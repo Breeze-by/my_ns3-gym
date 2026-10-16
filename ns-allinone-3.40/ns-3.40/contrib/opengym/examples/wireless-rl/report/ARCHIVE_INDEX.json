@@ -600,6 +600,11 @@
         "superseded": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/predeclared_plan_v4.json",
         "replacement": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/predeclared_plan_v5.json",
         "reason": "Source-objective analytic counterexample atgamma.99/lambda.95 before anypilot update; setgamma=lambda=1 with true-terminated MC and explicit one-bootstrap quota/wall truncation distinction. Preserve all old plans/results; charge242v4 plus390v2 native decisions and both fullactual walltimes; remaining3464/11500 conservative, no budget expansion."
+      },
+      {
+        "superseded": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/predeclared_plan_v5.json",
+        "replacement": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/predeclared_plan_v6.json",
+        "reason": "V5 auto-stopped at unchanged20ms terminal-detection guard with40ms evaluator-consumer lag. Add per-paused20tick evaluator clock/frozen-terminal acknowledgement in existing SingleThreadedExecutor; unchanged safety/reward/actor/candidate/map/Nav2. Preserve original completeauditFAIL, native task reports and prototype history. Charge all876v5 native decisions and5212.525802815799wall seconds; remaining2588/6383.461767349392, select6300 conservatively."
       }
     ],
     "artifacts": {
@@ -738,6 +743,98 @@
       "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v4/pilot_interrupted/diagnostic_stop_request.json": {
         "sha256": "57c6a1ca324703db5ceac46b7e60aa30f70c28b595bdd457916cd2ca17ed5041",
         "bytes": 562
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/predeclared_plan_v6.json": {
+        "sha256": "3165cbfa2dae3147e3af5889d470008940f928acfe6823cfced534fb825e83bd",
+        "bytes": 15248
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/selected_byte_integrity_v5.json": {
+        "sha256": "12669302141c92dbdf50d2127ec4e9b16a2368f6ce21a3f8ae947c336107e46e",
+        "bytes": 109531
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v5/minimal/manifest.json": {
+        "sha256": "cd8bcd52182adfc606fa4c1b4d6dd1028693619f3acf8969b3bcb3c1b491f869",
+        "bytes": 13748
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v5/minimal/audit_v5.json": {
+        "sha256": "443ea31576668ecd0734250fbe447ac5411b3e9ce16973808f7acaa8f17c27f8",
+        "bytes": 54199
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v5/minimal/independent_review_v5.json": {
+        "sha256": "7920d7ae661d585210e94a78940bf23bd0b1b11c93cf14c027af0a645951a10e",
+        "bytes": 20695
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v5/pilot_infrastructure/manifest.json": {
+        "sha256": "c1b3cd6c46d66d8af10519378eb85b35d7165f01818eb4f26ac7142cc092ea09",
+        "bytes": 160254
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v5/pilot_infrastructure/audit_v5_original.json": {
+        "sha256": "4ea0248d180f1c6e063d03a17819264a445d801d04faea99519c173c18ecd588",
+        "bytes": 1173258
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v5/pilot_infrastructure/closed_run_snapshot_v5_v1.json": {
+        "sha256": "8fdc475350ad533dc9eb34b2dddb843bd03e7142ab2e2fad48ad8dd75374b379",
+        "bytes": 66022
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v5/pilot_infrastructure/v5_infrastructure_review_v1.json": {
+        "sha256": "29aa5ca090959855b52d8d7a274a963f4accdbb90c5f2d0c1453d79b3138610a",
+        "bytes": 197339
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v5/pilot_infrastructure/v5_original_audit_cascade_review_v1.json": {
+        "sha256": "9aed00b09c6461e6f7f94b0fdeb637258bd58b4b17a2dbdb1b986011a17bc1df",
+        "bytes": 14844
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v5/pilot_infrastructure/raw_map_forensics_round0002_w3_v1.json": {
+        "sha256": "e37893172139a6bb03bd11cbc697a29cc7519586f62f1b4b60c73dc0b5264058",
+        "bytes": 26298
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v5/pilot_infrastructure/raw_map_observer_round0002_w3_v1/metadata.json": {
+        "sha256": "cf04e3d1a3962037439e0f20819580302e350341398bc7c4dbeca67a887ff922",
+        "bytes": 4122
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v5/pilot_infrastructure/raw_map_observer_round0002_w3_v1/summary.json": {
+        "sha256": "be288b330aaa14b52b774b79da944d07b6623da8a0bb81a23884f9c648a0bf62",
+        "bytes": 8202
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v5/pilot_infrastructure/diagnostic_frontier_source_counterexample_v1.py": {
+        "sha256": "8c18e87de528edbfa6402443f9b2adf53f2f336f7707517c8ea0bda0ddce50c1",
+        "bytes": 7410
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v5/pilot_infrastructure/diagnostic_frontier_source_counterexample_v1.json": {
+        "sha256": "8559ff7b1d5b09c2dd9eb4030901fbad26607dcc1b6c15d5e5b7871d671c7c50",
+        "bytes": 3682
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v5/pilot_infrastructure/round0000_worker0_tb2_controllability_review_v5.json": {
+        "sha256": "a888976dc8d703f69d9ed1a3ab11509b1381ecb8127172808ad4f4e900ab22ec",
+        "bytes": 8557
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v5/pilot_infrastructure/protocol_unsent_candidate_receipt_v1.json": {
+        "sha256": "ba2636ed9e177251d451186e9b09346e28e32c5803a93106f4fb7a749429c30c",
+        "bytes": 52280
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v5/pilot_infrastructure/protocol_unsent_candidate_receipt_v2.json": {
+        "sha256": "e05182441ba3d49a1b7a0c49f0bd73fe91d71277bc3e6e678b80c23afe33f48b",
+        "bytes": 54920
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v5/pilot_infrastructure/protocol_v2_review_v1.json": {
+        "sha256": "f2d3585b04ddf173a5051f46ba569092a83167e7255b3b3f3c50a3d9f01da980",
+        "bytes": 7709
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v5/pilot_infrastructure/round0000_native_review_v5.json": {
+        "sha256": "1d52580912ff5d99ae65762d5ea2c918aeff4f7b49efaf368e19fcbf2b837154",
+        "bytes": 386809
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v5/pilot_infrastructure/round0001_native_review_v5.json": {
+        "sha256": "b9bb576d885a1f98efec71e523fe8308492b403646530e1dcbb08265e2fd1c76",
+        "bytes": 638883
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v5/pilot_infrastructure/round0002_native_review_v5.json": {
+        "sha256": "d34e56ea37103eab4cb4de145c75fe72bd789ff9e8362a9b80d0f001e86293e3",
+        "bytes": 716775
+      },
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/prefreeze_checks_v6.json": {
+        "sha256": "a9f903dcf9d2c9092c4d3012c7c10ada7eebbf81ffd639f9eb006f07e6fb82e4",
+        "bytes": 6627
       }
     },
     "v2_source_freeze": "9e898bd5ca5eccc6e263e198481f672b5cf82320",
@@ -745,7 +842,7 @@
     "v2_pilot_interrupted_manifest": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v2/pilot_interrupted/manifest.json",
     "v2_diagnostic_audit": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v2/pilot_interrupted/diagnostic_native_prefix_audit_v1.json",
     "v2_scope": "Minimal8native decisions/4GPU optimizer steps/full offline auditPASS. Pilot390settled native decisions,388collector returns,389.10sampled reward seconds,1752.9574942300096wall seconds,0updates; two genuine peer-safety failures and two agent-abandoned cleanly closed prefixes. No95% task success, no final pilot checkpoint; originalgeneric infrastructure_error label retained but diagnostic SIGINT is not a simulator crash finding.",
-    "active_prospective_plan": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/predeclared_plan_v5.json",
+    "active_prospective_plan": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/predeclared_plan_v6.json",
     "v3_source_freeze": "c2911114226bbe8275a0658a3710dafa4e89f5e0",
     "v3_status": "historical_minimum_closed_original_full_scalar_audit_FAIL_preserved; no task/acceptance credit",
     "v3_scope": "Engineering minimum16native/returned decisions,16sampled seconds,4GPU optimizer steps,290.07678865175694wall seconds, clean closure. Original full audit_v3.json fails six scalar shared-boundary switch attribution checks. Independent CPU policy-only replayPASS does not replace scalar gate. Coverage.8291335707112206,IoU.16709862228891012,participationtrue,taskfalse. V3pilot and validation never started.",
@@ -782,8 +879,8 @@
     "v4_pilot_interrupted_manifest": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v4/pilot_interrupted/manifest.json",
     "v4_scope": "Minimum16native/returned decisions,4GPU optimizer steps,294.97549937386066wall seconds,full auditPASS; quality/participationfalse,no95% task. Pilot242native decisions/239collector returns/245rewardACK settlements,241.66physical-effective seconds,1051.0549356047995fullwall,0updates,onepeer-safetyfailure andthreeabandoned cleanprefixes,no tasksuccess/finalcheckpoint. Oneactualreject remainscounted. All168native owned identities absent;169including parent independently. Interrupt source-objective reason does not demonstrate learned performance.",
     "v4_packaging_status": "complete;29minimum+74pilot=103files,raw46100430/selected18694049bytes;selectedanddecodedrawSHA/bytes103/103PASS",
-    "v5_source_freeze": "SOURCE_FREEZE_FROM_METADATA",
-    "v5_status": "prospective_pre_native_gamma_lambda1; task_reward_native_actor_candidate_navigation_gates_unchanged",
+    "v5_source_freeze": "de7a805af9cd9bc7d1b24e60559ccc4d3054e4c3",
+    "v5_status": "minimum_full_audit_PASS; pilot_automatic_infrastructure_stop_terminal_detection_lag; original_full_audit_FAIL_preserved; final_only_validation_SKIPPED_no_final_zip",
     "v5_budget": {
       "original_decisions": 4096,
       "original_wall_seconds": 14400,
@@ -794,9 +891,37 @@
       "remaining_decisions": 3464,
       "remaining_wall_seconds": 11595.98757016519,
       "selected_wall_seconds": 11500,
-      "engineering_minima_and_fixed_validation_separate": true
+      "engineering_minima_and_fixed_validation_separate": true,
+      "scope": "Historical v5 predeclared allocation before actualv5 run; current remaining resource ceiling isv6_budget."
     },
     "v5_return_scope": "gamma=lambda=1 fixedconstants; true-terminated targets are undiscountedfinite-episodeMC/no bootstrap; taskfailureupper<=-10 onlytrueterminated. Quota/wall truncationtails and16-stepminimum bootstrapexactlyone finalvalue; nofailed-returnbound ontruncatedtargets.",
-    "v5_geometry_scope": "open101train andopen401/402/403validation useidenticalopenworld/taskgeometry andfixedstartposes/yaw0; taskseedchangesGazebosensor/physicsrandomness only, notposes/layouts/independentlearningseeds or unseen-generalization."
+    "v5_geometry_scope": "open101train andopen401/402/403validation useidenticalopenworld/taskgeometry andfixedstartposes/yaw0; taskseedchangesGazebosensor/physicsrandomness only, notposes/layouts/independentlearningseeds or unseen-generalization.",
+    "v5_minimal_manifest": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v5/minimal/manifest.json",
+    "v5_pilot_infrastructure_manifest": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v5/pilot_infrastructure/manifest.json",
+    "v5_scope": "Minimum16native/returned decisions,4GPUsteps,286.51577762141824wall seconds,full auditPASS. Pilot3completed rounds252+250+295=797saved samples,48actualGPUoptimizersteps/12epochs; total16attempts876native/875collector,870.12effective/870.20physical seconds,5212.525802815799fullwall. Three native evaluator successes(1initialpolicy+2after16updates),11peer-terminal reports including one infrastructure-invalid sampler attempt,2external-close prefixes. Disjoint3success+10otherpeerfailure+2prefix+1infra. No statistical learning-gain/reliability/heldout/P2Aacceptance claim.",
+    "v5_validation_status": "SKIPPED: pilot infrastructure_error and no final.zip; no earlier checkpoint substitution",
+    "v5_original_audit": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/native_v5/pilot_infrastructure/audit_v5_original.json",
+    "v5_original_audit_scope": "Original9-error fullFAIL preserved. Separate source-bound cascade review proves w1 protocol-gate omission11rows makes241-rowexpected versus252stored, causing downstreamaction_mask mismatch; complete4-episode252-rowCPU replay passes tensors/masks/actions/reward/value/logprob/dt/GAE. This does not erase protocol, real40ms>20mslag, incompleteprefix/run or missingfinal errors.",
+    "v5_diagnostics_scope": "Executed raw observerv1 once15-second configured budget/14.580348508898169actual seconds inside pilotwall; no application publisher/action/service/native control calls. Observerv2 prepared only. Exact actor81/source bundle replay proves observed occupancy source contributions, not physical object identity or a production repair. Synthetic frontier source counterexample is independent of actual w0 earlier target-intersection issue. Protocol prototypev1/review failure/v2 CPU evidence retained without retroactive de7a production credit.",
+    "v6_source_freeze": "SOURCE_FREEZE_FROM_METADATA",
+    "v6_status": "prospective_pre_native_evaluator_quantum_phase_ack; no actualv6task_or_acceptance_credit",
+    "v6_budget": {
+      "original_decisions": 4096,
+      "original_wall_seconds": 14400,
+      "v2_charged_decisions": 390,
+      "v2_full_wall_seconds": 1752.9574942300096,
+      "v4_charged_decisions": 242,
+      "v4_full_wall_seconds": 1051.0549356047995,
+      "v5_charged_decisions": 876,
+      "v5_full_wall_seconds": 5212.525802815799,
+      "remaining_decisions": 2588,
+      "remaining_wall_seconds": 6383.461767349392,
+      "selected_wall_seconds": 6300,
+      "engineering_phase_probe_minima_and_fixed_validation_separate": true
+    },
+    "v6_scope": "One newcleanpushedfreeze: engineering1worker2open101terminal-probe episodes/4steps -> originalnative/scalar+phaseACKauditPASS -> freshPPO16decisions/16stepstruncation/900wall/fullauditPASS -> fresh4workeropen101seed41pilot2588decisions/300maxsteps/6300wall -> conditionalfinitefinal-only deterministicopen401/402/403900decisions/9000wall/0updates. No extraobserver. Evaluator response at each paused20ticks does not prove fullproducer/DDS/P3 causalclock closure; all original gates unchanged.",
+    "v5_packaging_status": "complete;minimal27raw20416727/selected12831817bytes,pilot303raw114640113/selected38191508bytes,total330files;allselectedencoding/SHA/bytesanddecodedrawSHA/bytesPASS;includesobserveroriginalgz-onlymaps",
+    "v5_owned_closure_scope": "Infrastructure review confirms667saved nativePID/startidentities absent andpilotparentPID1195717 absent;all16ownedclosures empty. Process cleanup does not overwrite frozen navigation failure gates.",
+    "v6_prefreeze_check_scope": "3packagebuildPASS3.73s; initial823ROS/29.14s retained as intermediate; final824ROS/30.12s and133CPU/10.685sPASS;13changedPythonflake8PASS after preserving/fixing initial100char and3E128 failures; protocol23focusedPASS.773s. Exact3phase sourceSHA verified; fullsourceproofcountdeferreduntilcommitpreflight; root11Markdown154linksmissing[]. No native/GPUcredit."
   }
 }

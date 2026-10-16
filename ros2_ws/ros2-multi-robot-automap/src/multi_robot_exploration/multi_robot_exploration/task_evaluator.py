@@ -23,6 +23,7 @@ from std_srvs.srv import Trigger
 
 from .mr3_contacts import CONTACT_COMPONENTS, ContactMonitor, contact_topics
 from .mr3_episode import TASK_FAILURE_REASONS, elapsed_ns, timestamp_ns
+from .mr3_evaluator_phase import PHASE_PROTOCOL, EvaluatorPhase
 from .mr3_information import map_digest
 from .mr3_reward import RewardLedger
 from .mr3_task_contract import (
@@ -381,6 +382,9 @@ class TaskEvaluator(Node):
         self.coverage_times = {0.75: None, 0.8: None, 0.9: None, 0.95: None}
         self.finalized = False
         self.final_result = None
+        self.evaluator_phase = None
+        self.evaluator_phase_file = None
+        self.evaluator_phase_error = None
         self.training_reward_enabled = self.declare_parameter(
             "training_reward_enabled", False,
         ).value
@@ -451,6 +455,9 @@ class TaskEvaluator(Node):
                 ),
             ])
         if self.training_reward_enabled:
+            self.evaluator_phase = EvaluatorPhase(self.episode_id)
+            self.evaluator_phase_publisher = self.create_publisher(
+                String, "/mr3/evaluator_phase_ack", 10)
             self.task_terminal_publisher = self.create_publisher(
                 String, "/mr3/task_terminal", map_qos,
             )
@@ -461,6 +468,8 @@ class TaskEvaluator(Node):
                 String, "/mr3/reward_ready", map_qos,
             )
             self.input_subscriptions.extend([
+                self.create_subscription(String, "/mr3/evaluator_phase_request",
+                                         self._evaluator_phase_callback, 10),
                 self.create_subscription(
                     String, "/mr3/reward_request", self._reward_request_callback, 20,
                 ),
@@ -498,6 +507,74 @@ class TaskEvaluator(Node):
 
     def _now(self):
         return self.get_clock().now().nanoseconds / 1e9
+
+    def _trace_evaluator_phase(self, kind, **payload):
+        if self.evaluator_phase_file is None:
+            self.output_dir.mkdir(parents=True, exist_ok=True)
+            self.evaluator_phase_file = (self.output_dir / "evaluator_phase_evaluator.jsonl").open(
+                "x", buffering=1)
+        self.evaluator_phase_file.write(json.dumps({
+            "kind": kind, "epoch": self.episode_id,
+            "wall_monotonic_ns": time.monotonic_ns(),
+            "evaluator_clock_ns": self.get_clock().now().nanoseconds, **payload,
+        }, sort_keys=True, allow_nan=False) + "\n")
+
+    def _evaluator_phase_terminal(self):
+        if not self.finalized:
+            return None
+        if self.final_result is None or self.start_sim_time is None:
+            raise ValueError("evaluator_phase_finalization_incomplete")
+        # These are the same public scalar fields as /mr3/task_terminal. No
+        # metrics, truth, reward or producer-readiness state enter this ACK.
+        return {"epoch": self.episode_id,
+                "end_sim_time_sec": self.final_result["end_sim_time_sec"],
+                "termination_reason": self.final_result["termination_reason"]}
+
+    def _publish_evaluator_phase(self, response):
+        self._trace_evaluator_phase("ack_published", ack=response)
+        self.evaluator_phase_publisher.publish(String(data=json.dumps(
+            response, sort_keys=True, allow_nan=False)))
+
+    def _reject_evaluator_phase(self, request, error):
+        self.evaluator_phase_error = str(error)
+        self.evaluator_phase.pending = None
+        self._publish_evaluator_phase({
+            "schema": PHASE_PROTOCOL, "epoch": self.episode_id, "ok": False,
+            "request_id": request.get("request_id") if isinstance(request, dict) else None,
+            "target_time_ns": request.get("target_time_ns") if isinstance(request, dict) else None,
+            "evaluator_clock_ns": self.get_clock().now().nanoseconds, "error": str(error),
+        })
+
+    def _evaluator_phase_callback(self, message):
+        """Serialized with finalize by this node's existing single-thread executor."""
+        request = None
+        try:
+            request = json.loads(message.data)
+            self._trace_evaluator_phase("request_received", request=request)
+            if self.evaluator_phase_error is not None:
+                raise ValueError("evaluator_phase_already_failed: " + self.evaluator_phase_error)
+            if self.start_sim_time is None or not self.reward_reset_bound:
+                raise ValueError("evaluator_phase_requires_bound_released_task")
+            response = self.evaluator_phase.request(
+                request, self.get_clock().now().nanoseconds,
+                self._evaluator_phase_terminal(), time.monotonic_ns())
+            if response is not None:
+                self._publish_evaluator_phase(response)
+        except (ValueError, TypeError, KeyError, TimeoutError) as error:
+            self._reject_evaluator_phase(request, error)
+
+    def _drain_evaluator_phase(self):
+        phase = getattr(self, "evaluator_phase", None)
+        if phase is None or phase.pending is None:
+            return
+        request = phase.pending[0]
+        try:
+            response = phase.poll(self.get_clock().now().nanoseconds,
+                                  self._evaluator_phase_terminal(), time.monotonic_ns())
+            if response is not None:
+                self._publish_evaluator_phase(response)
+        except (ValueError, TypeError, KeyError, TimeoutError) as error:
+            self._reject_evaluator_phase(request, error)
 
     def _mr3_contact_callback(self, message, robot, component):
         if self.finalized:
@@ -1241,6 +1318,7 @@ class TaskEvaluator(Node):
                 self.pending_release = None
                 self._release_callback(pending_release)
             self._drain_reward_requests()
+            self._drain_evaluator_phase()
         if (self.training_reward_enabled and not self.training_acknowledged
                 and self.training_ack_deadline_wall is not None
                 and time.monotonic() >= self.training_ack_deadline_wall):
@@ -1480,6 +1558,9 @@ def main(args=None):
             finally:
                 try:
                     if evaluator is not None:
+                        phase_file = getattr(evaluator, "evaluator_phase_file", None)
+                        if phase_file is not None:
+                            phase_file.close()
                         evaluator.destroy_node()
                 finally:
                     if rclpy.ok():

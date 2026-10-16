@@ -433,6 +433,7 @@ def diagnostic_probe_evaluator():
     for name in (
         "_mr3_termination_reason", "_timer_callback", "_control_failure_callback",
         "_diagnostic_failure_callback", "_poll_diagnostic_failure", "training_exit_ready",
+        "_drain_evaluator_phase",
     ):
         setattr(node, name, MethodType(getattr(TaskEvaluator, name), node))
     return node, clock, readiness, finalizations, errors

@@ -1,4 +1,4 @@
-# MR3-P2A 联合 MaskablePPO pilot 契约 v5
+# MR3-P2A 联合 MaskablePPO pilot 契约 v6
 
 2026-10-16：用户验收 P1C 并授权 P2A。P2A 进行中，P2B 及后续未开始。
 正式任务沿用 [任务契约](MR3_TASK_CONTRACT.md) 与 [环境契约](MR3_ENV_CONTRACT.md)：
@@ -86,25 +86,51 @@ v5修订学习目标系数为gamma=lambda=1，不改环境奖励权重或任务/
 外部quota尾段、墙时截断及工程最小链仍只对真实末观测bootstrap一次，可能保留正value，
 不套用上述失败上界，不称所有采样都是无bootstrap的Monte Carlo。
 
-[v5前瞻计划](report/assets/20261016_mr3_p2a/predeclared_plan_v5.json)绑定同一新提交推送冻结；
-`SOURCE_FREEZE_FROM_METADATA`由各运行metadata记录实际SHA，不猜测提交。
-先完成CPU/静态检查和全新原生最小链：1 worker、open101、学习seed41、16真实决策、
-外部16步截断、900墙秒、最多4 epochs；独立native/scalar/pre-update policy审计通过才启动pilot。
-这些工程更新只验证新学习系数/采样/checkpoint闭环，不复用最小链权重，也不证明95%。
+[v5原计划](report/assets/20261016_mr3_p2a/predeclared_plan_v5.json)在
+`de7a805af9cd9bc7d1b24e60559ccc4d3054e4c3`运行：最小链16决策/4次GPU更新、
+286.51577762141824墙秒，完整独立审计PASS。pilot完成三round、797保存学习样本、48次GPU更新；
+所有尝试累计876原生决策、875返回、870.12有效/870.20物理仿真秒、5212.525802815799墙秒。
+16条原生任务报告有3次成功（1次首次更新前、2次16更新后），以及11条peer失败、2条外部关闭前缀；
+最后一条peer终态同时触发40ms检测滞后超过原20ms门禁的基础设施错误，不重复计为第17次尝试。
+run自动停止，非表现诊断中断；cleanup_errors=[]，没有final.zip，声明的final-only验证SKIPPED，
+不以checkpoint_0002或更早权重补测。原完整audit_v5_original.json FAIL及各项诊断分别保留。
+单开发图/单训练seed的少量成功不证明学习收益、可靠冻结策略或P2A完成。
 
-随后从全新初始权重执行单训练seed41的v5 pilot：4 workers，每worker仍为tb1/tb2/tb3，
-固定open101，最多3464真实决策或11500墙秒采样截止（先到即停）。普通episode保持300步上限；
-最后quota剩余或墙时截止允许明确外部截断尾段，闭合后仅bootstrap一次，不暗称完整300秒轨迹。
-预算沿用原4096决策/14400墙秒：扣v2实际390/1752.9574942300096和v4实际242/1051.0549356047995，
-余3464决策/11595.987570165191墙秒，v5保守取11500墙秒，不扩展原pilot预算。
-各版独立工程最小链与固定开发验证分别记账；原生安全取消/退出及已开始round的最后一次更新收尾
-仍按原声明单列实际额外墙时，不混入任务300仿真秒。
+[v6前瞻计划](report/assets/20261016_mr3_p2a/predeclared_plan_v6.json)只修订原生评价消费相位：
+每次20个物理tick推进并暂停后，由评价器同一SingleThreadedExecutor确认精确clock及已冻结终态，
+worker取得匹配epoch/相位回执后才推进下一量子。不放宽原20ms检测滞后、真实短步/零尾结算、
+任务/接触/源龄门禁；gamma=lambda=1、actor/候选/地图/SLAM/Nav2和reward权重不改。
+这提供评价器消费顺序证据，不外推为所有生产端/DDS消息排水或P3跨系统因果时钟证明。
+独立`mr3_learning/audit_evaluator_phase.py`从原physical receipts逐量子重放
+`evaluator_phase_worker.jsonl`及`evaluator_phase_evaluator.jsonl`，核对request/publish/receive/consume、
+LIVE permission与下一request顺序。精确worker源码绑定保证consume→permit→下一物理请求；
+Gazebo step RPC原件没有额外wall timestamp，不虚构此证据。重复request/publication/consume失败关闭；
+精确不变的过期ACK重复交付可以保留，但不能再consume或增加permit。
+此审计只证明冻结评价器终态的串行消费，原20ms/contact/command/scalar/W7 native门禁继续独立执行。
+协议v2集成按实际新freeze绑定adapter/protocol/transport/env-auditor四份精确SHA，
+保留原W7函数的可执行身份、原FAIL及严格detached replay；不修改旧原件或称旧v5整run通过。
+当前仅为新冻结前声明，尚无v6原生信用。
 
-v5 pilot正常产生有限final checkpoint后，只使用该final在open401/open402/open403各运行一轮开发验证，
-总上限900决策/9000墙秒、最多4 workers、确定性mask-aware推理、0 optimizer更新；
-不从验证反馈挑checkpoint或调参。学习seed41和Gazebo taskseed含义不同：open101及open401/402/403
-均使用同一p1c_open.world、同一任务几何和固定三台起点/yaw0，仅改变Gazebo传感/物理随机种子。
-这不是姿态/布局变化、多训练seed或未见泛化；rooms/corridors及预声明姿态/布局变化仍未启动。
+同一干净、已提交推送新freeze由metadata绑定`SOURCE_FREEZE_FROM_METADATA`，依次执行：
+先1worker、open101两episode、4步terminal-probe工程benchmark，验证20ms短终态和同边界零动作尾步；
+原native/scalar及新phase-ACK审计全部PASS后，执行全新学习seed41/open101最小链，
+16真实决策/16步外部截断/900墙秒，完整native/scalar/pre-update policy审计PASS后才启动pilot。
+两项均为独立工程成本，不载入旧checkpoint，也不证明95%任务。v6不计划额外raw-map observer。
+
+v6 pilot从全新初始权重开始，4workers、每worker仍为tb1/tb2/tb3，固定open101，
+最多2588真实决策/6300墙秒采样截止（先到即停）。普通episode上限300步；最后quota或墙时
+尾段明确外部截断，仅bootstrap一次末观测value。真实terminated才适用未折扣MC及失败回报界。
+原4096/14400 pilot扣v2的390/1752.9574942300096、v4的242/1051.0549356047995、
+v5的876/5212.525802815799，余2588决策/6383.461767349392墙秒，保守选6300，不扩预算。
+工程probe/最小链与固定开发验证单列；在途请求、原生安全关闭及已开始round末更新实耗
+仍按原声明另记，不混入任务300仿真秒。
+
+只有pilot无基础设施错误地完成并产生有限final.zip，才用该final在open401/open402/open403
+各做一轮确定性mask-aware开发验证：总900决策/9000墙秒、最多4workers、0optimizer更新。
+条件不满足则SKIP，不替换早期checkpoint，不按验证反馈选模型/调参。
+学习seed41与taskseed不同：这些open任务均为同world/任务几何/固定三台起点和yaw0，
+只改变Gazebo传感/物理随机种子；不是姿态/布局变化、多训练seed或未见泛化。
+rooms/corridors及后续预声明开发姿态/布局变化仍未启动。
 
 本轮无自动重试。真实任务失败计入；基础设施故障终止run，保留前缀与已有checkpoint。
 如未达到95%任务/安全/学习出口，明确P2A未完成，诊断表示、候选、采样与奖励，停在本步。

@@ -4,8 +4,11 @@
 本文记录当前接口；P1B原生矩阵只证明其旧冻结v2，P1C只提供W7环境工程信用。
 P2A v3最小链原scalar六项同边界switch归因FAIL保留；v4最小链已完整审计PASS，
 pilot在0更新时因源级折扣目标缺陷诊断停止，保留一项peer安全失败及三条前缀。
-当前v5仅将学习gamma/lambda改为1，原生候选/导航接口仍为本文v3；新冻结需重新最小链审计。
-这些结果不提供95%任务或网络性能信用。
+v5原生已有3次任务成功记录及48次pilot更新，后因20ms终态相位门禁失败自动停止，原完整审计FAIL保留。
+当前v6拟增加每20tick评价器phase ACK，候选/导航接口仍为本文v3，不改地图或机体安全门禁；
+新冻结须先工程terminal-probe及最小链审计。协议v2只对已严格证明未实际发送的peer停止目标
+做detached原W7重放，实际freeze的adapter/protocol/transport/env-auditor四份精确SHA须匹配；
+原FAIL和native原件保持，不能将旧v5完整审计改PASS。少量开发成功不证明学习收益、可靠性或网络性能。
 任务指标仍由[任务契约](MR3_TASK_CONTRACT.md)约束，学习闭环见[PPO契约](MR3_PPO_CONTRACT.md)。
 
 ## 模式与所有权
@@ -123,5 +126,5 @@ P1C已于2026-10-16由用户验收；短工程矩阵不证明多日训练稳定�
 P2A v2 pilot的tb3候选饥饿与两次peer安全失败保留在[P2A报告](report/20261016_mr3_p2a.md)，
 是本次v3执行修订的诊断依据。v3的16秒最小链三台均实际到达目标并更新地图几何，
 但不证明300秒候选充分性或95%任务；原scalar审计失败保留。
-v4候选/SLAM/Nav2及安全门禁不改，只修正日志隔离和离线switch归因，须新冻结独立验证，
+v4候选/SLAM/Nav2及安全门禁不改，日志隔离/离线switch归因已在v4最小链验证；当前v6只补评价器消费相位，
 不复用P1B/P1C或旧pilot成绩，详见[PPO契约](MR3_PPO_CONTRACT.md)。

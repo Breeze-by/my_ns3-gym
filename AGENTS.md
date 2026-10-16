@@ -87,7 +87,13 @@ The v4 16-decision chain passed native/reward/policy audits with four GPU update
 Its pilot was diagnostically interrupted after 242 native decisions and zero
 updates for a policy-independent discount/objective mismatch; all outcomes remain
 preserved. V5 uses gamma=lambda=1 for the finite task, retaining one bootstrap for
-external truncations; fresh native validation is required. There is no 95% task credit; no validated exploration policy or ROS/ns-3 gateway exists. Historical
+external truncations. Its pilot retained 48 GPU optimizer steps and 797 saved
+training samples before a genuine 40ms terminal-detection infrastructure failure;
+all 16 attempts and three descriptive strict successes are preserved. No final
+checkpoint was produced, so its final-only development validation was skipped.
+V6 adds an exact-clock evaluator ACK before each 20ms policy quantum; a fresh
+terminal probe, minimum loop and budget-limited pilot are predeclared. There is
+no frozen-policy reliability or 95% P2A acceptance credit; no validated exploration policy or ROS/ns-3 gateway exists. Historical
 five-user/15-input/5-action toy DQN is a separate task.
 P1A now measures all six actual body collisions per robot (18 streams), with
 continuous freshness, raw publication-sequence audit and navigation terminal

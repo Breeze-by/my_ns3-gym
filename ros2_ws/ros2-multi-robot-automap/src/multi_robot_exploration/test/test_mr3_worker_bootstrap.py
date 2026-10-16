@@ -5,9 +5,12 @@ import importlib.util
 import io
 from pathlib import Path
 import sys
+import threading
 from unittest.mock import patch
 
 import pytest
+
+from multi_robot_exploration.mr3_evaluator_phase import EvaluatorPhase, PhaseClient
 
 
 SCRIPTS = Path(__file__).resolve().parents[3] / "scripts"
@@ -120,6 +123,14 @@ def terminal_worker(end=10.):
     instance.snapshot = {"sequence": 4, "source_stamp": 10., "digest": "saved"}
     instance.watermarks = {"state_sequence": 100, "map_payload_sha256": "a" * 64}
     instance.transition_file = io.StringIO()
+    instance.callback_error = None
+    instance.evaluator_phase_file = io.StringIO()
+    instance.condition = threading.Condition()
+    instance.evaluator_phase = PhaseClient(instance.epoch)
+    request = instance.evaluator_phase.begin(instance.physical_ns)
+    ack = EvaluatorPhase(instance.epoch).request(request, instance.physical_ns, None, 0)
+    instance.evaluator_phase.receive(ack, instance.physical_ns, instance.clock_ns)
+    instance.evaluator_phase.consume()
     instance.shutdown_episode = lambda reason: setattr(instance, "shutdown_reason", reason)
     return instance
 
@@ -134,7 +145,8 @@ def test_same_boundary_terminal_settles_without_new_action_snapshot_or_physics()
                 "reason": "navigation_failure", "effective_step_end": 10.}
 
     instance._reward = reward
-    with patch.object(instance, "_physics") as physics, patch.object(instance, "_snapshot") as snap:
+    with (patch.object(instance, "_physics") as physics,
+          patch.object(instance, "_snapshot") as snap):
         result = instance.step(888, "external_sampler_limit")
         physics.assert_not_called()
         snap.assert_not_called()
@@ -169,11 +181,20 @@ def test_midstep_terminal_stops_after_one_real_quantum_and_authorizes_terminal_s
     instance.command_number = 0
     instance.events = []
     instance.action_pub = object()
-    instance._publish = lambda publisher, command: instance.events.append({
-        "kind": "action", "payload": {
-            "command_id": command["command_id"],
-            "observation_sequence": command["observation_sequence"],
-        }})
+    instance.evaluator_phase_pub = object()
+
+    def publish(publisher, command):
+        if publisher is instance.evaluator_phase_pub:
+            ack = {"schema": "mr3-evaluator-clock-terminal-ack-v1", **command, "ok": True,
+                   "evaluator_clock_ns": instance.physical_ns, "status": "TERMINAL",
+                   "terminal": instance.task_terminal}
+            instance.evaluator_phase.receive(ack, instance.physical_ns, instance.clock_ns)
+        else:
+            instance.events.append({"kind": "action", "payload": {
+                "command_id": command["command_id"],
+                "observation_sequence": command["observation_sequence"]}})
+
+    instance._publish = publish
 
     def wait(predicate, timeout, label):
         assert predicate(), label

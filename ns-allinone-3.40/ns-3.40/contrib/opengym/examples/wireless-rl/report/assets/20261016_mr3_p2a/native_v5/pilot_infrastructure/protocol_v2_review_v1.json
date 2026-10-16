@@ -1,0 +1,97 @@
+{
+  "schema": "mr3-independent-protocol-v2-adversarial-review-v1",
+  "utc_recorded": "2026-10-16T05:58:30.515868+00:00",
+  "reviewer": "p2a_policy",
+  "verdict": "PASS FOR FIXED-SCOPE OFFLINE CANDIDATE ONLY; no production integration or new task credit",
+  "native_freeze": "de7a805af9cd9bc7d1b24e60559ccc4d3054e4c3",
+  "artifacts": {
+    "protocol_unsent_candidate_v1.py": {
+      "sha256": "5f1d6908b49a9ca368459008fca8e4b50497cc5ddc750ac3f96700063711dadf",
+      "bytes": 16566
+    },
+    "test_protocol_unsent_candidate_v1.py": {
+      "sha256": "a9f9ba3f084e07729bebb2d2c7522aa7a957cab79115d3225b54988878760a0f",
+      "bytes": 12080
+    },
+    "protocol_unsent_candidate_receipt_v1.json": {
+      "sha256": "ba2636ed9e177251d451186e9b09346e28e32c5803a93106f4fb7a749429c30c",
+      "bytes": 52280
+    },
+    "protocol_unsent_candidate_v2.py": {
+      "sha256": "d852bb68139701ce6c0364c9516285c0dbf70b82180efe478011e4d4faa6a178",
+      "bytes": 20277
+    },
+    "test_protocol_unsent_candidate_v2.py": {
+      "sha256": "31cc4fad75ea662c6ca21885bb9459352e8ecfe60108a9a606306b4eb472ff38",
+      "bytes": 14548
+    },
+    "protocol_unsent_candidate_receipt_v2.json": {
+      "sha256": "e05182441ba3d49a1b7a0c49f0bd73fe91d71277bc3e6e678b80c23afe33f48b",
+      "bytes": 54920
+    }
+  },
+  "prior_v1_review_preserved": {
+    "verdict": "FAIL: accepted impossible/misbound command envelopes",
+    "actual_cpu_in_memory_mutations": [
+      {
+        "mutation": "suppressed envelope epoch=wrong-epoch",
+        "v1_accepted": true
+      },
+      {
+        "mutation": "suppressed envelope sequence=version=0",
+        "v1_accepted": true
+      },
+      {
+        "mutation": "suppressed envelope source_stamp=0",
+        "v1_accepted": true
+      },
+      {
+        "mutation": "suppressed envelope source_stamp=generated_stamp=0",
+        "v1_accepted": true
+      }
+    ],
+    "original_native_or_candidate_v1_files_modified": false
+  },
+  "review_findings": {
+    "v1_gap_closed": "v2 pins mr3_transport.py and replays the exact producer prefix, epoch, strict sequence/default version, payload, source/generated/received timestamps and ReceivedStore watermarks for the suppressed command stream. The original adapter/raw records are untouched.",
+    "lifecycle_rules_preserved": "Only one proven logical send and matching logical terminal are removed from a detached view. Original immutable W7 protocol replays every native send, actual result, cancellation confirmation and surviving logical owner; all nonclosure errors remain fatal. Saved observations independently prove unsent owner/lease release.",
+    "actual_binding": "tb3:11 logical producer line330 -> real safety stop331 -> exact command delivery335 -> edge_not_sent336 -> CANCELED terminal339 -> saved release observation347; native send/receipt absent",
+    "not_a_success_override": "w1 remains genuine navigation_failure; original closureFAIL and v1 reviewFAIL retained. No simulator outcome, reward, task gate or runtime behavior changes."
+  },
+  "independent_focused_tests": {
+    "command": "rtk proxy env PYTHONNOUSERSITE=1 CUDA_VISIBLE_DEVICES=-1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python - <<'PY'\nimport importlib.util,unittest\nfrom pathlib import Path\np=Path('/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v5_pilot/test_protocol_unsent_candidate_v2.py');spec=importlib.util.spec_from_file_location('independent_protocol_review_v2',p);m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)\nnames=['test_real_original_failure_retained_and_all_six_native_owners_replayed','test_adversarial_v1_envelope_loopholes_fail','test_prior_stream_watermark_duplicate_or_regression_fails','test_actual_native_send_without_result_never_gets_unsent_credit','test_other_native_owner_missing_result_still_fails','test_rerun_preserves_native_terminal_status_and_positive_cancel_checks','test_saved_owner_or_lease_not_released_fails_independent_proof','test_missing_or_non_peer_safety_stop_fails']\nr=unittest.TextTestRunner(verbosity=2).run(unittest.TestSuite(m.UnsentProofTests(x) for x in names));raise SystemExit(not r.wasSuccessful())\nPY",
+    "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+    "exit_code": 0,
+    "test_methods": [
+      "test_real_original_failure_retained_and_all_six_native_owners_replayed",
+      "test_adversarial_v1_envelope_loopholes_fail",
+      "test_prior_stream_watermark_duplicate_or_regression_fails",
+      "test_actual_native_send_without_result_never_gets_unsent_credit",
+      "test_other_native_owner_missing_result_still_fails",
+      "test_rerun_preserves_native_terminal_status_and_positive_cancel_checks",
+      "test_saved_owner_or_lease_not_released_fails_independent_proof",
+      "test_missing_or_non_peer_safety_stop_fails"
+    ],
+    "tests_run": 8,
+    "tests_passed": 8,
+    "unittest_elapsed_seconds": 4.484,
+    "shell_wall_seconds": null,
+    "captured_output": "Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.\nPlease upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.\nUsers of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.\nSee the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.\ntest_real_original_failure_retained_and_all_six_native_owners_replayed (independent_protocol_review_v2.UnsentProofTests) ... ok\ntest_adversarial_v1_envelope_loopholes_fail (independent_protocol_review_v2.UnsentProofTests) ... ok\ntest_prior_stream_watermark_duplicate_or_regression_fails (independent_protocol_review_v2.UnsentProofTests) ... ok\ntest_actual_native_send_without_result_never_gets_unsent_credit (independent_protocol_review_v2.UnsentProofTests) ... ok\ntest_other_native_owner_missing_result_still_fails (independent_protocol_review_v2.UnsentProofTests) ... ok\ntest_rerun_preserves_native_terminal_status_and_positive_cancel_checks (independent_protocol_review_v2.UnsentProofTests) ... ok\ntest_saved_owner_or_lease_not_released_fails_independent_proof (independent_protocol_review_v2.UnsentProofTests) ... ok\ntest_missing_or_non_peer_safety_stop_fails (independent_protocol_review_v2.UnsentProofTests) ... ok\n\n----------------------------------------------------------------------\nRan 8 tests in 4.484s\n\nOK\n"
+  },
+  "limits": [
+    "Only exact de7a805 freeze and strict demonstrated unsent peer-stop branch. Unsupported expiry, incomplete episodes, duplicate/ambiguous events and native-sent goals receive no exception.",
+    "record() reads self.now(), while flush_protocol_events receives a captured now. Equality is observed for this reviewed serialized ROS-clock prefix and is a conservative qualifier, not a generalized arbitrary async/multithreaded producer guarantee; nonmatching future timing fails closed.",
+    "The original W7 function code identity assumes its source-pinned loader and trusted helper globals. Formal integration must preserve the existing 44-source/native/phase/contact/command/scalar gates and pin external v2 bytes separately from native freeze.",
+    "No production integration until all v5 native/evaluation stages close; afterward use a separately versioned offline auditor, preserving all original FAIL receipts."
+  ],
+  "execution": {
+    "device": "cpu",
+    "native_processes_started": 0,
+    "simulator_runs": 0,
+    "gpu_jobs": 0,
+    "optimizer_steps": 0,
+    "signals_sent": 0,
+    "tracked_files_edited": 0,
+    "raw_native_evidence_edited": 0
+  }
+}

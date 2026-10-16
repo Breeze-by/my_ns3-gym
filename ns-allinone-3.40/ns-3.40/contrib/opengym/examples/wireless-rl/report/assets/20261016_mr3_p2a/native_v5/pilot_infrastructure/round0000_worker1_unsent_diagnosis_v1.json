@@ -1,0 +1,601 @@
+{
+  "schema": "mr3-p2a-unsent-safety-suppression-diagnosis-v1",
+  "created_utc": "2026-10-16T05:36:31.620310+00:00",
+  "source_freeze": "de7a805af9cd9bc7d1b24e60559ccc4d3054e4c3",
+  "episode": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v5_pilot/native/round0000/worker1/episode001_open_101",
+  "goal_id": "round0000_w1_e1_06f9a236:tb3:11",
+  "previous_goal_id": "round0000_w1_e1_06f9a236:tb3:5",
+  "original_component_review_sha256": "1d52580912ff5d99ae65762d5ea2c918aeff4f7b49efaf368e19fcbf2b837154",
+  "original_gate_error": "protocol replay: goal lacks native send/result/protocol terminal closure",
+  "original_verdict_preserved": "FAIL; no gate patched, exception filtered or native event rewritten.",
+  "logical_vs_native_counts": {
+    "logical_send_goal": 7,
+    "native_send": 6,
+    "native_result_receipts": 6,
+    "logical_protocol_terminals": 7
+  },
+  "source_proof": {
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_adapter.py": {
+      "freeze_sha256": "b20f6b492f91cb943247ebcc29bd16497983d17c23cc458f1be16fa24b9958d5",
+      "current_sha256": "b20f6b492f91cb943247ebcc29bd16497983d17c23cc458f1be16fa24b9958d5",
+      "freeze_worktree_equal": true
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_protocol.py": {
+      "freeze_sha256": "fb08097170b3f0e8423fa11dde2567c618d4d0d48be220e6cfbfc9538c37c147",
+      "current_sha256": "fb08097170b3f0e8423fa11dde2567c618d4d0d48be220e6cfbfc9538c37c147",
+      "freeze_worktree_equal": true
+    },
+    "ros2_ws/ros2-multi-robot-automap/scripts/audit_mr3_env.py": {
+      "freeze_sha256": "427d5263403dc9d0db846e36fe6051446d99ed337e45313424ff148ecef08cb7",
+      "current_sha256": "427d5263403dc9d0db846e36fe6051446d99ed337e45313424ff148ecef08cb7",
+      "freeze_worktree_equal": true
+    }
+  },
+  "evidence_sha256": {
+    "adapter.jsonl": "f6476c5860bb6f08a22dafb48a0e47ddaaceed7d8125c7a5c2bf25399b534ea5",
+    "transitions.jsonl": "2011ae6440323cc498a8b097da12fd63d5d00c8d9fc3056bc1fae3133f3fd2b9",
+    "summary.json": "54115e15c9a9d296dee74e6c523b7b4e6c504994f4ae2896b761d9630287ddd8",
+    "supervisor_shutdown.json": "254f79d041faf6efdb370d55acc1fb94b60929d55fdc9de26804bbe4b205864e"
+  },
+  "timeline": [
+    {
+      "line": 320,
+      "record": {
+        "epoch": "round0000_w1_e1_06f9a236",
+        "kind": "action",
+        "payload": {
+          "action": 881,
+          "candidate_version": "7cf3173c74fdbd6eb205c163be0ec16662c58300413513724e4ee9de1b09446e",
+          "choices": [
+            8,
+            8,
+            1
+          ],
+          "command_id": 11,
+          "observation_digest": "30ddaa9e7a391bd858da691fff9752db69140b9f5465255274c16de6a66ff73b",
+          "observation_sequence": 11,
+          "results": {
+            "tb1": "kept",
+            "tb2": "kept",
+            "tb3": "switch_pending"
+          }
+        },
+        "stamp": 78.9
+      }
+    },
+    {
+      "line": 321,
+      "record": {
+        "epoch": "round0000_w1_e1_06f9a236",
+        "kind": "protocol",
+        "payload": {
+          "epoch": "round0000_w1_e1_06f9a236",
+          "goal_id": "round0000_w1_e1_06f9a236:tb3:5",
+          "reason": "switch",
+          "robot": "tb3",
+          "stamp": 78.9,
+          "type": "cancel_goal"
+        },
+        "stamp": 78.9
+      }
+    },
+    {
+      "line": 322,
+      "record": {
+        "epoch": "round0000_w1_e1_06f9a236",
+        "kind": "delivery",
+        "payload": {
+          "epoch": "round0000_w1_e1_06f9a236",
+          "generated_stamp": 78.9,
+          "payload": {
+            "epoch": "round0000_w1_e1_06f9a236",
+            "goal_id": "round0000_w1_e1_06f9a236:tb3:5",
+            "reason": "switch",
+            "robot": "tb3",
+            "stamp": 78.9,
+            "type": "cancel_goal"
+          },
+          "received_stamp": 78.9,
+          "sequence": 3,
+          "source": "tb3",
+          "source_stamp": 78.9,
+          "stream": "command",
+          "version": 3
+        },
+        "stamp": 78.9
+      }
+    },
+    {
+      "line": 323,
+      "record": {
+        "epoch": "round0000_w1_e1_06f9a236",
+        "kind": "delivery",
+        "payload": {
+          "epoch": "round0000_w1_e1_06f9a236",
+          "generated_stamp": 78.9,
+          "payload": {
+            "goal_id": "round0000_w1_e1_06f9a236:tb3:5",
+            "robot": "tb3",
+            "type": "cancel",
+            "value": true
+          },
+          "received_stamp": 78.9,
+          "sequence": 4,
+          "source": "tb3",
+          "source_stamp": 78.9,
+          "stream": "receipt",
+          "version": 4
+        },
+        "stamp": 78.9
+      }
+    },
+    {
+      "line": 324,
+      "record": {
+        "epoch": "round0000_w1_e1_06f9a236",
+        "kind": "protocol",
+        "payload": {
+          "accepted": true,
+          "epoch": "round0000_w1_e1_06f9a236",
+          "goal_id": "round0000_w1_e1_06f9a236:tb3:5",
+          "robot": "tb3",
+          "stamp": 78.9,
+          "type": "cancel_response"
+        },
+        "stamp": 78.9
+      }
+    },
+    {
+      "line": 326,
+      "record": {
+        "epoch": "round0000_w1_e1_06f9a236",
+        "kind": "delivery",
+        "payload": {
+          "epoch": "round0000_w1_e1_06f9a236",
+          "generated_stamp": 78.92,
+          "payload": {
+            "goal_id": "round0000_w1_e1_06f9a236:tb3:5",
+            "robot": "tb3",
+            "type": "result",
+            "value": 5
+          },
+          "received_stamp": 79.1,
+          "sequence": 5,
+          "source": "tb3",
+          "source_stamp": 78.92,
+          "stream": "receipt",
+          "version": 5
+        },
+        "stamp": 79.1
+      }
+    },
+    {
+      "line": 329,
+      "record": {
+        "epoch": "round0000_w1_e1_06f9a236",
+        "kind": "protocol",
+        "payload": {
+          "command_id": 5,
+          "epoch": "round0000_w1_e1_06f9a236",
+          "goal_id": "round0000_w1_e1_06f9a236:tb3:5",
+          "robot": "tb3",
+          "stamp": 79.1,
+          "status": "CANCELED",
+          "type": "protocol_terminal"
+        },
+        "stamp": 79.1
+      }
+    },
+    {
+      "line": 330,
+      "record": {
+        "epoch": "round0000_w1_e1_06f9a236",
+        "kind": "protocol",
+        "payload": {
+          "command_id": 11,
+          "created_at": 78.9,
+          "epoch": "round0000_w1_e1_06f9a236",
+          "expires_at": 80.9,
+          "goal": {
+            "x": 4.03394349961303,
+            "y": 1.0864358137297598
+          },
+          "goal_id": "round0000_w1_e1_06f9a236:tb3:11",
+          "lease_until": 80.9,
+          "observation_version": 11,
+          "robot": "tb3",
+          "stamp": 79.1,
+          "type": "send_goal",
+          "x": 4.03394349961303,
+          "y": 1.0864358137297598
+        },
+        "stamp": 79.1
+      }
+    },
+    {
+      "line": 331,
+      "record": {
+        "epoch": "round0000_w1_e1_06f9a236",
+        "kind": "safety_stop",
+        "payload": {
+          "reason": "{\"component\": \"peer_obstacles\", \"reason\": \"peer_body_envelopes_overlap\"}"
+        },
+        "stamp": 79.1
+      }
+    },
+    {
+      "line": 333,
+      "record": {
+        "epoch": "round0000_w1_e1_06f9a236",
+        "kind": "protocol",
+        "payload": {
+          "epoch": "round0000_w1_e1_06f9a236",
+          "goal_id": "round0000_w1_e1_06f9a236:tb1:7",
+          "reason": "external_safety_failure",
+          "robot": "tb1",
+          "stamp": 79.1,
+          "type": "cancel_goal"
+        },
+        "stamp": 79.1
+      }
+    },
+    {
+      "line": 334,
+      "record": {
+        "epoch": "round0000_w1_e1_06f9a236",
+        "kind": "protocol",
+        "payload": {
+          "epoch": "round0000_w1_e1_06f9a236",
+          "goal_id": "round0000_w1_e1_06f9a236:tb2:9",
+          "reason": "external_safety_failure",
+          "robot": "tb2",
+          "stamp": 79.1,
+          "type": "cancel_goal"
+        },
+        "stamp": 79.1
+      }
+    },
+    {
+      "line": 335,
+      "record": {
+        "epoch": "round0000_w1_e1_06f9a236",
+        "kind": "delivery",
+        "payload": {
+          "epoch": "round0000_w1_e1_06f9a236",
+          "generated_stamp": 79.1,
+          "payload": {
+            "command_id": 11,
+            "created_at": 78.9,
+            "epoch": "round0000_w1_e1_06f9a236",
+            "expires_at": 80.9,
+            "goal": {
+              "x": 4.03394349961303,
+              "y": 1.0864358137297598
+            },
+            "goal_id": "round0000_w1_e1_06f9a236:tb3:11",
+            "lease_until": 80.9,
+            "observation_version": 11,
+            "robot": "tb3",
+            "stamp": 79.1,
+            "type": "send_goal",
+            "x": 4.03394349961303,
+            "y": 1.0864358137297598
+          },
+          "received_stamp": 79.1,
+          "sequence": 4,
+          "source": "tb3",
+          "source_stamp": 79.1,
+          "stream": "command",
+          "version": 4
+        },
+        "stamp": 79.1
+      }
+    },
+    {
+      "line": 336,
+      "record": {
+        "epoch": "round0000_w1_e1_06f9a236",
+        "kind": "edge_goal_not_sent",
+        "payload": {
+          "goal_id": "round0000_w1_e1_06f9a236:tb3:11",
+          "reason": "stopped"
+        },
+        "stamp": 79.1
+      }
+    },
+    {
+      "line": 337,
+      "record": {
+        "epoch": "round0000_w1_e1_06f9a236",
+        "kind": "delivery",
+        "payload": {
+          "epoch": "round0000_w1_e1_06f9a236",
+          "generated_stamp": 79.1,
+          "payload": {
+            "epoch": "round0000_w1_e1_06f9a236",
+            "goal_id": "round0000_w1_e1_06f9a236:tb1:7",
+            "reason": "external_safety_failure",
+            "robot": "tb1",
+            "stamp": 79.1,
+            "type": "cancel_goal"
+          },
+          "received_stamp": 79.1,
+          "sequence": 4,
+          "source": "tb1",
+          "source_stamp": 79.1,
+          "stream": "command",
+          "version": 4
+        },
+        "stamp": 79.1
+      }
+    },
+    {
+      "line": 338,
+      "record": {
+        "epoch": "round0000_w1_e1_06f9a236",
+        "kind": "delivery",
+        "payload": {
+          "epoch": "round0000_w1_e1_06f9a236",
+          "generated_stamp": 79.1,
+          "payload": {
+            "epoch": "round0000_w1_e1_06f9a236",
+            "goal_id": "round0000_w1_e1_06f9a236:tb2:9",
+            "reason": "external_safety_failure",
+            "robot": "tb2",
+            "stamp": 79.1,
+            "type": "cancel_goal"
+          },
+          "received_stamp": 79.1,
+          "sequence": 4,
+          "source": "tb2",
+          "source_stamp": 79.1,
+          "stream": "command",
+          "version": 4
+        },
+        "stamp": 79.1
+      }
+    },
+    {
+      "line": 339,
+      "record": {
+        "epoch": "round0000_w1_e1_06f9a236",
+        "kind": "protocol",
+        "payload": {
+          "command_id": 11,
+          "epoch": "round0000_w1_e1_06f9a236",
+          "goal_id": "round0000_w1_e1_06f9a236:tb3:11",
+          "robot": "tb3",
+          "stamp": 79.1,
+          "status": "CANCELED",
+          "type": "protocol_terminal"
+        },
+        "stamp": 79.1
+      }
+    },
+    {
+      "line": 340,
+      "record": {
+        "epoch": "round0000_w1_e1_06f9a236",
+        "kind": "delivery",
+        "payload": {
+          "epoch": "round0000_w1_e1_06f9a236",
+          "generated_stamp": 79.1,
+          "payload": {
+            "goal_id": "round0000_w1_e1_06f9a236:tb1:7",
+            "robot": "tb1",
+            "type": "cancel",
+            "value": true
+          },
+          "received_stamp": 79.1,
+          "sequence": 5,
+          "source": "tb1",
+          "source_stamp": 79.1,
+          "stream": "receipt",
+          "version": 5
+        },
+        "stamp": 79.1
+      }
+    },
+    {
+      "line": 341,
+      "record": {
+        "epoch": "round0000_w1_e1_06f9a236",
+        "kind": "delivery",
+        "payload": {
+          "epoch": "round0000_w1_e1_06f9a236",
+          "generated_stamp": 79.1,
+          "payload": {
+            "goal_id": "round0000_w1_e1_06f9a236:tb2:9",
+            "robot": "tb2",
+            "type": "cancel",
+            "value": true
+          },
+          "received_stamp": 79.1,
+          "sequence": 5,
+          "source": "tb2",
+          "source_stamp": 79.1,
+          "stream": "receipt",
+          "version": 5
+        },
+        "stamp": 79.1
+      }
+    },
+    {
+      "line": 342,
+      "record": {
+        "epoch": "round0000_w1_e1_06f9a236",
+        "kind": "protocol",
+        "payload": {
+          "accepted": true,
+          "epoch": "round0000_w1_e1_06f9a236",
+          "goal_id": "round0000_w1_e1_06f9a236:tb1:7",
+          "robot": "tb1",
+          "stamp": 79.1,
+          "type": "cancel_response"
+        },
+        "stamp": 79.1
+      }
+    },
+    {
+      "line": 343,
+      "record": {
+        "epoch": "round0000_w1_e1_06f9a236",
+        "kind": "protocol",
+        "payload": {
+          "accepted": true,
+          "epoch": "round0000_w1_e1_06f9a236",
+          "goal_id": "round0000_w1_e1_06f9a236:tb2:9",
+          "robot": "tb2",
+          "stamp": 79.1,
+          "type": "cancel_response"
+        },
+        "stamp": 79.1
+      }
+    },
+    {
+      "line": 344,
+      "record": {
+        "epoch": "round0000_w1_e1_06f9a236",
+        "kind": "task_terminal_received",
+        "payload": {
+          "end_sim_time_sec": 79.1,
+          "epoch": "round0000_w1_e1_06f9a236",
+          "termination_reason": "navigation_failure"
+        },
+        "stamp": 79.1
+      }
+    },
+    {
+      "line": 345,
+      "record": {
+        "epoch": "round0000_w1_e1_06f9a236",
+        "kind": "task_terminal",
+        "payload": {
+          "end_sim_time_sec": 79.1,
+          "epoch": "round0000_w1_e1_06f9a236",
+          "termination_reason": "navigation_failure"
+        },
+        "stamp": 79.1
+      }
+    },
+    {
+      "line": 351,
+      "record": {
+        "epoch": "round0000_w1_e1_06f9a236",
+        "kind": "delivery",
+        "payload": {
+          "epoch": "round0000_w1_e1_06f9a236",
+          "generated_stamp": 79.1,
+          "payload": {
+            "goal_id": "round0000_w1_e1_06f9a236:tb1:7",
+            "robot": "tb1",
+            "type": "result",
+            "value": 5
+          },
+          "received_stamp": 79.3,
+          "sequence": 6,
+          "source": "tb1",
+          "source_stamp": 79.1,
+          "stream": "receipt",
+          "version": 6
+        },
+        "stamp": 79.3
+      }
+    },
+    {
+      "line": 352,
+      "record": {
+        "epoch": "round0000_w1_e1_06f9a236",
+        "kind": "delivery",
+        "payload": {
+          "epoch": "round0000_w1_e1_06f9a236",
+          "generated_stamp": 79.1,
+          "payload": {
+            "goal_id": "round0000_w1_e1_06f9a236:tb2:9",
+            "robot": "tb2",
+            "type": "result",
+            "value": 5
+          },
+          "received_stamp": 79.3,
+          "sequence": 6,
+          "source": "tb2",
+          "source_stamp": 79.1,
+          "stream": "receipt",
+          "version": 6
+        },
+        "stamp": 79.3
+      }
+    },
+    {
+      "line": 353,
+      "record": {
+        "epoch": "round0000_w1_e1_06f9a236",
+        "kind": "protocol",
+        "payload": {
+          "command_id": 7,
+          "epoch": "round0000_w1_e1_06f9a236",
+          "goal_id": "round0000_w1_e1_06f9a236:tb1:7",
+          "robot": "tb1",
+          "stamp": 79.3,
+          "status": "CANCELED",
+          "type": "protocol_terminal"
+        },
+        "stamp": 79.3
+      }
+    },
+    {
+      "line": 354,
+      "record": {
+        "epoch": "round0000_w1_e1_06f9a236",
+        "kind": "protocol",
+        "payload": {
+          "command_id": 9,
+          "epoch": "round0000_w1_e1_06f9a236",
+          "goal_id": "round0000_w1_e1_06f9a236:tb2:9",
+          "robot": "tb2",
+          "stamp": 79.3,
+          "status": "CANCELED",
+          "type": "protocol_terminal"
+        },
+        "stamp": 79.3
+      }
+    },
+    {
+      "line": 355,
+      "record": {
+        "epoch": "round0000_w1_e1_06f9a236",
+        "kind": "task_stopped",
+        "payload": {
+          "epoch": "round0000_w1_e1_06f9a236",
+          "navigation_failure": false,
+          "pending_goal_count": 0,
+          "robot_names": [
+            "tb1",
+            "tb2",
+            "tb3"
+          ],
+          "start_sim_time_sec": 68.9,
+          "stop_sim_time_sec": 79.3
+        },
+        "stamp": 79.3
+      }
+    }
+  ],
+  "causal_proof": [
+    "Command11/action881 is bound to actual saved observation11; tb3 choice1 returns switch_pending and causes oldtb3:5 switchcancel.",
+    "Oldtb3:5 has positive nativecancel receipt and native resultstatus5, then unique logicalterminalCANCELED. Old ownership is released before new logical send_goal tb3:11.",
+    "Newtb3:11 logicalsend occurs79.1 before same-time peer-envelope safety_stop; actual adapterrow order is preserved.",
+    "receive_failure recordsstop then calls dispatcher.safety_stop. _stop sets stopped and _cancel marks newaccepting owner cancel_requested, without emittingnativecancel because acceptedfalse.",
+    "Queued commanddelivery binds exact logical sendgoal payload. At its edgehandling, dispatcher.stopped or cancel_requested istrue. The explicit stopped branch records edge_goal_not_sent and calls dispatcher.on_result withCANCELED, then continue before native_send/send_goal_async.",
+    "on_result checks current robot goal_id before _release, which emits unique logicalterminal and clears itsowner/command/lease/acceptance state. No nativeacceptance/handle/result exists or should be required for a goal never submitted toNav2.",
+    "Allsix actual native goals retain real result receipts and logical terminals. By task_stopped79.3 pending_goal_count0 and later strict18-node lifecycle shutdown isproven."
+  ],
+  "assessment": "Implemented explicit unsent safety-suppression lifecycle, not evidence that an unknown submitted Nav2 owner was released without native result. Original auditor assumes every logicalsend must be native-submitted and does not represent this explicit branch. Original FAIL is preserved pending any separately reviewed versioned auditor handling.",
+  "strict_future_handling_requirements": [
+    "Only allow exact stopped suppression branch when unique logicalsend, exact deliveredcommand and unique edge_goal_not_sent bind sameepoch/robot/goal/action and a preceding proven safety/terminal stop.",
+    "Require no native_send or anynative acceptance/cancel/resultreceipt anywhere for suppressedgoal; duplicates, delayed native evidence or mismatchedidentity reject.",
+    "Require unique subsequent matching CANCELED logicalterminal and allother actual nativegoals complete the unchanged native send/result/cancelpositive proof.",
+    "Retain original verdict/error and allsource pins, command-time, contact, clock, scalarreward and taskgates. Do not fabricate native receipts or silently filter the assertion."
+  ],
+  "scope": "Offline diagnosis only. No new simulation, optimizer/GPU call, code/gate edits or process signals. Initial-policy round0 success isnot learned improvement; worker2 individuallypasses stricttask gates, while originalwhole-round review retains worker1FAIL."
+}

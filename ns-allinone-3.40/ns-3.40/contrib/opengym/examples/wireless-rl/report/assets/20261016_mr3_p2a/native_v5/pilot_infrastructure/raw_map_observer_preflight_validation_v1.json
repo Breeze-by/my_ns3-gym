@@ -1,0 +1,44 @@
+{
+  "schema": "mr3-raw-map-observer-preparation-validation-v1",
+  "utc_recorded": "2026-10-16T06:20:52.880217+00:00",
+  "observer_script_sha256": "2d960327347f88ecd4738efb463679719eb8ddf02261bbf5f8d3e149851da603",
+  "pure_cpu_repro_script": "ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v5_pilot/raw_map_observer_preflight_repro_v1.py",
+  "pure_cpu_repro_script_sha256": "ab17661342d2baf90d11d194a5265c0c01f32dabb0c67b6c8cda69afdd656c4a",
+  "results": [
+    {
+      "command_argv": [
+        "rtk",
+        "proxy",
+        "env",
+        "PYTHONNOUSERSITE=1",
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v5_pilot/raw_map_observer_preflight_repro_v1.py"
+      ],
+      "cwd": "/home/zhuyulab/ns3-workspace",
+      "exit_code": 0,
+      "stdout": "{\n  \"script_sha256\": \"2d960327347f88ecd4738efb463679719eb8ddf02261bbf5f8d3e149851da603\",\n  \"pure_cpu_checks\": [\n    \"map_payload exactly matches detached producer functions\",\n    \"geometry hash matches independent little-endian int16 oracle\",\n    \"header changes full payload hash but not geometry hash\",\n    \"partial native tail ignored; exact saved-line offset/hash retained\",\n    \"AST contains no publisher/service/client/action/parameter/control calls\",\n    \"exactly3 fixed robot names\"\n  ],\n  \"observer_main_called\": false,\n  \"ROS_imported\": false,\n  \"native_or_GPU_jobs\": 0\n}\n",
+      "stderr": ""
+    },
+    {
+      "command_argv": [
+        "rtk",
+        "proxy",
+        "/usr/bin/python3",
+        "-m",
+        "flake8",
+        "--max-line-length=99",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v5_pilot/raw_map_observer_v1.py"
+      ],
+      "cwd": "/home/zhuyulab/ns3-workspace",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "preparation_context": "Original observer preparation checked AST/compile, flake8max99, and the same six pure serialization/hash/tail-read/no-control fixtures before any observer authorization. This stores a reproducible pure CPU rerun after the sole separately authorized observer has already closed.",
+  "observer_main_called_by_these_checks": false,
+  "rclpy_imported_by_these_checks": false,
+  "DDS_or_ROS_observer_started_by_these_checks": false,
+  "native_GPU_optimizer_or_signals": 0,
+  "separate_actual_observer_closure_receipt": "ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v5_pilot/raw_map_observer_round0002_w3_v1/closure_receipt.json"
+}

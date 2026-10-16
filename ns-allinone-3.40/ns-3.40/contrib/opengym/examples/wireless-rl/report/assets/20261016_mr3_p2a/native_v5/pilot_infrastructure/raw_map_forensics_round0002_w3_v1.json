@@ -1,0 +1,698 @@
+{
+  "schema": "mr3-v5-round2-worker3-exact-rawmap-forensics-v1",
+  "utc_analysis": "2026-10-16T06:20:19.294282+00:00",
+  "command": "rtk proxy env PYTHONNOUSERSITE=1 /usr/bin/python3 /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v5_pilot/raw_map_forensics_round0002_w3_v1.py",
+  "cwd": "/home/zhuyulab/ns3-workspace",
+  "script_sha256": "252c98297f6ad1d040b75c4883053e1517ff5286c3ec2763f0ae698d0bca3313",
+  "python": "/usr/bin/python3",
+  "numpy": "1.21.5",
+  "scipy": "1.8.0",
+  "execution": {
+    "ROS_imported_or_initialized": false,
+    "observer_processes_started": 0,
+    "native_or_gpu_jobs": 0,
+    "optimizer_steps": 0,
+    "signals": 0,
+    "tracked_source_edits": 0,
+    "original_capture_or_native_files_modified": false
+  },
+  "capture": {
+    "directory": "ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v5_pilot/raw_map_observer_round0002_w3_v1",
+    "epoch": "round0002_w3_e1_f3a69ded",
+    "domain_id": 167,
+    "native_freeze": "de7a805af9cd9bc7d1b24e60559ccc4d3054e4c3",
+    "completed_observer_wall_seconds": 14.580348508898169,
+    "observer_errors": []
+  },
+  "artifacts": {
+    "ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v5_pilot/raw_map_observer_round0002_w3_v1/metadata.json": {
+      "sha256": "cf04e3d1a3962037439e0f20819580302e350341398bc7c4dbeca67a887ff922",
+      "bytes": 4122
+    },
+    "ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v5_pilot/raw_map_observer_round0002_w3_v1/summary.json": {
+      "sha256": "be288b330aaa14b52b774b79da944d07b6623da8a0bb81a23884f9c648a0bf62",
+      "bytes": 8202
+    },
+    "ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v5_pilot/raw_map_observer_round0002_w3_v1/closure_receipt.json": {
+      "sha256": "a26f2266dfa634e5279e7614cac39b8b0f31a2c4b1e6d67b78dbf18902fd0602",
+      "bytes": 855
+    },
+    "ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v5_pilot/raw_map_observer_round0002_w3_v1/events.jsonl": {
+      "sha256": "d532b778f3eb67cbf928fbdf74cceeaf00a3e462c1956671f56ff1c038eb2bd9",
+      "bytes": 15257
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_episode.py": {
+      "sha256": "9145d2ad23789b252e32f0afdfe18cf2eeec8e2c7e9ca7e89127a532288e411b",
+      "bytes": 1379
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py": {
+      "sha256": "71ea159b57caf93471ded502aaab36ec4ec3b14893a4c40b511b6f4839fd4d63",
+      "bytes": 39812
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_information.py": {
+      "sha256": "115de517d85b27a46dee68ddae72b59f606de60448c1cb446e0f63a995eb6f0c",
+      "bytes": 30578
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/merge_map/merge_map/merge_map.py": {
+      "sha256": "f57eead7ff4606a9cb10f74c44fd6ee9a1ae0488f99599a8a390ee47db6cafba",
+      "bytes": 7007
+    },
+    "ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v5_pilot/raw_map_observer_round0002_w3_v1/maps/00d633ed1d7f398bfab5b868baae70ed2253c01ae8d88d1b1a0cb76992c01ef3.json.gz": {
+      "sha256": "51b92c3ca17894c20acf2e31ffc2cd8cb84efe55ecb5ed62e0e37cbe947af19b",
+      "bytes": 1895
+    },
+    "ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v5_pilot/raw_map_observer_round0002_w3_v1/maps/51cebeac346c058ae93113f38a728219fc2de283609342b5b4af7a3471a8522f.json.gz": {
+      "sha256": "7f1d017b849843a9204114dec3d67ef0c3ff22239a30fccfee9bf28ef15b2cfe",
+      "bytes": 3222
+    },
+    "ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v5_pilot/raw_map_observer_round0002_w3_v1/maps/5ea5a78d698bf6a29935e764637f94cf2e6bd210920a3c72c8c106c378f29a7b.json.gz": {
+      "sha256": "259d69812b806fea4d057e4cfd0fd98b47e059eecdf95d3e78422546e9425c3b",
+      "bytes": 1896
+    },
+    "ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v5_pilot/raw_map_observer_round0002_w3_v1/maps/77cf5f8b0389821b9324e8957e101ee90fb4285fcd371eb91db6a6d3d0dbfb30.json.gz": {
+      "sha256": "fc80aeb9f0990bb1e17404789d5f93086434188094fa733c39dffd85659ebb7c",
+      "bytes": 3156
+    },
+    "ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v5_pilot/raw_map_observer_round0002_w3_v1/maps/808dfadf32122e5d22ed489c6f8351115155b8fa98fcf2aa778639b168493817.json.gz": {
+      "sha256": "4b4ab2f9b8369086d079fbf6d45ba43cf9c0880b52bad138f04dbb3204da4ffc",
+      "bytes": 3164
+    },
+    "ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v5_pilot/raw_map_observer_round0002_w3_v1/maps/b72ae4221ddcd550add4b0791240b4deaade6e2012f7facfccebdf8fb368cd22.json.gz": {
+      "sha256": "f4f4bc44d90b5de7d42e9ffebbdcfe96cca6d69096b928b485b3cd2e2b4dd0f9",
+      "bytes": 3235
+    },
+    "ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v5_pilot/raw_map_observer_round0002_w3_v1/maps/eeaf203244f8d9f4e00c1b8b88672ebb0bcacf61a3d768483cc4d15a9c31ac5d.json.gz": {
+      "sha256": "2b764237b4734581c4abbc0d8e363a2de2801025d1acb21d5e237e79d8e563e4",
+      "bytes": 3511
+    },
+    "ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v5_pilot/raw_map_observer_round0002_w3_v1/maps/f54ea58e1981d3401b0e40ad7807967960f1f9c52640f4458b2f374569a1a151.json.gz": {
+      "sha256": "d8ce3549c99f882e24f8bef1d89884d1ac77f018ba185c8ac94e2a58a35aac8b",
+      "bytes": 1895
+    },
+    "ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v5_pilot/raw_map_observer_round0002_w3_v1/observations/0a7c2f7affb2bcd11da04074690802c7bb7db895ad2d43711695ab4a95cd0d07.json.gz": {
+      "sha256": "6432862d30d24684dbc88d77156d588a2872d1968af7d3265462c3167d7d5f5c",
+      "bytes": 7683
+    },
+    "ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v5_pilot/raw_map_observer_round0002_w3_v1/observations/69ab6427b0873b978756cb50dab5978e01bd865e2e65515e94647e99359c2dab.json.gz": {
+      "sha256": "a8974e0e62ee0e55028a5886ff5ec178de29e97928c8f6fef59ec0bf2c3d73fb",
+      "bytes": 7623
+    }
+  },
+  "source_hashes_equal_capture_metadata": {
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v5_pilot/raw_map_observer_v1.py": "2d960327347f88ecd4738efb463679719eb8ddf02261bbf5f8d3e149851da603",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/merge_map/merge_map/merge_map.py": "f57eead7ff4606a9cb10f74c44fd6ee9a1ae0488f99599a8a390ee47db6cafba",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_adapter.py": "b20f6b492f91cb943247ebcc29bd16497983d17c23cc458f1be16fa24b9958d5",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_information.py": "115de517d85b27a46dee68ddae72b59f606de60448c1cb446e0f63a995eb6f0c",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py": "71ea159b57caf93471ded502aaab36ec4ec3b14893a4c40b511b6f4839fd4d63",
+    "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/node.py": "d5899ee03f118c29439069733ec16a458885a74c9b3c74b3163377f2c99cb8f7"
+  },
+  "native_actor_line_bindings": [
+    {
+      "sequence": 79,
+      "digest": "867bb36a2722a1caeea1693804343e3272761ba237ad7f455ac29fd4cdee1de9",
+      "native_path": "ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v5_pilot/native/round0002/worker3/episode001_open_101/transitions.jsonl",
+      "proof": {
+        "complete_line_end_offset": 2458728,
+        "complete_line_start_offset": 2427682,
+        "file_size_when_read": 2458728,
+        "line_sha256": "ef9e0c74bffe2516f1ecee62b41f195959f79324962e965c9f5d98b9a9f3cc12",
+        "read_monotonic_ns": 3876472114078029,
+        "watermarks": {
+          "map_payload_sha256": "2e0fd2e3479ea69d0ad1c0a31739cb8b5beeb45a827ca8042dd8d7692e983a68",
+          "map_sources": {
+            "tb1": {
+              "payload_sha256": "b3c94061d717532edc7327dd267fc517518caa906951e7b8f31623036501a412",
+              "received_stamp": 151.0,
+              "sequence": 150,
+              "source_stamp": 150.46,
+              "version": 182
+            },
+            "tb2": {
+              "payload_sha256": "1f0f3685b5f5fca68d1943486d9a701cd40f229cd1ed20861ef7052d68e0a267",
+              "received_stamp": 151.0,
+              "sequence": 147,
+              "source_stamp": 150.38,
+              "version": 180
+            },
+            "tb3": {
+              "payload_sha256": "35a6567ad6e757b05e4282dbc9c3521b1db671d96c71730cb4b03c9c1a5b9c19",
+              "received_stamp": 151.0,
+              "sequence": 144,
+              "source_stamp": 150.294,
+              "version": 181
+            }
+          },
+          "map_version": 119,
+          "robots": [
+            {
+              "name": "tb1",
+              "received_stamp": 151.2,
+              "source_stamp": 151.06
+            },
+            {
+              "name": "tb2",
+              "received_stamp": 151.2,
+              "source_stamp": 151.18
+            },
+            {
+              "name": "tb3",
+              "received_stamp": 151.2,
+              "source_stamp": 151.096
+            }
+          ],
+          "state_sequence": 1506
+        }
+      }
+    },
+    {
+      "sequence": 81,
+      "digest": "99ca848dae9f342c61ed4cd2e00a27ae54dc9a20865050cdd2579889d5d7e6cc",
+      "native_path": "ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v5_pilot/native/round0002/worker3/episode001_open_101/transitions.jsonl",
+      "proof": {
+        "complete_line_end_offset": 2520946,
+        "complete_line_start_offset": 2489877,
+        "file_size_when_read": 2520946,
+        "line_sha256": "7a44126cb963d5d6a073b75acdc667c0db975c5011b1ba851b654e695e2e09ad",
+        "read_monotonic_ns": 3876486608340725,
+        "watermarks": {
+          "map_payload_sha256": "eeaf203244f8d9f4e00c1b8b88672ebb0bcacf61a3d768483cc4d15a9c31ac5d",
+          "map_sources": {
+            "tb1": {
+              "payload_sha256": "5ea5a78d698bf6a29935e764637f94cf2e6bd210920a3c72c8c106c378f29a7b",
+              "received_stamp": 153.0,
+              "sequence": 152,
+              "source_stamp": 152.66,
+              "version": 186
+            },
+            "tb2": {
+              "payload_sha256": "51cebeac346c058ae93113f38a728219fc2de283609342b5b4af7a3471a8522f",
+              "received_stamp": 153.0,
+              "sequence": 149,
+              "source_stamp": 152.38,
+              "version": 184
+            },
+            "tb3": {
+              "payload_sha256": "77cf5f8b0389821b9324e8957e101ee90fb4285fcd371eb91db6a6d3d0dbfb30",
+              "received_stamp": 153.0,
+              "sequence": 146,
+              "source_stamp": 152.497,
+              "version": 185
+            }
+          },
+          "map_version": 121,
+          "robots": [
+            {
+              "name": "tb1",
+              "received_stamp": 153.2,
+              "source_stamp": 153.06
+            },
+            {
+              "name": "tb2",
+              "received_stamp": 153.2,
+              "source_stamp": 153.18
+            },
+            {
+              "name": "tb3",
+              "received_stamp": 153.2,
+              "source_stamp": 153.096
+            }
+          ],
+          "state_sequence": 1526
+        }
+      }
+    }
+  ],
+  "selected_exact_bundle": {
+    "epoch": "round0002_w3_e1_f3a69ded",
+    "map_payload_sha256": "eeaf203244f8d9f4e00c1b8b88672ebb0bcacf61a3d768483cc4d15a9c31ac5d",
+    "map_received_stamp": 153.0,
+    "map_source_stamp": 152.38,
+    "map_sources": {
+      "tb1": {
+        "payload_sha256": "5ea5a78d698bf6a29935e764637f94cf2e6bd210920a3c72c8c106c378f29a7b",
+        "received_stamp": 153.0,
+        "sequence": 152,
+        "source_stamp": 152.66,
+        "version": 186
+      },
+      "tb2": {
+        "payload_sha256": "51cebeac346c058ae93113f38a728219fc2de283609342b5b4af7a3471a8522f",
+        "received_stamp": 153.0,
+        "sequence": 149,
+        "source_stamp": 152.38,
+        "version": 184
+      },
+      "tb3": {
+        "payload_sha256": "77cf5f8b0389821b9324e8957e101ee90fb4285fcd371eb91db6a6d3d0dbfb30",
+        "received_stamp": 153.0,
+        "sequence": 146,
+        "source_stamp": 152.497,
+        "version": 185
+      }
+    },
+    "map_version": 121
+  },
+  "selected_actor": {
+    "sequence": 81,
+    "digest": "99ca848dae9f342c61ed4cd2e00a27ae54dc9a20865050cdd2579889d5d7e6cc",
+    "source_stamp": 153.2,
+    "task_elapsed_seconds": 79.99999999999999,
+    "full_source_map_epoch_version_sequence_payload_geometry_equal": true
+  },
+  "unchanged_merge_replay": {
+    "all3_delivered_maps_to_hub_full_payload_equal": true,
+    "hub_sha256": "eeaf203244f8d9f4e00c1b8b88672ebb0bcacf61a3d768483cc4d15a9c31ac5d",
+    "own_plus_hub_to_navigation": {
+      "tb1": {
+        "replayed_payload_sha256": "eeaf203244f8d9f4e00c1b8b88672ebb0bcacf61a3d768483cc4d15a9c31ac5d",
+        "captured_payload_sha256": "eeaf203244f8d9f4e00c1b8b88672ebb0bcacf61a3d768483cc4d15a9c31ac5d",
+        "exact_full_payload_equal": true,
+        "equal_to_hub": true
+      },
+      "tb2": {
+        "replayed_payload_sha256": "eeaf203244f8d9f4e00c1b8b88672ebb0bcacf61a3d768483cc4d15a9c31ac5d",
+        "captured_payload_sha256": "eeaf203244f8d9f4e00c1b8b88672ebb0bcacf61a3d768483cc4d15a9c31ac5d",
+        "exact_full_payload_equal": true,
+        "equal_to_hub": true
+      },
+      "tb3": {
+        "replayed_payload_sha256": "eeaf203244f8d9f4e00c1b8b88672ebb0bcacf61a3d768483cc4d15a9c31ac5d",
+        "captured_payload_sha256": "eeaf203244f8d9f4e00c1b8b88672ebb0bcacf61a3d768483cc4d15a9c31ac5d",
+        "exact_full_payload_equal": true,
+        "equal_to_hub": true
+      }
+    }
+  },
+  "unchanged_observation_replay": {
+    "full_snapshot_equal": true,
+    "recomputed_snapshot_digest": "99ca848dae9f342c61ed4cd2e00a27ae54dc9a20865050cdd2579889d5d7e6cc",
+    "input_reconstruction": "Exact saved navigation.receipt_sequence copied back to input navigation.sequence, as named by _robot_state; no map/state values invented.",
+    "initial_CPU_replay_diagnostic": "Direct reuse of postprocessed robot dictionaries initially omitted the renamed receipt_sequence for tb2/tb3; the only differing semantic leaves were null versus39/36. The inverse field-name mapping above restores full snapshot equality.",
+    "tb1_seed": {
+      "source": "delivered_own_map",
+      "missing": false,
+      "epoch": "round0002_w3_e1_f3a69ded",
+      "sequence": 152,
+      "version": 186,
+      "source_stamp": 152.66,
+      "received_stamp": 153.0,
+      "source_age_sec": 0.539999999999992,
+      "received_age_sec": 0.19999999999998863,
+      "source_metadata_missing": false,
+      "payload_sha256": "5ea5a78d698bf6a29935e764637f94cf2e6bd210920a3c72c8c106c378f29a7b",
+      "geometry_sha256": "3a5795735ec99fc7a012b830f9ef1f5e97f83afec3a2106f672811318585dcf2",
+      "native_shape": [
+        197,
+        237
+      ],
+      "native_resolution_m": 0.05000000074505806,
+      "native_origin_m": [
+        -5.919194000615113,
+        -4.922318188106157
+      ],
+      "unavailable_reason": null,
+      "seed_cell": [
+        89,
+        118
+      ],
+      "seed_cell_clearance_m": 0.5347323814583749,
+      "seed_pose_cell_offset_m": 0.0029271305806376885,
+      "seed_pose_clearance_lower_bound_m": 0.5318052508777372,
+      "seed_required_clearance_m": 0.29,
+      "seed_rejection_reason": null
+    },
+    "candidate_diagnostics": {
+      "frontier_cells": 392,
+      "frontier_groups": 9,
+      "unsafe_or_occluded_frontier_cells": 12,
+      "unreachable_staging_cells": 1,
+      "geometric_pool_size": 228,
+      "candidate_truncated": 220,
+      "represented_frontier_groups": [
+        1,
+        2,
+        3,
+        5,
+        6
+      ],
+      "omitted_frontier_groups": [
+        4,
+        7,
+        8,
+        9
+      ],
+      "per_robot_reachable_target_cells": [
+        2,
+        23953,
+        24783
+      ],
+      "per_robot_arrival_noop_cells": [
+        0,
+        13,
+        11
+      ],
+      "per_robot_reachable_pool_counts": [
+        0,
+        126,
+        149
+      ],
+      "per_robot_reachable_selected_counts": [
+        0,
+        7,
+        7
+      ],
+      "per_robot_staging_rejections": [
+        {
+          "no_reachable_safe_cells": 0,
+          "beyond_staging_limit": 392,
+          "occluded_staging_line": 0,
+          "alternate_staging_searches": 0
+        },
+        {
+          "no_reachable_safe_cells": 0,
+          "beyond_staging_limit": 110,
+          "occluded_staging_line": 15,
+          "alternate_staging_searches": 21
+        },
+        {
+          "no_reachable_safe_cells": 0,
+          "beyond_staging_limit": 113,
+          "occluded_staging_line": 24,
+          "alternate_staging_searches": 47
+        }
+      ],
+      "mask_reasons": {
+        "per_robot": [
+          {
+            "candidate_missing_or_unreachable": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ]
+          },
+          {
+            "minimum_commitment": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              9
+            ]
+          },
+          {
+            "minimum_commitment": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              9
+            ]
+          }
+        ],
+        "joint_target_conflict_count": 0,
+        "joint_target_conflict_actions": []
+      },
+      "native_safe_cells": 29639,
+      "native_arrival_safe_cells": 26667,
+      "robot_seed_traversable": [
+        true,
+        true,
+        true
+      ],
+      "robot_seed_diagnostics": [
+        {
+          "seed_cell": [
+            89,
+            118
+          ],
+          "seed_cell_clearance_m": 0.5347323814583749,
+          "seed_pose_cell_offset_m": 0.0029271305806376885,
+          "seed_pose_clearance_lower_bound_m": 0.5318052508777372,
+          "seed_required_clearance_m": 0.29,
+          "seed_rejection_reason": null
+        },
+        {
+          "seed_cell": [
+            151,
+            100
+          ],
+          "seed_cell_clearance_m": 1.714644686490869,
+          "seed_pose_cell_offset_m": 0.01944588025356502,
+          "seed_pose_clearance_lower_bound_m": 1.695198806237304,
+          "seed_required_clearance_m": 0.29,
+          "seed_rejection_reason": null
+        },
+        {
+          "seed_cell": [
+            51,
+            89
+          ],
+          "seed_cell_clearance_m": 0.8378571332543656,
+          "seed_pose_cell_offset_m": 0.006615465338615235,
+          "seed_pose_clearance_lower_bound_m": 0.8312416679157504,
+          "seed_required_clearance_m": 0.29,
+          "seed_rejection_reason": null
+        }
+      ],
+      "path_map_source": [
+        "delivered_own_map",
+        "delivered_own_map",
+        "delivered_own_map"
+      ],
+      "candidate_selection": "per-robot staging/reservation; geometric farthest point",
+      "clearance_m": 0.29
+    }
+  },
+  "tb1_actual_pre_frontier_targets": [
+    {
+      "fused_cell": [
+        80,
+        118
+      ],
+      "world_xy_m": [
+        -0.031288968794221717,
+        -0.9422426926243013
+      ],
+      "own_path_distance_m": 0.5375049589149025,
+      "fused_target_clearance_m": 0.41464466711935954,
+      "nearest_fused_frontier_m": 3.2901368242992786,
+      "nearest_own_frontier_m": 0.4099306599779611,
+      "own_known_free_frontier_lines_within1m": 74,
+      "strict_current_navigation_start_path_finite": false
+    },
+    {
+      "fused_cell": [
+        80,
+        119
+      ],
+      "world_xy_m": [
+        0.018711031950836343,
+        -0.9422426926243013
+      ],
+      "own_path_distance_m": 0.5167942804876345,
+      "fused_target_clearance_m": 0.41464466711935954,
+      "nearest_fused_frontier_m": 3.2649655921146796,
+      "nearest_own_frontier_m": 0.3909934661093793,
+      "own_known_free_frontier_lines_within1m": 72,
+      "strict_current_navigation_start_path_finite": false
+    }
+  ],
+  "actual_navigation_start": {
+    "received_pose": [
+      0.004593543747407629,
+      -0.44998229684214874
+    ],
+    "native_fused_cell": [
+      90,
+      119
+    ],
+    "raw_value": 100,
+    "diagnostics": {
+      "seed_cell": [
+        90,
+        119
+      ],
+      "seed_cell_clearance_m": 0.0,
+      "seed_pose_cell_offset_m": 0.016099846643742196,
+      "seed_pose_clearance_lower_bound_m": -0.016099846643742196,
+      "seed_required_clearance_m": 0.29,
+      "seed_rejection_reason": "seed_cell_occupied"
+    },
+    "no_start_snapping_clearing_or_unknown_fill": true
+  },
+  "per_source_observed_occupied_support": {
+    "tb1": {
+      "payload_sha256": "5ea5a78d698bf6a29935e764637f94cf2e6bd210920a3c72c8c106c378f29a7b",
+      "epoch_version_sequence": {
+        "epoch": "round0002_w3_e1_f3a69ded",
+        "payload_sha256": "5ea5a78d698bf6a29935e764637f94cf2e6bd210920a3c72c8c106c378f29a7b",
+        "received_stamp": 153.0,
+        "sequence": 152,
+        "source_stamp": 152.66,
+        "version": 186
+      },
+      "raw_source_value_at_tb1_pose": 0,
+      "occupied_squares_intersecting_tb1_radius_0_25m": 0,
+      "occupied_squares_intersecting_tb1_radius_0_39m": 0,
+      "nearest_occupied_square_distance_from_tb1_m": 2.7829881176524336,
+      "support_for_actual_fused_navigation_start_cell": {
+        "intersecting_native_source_cells": [
+          {
+            "cell": [
+              89,
+              118
+            ],
+            "value": 0
+          },
+          {
+            "cell": [
+              89,
+              119
+            ],
+            "value": 0
+          },
+          {
+            "cell": [
+              90,
+              118
+            ],
+            "value": 0
+          },
+          {
+            "cell": [
+              90,
+              119
+            ],
+            "value": 0
+          }
+        ],
+        "resampled_max_value": 0,
+        "occupied_support": false
+      }
+    },
+    "tb2": {
+      "payload_sha256": "51cebeac346c058ae93113f38a728219fc2de283609342b5b4af7a3471a8522f",
+      "epoch_version_sequence": {
+        "epoch": "round0002_w3_e1_f3a69ded",
+        "payload_sha256": "51cebeac346c058ae93113f38a728219fc2de283609342b5b4af7a3471a8522f",
+        "received_stamp": 153.0,
+        "sequence": 149,
+        "source_stamp": 152.38,
+        "version": 184
+      },
+      "raw_source_value_at_tb1_pose": 0,
+      "occupied_squares_intersecting_tb1_radius_0_25m": 5,
+      "occupied_squares_intersecting_tb1_radius_0_39m": 5,
+      "nearest_occupied_square_distance_from_tb1_m": 0.01058796056319733,
+      "support_for_actual_fused_navigation_start_cell": {
+        "intersecting_native_source_cells": [
+          {
+            "cell": [
+              89,
+              118
+            ],
+            "value": 0
+          },
+          {
+            "cell": [
+              89,
+              119
+            ],
+            "value": 0
+          },
+          {
+            "cell": [
+              90,
+              118
+            ],
+            "value": 100
+          },
+          {
+            "cell": [
+              90,
+              119
+            ],
+            "value": 0
+          }
+        ],
+        "resampled_max_value": 100,
+        "occupied_support": true
+      }
+    },
+    "tb3": {
+      "payload_sha256": "77cf5f8b0389821b9324e8957e101ee90fb4285fcd371eb91db6a6d3d0dbfb30",
+      "epoch_version_sequence": {
+        "epoch": "round0002_w3_e1_f3a69ded",
+        "payload_sha256": "77cf5f8b0389821b9324e8957e101ee90fb4285fcd371eb91db6a6d3d0dbfb30",
+        "received_stamp": 153.0,
+        "sequence": 146,
+        "source_stamp": 152.497,
+        "version": 185
+      },
+      "raw_source_value_at_tb1_pose": 100,
+      "occupied_squares_intersecting_tb1_radius_0_25m": 8,
+      "occupied_squares_intersecting_tb1_radius_0_39m": 8,
+      "nearest_occupied_square_distance_from_tb1_m": 0.0,
+      "support_for_actual_fused_navigation_start_cell": {
+        "intersecting_native_source_cells": [
+          {
+            "cell": [
+              90,
+              119
+            ],
+            "value": 100
+          }
+        ],
+        "resampled_max_value": 100,
+        "occupied_support": true
+      }
+    }
+  },
+  "offline_prospective_joint_mask_only": {
+    "label": "offline prospective candidate insertion only; never executed",
+    "candidate": {
+      "index": 0,
+      "valid": true,
+      "x": -0.031288968794221717,
+      "y": -0.9422426926243013,
+      "reachable": [
+        true,
+        true,
+        true
+      ]
+    },
+    "joint_action": 88,
+    "choices": [
+      0,
+      8,
+      8
+    ],
+    "unchanged_joint_mask_legal": true,
+    "strict_current_navigation_route_certified": false,
+    "caveat": "Joint endpoint geometry can pass while the captured navigation start cell is occupied; this is not a valid complete-route repair."
+  },
+  "findings": [
+    "This capture exactly binds actor81 and its3 delivered raw maps/fused bundle; the unmodified merger reproduces fused and all3 navigation payloads byte-for-byte.",
+    "For tb1 the actual target intersection contains2 points, but all392 fused frontiers are more than1m away from feasible staging: pool0 occurs at the frontier-stage cap, not K8 or joint conflict filtering.",
+    "The exact current navigation/fused grid independently marks the actual tb1 start occupied100, so an unchanged .29m route certificate fails despite its healthy own-map seed. Adding own-frontier endpoints alone is not sufficient to certify complete-route feasibility.",
+    "Source attribution refers to received map evidence only. Occupancy support from other robot map sources near the estimated tb1 body does not prove which physical object, robot or wall produced a return."
+  ],
+  "limits": [
+    "This is a newly captured asynchronous diagnostic of round0002 w3. It does not retroactively reconstruct round0000 w0 tb2 (whose target intersection was0).",
+    "Actual Nav2 layered costmap, planner treatment of start/footprint, and execution of prospective targets were not observed or invoked. Raw-navigation certificate failure is not itself proof of a particular Nav2 rejection response.",
+    "No source filtering, map cleaning, unknown clearing, candidate rule modification, hand goal, safety gate change or task-success relabeling was performed."
+  ]
+}

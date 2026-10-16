@@ -1,0 +1,126 @@
+{
+  "schema": "mr3-p2a-v6-prefreeze-checks-v1",
+  "date": "2026-10-16",
+  "status": "precommit_source_checks_complete_native_execution_not_started",
+  "source_binding": "Containing future clean pushed source commit; runtime metadata resolves actual SHA. Intermediate checks below do not claim final-source/native success.",
+  "canonical_build": {
+    "command": "rtk proxy bash --noprofile --norc -c 'source /opt/ros/humble/setup.bash; export PYTHONNOUSERSITE=1; /usr/bin/python3 /usr/bin/colcon build --symlink-install --packages-select slam_toolbox multi_robot_exploration multi_robot --allow-overriding slam_toolbox multi_robot_exploration multi_robot'",
+    "cwd": "ros2_ws/ros2-multi-robot-automap",
+    "packages": [
+      "slam_toolbox",
+      "multi_robot_exploration",
+      "multi_robot"
+    ],
+    "passed": true,
+    "duration_sec": 3.73,
+    "scope": "Initial v6 source build; later Python callback atomicity edits require final source checks."
+  },
+  "ros_semantic_initial": {
+    "passed": 823,
+    "failed": 0,
+    "duration_sec": 29.14,
+    "scope": "Before later callback atomicity repair; preserve as intermediate run, not final-source claim.",
+    "command_provenance": "Count/duration supplied by root; exact final command pending final run receipt."
+  },
+  "ros_semantic_final": {
+    "command": "rtk proxy bash --noprofile --norc -c 'source /opt/ros/humble/setup.bash\nsource install/setup.bash\nPYTHONNOUSERSITE=1 /usr/bin/python3 -m pytest -q src/multi_robot_exploration/test --ignore=src/multi_robot_exploration/test/test_flake8.py --ignore=src/multi_robot_exploration/test/test_pep257.py --ignore=src/multi_robot_exploration/test/test_copyright.py'",
+    "cwd": "ros2_ws/ros2-multi-robot-automap",
+    "passed": 824,
+    "failed": 0,
+    "duration_sec": 30.12,
+    "scope": "Final callback atomicity repair and current evaluator-phase source."
+  },
+  "conda_cpu_final": {
+    "command": "rtk proxy env PYTHONNOUSERSITE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -m unittest discover -s mr3_learning/tests -q",
+    "cwd": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+    "passed": 133,
+    "failed": 0,
+    "duration_sec": 10.685,
+    "includes_protocol_tests": 23,
+    "includes_evaluator_phase_tests": 5
+  },
+  "changed_python_lint_final": {
+    "executable": "/usr/bin/python3",
+    "module": "flake8",
+    "max_line_length": 99,
+    "files": [
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_evaluator_phase.py",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_ppo.py",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_protocol.py",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_evaluator_phase.py",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_ppo.py",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_protocol.py",
+      "ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_evaluator_phase.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/task_evaluator.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_evaluator.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_evaluator_phase.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_reward.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_worker_bootstrap.py"
+    ],
+    "file_count": 13,
+    "selection": "Sorted unique git diff --name-only plus git ls-files --others --exclude-standard; .py only; exclude report/assets Python evidence.",
+    "passed": true,
+    "scope": "Final root all13-file run after indentation-only fixes."
+  },
+  "phase_auditor": {
+    "module": "mr3_learning/audit_evaluator_phase.py",
+    "scope": "Frozen evaluator terminal serialization only, not all-producer drain; original20ms/contact/command/scalar/nativeW7 gates retained.",
+    "physical_wall_order": "Exact worker source plus consume->permit->nextrequest trace; no extra GazeboRPCwalltimestamp.",
+    "duplicates": "Repeated request/publication/consume fails; exact stale ACKdelivery may repeat with no extra consume/permit."
+  },
+  "protocol_v2_auditor": {
+    "source_binding": "Actual nativefreeze exact4SHAadapter/protocol/transport/env-auditor plus immutable originalW7 executable identity",
+    "original_v5_full_FAIL_preserved": true,
+    "strict_detached_replay": true
+  },
+  "native_or_gpu_runs_in_these_checks": 0,
+  "selected_v5_originals": "selected_byte_integrity_v5.json:330/330 selected/raw byteproof PASS",
+  "reviewed_phase_source_sha256": {
+    "ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py": "977d4e8215e193a2be8c207728adb3a39d48e26d35bb9089abe921c1d61053fd",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/task_evaluator.py": "c49e1ad05fdd4daaac5837dc1528fab3765c13bade4f7f3fcb195e2521e40e06",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_evaluator_phase.py": "9c43ace376354edbdf496fe920d04a539ed47912fd0840f6d290c459450d69fa"
+  },
+  "changed_python_lint_initial": {
+    "status": "failed_one100_character_line_against99_limit_in_phase_auditor_then_corrected",
+    "root3_file_recheck_passed": true,
+    "all_changed_Python_final": "passed13",
+    "all13_initial_failure": {
+      "file": "mr3_learning/tests/test_audit_protocol.py",
+      "lines": [
+        118,
+        124,
+        126
+      ],
+      "code": "E128",
+      "fix": "indentation only",
+      "focused_protocol_tests_after_fix": 23,
+      "focused_duration_sec": 0.773,
+      "passed_after_fix": true
+    }
+  },
+  "source_proof_preflight": {
+    "status": "pending_containing_commit_and_offline_preflight",
+    "entries": null,
+    "scope": "No guessed source-proof count; new nativefreeze will be bound after commit."
+  },
+  "root_activity_document_links": {
+    "markdown_files": 11,
+    "local_links": 154,
+    "missing": [],
+    "scope": "Root-owned and child-owned active status documents; reported by root."
+  },
+  "independent_source_review": "phase_ack_source_review_v1.json",
+  "post_suite_source_pin_extension": {
+    "added_protected_files": [
+      "mr3_learning/ipc.py",
+      "mr3_learning/benchmark.py"
+    ],
+    "reason": "Bind IPC implementation and the terminal engineering benchmark/resource sampler to the same native source freeze. No runtime behavior changed.",
+    "command": "rtk proxy env PYTHONNOUSERSITE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -m unittest mr3_learning.tests.test_audit_ppo -q",
+    "cwd": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+    "passed": 9,
+    "failed": 0,
+    "duration_sec": 0.181
+  }
+}

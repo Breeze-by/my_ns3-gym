@@ -16,6 +16,9 @@ import threading
 import time
 
 from ros_smoke_test import configure_mr3_transport_environment, native_launch_failures
+from multi_robot_exploration.mr3_evaluator_phase import (
+    PHASE_PROTOCOL, PHASE_WALL_GUARD_SEC, PhaseClient,
+)
 
 
 ROS_ROOT = Path(__file__).resolve().parents[1]
@@ -49,6 +52,7 @@ class Worker:
         self.probe_armed = False
         self.probe_number = 0
         self.task_terminal = None
+        self.evaluator_phase = PhaseClient(self.epoch)
         self.condition = threading.Condition()
         self.clock_ns = 0
         self.monitor_ready = False
@@ -79,6 +83,8 @@ class Worker:
         self.started_wall = time.monotonic()
         self.transition_file = (directory / "transitions.jsonl").open("x", buffering=1)
         self.physics_file = (directory / "physics.jsonl").open("x", buffering=1)
+        self.evaluator_phase_file = (directory / "evaluator_phase_worker.jsonl").open(
+            "x", buffering=1)
         self.transport_environment = configure_mr3_transport_environment()
 
         import rclpy
@@ -104,18 +110,21 @@ class Worker:
         self.action_pub = self.node.create_publisher(String, "/mr3/action", 10)
         self.reward_pub = self.node.create_publisher(String, "/mr3/reward_request", 10)
         self.finalize_pub = self.node.create_publisher(String, "/mr3/training_finalize", 10)
+        self.evaluator_phase_pub = self.node.create_publisher(
+            String, "/mr3/evaluator_phase_request", 10)
         self.probe_pub = (self.node.create_publisher(String, "/mr3/diagnostic_failure", 10)
                           if self.terminal_probe else None)
         self.stop_pub = self.node.create_publisher(Header, "/exploration_stop_request", qos)
 
         def callback(function):
             def wrapped(message):
-                try:
-                    with self.condition:
+                with self.condition:
+                    try:
                         function(message)
+                    except Exception as error:
+                        self.callback_error = repr(error)
+                    finally:
                         self.condition.notify_all()
-                except Exception as error:
-                    self.callback_error = repr(error)
             return wrapped
 
         def message_json(message):
@@ -170,6 +179,11 @@ class Worker:
             if value:
                 self.receive_terminal(value)
 
+        def evaluator_phase(message):
+            value = json.loads(message.data)
+            self._trace_evaluator_phase("ack_received", ack=value)
+            self.evaluator_phase.receive(value, self.physical_ns, self.clock_ns)
+
         def clock(message):
             self.clock_ns = message.clock.sec * 10**9 + message.clock.nanosec
 
@@ -195,6 +209,8 @@ class Worker:
                                           callback(initial_inputs), qos),
             self.node.create_subscription(String, "/mr3/task_terminal",
                                           callback(task_terminal), qos),
+            self.node.create_subscription(String, "/mr3/evaluator_phase_ack",
+                                          callback(evaluator_phase), 10),
             self.node.create_subscription(String, "/mr3/events", callback(event), 100),
             self.node.create_subscription(String, "/exploration_stopped", callback(stopped), qos),
             self.node.create_subscription(String, "/exploration_failure", callback(failure), qos),
@@ -206,7 +222,9 @@ class Worker:
             try:
                 self.executor.spin()
             except Exception as error:
-                self.callback_error = repr(error)
+                with self.condition:
+                    self.callback_error = repr(error)
+                    self.condition.notify_all()
 
         self.spin_thread = threading.Thread(target=spin, name="mr3_worker_ros", daemon=True)
         self.spin_thread.start()
@@ -234,6 +252,8 @@ class Worker:
                     "python": sys.executable, "quantum_steps": 20,
                     "reset_handshake": "delivered_inputs_before_pause-v1",
                     "terminal_protocol": "mr3-task-terminal-v1",
+                    "evaluator_phase_protocol": PHASE_PROTOCOL,
+                    "evaluator_phase_wall_guard_sec": PHASE_WALL_GUARD_SEC,
                     "shutdown_protocol": SHUTDOWN_PROTOCOL,
                     "nav2_shutdown_wall_guard_sec": NAV2_SHUTDOWN_WALL_GUARD_SEC,
                     "terminal_probe": self.terminal_probe,
@@ -269,6 +289,31 @@ class Worker:
 
     def _publish(self, publisher, payload):
         publisher.publish(self.String(data=json.dumps(payload, allow_nan=False)))
+
+    def _trace_evaluator_phase(self, kind, **payload):
+        with self.condition:
+            self.evaluator_phase_file.write(json.dumps({
+                "kind": kind, "epoch": self.epoch, "wall_monotonic_ns": time.monotonic_ns(),
+                "worker_clock_ns": self.clock_ns,
+                "worker_physical_ns": getattr(self, "physical_ns", None), **payload,
+            }, sort_keys=True, allow_nan=False) + "\n")
+
+    def _evaluator_phase(self):
+        """Wait paused for the evaluator's real clock and serialized frozen terminal."""
+        with self.condition:
+            request = self.evaluator_phase.begin(self.physical_ns)
+            self._trace_evaluator_phase("request", request=request)
+        self._publish(self.evaluator_phase_pub, request)
+        self._wait(lambda: self.evaluator_phase.response is not None,
+                   PHASE_WALL_GUARD_SEC, "evaluator phase ACK wall guard expired")
+        with self.condition:
+            if self.callback_error:
+                raise RuntimeError("ROS callback failed: " + self.callback_error)
+            response = self.evaluator_phase.consume()
+            self._trace_evaluator_phase("ack_consumed", ack=response)
+            if response["terminal"] is not None:
+                self.receive_terminal(response["terminal"])
+        return response
 
     def _physics(self, steps, wait_clock=True):
         self.physics_number += 1
@@ -449,6 +494,8 @@ class Worker:
         response = self._reward(self.start_ns / 1e9, self.start_ns / 1e9, initialize=True)
         if response.get("reward") != 0 or response.get("terminated") or response.get("truncated"):
             raise RuntimeError("reward reset did not initialize an empty episode ledger")
+        if self._evaluator_phase()["status"] != "LIVE":
+            raise RuntimeError("initial evaluator phase is already terminal")
         result = {"snapshot": self.snapshot, "reward": 0., "terminated": False,
                   "truncated": False, "info": {
                       "epoch": self.epoch, "scene": self.scene, "seed": self.seed,
@@ -513,10 +560,16 @@ class Worker:
         # zero effective reward time and up to 20ms of honest physical lag.
         terminal = None
         while self.physical_ns < start_ns + 10**9:
+            if self.callback_error:
+                raise RuntimeError("ROS callback failed: " + self.callback_error)
+            self.evaluator_phase.before_advance(self.physical_ns)
+            self._trace_evaluator_phase("advance_permitted", next_target_time_ns=(
+                self.physical_ns + 20_000_000))
             self._physics(20)
             if self.probe_armed:
                 self.probe_armed = False
                 self.trigger_failure_probe()
+            self._evaluator_phase()
             terminal = self._evaluation()
             if terminal is not None:
                 break
@@ -729,6 +782,7 @@ class Worker:
             output.close()
         self.transition_file.close()
         self.physics_file.close()
+        self.evaluator_phase_file.close()
         path = self.directory / "adapter.jsonl"
         if path.exists():
             raw = path.read_bytes()

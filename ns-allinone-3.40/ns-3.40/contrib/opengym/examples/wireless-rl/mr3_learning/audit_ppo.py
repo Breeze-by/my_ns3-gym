@@ -22,7 +22,7 @@ import numpy as np
 import torch
 from sb3_contrib import MaskablePPO
 
-from . import audit_scalar
+from . import audit_evaluator_phase, audit_protocol, audit_scalar
 from .observation import encode_snapshot, observation_space
 
 
@@ -32,6 +32,14 @@ OBSERVATION_SOURCE = ROS + "src/multi_robot_exploration/multi_robot_exploration/
 OBSERVATION_V3_SHA256 = "71ea159b57caf93471ded502aaab36ec4ec3b14893a4c40b511b6f4839fd4d63"
 REWARD_SOURCE = ROS + "src/multi_robot_exploration/multi_robot_exploration/mr3_reward.py"
 W7_REWARD_SHA256 = "77485e7988489a146e4c44207343a0a4be7c12b5ffe36906dde59257cac16f88"
+EVALUATOR_PHASE_PINS = {
+    ROS + "scripts/mr3_env_worker.py":
+        "977d4e8215e193a2be8c207728adb3a39d48e26d35bb9089abe921c1d61053fd",
+    ROS + "src/multi_robot_exploration/multi_robot_exploration/task_evaluator.py":
+        "c49e1ad05fdd4daaac5837dc1528fab3765c13bade4f7f3fcb195e2521e40e06",
+    ROS + "src/multi_robot_exploration/multi_robot_exploration/mr3_evaluator_phase.py":
+        "9c43ace376354edbdf496fe920d04a539ed47912fd0840f6d290c459450d69fa",
+}
 CURRENT_AUDITOR_PINS = {
     ROS + "scripts/audit_mr3_env.py":
         "427d5263403dc9d0db846e36fe6051446d99ed337e45313424ff148ecef08cb7",
@@ -158,7 +166,7 @@ def load_compatible_components(phase, root, freeze):
     require(hashlib.sha256(normative_reward).hexdigest() == W7_REWARD_SHA256,
             "original W7 reward ledger Git SHA mismatch")
     runtime = {**phase.PINNED_RUNTIME, OBSERVATION_SOURCE: OBSERVATION_V3_SHA256,
-               REWARD_SOURCE: W7_REWARD_SHA256}
+               REWARD_SOURCE: W7_REWARD_SHA256, **EVALUATOR_PHASE_PINS}
     original_scripts = set(command.PINNED_AUDITORS)
     native_pins = {path: digest for path, digest in runtime.items()
                    if path not in original_scripts}
@@ -205,6 +213,7 @@ def load_compatible_components(phase, root, freeze):
                 sys.modules[name] = prior
     auditor = loaded[names[-1]]
     extend_snapshot_validator(auditor, current_probe)
+    auditor.audit_protocol = audit_protocol.ProtocolAuditor(auditor.audit_protocol, root, freeze)
     base.FREEZE, base.METHOD = freeze, phase.METHOD
     base.PINNED_RUNTIME, base.PINNED_DOCUMENTS = runtime, dict(phase.PINNED_DOCUMENTS)
     proof[OBSERVATION_SOURCE]["snapshot_validator_override"] = {
@@ -261,8 +270,9 @@ def load_native_gates(root, freeze):
                 "machine task/geometry changed from accepted W7 contract: " + relative)
         proof[relative] = {"sha256": digest, "git_source": freeze + ":" + relative,
                            "normative_source": TASK_BASE_FREEZE + ":" + relative}
-    for filename in ("audit_ppo.py", "audit_scalar.py", "ppo.py", "rollout.py", "policy.py",
-                     "model.py", "env.py",
+    for filename in ("audit_ppo.py", "audit_scalar.py", "audit_protocol.py",
+                     "audit_evaluator_phase.py", "ppo.py", "rollout.py", "policy.py",
+                     "model.py", "env.py", "ipc.py", "benchmark.py",
                      "observation.py", "supervisor.py", "requirements-env.txt",
                      "requirements-ppo.txt"):
         relative = WIRELESS + "mr3_learning/" + filename
@@ -412,8 +422,10 @@ def audit_run(directory, freeze):
     result = {"schema": "mr3-p2a-ppo-offline-audit-v1", "directory": str(directory),
               "freeze": freeze, "mode": metadata["mode"], "errors": [], "episodes": [],
               "rounds": [], "source_proof": proof, "original_helpers_modified": False,
-              "native_gates": ("unchanged phase-v2 contact + phase-v3 command + scalar-v3; "
-                               "switch assignment corrected by " + audit_scalar.METHOD),
+              "native_gates": ("phase-v2 contact + phase-v3 command + scalar-v3; "
+                               "causal scalar: " + audit_scalar.METHOD + "; proven unsent: "
+                               + audit_protocol.METHOD + "; evaluator ACK: "
+                               + audit_evaluator_phase.METHOD),
               "helper_sha256": {"phase_v3": PHASE_SHA256, "scalar_v3": SCALAR_SHA256},
               "task_success_credit": "only original evaluator success with passed native gates"}
 
@@ -438,6 +450,7 @@ def audit_run(directory, freeze):
             row.update(epoch=epoch, scene=native_meta["scene"], seed=native_meta["seed"])
             row["native"] = phase.corrected_audit(base, native_auditor, command, [native])
             row["scalar"] = scalar.audit_episode(native, freeze)
+            row["evaluator_phase"] = audit_evaluator_phase.audit_episode(native)
             evaluation = load_json(native / (epoch + ".json"))
             row["task"] = {key: evaluation[key] for key in (
                 "success", "termination_reason", "correct_free_coverage_ratio", "map_quality_pass",

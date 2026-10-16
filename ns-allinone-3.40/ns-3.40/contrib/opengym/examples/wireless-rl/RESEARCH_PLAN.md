@@ -39,7 +39,7 @@ Wi-Fi 分组网络，测量信息延迟、丢失和陈旧对同一联合建图�
 | `peer_obstacles.py` | baseline读raw；adapter读理想交付状态，完整机体包络不变 | P3A还需DDS/进程隔离与断链证明 |
 | Nav2 全局地图 | baseline读实时`/merge_map`；adapter读本机图+交付共享图副本 | P3A证明真实字节交付和无旁路 |
 | 覆盖评估器 | P1A合同schema4已验收，schema3兼容诊断 | 完整ROI、质量、全机体监测、三台参与与终态闭合门禁 |
-| 三机器人导航 RL / 训练环境 | P1C环境/reset/独立奖励及W7原生验证已于2026-10-16验收；P2A训练闭环进行中，尚无95%策略成功证据 | MR3-P1C 至 MR3-P2C |
+| 三机器人导航 RL / 训练环境 | P1C环境/reset/独立奖励及W7原生验证已于2026-10-16验收；P2A v5已有3次开发图原生成功记录，48次pilot更新后基础设施停止；完整训练/验证与可靠性出口未达 | MR3-P1C 至 MR3-P2C |
 | ROS 与 ns-3 双向 gateway / Wi-Fi 闭环 | **尚未实现** | MR3-P3A 至 MR3-P5 |
 | `sim.cc` 与已有 DQN | 五用户、15 维观测、5 动作的 toy 调度 MDP | 历史工具链，不能充当三机器人策略或网络接入证明 |
 
@@ -55,7 +55,7 @@ P1B在冻结`f9928fe`完成open/rooms/corridors各seed101的同冻结脚本适�
 这证明本次接口的目标所有权、理想交付副本与脚本导航闭合，不是RL或95%任务成功。
 P1B异步名义1秒快照在rooms实际出现2/3秒间隔，保留原历史范围。P1C在W7 `cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a`
 独立完成stepped 1秒、完整reset、1/2/4 worker采样及终态/故障/截止工程验证；非stepped timer名义频率与跳帧规则不变。
-762项ROS、40项conda CPU检查通过；GPU保留`b328f84`原固定接口3F/3B/0更新范围，本次无新GPU调用。
+762项ROS、40项conda CPU检查通过；GPU保留`b328f84`原固定接口3F/3B/0更新范围，P1C/W7没有新GPU调用。
 完整八阶段及独立phase3/命令时间/scalar审计见[P1C报告](report/20261015_mr3_p1c.md)。
 P1C已于2026-10-16由用户验收；其工程证据不证明多日稳定、RL有效性或95%任务成功，不复用v6 native信用。
 

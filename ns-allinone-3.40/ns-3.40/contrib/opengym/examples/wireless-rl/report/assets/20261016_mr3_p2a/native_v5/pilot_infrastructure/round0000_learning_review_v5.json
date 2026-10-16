@@ -1,0 +1,4243 @@
+{
+  "schema": "mr3-p2a-v5-round-learning-review-v1",
+  "utc_analysis": "2026-10-16T05:35:54.320453+00:00",
+  "freeze": "de7a805af9cd9bc7d1b24e60559ccc4d3054e4c3",
+  "scope": "first closed four-worker native round only; no final-run claim",
+  "execution": {
+    "device": "cpu",
+    "torch_threads": 1,
+    "optimizer_steps_performed": 0,
+    "native_or_ros_processes_started": 0,
+    "procedure_script_sha256": "fac62d0b68f09778ef27db9e050d6ebfab6bf542cf166612dc895e2579110df2"
+  },
+  "artifacts": {
+    "metadata.json": {
+      "sha256": "cf0dec158094f4bf2beddcc2c9b734eb531425d6f1f071789003311327095f57",
+      "bytes": 1368,
+      "scope": "completed-round artifact"
+    },
+    "summary.json": {
+      "sha256": "d75ee477dbd601e0312db499d314b6d83a4ff718823e12b5a46e7f2d0a75707b",
+      "bytes": 49347,
+      "scope": "exact bytes read; mutable nonfinal snapshot"
+    },
+    "sb3_metrics/progress.json": {
+      "sha256": "3f1e886909edad680fb7661e5f9b8728f33638b241883871bbd41c93a27ab64b",
+      "bytes": 385,
+      "scope": "exact bytes read; mutable nonfinal snapshot"
+    },
+    "rollout_0000.json": {
+      "sha256": "faf85b927fe12d32df635d5db4db57b93c3212feb7ba766346950b7600d728ad",
+      "bytes": 99265,
+      "scope": "completed-round artifact"
+    },
+    "rollout_0000.npz": {
+      "sha256": "ec491623c25038fcbd5fbf8acc6d88e25354cceb796c71d29f7f3e8941653a07",
+      "bytes": 558660,
+      "scope": "completed-round artifact"
+    },
+    "initial.zip": {
+      "sha256": "e85b7a3e994546c83c086d73618b865709887903a43f82af50158fcd4020c9ae",
+      "bytes": 2926529,
+      "scope": "completed-round artifact"
+    },
+    "checkpoint_0000.zip": {
+      "sha256": "b287887e516b176cfd7a4abd10018c8aa12d5b6aabda05721e7bfeb864eb26e5",
+      "bytes": 7797926,
+      "scope": "completed-round artifact"
+    },
+    "native/round0000/worker0/episode001_open_101/transitions.jsonl": {
+      "sha256": "ee083253ebf2413408a8aa09786979dec70178c1dd526210b1d2b3a2c00e7425",
+      "bytes": 1682105,
+      "scope": "completed-round artifact"
+    },
+    "native/round0000/worker0/episode001_open_101/round0000_w0_e1_05562ab8.json": {
+      "sha256": "ac429eeb6ee3a97584d0fa99a0474e54f707013eea45248b13527c09c00cae95",
+      "bytes": 18841,
+      "scope": "completed-round artifact"
+    },
+    "native/round0000/worker0/episode001_open_101/adapter.jsonl": {
+      "sha256": "30c8175ce8756a71d25fc066f9a7d6890663dca6fe09553d6bb2ab08e438ee4f",
+      "bytes": 2338778,
+      "scope": "completed-round artifact"
+    },
+    "native/round0000/worker0/episode001_open_101/supervisor_shutdown.json": {
+      "sha256": "2cf07db3a47ac536bde96f2aa1c8e70aab93184af67133fb205cce8dc85a6362",
+      "bytes": 7136,
+      "scope": "completed-round artifact"
+    },
+    "native/round0000/worker0/episode001_open_101/summary.json": {
+      "sha256": "8b62b7d552836034cd848b4e8f6a63743efc2aa36e3b0df209b80a5a710207a2",
+      "bytes": 13347,
+      "scope": "completed-round artifact"
+    },
+    "native/round0000/worker1/episode001_open_101/transitions.jsonl": {
+      "sha256": "2011ae6440323cc498a8b097da12fd63d5d00c8d9fc3056bc1fae3133f3fd2b9",
+      "bytes": 369337,
+      "scope": "completed-round artifact"
+    },
+    "native/round0000/worker1/episode001_open_101/round0000_w1_e1_06f9a236.json": {
+      "sha256": "0177ce77b021244b2aa6de6536ba2a8aafb9ff32b8b9f614833224fafa86872e",
+      "bytes": 18589,
+      "scope": "completed-round artifact"
+    },
+    "native/round0000/worker1/episode001_open_101/adapter.jsonl": {
+      "sha256": "f6476c5860bb6f08a22dafb48a0e47ddaaceed7d8125c7a5c2bf25399b534ea5",
+      "bytes": 526138,
+      "scope": "completed-round artifact"
+    },
+    "native/round0000/worker1/episode001_open_101/supervisor_shutdown.json": {
+      "sha256": "254f79d041faf6efdb370d55acc1fb94b60929d55fdc9de26804bbe4b205864e",
+      "bytes": 6974,
+      "scope": "completed-round artifact"
+    },
+    "native/round0000/worker1/episode001_open_101/summary.json": {
+      "sha256": "54115e15c9a9d296dee74e6c523b7b4e6c504994f4ae2896b761d9630287ddd8",
+      "bytes": 13295,
+      "scope": "completed-round artifact"
+    },
+    "native/round0000/worker2/episode001_open_101/transitions.jsonl": {
+      "sha256": "c19d48d449dcf8f79cfd0b179745a1fbbd1467b5336a864f49c1e829e49e42e2",
+      "bytes": 4041070,
+      "scope": "completed-round artifact"
+    },
+    "native/round0000/worker2/episode001_open_101/round0000_w2_e1_0fea3f95.json": {
+      "sha256": "608215d2f6f2456a668262b245a6f8c4acc2073d517abccc345963ff2171c64f",
+      "bytes": 18983,
+      "scope": "completed-round artifact"
+    },
+    "native/round0000/worker2/episode001_open_101/adapter.jsonl": {
+      "sha256": "d390c592cfe63fe9c16055504b738673962417283d692f6f94c013e476f82775",
+      "bytes": 5920271,
+      "scope": "completed-round artifact"
+    },
+    "native/round0000/worker2/episode001_open_101/supervisor_shutdown.json": {
+      "sha256": "0ad733407e1b629789e4ca4d7ff0459286038470f6faf3597d8adf2c23696070",
+      "bytes": 7135,
+      "scope": "completed-round artifact"
+    },
+    "native/round0000/worker2/episode001_open_101/summary.json": {
+      "sha256": "6a127dd591e073ad22c7ad85cb32c2ba5a9daa54599e58cc80e6ff8ee200c86e",
+      "bytes": 13260,
+      "scope": "completed-round artifact"
+    },
+    "native/round0000/worker3/episode001_open_101/transitions.jsonl": {
+      "sha256": "a10734c22b0955921642b075247957abd554a9c82746ed873e51de1dc782ed3f",
+      "bytes": 1911998,
+      "scope": "completed-round artifact"
+    },
+    "native/round0000/worker3/episode001_open_101/round0000_w3_e1_9f083252.json": {
+      "sha256": "f3d4ecabe7760726d5b4755a400d403af7e9129c68e6655edbcae338626887a0",
+      "bytes": 18941,
+      "scope": "completed-round artifact"
+    },
+    "native/round0000/worker3/episode001_open_101/adapter.jsonl": {
+      "sha256": "a90fef1b283a3e840ea9509ca84c9c6d66f9e3917e165d32d491aba9e4e426ae",
+      "bytes": 2775693,
+      "scope": "completed-round artifact"
+    },
+    "native/round0000/worker3/episode001_open_101/supervisor_shutdown.json": {
+      "sha256": "733d7d24ad6eda42755784327b74658fca6fac087c450a138a725c1d66a79a88",
+      "bytes": 6975,
+      "scope": "completed-round artifact"
+    },
+    "native/round0000/worker3/episode001_open_101/summary.json": {
+      "sha256": "cda38a5c4b3295a208351c49acb4652f79c0e0a7048c76d71ff90e2448883e6f",
+      "bytes": 13342,
+      "scope": "completed-round artifact"
+    }
+  },
+  "mutable_read_snapshots": {
+    "summary_round0000": {
+      "round": 0,
+      "decisions": 252,
+      "changed_parameter_tensors": 70,
+      "metrics": {
+        "train/learning_rate": 0.0003,
+        "train/entropy_loss": -1.4175529554486275,
+        "train/policy_gradient_loss": -0.02645183379354421,
+        "train/value_loss": 216.25188636779785,
+        "train/approx_kl": 0.009468944743275642,
+        "train/clip_fraction": 0.05195312621071935,
+        "train/loss": 101.86327362060547,
+        "train/explained_variance": -0.0015381574630737305,
+        "train/n_updates": 4.0,
+        "train/clip_range": 0.2
+      }
+    },
+    "sb3_metrics_first_record": {
+      "train/learning_rate": 0.0003,
+      "train/entropy_loss": -1.4175529554486275,
+      "train/policy_gradient_loss": -0.02645183379354421,
+      "train/value_loss": 216.25188636779785,
+      "train/approx_kl": 0.009468944743275642,
+      "train/clip_fraction": 0.05195312621071935,
+      "train/loss": 101.86327362060547,
+      "train/explained_variance": -0.0015381574630737305,
+      "train/n_updates": 4,
+      "train/clip_range": 0.2
+    },
+    "summary_closed_decisions_when_read": 252,
+    "summary_optimizer_updates_when_read": 16
+  },
+  "parameter_groups_unique_named_parameters": {
+    "shared_encoder": {
+      "unique_tensors": 22,
+      "changed_tensors": 22,
+      "elements": 349120,
+      "changed_elements": 206186,
+      "delta_l2": 1.139221565652552,
+      "adam_steps": [
+        16.0
+      ],
+      "adam_exp_avg_nonzero": 206242
+    },
+    "actor_head": {
+      "unique_tensors": 2,
+      "changed_tensors": 2,
+      "elements": 257000,
+      "changed_elements": 128110,
+      "delta_l2": 0.20442541233813796,
+      "adam_steps": [
+        16.0
+      ],
+      "adam_exp_avg_nonzero": 209000
+    },
+    "critic_head": {
+      "unique_tensors": 2,
+      "changed_tensors": 2,
+      "elements": 257,
+      "changed_elements": 209,
+      "delta_l2": 0.04362240694123692,
+      "adam_steps": [
+        16.0
+      ],
+      "adam_exp_avg_nonzero": 209
+    }
+  },
+  "parameter_rows": [
+    {
+      "name": "features_extractor.encoder.global_encoder.0.weight",
+      "group": "shared_encoder",
+      "elements": 1200,
+      "changed_elements": 1200,
+      "delta_l2": 0.0847399645244209,
+      "delta_max_abs": 0.004583075642585754,
+      "initial_adam_has_state": false,
+      "adam_step": 16.0,
+      "adam_exp_avg_l2": 0.004466399685760955,
+      "adam_exp_avg_sq_l1": 2.2288618542930726e-05,
+      "adam_exp_avg_nonzero": 1200
+    },
+    {
+      "name": "features_extractor.encoder.global_encoder.0.bias",
+      "group": "shared_encoder",
+      "elements": 16,
+      "changed_elements": 16,
+      "delta_l2": 0.008412438509045281,
+      "delta_max_abs": 0.004083405248820782,
+      "initial_adam_has_state": false,
+      "adam_step": 16.0,
+      "adam_exp_avg_l2": 0.0007798708715680932,
+      "adam_exp_avg_sq_l1": 9.93218620133629e-07,
+      "adam_exp_avg_nonzero": 16
+    },
+    {
+      "name": "features_extractor.encoder.global_encoder.2.weight",
+      "group": "shared_encoder",
+      "elements": 4608,
+      "changed_elements": 4415,
+      "delta_l2": 0.12571124733364583,
+      "delta_max_abs": 0.004676111042499542,
+      "initial_adam_has_state": false,
+      "adam_step": 16.0,
+      "adam_exp_avg_l2": 0.009234209859928845,
+      "adam_exp_avg_sq_l1": 4.0196380285326056e-05,
+      "adam_exp_avg_nonzero": 4416
+    },
+    {
+      "name": "features_extractor.encoder.global_encoder.2.bias",
+      "group": "shared_encoder",
+      "elements": 32,
+      "changed_elements": 32,
+      "delta_l2": 0.011559970810222702,
+      "delta_max_abs": 0.004321233369410038,
+      "initial_adam_has_state": false,
+      "adam_step": 16.0,
+      "adam_exp_avg_l2": 0.0010490924206795534,
+      "adam_exp_avg_sq_l1": 6.128144035649224e-07,
+      "adam_exp_avg_nonzero": 32
+    },
+    {
+      "name": "features_extractor.encoder.global_encoder.6.weight",
+      "group": "shared_encoder",
+      "elements": 65536,
+      "changed_elements": 21548,
+      "delta_l2": 0.2591215871030996,
+      "delta_max_abs": 0.004575327038764954,
+      "initial_adam_has_state": false,
+      "adam_step": 16.0,
+      "adam_exp_avg_l2": 0.021360161660755553,
+      "adam_exp_avg_sq_l1": 0.00011581786351019532,
+      "adam_exp_avg_nonzero": 21548
+    },
+    {
+      "name": "features_extractor.encoder.global_encoder.6.bias",
+      "group": "shared_encoder",
+      "elements": 128,
+      "changed_elements": 67,
+      "delta_l2": 0.01654029072378016,
+      "delta_max_abs": 0.004194829612970352,
+      "initial_adam_has_state": false,
+      "adam_step": 16.0,
+      "adam_exp_avg_l2": 0.001412337702663954,
+      "adam_exp_avg_sq_l1": 5.386462048617702e-07,
+      "adam_exp_avg_nonzero": 67
+    },
+    {
+      "name": "features_extractor.encoder.local_encoder.0.weight",
+      "group": "shared_encoder",
+      "elements": 1200,
+      "changed_elements": 1200,
+      "delta_l2": 0.10877604922172722,
+      "delta_max_abs": 0.004832863807678223,
+      "initial_adam_has_state": false,
+      "adam_step": 16.0,
+      "adam_exp_avg_l2": 0.09361366208505287,
+      "adam_exp_avg_sq_l1": 0.00021873247274048317,
+      "adam_exp_avg_nonzero": 1200
+    },
+    {
+      "name": "features_extractor.encoder.local_encoder.0.bias",
+      "group": "shared_encoder",
+      "elements": 16,
+      "changed_elements": 16,
+      "delta_l2": 0.012596861769638552,
+      "delta_max_abs": 0.004807753954082727,
+      "initial_adam_has_state": false,
+      "adam_step": 16.0,
+      "adam_exp_avg_l2": 0.0187472419163024,
+      "adam_exp_avg_sq_l1": 8.895641914530295e-06,
+      "adam_exp_avg_nonzero": 16
+    },
+    {
+      "name": "features_extractor.encoder.local_encoder.2.weight",
+      "group": "shared_encoder",
+      "elements": 4608,
+      "changed_elements": 4605,
+      "delta_l2": 0.19350989032228372,
+      "delta_max_abs": 0.004851147532463074,
+      "initial_adam_has_state": false,
+      "adam_step": 16.0,
+      "adam_exp_avg_l2": 0.07602010428023123,
+      "adam_exp_avg_sq_l1": 0.00016186093633225538,
+      "adam_exp_avg_nonzero": 4605
+    },
+    {
+      "name": "features_extractor.encoder.local_encoder.2.bias",
+      "group": "shared_encoder",
+      "elements": 32,
+      "changed_elements": 32,
+      "delta_l2": 0.017155046887569587,
+      "delta_max_abs": 0.004839185159653425,
+      "initial_adam_has_state": false,
+      "adam_step": 16.0,
+      "adam_exp_avg_l2": 0.012882435755238439,
+      "adam_exp_avg_sq_l1": 5.603725499514489e-06,
+      "adam_exp_avg_nonzero": 32
+    },
+    {
+      "name": "features_extractor.encoder.local_encoder.6.weight",
+      "group": "shared_encoder",
+      "elements": 32768,
+      "changed_elements": 29733,
+      "delta_l2": 0.45009480094799925,
+      "delta_max_abs": 0.004848085343837738,
+      "initial_adam_has_state": false,
+      "adam_step": 16.0,
+      "adam_exp_avg_l2": 0.10237448897238945,
+      "adam_exp_avg_sq_l1": 0.00033324127087569705,
+      "adam_exp_avg_nonzero": 29734
+    },
+    {
+      "name": "features_extractor.encoder.local_encoder.6.bias",
+      "group": "shared_encoder",
+      "elements": 64,
+      "changed_elements": 59,
+      "delta_l2": 0.019723353863763247,
+      "delta_max_abs": 0.004644508473575115,
+      "initial_adam_has_state": false,
+      "adam_step": 16.0,
+      "adam_exp_avg_l2": 0.008001781347407784,
+      "adam_exp_avg_sq_l1": 3.0992872949581196e-06,
+      "adam_exp_avg_nonzero": 59
+    },
+    {
+      "name": "features_extractor.encoder.robot_encoder.0.weight",
+      "group": "shared_encoder",
+      "elements": 4096,
+      "changed_elements": 2377,
+      "delta_l2": 0.13287314274298132,
+      "delta_max_abs": 0.004841893911361694,
+      "initial_adam_has_state": false,
+      "adam_step": 16.0,
+      "adam_exp_avg_l2": 0.04752841017592547,
+      "adam_exp_avg_sq_l1": 9.273142615579452e-05,
+      "adam_exp_avg_nonzero": 2377
+    },
+    {
+      "name": "features_extractor.encoder.robot_encoder.0.bias",
+      "group": "shared_encoder",
+      "elements": 64,
+      "changed_elements": 48,
+      "delta_l2": 0.020940448651530375,
+      "delta_max_abs": 0.004841810092329979,
+      "initial_adam_has_state": false,
+      "adam_step": 16.0,
+      "adam_exp_avg_l2": 0.007742986157132227,
+      "adam_exp_avg_sq_l1": 2.759403974796071e-06,
+      "adam_exp_avg_nonzero": 48
+    },
+    {
+      "name": "features_extractor.encoder.candidate_encoder.0.weight",
+      "group": "shared_encoder",
+      "elements": 512,
+      "changed_elements": 346,
+      "delta_l2": 0.060161618094500595,
+      "delta_max_abs": 0.0047142282128334045,
+      "initial_adam_has_state": false,
+      "adam_step": 16.0,
+      "adam_exp_avg_l2": 0.03092815059268714,
+      "adam_exp_avg_sq_l1": 3.766194873568457e-05,
+      "adam_exp_avg_nonzero": 346
+    },
+    {
+      "name": "features_extractor.encoder.candidate_encoder.0.bias",
+      "group": "shared_encoder",
+      "elements": 32,
+      "changed_elements": 28,
+      "delta_l2": 0.01671833911290832,
+      "delta_max_abs": 0.004713845439255238,
+      "initial_adam_has_state": false,
+      "adam_step": 16.0,
+      "adam_exp_avg_l2": 0.010368376517078377,
+      "adam_exp_avg_sq_l1": 4.5679305985743546e-06,
+      "adam_exp_avg_nonzero": 28
+    },
+    {
+      "name": "features_extractor.encoder.history_encoder.0.weight",
+      "group": "shared_encoder",
+      "elements": 12288,
+      "changed_elements": 8538,
+      "delta_l2": 0.2583710406553918,
+      "delta_max_abs": 0.004715338349342346,
+      "initial_adam_has_state": false,
+      "adam_step": 16.0,
+      "adam_exp_avg_l2": 0.02590285495312411,
+      "adam_exp_avg_sq_l1": 3.7359344064600886e-05,
+      "adam_exp_avg_nonzero": 8576
+    },
+    {
+      "name": "features_extractor.encoder.history_encoder.0.bias",
+      "group": "shared_encoder",
+      "elements": 64,
+      "changed_elements": 48,
+      "delta_l2": 0.016351615538387175,
+      "delta_max_abs": 0.004557434003800154,
+      "initial_adam_has_state": false,
+      "adam_step": 16.0,
+      "adam_exp_avg_l2": 0.0023273101168829633,
+      "adam_exp_avg_sq_l1": 5.545731194128711e-07,
+      "adam_exp_avg_nonzero": 48
+    },
+    {
+      "name": "features_extractor.encoder.task_encoder.0.weight",
+      "group": "shared_encoder",
+      "elements": 384,
+      "changed_elements": 150,
+      "delta_l2": 0.028859818533122725,
+      "delta_max_abs": 0.004302754998207092,
+      "initial_adam_has_state": false,
+      "adam_step": 16.0,
+      "adam_exp_avg_l2": 0.003121069665047901,
+      "adam_exp_avg_sq_l1": 1.0949768410015e-06,
+      "adam_exp_avg_nonzero": 150
+    },
+    {
+      "name": "features_extractor.encoder.task_encoder.0.bias",
+      "group": "shared_encoder",
+      "elements": 32,
+      "changed_elements": 15,
+      "delta_l2": 0.008295037370760455,
+      "delta_max_abs": 0.004044325090944767,
+      "initial_adam_has_state": false,
+      "adam_step": 16.0,
+      "adam_exp_avg_l2": 0.001051752189078332,
+      "adam_exp_avg_sq_l1": 1.514555229009673e-07,
+      "adam_exp_avg_nonzero": 15
+    },
+    {
+      "name": "features_extractor.encoder.fusion.0.weight",
+      "group": "shared_encoder",
+      "elements": 221184,
+      "changed_elements": 131505,
+      "delta_l2": 0.9291844873979508,
+      "delta_max_abs": 0.004842139780521393,
+      "initial_adam_has_state": false,
+      "adam_step": 16.0,
+      "adam_exp_avg_l2": 0.17652521785667277,
+      "adam_exp_avg_sq_l1": 0.0016896944788233757,
+      "adam_exp_avg_nonzero": 131521
+    },
+    {
+      "name": "features_extractor.encoder.fusion.0.bias",
+      "group": "shared_encoder",
+      "elements": 256,
+      "changed_elements": 208,
+      "delta_l2": 0.034825516274689265,
+      "delta_max_abs": 0.0043084691278636456,
+      "initial_adam_has_state": false,
+      "adam_step": 16.0,
+      "adam_exp_avg_l2": 0.004982914288043314,
+      "adam_exp_avg_sq_l1": 4.800164105332603e-06,
+      "adam_exp_avg_nonzero": 208
+    },
+    {
+      "name": "action_net.weight",
+      "group": "actor_head",
+      "elements": 256000,
+      "changed_elements": 127110,
+      "delta_l2": 0.2033754146559485,
+      "delta_max_abs": 0.0038491003215312958,
+      "initial_adam_has_state": false,
+      "adam_step": 16.0,
+      "adam_exp_avg_l2": 0.004361619359940743,
+      "adam_exp_avg_sq_l1": 3.44131446055029e-06,
+      "adam_exp_avg_nonzero": 208000
+    },
+    {
+      "name": "action_net.bias",
+      "group": "actor_head",
+      "elements": 1000,
+      "changed_elements": 1000,
+      "delta_l2": 0.020692750497184692,
+      "delta_max_abs": 0.00340438773855567,
+      "initial_adam_has_state": false,
+      "adam_step": 16.0,
+      "adam_exp_avg_l2": 0.000429173211787443,
+      "adam_exp_avg_sq_l1": 3.6405823399028786e-08,
+      "adam_exp_avg_nonzero": 1000
+    },
+    {
+      "name": "value_net.weight",
+      "group": "critic_head",
+      "elements": 256,
+      "changed_elements": 208,
+      "delta_l2": 0.043528195626890254,
+      "delta_max_abs": 0.004890322685241699,
+      "initial_adam_has_state": false,
+      "adam_step": 16.0,
+      "adam_exp_avg_l2": 0.16976889529810252,
+      "adam_exp_avg_sq_l1": 0.0011773286156472617,
+      "adam_exp_avg_nonzero": 208
+    },
+    {
+      "name": "value_net.bias",
+      "group": "critic_head",
+      "elements": 1,
+      "changed_elements": 1,
+      "delta_l2": 0.0028654097113758326,
+      "delta_max_abs": 0.0028654097113758326,
+      "initial_adam_has_state": false,
+      "adam_step": 16.0,
+      "adam_exp_avg_l2": 0.0036427718587219715,
+      "adam_exp_avg_sq_l1": 6.07676838626503e-06,
+      "adam_exp_avg_nonzero": 1
+    }
+  ],
+  "actor_action_rows": {
+    "ever_legal_classes": 678,
+    "changed_actor_rows": 1000,
+    "changed_never_legal_rows": 322
+  },
+  "sampling_policy_cpu_replay": {
+    "rows": 252,
+    "native_observation_tensor_bindings_exact": 252,
+    "selected_action_legal_rows": 252,
+    "saved_mask_equals_observation_mask": true,
+    "old_value_max_abs_error": 7.152557373046875e-07,
+    "old_log_prob_max_abs_error": 4.76837158203125e-07,
+    "forced_selected_log_prob_max_abs": 0.0,
+    "masked_full_policy_tv": {
+      "n": 252,
+      "min": 0.0,
+      "max": 0.13288502395153046,
+      "mean": 0.053658362433669116,
+      "std_population": 0.04101538082968984
+    },
+    "masked_head_only_policy_tv": {
+      "n": 252,
+      "min": 0.0,
+      "max": 0.08981651812791824,
+      "mean": 0.03459156222552771,
+      "std_population": 0.026610942537229492
+    },
+    "masked_kl_old_to_new": {
+      "n": 252,
+      "min": 0.0,
+      "max": 0.03998594358563423,
+      "mean": 0.011491485732784938,
+      "std_population": 0.010749788577480471
+    },
+    "deterministic_action_changed_rows": 132,
+    "selected_probability_delta": {
+      "n": 252,
+      "min": -0.12065070867538452,
+      "max": 0.12127065658569336,
+      "mean": -0.002063546170820556,
+      "std_population": 0.03957626674938893
+    },
+    "advantage_normalized_mean_selected_log_prob_improvement": 0.07663078606128693,
+    "critic_value_delta": {
+      "n": 252,
+      "min": -5.104019641876221,
+      "max": -1.2903635501861572,
+      "mean": -3.343815962946604,
+      "std_population": 1.0243470344274832
+    }
+  },
+  "mask_and_choices": {
+    "rows": 252,
+    "legal_joint_count_histogram": {
+      "40": 1,
+      "8": 13,
+      "6": 24,
+      "18": 2,
+      "2": 42,
+      "14": 3,
+      "16": 10,
+      "20": 5,
+      "140": 1,
+      "144": 1,
+      "67": 1,
+      "4": 2,
+      "1": 78,
+      "50": 2,
+      "7": 20,
+      "3": 9,
+      "57": 1,
+      "5": 11,
+      "134": 1,
+      "54": 1,
+      "59": 1,
+      "9": 3,
+      "44": 1,
+      "42": 1,
+      "293": 1,
+      "363": 1,
+      "255": 1,
+      "334": 1,
+      "460": 1,
+      "46": 1,
+      "48": 1,
+      "52": 1,
+      "69": 1,
+      "12": 1,
+      "23": 1,
+      "41": 1,
+      "45": 1,
+      "51": 1,
+      "65": 1,
+      "24": 1,
+      "35": 1,
+      "32": 1
+    },
+    "single_choice_rows": 78,
+    "single_choice_fraction": 0.30952380952380953,
+    "multi_choice_rows": 174,
+    "multi_choice_without_goal_rows": 42,
+    "goal_available_rows": 132,
+    "joint_goal_choice_rows": 97,
+    "goal_choice_components": 116,
+    "keep_components": 575,
+    "wait_components": 65,
+    "forced_rows_pg_score_gradient_is_zero": true
+  },
+  "offline_gradient_reconstruction": {
+    "scope": "frozen pre-update encoder features; complete-round globally normalized advantages, not the unknown actual GPU minibatch permutation; no optimizer step",
+    "raw_advantages": {
+      "n": 252,
+      "min": -19.367136001586914,
+      "max": 19.096118927001953,
+      "mean": -3.059200252805437,
+      "std_population": 14.95397969164423
+    },
+    "raw_advantage_positive_rows": 128,
+    "raw_advantage_negative_rows": 124,
+    "global_normalized_advantages": {
+      "n": 252,
+      "min": -1.0883755683898926,
+      "max": 1.4786242246627808,
+      "mean": 3.54789552234468e-09,
+      "std_population": 0.9980139009986446
+    },
+    "actor_pure_advantage_surrogate_gradient": {
+      "l2": 0.394597717268001,
+      "max_abs": 0.05484478548169136,
+      "nonzero_elements": 110000,
+      "elements": 257000
+    },
+    "actor_entropy_coefficient_0_01_gradient": {
+      "l2": 1.552477092824477e-05,
+      "max_abs": 2.657366394487326e-06,
+      "nonzero_elements": 110000,
+      "elements": 257000
+    },
+    "critic_half_mse_gradient": {
+      "l2": 24.661377421858596,
+      "max_abs": 6.9709367752075195,
+      "nonzero_elements": 202,
+      "elements": 257
+    },
+    "actor_actual_delta_cosine_to_negative_reconstructed_pg_gradient": 0.6125021576881409,
+    "direct_value_loss_gradient_into_actor_head": "structurally zero; disjoint direct heads",
+    "actual_native_gradient_norms": null,
+    "actual_native_gradient_limitation": "not logged; Adam states and checkpoint deltas are retained actual optimizer evidence"
+  },
+  "workers": [
+    {
+      "worker": 0,
+      "epoch": "round0000_w0_e1_05562ab8",
+      "native_evaluator": {
+        "success": false,
+        "termination_reason": "navigation_failure",
+        "failure_reason": "navigation_failure",
+        "control_failure": "{\"component\": \"peer_obstacles\", \"reason\": \"peer_body_envelopes_overlap\"}",
+        "elapsed_sim_time_sec": 52.18,
+        "correct_free_coverage_ratio": 0.8579384643476673,
+        "map_quality_pass": true,
+        "robot_participation_pass": false,
+        "navigation_protocol_closed": false,
+        "navigation_stop_acknowledgment": null,
+        "collision_events": 0,
+        "collision_monitoring_active": true,
+        "collision_monitoring_fresh": true,
+        "contact_component_count_per_robot": 6,
+        "time_to_95_coverage_sec": null,
+        "observed_accuracy": 0.9693367018378164,
+        "occupied_iou": 0.2153289748226457,
+        "false_free_ratio": 0.0021797451374916165
+      },
+      "native_closed_cleanup": {
+        "epoch": "round0000_w0_e1_05562ab8",
+        "start_sim_time_sec": 69.62,
+        "stop_sim_time_sec": 122.04,
+        "pending_goal_count": 0,
+        "robot_names": [
+          "tb1",
+          "tb2",
+          "tb3"
+        ],
+        "navigation_failure": false
+      },
+      "supervisor_shutdown": {
+        "worker_returncode": 0,
+        "forced_shutdown": false,
+        "failed_sample": false,
+        "remaining_owned_processes": [],
+        "remaining_owned_zombies": []
+      },
+      "decisions": 53,
+      "actual_effective_seconds": 52.18,
+      "native_reward_sum": -12.101386086003833,
+      "saved_first_return": -12.101386070251465,
+      "max_mc_target_error_from_native_reward_suffix": 2.7310142485248434e-06,
+      "return_targets": {
+        "n": 53,
+        "min": -20.068326950073242,
+        "max": -12.098052978515625,
+        "mean": -19.097210380266297,
+        "std_population": 1.9029024934254235
+      },
+      "advantages": {
+        "n": 53,
+        "min": -19.367136001586914,
+        "max": -11.292744636535645,
+        "mean": -18.17388315020867,
+        "std_population": 1.9131839244756146
+      },
+      "single_choice_rows": 0,
+      "multi_choice_rows": 53,
+      "goal_available_rows": 21,
+      "multi_choice_without_goal_rows": 32,
+      "actual_joint_goal_choice_rows": 16,
+      "per_robot_opportunities": [
+        {
+          "robot": "tb1",
+          "goal_opportunity_rows": 12,
+          "goal_choice_rows": 9,
+          "keep_rows": 41,
+          "wait_rows": 3,
+          "first_goal_opportunity_time": 0.0,
+          "first_goal_choice_time": 2.0,
+          "native": {
+            "collision_duration_sec": 0.0,
+            "collision_events": 0,
+            "collision_message_count": 6414,
+            "end_x": -0.4510145074316997,
+            "end_y": -1.7348161231397798,
+            "nav_aborted": 0,
+            "nav_canceled": 7,
+            "nav_goal_count": 9,
+            "nav_succeeded": 1,
+            "path_length_m": 9.54786080477839,
+            "start_x": 0.0021140316558622145,
+            "start_y": -0.44999608940259966,
+            "teleport_jump_count": 0,
+            "visited_cell_count": 112
+          }
+        },
+        {
+          "robot": "tb2",
+          "goal_opportunity_rows": 0,
+          "goal_choice_rows": 0,
+          "keep_rows": 22,
+          "wait_rows": 31,
+          "first_goal_opportunity_time": null,
+          "first_goal_choice_time": null,
+          "native": {
+            "collision_duration_sec": 0.0,
+            "collision_events": 0,
+            "collision_message_count": 6414,
+            "end_x": 0.0035804038760680556,
+            "end_y": 0.45001169412390957,
+            "nav_aborted": 0,
+            "nav_canceled": 0,
+            "nav_goal_count": 0,
+            "nav_succeeded": 0,
+            "path_length_m": 0.0015359293774327247,
+            "start_x": 0.0020454184999727596,
+            "start_y": 0.450003643515322,
+            "teleport_jump_count": 0,
+            "visited_cell_count": 1
+          }
+        },
+        {
+          "robot": "tb3",
+          "goal_opportunity_rows": 12,
+          "goal_choice_rows": 9,
+          "keep_rows": 43,
+          "wait_rows": 1,
+          "first_goal_opportunity_time": 0.0,
+          "first_goal_choice_time": 0.0,
+          "native": {
+            "collision_duration_sec": 0.0,
+            "collision_events": 0,
+            "collision_message_count": 6414,
+            "end_x": -0.8420943551845448,
+            "end_y": -2.0612566624579025,
+            "nav_aborted": 0,
+            "nav_canceled": 7,
+            "nav_goal_count": 9,
+            "nav_succeeded": 1,
+            "path_length_m": 8.932482952295508,
+            "start_x": 0.4519872958028106,
+            "start_y": 3.3986849643471076e-06,
+            "teleport_jump_count": 0,
+            "visited_cell_count": 109
+          }
+        }
+      ],
+      "first_ten_seconds_actions": [
+        {
+          "rollout_index": 0,
+          "worker": 0,
+          "task_time_sec": 0.0,
+          "action": 981,
+          "choices": [
+            9,
+            8,
+            1
+          ],
+          "legal_joint_actions": 40,
+          "legal_goal_choices_per_robot": [
+            2,
+            0,
+            3
+          ],
+          "navigation_phases": [
+            "idle",
+            "idle",
+            "idle"
+          ],
+          "mask_reasons": {
+            "joint_target_conflict_actions": [
+              82,
+              83,
+              85,
+              92,
+              93,
+              95,
+              682,
+              683,
+              685,
+              692,
+              693,
+              695,
+              882,
+              883,
+              885,
+              892,
+              893,
+              895,
+              982,
+              983,
+              985,
+              992,
+              993,
+              995
+            ],
+            "joint_target_conflict_count": 24,
+            "per_robot": [
+              {
+                "candidate_missing_or_unreachable": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  7
+                ]
+              },
+              {
+                "candidate_missing_or_unreachable": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7
+                ]
+              },
+              {
+                "candidate_missing_or_unreachable": [
+                  0,
+                  6
+                ]
+              }
+            ]
+          },
+          "saved_advantage": -11.411447525024414,
+          "saved_return": -12.101386070251465,
+          "pre_selected_probability": 0.02503753826022148,
+          "post_selected_probability": 0.019996125251054764,
+          "pre_entropy": 3.688877582550049
+        },
+        {
+          "rollout_index": 1,
+          "worker": 0,
+          "task_time_sec": 1.0,
+          "action": 998,
+          "choices": [
+            9,
+            9,
+            8
+          ],
+          "legal_joint_actions": 8,
+          "legal_goal_choices_per_robot": [
+            2,
+            0,
+            0
+          ],
+          "navigation_phases": [
+            "idle",
+            "idle",
+            "active"
+          ],
+          "mask_reasons": {
+            "joint_target_conflict_actions": [],
+            "joint_target_conflict_count": 0,
+            "per_robot": [
+              {
+                "candidate_missing_or_unreachable": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  7
+                ]
+              },
+              {
+                "candidate_missing_or_unreachable": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7
+                ]
+              },
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              }
+            ]
+          },
+          "saved_advantage": -11.292744636535645,
+          "saved_return": -12.098052978515625,
+          "pre_selected_probability": 0.12527723610401154,
+          "post_selected_probability": 0.11565205454826355,
+          "pre_entropy": 2.079439401626587
+        },
+        {
+          "rollout_index": 2,
+          "worker": 0,
+          "task_time_sec": 2.0,
+          "action": 88,
+          "choices": [
+            0,
+            8,
+            8
+          ],
+          "legal_joint_actions": 6,
+          "legal_goal_choices_per_robot": [
+            1,
+            0,
+            0
+          ],
+          "navigation_phases": [
+            "idle",
+            "idle",
+            "active"
+          ],
+          "mask_reasons": {
+            "joint_target_conflict_actions": [],
+            "joint_target_conflict_count": 0,
+            "per_robot": [
+              {
+                "candidate_missing_or_unreachable": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7
+                ]
+              },
+              {
+                "candidate_missing_or_unreachable": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7
+                ]
+              },
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              }
+            ]
+          },
+          "saved_advantage": -11.551608085632324,
+          "saved_return": -12.437776565551758,
+          "pre_selected_probability": 0.16711211204528809,
+          "post_selected_probability": 0.14092111587524414,
+          "pre_entropy": 1.7917578220367432
+        },
+        {
+          "rollout_index": 3,
+          "worker": 0,
+          "task_time_sec": 3.0,
+          "action": 895,
+          "choices": [
+            8,
+            9,
+            5
+          ],
+          "legal_joint_actions": 18,
+          "legal_goal_choices_per_robot": [
+            0,
+            0,
+            7
+          ],
+          "navigation_phases": [
+            "active",
+            "idle",
+            "idle"
+          ],
+          "mask_reasons": {
+            "joint_target_conflict_actions": [],
+            "joint_target_conflict_count": 0,
+            "per_robot": [
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              },
+              {
+                "candidate_missing_or_unreachable": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7
+                ]
+              },
+              {
+                "candidate_missing_or_unreachable": [
+                  0
+                ]
+              }
+            ]
+          },
+          "saved_advantage": -13.86174201965332,
+          "saved_return": -14.91207504272461,
+          "pre_selected_probability": 0.05586857348680496,
+          "post_selected_probability": 0.0460992306470871,
+          "pre_entropy": 2.8903682231903076
+        },
+        {
+          "rollout_index": 4,
+          "worker": 0,
+          "task_time_sec": 4.0,
+          "action": 898,
+          "choices": [
+            8,
+            9,
+            8
+          ],
+          "legal_joint_actions": 2,
+          "legal_goal_choices_per_robot": [
+            0,
+            0,
+            0
+          ],
+          "navigation_phases": [
+            "active",
+            "idle",
+            "active"
+          ],
+          "mask_reasons": {
+            "joint_target_conflict_actions": [],
+            "joint_target_conflict_count": 0,
+            "per_robot": [
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              },
+              {
+                "candidate_missing_or_unreachable": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7
+                ]
+              },
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              }
+            ]
+          },
+          "saved_advantage": -15.38182258605957,
+          "saved_return": -16.49871826171875,
+          "pre_selected_probability": 0.49947309494018555,
+          "post_selected_probability": 0.4358175992965698,
+          "pre_entropy": 0.6931465864181519
+        },
+        {
+          "rollout_index": 5,
+          "worker": 0,
+          "task_time_sec": 5.0,
+          "action": 888,
+          "choices": [
+            8,
+            8,
+            8
+          ],
+          "legal_joint_actions": 2,
+          "legal_goal_choices_per_robot": [
+            0,
+            0,
+            0
+          ],
+          "navigation_phases": [
+            "active",
+            "idle",
+            "active"
+          ],
+          "mask_reasons": {
+            "joint_target_conflict_actions": [],
+            "joint_target_conflict_count": 0,
+            "per_robot": [
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              },
+              {
+                "candidate_missing_or_unreachable": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7
+                ]
+              },
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              }
+            ]
+          },
+          "saved_advantage": -17.099905014038086,
+          "saved_return": -18.243762969970703,
+          "pre_selected_probability": 0.5006515979766846,
+          "post_selected_probability": 0.5643115043640137,
+          "pre_entropy": 0.6931464672088623
+        },
+        {
+          "rollout_index": 6,
+          "worker": 0,
+          "task_time_sec": 6.0,
+          "action": 998,
+          "choices": [
+            9,
+            9,
+            8
+          ],
+          "legal_joint_actions": 14,
+          "legal_goal_choices_per_robot": [
+            5,
+            0,
+            0
+          ],
+          "navigation_phases": [
+            "idle",
+            "idle",
+            "active"
+          ],
+          "mask_reasons": {
+            "joint_target_conflict_actions": [],
+            "joint_target_conflict_count": 0,
+            "per_robot": [
+              {
+                "candidate_missing_or_unreachable": [
+                  1,
+                  3,
+                  7
+                ]
+              },
+              {
+                "candidate_missing_or_unreachable": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7
+                ]
+              },
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              }
+            ]
+          },
+          "saved_advantage": -17.633556365966797,
+          "saved_return": -18.638721466064453,
+          "pre_selected_probability": 0.07150701433420181,
+          "post_selected_probability": 0.05951182171702385,
+          "pre_entropy": 2.639054298400879
+        },
+        {
+          "rollout_index": 7,
+          "worker": 0,
+          "task_time_sec": 7.0,
+          "action": 388,
+          "choices": [
+            3,
+            8,
+            8
+          ],
+          "legal_joint_actions": 16,
+          "legal_goal_choices_per_robot": [
+            6,
+            0,
+            0
+          ],
+          "navigation_phases": [
+            "idle",
+            "idle",
+            "active"
+          ],
+          "mask_reasons": {
+            "joint_target_conflict_actions": [],
+            "joint_target_conflict_count": 0,
+            "per_robot": [
+              {
+                "candidate_missing_or_unreachable": [
+                  1,
+                  2
+                ]
+              },
+              {
+                "candidate_missing_or_unreachable": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7
+                ]
+              },
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              }
+            ]
+          },
+          "saved_advantage": -17.628156661987305,
+          "saved_return": -18.70317840576172,
+          "pre_selected_probability": 0.06244341656565666,
+          "post_selected_probability": 0.05058590695261955,
+          "pre_entropy": 2.7725865840911865
+        },
+        {
+          "rollout_index": 8,
+          "worker": 0,
+          "task_time_sec": 8.0,
+          "action": 898,
+          "choices": [
+            8,
+            9,
+            8
+          ],
+          "legal_joint_actions": 2,
+          "legal_goal_choices_per_robot": [
+            0,
+            0,
+            0
+          ],
+          "navigation_phases": [
+            "active",
+            "idle",
+            "active"
+          ],
+          "mask_reasons": {
+            "joint_target_conflict_actions": [],
+            "joint_target_conflict_count": 0,
+            "per_robot": [
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              },
+              {
+                "candidate_missing_or_unreachable": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7
+                ]
+              },
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              }
+            ]
+          },
+          "saved_advantage": -17.68610191345215,
+          "saved_return": -18.777677536010742,
+          "pre_selected_probability": 0.499369740486145,
+          "post_selected_probability": 0.4342125952243805,
+          "pre_entropy": 0.6931463479995728
+        },
+        {
+          "rollout_index": 9,
+          "worker": 0,
+          "task_time_sec": 9.0,
+          "action": 881,
+          "choices": [
+            8,
+            8,
+            1
+          ],
+          "legal_joint_actions": 20,
+          "legal_goal_choices_per_robot": [
+            0,
+            0,
+            8
+          ],
+          "navigation_phases": [
+            "active",
+            "idle",
+            "active"
+          ],
+          "mask_reasons": {
+            "joint_target_conflict_actions": [],
+            "joint_target_conflict_count": 0,
+            "per_robot": [
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              },
+              {
+                "candidate_missing_or_unreachable": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7
+                ]
+              },
+              {}
+            ]
+          },
+          "saved_advantage": -17.72854995727539,
+          "saved_return": -18.860395431518555,
+          "pre_selected_probability": 0.049848347902297974,
+          "post_selected_probability": 0.045348379760980606,
+          "pre_entropy": 2.9957282543182373
+        }
+      ],
+      "native_adapter_event_counts": {
+        "state_update": 530,
+        "initial_inputs_ready": 1,
+        "snapshot_requested": 54,
+        "task_start": 1,
+        "observation": 54,
+        "snapshot_completed": 54,
+        "action": 53,
+        "protocol": 68,
+        "delivery": 564,
+        "native_send": 18,
+        "safety_stop": 1,
+        "task_terminal_received": 1,
+        "task_terminal": 1,
+        "task_stopped": 1
+      },
+      "native_protocol_type_counts": {
+        "send_goal": 18,
+        "protocol_terminal": 18,
+        "cancel_goal": 16,
+        "cancel_response": 16
+      },
+      "masked_full_policy_tv": {
+        "n": 53,
+        "min": 0.034317418932914734,
+        "max": 0.1205407977104187,
+        "mean": 0.07526506778766524,
+        "std_population": 0.02001815646681713
+      },
+      "masked_head_only_policy_tv": {
+        "n": 53,
+        "min": 0.020600732415914536,
+        "max": 0.07414364814758301,
+        "mean": 0.04604189386064152,
+        "std_population": 0.012188948599040577
+      }
+    },
+    {
+      "worker": 1,
+      "epoch": "round0000_w1_e1_06f9a236",
+      "native_evaluator": {
+        "success": false,
+        "termination_reason": "navigation_failure",
+        "failure_reason": "navigation_failure",
+        "control_failure": "{\"component\": \"peer_obstacles\", \"reason\": \"peer_body_envelopes_overlap\"}",
+        "elapsed_sim_time_sec": 10.2,
+        "correct_free_coverage_ratio": 0.7255089929699625,
+        "map_quality_pass": false,
+        "robot_participation_pass": false,
+        "navigation_protocol_closed": false,
+        "navigation_stop_acknowledgment": null,
+        "collision_events": 0,
+        "collision_monitoring_active": true,
+        "collision_monitoring_fresh": true,
+        "contact_component_count_per_robot": 6,
+        "time_to_95_coverage_sec": null,
+        "observed_accuracy": 0.9665487768936045,
+        "occupied_iou": 0.142152719075796,
+        "false_free_ratio": 0.00016767270288397049
+      },
+      "native_closed_cleanup": {
+        "epoch": "round0000_w1_e1_06f9a236",
+        "start_sim_time_sec": 68.9,
+        "stop_sim_time_sec": 79.3,
+        "pending_goal_count": 0,
+        "robot_names": [
+          "tb1",
+          "tb2",
+          "tb3"
+        ],
+        "navigation_failure": false
+      },
+      "supervisor_shutdown": {
+        "worker_returncode": 0,
+        "forced_shutdown": false,
+        "failed_sample": false,
+        "remaining_owned_processes": [],
+        "remaining_owned_zombies": []
+      },
+      "decisions": 11,
+      "actual_effective_seconds": 10.2,
+      "native_reward_sum": -13.226190267506617,
+      "saved_first_return": -13.226188659667969,
+      "max_mc_target_error_from_native_reward_suffix": 2.0542832643855036e-06,
+      "return_targets": {
+        "n": 11,
+        "min": -20.010665893554688,
+        "max": -13.222855567932129,
+        "mean": -18.335966890508477,
+        "std_population": 2.5652200714465883
+      },
+      "advantages": {
+        "n": 11,
+        "min": -19.321340560913086,
+        "max": -12.344991683959961,
+        "mean": -17.49934959411621,
+        "std_population": 2.584515255859131
+      },
+      "single_choice_rows": 2,
+      "multi_choice_rows": 9,
+      "goal_available_rows": 9,
+      "multi_choice_without_goal_rows": 0,
+      "actual_joint_goal_choice_rows": 6,
+      "per_robot_opportunities": [
+        {
+          "robot": "tb1",
+          "goal_opportunity_rows": 3,
+          "goal_choice_rows": 2,
+          "keep_rows": 8,
+          "wait_rows": 1,
+          "first_goal_opportunity_time": 0.0,
+          "first_goal_choice_time": 1.0,
+          "native": {
+            "collision_duration_sec": 0.0,
+            "collision_events": 0,
+            "collision_message_count": 1326,
+            "end_x": -1.1762918764678996,
+            "end_y": 0.10751123309500732,
+            "nav_aborted": 0,
+            "nav_canceled": 1,
+            "nav_goal_count": 2,
+            "nav_succeeded": 0,
+            "path_length_m": 1.4823906073721507,
+            "start_x": 0.002088527635272573,
+            "start_y": -0.449996189902959,
+            "teleport_jump_count": 0,
+            "visited_cell_count": 20
+          }
+        },
+        {
+          "robot": "tb2",
+          "goal_opportunity_rows": 5,
+          "goal_choice_rows": 2,
+          "keep_rows": 7,
+          "wait_rows": 2,
+          "first_goal_opportunity_time": 0.0,
+          "first_goal_choice_time": 0.0,
+          "native": {
+            "collision_duration_sec": 0.0,
+            "collision_events": 0,
+            "collision_message_count": 1320,
+            "end_x": -0.8876523347693618,
+            "end_y": 0.5101194226714326,
+            "nav_aborted": 0,
+            "nav_canceled": 1,
+            "nav_goal_count": 2,
+            "nav_succeeded": 0,
+            "path_length_m": 0.983783102594813,
+            "start_x": 0.0020182277890450975,
+            "start_y": 0.450003644079263,
+            "teleport_jump_count": 0,
+            "visited_cell_count": 13
+          }
+        },
+        {
+          "robot": "tb3",
+          "goal_opportunity_rows": 4,
+          "goal_choice_rows": 3,
+          "keep_rows": 8,
+          "wait_rows": 0,
+          "first_goal_opportunity_time": 0.0,
+          "first_goal_choice_time": 0.0,
+          "native": {
+            "collision_duration_sec": 0.0,
+            "collision_events": 0,
+            "collision_message_count": 1320,
+            "end_x": 0.5958993895085534,
+            "end_y": 0.1930842719346608,
+            "nav_aborted": 0,
+            "nav_canceled": 1,
+            "nav_goal_count": 2,
+            "nav_succeeded": 1,
+            "path_length_m": 0.2797510015655401,
+            "start_x": 0.45195986240251107,
+            "start_y": 3.375135028567894e-06,
+            "teleport_jump_count": 0,
+            "visited_cell_count": 4
+          }
+        }
+      ],
+      "first_ten_seconds_actions": [
+        {
+          "rollout_index": 53,
+          "worker": 1,
+          "task_time_sec": 0.0,
+          "action": 915,
+          "choices": [
+            9,
+            1,
+            5
+          ],
+          "legal_joint_actions": 67,
+          "legal_goal_choices_per_robot": [
+            2,
+            1,
+            5
+          ],
+          "navigation_phases": [
+            "idle",
+            "idle",
+            "idle"
+          ],
+          "mask_reasons": {
+            "joint_target_conflict_actions": [
+              85,
+              95,
+              314,
+              384,
+              385,
+              394,
+              395,
+              814,
+              884,
+              885,
+              894,
+              895,
+              914,
+              984,
+              985,
+              994,
+              995
+            ],
+            "joint_target_conflict_count": 17,
+            "per_robot": [
+              {
+                "candidate_missing_or_unreachable": [
+                  1,
+                  2,
+                  4,
+                  5,
+                  6,
+                  7
+                ]
+              },
+              {
+                "candidate_missing_or_unreachable": [
+                  0,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7
+                ]
+              },
+              {
+                "candidate_missing_or_unreachable": [
+                  0,
+                  1,
+                  3
+                ]
+              }
+            ]
+          },
+          "saved_advantage": -12.378305435180664,
+          "saved_return": -13.226188659667969,
+          "pre_selected_probability": 0.014916380867362022,
+          "post_selected_probability": 0.012043436989188194,
+          "pre_entropy": 4.204689979553223
+        },
+        {
+          "rollout_index": 54,
+          "worker": 1,
+          "task_time_sec": 1.0,
+          "action": 88,
+          "choices": [
+            0,
+            8,
+            8
+          ],
+          "legal_joint_actions": 4,
+          "legal_goal_choices_per_robot": [
+            2,
+            0,
+            0
+          ],
+          "navigation_phases": [
+            "idle",
+            "active",
+            "active"
+          ],
+          "mask_reasons": {
+            "joint_target_conflict_actions": [],
+            "joint_target_conflict_count": 0,
+            "per_robot": [
+              {
+                "candidate_missing_or_unreachable": [
+                  1,
+                  2,
+                  4,
+                  5,
+                  6,
+                  7
+                ]
+              },
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              },
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              }
+            ]
+          },
+          "saved_advantage": -12.344991683959961,
+          "saved_return": -13.222855567932129,
+          "pre_selected_probability": 0.2502777874469757,
+          "post_selected_probability": 0.22356434166431427,
+          "pre_entropy": 1.386293649673462
+        },
+        {
+          "rollout_index": 55,
+          "worker": 1,
+          "task_time_sec": 2.0,
+          "action": 888,
+          "choices": [
+            8,
+            8,
+            8
+          ],
+          "legal_joint_actions": 1,
+          "legal_goal_choices_per_robot": [
+            0,
+            0,
+            0
+          ],
+          "navigation_phases": [
+            "active",
+            "active",
+            "active"
+          ],
+          "mask_reasons": {
+            "joint_target_conflict_actions": [],
+            "joint_target_conflict_count": 0,
+            "per_robot": [
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              },
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              },
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              }
+            ]
+          },
+          "saved_advantage": -16.04526710510254,
+          "saved_return": -16.86190414428711,
+          "pre_selected_probability": 1.0,
+          "post_selected_probability": 1.0,
+          "pre_entropy": -0.0
+        },
+        {
+          "rollout_index": 56,
+          "worker": 1,
+          "task_time_sec": 3.0,
+          "action": 888,
+          "choices": [
+            8,
+            8,
+            8
+          ],
+          "legal_joint_actions": 1,
+          "legal_goal_choices_per_robot": [
+            0,
+            0,
+            0
+          ],
+          "navigation_phases": [
+            "active",
+            "active",
+            "active"
+          ],
+          "mask_reasons": {
+            "joint_target_conflict_actions": [],
+            "joint_target_conflict_count": 0,
+            "per_robot": [
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              },
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              },
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              }
+            ]
+          },
+          "saved_advantage": -17.96087646484375,
+          "saved_return": -18.987895965576172,
+          "pre_selected_probability": 1.0,
+          "post_selected_probability": 1.0,
+          "pre_entropy": -0.0
+        },
+        {
+          "rollout_index": 57,
+          "worker": 1,
+          "task_time_sec": 4.0,
+          "action": 883,
+          "choices": [
+            8,
+            8,
+            3
+          ],
+          "legal_joint_actions": 6,
+          "legal_goal_choices_per_robot": [
+            0,
+            0,
+            4
+          ],
+          "navigation_phases": [
+            "active",
+            "active",
+            "idle"
+          ],
+          "mask_reasons": {
+            "joint_target_conflict_actions": [],
+            "joint_target_conflict_count": 0,
+            "per_robot": [
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              },
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              },
+              {
+                "candidate_missing_or_unreachable": [
+                  0,
+                  2,
+                  4,
+                  5
+                ]
+              }
+            ]
+          },
+          "saved_advantage": -18.81795883178711,
+          "saved_return": -19.639177322387695,
+          "pre_selected_probability": 0.1666526347398758,
+          "post_selected_probability": 0.12245039641857147,
+          "pre_entropy": 1.7917568683624268
+        },
+        {
+          "rollout_index": 58,
+          "worker": 1,
+          "task_time_sec": 5.0,
+          "action": 898,
+          "choices": [
+            8,
+            9,
+            8
+          ],
+          "legal_joint_actions": 8,
+          "legal_goal_choices_per_robot": [
+            0,
+            6,
+            0
+          ],
+          "navigation_phases": [
+            "active",
+            "active",
+            "active"
+          ],
+          "mask_reasons": {
+            "joint_target_conflict_actions": [],
+            "joint_target_conflict_count": 0,
+            "per_robot": [
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              },
+              {
+                "candidate_missing_or_unreachable": [
+                  0,
+                  7
+                ]
+              },
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              }
+            ]
+          },
+          "saved_advantage": -18.902976989746094,
+          "saved_return": -19.85131072998047,
+          "pre_selected_probability": 0.12498387694358826,
+          "post_selected_probability": 0.09016533941030502,
+          "pre_entropy": 2.079439401626587
+        },
+        {
+          "rollout_index": 59,
+          "worker": 1,
+          "task_time_sec": 6.0,
+          "action": 698,
+          "choices": [
+            6,
+            9,
+            8
+          ],
+          "legal_joint_actions": 50,
+          "legal_goal_choices_per_robot": [
+            4,
+            7,
+            0
+          ],
+          "navigation_phases": [
+            "active",
+            "idle",
+            "active"
+          ],
+          "mask_reasons": {
+            "joint_target_conflict_actions": [
+              8,
+              338,
+              668,
+              778
+            ],
+            "joint_target_conflict_count": 4,
+            "per_robot": [
+              {
+                "candidate_missing_or_unreachable": [
+                  1,
+                  2,
+                  4,
+                  5
+                ]
+              },
+              {
+                "candidate_missing_or_unreachable": [
+                  1
+                ]
+              },
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              }
+            ]
+          },
+          "saved_advantage": -19.118576049804688,
+          "saved_return": -19.947263717651367,
+          "pre_selected_probability": 0.02004816010594368,
+          "post_selected_probability": 0.01738904044032097,
+          "pre_entropy": 3.912020206451416
+        },
+        {
+          "rollout_index": 60,
+          "worker": 1,
+          "task_time_sec": 7.0,
+          "action": 888,
+          "choices": [
+            8,
+            8,
+            8
+          ],
+          "legal_joint_actions": 7,
+          "legal_goal_choices_per_robot": [
+            0,
+            5,
+            0
+          ],
+          "navigation_phases": [
+            "active",
+            "idle",
+            "active"
+          ],
+          "mask_reasons": {
+            "joint_target_conflict_actions": [],
+            "joint_target_conflict_count": 0,
+            "per_robot": [
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              },
+              {
+                "candidate_missing_or_unreachable": [
+                  1,
+                  3,
+                  5
+                ]
+              },
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              }
+            ]
+          },
+          "saved_advantage": -19.09563446044922,
+          "saved_return": -19.963603973388672,
+          "pre_selected_probability": 0.14278286695480347,
+          "post_selected_probability": 0.13570058345794678,
+          "pre_entropy": 1.945908784866333
+        },
+        {
+          "rollout_index": 61,
+          "worker": 1,
+          "task_time_sec": 8.0,
+          "action": 808,
+          "choices": [
+            8,
+            0,
+            8
+          ],
+          "legal_joint_actions": 6,
+          "legal_goal_choices_per_robot": [
+            0,
+            4,
+            0
+          ],
+          "navigation_phases": [
+            "active",
+            "idle",
+            "active"
+          ],
+          "mask_reasons": {
+            "joint_target_conflict_actions": [],
+            "joint_target_conflict_count": 0,
+            "per_robot": [
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              },
+              {
+                "candidate_missing_or_unreachable": [
+                  1,
+                  2,
+                  3,
+                  4
+                ]
+              },
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              }
+            ]
+          },
+          "saved_advantage": -19.205095291137695,
+          "saved_return": -19.98469352722168,
+          "pre_selected_probability": 0.16693559288978577,
+          "post_selected_probability": 0.14932343363761902,
+          "pre_entropy": 1.7917588949203491
+        },
+        {
+          "rollout_index": 62,
+          "worker": 1,
+          "task_time_sec": 9.0,
+          "action": 888,
+          "choices": [
+            8,
+            8,
+            8
+          ],
+          "legal_joint_actions": 3,
+          "legal_goal_choices_per_robot": [
+            0,
+            0,
+            1
+          ],
+          "navigation_phases": [
+            "active",
+            "active",
+            "active"
+          ],
+          "mask_reasons": {
+            "joint_target_conflict_actions": [],
+            "joint_target_conflict_count": 0,
+            "per_robot": [
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              },
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              },
+              {
+                "candidate_missing_or_unreachable": [
+                  0,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7
+                ]
+              }
+            ]
+          },
+          "saved_advantage": -19.321340560913086,
+          "saved_return": -20.000076293945312,
+          "pre_selected_probability": 0.33400145173072815,
+          "post_selected_probability": 0.26916560530662537,
+          "pre_entropy": 1.0986114740371704
+        }
+      ],
+      "native_adapter_event_counts": {
+        "state_update": 113,
+        "initial_inputs_ready": 1,
+        "snapshot_requested": 12,
+        "task_start": 1,
+        "observation": 12,
+        "snapshot_completed": 12,
+        "action": 11,
+        "protocol": 24,
+        "delivery": 158,
+        "native_send": 6,
+        "safety_stop": 1,
+        "edge_goal_not_sent": 1,
+        "task_terminal_received": 1,
+        "task_terminal": 1,
+        "task_stopped": 1
+      },
+      "native_protocol_type_counts": {
+        "send_goal": 7,
+        "protocol_terminal": 7,
+        "cancel_goal": 5,
+        "cancel_response": 5
+      },
+      "masked_full_policy_tv": {
+        "n": 11,
+        "min": 0.0,
+        "max": 0.11754564940929413,
+        "mean": 0.06256083229726012,
+        "std_population": 0.03739671614526818
+      },
+      "masked_head_only_policy_tv": {
+        "n": 11,
+        "min": 0.0,
+        "max": 0.07642888277769089,
+        "mean": 0.0403335646472194,
+        "std_population": 0.024312250974022998
+      }
+    },
+    {
+      "worker": 2,
+      "epoch": "round0000_w2_e1_0fea3f95",
+      "native_evaluator": {
+        "success": true,
+        "termination_reason": "coverage_reached",
+        "failure_reason": "",
+        "control_failure": "",
+        "elapsed_sim_time_sec": 127.22,
+        "correct_free_coverage_ratio": 0.9504701908153017,
+        "map_quality_pass": true,
+        "robot_participation_pass": true,
+        "navigation_protocol_closed": true,
+        "navigation_stop_acknowledgment": {
+          "epoch": "round0000_w2_e1_0fea3f95",
+          "navigation_failure": false,
+          "pending_goal_count": 0,
+          "robot_names": [
+            "tb1",
+            "tb2",
+            "tb3"
+          ],
+          "start_sim_time_sec": 69.02,
+          "stop_sim_time_sec": 196.24
+        },
+        "collision_events": 0,
+        "collision_monitoring_active": true,
+        "collision_monitoring_fresh": true,
+        "contact_component_count_per_robot": 6,
+        "time_to_95_coverage_sec": 127.0,
+        "observed_accuracy": 0.9668586934762784,
+        "occupied_iou": 0.24546553808948005,
+        "false_free_ratio": 0.0018443997317236754
+      },
+      "native_closed_cleanup": {
+        "epoch": "round0000_w2_e1_0fea3f95",
+        "start_sim_time_sec": 69.02,
+        "stop_sim_time_sec": 196.24,
+        "pending_goal_count": 0,
+        "robot_names": [
+          "tb1",
+          "tb2",
+          "tb3"
+        ],
+        "navigation_failure": false
+      },
+      "supervisor_shutdown": {
+        "worker_returncode": 0,
+        "forced_shutdown": false,
+        "failed_sample": false,
+        "remaining_owned_processes": [],
+        "remaining_owned_zombies": []
+      },
+      "decisions": 128,
+      "actual_effective_seconds": 127.22,
+      "native_reward_sum": 18.222884853464798,
+      "saved_first_return": 18.222885131835938,
+      "max_mc_target_error_from_native_reward_suffix": 1.8354859072644558e-06,
+      "return_targets": {
+        "n": 128,
+        "min": 9.94926643371582,
+        "max": 18.222885131835938,
+        "mean": 10.635353296995163,
+        "std_population": 0.9882666311040404
+      },
+      "advantages": {
+        "n": 128,
+        "min": 10.68458080291748,
+        "max": 19.096118927001953,
+        "mean": 11.585857152938843,
+        "std_population": 0.9770582256172874
+      },
+      "single_choice_rows": 56,
+      "multi_choice_rows": 72,
+      "goal_available_rows": 67,
+      "multi_choice_without_goal_rows": 5,
+      "actual_joint_goal_choice_rows": 50,
+      "per_robot_opportunities": [
+        {
+          "robot": "tb1",
+          "goal_opportunity_rows": 26,
+          "goal_choice_rows": 21,
+          "keep_rows": 105,
+          "wait_rows": 2,
+          "first_goal_opportunity_time": 0.0,
+          "first_goal_choice_time": 0.0,
+          "native": {
+            "collision_duration_sec": 0.0,
+            "collision_events": 0,
+            "collision_message_count": 15386,
+            "end_x": 0.8667962806391659,
+            "end_y": 2.9252805733780365,
+            "nav_aborted": 0,
+            "nav_canceled": 20,
+            "nav_goal_count": 21,
+            "nav_succeeded": 1,
+            "path_length_m": 22.444382890371692,
+            "start_x": 0.002090680042827508,
+            "start_y": -0.4499961890818596,
+            "teleport_jump_count": 0,
+            "visited_cell_count": 257
+          }
+        },
+        {
+          "robot": "tb2",
+          "goal_opportunity_rows": 31,
+          "goal_choice_rows": 21,
+          "keep_rows": 101,
+          "wait_rows": 6,
+          "first_goal_opportunity_time": 0.0,
+          "first_goal_choice_time": 0.0,
+          "native": {
+            "collision_duration_sec": 0.0,
+            "collision_events": 0,
+            "collision_message_count": 15384,
+            "end_x": 2.4455806268907514,
+            "end_y": -3.5896170494385196,
+            "nav_aborted": 0,
+            "nav_canceled": 20,
+            "nav_goal_count": 21,
+            "nav_succeeded": 1,
+            "path_length_m": 22.571025096563183,
+            "start_x": 0.0020216079732833085,
+            "start_y": 0.4500033181829021,
+            "teleport_jump_count": 0,
+            "visited_cell_count": 255
+          }
+        },
+        {
+          "robot": "tb3",
+          "goal_opportunity_rows": 31,
+          "goal_choice_rows": 20,
+          "keep_rows": 98,
+          "wait_rows": 10,
+          "first_goal_opportunity_time": 0.0,
+          "first_goal_choice_time": 0.0,
+          "native": {
+            "collision_duration_sec": 0.0,
+            "collision_events": 0,
+            "collision_message_count": 15378,
+            "end_x": -4.3332812750382335,
+            "end_y": 0.7284680932603855,
+            "nav_aborted": 0,
+            "nav_canceled": 19,
+            "nav_goal_count": 20,
+            "nav_succeeded": 1,
+            "path_length_m": 22.17040398151202,
+            "start_x": 0.4519545115817051,
+            "start_y": 3.324759177140036e-06,
+            "teleport_jump_count": 0,
+            "visited_cell_count": 254
+          }
+        }
+      ],
+      "first_ten_seconds_actions": [
+        {
+          "rollout_index": 64,
+          "worker": 2,
+          "task_time_sec": 0.0,
+          "action": 14,
+          "choices": [
+            0,
+            1,
+            4
+          ],
+          "legal_joint_actions": 57,
+          "legal_goal_choices_per_robot": [
+            1,
+            2,
+            5
+          ],
+          "navigation_phases": [
+            "idle",
+            "idle",
+            "idle"
+          ],
+          "mask_reasons": {
+            "joint_target_conflict_actions": [
+              65,
+              83,
+              85,
+              93,
+              95,
+              813,
+              814,
+              863,
+              864,
+              865,
+              883,
+              884,
+              885,
+              893,
+              894,
+              895,
+              913,
+              914,
+              963,
+              964,
+              965,
+              983,
+              984,
+              985,
+              993,
+              994,
+              995
+            ],
+            "joint_target_conflict_count": 27,
+            "per_robot": [
+              {
+                "candidate_missing_or_unreachable": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7
+                ]
+              },
+              {
+                "candidate_missing_or_unreachable": [
+                  0,
+                  2,
+                  3,
+                  4,
+                  5,
+                  7
+                ]
+              },
+              {
+                "candidate_missing_or_unreachable": [
+                  0,
+                  1,
+                  6
+                ]
+              }
+            ]
+          },
+          "saved_advantage": 19.096118927001953,
+          "saved_return": 18.222885131835938,
+          "pre_selected_probability": 0.01753072626888752,
+          "post_selected_probability": 0.02136383019387722,
+          "pre_entropy": 4.043048858642578
+        },
+        {
+          "rollout_index": 65,
+          "worker": 2,
+          "task_time_sec": 1.0,
+          "action": 888,
+          "choices": [
+            8,
+            8,
+            8
+          ],
+          "legal_joint_actions": 1,
+          "legal_goal_choices_per_robot": [
+            0,
+            0,
+            0
+          ],
+          "navigation_phases": [
+            "active",
+            "active",
+            "active"
+          ],
+          "mask_reasons": {
+            "joint_target_conflict_actions": [],
+            "joint_target_conflict_count": 0,
+            "per_robot": [
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              },
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              },
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              }
+            ]
+          },
+          "saved_advantage": 17.843751907348633,
+          "saved_return": 17.123550415039062,
+          "pre_selected_probability": 1.0,
+          "post_selected_probability": 1.0,
+          "pre_entropy": -0.0
+        },
+        {
+          "rollout_index": 66,
+          "worker": 2,
+          "task_time_sec": 2.0,
+          "action": 888,
+          "choices": [
+            8,
+            8,
+            8
+          ],
+          "legal_joint_actions": 1,
+          "legal_goal_choices_per_robot": [
+            0,
+            0,
+            0
+          ],
+          "navigation_phases": [
+            "active",
+            "active",
+            "active"
+          ],
+          "mask_reasons": {
+            "joint_target_conflict_actions": [],
+            "joint_target_conflict_count": 0,
+            "per_robot": [
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              },
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              },
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              }
+            ]
+          },
+          "saved_advantage": 14.010631561279297,
+          "saved_return": 13.033942222595215,
+          "pre_selected_probability": 1.0,
+          "post_selected_probability": 1.0,
+          "pre_entropy": -0.0
+        },
+        {
+          "rollout_index": 67,
+          "worker": 2,
+          "task_time_sec": 3.0,
+          "action": 886,
+          "choices": [
+            8,
+            8,
+            6
+          ],
+          "legal_joint_actions": 5,
+          "legal_goal_choices_per_robot": [
+            0,
+            0,
+            3
+          ],
+          "navigation_phases": [
+            "active",
+            "active",
+            "idle"
+          ],
+          "mask_reasons": {
+            "joint_target_conflict_actions": [],
+            "joint_target_conflict_count": 0,
+            "per_robot": [
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              },
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              },
+              {
+                "candidate_missing_or_unreachable": [
+                  0,
+                  1,
+                  3,
+                  4,
+                  7
+                ]
+              }
+            ]
+          },
+          "saved_advantage": 12.944438934326172,
+          "saved_return": 11.878461837768555,
+          "pre_selected_probability": 0.20059633255004883,
+          "post_selected_probability": 0.24175725877285004,
+          "pre_entropy": 1.6094353199005127
+        },
+        {
+          "rollout_index": 68,
+          "worker": 2,
+          "task_time_sec": 4.0,
+          "action": 818,
+          "choices": [
+            8,
+            1,
+            8
+          ],
+          "legal_joint_actions": 4,
+          "legal_goal_choices_per_robot": [
+            0,
+            2,
+            0
+          ],
+          "navigation_phases": [
+            "active",
+            "idle",
+            "active"
+          ],
+          "mask_reasons": {
+            "joint_target_conflict_actions": [],
+            "joint_target_conflict_count": 0,
+            "per_robot": [
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              },
+              {
+                "candidate_missing_or_unreachable": [
+                  0,
+                  2,
+                  3,
+                  4,
+                  5,
+                  7
+                ]
+              },
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              }
+            ]
+          },
+          "saved_advantage": 12.805094718933105,
+          "saved_return": 11.675457954406738,
+          "pre_selected_probability": 0.2493862509727478,
+          "post_selected_probability": 0.32971906661987305,
+          "pre_entropy": 1.3862924575805664
+        },
+        {
+          "rollout_index": 69,
+          "worker": 2,
+          "task_time_sec": 5.0,
+          "action": 288,
+          "choices": [
+            2,
+            8,
+            8
+          ],
+          "legal_joint_actions": 7,
+          "legal_goal_choices_per_robot": [
+            5,
+            0,
+            0
+          ],
+          "navigation_phases": [
+            "idle",
+            "active",
+            "active"
+          ],
+          "mask_reasons": {
+            "joint_target_conflict_actions": [],
+            "joint_target_conflict_count": 0,
+            "per_robot": [
+              {
+                "candidate_missing_or_unreachable": [
+                  3,
+                  5,
+                  7
+                ]
+              },
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              },
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              }
+            ]
+          },
+          "saved_advantage": 12.561867713928223,
+          "saved_return": 11.513996124267578,
+          "pre_selected_probability": 0.14288723468780518,
+          "post_selected_probability": 0.17518970370292664,
+          "pre_entropy": 1.9459086656570435
+        },
+        {
+          "rollout_index": 70,
+          "worker": 2,
+          "task_time_sec": 6.0,
+          "action": 888,
+          "choices": [
+            8,
+            8,
+            8
+          ],
+          "legal_joint_actions": 1,
+          "legal_goal_choices_per_robot": [
+            0,
+            0,
+            0
+          ],
+          "navigation_phases": [
+            "active",
+            "active",
+            "active"
+          ],
+          "mask_reasons": {
+            "joint_target_conflict_actions": [],
+            "joint_target_conflict_count": 0,
+            "per_robot": [
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              },
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              },
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              }
+            ]
+          },
+          "saved_advantage": 12.383620262145996,
+          "saved_return": 11.439725875854492,
+          "pre_selected_probability": 1.0,
+          "post_selected_probability": 1.0,
+          "pre_entropy": -0.0
+        },
+        {
+          "rollout_index": 71,
+          "worker": 2,
+          "task_time_sec": 7.0,
+          "action": 888,
+          "choices": [
+            8,
+            8,
+            8
+          ],
+          "legal_joint_actions": 1,
+          "legal_goal_choices_per_robot": [
+            0,
+            0,
+            0
+          ],
+          "navigation_phases": [
+            "active",
+            "active",
+            "active"
+          ],
+          "mask_reasons": {
+            "joint_target_conflict_actions": [],
+            "joint_target_conflict_count": 0,
+            "per_robot": [
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              },
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              },
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              }
+            ]
+          },
+          "saved_advantage": 12.378813743591309,
+          "saved_return": 11.378921508789062,
+          "pre_selected_probability": 1.0,
+          "post_selected_probability": 1.0,
+          "pre_entropy": -0.0
+        },
+        {
+          "rollout_index": 72,
+          "worker": 2,
+          "task_time_sec": 8.0,
+          "action": 889,
+          "choices": [
+            8,
+            8,
+            9
+          ],
+          "legal_joint_actions": 2,
+          "legal_goal_choices_per_robot": [
+            0,
+            0,
+            0
+          ],
+          "navigation_phases": [
+            "active",
+            "active",
+            "active"
+          ],
+          "mask_reasons": {
+            "joint_target_conflict_actions": [],
+            "joint_target_conflict_count": 0,
+            "per_robot": [
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              },
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              },
+              {
+                "candidate_missing_or_unreachable": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7
+                ]
+              }
+            ]
+          },
+          "saved_advantage": 12.133842468261719,
+          "saved_return": 11.269956588745117,
+          "pre_selected_probability": 0.49946701526641846,
+          "post_selected_probability": 0.6207376718521118,
+          "pre_entropy": 0.6931467652320862
+        },
+        {
+          "rollout_index": 73,
+          "worker": 2,
+          "task_time_sec": 9.0,
+          "action": 889,
+          "choices": [
+            8,
+            8,
+            9
+          ],
+          "legal_joint_actions": 2,
+          "legal_goal_choices_per_robot": [
+            0,
+            0,
+            0
+          ],
+          "navigation_phases": [
+            "active",
+            "active",
+            "idle"
+          ],
+          "mask_reasons": {
+            "joint_target_conflict_actions": [],
+            "joint_target_conflict_count": 0,
+            "per_robot": [
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              },
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              },
+              {
+                "candidate_missing_or_unreachable": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7
+                ]
+              }
+            ]
+          },
+          "saved_advantage": 12.155774116516113,
+          "saved_return": 11.22261905670166,
+          "pre_selected_probability": 0.4994354248046875,
+          "post_selected_probability": 0.6183142066001892,
+          "pre_entropy": 0.6931464076042175
+        }
+      ],
+      "native_adapter_event_counts": {
+        "state_update": 1278,
+        "initial_inputs_ready": 1,
+        "snapshot_requested": 129,
+        "task_start": 1,
+        "observation": 129,
+        "snapshot_completed": 129,
+        "action": 127,
+        "protocol": 242,
+        "delivery": 2033,
+        "native_send": 62,
+        "action_rejected": 1,
+        "task_stopped": 1,
+        "task_terminal_received": 1,
+        "task_terminal": 1
+      },
+      "native_protocol_type_counts": {
+        "send_goal": 62,
+        "protocol_terminal": 62,
+        "cancel_goal": 59,
+        "cancel_response": 59
+      },
+      "masked_full_policy_tv": {
+        "n": 128,
+        "min": 0.0,
+        "max": 0.13288502395153046,
+        "mean": 0.044252231396967545,
+        "std_population": 0.043752070298156934
+      },
+      "masked_head_only_policy_tv": {
+        "n": 128,
+        "min": 0.0,
+        "max": 0.08981651812791824,
+        "mean": 0.02957924988004379,
+        "std_population": 0.02926826919099122
+      }
+    },
+    {
+      "worker": 3,
+      "epoch": "round0000_w3_e1_9f083252",
+      "native_evaluator": {
+        "success": false,
+        "termination_reason": "navigation_failure",
+        "failure_reason": "navigation_failure",
+        "control_failure": "{\"component\": \"peer_obstacles\", \"reason\": \"peer_body_envelopes_overlap\"}",
+        "elapsed_sim_time_sec": 59.38,
+        "correct_free_coverage_ratio": 0.9060303113302292,
+        "map_quality_pass": true,
+        "robot_participation_pass": true,
+        "navigation_protocol_closed": false,
+        "navigation_stop_acknowledgment": null,
+        "collision_events": 0,
+        "collision_monitoring_active": true,
+        "collision_monitoring_fresh": true,
+        "contact_component_count_per_robot": 6,
+        "time_to_95_coverage_sec": null,
+        "observed_accuracy": 0.9638281487013138,
+        "occupied_iou": 0.21410478602852953,
+        "false_free_ratio": 0.0021797451374916165
+      },
+      "native_closed_cleanup": {
+        "epoch": "round0000_w3_e1_9f083252",
+        "start_sim_time_sec": 71.72,
+        "stop_sim_time_sec": 131.3,
+        "pending_goal_count": 0,
+        "robot_names": [
+          "tb1",
+          "tb2",
+          "tb3"
+        ],
+        "navigation_failure": false
+      },
+      "supervisor_shutdown": {
+        "worker_returncode": 0,
+        "forced_shutdown": false,
+        "failed_sample": false,
+        "remaining_owned_processes": [],
+        "remaining_owned_zombies": []
+      },
+      "decisions": 60,
+      "actual_effective_seconds": 59.38,
+      "native_reward_sum": -11.742499205697076,
+      "saved_first_return": -11.742498397827148,
+      "max_mc_target_error_from_native_reward_suffix": 2.6227435725445503e-06,
+      "return_targets": {
+        "n": 60,
+        "min": -20.13040542602539,
+        "max": -11.739164352416992,
+        "mean": -19.247132333119712,
+        "std_population": 1.6867071680973205
+      },
+      "advantages": {
+        "n": 60,
+        "min": -19.267669677734375,
+        "max": -10.917097091674805,
+        "mean": -18.30332544644674,
+        "std_population": 1.6586491504879488
+      },
+      "single_choice_rows": 20,
+      "multi_choice_rows": 40,
+      "goal_available_rows": 35,
+      "multi_choice_without_goal_rows": 5,
+      "actual_joint_goal_choice_rows": 25,
+      "per_robot_opportunities": [
+        {
+          "robot": "tb1",
+          "goal_opportunity_rows": 18,
+          "goal_choice_rows": 10,
+          "keep_rows": 46,
+          "wait_rows": 4,
+          "first_goal_opportunity_time": 0.0,
+          "first_goal_choice_time": 2.0,
+          "native": {
+            "collision_duration_sec": 0.0,
+            "collision_events": 0,
+            "collision_message_count": 7341,
+            "end_x": -1.347444405020141,
+            "end_y": -1.755322966852406,
+            "nav_aborted": 0,
+            "nav_canceled": 8,
+            "nav_goal_count": 10,
+            "nav_succeeded": 1,
+            "path_length_m": 9.931778771099784,
+            "start_x": 0.0021701257716610625,
+            "start_y": -0.4499958783822313,
+            "teleport_jump_count": 0,
+            "visited_cell_count": 113
+          }
+        },
+        {
+          "robot": "tb2",
+          "goal_opportunity_rows": 12,
+          "goal_choice_rows": 11,
+          "keep_rows": 49,
+          "wait_rows": 0,
+          "first_goal_opportunity_time": 0.0,
+          "first_goal_choice_time": 0.0,
+          "native": {
+            "collision_duration_sec": 0.0,
+            "collision_events": 0,
+            "collision_message_count": 7338,
+            "end_x": -0.621257823169266,
+            "end_y": -0.08767661274796475,
+            "nav_aborted": 0,
+            "nav_canceled": 9,
+            "nav_goal_count": 11,
+            "nav_succeeded": 1,
+            "path_length_m": 12.00818453520795,
+            "start_x": 0.002100770100051721,
+            "start_y": 0.45000391927232275,
+            "teleport_jump_count": 0,
+            "visited_cell_count": 145
+          }
+        },
+        {
+          "robot": "tb3",
+          "goal_opportunity_rows": 18,
+          "goal_choice_rows": 8,
+          "keep_rows": 47,
+          "wait_rows": 5,
+          "first_goal_opportunity_time": 0.0,
+          "first_goal_choice_time": 0.0,
+          "native": {
+            "collision_duration_sec": 0.0,
+            "collision_events": 0,
+            "collision_message_count": 7344,
+            "end_x": -0.7117425846187334,
+            "end_y": -0.550212492307921,
+            "nav_aborted": 0,
+            "nav_canceled": 6,
+            "nav_goal_count": 8,
+            "nav_succeeded": 1,
+            "path_length_m": 8.721509023709652,
+            "start_x": 0.45203561222302735,
+            "start_y": 3.63692949614083e-06,
+            "teleport_jump_count": 0,
+            "visited_cell_count": 103
+          }
+        }
+      ],
+      "first_ten_seconds_actions": [
+        {
+          "rollout_index": 192,
+          "worker": 3,
+          "task_time_sec": 0.0,
+          "action": 916,
+          "choices": [
+            9,
+            1,
+            6
+          ],
+          "legal_joint_actions": 69,
+          "legal_goal_choices_per_robot": [
+            2,
+            1,
+            5
+          ],
+          "navigation_phases": [
+            "idle",
+            "idle",
+            "idle"
+          ],
+          "mask_reasons": {
+            "joint_target_conflict_actions": [
+              513,
+              583,
+              593,
+              813,
+              817,
+              883,
+              887,
+              893,
+              897,
+              913,
+              917,
+              983,
+              987,
+              993,
+              997
+            ],
+            "joint_target_conflict_count": 15,
+            "per_robot": [
+              {
+                "candidate_missing_or_unreachable": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  6,
+                  7
+                ]
+              },
+              {
+                "candidate_missing_or_unreachable": [
+                  0,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7
+                ]
+              },
+              {
+                "candidate_missing_or_unreachable": [
+                  0,
+                  1,
+                  5
+                ]
+              }
+            ]
+          },
+          "saved_advantage": -10.917097091674805,
+          "saved_return": -11.742498397827148,
+          "pre_selected_probability": 0.014483010396361351,
+          "post_selected_probability": 0.011592979542911053,
+          "pre_entropy": 4.234104156494141
+        },
+        {
+          "rollout_index": 193,
+          "worker": 3,
+          "task_time_sec": 1.0,
+          "action": 988,
+          "choices": [
+            9,
+            8,
+            8
+          ],
+          "legal_joint_actions": 5,
+          "legal_goal_choices_per_robot": [
+            3,
+            0,
+            0
+          ],
+          "navigation_phases": [
+            "idle",
+            "active",
+            "active"
+          ],
+          "mask_reasons": {
+            "joint_target_conflict_actions": [],
+            "joint_target_conflict_count": 0,
+            "per_robot": [
+              {
+                "candidate_missing_or_unreachable": [
+                  1,
+                  2,
+                  3,
+                  5,
+                  6
+                ]
+              },
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              },
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              }
+            ]
+          },
+          "saved_advantage": -10.952740669250488,
+          "saved_return": -11.739164352416992,
+          "pre_selected_probability": 0.1997963935136795,
+          "post_selected_probability": 0.2082248032093048,
+          "pre_entropy": 1.6094361543655396
+        },
+        {
+          "rollout_index": 194,
+          "worker": 3,
+          "task_time_sec": 2.0,
+          "action": 189,
+          "choices": [
+            1,
+            8,
+            9
+          ],
+          "legal_joint_actions": 8,
+          "legal_goal_choices_per_robot": [
+            2,
+            0,
+            0
+          ],
+          "navigation_phases": [
+            "idle",
+            "active",
+            "idle"
+          ],
+          "mask_reasons": {
+            "joint_target_conflict_actions": [],
+            "joint_target_conflict_count": 0,
+            "per_robot": [
+              {
+                "candidate_missing_or_unreachable": [
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7
+                ]
+              },
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              },
+              {
+                "candidate_missing_or_unreachable": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7
+                ]
+              }
+            ]
+          },
+          "saved_advantage": -14.007158279418945,
+          "saved_return": -14.790702819824219,
+          "pre_selected_probability": 0.12499723583459854,
+          "post_selected_probability": 0.10034888982772827,
+          "pre_entropy": 2.079440116882324
+        },
+        {
+          "rollout_index": 195,
+          "worker": 3,
+          "task_time_sec": 3.0,
+          "action": 888,
+          "choices": [
+            8,
+            8,
+            8
+          ],
+          "legal_joint_actions": 2,
+          "legal_goal_choices_per_robot": [
+            0,
+            0,
+            0
+          ],
+          "navigation_phases": [
+            "active",
+            "active",
+            "idle"
+          ],
+          "mask_reasons": {
+            "joint_target_conflict_actions": [],
+            "joint_target_conflict_count": 0,
+            "per_robot": [
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              },
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              },
+              {
+                "candidate_missing_or_unreachable": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7
+                ]
+              }
+            ]
+          },
+          "saved_advantage": -15.866714477539062,
+          "saved_return": -16.917835235595703,
+          "pre_selected_probability": 0.5003361701965332,
+          "post_selected_probability": 0.3807357847690582,
+          "pre_entropy": 0.6931471824645996
+        },
+        {
+          "rollout_index": 196,
+          "worker": 3,
+          "task_time_sec": 4.0,
+          "action": 829,
+          "choices": [
+            8,
+            2,
+            9
+          ],
+          "legal_joint_actions": 20,
+          "legal_goal_choices_per_robot": [
+            0,
+            8,
+            0
+          ],
+          "navigation_phases": [
+            "active",
+            "idle",
+            "idle"
+          ],
+          "mask_reasons": {
+            "joint_target_conflict_actions": [],
+            "joint_target_conflict_count": 0,
+            "per_robot": [
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              },
+              {},
+              {
+                "candidate_missing_or_unreachable": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7
+                ]
+              }
+            ]
+          },
+          "saved_advantage": -16.42740821838379,
+          "saved_return": -17.46001625061035,
+          "pre_selected_probability": 0.050157129764556885,
+          "post_selected_probability": 0.03744777664542198,
+          "pre_entropy": 2.9957282543182373
+        },
+        {
+          "rollout_index": 197,
+          "worker": 3,
+          "task_time_sec": 5.0,
+          "action": 889,
+          "choices": [
+            8,
+            8,
+            9
+          ],
+          "legal_joint_actions": 2,
+          "legal_goal_choices_per_robot": [
+            0,
+            0,
+            0
+          ],
+          "navigation_phases": [
+            "active",
+            "active",
+            "idle"
+          ],
+          "mask_reasons": {
+            "joint_target_conflict_actions": [],
+            "joint_target_conflict_count": 0,
+            "per_robot": [
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              },
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              },
+              {
+                "candidate_missing_or_unreachable": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7
+                ]
+              }
+            ]
+          },
+          "saved_advantage": -16.912336349487305,
+          "saved_return": -17.83055305480957,
+          "pre_selected_probability": 0.4996238946914673,
+          "post_selected_probability": 0.6202979683876038,
+          "pre_entropy": 0.693146824836731
+        },
+        {
+          "rollout_index": 198,
+          "worker": 3,
+          "task_time_sec": 6.0,
+          "action": 388,
+          "choices": [
+            3,
+            8,
+            8
+          ],
+          "legal_joint_actions": 12,
+          "legal_goal_choices_per_robot": [
+            4,
+            0,
+            0
+          ],
+          "navigation_phases": [
+            "idle",
+            "active",
+            "idle"
+          ],
+          "mask_reasons": {
+            "joint_target_conflict_actions": [],
+            "joint_target_conflict_count": 0,
+            "per_robot": [
+              {
+                "candidate_missing_or_unreachable": [
+                  1,
+                  2,
+                  4,
+                  7
+                ]
+              },
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              },
+              {
+                "candidate_missing_or_unreachable": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7
+                ]
+              }
+            ]
+          },
+          "saved_advantage": -17.3507137298584,
+          "saved_return": -18.188764572143555,
+          "pre_selected_probability": 0.08349360525608063,
+          "post_selected_probability": 0.06419514119625092,
+          "pre_entropy": 2.484905242919922
+        },
+        {
+          "rollout_index": 199,
+          "worker": 3,
+          "task_time_sec": 7.0,
+          "action": 888,
+          "choices": [
+            8,
+            8,
+            8
+          ],
+          "legal_joint_actions": 2,
+          "legal_goal_choices_per_robot": [
+            0,
+            0,
+            0
+          ],
+          "navigation_phases": [
+            "active",
+            "active",
+            "idle"
+          ],
+          "mask_reasons": {
+            "joint_target_conflict_actions": [],
+            "joint_target_conflict_count": 0,
+            "per_robot": [
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              },
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              },
+              {
+                "candidate_missing_or_unreachable": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7
+                ]
+              }
+            ]
+          },
+          "saved_advantage": -17.447938919067383,
+          "saved_return": -18.264633178710938,
+          "pre_selected_probability": 0.5005669593811035,
+          "post_selected_probability": 0.38249704241752625,
+          "pre_entropy": 0.6931463479995728
+        },
+        {
+          "rollout_index": 200,
+          "worker": 3,
+          "task_time_sec": 8.0,
+          "action": 888,
+          "choices": [
+            8,
+            8,
+            8
+          ],
+          "legal_joint_actions": 2,
+          "legal_goal_choices_per_robot": [
+            0,
+            0,
+            0
+          ],
+          "navigation_phases": [
+            "active",
+            "active",
+            "idle"
+          ],
+          "mask_reasons": {
+            "joint_target_conflict_actions": [],
+            "joint_target_conflict_count": 0,
+            "per_robot": [
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              },
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              },
+              {
+                "candidate_missing_or_unreachable": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7
+                ]
+              }
+            ]
+          },
+          "saved_advantage": -17.383480072021484,
+          "saved_return": -18.374507904052734,
+          "pre_selected_probability": 0.5004651546478271,
+          "post_selected_probability": 0.3798144459724426,
+          "pre_entropy": 0.693146824836731
+        },
+        {
+          "rollout_index": 201,
+          "worker": 3,
+          "task_time_sec": 9.0,
+          "action": 858,
+          "choices": [
+            8,
+            5,
+            8
+          ],
+          "legal_joint_actions": 20,
+          "legal_goal_choices_per_robot": [
+            0,
+            5,
+            1
+          ],
+          "navigation_phases": [
+            "active",
+            "active",
+            "idle"
+          ],
+          "mask_reasons": {
+            "joint_target_conflict_actions": [
+              811
+            ],
+            "joint_target_conflict_count": 1,
+            "per_robot": [
+              {
+                "minimum_commitment": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  9
+                ]
+              },
+              {
+                "candidate_missing_or_unreachable": [
+                  2,
+                  4,
+                  6
+                ]
+              },
+              {
+                "candidate_missing_or_unreachable": [
+                  0,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7
+                ]
+              }
+            ]
+          },
+          "saved_advantage": -17.505542755126953,
+          "saved_return": -18.488039016723633,
+          "pre_selected_probability": 0.04990993067622185,
+          "post_selected_probability": 0.0484892837703228,
+          "pre_entropy": 2.995729684829712
+        }
+      ],
+      "native_adapter_event_counts": {
+        "state_update": 613,
+        "initial_inputs_ready": 1,
+        "snapshot_requested": 61,
+        "task_start": 1,
+        "observation": 61,
+        "snapshot_completed": 61,
+        "action": 60,
+        "protocol": 110,
+        "delivery": 889,
+        "native_send": 29,
+        "safety_stop": 1,
+        "task_terminal_received": 1,
+        "task_terminal": 1,
+        "task_stopped": 1
+      },
+      "native_protocol_type_counts": {
+        "send_goal": 29,
+        "protocol_terminal": 29,
+        "cancel_goal": 26,
+        "cancel_response": 26
+      },
+      "masked_full_policy_tv": {
+        "n": 60,
+        "min": 0.0,
+        "max": 0.12067408859729767,
+        "mean": 0.053006732774277525,
+        "std_population": 0.04189657691050397
+      },
+      "masked_head_only_policy_tv": {
+        "n": 60,
+        "min": 0.0,
+        "max": 0.08059115707874298,
+        "mean": 0.034117335174232724,
+        "std_population": 0.02704503890217794
+      }
+    }
+  ],
+  "limitations": [
+    "One initial-policy success is not trained-policy reliability or a generalization/evaluation result.",
+    "The post-round policy has not been evaluated by this offline review.",
+    "Failure evaluator navigation closure remains frozen false; later clean process/goal cleanup does not turn those episodes into successes.",
+    "Offline reconstructed gradients are not measured GPU gradient norms."
+  ]
+}

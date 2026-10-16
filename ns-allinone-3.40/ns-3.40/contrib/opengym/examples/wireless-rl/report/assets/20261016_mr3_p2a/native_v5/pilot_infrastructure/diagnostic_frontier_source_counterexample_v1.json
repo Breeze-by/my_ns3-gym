@@ -1,0 +1,107 @@
+{
+  "actual_w0_cause_proven": false,
+  "actual_w0_caveat": "Reported actual w0/tb2 reachable_target_cells=0 is an upstream fused/own safe-target intersection issue; this fixture has33 targets and isolates the later frontier-only restriction.",
+  "candidate_rule": {
+    "frontier_staging_max_m": 1.0,
+    "goal_xy_tolerance_m": 0.1,
+    "new_goal_idle_separation_m": 0.6799999999999999,
+    "new_goal_pair_separation_m": 0.78,
+    "path_body_clearance_m": 0.29,
+    "target_clearance_m": 0.39,
+    "version": "mr3-per-robot-geometric-staging-v3"
+  },
+  "created_utc": "2026-10-16T05:42:26.459308+00:00",
+  "exact_command": "rtk proxy /usr/bin/python3 -B /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v5_pilot/diagnostic_frontier_source_counterexample_v1.py --workspace /home/zhuyulab/ns3-workspace --freeze de7a805af9cd9bc7d1b24e60559ccc4d3054e4c3 --output /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v5_pilot/diagnostic_frontier_source_counterexample_v1.json",
+  "fixed_robot_xy": {
+    "tb1": [
+      -3.05,
+      0.05
+    ],
+    "tb2": [
+      0.05,
+      0.05
+    ],
+    "tb3": [
+      3.05,
+      0.05
+    ]
+  },
+  "gpu_calls": 0,
+  "input_origin": "Fully synthetic occupancy and three fixed synthetic delivered-state/map entries; no actual or truth-derived input.",
+  "own_frontier_staging_example": {
+    "actual_goal_submitted": false,
+    "distance_to_own_frontier_m": 0.5,
+    "fused_clearance_m": 4.329289321881346,
+    "joint_KEEP_GOAL_KEEP_legal": true,
+    "joint_action": 808,
+    "known_free_own_line": true,
+    "own_clearance_m": 0.5292893218813454,
+    "own_frontier_grid_rc": [
+      51,
+      56
+    ],
+    "own_path_m": 0.14142135623731053,
+    "target_grid_rc": [
+      51,
+      51
+    ],
+    "target_xy": [
+      0.15000000000000036,
+      0.15000000000000036
+    ]
+  },
+  "passed": true,
+  "per_robot_reachable_pool_counts": [
+    324,
+    0,
+    324
+  ],
+  "per_robot_reachable_selected_counts": [
+    8,
+    0,
+    8
+  ],
+  "per_robot_reachable_target_cells": [
+    6722,
+    33,
+    6721
+  ],
+  "production_behavior_changed": false,
+  "received_maps_unchanged": true,
+  "robot_count": 3,
+  "robot_seed_traversable": [
+    true,
+    true,
+    true
+  ],
+  "schema": "mr3-p2a-synthetic-frontier-source-counterexample-v1",
+  "scope": "Synthetic pure-CPU source counterexample, not native evidence or a production repair.",
+  "script_sha256": "8c18e87de528edbfa6402443f9b2adf53f2f336f7707517c8ea0bda0ddce50c1",
+  "simulator_or_native_jobs": 0,
+  "source_freeze": "de7a805af9cd9bc7d1b24e60559ccc4d3054e4c3",
+  "source_proof": {
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_episode.py": {
+      "current_sha256": "9145d2ad23789b252e32f0afdfe18cf2eeec8e2c7e9ca7e89127a532288e411b",
+      "freeze_sha256": "9145d2ad23789b252e32f0afdfe18cf2eeec8e2c7e9ca7e89127a532288e411b",
+      "freeze_worktree_equal": true
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py": {
+      "current_sha256": "71ea159b57caf93471ded502aaab36ec4ec3b14893a4c40b511b6f4839fd4d63",
+      "freeze_sha256": "71ea159b57caf93471ded502aaab36ec4ec3b14893a4c40b511b6f4839fd4d63",
+      "freeze_worktree_equal": true
+    }
+  },
+  "tb2_legal_GOAL_count": 0,
+  "tb2_seed_clearance_m": 0.6292893218813443,
+  "tb2_staging_rejections": {
+    "alternate_staging_searches": 0,
+    "beyond_staging_limit": 356,
+    "no_reachable_safe_cells": 0,
+    "occluded_staging_line": 0
+  },
+  "versions": {
+    "numpy": "1.21.5",
+    "python": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "scipy": "1.8.0"
+  }
+}

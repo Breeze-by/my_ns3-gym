@@ -136,7 +136,7 @@ class VersionedNativeGateTests(unittest.TestCase):
         value["candidate_rule"] = copy.deepcopy(self.candidates.CANDIDATE_RULE_V3)
         return self.seal(value)
 
-    def test_only_observation_runtime_pin_changes_and_original_helpers_stay_exact(self):
+    def test_explicit_runtime_extensions_keep_original_helpers_exact(self):
         self.assertEqual(self.base.PINNED_RUNTIME[audit_ppo.OBSERVATION_SOURCE],
                          audit_ppo.OBSERVATION_V3_SHA256)
         self.assertEqual(self.base.PINNED_RUNTIME[audit_ppo.REWARD_SOURCE],
@@ -144,10 +144,10 @@ class VersionedNativeGateTests(unittest.TestCase):
         self.assertEqual(self.proof[audit_ppo.REWARD_SOURCE]["normative_source"],
                          audit_ppo.TASK_BASE_FREEZE + ":" + audit_ppo.REWARD_SOURCE)
         for path, digest in self.original_runtime_pins.items():
-            if path != audit_ppo.OBSERVATION_SOURCE:
+            if path != audit_ppo.OBSERVATION_SOURCE and path not in audit_ppo.EVALUATOR_PHASE_PINS:
                 self.assertEqual(self.base.PINNED_RUNTIME[path], digest)
         for function in (self.auditor.audit_physics, self.auditor.audit_contacts,
-                         self.auditor.audit_protocol):
+                         self.auditor.audit_protocol.original):
             self.assertTrue(function.__code__.co_filename.startswith(audit_ppo.TASK_BASE_FREEZE))
         self.assertEqual(audit_ppo.sha(self.directory / "audit_mr3_env_contact_phase_v3.py"),
                          audit_ppo.PHASE_SHA256)
@@ -156,6 +156,9 @@ class VersionedNativeGateTests(unittest.TestCase):
         for path, digest in audit_ppo.EXECUTION_CONFIG_PINS.items():
             self.assertEqual(self.proof[path]["sha256"], digest)
             self.assertEqual(self.proof[path]["worktree_sha256"], digest)
+        for path, digest in audit_ppo.EVALUATOR_PHASE_PINS.items():
+            self.assertEqual(self.base.PINNED_RUNTIME[path], digest)
+            self.assertEqual(self.proof[path]["sha256"], digest)
 
     def test_legacy_and_exact_v3_validate_without_changing_saved_snapshot(self):
         for snapshot in (self.legacy_snapshot(), self.versioned_snapshot()):

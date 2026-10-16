@@ -3567,3 +3567,83 @@ v5冻结前CPU/静态回执`report/assets/20261016_mr3_p2a/prefreeze_checks_v5.j
 ```bash
 rtk proxy env PYTHONNOUSERSITE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -m unittest discover -s mr3_learning/tests -q
 ```
+
+### 2026-10-16：MR3-P2A v5原生学习、3次开发任务成功记录与自动相位基础设施停止
+
+原v5计划与freeze`de7a805af9cd9bc7d1b24e60559ccc4d3054e4c3`保持，cwd wireless-rl、conda ns3gym、PYTHONNOUSERSITE=1。最小链和fresh pilot精确命令：
+
+```bash
+rtk proxy env PYTHONNOUSERSITE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -m mr3_learning.ppo --mode train --workers 1 --schedule open:101 --decisions 16 --episode-steps 16 --wall-seconds 900 --seed 41 --base-domain 160 --base-port 12301 --run-id mr3_p2a_v5_minimal
+rtk proxy env PYTHONNOUSERSITE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -m mr3_learning.ppo --mode train --workers 4 --schedule open:101 --decisions 3464 --episode-steps 300 --wall-seconds 11500 --seed 41 --base-domain 164 --base-port 12311 --run-id mr3_p2a_v5_pilot
+```
+
+minimum16原生/返回决策、16有效/物理秒、4次GPUoptimizer.step、286.51577762141824墙秒，completed=true/decision_budget、cleanup_errors=[]、audit_v5.json完整native/scalar/pre-update-policy审计PASS/errors=[]。initial checkpoint SHA`d0eac59490f296b34dc4487824a7d73ee6f51311337bb1d704158e2b518dc2d1`，final SHA`a647c11c1a0debdd09580fdf2a85af3c83672cb3f18c0fee494072638bd2ec3d`。这是工程链，不加载进fresh pilot。
+
+pilot metadata UTC开始05:03:00.188464，单训练seed41、四worker每个三台、全部open101固定world/起姿，gamma=lambda=1、真实dt与原reward/任务安全门禁。三个完成round为252/250/295决策，共797保存学习样本、48次实际GPUoptimizer.step/12epochs；初始checkpoint SHA`e85b7a3e994546c83c086d73618b865709887903a43f82af50158fcd4020c9ae`。完整16尝试原生876、collector875，870.12有效/870.20物理秒，全墙5212.525802815799。797不是全部采样成本，最后round不更新，也不伪补未返回的原生回执。
+
+完整原生任务报告：round0为w0:53决策/52.18s peer失败，w1:11/10.20s peer失败，w2:128/127.22s success覆盖.9504701908153017，w3:60/59.38s peer失败。round1为w0:62/61.92s success覆盖.9564046379987218，w1:57/56.40s success覆盖.9586642928877933，w2:28/27.70s peer失败，w3:103/102.88s peer失败（覆盖.9612891445266137但参与false）。round2为w0:10/9.78s、w1:41/40.86s、w2:144/143.50s、w3:100/99.60s，均peer失败（w2覆盖.9576828266228431但质量false）。round3为w0:7/6.82s peer失败，w1/w2各24决策/24.0奖励秒、故障后外部关闭评价24.2s；w3:24原生决策/23.68奖励秒，原生peer终态同时触发采样相位基础设施错误。全部16报告0接触/监测新鲜；原peer终态navigation_closed=false不能由后续clean关闭覆盖。
+
+3次原生success均95%/质量/参与/导航闭合通过；首次来自初始策略，另两次使用16更新后的策略。所有已见open101、单训练seed，不得作为统计学习收益、可靠冻结策略、未见泛化或P2A验收。互斥尝试分类为3成功+10其他peer失败+2故障后放弃前缀+1基础设施无效采样（其原生报告也有peer失败）；原生结果计数3成功/11peer终态/2外部关闭是重叠维度，不能再加一项infra凑成17次。
+
+pilot自动停止于ValueError('terminal detection lag exceeded one 20ms quantum')，stop_reason=infrastructure_error、completed=false、cleanup_errors=[]；不是表现驱动SIGINT/用户取消。round3w3评价器冻结终态与worker检测差40ms，超过原20ms门禁；失败保持，不放宽门限。没有final.zip，仅初始及checkpoint_0000/0001/0002和各已闭合rollout；原final-only open401/402/403验证因条件未满足SKIPPED，不选最后checkpoint补测。原audit_v5_original.json完整FAIL保持，含未完成尝试/外部前缀、旧协议审计对未发送目标的闭合要求、后续mask绑定及真实相位失败/缺final等项；独立消费方/连锁错误诊断另列，不反向将原run改PASS。
+
+规范原件入口为report/assets/20261016_mr3_p2a/native_v5/minimal和native_v5/pilot_infrastructure，canonicalmanifest/字节核查由实际打包回执绑定。原始根ROS log/mr3_ppo/mr3_p2a_v5_minimal及mr3_p2a_v5_pilot完整保留。新v6声明之前不覆盖v5计划、错误、失败原件或审计helper。
+
+v5期间root明确授权一次只读ROS raw-map observer，domain167、预算15墙秒，实际14.580348508898169秒；脚本仅订阅地图/metadata/观测，无应用publisher/action/service/native控制调用，wall已包含pilot不得再加。脚本metadata记录下列实际argv（cwd Gitroot，系统Humble Python，继承已声明loopback UDP环境）：
+
+```bash
+/usr/bin/python3 /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v5_pilot/raw_map_observer_v1.py --episode-directory /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v5_pilot/native/round0002/worker3/episode001_open_101 --domain-id 167 --wall-seconds 15 --output-directory /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v5_pilot/raw_map_observer_round0002_w3_v1
+```
+
+后续纯CPU精确重放命令（非再次observer运行）：
+
+```bash
+rtk proxy env PYTHONNOUSERSITE=1 /usr/bin/python3 /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v5_pilot/raw_map_forensics_round0002_w3_v1.py
+```
+
+raw_map_forensics_round0002_w3_v1.json SHA`e37893172139a6bb03bd11cbc697a29cc7519586f62f1b4b60c73dc0b5264058`绑定actor81/mapversion121及全部对应收到的原图，原merge_maps重现hub/三nav图、build_snapshot重现actor。tb1可达2安全目标但离融合前沿>3.26m、离自身前沿<.411m；原nav/fused起点100由tb2[90,118]100及tb3[90,119]100贡献，自身相交格0。仅靠本机前沿不能使原navigation起点安全；物理占据对象未识别，不宣称已证明机体过滤bug，也不改地图/候选或放宽门禁。独立v5round0w0tb2诊断与纯CPU合成前沿反例分开：后者33合法可达目标却pool0/356前沿距>1m，仅证明一般源码机制，明确不等于实际w0病因。合成反例精确执行（cwd/tmp）为：
+
+```bash
+rtk proxy /usr/bin/python3 -B /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v5_pilot/diagnostic_frontier_source_counterexample_v1.py --workspace /home/zhuyulab/ns3-workspace --freeze de7a805af9cd9bc7d1b24e60559ccc4d3054e4c3 --output /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v5_pilot/diagnostic_frontier_source_counterexample_v1.json
+```
+
+脚本SHA`8c18e87de528edbfa6402443f9b2adf53f2f336f7707517c8ea0bda0ddce50c1`，JSON SHA`8559ff7b1d5b09c2dd9eb4030901fbad26607dcc1b6c15d5e5b7871d671c7c50`。这些只读CPU诊断没有native/GPU调用；observer v2仅准备/预检，未实际运行。旧未发送目标审计原型v1、其复核失败和v2有限CPU证明均保留，不称作de7a生产源码或整run审计通过。
+
+v6前瞻predeclared_plan_v6.json要求同一新干净提交推送freeze，实际SHA只由metadata绑定。拟在每个20物理tick暂停处增加评价器同SingleThreadedExecutor的精确clock/冻结终态ACK，取得匹配相位才推进下一量子；不放宽20ms guard/任务接触门禁，不改真实dt/奖励/actor/候选/地图/SLAM/Nav2/gamma=lambda1。这是评价消费顺序证据，不是所有producer/DDS排水或P3跨系统时钟闭环。先1worker open101两episode、4steps terminal-probe benchmark（domain156/port12291）通过原native/scalar及phaseACK审计；再fresh16决策/16步截断/900墙秒minimum全审计PASS；之后fresh4worker open101学习seed41 pilot2588决策/6300墙秒，普通300步上限，quota/墙时尾段明确一次bootstrap。仅pilot无infra且有finitefinal.zip才按原900决策/9000墙秒、open401/402/403确定性0更新验证，否则SKIP，不换早期checkpoint。v6没有额外observer计划，尚未执行。
+
+原4096/14400 pilot扣除v2实际390/1752.9574942300096、v4实际242/1051.0549356047995、v5实际876/5212.525802815799，余2588决策/6383.461767349392墙秒；保守选6300，不扩预算，probe/各版minimum与固定validation单列，在途/原生关闭/已开始round末update实耗照原声明另记。所有open仍固定world/起姿，仅Gazebo stochasticseed变化，不作为姿态/布局或多训练seed泛化。P2A继续进行中，不宣称通过，不进入P2B/gateway。
+
+
+v5 canonical打包/闭合/原审计连锁复核补充：`native_v5/minimal/manifest.json` SHA`cd8bcd52182adfc606fa4c1b4d6dd1028693619f3acf8969b3bcb3c1b491f869`，27文件raw20416727/selected12831817bytes；`native_v5/pilot_infrastructure/manifest.json` SHA`c1b3cd6c46d66d8af10519378eb85b35d7165f01818eb4f26ac7142cc092ea09`，303文件raw114640113/selected38191508bytes，包含原observer gzip-only地图。`selected_byte_integrity_v5.json`330/330核对所选encoding/SHA/字节及解码raw SHA/字节PASS。原`audit_v5_original.json` SHA`4ea0248d180f1c6e063d03a17819264a445d801d04faea99519c173c18ecd588`原9项FAIL保留。
+
+`closed_run_snapshot_v5_v1.json`独立CPU核验252/250/295行rollout有限、原checkpoint的Adam步16/32/48；round3无保存rollout，79原生行中78客户端收到，末条command24有效.68/物理.72秒、差40ms未进入优化。`v5_infrastructure_review_v1.json`原件/源码证明：冻结终态94.400，物理量子继续94.420/94.440，adapter记录收到终态94.420，snapshot94.440；worker当时仅等待自身clock、量子循环后才drain，缺评价器消费相位回执，而非quantum超20ms或浮点舍入。667组保存原生PID/start身份及pilot父进程无匹配、所有16attempts owned关闭为空，cleanup[]。
+
+`v5_original_audit_cascade_review_v1.json`独立CPU复现后续mask错误：旧audit在round0w1协议门禁失败后、native_decisions及rounds.append之前抛出，遗漏11行，用241行期望去比252行保存rollout，action_mask先被检查；裁剪后的第53行从w1错位到w2。四episode完整252行CPU collecting-policy/native张量/mask/action/reward/value/logprob/dt/GAE重放通过，最大logprob误差4.76837158203125e-7；这证明该mask报错为漏episode连锁，不能用来称实际mask损坏。原完整FAIL、w1协议要求、round3真实40ms错误/无终态actor前缀、无final/未完成run全部仍保留，复核scope不把整run改PASS。
+
+v6文档前置静态核对：6份活动文档101个本地链接、15个shell块bash -n、四阶段CLI参数/唯一run-id/配额、56条归档SHA/字节通过；v1–v5旧计划及ENV/TASK两个SHA绑定合同保持HEAD原字节，共享log仅追加。实际benchmark/PPO两个--help均exit0，未启动native/GPU；conda导入保留既有Gym兼容提示，不影响帮助退出。`git diff --check`通过。选择6300后原pilot合计计划墙时14316.538232650608<=14400，决策390+242+876+2588=4096；新相位源码的语义/CPU/lint/build检查及原生结果仍由root后续回执独立补充。
+
+
+v6源码工程检查首轮（最终callback原子性修复后仍须重跑，不冒充最终冻结检查）：canonical三包build PASS3.73秒，cwd ROS工作区，root提供的实际命令如下。ROS语义首次823/823通过29.14秒，发生在后续callback原子性修复前；初次结果原范围保留，最终计数/命令等待实际重跑。没有native/GPU运行。
+
+```bash
+rtk proxy bash --noprofile --norc -c 'source /opt/ros/humble/setup.bash; export PYTHONNOUSERSITE=1; /usr/bin/python3 /usr/bin/colcon build --symlink-install --packages-select slam_toolbox multi_robot_exploration multi_robot --allow-overriding slam_toolbox multi_robot_exploration multi_robot'
+```
+
+新增mr3_learning/audit_evaluator_phase.py独立重放physical receipts和评价器/worker phase回执，原20ms/contact/command/scalar/native W7门禁分别保留；重复request/publish/consume失败关闭，精确不变的stale ACK交付可以重复但不多消费/许可。物理推进墙时顺序来自精确worker源码加consume→permit→nextrequest trace，原Gazebo step RPC没有额外walltimestamp，不虚构此证据。scope仅冻结评价器终态串行消费，不声称all-producer drain或P3因果闭环。协议v2将按实际新freeze中adapter/protocol/transport/env-auditor四份精确SHA集成，不再只认de7a提交identity，仍保留originalW7可执行身份、原FAIL、严格detached重放和所有原件，不能称旧v5整run PASS。初始/最终检查分层回执为report/assets/20261016_mr3_p2a/prefreeze_checks_v6.json，当前最终字段明确pending，待root实测补全。
+
+
+v6最终callback原子性修复后的实测检查：ROS语义824/824 PASS30.12秒；conda CPU133/133 PASS10.685秒，含新协议23项与phase5项。首次823/29.14结果仍为中间源码历史，最终命令如下（ROS cwd R，conda cwd wireless-rl）：
+
+```bash
+rtk proxy bash --noprofile --norc -c 'source /opt/ros/humble/setup.bash
+source install/setup.bash
+PYTHONNOUSERSITE=1 /usr/bin/python3 -m pytest -q src/multi_robot_exploration/test --ignore=src/multi_robot_exploration/test/test_flake8.py --ignore=src/multi_robot_exploration/test/test_pep257.py --ignore=src/multi_robot_exploration/test/test_copyright.py'
+rtk proxy env PYTHONNOUSERSITE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -m unittest discover -s mr3_learning/tests -q
+```
+
+phase审计限定flake8首轮一处100字符超过99限制失败已修正，root三文件复查PASS；所有修改Python最终一起lint的结果仍待root实测，不先填写PASS。最终源码SHA：worker977d4e8215e193a2be8c207728adb3a39d48e26d35bb9089abe921c1d61053fd，task_evaluator c49e1ad05fdd4daaac5837dc1528fab3765c13bade4f7f3fcb195e2521e40e06，纯phase模块9c43ace376354edbdf496fe920d04a539ed47912fd0840f6d290c459450d69fa；本代理已只读核对当前字节一致。提交后完整source-proof数量及原生新结果另验，不臆填47等计数。上述均无native/GPU调用。
+
+
+v6最终限定lint补充：13份修改/新增Python的system flake8（max-line-length=99）最终全部PASS，路径由git diff --name-only与git ls-files --others --exclude-standard合并、排序去重、仅.py并排除report/assets证据源码。首次全13入口在test_audit_protocol.py:118/124/126报三处E128，原失败保留，随后仅修缩进，聚焦协议23项PASS.773秒，最终全13PASS；这与先前phase模块一处100>99失败及root3文件复查分开记录。最终13路径明列prefreeze_checks_v6.json，无新增native/GPU。root另核对11份活动Markdown154本地链接missing=[]。独立native/phase/protocol代码复核报告无blocker，canonicalreview回执由root另补，不把代码复核当成原生结果。
+
+冻结前最后补全离线source-proof列表，增加同freeze的`mr3_learning/ipc.py`与`benchmark.py`（包含terminal工程入口与资源采样）；未改运行行为。W目录执行`rtk proxy env PYTHONNOUSERSITE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -m unittest mr3_learning.tests.test_audit_ppo -q`：9项PASS/0.181秒。独立`phase_ack_source_review_v1.json`精确源码哈希全部与最终工作树相符；其复核不代替新冻结原生运行。

@@ -27,8 +27,13 @@ The v2 pilot diagnostic interruption retains 390 native decisions, zero updates 
 two peer-safety failures. The v4 16-decision native/reward/policy chain passed with
 four GPU updates; its pilot diagnostic stop retains another 242 native decisions,
 zero updates and one genuine peer-safety failure. V5 corrects the finite-horizon
-objective to gamma=lambda=1 while retaining external-truncation bootstrap,
-without 95% task credit; no validated robot policy or ROS/ns-3 gateway exists. P1C implements Gymnasium
+objective to gamma=lambda=1 while retaining external-truncation bootstrap.
+Its pilot retained 48 optimizer steps/797 saved samples before a genuine 40ms
+terminal-detection infrastructure failure; three strict successes remain
+descriptive sampling outcomes. No final checkpoint exists and final-only
+validation was skipped. V6 adds an evaluator exact-clock/terminal ACK at each
+20ms policy boundary, with fresh engineering and remaining-budget pilot work
+predeclared. There is no frozen-policy reliability or 95% P2A acceptance credit; no validated robot policy or ROS/ns-3 gateway exists. P1C implements Gymnasium
 tensors/IPC, full process rebuild, explicit stepping and isolated first-correct-cell rewards.
 W7 `cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a` has the complete eight-stage engineering matrix and independent audits,
 762 ROS semantic and 40 conda CPU checks. The unchanged `b328f84` GPU interface probe
