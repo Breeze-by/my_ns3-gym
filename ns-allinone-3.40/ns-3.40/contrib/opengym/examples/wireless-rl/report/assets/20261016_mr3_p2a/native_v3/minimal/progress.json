@@ -1,0 +1,87 @@
+{
+  "completed_decisions": 0,
+  "round": 0,
+  "active_episodes": [
+    {
+      "scene": "open",
+      "seed": 101,
+      "cap": 16,
+      "episode_index": 0,
+      "worker_id": 0,
+      "epoch": "round0000_w0_e1_0a472793",
+      "api_records": 16,
+      "decisions": 16,
+      "simulation_seconds": 16.0,
+      "reward_sum": 7.728069022185702,
+      "zero_terminal_events": 0,
+      "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v3_minimal/native/round0000/worker0/episode001_open_101",
+      "terminated": false,
+      "truncated": true,
+      "reason": "external_sampler_limit",
+      "final_diagnostics": {
+        "collision_events_delta": 0,
+        "current_correct_free_cells": 36326,
+        "delta_sim_time": 1.0,
+        "effective_step_end": 98.42,
+        "elapsed_sim_time": 16.0,
+        "epoch": "round0000_w0_e1_0a472793",
+        "expected_actor_map_sha256": "9d5f3a98a916061f2df7bfdc223778189535635a52517d5cdb10a592a533dd68",
+        "expected_map_paired": true,
+        "goal_switches_delta": 2,
+        "initial_correct_free_cells": 2000,
+        "map_pairing_scope": "current_actor_map_paired",
+        "map_watermark": {
+          "header_stamp": 97.84,
+          "missing": false,
+          "payload_sha256": "9d5f3a98a916061f2df7bfdc223778189535635a52517d5cdb10a592a533dd68",
+          "received_sequence": 20,
+          "received_stamp": 98.12,
+          "source_version": null,
+          "source_version_missing": true
+        },
+        "metrics": {
+          "correct_free_coverage_ratio": 0.8291335707112206,
+          "false_free_ratio": 0.001676727028839705,
+          "known_coverage_ratio": 0.7820636451301832,
+          "map_quality_pass": false,
+          "navigation_protocol_closed": false,
+          "observed_accuracy": 0.9646270036991369,
+          "occupied_iou": 0.16709862228891012,
+          "robot_participation_pass": true
+        },
+        "new_correct_free_cells": 303,
+        "reason": "external_sampler_limit",
+        "rejected_actions_delta": 0,
+        "remaining_sim_time": 284.0,
+        "requested_step_end": 98.42,
+        "reward": 0.04582580115036976,
+        "reward_terms": {
+          "collision": -0.0,
+          "coverage": 0.06915913448370309,
+          "failure": 0.0,
+          "invalid": -0.0,
+          "success": 0.0,
+          "switch": -0.02,
+          "time": -0.0033333333333333335
+        },
+        "reward_weights": {
+          "collision": 20.0,
+          "coverage": 10.0,
+          "failure": 20.0,
+          "invalid": 0.05,
+          "success": 10.0,
+          "switch": 0.01,
+          "time": 1.0
+        },
+        "rewarded_correct_free_cells": 34530,
+        "schema": "mr3-reward-v1",
+        "sequence": 16,
+        "step_start": 97.42,
+        "terminated": false,
+        "truncated": true,
+        "truth_free_cell_count": 43812
+      }
+    }
+  ],
+  "elapsed_wall_sec": 287.90897184377536
+}

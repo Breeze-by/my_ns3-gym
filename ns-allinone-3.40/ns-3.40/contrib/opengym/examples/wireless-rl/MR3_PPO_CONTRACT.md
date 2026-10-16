@@ -1,4 +1,4 @@
-# MR3-P2A 联合 MaskablePPO pilot 契约 v3
+# MR3-P2A 联合 MaskablePPO pilot 契约 v4
 
 2026-10-16：用户验收 P1C 并授权 P2A。P2A 进行中，P2B 及后续未开始。
 正式任务沿用 [任务契约](MR3_TASK_CONTRACT.md) 与 [环境契约](MR3_ENV_CONTRACT.md)：
@@ -40,7 +40,7 @@ v1/v2最小链各完成8真实决策和4次GPU optimizer.step；v1首次文档SH
 v2 pilot在首个完整round返回前诊断中断：实际390条原生已执行决策、389.10奖励仿真秒、
 1752.9574942300096墙秒，0次optimizer更新；388条collector返回与390条原生记录分开。
 四条初始策略轨迹均暴露tb3候选饥饿，另有两次真实peer安全失败；两个未完成前缀正常关闭。
-这些失败保留，不能将顶层完整round计数0解释成没有采样，也不能复用为v3训练信用。
+这些失败保留，不能将顶层完整round计数0解释成没有采样，也不能复用为新版本训练信用。
 详见[P2A报告](report/20261016_mr3_p2a.md)。
 
 v3将执行契约明确修订为`mr3-per-robot-geometric-staging-v3`：每台已交付本地图的可达几何池
@@ -54,20 +54,35 @@ v3将执行契约明确修订为`mr3-per-robot-geometric-staging-v3`：每台已
 这属于新冻结的执行参数变化，P1B/P1C及v1/v2原件仍只证明原冻结，不转记为v3证据。
 300秒/95%、质量、三台参与、18路接触健康、peer包络及导航所有权门禁均不放宽。
 
-[v3前瞻计划](report/assets/20261016_mr3_p2a/predeclared_plan_v3.json)在原生运行前绑定同一新提交推送冻结；
-计划中的`SOURCE_FREEZE_FROM_METADATA`由各运行metadata记录实际SHA，不猜测尚未产生的提交。
-先完成CPU/静态检查和原生最小更新链：1 worker、open101、学习seed41、16真实决策、
+v3最小链已在`c2911114226bbe8275a0658a3710dafa4e89f5e0`完成16决策/16奖励秒、4次GPU更新、
+290.07678865175694墙秒，三台均有实际目标成功和地图几何变化；外部截断覆盖82.9134%，
+IoU未达标，不是95%任务。原`audit_v3.json`保留六项scalar同边界switch归因失败，
+未取得完整审计PASS，也未启动v3 pilot/验证。旧审计将下一命令在共享T同步触发的取消
+按闭区间时间戳归入前一步；新v4审计须按源快照、命令身份和事件顺序因果归属，保留其余全部门禁。
+该方法修正不改runtime事件、奖励或原失败结果。
+对同一v3原件的独立causal-switch-v4 scalar-only重放现已通过：5次真实switch恰好处罚-.05，
+六项旧错误及逐条因果替代证明并列保存；这不是新v4原生运行或完整审计PASS。
+
+另发现SB3 JSON logger与collector共用`progress.json`，原子替换会让SB3句柄留在旧inode；
+每round指标仍存于summary/checkpoint，但不能认为独立SB3磁盘日志完整。
+v4将SB3日志写入`sb3_metrics/progress.json`，collector实时状态仍为根`progress.json`，
+以文件隔离回归核验；候选v3、SLAM/Nav2、actor、奖励和任务门禁保持。
+
+[v4前瞻计划](report/assets/20261016_mr3_p2a/predeclared_plan_v4.json)绑定同一新提交推送冻结；
+计划中的`SOURCE_FREEZE_FROM_METADATA`由各运行metadata记录实际SHA，不猜测提交。
+先完成CPU/静态检查和全新原生最小链：1 worker、open101、学习seed41、16真实决策、
 外部16步截断、900墙秒，最多4 epochs。它验证采样/更新/checkpoint及新执行接口，不能证明95%。
 最小链及独立原生/policy审计未通过则先诊断、新冻结，不启动pilot；所有尝试保留。
 
-之后以全新初始权重执行单训练seed41的v3 pilot：4 workers，每个仍为tb1/tb2/tb3，固定open101，
-最多3706真实决策或12600墙秒采样截止（先到即停），普通episode上限300步，不载入v2 checkpoint。
+之后以全新初始权重执行单训练seed41的v4 pilot：4 workers，每个仍为tb1/tb2/tb3，固定open101，
+最多3706真实决策或12600墙秒采样截止（先到即停），普通episode上限300步，不载入旧checkpoint。
 预算沿用原4096决策/14400墙秒：扣除v2实际390决策及1752.9574942300096墙秒，
-决策余量3706，墙时余量12647.04250576999秒，v3保守取12600秒，不扩展原pilot预算。
+决策余量3706，墙时余量12647.04250576999秒，v4保守取12600秒，不扩展原pilot预算。
+v3只运行了独立工程最小链，没有消耗pilot份额；该16决策/290.076789墙秒另列。
 最小工程链与固定开发验证分别记账；原生安全取消/退出及已开始round的最后一次更新收尾
 仍按原声明单列实际额外墙时，不混入任务300仿真秒。
 
-v3 pilot完成后冻结final checkpoint，在open401/open402/open403各运行一轮开发验证，
+v4 pilot完成后冻结final checkpoint，在open401/open402/open403各运行一轮开发验证，
 总上限900决策、9000墙秒，最多4 workers、确定性mask-aware推理、0 optimizer更新。
 只使用最终checkpoint，不从验证episode反馈选checkpoint或调参。
 这些均为开发已见布局，不称未见泛化；rooms/corridors与姿态变化在固定布局学习诊断后再预声明。

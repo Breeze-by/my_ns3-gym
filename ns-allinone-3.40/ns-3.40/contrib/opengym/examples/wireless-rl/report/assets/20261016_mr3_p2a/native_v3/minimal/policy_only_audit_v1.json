@@ -1,0 +1,35 @@
+{
+  "schema": "mr3-p2a-v3-independent-policy-only-audit-v1",
+  "freeze": "c2911114226bbe8275a0658a3710dafa4e89f5e0",
+  "audit_source_sha256": "e4f1009e2991c7a172246659a457a2d2fbe9cfa72b8ffed43c6153868f147883",
+  "native_api_records": 16,
+  "policy": {
+    "decisions": 16,
+    "legal_actions": 16,
+    "candidate_choice_components": 11,
+    "deterministic_actions_verified": false,
+    "input_scope": "encode_snapshot of original preceding native snapshot only"
+  },
+  "rollout": {
+    "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v3_minimal/rollout_0000.npz",
+    "sha256": "269a4cdae172b5ac60c1c43e54f3ff8b922b3a72981e5823213694e371e163c1",
+    "decisions": 16,
+    "all_fields_finite": true,
+    "native_tensors_exact": true,
+    "sampling_masks_exact": true,
+    "duration_gae_verified": true,
+    "pre_update_replay_max_abs_error": {
+      "rewards": 9.15529083655997e-08,
+      "values": 3.5762786865234375e-07,
+      "log_probs": 2.384185791015625e-07,
+      "next_values": 3.5762786865234375e-07
+    },
+    "policy_cpu_atol": 0.0001,
+    "policy_cpu_rtol": 1e-05
+  },
+  "changed_state_dict_entries": 70,
+  "initial_sha256": "992878bfdad14eb0322db68a7125c730d6f8b7a5b41ff3df378b321732a50800",
+  "final_sha256": "7e43b501c0c904009c9ecf23b14294b46632391d258bb58d7374fb2ad39f7a08",
+  "passed": true,
+  "scope": "Read-only CPU replay only. Preserves full audit_v3.json original scalar failure; no native/scalar/task-success credit or GPU operation."
+}

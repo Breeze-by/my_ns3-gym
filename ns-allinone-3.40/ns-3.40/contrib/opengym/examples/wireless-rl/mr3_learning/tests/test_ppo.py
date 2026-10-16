@@ -338,7 +338,7 @@ class PPOIntegrationTests(unittest.TestCase):
 
 
 class NativeAccountingTests(unittest.TestCase):
-    def test_interruption_after_collection_does_not_count_closed_receipts_twice(self):
+    def test_interleaved_logging_and_interrupted_update_preserve_collected_receipts(self):
         environment = ReceiptEnv([{}, {"truncated": True}])
         with patch("mr3_learning.ppo.infer", side_effect=fixture_infer), patch(
                 "mr3_learning.ppo.next_value", return_value=.25):
@@ -346,8 +346,22 @@ class NativeAccountingTests(unittest.TestCase):
                 None, [environment], tasks_for([environment], cap=2),
                 deadline=time.monotonic() + 60.)
 
+        loggers = []
+
+        def production_logger(*args, **kwargs):
+            logger = configure(*args, **kwargs)
+            loggers.append(logger)
+            return logger
+
         def collected(*args, progress, **kwargs):
-            progress(summaries)
+            for iteration in range(2):
+                progress(summaries)
+                live = Path(temporary) / "fixture/progress.json"
+                expected = live.read_bytes()
+                loggers[0].record("train/fixture_loss", float(iteration))
+                loggers[0].dump(iteration)
+                self.assertEqual(live.read_bytes(), expected)
+                self.assertEqual(json.loads(expected)["active_episodes"], summaries)
             return episodes, summaries
 
         original_check_output = subprocess.check_output
@@ -364,12 +378,16 @@ class NativeAccountingTests(unittest.TestCase):
                 "mr3_learning.ppo.resource_sample", return_value={}), patch(
                 "mr3_learning.ppo.Supervisor"), patch(
                 "mr3_learning.ppo.MR3Env", return_value=environment), patch(
+                "mr3_learning.ppo.configure", side_effect=production_logger), patch(
                 "mr3_learning.ppo.collect_episodes", side_effect=collected), patch.object(
                 MaskablePPO, "train", side_effect=KeyboardInterrupt), contextlib.redirect_stdout(
                 io.StringIO()):
             status = main(["--run-id", "fixture", "--output-root", temporary,
                            "--decisions", "2", "--wall-seconds", "60", "--device", "cpu"])
             summary = json.loads((Path(temporary) / "fixture/summary.json").read_text())
+            metrics = (Path(temporary) / "fixture/sb3_metrics/progress.json").read_text()
+            self.assertEqual([json.loads(line) for line in metrics.splitlines()],
+                             [{"train/fixture_loss": 0.}, {"train/fixture_loss": 1.}])
         self.assertEqual(status, 1)
         self.assertEqual(summary["stop_reason"], "interrupted")
         self.assertEqual(summary["closed_episode_decisions"], 2)

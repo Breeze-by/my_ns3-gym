@@ -1,0 +1,108 @@
+{
+  "schema": "mr3-p2a-native-pilot-plan-v4",
+  "date": "2026-10-16",
+  "authorization": "User explicitly accepted MR3-P1C and instructed execution of P2A.",
+  "scope": "Native Gazebo pilot, exactly three robots per environment, no 2D or gateway.",
+  "freeze_binding": "Prospective plan: all v4 stages require the same new clean committed/pushed source freeze. SOURCE_FREEZE_FROM_METADATA is resolved only from actual run metadata; no speculative SHA. All v1/v2/v3 results and original audit failures remain historical, without v4 credit.",
+  "training_seed": 41,
+  "optimizer": {
+    "algorithm": "sb3-contrib MaskablePPO 2.9.0 train()",
+    "learning_rate": 0.0003,
+    "gamma_per_second": 0.99,
+    "gae_lambda_per_second": 0.95,
+    "minibatch_size": 64,
+    "maximum_epochs_per_round": 4,
+    "target_kl": 0.03,
+    "entropy_coefficient": 0.01
+  },
+  "stages": [
+    {
+      "name": "minimal",
+      "run_id": "mr3_p2a_v4_minimal",
+      "command": "python -m mr3_learning.ppo --mode train --workers 1 --schedule open:101 --decisions 16 --episode-steps 16 --wall-seconds 900 --seed 41 --base-domain 160 --base-port 12301 --run-id mr3_p2a_v4_minimal",
+      "decision_cap": 16,
+      "purpose": "Fresh v4 native observations, all three received-map geometric pools, legal learned masked choices, external truncation and clean closure followed by real PPO update/checkpoint. Independent native/scalar/pre-update-policy audit required before pilot; no 95% credit.",
+      "wall_seconds": 900
+    },
+    {
+      "name": "pilot",
+      "run_id": "mr3_p2a_v4_pilot",
+      "condition": "minimal native and collecting-policy audits pass",
+      "command": "python -m mr3_learning.ppo --mode train --workers 4 --schedule open:101 --decisions 3706 --episode-steps 300 --wall-seconds 12600 --seed 41 --base-domain 164 --base-port 12311 --run-id mr3_p2a_v4_pilot",
+      "decision_cap": 3706,
+      "purpose": "Fresh initial policy, fixed development open101, remaining original pilot budget after all v2 native activity is charged. No v2 checkpoint resumption, statistical comparison or old-result reuse.",
+      "wall_seconds": 12600
+    },
+    {
+      "name": "development_validation",
+      "run_id": "mr3_p2a_v4_validation",
+      "condition": "pilot produces a finite frozen final checkpoint without infrastructure errors",
+      "command": "python -m mr3_learning.ppo --mode evaluate --workers 4 --checkpoint /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v4_pilot/final.zip --schedule open:401,open:402,open:403 --decisions 900 --episode-steps 300 --wall-seconds 9000 --seed 41 --base-domain 172 --base-port 12321 --run-id mr3_p2a_v4_validation",
+      "optimizer_steps": 0,
+      "checkpoint_selection": "final only, no validation-driven selection or tuning",
+      "purpose": "Three deterministic mask-aware development episodes under unchanged 95%/300s/schema4 gates; all failures retained. Not unseen-layout generalization.",
+      "decision_cap": 900,
+      "wall_seconds": 9000
+    }
+  ],
+  "wall_budget": "Sample cutoff at next request boundary; in-flight request, genuine stop/closure and final update measured separately in total actual wall time.",
+  "retries": "none; infrastructure failure stops run/remaining stages, preserve prefix and diagnose",
+  "task_failures": "count and preserve, never replace or change gates",
+  "success_boundary": "Actual optimizer updates alone do not complete P2A. Must demonstrate frozen 95% task and learning/coordination evidence; otherwise remain in P2A and report diagnosis.",
+  "evaluation_split": "Development only; no held-out/test/confirmation layouts or seeds used.",
+  "evidence": "Complete native records, tensor/mask rollouts, sampling log probabilities, explicit dt/GAE/returns, initial/per-update/final checkpoints and hashes, all process closure receipts, resource samples and independent offline native/scalar/policy audit.",
+  "supersedes": "V3 engineering minimum under c2911114226bbe8275a0658a3710dafa4e89f5e0 completed16native/returned decisions,16reward seconds and4GPU updates in290.07678865175694wall seconds; no95percent task. Original full audit_v3.json failed six scalar shared-boundary switch attribution checks, retained unchanged; no full auditPASS or v3pilot/validation credit. Logging filename collision is corrected before any longpilot. V4 requires fresh engineering minimum and fullnative/scalar/policy audit under a new source freeze.",
+  "changes": [
+    "Keep the v3 received-only candidate rule, .29m path/.39m arrival disk, .10m GoalChecker+DWB tolerance, .10m/.20rad SLAM motion thresholds, all task/safety/reward gates and seed41 unchanged.",
+    "Isolate SB3 JSON output in sb3_metrics/progress.json from collector live progress.json; focused filename-isolation regression required.",
+    "Bind shared-boundary switch penalties causally in an explicit new offline auditor; retain original failed scalar-v3 audit and immutable original helper, with all other gates preserved.",
+    "Fresh16-decision/900-second engineering minimum, then unchanged remaining3706-decision/12600-second pilot from scratch, then fixed900-decision/9000-second zero-update validation; no previousminimal checkpoint reuse or pilot-budget expansion."
+  ],
+  "source_freeze": "SOURCE_FREEZE_FROM_METADATA",
+  "execution_version": "mr3-per-robot-geometric-staging-v3",
+  "shared_pilot_budget": {
+    "original_decision_cap": 4096,
+    "original_wall_seconds": 14400,
+    "v2_native_decisions_charged": 390,
+    "v2_collector_returned_API": 388,
+    "v2_full_actual_wall_seconds_charged": 1752.9574942300096,
+    "remaining_decision_cap": 3706,
+    "remaining_wall_seconds": 12647.04250576999,
+    "scope": "Pilot resource ceiling is not expanded. Only390v2 pilot settled native decisions and1752.9574942300096 full wall seconds have been charged to the original4096/14400 pilot allocation. v3 and v4 engineering minimal runs and the fixed development validation are separately reported. V3 pilot/validation never started. New sampling cutoff retains previously declared separate closure/in-flight/final-round update accounting.",
+    "v4_wall_seconds_selected": 12600,
+    "v3_engineering_minimal_decisions_separate": 16,
+    "v3_engineering_minimal_wall_seconds_separate": 290.07678865175694
+  },
+  "execution_changes": {
+    "candidate_rule": "Per-robot received-own-map reachable staging, one geometric reservation per still-unrepresented robot, then deterministic farthest-point K8; no truth/reward ranking, hand-planner, unsafe-start snapping or map clearing.",
+    "path_body_clearance_m": 0.29,
+    "goal_xy_tolerance_m": 0.1,
+    "target_arrival_disk_clearance_m": 0.39,
+    "new_goal_pair_separation_m": 0.78,
+    "new_goal_idle_body_separation_m": 0.68,
+    "candidate_hash": "candidate_rule is included in candidate_version; explicit version-aware audit retains old evidence semantics.",
+    "slam_config": "src/slam_toolbox/config/mapper_params_online_multi_async.yaml",
+    "minimum_travel_distance_m": 0.1,
+    "minimum_travel_heading_rad": 0.2,
+    "unchanged_ros_minimum_time_interval_sec": 0.5,
+    "unchanged_map_update_interval_sec": 5.0,
+    "nav2_configs": [
+      "src/multi_robot/params/nav2_params_tb1_0.yaml",
+      "src/multi_robot/params/nav2_params_tb2_0.yaml",
+      "src/multi_robot/params/nav2_params_tb3_0.yaml"
+    ],
+    "nav2_both_GoalChecker_and_DWB_xy_goal_tolerance_m": 0.1,
+    "unchanged_yaw_goal_tolerance_rad": 3.14,
+    "native_cpp_sdk_change": false,
+    "task_safety_reward_gates_changed": false
+  },
+  "workflow_repairs": {
+    "sb3_metrics_directory": "sb3_metrics/",
+    "sb3_json_metrics_file": "sb3_metrics/progress.json",
+    "collector_live_progress_file": "progress.json",
+    "paths_must_be_distinct": true,
+    "scalar_auditor": "explicit causal-switch-v4; preserve original scalar-v3 verdict and every other gate",
+    "scalar_boundary_rule": "A switch caused synchronously by command N at the shared T boundary belongs to decision N, established by returned source observation sequence, command identity and actual event order; later pending-switch events keep their real causal watermark. No reward values or runtime event timestamps are rewritten.",
+    "runtime_task_reward_candidate_navigation_change": false
+  }
+}

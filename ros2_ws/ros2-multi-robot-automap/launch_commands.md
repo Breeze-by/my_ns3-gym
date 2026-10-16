@@ -166,29 +166,31 @@ python -m pip install -r mr3_learning/requirements-ppo.txt
 仅在干净、已提交推送的新冻结运行，每次唯一run-id。完整episode闭合之后才更新，掩码随rollout保存；
 零时长无动作尾通知归并到此前真实决策，不产生伪actor样本。预算与出口见
 [PPO契约](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_PPO_CONTRACT.md)。
-当前为v3执行修订，原生运行前必须先完成同一新freeze的提交推送和ROS构建；
-下列命令与[v3前瞻计划](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/predeclared_plan_v3.json)一致，尚未执行。
+当前为v4日志隔离/离线审计修订，候选和导航沿用v3；原生运行前须完成同一新freeze的提交推送与相关检查；
+下列命令与[v4前瞻计划](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/predeclared_plan_v4.json)一致，尚未执行。
 v2已诊断停止，390条原生决策与1752.957494墙秒从原4096/14400 pilot预算扣除，
-v3取剩余3706决策/12600墙秒；原最小链和固定开发验证单列。不能把完整round计数0当作零采样。
+v4仍取剩余3706决策/12600墙秒；各版工程最小链和固定开发验证单列。不能把完整round计数0当作零采样。
+v3最小链实际完成16决策/4更新，原scalar六项同边界switch审计失败保留，v3 pilot/验证未开始。
 
 ```bash
 python -m mr3_learning.ppo --mode train --workers 1 --schedule open:101 \
   --decisions 16 --episode-steps 16 --wall-seconds 900 --seed 41 \
-  --base-domain 160 --base-port 12301 --run-id mr3_p2a_v3_minimal
+  --base-domain 160 --base-port 12301 --run-id mr3_p2a_v4_minimal
 
 python -m mr3_learning.ppo --mode train --workers 4 --schedule open:101 \
   --decisions 3706 --episode-steps 300 --wall-seconds 12600 --seed 41 \
-  --base-domain 164 --base-port 12311 --run-id mr3_p2a_v3_pilot
+  --base-domain 164 --base-port 12311 --run-id mr3_p2a_v4_pilot
 
 python -m mr3_learning.ppo --mode evaluate --workers 4 \
-  --checkpoint /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v3_pilot/final.zip \
+  --checkpoint /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v4_pilot/final.zip \
   --schedule open:401,open:402,open:403 \
   --decisions 900 --episode-steps 300 --wall-seconds 9000 --seed 41 \
-  --base-domain 172 --base-port 12321 --run-id mr3_p2a_v3_validation
+  --base-domain 172 --base-port 12321 --run-id mr3_p2a_v4_validation
 ```
 
 学习端使用cuda:0（可显式`--device cpu`）；每worker始终三台。
-输出为`log/mr3_ppo/<run-id>/`，包含metadata、原生进程/任务原件、张量/掩码rollout、
+输出为`log/mr3_ppo/<run-id>/`；SB3指标写`sb3_metrics/progress.json`，collector实时状态单独写根`progress.json`。
+包含metadata、原生进程/任务原件、张量/掩码rollout、
 采样概率、PPO指标、checkpoint和SHA、完整失败/中断。`completed`只表示run的采集/更新闭合，
 95%任务成功仍由原生schema4独立判断。首轮最小链未通过先停，不启动pilot；
 pilot未达95%时留在P2A诊断，不接网、不进入P2B。

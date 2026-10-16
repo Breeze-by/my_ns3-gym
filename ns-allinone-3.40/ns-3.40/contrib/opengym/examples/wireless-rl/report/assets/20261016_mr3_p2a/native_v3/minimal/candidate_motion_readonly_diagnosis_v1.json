@@ -1,0 +1,769 @@
+{
+  "schema": "mr3-p2a-candidate-motion-readonly-diagnosis-v1",
+  "freeze": "c2911114226bbe8275a0658a3710dafa4e89f5e0",
+  "run_id": "mr3_p2a_v3_minimal",
+  "learning_seed": 41,
+  "scene": "open",
+  "task_seed": 101,
+  "policy_control_scope": "All 16 sampled native decisions precede this run first optimizer update; this is the initial network policy. Four optimizer steps occur only after complete episode closure.",
+  "source_files": [
+    {
+      "path": "metadata.json",
+      "sha256": "43b71e3e7fbd07be6b1a210b35e50b992e9e63ff95e2c433275fde767d556465"
+    },
+    {
+      "path": "summary.json",
+      "sha256": "858d21234c5172050b8bb8bb71340ac3f9d25ca98fedd0660dcb1383a233e412"
+    },
+    {
+      "path": "native/round0000/worker0/episode001_open_101/adapter.jsonl",
+      "sha256": "3cc115356e1f1752fb060663629acd6ba322fbdc872abdfbdc197a17e0548a39"
+    },
+    {
+      "path": "native/round0000/worker0/episode001_open_101/transitions.jsonl",
+      "sha256": "511e0d5acb8c70da7d508e63bcacfc1660d04ed0552fb98d58b21fb23ab4d2ed"
+    },
+    {
+      "path": "native/round0000/worker0/episode001_open_101/round0000_w0_e1_0a472793.json",
+      "sha256": "d3fdd4cda6c983c0b40f843e4764f64d141eb8bd0d62b8173549ce57db38a45f"
+    }
+  ],
+  "observation_count": 17,
+  "candidate_rule": {
+    "frontier_staging_max_m": 1.0,
+    "goal_xy_tolerance_m": 0.1,
+    "new_goal_idle_separation_m": 0.6799999999999999,
+    "new_goal_pair_separation_m": 0.78,
+    "path_body_clearance_m": 0.29,
+    "target_clearance_m": 0.39,
+    "version": "mr3-per-robot-geometric-staging-v3"
+  },
+  "snapshot_pool_trace": [
+    {
+      "elapsed_sec": 0.0,
+      "per_robot_pool_counts": [
+        4,
+        0,
+        7
+      ],
+      "per_robot_selected_counts": [
+        2,
+        0,
+        6
+      ],
+      "robot_seed_traversable": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "elapsed_sec": 1.0,
+      "per_robot_pool_counts": [
+        4,
+        0,
+        7
+      ],
+      "per_robot_selected_counts": [
+        2,
+        0,
+        6
+      ],
+      "robot_seed_traversable": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "elapsed_sec": 2.0,
+      "per_robot_pool_counts": [
+        31,
+        1,
+        0
+      ],
+      "per_robot_selected_counts": [
+        7,
+        1,
+        0
+      ],
+      "robot_seed_traversable": [
+        true,
+        true,
+        false
+      ]
+    },
+    {
+      "elapsed_sec": 3.0,
+      "per_robot_pool_counts": [
+        107,
+        0,
+        111
+      ],
+      "per_robot_selected_counts": [
+        4,
+        0,
+        4
+      ],
+      "robot_seed_traversable": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "elapsed_sec": 4.0,
+      "per_robot_pool_counts": [
+        108,
+        0,
+        77
+      ],
+      "per_robot_selected_counts": [
+        5,
+        0,
+        4
+      ],
+      "robot_seed_traversable": [
+        true,
+        false,
+        true
+      ]
+    },
+    {
+      "elapsed_sec": 5.0,
+      "per_robot_pool_counts": [
+        34,
+        63,
+        60
+      ],
+      "per_robot_selected_counts": [
+        3,
+        4,
+        3
+      ],
+      "robot_seed_traversable": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "elapsed_sec": 6.0,
+      "per_robot_pool_counts": [
+        54,
+        30,
+        94
+      ],
+      "per_robot_selected_counts": [
+        4,
+        1,
+        7
+      ],
+      "robot_seed_traversable": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "elapsed_sec": 7.0,
+      "per_robot_pool_counts": [
+        79,
+        12,
+        114
+      ],
+      "per_robot_selected_counts": [
+        3,
+        2,
+        5
+      ],
+      "robot_seed_traversable": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "elapsed_sec": 8.0,
+      "per_robot_pool_counts": [
+        82,
+        10,
+        130
+      ],
+      "per_robot_selected_counts": [
+        3,
+        1,
+        7
+      ],
+      "robot_seed_traversable": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "elapsed_sec": 9.0,
+      "per_robot_pool_counts": [
+        106,
+        10,
+        148
+      ],
+      "per_robot_selected_counts": [
+        5,
+        1,
+        6
+      ],
+      "robot_seed_traversable": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "elapsed_sec": 10.0,
+      "per_robot_pool_counts": [
+        113,
+        30,
+        141
+      ],
+      "per_robot_selected_counts": [
+        5,
+        2,
+        6
+      ],
+      "robot_seed_traversable": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "elapsed_sec": 11.0,
+      "per_robot_pool_counts": [
+        97,
+        48,
+        144
+      ],
+      "per_robot_selected_counts": [
+        5,
+        2,
+        6
+      ],
+      "robot_seed_traversable": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "elapsed_sec": 12.0,
+      "per_robot_pool_counts": [
+        112,
+        78,
+        144
+      ],
+      "per_robot_selected_counts": [
+        5,
+        5,
+        5
+      ],
+      "robot_seed_traversable": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "elapsed_sec": 13.0,
+      "per_robot_pool_counts": [
+        103,
+        86,
+        139
+      ],
+      "per_robot_selected_counts": [
+        6,
+        6,
+        6
+      ],
+      "robot_seed_traversable": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "elapsed_sec": 14.0,
+      "per_robot_pool_counts": [
+        121,
+        85,
+        143
+      ],
+      "per_robot_selected_counts": [
+        6,
+        5,
+        6
+      ],
+      "robot_seed_traversable": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "elapsed_sec": 15.0,
+      "per_robot_pool_counts": [
+        118,
+        98,
+        119
+      ],
+      "per_robot_selected_counts": [
+        6,
+        6,
+        6
+      ],
+      "robot_seed_traversable": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "elapsed_sec": 16.0,
+      "per_robot_pool_counts": [
+        128,
+        110,
+        125
+      ],
+      "per_robot_selected_counts": [
+        6,
+        6,
+        5
+      ],
+      "robot_seed_traversable": [
+        true,
+        true,
+        true
+      ]
+    }
+  ],
+  "robots": {
+    "tb1": {
+      "native_send_count": 4,
+      "native_accept_true_count": 4,
+      "native_success_count": 1,
+      "successful_goals": [
+        {
+          "goal_id": "round0000_w0_e1_0a472793:tb1:1",
+          "command_id": 1,
+          "goal_xy": [
+            0.005806458587365171,
+            -0.8552358727117095
+          ],
+          "sampling_path_distance_m": 0.4121588548211243,
+          "native_send_elapsed_sec": 0.0,
+          "accepted_receipt_elapsed_sec": 0.0,
+          "terminal_elapsed_sec": 3.280000000000001,
+          "first_post_success_snapshot_elapsed_sec": 4.0,
+          "first_post_success_snapshot_xy": [
+            0.0621622379673291,
+            -0.7958199943981809
+          ],
+          "snapshot_arrival_error_m": 0.08189151644273793,
+          "arrival_error_scope": "Estimated pose in first subsequent snapshot carrying this SUCCEEDED receipt; not a continuous pose sample at native GoalChecker time."
+        }
+      ],
+      "action_result_counts": {
+        "sent": 2,
+        "kept": 11,
+        "switch_pending": 2
+      },
+      "distinct_native_own_geometry_digest_count": 15,
+      "native_own_geometry_digest_changes": [
+        {
+          "elapsed_sec": 0.0,
+          "sha256": "54005678e96baeed44b565f98f797eb3cf9781b7f5a0aaf5e4609749c97be6a4"
+        },
+        {
+          "elapsed_sec": 2.0,
+          "sha256": "f7ce1413838651125195dce88643555253cb60fbed3ec357a2b737c447ef6cce"
+        },
+        {
+          "elapsed_sec": 3.0,
+          "sha256": "2d1cb0442bbbb90e2f9fd39691dcba5fc5fc0c2b5dc55f6260e9b5258acbe0ef"
+        },
+        {
+          "elapsed_sec": 4.0,
+          "sha256": "68382010821a60631c2e7b8d6c5e5867f99c75dfb0bb3d36b2d902d3e874f390"
+        },
+        {
+          "elapsed_sec": 6.0,
+          "sha256": "05006dc73ddf7239c99ea24180dba04bf141c7da1a3ba9d0c24cf2b9539939d2"
+        },
+        {
+          "elapsed_sec": 7.0,
+          "sha256": "05bdd71708945e05ff4a0e5dae2311876930bf07274b745dd4a037f8127e47a7"
+        },
+        {
+          "elapsed_sec": 8.0,
+          "sha256": "68a3e2a36d4c49f1083c291ba8b9c56c0f21e9343d72b8ff420f960d0e37832d"
+        },
+        {
+          "elapsed_sec": 9.0,
+          "sha256": "da39cf6156d1a0b2d7cde878d40ea81a49bf6c6f6408fad836131130c1bb5156"
+        },
+        {
+          "elapsed_sec": 10.0,
+          "sha256": "3141df79fae729742fa546e4ddef67a0fed94287292a697fe4ae05f8a17f2244"
+        },
+        {
+          "elapsed_sec": 11.0,
+          "sha256": "efdbee17d1b7c021f2ac20d8f124873e21524b8443f1cf6cdbfb0245fc3ed006"
+        },
+        {
+          "elapsed_sec": 12.0,
+          "sha256": "34da184be3365643ee5ce9b5738044e788fa57d438079be72a54feb74c1251fb"
+        },
+        {
+          "elapsed_sec": 13.0,
+          "sha256": "0a104dd6100d75d0fc420749da5e7edd3273a103f9fd8a13825f2b441527b490"
+        },
+        {
+          "elapsed_sec": 14.0,
+          "sha256": "12c6b77d146ad0be971f67c065caaaf7fc6f12c7c0c5d98e3020f80c7be48c1e"
+        },
+        {
+          "elapsed_sec": 15.0,
+          "sha256": "e2b3c158945445d0d6fc9408cb20432fd6beb79420af237a6dfd1eefd5a1c6e1"
+        },
+        {
+          "elapsed_sec": 16.0,
+          "sha256": "fbc7d3aa75e6b2573ca34d12e6298d0dc94bfafef26cad276e2c6060fb8fa743"
+        }
+      ],
+      "max_estimated_displacement_from_reset_m": 2.778441797724489,
+      "snapshot_polyline_estimated_motion_m": 3.0600182555000295,
+      "seed_rejections": [],
+      "zero_pool_elapsed_sec": [],
+      "positive_pool_but_zero_selected_elapsed_sec": [],
+      "evaluator_diagnostics": {
+        "collision_duration_sec": 0.0,
+        "collision_events": 0,
+        "collision_message_count": 2052,
+        "end_x": 0.9362851142240746,
+        "end_y": -3.0808995416351292,
+        "nav_aborted": 0,
+        "nav_canceled": 3,
+        "nav_goal_count": 4,
+        "nav_succeeded": 1,
+        "path_length_m": 3.0702369132325518,
+        "start_x": 0.002483066086623545,
+        "start_y": -0.4499944942739958,
+        "teleport_jump_count": 0,
+        "visited_cell_count": 40
+      }
+    },
+    "tb2": {
+      "native_send_count": 3,
+      "native_accept_true_count": 3,
+      "native_success_count": 1,
+      "successful_goals": [
+        {
+          "goal_id": "round0000_w0_e1_0a472793:tb2:3",
+          "command_id": 3,
+          "goal_xy": [
+            -0.05035649445432533,
+            0.9390180930883991
+          ],
+          "sampling_path_distance_m": 0.5353903943860663,
+          "native_send_elapsed_sec": 2.0,
+          "accepted_receipt_elapsed_sec": 2.019999999999996,
+          "terminal_elapsed_sec": 5.659999999999997,
+          "first_post_success_snapshot_elapsed_sec": 6.0,
+          "first_post_success_snapshot_xy": [
+            -0.005191895431432538,
+            0.8603579325190518
+          ],
+          "snapshot_arrival_error_m": 0.09070425494812354,
+          "arrival_error_scope": "Estimated pose in first subsequent snapshot carrying this SUCCEEDED receipt; not a continuous pose sample at native GoalChecker time."
+        }
+      ],
+      "action_result_counts": {
+        "waiting": 2,
+        "kept": 10,
+        "sent": 2,
+        "switch_pending": 1
+      },
+      "distinct_native_own_geometry_digest_count": 10,
+      "native_own_geometry_digest_changes": [
+        {
+          "elapsed_sec": 0.0,
+          "sha256": "13e01259074cb5e98ef5b864309fb17790f4604d0c0b54c03ce62ed210e578ba"
+        },
+        {
+          "elapsed_sec": 4.0,
+          "sha256": "554e51412bc08c3eb2c624422fcf2f742bba4adfb33a2b0ce8018be2f4be68de"
+        },
+        {
+          "elapsed_sec": 5.0,
+          "sha256": "8398e783de99231b0339376c615cb159de7ae5b02060614907c682a063f02d62"
+        },
+        {
+          "elapsed_sec": 7.0,
+          "sha256": "c8c81acff61121b7ea126993d65e5acf8432a5d8f1621943f39f271a1cbdfde5"
+        },
+        {
+          "elapsed_sec": 10.0,
+          "sha256": "c244bdef6b3dff1c6cf219565fa711a262f53561cc68672a59fc96309ea4fc36"
+        },
+        {
+          "elapsed_sec": 11.0,
+          "sha256": "02c4967fae76d6672848df35f77830829559b05682d670bd8c5ccabeea7cfdfe"
+        },
+        {
+          "elapsed_sec": 12.0,
+          "sha256": "92d28e3d5fcaf897e6dbde31480039e00679a5b2ecc8103877e00c887195d39e"
+        },
+        {
+          "elapsed_sec": 13.0,
+          "sha256": "c54d778d3d2a4cf69f835e831988ea36fc8ba49c48cd5984ce3b33d6642869df"
+        },
+        {
+          "elapsed_sec": 15.0,
+          "sha256": "d91ddcddc06d2902132bbfdec7919ade8fa427fca26af7c740d3b763ebaaa74e"
+        },
+        {
+          "elapsed_sec": 16.0,
+          "sha256": "ecc905aa4a9741b525fda17da23425a7391df4952f7c07a0a12758eba3809165"
+        }
+      ],
+      "max_estimated_displacement_from_reset_m": 1.5693161006927163,
+      "snapshot_polyline_estimated_motion_m": 1.9483081840466,
+      "seed_rejections": [
+        {
+          "elapsed_sec": 4.0,
+          "reason": "seed_cell_body_clearance",
+          "diagnostics": {
+            "seed_cell": [
+              112,
+              120
+            ],
+            "seed_cell_clearance_m": 0.21959563989254183,
+            "seed_pose_cell_offset_m": 0.01978905263991189,
+            "seed_pose_clearance_lower_bound_m": 0.19980658725262995,
+            "seed_rejection_reason": "seed_cell_body_clearance",
+            "seed_required_clearance_m": 0.29
+          }
+        }
+      ],
+      "zero_pool_elapsed_sec": [
+        0.0,
+        1.0,
+        3.0,
+        4.0
+      ],
+      "positive_pool_but_zero_selected_elapsed_sec": [],
+      "evaluator_diagnostics": {
+        "collision_duration_sec": 0.0,
+        "collision_events": 0,
+        "collision_message_count": 2046,
+        "end_x": 1.2520563997308933,
+        "end_y": 1.45983135814973,
+        "nav_aborted": 0,
+        "nav_canceled": 2,
+        "nav_goal_count": 3,
+        "nav_succeeded": 1,
+        "path_length_m": 1.9887686125451969,
+        "start_x": 0.0024189008019795074,
+        "start_y": 0.45000512092589995,
+        "teleport_jump_count": 0,
+        "visited_cell_count": 23
+      }
+    },
+    "tb3": {
+      "native_send_count": 4,
+      "native_accept_true_count": 4,
+      "native_success_count": 1,
+      "successful_goals": [
+        {
+          "goal_id": "round0000_w0_e1_0a472793:tb3:1",
+          "command_id": 1,
+          "goal_xy": [
+            0.5558064667830038,
+            -0.2552358637710128
+          ],
+          "sampling_path_distance_m": 0.3077930910327421,
+          "native_send_elapsed_sec": 0.0,
+          "accepted_receipt_elapsed_sec": 0.0,
+          "terminal_elapsed_sec": 3.0,
+          "first_post_success_snapshot_elapsed_sec": 4.0,
+          "first_post_success_snapshot_xy": [
+            0.5857403071187085,
+            -0.17636050998676533
+          ],
+          "snapshot_arrival_error_m": 0.08436442515559306,
+          "arrival_error_scope": "Estimated pose in first subsequent snapshot carrying this SUCCEEDED receipt; not a continuous pose sample at native GoalChecker time."
+        }
+      ],
+      "action_result_counts": {
+        "sent": 2,
+        "kept": 11,
+        "switch_pending": 2
+      },
+      "distinct_native_own_geometry_digest_count": 15,
+      "native_own_geometry_digest_changes": [
+        {
+          "elapsed_sec": 0.0,
+          "sha256": "bee0331a849d32f6b7e09e5e219b11be42772e6bef5c074ed05ee56b3ad69092"
+        },
+        {
+          "elapsed_sec": 2.0,
+          "sha256": "08f268c65bbfc229370099289a5cd58d8c82255309df4852f8fc49d799687ecb"
+        },
+        {
+          "elapsed_sec": 3.0,
+          "sha256": "84ab37e84f68f47e4667ea1f7f1a2a52d08f09a9b7fc0408651729dc0c5de4fd"
+        },
+        {
+          "elapsed_sec": 5.0,
+          "sha256": "e06bae241d12853fc53e8a371e71347861fa89400ba3c267307c64b66413a609"
+        },
+        {
+          "elapsed_sec": 6.0,
+          "sha256": "b083629d8c90dbd3f8493466bf4c28ca99aa84bf79de10946396830e232813fe"
+        },
+        {
+          "elapsed_sec": 7.0,
+          "sha256": "b01520a2131aef698490e9a5046e950f49183a7396f9dbc766a7932c8c4728d1"
+        },
+        {
+          "elapsed_sec": 8.0,
+          "sha256": "ce71652cfe9b28032fdbe5ac4c6057fb45f3a0e01a5f061208d484c7fb0fe981"
+        },
+        {
+          "elapsed_sec": 9.0,
+          "sha256": "b971246a4dff70047c9616d01a1038084a49091b99233689eb60eef7c50632a9"
+        },
+        {
+          "elapsed_sec": 10.0,
+          "sha256": "1d0f1b35fdc8bcfc74c5d4a53ddb60d931583a07c0a8e96bcd2df060fa173b82"
+        },
+        {
+          "elapsed_sec": 11.0,
+          "sha256": "28defb5545eeb378103c448d2b2d209f95e1d4b0213ebbc9a8c3005f70fcc06c"
+        },
+        {
+          "elapsed_sec": 12.0,
+          "sha256": "7dccc76e0788e5e0cdeb9ed10d5479feb8f50e6887a071915eb5a82a433ff2d6"
+        },
+        {
+          "elapsed_sec": 13.0,
+          "sha256": "d2a4c33c1df5a78362154203a435c2548092aba013bacabf153389ee41ee8e2e"
+        },
+        {
+          "elapsed_sec": 14.0,
+          "sha256": "a4e24aa1192313b16de5098e309d63e3ad712f14babb16805d0c8175807c8008"
+        },
+        {
+          "elapsed_sec": 15.0,
+          "sha256": "7611d27249442e7b04146c0b674ffbad2f5c166cfe57393adfe09b022c809d34"
+        },
+        {
+          "elapsed_sec": 16.0,
+          "sha256": "ec40e2293d9c431fb496b22dcfe4b95fd340ac31dcb7fc835668f7eed6bbbe90"
+        }
+      ],
+      "max_estimated_displacement_from_reset_m": 1.6008600727592002,
+      "snapshot_polyline_estimated_motion_m": 2.4130316395486084,
+      "seed_rejections": [
+        {
+          "elapsed_sec": 2.0,
+          "reason": "seed_cell_body_clearance",
+          "diagnostics": {
+            "seed_cell": [
+              96,
+              130
+            ],
+            "seed_cell_clearance_m": 0.14492222687338152,
+            "seed_pose_cell_offset_m": 0.01938927911458114,
+            "seed_pose_clearance_lower_bound_m": 0.1255329477588004,
+            "seed_rejection_reason": "seed_cell_body_clearance",
+            "seed_required_clearance_m": 0.29
+          }
+        }
+      ],
+      "zero_pool_elapsed_sec": [
+        2.0
+      ],
+      "positive_pool_but_zero_selected_elapsed_sec": [],
+      "evaluator_diagnostics": {
+        "collision_duration_sec": 0.0,
+        "collision_events": 0,
+        "collision_message_count": 2046,
+        "end_x": 1.1505940320067751,
+        "end_y": -1.450116490562406,
+        "nav_aborted": 0,
+        "nav_canceled": 3,
+        "nav_goal_count": 4,
+        "nav_succeeded": 1,
+        "path_length_m": 2.438193497845077,
+        "start_x": 0.45236017083757457,
+        "start_y": 4.927303250231613e-06,
+        "teleport_jump_count": 0,
+        "visited_cell_count": 30
+      }
+    }
+  },
+  "action_record_count": 15,
+  "rejected_actions": [
+    {
+      "epoch": "round0000_w0_e1_0a472793",
+      "kind": "action_rejected",
+      "payload": {
+        "command_id": 4,
+        "observation_sequence": 4,
+        "reason": "navigation_changed_since_observation"
+      },
+      "stamp": 85.42
+    }
+  ],
+  "safety_stops": [],
+  "task_evaluator_final": {
+    "success": false,
+    "termination_reason": "training_external_truncation",
+    "failure_reason": "training_external_truncation",
+    "elapsed_sim_time_sec": 16.22,
+    "correct_free_coverage_ratio": 0.8291335707112206,
+    "coverage_threshold": 0.95,
+    "known_coverage_ratio": 0.7820636451301832,
+    "observed_accuracy": 0.9646270036991369,
+    "occupied_iou": 0.16709862228891012,
+    "false_free_ratio": 0.001676727028839705,
+    "map_quality_pass": false,
+    "robot_participation_pass": true,
+    "collision_events": 0,
+    "collision_duration_sec": 0.0,
+    "collision_monitoring_active": true,
+    "collision_monitoring_fresh": true,
+    "contact_component_count_per_robot": 6,
+    "navigation_protocol_closed": true,
+    "nav_goal_count": 11,
+    "nav_succeeded": 3,
+    "nav_canceled": 8,
+    "nav_aborted": 0,
+    "time_to_95_coverage_sec": null
+  },
+  "reward_scope_note": "The final rewarded snapshot precedes cleanup; its navigation_protocol_closed=false is preserved in summary.json. The final evaluator, after explicit cancellation/closure, reports navigation_protocol_closed=true. No reward or task metric is recomputed from later actor snapshots.",
+  "findings": [
+    "No positive per-robot geometric pool is lost completely by K8 selection in the 17 saved snapshots.",
+    "All three robots receive native accepted goals and each completes one goal successfully.",
+    "Own-map geometry digests change for all three robots; header-only map refresh is excluded by geometry_sha256.",
+    "Transient observed-safe-seed failures occur for tb3 at2s and tb2 at4s and recover on the next snapshot; no indefinite startup lock is seen in this16s probe.",
+    "One requested action is correctly rejected as navigation_changed_since_observation; it remains a recorded, penalized decision.",
+    "This externally truncated16s engineering sample is not95percent task success, learning efficacy, candidate sufficiency over300s, or statistical performance evidence. Coverage remains below.95 and occupied IoU below the frozen.20 quality threshold."
+  ],
+  "limitations": [
+    "Motion and post-success arrival errors above use delivered estimated snapshots; evaluator robot paths are separate diagnostic truth measurements and never policy inputs.",
+    "Full raw-contact sequence/freshness and shutdown audits are performed by the root audit, not inferred from this diagnostic receipt.",
+    "Logical ideal transport and a neural policy are used; this receipt provides no ns3/gateway or physical network credit."
+  ]
+}

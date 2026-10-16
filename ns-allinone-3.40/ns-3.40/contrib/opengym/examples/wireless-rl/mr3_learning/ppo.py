@@ -344,7 +344,7 @@ def main(argv=None):
         else:
             model = MaskablePPO.load(args.checkpoint, device=args.device)
             result["input_checkpoint_sha256"] = file_sha(args.checkpoint)
-        learner_logger = configure(str(directory), ["json"])
+        learner_logger = configure(str(directory / "sb3_metrics"), ["json"])
         model.set_logger(learner_logger)
         optimizer_hook = model.policy.optimizer.register_step_post_hook(
             lambda *unused: optimizer_steps.__setitem__(0, optimizer_steps[0] + 1))

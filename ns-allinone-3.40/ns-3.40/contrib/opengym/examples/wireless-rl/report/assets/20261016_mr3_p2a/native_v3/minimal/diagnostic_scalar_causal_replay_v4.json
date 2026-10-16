@@ -1,0 +1,180 @@
+{
+  "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v3_minimal/native/round0000/worker0/episode001_open_101",
+  "epoch": "round0000_w0_e1_0a472793",
+  "scene": "open",
+  "seed": 101,
+  "pid_identity": {
+    "pid": 1123996,
+    "parent": 1123893,
+    "group": 1123996,
+    "session": 1123996,
+    "start_ticks": 386878327,
+    "state": "R"
+  },
+  "initial_cells": 2000,
+  "newly_rewarded_cells": 34530,
+  "transitions": 16,
+  "terminal_short_steps": 0,
+  "terminal_reused_steps": 0,
+  "rejected_action_bindings": [
+    {
+      "step_sequence": 4,
+      "command_id": 4,
+      "observation_sequence": 4,
+      "stamp": 85.42
+    }
+  ],
+  "repeated_map_payload_steps": 0,
+  "reward_term_sums": {
+    "collision": 0.0,
+    "coverage": 7.881402355519036,
+    "failure": 0.0,
+    "invalid": -0.05,
+    "success": 0.0,
+    "switch": -0.05,
+    "time": -0.05333333333333334
+  },
+  "physical_quantum_counts": {
+    "0": 1,
+    "1": 10,
+    "20": 811
+  },
+  "evaluation_reason": "training_external_truncation",
+  "errors": [],
+  "scalar_method": "mr3-scalar-command-bound-switch-v4",
+  "original_scalar_sha256": "895395075a881c6d74b809100e198be52a3c05a6710d24d873020b87223ff665",
+  "original_scalar_path": "report/assets/20261015_mr3_p1c/reward_gate_audit_v3.py",
+  "original_errors": [
+    "step 9: switch penalty differs from actual protocol events",
+    "step 10: switch penalty differs from actual protocol events",
+    "step 13: switch penalty differs from actual protocol events",
+    "step 14: switch penalty differs from actual protocol events",
+    "step 15: switch penalty differs from actual protocol events",
+    "step 16: switch penalty differs from actual protocol events"
+  ],
+  "replaced_original_assertions": [
+    {
+      "original_error": "step 9: switch penalty differs from actual protocol events",
+      "original_timestamp_delta": 2,
+      "command_bound_delta": 0,
+      "future_command_switches_at_end": 2,
+      "previous_end_future_command_switches": 0
+    },
+    {
+      "original_error": "step 10: switch penalty differs from actual protocol events",
+      "original_timestamp_delta": 0,
+      "command_bound_delta": 2,
+      "future_command_switches_at_end": 0,
+      "previous_end_future_command_switches": 2
+    },
+    {
+      "original_error": "step 13: switch penalty differs from actual protocol events",
+      "original_timestamp_delta": 1,
+      "command_bound_delta": 0,
+      "future_command_switches_at_end": 1,
+      "previous_end_future_command_switches": 0
+    },
+    {
+      "original_error": "step 14: switch penalty differs from actual protocol events",
+      "original_timestamp_delta": 0,
+      "command_bound_delta": 1,
+      "future_command_switches_at_end": 0,
+      "previous_end_future_command_switches": 1
+    },
+    {
+      "original_error": "step 15: switch penalty differs from actual protocol events",
+      "original_timestamp_delta": 2,
+      "command_bound_delta": 0,
+      "future_command_switches_at_end": 2,
+      "previous_end_future_command_switches": 0
+    },
+    {
+      "original_error": "step 16: switch penalty differs from actual protocol events",
+      "original_timestamp_delta": 0,
+      "command_bound_delta": 2,
+      "future_command_switches_at_end": 0,
+      "previous_end_future_command_switches": 2
+    }
+  ],
+  "causal_switch": {
+    "method": "mr3-scalar-command-bound-switch-v4",
+    "deltas": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0,
+      1,
+      0,
+      2
+    ],
+    "bindings": [
+      {
+        "step_sequence": 10,
+        "command_id": 10,
+        "observation_sequence": 10,
+        "robot": "tb1",
+        "old_goal_id": "round0000_w0_e1_0a472793:tb1:5",
+        "action_event_line": 285,
+        "stamp": 91.42,
+        "cancel_event_line": 286
+      },
+      {
+        "step_sequence": 10,
+        "command_id": 10,
+        "observation_sequence": 10,
+        "robot": "tb3",
+        "old_goal_id": "round0000_w0_e1_0a472793:tb3:5",
+        "action_event_line": 285,
+        "stamp": 91.42,
+        "cancel_event_line": 287
+      },
+      {
+        "step_sequence": 14,
+        "command_id": 14,
+        "observation_sequence": 14,
+        "robot": "tb2",
+        "old_goal_id": "round0000_w0_e1_0a472793:tb2:9",
+        "action_event_line": 419,
+        "stamp": 95.42,
+        "cancel_event_line": 420
+      },
+      {
+        "step_sequence": 16,
+        "command_id": 16,
+        "observation_sequence": 16,
+        "robot": "tb1",
+        "old_goal_id": "round0000_w0_e1_0a472793:tb1:10",
+        "action_event_line": 483,
+        "stamp": 97.42,
+        "cancel_event_line": 484
+      },
+      {
+        "step_sequence": 16,
+        "command_id": 16,
+        "observation_sequence": 16,
+        "robot": "tb3",
+        "old_goal_id": "round0000_w0_e1_0a472793:tb3:10",
+        "action_event_line": 483,
+        "stamp": 97.42,
+        "cancel_event_line": 485
+      }
+    ],
+    "unique_actual_switches": 5,
+    "counting_point": "actual cancel_goal(reason=switch), not replacement send/accept"
+  },
+  "causal_switch_errors": [],
+  "original_helper_modified": false,
+  "passed": true,
+  "source_freeze": "c2911114226bbe8275a0658a3710dafa4e89f5e0",
+  "scope": "Offline scalar-only diagnosis of retained v3 data; original full audit FAIL preserved. Does not provide fresh v4 native credit.",
+  "current_wrapper_sha256": "fa26eddef15523cbbed40e4cdb02c19f93f90e372cad8cf9bffde9cd8f9888c8"
+}

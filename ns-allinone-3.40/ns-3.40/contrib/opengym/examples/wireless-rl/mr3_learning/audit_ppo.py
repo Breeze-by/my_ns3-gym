@@ -15,12 +15,14 @@ from pathlib import Path
 import re
 import subprocess
 import sys
-from types import ModuleType
+from functools import partial
+from types import ModuleType, SimpleNamespace
 
 import numpy as np
 import torch
 from sb3_contrib import MaskablePPO
 
+from . import audit_scalar
 from .observation import encode_snapshot, observation_space
 
 
@@ -28,6 +30,8 @@ WIRELESS = "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/"
 ROS = "ros2_ws/ros2-multi-robot-automap/"
 OBSERVATION_SOURCE = ROS + "src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py"
 OBSERVATION_V3_SHA256 = "71ea159b57caf93471ded502aaab36ec4ec3b14893a4c40b511b6f4839fd4d63"
+REWARD_SOURCE = ROS + "src/multi_robot_exploration/multi_robot_exploration/mr3_reward.py"
+W7_REWARD_SHA256 = "77485e7988489a146e4c44207343a0a4be7c12b5ffe36906dde59257cac16f88"
 CURRENT_AUDITOR_PINS = {
     ROS + "scripts/audit_mr3_env.py":
         "427d5263403dc9d0db846e36fe6051446d99ed337e45313424ff148ecef08cb7",
@@ -149,11 +153,17 @@ def load_compatible_components(phase, root, freeze):
     require(all(phase.PINNED_RUNTIME.get(path) == digest
                 for path, digest in command.PINNED_AUDITORS.items()),
             "original command-time auditor pins differ from W7 phase pins")
-    runtime = {**phase.PINNED_RUNTIME, OBSERVATION_SOURCE: OBSERVATION_V3_SHA256}
+    normative_reward = subprocess.check_output(
+        ["git", "show", TASK_BASE_FREEZE + ":" + REWARD_SOURCE], cwd=root)
+    require(hashlib.sha256(normative_reward).hexdigest() == W7_REWARD_SHA256,
+            "original W7 reward ledger Git SHA mismatch")
+    runtime = {**phase.PINNED_RUNTIME, OBSERVATION_SOURCE: OBSERVATION_V3_SHA256,
+               REWARD_SOURCE: W7_REWARD_SHA256}
     original_scripts = set(command.PINNED_AUDITORS)
     native_pins = {path: digest for path, digest in runtime.items()
                    if path not in original_scripts}
     proof = verify_frozen_pins(root, freeze, native_pins, "native runtime")
+    proof[REWARD_SOURCE]["normative_source"] = TASK_BASE_FREEZE + ":" + REWARD_SOURCE
     proof.update(verify_frozen_pins(root, freeze, CURRENT_AUDITOR_PINS, "current auditor"))
     proof.update(verify_frozen_pins(root, freeze, EXECUTION_CONFIG_PINS, "execution config"))
     for relative, expected in phase.PINNED_DOCUMENTS.items():
@@ -222,8 +232,12 @@ def load_native_gates(root, freeze):
         WIRELESS + "MR3_ENV_CONTRACT.md": ENV_DOCUMENT_SHA256,
         task_relative: source_task_digest}
     base, auditor, command, proof = load_compatible_components(phase, root, freeze)
-    scalar = load_pinned("mr3_p2a_scalar_v3", directory / "reward_gate_audit_v3.py",
-                         SCALAR_SHA256)
+    original_scalar = load_pinned("mr3_p2a_scalar_v3", directory / "reward_gate_audit_v3.py",
+                                  SCALAR_SHA256)
+    require(audit_scalar.ORIGINAL_SCALAR_SHA256 == SCALAR_SHA256,
+            "causal scalar wrapper does not preserve the original helper pin")
+    scalar = SimpleNamespace(
+        audit_episode=partial(audit_scalar.audit_episode, original=original_scalar))
     require(sha(root / WIRELESS / "MR3_ENV_CONTRACT.md") == ENV_DOCUMENT_SHA256,
             "current accepted environment document differs from explicit P2A pin")
     require(sha(root / task_relative) == TASK_DOCUMENT_SHA256,
@@ -247,7 +261,8 @@ def load_native_gates(root, freeze):
                 "machine task/geometry changed from accepted W7 contract: " + relative)
         proof[relative] = {"sha256": digest, "git_source": freeze + ":" + relative,
                            "normative_source": TASK_BASE_FREEZE + ":" + relative}
-    for filename in ("audit_ppo.py", "ppo.py", "rollout.py", "policy.py", "model.py", "env.py",
+    for filename in ("audit_ppo.py", "audit_scalar.py", "ppo.py", "rollout.py", "policy.py",
+                     "model.py", "env.py",
                      "observation.py", "supervisor.py", "requirements-env.txt",
                      "requirements-ppo.txt"):
         relative = WIRELESS + "mr3_learning/" + filename
@@ -397,7 +412,8 @@ def audit_run(directory, freeze):
     result = {"schema": "mr3-p2a-ppo-offline-audit-v1", "directory": str(directory),
               "freeze": freeze, "mode": metadata["mode"], "errors": [], "episodes": [],
               "rounds": [], "source_proof": proof, "original_helpers_modified": False,
-              "native_gates": "unchanged phase-v2 contact + phase-v3 command + scalar-v3",
+              "native_gates": ("unchanged phase-v2 contact + phase-v3 command + scalar-v3; "
+                               "switch assignment corrected by " + audit_scalar.METHOD),
               "helper_sha256": {"phase_v3": PHASE_SHA256, "scalar_v3": SCALAR_SHA256},
               "task_success_credit": "only original evaluator success with passed native gates"}
 

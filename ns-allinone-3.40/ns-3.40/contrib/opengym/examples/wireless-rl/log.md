@@ -3498,3 +3498,41 @@ rtk proxy python3 /tmp/mr3_p2a_package.py /home/zhuyulab/ns3-workspace/ros2_ws/r
 候选版本`mr3-per-robot-geometric-staging-v3`的新源码尚未运行原生/GPU；以下为本次将提交源码的静态/CPU检查，不能继承W7或v2任务信用。限定ROS语义检查786/786通过（25.37秒），conda CPU全套86/86通过（8.653秒）；11个本次Python修改文件flake8（99字符）通过。三个受影响包已在canonical工作区构建通过，share安装入口实际指向修正配置；9份活动文档的相对链接、计划/归档JSON及118份所选原件的压缩/原始SHA和字节均通过。完整命令与回执见`report/assets/20261016_mr3_p2a/prefreeze_checks_v3.json`及`selected_byte_integrity_v2.json`。前述广域lint失败保持记录。
 
 计数异常回归还验证：已闭合轮次在优化中断时不重复计入active；原生落盘决策含在途回调未达客户端的记录、零尾步不计actor决策；不宣称统计未落盘的已提交动作。显式关闭学习日志句柄，原生记账错误归基础设施异常。未变更奖励、任务门限或原生接触/时钟/命令检查。
+
+
+### 2026-10-16：MR3-P2A v3原生最小链、原scalar审计FAIL与v4前瞻日志/归因修订
+
+v3推送冻结`c2911114226bbe8275a0658a3710dafa4e89f5e0`，UTC启动2026-10-16T04:03:07.622076+00:00。cwd wireless-rl、conda ns3gym/PYTHONNOUSERSITE=1，系统ROS进程边界保持；按原v3计划精确执行：
+
+```bash
+rtk proxy env PYTHONNOUSERSITE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -m mr3_learning.ppo --mode train --workers 1 --schedule open:101 --decisions 16 --episode-steps 16 --wall-seconds 900 --seed 41 --base-domain 160 --base-port 12301 --run-id mr3_p2a_v3_minimal
+```
+
+exit0、completed=true/decision_budget；16原生决策、16collector已返回API、16.0奖励/物理仿真秒，4次GPU optimizer.step/4epochs，290.07678865175694墙秒含原生启动/关闭及更新。无原生记账错误，全部owned关闭clean0、无forced/遗留/zombie；独立43/43保存PID/start身份无当前匹配（owned_process_absence_v1.json SHA`1627bb269c154f6c37c4362dd247059a0b69b5feaeea6204c4b7ff6c16eea473`）。initial checkpoint SHA`992878bfdad14eb0322db68a7125c730d6f8b7a5b41ff3df378b321732a50800`，final SHA`7e43b501c0c904009c9ecf23b14294b46632391d258bb58d7374fb2ad39f7a08`；70个改变state_dict entries仍含共享别名。16动作均在首次更新前由初始网络产生，不能由此声称已学习有效策略。
+
+三台实际接受目标4/3/4、各1次成功，共11目标/3成功；15动作被接受，1个command4按navigation_changed_since_observation正确拒绝并真实扣分。17保存快照的本地图几何摘要各有15/10/15种（非header-only变新），正可达几何池没有因K8截断丧失全部代表。已交付估计快照折线路径3.060018/1.948308/2.413032m，评价真值路径另为3.070237/1.988769/2.438193m；不把真值提供actor。tb3@2秒、tb2@4秒真实观测种子净空不够被拒绝，下一快照恢复，没有吸附或清障。只读candidate_motion_readonly_diagnosis_v1.json SHA`b28d82280cee4df2ca4e134593cf0d93ac1bfd45e12f48a1b4c950310966b217`仅提供该16秒scope，不证明300秒候选充分性或学习效果。
+
+原生评价training_external_truncation、success=false、覆盖.8291335707112206、accuracy.9646270036991369、occupied IoU.16709862228891012（低于.20）、参与true、0接触/新鲜监测，关闭后navigation_protocol_closed=true。评价16.22秒含关闭尾段，奖励仍16.0秒；summary末奖励水位navclosed=false原样保留，不从后来的关闭图重算奖励或任务成功。
+
+原离线命令（同conda/env/rtk包装）为：
+
+```bash
+python -m mr3_learning.audit_ppo /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v3_minimal --freeze c2911114226bbe8275a0658a3710dafa4e89f5e0 --output /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v3_minimal/audit_v3.json
+```
+
+exit1，原audit_v3.json SHA`920ff6e41785fb770de4b5e8b072150a87970bdb2a506be761f85b777aa99cea`保留：原生contact/time/clock/closure通过，旧scalar只有step9/10、13/14、15/16六项switch计数/处罚归因失败；完整审计未到后续policy/rollout重评，不宣称完整PASS。源码/回执显示命令10使用刚返回sequence10快照、在91.42秒同步触发cancel，runtime正确记在新step10；旧scalar闭区间按结束T将它提前归到step9。必须使用显式因果switch-v4审计按源观测/命令身份/事件顺序修正同边界归属，保留原helper和原失败，其他所有门禁继续执行；不改运行奖励、事件stamp、ROI/95%/300秒或安全条件。
+
+根代理独立从c291的Git blob载入原audit_ppo.py源码（SHA`e4f1009e2991c7a172246659a457a2d2fbe9cfa72b8ffed43c6153868f147883`）做CPU policy-only重放，未启动native/GPU：policy_only_audit_v1.json SHA`1810b0925bcf38277dcca6605b3fec45f643fd414e74f50b8298078c0531bc8e`PASS，16实际张量/保存mask/动作/value/logprob/dt/GAE对应initial collecting checkpoint；CPUlogprob最大差2.384185791015625e-7，value3.5762786865234375e-7。此为独立scope，不改变原fullaudit FAIL，不提供scalar/task成功信用。诊断/独立重放为inline Python操作，没有虚构重放CLI；原件先保存在ROS log/mr3_ppo/mr3_p2a_v3_minimal/，规范选件由后续打包记录。
+
+v3最小链启动期间发现SB3 configure(directory,['json'])默认写根progress.json，与collector write_json同名。collector原子replace后SB3句柄指旧inode；每round有限指标仍保存在summary/checkpoint，但SB3独立磁盘日志路径不完整，长pilot前必须修复。v4将logger目录固定为sb3_metrics/，SB3写sb3_metrics/progress.json；collector实时状态仍写根progress.json，避免文件名碰撞。真实SB3/logger与collector交错写入隔离回归及相关14项CPU检查通过4.172秒；actor/优化器算法、候选v3、SLAM/Nav2/奖励及任务安全门禁均未变。原文件和六项旧scalar失败不得覆盖。
+
+原v3 pilot/validation未启动；v3工程16决策/290.076789墙秒独立记账，不抵扣或增加pilot份额。新predeclared_plan_v4.json前瞻绑定SOURCE_FREEZE_FROM_METADATA，不猜测未生成提交：新source推送冻结先跑全新16决策/16步截断/900秒工程链，完整native/scalar/policy审计通过后才开始新初始权重pilot。仍使用seed41/open101、4worker、剩余3706决策/12600墙秒；原4096/14400pilot仅扣v2的390原生决策/1752.957494墙秒，余量未扩大。final-only open401/402/403开发验证保持900决策/9000秒、确定性mask-aware、0更新。所有v1/v2/v3计划/失败/原件保留，v4原生尚未运行，P2A仍未满足95%/学习出口，P2B/gateway未开始。
+
+
+v3规范选件与v4冻结前核查补充：`report/assets/20261016_mr3_p2a/native_v3/minimal/manifest.json` SHA`7921d995a81ffa05da524aee815aa4aa8ae7556575f02c7189db33426c1ad2e2`绑定30文件，raw20462706/selected12824708bytes。`selected_byte_integrity_v3.json` SHA`00836f59fa861bac4223b46e03a5884a28691798313d655f062670d34e418036`只读核对30/30所选及解码raw SHA/字节PASS；没有新simulator/GPU。原audit_v3.json FAIL及candidate/policy-only/owned身份回执原样保留，不把打包算新原生结果。
+
+`diagnostic_switch_step_attribution_v1.json` SHA`bb32e6b013ce9f8beb6c2606b5aafa52b61df790079a74fb9ae8126f95471536`与`diagnostic_scalar_causal_replay_v4.json` SHA`ee0bb8fb14aceb749dd246d50ee0d44e44093d4116e8e522f9bfbe066cf8fc1e`已纳入同目录规范选件。新因果scalar-only重放errors=[]：5次真实switch在命令10/14/16所属step收费2/1/2次、累计-.05；六条旧scalar错误和逐条原始闭区间delta/因果delta/未来命令边界证明并列保留，其余原scalar断言继续执行。该离线方法PASS不改原完整audit_v3 FAIL，不证明v4原生或完整审计PASS；runtime reward与事件时间未改。
+
+root最终v4前置CPU回执：conda全套95/95通过8.970秒，6份修改学习端Python文件flake8通过；logger真实SB3交错写入隔离及相关14项聚焦检查通过4.172秒。原生节点/SLAM/Nav2配置与c291字节相同，先前786ROS语义检查和三包canonical build仍绑定同一实现；学习端日志隔离/离线审计修订没有新增ROS、仿真或GPU运行。v4原生尚未开始，须先新提交推送再按predeclared_plan_v4.json从新最小链执行；所有旧计划、失败和原件保持。
+
+最终v4 CPU/限定lint完整命令和输出回执为`report/assets/20261016_mr3_p2a/prefreeze_checks_v4.json`，归档索引记录其SHA/字节；原生源码未变的Gitdiff证据仅复用同字节的786语义检查/三包build范围，不声称新原生结果。本代理最终静态核对5文档59本地链接、15shell块、3个v4命令/预算、18条证据SHA/字节与旧v3计划哈希均通过；随后仅补本回执链接及第19条hash pin。`git diff --check`通过，未新增simulator/GPU。

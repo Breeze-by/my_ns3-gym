@@ -139,6 +139,10 @@ class VersionedNativeGateTests(unittest.TestCase):
     def test_only_observation_runtime_pin_changes_and_original_helpers_stay_exact(self):
         self.assertEqual(self.base.PINNED_RUNTIME[audit_ppo.OBSERVATION_SOURCE],
                          audit_ppo.OBSERVATION_V3_SHA256)
+        self.assertEqual(self.base.PINNED_RUNTIME[audit_ppo.REWARD_SOURCE],
+                         audit_ppo.W7_REWARD_SHA256)
+        self.assertEqual(self.proof[audit_ppo.REWARD_SOURCE]["normative_source"],
+                         audit_ppo.TASK_BASE_FREEZE + ":" + audit_ppo.REWARD_SOURCE)
         for path, digest in self.original_runtime_pins.items():
             if path != audit_ppo.OBSERVATION_SOURCE:
                 self.assertEqual(self.base.PINNED_RUNTIME[path], digest)

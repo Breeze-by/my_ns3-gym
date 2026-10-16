@@ -1,0 +1,964 @@
+{
+  "schema": "mr3-scalar-switch-causal-diagnosis-v1",
+  "created_utc": "2026-10-16T04:11:33.064544+00:00",
+  "source_freeze": "c2911114226bbe8275a0658a3710dafa4e89f5e0",
+  "original_audit_failure_preserved": [
+    "step 9: switch penalty differs from actual protocol events",
+    "step 10: switch penalty differs from actual protocol events",
+    "step 13: switch penalty differs from actual protocol events",
+    "step 14: switch penalty differs from actual protocol events",
+    "step 15: switch penalty differs from actual protocol events",
+    "step 16: switch penalty differs from actual protocol events"
+  ],
+  "classification": "offline right-closed timestamp assignment is incorrect for future-command same-boundary switch events; saved runtime deltas charge all five actual switch cancellations exactly once in their causal action steps",
+  "steps": [
+    {
+      "sequence": 1,
+      "start_sec": 82.42,
+      "end_sec": 83.42,
+      "source_observation_sequence": 1,
+      "returned_observation_sequence": 2,
+      "command_id": 1,
+      "action": 693,
+      "actual_switch_delta": 0,
+      "actual_switch_term": -0.0,
+      "old_timestamp_audit_expected_delta": 0
+    },
+    {
+      "sequence": 2,
+      "start_sec": 83.42,
+      "end_sec": 84.42,
+      "source_observation_sequence": 2,
+      "returned_observation_sequence": 3,
+      "command_id": 2,
+      "action": 888,
+      "actual_switch_delta": 0,
+      "actual_switch_term": -0.0,
+      "old_timestamp_audit_expected_delta": 0
+    },
+    {
+      "sequence": 3,
+      "start_sec": 84.42,
+      "end_sec": 85.42,
+      "source_observation_sequence": 3,
+      "returned_observation_sequence": 4,
+      "command_id": 3,
+      "action": 818,
+      "actual_switch_delta": 0,
+      "actual_switch_term": -0.0,
+      "old_timestamp_audit_expected_delta": 0
+    },
+    {
+      "sequence": 4,
+      "start_sec": 85.42,
+      "end_sec": 86.42,
+      "source_observation_sequence": 4,
+      "returned_observation_sequence": 5,
+      "command_id": 4,
+      "action": 888,
+      "actual_switch_delta": 0,
+      "actual_switch_term": -0.0,
+      "old_timestamp_audit_expected_delta": 0
+    },
+    {
+      "sequence": 5,
+      "start_sec": 86.42,
+      "end_sec": 87.42,
+      "source_observation_sequence": 5,
+      "returned_observation_sequence": 6,
+      "command_id": 5,
+      "action": 381,
+      "actual_switch_delta": 0,
+      "actual_switch_term": -0.0,
+      "old_timestamp_audit_expected_delta": 0
+    },
+    {
+      "sequence": 6,
+      "start_sec": 87.42,
+      "end_sec": 88.42,
+      "source_observation_sequence": 6,
+      "returned_observation_sequence": 7,
+      "command_id": 6,
+      "action": 888,
+      "actual_switch_delta": 0,
+      "actual_switch_term": -0.0,
+      "old_timestamp_audit_expected_delta": 0
+    },
+    {
+      "sequence": 7,
+      "start_sec": 88.42,
+      "end_sec": 89.42,
+      "source_observation_sequence": 7,
+      "returned_observation_sequence": 8,
+      "command_id": 7,
+      "action": 898,
+      "actual_switch_delta": 0,
+      "actual_switch_term": -0.0,
+      "old_timestamp_audit_expected_delta": 0
+    },
+    {
+      "sequence": 8,
+      "start_sec": 89.42,
+      "end_sec": 90.42,
+      "source_observation_sequence": 8,
+      "returned_observation_sequence": 9,
+      "command_id": 8,
+      "action": 888,
+      "actual_switch_delta": 0,
+      "actual_switch_term": -0.0,
+      "old_timestamp_audit_expected_delta": 0
+    },
+    {
+      "sequence": 9,
+      "start_sec": 90.42,
+      "end_sec": 91.42,
+      "source_observation_sequence": 9,
+      "returned_observation_sequence": 10,
+      "command_id": 9,
+      "action": 818,
+      "actual_switch_delta": 0,
+      "actual_switch_term": -0.0,
+      "old_timestamp_audit_expected_delta": 2
+    },
+    {
+      "sequence": 10,
+      "start_sec": 91.42,
+      "end_sec": 92.42,
+      "source_observation_sequence": 10,
+      "returned_observation_sequence": 11,
+      "command_id": 10,
+      "action": 483,
+      "actual_switch_delta": 2,
+      "actual_switch_term": -0.02,
+      "old_timestamp_audit_expected_delta": 0
+    },
+    {
+      "sequence": 11,
+      "start_sec": 92.42,
+      "end_sec": 93.42,
+      "source_observation_sequence": 11,
+      "returned_observation_sequence": 12,
+      "command_id": 11,
+      "action": 888,
+      "actual_switch_delta": 0,
+      "actual_switch_term": -0.0,
+      "old_timestamp_audit_expected_delta": 0
+    },
+    {
+      "sequence": 12,
+      "start_sec": 93.42,
+      "end_sec": 94.42,
+      "source_observation_sequence": 12,
+      "returned_observation_sequence": 13,
+      "command_id": 12,
+      "action": 888,
+      "actual_switch_delta": 0,
+      "actual_switch_term": -0.0,
+      "old_timestamp_audit_expected_delta": 0
+    },
+    {
+      "sequence": 13,
+      "start_sec": 94.42,
+      "end_sec": 95.42,
+      "source_observation_sequence": 13,
+      "returned_observation_sequence": 14,
+      "command_id": 13,
+      "action": 888,
+      "actual_switch_delta": 0,
+      "actual_switch_term": -0.0,
+      "old_timestamp_audit_expected_delta": 1
+    },
+    {
+      "sequence": 14,
+      "start_sec": 95.42,
+      "end_sec": 96.42,
+      "source_observation_sequence": 14,
+      "returned_observation_sequence": 15,
+      "command_id": 14,
+      "action": 828,
+      "actual_switch_delta": 1,
+      "actual_switch_term": -0.01,
+      "old_timestamp_audit_expected_delta": 0
+    },
+    {
+      "sequence": 15,
+      "start_sec": 96.42,
+      "end_sec": 97.42,
+      "source_observation_sequence": 15,
+      "returned_observation_sequence": 16,
+      "command_id": 15,
+      "action": 888,
+      "actual_switch_delta": 0,
+      "actual_switch_term": -0.0,
+      "old_timestamp_audit_expected_delta": 2
+    },
+    {
+      "sequence": 16,
+      "start_sec": 97.42,
+      "end_sec": 98.42,
+      "source_observation_sequence": 16,
+      "returned_observation_sequence": 17,
+      "command_id": 16,
+      "action": 785,
+      "actual_switch_delta": 2,
+      "actual_switch_term": -0.02,
+      "old_timestamp_audit_expected_delta": 0
+    }
+  ],
+  "timeline": [
+    {
+      "adapter_line_1_based": 250,
+      "epoch": "round0000_w0_e1_0a472793",
+      "kind": "observation",
+      "stamp": 90.42,
+      "payload": {
+        "sequence": 9
+      }
+    },
+    {
+      "adapter_line_1_based": 252,
+      "epoch": "round0000_w0_e1_0a472793",
+      "kind": "action",
+      "stamp": 90.42,
+      "payload": {
+        "action": 818,
+        "choices": [
+          8,
+          1,
+          8
+        ],
+        "command_id": 9,
+        "observation_digest": "f524e83d9ddf3327f6b43eb462d797662903dfdb355eb518e9bb292e0e58ec82",
+        "observation_sequence": 9,
+        "results": {
+          "tb1": "kept",
+          "tb2": "sent",
+          "tb3": "kept"
+        }
+      }
+    },
+    {
+      "adapter_line_1_based": 253,
+      "epoch": "round0000_w0_e1_0a472793",
+      "kind": "protocol",
+      "stamp": 90.42,
+      "payload": {
+        "command_id": 9,
+        "goal_id": "round0000_w0_e1_0a472793:tb2:9",
+        "observation_version": 9,
+        "robot": "tb2",
+        "type": "send_goal"
+      }
+    },
+    {
+      "adapter_line_1_based": 255,
+      "epoch": "round0000_w0_e1_0a472793",
+      "kind": "native_send",
+      "stamp": 90.42,
+      "payload": {
+        "command_id": 9,
+        "goal_id": "round0000_w0_e1_0a472793:tb2:9",
+        "robot": "tb2"
+      }
+    },
+    {
+      "adapter_line_1_based": 283,
+      "epoch": "round0000_w0_e1_0a472793",
+      "kind": "observation",
+      "stamp": 91.42,
+      "payload": {
+        "sequence": 10
+      }
+    },
+    {
+      "adapter_line_1_based": 285,
+      "epoch": "round0000_w0_e1_0a472793",
+      "kind": "action",
+      "stamp": 91.42,
+      "payload": {
+        "action": 483,
+        "choices": [
+          4,
+          8,
+          3
+        ],
+        "command_id": 10,
+        "observation_digest": "0f138a012af22c8d214c91200772142a5a2e86f7e0d32b4b4fe00dc5f7689f98",
+        "observation_sequence": 10,
+        "results": {
+          "tb1": "switch_pending",
+          "tb2": "kept",
+          "tb3": "switch_pending"
+        }
+      }
+    },
+    {
+      "adapter_line_1_based": 286,
+      "epoch": "round0000_w0_e1_0a472793",
+      "kind": "protocol",
+      "stamp": 91.42,
+      "payload": {
+        "goal_id": "round0000_w0_e1_0a472793:tb1:5",
+        "reason": "switch",
+        "robot": "tb1",
+        "type": "cancel_goal"
+      }
+    },
+    {
+      "adapter_line_1_based": 287,
+      "epoch": "round0000_w0_e1_0a472793",
+      "kind": "protocol",
+      "stamp": 91.42,
+      "payload": {
+        "goal_id": "round0000_w0_e1_0a472793:tb3:5",
+        "reason": "switch",
+        "robot": "tb3",
+        "type": "cancel_goal"
+      }
+    },
+    {
+      "adapter_line_1_based": 292,
+      "epoch": "round0000_w0_e1_0a472793",
+      "kind": "protocol",
+      "stamp": 91.42,
+      "payload": {
+        "accepted": true,
+        "goal_id": "round0000_w0_e1_0a472793:tb1:5",
+        "robot": "tb1",
+        "type": "cancel_response"
+      }
+    },
+    {
+      "adapter_line_1_based": 293,
+      "epoch": "round0000_w0_e1_0a472793",
+      "kind": "protocol",
+      "stamp": 91.42,
+      "payload": {
+        "accepted": true,
+        "goal_id": "round0000_w0_e1_0a472793:tb3:5",
+        "robot": "tb3",
+        "type": "cancel_response"
+      }
+    },
+    {
+      "adapter_line_1_based": 299,
+      "epoch": "round0000_w0_e1_0a472793",
+      "kind": "protocol",
+      "stamp": 91.62,
+      "payload": {
+        "command_id": 5,
+        "goal_id": "round0000_w0_e1_0a472793:tb1:5",
+        "robot": "tb1",
+        "status": "CANCELED",
+        "type": "protocol_terminal"
+      }
+    },
+    {
+      "adapter_line_1_based": 300,
+      "epoch": "round0000_w0_e1_0a472793",
+      "kind": "protocol",
+      "stamp": 91.62,
+      "payload": {
+        "command_id": 10,
+        "goal_id": "round0000_w0_e1_0a472793:tb1:10",
+        "observation_version": 10,
+        "robot": "tb1",
+        "type": "send_goal"
+      }
+    },
+    {
+      "adapter_line_1_based": 301,
+      "epoch": "round0000_w0_e1_0a472793",
+      "kind": "protocol",
+      "stamp": 91.62,
+      "payload": {
+        "command_id": 5,
+        "goal_id": "round0000_w0_e1_0a472793:tb3:5",
+        "robot": "tb3",
+        "status": "CANCELED",
+        "type": "protocol_terminal"
+      }
+    },
+    {
+      "adapter_line_1_based": 302,
+      "epoch": "round0000_w0_e1_0a472793",
+      "kind": "protocol",
+      "stamp": 91.62,
+      "payload": {
+        "command_id": 10,
+        "goal_id": "round0000_w0_e1_0a472793:tb3:10",
+        "observation_version": 10,
+        "robot": "tb3",
+        "type": "send_goal"
+      }
+    },
+    {
+      "adapter_line_1_based": 304,
+      "epoch": "round0000_w0_e1_0a472793",
+      "kind": "native_send",
+      "stamp": 91.62,
+      "payload": {
+        "command_id": 10,
+        "goal_id": "round0000_w0_e1_0a472793:tb1:10",
+        "robot": "tb1"
+      }
+    },
+    {
+      "adapter_line_1_based": 306,
+      "epoch": "round0000_w0_e1_0a472793",
+      "kind": "native_send",
+      "stamp": 91.62,
+      "payload": {
+        "command_id": 10,
+        "goal_id": "round0000_w0_e1_0a472793:tb3:10",
+        "robot": "tb3"
+      }
+    },
+    {
+      "adapter_line_1_based": 330,
+      "epoch": "round0000_w0_e1_0a472793",
+      "kind": "observation",
+      "stamp": 92.42,
+      "payload": {
+        "sequence": 11
+      }
+    },
+    {
+      "adapter_line_1_based": 332,
+      "epoch": "round0000_w0_e1_0a472793",
+      "kind": "action",
+      "stamp": 92.42,
+      "payload": {
+        "action": 888,
+        "choices": [
+          8,
+          8,
+          8
+        ],
+        "command_id": 11,
+        "observation_digest": "24896438ff4d8e2ca6b2e0a1bf53a2541a758f7ac077b78a938b830e40291fd0",
+        "observation_sequence": 11,
+        "results": {
+          "tb1": "kept",
+          "tb2": "kept",
+          "tb3": "kept"
+        }
+      }
+    },
+    {
+      "adapter_line_1_based": 359,
+      "epoch": "round0000_w0_e1_0a472793",
+      "kind": "observation",
+      "stamp": 93.42,
+      "payload": {
+        "sequence": 12
+      }
+    },
+    {
+      "adapter_line_1_based": 361,
+      "epoch": "round0000_w0_e1_0a472793",
+      "kind": "action",
+      "stamp": 93.42,
+      "payload": {
+        "action": 888,
+        "choices": [
+          8,
+          8,
+          8
+        ],
+        "command_id": 12,
+        "observation_digest": "502939f649ed9aed9f6fee25d4cba958258cfbf09d0b9b951bcb11d03072c12e",
+        "observation_sequence": 12,
+        "results": {
+          "tb1": "kept",
+          "tb2": "kept",
+          "tb3": "kept"
+        }
+      }
+    },
+    {
+      "adapter_line_1_based": 388,
+      "epoch": "round0000_w0_e1_0a472793",
+      "kind": "observation",
+      "stamp": 94.42,
+      "payload": {
+        "sequence": 13
+      }
+    },
+    {
+      "adapter_line_1_based": 390,
+      "epoch": "round0000_w0_e1_0a472793",
+      "kind": "action",
+      "stamp": 94.42,
+      "payload": {
+        "action": 888,
+        "choices": [
+          8,
+          8,
+          8
+        ],
+        "command_id": 13,
+        "observation_digest": "8bb07b8c13be1f24b293bc3b10d5abe384b85dd97deddab1e91616a4b4a95740",
+        "observation_sequence": 13,
+        "results": {
+          "tb1": "kept",
+          "tb2": "kept",
+          "tb3": "kept"
+        }
+      }
+    },
+    {
+      "adapter_line_1_based": 417,
+      "epoch": "round0000_w0_e1_0a472793",
+      "kind": "observation",
+      "stamp": 95.42,
+      "payload": {
+        "sequence": 14
+      }
+    },
+    {
+      "adapter_line_1_based": 419,
+      "epoch": "round0000_w0_e1_0a472793",
+      "kind": "action",
+      "stamp": 95.42,
+      "payload": {
+        "action": 828,
+        "choices": [
+          8,
+          2,
+          8
+        ],
+        "command_id": 14,
+        "observation_digest": "ba04f10c599da76955f99606782615bac66ea6483035315b559f0deedc53b585",
+        "observation_sequence": 14,
+        "results": {
+          "tb1": "kept",
+          "tb2": "switch_pending",
+          "tb3": "kept"
+        }
+      }
+    },
+    {
+      "adapter_line_1_based": 420,
+      "epoch": "round0000_w0_e1_0a472793",
+      "kind": "protocol",
+      "stamp": 95.42,
+      "payload": {
+        "goal_id": "round0000_w0_e1_0a472793:tb2:9",
+        "reason": "switch",
+        "robot": "tb2",
+        "type": "cancel_goal"
+      }
+    },
+    {
+      "adapter_line_1_based": 423,
+      "epoch": "round0000_w0_e1_0a472793",
+      "kind": "protocol",
+      "stamp": 95.44,
+      "payload": {
+        "accepted": true,
+        "goal_id": "round0000_w0_e1_0a472793:tb2:9",
+        "robot": "tb2",
+        "type": "cancel_response"
+      }
+    },
+    {
+      "adapter_line_1_based": 429,
+      "epoch": "round0000_w0_e1_0a472793",
+      "kind": "protocol",
+      "stamp": 95.64,
+      "payload": {
+        "command_id": 9,
+        "goal_id": "round0000_w0_e1_0a472793:tb2:9",
+        "robot": "tb2",
+        "status": "CANCELED",
+        "type": "protocol_terminal"
+      }
+    },
+    {
+      "adapter_line_1_based": 430,
+      "epoch": "round0000_w0_e1_0a472793",
+      "kind": "protocol",
+      "stamp": 95.64,
+      "payload": {
+        "command_id": 14,
+        "goal_id": "round0000_w0_e1_0a472793:tb2:14",
+        "observation_version": 14,
+        "robot": "tb2",
+        "type": "send_goal"
+      }
+    },
+    {
+      "adapter_line_1_based": 432,
+      "epoch": "round0000_w0_e1_0a472793",
+      "kind": "native_send",
+      "stamp": 95.64,
+      "payload": {
+        "command_id": 14,
+        "goal_id": "round0000_w0_e1_0a472793:tb2:14",
+        "robot": "tb2"
+      }
+    },
+    {
+      "adapter_line_1_based": 452,
+      "epoch": "round0000_w0_e1_0a472793",
+      "kind": "observation",
+      "stamp": 96.42,
+      "payload": {
+        "sequence": 15
+      }
+    },
+    {
+      "adapter_line_1_based": 454,
+      "epoch": "round0000_w0_e1_0a472793",
+      "kind": "action",
+      "stamp": 96.42,
+      "payload": {
+        "action": 888,
+        "choices": [
+          8,
+          8,
+          8
+        ],
+        "command_id": 15,
+        "observation_digest": "bfdd5faa4d6572f6ad3b27c8705b1e0ab1759a091a640e0c4ab7debd35e042f5",
+        "observation_sequence": 15,
+        "results": {
+          "tb1": "kept",
+          "tb2": "kept",
+          "tb3": "kept"
+        }
+      }
+    },
+    {
+      "adapter_line_1_based": 481,
+      "epoch": "round0000_w0_e1_0a472793",
+      "kind": "observation",
+      "stamp": 97.42,
+      "payload": {
+        "sequence": 16
+      }
+    },
+    {
+      "adapter_line_1_based": 483,
+      "epoch": "round0000_w0_e1_0a472793",
+      "kind": "action",
+      "stamp": 97.42,
+      "payload": {
+        "action": 785,
+        "choices": [
+          7,
+          8,
+          5
+        ],
+        "command_id": 16,
+        "observation_digest": "bf176a77e52b0f866566ab95011b8a90505e69b9904c62971862160ce1c653c5",
+        "observation_sequence": 16,
+        "results": {
+          "tb1": "switch_pending",
+          "tb2": "kept",
+          "tb3": "switch_pending"
+        }
+      }
+    },
+    {
+      "adapter_line_1_based": 484,
+      "epoch": "round0000_w0_e1_0a472793",
+      "kind": "protocol",
+      "stamp": 97.42,
+      "payload": {
+        "goal_id": "round0000_w0_e1_0a472793:tb1:10",
+        "reason": "switch",
+        "robot": "tb1",
+        "type": "cancel_goal"
+      }
+    },
+    {
+      "adapter_line_1_based": 485,
+      "epoch": "round0000_w0_e1_0a472793",
+      "kind": "protocol",
+      "stamp": 97.42,
+      "payload": {
+        "goal_id": "round0000_w0_e1_0a472793:tb3:10",
+        "reason": "switch",
+        "robot": "tb3",
+        "type": "cancel_goal"
+      }
+    },
+    {
+      "adapter_line_1_based": 493,
+      "epoch": "round0000_w0_e1_0a472793",
+      "kind": "protocol",
+      "stamp": 97.44,
+      "payload": {
+        "accepted": true,
+        "goal_id": "round0000_w0_e1_0a472793:tb1:10",
+        "robot": "tb1",
+        "type": "cancel_response"
+      }
+    },
+    {
+      "adapter_line_1_based": 494,
+      "epoch": "round0000_w0_e1_0a472793",
+      "kind": "protocol",
+      "stamp": 97.44,
+      "payload": {
+        "accepted": true,
+        "goal_id": "round0000_w0_e1_0a472793:tb3:10",
+        "robot": "tb3",
+        "type": "cancel_response"
+      }
+    },
+    {
+      "adapter_line_1_based": 500,
+      "epoch": "round0000_w0_e1_0a472793",
+      "kind": "protocol",
+      "stamp": 97.64,
+      "payload": {
+        "command_id": 10,
+        "goal_id": "round0000_w0_e1_0a472793:tb1:10",
+        "robot": "tb1",
+        "status": "CANCELED",
+        "type": "protocol_terminal"
+      }
+    },
+    {
+      "adapter_line_1_based": 501,
+      "epoch": "round0000_w0_e1_0a472793",
+      "kind": "protocol",
+      "stamp": 97.64,
+      "payload": {
+        "command_id": 16,
+        "goal_id": "round0000_w0_e1_0a472793:tb1:16",
+        "observation_version": 16,
+        "robot": "tb1",
+        "type": "send_goal"
+      }
+    },
+    {
+      "adapter_line_1_based": 502,
+      "epoch": "round0000_w0_e1_0a472793",
+      "kind": "protocol",
+      "stamp": 97.64,
+      "payload": {
+        "command_id": 10,
+        "goal_id": "round0000_w0_e1_0a472793:tb3:10",
+        "robot": "tb3",
+        "status": "CANCELED",
+        "type": "protocol_terminal"
+      }
+    },
+    {
+      "adapter_line_1_based": 503,
+      "epoch": "round0000_w0_e1_0a472793",
+      "kind": "protocol",
+      "stamp": 97.64,
+      "payload": {
+        "command_id": 16,
+        "goal_id": "round0000_w0_e1_0a472793:tb3:16",
+        "observation_version": 16,
+        "robot": "tb3",
+        "type": "send_goal"
+      }
+    },
+    {
+      "adapter_line_1_based": 505,
+      "epoch": "round0000_w0_e1_0a472793",
+      "kind": "native_send",
+      "stamp": 97.64,
+      "payload": {
+        "command_id": 16,
+        "goal_id": "round0000_w0_e1_0a472793:tb1:16",
+        "robot": "tb1"
+      }
+    },
+    {
+      "adapter_line_1_based": 507,
+      "epoch": "round0000_w0_e1_0a472793",
+      "kind": "native_send",
+      "stamp": 97.64,
+      "payload": {
+        "command_id": 16,
+        "goal_id": "round0000_w0_e1_0a472793:tb3:16",
+        "robot": "tb3"
+      }
+    },
+    {
+      "adapter_line_1_based": 528,
+      "epoch": "round0000_w0_e1_0a472793",
+      "kind": "observation",
+      "stamp": 98.42,
+      "payload": {
+        "sequence": 17
+      }
+    },
+    {
+      "adapter_line_1_based": 530,
+      "epoch": "round0000_w0_e1_0a472793",
+      "kind": "protocol",
+      "stamp": 98.42,
+      "payload": {
+        "goal_id": "round0000_w0_e1_0a472793:tb1:16",
+        "reason": "task_stop",
+        "robot": "tb1",
+        "type": "cancel_goal"
+      }
+    },
+    {
+      "adapter_line_1_based": 531,
+      "epoch": "round0000_w0_e1_0a472793",
+      "kind": "protocol",
+      "stamp": 98.42,
+      "payload": {
+        "goal_id": "round0000_w0_e1_0a472793:tb2:14",
+        "reason": "task_stop",
+        "robot": "tb2",
+        "type": "cancel_goal"
+      }
+    },
+    {
+      "adapter_line_1_based": 532,
+      "epoch": "round0000_w0_e1_0a472793",
+      "kind": "protocol",
+      "stamp": 98.42,
+      "payload": {
+        "goal_id": "round0000_w0_e1_0a472793:tb3:16",
+        "reason": "task_stop",
+        "robot": "tb3",
+        "type": "cancel_goal"
+      }
+    },
+    {
+      "adapter_line_1_based": 542,
+      "epoch": "round0000_w0_e1_0a472793",
+      "kind": "protocol",
+      "stamp": 98.44,
+      "payload": {
+        "accepted": true,
+        "goal_id": "round0000_w0_e1_0a472793:tb1:16",
+        "robot": "tb1",
+        "type": "cancel_response"
+      }
+    },
+    {
+      "adapter_line_1_based": 543,
+      "epoch": "round0000_w0_e1_0a472793",
+      "kind": "protocol",
+      "stamp": 98.44,
+      "payload": {
+        "accepted": true,
+        "goal_id": "round0000_w0_e1_0a472793:tb2:14",
+        "robot": "tb2",
+        "type": "cancel_response"
+      }
+    },
+    {
+      "adapter_line_1_based": 544,
+      "epoch": "round0000_w0_e1_0a472793",
+      "kind": "protocol",
+      "stamp": 98.44,
+      "payload": {
+        "accepted": true,
+        "goal_id": "round0000_w0_e1_0a472793:tb3:16",
+        "robot": "tb3",
+        "type": "cancel_response"
+      }
+    },
+    {
+      "adapter_line_1_based": 550,
+      "epoch": "round0000_w0_e1_0a472793",
+      "kind": "protocol",
+      "stamp": 98.64,
+      "payload": {
+        "command_id": 14,
+        "goal_id": "round0000_w0_e1_0a472793:tb2:14",
+        "robot": "tb2",
+        "status": "CANCELED",
+        "type": "protocol_terminal"
+      }
+    },
+    {
+      "adapter_line_1_based": 551,
+      "epoch": "round0000_w0_e1_0a472793",
+      "kind": "protocol",
+      "stamp": 98.64,
+      "payload": {
+        "command_id": 16,
+        "goal_id": "round0000_w0_e1_0a472793:tb1:16",
+        "robot": "tb1",
+        "status": "CANCELED",
+        "type": "protocol_terminal"
+      }
+    },
+    {
+      "adapter_line_1_based": 552,
+      "epoch": "round0000_w0_e1_0a472793",
+      "kind": "protocol",
+      "stamp": 98.64,
+      "payload": {
+        "command_id": 16,
+        "goal_id": "round0000_w0_e1_0a472793:tb3:16",
+        "robot": "tb3",
+        "status": "CANCELED",
+        "type": "protocol_terminal"
+      }
+    }
+  ],
+  "runtime_source_proof": {
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_ENV_CONTRACT.md": "fa39665fab65d2970e86a2654d047ada2ae5d3670fe644b7c06d5a1e3abb3beb",
+    "ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py": "930be78a0763d69dfa102c662ac8713ee970e421a56193f92257e65ce0e67dac",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/task_evaluator.py": "bd0c2e43dbbb4258e4e1ee537fbdbe512211576eb930d5f8862d787dc73e48af",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_protocol.py": "fb08097170b3f0e8423fa11dde2567c618d4d0d48be220e6cfbfc9538c37c147",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/reward_gate_audit_v3.py": "895395075a881c6d74b809100e198be52a3c05a6710d24d873020b87223ff665"
+  },
+  "artifact_sha256": {
+    "metadata.json": {
+      "sha256": "43b71e3e7fbd07be6b1a210b35e50b992e9e63ff95e2c433275fde767d556465",
+      "bytes": 1364
+    },
+    "summary.json": {
+      "sha256": "858d21234c5172050b8bb8bb71340ac3f9d25ca98fedd0660dcb1383a233e412",
+      "bytes": 14261
+    },
+    "audit_v3.json": {
+      "sha256": "920ff6e41785fb770de4b5e8b072150a87970bdb2a506be761f85b777aa99cea",
+      "bytes": 50622
+    },
+    "native/round0000/worker0/episode001_open_101/transitions.jsonl": {
+      "sha256": "511e0d5acb8c70da7d508e63bcacfc1660d04ed0552fb98d58b21fb23ab4d2ed",
+      "bytes": 534110
+    },
+    "native/round0000/worker0/episode001_open_101/adapter.jsonl": {
+      "sha256": "3cc115356e1f1752fb060663629acd6ba322fbdc872abdfbdc197a17e0548a39",
+      "bytes": 788016
+    }
+  },
+  "causal_contract": {
+    "counted_event": "unique actual protocol cancel_goal(reason=switch), once per old goal_id; not replacement goal acceptance/send",
+    "runtime_counting_source": "task_evaluator._reward_event_callback appends only actual switch cancel events; MR3RewardLedger.advance differences cumulative counts",
+    "step_causality": "worker completes snapshot and reward for step9 before returning IPC; command10 is then generated from returned snapshot10. Therefore its same91.42s cancel events occur after step9 reward, despite identical simulation stamps.",
+    "actual_switch_steps": {
+      "10": 2,
+      "14": 1,
+      "16": 2
+    },
+    "old_wrong_assignment_steps": {
+      "9": 2,
+      "13": 1,
+      "15": 2
+    },
+    "switch_total": 5,
+    "actual_total_penalty": -0.05,
+    "replacement_send_times_sec": {
+      "command10": 91.62,
+      "command14": 95.62,
+      "command16": 97.62
+    },
+    "unchanged_task_gates": "95%/300s/contact/quality/participation/ownership unchanged"
+  },
+  "limitations": [
+    "This is offline diagnosis only, not replacement audit PASS or fresh native credit.",
+    "No raw evaluator callback wall-order trace was saved; temporal causality relies on actual adapter source-observation order plus pinned synchronous worker IPC/reward-before-return source and recorded deltas.",
+    "Original helper and audit_v3.json remain untouched; no reward, event timestamp, task gate, runtime implementation or model was changed."
+  ]
+}
