@@ -373,6 +373,16 @@ class NativeAccountingTests(unittest.TestCase):
                 return ""
             return original_check_output(command, **kwargs)
 
+        def interrupted_update(model):
+            self.assertEqual(model.gamma, 1.)
+            self.assertEqual(model.gae_lambda, 1.)
+            self.assertEqual(model.rollout_buffer.gamma, 1.)
+            self.assertEqual(model.rollout_buffer.gae_lambda, 1.)
+            # This fixture is externally truncated: its actual next V=.25
+            # remains exactly once, even with the undiscounted return contract.
+            np.testing.assert_allclose(model.rollout_buffer.returns[:, 0], [2.25, 1.25])
+            raise KeyboardInterrupt
+
         with tempfile.TemporaryDirectory() as temporary, patch(
                 "mr3_learning.ppo.subprocess.check_output", side_effect=source_query), patch(
                 "mr3_learning.ppo.resource_sample", return_value={}), patch(
@@ -380,11 +390,15 @@ class NativeAccountingTests(unittest.TestCase):
                 "mr3_learning.ppo.MR3Env", return_value=environment), patch(
                 "mr3_learning.ppo.configure", side_effect=production_logger), patch(
                 "mr3_learning.ppo.collect_episodes", side_effect=collected), patch.object(
-                MaskablePPO, "train", side_effect=KeyboardInterrupt), contextlib.redirect_stdout(
+                MaskablePPO, "train", autospec=True, side_effect=interrupted_update), \
+                contextlib.redirect_stdout(
                 io.StringIO()):
             status = main(["--run-id", "fixture", "--output-root", temporary,
                            "--decisions", "2", "--wall-seconds", "60", "--device", "cpu"])
             summary = json.loads((Path(temporary) / "fixture/summary.json").read_text())
+            metadata = json.loads((Path(temporary) / "fixture/metadata.json").read_text())
+            self.assertEqual(metadata["gamma_per_second"], 1.)
+            self.assertEqual(metadata["lambda_per_second"], 1.)
             metrics = (Path(temporary) / "fixture/sb3_metrics/progress.json").read_text()
             self.assertEqual([json.loads(line) for line in metrics.splitlines()],
                              [{"train/fixture_loss": 0.}, {"train/fixture_loss": 1.}])

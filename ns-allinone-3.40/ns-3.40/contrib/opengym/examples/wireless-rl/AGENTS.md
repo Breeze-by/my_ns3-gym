@@ -24,9 +24,10 @@ Default baseline retains handcrafted ROS frontier allocation; the mutually
 exclusive adapter owns stable goals and consumes logical ideal-delivery copies.
 P2A has separate eight-decision engineering checkpoints (seed17/41, four GPU steps each).
 The v2 pilot diagnostic interruption retains 390 native decisions, zero updates and
-two peer-safety failures. The v3 16-decision probe confirms all three robots reach goals
-and update maps; its original scalar audit shared-timestamp failure remains preserved.
-PPO pipeline v4 separates logging and adds causal switch auditing before a fresh pilot,
+two peer-safety failures. The v4 16-decision native/reward/policy chain passed with
+four GPU updates; its pilot diagnostic stop retains another 242 native decisions,
+zero updates and one genuine peer-safety failure. V5 corrects the finite-horizon
+objective to gamma=lambda=1 while retaining external-truncation bootstrap,
 without 95% task credit; no validated robot policy or ROS/ns-3 gateway exists. P1C implements Gymnasium
 tensors/IPC, full process rebuild, explicit stepping and isolated first-correct-cell rewards.
 W7 `cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a` has the complete eight-stage engineering matrix and independent audits,

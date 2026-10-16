@@ -1,0 +1,171 @@
+{
+  "schema": "mr3-p2a-analytic-objective-audit-v1",
+  "created_utc": "2026-10-16T04:43:37.596488+00:00",
+  "source_freeze": "7fea5de53be2049bdf2e6e6a8b309a5516fd2cfe",
+  "scope": "Pure source-based analytic diagnosis; no simulator, policy inference, GPU or counterfactual performance experiment. Does not replace unchanged native/task/reward auditors.",
+  "source_proof": {
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/ppo.py": {
+      "freeze_sha256": "ad9ffa12279f7e588e8472a3dcc9b15fa82789c34cbc314a2961d242d30e4507",
+      "current_sha256": "ad9ffa12279f7e588e8472a3dcc9b15fa82789c34cbc314a2961d242d30e4507",
+      "freeze_worktree_equal": true
+    },
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/rollout.py": {
+      "freeze_sha256": "338f6b68505c39ea79b5db208a66080ce22c25199b0fc975e61bd5a1f935c87a",
+      "current_sha256": "338f6b68505c39ea79b5db208a66080ce22c25199b0fc975e61bd5a1f935c87a",
+      "freeze_worktree_equal": true
+    },
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_ENV_CONTRACT.md": {
+      "freeze_sha256": "fa39665fab65d2970e86a2654d047ada2ae5d3670fe644b7c06d5a1e3abb3beb",
+      "current_sha256": "fa39665fab65d2970e86a2654d047ada2ae5d3670fe644b7c06d5a1e3abb3beb",
+      "freeze_worktree_equal": true
+    },
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_TASK_CONTRACT.md": {
+      "freeze_sha256": "f96f5ba785a39daa882b3c2ea217c58dd968550b65bf0ee15faf07ca079f8991",
+      "current_sha256": "f96f5ba785a39daa882b3c2ea217c58dd968550b65bf0ee15faf07ca079f8991",
+      "freeze_worktree_equal": true
+    },
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/predeclared_plan_v4.json": {
+      "freeze_sha256": "66d320e9060fe9977db63f3ae6c51dbf4278fb536a5e1bfd0568c690391e698c",
+      "current_sha256": "66d320e9060fe9977db63f3ae6c51dbf4278fb536a5e1bfd0568c690391e698c",
+      "freeze_worktree_equal": true
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_reward.py": {
+      "freeze_sha256": "77485e7988489a146e4c44207343a0a4be7c12b5ffe36906dde59257cac16f88",
+      "current_sha256": "77485e7988489a146e4c44207343a0a4be7c12b5ffe36906dde59257cac16f88",
+      "freeze_worktree_equal": true
+    }
+  },
+  "run_metadata_sha256": "578e818d507cc49ecbf5306f597e761bcea98e067baecbdd337c571e2f673a16",
+  "defaults": {
+    "gamma_per_second": 0.99,
+    "lambda_per_second": 0.95,
+    "task_duration_sec": 300.0,
+    "coverage_weight": 10.0,
+    "failure_weight": 20.0,
+    "time_weight_per_300sec": 1.0,
+    "normal_dt_sec": 1.0,
+    "complete_episodes_before_update": true
+  },
+  "return_convention": {
+    "formula": "G_0 = sum_i gamma**(sum_{j<i} dt_j) * r_i",
+    "indexing": "r_i is settled at interval end, but its weight uses preceding durations only. First reward has weight1. Ordinary300-step terminal weight is gamma**299. A proven zero-duration terminal is merged into preceding submitted sample without another gamma.",
+    "gae": "delta_i = r_i + gamma**dt_i * next_V_i - V_i; A_i = delta_i + (0 if terminated_or_truncated else (gamma*lambda)**dt_i * A_(i+1)); terminal next_V=0; external-truncation next_V preserved."
+  },
+  "failure_bound": {
+    "assumptions": [
+      "Failure has no success bonus. Total nonnegative first-correct coverage reward <=10; startup-known cells are unrewarded so actual possible gain may be smaller.",
+      "All other reward terms are nonpositive. Task terminal duration <=300; ordinary intervals1s, terminal can be short.",
+      "This is a reward upper bound, not proof that an actual policy can gain all coverage immediately or attain the bound."
+    ],
+    "ordinary_300_step_formula": "G_failure <= C_early - (1-gamma**300)/(300*(1-gamma)) - 20*gamma**299, where C_early<=10; use limit time_cost=1 for gamma=1.",
+    "conservative_any_terminal_formula": "G_failure <= 10 - 20*gamma**300 (discarding additional nonpositive terms).",
+    "sufficient_gamma_strictly_greater_than": 0.9976921765270234,
+    "sharper_normal_300_step_upper_zero_gamma": 0.9974427624585799,
+    "values": [
+      {
+        "gamma": 0.99,
+        "terminal_weight_ordinary_300_steps": 0.04953625663766235,
+        "terminal_penalty_magnitude_ordinary_300_steps": 0.9907251327532469,
+        "conservative_terminal_magnitude_for_start_le300": 0.9808178814257145,
+        "discounted_time_cost_300_steps": 0.31698636864290447,
+        "failed_timeout_upper_with_coverage10_at_first_reward": 8.692288498603848,
+        "failed_timeout_example_bound_with_coverage8_at_first_reward": 6.6922884986038484,
+        "conservative_any_failed_episode_upper": 9.019182118574285
+      },
+      {
+        "gamma": 0.999,
+        "terminal_weight_ordinary_300_steps": 0.741448480636736,
+        "terminal_penalty_magnitude_ordinary_300_steps": 14.828969612734719,
+        "conservative_terminal_magnitude_for_start_le300": 14.814140643121984,
+        "discounted_time_cost_300_steps": 0.8643098928130019,
+        "failed_timeout_upper_with_coverage10_at_first_reward": -5.693279505547721,
+        "failed_timeout_example_bound_with_coverage8_at_first_reward": -7.6932795055477206,
+        "conservative_any_failed_episode_upper": -4.814140643121984
+      },
+      {
+        "gamma": 1.0,
+        "terminal_weight_ordinary_300_steps": 1.0,
+        "terminal_penalty_magnitude_ordinary_300_steps": 20.0,
+        "conservative_terminal_magnitude_for_start_le300": 20.0,
+        "discounted_time_cost_300_steps": 1.0,
+        "failed_timeout_upper_with_coverage10_at_first_reward": -11.0,
+        "failed_timeout_example_bound_with_coverage8_at_first_reward": -13.0,
+        "conservative_any_failed_episode_upper": -10.0
+      }
+    ]
+  },
+  "failure_delay": {
+    "assumptions": "Same preceding history; immediate failure on next1s interval versus failure after L>=1 intervals; no additional coverage/contact/switch/reject events; same failure−20 in both paths. Conditional mathematical comparison only.",
+    "formula": "G_wait_L - G_fail_1 = (1-gamma**(L-1)) * (20 - gamma/(300*(1-gamma))) for gamma<1.",
+    "no_positive_delay_preference_gamma_at_least": 0.9998333611064822,
+    "collision_plus_failure_40_threshold": 0.9999166736105325,
+    "gamma1_limit": "G_wait_L - G_fail_1 = -(L-1)/300. Thus finite-horizon gamma1 preserves the original time penalty and failure bound directly.",
+    "caveat": "gamma.999 restores negative worst-case failed return but does not remove a preference to defer an otherwise identical unavoidablefailure."
+  },
+  "credit_assignment": {
+    "values": [
+      {
+        "gamma": 0.99,
+        "lambda": 0.95,
+        "trace_product": 0.9405,
+        "half_life_sec": 11.29941573128618,
+        "raw_terminal_td_multiplier_after_60_steps": 0.025207396529318006,
+        "raw_terminal_td_multiplier_after_299_steps": 1.0821343077477902e-08
+      },
+      {
+        "gamma": 0.999,
+        "lambda": 0.95,
+        "trace_product": 0.94905,
+        "half_life_sec": 13.254864831597608,
+        "raw_terminal_td_multiplier_after_60_steps": 0.04338560029934481,
+        "raw_terminal_td_multiplier_after_299_steps": 1.6197163305925833e-07
+      },
+      {
+        "gamma": 0.999,
+        "lambda": 0.99,
+        "trace_product": 0.98901,
+        "half_life_sec": 62.72350515610913,
+        "raw_terminal_td_multiplier_after_60_steps": 0.5152772512556527,
+        "raw_terminal_td_multiplier_after_299_steps": 0.03672858222042567
+      },
+      {
+        "gamma": 0.999,
+        "lambda": 0.995,
+        "trace_product": 0.994005,
+        "half_life_sec": 115.27395991034204,
+        "raw_terminal_td_multiplier_after_60_steps": 0.6971305873710386,
+        "raw_terminal_td_multiplier_after_299_steps": 0.16564644605961923
+      },
+      {
+        "gamma": 0.999,
+        "lambda": 1.0,
+        "trace_product": 0.999,
+        "half_life_sec": 692.8005491785002,
+        "raw_terminal_td_multiplier_after_60_steps": 0.9417362622231682,
+        "raw_terminal_td_multiplier_after_299_steps": 0.741448480636736
+      },
+      {
+        "gamma": 1.0,
+        "lambda": 1.0,
+        "trace_product": 1.0,
+        "half_life_sec": null,
+        "raw_terminal_td_multiplier_after_60_steps": 1.0,
+        "raw_terminal_td_multiplier_after_299_steps": 1.0
+      }
+    ],
+    "interpretation": "These are multipliers of a terminal TD residual in raw GAE, not measured policy gradients. An accurate learned critic can relay distant value through bootstrapping. With an inaccurate initial critic and few updates, lambda.95 gives short direct terminal credit; not an impossibility theorem.",
+    "gamma1_lambda1": "On complete episodes, GAE targets equal undiscounted Monte Carlo returns; each prior decision receives actual later terminal failure cost without discount attenuation. Variance can increase; no claim of training success."
+  },
+  "cadence_and_truncation": {
+    "full_round": "Four300-step episodes may require~1200 samples before any update; a3706-decision ceiling gives about3 full rounds plus a small tail if all reach300s. Genuine earlier terminals and wall cutoff alter this.",
+    "external60": "A true external60-step stop must bootstrap once without fabricating task failure. Resetting every episode at60 never samples60-to300 or timeout; bootstrap values at60 then lack later-trajectory evidence. It does not fix the objective.",
+    "continuing_segments": "A separately implemented and validated collector could retain native episodes across fixed-length rollout updates, eventually observe300s, and improve cadence. This is not the current collector and requires a prospective source/plan."
+  },
+  "decision": "Recommend stopping known-misaligned v4 pilot before first optimizer update, preserving all genuine outcomes and interrupted prefixes and charging all executed native decisions/wall time. Root owns process control and prospective correction.",
+  "interpretation_limits": [
+    "Round0 is the untrained initial policy: idle behavior cannot be claimed as learned waiting.",
+    "No counterfactual claim that corrected gamma/lambda achieves95% or prevents observed safety failure.",
+    "No task/safety/reward/candidate gate is weakened. Original v4 outputs remain unchanged.",
+    "Prospective gamma1/lambda1 must use fresh frozen source; current evidence does not become new-freeze credit."
+  ]
+}

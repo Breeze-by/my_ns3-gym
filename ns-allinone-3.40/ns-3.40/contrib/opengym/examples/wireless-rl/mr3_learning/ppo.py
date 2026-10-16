@@ -32,6 +32,12 @@ from .rollout import DecisionTransition, build_rollout_buffer, merge_zero_termin
 from .supervisor import SCENES, Supervisor, WORKSPACE
 
 
+# This is a finite, time-limited episodic task. Preserve the accepted total
+# reward and full terminal credit; sampler truncations still bootstrap once.
+GAMMA_PER_SECOND = 1.
+GAE_LAMBDA_PER_SECOND = 1.
+
+
 class ContractSpaces(gym.Env):
     """Describe the tensor contract without starting or sampling a simulator."""
 
@@ -312,7 +318,8 @@ def main(argv=None):
                 "utc_start": datetime.now(timezone.utc).isoformat(),
                 "command": [sys.executable, "-m", "mr3_learning.ppo", *(argv or sys.argv[1:])],
                 "robots_per_worker": 3, "normalization": "frozen physical tensor scales only",
-                "gamma_per_second": .99, "lambda_per_second": .95,
+                "gamma_per_second": GAMMA_PER_SECOND,
+                "lambda_per_second": GAE_LAMBDA_PER_SECOND,
                 "learning_rate": .0003, "entropy_coefficient": .01,
                 "versions": {name: importlib.metadata.version(name) for name in
                              ("torch", "gymnasium", "stable-baselines3", "sb3-contrib", "numpy")}}
@@ -339,11 +346,15 @@ def main(argv=None):
                                 policy_kwargs=policy_kwargs(), seed=args.seed, device=args.device,
                                 n_steps=args.batch_size, batch_size=args.batch_size,
                                 n_epochs=args.epochs,
-                                gamma=.99, gae_lambda=.95, learning_rate=.0003, ent_coef=.01,
+                                gamma=GAMMA_PER_SECOND, gae_lambda=GAE_LAMBDA_PER_SECOND,
+                                learning_rate=.0003, ent_coef=.01,
                                 target_kl=.03, verbose=0)
         else:
             model = MaskablePPO.load(args.checkpoint, device=args.device)
             result["input_checkpoint_sha256"] = file_sha(args.checkpoint)
+        if (model.gamma != GAMMA_PER_SECOND
+                or model.gae_lambda != GAE_LAMBDA_PER_SECOND):
+            raise ValueError("checkpoint return contract differs from the declared pilot")
         learner_logger = configure(str(directory / "sb3_metrics"), ["json"])
         model.set_logger(learner_logger)
         optimizer_hook = model.policy.optimizer.register_step_post_hook(
@@ -395,7 +406,8 @@ def main(argv=None):
             result.pop("active_attempts", None)
             result.pop("active_episodes", None)
             buffer = build_rollout_buffer(episodes, observation_space(),
-                                          gym.spaces.Discrete(1000), device=args.device)
+                                          gym.spaces.Discrete(1000), gamma=model.gamma,
+                                          gae_lambda=model.gae_lambda, device=args.device)
             save_rollout(directory / f"rollout_{round_index:04d}.npz", buffer, episodes)
             if args.mode == "train" and decisions >= 2:
                 model.rollout_buffer = buffer

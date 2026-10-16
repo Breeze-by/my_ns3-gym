@@ -1,4 +1,4 @@
-# MR3-P2A 联合 MaskablePPO pilot 契约 v4
+# MR3-P2A 联合 MaskablePPO pilot 契约 v5
 
 2026-10-16：用户验收 P1C 并授权 P2A。P2A 进行中，P2B 及后续未开始。
 正式任务沿用 [任务契约](MR3_TASK_CONTRACT.md) 与 [环境契约](MR3_ENV_CONTRACT.md)：
@@ -15,7 +15,7 @@
 
 学习依赖固定 SB3=2.9.0、sb3-contrib=2.9.0，保留原 Gymnasium1.3.0、PyTorch2.11.0+cu128。
 复用成熟 `MaskablePPO.train()`、masked categorical、Adam 与 clipped PPO loss。
-学习率 3e-4、gamma=.99/仿真秒、GAE lambda=.95/仿真秒、clip=.2、entropy=.01、
+学习率 3e-4、gamma=1/仿真秒、GAE lambda=1/仿真秒（v5固定常量）、clip=.2、entropy=.01、
 value coefficient=.5、max grad norm=.5、target KL=.03、每 round 最多 4 epochs、minibatch64。
 记录实际 optimizer.step 次数与 PPO epoch 数；KL 提前停止不补足更新。
 
@@ -30,7 +30,7 @@ value coefficient=.5、max grad norm=.5、target KL=.03、每 round 最多 4 epo
   不另乘 gamma。无此前真实决策或重复结算报错。
 - 逐条 `discount=gamma**dt`、`trace=lambda**dt`；terminated bootstrap=0。
   外部 truncated 只 bootstrap 一次真实末观测的 value，GAE 不跨 episode。
-- 按完整 episode 展平构造精确长度的 `MaskableDictRolloutBuffer`；保留原采样掩码供 PPO 重评概率。
+- 按原生闭合 episode（含明确的外部截断尾段）展平构造精确长度的 `MaskableDictRolloutBuffer`；保留原采样掩码供 PPO 重评概率。
   最后 singleton minibatch 并入前一批，避免标准优势标准化的单样本标准差产生 NaN。
 - 基础设施错误抛出且整 round 不更新；保留所有成功、任务失败、故障前缀和 cleanup 回执，不静默补样本。
 
@@ -68,24 +68,43 @@ IoU未达标，不是95%任务。原`audit_v3.json`保留六项scalar同边界sw
 v4将SB3日志写入`sb3_metrics/progress.json`，collector实时状态仍为根`progress.json`，
 以文件隔离回归核验；候选v3、SLAM/Nav2、actor、奖励和任务门禁保持。
 
-[v4前瞻计划](report/assets/20261016_mr3_p2a/predeclared_plan_v4.json)绑定同一新提交推送冻结；
-计划中的`SOURCE_FREEZE_FROM_METADATA`由各运行metadata记录实际SHA，不猜测提交。
-先完成CPU/静态检查和全新原生最小链：1 worker、open101、学习seed41、16真实决策、
-外部16步截断、900墙秒，最多4 epochs。它验证采样/更新/checkpoint及新执行接口，不能证明95%。
-最小链及独立原生/policy审计未通过则先诊断、新冻结，不启动pilot；所有尝试保留。
+[v4原计划](report/assets/20261016_mr3_p2a/predeclared_plan_v4.json)已在
+`7fea5de53be2049bdf2e6e6a8b309a5516fd2cfe`执行最小链和首round pilot，原件与原计划保持。
+v4最小链16决策/4次GPU更新、294.97549937386066墙秒，完整native/scalar/policy审计PASS；
+覆盖79.3595%、地图质量及参与未通过，tb2在三次有联合合法新目标的机会未被初始策略选中，
+不能将该不移动现象再次归为候选完全饥饿，也不证明95%任务或学习效果。
+v4 pilot在任何更新前因源级目标函数缺陷诊断SIGINT停止：242原生决策、239 collector返回、
+241.66奖励/物理仿真秒、1051.0549356047995墙秒、0更新；1次真实peer安全失败及3条放弃前缀，
+没有成功或final checkpoint。245个奖励/ACK结算含3个关闭零尾通知，不能当作245个actor样本。
+四个环境均clean关闭，168组保存原生PID/start身份无匹配；独立含父进程检查为169组。
 
-之后以全新初始权重执行单训练seed41的v4 pilot：4 workers，每个仍为tb1/tb2/tb3，固定open101，
-最多3706真实决策或12600墙秒采样截止（先到即停），普通episode上限300步，不载入旧checkpoint。
-预算沿用原4096决策/14400墙秒：扣除v2实际390决策及1752.9574942300096墙秒，
-决策余量3706，墙时余量12647.04250576999秒，v4保守取12600秒，不扩展原pilot预算。
-v3只运行了独立工程最小链，没有消耗pilot份额；该16决策/290.076789墙秒另列。
-最小工程链与固定开发验证分别记账；原生安全取消/退出及已开始round的最后一次更新收尾
+v5修订学习目标系数为gamma=lambda=1，不改环境奖励权重或任务/安全门禁。
+旧gamma=.99使300步最后的-20失败罚只贡献约-.990725，折扣时间罚约-.316986；
+假设覆盖8分前置的纯解析失败例仍可有+6.692288折扣回报，不能把该数学反例当作实际轨迹。
+旧GAE尾部权重(.99*.95)**299约1.082e-8。gamma=lambda=1使真实terminated的GAE
+望远镜相消为未折扣有限episode回报；失败目标上界<=-10只适用于无bootstrap的真实terminated。
+外部quota尾段、墙时截断及工程最小链仍只对真实末观测bootstrap一次，可能保留正value，
+不套用上述失败上界，不称所有采样都是无bootstrap的Monte Carlo。
+
+[v5前瞻计划](report/assets/20261016_mr3_p2a/predeclared_plan_v5.json)绑定同一新提交推送冻结；
+`SOURCE_FREEZE_FROM_METADATA`由各运行metadata记录实际SHA，不猜测提交。
+先完成CPU/静态检查和全新原生最小链：1 worker、open101、学习seed41、16真实决策、
+外部16步截断、900墙秒、最多4 epochs；独立native/scalar/pre-update policy审计通过才启动pilot。
+这些工程更新只验证新学习系数/采样/checkpoint闭环，不复用最小链权重，也不证明95%。
+
+随后从全新初始权重执行单训练seed41的v5 pilot：4 workers，每worker仍为tb1/tb2/tb3，
+固定open101，最多3464真实决策或11500墙秒采样截止（先到即停）。普通episode保持300步上限；
+最后quota剩余或墙时截止允许明确外部截断尾段，闭合后仅bootstrap一次，不暗称完整300秒轨迹。
+预算沿用原4096决策/14400墙秒：扣v2实际390/1752.9574942300096和v4实际242/1051.0549356047995，
+余3464决策/11595.987570165191墙秒，v5保守取11500墙秒，不扩展原pilot预算。
+各版独立工程最小链与固定开发验证分别记账；原生安全取消/退出及已开始round的最后一次更新收尾
 仍按原声明单列实际额外墙时，不混入任务300仿真秒。
 
-v4 pilot完成后冻结final checkpoint，在open401/open402/open403各运行一轮开发验证，
-总上限900决策、9000墙秒，最多4 workers、确定性mask-aware推理、0 optimizer更新。
-只使用最终checkpoint，不从验证episode反馈选checkpoint或调参。
-这些均为开发已见布局，不称未见泛化；rooms/corridors与姿态变化在固定布局学习诊断后再预声明。
+v5 pilot正常产生有限final checkpoint后，只使用该final在open401/open402/open403各运行一轮开发验证，
+总上限900决策/9000墙秒、最多4 workers、确定性mask-aware推理、0 optimizer更新；
+不从验证反馈挑checkpoint或调参。学习seed41和Gazebo taskseed含义不同：open101及open401/402/403
+均使用同一p1c_open.world、同一任务几何和固定三台起点/yaw0，仅改变Gazebo传感/物理随机种子。
+这不是姿态/布局变化、多训练seed或未见泛化；rooms/corridors及预声明姿态/布局变化仍未启动。
 
 本轮无自动重试。真实任务失败计入；基础设施故障终止run，保留前缀与已有checkpoint。
 如未达到95%任务/安全/学习出口，明确P2A未完成，诊断表示、候选、采样与奖励，停在本步。

@@ -82,10 +82,12 @@ P1C made no new GPU training or multi-day stability claim.
 P2A has separate eight-decision native engineering checkpoints (seed17 and seed41,
 four GPU optimizer steps each). The v2 pilot was diagnostically interrupted after
 390 recorded native decisions and zero updates, preserving two peer-safety failures.
-Versioned v3 candidate/SLAM/Nav2 changes have a 16-decision native probe with all
-three robots reaching goals and updating maps. Its original full scalar audit
-retains a shared-timestamp switch-assignment failure; v4 separates logging and
-adds causal command-bound auditing before a fresh pilot. There is no 95% task credit; no validated exploration policy or ROS/ns-3 gateway exists. Historical
+Versioned v3 candidate/SLAM/Nav2 changes have native short-subgoal evidence.
+The v4 16-decision chain passed native/reward/policy audits with four GPU updates.
+Its pilot was diagnostically interrupted after 242 native decisions and zero
+updates for a policy-independent discount/objective mismatch; all outcomes remain
+preserved. V5 uses gamma=lambda=1 for the finite task, retaining one bootstrap for
+external truncations; fresh native validation is required. There is no 95% task credit; no validated exploration policy or ROS/ns-3 gateway exists. Historical
 five-user/15-input/5-action toy DQN is a separate task.
 P1A now measures all six actual body collisions per robot (18 streams), with
 continuous freshness, raw publication-sequence audit and navigation terminal

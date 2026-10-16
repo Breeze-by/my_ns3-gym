@@ -3536,3 +3536,34 @@ v3规范选件与v4冻结前核查补充：`report/assets/20261016_mr3_p2a/nativ
 root最终v4前置CPU回执：conda全套95/95通过8.970秒，6份修改学习端Python文件flake8通过；logger真实SB3交错写入隔离及相关14项聚焦检查通过4.172秒。原生节点/SLAM/Nav2配置与c291字节相同，先前786ROS语义检查和三包canonical build仍绑定同一实现；学习端日志隔离/离线审计修订没有新增ROS、仿真或GPU运行。v4原生尚未开始，须先新提交推送再按predeclared_plan_v4.json从新最小链执行；所有旧计划、失败和原件保持。
 
 最终v4 CPU/限定lint完整命令和输出回执为`report/assets/20261016_mr3_p2a/prefreeze_checks_v4.json`，归档索引记录其SHA/字节；原生源码未变的Gitdiff证据仅复用同字节的786语义检查/三包build范围，不声称新原生结果。本代理最终静态核对5文档59本地链接、15shell块、3个v4命令/预算、18条证据SHA/字节与旧v3计划哈希均通过；随后仅补本回执链接及第19条hash pin。`git diff --check`通过，未新增simulator/GPU。
+
+### 2026-10-16：MR3-P2A v4最小链PASS、pilot源级目标函数诊断中断与v5前瞻
+
+v4冻结`7fea5de53be2049bdf2e6e6a8b309a5516fd2cfe`，cwd wireless-rl，conda ns3gym、PYTHONNOUSERSITE=1；metadata保存精确命令、学习seed41和Gazebo open101。依次执行：
+
+```bash
+rtk proxy env PYTHONNOUSERSITE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -m mr3_learning.ppo --mode train --workers 1 --schedule open:101 --decisions 16 --episode-steps 16 --wall-seconds 900 --seed 41 --base-domain 160 --base-port 12301 --run-id mr3_p2a_v4_minimal
+rtk proxy env PYTHONNOUSERSITE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -m mr3_learning.ppo --mode train --workers 4 --schedule open:101 --decisions 3706 --episode-steps 300 --wall-seconds 12600 --seed 41 --base-domain 164 --base-port 12311 --run-id mr3_p2a_v4_pilot
+```
+
+minimal16原生/collector决策、16.0奖励秒、4次GPU optimizer.step、294.97549937386066全墙秒；exit0、原生关闭clean。完整native/contact/time/clock/causal scalar/pre-update policy及rollout审计audit_v4.json PASS/errors=[]，SHA`bbfebef094a5fd990b8de2f6b4453a83230286f021d42d3ed055ca9d2964d21d`。所有采样仍是更新前初始策略，不证明更新后任务性能。外部截断success=false、覆盖.7935953620012782、accuracy.9679414157851912、IoU.12867544105292636、质量/参与false、0接触/新鲜监测、关闭后navigation闭合。tb1/tb3接受3/4目标成功1/2，tb2接受0、估计路径.000471m，但有三次联合合法新目标机会被初始actor拒选；此时不应将不动泛称候选饥饿。详见native_v4/minimal/candidate_motion_readonly_diagnosis_v1.json（SHA`8712ccc042dea84ad5c9989f61d6a3a6718467bec31b77f027319ad3ca2c240d`）。
+
+pilot原生metadata UTC开始04:25:39.869298，四worker仍从全新初始权重采样，未载入minimal checkpoint。04:42:03 UTC因源码目标函数缺陷主动诊断SIGINT；核验PID1135223/start_ticks387012924后保存diagnostic_stop_request.json，实际操作`os.kill(1135223, signal.SIGINT)`，不是shellkill、用户取消或性能筛选。保留exit1、completed=false、stop_reason=interrupted、KeyboardInterrupt()、cleanup_errors=[]。最终242原生决策、239collector已返回、241.66有效/物理仿真秒、1051.0549356047995全墙秒、0optimizer更新、无final checkpoint；首round未闭合计数0不能解释成无采样。241动作接受，w2 command4因navigation_changed_since_observation拒绝且真实扣分；拒绝也计原242预算。245奖励/ACK结算另含3个关闭零尾通知，不是245actor样本，不将3条未返回原生回执伪补为collector样本。
+
+w0/w2/w3各66原生决策/66.0秒，为放弃前缀并正常外部关闭，评价覆盖分别.9019674974892723/.9449009403816306/.9543504062813841；w3参与false，即使T95coverage48.56仍不是任务成功。w1为44决策/43.66秒真实peer_body_envelopes_overlap导航安全失败，覆盖.8978362092577377，冻结navigation_protocol_closed=false；不能用之后clean退出覆盖。所有四条success=false、0接触/新鲜监测。四个owned环境均clean关闭；根owned_process_absence_v1.json确认168/168原生PID/start身份无匹配，独立prefix审计包含父进程共169组。独立diagnostic_native_prefix_audit_v4.json（SHA`6582616e1a3875f421554c6913d52d62251872c54c9e39065303eaee27e1ebc3`）核对242/239/245及四轨迹；已真实终止w1的closed_failure_worker1_component_audit_v4.json（SHA`9d25b69121a7abb6eaf5eba7b8b20233291d0c9a498a82ff1387a2c2e365555a`）通过原生/contact/time/causal scalar/初始策略组件范围，不替代未完成整run的完整audit或提供成功信用。只读诊断未启动新仿真/GPU，未保留独立诊断CLI时不虚构重放命令。
+
+源级解析analytic_objective_audit_v1.json（SHA`b4229c8fdacf92cde630e2c336d0bc379b86200db79a72ccd3a6f594ef7db8d6`）证明旧gamma=.99/lambda=.95可严重削弱晚失败：300步末-20贡献-.9907251327532469，折扣时间罚-.31698636864290447，假设覆盖8分前置可有失败回报+6.6922884986038484，GAE旧trace(.99*.95)**299=1.0821343077477902e-8。这是源码数学反例，不是观察轨迹回报、反事实策略性能或学习结果；pilot在首更新前停止，不能声称已学习策略差。v4开发验证没有启动。
+
+规范选件：native_v4/minimal/manifest.json SHA`a81aab9ba038027d817cfa0ecf23f821f4eb5dbd405d4f5c97327e2bf717d5eb`，29文件raw20362138/selected12695621 bytes；native_v4/pilot_interrupted/manifest.json SHA`3b36bba782e9f2e822e4eb864542406278702c0b2eaf9e5bc94e2ff78893ab10`，74文件raw25738292/selected5998428 bytes。`report/assets/20261016_mr3_p2a/selected_byte_integrity_v4.json`核查103/103所选及解码raw字节/SHA PASS，且原runtime目录无缺失/额外/修改选件；所有旧计划/失败/原件保持。原始根为ROS log/mr3_ppo/mr3_p2a_v4_minimal和mr3_p2a_v4_pilot。
+
+v5为新前瞻学习超参数契约：固定gamma=lambda=1，无新增CLI，生产model/buffer/metadata接线一致；reward权重、真实dt/零尾通知、原生候选/SLAM/Nav2/actor/任务和安全门禁均不改。真实terminated无bootstrap的GAE目标相消为未折扣有限episode MC，剩余覆盖<=10、失败-20、其他项非正时真实失败future target<=-10；该界不适用于外部quota/墙时尾段和工程16步截断，它们保留一次末观测value bootstrap，可能为正。普通任务episode上限300保持，不暗称所有quota尾段完整300步或无bootstrap MC。
+
+原pilot4096/14400扣v2的390原生决策/1752.9574942300096墙秒及v4的242/1051.0549356047995，余3464/11595.987570165191，保守取v5采样上限3464决策/11500墙秒。各版工程最小链与固定验证单列；在途、原生关闭和已开始round末更新额外收尾照原声明记实耗，不扩pilot预算。新predeclared_plan_v5.json只以前瞻SOURCE_FREEZE_FROM_METADATA绑定未来同一干净提交推送freeze：全新seed41/open101单worker最小链16决策/16步截断/900墙秒，完整审计通过才从新权重跑四worker剩余额度pilot；随后只用final在open401/402/403做900决策/9000墙秒确定性mask-aware、0更新开发验证，不挑checkpoint。当前均尚未执行。
+
+学习seed41仅控制学习初始化/采样；open101/401/402/403为同p1c_open.world、同任务几何和固定三台起点/yaw0，仅Gazebo传感/物理随机种子不同。worker并未调用布局生成器或随机起点；本轮不是姿态/布局变化、多学习seed或未见泛化，不能替代后续预声明的开发姿态/布局阶段。P2A仍未达95%/学习出口，P2B/gateway未开始。
+
+v5冻结前CPU/静态回执`report/assets/20261016_mr3_p2a/prefreeze_checks_v5.json`：完整conda105/105通过9.677秒，3份修改Python文件flake8通过，10项有限episode目标反例/性质检查通过.548秒，14项真实model/buffer/metadata系数接线和日志检查通过4.255秒。源码diff证明原生ROS src与scripts相对7fea无变更，仅复用同字节原786ROS语义/三包构建源码范围，不复用任务结果；这些新检查没有simulator/GPU。完整CPU命令为：
+
+```bash
+rtk proxy env PYTHONNOUSERSITE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -m unittest discover -s mr3_learning/tests -q
+```

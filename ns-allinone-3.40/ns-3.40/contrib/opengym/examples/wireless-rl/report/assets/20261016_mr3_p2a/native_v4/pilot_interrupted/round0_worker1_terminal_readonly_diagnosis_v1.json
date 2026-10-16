@@ -1,0 +1,489 @@
+{
+  "schema": "mr3-p2a-terminal-readonly-diagnosis-v1",
+  "run_id": "mr3_p2a_v4_pilot",
+  "freeze": "7fea5de53be2049bdf2e6e6a8b309a5516fd2cfe",
+  "worker": 1,
+  "epoch": "round0000_w1_e1_1edae17f",
+  "scene": "open",
+  "task_seed": 101,
+  "classification": "Genuine task safety failure during initial neural-policy/Nav2 execution; not a fabricated infrastructure terminal or observed SDK/process/freshness failure. Attribution to high-level policy versus local Nav2 alone is not isolated.",
+  "source_files": [
+    {
+      "path": "native/round0000/worker1/episode001_open_101/metadata.json",
+      "bytes": 2256,
+      "sha256": "811b1c37748bd3c721a67de390c75099da5c3c460d13ed39990684510e0ab924"
+    },
+    {
+      "path": "native/round0000/worker1/episode001_open_101/adapter.jsonl",
+      "bytes": 2050779,
+      "sha256": "1e8599f6a1d7d960bb77194fd558ae62795e6716915b0df6833054d23403859a"
+    },
+    {
+      "path": "native/round0000/worker1/episode001_open_101/transitions.jsonl",
+      "bytes": 1403286,
+      "sha256": "d689a8810a062da2609d609d44f3be15b6c4de0b700d2f987c3a7fe0317ea529"
+    },
+    {
+      "path": "native/round0000/worker1/episode001_open_101/round0000_w1_e1_1edae17f.json",
+      "bytes": 18847,
+      "sha256": "b815c58a20f4135d0d4f30ef2d50d36ad9d6b74cff9034c2e98ed1ddfed3032e"
+    },
+    {
+      "path": "native/round0000/worker1/episode001_open_101/nav2_shutdown.json",
+      "bytes": 11654,
+      "sha256": "31e569ccc3dd145f5899881447e6fe4e9f7e8a1b413823988f0c7e452a970364"
+    },
+    {
+      "path": "native/round0000/worker1/episode001_open_101/native_stop.json",
+      "bytes": 129,
+      "sha256": "54cad480acb69510938b490c9cd683f93832931ac52f82a1bd77cfc5aa1153a3"
+    }
+  ],
+  "exact_native_control_failure": {
+    "component": "peer_obstacles",
+    "reason": "peer_body_envelopes_overlap"
+  },
+  "safety_stop_event": {
+    "epoch": "round0000_w1_e1_1edae17f",
+    "kind": "safety_stop",
+    "payload": {
+      "reason": "{\"component\": \"peer_obstacles\", \"reason\": \"peer_body_envelopes_overlap\"}"
+    },
+    "stamp": 113.2
+  },
+  "frozen_task_evaluator": {
+    "success": false,
+    "termination_reason": "navigation_failure",
+    "failure_reason": "navigation_failure",
+    "control_failure": "{\"component\": \"peer_obstacles\", \"reason\": \"peer_body_envelopes_overlap\"}",
+    "map_contract_failure": "",
+    "elapsed_sim_time_sec": 43.66,
+    "end_sim_time_sec": 113.2,
+    "correct_free_coverage_ratio": 0.8978362092577377,
+    "coverage_threshold": 0.95,
+    "known_coverage_ratio": 0.849566055930569,
+    "observed_accuracy": 0.9675794551645857,
+    "occupied_iou": 0.21574781659388648,
+    "false_free_ratio": 0.0011737089201877935,
+    "map_quality_pass": true,
+    "robot_participation_pass": true,
+    "collision_events": 0,
+    "collision_duration_sec": 0.0,
+    "collision_monitoring_active": true,
+    "collision_monitoring_fresh": true,
+    "navigation_protocol_closed": false,
+    "navigation_stop_acknowledgment": null,
+    "nav_goal_count": 24,
+    "nav_succeeded": 4,
+    "nav_canceled": 17,
+    "nav_aborted": 0
+  },
+  "terminal_step": {
+    "submitted_decision_count": 44,
+    "command": {
+      "action": 888,
+      "command_id": 44,
+      "created_at": 112.54,
+      "epoch": "round0000_w1_e1_1edae17f",
+      "expires_at": 114.54,
+      "observation_digest": "0257eda006232785c8ca862c7ebe8540705bc473923a513c91c289cc07919789",
+      "observation_sequence": 44
+    },
+    "reward": -20.001287008125626,
+    "terminated": true,
+    "truncated": false,
+    "dt": 0.66,
+    "physical_dt": 0.66,
+    "reward_sequence": 44,
+    "reward_terms": {
+      "collision": -0.0,
+      "coverage": 0.0009129918743723181,
+      "failure": -20.0,
+      "invalid": -0.0,
+      "success": 0.0,
+      "switch": -0.0,
+      "time": -0.0022
+    },
+    "map_pairing_scope": "terminal_evaluator_frozen_before_drain"
+  },
+  "estimated_approach_snapshots": [
+    {
+      "elapsed_sec": 41.0,
+      "source_stamp": 110.54,
+      "estimated_pair_distances": [
+        {
+          "robots": [
+            "tb1",
+            "tb2"
+          ],
+          "estimated_centre_separation_m": 1.271339167657836
+        },
+        {
+          "robots": [
+            "tb1",
+            "tb3"
+          ],
+          "estimated_centre_separation_m": 4.00932526535816
+        },
+        {
+          "robots": [
+            "tb2",
+            "tb3"
+          ],
+          "estimated_centre_separation_m": 5.245989914191294
+        }
+      ],
+      "robots": [
+        {
+          "name": "tb1",
+          "xy": [
+            -0.6540572642985043,
+            0.2310717555603321
+          ],
+          "source_stamp": 110.417,
+          "source_age_sec": 0.12300000000000466,
+          "phase": "active",
+          "goal_id": "round0000_w1_e1_1edae17f:tb1:36",
+          "goal_xy": [
+            -2.4724263586563877,
+            3.5739320346739465
+          ]
+        },
+        {
+          "name": "tb2",
+          "xy": [
+            -1.8209338145767282,
+            0.7357522442179689
+          ],
+          "source_stamp": 110.38,
+          "source_age_sec": 0.1600000000000108,
+          "phase": "active",
+          "goal_id": "round0000_w1_e1_1edae17f:tb2:37",
+          "goal_xy": [
+            3.027573723299999,
+            -4.126068080064995
+          ]
+        },
+        {
+          "name": "tb3",
+          "xy": [
+            3.316148671354705,
+            -0.32763560249333523
+          ],
+          "source_stamp": 110.419,
+          "source_age_sec": 0.12100000000000932,
+          "phase": "active",
+          "goal_id": "round0000_w1_e1_1edae17f:tb3:40",
+          "goal_xy": [
+            -2.3224263564212135,
+            -4.38135842872347
+          ]
+        }
+      ]
+    },
+    {
+      "elapsed_sec": 42.0,
+      "source_stamp": 111.54,
+      "estimated_pair_distances": [
+        {
+          "robots": [
+            "tb1",
+            "tb2"
+          ],
+          "estimated_centre_separation_m": 0.8724946017256008
+        },
+        {
+          "robots": [
+            "tb1",
+            "tb3"
+          ],
+          "estimated_centre_separation_m": 4.032783272063579
+        },
+        {
+          "robots": [
+            "tb2",
+            "tb3"
+          ],
+          "estimated_centre_separation_m": 4.905266655795528
+        }
+      ],
+      "robots": [
+        {
+          "name": "tb1",
+          "xy": [
+            -0.7967015298092461,
+            0.3552072875992761
+          ],
+          "source_stamp": 111.416,
+          "source_age_sec": 0.12400000000000944,
+          "phase": "active",
+          "goal_id": "round0000_w1_e1_1edae17f:tb1:42",
+          "goal_xy": [
+            -3.9724263810081295,
+            -0.8313583758243475
+          ]
+        },
+        {
+          "name": "tb2",
+          "xy": [
+            -1.6481906890041276,
+            0.5455045335433744
+          ],
+          "source_stamp": 111.38,
+          "source_age_sec": 0.1600000000000108,
+          "phase": "active",
+          "goal_id": "round0000_w1_e1_1edae17f:tb2:37",
+          "goal_xy": [
+            3.027573723299999,
+            -4.126068080064995
+          ]
+        },
+        {
+          "name": "tb3",
+          "xy": [
+            3.1438494968234054,
+            -0.5023465159257142
+          ],
+          "source_stamp": 111.417,
+          "source_age_sec": 0.12300000000000466,
+          "phase": "active",
+          "goal_id": "round0000_w1_e1_1edae17f:tb3:40",
+          "goal_xy": [
+            -2.3224263564212135,
+            -4.38135842872347
+          ]
+        }
+      ]
+    },
+    {
+      "elapsed_sec": 43.0,
+      "source_stamp": 112.54,
+      "estimated_pair_distances": [
+        {
+          "robots": [
+            "tb1",
+            "tb2"
+          ],
+          "estimated_centre_separation_m": 0.5988976522461437
+        },
+        {
+          "robots": [
+            "tb1",
+            "tb3"
+          ],
+          "estimated_centre_separation_m": 4.125626066923513
+        },
+        {
+          "robots": [
+            "tb2",
+            "tb3"
+          ],
+          "estimated_centre_separation_m": 4.724473430688936
+        }
+      ],
+      "robots": [
+        {
+          "name": "tb1",
+          "xy": [
+            -1.0284193072619334,
+            0.36059070909123303
+          ],
+          "source_stamp": 112.417,
+          "source_age_sec": 0.12300000000000466,
+          "phase": "active",
+          "goal_id": "round0000_w1_e1_1edae17f:tb1:42",
+          "goal_xy": [
+            -3.9724263810081295,
+            -0.8313583758243475
+          ]
+        },
+        {
+          "name": "tb2",
+          "xy": [
+            -1.6103110869421757,
+            0.5022958769804218
+          ],
+          "source_stamp": 112.38,
+          "source_age_sec": 0.1600000000000108,
+          "phase": "active",
+          "goal_id": "round0000_w1_e1_1edae17f:tb2:43",
+          "goal_xy": [
+            3.177573725535173,
+            4.418641702406749
+          ]
+        },
+        {
+          "name": "tb3",
+          "xy": [
+            2.9661360929497915,
+            -0.6710669854558095
+          ],
+          "source_stamp": 112.419,
+          "source_age_sec": 0.12100000000000932,
+          "phase": "active",
+          "goal_id": "round0000_w1_e1_1edae17f:tb3:40",
+          "goal_xy": [
+            -2.3224263564212135,
+            -4.38135842872347
+          ]
+        }
+      ]
+    },
+    {
+      "elapsed_sec": 43.66,
+      "source_stamp": 113.2,
+      "estimated_pair_distances": [
+        {
+          "robots": [
+            "tb1",
+            "tb2"
+          ],
+          "estimated_centre_separation_m": 0.46069618360580133
+        },
+        {
+          "robots": [
+            "tb1",
+            "tb3"
+          ],
+          "estimated_centre_separation_m": 4.144187712897079
+        },
+        {
+          "robots": [
+            "tb2",
+            "tb3"
+          ],
+          "estimated_centre_separation_m": 4.588707186617802
+        }
+      ],
+      "robots": [
+        {
+          "name": "tb1",
+          "xy": [
+            -1.1679886671784223,
+            0.26035049582102765
+          ],
+          "source_stamp": 113.017,
+          "source_age_sec": 0.18300000000000693,
+          "phase": "canceling",
+          "goal_id": "round0000_w1_e1_1edae17f:tb1:42",
+          "goal_xy": [
+            -3.9724263810081295,
+            -0.8313583758243475
+          ]
+        },
+        {
+          "name": "tb2",
+          "xy": [
+            -1.5635089780496896,
+            0.49658058974905855
+          ],
+          "source_stamp": 112.98,
+          "source_age_sec": 0.21999999999999886,
+          "phase": "canceling",
+          "goal_id": "round0000_w1_e1_1edae17f:tb2:43",
+          "goal_xy": [
+            3.177573725535173,
+            4.418641702406749
+          ]
+        },
+        {
+          "name": "tb3",
+          "xy": [
+            2.8386218845162836,
+            -0.7985941140504046
+          ],
+          "source_stamp": 113.017,
+          "source_age_sec": 0.18300000000000693,
+          "phase": "canceling",
+          "goal_id": "round0000_w1_e1_1edae17f:tb3:40",
+          "goal_xy": [
+            -2.3224263564212135,
+            -4.38135842872347
+          ]
+        }
+      ]
+    }
+  ],
+  "pair_interpretation": "The reason event does not name a robot pair. Last delivered actor estimates identify tb1/tb2 as the only pair below0.50m at terminal(.460696m); this is a snapshot-based inference, not a separately logged exact peer-monitor pair or contact claim.",
+  "post_terminal_closure": {
+    "task_stopped_event": {
+      "epoch": "round0000_w1_e1_1edae17f",
+      "kind": "task_stopped",
+      "payload": {
+        "epoch": "round0000_w1_e1_1edae17f",
+        "navigation_failure": false,
+        "pending_goal_count": 0,
+        "robot_names": [
+          "tb1",
+          "tb2",
+          "tb3"
+        ],
+        "start_sim_time_sec": 69.54,
+        "stop_sim_time_sec": 113.4
+      },
+      "stamp": 113.4
+    },
+    "closure_after_frozen_failure_sec": 0.20000000000000284,
+    "final_canceled_goals": [
+      {
+        "epoch": "round0000_w1_e1_1edae17f",
+        "kind": "protocol",
+        "payload": {
+          "command_id": 42,
+          "epoch": "round0000_w1_e1_1edae17f",
+          "goal_id": "round0000_w1_e1_1edae17f:tb1:42",
+          "robot": "tb1",
+          "stamp": 113.4,
+          "status": "CANCELED",
+          "type": "protocol_terminal"
+        },
+        "stamp": 113.4
+      },
+      {
+        "epoch": "round0000_w1_e1_1edae17f",
+        "kind": "protocol",
+        "payload": {
+          "command_id": 43,
+          "epoch": "round0000_w1_e1_1edae17f",
+          "goal_id": "round0000_w1_e1_1edae17f:tb2:43",
+          "robot": "tb2",
+          "stamp": 113.4,
+          "status": "CANCELED",
+          "type": "protocol_terminal"
+        },
+        "stamp": 113.4
+      },
+      {
+        "epoch": "round0000_w1_e1_1edae17f",
+        "kind": "protocol",
+        "payload": {
+          "command_id": 40,
+          "epoch": "round0000_w1_e1_1edae17f",
+          "goal_id": "round0000_w1_e1_1edae17f:tb3:40",
+          "robot": "tb3",
+          "stamp": 113.4,
+          "status": "CANCELED",
+          "type": "protocol_terminal"
+        },
+        "stamp": 113.4
+      }
+    ],
+    "nav2_lifecycle_shutdown_success": true,
+    "nav2_lifecycle_shutdown_failures": [],
+    "native_stop": {
+      "returncode": 0,
+      "method": "owned_launch_native_stop",
+      "native_cli_pid": 1147701,
+      "server_clean_exit_recorded": true
+    },
+    "supervisor_shutdown_exists_at_read": false,
+    "scope": "Frozen evaluator navigation_protocol_closed=false and null stopACK remain original. Later adapter pending_goal_count0 and lifecycle/native-stop receipts prove cleanup closure only; they do not retroactively change task failure or reward. Supervisor finalclose may await the other round workers."
+  },
+  "findings": [
+    "Safety stop was peer_body_envelopes_overlap at113.20absolute/43.66taskseconds; no true contact event is recorded.",
+    "The final submitted action44 is KEEP888. Existing goals tb1:42,tb2:43,tb3:40 remain the native execution context; this is not evidence that KEEP alone caused the approach.",
+    "Final short transition is retained withdt=physical_dt=.66, terminated=true,truncated=false and taskfailure penalty-20.",
+    "All three goals are safety-canceled and close at113.40; cleanup time.20seconds is excluded from the frozen43.66second task/reward time.",
+    "Frozen coverage.897836<.95 despite passed quality and participation. It is a valid retained failure, not an invalid infrastructure sample, and no successful-task credit is claimed."
+  ]
+}

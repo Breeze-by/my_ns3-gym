@@ -1,0 +1,159 @@
+{
+  "schema": "mr3-p2a-native-pilot-plan-v5",
+  "date": "2026-10-16",
+  "authorization": "User explicitly accepted MR3-P1C and instructed execution of P2A.",
+  "scope": "Native Gazebo pilot, exactly three robots per environment, no 2D or gateway.",
+  "freeze_binding": "Prospective plan: all v5 stages require the same new clean committed/pushed source freeze. SOURCE_FREEZE_FROM_METADATA is resolved only from actual metadata. All original v1-v4 plans, failures and evidence remain historical and unchanged; no v5 result credit before execution.",
+  "training_seed": 41,
+  "optimizer": {
+    "algorithm": "sb3-contrib MaskablePPO 2.9.0 train()",
+    "learning_rate": 0.0003,
+    "gamma_per_second": 1.0,
+    "gae_lambda_per_second": 1.0,
+    "minibatch_size": 64,
+    "maximum_epochs_per_round": 4,
+    "target_kl": 0.03,
+    "entropy_coefficient": 0.01
+  },
+  "stages": [
+    {
+      "name": "minimal",
+      "run_id": "mr3_p2a_v5_minimal",
+      "command": "python -m mr3_learning.ppo --mode train --workers 1 --schedule open:101 --decisions 16 --episode-steps 16 --wall-seconds 900 --seed 41 --base-domain 160 --base-port 12301 --run-id mr3_p2a_v5_minimal",
+      "decision_cap": 16,
+      "purpose": "Fresh gamma=lambda=1 source,16 decisions and external16-step truncation with one bootstrap, real PPO/checkpoint and clean closure. Full native/scalar/pre-update-policy audit required before pilot; no95% credit.",
+      "wall_seconds": 900
+    },
+    {
+      "name": "pilot",
+      "run_id": "mr3_p2a_v5_pilot",
+      "condition": "minimal native and collecting-policy audits pass",
+      "command": "python -m mr3_learning.ppo --mode train --workers 4 --schedule open:101 --decisions 3464 --episode-steps 300 --wall-seconds 11500 --seed 41 --base-domain 164 --base-port 12311 --run-id mr3_p2a_v5_pilot",
+      "decision_cap": 3464,
+      "purpose": "Fresh seed41 initial policy, fixed development open101; remaining original pilot resource ceiling after charging every v2 and v4 native decision including rejection and full actual wall time. No checkpoint reuse.",
+      "wall_seconds": 11500
+    },
+    {
+      "name": "development_validation",
+      "run_id": "mr3_p2a_v5_validation",
+      "condition": "pilot produces a finite frozen final checkpoint without infrastructure errors",
+      "command": "python -m mr3_learning.ppo --mode evaluate --workers 4 --checkpoint /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v5_pilot/final.zip --schedule open:401,open:402,open:403 --decisions 900 --episode-steps 300 --wall-seconds 9000 --seed 41 --base-domain 172 --base-port 12321 --run-id mr3_p2a_v5_validation",
+      "optimizer_steps": 0,
+      "checkpoint_selection": "final only, no validation-driven selection or tuning",
+      "purpose": "Three deterministic mask-aware development Gazebo random seeds under unchanged95%/300s/schema4 gates; same open world, task geometry and fixed start poses/yaw0. All failures retained. No pose/layout variation, independent learning seeds or unseen generalization.",
+      "decision_cap": 900,
+      "wall_seconds": 9000
+    }
+  ],
+  "wall_budget": "Sample cutoff at next request boundary; in-flight request, genuine stop/closure and final update measured separately in total actual wall time.",
+  "retries": "none; infrastructure failure stops run/remaining stages, preserve prefix and diagnose",
+  "task_failures": "count and preserve, never replace or change gates",
+  "success_boundary": "Actual optimizer updates alone do not complete P2A. Must demonstrate frozen 95% task and learning/coordination evidence; otherwise remain in P2A and report diagnosis.",
+  "evaluation_split": "Development only; no held-out/test/confirmation layouts or seeds used.",
+  "evidence": "Complete native records, tensor/mask rollouts, sampling log probabilities, explicit dt/GAE/returns, initial/per-update/final checkpoints and hashes, all process closure receipts, resource samples and independent offline native/scalar/policy audit.",
+  "supersedes": "V4 source7fea5de53be2049bdf2e6e6a8b309a5516fd2cfe engineering minimum16 decisions/4GPU updates/full native-scalar-policy auditPASS, no95% task. Pilot diagnostic interrupt before first update:242native decisions/239collector returns/245reward-ACK settlements/241.66physical-effective seconds/1051.0549356047995wall seconds/0updates; one genuine peer-envelope failure and three abandoned clean prefixes, no task success or final checkpoint. Stop reason is source-objective defect, not observed learning performance. All original artifacts remain unchanged.",
+  "changes": [
+    "Set production model, rollout buffer and metadata gamma_per_second=gae_lambda_per_second=1.0, fixed constants without new CLI flags; other PPO hyperparameters unchanged.",
+    "Keep complete native closure before update and300-step episode maximum. Final quota-tail and wall-limit external truncations remain explicit with one final-observation value bootstrap; gamma=lambda=1 is pure finite-episode MC only for true terminated episodes.",
+    "Keep actual dt, zero-tail merging, reward weights, truth isolation, task95%/300s/quality/participation/contact/peer/ownership gates, actor, candidate/navigation/config bytes, logging isolation and causal scalar audit unchanged.",
+    "New16-decision/900-second minimum, then fresh remaining3464-decision/11500-second pilot, then fixed900-decision/9000-second zero-update final-only validation. No resource-ceiling expansion or historical native-credit reuse."
+  ],
+  "source_freeze": "SOURCE_FREEZE_FROM_METADATA",
+  "execution_version": "mr3-per-robot-geometric-staging-v3",
+  "shared_pilot_budget": {
+    "original_decision_cap": 4096,
+    "original_wall_seconds": 14400,
+    "v2_native_decisions_charged": 390,
+    "v2_collector_returned_API": 388,
+    "v2_full_actual_wall_seconds_charged": 1752.9574942300096,
+    "v4_native_decisions_charged": 242,
+    "v4_collector_returned_API": 239,
+    "v4_reward_ACK_settlements": 245,
+    "v4_accepted_actions": 241,
+    "v4_rejected_actions": 1,
+    "v4_full_actual_wall_seconds_charged": 1051.0549356047995,
+    "remaining_decision_cap": 3464,
+    "remaining_wall_seconds": 11595.98757016519,
+    "v5_wall_seconds_selected": 11500,
+    "scope": "All settled native pilot decisions including rejected actions and full actual wall seconds from both interrupted pilots are charged. Engineering minimum runs and fixed development validation are separate. Sampling cutoff retains separately measured in-flight request, native safety/closure and final already-started round update tails; no expansion of original4096/14400 allocation.",
+    "v3_engineering_minimal_decisions_separate": 16,
+    "v3_engineering_minimal_wall_seconds_separate": 290.07678865175694,
+    "v4_engineering_minimal_decisions_separate": 16,
+    "v4_engineering_minimal_wall_seconds_separate": 294.97549937386066
+  },
+  "execution_changes": {
+    "candidate_rule": "Per-robot received-own-map reachable staging, one geometric reservation per still-unrepresented robot, then deterministic farthest-point K8; no truth/reward ranking, hand-planner, unsafe-start snapping or map clearing.",
+    "path_body_clearance_m": 0.29,
+    "goal_xy_tolerance_m": 0.1,
+    "target_arrival_disk_clearance_m": 0.39,
+    "new_goal_pair_separation_m": 0.78,
+    "new_goal_idle_body_separation_m": 0.68,
+    "candidate_hash": "candidate_rule is included in candidate_version; explicit version-aware audit retains old evidence semantics.",
+    "slam_config": "src/slam_toolbox/config/mapper_params_online_multi_async.yaml",
+    "minimum_travel_distance_m": 0.1,
+    "minimum_travel_heading_rad": 0.2,
+    "unchanged_ros_minimum_time_interval_sec": 0.5,
+    "unchanged_map_update_interval_sec": 5.0,
+    "nav2_configs": [
+      "src/multi_robot/params/nav2_params_tb1_0.yaml",
+      "src/multi_robot/params/nav2_params_tb2_0.yaml",
+      "src/multi_robot/params/nav2_params_tb3_0.yaml"
+    ],
+    "nav2_both_GoalChecker_and_DWB_xy_goal_tolerance_m": 0.1,
+    "unchanged_yaw_goal_tolerance_rad": 3.14,
+    "native_cpp_sdk_change": false,
+    "task_safety_reward_gates_changed": false
+  },
+  "workflow_repairs": {
+    "sb3_metrics_directory": "sb3_metrics/",
+    "sb3_json_metrics_file": "sb3_metrics/progress.json",
+    "collector_live_progress_file": "progress.json",
+    "paths_must_be_distinct": true,
+    "scalar_auditor": "explicit causal-switch-v4; preserve original scalar-v3 verdict and every other gate",
+    "scalar_boundary_rule": "A switch caused synchronously by command N at the shared T boundary belongs to decision N, established by returned source observation sequence, command identity and actual event order; later pending-switch events keep their real causal watermark. No reward values or runtime event timestamps are rewritten.",
+    "runtime_task_reward_candidate_navigation_change": false
+  },
+  "return_contract": {
+    "gamma_per_second": 1.0,
+    "lambda_per_second": 1.0,
+    "constants_without_CLI_flags": true,
+    "true_terminated": "No bootstrap. Consistent-value GAE telescopes to undiscounted finite-episode Monte Carlo returns; late failures are not attenuated. Failure future-return upper bound<=-10 uses remaining coverage<=10, terminal failure-20 and other nonpositive terms.",
+    "external_truncated": "One true final-observation value bootstrap, including16-step engineering minimum, last decision-quota tail and wall-cutoff tails. No<=-10 failed-return bound claimed for externally truncated targets.",
+    "episode_cap_steps": 300,
+    "quota_or_wall_tails_can_be_shorter": true,
+    "analytic_diagnosis": "Source-based hypothetical300-step counterexample at oldgamma.99/lambda.95, not measured native policy performance: terminal-20 contribution-.9907251327532469,time-.31698636864290447,coverage8 frontloaded gives+6.6922884986038484; old trace(.99*.95)^299=1.0821343077477902e-8."
+  },
+  "seed_and_geometry_scope": {
+    "learning_seed": 41,
+    "train_schedule": "open:101",
+    "validation_schedule": [
+      "open:401",
+      "open:402",
+      "open:403"
+    ],
+    "world": "p1c_open.world",
+    "task_contract": "src/multi_robot/config/mr3_p1a/open.json",
+    "task_seed_meaning": "Gazebo --seed controls sensor/physics stochasticity; worker does not randomize world geometry or poses.",
+    "fixed_robot_start_xyz_m": {
+      "tb1": [
+        0.0,
+        -0.45,
+        0.01
+      ],
+      "tb2": [
+        0.0,
+        0.45,
+        0.01
+      ],
+      "tb3": [
+        0.45,
+        0.0,
+        0.01
+      ]
+    },
+    "fixed_start_yaw_rad": 0.0,
+    "pose_or_layout_variation": false,
+    "unseen_generalization_credit": false,
+    "later_development_variations": "Rooms/corridors and predeclared pose/layout variations remain unstarted pending fixed-layout learning diagnosis."
+  }
+}

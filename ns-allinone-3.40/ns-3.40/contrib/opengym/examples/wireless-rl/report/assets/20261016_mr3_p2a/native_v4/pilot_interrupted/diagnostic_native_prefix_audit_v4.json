@@ -1,0 +1,1445 @@
+{
+  "schema": "mr3-p2a-interrupted-native-prefix-audit-v4",
+  "created_utc": "2026-10-16T04:46:11.867186+00:00",
+  "initial_source_freeze": "7fea5de53be2049bdf2e6e6a8b309a5516fd2cfe",
+  "purpose": "Independent raw-receipt accounting and saved PID/start identity absence after root-owned diagnostic interrupt; no simulation/training/inference performed by this audit.",
+  "errors": [],
+  "totals": {
+    "api_records": 242,
+    "submitted_decisions": 242,
+    "accepted_action_receipts": 241,
+    "rejected_action_receipts": 1,
+    "effective_time_ns": 241660000000,
+    "physical_time_ns": 241660000000,
+    "native_reward_ack_sequence": 245,
+    "native_close_ledger_settlements_beyond_API": 3,
+    "collector_callback_decisions": 239,
+    "native_decisions_beyond_last_callback": 3
+  },
+  "episodes": [
+    {
+      "worker_id": 0,
+      "epoch": "round0000_w0_e1_072c9e33",
+      "directory": "ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v4_pilot/native/round0000/worker0/episode001_open_101",
+      "api_records": 66,
+      "submitted_decisions": 66,
+      "accepted_action_receipts": 66,
+      "rejected_action_receipts": 0,
+      "action_rejections": [],
+      "effective_time_ns": 66000000000,
+      "physical_time_ns": 66000000000,
+      "native_reward_ack_sequence": 67,
+      "native_close_ledger_settlements_beyond_API": 1,
+      "collector_callback_decisions": 65,
+      "native_decisions_beyond_last_callback": 1,
+      "last_api_terminated": false,
+      "last_api_truncated": false,
+      "last_api_effective_elapsed_sec": 66.0,
+      "last_api_reward_sum": 8.17275175750936,
+      "close_reason": "external_truncation",
+      "outcome_class": "agent_interrupted_native_prefix",
+      "clean_shutdown": true,
+      "nav2_finalized_nodes": 18,
+      "task": {
+        "success": false,
+        "termination_reason": "training_external_truncation",
+        "elapsed_sim_time_sec": 66.22,
+        "correct_free_coverage_ratio": 0.9019674974892723,
+        "map_quality_pass": true,
+        "robot_participation_pass": true,
+        "collision_events": 0,
+        "collision_monitoring_fresh": true,
+        "navigation_protocol_closed": true,
+        "time_to_95_coverage_sec": null
+      },
+      "safety_stops": [],
+      "candidate_availability": {
+        "tb1": {
+          "saved_eligible_steps_with_goal_choice": 18,
+          "max_legal_goal_choices": 5,
+          "goal_choice_count_sum": 67,
+          "selected_GOAL_components": 10,
+          "selected_KEEP_components": 55,
+          "selected_WAIT_components": 1,
+          "forced_KEEP_steps": 47,
+          "idle_no_legal_GOAL_steps": 1,
+          "actual_truth_evaluation_path_m": 12.576277414943005,
+          "actual_truth_nav_goal_count": 10
+        },
+        "tb2": {
+          "saved_eligible_steps_with_goal_choice": 14,
+          "max_legal_goal_choices": 7,
+          "goal_choice_count_sum": 60,
+          "selected_GOAL_components": 11,
+          "selected_KEEP_components": 52,
+          "selected_WAIT_components": 3,
+          "forced_KEEP_steps": 52,
+          "idle_no_legal_GOAL_steps": 0,
+          "actual_truth_evaluation_path_m": 12.5810041503768,
+          "actual_truth_nav_goal_count": 11
+        },
+        "tb3": {
+          "saved_eligible_steps_with_goal_choice": 18,
+          "max_legal_goal_choices": 6,
+          "goal_choice_count_sum": 62,
+          "selected_GOAL_components": 12,
+          "selected_KEEP_components": 50,
+          "selected_WAIT_components": 4,
+          "forced_KEEP_steps": 48,
+          "idle_no_legal_GOAL_steps": 0,
+          "actual_truth_evaluation_path_m": 10.893804589176694,
+          "actual_truth_nav_goal_count": 12
+        }
+      },
+      "files_sha256": {
+        "adapter.jsonl.gz": "cd3f3adf3571f9117728eb2ccf7e15eb879b10d8c705b54686a054ce750764e4",
+        "launch.log": "f3cba8440bc2884cf72d0a71e54509bb3db1bfbfdc39f252795090133dca8805",
+        "round0000_w0_e1_072c9e33.json": "f1eabc6ad0a6af74c5648e2ed58d294def0c9549e515507289c4d15c5ccec2e4",
+        "round0000_w0_e1_072c9e33.csv": "2744c8839b6f1c52dd0e8063daef2f5080ea1bbb4b47ee03ae4255c518b37c63",
+        "native_stop.json": "8fd19c73eefaa3f9579ac21c0c8ac8e5bbee8b085d339f4787173152e6b7e82c",
+        "worker.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "physics.jsonl": "106bb3d40878ae7a437398b46279759e449845d9a194693528af8190fdf2e0f1",
+        "transitions.jsonl": "6d13ca0896cdccc199ae4bed1e8201ce54101c1099fdf6258aa0ab79ed0d93cf",
+        "nav2_shutdown.json": "7714b67bb2ecb8ee57501a6a8a73f92f2e696843d0f9f2014b7f6d979501c101",
+        "adapter.sha256": "0fcd45adbd9c630eb8f7d0f54c1edb9dd3ece8299f960bf25aebf7b4a9b10c59",
+        "metadata.json": "9dcb83140129dd28e7e39addae8129fd7f343b8c76ee87a7a2011ccc948018f8",
+        "step_helper.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "summary.json": "54727a04f7ed48b6c5f31f42073278dfb955fc5b34d43fb95857669f78d8338f",
+        "adapter.jsonl": "d33118823992089fba0c6faadc081b5c29624401fc24524dcf4dc4343cfcc583",
+        "supervisor_metadata.json": "f501c301201797de3133f9cb40f0fc9f27b068336b5f04720015de2bdcc2bbe3",
+        "supervisor_shutdown.json": "e918f1668db6292cdb11258a8e62a581c8f1609cbd3325e4845b20844421c0ec"
+      }
+    },
+    {
+      "worker_id": 1,
+      "epoch": "round0000_w1_e1_1edae17f",
+      "directory": "ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v4_pilot/native/round0000/worker1/episode001_open_101",
+      "api_records": 44,
+      "submitted_decisions": 44,
+      "accepted_action_receipts": 44,
+      "rejected_action_receipts": 0,
+      "action_rejections": [],
+      "effective_time_ns": 43660000000,
+      "physical_time_ns": 43660000000,
+      "native_reward_ack_sequence": 44,
+      "native_close_ledger_settlements_beyond_API": 0,
+      "collector_callback_decisions": 44,
+      "native_decisions_beyond_last_callback": 0,
+      "last_api_terminated": true,
+      "last_api_truncated": false,
+      "last_api_effective_elapsed_sec": 43.66,
+      "last_api_reward_sum": -11.669486588149363,
+      "close_reason": "task_terminal",
+      "outcome_class": "genuine_task_failure",
+      "clean_shutdown": true,
+      "nav2_finalized_nodes": 18,
+      "task": {
+        "success": false,
+        "termination_reason": "navigation_failure",
+        "elapsed_sim_time_sec": 43.66,
+        "correct_free_coverage_ratio": 0.8978362092577377,
+        "map_quality_pass": true,
+        "robot_participation_pass": true,
+        "collision_events": 0,
+        "collision_monitoring_fresh": true,
+        "navigation_protocol_closed": false,
+        "time_to_95_coverage_sec": null
+      },
+      "safety_stops": [
+        {
+          "reason": "{\"component\": \"peer_obstacles\", \"reason\": \"peer_body_envelopes_overlap\"}"
+        }
+      ],
+      "candidate_availability": {
+        "tb1": {
+          "saved_eligible_steps_with_goal_choice": 12,
+          "max_legal_goal_choices": 7,
+          "goal_choice_count_sum": 53,
+          "selected_GOAL_components": 8,
+          "selected_KEEP_components": 33,
+          "selected_WAIT_components": 3,
+          "forced_KEEP_steps": 32,
+          "idle_no_legal_GOAL_steps": 0,
+          "actual_truth_evaluation_path_m": 8.076739618625908,
+          "actual_truth_nav_goal_count": 8
+        },
+        "tb2": {
+          "saved_eligible_steps_with_goal_choice": 12,
+          "max_legal_goal_choices": 6,
+          "goal_choice_count_sum": 50,
+          "selected_GOAL_components": 8,
+          "selected_KEEP_components": 32,
+          "selected_WAIT_components": 4,
+          "forced_KEEP_steps": 32,
+          "idle_no_legal_GOAL_steps": 0,
+          "actual_truth_evaluation_path_m": 7.332219959939125,
+          "actual_truth_nav_goal_count": 8
+        },
+        "tb3": {
+          "saved_eligible_steps_with_goal_choice": 10,
+          "max_legal_goal_choices": 5,
+          "goal_choice_count_sum": 33,
+          "selected_GOAL_components": 8,
+          "selected_KEEP_components": 33,
+          "selected_WAIT_components": 3,
+          "forced_KEEP_steps": 32,
+          "idle_no_legal_GOAL_steps": 2,
+          "actual_truth_evaluation_path_m": 8.090180720878172,
+          "actual_truth_nav_goal_count": 8
+        }
+      },
+      "files_sha256": {
+        "round0000_w1_e1_1edae17f.csv": "ab1703a5e39d221f3f1d7d5e0742d7d3754f218e888cde6ccbc3a2d1ef8f66a6",
+        "adapter.jsonl.gz": "8e66bd4fb7369a5f1b2dad8b7e95d1c463cd1ccb2958eede636ee21de0d73b65",
+        "launch.log": "6b8b10d2701e250e37a348d36c6d680835d74851f87c4e1ffab360db47c38ab2",
+        "native_stop.json": "54cad480acb69510938b490c9cd683f93832931ac52f82a1bd77cfc5aa1153a3",
+        "worker.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "physics.jsonl": "867d5d6aa65cbc66422cd3fc13349dd6ae252fd0f6549ba764186a8c5c47081f",
+        "transitions.jsonl": "d689a8810a062da2609d609d44f3be15b6c4de0b700d2f987c3a7fe0317ea529",
+        "nav2_shutdown.json": "31e569ccc3dd145f5899881447e6fe4e9f7e8a1b413823988f0c7e452a970364",
+        "adapter.sha256": "1ea3113334a1f94d89ad101913c5c8b8a2263173a68e3621676e13e4a665bfe4",
+        "metadata.json": "811b1c37748bd3c721a67de390c75099da5c3c460d13ed39990684510e0ab924",
+        "step_helper.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "summary.json": "cc5d58cc48c3993269aacda7c5ef1fd96285f6173ec8ed03f2a05404c74f7801",
+        "adapter.jsonl": "1e8599f6a1d7d960bb77194fd558ae62795e6716915b0df6833054d23403859a",
+        "supervisor_metadata.json": "cb62acf8a6a52b9b0dc1f1fd9b1562feb9888d610df794a7e658551a442d06d2",
+        "supervisor_shutdown.json": "a858a00b3440f6e5e36142491b6d67d4d802e2fbe63a51081ba6a2246cad5302",
+        "round0000_w1_e1_1edae17f.json": "b815c58a20f4135d0d4f30ef2d50d36ad9d6b74cff9034c2e98ed1ddfed3032e"
+      }
+    },
+    {
+      "worker_id": 2,
+      "epoch": "round0000_w2_e1_dc32b6c3",
+      "directory": "ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v4_pilot/native/round0000/worker2/episode001_open_101",
+      "api_records": 66,
+      "submitted_decisions": 66,
+      "accepted_action_receipts": 65,
+      "rejected_action_receipts": 1,
+      "action_rejections": [
+        {
+          "command_id": 4,
+          "observation_sequence": 4,
+          "reason": "navigation_changed_since_observation"
+        }
+      ],
+      "effective_time_ns": 66000000000,
+      "physical_time_ns": 66000000000,
+      "native_reward_ack_sequence": 67,
+      "native_close_ledger_settlements_beyond_API": 1,
+      "collector_callback_decisions": 65,
+      "native_decisions_beyond_last_callback": 1,
+      "last_api_terminated": false,
+      "last_api_truncated": false,
+      "last_api_effective_elapsed_sec": 66.0,
+      "last_api_reward_sum": 8.588705377522132,
+      "close_reason": "external_truncation",
+      "outcome_class": "agent_interrupted_native_prefix",
+      "clean_shutdown": true,
+      "nav2_finalized_nodes": 18,
+      "task": {
+        "success": false,
+        "termination_reason": "training_external_truncation",
+        "elapsed_sim_time_sec": 66.2,
+        "correct_free_coverage_ratio": 0.9449009403816306,
+        "map_quality_pass": true,
+        "robot_participation_pass": true,
+        "collision_events": 0,
+        "collision_monitoring_fresh": true,
+        "navigation_protocol_closed": true,
+        "time_to_95_coverage_sec": null
+      },
+      "safety_stops": [],
+      "candidate_availability": {
+        "tb1": {
+          "saved_eligible_steps_with_goal_choice": 16,
+          "max_legal_goal_choices": 7,
+          "goal_choice_count_sum": 71,
+          "selected_GOAL_components": 11,
+          "selected_KEEP_components": 52,
+          "selected_WAIT_components": 3,
+          "forced_KEEP_steps": 50,
+          "idle_no_legal_GOAL_steps": 0,
+          "actual_truth_evaluation_path_m": 11.946439031425474,
+          "actual_truth_nav_goal_count": 11
+        },
+        "tb2": {
+          "saved_eligible_steps_with_goal_choice": 13,
+          "max_legal_goal_choices": 6,
+          "goal_choice_count_sum": 52,
+          "selected_GOAL_components": 12,
+          "selected_KEEP_components": 54,
+          "selected_WAIT_components": 0,
+          "forced_KEEP_steps": 53,
+          "idle_no_legal_GOAL_steps": 0,
+          "actual_truth_evaluation_path_m": 13.175894847727019,
+          "actual_truth_nav_goal_count": 12
+        },
+        "tb3": {
+          "saved_eligible_steps_with_goal_choice": 23,
+          "max_legal_goal_choices": 6,
+          "goal_choice_count_sum": 76,
+          "selected_GOAL_components": 11,
+          "selected_KEEP_components": 49,
+          "selected_WAIT_components": 6,
+          "forced_KEEP_steps": 43,
+          "idle_no_legal_GOAL_steps": 0,
+          "actual_truth_evaluation_path_m": 10.821070167421908,
+          "actual_truth_nav_goal_count": 10
+        }
+      },
+      "files_sha256": {
+        "adapter.jsonl.gz": "3f376d3b2c05877ae3b9b5cfb852960460d308ce749143726259752509d12546",
+        "launch.log": "7979af3a8ca55d048c3e076acaa57f9edf7f3ec1b32ee324bac8e3dffdb02198",
+        "native_stop.json": "ccb4cb5c9303f18e4a2123c263f09565e1f2d30bd06b1d6dd41f266090910cd6",
+        "worker.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "physics.jsonl": "e9d386a3a725cda7a58380c2a1c78b8730ee596be5e6837d2ab9fc13481ec19f",
+        "transitions.jsonl": "8d3a76a42b5742ff7c27677c34ac3fd5ce61e28bc79be3442707cf580c8da0bc",
+        "nav2_shutdown.json": "2f8a68fb8deecd7897846419e38036791f33d5deaa3e721cb56d49eef2f9902c",
+        "adapter.sha256": "7debcc4a7ac8d10031cf43d17a6f32bfa16d5d19652fabac827b5461e6f9af31",
+        "metadata.json": "31518fe2bb0287234f325b70004f6e596444e4ccc523fdb5803de6b63f4e128a",
+        "step_helper.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "summary.json": "dfd4fa625aee93d45491de2f9414859cebb717452a4bc9b5fc6265816810df8b",
+        "adapter.jsonl": "9eb05a5b4d1b5dc7613ebe0187dacc29701baf70ec09d97ac461b08b17d69847",
+        "round0000_w2_e1_dc32b6c3.csv": "1d11fd8f4d183b663381c80fcf50bd344d9c5bb1034b5b57bb6f693b5de94d16",
+        "round0000_w2_e1_dc32b6c3.json": "7931e5108daeb8d6ad57ef1cded43a3b2571d041dd67425b0a2bb1451cfdd935",
+        "supervisor_metadata.json": "d450cf3fe73842d09039a71c3213ae735f758c0ee93887221ecc884f5f4c14f2",
+        "supervisor_shutdown.json": "6b5e34dc994339e200904a30f372f9dce8ae07071c112bcf8d30c17e6068eba2"
+      }
+    },
+    {
+      "worker_id": 3,
+      "epoch": "round0000_w3_e1_b4b34439",
+      "directory": "ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v4_pilot/native/round0000/worker3/episode001_open_101",
+      "api_records": 66,
+      "submitted_decisions": 66,
+      "accepted_action_receipts": 66,
+      "rejected_action_receipts": 0,
+      "action_rejections": [],
+      "effective_time_ns": 66000000000,
+      "physical_time_ns": 66000000000,
+      "native_reward_ack_sequence": 67,
+      "native_close_ledger_settlements_beyond_API": 1,
+      "collector_callback_decisions": 65,
+      "native_decisions_beyond_last_callback": 1,
+      "last_api_terminated": false,
+      "last_api_truncated": false,
+      "last_api_effective_elapsed_sec": 66.0,
+      "last_api_reward_sum": 8.760461060896555,
+      "close_reason": "external_truncation",
+      "outcome_class": "agent_interrupted_native_prefix",
+      "clean_shutdown": true,
+      "nav2_finalized_nodes": 18,
+      "task": {
+        "success": false,
+        "termination_reason": "training_external_truncation",
+        "elapsed_sim_time_sec": 66.22,
+        "correct_free_coverage_ratio": 0.9543504062813841,
+        "map_quality_pass": true,
+        "robot_participation_pass": false,
+        "collision_events": 0,
+        "collision_monitoring_fresh": true,
+        "navigation_protocol_closed": true,
+        "time_to_95_coverage_sec": 48.56
+      },
+      "safety_stops": [],
+      "candidate_availability": {
+        "tb1": {
+          "saved_eligible_steps_with_goal_choice": 3,
+          "max_legal_goal_choices": 1,
+          "goal_choice_count_sum": 3,
+          "selected_GOAL_components": 0,
+          "selected_KEEP_components": 35,
+          "selected_WAIT_components": 31,
+          "forced_KEEP_steps": 0,
+          "idle_no_legal_GOAL_steps": 63,
+          "actual_truth_evaluation_path_m": 0.0019474265399639942,
+          "actual_truth_nav_goal_count": 0
+        },
+        "tb2": {
+          "saved_eligible_steps_with_goal_choice": 12,
+          "max_legal_goal_choices": 7,
+          "goal_choice_count_sum": 76,
+          "selected_GOAL_components": 12,
+          "selected_KEEP_components": 54,
+          "selected_WAIT_components": 0,
+          "forced_KEEP_steps": 53,
+          "idle_no_legal_GOAL_steps": 1,
+          "actual_truth_evaluation_path_m": 13.922083978201627,
+          "actual_truth_nav_goal_count": 12
+        },
+        "tb3": {
+          "saved_eligible_steps_with_goal_choice": 16,
+          "max_legal_goal_choices": 8,
+          "goal_choice_count_sum": 83,
+          "selected_GOAL_components": 11,
+          "selected_KEEP_components": 52,
+          "selected_WAIT_components": 3,
+          "forced_KEEP_steps": 50,
+          "idle_no_legal_GOAL_steps": 0,
+          "actual_truth_evaluation_path_m": 12.378785794806724,
+          "actual_truth_nav_goal_count": 11
+        }
+      },
+      "files_sha256": {
+        "round0000_w3_e1_b4b34439.json": "04b29ea847ae42974a2b9ab66b96d1c6f305fe9a4c8f7f755299025c76ac3a0d",
+        "adapter.jsonl.gz": "339ec91d8e29d9e7a2e757f71167cd4f37128a745226af7b8037c56d14a573a3",
+        "round0000_w3_e1_b4b34439.csv": "891265094545818cd8847209591e441d227362a93e793f09d7d2ef6a800141b0",
+        "launch.log": "6392edca4dc93dbea5d6152157315fea2eed8dff6da34579d6bab49a0a04b5d0",
+        "native_stop.json": "7b89c98eb92900296fbbd1fb10fc0f74a7ad00571cab2b134b6588951feda7b7",
+        "worker.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "physics.jsonl": "15da4d7a834d55dbbbaa5f00cdf16917ac81a1be0ac6a2fb028752cd1751a43f",
+        "transitions.jsonl": "e995f9f77dd1dc7301c426659b8243d453e5125bd78636fb9ebb65a2ace5fb54",
+        "nav2_shutdown.json": "18b444c6d2c0f1e3dc487eba5b015f6b0d14a2861354a91373f2bf55eee737a9",
+        "adapter.sha256": "c5e6c125857c8fe9641a63d317971be0a5d281e0aa169c6851ea551f45631736",
+        "metadata.json": "40a0bba96448243e09209fd68a345d3182ba05e716c6958aa1672027a6de138f",
+        "step_helper.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "summary.json": "db654a0e7b957e4842919401e0742dcd7e75448f32971df26476ddd490940264",
+        "adapter.jsonl": "018b05a61874a30760badb42c1d5660ea27691812839bbb4c37c08fcd7f9598c",
+        "supervisor_metadata.json": "a221a5cd6d29bf42307b90103c647ef8d2750a71de4811ee00090c0f5a91a9f5",
+        "supervisor_shutdown.json": "92c5b2868a9440a9bc93e0ddf1027fea47effd9c9d0b3de431b1ca190e843520"
+      }
+    }
+  ],
+  "saved_process_identity_checks": [
+    {
+      "pid": 1135223,
+      "saved_start_ticks": 387012924,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1135330,
+      "saved_start_ticks": 387013551,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1135337,
+      "saved_start_ticks": 387013553,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1135338,
+      "saved_start_ticks": 387013553,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1135339,
+      "saved_start_ticks": 387013553,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1135448,
+      "saved_start_ticks": 387013725,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1135467,
+      "saved_start_ticks": 387013734,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1135472,
+      "saved_start_ticks": 387013735,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1135473,
+      "saved_start_ticks": 387013735,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1135479,
+      "saved_start_ticks": 387013881,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1135481,
+      "saved_start_ticks": 387013881,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1135483,
+      "saved_start_ticks": 387013881,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1135485,
+      "saved_start_ticks": 387013881,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1135487,
+      "saved_start_ticks": 387013881,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1135489,
+      "saved_start_ticks": 387013881,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1135491,
+      "saved_start_ticks": 387013881,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1135515,
+      "saved_start_ticks": 387013889,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1135518,
+      "saved_start_ticks": 387013889,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1135524,
+      "saved_start_ticks": 387013889,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1135527,
+      "saved_start_ticks": 387013889,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1135528,
+      "saved_start_ticks": 387013889,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1135531,
+      "saved_start_ticks": 387013890,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1135532,
+      "saved_start_ticks": 387013890,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1135535,
+      "saved_start_ticks": 387013890,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1135536,
+      "saved_start_ticks": 387013890,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1135540,
+      "saved_start_ticks": 387013890,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1135541,
+      "saved_start_ticks": 387013890,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1135544,
+      "saved_start_ticks": 387013890,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1135545,
+      "saved_start_ticks": 387013890,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1135548,
+      "saved_start_ticks": 387013890,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1135549,
+      "saved_start_ticks": 387013891,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1135552,
+      "saved_start_ticks": 387013891,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1135553,
+      "saved_start_ticks": 387013891,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1135556,
+      "saved_start_ticks": 387013891,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1135558,
+      "saved_start_ticks": 387013891,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1135560,
+      "saved_start_ticks": 387013891,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1135562,
+      "saved_start_ticks": 387013891,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1137188,
+      "saved_start_ticks": 387014262,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1137191,
+      "saved_start_ticks": 387014262,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1137193,
+      "saved_start_ticks": 387014262,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1137229,
+      "saved_start_ticks": 387014279,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1137231,
+      "saved_start_ticks": 387014280,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1137233,
+      "saved_start_ticks": 387014280,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1137244,
+      "saved_start_ticks": 387014285,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1137247,
+      "saved_start_ticks": 387014285,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1137249,
+      "saved_start_ticks": 387014286,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1137274,
+      "saved_start_ticks": 387014293,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1137276,
+      "saved_start_ticks": 387014293,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1137281,
+      "saved_start_ticks": 387014293,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1137432,
+      "saved_start_ticks": 387014603,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1137434,
+      "saved_start_ticks": 387014603,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1137436,
+      "saved_start_ticks": 387014603,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1137470,
+      "saved_start_ticks": 387014624,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1137472,
+      "saved_start_ticks": 387014624,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1137474,
+      "saved_start_ticks": 387014624,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1137478,
+      "saved_start_ticks": 387014628,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1137480,
+      "saved_start_ticks": 387014628,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1137482,
+      "saved_start_ticks": 387014628,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1137512,
+      "saved_start_ticks": 387014634,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1137514,
+      "saved_start_ticks": 387014635,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1137517,
+      "saved_start_ticks": 387014635,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1137658,
+      "saved_start_ticks": 387014946,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1137675,
+      "saved_start_ticks": 387014980,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1137677,
+      "saved_start_ticks": 387014984,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1137679,
+      "saved_start_ticks": 387014993,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1137758,
+      "saved_start_ticks": 387016097,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1137760,
+      "saved_start_ticks": 387016097,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1137762,
+      "saved_start_ticks": 387016097,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1137764,
+      "saved_start_ticks": 387016098,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1137766,
+      "saved_start_ticks": 387016098,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1137768,
+      "saved_start_ticks": 387016098,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1137770,
+      "saved_start_ticks": 387016100,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1137842,
+      "saved_start_ticks": 387016129,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1137844,
+      "saved_start_ticks": 387016130,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1137846,
+      "saved_start_ticks": 387016130,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1137848,
+      "saved_start_ticks": 387016130,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1137850,
+      "saved_start_ticks": 387016130,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1137852,
+      "saved_start_ticks": 387016130,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1137854,
+      "saved_start_ticks": 387016132,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1137912,
+      "saved_start_ticks": 387016139,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1137917,
+      "saved_start_ticks": 387016139,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1137923,
+      "saved_start_ticks": 387016140,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1137927,
+      "saved_start_ticks": 387016140,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1137929,
+      "saved_start_ticks": 387016141,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1137932,
+      "saved_start_ticks": 387016141,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1137937,
+      "saved_start_ticks": 387016143,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1137987,
+      "saved_start_ticks": 387016149,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1137990,
+      "saved_start_ticks": 387016150,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1138004,
+      "saved_start_ticks": 387016150,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1138008,
+      "saved_start_ticks": 387016151,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1138010,
+      "saved_start_ticks": 387016151,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1138013,
+      "saved_start_ticks": 387016152,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1138020,
+      "saved_start_ticks": 387016155,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1138417,
+      "saved_start_ticks": 387020599,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1138419,
+      "saved_start_ticks": 387020599,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1138421,
+      "saved_start_ticks": 387020600,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1138423,
+      "saved_start_ticks": 387020600,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1138425,
+      "saved_start_ticks": 387020600,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1138427,
+      "saved_start_ticks": 387020600,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1138429,
+      "saved_start_ticks": 387020601,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1138504,
+      "saved_start_ticks": 387020635,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1138506,
+      "saved_start_ticks": 387020635,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1138508,
+      "saved_start_ticks": 387020635,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1138510,
+      "saved_start_ticks": 387020635,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1138511,
+      "saved_start_ticks": 387020635,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1138513,
+      "saved_start_ticks": 387020636,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1138515,
+      "saved_start_ticks": 387020636,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1138518,
+      "saved_start_ticks": 387020636,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1138519,
+      "saved_start_ticks": 387020636,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1138521,
+      "saved_start_ticks": 387020636,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1138524,
+      "saved_start_ticks": 387020637,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1138525,
+      "saved_start_ticks": 387020637,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1138527,
+      "saved_start_ticks": 387020637,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1138530,
+      "saved_start_ticks": 387020638,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1138616,
+      "saved_start_ticks": 387020646,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1138639,
+      "saved_start_ticks": 387020651,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1138652,
+      "saved_start_ticks": 387020652,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1138658,
+      "saved_start_ticks": 387020653,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1138663,
+      "saved_start_ticks": 387020654,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1138667,
+      "saved_start_ticks": 387020654,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1138674,
+      "saved_start_ticks": 387020655,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1139033,
+      "saved_start_ticks": 387025088,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1139035,
+      "saved_start_ticks": 387025089,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1139037,
+      "saved_start_ticks": 387025089,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1139039,
+      "saved_start_ticks": 387025089,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1139042,
+      "saved_start_ticks": 387025089,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1139044,
+      "saved_start_ticks": 387025089,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1139046,
+      "saved_start_ticks": 387025090,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1139121,
+      "saved_start_ticks": 387025125,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1139123,
+      "saved_start_ticks": 387025126,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1139125,
+      "saved_start_ticks": 387025127,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1139127,
+      "saved_start_ticks": 387025128,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1139129,
+      "saved_start_ticks": 387025128,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1139131,
+      "saved_start_ticks": 387025129,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1139133,
+      "saved_start_ticks": 387025130,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1139135,
+      "saved_start_ticks": 387025130,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1139137,
+      "saved_start_ticks": 387025131,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1139139,
+      "saved_start_ticks": 387025132,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1139141,
+      "saved_start_ticks": 387025132,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1139145,
+      "saved_start_ticks": 387025133,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1139155,
+      "saved_start_ticks": 387025135,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1139159,
+      "saved_start_ticks": 387025136,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1139283,
+      "saved_start_ticks": 387025165,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1139286,
+      "saved_start_ticks": 387025166,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1139288,
+      "saved_start_ticks": 387025174,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1139290,
+      "saved_start_ticks": 387025174,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1139292,
+      "saved_start_ticks": 387025177,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1139295,
+      "saved_start_ticks": 387025179,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1139297,
+      "saved_start_ticks": 387025180,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1139455,
+      "saved_start_ticks": 387026053,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1139457,
+      "saved_start_ticks": 387026054,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1139460,
+      "saved_start_ticks": 387026072,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1139462,
+      "saved_start_ticks": 387026072,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1139464,
+      "saved_start_ticks": 387026078,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1139466,
+      "saved_start_ticks": 387026078,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1139501,
+      "saved_start_ticks": 387026125,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1139503,
+      "saved_start_ticks": 387026125,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1139590,
+      "saved_start_ticks": 387026451,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1139591,
+      "saved_start_ticks": 387026472,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1139592,
+      "saved_start_ticks": 387026474,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1139593,
+      "saved_start_ticks": 387026505,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1139595,
+      "saved_start_ticks": 387026508,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1139596,
+      "saved_start_ticks": 387026517,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1139597,
+      "saved_start_ticks": 387026522,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1139600,
+      "saved_start_ticks": 387026549,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1147701,
+      "saved_start_ticks": 387086563,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1150468,
+      "saved_start_ticks": 387113620,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1151860,
+      "saved_start_ticks": 387116112,
+      "current": null,
+      "saved_identity_absent": true
+    },
+    {
+      "pid": 1152583,
+      "saved_start_ticks": 387118054,
+      "current": null,
+      "saved_identity_absent": true
+    }
+  ],
+  "all_saved_process_identities_absent": true,
+  "saved_identities_checked": 169,
+  "wall_sec_including_all_attempts": 1051.0549356047995,
+  "optimizer_updates": 0,
+  "closed_rounds": 0,
+  "checkpoint_names": [
+    "initial.zip"
+  ],
+  "counter_scope": "Root decisions/API0 counts only completely returned rounds; last callback239 excludes3 native in-flight records. Native242 API/submitted includes all completed system-ROS receipts. Accepted241 plus rejected1 exactly binds242 command IDs. Reward ACK total245 includes3 client-close ledger settlements without extra actor/API records; these are not additional decisions. Policy-effective and step-physical time241.66s exclude navigation/cleanup advancement. External-stop evaluator elapsed includes cleanup and cannot be substituted for actor duration.",
+  "task_scope": "One genuine peer-envelope navigation failure retained; three agent-interrupted prefixes are not natural completed task failures or successful episodes. No strict success. Worker3 current coverage exceeds95% but participation false, tb1 had zero native goals; this is an initial-policy prefix, not evidence of learned waiting.",
+  "budget_charge": {
+    "v4_native_decisions": 242,
+    "v4_actual_wall_sec": 1051.0549356047995,
+    "v2_already_charged_decisions": 390,
+    "v2_already_charged_wall_sec": 1752.9574942300096,
+    "remaining_from_original_4096_decisions": 3464,
+    "remaining_from_original_14400_wall_sec": 11595.98757016519
+  },
+  "root_file_sha256": {
+    "metadata.json": "578e818d507cc49ecbf5306f597e761bcea98e067baecbdd337c571e2f673a16",
+    "summary.json": "5bc4d1cedb45e1ed71f315a8ae5854090509a73a1a9d46ba138c8c47a53904dd",
+    "progress.json": "16ad51da55b2e89c1bb856e08e78f384a1bf0d8e9de43bdf1a1e715ec69ebfef",
+    "initial.zip": "f5b84a043ebdf4941e328af9d0c4348b46d9be725f45b0758d5b9d11fd21b8dc",
+    "analytic_objective_audit_v1.json": "b4229c8fdacf92cde630e2c336d0bc379b86200db79a72ccd3a6f594ef7db8d6",
+    "closed_failure_worker1_component_audit_v4.json": "9d25b69121a7abb6eaf5eba7b8b20233291d0c9a498a82ff1387a2c2e365555a"
+  }
+}

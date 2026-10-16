@@ -166,26 +166,31 @@ python -m pip install -r mr3_learning/requirements-ppo.txt
 仅在干净、已提交推送的新冻结运行，每次唯一run-id。完整episode闭合之后才更新，掩码随rollout保存；
 零时长无动作尾通知归并到此前真实决策，不产生伪actor样本。预算与出口见
 [PPO契约](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_PPO_CONTRACT.md)。
-当前为v4日志隔离/离线审计修订，候选和导航沿用v3；原生运行前须完成同一新freeze的提交推送与相关检查；
-下列命令与[v4前瞻计划](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/predeclared_plan_v4.json)一致，尚未执行。
-v2已诊断停止，390条原生决策与1752.957494墙秒从原4096/14400 pilot预算扣除，
-v4仍取剩余3706决策/12600墙秒；各版工程最小链和固定开发验证单列。不能把完整round计数0当作零采样。
-v3最小链实际完成16决策/4更新，原scalar六项同边界switch审计失败保留，v3 pilot/验证未开始。
+当前为v5固定gamma=lambda=1的学习目标修订，原生候选/导航沿用v3、日志和审计沿用v4；
+原生前须新提交推送并完成检查，下列命令与[v5前瞻计划](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261016_mr3_p2a/predeclared_plan_v5.json)一致，尚未执行。
+v4最小链完整审计PASS16决策/4更新；pilot因源级折扣目标缺陷在0更新时诊断停止，
+242原生/239返回决策、241.66仿真秒、1051.054936墙秒，一次peer安全失败及三条前缀，无成功。
+原4096/14400 pilot扣v2的390/1752.957494与v4的242/1051.054936，余3464/11595.987570，
+v5保守取3464决策/11500墙秒；各版工程最小链和固定开发验证单列，完整round计数0不等于零采样。
+普通任务episode保持300步上限，最后quota/墙时尾段明确外部截断并只bootstrap一次。
+只有真实terminated无bootstrap时gamma=lambda=1等价有限episode MC；不把失败回报上界套到截断目标。
+学习seed41与taskseed不同：open101及open401/402/403是同world、任务几何、固定起点/yaw0，
+仅Gazebo传感/物理随机种子变化，不称姿态/布局变化、多学习seed或未见泛化。
 
 ```bash
 python -m mr3_learning.ppo --mode train --workers 1 --schedule open:101 \
   --decisions 16 --episode-steps 16 --wall-seconds 900 --seed 41 \
-  --base-domain 160 --base-port 12301 --run-id mr3_p2a_v4_minimal
+  --base-domain 160 --base-port 12301 --run-id mr3_p2a_v5_minimal
 
 python -m mr3_learning.ppo --mode train --workers 4 --schedule open:101 \
-  --decisions 3706 --episode-steps 300 --wall-seconds 12600 --seed 41 \
-  --base-domain 164 --base-port 12311 --run-id mr3_p2a_v4_pilot
+  --decisions 3464 --episode-steps 300 --wall-seconds 11500 --seed 41 \
+  --base-domain 164 --base-port 12311 --run-id mr3_p2a_v5_pilot
 
 python -m mr3_learning.ppo --mode evaluate --workers 4 \
-  --checkpoint /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v4_pilot/final.zip \
+  --checkpoint /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v5_pilot/final.zip \
   --schedule open:401,open:402,open:403 \
   --decisions 900 --episode-steps 300 --wall-seconds 9000 --seed 41 \
-  --base-domain 172 --base-port 12321 --run-id mr3_p2a_v4_validation
+  --base-domain 172 --base-port 12321 --run-id mr3_p2a_v5_validation
 ```
 
 学习端使用cuda:0（可显式`--device cpu`）；每worker始终三台。

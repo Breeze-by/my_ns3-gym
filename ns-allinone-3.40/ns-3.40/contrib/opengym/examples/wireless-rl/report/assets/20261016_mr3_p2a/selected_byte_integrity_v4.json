@@ -1,0 +1,25 @@
+{
+  "schema": "mr3-p2a-selected-byte-integrity-v4",
+  "runs": [
+    {
+      "directory": "native_v4/minimal",
+      "manifest_sha256": "a81aab9ba038027d817cfa0ecf23f821f4eb5dbd405d4f5c97327e2bf717d5eb",
+      "files_verified": 29,
+      "raw_bytes": 20362138,
+      "selected_bytes": 12695621,
+      "errors": [],
+      "passed": true
+    },
+    {
+      "directory": "native_v4/pilot_interrupted",
+      "manifest_sha256": "3b36bba782e9f2e822e4eb864542406278702c0b2eaf9e5bc94e2ff78893ab10",
+      "files_verified": 74,
+      "raw_bytes": 25738292,
+      "selected_bytes": 5998428,
+      "errors": [],
+      "passed": true
+    }
+  ],
+  "passed": true,
+  "scope": "Read-only compressed and decoded raw byte proof; no native/GPU operation."
+}
