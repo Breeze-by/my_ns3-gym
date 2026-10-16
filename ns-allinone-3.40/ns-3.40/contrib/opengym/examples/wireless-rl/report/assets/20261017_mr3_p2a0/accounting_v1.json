@@ -1,0 +1,46 @@
+{
+  "schema": "mr3-p2a0-accounting-v1",
+  "freeze": "f8694025d618532e851796d2f01aaa3aca322800",
+  "stages": [
+    {
+      "stage": "terminal",
+      "api_records": 8,
+      "real_decisions": 7,
+      "effective_sim_seconds": "6.02",
+      "physical_sim_seconds": "6.02",
+      "wall_seconds": "339.79872017819434",
+      "benchmark_passed": true,
+      "full_audit_passed": true
+    },
+    {
+      "stage": "reset",
+      "api_records": 64,
+      "real_decisions": 64,
+      "effective_sim_seconds": "63.14",
+      "physical_sim_seconds": "63.14",
+      "wall_seconds": "644.3825183720328",
+      "benchmark_passed": false,
+      "full_audit_passed": false
+    }
+  ],
+  "deadline_stage": {
+    "status": "SKIPPED",
+    "reason": "reset benchmark/full audit failed; prospective stop rule; no native launch"
+  },
+  "total_api_records": 72,
+  "total_real_decisions": 71,
+  "total_effective_sim_seconds": "69.16",
+  "total_physical_sim_seconds": "69.16",
+  "total_native_wall_seconds": "984.18123855022714",
+  "gpu_optimizer_steps": 0,
+  "new_pilot_runs": 0,
+  "pilot_budget_unchanged": {
+    "charged_decisions": 2226,
+    "charged_wall_seconds": "11494.045260453597",
+    "remaining_decisions": 1870,
+    "remaining_wall_seconds": "2905.954739546403"
+  },
+  "p2a0_accepted": false,
+  "p2a0_declared_exit_met": false,
+  "reason": "one real peer-envelope failure in reset; deadline not run; full stage result remains FAIL"
+}

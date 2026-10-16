@@ -3,8 +3,8 @@
 版本：2026-10-17；路线标识：`MR3`。本文取代旧的目标搜索、充电、集合和通信调度 RL 路线。
 唯一 Git 根：`/home/zhuyulab/ns3-workspace`。P0/P1A/P1B已验收；用户于2026-10-16验收P1C并授权P2A。
 P2A未完成；v6原session基础设施失败后停止。2026-10-17用户授权继续解决并允许前置准备，
-当前先做[MR3-P2A.0](IMPLEMENTATION_PLAN.md#mr3-p2a0训练前工程与接口准备2026-10-17授权进行中)，
-本轮不启动新pilot、不重置其余额；P2B及后续未开始。
+当前[MR3-P2A.0](IMPLEMENTATION_PLAN.md)原声明出口未达：terminal通过，reset真实peer失败，
+deadline跳过，停本步待复核。本轮无新pilot、不重置其余额；P2B及后续未开始。
 任务定义见[MR3_TASK_CONTRACT.md](MR3_TASK_CONTRACT.md)，环境实现与接口见[MR3_ENV_CONTRACT.md](MR3_ENV_CONTRACT.md)；
 当前停在P2A，完整联合MaskablePPO训练/验证出口未达；gateway不在授权范围内。
 快速二维独立选项及每run50万/72小时候选预算未获验收，不以P2A授权代替其单独验收。

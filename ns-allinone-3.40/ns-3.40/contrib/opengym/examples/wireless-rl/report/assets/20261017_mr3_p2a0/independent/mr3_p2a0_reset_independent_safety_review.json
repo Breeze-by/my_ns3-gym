@@ -1,0 +1,1757 @@
+{
+  "schema": "mr3-p2a0-independent-reset-safety-review-v1",
+  "freeze": "f8694025d618532e851796d2f01aaa3aca322800",
+  "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_reset",
+  "errors": [],
+  "episodes": [
+    {
+      "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_reset/worker0/episode001_open_101",
+      "epoch": "mr3_p2a0_20261017_reset_w0_e1_99045424",
+      "task_terminal": "navigation_failure",
+      "frozen_navigation_protocol_closed": false,
+      "dt_last": 0.14,
+      "command_last_present": true,
+      "api_steps": 16,
+      "script_decisions": 16,
+      "contact_components": 18,
+      "contact_fresh": true,
+      "collision_events": 0,
+      "nav2_finalized": 18,
+      "slam_exit_witnesses": [
+        [
+          400,
+          {
+            "action_id": 129809931369728,
+            "controlled": true,
+            "epoch": "mr3_p2a0_20261017_reset_w0_e1_99045424",
+            "event": "process_exited",
+            "pid": 1902065,
+            "process_name": "multirobot_slam_toolbox_node-13",
+            "process_start_index": 13,
+            "protocol": "nav2-finalized_then_serial-ros_then_gazebo-v1",
+            "receipt_index": 89,
+            "returncode": 0,
+            "role": "owned_ros",
+            "schema": "mr3-ordered-ros-shutdown-v1",
+            "signal_sequence": 23,
+            "wall_monotonic_ns": 3917769360311221
+          }
+        ],
+        [
+          411,
+          {
+            "action_id": 129809931209984,
+            "controlled": true,
+            "epoch": "mr3_p2a0_20261017_reset_w0_e1_99045424",
+            "event": "process_exited",
+            "pid": 1901938,
+            "process_name": "multirobot_slam_toolbox_node-10",
+            "process_start_index": 10,
+            "protocol": "nav2-finalized_then_serial-ros_then_gazebo-v1",
+            "receipt_index": 93,
+            "returncode": 0,
+            "role": "owned_ros",
+            "schema": "mr3-ordered-ros-shutdown-v1",
+            "signal_sequence": 25,
+            "wall_monotonic_ns": 3917769702052746
+          }
+        ],
+        [
+          422,
+          {
+            "action_id": 129809930974544,
+            "controlled": true,
+            "epoch": "mr3_p2a0_20261017_reset_w0_e1_99045424",
+            "event": "process_exited",
+            "pid": 1901093,
+            "process_name": "multirobot_slam_toolbox_node-7",
+            "process_start_index": 7,
+            "protocol": "nav2-finalized_then_serial-ros_then_gazebo-v1",
+            "receipt_index": 97,
+            "returncode": 0,
+            "role": "owned_ros",
+            "schema": "mr3-ordered-ros-shutdown-v1",
+            "signal_sequence": 27,
+            "wall_monotonic_ns": 3917770032072348
+          }
+        ]
+      ],
+      "slam_unregister_witnesses": [
+        [
+          398,
+          "[multirobot_slam_toolbox_node-13] Unregistering sensor: Custom Described Lidar : base_scan"
+        ],
+        [
+          409,
+          "[multirobot_slam_toolbox_node-10] Unregistering sensor: Custom Described Lidar : base_scan"
+        ],
+        [
+          420,
+          "[multirobot_slam_toolbox_node-7] Unregistering sensor: Custom Described Lidar : base_scan"
+        ]
+      ],
+      "serial_ros_signals": 31,
+      "ordered_complete": {
+        "epoch": "mr3_p2a0_20261017_reset_w0_e1_99045424",
+        "event": "complete",
+        "protocol": "nav2-finalized_then_serial-ros_then_gazebo-v1",
+        "receipt_index": 111,
+        "schema": "mr3-ordered-ros-shutdown-v1",
+        "server_pid": 1901082,
+        "server_returncode": 0,
+        "stop_cli_pid": 1905709,
+        "stop_cli_returncode": 0,
+        "wall_monotonic_ns": 3917773200226667
+      },
+      "truth_diagnostic": {
+        "failure_received_sim_time_sec": 92.2,
+        "latest_model_states": {
+          "poses": {
+            "tb1": {
+              "orientation": {
+                "w": -0.019661506952725515,
+                "x": 0.0030221112304354056,
+                "y": 4.720626625874109e-05,
+                "z": -0.9998021253026158
+              },
+              "position": {
+                "x": -1.104963588618171,
+                "y": -0.9188494088648074,
+                "z": 0.007951815773956058
+              }
+            },
+            "tb2": {
+              "orientation": {
+                "w": 0.986284443595587,
+                "x": 0.0008718545097212342,
+                "y": -0.001399386497735368,
+                "z": 0.1650462901991057
+              },
+              "position": {
+                "x": 0.5484963684285968,
+                "y": 1.13686021232939,
+                "z": 0.008712310145461224
+              }
+            },
+            "tb3": {
+              "orientation": {
+                "w": 0.6826580730262988,
+                "x": -0.002355716365040453,
+                "y": 0.002225436780088496,
+                "z": 0.7307307666737222
+              },
+              "position": {
+                "x": 0.9254352255108726,
+                "y": 0.8952081877423034,
+                "z": 0.007845894086699926
+              }
+            }
+          },
+          "received_sequence": 165,
+          "received_sim_time_sec": 92.2,
+          "source_stamp_missing": true
+        },
+        "scope": "evaluator-only latest ModelStates receipt before failure callback; not an exact source-time match to received safety inputs"
+      },
+      "peer_failure_review": {
+        "received_inputs_recomputed": true,
+        "pairs": [
+          {
+            "robots": [
+              "tb2",
+              "tb3"
+            ],
+            "recomputed_received_distance_m": 0.47346552439779177,
+            "physical_cache_distance_m": 0.44774837014279606
+          }
+        ],
+        "observation_sim_time_sec": 92.2,
+        "failure_received_sim_time_sec": 92.2,
+        "physical_cache_received_sim_time_sec": 92.2,
+        "physical_cache_source_stamp_missing": true,
+        "genuine_task_failure_preserved": true,
+        "evidence": {
+          "schema": "mr3-peer-overlap-inputs-v1",
+          "observation_sim_time_sec": 92.2,
+          "body_radius_m": 0.25,
+          "tf_source_lead_sec": 0.2,
+          "pairs": [
+            {
+              "robots": [
+                "tb2",
+                "tb3"
+              ],
+              "centre_distance_m": 0.47346552439779177,
+              "threshold_m": 0.5
+            }
+          ],
+          "received_inputs": {
+            "tb1": {
+              "estimated_map_pose": {
+                "x": -1.0965133535544986,
+                "y": -0.93039331374242,
+                "yaw": 3.0971003150474288
+              },
+              "odom_stamp_sec": 92.099,
+              "odom_source_age_sec": 0.10099999999999909,
+              "tf_validity_stamp_sec": 92.228,
+              "tf_source_stamp_sec": 92.02799999999999,
+              "tf_source_age_sec": 0.17200000000001125,
+              "odom_frame": "odom",
+              "odom_child_frame": "base_footprint",
+              "tf_frame": "map",
+              "tf_child_frame": "odom",
+              "odom_position": {
+                "x": -1.0864921895672168,
+                "y": -0.9196400531297086,
+                "z": 0.007981190149452609
+              },
+              "odom_orientation": {
+                "x": 0.0026085059480400745,
+                "y": 0.0007471353763554108,
+                "z": -0.9997490834752925,
+                "w": -0.022235277730700772
+              },
+              "tf_translation": {
+                "x": -0.010008489269953735,
+                "y": -0.010768235138644139,
+                "z": -0.01550684349836487
+              },
+              "tf_rotation": {
+                "x": -0.0013403270247114903,
+                "y": 0.002477715431457873,
+                "z": -3.5701661686415074e-06,
+                "w": 0.9999960322106091
+              },
+              "odom_twist": {
+                "linear": {
+                  "x": 0.24624210120324358,
+                  "y": 0.00012222336715083867,
+                  "z": 0.0
+                },
+                "angular": {
+                  "x": 0.0,
+                  "y": 0.0,
+                  "z": 0.07362217944402906
+                }
+              }
+            },
+            "tb2": {
+              "estimated_map_pose": {
+                "x": 0.5233663492821543,
+                "y": 1.1285833641772423,
+                "yaw": 0.2538554446398805
+              },
+              "odom_stamp_sec": 92.077,
+              "odom_source_age_sec": 0.12300000000000466,
+              "tf_validity_stamp_sec": 92.228,
+              "tf_source_stamp_sec": 92.02799999999999,
+              "tf_source_age_sec": 0.17200000000001125,
+              "odom_frame": "odom",
+              "odom_child_frame": "base_footprint",
+              "tf_frame": "map",
+              "tf_child_frame": "odom",
+              "odom_position": {
+                "x": 0.5226246153589965,
+                "y": 1.1291675147454334,
+                "z": 0.008638656974146045
+              },
+              "odom_orientation": {
+                "x": 0.0006480907205122381,
+                "y": -0.0010024538331807745,
+                "z": 0.12831962433426097,
+                "w": 0.9917321458314461
+              },
+              "tf_translation": {
+                "x": -0.003198633596037916,
+                "y": 0.0012479732034614225,
+                "z": -0.006088871465722181
+              },
+              "tf_rotation": {
+                "x": -0.0005996746901152782,
+                "y": 0.0011596284346034329,
+                "z": -0.0017455262746618532,
+                "w": 0.9999976243922704
+              },
+              "odom_twist": {
+                "linear": {
+                  "x": 0.24612236370076554,
+                  "y": -0.0007684463371424796,
+                  "z": 0.0
+                },
+                "angular": {
+                  "x": 0.0,
+                  "y": 0.0,
+                  "z": 0.6150977482064992
+                }
+              }
+            },
+            "tb3": {
+              "estimated_map_pose": {
+                "x": 0.9185266901705724,
+                "y": 0.8677809336244862,
+                "yaw": 1.6771070830731172
+              },
+              "odom_stamp_sec": 92.075,
+              "odom_source_age_sec": 0.125,
+              "tf_validity_stamp_sec": 92.135,
+              "tf_source_stamp_sec": 91.935,
+              "tf_source_age_sec": 0.26500000000000057,
+              "odom_frame": "odom",
+              "odom_child_frame": "base_footprint",
+              "tf_frame": "map",
+              "tf_child_frame": "odom",
+              "odom_position": {
+                "x": 0.9279701327860603,
+                "y": 0.8681139846188012,
+                "z": 0.007887241060514175
+              },
+              "odom_orientation": {
+                "x": -0.002354470596177407,
+                "y": 0.0021345835773238044,
+                "z": 0.7436723041719621,
+                "w": 0.6685367634085113
+              },
+              "tf_translation": {
+                "x": -0.009441375623697856,
+                "y": -0.00033526049917564167,
+                "z": -0.0122925422292718
+              },
+              "tf_rotation": {
+                "x": 0.003050456694499463,
+                "y": 0.0003748361535273883,
+                "z": 4.7084056614717517e-08,
+                "w": 0.9999952770947524
+              },
+              "odom_twist": {
+                "linear": {
+                  "x": 0.26043301036721195,
+                  "y": 0.0002869266373415856,
+                  "z": 0.0
+                },
+                "angular": {
+                  "x": 0.0,
+                  "y": 0.0,
+                  "z": -0.1687404406622375
+                }
+              }
+            }
+          },
+          "transport_epoch_missing": true,
+          "transport_sequence_missing": true,
+          "nonfinite_auxiliary_components_encoded_as_null": true,
+          "scope": "received odom/TF gate inputs; no truth or actual-contact assertion"
+        }
+      },
+      "task_success": false,
+      "original_worker_task_failures": [
+        "{\"component\": \"peer_obstacles\", \"reason\": \"peer_body_envelopes_overlap\", \"diagnostic\": {\"schema\": \"mr3-peer-overlap-inputs-v1\", \"observation_sim_time_sec\": 92.2, \"body_radius_m\": 0.25, \"tf_source_lead_sec\": 0.2, \"pairs\": [{\"robots\": [\"tb2\", \"tb3\"], \"centre_distance_m\": 0.47346552439779177, \"threshold_m\": 0.5}], \"received_inputs\": {\"tb1\": {\"estimated_map_pose\": {\"x\": -1.0965133535544986, \"y\": -0.93039331374242, \"yaw\": 3.0971003150474288}, \"odom_stamp_sec\": 92.099, \"odom_source_age_sec\": 0.10099999999999909, \"tf_validity_stamp_sec\": 92.228, \"tf_source_stamp_sec\": 92.02799999999999, \"tf_source_age_sec\": 0.17200000000001125, \"odom_frame\": \"odom\", \"odom_child_frame\": \"base_footprint\", \"tf_frame\": \"map\", \"tf_child_frame\": \"odom\", \"odom_position\": {\"x\": -1.0864921895672168, \"y\": -0.9196400531297086, \"z\": 0.007981190149452609}, \"odom_orientation\": {\"x\": 0.0026085059480400745, \"y\": 0.0007471353763554108, \"z\": -0.9997490834752925, \"w\": -0.022235277730700772}, \"tf_translation\": {\"x\": -0.010008489269953735, \"y\": -0.010768235138644139, \"z\": -0.01550684349836487}, \"tf_rotation\": {\"x\": -0.0013403270247114903, \"y\": 0.002477715431457873, \"z\": -3.5701661686415074e-06, \"w\": 0.9999960322106091}, \"odom_twist\": {\"linear\": {\"x\": 0.24624210120324358, \"y\": 0.00012222336715083867, \"z\": 0.0}, \"angular\": {\"x\": 0.0, \"y\": 0.0, \"z\": 0.07362217944402906}}}, \"tb2\": {\"estimated_map_pose\": {\"x\": 0.5233663492821543, \"y\": 1.1285833641772423, \"yaw\": 0.2538554446398805}, \"odom_stamp_sec\": 92.077, \"odom_source_age_sec\": 0.12300000000000466, \"tf_validity_stamp_sec\": 92.228, \"tf_source_stamp_sec\": 92.02799999999999, \"tf_source_age_sec\": 0.17200000000001125, \"odom_frame\": \"odom\", \"odom_child_frame\": \"base_footprint\", \"tf_frame\": \"map\", \"tf_child_frame\": \"odom\", \"odom_position\": {\"x\": 0.5226246153589965, \"y\": 1.1291675147454334, \"z\": 0.008638656974146045}, \"odom_orientation\": {\"x\": 0.0006480907205122381, \"y\": -0.0010024538331807745, \"z\": 0.12831962433426097, \"w\": 0.9917321458314461}, \"tf_translation\": {\"x\": -0.003198633596037916, \"y\": 0.0012479732034614225, \"z\": -0.006088871465722181}, \"tf_rotation\": {\"x\": -0.0005996746901152782, \"y\": 0.0011596284346034329, \"z\": -0.0017455262746618532, \"w\": 0.9999976243922704}, \"odom_twist\": {\"linear\": {\"x\": 0.24612236370076554, \"y\": -0.0007684463371424796, \"z\": 0.0}, \"angular\": {\"x\": 0.0, \"y\": 0.0, \"z\": 0.6150977482064992}}}, \"tb3\": {\"estimated_map_pose\": {\"x\": 0.9185266901705724, \"y\": 0.8677809336244862, \"yaw\": 1.6771070830731172}, \"odom_stamp_sec\": 92.075, \"odom_source_age_sec\": 0.125, \"tf_validity_stamp_sec\": 92.135, \"tf_source_stamp_sec\": 91.935, \"tf_source_age_sec\": 0.26500000000000057, \"odom_frame\": \"odom\", \"odom_child_frame\": \"base_footprint\", \"tf_frame\": \"map\", \"tf_child_frame\": \"odom\", \"odom_position\": {\"x\": 0.9279701327860603, \"y\": 0.8681139846188012, \"z\": 0.007887241060514175}, \"odom_orientation\": {\"x\": -0.002354470596177407, \"y\": 0.0021345835773238044, \"z\": 0.7436723041719621, \"w\": 0.6685367634085113}, \"tf_translation\": {\"x\": -0.009441375623697856, \"y\": -0.00033526049917564167, \"z\": -0.0122925422292718}, \"tf_rotation\": {\"x\": 0.003050456694499463, \"y\": 0.0003748361535273883, \"z\": 4.7084056614717517e-08, \"w\": 0.9999952770947524}, \"odom_twist\": {\"linear\": {\"x\": 0.26043301036721195, \"y\": 0.0002869266373415856, \"z\": 0.0}, \"angular\": {\"x\": 0.0, \"y\": 0.0, \"z\": -0.1687404406622375}}}}, \"transport_epoch_missing\": true, \"transport_sequence_missing\": true, \"nonfinite_auxiliary_components_encoded_as_null\": true, \"scope\": \"received odom/TF gate inputs; no truth or actual-contact assertion\"}}"
+      ],
+      "original_native_failures": [],
+      "artifact_sha256": {
+        "metadata.json": "03746414368eaefe18be0e04f1e8cb77a72af9110a0babccbd905ef44f8084eb",
+        "summary.json": "5a71b643825907539feaf884e14a6a15865dfeae3bf7e73014dea00a96f1a2dc",
+        "supervisor_shutdown.json": "5bf9e7bc9eb9f044bf11ab4b05099f79c436fd1de3be5349014dfae743d2d368",
+        "native_stop.json": "f4143153daa507f3873eed99ecf87c0b50bf316fc084b56bfc4b1a574892065b",
+        "nav2_shutdown.json": "0f7d8dccabe9942bea9d16a9453488dd310787f9acb81822d39b5b1efbe619a6",
+        "transitions.jsonl": "9440b87a11de65a48e2901a3d0a61eea2e863a6a6be9dc0a2345a5fc1842f7f4",
+        "launch.log": "3093a6fba267bc940bdb8a4a6fa382e1aeb71c68c82d26fd0c249aa6ab9f88f1",
+        "mr3_p2a0_20261017_reset_w0_e1_99045424.json": "3529966b8b3de6a0c4ce8049c060b5347aaf111a21e50fcf3ef3bb00aa15fd8d"
+      }
+    },
+    {
+      "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_reset/worker0/episode002_open_101",
+      "epoch": "mr3_p2a0_20261017_reset_w0_e2_45a28b5f",
+      "task_terminal": "training_external_truncation",
+      "frozen_navigation_protocol_closed": true,
+      "dt_last": 1.0,
+      "command_last_present": true,
+      "api_steps": 16,
+      "script_decisions": 16,
+      "contact_components": 18,
+      "contact_fresh": true,
+      "collision_events": 0,
+      "nav2_finalized": 18,
+      "slam_exit_witnesses": [
+        [
+          387,
+          {
+            "action_id": 140052989826416,
+            "controlled": true,
+            "epoch": "mr3_p2a0_20261017_reset_w0_e2_45a28b5f",
+            "event": "process_exited",
+            "pid": 1906908,
+            "process_name": "multirobot_slam_toolbox_node-13",
+            "process_start_index": 13,
+            "protocol": "nav2-finalized_then_serial-ros_then_gazebo-v1",
+            "receipt_index": 89,
+            "returncode": 0,
+            "role": "owned_ros",
+            "schema": "mr3-ordered-ros-shutdown-v1",
+            "signal_sequence": 23,
+            "wall_monotonic_ns": 3918095960651711
+          }
+        ],
+        [
+          398,
+          {
+            "action_id": 140052990052576,
+            "controlled": true,
+            "epoch": "mr3_p2a0_20261017_reset_w0_e2_45a28b5f",
+            "event": "process_exited",
+            "pid": 1906823,
+            "process_name": "multirobot_slam_toolbox_node-10",
+            "process_start_index": 10,
+            "protocol": "nav2-finalized_then_serial-ros_then_gazebo-v1",
+            "receipt_index": 93,
+            "returncode": 0,
+            "role": "owned_ros",
+            "schema": "mr3-ordered-ros-shutdown-v1",
+            "signal_sequence": 25,
+            "wall_monotonic_ns": 3918096421285683
+          }
+        ],
+        [
+          409,
+          {
+            "action_id": 140052989670736,
+            "controlled": true,
+            "epoch": "mr3_p2a0_20261017_reset_w0_e2_45a28b5f",
+            "event": "process_exited",
+            "pid": 1906322,
+            "process_name": "multirobot_slam_toolbox_node-7",
+            "process_start_index": 7,
+            "protocol": "nav2-finalized_then_serial-ros_then_gazebo-v1",
+            "receipt_index": 97,
+            "returncode": 0,
+            "role": "owned_ros",
+            "schema": "mr3-ordered-ros-shutdown-v1",
+            "signal_sequence": 27,
+            "wall_monotonic_ns": 3918096743507760
+          }
+        ]
+      ],
+      "slam_unregister_witnesses": [
+        [
+          385,
+          "[multirobot_slam_toolbox_node-13] Unregistering sensor: Custom Described Lidar : base_scan"
+        ],
+        [
+          396,
+          "[multirobot_slam_toolbox_node-10] Unregistering sensor: Custom Described Lidar : base_scan"
+        ],
+        [
+          407,
+          "[multirobot_slam_toolbox_node-7] Unregistering sensor: Custom Described Lidar : base_scan"
+        ]
+      ],
+      "serial_ros_signals": 31,
+      "ordered_complete": {
+        "epoch": "mr3_p2a0_20261017_reset_w0_e2_45a28b5f",
+        "event": "complete",
+        "protocol": "nav2-finalized_then_serial-ros_then_gazebo-v1",
+        "receipt_index": 111,
+        "schema": "mr3-ordered-ros-shutdown-v1",
+        "server_pid": 1906316,
+        "server_returncode": 0,
+        "stop_cli_pid": 1910429,
+        "stop_cli_returncode": 0,
+        "wall_monotonic_ns": 3918099661308982
+      },
+      "truth_diagnostic": null,
+      "peer_failure_review": null,
+      "task_success": false,
+      "original_worker_task_failures": [],
+      "original_native_failures": [],
+      "artifact_sha256": {
+        "metadata.json": "022aa98ab993786744e7bee5d1d74b5fd9ea80c5a9b7208df3d738896424ea27",
+        "summary.json": "8a7ad376ba48e5a23641b26fb56966279178b49e151c34e770623d0b33a56ebd",
+        "supervisor_shutdown.json": "09e24426a41bc40e92c0e20bae74ca51713fae2856fa3e6484dfd32180e79f4c",
+        "native_stop.json": "ee9a251e99a10e7dcb7ffd2caa23f58d59c2a7e7dab8e000536d688c2e00c7ba",
+        "nav2_shutdown.json": "a4d003cd0d569014520a42c88a159718cfaac904b79c5b91189dc14ca53cbb37",
+        "transitions.jsonl": "59f653ec174ebd7947184a7eabd79dfaca93f64a26b85769aab58732d193cecc",
+        "launch.log": "5021c85798b9edd84e113750667a9afec501623ff596ebabaca98ac58aa412c5",
+        "mr3_p2a0_20261017_reset_w0_e2_45a28b5f.json": "eb6db5d868c3f62d73db004222dd7c5794013b81106152b1929dc119a8986cca"
+      }
+    },
+    {
+      "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_reset/worker1/episode001_open_101",
+      "epoch": "mr3_p2a0_20261017_reset_w1_e1_d997b502",
+      "task_terminal": "training_external_truncation",
+      "frozen_navigation_protocol_closed": true,
+      "dt_last": 1.0,
+      "command_last_present": true,
+      "api_steps": 16,
+      "script_decisions": 16,
+      "contact_components": 18,
+      "contact_fresh": true,
+      "collision_events": 0,
+      "nav2_finalized": 18,
+      "slam_exit_witnesses": [
+        [
+          402,
+          {
+            "action_id": 124342440132128,
+            "controlled": true,
+            "epoch": "mr3_p2a0_20261017_reset_w1_e1_d997b502",
+            "event": "process_exited",
+            "pid": 1902091,
+            "process_name": "multirobot_slam_toolbox_node-13",
+            "process_start_index": 13,
+            "protocol": "nav2-finalized_then_serial-ros_then_gazebo-v1",
+            "receipt_index": 89,
+            "returncode": 0,
+            "role": "owned_ros",
+            "schema": "mr3-ordered-ros-shutdown-v1",
+            "signal_sequence": 23,
+            "wall_monotonic_ns": 3917763785284400
+          }
+        ],
+        [
+          413,
+          {
+            "action_id": 124342439888496,
+            "controlled": true,
+            "epoch": "mr3_p2a0_20261017_reset_w1_e1_d997b502",
+            "event": "process_exited",
+            "pid": 1901965,
+            "process_name": "multirobot_slam_toolbox_node-10",
+            "process_start_index": 10,
+            "protocol": "nav2-finalized_then_serial-ros_then_gazebo-v1",
+            "receipt_index": 93,
+            "returncode": 0,
+            "role": "owned_ros",
+            "schema": "mr3-ordered-ros-shutdown-v1",
+            "signal_sequence": 25,
+            "wall_monotonic_ns": 3917764215806365
+          }
+        ],
+        [
+          424,
+          {
+            "action_id": 124342439703888,
+            "controlled": true,
+            "epoch": "mr3_p2a0_20261017_reset_w1_e1_d997b502",
+            "event": "process_exited",
+            "pid": 1901089,
+            "process_name": "multirobot_slam_toolbox_node-7",
+            "process_start_index": 7,
+            "protocol": "nav2-finalized_then_serial-ros_then_gazebo-v1",
+            "receipt_index": 97,
+            "returncode": 0,
+            "role": "owned_ros",
+            "schema": "mr3-ordered-ros-shutdown-v1",
+            "signal_sequence": 27,
+            "wall_monotonic_ns": 3917764559851156
+          }
+        ]
+      ],
+      "slam_unregister_witnesses": [
+        [
+          400,
+          "[multirobot_slam_toolbox_node-13] Unregistering sensor: Custom Described Lidar : base_scan"
+        ],
+        [
+          411,
+          "[multirobot_slam_toolbox_node-10] Unregistering sensor: Custom Described Lidar : base_scan"
+        ],
+        [
+          422,
+          "[multirobot_slam_toolbox_node-7] Unregistering sensor: Custom Described Lidar : base_scan"
+        ]
+      ],
+      "serial_ros_signals": 31,
+      "ordered_complete": {
+        "epoch": "mr3_p2a0_20261017_reset_w1_e1_d997b502",
+        "event": "complete",
+        "protocol": "nav2-finalized_then_serial-ros_then_gazebo-v1",
+        "receipt_index": 111,
+        "schema": "mr3-ordered-ros-shutdown-v1",
+        "server_pid": 1901078,
+        "server_returncode": 0,
+        "stop_cli_pid": 1905594,
+        "stop_cli_returncode": 0,
+        "wall_monotonic_ns": 3917767575070403
+      },
+      "truth_diagnostic": null,
+      "peer_failure_review": null,
+      "task_success": false,
+      "original_worker_task_failures": [],
+      "original_native_failures": [],
+      "artifact_sha256": {
+        "metadata.json": "1fd99e7eaa4c70836e887d1bbff23b345d71654364673b0db87f3042e983e295",
+        "summary.json": "91e9bacfcf01ebdf60187a0d859d88fcc90d737e56f134c23633ab21111f09a1",
+        "supervisor_shutdown.json": "487e11132edb7007500c309de0c181bbb7532eed40f55b7f99a22d9a9eed7b9a",
+        "native_stop.json": "0eedce09277ee2553e90c3831d2948b23c35ec27096ab6d2e94b33863871e6b4",
+        "nav2_shutdown.json": "bdcad5cf7fef9b1202007d3d11475ae4250b7373c8a74c6b6841c5f5a050ffca",
+        "transitions.jsonl": "6118b81cefa3449c8f583fbfd4314a295bab593f15965820ce4a0e2eb64f8162",
+        "launch.log": "660837fb3654c90d4cee05e615b8019f5f24be27160e6bad38fcb01c5a3b8fb4",
+        "mr3_p2a0_20261017_reset_w1_e1_d997b502.json": "f05d962a1c6713ab8ffd037b3d5ec323c87876a9082d4ce2558e4f14ec1d8734"
+      }
+    },
+    {
+      "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_reset/worker1/episode002_open_101",
+      "epoch": "mr3_p2a0_20261017_reset_w1_e2_4d31a548",
+      "task_terminal": "training_external_truncation",
+      "frozen_navigation_protocol_closed": true,
+      "dt_last": 1.0,
+      "command_last_present": true,
+      "api_steps": 16,
+      "script_decisions": 16,
+      "contact_components": 18,
+      "contact_fresh": true,
+      "collision_events": 0,
+      "nav2_finalized": 18,
+      "slam_exit_witnesses": [
+        [
+          387,
+          {
+            "action_id": 140232411801600,
+            "controlled": true,
+            "epoch": "mr3_p2a0_20261017_reset_w1_e2_4d31a548",
+            "event": "process_exited",
+            "pid": 1906392,
+            "process_name": "multirobot_slam_toolbox_node-13",
+            "process_start_index": 13,
+            "protocol": "nav2-finalized_then_serial-ros_then_gazebo-v1",
+            "receipt_index": 89,
+            "returncode": 0,
+            "role": "owned_ros",
+            "schema": "mr3-ordered-ros-shutdown-v1",
+            "signal_sequence": 23,
+            "wall_monotonic_ns": 3918083753724367
+          }
+        ],
+        [
+          398,
+          {
+            "action_id": 140232411939696,
+            "controlled": true,
+            "epoch": "mr3_p2a0_20261017_reset_w1_e2_4d31a548",
+            "event": "process_exited",
+            "pid": 1906236,
+            "process_name": "multirobot_slam_toolbox_node-10",
+            "process_start_index": 10,
+            "protocol": "nav2-finalized_then_serial-ros_then_gazebo-v1",
+            "receipt_index": 93,
+            "returncode": 0,
+            "role": "owned_ros",
+            "schema": "mr3-ordered-ros-shutdown-v1",
+            "signal_sequence": 25,
+            "wall_monotonic_ns": 3918084110147115
+          }
+        ],
+        [
+          409,
+          {
+            "action_id": 140232411477328,
+            "controlled": true,
+            "epoch": "mr3_p2a0_20261017_reset_w1_e2_4d31a548",
+            "event": "process_exited",
+            "pid": 1905792,
+            "process_name": "multirobot_slam_toolbox_node-7",
+            "process_start_index": 7,
+            "protocol": "nav2-finalized_then_serial-ros_then_gazebo-v1",
+            "receipt_index": 97,
+            "returncode": 0,
+            "role": "owned_ros",
+            "schema": "mr3-ordered-ros-shutdown-v1",
+            "signal_sequence": 27,
+            "wall_monotonic_ns": 3918084453753485
+          }
+        ]
+      ],
+      "slam_unregister_witnesses": [
+        [
+          385,
+          "[multirobot_slam_toolbox_node-13] Unregistering sensor: Custom Described Lidar : base_scan"
+        ],
+        [
+          396,
+          "[multirobot_slam_toolbox_node-10] Unregistering sensor: Custom Described Lidar : base_scan"
+        ],
+        [
+          407,
+          "[multirobot_slam_toolbox_node-7] Unregistering sensor: Custom Described Lidar : base_scan"
+        ]
+      ],
+      "serial_ros_signals": 31,
+      "ordered_complete": {
+        "epoch": "mr3_p2a0_20261017_reset_w1_e2_4d31a548",
+        "event": "complete",
+        "protocol": "nav2-finalized_then_serial-ros_then_gazebo-v1",
+        "receipt_index": 111,
+        "schema": "mr3-ordered-ros-shutdown-v1",
+        "server_pid": 1905786,
+        "server_returncode": 0,
+        "stop_cli_pid": 1910299,
+        "stop_cli_returncode": 0,
+        "wall_monotonic_ns": 3918087651432915
+      },
+      "truth_diagnostic": null,
+      "peer_failure_review": null,
+      "task_success": false,
+      "original_worker_task_failures": [],
+      "original_native_failures": [],
+      "artifact_sha256": {
+        "metadata.json": "e7ae4056bcdbe107aead1e32063b4639714c46fff1febc1034f7dc9084c5868e",
+        "summary.json": "03bd3dea9f3d2124dc7b2c65150e9ab9f80217bb1e4ffbe0855f2125b5f4bb9b",
+        "supervisor_shutdown.json": "9e5343e2c2f8f4efeffcaadebf28775a1adf172e64a259d6a0fec433b10012f9",
+        "native_stop.json": "99e167c87bb4ce3bd43be509b5af7dae5554ce48ac9fd261fb1fd7944ec77ff6",
+        "nav2_shutdown.json": "d6b472e02d97a9387a0637de39af8ec789c90642e90562f5797288dbed92136e",
+        "transitions.jsonl": "99ca7f00d7bd09795f5c9aadf1fef1f982cb0a46b4358984bb2d39a86d3c1780",
+        "launch.log": "bdfd9e877e9e6ebd81826120a2a8819233ff2465492ca9b31cbcacad3c06eff2",
+        "mr3_p2a0_20261017_reset_w1_e2_4d31a548.json": "79a3a4ed13daec92b22763869dd39c8b47549e9462c588c5b4eca7ebc989cfae"
+      }
+    }
+  ],
+  "scope": "read-only native closure, 18-source frozen health, task failure/truncation distinction and diagnostic isolation; no training/task-success credit",
+  "source_proof": {
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/peer_obstacles.py": {
+      "sha256": "54e6eeccac7d93ac42c3783b7826fed14296c527c7d68a7ecdb76e77a50102d4",
+      "worktree_identical": true
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/task_evaluator.py": {
+      "sha256": "9b029f21d433f694b79118c113e23df5921401e3be88f89599201bcecf84cc91",
+      "worktree_identical": true
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_adapter.py": {
+      "sha256": "02a44cb495e80f64034961dca18e61477c6168fc71707b4d0def76ac3f31fc4d",
+      "worktree_identical": true
+    },
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/observation.py": {
+      "sha256": "1d030402a4f934031e8f3bde19356cfbee92a0836a5d540381a42c78c834c389",
+      "worktree_identical": true
+    }
+  },
+  "owned_identity_absence": [
+    {
+      "pid": 1900983,
+      "start_ticks": 391745687,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1900984,
+      "start_ticks": 391745687,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1901057,
+      "start_ticks": 391745843,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1901058,
+      "start_ticks": 391745843,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1901067,
+      "start_ticks": 391746001,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1901069,
+      "start_ticks": 391746001,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1901070,
+      "start_ticks": 391746001,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1901073,
+      "start_ticks": 391746001,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1901074,
+      "start_ticks": 391746001,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1901077,
+      "start_ticks": 391746001,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1901078,
+      "start_ticks": 391746001,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1901081,
+      "start_ticks": 391746002,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1901082,
+      "start_ticks": 391746002,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1901085,
+      "start_ticks": 391746002,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1901086,
+      "start_ticks": 391746002,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1901089,
+      "start_ticks": 391746002,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1901090,
+      "start_ticks": 391746002,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1901093,
+      "start_ticks": 391746002,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1901934,
+      "start_ticks": 391746363,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1901936,
+      "start_ticks": 391746363,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1901938,
+      "start_ticks": 391746364,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1901961,
+      "start_ticks": 391746373,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1901963,
+      "start_ticks": 391746373,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1901965,
+      "start_ticks": 391746373,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1902061,
+      "start_ticks": 391746673,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1902063,
+      "start_ticks": 391746673,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1902065,
+      "start_ticks": 391746673,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1902086,
+      "start_ticks": 391746683,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1902089,
+      "start_ticks": 391746683,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1902091,
+      "start_ticks": 391746684,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1902188,
+      "start_ticks": 391747006,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1902190,
+      "start_ticks": 391747011,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1902298,
+      "start_ticks": 391748153,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1902300,
+      "start_ticks": 391748153,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1902302,
+      "start_ticks": 391748153,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1902304,
+      "start_ticks": 391748153,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1902306,
+      "start_ticks": 391748153,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1902308,
+      "start_ticks": 391748154,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1902310,
+      "start_ticks": 391748155,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1902312,
+      "start_ticks": 391748155,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1902314,
+      "start_ticks": 391748156,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1902316,
+      "start_ticks": 391748156,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1902318,
+      "start_ticks": 391748156,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1902319,
+      "start_ticks": 391748156,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1902322,
+      "start_ticks": 391748156,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1902336,
+      "start_ticks": 391748158,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1902767,
+      "start_ticks": 391752654,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1902769,
+      "start_ticks": 391752654,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1902771,
+      "start_ticks": 391752654,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1902773,
+      "start_ticks": 391752654,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1902775,
+      "start_ticks": 391752654,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1902777,
+      "start_ticks": 391752655,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1902779,
+      "start_ticks": 391752655,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1902781,
+      "start_ticks": 391752656,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1902783,
+      "start_ticks": 391752656,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1902785,
+      "start_ticks": 391752656,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1902787,
+      "start_ticks": 391752656,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1902789,
+      "start_ticks": 391752656,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1902791,
+      "start_ticks": 391752657,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1902793,
+      "start_ticks": 391752657,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1903159,
+      "start_ticks": 391757146,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1903161,
+      "start_ticks": 391757147,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1903163,
+      "start_ticks": 391757147,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1903165,
+      "start_ticks": 391757147,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1903167,
+      "start_ticks": 391757147,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1903169,
+      "start_ticks": 391757147,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1903171,
+      "start_ticks": 391757147,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1903173,
+      "start_ticks": 391757150,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1903175,
+      "start_ticks": 391757150,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1903177,
+      "start_ticks": 391757150,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1903179,
+      "start_ticks": 391757150,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1903181,
+      "start_ticks": 391757150,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1903183,
+      "start_ticks": 391757150,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1903193,
+      "start_ticks": 391757151,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1903401,
+      "start_ticks": 391757878,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1903403,
+      "start_ticks": 391757879,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1903405,
+      "start_ticks": 391757940,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1903407,
+      "start_ticks": 391757940,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1903477,
+      "start_ticks": 391758237,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1903481,
+      "start_ticks": 391758280,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1903573,
+      "start_ticks": 391758377,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1903576,
+      "start_ticks": 391758419,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1905594,
+      "start_ticks": 391776555,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1905665,
+      "start_ticks": 391776977,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1905678,
+      "start_ticks": 391777018,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1905709,
+      "start_ticks": 391777102,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1905724,
+      "start_ticks": 391777125,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1905780,
+      "start_ticks": 391777281,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1905782,
+      "start_ticks": 391777281,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1905784,
+      "start_ticks": 391777282,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1905786,
+      "start_ticks": 391777282,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1905788,
+      "start_ticks": 391777282,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1905790,
+      "start_ticks": 391777282,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1905792,
+      "start_ticks": 391777282,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1906208,
+      "start_ticks": 391777556,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1906232,
+      "start_ticks": 391777625,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1906234,
+      "start_ticks": 391777625,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1906236,
+      "start_ticks": 391777626,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1906295,
+      "start_ticks": 391777707,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1906310,
+      "start_ticks": 391777864,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1906312,
+      "start_ticks": 391777864,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1906314,
+      "start_ticks": 391777865,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1906316,
+      "start_ticks": 391777865,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1906318,
+      "start_ticks": 391777865,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1906320,
+      "start_ticks": 391777865,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1906322,
+      "start_ticks": 391777865,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1906388,
+      "start_ticks": 391777934,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1906390,
+      "start_ticks": 391777934,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1906392,
+      "start_ticks": 391777934,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1906819,
+      "start_ticks": 391778235,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1906821,
+      "start_ticks": 391778235,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1906823,
+      "start_ticks": 391778235,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1906858,
+      "start_ticks": 391778268,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1906904,
+      "start_ticks": 391778548,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1906906,
+      "start_ticks": 391778548,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1906908,
+      "start_ticks": 391778548,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1906987,
+      "start_ticks": 391778875,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1907022,
+      "start_ticks": 391779412,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1907024,
+      "start_ticks": 391779412,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1907026,
+      "start_ticks": 391779413,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1907028,
+      "start_ticks": 391779413,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1907030,
+      "start_ticks": 391779413,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1907032,
+      "start_ticks": 391779413,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1907034,
+      "start_ticks": 391779414,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1907157,
+      "start_ticks": 391780016,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1907159,
+      "start_ticks": 391780016,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1907161,
+      "start_ticks": 391780016,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1907163,
+      "start_ticks": 391780016,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1907165,
+      "start_ticks": 391780016,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1907167,
+      "start_ticks": 391780017,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1907170,
+      "start_ticks": 391780018,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1907487,
+      "start_ticks": 391783919,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1907489,
+      "start_ticks": 391783919,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1907491,
+      "start_ticks": 391783919,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1907493,
+      "start_ticks": 391783919,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1907495,
+      "start_ticks": 391783920,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1907497,
+      "start_ticks": 391783920,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1907499,
+      "start_ticks": 391783920,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1907617,
+      "start_ticks": 391784527,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1907619,
+      "start_ticks": 391784528,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1907621,
+      "start_ticks": 391784528,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1907623,
+      "start_ticks": 391784528,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1907625,
+      "start_ticks": 391784528,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1907627,
+      "start_ticks": 391784528,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1907629,
+      "start_ticks": 391784528,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1907894,
+      "start_ticks": 391788411,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1907896,
+      "start_ticks": 391788411,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1907898,
+      "start_ticks": 391788411,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1907900,
+      "start_ticks": 391788412,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1907902,
+      "start_ticks": 391788412,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1907904,
+      "start_ticks": 391788412,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1907906,
+      "start_ticks": 391788412,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1908020,
+      "start_ticks": 391789018,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1908022,
+      "start_ticks": 391789018,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1908024,
+      "start_ticks": 391789018,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1908026,
+      "start_ticks": 391789019,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1908028,
+      "start_ticks": 391789019,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1908030,
+      "start_ticks": 391789019,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1908032,
+      "start_ticks": 391789019,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1908121,
+      "start_ticks": 391789189,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1908123,
+      "start_ticks": 391789189,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1908161,
+      "start_ticks": 391789503,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1908162,
+      "start_ticks": 391789543,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1908277,
+      "start_ticks": 391789809,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1908279,
+      "start_ticks": 391789810,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1908309,
+      "start_ticks": 391790034,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1908314,
+      "start_ticks": 391790074,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1910299,
+      "start_ticks": 391808550,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 1910429,
+      "start_ticks": 391809770,
+      "current": null,
+      "same_owned_identity_exists": false
+    }
+  ],
+  "owned_identity_count": 169,
+  "task_failure_count": 1,
+  "external_truncation_count": 3,
+  "reviewer_scope_correction": {
+    "initial_script": "/tmp/review_mr3_p2a0_reset_safety_v1_scope_failed.py",
+    "initial_result": "/tmp/mr3_p2a0_reset_independent_safety_review_v1_scope_failed.json",
+    "incorrect_assumptions": [
+      "required worker task failures empty despite explicitly retained peer task failure",
+      "different algebraic addition order required bit-identical reconstructed floating point distance"
+    ],
+    "correction": "retain and match original worker failure string against task control_failure; require strict native closure separately; reproduce original transform arithmetic order",
+    "native_rerun": false
+  },
+  "passed": true
+}

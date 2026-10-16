@@ -1,5 +1,11 @@
 # ROS component memory — MR3
 
+P2A.0 actual closure (2026-10-17): source freeze f8694025; six native episodes
+closed cleanly, terminal audit PASS, reset benchmark/full audit FAIL with one
+real peer-envelope task failure. The 300-step deadline was SKIPPED under the
+prospective stop rule. P2A.0 exit is unmet; await user review, do not restart
+pilot. Shared navigation-map occupied starts are now proved from exact raw maps.
+
 2026-10-17: user authorized P2A continuation/preparation. Current substep is
 MR3-P2A.0, with no new pilot: repair SLAM teardown ownership, retain failed
 collection evidence, version the received-frontier union and add safety input

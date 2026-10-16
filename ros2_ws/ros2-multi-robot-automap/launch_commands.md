@@ -156,6 +156,10 @@ phase3固定绑定原contact task-phase与独立命令时间门禁；scalar rewa
 
 ## MR3-P2A.0 当前训练前工程准备
 
+实际在`f8694025`执行：terminal完整审计PASS，reset保留1次真实peer安全失败、3次外部截断，
+整体benchmark/完整审计FAIL；deadline命令未执行（SKIPPED）。本步出口未达，停留待复核。
+以下保留原预声明命令，不授权自动重跑或执行已跳过的deadline；新修复需新冻结/预声明。
+
 2026-10-17用户授权继续解决P2A并允许前置准备。本轮先验证SLAM生命周期、候选v4、
 失败采样保存和安全触发诊断；全部为脚本工程检查，无policy训练/GPU更新。
 先按上文系统ROS构建并source当前install；学习端按P1C段激活`ns3gym`并清除`PYTHONPATH`。

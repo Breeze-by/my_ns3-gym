@@ -3751,3 +3751,53 @@ rtk proxy python3 /tmp/mr3_p2a_package.py ros2_ws/ros2-multi-robot-automap/log/m
 无GPU优化、不重启pilot；任一阶段工程审计失败停后续、不自动重试。
 命令见 `report/assets/20261017_mr3_p2a0/predeclared_plan_v1.json` 与ROS启动页，
 待实际运行再追加freeze/成本/结果；本条不将计划记成已执行。
+
+## 2026-10-17 MR3-P2A.0 原生闭合：关闭正常，准备矩阵未通过
+
+统一已推送源码freeze `f8694025d618532e851796d2f01aaa3aca322800`；72项source/config/document绑定通过。
+学习端conda ns3gym，`unset PYTHONPATH; export PYTHONNOUSERSITE=1`，系统ROS worker独立；
+固定三机器人/每环境，scene=open、Gazebo seed101，无新模型/训练/optimizer更新。
+运行cwd为wireless-rl；原始输出均在canonical ROS `log/mr3_p2a0/`，选件见下方manifest。
+
+实际命令1：
+```bash
+python -m mr3_learning.benchmark --workers 1 --schedule open:101,open:101 --steps 4 --terminal-probe --base-domain 180 --base-port 12401 --output-root /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0 --run-id mr3_p2a0_20261017_terminal
+python -m mr3_learning.audit_preparation /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_terminal --freeze f8694025d618532e851796d2f01aaa3aca322800 --output /tmp/mr3_p2a0_terminal_audit.json
+```
+两episode，8API/7真实脚本决策、6.02有效/物理秒、339.79872017819434墙秒，CLI0；
+20ms短末步/同刻零尾归并、native/contact/clock/command/scalar/phase/原图归档及脱离原目录审计PASS。
+原图独立重放9/9完整快照逐字一致；两次严格关闭、3SLAM/18Nav2/Gazebo均正常，86保存身份消失。
+这是故意终态注入工程probe，绝不计为95%任务、策略或训练信用。
+
+实际命令2：
+```bash
+python -m mr3_learning.benchmark --workers 2 --schedule open:101,open:101 --steps 16 --base-domain 184 --base-port 12411 --output-root /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0 --run-id mr3_p2a0_20261017_reset
+python -m mr3_learning.audit_preparation /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_reset --freeze f8694025d618532e851796d2f01aaa3aca322800 --output /tmp/mr3_p2a0_reset_audit.json
+```
+四attempt全部保留：64API/64真实决策、63.14有效/物理秒、644.3825183720328墙秒，CLI1/benchmark FAIL。
+w0/e1=真实peer安全失败15.14秒；其余3条为16秒外部截断。w0/e1末动作999 WAIT，
+92.06提交→92.20触发tb2–tb3中心距.47346552439779177<.5；健康odom/TF原始输入精确复算。
+同receipt时钟的独立ModelStates缓存距.44774837014279606，明确无source stamp；零接触不能抹去圆包络FAIL。
+四条独立episode的native/contact/clock/command/ownership/scalar/phase/归档检查通过；
+但整体完整审计仍为3项FAIL（benchmark声明/sampler accounting/comparison负载），脱离原目录重放同样FAIL，
+没有修改门禁或将task失败转infra。四条全部真实关闭，SLAM exit0/sensor注销、18Nav2 finalized、
+无forced/native崩溃/owned/zombie，169保存PID/start身份消失。
+
+只读原图取证进一步精确重现own-free→fused/nav-occupied起点：tb2 command1源seq1 seed[107,118]
+占据来自tb3；tb3 command11源seq11 seed[98,135]占据来自tb1；hub完整payload SHA/版本由三own图重现。
+缺实际master costmap/导航图和planner精确sim水位，不宣称peer层/物体身份或唯一规划错误cause。
+独立CPU reviewer的ACK/短步/任务failure字段范围误判、原失败脚本和修正回执一并保存，不涉及native重试。
+
+按事前停止规则，300KEEP deadline **SKIPPED**，未创建该run目录；没有新pilot/开发验证/GPU优化。
+总工程原生72API/71真实决策、69.16有效/物理秒、984.18123855022714墙秒；pilot累计成本和余额不变。
+P2A.0原出口未达，停该步待复核；不进入P2A训练/P2B/gateway。
+本轮修复已证明真实析构和6次关闭正常，不称V6原Karto throw栈根治或多日稳定；
+继续前必须修复共享导航图起点冲突和途中安全反应链，再闭合received-only累计参与观测。
+
+规范证据：`report/assets/20261017_mr3_p2a0/native/{terminal,reset}/manifest.json`、
+各full_audit/detached_audit、`independent/`原图/关闭复核及其脚本、`accounting_v1.json`；
+报告 `report/20261017_mr3_p2a0.md`。原预声明和所有FAIL/未执行阶段保持，不混用旧freeze信用。
+
+补充只读全量归档复核：reset68/68完整snapshot精确重建，含terminal共77/77；
+两条第二轮tb2各17/17 target交集0/无合法GOAL/无目标发送接受，v4未解决这类候选饥饿。
+最终v2回执与初版范围断言失败并列在independent/，benchmark FAIL没有变化。
