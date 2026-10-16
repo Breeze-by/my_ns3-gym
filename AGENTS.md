@@ -53,11 +53,11 @@ acceptance. Complete and verify each substep, commit/push, present evidence,
 and wait for the user's explicit acceptance before the next substep.
 Old P1C/P2C acceptance or PASS cannot be reused as MR3 credit.
 
-Current boundary: **MR3-P0 accepted on 2026-10-14; MR3-P1A/P1B accepted by the user on 2026-10-15; MR3-P1C implemented and validated, awaiting explicit user acceptance**.
+Current boundary: **MR3-P0 accepted on 2026-10-14; MR3-P1A/P1B accepted by the user on 2026-10-15; MR3-P1C accepted by the user on 2026-10-16; MR3-P2A authorized and in progress**.
 P1B freeze `f9928fe` passed the same-freeze open/rooms/corridors seed101 scripted
 adapter audits; see the [P1B report](ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261015_mr3_p1b.md).
-The user authorized P1C environment/reset/reward/sampling work. P2A and later
-remain unstarted; no actual policy training or gateway work is authorized.
+The user authorized P2A's joint MaskablePPO minimum training/validation loop on 2026-10-16.
+P2B and later remain unstarted; gateway work is not authorized.
 The implemented environment contract is [MR3_ENV_CONTRACT.md](ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_ENV_CONTRACT.md).
 The P1C validation started on 2026-10-15; its actual closure time, capacity and conditional budgets
 are in the [P1C report](ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261015_mr3_p1c.md).
@@ -76,7 +76,7 @@ conservative map fusion and Nav2. The mutually exclusive adapter owns stable
 goals and uses logical ideal-delivery map/state copies; it has no handcrafted
 exploration fallback. P1C implements the Gymnasium/IPC environment, full reset and isolated
 reward ledger. The W7 `cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a` engineering matrix and independent audits are complete,
-with 762 ROS semantic and 40 conda CPU checks. It awaits user acceptance.
+with 762 ROS semantic and 40 conda CPU checks. P1C was accepted on 2026-10-16.
 The retained `b328f84` GPU interface probe has 3 forward/3 backward calls and 0 updates;
 no new GPU training or multi-day stability claim is made.
 No trained three-robot policy or ROS/ns-3 gateway exists. Historical

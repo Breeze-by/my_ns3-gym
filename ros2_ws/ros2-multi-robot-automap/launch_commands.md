@@ -1,7 +1,7 @@
 # 当前三机器人基线与MR3适配启动命令
 
-本轮P1C验证2026-10-15启动（实际完成时刻见P1C报告）；新路线为 [MR3](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/RESEARCH_PLAN.md)，P0/P1A/P1B已验收，P1C实现与验证完成，待用户验收，P2A及后续未开始。
-默认`execution_mode:=baseline`启动前沿控制器；`adapter`为显式联合动作接口。P1C实现与验证完成、待用户验收；尚无实际策略训练或gateway。
+新路线为 [MR3](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/RESEARCH_PLAN.md)，P0/P1A/P1B已验收，用户于2026-10-16验收P1C并授权P2A；P2B及后续未开始。
+默认`execution_mode:=baseline`启动前沿控制器；`adapter`为显式联合动作接口。P2A联合MaskablePPO正在实现与验证；gateway未开始。
 所有推荐运行显式固定三台，活动默认已改为三台，保留1–4历史兼容。
 
 ## 环境与构建
@@ -73,7 +73,7 @@ rooms/corridors分别使用对应`--scene`，推荐域109/110、Gazebo端口1190
 [P1B报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261015_mr3_p1b.md)。
 K8/5秒承诺是本接口版本；P1B异步名义1秒快照在rooms实际有2/3秒间隔。
 P1C独立验证stepped 1秒步长/reset/采样，非stepped timer名义频率与跳帧规则不变。
-这不证明95%任务或RL有效性；P1B已验收，用户已授权P1C，P2A及后续未开始。
+这不证明95%任务或RL有效性；P1B/P1C已验收，P2A正在实施。
 
 手动提供策略输入时可启动同一模式：
 
@@ -85,9 +85,9 @@ ros2 launch multi_robot gazebo_multirobot_mapping_with_nav2.launch.py \
 ```
 
 无外部`/mr3/action`输入时保持空闲；KEEP不重发目标。正式验证使用脚本内的P1A持续监测，
-手动入口未启用评价器，不产生安全或任务成绩。P1C reset/采样工程验证完成、待用户验收，实际策略训练未开始。
+手动入口未启用评价器，不产生安全或任务成绩。P1C reset/采样工程已验收，P2A训练使用下方独立入口。
 
-## MR3-P1C采样与完整reset入口（实现与验证完成，待用户验收）
+## MR3-P1C采样与完整reset入口（2026-10-16已验收）
 
 步进模式明确构造gzserver argv，将每个`-s`与插件路径放在ROS参数终止符之前；
 启动日志`MR3_GAZEBO_SERVER_START`记录实际argv、插件和clock配置。baseline保留原启动入口。
@@ -153,6 +153,40 @@ phase3固定绑定原contact task-phase与独立命令时间门禁；scalar rewa
 固定1秒step、20ms量子、真实clock相位、seq0首格奖励绑定与外部截断/真实闭合规则见
 [环境契约](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_ENV_CONTRACT.md)。
 每次实际执行均是需追加共享log的实验，不能把入口存在当成P1C通过。
+
+## MR3-P2A联合MaskablePPO
+
+在上方conda `ns3gym`环境、wireless-rl目录执行；保持`PYTHONNOUSERSITE=1`与ROS解释器隔离。
+安装锁定学习依赖不会替换现有CUDA栈：
+
+```bash
+python -m pip install -r mr3_learning/requirements-ppo.txt
+```
+
+仅在干净、已提交推送的新冻结运行，每次唯一run-id。完整episode闭合之后才更新，掩码随rollout保存；
+零时长无动作尾通知归并到此前真实决策，不产生伪actor样本。预算与出口见
+[PPO契约](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_PPO_CONTRACT.md)。
+
+```bash
+python -m mr3_learning.ppo --mode train --workers 1 --schedule open:101 \
+  --decisions 8 --episode-steps 8 --wall-seconds 600 --seed 17 \
+  --base-domain 160 --base-port 12301 --run-id UNIQUE_P2A_MINIMAL
+
+python -m mr3_learning.ppo --mode train --workers 4 --schedule open:101 \
+  --decisions 4096 --episode-steps 300 --wall-seconds 14400 --seed 17 \
+  --base-domain 164 --base-port 12311 --run-id UNIQUE_P2A_PILOT
+
+python -m mr3_learning.ppo --mode evaluate --workers 4 \
+  --checkpoint /ABS/PILOT/final.zip --schedule open:401,open:402,open:403 \
+  --decisions 900 --episode-steps 300 --wall-seconds 9000 --seed 17 \
+  --base-domain 172 --base-port 12321 --run-id UNIQUE_P2A_VALIDATION
+```
+
+学习端使用cuda:0（可显式`--device cpu`）；每worker始终三台。
+输出为`log/mr3_ppo/<run-id>/`，包含metadata、原生进程/任务原件、张量/掩码rollout、
+采样概率、PPO指标、checkpoint和SHA、完整失败/中断。`completed`只表示run的采集/更新闭合，
+95%任务成功仍由原生schema4独立判断。首轮最小链未通过先停，不启动pilot；
+pilot未达95%时留在P2A诊断，不接网、不进入P2B。
 
 ## 已有 90% 工程评估（不验收 MR3 的 95% 任务）
 

@@ -3398,3 +3398,23 @@ rtk proxy /usr/bin/python3 -m flake8 /home/zhuyulab/ns3-workspace/ns-allinone-3.
 - `rtk git add -n .`已在Git root执行exit0；新文件全部属于有意保留的P1C canonical证据/离线审计与测试，无build/install、bag、checkpoint或core。原route backup两个ref及仅main/backup本地分支库存均未变。
 - 最终静态回执SHA：`eb5169ada4e9341944fe52dae1db935ffe27c1e0ee274e799245db308118d710`。
 - 随后用`rtk proxy git add -n .`核对原生Git完整dry-run输出：exit0、522条add（20份已跟踪文档/日志/索引修改与502份新canonical证据文件）；原生staging当时为空。独立只读交付review确认54源SHA和14条索引SHA/size、所有状态/数值/限制一致，无具体阻断。
+
+
+### 2026-10-16：MR3-P1C用户验收与P2A首轮实施冻结
+
+用户明确指示“阅读当前项目，p1c验收通过，继续执行P2A”。P1C记为2026-10-16已验收；当前只推进P2A，P2B及gateway未授权。二维替代和500k/72h候选预算仍未接受。
+
+学习端保留`PYTHONNOUSERSITE=1`与conda ns3gym。环境只读检查确认PyTorch2.11.0+cu128、CUDA可用、两RTX4090；系统ROS仍独立解释器。实际依赖命令（Git root，rtk proxy bash -lc包装）为：
+
+```bash
+PYTHONNOUSERSITE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -m pip install --dry-run stable-baselines3==2.9.0 sb3-contrib==2.9.0
+PYTHONNOUSERSITE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -m pip install --disable-pip-version-check --timeout 20 --retries 1 -i https://pypi.org/simple stable-baselines3==2.9.0 sb3-contrib==2.9.0
+```
+
+两命令exit0；仅新增SB3/contrib2.9.0，现有torch/CUDA/Gymnasium未替换。官方MaskablePPO、custom policy及Gymnasium终止/截断文档已核查，技术链接在MR3_PPO_CONTRACT.md。
+
+实现完整episode采样后调用成熟MaskablePPO.train()；保存精确张量/候选含义/掩码/logprob，零物理无动作尾通知在更新前归并到此前真实决策，短已执行末步保留，逐秒gamma/lambda GAE、真正terminated与外部truncated分开。变长buffer末尾singleton并入前batch以避免标准优势标准差NaN。评估显式mask-aware且核对内存参数SHA与0optimizer调用；没有手工探索兜底或真值actor输入。
+
+当前检查：conda CPU unittest 73项exit0，报告8.286秒；包括实际SB3 CPU optimizer fixture更新、采样mask概率重评、checkpoint往返、collector关闭/失败/短零终态和变长buffer。独立offline audit CPU正例及9种篡改反例另列，不计入73项；首次fixture因缺少新增epoch/sequence证明字段失败后只修正fixture。flake8新实现exit0；首次检查发现格式缩进后修正，不改变语义。11文档/110本地链接/19shell块语法exit0。规范结果：report/assets/20261016_mr3_p2a/implementation_checks_v1.json。此时native/GPU训练均未启动。
+
+完整原生命令、stage条件、seed、预算、停止规则见report/assets/20261016_mr3_p2a/predeclared_plan_v1.json。计划：新提交推送冻结先跑mr3_p2a_v1_minimal（open101，seed17，1worker/8决策/600墙秒，实际CUDA PPO更新）；原生及policy审计通过才启动mr3_p2a_v1_pilot（固定open101，seed17，4worker/4096决策或14400墙秒截止）；随后只用finalcheckpoint做open401/402/403三开发验证（900决策上限/9000墙秒，确定性mask-aware/0更新）。每worker始终三机器人，全部失败保留，无自动重试；wall上限是采样截止，原生安全闭合与最后已开始round更新额外实耗单列。P2A未达到冻结95%/安全/学习出口时停在本步，不以optimizer更新冒充验收。

@@ -14,8 +14,9 @@ passed same-freeze open/rooms/corridors seed101 scripted adapter audits. See the
 [P1B report](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261015_mr3_p1b.md).
 Freeze `5e47802` has 9 effective slots from 10 attempts, including one retained
 native infrastructure failure; see the [P1A report](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261014_mr3_p1a.md).
-P1C is implemented and validated, awaiting explicit user acceptance; P2A and later remain unstarted.
-No actual policy training or gateway work is authorized. K8/5 s describe the interface version,
+The user accepted P1C and authorized P2A's joint MaskablePPO minimum training/validation loop on 2026-10-16.
+P2A is in progress; P2B and later remain unstarted. The separate 2D option and candidate
+500k/72h per-run budget are not accepted; gateway work is not authorized. K8/5 s describe the interface version,
 not a 95% task proof. The nominal 1 s snapshot timer had 2/3 s rooms gaps;
 P1C provides separate W7 stepped fixed-dt/reset/1-2-4-worker engineering evidence.
 The non-stepped timer nominal cadence and skip rules remain unchanged. See the

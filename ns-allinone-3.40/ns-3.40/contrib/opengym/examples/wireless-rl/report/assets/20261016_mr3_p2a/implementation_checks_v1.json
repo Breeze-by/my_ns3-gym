@@ -1,0 +1,42 @@
+{
+  "schema": "mr3-p2a-implementation-checks-v1",
+  "native_simulations": 0,
+  "gpu_experiments": 0,
+  "cpu_unit_tests": 73,
+  "cpu_test_returncode": 0,
+  "cpu_test_reported_wall_seconds": 8.286,
+  "cpu_test_command": "rtk proxy env PYTHONNOUSERSITE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -m unittest discover -s mr3_learning/tests -q",
+  "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+  "document_files": 11,
+  "local_links": 110,
+  "bash_syntax_blocks": 19,
+  "errors": [],
+  "source_sha256": {
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/__init__.py": "1ed62607abac81c63a25c885a23a52f0152d279db480f5c270abea3da55564ef",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_ppo.py": "be7ad52cb38433e68e3a5c0eb4202cd98ab67ef2920c0dedd163de789a4f0940",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/benchmark.py": "11240da386526313609e0754707eaa776ec769eae7b5e0b9416064c1fcdf3d86",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/env.py": "3e2902ff9be5c1b5c0aec00e0e03f2e1b5046a2335a2e871b7ec846156e3a6ff",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/gpu_probe.py": "1505cef4cf4c148a026bac1c6ed4ba3c28ef30a874c9ac0e8e62180a83aa438e",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/ipc.py": "55c6cb4d4a985418ce43e9d753b2d84400bb48138d5588ef43080380bd33cf18",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/model.py": "7f060186696d656ce5423e1f64b985668435a30ab4d3755d5beefcc3f01e15f2",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/observation.py": "1d030402a4f934031e8f3bde19356cfbee92a0836a5d540381a42c78c834c389",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/policy.py": "b7d87473c1debf8939209ab7b2cea14e1c28d2639cae320a436c381faccd6452",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/ppo.py": "7208c2040f73f836d718f8f3051acd62b379c50122bccdd08736654bbd9f2a01",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/rollout.py": "338f6b68505c39ea79b5db208a66080ce22c25199b0fc975e61bd5a1f935c87a",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/supervisor.py": "51864bcdd1d2441846f243830d24a6e113e2b418e0e10bc94dd7c50b1011e4f4",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/__init__.py": "c6e5e28edd74fb3fefa88253f89465c364ae9327b36b0a8973c6f63bfb47de5a",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_env.py": "f1fcd0116c5f88a97d0dbc714a9536f06e1d0843d0eb56afed14ae46ba731f50",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_ipc.py": "19bd081a3906f368bb5e59449a71f343a0e07c9eadc96f1149e2c520c638db90",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_model_pooling.py": "b447ac7035583e54d1550a53fec064b6ad36b61fd1ef281fc70bbf707c7a7eda",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_observation.py": "f6c6dbe276f76f6d728528bf42513d5feda28b75e0de86520a2d04780bc4023d",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_policy.py": "ce74ab8e145342c74c1ae985f126f19e9f2185b17344b612ff8c36fa26965c2e",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_ppo.py": "99bb2e3c742c732933726c0ed68b56108d8cb9ffb475bba3d6e2ac903630d838",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_rollout.py": "cba2402e6b692d73bddbe1641b9cd39541e029ff62165d27eb55fb919d42d5c9",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_supervisor.py": "9b5ee8af64f8cc9157d923c7c724723631e34d8f5faba8dbe96098812db4dbb5"
+  },
+  "notes": [
+    "CPU tests include actual SB3 optimizer fixture updates; no native or GPU training yet.",
+    "Independent auditor CPU positive fixture and nine tamper cases also checked; they are separate from the 73 unittest count.",
+    "Prior partial suite counts60/71 preceded additional singleton/integration tests; only current73count used."
+  ]
+}

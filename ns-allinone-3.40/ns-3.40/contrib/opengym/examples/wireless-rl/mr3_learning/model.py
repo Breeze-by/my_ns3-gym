@@ -1,4 +1,4 @@
-"""Small feed-forward CNN/MLP contract probe; no algorithm or training loop."""
+"""Shared fixed-capacity MR3 encoder and the historical actor/critic probe."""
 
 import torch
 from torch import nn
@@ -16,8 +16,14 @@ def _map_encoder(output_size, pool_size):
     )
 
 
-class MR3ActorCritic(nn.Module):
-    """Capacity probe for fixed tensors, shared local encoders and 1000-way head."""
+class MR3Encoder(nn.Module):
+    """Received-only tensors to 256 features, with shared per-slot encoders.
+
+    The saved action mask is distribution metadata, not a learned feature.
+    Scaling is fixed in observation.py; maps retain their binary 0/1 values.
+    """
+
+    features_dim = 256
 
     def __init__(self):
         super().__init__()
@@ -28,8 +34,6 @@ class MR3ActorCritic(nn.Module):
         self.history_encoder = nn.Sequential(nn.Linear(192, 64), nn.ReLU())
         self.task_encoder = nn.Sequential(nn.Linear(12, 32), nn.ReLU())
         self.fusion = nn.Sequential(nn.Linear(864, 256), nn.ReLU())
-        self.actor = nn.Linear(256, 1000)
-        self.critic = nn.Linear(256, 1)
 
     def forward(self, observation):
         batch = observation["global_map"].shape[0]
@@ -43,7 +47,19 @@ class MR3ActorCritic(nn.Module):
             self.history_encoder(observation["history"].reshape(batch, -1)),
             self.task_encoder(observation["task"]),
         ), dim=-1)
-        latent = self.fusion(features)
+        return self.fusion(features)
+
+
+class MR3ActorCritic(MR3Encoder):
+    """Capacity probe retaining the original module names and 1000-way head."""
+
+    def __init__(self):
+        super().__init__()
+        self.actor = nn.Linear(self.features_dim, 1000)
+        self.critic = nn.Linear(self.features_dim, 1)
+
+    def forward(self, observation):
+        latent = super().forward(observation)
         mask = observation["action_mask"].bool()
         if not torch.all(mask.any(dim=-1)):
             raise ValueError("every sample requires at least one legal joint action")

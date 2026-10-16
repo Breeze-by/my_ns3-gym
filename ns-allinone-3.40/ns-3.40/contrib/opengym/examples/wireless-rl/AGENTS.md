@@ -3,9 +3,11 @@
 P1C validation started 2026-10-15; actual closure time is in the P1C report. The active contract is [RESEARCH_PLAN.md](RESEARCH_PLAN.md),
 then [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md). Follow root AGENTS.md.
 MR3-P0 was explicitly accepted on 2026-10-14; MR3-P1A was accepted on 2026-10-15 and the user authorized P1B.
-P1B was accepted by the user on 2026-10-15. P1C is implemented and validated,
-awaiting explicit user acceptance; P2A and later remain unstarted. No actual policy training or gateway
-is authorized. The implemented environment contract is [MR3_ENV_CONTRACT.md](MR3_ENV_CONTRACT.md).
+P1B was accepted by the user on 2026-10-15. The user accepted P1C and authorized P2A's
+joint MaskablePPO minimum training/validation loop on 2026-10-16. P2A is in progress;
+P2B and later remain unstarted. The separate 2D option and candidate 500k/72h per-run
+budget are not accepted; gateway work is not authorized.
+The implemented environment contract is [MR3_ENV_CONTRACT.md](MR3_ENV_CONTRACT.md).
 This route replaces the old search/charging/rally/communication-scheduler plan.
 
 ## Task and source of truth

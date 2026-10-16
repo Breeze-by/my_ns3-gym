@@ -1,21 +1,21 @@
 # 三机器人 ROS 建图导航：当前实现指南
 
-本轮P1C验证2026-10-15启动，实际完成时刻见P1C报告；MR3-P1A/P1B用户已验收，P1C实现与验证完成，待用户验收；`c9344e1`是历史工程冻结。
+本轮P1C验证2026-10-15启动，实际完成时刻见P1C报告；MR3-P1A/P1B用户已验收，用户于2026-10-16验收P1C并授权P2A；`c9344e1`是历史工程冻结。
 新研究契约在 [RESEARCH_PLAN.md](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/RESEARCH_PLAN.md)，步骤在
-[IMPLEMENTATION_PLAN.md](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/IMPLEMENTATION_PLAN.md)。MR3-P0/P1A/P1B已验收，P2A及后续未开始。
+[IMPLEMENTATION_PLAN.md](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/IMPLEMENTATION_PLAN.md)。MR3-P0/P1A/P1B/P1C已验收，P2A进行中，P2B及后续未开始。
 默认仍为**传统前沿控制器**；互斥adapter已验收。P1C已实现Gymnasium/IPC、独立奖励和完整reset，并在W7完成原生采样工程验证；
 762项ROS/40项CPU检查通过。GPU保留b328原固定接口3F/3B/0更新范围，没有训练策略或通信gateway。
 复制运行统一使用 [launch_commands.md](launch_commands.md)，其中全部显式传三台。
 冻结`f9928fe`的open/rooms/corridors各seed101脚本适配审计均通过；功能、原失败及证据见
 [P1B报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261015_mr3_p1b.md)。
-P1C实现与验证完成，待用户验收；时钟、张量、奖励与reset规则见
+P1C已于2026-10-16验收；时钟、张量、奖励与reset规则见
 [MR3_ENV_CONTRACT.md](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_ENV_CONTRACT.md)。
 P1C在W7保留18个精确Nav2状态响应writer的1墙秒匹配窗口，客户端2秒超时不变；
 原有18个状态切换响应writer仍为5秒。此配置与有序关闭已在完整W7工程矩阵中核验，
 历史P1A/P1B证据保持其原profile范围，细节见启动命令和P1C报告。
 v6长KEEP截止发现的两次合法TTL浮点误拒、原始审计和扣分保留。W7 `cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a`
 以整数纳秒端点统一命令、心跳租约、承诺mask和导航期限，完成全新八阶段及独立命令时间门禁，
-不使用v6结果填补v7信用；本步仍待用户验收，不宣称SDK竞态根治或多日稳定。
+不使用v6结果填补v7信用；P1C验收不宣称SDK竞态根治或多日稳定。
 
 ## 1. 路径与环境
 
@@ -38,7 +38,7 @@ v6长KEEP截止发现的两次合法TTL浮点误拒、原始审计和扣分保�
 | `mr3_adapter.py` / `mr3_observation.py` / `mr3_protocol.py` | 显式联合动作、几何候选/掩码、稳定目标所有权 |
 | `mr3_information.py` / `mr3_transport.py` | 理想交付、后端图和机器人导航图副本；非DDS隔离 |
 | `scripts/ros_smoke_test.py` / `run_ideal_baseline.py` / `run_mr3_adapter_probe.py` | 传统检查/矩阵和P1B脚本适配探针 |
-| `scripts/mr3_env_worker.py` / `mr3_gazebo_step` | P1C系统ROS子进程与真实物理tick步进，W7工程验证完成、待用户验收 |
+| `scripts/mr3_env_worker.py` / `mr3_gazebo_step` | P1C系统ROS子进程与真实物理tick步进，W7工程已于2026-10-16验收 |
 | `wireless-rl/mr3_learning/` | 独立conda Gym Dict/私有IPC、完整进程reset、采样与GPU接口探针 |
 
 主 launch 默认3台，校验保留1–4历史兼容；MR3合同只允许三台，不开展其他数量实验。
