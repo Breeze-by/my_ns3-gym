@@ -143,7 +143,7 @@ def next_value(model, observation):
 
 
 def collect_episodes(model, environments, tasks, *, deadline, deterministic=False,
-                     progress=None):
+                     progress=None, journal=None):
     """Collect a fixed round, retaining every task outcome and API receipt.
 
     No optimizer runs until all workers close. A wall stop is requested through
@@ -154,6 +154,11 @@ def collect_episodes(model, environments, tasks, *, deadline, deterministic=Fals
         raise ValueError("collector requires one environment per nonempty task")
     episodes = [[] for _ in tasks]
     summaries = [{} for _ in tasks]
+    if journal is not None:
+        # Keep caller-owned references before reset/step/close can fail. This
+        # journal is diagnostic only: collection still raises and yields no
+        # training buffer unless every required native closure succeeds.
+        journal.update(episodes=episodes, summaries=summaries)
     observations = {}
     with ThreadPoolExecutor(max_workers=len(tasks)) as pool:
         resets = [pool.submit(env.reset, seed=task["seed"], options={
@@ -220,10 +225,54 @@ def collect_episodes(model, environments, tasks, *, deadline, deterministic=Fals
             if errors:
                 raise errors[0]
     # Reap and verify native closure before allowing any sample to reach PPO.
+    errors = []
     for environment, summary in zip(environments, summaries):
-        environment.close()
-        summary["shutdown"] = environment.supervisor.receipts[-1]
+        try:
+            environment.close()
+            summary["shutdown"] = environment.supervisor.receipts[-1]
+        except Exception as error:
+            summary["infrastructure_error"] = repr(error)
+            errors.append(error)
+    if progress:
+        progress(summaries)
+    if errors:
+        raise errors[0]
     return episodes, summaries
+
+
+def save_failed_collection(path, journal, error):
+    """Preserve returned actor receipts without inventing targets or eligibility.
+
+    Native records that never returned through Gym remain in their original
+    worker streams. A prefix is not externally truncated here, has no GAE or
+    return targets, and cannot be passed to PPO by this persistence path.
+    """
+    episodes, summaries = journal["episodes"], journal["summaries"]
+    rows = [row for episode in episodes for row in episode]
+    arrays = {
+        name: np.asarray([getattr(row, attribute) for row in rows], dtype=dtype)
+        for name, attribute, dtype in (
+            ("actions", "action", np.int64), ("rewards", "reward", np.float64),
+            ("values", "value", np.float64), ("log_probs", "log_prob", np.float64),
+            ("next_values", "next_value", np.float64), ("dt", "dt", np.float64),
+            ("terminated", "terminated", bool), ("truncated", "truncated", bool))}
+    if rows:
+        arrays.update({"obs_" + key: np.stack([row.observation[key] for row in rows])
+                       for key in rows[0].observation})
+    path = Path(path)
+    temporary = path.with_name(path.name + ".tmp")
+    with temporary.open("wb") as destination:
+        np.savez_compressed(destination, **arrays)
+    temporary.replace(path)
+    write_json(path.with_suffix(".json"), {
+        "schema": "mr3-failed-collection-diagnostic-v1",
+        "training_eligible": False, "error": repr(error),
+        "error_type": type(error).__name__, "collector_returned_decisions": len(rows),
+        "tensor_file_sha256": file_sha(path),
+        "scope": "returned_decisions_only_no_synthetic_terminal_or_return_targets",
+        "episodes": [{"summary": summary, "saved_decisions": len(episode),
+                      "rows": [row.info for row in episode]}
+                     for episode, summary in zip(episodes, summaries)]})
 
 
 def save_rollout(path, buffer, episodes):
@@ -340,6 +389,7 @@ def main(argv=None):
     model = None
     learner_logger = None
     optimizer_steps = [0]
+    collection_journal = None
     try:
         if args.mode == "train":
             model = MaskablePPO("MultiInputPolicy", ContractSpaces(),
@@ -394,9 +444,12 @@ def main(argv=None):
                     "active_episodes": summaries, "elapsed_wall_sec": time.monotonic() - started})
             result["active_attempts"] = tasks
             write_json(directory / "summary.json", result)
+            collection_journal = {}
             episodes, summaries = collect_episodes(
                 model, environments, tasks, deadline=deadline,
-                deterministic=args.mode == "evaluate", progress=progress)
+                deterministic=args.mode == "evaluate", progress=progress,
+                journal=collection_journal)
+            collection_journal = None
             decisions = sum(len(episode) for episode in episodes)
             result["episodes"].extend(summaries)
             result["decisions"] += decisions
@@ -454,6 +507,13 @@ def main(argv=None):
     except BaseException as error:
         result["error"] = repr(error)
         result["error_type"] = type(error).__name__
+        if collection_journal:
+            try:
+                path = directory / f"failed_collection_{round_index:04d}.npz"
+                save_failed_collection(path, collection_journal, error)
+                result["failed_collection_diagnostic"] = str(path)
+            except Exception as persistence_error:
+                result["failed_collection_persistence_error"] = repr(persistence_error)
     finally:
         cleanup_errors = []
         for environment in environments:

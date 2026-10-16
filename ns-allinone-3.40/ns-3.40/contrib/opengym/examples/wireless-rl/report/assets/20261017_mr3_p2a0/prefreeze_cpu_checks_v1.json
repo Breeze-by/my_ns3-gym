@@ -1,0 +1,15 @@
+{
+  "kind": "final_conda_cpu_checks_not_simulation",
+  "command": [
+    "rtk",
+    "proxy",
+    "bash",
+    "-c",
+    "source /home/zhuyulab/miniconda3/etc/profile.d/conda.sh && conda activate ns3gym && unset PYTHONPATH && export PYTHONNOUSERSITE=1 && python -m unittest discover -s mr3_learning/tests -q"
+  ],
+  "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+  "returncode": 1,
+  "wall_seconds": 17.24560141423717,
+  "stdout": "",
+  "stderr": "Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.\nPlease upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.\nUsers of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.\nSee the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.\n======================================================================\nERROR: setUpClass (test_audit_protocol.UnsentProofTests)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_protocol.py\", line 146, in setUpClass\n    cls.wrapper = candidate.ProtocolAuditor(cls.original, ROOT, FIXTURE_FREEZE)\n  File \"/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_protocol.py\", line 326, in __init__\n    self.source_proof = verify_sources(root, freeze, original)\n  File \"/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_protocol.py\", line 80, in verify_sources\n    require(hashlib.sha256(frozen).hexdigest() == expected\n  File \"/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_protocol.py\", line 39, in require\n    raise ValueError(message)\nValueError: runtime/current source differs from exact unsent proof: ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_adapter.py\n\n----------------------------------------------------------------------\nRan 117 tests in 10.119s\n\nFAILED (errors=1)\n"
+}

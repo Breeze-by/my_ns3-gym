@@ -1,5 +1,10 @@
 # 三机器人 ROS 建图导航：当前实现指南
 
+2026-10-17当前边界：用户授权继续解决P2A并允许前置准备；先做MR3-P2A.0的SLAM生命周期、
+失败采样保存、候选v4及安全触发证据修复，见[P2A.0报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261017_mr3_p2a0.md)。
+本轮只做无训练的原生工程矩阵，不重启pilot；95%/300秒/三台参与/安全门禁及累计pilot余额不变。
+运动途中安全反应链与累计参与可观测性仍需下一准备步，P2A未完成，P2B/gateway未开始。
+
 本轮P1C验证2026-10-15启动，实际完成时刻见P1C报告；MR3-P1A/P1B用户已验收，用户于2026-10-16验收P1C并授权P2A；`c9344e1`是历史工程冻结。
 新研究契约在 [RESEARCH_PLAN.md](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/RESEARCH_PLAN.md)，步骤在
 [IMPLEMENTATION_PLAN.md](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/IMPLEMENTATION_PLAN.md)。MR3-P0/P1A/P1B/P1C已验收，P2A进行中，P2B及后续未开始。

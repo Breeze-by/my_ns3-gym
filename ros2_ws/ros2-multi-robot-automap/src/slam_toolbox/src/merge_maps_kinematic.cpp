@@ -141,13 +141,13 @@ bool MergeMapsKinematic::addSubmapCallback(
 
   // create an interactive marker for the base of this frame and attach it
   visualization_msgs::msg::Marker m =
-    vis_utils::toMarker("map", "merge_maps_tool", 2.0, shared_from_this());
+    vis_utils::toMarker("map", "merge_maps_tool", 2.0, this);
   m.pose.position.x = transform.getOrigin().getX();
   m.pose.position.y = transform.getOrigin().getY();
   m.id = num_submaps_;
 
   visualization_msgs::msg::InteractiveMarker int_marker =
-    vis_utils::toInteractiveMarker(m, 2.4, shared_from_this());
+    vis_utils::toInteractiveMarker(m, 2.4, this);
   interactive_server_->insert(
     int_marker,
     std::bind(&MergeMapsKinematic::processInteractiveFeedback, this, std::placeholders::_1));

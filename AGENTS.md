@@ -2,6 +2,14 @@
 
 # Codex Monorepo Memory — MR3
 
+2026-10-17 update: the user authorized continuing P2A and adding preparation.
+Current work is MR3-P2A.0 (SLAM ownership teardown, failed collection evidence,
+versioned received-frontier union and safety diagnostics). No new pilot is run
+in this substep; the cumulative pilot balance remains 1870 decisions /
+2905.954739546403 wall seconds. P2A.0 requires its own evidence and user
+acceptance before the next preparation/training substep; P2A is unfinished.
+See `wireless-rl/report/20261017_mr3_p2a0.md` at the canonical path below.
+
 ## Canonical checkout and components
 
 The only Git root is `/home/zhuyulab/ns3-workspace`. Both components belong to

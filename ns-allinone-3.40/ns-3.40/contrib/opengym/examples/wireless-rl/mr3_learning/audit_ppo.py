@@ -29,14 +29,14 @@ from .observation import encode_snapshot, observation_space
 WIRELESS = "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/"
 ROS = "ros2_ws/ros2-multi-robot-automap/"
 OBSERVATION_SOURCE = ROS + "src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py"
-OBSERVATION_V3_SHA256 = "71ea159b57caf93471ded502aaab36ec4ec3b14893a4c40b511b6f4839fd4d63"
+OBSERVATION_SHA256 = "ef4cf37c7c515728beeccac8dbd43eb0fed0a409913c2c5837828057b6739536"
 REWARD_SOURCE = ROS + "src/multi_robot_exploration/multi_robot_exploration/mr3_reward.py"
 W7_REWARD_SHA256 = "77485e7988489a146e4c44207343a0a4be7c12b5ffe36906dde59257cac16f88"
 EVALUATOR_PHASE_PINS = {
     ROS + "scripts/mr3_env_worker.py":
         "977d4e8215e193a2be8c207728adb3a39d48e26d35bb9089abe921c1d61053fd",
     ROS + "src/multi_robot_exploration/multi_robot_exploration/task_evaluator.py":
-        "c49e1ad05fdd4daaac5837dc1528fab3765c13bade4f7f3fcb195e2521e40e06",
+        "9b029f21d433f694b79118c113e23df5921401e3be88f89599201bcecf84cc91",
     ROS + "src/multi_robot_exploration/multi_robot_exploration/mr3_evaluator_phase.py":
         "9c43ace376354edbdf496fe920d04a539ed47912fd0840f6d290c459450d69fa",
 }
@@ -44,7 +44,58 @@ CURRENT_AUDITOR_PINS = {
     ROS + "scripts/audit_mr3_env.py":
         "427d5263403dc9d0db846e36fe6051446d99ed337e45313424ff148ecef08cb7",
     ROS + "scripts/audit_mr3_adapter_probe.py":
-        "bd991f9bc2fd78a9b713ee108c2337c5dbdd483d0f2fd387277357c57efe315d",
+        "6fd3d3d220ac138bedfb93f700a78eac8350f744c0a6009e1a7f2613919c37ef",
+}
+PREPARATION_RUNTIME_PINS = {
+    ROS + "src/multi_robot_exploration/multi_robot_exploration/mr3_adapter.py":
+        "02a44cb495e80f64034961dca18e61477c6168fc71707b4d0def76ac3f31fc4d",
+    ROS + "src/multi_robot_exploration/multi_robot_exploration/mr3_observation_archive.py":
+        "2429220eaace41b0ef401ec03ffef4aff0df4e1fa0bee74d7b79025e29e64d02",
+    ROS + "src/multi_robot_exploration/multi_robot_exploration/peer_obstacles.py":
+        "54e6eeccac7d93ac42c3783b7826fed14296c527c7d68a7ecdb76e77a50102d4",
+}
+SLAM = ROS + "src/slam_toolbox/"
+SLAM_RUNTIME_PINS = {
+    SLAM + "CMakeLists.txt":
+        "1125c85d10877b32711495ac9cdfa9a6f78066be18f141705f43adf4a44ee12b",
+    SLAM + "include/slam_toolbox/experimental/slam_toolbox_lifelong.hpp":
+        "9ecb0d48e43165a4189dd66bc8153e4227ccbcec44bedc0118b5ef8a8597b13c",
+    SLAM + "include/slam_toolbox/experimental/slam_toolbox_map_and_localization.hpp":
+        "80a61fc113fd2b60ae39846431215e16f8ffccb707358bec1fd5f428e7d532de",
+    SLAM + "include/slam_toolbox/laser_utils.hpp":
+        "e0150bb5e2a0c4437885e597ab2d42b767326e0079b612bd88fd4eda13e6684d",
+    SLAM + "include/slam_toolbox/loop_closure_assistant.hpp":
+        "9d1e81296b47aa6270b7927f124e5ee8b173e7d651ed17eff01830ff9889e912",
+    SLAM + "include/slam_toolbox/map_saver.hpp":
+        "b6f5cfb830b3c11d330cf98c75e4ba5ed340f25428c3f3ed58df0b74dcf680e5",
+    SLAM + "include/slam_toolbox/slam_toolbox_async.hpp":
+        "db0662e8cd6cf7dbacca0e8e8554260f9c673c659fd8c58f18cf1681bfe68b2f",
+    SLAM + "include/slam_toolbox/slam_toolbox_common.hpp":
+        "a2da12ccf1459e4a1ad6a727f1d08ee68b54eb47a3bea2cb32558cf75731d63e",
+    SLAM + "include/slam_toolbox/slam_toolbox_localization.hpp":
+        "cedbe39bcc9f1c38b43c20301dfa6606b8b6fb7908bf1f8f99d7a39498a1b7e4",
+    SLAM + "include/slam_toolbox/slam_toolbox_multirobot.hpp":
+        "860b3c54a209e53c5073ce9242a199e37722cc0e6c74c55d6dd288b55b3ddcfa",
+    SLAM + "include/slam_toolbox/slam_toolbox_sync.hpp":
+        "47d1e34a12e187b6d62788e78ef59b689612ca211e1563a38a3904ac7d1fd8e7",
+    SLAM + "include/slam_toolbox/visualization_utils.hpp":
+        "2ebcfee911c632c0f0d9ed519aec9c52d160bff40186833843a1bbfe874510d5",
+    SLAM + "solvers/ceres_solver.cpp":
+        "e2b6c8e4c89a57a4939e7514c8f5e4cd43ec04eadc354f7fbf9feb34ecfd3e0f",
+    SLAM + "solvers/ceres_solver.hpp":
+        "06b0fcaef5705f01ed3851ce52b2126d54c8076fcc9ec22d135bfb977e32bbe3",
+    SLAM + "src/laser_utils.cpp":
+        "695277ffd043293849772d1b8688bbab95dcf95204f9ce1399656ce97d093fba",
+    SLAM + "src/loop_closure_assistant.cpp":
+        "324fb71c693002419fbf47cd76ed3917f8a716ddf698a3428703693d122c044e",
+    SLAM + "src/map_saver.cpp":
+        "85d12d04783e0ad49ce8561eb7c0b77973f38aa2153dcfcb72c3300b7ce1e6d4",
+    SLAM + "src/merge_maps_kinematic.cpp":
+        "3252af48fffdeaddb084bd376c45423c6ca6e49d0da057a60a5d8ad724d1af8c",
+    SLAM + "src/slam_toolbox_common.cpp":
+        "3b1323d284cb1e05c171199f3c9b8eca3cefbb775c6350bb0e84d695c9d62309",
+    SLAM + "src/slam_toolbox_multirobot_node.cpp":
+        "1472cfff3644523c60a7fc454c4cc875faa5d481455c85d7e7747042b6944573",
 }
 EXECUTION_CONFIG_PINS = {
     ROS + "src/slam_toolbox/config/mapper_params_online_multi_async.yaml":
@@ -116,7 +167,7 @@ def verify_frozen_pins(root, freeze, pins, label):
 
 
 def extend_snapshot_validator(auditor, candidate_module):
-    """Extend the original validator solely for the exact pinned v3 rule.
+    """Extend the original validator for the exact reviewed v3/v4 rules.
 
     Original records take the unmodified legacy path. New records first prove
     their actual whole-snapshot and versioned candidate digests; a detached
@@ -130,7 +181,7 @@ def extend_snapshot_validator(auditor, candidate_module):
             return original(snapshot, epoch)
         versioned_digest = candidate_module.candidate_digest(snapshot)
         require(snapshot.get("candidate_version") == versioned_digest,
-                "v3 candidate digest mismatch")
+                "versioned candidate digest mismatch")
         require(snapshot.get("digest") == auditor.canonical_digest(
             {key: value for key, value in snapshot.items() if key != "digest"}),
             "saved snapshot digest mismatch")
@@ -165,8 +216,9 @@ def load_compatible_components(phase, root, freeze):
         ["git", "show", TASK_BASE_FREEZE + ":" + REWARD_SOURCE], cwd=root)
     require(hashlib.sha256(normative_reward).hexdigest() == W7_REWARD_SHA256,
             "original W7 reward ledger Git SHA mismatch")
-    runtime = {**phase.PINNED_RUNTIME, OBSERVATION_SOURCE: OBSERVATION_V3_SHA256,
-               REWARD_SOURCE: W7_REWARD_SHA256, **EVALUATOR_PHASE_PINS}
+    runtime = {**phase.PINNED_RUNTIME, OBSERVATION_SOURCE: OBSERVATION_SHA256,
+               REWARD_SOURCE: W7_REWARD_SHA256, **EVALUATOR_PHASE_PINS,
+               **PREPARATION_RUNTIME_PINS, **SLAM_RUNTIME_PINS}
     original_scripts = set(command.PINNED_AUDITORS)
     native_pins = {path: digest for path, digest in runtime.items()
                    if path not in original_scripts}
@@ -217,8 +269,8 @@ def load_compatible_components(phase, root, freeze):
     base.FREEZE, base.METHOD = freeze, phase.METHOD
     base.PINNED_RUNTIME, base.PINNED_DOCUMENTS = runtime, dict(phase.PINNED_DOCUMENTS)
     proof[OBSERVATION_SOURCE]["snapshot_validator_override"] = {
-        "rule": current_probe.CANDIDATE_RULE_V3,
-        "scope": ("exact v3 candidate digest dispatch only; "
+        "rules": [current_probe.CANDIDATE_RULE_V3, current_probe.CANDIDATE_RULE_V4],
+        "scope": ("exact v3/v4 candidate digest dispatch only; "
                   "legacy/contact/clock/command/scalar rules retained"),
         "original_auditor_files_modified": False}
     return base, auditor, command, proof
@@ -271,7 +323,8 @@ def load_native_gates(root, freeze):
         proof[relative] = {"sha256": digest, "git_source": freeze + ":" + relative,
                            "normative_source": TASK_BASE_FREEZE + ":" + relative}
     for filename in ("audit_ppo.py", "audit_scalar.py", "audit_protocol.py",
-                     "audit_evaluator_phase.py", "ppo.py", "rollout.py", "policy.py",
+                     "audit_evaluator_phase.py", "audit_preparation.py", "ppo.py",
+                     "rollout.py", "policy.py",
                      "model.py", "env.py", "ipc.py", "benchmark.py",
                      "observation.py", "supervisor.py", "requirements-env.txt",
                      "requirements-ppo.txt"):

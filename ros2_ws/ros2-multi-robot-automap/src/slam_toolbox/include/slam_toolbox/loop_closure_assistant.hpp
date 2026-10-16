@@ -86,7 +86,8 @@ private:
   std::unique_ptr<interactive_markers::InteractiveMarkerServer> interactive_server_;
   boost::mutex interactive_mutex_;
   bool interactive_mode_, enable_interactive_mode_;
-  rclcpp::Node::SharedPtr node_;
+  // Borrow the owning SlamToolbox node; retaining it would prevent teardown.
+  rclcpp::Node * node_;
   std::string map_frame_;
   PausedState & state_;
   ProcessType & processor_type_;

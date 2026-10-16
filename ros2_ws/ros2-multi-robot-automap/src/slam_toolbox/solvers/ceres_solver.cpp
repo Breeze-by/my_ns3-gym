@@ -25,7 +25,7 @@ CeresSolver::CeresSolver()
 void CeresSolver::Configure(rclcpp::Node::SharedPtr node)
 /*****************************************************************************/
 {
-  node_ = node;
+  node_ = node.get();
 
   std::string solver_type, preconditioner_type, dogleg_type,
     trust_strategy, loss_fn, mode;

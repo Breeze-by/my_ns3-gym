@@ -28,6 +28,15 @@ CANDIDATE_RULE_V3 = {
     "new_goal_idle_separation_m": (.25 + .04 + .10) + (.25 + .04),
     "frontier_staging_max_m": 1.,
 }
+CANDIDATE_RULE_V4 = {
+    **CANDIDATE_RULE_V3,
+    "version": "mr3-per-robot-geometric-staging-v4",
+    "frontier_sources": ["fused_received", "received_own:tb1", "received_own:tb2",
+                         "received_own:tb3"],
+    "frontier_projection": (
+        "world cell centre to containing fused native cell; free endpoints only"),
+}
+CANDIDATE_RULES = {item["version"]: item for item in (CANDIDATE_RULE_V3, CANDIDATE_RULE_V4)}
 
 
 def canonical_digest(payload):
@@ -37,7 +46,7 @@ def canonical_digest(payload):
 
 
 def candidate_digest(snapshot):
-    """Dispatch only declared legacy formats or the exact reviewed v3 rule."""
+    """Dispatch declared legacy formats or exact reviewed versioned rules."""
     schema = snapshot.get("schema")
     if schema not in ("mr3-observation-v1", "mr3-observation-v2"):
         raise ValueError("unexpected observation schema")
@@ -46,8 +55,10 @@ def candidate_digest(snapshot):
         keys.append("path_maps")
     if "candidate_rule" in snapshot:
         rule = snapshot["candidate_rule"]
+        version = rule.get("version") if isinstance(rule, dict) else None
+        expected = CANDIDATE_RULES.get(version) if isinstance(version, str) else None
         if (schema != "mr3-observation-v2" or not isinstance(rule, dict)
-                or canonical_digest(rule) != canonical_digest(CANDIDATE_RULE_V3)):
+                or expected is None or canonical_digest(rule) != canonical_digest(expected)):
             raise ValueError("unknown or mismatched candidate rule")
         keys.append("candidate_rule")
     return canonical_digest({key: snapshot[key] for key in keys})

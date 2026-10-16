@@ -719,12 +719,24 @@ class TaskEvaluator(Node):
         if self.finalized:
             return
         self.model_state_message_count += 1
+        now = self._now()
+        diagnostic_poses = {}
         for name in self.robot_names:
             if name in message.name:
                 pose = message.pose[message.name.index(name)]
                 self.positions[name] = (pose.position.x, pose.position.y)
+                diagnostic_poses[name] = {
+                    "position": {axis: getattr(pose.position, axis) for axis in ("x", "y", "z")},
+                    "orientation": {axis: getattr(pose.orientation, axis)
+                                    for axis in ("x", "y", "z", "w")},
+                }
+        # ModelStates has no source stamp. Never label its ROS receipt clock as
+        # a physical source time or feed this evaluator-only cache to the actor.
+        self.latest_model_state_diagnostic = {
+            "received_sim_time_sec": now, "received_sequence": self.model_state_message_count,
+            "source_stamp_missing": True, "poses": diagnostic_poses,
+        }
 
-        now = self._now()
         if self.start_sim_time is None:
             self._maybe_start(now)
             return
@@ -813,6 +825,12 @@ class TaskEvaluator(Node):
         if self.finalized:
             return
         self.control_failure = message.data
+        self.control_failure_truth_diagnostic = {
+            "failure_received_sim_time_sec": self._now(),
+            "latest_model_states": getattr(self, "latest_model_state_diagnostic", None),
+            "scope": ("evaluator-only latest ModelStates receipt before failure callback; "
+                      "not an exact source-time match to received safety inputs"),
+        }
         if self.task_contract:
             self._timer_callback()
         if not self.finalized:
@@ -1420,6 +1438,8 @@ class TaskEvaluator(Node):
             "coverage_threshold": self.coverage_threshold,
             "max_duration_sec": self.max_duration,
             "control_failure": self.control_failure,
+            "control_failure_truth_diagnostic": getattr(
+                self, "control_failure_truth_diagnostic", None),
             "time_to_75_coverage_sec": self.coverage_times[0.75],
             "time_to_80_coverage_sec": self.coverage_times[0.8],
             "time_to_90_coverage_sec": self.coverage_times[0.9],

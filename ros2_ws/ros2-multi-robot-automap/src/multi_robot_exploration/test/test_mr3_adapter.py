@@ -2,6 +2,8 @@
 
 from collections import deque
 from concurrent.futures import Future as EncodingFuture
+import gzip
+import hashlib
 import json
 import math
 from types import MethodType, SimpleNamespace
@@ -415,6 +417,83 @@ def test_map_bytes_and_metadata_must_match_before_task_start():
     node.finish_observation()
     assert node.started_at == 1.0 and len(node.test_observations) == 1
     assert json.loads(node.test_observations[0].data)["map_version"] == 1
+
+
+def archive_ready_adapter():
+    node, _ = make_adapter()
+    grid = OccupancyGrid()
+    grid.header.frame_id = "map"
+    grid.info.resolution = .1
+    grid.info.width = grid.info.height = 40
+    grid.info.origin.position.x = grid.info.origin.position.y = -2.
+    grid.info.origin.orientation.w = 1.
+    grid.data = [0] * 1600
+    node.receive_map(grid)
+    node.state["map_payload_sha256"] = node.map_digest
+    for name in ROBOTS:
+        node.receive_local_map(name, grid)
+        node.state["map_sources"][name] = {
+            "payload_sha256": node.local_map_digests[name], "source_stamp": 1.,
+            "received_stamp": 1., "version": 1, "sequence": 1,
+        }
+    return node, grid
+
+
+def test_async_input_archive_uses_frozen_bundle_when_later_maps_arrive(tmp_path):
+    node, first_grid = archive_ready_adapter()
+    node.audit_file = SimpleNamespace(name=str(tmp_path / "adapter.jsonl"))
+    job = {}
+    future = EncodingFuture()
+
+    def defer(function, *args, **kwargs):
+        job.update(function=function, args=args, kwargs=kwargs)
+        return future
+
+    node.encoder = SimpleNamespace(submit=defer)
+    first_digest = node.map_digest
+    node.publish_observation()
+    assert node.encoding is future
+    assert not (tmp_path / "observation_inputs").exists()  # Encoder has not run.
+    later = OccupancyGrid()
+    later.header.frame_id = "map"
+    later.info.resolution = .1
+    later.info.width = later.info.height = 40
+    later.info.origin.position.x = later.info.origin.position.y = -2.
+    later.info.origin.orientation.w = 1.
+    later.data = [100] * 1600
+    node.receive_map(later)
+    for name in ROBOTS:
+        node.receive_local_map(name, later)
+    # Even mutating the old ROS message cannot replace already-detached data.
+    first_grid.data[0] = 100
+    future.set_result(job["function"](*job["args"], **job["kwargs"]))
+    node.finish_observation()
+    result = json.loads(node.test_observations[-1].data)
+    expected = job["function"](*job["args"], **{**job["kwargs"], "archive": None})
+    assert result == expected  # Optional archive changes no snapshot bytes.
+    root = tmp_path / "observation_inputs"
+    manifest = json.loads(next((root / "snapshots").iterdir()).read_bytes())
+    assert manifest["snapshot_digest"] == result["digest"]
+    assert manifest["metadata"]["map_payload_sha256"] == first_digest
+    assert first_digest != node.map_digest
+    assert len(list((root / "maps").iterdir())) == 1
+    for entry in manifest["maps"].values():
+        raw = gzip.decompress((root / entry["artifact"]).read_bytes())
+        assert hashlib.sha256(raw).hexdigest() == first_digest
+        assert json.loads(raw)["data"] == [0] * 1600
+
+
+def test_no_audit_path_does_not_freeze_or_archive_map_payloads(tmp_path, monkeypatch):
+    node, _ = archive_ready_adapter()
+
+    def unexpected(*args, **kwargs):
+        raise AssertionError("disabled archive tried to freeze map payloads")
+
+    monkeypatch.setattr("multi_robot_exploration.mr3_adapter.map_payload", unexpected)
+    node.publish_observation()
+    node.finish_observation()
+    assert len(node.test_observations) == 1
+    assert not list(tmp_path.iterdir())
 
 
 def test_stale_received_state_cancels_owned_navigation_and_stops_renewing_lease():

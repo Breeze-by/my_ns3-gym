@@ -175,10 +175,11 @@ def test_v2_path_map_tampering_fails_even_when_outer_snapshot_digest_is_updated(
     assert_failed(tmp_path, "candidate version does not match saved candidates")
 
 
-def test_v3_candidate_hash_binds_exact_reviewed_rule_and_path_maps():
+@pytest.mark.parametrize("rule", [AUDIT.CANDIDATE_RULE_V3, AUDIT.CANDIDATE_RULE_V4])
+def test_versioned_candidate_hash_binds_exact_reviewed_rule_and_path_maps(rule):
     value = snapshot(1, 1.)
     value.update(schema="mr3-observation-v2", path_maps={name: {} for name in AUDIT.ROBOTS},
-                 candidate_rule=dict(AUDIT.CANDIDATE_RULE_V3))
+                 candidate_rule=dict(rule))
     expected = AUDIT.canonical_digest({key: value[key] for key in (
         "epoch", "map_version", "sequence", "candidates", "path_maps", "candidate_rule")})
     assert AUDIT.candidate_digest(value) == expected
@@ -201,6 +202,24 @@ def test_unknown_or_changed_v3_rule_is_rejected_even_if_self_signed(change):
 def test_legacy_observation_cannot_carry_a_v3_candidate_rule():
     value = snapshot(1, 1.)
     value["candidate_rule"] = dict(AUDIT.CANDIDATE_RULE_V3)
+    with pytest.raises(ValueError, match="candidate rule"):
+        AUDIT.candidate_digest(value)
+
+
+@pytest.mark.parametrize("change", [
+    {"version": "mr3-per-robot-geometric-staging-v5"},
+    {"version": []},
+    {"frontier_sources": ["raw_map"]},
+    {"frontier_sources": ["fused_received", "received_own:tb2", "received_own:tb1",
+                          "received_own:tb3"]},
+    {"frontier_projection": "clear fused occupancy before projection"},
+    {"target_clearance_m": .29},
+    {"extra_rule": 1.},
+])
+def test_unknown_or_changed_v4_rule_is_rejected_even_if_self_signed(change):
+    value = snapshot(1, 1.)
+    value.update(schema="mr3-observation-v2", path_maps={name: {} for name in AUDIT.ROBOTS},
+                 candidate_rule={**AUDIT.CANDIDATE_RULE_V4, **change})
     with pytest.raises(ValueError, match="candidate rule"):
         AUDIT.candidate_digest(value)
 

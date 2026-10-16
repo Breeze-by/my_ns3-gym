@@ -7,6 +7,7 @@ will split these endpoints and serialize bytes; this node claims no DDS isolatio
 
 from collections import deque
 from concurrent.futures import ThreadPoolExecutor
+import copy
 import json
 import math
 from pathlib import Path
@@ -25,7 +26,8 @@ from rclpy.qos import DurabilityPolicy, QoSProfile
 from std_msgs.msg import Bool, Header, String
 
 from multi_robot_exploration.mr3_observation import build_snapshot
-from multi_robot_exploration.mr3_information import map_digest
+from multi_robot_exploration.mr3_observation_archive import archive_snapshot_inputs
+from multi_robot_exploration.mr3_information import map_digest, map_payload
 from multi_robot_exploration.mr3_owner import acquire_navigation_owner
 from multi_robot_exploration.mr3_protocol import GoalDispatcher
 from multi_robot_exploration.mr3_episode import (
@@ -35,6 +37,14 @@ from multi_robot_exploration.mr3_transport import IdealTransport, ReceivedStore
 
 
 ROBOTS = ("tb1", "tb2", "tb3")
+
+
+def encode_snapshot(*args, archive=None, **kwargs):
+    """Encode and archive the same frozen inputs without accessing live ROS state."""
+    snapshot = build_snapshot(*args, **kwargs)
+    if archive is not None:
+        archive_snapshot_inputs(snapshot=snapshot, **archive)
+    return snapshot
 
 
 class MR3Adapter(Node):
@@ -450,8 +460,24 @@ class MR3Adapter(Node):
         }, "history": list(self.history[robot["name"]])} for robot in robots]
         self.sequence += 1
         path_maps = {}
+        audit_file = getattr(self, "audit_file", None)
+        archive = None
+        if audit_file is not None:
+            archive = {
+                "root": Path(audit_file.name).parent / "observation_inputs",
+                "payloads": {"fused": map_payload(self.map)},
+                "metadata": copy.deepcopy({
+                    "epoch": self.epoch, "map_version": metadata["map_version"],
+                    "map_payload_sha256": metadata["map_payload_sha256"],
+                    "map_source_stamp": metadata["map_source_stamp"],
+                    "map_received_stamp": metadata["map_received_stamp"],
+                    "map_sources": map_sources,
+                }),
+            }
         for name in ROBOTS:
             message = self.local_maps[name]
+            if archive is not None:
+                archive["payloads"][name] = map_payload(message)
             path_maps[name] = {
                 "grid": np.asarray(message.data, dtype=np.int16).reshape(
                     message.info.height, message.info.width),
@@ -462,7 +488,7 @@ class MR3Adapter(Node):
         # CPU map/path encoding must not block source deliveries, lease renewals
         # or action callbacks. The worker receives a detached frozen snapshot.
         self.encoding = self.encoder.submit(
-            build_snapshot,
+            encode_snapshot,
             np.asarray(self.map.data, dtype=np.int16).reshape(
                 self.map.info.height, self.map.info.width),
             self.map.info.resolution,
@@ -471,7 +497,7 @@ class MR3Adapter(Node):
             map_source_stamp=metadata["map_source_stamp"],
             map_received_stamp=metadata["map_received_stamp"],
             map_sources=map_sources, task_start=self.started_at,
-            robot_maps=path_maps,
+            robot_maps=path_maps, archive=archive,
         )
 
     def finish_observation(self):

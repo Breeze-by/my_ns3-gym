@@ -1,11 +1,19 @@
-# MR3-P2A 联合 MaskablePPO pilot 契约 v6
+# MR3-P2A 联合 MaskablePPO pilot 契约（v6停止；P2A.0准备）
 
-2026-10-16：用户验收 P1C 并授权 P2A。P2A未完成，v6基础设施失败后按预声明停止；本session不自动重试或启动v7，P2B及后续未开始。
+2026-10-16：用户验收 P1C 并授权 P2A。P2A未完成，v6原session基础设施失败后按预声明停止。
+2026-10-17用户授权继续解决，并允许前置准备；本轮先做P2A.0，不启动新pilot，P2B及后续未开始。
 正式任务沿用 [任务契约](MR3_TASK_CONTRACT.md) 与 [环境契约](MR3_ENV_CONTRACT.md)：
 原生 Gazebo、恰好三机器人、95%/300 仿真秒、原地图质量/参与/18 路接触及导航闭合门禁。
 本契约不授权二维替代、gateway 或历史候选 500k/72h 配额。
 
 ## 模型与学习
+
+P2A.0无策略训练/模型更新。候选v4增加融合+合法已交付own-map前沿来源并独立版本化，
+不改K8/路径/到达圆盘/联合掩码/策略张量/奖励/γ=λ=1。SLAM helper/solver改借用所属node，
+恢复真实析构和线程回收；串行原生关闭门禁不变。失败round另存
+`failed_collection_NNNN.npz/.json`，只有已返回真实决策，`training_eligible=false`，
+不含GAE/returns、不伪造截断，不解锁更新。安全诊断只增强证据，不改变.50m门槛。
+具体范围/原生工程矩阵与待证问题见[P2A.0报告](report/20261017_mr3_p2a0.md)。
 
 固定 `mr3-learning-tensors-v1`；二值地图不除以 255，不使用在线观测或 reward 归一化。
 复用 P1C 的全局 CNN、三台共享局部 CNN、状态/候选/历史/任务 MLP，融合为 256 维。

@@ -3727,3 +3727,27 @@ rtk proxy python3 /tmp/mr3_p2a_package.py ros2_ws/ros2-multi-robot-automap/log/m
 3. w2closedreview：`rtk proxy env PYTHONNOUSERSITE=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -c 'import runpy; runpy.run_path("/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v6_pilot/review_round0000_worker2_v6.py",run_name="__main__")'`，exit0，仅已关闭w2完整审核，不提供整run通过。
 4. native_stop_forensics：`rtk proxy env PYTHONNOUSERSITE=1 /usr/bin/python3 -B /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v6_pilot/review_v6_native_stop_forensics.py`，exit0；直接观察Karto异常/-6与后继CLI缺失，具体throw位置未知。
 5. frontier_union独立复核：`rtk proxy env PYTHONNOUSERSITE=1 OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 /usr/bin/python3 -B /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v6_pilot/review_frontier_union_feasibility_v6.py`，exit0；仅旧v5精确快照/隔离原型，无当前v6实际反事实或执行信用。
+
+## 2026-10-17 MR3-P2A.0：训练前修复及原生工程预声明
+
+用户本轮授权继续解决P2A并允许前置准备。当前仅P2A.0：修复SLAM helper/solver
+强引用环、TF/filter及同步线程析构顺序；失败round真实返回样本独立保存且禁止训练；
+候选v4已交付前沿并集、四份完整冻结地图归档和安全触发输入诊断。
+旧V6具体Karto throw/stack未证；target intersection为空及途中安全/累计参与观测未声称解决。
+本条尚无新Gazebo/训练/GPU尝试；原累计pilot余额1870决策/2905.954739546403墙秒不变。
+
+实际CPU/构建：系统ROS `/usr/bin/python3 /usr/bin/colcon build --symlink-install
+--packages-select slam_toolbox`（完整命令和所有失败在runtime_stability/review.json）；
+旧ownership三轮6断言FAIL保留，最终2项真实ROS gtest PASS；all-target build PASS。
+系统ROS `colcon build --symlink-install --packages-select multi_robot_exploration` PASS，
+全ROS语义860项PASS；conda `python -m unittest discover -s mr3_learning/tests -q`
+最终CPU回执为 `report/assets/20261017_mr3_p2a0/prefreeze_cpu_checks_v2.json`；
+首轮v1历史fixture SHA不匹配失败保留，生产严格source pin未放宽；
+改动Python flake8与ROS最终回执分别为prefreeze_style/ros_checks_v1.json。
+候选及CPU中间失败/修正不提供原生成功信用；精确命令、字节SHA和结果在对应回执。
+
+后续同一新提交推送冻结的三阶段脚本工程矩阵已预声明：terminal两episode、
+2worker各两次16步reset、1worker300步KEEP deadline，总上限372API/371真实脚本决策，
+无GPU优化、不重启pilot；任一阶段工程审计失败停后续、不自动重试。
+命令见 `report/assets/20261017_mr3_p2a0/predeclared_plan_v1.json` 与ROS启动页，
+待实际运行再追加freeze/成本/结果；本条不将计划记成已执行。

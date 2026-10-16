@@ -2,8 +2,9 @@
 
 This module has no ROS or truth input. Native observed cells determine body
 clearance and paths; the four compact CNN rasters are observation features only.
-Candidate selection reserves per-robot reachable geometric representatives
-before farthest-point sampling, with no task utility,
+Candidate selection uses fused and already-delivered own-map frontiers, then
+reserves per-robot reachable geometric representatives before farthest-point
+sampling, with no task utility,
 information-gain ranking, previous bad-goal memory or exploration fallback.
 """
 
@@ -36,7 +37,7 @@ CLEARANCE_MARGIN_M = 0.04
 CLEARANCE_M = PHYSICAL_RADIUS_M + CLEARANCE_MARGIN_M
 GOAL_XY_TOLERANCE_M = 0.10
 TARGET_CLEARANCE_M = CLEARANCE_M + GOAL_XY_TOLERANCE_M
-CANDIDATE_RULE_VERSION = "mr3-per-robot-geometric-staging-v3"
+CANDIDATE_RULE_VERSION = "mr3-per-robot-geometric-staging-v4"
 TARGET_SEPARATION_M = 2.0 * TARGET_CLEARANCE_M
 STATE_MAX_AGE_SEC = 0.5
 FRONTIER_STAGING_MAX_M = 1.0
@@ -257,18 +258,64 @@ def _known_line(raw_grid, first, second):
             iy += 1
 
 
-def _candidates(raw_grid, clearance, target_cells, target_paths, resolution, origin, states):
+def _frontiers(raw_grid):
+    return (raw_grid == 0) & ndimage.binary_dilation(
+        raw_grid < 0, structure=ndimage.generate_binary_structure(2, 1),
+    )
+
+
+def _candidate_frontiers(raw_grid, resolution, origin, robot_maps, path_maps):
+    """Union received frontiers without replacing any fused occupancy value.
+
+    Each own frontier centre projects to its containing fused native cell.
+    Only a fused observed-free cell may contribute. Map eligibility and native
+    geometry are the same validated delivered inputs used for own-map paths;
+    unsafe robot seeds do not make an otherwise valid delivered map disappear.
+    """
+    frontier = _frontiers(raw_grid)
+    sources = {"fused_received": {"native_frontier_cells": int(frontier.sum())}}
+    if robot_maps is None:
+        return frontier, sources
+    for name in ROBOT_NAMES:
+        metadata = path_maps[name]
+        diagnostic = {
+            "eligible": not metadata["missing"],
+            "unavailable_reason": metadata["unavailable_reason"] if metadata["missing"] else None,
+            "native_frontier_cells": 0, "projected_unique_inside_cells": 0,
+            "projected_fused_free_cells": 0, "rejected_fused_unknown_or_occupied_cells": 0,
+            "new_union_cells": 0,
+        }
+        sources[name] = diagnostic
+        if metadata["missing"]:
+            continue
+        entry = robot_maps[name]
+        own_cells = np.argwhere(_frontiers(np.asarray(entry["grid"])))
+        diagnostic["native_frontier_cells"] = len(own_cells)
+        points = (own_cells[:, ::-1] + .5) * metadata["native_resolution_m"]
+        points += np.asarray(metadata["native_origin_m"])
+        projected = np.floor((points - origin) / resolution).astype(np.int64)
+        inside = ((projected[:, 0] >= 0) & (projected[:, 0] < raw_grid.shape[1])
+                  & (projected[:, 1] >= 0) & (projected[:, 1] < raw_grid.shape[0]))
+        cells = np.unique(projected[inside, ::-1], axis=0)
+        diagnostic["projected_unique_inside_cells"] = len(cells)
+        cells = cells[raw_grid[tuple(cells.T)] == 0]
+        diagnostic["projected_fused_free_cells"] = len(cells)
+        diagnostic["rejected_fused_unknown_or_occupied_cells"] = (
+            diagnostic["projected_unique_inside_cells"] - len(cells))
+        diagnostic["new_union_cells"] = int(np.count_nonzero(~frontier[tuple(cells.T)]))
+        frontier[tuple(cells.T)] = True
+    return frontier, sources
+
+
+def _candidates(raw_grid, clearance, target_cells, target_paths, resolution, origin, states,
+                *, frontier_mask=None):
     """Project frontiers into each robot's reachable safe target component.
 
     ``target_paths`` contains native own-map paths to the fused target cells.
     Paths require body clearance; target cells additionally certify the whole
     declared Nav2 arrival disk. No robot utility or task reward ranks this pool.
     """
-    unknown = raw_grid < 0
-    adjacent_unknown = ndimage.binary_dilation(
-        unknown, structure=ndimage.generate_binary_structure(2, 1),
-    )
-    frontier = (raw_grid == 0) & adjacent_unknown
+    frontier = _frontiers(raw_grid) if frontier_mask is None else frontier_mask
     labels, count = ndimage.label(frontier, structure=np.ones((3, 3), dtype=np.uint8))
     frontier_cells = np.argwhere(frontier)
     diagnostics = {
@@ -699,8 +746,11 @@ def build_snapshot(raw_grid, resolution, origin, robots, now, epoch, map_version
         target_paths, path_maps, seeds_valid = _own_map_paths(
             robot_maps, states, now, epoch, resolution, origin, target_cells,
         )
+    frontier, frontier_sources = _candidate_frontiers(
+        grid, resolution, origin, robot_maps, path_maps)
     candidates, diagnostics = _candidates(
         grid, clearance, target_cells, target_paths, resolution, origin, states,
+        frontier_mask=frontier,
     )
     while len(candidates) < CANDIDATE_COUNT:
         candidates.append({
@@ -716,6 +766,10 @@ def build_snapshot(raw_grid, resolution, origin, robots, now, epoch, map_version
         "new_goal_pair_separation_m": TARGET_SEPARATION_M,
         "new_goal_idle_separation_m": TARGET_CLEARANCE_M + CLEARANCE_M,
         "frontier_staging_max_m": FRONTIER_STAGING_MAX_M,
+        "frontier_sources": ["fused_received", "received_own:tb1", "received_own:tb2",
+                             "received_own:tb3"],
+        "frontier_projection": (
+            "world cell centre to containing fused native cell; free endpoints only"),
     }
     candidate_version = hashlib.sha256(json.dumps({
         "epoch": epoch, "map_version": int(map_version), "sequence": int(sequence),
@@ -762,7 +816,8 @@ def build_snapshot(raw_grid, resolution, origin, robots, now, epoch, map_version
         "candidates": candidates, "per_robot_action_mask": per_robot,
         "joint_action_mask": joint, "action_encoding": "a_tb1*100+a_tb2*10+a_tb3",
         "keep_action": KEEP, "wait_action": WAIT,
-        "diagnostics": {**diagnostics, "mask_reasons": mask_reasons,
+        "diagnostics": {**diagnostics, "frontier_sources": frontier_sources,
+                        "mask_reasons": mask_reasons,
                         "native_safe_cells": int(np.count_nonzero(traversable)),
                         "native_arrival_safe_cells": len(target_cells),
                         "robot_seed_traversable": seeds_valid,

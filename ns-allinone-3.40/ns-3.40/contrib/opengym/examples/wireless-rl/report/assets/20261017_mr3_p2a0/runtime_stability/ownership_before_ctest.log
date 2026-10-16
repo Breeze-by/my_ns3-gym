@@ -1,0 +1,71 @@
+Start testing: Oct 17 01:08 CST
+----------------------------------------------------------
+1/1 Testing: slam_shutdown_test
+1/1 Test: slam_shutdown_test
+Command: "/usr/bin/python3" "-u" "/opt/ros/humble/share/ament_cmake_test/cmake/run_test.py" "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/slam_toolbox/test_results/slam_toolbox/slam_shutdown_test.gtest.xml" "--package-name" "slam_toolbox" "--output-file" "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/slam_toolbox/ament_cmake_gtest/slam_shutdown_test.txt" "--command" "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/slam_toolbox/slam_shutdown_test" "--gtest_output=xml:/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/slam_toolbox/test_results/slam_toolbox/slam_shutdown_test.gtest.xml"
+Directory: /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/slam_toolbox
+"slam_shutdown_test" start time: Oct 17 01:08 CST
+Output:
+----------------------------------------------------------
+-- run_test.py: invoking following command in '/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/slam_toolbox':
+ - /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/slam_toolbox/slam_shutdown_test --gtest_output=xml:/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/slam_toolbox/test_results/slam_toolbox/slam_shutdown_test.gtest.xml
+Running main() from /opt/ros/humble/src/gtest_vendor/src/gtest_main.cc
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from SlamShutdown
+[ RUN      ] SlamShutdown.ConfiguredOwnerAndRegisteredSensorsAreReleasedBeforeProcessExit
+[INFO] [1792170538.121515448] [slam_toolbox]: Using solver plugin solver_plugins::CeresSolver
+Registering sensor: [mr3_shutdown_probe_0]
+/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/slam_toolbox/test/slam_shutdown_test.cpp:49: Failure
+Value of: weak.expired()
+  Actual: false
+Expected: true
+owned SLAM helpers retained their node
+/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/slam_toolbox/test/slam_shutdown_test.cpp:50: Failure
+Expected: karto::SensorManager::GetInstance()->GetSensorByName( karto::Name(sensor_name)) throws an exception of type karto::Exception.
+  Actual: it throws nothing.
+[INFO] [1792170538.154170746] [slam_toolbox]: Using solver plugin solver_plugins::CeresSolver
+Registering sensor: [mr3_shutdown_probe_1]
+/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/slam_toolbox/test/slam_shutdown_test.cpp:49: Failure
+Value of: weak.expired()
+  Actual: false
+Expected: true
+owned SLAM helpers retained their node
+/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/slam_toolbox/test/slam_shutdown_test.cpp:50: Failure
+Expected: karto::SensorManager::GetInstance()->GetSensorByName( karto::Name(sensor_name)) throws an exception of type karto::Exception.
+  Actual: it throws nothing.
+[INFO] [1792170538.181905897] [slam_toolbox]: Using solver plugin solver_plugins::CeresSolver
+Registering sensor: [mr3_shutdown_probe_2]
+/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/slam_toolbox/test/slam_shutdown_test.cpp:49: Failure
+Value of: weak.expired()
+  Actual: false
+Expected: true
+owned SLAM helpers retained their node
+/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/slam_toolbox/test/slam_shutdown_test.cpp:50: Failure
+Expected: karto::SensorManager::GetInstance()->GetSensorByName( karto::Name(sensor_name)) throws an exception of type karto::Exception.
+  Actual: it throws nothing.
+[  FAILED  ] SlamShutdown.ConfiguredOwnerAndRegisteredSensorsAreReleasedBeforeProcessExit (144 ms)
+[----------] 1 test from SlamShutdown (144 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (144 ms total)
+[  PASSED  ] 0 tests.
+[  FAILED  ] 1 test, listed below:
+[  FAILED  ] SlamShutdown.ConfiguredOwnerAndRegisteredSensorsAreReleasedBeforeProcessExit
+
+ 1 FAILED TEST
+-- run_test.py: return code 1
+-- run_test.py: inject classname prefix into gtest result file '/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/slam_toolbox/test_results/slam_toolbox/slam_shutdown_test.gtest.xml'
+-- run_test.py: verify result file '/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/slam_toolbox/test_results/slam_toolbox/slam_shutdown_test.gtest.xml'
+<end of output>
+Test time =   0.48 sec
+----------------------------------------------------------
+Test Failed.
+"slam_shutdown_test" end time: Oct 17 01:08 CST
+"slam_shutdown_test" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Oct 17 01:08 CST
+
+gtest =   0.48 sec*proc
+

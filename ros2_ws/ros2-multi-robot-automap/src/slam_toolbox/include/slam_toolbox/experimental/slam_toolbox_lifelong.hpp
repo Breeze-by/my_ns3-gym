@@ -29,7 +29,7 @@ class LifelongSlamToolbox : public SlamToolbox
 {
 public:
   explicit LifelongSlamToolbox(rclcpp::NodeOptions options);
-  ~LifelongSlamToolbox() {}
+  ~LifelongSlamToolbox() {stopScanCallbacks();}
 
   // computation metrics
   double computeObjectiveScore(

@@ -25,7 +25,7 @@ from mr3_learning.observation import encode_snapshot, observation_space
 from mr3_learning.policy import policy_kwargs
 from mr3_learning.ppo import (
     ContractSpaces, collect_episodes, infer, main, native_record_accounting,
-    save_rollout, write_json)
+    save_failed_collection, save_rollout, write_json)
 from mr3_learning.rollout import build_rollout_buffer
 from mr3_learning.tests.test_observation import fixture
 
@@ -128,12 +128,13 @@ def fixture_infer(model, observations, *, deterministic=False):
 
 
 class CollectorTests(unittest.TestCase):
-    def collect(self, environments, *, deadline=None, cap=10):
+    def collect(self, environments, *, deadline=None, cap=10, journal=None):
         with patch("mr3_learning.ppo.infer", side_effect=fixture_infer), patch(
                 "mr3_learning.ppo.next_value", return_value=.25):
             return collect_episodes(
                 None, environments, tasks_for(environments, cap=cap),
-                deadline=time.monotonic() + 60. if deadline is None else deadline)
+                deadline=time.monotonic() + 60. if deadline is None else deadline,
+                journal=journal)
 
     def test_same_boundary_zero_terminal_settles_previous_decision_before_return(self):
         environment = ReceiptEnv([{"reward": 2.}, {"zero_tail": True, "reward": -20.}])
@@ -207,6 +208,42 @@ class CollectorTests(unittest.TestCase):
             self.collect(environments)
         self.assertEqual(len(environments[1].events), 1)
         self.assertEqual(environments[1].events[0][1], "reset")
+
+    def test_failed_step_journal_retains_exact_prefix_without_fabricated_terminal(self):
+        environments = [ReceiptEnv([{}, RuntimeError("physics failed")], epoch="failed"),
+                        ReceiptEnv([{"terminated": True}], epoch="peer")]
+        journal = {}
+        with self.assertRaisesRegex(RuntimeError, "physics failed") as failure:
+            self.collect(environments, journal=journal)
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "failed_collection.npz"
+            save_failed_collection(path, journal, failure.exception)
+            diagnostic = json.loads(path.with_suffix(".json").read_text())
+            with np.load(path, allow_pickle=False) as arrays:
+                np.testing.assert_array_equal(arrays["terminated"], [False, True])
+                np.testing.assert_array_equal(arrays["truncated"], [False, False])
+                np.testing.assert_array_equal(arrays["rewards"], [1., 1.])
+                np.testing.assert_array_equal(arrays["next_values"], [.25, 0.])
+                for key, value in journal["episodes"][0][0].observation.items():
+                    np.testing.assert_array_equal(arrays["obs_" + key][0], value)
+                self.assertNotIn("advantages", arrays.files)
+                self.assertNotIn("returns", arrays.files)
+            self.assertFalse(diagnostic["training_eligible"])
+            self.assertEqual(diagnostic["collector_returned_decisions"], 2)
+            self.assertEqual(diagnostic["error"], "RuntimeError('physics failed')")
+            self.assertIn("infrastructure_error", diagnostic["episodes"][0]["summary"])
+
+    def test_close_failure_reaps_other_workers_and_never_returns_training_samples(self):
+        environments = [ReceiptEnv([{"terminated": True}], epoch="failed",
+                                   close_error=RuntimeError("native abort")),
+                        ReceiptEnv([{"terminated": True}], epoch="peer")]
+        journal = {}
+        with self.assertRaisesRegex(RuntimeError, "native abort"):
+            self.collect(environments, journal=journal)
+        self.assertEqual([environment.closed for environment in environments], [1, 1])
+        self.assertEqual([len(episode) for episode in journal["episodes"]], [1, 1])
+        self.assertIn("infrastructure_error", journal["summaries"][0])
+        self.assertTrue(journal["summaries"][1]["shutdown"]["clean"])
 
     def test_empty_or_mismatched_worker_tasks_are_rejected_before_reset(self):
         environment = ReceiptEnv([{"terminated": True}])
@@ -338,6 +375,44 @@ class PPOIntegrationTests(unittest.TestCase):
 
 
 class NativeAccountingTests(unittest.TestCase):
+    def test_main_preserves_failed_collection_and_never_updates_or_writes_final(self):
+        environment = ReceiptEnv([{}, RuntimeError("native shutdown abort")])
+        original_check_output = subprocess.check_output
+
+        def source_query(command, **kwargs):
+            if command[:2] == ["git", "rev-parse"]:
+                return "a" * 40
+            if command[:2] == ["git", "status"]:
+                return ""
+            return original_check_output(command, **kwargs)
+
+        with tempfile.TemporaryDirectory() as temporary, patch(
+                "mr3_learning.ppo.subprocess.check_output", side_effect=source_query), patch(
+                "mr3_learning.ppo.resource_sample", return_value={}), patch(
+                "mr3_learning.ppo.Supervisor"), patch(
+                "mr3_learning.ppo.MR3Env", return_value=environment), patch(
+                "mr3_learning.ppo.infer", side_effect=fixture_infer), patch(
+                "mr3_learning.ppo.next_value", return_value=.25), patch.object(
+                MaskablePPO, "train") as train, contextlib.redirect_stdout(io.StringIO()):
+            status = main(["--run-id", "fixture", "--output-root", temporary,
+                           "--decisions", "2", "--wall-seconds", "60", "--device", "cpu"])
+            directory = Path(temporary) / "fixture"
+            summary = json.loads((directory / "summary.json").read_text())
+            diagnostic = json.loads((directory / "failed_collection_0000.json").read_text())
+            self.assertFalse((directory / "final.zip").exists())
+            self.assertFalse((directory / "rollout_0000.npz").exists())
+            self.assertFalse((directory / "checkpoint_0000.zip").exists())
+            with np.load(directory / "failed_collection_0000.npz", allow_pickle=False) as data:
+                self.assertEqual(data["actions"].shape, (1,))
+        train.assert_not_called()
+        self.assertEqual(status, 1)
+        self.assertEqual(summary["stop_reason"], "infrastructure_error")
+        self.assertEqual(summary["optimizer_updates"], 0)
+        self.assertEqual(summary["collector_observed_decisions"], 1)
+        self.assertEqual(summary["closed_episode_decisions"], 0)
+        self.assertFalse(diagnostic["training_eligible"])
+        self.assertEqual(diagnostic["collector_returned_decisions"], 1)
+
     def test_interleaved_logging_and_interrupted_update_preserve_collected_receipts(self):
         environment = ReceiptEnv([{}, {"truncated": True}])
         with patch("mr3_learning.ppo.infer", side_effect=fixture_infer), patch(

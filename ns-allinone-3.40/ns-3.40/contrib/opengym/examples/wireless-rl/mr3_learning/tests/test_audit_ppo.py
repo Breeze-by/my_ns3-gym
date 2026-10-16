@@ -138,13 +138,14 @@ class VersionedNativeGateTests(unittest.TestCase):
 
     def test_explicit_runtime_extensions_keep_original_helpers_exact(self):
         self.assertEqual(self.base.PINNED_RUNTIME[audit_ppo.OBSERVATION_SOURCE],
-                         audit_ppo.OBSERVATION_V3_SHA256)
+                         audit_ppo.OBSERVATION_SHA256)
         self.assertEqual(self.base.PINNED_RUNTIME[audit_ppo.REWARD_SOURCE],
                          audit_ppo.W7_REWARD_SHA256)
         self.assertEqual(self.proof[audit_ppo.REWARD_SOURCE]["normative_source"],
                          audit_ppo.TASK_BASE_FREEZE + ":" + audit_ppo.REWARD_SOURCE)
         for path, digest in self.original_runtime_pins.items():
-            if path != audit_ppo.OBSERVATION_SOURCE and path not in audit_ppo.EVALUATOR_PHASE_PINS:
+            if (path != audit_ppo.OBSERVATION_SOURCE and path not in audit_ppo.EVALUATOR_PHASE_PINS
+                    and path not in audit_ppo.PREPARATION_RUNTIME_PINS):
                 self.assertEqual(self.base.PINNED_RUNTIME[path], digest)
         for function in (self.auditor.audit_physics, self.auditor.audit_contacts,
                          self.auditor.audit_protocol.original):
@@ -160,8 +161,10 @@ class VersionedNativeGateTests(unittest.TestCase):
             self.assertEqual(self.base.PINNED_RUNTIME[path], digest)
             self.assertEqual(self.proof[path]["sha256"], digest)
 
-    def test_legacy_and_exact_v3_validate_without_changing_saved_snapshot(self):
-        for snapshot in (self.legacy_snapshot(), self.versioned_snapshot()):
+    def test_legacy_and_exact_versioned_rules_validate_without_changing_saved_snapshot(self):
+        v4 = self.legacy_snapshot()
+        v4["candidate_rule"] = copy.deepcopy(self.candidates.CANDIDATE_RULE_V4)
+        for snapshot in (self.legacy_snapshot(), self.versioned_snapshot(), self.seal(v4)):
             with self.subTest(version=snapshot.get("candidate_rule")):
                 before = copy.deepcopy(snapshot)
                 self.auditor.validate_snapshot(snapshot, "episode")

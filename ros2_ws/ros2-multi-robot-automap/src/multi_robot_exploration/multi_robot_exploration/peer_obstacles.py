@@ -35,6 +35,60 @@ def body_points(peers):
     return np.concatenate(groups).astype("<f4") if groups else np.empty((0, 3), dtype="<f4")
 
 
+def overlap_diagnostic(poses, odometry, transforms, now, tf_source_lead):
+    """Retain the exact received inputs of the existing centre-distance gate.
+
+    This is evidence, not a predictive collision check. Received ROS messages
+    do not carry the transport epoch/sequence, and their stamps need not match.
+    """
+    def vector(message, axes):
+        return {axis: (getattr(message, axis) if math.isfinite(getattr(message, axis)) else None)
+                for axis in axes}
+
+    pairs = []
+    names = list(poses)
+    for index, name in enumerate(names):
+        for other in names[index + 1:]:
+            distance = math.hypot(poses[other][0] - poses[name][0],
+                                  poses[other][1] - poses[name][1])
+            if distance < 2 * PEER_BODY_RADIUS_M:
+                pairs.append({"robots": [name, other], "centre_distance_m": distance,
+                              "threshold_m": 2 * PEER_BODY_RADIUS_M})
+    if not pairs:
+        return None
+    inputs = {}
+    for name, (x, y, yaw, _) in poses.items():
+        odom = odometry[name]
+        transform = transforms[name]
+        odom_stamp = odom.header.stamp.sec + odom.header.stamp.nanosec / 1e9
+        tf_stamp = transform.header.stamp.sec + transform.header.stamp.nanosec / 1e9
+        position, orientation = odom.pose.pose.position, odom.pose.pose.orientation
+        translation, rotation = transform.transform.translation, transform.transform.rotation
+        inputs[name] = {
+            "estimated_map_pose": {"x": x, "y": y, "yaw": yaw},
+            "odom_stamp_sec": odom_stamp, "odom_source_age_sec": now - odom_stamp,
+            "tf_validity_stamp_sec": tf_stamp, "tf_source_stamp_sec": tf_stamp - tf_source_lead,
+            "tf_source_age_sec": now - (tf_stamp - tf_source_lead),
+            "odom_frame": odom.header.frame_id, "odom_child_frame": odom.child_frame_id,
+            "tf_frame": transform.header.frame_id, "tf_child_frame": transform.child_frame_id,
+            "odom_position": vector(position, ("x", "y", "z")),
+            "odom_orientation": vector(orientation, ("x", "y", "z", "w")),
+            "tf_translation": vector(translation, ("x", "y", "z")),
+            "tf_rotation": vector(rotation, ("x", "y", "z", "w")),
+            "odom_twist": {
+                kind: vector(getattr(odom.twist.twist, kind), ("x", "y", "z"))
+                for kind in ("linear", "angular")},
+        }
+    return {
+        "schema": "mr3-peer-overlap-inputs-v1", "observation_sim_time_sec": now,
+        "body_radius_m": PEER_BODY_RADIUS_M, "tf_source_lead_sec": tf_source_lead,
+        "pairs": pairs, "received_inputs": inputs,
+        "transport_epoch_missing": True, "transport_sequence_missing": True,
+        "nonfinite_auxiliary_components_encoded_as_null": True,
+        "scope": "received odom/TF gate inputs; no truth or actual-contact assertion",
+    }
+
+
 class PeerObstacles(Node):
     def __init__(self):
         super().__init__("peer_obstacles")
@@ -137,17 +191,16 @@ class PeerObstacles(Node):
             return
         if self.failed:
             return
-        for index, name in enumerate(self.names):
-            x, y, _, _ = poses[name]
-            if any(math.hypot(poses[other][0] - x, poses[other][1] - y)
-                   < 2 * PEER_BODY_RADIUS_M for other in self.names[index + 1:]):
-                message = String()
-                message.data = json.dumps({
-                    "component": "peer_obstacles", "reason": "peer_body_envelopes_overlap",
-                })
-                self.failure_publisher.publish(message)
-                self.failed = True
-                return
+        diagnostic = overlap_diagnostic(poses, self.odometry, self.transforms, now, lead)
+        if diagnostic is not None:
+            message = String()
+            message.data = json.dumps({
+                "component": "peer_obstacles", "reason": "peer_body_envelopes_overlap",
+                "diagnostic": diagnostic,
+            }, allow_nan=False)
+            self.failure_publisher.publish(message)
+            self.failed = True
+            return
         for name, (x, y, yaw, _) in poses.items():
             peers = []
             for other, (px, py, _, stamp) in poses.items():

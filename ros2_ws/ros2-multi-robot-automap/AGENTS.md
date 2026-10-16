@@ -1,5 +1,11 @@
 # ROS component memory — MR3
 
+2026-10-17: user authorized P2A continuation/preparation. Current substep is
+MR3-P2A.0, with no new pilot: repair SLAM teardown ownership, retain failed
+collection evidence, version the received-frontier union and add safety input
+diagnostics. See shared `report/20261017_mr3_p2a0.md`; user acceptance of this
+substep precedes later preparation/training. P2A remains incomplete.
+
 Follow `/home/zhuyulab/ns3-workspace/AGENTS.md`. Read the shared
 `ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/RESEARCH_PLAN.md`
 and `IMPLEMENTATION_PLAN.md` before research decisions. Current executable

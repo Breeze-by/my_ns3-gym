@@ -14,7 +14,7 @@ from mr3_learning import audit_protocol as candidate
 
 HERE = Path(__file__).resolve().parent
 ROOT = next(parent for parent in HERE.parents if (parent / ".git").exists())
-FIXTURE_FREEZE = "de7a805af9cd9bc7d1b24e60559ccc4d3054e4c3"
+FIXTURE_FREEZE = "a" * 40  # Synthetic source identity; never native evidence.
 EPOCH = "portable-fixture-epoch"
 
 
@@ -138,6 +138,19 @@ def fixture(original, *, suppress=True):
 class UnsentProofTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
+        git_output = subprocess.check_output
+
+        def fixture_sources(command, **kwargs):
+            if command[:2] == ["git", "show"] and command[2].startswith(FIXTURE_FREEZE + ":"):
+                return (ROOT / command[2].split(":", 1)[1]).read_bytes()
+            return git_output(command, **kwargs)
+
+        # Test the real explicit source pins before a new commit can exist.
+        # The immutable W7 function still comes from its actual Git object;
+        # unknown/replaced sources and worktree mismatches remain rejected.
+        patcher = patch.object(candidate.subprocess, "check_output", fixture_sources)
+        patcher.start()
+        cls.addClassCleanup(patcher.stop)
         cls.normative = load_original()
         cls.original = staticmethod(cls.normative["audit_protocol"])
         cls.events, cls.transitions = fixture(cls.normative)

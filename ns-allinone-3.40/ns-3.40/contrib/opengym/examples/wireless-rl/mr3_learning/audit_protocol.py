@@ -23,7 +23,7 @@ AUDITOR = ROS + "scripts/audit_mr3_env.py"
 ORIGINAL_AUDITOR_SHA = "25ce0b466d988595934f26a0cfb7a81a445632b1e755f2462b80698371b272e8"
 PINS = {
     ROS + "src/multi_robot_exploration/multi_robot_exploration/mr3_adapter.py":
-        "b20f6b492f91cb943247ebcc29bd16497983d17c23cc458f1be16fa24b9958d5",
+        "02a44cb495e80f64034961dca18e61477c6168fc71707b4d0def76ac3f31fc4d",
     ROS + "src/multi_robot_exploration/multi_robot_exploration/mr3_protocol.py":
         "fb08097170b3f0e8423fa11dde2567c618d4d0d48be220e6cfbfc9538c37c147",
     ROS + "src/multi_robot_exploration/multi_robot_exploration/mr3_transport.py":

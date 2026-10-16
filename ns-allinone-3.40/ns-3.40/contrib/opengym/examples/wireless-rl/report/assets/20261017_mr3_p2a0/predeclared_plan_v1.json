@@ -1,0 +1,140 @@
+{
+  "schema": "mr3-p2a0-predeclaration-v1",
+  "date": "2026-10-17",
+  "authorization": "user requested P2A continuation and permitted preparation substeps",
+  "source_binding": "one clean pushed commit containing this predeclaration; full SHA recorded in every native metadata",
+  "robots_per_environment": 3,
+  "kind": "scripted_engineering_not_training",
+  "gpu_calls": 0,
+  "optimizer_steps": 0,
+  "max_api_records": 372,
+  "max_submitted_script_decisions": 371,
+  "stages": [
+    {
+      "stage": "terminal",
+      "command": [
+        "python",
+        "-m",
+        "mr3_learning.benchmark",
+        "--workers",
+        "1",
+        "--schedule",
+        "open:101,open:101",
+        "--steps",
+        "4",
+        "--terminal-probe",
+        "--base-domain",
+        "180",
+        "--base-port",
+        "12401",
+        "--output-root",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0",
+        "--run-id",
+        "mr3_p2a0_20261017_terminal"
+      ],
+      "run_directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_terminal",
+      "on_error": "stop_later_stages_no_automatic_retry",
+      "required_audits": [
+        "source_freeze",
+        "native",
+        "contact",
+        "clock",
+        "command",
+        "scalar",
+        "evaluator_phase",
+        "owned_identity_absence"
+      ]
+    },
+    {
+      "stage": "reset",
+      "command": [
+        "python",
+        "-m",
+        "mr3_learning.benchmark",
+        "--workers",
+        "2",
+        "--schedule",
+        "open:101,open:101",
+        "--steps",
+        "16",
+        "--base-domain",
+        "184",
+        "--base-port",
+        "12411",
+        "--output-root",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0",
+        "--run-id",
+        "mr3_p2a0_20261017_reset"
+      ],
+      "run_directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_reset",
+      "on_error": "stop_later_stages_no_automatic_retry",
+      "required_audits": [
+        "source_freeze",
+        "native",
+        "contact",
+        "clock",
+        "command",
+        "scalar",
+        "evaluator_phase",
+        "owned_identity_absence"
+      ]
+    },
+    {
+      "stage": "deadline",
+      "command": [
+        "python",
+        "-m",
+        "mr3_learning.benchmark",
+        "--workers",
+        "1",
+        "--schedule",
+        "open:101",
+        "--steps",
+        "300",
+        "--deadline-probe",
+        "--base-domain",
+        "188",
+        "--base-port",
+        "12421",
+        "--output-root",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0",
+        "--run-id",
+        "mr3_p2a0_20261017_deadline"
+      ],
+      "run_directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_deadline",
+      "on_error": "stop_later_stages_no_automatic_retry",
+      "required_audits": [
+        "source_freeze",
+        "native",
+        "contact",
+        "clock",
+        "command",
+        "scalar",
+        "evaluator_phase",
+        "owned_identity_absence"
+      ]
+    }
+  ],
+  "pilot_budget_unchanged": {
+    "charged_decisions": 2226,
+    "charged_wall_seconds": "11494.045260453597",
+    "remaining_decisions": 1870,
+    "remaining_wall_seconds": "2905.954739546403",
+    "new_pilot_authorized_by_this_plan": false
+  },
+  "unchanged_gates": [
+    "95 percent",
+    "300 simulation seconds",
+    "quality",
+    "each robot one metre and one goal",
+    "18 contact streams",
+    "peer centre envelope 0.50m",
+    "strict native closure"
+  ],
+  "scope_limits": [
+    "no claim of fixing V6 exact Karto throw",
+    "no proof of all-robot candidate sufficiency or collision avoidance",
+    "no learned-policy or P2A acceptance credit"
+  ],
+  "next_gate": "complete and push this preparation substep, then await explicit user acceptance"
+}

@@ -87,7 +87,7 @@ class MultiRobotSlamToolbox : public SlamToolbox
 {
 public:
   explicit MultiRobotSlamToolbox(rclcpp::NodeOptions options);
-  ~MultiRobotSlamToolbox() {};
+  ~MultiRobotSlamToolbox() {stopScanCallbacks();}
 
 protected:
   // Removed methods related to localized scans and external map merging

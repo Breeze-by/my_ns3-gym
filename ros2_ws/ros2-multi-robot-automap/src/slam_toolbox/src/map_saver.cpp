@@ -25,7 +25,7 @@ namespace map_saver
 
 /*****************************************************************************/
 MapSaver::MapSaver(rclcpp::Node::SharedPtr node, const std::string & map_name)
-: node_(node), map_name_(map_name), received_map_(false)
+: node_(node.get()), map_name_(map_name), received_map_(false)
 /*****************************************************************************/
 {
   server_ = node_->create_service<slam_toolbox::srv::SaveMap>("slam_toolbox/save_map",

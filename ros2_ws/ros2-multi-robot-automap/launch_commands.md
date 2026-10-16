@@ -154,7 +154,46 @@ phase3固定绑定原contact task-phase与独立命令时间门禁；scalar rewa
 [环境契约](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_ENV_CONTRACT.md)。
 每次实际执行均是需追加共享log的实验，不能把入口存在当成P1C通过。
 
-## MR3-P2A联合MaskablePPO
+## MR3-P2A.0 当前训练前工程准备
+
+2026-10-17用户授权继续解决P2A并允许前置准备。本轮先验证SLAM生命周期、候选v4、
+失败采样保存和安全触发诊断；全部为脚本工程检查，无policy训练/GPU更新。
+先按上文系统ROS构建并source当前install；学习端按P1C段激活`ns3gym`并清除`PYTHONPATH`。
+只在同一干净已提交推送冻结运行，逐项审计通过才执行下一项；失败停止，不自动重试。
+输出与预声明见[P2A.0报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261017_mr3_p2a0.md)。
+
+```bash
+MR3_P2A0_FREEZE=$(git rev-parse HEAD)
+python -m mr3_learning.benchmark --workers 1 --schedule open:101,open:101 \
+  --steps 4 --terminal-probe --base-domain 180 --base-port 12401 \
+  --output-root /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0 \
+  --run-id mr3_p2a0_20261017_terminal
+python -m mr3_learning.audit_preparation \
+  /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_terminal \
+  --freeze "$MR3_P2A0_FREEZE" --output /tmp/mr3_p2a0_terminal_audit.json
+
+python -m mr3_learning.benchmark --workers 2 --schedule open:101,open:101 \
+  --steps 16 --base-domain 184 --base-port 12411 \
+  --output-root /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0 \
+  --run-id mr3_p2a0_20261017_reset
+python -m mr3_learning.audit_preparation \
+  /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_reset \
+  --freeze "$MR3_P2A0_FREEZE" --output /tmp/mr3_p2a0_reset_audit.json
+
+python -m mr3_learning.benchmark --workers 1 --schedule open:101 \
+  --steps 300 --deadline-probe --base-domain 188 --base-port 12421 \
+  --output-root /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0 \
+  --run-id mr3_p2a0_20261017_deadline
+python -m mr3_learning.audit_preparation \
+  /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_deadline \
+  --freeze "$MR3_P2A0_FREEZE" --output /tmp/mr3_p2a0_deadline_audit.json
+```
+
+源文件/规则/配置由新审计入口精确绑定，旧W7门禁原件不修改。372API/371真实脚本决策为总上限，
+工程成本单列，不使用/重置pilot余额。每worker始终三台；300秒KEEP用于截止与关闭验证，
+不证明探索或三台参与成功。P2A.0交付后等待用户验收，下一准备步闭合途中安全和累计参与观测。
+
+## MR3-P2A联合MaskablePPO（v6历史命令，本轮不重启pilot）
 
 在上方conda `ns3gym`环境、wireless-rl目录执行；保持`PYTHONNOUSERSITE=1`与ROS解释器隔离。
 安装锁定学习依赖不会替换现有CUDA栈：

@@ -31,7 +31,7 @@ LoopClosureAssistant::LoopClosureAssistant(
   laser_utils::ScanHolder * scan_holder,
   PausedState & state, ProcessType & processor_type)
 : mapper_(mapper), scan_holder_(scan_holder),
-  interactive_mode_(false), node_(node), state_(state),
+  interactive_mode_(false), node_(node.get()), state_(state),
   processor_type_(processor_type)
 /*****************************************************************************/
 {

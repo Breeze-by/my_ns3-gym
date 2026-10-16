@@ -556,3 +556,107 @@ def test_goal_conflicts_use_arrival_radii_and_actual_idle_pose_radius():
     states[1]["navigation"]["goal_x"] = .80
     _, separated_mask, _ = observation._action_masks(states, candidates, 10.)
     assert separated_mask[88]
+
+
+def frontier_source_counterexample():
+    fused = np.full((100, 100), -1, dtype=np.int8)
+    fused[5:95, 5:95] = 0
+    small = np.full_like(fused, -1)
+    small[43:57, 43:57] = 0
+    states = robots()
+    for state, x in zip(states, (-3.05, .05, 3.05)):
+        state.update(x=x, y=.05)
+    maps = own_maps(fused, origin=(-5., -5.))
+    maps["tb2"]["grid"] = small
+    return fused, states, maps
+
+
+def test_received_own_frontier_restores_choice_when_fused_frontiers_are_too_far():
+    # A robot's small, fully safe own component can have no candidate near the
+    # expanding fused frontier. Its received frontiers preserve geometric choices
+    # while all paths and arrival disks still use the unchanged conservative maps.
+    fused, states, maps = frontier_source_counterexample()
+    before = fused.copy()
+    result = observation.build_snapshot(
+        fused, .1, (-5., -5.), states, 10., "episode-a", 2, 4, robot_maps=maps)
+    traversable, clearance = observation.native_traversable(fused, .1)
+    targets = np.argwhere(traversable & (clearance >= observation.TARGET_CLEARANCE_M))
+    paths, _, _ = observation._own_map_paths(
+        maps, copy.deepcopy(result["robots"]), 10., "episode-a", .1, (-5., -5.), targets)
+    _, old = observation._candidates(
+        fused, clearance, targets, paths, .1, (-5., -5.), result["robots"])
+    assert old["per_robot_reachable_target_cells"][1] == 33
+    assert old["per_robot_reachable_pool_counts"][1] == 0
+    assert result["diagnostics"]["per_robot_reachable_target_cells"][1] == 33
+    assert result["diagnostics"]["per_robot_reachable_pool_counts"][1] == 20
+    assert any(allowed and observation.decode_joint_action(action)[1] < 8
+               for action, allowed in enumerate(result["joint_action_mask"]))
+    assert np.array_equal(fused, before)
+    replay = observation.build_snapshot(
+        fused, .1, (-5., -5.), list(reversed(states)), 10., "episode-a", 2, 4,
+        robot_maps=dict(reversed(list(maps.items()))))
+    assert replay == result
+
+
+@pytest.mark.parametrize("edit,reason", [
+    ({"epoch": "previous-episode"}, "cross_epoch"),
+    ({"source_stamp": 10.01}, "future_map"),
+    ({"received_stamp": 10.01}, "future_map"),
+])
+def test_unavailable_received_map_cannot_contribute_candidate_frontiers(edit, reason):
+    fused, states, maps = frontier_source_counterexample()
+    maps["tb2"].update(edit)
+    result = observation.build_snapshot(
+        fused, .1, (-5., -5.), states, 10., "episode-a", 2, 4, robot_maps=maps)
+    contribution = result["diagnostics"]["frontier_sources"]["tb2"]
+    assert not contribution["eligible"]
+    assert contribution["unavailable_reason"] == reason
+    assert contribution["native_frontier_cells"] == contribution["new_union_cells"] == 0
+    assert result["diagnostics"]["per_robot_reachable_selected_counts"][1] == 0
+
+
+@pytest.mark.parametrize("barrier", (-1, 100))
+def test_received_frontier_union_does_not_clear_fused_unknown_or_obstacles(barrier):
+    fused = np.full((100, 120), barrier, dtype=np.int8)
+    original = fused.copy()
+    result = snapshot(fused, robot_maps=own_maps())
+    assert result["diagnostics"]["robot_seed_traversable"] == [True] * 3
+    assert not any(candidate["valid"] for candidate in result["candidates"])
+    for name in observation.ROBOT_NAMES:
+        contribution = result["diagnostics"]["frontier_sources"][name]
+        assert contribution["native_frontier_cells"] > 0
+        assert contribution["projected_fused_free_cells"] == 0
+        assert contribution["rejected_fused_unknown_or_occupied_cells"] > 0
+    assert result["joint_action_mask"][888]
+    assert np.array_equal(fused, original)
+
+
+def test_frontier_projection_uses_each_received_map_origin_and_resolution():
+    fused = np.zeros((60, 80), dtype=np.int8)
+    maps = own_maps(np.full((40, 60), -1, dtype=np.int8), .05, (-1.0375, -.5375))
+    for entry in maps.values():
+        entry["grid"][5:35, 5:55] = 0
+    result = observation.build_snapshot(
+        fused, .1, (-3., -2.), robots(), 10., "episode-a", 2, 4, robot_maps=maps)
+    frontier, sources = observation._candidate_frontiers(
+        fused, .1, (-3., -2.), maps, result["path_maps"])
+    own_cells = np.argwhere(observation._frontiers(maps["tb1"]["grid"]))
+    expected = np.zeros_like(frontier)
+    for row, column in own_cells:
+        x = maps["tb1"]["origin"][0] + (column + .5) * .05
+        y = maps["tb1"]["origin"][1] + (row + .5) * .05
+        expected[math.floor((y + 2.) / .1), math.floor((x + 3.) / .1)] = True
+    assert np.array_equal(frontier, expected)
+    assert sources["tb1"]["new_union_cells"] == int(expected.sum())
+    assert sources["tb2"]["new_union_cells"] == sources["tb3"]["new_union_cells"] == 0
+
+
+def test_missing_received_maps_have_no_frontier_fallback():
+    result = snapshot(robot_maps={})
+    assert all(not result["diagnostics"]["frontier_sources"][name]["eligible"]
+               for name in observation.ROBOT_NAMES)
+    assert result["candidate_rule"]["frontier_sources"] == [
+        "fused_received", "received_own:tb1", "received_own:tb2", "received_own:tb3"]
+    assert result["candidate_rule"]["frontier_projection"] == (
+        "world cell centre to containing fused native cell; free endpoints only")
+    assert sum(result["joint_action_mask"]) == 1

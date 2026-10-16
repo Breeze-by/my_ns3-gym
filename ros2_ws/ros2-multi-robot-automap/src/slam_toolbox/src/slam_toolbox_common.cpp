@@ -84,18 +84,45 @@ void SlamToolbox::configure()
 SlamToolbox::~SlamToolbox()
 /*****************************************************************************/
 {
-  for (int i = 0; i != threads_.size(); i++) {
-    threads_[i]->join();
-  }
+  stopScanCallbacks();
+  joinThreads();
 
-  smapper_.reset();
-  dataset_.reset();
+  // Helpers borrow this node and mapper/dataset state. Release them after the
+  // threads join, while their dependencies and the rclcpp node still exist.
   closure_assistant_.reset();
   map_saver_.reset();
   pose_helper_.reset();
   laser_assistant_.reset();
   scan_holder_.reset();
+  smapper_.reset();
+  dataset_.reset();
   solver_.reset();
+}
+
+/*****************************************************************************/
+void SlamToolbox::stopScanCallbacks()
+/*****************************************************************************/
+{
+  // TF may synchronously release queued scans through the message filter.
+  // Join its executor while the derived laserCallback implementation exists.
+  // Repeated calls from derived/base destructors are intentionally harmless.
+  tfL_.reset();
+  scan_filter_.reset();
+  scan_filter_sub_.reset();
+}
+
+/*****************************************************************************/
+void SlamToolbox::joinThreads()
+/*****************************************************************************/
+{
+  // Synchronous SLAM joins its scan worker before its derived queue is freed.
+  // The node executables shut down rclcpp before releasing their node owner.
+  for (auto & thread : threads_) {
+    if (thread->joinable()) {
+      thread->join();
+    }
+  }
+  threads_.clear();
 }
 
 /*****************************************************************************/

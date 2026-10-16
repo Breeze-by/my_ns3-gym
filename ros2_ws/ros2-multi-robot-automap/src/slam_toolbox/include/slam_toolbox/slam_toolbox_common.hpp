@@ -66,6 +66,10 @@ public:
   virtual void loadPoseGraphByParams();
 
 protected:
+  // Derived destructors call this while their virtual callback state exists.
+  void stopScanCallbacks();
+  void joinThreads();
+
   // threads
   void publishVisualizations();
   void publishTransformLoop(const double & transform_publish_period);

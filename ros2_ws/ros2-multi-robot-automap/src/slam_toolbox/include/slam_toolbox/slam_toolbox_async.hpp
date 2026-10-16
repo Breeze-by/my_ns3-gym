@@ -30,7 +30,7 @@ class AsynchronousSlamToolbox : public SlamToolbox
 {
 public:
   explicit AsynchronousSlamToolbox(rclcpp::NodeOptions options);
-  ~AsynchronousSlamToolbox() {}
+  ~AsynchronousSlamToolbox() {stopScanCallbacks();}
 
 protected:
   void laserCallback(

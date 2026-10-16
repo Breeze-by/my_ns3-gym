@@ -1,5 +1,11 @@
 # ns-allinone component memory
 
+2026-10-17: P2A continuation/preparation is authorized. Current MR3-P2A.0
+addresses SLAM ownership teardown, failed collection evidence, received-frontier
+union and safety diagnostics; no new pilot or reset of its cumulative budget.
+See `ns-3.40/contrib/opengym/examples/wireless-rl/report/20261017_mr3_p2a0.md`.
+Complete, push and present this substep for user acceptance before proceeding.
+
 This tree contains ns-3.40 and ns3-gym within the single Git repository
 `/home/zhuyulab/ns3-workspace`. Do not scan the whole framework unless needed.
 

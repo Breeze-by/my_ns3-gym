@@ -1,5 +1,12 @@
 # wireless-rl memory — MR3
 
+2026-10-17: user authorized P2A continuation and preparation. Current substep
+MR3-P2A.0 repairs SLAM ownership teardown, preserves failed collection evidence,
+adds versioned received-frontier union and safety diagnostics. No new pilot is
+run; its cumulative balance stays 1870 decisions/2905.954739546403 wall seconds.
+See [P2A.0 report](report/20261017_mr3_p2a0.md). This substep needs its own user
+acceptance before later preparation/training; P2A remains incomplete.
+
 P1C validation started 2026-10-15; actual closure time is in the P1C report. The active contract is [RESEARCH_PLAN.md](RESEARCH_PLAN.md),
 then [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md). Follow root AGENTS.md.
 MR3-P0 was explicitly accepted on 2026-10-14; MR3-P1A was accepted on 2026-10-15 and the user authorized P1B.
