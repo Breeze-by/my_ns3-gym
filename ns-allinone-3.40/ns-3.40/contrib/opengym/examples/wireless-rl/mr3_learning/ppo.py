@@ -214,7 +214,7 @@ def main(argv=None):
     parser.add_argument("--decisions", type=int, required=True)
     parser.add_argument("--episode-steps", type=int, default=300)
     parser.add_argument("--wall-seconds", type=float, required=True)
-    parser.add_argument("--seed", type=int, default=17)
+    parser.add_argument("--seed", type=int, default=41)
     parser.add_argument("--device", default="cuda:0")
     parser.add_argument("--base-domain", type=int, default=160)
     parser.add_argument("--base-port", type=int, default=12301)

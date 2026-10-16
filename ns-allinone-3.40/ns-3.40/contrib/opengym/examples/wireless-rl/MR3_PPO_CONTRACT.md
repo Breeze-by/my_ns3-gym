@@ -1,4 +1,4 @@
-# MR3-P2A 联合 MaskablePPO pilot 契约 v1
+# MR3-P2A 联合 MaskablePPO pilot 契约 v2
 
 2026-10-16：用户验收 P1C 并授权 P2A。P2A 进行中，P2B 及后续未开始。
 正式任务沿用 [任务契约](MR3_TASK_CONTRACT.md) 与 [环境契约](MR3_ENV_CONTRACT.md)：
@@ -36,13 +36,15 @@ value coefficient=.5、max grad norm=.5、target KL=.03、每 round 最多 4 epo
 
 ## 首轮预声明范围
 
-先完成 CPU 单元/集成检查与一个原生最小更新链；其后首轮单训练 seed17 pilot 以
+v1最小链已完成8真实决策/4次GPU更新；首次离线审计的旧文档SHA绑定失败与修正后的PASS并列保留。
+机器合同、世界和门禁未改；v2重新冻结，使用任务契约预声明训练seed41，全部原生阶段重新执行。
+先完成 CPU 单元/集成检查与一个原生最小更新链；其后首轮单训练 seed41 pilot 以
 最多4096真实决策或14400墙秒采样截止（先到即停），4 workers，各固定tb1/tb2/tb3，
 固定开发图open、任务seed101。普通episode上限300步；总额余量或墙时截止走原外部截断，
 原生安全取消/退出及至多一次已开始round的optimizer收尾可超过采样墙时界限，实耗另列。
 该局部工程预算由本次P2A授权内选择，不将单种子pilot写成正式算法比较。
 
-原生最小更新链：1 worker、open101、seed17、8真实决策、外部8步截断、600墙秒；
+原生最小更新链：1 worker、open101、seed41、8真实决策、外部8步截断、600墙秒；
 最多4 epochs。它证明实际采样到更新及checkpoint往返，不提供95%成功信用。
 最小链未通过则先诊断并新冻结，不启动长pilot；所有失败与重试仍保留。
 

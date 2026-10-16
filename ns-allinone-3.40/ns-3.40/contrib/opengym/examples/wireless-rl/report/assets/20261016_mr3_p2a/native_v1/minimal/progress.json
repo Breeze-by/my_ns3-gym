@@ -1,0 +1,73 @@
+{"train/learning_rate": 0.0003, "train/entropy_loss": -2.1163097620010376, "train/policy_gradient_loss": -0.032764583826065063, "train/value_loss": 7.694003582000732, "train/approx_kl": 0.003622114658355713, "train/clip_fraction": 0.0, "train/loss": 1.9609017372131348, "train/explained_variance": 0.10835278034210205, "train/n_updates": 4, "train/clip_range": 0.2}
+s": 0,
+      "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v1_minimal/native/round0000/worker0/episode001_open_101",
+      "terminated": false,
+      "truncated": true,
+      "reason": "external_sampler_limit",
+      "final_diagnostics": {
+        "collision_events_delta": 0,
+        "current_correct_free_cells": 24677,
+        "delta_sim_time": 1.0,
+        "effective_step_end": 81.04,
+        "elapsed_sim_time": 8.0,
+        "epoch": "round0000_w0_e1_9ea9e125",
+        "expected_actor_map_sha256": "15f40c19fcc74ca036980953e0888cc36a0594ba0b172f205b6d3c800545f206",
+        "expected_map_paired": true,
+        "goal_switches_delta": 0,
+        "initial_correct_free_cells": 1988,
+        "map_pairing_scope": "current_actor_map_paired",
+        "map_watermark": {
+          "header_stamp": 80.839,
+          "missing": false,
+          "payload_sha256": "15f40c19fcc74ca036980953e0888cc36a0594ba0b172f205b6d3c800545f206",
+          "received_sequence": 12,
+          "received_stamp": 81.04,
+          "source_version": null,
+          "source_version_missing": true
+        },
+        "metrics": {
+          "correct_free_coverage_ratio": 0.5632475120971423,
+          "false_free_ratio": 0.00335345405767941,
+          "known_coverage_ratio": 0.5210744133719062,
+          "map_quality_pass": false,
+          "navigation_protocol_closed": false,
+          "observed_accuracy": 0.9686933724023595,
+          "occupied_iou": 0.06631142687981054,
+          "robot_participation_pass": false
+        },
+        "new_correct_free_cells": 3334,
+        "reason": "external_sampler_limit",
+        "rejected_actions_delta": 0,
+        "remaining_sim_time": 292.0,
+        "requested_step_end": 81.04,
+        "reward": 0.7576453939559938,
+        "reward_terms": {
+          "collision": -0.0,
+          "coverage": 0.7609787272893271,
+          "failure": 0.0,
+          "invalid": -0.0,
+          "success": 0.0,
+          "switch": -0.0,
+          "time": -0.0033333333333333335
+        },
+        "reward_weights": {
+          "collision": 20.0,
+          "coverage": 10.0,
+          "failure": 20.0,
+          "invalid": 0.05,
+          "success": 10.0,
+          "switch": 0.01,
+          "time": 1.0
+        },
+        "rewarded_correct_free_cells": 25116,
+        "schema": "mr3-reward-v1",
+        "sequence": 8,
+        "step_start": 80.04,
+        "terminated": false,
+        "truncated": true,
+        "truth_free_cell_count": 43812
+      }
+    }
+  ],
+  "elapsed_wall_sec": 217.20674263918772
+}

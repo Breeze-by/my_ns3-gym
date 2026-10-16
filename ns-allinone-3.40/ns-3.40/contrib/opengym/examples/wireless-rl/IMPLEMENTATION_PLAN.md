@@ -32,7 +32,7 @@ P2B及后续保持未开始，gateway不在当前授权范围内。
 各图成功数为rooms2/3、corridors1/3、open3/3；corridors202另有地图质量失败。
 SDK关闭崩溃未证明根治，完整尝试及补充审计见 [P1A报告](report/20261014_mr3_p1a.md)。
 原修复冻结 `c9344e1`、路线切换前文档 `81b2f8b`及90%单种子证据保持历史范围。
-没有三机器人 RL checkpoint，也没有 ROS/ns-3 联合实验。
+P2A已有8决策工程checkpoint（seed17、4次GPU更新），尚无95%任务信用或ROS/ns-3联合实验。
 
 P1B冻结`f9928fe`的open/rooms/corridors各seed101完整同冻结脚本矩阵严格审计通过，
 前三次失败保留，详见[P1B报告](report/20261015_mr3_p1b.md)。独占目标接口、理想交付副本、

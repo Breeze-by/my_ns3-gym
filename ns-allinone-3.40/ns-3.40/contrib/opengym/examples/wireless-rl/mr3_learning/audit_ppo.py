@@ -24,6 +24,9 @@ from .observation import encode_snapshot, observation_space
 
 WIRELESS = "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/"
 ENV_DOCUMENT_SHA256 = "fa39665fab65d2970e86a2654d047ada2ae5d3670fe644b7c06d5a1e3abb3beb"
+TASK_DOCUMENT_SHA256 = "f96f5ba785a39daa882b3c2ea217c58dd968550b65bf0ee15faf07ca079f8991"
+PRIOR_TASK_DOCUMENT_SHA256 = "5e4400396e4aaf5a5094fb4c0c04c85810c327cc85be88b7d03fa3faeade07d2"
+TASK_BASE_FREEZE = "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a"
 PHASE_SHA256 = "4e2a24e3465fa45c06c05c37b57b8b77b6e462845b3227be10c1fecb85c2c7d7"
 SCALAR_SHA256 = "895395075a881c6d74b809100e198be52a3c05a6710d24d873020b87223ff665"
 POLICY_ATOL = 1e-4  # CPU replay of CUDA collecting inference; never a task tolerance.
@@ -70,16 +73,44 @@ def load_native_gates(root, freeze):
     directory = root / WIRELESS / "report/assets/20261015_mr3_p1c"
     phase = load_pinned("mr3_p2a_phase_v3", directory /
                         "audit_mr3_env_contact_phase_v3.py", PHASE_SHA256)
-    # Only the delivery-status text changed. All original runtime pins and
-    # the original v2 contact and v7 command-time implementations are retained.
+    task_relative = WIRELESS + "MR3_TASK_CONTRACT.md"
+    source_task = subprocess.check_output(["git", "show", freeze + ":" + task_relative], cwd=root)
+    source_task_digest = hashlib.sha256(source_task).hexdigest()
+    require(source_task_digest in (TASK_DOCUMENT_SHA256, PRIOR_TASK_DOCUMENT_SHA256),
+            "source task document is not an explicitly pinned status revision")
+    # These exact task documents differ in delivery status. Relative to W7
+    # they also clarify the still-unapproved budget per run. Original runtime
+    # pins and the contact/command-time implementations remain unchanged.
     phase.PINNED_DOCUMENTS = {
         **phase.PINNED_DOCUMENTS,
-        WIRELESS + "MR3_ENV_CONTRACT.md": ENV_DOCUMENT_SHA256}
+        WIRELESS + "MR3_ENV_CONTRACT.md": ENV_DOCUMENT_SHA256,
+        task_relative: source_task_digest}
     base, auditor, command, proof = phase.load_components(freeze, root)
     scalar = load_pinned("mr3_p2a_scalar_v3", directory / "reward_gate_audit_v3.py",
                          SCALAR_SHA256)
     require(sha(root / WIRELESS / "MR3_ENV_CONTRACT.md") == ENV_DOCUMENT_SHA256,
             "current accepted environment document differs from explicit P2A pin")
+    require(sha(root / task_relative) == TASK_DOCUMENT_SHA256,
+            "current accepted task document differs from explicit P2A status pin")
+    proof[task_relative].update(
+        current_status_sha256=TASK_DOCUMENT_SHA256,
+        native_document_sha256=source_task_digest, status_only_revision=True)
+    config = "ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/"
+    machine_paths = subprocess.check_output(
+        ["git", "ls-tree", "-r", "--name-only", TASK_BASE_FREEZE, "--", config],
+        cwd=root, text=True).splitlines()
+    machine_paths += ["ros2_ws/ros2-multi-robot-automap/src/multi_robot/worlds/p1c_" +
+                      scene + ".world" for scene in ("open", "rooms", "corridors")]
+    require(len(machine_paths) > 3, "original machine task contract is unavailable")
+    for relative in machine_paths:
+        normative = subprocess.check_output(
+            ["git", "show", TASK_BASE_FREEZE + ":" + relative], cwd=root)
+        actual = subprocess.check_output(["git", "show", freeze + ":" + relative], cwd=root)
+        digest = hashlib.sha256(normative).hexdigest()
+        require(actual == normative and sha(root / relative) == digest,
+                "machine task/geometry changed from accepted W7 contract: " + relative)
+        proof[relative] = {"sha256": digest, "git_source": freeze + ":" + relative,
+                           "normative_source": TASK_BASE_FREEZE + ":" + relative}
     for filename in ("ppo.py", "rollout.py", "policy.py", "model.py", "env.py",
                      "observation.py", "supervisor.py", "requirements-env.txt",
                      "requirements-ppo.txt"):
@@ -320,9 +351,10 @@ def audit_run(directory, freeze):
         result["rounds"].append(round_result)
     check("completed run", lambda: require(summary["completed"] and summary["error"] is None
           and not summary["cleanup_errors"], "run has an error/incomplete native closure"))
-    check("decision totals", lambda: require(summary["decisions"] == sum(
-          row["decisions"] for row in summary["episodes"]) and summary["api_records"] == sum(
-          row["api_records"] for row in summary["episodes"]), "summary count totals differ"))
+    check("decision totals", lambda: require(
+        summary["decisions"] == sum(row["decisions"] for row in summary["episodes"])
+        and summary["api_records"] == sum(row["api_records"] for row in summary["episodes"]),
+        "summary count totals differ"))
     if metadata["mode"] == "train":
         check("optimizer evidence", lambda: require(summary["optimizer_updates"] > 0
               and summary["rounds"] and all(row["changed_parameter_tensors"] > 0

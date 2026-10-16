@@ -22,7 +22,8 @@ are out of scope. Detailed method decisions live in the plan and
 
 Default baseline retains handcrafted ROS frontier allocation; the mutually
 exclusive adapter owns stable goals and consumes logical ideal-delivery copies.
-No trained robot policy or ROS/ns-3 gateway exists. P1C implements Gymnasium
+P2A has an eight-decision engineering checkpoint (seed17, four GPU optimizer steps),
+without 95% task credit; no validated robot policy or ROS/ns-3 gateway exists. P1C implements Gymnasium
 tensors/IPC, full process rebuild, explicit stepping and isolated first-correct-cell rewards.
 W7 `cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a` has the complete eight-stage engineering matrix and independent audits,
 762 ROS semantic and 40 conda CPU checks. The unchanged `b328f84` GPU interface probe

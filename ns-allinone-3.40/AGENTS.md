@@ -25,7 +25,8 @@ validated at W7 `cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a`; see
 The P1B asynchronous 1 s timer had 2/3 s rooms gaps. P1C independently validates
 stepped 1 s transitions/reset/1-2-4-worker sampling; the non-stepped timer nominal cadence and skip rules are unchanged.
 Its engineering checks include 762 ROS and 40 conda CPU tests. Retain only the original
-`b328f84` fixed-interface GPU 3-forward/3-backward/0-update proof; no policy training has begun.
+`b328f84` fixed-interface GPU 3-forward/3-backward/0-update proof for P1C. P2A now has an eight-decision engineering checkpoint
+(seed17, four GPU optimizer steps), without 95% task credit.
 Freeze `5e47802` has 9 effective slots from 10 attempts, including one retained
 native infrastructure failure; see the [P1A report](ns-3.40/contrib/opengym/examples/wireless-rl/report/20261014_mr3_p1a.md).
 The user accepted P1C and authorized P2A's joint MaskablePPO minimum training/validation loop on 2026-10-16.

@@ -3418,3 +3418,24 @@ PYTHONNOUSERSITE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -m pip insta
 当前检查：conda CPU unittest 73项exit0，报告8.286秒；包括实际SB3 CPU optimizer fixture更新、采样mask概率重评、checkpoint往返、collector关闭/失败/短零终态和变长buffer。独立offline audit CPU正例及9种篡改反例另列，不计入73项；首次fixture因缺少新增epoch/sequence证明字段失败后只修正fixture。flake8新实现exit0；首次检查发现格式缩进后修正，不改变语义。11文档/110本地链接/19shell块语法exit0。规范结果：report/assets/20261016_mr3_p2a/implementation_checks_v1.json。此时native/GPU训练均未启动。
 
 完整原生命令、stage条件、seed、预算、停止规则见report/assets/20261016_mr3_p2a/predeclared_plan_v1.json。计划：新提交推送冻结先跑mr3_p2a_v1_minimal（open101，seed17，1worker/8决策/600墙秒，实际CUDA PPO更新）；原生及policy审计通过才启动mr3_p2a_v1_pilot（固定open101，seed17，4worker/4096决策或14400墙秒截止）；随后只用finalcheckpoint做open401/402/403三开发验证（900决策上限/9000墙秒，确定性mask-aware/0更新）。每worker始终三机器人，全部失败保留，无自动重试；wall上限是采样截止，原生安全闭合与最后已开始round更新额外实耗单列。P2A未达到冻结95%/安全/学习出口时停在本步，不以optimizer更新冒充验收。
+
+
+### 2026-10-16：MR3-P2A v1原生最小更新链与离线文档绑定修正
+
+运行源码已提交推送为`bbbe21cb3c49f4f714cc2198b579a08699e9ba28`。cwd为wireless-rl，解释器conda ns3gym，PYTHONNOUSERSITE=1。精确命令：
+
+```bash
+rtk proxy env PYTHONNOUSERSITE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -m mr3_learning.ppo --mode train --workers 1 --schedule open:101 --decisions 8 --episode-steps 8 --wall-seconds 600 --seed 17 --base-domain 160 --base-port 12301 --run-id mr3_p2a_v1_minimal
+```
+
+exit0；220.14412238495424墙秒含startup/原生关闭/学习，8真实决策/8API/8仿真秒，4次实际CUDA optimizer.step，4PPO epochs；70个state_dict tensor entries改变（包含共享模块别名，不是70个独立参数张量）。原生关闭无forced/存活/zombie，task schema4为training_external_truncation、success=false、覆盖0.5632475120971423、quality/participation门禁false、0contact、持续监测健康、navigation_protocol_closed=true。该最小链证明真实三机器人网络选目标→执行→更新，不能算95%或P2A通过。8动作831/888/488/888/888/98/838/888，5个目标跨三台，0action_rejected；采样前snapshot/mask/candidate/command身份相符。
+
+initial.zip SHA ceb25b7b1564bad5da200fb3ae9d8eadc4bb4c835d842309e165ed634c9b7271；final.zip SHA 24c3a57e4344d09f4f8881a9f9e1f48b4b5f9765727ec063f12d398b56595ab4。PPO entropy_loss=-2.116309762、approxKL=.003622114658、value_loss7.694003582，有限参数/指标；完整原件`ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v1_minimal/`。
+
+首次离线命令为`python -m mr3_learning.audit_ppo /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v1_minimal --freeze bbbe21cb3c49f4f714cc2198b579a08699e9ba28 --output /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v1_minimal/audit_v1.json`（同conda/rtk/env包装），exit1。旧helper在读取源freeze的MR3_TASK_CONTRACT.md时docSHA不符，尚未执行native/policy审计，未生成audit_v1.json；错误回执保留audit_failure_v1.json。计划按门禁未启动v1pilot/validation。
+
+W7→当前任务文档diff仅交付状态与候选预算每run说明；整个机器合同目录/3world和全部native源字节不变。修正离线wrapper显式绑定任务文档旧状态SHA5e4400396e4aaf5a5094fb4c0c04c85810c327cc85be88b7d03fa3faeade07d2及已验收状态SHAf96f5ba785a39daa882b3c2ea217c58dd968550b65bf0ee15faf07ca079f8991，原始helpers和95%/300s/安全/reward门禁未改。相同命令改输出`audit_v1_revised_binding.json`exit0，SHA ee0546ca69fc255ef939a0f684a599a1b88254eb394f08b00c98756e2ca842be。8原生采样张量/掩码/动作/GAE与更新前checkpoint重评、原contact-phase/command-time/closure/scalar门禁均PASS；CPU重评logprob最大差4.768e-7、value2.682e-7。修正后的审计不改任务success=false，也不证明新native运行。
+
+选定原件`report/assets/20261016_mr3_p2a/native_v1/minimal/`：26原文件，raw19577083bytes/selected12590315bytes，逐文件SHA/encoding/源路径见manifest.json。压缩只是原件选择，不改变字节解码内容；包括全部3checkpoint/rollout/native/失败回执及修正audit。新v2计划前瞻使用任务契约既有训练seed41，重新冻结后重跑最小链/pilot/开发验证；v1seed17保留为工程探针，不混入v2矩阵，不用于正式算法比较。
+
+P2A v2冻结前补充：新增3项纯offline源绑定回归，当前76项CPU unittest全部exit0（8.482秒），变更文件flake8与diff-check通过；13文档/124本地链接/19shell块语法通过。记录implementation_checks_v2.json。v2学习默认seed调整为任务契约既有41（命令仍显式记录），新最小链/pilot/开发验证均先声明于predeclared_plan_v2.json，未复用v1原生信用。ARCHIVE_INDEX记录v1→v2计划取代及原件位置。

@@ -169,16 +169,16 @@ python -m pip install -r mr3_learning/requirements-ppo.txt
 
 ```bash
 python -m mr3_learning.ppo --mode train --workers 1 --schedule open:101 \
-  --decisions 8 --episode-steps 8 --wall-seconds 600 --seed 17 \
+  --decisions 8 --episode-steps 8 --wall-seconds 600 --seed 41 \
   --base-domain 160 --base-port 12301 --run-id UNIQUE_P2A_MINIMAL
 
 python -m mr3_learning.ppo --mode train --workers 4 --schedule open:101 \
-  --decisions 4096 --episode-steps 300 --wall-seconds 14400 --seed 17 \
+  --decisions 4096 --episode-steps 300 --wall-seconds 14400 --seed 41 \
   --base-domain 164 --base-port 12311 --run-id UNIQUE_P2A_PILOT
 
 python -m mr3_learning.ppo --mode evaluate --workers 4 \
   --checkpoint /ABS/PILOT/final.zip --schedule open:401,open:402,open:403 \
-  --decisions 900 --episode-steps 300 --wall-seconds 9000 --seed 17 \
+  --decisions 900 --episode-steps 300 --wall-seconds 9000 --seed 41 \
   --base-domain 172 --base-port 12321 --run-id UNIQUE_P2A_VALIDATION
 ```
 
