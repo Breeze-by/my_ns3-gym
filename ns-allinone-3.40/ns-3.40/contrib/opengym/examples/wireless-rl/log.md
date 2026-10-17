@@ -6033,3 +6033,17 @@ selected35原件202118B→35gzip45776B/max20102B，全部encoded/decoded/wholeSH
 pack exactargv/minenv/CPU/wall在原execution；exit0/1.96155toolwall（custody内部1.8223651428706944wall）。原v1 helper仅许/tmp直接子文件，实际nested preflight3件使v2只扩单个regular file路径至/tmp树内，仍拒symlink/目录，6codec逐byte不改；旧准备/5选择测试与新增nested选择校验、fatalstyle原件全保留，无native/formal重跑。
 V22 source准入PASS仅来源/二进制，不覆盖实际CLI可达错误；P2A.0仍未完成。保留这次.24578428314998746入口wall，并从后续同一18000工程总上限扣除；0真实native/0采样不能写成零成本。不得同冻结重试；下一版本只修显式conda benchmark/full_audit、失败returncode结构和真实CLI帮助预检，原corrector/world/task/auditor/ENV/191来源及全部数学保持，不重建SO或重复170ROS/40窄CPU/SDK。
 V18–21诊断预算2938.48922518407930/3600与pilot余额1870决策/2905.954739546403wall均未动，无GPU/optimizer/PPO/P2B/gateway。
+
+
+### 2026-10-18 — V23入口修复与原完整矩阵准备（未启动新原生）
+
+源基cdda62325c6322cf5322162c616bd9b699354665，V22闭合证据bf4b5f1095ff0cee4e701e2ffdc35d128f310ba8已推送；不在失败同freeze重试。
+只新建A23=report/assets/20261018_mr3_p2a0_v23_entry六协调器+1窄test+plan；旧191逐path/currentSHA完全保持，新198绑定。C++/actual7be SO/ODE/quick150 world/task/auditor de297/test43/ENVcace全部保持，无重建或旧170ROS/40CPU/SDK重跑。
+benchmark与full_audit固定/home/zhuyulab/miniconda3/envs/ns3gym/bin/python；parent和stdlib/ROS consumers原system解释器不改。preflight outer必须同Conda，并在current共享load_native_gates之前核解释器，新增三read-only有界实际imports/benchmark --help/full_audit --help，不构造Env/ROS/DDS或调用GPU。
+准备期真实probe使用原preflight5b064c源码中的helper直接调用（不是完整准入）：imports argv [/home/zhuyulab/miniconda3/envs/ns3gym/bin/python,-B,-c,import json,sys,gymnasium,torch; print(json.dumps版本/路径)]；另两个精确argv分别为同解释器 -B -m mr3_learning.benchmark --help、-B -m mr3_learning.audit_preparation --help，cwd wireless-rl、unset PYTHONPATH/PYTHONNOUSERSITE=1/PYTHONDONTWRITEBYTECODE=1/CUDA_VISIBLE_DEVICES为空。完整-c原文字和调用脚本在offline/candidate原件，不以本摘要替代。三actual exit0，4.829209363088012/.43371849972754717/5.053422350436449wall，总10.318188397213817；实际gymnasium1.3.0/torch2.11.0+cu128文件均来自固定Conda，未初始化GPU/创建环境。final9a9129 preflight仅输出名改为preflight_learner_entry防覆盖，wholebyte逆证、旧source/probe原bytes保留；实际新freeze仍须完整前检再做这些功能检查。
+failure receipt现始终保留实际已wait的returncode，未spawn为None，不以缺summary覆盖初始非零；V22入口.24578428314998746从原18000总额扣，opening17999.75421571685，不新授pilot或放宽总额。
+新6窄CPU：rtk proxy /usr/bin/python3 -B /tmp/mr3_p2a0_v23_entry_proposal_v1/independent/test_entry_interpreters_v1.py，exit0/.5157287023030221wall，actualmain subprocess明确mock，code None/1/0与原A22 corrector862e/binding95ec真实读取loader覆盖，不冒native。system已有flake8 fatalstyle/static198 PASS；早误用Conda flake8缺包、静态验证器误扫test中的断言字面量原失败保留，只纠命令/验证器，不安装依赖。CLI原3probe不在收口重复。
+六协调器旧34mandatory(10/7/10/7)、8reset pooled perrobot A OR B+任何eligible违规独立FAIL、608API/596decisions/12EP及stage1800/1800/6400/8000保持。源plan28b190af13c408f5ed0da243ccf4b3d25e4460a8f14b60d9af295cf5015cae07 ready仅源码就绪、native_admission_false；新domains188/190/192+193/196、ports13601/13611/13621+22/13631、v23新runids。
+独立源审 ef795d79…/215稳定输入PASS，确核新interpreters真实路径、outer guard/三旧probe原件、A22物理模块/库原path、预算/failedcode与namespace，不重复6CPU/3probe/SDK/math/native；actual argv rtk proxy /usr/bin/python3 -B /tmp/mr3_p2a0_v23_entry_independent_review_v1/review_v1.py，exit0/.431087wall。3小原件全量copy A23/offline/independent_review。
+作者40原件285813B+manifest+helper=42件304546B→72777B tar6cb30422…，custody422591a4…/12305B，所有member decode/SHA与末源stat/SHA稳定，pack.05915wall；唯一保管A23/offline/candidate。root精确提升8项，198实际SHA/191旧源全不变/7Python AST、34门和预算实扣核对PASS，原件offline/root_source_static。
+尚无V23实际新freeze准入或native、GPU/optimizer/PPO/P2B/gateway。V22cost已保留，V18–21诊断2938.48922518407930/3600与pilot1870/2905.954739546403不动；须新clean pushed exact40实际准入后一次完整四阶段，所有native/requiredreaders/monitor自然关闭后才改源码/Git。

@@ -1,6 +1,6 @@
 # wireless-rl memory — MR3
 
-V22实际冻结cdda6232来源预检PASS110runtime/191independent；四阶段矩阵首benchmark因system Python缺gymnasium退出，完整审计同缺torch，0机器人/0API，后三SKIP且父/watch自然关闭。入口.245784wall保留；修显式conda与失败回执后新冻结完整重验。corrector7be/quick150只有CPU证据，P2A.0未完成、无PPO，见[V22](report/20261018_mr3_p2a0_v22_ray_box.md)。
+V23只修V22解释器入口：benchmark/完整审计固定conda，系统parent/ROS保持；失败回执补实际returncode、前检新增实际imports/help。198绑定保留旧191全部SHA，原34门及608/596/18000不变且扣V22入口.245784wall。6窄CPU/3真实CLI与独立源审通过，待新clean pushed实际准入和完整四阶段；P2A.0未完成、无PPO。见[V23](report/20261018_mr3_p2a0_v23_entry.md)。
 
 2026-10-18: V19 freeze72d0465ddd1bbee09af117cfd9d89b7e729f8578 fixed50/150 diagnostic pair closed. Both admission/1ms capture/strict close PASS; baseline original physical PASS, contrast original physical FAIL because all33 snapshots have zero GOAL for every robot and no stopping stimulation. Own maps already retain near-seed100; no occupied clearing or .29 relaxation. 150 not selected, V17 stopping failure unresolved. Native1638.4207719592378sec; V18+V19=2489.3860735194758 of3600 ceiling. 78/78 native exits0; fresh91 PID/start identities gone. No matrix/PPO credit, pilot balance unchanged. See [V19](report/20261018_mr3_p2a0_v19.md).
 

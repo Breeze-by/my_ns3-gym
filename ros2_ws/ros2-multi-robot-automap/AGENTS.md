@@ -1,6 +1,6 @@
 # ROS component memory — MR3
 
-2026-10-18: V22 cdda6232 actual source preflight passed110runtime/191independent, but system Python inherited by benchmark/full audit lacks gymnasium/torch. Zero robot environments/API; interface entry FAIL and later3 SKIP, parent/watcher naturally closed. Entry .245784wall retained; fix explicit conda/failed receipts before a new frozen full matrix. Corrector7be/quick150 remain CPU-only candidates; P2A.0 incomplete, no PPO. See wireless-rl/report/20261018_mr3_p2a0_v22_ray_box.md.
+2026-10-18: V23 fixes V22 entry interpreter inheritance only: benchmark/full audit explicitly use ns3gym, system parent/ROS retained. Real returncode, import/help preflight and .245784 prior entry cost within18000 are bound. All old191 source SHAs retained plus7; original34 gates/608API/596decisions unchanged. Narrow6CPU/3 actual CLI probes and source review pass; clean pushed actual admission/full4stage remain pending. P2A.0 incomplete, no PPO. See wireless-rl/report/20261018_mr3_p2a0_v23_entry.md.
 
 2026-10-18: V20_sensor b33ff700 ordinary4 source capture and strict close completed; 39 native exits0 and47 identities gone. Legitimate near scan returns persist and map to own100; actual hit geometry remains unknown. Same-name ROS synchronous throttling and Karto stationary-refresh parameters have different semantics, so missing forwarding alone is not a proven bug. Production SLAM/physics/gates unchanged,150 not selected,P2A.0 incomplete. See shared report/20261018_mr3_p2a0_v20_sensor.md.
 

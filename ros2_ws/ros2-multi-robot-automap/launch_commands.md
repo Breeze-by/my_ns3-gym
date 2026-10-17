@@ -1,6 +1,6 @@
 # 当前三机器人基线与MR3适配启动命令
 
-V22实际冻结cdda6232来源预检PASS110runtime/191independent；四阶段矩阵首benchmark因system Python缺gymnasium退出，完整审计同缺torch，0机器人/0API，后三SKIP且父/watch自然关闭。入口.245784wall保留；修显式conda与失败回执后新冻结完整重验。corrector7be/quick150只有CPU证据，P2A.0未完成、无PPO，见[V22](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_v22_ray_box.md)。
+V23只修V22解释器入口：benchmark/完整审计固定conda，系统parent/ROS保持；失败回执补实际returncode、前检新增实际imports/help。198绑定保留旧191全部SHA，原34门及608/596/18000不变且扣V22入口.245784wall。6窄CPU/3真实CLI与独立源审通过，待新clean pushed实际准入和完整四阶段；P2A.0未完成、无PPO。见[V23](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_v23_entry.md)。
 
 V19固定50/150隔离诊断已关闭：两组加载、逐毫秒采集和严格关闭通过；150组三机全程没有合法GOAL或停车刺激，原物理FAIL，150尚未采用，P2A.0仍未完成。详见[V19](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_v19.md)。原启动命令、物理门和pilot余额不变。
 

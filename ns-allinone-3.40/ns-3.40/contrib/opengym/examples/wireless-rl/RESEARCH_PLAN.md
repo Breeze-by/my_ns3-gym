@@ -17,7 +17,7 @@ V19冻结72d0465d的固定50/150诊断已关闭，两组加载/逐毫秒采集/�
 150组三机全程无合法GOAL和有效停车刺激，原物理FAIL。150未选用，V17真实停车问题仍未解决。
 本版原生1638.4207719592378墙秒，V18+V19合计2489.3860735194758；无训练或四阶段矩阵信用，见[V19](report/20261018_mr3_p2a0_v19.md)。
 
-V22实际冻结cdda6232来源预检PASS110runtime/191independent；四阶段矩阵首benchmark因system Python缺gymnasium退出，完整审计同缺torch，0机器人/0API，后三SKIP且父/watch自然关闭。入口.245784wall保留；修显式conda与失败回执后新冻结完整重验。corrector7be/quick150只有CPU证据，P2A.0未完成、无PPO，见[V22](report/20261018_mr3_p2a0_v22_ray_box.md)。
+V23只修V22解释器入口：benchmark/完整审计固定conda，系统parent/ROS保持；失败回执补实际returncode、前检新增实际imports/help。198绑定保留旧191全部SHA，原34门及608/596/18000不变且扣V22入口.245784wall。6窄CPU/3真实CLI与独立源审通过，待新clean pushed实际准入和完整四阶段；P2A.0未完成、无PPO。见[V23](report/20261018_mr3_p2a0_v23_entry.md)。
 
 ## 1. 研究问题与范围
 
