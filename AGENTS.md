@@ -2,6 +2,8 @@
 
 # Codex Monorepo Memory — MR3
 
+2026-10-18: V20_sensor freeze b33ff700 closed ordinary4 source capture/strict native shutdown; 39 exits0 and47 saved PID/start identities gone. Legal near raw scan returns persist and map to own100, actual hit geometry still unknown; ROS synchronous throttling and SDK stationary-refresh semantics differ, so the early missing-setter bug inference is withdrawn. No production SLAM change/150 selection/matrix or PPO credit; P2A.0 remains incomplete. See wireless-rl/report/20261018_mr3_p2a0_v20_sensor.md.
+
 2026-10-18: V20_sensor准备一次三机open101普通4step/至多5API启动期rawscan/TF/SLAM参数归因采集，新增独立只读测量器；原生产源码、门禁与pilot余额不变。SDK/CPU/合成ROS回环和独立审查通过后，仍须新clean pushed exact40预检，单次native≤900wall、原e61c32步CLI明确SKIP；150未选用、P2A.0未完成。见wireless-rl/report/20261018_mr3_p2a0_v20_sensor.md。
 
 2026-10-18: V19 freeze72d0465ddd1bbee09af117cfd9d89b7e729f8578 fixed50/150 diagnostic pair closed. Both admission/1ms capture/strict close PASS; baseline original physical PASS, contrast original physical FAIL because all33 snapshots have zero GOAL for every robot and no stopping stimulation. Own maps already retain near-seed100; no occupied clearing or .29 relaxation. 150 not selected, V17 stopping failure unresolved. Native1638.4207719592378sec; V18+V19=2489.3860735194758 of3600 ceiling. 78/78 native exits0; fresh91 PID/start identities gone. No matrix/PPO credit, pilot balance unchanged. See wireless-rl/report/20261018_mr3_p2a0_v19.md.

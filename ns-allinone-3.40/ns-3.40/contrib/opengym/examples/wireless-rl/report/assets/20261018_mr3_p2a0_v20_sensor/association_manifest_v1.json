@@ -1,0 +1,133 @@
+{
+  "schema": "mr3-v20-sensor-two-root-custody-association-v1",
+  "passed": true,
+  "pass_scope": "Lossless byte custody only; original capture/task/physical verdicts retained.",
+  "freeze": "b33ff70084be6419edc3d0d91a26d6db3936ff45",
+  "plan_sha256": "743765ecaf14d86a27685f0fc3b9c8ca5475c063999ec6f9ddbcafb0fe94be39",
+  "original_execution": {
+    "path": "/tmp/mr3_p2a0_v20_sensor_execution_v1.json",
+    "sha256": "ca74471e2463d6fc1b9504a8458dfe4ad2c26ba0d24e49468b4ca576f17d52ff"
+  },
+  "original_metadata": {
+    "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v20_sensor_iters150/worker0/episode001_open_101/metadata.json",
+    "sha256": "9f5e6d5fad704fe2b326935f9eb90d9836d50ee9bbbc4a1b06cddbd86f80108f"
+  },
+  "original_actual_workload": {
+    "requested_steps": 4,
+    "actual_returned_resets": 1,
+    "actual_returned_steps": 4,
+    "actual_saved_api_records": 5,
+    "original_benchmark_passed": true,
+    "original_benchmark_returncode": 0,
+    "actual_protocol_ended": true,
+    "last_terminated": false,
+    "last_truncated": true,
+    "last_reason": "external_sampler_limit",
+    "protocol": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v20_sensor_iters150/worker0/episode001_open_101/transitions.jsonl",
+      "sha256": "f3ea5e877efa7349a56e489bace0e994224a21d67b4dbe2ebc61a57890f004f2"
+    },
+    "scope": "Actual typed RPC outcome retained; early real task end is not relabeled benchmark/task success."
+  },
+  "original_capture_process_completed": true,
+  "original_physical_passed": false,
+  "original_strict_native_closure_passed": true,
+  "original_e61c": {
+    "status": "SKIP",
+    "reason": "Immutable e61c requires32 returned steps; this explicit4step collection makes no e61c or32step matrix claim.",
+    "immutable_source_path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v18/independent/mr3_independent_stop_observer_v1.py",
+    "immutable_source_sha256": "e61ce4e00907ab35e196f7abe9fadfd9da099af3542f98dc773d593c33ca2b65"
+  },
+  "native_wall_seconds_original_charged_once": 229.27487259870395,
+  "groups": [
+    {
+      "source_kind": "native",
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "/tmp/mr3_p2a0_v20_sensor_pack_closed_v1.py",
+        "--source",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v20_sensor_iters150",
+        "--target",
+        "/tmp/mr3_p2a0_v20_sensor_selected_native_v1/native/iters150",
+        "--source-kind",
+        "native",
+        "--prospective-prefix",
+        "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v20_sensor/native/iters150",
+        "--execution",
+        "/tmp/mr3_p2a0_v20_sensor_execution_v1.json"
+      ],
+      "cwd": "/home/zhuyulab/ns3-workspace",
+      "environment_exact": {
+        "PATH": "/usr/bin:/bin",
+        "PYTHONNOUSERSITE": "1",
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "LANG": "C.UTF-8",
+        "LC_ALL": "C.UTF-8",
+        "TZ": "UTC"
+      },
+      "exit_code": 0,
+      "wall_seconds": 38.32868050923571,
+      "stdout": "/tmp/mr3_p2a0_v20_sensor_custody_native_execution_v1.stdout.log",
+      "stdout_sha256": "c134bf9568b9b4201f741a04d9bf134a942622caae0ac2855afd257e2ded5e10",
+      "manifest": {
+        "path": "/tmp/mr3_p2a0_v20_sensor_selected_native_v1/native/iters150/manifest.json",
+        "sha256": "2fefc1642ce8accca7c96ff785713228d263bb532bc0fc9ee8a6b286d85873f9",
+        "bytes": 286165
+      }
+    },
+    {
+      "source_kind": "sensor_capture",
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "/tmp/mr3_p2a0_v20_sensor_pack_closed_v1.py",
+        "--source",
+        "/tmp/mr3_p2a0_v20_sensor_capture_v1",
+        "--target",
+        "/tmp/mr3_p2a0_v20_sensor_selected_native_v1/sensor_capture",
+        "--source-kind",
+        "sensor_capture",
+        "--prospective-prefix",
+        "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v20_sensor/sensor_capture",
+        "--execution",
+        "/tmp/mr3_p2a0_v20_sensor_execution_v1.json"
+      ],
+      "cwd": "/home/zhuyulab/ns3-workspace",
+      "environment_exact": {
+        "PATH": "/usr/bin:/bin",
+        "PYTHONNOUSERSITE": "1",
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "LANG": "C.UTF-8",
+        "LC_ALL": "C.UTF-8",
+        "TZ": "UTC"
+      },
+      "exit_code": 0,
+      "wall_seconds": 2.2578164348378778,
+      "stdout": "/tmp/mr3_p2a0_v20_sensor_custody_sensor_capture_execution_v1.stdout.log",
+      "stdout_sha256": "7f3a1ce378a29e067c1b69714574fdce4382fd55cf8f255efb2b56e703093f3e",
+      "manifest": {
+        "path": "/tmp/mr3_p2a0_v20_sensor_selected_native_v1/sensor_capture/manifest.json",
+        "sha256": "3a5c37dd2531fca981b3982f96b37730fd09855cecc0d4a768c441dbd89b4650",
+        "bytes": 13387
+      }
+    }
+  ],
+  "groups_share_exact_closed_execution": true,
+  "source_files": 150,
+  "raw_bytes": 1249074082,
+  "selected_bytes": 93919310,
+  "selected_parts": 184,
+  "largest_encoded_part_bytes": 2659291,
+  "helper_sha256_before": "e27f337ec815fe3115b7761ffe4c6fba48c471545dadcd2660f762909b026e57",
+  "helper_sha256_after": "e27f337ec815fe3115b7761ffe4c6fba48c471545dadcd2660f762909b026e57",
+  "all_helper_execution_metadata_sources_stable": true,
+  "raw_chunk_bytes": 33554432,
+  "compression_workers_per_group": 2,
+  "start_utc": "2026-10-17T21:46:53.260462+00:00",
+  "end_utc": "2026-10-17T21:47:33.855990+00:00",
+  "wall_seconds": 40.595564615912735,
+  "child_user_cpu_seconds": 60.948812,
+  "child_system_cpu_seconds": 1.380159,
+  "no_new_native_formal_or_canonical_write": true
+}

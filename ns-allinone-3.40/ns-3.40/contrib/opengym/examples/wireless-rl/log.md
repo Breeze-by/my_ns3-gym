@@ -5904,3 +5904,32 @@ V20准备root静态PASS：160实际源摘要（旧155全保持）、3Python AST�
 Root只替换canonical parent相同验证bytes和160bindings中的1项hash；额外新回归仅offline证据，不增加native消费者。CPP4707/实际ELFefd8/原103runtime/预算和原门均未变。
 新26原件321278B固定tar逐member+final SHA核验；初root辅助保管误读manifest files而实际entries、后误取不存在的optional review.py均在archive说明保留，仅保管辅助失败，source/数据与结果不变。
 唯一V20 native尚未开始，修复完成新clean pushed exact40准入后再首次启动；原生charge仍0，V18+V19仍2489.3860735194758，pilot余额不变。
+
+
+### 2026-10-18 — V20_sensor实际来源采集及严格关闭；近身返回持续，撤回参数漏接推断
+
+实际新clean pushed冻结b33ff70084be6419edc3d0d91a26d6db3936ff45；cwd wireless-rl：
+`rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B report/assets/20261018_mr3_p2a0_v20_sensor/independent/mr3_p2a0_v20_sensor_preflight_v1.py`实际exit0，103runtime/160independent/实际三库/recorderELF/域170端口13451通过。
+唯一原生入口：`rtk proxy bash -c 'env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 -B report/assets/20261018_mr3_p2a0_v20_sensor/independent/mr3_p2a0_v20_sensor_run_v1.py b33ff70084be6419edc3d0d91a26d6db3936ff45 > /tmp/mr3_p2a0_v20_sensor_parent_v2.log 2>&1'`。
+实际children完整argv/env和顺序见A20/closed_core_v1内execution/lifecycle。三机open101/单worker/普通4step、1reset5API，prep flags均false，外部sampler_limit正常truncation。
+native229.27487259870395wall；benchmark/recorder/parent均0，自然结束后独占stop marker，未发临时signal、未retry。39native clean exits；独立fresh47 PID/start全gone。
+原profile首1ms读取50→150/setter1与其它字段不变通过，仅复用e61c两小函数；原32step CLI明确SKIP。
+原2516 physicalFalse：三机合格A/B均0，报告boundcounts0/errors[]；tb1/2 cancel=no_active_prior_linear_output，tb3无cancel。此为缺刺激FAIL，不是停车或150修复证据。
+strictcloseTrue；tb1/tb2 bt_navigator各一条真实halt ERROR原bytes完整保留，不由正常关闭否定。原95%/300s/参与/接触/净空/速度/停车全部门不改。
+
+独立recorder39359sample/12333788B CDR，三机scan141/134/130、processed pose8/2/1、map44/43/42；真实15typedSLAM参数各complete。
+系统ROS仅离线deserialize，无rclpy init/DDS：原CDR全部offset连续与sliceSHA、whole文件末SHA/stat一致；11public processed pose均有唯一同stamp scan。
+TB3首接纳2.560s14个合法finite near beam(.1328185–.1760021m>实际min)，按actualTF/correctedbase pose重建13个落首map两个100格，42map dataSHA相同。
+后续128raw中126仍有near端点，实际odom TF+最后公开校正的诊断投影122条仍命中原两格；latest28.16s18near中13命中。self/floor/几何仍未知，不清格/过滤合法beam/降.29。
+实际离线命令/源绑定/初v1失败/成本receipt都在52原件tar；成功分析总16.2648965898wall，首次失败wall未知，不按0计。
+
+重要解释纠正：ROS minimum_time_interval=.5仅文档同步模式最小节流；SDK MinimumTimeInterval默认3600是时间OR距离OR转角的stationary刷新，当前multirobot不调用同步shouldProcessScan。
+同名但语义不同，缺setter本身不是已证漏接bug。撤回本轮早期“接线缺陷/把.5直连”推断，旧分析原bytes封存且未改生产SLAM参数；后续near真实持续也不支持仅刷新能清100。
+
+无损custody helper实际40.595564616wall/userCPU60.948812/sys1.380159；150原文件1249074082B→184gzip93919310B，最大2659291B；全部encoded/decoded/whole重组SHA与sourcefinal stat一致。
+canonical189文件含metadata94227915B逐字copy1.408776527wall；首copy辅助误把184parts+5metadata写187，复制前断言失败，v2只修189/184精确inventory，失败source/receipt保留。
+A20/closed_core_v1 52原件12850181B→1437361B tar SHA286d072be2550649ea818b92afc85fc93b27f047e9e4658560f9e5bb745c82e2，fullmember往返+源末SHA/stat通过。
+累计V18+V19+V20=2718.66094611817975nativewall/原3600余额881.33905388182025，不重复计采集与custody。pilot1870决策/2905.954739546403wall不动。
+P2A.0未完成，150未选用，V17真实停车FAIL未解决；需actualray缓存命中名/几何来源后修复，新冻结原完整四阶段验证，禁止拼接旧PASS。无GPU/optimizer/PPO/P2B/gateway。
+
+V20补充源码复核A20/closed_source_reviews_v1：30封装原件448210B→166813B，archive SHAabf48f698264f01b64b177eb56a262fc8b091cefd68110ca31634ec9badf445f，完整往返与末源SHA/stat通过；内含独立语义复核及30份SDK试验原件的原tar。ray minRange/offset未见重复遗漏，静态sensor高于base/轮，动态实际命中仍未知。隔离SDK测试入口 /tmp/mr3_p2a0_v21_minimum_interval_sdk_run_v4.py（实际argv/env/CPU/wall在嵌套原receipt），前三compile分别缺ROS includes/vendor Werror/TBB link，最终compile0但首例清理返回stack-smashing SIGABRT/-6；仅一次filtered gdb仍无法区分fixture/ABI/SDK，其余4例未跑，明确SDK regression FAIL/无PASS信用。未rclpy init/DDS/Gazebo或生产变更，不计入native/pilot。该测试不作为V20近身回波根因。
