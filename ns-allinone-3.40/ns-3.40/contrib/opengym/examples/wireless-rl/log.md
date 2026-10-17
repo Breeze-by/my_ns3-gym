@@ -5727,3 +5727,8 @@ system flake8(max99)和syntax均0；源前后相同，consumer SHA e61ce4e00907a
 tar.gz1239767字节，1.1902677239850163墙秒，全部原件末次SHA和解码验证PASS；包括全部早期FAIL、错误审查及修正原件。
 可变root continuation state明确排除。152项独立source bindings仅刷新实际变更audit_ppo摘要并新增5个A18消费者/协调器，
 plan现ready表示来源/CPU/构建已收口；只有实际clean pushed HEAD预检通过才可启动native，原生成本仍0。
+
+V18准备提交修正：初次暂存diff-check发现两份readelf原始stdout行尾空格，root调用未正确阻断后续commit，
+意外形成`cf248cb`（尚未native）。不修改原stdout字节、不重写历史：在后续提交把两文件改为确定性gzip，
+`build/readelf_original_encoding_v1.json`记录编码前后SHA，offline原件及原commit均保留；重新diff-check/dry-run/精确暂存后提交推送。
+无代码/模型/物理参数/消费者变化，无重build或原生重跑。
