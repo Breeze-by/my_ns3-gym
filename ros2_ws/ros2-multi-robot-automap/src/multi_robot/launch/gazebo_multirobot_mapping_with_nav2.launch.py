@@ -7,6 +7,7 @@ import signal
 import tempfile
 import time
 from xml.sax.saxutils import escape
+import xml.etree.ElementTree as ET
 
 from ament_index_python.packages import get_package_prefix, get_package_share_directory
 
@@ -82,7 +83,7 @@ def prepare_physics_diagnostic(config_path, *, adapter_mode, stepped_mode,
     expected = {"schema", "run_directory", "episode_relative_directory", "scene", "seed",
                 "mode", "capture_start_ns", "capture_end_ns", "observer_library",
                 "profile_library"}
-    if (type(config) is not dict or set(config) != expected or
+    if (type(config) is not dict or set(config) not in (expected, expected | {"ray_provenance"}) or
             config["schema"] != "mr3-physics-diagnostic-config-v1"):
         raise ValueError("unknown physics diagnostic config schema/fields")
     if config["mode"] not in ("baseline", "iters150"):
@@ -128,6 +129,34 @@ def prepare_physics_diagnostic(config_path, *, adapter_mode, stepped_mode,
             raise ValueError("physics diagnostic library SHA mismatch")
         libraries[key] = {**spec, "resolved_path": str(resolved)}
 
+    ray = None
+    if "ray_provenance" in config:
+        spec = config["ray_provenance"]
+        required = {"enabled", "library", "library_sha256", "source_sha256",
+                    "start_ns", "end_ns", "sensor_link", "sensor_name"}
+        if (type(spec) is not dict or set(spec) != required or
+                spec["enabled"] is not True or spec["sensor_link"] != "base_scan" or
+                spec["sensor_name"] != "hls_lfcd_lds"):
+            raise ValueError("ray provenance fields/sensor/enabled mismatch")
+        if (type(spec["start_ns"]) is not int or spec["start_ns"] != 0 or
+                type(spec["end_ns"]) is not int or spec["end_ns"] != 300000000000):
+            raise ValueError("ray provenance requires fixed diagnostic window")
+        selected = Path(package_prefix) / "lib" / "libmr3_ray_provenance_observer.so"
+        if type(spec["library"]) is not str or spec["library"] != str(selected):
+            raise ValueError("ray provenance requires fixed canonical library")
+        for field in ("library_sha256", "source_sha256"):
+            digest = spec[field]
+            if (type(digest) is not str or len(digest) != 64 or
+                    any(ch not in "0123456789abcdef" for ch in digest)):
+                raise ValueError("ray provenance digest must be lowercase SHA256")
+        resolved = selected.resolve(strict=True)
+        _, digest = diagnostic_read(resolved)
+        if digest != spec["library_sha256"]:
+            raise ValueError("ray provenance library SHA mismatch")
+        ray = {**spec, "resolved_path": str(resolved),
+               "outputs": {name: str(episode / f"ray_{name}.jsonl")
+                           for name in ("tb1", "tb2", "tb3")}}
+
     world_path = Path(world).resolve(strict=True)
     _, world_sha = diagnostic_read(world_path)
     binding = {
@@ -141,6 +170,8 @@ def prepare_physics_diagnostic(config_path, *, adapter_mode, stepped_mode,
         "profile_output_path": str(episode / "physics_profile.jsonl"),
         "observer_outputs": {name: str(episode / f"physics_{name}.jsonl")
                              for name in ("tb1", "tb2", "tb3")}}
+    if ray is not None:
+        binding["ray_provenance"] = ray
     binding_path = episode / "physics_diagnostic_binding.json"
     binding_raw = (json.dumps(binding, sort_keys=True, allow_nan=False) + "\n").encode()
     with binding_path.open("xb") as stream:
@@ -171,6 +202,39 @@ def append_physics_observer(model, robot_name, diagnostic):
     return rendered
 
 
+def append_ray_provenance(model, robot_name, diagnostic):
+    binding = diagnostic["binding"]
+    if "ray_provenance" not in binding:
+        return model
+    if robot_name not in ("tb1", "tb2", "tb3") or model.count("</model>") != 1:
+        raise ValueError("ray provenance requires one model and active robot")
+    ray = binding["ray_provenance"]
+    name = f"mr3_ray_provenance_observer_{robot_name}"
+    if name in model:
+        raise ValueError("ray provenance observer already present")
+    fields = {"output_path": ray["outputs"][robot_name], "epoch": binding["epoch"],
+              "robot": robot_name, "sensor_link": ray["sensor_link"],
+              "sensor_name": ray["sensor_name"], "start_ns": str(ray["start_ns"]),
+              "end_ns": str(ray["end_ns"])}
+    filename = escape(ray["library"], {"\"": "&quot;"})
+    tree = ET.fromstring(model).find("model")
+    links = tree.findall("link[@name='base_scan']")
+    sensors = links[0].findall("sensor[@name='hls_lfcd_lds']") if len(links) == 1 else []
+    if len(sensors) != 1 or sensors[0].attrib != {"name": "hls_lfcd_lds", "type": "ray"}:
+        raise ValueError("ray provenance requires unique canonical ray sensor")
+    block = (f'        <plugin name="{name}" filename="{filename}">\n' +
+             "".join(f"          <{key}>{escape(value)}</{key}>\n" for key, value in fields.items()) +
+             "        </plugin>\n")
+    link_start = model.index('<link name="base_scan">')
+    link_end = model.index("</link>", link_start)
+    sensor_start = model.index('<sensor name="hls_lfcd_lds" type="ray">', link_start, link_end)
+    sensor_end = model.index("      </sensor>", sensor_start, link_end)
+    rendered = model[:sensor_end] + block + model[sensor_end:]
+    if rendered.replace(block, "", 1) != model:
+        raise ValueError("ray provenance changed original model bytes")
+    return rendered
+
+
 def drive_spawn_model(model_path, robot_name, audit_path, epoch, tagged_commands=False,
                       *, physics_diagnostic=None):
     """Select target protocol/audit tags without changing physical model bytes."""
@@ -191,6 +255,7 @@ def drive_spawn_model(model_path, robot_name, audit_path, epoch, tagged_commands
         model = model.replace(placeholder, f"<{tag}>{escape(value)}</{tag}>")
     if physics_diagnostic is not None:
         model = append_physics_observer(model, robot_name, physics_diagnostic)
+        model = append_ray_provenance(model, robot_name, physics_diagnostic)
     if audit_path:
         destination = os.path.join(os.path.dirname(audit_path), f"drive_model_{robot_name}.sdf")
         with open(destination, "x", encoding="utf-8") as stream:

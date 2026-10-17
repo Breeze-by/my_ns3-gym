@@ -137,4 +137,17 @@ target_compile_definitions(mr3_physics_diagnostic_profile PRIVATE
   MR3_PHYSICS_DIAGNOSTIC_SOURCE_SHA256="${mr3_profile_source_sha}")
 install(TARGETS mr3_physics_diagnostic_profile DESTINATION lib)
 
+# Opt-in ray provenance SensorPlugin; original targets/sources/flags unchanged.
+set(mr3_ray_provenance_source ${CMAKE_CURRENT_SOURCE_DIR}/src/mr3_ray_provenance_observer.cpp)
+set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${mr3_ray_provenance_source})
+file(SHA256 ${mr3_ray_provenance_source} mr3_ray_provenance_source_sha)
+add_library(mr3_ray_provenance_observer SHARED src/mr3_ray_provenance_observer.cpp)
+target_compile_features(mr3_ray_provenance_observer PRIVATE cxx_std_17)
+target_include_directories(mr3_ray_provenance_observer PRIVATE ${GAZEBO_INCLUDE_DIRS})
+target_link_libraries(mr3_ray_provenance_observer ${GAZEBO_LIBRARIES}
+  nlohmann_json::nlohmann_json ${CMAKE_DL_LIBS})
+target_compile_definitions(mr3_ray_provenance_observer PRIVATE
+  MR3_RAY_PROVENANCE_SOURCE_SHA256="${mr3_ray_provenance_source_sha}")
+install(TARGETS mr3_ray_provenance_observer DESTINATION lib)
+
 ament_package()

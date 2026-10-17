@@ -5933,3 +5933,37 @@ A20/closed_core_v1 52原件12850181B→1437361B tar SHA286d072be2550649ea818b92a
 P2A.0未完成，150未选用，V17真实停车FAIL未解决；需actualray缓存命中名/几何来源后修复，新冻结原完整四阶段验证，禁止拼接旧PASS。无GPU/optimizer/PPO/P2B/gateway。
 
 V20补充源码复核A20/closed_source_reviews_v1：30封装原件448210B→166813B，archive SHAabf48f698264f01b64b177eb56a262fc8b091cefd68110ca31634ec9badf445f，完整往返与末源SHA/stat通过；内含独立语义复核及30份SDK试验原件的原tar。ray minRange/offset未见重复遗漏，静态sensor高于base/轮，动态实际命中仍未知。隔离SDK测试入口 /tmp/mr3_p2a0_v21_minimum_interval_sdk_run_v4.py（实际argv/env/CPU/wall在嵌套原receipt），前三compile分别缺ROS includes/vendor Werror/TBB link，最终compile0但首例清理返回stack-smashing SIGABRT/-6；仅一次filtered gdb仍无法区分fixture/ABI/SDK，其余4例未跑，明确SDK regression FAIL/无PASS信用。未rclpy init/DDS/Gazebo或生产变更，不计入native/pilot。该测试不作为V20近身回波根因。
+
+
+### 2026-10-18 — V21 actual-ray SensorPlugin与新冻结入口准备（未启动原生）
+
+source_base为已推送4f8bd0e509e6f958c5993a50008955afac72c345；只在本次显式diagnostic配置向唯一base_scan/hls_lfcd_lds插入独立SensorPlugin，原ray几何/量程/noise/驱动/SLAM/候选/安全门保持。
+原V20合法近身beam持续、命中几何未知；不清占据、不滤合法beam、不把同步最小节流强接stationary刷新、不采用150生产配置、不启动PPO。
+TMP旧ModelPlugin SDK build01因SDK指针/回调/int64接口不符FAIL、窄修build02通过，原source/stdout/stderr保留。源审发现运行中ConnectUpdated注册的线程窗口，改直接SensorPlugin::Load，旧方案未native。
+最终CPP65b1c1db64861366811266580daf8cf43bcf565fc856a405f473b02bdefd082c，SDK构建+13纯assert groups+真实factory SENSOR_PLUGIN+ldd-r均PASS，54.815639715wall；未Load/init/ROS/Gazebo。
+精确CMake/configure/build/CPU/factory/ldd argv/env/成本见A21/offline/sdk原件，57files482326B→70728B tar248bed8f0d6698b7548ca3122597beab2e3e2baf2ca3ce529d3ce91e6a2a5f8d，manifest57471966…；TMP Debug ELF a48adc/7927440B仅保存摘要、不作native库。
+
+root只提升实际CPP与append-only CMake170eb49947c4daa61d30f45ab8fde637aa12766182dddfda15c9ca6453d0cc0d，逆去唯一13行target块全bytes等旧7ebe，旧target/flags不改。
+实际canonical工程构建入口cwd Gitroot：`rtk proxy env -i PATH=/usr/bin:/bin LANG=C.UTF-8 LC_ALL=C.UTF-8 PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 CMAKE_BUILD_PARALLEL_LEVEL=2 /bin/bash --noprofile --norc -c 'source /opt/ros/humble/setup.bash; exec /usr/bin/python3 -B /tmp/mr3_p2a0_v21_canonical_build_v1.py'`。
+真实child cwd ROS：/usr/bin/python3 /usr/bin/colcon build --symlink-install --packages-select multi_robot --allow-overriding nav2_bringup --parallel-workers 2 --event-handlers console_direct+。
+wrapper50.58614480635151wall，colcon/factory/ldd均0；仅vendor std::iterator deprecation warning保留，actualflags -O3 -DNDEBUG -fPIC/source宏65b1、无CPU_TEST。
+install新库→canonical build lib，463272B/SHA b76138132ae7dbb35936c2e0971e909f688189d240de3910516157b3553d57b8；旧driver a014/observer9a1d/profile09321 beforeafter逐字不变。
+gzip6 fullroundtrip148644B/SHA39f729a04c2aac90bdb03e1c292a904a528ad924e5f1061682f6f8ab48ff4529，binary custodycf589cf1…，actual build receipt015487b7…；A21/offline/canonical_build 17原件143735B→26396B tar0b13bf87…，完整member往返+末SHA/stat通过。
+独立build只读reviewe2fa608b…查21输入并STOP，未重复编译/factory/ldd；独立source review7bd358c3…核实际Sensor.Init/LoadPlugin→container Add/Update顺序与缓存范围。
+
+缓存360ray同时保留CollisionName/GetLength与relative/global端点，未调用GetIntersection/重cast或setter。无hit旧name不清，只有有限0<=length<max-min+非空name才当本次hit；GlobalPoints.end未被SetLength缩短。currentpose/碰撞SDF不是原cast原子ODE几何，measurementstamp也不是cast检查原子时间，均明确范围。
+source6c76 launch在唯一ray sensor内注入固定7tags；移除新块与原physicsobserver块后精确恢复原模板。新版witness101c同时核实际PID/已加载ELF/dladdr/proc maps/source宏及两个已验证插件的精确字节逆移除。
+old observer窗口0..1ms仅配置/首边界加载用途，晚spawn可能无sample，不授完整1ms信用；ray独立0..300s，原profile首1ms50→150/setter1谓词保持。完整e61c32step CLI仍SKIP。
+
+协调器最终launch6项+witness3项/parent身份6项/projection4项方法通过（只按各最终源计，不累加旧版本重复）。早8619 parent未核真实parent/scoped，tb2/3错写tb1也PASS；具体反例原bytes保留，93d43窄修configuration world/model/link/name→connected及每scan一致，拒错parent/scope/扫描漂移且坏流仍整SHA/stat。
+旧preflight444在实际旧audit_ppo EXECUTION_CONFIG_PINS会拒新CMake/launch，方法级Git stub未覆盖完整CLI，此阻断由独立源审在native前发现、原草案不改PASS。
+V4 deeb61 preflight只对固定7ebe→170e/bcb→6c76两源验证current+Git+固定SHA、严格内存逆投影恢复normative4f8全bytes，临时两pin只包unchanged load_native_gates且finally恢复原dict对象；old160/audit_ppo f42原bytes、其余101来源与全部actor/任务/物理数学不变。
+4方法用实际源及normativeGit，actualfreeze Git I/O与oldloader为明确CPU替身，覆盖坏source/Git/投影拒绝和异常恢复，不冒充实际exact40预检。调用链只读核实ordinarybenchmark/env/supervisor/worker/原2516不调用该loader，适配仅本次preflight，无生产隐藏override。
+全部V1..V4原136files1585664B与manifest组成137members1616969B→370526B tar9ea55b5a1f82ab3502dd1d6835294c1cd88ece959ed9097c155b559e8b162abd；packing.228319640wall/fullmember回读+末SHA/stat通过，oldfailed/uncheckeddraft/cache排除明示，A21/offline/coordinator唯一保管。
+
+root精确promote11源/配置/plan，安装launch与source全bytes同；old160全部保持，新13共173。plan相对封存draft仅status/pending/new_source_bindings_pending三准备字段改ready，finalplan SHA41c515102a34a5b8ab460c5326c615775b0a972c23f275f3ad4a64e288c81786。
+固定一次三机open101/单worker/普通4steps、最多1reset5API，domain174/port13471，新runid mr3_p2a0_20261018_v21_ray；native350上限，累计V18–20已2718.66094611817975/3600余额881.33905388182025，不重置。三ray各configuration+connected+≥1完整360scan/实例PID正确/diagerror0才测量PASS；自然close与measurement分字段，overall取AND，不以exit0抹缺测。
+正常顺序recorder ready→唯一benchmark自然退出→独占stop marker→recorder自然关闭，原2516科学physicalFalse可保留但strictclose必要；无signal/替代请求/retry。实际clean pushed conda预检及parent命令见V21报告，当前未调用新native。
+P2A.0仍未完成，V17真实停车FAIL尚未解决；须actualray/CDR定因后修复，再新冻结完成原四阶段矩阵，禁止跨冻结拼PASS。95%/300s/参与/全机体与速度停车门不降，pilot余额1870决策/2905.954739546403wall不动，无GPU/optimizer/PPO/P2B/gateway。
+
+V21最终独立v2 source review b12cff4f…无剩余已识别接口blocker，作者最终范围6launch+3witness+6identity+4projection；无重复测试/loader或native。15review/反例/快照原件640915B→54280B tar0b2d6132049e4158e61e402e132c4d2476e3b6ca71748ef9962158f4b932248b，完整往返与末源SHA/stat通过。root173实际来源SHA/7Python AST/固定2源全bytes逆投影/实际ELF与gzip/安装launch同字节/JSON与170本地链接检查通过；首次actual git add -n .41路径白名单，不含build/install/log缓存；上述静态及dry原件另存A21/offline/root_static_v1。它们不代替尚待的新clean pushed exact40实际准入。

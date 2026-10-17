@@ -2,6 +2,8 @@
 
 # Codex Monorepo Memory — MR3
 
+2026-10-18: V21_ray prepares one ordinary4/open101/three-robot actual ray-cast provenance diagnostic, native<=350wall within the original3600 ceiling. Opt-in SensorPlugin and exact two-config compatibility preserve normal SLAM/actor/gates; actual clean pushed source preflight still required. No150 selection/P2A.0 completion/PPO credit. See wireless-rl/report/20261018_mr3_p2a0_v21_ray.md.
+
 2026-10-18: V20_sensor freeze b33ff700 closed ordinary4 source capture/strict native shutdown; 39 exits0 and47 saved PID/start identities gone. Legal near raw scan returns persist and map to own100, actual hit geometry still unknown; ROS synchronous throttling and SDK stationary-refresh semantics differ, so the early missing-setter bug inference is withdrawn. No production SLAM change/150 selection/matrix or PPO credit; P2A.0 remains incomplete. See wireless-rl/report/20261018_mr3_p2a0_v20_sensor.md.
 
 2026-10-18: V20_sensor准备一次三机open101普通4step/至多5API启动期rawscan/TF/SLAM参数归因采集，新增独立只读测量器；原生产源码、门禁与pilot余额不变。SDK/CPU/合成ROS回环和独立审查通过后，仍须新clean pushed exact40预检，单次native≤900wall、原e61c32步CLI明确SKIP；150未选用、P2A.0未完成。见wireless-rl/report/20261018_mr3_p2a0_v20_sensor.md。
