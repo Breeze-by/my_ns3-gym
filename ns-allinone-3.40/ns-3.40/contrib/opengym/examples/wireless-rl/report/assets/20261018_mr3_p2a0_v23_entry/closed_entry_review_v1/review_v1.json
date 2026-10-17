@@ -1,0 +1,822 @@
+{
+  "schema": "mr3-v23-closed-native-entry-independent-review-v1",
+  "passed": true,
+  "freeze": "9160543e32ca49a56dfd05eaa0df3ccb6d25f89e",
+  "argv": [
+    "/usr/bin/python3",
+    "/tmp/mr3_p2a0_v23_closed_entry_review_v1/review_closed_v1.py"
+  ],
+  "cwd": "/home/zhuyulab/ns3-workspace",
+  "source_sha256": "5f91c4f7cea9153aca6c9a79bbb3b12ff854269b667f965d528da9b7e773d4b7",
+  "facts": {
+    "native_stage_passed": false,
+    "reset_returned": false,
+    "valid_transitions": 0,
+    "actual_gazebo_abort_returncode": -6,
+    "corrector_kinds": [
+      "configuration"
+    ],
+    "no_installed_credit": true,
+    "primary_cause_lines": [
+      {
+        "line": 76,
+        "text": "[gzserver-5]   what():  ray-box installation requires unstarted ODE world"
+      },
+      {
+        "line": 78,
+        "text": "[ERROR] [gzserver-5]: process has died [pid 3572578, exit code -6, cmd 'gzserver /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/share/multi_robot/worlds/p1c_open.world --seed=101 -s libgazebo_ros_init.so -s libgazebo_ros_factory.so -s libgazebo_ros_force_system.so -s /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/lib/libmr3_ray_box_corrector.so -s /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/lib/libmr3_gazebo_step.so --ros-args --params-file /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/share/multi_robot/config/mr3_step_clock.yaml --']."
+      }
+    ],
+    "formal_jobs": 11,
+    "formal_real_exit1": 11,
+    "mandatory_receipts": 10,
+    "all_mandatory_failed": true,
+    "all_submitted_jobs_finished": true,
+    "later_stages_skip": [
+      "terminal",
+      "reset",
+      "deadline"
+    ],
+    "forced_shutdown": true,
+    "failed_sample": true,
+    "ordered_infrastructure_cleanup_passed": false,
+    "cleanup_error": "TimeoutError('IPC response wall guard expired')",
+    "no_saved_owned_alive_or_zombie": true,
+    "native_stage_wall_seconds": 32.096621671225876,
+    "V22_entry_wall_seconds": 0.24578428314998746,
+    "cumulative_charged_wall_seconds": 32.34240595437586,
+    "remaining_18000_wall_seconds": 17967.657594045624
+  },
+  "saved_identity_count": 17,
+  "fresh_identity_checks": [
+    {
+      "saved": {
+        "pid": 3572381,
+        "start_ticks": 402595449,
+        "parent": 3572379,
+        "state": "R"
+      },
+      "sources": [
+        "parent_ledger"
+      ],
+      "current": null,
+      "same_identity_present": false
+    },
+    {
+      "saved": {
+        "pid": 3572428,
+        "parent": 3572381,
+        "group": 3572379,
+        "session": 3572379,
+        "start_ticks": 402595515,
+        "state": "R"
+      },
+      "sources": [
+        "launch",
+        "parent_ledger",
+        "parent_ledger",
+        "/tmp/mr3_p2a0_v23_interface_process_monitor_001.json",
+        "/tmp/mr3_p2a0_v23_interface_process_monitor_001.json",
+        "/tmp/mr3_p2a0_v23_interface_process_monitor_002.json"
+      ],
+      "current": null,
+      "same_identity_present": false
+    },
+    {
+      "saved": {
+        "pid": 3572454,
+        "parent": 3572428,
+        "group": 3572379,
+        "session": 3572379,
+        "start_ticks": 402595555,
+        "state": "R"
+      },
+      "sources": [
+        "launch",
+        "/tmp/mr3_p2a0_v23_interface_process_monitor_001.json",
+        "/tmp/mr3_p2a0_v23_interface_process_monitor_001.json",
+        "/tmp/mr3_p2a0_v23_interface_process_monitor_001.json",
+        "/tmp/mr3_p2a0_v23_interface_process_monitor_002.json"
+      ],
+      "current": null,
+      "same_identity_present": false
+    },
+    {
+      "saved": {
+        "pid": 3572523,
+        "parent": 3572454,
+        "group": 3572523,
+        "session": 3572523,
+        "start_ticks": 402595590,
+        "state": "S"
+      },
+      "sources": [
+        "summary",
+        "supervisor_shutdown",
+        "/tmp/mr3_p2a0_v23_interface_process_monitor_001.json",
+        "/tmp/mr3_p2a0_v23_interface_process_monitor_001.json",
+        "/tmp/mr3_p2a0_v23_interface_process_monitor_002.json"
+      ],
+      "current": null,
+      "same_identity_present": false
+    },
+    {
+      "saved": {
+        "pid": 3572535,
+        "parent": 3572523,
+        "group": 3572523,
+        "session": 3572523,
+        "start_ticks": 402595629,
+        "state": "R"
+      },
+      "sources": [
+        "summary",
+        "supervisor_shutdown"
+      ],
+      "current": null,
+      "same_identity_present": false
+    },
+    {
+      "saved": {
+        "pid": 3572565,
+        "parent": 3572523,
+        "group": 3572523,
+        "session": 3572523,
+        "start_ticks": 402595759,
+        "state": "Z"
+      },
+      "sources": [
+        "summary",
+        "supervisor_shutdown",
+        "/tmp/mr3_p2a0_v23_interface_process_monitor_001.json"
+      ],
+      "current": null,
+      "same_identity_present": false
+    },
+    {
+      "saved": {
+        "pid": 3572570,
+        "parent": 3572565,
+        "group": 3572523,
+        "session": 3572523,
+        "start_ticks": 402595919,
+        "state": "S"
+      },
+      "sources": [
+        "summary",
+        "supervisor_shutdown"
+      ],
+      "current": null,
+      "same_identity_present": false
+    },
+    {
+      "saved": {
+        "pid": 3572572,
+        "parent": 3572565,
+        "group": 3572523,
+        "session": 3572523,
+        "start_ticks": 402595919,
+        "state": "S"
+      },
+      "sources": [
+        "summary",
+        "supervisor_shutdown"
+      ],
+      "current": null,
+      "same_identity_present": false
+    },
+    {
+      "saved": {
+        "pid": 3572574,
+        "parent": 3572565,
+        "group": 3572523,
+        "session": 3572523,
+        "start_ticks": 402595919,
+        "state": "S"
+      },
+      "sources": [
+        "summary",
+        "supervisor_shutdown"
+      ],
+      "current": null,
+      "same_identity_present": false
+    },
+    {
+      "saved": {
+        "pid": 3572576,
+        "parent": 3572565,
+        "group": 3572523,
+        "session": 3572523,
+        "start_ticks": 402595919,
+        "state": "S"
+      },
+      "sources": [
+        "summary",
+        "supervisor_shutdown"
+      ],
+      "current": null,
+      "same_identity_present": false
+    },
+    {
+      "saved": {
+        "pid": 3572578,
+        "parent": 3572565,
+        "group": 3572523,
+        "session": 3572523,
+        "start_ticks": 402595919,
+        "state": "Z"
+      },
+      "sources": [
+        "summary",
+        "supervisor_shutdown"
+      ],
+      "current": null,
+      "same_identity_present": false
+    },
+    {
+      "saved": {
+        "pid": 3572580,
+        "parent": 3572565,
+        "group": 3572523,
+        "session": 3572523,
+        "start_ticks": 402595919,
+        "state": "S"
+      },
+      "sources": [
+        "summary",
+        "supervisor_shutdown"
+      ],
+      "current": null,
+      "same_identity_present": false
+    },
+    {
+      "saved": {
+        "pid": 3572582,
+        "parent": 3572565,
+        "group": 3572523,
+        "session": 3572523,
+        "start_ticks": 402595920,
+        "state": "R"
+      },
+      "sources": [
+        "summary",
+        "supervisor_shutdown"
+      ],
+      "current": null,
+      "same_identity_present": false
+    },
+    {
+      "saved": {
+        "pid": 3572584,
+        "parent": 3572565,
+        "group": 3572523,
+        "session": 3572523,
+        "start_ticks": 402595920,
+        "state": "S"
+      },
+      "sources": [
+        "summary",
+        "supervisor_shutdown"
+      ],
+      "current": null,
+      "same_identity_present": false
+    },
+    {
+      "saved": {
+        "pid": 3573004,
+        "parent": 3572523,
+        "group": 3572523,
+        "session": 3572523,
+        "start_ticks": 402596204,
+        "state": "Z"
+      },
+      "sources": [
+        "summary",
+        "supervisor_shutdown",
+        "/tmp/mr3_p2a0_v23_interface_process_monitor_001.json"
+      ],
+      "current": null,
+      "same_identity_present": false
+    },
+    {
+      "saved": {
+        "pid": 3573007,
+        "parent": 3572523,
+        "group": 3572523,
+        "session": 3572523,
+        "start_ticks": 402596241,
+        "state": "Z"
+      },
+      "sources": [
+        "summary",
+        "supervisor_shutdown",
+        "/tmp/mr3_p2a0_v23_interface_process_monitor_001.json"
+      ],
+      "current": null,
+      "same_identity_present": false
+    },
+    {
+      "saved": {
+        "pid": 3573169,
+        "start_ticks": 402598796,
+        "parent": 3572381,
+        "state": "R"
+      },
+      "sources": [
+        "parent_ledger",
+        "parent_ledger"
+      ],
+      "current": null,
+      "same_identity_present": false
+    }
+  ],
+  "formal_commands": [
+    {
+      "label": "information_review_v1",
+      "argv": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_independent_information_v2.py",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v23_interface",
+        "--freeze",
+        "9160543e32ca49a56dfd05eaa0df3ccb6d25f89e",
+        "--output",
+        "/tmp/mr3_p2a0_v23_interface_information_review_v1.json"
+      ],
+      "returncode": 1,
+      "passed": false,
+      "output": "/tmp/mr3_p2a0_v23_interface_information_review_v1.json",
+      "output_exists": true,
+      "wall_seconds": 0.11690546572208405
+    },
+    {
+      "label": "peer_review_v1",
+      "argv": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v11/independent/mr3_independent_control_phase_v2.py",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v23_interface",
+        "--freeze",
+        "9160543e32ca49a56dfd05eaa0df3ccb6d25f89e",
+        "--output",
+        "/tmp/mr3_p2a0_v23_interface_peer_review_v1.json",
+        "--peer-only"
+      ],
+      "returncode": 1,
+      "passed": false,
+      "output": "/tmp/mr3_p2a0_v23_interface_peer_review_v1.json",
+      "output_exists": true,
+      "wall_seconds": 0.13610703963786364
+    },
+    {
+      "label": "drive_review_v1",
+      "argv": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_independent_drive_trace_v6.py",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v23_interface",
+        "--freeze",
+        "9160543e32ca49a56dfd05eaa0df3ccb6d25f89e",
+        "--binary-proof",
+        "/tmp/mr3_p2a0_v23_binaryproof.json",
+        "--output",
+        "/tmp/mr3_p2a0_v23_interface_drive_review_v1.json"
+      ],
+      "returncode": 1,
+      "passed": false,
+      "output": "/tmp/mr3_p2a0_v23_interface_drive_review_v1.json",
+      "output_exists": true,
+      "wall_seconds": 0.279279968701303
+    },
+    {
+      "label": "control_review_v1",
+      "argv": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v11/independent/mr3_independent_control_phase_v2.py",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v23_interface",
+        "--freeze",
+        "9160543e32ca49a56dfd05eaa0df3ccb6d25f89e",
+        "--output",
+        "/tmp/mr3_p2a0_v23_interface_control_review_v1.json"
+      ],
+      "returncode": 1,
+      "passed": false,
+      "output": "/tmp/mr3_p2a0_v23_interface_control_review_v1.json",
+      "output_exists": true,
+      "wall_seconds": 0.1960827331058681
+    },
+    {
+      "label": "settled_turn_review_v1",
+      "argv": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v8/independent/mr3_independent_settled_turn_v3.py",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v23_interface",
+        "--freeze",
+        "9160543e32ca49a56dfd05eaa0df3ccb6d25f89e",
+        "--output",
+        "/tmp/mr3_p2a0_v23_interface_settled_review_v1.json",
+        "--require-use"
+      ],
+      "returncode": 1,
+      "passed": false,
+      "output": "/tmp/mr3_p2a0_v23_interface_settled_review_v1.json",
+      "output_exists": true,
+      "wall_seconds": 0.18195181665942073
+    },
+    {
+      "label": "fixed_angular_v1",
+      "argv": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v4/independent/mr3_independent_angular_interface_v1.py",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v23_interface/worker0/episode001_open_101",
+        "--output",
+        "/tmp/mr3_p2a0_v23_interface_fixed_angular_v1.json"
+      ],
+      "returncode": 1,
+      "passed": false,
+      "output": "/tmp/mr3_p2a0_v23_interface_fixed_angular_v1.json",
+      "output_exists": true,
+      "wall_seconds": 0.09599833795800805
+    },
+    {
+      "label": "fixed_physics_v1",
+      "argv": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v3/independent/mr3_independent_physics_review.py",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v23_interface/worker0/episode001_open_101",
+        "--output",
+        "/tmp/mr3_p2a0_v23_interface_fixed_physics_v1.json"
+      ],
+      "returncode": 1,
+      "passed": false,
+      "output": "/tmp/mr3_p2a0_v23_interface_fixed_physics_v1.json",
+      "output_exists": true,
+      "wall_seconds": 0.09885294362902641
+    },
+    {
+      "label": "episode001_fifo_phase_final",
+      "argv": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_v10_fifo_phase_review.py",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v23_interface/worker0/episode001_open_101",
+        "--freeze",
+        "9160543e32ca49a56dfd05eaa0df3ccb6d25f89e",
+        "--output",
+        "/tmp/mr3_p2a0_v23_interface_episode001_fifo_phase_final.json"
+      ],
+      "returncode": 1,
+      "passed": false,
+      "output": "/tmp/mr3_p2a0_v23_interface_episode001_fifo_phase_final.json",
+      "output_exists": false,
+      "wall_seconds": 0.23156289523467422
+    },
+    {
+      "label": "input_001",
+      "argv": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v4/independent/mr3_p2a0_v4_independent_input_episode_review_v1.py",
+        "--episode",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v23_interface/worker0/episode001_open_101",
+        "--output",
+        "/tmp/mr3_p2a0_v23_interface_input_review_v1.json"
+      ],
+      "returncode": 1,
+      "passed": false,
+      "output": "/tmp/mr3_p2a0_v23_interface_input_review_v1.json",
+      "output_exists": true,
+      "wall_seconds": 0.5744694890454412
+    },
+    {
+      "label": "closure_binary_review_v1",
+      "argv": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v23_entry/independent/mr3_v23_multiepoch_closure_binary_review_v1.py",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v23_interface",
+        "--prefix",
+        "mr3_p2a0_v23_interface",
+        "--freeze",
+        "9160543e32ca49a56dfd05eaa0df3ccb6d25f89e",
+        "--expected-episodes",
+        "1",
+        "--require-parameters"
+      ],
+      "returncode": 1,
+      "passed": false,
+      "output": "/tmp/mr3_p2a0_v23_interface_closure_binary_review_v1.json",
+      "output_exists": false,
+      "wall_seconds": 0.4840358546935022
+    },
+    {
+      "label": "full_audit",
+      "argv": [
+        "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+        "-m",
+        "mr3_learning.audit_preparation",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v23_interface",
+        "--freeze",
+        "9160543e32ca49a56dfd05eaa0df3ccb6d25f89e",
+        "--output",
+        "/tmp/mr3_p2a0_v23_interface_full_audit.json"
+      ],
+      "returncode": 1,
+      "passed": false,
+      "output": "/tmp/mr3_p2a0_v23_interface_full_audit.json",
+      "output_exists": true,
+      "wall_seconds": 5.813880974892527
+    }
+  ],
+  "input_bindings": {
+    "/tmp/mr3_p2a0_v23_interface_launch.json": {
+      "sha256": "7de79112862c56ca8f625ec317b78f40b8c31725af4661af2e4294b0f93526ff",
+      "bytes": 2586,
+      "stat": [
+        2586,
+        1792280592635732989,
+        76642583
+      ]
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v23_interface/benchmark_summary.json": {
+      "sha256": "6f8fbc2c07a7b0d22edd0de3a825bf55035f438b4f6084e3ccf596458c4f67e3",
+      "bytes": 8570,
+      "stat": [
+        8570,
+        1792280592526727531,
+        78654583
+      ]
+    },
+    "/tmp/mr3_p2a0_v23_interface_audit_execution_v1.json": {
+      "sha256": "ac9e99645417c38159f69099a12af1fa82865dbf8eeb213743e3cc818b15b363",
+      "bytes": 14886,
+      "stat": [
+        14886,
+        1792280599182060757,
+        76642618
+      ]
+    },
+    "/tmp/mr3_p2a0_v23_remaining_matrix_v1.jsonl": {
+      "sha256": "a63d4cc6fc8ba97606cfc9bde38f20f79094fbbcc6a2b2b0a84f65b7d563ec9e",
+      "bytes": 5821,
+      "stat": [
+        5821,
+        1792280599500076680,
+        76642580
+      ]
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v23_interface/worker0/episode001_open_101/supervisor_shutdown.json": {
+      "sha256": "e09437ae6e7c2cfd4a993c7258a6d74d362f6204def88f2c751a0ec39f76b454",
+      "bytes": 2487,
+      "stat": [
+        2487,
+        1792280592522727331,
+        78654580
+      ]
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v23_interface/worker0/episode001_open_101/infrastructure_cleanup.json": {
+      "sha256": "6cf4d7c7d28c77a02f0a1add24e657bffd995e7a3d1aec609484ffca46f6a42f",
+      "bytes": 1036,
+      "stat": [
+        1036,
+        1792280582050202989,
+        78654579
+      ]
+    },
+    "/tmp/mr3_p2a0_v23_cross_stage_mapping_summary_v1.json": {
+      "sha256": "5baeffbe61bcfbb1548addd915e9cf717d8651567115651c021c79c9cbd649bd",
+      "bytes": 4953,
+      "stat": [
+        4953,
+        1792280602523228047,
+        76642623
+      ]
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v23_interface/worker0/episode001_open_101/ray_box_corrector.jsonl": {
+      "sha256": "6c6ca48eaebdf1cc23d8aae6590ef026b02fc081a9e23660cc5955e730056ce4",
+      "bytes": 813,
+      "stat": [
+        813,
+        1792280565277363221,
+        78654573
+      ]
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v23_interface/worker0/episode001_open_101/metadata.json": {
+      "sha256": "5290bf14ef56a2c8fd9a39a2a5452189b85e4956cf118c826a27c98b0d65cdf1",
+      "bytes": 2553,
+      "stat": [
+        2553,
+        1792280562583228335,
+        78654562
+      ]
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v23_interface/worker0/episode001_open_101/launch.log": {
+      "sha256": "4f4a1831aa7de4e33230ba26bf39f4553aeaf5278d7fd589af0df3822392dcaf",
+      "bytes": 28110,
+      "stat": [
+        28110,
+        1792280567290464010,
+        78654563
+      ]
+    },
+    "/tmp/mr3_p2a0_v23_interface_information_review_v1_console.log": {
+      "sha256": "6902c3ef01ad344e03e1f56368c5fe3e9b8d2937e03aed35b668bbb919dc3d8d",
+      "bytes": 86,
+      "stat": [
+        86,
+        1792280593453773947,
+        76642600
+      ]
+    },
+    "/tmp/mr3_p2a0_v23_interface_information_review_v1.json": {
+      "sha256": "8e63b42660877fd0bf99487c005b669d229a9f9de0395b1132083c9d94c892c6",
+      "bytes": 2872,
+      "stat": [
+        2872,
+        1792280593453773947,
+        76642602
+      ]
+    },
+    "/tmp/mr3_p2a0_v23_interface_peer_review_v1_console.log": {
+      "sha256": "80e79b849e5ab89cc28fde9cde3faa49d8465e20d75e83bd3aa650eca9d979d3",
+      "bytes": 115,
+      "stat": [
+        115,
+        1792280593473774948,
+        76642601
+      ]
+    },
+    "/tmp/mr3_p2a0_v23_interface_peer_review_v1.json": {
+      "sha256": "193e2b2d07646af425e2812cf653121a4739d366947a89a3cc9db26fbc9258e9",
+      "bytes": 3233,
+      "stat": [
+        3233,
+        1792280593473774948,
+        76642603
+      ]
+    },
+    "/tmp/mr3_p2a0_v23_interface_drive_review_v1_console.log": {
+      "sha256": "e7e03f68b9a70ff9098554fa67695ee3fcd9c475c3c02ee5e4ed662b5473b78e",
+      "bytes": 80,
+      "stat": [
+        80,
+        1792280593615782059,
+        76642599
+      ]
+    },
+    "/tmp/mr3_p2a0_v23_interface_drive_review_v1.json": {
+      "sha256": "ee9575aba19ab110879b523dca49ae577c583c4f3f3a347cf9e1d394a0b9590a",
+      "bytes": 5916,
+      "stat": [
+        5916,
+        1792280593615782059,
+        76642606
+      ]
+    },
+    "/tmp/mr3_p2a0_v23_interface_control_review_v1_console.log": {
+      "sha256": "1dfb9d01350e7f04efdc35e8c8af998373bf33f1e1eb8127499db4c14154bbb2",
+      "bytes": 136,
+      "stat": [
+        136,
+        1792280593652783911,
+        76642604
+      ]
+    },
+    "/tmp/mr3_p2a0_v23_interface_control_review_v1.json": {
+      "sha256": "03c6d226a03d3dbe126b82d833f1708609d2a271d89599251d7f459cc7f7fc51",
+      "bytes": 3246,
+      "stat": [
+        3246,
+        1792280593652783911,
+        76642608
+      ]
+    },
+    "/tmp/mr3_p2a0_v23_interface_settled_turn_review_v1_console.log": {
+      "sha256": "45caa76f893687a58ea0e77c195e0629b658db89881c549d636b26ff23a0af94",
+      "bytes": 82,
+      "stat": [
+        82,
+        1792280593664784512,
+        76642605
+      ]
+    },
+    "/tmp/mr3_p2a0_v23_interface_settled_review_v1.json": {
+      "sha256": "d6517dfebf93a73642b62cf90f801c961ba36bfd35323747105973eb643f825e",
+      "bytes": 1294,
+      "stat": [
+        1294,
+        1792280593664784512,
+        76642609
+      ]
+    },
+    "/tmp/mr3_p2a0_v23_interface_fixed_angular_v1_console.log": {
+      "sha256": "71051724f385eed6ccbee877f3981a231c0c1abbaecd968037de39728d428148",
+      "bytes": 81,
+      "stat": [
+        81,
+        1792280593752788918,
+        76642610
+      ]
+    },
+    "/tmp/mr3_p2a0_v23_interface_fixed_angular_v1.json": {
+      "sha256": "048a8b725872cd69f313ee7c2408029d13b2d0f3ce79a22f673322501f7b8fa8",
+      "bytes": 372,
+      "stat": [
+        372,
+        1792280593752788918,
+        76642612
+      ]
+    },
+    "/tmp/mr3_p2a0_v23_interface_fixed_physics_v1_console.log": {
+      "sha256": "dca223f3a75dcf5ffd454991b693ebe3606a7efa4f9737b342b32e3c87f0f88e",
+      "bytes": 96,
+      "stat": [
+        96,
+        1792280593761789369,
+        76642611
+      ]
+    },
+    "/tmp/mr3_p2a0_v23_interface_fixed_physics_v1.json": {
+      "sha256": "4ebbd8d0b12c5b4cee8551bbaa66f9864602b0d8166e21139d405ae6527453fe",
+      "bytes": 1088,
+      "stat": [
+        1088,
+        1792280593760789319,
+        76642613
+      ]
+    },
+    "/tmp/mr3_p2a0_v23_interface_episode001_fifo_phase_final_console.log": {
+      "sha256": "b5046bf023f9711bc3a82521c735d2cd801c43a3f769960aa07a7b367796af42",
+      "bytes": 603,
+      "stat": [
+        603,
+        1792280593953798983,
+        76642614
+      ]
+    },
+    "/tmp/mr3_p2a0_v23_interface_input_001_console.log": {
+      "sha256": "ba892c0c6fcd5914a988ddc60fd2625d521166267d267df8c872b884b18f2571",
+      "bytes": 373,
+      "stat": [
+        373,
+        1792280594110806844,
+        76642607
+      ]
+    },
+    "/tmp/mr3_p2a0_v23_interface_input_review_v1.json": {
+      "sha256": "8282f906416311fc98c17bed7071c1bf511b638d2f7e5cfda17d507711a9e4ed",
+      "bytes": 6264,
+      "stat": [
+        6264,
+        1792280594110806844,
+        76642616
+      ]
+    },
+    "/tmp/mr3_p2a0_v23_interface_closure_binary_review_v1_console.log": {
+      "sha256": "47c5a349ce45b68587888a8adc9c3ca96dd57448f2c16652b46d2337be663d6d",
+      "bytes": 1911,
+      "stat": [
+        1911,
+        1792280594435823117,
+        76642615
+      ]
+    },
+    "/tmp/mr3_p2a0_v23_interface_full_audit_console.log": {
+      "sha256": "f751d2a00192066ad3944f633de9ec274b86ee4087e1dd7f5ef9ae427adc42b9",
+      "bytes": 923,
+      "stat": [
+        923,
+        1792280598097006429,
+        76642598
+      ]
+    },
+    "/tmp/mr3_p2a0_v23_interface_full_audit.json": {
+      "sha256": "3358a42c149ba4ff997ef507075b62a68a1e398503ad48f407f7e9a5194c1409",
+      "bytes": 58078,
+      "stat": [
+        58078,
+        1792280598085005828,
+        76642617
+      ]
+    },
+    "/tmp/mr3_p2a0_v23_interface_process_monitor_001.json": {
+      "sha256": "2d5c4e99c25b569b8e618b6eec578d9600641b0f44d409152199701e5e182100",
+      "bytes": 10997,
+      "stat": [
+        10997,
+        1792280579393069952,
+        76642593
+      ]
+    },
+    "/tmp/mr3_p2a0_v23_interface_process_monitor_002.json": {
+      "sha256": "0882933eaf805182a162d6eb13522793c0e6550296e487b82537a85de5ae351b",
+      "bytes": 7601,
+      "stat": [
+        7601,
+        1792280600885146029,
+        76642620
+      ]
+    }
+  },
+  "wall_seconds": 0.22611804911866784,
+  "limitations": [
+    "Fresh /proc checks cover exact saved PID/start identities only. Formal leaf child PID/start and watcher self identity were not saved, so this does not fabricate independent fresh leaf/watcher PID proof; parent wait/drain and watcher completion are original ledger facts.",
+    "No successful reset/task sample or physical PASS. Cleanup was forced and IPC cleanup failed; empty remaining-owned inventories do not relabel this as normal strict closure.",
+    "Existing audits were not rerun. No ROS/DDS/native, source change or canonical mutation."
+  ],
+  "scope": "Independent closed accounting/identity/original verdict preservation only; review passed is not native/physics/task passed."
+}

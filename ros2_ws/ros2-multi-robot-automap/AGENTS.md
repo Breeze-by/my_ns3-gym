@@ -1,6 +1,6 @@
 # ROS component memory — MR3
 
-2026-10-18: V23 fixes V22 entry interpreter inheritance only: benchmark/full audit explicitly use ns3gym, system parent/ROS retained. Real returncode, import/help preflight and .245784 prior entry cost within18000 are bound. All old191 source SHAs retained plus7; original34 gates/608API/596decisions unchanged. Narrow6CPU/3 actual CLI probes and source review pass; clean pushed actual admission/full4stage remain pending. P2A.0 incomplete, no PPO. See wireless-rl/report/20261018_mr3_p2a0_v23_entry.md.
+2026-10-18: V23 9160543e actual preflight passed110/198 and native startup reached corrector. WorldCreated guard reads iterations before World.Init initializes it; gzserver-6, first reset failed, zero valid transitions, later3 SKIP. Saved17 identities gone but actual forced cleanup/failed sample retained, not strictclose PASS. Prior32.342406/18000 charged; lifecycle repair/new full frozen matrix required. Physics/stopping/95% gates unchanged, P2A.0 incomplete/no PPO. See wireless-rl/report/20261018_mr3_p2a0_v23_entry.md.
 
 2026-10-18: V20_sensor b33ff700 ordinary4 source capture and strict close completed; 39 native exits0 and47 identities gone. Legitimate near scan returns persist and map to own100; actual hit geometry remains unknown. Same-name ROS synchronous throttling and Karto stationary-refresh parameters have different semantics, so missing forwarding alone is not a proven bug. Production SLAM/physics/gates unchanged,150 not selected,P2A.0 incomplete. See shared report/20261018_mr3_p2a0_v20_sensor.md.
 

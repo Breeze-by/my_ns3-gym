@@ -1,6 +1,6 @@
 # 三机器人 ROS 建图导航：当前实现指南
 
-V23只修V22解释器入口：benchmark/完整审计固定conda，系统parent/ROS保持；失败回执补实际returncode、前检新增实际imports/help。198绑定保留旧191全部SHA，原34门及608/596/18000不变且扣V22入口.245784wall。6窄CPU/3真实CLI与独立源审通过，待新clean pushed实际准入和完整四阶段；P2A.0未完成、无PPO。见[V23](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_v23_entry.md)。
+V23冻结9160543e真实前检PASS110/198并进入ROS/Gazebo；corrector在WorldCreated读取未初始化iteration的guard设计缺陷，gzserver-6，1个reset未返回/0有效transition，后三SKIP。17保存身份gone但forced cleanup/failed sample保留，非normal strictclose PASS；累计32.342406/18000。原物理/停车/95%不变，待生命周期修复新冻结完整重验。见[V23](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_v23_entry.md)。
 
 V19固定50/150隔离诊断已关闭：两组加载、逐毫秒采集和严格关闭通过；150组三机全程没有合法GOAL或停车刺激，原物理FAIL，150尚未采用，P2A.0仍未完成。详见[V19](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_v19.md)。原启动命令、物理门和pilot余额不变。
 
