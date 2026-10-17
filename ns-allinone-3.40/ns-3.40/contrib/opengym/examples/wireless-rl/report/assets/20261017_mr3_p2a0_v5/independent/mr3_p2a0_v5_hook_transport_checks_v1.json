@@ -1,0 +1,71 @@
+{
+  "schema": "mr3-p2a0-v5-hook-transport-checks-v1",
+  "passed": true,
+  "base_freeze": "b4e64f90391c0b4db2127e9e824118459a4288ad",
+  "new_source_freeze": "pending",
+  "checks": [
+    {
+      "name": "benchmark_unittest",
+      "command_argv": [
+        "bash",
+        "-c",
+        "source /home/zhuyulab/miniconda3/etc/profile.d/conda.sh && conda activate ns3gym && unset PYTHONPATH && export PYTHONNOUSERSITE=1 && python -m unittest mr3_learning.tests.test_benchmark -v"
+      ],
+      "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "test_already_aborted_worker_closes_without_any_reset (mr3_learning.tests.test_benchmark.CooperativeAbortTests) ... ok\ntest_close_exception_does_not_skip_other_worker_close (mr3_learning.tests.test_benchmark.CooperativeAbortTests) ... ok\ntest_complete_flag_fixture_keeps_both_twenty_step_episodes (mr3_learning.tests.test_benchmark.CooperativeAbortTests) ... ok\ntest_early_truncation_is_real_failure_not_completed_fixture (mr3_learning.tests.test_benchmark.CooperativeAbortTests) ... ok\ntest_later_reset_exception_does_not_claim_previous_epoch (mr3_learning.tests.test_benchmark.CooperativeAbortTests) ... ok\ntest_legacy_keeps_existing_reset_after_real_termination (mr3_learning.tests.test_benchmark.CooperativeAbortTests) ... ok\ntest_main_complete_flag_fixture_passes_without_abort (mr3_learning.tests.test_benchmark.CooperativeAbortTests) ... ok\ntest_main_legacy_metadata_has_no_preparation_version_or_abort (mr3_learning.tests.test_benchmark.CooperativeAbortTests) ... ok\ntest_main_parameter_review_source_binding_is_in_metadata_and_summary (mr3_learning.tests.test_benchmark.CooperativeAbortTests) ... ok\ntest_main_records_version_and_real_first_failure (mr3_learning.tests.test_benchmark.CooperativeAbortTests) ... ok\ntest_parameter_review_bad_transport_stops_before_spawn_or_step_and_closes (mr3_learning.tests.test_benchmark.CooperativeAbortTests) ... ok\ntest_parameter_review_failure_aborts_closes_and_saves_no_fake_step (mr3_learning.tests.test_benchmark.CooperativeAbortTests) ... ok\ntest_parameter_review_runs_after_reset_before_any_step_in_system_ros_environment (mr3_learning.tests.test_benchmark.CooperativeAbortTests) ... ok\ntest_parameter_review_timeout_retains_partial_output_and_closes_without_step (mr3_learning.tests.test_benchmark.CooperativeAbortTests) ... ok\ntest_real_termination_saved_before_peer_abort_and_all_workers_close (mr3_learning.tests.test_benchmark.CooperativeAbortTests) ... ok\ntest_reset_exception_closes_both_without_resetting_again (mr3_learning.tests.test_benchmark.CooperativeAbortTests) ... ok\ntest_step_exception_adds_no_transition_but_retains_peer_return (mr3_learning.tests.test_benchmark.CooperativeAbortTests) ... ok\ntest_changed_disk_profile_rejected_even_if_native_sha_updated (mr3_learning.tests.test_benchmark.ParameterReviewTransportTests) ... ok\ntest_missing_none_key_is_not_silently_inherited (mr3_learning.tests.test_benchmark.ParameterReviewTransportTests) ... ok\ntest_native_declared_profile_must_equal_frozen_git_bytes (mr3_learning.tests.test_benchmark.ParameterReviewTransportTests) ... ok\ntest_native_discovery_keys_are_exact_none_values_remove_parent_defaults (mr3_learning.tests.test_benchmark.ParameterReviewTransportTests) ... ok\ntest_native_metadata_epoch_and_freeze_bindings_required (mr3_learning.tests.test_benchmark.ParameterReviewTransportTests) ... ok\ntest_symlinked_profile_is_not_an_alternate_execution_path (mr3_learning.tests.test_benchmark.ParameterReviewTransportTests) ... ok\ntest_wrong_rmw_profile_hash_or_transport_key_rejected (mr3_learning.tests.test_benchmark.ParameterReviewTransportTests) ... ok\ntest_flag_rejects_old_sixteen_step_fixture_before_creating_run (mr3_learning.tests.test_benchmark.PreparationProbeTests) ... ok\ntest_outward_goals_do_not_reuse_crossing_stress_order (mr3_learning.tests.test_benchmark.PreparationProbeTests) ... ok\ntest_parameter_review_rejects_other_worker_schedule_or_probe_before_run (mr3_learning.tests.test_benchmark.PreparationProbeTests) ... ok\ntest_parameter_review_requires_exact_tracked_freeze_bytes (mr3_learning.tests.test_benchmark.PreparationProbeTests) ... ok\n\n----------------------------------------------------------------------\nRan 28 tests in 0.133s\n\nOK\n",
+      "wall_sec": 2.0067321942187846
+    },
+    {
+      "name": "retained_native_metadata_helper",
+      "command_argv": [
+        "bash",
+        "-c",
+        "source /home/zhuyulab/miniconda3/etc/profile.d/conda.sh && conda activate ns3gym && unset PYTHONPATH && export PYTHONNOUSERSITE=1 && python -c 'import hashlib\nimport json\nfrom pathlib import Path\nfrom types import SimpleNamespace\nfrom mr3_learning.benchmark import _parameter_review_environment, TRANSPORT_ENV_KEYS\np=Path(\"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v4_interface/worker0/episode001_open_101\")\nraw=p.joinpath(\"metadata.json\").read_bytes()\nm=json.loads(raw)\na=SimpleNamespace(freeze=m[\"freeze\"],base_domain=212,base_port=12561)\nenv,trace=_parameter_review_environment(a,0,{\"output_directory\":str(p),\"epoch\":m[\"epoch\"]})\nassert env[\"ROS_DOMAIN_ID\"]==\"212\"\nassert env[\"GAZEBO_MASTER_URI\"]==\"http://127.0.0.1:12561\"\nassert all(env.get(k)==m[\"transport_environment\"][k] for k in TRANSPORT_ENV_KEYS)\nresult={\"passed\":True,\"metadata\":str(p/\"metadata.json\"),\"metadata_sha256\":hashlib.sha256(raw).hexdigest(),\"trace\":trace,\"scope\":\"CPU environment construction from retained v4 native metadata only; no rclpy/control/subprocess observer/native start or delivery claim\"}\nout=Path(\"/tmp/mr3_p2a0_v5_hook_transport_native_metadata_v1.json\")\nwith out.open(\"x\") as f:f.write(json.dumps(result,indent=2)+\"\\n\")\nprint(json.dumps(result))\n'"
+      ],
+      "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+      "returncode": 0,
+      "stdout": "{\"passed\": true, \"metadata\": \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v4_interface/worker0/episode001_open_101/metadata.json\", \"metadata_sha256\": \"da34cc8d6bbb90ac0ede19f9d220ba0868c0c7479b409fd07c6f548df40a57bb\", \"trace\": {\"native_transport_environment\": {\"RMW_IMPLEMENTATION\": \"rmw_fastrtps_cpp\", \"ROS_LOCALHOST_ONLY\": \"0\", \"FASTRTPS_DEFAULT_PROFILES_FILE\": \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_fastdds_loopback_udp.xml\", \"SKIP_DEFAULT_XML\": \"1\", \"FASTDDS_DEFAULT_PROFILES_FILE\": null, \"RMW_FASTRTPS_USE_QOS_FROM_XML\": null, \"RMW_FASTRTPS_PUBLICATION_MODE\": null, \"profile_sha256\": \"dd7eeadca21f0924fe721515e8dd57ac979340df8b08885bc39d2595c8caf87b\"}, \"selected_transport_environment\": {\"RMW_IMPLEMENTATION\": \"rmw_fastrtps_cpp\", \"ROS_LOCALHOST_ONLY\": \"0\", \"FASTRTPS_DEFAULT_PROFILES_FILE\": \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_fastdds_loopback_udp.xml\", \"SKIP_DEFAULT_XML\": \"1\", \"FASTDDS_DEFAULT_PROFILES_FILE\": null, \"RMW_FASTRTPS_USE_QOS_FROM_XML\": null, \"RMW_FASTRTPS_PUBLICATION_MODE\": null}, \"metadata_sha256\": \"da34cc8d6bbb90ac0ede19f9d220ba0868c0c7479b409fd07c6f548df40a57bb\", \"profile_source\": {\"relative_path\": \"ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_fastdds_loopback_udp.xml\", \"freeze\": \"b4e64f90391c0b4db2127e9e824118459a4288ad\", \"sha256\": \"dd7eeadca21f0924fe721515e8dd57ac979340df8b08885bc39d2595c8caf87b\"}}, \"scope\": \"CPU environment construction from retained v4 native metadata only; no rclpy/control/subprocess observer/native start or delivery claim\"}\n",
+      "stderr": "",
+      "wall_sec": 1.9665488749742508
+    },
+    {
+      "name": "flake8",
+      "command_argv": [
+        "/usr/bin/python3",
+        "-m",
+        "flake8",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/benchmark.py",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_benchmark.py",
+        "--max-line-length=99"
+      ],
+      "cwd": "/home/zhuyulab/ns3-workspace",
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "",
+      "wall_sec": 0.9981492250226438
+    },
+    {
+      "name": "git_diff_check",
+      "command_argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "cwd": "/home/zhuyulab/ns3-workspace",
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "",
+      "wall_sec": 0.030350841116160154
+    }
+  ],
+  "source_sha256": {
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/benchmark.py": "d869756fba29a5fe9aaa19ebbf2aaf2cafe83405c05c84cf1390c803edf74ff0",
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_benchmark.py": "f131a40ffb474b0312f56eafd5a9a72ddacdb69c22d1db645b571728943bb0ba",
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v4/independent/mr3_actual_nav2_parameters_v4.py": "fe0a91eec1aaf6d45bc3aedd4de9223b53e77721be878136a96d02ef1bd5c0ae",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_fastdds_loopback_udp.xml": "dd7eeadca21f0924fe721515e8dd57ac979340df8b08885bc39d2595c8caf87b"
+  },
+  "fix": "Paused observer receives exactly native metadata seven-key discovery transport; None values unset inherited options, fixed canonical profile bytes equal native SHA and frozen Git object; no arbitrary metadata env keys accepted. Trace includes original selected transport/native declaration/source profile/metadata hashes.",
+  "scope": "28 CPU benchmark/hook/mutation checks + retained native metadata helper only. No native run, parameter queries, simulation, training, or new delivery/movement/angular/95% credit. V4 timeout FAIL preserved; fixed fe0a reviewer and30/45s timeouts unchanged."
+}

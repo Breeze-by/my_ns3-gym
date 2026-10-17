@@ -1,0 +1,38 @@
+{
+  "schema": "mr3-v4-interface-native-accounting-v1",
+  "freeze": "b4e64f90391c0b4db2127e9e824118459a4288ad",
+  "benchmark_passed": false,
+  "wall_sec_including_all_attempts": 182.76034711441025,
+  "returned_step_api_rows": 0,
+  "returned_reset_api_rows": 1,
+  "actual_adapter_actions": 0,
+  "unreturned_actions": [],
+  "returned_effective_ns": 0,
+  "returned_physical_ns": 0,
+  "release_time_ns": 70740000000,
+  "last_returned_snapshot_ns": 70740000000,
+  "final_physical_clock_ns": 70760000000,
+  "physical_post_release_and_cleanup_ns": 20000000,
+  "physical_after_last_returned_snapshot_ns": 20000000,
+  "controlled_warmup_alignment_ns": 16000000,
+  "summary_reward_transition_count": 1,
+  "finalize_ack": {
+    "ack_sequence": 1,
+    "epoch": "mr3_p2a0_20261017_v4_interface_w0_e1_45475821",
+    "kind": "training_finalize_ack",
+    "reason": "external_truncation"
+  },
+  "closed": {
+    "epoch": "mr3_p2a0_20261017_v4_interface_w0_e1_45475821",
+    "start_sim_time_sec": 70.74,
+    "stop_sim_time_sec": 70.74,
+    "pending_goal_count": 0,
+    "robot_names": [
+      "tb1",
+      "tb2",
+      "tb3"
+    ],
+    "navigation_failure": false
+  },
+  "scope": "Actual native engineering attempt, parameter observer failed before first step. Summary transition_count1 is external close reward ACK, not an action or step. No training/GPU/braking credit; later v4 stages skipped by root."
+}

@@ -20,6 +20,12 @@ from .supervisor import InfrastructureError, Supervisor, WORKSPACE, identity_ali
 PARAMETER_REVIEW_SCRIPT = Path(
     "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/"
     "20261017_mr3_p2a0_v4/independent/mr3_actual_nav2_parameters_v4.py")
+PARAMETER_REVIEW_PROFILE = Path(
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_fastdds_loopback_udp.xml")
+TRANSPORT_ENV_KEYS = (
+    "RMW_IMPLEMENTATION", "ROS_LOCALHOST_ONLY", "FASTRTPS_DEFAULT_PROFILES_FILE",
+    "SKIP_DEFAULT_XML", "FASTDDS_DEFAULT_PROFILES_FILE", "RMW_FASTRTPS_USE_QOS_FROM_XML",
+    "RMW_FASTRTPS_PUBLICATION_MODE")
 
 
 def probe_action(snapshot, *, outward_goals=False):
@@ -94,6 +100,48 @@ def _parameter_review_binding(freeze):
             "sha256": hashlib.sha256(raw).hexdigest()}
 
 
+def _parameter_review_environment(args, worker_id, episode):
+    """Match native discovery using only the seven frozen transport settings."""
+    metadata_raw = (Path(episode["output_directory"]) / "metadata.json").read_bytes()
+    metadata = json.loads(metadata_raw)
+    if metadata["freeze"] != args.freeze or metadata["epoch"] != episode["epoch"]:
+        raise RuntimeError("parameter review native metadata freeze/epoch mismatch")
+    native = metadata["transport_environment"]
+    profile = WORKSPACE / PARAMETER_REVIEW_PROFILE
+    if profile.resolve() != profile:
+        raise RuntimeError("parameter review profile must use the canonical unsymlinked path")
+    raw = profile.read_bytes()
+    profile_sha = hashlib.sha256(raw).hexdigest()
+    expected = {
+        "RMW_IMPLEMENTATION": "rmw_fastrtps_cpp", "ROS_LOCALHOST_ONLY": "0",
+        "FASTRTPS_DEFAULT_PROFILES_FILE": str(profile), "SKIP_DEFAULT_XML": "1",
+        "FASTDDS_DEFAULT_PROFILES_FILE": None, "RMW_FASTRTPS_USE_QOS_FROM_XML": None,
+        "RMW_FASTRTPS_PUBLICATION_MODE": None,
+    }
+    if (any(key not in native or native[key] != value for key, value in expected.items())
+            or native.get("profile_sha256") != profile_sha):
+        raise RuntimeError("parameter review native transport/profile declaration mismatch")
+    frozen = subprocess.check_output(
+        ["git", "show", f"{args.freeze}:{PARAMETER_REVIEW_PROFILE.as_posix()}"], cwd=WORKSPACE)
+    if raw != frozen:
+        raise RuntimeError("parameter review profile differs from the declared source freeze")
+    environment = dict(ros_environment(args.base_domain + worker_id, args.base_port + worker_id))
+    for key in TRANSPORT_ENV_KEYS:
+        if native[key] is None:
+            environment.pop(key, None)
+        else:
+            environment[key] = native[key]
+    return environment, {
+        "native_transport_environment": {
+            **{key: native[key] for key in TRANSPORT_ENV_KEYS}, "profile_sha256": profile_sha},
+        "selected_transport_environment": {
+            key: environment.get(key) for key in TRANSPORT_ENV_KEYS},
+        "metadata_sha256": hashlib.sha256(metadata_raw).hexdigest(),
+        "profile_source": {"relative_path": PARAMETER_REVIEW_PROFILE.as_posix(),
+                           "freeze": args.freeze, "sha256": profile_sha},
+    }
+
+
 def _run_parameter_review(args, worker_id, episode):
     binding = _parameter_review_binding(args.freeze)
     if binding != args.preparation_parameter_review_source:
@@ -111,10 +159,11 @@ def _run_parameter_review(args, worker_id, episode):
     trace = {"source": binding, "command_argv": command, "wall_timeout_sec": 45,
              "scope": "after returned reset, paused before first step; readonly GetParameters"}
     episode["preparation_parameter_review"] = trace
+    environment, transport = _parameter_review_environment(args, worker_id, episode)
+    trace["transport"] = transport
     try:
         response = subprocess.run(
-            command, env=ros_environment(args.base_domain + worker_id, args.base_port + worker_id),
-            text=True, capture_output=True, timeout=45)
+            command, env=environment, text=True, capture_output=True, timeout=45)
     except subprocess.TimeoutExpired as error:
         trace.update(timed_out=True,
                      stdout=(error.stdout.decode(errors="replace")

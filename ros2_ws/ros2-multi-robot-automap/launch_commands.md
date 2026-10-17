@@ -197,9 +197,9 @@ python -m mr3_learning.audit_preparation \
 工程成本单列，不使用/重置pilot余额。每worker始终三台；300秒KEEP用于截止与关闭验证，
 不证明探索或三台参与成功。旧版原件保持；用户随后要求继续完成P2A.0，新版见下节。
 
-## MR3-P2A.0 v4 当前训练前工程准备
+## MR3-P2A.0 v5 当前训练前工程准备
 
-v1/v2/v3失败原件保留，不重跑旧命令。当前导航合成own已知权威/shared补unknown、候选v5、快照v3/张量v2及71列活动观测延续。实际速度链为controller/behavior→`cmd_vel_nav`→smoother→`cmd_vel_unguarded`→唯一`motion_safety`→`cmd_vel`，每20ms暂停等待实际topic完成ACK。三机实际Nav2配置和安全门的角速度指令上限均为`.8rad/s`，测量门仍为`1.2rad/s`；精确一ULP规范、完整转向复验及保守停止包络延续。
+v1/v2/v3/v4失败原件保留，不重跑旧命令。当前导航合成own已知权威/shared补unknown、候选v5、快照v3/张量v2及71列活动观测延续。实际速度链为controller/behavior→`cmd_vel_nav`→smoother→`cmd_vel_unguarded`→唯一`motion_safety`→`cmd_vel`，每20ms暂停等待实际topic完成ACK。三机实际Nav2配置和安全门的角速度指令上限均为`.8rad/s`，测量门仍为`1.2rad/s`；精确一ULP规范、完整转向复验及保守停止包络延续。
 
 系统ROS环境先构建并source当前install，再按P1C段切换conda `ns3gym`并清除`PYTHONPATH`，在wireless-rl执行：
 
@@ -209,45 +209,45 @@ v1/v2/v3失败原件保留，不重跑旧命令。当前导航合成own已知权
 source install/setup.bash
 ```
 
-只在一个干净且已提交推送、完成源码和installed路径核验的冻结运行。interface通过后才开始terminal，再完整reset，最后deadline；每阶段完整审计通过再前进。上限488 API/487脚本动作、7000墙秒，无原生GPU/optimizer；pilot余额不动。真实失败保留并停止该版后续阶段，修复后新冻结/新预声明重验，不拼PASS。详见[v4报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261017_mr3_p2a0_v4.md)。
+只在一个干净且已提交推送、完成源码和installed路径核验的冻结运行。interface通过后才开始terminal，再完整reset，最后deadline；每阶段完整审计通过再前进。上限488 API/487脚本动作、7000墙秒，无原生GPU/optimizer；pilot余额不动。真实失败保留并停止该版后续阶段，修复后新冻结/新预声明重验，不拼PASS。详见[v5报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261017_mr3_p2a0_v5.md)。
 
 ```bash
-MR3_P2A0_V4_FREEZE=$(git rev-parse HEAD)
+MR3_P2A0_V5_FREEZE=$(git rev-parse HEAD)
 python -m mr3_learning.benchmark --workers 1 --schedule open:101 \
   --steps 20 --preparation-motion-probe \
-  --base-domain 212 --base-port 12561 --output-root \
-  /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0 --run-id mr3_p2a0_20261017_v4_interface --preparation-parameter-review
+  --base-domain 222 --base-port 12601 --output-root \
+  /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0 --run-id mr3_p2a0_20261017_v5_interface --preparation-parameter-review
 python -m mr3_learning.audit_preparation \
-  /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v4_interface \
-  --freeze "$MR3_P2A0_V4_FREEZE" --output /tmp/mr3_p2a0_v4_interface_audit.json
+  /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v5_interface \
+  --freeze "$MR3_P2A0_V5_FREEZE" --output /tmp/mr3_p2a0_v5_interface_audit.json
 
 python -m mr3_learning.benchmark --workers 1 --schedule open:101,open:101 \
   --steps 4 --terminal-probe \
-  --base-domain 214 --base-port 12571 --output-root \
-  /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0 --run-id mr3_p2a0_20261017_v4_terminal
+  --base-domain 224 --base-port 12611 --output-root \
+  /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0 --run-id mr3_p2a0_20261017_v5_terminal
 python -m mr3_learning.audit_preparation \
-  /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v4_terminal \
-  --freeze "$MR3_P2A0_V4_FREEZE" --output /tmp/mr3_p2a0_v4_terminal_audit.json
+  /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v5_terminal \
+  --freeze "$MR3_P2A0_V5_FREEZE" --output /tmp/mr3_p2a0_v5_terminal_audit.json
 
 python -m mr3_learning.benchmark --workers 2 --schedule open:101,open:101,rooms:101,corridors:101 \
   --steps 20 --preparation-motion-probe \
-  --base-domain 216 --base-port 12581 --output-root \
-  /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0 --run-id mr3_p2a0_20261017_v4_reset
+  --base-domain 226 --base-port 12621 --output-root \
+  /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0 --run-id mr3_p2a0_20261017_v5_reset
 python -m mr3_learning.audit_preparation \
-  /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v4_reset \
-  --freeze "$MR3_P2A0_V4_FREEZE" --output /tmp/mr3_p2a0_v4_reset_audit.json
+  /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v5_reset \
+  --freeze "$MR3_P2A0_V5_FREEZE" --output /tmp/mr3_p2a0_v5_reset_audit.json
 
 python -m mr3_learning.benchmark --workers 1 --schedule open:101 \
   --steps 300 --deadline-probe \
-  --base-domain 220 --base-port 12591 --output-root \
-  /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0 --run-id mr3_p2a0_20261017_v4_deadline
+  --base-domain 230 --base-port 12631 --output-root \
+  /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0 --run-id mr3_p2a0_20261017_v5_deadline
 python -m mr3_learning.audit_preparation \
-  /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v4_deadline \
-  --freeze "$MR3_P2A0_V4_FREEZE" --output /tmp/mr3_p2a0_v4_deadline_audit.json
+  /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v5_deadline \
+  --freeze "$MR3_P2A0_V5_FREEZE" --output /tmp/mr3_p2a0_v5_deadline_audit.json
 
 ```
 
-interface的`--preparation-parameter-review`只读固定、源码绑定的九节点参数脚本；reset返回后、首step前物理保持暂停，失败走严格关闭。原件`actual_nav2_parameters.json`保存在episode目录。interface还须通过冻结独立angular消费者，reset须通过冻结独立物理matrix；规则和脚本SHA见预声明资产。
+interface的`--preparation-parameter-review`只读固定、源码绑定的九节点参数脚本；使用原native metadata声明并经canonical profile/Git字节核验的相同loopback UDP配置；reset返回后、首step前物理保持暂停，失败走严格关闭。原件`actual_nav2_parameters.json`保存在episode目录。interface还须通过冻结独立angular消费者，reset须通过冻结独立物理matrix；规则和脚本SHA见预声明资产。
 
 `--preparation-motion-probe`显式工程输入优先向外合法方向；20步中GOAL[0,1.5)/[13,15)、WAIT[10,13)，其余KEEP。三台每轮均需合法GOAL、原生接受及received路径>.05m，首失败共享标志阻止后续调用而不补造终态。该脚本不是生产探索策略或fallback。terminal/deadline没有95%/参与信用；完成后待用户验收P2A.0。
 

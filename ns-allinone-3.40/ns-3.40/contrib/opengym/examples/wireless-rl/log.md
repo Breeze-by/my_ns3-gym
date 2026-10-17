@@ -4013,3 +4013,28 @@ pilot已用2226决策/11494.045260453597墙秒、余额1870/2905.954739546403不
 新v4输入重放消费者仅以旧v3原件作CPU兼容检查，完整七图/wholeobs/活动/实际目标绑定一致，
 真实移动不足仍FAIL/exit1；命令、原输出和SHA见`mr3_p2a0_v4_independent_input_reviewer_checks_v1.json`。
 独立脚本SHA已加入v4机器计划；本条无新native/PPO/GPU/制动信用，pilot不动。
+
+### 2026-10-17 MR3-P2A.0 v4 原生interface失败（保留，无训练）
+
+- freeze `b4e64f90391c0b4db2127e9e824118459a4288ad`，已推送且启动前clean；87源码/10独立脚本绑定PASS。
+- 精确声明命令：`python -m mr3_learning.benchmark --workers 1 --schedule open:101 --steps 20 --preparation-motion-probe --base-domain 212 --base-port 12561 --output-root /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0 --run-id mr3_p2a0_20261017_v4_interface --preparation-parameter-review`；实际Python/argv/parent身份见launcher原件。
+- 完整审计命令：`python -m mr3_learning.audit_preparation /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v4_interface --freeze b4e64f90391c0b4db2127e9e824118459a4288ad --output /tmp/mr3_p2a0_v4_interface_full_audit.json`，exit1/FAIL（source87绑定保持）。
+- open101单worker domain212/port12561，实际reset1、step0、submitted0/unreturned0。
+  新参数脚本30.31988252233714秒未收paused motion status，0receipt/0GetParameters，三项child cleanup true；
+  benchmark首失败后cooperative close，无新step/reset。七图/唯一wholeobs/候选/活动完整性PASS；
+  初始三台有合法GOAL，但均0接受/无postrelease活动，不得授移动、.8物理或制动信用。
+- 39 native exit0/complete，worker0/forcedfalse/failed_samplefalse；44 owned+benchmark/launcher共46身份均已退出。
+- benchmark墙秒182.76034711441025；launcher183.207426502835分别报告不相加。有效任务0秒，
+  alignment.016秒和关闭后物理.020秒单列。固定angular消费者只有每台一个postrelease源，bounds/coverage皆FAIL。
+- terminal/reset/deadline按声明SKIPPED，无same-freeze重试，无PPO/nativeoptimizer/GPU。
+  canonical证据见`report/assets/20261017_mr3_p2a0_v4/`及accounting_v4.json。
+- 诊断发现worker本地配置专用loopbackUDP而hook通用env未继承；等待独立CPU对照。
+  用户仍授权完成P2A.0，后续v5修复该具体接线并新冻结完整重验，不放宽旧门、不重置pilot。
+
+
+### 2026-10-17 MR3-P2A.0 v5 transport修复与冻结前CPU
+
+以b4冻结为基线，修复只读observer未继承worker专用transport的集成缺口，固定7键、Noneunset、canonical profile路径/SHA/exact Git bytes、metadataepoch/freeze绑定，fe0a及30/45秒界均不改。
+完整命令`python -m unittest discover -s mr3_learning/tests -q`在conda ns3gym/PYTHONNOUSERSITE1/PYTHONPATHunset，208 PASS，11.251测试秒/16.550404557958245墙秒；28项focused及独立同源复核PASS，限定style和14来源绑定PASS。命令/输入before-after/原输出见v5 assets回执。ROS生产源未变，不重做无关仿真或把旧941检查记成新native。
+CPU传输对照精确命令、原b4 shell和fe0a字节、实际环境及输出在canonical v4 native/interface/independent_monitor/transport_ab_v1：无Gazebo/控制，发布端原profile仅发一次TL状态；default domain228实际超时0状态/0参数，matched domain227九typed参数通过，全部CPU进程正常清理/身份消失。这是有意保留的失败对照，不混入Gazebo矩阵或pilot。
+v5新机器预声明完整interface20→terminal8API→reset160→deadline300，上限488API/487动作/7000墙秒、无PPO/GPU/optimizer，先提交推送干净冻结。pilot余额1870/2905.954739546403不变。

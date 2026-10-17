@@ -1,0 +1,100 @@
+{
+  "schema": "mr3-actual-nav2-parameter-readback-v1",
+  "passed": false,
+  "freeze": "b4e64f90391c0b4db2127e9e824118459a4288ad",
+  "episode_directory": "/tmp/mr3_p2a0_v4_transport_ab_v1/default_subscriber",
+  "script_sha256": "fe0a91eec1aaf6d45bc3aedd4de9223b53e77721be878136a96d02ef1bd5c0ae",
+  "nodes": [],
+  "errors": [
+    "ValueError('finite wall guard expired: paused reset status')"
+  ],
+  "expected_typed_parameters": {
+    "controller_server": {
+      "FollowPath.max_vel_theta": [
+        3,
+        0.8
+      ],
+      "FollowPath.max_vel_x": [
+        3,
+        0.26
+      ],
+      "FollowPath.max_speed_xy": [
+        3,
+        0.26
+      ],
+      "FollowPath.min_vel_x": [
+        3,
+        0.0
+      ],
+      "FollowPath.max_vel_y": [
+        3,
+        0.0
+      ],
+      "use_sim_time": [
+        1,
+        true
+      ]
+    },
+    "behavior_server": {
+      "max_rotational_vel": [
+        3,
+        0.8
+      ],
+      "min_rotational_vel": [
+        3,
+        0.4
+      ],
+      "rotational_acc_lim": [
+        3,
+        3.2
+      ],
+      "use_sim_time": [
+        1,
+        true
+      ]
+    },
+    "velocity_smoother": {
+      "max_velocity": [
+        8,
+        [
+          0.26,
+          0.0,
+          0.8
+        ]
+      ],
+      "min_velocity": [
+        8,
+        [
+          -0.26,
+          0.0,
+          -0.8
+        ]
+      ],
+      "feedback": [
+        4,
+        "OPEN_LOOP"
+      ],
+      "smoothing_frequency": [
+        3,
+        20.0
+      ],
+      "use_sim_time": [
+        1,
+        true
+      ]
+    }
+  },
+  "scope": "GetParameters read-only actual responses from nine namespaced nodes; source clock is durable same-epoch motion completion matched to paused reset release; no parameter writes, control publications or physical stepping",
+  "epoch": "transport_ab_fixture",
+  "source_clock_ns": 1000000000,
+  "metadata_sha256": "c3ed141e511e2debe10bf7bed84e1401b63f94fc9b005a86d61118e39ec85475",
+  "reset_transition_sha256": "5061d07c723b88d15e6d088cf1ed36a3b83be5f6fdedbca3e4fba1b21428b761",
+  "motion_status_receipts": [],
+  "cleanup": {
+    "executor_shutdown": true,
+    "node_destroyed": true,
+    "context_shutdown": true
+  },
+  "cleanup_errors": [],
+  "wall_duration_sec": 30.294760650023818
+}

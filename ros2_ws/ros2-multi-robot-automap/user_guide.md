@@ -3,10 +3,10 @@
 2026-10-17当前边界：用户明确要求继续完成P2A.0。第一版SLAM生命周期、失败采样保存、
 候选v4及诊断修复的[原始结果](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261017_mr3_p2a0.md)保持；
 当前将own权威导航合成、实际导航图v5候选、最终运动门及累计参与观测并入本步，
-实际三机Nav2及最终门角速度指令上限为.8rad/s，原测量界1.2不变；参数读回和物理采样须在新冻结验证。见[v4报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261017_mr3_p2a0_v4.md)。
+实际三机Nav2及最终门角速度指令上限为.8rad/s，原测量界1.2不变；参数读回和物理采样须在新冻结验证。见[v5报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261017_mr3_p2a0_v5.md)。
 本轮只做无训练的原生工程矩阵，不重启pilot；95%/300秒/三台参与/安全门禁及累计pilot余额不变。
 第一版6次原生严格关闭正常；terminal通过，reset真实peer失败、deadline跳过的原整体FAIL不改。
-v4须以新冻结完整验证导航、三台实际执行、20ms运动输出相位及300秒关闭，再待用户验收。
+v5须以新冻结完整验证导航、三台实际执行、20ms运动输出相位及300秒关闭，再待用户验收。
 P2A未完成，P2B/gateway未开始。
 
 本轮P1C验证2026-10-15启动，实际完成时刻见P1C报告；MR3-P1A/P1B用户已验收，用户于2026-10-16验收P1C并授权P2A；`c9344e1`是历史工程冻结。

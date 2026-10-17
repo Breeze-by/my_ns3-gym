@@ -1,0 +1,206 @@
+{
+  "schema": "mr3-v4-interface-independent-final-runtime-review-v1",
+  "freeze": "b4e64f90391c0b4db2127e9e824118459a4288ad",
+  "benchmark_passed": false,
+  "benchmark_wall_sec": 182.76034711441025,
+  "parameter_review_passed": false,
+  "parameter_errors": [
+    "ValueError('finite wall guard expired: paused reset status')"
+  ],
+  "parameter_nodes": 0,
+  "parameter_received_statuses": 0,
+  "parameter_cleanup": {
+    "executor_shutdown": true,
+    "node_destroyed": true,
+    "context_shutdown": true
+  },
+  "worker_error": "RuntimeError('parameter review failed with returncode 1')",
+  "parameter_review_subprocess_trace": {
+    "source": {
+      "relative_path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v4/independent/mr3_actual_nav2_parameters_v4.py",
+      "freeze": "b4e64f90391c0b4db2127e9e824118459a4288ad",
+      "sha256": "fe0a91eec1aaf6d45bc3aedd4de9223b53e77721be878136a96d02ef1bd5c0ae"
+    },
+    "command_argv": [
+      "bash",
+      "-c",
+      "source /opt/ros/humble/setup.bash && source \"$1\" && shift && exec /usr/bin/python3 \"$@\"",
+      "mr3_parameter_review",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/setup.bash",
+      "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v4/independent/mr3_actual_nav2_parameters_v4.py",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v4_interface/worker0/episode001_open_101",
+      "--freeze",
+      "b4e64f90391c0b4db2127e9e824118459a4288ad",
+      "--output",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v4_interface/worker0/episode001_open_101/actual_nav2_parameters.json",
+      "--wall-timeout-sec",
+      "30"
+    ],
+    "wall_timeout_sec": 45,
+    "scope": "after returned reset, paused before first step; readonly GetParameters",
+    "returncode": 1,
+    "stdout": "{\"passed\": false, \"nodes\": 0, \"errors\": [\"ValueError('finite wall guard expired: paused reset status')\"], \"output\": \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v4_interface/worker0/episode001_open_101/actual_nav2_parameters.json\"}\n",
+    "stderr": ""
+  },
+  "native_closure": {
+    "started": 39,
+    "exited": 39,
+    "returncodes": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "complete": true,
+    "launch_returncode": 0,
+    "native_failures": [],
+    "supervisor": {
+      "worker_returncode": 0,
+      "forced_shutdown": false,
+      "failed_sample": false,
+      "remaining_owned_processes": [],
+      "remaining_owned_zombies": []
+    }
+  },
+  "all_saved_owned_and_benchmark_launcher_gone": true,
+  "unique_owned_plus_parent_launcher": 46,
+  "benchmark_parent": {
+    "pid": 2434990,
+    "parent": 2434957,
+    "group": 2434955,
+    "session": 2434955,
+    "start_ticks": 395644807,
+    "state": "R"
+  },
+  "launcher_identity": {
+    "pid": 2434957,
+    "parent": 2434955,
+    "group": 2434955,
+    "session": 2434955,
+    "start_ticks": 395644645,
+    "state": "R"
+  },
+  "fifo_phase": [
+    {
+      "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v4_interface/worker0/episode001_open_101",
+      "decision_sequences": {
+        "tb1": 3525,
+        "tb2": 3525,
+        "tb3": 3525
+      },
+      "actual_counts": {
+        "tb1": 3525,
+        "tb2": 3525,
+        "tb3": 3525
+      },
+      "pending_FIFO": {
+        "tb1": 0,
+        "tb2": 0,
+        "tb3": 0
+      },
+      "maximum_actual_abs_linear": {
+        "tb1": 0.0,
+        "tb2": 0.0,
+        "tb3": 0.0
+      },
+      "maximum_actual_abs_angular": {
+        "tb1": 0.0,
+        "tb2": 0.0,
+        "tb3": 0.0
+      },
+      "nonzero_actual_linear_counts": {
+        "tb1": 0,
+        "tb2": 0,
+        "tb3": 0
+      },
+      "motion_phase_consumed_count": 2,
+      "last_consumed_clock_ns": 70760000000,
+      "phase_refs_not_yet_seen_in_motion_snapshot": 0,
+      "native_started": 39,
+      "native_exited": 39,
+      "native_complete": true,
+      "errors": [],
+      "shutdown": {
+        "worker_returncode": 0,
+        "forced_shutdown": false,
+        "failed_sample": false,
+        "remaining_owned_processes": [],
+        "remaining_owned_zombies": []
+      }
+    }
+  ],
+  "raw_physics_diagnostic": {
+    "tb1": {
+      "raw_odom_messages": 2074,
+      "unique_source_samples": 2074,
+      "maximum_planar_speed": 0.0005322215048950374,
+      "maximum_angular_norm": 6.509465211144385e-05,
+      "maximum_abs_wz": 6.509465211144385e-05,
+      "maximum_sampled_angular_vector_acceleration": 0.0005143196079535643,
+      "maximum_actual_abs_linear": 0.0,
+      "maximum_actual_abs_angular": 0.0,
+      "violations": []
+    },
+    "tb2": {
+      "raw_odom_messages": 2009,
+      "unique_source_samples": 2009,
+      "maximum_planar_speed": 0.0005322215048952662,
+      "maximum_angular_norm": 6.664533673823381e-05,
+      "maximum_abs_wz": 6.664533673823381e-05,
+      "maximum_sampled_angular_vector_acceleration": 0.0005143196079231973,
+      "maximum_actual_abs_linear": 0.0,
+      "maximum_actual_abs_angular": 0.0,
+      "violations": []
+    },
+    "tb3": {
+      "raw_odom_messages": 1945,
+      "unique_source_samples": 1945,
+      "maximum_planar_speed": 0.0005322215048938969,
+      "maximum_angular_norm": 6.28933768251655e-05,
+      "maximum_abs_wz": 6.28933768251655e-05,
+      "maximum_sampled_angular_vector_acceleration": 0.0005143196079834081,
+      "maximum_actual_abs_linear": 0.0,
+      "maximum_actual_abs_angular": 0.0,
+      "violations": []
+    }
+  },
+  "accounting_path": "/tmp/mr3_p2a0_v4_interface_accounting_v1.json",
+  "braking_credit": false,
+  "physical_validation_complete": false,
+  "scope": "True parameter-observer infrastructure failure before first step. Closure/FIFO/source integrity are separate from benchmark/task/parameters failure; nominal raw warmup maxima without meaningful motion do not establish hardware limits, angular stimulus coverage or stopping response."
+}

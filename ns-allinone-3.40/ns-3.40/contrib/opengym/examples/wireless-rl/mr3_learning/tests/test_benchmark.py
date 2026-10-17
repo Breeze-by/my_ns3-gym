@@ -2,6 +2,7 @@
 
 from concurrent.futures import ThreadPoolExecutor
 import contextlib
+import hashlib
 import io
 import json
 from pathlib import Path
@@ -351,6 +352,7 @@ class CooperativeAbortTests(unittest.TestCase):
                 patch.object(benchmark, "resource_sample", return_value={}), \
                 patch.object(benchmark.subprocess, "check_output", return_value="fake-freeze"), \
                 patch.object(benchmark, "_parameter_review_binding", return_value=binding), \
+                patch.object(benchmark, "_parameter_review_environment", return_value=({}, {})), \
                 patch.object(benchmark.subprocess, "run", return_value=SimpleNamespace(
                     returncode=0, stdout="readonly-review", stderr="")), \
                 contextlib.redirect_stdout(io.StringIO()):
@@ -404,6 +406,27 @@ class CooperativeAbortTests(unittest.TestCase):
     def test_parameter_review_timeout_retains_partial_output_and_closes_without_step(self):
         self.check_parameter_review(returncode="timeout")
 
+    def test_parameter_review_bad_transport_stops_before_spawn_or_step_and_closes(self):
+        args = self.args()
+        args.preparation_parameter_review, args.freeze = True, "fake-freeze"
+        binding = {"sha256": "fixed-source-sha"}
+        args.preparation_parameter_review_source = binding
+        abort = benchmark._new_preparation_abort()
+        supervisor, environment = self.fakes()
+        with supervisor, environment, \
+                patch.object(benchmark, "_parameter_review_binding", return_value=binding), \
+                patch.object(benchmark, "_parameter_review_environment",
+                             side_effect=RuntimeError("native transport mismatch")), \
+                patch.object(benchmark.subprocess, "run") as command:
+            result = benchmark.run_worker(args, 0, abort)
+        command.assert_not_called()
+        instance = self.environments[0]
+        self.assertEqual((instance.reset_calls, instance.step_calls, instance.close_calls),
+                         (1, 0, 1))
+        self.assertTrue(abort["event"].is_set())
+        self.assertEqual(result["episodes"][0]["transitions"], 0)
+        self.assertIn("native transport mismatch", result["error"])
+
     def check_parameter_review(self, returncode):
         args = self.args()
         args.schedule = args.schedule[:1]
@@ -438,14 +461,16 @@ class CooperativeAbortTests(unittest.TestCase):
 
         with supervisor, environment, \
                 patch.object(benchmark, "_parameter_review_binding", return_value=binding), \
-                patch.object(benchmark, "ros_environment",
-                             return_value={"ROS_DOMAIN_ID": "206"}) as ros_env, \
+                patch.object(benchmark, "_parameter_review_environment", return_value=(
+                    {"ROS_DOMAIN_ID": "206"}, {"native_profile_verified": True})) as ros_env, \
                 patch.object(benchmark.subprocess, "run", side_effect=review) as command:
             result = benchmark.run_worker(args, 0, abort)
-        ros_env.assert_called_once_with(206, 12541)
+        ros_env.assert_called_once()
+        self.assertEqual(ros_env.call_args.args[:2], (args, 0))
         command.assert_called_once()
         self.assertEqual(self.environments[0].close_calls, 1)
         trace = result["episodes"][0]["preparation_parameter_review"]
+        self.assertEqual(trace["transport"], {"native_profile_verified": True})
         if returncode == "timeout":
             self.assertTrue(trace["timed_out"])
             self.assertEqual(trace["wall_timeout_sec"], 45)
@@ -474,6 +499,111 @@ class CooperativeAbortTests(unittest.TestCase):
         self.assertNotIn("preparation_abort", result)
         self.assertNotIn("reset_attempts", result)
         self.assertTrue(all(episode["terminated"] for episode in result["episodes"]))
+
+
+class ParameterReviewTransportTests(unittest.TestCase):
+    def setUp(self):
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        self.root = Path(temporary.name)
+        self.args = SimpleNamespace(freeze="a" * 40, base_domain=212, base_port=12561)
+        self.profile = self.root / benchmark.PARAMETER_REVIEW_PROFILE
+        self.profile.parent.mkdir(parents=True)
+        self.profile.write_bytes(b"reviewed-loopback-udp-profile")
+        self.episode = {"output_directory": str(self.root / "episode"), "epoch": "actual-epoch"}
+        Path(self.episode["output_directory"]).mkdir()
+        self.native = {
+            "RMW_IMPLEMENTATION": "rmw_fastrtps_cpp", "ROS_LOCALHOST_ONLY": "0",
+            "FASTRTPS_DEFAULT_PROFILES_FILE": str(self.profile), "SKIP_DEFAULT_XML": "1",
+            "FASTDDS_DEFAULT_PROFILES_FILE": None, "RMW_FASTRTPS_USE_QOS_FROM_XML": None,
+            "RMW_FASTRTPS_PUBLICATION_MODE": None,
+            "profile_sha256": hashlib.sha256(self.profile.read_bytes()).hexdigest(),
+        }
+        self.metadata = {"freeze": self.args.freeze, "epoch": self.episode["epoch"],
+                         "transport_environment": self.native}
+
+    def environment(self, *, frozen=None):
+        path = Path(self.episode["output_directory"]) / "metadata.json"
+        path.write_text(json.dumps(self.metadata))
+        baseline = {"ROS_DOMAIN_ID": "212", "PATH": "/usr/bin",
+                    **{key: "unrelated-parent-value" for key in benchmark.TRANSPORT_ENV_KEYS}}
+        frozen = self.profile.read_bytes() if frozen is None else frozen
+        with patch.object(benchmark, "WORKSPACE", self.root), \
+                patch.object(benchmark, "ros_environment", return_value=baseline) as ros_env, \
+                patch.object(benchmark.subprocess, "check_output", return_value=frozen) as git:
+            result = benchmark._parameter_review_environment(self.args, 0, self.episode)
+        ros_env.assert_called_once_with(212, 12561)
+        git.assert_called_once_with([
+            "git", "show", f"{self.args.freeze}:{benchmark.PARAMETER_REVIEW_PROFILE.as_posix()}"],
+            cwd=self.root)
+        self.assertTrue(all(baseline[key] == "unrelated-parent-value"
+                            for key in benchmark.TRANSPORT_ENV_KEYS))
+        return result
+
+    def test_native_discovery_keys_are_exact_none_values_remove_parent_defaults(self):
+        self.native["BASH_ENV"] = "/untrusted/metadata/must/not/execute"
+        environment, trace = self.environment()
+        self.assertEqual(environment["ROS_DOMAIN_ID"], "212")
+        self.assertEqual(environment["PATH"], "/usr/bin")
+        for key in benchmark.TRANSPORT_ENV_KEYS:
+            if self.native[key] is None:
+                self.assertNotIn(key, environment)
+            else:
+                self.assertEqual(environment[key], self.native[key])
+        self.assertNotIn("BASH_ENV", environment)
+        self.assertNotIn("BASH_ENV", trace["native_transport_environment"])
+        self.assertEqual(trace["profile_source"]["sha256"], self.native["profile_sha256"])
+        self.assertEqual(trace["profile_source"]["freeze"], self.args.freeze)
+        self.assertEqual(trace["selected_transport_environment"],
+                         {key: self.native[key] for key in benchmark.TRANSPORT_ENV_KEYS})
+
+    def test_wrong_rmw_profile_hash_or_transport_key_rejected(self):
+        for key, value in (
+                ("RMW_IMPLEMENTATION", "rmw_other"), ("ROS_LOCALHOST_ONLY", "1"),
+                ("FASTRTPS_DEFAULT_PROFILES_FILE", "/unreviewed/profile.xml"),
+                ("SKIP_DEFAULT_XML", "0"), ("FASTDDS_DEFAULT_PROFILES_FILE", "/alternate.xml"),
+                ("RMW_FASTRTPS_USE_QOS_FROM_XML", "1"),
+                ("RMW_FASTRTPS_PUBLICATION_MODE", "ASYNCHRONOUS"),
+                ("profile_sha256", "0" * 64)):
+            with self.subTest(key=key):
+                original = self.native[key]
+                self.native[key] = value
+                with self.assertRaisesRegex(RuntimeError, "transport/profile declaration"):
+                    self.environment()
+                self.native[key] = original
+
+    def test_missing_none_key_is_not_silently_inherited(self):
+        del self.native["FASTDDS_DEFAULT_PROFILES_FILE"]
+        with self.assertRaisesRegex(RuntimeError, "transport/profile declaration"):
+            self.environment()
+
+    def test_native_metadata_epoch_and_freeze_bindings_required(self):
+        for key in ("epoch", "freeze"):
+            with self.subTest(key=key):
+                original = self.metadata[key]
+                self.metadata[key] = "different"
+                with self.assertRaisesRegex(RuntimeError, "metadata freeze/epoch mismatch"):
+                    self.environment()
+                self.metadata[key] = original
+
+    def test_native_declared_profile_must_equal_frozen_git_bytes(self):
+        with self.assertRaisesRegex(RuntimeError, "profile differs from the declared source"):
+            self.environment(frozen=b"different-frozen-profile")
+
+    def test_changed_disk_profile_rejected_even_if_native_sha_updated(self):
+        frozen = self.profile.read_bytes()
+        self.profile.write_bytes(b"changed-profile")
+        self.native["profile_sha256"] = hashlib.sha256(self.profile.read_bytes()).hexdigest()
+        with self.assertRaisesRegex(RuntimeError, "profile differs from the declared source"):
+            self.environment(frozen=frozen)
+
+    def test_symlinked_profile_is_not_an_alternate_execution_path(self):
+        target = self.root / "elsewhere.xml"
+        target.write_bytes(self.profile.read_bytes())
+        self.profile.unlink()
+        self.profile.symlink_to(target)
+        with self.assertRaisesRegex(RuntimeError, "canonical unsymlinked path"):
+            self.environment()
 
 
 if __name__ == "__main__":
