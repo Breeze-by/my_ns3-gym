@@ -29,6 +29,7 @@ TRANSPORT_ENV_KEYS = (
 PREPARATION_PROBE_V2 = "mr3-p2a0-outward-cancel-v2"
 PREPARATION_PROBE_V3 = "mr3-p2a0-outward-cancel-v3"
 PREPARATION_PROBE_V4 = "mr3-p2a0-outward-cancel-v4"
+PREPARATION_PROBE_V5 = "mr3-p2a0-outward-cancel-v5"
 
 
 def _probe_goal_order(snapshot, action, outward_goals):
@@ -133,7 +134,7 @@ def probe_action_v3(snapshot, diagnostics):
     return 888
 
 
-def probe_action_v4(snapshot, diagnostics):
+def probe_action_v4(snapshot, diagnostics, *, nonapproaching_goals=False):
     """Received-only bounded motion/cancel stimulus; never physical credit."""
     state = diagnostics.setdefault("v4_stimulus", {"rounds": {}, "decisions": []})
     if state.get("pending_submission") is not None:
@@ -178,11 +179,21 @@ def probe_action_v4(snapshot, diagnostics):
         desired.append(tuple(range(9)) if goal_window and not recovering else (8,))
     legal = [valid and all(choice in desired[index] for index, choice in
              enumerate((action // 100, action // 10 % 10, action % 10)))
+             and (not nonapproaching_goals or _probe_nonapproaching_goal_action(snapshot, action))
              for action, valid in enumerate(snapshot["joint_action_mask"])]
     if not any(legal):
         raise ValueError("no legal joint preparation action; never override a mask")
     filtered = dict(snapshot, joint_action_mask=legal)
     ranked = probe_action_v3(filtered, diagnostics)
+    if nonapproaching_goals and goal_window:
+        diagnostics["goal_decisions"][-1].update(
+            new_goal_filter="received_straight_nonapproach_v1",
+            original_joint_allowed_actions=sum(valid is True
+                                               for valid in snapshot["joint_action_mask"]),
+            filtered_stimulus_allowed_actions=sum(legal),
+            scope=("max_legal_goal_components refers only to the external V5 stimulus subset "
+                   "after lifecycle/nonapproach filtering; not actor interface availability; "
+                   "actual turn/stop coverage audited separately"))
     if goal_window:
         action = ranked
     else:
@@ -197,6 +208,8 @@ def probe_action_v4(snapshot, diagnostics):
                "received_motion_robots": [name for name, reason in reasons.items()
                                           if reason == "received_motion"],
                "scope": "planned legal input only, not submitted/cancelled/stopped credit"}
+    if nonapproaching_goals:
+        request["new_goal_filter"] = "received_straight_nonapproach_v1"
     state["pending_submission"] = request
     state["decisions"].append(dict(request))
     return action
@@ -231,6 +244,57 @@ def record_probe_v4_submission(diagnostics, info):
             "command_id": command.get("command_id"), "reason": request["reasons"].get(name),
             "scope": "actual step command submitted; native cancel/stop credit audited separately"})
     state["pending_submission"] = None
+
+
+def _probe_nonapproaching_goal_action(snapshot, action):
+    """External straight-direction filter only; never a trajectory/safety proof."""
+    choices = (action // 100, action // 10 % 10, action % 10)
+    if all(choice >= 8 for choice in choices):
+        return True
+
+    def finite(value):
+        try:
+            return type(value) in (int, float) and math.isfinite(value)
+        except OverflowError:
+            return False
+
+    for robot in snapshot["robots"]:
+        if (robot.get("fresh") is not True or robot.get("valid") is not True
+                or any(not finite(robot.get(key)) for key in ("x", "y"))):
+            return False
+    for index, choice in enumerate(choices):
+        if choice >= 8:
+            continue
+        own, goal = snapshot["robots"][index], snapshot["candidates"][choice]
+        if any(not finite(goal.get(key)) for key in ("x", "y")):
+            return False
+        gx, gy = goal["x"] - own["x"], goal["y"] - own["y"]
+        if not all(finite(value) for value in (gx, gy)):
+            return False
+        goal_distance = math.hypot(gx, gy)
+        if not finite(goal_distance) or goal_distance <= 0.:
+            return False
+        for peer_index, peer in enumerate(snapshot["robots"]):
+            if peer_index == index:
+                continue
+            px, py = peer["x"] - own["x"], peer["y"] - own["y"]
+            if not all(finite(value) for value in (px, py)):
+                return False
+            peer_distance = math.hypot(px, py)
+            denominator = goal_distance * peer_distance
+            dot = gx * px + gy * py
+            if (not all(finite(value) for value in (peer_distance, denominator, dot))
+                    or denominator <= 0.):
+                return False
+            margin = -dot / denominator
+            if not finite(margin) or margin < 0.:
+                return False
+    return True
+
+
+def probe_action_v5(snapshot, diagnostics):
+    """V4 lifecycle plus received non-approach new-GOAL screening."""
+    return probe_action_v4(snapshot, diagnostics, nonapproaching_goals=True)
 
 
 def _new_preparation_abort():
@@ -404,7 +468,7 @@ def run_worker(args, worker_id, preparation_abort=None):
                            for robot in initial["robots"]], "transitions": 0,
                        "transition_wall_sec": 0., "reward_sum": 0., "dt_values": []}
             if (preparation and getattr(args, "preparation_probe_version", None)
-                    in (PREPARATION_PROBE_V3, PREPARATION_PROBE_V4)):
+                    in (PREPARATION_PROBE_V3, PREPARATION_PROBE_V4, PREPARATION_PROBE_V5)):
                 episode["preparation_probe_diagnostics"] = {
                     "reference_turn_samples": {}, "goal_decisions": []}
             result["episodes"].append(episode)
@@ -439,8 +503,10 @@ def run_worker(args, worker_id, preparation_abort=None):
                         raise RuntimeError("killed worker was accepted as a valid transition")
                     break
                 if "preparation_probe_diagnostics" in episode:
-                    probe = (probe_action_v4 if args.preparation_probe_version
-                             == PREPARATION_PROBE_V4 else probe_action_v3)
+                    probe = (probe_action_v5 if args.preparation_probe_version
+                             == PREPARATION_PROBE_V5 else probe_action_v4
+                             if args.preparation_probe_version == PREPARATION_PROBE_V4
+                             else probe_action_v3)
                     action = probe(supervisor.last_result["snapshot"],
                                    episode["preparation_probe_diagnostics"])
                 else:
@@ -453,7 +519,8 @@ def run_worker(args, worker_id, preparation_abort=None):
                 episode["transitions"] += 1
                 episode["reward_sum"] += reward
                 episode["dt_values"].append(info["dt"])
-                if getattr(args, "preparation_probe_version", None) == PREPARATION_PROBE_V4:
+                if getattr(args, "preparation_probe_version", None) in (
+                        PREPARATION_PROBE_V4, PREPARATION_PROBE_V5):
                     record_probe_v4_submission(episode["preparation_probe_diagnostics"], info)
                 if terminated or truncated:
                     episode.update(terminated=terminated, truncated=truncated,
@@ -528,7 +595,8 @@ def main():
     parser.add_argument("--preparation-motion-probe", action="store_true",
                         help="external engineering inputs: prefer outward legal goals; no policy")
     parser.add_argument("--preparation-probe-version",
-                        choices=(PREPARATION_PROBE_V2, PREPARATION_PROBE_V3, PREPARATION_PROBE_V4),
+                        choices=(PREPARATION_PROBE_V2, PREPARATION_PROBE_V3,
+                                 PREPARATION_PROBE_V4, PREPARATION_PROBE_V5),
                         help="explicit external fixture version; v2=20 steps, v3=32 steps")
     parser.add_argument("--preparation-parameter-review", action="store_true",
                         help="paused one-worker open101: frozen readonly ROS parameter audit")
@@ -561,7 +629,7 @@ def main():
     if args.preparation_motion_probe:
         args.preparation_probe_version = args.preparation_probe_version or PREPARATION_PROBE_V2
         expected_steps = (32 if args.preparation_probe_version in
-                          (PREPARATION_PROBE_V3, PREPARATION_PROBE_V4) else 20)
+                          (PREPARATION_PROBE_V3, PREPARATION_PROBE_V4, PREPARATION_PROBE_V5) else 20)
         if args.steps != expected_steps:
             parser.error("preparation motion probe requires the explicit "
                          f"{expected_steps}-step fixture")

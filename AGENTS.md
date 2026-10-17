@@ -2,7 +2,7 @@
 
 # Codex Monorepo Memory — MR3
 
-2026-10-17 continuation: P2A.0 remains authorized and incomplete. V15 clean pushed freeze17ef3cb212aa completed interface32 and strict closure, but full/input activity and physical stopping coverage FAIL; terminal/reset/deadline SKIP. Navigation peer .26 geometry and complete control replay now PASS. tb1 received path .00436m and tb1/tb3 missing stop evidence remain. Actual peer motion turns an initially outward goal into a closing direction; second-phase reverse-first engineering ranking also chooses closing goals. Preserve all original FAILs, repair under a new reviewed clean pushed freeze and complete all four stages/mandatory gates without cross-freeze credit. Original task/body/stop gates remain. No PPO/P2B/gateway; pilot balance1870 decisions/2905.954739546403 wallsec unchanged. See wireless-rl/report/20261017_mr3_p2a0_v15.md.
+2026-10-17 continuation: P2A.0 remains authorized and incomplete. V15 freeze17ef3cb212aa failed interface activity/stopping coverage; originals and three SKIPs are closed in pushed55da440. V16 adds external V5/32 new-GOAL nonapproach screening within original lifecycle and joint legality; V4 defaults and original task/body/stop/angular gates remain. Offline282 conda CPU checks pass; no V16 native credit. Complete one reviewed clean pushed four-stage freeze with every mandatory gate, preserve failures, commit/push and await user acceptance. No PPO/P2B/gateway; pilot balance1870 decisions/2905.954739546403 wallsec unchanged. See wireless-rl/report/20261017_mr3_p2a0_v16.md.
 
 Historical first P2A.0 closure (2026-10-17): source freeze f8694025; six native episodes
 closed cleanly, terminal audit PASS, reset benchmark/full audit FAIL with one

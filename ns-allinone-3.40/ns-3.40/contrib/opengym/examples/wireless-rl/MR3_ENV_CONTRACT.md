@@ -323,6 +323,16 @@ fresh且导航idle、received线速度绝对值至多`.01m/s`；缺WAIT记录不
 旧v2/v3行为保持，未知版本及错误步数仍拒绝；工程capacity资格适配不提供历史P1C吞吐信用。
 
 
+V16新增`mr3-p2a0-outward-cancel-v5`，复用V4的32步、两GOAL窗口、取消条件和实际返回记账。
+仅对外部工程新GOAL增加筛选：本快照三机位置均fresh/valid且有限，每个所选目标相对每个队友的
+直线outward margin均有限且不小于0；重合、零分母及运算溢出/下溢拒绝该GOAL。KEEP/WAIT保持。
+筛选后沿用原GOAL数量、反向机会、outward、path及action id排名；原snapshot和actor joint mask不变。
+V5诊断的max_legal_goal_components只指工程筛选子集，另存原/过滤后合法动作数，不代表actor候选可用性。
+该筛选不保证Nav2瞬时路径、运动中cone或以后队友位置的安全；原guard与全部独立活动/物理门仍决定信用。
+原角覆盖要求每机至少一有效方向段、三机总体正负、至少一机先后反向，不添加每机双向要求。
+V4默认行为与旧V2/V3保持；新reset包装器只识别精确V5/32，原8轮/33API和raw物理/角向数学不改。
+
+
 ## P2A.0 v10 显式受控执行阶段（待同冻结原生验证）
 
 在`mr3_stepped=true`时，启动实际旧零输出/三存储ACK后接管timer，再真实推进20ticks到新clock；每一物理边界暂停，完成state_phase→peer_phase→motion control→三台driver存储→evaluator相位后再推进。三阶段共用epoch/request_id/target_time_ns且成功normal必须clock完全相等。状态节点取消周期state发布，选择自身实际causal入站、真实发布bundle及side消息；受控有效状态节拍改为50Hz，warmup/非stepped原10Hz保持。peer必须实际收到匹配SHA、sequence和publication开始后callback的六side及main bundle，才能真实发布障碍并ACK；guard必须实际收到两份ACK及main bundle、own causal输入，唯一正常输出并回收后ACK。墙超时10秒使本轮invalid，不推进仿真/修改源时间。诊断引用、raw ingress与协议ACK不进入actor/奖励。
