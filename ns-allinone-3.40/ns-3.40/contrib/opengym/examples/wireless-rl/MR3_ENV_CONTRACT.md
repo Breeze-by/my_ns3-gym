@@ -333,6 +333,18 @@ V5诊断的max_legal_goal_components只指工程筛选子集，另存原/过滤�
 V4默认行为与旧V2/V3保持；新reset包装器只识别精确V5/32，原8轮/33API和raw物理/角向数学不改。
 
 
+V17新增`mr3-p2a0-outward-cancel-v6`，仅在外部刺激中增加已接收候选的晚目标机会。
+旧初始及`[13,15)`窗口仍原V3排名，V6另外将`round(task_elapsed_sec*1e9)`按整数纳秒
+与`[15e9,26e9)`比较；晚窗口直接沿用原outward几何排名，真实elapsed原样保留，不伪造V3输入时间。
+整数端点避免`46.12-20.12`得到略小于26而错在第26秒派新GOAL；V4/V5默认窗口和诊断保持。
+晚GOAL仍要求原mask/V5非接近筛选、首WAIT至少3秒、fresh idle及received静止代理，
+active目标、缺首WAIT或不满足恢复条件时保持原合法KEEP/WAIT。原`.08m/s`、phase路径`.05m`运动取消条件、
+5秒承诺、28秒WAIT截止及真实step返回typed command锁存均不变。正常1秒输入最新新GOAL在25秒，
+最早30秒可合法WAIT，至32秒剩2秒只是测量机会，不能替代原`.78s/.144m`和连续raw rest样本。
+每机器人seed净空`.29m`及候选/actor mask不改；候选不合法时只等待。原V2/V3/V4/V5均可复现，
+V6只作32步工程刺激，不提供生产探索兜底、原生运动/停车或策略效果信用。
+
+
 ## P2A.0 v10 显式受控执行阶段（待同冻结原生验证）
 
 在`mr3_stepped=true`时，启动实际旧零输出/三存储ACK后接管timer，再真实推进20ticks到新clock；每一物理边界暂停，完成state_phase→peer_phase→motion control→三台driver存储→evaluator相位后再推进。三阶段共用epoch/request_id/target_time_ns且成功normal必须clock完全相等。状态节点取消周期state发布，选择自身实际causal入站、真实发布bundle及side消息；受控有效状态节拍改为50Hz，warmup/非stepped原10Hz保持。peer必须实际收到匹配SHA、sequence和publication开始后callback的六side及main bundle，才能真实发布障碍并ACK；guard必须实际收到两份ACK及main bundle、own causal输入，唯一正常输出并回收后ACK。墙超时10秒使本轮invalid，不推进仿真/修改源时间。诊断引用、raw ingress与协议ACK不进入actor/奖励。

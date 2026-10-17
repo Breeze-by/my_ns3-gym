@@ -5606,3 +5606,38 @@ rtk proxy /usr/bin/python3 /tmp/mr3_p2a0_v16_archive_closed_v1.py --publish --mo
 23helper元数据/custody反例与非行长style PASS；archive b4116df8 AST经version及inventory_v2单literal逆换同V15，packer d3f8cba6逆byte相同。实际context2.6678465376608074wall、pack32.96681893616915wholewall（内部32.202946595），568raw545668315B→33913593B，manifest322339fdde0b693b66480ac8dca45e55ba59c03d5a6ffd92abfe8455f7fe8233；最大encoded14642978B，全<100000000B及100MiB，无需分卷，未谎称现packer自动限额。publish exit0/14.924305682070553wall，255new support/raw17311911B→encoded1490654B及214旧raw去重引用，supportmanifest2ad71a46aea951258c3e39168619d4e7bcece832a0d1c79edc44dac9864f6a6c。101Git/tar源、134indie、189prefreezev2、actuala014/四宏与48身份freshgone均核验PASS。inventory1019 SHA cabcc3dff59b569bf430966958df82a26559a3c7f1a80f875cc3746e78fae848；verification a3d01c1967bd9af5daa44b2e96aa8412f45ea03099f32795900681cd9fdffa75，成本93050341472a30925a5de95e0a2c7605bdd500b3ef2ddf97756f5fc191411aa1。归档耗时不加native成本，保管PASS不改原physicalFAIL/3SKIP；pilot已用2226/11494.045260453597与余1870/2905.954739546403保持，P2A.0未完成，修复仅新冻结完整矩阵。
 
 V16关闭静态实际命令（cwd Git root）：`rtk proxy env PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 /tmp/root_mr3_v16_closure_static_review_v1.py`，exit0/.9502595849335194wall；1019库存SHA/bytes、152链接、原log前缀、真实唯一physicsFAIL/11jobs闭合均通过。实际git add -n .841路径全属11关闭文档或库存白名单、diff-check PASS，无native/formal重跑。5份发布后原件/静态helper和回执追加closure_static_v1，保留初库存，最终inventory_native_v2另覆盖后置保管。
+
+
+### 2026-10-18（北京时间） MR3-P2A.0 V17 晚目标刺激与离线准备（尚无原生）
+
+V16完整physicsFAIL/3SKIP闭包db6410f81f8540033443ff103c0b340b89bac65c已push并由只读ls-remote确认；原push上传较慢但自然exit0，未signal/并发盲push或重写历史。当前V17延续本轮UTC20261017原件ID，不修改原V16证据。
+
+V6仅在共享probe_action_v4新增默认False late_goal_window，V6 wrapper才同时启用V5非接近及late。旧V4/V5默认state/动作/完整diagnostic保持，原V2/V3/ranker/V5/filter/提交函数AST不变。原0..1.5/13..15仍V3排名，15..26晚窗口仅直接复用原_probe_goal_order outward排名，真实snapshot elapsed不改。新窗口按round(elapsed*1e9)与[15e9,26e9)比较，原46.12-20.12=25.999999999999996的float原型会误在t26选GOAL，旧源码/027→新ns888反例保留；t15 ns优先late分支，未伪造V3时间/加epsilon。正常1s末GOAL25、原5s mask直到30才可WAIT、余2s仅测量机会，仍须原.78s/.144m/三freshrawrest。原firstWAIT>=3/freshidle/received静止代理、.08+.05movingtrigger、28deadline及actual typed返回锁存保持；不更改seed.29/候选/地图/actor mask。
+
+候选7文件handoff45b47a6e0abce9a0d8a77a744f71585c4835fdd8873f25ef1ab8bd2986c28082，root逐base/新SHA核验晋升（fixture_promotion_v1）。benchmark1e32ea25b1dec121b9febc1f395124372cf14410dd6cbe66667dfa7feca63403，auditprep b7e07ee4；V6 exact32 capacity资格、A17两wrapper与test仅metadata适配，原8EP/33API/32steps、raw7a472/2516/原pool不变。最终4实际重放/边界+11portable PASS，10资格+19wrapper源未变复用原成功，不把含初portable失败的旧整体checks改标PASS。初新测试没先创建phase baseline而按原.05条件正确KEEP的fixture失败及2style失败/float原型source均保留。原V16输入t22首次反事实899→合法499，未授新轨迹信用。
+
+独立有限7组review b2ac6bb09de05121eba1abffe868aa3dd48328d67aaec835d3772f2540448a9c PASS/.9226wall：默认V4/V5真实V16输入动作/diag、ns两端及nextafter、t15late排名、fresh/recovery/firstWAIT/原mask、25GOAL→26/28/29maskedKEEP→30legalWAIT实际匹配返回后才latch→31held、.08/.05与False/nonbool提交门均保持。只提供机会/兼容，不证明Nav2持续.1s或制停。canonical wiring9a3c59c6 PASS：七source、两wrapper对A8归一全文+AST、58explicitpins及旧资产不变；仅V4/V15与V5/V16用原actual typedcommands，交叉V4/V16与V5/V15用构造matching receipts作counterfactual，无真实submission信用。ENV1144537c64c2c63e48cd6e55d41c7e811ee25935e60024f72f847631ae1c5a4d，PPO f7e161a7954d79499801a9a3a01959705f4733e2578e84e7660152c96c19084c只换ENV一literal，逆全文/AST回db641，原36runtime+3eval+19execution均匹配。全部原source/script/精确argv/env/stdout/执行回执在V17/tmp原件中，不重跑formal。
+
+完整canonical conda实际命令（cwd Git root，子进程cwd wireless-rl）：
+
+```bash
+rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 CUDA_VISIBLE_DEVICES= /usr/bin/python3 /tmp/mr3_p2a0_v17_conda_cpu_full_v1.py
+```
+
+仍ns3gym/python -m unittest discover -s mr3_learning/tests -v，exit0/294PASS，49.490test/54.956211707089096wall；48source before==after（继承46+明确V5/V6两个模块），不含未声明新路径。含CPU synthetic SB3 optimizer/checkpoint，不计原生PPO/pilot，ROS生产/YAML及actuala014四源码均不改，不重复已稳定ROS1200或重编译。
+
+V17九coord/test+parent/test共11新/tmp源，经版本逆字节+wholeAST同冻结ebe7的A16及原parent；四依赖Constant仅两wrapper路径A16→A17与两scheduler fakebasename。隔离fakecanonical/fakeCLI 39methods=14launcher/9scheduler/4Shim/3nested/9parent全部PASS（checks01 cda484cc，reverse_AST b2fe9add），原全硬门/预算逐值保持。9canonical晋升后仅相关9scheduler/.789test+9file fatal lintPASS，sources稳定（checks1d09f04c），不重复39。新active reset templates/criteria.consumer指A17/V6正确，不继承A8旧模板；raw消费者及数学scope不动。
+
+root最终plan de619095444706e83d59704928ccdcd099dd18d9222b20ed5cff34a1d135430f ready：147=130旧同SHA+4指定current刷新+13new，runtime101路径仍四授权delta。原608API/596决策/18000原生墙秒、4stage seed/domain/port/ceilings/required/pool/FAIL停止规则保持。实际最终canonical命令：`rtk proxy env PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 /tmp/mr3_p2a0_v17_final_coord_checks_v1.py`，14launcher/.286367848wall与9scheduler/.753245971wall PASS、148源/plan前后稳定。完整数学/源码/实际二进制最终独立命令（cwd Git root）：`rtk proxy env PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 /tmp/mr3_p2a0_v17_final_plan_source_independent_v1.py`，首跑PASS/1.5946wall，d774e4801e4a06167312c81d67613ca36469871ad68abc886297b6a553ae7741：stage仅V5→V6/runID、两active模板正确；criteria仅明示path/SHA/资格v5→v6归一，其余原数值/coverage同；147bindings/101runtime/36pins/ENV、ROSsrc/scripts无diff或untracked、5actual YAML/model、actual build/install/archivea014全byte和四source宏均匹配。静态/CPU不授native信用，clean pushed exact40 preflight仍必需；无新PPO/pilot/P2B/gateway。
+
+V17离线保管helper 0b15f22b00b24010d2aadbfbeee873dc201e7dd74c6a5ad47de94e44ed2d90c6：10custody fixtures/.022s及非行长lint PASS。旧A16 inventory_native_v2的1026项与19份更早manifest（共20refs/3976distinct raw）只读核验PASS/38.672925940249115wall。全部writer停止后实际命令（cwd Git root，PYTHONPATH unset/PYTHONNOUSERSITE=1/PYTHONDONTWRITEBYTECODE=1）：
+
+```bash
+rtk proxy env PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 /tmp/mr3_p2a0_v17_archive_offline_originals_v1.py --writers-stopped
+```
+
+一次publish exit0/40.24021921120584wall，主manifest a11005e1cf71bb2feccf63888bf3f6e74183b65867dfd919be23a72f67884531：194new/raw2574531B→encoded669413B、106旧raw去重引用；944排除=30fakecoord+82fakeruntimeleaf+831mock+1activeconsole（本次扫描无实际continuation/ELF入选，不冒称其排除数量）。所有194/106、encoded/decoded/source-stat后验PASS。receipt a1e4e61e3fc696aa0a16346f1d1087c0ac06403d1a583f78d2cebe5f44021de8，verification c65dbb99c194bc9b95f46d9aa18889d0e6103872d8c4461d929b55dda8917970。无native/formal，不计pilot/原生预算。
+
+实际静态`rtk proxy env PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 /tmp/mr3_p2a0_v17_prefreeze_inventory_verify_v1.py`，exit0/PASS：147绑定/101runtime/36pins、源末验、actuala014/四宏、194原件/106引用、164链接、真实git add -n .226路径白名单及diff-check通过；初208项库存SHA b9c02622aa4fd232effa32ca0fc4ef40d1055c5886526e78f737ee73156b223a。随后`rtk proxy env PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 /tmp/mr3_p2a0_v17_capture_publish_addendum_v1.py` exit0，发布回执/静态helper/result/dryrun等8原件raw72494B→encoded9028B，后置manifest d24c3d6ad3a7e093ec46ea21b7bf2125662e00c9db191212cad394f1ad35a9ad。最终inventory_prefreeze_v2覆盖218项/自身排除，SHA35848c92d649265c354c025a537b13a026dc68ea46e569692170f18e2391afcf，旧inventory及主manifest保持。只授静态保管信用；原生完整矩阵尚待clean pushed新冻结。
+
+最终提交前静态命令（cwd Git root）：`rtk proxy env PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 /tmp/mr3_p2a0_v17_final_static_review_v1.py`，exit0/PASS：218库存与全部219资产、194+8新原件/106旧ref、源/实际库/四宏、167本地链接、原db641 log前缀、实际git add -n .236路径白名单与diff-check全部通过；不覆盖旧静态原件，不提供native信用。

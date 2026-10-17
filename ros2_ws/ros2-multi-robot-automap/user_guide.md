@@ -3,7 +3,7 @@
 2026-10-17当前边界：用户明确要求继续完成P2A.0。第一版SLAM生命周期、失败采样保存、
 候选v4及诊断修复的[原始结果](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261017_mr3_p2a0.md)保持；
 当前将own权威导航合成、实际导航图v5候选、最终运动门及累计参与观测并入本步，
-MR3适配器每20ms物理推进前依次等待实际causal状态、peer障碍、guard回收与三台原生tagged目标存储回执。受控状态有效50Hz，非受控10Hz；存储ACK不代表机体响应，仍须原物理/时序门。实际三份Shim→原DWB局部控制使用.20/.8命令与显式加速度配置，完整速度模型不符时normal负ACK并严格清理，数据禁止训练。V16实际冻结ebe7d51b完成interface32/严格关闭，仅tb1制停覆盖FAIL，其他9门PASS，后三阶段SKIP；仍须修复后新冻结完整重验。旧失败/门禁保持，详见[V16报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261017_mr3_p2a0_v16.md)。
+MR3适配器每20ms物理推进前依次等待实际causal状态、peer障碍、guard回收与三台原生tagged目标存储回执。受控状态有效50Hz，非受控10Hz；存储ACK不代表机体响应，仍须原物理/时序门。实际三份Shim→原DWB局部控制使用.20/.8命令与显式加速度配置，完整速度模型不符时normal负ACK并严格清理，数据禁止训练。V16唯一tb1制停覆盖FAIL已封存db6410f；V17外部V6/32只增候选恢复后的晚目标窗口，294 CPU通过，仍须新冻结完整四阶段原生重验。旧失败/门禁保持，详见[V17报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261017_mr3_p2a0_v17.md)。
 实际Gazebo使用本包构建的paired joint-feedback驱动，物理参数保持原值，详见报告；本轮只做无训练的原生工程矩阵，不重启pilot；95%/300秒/三台参与/安全门禁及累计pilot余额不变。
 第一版6次原生严格关闭正常；terminal通过，reset真实peer失败、deadline跳过的原整体FAIL不改。
 须以新冻结完整验证导航、三台实际执行、20ms运动输出相位及300秒关闭，再待用户验收。

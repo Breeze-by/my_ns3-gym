@@ -26,22 +26,23 @@ PREPARATION_PROBE_VERSION = "mr3-p2a0-outward-cancel-v2"
 PREPARATION_PROBE_V3 = "mr3-p2a0-outward-cancel-v3"
 PREPARATION_PROBE_V4 = "mr3-p2a0-outward-cancel-v4"
 PREPARATION_PROBE_V5 = "mr3-p2a0-outward-cancel-v5"
+PREPARATION_PROBE_V6 = "mr3-p2a0-outward-cancel-v6"
 
 
 def exclude_preparation_capacity_comparison(auditor):
     """The new engineering inputs are not the historical P1C capacity workload.
 
     Keep every native gate and the original comparison function for legacy
-    inputs. Only the explicit, prospectively declared v2/v3/v4/v5 fixtures are excluded
+    inputs. Only the explicit, prospectively declared v2/v3/v4/v5/v6 fixtures are excluded
     from capacity comparison; it still has to pass all episode gates.
     """
     original = auditor.comparison_statistics
 
     def comparison(metadata, summary):
         version = metadata.get("preparation_probe_version")
-        if version not in (PREPARATION_PROBE_VERSION, PREPARATION_PROBE_V3, PREPARATION_PROBE_V4, PREPARATION_PROBE_V5):
+        if version not in (PREPARATION_PROBE_VERSION, PREPARATION_PROBE_V3, PREPARATION_PROBE_V4, PREPARATION_PROBE_V5, PREPARATION_PROBE_V6):
             return original(metadata, summary)
-        expected_steps = 32 if version in (PREPARATION_PROBE_V3, PREPARATION_PROBE_V4, PREPARATION_PROBE_V5) else 20
+        expected_steps = 32 if version in (PREPARATION_PROBE_V3, PREPARATION_PROBE_V4, PREPARATION_PROBE_V5, PREPARATION_PROBE_V6) else 20
         count, schedule = metadata.get("workers"), metadata.get("schedule")
         expected = ([['open', 101]] if count == 1 else
                     [['open', 101], ['open', 101], ['rooms', 101], ['corridors', 101]])

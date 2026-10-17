@@ -11,7 +11,7 @@ from unittest.mock import Mock
 
 from mr3_learning import audit_ppo
 from mr3_learning.audit_preparation import (
-    PREPARATION_PROBE_VERSION, PREPARATION_PROBE_V3, PREPARATION_PROBE_V4, PREPARATION_PROBE_V5,
+    PREPARATION_PROBE_VERSION, PREPARATION_PROBE_V3, PREPARATION_PROBE_V4, PREPARATION_PROBE_V5, PREPARATION_PROBE_V6,
     exclude_preparation_capacity_comparison,
 )
 
@@ -86,6 +86,19 @@ class PreparationComparisonTests(unittest.TestCase):
                 with self.subTest(workers=workers, steps=steps), self.assertRaises(ValueError):
                     self.auditor.comparison_statistics(metadata, summary)
 
+    def test_v6_only_excludes_exact_32_step_workload_and_keeps_all_episode_gates(self):
+        for workers in (1, 2):
+            metadata, summary = self.fixture(workers)
+            for row in (metadata, summary):
+                row.update(preparation_probe_version=PREPARATION_PROBE_V6, steps_per_episode=32)
+            outcome = self.auditor.comparison_statistics(metadata, summary)
+            self.assertFalse(outcome["eligible"])
+            self.assertIs(self.auditor.audit_episode, self.native_gate)
+            for steps in (20, 40, 32., True):
+                metadata["steps_per_episode"] = summary["steps_per_episode"] = steps
+                with self.subTest(workers=workers, steps=steps), self.assertRaises(ValueError):
+                    self.auditor.comparison_statistics(metadata, summary)
+
     def test_unknown_v4_like_probe_keeps_real_legacy_rejection(self):
         root = next(parent for parent in Path(__file__).resolve().parents
                     if (parent / ".git").exists())
@@ -100,7 +113,7 @@ class PreparationComparisonTests(unittest.TestCase):
         auditor = SimpleNamespace(comparison_statistics=namespace["comparison_statistics"],
                                   audit_episode=self.native_gate)
         exclude_preparation_capacity_comparison(auditor)
-        for version in ("mr3-p2a0-outward-cancel-v40", "mr3-p2a0-outward-cancel-v6"):
+        for version in ("mr3-p2a0-outward-cancel-v40", "mr3-p2a0-outward-cancel-v7"):
             metadata, summary = self.fixture()
             metadata.update(preparation_probe_version=version, steps_per_episode=32)
             summary.update(preparation_probe_version=version, steps_per_episode=32)

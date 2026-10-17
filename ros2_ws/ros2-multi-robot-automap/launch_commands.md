@@ -578,3 +578,29 @@ python report/assets/20261017_mr3_p2a0_v16/independent/mr3_p2a0_v16_audit_stage.
 ```
 
 原A13实际九参数reader、Shim观察及a014库保持；V16 closure只在核旧SHA后暂时切binaryproof路径13→16并finally还原。准确冻结、原件、所有FAIL及限制见[V16报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261017_mr3_p2a0_v16.md)。完整准备证据提交推送后等待用户P2A.0验收，不自动启动训练/P2B/gateway。
+
+
+## MR3-P2A.0 V17 完整准备矩阵（待新冻结准入）
+
+V16失败原件已封存db6410f。外部V6/32增晚目标机会，真实elapsed换算整数ns按[15e9,26e9)分类，保持旧V4/V5默认及原early排名；late只在原joint/lifecycle+V5非接近合法subset用旧outward排序。seed.29/路径/actor mask、5秒承诺、首WAIT3秒及moving/typed实际提交门不变。正常整数25秒最后新GOAL、30秒才可WAIT、32秒前剩2秒只是设计机会，仍须原raw物理/角向/接触/关闭门。没有生产探索兜底。
+
+完成clean pushed冻结及exact40 preflight后，串行父编排依次调用以下入口；各阶段全mandatory结束并PASS才准下一阶段，FAIL保留并SKIP后续，不同版重试或拼接PASS。被动mapping观察器只读实际进程。预算仍608API/596动作/18000原生墙秒，无PPO/pilot。
+
+```bash
+# cwd: wireless-rl；先按P1C段激活conda ns3gym并保持PYTHONNOUSERSITE=1
+unset PYTHONPATH
+export PYTHONDONTWRITEBYTECODE=1
+export MR3_P2A0_V17_FREEZE="$(git rev-parse HEAD)"
+python report/assets/20261017_mr3_p2a0_v17/independent/mr3_p2a0_v17_buildproof_preflight.py
+/usr/bin/python3 report/assets/20261017_mr3_p2a0_v17/independent/mr3_p2a0_v17_cross_stage_mapping_monitor_v1.py --freeze "$MR3_P2A0_V17_FREEZE" > /tmp/mr3_p2a0_v17_cross_stage_mapping_console.log 2>&1 &
+python report/assets/20261017_mr3_p2a0_v17/independent/mr3_p2a0_v17_launch_stage.py interface "$MR3_P2A0_V17_FREEZE"
+python report/assets/20261017_mr3_p2a0_v17/independent/mr3_p2a0_v17_audit_stage.py interface "$MR3_P2A0_V17_FREEZE"
+python report/assets/20261017_mr3_p2a0_v17/independent/mr3_p2a0_v17_launch_stage.py terminal "$MR3_P2A0_V17_FREEZE"
+python report/assets/20261017_mr3_p2a0_v17/independent/mr3_p2a0_v17_audit_stage.py terminal "$MR3_P2A0_V17_FREEZE"
+python report/assets/20261017_mr3_p2a0_v17/independent/mr3_p2a0_v17_launch_stage.py reset "$MR3_P2A0_V17_FREEZE"
+python report/assets/20261017_mr3_p2a0_v17/independent/mr3_p2a0_v17_audit_stage.py reset "$MR3_P2A0_V17_FREEZE"
+python report/assets/20261017_mr3_p2a0_v17/independent/mr3_p2a0_v17_launch_stage.py deadline "$MR3_P2A0_V17_FREEZE"
+python report/assets/20261017_mr3_p2a0_v17/independent/mr3_p2a0_v17_audit_stage.py deadline "$MR3_P2A0_V17_FREEZE"
+```
+
+原A13九参数reader、Shim观察及a014库复用；closure只在核旧SHA后暂改binaryproof路径13→17并finally还原。两A17 reset wrapper只变V6/32元数据，raw7a472/2516数学与原pool保持。实际结果/限制见[V17报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261017_mr3_p2a0_v17.md)。完整准备证据提交推送后等待用户验收，不自动启动训练/P2B/gateway。
