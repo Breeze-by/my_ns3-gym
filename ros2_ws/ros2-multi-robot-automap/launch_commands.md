@@ -604,3 +604,23 @@ python report/assets/20261017_mr3_p2a0_v17/independent/mr3_p2a0_v17_audit_stage.
 ```
 
 原A13九参数reader、Shim观察及a014库复用；closure只在核旧SHA后暂改binaryproof路径13→17并finally还原。两A17 reset wrapper只变V6/32元数据，raw7a472/2516数学与原pool保持。实际结果/限制见[V17报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261017_mr3_p2a0_v17.md)。完整准备证据提交推送后等待用户验收，不自动启动训练/P2B/gateway。
+
+## P2A.0 V18 隔离停车物理诊断（预声明，非完整矩阵）
+
+V17真实停车响应失败原件保持。V18仅为三机open101两次串行32步物理归因，
+先baseline原50 iterations，再显式150；各1800墙秒、总3600，最多2reset/64step/66API。
+默认运行不加载诊断库。仅由已审核预声明入口逐命令注入
+`MR3_PHYSICS_DIAGNOSTIC_CONFIG_FILE`，不要全局export。源码/安装库需先完成系统ROS构建、
+清洁提交推送和exact40准入，runner拒绝既有输出及盲重试。
+
+```bash
+cd /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl
+PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python \
+  report/assets/20261018_mr3_p2a0_v18/independent/mr3_p2a0_v18_preflight_v1.py
+PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 \
+  report/assets/20261018_mr3_p2a0_v18/independent/mr3_p2a0_v18_run_diagnostics_v1.py EXACT40
+```
+
+EXACT40必须是预检相同、干净且已推送的实际HEAD；清除学习端PYTHONPATH。两次原始物理门
+及1ms观测独立审计全部保留，baseline物理FAIL可作为有效诊断结果比较，基础设施/覆盖/来源
+核验失败则后一次SKIP。无PPO、pilot、GPU更新、四阶段或95%任务信用；之后完整矩阵另立新冻结。

@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
+import hashlib
 import json
+from pathlib import Path
 import os
 import signal
 import tempfile
@@ -31,7 +33,146 @@ from launch_ros.actions import Node
 from nav2_common.launch import RewrittenYaml
 
 
-def drive_spawn_model(model_path, robot_name, audit_path, epoch, tagged_commands=False):
+# Candidate helpers to insert in the existing launch file. No standalone node.
+PHYSICS_DIAGNOSTIC_ENV = "MR3_PHYSICS_DIAGNOSTIC_CONFIG_FILE"
+
+
+def diagnostic_read(path):
+    path = Path(path)
+    with path.open("rb") as stream:
+        before = os.fstat(stream.fileno())
+        raw = stream.read()
+        after = os.fstat(stream.fileno())
+    linked = path.stat()
+
+    def identity(value):
+        return (value.st_dev, value.st_ino, value.st_size, value.st_mtime_ns)
+    if identity(before) != identity(after) or identity(after) != identity(linked):
+        raise ValueError("diagnostic input changed while read")
+    return raw, hashlib.sha256(raw).hexdigest()
+
+
+def diagnostic_json(raw):
+    def unique(items):
+        value = {}
+        for key, item in items:
+            if key in value:
+                raise ValueError("duplicate diagnostic JSON key")
+            value[key] = item
+        return value
+    return json.loads(raw, object_pairs_hook=unique,
+                      parse_constant=lambda value: (_ for _ in ()).throw(
+                          ValueError("nonfinite diagnostic JSON")))
+
+
+def prepare_physics_diagnostic(config_path, *, adapter_mode, stepped_mode,
+                               robot_count, epoch, audit_path, world, seed,
+                               package_prefix):
+    if not config_path:
+        return None
+    if not (adapter_mode and stepped_mode and robot_count == 3 and epoch and audit_path):
+        raise ValueError("physics diagnostic requires stepped three-robot adapter epoch/audit")
+    config_file = Path(config_path)
+    audit = Path(audit_path)
+    if not config_file.is_absolute() or not audit.is_absolute():
+        raise ValueError("physics diagnostic requires absolute config/audit paths")
+    episode = audit.parent.resolve(strict=True)
+    raw, input_sha = diagnostic_read(config_file)
+    config = diagnostic_json(raw)
+    expected = {"schema", "run_directory", "episode_relative_directory", "scene", "seed",
+                "mode", "capture_start_ns", "capture_end_ns", "observer_library",
+                "profile_library"}
+    if (type(config) is not dict or set(config) != expected or
+            config["schema"] != "mr3-physics-diagnostic-config-v1"):
+        raise ValueError("unknown physics diagnostic config schema/fields")
+    if config["mode"] not in ("baseline", "iters150"):
+        raise ValueError("unknown physics diagnostic mode")
+    if type(config["seed"]) is not int or config["seed"] < 0 or str(config["seed"]) != str(seed):
+        raise ValueError("physics diagnostic seed mismatch")
+    if (type(config["scene"]) is not str or config["scene"] not in ("open", "rooms", "corridors")
+            or Path(world).name != f"p1c_{config['scene']}.world"):
+        raise ValueError("physics diagnostic scene mismatch")
+    for key in ("capture_start_ns", "capture_end_ns"):
+        if type(config[key]) is not int or not 0 <= config[key] <= 9223372036854775807:
+            raise ValueError("physics diagnostic window must use finite nonnegative int64 ns")
+    if config["capture_end_ns"] <= config["capture_start_ns"]:
+        raise ValueError("physics diagnostic capture window must increase")
+    if (type(config["run_directory"]) is not str or
+            type(config["episode_relative_directory"]) is not str):
+        raise ValueError("physics diagnostic run/episode path must be strings")
+    run = Path(config["run_directory"])
+    relative = Path(config["episode_relative_directory"])
+    required_relative = Path("worker0") / f"episode001_{config['scene']}_{config['seed']}"
+    if (not run.is_absolute() or relative != required_relative or
+            str(run.resolve(strict=True)) != str(run) or
+            (run / relative).resolve(strict=True) != episode):
+        raise ValueError("physics diagnostic exact run/first-episode mismatch")
+
+    libraries = {}
+    for key, filename in (("observer_library", "libmr3_stop_response_observer.so"),
+                          ("profile_library", "libmr3_physics_diagnostic_profile.so")):
+        spec = config[key]
+        if type(spec) is not dict or set(spec) != {"path", "sha256", "source_sha256"}:
+            raise ValueError("physics diagnostic library fields mismatch")
+        selected = Path(package_prefix) / "lib" / filename
+        if type(spec["path"]) is not str or spec["path"] != str(selected):
+            raise ValueError("physics diagnostic library must use reviewed canonical target")
+        for field in ("sha256", "source_sha256"):
+            digest = spec[field]
+            if (type(digest) is not str or len(digest) != 64 or
+                    any(ch not in "0123456789abcdef" for ch in digest)):
+                raise ValueError("physics diagnostic digest must be lowercase SHA256")
+        resolved = selected.resolve(strict=True)
+        _, digest = diagnostic_read(resolved)
+        if digest != spec["sha256"]:
+            raise ValueError("physics diagnostic library SHA mismatch")
+        libraries[key] = {**spec, "resolved_path": str(resolved)}
+
+    world_path = Path(world).resolve(strict=True)
+    _, world_sha = diagnostic_read(world_path)
+    binding = {
+        "schema": "mr3-physics-diagnostic-binding-v1", "epoch": epoch,
+        "episode_directory": str(episode), "config_source": str(config_file.resolve(strict=True)),
+        "config_sha256": input_sha, "mode": config["mode"],
+        "world_name": f"p1c_{config['scene']}", "world_path": str(world_path),
+        "world_sha256": world_sha, "seed": config["seed"],
+        "capture_start_ns": config["capture_start_ns"],
+        "capture_end_ns": config["capture_end_ns"], **libraries,
+        "profile_output_path": str(episode / "physics_profile.jsonl"),
+        "observer_outputs": {name: str(episode / f"physics_{name}.jsonl")
+                             for name in ("tb1", "tb2", "tb3")}}
+    binding_path = episode / "physics_diagnostic_binding.json"
+    binding_raw = (json.dumps(binding, sort_keys=True, allow_nan=False) + "\n").encode()
+    with binding_path.open("xb") as stream:
+        stream.write(binding_raw)
+    return {"binding": binding, "binding_path": str(binding_path),
+            "binding_sha256": hashlib.sha256(binding_raw).hexdigest()}
+
+
+def append_physics_observer(model, robot_name, diagnostic):
+    binding = diagnostic["binding"]
+    if robot_name not in ("tb1", "tb2", "tb3") or model.count("</model>") != 1:
+        raise ValueError("diagnostic requires one model and an active canonical robot")
+    name = f"mr3_stop_response_observer_{robot_name}"
+    if name in model:
+        raise ValueError("diagnostic observer already present")
+    fields = {
+        "epoch": binding["epoch"], "robot": robot_name,
+        "output_path": binding["observer_outputs"][robot_name], "base_link": "base_link",
+        "right_joint": "wheel_right_joint", "left_joint": "wheel_left_joint",
+        "start_ns": str(binding["capture_start_ns"]), "end_ns": str(binding["capture_end_ns"])}
+    filename = escape(binding["observer_library"]["path"], {'"': "&quot;"})
+    block = (f'  <plugin name="{name}" filename="{filename}">\n' +
+             "".join(f"    <{key}>{escape(value)}</{key}>\n" for key, value in fields.items()) +
+             "  </plugin>\n")
+    rendered = model.replace("</model>", block + "</model>", 1)
+    if rendered.replace(block, "", 1) != model:
+        raise ValueError("diagnostic changed original model bytes")
+    return rendered
+
+
+def drive_spawn_model(model_path, robot_name, audit_path, epoch, tagged_commands=False,
+                      *, physics_diagnostic=None):
     """Select target protocol/audit tags without changing physical model bytes."""
     if type(tagged_commands) is not bool or (tagged_commands and not epoch):
         raise ValueError("tagged drive requires an explicit adapter epoch")
@@ -48,6 +189,8 @@ def drive_spawn_model(model_path, robot_name, audit_path, epoch, tagged_commands
         if model.count(placeholder) != 1:
             raise ValueError(f"drive model requires exactly one {tag} placeholder")
         model = model.replace(placeholder, f"<{tag}>{escape(value)}</{tag}>")
+    if physics_diagnostic is not None:
+        model = append_physics_observer(model, robot_name, physics_diagnostic)
     if audit_path:
         destination = os.path.join(os.path.dirname(audit_path), f"drive_model_{robot_name}.sdf")
         with open(destination, "x", encoding="utf-8") as stream:
@@ -368,6 +511,14 @@ def launch_setup(context, *args, **kwargs):
         output="screen",
     )
     adapter_audit_path = LaunchConfiguration("mr3_audit_path").perform(context)
+    physics_diagnostic = prepare_physics_diagnostic(
+        context.environment.get(PHYSICS_DIAGNOSTIC_ENV, ""),
+        adapter_mode=adapter_mode, stepped_mode=stepped_mode, robot_count=robot_count,
+        epoch=episode_epoch.perform(context), audit_path=adapter_audit_path, world=world,
+        seed=gazebo_seed.perform(context), package_prefix=get_package_prefix("multi_robot"))
+    if physics_diagnostic is not None:
+        actions.append(LogInfo(msg="MR3_PHYSICS_DIAGNOSTIC_SELECTED " +
+                               json.dumps(physics_diagnostic, sort_keys=True)))
     if adapter_mode:
         actions.append(Node(
             package="multi_robot_exploration", executable="mr3_information",
@@ -656,6 +807,11 @@ def launch_setup(context, *args, **kwargs):
                                   ("GAZEBO_PLUGIN_PATH", plugin_export),
                                   ("GAZEBO_RESOURCE_PATH", media_export))
         }
+        diagnostic_system_args = []
+        if physics_diagnostic is not None:
+            diagnostic_system_args = [
+                "-s", physics_diagnostic["binding"]["profile_library"]["path"]]
+            gazebo_environment[PHYSICS_DIAGNOSTIC_ENV] = physics_diagnostic["binding_path"]
         # Humble's included gzserver launch appends extra_gazebo_args after the ROS '--'.
         # Gazebo treats that tail as positional pass-through, so load the system plugin
         # explicitly before the ROS argument section, with separate argv tokens.
@@ -663,6 +819,7 @@ def launch_setup(context, *args, **kwargs):
             cmd=["gzserver", world, ["--seed=", gazebo_seed],
                  "-s", "libgazebo_ros_init.so", "-s", "libgazebo_ros_factory.so",
                  "-s", "libgazebo_ros_force_system.so", "-s", step_plugin,
+                 *diagnostic_system_args,
                  "--ros-args", "--params-file", clock_parameters, "--"],
             output="both", additional_env=gazebo_environment,
         )
@@ -713,7 +870,8 @@ def launch_setup(context, *args, **kwargs):
         robot_name = robot["name"]
         namespace = "/" + robot_name
         spawn_model = drive_spawn_model(
-            model, robot_name, adapter_audit_path, episode_epoch.perform(context), adapter_mode)
+            model, robot_name, adapter_audit_path, episode_epoch.perform(context), adapter_mode,
+            physics_diagnostic=physics_diagnostic)
         if not adapter_audit_path:
             actions.append(RegisterEventHandler(OnShutdown(
                 on_shutdown=lambda event, event_context, path=spawn_model:

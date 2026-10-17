@@ -5688,3 +5688,42 @@ publish driver实际调用`/usr/bin/python3 /tmp/mr3_p2a0_v17_archive_closed_v1.
 共11reset/296step/307API、295实际命令/294.02task物理秒，计费4425.007009362802native launcher墙秒；父audit CLI墙秒362.9459742582403/256.85878604091704/2112.325802913867单列，压缩/归档不计native成本。原生PPO/GPU/optimizer/learning samples均0；pilot已用2226/11494.045260453597、余1870/2905.954739546403保持。P2A.0仍未完成，后续修复使用新冻结，不把本版两阶段PASS拼接成完成信用。
 
 V17闭包静态实际命令（cwd Git root）：`rtk proxy env PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 /tmp/root_mr3_v17_closure_static_review_v1.py`，exit0/6.137763304170221wall：6928库存SHA/bytes、101runtime/147independent仍原源、487身份消失原核验、11/9/26 jobs与原FAIL保持、155链接、原eee6日志前缀、真实git add -n .6721路径白名单及diff-check PASS。发布后7份实际静态/发布原件以`rtk proxy env PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 /tmp/root_mr3_v17_capture_closure_static_v1.py`无损后置保存，raw1558070B→encoded224891B，manifest ef521cad309074701460a6be51d01a3c5e9b7f86063e8ef55f680d7cf892ddb4；最终inventory_native_v2覆盖6937项/自身排除，SHA42a6df7973301b17e0cf47ca314e1c88f6acf0c98683909f75690d3f8a24b856，旧库存和全部原件不改。无native/formal重跑。
+
+
+### 2026-10-18 Asia/Shanghai — P2A.0 V18 隔离停车物理诊断准备（尚无native信用）
+
+来源父冻结`8780735c8234872a781236b4e52bac6f2237b746`，原V17完整FAIL已关闭推送。
+本段为新工作树CPU/构建检查，实际执行UTC2026-10-17；各回执保存具体before/after源码SHA，
+非以父冻结冒充新实现。新observer源4e721e15…、profile26952e1c…、launch bcb177d6…、合并CMake7ebe737c…；
+原驱动四源不变，实际SO前后均a014f2c6…。无新PPO/pilot/GPU/native/矩阵或95%信用。
+
+确切构建入口：`PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 /tmp/mr3_p2a0_v18_build_v1.py`。
+其argv为系统Humble underlay后执行`/usr/bin/python3 /usr/bin/colcon build --symlink-install --packages-select multi_robot --allow-overriding nav2_bringup`，
+环境移除Conda/继承ROS路径，PYTHONNOUSERSITE=1、CMAKE_BUILD_PARALLEL_LEVEL=2；53.591792651917785墙秒、exit0，
+source before/after相同，原a014未重编字节变化。库保管入口`/tmp/mr3_p2a0_v18_binary_custody_v1.py`在系统Humble/当前overlay下执行；
+两SO ldd-r/readelf-h均0、无undefined/notfound、build/install逐字一致、source宏匹配、gzip确定性及解码匹配。
+外层执行2.4441555墙秒、保管内部1.2942128609865904墙秒。回执v1预定archive日期错写20261017；
+`/tmp/mr3_p2a0_v18_binary_receipt_path_correction_v2.py`仅修六个prospective路径到20261018（内部.0283秒），原构建/ELF/v1保留，无重build或ldd。
+
+完整CPU入口`PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 /tmp/mr3_p2a0_v18_conda_cpu_full_v1.py`，
+内部conda ns3gym、PYTHONNOUSERSITE=1、unset PYTHONPATH、CUDA_VISIBLE_DEVICES空；294项PASS，
+53.832测试秒/59.241407084744424墙秒，48源前后相同。含CPU synthetic SB3 optimizer/checkpoint测试，不计原生PPO。
+launch graph/默认三SDF byte兼容/严格配置拒绝最终9项PASS（4.038197519723326墙秒）；早期两fixture FAIL和lint FAIL/源快照保留。
+observer v1实际SDFormat模板编译FAIL原件不删；最终v5 syntax-only PASS25.28719墙秒，canonical合并复核PASS。
+`/usr/bin/python3 -B /tmp/mr3_p2a0_v18_runner_checks_v1.py`4项实际CPU子进程反例PASS，区分有效物理FAIL退出1、坏JSON退出3、spawn失败与PASS；
+`/usr/bin/python3 -B /tmp/mr3_p2a0_v18_live_admission_tests_v3.py`5项PID/start/maps/半行文件检查PASS（.11113508511334658墙秒）。
+前两版CPU检查与被纠正的审查文字均留原件；非native重试。
+
+预声明下一原生仅两次固定三机器人open101/V6/32步，每次1reset+32step=33API、1800墙秒，
+累计66API/3600原生墙秒、0更新；baseline原50 iters、iters150唯一变量对照，非完整四阶段。
+配置、命令、库和最终来源见`report/assets/20261018_mr3_p2a0_v18/predeclared_plan_v18.json`；
+只有消费者/绑定/CPU保管收口并clean commit/push、exact40预检后才能执行，当前本条不记为已运行。
+无原任务/停车门放宽；原失败保留，不挑选、盲重试或拼接跨冻结PASS。pilot余1870决策/2905.954739546403墙秒不变。
+
+V18准备收口补记：最终`/usr/bin/python3 /tmp/mr3_independent_stop_observer_v1_tests.py -v`29项PASS（2.266774286981672墙秒），
+system flake8(max99)和syntax均0；源前后相同，consumer SHA e61ce4e00907ab35e196f7abe9fadfd9da099af3542f98dc773d593c33ca2b65。
+仅V17小transitions解析33记录/32实际step兼容PASS，不授新原生信用。
+`/usr/bin/python3 -B /tmp/mr3_p2a0_v18_pack_offline_v1.py`在所有对应写者STOP后封324原件/4462289原字节，
+tar.gz1239767字节，1.1902677239850163墙秒，全部原件末次SHA和解码验证PASS；包括全部早期FAIL、错误审查及修正原件。
+可变root continuation state明确排除。152项独立source bindings仅刷新实际变更audit_ppo摘要并新增5个A18消费者/协调器，
+plan现ready表示来源/CPU/构建已收口；只有实际clean pushed HEAD预检通过才可启动native，原生成本仍0。

@@ -132,7 +132,7 @@ EXECUTION_CONFIG_PINS = {
     ROS + 'src/multi_robot/config/nav2_params.yaml':
         '143b93aed93c0b71986844b7e3c00e1046e0b4fa9be8c94bcbc37b95e36b1e5b',
     ROS + 'src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py':
-        '9a281992530cd0b4f36f72e1ae5a9ccfed441599b511e5599ee738a0e889a4a7',
+        'bcb177d669890ecd6f552379afad771656b6b748c314ea158e5599d37a0c3d2b',
     ROS + 'src/multi_robot/launch/nav2_bringup/bringup_launch.py':
         '41b7e5e65c2c61ce6f1efb5a9288c3875e60f6c9054d77f96f7fc6f0a6f2aa53',
     ROS + 'src/multi_robot/launch/nav2_bringup/navigation_launch.py':
@@ -142,7 +142,11 @@ EXECUTION_CONFIG_PINS = {
     ROS + 'src/multi_robot/models/turtlebot3_waffle/model.sdf':
         'c8131da065085475bdb0ce1e4c3abfc8c009811af6851fadf1fc33bd38b1d8a1',
     ROS + 'src/multi_robot/CMakeLists.txt':
-        '84c4ecd5d04d20567406b8cc6079e20bc1366012b762e2d01aa600d15899a38d',
+        '7ebe737cdec686b08b02702846ca27998d1f67e9f1070979fa9123bfd6ea08b7',
+    ROS + 'src/multi_robot/src/mr3_stop_response_observer.cpp':
+        '4e721e15ee7c67938c1f2c1dbd3005e0832adb0182c66d6dce6ddcafaf7c0396',
+    ROS + 'src/multi_robot/src/mr3_physics_diagnostic_profile.cpp':
+        '26952e1cb8b17239a61b75ee98466daad65bafe116864557bbe92cc0b7fed7c0',
     ROS + 'src/multi_robot/package.xml':
         '5b3ccb10c6d3c9e2cf92861ba214e186b267ebbcfc28f2747ba72509d7784abf',
     ROS + 'src/multi_robot/src/mr3_gazebo_diff_drive.cpp':
@@ -160,7 +164,7 @@ EXECUTION_CONFIG_PINS = {
     ROS + 'src/multi_robot/include/multi_robot/mr3_drive_target.hpp':
         '4be4d77de247a5bcd427eb6948165e85098eb361030cf89d278d6df92e959d41',
 }
-ENV_DOCUMENT_SHA256 = "1144537c64c2c63e48cd6e55d41c7e811ee25935e60024f72f847631ae1c5a4d"
+ENV_DOCUMENT_SHA256 = "96d9bd3e3d597899b3d44a69ef9138e77b62b3641bd7261eb38846d5b003f155"
 TASK_DOCUMENT_SHA256 = "f96f5ba785a39daa882b3c2ea217c58dd968550b65bf0ee15faf07ca079f8991"
 PRIOR_TASK_DOCUMENT_SHA256 = "5e4400396e4aaf5a5094fb4c0c04c85810c327cc85be88b7d03fa3faeade07d2"
 TASK_BASE_FREEZE = "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a"

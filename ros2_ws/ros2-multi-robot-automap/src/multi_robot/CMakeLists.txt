@@ -45,6 +45,19 @@ target_compile_definitions(mr3_gazebo_diff_drive PRIVATE
 install(TARGETS mr3_gazebo_diff_drive DESTINATION lib)
 install(DIRECTORY vendor/ DESTINATION share/${PROJECT_NAME}/vendor)
 
+# Opt-in diagnostic observer only. No existing driver target/source/flags change.
+set(mr3_observer_source ${CMAKE_CURRENT_SOURCE_DIR}/src/mr3_stop_response_observer.cpp)
+set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${mr3_observer_source})
+file(SHA256 ${mr3_observer_source} mr3_observer_source_sha)
+add_library(mr3_stop_response_observer SHARED src/mr3_stop_response_observer.cpp)
+target_compile_features(mr3_stop_response_observer PRIVATE cxx_std_17)
+target_include_directories(mr3_stop_response_observer PRIVATE ${GAZEBO_INCLUDE_DIRS})
+target_compile_definitions(mr3_stop_response_observer PRIVATE
+  MR3_OBSERVER_SOURCE_SHA256="${mr3_observer_source_sha}")
+target_link_libraries(mr3_stop_response_observer ${GAZEBO_LIBRARIES}
+  nlohmann_json::nlohmann_json ${CMAKE_DL_LIBS})
+install(TARGETS mr3_stop_response_observer DESTINATION lib)
+
 add_library(mr3_gazebo_step_plugin SHARED src/mr3_gazebo_step_plugin.cpp)
 set_target_properties(mr3_gazebo_step_plugin PROPERTIES OUTPUT_NAME mr3_gazebo_step)
 add_executable(mr3_gazebo_step src/mr3_gazebo_step.cpp)
@@ -110,5 +123,18 @@ install(DIRECTORY maps/
 
 # ament_environment_hooks("${CMAKE_CURRENT_SOURCE_DIR}/env-hooks/multi_robot.dsv.in")
 
+
+# Diagnostic-only opt-in SystemPlugin. No change to original driver/step targets.
+set(mr3_profile_source ${CMAKE_CURRENT_SOURCE_DIR}/src/mr3_physics_diagnostic_profile.cpp)
+set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${mr3_profile_source})
+file(SHA256 ${mr3_profile_source} mr3_profile_source_sha)
+add_library(mr3_physics_diagnostic_profile SHARED src/mr3_physics_diagnostic_profile.cpp)
+target_compile_features(mr3_physics_diagnostic_profile PUBLIC cxx_std_17)
+target_include_directories(mr3_physics_diagnostic_profile PRIVATE ${GAZEBO_INCLUDE_DIRS})
+target_link_libraries(mr3_physics_diagnostic_profile ${GAZEBO_LIBRARIES}
+  nlohmann_json::nlohmann_json ${CMAKE_DL_LIBS})
+target_compile_definitions(mr3_physics_diagnostic_profile PRIVATE
+  MR3_PHYSICS_DIAGNOSTIC_SOURCE_SHA256="${mr3_profile_source_sha}")
+install(TARGETS mr3_physics_diagnostic_profile DESTINATION lib)
 
 ament_package()

@@ -354,3 +354,23 @@ normal回执同clock不可覆；独立`phase_kind=stop`只能永久三零、read
 阶段ACK绑定各节点实际callback前缀，不构成跨进程原子事务。worker已实际处理stop或主动发stop请求后不得再用normal推进或恢复；guard一旦stop，新输出只能为零。guard发出但DDS尚在途的窗口保留原最多20ms终态排空和完整160ms驱动/机体反应门；源stop与旧normal permit的窗口另作诊断，不声称零延迟跨进程封闭。
 
 工程与策略结果审计共用受限bootstrap审计入口：仅精确v1元数据、唯一实际三零交接、三takeover、实际回收/原生存储以及完整控制账本均成立时，原W7物理审计的setup→受控量子切换参数取bootstrap起点T0；输入仍为全部原始receipts，原整数/连续/量子数学不改。真实任务release仍为交接终点T1，奖励/接触/终态等继续使用T1。legacy保留原release调用，未知协议拒绝，每次调用后还原原审计函数；工程fixture的capacity排除不进入策略审计。本轮只验证接线，无新采样/优化或策略效果信用。
+
+## P2A.0 显式隔离物理诊断（V18，尚无验收信用）
+
+默认不加载观测或物理配置插件。仅在事前声明的单次命令中设置
+`MR3_PHYSICS_DIAGNOSTIC_CONFIG_FILE`，launch严格核对三机器人stepped adapter、
+唯一run/首episode、场景、seed、有限整数采集窗口和两个已构建库的路径/SHA，
+生成绑定实际epoch的独占JSON。gzserver消费该绑定；actor、候选、mask、reward和
+原world/model几何字节保持原契约。未设置该变量时，默认gzserver参数和生成模型与旧版逐字相同。
+
+独立ModelPlugin仅向隔离文件记录1ms求解前后配对状态、原点/CoG速度、轮关节和
+实际保留的接触数据；空接触列表不证明没有支撑接触。它不发布消息、不调用物理setter，
+其同步读回/JSON/I/O有墙时开销。独立SystemPlugin在首个实际1ms更新边界记录
+ODE原生数值与配置缓存：baseline不调用setter；iters150仅调用一次iterations50→150，
+其余读回字段须保持。缓存solver类型不冒充私有求解函数指针证明。新库与原a014驱动
+分别保留源码宏、构建产物、真实加载路径及owned PID/start/maps证明。
+
+原30Hz里程计、.78秒/.144米停车、全平面速度≤.01连续3个唯一源样本、任务/安全门、
+1ms物理步与20ms策略边界均不变。新增1ms积分/有限差分只用于归因，不能代替原停车门。
+两次固定三机open101/32步诊断最多66条API记录、3600原生墙秒，0训练/0更新，
+不计四阶段矩阵或95%任务信用；实际失败全部保留。修复之后仍须另立新冻结，完整重验四阶段。
