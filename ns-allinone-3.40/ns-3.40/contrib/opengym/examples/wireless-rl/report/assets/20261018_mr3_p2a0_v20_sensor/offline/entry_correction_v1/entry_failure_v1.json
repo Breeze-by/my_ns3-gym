@@ -1,0 +1,28 @@
+{
+  "schema": "mr3-v20-preflight-entry-environment-correction-v1",
+  "freeze": "340b13d8909fc58f0faf346780f7cfd75e5e93f8",
+  "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+  "argv": [
+    "rtk",
+    "proxy",
+    "env",
+    "-u",
+    "PYTHONPATH",
+    "PYTHONNOUSERSITE=1",
+    "PYTHONDONTWRITEBYTECODE=1",
+    "/usr/bin/python3",
+    "-B",
+    "report/assets/20261018_mr3_p2a0_v20_sensor/independent/mr3_p2a0_v20_sensor_preflight_v1.py"
+  ],
+  "source_sha256": "28da0a640a423ffc16ab122795728ee6454214899883aa04186b6207d99f86eb",
+  "tool_exec_session": 33288,
+  "exit_code": 1,
+  "error": "ModuleNotFoundError: torch",
+  "stderr_provenance": "Text copied from returned exec session33288 output, not a replay.",
+  "native_started": false,
+  "native_charge_seconds": 0,
+  "preflight_output_created": false,
+  "correction": "Use conda ns3gym for load_native_gates/audit_ppo dependency; parent remains system Python and launches isolated ROS C++ with correct setup.",
+  "code_and_configuration_changed": false,
+  "pilot_balance_changed": false
+}

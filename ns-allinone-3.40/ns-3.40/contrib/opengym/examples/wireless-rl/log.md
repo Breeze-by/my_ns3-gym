@@ -5882,3 +5882,9 @@ raw CDR+实际GID/时戳/seq、scan/TF/odom/processedpose/ownmap及真实SLAM Li
 V18+V19 charged2489.3860735194758，900新上限累计3389.386073519476<3600；pilot余1870决策/2905.954739546403wall不动。P2A.0仍未完成，完整四阶段在真正修复的新冻结另验。
 
 V20准备root静态PASS：160实际源摘要（旧155全保持）、3Python AST、真实ELF与唯一canonical gzip逐字一致、174本地文档链接/JSON、git diff --check；actual git add -n .首30路径白名单及只对已声明runtime ELF gzip的force-dry-run1路径通过，build cache/objects不入Git。原始静态与dry-run在A20_sensor/offline/root_static_v1。无native/source准入或formal重跑。
+
+### 2026-10-18 — V20预检入口环境纠正（未启动原生）
+
+冻结340b13d8909fc58f0faf346780f7cfd75e5e93f8已推送。首次实际预检误用/usr/bin/python3，在preflight149导入audit_ppo22的torch时ModuleNotFoundError，session33288 exit1；源码准入未完成、未生成preflight文件，native/预算消耗0。
+精确argv/cwd/源码SHA与工具返回错误文本副本在A20_sensor/offline/entry_correction_v1，未重复执行失败调用。原runtime/独立160源、库/配置均未改。
+按项目无线学习侧环境规则将V20报告预检入口改用/home/zhuyulab/miniconda3/envs/ns3gym/bin/python，parent保持system Python并对子C++明确source ROS；此为CLI文档修正，不重跑CPU/SDK/合成ROS、不改变原门或首次失败。
