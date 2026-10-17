@@ -1,0 +1,251 @@
+{
+  "schema": "mr3-p2a0-v3-safety-activity-checks-v1",
+  "scope": "CPU unit/integration and independent consumer checks; no simulation/training/native task-success credit",
+  "checks": [
+    {
+      "generation": "initial_one_ulp",
+      "label": "ros_motion",
+      "cmd": "rtk proxy bash -c 'source /opt/ros/humble/setup.bash\nsource install/setup.bash\nexport PYTHONNOUSERSITE=1\n/usr/bin/python3 -m pytest src/multi_robot_exploration/test/test_motion_safety.py -q'",
+      "workdir": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap",
+      "result": {
+        "chunk_id": "922796",
+        "wall_time_seconds": 1.000749088,
+        "session_id": 56662,
+        "original_token_count": 0,
+        "output": ""
+      },
+      "completion": {
+        "chunk_id": "99128c",
+        "wall_time_seconds": 9.641e-06,
+        "exit_code": 0,
+        "original_token_count": 25,
+        "output": ".........................                                                [100%]\n25 passed in 1.69s\n"
+      }
+    },
+    {
+      "generation": "initial_one_ulp",
+      "label": "conda_audits",
+      "cmd": "rtk proxy bash -c 'source /home/zhuyulab/miniconda3/etc/profile.d/conda.sh\nconda activate ns3gym\nunset PYTHONPATH\nexport PYTHONNOUSERSITE=1\npython -m unittest mr3_learning.tests.test_audit_activity mr3_learning.tests.test_audit_motion -q'",
+      "workdir": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+      "result": {
+        "chunk_id": "bf568b",
+        "wall_time_seconds": 1.000765839,
+        "session_id": 74001,
+        "original_token_count": 0,
+        "output": ""
+      },
+      "completion": {
+        "chunk_id": "bd8bc9",
+        "wall_time_seconds": 2.0037e-05,
+        "exit_code": 0,
+        "original_token_count": 25,
+        "output": "----------------------------------------------------------------------\nRan 17 tests in 0.273s\n\nOK\n"
+      }
+    },
+    {
+      "generation": "initial_one_ulp",
+      "label": "safety_activity_lint",
+      "cmd": "rtk proxy /usr/bin/python3 -m flake8 ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_motion_safety.py ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_motion_safety.py ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_activity.py ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_activity.py ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_motion.py ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_motion.py --max-line-length=99 --extend-ignore=D100,D101,D102,D103,D104,D105,D107,D203,D212",
+      "workdir": "/home/zhuyulab/ns3-workspace",
+      "result": {
+        "chunk_id": "64b810",
+        "wall_time_seconds": 1.000298012,
+        "session_id": 45202,
+        "original_token_count": 84,
+        "output": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_activity.py:111:58: E127 continuation line over-indented for visual indent\nns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_motion.py:147:21: E128 continuation line under-indented for visual indent\n"
+      },
+      "completion": {
+        "chunk_id": "82d5c2",
+        "wall_time_seconds": 1.8345e-05,
+        "exit_code": 1,
+        "original_token_count": 0,
+        "output": ""
+      }
+    },
+    {
+      "generation": "component_filter_padding",
+      "label": "ros_motion",
+      "cmd": "rtk proxy bash -c 'source /opt/ros/humble/setup.bash\nsource install/setup.bash\nexport PYTHONNOUSERSITE=1\n/usr/bin/python3 -m pytest src/multi_robot_exploration/test/test_motion_safety.py -q'",
+      "workdir": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap",
+      "result": {
+        "chunk_id": "3b7d33",
+        "wall_time_seconds": 1.001822993,
+        "session_id": 62872,
+        "original_token_count": 0,
+        "output": ""
+      },
+      "completion": {
+        "chunk_id": "73f49e",
+        "wall_time_seconds": 1.3244e-05,
+        "exit_code": 0,
+        "original_token_count": 25,
+        "output": "................................                                         [100%]\n32 passed in 1.97s\n"
+      }
+    },
+    {
+      "generation": "component_filter_padding",
+      "label": "conda_audits",
+      "cmd": "rtk proxy bash -c 'source /home/zhuyulab/miniconda3/etc/profile.d/conda.sh\nconda activate ns3gym\nunset PYTHONPATH\nexport PYTHONNOUSERSITE=1\npython -m unittest mr3_learning.tests.test_audit_activity mr3_learning.tests.test_audit_motion -q'",
+      "workdir": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+      "result": {
+        "chunk_id": "ad3f01",
+        "wall_time_seconds": 1.001921415,
+        "session_id": 38718,
+        "original_token_count": 0,
+        "output": ""
+      },
+      "completion": {
+        "chunk_id": "2659ed",
+        "wall_time_seconds": 2.1667e-05,
+        "exit_code": 0,
+        "original_token_count": 25,
+        "output": "----------------------------------------------------------------------\nRan 18 tests in 1.425s\n\nOK\n"
+      }
+    },
+    {
+      "generation": "component_filter_padding",
+      "label": "safety_activity_lint",
+      "cmd": "rtk proxy /usr/bin/python3 -m flake8 ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_motion_safety.py ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_motion_safety.py ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_activity.py ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_activity.py ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_motion.py ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_motion.py --max-line-length=99 --extend-ignore=D100,D101,D102,D103,D104,D105,D107,D203,D212",
+      "workdir": "/home/zhuyulab/ns3-workspace",
+      "result": {
+        "chunk_id": "1d1bf5",
+        "wall_time_seconds": 1.001760564,
+        "session_id": 28469,
+        "original_token_count": 154,
+        "output": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_activity.py:111:56: E128 continuation line under-indented for visual indent\nns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_motion.py:459:100: E501 line too long (104 > 99 characters)\nns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_motion.py:174:100: E501 line too long (100 > 99 characters)\nns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_motion.py:186:100: E501 line too long (110 > 99 characters)\n"
+      },
+      "completion": {
+        "chunk_id": "9bf42d",
+        "wall_time_seconds": 1.8229e-05,
+        "exit_code": 1,
+        "original_token_count": 0,
+        "output": ""
+      }
+    },
+    {
+      "generation": "full_filtered_fifo",
+      "label": "ros_motion",
+      "cmd": "rtk proxy bash -c 'source /opt/ros/humble/setup.bash\nsource install/setup.bash\nexport PYTHONNOUSERSITE=1\n/usr/bin/python3 -m pytest src/multi_robot_exploration/test/test_motion_safety.py -q'",
+      "workdir": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap",
+      "result": {
+        "chunk_id": "a135f6",
+        "wall_time_seconds": 1.001415845,
+        "session_id": 18045,
+        "original_token_count": 0,
+        "output": ""
+      },
+      "completion": {
+        "chunk_id": "8b1e46",
+        "wall_time_seconds": 9.728e-06,
+        "exit_code": 0,
+        "original_token_count": 25,
+        "output": "................................                                         [100%]\n32 passed in 1.64s\n"
+      }
+    },
+    {
+      "generation": "full_filtered_fifo",
+      "label": "conda_audits",
+      "cmd": "rtk proxy bash -c 'source /home/zhuyulab/miniconda3/etc/profile.d/conda.sh\nconda activate ns3gym\nunset PYTHONPATH\nexport PYTHONNOUSERSITE=1\npython -m unittest mr3_learning.tests.test_audit_activity mr3_learning.tests.test_audit_motion -q'",
+      "workdir": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+      "result": {
+        "chunk_id": "b7a59b",
+        "wall_time_seconds": 1.001437981,
+        "session_id": 84417,
+        "original_token_count": 0,
+        "output": ""
+      },
+      "completion": {
+        "chunk_id": "617d3b",
+        "wall_time_seconds": 1.0169e-05,
+        "exit_code": 0,
+        "original_token_count": 25,
+        "output": "----------------------------------------------------------------------\nRan 19 tests in 1.629s\n\nOK\n"
+      }
+    },
+    {
+      "generation": "full_filtered_fifo",
+      "label": "safety_activity_lint",
+      "cmd": "rtk proxy /usr/bin/python3 -m flake8 ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_motion_safety.py ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_motion_safety.py ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_activity.py ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_activity.py ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_motion.py ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_motion.py --max-line-length=99 --extend-ignore=D100,D101,D102,D103,D104,D105,D107,D203,D212",
+      "workdir": "/home/zhuyulab/ns3-workspace",
+      "result": {
+        "chunk_id": "080226",
+        "wall_time_seconds": 1.00134417,
+        "session_id": 94988,
+        "original_token_count": 38,
+        "output": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_motion.py:214:100: E501 line too long (100 > 99 characters)\n"
+      },
+      "completion": {
+        "chunk_id": "3138a1",
+        "wall_time_seconds": 1.8323e-05,
+        "exit_code": 1,
+        "original_token_count": 0,
+        "output": ""
+      }
+    }
+  ],
+  "final_lint": {
+    "label": "safety_activity_lint",
+    "cmd": "rtk proxy /usr/bin/python3 -m flake8 ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_motion_safety.py ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_motion_safety.py ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_activity.py ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_activity.py ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_motion.py ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_motion.py --max-line-length=99 --extend-ignore=D100,D101,D102,D103,D104,D105,D107,D203,D212",
+    "workdir": "/home/zhuyulab/ns3-workspace",
+    "result": {
+      "chunk_id": "93e38b",
+      "wall_time_seconds": 1.001034694,
+      "session_id": 39621,
+      "original_token_count": 0,
+      "output": ""
+    },
+    "completion": {
+      "chunk_id": "791115",
+      "wall_time_seconds": 1.9519e-05,
+      "exit_code": 0,
+      "original_token_count": 0,
+      "output": ""
+    }
+  },
+  "full_conda_before_pin_refresh": {
+    "cmd": "rtk proxy bash -c 'source /home/zhuyulab/miniconda3/etc/profile.d/conda.sh\nconda activate ns3gym\nunset PYTHONPATH\nexport PYTHONNOUSERSITE=1\npython -m unittest discover -s mr3_learning/tests -q'",
+    "workdir": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+    "initial": {
+      "chunk_id": "72d425",
+      "wall_time_seconds": 1.000912884,
+      "session_id": 72533,
+      "original_token_count": 0,
+      "output": ""
+    },
+    "completion": {
+      "chunk_id": "9751fa",
+      "wall_time_seconds": 2.2453e-05,
+      "exit_code": 1,
+      "original_token_count": 481,
+      "output": "Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.\nPlease upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.\nUsers of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.\nSee the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.\n======================================================================\nERROR: setUpClass (test_audit_ppo.VersionedNativeGateTests)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_ppo.py\", line 112, in setUpClass\n    cls.base, cls.auditor, cls.command, cls.proof = audit_ppo.load_compatible_components(\n  File \"/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_ppo.py\", line 256, in load_compatible_components\n    proof = verify_frozen_pins(root, freeze, native_pins, \"native runtime\")\n  File \"/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_ppo.py\", line 186, in verify_frozen_pins\n    require(digest == expected and sha(root / relative) == expected,\n  File \"/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_ppo.py\", line 146, in require\n    raise ValueError(reason)\nValueError: native runtime source freeze/worktree SHA mismatch: ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_information.py\n\n----------------------------------------------------------------------\nRan 169 tests in 17.600s\n\nFAILED (errors=1)\n"
+    },
+    "resolution": "Root subsequently refreshed the three exact runtime pins; no test or production validation was weakened. Root owns the subsequent unified full-suite result."
+  },
+  "final_diff_check": {
+    "exit_code": 0,
+    "output": ""
+  },
+  "contract": {
+    "normalization": "exactly one outward binary64 neighbour only",
+    "final_hard_limits": [
+      0.26,
+      1
+    ],
+    "geometry_margin_m": 0.02,
+    "peer_failure_threshold_m": 0.5,
+    "turn_stop_padding_sec": 0.02,
+    "horizon_sec": 0.78,
+    "pair_braking_reserve_m": 0.288,
+    "filter": "only mixed peer_braking_nonclosing -> independently clear (0,canonical_w); unchanged requested turn direction",
+    "activity_integrity_is_availability": false,
+    "probe_min_path_m_exclusive": 0.05
+  },
+  "final_source_sha256": {
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_motion_safety.py": "b8345ec5e289d18a9d342501bb249a7b40f26d4ea8bf0d8855aa1fed6ca565ee",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_motion_safety.py": "a56674fb664f3476997da1d2bdffe62ebd82d25bd54e62b6a32b2e0b5dca7a76",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_motion.py": "48a6ec943287a8842d51903dd057e6aa392faf994c8c5fc1abca054bfc3dcc7e",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_motion.py": "a8c625ae08e1f174835e95e98d215c3baeb8bf21638ab90ca05ae6f2e39324b4",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_activity.py": "0fa0c47262ccf29f140cc2b915431461e830f87680b65f524cbda6a6ffff4407",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_activity.py": "ad08d15bfa6945c99efdd0e163c184d6c10900f036ee243409f49668002f1c55"
+  }
+}

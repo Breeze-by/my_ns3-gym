@@ -633,7 +633,7 @@ class IdealInformation(Node):
                                "source_stamp": None, "received_stamp": None})
                 continue
             payload = record.payload
-            odometry = restore_message(Odometry(), payload.pop("odometry"))
+            odometry = restore_message(Odometry(), payload["odometry"])
             transform = restore_message(TransformStamped(), payload.pop("transform"))
             # An ideal broadcast delivery; no raw odom or TF is published here.
             # Future edge isolation and faulted fanout are P3A/P3B gates.

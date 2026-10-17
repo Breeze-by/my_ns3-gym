@@ -10,7 +10,7 @@ import tempfile
 from types import ModuleType
 import unittest
 
-from mr3_learning.audit_motion import PURE_DIRECTORY, ROBOTS, _audit_records
+from mr3_learning.audit_motion import PURE_DIRECTORY, ROBOTS, _audit_records, command_boundary
 
 
 def helper_module():
@@ -138,6 +138,102 @@ class MotionAuditTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.helper = helper_module()
+
+    def test_independent_exact_endpoint_consumer_rejects_wider_or_unbounded_changes(self):
+        import math
+        request = {"v": .26000000000000006, "w": .6842105263157895}
+        decision = {
+            "allow": True, "output": [.26, request["w"]],
+            "command_normalization": {"schema": "mr3-command-one-ulp-v1",
+                                      "input": [request["v"], request["w"]],
+                                      "canonical": [.26, request["w"]],
+                                      "normalized_axes": ["v"]},
+        }
+        command_boundary(decision, request)
+        for fault in ("output", "two_ulps", "metadata", "original"):
+            changed, source = copy.deepcopy(decision), copy.deepcopy(request)
+            if fault == "output":
+                changed["output"][0] = request["v"]
+            elif fault == "two_ulps":
+                source["v"] = math.nextafter(request["v"], math.inf)
+                changed["command_normalization"]["input"][0] = source["v"]
+            elif fault == "metadata":
+                changed["command_normalization"]["canonical"][0] = .25
+            else:
+                changed["command_normalization"]["input"][0] = .26
+            with self.subTest(fault=fault), self.assertRaises(ValueError):
+                command_boundary(changed, source)
+
+    def test_component_consumer_requires_exact_turn_and_full_independent_recheck(self):
+        def state(name, x, y):
+            return {"name": name, "epoch": "fixture", "valid": True, "x": x, "y": y,
+                    "yaw": 0., "v": 0., "w": 0., "source_stamp": 1.}
+        own = state("tb1", 0., 0.)
+        peers = {"tb2": state("tb2", .65, 0.), "tb3": state("tb3", 4., 4.)}
+        request = {"v": .26000000000000006, "w": -.6842105263157895}
+        decision = self.helper.guard_motion(
+            [request["v"], request["w"]], own, peers, 1., "fixture")
+        command_boundary(decision, request)
+        self.assertEqual(decision["output"], [0., request["w"]])
+        for fault in ("linear", "angular", "missing", "rejected", "rotation"):
+            changed = copy.deepcopy(decision)
+            if fault == "linear":
+                changed["output"][0] = .01
+            elif fault == "angular":
+                changed["output"][1] = -request["w"]
+            elif fault == "missing":
+                changed["component_filter"] = None
+            elif fault == "rejected":
+                rejected = changed["component_filter"]["rejected_mixed_decision"]
+                rejected["reason"] = "peer_uncertainty_envelope"
+            else:
+                changed["component_filter"]["rotation_check"]["allow"] = False
+            with self.subTest(fault=fault), self.assertRaises(ValueError):
+                command_boundary(changed, request)
+
+    def test_filtered_turn_binds_actual_fifo_and_is_never_counted_as_full_request_pass(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            files = write_fixture(directory, self.helper)
+            rows = files["motion_safety.jsonl"]
+            received = next(row["payload"] for row in rows if row["kind"] == "received_states")
+            received["robots"][1]["x"] = .65
+            peers = {robot["name"]: robot for robot in received["robots"]}
+            requests, outputs = {}, {}
+            for row in rows:
+                value, kind = row["payload"], row["kind"]
+                if kind == "raw_request":
+                    if value["robot"] == "tb1":
+                        value["request"].update(v=.26000000000000006, w=-.6842105263157895)
+                        value["twist"] = twist(.26000000000000006, -.6842105263157895)
+                    requests[value["robot"]] = value["request"]
+                elif kind == "decision":
+                    name = value["robot"]
+                    value["request"] = copy.deepcopy(requests[name])
+                    value["received_peers"] = {
+                        peer: copy.deepcopy(state) for peer, state in peers.items()
+                        if peer != name}
+                    if value["started"]:
+                        request = requests[name]
+                        value["decision"] = self.helper.guard_motion(
+                            [request["v"], request["w"]], value["own_state"],
+                            value["received_peers"], value["clock_ns"] / 1e9, "fixture-motion")
+                    outputs[name, value["decision_sequence"]] = value["decision"]["output"]
+                elif kind == "actual_cmd_vel":
+                    output = outputs[value["robot"], value["observed_decision_sequence"]]
+                    value["twist"] = twist(*output)
+            write_files(directory, files)
+            result = _audit_records(directory, self.helper, {})
+            self.assertEqual(result["robots"]["tb1"]["passed_nonzero"], 0)
+            self.assertEqual(result["robots"]["tb1"]["rotation_only_filtered"], 1)
+            self.assertEqual(result["robots"]["tb1"]["actual_outputs"], 2)
+            actual = next(row for row in rows if row["kind"] == "actual_cmd_vel"
+                          and row["payload"]["robot"] == "tb1"
+                          and row["payload"]["observed_decision_sequence"] == 2)
+            actual["payload"]["twist"]["linear"]["x"] = .01
+            write_files(directory, files)
+            with self.assertRaisesRegex(ValueError, "publication FIFO"):
+                _audit_records(directory, self.helper, {})
 
     def test_raw_received_and_actual_fifo_pass_including_gzip_artifacts(self):
         with tempfile.TemporaryDirectory() as temporary:

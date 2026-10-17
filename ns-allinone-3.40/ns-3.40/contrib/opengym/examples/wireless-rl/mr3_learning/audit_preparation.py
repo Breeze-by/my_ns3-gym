@@ -11,7 +11,7 @@ import zlib
 
 from .audit_ppo import load_native_gates, load_rows, require
 from .audit_evaluator_phase import audit_episode as audit_phase
-from .audit_activity import audit_episode as audit_activity
+from .audit_activity import audit_episode as audit_activity, audit_probe_activity
 from .audit_motion import audit_episode as audit_motion
 
 
@@ -285,9 +285,13 @@ def audit(directory, root, freeze):
             row["activity"] = audit_activity(episode)
             row["motion"] = audit_motion(episode)
             if motion_probe:
+                row["activity_availability"] = audit_probe_activity(episode)
                 row["probe_execution"] = audit_probe_execution(episode)
-            for component in ("scalar", "evaluator_phase", "observation_archives",
-                              "execution_inputs", "activity", "motion"):
+            components = ("scalar", "evaluator_phase", "observation_archives",
+                          "execution_inputs", "activity", "motion")
+            if motion_probe:
+                components += ("activity_availability", "probe_execution")
+            for component in components:
                 if row[component].get("passed") is not True:
                     errors.append(str(episode) + ": " + component + " audit failed")
         except (OSError, ValueError, TypeError, KeyError, IndexError, zlib.error) as error:

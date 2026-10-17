@@ -820,6 +820,11 @@ class MR3Adapter(Node):
                     lambda future, name=name, goal_id=goal_id: self.accepted(
                         future, name, goal_id))
             elif event["type"] == "cancel_goal" and goal_id in self.handles:
+                payload = {"robot": name, "goal_id": goal_id, "stamp": now,
+                           "scope": "native_cancel_call_attempt"}
+                if "command_id" in event:
+                    payload["command_id"] = event["command_id"]
+                self.record("native_cancel", payload)
                 self.handles[goal_id].cancel_goal_async().add_done_callback(
                     lambda future, name=name, goal_id=goal_id: self.canceled(
                         future, name, goal_id))

@@ -1,0 +1,156 @@
+{
+  "schema": "mr3-p2a0-v3-runtime-independent-review-v1",
+  "wall_monotonic_ns": 3953442474877540,
+  "reviewer": "runtime_stability (independent of safety producer changes)",
+  "production_edits_by_reviewer_in_this_followup": false,
+  "source_sha256_at_review": {
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_episode.py": "9145d2ad23789b252e32f0afdfe18cf2eeec8e2c7e9ca7e89127a532288e411b",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_motion_safety.py": "b8345ec5e289d18a9d342501bb249a7b40f26d4ea8bf0d8855aa1fed6ca565ee",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/motion_safety.py": "a23f138e2dca3c13156eff2cc5b4ff861a061f48123414da9595ae3028808d46",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_motion.py": "48a6ec943287a8842d51903dd057e6aa392faf994c8c5fc1abca054bfc3dcc7e",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_motion_safety.py": "a56674fb664f3476997da1d2bdffe62ebd82d25bd54e62b6a32b2e0b5dca7a76",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_motion.py": "a8c625ae08e1f174835e95e98d215c3baeb8bf21638ab90ca05ae6f2e39324b4"
+  },
+  "artifact_index": {
+    "/tmp/mr3_p2a0_v2_stop_assessment.json": {
+      "sha256": "ddf67d552b1b97a4ce3c25047a8da51880a6230d10137bfcaf3ff01d42175688",
+      "bytes": 17519
+    },
+    "/tmp/mr3_p2a0_v2_diagnostic_cancel.json": {
+      "sha256": "86235b8702495c94bc78739bebbd430cb6b3234679c867cf9a105b0919ce96ce",
+      "bytes": 3157
+    },
+    "/tmp/mr3_p2a0_v2_diagnostic_cancel_outcome.json": {
+      "sha256": "d81b7793d920d7d5c98a187daa0cd89b2b3e0f3ea7c08db3a6d7c9cb03509f26",
+      "bytes": 2718
+    },
+    "/tmp/mr3_p2a0_v2_reset_accounting.json": {
+      "sha256": "64526faa4a299060de8ff12cf2d45859bf0b19ce22fd462a44a667de04c2134d",
+      "bytes": 2970
+    },
+    "/tmp/packing_terminal_receipt.json": {
+      "sha256": "8297405197caae39c2f349150983f9cdd3ab75cc214bac2f524b105eea73b265",
+      "bytes": 2085
+    },
+    "/tmp/packing_reset_receipt.json": {
+      "sha256": "c94f871900333efd17a9760312ce06468945089590bd7f7ade27f4ffe9cdb230",
+      "bytes": 7146
+    },
+    "/tmp/mr3_p2a0_v2_guard_counterfactual.json": {
+      "sha256": "32d7fd64ed5fa389ead3173e04cafaf6e75de4e4c78f1ad2877c5305e1f6c829",
+      "bytes": 23378
+    },
+    "/tmp/mr3_v2_guard_counterfactual.py": {
+      "sha256": "ba8aa1a58c7225438a397bd8eb1f0f3150fb472241720c9d1dfb3c8c9c5835f8",
+      "bytes": 4472
+    },
+    "/tmp/mr3_p2a0_v3_guard_on_v2_inputs.json": {
+      "sha256": "5a7a411ab3431a03462024615a201c53b307a9a7cf2f0ed7d8d2df8ced06ab58",
+      "bytes": 7946
+    },
+    "/tmp/mr3_p2a0_v2_wheel_stop_bound_scan.json": {
+      "sha256": "67136bd8c2192664527abcf23f69db300038c4938b74993619942e80d33a15d1",
+      "bytes": 3303
+    },
+    "/tmp/mr3_wheel_stop_bound_scan.py": {
+      "sha256": "9dfbb24c40390379a1f13ce020b684def92f8326280dd7485aa0167f6ebbdf43",
+      "bytes": 3897
+    }
+  },
+  "review": {
+    "one_ulp": "Only exact nextafter(abs limit,+inf) is canonicalized back to signed declared hard endpoint; second neighbour and larger/nonfinite remain unsupported; raw request and explicit metadata retained. Timestamp freshness remains integer recovered endpoints, no added tolerance.",
+    "angular_component": "Only a mixed nonzero canonical request rejected by peer_braking_nonclosing may pass a second complete guard(0,w) with original angular component. Full epoch/freshness/body-envelope, own measured residual motion direction and source-age/turn/brake bounds remain. Recheck cannot recurse because v=0. Original request, rejected result and complete clear rotation result bind metadata. No new steering or target is selected.",
+    "actual_fifo": "Motion node publishes the returned filtered [0,w] and enqueues it unchanged; audit replays helper, independently constrains sole normalization/component exception, then consumes all real final Twist FIFO and local completion ACK. Filter stats are separated from unmodified nonzero pass.",
+    "tests_reviewed": "Captured positive/negative turns; pending actual movement/envelope/stale/two-ULP cannot bypass; independent metadata mutations; full _audit_records filtered actual output PASS and changed actual linear output rejection (safety owner test).",
+    "limitations": "Current guard repeated on old inputs is not a closed-loop motion prediction. Pure model is ideal continuous wheel-rim acceleration only, not actuator/physics proof; zero command is not measured rest."
+  },
+  "model": {
+    "exact_command": "source /home/zhuyulab/miniconda3/etc/profile.d/conda.sh && conda activate ns3gym && PYTHONNOUSERSITE=1 python /tmp/mr3_wheel_stop_bound_scan.py",
+    "cases": 122549,
+    "analytic_T_stop_sec": "(|v| + .287/2*abs(cmdw-w))/1 + .16",
+    "worst_time_sec": 0.7757,
+    "worst_path_m_per_robot": 0.14271,
+    "old_horizon_shortfall_sec": 0.0157,
+    "old_per_robot_reserve_shortfall_m": 0.00471,
+    "old_pair_geometry_margin_remainder_m": 0.01058,
+    "new_horizon_sec": 0.78,
+    "new_per_robot_reserve_m": 0.144,
+    "grid_yaw_bound_excess_rad": 0.0,
+    "grid_max_yaw_bound_ratio": 0.6619078947368421,
+    "zero_v_note": "Wheel-settle time is a conservative centre-rest bound when v=0; centre translation is already zero. Analytic worst occurs at nonzero |v|=.3 and opposite boundary angular speeds."
+  },
+  "counterfactual": {
+    "v2_ulp_only_normalized_requests": 1134,
+    "ulp_only_new_unmodified_translation_passes": 0,
+    "v3_old_zero_to_requested_angular_only": {
+      "worker0": [
+        448,
+        295,
+        167
+      ],
+      "worker1": [
+        118,
+        483,
+        0
+      ]
+    },
+    "total_angular_only": 1511,
+    "old_envelope_rejection_to_allow": 0,
+    "translation_nonzero_pass_on_old_inputs": 0,
+    "strict_padding_removed_8_old_full_passes_in_w1_tb1": true
+  },
+  "external_cancel": {
+    "method": "exact PID/start + child stdin/parent writable pipe inode equality; one atomic same-epoch string-id close per worker, no signals",
+    "native_worker_returncodes": [
+      0,
+      0
+    ],
+    "native_forced_shutdown": [
+      false,
+      false
+    ],
+    "failed_samples": [
+      true,
+      true
+    ],
+    "all_saved_owned_process_identities_gone": true,
+    "parent_identity_gone": true,
+    "declared_benchmark_result": "FAIL, intentionally interrupted",
+    "real_applied_actions": 30,
+    "returned_step_APIs": 30,
+    "returned_API_including_resets": 32,
+    "unreturned_applied_actions": 0,
+    "effective_and_returned_physical_sec": 30.0,
+    "extra_cleanup_physical_sec": 0.24,
+    "controlled_warmup_alignment_sec": 0.025,
+    "wall_sec": 422.59510789997876
+  },
+  "intermediate_failures_preserved": [
+    {
+      "stage": "first inline guard counterfactual attempt",
+      "failure": "SyntaxError in diagnostic peer-age dictionary before reading/executing fixture; corrected standalone script produced final recorded result",
+      "native_or_policy_execution": false
+    },
+    {
+      "stage": "frozen auditor export first CLI attempt",
+      "failure": "minimal /tmp source export omitted immutable historical phase helper; no native audit result was produced",
+      "native_or_policy_execution": false
+    },
+    {
+      "stage": "frozen auditor export second CLI attempt",
+      "failure": "minimal /tmp source export omitted nested protocol runtime mr3_transport.py; no native audit result was produced",
+      "native_or_policy_execution": false
+    },
+    {
+      "stage": "complete original and detached reset audit",
+      "failure": "Expected whole FAIL retained: diagnostic RPC cancellation/partial schedule, scalar failed_sample plus w0 extra zero-dt close settlement, insufficient moved proof; other per-episode provenance components retained",
+      "native_or_policy_execution": false
+    }
+  ],
+  "next_independent_consumer_requirements": [
+    "Full planar velocity norm and complete angular components, raw odom chord speed, source-time continuity",
+    "Linear-zero stop latency/path sampled from own raw odometry, compared with .78s/.144m only for sufficiently meaningful prior nonzero movement and stable zero interval",
+    "No nonzero meaningful stop segment => explicit missing evidence, never physical-bound PASS",
+    "Strict original native closures and live exact PID/start recheck; local cmd topic receipt is not Gazebo consumption"
+  ]
+}

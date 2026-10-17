@@ -350,6 +350,43 @@ def test_task_stop_requires_real_terminal_and_never_acknowledges_cancel_response
     assert len(node.test_stopped) == 1
 
 
+@pytest.mark.parametrize("command_id", (None, 17))
+def test_native_cancel_trace_precedes_real_call_and_preserves_callback_closure(command_id):
+    node, clock = make_adapter()
+    goal_id, handle = accepted_goal(node, clock)
+    node.receive_stop(Header(stamp=stamp(1.1), frame_id="map"))
+    if command_id is not None:
+        event = next(event for event in node.events if event["type"] == "cancel_goal")
+        event["command_id"] = command_id
+    expected = {"robot": "tb1", "goal_id": goal_id, "stamp": 1.15,
+                "scope": "native_cancel_call_attempt"}
+    if command_id is not None:
+        expected["command_id"] = command_id
+    original = handle.cancel_goal_async
+
+    def cancel():
+        assert node.test_records[-1] == ("native_cancel", expected)
+        assert handle.cancel_calls == 0 and not node.test_stopped
+        return original()
+
+    handle.cancel_goal_async = cancel
+    advance(node, clock, 1.15)
+    assert handle.cancel_calls == 1 and not node.dispatcher.closed
+    handle.cancel.set_result(SimpleNamespace(
+        goals_canceling=[SimpleNamespace(goal_id=handle.goal_id)]))
+    advance(node, clock, 1.4)
+    assert not node.test_stopped and not node.dispatcher.closed
+    receipts = [payload["payload"] for kind, payload in node.test_records
+                if kind == "delivery" and payload["stream"] == "receipt"]
+    assert any(receipt["type"] == "cancel" and receipt["value"] is True
+               and receipt["goal_id"] == goal_id for receipt in receipts)
+    handle.result.set_result(SimpleNamespace(status=5))
+    advance(node, clock, 1.65)
+    assert node.dispatcher.closed and len(node.test_stopped) == 1
+    cancels = [payload for kind, payload in node.test_records if kind == "native_cancel"]
+    assert cancels == [expected]
+
+
 def test_queued_goal_stopped_before_delivery_never_executes():
     node, clock = make_adapter()
     node.receive_action(command(node))
@@ -361,6 +398,7 @@ def test_queued_goal_stopped_before_delivery_never_executes():
     assert node.dispatcher.closed
     assert not node.dispatcher.failed
     assert len(node.test_stopped) == 1
+    assert not any(kind == "native_cancel" for kind, _ in node.test_records)
 
 
 def test_queued_goal_expired_before_delivery_never_executes_and_failure_is_retained():

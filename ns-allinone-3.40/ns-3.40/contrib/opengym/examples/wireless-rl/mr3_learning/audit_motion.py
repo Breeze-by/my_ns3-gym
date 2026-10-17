@@ -150,6 +150,50 @@ def twist_pair(value):
     return [value["linear"]["x"], value["angular"]["z"]]
 
 
+def command_boundary(decision, request):
+    """Enforce hard limits, exact endpoint normalization and sole component filter."""
+    output = decision["output"]
+    require(abs(output[0]) <= .26 and abs(output[1]) <= 1., "final motion hard limit exceeded")
+    normalization = decision.get("command_normalization")
+    canonical = None if request is None else [request["v"], request["w"]]
+    if normalization is not None:
+        require(request is not None and normalization["schema"] == "mr3-command-one-ulp-v1"
+                and normalization["input"] == canonical,
+                "motion normalization lost original callback values")
+        canonical, changed = [], []
+        for axis, value, limit in zip(("v", "w"), normalization["input"], (.26, 1.)):
+            if abs(value) > limit:
+                require(abs(value) == math.nextafter(limit, math.inf),
+                        "motion normalization exceeded one binary64 neighbour")
+                value = math.copysign(limit, value)
+                changed.append(axis)
+            canonical.append(value)
+        require(changed and normalization["normalized_axes"] == changed
+                and normalization["canonical"] == canonical,
+                "motion normalization metadata differs from exact endpoints")
+    component = decision.get("component_filter")
+    if component is None:
+        if decision["allow"]:
+            require(output == canonical, "allowed motion differs from canonical endpoint request")
+        return
+    require(canonical is not None and canonical[0] != 0 and canonical[1] != 0
+            and decision["allow"] is True
+            and decision["reason"] == "linear_brake_preserve_requested_turn"
+            and component["schema"] == "mr3-linear-brake-requested-turn-v1"
+            and component["canonical_input"] == canonical,
+            "invalid requested-turn component filter")
+    rejected, rotation = component["rejected_mixed_decision"], component["rotation_check"]
+    require(rejected["allow"] is False and rejected["reason"] == "peer_braking_nonclosing"
+            and rejected["output"] == [0., 0.] and rejected.get("component_filter") is None
+            and rejected.get("command_normalization") == normalization,
+            "component filter bypassed a different mixed-command rejection")
+    require(rotation["allow"] is True and rotation["reason"] == "clear"
+            and rotation.get("component_filter") is None
+            and rotation.get("command_normalization") is None
+            and rotation["output"] == output == [0., canonical[1]],
+            "component filter changed angular direction or lacks clear rotation check")
+
+
 def _audit_records(directory, helper, source_proof):
     """Actual consumer, split only so synthetic fixtures need no fabricated Git freeze."""
     directory = Path(directory)
@@ -189,6 +233,7 @@ def _audit_records(directory, helper, source_proof):
     requests, states, decisions = {}, {}, {}
     queues = {name: deque() for name in ROBOTS}
     stats = {name: {"nonzero_requests": 0, "passed_nonzero": 0, "stopped_nonzero": 0,
+                    "rotation_only_filtered": 0,
                     "decisions": 0, "actual_outputs": 0, "near_events": 0,
                     "maximum_measured_abs_v": 0., "maximum_measured_abs_w": 0.,
                     "minimum_body_margin_m": None} for name in ROBOTS}
@@ -317,6 +362,7 @@ def _audit_records(directory, helper, source_proof):
                                             decision_clock / 1e9, epoch) if reason is None else
                         {"allow": False, "reason": reason, "output": [0., 0.],
                          "minimum_margin_m": None})
+            command_boundary(value["decision"], request)
             require(value["decision"] == expected,
                     "motion decision differs from frozen helper replay")
             key = (name, value["decision_sequence"])
@@ -326,8 +372,10 @@ def _audit_records(directory, helper, source_proof):
             item["decisions"] += 1
             nonzero = bool(request and request["supported"] and (request["v"] or request["w"]))
             item["nonzero_requests"] += nonzero
-            item["passed_nonzero"] += nonzero and expected["allow"]
+            filtered = expected.get("component_filter") is not None
+            item["passed_nonzero"] += nonzero and expected["allow"] and not filtered
             item["stopped_nonzero"] += nonzero and not expected["allow"]
+            item["rotation_only_filtered"] += filtered
             item["near_events"] += sum(check["near"]
                                        for check in expected.get("near_peer_checks", []))
             margin = expected.get("body_margin_m")
@@ -336,11 +384,12 @@ def _audit_records(directory, helper, source_proof):
                 item["minimum_body_margin_m"] = margin
                 if old_margin is not None:
                     item["minimum_body_margin_m"] = min(old_margin, margin)
-            if any(expected["output"]):
+            if expected["output"][0] != 0:
                 if name in pending_stops:
                     pending_stops[name]["status"] = "resumed_before_observed_rest"
                     stop_responses.append(pending_stops.pop(name))
-            elif nonzero and expected["reason"].startswith("peer_") and name not in pending_stops:
+            elif (nonzero and (expected["reason"].startswith("peer_") or filtered)
+                  and name not in pending_stops):
                 pending_stops[name] = {"robot": name, "stop_clock_ns": decision_clock,
                                        "status": "incomplete", "observed_odom_path_m": 0.,
                                        "last_point": None}
@@ -407,6 +456,8 @@ def _audit_records(directory, helper, source_proof):
     for response in stop_responses:
         response.pop("last_point", None)
     return {"passed": True, "epoch": epoch, "records": len(rows), "robots": stats,
+            "passed_nonzero_scope": ("complete canonical request passed; "
+                                     "rotation-only filters separate"),
             "consumed_motion_phases": len(consumed), "stop_responses": stop_responses,
             "artifact_proof": proof, "source_proof": source_proof,
             "scope": "callback graph identity, raw input/received-state provenance, frozen-helper "

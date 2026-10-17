@@ -197,12 +197,14 @@ python -m mr3_learning.audit_preparation \
 工程成本单列，不使用/重置pilot余额。每worker始终三台；300秒KEEP用于截止与关闭验证，
 不证明探索或三台参与成功。旧版原件保持；用户随后要求继续完成P2A.0，新版见下节。
 
-## MR3-P2A.0 v2 当前训练前工程准备
+## MR3-P2A.0 v3 当前训练前工程准备
 
-用户2026-10-17明确要求继续完成本步。新版导航合成保留own已知格、shared只补unknown，
+用户2026-10-17明确要求继续完成本步。v1/v2原生FAIL及中断保持，不重跑旧命令。新版导航合成保留own已知格、shared只补unknown，
 v5候选使用实际导航图；快照v3/张量v2增加received local-odom累计活动。adapter速度链为
 controller/behavior→`cmd_vel_nav`→smoother→`cmd_vel_unguarded`→唯一`motion_safety`→`cmd_vel`。
-安全门仅pass原速度或零；不选探索目标。worker任务放行前等实际输入就绪并核验DDS唯一出口，
+安全门保持请求或全零；接近方向被拒绝时，仅在`(0,原角速度)`完整重验通过后刹停线速度并保留转向。
+状态无效、包络不足、残余移动不安全时不能走此分支。恰好超出速度上限一个binary64相邻值的Nav2插值规范到原上限，
+更大超界拒绝，原请求与规范记录均保存。不选探索目标。worker任务放行前等实际输入就绪并核验DDS唯一出口，
 每20ms暂停等安全门同clock完成回执。`motion_safety.jsonl`保存输入/判据/实际速度回调，
 `motion_phase_worker.jsonl`保存回执；七份原始地图及六路master costmap输出保留源时间与SHA。
 `mr3_audit_path`为空时不写安全trace，安全门仍生效；baseline的原速度topic默认值保持。
@@ -218,37 +220,38 @@ source install/setup.bash
 再按P1C段切换conda `ns3gym`、清除`PYTHONPATH`，在wireless-rl执行。只在同一干净、已提交推送
 且完成源码预检的冻结运行；每阶段独立完整审计通过才开始下一阶段。原生工程上限436 API/435脚本动作、
 6000墙秒，无GPU/optimizer；pilot余额不动。失败保留并停止该矩阵，诊断修复后需新冻结/新预声明，
-不能盲重试或跨冻结拼PASS。计划和结果见[v2报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261017_mr3_p2a0_v2.md)。
+不能盲重试或跨冻结拼PASS。计划和结果见[v3报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261017_mr3_p2a0_v3.md)。
 
 ```bash
-MR3_P2A0_V2_FREEZE=$(git rev-parse HEAD)
+MR3_P2A0_V3_FREEZE=$(git rev-parse HEAD)
 python -m mr3_learning.benchmark --workers 1 --schedule open:101,open:101 \
-  --steps 4 --terminal-probe --base-domain 190 --base-port 12501 \
+  --steps 4 --terminal-probe --base-domain 202 --base-port 12531 \
   --output-root /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0 \
-  --run-id mr3_p2a0_20261017_v2_terminal
+  --run-id mr3_p2a0_20261017_v3_terminal
 python -m mr3_learning.audit_preparation \
-  /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v2_terminal \
-  --freeze "$MR3_P2A0_V2_FREEZE" --output /tmp/mr3_p2a0_v2_terminal_audit.json
+  /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v3_terminal \
+  --freeze "$MR3_P2A0_V3_FREEZE" --output /tmp/mr3_p2a0_v3_terminal_audit.json
 
 python -m mr3_learning.benchmark --workers 2 \
   --schedule open:101,open:101,rooms:101,corridors:101 \
-  --steps 16 --base-domain 194 --base-port 12511 \
+  --steps 16 --preparation-motion-probe --base-domain 206 --base-port 12541 \
   --output-root /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0 \
-  --run-id mr3_p2a0_20261017_v2_reset
+  --run-id mr3_p2a0_20261017_v3_reset
 python -m mr3_learning.audit_preparation \
-  /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v2_reset \
-  --freeze "$MR3_P2A0_V2_FREEZE" --output /tmp/mr3_p2a0_v2_reset_audit.json
+  /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v3_reset \
+  --freeze "$MR3_P2A0_V3_FREEZE" --output /tmp/mr3_p2a0_v3_reset_audit.json
 
 python -m mr3_learning.benchmark --workers 1 --schedule open:101 \
-  --steps 300 --deadline-probe --base-domain 198 --base-port 12521 \
+  --steps 300 --deadline-probe --base-domain 210 --base-port 12551 \
   --output-root /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0 \
-  --run-id mr3_p2a0_20261017_v2_deadline
+  --run-id mr3_p2a0_20261017_v3_deadline
 python -m mr3_learning.audit_preparation \
-  /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v2_deadline \
-  --freeze "$MR3_P2A0_V2_FREEZE" --output /tmp/mr3_p2a0_v2_deadline_audit.json
+  /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v3_deadline \
+  --freeze "$MR3_P2A0_V3_FREEZE" --output /tmp/mr3_p2a0_v3_deadline_audit.json
 ```
 
-reset逐episode要求三台各有合法GOAL、原生接受且received-odom移动超过`.05m`，另核验途中保护及正常关闭。
+`--preparation-motion-probe`仅为外部工程输入：最大合法GOAL数后优先向外角度，再按路径和动作号稳定排序；
+保留取消/承诺压力时序，不进入adapter/PPO，不是探索基线或安全证明。reset逐episode要求三台各有合法GOAL、原生接受且received-odom移动超过`.05m`，另核验途中保护及正常关闭。
 terminal/deadline是显式诊断终态/截止工程验证，不提供95%策略或参与成功信用。通过本步后待用户验收，再恢复P2A训练。
 
 ## MR3-P2A联合MaskablePPO（v6历史命令，本轮不重启pilot）

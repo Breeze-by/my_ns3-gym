@@ -1,0 +1,214 @@
+{
+  "schema": "mr3-p2a0-v2-outward-engineering-action-counterfactual-v1",
+  "passed": true,
+  "freeze": "96c201e0e258bd0fe192fc03c6716fc694b7a9b7",
+  "method": "max GOAL count; max min_robot(min_peer -dot(unit_goal,unit_peer)); max sum outward scores; min path sum; action tie",
+  "source_trace_sha256": "3f04303d04ae8354f136e0f069cff49aca67a8be22cb517524c72b8c98d4b976",
+  "episodes": [
+    {
+      "episode": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v2_reset/worker0/episode001_open_101",
+      "snapshot_digest": "565dc85c47071724540fa1acf9e0926ec74b50d082f0d68fb460f35b8f0bb024",
+      "snapshot_initial_source_stamp": 78.22,
+      "snapshot_input_sha256": "7899f16a23eca01dd642452376707acc14f80cdd6d84dc105172020616b6c3e3",
+      "chosen": {
+        "action": 261,
+        "digits": [
+          2,
+          6,
+          1
+        ],
+        "count": 3,
+        "min_outward_score": 0.620024203298688,
+        "sum_outward_score": 2.1123277579711517,
+        "sum_paths": 1.2217153712793998,
+        "robots": {
+          "tb1": {
+            "candidate": 2,
+            "start": [
+              0.002396802677275611,
+              -0.44999632861472993
+            ],
+            "goal": [
+              -0.0034034448038076093,
+              -0.8479643411972893
+            ],
+            "delta": [
+              -0.00580024748108322,
+              -0.3979680125825593
+            ],
+            "euclidean_distance_m": 0.39801027864837096,
+            "path_distance_m": 0.40614588815341796,
+            "outward_score": 0.7174712790878051,
+            "negative_dot_unit_per_peer": {
+              "tb2": 0.9998918861952721,
+              "tb3": 0.7174712790878051
+            },
+            "has_clear_actual_motion_phase_counterfactual": true,
+            "clear_phase_count": 301,
+            "total_phases": 700,
+            "first_clear_clock_ns": 78240000000
+          },
+          "tb2": {
+            "candidate": 6,
+            "start": [
+              0.002278734709262649,
+              0.45000330514443576
+            ],
+            "goal": [
+              -0.20340344778403985,
+              0.7020356818995106
+            ],
+            "delta": [
+              -0.2056821824933025,
+              0.25203237675507484
+            ],
+            "euclidean_distance_m": 0.32530828321458427,
+            "path_distance_m": 0.3388774257248223,
+            "outward_score": 0.7748322755846585,
+            "negative_dot_unit_per_peer": {
+              "tb1": 0.7748322755846585,
+              "tb3": 0.9949182489740933
+            },
+            "has_clear_actual_motion_phase_counterfactual": true,
+            "clear_phase_count": 336,
+            "total_phases": 700,
+            "first_clear_clock_ns": 78240000000
+          },
+          "tb3": {
+            "candidate": 1,
+            "start": [
+              0.45222195200785525,
+              2.9884224375020513e-06
+            ],
+            "goal": [
+              0.8965965686072375,
+              0.052035672213755824
+            ],
+            "delta": [
+              0.4443746165993822,
+              0.05203268379131832
+            ],
+            "euclidean_distance_m": 0.4474105497866308,
+            "path_distance_m": 0.4766920574011596,
+            "outward_score": 0.620024203298688,
+            "negative_dot_unit_per_peer": {
+              "tb1": 0.7844233081898789,
+              "tb2": 0.620024203298688
+            },
+            "has_clear_actual_motion_phase_counterfactual": true,
+            "clear_phase_count": 198,
+            "total_phases": 700,
+            "first_clear_clock_ns": 78300000000
+          }
+        }
+      },
+      "all_three_goal_joint_mask_legal": true,
+      "all_chosen_have_some_actual_phase_heading_counterfactual_clear": true,
+      "shared_clock_all_chosen_counterfactual_clear_count": 0,
+      "first_shared_clear_clock_ns": null
+    },
+    {
+      "episode": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v2_reset/worker1/episode001_open_101",
+      "snapshot_digest": "998211487781f3eb830c84f354cfb75846ac3176396abc81253f3ec071c756b5",
+      "snapshot_initial_source_stamp": 74.2,
+      "snapshot_input_sha256": "32e6496f5df2a7af50065bf8cb66dca5cde7697b38b48d6bdb1b314c87b066c3",
+      "chosen": {
+        "action": 621,
+        "digits": [
+          6,
+          2,
+          1
+        ],
+        "count": 3,
+        "min_outward_score": 0.6298770863934009,
+        "sum_outward_score": 2.264783342291544,
+        "sum_paths": 1.3431647617629832,
+        "robots": {
+          "tb1": {
+            "candidate": 6,
+            "start": [
+              0.002278050989546637,
+              -0.44999669918589574
+            ],
+            "goal": [
+              -0.1609675016533414,
+              -0.6992079447647779
+            ],
+            "delta": [
+              -0.16324555264288804,
+              -0.24921124557888213
+            ],
+            "euclidean_distance_m": 0.2979183703309681,
+            "path_distance_m": 0.32540105347753656,
+            "outward_score": 0.8364661071867378,
+            "negative_dot_unit_per_peer": {
+              "tb2": 0.8364661071867378,
+              "tb3": 0.9789913305703682
+            },
+            "has_clear_actual_motion_phase_counterfactual": true,
+            "clear_phase_count": 322,
+            "total_phases": 800,
+            "first_clear_clock_ns": 74240000000
+          },
+          "tb2": {
+            "candidate": 2,
+            "start": [
+              0.002208445391362821,
+              0.45000292426830835
+            ],
+            "goal": [
+              -0.060967500163225274,
+              0.90079207907708
+            ],
+            "delta": [
+              -0.0631759455545881,
+              0.4507891548087717
+            ],
+            "euclidean_distance_m": 0.45519453224958994,
+            "path_distance_m": 0.4839102410477689,
+            "outward_score": 0.7984401487114055,
+            "negative_dot_unit_per_peer": {
+              "tb1": 0.9903327204617431,
+              "tb3": 0.7984401487114055
+            },
+            "has_clear_actual_motion_phase_counterfactual": true,
+            "clear_phase_count": 371,
+            "total_phases": 800,
+            "first_clear_clock_ns": 74220000000
+          },
+          "tb3": {
+            "candidate": 1,
+            "start": [
+              0.45215156403492246,
+              2.729282490197331e-06
+            ],
+            "goal": [
+              0.9390325147379359,
+              0.05079206641109302
+            ],
+            "delta": [
+              0.48688095070301346,
+              0.05078933712860282
+            ],
+            "euclidean_distance_m": 0.4895228461710782,
+            "path_distance_m": 0.5338534672376778,
+            "outward_score": 0.6298770863934009,
+            "negative_dot_unit_per_peer": {
+              "tb1": 0.7765667278652683,
+              "tb2": 0.6298770863934009
+            },
+            "has_clear_actual_motion_phase_counterfactual": true,
+            "clear_phase_count": 134,
+            "total_phases": 800,
+            "first_clear_clock_ns": 74320000000
+          }
+        }
+      },
+      "all_three_goal_joint_mask_legal": true,
+      "all_chosen_have_some_actual_phase_heading_counterfactual_clear": true,
+      "shared_clock_all_chosen_counterfactual_clear_count": 0,
+      "first_shared_clear_clock_ns": null
+    }
+  ],
+  "scope": "External engineering input only; joint legal and conditional guard phases do not prove native execution or all-candidate safety."
+}

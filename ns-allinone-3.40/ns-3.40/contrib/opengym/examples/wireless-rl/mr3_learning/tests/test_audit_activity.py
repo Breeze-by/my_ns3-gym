@@ -7,7 +7,7 @@ from pathlib import Path
 import tempfile
 import unittest
 
-from mr3_learning.audit_activity import audit_episode
+from mr3_learning.audit_activity import audit_episode, audit_probe_activity
 
 
 ROBOTS = ("tb1", "tb2", "tb3")
@@ -76,9 +76,48 @@ def fixture():
     return records, transitions
 
 
+def probe_fixture():
+    records, transitions = fixture()
+    raw = next(row for row in records if row["kind"] == "state_update"
+               and row["payload"]["sequence"] == 2)
+    receipt = next(row for row in records if row["kind"] == "activity_update"
+                   and row["payload"]["state_sequence"] == 2)
+    for robot in raw["payload"]["robots"]:
+        robot["odometry"]["pose"]["pose"]["position"]["x"] = .3
+    for robot in receipt["payload"]["robots"]:
+        robot["estimated_path_m"] = robot["sample"]["x"] = .3
+    for robot in transitions[-1]["snapshot"]["robots"]:
+        robot["activity"]["estimated_path_m"] = .3
+        robot["navigation"].update(accepted_goal_count=1, receipt_sequence=1)
+
+    def row(kind, payload):
+        return {"kind": kind, "epoch": EPOCH, "stamp": 1.1, "payload": payload}
+
+    first_accept = next(index for index, item in enumerate(records)
+                        if item["kind"] == "delivery")
+    records.insert(first_accept, row("native_send", {"robot": "tb1", "goal_id": "goal1"}))
+    boundary = next(index for index, item in enumerate(records)
+                    if item["kind"] == "activity_snapshot_bound"
+                    and item["payload"]["observation_sequence"] == 2)
+    extra = []
+    for name in ("tb2", "tb3"):
+        goal = "goal-" + name
+        extra.extend([
+            row("protocol", {"type": "send_goal", "robot": name, "epoch": EPOCH,
+                             "goal_id": goal}),
+            row("native_send", {"robot": name, "goal_id": goal}),
+            row("delivery", {"epoch": EPOCH, "stream": "receipt", "source": name,
+                             "sequence": 1, "payload": {
+                                 "type": "accept", "goal_id": goal, "value": True}}),
+        ])
+    records[boundary:boundary] = extra
+    seal(transitions[-1]["snapshot"])
+    return records, transitions
+
+
 class ActivityAuditTests(unittest.TestCase):
-    def run_fixture(self, mutate=None):
-        records, transitions = fixture()
+    def run_fixture(self, mutate=None, *, probe=False, all_robots=False):
+        records, transitions = probe_fixture() if all_robots else fixture()
         if mutate:
             mutate(records, transitions)
         with tempfile.TemporaryDirectory() as folder:
@@ -88,13 +127,64 @@ class ActivityAuditTests(unittest.TestCase):
                 "".join(json.dumps(r) + "\n" for r in records))
             (directory / "transitions.jsonl").write_text(
                 "".join(json.dumps(r) + "\n" for r in transitions))
-            return audit_episode(directory)
+            return audit_probe_activity(directory) if probe else audit_episode(directory)
 
     def test_exact_raw_odometry_and_duplicate_acceptance_replay(self):
         result = self.run_fixture()
         self.assertTrue(result["passed"])
         self.assertEqual(result["activity_updates"], 2)
         self.assertEqual(result["final_received_acceptance_counts"]["tb1"], 1)
+
+    def test_complete_native_three_robot_probe_has_separate_availability_credit(self):
+        result = self.run_fixture(probe=True, all_robots=True)
+        self.assertTrue(result["passed"])
+        self.assertTrue(result["integrity"]["integrity_passed"])
+        self.assertTrue(result["integrity"]["availability_passed"])
+        self.assertEqual(set(result["native_accepted_goal_ids"]), set(ROBOTS))
+
+    def test_all_null_activity_is_integrity_only_even_with_real_acceptances(self):
+        def mutate(records, transitions):
+            for row in records:
+                if row["kind"] == "state_update":
+                    for robot in row["payload"]["robots"]:
+                        del robot["odometry"]
+                elif row["kind"] == "activity_update":
+                    for robot in row["payload"]["robots"]:
+                        robot.update(status="invalid_odometry", sample=None,
+                                     estimated_path_m=None, sample_count=0,
+                                     last_odom_source_stamp=None,
+                                     path_observation_complete=False)
+            for transition in transitions:
+                for robot in transition["snapshot"]["robots"]:
+                    robot["activity"].update(estimated_path_m=None, sample_count=0,
+                                             last_odom_source_stamp=None,
+                                             path_observation_complete=False)
+                seal(transition["snapshot"])
+        integrity = self.run_fixture(mutate, all_robots=True)
+        self.assertTrue(integrity["integrity_passed"])
+        self.assertFalse(integrity["availability_passed"])
+        with self.assertRaisesRegex(ValueError, "unavailable/incomplete"):
+            self.run_fixture(mutate, probe=True, all_robots=True)
+
+    def test_accepted_probe_without_native_send_cannot_claim_execution(self):
+        def mutate(records, transitions):
+            records[:] = [row for row in records if row["kind"] != "native_send"]
+        with self.assertRaisesRegex(ValueError, "preceding native send"):
+            self.run_fixture(mutate, probe=True, all_robots=True)
+
+    def test_accepted_probe_at_exact_movement_threshold_is_rejected(self):
+        def mutate(records, transitions):
+            raw = next(row for row in records if row["kind"] == "state_update"
+                       and row["payload"]["sequence"] == 2)
+            raw["payload"]["robots"][0]["odometry"]["pose"]["pose"]["position"]["x"] = .05
+            receipt = next(row for row in records if row["kind"] == "activity_update"
+                           and row["payload"]["state_sequence"] == 2)
+            receipt["payload"]["robots"][0]["estimated_path_m"] = .05
+            receipt["payload"]["robots"][0]["sample"]["x"] = .05
+            transitions[-1]["snapshot"]["robots"][0]["activity"]["estimated_path_m"] = .05
+            seal(transitions[-1]["snapshot"])
+        with self.assertRaisesRegex(ValueError, "movement >0.05m"):
+            self.run_fixture(mutate, probe=True, all_robots=True)
 
     def test_changed_snapshot_path_or_count_is_rejected_even_with_new_digest(self):
         for changed in ("path", "count", "epoch", "boundary"):

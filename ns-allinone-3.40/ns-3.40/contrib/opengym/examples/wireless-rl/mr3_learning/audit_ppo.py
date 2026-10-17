@@ -48,7 +48,7 @@ CURRENT_AUDITOR_PINS = {
 }
 PREPARATION_RUNTIME_PINS = {
     ROS + 'src/multi_robot_exploration/multi_robot_exploration/mr3_adapter.py':
-        'da648c20e92160e8d8b3295909fb4b4b1eb3328b3f0a5355cf290df486bd4ebb',
+        '90444564b04b86982553a7fe6e0b98beb290ba92c3ab1e32e503998e6411fc1c',
     ROS + 'src/multi_robot_exploration/multi_robot_exploration/mr3_observation_archive.py':
         '03da72d5e989e6c7af99b90aaddf357120c2239fc08e99febb858554b1fefea8',
     ROS + 'src/multi_robot_exploration/multi_robot_exploration/peer_obstacles.py':
@@ -56,13 +56,13 @@ PREPARATION_RUNTIME_PINS = {
     ROS + 'src/merge_map/merge_map/merge_map.py':
         '76c3d2c604f38f61116be1f39263472f9074b4f69fe7a0428b532da977530078',
     ROS + 'src/multi_robot_exploration/multi_robot_exploration/mr3_information.py':
-        '3003f57b3de2c518a7217609084efeadc0154afa8ab7d81e386eee44e87ffffa',
+        '5c85502eabd0d711248f230ca0fa7a2b78491a159a4222c2eee80d4e5c97c81f',
     ROS + 'src/multi_robot_exploration/multi_robot_exploration/mr3_activity.py':
         '7af918d75c05b6f8fb1a65899e43aad11a315640e8b00fdb589c31f693ad696e',
     ROS + 'src/multi_robot_exploration/multi_robot_exploration/mr3_protocol.py':
         '5a2b90efd162b19a35964750002fe549413fec6e07f9679ea611d3fe6b1e4ada',
     ROS + 'src/multi_robot_exploration/multi_robot_exploration/mr3_motion_safety.py':
-        '87c7e61ed59aea93b6c4c4b4e153644f59d27151840771afdba7b0012c5a2b6b',
+        'b8345ec5e289d18a9d342501bb249a7b40f26d4ea8bf0d8855aa1fed6ca565ee',
     ROS + 'src/multi_robot_exploration/multi_robot_exploration/motion_safety.py':
         'a23f138e2dca3c13156eff2cc5b4ff861a061f48123414da9595ae3028808d46',
     ROS + 'src/multi_robot_exploration/multi_robot_exploration/control.py':
@@ -131,7 +131,7 @@ EXECUTION_CONFIG_PINS = {
     ROS + 'src/multi_robot/models/turtlebot3_waffle/model.sdf':
         '801ee7f05f8aab1b791ec1203595d08139f0d57cd2e5518e09baf657c2085156',
 }
-ENV_DOCUMENT_SHA256 = "12a4183f9dbb096368be60ea7fda51000a4f9c4581a0ec714f81dc14283e8294"
+ENV_DOCUMENT_SHA256 = "810fed08b884449c0e7737ae79a98ef881efbb74bb35b04e99c21aa101914464"
 TASK_DOCUMENT_SHA256 = "f96f5ba785a39daa882b3c2ea217c58dd968550b65bf0ee15faf07ca079f8991"
 PRIOR_TASK_DOCUMENT_SHA256 = "5e4400396e4aaf5a5094fb4c0c04c85810c327cc85be88b7d03fa3faeade07d2"
 TASK_BASE_FREEZE = "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a"

@@ -3,6 +3,7 @@
 import argparse
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import json
+import math
 import os
 from pathlib import Path
 import signal
@@ -15,7 +16,7 @@ from .env import MR3Env
 from .supervisor import InfrastructureError, Supervisor, WORKSPACE, identity_alive
 
 
-def probe_action(snapshot):
+def probe_action(snapshot, *, outward_goals=False):
     """Explicit external cancellation-stress inputs, not a mapping baseline."""
     elapsed = snapshot["task_elapsed_sec"]
     mask = snapshot["joint_action_mask"]
@@ -24,7 +25,28 @@ def probe_action(snapshot):
             choices = (action // 100, action // 10 % 10, action % 10)
             paths = sum(snapshot["candidates"][choice]["path_distances_m"][index] or 0.
                         for index, choice in enumerate(choices) if choice < 8)
-            return (-sum(choice < 8 for choice in choices), -paths, action)
+            goal_count = sum(choice < 8 for choice in choices)
+            if not outward_goals:
+                return (-goal_count, -paths, action)
+            margins = []
+            for index, choice in enumerate(choices):
+                if choice >= 8:
+                    continue
+                own, goal = snapshot["robots"][index], snapshot["candidates"][choice]
+                gx, gy = goal["x"] - own["x"], goal["y"] - own["y"]
+                goal_distance = math.hypot(gx, gy)
+                peer_margins = []
+                for peer_index, peer in enumerate(snapshot["robots"]):
+                    if peer_index == index:
+                        continue
+                    px, py = peer["x"] - own["x"], peer["y"] - own["y"]
+                    denominator = goal_distance * math.hypot(px, py)
+                    peer_margins.append(-(gx * px + gy * py) / denominator
+                                        if denominator else -1.)
+                margins.append(min(peer_margins, default=-1.))
+            # External diagnostic inputs exercise outward Nav2 motion. This is
+            # neither a policy nor an adapter fallback or safety certificate.
+            return (-goal_count, -min(margins, default=-1.), -sum(margins), paths, action)
         return min((action for action, valid in enumerate(mask) if valid), key=order)
     if elapsed >= 7.:
         return next(action for action in range(999, -1, -1) if mask[action])
@@ -95,7 +117,8 @@ def run_worker(args, worker_id):
                         raise RuntimeError("killed worker was accepted as a valid transition")
                     break
                 action = (888 if args.deadline_probe or args.terminal_probe else
-                          probe_action(supervisor.last_result["snapshot"]))
+                          probe_action(supervisor.last_result["snapshot"],
+                                       outward_goals=args.preparation_motion_probe))
                 step_started = time.monotonic()
                 observation, reward, terminated, truncated, info = environment.step(action)
                 episode["transition_wall_sec"] += time.monotonic() - step_started
@@ -142,6 +165,8 @@ def main():
     parser.add_argument("--fault-probe", action="store_true")
     parser.add_argument("--deadline-probe", action="store_true")
     parser.add_argument("--terminal-probe", action="store_true")
+    parser.add_argument("--preparation-motion-probe", action="store_true",
+                        help="external engineering inputs: prefer outward legal goals; no policy")
     args = parser.parse_args()
     if not 1 <= args.steps <= 300:
         parser.error("steps must be in [1,300]")
@@ -159,9 +184,13 @@ def main():
             args.workers != 1 or len(args.schedule) != 1 or args.steps != 300
             or args.fault_probe or args.terminal_probe):
         parser.error("deadline probe requires one worker, one 300-step episode, no injected crash")
-    if args.terminal_probe and (args.workers != 1 or args.schedule != [("open", 101)] * 2
-                               or args.steps != 4 or args.fault_probe or args.deadline_probe):
+    if args.terminal_probe and (
+            args.workers != 1 or args.schedule != [("open", 101)] * 2
+            or args.steps != 4 or args.fault_probe or args.deadline_probe):
         parser.error("terminal probe requires one worker, two open101 episodes and four API steps")
+    if args.preparation_motion_probe and any((
+            args.terminal_probe, args.deadline_probe, args.fault_probe)):
+        parser.error("preparation motion probe cannot be combined with other probes")
     output_root = args.output_root or (
         WORKSPACE / "ros2_ws/ros2-multi-robot-automap/log/mr3_learning")
     directory = output_root / args.run_id
@@ -187,6 +216,7 @@ def main():
                 "fault_probe": args.fault_probe,
                 "deadline_probe": args.deadline_probe,
                 "terminal_probe": args.terminal_probe,
+                "preparation_motion_probe": args.preparation_motion_probe,
                 "resource_scope": "host counters include unrelated activity; GPU driver reports",
                 "num_logical_cpus": os.cpu_count(),
                 "cpu_affinity_count": len(os.sched_getaffinity(0))}

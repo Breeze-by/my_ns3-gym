@@ -16,7 +16,8 @@ from std_msgs.msg import Header, String
 
 from multi_robot_exploration.motion_safety import MotionSafety
 from multi_robot_exploration.mr3_motion_safety import (
-    BRAKING_DECEL_MPS2, ROBOTS, guard_motion, maximum_heading_projection, valid_state,
+    BRAKING_DECEL_MPS2, ROBOTS, TURN_STOP_PADDING_SEC, guard_motion,
+    maximum_heading_projection, valid_state,
 )
 
 
@@ -64,7 +65,9 @@ def test_measured_pending_motion_and_full_turn_interval_are_checked_before_new_c
     assert not evaluate(states, "tb1", [-.2, 0.])["allow"]
     states["tb1"].update(v=0., yaw=math.pi / 2)
     assert evaluate(states, "tb1", [.2, 0.])["allow"]
-    assert not evaluate(states, "tb1", [.2, 1.])["allow"]
+    turning = evaluate(states, "tb1", [.2, 1.])
+    assert turning["output"] == [0., 1.]
+    assert turning["reason"] == "linear_brake_preserve_requested_turn"
     # Independently sample every heading; the analytic envelope must cover it.
     for heading in (-math.pi, -.3, 0., .8, math.pi):
         bound = maximum_heading_projection(.4, -.2, heading, .7)
@@ -92,9 +95,21 @@ def test_source_yaw_age_and_unobserved_pending_turn_cannot_use_old_zero_angular_
     assert not result["allow"]
     direction = result["near_peer_checks"][0]["direction_checks"][0]
     assert direction["turn_bound_radps"] == pytest.approx(.35)
-    assert direction["horizon_sec"] == pytest.approx(.76)
+    assert direction["horizon_sec"] == pytest.approx(.78)
     states["tb1"]["source_stamp"] = 1.
     assert evaluate(states, "tb1", [.26, 0.])["allow"]
+
+
+def test_turn_coupling_padding_is_explicit_in_both_stop_reserve_and_heading_horizon():
+    states = {"tb1": state("tb1", 0., 0.), "tb2": state("tb2", -.8, 0.),
+              "tb3": state("tb3", 4., 4.)}
+    result = evaluate(states, "tb1", [.2, 0.])
+    check = result["near_peer_checks"][0]
+    assert TURN_STOP_PADDING_SEC == .02
+    assert check["near"]
+    assert check["body_margin_m"] == pytest.approx(.28)
+    assert check["body_margin_m"] - check["braking_zone_margin_m"] == pytest.approx(.288)
+    assert check["direction_checks"][0]["horizon_sec"] == pytest.approx(.78)
 
 
 @pytest.mark.parametrize("fault", ["stale", "future", "epoch", "missing", "invalid", "speed"])
@@ -121,6 +136,73 @@ def test_requested_speed_turn_and_nonfinite_limits_are_not_clipped_into_new_acti
     states = {name: state(name, index * 3., 0.) for index, name in enumerate(ROBOTS)}
     result = evaluate(states, "tb1", command)
     assert result["reason"] == "unsupported_command" and result["output"] == [0., 0.]
+
+
+@pytest.mark.parametrize("sign", [-1., 1.])
+def test_only_one_ulp_outward_endpoints_are_canonicalized_to_hard_limits(sign):
+    states = {name: state(name, index * 3., 0.) for index, name in enumerate(ROBOTS)}
+    # This v is an actual v2 Nav2 smoother callback, not a broad epsilon case.
+    captured_v = sign * 0.26000000000000006
+    adjacent_w = sign * math.nextafter(1., math.inf)
+    result = evaluate(states, "tb1", [captured_v, adjacent_w])
+    assert result["allow"] and result["output"] == [sign * .26, sign * 1.]
+    assert result["command_normalization"] == {
+        "schema": "mr3-command-one-ulp-v1", "input": [captured_v, adjacent_w],
+        "canonical": [sign * .26, sign * 1.], "normalized_axes": ["v", "w"]}
+    assert abs(result["output"][0]) <= .26 and abs(result["output"][1]) <= 1.
+    for axis, limit in enumerate((.26, 1.)):
+        command = [0., 0.]
+        command[axis] = sign * math.nextafter(math.nextafter(limit, math.inf), math.inf)
+        rejected = evaluate(states, "tb1", command)
+        assert not rejected["allow"] and rejected["reason"] == "unsupported_command"
+        assert rejected["output"] == [0., 0.]
+
+
+def test_one_ulp_normalization_preserves_geometry_rejection_and_original_input():
+    states = {"tb1": state("tb1", 0., 0., v=.1), "tb2": state("tb2", .65, 0.),
+              "tb3": state("tb3", 4., 4.)}
+    captured = [.26000000000000006, .6842105263157895]
+    original = list(captured)
+    result = evaluate(states, "tb1", captured)
+    assert captured == original
+    assert not result["allow"] and result["reason"] == "peer_braking_nonclosing"
+    assert result["output"] == [0., 0.]
+    assert result["command_normalization"]["canonical"] == [.26, captured[1]]
+
+
+@pytest.mark.parametrize("turn", [-.6842105263157895, .6842105263157895])
+def test_captured_mixed_request_can_only_preserve_independently_safe_requested_turn(turn):
+    states = {"tb1": state("tb1", 0., 0.), "tb2": state("tb2", .65, 0.),
+              "tb3": state("tb3", 4., 4.)}
+    request = [.26000000000000006, turn]
+    result = evaluate(states, "tb1", request)
+    assert result["allow"] and result["output"] == [0., turn]
+    component = result["component_filter"]
+    assert component["canonical_input"] == [.26, turn]
+    assert component["rejected_mixed_decision"]["reason"] == "peer_braking_nonclosing"
+    assert component["rejected_mixed_decision"]["output"] == [0., 0.]
+    assert component["rotation_check"] == evaluate(states, "tb1", [0., turn])
+    assert component["rotation_check"]["reason"] == "clear"
+    assert component["rotation_check"]["component_filter"] is None
+    assert request == [.26000000000000006, turn]
+
+
+@pytest.mark.parametrize("fault", ["moving", "envelope", "stale", "two_ulps"])
+def test_component_filter_never_bypasses_measured_motion_or_unavailable_geometry(fault):
+    states = {"tb1": state("tb1", 0., 0.), "tb2": state("tb2", .65, 0.),
+              "tb3": state("tb3", 4., 4.)}
+    request = [.26, -.6842105263157895]
+    if fault == "moving":
+        states["tb1"]["v"] = .1
+    elif fault == "envelope":
+        states["tb2"]["x"] = .49
+    elif fault == "stale":
+        states["tb2"]["source_stamp"] = .499
+    else:
+        request[1] = math.nextafter(math.nextafter(1., math.inf), math.inf)
+    result = evaluate(states, "tb1", request)
+    assert not result["allow"] and result["output"] == [0., 0.]
+    assert result["component_filter"] is None
 
 
 @pytest.mark.parametrize("crossing", [False, True])

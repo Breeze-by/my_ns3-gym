@@ -1,0 +1,1292 @@
+{
+  "schema": "mr3-p2a0-independent-reset-safety-review-v2",
+  "freeze": "96c201e0e258bd0fe192fc03c6716fc694b7a9b7",
+  "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v2_reset",
+  "errors": [
+    "worker0/episode001_open_101: supervisor cleanup",
+    "worker1/episode001_open_101: supervisor cleanup"
+  ],
+  "episodes": [
+    {
+      "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v2_reset/worker0/episode001_open_101",
+      "epoch": "mr3_p2a0_20261017_v2_reset_w0_e1_e3d4be9d",
+      "motion": {
+        "raw_motion_records": 107476,
+        "robots": {
+          "tb1": {
+            "decisions": 4593,
+            "actual": 4593,
+            "nonzero_requests": 552,
+            "nonzero_outputs": 2,
+            "max_abs_v": 0.0005267679549696187,
+            "max_abs_w": 6.509465211144385e-05,
+            "max_planar_speed_norm": 0.0005322215048950374,
+            "max_abs_lateral_v": 7.59950780634116e-05,
+            "max_abs_vertical_v": 0.0,
+            "max_angular_speed_norm": 6.509465211144385e-05,
+            "max_source_chord_speed": 0.0005442121197350702,
+            "duplicate_odom_source_count": 0,
+            "older_odom_source_count": 0
+          },
+          "tb2": {
+            "decisions": 4593,
+            "actual": 4593,
+            "nonzero_requests": 550,
+            "nonzero_outputs": 0,
+            "max_abs_v": 0.0005267679549697263,
+            "max_abs_w": 6.664533673823381e-05,
+            "max_planar_speed_norm": 0.0005322215048952662,
+            "max_abs_lateral_v": 7.599507806426852e-05,
+            "max_abs_vertical_v": 0.0,
+            "max_angular_speed_norm": 6.664533673823381e-05,
+            "max_source_chord_speed": 0.0005442121197349826,
+            "duplicate_odom_source_count": 0,
+            "older_odom_source_count": 0
+          },
+          "tb3": {
+            "decisions": 4593,
+            "actual": 4593,
+            "nonzero_requests": 553,
+            "nonzero_outputs": 43,
+            "max_abs_v": 0.003098856396726585,
+            "max_abs_w": 1.1304093053351068,
+            "max_planar_speed_norm": 0.003121947852554537,
+            "max_abs_lateral_v": 0.0008211006527693051,
+            "max_abs_vertical_v": 0.0,
+            "max_angular_speed_norm": 1.1304093053351068,
+            "max_source_chord_speed": 0.002901389481095326,
+            "duplicate_odom_source_count": 0,
+            "older_odom_source_count": 0
+          }
+        },
+        "release_ns": 78220000000,
+        "motion_acks_consumed": 712,
+        "costmap_streams": [
+          [
+            "tb1",
+            "global"
+          ],
+          [
+            "tb1",
+            "local"
+          ],
+          [
+            "tb2",
+            "global"
+          ],
+          [
+            "tb2",
+            "local"
+          ],
+          [
+            "tb3",
+            "global"
+          ],
+          [
+            "tb3",
+            "local"
+          ]
+        ],
+        "unique_costmaps": 196,
+        "scope": "independent raw input reconstruction and observed graph/value FIFO; no production geometry imports, no actuator consumption claim"
+      },
+      "physical": {
+        "release_ns": 78220000000,
+        "robots": {
+          "tb1": {
+            "post_release_source_samples": 419,
+            "maximum_abs_planar_speed_norm": 6.990594488534107e-05,
+            "maximum_abs_vx": 3.599077598669377e-05,
+            "maximum_abs_vy": 6.532852404432082e-05,
+            "maximum_abs_vz": 0.0,
+            "maximum_abs_wx": 0.0,
+            "maximum_abs_wy": 0.0,
+            "maximum_abs_wz": 5.002930741399905e-05,
+            "maximum_abs_chord_speed_mps": 3.216556591647766e-05,
+            "maximum_abs_yaw_source_rate_radps": 5.7182825789253746e-05,
+            "largest_tf_corrections": []
+          },
+          "tb2": {
+            "post_release_source_samples": 419,
+            "maximum_abs_planar_speed_norm": 7.021824864370961e-05,
+            "maximum_abs_vx": 3.610919406173678e-05,
+            "maximum_abs_vy": 6.457101103192281e-05,
+            "maximum_abs_vz": 0.0,
+            "maximum_abs_wx": 0.0,
+            "maximum_abs_wy": 0.0,
+            "maximum_abs_wz": 5.029377624322877e-05,
+            "maximum_abs_chord_speed_mps": 3.204990348895761e-05,
+            "maximum_abs_yaw_source_rate_radps": 5.654732641429095e-05,
+            "largest_tf_corrections": []
+          },
+          "tb3": {
+            "post_release_source_samples": 419,
+            "maximum_abs_planar_speed_norm": 0.003121947852554537,
+            "maximum_abs_vx": 0.003098856396726585,
+            "maximum_abs_vy": 0.0008211006527693051,
+            "maximum_abs_vz": 0.0,
+            "maximum_abs_wx": 0.0,
+            "maximum_abs_wy": 0.0,
+            "maximum_abs_wz": 1.1304093053351068,
+            "maximum_abs_chord_speed_mps": 0.002901389481095326,
+            "maximum_abs_yaw_source_rate_radps": 1.119021211430286,
+            "largest_tf_corrections": [
+              {
+                "source_ns": 80080000000,
+                "previous_source_ns": 80080000000,
+                "received_clock_ns": 80100000000,
+                "translation_delta_m": 0.00865673457822379,
+                "rotation_delta_rad": 0.0034839319797769458,
+                "source_delta_sec": 0.0,
+                "same_odom_common_frame_shift_m": 0.010230403296211717
+              },
+              {
+                "source_ns": 80280000000,
+                "previous_source_ns": 80280000000,
+                "received_clock_ns": 80300000000,
+                "translation_delta_m": 0.008636384077560434,
+                "rotation_delta_rad": 0.003486654666154868,
+                "source_delta_sec": 0.0,
+                "same_odom_common_frame_shift_m": 0.010209621940460182
+              },
+              {
+                "source_ns": 81880000000,
+                "previous_source_ns": 81880000000,
+                "received_clock_ns": 81900000000,
+                "translation_delta_m": 0.010010747831067538,
+                "rotation_delta_rad": 4.5349985608976457e-07,
+                "source_delta_sec": 0.0,
+                "same_odom_common_frame_shift_m": 0.010010749024659737
+              },
+              {
+                "source_ns": 80680000000,
+                "previous_source_ns": 80480000000,
+                "received_clock_ns": 80700000000,
+                "translation_delta_m": 0.010010629575134123,
+                "rotation_delta_rad": 1.9233957478928185e-06,
+                "source_delta_sec": 0.2,
+                "same_odom_common_frame_shift_m": 0.010009761873937257
+              }
+            ]
+          }
+        },
+        "speed_bound_violations": [],
+        "speed_bound_violation_count": 0,
+        "local_source_chord_bound_violations": [],
+        "local_source_chord_bound_violation_count": 0,
+        "source_regressions": [],
+        "source_regression_count": 0,
+        "tf_source_regressions": [],
+        "tf_source_regression_count": 0,
+        "sampled_stop_segments": [],
+        "scope": "full raw odometry vectors and source timestamps; sampled empirical evidence only. Chord sums are lower bounds on travelled curves; no continuous-time proof. Exact global braking envelope uses .30m/s/.16s/.5m/s2 without added tolerance; reported rest<=.01m/s is diagnostic, not proof of exact zero or a changed gate."
+      },
+      "final_actor_activity": {
+        "tb1": {
+          "epoch": "mr3_p2a0_20261017_v2_reset_w0_e1_e3d4be9d",
+          "estimated_path_m": null,
+          "last_odom_source_stamp": null,
+          "path_observation_complete": false,
+          "sample_count": 0,
+          "schema": "mr3-received-activity-v1",
+          "started_at": 78.22,
+          "state_sequence": 903
+        },
+        "tb2": {
+          "epoch": "mr3_p2a0_20261017_v2_reset_w0_e1_e3d4be9d",
+          "estimated_path_m": null,
+          "last_odom_source_stamp": null,
+          "path_observation_complete": false,
+          "sample_count": 0,
+          "schema": "mr3-received-activity-v1",
+          "started_at": 78.22,
+          "state_sequence": 903
+        },
+        "tb3": {
+          "epoch": "mr3_p2a0_20261017_v2_reset_w0_e1_e3d4be9d",
+          "estimated_path_m": null,
+          "last_odom_source_stamp": null,
+          "path_observation_complete": false,
+          "sample_count": 0,
+          "schema": "mr3-received-activity-v1",
+          "started_at": 78.22,
+          "state_sequence": 903
+        }
+      },
+      "raw_state_updates": 154,
+      "raw_odom_missing_counts": {
+        "tb1": 154,
+        "tb2": 154,
+        "tb3": 154
+      },
+      "task_terminal": "training_external_truncation",
+      "frozen_navigation_protocol_closed": true,
+      "dt_last": 1.0,
+      "command_last_present": true,
+      "api_steps": 14,
+      "script_decisions": 14,
+      "contact_components": 18,
+      "contact_fresh": true,
+      "collision_events": 0,
+      "nav2_finalized": 18,
+      "slam_exit_witnesses": [
+        [
+          389,
+          {
+            "action_id": 123764582233136,
+            "controlled": true,
+            "epoch": "mr3_p2a0_20261017_v2_reset_w0_e1_e3d4be9d",
+            "event": "process_exited",
+            "pid": 2311296,
+            "process_name": "multirobot_slam_toolbox_node-14",
+            "process_start_index": 14,
+            "protocol": "nav2-finalized_then_serial-ros_then_gazebo-v1",
+            "receipt_index": 90,
+            "returncode": 0,
+            "role": "owned_ros",
+            "schema": "mr3-ordered-ros-shutdown-v1",
+            "signal_sequence": 23,
+            "wall_monotonic_ns": 3952783900172192
+          }
+        ],
+        [
+          400,
+          {
+            "action_id": 123764582241264,
+            "controlled": true,
+            "epoch": "mr3_p2a0_20261017_v2_reset_w0_e1_e3d4be9d",
+            "event": "process_exited",
+            "pid": 2310994,
+            "process_name": "multirobot_slam_toolbox_node-11",
+            "process_start_index": 11,
+            "protocol": "nav2-finalized_then_serial-ros_then_gazebo-v1",
+            "receipt_index": 94,
+            "returncode": 0,
+            "role": "owned_ros",
+            "schema": "mr3-ordered-ros-shutdown-v1",
+            "signal_sequence": 25,
+            "wall_monotonic_ns": 3952784246459222
+          }
+        ],
+        [
+          411,
+          {
+            "action_id": 123764582024624,
+            "controlled": true,
+            "epoch": "mr3_p2a0_20261017_v2_reset_w0_e1_e3d4be9d",
+            "event": "process_exited",
+            "pid": 2309955,
+            "process_name": "multirobot_slam_toolbox_node-8",
+            "process_start_index": 8,
+            "protocol": "nav2-finalized_then_serial-ros_then_gazebo-v1",
+            "receipt_index": 98,
+            "returncode": 0,
+            "role": "owned_ros",
+            "schema": "mr3-ordered-ros-shutdown-v1",
+            "signal_sequence": 27,
+            "wall_monotonic_ns": 3952784586161500
+          }
+        ]
+      ],
+      "slam_unregister_witnesses": [
+        [
+          387,
+          "[multirobot_slam_toolbox_node-14] Unregistering sensor: Custom Described Lidar : base_scan"
+        ],
+        [
+          398,
+          "[multirobot_slam_toolbox_node-11] Unregistering sensor: Custom Described Lidar : base_scan"
+        ],
+        [
+          409,
+          "[multirobot_slam_toolbox_node-8] Unregistering sensor: Custom Described Lidar : base_scan"
+        ]
+      ],
+      "serial_ros_signals": 32,
+      "ordered_complete": {
+        "epoch": "mr3_p2a0_20261017_v2_reset_w0_e1_e3d4be9d",
+        "event": "complete",
+        "protocol": "nav2-finalized_then_serial-ros_then_gazebo-v1",
+        "receipt_index": 114,
+        "schema": "mr3-ordered-ros-shutdown-v1",
+        "server_pid": 2309949,
+        "server_returncode": 0,
+        "stop_cli_pid": 2327193,
+        "stop_cli_returncode": 0,
+        "wall_monotonic_ns": 3952788090202077
+      },
+      "truth_diagnostic": null,
+      "peer_failure_review": null,
+      "task_success": false,
+      "original_worker_task_failures": [],
+      "original_native_failures": [],
+      "artifact_sha256": {
+        "metadata.json": "5d966a96da20779cf5a4c6240fb073fe585bb10ef8749543bf41989fd91cf126",
+        "summary.json": "dbb4479f0802927f04364f9b79f5448934276110ff3c9f5d0d2c6b0e4fec5fa5",
+        "supervisor_shutdown.json": "32fc33ec34fda8a0141f902a949108e15f8e7f98a6314ea77d0a606450b786a7",
+        "native_stop.json": "f8a9269bc185fba4ab5878db5420360f4efc8cc1c885e90c1d1c8e69457b8b38",
+        "nav2_shutdown.json": "9275f0700297b73c6ca0aec79213db9e4a4d3442d7fdd5cdc8df40e0278bcb54",
+        "transitions.jsonl": "7899f16a23eca01dd642452376707acc14f80cdd6d84dc105172020616b6c3e3",
+        "launch.log": "fc4849656913a91d57918ae12c97e4b4755d675f6d2ecdc9d545762693dce54c",
+        "mr3_p2a0_20261017_v2_reset_w0_e1_e3d4be9d.json": "45174bbd6d211fd1fd15ad98c8781fe90d51fab51a698510b4384e5708b32de1"
+      }
+    },
+    {
+      "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v2_reset/worker1/episode001_open_101",
+      "epoch": "mr3_p2a0_20261017_v2_reset_w1_e1_30ab806f",
+      "motion": {
+        "raw_motion_records": 107909,
+        "robots": {
+          "tb1": {
+            "decisions": 4483,
+            "actual": 4483,
+            "nonzero_requests": 600,
+            "nonzero_outputs": 171,
+            "max_abs_v": 0.0024411671532509967,
+            "max_abs_w": 1.113746604884402,
+            "max_planar_speed_norm": 0.002480079836212262,
+            "max_abs_lateral_v": 0.0006662513055959325,
+            "max_abs_vertical_v": 0.0,
+            "max_angular_speed_norm": 1.113746604884402,
+            "max_source_chord_speed": 0.0023132842211504084,
+            "duplicate_odom_source_count": 0,
+            "older_odom_source_count": 0
+          },
+          "tb2": {
+            "decisions": 4483,
+            "actual": 4483,
+            "nonzero_requests": 602,
+            "nonzero_outputs": 3,
+            "max_abs_v": 0.0005267679549697263,
+            "max_abs_w": 6.664533673823381e-05,
+            "max_planar_speed_norm": 0.0005322215048952662,
+            "max_abs_lateral_v": 7.599507806426852e-05,
+            "max_abs_vertical_v": 0.0,
+            "max_angular_speed_norm": 6.664533673823381e-05,
+            "max_source_chord_speed": 0.0005442121197349826,
+            "duplicate_odom_source_count": 0,
+            "older_odom_source_count": 0
+          },
+          "tb3": {
+            "decisions": 4483,
+            "actual": 4483,
+            "nonzero_requests": 602,
+            "nonzero_outputs": 195,
+            "max_abs_v": 0.002158159807551829,
+            "max_abs_w": 1.146542146648025,
+            "max_planar_speed_norm": 0.002300263468036245,
+            "max_abs_lateral_v": 0.0007959637350093195,
+            "max_abs_vertical_v": 0.0,
+            "max_angular_speed_norm": 1.146542146648025,
+            "max_source_chord_speed": 0.001982552286452985,
+            "duplicate_odom_source_count": 0,
+            "older_odom_source_count": 0
+          }
+        },
+        "release_ns": 74200000000,
+        "motion_acks_consumed": 802,
+        "costmap_streams": [
+          [
+            "tb1",
+            "global"
+          ],
+          [
+            "tb1",
+            "local"
+          ],
+          [
+            "tb2",
+            "global"
+          ],
+          [
+            "tb2",
+            "local"
+          ],
+          [
+            "tb3",
+            "global"
+          ],
+          [
+            "tb3",
+            "local"
+          ]
+        ],
+        "unique_costmaps": 202,
+        "scope": "independent raw input reconstruction and observed graph/value FIFO; no production geometry imports, no actuator consumption claim"
+      },
+      "physical": {
+        "release_ns": 74200000000,
+        "robots": {
+          "tb1": {
+            "post_release_source_samples": 471,
+            "maximum_abs_planar_speed_norm": 0.002480079836212262,
+            "maximum_abs_vx": 0.0024411671532509967,
+            "maximum_abs_vy": 0.0006662513055959325,
+            "maximum_abs_vz": 0.0,
+            "maximum_abs_wx": 0.0,
+            "maximum_abs_wy": 0.0,
+            "maximum_abs_wz": 1.113746604884402,
+            "maximum_abs_chord_speed_mps": 0.0023132842211504084,
+            "maximum_abs_yaw_source_rate_radps": 1.1069613987715756,
+            "largest_tf_corrections": [
+              {
+                "source_ns": 87600000000,
+                "previous_source_ns": 87400000000,
+                "received_clock_ns": 87620000000,
+                "translation_delta_m": 0.02235261975439831,
+                "rotation_delta_rad": 3.913527863467972e-06,
+                "source_delta_sec": 0.2,
+                "same_odom_common_frame_shift_m": 0.022354197540846905
+              },
+              {
+                "source_ns": 81800000000,
+                "previous_source_ns": 81600000000,
+                "received_clock_ns": 81840000000,
+                "translation_delta_m": 0.014155431277583196,
+                "rotation_delta_rad": 4.824365917049558e-06,
+                "source_delta_sec": 0.2,
+                "same_odom_common_frame_shift_m": 0.014153893871881049
+              },
+              {
+                "source_ns": 89000000000,
+                "previous_source_ns": 89000000000,
+                "received_clock_ns": 89000000000,
+                "translation_delta_m": 0.006423260969466416,
+                "rotation_delta_rad": 0.006973844654590572,
+                "source_delta_sec": 0.0,
+                "same_odom_common_frame_shift_m": 0.009574934177773782
+              },
+              {
+                "source_ns": 80600000000,
+                "previous_source_ns": 80600000000,
+                "received_clock_ns": 80620000000,
+                "translation_delta_m": 0.005115752828848903,
+                "rotation_delta_rad": 0.010466823140916117,
+                "source_delta_sec": 0.0,
+                "same_odom_common_frame_shift_m": 0.0006827216296226347
+              },
+              {
+                "source_ns": 80200000000,
+                "previous_source_ns": 80200000000,
+                "received_clock_ns": 80200000000,
+                "translation_delta_m": 0.003325389930912862,
+                "rotation_delta_rad": 0.006987427631049896,
+                "source_delta_sec": 0.0,
+                "same_odom_common_frame_shift_m": 0.0004336832158632733
+              },
+              {
+                "source_ns": 81400000000,
+                "previous_source_ns": 81400000000,
+                "received_clock_ns": 81440000000,
+                "translation_delta_m": 0.001744318373764149,
+                "rotation_delta_rad": 0.0034903135211598706,
+                "source_delta_sec": 0.0,
+                "same_odom_common_frame_shift_m": 0.0002061039074993036
+              }
+            ]
+          },
+          "tb2": {
+            "post_release_source_samples": 471,
+            "maximum_abs_planar_speed_norm": 7.021824864370961e-05,
+            "maximum_abs_vx": 3.610919406173678e-05,
+            "maximum_abs_vy": 6.457101103192281e-05,
+            "maximum_abs_vz": 0.0,
+            "maximum_abs_wx": 0.0,
+            "maximum_abs_wy": 0.0,
+            "maximum_abs_wz": 5.029377624322877e-05,
+            "maximum_abs_chord_speed_mps": 3.204990348895761e-05,
+            "maximum_abs_yaw_source_rate_radps": 5.654732641429095e-05,
+            "largest_tf_corrections": []
+          },
+          "tb3": {
+            "post_release_source_samples": 471,
+            "maximum_abs_planar_speed_norm": 0.002300263468036245,
+            "maximum_abs_vx": 0.002158159807551829,
+            "maximum_abs_vy": 0.0007959637350093195,
+            "maximum_abs_vz": 0.0,
+            "maximum_abs_wx": 0.0,
+            "maximum_abs_wy": 0.0,
+            "maximum_abs_wz": 1.146542146648025,
+            "maximum_abs_chord_speed_mps": 0.001982552286452985,
+            "maximum_abs_yaw_source_rate_radps": 1.1447368524861363,
+            "largest_tf_corrections": [
+              {
+                "source_ns": 77873000000,
+                "previous_source_ns": 77873000000,
+                "received_clock_ns": 77920000000,
+                "translation_delta_m": 0.020239957165522952,
+                "rotation_delta_rad": 0.006975091739368824,
+                "source_delta_sec": 0.0,
+                "same_odom_common_frame_shift_m": 0.020074584257120023
+              },
+              {
+                "source_ns": 85074000000,
+                "previous_source_ns": 85074000000,
+                "received_clock_ns": 85100000000,
+                "translation_delta_m": 0.02017475431287264,
+                "rotation_delta_rad": 0.010464122631976866,
+                "source_delta_sec": 0.0,
+                "same_odom_common_frame_shift_m": 0.01979073362858295
+              },
+              {
+                "source_ns": 88678000000,
+                "previous_source_ns": 88678000000,
+                "received_clock_ns": 88680000000,
+                "translation_delta_m": 0.015103516150955044,
+                "rotation_delta_rad": 0.003487878296654118,
+                "source_delta_sec": 0.0,
+                "same_odom_common_frame_shift_m": 0.013946473606004369
+              },
+              {
+                "source_ns": 80472000000,
+                "previous_source_ns": 80472000000,
+                "received_clock_ns": 80500000000,
+                "translation_delta_m": 0.011370786503090662,
+                "rotation_delta_rad": 0.0034954535920597584,
+                "source_delta_sec": 0.0,
+                "same_odom_common_frame_shift_m": 0.009789393793968126
+              },
+              {
+                "source_ns": 86278000000,
+                "previous_source_ns": 86278000000,
+                "received_clock_ns": 86300000000,
+                "translation_delta_m": 0.010510905795817952,
+                "rotation_delta_rad": 0.010472908618524663,
+                "source_delta_sec": 0.0,
+                "same_odom_common_frame_shift_m": 0.009683000451416393
+              },
+              {
+                "source_ns": 86479000000,
+                "previous_source_ns": 86479000000,
+                "received_clock_ns": 86520000000,
+                "translation_delta_m": 0.0014198421404498314,
+                "rotation_delta_rad": 0.003489146311303922,
+                "source_delta_sec": 0.0,
+                "same_odom_common_frame_shift_m": 0.00023547424489410925
+              }
+            ]
+          }
+        },
+        "speed_bound_violations": [],
+        "speed_bound_violation_count": 0,
+        "local_source_chord_bound_violations": [],
+        "local_source_chord_bound_violation_count": 0,
+        "source_regressions": [],
+        "source_regression_count": 0,
+        "tf_source_regressions": [],
+        "tf_source_regression_count": 0,
+        "sampled_stop_segments": [],
+        "scope": "full raw odometry vectors and source timestamps; sampled empirical evidence only. Chord sums are lower bounds on travelled curves; no continuous-time proof. Exact global braking envelope uses .30m/s/.16s/.5m/s2 without added tolerance; reported rest<=.01m/s is diagnostic, not proof of exact zero or a changed gate."
+      },
+      "final_actor_activity": {
+        "tb1": {
+          "epoch": "mr3_p2a0_20261017_v2_reset_w1_e1_30ab806f",
+          "estimated_path_m": null,
+          "last_odom_source_stamp": null,
+          "path_observation_complete": false,
+          "sample_count": 0,
+          "schema": "mr3-received-activity-v1",
+          "started_at": 74.2,
+          "state_sequence": 891
+        },
+        "tb2": {
+          "epoch": "mr3_p2a0_20261017_v2_reset_w1_e1_30ab806f",
+          "estimated_path_m": null,
+          "last_odom_source_stamp": null,
+          "path_observation_complete": false,
+          "sample_count": 0,
+          "schema": "mr3-received-activity-v1",
+          "started_at": 74.2,
+          "state_sequence": 891
+        },
+        "tb3": {
+          "epoch": "mr3_p2a0_20261017_v2_reset_w1_e1_30ab806f",
+          "estimated_path_m": null,
+          "last_odom_source_stamp": null,
+          "path_observation_complete": false,
+          "sample_count": 0,
+          "schema": "mr3-received-activity-v1",
+          "started_at": 74.2,
+          "state_sequence": 891
+        }
+      },
+      "raw_state_updates": 178,
+      "raw_odom_missing_counts": {
+        "tb1": 178,
+        "tb2": 178,
+        "tb3": 178
+      },
+      "task_terminal": "training_external_truncation",
+      "frozen_navigation_protocol_closed": true,
+      "dt_last": 1.0,
+      "command_last_present": true,
+      "api_steps": 16,
+      "script_decisions": 16,
+      "contact_components": 18,
+      "contact_fresh": true,
+      "collision_events": 0,
+      "nav2_finalized": 18,
+      "slam_exit_witnesses": [
+        [
+          390,
+          {
+            "action_id": 134371954202400,
+            "controlled": true,
+            "epoch": "mr3_p2a0_20261017_v2_reset_w1_e1_30ab806f",
+            "event": "process_exited",
+            "pid": 2311184,
+            "process_name": "multirobot_slam_toolbox_node-14",
+            "process_start_index": 14,
+            "protocol": "nav2-finalized_then_serial-ros_then_gazebo-v1",
+            "receipt_index": 90,
+            "returncode": 0,
+            "role": "owned_ros",
+            "schema": "mr3-ordered-ros-shutdown-v1",
+            "signal_sequence": 23,
+            "wall_monotonic_ns": 3952794581300125
+          }
+        ],
+        [
+          401,
+          {
+            "action_id": 134371954185440,
+            "controlled": true,
+            "epoch": "mr3_p2a0_20261017_v2_reset_w1_e1_30ab806f",
+            "event": "process_exited",
+            "pid": 2310966,
+            "process_name": "multirobot_slam_toolbox_node-11",
+            "process_start_index": 11,
+            "protocol": "nav2-finalized_then_serial-ros_then_gazebo-v1",
+            "receipt_index": 94,
+            "returncode": 0,
+            "role": "owned_ros",
+            "schema": "mr3-ordered-ros-shutdown-v1",
+            "signal_sequence": 25,
+            "wall_monotonic_ns": 3952794923864342
+          }
+        ],
+        [
+          412,
+          {
+            "action_id": 134371953771952,
+            "controlled": true,
+            "epoch": "mr3_p2a0_20261017_v2_reset_w1_e1_30ab806f",
+            "event": "process_exited",
+            "pid": 2309973,
+            "process_name": "multirobot_slam_toolbox_node-8",
+            "process_start_index": 8,
+            "protocol": "nav2-finalized_then_serial-ros_then_gazebo-v1",
+            "receipt_index": 98,
+            "returncode": 0,
+            "role": "owned_ros",
+            "schema": "mr3-ordered-ros-shutdown-v1",
+            "signal_sequence": 27,
+            "wall_monotonic_ns": 3952795280284987
+          }
+        ]
+      ],
+      "slam_unregister_witnesses": [
+        [
+          388,
+          "[multirobot_slam_toolbox_node-14] Unregistering sensor: Custom Described Lidar : base_scan"
+        ],
+        [
+          399,
+          "[multirobot_slam_toolbox_node-11] Unregistering sensor: Custom Described Lidar : base_scan"
+        ],
+        [
+          410,
+          "[multirobot_slam_toolbox_node-8] Unregistering sensor: Custom Described Lidar : base_scan"
+        ]
+      ],
+      "serial_ros_signals": 32,
+      "ordered_complete": {
+        "epoch": "mr3_p2a0_20261017_v2_reset_w1_e1_30ab806f",
+        "event": "complete",
+        "protocol": "nav2-finalized_then_serial-ros_then_gazebo-v1",
+        "receipt_index": 114,
+        "schema": "mr3-ordered-ros-shutdown-v1",
+        "server_pid": 2309965,
+        "server_returncode": 0,
+        "stop_cli_pid": 2327630,
+        "stop_cli_returncode": 0,
+        "wall_monotonic_ns": 3952798617948290
+      },
+      "truth_diagnostic": null,
+      "peer_failure_review": null,
+      "task_success": false,
+      "original_worker_task_failures": [],
+      "original_native_failures": [],
+      "artifact_sha256": {
+        "metadata.json": "30bfcfc319206a53a2fb85261753abe42a6bc7b460f88e7e1ca0817624f75a36",
+        "summary.json": "1468b01ab62464ba5baa355567737c4c6da77f984bbf7ed6b61657eff0254724",
+        "supervisor_shutdown.json": "209d2357a86e7fb99ca04fdba97f969984199f08d76e9e74eb032a23229e268b",
+        "native_stop.json": "0b2b87dbce3069feab049e8b319b364d621dd839b159bdb97fa696d642323493",
+        "nav2_shutdown.json": "a6bdcb98274e45a435acaaeae5b7526dd03c53a4a90cfc501d0d08d8ad4f37a8",
+        "transitions.jsonl": "32e6496f5df2a7af50065bf8cb66dca5cde7697b38b48d6bdb1b314c87b066c3",
+        "launch.log": "4327664618b4daf4f752279653bf33752c8a7f4e75ef2303787ffef6633a6079",
+        "mr3_p2a0_20261017_v2_reset_w1_e1_30ab806f.json": "22af6bdeb38ab6853bfe31758b45c3cb386a3e491abe46ea17d716d482376430"
+      }
+    }
+  ],
+  "scope": "read-only native closure, 18-source frozen health, task failure/truncation distinction and diagnostic isolation; no training/task-success credit",
+  "source_preflight_scope": "frozen Git bytes bind to native-start preflight; worktree may already contain subsequent v3 repairs",
+  "source_proof": {
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/peer_obstacles.py": {
+      "sha256": "54e6eeccac7d93ac42c3783b7826fed14296c527c7d68a7ecdb76e77a50102d4",
+      "worktree_identical": true
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/task_evaluator.py": {
+      "sha256": "9b029f21d433f694b79118c113e23df5921401e3be88f89599201bcecf84cc91",
+      "worktree_identical": true
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_adapter.py": {
+      "sha256": "da648c20e92160e8d8b3295909fb4b4b1eb3328b3f0a5355cf290df486bd4ebb",
+      "worktree_identical": true
+    },
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/observation.py": {
+      "sha256": "69f446d601fd67e2cd51622c1e443891a3915587d8d1ba6b12745f7e15ad1723",
+      "worktree_identical": true
+    }
+  },
+  "owned_identity_absence": [
+    {
+      "pid": 2309749,
+      "start_ticks": 395237707,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2309750,
+      "start_ticks": 395237707,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2309875,
+      "start_ticks": 395237881,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2309878,
+      "start_ticks": 395237886,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2309941,
+      "start_ticks": 395238045,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2309943,
+      "start_ticks": 395238045,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2309945,
+      "start_ticks": 395238045,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2309947,
+      "start_ticks": 395238046,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2309949,
+      "start_ticks": 395238046,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2309951,
+      "start_ticks": 395238046,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2309953,
+      "start_ticks": 395238046,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2309955,
+      "start_ticks": 395238046,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2309957,
+      "start_ticks": 395238047,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2309959,
+      "start_ticks": 395238047,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2309961,
+      "start_ticks": 395238048,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2309963,
+      "start_ticks": 395238048,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2309965,
+      "start_ticks": 395238048,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2309969,
+      "start_ticks": 395238048,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2309971,
+      "start_ticks": 395238048,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2309973,
+      "start_ticks": 395238048,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2310962,
+      "start_ticks": 395238431,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2310964,
+      "start_ticks": 395238431,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2310966,
+      "start_ticks": 395238431,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2310985,
+      "start_ticks": 395238439,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2310989,
+      "start_ticks": 395238439,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2310994,
+      "start_ticks": 395238439,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2311180,
+      "start_ticks": 395238757,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2311182,
+      "start_ticks": 395238757,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2311184,
+      "start_ticks": 395238758,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2311292,
+      "start_ticks": 395238935,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2311294,
+      "start_ticks": 395238935,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2311296,
+      "start_ticks": 395238935,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2311404,
+      "start_ticks": 395239094,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2311478,
+      "start_ticks": 395239271,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2312210,
+      "start_ticks": 395240240,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2312213,
+      "start_ticks": 395240241,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2312215,
+      "start_ticks": 395240241,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2312217,
+      "start_ticks": 395240241,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2312219,
+      "start_ticks": 395240242,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2312221,
+      "start_ticks": 395240243,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2312223,
+      "start_ticks": 395240243,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2312390,
+      "start_ticks": 395240417,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2312392,
+      "start_ticks": 395240417,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2312394,
+      "start_ticks": 395240418,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2312396,
+      "start_ticks": 395240418,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2312398,
+      "start_ticks": 395240418,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2312400,
+      "start_ticks": 395240419,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2312402,
+      "start_ticks": 395240419,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2314141,
+      "start_ticks": 395244739,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2314144,
+      "start_ticks": 395244739,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2314146,
+      "start_ticks": 395244739,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2314148,
+      "start_ticks": 395244739,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2314150,
+      "start_ticks": 395244739,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2314152,
+      "start_ticks": 395244740,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2314154,
+      "start_ticks": 395244740,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2314291,
+      "start_ticks": 395244923,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2314293,
+      "start_ticks": 395244924,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2314295,
+      "start_ticks": 395244924,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2314297,
+      "start_ticks": 395244924,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2314299,
+      "start_ticks": 395244924,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2314301,
+      "start_ticks": 395244924,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2314303,
+      "start_ticks": 395244925,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2315778,
+      "start_ticks": 395249233,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2315780,
+      "start_ticks": 395249233,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2315782,
+      "start_ticks": 395249233,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2315784,
+      "start_ticks": 395249234,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2315786,
+      "start_ticks": 395249234,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2315788,
+      "start_ticks": 395249234,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2315790,
+      "start_ticks": 395249234,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2315934,
+      "start_ticks": 395249420,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2315936,
+      "start_ticks": 395249420,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2315938,
+      "start_ticks": 395249420,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2315940,
+      "start_ticks": 395249420,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2315942,
+      "start_ticks": 395249421,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2315944,
+      "start_ticks": 395249421,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2315946,
+      "start_ticks": 395249421,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2316209,
+      "start_ticks": 395250024,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2316211,
+      "start_ticks": 395250025,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2316283,
+      "start_ticks": 395250175,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2316285,
+      "start_ticks": 395250175,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2316400,
+      "start_ticks": 395250496,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2316415,
+      "start_ticks": 395250540,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2316450,
+      "start_ticks": 395250580,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2316535,
+      "start_ticks": 395250623,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2327193,
+      "start_ticks": 395278605,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2327630,
+      "start_ticks": 395279665,
+      "current": null,
+      "same_owned_identity_exists": false
+    },
+    {
+      "pid": 2309666,
+      "start_ticks": 395237674,
+      "current": null,
+      "same_owned_identity_exists": false
+    }
+  ],
+  "owned_identity_count": 87,
+  "task_failure_count": 0,
+  "external_truncation_count": 2,
+  "native_closure_passed": false,
+  "passed": false,
+  "preparation_errors": [
+    "declared eight-episode matrix stopped after two actual episodes",
+    "all received activity unavailable because broadcast state stripped original odometry; each robot movement criterion unproven"
+  ],
+  "benchmark_parent_captured": [
+    {
+      "pid": 2309666,
+      "start_ticks": 395237674,
+      "state": "S"
+    }
+  ]
+}

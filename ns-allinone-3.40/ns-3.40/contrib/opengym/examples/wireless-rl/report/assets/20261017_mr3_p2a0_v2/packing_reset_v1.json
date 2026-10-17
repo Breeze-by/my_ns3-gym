@@ -1,0 +1,131 @@
+{
+  "schema": "mr3-p2a0-selected-packing-receipt-v1",
+  "passed": true,
+  "source_root": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v2_reset",
+  "selected_root": "/tmp/mr3_p2a0_v2_selected_reset",
+  "file_count": 698,
+  "source_bytes": 186085610,
+  "selected_bytes": 11377655,
+  "all_source_selected_decoded_sha256_match_manifest": true,
+  "decoded_matches_original_source_content": true,
+  "duplicate_encoded_copies_verified": [
+    {
+      "source": "worker0/episode001_open_101/adapter.jsonl.gz",
+      "source_sha256": "64a60de74644fc4204f69c172bf497608a19ea569c6cad43d6aa84e2d3553f8b",
+      "decoded_sha256": "bead59ba5ebb80457a7f7017ca83ada32bf6e1a67a160fd4e7b023629bf91706"
+    },
+    {
+      "source": "worker1/episode001_open_101/adapter.jsonl.gz",
+      "source_sha256": "d89ceda1f7f872facb3aaba4b32b52d30af2a41aba08fdae624d90bd9bda9996",
+      "decoded_sha256": "83af54cd4643c21fe7e2787e86fd64690aa60fc0d763023cfecae0049ac6d83a"
+    }
+  ],
+  "manifest_sha256": "03d74b267a037d9ad13ef29c35433a0fbc20302d71a20da80bd62542fb06a698",
+  "freeze": "96c201e0e258bd0fe192fc03c6716fc694b7a9b7",
+  "packing_passed": true,
+  "full_audit_passed": false,
+  "detached_audit_passed": false,
+  "full_audit_sha256": "6b4ca45a4a438e4e16943ed17bf8b4702c2ed31bb8a361a35882292caa840939",
+  "detached_audit_sha256": "c7175ececb9150c35e54824f973a086645c39aa8e39f1691f9480f989a477af4",
+  "full_and_detached_source_bindings_identical": true,
+  "episode_count": 2,
+  "component_results": [
+    {
+      "episode": "episode001_open_101",
+      "components": {
+        "scalar": false,
+        "evaluator_phase": true,
+        "observation_archives": true,
+        "execution_inputs": true,
+        "activity": true,
+        "motion": true
+      },
+      "full_error": "ValueError('tb1 has no proven legal/sent/accepted/moving execution in the short probe')",
+      "detached_error": "ValueError('tb1 has no proven legal/sent/accepted/moving execution in the short probe')",
+      "scalar_errors": [
+        "episode summary transition count",
+        "supervisor cleanup"
+      ]
+    },
+    {
+      "episode": "episode001_open_101",
+      "components": {
+        "scalar": false,
+        "evaluator_phase": true,
+        "observation_archives": true,
+        "execution_inputs": true,
+        "activity": true,
+        "motion": true
+      },
+      "full_error": "ValueError('tb1 has no proven legal/sent/accepted/moving execution in the short probe')",
+      "detached_error": "ValueError('tb1 has no proven legal/sent/accepted/moving execution in the short probe')",
+      "scalar_errors": [
+        "supervisor cleanup"
+      ]
+    }
+  ],
+  "full_audit_errors": [
+    "native: benchmark declaration: benchmark declaration/worker count/freeze/result mismatch",
+    "native: worker 0: worker error or missing reset/cleanup episode",
+    "native: worker 0 episode 0 audit failed",
+    "native: episode sampler accounting: sampler transition/reward/fault count mismatch",
+    "native: worker 1: worker error or missing reset/cleanup episode",
+    "native: worker 1 episode 0 audit failed",
+    "native: new reset process: worker process identity reused across reset",
+    "native: throughput denominator: throughput omits attempts or differs from valid saved transition count",
+    "native: comparison accounting: extra scenes differ from the declared serial reset regression",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v2_reset/worker0/episode001_open_101: ValueError('tb1 has no proven legal/sent/accepted/moving execution in the short probe')",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v2_reset/worker1/episode001_open_101: ValueError('tb1 has no proven legal/sent/accepted/moving execution in the short probe')"
+  ],
+  "detached_audit_errors": [
+    "native: benchmark declaration: benchmark declaration/worker count/freeze/result mismatch",
+    "native: worker 0: worker error or missing reset/cleanup episode",
+    "native: worker 0 episode 0 audit failed",
+    "native: episode sampler accounting: sampler transition/reward/fault count mismatch",
+    "native: worker 1: worker error or missing reset/cleanup episode",
+    "native: worker 1 episode 0 audit failed",
+    "native: new reset process: worker process identity reused across reset",
+    "native: throughput denominator: throughput omits attempts or differs from valid saved transition count",
+    "native: comparison accounting: extra scenes differ from the declared serial reset regression",
+    "/tmp/mr3_p2a0_v2_selected_reset/worker0/episode001_open_101: ValueError('tb1 has no proven legal/sent/accepted/moving execution in the short probe')",
+    "/tmp/mr3_p2a0_v2_selected_reset/worker1/episode001_open_101: ValueError('tb1 has no proven legal/sent/accepted/moving execution in the short probe')"
+  ],
+  "diagnostic_controller_artifact_sha256": {
+    "diagnostic_controller/mr3_p2a0_v2_diagnostic_cancel.json": "86235b8702495c94bc78739bebbd430cb6b3234679c867cf9a105b0919ce96ce",
+    "diagnostic_controller/mr3_p2a0_v2_diagnostic_cancel_outcome.json": "d81b7793d920d7d5c98a187daa0cd89b2b3e0f3ea7c08db3a6d7c9cb03509f26",
+    "diagnostic_controller/mr3_p2a0_v2_stop_assessment.json": "ddf67d552b1b97a4ce3c25047a8da51880a6230d10137bfcaf3ff01d42175688",
+    "diagnostic_controller/mr3_p2a0_v2_reset_accounting.json": "64526faa4a299060de8ff12cf2d45859bf0b19ce22fd462a44a667de04c2134d",
+    "diagnostic_controller/mr3_p2a0_v2_guard_counterfactual.json": "32d7fd64ed5fa389ead3173e04cafaf6e75de4e4c78f1ad2877c5305e1f6c829"
+  },
+  "accounting": {
+    "returned_parent_api_step_rows": 30,
+    "worker_applied_adapter_action_count": 30,
+    "unreturned_action_count": 0,
+    "returned_effective_dt_ns": 30000000000,
+    "returned_physical_dt_ns": 30000000000,
+    "physical_task_plus_cleanup_ns": 30240000000,
+    "physical_after_last_returned_snapshot_ns": 240000000,
+    "warmup_alignment_physics_ns": 25000000,
+    "returned_api_including_resets": 32
+  },
+  "auditor_export": {
+    "root": "/tmp/mr3_p2a0_v2_frozen_auditor",
+    "source": "git show 96c201e0e258bd0fe192fc03c6716fc694b7a9b7",
+    "rationale": "canonical worktree was authorized to repair after all original processes gone; audit only exact original source and immutable historical helpers",
+    "initialization_attempts": [
+      {
+        "result": "error before any native audit result",
+        "reason": "initial minimal export missing pinned historical phase helper"
+      },
+      {
+        "result": "error before any native audit result",
+        "reason": "minimal export missing nested protocol runtime mr3_transport.py"
+      },
+      {
+        "result": "completed expected whole FAIL",
+        "reason": "filled all immutable .py helpers and exact frozen ROS code/configs, then retained both full and detached FAIL"
+      }
+    ]
+  },
+  "scope": "lossless selected archive with expected retained whole-audit FAIL after explicit diagnostic cancellation; provenance components remain separate; no retry, policy, physical braking or task acceptance credit"
+}

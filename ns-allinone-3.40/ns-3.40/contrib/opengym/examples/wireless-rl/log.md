@@ -3838,3 +3838,66 @@ root新增worker/phase回归72 PASS；output/master-costmap/phase与短probe审�
 上限436API/435脚本动作/6000墙秒，每环境始终三台；只在干净推送新冻结运行，后续实际命令/冻结/结果另行追加。
 
 后续同worktree复验：`prefreeze_cpu_checks_v3` 167 PASS/19.850秒，before/after源码SHA一致；`prefreeze_style_checks_v3` 40份变更Python全部flake8 PASS，三份旧格式launch只AST编译并由launch语义回归验证；无新增依赖。以上包括首次FAIL及修正，不改变任何旧native结论。
+
+
+## 2026-10-17 MR3-P2A.0 v2 — 原生FAIL与有序诊断中断
+
+精确冻结`96c201e0e258bd0fe192fc03c6716fc694b7a9b7`、干净已推送；源码86绑定和7项安装来源预检PASS。
+以下均conda ns3gym、unset PYTHONPATH、PYTHONNOUSERSITE=1，wireless-rl目录：
+
+```bash
+python -m mr3_learning.benchmark --workers 1 --schedule open:101,open:101 --steps 4 --terminal-probe --base-domain 190 --base-port 12501 --output-root /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0 --run-id mr3_p2a0_20261017_v2_terminal
+python -m mr3_learning.audit_preparation /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v2_terminal --freeze 96c201e0e258bd0fe192fc03c6716fc694b7a9b7 --output /tmp/mr3_p2a0_v2_terminal_full_audit.json
+python -m mr3_learning.benchmark --workers 2 --schedule open:101,open:101,rooms:101,corridors:101 --steps 16 --base-domain 194 --base-port 12511 --output-root /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0 --run-id mr3_p2a0_20261017_v2_reset
+```
+
+terminal CLI0/完整审计PASS：8step API/7实际动作、6.02有效/返回物理秒、376.7940441519022墙秒。
+短20ms尾/零尾、七图、native/contact/scalar/phase、actual output FIFO及ACK一致，89身份含parent均消失。
+但活动path全null；当时integrity PASS仅表示记录真实缺失，未证明可用。
+reset首对episode三台有合法GOAL/native send/accept，实际received state JSON却无odometry，三台activity全invalid。
+定位publish_states恢复消息时pop后再广播；synthetic直接喂raw fixture漏了真实桥接层，属于实现/集成测试缺陷。
+另有1134次一ULP端点误拒；规范后仍为peer几何停止，整体Twist归零妨碍原检查可允许的角向调整。
+
+确认缺陷后执行/tmp诊断controller：精确核验owned worker PID/starttick、epoch、stdin pipe inode及parent写端，
+每台只原子写一次带字符串id的既有close请求，未发送信号。两台各仅e1，正常关闭原生launch与worker exit0；
+parent保留预期step/close IPC identity mismatch错误，benchmark CLI1/FAIL，不包装为正常截断。
+精确原件核对：w0 14、w1 16实际动作，30返回step，无未返回动作差额；另2reset API。
+有效/返回物理各30秒，快照后关闭物理步.220+.020=.240秒；全墙422.59510789997876秒。
+两台共86保存身份及parent均已消失，无forced shutdown/native failure/owned/zombie。
+完整审计及detached均保留FAIL，phase/archive/execution/activity-provenance/motion通过，scalar受额外0dt外部close及failed_sample拒绝。
+剩余6reset episode、300KEEP deadline均SKIPPED，不重试该freeze。
+
+v2总38step API/37实际脚本动作、36.02有效/返回物理秒、799.38915205188096墙秒，无native训练/GPU更新。
+规范原件`report/assets/20261017_mr3_p2a0_v2/native/{terminal,reset}/`及full/detached audit、manifest；
+415+698原件逐source/selected/decode SHA检查，关闭/取消/独立地图/运动反事实及精确cost在同目录independent与accounting_v2.json。
+包装最初缺两个旧helper/transport导出文件，补Git原件后重审；该CPU包装失败保留，不改native结果。
+旧v1/v2 FAIL保持，pilot累计费用/余额不动；用户已要求继续完成P2A.0，修复后另用新冻结完整重验。
+
+## 2026-10-17 MR3-P2A.0 v3 — 定向归因检查与新预声明
+
+以96c201为基线，真实publish_states→adapter→冻结快照回归先旧源码1FAIL，最小producer修复后77PASS；
+精确命令、源码SHA、raw stdout在`report/assets/20261017_mr3_p2a0_v3/information_activity_checks_v1.json`。
+独立旧freeze32快照七图/完整观测重放一致，旧actor path全null保持；不能事后补旧观测。
+旧trace上的向外方向counterfactual每台各有clear时间窗，但两初始snapshot均无三台同时clear证明；
+短path排序有确证方向缺口，未用于新native。外部工程flag改向外margin排序，默认旧压力规则保持；不进生产adapter/PPO。
+有限理想轮模型122549case与解析极值，原.76s偏短.0157s，加入明确.02s耦合padding到时域和双方reserve；
+只能证明有限模型界，非真实Gazebo响应。全部source/命令/输入输出诊断保存在v2 independent和v3对应回执。
+
+新完整矩阵预声明`report/assets/20261017_mr3_p2a0_v3/predeclared_plan_v3.json`：
+terminal→2worker四轮三scene reset（显式--preparation-motion-probe）→300KEEP deadline；
+每环境恰三台，上限436step API/435实际动作/6000墙秒，无native GPU/optimizer，pilot额度不动。
+原生开始前提交推送源码并记完整freeze；后续实际结果另记。合成CPU优化器测试不算native训练。
+
+
+v3统一检查（尚无新native）：系统ROS三包colcon8.503墙秒PASS；同v2完整语义命令937PASS/26.08测试秒；
+conda `python -m unittest discover -s mr3_learning/tests -q`175PASS/12.403测试秒、17.839544211048633墙秒。
+12份变更Python限定flake8首轮1E128（benchmark原terminal if续行缩进）FAIL保留，修缩进后同命令PASS；
+source before/after SHA全部一致。精确cwd/环境下argv、源码与原输出见v3 `build_v1`、`prefreeze_ros_checks_v1`、
+`prefreeze_cpu_checks_v1`、`prefreeze_style_checks_v1/v2` JSON/log.gz。完整CPU早先pins更新前169tests/1Error原件
+在`safety_checks_v1.json`保留，更新3份审阅过的info/pure/ENV精确SHA后统一通过，未放宽source gate。
+独立预检发现launch文档tensor/Nav2笔误及端到端测试“冻结张量”范围过述，已改为tensorv2/Nav2/冻结快照，
+无runtime变化；原source/fullSHA、63条相对链接与三阶段参数对照见docs_preflight_v1.json。
+
+最后追加最小native_cancel调用前trace：adapter focused59PASS/1.77s、style/diff-check PASS；双精确adapter pins更新后native gate/protocol/benchmark33CPU PASS。独立A/B物理消费者7个合成拒绝/分类回归PASS，规则在新原生前固定，源码/回执进v3 independent；不是原生制动信用。
+
+原生前最终固定独立physical matrix wrapper及3组mutation测试PASS（missingrobot/bound violation/closure/缺第8轮/混terminal拒绝）；原逐episode consumer不改，完整命令/源码SHA/规则在v3 independent/physical_matrix_receipt_v1.json。另核验实际import的6运行模块均解析到规范源且字节SHA一致，runtime_install_preflight_v1.json。

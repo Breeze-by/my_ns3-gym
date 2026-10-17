@@ -1,0 +1,219 @@
+{
+  "schema": "mr3-repaired-guard-old-input-counterfactual-v1",
+  "source_proof": {
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_episode.py": {
+      "sha256": "9145d2ad23789b252e32f0afdfe18cf2eeec8e2c7e9ca7e89127a532288e411b"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_motion_safety.py": {
+      "sha256": "b8345ec5e289d18a9d342501bb249a7b40f26d4ea8bf0d8855aa1fed6ca565ee"
+    }
+  },
+  "scope": "read-only pure current helper on saved real v2 inputs; no closed-loop trajectory prediction or native acceptance; actor/old input paths are unchanged",
+  "episodes": [
+    {
+      "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v2_reset/worker0/episode001_open_101",
+      "robots": {
+        "tb1": {
+          "original": {
+            "peer_braking_nonclosing": 281,
+            "peer_uncertainty_envelope": 75,
+            "clear": 12,
+            "unsupported_command": 196
+          },
+          "repaired": {
+            "linear_brake_preserve_requested_turn": 448,
+            "peer_uncertainty_envelope": 104,
+            "clear": 12
+          },
+          "original_unmodified_nonzero_pass": 2,
+          "repaired_unmodified_nonzero_pass": 2,
+          "repaired_translation_nonzero_pass": 0,
+          "repaired_rotation_only_filtered": 448,
+          "original_zero_to_rotation_filtered": 448,
+          "geometry_envelope_bypasses": 0,
+          "filter_example": {
+            "clock_ns": 78280000000,
+            "raw_request": [
+              0.02736842105263158,
+              0.32
+            ],
+            "old_reason": "peer_braking_nonclosing",
+            "new_output": [
+              0.0,
+              0.32
+            ],
+            "original_body_margin_m": 0.03257059884547964,
+            "new_body_margin_m": 0.03257059884547964,
+            "new_reason": "linear_brake_preserve_requested_turn",
+            "source_v": -2.733360159807632e-05
+          }
+        },
+        "tb2": {
+          "original": {
+            "peer_braking_nonclosing": 2,
+            "unsupported_command": 544,
+            "peer_uncertainty_envelope": 15,
+            "clear": 3
+          },
+          "repaired": {
+            "linear_brake_preserve_requested_turn": 295,
+            "peer_uncertainty_envelope": 266,
+            "clear": 3
+          },
+          "original_unmodified_nonzero_pass": 0,
+          "repaired_unmodified_nonzero_pass": 0,
+          "repaired_translation_nonzero_pass": 0,
+          "repaired_rotation_only_filtered": 295,
+          "original_zero_to_rotation_filtered": 295,
+          "geometry_envelope_bypasses": 0,
+          "filter_example": {
+            "clock_ns": 78280000000,
+            "raw_request": [
+              0.25,
+              0.26315789473684204
+            ],
+            "old_reason": "peer_braking_nonclosing",
+            "new_output": [
+              0.0,
+              0.26315789473684204
+            ],
+            "original_body_margin_m": 0.02455470469198397,
+            "new_body_margin_m": 0.02455470469198397,
+            "new_reason": "linear_brake_preserve_requested_turn",
+            "source_v": -3.208980109953683e-05
+          }
+        },
+        "tb3": {
+          "original": {
+            "peer_uncertainty_envelope": 264,
+            "clear": 49,
+            "peer_braking_nonclosing": 205,
+            "unsupported_command": 46
+          },
+          "repaired": {
+            "peer_uncertainty_envelope": 287,
+            "clear": 49,
+            "peer_braking_nonclosing": 61,
+            "linear_brake_preserve_requested_turn": 167
+          },
+          "original_unmodified_nonzero_pass": 43,
+          "repaired_unmodified_nonzero_pass": 43,
+          "repaired_translation_nonzero_pass": 0,
+          "repaired_rotation_only_filtered": 167,
+          "original_zero_to_rotation_filtered": 167,
+          "geometry_envelope_bypasses": 0,
+          "filter_example": {
+            "clock_ns": 81120000000,
+            "raw_request": [
+              0.01368421052631579,
+              0.894736842105263
+            ],
+            "old_reason": "peer_braking_nonclosing",
+            "new_output": [
+              0.0,
+              0.894736842105263
+            ],
+            "original_body_margin_m": 0.03923175445100695,
+            "new_body_margin_m": 0.03923175445100695,
+            "new_reason": "linear_brake_preserve_requested_turn",
+            "source_v": -3.556780728532214e-05
+          }
+        }
+      }
+    },
+    {
+      "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v2_reset/worker1/episode001_open_101",
+      "robots": {
+        "tb1": {
+          "original": {
+            "clear": 178,
+            "peer_uncertainty_envelope": 164,
+            "peer_braking_nonclosing": 289
+          },
+          "repaired": {
+            "clear": 170,
+            "peer_uncertainty_envelope": 164,
+            "peer_braking_nonclosing": 179,
+            "linear_brake_preserve_requested_turn": 118
+          },
+          "original_unmodified_nonzero_pass": 171,
+          "repaired_unmodified_nonzero_pass": 163,
+          "repaired_translation_nonzero_pass": 0,
+          "repaired_rotation_only_filtered": 118,
+          "original_zero_to_rotation_filtered": 118,
+          "geometry_envelope_bypasses": 0,
+          "filter_example": {
+            "clock_ns": 75620000000,
+            "raw_request": [
+              0.01368421052631579,
+              0.9999999999999999
+            ],
+            "old_reason": "peer_braking_nonclosing",
+            "new_output": [
+              0.0,
+              0.9999999999999999
+            ],
+            "original_body_margin_m": 0.06580645237494799,
+            "new_body_margin_m": 0.06580645237494799,
+            "new_reason": "linear_brake_preserve_requested_turn",
+            "source_v": -0.0006515668297194025
+          }
+        },
+        "tb2": {
+          "original": {
+            "peer_braking_nonclosing": 217,
+            "unsupported_command": 348,
+            "clear": 25,
+            "peer_uncertainty_envelope": 41
+          },
+          "repaired": {
+            "linear_brake_preserve_requested_turn": 483,
+            "peer_uncertainty_envelope": 123,
+            "clear": 25
+          },
+          "original_unmodified_nonzero_pass": 3,
+          "repaired_unmodified_nonzero_pass": 3,
+          "repaired_translation_nonzero_pass": 0,
+          "repaired_rotation_only_filtered": 483,
+          "original_zero_to_rotation_filtered": 483,
+          "geometry_envelope_bypasses": 0,
+          "filter_example": {
+            "clock_ns": 74260000000,
+            "raw_request": [
+              0.125,
+              0.16
+            ],
+            "old_reason": "peer_braking_nonclosing",
+            "new_output": [
+              0.0,
+              0.16
+            ],
+            "original_body_margin_m": 0.03415459215132027,
+            "new_body_margin_m": 0.03415459215132027,
+            "new_reason": "linear_brake_preserve_requested_turn",
+            "source_v": 1.5709381736710194e-06
+          }
+        },
+        "tb3": {
+          "original": {
+            "peer_uncertainty_envelope": 296,
+            "clear": 205,
+            "peer_braking_nonclosing": 130
+          },
+          "repaired": {
+            "peer_uncertainty_envelope": 296,
+            "clear": 205,
+            "peer_braking_nonclosing": 130
+          },
+          "original_unmodified_nonzero_pass": 195,
+          "repaired_unmodified_nonzero_pass": 195,
+          "repaired_translation_nonzero_pass": 0,
+          "repaired_rotation_only_filtered": 0,
+          "original_zero_to_rotation_filtered": 0,
+          "geometry_envelope_bypasses": 0,
+          "filter_example": null
+        }
+      }
+    }
+  ]
+}

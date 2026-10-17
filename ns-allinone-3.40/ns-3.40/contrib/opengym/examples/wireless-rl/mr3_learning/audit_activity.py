@@ -186,7 +186,7 @@ def _acceptance_history(records, epoch):
                 "state_sequence": event["state_sequence"], "stamp": row["stamp"],
                 "counts": {name: len(goals) for name, goals in seen.items()},
             }
-    return counts, boundaries
+    return counts, boundaries, seen
 
 
 def audit_episode(directory):
@@ -201,8 +201,10 @@ def audit_episode(directory):
     _require(len(releases) == 1 and all(r["epoch"] == epoch for r in records),
              "activity requires one released epoch")
     history = _activity_history(records, epoch, releases[0])
-    acceptances, boundaries = _acceptance_history(records, epoch)
+    acceptances, boundaries, owned_accepts = _acceptance_history(records, epoch)
     snapshots = set()
+    latest = {}
+    latest_snapshot_sequence = None
     for row in (json.loads(line) for line in transitions.splitlines()):
         snapshot = row["snapshot"]
         _require(snapshot["schema"] == "mr3-observation-v3" and snapshot["epoch"] == epoch,
@@ -230,16 +232,64 @@ def audit_episode(directory):
             _require(count is not None and type(observed_count) is int and observed_count == count
                      and count == boundary["counts"][name],
                      name + ": accepted goals differ from delivered unique receipts")
+            latest[name] = {
+                "estimated_path_m": activity["estimated_path_m"],
+                "sample_count": activity["sample_count"],
+                "path_observation_complete": activity["path_observation_complete"],
+                "accepted_goal_count": observed_count,
+            }
+        latest_snapshot_sequence = snapshot["sequence"]
         snapshots.add(snapshot["digest"])
     _require(bool(snapshots), "no saved actor snapshots for activity audit")
+    available = all(item["estimated_path_m"] is not None and item["sample_count"] >= 2
+                    and item["path_observation_complete"] for item in latest.values())
     return {
-        "schema": "mr3-received-activity-audit-v1", "passed": True, "epoch": epoch,
+        "schema": "mr3-received-activity-audit-v1", "passed": True,
+        "integrity_passed": True, "availability_passed": available, "epoch": epoch,
+        "latest_actor_activity": latest, "latest_snapshot_sequence": latest_snapshot_sequence,
+        "owned_accepted_goal_ids": {name: sorted(goals) for name, goals in owned_accepts.items()},
         "activity_updates": len(history), "unique_snapshots": len(snapshots),
         "final_received_acceptance_counts": {
             n: max(c.values(), default=0) for n, c in acceptances.items()},
         "adapter_sha256": hashlib.sha256(adapter).hexdigest(),
         "transitions_sha256": hashlib.sha256(transitions).hexdigest(),
         "path_numeric_comparison": "relative 1e-12 / absolute 1e-10 metre arithmetic tolerance",
-        "scope": ("raw delivered local odom/unique acceptance observations; "
-                  "no truth/task-success assertion"),
+        "scope": ("integrity of raw delivered local odom/unique acceptance observations only; "
+                  "availability_passed is separate, no truth/task-success assertion"),
     }
+
+
+def audit_probe_activity(directory):
+    """Require available received activity and actual three-robot probe execution."""
+    directory = Path(directory)
+    integrity = audit_episode(directory)
+    _require(integrity["availability_passed"], "probe received activity is unavailable/incomplete")
+    records = [json.loads(line) for line in _load(directory / "adapter.jsonl").splitlines()]
+    sequence = integrity["latest_snapshot_sequence"]
+    boundary = next(index for index, row in enumerate(records)
+                    if row["kind"] == "activity_snapshot_bound"
+                    and row["payload"]["observation_sequence"] == sequence)
+    sent = {name: set() for name in ROBOTS}
+    proven_accepts = {name: set() for name in ROBOTS}
+    for row in records[:boundary + 1]:
+        value = row["payload"]
+        if row["kind"] == "native_send":
+            sent[value["robot"]].add(value["goal_id"])
+        elif row["kind"] == "delivery" and value.get("stream") == "receipt":
+            receipt, name = value["payload"], value["source"]
+            if (receipt["type"] == "accept" and receipt["value"] is True
+                    and receipt["goal_id"] in integrity["owned_accepted_goal_ids"][name]):
+                _require(receipt["goal_id"] in sent[name],
+                         "owned accepted goal has no preceding native send")
+                proven_accepts[name].add(receipt["goal_id"])
+    for name, activity in integrity["latest_actor_activity"].items():
+        _require(activity["estimated_path_m"] > .05
+                 and activity["accepted_goal_count"] > 0
+                 and len(proven_accepts[name]) == activity["accepted_goal_count"],
+                 name + ": probe lacks native accepted goal and received movement >0.05m")
+    return {"schema": "mr3-received-activity-probe-audit-v1", "passed": True,
+            "epoch": integrity["epoch"], "robots": integrity["latest_actor_activity"],
+            "native_accepted_goal_ids": {name: sorted(goals)
+                                         for name, goals in proven_accepts.items()},
+            "integrity": integrity,
+            "scope": "received raw-odom availability and short native execution; no 1m/95% credit"}

@@ -24,6 +24,7 @@ TURN_ACCEL_BOUND_RADPS2 = 7.0  # 2 * model wheel-rim 1 m/s² / .287 m wheel sepa
 SOURCE_MAX_AGE_SEC = .5
 REACTION_SEC = .16
 BRAKING_DECEL_MPS2 = .5
+TURN_STOP_PADDING_SEC = .02
 GEOMETRY_MARGIN_M = .02
 PERIOD_SEC = .02
 COMMAND_TIMEOUT_SEC = .2
@@ -63,7 +64,20 @@ def maximum_heading_projection(dx, dy, heading, half_angle):
 
 
 def guard_motion(request, own, peers, now, epoch):
-    """Return only the unchanged requested differential-drive Twist or zero.
+    """Return a bounded differential-drive request or zero.
+
+    Nav2's smoother can round a declared endpoint one binary64 neighbour
+    outward. Only that exact adjacent value is canonicalized to the endpoint;
+    a second neighbour or any larger excess remains unsupported. Original
+    callback values and explicit normalization metadata remain auditable.
+
+    A rejected mixed request may retain only its requested angular component,
+    after independently passing this same complete gate with zero linear speed.
+    The .5 m/s² parameter describes a global stopping envelope, not an
+    instantaneous centre-speed deceleration guarantee. Independent bounded
+    wheel analysis gives .6157 s worst stop time; .16 s reaction plus that
+    time is covered by the .78 s horizon with .02 s coupling padding. Native
+    motion still has to validate the declared speed/actuator model bounds.
 
     Source-age expansion is separate from .16 s reaction: .10 s request,
     .02 s gate, 1/30 s actuator and the remaining command delivery allowance.
@@ -72,7 +86,8 @@ def guard_motion(request, own, peers, now, epoch):
     """
     result = {"allow": False, "reason": "state_unavailable", "output": [0., 0.],
               "minimum_margin_m": None, "body_margin_m": None,
-              "braking_zone_margin_m": None, "near_peer_checks": []}
+              "braking_zone_margin_m": None, "near_peer_checks": [],
+              "command_normalization": None, "component_filter": None}
     if (type(now) not in (int, float) or not math.isfinite(now)
             or not valid_state(own, now, epoch) or set(peers) != set(ROBOTS) - {own.get("name")}
             or any(not valid_state(peer, now, epoch) for peer in peers.values())):
@@ -80,11 +95,25 @@ def guard_motion(request, own, peers, now, epoch):
     valid_request = (isinstance(request, (list, tuple)) and len(request) == 2
                      and all(type(value) in (int, float) and math.isfinite(value)
                              for value in request))
-    if (not valid_request or abs(request[0]) > COMMAND_SPEED_LIMIT
-            or abs(request[1]) > COMMAND_TURN_LIMIT):
+    if not valid_request:
         result["reason"] = "unsupported_command"
         return result
-    v, w = request
+    canonical, normalized_axes = [], []
+    for axis, value, limit in zip(("v", "w"), request,
+                                  (COMMAND_SPEED_LIMIT, COMMAND_TURN_LIMIT)):
+        if abs(value) > limit:
+            if abs(value) != math.nextafter(limit, math.inf):
+                result["reason"] = "unsupported_command"
+                return result
+            value = math.copysign(limit, value)
+            normalized_axes.append(axis)
+        canonical.append(value)
+    if normalized_axes:
+        result["command_normalization"] = {
+            "schema": "mr3-command-one-ulp-v1", "input": list(request),
+            "canonical": canonical, "normalized_axes": normalized_axes,
+        }
+    v, w = canonical
     own_age = elapsed_ns(own["source_stamp"], now) / 1e9
     body_margins, zone_margins, direction_margins = [], [], []
     for name, peer in peers.items():
@@ -93,7 +122,7 @@ def guard_motion(request, own, peers, now, epoch):
         uncertainty = MEASURED_SPEED_BOUND * (
             own_age + elapsed_ns(peer["source_stamp"], now) / 1e9)
         body_margin = distance - 2 * BODY_RADIUS_M - uncertainty - GEOMETRY_MARGIN_M
-        braking_reserve = (2 * MEASURED_SPEED_BOUND * REACTION_SEC
+        braking_reserve = (2 * MEASURED_SPEED_BOUND * (REACTION_SEC + TURN_STOP_PADDING_SEC)
                            + MEASURED_SPEED_BOUND ** 2 / BRAKING_DECEL_MPS2)
         zone_margin = body_margin - braking_reserve
         check = {"peer": name, "centre_distance_m": distance,
@@ -108,7 +137,8 @@ def guard_motion(request, own, peers, now, epoch):
             # The delayed twist may predate acceleration under an earlier
             # command. Reserve the full declared speed bound, even for a small
             # current request and an old zero-speed observation.
-            horizon = REACTION_SEC + MEASURED_SPEED_BOUND / BRAKING_DECEL_MPS2
+            horizon = (REACTION_SEC + MEASURED_SPEED_BOUND / BRAKING_DECEL_MPS2
+                       + TURN_STOP_PADDING_SEC)
             possible_turn = min(MEASURED_TURN_BOUND,
                                 abs(own["w"]) + TURN_ACCEL_BOUND_RADPS2 * own_age)
             turn_bound = max(abs(w), possible_turn)
@@ -134,4 +164,21 @@ def guard_motion(request, own, peers, now, epoch):
         result["reason"] = "peer_braking_nonclosing"
     else:
         result.update(allow=True, reason="clear", output=[float(v), float(w)])
+    if result["reason"] == "peer_braking_nonclosing" and v != 0. and w != 0.:
+        # Preserve only Nav2's requested angular direction, after a separate
+        # full check of the braking request. v=0 cannot enter this branch, so
+        # this is a single additional check rather than recursive steering.
+        rotation = guard_motion([0., w], own, peers, now, epoch)
+        if rotation["allow"] and rotation["reason"] == "clear":
+            filtered = dict(rotation)
+            filtered.update(
+                reason="linear_brake_preserve_requested_turn",
+                command_normalization=result["command_normalization"],
+                component_filter={
+                    "schema": "mr3-linear-brake-requested-turn-v1",
+                    "canonical_input": canonical,
+                    "rejected_mixed_decision": result,
+                    "rotation_check": rotation,
+                })
+            return filtered
     return result

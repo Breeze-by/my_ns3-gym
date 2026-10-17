@@ -1,0 +1,24 @@
+{
+  "schema": "mr3-p2a0-v3-native-cancel-trace-check-v1",
+  "passed": true,
+  "source_freeze": "pending",
+  "scope": "Add only a pre-invocation native cancel attempt trace; no cancellation dispatch, future, protocol or receipt semantics changed.",
+  "producer_sha256": "90444564b04b86982553a7fe6e0b98beb290ba92c3ab1e32e503998e6411fc1c",
+  "test_sha256": "ca08c85cd2e5c88aff86ebcadc74a9b817d8c3ee9f9e313c92c925a3c06a1c7f",
+  "tests_passed": 59,
+  "test_output_sha256": "cde2250683503b158dfd6fa4afc9a2775ae1bf7b1faabfef862c5b87d2d0fa76",
+  "test_output": "...........................................................              [100%]\n59 passed in 1.77s\n",
+  "command": "source /opt/ros/humble/setup.bash; export PYTHONNOUSERSITE=1; export PYTHONPATH=/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration:/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/merge_map:$PYTHONPATH; /usr/bin/python3 -B -m pytest -q src/multi_robot_exploration/test/test_mr3_adapter.py",
+  "cwd": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap",
+  "meaningful_checks": [
+    "Actual fake handle method observes the trace already recorded immediately before invocation.",
+    "Robot, goal id, now and native_cancel_call_attempt scope are exact; optional event command id is retained only when present.",
+    "One actual cancel invocation and one trace; repeated maintains do not recancel.",
+    "Real cancel-response Future still delivers an ordinary receipt and cannot close owner before terminal result.",
+    "Queued never-sent goal produces no native_cancel trace."
+  ],
+  "style": "Owned adapter/test flake8 pass after correcting one100-char test assertion line.",
+  "diff_check": "PASS",
+  "native_launches": 0,
+  "optimizer_or_gpu_calls": 0
+}

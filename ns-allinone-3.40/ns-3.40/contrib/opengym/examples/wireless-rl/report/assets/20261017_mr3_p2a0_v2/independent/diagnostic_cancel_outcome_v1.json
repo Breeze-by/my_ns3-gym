@@ -1,0 +1,61 @@
+{
+  "schema": "mr3-external-owned-rpc-cancellation-outcome-v1",
+  "freeze": "96c201e0e258bd0fe192fc03c6716fc694b7a9b7",
+  "run_directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v2_reset",
+  "checked_wall_monotonic_ns": 3952822714197033,
+  "signals_sent_by_controller": [],
+  "benchmark_passed": false,
+  "benchmark_valid_transitions": 30,
+  "benchmark_wall_sec_including_all_attempts": 422.59510789997876,
+  "workers": [
+    {
+      "worker_id": 0,
+      "episode_count": 1,
+      "native_reason": "external_truncation",
+      "launch_returncode": 0,
+      "native_failures": [],
+      "worker_error": "InfrastructureError('step: IPC response identity mismatch')",
+      "worker_returncode": 0,
+      "forced_shutdown": false,
+      "failed_sample": true,
+      "remaining_owned_processes": [],
+      "remaining_owned_zombies": [],
+      "independent_pid_starttick_recheck": [],
+      "owned_process_count": 43,
+      "returned_real_step_rows": 14,
+      "last_returned_source_stamp": 92.22,
+      "artifact_sha256": {
+        "summary.json": "dbb4479f0802927f04364f9b79f5448934276110ff3c9f5d0d2c6b0e4fec5fa5",
+        "supervisor_shutdown.json": "32fc33ec34fda8a0141f902a949108e15f8e7f98a6314ea77d0a606450b786a7",
+        "native_stop.json": "f8a9269bc185fba4ab5878db5420360f4efc8cc1c885e90c1d1c8e69457b8b38",
+        "transitions.jsonl": "7899f16a23eca01dd642452376707acc14f80cdd6d84dc105172020616b6c3e3"
+      }
+    },
+    {
+      "worker_id": 1,
+      "episode_count": 1,
+      "native_reason": "external_truncation",
+      "launch_returncode": 0,
+      "native_failures": [],
+      "worker_error": "InfrastructureError('close: IPC response identity mismatch')",
+      "worker_returncode": 0,
+      "forced_shutdown": false,
+      "failed_sample": true,
+      "remaining_owned_processes": [],
+      "remaining_owned_zombies": [],
+      "independent_pid_starttick_recheck": [],
+      "owned_process_count": 43,
+      "returned_real_step_rows": 16,
+      "last_returned_source_stamp": 90.2,
+      "artifact_sha256": {
+        "summary.json": "1468b01ab62464ba5baa355567737c4c6da77f984bbf7ed6b61657eff0254724",
+        "supervisor_shutdown.json": "209d2357a86e7fb99ca04fdba97f969984199f08d76e9e74eb032a23229e268b",
+        "native_stop.json": "0b2b87dbce3069feab049e8b319b364d621dd839b159bdb97fa696d642323493",
+        "transitions.jsonl": "32e6496f5df2a7af50065bf8cb66dca5cde7697b38b48d6bdb1b314c87b066c3"
+      }
+    }
+  ],
+  "scope": "diagnostic interruption; preserves native close evidence separately from failed RPC samples; no acceptance or retry credit",
+  "benchmark_original_identity_still_present": false,
+  "all_saved_owned_identities_gone": true
+}

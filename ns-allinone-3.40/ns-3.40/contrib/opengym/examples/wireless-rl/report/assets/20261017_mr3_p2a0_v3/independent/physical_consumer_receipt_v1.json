@@ -1,0 +1,127 @@
+{
+  "schema": "mr3-independent-physics-AB-consumer-preparation-v1",
+  "files": {
+    "/tmp/mr3_independent_physics_review.py": {
+      "sha256": "2516e394f60eac5dd24fd66b51c4c48fc37245090eb1626ebe1c7a3a23f8bafb",
+      "bytes": 17259
+    },
+    "/tmp/mr3_independent_physics_review_tests.py": {
+      "sha256": "1484eee1557a18757fd9d21670d059846adedd8ede3052e763d665f6dd544674",
+      "bytes": 5991
+    },
+    "/tmp/mr3_independent_physics_review_tests_AB_typed_final.txt": {
+      "sha256": "4e304ca338c09f7b6c8ddf828260c821b222aa7ada651e20ec008c27de3d82f1",
+      "bytes": 833
+    },
+    "/tmp/mr3_v2_independent_physics_AB_typed_selfcheck.json": {
+      "sha256": "bea36ecd59ecd6b23d91f849346514b7186217adaee96f9c5d0b7839dace4cf0",
+      "bytes": 16330
+    }
+  },
+  "final_rules_frozen_before_new_native": true,
+  "producer_imports": false,
+  "ros_imports": false,
+  "A": {
+    "event": "actual final observed cmd_vel linear changes nonzero to zero",
+    "scope": "local topic receipt to sustained raw odom linear rest; no Gazebo receipt assumption"
+  },
+  "B": {
+    "event": "same-epoch native_cancel_call_attempt trace matching original native_send robot/goal",
+    "completion_required": "subsequent original received delivery cancel=True or GoalStatus result=5, same epoch/robot/goal/source-clock\u2264receipt-clock and \u2265attempt-clock",
+    "scope": "call attempt\u2192Nav2 cancel\u2192smoother\u2192actuator total sampled response; never sudden-zero proof",
+    "invalidation": "next true native_send or nonzero-linear output after first zero, before 3 rest samples"
+  },
+  "shared": {
+    "minimum_prior_contiguous_nonzero_linear_output_sec": 0.1,
+    "minimum_fresh_initial_planar_speed_mps": 0.05,
+    "fresh_anchor_and_max_source_gap_sec": 0.1,
+    "rest_planar_speed_max": 0.01,
+    "rest_consecutive_source_samples": 3,
+    "maximum_response_sec": 0.78,
+    "maximum_observed_local_odom_polyline_m": 0.144,
+    "raw_limits": "complete body-plane linear norm\u2264.30, complete angular norm\u22641.2, consecutive raw-odom chord speed\u2264.30; all/task maxima reported separately",
+    "credit": "A and B separate per robot; either can supply sampled-range evidence, never conflate B with A; no meaningful prior movement means missing, not PASS"
+  },
+  "self_tests": {
+    "result": "7 PASS in .006s",
+    "covers": [
+      "meaningful A sampled stop",
+      "meaningful B smooth cancellation without A credit",
+      "unacknowledged native cancel rejected",
+      "protocol intent is not native call",
+      "new native goal/linear recovery invalidates B",
+      "full planar/angular/chord excess",
+      "tiny movement and slow nonrest beyond horizon",
+      "sparse source/early resume",
+      "source duplicate conflict"
+    ]
+  },
+  "intermediate_failure": {
+    "stage": "local helper extraction during A/B refactor",
+    "result": "py_compile SyntaxError from leftover loop continue before any test/native data execution; removed; full final tests passed"
+  },
+  "scope": "independent finite sampled response and strict-close consumer. Reports actual initial-speed coverage, no continuous unobserved path proof, no expansion of native budget.",
+  "old_v2_selfcheck": {
+    "passed": false,
+    "episodes": [
+      {
+        "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v2_reset/worker0/episode001_open_101",
+        "native_strict_cleanup_errors": [
+          "not_failed_sample"
+        ],
+        "robots": {
+          "tb1": {
+            "eligible_A": 0,
+            "credited_A": 0,
+            "native_cancel_B": 0,
+            "credited_B": 0,
+            "physical_evidence_complete": false
+          },
+          "tb2": {
+            "eligible_A": 0,
+            "credited_A": 0,
+            "native_cancel_B": 0,
+            "credited_B": 0,
+            "physical_evidence_complete": false
+          },
+          "tb3": {
+            "eligible_A": 0,
+            "credited_A": 0,
+            "native_cancel_B": 0,
+            "credited_B": 0,
+            "physical_evidence_complete": false
+          }
+        }
+      },
+      {
+        "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v2_reset/worker1/episode001_open_101",
+        "native_strict_cleanup_errors": [
+          "not_failed_sample"
+        ],
+        "robots": {
+          "tb1": {
+            "eligible_A": 0,
+            "credited_A": 0,
+            "native_cancel_B": 0,
+            "credited_B": 0,
+            "physical_evidence_complete": false
+          },
+          "tb2": {
+            "eligible_A": 0,
+            "credited_A": 0,
+            "native_cancel_B": 0,
+            "credited_B": 0,
+            "physical_evidence_complete": false
+          },
+          "tb3": {
+            "eligible_A": 0,
+            "credited_A": 0,
+            "native_cancel_B": 0,
+            "credited_B": 0,
+            "physical_evidence_complete": false
+          }
+        }
+      }
+    ]
+  }
+}

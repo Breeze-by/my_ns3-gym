@@ -1,0 +1,90 @@
+{
+  "schema": "mr3-external-owned-rpc-cancellation-v1",
+  "freeze": "96c201e0e258bd0fe192fc03c6716fc694b7a9b7",
+  "run_directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v2_reset",
+  "benchmark_identity": {
+    "pid": 2309666,
+    "start_ticks": 395237674,
+    "parent": 2309611,
+    "group": 2309609,
+    "session": 2309609,
+    "state": "S"
+  },
+  "started_wall_monotonic_ns": 3952767064621210,
+  "reason": "diagnostic stop after confirmed received activity input missing odometry; preserve all attempted episodes; no task/native PASS",
+  "method": "single atomic externally labeled same-epoch close IPC request to exact owned worker stdin; parent integer RPC mismatch expected to abort worker schedule",
+  "signals_sent": [],
+  "workers": [
+    {
+      "worker_id": 0,
+      "episode_directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v2_reset/worker0/episode001_open_101",
+      "epoch": "mr3_p2a0_20261017_v2_reset_w0_e1_e3d4be9d",
+      "saved_worker_identity": {
+        "pid": 2309749,
+        "parent": 2309666,
+        "group": 2309749,
+        "session": 2309749,
+        "start_ticks": 395237707,
+        "state": "R"
+      },
+      "observed_worker_identity": {
+        "pid": 2309749,
+        "start_ticks": 395237707,
+        "parent": 2309666,
+        "group": 2309749,
+        "session": 2309749,
+        "state": "S"
+      },
+      "write_performed": true,
+      "endpoint_pipe": "pipe:[191351907]",
+      "matching_parent_write_fd": {
+        "fd": 8,
+        "flags_octal": "0o2000001",
+        "pipe": "pipe:[191351907]"
+      },
+      "request": {
+        "id": "diagnostic_external_cancel_mr3_p2a0_20261017_v2_reset_w0_e1_e3d4be9d",
+        "op": "close",
+        "epoch": "mr3_p2a0_20261017_v2_reset_w0_e1_e3d4be9d"
+      },
+      "write_wall_monotonic_ns": 3952767067270978,
+      "written_bytes": 143
+    },
+    {
+      "worker_id": 1,
+      "episode_directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v2_reset/worker1/episode001_open_101",
+      "epoch": "mr3_p2a0_20261017_v2_reset_w1_e1_30ab806f",
+      "saved_worker_identity": {
+        "pid": 2309750,
+        "parent": 2309666,
+        "group": 2309750,
+        "session": 2309750,
+        "start_ticks": 395237707,
+        "state": "R"
+      },
+      "observed_worker_identity": {
+        "pid": 2309750,
+        "start_ticks": 395237707,
+        "parent": 2309666,
+        "group": 2309750,
+        "session": 2309750,
+        "state": "S"
+      },
+      "write_performed": true,
+      "endpoint_pipe": "pipe:[191350947]",
+      "matching_parent_write_fd": {
+        "fd": 12,
+        "flags_octal": "0o2000001",
+        "pipe": "pipe:[191350947]"
+      },
+      "request": {
+        "id": "diagnostic_external_cancel_mr3_p2a0_20261017_v2_reset_w1_e1_30ab806f",
+        "op": "close",
+        "epoch": "mr3_p2a0_20261017_v2_reset_w1_e1_30ab806f"
+      },
+      "write_wall_monotonic_ns": 3952767069404938,
+      "written_bytes": 143
+    }
+  ],
+  "completed_controller_wall_monotonic_ns": 3952767070130808
+}
