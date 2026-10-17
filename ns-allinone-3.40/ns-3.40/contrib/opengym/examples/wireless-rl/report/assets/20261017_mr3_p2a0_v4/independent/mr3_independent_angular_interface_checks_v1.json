@@ -1,0 +1,48 @@
+{
+  "schema": "mr3-independent-angular-interface-checks-v1",
+  "passed": true,
+  "checks": [
+    {
+      "command_argv": [
+        "/usr/bin/python3",
+        "/tmp/mr3_independent_angular_interface_v1_tests.py",
+        "-v"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "test_both_signs_across_robots_do_not_replace_one_robot_two_signs (__main__.AngularMutationTests) ... ok\ntest_complete_vector_acceleration_not_just_wz_is_checked (__main__.AngularMutationTests) ... ok\ntest_complete_vector_norm_not_just_wz_is_checked (__main__.AngularMutationTests) ... ok\ntest_each_robot_needs_real_postrelease_source_samples (__main__.AngularMutationTests) ... ok\ntest_epoch_mismatch_rejected (__main__.AngularMutationTests) ... ok\ntest_exact_raw_message_duplicate_deduplicates (__main__.AngularMutationTests) ... ok\ntest_frame_change_rejected (__main__.AngularMutationTests) ... ok\ntest_gap_over_100ms_is_missing_not_pass (__main__.AngularMutationTests) ... ok\ntest_nan_and_invalid_source_timestamp_fail_closed (__main__.AngularMutationTests) ... ok\ntest_rewind_rejected_even_if_message_itself_is_identical (__main__.AngularMutationTests) ... ok\ntest_same_source_changed_nonangular_payload_rejected (__main__.AngularMutationTests) ... ok\ntest_two_samples_do_not_make_a_sign_span (__main__.AngularMutationTests) ... ok\ntest_valid_bidirectional_stop_restart_coverage_and_original_max_pair (__main__.AngularMutationTests) ... ok\n\n----------------------------------------------------------------------\nRan 13 tests in 0.014s\n\nOK\n"
+    },
+    {
+      "command_argv": [
+        "/usr/bin/python3",
+        "-m",
+        "flake8",
+        "/tmp/mr3_independent_angular_interface_v1.py",
+        "/tmp/mr3_independent_angular_interface_v1_tests.py",
+        "--max-line-length=99"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command_argv": [
+        "/usr/bin/python3",
+        "/tmp/mr3_independent_angular_interface_v1.py",
+        "ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v3_reset/worker1/episode001_open_101",
+        "--output",
+        "/tmp/mr3_p2a0_v3_reset_w1_e1_angular_interface_v2.json"
+      ],
+      "returncode": 1,
+      "stdout": "{\"passed\": false, \"output\": \"/tmp/mr3_p2a0_v3_reset_w1_e1_angular_interface_v2.json\"}\n",
+      "stderr": ""
+    }
+  ],
+  "source_sha256": {
+    "/tmp/mr3_independent_angular_interface_v1.py": "7a472ba7efdd55addc710b98c66c89feff7f5092f214f76fd76cd4ca526343d0",
+    "/tmp/mr3_independent_angular_interface_v1_tests.py": "474735b1c8364787124a68eed01c72df93b4131b6ea4a89e6a48263d9e97b289"
+  },
+  "native_v4_validation": "not run; criteria fixed before new native",
+  "old_failure_expected": "v3 w1 e1 retained: tb1/tb3 norm over1.2, no same-robot sequential opposite sign coverage; no relabel",
+  "scope": "stdlib synthetic mutations and old read-only raw local odometry. No simulation, control, truth or actor imports."
+}

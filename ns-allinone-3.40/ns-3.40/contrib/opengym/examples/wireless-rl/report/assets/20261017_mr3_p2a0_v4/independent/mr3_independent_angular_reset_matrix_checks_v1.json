@@ -1,0 +1,60 @@
+{
+  "schema": "mr3-independent-angular-reset-matrix-checks-v1",
+  "passed": true,
+  "scope": "synthetic stdlib mutation checks only; no native credit",
+  "history": [
+    {
+      "check": "initial_mutations",
+      "passed": 6,
+      "seconds": 14.631,
+      "scope": "non-final source; final source rerun below"
+    },
+    {
+      "check": "initial_lint",
+      "exit_code": 1,
+      "stdout": "matrix.py:159 E501; tests.py:42 E128; tests.py:122 E501"
+    },
+    {
+      "check": "second_lint",
+      "exit_code": 1,
+      "stdout": "tests.py:123 E501"
+    }
+  ],
+  "checks": [
+    {
+      "name": "angular_reset_matrix_mutations",
+      "argv": [
+        "rtk",
+        "proxy",
+        "/usr/bin/python3",
+        "/tmp/mr3_independent_angular_reset_matrix_v1_tests.py",
+        "-v"
+      ],
+      "exit_code": 0,
+      "wall_sec": 17.35763981193304,
+      "stdout": "test_compressed_raw_inputs_remain_replayable_and_hash_bound (__main__.AngularResetMatrixMutationTests) ... ok\ntest_exact_source_hash_is_required_before_loading_consumer (__main__.AngularResetMatrixMutationTests) ... ok\ntest_missing_extra_directory_wrong_epoch_and_short_real_prefix_are_rejected (__main__.AngularResetMatrixMutationTests) ... ok\ntest_single_episode_complete_vector_acceleration_violation_fails_matrix (__main__.AngularResetMatrixMutationTests) ... ok\ntest_stationary_reset_bounds_pass_without_relabelling_missing_coverage (__main__.AngularResetMatrixMutationTests) ... ok\ntest_workload_type_budget_seed_version_summary_and_freeze_mutations_fail (__main__.AngularResetMatrixMutationTests) ... ok\n\n----------------------------------------------------------------------\nRan 6 tests in 16.748s\n\nOK\n"
+    },
+    {
+      "name": "lint",
+      "argv": [
+        "rtk",
+        "proxy",
+        "/usr/bin/python3",
+        "-m",
+        "flake8",
+        "/tmp/mr3_independent_angular_reset_matrix_v1.py",
+        "/tmp/mr3_independent_angular_reset_matrix_v1_tests.py",
+        "--max-line-length=99",
+        "--extend-ignore=D100,D101,D102,D103,D104,D105,D107,D203,D212"
+      ],
+      "exit_code": 0,
+      "wall_sec": 2.903139399830252,
+      "stdout": ""
+    }
+  ],
+  "source_sha256": {
+    "/tmp/mr3_independent_angular_reset_matrix_v1.py": "6f4b0c3ce7b3cd2eba18c9e264c6d0cdc980ab486b5d235f1f2b06f7a8a774c1",
+    "/tmp/mr3_independent_angular_reset_matrix_v1_tests.py": "051a7c46ff62ab6a55746bd0affea65accdf1eda1a77398e6f93ec3cda26f691",
+    "/tmp/mr3_independent_angular_interface_v1.py": "7a472ba7efdd55addc710b98c66c89feff7f5092f214f76fd76cd4ca526343d0"
+  }
+}

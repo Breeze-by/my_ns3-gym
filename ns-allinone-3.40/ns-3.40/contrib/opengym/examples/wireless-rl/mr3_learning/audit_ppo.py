@@ -62,7 +62,7 @@ PREPARATION_RUNTIME_PINS = {
     ROS + 'src/multi_robot_exploration/multi_robot_exploration/mr3_protocol.py':
         '5a2b90efd162b19a35964750002fe549413fec6e07f9679ea611d3fe6b1e4ada',
     ROS + 'src/multi_robot_exploration/multi_robot_exploration/mr3_motion_safety.py':
-        'b8345ec5e289d18a9d342501bb249a7b40f26d4ea8bf0d8855aa1fed6ca565ee',
+        '34cc0877069ddb7c07ebe14fbac7ac9a58bd328265a2336ace7d13d129a9da28',
     ROS + 'src/multi_robot_exploration/multi_robot_exploration/motion_safety.py':
         'a23f138e2dca3c13156eff2cc5b4ff861a061f48123414da9595ae3028808d46',
     ROS + 'src/multi_robot_exploration/multi_robot_exploration/control.py':
@@ -115,11 +115,13 @@ EXECUTION_CONFIG_PINS = {
     ROS + 'src/slam_toolbox/config/mapper_params_online_multi_async.yaml':
         '3ca81b5afb628d5787e60a266c6dc375a26f6b6a5c4fef70bd8a5261dc8dbb17',
     ROS + 'src/multi_robot/params/nav2_params_tb1_0.yaml':
-        'fb5c7e0599a8b6cf69af21d14bd486017d87d6de0c6a61bdd5cd1b31647723fb',
+        '342679598ebfa27b503cf5be16cf921c35c32a4dcd8cd0f861df9f70ed2cde07',
     ROS + 'src/multi_robot/params/nav2_params_tb2_0.yaml':
-        '2964ef46a8d75267a359c339c8629932ff20e87357dcb6bfca160681b819c40b',
+        '022e3ff990ace0a30fee4e0bd2917ee02a3ee1cd96e8ff566e54d25b2048906e',
     ROS + 'src/multi_robot/params/nav2_params_tb3_0.yaml':
-        '1ea059a6e9f9ec462eea625a90f1711534f629bbeda03b846deb549dbde1fc8f',
+        'ddc3c75ae0a3add7e2055458bab1cbe138c24c32a0897b2669560dfd52791281',
+    ROS + 'src/multi_robot/config/nav2_params.yaml':
+        '53b1fd403a55b6567a238efe954fadd40f572347f18bd0d258993b0e8d10d723',
     ROS + 'src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py':
         '370a07e2fe42083b03b0a0b05c9b818d277782fcc602908830069dd89938d42f',
     ROS + 'src/multi_robot/launch/nav2_bringup/bringup_launch.py':
@@ -131,7 +133,7 @@ EXECUTION_CONFIG_PINS = {
     ROS + 'src/multi_robot/models/turtlebot3_waffle/model.sdf':
         '801ee7f05f8aab1b791ec1203595d08139f0d57cd2e5518e09baf657c2085156',
 }
-ENV_DOCUMENT_SHA256 = "810fed08b884449c0e7737ae79a98ef881efbb74bb35b04e99c21aa101914464"
+ENV_DOCUMENT_SHA256 = "a991f2611e45db07814067f91ac030520e671407f5554909d6cd6a39a5cc1639"
 TASK_DOCUMENT_SHA256 = "f96f5ba785a39daa882b3c2ea217c58dd968550b65bf0ee15faf07ca079f8991"
 PRIOR_TASK_DOCUMENT_SHA256 = "5e4400396e4aaf5a5094fb4c0c04c85810c327cc85be88b7d03fa3faeade07d2"
 TASK_BASE_FREEZE = "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a"

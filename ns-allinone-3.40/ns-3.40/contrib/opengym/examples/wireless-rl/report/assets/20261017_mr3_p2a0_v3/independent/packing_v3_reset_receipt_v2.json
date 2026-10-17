@@ -1,0 +1,219 @@
+{
+  "schema": "mr3-native-evidence-packing-receipt-v2",
+  "freeze": "f9312e1ed245fb93af50614fd34c960870edb78d",
+  "source": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v3_reset",
+  "selected": "/tmp/mr3_p2a0_v3_selected_reset",
+  "archive_helper": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0/archive_native_evidence.py",
+  "archive_helper_sha256": "847647e8995cc96e1f104f23b446d9a52c9b7c52a47edfb78b260b4966d32117",
+  "manifest": {
+    "file_count": 694,
+    "source_bytes": 291457857,
+    "selected_bytes": 14509886,
+    "sha256": "a3a18280a28a678d3defe607ccf0959685e1172effe1da94e889e6ec71a3d571"
+  },
+  "byte_integrity_passed": true,
+  "byte_integrity_proof": {
+    "path": "independent_monitor/packing_v3_reset_byte_check_v2.json",
+    "sha256": "1eaa411ca4663c56f116d492cfa6015ada8f1258996addd8db46db06c38341de"
+  },
+  "full_audit": {
+    "passed": false,
+    "source_original_sha256": "5bafed419f629b9bd240d80f44681ac7db8490bb235d4e2e416277c8caf90b4e",
+    "selected_sha256": "5bafed419f629b9bd240d80f44681ac7db8490bb235d4e2e416277c8caf90b4e",
+    "exact_copy": true,
+    "errors": [
+      "native: benchmark declaration: benchmark declaration/worker count/freeze/result mismatch",
+      "native: worker 0: worker error or missing reset/cleanup episode",
+      "native: episode sampler accounting: sampler transition/reward/fault count mismatch",
+      "native: worker 0 episode 1 audit failed",
+      "native: episode sampler accounting: sampler transition/reward/fault count mismatch",
+      "native: worker 1: worker error or missing reset/cleanup episode",
+      "native: episode sampler accounting: sampler transition/reward/fault count mismatch",
+      "native: worker 1 episode 1 audit failed",
+      "native: new reset process: worker process identity reused across reset",
+      "native: episode sampler accounting: sampler transition/reward/fault count mismatch",
+      "native: comparison accounting: extra scenes differ from the declared serial reset regression",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v3_reset/worker0/episode001_open_101: ValueError('tb1: probe lacks native accepted goal and received movement >0.05m')",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v3_reset/worker0/episode002_open_101: ValueError('probe received activity is unavailable/incomplete')",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v3_reset/worker1/episode001_open_101: ValueError('tb1: probe lacks native accepted goal and received movement >0.05m')",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v3_reset/worker1/episode002_open_101: ValueError('probe received activity is unavailable/incomplete')"
+    ]
+  },
+  "detached_audit": {
+    "passed": false,
+    "sha256": "9e0e3708c9c22c3bbdcb60ec191949666c850e551b062fabf2f8bd51146db4b5",
+    "errors": [
+      "native: benchmark declaration: benchmark declaration/worker count/freeze/result mismatch",
+      "native: worker 0: worker error or missing reset/cleanup episode",
+      "native: episode sampler accounting: sampler transition/reward/fault count mismatch",
+      "native: worker 0 episode 1 audit failed",
+      "native: episode sampler accounting: sampler transition/reward/fault count mismatch",
+      "native: worker 1: worker error or missing reset/cleanup episode",
+      "native: episode sampler accounting: sampler transition/reward/fault count mismatch",
+      "native: worker 1 episode 1 audit failed",
+      "native: new reset process: worker process identity reused across reset",
+      "native: episode sampler accounting: sampler transition/reward/fault count mismatch",
+      "native: comparison accounting: extra scenes differ from the declared serial reset regression",
+      "/tmp/mr3_p2a0_v3_selected_reset/worker0/episode001_open_101: ValueError('tb1: probe lacks native accepted goal and received movement >0.05m')",
+      "/tmp/mr3_p2a0_v3_selected_reset/worker0/episode002_open_101: ValueError('probe received activity is unavailable/incomplete')",
+      "/tmp/mr3_p2a0_v3_selected_reset/worker1/episode001_open_101: ValueError('tb1: probe lacks native accepted goal and received movement >0.05m')",
+      "/tmp/mr3_p2a0_v3_selected_reset/worker1/episode002_open_101: ValueError('probe received activity is unavailable/incomplete')"
+    ],
+    "source_bindings_count": 86,
+    "source_bindings_equal_original": true,
+    "normalized_complete_result_equal_original": false,
+    "encoded_artifact_references_differ_as_expected": true,
+    "decoded_semantic_result_equal_original": true
+  },
+  "all_owned_and_parent_gone": true,
+  "unique_saved_owned_identities_plus_parent": 173,
+  "accounting_totals": {
+    "returned_parent_api_step_rows": 4,
+    "worker_applied_adapter_action_count": 4,
+    "unreturned_action_count": 0,
+    "returned_effective_dt_ns": 3320000000,
+    "returned_physical_dt_ns": 3320000000,
+    "physical_task_plus_cleanup_ns": 3760000000,
+    "physical_after_last_returned_snapshot_ns": 440000000,
+    "warmup_alignment_physics_ns": 25000000,
+    "returned_api_including_resets": 8
+  },
+  "wall_sec_including_all_attempts": 345.9337030528113,
+  "final_motion_FIFO_errors": [
+    {
+      "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v3_reset/worker0/episode001_open_101",
+      "errors": [],
+      "pending_FIFO": {
+        "tb1": 0,
+        "tb2": 0,
+        "tb3": 0
+      }
+    },
+    {
+      "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v3_reset/worker0/episode002_open_101",
+      "errors": [],
+      "pending_FIFO": {
+        "tb1": 0,
+        "tb2": 0,
+        "tb3": 0
+      }
+    },
+    {
+      "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v3_reset/worker1/episode001_open_101",
+      "errors": [],
+      "pending_FIFO": {
+        "tb1": 0,
+        "tb2": 0,
+        "tb3": 0
+      }
+    },
+    {
+      "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v3_reset/worker1/episode002_open_101",
+      "errors": [],
+      "pending_FIFO": {
+        "tb1": 0,
+        "tb2": 0,
+        "tb3": 0
+      }
+    }
+  ],
+  "independent_extras": [
+    {
+      "selected": "independent_monitor/mr3_p2a0_v3_diagnostic_cancel.json",
+      "bytes": 3135,
+      "sha256": "c2c1e7fedbf69569a3e1f89b3fc6cab1506f85d29169b1f705b785fce7182d7e"
+    },
+    {
+      "selected": "independent_monitor/mr3_p2a0_v3_diagnostic_cancel_outcome.json",
+      "bytes": 27257,
+      "sha256": "5a9a4bf1174efcaffdc64baac738bd45442be5436c1c995dba743eb22633a508"
+    },
+    {
+      "selected": "independent_monitor/mr3_p2a0_v3_frozen_auditor_receipt.json",
+      "bytes": 285,
+      "sha256": "daa818ecce31ec0ab04d7a938db6843fb1d769622c20e6ebf7dccb719bc3eb50"
+    },
+    {
+      "selected": "independent_monitor/mr3_p2a0_v3_reset_accounting.json",
+      "bytes": 5190,
+      "sha256": "9ebc1bc9c6b5f548c1bed6399501c93dfa69607d4e2c63b05c0b55a3918385b9"
+    },
+    {
+      "selected": "independent_monitor/mr3_p2a0_v3_reset_angular_bound_alert.json",
+      "bytes": 10495,
+      "sha256": "965f007cdb7dadf9a6aaf8800df52337c57026677f59c177bdd5d0b0d53dfb5a"
+    },
+    {
+      "selected": "independent_monitor/mr3_p2a0_v3_reset_angular_forensics.json",
+      "bytes": 2548762,
+      "sha256": "187141643276c6fb0b6afb5742ce4b350c4a87ce33728363a45d423dbb4ce9c5"
+    },
+    {
+      "selected": "independent_monitor/mr3_p2a0_v3_reset_final_phase_fifo_review.json",
+      "bytes": 5299,
+      "sha256": "cd87328c1bb10cf3224ed2e8c2b92a5f8841e427539a63a1912c1fd9e3b93713"
+    },
+    {
+      "selected": "independent_monitor/mr3_p2a0_v3_reset_independent_matrix.json",
+      "bytes": 239,
+      "sha256": "8b56a5b556abc050c572c87952e586e7ed4b33400c96f58d57d0f2c731d5df2a"
+    },
+    {
+      "selected": "independent_monitor/mr3_p2a0_v3_reset_independent_physics.json",
+      "bytes": 42044,
+      "sha256": "fa8ff88d5b93eb7fcf9c9146df7644c5df15c6fe3c8b339e0a74f13289be2e27"
+    },
+    {
+      "selected": "independent_monitor/mr3_p2a0_v3_reset_monitor_start.json",
+      "bytes": 1090,
+      "sha256": "7f3d342acc94313e85d32a9df3a67d62dd774e6954b0b181855b8f28e0b52f91"
+    },
+    {
+      "selected": "independent_monitor/mr3_p2a0_v3_reset_physics_live_01.json",
+      "bytes": 5257,
+      "sha256": "a96ebbc5d2205bfca41eb2af68c31554c33e1616709bef09dcaaf55d9407a270"
+    },
+    {
+      "selected": "independent_monitor/mr3_p2a0_v3_reset_source_acceleration_review.json",
+      "bytes": 833777,
+      "sha256": "86ef3540c58be6fdfbc7975e677469f6f7385bd90af096443712ab7250035717"
+    },
+    {
+      "selected": "independent_monitor/mr3_readonly_physics_live.py",
+      "bytes": 3784,
+      "sha256": "449a362aca2132176d64acce0e8d0a553c269918ef8b34abd240c8624443367c"
+    },
+    {
+      "selected": "independent_monitor/mr3_readonly_terminal_live.py",
+      "bytes": 5428,
+      "sha256": "7fa72c9d52a674e6561a64cd75739aa7db9114e265c66535fec7df3092dced7a"
+    },
+    {
+      "selected": "independent_monitor/packing_v3_reset_byte_check.json",
+      "bytes": 254633,
+      "sha256": "afd997257b8dc183e04a66aa2e1083f945b624d38daa1708d83ca739923f75fb"
+    },
+    {
+      "selected": "independent_monitor/packing_v3_reset_byte_check_v2.json",
+      "bytes": 259933,
+      "sha256": "1eaa411ca4663c56f116d492cfa6015ada8f1258996addd8db46db06c38341de"
+    },
+    {
+      "selected": "independent_monitor/packing_v3_reset_audit_comparison.json",
+      "bytes": 30915,
+      "sha256": "a13000a7a233a6cb249ecbbe663988f808aafa75d6ef11807b8953a9ecb2eaa7"
+    }
+  ],
+  "initial_checker_failure": {
+    "path": "independent_monitor/packing_v3_reset_byte_check.json",
+    "preserved": true,
+    "reason": "checker erroneously compared decoded pre-existing gz payload to original encoded gz; every source/selected/decoded hash passed. Corrected v2 compares decoded source content. Archive bytes unchanged."
+  },
+  "conclusion": "Evidence packing integrity PASS only. Native reset/task/matrix remain FAIL for real angular1.2 bound violation and intentional cancellation; e1 native closures strict, e2 supervisor forced -15 failed_sample true; no braking/policy credit; later reset slots and deadline SKIP.",
+  "audit_comparison": {
+    "path": "independent_monitor/packing_v3_reset_audit_comparison.json",
+    "sha256": "a13000a7a233a6cb249ecbbe663988f808aafa75d6ef11807b8953a9ecb2eaa7",
+    "passed": true
+  },
+  "supersedes": "/tmp/packing_v3_reset_receipt.json"
+}

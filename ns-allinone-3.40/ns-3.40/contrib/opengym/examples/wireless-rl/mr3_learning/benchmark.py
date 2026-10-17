@@ -2,6 +2,7 @@
 
 import argparse
 from concurrent.futures import ThreadPoolExecutor, as_completed
+import hashlib
 import json
 import math
 import os
@@ -13,14 +14,21 @@ import threading
 import time
 
 from .env import MR3Env
-from .supervisor import InfrastructureError, Supervisor, WORKSPACE, identity_alive
+from .supervisor import InfrastructureError, Supervisor, WORKSPACE, identity_alive, ros_environment
+
+
+PARAMETER_REVIEW_SCRIPT = Path(
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/"
+    "20261017_mr3_p2a0_v4/independent/mr3_actual_nav2_parameters_v4.py")
 
 
 def probe_action(snapshot, *, outward_goals=False):
     """Explicit external cancellation-stress inputs, not a mapping baseline."""
     elapsed = snapshot["task_elapsed_sec"]
     mask = snapshot["joint_action_mask"]
-    if elapsed < 1.5 or 10. <= elapsed < 12.:
+    second_goal_start, second_goal_end = (13., 15.) if outward_goals else (10., 12.)
+    goal_window = elapsed < 1.5 or second_goal_start <= elapsed < second_goal_end
+    if goal_window:
         def order(action):
             choices = (action // 100, action // 10 % 10, action % 10)
             paths = sum(snapshot["candidates"][choice]["path_distances_m"][index] or 0.
@@ -48,9 +56,75 @@ def probe_action(snapshot, *, outward_goals=False):
             # neither a policy nor an adapter fallback or safety certificate.
             return (-goal_count, -min(margins, default=-1.), -sum(margins), paths, action)
         return min((action for action, valid in enumerate(mask) if valid), key=order)
-    if elapsed >= 7.:
+    if (10. <= elapsed < 13. if outward_goals else elapsed >= 7.):
         return next(action for action in range(999, -1, -1) if mask[action])
     return 888
+
+
+def _new_preparation_abort():
+    return {"event": threading.Event(), "lock": threading.Lock(), "first_failure": None}
+
+
+def _abort_requested(abort):
+    return abort is not None and abort["event"].is_set()
+
+
+def _preparation_failure(abort, worker_id, kind, reason, episode_index=None, epoch=None):
+    """Publish only the first observed failure; no RPC, signal or sample change."""
+    if abort is None:
+        return
+    with abort["lock"]:
+        if not abort["event"].is_set():
+            abort["first_failure"] = {
+                "worker_id": worker_id, "kind": kind, "reason": str(reason),
+                "episode_index": episode_index, "epoch": epoch,
+                "observed_wall_monotonic_ns": time.monotonic_ns(),
+            }
+            abort["event"].set()
+
+
+def _parameter_review_binding(freeze):
+    """The only review executable must equal its tracked source at this freeze."""
+    raw = (WORKSPACE / PARAMETER_REVIEW_SCRIPT).read_bytes()
+    frozen = subprocess.check_output(
+        ["git", "show", f"{freeze}:{PARAMETER_REVIEW_SCRIPT.as_posix()}"], cwd=WORKSPACE)
+    if raw != frozen:
+        raise RuntimeError("parameter review script differs from the declared source freeze")
+    return {"relative_path": PARAMETER_REVIEW_SCRIPT.as_posix(), "freeze": freeze,
+            "sha256": hashlib.sha256(raw).hexdigest()}
+
+
+def _run_parameter_review(args, worker_id, episode):
+    binding = _parameter_review_binding(args.freeze)
+    if binding != args.preparation_parameter_review_source:
+        raise RuntimeError("parameter review script binding changed after preflight")
+    directory = Path(episode["output_directory"])
+    command = [
+        "bash", "-c",
+        'source /opt/ros/humble/setup.bash && '
+        'source "$1" && shift && exec /usr/bin/python3 "$@"',
+        "mr3_parameter_review",
+        str(WORKSPACE / "ros2_ws/ros2-multi-robot-automap/install/setup.bash"),
+        str(WORKSPACE / PARAMETER_REVIEW_SCRIPT), str(directory),
+        "--freeze", args.freeze, "--output", str(directory / "actual_nav2_parameters.json"),
+        "--wall-timeout-sec", "30"]
+    trace = {"source": binding, "command_argv": command, "wall_timeout_sec": 45,
+             "scope": "after returned reset, paused before first step; readonly GetParameters"}
+    episode["preparation_parameter_review"] = trace
+    try:
+        response = subprocess.run(
+            command, env=ros_environment(args.base_domain + worker_id, args.base_port + worker_id),
+            text=True, capture_output=True, timeout=45)
+    except subprocess.TimeoutExpired as error:
+        trace.update(timed_out=True,
+                     stdout=(error.stdout.decode(errors="replace")
+                             if isinstance(error.stdout, bytes) else error.stdout),
+                     stderr=(error.stderr.decode(errors="replace")
+                             if isinstance(error.stderr, bytes) else error.stderr))
+        raise
+    trace.update(returncode=response.returncode, stdout=response.stdout, stderr=response.stderr)
+    if response.returncode:
+        raise RuntimeError(f"parameter review failed with returncode {response.returncode}")
 
 
 def resource_sample():
@@ -75,18 +149,36 @@ def resource_sample():
     return result
 
 
-def run_worker(args, worker_id):
-    supervisor = Supervisor(run_id=args.run_id, worker_id=worker_id,
-                            domain_id=args.base_domain + worker_id,
-                            gazebo_port=args.base_port + worker_id,
-                            output_root=args.output_root, terminal_probe=args.terminal_probe)
-    environment = MR3Env(supervisor=supervisor, max_steps=args.steps)
+def run_worker(args, worker_id, preparation_abort=None):
+    preparation = args.preparation_motion_probe
+    abort = (preparation_abort or _new_preparation_abort()) if preparation else None
+    try:
+        supervisor = Supervisor(run_id=args.run_id, worker_id=worker_id,
+                                domain_id=args.base_domain + worker_id,
+                                gazebo_port=args.base_port + worker_id,
+                                output_root=args.output_root, terminal_probe=args.terminal_probe)
+        environment = MR3Env(supervisor=supervisor, max_steps=args.steps)
+    except Exception as error:
+        _preparation_failure(abort, worker_id, "construction_exception", repr(error))
+        raise
     result = {"worker_id": worker_id, "episodes": [], "error": None}
+    if preparation:
+        result["reset_attempts"] = []
     started = time.monotonic()
+    episode, episode_index, episode_started = None, None, None
     try:
         for episode_index, (scene, seed) in enumerate(args.schedule):
+            if _abort_requested(abort):
+                break
+            episode = None
             episode_started = time.monotonic()
+            if preparation:
+                attempt = {"episode_index": episode_index, "scene": scene,
+                           "seed": seed, "reset_returned": False}
+                result["reset_attempts"].append(attempt)
             observation, info = environment.reset(seed=seed, options={"scene": scene})
+            if preparation:
+                attempt["reset_returned"] = True
             initial = supervisor.last_result["snapshot"]
             episode = {"epoch": info["epoch"], "scene": scene, "seed": seed,
                        "initial_observation_digest": info["observation_digest"],
@@ -97,7 +189,18 @@ def run_worker(args, worker_id):
                            for robot in initial["robots"]], "transitions": 0,
                        "transition_wall_sec": 0., "reward_sum": 0., "dt_values": []}
             result["episodes"].append(episode)
+            if _abort_requested(abort):
+                episode["intentional_abort_prefix"] = {
+                    "after_rpc": "reset", "first_failure": abort["first_failure"]}
+                break
+            if getattr(args, "preparation_parameter_review", False):
+                _run_parameter_review(args, worker_id, episode)
             for step_index in range(args.steps):
+                if _abort_requested(abort):
+                    episode["intentional_abort_prefix"] = {
+                        "after_rpc": "reset" if step_index == 0 else "step",
+                        "first_failure": abort["first_failure"]}
+                    break
                 if args.terminal_probe and step_index == 3:
                     if episode_index == 0:
                         episode["diagnostic_failure_arm"] = supervisor.arm_failure_probe()
@@ -135,17 +238,47 @@ def run_worker(args, worker_id):
                                 "terminal_observation_reused", False),
                             "action_submitted": info.get("action_submitted", True),
                         }
+                if preparation:
+                    if terminated:
+                        _preparation_failure(
+                            abort, worker_id, "unexpected_termination", info.get("reason"),
+                            episode_index, episode["epoch"])
+                    elif truncated and step_index + 1 < args.steps:
+                        _preparation_failure(
+                            abort, worker_id, "early_truncation", info.get("reason"),
+                            episode_index, episode["epoch"])
+                    if _abort_requested(abort):
+                        if not (terminated or truncated):
+                            episode["intentional_abort_prefix"] = {
+                                "after_rpc": "step", "first_failure": abort["first_failure"]}
+                        break
+                if terminated or truncated:
                     break
+            if _abort_requested(abort):
+                break
             if not environment._episode_done:
                 raise RuntimeError("sampler step limit did not produce explicit truncation")
             episode["wall_sec_including_startup_and_closure"] = time.monotonic() - episode_started
     except Exception as error:
         result["error"] = repr(error)
+        _preparation_failure(
+            abort, worker_id, "rpc_or_worker_exception", repr(error), episode_index,
+            None if episode is None else episode["epoch"])
     finally:
         try:
             environment.close()
         except Exception as error:
             result["cleanup_error"] = repr(error)
+            _preparation_failure(
+                abort, worker_id, "cleanup_exception", repr(error), episode_index,
+                None if episode is None else episode["epoch"])
+        if preparation:
+            if episode is not None:
+                episode["wall_sec_including_startup_and_closure"] = (
+                    time.monotonic() - episode_started)
+            result["preparation_abort"] = {
+                "requested": _abort_requested(abort), "first_failure": abort["first_failure"],
+                "scope": "cooperative stop after real RPC return; no synthetic transition"}
         result["wall_sec"] = time.monotonic() - started
         result["shutdown_receipts"] = supervisor.receipts
         (supervisor.directory / "worker_summary.json").write_text(
@@ -167,6 +300,8 @@ def main():
     parser.add_argument("--terminal-probe", action="store_true")
     parser.add_argument("--preparation-motion-probe", action="store_true",
                         help="external engineering inputs: prefer outward legal goals; no policy")
+    parser.add_argument("--preparation-parameter-review", action="store_true",
+                        help="paused one-worker open101: frozen readonly ROS parameter audit")
     args = parser.parse_args()
     if not 1 <= args.steps <= 300:
         parser.error("steps must be in [1,300]")
@@ -191,6 +326,21 @@ def main():
     if args.preparation_motion_probe and any((
             args.terminal_probe, args.deadline_probe, args.fault_probe)):
         parser.error("preparation motion probe cannot be combined with other probes")
+    if args.preparation_motion_probe and args.steps != 20:
+        parser.error("preparation motion probe requires the explicit 20-step fixture")
+    if args.preparation_parameter_review and (
+            not args.preparation_motion_probe or args.workers != 1
+            or args.schedule != [("open", 101)]):
+        parser.error("parameter review requires preparation motion probe, one worker, one open101")
+    args.freeze = None
+    args.preparation_parameter_review_source = None
+    if args.preparation_parameter_review:
+        args.freeze = subprocess.check_output(
+            ["git", "rev-parse", "HEAD"], cwd=WORKSPACE, text=True).strip()
+        try:
+            args.preparation_parameter_review_source = _parameter_review_binding(args.freeze)
+        except (OSError, subprocess.CalledProcessError, RuntimeError) as error:
+            parser.error(f"frozen parameter review source unavailable: {error}")
     output_root = args.output_root or (
         WORKSPACE / "ros2_ws/ros2-multi-robot-automap/log/mr3_learning")
     directory = output_root / args.run_id
@@ -210,27 +360,34 @@ def main():
     metadata = {"kind": "scripted_p1c_sampling_not_rl", "workers": args.workers,
                 "robots_per_worker": 3, "schedule": args.schedule, "steps_per_episode": args.steps,
                 "command": sys.argv, "python": sys.executable,
-                "freeze": subprocess.check_output(
+                "freeze": args.freeze or subprocess.check_output(
                     ["git", "rev-parse", "HEAD"], cwd=WORKSPACE, text=True).strip(),
                 "base_domain": args.base_domain, "base_port": args.base_port,
                 "fault_probe": args.fault_probe,
                 "deadline_probe": args.deadline_probe,
                 "terminal_probe": args.terminal_probe,
                 "preparation_motion_probe": args.preparation_motion_probe,
+                "preparation_probe_version": (
+                    "mr3-p2a0-outward-cancel-v2" if args.preparation_motion_probe else None),
+                "preparation_parameter_review": args.preparation_parameter_review,
+                "preparation_parameter_review_source": args.preparation_parameter_review_source,
                 "resource_scope": "host counters include unrelated activity; GPU driver reports",
                 "num_logical_cpus": os.cpu_count(),
                 "cpu_affinity_count": len(os.sched_getaffinity(0))}
     (directory / "benchmark_metadata.json").write_text(json.dumps(metadata, indent=2) + "\n")
     results = []
+    preparation_abort = _new_preparation_abort() if args.preparation_motion_probe else None
     sampler.start()
     try:
         with ThreadPoolExecutor(max_workers=args.workers) as pool:
-            futures = {pool.submit(run_worker, args, worker_id): worker_id
+            futures = {pool.submit(run_worker, args, worker_id, preparation_abort): worker_id
                        for worker_id in range(args.workers)}
             for future in as_completed(futures):
                 try:
                     results.append(future.result())
                 except Exception as error:
+                    _preparation_failure(
+                        preparation_abort, futures[future], "worker_result_exception", repr(error))
                     results.append({"worker_id": futures[future], "episodes": [],
                                     "shutdown_receipts": [], "error": repr(error)})
     finally:
@@ -268,10 +425,17 @@ def main():
                 for index, receipt in enumerate(worker["shutdown_receipts"]))
         and (not args.fault_probe or worker["worker_id"] != 0 or worker.get("fault_verified"))
         for worker in results)
+    if preparation_abort is not None:
+        passed = passed and not _abort_requested(preparation_abort)
     summary = {**metadata, "passed": passed, "wall_sec_including_all_attempts": wall,
                "valid_transitions": transitions,
                "effective_transition_per_wall_sec": transitions / wall,
                "workers_results": sorted(results, key=lambda value: value["worker_id"])}
+    if preparation_abort is not None:
+        summary["preparation_abort"] = {
+            "requested": _abort_requested(preparation_abort),
+            "first_failure": preparation_abort["first_failure"],
+            "scope": "first observed failing RPC/worker; other in-flight RPCs finish then close"}
     (directory / "benchmark_summary.json").write_text(json.dumps(summary, indent=2) + "\n")
     print(json.dumps({key: value for key, value in summary.items()
                       if key != "workers_results"}, indent=2))

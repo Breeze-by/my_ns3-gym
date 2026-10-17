@@ -197,19 +197,11 @@ python -m mr3_learning.audit_preparation \
 工程成本单列，不使用/重置pilot余额。每worker始终三台；300秒KEEP用于截止与关闭验证，
 不证明探索或三台参与成功。旧版原件保持；用户随后要求继续完成P2A.0，新版见下节。
 
-## MR3-P2A.0 v3 当前训练前工程准备
+## MR3-P2A.0 v4 当前训练前工程准备
 
-用户2026-10-17明确要求继续完成本步。v1/v2原生FAIL及中断保持，不重跑旧命令。新版导航合成保留own已知格、shared只补unknown，
-v5候选使用实际导航图；快照v3/张量v2增加received local-odom累计活动。adapter速度链为
-controller/behavior→`cmd_vel_nav`→smoother→`cmd_vel_unguarded`→唯一`motion_safety`→`cmd_vel`。
-安全门保持请求或全零；接近方向被拒绝时，仅在`(0,原角速度)`完整重验通过后刹停线速度并保留转向。
-状态无效、包络不足、残余移动不安全时不能走此分支。恰好超出速度上限一个binary64相邻值的Nav2插值规范到原上限，
-更大超界拒绝，原请求与规范记录均保存。不选探索目标。worker任务放行前等实际输入就绪并核验DDS唯一出口，
-每20ms暂停等安全门同clock完成回执。`motion_safety.jsonl`保存输入/判据/实际速度回调，
-`motion_phase_worker.jsonl`保存回执；七份原始地图及六路master costmap输出保留源时间与SHA。
-`mr3_audit_path`为空时不写安全trace，安全门仍生效；baseline的原速度topic默认值保持。
+v1/v2/v3失败原件保留，不重跑旧命令。当前导航合成own已知权威/shared补unknown、候选v5、快照v3/张量v2及71列活动观测延续。实际速度链为controller/behavior→`cmd_vel_nav`→smoother→`cmd_vel_unguarded`→唯一`motion_safety`→`cmd_vel`，每20ms暂停等待实际topic完成ACK。三机实际Nav2配置和安全门的角速度指令上限均为`.8rad/s`，测量门仍为`1.2rad/s`；精确一ULP规范、完整转向复验及保守停止包络延续。
 
-先在系统ROS环境构建并source当前install：
+系统ROS环境先构建并source当前install，再按P1C段切换conda `ns3gym`并清除`PYTHONPATH`，在wireless-rl执行：
 
 ```bash
 /usr/bin/python3 /usr/bin/colcon build --symlink-install \
@@ -217,42 +209,47 @@ controller/behavior→`cmd_vel_nav`→smoother→`cmd_vel_unguarded`→唯一`mo
 source install/setup.bash
 ```
 
-再按P1C段切换conda `ns3gym`、清除`PYTHONPATH`，在wireless-rl执行。只在同一干净、已提交推送
-且完成源码预检的冻结运行；每阶段独立完整审计通过才开始下一阶段。原生工程上限436 API/435脚本动作、
-6000墙秒，无GPU/optimizer；pilot余额不动。失败保留并停止该矩阵，诊断修复后需新冻结/新预声明，
-不能盲重试或跨冻结拼PASS。计划和结果见[v3报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261017_mr3_p2a0_v3.md)。
+只在一个干净且已提交推送、完成源码和installed路径核验的冻结运行。interface通过后才开始terminal，再完整reset，最后deadline；每阶段完整审计通过再前进。上限488 API/487脚本动作、7000墙秒，无原生GPU/optimizer；pilot余额不动。真实失败保留并停止该版后续阶段，修复后新冻结/新预声明重验，不拼PASS。详见[v4报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261017_mr3_p2a0_v4.md)。
 
 ```bash
-MR3_P2A0_V3_FREEZE=$(git rev-parse HEAD)
-python -m mr3_learning.benchmark --workers 1 --schedule open:101,open:101 \
-  --steps 4 --terminal-probe --base-domain 202 --base-port 12531 \
-  --output-root /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0 \
-  --run-id mr3_p2a0_20261017_v3_terminal
+MR3_P2A0_V4_FREEZE=$(git rev-parse HEAD)
+python -m mr3_learning.benchmark --workers 1 --schedule open:101 \
+  --steps 20 --preparation-motion-probe \
+  --base-domain 212 --base-port 12561 --output-root \
+  /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0 --run-id mr3_p2a0_20261017_v4_interface --preparation-parameter-review
 python -m mr3_learning.audit_preparation \
-  /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v3_terminal \
-  --freeze "$MR3_P2A0_V3_FREEZE" --output /tmp/mr3_p2a0_v3_terminal_audit.json
+  /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v4_interface \
+  --freeze "$MR3_P2A0_V4_FREEZE" --output /tmp/mr3_p2a0_v4_interface_audit.json
 
-python -m mr3_learning.benchmark --workers 2 \
-  --schedule open:101,open:101,rooms:101,corridors:101 \
-  --steps 16 --preparation-motion-probe --base-domain 206 --base-port 12541 \
-  --output-root /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0 \
-  --run-id mr3_p2a0_20261017_v3_reset
+python -m mr3_learning.benchmark --workers 1 --schedule open:101,open:101 \
+  --steps 4 --terminal-probe \
+  --base-domain 214 --base-port 12571 --output-root \
+  /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0 --run-id mr3_p2a0_20261017_v4_terminal
 python -m mr3_learning.audit_preparation \
-  /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v3_reset \
-  --freeze "$MR3_P2A0_V3_FREEZE" --output /tmp/mr3_p2a0_v3_reset_audit.json
+  /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v4_terminal \
+  --freeze "$MR3_P2A0_V4_FREEZE" --output /tmp/mr3_p2a0_v4_terminal_audit.json
+
+python -m mr3_learning.benchmark --workers 2 --schedule open:101,open:101,rooms:101,corridors:101 \
+  --steps 20 --preparation-motion-probe \
+  --base-domain 216 --base-port 12581 --output-root \
+  /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0 --run-id mr3_p2a0_20261017_v4_reset
+python -m mr3_learning.audit_preparation \
+  /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v4_reset \
+  --freeze "$MR3_P2A0_V4_FREEZE" --output /tmp/mr3_p2a0_v4_reset_audit.json
 
 python -m mr3_learning.benchmark --workers 1 --schedule open:101 \
-  --steps 300 --deadline-probe --base-domain 210 --base-port 12551 \
-  --output-root /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0 \
-  --run-id mr3_p2a0_20261017_v3_deadline
+  --steps 300 --deadline-probe \
+  --base-domain 220 --base-port 12591 --output-root \
+  /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0 --run-id mr3_p2a0_20261017_v4_deadline
 python -m mr3_learning.audit_preparation \
-  /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v3_deadline \
-  --freeze "$MR3_P2A0_V3_FREEZE" --output /tmp/mr3_p2a0_v3_deadline_audit.json
+  /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v4_deadline \
+  --freeze "$MR3_P2A0_V4_FREEZE" --output /tmp/mr3_p2a0_v4_deadline_audit.json
+
 ```
 
-`--preparation-motion-probe`仅为外部工程输入：最大合法GOAL数后优先向外角度，再按路径和动作号稳定排序；
-保留取消/承诺压力时序，不进入adapter/PPO，不是探索基线或安全证明。reset逐episode要求三台各有合法GOAL、原生接受且received-odom移动超过`.05m`，另核验途中保护及正常关闭。
-terminal/deadline是显式诊断终态/截止工程验证，不提供95%策略或参与成功信用。通过本步后待用户验收，再恢复P2A训练。
+interface的`--preparation-parameter-review`只读固定、源码绑定的九节点参数脚本；reset返回后、首step前物理保持暂停，失败走严格关闭。原件`actual_nav2_parameters.json`保存在episode目录。interface还须通过冻结独立angular消费者，reset须通过冻结独立物理matrix；规则和脚本SHA见预声明资产。
+
+`--preparation-motion-probe`显式工程输入优先向外合法方向；20步中GOAL[0,1.5)/[13,15)、WAIT[10,13)，其余KEEP。三台每轮均需合法GOAL、原生接受及received路径>.05m，首失败共享标志阻止后续调用而不补造终态。该脚本不是生产探索策略或fallback。terminal/deadline没有95%/参与信用；完成后待用户验收P2A.0。
 
 ## MR3-P2A联合MaskablePPO（v6历史命令，本轮不重启pilot）
 

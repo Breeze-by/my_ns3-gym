@@ -1,0 +1,154 @@
+{
+  "schema": "mr3-p2a0-v3-native-accounting-v1",
+  "freeze": "f9312e1ed245fb93af50614fd34c960870edb78d",
+  "stages": [
+    {
+      "stage": "terminal",
+      "benchmark_passed": true,
+      "command": [
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/benchmark.py",
+        "--workers",
+        "1",
+        "--schedule",
+        "open:101,open:101",
+        "--steps",
+        "4",
+        "--terminal-probe",
+        "--base-domain",
+        "202",
+        "--base-port",
+        "12531",
+        "--output-root",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0",
+        "--run-id",
+        "mr3_p2a0_20261017_v3_terminal"
+      ],
+      "schedule": [
+        [
+          "open",
+          101
+        ],
+        [
+          "open",
+          101
+        ]
+      ],
+      "workers": 1,
+      "steps_per_episode": 4,
+      "base_domain": 202,
+      "base_port": 12531,
+      "wall_sec_including_all_attempts": 372.49735159100965,
+      "wall_sec_decimal": "372.49735159100965",
+      "attempted_episodes": 2,
+      "returned_step_api_rows": 8,
+      "actual_adapter_actions": 7,
+      "unreturned_adapter_actions": 0,
+      "reset_api_rows": 2,
+      "returned_effective_ns": 6020000000,
+      "returned_physical_ns": 6020000000,
+      "after_last_returned_snapshot_physical_ns": 0,
+      "post_release_physical_ns": 6020000000,
+      "warmup_alignment_physical_ns": 29000000,
+      "benchmark_summary_sha256": "39fd89acd3a195ef3363a81e3ea53ad48fc46cb1be25e7bd63956c260b9d189d",
+      "per_episode_source_receipt": "independent/mr3_p2a0_v3_terminal_runtime_review_v1.json"
+    },
+    {
+      "stage": "reset",
+      "benchmark_passed": false,
+      "command": [
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/benchmark.py",
+        "--workers",
+        "2",
+        "--schedule",
+        "open:101,open:101,rooms:101,corridors:101",
+        "--steps",
+        "16",
+        "--preparation-motion-probe",
+        "--base-domain",
+        "206",
+        "--base-port",
+        "12541",
+        "--output-root",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0",
+        "--run-id",
+        "mr3_p2a0_20261017_v3_reset"
+      ],
+      "schedule": [
+        [
+          "open",
+          101
+        ],
+        [
+          "open",
+          101
+        ],
+        [
+          "rooms",
+          101
+        ],
+        [
+          "corridors",
+          101
+        ]
+      ],
+      "workers": 2,
+      "steps_per_episode": 16,
+      "base_domain": 206,
+      "base_port": 12541,
+      "wall_sec_including_all_attempts": 345.9337030528113,
+      "wall_sec_decimal": "345.9337030528113",
+      "attempted_episodes": 4,
+      "returned_step_api_rows": 4,
+      "actual_adapter_actions": 4,
+      "unreturned_adapter_actions": 0,
+      "reset_api_rows": 4,
+      "returned_effective_ns": 3320000000,
+      "returned_physical_ns": 3320000000,
+      "after_last_returned_snapshot_physical_ns": 440000000,
+      "post_release_physical_ns": 3760000000,
+      "warmup_alignment_physical_ns": 25000000,
+      "benchmark_summary_sha256": "f8d66ce37ac0d3b0596223cf4d23fc87d49a645583c9ec27a114f4892f333ab6",
+      "per_episode_source_receipt": "independent/mr3_p2a0_v3_reset_accounting.json"
+    }
+  ],
+  "totals": {
+    "attempted_episodes": 6,
+    "returned_step_api_rows": 12,
+    "actual_adapter_actions": 11,
+    "unreturned_adapter_actions": 0,
+    "reset_api_rows": 6,
+    "returned_effective_ns": 9340000000,
+    "returned_physical_ns": 9340000000,
+    "after_last_returned_snapshot_physical_ns": 440000000,
+    "post_release_physical_ns": 9780000000,
+    "warmup_alignment_physical_ns": 54000000,
+    "returned_api_including_resets": 18,
+    "wall_sec_decimal": "718.43105464382095",
+    "post_release_plus_controlled_alignment_physical_ns": 9834000000
+  },
+  "deadline": {
+    "status": "SKIPPED_after_reset_real_bound_failure",
+    "attempts": 0,
+    "step_api_rows": 0,
+    "adapter_actions": 0,
+    "run_directory_created": false
+  },
+  "classification": {
+    "terminal_task_injection_attempts": 2,
+    "real_task_safety_failures": 2,
+    "diagnostic_external_cancel_attempts": 2,
+    "full_strict_closure_attempts": 4,
+    "supervisor_forced_minus15_attempts": 2,
+    "remaining_reset_slots_skipped": 4,
+    "braking_credit": false,
+    "policy_training_samples": 0,
+    "gpu_optimizer_updates": 0
+  },
+  "pilot_ledger_unchanged": {
+    "charged_decisions": 2226,
+    "charged_wall_sec_decimal": "11494.045260453597",
+    "remaining_decisions": 1870,
+    "remaining_wall_sec_decimal": "2905.954739546403"
+  },
+  "scope": "step API counts exclude reset API; terminal post-terminal zero-dt API is not a native action; e2 external-close reward finalize ACK count1 is not an action/returned step. Child-native launch clean exit does not override supervisor forced worker failure. Engineering wall includes startup/closure; unstepped startup simulator warmup is not effective task time and its wall is already charged."
+}

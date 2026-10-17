@@ -1,9 +1,11 @@
 """Peer geometry, final-command ownership and fail-closed callback fixtures."""
 
+import ast
 import copy
 from collections import deque
 import json
 import math
+from pathlib import Path
 import time
 from types import SimpleNamespace
 
@@ -13,10 +15,11 @@ import rclpy
 from rclpy.executors import SingleThreadedExecutor
 from rclpy.node import Node
 from std_msgs.msg import Header, String
+import yaml
 
 from multi_robot_exploration.motion_safety import MotionSafety
 from multi_robot_exploration.mr3_motion_safety import (
-    BRAKING_DECEL_MPS2, ROBOTS, TURN_STOP_PADDING_SEC, guard_motion,
+    BRAKING_DECEL_MPS2, COMMAND_TURN_LIMIT, ROBOTS, TURN_STOP_PADDING_SEC, guard_motion,
     maximum_heading_projection, valid_state,
 )
 
@@ -40,7 +43,7 @@ def test_initial_three_robot_pose_allows_departure_and_rotation_without_hidden_s
         assert not result["allow"] and result["output"] == [0., 0.]
         assert result["reason"] == "peer_braking_nonclosing"
     for name in ROBOTS:
-        assert evaluate(states, name, [0., 1.])["output"] == [0., 1.]
+        assert evaluate(states, name, [0., .8])["output"] == [0., .8]
     states["tb3"]["x"] = 2.
     assert evaluate(states, "tb1", [.26, 0.])["output"] == [.26, 0.]
 
@@ -65,8 +68,8 @@ def test_measured_pending_motion_and_full_turn_interval_are_checked_before_new_c
     assert not evaluate(states, "tb1", [-.2, 0.])["allow"]
     states["tb1"].update(v=0., yaw=math.pi / 2)
     assert evaluate(states, "tb1", [.2, 0.])["allow"]
-    turning = evaluate(states, "tb1", [.2, 1.])
-    assert turning["output"] == [0., 1.]
+    turning = evaluate(states, "tb1", [.2, .8])
+    assert turning["output"] == [0., .8]
     assert turning["reason"] == "linear_brake_preserve_requested_turn"
     # Independently sample every heading; the analytic envelope must cover it.
     for heading in (-math.pi, -.3, 0., .8, math.pi):
@@ -112,6 +115,84 @@ def test_turn_coupling_padding_is_explicit_in_both_stop_reserve_and_heading_hori
     assert check["direction_checks"][0]["horizon_sec"] == pytest.approx(.78)
 
 
+def test_odom_angular_age_is_distinct_from_older_geometry_and_yaw_source_age():
+    states = {"tb1": state("tb1", 0., 0., stamp=.8),
+              "tb2": state("tb2", -.8, 0.), "tb3": state("tb3", 4., 4.)}
+    states["tb1"].update(odom_source_stamp=.98, tf_source_stamp=.8)
+    result = evaluate(states, "tb1", [.2, .1])
+    assert result["allow"]
+    direction = result["near_peer_checks"][0]["direction_checks"][0]
+    assert direction["geometry_source_stamp"] == .8
+    assert direction["geometry_source_age_sec"] == pytest.approx(.2)
+    assert direction["angular_velocity_source_stamp"] == .98
+    assert direction["angular_velocity_source_age_sec"] == pytest.approx(.02)
+    assert direction["source_yaw_uncertainty_rad"] == pytest.approx(.24)
+    assert direction["turn_bound_radps"] == pytest.approx(.14)
+    assert direction["heading_half_angle_rad"] == pytest.approx(.24 + .14 * .78)
+    # A newer odometry measurement cannot make an old TF pose/yaw look fresh.
+    states["tb1"]["tf_source_stamp"] = .499
+    assert not evaluate(states, "tb1", [.2, .1])["allow"]
+
+
+def test_actual_nav2_node_parameters_share_the_guard_command_limits():
+    component = Path(__file__).resolve().parents[2] / "multi_robot"
+    assert COMMAND_TURN_LIMIT == .8
+    sources = [component / "config/nav2_params.yaml"] + [
+        component / "params" / f"nav2_params_{name}_0.yaml" for name in ROBOTS]
+    for source in sources:
+        params = yaml.safe_load(source.read_text())
+        controller = params["controller_server"]["ros__parameters"]["FollowPath"]
+        behavior = params["behavior_server"]["ros__parameters"]
+        smoother = params["velocity_smoother"]["ros__parameters"]
+        assert controller["max_vel_x"] == controller["max_speed_xy"] == .26
+        assert controller["max_vel_theta"] == behavior["max_rotational_vel"] == .8
+        assert smoother["max_velocity"] == [.26, 0., .8]
+        assert smoother["min_velocity"] == [-.26, 0., -.8]
+        assert smoother["smoothing_frequency"] == 20. and smoother["feedback"] == "OPEN_LOOP"
+        assert smoother["use_sim_time"] is True and behavior["use_sim_time"] is True
+    # The canonical top-level launch selects these per-robot files; checking
+    # config/nav2_params.yaml alone would miss the actual native input.
+    top = ast.parse((component / "launch/gazebo_multirobot_mapping_with_nav2.launch.py")
+                    .read_text())
+    selections = [node.value for node in ast.walk(top) if isinstance(node, ast.Assign)
+                  and any(isinstance(target, ast.Name) and target.id == "params_file"
+                          for target in node.targets)
+                  and isinstance(node.value, ast.Call)
+                  and isinstance(node.value.func, ast.Attribute)
+                  and node.value.func.attr == "join"]
+    assert len(selections) == 1
+    selection = selections[0].args
+    assert isinstance(selection[0], ast.Name) and selection[0].id == "multi_robot_share"
+    assert isinstance(selection[1], ast.Constant) and selection[1].value == "params"
+    assert isinstance(selection[2], ast.JoinedStr)
+    assert ast.dump(selection[2]) == ast.dump(ast.parse(
+        'f"nav2_params_{robot_name}_0.yaml"', mode="eval").body)
+    # Check the node keys against both real launch branches, rather than the
+    # obsolete recoveries_server compatibility section alone.
+    launch = ast.parse((component / "launch/nav2_bringup/navigation_launch.py").read_text())
+    bindings = []
+    for call in ast.walk(launch):
+        if not isinstance(call, ast.Call) or not isinstance(call.func, ast.Name):
+            continue
+        if call.func.id not in ("Node", "ComposableNode"):
+            continue
+        keywords = {item.arg: item.value for item in call.keywords}
+        # The standalone controller uses its executable's default node name;
+        # the composed controller and both other nodes declare explicit names.
+        name = keywords.get("name", keywords.get("executable"))
+        if isinstance(name, ast.Constant) and name.value in (
+                "controller_server", "behavior_server", "velocity_smoother"):
+            configured = keywords["parameters"]
+            assert isinstance(configured, ast.List) and len(configured.elts) == 1
+            assert isinstance(configured.elts[0], ast.Name)
+            assert configured.elts[0].id == "configured_params"
+            bindings.append((call.func.id, name.value))
+    assert sorted(bindings) == sorted((kind, name)
+                                      for kind in ("Node", "ComposableNode")
+                                      for name in ("controller_server", "behavior_server",
+                                                   "velocity_smoother"))
+
+
 @pytest.mark.parametrize("fault", ["stale", "future", "epoch", "missing", "invalid", "speed"])
 def test_missing_stale_future_wrong_epoch_or_unbounded_state_stops(fault):
     states = {name: state(name, index * 3., 0.) for index, name in enumerate(ROBOTS)}
@@ -131,7 +212,7 @@ def test_missing_stale_future_wrong_epoch_or_unbounded_state_stops(fault):
     assert not result["allow"] and result["output"] == [0., 0.]
 
 
-@pytest.mark.parametrize("command", [[.261, 0.], [0., 1.01], [float("nan"), 0.]])
+@pytest.mark.parametrize("command", [[.261, 0.], [0., 1.], [float("nan"), 0.]])
 def test_requested_speed_turn_and_nonfinite_limits_are_not_clipped_into_new_actions(command):
     states = {name: state(name, index * 3., 0.) for index, name in enumerate(ROBOTS)}
     result = evaluate(states, "tb1", command)
@@ -143,14 +224,14 @@ def test_only_one_ulp_outward_endpoints_are_canonicalized_to_hard_limits(sign):
     states = {name: state(name, index * 3., 0.) for index, name in enumerate(ROBOTS)}
     # This v is an actual v2 Nav2 smoother callback, not a broad epsilon case.
     captured_v = sign * 0.26000000000000006
-    adjacent_w = sign * math.nextafter(1., math.inf)
+    adjacent_w = sign * math.nextafter(.8, math.inf)
     result = evaluate(states, "tb1", [captured_v, adjacent_w])
-    assert result["allow"] and result["output"] == [sign * .26, sign * 1.]
+    assert result["allow"] and result["output"] == [sign * .26, sign * .8]
     assert result["command_normalization"] == {
         "schema": "mr3-command-one-ulp-v1", "input": [captured_v, adjacent_w],
-        "canonical": [sign * .26, sign * 1.], "normalized_axes": ["v", "w"]}
-    assert abs(result["output"][0]) <= .26 and abs(result["output"][1]) <= 1.
-    for axis, limit in enumerate((.26, 1.)):
+        "canonical": [sign * .26, sign * .8], "normalized_axes": ["v", "w"]}
+    assert abs(result["output"][0]) <= .26 and abs(result["output"][1]) <= .8
+    for axis, limit in enumerate((.26, .8)):
         command = [0., 0.]
         command[axis] = sign * math.nextafter(math.nextafter(limit, math.inf), math.inf)
         rejected = evaluate(states, "tb1", command)
@@ -199,7 +280,7 @@ def test_component_filter_never_bypasses_measured_motion_or_unavailable_geometry
     elif fault == "stale":
         states["tb2"]["source_stamp"] = .499
     else:
-        request[1] = math.nextafter(math.nextafter(1., math.inf), math.inf)
+        request[1] = math.nextafter(math.nextafter(.8, math.inf), math.inf)
     result = evaluate(states, "tb1", request)
     assert not result["allow"] and result["output"] == [0., 0.]
     assert result["component_filter"] is None

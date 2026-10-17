@@ -18,7 +18,7 @@ ROBOTS = ("tb1", "tb2", "tb3")
 BODY_RADIUS_M = .25  # Existing Waffle full-body disk; actual collision radius < .238 m.
 COMMAND_SPEED_LIMIT = .26
 MEASURED_SPEED_BOUND = .30
-COMMAND_TURN_LIMIT = 1.
+COMMAND_TURN_LIMIT = .8
 MEASURED_TURN_BOUND = 1.2
 TURN_ACCEL_BOUND_RADPS2 = 7.0  # 2 * model wheel-rim 1 m/s² / .287 m wheel separation.
 SOURCE_MAX_AGE_SEC = .5
@@ -115,6 +115,10 @@ def guard_motion(request, own, peers, now, epoch):
         }
     v, w = canonical
     own_age = elapsed_ns(own["source_stamp"], now) / 1e9
+    # Position/yaw use the older odom/TF source. Angular velocity comes from
+    # odometry, so pending acceleration starts at that measurement's own time.
+    odom_source_stamp = own.get("odom_source_stamp", own["source_stamp"])
+    odom_age = elapsed_ns(odom_source_stamp, now) / 1e9
     body_margins, zone_margins, direction_margins = [], [], []
     for name, peer in peers.items():
         dx, dy = peer["x"] - own["x"], peer["y"] - own["y"]
@@ -140,7 +144,7 @@ def guard_motion(request, own, peers, now, epoch):
             horizon = (REACTION_SEC + MEASURED_SPEED_BOUND / BRAKING_DECEL_MPS2
                        + TURN_STOP_PADDING_SEC)
             possible_turn = min(MEASURED_TURN_BOUND,
-                                abs(own["w"]) + TURN_ACCEL_BOUND_RADPS2 * own_age)
+                                abs(own["w"]) + TURN_ACCEL_BOUND_RADPS2 * odom_age)
             turn_bound = max(abs(w), possible_turn)
             half_angle = MEASURED_TURN_BOUND * own_age + turn_bound * horizon
             directions = {math.copysign(1., value) for value in (v, own["v"])
@@ -152,6 +156,10 @@ def guard_motion(request, own, peers, now, epoch):
                 direction_margins.append(margin)
                 check["direction_checks"].append({
                     "sign": sign, "horizon_sec": horizon, "turn_bound_radps": turn_bound,
+                    "geometry_source_stamp": own["source_stamp"],
+                    "geometry_source_age_sec": own_age,
+                    "angular_velocity_source_stamp": odom_source_stamp,
+                    "angular_velocity_source_age_sec": odom_age,
                     "source_yaw_uncertainty_rad": MEASURED_TURN_BOUND * own_age,
                     "heading_half_angle_rad": half_angle,
                     "maximum_projection_m": projection, "nonclosing_margin_m": margin})

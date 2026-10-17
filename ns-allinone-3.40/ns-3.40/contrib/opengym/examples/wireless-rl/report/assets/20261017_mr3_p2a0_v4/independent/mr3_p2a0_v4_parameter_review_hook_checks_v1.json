@@ -1,0 +1,83 @@
+{
+  "schema": "mr3-p2a0-v4-parameter-review-hook-checks-v1",
+  "passed": true,
+  "base_freeze": "f9312e1ed245fb93af50614fd34c960870edb78d",
+  "new_source_freeze": "pending",
+  "checks": [
+    {
+      "command_argv": [
+        "bash",
+        "-c",
+        "source /home/zhuyulab/miniconda3/etc/profile.d/conda.sh && conda activate ns3gym && unset PYTHONPATH && export PYTHONNOUSERSITE=1 && python -m unittest mr3_learning.tests.test_benchmark -v"
+      ],
+      "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "test_already_aborted_worker_closes_without_any_reset (mr3_learning.tests.test_benchmark.CooperativeAbortTests) ... ok\ntest_close_exception_does_not_skip_other_worker_close (mr3_learning.tests.test_benchmark.CooperativeAbortTests) ... ok\ntest_complete_flag_fixture_keeps_both_twenty_step_episodes (mr3_learning.tests.test_benchmark.CooperativeAbortTests) ... ok\ntest_early_truncation_is_real_failure_not_completed_fixture (mr3_learning.tests.test_benchmark.CooperativeAbortTests) ... ok\ntest_later_reset_exception_does_not_claim_previous_epoch (mr3_learning.tests.test_benchmark.CooperativeAbortTests) ... ok\ntest_legacy_keeps_existing_reset_after_real_termination (mr3_learning.tests.test_benchmark.CooperativeAbortTests) ... ok\ntest_main_complete_flag_fixture_passes_without_abort (mr3_learning.tests.test_benchmark.CooperativeAbortTests) ... ok\ntest_main_legacy_metadata_has_no_preparation_version_or_abort (mr3_learning.tests.test_benchmark.CooperativeAbortTests) ... ok\ntest_main_parameter_review_source_binding_is_in_metadata_and_summary (mr3_learning.tests.test_benchmark.CooperativeAbortTests) ... ok\ntest_main_records_version_and_real_first_failure (mr3_learning.tests.test_benchmark.CooperativeAbortTests) ... ok\ntest_parameter_review_failure_aborts_closes_and_saves_no_fake_step (mr3_learning.tests.test_benchmark.CooperativeAbortTests) ... ok\ntest_parameter_review_runs_after_reset_before_any_step_in_system_ros_environment (mr3_learning.tests.test_benchmark.CooperativeAbortTests) ... ok\ntest_parameter_review_timeout_retains_partial_output_and_closes_without_step (mr3_learning.tests.test_benchmark.CooperativeAbortTests) ... ok\ntest_real_termination_saved_before_peer_abort_and_all_workers_close (mr3_learning.tests.test_benchmark.CooperativeAbortTests) ... ok\ntest_reset_exception_closes_both_without_resetting_again (mr3_learning.tests.test_benchmark.CooperativeAbortTests) ... ok\ntest_step_exception_adds_no_transition_but_retains_peer_return (mr3_learning.tests.test_benchmark.CooperativeAbortTests) ... ok\ntest_flag_rejects_old_sixteen_step_fixture_before_creating_run (mr3_learning.tests.test_benchmark.PreparationProbeTests) ... ok\ntest_outward_goals_do_not_reuse_crossing_stress_order (mr3_learning.tests.test_benchmark.PreparationProbeTests) ... ok\ntest_parameter_review_rejects_other_worker_schedule_or_probe_before_run (mr3_learning.tests.test_benchmark.PreparationProbeTests) ... ok\ntest_parameter_review_requires_exact_tracked_freeze_bytes (mr3_learning.tests.test_benchmark.PreparationProbeTests) ... ok\n\n----------------------------------------------------------------------\nRan 20 tests in 0.093s\n\nOK\n",
+      "wall_sec": 1.9119707671925426
+    },
+    {
+      "command_argv": [
+        "/usr/bin/python3",
+        "-m",
+        "flake8",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/benchmark.py",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_benchmark.py",
+        "--max-line-length=99"
+      ],
+      "cwd": "/home/zhuyulab/ns3-workspace",
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "",
+      "wall_sec": 0.9699221309274435
+    },
+    {
+      "command_argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "cwd": "/home/zhuyulab/ns3-workspace",
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "",
+      "wall_sec": 0.048542866948992014
+    }
+  ],
+  "source_sha256": {
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/benchmark.py": "e861f695b2dcdfc23f3a33b12bea630d8480c669d8aad26caca4e38242020e21",
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_benchmark.py": "0b9ae41db90a131b47edade25e2bce0f5dacbc79c412bc9f5db3bf783cd94e90",
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v4/independent/mr3_actual_nav2_parameters_v4.py": "fe0a91eec1aaf6d45bc3aedd4de9223b53e77721be878136a96d02ef1bd5c0ae"
+  },
+  "interface": {
+    "option": "--preparation-parameter-review",
+    "requires": "--preparation-motion-probe --workers 1 --schedule open:101 --steps 20",
+    "source": "fixed canonical v4 asset, exact git show benchmark freeze bytes before run and before each call",
+    "phase": "returned reset, paused, before first step; no synthetic transition",
+    "inner_command_argv": [
+      "bash",
+      "-c",
+      "source /opt/ros/humble/setup.bash && source \"$1\" && shift && exec /usr/bin/python3 \"$@\"",
+      "mr3_parameter_review",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/setup.bash",
+      "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v4/independent/mr3_actual_nav2_parameters_v4.py",
+      "<episode-directory>",
+      "--freeze",
+      "<benchmark-metadata-freeze>",
+      "--output",
+      "<episode-directory>/actual_nav2_parameters.json",
+      "--wall-timeout-sec",
+      "30"
+    ],
+    "environment": "supervisor.ros_environment(base_domain+worker,base_port+worker)",
+    "process_wall_timeout_sec": 45,
+    "failure": "nonzero/timeout propagate shared firstfailure; stdout/stderr incl captured TimeoutExpired bytes saved; orderly environment.close; no extra samples",
+    "metadata_fields": [
+      "preparation_parameter_review",
+      "preparation_parameter_review_source.relative_path",
+      "preparation_parameter_review_source.freeze",
+      "preparation_parameter_review_source.sha256"
+    ]
+  },
+  "scope": "20 CPU fake-environment/CLI/source-binding tests and static checks only, no native service/control/simulation/learning. Earlier 14-test abort/ranking receipt retained independently."
+}

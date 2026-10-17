@@ -1,0 +1,115 @@
+{
+  "schema": "mr3-p2a0-v4-independent-runtime-preflight-v1",
+  "passed": true,
+  "artifacts": [
+    {
+      "path": "/tmp/mr3_independent_physics_matrix_v4.py",
+      "sha256": "c6dcad54743a2d04ce64dd3f4feb329b1a4e3116b384f9269db342df4f6fa655",
+      "bytes": 12143
+    },
+    {
+      "path": "/tmp/mr3_independent_physics_matrix_v4_tests.py",
+      "sha256": "4082ca7e8149881ee94ccc99cce2d2262563232efd801bb9f4243b35dcfa6988",
+      "bytes": 7611
+    },
+    {
+      "path": "/tmp/mr3_independent_physics_matrix_v4_tests_final.txt",
+      "sha256": "1098faf7963a2020e831c54a4b687d769f7bcd000f3027c98678b0ae6378cd38",
+      "bytes": 460
+    },
+    {
+      "path": "/tmp/mr3_actual_nav2_parameters_v4.py",
+      "sha256": "fe0a91eec1aaf6d45bc3aedd4de9223b53e77721be878136a96d02ef1bd5c0ae",
+      "bytes": 10020
+    },
+    {
+      "path": "/tmp/mr3_actual_nav2_parameters_v4_tests.py",
+      "sha256": "23f0be02403b9af5e6a9ff4422470c24b73a848807bb2e37a716b26364b1b54c",
+      "bytes": 2362
+    },
+    {
+      "path": "/tmp/mr3_actual_nav2_parameters_v4_tests.txt",
+      "sha256": "7e7c830799e1dce1c93116069064f8cdc70ccfe5aa668cd8641d27751492c409",
+      "bytes": 378
+    },
+    {
+      "path": "/tmp/mr3_actual_nav2_parameters_v4_ros_cpu_test.py",
+      "sha256": "00c67eb9a90ac7b438315254c407d0c163c39b4838f98b949cd0eeb48e7186df",
+      "bytes": 4599
+    },
+    {
+      "path": "/tmp/mr3_actual_nav2_parameters_v4_ros_cpu_test.txt",
+      "sha256": "a179a4e13e19250320a107dc68b90de649ea2805afa0882ea48d47d438341422",
+      "bytes": 304
+    },
+    {
+      "path": "/tmp/mr3_actual_nav2_parameters_v4_ros_cpu_test_retry_domain229.txt",
+      "sha256": "aa8ccc88ec1c8550684d5e10bf11403c5e726bbc8114266c1cee5b2cf634c993",
+      "bytes": 72
+    },
+    {
+      "path": "/tmp/mr3_actual_nav2_parameters_v4_ros_cpu_receipt.json",
+      "sha256": "46b412c236f3d55bbc4f7e9c5899eef817623b785d296eb64be6ff517bed178a",
+      "bytes": 21310
+    }
+  ],
+  "reviewed_sources": [
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_motion_safety.py",
+      "sha256": "34cc0877069ddb7c07ebe14fbac7ac9a58bd328265a2336ace7d13d129a9da28"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/motion_safety.py",
+      "sha256": "a23f138e2dca3c13156eff2cc5b4ff861a061f48123414da9595ae3028808d46"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py",
+      "sha256": "370a07e2fe42083b03b0a0b05c9b818d277782fcc602908830069dd89938d42f"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot/launch/nav2_bringup/navigation_launch.py",
+      "sha256": "ee4a7b7d590eb9f1a8129d025e99ceaf5908537d0063144da159d5a7ae8fd209"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/nav2_params.yaml",
+      "sha256": "53b1fd403a55b6567a238efe954fadd40f572347f18bd0d258993b0e8d10d723"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot/params/nav2_params_tb1_0.yaml",
+      "sha256": "342679598ebfa27b503cf5be16cf921c35c32a4dcd8cd0f861df9f70ed2cde07"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot/params/nav2_params_tb2_0.yaml",
+      "sha256": "022e3ff990ace0a30fee4e0bd2917ee02a3ee1cd96e8ff566e54d25b2048906e"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot/params/nav2_params_tb3_0.yaml",
+      "sha256": "ddc3c75ae0a3add7e2055458bab1cbe138c24c32a0897b2669560dfd52791281"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_motion.py",
+      "sha256": "b629d0490385d8d176b685ece109a8dc3d1a7d4e90f13e9861065cf62892ba2b"
+    }
+  ],
+  "unchanged_per_episode_consumer_sha256": "2516e394f60eac5dd24fd66b51c4c48fc37245090eb1626ebe1c7a3a23f8bafb",
+  "checks": {
+    "matrix_stdlib_tests": "4 PASS",
+    "actual_parameter_stdlib_rules": "3 PASS",
+    "actual_ros_cpu_nine_nodes": true,
+    "actual_ros_cpu_old_cap_rejected": true,
+    "readback_success_cleanup": true,
+    "readback_rejected_cleanup": true
+  },
+  "first_check_failure": {
+    "path": "/tmp/mr3_actual_nav2_parameters_v4_ros_cpu_test.txt",
+    "cause": "CPU fixture chose ROS domain249; installed FastDDS refuses derived multicast port beyond legal range. No simulator/native task was launched. Domain229 rerun passed. First log preserved."
+  },
+  "review": {
+    "command_caps": "Pure final guard .8, independent command_boundary .8, actual three YAMLs controller .8, actual behavior_server .8/.4/3.2, smoother \u00b1.26/\u00b1.8 20Hz OPEN_LOOP. Top-level mapping uses actual params_tbN files and forwards through both launch modes; initial template-only patch deficiency found and repaired before freeze.",
+    "source_binding": "pending angular acceleration7 uses actual odometry measurement age; pose/yaw uncertainty and pair disks still use min(odom,TF) source age. Production local_state and offline own_state reconstruct w and odom_source_stamp from same original odom and seq. Freshness recovered integer ns unchanged.",
+    "physical_limit": "Observed v3 maxangular1.256657>1.2 retainedFAIL; command cap.8 is based on observed overshoot with margin, but finite CPU/model evidence does not prove next native max\u22641.2. Native measured bound1.2 remains unchanged.",
+    "physics_matrix": "new schema v2, exact20steps/probe version, old v3 wrapper untouched, consumer2516 unchanged. Stop criteria .78/.144 and per-robot cross-reset coverage unchanged, terminal/deadline excluded.",
+    "readback_clock": "requires returned original reset release and durable exact ready motion status same epoch throughout reads; no physics/control publication or remote parameter writes. Must be invoked while root holds reset paused, before first step."
+  },
+  "scope": "offline/std lib + real ROS service fixture only; no simulation, training, native dynamics or P2A acceptance credit"
+}

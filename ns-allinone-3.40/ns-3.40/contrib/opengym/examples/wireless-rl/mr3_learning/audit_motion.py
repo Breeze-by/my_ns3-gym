@@ -153,7 +153,7 @@ def twist_pair(value):
 def command_boundary(decision, request):
     """Enforce hard limits, exact endpoint normalization and sole component filter."""
     output = decision["output"]
-    require(abs(output[0]) <= .26 and abs(output[1]) <= 1., "final motion hard limit exceeded")
+    require(abs(output[0]) <= .26 and abs(output[1]) <= .8, "final motion hard limit exceeded")
     normalization = decision.get("command_normalization")
     canonical = None if request is None else [request["v"], request["w"]]
     if normalization is not None:
@@ -161,7 +161,7 @@ def command_boundary(decision, request):
                 and normalization["input"] == canonical,
                 "motion normalization lost original callback values")
         canonical, changed = [], []
-        for axis, value, limit in zip(("v", "w"), normalization["input"], (.26, 1.)):
+        for axis, value, limit in zip(("v", "w"), normalization["input"], (.26, .8)):
             if abs(value) > limit:
                 require(abs(value) == math.nextafter(limit, math.inf),
                         "motion normalization exceeded one binary64 neighbour")

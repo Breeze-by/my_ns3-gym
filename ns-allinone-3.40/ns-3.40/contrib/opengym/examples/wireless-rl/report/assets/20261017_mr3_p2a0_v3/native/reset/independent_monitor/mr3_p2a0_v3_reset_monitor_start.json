@@ -1,0 +1,36 @@
+{
+  "schema": "mr3-readonly-native-monitor-start-v1",
+  "freeze": "f9312e1ed245fb93af50614fd34c960870edb78d",
+  "run_directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v3_reset",
+  "benchmark_identity": {
+    "pid": 2410681,
+    "parent": 2410617,
+    "group": 2410614,
+    "session": 2410614,
+    "start_ticks": 395467601,
+    "state": "S",
+    "command": [
+      "python",
+      "-m",
+      "mr3_learning.benchmark",
+      "--workers",
+      "2",
+      "--schedule",
+      "open:101,open:101,rooms:101,corridors:101",
+      "--steps",
+      "16",
+      "--preparation-motion-probe",
+      "--base-domain",
+      "206",
+      "--base-port",
+      "12541",
+      "--output-root",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0",
+      "--run-id",
+      "mr3_p2a0_20261017_v3_reset"
+    ]
+  },
+  "wall_monotonic_ns": 3954704283047992,
+  "read_only": true,
+  "scope": "exact frozen reset eight-episode physical/closure/phase/FIFO; original per-episode strict consumer and matrix aggregate unchanged"
+}

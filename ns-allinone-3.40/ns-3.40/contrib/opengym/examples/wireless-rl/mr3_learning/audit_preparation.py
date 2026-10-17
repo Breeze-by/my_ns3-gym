@@ -15,6 +15,51 @@ from .audit_activity import audit_episode as audit_activity, audit_probe_activit
 from .audit_motion import audit_episode as audit_motion
 
 
+PREPARATION_PROBE_VERSION = "mr3-p2a0-outward-cancel-v2"
+
+
+def exclude_preparation_capacity_comparison(auditor):
+    """The new engineering inputs are not the historical P1C capacity workload.
+
+    Keep every native gate and the original comparison function for legacy
+    inputs. Only the explicit, prospectively declared v2 fixture is excluded
+    from capacity comparison; it still has to pass all episode gates.
+    """
+    original = auditor.comparison_statistics
+
+    def comparison(metadata, summary):
+        if metadata.get("preparation_probe_version") != PREPARATION_PROBE_VERSION:
+            return original(metadata, summary)
+        count, schedule = metadata.get("workers"), metadata.get("schedule")
+        expected = ([['open', 101]] if count == 1 else
+                    [['open', 101], ['open', 101], ['rooms', 101], ['corridors', 101]])
+        require(type(count) is int and count in (1, 2) and schedule == expected
+                and all(type(cell[1]) is int for cell in schedule)
+                and type(metadata.get("steps_per_episode")) is int
+                and metadata["steps_per_episode"] == 20
+                and metadata.get("preparation_motion_probe") is True
+                and all(metadata.get(key) is False for key in
+                        ("terminal_probe", "deadline_probe", "fault_probe")),
+                "unknown versioned preparation workload")
+        keys = ("workers", "schedule", "steps_per_episode", "preparation_motion_probe",
+                "preparation_probe_version", "terminal_probe", "deadline_probe",
+                "fault_probe", "freeze")
+        require(json.dumps({key: summary.get(key) for key in keys}, sort_keys=True,
+                           allow_nan=False)
+                == json.dumps({key: metadata.get(key) for key in keys}, sort_keys=True,
+                              allow_nan=False),
+                "versioned preparation summary/declaration mismatch")
+        return {
+            "eligible": False,
+            "reason": "explicit preparation fixture; no historical P1C capacity comparison",
+            "preparation_probe_version": PREPARATION_PROBE_VERSION,
+            "original_comparison_source": original.__code__.co_filename,
+            "native_episode_gates_unchanged": True,
+        }
+
+    auditor.comparison_statistics = comparison
+
+
 def audit_execution_inputs(directory):
     """Verify actual graph and complete master-costmap copies independently."""
     transitions = load_rows(directory / "transitions.jsonl")
@@ -266,6 +311,7 @@ def audit_archives(directory):
 
 def audit(directory, root, freeze):
     phase, base, native, command, scalar, sources = load_native_gates(root, freeze)
+    exclude_preparation_capacity_comparison(native)
     result = phase.corrected_audit(base, native, command, [directory])
     episodes = []
     metadata = json.loads((directory / "benchmark_metadata.json").read_text())

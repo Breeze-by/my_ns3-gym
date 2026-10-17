@@ -110,10 +110,18 @@ adapter新增最终速度门：controller与behavior均发往`cmd_vel_nav`，smo
 state，50Hz检查命令超时、状态源龄、任务放行/停止及共同制动区域；近区只允许完整角速度/制动
 时域中不接近队友的请求。接近方向拒绝后，只有`(0,原角速度)`通过同一完整几何/源龄/残余移动核验
 才刹停线速度并保留原转向；状态无效、包络不足、超界不能旁路，过滤及重验均写trace；否则全零。
-恰好比`.26m/s`或`1rad/s`上限高一个binary64相邻值
+三份实际`params/nav2_params_tbN_0.yaml`和通用配置中的controller、实际`behavior_server`、
+smoother共同收紧命令角速度为`.8rad/s`，线速度上限仍为`.26m/s`；smoother保留显式
+`20Hz/OPEN_LOOP`，不据其墙钟插值宣称仿真时钟下的物理加速度。恰好比`.26m/s`或`.8rad/s`上限高一个binary64相邻值
 的Nav2插值规范到原上限，保留原值/规范元数据；第二个相邻值及更大超界拒绝，最终输出严格有界。
 它不替策略选目标/方向，既有peer costmap仍供Nav2避让。
-输入/输出、使用的源时间和几何判据写入独立trace，worker实际DDS端点证明无速度发布旁路。
+角速度原测量来自own odom，其pending-turn预测使用`odom_source_stamp`对应源龄及`7rad/s²`界；
+几何位置/yaw仍使用较旧的`min(odom,TF)`源时间，两项source stamp/age分别留证。
+实测平面速度`.30m/s`、角速度`1.2rad/s`界保持；`.8rad/s`命令上限不能证明身体实测满足此界，
+仍须以完整原始twist向量、响应及停止路程核验。`.02s`轮耦合余量继续同时计入`.78s`时域和
+共同停止reserve；`.5m/s²`描述全局停止包络，不是每瞬时中心速度的物理最低减速度。
+输入/输出、使用的源时间和几何判据写入独立trace，worker核对图上唯一发布者、本地actual值FIFO
+及同clock三台输出消费后ACK；`graph_at_callback`不是逐包MessageInfo或Gazebo执行器消费确认。
 保护依赖有限速度/源龄/反应/制动界，不对任意定位跳变作绝对安全承诺；`.50m`任务失败门槛保持。
 
 这些edge/backend对象目前同进程/同DDS域，action endpoint仍在适配器内部。

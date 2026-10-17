@@ -1,0 +1,108 @@
+{
+  "schema": "mr3-p2a0-safety-cap-checks-v1",
+  "scope": "CPU/interface only; no native motion, PPO, GPU or acceptance credit",
+  "prior_source_freeze": "f9312e1ed245fb93af50614fd34c960870edb78d",
+  "history": [
+    {
+      "check": "ros_motion_before_launch_AST",
+      "exit_code": 0,
+      "stdout": "34 passed in 1.92s",
+      "scope": "config-only check did not establish actual per-robot YAML binding"
+    },
+    {
+      "check": "ros_motion_first_launch_AST",
+      "exit_code": 1,
+      "stdout_excerpt": "1 failed, 33 passed in 2.13s\nFAILED test_actual_nav2_node_parameters_share_the_guard_command_limits\nAssertionError: standalone controller had no explicit name keyword, so AST fixture omitted its configured_params binding",
+      "stdout_scope": "relevant diagnostic transcribed from complete tool output",
+      "correction": "resolve known standalone node by executable when no explicit name; production launch unchanged"
+    },
+    {
+      "check": "ros_motion_after_AST_fix",
+      "exit_code": 0,
+      "stdout": "34 passed in 1.90s"
+    },
+    {
+      "finding": "independent runtime reviewer found canonical top-level launch selects params/nav2_params_tbN_0.yaml rather than config/nav2_params.yaml",
+      "correction": "all three actual inputs now .8 controller/behavior/smoother; static test binds top-level selected filenames and both navigation branches"
+    },
+    {
+      "check": "ros_motion_actual_three_YAML",
+      "exit_code": 0,
+      "stdout": "34 passed in 2.51s"
+    }
+  ],
+  "checks": [
+    {
+      "name": "ros_motion_final",
+      "argv": [
+        "rtk",
+        "proxy",
+        "bash",
+        "-c",
+        "source /opt/ros/humble/setup.bash\nsource /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/setup.bash\nexport PYTHONNOUSERSITE=1\n/usr/bin/python3 -m pytest -q ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_motion_safety.py"
+      ],
+      "cwd": "/home/zhuyulab/ns3-workspace",
+      "exit_code": 0,
+      "wall_sec": 4.636013751849532,
+      "stdout": "..................................                                       [100%]\n34 passed in 2.23s\n"
+    },
+    {
+      "name": "conda_activity_motion_final",
+      "argv": [
+        "rtk",
+        "proxy",
+        "bash",
+        "-c",
+        "source /home/zhuyulab/miniconda3/etc/profile.d/conda.sh\nconda activate ns3gym\nunset PYTHONPATH\nexport PYTHONNOUSERSITE=1\npython -m unittest mr3_learning.tests.test_audit_motion mr3_learning.tests.test_audit_activity -v"
+      ],
+      "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+      "exit_code": 0,
+      "wall_sec": 2.369568395894021,
+      "stdout": "test_actual_graph_fifo_missing_receipt_and_ack_mutations_are_rejected (mr3_learning.tests.test_audit_motion.MotionAuditTests) ... ok\ntest_component_consumer_requires_exact_turn_and_full_independent_recheck (mr3_learning.tests.test_audit_motion.MotionAuditTests) ... ok\ntest_epoch_record_order_and_missing_file_are_rejected (mr3_learning.tests.test_audit_motion.MotionAuditTests) ... ok\ntest_filtered_turn_binds_actual_fifo_and_is_never_counted_as_full_request_pass (mr3_learning.tests.test_audit_motion.MotionAuditTests) ... ok\ntest_independent_angular_endpoint_consumer_preserves_point_eight_hard_limit (mr3_learning.tests.test_audit_motion.MotionAuditTests) ... ok\ntest_independent_exact_endpoint_consumer_rejects_wider_or_unbounded_changes (mr3_learning.tests.test_audit_motion.MotionAuditTests) ... ok\ntest_raw_own_received_request_and_helper_output_mutations_are_rejected (mr3_learning.tests.test_audit_motion.MotionAuditTests) ... ok\ntest_raw_received_and_actual_fifo_pass_including_gzip_artifacts (mr3_learning.tests.test_audit_motion.MotionAuditTests) ... ok\ntest_accepted_probe_at_exact_movement_threshold_is_rejected (mr3_learning.tests.test_audit_activity.ActivityAuditTests) ... ok\ntest_accepted_probe_without_native_send_cannot_claim_execution (mr3_learning.tests.test_audit_activity.ActivityAuditTests) ... ok\ntest_all_null_activity_is_integrity_only_even_with_real_acceptances (mr3_learning.tests.test_audit_activity.ActivityAuditTests) ... ok\ntest_changed_snapshot_path_or_count_is_rejected_even_with_new_digest (mr3_learning.tests.test_audit_activity.ActivityAuditTests) ... ok\ntest_changing_count_and_receipt_metadata_cannot_relabel_an_old_snapshot (mr3_learning.tests.test_audit_activity.ActivityAuditTests) ... ok\ntest_complete_native_three_robot_probe_has_separate_availability_credit (mr3_learning.tests.test_audit_activity.ActivityAuditTests) ... ok\ntest_exact_raw_odometry_and_duplicate_acceptance_replay (mr3_learning.tests.test_audit_activity.ActivityAuditTests) ... ok\ntest_incomplete_missing_odom_is_explicit_and_does_not_invent_motion (mr3_learning.tests.test_audit_activity.ActivityAuditTests) ... ok\ntest_map_pose_cannot_substitute_for_the_raw_odom_source (mr3_learning.tests.test_audit_activity.ActivityAuditTests) ... ok\ntest_same_clock_activity_cannot_precede_its_raw_received_input (mr3_learning.tests.test_audit_activity.ActivityAuditTests) ... ok\ntest_unowned_or_rejected_acceptance_cannot_pay_a_goal_count (mr3_learning.tests.test_audit_activity.ActivityAuditTests) ... ok\ntest_wrong_received_epoch_cannot_enter_the_activity_ledger (mr3_learning.tests.test_audit_activity.ActivityAuditTests) ... ok\n\n----------------------------------------------------------------------\nRan 20 tests in 0.506s\n\nOK\n"
+    },
+    {
+      "name": "lint_final",
+      "argv": [
+        "rtk",
+        "proxy",
+        "/usr/bin/python3",
+        "-m",
+        "flake8",
+        "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_motion_safety.py",
+        "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_motion_safety.py",
+        "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_motion.py",
+        "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_motion.py",
+        "--max-line-length=99",
+        "--extend-ignore=D100,D101,D102,D103,D104,D105,D107,D203,D212"
+      ],
+      "cwd": "/home/zhuyulab/ns3-workspace",
+      "exit_code": 0,
+      "wall_sec": 3.745530128944665,
+      "stdout": ""
+    },
+    {
+      "name": "diff_check_final",
+      "argv": [
+        "rtk",
+        "git",
+        "diff",
+        "--check"
+      ],
+      "cwd": "/home/zhuyulab/ns3-workspace",
+      "exit_code": 0,
+      "wall_sec": 0.3228018148802221,
+      "stdout": "\n"
+    }
+  ],
+  "source_sha256": {
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_motion_safety.py": "34cc0877069ddb7c07ebe14fbac7ac9a58bd328265a2336ace7d13d129a9da28",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_motion_safety.py": "cad27e7513b8aae6b407cc85b6c354c1463851607cf315a4a0c8efdf0a976059",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_motion.py": "b629d0490385d8d176b685ece109a8dc3d1a7d4e90f13e9861065cf62892ba2b",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_motion.py": "702a29e45f2136dbafce58b7fa54e7d7850921400838e6989dbe0fe90c2838f9",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/nav2_params.yaml": "53b1fd403a55b6567a238efe954fadd40f572347f18bd0d258993b0e8d10d723",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/params/nav2_params_tb1_0.yaml": "342679598ebfa27b503cf5be16cf921c35c32a4dcd8cd0f861df9f70ed2cde07",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/params/nav2_params_tb2_0.yaml": "022e3ff990ace0a30fee4e0bd2917ee02a3ee1cd96e8ff566e54d25b2048906e",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/params/nav2_params_tb3_0.yaml": "ddc3c75ae0a3add7e2055458bab1cbe138c24c32a0897b2669560dfd52791281"
+  },
+  "passed": true
+}

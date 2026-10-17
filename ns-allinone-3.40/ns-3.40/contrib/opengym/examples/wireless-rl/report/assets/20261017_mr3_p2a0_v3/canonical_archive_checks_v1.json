@@ -1,0 +1,34 @@
+{
+  "schema": "mr3-p2a0-v3-canonical-archive-checks-v1",
+  "freeze": "f9312e1ed245fb93af50614fd34c960870edb78d",
+  "passed": true,
+  "stages": {
+    "terminal": {
+      "manifest_files": 397,
+      "manifest_sha256": "388c680a0d5dbbadd7aa77cb340cf5fbf373227bc42e84bf19d905942a2675b0",
+      "source_bytes": 149952459,
+      "selected_bytes": 7611781,
+      "source_selected_decoded_integrity_passed": true,
+      "duplicate_encoded_sources_verified": 2,
+      "full_audit_passed": true,
+      "detached_audit_passed": true,
+      "matching_source_bindings": 86
+    },
+    "reset": {
+      "manifest_files": 694,
+      "manifest_sha256": "a3a18280a28a678d3defe607ccf0959685e1172effe1da94e889e6ec71a3d571",
+      "source_bytes": 291457857,
+      "selected_bytes": 14509886,
+      "source_selected_decoded_integrity_passed": true,
+      "duplicate_encoded_sources_verified": 4,
+      "full_audit_passed": false,
+      "detached_audit_passed": false,
+      "matching_source_bindings": 86
+    }
+  },
+  "scope": "byte/source/decoded and declared native-result accounting integrity only; native reset stays FAIL",
+  "original_prefreeze_inventory_entries_unchanged": 33,
+  "canonical_copy_groups_verified": 51,
+  "deadline_run_absent": true,
+  "accounting_sha256": "a3b8b47102607a0109afdc93e2c86cc669616053bee8fe4b8129c3a601d64be8"
+}

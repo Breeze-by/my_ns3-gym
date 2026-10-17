@@ -191,6 +191,28 @@ class MotionAuditTests(unittest.TestCase):
             with self.subTest(fault=fault), self.assertRaises(ValueError):
                 command_boundary(changed, request)
 
+    def test_independent_angular_endpoint_consumer_preserves_point_eight_hard_limit(self):
+        import math
+        for sign in (-1., 1.):
+            request = {"v": 0., "w": sign * math.nextafter(.8, math.inf)}
+            decision = {
+                "allow": True, "output": [0., sign * .8],
+                "command_normalization": {
+                    "schema": "mr3-command-one-ulp-v1", "input": [0., request["w"]],
+                    "canonical": [0., sign * .8], "normalized_axes": ["w"]}}
+            command_boundary(decision, request)
+            for fault in ("unbounded_output", "old_limit", "two_ulps"):
+                changed, original = copy.deepcopy(decision), copy.deepcopy(request)
+                if fault == "unbounded_output":
+                    changed["output"][1] = request["w"]
+                elif fault == "old_limit":
+                    changed["output"][1] = sign
+                else:
+                    original["w"] = sign * math.nextafter(abs(request["w"]), math.inf)
+                    changed["command_normalization"]["input"][1] = original["w"]
+                with self.subTest(sign=sign, fault=fault), self.assertRaises(ValueError):
+                    command_boundary(changed, original)
+
     def test_filtered_turn_binds_actual_fifo_and_is_never_counted_as_full_request_pass(self):
         with tempfile.TemporaryDirectory() as temporary:
             directory = Path(temporary)

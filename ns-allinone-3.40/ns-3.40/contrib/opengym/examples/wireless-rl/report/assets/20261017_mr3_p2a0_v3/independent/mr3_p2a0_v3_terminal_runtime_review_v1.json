@@ -1,0 +1,188 @@
+{
+  "schema": "mr3-terminal-independent-runtime-review-v1",
+  "freeze": "f9312e1ed245fb93af50614fd34c960870edb78d",
+  "read_only": true,
+  "run_directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v3_terminal",
+  "checked_wall_monotonic_ns": 3954629197220351,
+  "benchmark_passed": true,
+  "benchmark_wall_sec": 372.49735159100965,
+  "benchmark_original_identity": {
+    "pid": 2387962,
+    "parent": 2387902,
+    "group": 2387900,
+    "session": 2387900,
+    "start_ticks": 395415001,
+    "state": "S",
+    "command": [
+      "python",
+      "-m",
+      "mr3_learning.benchmark",
+      "--workers",
+      "1",
+      "--schedule",
+      "open:101,open:101",
+      "--steps",
+      "4",
+      "--terminal-probe",
+      "--base-domain",
+      "202",
+      "--base-port",
+      "12531",
+      "--output-root",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0",
+      "--run-id",
+      "mr3_p2a0_20261017_v3_terminal"
+    ]
+  },
+  "benchmark_original_identity_present": false,
+  "episodes": [
+    {
+      "epoch": "mr3_p2a0_20261017_v3_terminal_w0_e1_db1de177",
+      "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v3_terminal/worker0/episode001_open_101",
+      "strict_closure_passed": true,
+      "independent_saved_identity_remaining": [],
+      "owned_identity_count": 44,
+      "worker_returncode": 0,
+      "forced_shutdown": false,
+      "failed_sample": false,
+      "native_returncode": 0,
+      "native_failures": [],
+      "motion_FIFO": {
+        "decision_sequences": {
+          "tb1": 3663,
+          "tb2": 3663,
+          "tb3": 3663
+        },
+        "actual_counts": {
+          "tb1": 3663,
+          "tb2": 3663,
+          "tb3": 3663
+        },
+        "pending_FIFO": {
+          "tb1": 0,
+          "tb2": 0,
+          "tb3": 0
+        },
+        "maximum_actual_abs_linear": {
+          "tb1": 0.0,
+          "tb2": 0.0,
+          "tb3": 0.0
+        },
+        "maximum_actual_abs_angular": {
+          "tb1": 0.0,
+          "tb2": 0.0,
+          "tb3": 0.0
+        },
+        "errors": []
+      },
+      "motion_consumed_phases": 152,
+      "motion_worker_exact_barrier_passed": true,
+      "evaluator_consumed_phases": 152,
+      "evaluator_worker_exact_barrier_passed": true,
+      "motion_phase_references_unresolved": 0,
+      "native_started": 39,
+      "native_exited": 39,
+      "native_complete": true,
+      "physical_evidence_complete": false,
+      "braking_credit": false,
+      "accounting": {
+        "step_API_rows": 4,
+        "reset_calls": 1,
+        "submitted_adapter_actions": 4,
+        "unreturned_submitted_actions": 0,
+        "returned_effective_ns": 3020000000,
+        "returned_physical_ns": 3020000000,
+        "cleanup_after_last_returned_snapshot_ns": 0,
+        "controlled_warmup_alignment_ns": 18000000
+      }
+    },
+    {
+      "epoch": "mr3_p2a0_20261017_v3_terminal_w0_e2_449f6cd3",
+      "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v3_terminal/worker0/episode002_open_101",
+      "strict_closure_passed": true,
+      "independent_saved_identity_remaining": [],
+      "owned_identity_count": 44,
+      "worker_returncode": 0,
+      "forced_shutdown": false,
+      "failed_sample": false,
+      "native_returncode": 0,
+      "native_failures": [],
+      "motion_FIFO": {
+        "decision_sequences": {
+          "tb1": 3931,
+          "tb2": 3931,
+          "tb3": 3931
+        },
+        "actual_counts": {
+          "tb1": 3931,
+          "tb2": 3931,
+          "tb3": 3931
+        },
+        "pending_FIFO": {
+          "tb1": 0,
+          "tb2": 0,
+          "tb3": 0
+        },
+        "maximum_actual_abs_linear": {
+          "tb1": 0.0,
+          "tb2": 0.0,
+          "tb3": 0.0
+        },
+        "maximum_actual_abs_angular": {
+          "tb1": 0.0,
+          "tb2": 0.0,
+          "tb3": 0.0
+        },
+        "errors": []
+      },
+      "motion_consumed_phases": 151,
+      "motion_worker_exact_barrier_passed": true,
+      "evaluator_consumed_phases": 151,
+      "evaluator_worker_exact_barrier_passed": true,
+      "motion_phase_references_unresolved": 0,
+      "native_started": 39,
+      "native_exited": 39,
+      "native_complete": true,
+      "physical_evidence_complete": false,
+      "braking_credit": false,
+      "accounting": {
+        "step_API_rows": 4,
+        "reset_calls": 1,
+        "submitted_adapter_actions": 3,
+        "unreturned_submitted_actions": 0,
+        "returned_effective_ns": 3000000000,
+        "returned_physical_ns": 3000000000,
+        "cleanup_after_last_returned_snapshot_ns": 0,
+        "controlled_warmup_alignment_ns": 11000000
+      }
+    }
+  ],
+  "scope": "terminal stage strict native/serialization/actual output review only; physical stopping absence is explicitly missing and does not reject terminal; no braking/policy/95% acceptance credit",
+  "all_saved_owned_identities_gone": true,
+  "unique_owned_identity_count": 88,
+  "totals": {
+    "step_API_rows": 8,
+    "reset_calls": 2,
+    "submitted_adapter_actions": 7,
+    "unreturned_submitted_actions": 0,
+    "returned_effective_ns": 6020000000,
+    "returned_physical_ns": 6020000000,
+    "cleanup_after_last_returned_snapshot_ns": 0,
+    "controlled_warmup_alignment_ns": 29000000
+  },
+  "terminal_runtime_review_passed": true,
+  "artifacts": {
+    "/tmp/mr3_p2a0_v3_terminal_monitor_start.json": {
+      "sha256": "76fd624af2818ec451e0f206772f16373ea9ec745a82c7ee729c328888ecad97"
+    },
+    "/tmp/mr3_p2a0_v3_terminal_live_03.json": {
+      "sha256": "5a6e047b220b20a12a7777f5adfe1bb8f1ac08945518847568a5fc1b31ad3bc1"
+    },
+    "/tmp/mr3_p2a0_v3_terminal_live_06.json": {
+      "sha256": "64188ff8f56b286351bba91441b5f4c38c0c7e1b722da7f050b062fe457ef7ee"
+    },
+    "/tmp/mr3_p2a0_v3_terminal_physical_scope_review.json": {
+      "sha256": "79f47acacfa4377f2e58309fe5d87d130ca2ce6b3f8efe7fd7ce2642420a9a32"
+    }
+  }
+}

@@ -1,0 +1,321 @@
+{
+  "schema": "mr3-p2a0-v3-independent-terminal-input-review-v1",
+  "freeze": "f9312e1ed245fb93af50614fd34c960870edb78d",
+  "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v3_terminal",
+  "errors": [],
+  "episodes": [
+    {
+      "epoch": "mr3_p2a0_20261017_v3_terminal_w0_e1_db1de177",
+      "api_steps": 4,
+      "commands": 4,
+      "last_dt": 0.02,
+      "task_termination": "navigation_failure",
+      "initial_activity": {
+        "tb1": {
+          "epoch": "mr3_p2a0_20261017_v3_terminal_w0_e1_db1de177",
+          "estimated_path_m": null,
+          "last_odom_source_stamp": null,
+          "path_observation_complete": false,
+          "sample_count": 0,
+          "schema": "mr3-received-activity-v1",
+          "started_at": 70.38,
+          "state_sequence": 687
+        },
+        "tb2": {
+          "epoch": "mr3_p2a0_20261017_v3_terminal_w0_e1_db1de177",
+          "estimated_path_m": null,
+          "last_odom_source_stamp": null,
+          "path_observation_complete": false,
+          "sample_count": 0,
+          "schema": "mr3-received-activity-v1",
+          "started_at": 70.38,
+          "state_sequence": 687
+        },
+        "tb3": {
+          "epoch": "mr3_p2a0_20261017_v3_terminal_w0_e1_db1de177",
+          "estimated_path_m": null,
+          "last_odom_source_stamp": null,
+          "path_observation_complete": false,
+          "sample_count": 0,
+          "schema": "mr3-received-activity-v1",
+          "started_at": 70.38,
+          "state_sequence": 687
+        }
+      },
+      "postrelease_anchors": {
+        "tb1": {
+          "source_ns": 70386000000,
+          "state_sequence": 688,
+          "original_header": {
+            "frame_id": "odom",
+            "stamp": {
+              "nanosec": 386000000,
+              "sec": 70
+            }
+          },
+          "child_frame_id": "base_footprint"
+        },
+        "tb2": {
+          "source_ns": 70400000000,
+          "state_sequence": 688,
+          "original_header": {
+            "frame_id": "odom",
+            "stamp": {
+              "nanosec": 400000000,
+              "sec": 70
+            }
+          },
+          "child_frame_id": "base_footprint"
+        },
+        "tb3": {
+          "source_ns": 70474000000,
+          "state_sequence": 689,
+          "original_header": {
+            "frame_id": "odom",
+            "stamp": {
+              "nanosec": 474000000,
+              "sec": 70
+            }
+          },
+          "child_frame_id": "base_footprint"
+        }
+      },
+      "valid_original_odom_records": {
+        "tb1": 41,
+        "tb2": 41,
+        "tb3": 41
+      },
+      "activity_integrity": {
+        "schema": "mr3-received-activity-audit-v1",
+        "passed": true,
+        "integrity_passed": true,
+        "availability_passed": true,
+        "epoch": "mr3_p2a0_20261017_v3_terminal_w0_e1_db1de177",
+        "latest_actor_activity": {
+          "tb1": {
+            "estimated_path_m": 8.806814171939614e-05,
+            "sample_count": 31,
+            "path_observation_complete": true,
+            "accepted_goal_count": 0
+          },
+          "tb2": {
+            "estimated_path_m": 8.817999258765033e-05,
+            "sample_count": 31,
+            "path_observation_complete": true,
+            "accepted_goal_count": 0
+          },
+          "tb3": {
+            "estimated_path_m": 8.616678149252824e-05,
+            "sample_count": 30,
+            "path_observation_complete": true,
+            "accepted_goal_count": 0
+          }
+        },
+        "latest_snapshot_sequence": 5,
+        "owned_accepted_goal_ids": {
+          "tb1": [],
+          "tb2": [],
+          "tb3": []
+        },
+        "activity_updates": 32,
+        "unique_snapshots": 5,
+        "final_received_acceptance_counts": {
+          "tb1": 0,
+          "tb2": 0,
+          "tb3": 0
+        },
+        "adapter_sha256": "70d59c49c331056f873d2282b5d91810f8414a8bd6a8837452942e0fc5fb2470",
+        "transitions_sha256": "78d80fb74cb347006a2191f60f8b97222724f71917d27752d4dd5cffecd26105",
+        "path_numeric_comparison": "relative 1e-12 / absolute 1e-10 metre arithmetic tolerance",
+        "scope": "integrity of raw delivered local odom/unique acceptance observations only; availability_passed is separate, no truth/task-success assertion"
+      },
+      "strict_probe_rejection": "tb1: probe lacks native accepted goal and received movement >0.05m",
+      "contact_components": 18,
+      "all_contact_fresh": true,
+      "collision_events": 0,
+      "goal_ownership_closed": {
+        "epoch": "mr3_p2a0_20261017_v3_terminal_w0_e1_db1de177",
+        "start_sim_time_sec": 70.38,
+        "stop_sim_time_sec": 73.4,
+        "pending_goal_count": 0,
+        "robot_names": [
+          "tb1",
+          "tb2",
+          "tb3"
+        ],
+        "navigation_failure": false
+      },
+      "frozen_task_navigation_closed": false,
+      "artifact_sha256": {
+        "metadata.json": "8f589d3c22c7c7bbc4fce70be0f3eeefd52ed956606ba4a9d8d01b42e2b54603",
+        "transitions.jsonl": "78d80fb74cb347006a2191f60f8b97222724f71917d27752d4dd5cffecd26105",
+        "adapter.jsonl": "70d59c49c331056f873d2282b5d91810f8414a8bd6a8837452942e0fc5fb2470",
+        "summary.json": "47181a747922e7665613485e4728f165ad41cec1e5f5039f820685a4d5cc2c56",
+        "supervisor_shutdown.json": "c1c4c9381108cce1424b81648b433cc0463dec30cf76704dc0e390402aebc72f",
+        "mr3_p2a0_20261017_v3_terminal_w0_e1_db1de177.json": "67676931cdfc739f52a153e2a8a2af7db87e6577db4668af0a6494dc850b81d5"
+      }
+    },
+    {
+      "epoch": "mr3_p2a0_20261017_v3_terminal_w0_e2_449f6cd3",
+      "api_steps": 4,
+      "commands": 3,
+      "last_dt": 0.0,
+      "task_termination": "navigation_failure",
+      "initial_activity": {
+        "tb1": {
+          "epoch": "mr3_p2a0_20261017_v3_terminal_w0_e2_449f6cd3",
+          "estimated_path_m": null,
+          "last_odom_source_stamp": null,
+          "path_observation_complete": false,
+          "sample_count": 0,
+          "schema": "mr3-received-activity-v1",
+          "started_at": 75.68,
+          "state_sequence": 752
+        },
+        "tb2": {
+          "epoch": "mr3_p2a0_20261017_v3_terminal_w0_e2_449f6cd3",
+          "estimated_path_m": null,
+          "last_odom_source_stamp": null,
+          "path_observation_complete": false,
+          "sample_count": 0,
+          "schema": "mr3-received-activity-v1",
+          "started_at": 75.68,
+          "state_sequence": 752
+        },
+        "tb3": {
+          "epoch": "mr3_p2a0_20261017_v3_terminal_w0_e2_449f6cd3",
+          "estimated_path_m": null,
+          "last_odom_source_stamp": null,
+          "path_observation_complete": false,
+          "sample_count": 0,
+          "schema": "mr3-received-activity-v1",
+          "started_at": 75.68,
+          "state_sequence": 752
+        }
+      },
+      "postrelease_anchors": {
+        "tb1": {
+          "source_ns": 75694000000,
+          "state_sequence": 753,
+          "original_header": {
+            "frame_id": "odom",
+            "stamp": {
+              "nanosec": 694000000,
+              "sec": 75
+            }
+          },
+          "child_frame_id": "base_footprint"
+        },
+        "tb3": {
+          "source_ns": 75695000000,
+          "state_sequence": 753,
+          "original_header": {
+            "frame_id": "odom",
+            "stamp": {
+              "nanosec": 695000000,
+              "sec": 75
+            }
+          },
+          "child_frame_id": "base_footprint"
+        },
+        "tb2": {
+          "source_ns": 75775000000,
+          "state_sequence": 754,
+          "original_header": {
+            "frame_id": "odom",
+            "stamp": {
+              "nanosec": 775000000,
+              "sec": 75
+            }
+          },
+          "child_frame_id": "base_footprint"
+        }
+      },
+      "valid_original_odom_records": {
+        "tb1": 53,
+        "tb2": 53,
+        "tb3": 53
+      },
+      "activity_integrity": {
+        "schema": "mr3-received-activity-audit-v1",
+        "passed": true,
+        "integrity_passed": true,
+        "availability_passed": true,
+        "epoch": "mr3_p2a0_20261017_v3_terminal_w0_e2_449f6cd3",
+        "latest_actor_activity": {
+          "tb1": {
+            "estimated_path_m": 8.508552829213762e-05,
+            "sample_count": 30,
+            "path_observation_complete": true,
+            "accepted_goal_count": 0
+          },
+          "tb2": {
+            "estimated_path_m": 8.3045286167686e-05,
+            "sample_count": 29,
+            "path_observation_complete": true,
+            "accepted_goal_count": 0
+          },
+          "tb3": {
+            "estimated_path_m": 8.510770699961437e-05,
+            "sample_count": 30,
+            "path_observation_complete": true,
+            "accepted_goal_count": 0
+          }
+        },
+        "latest_snapshot_sequence": 4,
+        "owned_accepted_goal_ids": {
+          "tb1": [],
+          "tb2": [],
+          "tb3": []
+        },
+        "activity_updates": 31,
+        "unique_snapshots": 4,
+        "final_received_acceptance_counts": {
+          "tb1": 0,
+          "tb2": 0,
+          "tb3": 0
+        },
+        "adapter_sha256": "5c5cc5746696182262aa377ab0518c1644ccc89e1efe10650962140fbebf439f",
+        "transitions_sha256": "f60482e2587fbd3c27b1e2d19e8b66d18dcdf5c1d05ec5b40e7048ae9b359e95",
+        "path_numeric_comparison": "relative 1e-12 / absolute 1e-10 metre arithmetic tolerance",
+        "scope": "integrity of raw delivered local odom/unique acceptance observations only; availability_passed is separate, no truth/task-success assertion"
+      },
+      "strict_probe_rejection": "tb1: probe lacks native accepted goal and received movement >0.05m",
+      "contact_components": 18,
+      "all_contact_fresh": true,
+      "collision_events": 0,
+      "goal_ownership_closed": {
+        "epoch": "mr3_p2a0_20261017_v3_terminal_w0_e2_449f6cd3",
+        "start_sim_time_sec": 75.68,
+        "stop_sim_time_sec": 78.68,
+        "pending_goal_count": 0,
+        "robot_names": [
+          "tb1",
+          "tb2",
+          "tb3"
+        ],
+        "navigation_failure": false
+      },
+      "frozen_task_navigation_closed": false,
+      "artifact_sha256": {
+        "metadata.json": "6f021f7c8fe5d9de8b3982b34837a8e27d14c0c22a4715b54184bbe3f83e541f",
+        "transitions.jsonl": "f60482e2587fbd3c27b1e2d19e8b66d18dcdf5c1d05ec5b40e7048ae9b359e95",
+        "adapter.jsonl": "5c5cc5746696182262aa377ab0518c1644ccc89e1efe10650962140fbebf439f",
+        "summary.json": "ded10bd23a2c4b8f00000a78520873e2a036ce1270cd0cd50586879f3745b265",
+        "supervisor_shutdown.json": "03353fad395abc5afbd290dfba3dcda5741881be985c4308d32685fc3bd1974d",
+        "mr3_p2a0_20261017_v3_terminal_w0_e2_449f6cd3.json": "53a593df77a9bef11f9d2b124f7736c1c7c062f29127f1987e37eb46bba18411"
+      }
+    }
+  ],
+  "scope": "actual received-odom availability, scalar terminal/ACK/contact/protocol evidence; terminal failure injection, no 95%, movement, braking or PPO credit",
+  "source_proof": {
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_information.py": "5c85502eabd0d711248f230ca0fa7a2b78491a159a4222c2eee80d4e5c97c81f",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_activity.py": "7af918d75c05b6f8fb1a65899e43aad11a315640e8b00fdb589c31f693ad696e",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_adapter.py": "90444564b04b86982553a7fe6e0b98beb290ba92c3ab1e32e503998e6411fc1c",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_protocol.py": "5a2b90efd162b19a35964750002fe549413fec6e07f9679ea611d3fe6b1e4ada",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_motion_safety.py": "b8345ec5e289d18a9d342501bb249a7b40f26d4ea8bf0d8855aa1fed6ca565ee",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/motion_safety.py": "a23f138e2dca3c13156eff2cc5b4ff861a061f48123414da9595ae3028808d46",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_activity.py": "0fa0c47262ccf29f140cc2b915431461e830f87680b65f524cbda6a6ffff4407"
+  },
+  "passed": true
+}
