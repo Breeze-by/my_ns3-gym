@@ -5791,3 +5791,52 @@ pilot余1870决策/2905.954739546403wall不动。诊断后有依据修复，再�
 V19 preparation root静态核验PASS：155实际source bindings（旧152逐值不变）、2config SHA、3协调器syntax、146文档links、actual `git diff --check`及`git add -n .`21路径精确白名单；原record与dry-run压缩原件在A19/offline。无native/formal调用，actual clean pushed exact40预检仍为后置准入。
 
 V19额外primary-source静态复核：缓存World/ODEPhysics/ODELink保持，缺失的官方gazebo11_11.10.2三个ODE源下载原件/URL/时间/SHA逐字保留。QuickStep pose积分在先、ERP速度移除在后，World dirty pose先于End；这提供getter与积分速度不一致的代码机制，但未采内部caccel/caccel_erp，不归V17唯一根因。源码复核SHA8011934a…及6件gzip无损保管在A19/offline，所有writerSTOP；无raw重扫/native/formal或门禁修改。
+
+
+### 2026-10-18 — P2A.0 V19固定诊断闭合：采集PASS，150组无运动刺激而原物理FAIL
+
+冻结`72d0465ddd1bbee09af117cfd9d89b7e729f8578`，clean pushed预检SHA89b5b9ed… PASS。
+精确父入口（cwd wireless-rl）：`rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 -u report/assets/20261018_mr3_p2a0_v19/independent/mr3_p2a0_v19_run_diagnostics_v1.py 72d0465ddd1bbee09af117cfd9d89b7e729f8578`。
+其固定child完整argv/env/源SHA和各console在A19/closed_core_v3/originals.tar.gz，不凭摘要重建命令。
+两次均exact3/open101/单worker/V6/32：baseline域154/13361、iters150域156/13371，32step+1reset=33API，各32任务秒。
+baseline actual30.1→62.1/native916.0106622199528wall；contrast23.1→55.1/native722.410109739285wall。
+实体/SHA/loaded library/原生iters setter/readback准入均PASS；两组e61c原正式1ms采集PASS，各三机32001 task pair。
+原2516 physical baseline PASS；contrast FAIL/exit1，三机eligible A/B均0，无目标无运动，非速度/加速度越界；严格关闭均PASS。
+正式consumer墙秒依次731.308353652712/16.604266077280045/679.791821338702/14.919598877895623，均为只读consumer成本，不混原生或pilot。
+两组78原生进程全部正常退出；父进程结束后只读closed_summary_v2.py（v1错读closure.strict的KeyError原件保留）重新核验91组PID/start全部消失。
+本版原生1638.4207719592378wall；V18+V19=2489.3860735194758，原3600余1110.6139264805242；无主动signals/重试。
+
+只读候选证据：`rtk proxy /usr/bin/python3 -B /tmp/mr3_p2a0_v19_candidate_stimulus_comparison_v1.py`及实际exec原件保存。
+两组全部33快照/32 typed实际V6选择精确重放，diagnostics逐值一致。baseline每机接受2目标，共6GOAL；contrast三机33/33 fresh/valid却零GOAL、25×888/7×999。
+全部99个contrast seed自身FREE0，但最近阻断100已存在于OWN保守投影，并非shared-only或unknown-only；距离.05/.10/.05m、clearance.01464/.06464/.01464<原.29。
+198份nav数组精确重建，近身100持续到55.1，在绝对30.1也仍无GOAL；不据release差加固定7秒、不清100或降低净空。
+小ownership review与上述结果独立一致。未保存rawscan/TF，不能认定100是真实障碍或已定scan/SLAM根因。
+
+额外描述性单pass：`rtk proxy /usr/bin/python3 -B /tmp/mr3_p2a0_v19_paired_zero_motor_run_v1.py`实际child argv/env/输入beforeafter在execution4b38031b…。
+helper025a4aa5…，12CPU+4独立小内存反例通过（首轮style错误/format-only修订保留），实际child0/内部453.98471132293344wall。
+保留全task、全部双phase双motor严格0且已持续780ms的streak，不选最长：baseline late20145/20354/22559 pair，contrast各31221 pair。
+contrast全32001 pair motor0，无运动后的停止刺激；两组轨迹不匹配，不提供150修复因果信用。
+model/canonical origin/canonical CoG实际getter统计相同，不能作为独立重复；base origin/CoG分别保留。
+getter Z与每步pose差分仍不一致，仅标识测量限制，不改变原.01/三唯一样本/.78/.144或指认V17唯一根因。
+独立小结果review07a7cdec…完整性无异常，不重扫raw。
+
+保管命令源/执行/CPU原件同A19/closed_core_v3：baseline502raw/2988325602B→587part/226712357B；contrast494raw/2588450699B→565part/194283176B。
+固定32MiB raw分片，全部编码、解码、整体重组SHA及源final stat核验，4codec/8入口相关CPU与原失败保留；不是新native/physics审计。
+baseline TMP helper96.326155844wall，contrast81.96380899474025wall；independent encoded-only复核不重复全raw decode。
+canonical1156文件含metadata共422864963B，逐字复制核验1.7340063941664994wall，manifest fdc8f5ae…/33789be6…。
+闭合core128原件/5270361B→963557B，SHAf75c7512…，往返与final SHA/stat PASS；归档辅助v1重复自身路径、v2含atime的stat相等断言失败均原样保存，v3仅修保管辅助，不动研究数据或判定。
+150尚未选用，V17物理停车FAIL保持，四阶段准备矩阵仍未完成；无新PPO/GPU/optimizer/P2B/gateway。pilot余1870决策/2905.954739546403wall不动。
+
+
+V19有界姿态补充（A19/closed_pose_v1）保留按源offset选取的PRE/POST原行及脚本/错误/回执，
+总计只读12714005原始字节，无六份大流重复全扫。端点两组高度、姿态近似；
+每机first pair后固定.2/.4/.6/1/2/3秒的取样中，baseline最大|pitch|.642580°、contrast.794788°，
+预测最短地面交点11.529448/9.335524米。后者可能产生远端地面回波机会，不能解释.05/.1米近身占据，
+也未据稀疏样本断言全程姿态或实际scan来源。SLAM与本机spawn同组启动且无physical-settle gate；
+源码addScan路径不以minimum_time_interval作为settle门。未保存rawscan/完整TF，故仍待直接来源测量。
+精确有界seek/摘要执行入口、argv、每源offset/行SHA/fd-path stat和首次错误均在上述原件；无新native/formal/训练或门禁变化。
+
+V19 A19/closed_scan_static_v1源码与静态原件保留精确Gazebo/ROS/Karto来源、URL/SHA与6项float32端点案例：below/equal-min与no-return不直接形成占据端点，不能据此过滤.12。旧source-review的结构化sensor辅助字段误选首个contact sensor；新更正原件c078802f…对6份effective SDF显式选ray核验，几何/端点结论不变，旧35原件不改。真实processed /tbN/pose可作成功addScan的公开代理；既有原件没有rawscan，来源仍未定。
+
+闭合独立复核ffdc2b48…与root静态155源摘要/160本地链接/JSON/diff检查通过，actual git add -n .初次1170路径均在白名单；原生与formal没有重跑。
+该补充实际仅静态/只读端点CPU，无新原生；旧结构化字段选择错误明确保留，更正无结果重标。

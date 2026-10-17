@@ -1,5 +1,7 @@
 # 当前三机器人基线与MR3适配启动命令
 
+V19固定50/150隔离诊断已关闭：两组加载、逐毫秒采集和严格关闭通过；150组三机全程没有合法GOAL或停车刺激，原物理FAIL，150尚未采用，P2A.0仍未完成。详见[V19](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_v19.md)。原启动命令、物理门和pilot余额不变。
+
 新路线为 [MR3](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/RESEARCH_PLAN.md)，P0/P1A/P1B已验收，用户于2026-10-16验收P1C并授权P2A；P2B及后续未开始。
 默认`execution_mode:=baseline`启动前沿控制器；`adapter`为显式联合动作接口。P2A联合MaskablePPO正在实现与验证；gateway未开始。
 所有推荐运行显式固定三台，活动默认已改为三台，保留1–4历史兼容。
