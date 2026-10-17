@@ -73,3 +73,5 @@ P1B已于2026-10-15由用户验收；该异步历史不提供固定dt信用。P1
 | [20261017_mr3_p2a0_v12.md](20261017_mr3_p2a0_v12.md) | 受控reset复合readiness消费者 | interface/terminal全门PASS；reset活动、物理速度/停止及driver数值FAIL，deadline跳过；原件保留 |
 
 | [20261017_mr3_p2a0_v13.md](20261017_mr3_p2a0_v13.md) | 局部执行、完整速度模型及paired数值修复 | 首个参数响应匹配超时：interface FAIL，后三stage SKIP；无动作/训练信用 |
+
+| [20261017_mr3_p2a0_v14.md](20261017_mr3_p2a0_v14.md) | 九个精确参数reply writer有限等待修复 | 源码/CPU通过，plan ready待clean-pushed preflight/完整矩阵；无本版原生或训练信用 |

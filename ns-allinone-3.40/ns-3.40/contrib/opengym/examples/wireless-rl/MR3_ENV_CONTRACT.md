@@ -134,14 +134,20 @@ worker原件区分`ack_received/ack_consumed/advance_permitted/physics_completed
 旧`mr3-drive-actuation-v1`及headerless Twist消费仅按其原冻结历史/非tagged兼容范围解释。
 缺省audit路径为空时不写驱动原件；正式worker提供路径和epoch，独占创建且写入失败仍为原生失败。
 
-## 本机SDK状态响应等待（W7已验证配置）
+## 本机SDK服务响应等待
 
-同机FastDDS loopback profile只对三台各六个Nav2节点的精确`get_stateReply` writer
+原W7配置对三台各六个Nav2节点的精确`get_stateReply` writer
 增加1墙秒的response-reader匹配/写入有界等待，保留原18个`change_stateReply`的5秒窗口。
 Nav2 `get_state`客户端原2秒future超时不变；其预算还包含请求传输和调度，不能推断必有
-完整1秒回传余量或保证发现成功。其余默认、request/data/contact端点、DDS transport buffer、
+完整1秒回传余量或保证发现成功。除下面新增参数回复规则外，其余默认、request/data/contact端点、DDS transport buffer、
 发布频率、SDK版本与任务时钟不变。无自动重试，实际超时仍是infra，旧profile证据不赋予新冻结信用。
 这是应用配置的有界等待，不是DDS发现竞态修复声明；W7完整矩阵仅提供其实际工程范围。
+
+P2A.0 V14为三台各`controller_server`、`behavior_server`、`velocity_smoother`的九个精确
+`get_parametersReply` writer配置1墙秒的可靠匹配/写入等待；无通配、default、service fallback或reader规则。
+V13首个参数回复在特定响应reader GUID匹配等待分支超时，早于序列化/write；原九项默认100ms由本机SDK工厂读取证实。
+1秒是针对该分支的有限余量，不证明原生可靠性或充分性。参数读回仍为同一暂停release的九节点完整typed核验，
+客户端原30秒总墙钟guard及45秒hook不变，无重试、分包、物理推进或丢弃失败。实际超时仍为infra；必须新冻结完整矩阵验证。
 
 ## 命令、租约与导航期限的纳秒端点（W7实现）
 

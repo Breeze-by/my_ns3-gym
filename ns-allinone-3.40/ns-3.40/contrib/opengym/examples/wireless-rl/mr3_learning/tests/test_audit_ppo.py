@@ -195,6 +195,50 @@ class VersionedNativeGateTests(unittest.TestCase):
         self.assertNotIn(audit_ppo.ROS + "src/slam_toolbox/config/mapper_params_online_async.yaml",
                          audit_ppo.EXECUTION_CONFIG_PINS)
 
+    def test_current_transport_profile_has_explicit_current_runtime_proof(self):
+        relative = audit_ppo.ROS + "src/multi_robot/config/mr3_fastdds_loopback_udp.xml"
+        digest = audit_ppo.sha(self.root / relative)
+        self.assertEqual(audit_ppo.PREPARATION_RUNTIME_PINS[relative], digest)
+        self.assertEqual(self.base.PINNED_RUNTIME[relative], digest)
+        self.assertEqual(self.proof[relative]["sha256"], digest)
+        self.assertEqual(self.proof[relative]["worktree_sha256"], digest)
+        self.assertEqual(self.proof[relative]["git_source"], "a" * 40 + ":" + relative)
+        # This reviewed current pin must not rewrite the immutable W7 dictionary.
+        original = audit_ppo.load_pinned(
+            "mr3_test_original_transport_phase", self.directory /
+            "audit_mr3_env_contact_phase_v3.py", audit_ppo.PHASE_SHA256)
+        self.assertEqual(original.PINNED_RUNTIME, self.original_runtime_pins)
+
+    def test_full_component_loader_rejects_changed_transport_git_or_worktree(self):
+        relative = audit_ppo.ROS + "src/multi_robot/config/mr3_fastdds_loopback_udp.xml"
+        freeze = "a" * 40
+        original_git = audit_ppo.subprocess.check_output
+        original_sha = audit_ppo.sha
+        for changed in ("git", "worktree"):
+            phase = audit_ppo.load_pinned(
+                "mr3_test_reject_transport_" + changed, self.directory /
+                "audit_mr3_env_contact_phase_v3.py", audit_ppo.PHASE_SHA256)
+            phase.PINNED_DOCUMENTS = {}
+
+            def git_output(command, **kwargs):
+                if command[:2] == ["git", "show"] and command[2].startswith(freeze + ":"):
+                    path = command[2].split(":", 1)[1]
+                    payload = (self.root / path).read_bytes()
+                    return (payload + b"changed" if changed == "git" and path == relative
+                            else payload)
+                return original_git(command, **kwargs)
+
+            def worktree_digest(path):
+                if changed == "worktree" and Path(path) == self.root / relative:
+                    return "0" * 64
+                return original_sha(path)
+
+            with self.subTest(changed=changed), \
+                    patch.object(audit_ppo.subprocess, "check_output", git_output), \
+                    patch.object(audit_ppo, "sha", worktree_digest), \
+                    self.assertRaisesRegex(ValueError, "native runtime.*fastdds_loopback"):
+                audit_ppo.load_compatible_components(phase, self.root, freeze)
+
     def test_unknown_changed_extra_or_noncanonical_candidate_rules_are_rejected(self):
         changes = ({"version": "unknown"}, {"goal_xy_tolerance_m": .25},
                    {"frontier_staging_max_m": True}, {"frontier_staging_max_m": 1},

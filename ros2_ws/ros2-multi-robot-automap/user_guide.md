@@ -164,3 +164,5 @@ P1B仅为脚本适配与理想逻辑交付证据，两者均没有导航RL/通�
 
 新研究的验收次序、RL方法/奖励、gateway无旁路和时钟规则都在共享研究/实施计划。
 本文只说明当前实现；历史或上游README的任务步骤不作为当前路线指令。
+
+当前P2A.0 V14只补九个精确Nav2参数响应writer的1秒有限匹配等待，30秒client与45秒hook、任务/物理门不改；三机运动源码与a014库复用。源码/CPU与root计划ready，尚须clean-pushed preflight及全矩阵，无新原生结果，V13失败原件保留；见[V14](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261017_mr3_p2a0_v14.md)。

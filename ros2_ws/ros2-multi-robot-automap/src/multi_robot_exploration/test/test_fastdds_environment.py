@@ -37,7 +37,7 @@ def test_profile_uses_only_one_default_loopback_udp_transport():
     assert root.tag == f"{{{NS['dds']}}}profiles"
     assert [child.tag for child in root] == [
         f"{{{NS['dds']}}}transport_descriptors", f"{{{NS['dds']}}}participant",
-    ] + [f"{{{NS['dds']}}}publisher"] * 36
+    ] + [f"{{{NS['dds']}}}publisher"] * 45
     transports = root.findall('dds:transport_descriptors/dds:transport_descriptor', NS)
     assert len(transports) == 1
     transport = transports[0]
@@ -71,7 +71,8 @@ def test_only_exact_nav2_lifecycle_replies_get_distinct_bounded_matching_waits()
     expected = {f'rr/tb{robot}/{node}/{service}Reply': seconds
                 for robot in range(1, 4) for node in nodes
                 for service, seconds in [('change_state', 5), ('get_state', 1)]}
-    writers = root.findall('dds:publisher', NS)
+    all_writers = root.findall('dds:publisher', NS)
+    writers = [writer for writer in all_writers if writer.attrib['profile_name'] in expected]
     assert len(writers) == 36
     assert {writer.attrib['profile_name'] for writer in writers} == set(expected)
     for writer in writers:
@@ -95,6 +96,40 @@ def test_only_exact_nav2_lifecycle_replies_get_distinct_bounded_matching_waits()
     assert root.findall('dds:data_reader', NS) == []
     assert root.findall('dds:data_writer', NS) == []
     assert all('*' not in name and name != 'service' for name in expected)
+
+
+def test_nine_exact_parameter_replies_add_only_bounded_response_matching_waits():
+    root = ET.parse(PROFILE).getroot()
+    expected = {f'rr/tb{robot}/{node}/get_parametersReply'
+                for robot in range(1, 4)
+                for node in ('controller_server', 'behavior_server', 'velocity_smoother')}
+    all_writers = root.findall('dds:publisher', NS)
+    assert len(all_writers) == 45
+    names = [writer.attrib['profile_name'] for writer in all_writers]
+    assert len(set(names)) == 45
+    writers = [writer for writer in all_writers if writer.attrib['profile_name'] in expected]
+    assert len(writers) == 9
+    assert {writer.attrib['profile_name'] for writer in writers} == expected
+    for writer in writers:
+        assert set(writer.attrib) == {'profile_name'}
+        assert [child.tag for child in writer] == [f"{{{NS['dds']}}}qos"]
+        qos = writer.find('dds:qos', NS)
+        assert [child.tag for child in qos] == [f"{{{NS['dds']}}}reliability"]
+        reliability = qos.find('dds:reliability', NS)
+        assert [child.tag for child in reliability] == [
+            f"{{{NS['dds']}}}kind", f"{{{NS['dds']}}}max_blocking_time",
+        ]
+        assert reliability.findtext('dds:kind', namespaces=NS) == 'RELIABLE'
+        duration = reliability.find('dds:max_blocking_time', NS)
+        assert [(child.tag, child.text) for child in duration] == [
+            (f"{{{NS['dds']}}}sec", '1'), (f"{{{NS['dds']}}}nanosec", '0'),
+        ]
+        assert len(list(writer.iter())) == 7
+    assert root.findall('dds:subscriber', NS) == []
+    assert root.findall('dds:data_reader', NS) == []
+    assert root.findall('dds:data_writer', NS) == []
+    assert all(not any(token in name for token in ('*', '?', '[', ']'))
+               and name != 'service' for name in names)
 
 
 def test_p1a_environment_avoids_rmw_localhost_shm_append_and_xml_qos(monkeypatch):

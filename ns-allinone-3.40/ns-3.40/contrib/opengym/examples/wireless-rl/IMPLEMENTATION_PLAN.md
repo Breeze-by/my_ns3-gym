@@ -338,3 +338,5 @@ V12实际冻结`6b1b4a010835` interface32与terminal全部正式门PASS；reset�
 当前V13实现局部Shim/DWB及.20命令配置、完整own/peer测量范数的normal负ACK隔离和paired严格向内舍入。原任务/物理/源龄/停止门不变，V12持久静止失败仍待同冻结原生验证；新版本计划仍四stage/608API/596动作/18000墙秒，源码、实际新库与离线审计已通过，待clean push后exact40 preflight准入，不授PPO或跨冻结PASS。详见[V13](report/20261017_mr3_p2a0_v13.md)。
 
 V13实际冻结`1cfe74b4ad32`的interface在首个GetParameters响应匹配超时而FAIL（1reset/0step），其余三stage SKIP；39原生干净退出、所有保存身份消失，原aggregate FAIL保留。现仅在/tmp准备九个精确参数response writer有限等待修复，不改client guard、任务/物理门，须新冻结全矩阵。
+
+V14仅修9个精确参数reply writer的有限匹配等待，复用V13运动源码/实际库/原审计数学。当前新编排/105绑定/36显式pins、ROS1193与conda255均核验通过，root计划ready，必须clean push/preflight后按原608/596/18000完整矩阵，首FAIL停止后续；见[V14报告](report/20261017_mr3_p2a0_v14.md)。

@@ -48,6 +48,8 @@ CURRENT_AUDITOR_PINS = {
         '5b0ecf24617e317415b66876add73f5834187d022647d251edde8d1082370195',
 }
 PREPARATION_RUNTIME_PINS = {
+    ROS + 'src/multi_robot/config/mr3_fastdds_loopback_udp.xml':
+        '0b909216206301a5bee45cb1fd755f67a92481d98cec39d818b2dc8764844e37',
     ROS + 'src/multi_robot_exploration/multi_robot_exploration/mr3_adapter.py':
         'd9121970b18e86a524ad4aad591a64661555bc15c0a59bf425896324473eecfc',
     ROS + 'src/multi_robot_exploration/multi_robot_exploration/mr3_observation_archive.py':
@@ -158,7 +160,7 @@ EXECUTION_CONFIG_PINS = {
     ROS + 'src/multi_robot/include/multi_robot/mr3_drive_target.hpp':
         '4be4d77de247a5bcd427eb6948165e85098eb361030cf89d278d6df92e959d41',
 }
-ENV_DOCUMENT_SHA256 = "ba0b96bba560ec097e4b9fd19c00c1f6338378d8142fd50b07b8a532c15330c7"
+ENV_DOCUMENT_SHA256 = "4285b8d3ec5b28c4944b04e03258e1955b491d7d635e7edd4e57751c979028f9"
 TASK_DOCUMENT_SHA256 = "f96f5ba785a39daa882b3c2ea217c58dd968550b65bf0ee15faf07ca079f8991"
 PRIOR_TASK_DOCUMENT_SHA256 = "5e4400396e4aaf5a5094fb4c0c04c85810c327cc85be88b7d03fa3faeade07d2"
 TASK_BASE_FREEZE = "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a"

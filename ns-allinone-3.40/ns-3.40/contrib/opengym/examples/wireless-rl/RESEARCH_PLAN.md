@@ -432,3 +432,5 @@ MAC 重试、命令到达/执行龄、回执闭合率及时间耦合误差。
 [归档索引](report/ARCHIVE_INDEX.json)明确历史内容的适用版本。
 旧报告保留数据，只作为历史证据，不指挥新工作；原路线最新完整版留在
 `p2c1/global-mission-20261012@8fe1495`，当前 MR3 在 `main`。
+
+当前继续P2A.0的[V14服务匹配等待修复](report/20261017_mr3_p2a0_v14.md)：只增9个精确参数reply writer有限1秒等待，旧任务/物理/client门不变，原运动源码与库保持。V13已关闭FAIL，V14源码/CPU及root计划ready，待clean-pushed exact40 preflight及完整同冻结四stage，尚无原生信用。
