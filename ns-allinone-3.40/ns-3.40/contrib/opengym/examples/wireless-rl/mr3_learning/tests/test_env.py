@@ -32,6 +32,7 @@ class SupervisorFixture:
         self.snapshot["epoch"] = epoch
         for robot in self.snapshot["robots"]:
             robot["epoch"] = epoch
+            robot["activity"]["epoch"] = epoch
         for metadata in self.snapshot["path_maps"].values():
             metadata["epoch"] = epoch
         seal(self.snapshot)

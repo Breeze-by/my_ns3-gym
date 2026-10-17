@@ -365,6 +365,16 @@ def launch_setup(context, *args, **kwargs):
             for robot in robots for topic in ("odom", "tf")
         ] if adapter_mode else []),
     ))
+    if adapter_mode:
+        adapter_audit_path = LaunchConfiguration("mr3_audit_path").perform(context)
+        actions.append(Node(
+            package="multi_robot_exploration", executable="motion_safety",
+            name="motion_safety", output="screen",
+            parameters=[{"use_sim_time": use_sim_time, "episode_epoch": episode_epoch,
+                         "audit_path": (os.path.join(os.path.dirname(adapter_audit_path),
+                                                     "motion_safety.jsonl")
+                                        if adapter_audit_path else "")}],
+        ))
 
     merge_rviz = Node(
         package="rviz2",
@@ -727,6 +737,8 @@ def launch_setup(context, *args, **kwargs):
                 # competing map->odom transform while the map is being built.
                 "slam": "True",
                 "namespace": namespace,
+                "cmd_vel_output": "cmd_vel_unguarded" if adapter_mode else "cmd_vel",
+                "behavior_cmd_vel": "cmd_vel_nav" if adapter_mode else "cmd_vel",
                 "use_namespace": "True",
                 "map": map_file_path,
                 "map_server": "False",

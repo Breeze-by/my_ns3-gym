@@ -117,7 +117,8 @@ def audit_physics(rows, epoch, release_ns):
 
 def validate_snapshot(snapshot, epoch):
     require(snapshot.get("epoch") == epoch, "snapshot cross-epoch")
-    require(snapshot.get("schema") == "mr3-observation-v2", "unexpected observation schema")
+    require(snapshot.get("schema") in ("mr3-observation-v2", "mr3-observation-v3"),
+            "unexpected observation schema")
     require(type(snapshot.get("sequence")) is int and snapshot["sequence"] > 0,
             "invalid observation sequence")
     require(snapshot.get("digest") == canonical_digest(

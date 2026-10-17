@@ -2,7 +2,9 @@
 
 # Codex Monorepo Memory — MR3
 
-P2A.0 actual closure (2026-10-17): source freeze f8694025; six native episodes
+2026-10-17 continuation: the user explicitly requested completing P2A.0. Continue repairs inside this step: own-known/shared-unknown navigation, actual navigation-map v5 candidates, unique final velocity guard with exact 20ms output-completion ACK, and received odometry/accepted-goal cumulative observations (snapshot v3, tensors v2, 71 robot fields). Validate a new clean pushed freeze and preserve the first matrix FAIL. No pilot, P2B or gateway; pilot balance remains 1870 decisions / 2905.954739546403 wall seconds. See wireless-rl/report/20261017_mr3_p2a0_v2.md. User acceptance is required after completing this step, not to continue these already authorized repairs.
+
+Historical first P2A.0 closure (2026-10-17): source freeze f8694025; six native episodes
 closed cleanly, terminal audit PASS, reset benchmark/full audit FAIL with one
 real peer-envelope task failure. The 300-step deadline was SKIPPED under the
 prospective stop rule. P2A.0 exit is unmet; await user review, do not restart
@@ -110,8 +112,8 @@ Its two-episode terminal probe and fresh 16-decision/four-update minimum pass
 independent native/scalar/policy/ACK audits. Its pilot retained 718 native
 decisions and zero updates before a genuine controlled-shutdown Karto abort
 (SLAM exit -6); all 167 saved process identities and its parent are gone. No
-final model exists, so its final-only validation is skipped. This session stops
-in P2A under its no-retry rule. The user explicitly approved a cumulative
+final model exists, so its final-only validation is skipped. That v6 pilot stopped
+in P2A under its no-retry rule; the later P2A.0 preparation continuation does not restart it. The user explicitly approved a cumulative
 4096-decision/14400-wall-second pilot ceiling plus three development validations;
 2226 decisions/11494.045260453597 seconds have been charged across pilot versions,
 leaving 1870/2905.954739546403 unused, without an automatic new run. There is

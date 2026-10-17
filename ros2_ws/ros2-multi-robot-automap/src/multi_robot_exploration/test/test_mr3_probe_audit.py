@@ -224,6 +224,22 @@ def test_unknown_or_changed_v4_rule_is_rejected_even_if_self_signed(change):
         AUDIT.candidate_digest(value)
 
 
+def test_v5_navigation_rule_binds_exact_composition_and_requires_v3_snapshot():
+    value = snapshot(1, 1.)
+    value.update(schema="mr3-observation-v3", path_maps={name: {} for name in AUDIT.ROBOTS},
+                 candidate_rule=dict(AUDIT.CANDIDATE_RULE_V5))
+    expected = AUDIT.canonical_digest({key: value[key] for key in (
+        "epoch", "map_version", "sequence", "candidates", "path_maps", "candidate_rule")})
+    assert AUDIT.candidate_digest(value) == expected
+    value["schema"] = "mr3-observation-v2"
+    with pytest.raises(ValueError, match="observation v3"):
+        AUDIT.candidate_digest(value)
+    value["schema"] = "mr3-observation-v3"
+    value["candidate_rule"]["navigation_composition"] = "unreviewed-free-clearing"
+    with pytest.raises(ValueError, match="candidate rule"):
+        AUDIT.candidate_digest(value)
+
+
 def test_acceptance_without_estimated_movement_is_not_navigation_execution_proof(tmp_path):
     rows = evidence(tmp_path)
     for row in rows:

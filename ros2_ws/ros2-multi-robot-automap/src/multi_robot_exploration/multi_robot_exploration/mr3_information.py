@@ -31,7 +31,9 @@ import math
 from time import perf_counter, monotonic
 
 from geometry_msgs.msg import TransformStamped
-from merge_map.merge_map import merge_maps
+from merge_map.merge_map import (
+    NAVIGATION_COMPOSITION_VERSION, merge_maps, merge_navigation_map,
+)
 from nav_msgs.msg import OccupancyGrid, Odometry
 import numpy as np
 import rclpy
@@ -187,22 +189,43 @@ def compute_map_bundle(records, local_maps, previous_shared):
                  for record in records}
     hub = merge_maps(list(delivered.values()), "map")
     navigation, previous_navigation = {}, {}
+    navigation_inputs, previous_navigation_inputs = {}, {}
+    hub_digest = map_digest(hub)
     for name, local in local_maps.items():
-        navigation[name] = merge_maps([local, hub], "map")
+        navigation[name] = merge_navigation_map(local, hub, "map")
+        navigation_inputs[name] = {
+            "input_own_map_payload_sha256": map_digest(local),
+            "input_own_source_stamp": stamp_seconds(local.header.stamp),
+            "input_shared_map_payload_sha256": hub_digest,
+        }
     for name, record in previous_shared.items():
         local = local_maps.get(name)
         maps = [local] if local is not None else []
         if record is not None:
             maps.append(restore_message(OccupancyGrid(), record.payload))
         if maps:
-            previous_navigation[name] = merge_maps(maps, "map")
+            previous_navigation[name] = (merge_navigation_map(*maps, "map")
+                                         if len(maps) == 2 else merge_maps(maps, "map"))
+            previous_navigation_inputs[name] = {
+                "input_own_map_payload_sha256": None if local is None else map_digest(local),
+                "input_own_source_stamp": (
+                    None if local is None else stamp_seconds(local.header.stamp)),
+                "input_shared_map_payload_sha256": (
+                    None if record is None else map_digest(maps[-1])),
+            }
         if name not in navigation:
             navigation[name] = hub
+            navigation_inputs[name] = {
+                "input_own_map_payload_sha256": None, "input_own_source_stamp": None,
+                "input_shared_map_payload_sha256": hub_digest,
+            }
     return {
         "records": records, "delivered_maps": delivered, "hub": hub,
-        "hub_payload": map_payload(hub), "hub_digest": map_digest(hub),
+        "hub_payload": map_payload(hub), "hub_digest": hub_digest,
         "source_digests": {name: map_digest(grid) for name, grid in delivered.items()},
         "navigation": navigation, "previous_navigation": previous_navigation,
+        "navigation_inputs": navigation_inputs,
+        "previous_navigation_inputs": previous_navigation_inputs,
         "previous_shared": previous_shared,
         "worker_wall_sec": perf_counter() - started,
     }
@@ -241,6 +264,7 @@ class IdealInformation(Node):
         self.received_map_digests = {}
         self.published_map_records = {}
         self.navigation_maps = {}
+        self.navigation_sources = {}
         self.map_executor = ThreadPoolExecutor(max_workers=1, thread_name_prefix="mr3-map")
         self.map_future = None
         self.queued_map_job = None
@@ -296,8 +320,10 @@ class IdealInformation(Node):
             ])
         self.state_timer = self.create_timer(STATE_PERIOD_SEC, self.publish_states)
         self.map_timer = self.create_timer(MAP_PERIOD_SEC, self.publish_maps)
-        timer_clock = Clock(clock_type=ClockType.STEADY_TIME) if self.stepped_mode else None
-        self.map_finish_timer = self.create_timer(0.02, self.maintain_deliveries, clock=timer_clock)
+        timer_clock = (Clock(clock_type=ClockType.STEADY_TIME)
+                       if self.stepped_mode else None)
+        self.map_finish_timer = self.create_timer(
+            0.02, self.maintain_deliveries, clock=timer_clock)
 
     def receive_drain_request(self, message):
         request = None
@@ -324,7 +350,8 @@ class IdealInformation(Node):
         except (ValueError, TypeError, KeyError) as error:
             response = {"epoch": self.epoch, "ok": False, "error": str(error)}
             if isinstance(request, dict):
-                response.update({key: request.get(key) for key in ("request_id", "target_time_ns")})
+                response.update({key: request.get(key)
+                                 for key in ("request_id", "target_time_ns")})
             self.drain_publisher.publish(String(data=json.dumps(response)))
 
     def maintain_deliveries(self):
@@ -522,12 +549,30 @@ class IdealInformation(Node):
                 break
             self.downlinks[name].deliver(self.edges[name], received_now, sampled=True)
             delivered = self.edges[name].get("shared_map", "hub")
+            input_identity = None
             if delivered is not None and delivered.payload_json == sent.payload_json:
                 self.navigation_maps[name] = result["navigation"][name]
+                input_identity = result["navigation_inputs"][name]
             elif delivered == result["previous_shared"][name]:
                 previous_navigation = result["previous_navigation"].get(name)
                 if previous_navigation is not None:
                     self.navigation_maps[name] = previous_navigation
+                    input_identity = result["previous_navigation_inputs"][name]
+            if input_identity is not None:
+                own_stamp = input_identity["input_own_source_stamp"]
+                shared_stamp = None if delivered is None else delivered.source_stamp
+                stamps = [stamp for stamp in (own_stamp, shared_stamp) if stamp is not None]
+                self.navigation_sources[name] = {
+                    "epoch": self.epoch, "sequence": self.map_diagnostics["completed"] + 1,
+                    "version": self.map_diagnostics["completed"] + 1,
+                    "source_stamp": min(stamps) if stamps else None,
+                    "received_stamp": None if delivered is None else delivered.received_stamp,
+                    "received_stamp_scope": "shared_map_delivery_used_by_navigation",
+                    "shared_map_version": None if delivered is None else delivered.version,
+                    "composition_version": NAVIGATION_COMPOSITION_VERSION,
+                    "payload_sha256": map_digest(self.navigation_maps[name]),
+                    **input_identity,
+                }
             self.publish_navigation_map(name)
         self.map_diagnostics["completed"] += 1
         self.map_diagnostics["worker_wall_sec"] = result["worker_wall_sec"]
@@ -539,6 +584,8 @@ class IdealInformation(Node):
             "map_payload_sha256": self.map_payload_sha256,
             "map_source_stamp": self.hub_map_source_stamp,
             "map_received_stamp": self.hub_map_received_stamp,
+            "navigation_composition": {"version": NAVIGATION_COMPOSITION_VERSION},
+            "navigation_sources": copy.deepcopy(self.navigation_sources),
             "map_sources": {
                 record.source: {
                     "sequence": record.sequence, "version": record.version,
@@ -615,6 +662,8 @@ class IdealInformation(Node):
                 for name, record in maps.items() if record is not None
             },
             "map_payload_sha256": self.map_payload_sha256,
+            "navigation_composition": {"version": NAVIGATION_COMPOSITION_VERSION},
+            "navigation_sources": copy.deepcopy(self.navigation_sources),
             "information_diagnostics": dict(
                 self.map_diagnostics, pending=self.map_future is not None,
                 queued=self.queued_map_job is not None),

@@ -71,7 +71,7 @@ def bridge():
         navigation_publishers={name: Publisher() for name in names},
         received_map_publishers={name: Publisher() for name in names},
         received_map_digests={},
-        published_map_records={}, navigation_maps={},
+        published_map_records={}, navigation_maps={}, navigation_sources={},
         map_executor=ImmediateExecutor(), map_future=None, queued_map_job=None,
         map_failure_publisher=Publisher(),
         map_diagnostics={"submitted": 0, "completed": 0, "replaced_queued": 0,
@@ -256,16 +256,22 @@ def test_hub_map_and_navigation_map_use_explicit_delivered_snapshot(monkeypatch)
     assert list(node.received_map_publishers["tb1"].messages[-1].data) == [0, -1, 0]
     assert list(node.received_map_publishers["tb2"].messages[-1].data) == [-1, 100, -1]
     assert not node.received_map_publishers["tb3"].messages
-    # Local changes can help that robot before the next uplink; shared occupied
-    # evidence still wins the local free conflict. Other robots retain delivery.
+    # Local known cells govern that robot; only its unknown uses delivery.
+    # The global hub and other robots still retain the actually delivered data.
     node.local_maps["tb1"] = grid([100, 0, -1], stamp=2)
     node.local_map_versions["tb1"] = 2
     node.now = lambda: 3.0
     monkeypatch.setattr(node.transport, "deliver", lambda *args, **kwargs: ())
     IdealInformation.publish_maps(node)
-    assert list(node.navigation_publishers["tb1"].messages[-1].data) == [100, 100, 0]
+    assert list(node.navigation_publishers["tb1"].messages[-1].data) == [100, 0, 0]
     assert list(node.navigation_publishers["tb3"].messages[-1].data) == [0, 100, 0]
     assert list(node.received.get("map", "tb1").payload["data"]) == [0, -1, 0]
+    bundle = json.loads(node.map_metadata_publisher.messages[-1].data)
+    source = bundle["navigation_sources"]["tb1"]
+    assert source["payload_sha256"] == map_digest(node.navigation_publishers["tb1"].messages[-1])
+    assert source["input_own_map_payload_sha256"] == map_digest(node.local_maps["tb1"])
+    assert source["input_shared_map_payload_sha256"] == node.map_payload_sha256
+    assert source["composition_version"] == bundle["navigation_composition"]["version"]
 
 
 def test_state_delivery_continues_while_map_encoding_is_pending_with_honest_receipts():

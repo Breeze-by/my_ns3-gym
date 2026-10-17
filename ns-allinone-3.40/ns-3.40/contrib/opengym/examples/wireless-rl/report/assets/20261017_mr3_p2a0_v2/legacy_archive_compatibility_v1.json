@@ -1,0 +1,49 @@
+{
+  "schema": "mr3-legacy-archive-revalidation-v1",
+  "passed": true,
+  "episodes": [
+    {
+      "episode": "report/assets/20261017_mr3_p2a0/native/terminal/worker0/episode001_open_101",
+      "passed": true,
+      "snapshots": 5,
+      "maps": 15
+    },
+    {
+      "episode": "report/assets/20261017_mr3_p2a0/native/terminal/worker0/episode002_open_101",
+      "passed": true,
+      "snapshots": 4,
+      "maps": 16
+    },
+    {
+      "episode": "report/assets/20261017_mr3_p2a0/native/reset/worker0/episode001_open_101",
+      "passed": true,
+      "snapshots": 17,
+      "maps": 64
+    },
+    {
+      "episode": "report/assets/20261017_mr3_p2a0/native/reset/worker0/episode002_open_101",
+      "passed": true,
+      "snapshots": 17,
+      "maps": 68
+    },
+    {
+      "episode": "report/assets/20261017_mr3_p2a0/native/reset/worker1/episode001_open_101",
+      "passed": true,
+      "snapshots": 17,
+      "maps": 68
+    },
+    {
+      "episode": "report/assets/20261017_mr3_p2a0/native/reset/worker1/episode002_open_101",
+      "passed": true,
+      "snapshots": 17,
+      "maps": 68
+    }
+  ],
+  "total_snapshots": 77,
+  "sources": {
+    "mr3_learning/audit_preparation.py": {
+      "sha256": "93b37c7f3cf48d5f51ad532d25f76ae0f5c0ef34ebe877a41aeebc36f085b421"
+    }
+  },
+  "scope": "Old v1 exact raw archives remain readable; no new native run or changed historical outcomes."
+}

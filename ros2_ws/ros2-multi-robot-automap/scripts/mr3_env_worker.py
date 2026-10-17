@@ -29,6 +29,8 @@ SHUTDOWN_PROTOCOL = "nav2-finalized_then_serial-ros_then_gazebo-v1"
 NAV2_NODES = ("controller_server", "planner_server", "behavior_server",
               "bt_navigator", "waypoint_follower", "velocity_smoother")
 NAV2_SHUTDOWN_WALL_GUARD_SEC = 30.
+MOTION_OUTPUT_PUBLISHER = ("/", "motion_safety")
+MOTION_PHASE_COMPLETION = "publication_and_local_topic_receipt"
 spec = importlib.util.spec_from_file_location("mr3_pipe_protocol", LEARNER / "ipc.py")
 ipc = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(ipc)
@@ -56,6 +58,8 @@ class Worker:
         self.condition = threading.Condition()
         self.clock_ns = 0
         self.monitor_ready = False
+        self.motion_ready = False
+        self.motion_status = None
         self.initial_inputs_ready = None
         self.snapshots = {}
         self.drains = {}
@@ -79,12 +83,16 @@ class Worker:
         self.launch = None
         self.helper = None
         self.outputs = []
+        self.execution_map_digests = set()
+        self.execution_costmap_file = (directory / "costmaps.jsonl").open("x", buffering=1)
+        self.outputs.append(self.execution_costmap_file)
         self.last_native_check = 0.
         self.started_wall = time.monotonic()
         self.transition_file = (directory / "transitions.jsonl").open("x", buffering=1)
         self.physics_file = (directory / "physics.jsonl").open("x", buffering=1)
         self.evaluator_phase_file = (directory / "evaluator_phase_worker.jsonl").open(
             "x", buffering=1)
+        self.motion_phase_file = (directory / "motion_phase_worker.jsonl").open("x", buffering=1)
         self.transport_environment = configure_mr3_transport_environment()
 
         import rclpy
@@ -95,6 +103,8 @@ class Worker:
         from std_msgs.msg import Bool, Header, String
         from lifecycle_msgs.srv import GetState
         from nav2_msgs.srv import ManageLifecycleNodes
+        from nav_msgs.msg import OccupancyGrid
+        from multi_robot_exploration.mr3_information import map_payload
 
         rclpy.init()
         self.rclpy = rclpy
@@ -102,6 +112,7 @@ class Worker:
         self.Header = Header
         self.GetState = GetState
         self.ManageLifecycleNodes = ManageLifecycleNodes
+        self.map_payload = map_payload
         self.node = rclpy.create_node("mr3_environment_worker", parameter_overrides=[
             Parameter("use_sim_time", Parameter.Type.BOOL, True)])
         qos = QoSProfile(depth=1, durability=DurabilityPolicy.TRANSIENT_LOCAL)
@@ -190,6 +201,12 @@ class Worker:
         def monitor(message):
             self.monitor_ready = bool(message.data)
 
+        def motion_ready(message):
+            self.motion_ready = bool(message.data)
+
+        def motion_status(message):
+            self.receive_motion_status(json.loads(message.data))
+
         def failure(message):
             self.failures.append(message.data)
 
@@ -198,6 +215,10 @@ class Worker:
                 Clock, "/clock", callback(clock),
                 QoSProfile(depth=20, reliability=ReliabilityPolicy.BEST_EFFORT)),
             self.node.create_subscription(Bool, "/task_monitor_ready", callback(monitor), qos),
+            self.node.create_subscription(Bool, "/motion_safety/ready",
+                                          callback(motion_ready), qos),
+            self.node.create_subscription(String, "/motion_safety/status",
+                                          callback(motion_status), qos),
             self.node.create_subscription(String, "/mr3/snapshot_response",
                                           callback(snapshot_response), 10),
             self.node.create_subscription(String, "/mr3/information_drained",
@@ -215,6 +236,14 @@ class Worker:
             self.node.create_subscription(String, "/exploration_stopped", callback(stopped), qos),
             self.node.create_subscription(String, "/exploration_failure", callback(failure), qos),
         ]
+        for name in ("tb1", "tb2", "tb3"):
+            for layer in ("global", "local"):
+                self.subscriptions.append(self.node.create_subscription(
+                    OccupancyGrid, f"/{name}/{layer}_costmap/costmap",
+                    callback(lambda grid, name=name, layer=layer:
+                             self.record_costmap(name, layer, grid)),
+                    QoSProfile(depth=1, durability=DurabilityPolicy.TRANSIENT_LOCAL,
+                               reliability=ReliabilityPolicy.RELIABLE)))
         self.executor = SingleThreadedExecutor()
         self.executor.add_node(self.node)
 
@@ -333,7 +362,63 @@ class Worker:
             if self.clock_ns != receipt["end_time_ns"]:
                 raise RuntimeError("ROS /clock advanced beyond the paused physical boundary")
         self.physical_ns = receipt["end_time_ns"]
+        if wait_clock:
+            self.wait_motion_phase()
         return receipt
+
+    def receive_motion_status(self, value):
+        """Receive a real gate-executor completion, never synthesize its clock."""
+        if value.get("epoch") != self.epoch:
+            return
+        sequences = value.get("decision_sequences")
+        if (value.get("schema") != "mr3-motion-safety-status-v1"
+                or value.get("completion_scope") != MOTION_PHASE_COMPLETION
+                or type(value.get("clock_ns")) is not int or value["clock_ns"] < 0
+                or type(value.get("ready")) is not bool or not isinstance(sequences, dict)
+                or set(sequences) != {"tb1", "tb2", "tb3"}
+                or any(type(sequence) is not int or sequence <= 0
+                       for sequence in sequences.values())):
+            raise ValueError("invalid motion gate phase status")
+        previous = self.motion_status
+        if previous is not None:
+            if value["clock_ns"] < previous["clock_ns"]:
+                raise ValueError("motion gate phase clock regressed")
+            if any(sequences[name] < previous["decision_sequences"][name]
+                   for name in sequences):
+                raise ValueError("motion gate phase sequence regressed")
+            if (value["clock_ns"] > previous["clock_ns"]
+                    and any(sequences[name] <= previous["decision_sequences"][name]
+                            for name in sequences)):
+                raise ValueError("motion gate clock advanced without new decisions")
+            if value["clock_ns"] == previous["clock_ns"] and value != previous:
+                raise ValueError("motion gate phase changed within one clock")
+        self.motion_status = value
+        self.motion_phase_file.write(json.dumps({
+            "kind": "ack_received", "epoch": self.epoch, "ack": value,
+            "worker_clock_ns": self.clock_ns,
+            "worker_physical_ns": getattr(self, "physical_ns", None),
+            "wall_monotonic_ns": time.monotonic_ns(),
+        }, sort_keys=True) + "\n")
+
+    def wait_motion_phase(self):
+        """Hold physical pause until this exact clock's three decisions complete.
+
+        This proves gate output publication, not Gazebo actuator consumption.
+        The latter remains checked through native measured motion traces.
+        """
+        target = self.physical_ns
+        self._wait(lambda: self.motion_status is not None
+                   and self.motion_status["clock_ns"] >= target, 10.,
+                   "motion gate exact-clock phase wall guard expired")
+        ack = self.motion_status
+        if ack["clock_ns"] != target or self.clock_ns != target:
+            raise RuntimeError("motion gate advanced beyond the paused physical boundary")
+        self.motion_phase_file.write(json.dumps({
+            "kind": "ack_consumed", "epoch": self.epoch, "ack": ack,
+            "worker_clock_ns": self.clock_ns, "worker_physical_ns": target,
+            "wall_monotonic_ns": time.monotonic_ns(),
+        }, sort_keys=True) + "\n")
+        return ack
 
     def _snapshot(self, allow_terminal=False):
         from multi_robot_exploration.mr3_observation import snapshot_digest
@@ -455,9 +540,70 @@ class Worker:
             raise ValueError("initial delivered-input acknowledgement changed within epoch")
         self.initial_inputs_ready = value
 
+    def record_costmap(self, name, layer, grid):
+        """Archive actual Nav2 master outputs without inventing a planner barrier.
+
+        Header source time and the worker's receipt clock are distinct. These
+        diagnostic copies never enter the actor, candidate or reward pipeline.
+        """
+        payload = self.map_payload(grid)
+        raw = json.dumps(payload, sort_keys=True, separators=(",", ":"),
+                         allow_nan=False).encode()
+        digest = hashlib.sha256(raw).hexdigest()
+        if digest not in self.execution_map_digests:
+            root = self.directory / "execution_inputs" / "maps"
+            root.mkdir(parents=True, exist_ok=True)
+            with (root / (digest + ".json.gz")).open("xb") as output:
+                output.write(gzip.compress(raw, mtime=0))
+            self.execution_map_digests.add(digest)
+        row = {"schema": "mr3-native-costmap-receipt-v1", "epoch": self.epoch,
+               "robot": name, "layer": layer,
+               "topic": f"/{name}/{layer}_costmap/costmap",
+               "source_header": payload["header"],
+               "received_clock_ns": self.clock_ns,
+               "payload_sha256": digest,
+               "artifact": f"execution_inputs/maps/{digest}.json.gz",
+               "scope": "published Nav2 master costmap; no exact planner-consumption ACK"}
+        self.execution_costmap_file.write(json.dumps(row, sort_keys=True) + "\n")
+
+    def verify_motion_output_topology(self):
+        """Refuse task release while any bottom-level velocity bypass exists.
+
+        The check inspects discovered DDS endpoints after Nav2 has become
+        active. A launch remapping alone is not evidence of the native graph.
+        Missing discovery is allowed to settle within a wall guard; a visible
+        unexpected publisher is an immediate error.
+        """
+        endpoints = {}
+
+        def ready():
+            for name in ("tb1", "tb2", "tb3"):
+                topic = f"/{name}/cmd_vel"
+                entries = self.node.get_publishers_info_by_topic(topic)
+                identities = [(entry.node_namespace, entry.node_name) for entry in entries]
+                if any(identity != MOTION_OUTPUT_PUBLISHER for identity in identities):
+                    raise RuntimeError(f"unguarded velocity publisher on {topic}: {identities}")
+                endpoints[topic] = [{
+                    "namespace": entry.node_namespace, "node": entry.node_name,
+                    "topic_type": entry.topic_type,
+                    "endpoint_gid": bytes(entry.endpoint_gid).hex(),
+                } for entry in entries]
+            return all(len(entries) == 1 for entries in endpoints.values())
+
+        self._wait(ready, 10., "unique final motion gate publishers were not discovered")
+        receipt = {"schema": "mr3-motion-output-topology-v1", "epoch": self.epoch,
+                   "stamp": self.clock_ns / 1e9,
+                   "scope": "native discovered cmd_vel publishers before task release",
+                   "endpoints": endpoints}
+        with (self.directory / "motion_topology.json").open("x") as output:
+            json.dump(receipt, output, sort_keys=True, indent=2, allow_nan=False)
+            output.write("\n")
+
     def reset(self):
-        self._wait(lambda: self.monitor_ready and self.initial_inputs_ready is not None,
+        self._wait(lambda: self.monitor_ready and self.initial_inputs_ready is not None
+                   and self.motion_ready,
                    400., "three-robot delivered-input startup guard expired")
+        self.verify_motion_output_topology()
         output = (self.directory / "step_helper.log").open("w")
         self.outputs.append(output)
         self.helper = subprocess.Popen([
@@ -483,6 +629,9 @@ class Worker:
             self._physics(1, wait_clock=False)
         else:
             raise RuntimeError("could not align the real /clock phase before release")
+        initial_motion_status = self.wait_motion_phase()
+        if initial_motion_status["ready"] is not True:
+            raise RuntimeError("initial paused motion inputs are not ready for task release")
         self._snapshot()
         if self.watermarks["state_sequence"] < self.initial_inputs_ready["state_sequence"]:
             raise RuntimeError("initial snapshot predates delivered-input acknowledgement")
@@ -505,6 +654,7 @@ class Worker:
                       "scheduler": "mr3-physical-20ms-v1", "watermarks": self.watermarks,
                       "initial_pause_time_ns": receipt["end_time_ns"],
                       "initial_inputs_ready": self.initial_inputs_ready,
+                      "initial_motion_status": initial_motion_status,
                       "release_time_ns": self.start_ns}}
         self.transition_file.write(json.dumps({"kind": "reset", **result}, sort_keys=True) + "\n")
         return result
@@ -783,6 +933,7 @@ class Worker:
         self.transition_file.close()
         self.physics_file.close()
         self.evaluator_phase_file.close()
+        self.motion_phase_file.close()
         path = self.directory / "adapter.jsonl"
         if path.exists():
             raw = path.read_bytes()

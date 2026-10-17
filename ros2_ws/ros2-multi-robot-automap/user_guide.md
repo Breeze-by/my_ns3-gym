@@ -1,11 +1,13 @@
 # 三机器人 ROS 建图导航：当前实现指南
 
-2026-10-17当前边界：用户授权继续解决P2A并允许前置准备；先做MR3-P2A.0的SLAM生命周期、
-失败采样保存、候选v4及安全触发证据修复，见[P2A.0报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261017_mr3_p2a0.md)。
+2026-10-17当前边界：用户明确要求继续完成P2A.0。第一版SLAM生命周期、失败采样保存、
+候选v4及诊断修复的[原始结果](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261017_mr3_p2a0.md)保持；
+当前将own权威导航合成、实际导航图v5候选、最终运动门及累计参与观测并入本步，
+见[v2报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261017_mr3_p2a0_v2.md)。
 本轮只做无训练的原生工程矩阵，不重启pilot；95%/300秒/三台参与/安全门禁及累计pilot余额不变。
-实际6次原生严格关闭正常；terminal通过，reset捕获真实peer失败，deadline按规则跳过，P2A.0未通过。
-新原图已证共享导航图起点占据冲突，仍须在P2A.0闭合它和途中安全，不能凭组件通过进入训练。
-运动途中安全反应链与累计参与可观测性仍需下一准备步，P2A未完成，P2B/gateway未开始。
+第一版6次原生严格关闭正常；terminal通过，reset真实peer失败、deadline跳过的原整体FAIL不改。
+v2须以新冻结完整验证导航、三台实际执行、20ms运动输出相位及300秒关闭，再待用户验收。
+P2A未完成，P2B/gateway未开始。
 
 本轮P1C验证2026-10-15启动，实际完成时刻见P1C报告；MR3-P1A/P1B用户已验收，用户于2026-10-16验收P1C并授权P2A；`c9344e1`是历史工程冻结。
 新研究契约在 [RESEARCH_PLAN.md](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/RESEARCH_PLAN.md)，步骤在
@@ -57,7 +59,8 @@ MR3合同和新schema4的原生证据在P1A报告，不能沿用旧90%成绩。
 
 每台本机 Gazebo 发布 `/tbN/scan`、`odom`、`imu`、`joint_states`、`collision`；
 本机 robot_state_publisher/SLAM 发布 namespaced TF 与 `/tbN/map`。
-Nav2 发布 `/tbN/cmd_vel`，差速插件消费速度。`cmd_vel` 不是机器人测得的真实速度。
+baseline中Nav2发布`/tbN/cmd_vel`；adapter中controller/behavior经smoother后由唯一`motion_safety`
+发布该最终topic，差速插件消费速度。安全门只保留请求或输出零。`cmd_vel`不是机器人测得的真实速度。
 baseline将三台SLAM地图融合为`/merge_map`；adapter后端融合图为`/mr3/received/map`，公共frame均为`map`。
 
 baseline手工控制器用融合图及每台观测位姿计算前沿、可达路径/信息增益、历史效用，分配

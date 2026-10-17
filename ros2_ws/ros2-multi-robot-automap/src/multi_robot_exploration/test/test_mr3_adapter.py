@@ -2,6 +2,7 @@
 
 from collections import deque
 from concurrent.futures import Future as EncodingFuture
+import copy
 import gzip
 import hashlib
 import json
@@ -15,6 +16,8 @@ from rclpy.task import Future
 from std_msgs.msg import Header, String
 
 from multi_robot_exploration.mr3_adapter import MR3Adapter, ROBOTS
+from multi_robot_exploration.mr3_observation import NAVIGATION_COMPOSITION_VERSION
+from multi_robot_exploration.mr3_activity import ReceivedActivity
 from multi_robot_exploration.mr3_owner import acquire_navigation_owner
 from multi_robot_exploration.mr3_protocol import GoalDispatcher
 from multi_robot_exploration.mr3_transport import IdealTransport, ReceivedStore
@@ -96,6 +99,7 @@ def make_adapter(started=True):
         record=lambda kind, payload: records.append((kind, payload)),
         started_at=1.0 if started else None, stop_requested=False, stop_acknowledged=False,
         pending_stop=None, map_digest=None, local_maps={}, local_map_digests={},
+        navigation_maps={}, navigation_map_digests={},
         encoder=SimpleNamespace(submit=encode), encoding=None,
         stepped_mode=False, pending_snapshot=None, encoding_request=None, map_metadata=None,
         initial_inputs_ready=False,
@@ -107,6 +111,7 @@ def make_adapter(started=True):
         command_receipt=None, sequence=0, last_heartbeat=-math.inf,
         receipt_metadata={name: {} for name in ROBOTS},
         history={name: deque(maxlen=16) for name in ROBOTS},
+        activity=ReceivedActivity("episode-a"),
         state=state(), snapshot=None, map=None, monitor_ready=True,
         stop_pub=SimpleNamespace(publish=stopped.append),
         failure_pub=SimpleNamespace(publish=failures.append),
@@ -118,6 +123,8 @@ def make_adapter(started=True):
         if callable(method) and name not in ("__init__", "now", "record", "destroy_node"):
             setattr(node, name, MethodType(method, node))
     node.test_records = records
+    if started:
+        node.activity.start(1.)
     node.test_stopped = stopped
     node.test_failures = failures
     node.test_starts = starts
@@ -413,10 +420,27 @@ def test_map_bytes_and_metadata_must_match_before_task_start():
             "payload_sha256": node.local_map_digests[name], "source_stamp": 1.,
             "received_stamp": 1., "version": 1, "sequence": 1,
         }
+    bind_navigation_maps(node, grid)
     node.publish_observation()
     node.finish_observation()
     assert node.started_at == 1.0 and len(node.test_observations) == 1
     assert json.loads(node.test_observations[0].data)["map_version"] == 1
+
+
+def bind_navigation_maps(node, grid):
+    node.state["navigation_composition"] = {"version": NAVIGATION_COMPOSITION_VERSION}
+    node.state["navigation_sources"] = {}
+    for name in ROBOTS:
+        node.receive_navigation_map(name, grid)
+        node.state["navigation_sources"][name] = {
+            "epoch": node.epoch, "payload_sha256": node.navigation_map_digests[name],
+            "composition_version": NAVIGATION_COMPOSITION_VERSION,
+            "source_stamp": 1., "received_stamp": 1., "version": 1, "sequence": 1,
+            "input_own_map_payload_sha256": node.local_map_digests[name],
+            "input_shared_map_payload_sha256": node.map_digest, "shared_map_version": 1,
+            "input_own_source_stamp": 1.,
+            "received_stamp_scope": "shared_map_delivery_used_by_navigation",
+        }
 
 
 def archive_ready_adapter():
@@ -436,7 +460,58 @@ def archive_ready_adapter():
             "payload_sha256": node.local_map_digests[name], "source_stamp": 1.,
             "received_stamp": 1., "version": 1, "sequence": 1,
         }
+    bind_navigation_maps(node, grid)
     return node, grid
+
+
+def test_received_activity_is_in_frozen_snapshot_and_never_counts_map_frame_corrections():
+    node, _ = archive_ready_adapter()
+    delivery = copy.deepcopy(node.state)
+    for robot in delivery["robots"]:
+        robot["odom_source_stamp"] = 1.
+        robot["odometry"] = {
+            "header": {"stamp": {"sec": 1, "nanosec": 0}, "frame_id": "odom"},
+            "child_frame_id": "base_footprint",
+            "pose": {"pose": {"position": {"x": 0., "y": 0.}}},
+        }
+    delivery["sequence"] = 2
+    node.receive_states(message(delivery))
+    delivery["sequence"] = 3
+    for robot in delivery["robots"]:
+        robot.update(odom_source_stamp=1.1, source_stamp=1.1, received_stamp=1.1)
+        robot["odometry"]["header"]["stamp"]["nanosec"] = 100000000
+        robot["odometry"]["pose"]["pose"]["position"]["x"] = .25
+        robot["x"] += .5  # Map/TF shift differs from local odometry displacement.
+    node.now = lambda: 1.1
+    node.receive_states(message(delivery))
+    node.dispatcher.submit("tb1", "GOAL", 1.1, 1, 1, 3.1,
+                           goal={"x": 1., "y": 1.})
+    goal = node.dispatcher.navigation()["tb1"]["goal_id"]
+    node.dispatcher.on_accept("tb1", goal, True, 1.1)
+    node.dispatcher.on_accept("tb1", goal, True, 1.1)
+    job, future = {}, EncodingFuture()
+
+    def defer(function, *args, **kwargs):
+        job.update(function=function, args=args, kwargs=kwargs)
+        return future
+
+    node.encoder = SimpleNamespace(submit=defer)
+    node.publish_observation()
+    delivery["sequence"] = 4
+    for robot in delivery["robots"]:
+        robot.update(odom_source_stamp=1.2, source_stamp=1.2, received_stamp=1.2)
+        robot["odometry"]["header"]["stamp"]["nanosec"] = 200000000
+        robot["odometry"]["pose"]["pose"]["position"]["x"] = .75
+    node.now = lambda: 1.2
+    node.receive_states(message(delivery))
+    future.set_result(job["function"](*job["args"], **job["kwargs"]))
+    node.finish_observation()
+    snapshot = json.loads(node.test_observations[-1].data)
+    assert snapshot["schema"] == "mr3-observation-v3"
+    assert snapshot["robots"][0]["activity"]["estimated_path_m"] == .25
+    assert snapshot["robots"][0]["navigation"]["accepted_goal_count"] == 1
+    assert node.activity.snapshot("tb1")["estimated_path_m"] == .75
+    assert any(kind == "activity_update" for kind, _ in node.test_records)
 
 
 def test_async_input_archive_uses_frozen_bundle_when_later_maps_arrive(tmp_path):
@@ -464,6 +539,7 @@ def test_async_input_archive_uses_frozen_bundle_when_later_maps_arrive(tmp_path)
     node.receive_map(later)
     for name in ROBOTS:
         node.receive_local_map(name, later)
+        node.receive_navigation_map(name, later)
     # Even mutating the old ROS message cannot replace already-detached data.
     first_grid.data[0] = 100
     future.set_result(job["function"](*job["args"], **job["kwargs"]))

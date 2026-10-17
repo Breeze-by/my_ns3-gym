@@ -660,3 +660,76 @@ def test_missing_received_maps_have_no_frontier_fallback():
     assert result["candidate_rule"]["frontier_projection"] == (
         "world cell centre to containing fused native cell; free endpoints only")
     assert sum(result["joint_action_mask"]) == 1
+
+
+def navigation_maps(grid=None):
+    maps = own_maps(grid)
+    for entry in maps.values():
+        entry.update(composition_version=observation.NAVIGATION_COMPOSITION_VERSION,
+                     input_own_map_payload_sha256="own-delivered-payload",
+                     input_shared_map_payload_sha256="shared-delivered-payload",
+                     shared_map_version=2)
+    return maps
+
+
+def test_navigation_candidates_certify_actual_path_map_instead_of_fused_start_conflicts():
+    fused = frontier_map()
+    fused[48:53, 58:63] = 100
+    original = fused.copy()
+    maps = navigation_maps()
+    result = snapshot(fused, robot_maps=own_maps(), navigation_maps=maps)
+    assert result["candidate_rule"]["version"] == observation.NAVIGATION_CANDIDATE_RULE_VERSION
+    assert result["diagnostics"]["path_map_source"] == ["delivered_navigation_map"] * 3
+    assert result["path_maps"]["tb2"]["seed_rejection_reason"] is None
+    assert result["diagnostics"]["per_robot_reachable_target_cells"][1] > 0
+    assert any(allowed and observation.decode_joint_action(action)[1] < 8
+               for action, allowed in enumerate(result["joint_action_mask"]))
+    assert np.array_equal(fused, original)
+    assert observation.snapshot_digest(result) == result["digest"]
+    for candidate in result["candidates"]:
+        for index, value in enumerate(candidate["clearance_by_robot_m"]):
+            assert (value is not None) == candidate["reachable"][index]
+            if value is not None:
+                assert value >= observation.TARGET_CLEARANCE_M
+
+
+def test_navigation_occupied_own_seed_cannot_be_cleared_or_snapped_by_fused_map():
+    maps = navigation_maps()
+    maps["tb2"]["grid"][50, 60] = 100
+    before = maps["tb2"]["grid"].copy()
+    result = snapshot(navigation_maps=maps)
+    assert result["path_maps"]["tb2"]["seed_rejection_reason"] == "seed_cell_occupied"
+    assert not any(candidate["reachable"][1] for candidate in result["candidates"])
+    assert np.array_equal(maps["tb2"]["grid"], before)
+
+
+def test_missing_navigation_map_does_not_fall_back_to_own_or_fused_paths():
+    maps = navigation_maps()
+    del maps["tb2"]
+    result = snapshot(navigation_maps=maps, robot_maps=own_maps())
+    assert result["path_maps"]["tb2"]["unavailable_reason"] == "missing_received_navigation_map"
+    assert result["per_robot_action_mask"][1] == [False] * 8 + [True, False]
+    assert result["joint_action_mask"][888]
+
+
+@pytest.mark.parametrize("edit", [{"origin": (-5.99, -5.)}, {"resolution": .05},
+                                  {"composition_version": "unreviewed-rule"}])
+def test_navigation_map_lattice_and_composition_are_explicit_not_silently_resampled(edit):
+    maps = navigation_maps()
+    maps["tb2"].update(edit)
+    with pytest.raises(ValueError, match="navigation"):
+        snapshot(navigation_maps=maps)
+
+
+def test_navigation_known_line_uses_that_robots_obstacles_not_fused_free_cells():
+    grid = np.zeros((30, 30), dtype=np.int8)
+    grid[9, 10] = -1
+    native = grid.copy()
+    native[12, :] = 100
+    _, clearance = observation.native_traversable(grid, .1)
+    cells = np.asarray(((17, 10),))
+    candidates, diagnostics = observation._candidates(
+        grid, clearance, cells, np.asarray(((1., np.inf, np.inf),)),
+        .1, (-1.5, -1.5), robots(), line_grids=[native, grid, grid])
+    assert not candidates
+    assert diagnostics["per_robot_staging_rejections"][0]["occluded_staging_line"] > 0

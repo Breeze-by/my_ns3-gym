@@ -22,13 +22,14 @@ ROS = "ros2_ws/ros2-multi-robot-automap/"
 AUDITOR = ROS + "scripts/audit_mr3_env.py"
 ORIGINAL_AUDITOR_SHA = "25ce0b466d988595934f26a0cfb7a81a445632b1e755f2462b80698371b272e8"
 PINS = {
-    ROS + "src/multi_robot_exploration/multi_robot_exploration/mr3_adapter.py":
-        "02a44cb495e80f64034961dca18e61477c6168fc71707b4d0def76ac3f31fc4d",
-    ROS + "src/multi_robot_exploration/multi_robot_exploration/mr3_protocol.py":
-        "fb08097170b3f0e8423fa11dde2567c618d4d0d48be220e6cfbfc9538c37c147",
-    ROS + "src/multi_robot_exploration/multi_robot_exploration/mr3_transport.py":
-        "426d9b777c2150bb690de3266c973dedfc8fe8da3fa36c7bf37cbe3c31d70eca",
-    AUDITOR: "427d5263403dc9d0db846e36fe6051446d99ed337e45313424ff148ecef08cb7",
+    ROS + 'src/multi_robot_exploration/multi_robot_exploration/mr3_adapter.py':
+        'da648c20e92160e8d8b3295909fb4b4b1eb3328b3f0a5355cf290df486bd4ebb',
+    ROS + 'src/multi_robot_exploration/multi_robot_exploration/mr3_protocol.py':
+        '5a2b90efd162b19a35964750002fe549413fec6e07f9679ea611d3fe6b1e4ada',
+    ROS + 'src/multi_robot_exploration/multi_robot_exploration/mr3_transport.py':
+        '426d9b777c2150bb690de3266c973dedfc8fe8da3fa36c7bf37cbe3c31d70eca',
+    ROS + 'scripts/audit_mr3_env.py':
+        '5ba60bc89f3c87059cd5d4342fa433de25548c7d95c66ea0ce7708eb4ae8dad2',
 }
 ROBOTS = ("tb1", "tb2", "tb3")
 OLD_CLOSURE_ERROR = "goal lacks native send/result/protocol terminal closure"

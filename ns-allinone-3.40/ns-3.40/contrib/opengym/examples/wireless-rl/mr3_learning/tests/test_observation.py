@@ -11,18 +11,32 @@ import numpy as np
 
 from mr3_learning.observation import (
     CANDIDATE_FIELDS, HISTORY_FIELDS, ROBOT_FIELDS, TASK_FIELDS,
-    encode_snapshot, observation_space,
+    SNAPSHOT_SCHEMA, encode_snapshot, observation_space,
 )
 
 
-def fixture():
+def fixture(legacy=False):
+    """Historical map/state inputs with explicit synthetic v3 activity metadata."""
     root = Path(__file__).resolve().parents[2]
     path = root / "report/assets/20261015_mr3_p1b/native_v4/open101/adapter.jsonl.gz"
     with gzip.open(path, "rt") as handle:
         for line in handle:
             row = json.loads(line)
             if row["kind"] == "observation":
-                return row["payload"]
+                snapshot = row["payload"]
+                if legacy:
+                    return snapshot
+                snapshot["schema"] = SNAPSHOT_SCHEMA
+                for robot in snapshot["robots"]:
+                    robot["navigation"]["accepted_goal_count"] = 0
+                    robot["activity"] = {
+                        "schema": "mr3-received-activity-v1", "epoch": snapshot["epoch"],
+                        "started_at": snapshot["source_stamp"],
+                        "last_odom_source_stamp": snapshot["source_stamp"],
+                        "estimated_path_m": 0., "sample_count": 1, "state_sequence": 1,
+                        "path_observation_complete": True,
+                    }
+                return seal(snapshot)
     raise AssertionError("accepted P1B fixture has no observation")
 
 
@@ -34,16 +48,47 @@ def seal(snapshot):
 
 
 class ObservationTests(unittest.TestCase):
-    def test_real_accepted_snapshot_matches_fixed_spaces_and_all_indices(self):
+    def test_explicit_v3_fixture_matches_fixed_spaces_and_all_indices(self):
         encoded = encode_snapshot(fixture())
         self.assertTrue(observation_space().contains(encoded))
         fields = (ROBOT_FIELDS, CANDIDATE_FIELDS, HISTORY_FIELDS, TASK_FIELDS)
-        self.assertEqual(tuple(map(len, fields)), (64, 16, 4, 12))
+        self.assertEqual(tuple(map(len, fields)), (71, 16, 4, 12))
         for fields in (ROBOT_FIELDS, CANDIDATE_FIELDS, HISTORY_FIELDS, TASK_FIELDS):
             self.assertEqual(len(fields), len(set(fields)))
         self.assertEqual(encoded["global_map"].dtype, np.uint8)
         self.assertEqual(encoded["robots"].dtype, np.float32)
         self.assertLessEqual(int(encoded["global_map"].max()), 1)
+
+    def test_old_snapshot_is_explicitly_incompatible_with_new_actor_inputs(self):
+        with self.assertRaisesRegex(ValueError, "unsupported snapshot"):
+            encode_snapshot(fixture(legacy=True))
+
+    def test_received_activity_is_scaled_and_complete_status_is_explicit(self):
+        snapshot = fixture()
+        snapshot["robots"][0]["activity"]["estimated_path_m"] = 1.5
+        snapshot["robots"][0]["navigation"]["accepted_goal_count"] = 2
+        encoded = encode_snapshot(seal(snapshot))["robots"][0]
+        self.assertEqual(encoded[ROBOT_FIELDS.index("received_estimated_path_m")], 1.5 / 32)
+        self.assertEqual(encoded[ROBOT_FIELDS.index("received_accepted_goal_count")], 2 / 64)
+        self.assertEqual(encoded[ROBOT_FIELDS.index("received_path_complete")], 1)
+        self.assertEqual(encoded[ROBOT_FIELDS.index("estimated_activity_ready")], 1)
+        snapshot["robots"][0]["activity"]["path_observation_complete"] = False
+        encoded = encode_snapshot(seal(snapshot))["robots"][0]
+        self.assertEqual(encoded[ROBOT_FIELDS.index("received_path_complete")], 0)
+        self.assertEqual(encoded[ROBOT_FIELDS.index("estimated_activity_ready")], 0)
+
+    def test_cross_epoch_future_and_invalid_activity_counters_are_rejected(self):
+        for field, value in (("epoch", "old"), ("estimated_path_m", -1.),
+                             ("last_odom_source_stamp", fixture()["source_stamp"] + 1)):
+            snapshot = fixture()
+            snapshot["robots"][0]["activity"][field] = value
+            with self.assertRaises(ValueError):
+                encode_snapshot(seal(snapshot))
+        for count in (-1, .5, True):
+            snapshot = fixture()
+            snapshot["robots"][0]["navigation"]["accepted_goal_count"] = count
+            with self.assertRaises(ValueError):
+                encode_snapshot(seal(snapshot))
 
     def test_missing_values_have_zero_and_explicit_valid_bits(self):
         snapshot = fixture()

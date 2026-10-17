@@ -3801,3 +3801,40 @@ P2A.0原出口未达，停该步待复核；不进入P2A训练/P2B/gateway。
 补充只读全量归档复核：reset68/68完整snapshot精确重建，含terminal共77/77；
 两条第二轮tb2各17/17 target交集0/无合法GOAL/无目标发送接受，v4未解决这类候选饥饿。
 最终v2回执与初版范围断言失败并列在independent/，benchmark FAIL没有变化。
+
+
+## 2026-10-17 MR3-P2A.0 continuation v2 — prefreeze engineering checks
+
+用户明确要求“继续完成P2A.0”；以`0393fef363ff550707e2ed50a8129c95669abbb1`为修复基线，
+在本步内补own-known/shared-unknown导航、实际导航图候选v5、唯一最终速度门与20ms实际本地回读ACK、
+received local-odom/accepted-goal累计观测（snapshot v3/tensors v2，robot71列）。
+不启动pilot/optimizer/GPU；原pilot余额1870决策/2905.954739546403墙秒不动，第一版FAIL及deadline SKIPPED保持。
+
+源码在检查期间按before/after SHA保存于
+`report/assets/20261017_mr3_p2a0_v2/`；这是新冻结前检查，非已发生的新native成绩。
+系统ROS构建命令（ROS目录，PYTHONNOUSERSITE=1）：
+`/usr/bin/python3 /usr/bin/colcon build --symlink-install --packages-select merge_map multi_robot_exploration multi_robot`。
+三包6.14秒PASS，原输出`build_v1.log.gz`。
+完整ROS语义命令：source Humble和当前install后，
+`/usr/bin/python3 -m pytest -q src/merge_map/test src/multi_robot_exploration/test --ignore=src/merge_map/test/test_copyright.py --ignore=src/merge_map/test/test_flake8.py --ignore=src/merge_map/test/test_pep257.py --ignore=src/multi_robot_exploration/test/test_copyright.py --ignore=src/multi_robot_exploration/test/test_flake8.py --ignore=src/multi_robot_exploration/test/test_pep257.py`，
+926 PASS/27.64秒，见`prefreeze_ros_checks_v2.json/.log.gz`。首轮误包含merge的workspace-wide旧lint及新synthetic fixture缺少导航/运动ready，15FAIL/905PASS/1SKIP原输出`ros_checks_v1`保留；修fixture未放宽生产门禁。
+
+conda ns3gym、unset PYTHONPATH、PYTHONNOUSERSITE=1：
+`python -m unittest discover -s mr3_learning/tests -q`首轮167测试中25个错误，均synthetic env改epoch后未同步activity epoch；
+`prefreeze_cpu_checks_v2`原件保持，严格encoder未放宽，修fixture后另存复验。
+root新增worker/phase回归72 PASS；output/master-costmap/phase与短probe审计mutation7 PASS。
+限定全变更Python检查的两项长行/缩进失败原回执`prefreeze_style_checks_v2`保留，修后另存。
+
+独立原图counterfactual仅重放既有原始地图：两条tb2空池恢复0→334/316，两个旧nav seed100→0，
+全hub字节SHA不变，own occupied丢失0、双unknown升格0；不是native改善信用。
+精确命令/sourceSHA/四例原件见`navigation_authority_replay_v1.py/.json`、`candidate_checks_v1.json`；
+旧六episode77快照archive兼容重放PASS，不改旧任务/整体FAIL。
+活动实现/独立raw先行因果重放及中间失败见`participation_checks_v1.json`；
+运动数学/合成制动/源龄ns端点、真实Humble单参数回调三次完整DDS生命周期、strict FIFO及中间失败见
+`safety_checks_v1.json`和`safety_cpu_callbacks_v1.txt`，三次各三台decision=1/actual=1/pending=0。
+这些是CPU/真实ROS消息工程检查，没有Gazebo研究任务、GPU更新或95%信用。
+
+新native矩阵预声明在`predeclared_plan_v2.json`，逐阶段terminal→2worker四轮三scene reset→300KEEP deadline，
+上限436API/435脚本动作/6000墙秒，每环境始终三台；只在干净推送新冻结运行，后续实际命令/冻结/结果另行追加。
+
+后续同worktree复验：`prefreeze_cpu_checks_v3` 167 PASS/19.850秒，before/after源码SHA一致；`prefreeze_style_checks_v3` 40份变更Python全部flake8 PASS，三份旧格式launch只AST编译并由launch语义回归验证；无新增依赖。以上包括首次FAIL及修正，不改变任何旧native结论。

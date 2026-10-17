@@ -6,6 +6,7 @@ import io
 from pathlib import Path
 import sys
 import threading
+from types import SimpleNamespace
 from unittest.mock import patch
 
 import pytest
@@ -47,6 +48,130 @@ def test_initial_reset_does_not_pause_without_actual_delivered_input_ack():
         with pytest.raises(TimeoutError, match="delivered-input startup"):
             instance.reset()
         process.assert_not_called()
+
+
+def test_native_velocity_bypass_prevents_release_and_does_not_write_a_pass(tmp_path):
+    instance = worker()
+    instance.directory = tmp_path
+    instance.clock_ns = 10**10
+    bypass = SimpleNamespace(node_namespace="/tb2", node_name="behavior_server")
+    instance.node = SimpleNamespace(get_publishers_info_by_topic=lambda topic: [bypass])
+    instance._wait = lambda predicate, *args: predicate()
+    with pytest.raises(RuntimeError, match="unguarded velocity publisher"):
+        instance.verify_motion_output_topology()
+    assert not (tmp_path / "motion_topology.json").exists()
+
+
+def test_missing_or_duplicate_motion_gate_is_not_native_topology_proof(tmp_path):
+    instance = worker()
+    instance.directory = tmp_path
+    instance.clock_ns = 10**10
+    gate = SimpleNamespace(node_namespace="/", node_name="motion_safety",
+                           endpoint_gid=[1] * 16, topic_type="geometry_msgs/msg/Twist")
+    for entries in ([], [gate, gate]):
+        instance.node = SimpleNamespace(get_publishers_info_by_topic=lambda topic: entries)
+
+        def wait(predicate, *args):
+            assert not predicate()
+            raise TimeoutError("discovery incomplete")
+
+        instance._wait = wait
+        with pytest.raises(TimeoutError):
+            instance.verify_motion_output_topology()
+    assert not (tmp_path / "motion_topology.json").exists()
+
+
+def test_three_unique_native_motion_publishers_bind_actual_endpoint_ids(tmp_path):
+    import json
+    instance = worker()
+    instance.directory = tmp_path
+    instance.clock_ns = 10**10
+    gate = SimpleNamespace(node_namespace="/", node_name="motion_safety",
+                           endpoint_gid=[1] * 16, topic_type="geometry_msgs/msg/Twist")
+    instance.node = SimpleNamespace(get_publishers_info_by_topic=lambda topic: [gate])
+    instance._wait = lambda predicate, *args: predicate()
+    instance.verify_motion_output_topology()
+    proof = json.loads((tmp_path / "motion_topology.json").read_text())
+    assert proof["epoch"] == "current" and proof["stamp"] == 10.
+    assert set(proof["endpoints"]) == {f"/tb{i}/cmd_vel" for i in (1, 2, 3)}
+    assert all(entries[0]["endpoint_gid"] == "01" * 16
+               for entries in proof["endpoints"].values())
+
+
+def test_native_costmap_archive_preserves_source_header_and_actual_receipt(tmp_path):
+    import gzip
+    import hashlib
+    import json
+    instance = worker()
+    instance.directory = tmp_path
+    instance.clock_ns = 10**10
+    instance.execution_map_digests = set()
+    instance.execution_costmap_file = io.StringIO()
+    payload = {"header": {"stamp": {"sec": 9, "nanosec": 123}, "frame_id": "map"},
+               "info": {"width": 2, "height": 1}, "data": [100, -1]}
+    instance.map_payload = lambda message: copy.deepcopy(payload)
+    instance.record_costmap("tb2", "global", object())
+    instance.clock_ns += 20_000_000
+    instance.record_costmap("tb2", "global", object())
+    rows = [json.loads(line) for line in instance.execution_costmap_file.getvalue().splitlines()]
+    assert rows[0]["source_header"] == payload["header"] == rows[1]["source_header"]
+    assert [row["received_clock_ns"] for row in rows] == [10**10, 10**10 + 20_000_000]
+    assert len(list((tmp_path / "execution_inputs/maps").glob("*.gz"))) == 1
+    raw = gzip.decompress((tmp_path / rows[0]["artifact"]).read_bytes())
+    assert hashlib.sha256(raw).hexdigest() == rows[0]["payload_sha256"]
+    assert json.loads(raw) == payload
+
+
+def motion_worker():
+    instance = worker()
+    instance.motion_status = None
+    instance.clock_ns = instance.physical_ns = 10**10
+    instance.motion_phase_file = io.StringIO()
+    return instance
+
+
+def motion_ack(clock_ns=10**10):
+    return {"schema": "mr3-motion-safety-status-v1", "epoch": "current",
+            "completion_scope": "publication_and_local_topic_receipt",
+            "clock_ns": clock_ns, "ready": True,
+            "decision_sequences": {name: clock_ns // 20_000_000
+                                   for name in ("tb1", "tb2", "tb3")}}
+
+
+def test_motion_phase_waits_for_actual_exact_clock_completion():
+    instance = motion_worker()
+    instance.receive_motion_status(motion_ack(10**10 - 20_000_000))
+
+    def wait(predicate, *args):
+        assert not predicate()
+        instance.receive_motion_status(motion_ack())
+        assert predicate()
+
+    instance._wait = wait
+    instance.wait_motion_phase()
+    assert '"kind": "ack_consumed"' in instance.motion_phase_file.getvalue()
+
+
+def test_future_motion_phase_cannot_authorize_a_paused_quantum():
+    instance = motion_worker()
+    instance.receive_motion_status(motion_ack(10**10 + 1))
+    instance._wait = lambda predicate, *args: predicate()
+    with pytest.raises(RuntimeError, match="beyond the paused"):
+        instance.wait_motion_phase()
+
+
+def test_motion_phase_rejects_cross_epoch_regression_and_conflicting_same_clock():
+    instance = motion_worker()
+    instance.receive_motion_status({**motion_ack(), "epoch": "old"})
+    assert instance.motion_status is None
+    instance.receive_motion_status(motion_ack())
+    instance.receive_motion_status(motion_ack())
+    with pytest.raises(ValueError, match="clock regressed"):
+        instance.receive_motion_status(motion_ack(10**10 - 1))
+    with pytest.raises(ValueError, match="changed within one clock"):
+        instance.receive_motion_status({**motion_ack(), "ready": False})
+    with pytest.raises(ValueError, match="invalid motion gate"):
+        instance.receive_motion_status({**motion_ack(), "decision_sequences": {"tb1": True}})
 
 
 def test_same_epoch_ack_is_idempotent_and_does_not_release_the_task():

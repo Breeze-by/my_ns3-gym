@@ -3,6 +3,8 @@
 import torch
 from torch import nn
 
+from .observation import ROBOT_FIELDS
+
 
 def _map_encoder(output_size, pool_size):
     # The fixed 128/64 inputs become 32/16 after the two convolutions.
@@ -29,7 +31,7 @@ class MR3Encoder(nn.Module):
         super().__init__()
         self.global_encoder = _map_encoder(128, pool_size=8)
         self.local_encoder = _map_encoder(64, pool_size=4)
-        self.robot_encoder = nn.Sequential(nn.Linear(64, 64), nn.ReLU())
+        self.robot_encoder = nn.Sequential(nn.Linear(len(ROBOT_FIELDS), 64), nn.ReLU())
         self.candidate_encoder = nn.Sequential(nn.Linear(16, 32), nn.ReLU())
         self.history_encoder = nn.Sequential(nn.Linear(192, 64), nn.ReLU())
         self.task_encoder = nn.Sequential(nn.Linear(12, 32), nn.ReLU())

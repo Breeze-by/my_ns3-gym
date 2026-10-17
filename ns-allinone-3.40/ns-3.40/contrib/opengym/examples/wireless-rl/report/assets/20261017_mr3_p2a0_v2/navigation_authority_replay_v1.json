@@ -1,0 +1,583 @@
+{
+  "schema": "mr3-owner-authoritative-navigation-counterfactual-replay-v1",
+  "passed": true,
+  "baseline_native_freeze": "f8694025d618532e851796d2f01aaa3aca322800",
+  "candidate_source_proof": {
+    "ros2_ws/ros2-multi-robot-automap/src/merge_map/merge_map/merge_map.py": {
+      "sha256": "76c3d2c604f38f61116be1f39263472f9074b4f69fe7a0428b532da977530078"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_information.py": {
+      "sha256": "3003f57b3de2c518a7217609084efeadc0154afa8ab7d81e386eee44e87ffffa"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py": {
+      "sha256": "b81da18c256ff307a4afc09c5115d0057e5a142a246555f39c1f7a5cee88c6e8"
+    },
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/navigation_archive.py": {
+      "sha256": "b509cc0d19ca443c0776cae4d728d35f399670bda08c171d590c8738964c48bd"
+    }
+  },
+  "inputs": {
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0/native/reset/worker0/episode001_open_101/transitions.jsonl.gz": {
+      "bytes": 113848,
+      "sha256": "4193ab39d7245cdeae7bf519d54d660a52bdcd97fc48a492d19ff7b99ecf1975"
+    },
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0/native/reset/worker0/episode001_open_101/observation_inputs/snapshots/00000001_623e8795f3a2fd82b98c945a98e79aed5499767d0e56c024b21fa53f50663e00.json": {
+      "bytes": 1812,
+      "sha256": "26604cc44a4de45c2c68cf84ae85dc979980cd3e6b35f62f30af665cd908e73c"
+    },
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0/native/reset/worker0/episode001_open_101/observation_inputs/maps/892987e25e926e31d0742240e15b16ea11633be660caa55dae108575bd5cd3a1.json.gz": {
+      "bytes": 847,
+      "sha256": "5454ccab937a296b353798f1d355c78a093df57c9119bf511ce4992431214268"
+    },
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0/native/reset/worker0/episode001_open_101/observation_inputs/maps/b0d65d90851bf6c6f3012407a832274357a0c468073e5ade5568951256b045f6.json.gz": {
+      "bytes": 919,
+      "sha256": "2103d91a820d202e7613ce500450844c57bfb7863596fe0b34e4eb313563541c"
+    },
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0/native/reset/worker0/episode001_open_101/observation_inputs/maps/e6ad6cb2beab7772f30b0d4928af4dfcdcbaa0296828574b84040476d40a4956.json.gz": {
+      "bytes": 919,
+      "sha256": "798473249642d03470a1c605f1f5ab326b524b0b80d77c792e3db12971891a55"
+    },
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0/native/reset/worker0/episode001_open_101/observation_inputs/maps/e2849bf1d066a7b01215ad025571c292abf08b2fa8d093c08355e9a3dce4c700.json.gz": {
+      "bytes": 923,
+      "sha256": "b003b658bc13d196c82209d71cb5064d9c27d1e963a2247b0f8cc6db2d2482c8"
+    },
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0/native/reset/worker0/episode001_open_101/observation_inputs/snapshots/00000011_3eed3b46fe2cb26f3cf457b4f2f1621aab0d1480625faf2e9c0e6891109a3c47.json": {
+      "bytes": 1813,
+      "sha256": "abcc3e3ebb3be6d68bf84aef0f0333fe688a0f05621ce4826ec34ac3697f02bd"
+    },
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0/native/reset/worker0/episode001_open_101/observation_inputs/maps/0c0592e62839b7a63d7a7c25a76e2df026b243e68e5e9720c97c163aeed648bc.json.gz": {
+      "bytes": 2301,
+      "sha256": "db9558b2683f0b0027f03f2160487910e901accfdf3ced90ba62e6955b8d81d9"
+    },
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0/native/reset/worker0/episode001_open_101/observation_inputs/maps/00324647e2dc8f8e6fa87cce63cba68b232e611290e1ec5fbe081cd7d976beb4.json.gz": {
+      "bytes": 2696,
+      "sha256": "99cfeac7a3125b3ffa69319ae7cc564fb84b28a8907fbe72792431437bc1573e"
+    },
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0/native/reset/worker0/episode001_open_101/observation_inputs/maps/ca2036772c1e46f3c866a7cee7547363c8428eb56ce72fa7725753acd228644f.json.gz": {
+      "bytes": 2906,
+      "sha256": "ff740ca730f1fcc0b676f2b83bdf65f7b579769c7e43712f725871aee82a0b05"
+    },
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0/native/reset/worker0/episode001_open_101/observation_inputs/maps/74d1d5e8dea27d91a4cbe2d534c7890fc734e2305495cc4cdef3068e1da1cda9.json.gz": {
+      "bytes": 5054,
+      "sha256": "d8dd7b468b44e229b0411faba9e859d44a762395f82e64dfe60295a1236ba298"
+    },
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0/native/reset/worker0/episode002_open_101/transitions.jsonl.gz": {
+      "bytes": 107878,
+      "sha256": "51dd67667519401ef4397d9bc4fd68d19c0e25b1b9b7b583a14a6ab67d480556"
+    },
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0/native/reset/worker0/episode002_open_101/observation_inputs/snapshots/00000001_b0e4840bb01dcb010844dc6ce40266f034424c1bfc3e395258e6147722e6b824.json": {
+      "bytes": 1812,
+      "sha256": "163b564597071bd2d93d702bd9406c0387f51ba59b5d41125c317c262017be8f"
+    },
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0/native/reset/worker0/episode002_open_101/observation_inputs/maps/973e651a09570c85d5c50e86960a8dcb805cff763234eb80b5dbd730d0bfcb7d.json.gz": {
+      "bytes": 826,
+      "sha256": "0025fd9a57783342fc45d06193f3bb3348e0659695a3e9c131b7bd97d5813990"
+    },
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0/native/reset/worker0/episode002_open_101/observation_inputs/maps/14293d843ba46d683246031ad8bbd14494091715b1fc93e626c740e53053456d.json.gz": {
+      "bytes": 873,
+      "sha256": "61765696ff2d1b1db27a67a4d518fbf7de194312392ba9b565a2880e9f29e542"
+    },
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0/native/reset/worker0/episode002_open_101/observation_inputs/maps/31308bd46615db4ecb6f9441102ad12f1cb1ce0529c10fc4527d880b02377b5f.json.gz": {
+      "bytes": 923,
+      "sha256": "313e8bb9f7eaf0b2fa8dbb1842eddeb80a341af239bc8ab2bf147182cd46333d"
+    },
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0/native/reset/worker0/episode002_open_101/observation_inputs/maps/1e891823b1b7c3c0ec2bd9320f7d57cb74501914502c851939b2cb975f0164d3.json.gz": {
+      "bytes": 968,
+      "sha256": "c53d4fb2ba6b30411e9a3296b0acc394a85510d94d44153ac6070ea69495ca63"
+    },
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0/native/reset/worker1/episode002_open_101/transitions.jsonl.gz": {
+      "bytes": 119662,
+      "sha256": "c88b27fafd61be8aaf315f797162bc995b2a2bb4b708dda7e322eb41ce2d5116"
+    },
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0/native/reset/worker1/episode002_open_101/observation_inputs/snapshots/00000001_29cf70efdb62c9f9ba5898a05581576915a5318b23b9edd51a153300d977f8ea.json": {
+      "bytes": 1812,
+      "sha256": "641978f35697dad13f433ce89e0b11c24886ec2c74f038323788205eea127f3b"
+    },
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0/native/reset/worker1/episode002_open_101/observation_inputs/maps/86f64bde9196917887b58f020a2e815ef507245d2967bcc1ab8caf4b9352974e.json.gz": {
+      "bytes": 818,
+      "sha256": "7e048666a3f2402587873e5e52171f62c0d07173cceabab08fedbeb619b4322b"
+    },
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0/native/reset/worker1/episode002_open_101/observation_inputs/maps/610725c9fe8b0eee340d9cb4d0f61d04a2f592c3d893e88bfa8980425476a253.json.gz": {
+      "bytes": 873,
+      "sha256": "5240b909c4af1a0dd3e7cdb764a4484957a2f1f4bcd270997f9bbcc3128690c6"
+    },
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0/native/reset/worker1/episode002_open_101/observation_inputs/maps/34ca4c73ca508e1b95716fca9cc8bbb3eceec15d960d24b889ca3d89c05e0c4b.json.gz": {
+      "bytes": 938,
+      "sha256": "47bb73eb52f468ee37091bb0be2e1991a643f79fd8157369458b5ebcf3139d65"
+    },
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0/native/reset/worker1/episode002_open_101/observation_inputs/maps/e450652721ddfa0c5e3b67cd05a0a24107a75c66c23c4c70c43135678921482e.json.gz": {
+      "bytes": 955,
+      "sha256": "439b1014de68bcc4e617e051c058654c79890797e828ee8ef479f0e6d2b8e346"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/merge_map/merge_map/merge_map.py": {
+      "bytes": 8123,
+      "sha256": "76c3d2c604f38f61116be1f39263472f9074b4f69fe7a0428b532da977530078"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_information.py": {
+      "bytes": 33459,
+      "sha256": "3003f57b3de2c518a7217609084efeadc0154afa8ab7d81e386eee44e87ffffa"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py": {
+      "bytes": 47258,
+      "sha256": "b81da18c256ff307a4afc09c5115d0057e5a142a246555f39c1f7a5cee88c6e8"
+    },
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/navigation_archive.py": {
+      "bytes": 4655,
+      "sha256": "b509cc0d19ca443c0776cae4d728d35f399670bda08c171d590c8738964c48bd"
+    },
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v2/navigation_authority_replay_v1.py": {
+      "bytes": 10308,
+      "sha256": "fa0c036e552a4a24b5d81c96b166bff318df375569b9073c2a90ccba5b6b9721"
+    }
+  },
+  "cases": [
+    {
+      "episode": "worker0/episode001_open_101",
+      "sequence": 1,
+      "robot": "tb2",
+      "old_snapshot_digest": "623e8795f3a2fd82b98c945a98e79aed5499767d0e56c024b21fa53f50663e00",
+      "new_counterfactual_snapshot_digest": "4ce00f2141737860425d9e3e5c88471d573bdcabc8a23baeb276ef90aa0401ff",
+      "old_target_intersection": 2,
+      "new_navigation_target_intersection": 338,
+      "old_pool": 2,
+      "new_pool": 41,
+      "new_joint_legal_goal_choices": [
+        0,
+        1,
+        2,
+        3,
+        6,
+        7
+      ],
+      "estimated_seed": [
+        107,
+        118
+      ],
+      "old_hub_seed_value": 100,
+      "new_navigation_seed_value": 0,
+      "new_navigation_seed_diagnostics": {
+        "source": "delivered_navigation_map",
+        "missing": false,
+        "epoch": "mr3_p2a0_20261017_reset_w0_e1_99045424",
+        "sequence": 1,
+        "version": 67,
+        "source_stamp": 74.426,
+        "received_stamp": 77.0,
+        "source_age_sec": 2.6340000000000003,
+        "received_age_sec": 0.060000000000002274,
+        "source_metadata_missing": false,
+        "payload_sha256": "0f9d6b0f8692792a5c699df77cea8fed668798a343c0b489261b529da20683d0",
+        "geometry_sha256": "eb2b26a0337eb9117ff98104fe23095f1c792e70396e00d79a10a119e8be0fa5",
+        "native_shape": [
+          198,
+          238
+        ],
+        "native_resolution_m": 0.05000000074505806,
+        "native_origin_m": [
+          -5.920496417185726,
+          -4.922418139757361
+        ],
+        "unavailable_reason": null,
+        "seed_cell": [
+          107,
+          118
+        ],
+        "seed_cell_clearance_m": 0.6752781911806964,
+        "seed_pose_cell_offset_m": 0.003395365495230455,
+        "seed_pose_clearance_lower_bound_m": 0.671882825685466,
+        "seed_required_clearance_m": 0.29,
+        "seed_rejection_reason": null,
+        "composition_version": "mr3-own-known-shared-unknown-v1",
+        "input_own_map_payload_sha256": "e6ad6cb2beab7772f30b0d4928af4dfcdcbaa0296828574b84040476d40a4956",
+        "input_shared_map_payload_sha256": "892987e25e926e31d0742240e15b16ea11633be660caa55dae108575bd5cd3a1",
+        "shared_map_version": 67,
+        "received_stamp_scope": "counterfactual_frozen_received_bundle_not_native_publication",
+        "input_own_source_stamp": null
+      },
+      "candidate_rule": {
+        "version": "mr3-navigation-geometric-staging-v5",
+        "path_body_clearance_m": 0.29,
+        "goal_xy_tolerance_m": 0.1,
+        "target_clearance_m": 0.39,
+        "new_goal_pair_separation_m": 0.78,
+        "new_goal_idle_separation_m": 0.6799999999999999,
+        "frontier_staging_max_m": 1.0,
+        "frontier_sources": [
+          "received_navigation:tb1",
+          "received_navigation:tb2",
+          "received_navigation:tb3"
+        ],
+        "frontier_projection": "same delivered fused native lattice; navigation-free sightlines",
+        "path_map_source": "delivered_navigation_map",
+        "navigation_composition": "mr3-own-known-shared-unknown-v1"
+      },
+      "conservation": {
+        "tb1": {
+          "independent_numpy_reconstruction_matches": true,
+          "own_occupied_output_cells": 20,
+          "own_occupied_lost": 0,
+          "both_unknown_promoted": 0,
+          "known_own_free_shared_occupied_conflicts": 14
+        },
+        "tb2": {
+          "independent_numpy_reconstruction_matches": true,
+          "own_occupied_output_cells": 20,
+          "own_occupied_lost": 0,
+          "both_unknown_promoted": 0,
+          "known_own_free_shared_occupied_conflicts": 8
+        },
+        "tb3": {
+          "independent_numpy_reconstruction_matches": true,
+          "own_occupied_output_cells": 22,
+          "own_occupied_lost": 0,
+          "both_unknown_promoted": 0,
+          "known_own_free_shared_occupied_conflicts": 2
+        }
+      },
+      "global_hub_payload_sha256_unchanged": "892987e25e926e31d0742240e15b16ea11633be660caa55dae108575bd5cd3a1",
+      "actual_new_native_navigation_or_policy_run": false
+    },
+    {
+      "episode": "worker0/episode001_open_101",
+      "sequence": 11,
+      "robot": "tb3",
+      "old_snapshot_digest": "3eed3b46fe2cb26f3cf457b4f2f1621aab0d1480625faf2e9c0e6891109a3c47",
+      "new_counterfactual_snapshot_digest": "065f3912f71b0989c2c5101382b4ec5a5d22064cc1ebbaf64154d7d0906a0729",
+      "old_target_intersection": 3388,
+      "new_navigation_target_intersection": 18863,
+      "old_pool": 288,
+      "new_pool": 188,
+      "new_joint_legal_goal_choices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        7
+      ],
+      "estimated_seed": [
+        98,
+        135
+      ],
+      "old_hub_seed_value": 100,
+      "new_navigation_seed_value": 0,
+      "new_navigation_seed_diagnostics": {
+        "source": "delivered_navigation_map",
+        "missing": false,
+        "epoch": "mr3_p2a0_20261017_reset_w0_e1_99045424",
+        "sequence": 11,
+        "version": 77,
+        "source_stamp": 86.335,
+        "received_stamp": 87.0,
+        "source_age_sec": 0.7250000000000085,
+        "received_age_sec": 0.060000000000002274,
+        "source_metadata_missing": false,
+        "payload_sha256": "03045d64f87238abfbb21f441038ad1a676dc1fc1d90b91346f8d3925845dbef",
+        "geometry_sha256": "f6c0d63f7f3027087a8096c139af436df2255e2e8687ccd8b282af17b33db164",
+        "native_shape": [
+          199,
+          238
+        ],
+        "native_resolution_m": 0.05000000074505806,
+        "native_origin_m": [
+          -5.944369914026285,
+          -4.938103258908035
+        ],
+        "unavailable_reason": null,
+        "seed_cell": [
+          98,
+          135
+        ],
+        "seed_cell_clearance_m": 0.7278615479103421,
+        "seed_pose_cell_offset_m": 0.006692966805272491,
+        "seed_pose_clearance_lower_bound_m": 0.7211685811050695,
+        "seed_required_clearance_m": 0.29,
+        "seed_rejection_reason": null,
+        "composition_version": "mr3-own-known-shared-unknown-v1",
+        "input_own_map_payload_sha256": "74d1d5e8dea27d91a4cbe2d534c7890fc734e2305495cc4cdef3068e1da1cda9",
+        "input_shared_map_payload_sha256": "0c0592e62839b7a63d7a7c25a76e2df026b243e68e5e9720c97c163aeed648bc",
+        "shared_map_version": 77,
+        "received_stamp_scope": "counterfactual_frozen_received_bundle_not_native_publication",
+        "input_own_source_stamp": null
+      },
+      "candidate_rule": {
+        "version": "mr3-navigation-geometric-staging-v5",
+        "path_body_clearance_m": 0.29,
+        "goal_xy_tolerance_m": 0.1,
+        "target_clearance_m": 0.39,
+        "new_goal_pair_separation_m": 0.78,
+        "new_goal_idle_separation_m": 0.6799999999999999,
+        "frontier_staging_max_m": 1.0,
+        "frontier_sources": [
+          "received_navigation:tb1",
+          "received_navigation:tb2",
+          "received_navigation:tb3"
+        ],
+        "frontier_projection": "same delivered fused native lattice; navigation-free sightlines",
+        "path_map_source": "delivered_navigation_map",
+        "navigation_composition": "mr3-own-known-shared-unknown-v1"
+      },
+      "conservation": {
+        "tb1": {
+          "independent_numpy_reconstruction_matches": true,
+          "own_occupied_output_cells": 1165,
+          "own_occupied_lost": 0,
+          "both_unknown_promoted": 0,
+          "known_own_free_shared_occupied_conflicts": 288
+        },
+        "tb2": {
+          "independent_numpy_reconstruction_matches": true,
+          "own_occupied_output_cells": 1381,
+          "own_occupied_lost": 0,
+          "both_unknown_promoted": 0,
+          "known_own_free_shared_occupied_conflicts": 238
+        },
+        "tb3": {
+          "independent_numpy_reconstruction_matches": true,
+          "own_occupied_output_cells": 1192,
+          "own_occupied_lost": 0,
+          "both_unknown_promoted": 0,
+          "known_own_free_shared_occupied_conflicts": 41
+        }
+      },
+      "global_hub_payload_sha256_unchanged": "0c0592e62839b7a63d7a7c25a76e2df026b243e68e5e9720c97c163aeed648bc",
+      "actual_new_native_navigation_or_policy_run": false
+    },
+    {
+      "episode": "worker0/episode002_open_101",
+      "sequence": 1,
+      "robot": "tb2",
+      "old_snapshot_digest": "b0e4840bb01dcb010844dc6ce40266f034424c1bfc3e395258e6147722e6b824",
+      "new_counterfactual_snapshot_digest": "d7be9166f38895ab8b9814191a33d92452fd9a56e640f7b81756e7956c5c5ed3",
+      "old_target_intersection": 0,
+      "new_navigation_target_intersection": 334,
+      "old_pool": 0,
+      "new_pool": 32,
+      "new_joint_legal_goal_choices": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        7
+      ],
+      "estimated_seed": [
+        107,
+        118
+      ],
+      "old_hub_seed_value": 100,
+      "new_navigation_seed_value": 0,
+      "new_navigation_seed_diagnostics": {
+        "source": "delivered_navigation_map",
+        "missing": false,
+        "epoch": "mr3_p2a0_20261017_reset_w0_e2_45a28b5f",
+        "sequence": 1,
+        "version": 63,
+        "source_stamp": 71.465,
+        "received_stamp": 74.0,
+        "source_age_sec": 3.0549999999999926,
+        "received_age_sec": 0.519999999999996,
+        "source_metadata_missing": false,
+        "payload_sha256": "75e2927dabb5a8d5ac04331f5db5cc9514d77ae1a60b8aff4583ce60966b653f",
+        "geometry_sha256": "d2a857b09d0d02d7923a007c7774e8772e4ba683a96a9bd96e1c05b220b8d64f",
+        "native_shape": [
+          198,
+          238
+        ],
+        "native_resolution_m": 0.05000000074505806,
+        "native_origin_m": [
+          -5.924945142869514,
+          -4.922798603578227
+        ],
+        "unavailable_reason": null,
+        "seed_cell": [
+          107,
+          118
+        ],
+        "seed_cell_clearance_m": 0.6373258727912535,
+        "seed_pose_cell_offset_m": 0.0030818564188076825,
+        "seed_pose_clearance_lower_bound_m": 0.6342440163724459,
+        "seed_required_clearance_m": 0.29,
+        "seed_rejection_reason": null,
+        "composition_version": "mr3-own-known-shared-unknown-v1",
+        "input_own_map_payload_sha256": "31308bd46615db4ecb6f9441102ad12f1cb1ce0529c10fc4527d880b02377b5f",
+        "input_shared_map_payload_sha256": "973e651a09570c85d5c50e86960a8dcb805cff763234eb80b5dbd730d0bfcb7d",
+        "shared_map_version": 63,
+        "received_stamp_scope": "counterfactual_frozen_received_bundle_not_native_publication",
+        "input_own_source_stamp": null
+      },
+      "candidate_rule": {
+        "version": "mr3-navigation-geometric-staging-v5",
+        "path_body_clearance_m": 0.29,
+        "goal_xy_tolerance_m": 0.1,
+        "target_clearance_m": 0.39,
+        "new_goal_pair_separation_m": 0.78,
+        "new_goal_idle_separation_m": 0.6799999999999999,
+        "frontier_staging_max_m": 1.0,
+        "frontier_sources": [
+          "received_navigation:tb1",
+          "received_navigation:tb2",
+          "received_navigation:tb3"
+        ],
+        "frontier_projection": "same delivered fused native lattice; navigation-free sightlines",
+        "path_map_source": "delivered_navigation_map",
+        "navigation_composition": "mr3-own-known-shared-unknown-v1"
+      },
+      "conservation": {
+        "tb1": {
+          "independent_numpy_reconstruction_matches": true,
+          "own_occupied_output_cells": 4,
+          "own_occupied_lost": 0,
+          "both_unknown_promoted": 0,
+          "known_own_free_shared_occupied_conflicts": 21
+        },
+        "tb2": {
+          "independent_numpy_reconstruction_matches": true,
+          "own_occupied_output_cells": 27,
+          "own_occupied_lost": 0,
+          "both_unknown_promoted": 0,
+          "known_own_free_shared_occupied_conflicts": 13
+        },
+        "tb3": {
+          "independent_numpy_reconstruction_matches": true,
+          "own_occupied_output_cells": 43,
+          "own_occupied_lost": 0,
+          "both_unknown_promoted": 0,
+          "known_own_free_shared_occupied_conflicts": 0
+        }
+      },
+      "global_hub_payload_sha256_unchanged": "973e651a09570c85d5c50e86960a8dcb805cff763234eb80b5dbd730d0bfcb7d",
+      "actual_new_native_navigation_or_policy_run": false
+    },
+    {
+      "episode": "worker1/episode002_open_101",
+      "sequence": 1,
+      "robot": "tb2",
+      "old_snapshot_digest": "29cf70efdb62c9f9ba5898a05581576915a5318b23b9edd51a153300d977f8ea",
+      "new_counterfactual_snapshot_digest": "b11985fbe83f030989ecdfaa66375cdc7b06f067da8055d84ef83f9d6d81e087",
+      "old_target_intersection": 0,
+      "new_navigation_target_intersection": 316,
+      "old_pool": 0,
+      "new_pool": 35,
+      "new_joint_legal_goal_choices": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "estimated_seed": [
+        107,
+        118
+      ],
+      "old_hub_seed_value": 100,
+      "new_navigation_seed_value": 0,
+      "new_navigation_seed_diagnostics": {
+        "source": "delivered_navigation_map",
+        "missing": false,
+        "epoch": "mr3_p2a0_20261017_reset_w1_e2_4d31a548",
+        "sequence": 1,
+        "version": 69,
+        "source_stamp": 77.449,
+        "received_stamp": 80.0,
+        "source_age_sec": 2.771000000000001,
+        "received_age_sec": 0.21999999999999886,
+        "source_metadata_missing": false,
+        "payload_sha256": "44d38ed03fb10d489463fb2d89acd4c356622222ccf629e0421255d612283674",
+        "geometry_sha256": "421a47e3c85c42c9b535b6e36a001703d11201a19b0cb274e0c0966c1a5cd91a",
+        "native_shape": [
+          198,
+          238
+        ],
+        "native_resolution_m": 0.05000000074505806,
+        "native_origin_m": [
+          -5.929531768533344,
+          -4.921973645087641
+        ],
+        "unavailable_reason": null,
+        "seed_cell": [
+          107,
+          118
+        ],
+        "seed_cell_clearance_m": 0.7028858244261574,
+        "seed_pose_cell_offset_m": 0.007549059727878703,
+        "seed_pose_clearance_lower_bound_m": 0.6953367646982788,
+        "seed_required_clearance_m": 0.29,
+        "seed_rejection_reason": null,
+        "composition_version": "mr3-own-known-shared-unknown-v1",
+        "input_own_map_payload_sha256": "34ca4c73ca508e1b95716fca9cc8bbb3eceec15d960d24b889ca3d89c05e0c4b",
+        "input_shared_map_payload_sha256": "86f64bde9196917887b58f020a2e815ef507245d2967bcc1ab8caf4b9352974e",
+        "shared_map_version": 69,
+        "received_stamp_scope": "counterfactual_frozen_received_bundle_not_native_publication",
+        "input_own_source_stamp": null
+      },
+      "candidate_rule": {
+        "version": "mr3-navigation-geometric-staging-v5",
+        "path_body_clearance_m": 0.29,
+        "goal_xy_tolerance_m": 0.1,
+        "target_clearance_m": 0.39,
+        "new_goal_pair_separation_m": 0.78,
+        "new_goal_idle_separation_m": 0.6799999999999999,
+        "frontier_staging_max_m": 1.0,
+        "frontier_sources": [
+          "received_navigation:tb1",
+          "received_navigation:tb2",
+          "received_navigation:tb3"
+        ],
+        "frontier_projection": "same delivered fused native lattice; navigation-free sightlines",
+        "path_map_source": "delivered_navigation_map",
+        "navigation_composition": "mr3-own-known-shared-unknown-v1"
+      },
+      "conservation": {
+        "tb1": {
+          "independent_numpy_reconstruction_matches": true,
+          "own_occupied_output_cells": 4,
+          "own_occupied_lost": 0,
+          "both_unknown_promoted": 0,
+          "known_own_free_shared_occupied_conflicts": 16
+        },
+        "tb2": {
+          "independent_numpy_reconstruction_matches": true,
+          "own_occupied_output_cells": 56,
+          "own_occupied_lost": 0,
+          "both_unknown_promoted": 0,
+          "known_own_free_shared_occupied_conflicts": 7
+        },
+        "tb3": {
+          "independent_numpy_reconstruction_matches": true,
+          "own_occupied_output_cells": 18,
+          "own_occupied_lost": 0,
+          "both_unknown_promoted": 0,
+          "known_own_free_shared_occupied_conflicts": 3
+        }
+      },
+      "global_hub_payload_sha256_unchanged": "86f64bde9196917887b58f020a2e815ef507245d2967bcc1ab8caf4b9352974e",
+      "actual_new_native_navigation_or_policy_run": false
+    }
+  ],
+  "command": [
+    "/usr/bin/python3",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v2/navigation_authority_replay_v1.py",
+    "--output",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v2/navigation_authority_replay_v1.json"
+  ],
+  "environment": "system ROS Humble Python; PYTHONNOUSERSITE=1; no ROS initialization",
+  "scope": "Frozen received-map method replay; production-native validation remains separate",
+  "limits": [
+    "Own observed free is local SLAM authority, not proof of physical free space.",
+    "No own occupied cells or both-unknown cells are cleared/promoted by this rule.",
+    "Global occupied-wins evaluation maps are byte-identical to the baseline native inputs.",
+    "The old native failures remain; this is not a new native Nav2 execution or 95% result."
+  ],
+  "jobs": {
+    "ROS_initialized": false,
+    "native_starts": 0,
+    "messages": 0,
+    "services": 0,
+    "process_signals": 0,
+    "GPU": 0,
+    "repository_source_writes": 0,
+    "evidence_json_writes": 1
+  }
+}

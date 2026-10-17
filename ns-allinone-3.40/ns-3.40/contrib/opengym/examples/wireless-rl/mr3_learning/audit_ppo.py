@@ -29,30 +29,44 @@ from .observation import encode_snapshot, observation_space
 WIRELESS = "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/"
 ROS = "ros2_ws/ros2-multi-robot-automap/"
 OBSERVATION_SOURCE = ROS + "src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py"
-OBSERVATION_SHA256 = "ef4cf37c7c515728beeccac8dbd43eb0fed0a409913c2c5837828057b6739536"
+OBSERVATION_SHA256 = "b81da18c256ff307a4afc09c5115d0057e5a142a246555f39c1f7a5cee88c6e8"
 REWARD_SOURCE = ROS + "src/multi_robot_exploration/multi_robot_exploration/mr3_reward.py"
 W7_REWARD_SHA256 = "77485e7988489a146e4c44207343a0a4be7c12b5ffe36906dde59257cac16f88"
 EVALUATOR_PHASE_PINS = {
-    ROS + "scripts/mr3_env_worker.py":
-        "977d4e8215e193a2be8c207728adb3a39d48e26d35bb9089abe921c1d61053fd",
-    ROS + "src/multi_robot_exploration/multi_robot_exploration/task_evaluator.py":
-        "9b029f21d433f694b79118c113e23df5921401e3be88f89599201bcecf84cc91",
-    ROS + "src/multi_robot_exploration/multi_robot_exploration/mr3_evaluator_phase.py":
-        "9c43ace376354edbdf496fe920d04a539ed47912fd0840f6d290c459450d69fa",
+    ROS + 'scripts/mr3_env_worker.py':
+        '8f92b8f1e65890c12b31625e1c9b51ce6b613b19a440c6353efec484c4c996cd',
+    ROS + 'src/multi_robot_exploration/multi_robot_exploration/task_evaluator.py':
+        '9b029f21d433f694b79118c113e23df5921401e3be88f89599201bcecf84cc91',
+    ROS + 'src/multi_robot_exploration/multi_robot_exploration/mr3_evaluator_phase.py':
+        '9c43ace376354edbdf496fe920d04a539ed47912fd0840f6d290c459450d69fa',
 }
 CURRENT_AUDITOR_PINS = {
-    ROS + "scripts/audit_mr3_env.py":
-        "427d5263403dc9d0db846e36fe6051446d99ed337e45313424ff148ecef08cb7",
-    ROS + "scripts/audit_mr3_adapter_probe.py":
-        "6fd3d3d220ac138bedfb93f700a78eac8350f744c0a6009e1a7f2613919c37ef",
+    ROS + 'scripts/audit_mr3_env.py':
+        '5ba60bc89f3c87059cd5d4342fa433de25548c7d95c66ea0ce7708eb4ae8dad2',
+    ROS + 'scripts/audit_mr3_adapter_probe.py':
+        '5b0ecf24617e317415b66876add73f5834187d022647d251edde8d1082370195',
 }
 PREPARATION_RUNTIME_PINS = {
-    ROS + "src/multi_robot_exploration/multi_robot_exploration/mr3_adapter.py":
-        "02a44cb495e80f64034961dca18e61477c6168fc71707b4d0def76ac3f31fc4d",
-    ROS + "src/multi_robot_exploration/multi_robot_exploration/mr3_observation_archive.py":
-        "2429220eaace41b0ef401ec03ffef4aff0df4e1fa0bee74d7b79025e29e64d02",
-    ROS + "src/multi_robot_exploration/multi_robot_exploration/peer_obstacles.py":
-        "54e6eeccac7d93ac42c3783b7826fed14296c527c7d68a7ecdb76e77a50102d4",
+    ROS + 'src/multi_robot_exploration/multi_robot_exploration/mr3_adapter.py':
+        'da648c20e92160e8d8b3295909fb4b4b1eb3328b3f0a5355cf290df486bd4ebb',
+    ROS + 'src/multi_robot_exploration/multi_robot_exploration/mr3_observation_archive.py':
+        '03da72d5e989e6c7af99b90aaddf357120c2239fc08e99febb858554b1fefea8',
+    ROS + 'src/multi_robot_exploration/multi_robot_exploration/peer_obstacles.py':
+        '54e6eeccac7d93ac42c3783b7826fed14296c527c7d68a7ecdb76e77a50102d4',
+    ROS + 'src/merge_map/merge_map/merge_map.py':
+        '76c3d2c604f38f61116be1f39263472f9074b4f69fe7a0428b532da977530078',
+    ROS + 'src/multi_robot_exploration/multi_robot_exploration/mr3_information.py':
+        '3003f57b3de2c518a7217609084efeadc0154afa8ab7d81e386eee44e87ffffa',
+    ROS + 'src/multi_robot_exploration/multi_robot_exploration/mr3_activity.py':
+        '7af918d75c05b6f8fb1a65899e43aad11a315640e8b00fdb589c31f693ad696e',
+    ROS + 'src/multi_robot_exploration/multi_robot_exploration/mr3_protocol.py':
+        '5a2b90efd162b19a35964750002fe549413fec6e07f9679ea611d3fe6b1e4ada',
+    ROS + 'src/multi_robot_exploration/multi_robot_exploration/mr3_motion_safety.py':
+        '87c7e61ed59aea93b6c4c4b4e153644f59d27151840771afdba7b0012c5a2b6b',
+    ROS + 'src/multi_robot_exploration/multi_robot_exploration/motion_safety.py':
+        'a23f138e2dca3c13156eff2cc5b4ff861a061f48123414da9595ae3028808d46',
+    ROS + 'src/multi_robot_exploration/multi_robot_exploration/control.py':
+        'f595fd1e999a5cbe9d0f33db549d7aba0af615703b589ef14ff2538a871e380c',
 }
 SLAM = ROS + "src/slam_toolbox/"
 SLAM_RUNTIME_PINS = {
@@ -98,16 +112,26 @@ SLAM_RUNTIME_PINS = {
         "1472cfff3644523c60a7fc454c4cc875faa5d481455c85d7e7747042b6944573",
 }
 EXECUTION_CONFIG_PINS = {
-    ROS + "src/slam_toolbox/config/mapper_params_online_multi_async.yaml":
-        "3ca81b5afb628d5787e60a266c6dc375a26f6b6a5c4fef70bd8a5261dc8dbb17",
-    ROS + "src/multi_robot/params/nav2_params_tb1_0.yaml":
-        "fb5c7e0599a8b6cf69af21d14bd486017d87d6de0c6a61bdd5cd1b31647723fb",
-    ROS + "src/multi_robot/params/nav2_params_tb2_0.yaml":
-        "2964ef46a8d75267a359c339c8629932ff20e87357dcb6bfca160681b819c40b",
-    ROS + "src/multi_robot/params/nav2_params_tb3_0.yaml":
-        "1ea059a6e9f9ec462eea625a90f1711534f629bbeda03b846deb549dbde1fc8f",
+    ROS + 'src/slam_toolbox/config/mapper_params_online_multi_async.yaml':
+        '3ca81b5afb628d5787e60a266c6dc375a26f6b6a5c4fef70bd8a5261dc8dbb17',
+    ROS + 'src/multi_robot/params/nav2_params_tb1_0.yaml':
+        'fb5c7e0599a8b6cf69af21d14bd486017d87d6de0c6a61bdd5cd1b31647723fb',
+    ROS + 'src/multi_robot/params/nav2_params_tb2_0.yaml':
+        '2964ef46a8d75267a359c339c8629932ff20e87357dcb6bfca160681b819c40b',
+    ROS + 'src/multi_robot/params/nav2_params_tb3_0.yaml':
+        '1ea059a6e9f9ec462eea625a90f1711534f629bbeda03b846deb549dbde1fc8f',
+    ROS + 'src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py':
+        '370a07e2fe42083b03b0a0b05c9b818d277782fcc602908830069dd89938d42f',
+    ROS + 'src/multi_robot/launch/nav2_bringup/bringup_launch.py':
+        '41b7e5e65c2c61ce6f1efb5a9288c3875e60f6c9054d77f96f7fc6f0a6f2aa53',
+    ROS + 'src/multi_robot/launch/nav2_bringup/navigation_launch.py':
+        'ee4a7b7d590eb9f1a8129d025e99ceaf5908537d0063144da159d5a7ae8fd209',
+    ROS + 'src/multi_robot_exploration/setup.py':
+        'a23cd0dc598ebb59d9eae325bd1a6ee0ae700751986cac6858fe2c2949b68a15',
+    ROS + 'src/multi_robot/models/turtlebot3_waffle/model.sdf':
+        '801ee7f05f8aab1b791ec1203595d08139f0d57cd2e5518e09baf657c2085156',
 }
-ENV_DOCUMENT_SHA256 = "fa39665fab65d2970e86a2654d047ada2ae5d3670fe644b7c06d5a1e3abb3beb"
+ENV_DOCUMENT_SHA256 = "12a4183f9dbb096368be60ea7fda51000a4f9c4581a0ec714f81dc14283e8294"
 TASK_DOCUMENT_SHA256 = "f96f5ba785a39daa882b3c2ea217c58dd968550b65bf0ee15faf07ca079f8991"
 PRIOR_TASK_DOCUMENT_SHA256 = "5e4400396e4aaf5a5094fb4c0c04c85810c327cc85be88b7d03fa3faeade07d2"
 TASK_BASE_FREEZE = "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a"
@@ -167,7 +191,7 @@ def verify_frozen_pins(root, freeze, pins, label):
 
 
 def extend_snapshot_validator(auditor, candidate_module):
-    """Extend the original validator for the exact reviewed v3/v4 rules.
+    """Extend the original validator for exact reviewed candidate/schema rules.
 
     Original records take the unmodified legacy path. New records first prove
     their actual whole-snapshot and versioned candidate digests; a detached
@@ -185,7 +209,14 @@ def extend_snapshot_validator(auditor, candidate_module):
         require(snapshot.get("digest") == auditor.canonical_digest(
             {key: value for key, value in snapshot.items() if key != "digest"}),
             "saved snapshot digest mismatch")
+        if snapshot.get("schema") == "mr3-observation-v3":
+            # The current encoder validates every activity field and valid bit.
+            # Native masks, candidate coordinates and execution gates are not
+            # changed in the detached original-validator view below.
+            encode_snapshot(snapshot)
         legacy = copy.deepcopy(snapshot)
+        if legacy.get("schema") == "mr3-observation-v3":
+            legacy["schema"] = "mr3-observation-v2"
         legacy.pop("candidate_rule")
         legacy["candidate_version"] = auditor.canonical_digest({
             key: legacy[key] for key in
@@ -269,8 +300,9 @@ def load_compatible_components(phase, root, freeze):
     base.FREEZE, base.METHOD = freeze, phase.METHOD
     base.PINNED_RUNTIME, base.PINNED_DOCUMENTS = runtime, dict(phase.PINNED_DOCUMENTS)
     proof[OBSERVATION_SOURCE]["snapshot_validator_override"] = {
-        "rules": [current_probe.CANDIDATE_RULE_V3, current_probe.CANDIDATE_RULE_V4],
-        "scope": ("exact v3/v4 candidate digest dispatch only; "
+        "rules": list(current_probe.CANDIDATE_RULES.values()),
+        "scope": ("exact reviewed candidate digest/schema dispatch; "
+                  "v3 activity encoder validation; "
                   "legacy/contact/clock/command/scalar rules retained"),
         "original_auditor_files_modified": False}
     return base, auditor, command, proof
@@ -323,7 +355,8 @@ def load_native_gates(root, freeze):
         proof[relative] = {"sha256": digest, "git_source": freeze + ":" + relative,
                            "normative_source": TASK_BASE_FREEZE + ":" + relative}
     for filename in ("audit_ppo.py", "audit_scalar.py", "audit_protocol.py",
-                     "audit_evaluator_phase.py", "audit_preparation.py", "ppo.py",
+                     "audit_evaluator_phase.py", "audit_preparation.py", "audit_activity.py",
+                     "audit_motion.py", "navigation_archive.py", "ppo.py",
                      "rollout.py", "policy.py",
                      "model.py", "env.py", "ipc.py", "benchmark.py",
                      "observation.py", "supervisor.py", "requirements-env.txt",

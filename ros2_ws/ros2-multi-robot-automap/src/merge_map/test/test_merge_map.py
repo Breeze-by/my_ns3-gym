@@ -1,7 +1,7 @@
 from nav_msgs.msg import OccupancyGrid
 import pytest
 
-from merge_map.merge_map import merge_maps
+from merge_map.merge_map import merge_maps, merge_navigation_map
 
 
 def make_grid(data, width, origin_x=0.0):
@@ -76,3 +76,27 @@ def test_merge_stamp_uses_latest_input_instead_of_robot_order():
     first.header.stamp.sec = 10
     second.header.stamp.sec = 2
     assert merge_maps([first, second]).header.stamp.sec == 10
+
+
+def test_navigation_preserves_all_own_known_values_and_only_fills_own_unknown():
+    own = make_grid([0, 100, -1, -1, -1], 5)
+    shared = make_grid([100, 0, 100, 0, -1], 5)
+    assert list(merge_maps([own, shared]).data) == [100, 100, 100, 0, -1]
+    assert list(merge_navigation_map(own, shared).data) == [0, 100, 100, 0, -1]
+    assert list(own.data) == [0, 100, -1, -1, -1]
+    assert list(shared.data) == [100, 0, 100, 0, -1]
+
+
+def test_fractional_navigation_keeps_own_occupied_area_and_requires_full_own_free():
+    own = make_grid([100, 0, 0], 3, origin_x=.4)
+    shared = make_grid([0, 100, 100, 100], 4)
+    result = merge_navigation_map(own, shared)
+    assert list(result.data) == [100, 100, 0, 100]
+    # The final partly observed own-free cell is not promoted to own authority.
+    assert result.data[-1] == 100
+
+
+def test_navigation_does_not_depend_on_robot_seed_history_or_target():
+    own, shared = make_grid([0, -1, 100], 3), make_grid([100, -1, 0], 3)
+    assert merge_navigation_map(own, shared) == merge_navigation_map(own, shared)
+    assert list(merge_navigation_map(own, shared).data) == [0, -1, 100]

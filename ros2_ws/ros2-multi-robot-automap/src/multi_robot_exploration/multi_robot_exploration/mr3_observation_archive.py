@@ -9,7 +9,7 @@ from multi_robot_exploration.mr3_observation import ROBOT_NAMES, snapshot_digest
 
 
 def archive_snapshot_inputs(root, snapshot, payloads, metadata):
-    """Write four frozen map payloads and a manifest in the episode audit root.
+    """Write frozen received maps and a manifest in the episode audit root.
 
     The canonical JSON is byte-identical to ``mr3_information.map_digest``.
     Everything is validated before writing; errors propagate to the encoder
@@ -25,23 +25,40 @@ def archive_snapshot_inputs(root, snapshot, payloads, metadata):
             or metadata["map_source_stamp"] != snapshot["map"]["source_stamp"]
             or metadata["map_received_stamp"] != snapshot["map"]["received_stamp"]):
         raise ValueError("archive metadata does not match frozen snapshot")
-    if set(payloads) != {"fused", *ROBOT_NAMES}:
+    navigation = metadata.get("navigation_sources")
+    roles = {"fused", *ROBOT_NAMES}
+    if navigation is not None:
+        roles.update("navigation:" + name for name in ROBOT_NAMES)
+        if navigation != snapshot.get("navigation_sources"):
+            raise ValueError("archive navigation sources differ from frozen snapshot")
+        if metadata.get("navigation_composition", {}).get("version") != snapshot.get(
+                "candidate_rule", {}).get("navigation_composition"):
+            raise ValueError("archive navigation composition differs from candidate rule")
+    if set(payloads) != roles:
         raise ValueError("archive requires fused and three own-map payloads")
     encoded, maps = {}, {}
-    for name in ("fused", *ROBOT_NAMES):
+    for name in sorted(roles):
         raw = json.dumps(payloads[name], allow_nan=False, sort_keys=True,
                          separators=(",", ":")).encode("utf-8")
         digest = hashlib.sha256(raw).hexdigest()
-        expected = (metadata["map_payload_sha256"] if name == "fused"
-                    else metadata["map_sources"][name]["payload_sha256"])
+        if name == "fused":
+            expected = metadata["map_payload_sha256"]
+        elif name.startswith("navigation:"):
+            expected = navigation[name.split(":", 1)[1]]["payload_sha256"]
+        else:
+            expected = metadata["map_sources"][name]["payload_sha256"]
         if digest != expected:
             raise ValueError("archive map payload digest mismatch: " + name)
-        if name != "fused" and snapshot["path_maps"][name]["payload_sha256"] != expected:
-            raise ValueError("archive own-map identity differs from snapshot: " + name)
+        path_name = (name.split(":", 1)[1] if name.startswith("navigation:")
+                     else name if navigation is None and name in ROBOT_NAMES else None)
+        if (path_name is not None
+                and snapshot["path_maps"][path_name]["payload_sha256"] != expected):
+            raise ValueError("archive path-map identity differs from snapshot: " + name)
         encoded[digest] = raw
         maps[name] = {"payload_sha256": digest, "artifact": f"maps/{digest}.json.gz"}
     manifest = {
-        "schema": "mr3-observation-input-archive-v1",
+        "schema": ("mr3-observation-input-archive-v1" if navigation is None
+                   else "mr3-observation-input-archive-v2"),
         "scope": "encoder_result_before_publication",
         "epoch": snapshot["epoch"], "sequence": snapshot["sequence"],
         "snapshot_digest": snapshot["digest"], "candidate_version": snapshot["candidate_version"],

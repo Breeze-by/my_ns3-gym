@@ -24,7 +24,7 @@ from scipy.spatial import cKDTree
 from multi_robot_exploration.mr3_episode import elapsed_ns, timestamp_ns
 
 
-SCHEMA = "mr3-observation-v2"
+SCHEMA = "mr3-observation-v3"
 ROBOT_NAMES = ("tb1", "tb2", "tb3")
 CANDIDATE_COUNT = 8
 KEEP = 8
@@ -38,6 +38,8 @@ CLEARANCE_M = PHYSICAL_RADIUS_M + CLEARANCE_MARGIN_M
 GOAL_XY_TOLERANCE_M = 0.10
 TARGET_CLEARANCE_M = CLEARANCE_M + GOAL_XY_TOLERANCE_M
 CANDIDATE_RULE_VERSION = "mr3-per-robot-geometric-staging-v4"
+NAVIGATION_CANDIDATE_RULE_VERSION = "mr3-navigation-geometric-staging-v5"
+NAVIGATION_COMPOSITION_VERSION = "mr3-own-known-shared-unknown-v1"
 TARGET_SEPARATION_M = 2.0 * TARGET_CLEARANCE_M
 STATE_MAX_AGE_SEC = 0.5
 FRONTIER_STAGING_MAX_M = 1.0
@@ -148,6 +150,7 @@ def _robot_state(robot, now):
         "source_metadata_missing": nav_source is None or nav_received is None,
         "receipt_sequence": navigation.get("sequence"),
         "progress_m": _finite(navigation.get("progress_m")),
+        "accepted_goal_count": navigation.get("accepted_goal_count"),
         "last_failure": navigation.get("last_failure"),
     }
     for key in ("requested_at", "accepted_at", "created_at", "expires_at", "lease_until"):
@@ -185,6 +188,7 @@ def _robot_state(robot, now):
         "source_stamp": source_stamp, "received_stamp": received_stamp,
         "source_age_sec": source_age, "received_age_sec": received_age,
         "missing": not valid, "navigation": nav, "history": history,
+        "activity": copy.deepcopy(robot.get("activity")),
     }
 
 
@@ -308,7 +312,7 @@ def _candidate_frontiers(raw_grid, resolution, origin, robot_maps, path_maps):
 
 
 def _candidates(raw_grid, clearance, target_cells, target_paths, resolution, origin, states,
-                *, frontier_mask=None):
+                *, frontier_mask=None, line_grids=None):
     """Project frontiers into each robot's reachable safe target component.
 
     ``target_paths`` contains native own-map paths to the fused target cells.
@@ -354,6 +358,7 @@ def _candidates(raw_grid, clearance, target_cells, target_paths, resolution, ori
     pool = {}
     supported, occluded = set(), set()
     for robot_index in range(3):
+        line_grid = raw_grid if line_grids is None else line_grids[robot_index]
         rejection = diagnostics["per_robot_staging_rejections"][robot_index]
         if not reachable[:, robot_index].any():
             rejection["no_reachable_safe_cells"] = len(frontier_cells)
@@ -369,7 +374,7 @@ def _candidates(raw_grid, clearance, target_cells, target_paths, resolution, ori
             if distance[frontier_row, frontier_column] * resolution > FRONTIER_STAGING_MAX_M:
                 rejection["beyond_staging_limit"] += 1
                 continue
-            if not _known_line(raw_grid, (row, column), (frontier_row, frontier_column)):
+            if not _known_line(line_grid, (row, column), (frontier_row, frontier_column)):
                 # A wall can hide the Euclidean-nearest reachable cell while
                 # another equally safe cell has a known-free sightline. Search
                 # the bounded geometric neighbourhood before rejecting this
@@ -385,7 +390,7 @@ def _candidates(raw_grid, clearance, target_cells, target_paths, resolution, ori
                     (cell[0] - frontier_row) ** 2 + (cell[1] - frontier_column) ** 2,
                     cell[1], cell[0]))
                 visible = next((cell for cell in ordered if _known_line(
-                    raw_grid, cell, (frontier_row, frontier_column))), None)
+                    line_grid, cell, (frontier_row, frontier_column))), None)
                 if visible is None:
                     rejection["occluded_staging_line"] += 1
                     occluded.add(frontier_index)
@@ -496,7 +501,8 @@ def _seed_diagnostics(grid, traversable, clearance, robot, resolution, origin):
     }
 
 
-def _own_map_paths(robot_maps, states, now, epoch, fused_resolution, fused_origin, target_cells):
+def _own_map_paths(robot_maps, states, now, epoch, fused_resolution, fused_origin, target_cells,
+                   *, source="delivered_own_map"):
     """Build each graph from that robot's unchanged, explicitly delivered map."""
     if not isinstance(robot_maps, dict) or set(robot_maps) - set(ROBOT_NAMES):
         raise ValueError("robot_maps must map only tb1/tb2/tb3 to delivered maps")
@@ -507,19 +513,21 @@ def _own_map_paths(robot_maps, states, now, epoch, fused_resolution, fused_origi
     for robot_index, robot in enumerate(states):
         name = robot["name"]
         entry = robot_maps.get(name)
+        missing_reason = ("missing_received_navigation_map"
+                          if source == "delivered_navigation_map" else "missing_received_own_map")
         metadata = {
-            "source": "delivered_own_map", "missing": True,
+            "source": source, "missing": True,
             "epoch": None, "sequence": None, "version": None,
             "source_stamp": None, "received_stamp": None,
             "source_age_sec": None, "received_age_sec": None,
             "source_metadata_missing": True, "payload_sha256": None,
             "geometry_sha256": None, "native_shape": None,
             "native_resolution_m": None, "native_origin_m": None,
-            "unavailable_reason": "missing_received_own_map",
+            "unavailable_reason": missing_reason,
             "seed_cell": None, "seed_cell_clearance_m": None,
             "seed_pose_cell_offset_m": None, "seed_pose_clearance_lower_bound_m": None,
             "seed_required_clearance_m": CLEARANCE_M,
-            "seed_rejection_reason": "missing_received_own_map",
+            "seed_rejection_reason": missing_reason,
         }
         seed_valid = False
         if entry is not None and entry.get("grid") is not None:
@@ -585,6 +593,13 @@ def _own_map_paths(robot_maps, states, now, epoch, fused_resolution, fused_origi
                 metadata["unavailable_reason"] = "empty_received_own_map"
                 metadata["seed_rejection_reason"] = "empty_received_own_map"
         robot["path_map_available"] = not metadata["missing"]
+        if source == "delivered_navigation_map":
+            robot["path_map_source"] = source
+            if entry is not None:
+                for key in ("composition_version", "input_own_map_payload_sha256",
+                            "input_shared_map_payload_sha256", "shared_map_version",
+                            "received_stamp_scope", "input_own_source_stamp"):
+                    metadata[key] = copy.deepcopy(entry.get(key))
         provenance[name] = metadata
         seeds_valid.append(seed_valid)
     return target_paths, provenance, seeds_valid
@@ -639,7 +654,10 @@ def _action_masks(robots, candidates, now):
         if not robot["fresh"]:
             why["state_missing_or_stale"] = list(range(8)) + [WAIT]
         elif robot.get("path_map_available") is False:
-            why["received_own_map_missing"] = list(range(8)) + [WAIT]
+            reason = ("received_navigation_map_missing"
+                      if robot.get("path_map_source") == "delivered_navigation_map"
+                      else "received_own_map_missing")
+            why[reason] = list(range(8)) + [WAIT]
         elif nav["phase"] not in ("idle", "active"):
             why["protocol_" + nav["phase"]] = list(range(8)) + [WAIT]
         elif (nav["phase"] == "active"
@@ -693,7 +711,7 @@ def _action_masks(robots, candidates, now):
 
 def build_snapshot(raw_grid, resolution, origin, robots, now, epoch, map_version,
                    sequence, *, map_source_stamp=None, map_received_stamp=None,
-                   map_sources=None, task_start=None, robot_maps=None):
+                   map_sources=None, task_start=None, robot_maps=None, navigation_maps=None):
     """Build one self-contained JSON snapshot; consumers save it with the action.
 
     Robots must be exactly tb1/tb2/tb3 with names, estimated x/y/yaw, measured
@@ -701,11 +719,12 @@ def build_snapshot(raw_grid, resolution, origin, robots, now, epoch, map_version
     ordering does not matter. ``None`` map and missing/invalid state produce a
     valid missing-data snapshot and KEEP actions, rather than invented free map.
     Epoch and versions identify the immutable candidate/action meaning.
-    When ``robot_maps`` is supplied, only each robot's explicitly delivered own
-    local map defines its path; absent maps never fall back to fusion. Entries
-    contain grid, resolution, origin, epoch/sequence/version, source_stamp,
-    received_stamp and payload_sha256. Fused-map paths remain an explicit legacy
-    API mode only when ``robot_maps is None``; runtime MR3 uses received own maps.
+    Runtime ``navigation_maps`` supplies the exact delivered navigation maps
+    used by Nav2 and candidate paths/arrival disks. Missing maps never fall back
+    to own/fused maps. Entries include grid, resolution, origin, source identity
+    and explicit composition metadata. ``robot_maps`` without navigation maps
+    retains the older received-own-map interface; omitting both retains the
+    fused-map legacy API. These legacy modes do not substitute for runtime data.
     """
     now, resolution = float(now), float(resolution)
     if not math.isfinite(now) or not math.isfinite(resolution) or resolution <= 0:
@@ -725,7 +744,29 @@ def build_snapshot(raw_grid, resolution, origin, robots, now, epoch, map_version
     grid = np.empty((0, 0), dtype=np.int8) if missing_map else _received_grid(raw_grid)
     traversable, clearance = native_traversable(grid, resolution)
     target_cells = np.argwhere(traversable & (clearance >= TARGET_CLEARANCE_M))
-    if robot_maps is None:
+    navigation_grids = None
+    if navigation_maps is not None:
+        target_cells = np.argwhere(np.ones(grid.shape, dtype=bool))
+        target_paths, path_maps, seeds_valid = _own_map_paths(
+            navigation_maps, states, now, epoch, resolution, origin, target_cells,
+            source="delivered_navigation_map")
+        navigation_grids = []
+        navigation_clearances = []
+        for name in ROBOT_NAMES:
+            entry, metadata = navigation_maps.get(name), path_maps[name]
+            if metadata["missing"]:
+                native = np.full(grid.shape, -1, dtype=np.int8)
+            else:
+                if (metadata["native_shape"] != list(grid.shape)
+                        or metadata["native_resolution_m"] != resolution
+                        or metadata["native_origin_m"] != list(origin)):
+                    raise ValueError("navigation map must use the delivered fused native lattice")
+                if entry.get("composition_version") != NAVIGATION_COMPOSITION_VERSION:
+                    raise ValueError("unknown delivered navigation composition")
+                native = _received_grid(entry["grid"])
+            navigation_grids.append(native)
+            navigation_clearances.append(native_traversable(native, resolution)[1])
+    elif robot_maps is None:
         seed_data = [_seed_diagnostics(grid, traversable, clearance, robot, resolution, origin)
                      for robot in states]
         seeds_valid = [entry[2]["seed_rejection_reason"] is None for entry in seed_data]
@@ -746,12 +787,27 @@ def build_snapshot(raw_grid, resolution, origin, robots, now, epoch, map_version
         target_paths, path_maps, seeds_valid = _own_map_paths(
             robot_maps, states, now, epoch, resolution, origin, target_cells,
         )
-    frontier, frontier_sources = _candidate_frontiers(
-        grid, resolution, origin, robot_maps, path_maps)
+    if navigation_grids is None:
+        frontier, frontier_sources = _candidate_frontiers(
+            grid, resolution, origin, robot_maps, path_maps)
+    else:
+        individual = [_frontiers(native) for native in navigation_grids]
+        frontier = np.logical_or.reduce(individual)
+        frontier_sources = {name: {"native_frontier_cells": int(mask.sum()),
+                                   "eligible": not path_maps[name]["missing"]}
+                            for name, mask in zip(ROBOT_NAMES, individual)}
     candidates, diagnostics = _candidates(
         grid, clearance, target_cells, target_paths, resolution, origin, states,
-        frontier_mask=frontier,
+        frontier_mask=frontier, line_grids=navigation_grids,
     )
+    if navigation_grids is not None:
+        for candidate in candidates:
+            cell = (candidate["row"], candidate["column"])
+            candidate["clearance_by_robot_m"] = [
+                float(native[cell]) if candidate["reachable"][index] else None
+                for index, native in enumerate(navigation_clearances)]
+            candidate["clearance_m"] = min(value for value in candidate[
+                "clearance_by_robot_m"] if value is not None)
     while len(candidates) < CANDIDATE_COUNT:
         candidates.append({
             "index": len(candidates), "valid": False, "x": None, "y": None,
@@ -759,6 +815,9 @@ def build_snapshot(raw_grid, resolution, origin, robots, now, epoch, map_version
             "frontier_count": 0, "frontier_groups": [],
             "reachable": [False] * 3, "path_distances_m": [None] * 3,
         })
+    if navigation_grids is not None:
+        for candidate in candidates:
+            candidate.setdefault("clearance_by_robot_m", [None] * 3)
     candidate_rule = {
         "version": CANDIDATE_RULE_VERSION, "path_body_clearance_m": CLEARANCE_M,
         "goal_xy_tolerance_m": GOAL_XY_TOLERANCE_M,
@@ -771,11 +830,24 @@ def build_snapshot(raw_grid, resolution, origin, robots, now, epoch, map_version
         "frontier_projection": (
             "world cell centre to containing fused native cell; free endpoints only"),
     }
+    if navigation_grids is not None:
+        candidate_rule.update({
+            "version": NAVIGATION_CANDIDATE_RULE_VERSION,
+            "path_map_source": "delivered_navigation_map",
+            "navigation_composition": NAVIGATION_COMPOSITION_VERSION,
+            "frontier_sources": ["received_navigation:" + name for name in ROBOT_NAMES],
+            "frontier_projection": (
+                "same delivered fused native lattice; navigation-free sightlines"),
+        })
     candidate_version = hashlib.sha256(json.dumps({
         "epoch": epoch, "map_version": int(map_version), "sequence": int(sequence),
         "candidate_rule": candidate_rule, "candidates": candidates, "path_maps": path_maps,
     }, sort_keys=True, separators=(",", ":"), allow_nan=False).encode()).hexdigest()
     per_robot, joint, mask_reasons = _action_masks(states, candidates, now)
+    arrival_safe_count = len(target_cells)
+    if navigation_grids is not None:
+        arrival_safe_count = int(np.count_nonzero(np.logical_or.reduce([
+            values >= TARGET_CLEARANCE_M for values in navigation_clearances])))
     integrals = _raster_integrals(grid)
     global_raster = _raster(
         integrals, grid.shape, resolution, origin, GLOBAL_EXTENT_M, 128,
@@ -819,7 +891,7 @@ def build_snapshot(raw_grid, resolution, origin, robots, now, epoch, map_version
         "diagnostics": {**diagnostics, "frontier_sources": frontier_sources,
                         "mask_reasons": mask_reasons,
                         "native_safe_cells": int(np.count_nonzero(traversable)),
-                        "native_arrival_safe_cells": len(target_cells),
+                        "native_arrival_safe_cells": arrival_safe_count,
                         "robot_seed_traversable": seeds_valid,
                         "robot_seed_diagnostics": [
                             {key: value for key, value in path_maps[name].items()
@@ -830,5 +902,11 @@ def build_snapshot(raw_grid, resolution, origin, robots, now, epoch, map_version
                             "per-robot staging/reservation; geometric farthest point"),
                         "clearance_m": CLEARANCE_M},
     }
+    if navigation_maps is not None:
+        snapshot["navigation_sources"] = {
+            name: {key: copy.deepcopy(value) for key, value in entry.items()
+                   if key not in ("grid", "resolution", "origin")}
+            for name, entry in navigation_maps.items()
+        }
     snapshot["digest"] = snapshot_digest(snapshot)
     return snapshot

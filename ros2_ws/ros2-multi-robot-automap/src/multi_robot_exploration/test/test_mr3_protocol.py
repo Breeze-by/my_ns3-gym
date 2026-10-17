@@ -46,6 +46,23 @@ def test_keep_never_submits_goal_and_navigation_is_detached():
     assert dispatcher.navigation()["tb1"]["goal_x"] == 1.0
 
 
+def test_received_acceptance_count_is_unique_survives_terminal_and_resets_with_epoch():
+    dispatcher, _ = protocol()
+    assert dispatcher.navigation()["tb1"]["accepted_goal_count"] == 0
+    goal = start(dispatcher)
+    assert dispatcher.on_accept("tb1", goal, True, .1) == "duplicate"
+    assert dispatcher.navigation()["tb1"]["accepted_goal_count"] == 1
+    dispatcher.on_result("tb1", goal, "SUCCEEDED", .2)
+    assert dispatcher.on_accept("tb1", goal, True, .3) == "stale_goal"
+    assert dispatcher.navigation()["tb1"]["accepted_goal_count"] == 1
+    assert submit(dispatcher, now=.4, sequence=2) == "sent"
+    rejected = dispatcher.navigation()["tb1"]["goal_id"]
+    dispatcher.on_accept("tb1", rejected, False, .5)
+    assert dispatcher.navigation()["tb1"]["accepted_goal_count"] == 1
+    dispatcher.reset("episode-b", 0.)
+    assert dispatcher.navigation()["tb1"]["accepted_goal_count"] == 0
+
+
 def test_minimum_commitment_blocks_discretionary_switch_and_wait():
     dispatcher, events = protocol()
     goal_id = start(dispatcher)
@@ -265,7 +282,8 @@ def test_command_epoch_sequence_duplicate_and_expiry_are_idempotent():
     assert submit(dispatcher, command_epoch="old") == "stale_epoch"
     assert submit(dispatcher) == "sent"
     assert submit(dispatcher, now=0.1, expires_at=2) == "duplicate"
-    assert submit(dispatcher, now=0.1, expires_at=2, goal={"x": 2, "y": 3}) == "command_id_conflict"
+    assert submit(dispatcher, now=0.1, expires_at=2,
+                  goal={"x": 2, "y": 3}) == "command_id_conflict"
     assert submit(dispatcher, "KEEP", 0.2, 3) == "kept"
     assert submit(dispatcher, "KEEP", 0.3, 2) == "stale_command"
     assert submit(dispatcher, "KEEP", 0.4, 4, expires_at=0.4) == "expired"

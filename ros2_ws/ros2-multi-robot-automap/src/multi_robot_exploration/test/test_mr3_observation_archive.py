@@ -97,3 +97,27 @@ def test_no_audit_root_performs_no_validation_or_filesystem_access(tmp_path, mon
     monkeypatch.setattr("pathlib.Path.mkdir", unexpected)
     archive_snapshot_inputs(None, None, None, None)
     archive_snapshot_inputs("", None, None, None)
+
+
+def test_v2_archives_seven_actual_navigation_roles_and_binds_their_source_metadata(tmp_path):
+    snapshot, payloads, metadata = inputs()
+    navigation = {name: {
+        "epoch": snapshot["epoch"], "sequence": 1, "version": 1,
+        "payload_sha256": metadata["map_payload_sha256"],
+        "composition_version": "mr3-own-known-shared-unknown-v1"}
+                  for name in ("tb1", "tb2", "tb3")}
+    metadata["navigation_sources"] = copy.deepcopy(navigation)
+    metadata["navigation_composition"] = {"version": "mr3-own-known-shared-unknown-v1"}
+    snapshot["navigation_sources"] = copy.deepcopy(navigation)
+    snapshot["candidate_rule"] = {"navigation_composition": "mr3-own-known-shared-unknown-v1"}
+    snapshot["digest"] = snapshot_digest(snapshot)
+    for name in navigation:
+        payloads["navigation:" + name] = copy.deepcopy(payloads[name])
+    archive_snapshot_inputs(tmp_path, snapshot, payloads, metadata)
+    manifest = json.loads(next((tmp_path / "snapshots").iterdir()).read_bytes())
+    assert manifest["schema"] == "mr3-observation-input-archive-v2"
+    assert len(manifest["maps"]) == 7
+    assert len(list((tmp_path / "maps").iterdir())) == 1
+    payloads["navigation:tb2"]["data"][0] = 100
+    with pytest.raises(ValueError, match="payload digest"):
+        archive_snapshot_inputs(tmp_path, snapshot, payloads, metadata)

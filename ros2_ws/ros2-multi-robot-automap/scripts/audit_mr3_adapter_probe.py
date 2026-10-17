@@ -36,7 +36,16 @@ CANDIDATE_RULE_V4 = {
     "frontier_projection": (
         "world cell centre to containing fused native cell; free endpoints only"),
 }
-CANDIDATE_RULES = {item["version"]: item for item in (CANDIDATE_RULE_V3, CANDIDATE_RULE_V4)}
+CANDIDATE_RULE_V5 = {
+    **CANDIDATE_RULE_V4,
+    "version": "mr3-navigation-geometric-staging-v5",
+    "path_map_source": "delivered_navigation_map",
+    "navigation_composition": "mr3-own-known-shared-unknown-v1",
+    "frontier_sources": ["received_navigation:" + name for name in ROBOTS],
+    "frontier_projection": "same delivered fused native lattice; navigation-free sightlines",
+}
+CANDIDATE_RULES = {item["version"]: item for item in (
+    CANDIDATE_RULE_V3, CANDIDATE_RULE_V4, CANDIDATE_RULE_V5)}
 
 
 def canonical_digest(payload):
@@ -48,18 +57,21 @@ def canonical_digest(payload):
 def candidate_digest(snapshot):
     """Dispatch declared legacy formats or exact reviewed versioned rules."""
     schema = snapshot.get("schema")
-    if schema not in ("mr3-observation-v1", "mr3-observation-v2"):
+    if schema not in ("mr3-observation-v1", "mr3-observation-v2", "mr3-observation-v3"):
         raise ValueError("unexpected observation schema")
     keys = ["epoch", "map_version", "sequence", "candidates"]
-    if schema == "mr3-observation-v2":
+    if schema in ("mr3-observation-v2", "mr3-observation-v3"):
         keys.append("path_maps")
     if "candidate_rule" in snapshot:
         rule = snapshot["candidate_rule"]
         version = rule.get("version") if isinstance(rule, dict) else None
         expected = CANDIDATE_RULES.get(version) if isinstance(version, str) else None
-        if (schema != "mr3-observation-v2" or not isinstance(rule, dict)
+        if (schema not in ("mr3-observation-v2", "mr3-observation-v3")
+                or not isinstance(rule, dict)
                 or expected is None or canonical_digest(rule) != canonical_digest(expected)):
             raise ValueError("unknown or mismatched candidate rule")
+        if version == CANDIDATE_RULE_V5["version"] and schema != "mr3-observation-v3":
+            raise ValueError("navigation candidate rule requires observation v3")
         keys.append("candidate_rule")
     return canonical_digest({key: snapshot[key] for key in keys})
 

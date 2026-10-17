@@ -25,10 +25,11 @@ from rclpy.node import Node
 from rclpy.qos import DurabilityPolicy, QoSProfile
 from std_msgs.msg import Bool, Header, String
 
-from multi_robot_exploration.mr3_observation import build_snapshot
+from multi_robot_exploration.mr3_observation import build_snapshot, NAVIGATION_COMPOSITION_VERSION
 from multi_robot_exploration.mr3_observation_archive import archive_snapshot_inputs
 from multi_robot_exploration.mr3_information import map_digest, map_payload
 from multi_robot_exploration.mr3_owner import acquire_navigation_owner
+from multi_robot_exploration.mr3_activity import ReceivedActivity
 from multi_robot_exploration.mr3_protocol import GoalDispatcher
 from multi_robot_exploration.mr3_episode import (
     TASK_DURATION_NS, TASK_FAILURE_REASONS, elapsed_ns, timestamp_ns,
@@ -92,6 +93,8 @@ class MR3Adapter(Node):
         self.map_digest = None
         self.local_maps = {}
         self.local_map_digests = {}
+        self.navigation_maps = {}
+        self.navigation_map_digests = {}
         self.state = None
         self.snapshot = None
         self.sequence = 0
@@ -105,6 +108,7 @@ class MR3Adapter(Node):
         self.last_heartbeat = -math.inf
         self.receipt_metadata = {name: {} for name in ROBOTS}
         self.history = {name: deque(maxlen=16) for name in ROBOTS}
+        self.activity = ReceivedActivity(self.epoch)
         self.encoder = ThreadPoolExecutor(max_workers=1, thread_name_prefix="mr3_observation")
         self.encoding = None
         task_qos = QoSProfile(depth=1, durability=DurabilityPolicy.TRANSIENT_LOCAL)
@@ -136,6 +140,10 @@ class MR3Adapter(Node):
         self.subscriptions_.extend(self.create_subscription(
             OccupancyGrid, f"/mr3/received/{name}/map",
             lambda message, name=name: self.receive_local_map(name, message), task_qos,
+        ) for name in ROBOTS)
+        self.subscriptions_.extend(self.create_subscription(
+            OccupancyGrid, f"/{name}/navigation_map",
+            lambda message, name=name: self.receive_navigation_map(name, message), task_qos,
         ) for name in ROBOTS)
         timer_clock = Clock(clock_type=ClockType.STEADY_TIME) if self.stepped_mode else None
         self.timer = self.create_timer(
@@ -249,6 +257,8 @@ class MR3Adapter(Node):
                             ("name", "source_stamp", "received_stamp")}
                            for robot in snapshot["robots"]],
             }
+            if "navigation_sources" in snapshot:
+                response["watermarks"]["navigation_sources"] = snapshot["navigation_sources"]
         self.snapshot_responses[request["request_id"]] = response
         while len(self.snapshot_responses) > 16:
             del self.snapshot_responses[next(iter(self.snapshot_responses))]
@@ -278,6 +288,10 @@ class MR3Adapter(Node):
         self.local_maps[name] = message
         self.local_map_digests[name] = map_digest(message)
 
+    def receive_navigation_map(self, name, message):
+        self.navigation_maps[name] = message
+        self.navigation_map_digests[name] = map_digest(message)
+
     def receive_states(self, message):
         try:
             state = json.loads(message.data)
@@ -290,9 +304,12 @@ class MR3Adapter(Node):
                     "information_diagnostics": state.get("information_diagnostics"),
                     "robots": [{key: robot.get(key) for key in (
                         "name", "source_stamp", "received_stamp", "odom_source_stamp",
-                        "tf_source_stamp", "tf_validity_stamp", "valid")}
+                        "tf_source_stamp", "tf_validity_stamp", "valid", "epoch", "odometry")}
                         for robot in state["robots"]],
                 })
+                activity = self.activity.update(state, self.now())
+                if activity is not None:
+                    self.record("activity_update", activity)
                 for robot in state["robots"]:
                     history = self.history[robot["name"]]
                     if robot["valid"] and (not history or
@@ -358,14 +375,21 @@ class MR3Adapter(Node):
         self.dispatcher.safety_stop(self.now(), "external_safety_failure")
 
     def map_inputs_match(self, metadata):
-        """Require the actually delivered fused/own maps to share one bundle."""
+        """Require actually delivered fused/own/navigation maps in one bundle."""
         if (self.map is None or metadata is None
                 or self.map_digest != metadata.get("map_payload_sha256")):
             return False
         sources = metadata.get("map_sources", {})
-        return all(name in self.local_maps and self.local_map_digests.get(name) is not None
-                   and self.local_map_digests[name] == sources.get(name, {}).get("payload_sha256")
-                   for name in ROBOTS)
+        navigation = metadata.get("navigation_sources", {})
+        return (metadata.get("navigation_composition", {}).get("version")
+                == NAVIGATION_COMPOSITION_VERSION and all(
+                    name in self.local_maps and self.local_map_digests.get(name) is not None
+                    and self.local_map_digests[name] == sources.get(name, {}).get("payload_sha256")
+                    and name in self.navigation_maps
+                    and self.navigation_map_digests.get(name) == navigation.get(
+                        name, {}).get("payload_sha256")
+                    and navigation.get(name, {}).get("composition_version")
+                    == NAVIGATION_COMPOSITION_VERSION for name in ROBOTS))
 
     def publish_initial_inputs_ready(self, now):
         """Acknowledge real input receipt before the worker pauses physics."""
@@ -383,6 +407,8 @@ class MR3Adapter(Node):
             "map_source_stamp": metadata["map_source_stamp"],
             "map_received_stamp": metadata["map_received_stamp"],
             "map_sources": metadata["map_sources"],
+            "navigation_composition": metadata["navigation_composition"],
+            "navigation_sources": metadata["navigation_sources"],
             "robots": [{key: robot[key] for key in (
                 "name", "source_stamp", "received_stamp", "odom_source_stamp",
                 "tf_source_stamp", "tf_validity_stamp", "tf_validity_lead_sec",
@@ -397,6 +423,7 @@ class MR3Adapter(Node):
         now_ns = self.get_clock().now().nanoseconds
         metadata = self.map_metadata if self.stepped_mode else self.state
         sources = metadata.get("map_sources", {}) if metadata is not None else {}
+        navigation = metadata.get("navigation_sources", {}) if metadata is not None else {}
         expected = request.get("expected_map_sha256")
         metadata_digest = metadata.get("map_payload_sha256") if metadata is not None else None
         return {
@@ -417,6 +444,15 @@ class MR3Adapter(Node):
                 "expected_payload_sha256": sources.get(name, {}).get("payload_sha256"),
                 "matches": name in self.local_maps and self.local_map_digests.get(name) is not None
                 and self.local_map_digests[name] == sources.get(name, {}).get("payload_sha256"),
+            } for name in ROBOTS},
+            "navigation_maps": {name: {
+                "received": name in self.navigation_maps,
+                "payload_sha256": self.navigation_map_digests.get(name),
+                "expected_payload_sha256": navigation.get(name, {}).get("payload_sha256"),
+                "matches": name in self.navigation_maps
+                and self.navigation_map_digests.get(name) is not None
+                and self.navigation_map_digests[name] == navigation.get(
+                    name, {}).get("payload_sha256"),
             } for name in ROBOTS},
             "monitor_ready": self.monitor_ready, "started_at": self.started_at,
             "stop_requested": self.stop_requested,
@@ -448,6 +484,10 @@ class MR3Adapter(Node):
             ]:
                 raise RuntimeError("Handcrafted controller present in adapter mode")
             self.started_at = now
+            self.activity.start(now)
+            activity = self.activity.update(self.state, now)
+            if activity is not None:
+                self.record("activity_update", activity)
             start = Header()
             start.stamp = self.get_clock().now().to_msg()
             start.frame_id = "map"
@@ -457,9 +497,11 @@ class MR3Adapter(Node):
         robots = [{**robot, "navigation": {
             **navigation[robot["name"]], **self.receipt_metadata[robot["name"]],
             "last_failure": navigation[robot["name"]].get("failure"),
-        }, "history": list(self.history[robot["name"]])} for robot in robots]
+        }, "history": list(self.history[robot["name"]]),
+            "activity": self.activity.snapshot(robot["name"])} for robot in robots]
         self.sequence += 1
         path_maps = {}
+        navigation_maps = {}
         audit_file = getattr(self, "audit_file", None)
         archive = None
         if audit_file is not None:
@@ -472,6 +514,8 @@ class MR3Adapter(Node):
                     "map_source_stamp": metadata["map_source_stamp"],
                     "map_received_stamp": metadata["map_received_stamp"],
                     "map_sources": map_sources,
+                    "navigation_composition": metadata["navigation_composition"],
+                    "navigation_sources": metadata["navigation_sources"],
                 }),
             }
         for name in ROBOTS:
@@ -485,8 +529,22 @@ class MR3Adapter(Node):
                 "origin": (message.info.origin.position.x, message.info.origin.position.y),
                 "epoch": self.epoch, **map_sources[name],
             }
+            navigation_message = self.navigation_maps[name]
+            if archive is not None:
+                archive["payloads"]["navigation:" + name] = map_payload(navigation_message)
+            navigation_maps[name] = {
+                "grid": np.asarray(navigation_message.data, dtype=np.int16).reshape(
+                    navigation_message.info.height, navigation_message.info.width),
+                "resolution": navigation_message.info.resolution,
+                "origin": (navigation_message.info.origin.position.x,
+                           navigation_message.info.origin.position.y),
+                "epoch": self.epoch, **metadata["navigation_sources"][name],
+            }
         # CPU map/path encoding must not block source deliveries, lease renewals
         # or action callbacks. The worker receives a detached frozen snapshot.
+        self.record("activity_snapshot_bound", {
+            "observation_sequence": self.sequence, "state_sequence": self.activity.last_sequence,
+        })
         self.encoding = self.encoder.submit(
             encode_snapshot,
             np.asarray(self.map.data, dtype=np.int16).reshape(
@@ -497,7 +555,7 @@ class MR3Adapter(Node):
             map_source_stamp=metadata["map_source_stamp"],
             map_received_stamp=metadata["map_received_stamp"],
             map_sources=map_sources, task_start=self.started_at,
-            robot_maps=path_maps, archive=archive,
+            robot_maps=path_maps, navigation_maps=navigation_maps, archive=archive,
         )
 
     def finish_observation(self):

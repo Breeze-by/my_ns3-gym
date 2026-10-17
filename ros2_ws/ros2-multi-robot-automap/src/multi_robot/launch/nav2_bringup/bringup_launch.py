@@ -30,6 +30,8 @@ def generate_launch_description():
     use_composition = LaunchConfiguration('use_composition')
     use_respawn = LaunchConfiguration('use_respawn')
     log_level = LaunchConfiguration('log_level')
+    cmd_vel_output = LaunchConfiguration('cmd_vel_output')
+    behavior_cmd_vel = LaunchConfiguration('behavior_cmd_vel')
 
 
     remappings = [('/tf', 'tf'),
@@ -142,6 +144,8 @@ def generate_launch_description():
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(os.path.join(launch_dir, 'navigation_launch.py')),
             launch_arguments={'namespace': namespace,
+                              'cmd_vel_output': cmd_vel_output,
+                              'behavior_cmd_vel': behavior_cmd_vel,
                               'use_sim_time': use_sim_time,
                               'autostart': autostart,
                               'params_file': params_file,
@@ -169,6 +173,8 @@ def generate_launch_description():
     ld.add_action(declare_use_composition_cmd)
     ld.add_action(declare_use_respawn_cmd)
     ld.add_action(declare_log_level_cmd)
+    ld.add_action(DeclareLaunchArgument('cmd_vel_output', default_value='cmd_vel'))
+    ld.add_action(DeclareLaunchArgument('behavior_cmd_vel', default_value='cmd_vel'))
 
     # Add the actions to launch all of the navigation nodes
     ld.add_action(bringup_cmd_group)

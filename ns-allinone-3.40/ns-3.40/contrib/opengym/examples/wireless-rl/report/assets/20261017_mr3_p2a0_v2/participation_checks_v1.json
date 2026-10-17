@@ -1,0 +1,237 @@
+{
+  "schema": "mr3-p2a0-participation-checks-v1",
+  "date": "2026-10-17",
+  "recorded_utc": "2026-10-17 02:53:32 UTC",
+  "scope": "CPU received-activity implementation and independent mutation audit; no ROS service, simulator, GPU, training or task-success credit",
+  "source_context": "working-tree development checks; canonical unified source freeze is the root agent's responsibility",
+  "contract": {
+    "snapshot_schema": "mr3-observation-v3",
+    "tensor_schema": "mr3-learning-tensors-v2",
+    "robots_shape": [
+      3,
+      71
+    ],
+    "path": "delivered local-odom post-release chords, never map/TF corrections",
+    "accepted_goals": "unique delivered true accepts for the currently owned goal",
+    "reward_changed": false,
+    "task_gates_changed": false,
+    "legacy_models_compatible": false
+  },
+  "intermediate_checks": [
+    {
+      "name": "initial ROS activity/protocol/adapter",
+      "status": "PASS",
+      "tests": 163,
+      "reported_seconds": 2.62
+    },
+    {
+      "name": "initial conda observation/model/policy/rollout",
+      "status": "PASS",
+      "tests": 39,
+      "reported_seconds": 3.64
+    },
+    {
+      "name": "added async adapter integration initial execution",
+      "status": "FAIL",
+      "passed_tests": 163,
+      "failed_tests": 1,
+      "reported_seconds": 1.97,
+      "reason": "new test omitted import copy; NameError at test_mr3_adapter.py:448",
+      "fix": "added explicit stdlib copy import; corrected run164PASS/1.84s"
+    },
+    {
+      "name": "first participation limited lint",
+      "status": "FAIL",
+      "issues": [
+        "test_mr3_activity.py E127",
+        "test_mr3_adapter.py F821 copy undefined",
+        "learning observation.py E501 line100 and E128"
+      ],
+      "fix": "import and formatting only"
+    },
+    {
+      "name": "intermediate participation lint",
+      "status": "FAIL",
+      "issues": [
+        "test_mr3_activity.py E127 persisted until nested fixture dict was formatted clearly"
+      ],
+      "fix": "fixture formatting only"
+    },
+    {
+      "name": "initial independent-audit mutation execution",
+      "status": "FAIL",
+      "tests_executed": 45,
+      "failed_tests": 1,
+      "reported_seconds": 3.504,
+      "reason": "audit correctly rejected replaced odometry at sample identity before the test's expected path-mismatch error string",
+      "fix": "mutation test now accepts the earlier independent mismatch rejection"
+    },
+    {
+      "name": "initial ROS after adding state_sequence metadata",
+      "status": "FAIL",
+      "passed_tests": 163,
+      "failed_tests": 1,
+      "reported_seconds": 2,
+      "reason": "duplicate/older source test incorrectly expected the received delivery sequence metadata to remain2 after new state sequences3/4",
+      "fix": "retain equal cumulative motion and sample history while expecting current state_sequence4"
+    },
+    {
+      "name": "initial independent-audit limited lint",
+      "status": "FAIL",
+      "issues": [
+        "audit_activity.py E501/E127",
+        "test_audit_activity.py E127 and E501"
+      ],
+      "fix": "formatting only"
+    },
+    {
+      "name": "extended mutation test lint",
+      "status": "FAIL",
+      "issues": [
+        "test_audit_activity.py E501 in newly added causal count+receipt mutation and missing-data fixture"
+      ],
+      "fix": "line wrapping only"
+    },
+    {
+      "name": "independent audit plus learner regression after fixes",
+      "status": "PASS",
+      "tests": 46,
+      "reported_seconds": 3.576
+    },
+    {
+      "name": "ROS activity/protocol/adapter after fixes",
+      "status": "PASS",
+      "tests": 164,
+      "reported_seconds": 1.76
+    },
+    {
+      "name": "final broad participation lint first attempt",
+      "status": "FAIL",
+      "issues": [
+        "test_mr3_protocol.py:285 E501 existing100-character assertion reached by extending lint scope"
+      ],
+      "fix": "wrapped the assertion without semantic change"
+    }
+  ],
+  "final_checks": [
+    {
+      "label": "ros_activity_protocol_adapter",
+      "cmd": "rtk proxy bash -c 'source /opt/ros/humble/setup.bash\nsource install/setup.bash\nexport PYTHONNOUSERSITE=1\n/usr/bin/python3 -m pytest src/multi_robot_exploration/test/test_mr3_activity.py src/multi_robot_exploration/test/test_mr3_protocol.py src/multi_robot_exploration/test/test_mr3_adapter.py -q'",
+      "workdir": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap",
+      "result": {
+        "chunk_id": "4ca1ec",
+        "wall_time_seconds": 4.320797531,
+        "exit_code": 0,
+        "original_token_count": 65,
+        "output": "........................................................................ [ 43%]\n........................................................................ [ 87%]\n....................                                                     [100%]\n164 passed in 1.70s\n"
+      }
+    },
+    {
+      "label": "conda_activity_observation_model_policy_rollout",
+      "cmd": "rtk proxy bash -c 'source /home/zhuyulab/miniconda3/etc/profile.d/conda.sh\nconda activate ns3gym\nexport PYTHONNOUSERSITE=1\npython -m unittest mr3_learning.tests.test_audit_activity mr3_learning.tests.test_observation mr3_learning.tests.test_model_pooling mr3_learning.tests.test_policy mr3_learning.tests.test_rollout -q'",
+      "workdir": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+      "result": {
+        "chunk_id": "e7cb3c",
+        "wall_time_seconds": 10.002053283,
+        "session_id": 18830,
+        "original_token_count": 150,
+        "output": "Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.\nPlease upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.\nUsers of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.\nSee the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.\n----------------------------------------------------------------------\nRan 46 tests in 3.643s\n\nOK\n",
+        "exit_code": 0,
+        "completion": {
+          "session_id": 18830,
+          "exit_code": 0,
+          "output": ""
+        },
+        "note": "Original output already recorded 46 tests OK; final empty poll confirms exit0"
+      }
+    }
+  ],
+  "final_lint": {
+    "chunk_id": "aa5cf9",
+    "wall_time_seconds": 1.594505998,
+    "exit_code": 0,
+    "original_token_count": 0,
+    "output": ""
+  },
+  "source_sha256": {
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_activity.py": "7af918d75c05b6f8fb1a65899e43aad11a315640e8b00fdb589c31f693ad696e",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_adapter.py": "da648c20e92160e8d8b3295909fb4b4b1eb3328b3f0a5355cf290df486bd4ebb",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_protocol.py": "5a2b90efd162b19a35964750002fe549413fec6e07f9679ea611d3fe6b1e4ada",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py": "b81da18c256ff307a4afc09c5115d0057e5a142a246555f39c1f7a5cee88c6e8",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/observation.py": "69f446d601fd67e2cd51622c1e443891a3915587d8d1ba6b12745f7e15ad1723",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/model.py": "589ef94730c3bb0785f2d9027e9affe666828a19aff6952dcc2098e4bc31ae41",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_activity.py": "122ebe25a01a39a41b3bdf4bdd01280b46c5b6551f637bf876a4c8773ca507f7",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_activity.py": "a1b056ab320d75ef0bee5c12adb7feb8049aeb0007eeb2969829c7a3c4c5ac72"
+  },
+  "audit_independence": {
+    "production_tracker_imported": false,
+    "production_dispatcher_imported": false,
+    "raw_inputs": "adapter state_update.odometry; event-source stamps and receipt/protocol ownership",
+    "snapshot_binding": "activity_snapshot_bound at actual encoding freeze + transition state watermark + nav receipt sequence",
+    "archive_support": "plain JSON/JSONL or gzip only, no runtime-directory dependency",
+    "mutations": [
+      "changed path/count/epoch",
+      "older activity boundary with recomputed digest",
+      "raw map-frame jump substituted for odom",
+      "rejected or unowned acceptance",
+      "count and receipt metadata changed together",
+      "explicit missing odometry retains incomplete state",
+      "same-clock activity moved before original raw received input"
+    ]
+  },
+  "known_limits": [
+    "Odometry estimate is not physical truth path or effective division of labour.",
+    "Coverage/safety/participation task gates remain evaluator-only and unchanged.",
+    "CPU checks do not establish native safety or policy learning efficacy."
+  ],
+  "superseded_final_lint_attempt": {
+    "label": "participation_limited_lint",
+    "cmd": "rtk proxy /usr/bin/python3 -m flake8 ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_activity.py ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_adapter.py ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_protocol.py ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_activity.py ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_protocol.py ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_adapter.py ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/observation.py ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/model.py ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_observation.py ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_activity.py ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_activity.py --max-line-length=99 --extend-ignore=D100,D101,D102,D103,D104,D105,D107,D203,D212",
+    "workdir": "/home/zhuyulab/ns3-workspace",
+    "result": {
+      "chunk_id": "7f3e79",
+      "wall_time_seconds": 1.454566855,
+      "exit_code": 1,
+      "original_token_count": 35,
+      "output": "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_protocol.py:285:100: E501 line too long (100 > 99 characters)\n"
+    }
+  },
+  "post_review_raw_before_activity_checks": [
+    {
+      "label": "raw_record_ros",
+      "cmd": "rtk proxy bash -c 'source /opt/ros/humble/setup.bash\nsource install/setup.bash\nexport PYTHONNOUSERSITE=1\n/usr/bin/python3 -m pytest src/multi_robot_exploration/test/test_mr3_activity.py src/multi_robot_exploration/test/test_mr3_protocol.py src/multi_robot_exploration/test/test_mr3_adapter.py -q'",
+      "workdir": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap",
+      "result": {
+        "chunk_id": "41a871",
+        "wall_time_seconds": 4.187808508,
+        "exit_code": 0,
+        "original_token_count": 65,
+        "output": "........................................................................ [ 43%]\n........................................................................ [ 87%]\n....................                                                     [100%]\n164 passed in 1.91s\n"
+      }
+    },
+    {
+      "label": "raw_record_audit",
+      "cmd": "rtk proxy bash -c 'source /home/zhuyulab/miniconda3/etc/profile.d/conda.sh\nconda activate ns3gym\nexport PYTHONNOUSERSITE=1\npython -m unittest mr3_learning.tests.test_audit_activity -q'",
+      "workdir": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+      "result": {
+        "chunk_id": "7eb6d3",
+        "wall_time_seconds": 1.790578187,
+        "exit_code": 0,
+        "original_token_count": 25,
+        "output": "----------------------------------------------------------------------\nRan 8 tests in 0.029s\n\nOK\n"
+      }
+    },
+    {
+      "label": "raw_record_lint",
+      "cmd": "rtk proxy /usr/bin/python3 -m flake8 ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_adapter.py ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_activity.py ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_activity.py --max-line-length=99 --extend-ignore=D100,D101,D102,D103,D104,D105,D107,D203,D212",
+      "workdir": "/home/zhuyulab/ns3-workspace",
+      "result": {
+        "chunk_id": "2f7ce2",
+        "wall_time_seconds": 1.409120103,
+        "exit_code": 0,
+        "original_token_count": 0,
+        "output": ""
+      }
+    }
+  ]
+}

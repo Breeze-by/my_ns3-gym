@@ -261,6 +261,9 @@ def test_initial_phase_follows_reward_binding_and_terminal_cannot_return_live_re
     instance.directory, instance.outputs, instance.scene, instance.seed = tmp_path, [], "open", 101
     instance.started_wall = WORKER.time.monotonic()
     instance.initial_inputs_ready = {"stamp": 10., "state_sequence": 100}
+    instance.motion_ready = True
+    instance.verify_motion_output_topology = lambda: None
+    instance.wait_motion_phase = lambda: {"ready": True}
     instance.reward_ready = {"start_sim_time": 10.}
     order = []
     instance._physics = lambda *_args, **_kwargs: {"end_time_ns": START}
