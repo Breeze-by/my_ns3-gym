@@ -1,0 +1,964 @@
+{
+  "all_files_roundtrip_exact": true,
+  "all_sources_stable_before_after": true,
+  "archive": {
+    "decoded_tar_bytes": 706560,
+    "decoded_tar_sha256": "76d62a17fc46ad4457e8c7bdbfe35dcf6b3a7c1982ded765d9776e8f167b8efd",
+    "encoded_bytes": 89314,
+    "encoded_sha256": "b17d227ec71229a670d73b8dab9b3d935eda5722d7d8cfcc2481272d966c4590",
+    "path": "/tmp/mr3_p2a0_v18_closed_observer_bundle_v1.tar.gz"
+  },
+  "exact_archive_command": [
+    "env",
+    "PYTHONDONTWRITEBYTECODE=1",
+    "PYTHONNOUSERSITE=1",
+    "/usr/bin/python3",
+    "/tmp/mr3_p2a0_v18_closed_observer_bundle_v1.py"
+  ],
+  "exclusions": [
+    "Large native physics/motion raw files are referenced by their complete one-pass SHA in diagnostic.json, not copied into this supplemental bundle.",
+    "Immutable A18 low-level reader and runtime V19 proposal are referenced by original path/SHA, not duplicated.",
+    "No ELF/build/cache/symlink views, no new native/formal results."
+  ],
+  "file_count": 52,
+  "files": [
+    {
+      "archive_member": "originals/mr3_p2a0_v18_closed_diagnostic_cpu_v1/result.json",
+      "raw_bytes": 32180,
+      "raw_sha256": "4bbc6e276e666f4f9cc0d5bf84b4271d4f4a7c39dc3fc9cc5aa5ed8f82513778",
+      "source_absolute_path": "/tmp/mr3_p2a0_v18_closed_diagnostic_cpu_v1/result.json",
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78546129,
+        "st_mtime_ns": 1792265652521454793,
+        "st_size": 32180
+      },
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78546129,
+        "st_mtime_ns": 1792265652521454793,
+        "st_size": 32180
+      }
+    },
+    {
+      "archive_member": "originals/mr3_p2a0_v18_closed_diagnostic_cpu_v1/synthetic.jsonl",
+      "raw_bytes": 16904,
+      "raw_sha256": "75ae96a57f4f3e9c49f4cf84e33ea8a6e8acc980fb9bf6190366e906972f5c3a",
+      "source_absolute_path": "/tmp/mr3_p2a0_v18_closed_diagnostic_cpu_v1/synthetic.jsonl",
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78546119,
+        "st_mtime_ns": 1792265652509453892,
+        "st_size": 16904
+      },
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78546119,
+        "st_mtime_ns": 1792265652509453892,
+        "st_size": 16904
+      }
+    },
+    {
+      "archive_member": "originals/mr3_p2a0_v18_closed_diagnostic_cpu_v1/tb1_configuration.jsonl",
+      "raw_bytes": 1870,
+      "raw_sha256": "b27ee747a8fb3faf1919ba7af4feac3422a06402d3aae1cc1a5db8f9061e1c29",
+      "source_absolute_path": "/tmp/mr3_p2a0_v18_closed_diagnostic_cpu_v1/tb1_configuration.jsonl",
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78546128,
+        "st_mtime_ns": 1792265652518454568,
+        "st_size": 1870
+      },
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78546128,
+        "st_mtime_ns": 1792265652518454568,
+        "st_size": 1870
+      }
+    },
+    {
+      "archive_member": "originals/mr3_p2a0_v18_closed_diagnostic_cpu_v1/tb1_own_odom_pre_projection_residual.jsonl",
+      "raw_bytes": 2466,
+      "raw_sha256": "666812c58aa2548bdf9c1bbcd2376e109854bacdc6933a2d923d51810b37570f",
+      "source_absolute_path": "/tmp/mr3_p2a0_v18_closed_diagnostic_cpu_v1/tb1_own_odom_pre_projection_residual.jsonl",
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78546122,
+        "st_mtime_ns": 1792265652517454492,
+        "st_size": 2466
+      },
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78546122,
+        "st_mtime_ns": 1792265652517454492,
+        "st_size": 2466
+      }
+    },
+    {
+      "archive_member": "originals/mr3_p2a0_v18_closed_diagnostic_cpu_v1/tb1_own_odom_pre_projection_residual_own_odom.jsonl",
+      "raw_bytes": 150,
+      "raw_sha256": "01049504f09090bb43b380dcec2c251f381185865a38de2e325309b31d162a0b",
+      "source_absolute_path": "/tmp/mr3_p2a0_v18_closed_diagnostic_cpu_v1/tb1_own_odom_pre_projection_residual_own_odom.jsonl",
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78546123,
+        "st_mtime_ns": 1792265652517454492,
+        "st_size": 150
+      },
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78546123,
+        "st_mtime_ns": 1792265652517454492,
+        "st_size": 150
+      }
+    },
+    {
+      "archive_member": "originals/mr3_p2a0_v18_closed_diagnostic_cpu_v1/tb1_post_fixed_link_velocity_residual.jsonl",
+      "raw_bytes": 2507,
+      "raw_sha256": "fa3b9cfb7462e579400c67634424cbb37ddea3ae8e64fc32499704010e1ab7e7",
+      "source_absolute_path": "/tmp/mr3_p2a0_v18_closed_diagnostic_cpu_v1/tb1_post_fixed_link_velocity_residual.jsonl",
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78546121,
+        "st_mtime_ns": 1792265652517454492,
+        "st_size": 2507
+      },
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78546121,
+        "st_mtime_ns": 1792265652517454492,
+        "st_size": 2507
+      }
+    },
+    {
+      "archive_member": "originals/mr3_p2a0_v18_closed_diagnostic_cpu_v1/tb1_pre_fixed_link_velocity_residual.jsonl",
+      "raw_bytes": 2466,
+      "raw_sha256": "666812c58aa2548bdf9c1bbcd2376e109854bacdc6933a2d923d51810b37570f",
+      "source_absolute_path": "/tmp/mr3_p2a0_v18_closed_diagnostic_cpu_v1/tb1_pre_fixed_link_velocity_residual.jsonl",
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78546120,
+        "st_mtime_ns": 1792265652517454492,
+        "st_size": 2466
+      },
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78546120,
+        "st_mtime_ns": 1792265652517454492,
+        "st_size": 2466
+      }
+    },
+    {
+      "archive_member": "originals/mr3_p2a0_v18_closed_diagnostic_cpu_v1/tb1_zero_motor_canonical_cog_planar_speed.jsonl",
+      "raw_bytes": 2507,
+      "raw_sha256": "0d7c4eb8b141bc554acad6435f5e42e6b72275bce925316097df54fb17c3fb55",
+      "source_absolute_path": "/tmp/mr3_p2a0_v18_closed_diagnostic_cpu_v1/tb1_zero_motor_canonical_cog_planar_speed.jsonl",
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78546126,
+        "st_mtime_ns": 1792265652517454492,
+        "st_size": 2507
+      },
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78546126,
+        "st_mtime_ns": 1792265652517454492,
+        "st_size": 2507
+      }
+    },
+    {
+      "archive_member": "originals/mr3_p2a0_v18_closed_diagnostic_cpu_v1/tb1_zero_motor_canonical_cog_post_velocity_pose_residual_speed.jsonl",
+      "raw_bytes": 2582,
+      "raw_sha256": "c7ad3443b2c468773bdd59106cde22c2c9936be9eed47356450a5361ce9ca069",
+      "source_absolute_path": "/tmp/mr3_p2a0_v18_closed_diagnostic_cpu_v1/tb1_zero_motor_canonical_cog_post_velocity_pose_residual_speed.jsonl",
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78546127,
+        "st_mtime_ns": 1792265652518454568,
+        "st_size": 2582
+      },
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78546127,
+        "st_mtime_ns": 1792265652518454568,
+        "st_size": 2582
+      }
+    },
+    {
+      "archive_member": "originals/mr3_p2a0_v18_closed_diagnostic_cpu_v1/tb1_zero_motor_model_planar_speed.jsonl",
+      "raw_bytes": 2507,
+      "raw_sha256": "0d7c4eb8b141bc554acad6435f5e42e6b72275bce925316097df54fb17c3fb55",
+      "source_absolute_path": "/tmp/mr3_p2a0_v18_closed_diagnostic_cpu_v1/tb1_zero_motor_model_planar_speed.jsonl",
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78546124,
+        "st_mtime_ns": 1792265652517454492,
+        "st_size": 2507
+      },
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78546124,
+        "st_mtime_ns": 1792265652517454492,
+        "st_size": 2507
+      }
+    },
+    {
+      "archive_member": "originals/mr3_p2a0_v18_closed_diagnostic_cpu_v1/tb1_zero_motor_model_post_velocity_pose_residual_speed.jsonl",
+      "raw_bytes": 2582,
+      "raw_sha256": "c7ad3443b2c468773bdd59106cde22c2c9936be9eed47356450a5361ce9ca069",
+      "source_absolute_path": "/tmp/mr3_p2a0_v18_closed_diagnostic_cpu_v1/tb1_zero_motor_model_post_velocity_pose_residual_speed.jsonl",
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78546125,
+        "st_mtime_ns": 1792265652517454492,
+        "st_size": 2582
+      },
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78546125,
+        "st_mtime_ns": 1792265652517454492,
+        "st_size": 2582
+      }
+    },
+    {
+      "archive_member": "originals/mr3_p2a0_v18_closed_observer_bundle_v1.py",
+      "raw_bytes": 6840,
+      "raw_sha256": "5313704961623216bb7c3e2d33eaee7d2e75f380669734f140d9bac47757dd6e",
+      "source_absolute_path": "/tmp/mr3_p2a0_v18_closed_observer_bundle_v1.py",
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 76641935,
+        "st_mtime_ns": 1792266595377198443,
+        "st_size": 6840
+      },
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 76641935,
+        "st_mtime_ns": 1792266595377198443,
+        "st_size": 6840
+      }
+    },
+    {
+      "archive_member": "originals/mr3_p2a0_v18_closed_observer_development_history_v1.json",
+      "raw_bytes": 1532,
+      "raw_sha256": "649e07cddf6fe703f6d58d2ecc080ea5cdfdc8ada20fa19ba15cbe960d9d9584",
+      "source_absolute_path": "/tmp/mr3_p2a0_v18_closed_observer_development_history_v1.json",
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 76641936,
+        "st_mtime_ns": 1792266595632213809,
+        "st_size": 1532
+      },
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 76641936,
+        "st_mtime_ns": 1792266595632213809,
+        "st_size": 1532
+      }
+    },
+    {
+      "archive_member": "originals/mr3_p2a0_v18_closed_observer_diagnostic_cpu_v1.py",
+      "raw_bytes": 2012,
+      "raw_sha256": "e2e712efef68c2640ebf506299146699e90427ad4fa834b06f070ba34033caf4",
+      "source_absolute_path": "/tmp/mr3_p2a0_v18_closed_observer_diagnostic_cpu_v1.py",
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 76641913,
+        "st_mtime_ns": 1792265652061420283,
+        "st_size": 2012
+      },
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 76641913,
+        "st_mtime_ns": 1792265652061420283,
+        "st_size": 2012
+      }
+    },
+    {
+      "archive_member": "originals/mr3_p2a0_v18_closed_observer_diagnostic_execution_v1.json",
+      "raw_bytes": 1190,
+      "raw_sha256": "4d3ec9b2c4d6e2f3ff17dac94add97b4c6c0bee64361070c29064423a0c0eb8b",
+      "source_absolute_path": "/tmp/mr3_p2a0_v18_closed_observer_diagnostic_execution_v1.json",
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 76641930,
+        "st_mtime_ns": 1792266439120709794,
+        "st_size": 1190
+      },
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 76641930,
+        "st_mtime_ns": 1792266439120709794,
+        "st_size": 1190
+      }
+    },
+    {
+      "archive_member": "originals/mr3_p2a0_v18_closed_observer_diagnostic_run_v1.py",
+      "raw_bytes": 1918,
+      "raw_sha256": "bec99094898b24f9e648c64d9808224cd7e389e4cc09ff4de9ac97e8ad05c8d0",
+      "source_absolute_path": "/tmp/mr3_p2a0_v18_closed_observer_diagnostic_run_v1.py",
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 76641914,
+        "st_mtime_ns": 1792265652866480675,
+        "st_size": 1918
+      },
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 76641914,
+        "st_mtime_ns": 1792265652866480675,
+        "st_size": 1918
+      }
+    },
+    {
+      "archive_member": "originals/mr3_p2a0_v18_closed_observer_diagnostic_v1/diagnostic.json",
+      "raw_bytes": 280486,
+      "raw_sha256": "a6b112450b6fb806c74bf0dfc54f3a9d5fa76fdf56d0f2bb121cdee14c2d085a",
+      "source_absolute_path": "/tmp/mr3_p2a0_v18_closed_observer_diagnostic_v1/diagnostic.json",
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78546563,
+        "st_mtime_ns": 1792266438940698769,
+        "st_size": 280486
+      },
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78546563,
+        "st_mtime_ns": 1792266438940698769,
+        "st_size": 280486
+      }
+    },
+    {
+      "archive_member": "originals/mr3_p2a0_v18_closed_observer_diagnostic_v1/tb1_configuration.jsonl",
+      "raw_bytes": 3479,
+      "raw_sha256": "7c0a8db9d1507d263dbed2ef3eacf2950a7afb97361f4f2789baa137476b2889",
+      "source_absolute_path": "/tmp/mr3_p2a0_v18_closed_observer_diagnostic_v1/tb1_configuration.jsonl",
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78546549,
+        "st_mtime_ns": 1792265934385455940,
+        "st_size": 3479
+      },
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78546549,
+        "st_mtime_ns": 1792265934385455940,
+        "st_size": 3479
+      }
+    },
+    {
+      "archive_member": "originals/mr3_p2a0_v18_closed_observer_diagnostic_v1/tb1_own_odom_pre_projection_residual.jsonl",
+      "raw_bytes": 5685,
+      "raw_sha256": "4b206f8ad9f8a4445894de31c7460da2855d8b15b4ee02d8e3205aeb34899c37",
+      "source_absolute_path": "/tmp/mr3_p2a0_v18_closed_observer_diagnostic_v1/tb1_own_odom_pre_projection_residual.jsonl",
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78546547,
+        "st_mtime_ns": 1792265934385455940,
+        "st_size": 5685
+      },
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78546547,
+        "st_mtime_ns": 1792265934385455940,
+        "st_size": 5685
+      }
+    },
+    {
+      "archive_member": "originals/mr3_p2a0_v18_closed_observer_diagnostic_v1/tb1_own_odom_pre_projection_residual_own_odom.jsonl",
+      "raw_bytes": 1118,
+      "raw_sha256": "768b54134c74966b771f35adbc781d2485db3114868f2547a7420dc25034bc6e",
+      "source_absolute_path": "/tmp/mr3_p2a0_v18_closed_observer_diagnostic_v1/tb1_own_odom_pre_projection_residual_own_odom.jsonl",
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78546548,
+        "st_mtime_ns": 1792265934385455940,
+        "st_size": 1118
+      },
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78546548,
+        "st_mtime_ns": 1792265934385455940,
+        "st_size": 1118
+      }
+    },
+    {
+      "archive_member": "originals/mr3_p2a0_v18_closed_observer_diagnostic_v1/tb1_post_fixed_link_velocity_residual.jsonl",
+      "raw_bytes": 6691,
+      "raw_sha256": "7713cb4f24119f519b13b01e0718040382de4b411c632dc1a9a37c1787197093",
+      "source_absolute_path": "/tmp/mr3_p2a0_v18_closed_observer_diagnostic_v1/tb1_post_fixed_link_velocity_residual.jsonl",
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78546542,
+        "st_mtime_ns": 1792265934384455872,
+        "st_size": 6691
+      },
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78546542,
+        "st_mtime_ns": 1792265934384455872,
+        "st_size": 6691
+      }
+    },
+    {
+      "archive_member": "originals/mr3_p2a0_v18_closed_observer_diagnostic_v1/tb1_pre_fixed_link_velocity_residual.jsonl",
+      "raw_bytes": 6219,
+      "raw_sha256": "e5c8d5e6cc4d548a0ebc9a06ec42bc2bbc971762549fcaf8599ed28bf818784a",
+      "source_absolute_path": "/tmp/mr3_p2a0_v18_closed_observer_diagnostic_v1/tb1_pre_fixed_link_velocity_residual.jsonl",
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78546541,
+        "st_mtime_ns": 1792265934384455872,
+        "st_size": 6219
+      },
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78546541,
+        "st_mtime_ns": 1792265934384455872,
+        "st_size": 6219
+      }
+    },
+    {
+      "archive_member": "originals/mr3_p2a0_v18_closed_observer_diagnostic_v1/tb1_zero_motor_canonical_cog_planar_speed.jsonl",
+      "raw_bytes": 6679,
+      "raw_sha256": "a010b978d6ea9b4246f921dfad7b787bb709bc9a7912cf93d50b0a3fc253e8b7",
+      "source_absolute_path": "/tmp/mr3_p2a0_v18_closed_observer_diagnostic_v1/tb1_zero_motor_canonical_cog_planar_speed.jsonl",
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78546545,
+        "st_mtime_ns": 1792265934384455872,
+        "st_size": 6679
+      },
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78546545,
+        "st_mtime_ns": 1792265934384455872,
+        "st_size": 6679
+      }
+    },
+    {
+      "archive_member": "originals/mr3_p2a0_v18_closed_observer_diagnostic_v1/tb1_zero_motor_canonical_cog_post_velocity_pose_residual_speed.jsonl",
+      "raw_bytes": 6742,
+      "raw_sha256": "0d243a1c86731962f0629b65af12b3ae990698b227f35c2fa79cf80f45de7e33",
+      "source_absolute_path": "/tmp/mr3_p2a0_v18_closed_observer_diagnostic_v1/tb1_zero_motor_canonical_cog_post_velocity_pose_residual_speed.jsonl",
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78546546,
+        "st_mtime_ns": 1792265934385455940,
+        "st_size": 6742
+      },
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78546546,
+        "st_mtime_ns": 1792265934385455940,
+        "st_size": 6742
+      }
+    },
+    {
+      "archive_member": "originals/mr3_p2a0_v18_closed_observer_diagnostic_v1/tb1_zero_motor_model_planar_speed.jsonl",
+      "raw_bytes": 6679,
+      "raw_sha256": "a010b978d6ea9b4246f921dfad7b787bb709bc9a7912cf93d50b0a3fc253e8b7",
+      "source_absolute_path": "/tmp/mr3_p2a0_v18_closed_observer_diagnostic_v1/tb1_zero_motor_model_planar_speed.jsonl",
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78546543,
+        "st_mtime_ns": 1792265934384455872,
+        "st_size": 6679
+      },
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78546543,
+        "st_mtime_ns": 1792265934384455872,
+        "st_size": 6679
+      }
+    },
+    {
+      "archive_member": "originals/mr3_p2a0_v18_closed_observer_diagnostic_v1/tb1_zero_motor_model_post_velocity_pose_residual_speed.jsonl",
+      "raw_bytes": 6742,
+      "raw_sha256": "0d243a1c86731962f0629b65af12b3ae990698b227f35c2fa79cf80f45de7e33",
+      "source_absolute_path": "/tmp/mr3_p2a0_v18_closed_observer_diagnostic_v1/tb1_zero_motor_model_post_velocity_pose_residual_speed.jsonl",
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78546544,
+        "st_mtime_ns": 1792265934384455872,
+        "st_size": 6742
+      },
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78546544,
+        "st_mtime_ns": 1792265934384455872,
+        "st_size": 6742
+      }
+    },
+    {
+      "archive_member": "originals/mr3_p2a0_v18_closed_observer_diagnostic_v1/tb2_configuration.jsonl",
+      "raw_bytes": 3481,
+      "raw_sha256": "c8c385ebcddee7e8eeec9c7d8a8a728a25292cfdef93621b448c748168753ae8",
+      "source_absolute_path": "/tmp/mr3_p2a0_v18_closed_observer_diagnostic_v1/tb2_configuration.jsonl",
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78546558,
+        "st_mtime_ns": 1792266192480339235,
+        "st_size": 3481
+      },
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78546558,
+        "st_mtime_ns": 1792266192480339235,
+        "st_size": 3481
+      }
+    },
+    {
+      "archive_member": "originals/mr3_p2a0_v18_closed_observer_diagnostic_v1/tb2_own_odom_pre_projection_residual.jsonl",
+      "raw_bytes": 6824,
+      "raw_sha256": "cce583358d713bf1e7e6606d22663cb6515f0dad9a1d9afe85f382ff98d9c90b",
+      "source_absolute_path": "/tmp/mr3_p2a0_v18_closed_observer_diagnostic_v1/tb2_own_odom_pre_projection_residual.jsonl",
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78546556,
+        "st_mtime_ns": 1792266192480339235,
+        "st_size": 6824
+      },
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78546556,
+        "st_mtime_ns": 1792266192480339235,
+        "st_size": 6824
+      }
+    },
+    {
+      "archive_member": "originals/mr3_p2a0_v18_closed_observer_diagnostic_v1/tb2_own_odom_pre_projection_residual_own_odom.jsonl",
+      "raw_bytes": 1119,
+      "raw_sha256": "64cafba4c17e8cecae632a8f5bacdf6cebdc1553d9c53c383a4154ab7bf56b11",
+      "source_absolute_path": "/tmp/mr3_p2a0_v18_closed_observer_diagnostic_v1/tb2_own_odom_pre_projection_residual_own_odom.jsonl",
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78546557,
+        "st_mtime_ns": 1792266192480339235,
+        "st_size": 1119
+      },
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78546557,
+        "st_mtime_ns": 1792266192480339235,
+        "st_size": 1119
+      }
+    },
+    {
+      "archive_member": "originals/mr3_p2a0_v18_closed_observer_diagnostic_v1/tb2_post_fixed_link_velocity_residual.jsonl",
+      "raw_bytes": 6694,
+      "raw_sha256": "a9e47390780b2719836e64fd0da5b9e080ee707e6592316662d941284a9304cc",
+      "source_absolute_path": "/tmp/mr3_p2a0_v18_closed_observer_diagnostic_v1/tb2_post_fixed_link_velocity_residual.jsonl",
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78546551,
+        "st_mtime_ns": 1792266192479339171,
+        "st_size": 6694
+      },
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78546551,
+        "st_mtime_ns": 1792266192479339171,
+        "st_size": 6694
+      }
+    },
+    {
+      "archive_member": "originals/mr3_p2a0_v18_closed_observer_diagnostic_v1/tb2_pre_fixed_link_velocity_residual.jsonl",
+      "raw_bytes": 5645,
+      "raw_sha256": "b982bbbeb31f02e604f02e710409e37df0fc53a141fe1a8db1b3e21b1a643f1d",
+      "source_absolute_path": "/tmp/mr3_p2a0_v18_closed_observer_diagnostic_v1/tb2_pre_fixed_link_velocity_residual.jsonl",
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78546550,
+        "st_mtime_ns": 1792266192479339171,
+        "st_size": 5645
+      },
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78546550,
+        "st_mtime_ns": 1792266192479339171,
+        "st_size": 5645
+      }
+    },
+    {
+      "archive_member": "originals/mr3_p2a0_v18_closed_observer_diagnostic_v1/tb2_zero_motor_canonical_cog_planar_speed.jsonl",
+      "raw_bytes": 6659,
+      "raw_sha256": "4212256ff99a06c7679cbeb459b6a3244a128f940ebb1770237849ae42ffca35",
+      "source_absolute_path": "/tmp/mr3_p2a0_v18_closed_observer_diagnostic_v1/tb2_zero_motor_canonical_cog_planar_speed.jsonl",
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78546554,
+        "st_mtime_ns": 1792266192479339171,
+        "st_size": 6659
+      },
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78546554,
+        "st_mtime_ns": 1792266192479339171,
+        "st_size": 6659
+      }
+    },
+    {
+      "archive_member": "originals/mr3_p2a0_v18_closed_observer_diagnostic_v1/tb2_zero_motor_canonical_cog_post_velocity_pose_residual_speed.jsonl",
+      "raw_bytes": 6737,
+      "raw_sha256": "401cf953ce7dfb03646596ba6134a27313b4e8b7e0c6d2f6e0c445e26faaf060",
+      "source_absolute_path": "/tmp/mr3_p2a0_v18_closed_observer_diagnostic_v1/tb2_zero_motor_canonical_cog_post_velocity_pose_residual_speed.jsonl",
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78546555,
+        "st_mtime_ns": 1792266192480339235,
+        "st_size": 6737
+      },
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78546555,
+        "st_mtime_ns": 1792266192480339235,
+        "st_size": 6737
+      }
+    },
+    {
+      "archive_member": "originals/mr3_p2a0_v18_closed_observer_diagnostic_v1/tb2_zero_motor_model_planar_speed.jsonl",
+      "raw_bytes": 6659,
+      "raw_sha256": "4212256ff99a06c7679cbeb459b6a3244a128f940ebb1770237849ae42ffca35",
+      "source_absolute_path": "/tmp/mr3_p2a0_v18_closed_observer_diagnostic_v1/tb2_zero_motor_model_planar_speed.jsonl",
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78546552,
+        "st_mtime_ns": 1792266192479339171,
+        "st_size": 6659
+      },
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78546552,
+        "st_mtime_ns": 1792266192479339171,
+        "st_size": 6659
+      }
+    },
+    {
+      "archive_member": "originals/mr3_p2a0_v18_closed_observer_diagnostic_v1/tb2_zero_motor_model_post_velocity_pose_residual_speed.jsonl",
+      "raw_bytes": 6737,
+      "raw_sha256": "401cf953ce7dfb03646596ba6134a27313b4e8b7e0c6d2f6e0c445e26faaf060",
+      "source_absolute_path": "/tmp/mr3_p2a0_v18_closed_observer_diagnostic_v1/tb2_zero_motor_model_post_velocity_pose_residual_speed.jsonl",
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78546553,
+        "st_mtime_ns": 1792266192479339171,
+        "st_size": 6737
+      },
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78546553,
+        "st_mtime_ns": 1792266192479339171,
+        "st_size": 6737
+      }
+    },
+    {
+      "archive_member": "originals/mr3_p2a0_v18_closed_observer_diagnostic_v1/tb3_configuration.jsonl",
+      "raw_bytes": 3481,
+      "raw_sha256": "8fa198ad202c4642b52451fd0221ce1aa0f8afd9a0c68347fafd9a4ec186e929",
+      "source_absolute_path": "/tmp/mr3_p2a0_v18_closed_observer_diagnostic_v1/tb3_configuration.jsonl",
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78546562,
+        "st_mtime_ns": 1792266438911696993,
+        "st_size": 3481
+      },
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78546562,
+        "st_mtime_ns": 1792266438911696993,
+        "st_size": 3481
+      }
+    },
+    {
+      "archive_member": "originals/mr3_p2a0_v18_closed_observer_diagnostic_v1/tb3_own_odom_pre_projection_residual.jsonl",
+      "raw_bytes": 6816,
+      "raw_sha256": "88308dbc5632d53f66302d0c81422f0f9face8cec0558ffd7ea36ceb9670d5dd",
+      "source_absolute_path": "/tmp/mr3_p2a0_v18_closed_observer_diagnostic_v1/tb3_own_odom_pre_projection_residual.jsonl",
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78546560,
+        "st_mtime_ns": 1792266438911696993,
+        "st_size": 6816
+      },
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78546560,
+        "st_mtime_ns": 1792266438911696993,
+        "st_size": 6816
+      }
+    },
+    {
+      "archive_member": "originals/mr3_p2a0_v18_closed_observer_diagnostic_v1/tb3_own_odom_pre_projection_residual_own_odom.jsonl",
+      "raw_bytes": 1126,
+      "raw_sha256": "41ac73ed9db3f62e30c14c6c1ab243e22ced2bad169f19df5971494dcbde1b21",
+      "source_absolute_path": "/tmp/mr3_p2a0_v18_closed_observer_diagnostic_v1/tb3_own_odom_pre_projection_residual_own_odom.jsonl",
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78546561,
+        "st_mtime_ns": 1792266438911696993,
+        "st_size": 1126
+      },
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78546561,
+        "st_mtime_ns": 1792266438911696993,
+        "st_size": 1126
+      }
+    },
+    {
+      "archive_member": "originals/mr3_p2a0_v18_closed_observer_diagnostic_v1/tb3_post_fixed_link_velocity_residual.jsonl",
+      "raw_bytes": 6723,
+      "raw_sha256": "33e01b953d7bfa4874919cafda801550bd864317fb628f653a97d5ae04df985d",
+      "source_absolute_path": "/tmp/mr3_p2a0_v18_closed_observer_diagnostic_v1/tb3_post_fixed_link_velocity_residual.jsonl",
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78513042,
+        "st_mtime_ns": 1792266438910696931,
+        "st_size": 6723
+      },
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78513042,
+        "st_mtime_ns": 1792266438910696931,
+        "st_size": 6723
+      }
+    },
+    {
+      "archive_member": "originals/mr3_p2a0_v18_closed_observer_diagnostic_v1/tb3_pre_fixed_link_velocity_residual.jsonl",
+      "raw_bytes": 5669,
+      "raw_sha256": "8abfb02d25889c1cb55092dcb79eb7ed5cb18a85a1f945968d3084f4d151b917",
+      "source_absolute_path": "/tmp/mr3_p2a0_v18_closed_observer_diagnostic_v1/tb3_pre_fixed_link_velocity_residual.jsonl",
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78513041,
+        "st_mtime_ns": 1792266438910696931,
+        "st_size": 5669
+      },
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78513041,
+        "st_mtime_ns": 1792266438910696931,
+        "st_size": 5669
+      }
+    },
+    {
+      "archive_member": "originals/mr3_p2a0_v18_closed_observer_diagnostic_v1/tb3_zero_motor_canonical_cog_planar_speed.jsonl",
+      "raw_bytes": 8359,
+      "raw_sha256": "e6f7cc487bc1dc0d2725899a8757b1ea5635f008c5d5eaf09d283c37fd097195",
+      "source_absolute_path": "/tmp/mr3_p2a0_v18_closed_observer_diagnostic_v1/tb3_zero_motor_canonical_cog_planar_speed.jsonl",
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78513045,
+        "st_mtime_ns": 1792266438911696993,
+        "st_size": 8359
+      },
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78513045,
+        "st_mtime_ns": 1792266438911696993,
+        "st_size": 8359
+      }
+    },
+    {
+      "archive_member": "originals/mr3_p2a0_v18_closed_observer_diagnostic_v1/tb3_zero_motor_canonical_cog_post_velocity_pose_residual_speed.jsonl",
+      "raw_bytes": 6706,
+      "raw_sha256": "466a0682675e847490fc5c3481ac81181f7015eeba5dd7cfa40967ccacb7a004",
+      "source_absolute_path": "/tmp/mr3_p2a0_v18_closed_observer_diagnostic_v1/tb3_zero_motor_canonical_cog_post_velocity_pose_residual_speed.jsonl",
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78546559,
+        "st_mtime_ns": 1792266438911696993,
+        "st_size": 6706
+      },
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78546559,
+        "st_mtime_ns": 1792266438911696993,
+        "st_size": 6706
+      }
+    },
+    {
+      "archive_member": "originals/mr3_p2a0_v18_closed_observer_diagnostic_v1/tb3_zero_motor_model_planar_speed.jsonl",
+      "raw_bytes": 8359,
+      "raw_sha256": "e6f7cc487bc1dc0d2725899a8757b1ea5635f008c5d5eaf09d283c37fd097195",
+      "source_absolute_path": "/tmp/mr3_p2a0_v18_closed_observer_diagnostic_v1/tb3_zero_motor_model_planar_speed.jsonl",
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78513043,
+        "st_mtime_ns": 1792266438911696993,
+        "st_size": 8359
+      },
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78513043,
+        "st_mtime_ns": 1792266438911696993,
+        "st_size": 8359
+      }
+    },
+    {
+      "archive_member": "originals/mr3_p2a0_v18_closed_observer_diagnostic_v1/tb3_zero_motor_model_post_velocity_pose_residual_speed.jsonl",
+      "raw_bytes": 6706,
+      "raw_sha256": "466a0682675e847490fc5c3481ac81181f7015eeba5dd7cfa40967ccacb7a004",
+      "source_absolute_path": "/tmp/mr3_p2a0_v18_closed_observer_diagnostic_v1/tb3_zero_motor_model_post_velocity_pose_residual_speed.jsonl",
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78513044,
+        "st_mtime_ns": 1792266438911696993,
+        "st_size": 6706
+      },
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78513044,
+        "st_mtime_ns": 1792266438911696993,
+        "st_size": 6706
+      }
+    },
+    {
+      "archive_member": "originals/mr3_p2a0_v18_closed_observer_diagnostic_v1.py",
+      "raw_bytes": 18121,
+      "raw_sha256": "19087d8626972f368216a852ea8fb6fc0764e75d81a8b23a75e6e9ad36ef9681",
+      "source_absolute_path": "/tmp/mr3_p2a0_v18_closed_observer_diagnostic_v1.py",
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 76641912,
+        "st_mtime_ns": 1792265624494338644,
+        "st_size": 18121
+      },
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 76641912,
+        "st_mtime_ns": 1792265624494338644,
+        "st_size": 18121
+      }
+    },
+    {
+      "archive_member": "originals/mr3_p2a0_v18_closed_observer_diagnostic_v1.stderr",
+      "raw_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_absolute_path": "/tmp/mr3_p2a0_v18_closed_observer_diagnostic_v1.stderr",
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 76641916,
+        "st_mtime_ns": 1792265653116499426,
+        "st_size": 0
+      },
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 76641916,
+        "st_mtime_ns": 1792265653116499426,
+        "st_size": 0
+      }
+    },
+    {
+      "archive_member": "originals/mr3_p2a0_v18_closed_observer_diagnostic_v1.stdout",
+      "raw_bytes": 486,
+      "raw_sha256": "c3c6665e69e710d8a364142ecd41728cc866831b6ccf36dd82d74a8c52fa0c01",
+      "source_absolute_path": "/tmp/mr3_p2a0_v18_closed_observer_diagnostic_v1.stdout",
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 76641915,
+        "st_mtime_ns": 1792266438943698953,
+        "st_size": 486
+      },
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 76641915,
+        "st_mtime_ns": 1792266438943698953,
+        "st_size": 486
+      }
+    },
+    {
+      "archive_member": "originals/mr3_p2a0_v18_closed_observer_summary_v1.json",
+      "raw_bytes": 61370,
+      "raw_sha256": "ec75e581130bc032a4d6d641279a1fe1413f72ec2db6f0c5ed36be668b387fce",
+      "source_absolute_path": "/tmp/mr3_p2a0_v18_closed_observer_summary_v1.json",
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 76641933,
+        "st_mtime_ns": 1792266551162528865,
+        "st_size": 61370
+      },
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 76641933,
+        "st_mtime_ns": 1792266551162528865,
+        "st_size": 61370
+      }
+    },
+    {
+      "archive_member": "originals/mr3_p2a0_v18_closed_observer_summary_v1.md",
+      "raw_bytes": 2190,
+      "raw_sha256": "53662b8faff4d7a1cf8fda6928345c1bbf1d1ea2094eeb69f43a9db63035f547",
+      "source_absolute_path": "/tmp/mr3_p2a0_v18_closed_observer_summary_v1.md",
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 76641934,
+        "st_mtime_ns": 1792266551163528926,
+        "st_size": 2190
+      },
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 76641934,
+        "st_mtime_ns": 1792266551163528926,
+        "st_size": 2190
+      }
+    },
+    {
+      "archive_member": "originals/mr3_p2a0_v18_closed_observer_summary_v1.py",
+      "raw_bytes": 8179,
+      "raw_sha256": "b1193f72cc0fe4c2a5b54ed4555cb89915affb3f833ca42fe7702007cb7c608c",
+      "source_absolute_path": "/tmp/mr3_p2a0_v18_closed_observer_summary_v1.py",
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 76641932,
+        "st_mtime_ns": 1792266550910513617,
+        "st_size": 8179
+      },
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 76641932,
+        "st_mtime_ns": 1792266550910513617,
+        "st_size": 8179
+      }
+    },
+    {
+      "archive_member": "originals/mr3_p2a0_v19_witness_independent_review_v1.json",
+      "raw_bytes": 1779,
+      "raw_sha256": "7918a4a39a258baf3be23ab18b38cec7fe35ec3e33fed9a19ea6eec73ef0a798",
+      "source_absolute_path": "/tmp/mr3_p2a0_v19_witness_independent_review_v1.json",
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 76641923,
+        "st_mtime_ns": 1792265696376712518,
+        "st_size": 1779
+      },
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 76641923,
+        "st_mtime_ns": 1792265696376712518,
+        "st_size": 1779
+      }
+    },
+    {
+      "archive_member": "originals/mr3_p2a0_v19_witness_independent_review_v1.py",
+      "raw_bytes": 3429,
+      "raw_sha256": "ef11c77eba283edc8b424c9048918db745803ec75d27696203a73de7523fae07",
+      "source_absolute_path": "/tmp/mr3_p2a0_v19_witness_independent_review_v1.py",
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 76641922,
+        "st_mtime_ns": 1792265695997684633,
+        "st_size": 3429
+      },
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 76641922,
+        "st_mtime_ns": 1792265695997684633,
+        "st_size": 3429
+      }
+    }
+  ],
+  "inner_manifest_sha256": "66eec5c03dad3d4fa85e9f249a74831038e40632e5964037070a1dba9e1353af",
+  "schema": "mr3-v18-closed-observer-evidence-bundle-v1"
+}

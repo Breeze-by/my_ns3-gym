@@ -93,7 +93,7 @@
       "affected_reports": [
         "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261017_mr3_p2a0_v17.md"
       ],
-      "scope": "V17 closed physical FAIL remains unresolved. V18 freeze85abe391 baseline32/native/original physical/strict close passed, but predeclared witness incorrectly rejected versioned gzserver basename; formal1ms and contrast SKIPPED, original overallFAIL retained. No retry, retroactive PASS, matrix/training credit or pilot reset. Fixed facts/native bytes archived; extra closed-data analysis pending separately."
+      "scope": "V17 closed physical FAIL remains unresolved. V18 freeze85abe391 baseline32/native/original physical/strict close passed, but predeclared witness incorrectly rejected versioned gzserver basename; formal1ms and contrast SKIPPED, original overallFAIL retained. No retry, retroactive PASS, matrix/training credit or pilot reset. Fixed facts/native bytes archived; extra closed-data descriptive analysis archived separately without replacing the missing admission proof."
     }
   ],
   "files": [
@@ -1429,5 +1429,39 @@
     },
     "final_inventory": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v17/inventory_native_v2.json",
     "final_inventory_sha256": "42a6df7973301b17e0cf47ca314e1c88f6acf0c98683909f75690d3f8a24b856"
+  },
+  "mr3_p2a0_v18": {
+    "recorded_date": "2026-10-18",
+    "source_freeze": "85abe3916ab1582b68d7b3c3c0b96ea7fd68f6f1",
+    "fixed_facts_commit": "bbbd7a9f01c380e1f03872d5d4aa58390f011b77",
+    "status": "baseline native/original sampled physics/strict close PASS; executable basename admission FAIL; formal1ms/iters150 SKIP; preserved",
+    "report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_v18.md",
+    "assets": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v18",
+    "native_files": 502,
+    "native_raw_bytes": 2964003816,
+    "native_encoded_parts": 586,
+    "native_encoded_bytes": 225772425,
+    "closed_cost": {
+      "resets": 1,
+      "steps": 32,
+      "API": 33,
+      "native_wall_seconds": 850.965301560238,
+      "optimizer_updates": 0
+    },
+    "descriptive_supplement": {
+      "manifest": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v18/closed_descriptive_v1/manifest_v1.json",
+      "sha256": "05e41872bc3036795bebc58ff50419235781901237fae5e7ed2d4a135a15f083",
+      "scope": "52 originals, no missing live proof replacement or retroactive PASS; no V17 failure reproduction"
+    }
+  },
+  "mr3_p2a0_v19": {
+    "recorded_date": "2026-10-18",
+    "source_base": "bbbd7a9f01c380e1f03872d5d4aa58390f011b77",
+    "status": "source-ready preparation; actual clean pushed exact40 preflight and native pair not yet run",
+    "report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_v19.md",
+    "assets": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v19",
+    "scope": "Fresh same-freeze50/150 fixed physics diagnosis only; no matrix/PPO/pilot/gateway credit",
+    "budget_native_wall_seconds": 2749.0,
+    "prior_v18_native_wall_seconds": 850.965301560238
   }
 }

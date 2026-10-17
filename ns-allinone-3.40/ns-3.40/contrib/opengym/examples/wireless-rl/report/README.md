@@ -9,6 +9,7 @@
 
 | 文件 | 用途 | 能提供的信用 |
 | --- | --- | --- |
+| [P2A.0 V19 固定物理对照准备](20261018_mr3_p2a0_v19.md) | 可执行实体/SHA准入修复；新baseline/iters150预声明 | 待actual clean pushed预检；不授P2A.0或训练信用 |
 | [20261018_mr3_p2a0_v18.md](20261018_mr3_p2a0_v18.md) | 停车响应隔离物理诊断 | baseline32原生/原停车/关闭PASS，版本文件名准入FAIL；1ms正式consumer及对照SKIP，整体FAIL，P2A.0未完成 |
 | [20261017_mr3_p2a0_v17.md](20261017_mr3_p2a0_v17.md) | 晚GOAL机会及完整准备验证 | interface/terminal PASS，reset真实停车响应FAIL，deadline SKIP；原件封存，P2A.0未完成 |
 | [20261017_mr3_p2a0_v16.md](20261017_mr3_p2a0_v16.md) | 外部非接近新GOAL刺激 | interface32及9门PASS，仅tb1制停覆盖FAIL；后三阶段SKIP，P2A.0未完成 |

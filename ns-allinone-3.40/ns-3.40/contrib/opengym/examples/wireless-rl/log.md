@@ -5757,3 +5757,37 @@ closed_summary_v1只读汇总错读顶层command得0；v2仅按实际info.comman
 V18原3600nativewall已用850.965301560238，余2749.034698439762；pilot余1870/2905.954739546403不动，无训练/GPU更新。
 
 V18闭合静态核验：`/usr/bin/python3 -B`只读检查137个变更文档链接、152项原independent源SHA、实际`git diff --check`和`git add -n .`598路径白名单，均PASS；无native/consumer重跑。独立canonical custody检查586个encoded parts与/tmp原封存逐字一致，26项支持tar解码与原件SHA一致、无单文件≥100000000B，receipt SHA30d5f25d…；原件见`assets/20261018_mr3_p2a0_v18/closed_static_v1/`。额外归约仅TMP仍在进行，V18原FAIL/SKIP不改。
+
+
+### 2026-10-18 — V18闭合数据额外归约（描述性，原FAIL不变）与V19准入修复准备
+
+V18 exact85abe391已关闭原件额外只读入口（cwd Git root）：
+`/usr/bin/python3 /tmp/mr3_p2a0_v18_closed_observer_diagnostic_v1.py ROS/log/mr3_p2a0/mr3_p2a0_20261018_v18_baseline/worker0/episode001_open_101 --output-directory /tmp/mr3_p2a0_v18_closed_observer_diagnostic_v1`。
+精确绝对argv/隔离env在执行原件，exit0，内部785.4870867431164/外层786.0037721036933wall。
+每份physics与motion单顺序pass，三机29.72→61.72各32001配对/有限/连续，无capture errors；
+ownodom942/942/941同T PRE位置与按原floatyaw投影XY/WZ逐值误差0，origin-CoG残差≤8.33e-17、fixedlink逐轴≤9.45e-5。
+零双motor峰值含刹车，不新增晚停结论；公共postvel Z积分对CoG位姿残差约2.69–2.89m/32秒，XY毫米级，
+保留getter/位姿限制，不改raw门或断言唯一根因。支撑contact有实际保留，世界RMS/constraint pointer不可用非0。
+封存入口`env PYTHONDONTWRITEBYTECODE=1 PYTHONNOUSERSITE=1 /usr/bin/python3 /tmp/mr3_p2a0_v18_closed_observer_bundle_v1.py`，
+52原件/encoded89314B，SHA b17d227e…，roundtrip/source stat前后稳定PASS；canonical A18/closed_descriptive_v1。
+该分析没有缺失的live proof，V18整体FAIL/正式1ms与iters150 SKIP不变，未复现或证明修复V17。
+
+V19源码父冻结bbbd7a9f01c380e1f03872d5d4aa58390f011b77，最小新live witness9c737261…/preflight1f2ad7ed…；
+只将basename改为预声明Gazebo samefile/resolved ELF/bytes/SHA，并先核新witness唯一冻结binding再导入。
+实际gzserver为/usr/bin/gzserver-11.10.2、159232B、SHA689e6123…；原PID/start/归属/maps/库门不变。
+`rtk proxy /usr/bin/python3 -B /tmp/mr3_p2a0_v19_preflight_proposal_v1/execute_checks_v1.py`实际20 CPU检查
+（真实exe8+preflight/static8+runner真实子进程异常4）及fatal lint exit0，3.570096406wall；精确argv/env/原件在A19/offline。
+原103runtime/152independent sources实际摘要及a014/observer9a1d/profile0932三个实际SO全部未变，无重build。
+完整CPU294/launch9/reader29沿用V18原件范围，不冒充本版新执行。
+root按exactbytes promotion3新独立脚本、2配置及plan共155 bindings；CPU proposals保管39原件、52492编码B全解码/原件末次SHA一致。
+独立final review PASS、310输入前后稳定、无阻断；原checker初轮对tar顺序/binary64舍入过强断言在原JSON保留，未改提案或原结果。
+
+V19下一原生只准新clean pushed exact40 preflight后的固定两次open101/3robots/1worker/V6/32。
+baseline154/13361、iters150156/13371，各1374.5nativewall/33API，总2749.0/66API；保留V18已用850.965301560238，
+累计原生上限3599.965301560238/99API，无主动signals截断。原所有task/物理/停车/时序门不变；正确采集的原物理FAIL仍保留，
+加载/来源/配置/逐毫秒覆盖/关闭失败则后次SKIP，不挑样/盲重试/拼接PASS。此条仍为准备，无新native/PPO/GPU/optimizer，
+pilot余1870决策/2905.954739546403wall不动。诊断后有依据修复，再新冻结完整原四阶段矩阵，用户验收后才训练。
+
+V19 preparation root静态核验PASS：155实际source bindings（旧152逐值不变）、2config SHA、3协调器syntax、146文档links、actual `git diff --check`及`git add -n .`21路径精确白名单；原record与dry-run压缩原件在A19/offline。无native/formal调用，actual clean pushed exact40预检仍为后置准入。
+
+V19额外primary-source静态复核：缓存World/ODEPhysics/ODELink保持，缺失的官方gazebo11_11.10.2三个ODE源下载原件/URL/时间/SHA逐字保留。QuickStep pose积分在先、ERP速度移除在后，World dirty pose先于End；这提供getter与积分速度不一致的代码机制，但未采内部caccel/caccel_erp，不归V17唯一根因。源码复核SHA8011934a…及6件gzip无损保管在A19/offline，所有writerSTOP；无raw重扫/native/formal或门禁修改。

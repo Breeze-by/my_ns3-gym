@@ -626,3 +626,24 @@ PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 \
 EXACT40必须是预检相同、干净且已推送的实际HEAD；清除学习端PYTHONPATH。两次原始物理门
 及1ms观测独立审计全部保留，baseline物理FAIL可作为有效诊断结果比较，基础设施/覆盖/来源
 核验失败则后一次SKIP。无PPO、pilot、GPU更新、四阶段或95%任务信用；之后完整矩阵另立新冻结。
+
+
+## P2A.0 V19：实体准入修复与固定物理对照
+
+V18整体FAIL已封存，不重跑。V19只修独立工具的Gazebo可执行实体/SHA检查；原ROS源码、a014驱动及两诊断库
+保持，无需重构建。新三机open101/V6/32固定baseline域154/端口13361、iters150域156/13371；
+各1374.5原生墙秒，总2749.0，保留V18已用850.965301560238。全部原物理/停车/任务门不变。
+先完成独立复核、clean commit/push与actual exact40预检；诊断环境仅由runner逐命令注入，不全局export。
+
+```bash
+cd /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl
+env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python \
+  report/assets/20261018_mr3_p2a0_v19/independent/mr3_p2a0_v19_preflight_v1.py
+env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 -u \
+  report/assets/20261018_mr3_p2a0_v19/independent/mr3_p2a0_v19_run_diagnostics_v1.py EXACT40
+```
+
+EXACT40与实际预检必须相同。固定两个新run仅尝试一次；加载/原生/配置/逐毫秒覆盖/关闭FAIL则后续SKIP，
+正确捕获的原物理FAIL仍保留并可比较。不据结果挑样，不用旧PASS拼接，活动期间不改源/库/Git。
+这是隔离归因，不是四阶段矩阵或P2A.0通过；之后有依据修复再新冻结完整重验，待用户验收后训练。
+详见[V19报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_v19.md)。
