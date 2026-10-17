@@ -1,6 +1,6 @@
 # ROS component memory — MR3
 
-2026-10-18: V22 prepares a public-API native RayBox finite-slab correction after actual ODE CPU false-hit reproduction. Final canonical SO7be79c7f/389312B and actual-library CPU/lifetime review pass. Fixed quick150 worlds/tasks are an unproven stopping candidate; original gates remain. Full new same-freeze fourstage matrix/preflight pending; P2A.0 incomplete, no new native/PPO. Old failures/pilot balance retained. See wireless-rl/report/20261018_mr3_p2a0_v22_ray_box.md.
+2026-10-18: V22 cdda6232 actual source preflight passed110runtime/191independent, but system Python inherited by benchmark/full audit lacks gymnasium/torch. Zero robot environments/API; interface entry FAIL and later3 SKIP, parent/watcher naturally closed. Entry .245784wall retained; fix explicit conda/failed receipts before a new frozen full matrix. Corrector7be/quick150 remain CPU-only candidates; P2A.0 incomplete, no PPO. See wireless-rl/report/20261018_mr3_p2a0_v22_ray_box.md.
 
 2026-10-18: V20_sensor b33ff700 ordinary4 source capture and strict close completed; 39 native exits0 and47 identities gone. Legitimate near scan returns persist and map to own100; actual hit geometry remains unknown. Same-name ROS synchronous throttling and Karto stationary-refresh parameters have different semantics, so missing forwarding alone is not a proven bug. Production SLAM/physics/gates unchanged,150 not selected,P2A.0 incomplete. See shared report/20261018_mr3_p2a0_v20_sensor.md.
 

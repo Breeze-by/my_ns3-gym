@@ -1,0 +1,452 @@
+{
+  "schema": "mr3-v22-prebackend-entry-failure-closure-data-review-v1",
+  "passed": false,
+  "review_completed": true,
+  "freeze": "cdda62325c6322cf5322162c616bd9b699354665",
+  "actual_stage_outcome": "ENTRYFAIL before backend/worker/Gazebo; original failure preserved",
+  "native_runs": 0,
+  "api_records": 0,
+  "physics_steps": 0,
+  "evidence_basis": "benchmark failed while importing env.py/gymnasium, before benchmark main creates output/backend; all four actual run directories absent",
+  "saved_identity_count": 4,
+  "identities": [
+    {
+      "saved": {
+        "pid": 3566538,
+        "start_ticks": 402494132,
+        "parent": 3566536,
+        "state": "R"
+      },
+      "current": null,
+      "same_identity_present": false
+    },
+    {
+      "saved": {
+        "pid": 3566585,
+        "parent": 3566538,
+        "group": 3566536,
+        "session": 3566536,
+        "start_ticks": 402494201,
+        "state": "R"
+      },
+      "current": null,
+      "same_identity_present": false
+    },
+    {
+      "saved": {
+        "pid": 3566635,
+        "start_ticks": 402494314,
+        "parent": 3566538,
+        "state": "R"
+      },
+      "current": null,
+      "same_identity_present": false
+    },
+    {
+      "saved": {
+        "pid": 3566609,
+        "parent": 3566585,
+        "group": 3566536,
+        "session": 3566536,
+        "start_ticks": 402494242,
+        "state": "R"
+      },
+      "current": null,
+      "same_identity_present": false
+    }
+  ],
+  "all_saved_identities_fresh_gone": true,
+  "current_matching_argv_processes": [],
+  "current_proc_permission_errors": [],
+  "no_current_matching_execution_argv": true,
+  "exact_identity_coverage_limit": "Only matrix/launcher/benchmark/audit coordinator PID/start saved. Seven formal subprocess records and watcher start omit their own PID/start, so no retrospective per-leaf identity inventory is claimed. Their completion uses actual wait returns / final watcher summary and root session exit evidence.",
+  "audit_submitted_commands": 7,
+  "audit_commands": [
+    {
+      "label": "information_review_v1",
+      "argv": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_independent_information_v2.py",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v22_interface",
+        "--freeze",
+        "cdda62325c6322cf5322162c616bd9b699354665",
+        "--output",
+        "/tmp/mr3_p2a0_v22_interface_information_review_v1.json"
+      ],
+      "returncode": 1,
+      "output_exists": true,
+      "passed": false
+    },
+    {
+      "label": "peer_review_v1",
+      "argv": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v11/independent/mr3_independent_control_phase_v2.py",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v22_interface",
+        "--freeze",
+        "cdda62325c6322cf5322162c616bd9b699354665",
+        "--output",
+        "/tmp/mr3_p2a0_v22_interface_peer_review_v1.json",
+        "--peer-only"
+      ],
+      "returncode": 1,
+      "output_exists": true,
+      "passed": false
+    },
+    {
+      "label": "drive_review_v1",
+      "argv": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_independent_drive_trace_v6.py",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v22_interface",
+        "--freeze",
+        "cdda62325c6322cf5322162c616bd9b699354665",
+        "--binary-proof",
+        "/tmp/mr3_p2a0_v22_binaryproof.json",
+        "--output",
+        "/tmp/mr3_p2a0_v22_interface_drive_review_v1.json"
+      ],
+      "returncode": 1,
+      "output_exists": true,
+      "passed": false
+    },
+    {
+      "label": "settled_turn_review_v1",
+      "argv": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v8/independent/mr3_independent_settled_turn_v3.py",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v22_interface",
+        "--freeze",
+        "cdda62325c6322cf5322162c616bd9b699354665",
+        "--output",
+        "/tmp/mr3_p2a0_v22_interface_settled_review_v1.json",
+        "--require-use"
+      ],
+      "returncode": 1,
+      "output_exists": true,
+      "passed": false
+    },
+    {
+      "label": "control_review_v1",
+      "argv": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v11/independent/mr3_independent_control_phase_v2.py",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v22_interface",
+        "--freeze",
+        "cdda62325c6322cf5322162c616bd9b699354665",
+        "--output",
+        "/tmp/mr3_p2a0_v22_interface_control_review_v1.json"
+      ],
+      "returncode": 1,
+      "output_exists": true,
+      "passed": false
+    },
+    {
+      "label": "full_audit",
+      "argv": [
+        "/usr/bin/python3",
+        "-m",
+        "mr3_learning.audit_preparation",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v22_interface",
+        "--freeze",
+        "cdda62325c6322cf5322162c616bd9b699354665",
+        "--output",
+        "/tmp/mr3_p2a0_v22_interface_full_audit.json"
+      ],
+      "returncode": 1,
+      "output_exists": false,
+      "passed": false
+    },
+    {
+      "label": "closure_binary_review_v1",
+      "argv": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v22_ray_box/independent/mr3_v22_multiepoch_closure_binary_review_v1.py",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v22_interface",
+        "--prefix",
+        "mr3_p2a0_v22_interface",
+        "--freeze",
+        "cdda62325c6322cf5322162c616bd9b699354665",
+        "--expected-episodes",
+        "1",
+        "--require-parameters"
+      ],
+      "returncode": 1,
+      "output_exists": false,
+      "passed": false
+    }
+  ],
+  "all_submitted_jobs_finished": true,
+  "runner_errors": [],
+  "required_receipts": 10,
+  "required_passed": 0,
+  "actual_missing_receipts": [
+    "/tmp/mr3_p2a0_v22_interface_full_audit.json",
+    "/tmp/mr3_p2a0_v22_interface_input_review_v1.json",
+    "/tmp/mr3_p2a0_v22_interface_fixed_angular_v1.json",
+    "/tmp/mr3_p2a0_v22_interface_fixed_physics_v1.json",
+    "/tmp/mr3_p2a0_v22_interface_closure_binary_review_v1.json"
+  ],
+  "skipped_stages": [
+    "terminal",
+    "reset",
+    "deadline"
+  ],
+  "run_directory_facts": [
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v22_interface",
+      "exists": false
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v22_terminal",
+      "exists": false
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v22_reset",
+      "exists": false
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v22_deadline",
+      "exists": false
+    }
+  ],
+  "watcher_natural_finish": {
+    "closed_stages": [
+      "interface"
+    ],
+    "stop_reason": "actual matrix ledger declares version failure and later stages skip",
+    "wall_seconds": 22.415530228056014,
+    "actual_worker_count": 0
+  },
+  "actual_wrong_interpreters": {
+    "parent": "/usr/bin/python3",
+    "benchmark": "/usr/bin/python3",
+    "full_audit": "/usr/bin/python3"
+  },
+  "cost": {
+    "native_wall_seconds": 0,
+    "launcher_wrapper_wall_seconds": 0.24578428314998746,
+    "parent_launch_child_wall_seconds": 0.8152396008372307,
+    "parent_audit_child_wall_seconds": 0.8851855746470392
+  },
+  "prior_review_correction": "The prior static coordinator review proved call structure but missed actual sys.executable inheritance: a system-Python parent selected system Python for benchmark and full audit. That review did not establish dependency-environment readiness and cannot be read as an end-to-end launch check.",
+  "scope": "Read-only closed entry-failure facts and fresh /proc snapshot. No unit/math/import probe/SDK/ROS/DDS/native/formal execution, signals, retry or canonical edits.",
+  "capture_utc": "2026-10-17T23:27:57.605928+00:00",
+  "capture_monotonic_ns": 4025072618888220,
+  "inputs": {
+    "/tmp/mr3_p2a0_v22_remaining_matrix_v1.jsonl": {
+      "sha256": "423a66f55d841efd4a80137e6720cd8756c1102a4a2206d5ebee5bca8e115e8c",
+      "bytes": 5830,
+      "stat": [
+        2051,
+        76642517,
+        5830,
+        1792279549317596636,
+        1792279549317596636
+      ]
+    },
+    "/tmp/mr3_p2a0_v22_interface_launch.json": {
+      "sha256": "5137620d2b869092afdc56a5567896797cda55381f40186b6dbfdfd8ee2b3307",
+      "bytes": 2277,
+      "stat": [
+        2051,
+        76642520,
+        2277,
+        1792279547657513992,
+        1792279547657513992
+      ]
+    },
+    "/tmp/mr3_p2a0_v22_interface_audit_execution_v1.json": {
+      "sha256": "90817558a62adc124fc06137ff53303c11f6634e6afe333519ca2a1389ef49cf",
+      "bytes": 10092,
+      "stat": [
+        2051,
+        76642535,
+        10092,
+        1792279548994580555,
+        1792279548994580555
+      ]
+    },
+    "/tmp/mr3_p2a0_v22_cross_stage_mapping_summary_v1.json": {
+      "sha256": "d23714e1baa4064890b69fac524016446a01a8c48948e7c5e161a844805b4341",
+      "bytes": 3838,
+      "stat": [
+        2051,
+        76642537,
+        3838,
+        1792279563069281308,
+        1792279563069281308
+      ]
+    },
+    "/tmp/mr3_p2a0_v22_cross_stage_mapping_start_v1.json": {
+      "sha256": "1a62e0eb505a90412a6932061779c126b2116f3353f3d614b87d158cab5c289e",
+      "bytes": 1182,
+      "stat": [
+        2051,
+        76642513,
+        1182,
+        1792279540653165312,
+        1792279540653165312
+      ]
+    },
+    "/tmp/mr3_p2a0_v22_source_preflight.json": {
+      "sha256": "2fbdeb126ae800e56cd4a5054eb0d1f4d373976c04b1d7ae85eb88e93f21dc53",
+      "bytes": 109761,
+      "stat": [
+        2051,
+        76642511,
+        109761,
+        1792279524411356910,
+        1792279524411356910
+      ]
+    },
+    "/tmp/mr3_p2a0_v22_interface_console.log": {
+      "sha256": "6a8565dcc07ab3d7a636b3ac9d7700fed7019c5d0cfd82d23c32c34945270133",
+      "bytes": 638,
+      "stat": [
+        2051,
+        76642521,
+        638,
+        1792279547606511453,
+        1792279547606511453
+      ]
+    },
+    "/tmp/mr3_p2a0_v22_interface_full_audit_console.log": {
+      "sha256": "ece6e4a0153faefb2f6face96419fcf91b11b86d8b3702845e7eacef0676f85f",
+      "bytes": 674,
+      "stat": [
+        2051,
+        76642523,
+        674,
+        1792279548886575178,
+        1792279548886575178
+      ]
+    },
+    "/tmp/mr3_p2a0_v22_interface_information_review_v1_console.log": {
+      "sha256": "cf62a39d776cc5b3c754b818dbd528e62c69dc4f9b8229f698538fed54abdf54",
+      "bytes": 86,
+      "stat": [
+        2051,
+        76642525,
+        86,
+        1792279548629562383,
+        1792279548629562383
+      ]
+    },
+    "/tmp/mr3_p2a0_v22_interface_information_review_v1.json": {
+      "sha256": "931ce53d45658412ba1d3b5c94c7bbdb2b8c2e1bacdd3808ac74664e822ac3b1",
+      "bytes": 1465,
+      "stat": [
+        2051,
+        76642527,
+        1465,
+        1792279548628562334,
+        1792279548628562334
+      ]
+    },
+    "/tmp/mr3_p2a0_v22_interface_peer_review_v1_console.log": {
+      "sha256": "fec1d0f1cd95a549fe6a86898e44e2c4650c6b4a7cc4a05bf5f26a5b83595781",
+      "bytes": 115,
+      "stat": [
+        2051,
+        76642526,
+        115,
+        1792279548655563678,
+        1792279548655563678
+      ]
+    },
+    "/tmp/mr3_p2a0_v22_interface_peer_review_v1.json": {
+      "sha256": "f9643ca66b78eec307a8abf0b073d69001e58ad7a30a465f609fc0b9919d049e",
+      "bytes": 2326,
+      "stat": [
+        2051,
+        76642529,
+        2326,
+        1792279548655563678,
+        1792279548655563678
+      ]
+    },
+    "/tmp/mr3_p2a0_v22_interface_drive_review_v1_console.log": {
+      "sha256": "92a8814647d257f9cf7aeb6ba2217321dd587d08252aee061675f1ea4a47ec95",
+      "bytes": 80,
+      "stat": [
+        2051,
+        76642524,
+        80,
+        1792279548716566715,
+        1792279548716566715
+      ]
+    },
+    "/tmp/mr3_p2a0_v22_interface_drive_review_v1.json": {
+      "sha256": "630cbcf49aee7bea536d84eeccb2c858d64b932dbf7b34b37c7693e5b4fede93",
+      "bytes": 1360,
+      "stat": [
+        2051,
+        76642531,
+        1360,
+        1792279548716566715,
+        1792279548716566715
+      ]
+    },
+    "/tmp/mr3_p2a0_v22_interface_settled_turn_review_v1_console.log": {
+      "sha256": "fb423fd004ba93954a219bb1212dc7c9e6674312f33997e34186e8619d3885e6",
+      "bytes": 82,
+      "stat": [
+        2051,
+        76642530,
+        82,
+        1792279548760568905,
+        1792279548760568905
+      ]
+    },
+    "/tmp/mr3_p2a0_v22_interface_settled_review_v1.json": {
+      "sha256": "f199f941408fa62a53fab9a785d7dedfaecbba2dd6d6a88456ca0b08e9cad0a2",
+      "bytes": 200,
+      "stat": [
+        2051,
+        76642534,
+        200,
+        1792279548759568856,
+        1792279548759568856
+      ]
+    },
+    "/tmp/mr3_p2a0_v22_interface_control_review_v1_console.log": {
+      "sha256": "f4cd8ad44cea61aa275b4af76bf3217d504e9662d0e156b6ef2f5964fc322998",
+      "bytes": 136,
+      "stat": [
+        2051,
+        76642528,
+        136,
+        1792279548759568856,
+        1792279548759568856
+      ]
+    },
+    "/tmp/mr3_p2a0_v22_interface_control_review_v1.json": {
+      "sha256": "4c18e6a1c7959c3002fbe59edd9cfd3e0a672de3f601ceac302af5b328998b0e",
+      "bytes": 2339,
+      "stat": [
+        2051,
+        76642533,
+        2339,
+        1792279548759568856,
+        1792279548759568856
+      ]
+    },
+    "/tmp/mr3_p2a0_v22_interface_closure_binary_review_v1_console.log": {
+      "sha256": "92f92e4631ccc27cebe255b0063e665aec09d4d3de8edb9364910b1d64eb2ef7",
+      "bytes": 815,
+      "stat": [
+        2051,
+        76642532,
+        815,
+        1792279548931577419,
+        1792279548931577419
+      ]
+    }
+  },
+  "source_sha256": "b0d4b76c9e3168783e972b14ebd6c4b9109d92a29c1fb14744c4d84b464e1648",
+  "argv": [
+    "/tmp/mr3_p2a0_v22_entry_failure_closure_review_v1.py"
+  ],
+  "wall_seconds": 0.05797170288860798
+}

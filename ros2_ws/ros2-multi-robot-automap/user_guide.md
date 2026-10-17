@@ -1,6 +1,6 @@
 # 三机器人 ROS 建图导航：当前实现指南
 
-V22准备修复已用实际ODE库CPU复现的Ray×Box近零方向误命中，stepped adapter加载独立碰撞回调。最终canonical库7be79c7f/389312B、动态实际库CPU与独立生命周期审查通过；三研究world/task选择quick/150单一工程候选，原门不变。尚待新冻结完整四阶段，P2A.0未完成；无新native/PPO，pilot余额未动。见[V22](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_v22_ray_box.md)。
+V22实际冻结cdda6232来源预检PASS110runtime/191independent；四阶段矩阵首benchmark因system Python缺gymnasium退出，完整审计同缺torch，0机器人/0API，后三SKIP且父/watch自然关闭。入口.245784wall保留；修显式conda与失败回执后新冻结完整重验。corrector7be/quick150只有CPU证据，P2A.0未完成、无PPO，见[V22](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_v22_ray_box.md)。
 
 V19固定50/150隔离诊断已关闭：两组加载、逐毫秒采集和严格关闭通过；150组三机全程没有合法GOAL或停车刺激，原物理FAIL，150尚未采用，P2A.0仍未完成。详见[V19](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_v19.md)。原启动命令、物理门和pilot余额不变。
 

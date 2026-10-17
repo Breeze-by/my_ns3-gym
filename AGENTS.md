@@ -2,7 +2,7 @@
 
 # Codex Monorepo Memory — MR3
 
-2026-10-18: V22 prepares a public-API native RayBox finite-slab correction after actual ODE CPU false-hit reproduction. Final canonical SO7be79c7f/389312B and actual-library CPU/lifetime review pass. Fixed quick150 worlds/tasks are an unproven stopping candidate; original gates remain. Full new same-freeze fourstage matrix/preflight pending; P2A.0 incomplete, no new native/PPO. Old failures/pilot balance retained. See wireless-rl/report/20261018_mr3_p2a0_v22_ray_box.md.
+2026-10-18: V22 cdda6232 actual source preflight passed110runtime/191independent, but system Python inherited by benchmark/full audit lacks gymnasium/torch. Zero robot environments/API; interface entry FAIL and later3 SKIP, parent/watcher naturally closed. Entry .245784wall retained; fix explicit conda/failed receipts before a new frozen full matrix. Corrector7be/quick150 remain CPU-only candidates; P2A.0 incomplete, no PPO. See wireless-rl/report/20261018_mr3_p2a0_v22_ray_box.md.
 
 2026-10-18: V20_sensor freeze b33ff700 closed ordinary4 source capture/strict native shutdown; 39 exits0 and47 saved PID/start identities gone. Legal near raw scan returns persist and map to own100, actual hit geometry still unknown; ROS synchronous throttling and SDK stationary-refresh semantics differ, so the early missing-setter bug inference is withdrawn. No production SLAM change/150 selection/matrix or PPO credit; P2A.0 remains incomplete. See wireless-rl/report/20261018_mr3_p2a0_v20_sensor.md.
 

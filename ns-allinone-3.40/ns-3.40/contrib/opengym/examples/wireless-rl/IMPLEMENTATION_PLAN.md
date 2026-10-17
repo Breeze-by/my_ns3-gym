@@ -16,7 +16,7 @@ V19冻结72d0465d的固定50/150诊断已关闭，两组加载/逐毫秒采集/�
 150组三机全程无合法GOAL和有效停车刺激，原物理FAIL。150未选用，V17真实停车问题仍未解决。
 本版原生1638.4207719592378墙秒，V18+V19合计2489.3860735194758；无训练或四阶段矩阵信用，见[V19](report/20261018_mr3_p2a0_v19.md)。
 
-V22准备修复已用实际ODE库CPU复现的Ray×Box近零方向误命中，stepped adapter加载独立碰撞回调。最终canonical库7be79c7f/389312B、动态实际库CPU与独立生命周期审查通过；三研究world/task选择quick/150单一工程候选，原门不变。尚待新冻结完整四阶段，P2A.0未完成；无新native/PPO，pilot余额未动。见[V22](report/20261018_mr3_p2a0_v22_ray_box.md)。
+V22实际冻结cdda6232来源预检PASS110runtime/191independent；四阶段矩阵首benchmark因system Python缺gymnasium退出，完整审计同缺torch，0机器人/0API，后三SKIP且父/watch自然关闭。入口.245784wall保留；修显式conda与失败回执后新冻结完整重验。corrector7be/quick150只有CPU证据，P2A.0未完成、无PPO，见[V22](report/20261018_mr3_p2a0_v22_ray_box.md)。
 
 ## 1. 当前状态
 
