@@ -729,9 +729,10 @@ class MR3Adapter(Node):
         self.publish_initial_inputs_ready(now)
         self.finish_observation()
         self.poll_snapshot()
-        if self.started_at is None:
+        if self.started_at is None and not self.stop_requested:
             return
-        if elapsed_ns(self.started_at, now) >= TASK_DURATION_NS and not self.stop_requested:
+        if (self.started_at is not None and elapsed_ns(self.started_at, now) >= TASK_DURATION_NS
+                and not self.stop_requested):
             self.stop_requested = True
             self.dispatcher.safety_stop(now, "task_deadline")
         if self.pending_stop is not None:

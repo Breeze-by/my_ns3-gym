@@ -1227,11 +1227,37 @@
   },
   "mr3_p2a0_v9": {
     "recorded_date": "2026-10-17",
-    "source_freeze": null,
-    "source_status": "working repair afterd41485df; new clean pushed preflight required",
-    "status": "repair/offline validation in progress; no native started",
+    "source_freeze": "26534fae40409e266376baf0995fb15dc0223e4b",
+    "source_status": "clean pushed actual native freeze",
+    "status": "native startup FAIL; terminal/reset/deadline SKIP; preserved",
     "report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261017_mr3_p2a0_v9.md",
     "assets": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v9",
-    "scope": "Fix reproducible future-latest odom discard with causal pending selection and raw independent information audit; no confirmed specific native skip rootcause or universal callback-order guarantee, no PPO/pilot credit."
+    "scope": "Fix reproducible future-latest odom discard with causal pending selection and raw independent information audit; no confirmed specific native skip rootcause or universal callback-order guarantee, no PPO/pilot credit.",
+    "superseding_work": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261017_mr3_p2a0_v10.md"
+  },
+  "mr3_p2a0_v10": {
+    "source_freeze": "631d8c35c43fdb7ed45e984376543e55395066ef",
+    "source_status": "clean pushed actual native freeze",
+    "status": "native QoS startup and invalid-stop closure FAIL; terminal/reset/deadline SKIP; preserved",
+    "report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261017_mr3_p2a0_v10.md",
+    "assets": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10",
+    "superseding_work": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261017_mr3_p2a0_v11.md",
+    "inventory": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/inventory_native_v1.json",
+    "inventory_sha256": "e022c7bd8c3d51861392dbe719778a9c3bfcffb36f669831a5316891067536cf",
+    "native_source_files": 192,
+    "native_raw_bytes": 170895648,
+    "native_selected_bytes": 9932259,
+    "source_payload_git_objects": 100,
+    "final_inventory": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/inventory_native_v2.json",
+    "final_inventory_sha256": "88ae6db30c44746cbd092ae70dbb5bb14ef79b65460c554fd55ad5dd5e8a6776"
+  },
+  "mr3_p2a0_v11": {
+    "recorded_date": "2026-10-17",
+    "source_freeze": null,
+    "source_status": "working narrow QoS and real pre-release stop repair; new clean pushed full matrix required",
+    "status": "offline validation in progress; no native started",
+    "report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261017_mr3_p2a0_v11.md",
+    "assets": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v11",
+    "scope": "All original task/source/body/160ms/settled and full-stage gates unchanged; no PPO/pilot/gateway credit."
   }
 }

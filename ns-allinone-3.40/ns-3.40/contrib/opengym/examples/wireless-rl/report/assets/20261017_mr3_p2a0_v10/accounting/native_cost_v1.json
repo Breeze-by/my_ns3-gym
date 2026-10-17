@@ -1,0 +1,132 @@
+{
+  "schema": "mr3-v10-closed-engineering-cost-v1",
+  "freeze": "631d8c35c43fdb7ed45e984376543e55395066ef",
+  "stage": "interface",
+  "stage_passed": false,
+  "attempted_environments": 1,
+  "attempted_resets": 1,
+  "returned_resets": 0,
+  "returned_steps": 0,
+  "saved_transition_records": 0,
+  "gpu_calls": 0,
+  "optimizer_updates": 0,
+  "launcher_wall_seconds": 210.30002562794834,
+  "benchmark_wall_seconds_including_attempts": 209.8452442488633,
+  "declared_matrix_wall_seconds": 18000,
+  "later_stages": {
+    "terminal": "SKIPPED_after_interface_failure",
+    "reset": "SKIPPED_after_interface_failure",
+    "deadline": "SKIPPED_after_interface_failure"
+  },
+  "pilot_budget_unchanged": {
+    "remaining_decisions": 1870,
+    "remaining_wall_seconds": 2905.954739546403
+  },
+  "first_failure": {
+    "worker_id": 0,
+    "kind": "rpc_or_worker_exception",
+    "reason": "InfrastructureError(\"TimeoutError('peer controlled execution phase wall guard expired')\")",
+    "episode_index": 0,
+    "epoch": null,
+    "observed_wall_monotonic_ns": 3972109752322685
+  },
+  "formal_audit_execution_passed": false,
+  "formal_commands": [
+    {
+      "label": "full_audit",
+      "returncode": 1,
+      "passed": false,
+      "output_exists": true
+    },
+    {
+      "label": "drive_review_v1",
+      "returncode": 1,
+      "passed": false,
+      "output_exists": true
+    },
+    {
+      "label": "information_review_v1",
+      "returncode": 1,
+      "passed": false,
+      "output_exists": true
+    },
+    {
+      "label": "peer_review_v1",
+      "returncode": 1,
+      "passed": false,
+      "output_exists": true
+    },
+    {
+      "label": "control_review_v1",
+      "returncode": 1,
+      "passed": false,
+      "output_exists": true
+    },
+    {
+      "label": "settled_turn_review_v1",
+      "returncode": 1,
+      "passed": false,
+      "output_exists": true
+    },
+    {
+      "label": "input_001",
+      "returncode": 1,
+      "passed": false,
+      "output_exists": true
+    },
+    {
+      "label": "fixed_angular_v1",
+      "returncode": 1,
+      "passed": false,
+      "output_exists": true
+    },
+    {
+      "label": "fixed_physics_v1",
+      "returncode": 1,
+      "passed": false,
+      "output_exists": true
+    },
+    {
+      "label": "episode001_fifo_phase_final",
+      "returncode": 1,
+      "passed": false,
+      "output_exists": false
+    },
+    {
+      "label": "closure_binary_review_v1",
+      "returncode": 1,
+      "passed": false,
+      "output_exists": false
+    }
+  ],
+  "strict_closure": {
+    "epoch": "mr3_p2a0_20261017_v10_interface_w0_e1_fd1deb1e",
+    "worker_returncode": 1,
+    "forced_shutdown": true,
+    "failed_sample": true,
+    "remaining_owned_processes": [],
+    "remaining_owned_zombies": []
+  },
+  "fresh_saved_identity_count": 45,
+  "fresh_same_identity_present": [],
+  "fresh_absence_is_not_strict_closure_pass": true,
+  "native_selected_files": 192,
+  "native_raw_bytes": 170895648,
+  "native_selected_bytes": 9932259,
+  "sourcepack_files": 100,
+  "prefreeze_git_files_including_inventory": 723,
+  "prefreeze_inventory_entries": 724,
+  "inventory_originals_not_in_freeze": [
+    {
+      "path": "independent/root_offline/final_source/ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py.gz",
+      "bytes": 16890,
+      "sha256": "624538dce8dcf53f87e98a9ce9cc3a4c9efaf0ab1219279d38d367581c973a45"
+    },
+    {
+      "path": "independent/runtime_offline/final_sources/ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py",
+      "bytes": 77674,
+      "sha256": "2da3ba79c20c1d2516c74eb6201384847fe08e1f6a41b0a64d7ec6013d4fd712"
+    }
+  ],
+  "scope": "Engineering failure and collection costs only; no task release, training, candidate execution, safety/body,95% or P2A/P2A.0 acceptance credit."
+}

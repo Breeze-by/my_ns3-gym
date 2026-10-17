@@ -1,0 +1,22 @@
+{
+  "schema": "mr3-readonly-wrapper-review-v1",
+  "passed": true,
+  "scope": "Read-only source interface/causality review; no repeated CPU suite or native execution",
+  "source": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v11/independent/mr3_independent_control_phase_v2.py",
+  "source_sha256": "3089ba774055b53e4c64e4e3e601398535554bc0bd15eb5d952bcfdf027b9a4b",
+  "inherited_sha256": "04cd7d079c16004b20320868943bcdac899da7646304d30cbad0804d1a6ee8d3",
+  "checks": {
+    "only_ControlReplay_record_extended": true,
+    "current_epoch_actual_false_ACK_always_rejected_unless_precise_terminal_candidate": true,
+    "typed_bool_ok_required": true,
+    "cross_epoch_callbacks_remain_ignored": true,
+    "terminal_candidate_rechecked_by_original_notice_source_scope_bindings": true,
+    "old_geometry_bootstrap_drive_math_functions_not_changed": true,
+    "worker_callback_sticky_failure_semantics_match": true
+  },
+  "known_limits": [
+    "Full mode extends worker-prefix failure checks; peer-only is overlapping original component scope.",
+    "No new cross-process atomic-stop or physical guarantee."
+  ],
+  "issues": []
+}

@@ -755,3 +755,28 @@ def test_task_deadline_precedes_new_native_dispatch():
     assert not any(client.goals for client in node.navigation_clients.values())
     assert any(kind == "action_rejected" and data["reason"] == "task_deadline"
                for kind, data in node.test_records)
+
+
+def test_real_pre_release_failure_closes_actual_idle_dispatcher_without_start_or_observation():
+    node, clock = make_adapter(started=False)
+    clock[0] = 72.62
+    node.receive_failure(message({"component": "mr3_environment_worker",
+                                  "reason": "infrastructure_failure", "invalid_sample": True}))
+    assert node.stop_requested and node.dispatcher.closed
+    node.maintain()
+    assert len(node.test_stopped) == 1
+    payload = json.loads(node.test_stopped[0].data)
+    assert payload["epoch"] == node.epoch and payload["start_sim_time_sec"] is None
+    assert payload["pending_goal_count"] == 0 and payload["robot_names"] == list(ROBOTS)
+    assert payload["stop_sim_time_sec"] == clock[0]
+    assert node.started_at is None and not node.test_starts and not node.test_observations
+    assert not any(client.goals for client in node.navigation_clients.values())
+    node.maintain()
+    assert len(node.test_stopped) == 1  # A real closure is acknowledged once.
+
+
+def test_pre_release_without_failure_does_not_publish_a_stop_or_start():
+    node, _ = make_adapter(started=False)
+    node.maintain()
+    assert node.started_at is None and not node.stop_requested
+    assert not node.test_stopped and not node.test_starts and not node.test_observations

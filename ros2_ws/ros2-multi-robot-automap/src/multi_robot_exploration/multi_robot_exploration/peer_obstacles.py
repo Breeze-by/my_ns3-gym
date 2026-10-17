@@ -15,7 +15,7 @@ import rclpy
 from rclpy.clock import Clock, ClockType
 from rclpy.executors import ExternalShutdownException
 from rclpy.node import Node
-from rclpy.qos import DurabilityPolicy, QoSProfile
+from rclpy.qos import DurabilityPolicy, QoSProfile, ReliabilityPolicy
 from sensor_msgs.msg import LaserScan, PointCloud2, PointField
 from std_msgs.msg import Header, String
 from tf2_msgs.msg import TFMessage
@@ -204,7 +204,10 @@ class PeerObstacles(Node):
         if self.stepped_mode:
             if self.names != ["tb1", "tb2", "tb3"]:
                 raise ValueError("stepped peer phases require exactly three robots")
-            self.phase_ack_pub = self.create_publisher(String, "/mr3/peer_phase_ack", 10)
+            self.phase_ack_pub = self.create_publisher(
+                String, "/mr3/peer_phase_ack",
+                QoSProfile(depth=1, durability=DurabilityPolicy.TRANSIENT_LOCAL,
+                           reliability=ReliabilityPolicy.RELIABLE))
             self.inputs.extend([
                 self.create_subscription(String, "/mr3/peer_phase_request",
                                          self.receive_phase_request, 10),

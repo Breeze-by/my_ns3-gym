@@ -49,11 +49,11 @@ CURRENT_AUDITOR_PINS = {
 }
 PREPARATION_RUNTIME_PINS = {
     ROS + 'src/multi_robot_exploration/multi_robot_exploration/mr3_adapter.py':
-        '90444564b04b86982553a7fe6e0b98beb290ba92c3ab1e32e503998e6411fc1c',
+        'd9121970b18e86a524ad4aad591a64661555bc15c0a59bf425896324473eecfc',
     ROS + 'src/multi_robot_exploration/multi_robot_exploration/mr3_observation_archive.py':
         '03da72d5e989e6c7af99b90aaddf357120c2239fc08e99febb858554b1fefea8',
     ROS + 'src/multi_robot_exploration/multi_robot_exploration/peer_obstacles.py':
-        'ac0834ab362a771efddbbb656d27edee176b9089be81a83f55ad3a2440065898',
+        'ad8f1676a4743f6cb01ff5d4b3b4a56555ec752e0fb92538597b54fffdf59b56',
     ROS + 'src/merge_map/merge_map/merge_map.py':
         '76c3d2c604f38f61116be1f39263472f9074b4f69fe7a0428b532da977530078',
     ROS + 'src/multi_robot_exploration/multi_robot_exploration/mr3_information.py':

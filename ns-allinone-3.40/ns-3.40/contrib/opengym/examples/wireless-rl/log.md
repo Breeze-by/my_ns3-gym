@@ -4969,3 +4969,211 @@ python report/assets/20261017_mr3_p2a0_v8/independent/mr3_p2a0_v8_contract_check
 共享stdlib physics dispatcher使preparation与audit_ppo识别同一真实零bootstrap，保留所有原物理数学/完整行/真实任务release/legacy/策略容量和目标。仅此一import、一文件binding和try/finally调用替换由静态AST精确许可，不豁免整个函数。没有PPO采样、GPU或优化器。四阶段正式原生尚未开始；clean push后preflight和实际binary/proc映射须新核验。
 
 冻结前补充两项实际检查：`plan_launcher_v10_final_v3`13 PASS/0.7238266966305673墙秒，准确命令conda python A10/independent/mr3_p2a0_v10_plan_launcher_tests_v1.py；`contract_static_v10_final`35pins/156links/AST PASS/4.826862648129463墙秒，准确命令`env -u PYTHONPATH PYTHONNOUSERSITE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python report/assets/20261017_mr3_p2a0_v10/independent/mr3_p2a0_v10_contract_checks.py /tmp/mr3_p2a0_v10_contract_static_final.json`，均cwd W。实际argv/source/console在同名JSON。root_offline manifest SHA 9d8249bcc8c08af322bc045f655d1badde34f0ea404e28716da309245467c2c5，最终预声明SHA 0456d6100e44bf93afe66edf2d057d5c71161dbbdcdd2f12cbf37f0fe63a1e52、59bindings。静态检查后仅补结果文字，不改执行合同/pins/代码。
+
+
+### 2026-10-17 MR3-P2A.0 v10 原生QoS及pre-release关闭FAIL闭合
+
+冻结631d8c35c43fdb7ed45e984376543e55395066ef，clean push后执行`env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python report/assets/20261017_mr3_p2a0_v10/independent/mr3_p2a0_v10_buildproof_preflight.py`，100runtime/59independent/原d0d库PASS；`/usr/bin/python3 /tmp/mr3_p2a0_v10_pack_source_bindings_v1.py`保存100精确Git payload。实际原生同env/conda命令`python report/assets/20261017_mr3_p2a0_v10/independent/mr3_p2a0_v10_launch_stage.py interface 631d8c35c43fdb7ed45e984376543e55395066ef`，精确benchmark argv及domain110/port13001在A10 accounting原launch JSON。08:41:44.569672–08:45:14.870305 UTC，launcher210.30002562794834wall/benchmark209.8452442488633wall，exit1；两包装时间不相加。1reset attempt/0returned reset/0step/0taskseconds/0GPUupdate。terminal/reset/deadline均SKIP未尝试。
+
+实际peer72.62 takeoverACK已publish，worker请求TL而peer默认VOLATILE，真实DURABILITY warning与10walltimeout对应。随后真实基础设施通知/永久零/storage/20ticks排空，但adapter未release时maintain早return跳过dispatcher.closed后的真实探索停止ACK，cleanup60.000343832187355walltimeout后forced。45fresh PID/start gone仅授absence，原forced_shutdownTrue/failed_sampleTrue/worker_rc1/native_stop缺失/strict closure FAIL不改。三实际SDF/driver配置/proc真实mapping匹配冻结d0d子事实不授整体PASS。
+
+正式调用同conda env `python report/assets/20261017_mr3_p2a0_v10/independent/mr3_p2a0_v10_audit_stage.py interface 631d8c35c43fdb7ed45e984376543e55395066ef`，cwd W；11条实际CLI/exit/wall/stdout/outputSHA在A10 independent/mr3_p2a0_v10_interface_audit_execution_v1.json。全部FAIL，FIFO/closure无reset入口未生成JSON，console保留。未用reader细项PASS覆盖该失败。v10control reader standalone abandonednegative缺口由mandatory full gate仍拒绝，原CPU反例与旧PASS/worker拒绝保留，v11加强对应reader不放宽生产门。
+
+原件pack `/usr/bin/python3 /tmp/mr3_p2a0_v10_pack_native_v1.py interface`：192文件170895648raw→9932259选择字节，60support原件及100精确Git payload无损核验；inventory_native_v1自排986项SHAe022c7bd8c3d51861392dbe719778a9c3bfcffb36f669831a5316891067536cf，verification SHA90379e0c667792852fe0a684b543151e0c40c57854bb6a6df46cb44025766458。原724条prefreeze字节均存在，但2条canonical worker快照被ignore未入631：实际631是722条+inventory=723文件；下一commit明确force-add这2条原字节，不改旧inventory或声称旧冻结已发布。原生产100source pack不受影响。pilot余额1870/2905.954739546403保持，无P2A.0/95%训练信用。
+
+封存库存范围更正：原inventory_native_v1误包含3个ignored Python cache，仅是初版库存范围错误，原件及字节不改。最终inventory_native_v2显式排缓存、selfexcluded，984项SHA88ae6db30c44746cbd092ae70dbb5bb14ef79b65460c554fd55ad5dd5e8a6776；不发布缓存。
+
+
+### 2026-10-17 MR3-P2A.0 v11 最小接线修复与完整离线检查
+
+基准V10 frozen631d8c35，working byte peer ad8f1676a4743f6cb01ff5d4b3b4a56555ec752e0fb92538597b54fffdf59b56、adapter d9121970b18e86a524ad4aad591a64661555bc15c0a59bf425896324473eecfc。仅peer ACK reliable/TL1与pre-release已stop且dispatcher真实closed的原ACK通路/None deadline guard，未release无规划/reward；所有source/body/task门、物理、actor、奖励、训练保持。audit_ppo两PREP pin及audit_protocol一adapter pin同步，后者非pin AST相同，不改unsent proof逻辑。
+
+完整ROS1175 PASS，conda236 PASS，actual10 installed imports/6source+test style/5coordinator style/13launcher/35pins及121links PASS。第一conda207run/2setupERROR因旧unsentproof adapterpin正确拒新源码，原FAIL留存；初root静态style直接调用6错误（E731/E402/3E128/E501），未capture专门stdout，原工具转录存在，不假造原件；随后capture root_style01四错误、修复02PASS。最终所有rootchecks的before==after且原stdout无损。准确每次argv/cwd/exit/wall在A11同名JSON及如下实际调用索引：
+
+```json
+[
+  {
+    "command": [
+      "/usr/bin/env",
+      "-u",
+      "PYTHONPATH",
+      "PYTHONNOUSERSITE=1",
+      "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "mr3_learning/tests",
+      "-q"
+    ],
+    "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+    "exit_code": 1,
+    "wall_seconds": 33.15218872204423,
+    "stdout_stderr_gzip": "conda_cpu_v11_final.log.gz",
+    "decoded_sha256": "6eb919ba704daca7586f0f99a765aaab2a32ec6a4161a0398fffd95b8eedbba1"
+  },
+  {
+    "command": [
+      "/usr/bin/env",
+      "-u",
+      "PYTHONPATH",
+      "PYTHONNOUSERSITE=1",
+      "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "mr3_learning/tests",
+      "-q"
+    ],
+    "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+    "exit_code": 0,
+    "wall_seconds": 31.258900242857635,
+    "stdout_stderr_gzip": "conda_cpu_v11_final_v2.log.gz",
+    "decoded_sha256": "a16d0ebbd41005ff6a58f15bfc54fa16aa8fc1530c644751b8aac2add234bdb8"
+  },
+  {
+    "command": [
+      "/usr/bin/env",
+      "-u",
+      "PYTHONPATH",
+      "PYTHONNOUSERSITE=1",
+      "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+      "report/assets/20261017_mr3_p2a0_v11/independent/mr3_p2a0_v11_contract_checks.py",
+      "/tmp/mr3_p2a0_v11_contract_static_final.json"
+    ],
+    "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+    "exit_code": 0,
+    "wall_seconds": 5.038378910627216,
+    "stdout_stderr_gzip": "contract_static_v11_final.log.gz",
+    "decoded_sha256": "da8666691481979da99276581f3c2bffd88132654951500f833fee5828ee6723"
+  },
+  {
+    "command": [
+      "/usr/bin/env",
+      "-u",
+      "PYTHONPATH",
+      "PYTHONNOUSERSITE=1",
+      "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+      "report/assets/20261017_mr3_p2a0_v11/independent/mr3_p2a0_v11_contract_checks.py",
+      "/tmp/mr3_p2a0_v11_contract_static_final_v2.json"
+    ],
+    "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+    "exit_code": 0,
+    "wall_seconds": 5.294793718028814,
+    "stdout_stderr_gzip": "contract_static_v11_final_v2.log.gz",
+    "decoded_sha256": "da8666691481979da99276581f3c2bffd88132654951500f833fee5828ee6723"
+  },
+  {
+    "command": [
+      "/usr/bin/env",
+      "-u",
+      "PYTHONPATH",
+      "PYTHONNOUSERSITE=1",
+      "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+      "report/assets/20261017_mr3_p2a0_v11/independent/mr3_p2a0_v11_plan_launcher_tests_v1.py"
+    ],
+    "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+    "exit_code": 0,
+    "wall_seconds": 0.2716349666006863,
+    "stdout_stderr_gzip": "plan_launcher_v11_final.log.gz",
+    "decoded_sha256": "688b6928c8a57e68004225a884d51c19aac5fcf719b2f718d2e5fe8d6356b74d"
+  },
+  {
+    "command": [
+      "/usr/bin/env",
+      "-u",
+      "PYTHONPATH",
+      "PYTHONNOUSERSITE=1",
+      "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+      "report/assets/20261017_mr3_p2a0_v11/independent/mr3_p2a0_v11_plan_launcher_tests_v1.py"
+    ],
+    "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+    "exit_code": 0,
+    "wall_seconds": 0.2753863916732371,
+    "stdout_stderr_gzip": "plan_launcher_v11_final_v2.log.gz",
+    "decoded_sha256": "8e8f32b64b12b3f119919b9253db0b16fa1544f6956d4878b20a15243297b552"
+  },
+  {
+    "command": [
+      "/usr/bin/python3",
+      "-m",
+      "flake8",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v11/independent/mr3_p2a0_v11_contract_checks.py",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v11/independent/mr3_p2a0_v11_audit_stage.py",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v11/independent/mr3_p2a0_v11_launch_stage.py",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v11/independent/mr3_p2a0_v11_buildproof_preflight.py",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v11/independent/mr3_p2a0_v11_plan_launcher_tests_v1.py",
+      "--max-line-length=99"
+    ],
+    "cwd": "/home/zhuyulab/ns3-workspace",
+    "exit_code": 1,
+    "wall_seconds": 0.7980459146201611,
+    "stdout_stderr_gzip": "root_style_v11_01.log.gz",
+    "decoded_sha256": "2fe3a925bb3e3f58f7f35c1363c5ba2db00d4c586758c4923b6c8c249c74094b"
+  },
+  {
+    "command": [
+      "/usr/bin/python3",
+      "-m",
+      "flake8",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v11/independent/mr3_p2a0_v11_contract_checks.py",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v11/independent/mr3_p2a0_v11_audit_stage.py",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v11/independent/mr3_p2a0_v11_launch_stage.py",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v11/independent/mr3_p2a0_v11_buildproof_preflight.py",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v11/independent/mr3_p2a0_v11_plan_launcher_tests_v1.py",
+      "--max-line-length=99"
+    ],
+    "cwd": "/home/zhuyulab/ns3-workspace",
+    "exit_code": 0,
+    "wall_seconds": 0.795739684253931,
+    "stdout_stderr_gzip": "root_style_v11_02.log.gz",
+    "decoded_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "/bin/bash",
+      "-c",
+      "source /opt/ros/humble/setup.bash && source install/setup.bash && export PYTHONNOUSERSITE=1 && /usr/bin/python3 -m pytest -q src/merge_map/test src/multi_robot_exploration/test --ignore=src/merge_map/test/test_copyright.py --ignore=src/merge_map/test/test_flake8.py --ignore=src/merge_map/test/test_pep257.py --ignore=src/multi_robot_exploration/test/test_copyright.py --ignore=src/multi_robot_exploration/test/test_flake8.py --ignore=src/multi_robot_exploration/test/test_pep257.py"
+    ],
+    "cwd": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap",
+    "exit_code": 0,
+    "wall_seconds": 40.27761468477547,
+    "stdout_stderr_gzip": "ros_semantic_v11_final.log.gz",
+    "decoded_sha256": "7cdc917231178a7cde9fa4283c75c943fd3c2be20bb9219407b1dae523ccdcd9"
+  },
+  {
+    "command": [
+      "/bin/bash",
+      "-c",
+      "source /opt/ros/humble/setup.bash && source install/setup.bash && export PYTHONNOUSERSITE=1 && /usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_p2a0_v10_runtime_import_check.py /tmp/mr3_p2a0_v11_runtime_import_bindings.json"
+    ],
+    "cwd": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap",
+    "exit_code": 0,
+    "wall_seconds": 2.301298280246556,
+    "stdout_stderr_gzip": "runtime_imports_v11_final.log.gz",
+    "decoded_sha256": "1d989cfc60e2e774985a5665ccd4b7c22da44a8af0cd221e5b66f2243869289a"
+  },
+  {
+    "command": [
+      "/usr/bin/python3",
+      "-m",
+      "flake8",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_ppo.py",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_protocol.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/peer_obstacles.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_adapter.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_phase_qos.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_adapter.py",
+      "--max-line-length=99"
+    ],
+    "cwd": "/home/zhuyulab/ns3-workspace",
+    "exit_code": 0,
+    "wall_seconds": 1.1483816653490067,
+    "stdout_stderr_gzip": "source_style_v11_final.log.gz",
+    "decoded_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+]
+```
+
+实际端点QoS+真实ACK交付/adapter focused67PASS，初red7FAIL1PASS（2真实缺口+5初test默认liveliness警告误判）及原fixture/source-before-after/准确argv在A11 independent/runtime_offline/originals_manifest_v1.json，SHA cb3a37ddfc1a3ffea2311ff91dabf64cd65419103a40da2c9c5921d1ac994320，19原件254967raw；缺失初中间test bytes明确标注。独立control v2只继承原04cd/旧58，新增9sticky negativemutation；旧CLI真实反例exit0/PASS、新CLI exit1/FAIL正确拒绝，同raw输入恒定，wrapper AST原实际拒绝。27原件manifest181217d13cdb5671b27eda8352e7b8ac29a5ffd8e8035e04aaed12ec20501930，raw184890→27865B；无native信用。root原件manifestf87fac9539a6813b0a7cc2f9181e658111366f34bfeec56217f0d4494749d15f。新plan68bindings/18000wall/608API596actions与原四stage门保持；仍需新clean-push preflight及完整新原生矩阵。无PPO/GPU/optimizer，pilot余额不变。
