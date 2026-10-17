@@ -1,6 +1,6 @@
 # MR3 研究路线：三机器人 RL 联合建图与冻结策略的 Wi-Fi 网络影响
 
-版本：2026-10-17；路线标识：`MR3`。本文取代旧的目标搜索、充电、集合和通信调度 RL 路线。
+版本：2026-10-18；路线标识：`MR3`。本文取代旧的目标搜索、充电、集合和通信调度 RL 路线。
 唯一 Git 根：`/home/zhuyulab/ns3-workspace`。P0/P1A/P1B已验收；用户于2026-10-16验收P1C并授权P2A。
 P2A未完成；v6原session基础设施失败后停止。2026-10-17用户授权继续解决并允许前置准备，
 当前[MR3-P2A.0](IMPLEMENTATION_PLAN.md)仍未完成：V17冻结eee6b2f9的interface与terminal完整PASS，reset8x32原生正常关闭，但worker1 open/rooms的tb1真实停车响应FAIL，deadline按规则SKIP。零命令和双轮目标已证实归零，raw横向速度约.011仍超原静止门；先做隔离物理诊断，再新冻结完整重验，不拼接旧PASS，见[V17报告](report/20261017_mr3_p2a0_v17.md)。
@@ -11,6 +11,10 @@ P2A未完成；v6原session基础设施失败后停止。2026-10-17用户授权�
 工程步骤、状态和逐步验收以 [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) 为准；
 代码审计、文献和取舍依据见 [路线审计](report/20261014_mr3_route_audit.md)；
 本轮矫正见 [复核报告](report/20261014_mr3_correction_review.md)。
+
+
+V18隔离诊断冻结85abe391的baseline32原生/原停车/关闭通过，但可执行文件名准入FAIL，1ms正式consumer与对照SKIP；
+V17真实停车问题尚未复现或解决。当前先修复准入、保留850.965301560238原生墙秒成本，再新冻结验证，见[V18](report/20261018_mr3_p2a0_v18.md)。
 
 ## 1. 研究问题与范围
 

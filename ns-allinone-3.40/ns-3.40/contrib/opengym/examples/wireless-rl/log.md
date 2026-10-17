@@ -5732,3 +5732,28 @@ V18准备提交修正：初次暂存diff-check发现两份readelf原始stdout行
 意外形成`cf248cb`（尚未native）。不修改原stdout字节、不重写历史：在后续提交把两文件改为确定性gzip，
 `build/readelf_original_encoding_v1.json`记录编码前后SHA，offline原件及原commit均保留；重新diff-check/dry-run/精确暂存后提交推送。
 无代码/模型/物理参数/消费者变化，无重build或原生重跑。
+
+### 2026-10-18 — V18冻结85abe391实际baseline关闭，准入FAIL/对照SKIP
+
+实际source freeze `85abe3916ab1582b68d7b3c3c0b96ea7fd68f6f1` clean pushed；
+`env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python report/assets/20261018_mr3_p2a0_v18/independent/mr3_p2a0_v18_preflight_v1.py`
+103 runtime/152 independent/原a014/两新SO PASS；
+`/usr/bin/python3 /tmp/mr3_p2a0_v10_pack_source_bindings_v1.py --preflight /tmp/mr3_p2a0_v18_source_preflight.json`
+103 Git对象sourcepack PASS，manifest db2e8c1f…/encoded4c197838…。
+实际parent入口：`env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 -u report/assets/20261018_mr3_p2a0_v18/independent/mr3_p2a0_v18_run_diagnostics_v1.py 85abe3916ab1582b68d7b3c3c0b96ea7fd68f6f1 > /tmp/mr3_p2a0_v18_pair_parent_v1.log 2>&1`。
+内部baseline exactargv见原plan/receipt：三机open101、seed101、1worker、V6/32、ROS150/port13341、baseline config命令作用域注入。
+返回1reset/32step/33API、32实际info.command、release29.72→61.72s、32任务秒，native850.965301560238墙秒，
+benchmark exit0/PASS。原`mr3_independent_physics_review.py RUN --output /tmp/mr3_p2a0_v18_baseline_physical_review.json`
+exit0/PASS、18.909605588763952只读墙秒；三机原停车证据完整/errors空，39/39原生exit0，46保存PID/start freshgone。
+整体coordinator exit1/FAIL：root误把/proc/PID/exe basename硬写gzserver，本机为gzserver-11.10.2（与/usr/bin/gzserver samefile），
+predeclared witness FAIL、1ms正式consumer SKIP、iters150 SKIP；无信号/源变更/盲重试/补PASS。本次未复现V17物理FAIL，不称已修复。
+额外实际server/maps、configuration及当前rigidity DATA快照仅归因，非正式准入；完整1ms闭合后归约仍在单pass只读中，结果另列。
+
+归档命令`/usr/bin/python3 -B /tmp/mr3_p2a0_v18_pack_closed_baseline_v1.py --source ROS/log/mr3_p2a0/mr3_p2a0_20261018_v18_baseline --target /tmp/mr3_p2a0_v18_selected_native_v1/baseline --prospective-prefix W/report/assets/20261018_mr3_p2a0_v18/native/baseline --execution /tmp/mr3_p2a0_v18_baseline_execution.json`
+（原执行receipt保存展开的绝对ROOT/ROS/W路径及精确6-key env）。4 codec组PASS；502原件2,964,003,816B→586parts/225,772,425B，
+最大2,689,824B；32MiB固定原byte分块、全部解码/重组SHA/原statfinal一致，helper外层52.86549312714487墙秒。
+`/usr/bin/python3 -B /tmp/mr3_p2a0_v18_pack_closed_support_v1.py`封26额外失败/来源/执行原件，473913编码B；原stageFAIL/SKIP不变。
+closed_summary_v1只读汇总错读顶层command得0；v2仅按实际info.command改32，两版均保留，非native/consumer重跑。
+V18原3600nativewall已用850.965301560238，余2749.034698439762；pilot余1870/2905.954739546403不动，无训练/GPU更新。
+
+V18闭合静态核验：`/usr/bin/python3 -B`只读检查137个变更文档链接、152项原independent源SHA、实际`git diff --check`和`git add -n .`598路径白名单，均PASS；无native/consumer重跑。独立canonical custody检查586个encoded parts与/tmp原封存逐字一致，26项支持tar解码与原件SHA一致、无单文件≥100000000B，receipt SHA30d5f25d…；原件见`assets/20261018_mr3_p2a0_v18/closed_static_v1/`。额外归约仅TMP仍在进行，V18原FAIL/SKIP不改。

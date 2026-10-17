@@ -605,9 +605,11 @@ python report/assets/20261017_mr3_p2a0_v17/independent/mr3_p2a0_v17_audit_stage.
 
 原A13九参数reader、Shim观察及a014库复用；closure只在核旧SHA后暂改binaryproof路径13→17并finally还原。两A17 reset wrapper只变V6/32元数据，raw7a472/2516数学与原pool保持。实际结果/限制见[V17报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261017_mr3_p2a0_v17.md)。完整准备证据提交推送后等待用户验收，不自动启动训练/P2B/gateway。
 
-## P2A.0 V18 隔离停车物理诊断（预声明，非完整矩阵）
+## P2A.0 V18 隔离停车物理诊断（历史FAIL，不重跑）
 
-V17真实停车响应失败原件保持。V18仅为三机open101两次串行32步物理归因，
+V17真实停车响应失败原件保持。V18冻结85abe391实际baseline32与原停车/关闭PASS，但root可执行文件名准入FAIL，
+正式1ms consumer及iters150均SKIP，整体FAIL。以下原命令仅保留，不重跑；修复后另立新冻结。
+原计划为三机open101两次串行32步物理归因，
 先baseline原50 iterations，再显式150；各1800墙秒、总3600，最多2reset/64step/66API。
 默认运行不加载诊断库。仅由已审核预声明入口逐命令注入
 `MR3_PHYSICS_DIAGNOSTIC_CONFIG_FILE`，不要全局export。源码/安装库需先完成系统ROS构建、

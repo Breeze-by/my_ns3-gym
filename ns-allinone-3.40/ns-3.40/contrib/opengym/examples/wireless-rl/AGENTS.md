@@ -1,5 +1,7 @@
 # wireless-rl memory — MR3
 
+2026-10-18: V18 freeze85abe391 baseline32/native/original sampled stopping/strict close passed, but root witness rejected actual gzserver-11.10.2 basename. OverallFAIL; formal1ms and iters150 SKIPPED. All39 native exits0,46 saved identities gone,850.965301560238 nativewall charged. V17 physical failure remains unresolved; fix executable entity admission in a fresh freeze, no blind retry or retroactive PASS. See [V18](report/20261018_mr3_p2a0_v18.md). P2A.0 remains incomplete; no PPO/pilot/P2B/gateway.
+
 2026-10-17 continuation (updated2026-10-18 Asia/Shanghai): P2A.0 remains authorized and incomplete. V17 freeze eee6b2f90f697b28a1c20a2af5d1a6d2f044465e passed interface and terminal completely; reset8x32 native/closure and 24 of 26 formal jobs passed, but tb1 real stopping response failed in worker1 open/rooms. Deadline SKIPPED, no retry. All originals preserved; 487 saved PID/start identities absent, 429/429 native processes exited normally. Actual zero commands and applied wheel zeros do not eliminate lateral raw vy about .011m/s; original .01/three-sample/.78s gates remain. Diagnose physics with isolated evidence before a new reviewed clean pushed complete matrix; no cross-freeze PASS. No PPO/P2B/gateway; pilot balance1870 decisions/2905.954739546403 wallsec unchanged. See wireless-rl/report/20261017_mr3_p2a0_v17.md.
 
 Historical first P2A.0 closure (2026-10-17): source freeze f8694025; six native episodes

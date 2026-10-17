@@ -9,7 +9,7 @@
 
 | 文件 | 用途 | 能提供的信用 |
 | --- | --- | --- |
-| [20261018_mr3_p2a0_v18.md](20261018_mr3_p2a0_v18.md) | 停车响应隔离物理诊断准备 | 两次固定三机open101/32步、66API；CPU/构建准备，无原生/完整矩阵信用，P2A.0未完成 |
+| [20261018_mr3_p2a0_v18.md](20261018_mr3_p2a0_v18.md) | 停车响应隔离物理诊断 | baseline32原生/原停车/关闭PASS，版本文件名准入FAIL；1ms正式consumer及对照SKIP，整体FAIL，P2A.0未完成 |
 | [20261017_mr3_p2a0_v17.md](20261017_mr3_p2a0_v17.md) | 晚GOAL机会及完整准备验证 | interface/terminal PASS，reset真实停车响应FAIL，deadline SKIP；原件封存，P2A.0未完成 |
 | [20261017_mr3_p2a0_v16.md](20261017_mr3_p2a0_v16.md) | 外部非接近新GOAL刺激 | interface32及9门PASS，仅tb1制停覆盖FAIL；后三阶段SKIP，P2A.0未完成 |
 | [20261017_mr3_p2a0_v15.md](20261017_mr3_p2a0_v15.md) | 恢复导航peer包络；运动取消工程刺激 | interface活动/停止覆盖FAIL，后三阶段SKIP；导航/控制通过，不提供P2A.0完成信用 |
