@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <array>
 #include <cmath>
+#include <limits>
 #include <stdexcept>
 
 namespace multi_robot
@@ -39,8 +40,13 @@ inline PairedWheelSlewResult limit_paired_wheel_speeds(
   const std::array<long double, 2> delta{
     static_cast<long double>(desired[0]) - current[0],
     static_cast<long double>(desired[1]) - current[1]};
-  const long double budget = static_cast<long double>(max_accel) * sim_dt;
-  const long double largest = std::max(std::abs(delta[0]), std::abs(delta[1]));
+  // Directed one-ULP interval bounds on the supported native floating-point build.
+  // A rounded long-double equality alone must not certify an exact binary64 budget.
+  const long double budget = std::nextafter(
+    static_cast<long double>(max_accel) * sim_dt, 0.0L);
+  const long double largest = std::nextafter(
+    std::max(std::abs(delta[0]), std::abs(delta[1])),
+    std::numeric_limits<long double>::infinity());
   if (!std::isfinite(budget) || !std::isfinite(largest)) {
     throw std::invalid_argument("wheel slew arithmetic exceeds finite range");
   }
@@ -55,14 +61,14 @@ inline PairedWheelSlewResult limit_paired_wheel_speeds(
           static_cast<long double>(current[1])))}, alpha};
     };
   const auto within_budget = [&](const PairedWheelSlewResult & result) {
-      return std::abs(static_cast<long double>(result.applied[0]) - current[0]) <= budget &&
-             std::abs(static_cast<long double>(result.applied[1]) - current[1]) <= budget;
+      return std::nextafter(std::abs(static_cast<long double>(result.applied[0]) - current[0]),
+               std::numeric_limits<long double>::infinity()) <= budget &&
+             std::nextafter(std::abs(static_cast<long double>(result.applied[1]) - current[1]),
+               std::numeric_limits<long double>::infinity()) <= budget;
     };
   const long double nominal = budget / largest;
-  double high = static_cast<double>(nominal);
-  if (static_cast<long double>(high) > nominal) {
-    high = std::nextafter(high, 0.0);
-  }
+  // Always step the binary64 fraction inward: nominal itself is rounded in long double.
+  double high = std::nextafter(static_cast<double>(nominal), 0.0);
   auto result = at(high);
   if (within_budget(result)) {
     return result;

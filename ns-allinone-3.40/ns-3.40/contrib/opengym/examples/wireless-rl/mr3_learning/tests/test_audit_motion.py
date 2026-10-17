@@ -74,8 +74,9 @@ def write_fixture(directory, helper):
                      "x": index * 3., "y": 0., "yaw": 0., "v": 0., "w": 0.,
                      "odom_source_stamp": 1., "tf_source_stamp": 1., "tf_validity_stamp": 1.2,
                      "tf_validity_lead_sec": .2, "source_stamp": 1.,
-                     "input_sequences": {"odom": 1, "tf": 1}}
-        received[name] = {**copy.deepcopy(own[name]), "x": 100. + index * 3.}
+                     "input_sequences": {"odom": 1, "tf": 1}, "planar_speed_mps": 0.}
+        received[name] = {**copy.deepcopy(own[name]), "x": 100. + index * 3.,
+                          "odometry": copy.deepcopy(odom)}
     record("received_states", {"epoch": epoch, "robots": list(received.values())})
     for index, name in enumerate(ROBOTS):
         request_identity = {
@@ -156,7 +157,7 @@ def write_settled_fixture(directory, helper, mixed=False, prewarm=False):
         "settled_turn_contract": "mr3-settled-turn-v1; synthetic complete source history",
     }, start)
     for sequence, clock in enumerate(range(start, 2_000_000_001, 20_000_000), 1):
-        own, requests = {}, {}
+        own, requests, raw_odometry = {}, {}, {}
         for index, name in enumerate(ROBOTS):
             v = .001 if name == "tb1" else 0.
             x, y = ((.001 * (clock / 1e9 - 1.), 0.) if name == "tb1" else
@@ -174,6 +175,7 @@ def write_settled_fixture(directory, helper, mixed=False, prewarm=False):
                 "translation": {"x": 0., "y": 0., "z": 0.}, "rotation": rotation}}
             record("own_odom", {"robot": name, "input_sequence": sequence,
                                 "message": odom}, clock)
+            raw_odometry[name] = copy.deepcopy(odom)
             trackers[name].observe(odom, sequence)
             record("own_tf", {"robot": name, "input_sequence": sequence,
                               "message": transform}, clock)
@@ -185,7 +187,8 @@ def write_settled_fixture(directory, helper, mixed=False, prewarm=False):
                          "tf_validity_stamp": validity, "tf_validity_lead_sec": .2,
                          "source_stamp": min(source, validity - .2),
                          "input_sequences": {"odom": sequence, "tf": sequence}}
-        received = copy.deepcopy(own)
+        received = {name: {**copy.deepcopy(state), "odometry": raw_odometry[name]}
+                    for name, state in own.items()}
         record("received_states", {"epoch": epoch, "robots": list(received.values())}, clock)
         for index, name in enumerate(ROBOTS):
             v, w = ((.2 if mixed else 0., .5) if name == "tb1" else (0., 0.))
@@ -423,12 +426,12 @@ class MotionAuditTests(unittest.TestCase):
 
     def test_independent_exact_endpoint_consumer_rejects_wider_or_unbounded_changes(self):
         import math
-        request = {"v": .26000000000000006, "w": .6842105263157895}
+        request = {"v": math.nextafter(.20, math.inf), "w": .6842105263157895}
         decision = {
-            "allow": True, "output": [.26, request["w"]],
+            "allow": True, "output": [.20, request["w"]],
             "command_normalization": {"schema": "mr3-command-one-ulp-v1",
                                       "input": [request["v"], request["w"]],
-                                      "canonical": [.26, request["w"]],
+                                      "canonical": [.20, request["w"]],
                                       "normalized_axes": ["v"]},
         }
         command_boundary(decision, request)
@@ -442,17 +445,28 @@ class MotionAuditTests(unittest.TestCase):
             elif fault == "metadata":
                 changed["command_normalization"]["canonical"][0] = .25
             else:
-                changed["command_normalization"]["input"][0] = .26
+                changed["command_normalization"]["input"][0] = .20
             with self.subTest(fault=fault), self.assertRaises(ValueError):
                 command_boundary(changed, source)
+
+    def test_old_captured_endpoint_requires_its_old_frozen_command_limit(self):
+        request = {"v": .26000000000000006, "w": .4}
+        decision = {"allow": True, "output": [.26, .4],
+                    "command_normalization": {
+                        "schema": "mr3-command-one-ulp-v1", "input": [request["v"], .4],
+                        "canonical": [.26, .4], "normalized_axes": ["v"]}}
+        with self.assertRaises(ValueError):
+            command_boundary(decision, request)
+        command_boundary(decision, request, command_limits=(.26, .8))
 
     def test_component_consumer_requires_exact_turn_and_full_independent_recheck(self):
         def state(name, x, y):
             return {"name": name, "epoch": "fixture", "valid": True, "x": x, "y": y,
-                    "yaw": 0., "v": 0., "w": 0., "source_stamp": 1.}
+                    "yaw": 0., "v": 0., "w": 0., "source_stamp": 1.,
+                    "planar_speed_mps": 0., "odometry": {"twist": {"twist": twist()}}}
         own = state("tb1", 0., 0.)
         peers = {"tb2": state("tb2", .65, 0.), "tb3": state("tb3", 4., 4.)}
-        request = {"v": .26000000000000006, "w": -.6842105263157895}
+        request = {"v": math.nextafter(.20, math.inf), "w": -.6842105263157895}
         decision = self.helper.guard_motion(
             [request["v"], request["w"]], own, peers, 1., "fixture")
         command_boundary(decision, request)
@@ -508,8 +522,9 @@ class MotionAuditTests(unittest.TestCase):
                 value, kind = row["payload"], row["kind"]
                 if kind == "raw_request":
                     if value["robot"] == "tb1":
-                        value["request"].update(v=.26000000000000006, w=-.6842105263157895)
-                        value["twist"] = twist(.26000000000000006, -.6842105263157895)
+                        value["request"].update(v=math.nextafter(.20, math.inf),
+                                                w=-.6842105263157895)
+                        value["twist"] = twist(math.nextafter(.20, math.inf), -.6842105263157895)
                     requests[value["robot"]] = value["request"]
                 elif kind == "decision":
                     name = value["robot"]
@@ -820,6 +835,45 @@ def write_controlled_fixture(directory, helper):
     return json.loads(json.dumps(files))
 
 
+def add_controlled_own_samples(files, helper, samples, before_clock=1_040_000_000):
+    """Insert genuine callback rows, preserving the original cross-ledger wall order."""
+    rows = files["motion_safety.jsonl"]
+    index = next(i for i, row in enumerate(rows) if row["kind"] == "decision"
+                 and row["payload"]["clock_ns"] == before_clock)
+    original = next(row for row in rows if row["kind"] == "own_odom"
+                    and row["payload"]["robot"] == "tb1")
+    inserted = []
+    for sequence, (source, angular_x) in enumerate(samples, 2):
+        row = copy.deepcopy(original)
+        row.update(sim_time_sec=before_clock / 1e9,
+                   wall_monotonic_ns=rows[index - 1]["wall_monotonic_ns"] + sequence - 1)
+        row["payload"]["input_sequence"] = sequence
+        raw = row["payload"]["message"]
+        sec, nano = divmod(source, 10**9)
+        raw["header"]["stamp"] = {"sec": sec, "nanosec": nano}
+        raw["twist"]["twist"]["angular"]["x"] = angular_x
+        inserted.append(row)
+    rows[index:index] = inserted
+    for sequence, row in enumerate(rows, 1):
+        row["record_sequence"] = sequence
+    for row in rows[index + len(inserted):]:
+        if row["kind"] != "decision" or row["payload"]["robot"] != "tb1":
+            continue
+        value = row["payload"]
+        eligible = [(source, sequence) for sequence, (source, _) in enumerate(samples, 2)
+                    if source <= value["clock_ns"]]
+        source, sequence = max([(1_000_000_000, 1), *eligible])
+        own = value["own_state"]
+        own["odom_source_stamp"] = source / 1e9
+        own["source_stamp"] = min(source / 1e9, own["tf_source_stamp"])
+        own["input_sequences"]["odom"] = sequence
+        if value["started"] and "phase_kind" not in value:
+            request = value["request"]
+            value["decision"] = helper.guard_motion(
+                [request["v"], request["w"]], own, value["received_peers"],
+                value["clock_ns"] / 1e9, files["metadata.json"]["epoch"])
+
+
 class ControlledMotionAuditTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -834,6 +888,68 @@ class ControlledMotionAuditTests(unittest.TestCase):
             self.assertEqual(result["controlled_execution_replay"]["stop_clocks"],
                              [1040000000, 1060000000])
             self.assertEqual(result["robots"]["tb1"]["controlled_stop_decisions"], 2)
+
+    def test_normal_commit_rejects_selected_raw_angular_xyz_peak(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            files = write_controlled_fixture(directory, self.helper)
+            raw = next(row["payload"]["message"] for row in files["motion_safety.jsonl"]
+                       if row["kind"] == "own_odom" and row["payload"]["robot"] == "tb1")
+            raw["twist"]["twist"]["angular"]["x"] = 1.3
+            write_files(directory, files)
+            with self.assertRaisesRegex(
+                    ValueError, "selected_own.*measured_angular_speed_exceeded"):
+                _audit_records(directory, self.helper, {})
+
+    def test_normal_commit_rejects_causal_history_peak_hidden_by_new_healthy_sample(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            files = write_controlled_fixture(directory, self.helper)
+            add_controlled_own_samples(files, self.helper,
+                                       [(1_025_000_000, 1.3), (1_030_000_000, 0.)])
+            write_files(directory, files)
+            with self.assertRaisesRegex(ValueError, "own_history.*measured_angular_speed_exceeded"):
+                _audit_records(directory, self.helper, {})
+
+    def test_unselected_prewarm_and_future_peaks_are_not_normal_task_history(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            files = write_controlled_fixture(directory, self.helper)
+            add_controlled_own_samples(files, self.helper,
+                                       [(990_000_000, 1.3), (1_080_000_000, 1.3)])
+            write_files(directory, files)
+            self.assertTrue(_audit_records(directory, self.helper, {})["passed"])
+
+    def test_new_raw_peak_during_stop_does_not_become_a_normal_commit(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            files = write_controlled_fixture(directory, self.helper)
+            add_controlled_own_samples(files, self.helper, [(1_050_000_000, 1.3)],
+                                       before_clock=1_060_000_000)
+            write_files(directory, files)
+            self.assertTrue(_audit_records(directory, self.helper, {})["passed"])
+
+    def test_actual_model_invalid_event_and_negative_ack_cannot_be_success(self):
+        for mutation in ("model_invalid", "negative_ack"):
+            with self.subTest(mutation=mutation), tempfile.TemporaryDirectory() as temporary:
+                directory = Path(temporary)
+                files = write_controlled_fixture(directory, self.helper)
+                rows = files["motion_safety.jsonl"]
+                if mutation == "model_invalid":
+                    target = next(row for row in rows if row["kind"] == "control_commit")
+                    target.update(kind="normal_control_model_invalid", payload={
+                        "schema": "mr3-normal-control-model-fault-v1",
+                        "classification": "normal_control_model_invalid_not_task_attributed"})
+                    message = "actual normal control model invalid"
+                else:
+                    target = next(row for row in rows if row["kind"] == "control_ack"
+                                  and row["payload"]["operation"] == "commit")
+                    target["payload"].update(ok=False, error="normal_control_model_invalid")
+                    target["payload"].pop("status")
+                    message = "failed actual motion control ACK"
+                write_files(directory, files)
+                with self.assertRaisesRegex(ValueError, message):
+                    _audit_records(directory, self.helper, {})
 
     def test_control_mutations_cannot_hide_missing_side_order_or_zero_completion(self):
         for mutation in ("failure", "nonzero_stop", "missing_self", "wrong_dependency",

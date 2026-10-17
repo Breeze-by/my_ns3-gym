@@ -150,24 +150,32 @@ controller_server:
       xy_goal_tolerance: 0.10
       yaw_goal_tolerance: 3.14
       stateful: True
-    # DWB parameters
+    # Rotation Shim delegates path tracking to the existing DWB controller.
     FollowPath:
-      plugin: "dwb_core::DWBLocalPlanner"
+      plugin: "nav2_rotation_shim_controller::RotationShimController"
+      primary_controller: "dwb_core::DWBLocalPlanner"
+      angular_dist_threshold: 0.5
+      angular_disengage_threshold: 0.5
+      forward_sampling_distance: 0.3
+      rotate_to_heading_angular_vel: 0.8
+      max_angular_accel: 3.2
+      simulate_ahead_time: 1.0
+      rotate_to_goal_heading: False
+      closed_loop: True
       debug_trajectory_details: False
       min_vel_x: 0.0
       min_vel_y: 0.0
-      max_vel_x: 0.26
+      max_vel_x: 0.20
       max_vel_y: 0.0
       max_vel_theta: 0.8
       min_speed_xy: 0.0
-      max_speed_xy: 0.26
+      max_speed_xy: 0.20
       min_speed_theta: 0.0
-      # Add high threshold velocity for turtlebot 3 issue.
-      # https://github.com/ROBOTIS-GIT/turtlebot3_simulations/issues/75
-      acc_lim_x: 2.5
+      # Match the explicitly configured smoother body-command acceleration.
+      acc_lim_x: 0.5
       acc_lim_y: 0.0
       acc_lim_theta: 3.2
-      decel_lim_x: -2.5
+      decel_lim_x: -0.5
       decel_lim_y: 0.0
       decel_lim_theta: -3.2
       vx_samples: 20
@@ -399,8 +407,10 @@ velocity_smoother:
     use_sim_time: True
     smoothing_frequency: 20.0
     feedback: "OPEN_LOOP"
-    max_velocity: [0.26, 0.0, 0.8]
-    min_velocity: [-0.26, 0.0, -0.8]
+    max_velocity: [0.20, 0.0, 0.8]
+    min_velocity: [-0.20, 0.0, -0.8]
+    max_accel: [0.5, 0.0, 3.2]
+    max_decel: [-0.5, 0.0, -3.2]
 
 robot_state_publisher:
   ros__parameters:

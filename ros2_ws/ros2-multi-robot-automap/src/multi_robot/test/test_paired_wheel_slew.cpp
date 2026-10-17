@@ -158,3 +158,53 @@ TEST(PairedWheelSlew, IdealNoSlipZeroTargetFitsRetainedGlobalStopEnvelope)
     }
   }
 }
+
+// Native P2A.0 v12 rows; exact binary64 nominal ratios are retained in the
+// independent Fraction evidence. A rounded long-double equality is insufficient.
+TEST(PairedWheelSlew, ActualZeroTargetNominalRatioCannotRoundOutward)
+{
+  const auto result = limit_paired_wheel_speeds(
+    {0.03870224258609071, 0.05117593092848239}, {0.0, 0.0}, 1.0, 0.034);
+  // The true ratio is strictly below 0x1.5428efc955958p-1.
+  EXPECT_LE(result.alpha, 0x1.5428efc955957p-1);
+  EXPECT_NEAR(result.alpha, 0.6643748219746994, 1e-12);
+}
+
+TEST(PairedWheelSlew, ActualMixedTargetNominalRatioCannotRoundOutward)
+{
+  const auto result = limit_paired_wheel_speeds(
+    {0.05503729208154675, 0.05598067674745284},
+    {0.20562105263157898, 0.31437894736842104}, 1.0, 0.034);
+  // The true ratio is strictly below 0x1.0d79b990149f5p-3.
+  EXPECT_LE(result.alpha, 0x1.0d79b990149f4p-3);
+  EXPECT_NEAR(result.alpha, 0.13157982798527681, 1e-12);
+}
+
+TEST(PairedWheelSlew, FastPathCannotLoseTinyCurrentAcrossTheExactBudgetBoundary)
+{
+  for (const double sign : {-1.0, 1.0}) {
+    const auto result = limit_paired_wheel_speeds(
+      {-sign * 1e-300, 0.0}, {sign * 0.034, 0.0}, 1.0, 0.034);
+    // Returning desired would move by binary64(0.034) + binary64(1e-300),
+    // strictly exceeding budget even though that sum rounds to 0.034 in LD.
+    EXPECT_LT(sign * result.applied[0], 0.034);
+    EXPECT_GT(sign * result.applied[0], 0.0);
+    EXPECT_LT(result.alpha, 1.0);
+    EXPECT_NEAR(result.alpha, 1.0, 1e-12);
+    EXPECT_DOUBLE_EQ(result.applied[1], 0.0);
+  }
+}
+
+TEST(PairedWheelSlew, RoundedAppliedStepCannotHideTinyCurrentBeyondBudget)
+{
+  for (const double sign : {-1.0, 1.0}) {
+    const auto result = limit_paired_wheel_speeds(
+      {-sign * 1e-300, 0.0}, {sign * 0.068, 0.0}, 1.0, 0.034);
+    // The old within-budget LD subtraction also lost the original tiny value.
+    EXPECT_LT(sign * result.applied[0], 0.034);
+    EXPECT_GT(sign * result.applied[0], 0.0);
+    EXPECT_LT(result.alpha, 0.5);
+    EXPECT_NEAR(result.alpha, 0.5, 1e-12);
+    EXPECT_DOUBLE_EQ(result.applied[1], 0.0);
+  }
+}

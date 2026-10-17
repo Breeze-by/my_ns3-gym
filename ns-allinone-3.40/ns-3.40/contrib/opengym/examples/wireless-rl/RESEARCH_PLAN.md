@@ -3,8 +3,8 @@
 版本：2026-10-17；路线标识：`MR3`。本文取代旧的目标搜索、充电、集合和通信调度 RL 路线。
 唯一 Git 根：`/home/zhuyulab/ns3-workspace`。P0/P1A/P1B已验收；用户于2026-10-16验收P1C并授权P2A。
 P2A未完成；v6原session基础设施失败后停止。2026-10-17用户授权继续解决并允许前置准备，
-当前[MR3-P2A.0](IMPLEMENTATION_PLAN.md)原声明出口未达，v1/v2/v3失败均保持；用户要求继续完成，
-v4观察回执故障及v5真实角速度失败均保留；v6轮反馈与机体子审计通过但真实目标消费约.727秒滞后；v7真实消费及关闭通过，但活动/转向/停止刺激不足，整体FAIL保持；v8接口32完整PASS，但terminal首轮旧received源龄.52超过原.5而提前失败，reset/deadline跳过。v9缓存修复后启动仍FAIL，真实ledger证实定时旧TF先选、新TF同clock晚到而暂停饥饿；v10显式阶段启动发现真实ACK QoS不匹配及pre-release停止回执缺口，原FAIL保留；v11实际interface32/关闭及独立门通过，但旧readiness消费者不识别新握手，原full FAIL保留；v12同冻结interface/terminal全部PASS，但reset活动不足、机体速度/停止响应与驱动严格数值门FAIL，deadline跳过；原件已归档，继续修复后以新冻结完整重验。本轮无新pilot、不重置其余额；P2B及后续未开始。
+当前[MR3-P2A.0](IMPLEMENTATION_PLAN.md)仍未完成：V12 interface/terminal全部正式门通过，reset活动、机体速度/持续停止与driver严格舍入门失败，deadline跳过。所有原件保留；用户要求继续完成，本版V13修复局部执行、完整速度模型与数值边界，须一个新冻结完整矩阵，见[V13报告](report/20261017_mr3_p2a0_v13.md)。
+本轮无新pilot、不重置其余额；P2B及后续未开始。
 任务定义见[MR3_TASK_CONTRACT.md](MR3_TASK_CONTRACT.md)，环境实现与接口见[MR3_ENV_CONTRACT.md](MR3_ENV_CONTRACT.md)；
 当前停在P2A，完整联合MaskablePPO训练/验证出口未达；gateway不在授权范围内。
 快速二维独立选项及每run50万/72小时候选预算未获验收，不以P2A授权代替其单独验收。

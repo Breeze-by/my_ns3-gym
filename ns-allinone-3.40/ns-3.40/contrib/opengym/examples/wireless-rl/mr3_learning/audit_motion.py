@@ -98,7 +98,8 @@ def yaw(quaternion):
     return math.atan2(2 * (w * z + x * y), 1 - 2 * (y ** 2 + z ** 2))
 
 
-def own_state(name, sources, sequences, epoch, settled_tracker=None, clock_ns=None):
+def own_state(name, sources, sequences, epoch, settled_tracker=None, clock_ns=None,
+              full_velocity=False):
     if "odom" not in sources or "tf" not in sources:
         return None
     odom, transform = sources["odom"], sources["tf"]
@@ -129,9 +130,10 @@ def own_state(name, sources, sequences, epoch, settled_tracker=None, clock_ns=No
         "source_stamp": min(odom_time, tf_time),
         "input_sequences": {key: sequences[key] for key in ("odom", "tf")},
     }
-    if settled_tracker is not None:
+    if settled_tracker is not None or full_velocity:
         linear = odom["twist"]["twist"]["linear"]
         value["planar_speed_mps"] = math.hypot(linear["x"], linear["y"])
+    if settled_tracker is not None:
         value["settled_turn"] = settled_tracker.certificate(clock_ns)
     return value
 
@@ -181,10 +183,16 @@ def twist_pair(value):
     return [value["linear"]["x"], value["angular"]["z"]]
 
 
-def command_boundary(decision, request, settled_enabled=False):
+def command_boundary(decision, request, settled_enabled=False, command_limits=(.20, .8)):
     """Enforce hard limits, exact endpoint normalization and sole component filter."""
     output = decision["output"]
-    require(abs(output[0]) <= .26 and abs(output[1]) <= .8, "final motion hard limit exceeded")
+    require(len(command_limits) == 2 and all(type(limit) in (int, float)
+            and math.isfinite(limit) and limit > 0 for limit in command_limits),
+            "invalid frozen motion command limits")
+    require(len(output) == 2 and all(type(value) in (int, float)
+            and math.isfinite(value) and abs(value) <= limit
+            for value, limit in zip(output, command_limits)),
+            "final motion hard limit exceeded")
     normalization = decision.get("command_normalization")
     canonical = None if request is None else [request["v"], request["w"]]
     if normalization is not None:
@@ -192,7 +200,7 @@ def command_boundary(decision, request, settled_enabled=False):
                 and normalization["input"] == canonical,
                 "motion normalization lost original callback values")
         canonical, changed = [], []
-        for axis, value, limit in zip(("v", "w"), normalization["input"], (.26, .8)):
+        for axis, value, limit in zip(("v", "w"), normalization["input"], command_limits):
             if abs(value) > limit:
                 require(abs(value) == math.nextafter(limit, math.inf),
                         "motion normalization exceeded one binary64 neighbour")
@@ -221,7 +229,7 @@ def command_boundary(decision, request, settled_enabled=False):
             and rejected.get("command_normalization") == normalization,
             "component filter bypassed a different mixed-command rejection")
     require(rotation["allow"] is True and rotation["reason"] in (
-                "clear", "settled_turn_drift_reserve")
+            "clear", "settled_turn_drift_reserve")
             and rotation.get("component_filter") is None
             and rotation.get("command_normalization") is None
             and rotation["output"] == output == [0., canonical[1]],
@@ -458,6 +466,9 @@ def _audit_records(directory, helper, source_proof):
             "graph_at_callback; packet MessageInfo unavailable on installed Humble",
             "unknown motion identity scope/configuration")
     settled_enabled = "settled_turn_contract" in configuration
+    full_velocity = callable(getattr(helper, "measured_velocity_error", None))
+    peer_options = {"require_raw": True} if full_velocity else {}
+    command_limits = (helper.COMMAND_SPEED_LIMIT, helper.COMMAND_TURN_LIMIT)
     causal_selection = configuration.get("own_input_selection") == "latest_causal_v1"
     require("own_input_selection" not in configuration or causal_selection,
             "unknown own motion input selection")
@@ -498,7 +509,32 @@ def _audit_records(directory, helper, source_proof):
         if causal_selection:
             selected, selected_sequences = causal_own_inputs(
                 histories[name], sequences[name], target)
-        return own_state(name, selected, selected_sequences, epoch, tracker, target)
+        return own_state(name, selected, selected_sequences, epoch, tracker, target,
+                         full_velocity=full_velocity)
+
+    def normal_velocity_inputs(target):
+        """Replay normal eligibility from raw; this is not task-time attribution."""
+        if not full_velocity:
+            return
+        for name in ROBOTS:
+            own = selected_own(name, target)
+            require(own is not None, "normal control lacks selected raw own input")
+            selected_sequence = own["input_sequences"]["odom"]
+            for sequence, raw in histories[name]["odom"]:
+                stamp(raw["header"])
+                source = raw["header"]["stamp"]
+                source_ns = source["sec"] * 10**9 + source["nanosec"]
+                selected = sequence == selected_sequence
+                historical = started and release_ns <= source_ns <= target
+                if source_ns > target or not (selected or historical):
+                    continue
+                measured = dict(own) if selected else {}
+                measured["odometry"] = raw
+                error = helper.measured_velocity_error(measured, require_raw=True)
+                role = "selected_own" if selected else "own_history"
+                require(error is None, f"normal control {name} {role}: {error}")
+            error = helper.measured_velocity_error(states.get(name), require_raw=True)
+            require(error is None, f"normal control {name} received_peer: {error}")
 
     def completed_status(status, wall):
         require(isinstance(status, dict) and status.get("epoch") == epoch
@@ -610,6 +646,8 @@ def _audit_records(directory, helper, source_proof):
                       else "external_safety_failure")
         elif kind == "settled_turn_model_failure":
             raise ValueError("actual settled turn model failure: " + str(value))
+        elif kind == "normal_control_model_invalid":
+            raise ValueError("actual normal control model invalid: " + str(value))
         elif kind == "decision":
             name = value["robot"]
             require(name in ROBOTS
@@ -635,11 +673,12 @@ def _audit_records(directory, helper, source_proof):
             if is_stop:
                 require(value["ready"] is False, "stop decision falsely claims input readiness")
             elif value["ready"]:
-                require(all(helper.valid_state(
-                    selected_own(peer, decision_clock),
-                    decision_clock / 1e9, epoch)
-                            and helper.valid_state(states.get(peer), decision_clock / 1e9, epoch)
-                            for peer in ROBOTS), "ready motion decision used unhealthy source")
+                require(all(
+                    helper.valid_state(selected_own(peer, decision_clock),
+                                       decision_clock / 1e9, epoch)
+                    and helper.valid_state(states.get(peer), decision_clock / 1e9, epoch,
+                                           **peer_options)
+                    for peer in ROBOTS), "ready motion decision used unhealthy source")
             elif started and halted is None:
                 halted = "motion_state_or_topology_unavailable"
             if is_stop:
@@ -663,7 +702,7 @@ def _audit_records(directory, helper, source_proof):
                                             decision_clock / 1e9, epoch) if reason is None else
                         {"allow": False, "reason": reason, "output": [0., 0.],
                          "minimum_margin_m": None})
-            command_boundary(value["decision"], request, settled_enabled)
+            command_boundary(value["decision"], request, settled_enabled, command_limits)
             require(same_json(value["decision"], expected),
                     "motion decision differs from frozen helper replay")
             if settled_enabled:
@@ -777,6 +816,7 @@ def _audit_records(directory, helper, source_proof):
                     and re.fullmatch(r"[0-9a-f]{64}", state.get("bundle_sha256", ""))
                     and peer.get("bundle_sha256") == state["bundle_sha256"]
                     and clock not in control_commits, "normal control boundary changed/duplicated")
+            normal_velocity_inputs(clock)
             control_commits[clock] = request
         elif kind == "control_ack":
             request = control_requests.get(value.get("request_id"))

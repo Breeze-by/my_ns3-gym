@@ -67,10 +67,11 @@ adapter模式的controller和behavior速度统一经过Nav2 smoother及`/motion_
 完整请求因接近方向被拒绝时，
 只在线速度归零、原角速度不变的请求重新通过全部同一几何/源龄/残余移动检查后保留该转向；
 状态无效、包络不足或超界不能走此分支。否则保持原请求或全零，每次分量过滤及重验均留证。
-命令硬上限为线速度`.26m/s`、角速度`.8rad/s`；三份实际`params/nav2_params_tbN_0.yaml`
-中的controller、实际`behavior_server`及smoother共同绑定此上限，通用配置保持一致。
-smoother显式保留`20Hz/OPEN_LOOP`；其墙钟插值不能提供仿真时钟下的物理加速度保证。
-Nav2插值恰好高出`.26m/s`或`.8rad/s`一个binary64相邻值时，明确记录原值并规范到上限；
+命令硬上限为线速度`.20m/s`、角速度`.8rad/s`；三份实际`params/nav2_params_tbN_0.yaml`
+中的controller、实际`behavior_server`及smoother共同绑定此上限；通用DWB配置同步线速度和加速度。
+实际三份FollowPath使用已安装Nav2 RotationShimController，primary仍为原DWB：路径前向采样`.30m`，角差启用/退出均`.5rad`，旋转参考`.8rad/s`，角加速度参数`3.2rad/s²`，closed_loop使用本机实测角速度。短路径、变换或旋转检查失败时仍可委托DWB，不承诺所有候选安全可执行或必有平移。Shim不选择探索目标，原critic权重/规划器/goal checker不变。
+smoother显式`20Hz/OPEN_LOOP`，线加/减速度参数`±.5m/s²`、角`±3.2rad/s²`；DWB一致。理想指令组合`.5 + (.287/2)*3.2 = .9592m/s²`位于原轮缘`1.0m/s²`预算内；这不证明实测机体、每次墙钟插值或连续制动界。Shim参考`.8`也不保证其每个原始输出不超该值，最终smoother/保护门仍核严格硬界。
+Nav2插值恰好高出`.20m/s`或`.8rad/s`一个binary64相邻值时，明确记录原值并规范到上限；
 第二个相邻值及更大超界仍拒绝，最终输出严格不超过原上限。
 本机原传感、已交付队友状态、源龄、命令超时和任务停止控制放行。近距离的共同制动区域内
 禁止朝队友接近，具体常数及计算以版本化纯几何实现为准，不放宽原`.50m`失败门槛。
@@ -78,6 +79,7 @@ Nav2插值恰好高出`.26m/s`或`.8rad/s`一个binary64相邻值时，明确记
 位置及yaw不确定性继续使用较旧的`min(odom,TF)`源时间，不能以新odom刷新旧TF的几何时间。
 trace分别保存两项source stamp/age。模型依赖实测平面速度`.30m/s`、角速度`1.2rad/s`界；
 降低命令上限不能替代完整原始twist向量、源时间、转向响应及停止路程的原生核验。
+V13受控normal commit在实际state/peer依赖满足后，核验当前本机源绑定标量与所选raw，以及release后保留历史中source≤commit clock的原始平面/角速度范数；received peer必须有真实raw odometry且v/w/可选标量一致。无raw的本机紧凑状态只作独立重建的平面标量检查，完整角XYZ另由所选/历史raw核验，不把完整odom重复加入actor或每20ms本机状态。超原`.30/1.2`模型界触发永久零与明确`normal_control_model_invalid`负ACK；不发布通用exploration_failure制造任务终态。worker沿现有callback-error/abort_cleanup严格关闭，整次尝试基础设施无效，数据禁止训练。此类normal资格错误不依回调先后归因到任务；真实release/end窗口归属由离线原件核验，不新增终态样本救回支路或改变正常state→peer→motion→storage→evaluator顺序。未来源/预热历史不提前归入任务，后到健康样本不能掩盖保留历史中的因果峰值。raw own非有限值也可能先触发既有settled失败，该分支不承诺重分类任意畸形ROS输入。
 轮耦合停止另有`.02s`余量，同时计入`.78s`完整转向/制动时域和双方累计停止reserve；
 `.5m/s²`是全局停止包络参数，不声称中心速度每瞬时都以此减速。这是依赖输入/速度/反应/制动界的执行保护，不能保证任意定位跳变或无界迟到下安全。
 v9的ideal information发布器以pending队列保留未到当前clock的本机odom，选取最近且source≤clock的已入站样本；不能让future最新样本抹去仍有效的causal缓存而跳过整次发送。256有界队列、冲突/溢出明确失败，并以真实入站/选取账本独立核验。选取及`.5s`有效门以整数纳秒比较：源不得晚于clock，源龄闭区间`[0,500000000]ns`，多1ns仍拒；wire原double源字段保留，无epsilon。修正原double相减将精确`.5s`误判为`.5000000000000001s`的端点错误，与现guard时间规范一致。非受控状态发布仍`.1s`、源龄门仍`.5s`，不借未交付的队友raw状态。`state_audit_path`仅诊断文件，原始入站与选取引用不进入actor、候选、掩码或奖励。该缓存修复不证明跨节点同clock回调总顺序或所有时刻无竞态。
@@ -99,7 +101,7 @@ adapter的局部`libmr3_gazebo_diff_drive.so`以tagged模式订阅该唯一入�
 [来源说明](../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot/vendor/gazebo_ros_diff_drive.PROVENANCE.md)，
 不替换系统库。每次实际驱动更新从本机两个轮关节的实测轮缘速度出发，以同一个插值比例朝
 最终命令对应的左右轮目标推进，每轮变化不超过`1.0m/s² * sim_dt`；不再累加隐藏轮速指令。
-该性质约束施加的轮速参考，不能替代对机体滑移、接触、有限力矩及实际停止响应的验证。
+V13 helper以本机受支持long-double构建的向下预算、向上差值区间及始终向内的binary64比例避免有限精度等号误授资格；独立exact Fraction门不放宽，disabled/零dt语义保留。该性质约束施加的轮速参考，不能替代对机体滑移、接触、有限力矩及实际停止响应的验证。
 最终速度门仍立即输出原请求、经完整复验的`(0,w)`或全零，不增加其后的另一个策略/速度门。
 
 物理参数保持30Hz驱动更新、`.287m`轮距、`.066m`轮径、`1.0m/s²`轮缘加速度、

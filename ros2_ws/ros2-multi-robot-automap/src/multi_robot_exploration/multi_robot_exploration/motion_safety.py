@@ -1,6 +1,7 @@
 """The adapter's unique final Twist publisher with received-peer braking guards."""
 
 from collections import deque
+import hashlib
 import json
 import math
 from pathlib import Path
@@ -18,7 +19,8 @@ from tf2_msgs.msg import TFMessage
 from multi_robot_exploration.mr3_information import odom_payload, state_payload, transform_payload
 from multi_robot_exploration.mr3_episode import elapsed_ns, timestamp_ns
 from multi_robot_exploration.mr3_motion_safety import (
-    COMMAND_TIMEOUT_SEC, PERIOD_SEC, ROBOTS, SettledTurnTracker, guard_motion, valid_state,
+    COMMAND_TIMEOUT_SEC, PERIOD_SEC, ROBOTS, SettledTurnTracker, guard_motion,
+    measured_velocity_error, valid_state,
 )
 from multi_robot_exploration.mr3_motion_control import MotionControlPhase
 
@@ -59,6 +61,7 @@ class MotionSafety(Node):
         self.stop_time = None
         self.halted = None
         self.failure_sent = False
+        self.normal_control_model_fault = None
         durable = QoSProfile(depth=1, durability=DurabilityPolicy.TRANSIENT_LOCAL)
         self.outputs = {name: self.create_publisher(Twist, f"/{name}/cmd_vel", 20)
                         for name in ROBOTS}
@@ -357,12 +360,102 @@ class MotionSafety(Node):
             return
         self.emit_motion()
 
+    def normal_velocity_fault(self, clock_ns):
+        """Normal-control eligibility, not task-body attribution from callback order.
+
+        Called only by a controlled normal commit after its real state/peer
+        dependencies match. Current selected own raw plus received peer raw
+        must satisfy the declared body norms. After release, every retained
+        causal own raw sample is checked as well, so a later healthy sample
+        cannot hide an intermediate peak. Warmup callbacks never latch this
+        fault. A terminal received later cannot convert a real negative ACK
+        into training data; actual task source-window attribution stays offline.
+        """
+        if type(clock_ns) is not int or clock_ns < 0:
+            raise ValueError("invalid normal model check clock")
+
+        def source_ns(payload):
+            stamp = payload["header"]["stamp"]
+            if (type(stamp["sec"]) is not int or type(stamp["nanosec"]) is not int
+                    or stamp["sec"] < 0 or not 0 <= stamp["nanosec"] < 1_000_000_000):
+                raise ValueError("invalid normal model odometry source")
+            return stamp["sec"] * 1_000_000_000 + stamp["nanosec"]
+
+        def fault(name, role, error, raw, sequence, release_ns, state=None):
+            try:
+                digest = hashlib.sha256(json.dumps(
+                    raw, sort_keys=True, separators=(",", ":"), allow_nan=False
+                ).encode()).hexdigest()
+            except (ValueError, TypeError):
+                digest = None
+            twist = raw.get("twist") if isinstance(raw, dict) else None
+            twist = twist.get("twist") if isinstance(twist, dict) else None
+            try:
+                stamp = source_ns(raw)
+            except (ValueError, KeyError, TypeError):
+                stamp = None
+            return {"schema": "mr3-normal-control-model-fault-v1",
+                    "reason": error, "robot": name, "role": role,
+                    "commit_clock_ns": clock_ns, "input_sequence": sequence,
+                    "odom_source_ns": stamp,
+                    "known_release_ns": release_ns,
+                    "known_stop_time_ns": (None if self.stop_time is None
+                                           else timestamp_ns(self.stop_time)),
+                    "state_sequence": None if self.received is None
+                    else self.received.get("sequence"),
+                    "state_source_stamp": None if state is None else state.get("source_stamp"),
+                    "twist": twist, "odom_payload_sha256": digest,
+                    "classification": "normal_control_model_invalid_not_task_attributed",
+                    "scope": "normal commit eligibility; task release/end attribution is offline"}
+
+        states = {row["name"]: row for row in self.received["robots"]} if self.received else {}
+        for name in ROBOTS:
+            release_ns = self.settled_turn[name].release_ns if self.started else None
+            own = self.local_state(name)
+            selected_sequence = None if own is None else own["input_sequences"]["odom"]
+            for sequence, message in self.own_input_history[name]["odom"]:
+                stamp = message.header.stamp
+                stamp_ns = stamp.sec * 1_000_000_000 + stamp.nanosec
+                selected = sequence == selected_sequence
+                historical = (release_ns is not None and release_ns <= stamp_ns <= clock_ns)
+                if not selected and not historical:
+                    continue
+                if stamp_ns > clock_ns:
+                    continue  # Retain future source; it is not a causal normal input yet.
+                twist = {kind: {axis: getattr(getattr(message.twist.twist, kind), axis)
+                                for axis in ("x", "y", "z")}
+                         for kind in ("linear", "angular")}
+                check = dict(own) if selected else {}
+                check["odometry"] = {"twist": {"twist": twist}}
+                error = measured_velocity_error(check, require_raw=True)
+                if error is not None:
+                    return fault(name, "selected_own" if selected else "own_history",
+                                 error, odom_payload(message), sequence, release_ns, own)
+            peer = states.get(name)
+            if isinstance(peer, dict) and peer.get("epoch") == self.epoch:
+                # Missing/future/stale state remains the existing readiness wait;
+                # a received valid current-epoch raw model violation is explicit.
+                stamps = [peer.get(key) for key in
+                          ("source_stamp", "odom_source_stamp", "tf_source_stamp")]
+                if (peer.get("valid") is True
+                        and all(type(stamp) in (int, float) and math.isfinite(stamp)
+                                and stamp > 0 for stamp in stamps)):
+                    if any(not 0 <= elapsed_ns(stamp, clock_ns / 1e9) <= 500_000_000
+                           for stamp in stamps):
+                        continue
+                    error = measured_velocity_error(peer, require_raw=True)
+                    if error is not None:
+                        return fault(name, "received_peer", error, peer.get("odometry"),
+                                     peer.get("sequence"), release_ns, peer)
+        return None
+
     def control_inputs_ready(self, clock_ns):
         now = clock_ns / 1e9
         states = {row["name"]: row for row in self.received["robots"]} if self.received else {}
         return (self.local_observers_ready() and self.topology_ready()
                 and all(valid_state(self.local_state(name), now, self.epoch)
-                        and valid_state(states.get(name), now, self.epoch) for name in ROBOTS))
+                        and valid_state(states.get(name), now, self.epoch, require_raw=True)
+                        for name in ROBOTS))
 
     def ensure_motion_output(self, clock_ns, stop=False):
         key = (clock_ns, "stop" if stop else "normal")
@@ -385,7 +478,8 @@ class MotionSafety(Node):
         own = {name: self.local_state(name) for name in ROBOTS}
         healthy = (observers_ready and self.topology_ready()
                    and all(valid_state(own[name], now, self.epoch)
-                   and valid_state(states.get(name), now, self.epoch) for name in ROBOTS))
+                   and valid_state(states.get(name), now, self.epoch, require_raw=True)
+                   for name in ROBOTS))
         if hasattr(self, "issued_motion"):
             self.issued_motion.add((clock_ns, "stop" if stop else "normal"))
         healthy = healthy and not stop
@@ -393,7 +487,8 @@ class MotionSafety(Node):
         self.ready_pub.publish(ready)
         if self.started and not healthy and not stop and self.halted is None:
             self.halted = "motion_state_or_topology_unavailable"
-        if self.halted and self.started and not self.failure_sent:
+        if (self.halted and self.halted != "normal_control_model_invalid"
+                and self.started and not self.failure_sent):
             self.failure_sent = True
             self.failure_pub.publish(String(data=json.dumps({
                 "component": "motion_safety", "reason": self.halted})))

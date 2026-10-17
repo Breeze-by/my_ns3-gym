@@ -10,7 +10,7 @@ namespace
 nlohmann::json Target()
 {
   return {{"schema", "mr3-drive-target-v1"}, {"epoch", "episode"}, {"robot", "tb2"},
-    {"clock_ns", 100}, {"decision_sequence", 3}, {"linear_x", .26}, {"angular_z", -.8}};
+    {"clock_ns", 100}, {"decision_sequence", 3}, {"linear_x", .20}, {"angular_z", -.8}};
 }
 }
 
@@ -18,7 +18,7 @@ TEST(DriveTarget, ExactEndpointsAndCurrentWorldClockAreAccepted)
 {
   const auto target = multi_robot::ParseDriveTarget(Target());
   EXPECT_NO_THROW(multi_robot::ValidateDriveTarget(target, "episode", "tb2", 100, 2, 100));
-  EXPECT_DOUBLE_EQ(target.linear_x, .26);
+  EXPECT_DOUBLE_EQ(target.linear_x, .20);
   EXPECT_DOUBLE_EQ(target.angular_z, -.8);
 }
 
@@ -56,7 +56,7 @@ TEST(DriveTarget, IntegerFieldsDoNotCoerceFloatBoolOrOverflow)
 
 TEST(DriveTarget, TaggedCommandsRejectEvenOneUlpBeyondTheFinalGuardCaps)
 {
-  for (const auto & item : {std::make_pair("linear_x", .26), std::make_pair("angular_z", .8)}) {
+  for (const auto & item : {std::make_pair("linear_x", .20), std::make_pair("angular_z", .8)}) {
     for (double sign : {-1., 1.}) {
       auto value = Target(); value[item.first] = sign * item.second;
       EXPECT_NO_THROW(multi_robot::ParseDriveTarget(value));
@@ -112,4 +112,13 @@ TEST(DriveTarget, SourceClockCannotRegressButSameClockHigherDecisionIsAllowed)
   const auto target = multi_robot::ParseDriveTarget(Target());
   EXPECT_THROW(multi_robot::ValidateDriveTarget(target, "episode", "tb2", 101, 2, 101), std::invalid_argument);
   EXPECT_NO_THROW(multi_robot::ValidateDriveTarget(target, "episode", "tb2", 101, 2, 100));
+}
+
+TEST(DriveTarget, PreviousLinearCapCannotBypassTheNarrowerTagContract)
+{
+  for (double sign : {-1., 1.}) {
+    auto value = Target();
+    value["linear_x"] = sign * .26;
+    EXPECT_ANY_THROW(multi_robot::ParseDriveTarget(value));
+  }
 }

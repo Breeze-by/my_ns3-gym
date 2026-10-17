@@ -51,7 +51,7 @@ inline DriveTarget ParseDriveTarget(const nlohmann::json & value)
     DriveTargetInteger(value.at("decision_sequence"), true),
     value.at("linear_x").get<double>(), value.at("angular_z").get<double>()};
   if (target.epoch.empty() || target.robot.empty() || !std::isfinite(target.linear_x) ||
-    !std::isfinite(target.angular_z) || std::abs(target.linear_x) > .26 ||
+    !std::isfinite(target.angular_z) || std::abs(target.linear_x) > .20 ||
     std::abs(target.angular_z) > .8)
   {
     throw std::invalid_argument("drive target identity/finite command limits");

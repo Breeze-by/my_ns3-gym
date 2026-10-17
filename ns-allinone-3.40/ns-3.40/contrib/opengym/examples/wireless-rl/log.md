@@ -5349,3 +5349,38 @@ preflight100 runtime/76 independent PASS，plan264a9c5a、SO d0d31b0f；controll
 所有正式26jobs及原FAIL、被动观察失败/修正、critic/代价图/raw body/strict alpha/stop尾段诊断及其精确CPU命令、退出/耗时/SHA，均逐原保存在[支持manifest](report/assets/20261017_mr3_p2a0_v12/independent/native_originals_v1/manifest.json)，不重写旧原件。[报告](report/20261017_mr3_p2a0_v12.md)、[完整inventory](report/assets/20261017_mr3_p2a0_v12/inventory_native_v1.json)、[计费](report/assets/20261017_mr3_p2a0_v12/accounting/native_cost_v1.json)。所有原生/正式reader/自有只读writer已结束，PID/start缺失项保留实际证据范围。V13候选修复只在/tmp草稿，未授新native/PPO信用。
 
 关闭文档静态检查：`rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python report/assets/20261017_mr3_p2a0_v12/independent/mr3_p2a0_v12_contract_checks.py /tmp/mr3_p2a0_closure_static_checks_v1.json`（cwd wireless-rl）exit0，97源码逐字同V11、35pins、128本地链接PASS；没有为文档修改重跑native。`rtk git diff --check` PASS；提交前完整`git add -n .`逐path与上述inventory/9文档白名单比较，排除cache/runtime/build等非证据。
+
+### 2026-10-17 MR3-P2A.0 V13 开发与离线验证（尚无原生结果）
+
+继续用户完成P2A.0授权；V12完整FAIL证据已提交d48b939，原interface/terminal PASS不提供本版native信用。源码working repair：实际三机Nav2 RotationShim→原DWB/.20/.8，通用DWB同步.20与加速度，DWB及smoother显式±.5线/±3.2角；原critics/planner/goal checker不改。最终guard与tag parser同时改.20，fullnorm/peer raw一致/因果own raw历史不符时normal真实负ACK+永久零，沿原callback_error/abort_cleanup禁止训练，不改变正常控制/evaluator先后。paired数值预算/差值保守区间和binary64向内比例修复真alpha及另near-zero反例，不放宽原Fraction门。实测.30/1.2/角加速7/停止.78和.144/静止.01/settled整段/source500ms/peer.50/contact18/95%/300秒/参与和关闭门均不改。
+
+所有离线检查的精确argv、cwd、相关env、源before/after SHA、exit、墙秒和完整stdout/stderr由各自JSON绑定；早失败原样保留，后续canonical manifest追溯绝对原路径，不把重叠检查数相加：
+
+- 新helper作者exact Fraction 30085组PASS，旧同集55alpha/50wheel-budget FAIL；实际V12两行只alpha失败而轮budget未超，另tiny预算例只属CPU。独立9 targeted Fraction PASS。paired永久旧8PASS+4FAIL→新12PASS；target旧.26对current10tests为8PASS+2FAIL→新.20全10PASS。原compiled probes只CPU，无plant证明。
+- Navigation profile/typed readback9 + 新drivecap13 + 旧V5/V4原63数学 + benchmark35共120项CPU PASS。旧三YAML/generic除声明profile字段外语义同值；新V6真实调用原V5/V4全部math/provenance并追加final guard/target/native精确.20/.8，不改旧FAIL。
+- Safety模型草稿v1..v5的15/15/27/29/30检查与初malformed/style失误分别保留；最终scoped ROS104PASS，style PASS。首正式CPU调用使用domain233在36dots后exit1无trace；独立rclpy确证domainId>232导致DDS端口超限，改domain211后通过；该环境错误不记native/model门失败。原代码/方法常量的AST证据单独保存。
+- Canonical systemROS实际构建两包exit0，102.01216239202768wall；canonical C++12+10都PASS，1.1137542170472443wall，不与standalone结果叠加。额外CMake参数仅导出真实compile_commands，完整warnings不丢。new SO a014f2c618e38fc8a306d76c100083d952606333045a2e35bffce6f8b25b10c8、1999200B；canonical installed symlink/samefile、4编译摘要与actual source全核验，并已lossless gzip保留实际库。build receipt85484c6d7a32f793c943b7d9778067cd77ef99b4220f3aba50aa38021675f474。
+- Root motion01误用conda未安装pytest，exit1/0.04573375wall，无新依赖；改既有unittest。motion02（3.95215739wall）揭示settled fixture缺真实peer raw，原10failures/8errors保留，修fixture不削断言后motion03二十项PASS（12.32535255wall）。独立反例又发现仅own angular.x1.3仍被该reader误授PASS，原wholematrix的独立angular仍会拒；补独立normal commit所选raw/因果history/peer raw范数及真实negativeACK拒绝，最终25项PASS，8.93747895wall，style/diff PASS。初author pytest/style发展失败亦原样保留；当前成功并非改标旧反例。
+- 完整ROS1192PASS（36.12test/38.3627204881wall），复用A11实际merge_map/test+multi_robot_exploration/test及原6lint ignores，新增norm module自动纳入，systemROS+overlay/domain211/PYTHONNOUSERSITE=1/PYTHONDONTWRITEBYTECODE=1，166源前后恒定。完整conda253PASS（53.373test/58.711605194wall），45源前后恒定；CPU synthetic SB3 optimizer测试仍属于本测试来源，不算原生学习/pilot量。
+
+实际构建命令（cwd canonical ROS，先清conda/PYTHONPATH/旧overlay再source /opt/ros/humble/setup.bash，PYTHONNOUSERSITE=1）：
+
+```bash
+/usr/bin/python3 /usr/bin/colcon build --symlink-install --allow-overriding nav2_bringup --packages-select multi_robot multi_robot_exploration --cmake-force-configure --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+```
+
+Root完整conda命令（cwd wireless-rl）：
+
+```bash
+rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -m unittest discover -s mr3_learning/tests -v
+```
+
+完整ROS确切选择/环境命令在原ros_semantic_full_v1.json，canonical C++实际ctest argv/原XML在build checks，不把普通pytest/std::test冒作原生实验。V12 stop source102.48后desired117/117零但前8条仍合法减速，102.776起109条applied才持续零；测量点/floatyaw审计没有证明误报。V13降速与一致加速度尚未证明修其持续静止FAIL，不能减原rest门或用小chord替代瞬时速度。源码与构建离线核验已完成；实际Shim mapping仍须native验证，plan/coordinator的最终检查及clean-pushed exact40 preflight见本段后续闭合记录；原生尚未启动，无新增GPU/pilot用量，P2B/gateway未开始。
+
+V13冻结前补充：Shim实际mapping wrapper先调用原7126969f观察器，再追加每episode真实worker argv/run-dir/PID/start及三台controller namespace/ancestry/库path+device+inode+SHA；原base JSON/console/source/actualCLI绑定必须一致。原V1作者20项通过后，独立发现跨EP借worker与hash/read-stat分离两CPU反例，保留并修为V2；新23proc+22supplement+6watcher+14launcher+9actual-main scheduler共74CPU通过，独立8定向通过。旧13+7编排断言全保留，新增拒绝未准入和Shim失败路径。此后再次独立发现nested closure没有继承重复读/终读稳定性，新增真实main/read3fixtures显示旧2FAIL→新3PASS，旧数学AST可逆恢复同值；14+9编排复跑通过。原219candidate manifest不覆，补充另存。
+
+实际四stage父编排器 /tmp/mr3_p2a0_v13_run_matrix_v1.py (SHA0de57dd7e0069fee7fc4f1d54aa0156115eefe58c0775c238aeb12c6776f8f48) 的7 fakeCLI methods通过（4.294778182171285wall）、style通过；成功、launch/audit FAIL、false leaf、source变更、异常仍reap同child及不覆盖均核验，不等于native运行。精确命令/CPU子进程/初style FAIL在 checks_final_v2.json 原件。最终strict static v4 (`/usr/bin/python3 /tmp/mr3_p2a0_v13_research_gate_static_v2.py --require-final-plan --output /tmp/mr3_p2a0_v13_research_gate_static_review_v4.json`) exit0/PASS .8994045569561422wall；96bindings=73immutable旧SHA+3授权current审计SHA刷新+20new，35pins+ENV、12digest-only AST、actual a014 SO/4宏、source/task/body/stop/actor/candidate/reward和链接均通过。旧v1三stale-binding FAIL及v2/v3回执保留，不改标为本版成功。
+
+最终独立nested/source复核3cd8134a PASS：新增3fixtures独立复跑通过（.21test/.670wall），剥离新增stable-read/终读AST后旧闭合逻辑完全相同，mandatory 10/7/10/7及顺序不变。所有/tmp原件写者结束后执行 `rtk proxy env PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 /tmp/mr3_archive_common_offline_v13_v1.py`（cwd Git root）：471原件/raw2125525B/encoded689862B，manifest0a2b3313b2414b3c94b9f4deee59e337fcd09345f6d7a8501d38c3678deed46b；每项encoded/decoded/source-before-after SHA+stat均验证，排除6个compiled/cache项，按绝对source去重已有Safety156、candidate219和addendum17原件。Safety canonical manifest cec4f7d4、candidate9280f4a2、addendume348c6be保持不覆。无新native。
+
+冻结前inventory/白名单/链接核验：`rtk proxy env PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 /tmp/mr3_p2a0_v13_prefreeze_inventory_verify_v1.py --inventory /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/inventory_prefreeze_v1.json --report /tmp/mr3_p2a0_v13_prefreeze_inventory_review_v1.json --allow-canonical-inventory`（cwd Git root）exit0/PASS；891 prefreeze assets、96 independent、35pins、168本地链接、863 archive rows、旧日志前缀与V12原FAIL原件、白名单及所有读后哈希一致。inventory自身独立记录不纳入自身。`rtk git diff --check` PASS，提交前实际 `git add -n .` 逐path对照显式代码/文档白名单及完整inventory，排除build/runtime/cache/CPU ELF。

@@ -469,3 +469,36 @@ Nav2 接受/取消终态默认期限为10仿真秒，对应
 运行源码 `c9344e1` 的最近三机器人90%工程结果为 rooms60.2s、corridors81.9s，seed101，
 180仿真秒上限、基体接触记录为零、原生干净退出；未重跑完整多种子矩阵或95%任务。
 详见 [工程修复报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261013_p1c_engineering_repair.md)。
+
+## MR3-P2A.0 v13 当前训练前工程准备
+
+V12失败原件保留，不重跑。V13实际三份参数启用Rotation Shim→原DWB；命令线速度.20、角.8，DWB与smoother线加减速度±.5/角±3.2。通用配置保持DWB但同步命令与加速度。WORLD里程计、SDF、实测.30/1.2、停止.78秒/.144米、任务95%/300秒/参与及接触门均不放宽。fullnorm模型不符的normal commit返回明确负ACK，沿原abort_cleanup清理，数据禁止训练；不改正常state→peer→motion→storage→evaluator顺序。
+
+先按上文system ROS环境构建实际库（本版helper与target header已变，必须重新configure以嵌入4源码摘要）：
+
+```bash
+cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
+/usr/bin/python3 /usr/bin/colcon build --symlink-install --allow-overriding nav2_bringup --packages-select multi_robot multi_robot_exploration --cmake-force-configure --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+source install/setup.bash
+```
+
+再按P1C段进入conda ns3gym，仅在wireless-rl调用下列入口；ROS child仍system Python。源码、实际新库、独立回执与预声明全部钉住、通过离线检查并clean commit/push后才能启动。源码离线准入已打开；实际40位冻结仅由推送后的preflight解析，不能把CPU检查当作原生通过。仅同一个freeze逐stage全部mandatory通过才可下一stage，首FAIL停止后续；预算608API/596动作/18000原生墙秒，不启动PPO/GPU/optimizer或pilot。
+
+```bash
+cd /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl
+export PYTHONNOUSERSITE=1
+export PYTHONDONTWRITEBYTECODE=1
+export MR3_P2A0_V13_FREEZE="$(git rev-parse HEAD)"
+python report/assets/20261017_mr3_p2a0_v13/independent/mr3_p2a0_v13_buildproof_preflight.py
+/usr/bin/python3 report/assets/20261017_mr3_p2a0_v13/independent/mr3_p2a0_v13_cross_stage_mapping_monitor_v1.py --freeze "$MR3_P2A0_V13_FREEZE" > /tmp/mr3_p2a0_v13_cross_stage_mapping_console.log 2>&1 &
+python report/assets/20261017_mr3_p2a0_v13/independent/mr3_p2a0_v13_launch_stage.py interface "$MR3_P2A0_V13_FREEZE"
+python report/assets/20261017_mr3_p2a0_v13/independent/mr3_p2a0_v13_audit_stage.py interface "$MR3_P2A0_V13_FREEZE"
+python report/assets/20261017_mr3_p2a0_v13/independent/mr3_p2a0_v13_launch_stage.py terminal "$MR3_P2A0_V13_FREEZE"
+python report/assets/20261017_mr3_p2a0_v13/independent/mr3_p2a0_v13_audit_stage.py terminal "$MR3_P2A0_V13_FREEZE"
+python report/assets/20261017_mr3_p2a0_v13/independent/mr3_p2a0_v13_launch_stage.py reset "$MR3_P2A0_V13_FREEZE"
+python report/assets/20261017_mr3_p2a0_v13/independent/mr3_p2a0_v13_audit_stage.py reset "$MR3_P2A0_V13_FREEZE"
+python report/assets/20261017_mr3_p2a0_v13/independent/mr3_p2a0_v13_launch_stage.py deadline "$MR3_P2A0_V13_FREEZE"
+python report/assets/20261017_mr3_p2a0_v13/independent/mr3_p2a0_v13_audit_stage.py deadline "$MR3_P2A0_V13_FREEZE"
+```
+
+上面的每一个audit入口包括完整原门和独立consumer，不直接绕过launcher调用benchmark。新drive v6先完整调用旧V5/V4严格数学/源/时延/停止验证，再附加最终guard、target与native实用值的精确.20/.8硬界。参数readback仍在首次动作前对9实际节点只读查询；插件映射原件证明实际加载身份，均不能代替身体运动/停止核验。脚本v3仅外部工程刺激，不是探索fallback。结果及限制见[V13报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261017_mr3_p2a0_v13.md)。完成本步后待用户验收，不自动训练。

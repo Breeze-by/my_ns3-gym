@@ -19,7 +19,7 @@ from .supervisor import InfrastructureError, Supervisor, WORKSPACE, identity_ali
 
 PARAMETER_REVIEW_SCRIPT = Path(
     "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/"
-    "20261017_mr3_p2a0_v4/independent/mr3_actual_nav2_parameters_v4.py")
+    "20261017_mr3_p2a0_v13/independent/mr3_actual_nav2_parameters_v13.py")
 PARAMETER_REVIEW_PROFILE = Path(
     "ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_fastdds_loopback_udp.xml")
 TRANSPORT_ENV_KEYS = (

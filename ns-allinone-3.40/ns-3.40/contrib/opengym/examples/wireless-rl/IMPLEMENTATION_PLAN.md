@@ -334,3 +334,5 @@ P1A/P1B/P1C已验收，P2A已授权但未完成，v6停止；工程证据与后�
 v11实际interface32与关闭及独立门通过，原full仅旧readiness协议识别FAIL。v12只修consumer真实复合证明，保持ROS/任务/接触/物理；使用4个有界独立read-only audit subprocess减等待，依赖与全部receipt门保留。新freeze整矩阵，不重贴旧FAIL。
 
 V12实际冻结`6b1b4a010835` interface32与terminal全部正式门PASS；reset八轮原生严格关闭，但活动不足、完整平面速度.305828>.30、持续停止响应和driver精确向内舍入门FAIL。26项正式jobs全结束，deadline按规则SKIP；所有原件/FAIL已lossless归档，P2A.0仍未完成。继续修复必须以新clean pushed冻结/新预声明完整重验，不重试旧失败版或拼接PASS。
+
+当前V13实现局部Shim/DWB及.20命令配置、完整own/peer测量范数的normal负ACK隔离和paired严格向内舍入。原任务/物理/源龄/停止门不变，V12持久静止失败仍待同冻结原生验证；新版本计划仍四stage/608API/596动作/18000墙秒，源码、实际新库与离线审计已通过，待clean push后exact40 preflight准入，不授PPO或跨冻结PASS。详见[V13](report/20261017_mr3_p2a0_v13.md)。

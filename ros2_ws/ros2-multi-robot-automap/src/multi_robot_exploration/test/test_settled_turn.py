@@ -17,7 +17,8 @@ def odom(source_ns, x=.00024, y=0.):
     return {"header": {"stamp": {"sec": source_ns // 10**9, "nanosec": source_ns % 10**9},
                        "frame_id": "odom"}, "child_frame_id": "base_footprint",
             "pose": {"pose": {"position": {"x": 0., "y": 0., "z": 0.}}},
-            "twist": {"twist": {"linear": {"x": x, "y": y, "z": 0.}}}}
+            "twist": {"twist": {"linear": {"x": x, "y": y, "z": 0.},
+                                "angular": {"x": 0., "y": 0., "z": 0.}}}}
 
 
 def ready_tracker():
@@ -35,7 +36,8 @@ def states(tracker=None, distance=.84):
            "planar_speed_mps": .00024,
            "settled_turn": tracker.certificate(2_000_000_000) if tracker else None}
     peers = {name: {**own, "name": name, "x": x, "y": y, "v": 0., "w": 0.,
-                    "source_stamp": 1.85, "settled_turn": None}
+                    "source_stamp": 1.85, "settled_turn": None,
+                    "planar_speed_mps": 0., "odometry": odom(1_990_000_000, x=0.)}
              for name, x, y in (("tb2", distance, 0.), ("tb3", 4., 4.))}
     return own, peers
 
@@ -76,11 +78,11 @@ def test_real_tiny_residual_deadlock_needs_positive_finite_drift_reserve():
 
 def test_mixed_filter_retains_requested_turn_only_and_never_authorizes_translation():
     own, peers = states(ready_tracker())
-    decision = guard_motion([.26, -.8], own, peers, 2., "e")
+    decision = guard_motion([.20, -.8], own, peers, 2., "e")
     assert decision["output"] == [0., -.8]
     assert decision["reason"] == "linear_brake_preserve_requested_turn"
     assert decision["component_filter"]["rotation_check"]["reason"] == "settled_turn_drift_reserve"
-    assert guard_motion([.26, 0.], own, peers, 2., "e")["output"] == [0., 0.]
+    assert guard_motion([.20, 0.], own, peers, 2., "e")["output"] == [0., 0.]
 
 
 @pytest.mark.parametrize("fault", ["epoch", "stale", "body", "speed", "command", "nonfinite"])

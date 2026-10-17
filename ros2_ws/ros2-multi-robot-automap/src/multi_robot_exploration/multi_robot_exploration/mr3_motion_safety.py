@@ -19,7 +19,7 @@ from multi_robot_exploration.mr3_episode import elapsed_ns, timestamp_ns
 
 ROBOTS = ("tb1", "tb2", "tb3")
 BODY_RADIUS_M = .25  # Existing Waffle full-body disk; actual collision radius < .238 m.
-COMMAND_SPEED_LIMIT = .26
+COMMAND_SPEED_LIMIT = .20
 MEASURED_SPEED_BOUND = .30
 COMMAND_TURN_LIMIT = .8
 MEASURED_TURN_BOUND = 1.2
@@ -235,7 +235,60 @@ def valid_settled_turn(own, now):
             and previous["planar_speed_mps"] == own["planar_speed_mps"])
 
 
-def valid_state(state, now, epoch):
+def measured_velocity_error(state, *, require_raw=False):
+    """Check planar norm and angular norm when raw is present; no bound tolerance.
+
+    Local state has an independently reconstructed source-pinned planar scalar.
+    Received peer state requires its real odometry; supplied scalars never replace
+    raw bytes. Without raw, local angular coverage here is wz only; the controlled
+    node separately checks the selected/history full angular XYZ from original
+    local odometry. No raw payload is added to actor or each local decision.
+    """
+    if not isinstance(state, dict):
+        return "missing_measured_velocity"
+    try:
+        scalar_present = "planar_speed_mps" in state
+        scalar = state.get("planar_speed_mps")
+        if scalar_present and (type(scalar) not in (int, float)
+                               or not math.isfinite(scalar) or scalar < 0):
+            return "invalid_planar_speed"
+        if "odometry" in state:
+            twist = state["odometry"]["twist"]["twist"]
+            linear, angular = twist["linear"], twist["angular"]
+            if any(type(linear[key]) not in (int, float) or not math.isfinite(linear[key])
+                   for key in ("x", "y")) or any(
+                       type(angular[key]) not in (int, float) or not math.isfinite(angular[key])
+                       for key in ("x", "y", "z")):
+                return "invalid_measured_velocity"
+            speed = math.hypot(linear["x"], linear["y"])
+            turn = math.sqrt(sum(angular[key] ** 2 for key in ("x", "y", "z")))
+            if scalar_present and scalar != speed:
+                return "inconsistent_planar_speed"
+            if any(key in state and (type(state[key]) not in (int, float)
+                                     or not math.isfinite(state[key]) or state[key] != expected)
+                   for key, expected in (("v", linear["x"]), ("w", angular["z"]))):
+                return "inconsistent_measured_velocity"
+        else:
+            if require_raw or not scalar_present:
+                return "missing_raw_odometry" if require_raw else "missing_planar_speed"
+            if any(type(state.get(key)) not in (int, float)
+                   or not math.isfinite(state[key]) for key in ("v", "w")):
+                return "invalid_measured_velocity"
+            if scalar < abs(state["v"]):
+                return "inconsistent_planar_speed"
+            speed, turn = scalar, abs(state["w"])
+        if not math.isfinite(speed) or not math.isfinite(turn):
+            return "invalid_measured_velocity"
+        if speed > MEASURED_SPEED_BOUND:
+            return "measured_planar_speed_exceeded"
+        if turn > MEASURED_TURN_BOUND:
+            return "measured_angular_speed_exceeded"
+        return None
+    except (KeyError, TypeError, ValueError, OverflowError):
+        return "invalid_measured_velocity"
+
+
+def valid_state(state, now, epoch, *, require_raw=False):
     """Reject missing/nonfinite, cross-epoch, future and stale received inputs."""
     if (type(now) not in (int, float) or not math.isfinite(now) or now < 0
             or not isinstance(state, dict) or state.get("epoch") != epoch
@@ -253,6 +306,7 @@ def valid_state(state, now, epoch):
             return False
     return (state["source_stamp"] > 0
             and 0 <= elapsed_ns(state["source_stamp"], now) <= timestamp_ns(SOURCE_MAX_AGE_SEC)
+            and measured_velocity_error(state, require_raw=require_raw) is None
             and abs(state["v"]) <= MEASURED_SPEED_BOUND
             and abs(state["w"]) <= MEASURED_TURN_BOUND)
 
@@ -288,6 +342,8 @@ def guard_motion(request, own, peers, now, epoch):
     .02 s gate, 1/30 s actuator and the remaining command delivery allowance.
     Both actual and requested translational directions must be non-closing in
     a near region. Pure rotation is safe for the fixed circumscribed body disk.
+    The directional model retains the differential-drive/no-side-slip assumption;
+    checking the full planar norm alone does not establish that plant assumption.
     """
     result = {"allow": False, "reason": "state_unavailable", "output": [0., 0.],
               "minimum_margin_m": None, "body_margin_m": None,
@@ -295,7 +351,8 @@ def guard_motion(request, own, peers, now, epoch):
               "command_normalization": None, "component_filter": None}
     if (type(now) not in (int, float) or not math.isfinite(now)
             or not valid_state(own, now, epoch) or set(peers) != set(ROBOTS) - {own.get("name")}
-            or any(not valid_state(peer, now, epoch) for peer in peers.values())):
+            or any(not valid_state(peer, now, epoch, require_raw=True)
+                   for peer in peers.values())):
         return result
     valid_request = (isinstance(request, (list, tuple)) and len(request) == 2
                      and all(type(value) in (int, float) and math.isfinite(value)

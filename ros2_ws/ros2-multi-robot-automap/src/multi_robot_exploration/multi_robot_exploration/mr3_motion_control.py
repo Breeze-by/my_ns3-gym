@@ -186,6 +186,9 @@ class MotionControlPhase:
                 raise ValueError("motion control clock passed or wall timeout")
             if now < target:
                 return
+            if (operation != "stop"
+                    and self.node.halted == "normal_control_model_invalid"):
+                raise ValueError("normal_control_model_invalid")
             stop = operation == "stop" or (operation == "commit" and (
                 self.stopping or self.node.halted is not None or self.node.stop_time is not None
                 and now >= round(self.node.stop_time * 1e9)))
@@ -200,8 +203,15 @@ class MotionControlPhase:
                 if (target in self.normal_clocks
                         or (target, "normal") in self.node.issued_motion):
                     raise ValueError("normal clock already committed")
-                if (not self.dependency_ready(request)
-                        or not self.node.control_inputs_ready(target)):
+                if not self.dependency_ready(request):
+                    return
+                fault = self.node.normal_velocity_fault(target)
+                if fault is not None:
+                    self.node.normal_control_model_fault = fault
+                    self.node.halted = "normal_control_model_invalid"
+                    self.node.record("normal_control_model_invalid", fault)
+                    raise ValueError("normal_control_model_invalid")
+                if not self.node.control_inputs_ready(target):
                     if self.node.halted:
                         self.ensure_stop()
                     return

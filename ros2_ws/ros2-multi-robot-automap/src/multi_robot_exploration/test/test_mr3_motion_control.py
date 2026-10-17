@@ -29,6 +29,7 @@ class Guard:
         self.events, self.calls, self.subscriptions = [], [], []
         self.decision_sequences = dict.fromkeys(('tb1', 'tb2', 'tb3'), 0)
         self.inputs_ready, self.complete = True, True
+        self.normal_control_model_fault = None
 
     def create_publisher(self, *args):
         return Publisher()
@@ -45,6 +46,12 @@ class Guard:
 
     def record(self, *args):
         self.events.append(args)
+
+    def normal_velocity_fault(self, clock):
+        # This fixture isolates phase/dependency ordering; body models have
+        # dedicated real-source node tests and are valid for this stub.
+        assert clock == self.clock
+        return None
 
     def control_inputs_ready(self, clock):
         assert clock == self.clock

@@ -29,7 +29,11 @@ from multi_robot_exploration.mr3_motion_safety import (
 
 def state(name, x, y, yaw=0., v=0., w=0., stamp=1.):
     return {"name": name, "epoch": "episode", "valid": True, "x": x, "y": y,
-            "yaw": yaw, "v": v, "w": w, "source_stamp": stamp}
+            "yaw": yaw, "v": v, "w": w, "source_stamp": stamp,
+            "planar_speed_mps": abs(v),
+            "odometry": {"twist": {"twist": {
+                "linear": {"x": v, "y": 0., "z": 0.},
+                "angular": {"x": 0., "y": 0., "z": w}}}}}
 
 
 def evaluate(states, name, request, now=1.):
@@ -40,15 +44,15 @@ def evaluate(states, name, request, now=1.):
 def test_initial_three_robot_pose_allows_departure_and_rotation_without_hidden_steering():
     states = {"tb1": state("tb1", 0., -.45), "tb2": state("tb2", 0., .45),
               "tb3": state("tb3", .45, 0.)}
-    assert evaluate(states, "tb3", [.26, 0.])["output"] == [.26, 0.]
+    assert evaluate(states, "tb3", [.20, 0.])["output"] == [.20, 0.]
     for name in ("tb1", "tb2"):
-        result = evaluate(states, name, [.26, 0.])
+        result = evaluate(states, name, [.20, 0.])
         assert not result["allow"] and result["output"] == [0., 0.]
         assert result["reason"] == "peer_braking_nonclosing"
     for name in ROBOTS:
         assert evaluate(states, name, [0., .8])["output"] == [0., .8]
     states["tb3"]["x"] = 2.
-    assert evaluate(states, "tb1", [.26, 0.])["output"] == [.26, 0.]
+    assert evaluate(states, "tb1", [.20, 0.])["output"] == [.20, 0.]
 
 
 def test_stationary_bypass_parallel_and_reverse_departure_are_permitted_when_clear():
@@ -69,7 +73,8 @@ def test_measured_pending_motion_and_full_turn_interval_are_checked_before_new_c
     states = {"tb1": state("tb1", 0., 0., v=.26), "tb2": state("tb2", .7, 0.),
               "tb3": state("tb3", 4., 4.)}
     assert not evaluate(states, "tb1", [-.2, 0.])["allow"]
-    states["tb1"].update(v=0., yaw=math.pi / 2)
+    states["tb1"].update(v=0., yaw=math.pi / 2, planar_speed_mps=0.)
+    states["tb1"]["odometry"]["twist"]["twist"]["linear"]["x"] = 0.
     assert evaluate(states, "tb1", [.2, 0.])["allow"]
     turning = evaluate(states, "tb1", [.2, .8])
     assert turning["output"] == [0., .8]
@@ -97,13 +102,13 @@ def test_source_yaw_age_and_unobserved_pending_turn_cannot_use_old_zero_angular_
     # Even adding yaw age alone misses angular velocity gained since that
     # old zero-w measurement. The pending-turn envelope must also reject it.
     assert -maximum_heading_projection(-.1, .7, 0., 1.2 * .05) - .3 * .05 > 0
-    result = evaluate(states, "tb1", [.26, 0.])
+    result = evaluate(states, "tb1", [.20, 0.])
     assert not result["allow"]
     direction = result["near_peer_checks"][0]["direction_checks"][0]
     assert direction["turn_bound_radps"] == pytest.approx(.35)
     assert direction["horizon_sec"] == pytest.approx(.78)
     states["tb1"]["source_stamp"] = 1.
-    assert evaluate(states, "tb1", [.26, 0.])["allow"]
+    assert evaluate(states, "tb1", [.20, 0.])["allow"]
 
 
 def test_turn_coupling_padding_is_explicit_in_both_stop_reserve_and_heading_horizon():
@@ -147,10 +152,18 @@ def test_actual_nav2_node_parameters_share_the_guard_command_limits():
         controller = params["controller_server"]["ros__parameters"]["FollowPath"]
         behavior = params["behavior_server"]["ros__parameters"]
         smoother = params["velocity_smoother"]["ros__parameters"]
-        assert controller["max_vel_x"] == controller["max_speed_xy"] == .26
+        assert controller["max_vel_x"] == controller["max_speed_xy"] == .20
+        if source.parent.name == "params":
+            assert controller["plugin"] == "nav2_rotation_shim_controller::RotationShimController"
+            assert controller["primary_controller"] == "dwb_core::DWBLocalPlanner"
+        else:
+            assert controller["plugin"] == "dwb_core::DWBLocalPlanner"
         assert controller["max_vel_theta"] == behavior["max_rotational_vel"] == .8
-        assert smoother["max_velocity"] == [.26, 0., .8]
-        assert smoother["min_velocity"] == [-.26, 0., -.8]
+        assert controller["acc_lim_x"] == .5 and controller["decel_lim_x"] == -.5
+        assert smoother["max_velocity"] == [.20, 0., .8]
+        assert smoother["min_velocity"] == [-.20, 0., -.8]
+        assert smoother["max_accel"] == [.5, 0., 3.2]
+        assert smoother["max_decel"] == [-.5, 0., -3.2]
         assert smoother["smoothing_frequency"] == 20. and smoother["feedback"] == "OPEN_LOOP"
         assert smoother["use_sim_time"] is True and behavior["use_sim_time"] is True
     # The canonical top-level launch selects these per-robot files; checking
@@ -211,11 +224,13 @@ def test_missing_stale_future_wrong_epoch_or_unbounded_state_stops(fault):
         states["tb2"]["x"] = float("nan")
     else:
         states["tb2"]["v"] = .31
+        states["tb2"]["planar_speed_mps"] = .31
+        states["tb2"]["odometry"]["twist"]["twist"]["linear"]["x"] = .31
     result = evaluate(states, "tb1", [.2, 0.])
     assert not result["allow"] and result["output"] == [0., 0.]
 
 
-@pytest.mark.parametrize("command", [[.261, 0.], [0., 1.], [float("nan"), 0.]])
+@pytest.mark.parametrize("command", [[.201, 0.], [0., 1.], [float("nan"), 0.]])
 def test_requested_speed_turn_and_nonfinite_limits_are_not_clipped_into_new_actions(command):
     states = {name: state(name, index * 3., 0.) for index, name in enumerate(ROBOTS)}
     result = evaluate(states, "tb1", command)
@@ -225,16 +240,16 @@ def test_requested_speed_turn_and_nonfinite_limits_are_not_clipped_into_new_acti
 @pytest.mark.parametrize("sign", [-1., 1.])
 def test_only_one_ulp_outward_endpoints_are_canonicalized_to_hard_limits(sign):
     states = {name: state(name, index * 3., 0.) for index, name in enumerate(ROBOTS)}
-    # This v is an actual v2 Nav2 smoother callback, not a broad epsilon case.
-    captured_v = sign * 0.26000000000000006
+    # Synthetic adjacent binary64 endpoint for the new .20 command contract.
+    adjacent_v = sign * math.nextafter(.20, math.inf)
     adjacent_w = sign * math.nextafter(.8, math.inf)
-    result = evaluate(states, "tb1", [captured_v, adjacent_w])
-    assert result["allow"] and result["output"] == [sign * .26, sign * .8]
+    result = evaluate(states, "tb1", [adjacent_v, adjacent_w])
+    assert result["allow"] and result["output"] == [sign * .20, sign * .8]
     assert result["command_normalization"] == {
-        "schema": "mr3-command-one-ulp-v1", "input": [captured_v, adjacent_w],
-        "canonical": [sign * .26, sign * .8], "normalized_axes": ["v", "w"]}
-    assert abs(result["output"][0]) <= .26 and abs(result["output"][1]) <= .8
-    for axis, limit in enumerate((.26, .8)):
+        "schema": "mr3-command-one-ulp-v1", "input": [adjacent_v, adjacent_w],
+        "canonical": [sign * .20, sign * .8], "normalized_axes": ["v", "w"]}
+    assert abs(result["output"][0]) <= .20 and abs(result["output"][1]) <= .8
+    for axis, limit in enumerate((.20, .8)):
         command = [0., 0.]
         command[axis] = sign * math.nextafter(math.nextafter(limit, math.inf), math.inf)
         rejected = evaluate(states, "tb1", command)
@@ -242,42 +257,54 @@ def test_only_one_ulp_outward_endpoints_are_canonicalized_to_hard_limits(sign):
         assert rejected["output"] == [0., 0.]
 
 
+@pytest.mark.parametrize("sign", [-1., 1.])
+def test_historical_point26_smoother_capture_is_outside_the_new_command_contract(sign):
+    states = {name: state(name, index * 3., 0.) for index, name in enumerate(ROBOTS)}
+    # Preserve the actual V2 input as a rejection regression under V13's .20 cap.
+    result = evaluate(states, "tb1", [sign * .26000000000000006, .6842105263157895])
+    assert not result["allow"] and result["reason"] == "unsupported_command"
+    assert result["output"] == [0., 0.]
+    assert result["command_normalization"] is None
+
+
 def test_one_ulp_normalization_preserves_geometry_rejection_and_original_input():
     states = {"tb1": state("tb1", 0., 0., v=.1), "tb2": state("tb2", .65, 0.),
               "tb3": state("tb3", 4., 4.)}
-    captured = [.26000000000000006, .6842105263157895]
+    captured = [math.nextafter(.20, math.inf), .6842105263157895]
     original = list(captured)
     result = evaluate(states, "tb1", captured)
     assert captured == original
     assert not result["allow"] and result["reason"] == "peer_braking_nonclosing"
     assert result["output"] == [0., 0.]
-    assert result["command_normalization"]["canonical"] == [.26, captured[1]]
+    assert result["command_normalization"]["canonical"] == [.20, captured[1]]
 
 
 @pytest.mark.parametrize("turn", [-.6842105263157895, .6842105263157895])
-def test_captured_mixed_request_can_only_preserve_independently_safe_requested_turn(turn):
+def test_adjacent_mixed_request_can_only_preserve_independently_safe_requested_turn(turn):
     states = {"tb1": state("tb1", 0., 0.), "tb2": state("tb2", .65, 0.),
               "tb3": state("tb3", 4., 4.)}
-    request = [.26000000000000006, turn]
+    request = [math.nextafter(.20, math.inf), turn]
     result = evaluate(states, "tb1", request)
     assert result["allow"] and result["output"] == [0., turn]
     component = result["component_filter"]
-    assert component["canonical_input"] == [.26, turn]
+    assert component["canonical_input"] == [.20, turn]
     assert component["rejected_mixed_decision"]["reason"] == "peer_braking_nonclosing"
     assert component["rejected_mixed_decision"]["output"] == [0., 0.]
     assert component["rotation_check"] == evaluate(states, "tb1", [0., turn])
     assert component["rotation_check"]["reason"] == "clear"
     assert component["rotation_check"]["component_filter"] is None
-    assert request == [.26000000000000006, turn]
+    assert request == [math.nextafter(.20, math.inf), turn]
 
 
 @pytest.mark.parametrize("fault", ["moving", "envelope", "stale", "two_ulps"])
 def test_component_filter_never_bypasses_measured_motion_or_unavailable_geometry(fault):
     states = {"tb1": state("tb1", 0., 0.), "tb2": state("tb2", .65, 0.),
               "tb3": state("tb3", 4., 4.)}
-    request = [.26, -.6842105263157895]
+    request = [.20, -.6842105263157895]
     if fault == "moving":
         states["tb1"]["v"] = .1
+        states["tb1"]["planar_speed_mps"] = .1
+        states["tb1"]["odometry"]["twist"]["twist"]["linear"]["x"] = .1
     elif fault == "envelope":
         states["tb2"]["x"] = .49
     elif fault == "stale":
@@ -295,7 +322,7 @@ def test_bounded_reaction_and_braking_headon_or_crossing_never_reaches_half_mete
               "tb2": state("tb2", 0. if crossing else 1., -1. if crossing else 0.,
                            yaw=math.pi / 2 if crossing else math.pi, v=.26),
               "tb3": state("tb3", 5., 5.)}
-    commands = {"tb1": .26, "tb2": .26}
+    commands = {"tb1": .20, "tb2": .20}
     delayed = {name: [] for name in commands}
     history = [copy.deepcopy(states)]
     minimum, stops = 10., 0
@@ -308,7 +335,7 @@ def test_bounded_reaction_and_braking_headon_or_crossing_never_reaches_half_mete
                 own = copy.deepcopy(states[name])
                 own["source_stamp"] = now
                 peers = {peer: row for peer, row in received.items() if peer != name}
-                decision = guard_motion([.26, 0.], own, peers, now, "episode")
+                decision = guard_motion([.20, 0.], own, peers, now, "episode")
                 stops += not decision["allow"]
                 # Worst declared reaction delay, followed by minimum braking.
                 delayed[name].append((index + 160, decision["output"][0]))
@@ -319,6 +346,8 @@ def test_bounded_reaction_and_braking_headon_or_crossing_never_reaches_half_mete
             change = max(-BRAKING_DECEL_MPS2 * dt,
                          min(BRAKING_DECEL_MPS2 * dt, commands[name] - value["v"]))
             value["v"] += change
+            value["planar_speed_mps"] = abs(value["v"])
+            value["odometry"]["twist"]["twist"]["linear"]["x"] = value["v"]
             value["x"] += value["v"] * math.cos(value["yaw"]) * dt
             value["y"] += value["v"] * math.sin(value["yaw"]) * dt
         for row in states.values():

@@ -68,3 +68,11 @@ independent raw body-speed, angular acceleration, collision, stopping response,
 task or shutdown checks. Historical v5 angular overshoot remains a failure; its
 unrecorded joint feedback and plugin internal state cannot be uniquely replayed
 from WORLD odometry and command-topic receipts alone.
+
+V13 keeps the same joint-feedback model and SDF. The paired helper now uses
+conservative long-double interval bounds for budget/differences and rounds the
+binary64 common fraction inward. The exact rational alpha and per-wheel budget
+audits remain strict. The tagged adapter input parser and final guard now share
+a 0.20 m/s linear command limit; the angular command limit remains 0.8 rad/s.
+These numerical and command limits do not establish the physical stopping bound.
+V12's exact-alpha and persistent-rest failures retain their original evidence.
