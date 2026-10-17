@@ -1,0 +1,90 @@
+{
+  "schema": "mr3-v22-corrector-custody-handoff-v1",
+  "source_writers_stopped": true,
+  "promotion_files": [
+    {
+      "source": "/tmp/mr3_p2a0_v22_corrector_custody_proposal_v1/mr3_v22_corrector_custody_v1.py",
+      "prospective_canonical": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v22_ray_box/independent/mr3_v22_corrector_custody_v1.py",
+      "sha256": "e12b802a820e17ab1be9b133732f21b4b0c1e7b4fe46f699e6ff1ad88109ff15",
+      "bytes": 28849
+    },
+    {
+      "source": "/tmp/mr3_p2a0_v22_corrector_custody_proposal_v1/test_corrector_custody_v1.py",
+      "prospective_canonical": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v22_ray_box/independent/test_corrector_custody_v1.py",
+      "sha256": "775a3b1bf1f3f9011c452a72afbd1f199b260907f454d30b4ac52058ebd41461",
+      "bytes": 15391
+    },
+    {
+      "source": "/tmp/mr3_p2a0_v22_corrector_custody_proposal_v1/mr3_v22_corrector_binding_v1.json",
+      "prospective_canonical": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v22_ray_box/independent/mr3_v22_corrector_binding_v1.json",
+      "sha256": "95ec473d92cde38674c5d17fa691e29ac68eb5a2eeef9823e4f0af36be1a986e",
+      "bytes": 2379
+    }
+  ],
+  "api": {
+    "observe": "observe(monitor_path,binding_path,freeze,read,*,proc_root=Path(\"/proc\")) -> proof; read(Path) returns original raw bytes. proc_root is for pure fixture API only, not exposed by CLI.",
+    "review": "review(run,prefix,freeze,binding_path,read) -> result. prefix must be absolute TMP; proof pattern PREFIX_corrector_mapping_*.json. Stable raw-byte reader supplied by outer closure keeps first values and final recheck."
+  },
+  "cli": {
+    "observe": [
+      "/usr/bin/python3",
+      "-B",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v22_ray_box/independent/mr3_v22_corrector_custody_v1.py",
+      "observe",
+      "--monitor",
+      "{original_A13_monitor}",
+      "--binding",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v22_ray_box/independent/mr3_v22_corrector_binding_v1.json",
+      "--freeze",
+      "{freeze}",
+      "--output",
+      "{prefix}_corrector_mapping_{index:03d}.json"
+    ],
+    "review": [
+      "/usr/bin/python3",
+      "-B",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v22_ray_box/independent/mr3_v22_corrector_custody_v1.py",
+      "review",
+      "{run}",
+      "--prefix",
+      "{prefix}",
+      "--binding",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v22_ray_box/independent/mr3_v22_corrector_binding_v1.json",
+      "--freeze",
+      "{freeze}",
+      "--output",
+      "{prefix}_corrector_custody_review_v1.json"
+    ]
+  },
+  "actual_binary": {
+    "sha256": "7be79c7f3d2cac53a9d1692aa868d91d4b9977e2b7541203ce4ffe90c605a08f",
+    "bytes": 389312,
+    "source3": [
+      "b165ce49eaf5b3d52853cd759e4809962192d1922f0f210f5c82cff79c2a6b2a",
+      "d556dda57250da3680a7d5a9862416f6196cab9763e495ee75269307b87715cb",
+      "c619442d038e4bc6ea0695ada34d7074ee83d775b2137222ab9fb6bf8193879b"
+    ],
+    "SDK442_and_initial_f9_not_used": true
+  },
+  "binding_scope": "Ready source/SO identity only; no native source admission or native credit.",
+  "checks": {
+    "path": "/tmp/mr3_p2a0_v22_corrector_custody_proposal_v1/checks04.json",
+    "sha256": "a609ef6139a60917d987e77ecb44447fa2a97248fb28947c957bb820590b3fed",
+    "pure_fakeproc_closed_mutation_methods": 20,
+    "fatal_F_E9_lint_and_syntax_and_CLI_parser": true,
+    "actual_source_ELF_ODE_read_compatibility": {
+      "path": "/tmp/mr3_p2a0_v22_corrector_custody_proposal_v1/actual_binding_compatibility_v2.json",
+      "sha256": "0e6f64efc1e589b9a294d6c26a0db0c95a8f737a2e858c176c3a38433bff1717"
+    }
+  },
+  "semantics": [
+    "Keep all original34 jobs/math/native closure gates unchanged. Nested supplement cannot override an original failure.",
+    "Each actual epoch/exact worker requires at least one active real original A13 snapshot with corrector+original ODE mapped inode/device/SHA; no another-EP borrowing and no basename gate.",
+    "Closed actual source3/epoch/PID/T0iter0/pair/native150/maxstep.001/final callback counters/errors0 are required; strict existing closure remains separately mandatory.",
+    "First outside-nearparallel primitive is optional descriptive data, not required occurrence or proof of legacy defect.",
+    "Original A13 monitor bytes are not edited. New observe writes only separate TMP proof; no DDS/control/signals/native/full math suite invocation."
+  ],
+  "history": "checks01/02/03 retained at their original source SHA. checked_sources03 reconstructed by exact inverse metadata-only change to both recorded source hashes, not rerun; draft01/draft02 remain. checks04 is sole final20-method source version.",
+  "canonical_mutation_by_this_agent": false,
+  "native_or_formal_run": false
+}

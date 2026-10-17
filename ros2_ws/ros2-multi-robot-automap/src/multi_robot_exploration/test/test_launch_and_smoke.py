@@ -51,6 +51,8 @@ def mapping_actions(monkeypatch, tmp_path, stepped=False, installed_plugin=True)
     if installed_plugin:
         plugin.parent.mkdir()
         plugin.touch()
+        # Existence markers only; these unit fixtures never load either SO.
+        (plugin.parent / "libmr3_ray_box_corrector.so").touch()
     context = LaunchContext()
     for action in launch.generate_launch_description().entities:
         if isinstance(action, DeclareLaunchArgument):
@@ -77,7 +79,8 @@ def test_stepped_server_plugin_is_a_real_option_before_ros_argument_terminator(
     assert argv == [
         "gzserver", str(ROOT / "src/multi_robot/worlds/my_world.world"), "--seed=101",
         "-s", "libgazebo_ros_init.so", "-s", "libgazebo_ros_factory.so",
-        "-s", "libgazebo_ros_force_system.so", "-s", str(plugin),
+        "-s", "libgazebo_ros_force_system.so",
+        "-s", str(plugin.parent / "libmr3_ray_box_corrector.so"), "-s", str(plugin),
         "--ros-args", "--params-file", str(ROOT / "src/multi_robot/config/mr3_step_clock.yaml"),
         "--",
     ]
@@ -99,6 +102,11 @@ def test_stepped_server_plugin_is_a_real_option_before_ros_argument_terminator(
     assert record["argv"] == argv
     assert record["pid"] == 12345
     assert record["selected_step_plugin"] == str(plugin)
+    assert record["selected_ray_box_plugin"] == str(
+        plugin.parent / "libmr3_ray_box_corrector.so")
+    assert record["ray_box_audit_path"] == environment["MR3_RAY_BOX_CORRECTOR_AUDIT_PATH"]
+    assert Path(record["ray_box_audit_path"]).name == "ray_box_corrector.jsonl"
+    assert environment["MR3_RAY_BOX_CORRECTOR_EPOCH"] == "mr3-p1b"
     assert record["selected_clock_parameters"] == argv[-2]
     assert record["gazebo_plugin_path"] == environment["GAZEBO_PLUGIN_PATH"]
 
@@ -121,6 +129,13 @@ def test_stepped_launch_fails_before_start_if_installed_plugin_is_missing(monkey
         monkeypatch, tmp_path, stepped=True, installed_plugin=False,
     )
     with pytest.raises(ValueError, match="installed MR3 stepping plugin does not exist"):
+        launch.launch_setup(context)
+
+
+def test_stepped_launch_fails_before_start_if_corrector_is_missing(monkeypatch, tmp_path):
+    launch, context, plugin = mapping_actions(monkeypatch, tmp_path, stepped=True)
+    (plugin.parent / "libmr3_ray_box_corrector.so").unlink()
+    with pytest.raises(ValueError, match="installed MR3 ray-box corrector does not exist"):
         launch.launch_setup(context)
 
 

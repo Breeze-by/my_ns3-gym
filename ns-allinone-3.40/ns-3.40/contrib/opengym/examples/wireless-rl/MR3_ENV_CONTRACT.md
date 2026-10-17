@@ -374,3 +374,87 @@ ODE原生数值与配置缓存：baseline不调用setter；iters150仅调用一�
 1ms物理步与20ms策略边界均不变。新增1ms积分/有限差分只用于归因，不能代替原停车门。
 两次固定三机open101/32步诊断最多66条API记录、3600原生墙秒，0训练/0更新，
 不计四阶段矩阵或95%任务信用；实际失败全部保留。修复之后仍须另立新冻结，完整重验四阶段。
+
+## P2A.0 研究 world 的显式 QuickStep 执行配置
+
+本执行修订仅在`p1c_open.world`、`p1c_rooms.world`、`p1c_corridors.world`中，
+增加唯一审核过的`ode/solver`块，显式指定`type=quick`及`iters=150`。
+SOR、CFM、ERP、接触参数、重力及其他物理配置保持原值；模型、碰撞体、场景几何不变。
+对应`mr3_p1a/open.json`、`rooms.json`、`corridors.json`仅更新单个`world_sha256`，
+使任务加载、真值栅格、scene审计、reward reset和evaluation继续绑定所选实际world的完整文件SHA。
+任务loader仍只使用这一实际world身份；不以旧geometry摘要代替实际world来源，
+不通过运行时物理setter绕过world配置或审计。
+
+六个修订文件的完整新SHA如下，路径相对ROS工程根：
+
+| 文件 | 完整新SHA256 |
+| --- | --- |
+| `src/multi_robot/worlds/p1c_open.world` | `ed3fcd526d7367e8e0eb5245c365ba60631a6f4a6d725c64134221217ddc4846` |
+| `src/multi_robot/worlds/p1c_rooms.world` | `92ac7dff82bdf03b9f1ce3e9f075a3f59ca07df23c2f89fca654b3f423742768` |
+| `src/multi_robot/worlds/p1c_corridors.world` | `7e15f3ba716fd2f6cdc55310ab3064e61c8d0d34c4f8cba79a964260a8dac051` |
+| `src/multi_robot/config/mr3_p1a/open.json` | `e4a3c25374bb482a0104530f1765f17b807377e0a5c85bc42d6645a63bfc5487` |
+| `src/multi_robot/config/mr3_p1a/rooms.json` | `c4ddca59d8b955f5410a0e639736263c750d6e819a864020c3e4e6da783a811e` |
+| `src/multi_robot/config/mr3_p1a/corridors.json` | `44cc8593cf69206a36b3a7bf82b2008957d5454caaa040dc4b3ac815e1b778a6` |
+
+这六份执行/元数据原件与W7原字节不同。受限审计仅对白名单中这六个固定路径，
+同时核验声明冻结Git对象、当前文件及上述固定新SHA，再作逐字投影：
+三个world移除唯一固定新增的`ode/solver/type=quick/iters=150`块后必须完全恢复
+`TASK_BASE_FREEZE`的原world；三个JSON仅将对应实际新world SHA替回该场景原W7 world SHA，
+必须完全恢复原JSON。任务JSON的新world SHA须来自独立验证的对应实际world，不能由调用者自证。
+其他machine/config文件仍要求与原W7逐字相同。审计回执分别保留实际新SHA、
+物理配置或world-SHA元数据修订类别、原W7来源与投影SHA，不将新文件记为原始W7字节。
+旧SDF、任务JSON、sourcepack、失败、诊断及各冻结结果均保留，不改写或追认其范围。
+
+SDFormat9.7的每场景43项schema字段归一化对照只允许迭代数`50→150`不同；
+43项是schema字段数，包含可选及非活动引擎分支，不是43次测试，也不是实际native参数读回。
+静态几何、ROI和真值mask一致性只证明任务定义保持，不能证明求解收敛、机体响应或运行稳定性。
+完整新冻结须保留实际world路径/SHA、任务JSON SHA、Gazebo命令及二进制来源，
+并按事前声明的实际参数核验范围解释生效证据；不把缓存solver标签冒充私有执行函数指针证明。
+
+物理步`1ms`、受控量子`20ms`、实测全平面速度界`.30m/s`、完整角速度范数界`1.2rad/s`、
+原角加速度界`7rad/s²`、停车响应`.78s`与路程`.144m`、全平面速度≤`.01m/s`的
+连续`3`条唯一raw源样本均不变；积分、位姿差分或更高求解迭代数不能替代这些原门。
+任务仍为三机`95%`覆盖、`300s`期限、每机至少`1m`参与及原目标要求，
+保留`18`路持续机体接触监测、零真实非支撑接触、`.50m`队友安全包络、原地图质量与导航闭合门。
+原`a014`驱动及目标存储协议、actor、候选/掩码、observation/tensor schema、reward和评价器数学不变。
+
+本执行修订本身不授予原生矩阵、95%任务或策略信用。应用后须另立干净推送的新source freeze，
+在同一冻结下完成原interface、terminal、reset、deadline四阶段及全部独立门禁；
+不得将旧矩阵或隔离对照结果拼接为新矩阵，也不因此启动PPO或重置累计训练余额。
+
+## P2A.0 native Ray×Box 碰撞执行修订
+
+该执行候选保留原模型尺寸、惯量、轮组、碰撞体、激光量程、噪声与传感器外参，
+只修正 Gazebo 所用 ODE 的 Ray×Box 碰撞查询中近乎平行分量的 slab 判定。
+新独立 SystemPlugin `libmr3_ray_box_corrector.so` 通过公开
+`dSetColliderOverride(dRayClass,dBoxClass,callback)` 安装审核过的固定回调，
+不修改其他 shape pair、接触动力学、控制器、driver、SLAM、地图融合、候选、动作掩码或奖励。
+不得以删除射线、自体过滤、清除已有 occupied、减小 `.29m` 候选净空或放宽安全门代替源级修正。
+此段是待新冻结逐项核验的执行要求，不把源码提案或 CPU 几何反例写成原生验收结果。
+
+插件只由显式 MR3 任务入口接入，位于 gzserver 的 ROS 参数分隔符之前；
+应在正确研究 world 的 ODE 已初始化、time/iteration 均为零且首个研究传感器尚未执行之前安装一次。
+实际安装时机、唯一次数、epoch、库类型、实际解析的库路径和源码身份必须由实际 native ledger 保留。
+源代码、header、CMake/launch 接线、新实际 ELF、build commands 和归档字节需对应同一审核冻结；
+原 Gazebo 可执行体、原 ODE 库、原 driver 和 Shim 的既有来源检查仍继续，
+新增 actual `/proc` 映射须绑定每个 episode 自己的 owned gzserver PID/start/epoch 与祖链。
+仅有文件名、字符串、GetParameters 或旧 driver 的相同 SHA，不能证明修正回调实际被研究进程使用。
+安装原件还必须只读取得实际 ODE world 的 `native_ode_quickstep_iterations=150` 整数及
+`physics_max_step_size_sec=.001`，二者与事前配置一致；缓存 SDF 标签不能替代这项实际读回。
+不得将诊断-only SensorPlugin 或运行时物理 profile setter 混入正式四阶段命令。
+
+原 CMake/launch 的受限执行修订须同时验证固定 Git 原件、实际冻结 Git 对象、worktree 与新 SHA。
+按审核的固定增量移除新回调接线和已有 opt-in 诊断声明后，必须逐字恢复原规范 source；
+回执区分实际执行 SHA、规范来源 SHA 与逆投影，不将新源码标记为原始字节。
+共享 current auditor 的这项精确分派必须同时用于正式审计和预检，不能只在启动前临时改内存 pin。
+除明确列入的新 source/binary 与固定六 world/task 文件外，其余冻结源和所有原数值门保持。
+
+`iters=150` 是针对前次制停证据失败所选的单一工程候选，不因隔离静止诊断而视为修复已验。
+原 `1ms` 物理步、`20ms` 受控量子、`.20m/s` 命令上限、`.8rad/s` 命令角速上限、
+实测 `.30m/s` 全平面速度界、`1.2rad/s` 完整角范数、`7rad/s²` 样本角加速度界、
+`.78s` 制停期限、`.144m` 路程和 `.01m/s` 下连续 `3` 条唯一源样本均保持原门。
+完整 interface32、terminal 两 episode、reset 两 worker 共八 episode32、deadline300 必须在新同一冻结下重做。
+interface 仍要求原角向覆盖和每机 A 或 B 制停信用；reset 仍按八 episode 逐机 A 或 B 合并，
+任一实际 eligible 的超界、非休止或源错误不能被其他 episode 信用冲销；reset 原角向 sampled-bounds 范围不变。
+四阶段原 608 API、596 脚本决策、18000 wall-second 工程上限与失败后保留原件并跳过后续阶段不变。
+本工程候选不授予 `95%` 三机建图、有效分工、PPO 学习或冻结策略可靠性信用，不重置学习余额。

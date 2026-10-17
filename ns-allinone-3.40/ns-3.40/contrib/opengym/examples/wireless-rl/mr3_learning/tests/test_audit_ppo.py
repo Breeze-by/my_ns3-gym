@@ -30,7 +30,9 @@ class NativeBindingTests(unittest.TestCase):
         def components(source_phase, source_root, source_freeze):
             self.assertIs(source_phase, phase)
             self.assertEqual((source_freeze, source_root), (freeze, root))
-            return None, None, None, {task: {"sha256": document_digest}}
+            return None, None, None, {task: {"sha256": document_digest},
+                                      audit_ppo.WIRELESS + "MR3_ENV_CONTRACT.md": {
+                                          "sha256": audit_ppo.ENV_DOCUMENT_SHA256}}
 
         def git_output(command, **kwargs):
             self.assertEqual(kwargs["cwd"], root)
@@ -61,7 +63,13 @@ class NativeBindingTests(unittest.TestCase):
                 return learner_digest
             return machine_digest
 
-        with patch.object(audit_ppo, "load_pinned", side_effect=[phase, None]), \
+        # This status-document fixture retains the original strict unchanged-machine
+        # branch. New six-file/ENV revisions have separate exact-byte negative tests.
+        with patch.dict(audit_ppo.SOLVER150_WORLD_PINS, {}, clear=True), \
+                patch.dict(audit_ppo.SOLVER150_TASK_PINS, {}, clear=True), \
+                patch.object(audit_ppo, "verify_environment_appendix", return_value={
+                    "scope": "status-fixture-only; not execution revision credit"}), \
+                patch.object(audit_ppo, "load_pinned", side_effect=[phase, None]), \
                 patch.object(audit_ppo, "load_compatible_components", components), \
                 patch.object(audit_ppo.subprocess, "check_output", git_output), \
                 patch.object(audit_ppo.hashlib, "sha256", digest), \
@@ -96,6 +104,83 @@ class NativeBindingTests(unittest.TestCase):
     def test_known_status_pin_cannot_authorize_changed_machine_contract(self):
         with self.assertRaisesRegex(ValueError, "machine task/geometry changed"):
             self.loader(audit_ppo.TASK_DOCUMENT_SHA256, machine_changed=True)
+
+
+class ProductionExecutionProjectionTests(unittest.TestCase):
+    """New revisions keep exact old geometry/document/source projections.
+
+    The synthetic freeze reads current worktree bytes, matching the existing
+    VersionedNativeGateTests fixture. This is not a real pushed-freeze check.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.root = next(parent for parent in Path(audit_ppo.__file__).parents
+                        if (parent / ".git").exists())
+        cls.freeze = "b" * 40
+
+    def call(self, function, *arguments):
+        original = audit_ppo.subprocess.check_output
+
+        def current_git(command, **kwargs):
+            if command[:2] == ["git", "show"] and command[2].startswith(self.freeze + ":"):
+                return (self.root / command[2].split(":", 1)[1]).read_bytes()
+            return original(command, **kwargs)
+
+        with patch.object(audit_ppo.subprocess, "check_output", current_git):
+            return function(self.root, self.freeze, *arguments)
+
+    def changed_bytes(self, selected, replacement):
+        original = Path.read_bytes
+
+        def read(path):
+            return replacement if path == selected else original(path)
+
+        return patch.object(Path, "read_bytes", read)
+
+    def test_exact_six_machine_files_and_changed_physics_rejected_even_repinned(self):
+        for relative in (*audit_ppo.SOLVER150_WORLD_PINS, *audit_ppo.SOLVER150_TASK_PINS):
+            proof = self.call(audit_ppo.verify_machine_task_file, relative)
+            self.assertEqual(proof["projected_normative_sha256"], proof["normative_sha256"])
+            self.assertNotEqual(proof["sha256"], proof["normative_sha256"])
+        relative = next(iter(audit_ppo.SOLVER150_WORLD_PINS))
+        path = self.root / relative
+        changed = path.read_bytes().replace(b">0.001<", b">0.002<", 1)
+        self.assertNotEqual(changed, path.read_bytes())
+        with self.changed_bytes(path, changed), patch.dict(audit_ppo.SOLVER150_WORLD_PINS, {
+                relative: hashlib.sha256(changed).hexdigest()}):
+            with self.assertRaisesRegex(ValueError, "project exactly to W7"):
+                self.call(audit_ppo.verify_machine_task_file, relative)
+
+    def test_environment_whole_prefix_cannot_be_changed_by_repinning_actual_digest(self):
+        self.call(audit_ppo.verify_environment_appendix)
+        path = self.root / audit_ppo.WIRELESS / "MR3_ENV_CONTRACT.md"
+        original = path.read_bytes()
+        changed = bytes([original[0] ^ 1]) + original[1:]
+        with self.changed_bytes(path, changed), patch.object(audit_ppo, "ENV_DOCUMENT_SHA256",
+                                                            hashlib.sha256(changed).hexdigest()):
+            with self.assertRaisesRegex(ValueError, "normative whole prefix"):
+                self.call(audit_ppo.verify_environment_appendix)
+
+    def test_unrelated_launch_change_rejected_even_repinned(self):
+        self.call(audit_ppo.verify_execution_configs)
+        relative = next(path for path in audit_ppo.RAY_BOX_EXECUTION_PINS
+                        if path.endswith(".launch.py"))
+        path = self.root / relative
+        changed = path.read_bytes() + b"\n# unrelated source change\n"
+        with self.changed_bytes(path, changed), patch.dict(audit_ppo.RAY_BOX_EXECUTION_PINS, {
+                relative: hashlib.sha256(changed).hexdigest()}):
+            with self.assertRaisesRegex(ValueError, "sensor diagnostic revision"):
+                self.call(audit_ppo.verify_execution_configs)
+
+    def test_actual_installed_corrector_elf_cannot_be_substituted(self):
+        self.call(audit_ppo.verify_ray_box_library)
+        path = self.root / audit_ppo.RAY_BOX_LIBRARY_SPEC["library"]["path"]
+        original = path.read_bytes()
+        changed = original[:-1] + bytes([original[-1] ^ 1])
+        with self.changed_bytes(path, changed):
+            with self.assertRaisesRegex(ValueError, "actual installed ELF differs"):
+                self.call(audit_ppo.verify_ray_box_library)
 
 
 class VersionedNativeGateTests(unittest.TestCase):
@@ -164,8 +249,22 @@ class VersionedNativeGateTests(unittest.TestCase):
         self.assertEqual(audit_ppo.sha(self.directory / "reward_gate_audit_v3.py"),
                          audit_ppo.SCALAR_SHA256)
         for path, digest in audit_ppo.EXECUTION_CONFIG_PINS.items():
-            self.assertEqual(self.proof[path]["sha256"], digest)
-            self.assertEqual(self.proof[path]["worktree_sha256"], digest)
+            if path in audit_ppo.RAY_BOX_EXECUTION_PINS:
+                actual_digest = audit_ppo.RAY_BOX_EXECUTION_PINS[path]
+                self.assertEqual(self.proof[path]["sha256"], actual_digest)
+                self.assertEqual(self.proof[path]["worktree_sha256"], actual_digest)
+                self.assertEqual(self.proof[path]["normative_sha256"], digest)
+                self.assertEqual(self.proof[path]["projected_normative_sha256"], digest)
+                actual = (self.root / path).read_bytes()
+                intermediate = audit_ppo.project_ray_box_runtime(path, actual)
+                normative = audit_ppo.subprocess.check_output(
+                    ["git", "show", audit_ppo.EXECUTION_NORMATIVE_FREEZE + ":" + path],
+                    cwd=self.root)
+                self.assertEqual(audit_ppo.project_sensor_diagnostic_runtime(path, intermediate),
+                                 normative)
+            else:
+                self.assertEqual(self.proof[path]["sha256"], digest)
+                self.assertEqual(self.proof[path]["worktree_sha256"], digest)
         for path, digest in audit_ppo.EVALUATOR_PHASE_PINS.items():
             self.assertEqual(self.base.PINNED_RUNTIME[path], digest)
             self.assertEqual(self.proof[path]["sha256"], digest)

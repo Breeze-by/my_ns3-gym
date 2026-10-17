@@ -151,3 +151,28 @@ target_compile_definitions(mr3_ray_provenance_observer PRIVATE
 install(TARGETS mr3_ray_provenance_observer DESTINATION lib)
 
 ament_package()
+
+# MR3 ray/box finite-segment correction (the other collider pairs are unchanged).
+set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS
+  "${CMAKE_CURRENT_SOURCE_DIR}/src/mr3_ray_box_corrector.cpp"
+  "${CMAKE_CURRENT_SOURCE_DIR}/src/mr3_ray_box_collision.cpp"
+  "${CMAKE_CURRENT_SOURCE_DIR}/include/multi_robot/mr3_ray_box_collision.hpp")
+file(SHA256 "${CMAKE_CURRENT_SOURCE_DIR}/src/mr3_ray_box_corrector.cpp"
+  MR3_RAY_BOX_CORRECTOR_SOURCE_SHA256)
+file(SHA256 "${CMAKE_CURRENT_SOURCE_DIR}/src/mr3_ray_box_collision.cpp"
+  MR3_RAY_BOX_COLLISION_SOURCE_SHA256)
+file(SHA256 "${CMAKE_CURRENT_SOURCE_DIR}/include/multi_robot/mr3_ray_box_collision.hpp"
+  MR3_RAY_BOX_COLLISION_HEADER_SHA256)
+add_library(mr3_ray_box_corrector SHARED
+  src/mr3_ray_box_corrector.cpp src/mr3_ray_box_collision.cpp)
+set_target_properties(mr3_ray_box_corrector PROPERTIES CXX_STANDARD 17 CXX_STANDARD_REQUIRED ON)
+target_include_directories(mr3_ray_box_corrector PRIVATE
+  "${CMAKE_CURRENT_SOURCE_DIR}/include" ${GAZEBO_INCLUDE_DIRS})
+target_link_libraries(mr3_ray_box_corrector ${GAZEBO_LIBRARIES} gazebo_ode ${CMAKE_DL_LIBS})
+target_compile_definitions(mr3_ray_box_corrector PRIVATE
+  MR3_RAY_BOX_CORRECTOR_SOURCE_SHA256="${MR3_RAY_BOX_CORRECTOR_SOURCE_SHA256}"
+  MR3_RAY_BOX_COLLISION_SOURCE_SHA256="${MR3_RAY_BOX_COLLISION_SOURCE_SHA256}"
+  MR3_RAY_BOX_COLLISION_HEADER_SHA256="${MR3_RAY_BOX_COLLISION_HEADER_SHA256}")
+install(TARGETS mr3_ray_box_corrector LIBRARY DESTINATION lib)
+install(FILES vendor/mr3_ray_box_corrector/LICENSE-BSD.TXT
+  DESTINATION share/${PROJECT_NAME}/vendor/mr3_ray_box_corrector)

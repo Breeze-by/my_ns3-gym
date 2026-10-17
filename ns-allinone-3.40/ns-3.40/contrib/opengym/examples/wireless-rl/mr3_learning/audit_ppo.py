@@ -164,10 +164,27 @@ EXECUTION_CONFIG_PINS = {
     ROS + 'src/multi_robot/include/multi_robot/mr3_drive_target.hpp':
         '4be4d77de247a5bcd427eb6948165e85098eb361030cf89d278d6df92e959d41',
 }
-ENV_DOCUMENT_SHA256 = "96d9bd3e3d597899b3d44a69ef9138e77b62b3641bd7261eb38846d5b003f155"
+ENV_DOCUMENT_SHA256 = "cace2f98cca4553f6cc618e7f43d7ead24451c7d802aac816583b74527eb5377"
 TASK_DOCUMENT_SHA256 = "f96f5ba785a39daa882b3c2ea217c58dd968550b65bf0ee15faf07ca079f8991"
 PRIOR_TASK_DOCUMENT_SHA256 = "5e4400396e4aaf5a5094fb4c0c04c85810c327cc85be88b7d03fa3faeade07d2"
 TASK_BASE_FREEZE = "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a"
+SOLVER150_WORLD_PINS = {
+    'ros2_ws/ros2-multi-robot-automap/src/multi_robot/worlds/p1c_open.world':
+        'ed3fcd526d7367e8e0eb5245c365ba60631a6f4a6d725c64134221217ddc4846',
+    'ros2_ws/ros2-multi-robot-automap/src/multi_robot/worlds/p1c_rooms.world':
+        '92ac7dff82bdf03b9f1ce3e9f075a3f59ca07df23c2f89fca654b3f423742768',
+    'ros2_ws/ros2-multi-robot-automap/src/multi_robot/worlds/p1c_corridors.world':
+        '7e15f3ba716fd2f6cdc55310ab3064e61c8d0d34c4f8cba79a964260a8dac051',
+}
+SOLVER150_TASK_PINS = {
+    'ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/open.json':
+        'e4a3c25374bb482a0104530f1765f17b807377e0a5c85bc42d6645a63bfc5487',
+    'ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/rooms.json':
+        'c4ddca59d8b955f5410a0e639736263c750d6e819a864020c3e4e6da783a811e',
+    'ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/corridors.json':
+        '44cc8593cf69206a36b3a7bf82b2008957d5454caaa040dc4b3ac815e1b778a6',
+}
+
 PHASE_SHA256 = "4e2a24e3465fa45c06c05c37b57b8b77b6e462845b3227be10c1fecb85c2c7d7"
 SCALAR_SHA256 = "895395075a881c6d74b809100e198be52a3c05a6710d24d873020b87223ff665"
 POLICY_ATOL = 1e-4  # CPU replay of CUDA collecting inference; never a task tolerance.
@@ -182,6 +199,85 @@ def require(condition, reason):
 def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
+
+def verify_machine_task_file(root, freeze, relative):
+    """Bind current bytes and narrowly project only the reviewed six-file revision."""
+    normative = subprocess.check_output(
+        ["git", "show", TASK_BASE_FREEZE + ":" + relative], cwd=root)
+    actual = subprocess.check_output(["git", "show", freeze + ":" + relative], cwd=root)
+    normative_digest = hashlib.sha256(normative).hexdigest()
+    actual_digest = hashlib.sha256(actual).hexdigest()
+    if relative not in SOLVER150_WORLD_PINS and relative not in SOLVER150_TASK_PINS:
+        require(actual == normative and sha(root / relative) == normative_digest,
+                "machine task/geometry changed from accepted W7 contract: " + relative)
+        return {"sha256": normative_digest, "git_source": freeze + ":" + relative,
+                "normative_source": TASK_BASE_FREEZE + ":" + relative}
+    expected_digest = (SOLVER150_WORLD_PINS if relative in SOLVER150_WORLD_PINS
+                       else SOLVER150_TASK_PINS)[relative]
+    require(actual_digest == expected_digest and sha(root / relative) == expected_digest,
+            "explicit solver150 machine source freeze/worktree SHA mismatch: " + relative)
+    if relative in SOLVER150_WORLD_PINS:
+        anchor = b"      <real_time_update_rate>1000</real_time_update_rate>\n"
+        block = (b"      <ode>\n"
+                 b"        <solver>\n"
+                 b"          <type>quick</type>\n"
+                 b"          <iters>150</iters>\n"
+                 b"        </solver>\n"
+                 b"      </ode>\n")
+        require(normative.count(anchor) == 1 and b"<ode>" not in normative
+                and actual.count(block) == 1
+                and actual == normative.replace(anchor, anchor + block, 1)
+                and actual.replace(block, b"", 1) == normative,
+                "solver150 world does not project exactly to W7: " + relative)
+        revision = "explicit_quickstep150_physics_only_v1"
+        world_reference = None
+    else:
+        scene = Path(relative).stem
+        world_relative = ROS + "src/multi_robot/worlds/p1c_" + scene + ".world"
+        require(world_relative in SOLVER150_WORLD_PINS,
+                "solver150 task metadata has no reviewed matching scene")
+        world_proof = verify_machine_task_file(root, freeze, world_relative)
+        old_field = ('  "world_sha256": "' + world_proof["normative_sha256"] + '",\n').encode()
+        new_field = ('  "world_sha256": "' + world_proof["sha256"] + '",\n').encode()
+        require(normative.count(old_field) == 1 and actual.count(new_field) == 1
+                and actual == normative.replace(old_field, new_field, 1)
+                and actual.replace(new_field, old_field, 1) == normative,
+                "solver150 task metadata does not project exactly to W7: " + relative)
+        revision = "actual_world_sha256_metadata_only_v1"
+        world_reference = {"path": world_relative, "sha256": world_proof["sha256"]}
+    proof = {"sha256": actual_digest, "git_source": freeze + ":" + relative,
+             "normative_source": TASK_BASE_FREEZE + ":" + relative,
+             "normative_sha256": normative_digest, "machine_revision": revision,
+             "projected_normative_sha256": normative_digest,
+             "scope": "actual revised execution/config bytes; exact W7 geometry/task projection"}
+    if world_reference is not None:
+        proof["actual_world"] = world_reference
+    return proof
+
+
+
+ENV_NORMATIVE_FREEZE = "4f8bd0e509e6f958c5993a50008955afac72c345"
+ENV_NORMATIVE_SHA256 = "96d9bd3e3d597899b3d44a69ef9138e77b62b3641bd7261eb38846d5b003f155"
+ENV_EXECUTION_APPENDIX_SHA256 = "29d59c3d0c9f023d961ae9a17c2ce397cd537401576c436ead8a95af45e8c7c2"
+ENV_EXECUTION_APPENDIX_BYTES = 7535
+
+def verify_environment_appendix(root, freeze):
+    relative = WIRELESS + "MR3_ENV_CONTRACT.md"
+    normative = subprocess.check_output(["git", "show", ENV_NORMATIVE_FREEZE + ":" + relative], cwd=root)
+    actual = subprocess.check_output(["git", "show", freeze + ":" + relative], cwd=root)
+    require(hashlib.sha256(normative).hexdigest() == ENV_NORMATIVE_SHA256
+            and hashlib.sha256(actual).hexdigest() == ENV_DOCUMENT_SHA256
+            and sha(root / relative) == ENV_DOCUMENT_SHA256, "execution ENV Git/worktree identity differs")
+    require(len(actual) == len(normative) + ENV_EXECUTION_APPENDIX_BYTES
+            and actual[:len(normative)] == normative
+            and hashlib.sha256(actual[len(normative):]).hexdigest() == ENV_EXECUTION_APPENDIX_SHA256,
+            "execution ENV must preserve normative whole prefix plus unique fixed appendix")
+    return {"environment_revision": "native_ray_box_and_explicit_solver150_v1",
+            "normative_sha256": ENV_NORMATIVE_SHA256,
+            "normative_source": ENV_NORMATIVE_FREEZE + ":" + relative,
+            "appendix_sha256": ENV_EXECUTION_APPENDIX_SHA256,
+            "append_only_normative_prefix_exact": True,
+            "scope": "actual revised environment document; original numeric/task/eligibility gates retained"}
 
 def parameter_changes(before, after):
     left, right = before.policy.state_dict(), after.policy.state_dict()
@@ -220,6 +316,235 @@ def verify_frozen_pins(root, freeze, pins, label):
                 label + " source freeze/worktree SHA mismatch: " + relative)
         proof[relative] = {"sha256": digest, "git_source": freeze + ":" + relative,
                            "worktree_sha256": expected}
+    return proof
+
+
+
+# Only these reviewed execution-source additions have a whole-byte inverse.
+EXECUTION_NORMATIVE_FREEZE = '4f8bd0e509e6f958c5993a50008955afac72c345'
+EXECUTION_NORMATIVE_PINS = {'ros2_ws/ros2-multi-robot-automap/src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py': 'bcb177d669890ecd6f552379afad771656b6b748c314ea158e5599d37a0c3d2b',
+ 'ros2_ws/ros2-multi-robot-automap/src/multi_robot/CMakeLists.txt': '7ebe737cdec686b08b02702846ca27998d1f67e9f1070979fa9123bfd6ea08b7'}
+SENSOR_DIAGNOSTIC_CONFIG_PINS = {'ros2_ws/ros2-multi-robot-automap/src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py': '6c76a4f0afbeb4c26f8c28b8e1139bbd12e5162a54ca3a193b99a156ef47a2d2',
+ 'ros2_ws/ros2-multi-robot-automap/src/multi_robot/CMakeLists.txt': '170eb49947c4daa61d30f45ab8fde637aa12766182dddfda15c9ca6453d0cc0d'}
+RAY_BOX_EXECUTION_PINS = {'ros2_ws/ros2-multi-robot-automap/src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py': '814f5b6256ac8badfb7f74dae21f0c66423c6e8ca7181266639d8865dc09cfd1',
+ 'ros2_ws/ros2-multi-robot-automap/src/multi_robot/CMakeLists.txt': '12b994e0fc0c01ec8761aaf23a7ae4722fe3026391b0622d13b842d0b425ebdc'}
+RAY_BOX_SOURCE_PINS = {'ros2_ws/ros2-multi-robot-automap/src/multi_robot/src/mr3_ray_box_corrector.cpp': 'b165ce49eaf5b3d52853cd759e4809962192d1922f0f210f5c82cff79c2a6b2a',
+ 'ros2_ws/ros2-multi-robot-automap/src/multi_robot/src/mr3_ray_box_collision.cpp': 'd556dda57250da3680a7d5a9862416f6196cab9763e495ee75269307b87715cb',
+ 'ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/mr3_ray_box_collision.hpp': 'c619442d038e4bc6ea0695ada34d7074ee83d775b2137222ab9fb6bf8193879b'}
+RAY_BOX_LICENSE_PINS = {'ros2_ws/ros2-multi-robot-automap/src/multi_robot/vendor/mr3_ray_box_corrector/LICENSE-BSD.TXT': 'fe012d262cf04a701cc856e2d12780261a60d7b17f4f7cb9cd589ff65b3f4f32'}
+RAY_BOX_LAUNCH_CHANGES = [{'before': '    server_state = {\n',
+  'after': '    ray_box_plugin = None\n'
+           '    ray_box_audit_path = None\n'
+           '    if stepped_mode:\n'
+           '        ray_box_plugin = os.path.join(get_package_prefix("multi_robot"),\n'
+           '                                     "lib", "libmr3_ray_box_corrector.so")\n'
+           '        if not os.path.isfile(ray_box_plugin):\n'
+           '            raise ValueError(f"installed MR3 ray-box corrector does not exist: '
+           '{ray_box_plugin}")\n'
+           '        ray_box_directory = (Path(adapter_audit_path).parent.resolve(strict=True)\n'
+           '                             if adapter_audit_path else\n'
+           '                             Path(tempfile.mkdtemp(prefix="mr3_ray_box_corrector_")))\n'
+           '        ray_box_audit_path = str(ray_box_directory / "ray_box_corrector.jsonl")\n'
+           '    server_state = {\n'},
+ {'before': '                "stepped_mode": stepped_mode, "selected_step_plugin": step_plugin,\n',
+  'after': '                "stepped_mode": stepped_mode, "selected_step_plugin": step_plugin,\n'
+           '                "selected_ray_box_plugin": ray_box_plugin,\n'
+           '                "ray_box_audit_path": ray_box_audit_path,\n'},
+ {'before': '        diagnostic_system_args = []\n',
+  'after': '        gazebo_environment["MR3_RAY_BOX_CORRECTOR_AUDIT_PATH"] = ray_box_audit_path\n'
+           '        gazebo_environment["MR3_RAY_BOX_CORRECTOR_EPOCH"] = '
+           'episode_epoch.perform(context)\n'
+           '        diagnostic_system_args = []\n'},
+ {'before': '                 "-s", "libgazebo_ros_force_system.so", "-s", step_plugin,\n',
+  'after': '                 "-s", "libgazebo_ros_force_system.so",\n'
+           '                 "-s", ray_box_plugin, "-s", step_plugin,\n'}]
+RAY_BOX_CMAKE_ADDITION = ('\n'
+ '# MR3 ray/box finite-segment correction (the other collider pairs are unchanged).\n'
+ 'set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS\n'
+ '  "${CMAKE_CURRENT_SOURCE_DIR}/src/mr3_ray_box_corrector.cpp"\n'
+ '  "${CMAKE_CURRENT_SOURCE_DIR}/src/mr3_ray_box_collision.cpp"\n'
+ '  "${CMAKE_CURRENT_SOURCE_DIR}/include/multi_robot/mr3_ray_box_collision.hpp")\n'
+ 'file(SHA256 "${CMAKE_CURRENT_SOURCE_DIR}/src/mr3_ray_box_corrector.cpp"\n'
+ '  MR3_RAY_BOX_CORRECTOR_SOURCE_SHA256)\n'
+ 'file(SHA256 "${CMAKE_CURRENT_SOURCE_DIR}/src/mr3_ray_box_collision.cpp"\n'
+ '  MR3_RAY_BOX_COLLISION_SOURCE_SHA256)\n'
+ 'file(SHA256 "${CMAKE_CURRENT_SOURCE_DIR}/include/multi_robot/mr3_ray_box_collision.hpp"\n'
+ '  MR3_RAY_BOX_COLLISION_HEADER_SHA256)\n'
+ 'add_library(mr3_ray_box_corrector SHARED\n'
+ '  src/mr3_ray_box_corrector.cpp src/mr3_ray_box_collision.cpp)\n'
+ 'set_target_properties(mr3_ray_box_corrector PROPERTIES CXX_STANDARD 17 CXX_STANDARD_REQUIRED '
+ 'ON)\n'
+ 'target_include_directories(mr3_ray_box_corrector PRIVATE\n'
+ '  "${CMAKE_CURRENT_SOURCE_DIR}/include" ${GAZEBO_INCLUDE_DIRS})\n'
+ 'target_link_libraries(mr3_ray_box_corrector ${GAZEBO_LIBRARIES} gazebo_ode ${CMAKE_DL_LIBS})\n'
+ 'target_compile_definitions(mr3_ray_box_corrector PRIVATE\n'
+ '  MR3_RAY_BOX_CORRECTOR_SOURCE_SHA256="${MR3_RAY_BOX_CORRECTOR_SOURCE_SHA256}"\n'
+ '  MR3_RAY_BOX_COLLISION_SOURCE_SHA256="${MR3_RAY_BOX_COLLISION_SOURCE_SHA256}"\n'
+ '  MR3_RAY_BOX_COLLISION_HEADER_SHA256="${MR3_RAY_BOX_COLLISION_HEADER_SHA256}")\n'
+ 'install(TARGETS mr3_ray_box_corrector LIBRARY DESTINATION lib)\n'
+ 'install(FILES vendor/mr3_ray_box_corrector/LICENSE-BSD.TXT\n'
+ '  DESTINATION share/${PROJECT_NAME}/vendor/mr3_ray_box_corrector)\n')
+RAY_CMAKE_ADDITION = ('# Opt-in ray provenance SensorPlugin; original targets/sources/flags unchanged.\n'
+ 'set(mr3_ray_provenance_source ${CMAKE_CURRENT_SOURCE_DIR}/src/mr3_ray_provenance_observer.cpp)\n'
+ 'set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${mr3_ray_provenance_source})\n'
+ 'file(SHA256 ${mr3_ray_provenance_source} mr3_ray_provenance_source_sha)\n'
+ 'add_library(mr3_ray_provenance_observer SHARED src/mr3_ray_provenance_observer.cpp)\n'
+ 'target_compile_features(mr3_ray_provenance_observer PRIVATE cxx_std_17)\n'
+ 'target_include_directories(mr3_ray_provenance_observer PRIVATE ${GAZEBO_INCLUDE_DIRS})\n'
+ 'target_link_libraries(mr3_ray_provenance_observer ${GAZEBO_LIBRARIES}\n'
+ '  nlohmann_json::nlohmann_json ${CMAKE_DL_LIBS})\n'
+ 'target_compile_definitions(mr3_ray_provenance_observer PRIVATE\n'
+ '  MR3_RAY_PROVENANCE_SOURCE_SHA256="${mr3_ray_provenance_source_sha}")\n'
+ 'install(TARGETS mr3_ray_provenance_observer DESTINATION lib)\n'
+ '\n')
+
+def project_sensor_diagnostic_runtime(relative, current):
+    """Remove only the fixed opt-in SensorPlugin target/config/injection additions."""
+    text = current.decode()
+    if relative.endswith('/CMakeLists.txt'):
+        require(text.count(RAY_CMAKE_ADDITION) == 1, 'ray target addition differs')
+        return text.replace(RAY_CMAKE_ADDITION, '', 1).encode()
+    def replace_once(text, added, original=''):
+        require(text.count(added) == 1, 'ray launch inverse marker differs')
+        return text.replace(added, original, 1)
+    text = replace_once(text, 'import xml.etree.ElementTree as ET\n')
+    text = replace_once(text,
+        '    if (type(config) is not dict or set(config) not in (expected, expected | {"ray_provenance"}) or\n',
+        '    if (type(config) is not dict or set(config) != expected or\n')
+    start = text.index('    ray = None\n')
+    end = text.index('    world_path = Path(world).resolve(strict=True)\n', start)
+    text = text[:start] + text[end:]
+    text = replace_once(text, '    if ray is not None:\n        binding["ray_provenance"] = ray\n')
+    start = text.index('def append_ray_provenance(')
+    end = text.index('def drive_spawn_model(', start)
+    text = text[:start] + text[end:]
+    text = replace_once(text, '        model = append_ray_provenance(model, robot_name, physics_diagnostic)\n')
+    return text.encode()
+
+def project_ray_box_runtime(relative, current):
+    text = current.decode()
+    if relative.endswith('/CMakeLists.txt'):
+        require(text.count(RAY_BOX_CMAKE_ADDITION) == 1,
+                'ray-box target addition differs')
+        return text.replace(RAY_BOX_CMAKE_ADDITION, '', 1).encode()
+    for change in reversed(RAY_BOX_LAUNCH_CHANGES):
+        require(text.count(change['after']) == 1, 'ray-box launch inverse marker differs')
+        text = text.replace(change['after'], change['before'], 1)
+    return text.encode()
+
+
+def verify_execution_configs(root, freeze):
+    require(all(EXECUTION_CONFIG_PINS.get(path) == digest
+                for path, digest in EXECUTION_NORMATIVE_PINS.items()),
+            'original execution config pins differ')
+    retained = {path: digest for path, digest in EXECUTION_CONFIG_PINS.items()
+                if path not in EXECUTION_NORMATIVE_PINS}
+    proof = verify_frozen_pins(root, freeze, retained, 'execution config')
+    for relative, expected in RAY_BOX_EXECUTION_PINS.items():
+        actual = subprocess.check_output(['git', 'show', freeze + ':' + relative], cwd=root)
+        require(hashlib.sha256(actual).hexdigest() == expected and sha(root / relative) == expected,
+                'ray-box execution source Git/worktree SHA mismatch: ' + relative)
+        intermediate = project_ray_box_runtime(relative, actual)
+        require(hashlib.sha256(intermediate).hexdigest() == SENSOR_DIAGNOSTIC_CONFIG_PINS[relative],
+                'ray-box source does not project exactly to sensor diagnostic revision: ' + relative)
+        normative = subprocess.check_output(
+            ['git', 'show', EXECUTION_NORMATIVE_FREEZE + ':' + relative], cwd=root)
+        projected = project_sensor_diagnostic_runtime(relative, intermediate)
+        require(hashlib.sha256(normative).hexdigest() == EXECUTION_NORMATIVE_PINS[relative]
+                and projected == normative, 'execution source does not restore normative whole bytes: ' + relative)
+        proof[relative] = {'sha256': expected, 'git_source': freeze + ':' + relative,
+                           'worktree_sha256': expected,
+                           'execution_revision': 'sensor_diagnostic_and_native_ray_box_only_v1',
+                           'intermediate_sha256': SENSOR_DIAGNOSTIC_CONFIG_PINS[relative],
+                           'normative_source': EXECUTION_NORMATIVE_FREEZE + ':' + relative,
+                           'normative_sha256': EXECUTION_NORMATIVE_PINS[relative],
+                           'projected_normative_sha256': hashlib.sha256(projected).hexdigest()}
+    proof.update(verify_frozen_pins(root, freeze, {**RAY_BOX_SOURCE_PINS, **RAY_BOX_LICENSE_PINS},
+                                    'ray-box implementation'))
+    return proof
+
+
+
+RAY_BOX_LIBRARY_SPEC = {'receipt': {'path': 'ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v22_ray_box/binary/receipt_v1.json',
+             'sha256': 'e522c3000097fcf4fd5c065fbcbd074f0f56167cc82da663081d84b60f0d6670',
+             'bytes': 7954},
+ 'build': {'path': 'ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v22_ray_box/binary/canonical_build_receipt_v1.json',
+           'sha256': 'ec91e83376219fb4d4d78b7ed42760fc36bff0b9ee9984518d0316299c840d50',
+           'bytes': 17457},
+ 'archive': {'path': 'ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v22_ray_box/binary/libmr3_ray_box_corrector.so.gz',
+             'sha256': '5adc1aa8eaac84c34c08351c1829ba9e14005ec215e058c1f784cc652220c026',
+             'bytes': 125793},
+ 'library': {'path': 'ros2_ws/ros2-multi-robot-automap/install/multi_robot/lib/libmr3_ray_box_corrector.so',
+             'resolved': 'ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_ray_box_corrector.so',
+             'bytes': 389312,
+             'sha256': '7be79c7f3d2cac53a9d1692aa868d91d4b9977e2b7541203ce4ffe90c605a08f'},
+ 'ode_library': {'path': '/lib/x86_64-linux-gnu/libgazebo_ode.so.11',
+                 'resolved': '/usr/lib/x86_64-linux-gnu/libgazebo_ode.so.11.10.2',
+                 'bytes': 719240,
+                 'sha256': 'a94a424df0b3af9d8a04c58ef1562734cc81728253bcedd25c7705330289c258'},
+ 'unchanged_libraries': {'libmr3_gazebo_diff_drive.so': {'path': 'ros2_ws/ros2-multi-robot-automap/install/multi_robot/lib/libmr3_gazebo_diff_drive.so',
+                                                         'resolved': 'ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_gazebo_diff_drive.so',
+                                                         'bytes': 1999200,
+                                                         'sha256': 'a014f2c618e38fc8a306d76c100083d952606333045a2e35bffce6f8b25b10c8'},
+                         'libmr3_stop_response_observer.so': {'path': 'ros2_ws/ros2-multi-robot-automap/install/multi_robot/lib/libmr3_stop_response_observer.so',
+                                                              'resolved': 'ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_stop_response_observer.so',
+                                                              'bytes': 497648,
+                                                              'sha256': '9a1d76b0d9a6585bb2d40fb348bc5636bdd256838291e8ea605d1d05b18806bf'},
+                         'libmr3_physics_diagnostic_profile.so': {'path': 'ros2_ws/ros2-multi-robot-automap/install/multi_robot/lib/libmr3_physics_diagnostic_profile.so',
+                                                                  'resolved': 'ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_physics_diagnostic_profile.so',
+                                                                  'bytes': 496360,
+                                                                  'sha256': '09321ea65a2c893d2e65316f43d5ee54d5dda7014a5d40e2186b6b720055fcc1'},
+                         'libmr3_ray_provenance_observer.so': {'path': 'ros2_ws/ros2-multi-robot-automap/install/multi_robot/lib/libmr3_ray_provenance_observer.so',
+                                                               'resolved': 'ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_ray_provenance_observer.so',
+                                                               'bytes': 463272,
+                                                               'sha256': 'b76138132ae7dbb35936c2e0971e909f688189d240de3910516157b3553d57b8'}}}
+
+def verify_ray_box_library(root, freeze):
+    """Bind the actual installed ELF to fixed compiled sources and saved build bytes.
+
+    This proves file/build identity only. Per-episode loaded mappings, installed
+    callback/real ODE readback and closed ledger are separately required.
+    """
+    spec = RAY_BOX_LIBRARY_SPEC
+    tracked = {spec[key]['path']: spec[key]['sha256'] for key in ('receipt', 'build', 'archive')}
+    proof = verify_frozen_pins(root, freeze, tracked, 'ray-box binary custody')
+    for key in ('receipt', 'build', 'archive'):
+        require((root / spec[key]['path']).stat().st_size == spec[key]['bytes'],
+                'ray-box binary custody byte count differs: ' + key)
+    receipt = json.loads((root / spec['receipt']['path']).read_bytes())
+    require(receipt.get('schema') == 'mr3-v22-ray-box-actual-binary-custody-v1'
+            and receipt.get('passed') is True and receipt.get('old_four_libraries_byte_unchanged') is True,
+            'ray-box canonical build custody is not passed')
+    actual_library = root / spec['library']['path']
+    require(actual_library.resolve(strict=True) == (root / spec['library']['resolved']).resolve(strict=True),
+            'ray-box installed library resolves outside reviewed build artifact')
+    raw = actual_library.read_bytes()
+    require(raw[:4] == b'\x7fELF' and len(raw) == spec['library']['bytes']
+            and hashlib.sha256(raw).hexdigest() == spec['library']['sha256'],
+            'ray-box actual installed ELF differs')
+    require(gzip.decompress((root / spec['archive']['path']).read_bytes()) == raw,
+            'ray-box actual ELF/archive bytes differ')
+    for relative, expected in RAY_BOX_SOURCE_PINS.items():
+        require(expected.encode() in raw, 'ray-box compiled source macro missing: ' + relative)
+        short = str(Path(relative).relative_to(ROS + 'src/multi_robot'))
+        require(receipt['sources'][short]['sha256'] == expected,
+                'ray-box build receipt source identity differs: ' + relative)
+    for library in [spec['ode_library'], *spec['unchanged_libraries'].values()]:
+        path = root / library['path']
+        require(path.resolve(strict=True) == (root / library['resolved']).resolve(strict=True),
+                'reviewed ODE/unchanged library resolved path differs: ' + str(path))
+        payload = path.read_bytes()
+        require(payload[:4] == b'\x7fELF' and len(payload) == library['bytes']
+                and hashlib.sha256(payload).hexdigest() == library['sha256'],
+                'reviewed ODE/unchanged library bytes differ: ' + str(path))
+    proof[spec['receipt']['path']].update(
+        installed_library_sha256=spec['library']['sha256'],
+        installed_library_bytes=spec['library']['bytes'],
+        installed_library_path=str(actual_library),
+        installed_library_resolved=str(actual_library.resolve(strict=True)),
+        compiled_source_sha256=dict(RAY_BOX_SOURCE_PINS),
+        actual_ode_library=spec['ode_library'],
+        scope='actual file/build/archive identity; loaded process and callback/iterations are separate custody gates')
     return proof
 
 
@@ -289,7 +614,8 @@ def load_compatible_components(phase, root, freeze):
     proof = verify_frozen_pins(root, freeze, native_pins, "native runtime")
     proof[REWARD_SOURCE]["normative_source"] = TASK_BASE_FREEZE + ":" + REWARD_SOURCE
     proof.update(verify_frozen_pins(root, freeze, CURRENT_AUDITOR_PINS, "current auditor"))
-    proof.update(verify_frozen_pins(root, freeze, EXECUTION_CONFIG_PINS, "execution config"))
+    proof.update(verify_execution_configs(root, freeze))
+    proof.update(verify_ray_box_library(root, freeze))
     for relative, expected in phase.PINNED_DOCUMENTS.items():
         payload = subprocess.check_output(["git", "show", freeze + ":" + relative], cwd=root)
         require(hashlib.sha256(payload).hexdigest() == expected,
@@ -368,6 +694,7 @@ def load_native_gates(root, freeze):
             "current accepted environment document differs from explicit P2A pin")
     require(sha(root / task_relative) == TASK_DOCUMENT_SHA256,
             "current accepted task document differs from explicit P2A status pin")
+    proof[WIRELESS + "MR3_ENV_CONTRACT.md"].update(verify_environment_appendix(root, freeze))
     proof[task_relative].update(
         current_status_sha256=TASK_DOCUMENT_SHA256,
         native_document_sha256=source_task_digest, status_only_revision=True)
@@ -379,14 +706,7 @@ def load_native_gates(root, freeze):
                       scene + ".world" for scene in ("open", "rooms", "corridors")]
     require(len(machine_paths) > 3, "original machine task contract is unavailable")
     for relative in machine_paths:
-        normative = subprocess.check_output(
-            ["git", "show", TASK_BASE_FREEZE + ":" + relative], cwd=root)
-        actual = subprocess.check_output(["git", "show", freeze + ":" + relative], cwd=root)
-        digest = hashlib.sha256(normative).hexdigest()
-        require(actual == normative and sha(root / relative) == digest,
-                "machine task/geometry changed from accepted W7 contract: " + relative)
-        proof[relative] = {"sha256": digest, "git_source": freeze + ":" + relative,
-                           "normative_source": TASK_BASE_FREEZE + ":" + relative}
+        proof[relative] = verify_machine_task_file(root, freeze, relative)
     for filename in ("audit_ppo.py", "audit_scalar.py", "audit_protocol.py",
                      "audit_evaluator_phase.py", "audit_preparation.py", "audit_activity.py",
                      "audit_motion.py", "audit_controlled_physics.py",

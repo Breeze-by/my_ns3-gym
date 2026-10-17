@@ -119,6 +119,16 @@
       "report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_v21_ray.md",
       "affected_reports": [],
       "scope": "V21 closed capture and original cached-ray/raw CDR alignment only. All original physical FAIL and e61c SKIP outcomes retained. Native219.82827906589955wall; cumulative2938.48922518407930/3600. No150 selection, matrix/PPO credit or pilot reset."
+    },
+    {
+      "recorded_date": "2026-10-18",
+      "review_base_commit": "ba34efb122a15ceea0fa28319bb16b5fc1469364",
+      "report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_v22_ray_box.md",
+      "affected_reports": [
+        "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_v19.md",
+        "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_v21_ray.md"
+      ],
+      "scope": "V22 selects the previously unselected fixed150 world/task source as one new engineering candidate and fixes a separately CPU-reproduced native RayBox false intersection using public ODE API. V19/V21 original outcomes, source freezes, scope and failures remain unchanged. Final actual library7be79 differs from SDK44263/first canonical f9a252. No native/matrix/PPO/95% or stopping-repair credit before complete new same-freeze validation."
     }
   ],
   "files": [

@@ -720,6 +720,17 @@ def launch_setup(context, *args, **kwargs):
                         if stepped_mode else None)
     if stepped_mode and not os.path.isfile(step_plugin):
         raise ValueError(f"installed MR3 stepping plugin does not exist: {step_plugin}")
+    ray_box_plugin = None
+    ray_box_audit_path = None
+    if stepped_mode:
+        ray_box_plugin = os.path.join(get_package_prefix("multi_robot"),
+                                     "lib", "libmr3_ray_box_corrector.so")
+        if not os.path.isfile(ray_box_plugin):
+            raise ValueError(f"installed MR3 ray-box corrector does not exist: {ray_box_plugin}")
+        ray_box_directory = (Path(adapter_audit_path).parent.resolve(strict=True)
+                             if adapter_audit_path else
+                             Path(tempfile.mkdtemp(prefix="mr3_ray_box_corrector_")))
+        ray_box_audit_path = str(ray_box_directory / "ray_box_corrector.jsonl")
     server_state = {
         "started": None, "environment": None, "exited": False, "stopping": False,
         "server_returncode": None, "stop_cli_returncode": None,
@@ -742,6 +753,8 @@ def launch_setup(context, *args, **kwargs):
             LogInfo(msg="MR3_GAZEBO_SERVER_START " + json.dumps({
                 "pid": event.pid, "process_name": event.process_name, "argv": list(event.cmd),
                 "stepped_mode": stepped_mode, "selected_step_plugin": step_plugin,
+                "selected_ray_box_plugin": ray_box_plugin,
+                "ray_box_audit_path": ray_box_audit_path,
                 "selected_clock_parameters": clock_parameters,
                 "gazebo_plugin_path": server_state["environment"].get("GAZEBO_PLUGIN_PATH"),
             }, sort_keys=True)),
@@ -872,6 +885,8 @@ def launch_setup(context, *args, **kwargs):
                                   ("GAZEBO_PLUGIN_PATH", plugin_export),
                                   ("GAZEBO_RESOURCE_PATH", media_export))
         }
+        gazebo_environment["MR3_RAY_BOX_CORRECTOR_AUDIT_PATH"] = ray_box_audit_path
+        gazebo_environment["MR3_RAY_BOX_CORRECTOR_EPOCH"] = episode_epoch.perform(context)
         diagnostic_system_args = []
         if physics_diagnostic is not None:
             diagnostic_system_args = [
@@ -883,7 +898,8 @@ def launch_setup(context, *args, **kwargs):
         gzserver_cmd = ExecuteProcess(
             cmd=["gzserver", world, ["--seed=", gazebo_seed],
                  "-s", "libgazebo_ros_init.so", "-s", "libgazebo_ros_factory.so",
-                 "-s", "libgazebo_ros_force_system.so", "-s", step_plugin,
+                 "-s", "libgazebo_ros_force_system.so",
+                 "-s", ray_box_plugin, "-s", step_plugin,
                  *diagnostic_system_args,
                  "--ros-args", "--params-file", clock_parameters, "--"],
             output="both", additional_env=gazebo_environment,

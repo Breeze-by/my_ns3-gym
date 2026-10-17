@@ -1,6 +1,6 @@
 # ROS component memory — MR3
 
-2026-10-18: V21_ray freeze099a8eea naturally closed ordinary4/open101/three-robot source capture: native219.82827906589955wall,39native exits0,48saved identities gone. Actual near raw returns hit each own base_collision; physical FAIL retained for tb1/tb2 missing stimulation. Diagnostic cumulative2938.48922518407930/3600wall. No150 production selection/P2A.0 completion/PPO or matrix credit. See wireless-rl/report/20261018_mr3_p2a0_v21_ray.md.
+2026-10-18: V22 prepares a public-API native RayBox finite-slab correction after actual ODE CPU false-hit reproduction. Final canonical SO7be79c7f/389312B and actual-library CPU/lifetime review pass. Fixed quick150 worlds/tasks are an unproven stopping candidate; original gates remain. Full new same-freeze fourstage matrix/preflight pending; P2A.0 incomplete, no new native/PPO. Old failures/pilot balance retained. See wireless-rl/report/20261018_mr3_p2a0_v22_ray_box.md.
 
 2026-10-18: V20_sensor b33ff700 ordinary4 source capture and strict close completed; 39 native exits0 and47 identities gone. Legitimate near scan returns persist and map to own100; actual hit geometry remains unknown. Same-name ROS synchronous throttling and Karto stationary-refresh parameters have different semantics, so missing forwarding alone is not a proven bug. Production SLAM/physics/gates unchanged,150 not selected,P2A.0 incomplete. See shared report/20261018_mr3_p2a0_v20_sensor.md.
 
