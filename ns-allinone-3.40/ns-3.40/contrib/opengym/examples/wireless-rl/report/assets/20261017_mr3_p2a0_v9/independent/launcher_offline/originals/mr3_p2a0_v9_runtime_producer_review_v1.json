@@ -1,0 +1,53 @@
+{
+  "schema": "mr3-v9-runtime-readonly-producer-review-v1",
+  "base_freeze": "d41485dfd93797026316806916e127eb5101f3b8",
+  "source_status": "working v9 final candidate; future reviewed/pushed source freeze still required",
+  "source_bindings": [
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_information.py",
+      "bytes": 42614,
+      "sha256": "b9830fa5089201920e05196d923e82fff62344946a43987204b1f43aaeb3e1b5"
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_information.py",
+      "bytes": 31567,
+      "sha256": "ad769b0045f36f58dd4310e27c9043a581d66457f8dcde9d7a9f5f1382f344ce"
+    }
+  ],
+  "source_review_passed": true,
+  "source_review_only": true,
+  "production_tests_executed_by_this_review": false,
+  "findings": [
+    {
+      "id": "validity-float-endpoint",
+      "status": "fixed by producer owner and covered in final source tests",
+      "evidence": "Python now1.064-source.564=.5000000000000001 while endpoint integer difference500000000ns; final producer valid uses round(now*1e9)-round(source*1e9) inclusive500000000, with exact endpoint/+1ns/future1ns fixtures. Does not relabel native v8 age.520 failure."
+    }
+  ],
+  "reviewed_properties": [
+    "queued odometry sorted by exact raw source_ns; latest causal selected and future retained",
+    "old selected source cannot be replaced by backwards odometry; same-source identical duplicate retains original ref; conflicting duplicate and overflow publish explicit state_input_failure and latch no further progress",
+    "input ref pruning retains selected/pending object references and bounds per-stream pending queues at256",
+    "old TF pending/header-order semantics preserved and audited; integer source eligibility avoids validity-lead float endpoint starvation",
+    "new epoch/full process rebuild starts empty inputs/queues/ledger counters; task release does not flush legitimate same-epoch prewarm sensor state",
+    "diagnostic writes isolated from transport selection/actor/candidate/reward payload fields; actor still sees actual delivered copies",
+    "state_selection/send first captured clock and actual delivery/publication second captured clock retained; no invented whole-method same-clock gate",
+    "transport record.payload is caller-owned JSON decode, so publication pops do not mutate stored envelopes",
+    "raw nonfinite/invalid data is not granted native credit; unchanged complete native/motion/clock/freshness gates remain required"
+  ],
+  "remaining_limits": [
+    "No hub raw ingress existed in v8, so specific native latest-future skip cause remains unproved despite deterministic source-level counterexample",
+    "Pending causal queue does not theoretically eliminate same-clock delivered-bundle/guard-timer ordering; v9 explicitly retains risk and needs complete same-freeze matrix",
+    "Original global clock-rewind/startup behavior and no-new20msinputcommit architecture retained; no beyond-contract freshness/localization guarantee"
+  ],
+  "independent_reader_feedback": {
+    "sent_to_owner": [
+      "retain cached delivery received_stamp on no-send cycles",
+      "typed canonical missing placeholder and fixed configuration validation",
+      "separately bind genuine selection/send and possibly-later publication captured clocks"
+    ],
+    "clock_advice_correction": "Initial suggestion of one whole-method clock withdrawn after root noted original two now() calls; this review requires source-faithful ordering, not a new equality gate."
+  },
+  "native_runs": 0,
+  "git_edits": 0
+}

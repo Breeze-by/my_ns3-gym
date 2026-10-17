@@ -1,0 +1,59 @@
+{
+  "schema": "mr3-v8-runtime-v9-minimal-repair-review-v1",
+  "source_freeze": "d41485dfd93797026316806916e127eb5101f3b8",
+  "proven_native_facts": [
+    "terminal e1 released at68.040s; source67.580 peer TF exactly.500s old at68.080 and.520s old at68.100; original.500s age gate correctly rejected",
+    "68.100 guard decisions45424..45426 used previously received bundle673/version578; same-clock fresh received bundle674/version579 arrived only at45433, before failure self-echo45434 but after failure was already latched",
+    "No settled_turn_model_failure or grant caused e1; no native Nav2 goal was issued, no contact event; terminal e2 completed declared3x1+zero steps",
+    "90 exact saved native/owned/benchmark/launcher identities are absent,78 native starts/exits clean,0forced/0failed_sample"
+  ],
+  "unproven_native_cause": "No raw ingress/selection trace exists inside the original hub, so latest-future odometry skip/cache cause cannot be proved from motion-local raw TF or the state bundle alone. Local own-TF receipt does not prove independent hub receipt.",
+  "minimal_producer_fix_assessment": {
+    "necessary_reproducible_path": "Latest-only odometry callback can discard older causal input when a future-source input arrives. publish_states skips the robot if max(odom,TFsource)>clock. Pending queue with last-selected causal input eliminates that constructible skip without changing.100s publication/.500s freshness.",
+    "selection_rule": "At each state clock select latest actually received source<=clock; retain future inputs pending, preserve raw header/source and true min(odom,TFsource), no invented freshness/truth/peer bypass.",
+    "ledger_required": [
+      "raw hub odom/TF callback messages+source ns+inputseq/hash+callback clock/order",
+      "causal selection refs, known future queue and bounded overflow/order decisions",
+      "actual transport state envelope send/delivery and exact bundle publication",
+      "motion actual received bundle identity/order and decision peer binding"
+    ],
+    "remaining_risk": "Queue repair alone does not prove absence of same-clock publication/delivery versus50Hz guard tick races. A complete guarantee would require input publication/delivery commit before guard/driver ACK/physics advance, while preserving zero output and original age gates. Root selected minimal producer repair plus complete new native matrix and explicit residual-risk scope for v9."
+  },
+  "budget_assessment": {
+    "same_4_stages": true,
+    "max_api_records": 608,
+    "max_submitted_script_decisions": 596,
+    "stage_wall_ceiling_sec": [
+      1800,
+      1800,
+      6400,
+      8000
+    ],
+    "total_wall_ceiling_sec": 18000,
+    "scope": "Prospective admission/reservation and completion-time failure gate, no active kill; benchmark own finite startup/request/closure guards retained. A launcher exception waits same finite benchmark, reportsFAIL and blocks next admission; no retry or hidden pilot reset."
+  },
+  "bound_inputs": [
+    {
+      "path": "/tmp/mr3_p2a0_v8_terminal_e1_failure_provenance_v1.json",
+      "bytes": 276639,
+      "sha256": "c5556026921021e6fbff03d9ca1d84c4310c63d240952d7c083b16c91241db8f"
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v8_terminal_e1_tb3_tf_delivery_timeline_v1.json",
+      "bytes": 5726,
+      "sha256": "426f7555c9e36ae1c84c6f5a20b1b5ab33a5aba83aeb6f615981160915174f93"
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v8_terminal_closure_binary_review_v1.json",
+      "bytes": 45151,
+      "sha256": "9087b23eba15e4492331d2c28f7ae89f854c06a66069001c3e536d501469adca"
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v8_terminal_closure_strict_facts_v1.json",
+      "bytes": 1969,
+      "sha256": "c4c6d3ef3269333f4e5e57ba424fb3cf435c3e9ccb03cc60af09075ca1fe9c4a"
+    }
+  ],
+  "native_started_by_review": false,
+  "git_writes_by_review": false
+}

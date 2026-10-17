@@ -1,0 +1,18 @@
+{
+  "schema": "mr3-v9-plan-launcher-style-development-v2",
+  "command": [
+    "/usr/bin/python3",
+    "-m",
+    "flake8",
+    "--max-line-length=99",
+    "/tmp/mr3_p2a0_v9_draft/mr3_p2a0_v9_launch_stage.py",
+    "/tmp/mr3_p2a0_v9_draft/mr3_p2a0_v9_buildproof_preflight.py",
+    "/tmp/mr3_p2a0_v9_draft/mr3_p2a0_v9_plan_launcher_tests_v1.py"
+  ],
+  "cwd": "/home/zhuyulab/ns3-workspace",
+  "exit_code": 1,
+  "wall_sec": 0.905310361,
+  "stdout": "/tmp/mr3_p2a0_v9_draft/mr3_p2a0_v9_plan_launcher_tests_v1.py:214:42: E128 continuation line under-indented for visual indent\n",
+  "source_sha256": "19cbcd7b9fb3d29ed35ff57b838cf4d5a2c6888707f2c3c3b9f45ff77912c70e",
+  "capture_scope": "Exact tool output and argv recorded after execution; not a test rerun."
+}

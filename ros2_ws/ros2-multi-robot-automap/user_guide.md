@@ -3,7 +3,7 @@
 2026-10-17当前边界：用户明确要求继续完成P2A.0。第一版SLAM生命周期、失败采样保存、
 候选v4及诊断修复的[原始结果](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261017_mr3_p2a0.md)保持；
 当前将own权威导航合成、实际导航图v5候选、最终运动门及累计参与观测并入本步，
-实际三机Nav2及最终门角速度指令上限为.8rad/s，原测量界1.2不变；adapter原生驱动只消费带epoch/clock/序号的最终guard目标，worker每20ms推进前等待三台实际存储回执；baseline仍Twist。存储ACK不代表身体响应，参数/物理/时序须在新冻结验证。v7消费/时延和关闭通过，但活动及刺激不全，原整体FAIL保持。当前新增own-only停车后转向条件总漂移预算，仍需新冻结完整矩阵，见[v8报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261017_mr3_p2a0_v8.md)。
+实际三机Nav2及最终门角速度指令上限为.8rad/s，原测量界1.2不变；adapter原生驱动只消费带epoch/clock/序号的最终guard目标，worker每20ms推进前等待三台实际存储回执；baseline仍Twist。存储ACK不代表身体响应，参数/物理/时序须在新冻结验证。v7消费/时延和关闭通过，但活动及刺激不全，原整体FAIL保持。v8的own-only停车后转向预算通过32步接口，但终止首轮旧received源龄.52超过原.5提前失败，后两阶段跳过。v9修producer future-latest odom覆盖缓存导致跳过发送的缺陷，补真实入站/选取独立诊断；不改源龄门、发布周期或策略输入，再以新冻结完整重验，见[v9报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261017_mr3_p2a0_v9.md)。
 实际Gazebo使用本包构建的paired joint-feedback驱动，物理参数保持原值，详见报告；本轮只做无训练的原生工程矩阵，不重启pilot；95%/300秒/三台参与/安全门禁及累计pilot余额不变。
 第一版6次原生严格关闭正常；terminal通过，reset真实peer失败、deadline跳过的原整体FAIL不改。
 v6须以新冻结完整验证导航、三台实际执行、20ms运动输出相位及300秒关闭，再待用户验收。

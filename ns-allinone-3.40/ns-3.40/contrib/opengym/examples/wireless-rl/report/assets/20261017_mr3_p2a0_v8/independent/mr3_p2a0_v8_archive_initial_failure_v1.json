@@ -1,0 +1,13 @@
+{
+  "schema": "mr3-p2a0-v8-archive-initial-failure-v1",
+  "passed": false,
+  "command_argv": [
+    "python3",
+    "/tmp/archive_mr3_p2a0_v8_closed_v1.py"
+  ],
+  "stdout": "/tmp/mr3_p2a0_v8_archive_receipt_v1.json",
+  "session_id": 31693,
+  "returncode": 1,
+  "stderr_observed": "Traceback (most recent call last):\n  File \"/tmp/archive_mr3_p2a0_v8_closed_v1.py\", line 63, in <module>\n    assert len(tar.getmembers())==source['source_count']==97\nKeyError: 'source_count'\n",
+  "scope": "Archive helper schema mismatch only; native raw unchanged; partially copied exact bytes will be verified and reused by versioned correction."
+}

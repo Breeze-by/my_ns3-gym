@@ -1,0 +1,1309 @@
+{
+  "schema": "mr3-v8-readonly-drive-mapping-monitor-v1",
+  "freeze": "d41485dfd93797026316806916e127eb5101f3b8",
+  "run": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v8_terminal",
+  "wall_monotonic_ns": 3965617910260591,
+  "benchmark_parent_saved": {
+    "pid": 2671506,
+    "parent": 2671423,
+    "group": 2671422,
+    "session": 2671422,
+    "start_ticks": 396539645,
+    "state": "R"
+  },
+  "benchmark_parent_current": {
+    "pid": 2671506,
+    "parent": 2671423,
+    "group": 2671422,
+    "session": 2671422,
+    "start_ticks": 396539645,
+    "state": "S"
+  },
+  "launcher_saved": {
+    "pid": 2671423,
+    "parent": 2671422,
+    "group": 2671422,
+    "session": 2671422,
+    "start_ticks": 396539461,
+    "state": "R"
+  },
+  "launcher_current": {
+    "pid": 2671423,
+    "parent": 2671422,
+    "group": 2671422,
+    "session": 2671422,
+    "start_ticks": 396539461,
+    "state": "S"
+  },
+  "owned_current_processes": [
+    {
+      "identity": {
+        "pid": 2671506,
+        "parent": 2671423,
+        "group": 2671422,
+        "session": 2671422,
+        "start_ticks": 396539645,
+        "state": "S"
+      },
+      "argv": [
+        "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+        "-u",
+        "-m",
+        "mr3_learning.benchmark",
+        "--workers",
+        "1",
+        "--schedule",
+        "open:101,open:101",
+        "--steps",
+        "4",
+        "--terminal-probe",
+        "--base-domain",
+        "202",
+        "--base-port",
+        "12811",
+        "--output-root",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0",
+        "--run-id",
+        "mr3_p2a0_20261017_v8_terminal"
+      ]
+    },
+    {
+      "identity": {
+        "pid": 2677570,
+        "parent": 2671506,
+        "group": 2677570,
+        "session": 2677570,
+        "start_ticks": 396555241,
+        "state": "S"
+      },
+      "argv": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py",
+        "--run-dir",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v8_terminal/worker0/episode002_open_101"
+      ]
+    },
+    {
+      "identity": {
+        "pid": 2677658,
+        "parent": 2677570,
+        "group": 2677570,
+        "session": 2677570,
+        "start_ticks": 396555415,
+        "state": "S"
+      },
+      "argv": [
+        "/usr/bin/python3",
+        "/opt/ros/humble/bin/ros2",
+        "launch",
+        "multi_robot",
+        "gazebo_multirobot_mapping_with_nav2.launch.py",
+        "execution_mode:=adapter",
+        "mr3_stepped:=true",
+        "training_reward_enabled:=true",
+        "robot_count:=3",
+        "mr3_episode_epoch:=mr3_p2a0_20261017_v8_terminal_w0_e2_4c781e15",
+        "mr3_audit_path:=/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v8_terminal/worker0/episode002_open_101/adapter.jsonl",
+        "world:=p1c_open.world",
+        "gazebo_seed:=101",
+        "enable_gzclient:=false",
+        "enable_rviz:=false",
+        "enable_merge_rviz:=false",
+        "auto_save_map:=false",
+        "enable_task_evaluator:=true",
+        "evaluation_contract_path:=/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/open.json",
+        "evaluation_episode_id:=mr3_p2a0_20261017_v8_terminal_w0_e2_4c781e15",
+        "evaluation_output_dir:=/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v8_terminal/worker0/episode002_open_101",
+        "training_terminal_probe:=true"
+      ]
+    },
+    {
+      "identity": {
+        "pid": 2677729,
+        "parent": 2677658,
+        "group": 2677570,
+        "session": 2677570,
+        "start_ticks": 396555578,
+        "state": "R"
+      },
+      "argv": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot_exploration/lib/multi_robot_exploration/mr3_information",
+        "--ros-args",
+        "-r",
+        "__node:=mr3_information",
+        "--params-file",
+        "/tmp/launch_params_spyqcsw5"
+      ]
+    },
+    {
+      "identity": {
+        "pid": 2677731,
+        "parent": 2677658,
+        "group": 2677570,
+        "session": 2677570,
+        "start_ticks": 396555578,
+        "state": "S"
+      },
+      "argv": [
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/lib/multi_robot/mr3_contact_reducer",
+        "--ros-args",
+        "-r",
+        "__node:=mr3_contact_reducer",
+        "--params-file",
+        "/tmp/launch_params_jll6sn2e"
+      ]
+    },
+    {
+      "identity": {
+        "pid": 2677733,
+        "parent": 2677658,
+        "group": 2677570,
+        "session": 2677570,
+        "start_ticks": 396555578,
+        "state": "S"
+      },
+      "argv": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot_exploration/lib/multi_robot_exploration/peer_obstacles",
+        "--ros-args",
+        "-r",
+        "__node:=peer_obstacles",
+        "--params-file",
+        "/tmp/launch_params_uvfdsjhf",
+        "-r",
+        "/tb1/odom:=/mr3/received/tb1/odom",
+        "-r",
+        "/tb1/tf:=/mr3/received/tb1/tf",
+        "-r",
+        "/tb2/odom:=/mr3/received/tb2/odom",
+        "-r",
+        "/tb2/tf:=/mr3/received/tb2/tf",
+        "-r",
+        "/tb3/odom:=/mr3/received/tb3/odom",
+        "-r",
+        "/tb3/tf:=/mr3/received/tb3/tf"
+      ]
+    },
+    {
+      "identity": {
+        "pid": 2677735,
+        "parent": 2677658,
+        "group": 2677570,
+        "session": 2677570,
+        "start_ticks": 396555578,
+        "state": "R"
+      },
+      "argv": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot_exploration/lib/multi_robot_exploration/motion_safety",
+        "--ros-args",
+        "-r",
+        "__node:=motion_safety",
+        "--params-file",
+        "/tmp/launch_params_canvlwgd"
+      ]
+    },
+    {
+      "identity": {
+        "pid": 2677737,
+        "parent": 2677658,
+        "group": 2677570,
+        "session": 2677570,
+        "start_ticks": 396555578,
+        "state": "S"
+      },
+      "argv": [
+        "gzserver",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/share/multi_robot/worlds/p1c_open.world",
+        "--seed=101",
+        "-s",
+        "libgazebo_ros_init.so",
+        "-s",
+        "libgazebo_ros_factory.so",
+        "-s",
+        "libgazebo_ros_force_system.so",
+        "-s",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/lib/libmr3_gazebo_step.so",
+        "--ros-args",
+        "--params-file",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/share/multi_robot/config/mr3_step_clock.yaml",
+        "--"
+      ]
+    },
+    {
+      "identity": {
+        "pid": 2677739,
+        "parent": 2677658,
+        "group": 2677570,
+        "session": 2677570,
+        "start_ticks": 396555578,
+        "state": "S"
+      },
+      "argv": [
+        "/opt/ros/humble/lib/robot_state_publisher/robot_state_publisher",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/share/multi_robot/urdf/turtlebot3_waffle.urdf",
+        "--ros-args",
+        "-r",
+        "__ns:=/tb1",
+        "--params-file",
+        "/tmp/launch_params_y0fnrkxi",
+        "-r",
+        "/tf:=tf",
+        "-r",
+        "/tf_static:=tf_static"
+      ]
+    },
+    {
+      "identity": {
+        "pid": 2677743,
+        "parent": 2677658,
+        "group": 2677570,
+        "session": 2677570,
+        "start_ticks": 396555579,
+        "state": "S"
+      },
+      "argv": [
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/slam_toolbox/lib/slam_toolbox/multirobot_slam_toolbox_node",
+        "--ros-args",
+        "-r",
+        "__node:=slam_toolbox",
+        "-r",
+        "__ns:=/tb1",
+        "--params-file",
+        "/tmp/launch_params_359jio5l",
+        "--params-file",
+        "/tmp/launch_params_gpuctage",
+        "-r",
+        "/map:=map",
+        "-r",
+        "/tf:=tf",
+        "-r",
+        "/tf_static:=tf_static",
+        "-r",
+        "/map_metadata:=map_metadata"
+      ]
+    },
+    {
+      "identity": {
+        "pid": 2678282,
+        "parent": 2677658,
+        "group": 2677570,
+        "session": 2677570,
+        "start_ticks": 396555962,
+        "state": "S"
+      },
+      "argv": [
+        "/opt/ros/humble/lib/robot_state_publisher/robot_state_publisher",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/share/multi_robot/urdf/turtlebot3_waffle.urdf",
+        "--ros-args",
+        "-r",
+        "__ns:=/tb2",
+        "--params-file",
+        "/tmp/launch_params_1y_iiobg",
+        "-r",
+        "/tf:=tf",
+        "-r",
+        "/tf_static:=tf_static"
+      ]
+    },
+    {
+      "identity": {
+        "pid": 2678286,
+        "parent": 2677658,
+        "group": 2677570,
+        "session": 2677570,
+        "start_ticks": 396555962,
+        "state": "S"
+      },
+      "argv": [
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/slam_toolbox/lib/slam_toolbox/multirobot_slam_toolbox_node",
+        "--ros-args",
+        "-r",
+        "__node:=slam_toolbox",
+        "-r",
+        "__ns:=/tb2",
+        "--params-file",
+        "/tmp/launch_params_zsgu6wzh",
+        "--params-file",
+        "/tmp/launch_params_ea99phx5",
+        "-r",
+        "/map:=map",
+        "-r",
+        "/tf:=tf",
+        "-r",
+        "/tf_static:=tf_static",
+        "-r",
+        "/map_metadata:=map_metadata"
+      ]
+    },
+    {
+      "identity": {
+        "pid": 2678437,
+        "parent": 2677658,
+        "group": 2677570,
+        "session": 2677570,
+        "start_ticks": 396556271,
+        "state": "S"
+      },
+      "argv": [
+        "/opt/ros/humble/lib/robot_state_publisher/robot_state_publisher",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/share/multi_robot/urdf/turtlebot3_waffle.urdf",
+        "--ros-args",
+        "-r",
+        "__ns:=/tb3",
+        "--params-file",
+        "/tmp/launch_params_ngoqvn78",
+        "-r",
+        "/tf:=tf",
+        "-r",
+        "/tf_static:=tf_static"
+      ]
+    },
+    {
+      "identity": {
+        "pid": 2678441,
+        "parent": 2677658,
+        "group": 2677570,
+        "session": 2677570,
+        "start_ticks": 396556271,
+        "state": "S"
+      },
+      "argv": [
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/slam_toolbox/lib/slam_toolbox/multirobot_slam_toolbox_node",
+        "--ros-args",
+        "-r",
+        "__node:=slam_toolbox",
+        "-r",
+        "__ns:=/tb3",
+        "--params-file",
+        "/tmp/launch_params_kzuocg9v",
+        "--params-file",
+        "/tmp/launch_params_cdyhi6op",
+        "-r",
+        "/map:=map",
+        "-r",
+        "/tf:=tf",
+        "-r",
+        "/tf_static:=tf_static",
+        "-r",
+        "/map_metadata:=map_metadata"
+      ]
+    },
+    {
+      "identity": {
+        "pid": 2678594,
+        "parent": 2677658,
+        "group": 2677570,
+        "session": 2677570,
+        "start_ticks": 396556600,
+        "state": "S"
+      },
+      "argv": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot_exploration/lib/multi_robot_exploration/nav2_ready_gate",
+        "--ros-args",
+        "-r",
+        "__node:=nav2_ready_gate",
+        "--params-file",
+        "/tmp/launch_params_rt3of3l1"
+      ]
+    },
+    {
+      "identity": {
+        "pid": 2678976,
+        "parent": 2677658,
+        "group": 2677570,
+        "session": 2677570,
+        "start_ticks": 396557747,
+        "state": "S"
+      },
+      "argv": [
+        "/opt/ros/humble/lib/nav2_controller/controller_server",
+        "--ros-args",
+        "--log-level",
+        "warn",
+        "--ros-args",
+        "-r",
+        "__ns:=/tb1",
+        "--params-file",
+        "/tmp/tmp60ysq3dq",
+        "-r",
+        "/tf:=tf",
+        "-r",
+        "/tf_static:=tf_static",
+        "-r",
+        "/scan:=/tb1/scan",
+        "-r",
+        "cmd_vel:=cmd_vel_nav"
+      ]
+    },
+    {
+      "identity": {
+        "pid": 2678978,
+        "parent": 2677658,
+        "group": 2677570,
+        "session": 2677570,
+        "start_ticks": 396557747,
+        "state": "S"
+      },
+      "argv": [
+        "/opt/ros/humble/lib/nav2_planner/planner_server",
+        "--ros-args",
+        "--log-level",
+        "warn",
+        "--ros-args",
+        "-r",
+        "__node:=planner_server",
+        "-r",
+        "__ns:=/tb1",
+        "--params-file",
+        "/tmp/tmpmmk83bu5",
+        "-r",
+        "/tf:=tf",
+        "-r",
+        "/tf_static:=tf_static",
+        "-r",
+        "/scan:=/tb1/scan"
+      ]
+    },
+    {
+      "identity": {
+        "pid": 2678980,
+        "parent": 2677658,
+        "group": 2677570,
+        "session": 2677570,
+        "start_ticks": 396557747,
+        "state": "S"
+      },
+      "argv": [
+        "/opt/ros/humble/lib/nav2_behaviors/behavior_server",
+        "--ros-args",
+        "--log-level",
+        "warn",
+        "--ros-args",
+        "-r",
+        "__node:=behavior_server",
+        "-r",
+        "__ns:=/tb1",
+        "--params-file",
+        "/tmp/tmpq9d590gk",
+        "-r",
+        "/tf:=tf",
+        "-r",
+        "/tf_static:=tf_static",
+        "-r",
+        "/scan:=/tb1/scan",
+        "-r",
+        "cmd_vel:=cmd_vel_nav"
+      ]
+    },
+    {
+      "identity": {
+        "pid": 2678982,
+        "parent": 2677658,
+        "group": 2677570,
+        "session": 2677570,
+        "start_ticks": 396557747,
+        "state": "S"
+      },
+      "argv": [
+        "/opt/ros/humble/lib/nav2_bt_navigator/bt_navigator",
+        "--ros-args",
+        "--log-level",
+        "warn",
+        "--ros-args",
+        "-r",
+        "__node:=bt_navigator",
+        "-r",
+        "__ns:=/tb1",
+        "--params-file",
+        "/tmp/tmpu86hxzyu",
+        "-r",
+        "/tf:=tf",
+        "-r",
+        "/tf_static:=tf_static",
+        "-r",
+        "/scan:=/tb1/scan"
+      ]
+    },
+    {
+      "identity": {
+        "pid": 2678984,
+        "parent": 2677658,
+        "group": 2677570,
+        "session": 2677570,
+        "start_ticks": 396557748,
+        "state": "S"
+      },
+      "argv": [
+        "/opt/ros/humble/lib/nav2_waypoint_follower/waypoint_follower",
+        "--ros-args",
+        "--log-level",
+        "warn",
+        "--ros-args",
+        "-r",
+        "__node:=waypoint_follower",
+        "-r",
+        "__ns:=/tb1",
+        "--params-file",
+        "/tmp/tmpwrpm80hs",
+        "-r",
+        "/tf:=tf",
+        "-r",
+        "/tf_static:=tf_static",
+        "-r",
+        "/scan:=/tb1/scan"
+      ]
+    },
+    {
+      "identity": {
+        "pid": 2678986,
+        "parent": 2677658,
+        "group": 2677570,
+        "session": 2677570,
+        "start_ticks": 396557750,
+        "state": "S"
+      },
+      "argv": [
+        "/opt/ros/humble/lib/nav2_velocity_smoother/velocity_smoother",
+        "--ros-args",
+        "--log-level",
+        "warn",
+        "--ros-args",
+        "-r",
+        "__node:=velocity_smoother",
+        "-r",
+        "__ns:=/tb1",
+        "--params-file",
+        "/tmp/tmp8y5lvitg",
+        "-r",
+        "/tf:=tf",
+        "-r",
+        "/tf_static:=tf_static",
+        "-r",
+        "/scan:=/tb1/scan",
+        "-r",
+        "cmd_vel:=cmd_vel_nav",
+        "-r",
+        "cmd_vel_smoothed:=cmd_vel_unguarded"
+      ]
+    },
+    {
+      "identity": {
+        "pid": 2678988,
+        "parent": 2677658,
+        "group": 2677570,
+        "session": 2677570,
+        "start_ticks": 396557750,
+        "state": "S"
+      },
+      "argv": [
+        "/opt/ros/humble/lib/nav2_lifecycle_manager/lifecycle_manager",
+        "--ros-args",
+        "--log-level",
+        "warn",
+        "--ros-args",
+        "-r",
+        "__node:=lifecycle_manager_navigation",
+        "-r",
+        "__ns:=/tb1",
+        "--params-file",
+        "/tmp/launch_params_xy7jqwc6",
+        "--params-file",
+        "/tmp/launch_params_icmbdyut",
+        "--params-file",
+        "/tmp/launch_params_c58m18fj"
+      ]
+    }
+  ],
+  "gazebo_mapped_libraries": [
+    {
+      "identity": {
+        "pid": 2677737,
+        "parent": 2677658,
+        "group": 2677570,
+        "session": 2677570,
+        "start_ticks": 396555578,
+        "state": "S"
+      },
+      "matching_drive_map_lines": [
+        "7e2bb81a3000-7e2bb8243000 r--p 00000000 08:03 73558744                   /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_gazebo_diff_drive.so",
+        "7e2bb8243000-7e2bb82c6000 r-xp 000a0000 08:03 73558744                   /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_gazebo_diff_drive.so",
+        "7e2bb82c6000-7e2bb82ee000 r--p 00123000 08:03 73558744                   /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_gazebo_diff_drive.so",
+        "7e2bb82ee000-7e2bb82ef000 ---p 0014b000 08:03 73558744                   /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_gazebo_diff_drive.so",
+        "7e2bb82ef000-7e2bb82f5000 r--p 0014b000 08:03 73558744                   /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_gazebo_diff_drive.so",
+        "7e2bb82f5000-7e2bb82f7000 rw-p 00151000 08:03 73558744                   /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_gazebo_diff_drive.so"
+      ],
+      "mappings": [
+        {
+          "raw_maps_line": "7e2bb81a3000-7e2bb8243000 r--p 00000000 08:03 73558744                   /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_gazebo_diff_drive.so",
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_gazebo_diff_drive.so",
+          "resolved": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_gazebo_diff_drive.so",
+          "current_file_sha256": "d0d31b0ff62de498182073b4dd2715a78e17201844d8d8a360e385f4d2531dd6",
+          "file_inode": 73558744,
+          "mapping_inode": 73558744,
+          "file_device": "08:03",
+          "mapping_device": "08:03",
+          "matches_declared_binary": true
+        },
+        {
+          "raw_maps_line": "7e2bb8243000-7e2bb82c6000 r-xp 000a0000 08:03 73558744                   /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_gazebo_diff_drive.so",
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_gazebo_diff_drive.so",
+          "resolved": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_gazebo_diff_drive.so",
+          "current_file_sha256": "d0d31b0ff62de498182073b4dd2715a78e17201844d8d8a360e385f4d2531dd6",
+          "file_inode": 73558744,
+          "mapping_inode": 73558744,
+          "file_device": "08:03",
+          "mapping_device": "08:03",
+          "matches_declared_binary": true
+        },
+        {
+          "raw_maps_line": "7e2bb82c6000-7e2bb82ee000 r--p 00123000 08:03 73558744                   /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_gazebo_diff_drive.so",
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_gazebo_diff_drive.so",
+          "resolved": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_gazebo_diff_drive.so",
+          "current_file_sha256": "d0d31b0ff62de498182073b4dd2715a78e17201844d8d8a360e385f4d2531dd6",
+          "file_inode": 73558744,
+          "mapping_inode": 73558744,
+          "file_device": "08:03",
+          "mapping_device": "08:03",
+          "matches_declared_binary": true
+        },
+        {
+          "raw_maps_line": "7e2bb82ee000-7e2bb82ef000 ---p 0014b000 08:03 73558744                   /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_gazebo_diff_drive.so",
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_gazebo_diff_drive.so",
+          "resolved": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_gazebo_diff_drive.so",
+          "current_file_sha256": "d0d31b0ff62de498182073b4dd2715a78e17201844d8d8a360e385f4d2531dd6",
+          "file_inode": 73558744,
+          "mapping_inode": 73558744,
+          "file_device": "08:03",
+          "mapping_device": "08:03",
+          "matches_declared_binary": true
+        },
+        {
+          "raw_maps_line": "7e2bb82ef000-7e2bb82f5000 r--p 0014b000 08:03 73558744                   /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_gazebo_diff_drive.so",
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_gazebo_diff_drive.so",
+          "resolved": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_gazebo_diff_drive.so",
+          "current_file_sha256": "d0d31b0ff62de498182073b4dd2715a78e17201844d8d8a360e385f4d2531dd6",
+          "file_inode": 73558744,
+          "mapping_inode": 73558744,
+          "file_device": "08:03",
+          "mapping_device": "08:03",
+          "matches_declared_binary": true
+        },
+        {
+          "raw_maps_line": "7e2bb82f5000-7e2bb82f7000 rw-p 00151000 08:03 73558744                   /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_gazebo_diff_drive.so",
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_gazebo_diff_drive.so",
+          "resolved": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_gazebo_diff_drive.so",
+          "current_file_sha256": "d0d31b0ff62de498182073b4dd2715a78e17201844d8d8a360e385f4d2531dd6",
+          "file_inode": 73558744,
+          "mapping_inode": 73558744,
+          "file_device": "08:03",
+          "mapping_device": "08:03",
+          "matches_declared_binary": true
+        }
+      ],
+      "new_drive_mapped": true,
+      "old_system_drive_mapped": false,
+      "identity_still_same_after_maps": true
+    }
+  ],
+  "episodes": [
+    {
+      "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v8_terminal/worker0/episode001_open_101",
+      "drivers": {
+        "tb1": {
+          "available": true,
+          "configuration": {
+            "actuation_algorithm": "measured_joint_rim_paired_common_fraction_v1",
+            "command_mode": "tagged",
+            "command_topic": "/tb1/mr3_drive/target",
+            "compiled_header_sha256": "a7c237943e8728f72cd39e815b8aa47c0bff45374941293aacf77384e3c4b63e",
+            "compiled_helper_sha256": "80cf2e51f1b39f7bb89ef8b61b4b6eaf7c9be68c418bf0bb7ef57640d82c99d9",
+            "compiled_source_sha256": "09f741ee154d620fb3d62f8473853929231093fd8cc0b9a4be62b535b514dc05",
+            "compiled_target_contract_sha256": "a1a11a73ac5c416d6d548249829717ccb262005498566c0bcc8dc1997999b9ba",
+            "epoch": "mr3_p2a0_20261017_v8_terminal_w0_e1_ad068985",
+            "joint_names": [
+              "wheel_right_joint",
+              "wheel_left_joint"
+            ],
+            "kind": "configuration",
+            "library_filename": "libmr3_gazebo_diff_drive.so",
+            "loaded_library_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_gazebo_diff_drive.so",
+            "max_acceleration_mps2": 1.0,
+            "max_torque_nm": 20.0,
+            "num_wheel_pairs": 1,
+            "odometry_source": 1,
+            "record_sequence": 1,
+            "robot": "tb1",
+            "schema": "mr3-drive-actuation-v2",
+            "sim_time_ns": 236000000,
+            "status_topic": "/tb1/mr3_drive/status",
+            "update_rate_hz": 30.0,
+            "upstream_source_sha256": "7a6ef5eb9b48292f1b4f3d9a16907815d5d5a751e0a5635a1cac84315b95b498",
+            "wheel_diameter_m": [
+              0.066
+            ],
+            "wheel_order": [
+              "right",
+              "left"
+            ],
+            "wheel_separation_m": [
+              0.287
+            ]
+          },
+          "compiled_match": true,
+          "library_match": true,
+          "tagged_match": true,
+          "complete_rows": 8779,
+          "last_record": {
+            "cmd_seq": 3391,
+            "desired_v": 0.0,
+            "desired_w": 0.0,
+            "epoch": "mr3_p2a0_20261017_v8_terminal_w0_e1_ad068985",
+            "kind": "status_publish",
+            "record_sequence": 8779,
+            "robot": "tb1",
+            "schema": "mr3-drive-actuation-v2",
+            "scope": "target_storage_and_status_publication",
+            "sim_time_ns": 68100000000,
+            "status": {
+              "angular_z": 0.0,
+              "clock_ns": 68100000000,
+              "cmd_seq": 3391,
+              "decision_sequence": 3405,
+              "epoch": "mr3_p2a0_20261017_v8_terminal_w0_e1_ad068985",
+              "linear_x": 0.0,
+              "robot": "tb1",
+              "schema": "mr3-drive-target-consumed-v1",
+              "source_clock_ns": 68100000000
+            },
+            "target_clock_ns": 68100000000,
+            "target_decision_sequence": 3405
+          },
+          "command_received_count": 3391,
+          "actuation_count": 1996
+        },
+        "tb2": {
+          "available": true,
+          "configuration": {
+            "actuation_algorithm": "measured_joint_rim_paired_common_fraction_v1",
+            "command_mode": "tagged",
+            "command_topic": "/tb2/mr3_drive/target",
+            "compiled_header_sha256": "a7c237943e8728f72cd39e815b8aa47c0bff45374941293aacf77384e3c4b63e",
+            "compiled_helper_sha256": "80cf2e51f1b39f7bb89ef8b61b4b6eaf7c9be68c418bf0bb7ef57640d82c99d9",
+            "compiled_source_sha256": "09f741ee154d620fb3d62f8473853929231093fd8cc0b9a4be62b535b514dc05",
+            "compiled_target_contract_sha256": "a1a11a73ac5c416d6d548249829717ccb262005498566c0bcc8dc1997999b9ba",
+            "epoch": "mr3_p2a0_20261017_v8_terminal_w0_e1_ad068985",
+            "joint_names": [
+              "wheel_right_joint",
+              "wheel_left_joint"
+            ],
+            "kind": "configuration",
+            "library_filename": "libmr3_gazebo_diff_drive.so",
+            "loaded_library_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_gazebo_diff_drive.so",
+            "max_acceleration_mps2": 1.0,
+            "max_torque_nm": 20.0,
+            "num_wheel_pairs": 1,
+            "odometry_source": 1,
+            "record_sequence": 1,
+            "robot": "tb2",
+            "schema": "mr3-drive-actuation-v2",
+            "sim_time_ns": 1614000000,
+            "status_topic": "/tb2/mr3_drive/status",
+            "update_rate_hz": 30.0,
+            "upstream_source_sha256": "7a6ef5eb9b48292f1b4f3d9a16907815d5d5a751e0a5635a1cac84315b95b498",
+            "wheel_diameter_m": [
+              0.066
+            ],
+            "wheel_order": [
+              "right",
+              "left"
+            ],
+            "wheel_separation_m": [
+              0.287
+            ]
+          },
+          "compiled_match": true,
+          "library_match": true,
+          "tagged_match": true,
+          "complete_rows": 8600,
+          "last_record": {
+            "cmd_seq": 3322,
+            "desired_v": 0.0,
+            "desired_w": 0.0,
+            "epoch": "mr3_p2a0_20261017_v8_terminal_w0_e1_ad068985",
+            "kind": "status_publish",
+            "record_sequence": 8600,
+            "robot": "tb2",
+            "schema": "mr3-drive-actuation-v2",
+            "scope": "target_storage_and_status_publication",
+            "sim_time_ns": 68100000000,
+            "status": {
+              "angular_z": 0.0,
+              "clock_ns": 68100000000,
+              "cmd_seq": 3322,
+              "decision_sequence": 3405,
+              "epoch": "mr3_p2a0_20261017_v8_terminal_w0_e1_ad068985",
+              "linear_x": 0.0,
+              "robot": "tb2",
+              "schema": "mr3-drive-target-consumed-v1",
+              "source_clock_ns": 68100000000
+            },
+            "target_clock_ns": 68100000000,
+            "target_decision_sequence": 3405
+          },
+          "command_received_count": 3322,
+          "actuation_count": 1955
+        },
+        "tb3": {
+          "available": true,
+          "configuration": {
+            "actuation_algorithm": "measured_joint_rim_paired_common_fraction_v1",
+            "command_mode": "tagged",
+            "command_topic": "/tb3/mr3_drive/target",
+            "compiled_header_sha256": "a7c237943e8728f72cd39e815b8aa47c0bff45374941293aacf77384e3c4b63e",
+            "compiled_helper_sha256": "80cf2e51f1b39f7bb89ef8b61b4b6eaf7c9be68c418bf0bb7ef57640d82c99d9",
+            "compiled_source_sha256": "09f741ee154d620fb3d62f8473853929231093fd8cc0b9a4be62b535b514dc05",
+            "compiled_target_contract_sha256": "a1a11a73ac5c416d6d548249829717ccb262005498566c0bcc8dc1997999b9ba",
+            "epoch": "mr3_p2a0_20261017_v8_terminal_w0_e1_ad068985",
+            "joint_names": [
+              "wheel_right_joint",
+              "wheel_left_joint"
+            ],
+            "kind": "configuration",
+            "library_filename": "libmr3_gazebo_diff_drive.so",
+            "loaded_library_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_gazebo_diff_drive.so",
+            "max_acceleration_mps2": 1.0,
+            "max_torque_nm": 20.0,
+            "num_wheel_pairs": 1,
+            "odometry_source": 1,
+            "record_sequence": 1,
+            "robot": "tb3",
+            "schema": "mr3-drive-actuation-v2",
+            "sim_time_ns": 3776000000,
+            "status_topic": "/tb3/mr3_drive/status",
+            "update_rate_hz": 30.0,
+            "upstream_source_sha256": "7a6ef5eb9b48292f1b4f3d9a16907815d5d5a751e0a5635a1cac84315b95b498",
+            "wheel_diameter_m": [
+              0.066
+            ],
+            "wheel_order": [
+              "right",
+              "left"
+            ],
+            "wheel_separation_m": [
+              0.287
+            ]
+          },
+          "compiled_match": true,
+          "library_match": true,
+          "tagged_match": true,
+          "complete_rows": 8324,
+          "last_record": {
+            "cmd_seq": 3216,
+            "desired_v": 0.0,
+            "desired_w": 0.0,
+            "epoch": "mr3_p2a0_20261017_v8_terminal_w0_e1_ad068985",
+            "kind": "status_publish",
+            "record_sequence": 8324,
+            "robot": "tb3",
+            "schema": "mr3-drive-actuation-v2",
+            "scope": "target_storage_and_status_publication",
+            "sim_time_ns": 68100000000,
+            "status": {
+              "angular_z": 0.0,
+              "clock_ns": 68100000000,
+              "cmd_seq": 3216,
+              "decision_sequence": 3405,
+              "epoch": "mr3_p2a0_20261017_v8_terminal_w0_e1_ad068985",
+              "linear_x": 0.0,
+              "robot": "tb3",
+              "schema": "mr3-drive-target-consumed-v1",
+              "source_clock_ns": 68100000000
+            },
+            "target_clock_ns": 68100000000,
+            "target_decision_sequence": 3405
+          },
+          "command_received_count": 3216,
+          "actuation_count": 1891
+        }
+      },
+      "evidence": {
+        "drive_topology": {
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v8_terminal/worker0/episode001_open_101/drive_topology.json",
+          "sha256": "8d2e5b43d56a0de7b28a649043ed9d749a139c9e05c310f83eba6fd9c3b985d2",
+          "valid": true,
+          "actual": {
+            "clock_ns": 67480000000,
+            "epoch": "mr3_p2a0_20261017_v8_terminal_w0_e1_ad068985",
+            "legacy_subscribers": {
+              "/tb1/cmd_vel": [
+                {
+                  "endpoint_gid": "010f3cc078c4515e0000000000001e040000000000000000",
+                  "namespace": "/",
+                  "node": "motion_safety",
+                  "topic_type": "geometry_msgs/msg/Twist"
+                }
+              ],
+              "/tb2/cmd_vel": [
+                {
+                  "endpoint_gid": "010f3cc078c4515e00000000000022040000000000000000",
+                  "namespace": "/",
+                  "node": "motion_safety",
+                  "topic_type": "geometry_msgs/msg/Twist"
+                }
+              ],
+              "/tb3/cmd_vel": [
+                {
+                  "endpoint_gid": "010f3cc078c4515e00000000000026040000000000000000",
+                  "namespace": "/",
+                  "node": "motion_safety",
+                  "topic_type": "geometry_msgs/msg/Twist"
+                }
+              ]
+            },
+            "publishers": {
+              "/tb1/mr3_drive/status": [
+                {
+                  "endpoint_gid": "010f3cc07ac4a302000000000000db030000000000000000",
+                  "namespace": "/tb1",
+                  "node": "turtlebot3_diff_drive",
+                  "topic_type": "std_msgs/msg/String"
+                }
+              ],
+              "/tb1/mr3_drive/target": [
+                {
+                  "endpoint_gid": "010f3cc078c4515e00000000000015030000000000000000",
+                  "namespace": "/",
+                  "node": "motion_safety",
+                  "topic_type": "std_msgs/msg/String"
+                }
+              ],
+              "/tb2/mr3_drive/status": [
+                {
+                  "endpoint_gid": "010f3cc07ac4a30200000000000187030000000000000000",
+                  "namespace": "/tb2",
+                  "node": "turtlebot3_diff_drive",
+                  "topic_type": "std_msgs/msg/String"
+                }
+              ],
+              "/tb2/mr3_drive/target": [
+                {
+                  "endpoint_gid": "010f3cc078c4515e00000000000016030000000000000000",
+                  "namespace": "/",
+                  "node": "motion_safety",
+                  "topic_type": "std_msgs/msg/String"
+                }
+              ],
+              "/tb3/mr3_drive/status": [
+                {
+                  "endpoint_gid": "010f3cc07ac4a30200000000000234030000000000000000",
+                  "namespace": "/tb3",
+                  "node": "turtlebot3_diff_drive",
+                  "topic_type": "std_msgs/msg/String"
+                }
+              ],
+              "/tb3/mr3_drive/target": [
+                {
+                  "endpoint_gid": "010f3cc078c4515e00000000000017030000000000000000",
+                  "namespace": "/",
+                  "node": "motion_safety",
+                  "topic_type": "std_msgs/msg/String"
+                }
+              ]
+            },
+            "schema": "mr3-drive-topology-v1",
+            "target_subscribers": {
+              "/tb1/mr3_drive/target": [
+                {
+                  "endpoint_gid": "010f3cc07ac4a302000000000000dc040000000000000000",
+                  "namespace": "/tb1",
+                  "node": "turtlebot3_diff_drive",
+                  "topic_type": "std_msgs/msg/String"
+                }
+              ],
+              "/tb2/mr3_drive/target": [
+                {
+                  "endpoint_gid": "010f3cc07ac4a30200000000000188040000000000000000",
+                  "namespace": "/tb2",
+                  "node": "turtlebot3_diff_drive",
+                  "topic_type": "std_msgs/msg/String"
+                }
+              ],
+              "/tb3/mr3_drive/target": [
+                {
+                  "endpoint_gid": "010f3cc07ac4a30200000000000236040000000000000000",
+                  "namespace": "/tb3",
+                  "node": "turtlebot3_diff_drive",
+                  "topic_type": "std_msgs/msg/String"
+                }
+              ]
+            }
+          }
+        },
+        "model_tb1": {
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v8_terminal/worker0/episode001_open_101/drive_model_tb1.sdf",
+          "sha256": "8ede05c520320341e8ef0d051026348bc930d8bd24cad17b56e06f285955100e",
+          "valid": true
+        },
+        "model_tb2": {
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v8_terminal/worker0/episode001_open_101/drive_model_tb2.sdf",
+          "sha256": "3748aa3503048edfd8a69f4b3d80a5964e3e07b175653587381a72587f0a2c72",
+          "valid": true
+        },
+        "model_tb3": {
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v8_terminal/worker0/episode001_open_101/drive_model_tb3.sdf",
+          "sha256": "945bd7512960a286b526b6f558146f727250e8471cf555dbf7fd1a7fe7b3a9ee",
+          "valid": true
+        }
+      }
+    },
+    {
+      "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v8_terminal/worker0/episode002_open_101",
+      "drivers": {
+        "tb1": {
+          "available": true,
+          "configuration": {
+            "actuation_algorithm": "measured_joint_rim_paired_common_fraction_v1",
+            "command_mode": "tagged",
+            "command_topic": "/tb1/mr3_drive/target",
+            "compiled_header_sha256": "a7c237943e8728f72cd39e815b8aa47c0bff45374941293aacf77384e3c4b63e",
+            "compiled_helper_sha256": "80cf2e51f1b39f7bb89ef8b61b4b6eaf7c9be68c418bf0bb7ef57640d82c99d9",
+            "compiled_source_sha256": "09f741ee154d620fb3d62f8473853929231093fd8cc0b9a4be62b535b514dc05",
+            "compiled_target_contract_sha256": "a1a11a73ac5c416d6d548249829717ccb262005498566c0bcc8dc1997999b9ba",
+            "epoch": "mr3_p2a0_20261017_v8_terminal_w0_e2_4c781e15",
+            "joint_names": [
+              "wheel_right_joint",
+              "wheel_left_joint"
+            ],
+            "kind": "configuration",
+            "library_filename": "libmr3_gazebo_diff_drive.so",
+            "loaded_library_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_gazebo_diff_drive.so",
+            "max_acceleration_mps2": 1.0,
+            "max_torque_nm": 20.0,
+            "num_wheel_pairs": 1,
+            "odometry_source": 1,
+            "record_sequence": 1,
+            "robot": "tb1",
+            "schema": "mr3-drive-actuation-v2",
+            "sim_time_ns": 422000000,
+            "status_topic": "/tb1/mr3_drive/status",
+            "update_rate_hz": 30.0,
+            "upstream_source_sha256": "7a6ef5eb9b48292f1b4f3d9a16907815d5d5a751e0a5635a1cac84315b95b498",
+            "wheel_diameter_m": [
+              0.066
+            ],
+            "wheel_order": [
+              "right",
+              "left"
+            ],
+            "wheel_separation_m": [
+              0.287
+            ]
+          },
+          "compiled_match": true,
+          "library_match": true,
+          "tagged_match": true,
+          "complete_rows": 4886,
+          "last_record": {
+            "cmd_seq": 1887,
+            "desired_v": 0.0,
+            "desired_w": 0.0,
+            "epoch": "mr3_p2a0_20261017_v8_terminal_w0_e2_4c781e15",
+            "kind": "status_publish",
+            "record_sequence": 4886,
+            "robot": "tb1",
+            "schema": "mr3-drive-actuation-v2",
+            "scope": "target_storage_and_status_publication",
+            "sim_time_ns": 38202000000,
+            "status": {
+              "angular_z": 0.0,
+              "clock_ns": 38202000000,
+              "cmd_seq": 1887,
+              "decision_sequence": 1909,
+              "epoch": "mr3_p2a0_20261017_v8_terminal_w0_e2_4c781e15",
+              "linear_x": 0.0,
+              "robot": "tb1",
+              "schema": "mr3-drive-target-consumed-v1",
+              "source_clock_ns": 38200000000
+            },
+            "target_clock_ns": 38200000000,
+            "target_decision_sequence": 1909
+          },
+          "command_received_count": 1887,
+          "actuation_count": 1111
+        },
+        "tb2": {
+          "available": true,
+          "configuration": {
+            "actuation_algorithm": "measured_joint_rim_paired_common_fraction_v1",
+            "command_mode": "tagged",
+            "command_topic": "/tb2/mr3_drive/target",
+            "compiled_header_sha256": "a7c237943e8728f72cd39e815b8aa47c0bff45374941293aacf77384e3c4b63e",
+            "compiled_helper_sha256": "80cf2e51f1b39f7bb89ef8b61b4b6eaf7c9be68c418bf0bb7ef57640d82c99d9",
+            "compiled_source_sha256": "09f741ee154d620fb3d62f8473853929231093fd8cc0b9a4be62b535b514dc05",
+            "compiled_target_contract_sha256": "a1a11a73ac5c416d6d548249829717ccb262005498566c0bcc8dc1997999b9ba",
+            "epoch": "mr3_p2a0_20261017_v8_terminal_w0_e2_4c781e15",
+            "joint_names": [
+              "wheel_right_joint",
+              "wheel_left_joint"
+            ],
+            "kind": "configuration",
+            "library_filename": "libmr3_gazebo_diff_drive.so",
+            "loaded_library_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_gazebo_diff_drive.so",
+            "max_acceleration_mps2": 1.0,
+            "max_torque_nm": 20.0,
+            "num_wheel_pairs": 1,
+            "odometry_source": 1,
+            "record_sequence": 1,
+            "robot": "tb2",
+            "schema": "mr3-drive-actuation-v2",
+            "sim_time_ns": 2607000000,
+            "status_topic": "/tb2/mr3_drive/status",
+            "update_rate_hz": 30.0,
+            "upstream_source_sha256": "7a6ef5eb9b48292f1b4f3d9a16907815d5d5a751e0a5635a1cac84315b95b498",
+            "wheel_diameter_m": [
+              0.066
+            ],
+            "wheel_order": [
+              "right",
+              "left"
+            ],
+            "wheel_separation_m": [
+              0.287
+            ]
+          },
+          "compiled_match": true,
+          "library_match": true,
+          "tagged_match": true,
+          "complete_rows": 4614,
+          "last_record": {
+            "cmd_seq": 1782,
+            "desired_v": 0.0,
+            "desired_w": 0.0,
+            "epoch": "mr3_p2a0_20261017_v8_terminal_w0_e2_4c781e15",
+            "kind": "status_publish",
+            "record_sequence": 4614,
+            "robot": "tb2",
+            "schema": "mr3-drive-actuation-v2",
+            "scope": "target_storage_and_status_publication",
+            "sim_time_ns": 38285000000,
+            "status": {
+              "angular_z": 0.0,
+              "clock_ns": 38285000000,
+              "cmd_seq": 1782,
+              "decision_sequence": 1913,
+              "epoch": "mr3_p2a0_20261017_v8_terminal_w0_e2_4c781e15",
+              "linear_x": 0.0,
+              "robot": "tb2",
+              "schema": "mr3-drive-target-consumed-v1",
+              "source_clock_ns": 38280000000
+            },
+            "target_clock_ns": 38280000000,
+            "target_decision_sequence": 1913
+          },
+          "command_received_count": 1782,
+          "actuation_count": 1049
+        },
+        "tb3": {
+          "available": true,
+          "configuration": {
+            "actuation_algorithm": "measured_joint_rim_paired_common_fraction_v1",
+            "command_mode": "tagged",
+            "command_topic": "/tb3/mr3_drive/target",
+            "compiled_header_sha256": "a7c237943e8728f72cd39e815b8aa47c0bff45374941293aacf77384e3c4b63e",
+            "compiled_helper_sha256": "80cf2e51f1b39f7bb89ef8b61b4b6eaf7c9be68c418bf0bb7ef57640d82c99d9",
+            "compiled_source_sha256": "09f741ee154d620fb3d62f8473853929231093fd8cc0b9a4be62b535b514dc05",
+            "compiled_target_contract_sha256": "a1a11a73ac5c416d6d548249829717ccb262005498566c0bcc8dc1997999b9ba",
+            "epoch": "mr3_p2a0_20261017_v8_terminal_w0_e2_4c781e15",
+            "joint_names": [
+              "wheel_right_joint",
+              "wheel_left_joint"
+            ],
+            "kind": "configuration",
+            "library_filename": "libmr3_gazebo_diff_drive.so",
+            "loaded_library_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_gazebo_diff_drive.so",
+            "max_acceleration_mps2": 1.0,
+            "max_torque_nm": 20.0,
+            "num_wheel_pairs": 1,
+            "odometry_source": 1,
+            "record_sequence": 1,
+            "robot": "tb3",
+            "schema": "mr3-drive-actuation-v2",
+            "sim_time_ns": 4777000000,
+            "status_topic": "/tb3/mr3_drive/status",
+            "update_rate_hz": 30.0,
+            "upstream_source_sha256": "7a6ef5eb9b48292f1b4f3d9a16907815d5d5a751e0a5635a1cac84315b95b498",
+            "wheel_diameter_m": [
+              0.066
+            ],
+            "wheel_order": [
+              "right",
+              "left"
+            ],
+            "wheel_separation_m": [
+              0.287
+            ]
+          },
+          "compiled_match": true,
+          "library_match": true,
+          "tagged_match": true,
+          "complete_rows": 4345,
+          "last_record": {
+            "actuation_seq": 988,
+            "alpha": 1.0,
+            "applied_rim_mps": [
+              0.0,
+              0.0
+            ],
+            "cmd_seq": 1678,
+            "current_rim_mps": [
+              1.7015692425666343e-05,
+              2.8450090410290553e-06
+            ],
+            "desired_rim_mps": [
+              0.0,
+              0.0
+            ],
+            "desired_v": 0.0,
+            "desired_w": 0.0,
+            "dt_ns": 34000000,
+            "dt_sec": 0.034,
+            "epoch": "mr3_p2a0_20261017_v8_terminal_w0_e2_4c781e15",
+            "kind": "actuation",
+            "max_acceleration_mps2": 1.0,
+            "pair_index": 0,
+            "record_sequence": 4345,
+            "robot": "tb3",
+            "schema": "mr3-drive-actuation-v2",
+            "sim_time_ns": 38369000000,
+            "target_clock_ns": 38360000000,
+            "target_decision_sequence": 1917
+          },
+          "command_received_count": 1678,
+          "actuation_count": 988
+        }
+      },
+      "evidence": {
+        "model_tb1": {
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v8_terminal/worker0/episode002_open_101/drive_model_tb1.sdf",
+          "sha256": "1a20b3887b71c70f12f4c4cdcd19252f552c67bde1f0a2d75664f9588eb70916",
+          "valid": true
+        },
+        "model_tb2": {
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v8_terminal/worker0/episode002_open_101/drive_model_tb2.sdf",
+          "sha256": "e64bebe91074a94e603cbab29fafaeca29a0f2a8915e110a5f10165658c4bc8f",
+          "valid": true
+        },
+        "model_tb3": {
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v8_terminal/worker0/episode002_open_101/drive_model_tb3.sdf",
+          "sha256": "64cf269dbfabb0ce8265da7f37fe7961e7f5cd107d9c25c7784a3a029b55dec9",
+          "valid": true
+        }
+      }
+    }
+  ],
+  "errors": [],
+  "scope": "Owned identity, actual proc maps/inode and current disk bytes at capture; no process-memory byte read or body-response credit. Incomplete warmup is pending, not failure."
+}

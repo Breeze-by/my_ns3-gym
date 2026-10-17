@@ -1,0 +1,121 @@
+{
+  "schema": "mr3-v8-final-telemetry-fifo-phase-observation-v1",
+  "passed": true,
+  "epoch": "mr3_p2a0_20261017_v8_terminal_w0_e1_ad068985",
+  "freeze": "d41485dfd93797026316806916e127eb5101f3b8",
+  "capture_wall_monotonic_ns": 3965574386754599,
+  "release_ns": 68040000000,
+  "final_physics_ns": 68100000000,
+  "returned_steps": 1,
+  "counts": {
+    "tb1": {
+      "decisions": 3405,
+      "actual": 3405
+    },
+    "tb2": {
+      "decisions": 3405,
+      "actual": 3405
+    },
+    "tb3": {
+      "decisions": 3405,
+      "actual": 3405
+    }
+  },
+  "unmatched": {
+    "tb1": 0,
+    "tb2": 0,
+    "tb3": 0
+  },
+  "motion_consumed_acks": 4,
+  "last_motion_ack": {
+    "clock_ns": 68100000000,
+    "completion_scope": "publication_and_local_topic_receipt",
+    "decision_sequences": {
+      "tb1": 3405,
+      "tb2": 3405,
+      "tb3": 3405
+    },
+    "epoch": "mr3_p2a0_20261017_v8_terminal_w0_e1_ad068985",
+    "outputs": {
+      "tb1": {
+        "angular_z": 0.0,
+        "linear_x": 0.0
+      },
+      "tb2": {
+        "angular_z": 0.0,
+        "linear_x": 0.0
+      },
+      "tb3": {
+        "angular_z": 0.0,
+        "linear_x": 0.0
+      }
+    },
+    "ready": false,
+    "schema": "mr3-motion-safety-status-v1"
+  },
+  "drive_consumed_clocks": 3,
+  "positive20tick_physics": 3,
+  "advance_permitted": 3,
+  "robots": {
+    "tb1": {
+      "task_actuations": 2,
+      "task_command_receipts": 4,
+      "max_exact_receive_age_ns": 0,
+      "max_exact_target_age_ns": 20000000,
+      "over160ms_actuations": 0,
+      "target_rejected_task": 0
+    },
+    "tb2": {
+      "task_actuations": 2,
+      "task_command_receipts": 4,
+      "max_exact_receive_age_ns": 0,
+      "max_exact_target_age_ns": 10000000,
+      "over160ms_actuations": 0,
+      "target_rejected_task": 0
+    },
+    "tb3": {
+      "task_actuations": 1,
+      "task_command_receipts": 4,
+      "max_exact_receive_age_ns": 0,
+      "max_exact_target_age_ns": 10000000,
+      "over160ms_actuations": 0,
+      "target_rejected_task": 0
+    }
+  },
+  "errors": [],
+  "bindings": {
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v8_terminal/worker0/episode001_open_101/transitions.jsonl": {
+      "bytes": 74190,
+      "sha256": "7a7227cc0382e8fad545b325d706d087e224dcf81db536c3afc814c9de28da6b"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v8_terminal/worker0/episode001_open_101/physics.jsonl": {
+      "bytes": 5472,
+      "sha256": "895e709432e658834aea1b3a75bc1707e5e168399aab85b3c8c3b8f8139682b5"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v8_terminal/worker0/episode001_open_101/motion_safety.jsonl": {
+      "bytes": 70360102,
+      "sha256": "b8fb19d35bfdf2a3502c22598854cbed98f041c037cd5174d973f8ae862e4ccf"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v8_terminal/worker0/episode001_open_101/motion_phase_worker.jsonl": {
+      "bytes": 2017111,
+      "sha256": "3c5e7d70b90f81a87cc1661b7705907fd1487abe4c823462724dd00b68d1ab1e"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v8_terminal/worker0/episode001_open_101/drive_tb1.jsonl": {
+      "bytes": 3952896,
+      "sha256": "8442f8d6748e2e15646df34a52bb9ddbda0c3d4f595c459825a50cb3c97215c2"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v8_terminal/worker0/episode001_open_101/drive_tb2.jsonl": {
+      "bytes": 3873267,
+      "sha256": "6c7040edecaa5c8a397ec800c3b0d7e4781dee7a5e1c8f7b1a3e7890c7290eee"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v8_terminal/worker0/episode001_open_101/drive_tb3.jsonl": {
+      "bytes": 3749782,
+      "sha256": "0ff7a01c446ee79919f4d0674c9260e64878fb9b3f9578bbc1e4fa6f4d0d2b2b"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v8_terminal/worker0/episode001_open_101/drive_phase_worker.jsonl": {
+      "bytes": 4590638,
+      "sha256": "2792200300b75b9e8ea952833a3c25ed080d6472da04aded18416b7e8738a21d"
+    }
+  },
+  "scope": "Streaming actual telemetry FIFO/local completion, exact tagged source-age and ACK-before-positive20tick facts. Frozen full drive reader remains complete acceptance gate; no body/braking/stage credit."
+}

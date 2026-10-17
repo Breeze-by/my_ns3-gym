@@ -82,6 +82,18 @@ def test_ready_gate_releases_exactly_one_goal_owner_and_matching_information_pat
             assert parameters["episode_epoch"].perform(context) == "mr3-p1b"
 
 
+@pytest.mark.parametrize("audit_enabled", [False, True])
+def test_information_input_ledger_uses_the_owned_episode_directory(
+        monkeypatch, tmp_path, audit_enabled):
+    audit_path = str(tmp_path / "adapter.jsonl") if audit_enabled else ""
+    context, actions, nodes, _ = configured_launch(
+        monkeypatch, execution_mode="adapter", mr3_audit_path=audit_path)
+    active = released_nodes(context, actions, nodes)
+    information = next(item for item in active if item["executable"] == "mr3_information")
+    expected = str(tmp_path / "information_states.jsonl") if audit_enabled else ""
+    assert information["parameters"][0]["state_audit_path"] == expected
+
+
 @pytest.mark.parametrize("count", ["1", "2", "4"])
 def test_adapter_rejects_every_compatible_non_three_robot_configuration(monkeypatch, count):
     with pytest.raises(ValueError, match="robot_count=3"):

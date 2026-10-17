@@ -367,13 +367,18 @@ def launch_setup(context, *args, **kwargs):
         ],
         output="screen",
     )
+    adapter_audit_path = LaunchConfiguration("mr3_audit_path").perform(context)
     if adapter_mode:
         actions.append(Node(
             package="multi_robot_exploration", executable="mr3_information",
             name="mr3_information", output="screen",
             parameters=[{"use_sim_time": use_sim_time, "robot_count": 3,
                          "episode_epoch": episode_epoch, "tf_validity_lead_sec": .2,
-                         "stepped_mode": stepped_mode}],
+                         "stepped_mode": stepped_mode,
+                         "state_audit_path": (
+                             os.path.join(os.path.dirname(adapter_audit_path),
+                                          "information_states.jsonl")
+                             if adapter_audit_path else "")}],
         ))
     else:
         actions.append(merge_map_node)
@@ -404,7 +409,6 @@ def launch_setup(context, *args, **kwargs):
             for robot in robots for topic in ("odom", "tf")
         ] if adapter_mode else []),
     ))
-    adapter_audit_path = LaunchConfiguration("mr3_audit_path").perform(context)
     if adapter_mode:
         actions.append(Node(
             package="multi_robot_exploration", executable="motion_safety",

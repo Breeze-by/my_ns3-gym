@@ -56,7 +56,7 @@ PREPARATION_RUNTIME_PINS = {
     ROS + 'src/merge_map/merge_map/merge_map.py':
         '76c3d2c604f38f61116be1f39263472f9074b4f69fe7a0428b532da977530078',
     ROS + 'src/multi_robot_exploration/multi_robot_exploration/mr3_information.py':
-        '5c85502eabd0d711248f230ca0fa7a2b78491a159a4222c2eee80d4e5c97c81f',
+        'b9830fa5089201920e05196d923e82fff62344946a43987204b1f43aaeb3e1b5',
     ROS + 'src/multi_robot_exploration/multi_robot_exploration/mr3_activity.py':
         '7af918d75c05b6f8fb1a65899e43aad11a315640e8b00fdb589c31f693ad696e',
     ROS + 'src/multi_robot_exploration/multi_robot_exploration/mr3_protocol.py':
@@ -125,7 +125,7 @@ EXECUTION_CONFIG_PINS = {
     ROS + 'src/multi_robot/config/nav2_params.yaml':
         '53b1fd403a55b6567a238efe954fadd40f572347f18bd0d258993b0e8d10d723',
     ROS + 'src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py':
-        '1e65ccd6c42b4788346764e83760c71f7959cdfd61be95289af4e733df9b8a00',
+        '5345a8e583a779847f7b1a6e63a4c3a7b9585d308fdb1e3b9f4790309c0ce9ec',
     ROS + 'src/multi_robot/launch/nav2_bringup/bringup_launch.py':
         '41b7e5e65c2c61ce6f1efb5a9288c3875e60f6c9054d77f96f7fc6f0a6f2aa53',
     ROS + 'src/multi_robot/launch/nav2_bringup/navigation_launch.py':
@@ -153,7 +153,7 @@ EXECUTION_CONFIG_PINS = {
     ROS + 'src/multi_robot/include/multi_robot/mr3_drive_target.hpp':
         'a1a11a73ac5c416d6d548249829717ccb262005498566c0bcc8dc1997999b9ba',
 }
-ENV_DOCUMENT_SHA256 = "ef2a59e54bbde820a9a55a502b4dd0624527e689f1a3bd4dcfbc46f3a41a1440"
+ENV_DOCUMENT_SHA256 = "98a627ce780d2f384ed62a4a726e23327a743f16cd8cb4dba95c2681837a95d3"
 TASK_DOCUMENT_SHA256 = "f96f5ba785a39daa882b3c2ea217c58dd968550b65bf0ee15faf07ca079f8991"
 PRIOR_TASK_DOCUMENT_SHA256 = "5e4400396e4aaf5a5094fb4c0c04c85810c327cc85be88b7d03fa3faeade07d2"
 TASK_BASE_FREEZE = "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a"

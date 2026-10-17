@@ -1,0 +1,62 @@
+{
+  "schema": "mr3-v9-plan-launcher-draft-checks-v3",
+  "passed": true,
+  "checks": [
+    {
+      "command": [
+        "/usr/bin/python3",
+        "/tmp/mr3_p2a0_v9_draft/mr3_p2a0_v9_plan_launcher_tests_v1.py"
+      ],
+      "cwd": "/home/zhuyulab/ns3-workspace",
+      "exit_code": 0,
+      "wall_sec": 0.6018213699571788,
+      "stdout": "/tmp/mr3_p2a0_v9_plan_launcher_final_0_v3.log",
+      "stdout_sha256": "cbad0aa89f214a7a3dcaabfd4b678919bfbf0c84400b32a336fb40b61fe9d292"
+    },
+    {
+      "command": [
+        "/usr/bin/python3",
+        "/tmp/mr3v9_layout__ww3ycl2/independent/mr3_p2a0_v9_plan_launcher_tests_v1.py"
+      ],
+      "cwd": "/home/zhuyulab/ns3-workspace",
+      "exit_code": 0,
+      "wall_sec": 0.38580989371985197,
+      "stdout": "/tmp/mr3_p2a0_v9_plan_launcher_final_1_v3.log",
+      "stdout_sha256": "2c09d85bfea8d15311716be76957c6a7319ca85dcc16279146036542ed6573ba"
+    },
+    {
+      "command": [
+        "/usr/bin/python3",
+        "-m",
+        "flake8",
+        "--max-line-length=99",
+        "/tmp/mr3_p2a0_v9_draft/mr3_p2a0_v9_launch_stage.py",
+        "/tmp/mr3_p2a0_v9_draft/mr3_p2a0_v9_buildproof_preflight.py",
+        "/tmp/mr3_p2a0_v9_draft/mr3_p2a0_v9_plan_launcher_tests_v1.py"
+      ],
+      "cwd": "/home/zhuyulab/ns3-workspace",
+      "exit_code": 0,
+      "wall_sec": 0.8002899177372456,
+      "stdout": "/tmp/mr3_p2a0_v9_plan_launcher_final_2_v3.log",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "source_before": {
+    "/tmp/mr3_p2a0_v9_draft/mr3_p2a0_v9_launch_stage.py": "518a9308040ec21ff8548147762cb45521e5c00dde63e8c1b4e43df8442a9a66",
+    "/tmp/mr3_p2a0_v9_draft/mr3_p2a0_v9_buildproof_preflight.py": "627ba3a3be8adf681dc669d17d86ff9043ffb0fc8429eab45015a1f3676c13c9",
+    "/tmp/mr3_p2a0_v9_draft/predeclared_plan_v9.json": "31fd4672af4cc72c641c35fe321ea79bc5dbfdfc94b8ec9cb686fc86440dcdb5",
+    "/tmp/mr3_p2a0_v9_draft/mr3_p2a0_v9_plan_launcher_tests_v1.py": "91ede18c0262439cd9ecd239da19669ae75b4768ebea001d2aacb5469cd72cb0"
+  },
+  "source_after": {
+    "/tmp/mr3_p2a0_v9_draft/mr3_p2a0_v9_launch_stage.py": "518a9308040ec21ff8548147762cb45521e5c00dde63e8c1b4e43df8442a9a66",
+    "/tmp/mr3_p2a0_v9_draft/mr3_p2a0_v9_buildproof_preflight.py": "627ba3a3be8adf681dc669d17d86ff9043ffb0fc8429eab45015a1f3676c13c9",
+    "/tmp/mr3_p2a0_v9_draft/predeclared_plan_v9.json": "31fd4672af4cc72c641c35fe321ea79bc5dbfdfc94b8ec9cb686fc86440dcdb5",
+    "/tmp/mr3_p2a0_v9_draft/mr3_p2a0_v9_plan_launcher_tests_v1.py": "91ede18c0262439cd9ecd239da19669ae75b4768ebea001d2aacb5469cd72cb0"
+  },
+  "distinct_test_methods": 13,
+  "two_layout_runs_not_unique_tests": true,
+  "old_immutable_bindings_preserved": 27,
+  "current_bindings": 30,
+  "final_information_hashes_pending": true,
+  "scope": "Pure stdlib fake-child admission/cleanup and exact preflight-version+new readiness gate; same13 tests checked flat draft/canonical directory layout, not26 distinct tests. No native or Git writes."
+}

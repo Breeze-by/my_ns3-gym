@@ -28,7 +28,8 @@ import copy
 import hashlib
 import json
 import math
-from time import perf_counter, monotonic
+from pathlib import Path
+from time import perf_counter, monotonic, monotonic_ns
 
 from geometry_msgs.msg import TransformStamped
 from merge_map.merge_map import (
@@ -51,6 +52,16 @@ from multi_robot_exploration.mr3_transport import (
 
 def stamp_seconds(stamp):
     return stamp.sec + stamp.nanosec / 1e9
+
+
+def stamp_ns(stamp):
+    return stamp.sec * 1_000_000_000 + stamp.nanosec
+
+
+def payload_digest(payload):
+    encoded = json.dumps(payload, allow_nan=False, sort_keys=True,
+                         separators=(",", ":")).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
 
 
 def stamp_payload(stamp):
@@ -255,8 +266,15 @@ class IdealInformation(Node):
         self.local_maps = {}
         self.local_map_versions = {}
         self.local_odometry = {}
+        self.pending_odometry = {name: [] for name in self.names}
         self.local_transforms = {}
         self.pending_transforms = {name: [] for name in self.names}
+        self.state_input_sequences = {(kind, name): 0 for kind in ("odom", "tf")
+                                      for name in self.names}
+        self.state_input_refs = {kind: {} for kind in ("odom", "tf")}
+        self.state_audit_sequence = 0
+        self.state_audit_stream = None
+        self.state_input_failed = False
         self.map_version = 0
         self.map_signature = None
         self.hub_map = None
@@ -293,6 +311,15 @@ class IdealInformation(Node):
         self.state_publisher = self.create_publisher(String, "/mr3/received/states", 1)
         self.map_failure_publisher = self.create_publisher(
             String, "/exploration_failure", map_qos)
+        state_audit_path = self.declare_parameter("state_audit_path", "").value
+        if state_audit_path:
+            self.state_audit_stream = Path(state_audit_path).open("x", buffering=1)
+            self.record_state("configuration", {
+                "tf_validity_lead_sec": self.tf_validity_lead_sec, "pending_limit": 256,
+                "state_period_sec": STATE_PERIOD_SEC,
+                "odom_pending_order": "source_ns_ascending",
+                "tf_pending_order": "accepted_header_ascending",
+            })
         self.navigation_publishers = {
             name: self.create_publisher(OccupancyGrid, f"/{name}/navigation_map", map_qos)
             for name in self.names
@@ -393,6 +420,8 @@ class IdealInformation(Node):
 
     def destroy_node(self):
         self.map_executor.shutdown(wait=True, cancel_futures=True)
+        if self.state_audit_stream is not None:
+            self.state_audit_stream.close()
         return super().destroy_node()
 
     def now(self):
@@ -404,11 +433,78 @@ class IdealInformation(Node):
         self.last_now = now
         return None if self.clock_failed or now <= 0 else now
 
+    def record_state(self, kind, payload, clock_ns=None):
+        """Isolated diagnostics; never modifies a delivered state or actor input."""
+        if self.state_audit_stream is None:
+            return
+        if clock_ns is None:
+            clock_ns = self.get_clock().now().nanoseconds
+        self.state_audit_sequence += 1
+        self.state_audit_stream.write(json.dumps({
+            "schema": "mr3-information-state-audit-v1", "epoch": self.epoch,
+            "record_sequence": self.state_audit_sequence, "kind": kind,
+            "clock_ns": clock_ns, "wall_monotonic_ns": monotonic_ns(), "payload": payload,
+        }, sort_keys=True, allow_nan=False, separators=(",", ":")) + "\n")
+
+    def fail_state_input(self, name, reason):
+        self.clock_failed = True
+        if self.state_input_failed:
+            return
+        self.state_input_failed = True
+        payload = {"component": "mr3_information", "robot": name,
+                   "reason": reason, "epoch": self.epoch}
+        self.map_failure_publisher.publish(String(data=json.dumps(payload, allow_nan=False)))
+        self.record_state("state_input_failure", {"robot": name, "reason": reason})
+        self.get_logger().error(f"Rejected {name} state input: {reason}; episode must restart")
+
     def receive_local_odom(self, name, message):
+        key = ("odom", name)
+        self.state_input_sequences[key] += 1
+        sequence = self.state_input_sequences[key]
+        source = stamp_ns(message.header.stamp)
+        raw = odom_payload(message)
+        digest = payload_digest(raw)
+        pending = self.pending_odometry[name]
         previous = self.local_odometry.get(name)
-        if (previous is None
-                or stamp_seconds(message.header.stamp) >= stamp_seconds(previous.header.stamp)):
-            self.local_odometry[name] = copy.deepcopy(message)
+        matched = next((item for item in ([previous] if previous is not None else []) + pending
+                        if stamp_ns(item.header.stamp) == source), None)
+        matched_sequence = self.state_input_refs["odom"].get(id(matched))
+        if matched is not None:
+            admission = ("duplicate" if payload_digest(odom_payload(matched)) == digest
+                         else "conflicting_duplicate")
+        elif previous is not None and source < stamp_ns(previous.header.stamp):
+            admission = "backwards"
+        elif len(pending) >= 256:
+            admission = "queue_overflow"
+        else:
+            admission = "queued"
+            captured = copy.deepcopy(message)
+            self.state_input_refs["odom"][id(captured)] = sequence
+            pending.append(captured)
+            pending.sort(key=lambda item: stamp_ns(item.header.stamp))
+        self.record_state("odom_ingress", {
+            "robot": name, "input_sequence": sequence, "source_ns": source,
+            "raw": raw, "raw_sha256": digest, "admission": admission,
+            "matched_input_sequence": matched_sequence,
+        })
+        if admission in ("conflicting_duplicate", "queue_overflow"):
+            self.fail_state_input(name, "odom_" + admission)
+
+    def promote_odometry(self, now):
+        for name, pending in self.pending_odometry.items():
+            ready = [item for item in pending if stamp_ns(item.header.stamp) <= round(now * 1e9)]
+            self.pending_odometry[name] = [
+                item for item in pending if stamp_ns(item.header.stamp) > round(now * 1e9)]
+            if ready:
+                self.local_odometry[name] = max(
+                    ready, key=lambda item: stamp_ns(item.header.stamp))
+        self.prune_input_refs("odom", self.local_odometry, self.pending_odometry)
+
+    def prune_input_refs(self, kind, selected, pending):
+        retained = {id(item) for items in pending.values() for item in items}
+        retained.update(id(item) for item in selected.values())
+        self.state_input_refs[kind] = {
+            key: value for key, value in self.state_input_refs[kind].items() if key in retained}
 
     def receive_local_tf(self, name, message):
         for transform in message.transforms:
@@ -416,13 +512,31 @@ class IdealInformation(Node):
                     and transform.child_frame_id.lstrip("/") == "odom"):
                 pending = self.pending_transforms[name]
                 stamp = stamp_seconds(transform.header.stamp)
+                key = ("tf", name)
+                self.state_input_sequences[key] += 1
+                sequence = self.state_input_sequences[key]
+                matched = None
                 if pending and stamp <= stamp_seconds(pending[-1].header.stamp):
-                    continue
-                if len(pending) >= 256:
-                    self.clock_failed = True
-                    self.get_logger().error("Future TF queue exceeded 256; episode must restart")
+                    admission = "ignored_pending_order"
+                    matched = self.state_input_refs["tf"].get(id(pending[-1]))
+                elif len(pending) >= 256:
+                    admission = "queue_overflow"
+                else:
+                    admission = "queued"
+                    captured = copy.deepcopy(transform)
+                    self.state_input_refs["tf"][id(captured)] = sequence
+                    pending.append(captured)
+                raw = transform_payload(transform)
+                self.record_state("tf_ingress", {
+                    "robot": name, "input_sequence": sequence,
+                    "source_ns": stamp_ns(transform.header.stamp)
+                    - round(self.tf_validity_lead_sec * 1e9),
+                    "raw": raw, "raw_sha256": payload_digest(raw), "admission": admission,
+                    "matched_input_sequence": matched,
+                })
+                if admission == "queue_overflow":
+                    self.fail_state_input(name, "tf_queue_overflow")
                     return
-                pending.append(copy.deepcopy(transform))
 
     def promote_transforms(self, now):
         # SLAM stamps map->odom at scan time + transform_timeout. The estimate
@@ -431,16 +545,26 @@ class IdealInformation(Node):
         # Preserve the header for consumers and gate on the actual source time.
         for name, pending in self.pending_transforms.items():
             ready = [item for item in pending
-                     if stamp_seconds(item.header.stamp) - self.tf_validity_lead_sec <= now]
+                     if stamp_ns(item.header.stamp) - round(self.tf_validity_lead_sec * 1e9)
+                     <= round(now * 1e9)]
             self.pending_transforms[name] = [
                 item for item in pending
-                if stamp_seconds(item.header.stamp) - self.tf_validity_lead_sec > now]
+                if stamp_ns(item.header.stamp) - round(self.tf_validity_lead_sec * 1e9)
+                > round(now * 1e9)]
             if ready:
                 newest = max(ready, key=lambda item: stamp_seconds(item.header.stamp))
                 previous = self.local_transforms.get(name)
                 if (previous is None or stamp_seconds(newest.header.stamp)
                         >= stamp_seconds(previous.header.stamp)):
                     self.local_transforms[name] = newest
+                self.record_state("tf_promote", {
+                    "robot": name,
+                    "selected_input_sequence": self.state_input_refs["tf"].get(
+                        id(self.local_transforms.get(name))),
+                    "pending_tf_input_sequences": [self.state_input_refs["tf"].get(id(item))
+                                                   for item in self.pending_transforms[name]],
+                }, round(now * 1e9))
+        self.prune_input_refs("tf", self.local_transforms, self.pending_transforms)
 
     def receive_local_map(self, name, message):
         previous = self.local_maps.get(name)
@@ -604,28 +728,55 @@ class IdealInformation(Node):
         now = self.now()
         if now is None:
             return
+        self.promote_odometry(now)
         self.promote_transforms(now)
+        cycle_id = self.state_sequence + 1
         for name in self.names:
             odometry = self.local_odometry.get(name)
             transform = self.local_transforms.get(name)
-            if odometry is None or transform is None:
+            odom_source = None if odometry is None else stamp_ns(odometry.header.stamp)
+            tf_source = (None if transform is None else stamp_ns(transform.header.stamp)
+                         - round(self.tf_validity_lead_sec * 1e9))
+            payload = None
+            if odometry is None:
+                skip = "missing_odom"
+            elif transform is None:
+                skip = "missing_tf"
+            elif min(odom_source, tf_source) < 0 or max(odom_source, tf_source) > round(now * 1e9):
+                skip = "future_source"
+            else:
+                payload = state_payload(name, odometry, transform, self.tf_validity_lead_sec)
+                skip = (None if all(math.isfinite(payload[field])
+                                    for field in ("x", "y", "yaw", "v", "w"))
+                        else "nonfinite_state")
+            self.record_state("state_selection", {
+                "cycle_id": cycle_id, "robot": name,
+                "odom_input_sequence": self.state_input_refs["odom"].get(id(odometry)),
+                "tf_input_sequence": self.state_input_refs["tf"].get(id(transform)),
+                "odom_source_ns": odom_source, "tf_source_ns": tf_source,
+                "pending_odom_input_sequences": [self.state_input_refs["odom"].get(id(item))
+                                                 for item in self.pending_odometry[name]],
+                "pending_tf_input_sequences": [self.state_input_refs["tf"].get(id(item))
+                                               for item in self.pending_transforms[name]],
+                "skip_reason": skip,
+            }, round(now * 1e9))
+            if skip is not None:
                 continue
-            stamps = (stamp_seconds(odometry.header.stamp),
-                      stamp_seconds(transform.header.stamp) - self.tf_validity_lead_sec)
-            source_stamp = min(stamps)
-            if source_stamp < 0 or max(stamps) > now:
-                continue
-            payload = state_payload(name, odometry, transform, self.tf_validity_lead_sec)
-            if not all(math.isfinite(payload[field]) for field in ("x", "y", "yaw", "v", "w")):
-                continue
-            self.transport.send("state", name, payload, source_stamp=source_stamp, now=now)
+            source_stamp = min(payload["odom_source_stamp"], payload["tf_source_stamp"])
+            envelope = self.transport.send(
+                "state", name, payload, source_stamp=source_stamp, now=now)
+            self.record_state("state_send", {
+                "cycle_id": cycle_id, "robot": name, "envelope": envelope.to_dict(),
+                "payload_sha256": payload_digest(payload),
+            }, round(now * 1e9))
         now = self.now()
         if now is None:
             return
         self.transport.deliver(self.received, now, sampled=True)
-        robots = []
+        robots, envelopes, side_publications = [], {}, []
         for name in self.names:
             record = self.received.get("state", name)
+            envelopes[name] = None if record is None else record.to_dict()
             if record is None:
                 robots.append({"robot": name, "name": name, "valid": False,
                                "x": 0.0, "y": 0.0, "yaw": 0.0, "v": 0.0, "w": 0.0,
@@ -639,11 +790,19 @@ class IdealInformation(Node):
             # Future edge isolation and faulted fanout are P3A/P3B gates.
             self.odom_publishers[name].publish(odometry)
             self.tf_publishers[name].publish(TFMessage(transforms=[transform]))
+            side_publications.append({
+                "robot": name, "odom_topic": f"/mr3/received/{name}/odom",
+                "tf_topic": f"/mr3/received/{name}/tf",
+                "odom_sha256": payload_digest(odom_payload(odometry)),
+                "tf_sha256": payload_digest(transform_payload(transform)),
+                "envelope_sequence": record.sequence,
+            })
             payload.update({
                 "epoch": self.epoch, "sequence": record.sequence, "version": record.version,
                 "source_stamp": record.source_stamp, "received_stamp": record.received_stamp,
                 "valid": (record.source_stamp > 0
-                          and 0 <= now - record.source_stamp <= 0.5),
+                          and 0 <= round(now * 1e9) - round(record.source_stamp * 1e9)
+                          <= 500_000_000),
             })
             robots.append(payload)
         self.state_sequence += 1
@@ -668,7 +827,18 @@ class IdealInformation(Node):
                 self.map_diagnostics, pending=self.map_future is not None,
                 queued=self.queued_map_job is not None),
         }, allow_nan=False, sort_keys=True)
+        publish_started = monotonic_ns()
         self.state_publisher.publish(message)
+        publish_completed = monotonic_ns()
+        published_payload = json.loads(message.data)
+        self.record_state("state_publish", {
+            "cycle_id": cycle_id, "message": published_payload,
+            "message_sha256": payload_digest(published_payload), "envelopes": envelopes,
+            "side_publications": side_publications,
+            "publish_started_wall_monotonic_ns": publish_started,
+            "publish_completed_wall_monotonic_ns": publish_completed,
+            "scope": "actual_publish_calls_returned",
+        }, round(now * 1e9))
         self.map_diagnostics["state_wall_sec"] = perf_counter() - started
 
 

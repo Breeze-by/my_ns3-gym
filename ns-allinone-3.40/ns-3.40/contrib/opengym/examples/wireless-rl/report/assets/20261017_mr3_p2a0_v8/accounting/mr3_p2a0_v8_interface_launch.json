@@ -1,0 +1,77 @@
+{
+  "schema": "mr3-p2a0-native-launch-v2",
+  "freeze": "d41485dfd93797026316806916e127eb5101f3b8",
+  "stage": "interface",
+  "status": "completed",
+  "command_argv": [
+    "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+    "-u",
+    "-m",
+    "mr3_learning.benchmark",
+    "--workers",
+    "1",
+    "--schedule",
+    "open:101",
+    "--steps",
+    "32",
+    "--preparation-motion-probe",
+    "--preparation-probe-version",
+    "mr3-p2a0-outward-cancel-v3",
+    "--base-domain",
+    "200",
+    "--base-port",
+    "12801",
+    "--output-root",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0",
+    "--run-id",
+    "mr3_p2a0_20261017_v8_interface",
+    "--preparation-parameter-review"
+  ],
+  "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+  "launcher_identity": {
+    "pid": 2637693,
+    "parent": 2637691,
+    "group": 2637691,
+    "session": 2637691,
+    "start_ticks": 396439663,
+    "state": "R"
+  },
+  "start_utc": "2026-10-17T06:36:43.190351+00:00",
+  "start_monotonic": 3964398.203055469,
+  "console": "/tmp/mr3_p2a0_v8_interface_console.log",
+  "budget": {
+    "max_total_wall_seconds": 18000,
+    "preceding_wall_seconds": 0.0,
+    "remaining_before_stage_seconds": 18000.0,
+    "stage_wall_ceiling_seconds": 1800,
+    "preceding_launch_receipts": [],
+    "preceding_formal_receipts": [],
+    "scope": "stage duration; no timeout signal; excess fails and blocks later stages"
+  },
+  "source_preflight": {
+    "path": "/tmp/mr3_p2a0_v8_source_preflight.json",
+    "sha256": "9b95bfead5bb3747dc4903add77c46463918c88ddae07ae00e108bceee35f0f3"
+  },
+  "plan_sha256": "b7487cd09450044d815904e240e795f25800e3ae542bf665e7585467cbe5b60b",
+  "benchmark_parent": {
+    "pid": 2637771,
+    "parent": 2637693,
+    "group": 2637691,
+    "session": 2637691,
+    "start_ticks": 396439820,
+    "state": "R"
+  },
+  "benchmark_parent_pid": 2637771,
+  "returncode": 0,
+  "wall_duration_sec": 625.2535761622712,
+  "end_utc": "2026-10-17T06:47:08.444512+00:00",
+  "benchmark_parent_after": null,
+  "cumulative_wall_seconds": 625.2535761622712,
+  "within_wall_budget": true,
+  "benchmark_summary": {
+    "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v8_interface/benchmark_summary.json",
+    "sha256": "67c55918af2e5684285140562aa9d0206fd7afa17d2cce5a2db8ada335d9bfd5"
+  },
+  "passed": true,
+  "pass_scope": "launch/benchmark/budget; independent audits also required"
+}

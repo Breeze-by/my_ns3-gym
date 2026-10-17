@@ -1,0 +1,1643 @@
+{
+  "schema": "mr3-independent-angular-interface-v1",
+  "epoch": "mr3_p2a0_20261017_v8_interface_w0_e1_3cb1e08e",
+  "release_time_ns": 73080000000,
+  "final_physics_time_ns": 105100000000,
+  "passed": true,
+  "sampled_bounds_passed": true,
+  "stimulus_coverage_passed": true,
+  "missing": [],
+  "robots": {
+    "tb1": {
+      "robot": "tb1",
+      "bounds_passed": true,
+      "errors": [],
+      "missing": [],
+      "raw_unique_samples": 3084,
+      "exact_duplicate_messages_deduplicated": 0,
+      "postrelease_samples": 942,
+      "sign_spans": [
+        {
+          "sign": -1,
+          "samples": 121,
+          "start_source_ns": 74158000000,
+          "end_source_ns": 78238000000,
+          "start_line": 50470,
+          "end_line": 64160,
+          "min_abs_wz": 0.10604192823464523,
+          "max_abs_wz": 0.7902119124315903
+        },
+        {
+          "sign": 1,
+          "samples": 17,
+          "start_source_ns": 86534000000,
+          "end_source_ns": 87078000000,
+          "start_line": 87752,
+          "end_line": 88778,
+          "min_abs_wz": 0.10191501421486619,
+          "max_abs_wz": 0.13546459522520715
+        },
+        {
+          "sign": 1,
+          "samples": 23,
+          "start_source_ns": 88132000000,
+          "end_source_ns": 88880000000,
+          "start_line": 93723,
+          "end_line": 95126,
+          "min_abs_wz": 0.10201358599215557,
+          "max_abs_wz": 0.2593876826175234
+        },
+        {
+          "sign": 1,
+          "samples": 7,
+          "start_source_ns": 90342000000,
+          "end_source_ns": 90546000000,
+          "start_line": 100877,
+          "end_line": 101258,
+          "min_abs_wz": 0.10925197200049652,
+          "max_abs_wz": 0.15514303566531207
+        },
+        {
+          "sign": 1,
+          "samples": 5,
+          "start_source_ns": 90682000000,
+          "end_source_ns": 90818000000,
+          "start_line": 101524,
+          "end_line": 101757,
+          "min_abs_wz": 0.10805207281308939,
+          "max_abs_wz": 0.14797330852101867
+        },
+        {
+          "sign": 1,
+          "samples": 20,
+          "start_source_ns": 91124000000,
+          "end_source_ns": 91770000000,
+          "start_line": 103893,
+          "end_line": 105137,
+          "min_abs_wz": 0.10845105506322264,
+          "max_abs_wz": 0.157270828528826
+        },
+        {
+          "sign": -1,
+          "samples": 5,
+          "start_source_ns": 94082000000,
+          "end_source_ns": 94218000000,
+          "start_line": 114357,
+          "end_line": 114587,
+          "min_abs_wz": 0.11433179736434335,
+          "max_abs_wz": 0.15832628660254605
+        },
+        {
+          "sign": 1,
+          "samples": 6,
+          "start_source_ns": 94592000000,
+          "end_source_ns": 94762000000,
+          "start_line": 115292,
+          "end_line": 115627,
+          "min_abs_wz": 0.11038906428678667,
+          "max_abs_wz": 0.1309871914374965
+        },
+        {
+          "sign": -1,
+          "samples": 83,
+          "start_source_ns": 98740000000,
+          "end_source_ns": 101528000000,
+          "start_line": 129804,
+          "end_line": 139090,
+          "min_abs_wz": 0.11011017572744537,
+          "max_abs_wz": 0.38249004991925223
+        }
+      ],
+      "maximum_sign_run_samples": 121,
+      "max_angular_norm_rad_s": 0.7902119124315903,
+      "max_norm_original_sample": {
+        "source_ns": 75110000000,
+        "angular_xyz": [
+          0.0,
+          0.0,
+          -0.7902119124315903
+        ],
+        "angular_norm": 0.7902119124315903,
+        "frames": [
+          "odom",
+          "base_footprint"
+        ],
+        "line": 52853,
+        "raw_own_odom": {
+          "schema": "mr3-motion-safety-v1",
+          "epoch": "mr3_p2a0_20261017_v8_interface_w0_e1_3cb1e08e",
+          "record_sequence": 52853,
+          "kind": "own_odom",
+          "sim_time_sec": 75.1,
+          "wall_monotonic_ns": 3964555820362856,
+          "payload": {
+            "robot": "tb1",
+            "input_sequence": 2202,
+            "message": {
+              "header": {
+                "stamp": {
+                  "sec": 75,
+                  "nanosec": 110000000
+                },
+                "frame_id": "odom"
+              },
+              "child_frame_id": "base_footprint",
+              "pose": {
+                "pose": {
+                  "position": {
+                    "x": 0.004039903525952015,
+                    "y": -0.45037396002149777,
+                    "z": 0.007829942849289086
+                  },
+                  "orientation": {
+                    "x": 0.0009336444460125601,
+                    "y": 0.003190416519994133,
+                    "z": -0.2769975616533145,
+                    "w": 0.960864871034734
+                  }
+                },
+                "covariance": [
+                  1e-05,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1e-05,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1000000000000.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1000000000000.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1000000000000.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.001
+                ]
+              },
+              "twist": {
+                "twist": {
+                  "linear": {
+                    "x": 0.014855459740916687,
+                    "y": 0.0002737705561979484,
+                    "z": 0.0
+                  },
+                  "angular": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -0.7902119124315903
+                  }
+                },
+                "covariance": [
+                  1e-05,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1e-05,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1000000000000.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1000000000000.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1000000000000.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.001
+                ]
+              }
+            }
+          }
+        }
+      },
+      "max_sampled_angular_accel_rad_s2": 1.5006012296695908,
+      "max_acceleration_original_adjacent_samples": {
+        "gap_ns": 34000000,
+        "sampled_angular_accel_rad_s2": 1.5006012296695908,
+        "prior": {
+          "source_ns": 93946000000,
+          "angular_xyz": [
+            0.0,
+            0.0,
+            0.042385122588408916
+          ],
+          "angular_norm": 0.042385122588408916,
+          "frames": [
+            "odom",
+            "base_footprint"
+          ],
+          "line": 112543,
+          "raw_own_odom": {
+            "schema": "mr3-motion-safety-v1",
+            "epoch": "mr3_p2a0_20261017_v8_interface_w0_e1_3cb1e08e",
+            "record_sequence": 112543,
+            "kind": "own_odom",
+            "sim_time_sec": 93.94,
+            "wall_monotonic_ns": 3964841890312582,
+            "payload": {
+              "robot": "tb1",
+              "input_sequence": 2756,
+              "message": {
+                "header": {
+                  "stamp": {
+                    "sec": 93,
+                    "nanosec": 946000000
+                  },
+                  "frame_id": "odom"
+                },
+                "child_frame_id": "base_footprint",
+                "pose": {
+                  "pose": {
+                    "position": {
+                      "x": -0.9880313951255638,
+                      "y": -2.377040145421639,
+                      "z": 0.007877104033273541
+                    },
+                    "orientation": {
+                      "x": 0.0026408808089067,
+                      "y": 0.001797134808122107,
+                      "z": -0.8241654166721655,
+                      "w": 0.5663401469228813
+                    }
+                  },
+                  "covariance": [
+                    1e-05,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1e-05,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.001
+                  ]
+                },
+                "twist": {
+                  "twist": {
+                    "linear": {
+                      "x": 0.256941800394059,
+                      "y": -0.00014360466869908772,
+                      "z": 0.0
+                    },
+                    "angular": {
+                      "x": 0.0,
+                      "y": 0.0,
+                      "z": 0.042385122588408916
+                    }
+                  },
+                  "covariance": [
+                    1e-05,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1e-05,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.001
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "current": {
+          "source_ns": 93980000000,
+          "angular_xyz": [
+            0.0,
+            0.0,
+            -0.008635319220357172
+          ],
+          "angular_norm": 0.008635319220357172,
+          "frames": [
+            "odom",
+            "base_footprint"
+          ],
+          "line": 112589,
+          "raw_own_odom": {
+            "schema": "mr3-motion-safety-v1",
+            "epoch": "mr3_p2a0_20261017_v8_interface_w0_e1_3cb1e08e",
+            "record_sequence": 112589,
+            "kind": "own_odom",
+            "sim_time_sec": 93.98,
+            "wall_monotonic_ns": 3964842054950999,
+            "payload": {
+              "robot": "tb1",
+              "input_sequence": 2757,
+              "message": {
+                "header": {
+                  "stamp": {
+                    "sec": 93,
+                    "nanosec": 980000000
+                  },
+                  "frame_id": "odom"
+                },
+                "child_frame_id": "base_footprint",
+                "pose": {
+                  "pose": {
+                    "position": {
+                      "x": -0.9911926667154085,
+                      "y": -2.385275673575379,
+                      "z": 0.007885737455823298
+                    },
+                    "orientation": {
+                      "x": 0.002629089658822887,
+                      "y": 0.001789246813389903,
+                      "z": -0.8240173658620389,
+                      "w": 0.5665556170767292
+                    }
+                  },
+                  "covariance": [
+                    1e-05,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1e-05,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.001
+                  ]
+                },
+                "twist": {
+                  "twist": {
+                    "linear": {
+                      "x": 0.2599496220366554,
+                      "y": 3.037723851517793e-06,
+                      "z": 0.0
+                    },
+                    "angular": {
+                      "x": 0.0,
+                      "y": 0.0,
+                      "z": -0.008635319220357172
+                    }
+                  },
+                  "covariance": [
+                    1e-05,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1e-05,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.001
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "max_source_gap_ns": 34000000
+    },
+    "tb2": {
+      "robot": "tb2",
+      "bounds_passed": true,
+      "errors": [],
+      "missing": [],
+      "raw_unique_samples": 3024,
+      "exact_duplicate_messages_deduplicated": 0,
+      "postrelease_samples": 942,
+      "sign_spans": [
+        {
+          "sign": 1,
+          "samples": 4,
+          "start_source_ns": 73388000000,
+          "end_source_ns": 73490000000,
+          "start_line": 48177,
+          "end_line": 48366,
+          "min_abs_wz": 0.10147576584361355,
+          "max_abs_wz": 0.16248258812549593
+        },
+        {
+          "sign": 1,
+          "samples": 15,
+          "start_source_ns": 73558000000,
+          "end_source_ns": 74034000000,
+          "start_line": 48481,
+          "end_line": 49382,
+          "min_abs_wz": 0.11107127123928939,
+          "max_abs_wz": 0.2565798627892845
+        },
+        {
+          "sign": 1,
+          "samples": 138,
+          "start_source_ns": 74170000000,
+          "end_source_ns": 78828000000,
+          "start_line": 50504,
+          "end_line": 65197,
+          "min_abs_wz": 0.10313863120300093,
+          "max_abs_wz": 0.8804462122296367
+        },
+        {
+          "sign": -1,
+          "samples": 17,
+          "start_source_ns": 86478000000,
+          "end_source_ns": 87022000000,
+          "start_line": 87636,
+          "end_line": 88695,
+          "min_abs_wz": 0.10339904566063986,
+          "max_abs_wz": 0.1948302398482942
+        },
+        {
+          "sign": -1,
+          "samples": 31,
+          "start_source_ns": 88892000000,
+          "end_source_ns": 89912000000,
+          "start_line": 95158,
+          "end_line": 98605,
+          "min_abs_wz": 0.10911182127857093,
+          "max_abs_wz": 0.49148409626428907
+        },
+        {
+          "sign": -1,
+          "samples": 42,
+          "start_source_ns": 90048000000,
+          "end_source_ns": 91442000000,
+          "start_line": 98868,
+          "end_line": 104518,
+          "min_abs_wz": 0.10292026685193893,
+          "max_abs_wz": 0.3186510687581529
+        },
+        {
+          "sign": 1,
+          "samples": 7,
+          "start_source_ns": 94230000000,
+          "end_source_ns": 94434000000,
+          "start_line": 114621,
+          "end_line": 114996,
+          "min_abs_wz": 0.10088725391281113,
+          "max_abs_wz": 0.11891083883195146
+        },
+        {
+          "sign": 1,
+          "samples": 9,
+          "start_source_ns": 95522000000,
+          "end_source_ns": 95794000000,
+          "start_line": 118739,
+          "end_line": 119227,
+          "min_abs_wz": 0.10790843973095607,
+          "max_abs_wz": 0.12002908377713709
+        },
+        {
+          "sign": 1,
+          "samples": 32,
+          "start_source_ns": 98378000000,
+          "end_source_ns": 99432000000,
+          "start_line": 129128,
+          "end_line": 132816,
+          "min_abs_wz": 0.103190308751792,
+          "max_abs_wz": 0.3028037314803159
+        },
+        {
+          "sign": 1,
+          "samples": 6,
+          "start_source_ns": 100282000000,
+          "end_source_ns": 100452000000,
+          "start_line": 135742,
+          "end_line": 136044,
+          "min_abs_wz": 0.10476418805737372,
+          "max_abs_wz": 0.11671169064625807
+        }
+      ],
+      "maximum_sign_run_samples": 138,
+      "max_angular_norm_rad_s": 0.8804462122296367,
+      "max_norm_original_sample": {
+        "source_ns": 77604000000,
+        "angular_xyz": [
+          0.0,
+          0.0,
+          0.8804462122296367
+        ],
+        "angular_norm": 0.8804462122296367,
+        "frames": [
+          "odom",
+          "base_footprint"
+        ],
+        "line": 61459,
+        "raw_own_odom": {
+          "schema": "mr3-motion-safety-v1",
+          "epoch": "mr3_p2a0_20261017_v8_interface_w0_e1_3cb1e08e",
+          "record_sequence": 61459,
+          "kind": "own_odom",
+          "sim_time_sec": 77.6,
+          "wall_monotonic_ns": 3964594093239440,
+          "payload": {
+            "robot": "tb2",
+            "input_sequence": 2216,
+            "message": {
+              "header": {
+                "stamp": {
+                  "sec": 77,
+                  "nanosec": 604000000
+                },
+                "frame_id": "odom"
+              },
+              "child_frame_id": "base_footprint",
+              "pose": {
+                "pose": {
+                  "position": {
+                    "x": 0.041734207651152926,
+                    "y": 0.7847421283825727,
+                    "z": 0.00788721942848083
+                  },
+                  "orientation": {
+                    "x": -0.0027646878568000598,
+                    "y": 0.0014629684647752628,
+                    "z": 0.8888992786179819,
+                    "w": 0.4580920089859213
+                  }
+                },
+                "covariance": [
+                  1e-05,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1e-05,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1000000000000.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1000000000000.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1000000000000.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.001
+                ]
+              },
+              "twist": {
+                "twist": {
+                  "linear": {
+                    "x": 0.18753570911044315,
+                    "y": -0.0010953046704723357,
+                    "z": 0.0
+                  },
+                  "angular": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.8804462122296367
+                  }
+                },
+                "covariance": [
+                  1e-05,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1e-05,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1000000000000.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1000000000000.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1000000000000.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.001
+                ]
+              }
+            }
+          }
+        }
+      },
+      "max_sampled_angular_accel_rad_s2": 1.7391159010414825,
+      "max_acceleration_original_adjacent_samples": {
+        "gap_ns": 34000000,
+        "sampled_angular_accel_rad_s2": 1.7391159010414825,
+        "prior": {
+          "source_ns": 98378000000,
+          "angular_xyz": [
+            0.0,
+            0.0,
+            0.13691831078119546
+          ],
+          "angular_norm": 0.13691831078119546,
+          "frames": [
+            "odom",
+            "base_footprint"
+          ],
+          "line": 129128,
+          "raw_own_odom": {
+            "schema": "mr3-motion-safety-v1",
+            "epoch": "mr3_p2a0_20261017_v8_interface_w0_e1_3cb1e08e",
+            "record_sequence": 129128,
+            "kind": "own_odom",
+            "sim_time_sec": 98.36,
+            "wall_monotonic_ns": 3964912482580458,
+            "payload": {
+              "robot": "tb2",
+              "input_sequence": 2827,
+              "message": {
+                "header": {
+                  "stamp": {
+                    "sec": 98,
+                    "nanosec": 378000000
+                  },
+                  "frame_id": "odom"
+                },
+                "child_frame_id": "base_footprint",
+                "pose": {
+                  "pose": {
+                    "position": {
+                      "x": -1.1591612049638946,
+                      "y": 3.533286557830286,
+                      "z": 0.007885562179712105
+                    },
+                    "orientation": {
+                      "x": -0.002544585761889716,
+                      "y": 0.0018458413802516934,
+                      "z": 0.8118037939209596,
+                      "w": 0.5839218424827379
+                    }
+                  },
+                  "covariance": [
+                    1e-05,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1e-05,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.001
+                  ]
+                },
+                "twist": {
+                  "twist": {
+                    "linear": {
+                      "x": 0.2528782545100103,
+                      "y": -9.576461079739695e-05,
+                      "z": 0.0
+                    },
+                    "angular": {
+                      "x": 0.0,
+                      "y": 0.0,
+                      "z": 0.13691831078119546
+                    }
+                  },
+                  "covariance": [
+                    1e-05,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1e-05,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.001
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "current": {
+          "source_ns": 98412000000,
+          "angular_xyz": [
+            0.0,
+            0.0,
+            0.19604825141660587
+          ],
+          "angular_norm": 0.19604825141660587,
+          "frames": [
+            "odom",
+            "base_footprint"
+          ],
+          "line": 129203,
+          "raw_own_odom": {
+            "schema": "mr3-motion-safety-v1",
+            "epoch": "mr3_p2a0_20261017_v8_interface_w0_e1_3cb1e08e",
+            "record_sequence": 129203,
+            "kind": "own_odom",
+            "sim_time_sec": 98.4,
+            "wall_monotonic_ns": 3964912759783162,
+            "payload": {
+              "robot": "tb2",
+              "input_sequence": 2828,
+              "message": {
+                "header": {
+                  "stamp": {
+                    "sec": 98,
+                    "nanosec": 412000000
+                  },
+                  "frame_id": "odom"
+                },
+                "child_frame_id": "base_footprint",
+                "pose": {
+                  "pose": {
+                    "position": {
+                      "x": -1.161958811275435,
+                      "y": 3.541581520776756,
+                      "z": 0.00788499555503226
+                    },
+                    "orientation": {
+                      "x": -0.0025341209678491497,
+                      "y": 0.0018247234660164371,
+                      "z": 0.813471891042079,
+                      "w": 0.5815958485921449
+                    }
+                  },
+                  "covariance": [
+                    1e-05,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1e-05,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.001
+                  ]
+                },
+                "twist": {
+                  "twist": {
+                    "linear": {
+                      "x": 0.25798026121200196,
+                      "y": -0.00025808503840835106,
+                      "z": 0.0
+                    },
+                    "angular": {
+                      "x": 0.0,
+                      "y": 0.0,
+                      "z": 0.19604825141660587
+                    }
+                  },
+                  "covariance": [
+                    1e-05,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1e-05,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.001
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "max_source_gap_ns": 34000000
+    },
+    "tb3": {
+      "robot": "tb3",
+      "bounds_passed": true,
+      "errors": [],
+      "missing": [],
+      "raw_unique_samples": 2967,
+      "exact_duplicate_messages_deduplicated": 0,
+      "postrelease_samples": 942,
+      "sign_spans": [
+        {
+          "sign": -1,
+          "samples": 6,
+          "start_source_ns": 73667000000,
+          "end_source_ns": 73837000000,
+          "start_line": 48703,
+          "end_line": 49007,
+          "min_abs_wz": 0.10097692575090439,
+          "max_abs_wz": 0.11669348003603794
+        },
+        {
+          "sign": 1,
+          "samples": 10,
+          "start_source_ns": 86621000000,
+          "end_source_ns": 86927000000,
+          "start_line": 87937,
+          "end_line": 88509,
+          "min_abs_wz": 0.10505611853564228,
+          "max_abs_wz": 0.12177338349779321
+        },
+        {
+          "sign": 1,
+          "samples": 28,
+          "start_source_ns": 90633000000,
+          "end_source_ns": 91551000000,
+          "start_line": 101417,
+          "end_line": 104707,
+          "min_abs_wz": 0.11594786330913785,
+          "max_abs_wz": 0.29022838390335337
+        },
+        {
+          "sign": -1,
+          "samples": 23,
+          "start_source_ns": 92231000000,
+          "end_source_ns": 92979000000,
+          "start_line": 107635,
+          "end_line": 109037,
+          "min_abs_wz": 0.1056471304623035,
+          "max_abs_wz": 0.2016242892760388
+        },
+        {
+          "sign": 1,
+          "samples": 5,
+          "start_source_ns": 97059000000,
+          "end_source_ns": 97195000000,
+          "start_line": 123281,
+          "end_line": 125128,
+          "min_abs_wz": 0.10045178945456465,
+          "max_abs_wz": 0.11518540550916341
+        },
+        {
+          "sign": 1,
+          "samples": 10,
+          "start_source_ns": 97297000000,
+          "end_source_ns": 97603000000,
+          "start_line": 125317,
+          "end_line": 125916,
+          "min_abs_wz": 0.10296134203569934,
+          "max_abs_wz": 0.12402015300553294
+        },
+        {
+          "sign": 1,
+          "samples": 28,
+          "start_source_ns": 100629000000,
+          "end_source_ns": 101547000000,
+          "start_line": 136386,
+          "end_line": 139128,
+          "min_abs_wz": 0.10970705723616972,
+          "max_abs_wz": 0.3289628328897884
+        }
+      ],
+      "maximum_sign_run_samples": 28,
+      "max_angular_norm_rad_s": 0.3289628328897884,
+      "max_norm_original_sample": {
+        "source_ns": 101105000000,
+        "angular_xyz": [
+          0.0,
+          0.0,
+          0.3289628328897884
+        ],
+        "angular_norm": 0.3289628328897884,
+        "frames": [
+          "odom",
+          "base_footprint"
+        ],
+        "line": 138310,
+        "raw_own_odom": {
+          "schema": "mr3-motion-safety-v1",
+          "epoch": "mr3_p2a0_20261017_v8_interface_w0_e1_3cb1e08e",
+          "record_sequence": 138310,
+          "kind": "own_odom",
+          "sim_time_sec": 101.1,
+          "wall_monotonic_ns": 3964951008385173,
+          "payload": {
+            "robot": "tb3",
+            "input_sequence": 2850,
+            "message": {
+              "header": {
+                "stamp": {
+                  "sec": 101,
+                  "nanosec": 105000000
+                },
+                "frame_id": "odom"
+              },
+              "child_frame_id": "base_footprint",
+              "pose": {
+                "pose": {
+                  "position": {
+                    "x": 4.4550389338041105,
+                    "y": 0.3905485904911121,
+                    "z": 0.007832952685622008
+                  },
+                  "orientation": {
+                    "x": -0.000564820877205944,
+                    "y": 0.0032766395763160153,
+                    "z": 0.17675271655767552,
+                    "w": 0.9842496745236676
+                  }
+                },
+                "covariance": [
+                  1e-05,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1e-05,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1000000000000.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1000000000000.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1000000000000.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.001
+                ]
+              },
+              "twist": {
+                "twist": {
+                  "linear": {
+                    "x": 0.25679267583125887,
+                    "y": -0.0005774229930252395,
+                    "z": 0.0
+                  },
+                  "angular": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.3289628328897884
+                  }
+                },
+                "covariance": [
+                  1e-05,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1e-05,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1000000000000.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1000000000000.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1000000000000.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.001
+                ]
+              }
+            }
+          }
+        }
+      },
+      "max_sampled_angular_accel_rad_s2": 1.4043364385990593,
+      "max_acceleration_original_adjacent_samples": {
+        "gap_ns": 34000000,
+        "sampled_angular_accel_rad_s2": 1.4043364385990593,
+        "prior": {
+          "source_ns": 90667000000,
+          "angular_xyz": [
+            0.0,
+            0.0,
+            0.1486369158909473
+          ],
+          "angular_norm": 0.1486369158909473,
+          "frames": [
+            "odom",
+            "base_footprint"
+          ],
+          "line": 101488,
+          "raw_own_odom": {
+            "schema": "mr3-motion-safety-v1",
+            "epoch": "mr3_p2a0_20261017_v8_interface_w0_e1_3cb1e08e",
+            "record_sequence": 101488,
+            "kind": "own_odom",
+            "sim_time_sec": 90.66,
+            "wall_monotonic_ns": 3964795466748454,
+            "payload": {
+              "robot": "tb3",
+              "input_sequence": 2543,
+              "message": {
+                "header": {
+                  "stamp": {
+                    "sec": 90,
+                    "nanosec": 667000000
+                  },
+                  "frame_id": "odom"
+                },
+                "child_frame_id": "base_footprint",
+                "pose": {
+                  "pose": {
+                    "position": {
+                      "x": 1.923986507951411,
+                      "y": -0.048043297039042185,
+                      "z": 0.007811499915142541
+                    },
+                    "orientation": {
+                      "x": -2.489700887616141e-06,
+                      "y": 0.003350993493745555,
+                      "z": 0.004880832527478847,
+                      "w": 0.9999824740015422
+                    }
+                  },
+                  "covariance": [
+                    1e-05,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1e-05,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.001
+                  ]
+                },
+                "twist": {
+                  "twist": {
+                    "linear": {
+                      "x": 0.24555147455482249,
+                      "y": -0.00022628418968421646,
+                      "z": 0.0
+                    },
+                    "angular": {
+                      "x": 0.0,
+                      "y": 0.0,
+                      "z": 0.1486369158909473
+                    }
+                  },
+                  "covariance": [
+                    1e-05,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1e-05,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.001
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "current": {
+          "source_ns": 90701000000,
+          "angular_xyz": [
+            0.0,
+            0.0,
+            0.19638435480331531
+          ],
+          "angular_norm": 0.19638435480331531,
+          "frames": [
+            "odom",
+            "base_footprint"
+          ],
+          "line": 101563,
+          "raw_own_odom": {
+            "schema": "mr3-motion-safety-v1",
+            "epoch": "mr3_p2a0_20261017_v8_interface_w0_e1_3cb1e08e",
+            "record_sequence": 101563,
+            "kind": "own_odom",
+            "sim_time_sec": 90.7,
+            "wall_monotonic_ns": 3964795742282179,
+            "payload": {
+              "robot": "tb3",
+              "input_sequence": 2544,
+              "message": {
+                "header": {
+                  "stamp": {
+                    "sec": 90,
+                    "nanosec": 701000000
+                  },
+                  "frame_id": "odom"
+                },
+                "child_frame_id": "base_footprint",
+                "pose": {
+                  "pose": {
+                    "position": {
+                      "x": 1.9323437570568218,
+                      "y": -0.04794867037319804,
+                      "z": 0.007810708156696893
+                    },
+                    "orientation": {
+                      "x": -1.0061084396536848e-05,
+                      "y": 0.0033405842158179557,
+                      "z": 0.007838723572749784,
+                      "w": 0.9999636967453477
+                    }
+                  },
+                  "covariance": [
+                    1e-05,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1e-05,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.001
+                  ]
+                },
+                "twist": {
+                  "twist": {
+                    "linear": {
+                      "x": 0.24573920484177914,
+                      "y": -0.00046915992808659436,
+                      "z": 0.0
+                    },
+                    "angular": {
+                      "x": 0.0,
+                      "y": 0.0,
+                      "z": 0.19638435480331531
+                    }
+                  },
+                  "covariance": [
+                    1e-05,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1e-05,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.001
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "max_source_gap_ns": 34000000
+    }
+  },
+  "positive_span_robots": [
+    "tb1",
+    "tb2",
+    "tb3"
+  ],
+  "negative_span_robots": [
+    "tb1",
+    "tb2",
+    "tb3"
+  ],
+  "sequential_opposite_sign_span_robots": [
+    "tb1",
+    "tb2",
+    "tb3"
+  ],
+  "criteria": {
+    "angular_norm_rad_s_max": 1.2,
+    "sampled_vector_angular_accel_rad_s2_max": 7.0,
+    "maximum_source_gap_ns": 100000000,
+    "minimum_sign_abs_wz_rad_s": 0.1,
+    "minimum_sign_consecutive_fresh_samples": 3,
+    "every_robot_requires_a_sign_span": true,
+    "at_least_one_robot_requires_sequential_opposite_sign_spans": true
+  },
+  "scope": "Only raw local own_odom diagnostics in source time. Opposite sign spans are stop/restart coverage, not peak-to-peak direct reversal or continuous acceleration proof. No control/truth/production actor imports. Whole-body linear/chord/strict-close and three-robot >0.05m activity gates are independently required elsewhere.",
+  "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v8_interface/worker0/episode001_open_101",
+  "inputs": {
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v8_interface/worker0/episode001_open_101/metadata.json": {
+      "bytes": 2426,
+      "sha256": "953e1fb146d38eb5f0030552966f6fdd3df86ddde2914fe9c238e5b0173a0074"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v8_interface/worker0/episode001_open_101/transitions.jsonl": {
+      "bytes": 1278799,
+      "sha256": "09546480f12beae9c77e512539807d54a8708e5e17be9482607634a84c9ec44f"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v8_interface/worker0/episode001_open_101/physics.jsonl": {
+      "bytes": 409504,
+      "sha256": "abbc76de8fbbb1d88909d39c959303a5fb05b549c454bf042725fb08b8e28bf3"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v8_interface/worker0/episode001_open_101/motion_safety.jsonl": {
+      "bytes": 156248296,
+      "sha256": "fc33608c77f657a75288b63c572eb8cbfce6aacaba358cd4adc60e3ca3a7926e"
+    }
+  },
+  "script_sha256": "7a472ba7efdd55addc710b98c66c89feff7f5092f214f76fd76cd4ca526343d0"
+}

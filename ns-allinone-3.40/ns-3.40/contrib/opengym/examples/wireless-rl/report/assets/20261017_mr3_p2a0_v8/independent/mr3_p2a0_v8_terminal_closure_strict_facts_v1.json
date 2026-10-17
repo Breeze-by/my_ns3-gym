@@ -1,0 +1,52 @@
+{
+  "schema": "mr3-v8-terminal-strict-closure-facts-v1",
+  "passed": true,
+  "overall_stage_passed": false,
+  "freeze": "d41485dfd93797026316806916e127eb5101f3b8",
+  "formal_review": {
+    "path": "/tmp/mr3_p2a0_v8_terminal_closure_binary_review_v1.json",
+    "sha256": "9087b23eba15e4492331d2c28f7ae89f854c06a66069001c3e536d501469adca",
+    "passed": false,
+    "errors": [
+      "launcher/parent not cleanly closed"
+    ]
+  },
+  "strict_episode_results": [
+    {
+      "epoch": "mr3_p2a0_20261017_v8_terminal_w0_e1_ad068985",
+      "passed": true,
+      "native_started": 39,
+      "native_clean_exits": 39,
+      "owned_identity_rows": 44,
+      "supervisor": {
+        "worker_returncode": 0,
+        "forced_shutdown": false,
+        "failed_sample": false,
+        "remaining_owned_processes": [],
+        "remaining_owned_zombies": []
+      }
+    },
+    {
+      "epoch": "mr3_p2a0_20261017_v8_terminal_w0_e2_4c781e15",
+      "passed": true,
+      "native_started": 39,
+      "native_clean_exits": 39,
+      "owned_identity_rows": 44,
+      "supervisor": {
+        "worker_returncode": 0,
+        "forced_shutdown": false,
+        "failed_sample": false,
+        "remaining_owned_processes": [],
+        "remaining_owned_zombies": []
+      }
+    }
+  ],
+  "actual_unique_saved_identities": 90,
+  "all_exact_pid_start_identities_absent": true,
+  "native_starts": 78,
+  "native_clean_exits": 78,
+  "launch_returncode": 1,
+  "fresh_capture_wall_monotonic_ns": 3965971760885304,
+  "clarification": "Formal review conservatively included launcher exit0 in aggregate, so it remainsFalse for this genuine task-stage FAIL. All native closure/binary/FIFO/identity child checks areTrue. Parent and launcher are absent; exit1 is the expected wrapper report of unexpected early task terminal, not a native forced-close failure. Original formal review bytes unchanged.",
+  "scope": "Strict closure/provenance facts only, no braking, physical, terminal-stage or P2A success."
+}

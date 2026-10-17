@@ -1,0 +1,39 @@
+{
+  "passed": true,
+  "schema": "mr3-p2a0-v9-final-runtime-test-bindings-v1",
+  "checks": {
+    "ros_semantic_v9_final": {
+      "exit_code": 0,
+      "source_before_after_equal": true
+    },
+    "conda_cpu_v9_final": {
+      "exit_code": 0,
+      "source_before_after_equal": true
+    },
+    "build_v9_final": {
+      "exit_code": 0,
+      "source_before_after_equal": true
+    },
+    "style_v9_final": {
+      "exit_code": 0,
+      "source_before_after_equal": true
+    },
+    "runtime_imports_v9_final": {
+      "exit_code": 0,
+      "source_before_after_equal": true
+    },
+    "contract_static_v9_final": {
+      "exit_code": 0,
+      "source_before_after_equal": true
+    }
+  },
+  "verified_final_runtime_sources": {
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_information.py": "b9830fa5089201920e05196d923e82fff62344946a43987204b1f43aaeb3e1b5",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py": "5345a8e583a779847f7b1a6e63a4c3a7b9585d308fdb1e3b9f4790309c0ce9ec",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_information.py": "ad769b0045f36f58dd4310e27c9043a581d66457f8dcde9d7a9f5f1382f344ce",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_adapter_launch.py": "4edf9340ea5821f8b76c9aed29a22e0550b6675a8c5baa1285a3efff09e66325",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_ppo.py": "aab089d0a8b365e6d820e7e6e3a23caf474e3c4701caf3c6f548ed52cb91a3b8",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_ENV_CONTRACT.md": "98a627ce780d2f384ed62a4a726e23327a743f16cd8cb4dba95c2681837a95d3"
+  },
+  "scope": "All final runtime/contract/test bytes equal actual final checks; documentation status updates after checks are not runtime changes; no native credit."
+}

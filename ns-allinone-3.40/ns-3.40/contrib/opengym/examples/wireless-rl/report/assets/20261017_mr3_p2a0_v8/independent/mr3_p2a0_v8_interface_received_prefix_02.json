@@ -1,0 +1,591 @@
+{
+  "schema": "mr3-p2a0-v8-readonly-received-monitor-v1",
+  "capture_wall_ns": 1792219172144176831,
+  "run": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v8_interface",
+  "episodes": [
+    {
+      "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v8_interface/worker0/episode001_open_101",
+      "epoch": "mr3_p2a0_20261017_v8_interface_w0_e1_3cb1e08e",
+      "freeze": "d41485dfd93797026316806916e127eb5101f3b8",
+      "complete_transition_rows": 3,
+      "returned_steps": 2,
+      "closed": false,
+      "latest_snapshot_sequence": 3,
+      "latest_elapsed_sec": 2.0,
+      "robots": [
+        {
+          "name": "tb1",
+          "activity": {
+            "epoch": "mr3_p2a0_20261017_v8_interface_w0_e1_3cb1e08e",
+            "estimated_path_m": 0.0012876501698990443,
+            "last_odom_source_stamp": 74.974,
+            "path_observation_complete": true,
+            "sample_count": 19,
+            "schema": "mr3-received-activity-v1",
+            "started_at": 73.08,
+            "state_sequence": 750
+          },
+          "navigation": {
+            "acceptance_age_sec": 2.0,
+            "accepted_at": 73.08,
+            "accepted_goal_count": 1,
+            "cancel_requested": false,
+            "command_id": 1,
+            "commitment_remaining_sec": 3.0,
+            "commitment_until": 78.08,
+            "created_at": 73.08,
+            "expires_at": 75.08,
+            "goal_age_sec": 2.0,
+            "goal_distance_m": 0.4404299730068566,
+            "goal_id": "mr3_p2a0_20261017_v8_interface_w0_e1_3cb1e08e:tb1:1",
+            "goal_x": 0.003002763650850504,
+            "goal_y": -0.9006629991267276,
+            "last_failure": null,
+            "last_goal_id": null,
+            "last_terminal": null,
+            "lease_until": 77.08,
+            "missing": false,
+            "observation_version": 1,
+            "owned": true,
+            "phase": "active",
+            "progress_m": null,
+            "receipt_missing": false,
+            "receipt_sequence": 1,
+            "received_age_sec": 2.0,
+            "received_stamp": 73.08,
+            "requested_at": 73.08,
+            "source_age_sec": 2.0,
+            "source_metadata_missing": false,
+            "source_stamp": 73.08,
+            "stop_reason": null
+          },
+          "current_legal_goal_count": 0,
+          "min_legal_goal_count": 0,
+          "native_sends": [
+            {
+              "command_id": 1,
+              "goal_id": "mr3_p2a0_20261017_v8_interface_w0_e1_3cb1e08e:tb1:1",
+              "pose": {
+                "frame_id": "map",
+                "orientation": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  1.0
+                ],
+                "stamp": 73.08,
+                "x": 0.003002763650850504,
+                "y": -0.9006629991267276
+              },
+              "robot": "tb1"
+            }
+          ],
+          "received_native_accepts": [
+            {
+              "goal_id": "mr3_p2a0_20261017_v8_interface_w0_e1_3cb1e08e:tb1:1",
+              "robot": "tb1",
+              "type": "accept",
+              "value": true
+            }
+          ],
+          "received_native_results": [],
+          "goal_relative_received": {
+            "distance_m": 0.4404299730068566,
+            "bearing_rad": -1.0911788698094487
+          },
+          "final_guard_reason_counts": {
+            "before_release": 1,
+            "command_timeout": 2,
+            "linear_brake_preserve_requested_turn": 47,
+            "peer_uncertainty_envelope": 3,
+            "peer_braking_nonclosing": 52,
+            "settled_turn_drift_reserve": 9,
+            "clear": 37
+          },
+          "latest_guard": {
+            "clock_ns": 76080000000,
+            "request": {
+              "v": 0.23263157894736847,
+              "w": -0.8,
+              "received_stamp": 76.06,
+              "sequence": 551,
+              "publisher_identity": {
+                "scope": "graph_at_callback",
+                "topic": "/tb1/cmd_vel_unguarded",
+                "valid": true,
+                "endpoints": [
+                  {
+                    "namespace": "/tb1",
+                    "node": "velocity_smoother",
+                    "endpoint_gid": "010f3cc02346aef00000000000001e030000000000000000",
+                    "topic_type": "geometry_msgs/msg/Twist"
+                  }
+                ]
+              },
+              "supported": true
+            },
+            "decision": {
+              "allow": true,
+              "reason": "clear",
+              "output": [
+                0.23263157894736847,
+                -0.8
+              ],
+              "minimum_margin_m": 0.3287286093965564,
+              "body_margin_m": 0.3287286093965564,
+              "braking_zone_margin_m": 0.040728609396556426,
+              "near_peer_checks": [
+                {
+                  "peer": "tb2",
+                  "centre_distance_m": 1.033974492603212,
+                  "source_uncertainty_m": 0.0858,
+                  "body_margin_m": 0.42817449260321194,
+                  "braking_zone_margin_m": 0.14017449260321196,
+                  "near": false,
+                  "direction_checks": []
+                },
+                {
+                  "peer": "tb3",
+                  "centre_distance_m": 0.9498286093965564,
+                  "source_uncertainty_m": 0.10110000000000001,
+                  "body_margin_m": 0.3287286093965564,
+                  "braking_zone_margin_m": 0.040728609396556426,
+                  "near": false,
+                  "direction_checks": []
+                }
+              ],
+              "command_normalization": null,
+              "component_filter": null
+            },
+            "own_state": {
+              "robot": "tb1",
+              "name": "tb1",
+              "x": 0.061783186213746684,
+              "y": -0.5597714422307773,
+              "yaw": -1.1588823257445853,
+              "v": 0.23427632599547948,
+              "w": -0.6989792219405027,
+              "odom_source_stamp": 76.062,
+              "tf_source_stamp": 76.011,
+              "tf_validity_stamp": 76.211,
+              "tf_validity_lead_sec": 0.2,
+              "epoch": "mr3_p2a0_20261017_v8_interface_w0_e1_3cb1e08e",
+              "valid": true,
+              "source_stamp": 76.011,
+              "input_sequences": {
+                "odom": 2230,
+                "tf": 7823
+              },
+              "planar_speed_mps": 0.23427796602898102,
+              "settled_turn": null
+            }
+          }
+        },
+        {
+          "name": "tb2",
+          "activity": {
+            "epoch": "mr3_p2a0_20261017_v8_interface_w0_e1_3cb1e08e",
+            "estimated_path_m": 0.001940458072178296,
+            "last_odom_source_stamp": 74.986,
+            "path_observation_complete": true,
+            "sample_count": 20,
+            "schema": "mr3-received-activity-v1",
+            "started_at": 73.08,
+            "state_sequence": 750
+          },
+          "navigation": {
+            "acceptance_age_sec": 2.0,
+            "accepted_at": 73.08,
+            "accepted_goal_count": 1,
+            "cancel_requested": false,
+            "command_id": 1,
+            "commitment_remaining_sec": 3.0,
+            "commitment_until": 78.08,
+            "created_at": 73.08,
+            "expires_at": 75.08,
+            "goal_age_sec": 2.0,
+            "goal_distance_m": 0.47294744263267435,
+            "goal_id": "mr3_p2a0_20261017_v8_interface_w0_e1_3cb1e08e:tb2:1",
+            "goal_x": -0.14699723858432368,
+            "goal_y": 0.8993370276953625,
+            "last_failure": null,
+            "last_goal_id": null,
+            "last_terminal": null,
+            "lease_until": 77.08,
+            "missing": false,
+            "observation_version": 1,
+            "owned": true,
+            "phase": "active",
+            "progress_m": null,
+            "receipt_missing": false,
+            "receipt_sequence": 1,
+            "received_age_sec": 2.0,
+            "received_stamp": 73.08,
+            "requested_at": 73.08,
+            "source_age_sec": 2.0,
+            "source_metadata_missing": false,
+            "source_stamp": 73.08,
+            "stop_reason": null
+          },
+          "current_legal_goal_count": 0,
+          "min_legal_goal_count": 0,
+          "native_sends": [
+            {
+              "command_id": 1,
+              "goal_id": "mr3_p2a0_20261017_v8_interface_w0_e1_3cb1e08e:tb2:1",
+              "pose": {
+                "frame_id": "map",
+                "orientation": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  1.0
+                ],
+                "stamp": 73.08,
+                "x": -0.14699723858432368,
+                "y": 0.8993370276953625
+              },
+              "robot": "tb2"
+            }
+          ],
+          "received_native_accepts": [
+            {
+              "goal_id": "mr3_p2a0_20261017_v8_interface_w0_e1_3cb1e08e:tb2:1",
+              "robot": "tb2",
+              "type": "accept",
+              "value": true
+            }
+          ],
+          "received_native_results": [],
+          "goal_relative_received": {
+            "distance_m": 0.47294744263267435,
+            "bearing_rad": 1.3961923011010584
+          },
+          "final_guard_reason_counts": {
+            "before_release": 1,
+            "command_timeout": 2,
+            "clear": 55,
+            "peer_braking_nonclosing": 54,
+            "peer_uncertainty_envelope": 5,
+            "linear_brake_preserve_requested_turn": 22,
+            "settled_turn_drift_reserve": 12
+          },
+          "latest_guard": {
+            "clock_ns": 76080000000,
+            "request": {
+              "v": 0.23263157894736847,
+              "w": 0.7157894736842105,
+              "received_stamp": 76.06,
+              "sequence": 551,
+              "publisher_identity": {
+                "scope": "graph_at_callback",
+                "topic": "/tb2/cmd_vel_unguarded",
+                "valid": true,
+                "endpoints": [
+                  {
+                    "namespace": "/tb2",
+                    "node": "velocity_smoother",
+                    "endpoint_gid": "010f3cc0024c6abb0000000000001e030000000000000000",
+                    "topic_type": "geometry_msgs/msg/Twist"
+                  }
+                ]
+              },
+              "supported": true
+            },
+            "decision": {
+              "allow": true,
+              "reason": "clear",
+              "output": [
+                0.23263157894736847,
+                0.7157894736842105
+              ],
+              "minimum_margin_m": 0.29138385175214343,
+              "body_margin_m": 0.29138385175214343,
+              "braking_zone_margin_m": 0.003383851752143452,
+              "near_peer_checks": [
+                {
+                  "peer": "tb1",
+                  "centre_distance_m": 1.0340728561210784,
+                  "source_uncertainty_m": 0.14609999999999998,
+                  "body_margin_m": 0.36797285612107833,
+                  "braking_zone_margin_m": 0.07997285612107835,
+                  "near": false,
+                  "direction_checks": []
+                },
+                {
+                  "peer": "tb3",
+                  "centre_distance_m": 0.9568838517521434,
+                  "source_uncertainty_m": 0.1455,
+                  "body_margin_m": 0.29138385175214343,
+                  "braking_zone_margin_m": 0.003383851752143452,
+                  "near": false,
+                  "direction_checks": []
+                }
+              ],
+              "command_normalization": null,
+              "component_filter": null
+            },
+            "own_state": {
+              "robot": "tb2",
+              "name": "tb2",
+              "x": 0.034654347950193495,
+              "y": 0.48898322382870646,
+              "yaw": 1.0411650878057372,
+              "v": 0.20428713174750762,
+              "w": 0.5692280746379688,
+              "odom_source_stamp": 76.074,
+              "tf_source_stamp": 75.863,
+              "tf_validity_stamp": 76.063,
+              "tf_validity_lead_sec": 0.2,
+              "epoch": "mr3_p2a0_20261017_v8_interface_w0_e1_3cb1e08e",
+              "valid": true,
+              "source_stamp": 75.863,
+              "input_sequences": {
+                "odom": 2171,
+                "tf": 7667
+              },
+              "planar_speed_mps": 0.2042890222767291,
+              "settled_turn": null
+            }
+          }
+        },
+        {
+          "name": "tb3",
+          "activity": {
+            "epoch": "mr3_p2a0_20261017_v8_interface_w0_e1_3cb1e08e",
+            "estimated_path_m": 0.36023332420769183,
+            "last_odom_source_stamp": 74.993,
+            "path_observation_complete": true,
+            "sample_count": 20,
+            "schema": "mr3-received-activity-v1",
+            "started_at": 73.08,
+            "state_sequence": 750
+          },
+          "navigation": {
+            "acceptance_age_sec": 2.0,
+            "accepted_at": 73.08,
+            "accepted_goal_count": 1,
+            "cancel_requested": false,
+            "command_id": 1,
+            "commitment_remaining_sec": 3.0,
+            "commitment_until": 78.08,
+            "created_at": 73.08,
+            "expires_at": 75.08,
+            "goal_age_sec": 2.0,
+            "goal_distance_m": 0.15226322643844512,
+            "goal_id": "mr3_p2a0_20261017_v8_interface_w0_e1_3cb1e08e:tb3:1",
+            "goal_x": 0.9530027778069536,
+            "goal_y": -0.0006629857156825736,
+            "last_failure": null,
+            "last_goal_id": null,
+            "last_terminal": null,
+            "lease_until": 77.08,
+            "missing": false,
+            "observation_version": 1,
+            "owned": true,
+            "phase": "active",
+            "progress_m": null,
+            "receipt_missing": false,
+            "receipt_sequence": 1,
+            "received_age_sec": 2.0,
+            "received_stamp": 73.08,
+            "requested_at": 73.08,
+            "source_age_sec": 2.0,
+            "source_metadata_missing": false,
+            "source_stamp": 73.08,
+            "stop_reason": null
+          },
+          "current_legal_goal_count": 0,
+          "min_legal_goal_count": 0,
+          "native_sends": [
+            {
+              "command_id": 1,
+              "goal_id": "mr3_p2a0_20261017_v8_interface_w0_e1_3cb1e08e:tb3:1",
+              "pose": {
+                "frame_id": "map",
+                "orientation": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  1.0
+                ],
+                "stamp": 73.08,
+                "x": 0.9530027778069536,
+                "y": -0.0006629857156825736
+              },
+              "robot": "tb3"
+            }
+          ],
+          "received_native_accepts": [
+            {
+              "goal_id": "mr3_p2a0_20261017_v8_interface_w0_e1_3cb1e08e:tb3:1",
+              "robot": "tb3",
+              "type": "accept",
+              "value": true
+            }
+          ],
+          "received_native_results": [
+            {
+              "goal_id": "mr3_p2a0_20261017_v8_interface_w0_e1_3cb1e08e:tb3:1",
+              "robot": "tb3",
+              "type": "result",
+              "value": 4
+            }
+          ],
+          "goal_relative_received": {
+            "distance_m": 0.15226322643844512,
+            "bearing_rad": 0.21564097615081507
+          },
+          "final_guard_reason_counts": {
+            "before_release": 1,
+            "command_timeout": 2,
+            "clear": 147,
+            "peer_uncertainty_envelope": 1
+          },
+          "latest_guard": {
+            "clock_ns": 76080000000,
+            "request": {
+              "v": 0.0,
+              "w": 0.0,
+              "received_stamp": 76.06,
+              "sequence": 551,
+              "publisher_identity": {
+                "scope": "graph_at_callback",
+                "topic": "/tb3/cmd_vel_unguarded",
+                "valid": true,
+                "endpoints": [
+                  {
+                    "namespace": "/tb3",
+                    "node": "velocity_smoother",
+                    "endpoint_gid": "010f3cc0ca5181940000000000001e030000000000000000",
+                    "topic_type": "geometry_msgs/msg/Twist"
+                  }
+                ]
+              },
+              "supported": true
+            },
+            "decision": {
+              "allow": true,
+              "reason": "clear",
+              "output": [
+                0.0,
+                0.0
+              ],
+              "minimum_margin_m": 0.3260772978332846,
+              "body_margin_m": 0.3260772978332846,
+              "braking_zone_margin_m": 0.03807729783328462,
+              "near_peer_checks": [
+                {
+                  "peer": "tb1",
+                  "centre_distance_m": 0.9474772978332846,
+                  "source_uncertainty_m": 0.1014,
+                  "body_margin_m": 0.3260772978332846,
+                  "braking_zone_margin_m": 0.03807729783328462,
+                  "near": false,
+                  "direction_checks": []
+                },
+                {
+                  "peer": "tb2",
+                  "centre_distance_m": 0.957023851665226,
+                  "source_uncertainty_m": 0.0855,
+                  "body_margin_m": 0.35152385166522593,
+                  "braking_zone_margin_m": 0.06352385166522595,
+                  "near": false,
+                  "direction_checks": []
+                }
+              ],
+              "command_normalization": null,
+              "component_filter": null
+            },
+            "own_state": {
+              "robot": "tb3",
+              "name": "tb3",
+              "x": 0.8441758170094754,
+              "y": -0.021218146970579065,
+              "yaw": -0.110183812364564,
+              "v": -3.190012840681872e-05,
+              "w": -0.000349602506246078,
+              "odom_source_stamp": 76.047,
+              "tf_source_stamp": 76.012,
+              "tf_validity_stamp": 76.212,
+              "tf_validity_lead_sec": 0.2,
+              "epoch": "mr3_p2a0_20261017_v8_interface_w0_e1_3cb1e08e",
+              "valid": true,
+              "source_stamp": 76.012,
+              "input_sequences": {
+                "odom": 2113,
+                "tf": 7501
+              },
+              "planar_speed_mps": 6.414619750625707e-05,
+              "settled_turn": null
+            }
+          }
+        }
+      ],
+      "first_received_turn_reference": {
+        "tb2": {
+          "sign": 1.0,
+          "w": 0.17717636865406453,
+          "snapshot_sequence": 2,
+          "source_stamp": 73.86399999999999,
+          "odom_source_stamp": 73.966
+        },
+        "tb3": {
+          "sign": -1.0,
+          "w": -0.10678293278665069,
+          "snapshot_sequence": 2,
+          "source_stamp": 73.812,
+          "odom_source_stamp": 73.973
+        }
+      },
+      "actual_goal_phase_opportunities": [
+        {
+          "snapshot_sequence": 1,
+          "task_elapsed_sec": 0.0,
+          "actual_action": 261,
+          "actual_action_joint_legal": true,
+          "max_legal_goal_components": 3,
+          "max_reverse_robot_opportunities": 0,
+          "actual_selected_reverse_robots": []
+        },
+        {
+          "snapshot_sequence": 2,
+          "task_elapsed_sec": 1.0,
+          "actual_action": 888,
+          "actual_action_joint_legal": true,
+          "max_legal_goal_components": 0,
+          "max_reverse_robot_opportunities": 0,
+          "actual_selected_reverse_robots": []
+        }
+      ]
+    }
+  ],
+  "formal_pass": null,
+  "scope": "complete prefixes only; no truth/control; legal candidates are not an execution/safety proof",
+  "input_prefix_bindings": {
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v8_interface/worker0/episode001_open_101/metadata.json": {
+      "captured_bytes": 2426,
+      "complete_prefix_bytes": 2426,
+      "complete_prefix_sha256": "953e1fb146d38eb5f0030552966f6fdd3df86ddde2914fe9c238e5b0173a0074",
+      "omitted_partial_tail_bytes": 0
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v8_interface/worker0/episode001_open_101/transitions.jsonl": {
+      "captured_bytes": 114633,
+      "complete_prefix_bytes": 114633,
+      "complete_prefix_sha256": "c55350ac2a0cb6b4f806000734f971d5fe4a95a02d7f274197e517d2d34d5810",
+      "omitted_partial_tail_bytes": 0
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v8_interface/worker0/episode001_open_101/adapter.jsonl": {
+      "captured_bytes": 336631,
+      "complete_prefix_bytes": 336631,
+      "complete_prefix_sha256": "caaf84b63213ccacdeed3c5eea8afa351b6829ce480468cdf92b3952e9483eb3",
+      "omitted_partial_tail_bytes": 0
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v8_interface/worker0/episode001_open_101/motion_safety.jsonl": {
+      "captured_bytes": 80471829,
+      "complete_prefix_bytes": 80471829,
+      "complete_prefix_sha256": "8f72d33a3bfd6068495ca010b2ef4fbfd119fb9b0269bcb00659516bc55b0dc2",
+      "omitted_partial_tail_bytes": 0
+    }
+  }
+}

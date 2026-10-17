@@ -1,0 +1,51 @@
+{
+  "schema": "mr3-p2a0-v8-root-audit-diagnostic-execution-v2",
+  "freeze": "d41485dfd93797026316806916e127eb5101f3b8",
+  "stage": "terminal",
+  "passed": false,
+  "records": [
+    {
+      "name": "full_audit",
+      "command_argv": [
+        "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+        "-m",
+        "mr3_learning.audit_preparation",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v8_terminal",
+        "--freeze",
+        "d41485dfd93797026316806916e127eb5101f3b8",
+        "--output",
+        "/tmp/mr3_p2a0_v8_terminal_full_audit.json"
+      ],
+      "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+      "returncode": 1,
+      "wall_seconds": 54.96930935001001,
+      "console": "/tmp/mr3_p2a0_v8_terminal_full_audit_console.log",
+      "console_sha256": "b2a3a8a968f9fa248e60a475df1fcee2fcafcf26a0e1831d51e18f1bf7dc8880",
+      "output": "/tmp/mr3_p2a0_v8_terminal_full_audit.json",
+      "output_sha256": "7bf732056a481fdfa0dbcc87d40bb80096165117e64a9298f19c0f9c6643b728",
+      "passed": false
+    },
+    {
+      "name": "drive_review_v1",
+      "command_argv": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v7/independent/mr3_independent_drive_trace_v4.py",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v8_terminal",
+        "--freeze",
+        "d41485dfd93797026316806916e127eb5101f3b8",
+        "--binary-proof",
+        "/tmp/mr3_p2a0_v8_binaryproof.json",
+        "--output",
+        "/tmp/mr3_p2a0_v8_terminal_drive_review_v1.json"
+      ],
+      "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+      "returncode": 0,
+      "wall_seconds": 17.831638772971928,
+      "console": "/tmp/mr3_p2a0_v8_terminal_drive_review_v1_console.log",
+      "console_sha256": "7a12ddee905d028469c3f92dd775a4de371da03f04bdca33c95b3b192db91b1a",
+      "output": "/tmp/mr3_p2a0_v8_terminal_drive_review_v1.json",
+      "output_sha256": "b494ac74b29213fb6113b804306c55d8b43bda2ed7f123d5b4e31e222e3395de",
+      "passed": true
+    }
+  ]
+}
