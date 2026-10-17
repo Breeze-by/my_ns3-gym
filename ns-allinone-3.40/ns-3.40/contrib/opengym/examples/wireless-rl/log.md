@@ -4038,3 +4038,144 @@ pilot已用2226决策/11494.045260453597墙秒、余额1870/2905.954739546403不
 完整命令`python -m unittest discover -s mr3_learning/tests -q`在conda ns3gym/PYTHONNOUSERSITE1/PYTHONPATHunset，208 PASS，11.251测试秒/16.550404557958245墙秒；28项focused及独立同源复核PASS，限定style和14来源绑定PASS。命令/输入before-after/原输出见v5 assets回执。ROS生产源未变，不重做无关仿真或把旧941检查记成新native。
 CPU传输对照精确命令、原b4 shell和fe0a字节、实际环境及输出在canonical v4 native/interface/independent_monitor/transport_ab_v1：无Gazebo/控制，发布端原profile仅发一次TL状态；default domain228实际超时0状态/0参数，matched domain227九typed参数通过，全部CPU进程正常清理/身份消失。这是有意保留的失败对照，不混入Gazebo矩阵或pilot。
 v5新机器预声明完整interface20→terminal8API→reset160→deadline300，上限488API/487动作/7000墙秒、无PPO/GPU/optimizer，先提交推送干净冻结。pilot余额1870/2905.954739546403不变。
+
+### 2026-10-17 MR3-P2A.0 v5 原生物理FAIL（原件保留）
+
+source `57b7c7f372aef4d84acd25fcd97a9944fa1fe9bb`，已推送、启动clean，87 source/10独立脚本PASS。精确命令`python -m mr3_learning.benchmark --workers 1 --schedule open:101 --steps 20 --preparation-motion-probe --base-domain 222 --base-port 12601 --output-root /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0 --run-id mr3_p2a0_20261017_v5_interface --preparation-parameter-review`。完整审计命令`python -m mr3_learning.audit_preparation /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v5_interface --freeze 57b7c7f372aef4d84acd25fcd97a9944fa1fe9bb --output /tmp/mr3_p2a0_v5_interface_full_audit.json`，FAIL/exit1。
+
+只执行interface open101/domain222/port12601；reset1+returned15=16 API、真实15动作，无未返回差额；最后dt.64/elapsed14.64真实navigation_failure，cooperative停止，terminal/reset/deadline均SKIP。九实际参数及同epoch78.52秒暂停状态读回PASS、transport selected/native7keys和dd7profile一致；16 wholeobs/七图/候选/活动独立精确重放PASS，三台path.703918779/.539448767/.572382559均complete，2nativeaccept各（1成功+1取消）；这些子PASS不改整体FAIL。
+
+tb2在source93.145秒角速度范数首次1.2024862996>1.2，93.247秒峰1.3969248505326008（x=y0）；实际finalcmd仍≤.26/.8，邻源角差分最高<7。motion gate在93.16秒失效立即输出0，其后仍有身体滞后，不得从命令或FIFO推断瞬时物理停车。全部3×4656decision/actual FIFO精确，743 motion ACK闭合；39native全exit0/complete，worker0/forcedfalse/failed_samplefalse，44owned+两父共46身份全部退出。
+
+有效/returnedphysical14.64s，release78.52→final93.36共14.84（cleanup.20单列），alignment.002s；benchmark墙秒361.0312315579504，launcher361.46578524494544分列不混加。原件及独立回执见v5 assets/native/interface；无PPO/GPU/optimizer、无同freeze重试，pilot余额不动。
+
+只读官方/安装包调研：gazebo_plugins3.9.0-1同tag源码反馈error被累加到旧instr，并有fastpath未sync隐藏状态；真实旧native无joint/instr故不能唯一exact回放其根因。Nav2 1.1.20 smoother墙钟/固定步长及CLOSED_LOOP反馈无末端clamp/无freshness的限制均保留为局部调研，不改DWB或冒称改两YAML可保证物理界。新v6只修局部驱动实际反馈与paired rim限加速，保持物理参数、任务/测量和停止门，新source完整重验；详见v6预声明。
+
+
+## 2026-10-17 MR3-P2A.0 v6 — 冻结前驱动修复与全部现存离线检查
+
+基线是v5冻结`57b7c7f372aef4d84acd25fcd97a9944fa1fe9bb`，下列检查使用其后的**未提交v6工作树候选**；
+不是旧57b7代码的验证，也不授予尚未运行的新冻结原生矩阵信用。每份回执保留实际输入SHA及原输出。
+最终驱动cpp SHA `f30b6d7c6ee44cd40f3603c4c0b759e43d6333f3136570bdc13c088c61230075`，
+paired helper SHA `80cf2e51f1b39f7bb89ef8b61b4b6eaf7c9be68c418bf0bb7ef57640d82c99d9`。
+保持95%/300秒、三台1m与目标、质量、18接触、.50m及1.2实测/.26与.8命令/停止门；无PPO/GPU/native optimizer。
+
+ROS系统Python，cwd为`/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap`。
+构建与测试的原命令如下（build执行四次、test执行两次；各次源码范围由原回执区分）：
+
+```bash
+source /opt/ros/humble/setup.bash; export PYTHONNOUSERSITE=1; /usr/bin/python3 /usr/bin/colcon build --packages-select multi_robot --symlink-install --event-handlers console_direct+
+source /opt/ros/humble/setup.bash; export PYTHONNOUSERSITE=1; /usr/bin/python3 /usr/bin/colcon test --packages-select multi_robot --event-handlers console_direct+
+```
+
+build01因CMake源码SHA输入误用build目录相对路径失败；修为CMAKE_CURRENT_SOURCE_DIR后build02通过，
+build03为中间weak-callback实现通过，build04为最终添加command_topic来源的实际库构建通过。
+test01为中间20个gtest，test02最终三个CTest target共21个gtest（含8个paired helper）全通过，
+最终CTest原文0.87秒、colcon1.88秒；中间结果不能充作最终源覆盖。
+Gazebo CMake PkgConfig命名及std::iterator弃用warning原样保留，最终无编译/链接错误。
+原始build01—04/test01—02输出与SHA见`report/assets/20261017_mr3_p2a0_v6/independent/mr3_p2a0_v6_drive_checks_v1.json`。
+
+纯helper在Git根cwd的精确命令：
+
+```bash
+rtk proxy /usr/bin/g++ -std=c++17 -Wall -Wextra -Werror -pedantic -fsanitize=undefined -fno-sanitize-recover=all -Iros2_ws/ros2-multi-robot-automap/src/multi_robot/include ros2_ws/ros2-multi-robot-automap/src/multi_robot/test/test_paired_wheel_slew.cpp -lgtest -lgtest_main -pthread -o /tmp/mr3_test_paired_wheel_slew_ubsan
+rtk proxy /tmp/mr3_test_paired_wheel_slew_ubsan
+rtk git diff --check
+/usr/bin/python3 /tmp/mr3_paired_wheel_stop_model_v1.py
+```
+
+严格C++17/-Wall/-Wextra/-Werror/-pedantic及UBSan编译exit0，最终8 tests PASS，无UBSan错误；
+compile/run墙秒4.259705085773021/0.7127777929417789，原stdout在helper_checks_v1。
+8项包含20000对有限随机wheel预算/共同alpha/凸组合及2989初始体速度对的停止模型检查。
+stdlib独立模型给理想无滑移且即时跟踪目标、34ms更新界等条件下保守.7002秒/.13923米，
+不证明Gazebo机体角速度、打滑、接触、停车或每瞬时最低减速度。最早7项及后增第8项历史均保留。
+可重建的752736-byte UBSan ELF不进入canonical；命令、stdout、源码SHA和模型脚本/JSON保留。
+
+实际最终库加载CPU检查在Git根cwd，原pkg-config与编译argv保存如下：
+
+```bash
+pkg-config --cflags --libs gazebo > /tmp/mr3_p2a0_v6_drive_pkgconfig.txt
+g++ -std=c++17 /tmp/mr3_v6_drive_dlopen_cpu.cpp -o /tmp/mr3_v6_drive_dlopen_cpu -std=c++11 -std=c++17 -pthread -std=c++17 -I/usr/lib/x86_64-linux-gnu/pkgconfig/../../..//include/gazebo-11 -I/usr/include/sdformat-9.7 -I/usr/lib/x86_64-linux-gnu/pkgconfig/../../..//include/ignition/fuel_tools4 -I/usr/include/x86_64-linux-gnu -I/usr/lib/x86_64-linux-gnu/pkgconfig/../../..//include/ignition/common3 -I/usr/lib/x86_64-linux-gnu/pkgconfig/../../..//include/ignition/transport8 -isystem /usr/include/mit-krb5 -I/usr/include/pgm-5.3 -I/usr/include/libxml2 -I/usr/include/uuid -I/usr/lib/x86_64-linux-gnu/pkgconfig/../../..//include/ignition/msgs5 -I/usr/lib/x86_64-linux-gnu/pkgconfig/../../..//include/ignition/math6 -I/usr/lib/x86_64-linux-gnu/pkgconfig/../../..//include/ignition/cmake2 -L/usr/lib/x86_64-linux-gnu/pkgconfig/../../..//lib/x86_64-linux-gnu -L/usr/lib/x86_64-linux-gnu/pkgconfig/../../..//lib/x86_64-linux-gnu/gazebo-11/plugins -L/usr/lib/x86_64-linux-gnu/pkgconfig/../../..//lib/x86_64-linux-gnu -Wl,-rpath,/usr/lib/x86_64-linux-gnu/pkgconfig/../../..//lib/x86_64-linux-gnu/gazebo-11/plugins -lgazebo_transport -lgazebo_physics -lgazebo_sensors -lgazebo_rendering -lgazebo_gui -lgazebo_client -lgazebo_msgs -lgazebo_common -lgazebo -lboost_thread -lboost_system -lboost_filesystem -lboost_program_options -lboost_regex -lboost_iostreams -lboost_date_time -lsdformat9 -ltbb -lignition-fuel_tools4 -lignition-transport8 -luuid -lignition-msgs5 -lprotobuf -lignition-math6 -ldl
+source /opt/ros/humble/setup.bash; /tmp/mr3_v6_drive_dlopen_cpu /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/lib/libmr3_gazebo_diff_drive.so
+ldd -r ros2_ws/ros2-multi-robot-automap/install/multi_robot/lib/libmr3_gazebo_diff_drive.so
+python3 /tmp/mr3_v6_drive_static_verify.py
+```
+
+compiler返回0，1000次实际库factory/create/destroy通过；没有ModelPlugin::Load、世界、回调或物理推进。
+完整compiler argv是从原tool调用构造和原pkg-config输出事后逐项呈现，明确不是execve trace，
+见`independent/mr3_p2a0_v6_drive_dlopen_compiler_argv_v1.json`；原cpp、pkg-config及编译warning/运行stdout均保留。
+ldd -r无缺库/undefined symbols，静态核对5份upstream odometry函数除private类名外保持，编译声明与实际安装库一致。
+正式库解码SHA `e4671d82dc1c410fbf3c710f82b4e6768f6c603894a4bf23d8621e04ecc75c81`，
+特意保留`binary/libmr3_gazebo_diff_drive.so.gz`，与build_drive_binary_v6.json压缩/解码SHA均相符；
+canonical内没有其他ELF或压缩ELF。上述均无真实callback竞争/机体响应/native关闭可靠性信用。
+
+launch/headless回归和限定style精确argv（各cwd在launch_checks_v1中）：
+
+```bash
+bash -c 'source /opt/ros/humble/setup.bash && source install/setup.bash && export PYTHONNOUSERSITE=1 && /usr/bin/python3 -m pytest src/multi_robot_exploration/test/test_mr3_drive_launch.py src/multi_robot_exploration/test/test_mr3_adapter_launch.py src/multi_robot_exploration/test/test_mr3_terminal_launch.py src/multi_robot_exploration/test/test_launch_and_smoke.py -q'
+/usr/bin/python3 -m flake8 /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_drive_launch.py --max-line-length=99
+git diff --check
+```
+
+115 PASS/6.51测试秒、8.31542539037764墙秒；首次style因旧ValueError literal及新test签名超过99字符E501失败，
+仅换行后最终flake8 exit0（1.003926050849259墙秒），git diff --check exit0；首次错误stdout另存，未抹去。
+模型对照还证明：恢复旧插件文件名并删两项新审计tag即逐字恢复57b7原SDF；实际3台spawn选择各自有效SDF和trace，
+不改碰撞/质量/torque/轮参数，不产生tb4新研究矩阵。此为源/配置语义，非Gazebo load验证。
+
+完整ROS语义与conda CPU的精确命令：
+
+```bash
+/usr/bin/python3 -m pytest -q src/merge_map/test src/multi_robot_exploration/test --ignore=src/merge_map/test/test_copyright.py --ignore=src/merge_map/test/test_flake8.py --ignore=src/merge_map/test/test_pep257.py --ignore=src/multi_robot_exploration/test/test_copyright.py --ignore=src/multi_robot_exploration/test/test_flake8.py --ignore=src/multi_robot_exploration/test/test_pep257.py
+python -m unittest discover -s mr3_learning/tests -q
+```
+
+ROS cwd=`/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap`，/usr/bin/python3；ROS source/install环境和PYTHONNOUSERSITE=1。
+945 PASS/30.83测试秒、32.12174702901393墙秒；115 launch项包含在945内，不累加。
+conda cwd=`/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl`，解析Python=`/home/zhuyulab/miniconda3/envs/ns3gym/bin/python`，
+ns3gym/PYTHONNOUSERSITE=1/PYTHONPATH unset，208 PASS/12.460测试秒、17.96432446083054墙秒。
+完整before/after输入SHA一致及原stdout.gz分别见ros_semantic_v6.json、conda_cpu_v6.json。
+
+完整208检查对应contract v1的audit_ppo SHA d42eb404771f0db25154c23df0bd6f8bc951dfa30da7206880120799d1219286，
+ADAPTER SHA8ea41f9ab35dda86a7ad741fdb85c64e20600af96ccceb815e52e384e5f3afe2。
+随后仅明确ADAPTER执行ACK范围措辞及更新其审阅pin，最终audit_ppo SHA
+`d21cd79494c07f4e4b79bc94258cd4bd128c492b8c6dc8ec9a08a9dde17845ee`，ADAPTER SHA
+`31926aeb325ba8b47c01d2b28c430ba4475c38cc673af6b22c91309feaed22fb`。
+contract v1和v2分别在W目录执行同一9项focused命令：
+
+```bash
+env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 conda run --no-capture-output -n ns3gym python -m unittest mr3_learning.tests.test_audit_ppo -v
+conda run -n ns3gym python -m flake8 mr3_learning/audit_ppo.py
+/usr/bin/python3 -m flake8 mr3_learning/audit_ppo.py --max-line-length=99
+```
+
+两轮9 tests均PASS，首次conda flake8因No module named flake8返回1，保留原失败txt；
+之后使用已有系统flake8返回0，两轮空stdout文件也分别保存。v2核验18项执行pin、静态链接和
+非执行任务/奖励/审计逻辑AST仍与HEAD不变；不将完整208写成最终措辞/pin更新后再次执行。
+两轮receipt和5个原始txt在v6 independent，早期失败不改判。
+
+所有本节新增原件的原路径、bytes及SHA见`report/assets/20261017_mr3_p2a0_v6/independent/offline_checks_archive_v1.json`；
+报告为`report/20261017_mr3_p2a0_v6.md`。本节记录现存离线检查，不代表尚待冻结的原生interface/terminal/reset/deadline已执行。
+新独立actuator trace消费者仍须固定并在新原生原件上验证。pilot已用2226决策/11494.045260453597墙秒、
+余额1870/2905.954739546403不变，原v5实际1.3969248505326008超界FAIL及之后阶段SKIP保持。
+
+补充来源检查：8项actual installed source/resolved/SHA及6项真实runtime import/resolved/SHA匹配PASS，
+分别保存installed_assets_v6.json与runtime_modules_v6.json，范围为静态安装/导入，非运行参数或物理控制。
+changed/new Markdown173条链接由root检查零missing，最终root静态receipt记录；此处不冒称我复核了该全部范围。
+独立actuator consumer **v1**的25项CPU mutation tests由runtime独立执行通过，原review及原txt已归档；
+review指明首pre-release update的dt边界问题仍待candidate修v2，不称该v1已是最终冻结消费者，任务30Hz规则保持。
+terminal声明再次澄清：每轮4步API、两轮共8；488步API=20+8+160+300，487真实脚本动作不含零时长结算。
+
+消费者随后最终v2交付：`/usr/bin/python3 /tmp/mr3_independent_drive_trace_v1_tests.py -v`
+26 tests PASS/3.385测试秒、4.283131749834865墙秒；
+`/usr/bin/python3 -m py_compile /tmp/mr3_independent_drive_trace_v1.py /tmp/mr3_independent_drive_trace_v1_tests.py`
+exit0/0.09837843663990498墙秒。原argv/双stdout、脚本SHA在
+`independent/mr3_p2a0_v6_drive_consumer_checks_v2.json`；脚本文件名沿用v1，最终源码SHA
+92be5fca543c081cc6d9138434bb86d9686a014930720eba0642401c4f7d1b4e、tests SHA
+75ab94e3c8be06aca1c0b17d9585aa1bde0384c4e01b46d40b734bf09dea089a。
+新回归只允许释放前**首个**actuation dt涵盖Load延迟，以configuration/reset源时间括界且正、至少30Hz周期；
+后续及每个task区间actuation仍严格物理30Hz上界和source-successor精确dt，不放宽任务规则。
+v1独立25项review保留，仅覆当时字节；最终26项由candidate执行，不冒称runtime已独立重复26。
+当前/归档.so读回只是保存二进制IO/schema兼容，example为fake aaaa且不作Gitfreeze信用，
+真实postcommit来源和实际Load/执行仍需新冻结原生证明。无ROS/新native/机体安全或停止信用。
+
+冻结前staged `git diff --cached --check`因原始CMake/gtest stdout尾空格返回2，未commit/native；将10份canonical raw日志无损gzip（源/tmp原件不动），`offline_stdout_encoding_v2.json`保存原selected→gzip/encoded+decodedSHA映射，原checks和offline_archive_v1原始SHA均保留。重新执行diff/check、add-n后冻结。

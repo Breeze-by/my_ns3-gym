@@ -1,0 +1,70 @@
+{
+  "schema": "mr3-v5-installed-diffdrive-primary-source-v1",
+  "freeze": "57b7c7f372aef4d84acd25fcd97a9944fa1fe9bb",
+  "installed_shared_object": {
+    "path": "/opt/ros/humble/lib/libgazebo_ros_diff_drive.so",
+    "realpath": "/opt/ros/humble/lib/libgazebo_ros_diff_drive.so",
+    "sha256": "931a0b3f83d08a8728fe82461c72ec85e0a360f8b50e88471c214cfaa7c72027",
+    "bytes": 682432,
+    "owner": {
+      "argv": [
+        "dpkg",
+        "-S",
+        "/opt/ros/humble/lib/libgazebo_ros_diff_drive.so"
+      ],
+      "returncode": 0,
+      "stdout": "ros-humble-gazebo-plugins: /opt/ros/humble/lib/libgazebo_ros_diff_drive.so\n",
+      "stderr": ""
+    },
+    "package": {
+      "argv": [
+        "dpkg-query",
+        "-W",
+        "-f=${Package} ${Version} ${Architecture} ${Status}\\n",
+        "ros-humble-gazebo-plugins"
+      ],
+      "returncode": 0,
+      "stdout": "ros-humble-gazebo-plugins 3.9.0-1jammy.20260325.235919 amd64 install ok installed\n",
+      "stderr": ""
+    },
+    "build_id": {
+      "argv": [
+        "readelf",
+        "-n",
+        "/opt/ros/humble/lib/libgazebo_ros_diff_drive.so"
+      ],
+      "returncode": 0,
+      "stdout": "\nDisplaying notes found in: .note.gnu.property\n  Owner                Data size \tDescription\n  GNU                  0x00000010\tNT_GNU_PROPERTY_TYPE_0\n      Properties: x86 feature: IBT, SHSTK\n\nDisplaying notes found in: .note.gnu.build-id\n  Owner                Data size \tDescription\n  GNU                  0x00000014\tNT_GNU_BUILD_ID (unique build ID bitstring)\n    Build ID: c9d9c41b90930abb396d9d7187b8c2e057e07d2b\n",
+      "stderr": ""
+    }
+  },
+  "official_sources": [
+    {
+      "file": "upstream_3.9.0.cpp",
+      "url": "https://raw.githubusercontent.com/ros-simulation/gazebo_ros_pkgs/3.9.0/gazebo_plugins/src/gazebo_ros_diff_drive.cpp",
+      "sha256": "7a6ef5eb9b48292f1b4f3d9a16907815d5d5a751e0a5635a1cac84315b95b498",
+      "bytes": 23278
+    },
+    {
+      "file": "bloom_humble_3.9.0-1.cpp",
+      "url": "https://raw.githubusercontent.com/ros2-gbp/gazebo_ros_pkgs-release/release/humble/gazebo_plugins/3.9.0-1/src/gazebo_ros_diff_drive.cpp",
+      "sha256": "7a6ef5eb9b48292f1b4f3d9a16907815d5d5a751e0a5635a1cac84315b95b498",
+      "bytes": 23278
+    }
+  ],
+  "official_sources_identical": true,
+  "canonical_sdf": {
+    "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/models/turtlebot3_waffle/model.sdf",
+    "sha256": "801ee7f05f8aab1b791ec1203595d08139f0d57cd2e5518e09baf657c2085156",
+    "diffdrive_plugins": [
+      {
+        "attributes": {
+          "name": "turtlebot3_diff_drive",
+          "filename": "libgazebo_ros_diff_drive.so"
+        },
+        "xml": "<plugin name=\"turtlebot3_diff_drive\" filename=\"libgazebo_ros_diff_drive.so\">\n\n      <ros>\n        \n        <remapping>/tf:=tf</remapping>\n      </ros>\n\n      <update_rate>30</update_rate>\n      <left_joint>wheel_left_joint</left_joint>\n      <right_joint>wheel_right_joint</right_joint>\n\n      <wheel_separation>0.287</wheel_separation>\n      <wheel_diameter>0.066</wheel_diameter>\n\n      <max_wheel_torque>20</max_wheel_torque>\n      <max_wheel_acceleration>1.0</max_wheel_acceleration>\n\n      <odometry_source>1</odometry_source>\n\n      <command_topic>cmd_vel</command_topic>\n\n      <publish_odom>true</publish_odom>\n      <publish_odom_tf>true</publish_odom_tf>\n      <publish_wheel_tf>false</publish_wheel_tf>\n\n      <odometry_topic>odom</odometry_topic>\n      <odometry_frame>odom</odometry_frame>\n      \n\n    </plugin>\n\n    "
+      }
+    ]
+  },
+  "source_binary_limit": "Installed package version establishes declared upstream/release version; no reproducible-build or instruction-level equality proof to downloaded source is claimed. Actual SO bytes/build-id retained. Native run did not archive plugin wheel joint velocity, wheel_speed_instr_ internal state, or actual plugin OnCmdVel consumption times, so exact latent replay cannot be uniquely determined from command-topic+WORLD odom alone."
+}

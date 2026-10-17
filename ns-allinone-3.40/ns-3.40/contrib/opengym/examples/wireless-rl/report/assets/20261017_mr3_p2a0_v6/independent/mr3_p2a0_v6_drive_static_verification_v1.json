@@ -1,0 +1,41 @@
+{
+  "schema": "mr3-v6-drive-static-source-verification-v1",
+  "passed": true,
+  "upstream_cpp_sha256": "7a6ef5eb9b48292f1b4f3d9a16907815d5d5a751e0a5635a1cac84315b95b498",
+  "unchanged_odometry_functions": {
+    "UpdateOdometryEncoder": {
+      "unchanged_except_private_class_rename": true,
+      "sha256": "5fa2ff7fab899ee76045f982d00a632683215721026b179107c7bc9339a57da3"
+    },
+    "UpdateOdometryWorld": {
+      "unchanged_except_private_class_rename": true,
+      "sha256": "c8f6f42ae1187f67f87151f602d1c0f2824f450baa50ec2b5db372fc8199511e"
+    },
+    "PublishOdometryTf": {
+      "unchanged_except_private_class_rename": true,
+      "sha256": "84d6581dddfc9c6f9ce343c8e8a1ee14886515cf5e4c2eccd0548900f372035a"
+    },
+    "PublishWheelsTf": {
+      "unchanged_except_private_class_rename": true,
+      "sha256": "a621a766ffbceb14a1ac5900a4604e7a73f6e04adb4abfaaf2541cc693319419"
+    },
+    "PublishOdometryMsg": {
+      "unchanged_except_private_class_rename": true,
+      "sha256": "3fda68812f0438d3cec412f14a1d04ed2215129797a3e39dfc199b1797a3126d"
+    }
+  },
+  "compiled_hashes_match_current_sources": {
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/src/mr3_gazebo_diff_drive.cpp": "f30b6d7c6ee44cd40f3603c4c0b759e43d6333f3136570bdc13c088c61230075",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/mr3_gazebo_diff_drive.hpp": "a7c237943e8728f72cd39e815b8aa47c0bff45374941293aacf77384e3c4b63e",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/paired_wheel_slew.hpp": "80cf2e51f1b39f7bb89ef8b61b4b6eaf7c9be68c418bf0bb7ef57640d82c99d9"
+  },
+  "installed_library_realpath": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_gazebo_diff_drive.so",
+  "installed_library_sha256": "e4671d82dc1c410fbf3c710f82b4e6768f6c603894a4bf23d8621e04ecc75c81",
+  "gtests": {
+    "tests": 21,
+    "failures": 0,
+    "errors": 0,
+    "disabled": 0
+  },
+  "scope": "Source/binary hash declaration, retained odometry computations, weak callback ownership structure and CPU tests; no Gazebo, native physical response, task, or braking credit."
+}

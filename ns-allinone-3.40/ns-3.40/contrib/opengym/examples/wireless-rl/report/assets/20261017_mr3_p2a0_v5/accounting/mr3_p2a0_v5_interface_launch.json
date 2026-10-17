@@ -1,0 +1,51 @@
+{
+  "schema": "mr3-p2a0-native-launch-v1",
+  "freeze": "57b7c7f372aef4d84acd25fcd97a9944fa1fe9bb",
+  "stage": "interface",
+  "command_argv": [
+    "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+    "-u",
+    "-m",
+    "mr3_learning.benchmark",
+    "--workers",
+    "1",
+    "--schedule",
+    "open:101",
+    "--steps",
+    "20",
+    "--preparation-motion-probe",
+    "--base-domain",
+    "222",
+    "--base-port",
+    "12601",
+    "--output-root",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0",
+    "--run-id",
+    "mr3_p2a0_20261017_v5_interface",
+    "--preparation-parameter-review"
+  ],
+  "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+  "benchmark_parent": {
+    "pid": 2444041,
+    "parent": 2444008,
+    "group": 2444006,
+    "session": 2444006,
+    "start_ticks": 395721877,
+    "state": "R"
+  },
+  "launcher_identity": {
+    "pid": 2444008,
+    "parent": 2444006,
+    "group": 2444006,
+    "session": 2444006,
+    "start_ticks": 395721712,
+    "state": "R"
+  },
+  "start_utc": "2026-10-17T04:37:03.759593+00:00",
+  "start_monotonic": 3957218.771444682,
+  "console": "/tmp/mr3_p2a0_v5_interface_console.log",
+  "returncode": 1,
+  "wall_duration_sec": 361.46578524494544,
+  "end_utc": "2026-10-17T04:43:05.224338+00:00",
+  "benchmark_parent_after": null
+}

@@ -1,0 +1,141 @@
+{
+  "schema": "mr3-paired-wheel-helper-checks-v1",
+  "passed": true,
+  "scope": "pure C++ command/model validation; no native/GPU/PPO or physical-body acceptance credit",
+  "history": [
+    {
+      "check": "initial_cpp17_compile_and_gtests",
+      "passed": 7
+    },
+    {
+      "check": "nominal_alpha_downround_property",
+      "passed": 7
+    },
+    {
+      "check": "retained_model_envelope_grid_added",
+      "passed": 8,
+      "milliseconds": 358
+    }
+  ],
+  "checks": [
+    {
+      "name": "cpp17_ubsan_compile",
+      "argv": [
+        "rtk",
+        "proxy",
+        "/usr/bin/g++",
+        "-std=c++17",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-pedantic",
+        "-fsanitize=undefined",
+        "-fno-sanitize-recover=all",
+        "-Iros2_ws/ros2-multi-robot-automap/src/multi_robot/include",
+        "ros2_ws/ros2-multi-robot-automap/src/multi_robot/test/test_paired_wheel_slew.cpp",
+        "-lgtest",
+        "-lgtest_main",
+        "-pthread",
+        "-o",
+        "/tmp/mr3_test_paired_wheel_slew_ubsan"
+      ],
+      "exit_code": 0,
+      "wall_sec": 4.259705085773021,
+      "stdout": ""
+    },
+    {
+      "name": "cpp17_ubsan_gtest",
+      "argv": [
+        "rtk",
+        "proxy",
+        "/tmp/mr3_test_paired_wheel_slew_ubsan"
+      ],
+      "exit_code": 0,
+      "wall_sec": 0.7127777929417789,
+      "stdout": "Running main() from ./googletest/src/gtest_main.cc\n[==========] Running 8 tests from 1 test suite.\n[----------] Global test environment set-up.\n[----------] 8 tests from PairedWheelSlew\n[ RUN      ] PairedWheelSlew.UsesOneFractionFromCurrentFeedbackInsteadOfRetainedInstruction\n[       OK ] PairedWheelSlew.UsesOneFractionFromCurrentFeedbackInsteadOfRetainedInstruction (25 ms)\n[ RUN      ] PairedWheelSlew.ZeroTargetBrakesBothWheelsWithoutInventingTurn\n[       OK ] PairedWheelSlew.ZeroTargetBrakesBothWheelsWithoutInventingTurn (0 ms)\n[ RUN      ] PairedWheelSlew.ReachesBothDesiredSpeedsTogetherAndHasNoDeadbandBranch\n[       OK ] PairedWheelSlew.ReachesBothDesiredSpeedsTogetherAndHasNoDeadbandBranch (0 ms)\n[ RUN      ] PairedWheelSlew.DisabledLimitAndZeroTimeHaveExplicitSeparateSemantics\n[       OK ] PairedWheelSlew.DisabledLimitAndZeroTimeHaveExplicitSeparateSemantics (0 ms)\n[ RUN      ] PairedWheelSlew.RejectsNegativeAndEveryNonfiniteInputEvenWithLimitDisabled\n[       OK ] PairedWheelSlew.RejectsNegativeAndEveryNonfiniteInputEvenWithLimitDisabled (0 ms)\n[ RUN      ] PairedWheelSlew.FiniteExtremesDoNotOverflowDifferenceOrMakeNan\n[       OK ] PairedWheelSlew.FiniteExtremesDoNotOverflowDifferenceOrMakeNan (0 ms)\n[ RUN      ] PairedWheelSlew.RandomPairsHaveExactRimBudgetSharedAlphaAndConvexBodyVelocity\n[       OK ] PairedWheelSlew.RandomPairsHaveExactRimBudgetSharedAlphaAndConvexBodyVelocity (412 ms)\n[ RUN      ] PairedWheelSlew.IdealNoSlipZeroTargetFitsRetainedGlobalStopEnvelope\n[       OK ] PairedWheelSlew.IdealNoSlipZeroTargetFitsRetainedGlobalStopEnvelope (33 ms)\n[----------] 8 tests from PairedWheelSlew (472 ms total)\n\n[----------] Global test environment tear-down\n[==========] 8 tests from 1 test suite ran. (472 ms total)\n[  PASSED  ] 8 tests.\n"
+    },
+    {
+      "name": "diff_check",
+      "argv": [
+        "rtk",
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit_code": 0,
+      "wall_sec": 0.3786434163339436,
+      "stdout": "\n"
+    }
+  ],
+  "source_sha256": {
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/paired_wheel_slew.hpp": "80cf2e51f1b39f7bb89ef8b61b4b6eaf7c9be68c418bf0bb7ef57640d82c99d9",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/test/test_paired_wheel_slew.cpp": "cdebba0946feaec82cbba07674afafc7d3a0030cc69c501e6d18dcaea99fffc0",
+    "/tmp/mr3_paired_wheel_stop_model_v1.py": "a4049d0dc15baeec7664a040edc5e727056bc587b4af1b1b639191b366d888a4",
+    "/tmp/mr3_paired_wheel_stop_model_v1.json": "2adc73c6bbcfa5dd52c6554be9f5af243ca2bde41b734caeb1e6320a51d22a4b"
+  },
+  "contract": {
+    "namespace": "multi_robot",
+    "api": "limit_paired_wheel_speeds(current array2, desired array2, max_accel, sim_dt) -> {applied array2, alpha}",
+    "invalid": "nonfinite current/desired/maxa/dt or negative maxa/dt throws invalid_argument",
+    "disabled": "maxa0 -> desired,alpha1; no retained state",
+    "zero_time_active": "maxa>0 and dt0 -> current,alpha0",
+    "normal": "one common alpha from source-current pair; exact binary64 result stays within each rim a*dt budget; inward rounding may make alpha smaller than nominal",
+    "reset": "stateless helper: caller clears command/epoch; no old instruction accumulator"
+  },
+  "conditional_model": {
+    "schema": "mr3-independent-paired-wheel-stop-model-v1",
+    "passed": true,
+    "physical_evidence": false,
+    "parameters": {
+      "body_speed_bound_mps": 0.3,
+      "body_turn_bound_radps": 1.2,
+      "wheel_separation_m": 0.287,
+      "rim_accel_mps2": 1.0,
+      "update_dt_sec": 0.034,
+      "reaction_sec": 0.16,
+      "extra_phase_sec": 0.034
+    },
+    "bounds": {
+      "maximum_initial_rim_mps": 0.4722,
+      "continuous_stop_including_reaction_sec": 0.6322,
+      "continuous_path_including_reaction_m": 0.11883,
+      "conservative_discrete_time_sec": 0.7002,
+      "conservative_discrete_path_m": 0.13923,
+      "retained_task_time_envelope_sec": 0.78,
+      "retained_path_envelope_m": 0.144
+    },
+    "finite_grid": {
+      "initial_pairs": 2989,
+      "maximum_path_m": 0.1341664548919949,
+      "maximum_time_sec": 0.67,
+      "worst_path_case": {
+        "initial_v": -0.3,
+        "initial_w": -1.2,
+        "path_with_extra_phase_m": 0.1341664548919949,
+        "time_with_extra_phase_sec": 0.67
+      }
+    },
+    "derivation": [
+      "M=max(abs(left),abs(right)) <= abs(v)+(.287/2)*abs(w) <= .4722",
+      "zero target: common alpha=min(1,a*dt/M), each rim and body v/w multiply by1-alpha",
+      "continuous Tstop=M/a; integral abs(v)dt=abs(v0)*M/(2a)",
+      "continuous with reaction: .16+.4722=.6322s and .048+.07083=.11883m",
+      "holding old speed adds at most .30*.034; an additional full phase adds .0102m",
+      "conservative finite-model .7002s/.13923m remain inside .78s/.144m"
+    ],
+    "assumptions": [
+      "ideal no-slip differential-drive mapping and instantaneous tracking of applied joint target",
+      "source-current joint feedback is accurate; no stale accumulated instruction",
+      "initial body abs(v)<=.30 and abs(w)<=1.2 at braking start; rim acceleration limit1",
+      "sim-time wheel updates at most34ms; reaction within declared.16s; zero command retained",
+      "numeric inward rounding may reduce alpha; negligible binary64 arithmetic must be audited separately"
+    ],
+    "limitations": [
+      "current joint target step bound is not a world body speed/acceleration guarantee",
+      "torque, contact, slip and real tracking are omitted; native full-vector/stop audits remain mandatory",
+      "global stop envelope is not a claim of instantaneous minimum body deceleration.5m/s2",
+      "grid complements the closed-form upper bound and does not substitute native evidence"
+    ],
+    "script_sha256": "a4049d0dc15baeec7664a040edc5e727056bc587b4af1b1b639191b366d888a4"
+  }
+}

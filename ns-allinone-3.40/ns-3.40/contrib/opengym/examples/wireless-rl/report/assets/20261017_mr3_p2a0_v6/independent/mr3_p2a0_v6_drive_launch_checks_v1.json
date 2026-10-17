@@ -1,0 +1,72 @@
+{
+  "schema": "mr3-p2a0-v6-drive-launch-checks-v1",
+  "passed": true,
+  "new_freeze": "pending",
+  "baseline_model_freeze": "57b7c7f372aef4d84acd25fcd97a9944fa1fe9bb",
+  "baseline_model_sha256": "801ee7f05f8aab1b791ec1203595d08139f0d57cd2e5518e09baf657c2085156",
+  "source_sha256": {
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/models/turtlebot3_waffle/model.sdf": "94c067066beb942fbd1b73fb6a40726f7336a7ac8d0e0d2ccf6cec6a785a6210",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py": "008173e55ba2bc049ee117e97c82f516fc347ad715124b719850253824de01d7",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_drive_launch.py": "3f5aa25216d10b2990aeaef1bc349eca0c9ccfc9366de04c1449a73af7f60f7a"
+  },
+  "checks": [
+    {
+      "name": "ros_headless_launch_regressions",
+      "command_argv": [
+        "bash",
+        "-c",
+        "source /opt/ros/humble/setup.bash && source install/setup.bash && export PYTHONNOUSERSITE=1 && /usr/bin/python3 -m pytest src/multi_robot_exploration/test/test_mr3_drive_launch.py src/multi_robot_exploration/test/test_mr3_adapter_launch.py src/multi_robot_exploration/test/test_mr3_terminal_launch.py src/multi_robot_exploration/test/test_launch_and_smoke.py -q"
+      ],
+      "cwd": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap",
+      "returncode": 0,
+      "stdout": "........................................................................ [ 62%]\n...........................................                              [100%]\n115 passed in 6.51s\n",
+      "stderr": "",
+      "wall_sec": 8.31542539037764
+    },
+    {
+      "name": "flake8",
+      "command_argv": [
+        "/usr/bin/python3",
+        "-m",
+        "flake8",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_drive_launch.py",
+        "--max-line-length=99"
+      ],
+      "cwd": "/home/zhuyulab/ns3-workspace",
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "",
+      "wall_sec": 1.003926050849259
+    },
+    {
+      "name": "git_diff_check",
+      "command_argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "cwd": "/home/zhuyulab/ns3-workspace",
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "",
+      "wall_sec": 0.02206928003579378
+    }
+  ],
+  "initial_failure_preserved": {
+    "kind": "style-only E501",
+    "details": [
+      "existing top launch ValueError line100 exceeded requested99-char check",
+      "new test function name101 chars exceeded99-char check"
+    ],
+    "resolution": "wrapped same ValueError literal and test signature; final style pass, no production behavior changed"
+  },
+  "verified": [
+    "Restoring original filename and removing only2newaudit tags reproduces every original Git57b7 model byte",
+    "Actual three spawn -file paths point to evidence/drive_model_tbN.sdf with distinct drive_tbN.jsonl and same adapter epoch",
+    "XML escape roundtrip preserves special path/epoch characters; physical bytes unchanged",
+    "Audit SDF files use open x and are retained; existing prior evidence never overwritten; no disabled tb4 artifact",
+    "Audit empty path remains empty; baseline empty epoch allowed; owned temporary model files removed on shutdown"
+  ],
+  "scope": "115headless ROS launch/config semantic checks only; no Gazebo/plugin load, physical simulation/control, learning, task gate change, or native proof. Runtime agent owns implementation/build/paired actuator dynamics."
+}

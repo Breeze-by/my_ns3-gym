@@ -16,8 +16,8 @@ pilot718原生/717返回、0更新，因w0 tb1 SLAM有序SIGINT后karto::Excepti
 
 ## 模式与所有权
 
-`execution_mode:=baseline`保留传统控制器；`adapter`只启动`mr3_adapter`，固定三台，
-禁止drive。两者共享按用户/ROS域划分的本机文件锁，第二个目标所有者启动即失败。
+`execution_mode:=baseline`保留传统控制器；`adapter`由`mr3_adapter`独占全局目标，固定三台，
+禁止传统`drive`目标节点。两者共享按用户/ROS域划分的本机文件锁，第二个目标所有者启动即失败。
 adapter不导入探索效用、坏点重派或旧目标分配函数；没有策略输入就保持空闲。
 它只拥有`NavigateToPose`，不写底盘速度。安全停止与Nav2本地恢复不选择新探索目标。
 
@@ -123,6 +123,24 @@ smoother共同收紧命令角速度为`.8rad/s`，线速度上限仍为`.26m/s`�
 输入/输出、使用的源时间和几何判据写入独立trace，worker核对图上唯一发布者、本地actual值FIFO
 及同clock三台输出消费后ACK；`graph_at_callback`不是逐包MessageInfo或Gazebo执行器消费确认。
 保护依赖有限速度/源龄/反应/制动界，不对任意定位跳变作绝对安全承诺；`.50m`任务失败门槛保持。
+
+执行合同更新为`mr3-paired-joint-feedback-drive-v1`：最终`cmd_vel`交给局部
+`libmr3_gazebo_diff_drive.so`，从本机实测左右轮关节轮缘速度共同插值到命令目标；
+每轮步长受`max_wheel_acceleration * sim_dt`约束，两轮共享同一比例，不累加隐藏指令。
+插件来自Gazebo ROS 3.9.0，保留BSD许可、独立namespace/class及
+[来源说明](../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot/vendor/gazebo_ros_diff_drive.PROVENANCE.md)，
+系统插件保持原件。轮速反馈是本机传感；继承的WORLD里程计仍只用于输出计算，不进入轮执行决策。
+30Hz、`.287m`轮距、`.066m`轮径、`1.0m/s²`轮缘加速度、`20Nm`力矩、WORLD里程计及
+1ms物理tick/20ms量子保持。施加参考的共同插值性质不等于机体响应证明；
+`.30m/s`、`1.2rad/s`、`7rad/s²`、每机`.78s/.144m`停止响应及原任务/接触/关闭门禁仍须同冻结原生核验。
+
+正式运行保存实际spawn的`drive_model_tbN.sdf`与`drive_tbN.jsonl`，后者使用
+`mr3-drive-actuation-v1`记录epoch/本机/精确sim ns、实际库路径/编译来源SHA、真实
+`command_received`回调和每次驱动更新的`actuation`；绑定最新已接收命令序号、两轮实测/目标/施加值、
+共同插值比例和真实`dt`。原QoS depth 1保留最新目标语义，接收命令允许是最终输出FIFO的有序
+子序列，不是逐命令执行ACK。审计另将加载库文件SHA与源码/构建证明绑定；
+原motion同clock ACK仍只证明发布与本地topic接收，不能冒称Gazebo消费了每条命令。
+驱动原件只供独立工程核验，不进入actor或产生目标/探索兜底。
 
 这些edge/backend对象目前同进程/同DDS域，action endpoint仍在适配器内部。
 逻辑交付夹具不等于P3A的进程/订阅隔离、完整线协议或黑断测试；这些仍按计划留待P3A。

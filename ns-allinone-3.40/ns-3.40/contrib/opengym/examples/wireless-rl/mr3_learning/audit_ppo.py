@@ -123,7 +123,7 @@ EXECUTION_CONFIG_PINS = {
     ROS + 'src/multi_robot/config/nav2_params.yaml':
         '53b1fd403a55b6567a238efe954fadd40f572347f18bd0d258993b0e8d10d723',
     ROS + 'src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py':
-        '370a07e2fe42083b03b0a0b05c9b818d277782fcc602908830069dd89938d42f',
+        '008173e55ba2bc049ee117e97c82f516fc347ad715124b719850253824de01d7',
     ROS + 'src/multi_robot/launch/nav2_bringup/bringup_launch.py':
         '41b7e5e65c2c61ce6f1efb5a9288c3875e60f6c9054d77f96f7fc6f0a6f2aa53',
     ROS + 'src/multi_robot/launch/nav2_bringup/navigation_launch.py':
@@ -131,9 +131,25 @@ EXECUTION_CONFIG_PINS = {
     ROS + 'src/multi_robot_exploration/setup.py':
         'a23cd0dc598ebb59d9eae325bd1a6ee0ae700751986cac6858fe2c2949b68a15',
     ROS + 'src/multi_robot/models/turtlebot3_waffle/model.sdf':
-        '801ee7f05f8aab1b791ec1203595d08139f0d57cd2e5518e09baf657c2085156',
+        '94c067066beb942fbd1b73fb6a40726f7336a7ac8d0e0d2ccf6cec6a785a6210',
+    ROS + 'src/multi_robot/CMakeLists.txt':
+        '9bc30246ab5f603bbf927d8b89b9d99803a7904fd5c8792d7e4cf8945463dc47',
+    ROS + 'src/multi_robot/package.xml':
+        'befde661174ae259974b6dcfe1ff98f8ce44568fd2ec94663303de413b7d1601',
+    ROS + 'src/multi_robot/src/mr3_gazebo_diff_drive.cpp':
+        'f30b6d7c6ee44cd40f3603c4c0b759e43d6333f3136570bdc13c088c61230075',
+    ROS + 'src/multi_robot/include/multi_robot/mr3_gazebo_diff_drive.hpp':
+        'a7c237943e8728f72cd39e815b8aa47c0bff45374941293aacf77384e3c4b63e',
+    ROS + 'src/multi_robot/include/multi_robot/paired_wheel_slew.hpp':
+        '80cf2e51f1b39f7bb89ef8b61b4b6eaf7c9be68c418bf0bb7ef57640d82c99d9',
+    ROS + 'src/multi_robot/vendor/gazebo_ros_diff_drive.PROVENANCE.md':
+        'f94919b9d3fc921f714f6d400fbc3f51f70a4a9b50a0a8579d050cb8258c98f0',
+    ROS + 'src/multi_robot/vendor/gazebo_ros_diff_drive.BSD-3-Clause.txt':
+        '771978f82c58310201ccdfdfd66e8ca798d26c2202d77f32a131d60bd297a545',
+    WIRELESS + 'MR3_ADAPTER_CONTRACT.md':
+        '31926aeb325ba8b47c01d2b28c430ba4475c38cc673af6b22c91309feaed22fb',
 }
-ENV_DOCUMENT_SHA256 = "a991f2611e45db07814067f91ac030520e671407f5554909d6cd6a39a5cc1639"
+ENV_DOCUMENT_SHA256 = "28176ab3e200370caaf168790e097ebbe25aef8d5df4165227f526b31260aee4"
 TASK_DOCUMENT_SHA256 = "f96f5ba785a39daa882b3c2ea217c58dd968550b65bf0ee15faf07ca079f8991"
 PRIOR_TASK_DOCUMENT_SHA256 = "5e4400396e4aaf5a5094fb4c0c04c85810c327cc85be88b7d03fa3faeade07d2"
 TASK_BASE_FREEZE = "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a"

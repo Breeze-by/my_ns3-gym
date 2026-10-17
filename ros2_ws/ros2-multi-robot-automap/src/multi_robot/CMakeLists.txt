@@ -10,6 +10,37 @@ find_package(rmw REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(gazebo REQUIRED)
 find_package(TBB REQUIRED)
+find_package(gazebo_ros REQUIRED)
+find_package(geometry_msgs REQUIRED)
+find_package(nav_msgs REQUIRED)
+find_package(tf2 REQUIRED)
+find_package(tf2_geometry_msgs REQUIRED)
+find_package(tf2_ros REQUIRED)
+find_package(nlohmann_json REQUIRED)
+
+# Keep embedded provenance correct after either the implementation or pure
+# actuator helper changes, including incremental builds.
+set(mr3_drive_sources
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/mr3_gazebo_diff_drive.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/multi_robot/mr3_gazebo_diff_drive.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/multi_robot/paired_wheel_slew.hpp)
+set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${mr3_drive_sources})
+file(SHA256 ${CMAKE_CURRENT_SOURCE_DIR}/src/mr3_gazebo_diff_drive.cpp mr3_drive_source_sha)
+file(SHA256 ${CMAKE_CURRENT_SOURCE_DIR}/include/multi_robot/mr3_gazebo_diff_drive.hpp mr3_drive_header_sha)
+file(SHA256 ${CMAKE_CURRENT_SOURCE_DIR}/include/multi_robot/paired_wheel_slew.hpp mr3_drive_helper_sha)
+add_library(mr3_gazebo_diff_drive SHARED src/mr3_gazebo_diff_drive.cpp)
+target_compile_features(mr3_gazebo_diff_drive PUBLIC cxx_std_17)
+target_include_directories(mr3_gazebo_diff_drive PRIVATE include ${GAZEBO_INCLUDE_DIRS})
+ament_target_dependencies(mr3_gazebo_diff_drive
+  gazebo_ros geometry_msgs nav_msgs rclcpp tf2 tf2_geometry_msgs tf2_ros)
+target_link_libraries(mr3_gazebo_diff_drive ${GAZEBO_LIBRARIES}
+  nlohmann_json::nlohmann_json ${CMAKE_DL_LIBS})
+target_compile_definitions(mr3_gazebo_diff_drive PRIVATE
+  MR3_DRIVE_SOURCE_SHA256="${mr3_drive_source_sha}"
+  MR3_DRIVE_HEADER_SHA256="${mr3_drive_header_sha}"
+  MR3_DRIVE_HELPER_SHA256="${mr3_drive_helper_sha}")
+install(TARGETS mr3_gazebo_diff_drive DESTINATION lib)
+install(DIRECTORY vendor/ DESTINATION share/${PROJECT_NAME}/vendor)
 
 add_library(mr3_gazebo_step_plugin SHARED src/mr3_gazebo_step_plugin.cpp)
 set_target_properties(mr3_gazebo_step_plugin PROPERTIES OUTPUT_NAME mr3_gazebo_step)
@@ -37,6 +68,9 @@ if(BUILD_TESTING)
   ament_add_gtest(test_step_contract test/test_step_contract.cpp)
   target_include_directories(test_step_contract PRIVATE include)
   target_compile_features(test_step_contract PUBLIC cxx_std_17)
+  ament_add_gtest(test_paired_wheel_slew test/test_paired_wheel_slew.cpp)
+  target_include_directories(test_paired_wheel_slew PRIVATE include)
+  target_compile_features(test_paired_wheel_slew PUBLIC cxx_std_17)
 endif()
 
 install(DIRECTORY launch/

@@ -1,0 +1,41 @@
+{
+  "schema": "mr3-v6-drive-consumer-independent-review-v1",
+  "passed": true,
+  "review_scope": "Read-only comparison to actual vendored producer and independent execution of synthetic CPU tests; no ROS/Gazebo or Git edits.",
+  "bindings": {
+    "/tmp/mr3_independent_drive_trace_v1.py": {
+      "bytes": 28163,
+      "sha256": "e2b610fe1fcb60f5a67a44a4eef30748e3a7600450043382d0a6ad71b02065e4"
+    },
+    "/tmp/mr3_independent_drive_trace_v1_tests.py": {
+      "bytes": 20050,
+      "sha256": "9a0a4ade25c2b7f0ab97c6559be335511e006c93e99551ac1c91344b33f77bc6"
+    },
+    "/tmp/mr3_p2a0_v6_drive_consumer_independent_tests_v1.txt": {
+      "bytes": 2316,
+      "sha256": "19bd2bce6f855431146c000492c3d4ec72b4db27261621e37b3b682f5cdfd397"
+    }
+  },
+  "independent_test_count": 25,
+  "independent_test_returncode": 0,
+  "confirmed": [
+    "Production trace field names and RIGHT0/LEFT1 order",
+    "Command selection locked through actuator write and audit, so latest recorded received target is consumed",
+    "QoS1 ordered guard-output subsequence; no per-command execution ACK claim",
+    "Effective SDF physical/link/collision tree matches old freeze except explicit plugin filename and audit tags",
+    "Actual native spawn argv file and robot namespace binding",
+    "Current canonical library bytes SHA; explicit archived gzip encoded and decoded SHA modes",
+    "Three compiled source declarations bound to exact frozen Git blobs",
+    "Exact Fraction(binary64) per-wheel acceleration budget without epsilon; separate 1e-12 algebraic rounding residual",
+    "Actual parsed bytes are the hashed bytes; end-of-audit mutation recheck",
+    "Terminal short prefix has explicit missing sampled-response/body credit",
+    "No world-body safety proof claimed"
+  ],
+  "fixed_prior_review_findings": [
+    "physical_model formerly mutated effective XML before its follow-up tag/filename validation; now copies first",
+    "Inputs formerly hashed one read then parsed a second read; now parses captured bytes"
+  ],
+  "predeclared_startup_observation": "First dt is not equated to configuration timestamp (covered by test). Auditor still requires normal 34ms source cadence for first update too. Producer sets last_update_time before connecting the update callback; no local evidence establishes that world time can advance during that Load interval. If first native dt exceeds the declared cadence it must remain an explicit engineering/audit failure, not be silently accepted.",
+  "world_body_response_credit": false,
+  "git_files_modified": false
+}

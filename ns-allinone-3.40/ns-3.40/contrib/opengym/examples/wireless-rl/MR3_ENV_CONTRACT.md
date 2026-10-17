@@ -1,6 +1,7 @@
 # MR3 环境与采样契约 v2（P2A.0准备修订）
 
-2026-10-17用户要求继续完成P2A.0。下列v3快照、v2张量、机器人导航图合成及最终速度门为本次新接口，
+2026-10-17用户要求继续完成P2A.0。下列v3快照、v2张量、机器人导航图合成、最终速度门及
+`mr3-paired-joint-feedback-drive-v1`执行合同为本次新接口，
 须由新冻结原生矩阵验证；不继承W7或旧P2A的成绩。旧任务指标、reward及20ms评价器相位门禁保持。
 
 本轮P1C验证2026-10-15启动，实际完成时刻见P1C报告。用户于2026-10-16验收P1C并授权P2A；P2A进行中，P2B及后续未开始。
@@ -81,6 +82,28 @@ worker在任务放行前等待三台运动输入就绪，并保存图上唯一�
 同clock三台输出消费后的ACK。当前Humble的身份范围是`graph_at_callback`，不是逐包MessageInfo
 或Gazebo执行器消费确认。另存实际global/local
 master costmap完整输出和源头/接收时钟。这些诊断不进入actor，也不冒充planner同刻消费确认。
+
+最终`cmd_vel`由局部构建的`libmr3_gazebo_diff_drive.so`执行，合同标识为
+`mr3-paired-joint-feedback-drive-v1`。该插件以Gazebo ROS 3.9.0为来源，保留BSD许可及
+[来源说明](../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot/vendor/gazebo_ros_diff_drive.PROVENANCE.md)，
+不替换系统库。每次实际驱动更新从本机两个轮关节的实测轮缘速度出发，以同一个插值比例朝
+最终命令对应的左右轮目标推进，每轮变化不超过`1.0m/s² * sim_dt`；不再累加隐藏轮速指令。
+该性质约束施加的轮速参考，不能替代对机体滑移、接触、有限力矩及实际停止响应的验证。
+最终速度门仍立即输出原请求、经完整复验的`(0,w)`或全零，不增加其后的另一个策略/速度门。
+
+物理参数保持30Hz驱动更新、`.287m`轮距、`.066m`轮径、`1.0m/s²`轮缘加速度、
+`20Nm`力矩和原WORLD里程计；真实1ms物理tick、20ms量子及任务时钟不变。
+原`.30m/s`机体平面速度、`1.2rad/s`角速度、`7rad/s²`转向加速度、`.78s/.144m`每机停止响应、
+`.50m`队友包络及任务/接触/关闭门禁保持，须在同一冻结原生矩阵独立核验。
+
+正式原件另存三个`drive_tbN.jsonl`及实际spawn使用的`drive_model_tbN.sdf`。
+驱动trace的schema为`mr3-drive-actuation-v1`，记录epoch、本机、精确仿真纳秒、实际库路径和
+编译来源摘要；`command_received`是Gazebo插件实际回调收到的最终命令，`actuation`绑定该次
+更新使用的最新命令序号、实测/目标/施加的两轮速度、共同插值比例及真实`dt`。
+订阅保留QoS depth 1和最新目标语义，实际接收可为最终输出FIFO的有序子序列，不能要求或
+伪造每个命令的执行ACK。驱动记录与已保存的唯一发布者/输出FIFO配对，并独立绑定实际加载库
+文件的SHA；它补充执行消费证据，不将本地topic接收ACK升级为Gazebo逐命令执行确认。
+缺省audit路径为空时不写驱动原件；正式worker提供路径和epoch，独占创建且写入失败仍为原生失败。
 
 ## 本机SDK状态响应等待（W7已验证配置）
 

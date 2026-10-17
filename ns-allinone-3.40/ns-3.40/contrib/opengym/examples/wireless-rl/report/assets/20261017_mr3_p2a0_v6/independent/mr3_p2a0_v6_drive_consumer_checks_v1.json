@@ -1,0 +1,73 @@
+{
+  "schema": "mr3-p2a0-v6-drive-consumer-checks-v1",
+  "passed": true,
+  "source_sha256": {
+    "/tmp/mr3_independent_drive_trace_v1.py": "e2b610fe1fcb60f5a67a44a4eef30748e3a7600450043382d0a6ad71b02065e4",
+    "/tmp/mr3_independent_drive_trace_v1_tests.py": "9a0a4ade25c2b7f0ab97c6559be335511e006c93e99551ac1c91344b33f77bc6"
+  },
+  "checks": [
+    {
+      "name": "synthetic_mutation_unittest",
+      "command_argv": [
+        "/usr/bin/python3",
+        "/tmp/mr3_independent_drive_trace_v1_tests.py",
+        "-v"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "test_actual_spawn_must_load_the_exact_effective_file (__main__.DriveMutationTests) ... ok\ntest_all_three_valid_and_no_world_body_credit (__main__.DriveMutationTests) ... ok\ntest_applied_value_must_use_one_common_alpha (__main__.DriveMutationTests) ... ok\ntest_common_fraction_and_nominal_fraction_required (__main__.DriveMutationTests) ... ok\ntest_different_source_successor_dt_rejected (__main__.DriveMutationTests) ... ok\ntest_effective_model_physics_and_epoch_mutations (__main__.DriveMutationTests) ... ok\ntest_epoch_record_sequence_clock_and_types_mutations (__main__.DriveMutationTests) ... ok\ntest_exact_terminal_fixture_dispatch (__main__.DriveMutationTests) ... ok\ntest_first_dt_does_not_assume_configuration_clock_is_last_update (__main__.DriveMutationTests) ... ok\ntest_gzip_logs_and_explicit_archived_binary_mode (__main__.DriveMutationTests) ... ok\ntest_input_mutation_detected_at_end (__main__.DriveMutationTests) ... ok\ntest_latest_received_command_cannot_be_held_stale_after_release (__main__.DriveMutationTests) ... ok\ntest_latest_received_sequence_and_value_not_a_synthetic_command (__main__.DriveMutationTests) ... ok\ntest_missing_guard_source_and_future_guard_source_rejected (__main__.DriveMutationTests) ... ok\ntest_missing_one_robot_trace_fails_whole_episode (__main__.DriveMutationTests) ... ok\ntest_one_binary64_ulp_over_budget_is_not_a_math_tolerance (__main__.DriveMutationTests) ... ok\ntest_qos_one_can_skip_guard_publications_without_fabricating_ack (__main__.DriveMutationTests) ... ok\ntest_received_command_outside_limits_rejected (__main__.DriveMutationTests) ... ok\ntest_selected_gzip_archive_restores_original_absolute_paths_from_manifest (__main__.DriveMutationTests) ... ok\ntest_task_reset_rejected (__main__.DriveMutationTests) ... ok\ntest_terminal_near_prerelease_sample_no_response_credit (__main__.DriveMutationTests) ... ok\ntest_wrong_30hz_tick_dt_and_nonfinite_current_rejected (__main__.DriveMutationTests) ... ok\ntest_wrong_binary_or_wrong_proof_compiled_source_rejected (__main__.DriveMutationTests) ... ok\ntest_wrong_compiled_source_and_physical_configuration (__main__.DriveMutationTests) ... ok\ntest_wrong_right_left_body_transform (__main__.DriveMutationTests) ... ok\n\n----------------------------------------------------------------------\nRan 25 tests in 0.932s\n\nOK\n",
+      "wall_sec": 1.3602744489908218
+    },
+    {
+      "name": "syntax",
+      "command_argv": [
+        "/usr/bin/python3",
+        "-m",
+        "py_compile",
+        "/tmp/mr3_independent_drive_trace_v1.py",
+        "/tmp/mr3_independent_drive_trace_v1_tests.py"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "",
+      "wall_sec": 0.39211935782805085
+    }
+  ],
+  "binary_schema_io_compatibility_only": {
+    "example_proof": "/tmp/mr3_p2a0_v6_binaryproof_example.json",
+    "example_proof_sha256": "b51fb2c61175273609e422da518314268066e2ee72c269051aaceb9d35cbfc23",
+    "current": {
+      "library_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_gazebo_diff_drive.so",
+      "library_sha256": "e4671d82dc1c410fbf3c710f82b4e6768f6c603894a4bf23d8621e04ecc75c81",
+      "compiled_sources": {
+        "compiled_source_sha256": "f30b6d7c6ee44cd40f3603c4c0b759e43d6333f3136570bdc13c088c61230075",
+        "compiled_header_sha256": "a7c237943e8728f72cd39e815b8aa47c0bff45374941293aacf77384e3c4b63e",
+        "compiled_helper_sha256": "80cf2e51f1b39f7bb89ef8b61b4b6eaf7c9be68c418bf0bb7ef57640d82c99d9"
+      },
+      "mode": "current_canonical_binary_verified",
+      "current_binary_verified": true,
+      "loaded_library_still_in_process_proven": false
+    },
+    "archived": {
+      "library_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_gazebo_diff_drive.so",
+      "library_sha256": "e4671d82dc1c410fbf3c710f82b4e6768f6c603894a4bf23d8621e04ecc75c81",
+      "compiled_sources": {
+        "compiled_source_sha256": "f30b6d7c6ee44cd40f3603c4c0b759e43d6333f3136570bdc13c088c61230075",
+        "compiled_header_sha256": "a7c237943e8728f72cd39e815b8aa47c0bff45374941293aacf77384e3c4b63e",
+        "compiled_helper_sha256": "80cf2e51f1b39f7bb89ef8b61b4b6eaf7c9be68c418bf0bb7ef57640d82c99d9"
+      },
+      "mode": "archived_binary_replay",
+      "current_binary_verified": false,
+      "loaded_library_still_in_process_proven": false
+    },
+    "git_freeze_verification": "pending real postcommit proof; fake aaaa example used solely for binary IO/schema, not native or source-freeze credit"
+  },
+  "independent_review_fixes": [
+    "Runtime review identified in-place XML normalization, fixed by deep copy before comparing original physical model.",
+    "Parsing now uses exactly captured-and-hashed raw bytes; input hash also rechecked after audit."
+  ],
+  "cli": "/usr/bin/python3 SCRIPT EP_OR_RUN --freeze EXACT40 --binary-proof POSTCOMMIT_PROOF --output NEW_JSON [--archived]",
+  "archive_contract": "archived_library_gzip is repo-relative string + archived_library_encoded_sha256; --archived permits saved SO bytes and records current_binary_verified=false. Selected data paths restore original EP only via manifest.source+relativeEP; native requires actualEP.",
+  "coverage": "ordinary returned-step fixtures require postrelease actuation and100ms source coverage. Exact 2open101/4API terminal fixture permits fresh prerelease anchor with sampled_response_credit=false if no postrelease update.",
+  "scope": "25 stdlib synthetic mutations, syntax and saved actual binary IO compatibility. No ROS/control/native launch, producer imports, actor/truth, source modifications, task physics changes, new native validation or body/angular credit."
+}

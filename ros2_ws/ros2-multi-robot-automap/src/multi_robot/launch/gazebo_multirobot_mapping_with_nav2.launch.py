@@ -2,7 +2,9 @@
 import json
 import os
 import signal
+import tempfile
 import time
+from xml.sax.saxutils import escape
 
 from ament_index_python.packages import get_package_prefix, get_package_share_directory
 
@@ -19,7 +21,7 @@ from launch.actions import (
     TimerAction,
 )
 from launch.conditions import IfCondition
-from launch.event_handlers import OnProcessExit, OnProcessStart
+from launch.event_handlers import OnProcessExit, OnProcessStart, OnShutdown
 from launch.events import Shutdown, matches_action
 from launch.events.process import SignalProcess
 from launch.launch_description_sources import PythonLaunchDescriptionSource
@@ -27,6 +29,39 @@ from launch.substitutions import LaunchConfiguration
 
 from launch_ros.actions import Node
 from nav2_common.launch import RewrittenYaml
+
+
+def drive_spawn_model(model_path, robot_name, audit_path, epoch):
+    """Set diagnostic tags without reserializing any physical model bytes."""
+    with open(model_path, encoding="utf-8") as stream:
+        model = stream.read()
+    tags = {
+        "mr3_audit_path": (os.path.join(os.path.dirname(audit_path), f"drive_{robot_name}.jsonl")
+                           if audit_path else ""),
+        "mr3_epoch": epoch,
+    }
+    for tag, value in tags.items():
+        placeholder = f"<{tag}/>"
+        if model.count(placeholder) != 1:
+            raise ValueError(f"drive model requires exactly one {tag} placeholder")
+        model = model.replace(placeholder, f"<{tag}>{escape(value)}</{tag}>")
+    if audit_path:
+        destination = os.path.join(os.path.dirname(audit_path), f"drive_model_{robot_name}.sdf")
+        with open(destination, "x", encoding="utf-8") as stream:
+            stream.write(model)
+        return destination
+    with tempfile.NamedTemporaryFile(
+            mode="w", encoding="utf-8", suffix=f"_{robot_name}.sdf", delete=False) as stream:
+        stream.write(model)
+        return stream.name
+
+
+def remove_drive_spawn_model(event, context, *, path):
+    try:
+        os.unlink(path)
+    except FileNotFoundError:
+        pass
+    return []
 
 
 class OrderedRosShutdown:
@@ -272,7 +307,8 @@ def launch_setup(context, *args, **kwargs):
         raise ValueError("mr3_stepped requires adapter mode")
     if training_reward and (not adapter_mode or not evaluation_contract.perform(context)
                             or not IfCondition(enable_task_evaluator).evaluate(context)):
-        raise ValueError("training_reward_enabled requires adapter mode and MR3 contract evaluator")
+        raise ValueError(
+            "training_reward_enabled requires adapter mode and MR3 contract evaluator")
     if terminal_probe and (not training_reward or not stepped_mode):
         raise ValueError("training_terminal_probe requires isolated rewards and stepped mode")
     if adapter_mode and robot_count != 3:
@@ -365,8 +401,8 @@ def launch_setup(context, *args, **kwargs):
             for robot in robots for topic in ("odom", "tf")
         ] if adapter_mode else []),
     ))
+    adapter_audit_path = LaunchConfiguration("mr3_audit_path").perform(context)
     if adapter_mode:
-        adapter_audit_path = LaunchConfiguration("mr3_audit_path").perform(context)
         actions.append(Node(
             package="multi_robot_exploration", executable="motion_safety",
             name="motion_safety", output="screen",
@@ -663,6 +699,12 @@ def launch_setup(context, *args, **kwargs):
     for robot in robots:
         robot_name = robot["name"]
         namespace = "/" + robot_name
+        spawn_model = drive_spawn_model(
+            model, robot_name, adapter_audit_path, episode_epoch.perform(context))
+        if not adapter_audit_path:
+            actions.append(RegisterEventHandler(OnShutdown(
+                on_shutdown=lambda event, event_context, path=spawn_model:
+                remove_drive_spawn_model(event, event_context, path=path))))
 
         params_file = os.path.join(
             multi_robot_share,
@@ -704,7 +746,7 @@ def launch_setup(context, *args, **kwargs):
             executable="spawn_entity.py",
             arguments=[
                 "-file",
-                model,
+                spawn_model,
                 "-entity",
                 robot_name,
                 "-robot_namespace",
