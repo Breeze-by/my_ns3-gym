@@ -332,3 +332,5 @@ P1A/P1B/P1C已验收，P2A已授权但未完成，v6停止；工程证据与后�
 当前v10真实peer ACK QoS不匹配使reset等待超时；未release adapter早return遮住真实stop ACK，invalid关闭也超时。v11统一实际durable ACK和未启动但已实际dispatcher.closed的stop闭合，保留所有原门、新冻结完整重验，不借旧PASS。
 
 v11实际interface32与关闭及独立门通过，原full仅旧readiness协议识别FAIL。v12只修consumer真实复合证明，保持ROS/任务/接触/物理；使用4个有界独立read-only audit subprocess减等待，依赖与全部receipt门保留。新freeze整矩阵，不重贴旧FAIL。
+
+V12实际冻结`6b1b4a010835` interface32与terminal全部正式门PASS；reset八轮原生严格关闭，但活动不足、完整平面速度.305828>.30、持续停止响应和driver精确向内舍入门FAIL。26项正式jobs全结束，deadline按规则SKIP；所有原件/FAIL已lossless归档，P2A.0仍未完成。继续修复必须以新clean pushed冻结/新预声明完整重验，不重试旧失败版或拼接PASS。

@@ -70,4 +70,4 @@ P1B已于2026-10-15由用户验收；该异步历史不提供固定dt信用。P1
 
 | [20261017_mr3_p2a0_v11.md](20261017_mr3_p2a0_v11.md) | ACK QoS与pre-release关闭接线修复 | 原生32/严格关闭及独立子门PASS；旧握手消费者FAIL，后续SKIP |
 
-| [20261017_mr3_p2a0_v12.md](20261017_mr3_p2a0_v12.md) | 受控reset复合readiness消费者 | 实现/验证中；全部原门保持、新冻结整矩阵 |
+| [20261017_mr3_p2a0_v12.md](20261017_mr3_p2a0_v12.md) | 受控reset复合readiness消费者 | interface/terminal全门PASS；reset活动、物理速度/停止及driver数值FAIL，deadline跳过；原件保留 |

@@ -2,7 +2,7 @@
 
 # Codex Monorepo Memory — MR3
 
-2026-10-17 continuation: P2A.0 remains authorized. V11 ba018fe3122c completed32 native interface steps and strict closure; drive/information/peer/control/settled/input/angular/physical/FIFO/closure audits PASS, original full FAIL retained because old initial-input/contact readiness consumer does not recognize the controlled reset handshake. Later native stages SKIP. V12 keeps all ROS/native/task/body/source contracts unchanged, adding a strict composite controlled-readiness audit and scoped legacy prewarm ACK subpredicate, with bounded4 independent auditor subprocesses. A new clean pushed full matrix is required; no inherited native PASS. No PPO/P2B/gateway; pilot balance1870 decisions/2905.954739546403 wallsec unchanged. See wireless-rl/report/20261017_mr3_p2a0_v12.md. User acceptance follows completion.
+2026-10-17 continuation: P2A.0 remains authorized and incomplete. V12 clean pushed freeze 6b1b4a010835 completes interface32 and terminal all formal gates PASS; reset eight episodes close normally but full/input activity, strict driver alpha and independent physical speed/stop gates FAIL. All26 formal jobs finished, deadline SKIP, original FAIL and lossless evidence preserved. Continue repairs under a new clean pushed freeze and full declared matrix; no cross-freeze PASS assembly. No PPO/P2B/gateway; pilot balance1870 decisions/2905.954739546403 wallsec unchanged. See wireless-rl/report/20261017_mr3_p2a0_v12.md. User acceptance follows completion.
 
 Historical first P2A.0 closure (2026-10-17): source freeze f8694025; six native episodes
 closed cleanly, terminal audit PASS, reset benchmark/full audit FAIL with one

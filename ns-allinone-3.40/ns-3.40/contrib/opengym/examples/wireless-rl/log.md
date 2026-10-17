@@ -5304,3 +5304,48 @@ root完整conda247 PASS（46.953test/52.430579245090485wall）、5coordinator st
 agent初19/11/14版fixture/字段/style失败、diagnostic01 FAIL及02/03/04 working-consumer真实组合PASS（末43.643547wall）原件均保留。最终15focused PASS/20.840test/25.594564wall；其范围与root247重叠不相加。实际V11原输入/旧正式FAIL/本working source前后SHA恒定，原W7 ACK子predicate+原contact.release_context真实入口均运行；该诊断不重新采样、不冒新freeze或95%信用。Runtime50原件raw689428/encoded664924，manifestb00632762c643844d2396a98bec5e94b1442ef3a4b264d524549ce426e993e4c；缺失早draft字节明确记录。独立Safety review v1/v2源码/结果均在该manifest，v2 SHA2219a0a44b9d361ed4057a1ab73a11f8bd6be0c9d4ba67fc7f27ba185c368bc8。
 
 bounded4 ThreadPoolExecutor只调度原独立审计subprocess，rawphysical先于pooledmatrix、全部FIFO先于closure、主/子异常也finally等待全部已提交任务，完成后才组装mandatory；7个actual main/fakeCLI测试涵盖4上限/两依赖/失败保留/两层异常drain/不覆盖。runner10原件manifest0d3c19aaa4d314e333de4cfbe538f92a000eee93c1f01382cf4686581aa88ac9，最终源码/fixtures明确，未复制mock树或重造早draft。root原件manifest183e39c30d8f49bd59042d6e2f431785d2b4eb7e2b18fdd49847e63afcfe5e51。新plan76bindings/100runtime待preflight，四阶段608API/596actions/18000nativewall原门不变。V12尚无原生/PPO/GPU/optimizer，pilot余额1870/2905.954739546403不变。
+
+
+### 2026-10-17 MR3-P2A.0 V12 native（正式FAIL，待canonical归档链接）
+
+freeze `6b1b4a0108351f5bfb70ec0c96ba895248d4f7a8`；source preflight100 runtime/76independent，原actual binary/four macro proof按其原receipt。按预声明依次执行三次benchmark（精确实际argv如下；启动环境及launcher/source/planSHA见各`/tmp/mr3_p2a0_v12_{stage}_launch.json`，正式审计完整命令与退出/输出SHA见`*_audit_execution_v1.json`）：
+
+```bash
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -u -m mr3_learning.benchmark --workers 1 --schedule open:101 --steps 32 --preparation-motion-probe --preparation-probe-version mr3-p2a0-outward-cancel-v3 --base-domain 130 --base-port 13201 --output-root /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0 --run-id mr3_p2a0_20261017_v12_interface --preparation-parameter-review
+```
+
+```bash
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -u -m mr3_learning.benchmark --workers 1 --schedule open:101,open:101 --steps 4 --terminal-probe --base-domain 132 --base-port 13211 --output-root /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0 --run-id mr3_p2a0_20261017_v12_terminal
+```
+
+```bash
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -u -m mr3_learning.benchmark --workers 2 --schedule open:101,open:101,rooms:101,corridors:101 --steps 32 --preparation-motion-probe --preparation-probe-version mr3-p2a0-outward-cancel-v3 --base-domain 134 --base-port 13221 --output-root /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0 --run-id mr3_p2a0_20261017_v12_reset
+```
+
+interface32steps与terminal2×4step API全部mandatory PASS。reset2workers×4schedule×32step完成并CLI0，整体版本FAIL：w0/e2 tb2仅0.0032782531368285074m活动；w0/e3 tb2真实fullplanar0.3058281617710947>.30；w1/e2与e3 tb1驱动alpha真Fraction向内门正式拒绝。三项归因独立，旧FAIL/原物理界/原driver数学均保留。reset全部26jobs结束，full/input/drive/physics FAIL；angular/settled/closure/binary/info/peer/control与八份FIFO PASS。活动不足另含w1/e4 tb1(.00514502831364514m)与tb3(.006289445193331186m)。新增第四类真实FAIL：w0/e4 tb1 A102.48s最终0/B102.46s实际cancel后无新goal/非零目标，但到106.448s无3连speed<=.01；.78s后仍.01165–.01297，native已在102.776s applied双轮0并维持。有限观测path A.04136230664963264m/B.04616805750202775m未超.144，不能冒称已停或给无穷后续上界。严格persistent rest FAIL保留。controller11:44:10UTC实际later_stages_skip并exit1，deadline未启动，无同freeze盲重试。
+
+实际一次性计费307reset+step API（11reset+296step）、295真正下发joint command、294.02有效/返回物理任务秒；helper推进294.538秒（含release前.338及cleanup.180），原启动free-run不混该helper量。launcher原生墙秒4414.7895641284995；benchmark elapsed4413.4765489515848只是同一成本另一视图，不能相加或再加wrapper样本。八轮reset native_stop0/真实Nav2finalized，各saved identity动态并集349fresh全gone为关闭子事实。完整accounting源码原件SHA在`/tmp/mr3_p2a0_v12_report_accounting_final_v1.json`。
+
+失败后被动corridor CDR诊断为额外非预声明负载，仅/tmp保存完整原件/初失败/修正与范围：5850+5556实收、6161去重gzip；没有控制publisher/SetParameters，无法补旧w0/e2内部原件或证明每包GID/接收延迟。参见`passive_nav2_custody_manifest_v1.json`、`observer_corrections_v1.json`、`timestamp_scope_v1.json`。原计划、所有运行/审计FAIL、观察器错误及修正分别保留；不得用新的working-consumer/source修复重标旧freeze。
+
+原生矩阵PPO/GPU/optimizer均0（不排除已单独记录的CPU synthetic optimizer测试），pilot2226/11494.045260453597已用、1870/2905.954739546403余额原样；不降95%/参与/物理门，不授冻结策略或本版完整矩阵PASS。正式reset/skip结果已收齐；canonical证据见下。
+
+实际入口（cwd wireless-rl；conda调用均 env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1）：
+
+```bash
+rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python report/assets/20261017_mr3_p2a0_v12/independent/mr3_p2a0_v12_buildproof_preflight.py
+rtk proxy /usr/bin/python3 /tmp/mr3_p2a0_v10_pack_source_bindings_v1.py --preflight /tmp/mr3_p2a0_v12_source_preflight.json
+rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python report/assets/20261017_mr3_p2a0_v12/independent/mr3_p2a0_v12_launch_stage.py interface 6b1b4a0108351f5bfb70ec0c96ba895248d4f7a8
+rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python report/assets/20261017_mr3_p2a0_v12/independent/mr3_p2a0_v12_audit_stage.py interface 6b1b4a0108351f5bfb70ec0c96ba895248d4f7a8
+rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -u /tmp/mr3_p2a0_v12_continue_matrix_v1.py
+rtk proxy /usr/bin/python3 /tmp/mr3_p2a0_v12_pack_native_v1.py interface
+rtk proxy /usr/bin/python3 /tmp/mr3_p2a0_v12_pack_native_v1.py terminal
+rtk proxy /usr/bin/python3 /tmp/mr3_p2a0_v12_pack_native_v1.py reset
+rtk proxy /usr/bin/python3 /tmp/mr3_p2a0_v12_archive_closed_v1.py --publish --mode stopped --stop-stage reset
+```
+
+preflight100 runtime/76 independent PASS，plan264a9c5a、SO d0d31b0f；controller精确child argv/cwd/UTC/exit在canonical remaining_matrix原件。interface/terminal/reset原包manifest SHA分别addd1448/86bdbd7a/acfd5b1c；只读包生成25.430645/17.660513/201.044655墙秒，不加到native成本。归档helper8项最小fixtures PASS，预核V2 PASS，publish PASS（只授保管一致）；代码/命令/输出在支持manifest，原raw5471507727B/selected330143198B/5525 native files；6616支持原件；inventory12234项 SHA52213bf6d4945792dd278be9d04713a3eb37b24162d7f2e8267b2b6f457bf55d。
+
+所有正式26jobs及原FAIL、被动观察失败/修正、critic/代价图/raw body/strict alpha/stop尾段诊断及其精确CPU命令、退出/耗时/SHA，均逐原保存在[支持manifest](report/assets/20261017_mr3_p2a0_v12/independent/native_originals_v1/manifest.json)，不重写旧原件。[报告](report/20261017_mr3_p2a0_v12.md)、[完整inventory](report/assets/20261017_mr3_p2a0_v12/inventory_native_v1.json)、[计费](report/assets/20261017_mr3_p2a0_v12/accounting/native_cost_v1.json)。所有原生/正式reader/自有只读writer已结束，PID/start缺失项保留实际证据范围。V13候选修复只在/tmp草稿，未授新native/PPO信用。
+
+关闭文档静态检查：`rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python report/assets/20261017_mr3_p2a0_v12/independent/mr3_p2a0_v12_contract_checks.py /tmp/mr3_p2a0_closure_static_checks_v1.json`（cwd wireless-rl）exit0，97源码逐字同V11、35pins、128本地链接PASS；没有为文档修改重跑native。`rtk git diff --check` PASS；提交前完整`git add -n .`逐path与上述inventory/9文档白名单比较，排除cache/runtime/build等非证据。

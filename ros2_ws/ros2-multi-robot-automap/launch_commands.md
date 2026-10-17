@@ -197,7 +197,9 @@ python -m mr3_learning.audit_preparation \
 工程成本单列，不使用/重置pilot余额。每worker始终三台；300秒KEEP用于截止与关闭验证，
 不证明探索或三台参与成功。旧版原件保持；用户随后要求继续完成P2A.0，新版见下节。
 
-## MR3-P2A.0 v12 当前训练前工程准备
+## MR3-P2A.0 v12 历史训练前工程命令（失败保留，不重跑）
+
+实际冻结`6b1b4a010835`的interface/terminal全部正式门通过；reset活动、实测速度/持续停止和driver数值门FAIL，deadline跳过。下面命令保留用于追溯；继续修复后新冻结完整重验，不能照此重试旧失败版。
 
 v1至v9失败及原件保留，详见 dated reports。当前导航合成own已知权威/shared补unknown、候选`mr3-navigation-geometric-staging-v5`、快照v3/张量v2及71列活动观测延续。实际速度链为controller/behavior→`cmd_vel_nav`→smoother→`cmd_vel_unguarded`→唯一`motion_safety`→`cmd_vel`。受控每20ms暂停完成state实际发布→peer实际接收/障碍发布→guard实际回收→三台native目标存储后才推进。三机实际Nav2配置和安全门的角速度指令上限均为`.8rad/s`，测量门仍为`1.2rad/s`；精确一ULP规范、完整转向复验及保守停止包络延续。
 

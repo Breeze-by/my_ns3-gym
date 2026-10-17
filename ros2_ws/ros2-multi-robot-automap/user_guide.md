@@ -3,7 +3,7 @@
 2026-10-17当前边界：用户明确要求继续完成P2A.0。第一版SLAM生命周期、失败采样保存、
 候选v4及诊断修复的[原始结果](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261017_mr3_p2a0.md)保持；
 当前将own权威导航合成、实际导航图v5候选、最终运动门及累计参与观测并入本步，
-MR3适配器每20ms物理推进前依次等待实际causal状态、peer障碍、guard回收与三台原生tagged目标存储回执。受控状态有效50Hz，非受控10Hz；存储ACK不代表机体响应，仍须原物理/时序门。当前P2A.0 v11已通过32步原生、严格关闭及独立执行/物理门，完整门因旧握手消费者识别失败；v12补审计支持后须新冻结完整工程矩阵；无训练/策略可靠性信用。详见[v12报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261017_mr3_p2a0_v12.md)。
+MR3适配器每20ms物理推进前依次等待实际causal状态、peer障碍、guard回收与三台原生tagged目标存储回执。受控状态有效50Hz，非受控10Hz；存储ACK不代表机体响应，仍须原物理/时序门。当前P2A.0 v12 interface/terminal完整门通过；reset八轮正常关闭，但活动、机体速度/停止与driver数值门失败，deadline跳过。原失败保留，继续修复须新冻结完整重验；无训练/策略可靠性信用。详见[v12报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261017_mr3_p2a0_v12.md)。
 实际Gazebo使用本包构建的paired joint-feedback驱动，物理参数保持原值，详见报告；本轮只做无训练的原生工程矩阵，不重启pilot；95%/300秒/三台参与/安全门禁及累计pilot余额不变。
 第一版6次原生严格关闭正常；terminal通过，reset真实peer失败、deadline跳过的原整体FAIL不改。
 v6须以新冻结完整验证导航、三台实际执行、20ms运动输出相位及300秒关闭，再待用户验收。
