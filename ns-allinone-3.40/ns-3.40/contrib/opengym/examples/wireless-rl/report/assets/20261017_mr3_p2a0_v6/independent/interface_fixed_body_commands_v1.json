@@ -1,0 +1,52 @@
+{
+  "schema": "mr3-v6-interface-fixed-body-command-receipt-v1",
+  "freeze": "448ceb6a26e9fef1f1c47e26292ba64c1b93c732",
+  "commands": [
+    {
+      "argv": [
+        "rtk",
+        "proxy",
+        "env",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v4/independent/mr3_independent_angular_interface_v1.py",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101",
+        "--output",
+        "/tmp/mr3_p2a0_v6_interface_fixed_angular_v1.json"
+      ],
+      "cwd": "/home/zhuyulab/ns3-workspace",
+      "exit_code": 0,
+      "output_original": "/tmp/mr3_p2a0_v6_interface_fixed_angular_v1.json",
+      "output_sha256": "2489bd126cf11160ee1b351575f186634d6f539c6350a299f9ddf5ec86e83f57",
+      "script_sha256": "7a472ba7efdd55addc710b98c66c89feff7f5092f214f76fd76cd4ca526343d0",
+      "observed_stdout_parsed": {
+        "passed": true,
+        "output": "/tmp/mr3_p2a0_v6_interface_fixed_angular_v1.json"
+      }
+    },
+    {
+      "argv": [
+        "rtk",
+        "proxy",
+        "env",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v3/independent/mr3_independent_physics_review.py",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101",
+        "--output",
+        "/tmp/mr3_p2a0_v6_interface_fixed_physics_v1.json"
+      ],
+      "cwd": "/home/zhuyulab/ns3-workspace",
+      "exit_code": 0,
+      "output_original": "/tmp/mr3_p2a0_v6_interface_fixed_physics_v1.json",
+      "output_sha256": "35f23b692586ea3d5f0c5ced1349a8a3e24fcae1cf420dea6b97223db8006717",
+      "script_sha256": "2516e394f60eac5dd24fd66b51c4c48fc37245090eb1626ebe1c7a3a23f8bafb",
+      "observed_stdout_parsed": {
+        "passed": true,
+        "output": "/tmp/mr3_p2a0_v6_interface_fixed_physics_v1.json",
+        "episodes": 1
+      }
+    }
+  ],
+  "scope": "Executed original frozen consumers on closed native originals. A finite sampled stops only; B final cancel-rest missing. No final actuator delivery credit."
+}

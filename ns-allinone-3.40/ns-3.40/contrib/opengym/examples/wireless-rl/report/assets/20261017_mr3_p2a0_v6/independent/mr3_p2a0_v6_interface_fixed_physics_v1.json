@@ -1,0 +1,578 @@
+{
+  "schema": "mr3-independent-raw-physics-closure-review-v1",
+  "passed": true,
+  "episodes": [
+    {
+      "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101",
+      "epoch": "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e",
+      "closure": {
+        "passed": true,
+        "errors": [],
+        "checks": {
+          "epoch": true,
+          "worker_return0": true,
+          "no_forced": true,
+          "not_failed_sample": true,
+          "no_recorded_remaining": true,
+          "no_live_saved_identity": true,
+          "launch_return0": true,
+          "native_server_clean": true,
+          "nav_finalized": true,
+          "ordered_complete": true,
+          "all_started_exited_zero": true
+        },
+        "processes_seen": 44,
+        "started_processes": 39,
+        "exited_processes": 39,
+        "still_present_saved_identities": [],
+        "finalized_nodes": [
+          [
+            "tb1",
+            "controller_server",
+            4
+          ],
+          [
+            "tb1",
+            "planner_server",
+            4
+          ],
+          [
+            "tb1",
+            "behavior_server",
+            4
+          ],
+          [
+            "tb1",
+            "bt_navigator",
+            4
+          ],
+          [
+            "tb1",
+            "waypoint_follower",
+            4
+          ],
+          [
+            "tb1",
+            "velocity_smoother",
+            4
+          ],
+          [
+            "tb2",
+            "controller_server",
+            4
+          ],
+          [
+            "tb2",
+            "planner_server",
+            4
+          ],
+          [
+            "tb2",
+            "behavior_server",
+            4
+          ],
+          [
+            "tb2",
+            "bt_navigator",
+            4
+          ],
+          [
+            "tb2",
+            "waypoint_follower",
+            4
+          ],
+          [
+            "tb2",
+            "velocity_smoother",
+            4
+          ],
+          [
+            "tb3",
+            "controller_server",
+            4
+          ],
+          [
+            "tb3",
+            "planner_server",
+            4
+          ],
+          [
+            "tb3",
+            "behavior_server",
+            4
+          ],
+          [
+            "tb3",
+            "bt_navigator",
+            4
+          ],
+          [
+            "tb3",
+            "waypoint_follower",
+            4
+          ],
+          [
+            "tb3",
+            "velocity_smoother",
+            4
+          ]
+        ]
+      },
+      "robots": {
+        "tb1": {
+          "errors": [],
+          "raw_unique_odom_samples": 2682,
+          "task_odom_samples": 595,
+          "maximum_planar_speed_all": 0.26206059692039596,
+          "maximum_angular_norm_all": 0.8199303592278344,
+          "maximum_abs_angular_z_all": 0.8199303592278344,
+          "maximum_planar_speed_task": 0.26206059692039596,
+          "maximum_angular_norm_task": 0.8199303592278344,
+          "maximum_abs_angular_z_task": 0.8199303592278344,
+          "maximum_raw_odom_chord_speed_task": 0.262101128080986,
+          "maximum_task_source_gap_ns": 34000000,
+          "bound_violation_counts": {
+            "planar_speed_over_.30": 0,
+            "angular_norm_over_1.2": 0,
+            "chord_speed_over_.30": 0
+          },
+          "bound_violation_examples": {
+            "planar_speed_over_.30": [],
+            "angular_norm_over_1.2": [],
+            "chord_speed_over_.30": []
+          },
+          "linear_zero_events": 11,
+          "eligible_stop_events": 3,
+          "credited_sampled_stop_events": 1,
+          "maximum_credited_initial_planar_speed": 0.20655477081003062,
+          "maximum_cancel_credited_initial_planar_speed": null,
+          "hard_zero_evidence_complete": true,
+          "cancel_end_to_end_evidence_complete": false,
+          "native_cancel_events": 1,
+          "eligible_cancel_stop_events": 1,
+          "credited_cancel_stop_events": 0,
+          "cancel_stop_responses": [
+            {
+              "event_clock_ns": 91220000000,
+              "zero_w": null,
+              "event_category": "B_native_cancel_end_to_end",
+              "prior_nonzero_command_span_ns": 6940000000,
+              "status": "missing_rest_evidence",
+              "eligible": true,
+              "initial_observed_planar_speed": 0.23225662601608713,
+              "observed_nonrest_beyond_horizon": false,
+              "cancel_clock_ns": 91220000000,
+              "goal_id": "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e:tb1:14",
+              "completion_evidence": [
+                {
+                  "kind": "cancel",
+                  "value": true,
+                  "received_clock_ns": 91240000000,
+                  "source_clock_ns": 91220000000,
+                  "delivery_sequence": 4
+                },
+                {
+                  "kind": "result",
+                  "value": 5,
+                  "received_clock_ns": 91440000000,
+                  "source_clock_ns": 91240000000,
+                  "delivery_sequence": 5
+                }
+              ],
+              "new_goal_clock_ns": null
+            }
+          ],
+          "physical_evidence_complete": true,
+          "stop_responses": [
+            {
+              "event_clock_ns": 72940000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.00027375871349339526
+            },
+            {
+              "event_clock_ns": 73100000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 40000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.00012082384206961837
+            },
+            {
+              "event_clock_ns": 73220000000,
+              "zero_w": -0.8,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 100000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 9.64715719739947e-05
+            },
+            {
+              "event_clock_ns": 73420000000,
+              "zero_w": -0.8,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 160000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 4.6578813811068387e-05
+            },
+            {
+              "event_clock_ns": 73620000000,
+              "zero_w": -0.8,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 160000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 6.628893868990059e-05
+            },
+            {
+              "event_clock_ns": 73820000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 140000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.00660985089896301
+            },
+            {
+              "event_clock_ns": 74020000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 140000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.014126889353481584
+            },
+            {
+              "event_clock_ns": 74220000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 140000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.0011880482852518743
+            },
+            {
+              "event_clock_ns": 74420000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 120000000,
+              "status": "resumed_before_proven_rest",
+              "eligible": true,
+              "initial_observed_planar_speed": 0.05590355849648027,
+              "observed_nonrest_beyond_horizon": false
+            },
+            {
+              "event_clock_ns": 76240000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 1740000000,
+              "status": "sampled_response_within_declared_bounds",
+              "eligible": true,
+              "initial_observed_planar_speed": 0.20655477081003062,
+              "rest_source_ns": 76952000000,
+              "observed_latency_sec": 0.712,
+              "observed_odom_polyline_m": 0.07447337457982818,
+              "maximum_observation_gap_ns": 34000000,
+              "observed_nonrest_beyond_horizon": false
+            },
+            {
+              "event_clock_ns": 91240000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 6960000000,
+              "status": "missing_rest_evidence",
+              "eligible": true,
+              "initial_observed_planar_speed": 0.2322562778467794,
+              "observed_nonrest_beyond_horizon": false
+            }
+          ],
+          "scope": "finite sampled raw-odom response evidence at reported speed range; no continuous-path upper proof or claim that all zero commands are rest"
+        },
+        "tb2": {
+          "errors": [],
+          "raw_unique_odom_samples": 2623,
+          "task_odom_samples": 595,
+          "maximum_planar_speed_all": 0.2602178208517182,
+          "maximum_angular_norm_all": 0.7674276760886488,
+          "maximum_abs_angular_z_all": 0.7674276760886488,
+          "maximum_planar_speed_task": 0.2602178208517182,
+          "maximum_angular_norm_task": 0.7674276760886488,
+          "maximum_abs_angular_z_task": 0.7674276760886488,
+          "maximum_raw_odom_chord_speed_task": 0.26023960294305754,
+          "maximum_task_source_gap_ns": 34000000,
+          "bound_violation_counts": {
+            "planar_speed_over_.30": 0,
+            "angular_norm_over_1.2": 0,
+            "chord_speed_over_.30": 0
+          },
+          "bound_violation_examples": {
+            "planar_speed_over_.30": [],
+            "angular_norm_over_1.2": [],
+            "chord_speed_over_.30": []
+          },
+          "linear_zero_events": 9,
+          "eligible_stop_events": 2,
+          "credited_sampled_stop_events": 1,
+          "maximum_credited_initial_planar_speed": 0.16045095303241474,
+          "maximum_cancel_credited_initial_planar_speed": null,
+          "hard_zero_evidence_complete": true,
+          "cancel_end_to_end_evidence_complete": false,
+          "native_cancel_events": 1,
+          "eligible_cancel_stop_events": 1,
+          "credited_cancel_stop_events": 0,
+          "cancel_stop_responses": [
+            {
+              "event_clock_ns": 91220000000,
+              "zero_w": null,
+              "event_category": "B_native_cancel_end_to_end",
+              "prior_nonzero_command_span_ns": 6940000000,
+              "status": "missing_rest_evidence",
+              "eligible": true,
+              "initial_observed_planar_speed": 0.25991492323089616,
+              "observed_nonrest_beyond_horizon": false,
+              "cancel_clock_ns": 91220000000,
+              "goal_id": "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e:tb2:14",
+              "completion_evidence": [
+                {
+                  "kind": "cancel",
+                  "value": true,
+                  "received_clock_ns": 91240000000,
+                  "source_clock_ns": 91220000000,
+                  "delivery_sequence": 4
+                },
+                {
+                  "kind": "result",
+                  "value": 5,
+                  "received_clock_ns": 91440000000,
+                  "source_clock_ns": 91240000000,
+                  "delivery_sequence": 5
+                }
+              ],
+              "new_goal_clock_ns": null
+            }
+          ],
+          "physical_evidence_complete": true,
+          "stop_responses": [
+            {
+              "event_clock_ns": 72980000000,
+              "zero_w": 0.8,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 60000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 9.777652853712975e-05
+            },
+            {
+              "event_clock_ns": 73100000000,
+              "zero_w": 0.8,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 7.245541094545991e-05
+            },
+            {
+              "event_clock_ns": 73200000000,
+              "zero_w": 0.8,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 80000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 5.7103132226672406e-05
+            },
+            {
+              "event_clock_ns": 73820000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 80000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.0006304489951490177
+            },
+            {
+              "event_clock_ns": 74020000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 160000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.0015096231596031565
+            },
+            {
+              "event_clock_ns": 74220000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 160000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.0015474819911108467
+            },
+            {
+              "event_clock_ns": 74420000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 160000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.012241840599655579
+            },
+            {
+              "event_clock_ns": 76860000000,
+              "zero_w": -0.05894736842105258,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 2400000000,
+              "status": "sampled_response_within_declared_bounds",
+              "eligible": true,
+              "initial_observed_planar_speed": 0.16045095303241474,
+              "rest_source_ns": 77442000000,
+              "observed_latency_sec": 0.582,
+              "observed_odom_polyline_m": 0.05719986735833448,
+              "maximum_observation_gap_ns": 34000000,
+              "observed_nonrest_beyond_horizon": false
+            },
+            {
+              "event_clock_ns": 91240000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 6960000000,
+              "status": "missing_rest_evidence",
+              "eligible": true,
+              "initial_observed_planar_speed": 0.25991492323089616,
+              "observed_nonrest_beyond_horizon": false
+            }
+          ],
+          "scope": "finite sampled raw-odom response evidence at reported speed range; no continuous-path upper proof or claim that all zero commands are rest"
+        },
+        "tb3": {
+          "errors": [],
+          "raw_unique_odom_samples": 2564,
+          "task_odom_samples": 595,
+          "maximum_planar_speed_all": 0.2605873149587749,
+          "maximum_angular_norm_all": 0.28817591195244213,
+          "maximum_abs_angular_z_all": 0.28817591195244213,
+          "maximum_planar_speed_task": 0.2605873149587749,
+          "maximum_angular_norm_task": 0.28817591195244213,
+          "maximum_abs_angular_z_task": 0.28817591195244213,
+          "maximum_raw_odom_chord_speed_task": 0.2606124166152852,
+          "maximum_task_source_gap_ns": 34000000,
+          "bound_violation_counts": {
+            "planar_speed_over_.30": 0,
+            "angular_norm_over_1.2": 0,
+            "chord_speed_over_.30": 0
+          },
+          "bound_violation_examples": {
+            "planar_speed_over_.30": [],
+            "angular_norm_over_1.2": [],
+            "chord_speed_over_.30": []
+          },
+          "linear_zero_events": 4,
+          "eligible_stop_events": 3,
+          "credited_sampled_stop_events": 1,
+          "maximum_credited_initial_planar_speed": 0.20560065833574906,
+          "maximum_cancel_credited_initial_planar_speed": null,
+          "hard_zero_evidence_complete": true,
+          "cancel_end_to_end_evidence_complete": false,
+          "native_cancel_events": 1,
+          "eligible_cancel_stop_events": 1,
+          "credited_cancel_stop_events": 0,
+          "cancel_stop_responses": [
+            {
+              "event_clock_ns": 91220000000,
+              "zero_w": null,
+              "event_category": "B_native_cancel_end_to_end",
+              "prior_nonzero_command_span_ns": 6940000000,
+              "status": "missing_rest_evidence",
+              "eligible": true,
+              "initial_observed_planar_speed": 0.2461942743621964,
+              "observed_nonrest_beyond_horizon": false,
+              "cancel_clock_ns": 91220000000,
+              "goal_id": "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e:tb3:14",
+              "completion_evidence": [
+                {
+                  "kind": "cancel",
+                  "value": true,
+                  "received_clock_ns": 91240000000,
+                  "source_clock_ns": 91220000000,
+                  "delivery_sequence": 4
+                },
+                {
+                  "kind": "result",
+                  "value": 5,
+                  "received_clock_ns": 91440000000,
+                  "source_clock_ns": 91240000000,
+                  "delivery_sequence": 5
+                }
+              ],
+              "new_goal_clock_ns": null
+            }
+          ],
+          "physical_evidence_complete": true,
+          "stop_responses": [
+            {
+              "event_clock_ns": 71440000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 160000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 5.652863754059328e-05
+            },
+            {
+              "event_clock_ns": 71660000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 180000000,
+              "status": "resumed_before_proven_rest",
+              "eligible": true,
+              "initial_observed_planar_speed": 0.09297034260510555,
+              "observed_nonrest_beyond_horizon": false
+            },
+            {
+              "event_clock_ns": 73160000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 1480000000,
+              "status": "sampled_response_within_declared_bounds",
+              "eligible": true,
+              "initial_observed_planar_speed": 0.20560065833574906,
+              "rest_source_ns": 73717000000,
+              "observed_latency_sec": 0.557,
+              "observed_odom_polyline_m": 0.07044181737385437,
+              "maximum_observation_gap_ns": 34000000,
+              "observed_nonrest_beyond_horizon": false
+            },
+            {
+              "event_clock_ns": 91240000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 6960000000,
+              "status": "missing_rest_evidence",
+              "eligible": true,
+              "initial_observed_planar_speed": 0.24620244940467956,
+              "observed_nonrest_beyond_horizon": false
+            }
+          ],
+          "scope": "finite sampled raw-odom response evidence at reported speed range; no continuous-path upper proof or claim that all zero commands are rest"
+        }
+      },
+      "physical_evidence_complete": true,
+      "passed": true
+    }
+  ],
+  "criteria": {
+    "linear_stop_horizon_sec": 0.78,
+    "observed_path_bound_m_per_robot": 0.144,
+    "minimum_prior_nonzero_output_span_sec": 0.1,
+    "minimum_initial_observed_planar_speed_mps": 0.05,
+    "rest_planar_speed_mps": 0.01,
+    "rest_consecutive_samples": 3,
+    "maximum_source_gap_sec": 0.1
+  },
+  "scope": "independent source-time sampled physical/strict-close evidence; A final-linear-zero and B actual-native-cancel end-to-end remain separate. Meaningful evidence in either is reported by type, never native-cancel as sudden-zero proof. Missing meaningful segments never PASS; sampled norms/chords do not prove continuous truth",
+  "script_sha256": "2516e394f60eac5dd24fd66b51c4c48fc37245090eb1626ebe1c7a3a23f8bafb"
+}

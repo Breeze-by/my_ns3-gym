@@ -1,0 +1,2366 @@
+{
+  "schema": "mr3-p2a0-v4-independent-input-episode-review-v1",
+  "passed": true,
+  "whole_observation_and_seven_map_replay_passed": true,
+  "freeze": "448ceb6a26e9fef1f1c47e26292ba64c1b93c732",
+  "benchmark_complete": true,
+  "preparation_probe_version": "mr3-p2a0-outward-cancel-v2",
+  "motion_contract_scope": "Angular limits and motion safety metadata are checked by separate physics/angular consumers. This received-map/activity replay does not hard-code the old 1.2 or new 0.8 command cap, and never treats geometric reachability as executable/safe proof.",
+  "source_proof": {
+    "mr3_observation.py": {
+      "freeze": "448ceb6a26e9fef1f1c47e26292ba64c1b93c732",
+      "sha256": "b81da18c256ff307a4afc09c5115d0057e5a142a246555f39c1f7a5cee88c6e8",
+      "source": "448ceb6a26e9fef1f1c47e26292ba64c1b93c732:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py",
+      "current_worktree_matches_native_freeze": true
+    },
+    "mr3_episode.py": {
+      "freeze": "448ceb6a26e9fef1f1c47e26292ba64c1b93c732",
+      "sha256": "9145d2ad23789b252e32f0afdfe18cf2eeec8e2c7e9ca7e89127a532288e411b",
+      "source": "448ceb6a26e9fef1f1c47e26292ba64c1b93c732:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_episode.py",
+      "current_worktree_matches_native_freeze": true
+    },
+    "mr3_observation_archive.py": {
+      "freeze": "448ceb6a26e9fef1f1c47e26292ba64c1b93c732",
+      "sha256": "03da72d5e989e6c7af99b90aaddf357120c2239fc08e99febb858554b1fefea8",
+      "source": "448ceb6a26e9fef1f1c47e26292ba64c1b93c732:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation_archive.py",
+      "current_worktree_matches_native_freeze": true
+    },
+    "mr3_adapter.py": {
+      "freeze": "448ceb6a26e9fef1f1c47e26292ba64c1b93c732",
+      "sha256": "90444564b04b86982553a7fe6e0b98beb290ba92c3ab1e32e503998e6411fc1c",
+      "source": "448ceb6a26e9fef1f1c47e26292ba64c1b93c732:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_adapter.py",
+      "current_worktree_matches_native_freeze": true
+    },
+    "mr3_information.py": {
+      "freeze": "448ceb6a26e9fef1f1c47e26292ba64c1b93c732",
+      "sha256": "5c85502eabd0d711248f230ca0fa7a2b78491a159a4222c2eee80d4e5c97c81f",
+      "source": "448ceb6a26e9fef1f1c47e26292ba64c1b93c732:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_information.py",
+      "current_worktree_matches_native_freeze": true
+    },
+    "mr3_activity.py": {
+      "freeze": "448ceb6a26e9fef1f1c47e26292ba64c1b93c732",
+      "sha256": "7af918d75c05b6f8fb1a65899e43aad11a315640e8b00fdb589c31f693ad696e",
+      "source": "448ceb6a26e9fef1f1c47e26292ba64c1b93c732:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_activity.py",
+      "current_worktree_matches_native_freeze": true
+    },
+    "mr3_learning/navigation_archive.py": {
+      "freeze": "448ceb6a26e9fef1f1c47e26292ba64c1b93c732",
+      "sha256": "b509cc0d19ca443c0776cae4d728d35f399670bda08c171d590c8738964c48bd",
+      "source": "448ceb6a26e9fef1f1c47e26292ba64c1b93c732:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/navigation_archive.py"
+    },
+    "mr3_learning/audit_activity.py": {
+      "freeze": "448ceb6a26e9fef1f1c47e26292ba64c1b93c732",
+      "sha256": "0fa0c47262ccf29f140cc2b915431461e830f87680b65f524cbda6a6ffff4407",
+      "source": "448ceb6a26e9fef1f1c47e26292ba64c1b93c732:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_activity.py"
+    }
+  },
+  "inputs": {
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/metadata.json": {
+      "bytes": 2426,
+      "sha256": "3c38ab9a5037fe4fcb70ed73088bde90d683190021c98281cb2aa56c28f37a7f"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/benchmark_metadata.json": {
+      "bytes": 1562,
+      "sha256": "17806a94ec663c535e4896a5e40e5a3ca0f9e888e342fec04bd625a8b9b67e4c"
+    },
+    "/tmp/mr3_p2a0_v4_frozen_448ceb6a26e9_8ub2cthv/multi_robot_exploration/mr3_observation.py": {
+      "bytes": 47258,
+      "sha256": "b81da18c256ff307a4afc09c5115d0057e5a142a246555f39c1f7a5cee88c6e8"
+    },
+    "/tmp/mr3_p2a0_v4_frozen_448ceb6a26e9_8ub2cthv/multi_robot_exploration/mr3_episode.py": {
+      "bytes": 1379,
+      "sha256": "9145d2ad23789b252e32f0afdfe18cf2eeec8e2c7e9ca7e89127a532288e411b"
+    },
+    "/tmp/mr3_p2a0_v4_frozen_448ceb6a26e9_8ub2cthv/multi_robot_exploration/mr3_observation_archive.py": {
+      "bytes": 4459,
+      "sha256": "03da72d5e989e6c7af99b90aaddf357120c2239fc08e99febb858554b1fefea8"
+    },
+    "/tmp/mr3_p2a0_v4_frozen_448ceb6a26e9_8ub2cthv/multi_robot_exploration/mr3_adapter.py": {
+      "bytes": 45330,
+      "sha256": "90444564b04b86982553a7fe6e0b98beb290ba92c3ab1e32e503998e6411fc1c"
+    },
+    "/tmp/mr3_p2a0_v4_frozen_448ceb6a26e9_8ub2cthv/multi_robot_exploration/mr3_information.py": {
+      "bytes": 33455,
+      "sha256": "5c85502eabd0d711248f230ca0fa7a2b78491a159a4222c2eee80d4e5c97c81f"
+    },
+    "/tmp/mr3_p2a0_v4_frozen_448ceb6a26e9_8ub2cthv/multi_robot_exploration/mr3_activity.py": {
+      "bytes": 6162,
+      "sha256": "7af918d75c05b6f8fb1a65899e43aad11a315640e8b00fdb589c31f693ad696e"
+    },
+    "/tmp/mr3_p2a0_v4_frozen_448ceb6a26e9_8ub2cthv/mr3_learning/navigation_archive.py": {
+      "bytes": 4655,
+      "sha256": "b509cc0d19ca443c0776cae4d728d35f399670bda08c171d590c8738964c48bd"
+    },
+    "/tmp/mr3_p2a0_v4_frozen_448ceb6a26e9_8ub2cthv/mr3_learning/audit_activity.py": {
+      "bytes": 15707,
+      "sha256": "0fa0c47262ccf29f140cc2b915431461e830f87680b65f524cbda6a6ffff4407"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/transitions.jsonl": {
+      "bytes": 822070,
+      "sha256": "7184284e4863d6bbfe52e1be3bcb963cfafd5caa7aa31f11342c4299857542db"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/adapter.jsonl": {
+      "bytes": 2072923,
+      "sha256": "0046d7dbd53ef82e12f089346efe2430acf7c08635cbaf2783eb0544535194c9"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/snapshots/00000001_97f48c72f5624a3b24ed8786c8d3d467a4a464421c810fefc7c55bd3d3a6a1da.json": {
+      "bytes": 4284,
+      "sha256": "9e65b5dc6b4a6098f3214f75564af7915a47bb8d73dcfe9fa101b0a9fd71a656"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/3f1d2a8e752904314c86dc7b5eaed6c17d3b35124b238bf29f614a672e49925e.json.gz": {
+      "bytes": 834,
+      "sha256": "c637502b4e0ecf0435dd5995f31d1e5e802954a3cd93a4a389955580f5223ba2"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/2f3eacf2eb8db1bda8c6c7d5ec0577d3d6f41540a19725a45ed5ef3ce8807f2e.json.gz": {
+      "bytes": 812,
+      "sha256": "a8d580a6dc872494f9a117fa6b04d7a9459dfeeb74a0b72eaa0cbb100f13e5a5"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/0ffcfdfa2acab57c5da7c2d517f525e0f08f94b5af27330f26d10ce7f04b82ee.json.gz": {
+      "bytes": 816,
+      "sha256": "019f8feacc6c53d08bdc15bfd3f2048cdbf30c71a65f58e4961270a12a2e16c8"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/c5976d3717deece478baddc5b72387de4008ec58312c1c55f00116ca0b7af44b.json.gz": {
+      "bytes": 836,
+      "sha256": "562a4ea07510abdabad4306b6658bd8fd45e4ee07a51421445c77dc253dcec01"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/1688c18a50ed03bbd60d7d26dddb6565f1a1fc3da4eaf01f8fd94e15014645fc.json.gz": {
+      "bytes": 872,
+      "sha256": "dcfb4227a9a0f0cfdee4fc66c444342f1ce2796b17b4feb25a24abdd09a0fb3e"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/9979d573a66bba3e5625d37d05f0686328f05c54d922e7f598b7320070a257ac.json.gz": {
+      "bytes": 909,
+      "sha256": "22f4aa99149b2fdf49e29c50d331aa271591d03d11cea5687801a750db7353a9"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/fee47ca15b10f09dc5fd1da0c1ee03789e61316bfc3afa144c6da89fa13ec745.json.gz": {
+      "bytes": 969,
+      "sha256": "24bb3294cba607fbcd9d8f22e04607a4d1c5e4afbb3aab18b6dd488c464d2b59"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/snapshots/00000002_c97ad2a5eca72bfc4c3dec0207968c1c41f88713a5531d9599ddc0aa971db9a2.json": {
+      "bytes": 4287,
+      "sha256": "6e8f086742077ea6407616f04b34babfe91cefddcee2e28a9efd992f63e2516a"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/0edb8ebc707c56bfa700bd6a71b30f57175c98d67f916e44326abf2bb13bb34d.json.gz": {
+      "bytes": 835,
+      "sha256": "729332dd2e0b9a0858efd952655b031e0f3f9b1552b307251964cf6c5aed8712"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/40ef1ed8d96f684728998f69e483281d635ee5be6a606350447e11c3bed6a7c6.json.gz": {
+      "bytes": 813,
+      "sha256": "4d4aeebc0750231d6f335ce50c6b5e03ae5c68b5f8bc6871aafef54ece65e496"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/a0190ca2a82da81c033a76e15389e48f535609ffd83e0ebf82efc352d3699d1e.json.gz": {
+      "bytes": 817,
+      "sha256": "8580139aa6b452f6289f79da66c68c30e385a1482fd77ab4fbf72db4418a34ab"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/9b0e0dd5f0e59819cd6d98098bd5496b6104b4f4ffe220df50f2e7c649205b15.json.gz": {
+      "bytes": 837,
+      "sha256": "fc46877fde4596f9ac35429870a91c64e38e760099fad826c051b04064449c08"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/1276d34579412aa5d41b182eedae3a8aa8a19d26863c98275aea358f686a90f0.json.gz": {
+      "bytes": 871,
+      "sha256": "f7219ae4b27ced7592f994c374ac607a7c16c5e98af12d07f598350576e7b600"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/7c2912c92c47a0e6d5cc1cf180b47520b4d378894b7f18ea6eebddaa8672d8bd.json.gz": {
+      "bytes": 911,
+      "sha256": "2ec793d638bda9430218e1ffe738ccd3c5d0e5152a5af71df32d582d3ea19a33"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/c057606282dc4e7a27a0ebd3c2464bc330242e0a211e11e7a47b04781db84b61.json.gz": {
+      "bytes": 970,
+      "sha256": "0dbaf6e80657a0fcd9de6b283650deb8eea2af5ec117667a380b13820589654c"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/snapshots/00000003_946a41c496f8ca611c2550e3d14bf8ead4a0616780406ce514e90a0dca2fcb43.json": {
+      "bytes": 4287,
+      "sha256": "a63cb7da4fb9f36de1bc84c592193b79321ab37b9a859ba90c78f92d1820ae4d"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/5e12b87c93b1f54209d2bf52090cde169b816cc755500b8fc7367c2b2d1f4467.json.gz": {
+      "bytes": 3981,
+      "sha256": "651b177afda11d72feee5ddf2f100fb493805e2b65b6817a7a29735a79d7a2ad"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/fee338d7cf142be2dbafeb84becc1064e6e8a1eb24496c48d5e8dbd4b7863d18.json.gz": {
+      "bytes": 3956,
+      "sha256": "e9ebd84ece015ad72ec0ffee7a05485c6edf691853500bf2eb59bfee2deee690"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/aba292912f601cbf56ac651fb0293a5bfa424b8905b020ca161309b2a4e165e9.json.gz": {
+      "bytes": 3966,
+      "sha256": "50564b2f287b225f4291f0016664d144f98d4373019bdd5fdededa51fbc7b289"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/6d6cb097fea2dbaa12a62ac0be747005ec00d92fd5686b397c91323b4b68995b.json.gz": {
+      "bytes": 3971,
+      "sha256": "f5f0e3a9768135280ad00f56d7eb0f7d11675a06ab059d5b61250c4cf0a5c6ec"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/22700b95a74728f69e05c3cb5b40a28d9e5535300bbcd7f328a8ccec542b5a27.json.gz": {
+      "bytes": 872,
+      "sha256": "88682fa53f38e9620c6a6c8ed1eb0f78c006ea4106b87affff037cf786e2a4f6"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/34d37003d9a185f02a819d0b6048a837b1394bff78f3d24b359df0045c523c5b.json.gz": {
+      "bytes": 2896,
+      "sha256": "b0fdc887870c927d6b573691baa73999a205697fc7175c9fbb4a7c56dc7027ef"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/a84290f0948e792fd3c05a2ef413d2ba15d1ea33735f77529d6bf822dadefce7.json.gz": {
+      "bytes": 4963,
+      "sha256": "3517a56ed5ff0d1e020b4a966e0264cb52d80fbead7069766795636396341273"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/snapshots/00000004_d0a6fef19a789cfff621321f28d5da0a759a8852ccf7d2d5feec83412994f2bc.json": {
+      "bytes": 4287,
+      "sha256": "2c73de3cc3f0fc4946fe12173bea56e41e6334398fa149ee2cb3a9f814e6aaa2"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/c59ce5166c826193c6ace317ead4083e888a7b059f5147949bcfe835e1ebf260.json.gz": {
+      "bytes": 4925,
+      "sha256": "22cb8816507a1694024f22d0c55d0fc5f4a11cf37166a49eac244786acd9a154"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/e5fae8c583edac8f5084a9b57d73ad9cad80bd4ebda12c7beb01de20d6373cdc.json.gz": {
+      "bytes": 5015,
+      "sha256": "a296fdbb8f402fc8e0944c4aef3f8d1652604c4ab63165b3dc063df3aa189e17"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/8fbe49cd03be3706a2350806b8e6ad546b2719b74efce1b6a36dec685c893af1.json.gz": {
+      "bytes": 4914,
+      "sha256": "052d09c626f54648681737df80f23e459457738ab3d8f7eda2bb951c5c955f14"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/08992f2032bf842ec715949a6e7c5804868912061e37e9892944d50bfeeca907.json.gz": {
+      "bytes": 4934,
+      "sha256": "ea24b03374f67babc3f5df50db9f7a662a7d93d0e7df238e9fd04de161fbdd00"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/6d1f52a40f2b00800ff842feecf2111d7269f2ff8d892b8907331082f9f7ab7c.json.gz": {
+      "bytes": 5163,
+      "sha256": "eb1fa8f4df621393fa873b91aafb5f76564bcd820fd941a427991e7c99d367d7"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/662782268f3f960b99585b5a652e9cf49c14f06e0e139e42983ac266487e6716.json.gz": {
+      "bytes": 2895,
+      "sha256": "185996e22977cc3b330ef3a445f51613a948dfaa65515b73c6703f0141fcadb9"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/41bb97c4302e645b9ce3721a91a5d2a0759e1d3e21ba785edf0695f466bbcf98.json.gz": {
+      "bytes": 5122,
+      "sha256": "fd3f0baf99dcfeb0486837fd43df83051929ed5159660c29d557e22535d4bfba"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/snapshots/00000005_7c74243263207c5300d18ab2c63a8e090f3373253d410829fa5c41bc90b00880.json": {
+      "bytes": 4287,
+      "sha256": "d166646df35e7dc01af703316e251ab21639db10a66b6bf71855387619f71d39"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/6e956f1bbf240ef528e2dff59df4f88c2fba4e1add85a9729e9a206ad4d6f336.json.gz": {
+      "bytes": 4637,
+      "sha256": "d041341a6759df85d7b409265569397e5f313214f73a02389f9361ad75d8bf31"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/3e83d85098a52a2aa63faebb21815c2bc5ac3bb7e329ea699b91673ed97c9b4d.json.gz": {
+      "bytes": 4649,
+      "sha256": "bb086301c7d79fab2f35826efaaae37d670801ba36b5957c80917f6fd03ca6de"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/c616ac03f68257dc36bc522770dcd4441e051527ea93c7da1f66913ef63f1288.json.gz": {
+      "bytes": 4654,
+      "sha256": "d2e25d6bc1a4cd7a63646844e0fbb72efe7c321c3987c8a8b995580654c8701b"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/56e8057bf308e06b9923df7a6f4aaca6e9aebe155db88ec382a025563cc36c9e.json.gz": {
+      "bytes": 4628,
+      "sha256": "3fd0af0fed8add892f60252f924b5166b66aff4a35d5a788f63c94101ee01772"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/5b59d5b396defceecf79ae8b5bdde4744b83f076e4535eea96a63037633ae636.json.gz": {
+      "bytes": 5130,
+      "sha256": "eba91d6aa2c49cd3cadce3f9ef332c578d721abdf4ec49ac456db4c81474c3b0"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/4184a3ef5ddc8d97e742b82a64219c349ec491641280c82d2c5d9cb9d1724431.json.gz": {
+      "bytes": 4953,
+      "sha256": "bd6e3566d8197ea0525b54a726f70320e93515fb3ff714dcf3f6d339e965a28f"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/4ab85a2db318d2f9e2226d4885c80584c293314881af16877728376578d4e9c0.json.gz": {
+      "bytes": 5122,
+      "sha256": "def54a09b357e058c0d2b2a805652d2f5aca4047e854d27a1188f8f5346800a3"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/snapshots/00000006_8c48b60fe470860fbf402b37fadcdae8ec7294746aed0e675f8567e846e75b46.json": {
+      "bytes": 4287,
+      "sha256": "80fe16d2b018e7e84274b37d60f84c50ec1f5af51773994b5d67b96bdfabe5e2"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/dc5daffee8d19fd715be01f3cdf92fb3b9b42bc9c4fd61317d575fa76b3ba125.json.gz": {
+      "bytes": 3988,
+      "sha256": "2df388c8627cca49ddcd15a50b18e9ff87a4d3b8133b1ace59f24bdd5e0ee8a1"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/0334fdb76e2c566c69d675ef64a30c00e78b38ecdaad1268748a58d82297c2b9.json.gz": {
+      "bytes": 4016,
+      "sha256": "d6c667f76ddacd7284f46014b1c5ce25b35c4fdf93872ff6bb278bbad457d9f7"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/c568356c633c6f2a39c0d5dc28b5fddc4ddfb7f14af5d31b3360931b68ac664b.json.gz": {
+      "bytes": 4007,
+      "sha256": "89486d7edc5eec79fea2e29b86f370b96b9423dde92ce5e94ad36ec0445c7f2c"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/2bce59ec20703048450a9db3dbc4bc7fa255f6b847af6b282f8149c69048c591.json.gz": {
+      "bytes": 3976,
+      "sha256": "65e90a3e97eaf73f0e43ff21dfa954e20b4c9684e39114080020a9d0390315f1"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/e9a92c7d570db3f23d0bf690bf4ad93d5a68d1a9a8e05a4d90ec50a29c311e5a.json.gz": {
+      "bytes": 4388,
+      "sha256": "99693d9543ea01c68c30921402ef8c6d30ecfe238df5d93e05de70a5efc9115d"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/85b26c8c4850cbb276c1785bb0977d0d577614f35bed0a83eeecf9d6c80c20f7.json.gz": {
+      "bytes": 4464,
+      "sha256": "baee3c0aa46618db4f9d20dc525a33e0fbf4d847b52d085fcf584ba541213b34"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/cd90038bd6b8995dd27c6600db8ed791ee80067b3e05f91f789ed407dbe90a95.json.gz": {
+      "bytes": 5123,
+      "sha256": "f59075de63b033a025ba935dc859f6a9213a470ededf45f98d7467da7291f1a6"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/snapshots/00000007_0b70faae0e9ea5aa94babc5321179f9ca1e92beea56806b5a652ed17dfc6b1db.json": {
+      "bytes": 4287,
+      "sha256": "a303cbf0f4eb81a573d8976f33b9b2718abe5915a5502ef755fd1e0ea16090a8"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/27b7fba0d89c5b3ad975439868fa1dd7653fc3255384ef1be57d88782324b3c1.json.gz": {
+      "bytes": 2360,
+      "sha256": "e3ff50ad8c729c86b2f666c54b6c668e097727035c45763a5d20dac75f4f1862"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/82f92a9cc344326589960b52163a05eafc98d9e0b478fedaa73c5cad897ec383.json.gz": {
+      "bytes": 2382,
+      "sha256": "b7386bfb22a3f234e10a100db51173a7b74c1226efc8cfc67b9d3e0e0a9f06c1"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/ab16fef5488af5f04beaf21e5b823ffc21ce15817b0b4652af6487dd87b2bda7.json.gz": {
+      "bytes": 2402,
+      "sha256": "3c6a83445a7c63782da6e4155e666d8e3b3d82df4a05bdb73795088229a84d79"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/130c6947419965c3f0c5974f5c6a3a22c1def5f070511c366e71dbb2d375dd67.json.gz": {
+      "bytes": 2339,
+      "sha256": "78a675d36fcf23a12359c9b32e42476647442c2169103e36bffa00f335e07e90"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/c891482ed61c02b718c0099f00b52336b50f30cd6a27a15fc210721f86800921.json.gz": {
+      "bytes": 2905,
+      "sha256": "8d923efb50f4318660a8657f1b915d7d8201dfc57b445753ac2ff7f526288896"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/acc4afafa0216d8a7d0a18a3a4e3391f837b2b9c8fe935c2c030e05f850991d1.json.gz": {
+      "bytes": 3245,
+      "sha256": "32a606664b0a393de2a103ef68e5969856e3e2dd78c7307638f3f9ea5f62f0dc"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/7f67e6c143a82eb368066dc0e55d75c7775022816bf67009a3967b7e7841bb09.json.gz": {
+      "bytes": 5122,
+      "sha256": "bb81bf1c64d3b4bb98d3b49efa13269ebe89dde521045a147d512db946e9b6c8"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/snapshots/00000008_6a0c2de402fbcc9934d97fcca94dfc0355b2650ca631223fec9f06dafb94c718.json": {
+      "bytes": 4287,
+      "sha256": "63f6d8a97f3d843cc2db18e54469e9d6ce60e66496356567d7a81d3247668ee4"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/cc64739f030465948cab30957621aba92957e19555462591a896ef5be58f11c4.json.gz": {
+      "bytes": 2206,
+      "sha256": "a210b542870d14eda0e2b49fe8a5fd4678a2cf8fe2ac9af96a159910dba7f9cf"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/d722fb9957d1730514d9a779a17bf8ad49984daf2dc171ff149a96a420b2ed40.json.gz": {
+      "bytes": 2248,
+      "sha256": "e8aefee800cdeb0f0b08533d69d3969c628f48a27fe9f5776ee050babbbf4c6f"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/40d5d56f3447d87d2292cfebe5ff69bfeae47038a7e8affcebfc1de44f2c606e.json.gz": {
+      "bytes": 2264,
+      "sha256": "711f9b0f5328d69a3a117b8eb3277e4c4c24bbaebc73521818595772014fbfb4"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/f1a77de66b472f89c55d000b75a4a415c309aa3c69255ba90a09bc75dca460b7.json.gz": {
+      "bytes": 2190,
+      "sha256": "f90d20fe588e4a23f696613fc99bbdfe00ae79f114475044544618a1c93a68f6"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/f7e0321af51fcfd0c8b274cf6d627aefb85a773e8836b7df6f93104e9f35130c.json.gz": {
+      "bytes": 2905,
+      "sha256": "25d228d395418a2b43cdba4d2aa3c36a5a1c703f4f4b326c3a2c442818981da0"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/916a5d087d1dc0655caf5ac27e07f248db581d41183b0a8fe338e39d17e1166b.json.gz": {
+      "bytes": 2841,
+      "sha256": "ada3509f803ddbd1127409b70ba45943abce5c071d60dee76a0d9ac6023efa78"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/f3441087c2a219851dd9b4dfe5eaaf4137c34e5fd22d23a2789d2f58afb067e8.json.gz": {
+      "bytes": 5122,
+      "sha256": "04dee0eb851283ef69fc5d0e46226fa43eb32c1f103f8e732c9d40ce0281d9b7"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/snapshots/00000009_78363f4babad1a5dbd56e0406e5cf2615216b7a86dc972d69a997be531647b13.json": {
+      "bytes": 4287,
+      "sha256": "3f7a7dad8181891ef8301d3eeb831d689a96cbd3bf85c43abb598180dc35cf92"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/5cc82c746eb7076b64f5844cdbd6a0411ac0b3eb6e36393fed57457d775f6944.json.gz": {
+      "bytes": 2205,
+      "sha256": "f5556954fef989e93507317680a53c468a1be805fb9f6727735006037a44eac9"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/0bde02d0ed81b49fb7eec3d686e830c3fd41e2c0dc34af824bf61f23e256aa52.json.gz": {
+      "bytes": 2248,
+      "sha256": "905dd938d054d17878ec262cba31cf451b3f3d87dce3807040a7f804227b2e50"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/b9819c0fc24fbd3a40c6e5aa8f905d7d11cc45bfe7d5d98fb360bc14bb0e68d3.json.gz": {
+      "bytes": 2264,
+      "sha256": "418a9e30261fc728bc156ed9410e0ef176a8a4e6081f8ca95d39bba942497f15"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/82b4b47118c28b1c0d90901588bc7a97fa998513923af11ba9a5be71bf5c3981.json.gz": {
+      "bytes": 2190,
+      "sha256": "9296cd23083614adf90940011df0ce73007aba3d99a7e0dd0eec1df6e69fd013"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/b79c0dca63d814df5b1d1b8deade25a7923e3f8dcaffdb873a4d517591943479.json.gz": {
+      "bytes": 2905,
+      "sha256": "d338d64774fff8e0a44b34f13839a328df30b91d6fed66a5ae4adb49ea58644d"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/e98ecf3dc5a6bb65aa3b12a175c0bb345d01e243c7dcc5e4d65048efd9ab1f96.json.gz": {
+      "bytes": 2841,
+      "sha256": "67b0fa1e7d5989202ec7a9d00ff827ad5a9fefa4bf8951ce9b3fe66032cc115a"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/3edbf9e9fcb869583e660a795cab05130046aef79680492b2752b3f11e6bf9bd.json.gz": {
+      "bytes": 5122,
+      "sha256": "7d5455b7374bd0bfc5413037acd1ba8a3f5ddc1a956e38db9b967c807e69f77e"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/snapshots/00000010_663aa60e0d50e524fa93f880cab2a6f897c3855c233ba459b1c4103766ca5a10.json": {
+      "bytes": 4288,
+      "sha256": "4f0d95d344d7022a48336b9622891b0c2c4763637b9f31fecd573b77c88baec7"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/94ecb93cb9716487a2a35c7dbf53dbea9f4c93e58e4c25d3ba8e822d1668f876.json.gz": {
+      "bytes": 2206,
+      "sha256": "fa4c2be12a12f3085ab41ee9036ee6fb09dad7999727b906324aca4b180de915"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/a85ed545aba29f73a3603871521f74d254c0329927cb20d30a4bd56b93bccd44.json.gz": {
+      "bytes": 2248,
+      "sha256": "08e01c28a83eba310faf64ef40169c83d5d151f03f79d6b010b5a6361fabbd87"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/72327a6d331da545a0ef2fc7ed3980710497dafc635cf4610f01081063afee6c.json.gz": {
+      "bytes": 2264,
+      "sha256": "e8dc004455afbd0f205bd3cccbc83f2ace21743c70469555c6203975179656e7"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/d81da8db5177ca152f4b56de410f5358864ebfca43f877ef59832b1a5c0cbba1.json.gz": {
+      "bytes": 2191,
+      "sha256": "23b1e430120442b8d79a9fd119dcca42f975c3268ccdf07db72ab130db09c662"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/f42e38e59b0976386610de6972263a784f0953d265146babca31410edc101728.json.gz": {
+      "bytes": 2906,
+      "sha256": "ef0a24638680c027c5eefb566ef7434494a7474349ba0fd32b4c1d4692d77589"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/d61995903745415db33e40705ff6376b3980b9183c49fc64b6c646617eba2151.json.gz": {
+      "bytes": 2841,
+      "sha256": "34f6092a3cb0f64c1137f8809f72a75bed7e69a4326a203ea34638685adcfc2b"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/e798b9b0d76d5a52377d27a0cee37559d080054fb4ef8fa3ce85e35b5d97ad3f.json.gz": {
+      "bytes": 5122,
+      "sha256": "f9042b176091af53959dd08abf8c3fa8b70a060e6d75fc551a3635fa1b1aa32f"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/snapshots/00000011_d72b5c899aefa886e65c8e094c1d22e6baa3bbb9275b9a2f00635a1bd2b6484e.json": {
+      "bytes": 4288,
+      "sha256": "1f0603df497343c96cdb07540a9687f65c4be512c32b5be35800115f9053e10d"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/56ef04e7a71b20f25b1b0ebac69988dbb7db5900a64182453156a801c87fc9a6.json.gz": {
+      "bytes": 2205,
+      "sha256": "3db0ebb6d125d647a379a187acfe745be2aa0d0da8fce84be6ac6cf0626341f2"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/7605fce8f2498ed02a11f237c840c3b2866239a18b6354e1a3f731955f887036.json.gz": {
+      "bytes": 2247,
+      "sha256": "297597027a2ff5a94b4ad155619b73f33f820a1e15c29f87fb08b19ba760fde4"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/0f6fbf3319e730efedae2b3fb2a12c93c16d524ebd7288ee998f82801cd2c6b5.json.gz": {
+      "bytes": 2264,
+      "sha256": "1df58e00cd396faf297c42f27bc40c73c1986a9a7f0bbe970fe0a8a0e9084653"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/df6bb67d59a911ce3826c992cda6d15286ec75ffea95b1147cd19a0e42b34cde.json.gz": {
+      "bytes": 2190,
+      "sha256": "7abdd71b865589150b58c6c9a7c0838c1bf2894b628bc5c4866ec9ebbc572245"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/f01ef311847594d54a8078b65bc3a4607b185590f351949cdf59942db12b1f14.json.gz": {
+      "bytes": 2903,
+      "sha256": "d1cf484ffd09f3e1b20c5ab3a0f2a44f635a21d9c98f08e7b13569fe2160fac0"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/c3322be7080951684f37b522b60560239b88129e7bb50e28c1c56ec61d440f12.json.gz": {
+      "bytes": 2840,
+      "sha256": "ec2a9ed13ae4e01948a4f432a2adfd23460dd30e6a026873b8418fbf4a5cd97a"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/67a4ae909255015062df634b0aee2dfc80c129a650af9c84381cb1082d90cc6c.json.gz": {
+      "bytes": 5122,
+      "sha256": "5d2f26c92ab4667948d5eac81666b045efd4b10c7599f022e18fc3fc38796758"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/snapshots/00000012_06f46253db8c8a06c69cc6cb27d78f660668ad3acd2f48f5518e14760743455b.json": {
+      "bytes": 4288,
+      "sha256": "a8533323cb7ec95f18bc5042bdc4f0a137c67a08a2398542e9cfab15965f154d"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/41e054abb5499dc32001b5127900718b5a40c25f4aa14c09d539698335474834.json.gz": {
+      "bytes": 2204,
+      "sha256": "61fb0c217504a042825300838640e639f75465e4e91d24f4edc2e92fd650a1db"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/fe4534782a7596e3441c6b2e67277aef495a09031f36e5c0a07e3c79df017470.json.gz": {
+      "bytes": 2247,
+      "sha256": "8ce249af4c61a6c20e75889a9483ee1cbd30ffa0c2a2b7abe304651f471c9d27"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/bd8ee23ad040e02b1a4850815f37b648c7cde72f05cf6b19845af3c2bef2d24f.json.gz": {
+      "bytes": 2263,
+      "sha256": "51e580d5016b65042b62a0be79ffdd8294c0d2c2f74f64006aa18c7e63462a61"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/3cf70fc93dea6f0bd37b0cd9cc5caed1338ab3ab74523bb791eeb301bbaa85a9.json.gz": {
+      "bytes": 2190,
+      "sha256": "111e7f4c2efd28cfb33ff3db8024109dd4c427c4df898f3b9b8692f0e9f622a2"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/fbeaefbafd0a6932f29272380896ad214ce4a8c80a1733a1c36894cc1815152f.json.gz": {
+      "bytes": 2904,
+      "sha256": "2cc42e149cafd538145885e195e2f7f5172e395fbc2dd1a087779a3cc4b25826"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/c7812e2ab93c94b28baf14fe48d97708a3552ec380c0e9a9a766fc53215b8606.json.gz": {
+      "bytes": 2839,
+      "sha256": "3a52ccc542c07f8b2dcd7ad2e8cccce11d880e90cde72d9df7e91cdd97b02f72"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/bb55be2636acca163d4262007733487c1bba65f2b2e0847a6bda2fe2f4e25c2d.json.gz": {
+      "bytes": 5123,
+      "sha256": "75a6ec7756efc2e907efd7f0098155612d6b73586a8d8524f99feda4795a453e"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/snapshots/00000013_7cbee5ef8bb9ada2b6667a6c90712f563ece9fc162d498e0e82ff9ac5c48f24c.json": {
+      "bytes": 4288,
+      "sha256": "aea3cda6ccfd48ab767cc31aea9f35614ab69a6e1905bfa323216de2d77d1c74"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/ce583c4aa11fc96d25bf08db4221c9adec4defee93245272b53a2f46776a4e08.json.gz": {
+      "bytes": 2204,
+      "sha256": "517ba56f0c6b88551ca126494d40780cc6994633b0f1aa1c0a3b095d99dd6358"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/6a112d2ad58cf1fcc9a35e0fbab2a4163af5aaaad1413bfdb8f28ac6653053a1.json.gz": {
+      "bytes": 2247,
+      "sha256": "ee8035933ac7120b40b920b153a42bb2932edbd7b0585089c8399206b1914dfb"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/37cf96529f23ec3c0ad1c28e8d2562fa190874e66a34abd77a6d0e9d33629c97.json.gz": {
+      "bytes": 2263,
+      "sha256": "1d819b4bdcb38626d530e77902351c76660c669f39ebd77b1eaaddc6860ef0b5"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/2f864ebc2316826f612f59bf3c3514b43a8412b0262d3a4cd776d2a25496acb1.json.gz": {
+      "bytes": 2190,
+      "sha256": "db00985f44604edfd9d237aa9af4bd5b36b5ead6e1b7684d1dc0ce036200aed4"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/8270f4031e3a177634fb02d9413b2dee1dc2748c8c9f56ddc2c8fdf42ff9d123.json.gz": {
+      "bytes": 2906,
+      "sha256": "0bc8688afebcf6e07a119ea498e63e00e034a9591b3cce2476f3a5d510aa46ea"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/9ed6584ac9844219b998f32e753f113c6561b72bd9f707bbfc141459d695a81b.json.gz": {
+      "bytes": 2840,
+      "sha256": "f494f78c8591106c974aec8c6593f9f3f5d1211ade311eb5a13678b9a988645b"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/b79972523e2771f2bc5af423e9ee51af32365da8f3d1dfb82d181708774cd100.json.gz": {
+      "bytes": 5123,
+      "sha256": "98ccda6ed74b4d21ecba35304f295b808b4ff3fb5a467592f949c993ce01ac5c"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/snapshots/00000014_ee187823905e15e4cbc6c52a262bff190560054d7b8378b2c0b20ed20d8b0f36.json": {
+      "bytes": 4288,
+      "sha256": "1ae0d2ebbc2b55f110e2fa0c32fde9ecd588dc4167de83a89d6db6fc18d463ec"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/a7f8c62fb4f5c8be0d16a84bcb449e691fd70bd738c7f2302bbef408f3baecd0.json.gz": {
+      "bytes": 2205,
+      "sha256": "c04d1dc7bac9446c6976e95486ed7ee05ce24cb9ad99e9db19075ab6c7733209"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/3fa416ee6a5673b8dbe56c57ef755513563fa4597e349338900e35dde4c0a45d.json.gz": {
+      "bytes": 2248,
+      "sha256": "6e060de9b41e32125dd2c261bc0c753c39e34d23497c6d97cfdd4e7c5b9a2e52"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/e11b7f397a2e70d4f27da0b2976fefd9634278ef38eaab0bb98e21fb27e7abb4.json.gz": {
+      "bytes": 2264,
+      "sha256": "237f630333b056120a67fe6c25bb6d0fb37235a2a6b6eb0c1606c90cc9ec3dd2"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/ddc93044fce6ea8a08ae9dc8f606d1246dea114e2d3768bc16d2f0e6f65ef08c.json.gz": {
+      "bytes": 2191,
+      "sha256": "19175fa922b3664dcbb32b03b5653b96fb75b67a609d2ce888e9e397c0dfd6b3"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/b78d4972c8ade22214bca9a355819cfec7c73118482cfb6280b87bd39a531aa9.json.gz": {
+      "bytes": 2906,
+      "sha256": "e69b6bc0f4455e6d8b25ab15045d10c546559f84ed7dfad22f4d1b3897a459a2"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/923227b10d43191cac86e85b4b445316c5b7ef34fb6247cb0d15e04d0d538d25.json.gz": {
+      "bytes": 2840,
+      "sha256": "ae9e72e4b1a820e927741f64782bcf289f38408c66f50949c354894bc9b9321b"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/d73fded1ca2040f76457a0c974581a69871751b41ff035c2f132c9d05c19c8fd.json.gz": {
+      "bytes": 5123,
+      "sha256": "c7f67051aecacb8cd7e3aab274fd86dd38ed668d8874f8ee651d617a3245f95d"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/snapshots/00000015_971a848cdd8d5507d1b10019731075f5e30c12771938e564b8946c3f3f3a9494.json": {
+      "bytes": 4288,
+      "sha256": "9d1227449ca1f4a64bfaca94f3cc638eccb26d38769f6320408fb377a13166a1"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/a8e859cbabae6f6703f442930952a6821eb01896838c5371667dfecca34dc781.json.gz": {
+      "bytes": 2184,
+      "sha256": "867cd49af6536957ee36e518d0b8d3faf9adfe072ed099d654efb04436ab651f"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/38b0b399c71ab7052d8da54928edfbebb71b9174bc7713dc786707a3e8cd6c98.json.gz": {
+      "bytes": 2227,
+      "sha256": "f7ad7205494911e2bb3fa5a4c1d1e97a2ee3dbd269b9bb719db1d83a82cb8108"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/8c8a01a359d83f45a9bb97ea1b58b3389a6550f7718706c5e07dc19d785d0725.json.gz": {
+      "bytes": 2236,
+      "sha256": "ccb7f515eb36339262cb5c425b49f2d3f9335142b0d235be47e38bad25ecf915"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/d216fff6d4396883bd2887852915f22e40fb2a7b722f9d4d27465aa548416e6b.json.gz": {
+      "bytes": 2163,
+      "sha256": "e904f4e2c45183660325e52c3a1bd81666b3a7aae98d06fdc8b4ab5627899086"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/9689fc85f49541d860433090c68dd24fb0b905fe80e416ff7d0f5d784b371305.json.gz": {
+      "bytes": 2905,
+      "sha256": "840a84dea8a2d77dd315542fd0118b0cdb031888ecccfe95dcb870d7c9d0a97c"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/a4a90fcb2aa5e697457b0fdd58925a604575abe7513a8353e75ebcbc0ff74a09.json.gz": {
+      "bytes": 2841,
+      "sha256": "9c1c86e91d2b3127995a96ed25137f5e29af3b48a183cbf8e31ca83da715066e"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/cc190a465139aa3308fae43669740ce4854a3aec831e8e9d723f2110fa473bea.json.gz": {
+      "bytes": 4721,
+      "sha256": "850d05092ebaa618cf9816db8275dbdcf6b2e7337f62a4916a5817fd1ff1e199"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/snapshots/00000016_6a67de1b52b67cadc3b3ef490b054df7d60273e4c029aef451f297cd39f53ebe.json": {
+      "bytes": 4288,
+      "sha256": "d475f6e36661a6cb143e2e3013da9383541b390894dfadbf0c23f87cab1e57e2"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/198c6a6b58d1acbf46e85353281c0a61702c37845f9b1428031dd596285c7700.json.gz": {
+      "bytes": 1903,
+      "sha256": "051d0e58a2f25de32c87ad205755887110bcc4e45b8e60818fd4cc7ab500a9be"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/f55ddd25bfc313e351ae89dd948d5a08ae67a476d7a83286c4a3c7cb7b682c96.json.gz": {
+      "bytes": 1935,
+      "sha256": "e95b1cb44af40e12245a48c59295852e67b16d376bfcfe023883afd70bbddd46"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/a408f4dbf332a1dea6bf9095e1910b3ae861913c758827b78327f40446da7725.json.gz": {
+      "bytes": 1974,
+      "sha256": "c194128f46c9b36fe8d1b2d412d0e28317ba850052b69de25a3154084bf8fa60"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/d1b9638adeff5e0e8885462ba3f467661a0b8be97b24b492c19d79984002ca7e.json.gz": {
+      "bytes": 1883,
+      "sha256": "6b59f00b5d8be59a833c6729835a989745fe56dbc543997d4979aa27c1b56c24"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/520b139e960b4a717bc13e75bf0678b02218d656814c9fd0c198d9c6c0f0e8ab.json.gz": {
+      "bytes": 2330,
+      "sha256": "1156beb11b0b752f422042a1ad50772e1fcd155546769c8f9558e0c3ad185072"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/9d3860a0d2a1955d5bdae90a7169cf49b0ef3e118caffcc10aba368d9bac07fc.json.gz": {
+      "bytes": 2318,
+      "sha256": "186224922e838116f05b83e8b6912564a3de33040a2f0e58725d3399a5143f28"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/d0e0fd3476f851382162fbc9d7593c78fc4c3941e5c8a72f3cd48bab5ab558bf.json.gz": {
+      "bytes": 4722,
+      "sha256": "f240c8cc9806abb973c89f495ad18d90b5aa9ac8dc8d7ec3a1b5ed2bf55e9d52"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/snapshots/00000017_e0c02c38a145b8b58389c43073e9d32670682657bdd7417b2b7f092505860fcf.json": {
+      "bytes": 4288,
+      "sha256": "097096662a06f37d392e6ddff6c772b4047cd719b1dfdb87467730dcc5755f2a"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/927eff2ccb8163d148d1516cb9192db9714bf1fdaefaeb622ee5bf268110c3db.json.gz": {
+      "bytes": 1770,
+      "sha256": "8d08dfafa13f0b2a444f3527fee2d5482f59e2417bdc1526a0a0e3ecb010c39e"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/435086403ddddfc4a11ef8a2ceae1a74b170fc068123e5b90812962c1877c0e5.json.gz": {
+      "bytes": 1801,
+      "sha256": "87a8dda481bf46210402f4108e23662d7a14069451e2d025e4c7e9764e0b755b"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/8bd342455a2cc0713a873d57e6649ce05574ddba54487a6248fdab052af6ed72.json.gz": {
+      "bytes": 1815,
+      "sha256": "ef681ac6f4bb5e55410b7f17d1fa4dae1cdf1c8fbf56987af0e0958b6bd86255"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/32deb2a789bafb5cd0593b7abbc7d548a8a9186aacb5a71a989651435e0c97c9.json.gz": {
+      "bytes": 1743,
+      "sha256": "65ecb3e3da6b62d6a3a29892e0683078e9fd0895ff329895ac65b361ef6872c4"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/17bf6492ac7664711fed7b5b6f3ca9bf8e804abc7eda36789fb5f2f8af07849e.json.gz": {
+      "bytes": 2133,
+      "sha256": "cf5fabe0228a0e711a33c3509d63fe6c06d7a09da9e61be3adeaf5e288247fb5"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/f30cf98e4545e81fb94c9295fe1972b2248eb702c99863936d0623a518e44ab7.json.gz": {
+      "bytes": 2047,
+      "sha256": "d3e87d603092ebc065b0cc5486ee7d89f39cacd06d112b02997ed1aa6fee62a4"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/aa7eb7dfc6cf9964f3faaaa0a83c127aec31d1d6184dd9a2e66578b905c5faf6.json.gz": {
+      "bytes": 3283,
+      "sha256": "3ca23a8010d845f5a0761b6c15408169637af8bb714143f2eb1e26ebecfba0e9"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/snapshots/00000018_65cbf4e700cf19f9d284ccad5ae5413cd4a579a4ecb5522372bff5ae3fee8f81.json": {
+      "bytes": 4288,
+      "sha256": "796b2eb05944f35deacd565f7602b13f549e3fc174e8bc2c0eecf88fc30eb764"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/0054ecee1474ea0078466a85326bd5b1309b75f0b5dd48d1d725fb6e2ee30078.json.gz": {
+      "bytes": 1686,
+      "sha256": "0016dded5d2827c8848bb9f0e759243fbb403633c5a93d14730cdc209f41760a"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/717be160f0f8d808d82edc1e52574aa66f5f8a3833794cd26ebc23aecb60c4f7.json.gz": {
+      "bytes": 1706,
+      "sha256": "6cdf44a06892e3cf41b63c95495a1d4b9cb05dcd9186a63800469ba453294198"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/66fea970d50ab3b2052abfa15659f44fdee95494989cc716dd8266dbfa87f71f.json.gz": {
+      "bytes": 1729,
+      "sha256": "ac829c7eb8a38355a88679842d305acc1883e7e8da7b34bbbcf5ff685b9fbe79"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/31c4c9072fc533b028b9a36eeb31ffa3ce18c8f02b4130e1d9bdb8aab01602e2.json.gz": {
+      "bytes": 1673,
+      "sha256": "28b3de2604c1be33cf22ce05fef7da56d36c78669f1db23b981b176f7c0245b0"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/2c54cfd62389764bfe996b1193dc1a3eeec433f9a4b8f4b1acf66dc22afeef71.json.gz": {
+      "bytes": 1870,
+      "sha256": "63af2a097a91ed34befe236a4e927931bbffa7c02680d990f5db8719526cef3a"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/7689f57fe6baa22ee403ad2742d51cf630598760651c28ae0ff0a72b06c4e278.json.gz": {
+      "bytes": 1965,
+      "sha256": "6f54e1d5be7792d68fbf8f600e9a054d6548c8070ba1621b5927a18d05048be1"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/3576f51cae2a7ccfc6418735ff5de64a89192d5d3f5bcf26885c42d4e2db0eed.json.gz": {
+      "bytes": 2551,
+      "sha256": "43dcb6735be37537b8be199d2effd8f235052c37ef472fb89e261ba3b8af5632"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/snapshots/00000019_21cc22db83beb2067ef9bf76647876a9abea5c0de0cc99092dd03d67905059b2.json": {
+      "bytes": 4285,
+      "sha256": "9a10a76d8397d3d770db2bd4292c952c25d8e9b2c04687e4fa16ff9c354d8f12"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/cad23a2503cb6ac7f0ea0fd85c56d0980602fc2b858fa58fc09646c8ad886c3e.json.gz": {
+      "bytes": 1708,
+      "sha256": "574f6605439ad09b46ed00b4afd5d2f05e7b148f8de6b28c876823996f7effe1"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/4eda71266fd344e4d11adf69466066db83e95daa955d6c37d40f86e2f692f10e.json.gz": {
+      "bytes": 1724,
+      "sha256": "6807e804d1635be177117ebaab755498f2e274355e1bf1e8558d599f6e781df0"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/ef9f7a56c1f5d3339560f5b1435e7d309ae78df8fa83c6b31bf11c395699ab72.json.gz": {
+      "bytes": 1745,
+      "sha256": "56138e161c0dd77e54e9633dfcb50747d45701b1adb3e7ef81f798d918843025"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/eb84f9f900fccca63b5390aea36f25147734c4b0af7c8e95a4d73030673eadcf.json.gz": {
+      "bytes": 1701,
+      "sha256": "b860c5383b9e316177b870e4f2ddd9fad1c59396654a20159c828eee93e77f5a"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/0070910e2a286ad2b3578fd733c43d37a2ec8b31589afe09f8b24cdc583c6977.json.gz": {
+      "bytes": 1814,
+      "sha256": "885b893cab272db68821ab754a590737ca749a3533d586766067c5f835fbe936"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/040e607c267e2005cb1c2ea8a68c46ccb79e8f566bec1c5c9227132a0eeca11c.json.gz": {
+      "bytes": 1819,
+      "sha256": "b1dca083f0c464404c93fc1985760ba976050e5e049590c50144f5190282cdc3"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/eb4b2fa1e1076079b435de050467ab9d84e5c5969c5eb65c13bf71d2a64aa6ef.json.gz": {
+      "bytes": 2435,
+      "sha256": "0acf439221b051a910639c8ac007925719b5e447891fc30ab90e64854c12db0d"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/snapshots/00000020_e28de07be0bd4dc806b6e488b3fb65df93b5bbf0056ff0fa95d9f16323d26fa5.json": {
+      "bytes": 4288,
+      "sha256": "28d6c293719607569bdbf1a087cf3b4dfd0605112e3523088aca06f14fa9728c"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/af54339af60ea2d19f35d27a0b8c6d7a688195b00f7c31552864a6cfb40fe663.json.gz": {
+      "bytes": 1836,
+      "sha256": "5be0ada7dc2e7ef06c7b49fb0119d8f9d7bc49e718f407df02a2024151141d5d"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/21f74748c2e69bb3b5cb1f629d18b182313de4c3dfbe16759cafca2d2a8b99a7.json.gz": {
+      "bytes": 1818,
+      "sha256": "eea6b03d258d00fb7d0c002bd404709d11aaf6e2bdfe5745cc75fffc0f8d7f07"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/790da6785349e73068dfa7feb7a7d4363c608079ec4e6b78f7530876cbf267d8.json.gz": {
+      "bytes": 1858,
+      "sha256": "dbf777327e1638043909b039d125d975256778dab897449c7e8adb79327f88fd"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/67a03cb9d030d941a215e76174071912426cab6b99ff2d484fabab6405c29a47.json.gz": {
+      "bytes": 1838,
+      "sha256": "fc032b3441489d703c64540d76c40d330f34eef5576ac923ff56f2bf5ac28492"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/a138fa72300f2f8d94df2bc40d5152abd8f4b069de9b5cd1c248499ef438474f.json.gz": {
+      "bytes": 1719,
+      "sha256": "9f225ae654f02308578b14a6e270c7dbca1d1b96d465a10fd28021201ea9378a"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/74459f80e434364ed75329aeb418d3b8ecf04d96798ff8a399857c171d4a28f6.json.gz": {
+      "bytes": 1773,
+      "sha256": "88f7239d635a19e15e3e110666ec8d4f6e6bd4177cbb4c23f782af777c90465b"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/b755e67196644c781c3f6d4766e3277554ace753a58d81e7165e13d8b2657c19.json.gz": {
+      "bytes": 2361,
+      "sha256": "7b0563861f3b734fb3c62010f6b60fb3053c7d6e8e17a38777c81f26f1cb052d"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/snapshots/00000021_9628e751d9c306cfcf13f13a766d4eb348c2583a7d8a7e6e6ec19141f60decf4.json": {
+      "bytes": 4288,
+      "sha256": "84621d04ff6ae8a0f97a6dc2d0d455d074b01e4733bff4355f42fd0539af254d"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/b326014e82c85509b7bfab1a9a2899ecddf9042494b6ef01a2e78496c797fbba.json.gz": {
+      "bytes": 1916,
+      "sha256": "d04686e75025d48c0296684ce80aa3e8c13055cf3b923fc283a155d4d96018d5"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/d0bf91f19b8c8f0b53d70a8e69f0aa0d54e429b0be3ea9be509abc4ec83f9eb9.json.gz": {
+      "bytes": 1927,
+      "sha256": "c746ff8fc347748978af0253c01fdcc1a8310dea1aaee7dc52c1a0555d29338d"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/5bb4a2df09e0b14aefab2208f1042b73f7bdee8fc14fa6dc11eb0d4a0bee73fd.json.gz": {
+      "bytes": 1968,
+      "sha256": "ebfb0bdd32b9ce3796be82109b0a77beb64a13c0e24b0b2e75c4814a29ade0ff"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/7842e83b3a7dd58646dc91811825af41984f2f69454cc95ff6ee9e26c699ab99.json.gz": {
+      "bytes": 1917,
+      "sha256": "4f1a577385d52224aa96789aaec6791191d6723de85d095582d7c68b1c99f417"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/186d9a00c49a0f0f4b05fb7511079c28bfa5a728895fd06b5925134166ce5d37.json.gz": {
+      "bytes": 1726,
+      "sha256": "b223d6bb5c20c772e1e0d25b11eb068a7e5808dde93225e0c1cb772da8ec52de"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/c50dd3543c7b8cbe04b580c7016cb94ac41c6868464c29fe047115ce7c1b185f.json.gz": {
+      "bytes": 1711,
+      "sha256": "8d7c696649cd4badd0ded2f4a3d1e270f1c7fa4c797288283d56add5293befbb"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/observation_inputs/maps/c416b51b8fc74a2913b74f4b07dba17ca1c3874f6a24596fb157d12225485c9e.json.gz": {
+      "bytes": 2295,
+      "sha256": "8a3908d615252cc54f6a435ba48e214e03fcae53a2f722abda1ace652ed84405"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/launch.log": {
+      "bytes": 129880,
+      "sha256": "030ff6847319e13f5ae8fb339915c2cdcab353820c5b75d3b928a637057bcc69"
+    },
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v4/independent/mr3_p2a0_v4_independent_input_episode_review_v1.py": {
+      "bytes": 22894,
+      "sha256": "ab102c02bff6b3dbd916e07552ea4250b0bf2f935da74f97d21ed5f766261c05"
+    }
+  },
+  "script_sha256": "ab102c02bff6b3dbd916e07552ea4250b0bf2f935da74f97d21ed5f766261c05",
+  "exact_full_snapshot_replays": 21,
+  "short_20ms_terminal_steps": 0,
+  "zero_duration_reused_terminal_tails": 0,
+  "episodes": [
+    {
+      "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101",
+      "epoch": "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e",
+      "activity_independent_replay": {
+        "schema": "mr3-received-activity-audit-v1",
+        "passed": true,
+        "integrity_passed": true,
+        "availability_passed": true,
+        "epoch": "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e",
+        "latest_actor_activity": {
+          "tb1": {
+            "estimated_path_m": 2.050096574561806,
+            "sample_count": 200,
+            "path_observation_complete": true,
+            "accepted_goal_count": 2
+          },
+          "tb2": {
+            "estimated_path_m": 2.1043245914592292,
+            "sample_count": 200,
+            "path_observation_complete": true,
+            "accepted_goal_count": 2
+          },
+          "tb3": {
+            "estimated_path_m": 1.9993159024550078,
+            "sample_count": 200,
+            "path_observation_complete": true,
+            "accepted_goal_count": 2
+          }
+        },
+        "latest_snapshot_sequence": 21,
+        "owned_accepted_goal_ids": {
+          "tb1": [
+            "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e:tb1:1",
+            "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e:tb1:14"
+          ],
+          "tb2": [
+            "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e:tb2:1",
+            "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e:tb2:14"
+          ],
+          "tb3": [
+            "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e:tb3:1",
+            "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e:tb3:14"
+          ]
+        },
+        "activity_updates": 203,
+        "unique_snapshots": 21,
+        "final_received_acceptance_counts": {
+          "tb1": 2,
+          "tb2": 2,
+          "tb3": 2
+        },
+        "adapter_sha256": "0046d7dbd53ef82e12f089346efe2430acf7c08635cbaf2783eb0544535194c9",
+        "transitions_sha256": "7184284e4863d6bbfe52e1be3bcb963cfafd5caa7aa31f11342c4299857542db",
+        "path_numeric_comparison": "relative 1e-12 / absolute 1e-10 metre arithmetic tolerance",
+        "scope": "integrity of raw delivered local odom/unique acceptance observations only; availability_passed is separate, no truth/task-success assertion"
+      },
+      "native_received_motion_probe": {
+        "schema": "mr3-received-activity-probe-audit-v1",
+        "passed": true,
+        "epoch": "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e",
+        "robots": {
+          "tb1": {
+            "estimated_path_m": 2.050096574561806,
+            "sample_count": 200,
+            "path_observation_complete": true,
+            "accepted_goal_count": 2
+          },
+          "tb2": {
+            "estimated_path_m": 2.1043245914592292,
+            "sample_count": 200,
+            "path_observation_complete": true,
+            "accepted_goal_count": 2
+          },
+          "tb3": {
+            "estimated_path_m": 1.9993159024550078,
+            "sample_count": 200,
+            "path_observation_complete": true,
+            "accepted_goal_count": 2
+          }
+        },
+        "native_accepted_goal_ids": {
+          "tb1": [
+            "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e:tb1:1",
+            "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e:tb1:14"
+          ],
+          "tb2": [
+            "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e:tb2:1",
+            "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e:tb2:14"
+          ],
+          "tb3": [
+            "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e:tb3:1",
+            "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e:tb3:14"
+          ]
+        },
+        "integrity": {
+          "schema": "mr3-received-activity-audit-v1",
+          "passed": true,
+          "integrity_passed": true,
+          "availability_passed": true,
+          "epoch": "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e",
+          "latest_actor_activity": {
+            "tb1": {
+              "estimated_path_m": 2.050096574561806,
+              "sample_count": 200,
+              "path_observation_complete": true,
+              "accepted_goal_count": 2
+            },
+            "tb2": {
+              "estimated_path_m": 2.1043245914592292,
+              "sample_count": 200,
+              "path_observation_complete": true,
+              "accepted_goal_count": 2
+            },
+            "tb3": {
+              "estimated_path_m": 1.9993159024550078,
+              "sample_count": 200,
+              "path_observation_complete": true,
+              "accepted_goal_count": 2
+            }
+          },
+          "latest_snapshot_sequence": 21,
+          "owned_accepted_goal_ids": {
+            "tb1": [
+              "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e:tb1:1",
+              "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e:tb1:14"
+            ],
+            "tb2": [
+              "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e:tb2:1",
+              "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e:tb2:14"
+            ],
+            "tb3": [
+              "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e:tb3:1",
+              "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e:tb3:14"
+            ]
+          },
+          "activity_updates": 203,
+          "unique_snapshots": 21,
+          "final_received_acceptance_counts": {
+            "tb1": 2,
+            "tb2": 2,
+            "tb3": 2
+          },
+          "adapter_sha256": "0046d7dbd53ef82e12f089346efe2430acf7c08635cbaf2783eb0544535194c9",
+          "transitions_sha256": "7184284e4863d6bbfe52e1be3bcb963cfafd5caa7aa31f11342c4299857542db",
+          "path_numeric_comparison": "relative 1e-12 / absolute 1e-10 metre arithmetic tolerance",
+          "scope": "integrity of raw delivered local odom/unique acceptance observations only; availability_passed is separate, no truth/task-success assertion"
+        },
+        "scope": "received raw-odom availability and short native execution; no 1m/95% credit"
+      },
+      "actual_navigation_maps_reconstructed_independently": true,
+      "transition_rows": 21,
+      "unique_snapshots": 21,
+      "manifest_files": 21,
+      "unique_full_payloads": 147,
+      "zero_tail_rows": [],
+      "short_20ms_terminal_rows": [],
+      "no_extra_or_duplicate_manifest_or_blob": true,
+      "full_observation_replayed_exact": true,
+      "per_robot": {
+        "tb1": {
+          "final_received_activity": {
+            "epoch": "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e",
+            "estimated_path_m": 2.050096574561806,
+            "last_odom_source_stamp": 91.198,
+            "path_observation_complete": true,
+            "sample_count": 200,
+            "schema": "mr3-received-activity-v1",
+            "started_at": 71.22,
+            "state_sequence": 911
+          },
+          "received_path_gt_0_05m": true,
+          "final_received_accepted_goal_count": 2,
+          "unique_snapshots": 21,
+          "snapshots_with_target_intersection": 19,
+          "snapshots_with_zero_target_intersection": 2,
+          "snapshots_with_joint_legal_goal": 12,
+          "snapshots_with_pool_zero": 2,
+          "own_seed_reason_counts": {
+            "None": 19,
+            "seed_cell_body_clearance": 2
+          },
+          "submitted_action_digits": [
+            2,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            9,
+            9,
+            9,
+            4,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8
+          ],
+          "actual_decision_sources": 20,
+          "decision_sources_with_joint_legal_goal": 11,
+          "decision_sources_with_zero_target_intersection": 2,
+          "submitted_goal_components": 2,
+          "native_sends": [
+            {
+              "command_id": 1,
+              "goal_id": "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e:tb1:1",
+              "pose": {
+                "frame_id": "map",
+                "orientation": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  1.0
+                ],
+                "stamp": 71.22,
+                "x": -0.050285791949544745,
+                "y": -0.8969735851104668
+              },
+              "robot": "tb1"
+            },
+            {
+              "command_id": 14,
+              "goal_id": "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e:tb1:14",
+              "pose": {
+                "frame_id": "map",
+                "orientation": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  1.0
+                ],
+                "stamp": 84.22,
+                "x": -1.8171694984244535,
+                "y": -2.6237246231867193
+              },
+              "robot": "tb1"
+            }
+          ],
+          "native_send_targets_bound_to_submitted_candidate_snapshots": true,
+          "actual_accept_receipts": [
+            {
+              "epoch": "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e",
+              "generated_stamp": 71.22,
+              "payload": {
+                "goal_id": "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e:tb1:1",
+                "robot": "tb1",
+                "type": "accept",
+                "value": true
+              },
+              "received_stamp": 71.22,
+              "sequence": 1,
+              "source": "tb1",
+              "source_stamp": 71.22,
+              "stream": "receipt",
+              "version": 1
+            },
+            {
+              "epoch": "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e",
+              "generated_stamp": 84.22,
+              "payload": {
+                "goal_id": "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e:tb1:14",
+                "robot": "tb1",
+                "type": "accept",
+                "value": true
+              },
+              "received_stamp": 84.24,
+              "sequence": 3,
+              "source": "tb1",
+              "source_stamp": 84.22,
+              "stream": "receipt",
+              "version": 3
+            }
+          ],
+          "actual_accepted_goal_ids": [
+            "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e:tb1:1",
+            "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e:tb1:14"
+          ],
+          "actual_result_receipts": [
+            {
+              "epoch": "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e",
+              "generated_stamp": 76.22,
+              "payload": {
+                "goal_id": "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e:tb1:1",
+                "robot": "tb1",
+                "type": "result",
+                "value": 4
+              },
+              "received_stamp": 76.22,
+              "sequence": 2,
+              "source": "tb1",
+              "source_stamp": 76.22,
+              "stream": "receipt",
+              "version": 2
+            },
+            {
+              "epoch": "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e",
+              "generated_stamp": 91.24,
+              "payload": {
+                "goal_id": "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e:tb1:14",
+                "robot": "tb1",
+                "type": "result",
+                "value": 5
+              },
+              "received_stamp": 91.44,
+              "sequence": 5,
+              "source": "tb1",
+              "source_stamp": 91.24,
+              "stream": "receipt",
+              "version": 5
+            }
+          ],
+          "actual_result_status_counts": {
+            "4": 1,
+            "5": 1
+          },
+          "snapshot_geometry_and_mask_diagnostics": [
+            {
+              "sequence": 1,
+              "digest": "97f48c72f5624a3b24ed8786c8d3d467a4a464421c810fefc7c55bd3d3a6a1da",
+              "phase": "idle",
+              "target_intersection_cells": 561,
+              "reachable_pool": 54,
+              "reachable_selected": 8,
+              "joint_legal_goal_choices": [
+                0,
+                2,
+                4,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 2,
+              "digest": "c97ad2a5eca72bfc4c3dec0207968c1c41f88713a5531d9599ddc0aa971db9a2",
+              "phase": "active",
+              "target_intersection_cells": 561,
+              "reachable_pool": 54,
+              "reachable_selected": 8,
+              "joint_legal_goal_choices": [],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 3,
+              "digest": "946a41c496f8ca611c2550e3d14bf8ead4a0616780406ce514e90a0dca2fcb43",
+              "phase": "active",
+              "target_intersection_cells": 3216,
+              "reachable_pool": 185,
+              "reachable_selected": 8,
+              "joint_legal_goal_choices": [],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 4,
+              "digest": "d0a6fef19a789cfff621321f28d5da0a759a8852ccf7d2d5feec83412994f2bc",
+              "phase": "active",
+              "target_intersection_cells": 0,
+              "reachable_pool": 0,
+              "reachable_selected": 0,
+              "joint_legal_goal_choices": [],
+              "own_seed_reason": "seed_cell_body_clearance"
+            },
+            {
+              "sequence": 5,
+              "digest": "7c74243263207c5300d18ab2c63a8e090f3373253d410829fa5c41bc90b00880",
+              "phase": "active",
+              "target_intersection_cells": 0,
+              "reachable_pool": 0,
+              "reachable_selected": 0,
+              "joint_legal_goal_choices": [],
+              "own_seed_reason": "seed_cell_body_clearance"
+            },
+            {
+              "sequence": 6,
+              "digest": "8c48b60fe470860fbf402b37fadcdae8ec7294746aed0e675f8567e846e75b46",
+              "phase": "active",
+              "target_intersection_cells": 9874,
+              "reachable_pool": 209,
+              "reachable_selected": 8,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 7,
+              "digest": "0b70faae0e9ea5aa94babc5321179f9ca1e92beea56806b5a652ed17dfc6b1db",
+              "phase": "idle",
+              "target_intersection_cells": 18175,
+              "reachable_pool": 185,
+              "reachable_selected": 8,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 8,
+              "digest": "6a0c2de402fbcc9934d97fcca94dfc0355b2650ca631223fec9f06dafb94c718",
+              "phase": "idle",
+              "target_intersection_cells": 18983,
+              "reachable_pool": 190,
+              "reachable_selected": 7,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 9,
+              "digest": "78363f4babad1a5dbd56e0406e5cf2615216b7a86dc972d69a997be531647b13",
+              "phase": "idle",
+              "target_intersection_cells": 18983,
+              "reachable_pool": 190,
+              "reachable_selected": 7,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 10,
+              "digest": "663aa60e0d50e524fa93f880cab2a6f897c3855c233ba459b1c4103766ca5a10",
+              "phase": "idle",
+              "target_intersection_cells": 18983,
+              "reachable_pool": 190,
+              "reachable_selected": 7,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 11,
+              "digest": "d72b5c899aefa886e65c8e094c1d22e6baa3bbb9275b9a2f00635a1bd2b6484e",
+              "phase": "idle",
+              "target_intersection_cells": 18983,
+              "reachable_pool": 190,
+              "reachable_selected": 7,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 12,
+              "digest": "06f46253db8c8a06c69cc6cb27d78f660668ad3acd2f48f5518e14760743455b",
+              "phase": "idle",
+              "target_intersection_cells": 18983,
+              "reachable_pool": 190,
+              "reachable_selected": 7,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 13,
+              "digest": "7cbee5ef8bb9ada2b6667a6c90712f563ece9fc162d498e0e82ff9ac5c48f24c",
+              "phase": "idle",
+              "target_intersection_cells": 18983,
+              "reachable_pool": 190,
+              "reachable_selected": 7,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 14,
+              "digest": "ee187823905e15e4cbc6c52a262bff190560054d7b8378b2c0b20ed20d8b0f36",
+              "phase": "idle",
+              "target_intersection_cells": 18983,
+              "reachable_pool": 190,
+              "reachable_selected": 7,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 15,
+              "digest": "971a848cdd8d5507d1b10019731075f5e30c12771938e564b8946c3f3f3a9494",
+              "phase": "active",
+              "target_intersection_cells": 19374,
+              "reachable_pool": 179,
+              "reachable_selected": 8,
+              "joint_legal_goal_choices": [],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 16,
+              "digest": "6a67de1b52b67cadc3b3ef490b054df7d60273e4c029aef451f297cd39f53ebe",
+              "phase": "active",
+              "target_intersection_cells": 20705,
+              "reachable_pool": 133,
+              "reachable_selected": 8,
+              "joint_legal_goal_choices": [],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 17,
+              "digest": "e0c02c38a145b8b58389c43073e9d32670682657bdd7417b2b7f092505860fcf",
+              "phase": "active",
+              "target_intersection_cells": 21867,
+              "reachable_pool": 123,
+              "reachable_selected": 8,
+              "joint_legal_goal_choices": [],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 18,
+              "digest": "65cbf4e700cf19f9d284ccad5ae5413cd4a579a4ecb5522372bff5ae3fee8f81",
+              "phase": "active",
+              "target_intersection_cells": 22777,
+              "reachable_pool": 121,
+              "reachable_selected": 7,
+              "joint_legal_goal_choices": [],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 19,
+              "digest": "21cc22db83beb2067ef9bf76647876a9abea5c0de0cc99092dd03d67905059b2",
+              "phase": "active",
+              "target_intersection_cells": 23028,
+              "reachable_pool": 122,
+              "reachable_selected": 7,
+              "joint_legal_goal_choices": [],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 20,
+              "digest": "e28de07be0bd4dc806b6e488b3fb65df93b5bbf0056ff0fa95d9f16323d26fa5",
+              "phase": "active",
+              "target_intersection_cells": 23279,
+              "reachable_pool": 127,
+              "reachable_selected": 7,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 21,
+              "digest": "9628e751d9c306cfcf13f13a766d4eb348c2583a7d8a7e6e6ec19141f60decf4",
+              "phase": "active",
+              "target_intersection_cells": 23516,
+              "reachable_pool": 146,
+              "reachable_selected": 8,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            }
+          ]
+        },
+        "tb2": {
+          "final_received_activity": {
+            "epoch": "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e",
+            "estimated_path_m": 2.1043245914592292,
+            "last_odom_source_stamp": 91.178,
+            "path_observation_complete": true,
+            "sample_count": 200,
+            "schema": "mr3-received-activity-v1",
+            "started_at": 71.22,
+            "state_sequence": 911
+          },
+          "received_path_gt_0_05m": true,
+          "final_received_accepted_goal_count": 2,
+          "unique_snapshots": 21,
+          "snapshots_with_target_intersection": 20,
+          "snapshots_with_zero_target_intersection": 1,
+          "snapshots_with_joint_legal_goal": 11,
+          "snapshots_with_pool_zero": 1,
+          "own_seed_reason_counts": {
+            "None": 20,
+            "seed_cell_body_clearance": 1
+          },
+          "submitted_action_digits": [
+            6,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            9,
+            9,
+            9,
+            5,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8
+          ],
+          "actual_decision_sources": 20,
+          "decision_sources_with_joint_legal_goal": 10,
+          "decision_sources_with_zero_target_intersection": 1,
+          "submitted_goal_components": 2,
+          "native_sends": [
+            {
+              "command_id": 1,
+              "goal_id": "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e:tb2:1",
+              "pose": {
+                "frame_id": "map",
+                "orientation": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  1.0
+                ],
+                "stamp": 71.22,
+                "x": -0.1002857926946028,
+                "y": 0.9030264417116234
+              },
+              "robot": "tb2"
+            },
+            {
+              "command_id": 14,
+              "goal_id": "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e:tb2:14",
+              "pose": {
+                "frame_id": "map",
+                "orientation": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  1.0
+                ],
+                "stamp": 84.22,
+                "x": -2.217169504384918,
+                "y": 3.0262754610048415
+              },
+              "robot": "tb2"
+            }
+          ],
+          "native_send_targets_bound_to_submitted_candidate_snapshots": true,
+          "actual_accept_receipts": [
+            {
+              "epoch": "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e",
+              "generated_stamp": 71.22,
+              "payload": {
+                "goal_id": "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e:tb2:1",
+                "robot": "tb2",
+                "type": "accept",
+                "value": true
+              },
+              "received_stamp": 71.22,
+              "sequence": 1,
+              "source": "tb2",
+              "source_stamp": 71.22,
+              "stream": "receipt",
+              "version": 1
+            },
+            {
+              "epoch": "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e",
+              "generated_stamp": 84.22,
+              "payload": {
+                "goal_id": "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e:tb2:14",
+                "robot": "tb2",
+                "type": "accept",
+                "value": true
+              },
+              "received_stamp": 84.24,
+              "sequence": 3,
+              "source": "tb2",
+              "source_stamp": 84.22,
+              "stream": "receipt",
+              "version": 3
+            }
+          ],
+          "actual_accepted_goal_ids": [
+            "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e:tb2:1",
+            "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e:tb2:14"
+          ],
+          "actual_result_receipts": [
+            {
+              "epoch": "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e",
+              "generated_stamp": 76.92,
+              "payload": {
+                "goal_id": "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e:tb2:1",
+                "robot": "tb2",
+                "type": "result",
+                "value": 4
+              },
+              "received_stamp": 76.92,
+              "sequence": 2,
+              "source": "tb2",
+              "source_stamp": 76.92,
+              "stream": "receipt",
+              "version": 2
+            },
+            {
+              "epoch": "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e",
+              "generated_stamp": 91.24,
+              "payload": {
+                "goal_id": "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e:tb2:14",
+                "robot": "tb2",
+                "type": "result",
+                "value": 5
+              },
+              "received_stamp": 91.44,
+              "sequence": 5,
+              "source": "tb2",
+              "source_stamp": 91.24,
+              "stream": "receipt",
+              "version": 5
+            }
+          ],
+          "actual_result_status_counts": {
+            "4": 1,
+            "5": 1
+          },
+          "snapshot_geometry_and_mask_diagnostics": [
+            {
+              "sequence": 1,
+              "digest": "97f48c72f5624a3b24ed8786c8d3d467a4a464421c810fefc7c55bd3d3a6a1da",
+              "phase": "idle",
+              "target_intersection_cells": 328,
+              "reachable_pool": 42,
+              "reachable_selected": 7,
+              "joint_legal_goal_choices": [
+                0,
+                2,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 2,
+              "digest": "c97ad2a5eca72bfc4c3dec0207968c1c41f88713a5531d9599ddc0aa971db9a2",
+              "phase": "active",
+              "target_intersection_cells": 328,
+              "reachable_pool": 42,
+              "reachable_selected": 7,
+              "joint_legal_goal_choices": [],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 3,
+              "digest": "946a41c496f8ca611c2550e3d14bf8ead4a0616780406ce514e90a0dca2fcb43",
+              "phase": "active",
+              "target_intersection_cells": 2950,
+              "reachable_pool": 183,
+              "reachable_selected": 8,
+              "joint_legal_goal_choices": [],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 4,
+              "digest": "d0a6fef19a789cfff621321f28d5da0a759a8852ccf7d2d5feec83412994f2bc",
+              "phase": "active",
+              "target_intersection_cells": 5610,
+              "reachable_pool": 207,
+              "reachable_selected": 8,
+              "joint_legal_goal_choices": [],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 5,
+              "digest": "7c74243263207c5300d18ab2c63a8e090f3373253d410829fa5c41bc90b00880",
+              "phase": "active",
+              "target_intersection_cells": 7158,
+              "reachable_pool": 234,
+              "reachable_selected": 8,
+              "joint_legal_goal_choices": [],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 6,
+              "digest": "8c48b60fe470860fbf402b37fadcdae8ec7294746aed0e675f8567e846e75b46",
+              "phase": "active",
+              "target_intersection_cells": 9840,
+              "reachable_pool": 203,
+              "reachable_selected": 6,
+              "joint_legal_goal_choices": [
+                1,
+                2,
+                3,
+                5,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 7,
+              "digest": "0b70faae0e9ea5aa94babc5321179f9ca1e92beea56806b5a652ed17dfc6b1db",
+              "phase": "idle",
+              "target_intersection_cells": 0,
+              "reachable_pool": 0,
+              "reachable_selected": 0,
+              "joint_legal_goal_choices": [],
+              "own_seed_reason": "seed_cell_body_clearance"
+            },
+            {
+              "sequence": 8,
+              "digest": "6a0c2de402fbcc9934d97fcca94dfc0355b2650ca631223fec9f06dafb94c718",
+              "phase": "idle",
+              "target_intersection_cells": 18904,
+              "reachable_pool": 186,
+              "reachable_selected": 7,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                2,
+                4,
+                5,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 9,
+              "digest": "78363f4babad1a5dbd56e0406e5cf2615216b7a86dc972d69a997be531647b13",
+              "phase": "idle",
+              "target_intersection_cells": 18904,
+              "reachable_pool": 186,
+              "reachable_selected": 7,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                2,
+                4,
+                5,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 10,
+              "digest": "663aa60e0d50e524fa93f880cab2a6f897c3855c233ba459b1c4103766ca5a10",
+              "phase": "idle",
+              "target_intersection_cells": 18904,
+              "reachable_pool": 186,
+              "reachable_selected": 7,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                2,
+                4,
+                5,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 11,
+              "digest": "d72b5c899aefa886e65c8e094c1d22e6baa3bbb9275b9a2f00635a1bd2b6484e",
+              "phase": "idle",
+              "target_intersection_cells": 18904,
+              "reachable_pool": 186,
+              "reachable_selected": 7,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                2,
+                4,
+                5,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 12,
+              "digest": "06f46253db8c8a06c69cc6cb27d78f660668ad3acd2f48f5518e14760743455b",
+              "phase": "idle",
+              "target_intersection_cells": 18904,
+              "reachable_pool": 186,
+              "reachable_selected": 7,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                2,
+                4,
+                5,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 13,
+              "digest": "7cbee5ef8bb9ada2b6667a6c90712f563ece9fc162d498e0e82ff9ac5c48f24c",
+              "phase": "idle",
+              "target_intersection_cells": 18904,
+              "reachable_pool": 186,
+              "reachable_selected": 7,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                2,
+                4,
+                5,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 14,
+              "digest": "ee187823905e15e4cbc6c52a262bff190560054d7b8378b2c0b20ed20d8b0f36",
+              "phase": "idle",
+              "target_intersection_cells": 18904,
+              "reachable_pool": 186,
+              "reachable_selected": 7,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                2,
+                4,
+                5,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 15,
+              "digest": "971a848cdd8d5507d1b10019731075f5e30c12771938e564b8946c3f3f3a9494",
+              "phase": "active",
+              "target_intersection_cells": 19292,
+              "reachable_pool": 176,
+              "reachable_selected": 7,
+              "joint_legal_goal_choices": [],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 16,
+              "digest": "6a67de1b52b67cadc3b3ef490b054df7d60273e4c029aef451f297cd39f53ebe",
+              "phase": "active",
+              "target_intersection_cells": 20588,
+              "reachable_pool": 133,
+              "reachable_selected": 7,
+              "joint_legal_goal_choices": [],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 17,
+              "digest": "e0c02c38a145b8b58389c43073e9d32670682657bdd7417b2b7f092505860fcf",
+              "phase": "active",
+              "target_intersection_cells": 21778,
+              "reachable_pool": 124,
+              "reachable_selected": 8,
+              "joint_legal_goal_choices": [],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 18,
+              "digest": "65cbf4e700cf19f9d284ccad5ae5413cd4a579a4ecb5522372bff5ae3fee8f81",
+              "phase": "active",
+              "target_intersection_cells": 22591,
+              "reachable_pool": 119,
+              "reachable_selected": 6,
+              "joint_legal_goal_choices": [],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 19,
+              "digest": "21cc22db83beb2067ef9bf76647876a9abea5c0de0cc99092dd03d67905059b2",
+              "phase": "active",
+              "target_intersection_cells": 22880,
+              "reachable_pool": 119,
+              "reachable_selected": 5,
+              "joint_legal_goal_choices": [],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 20,
+              "digest": "e28de07be0bd4dc806b6e488b3fb65df93b5bbf0056ff0fa95d9f16323d26fa5",
+              "phase": "active",
+              "target_intersection_cells": 23048,
+              "reachable_pool": 122,
+              "reachable_selected": 4,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                4,
+                6
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 21,
+              "digest": "9628e751d9c306cfcf13f13a766d4eb348c2583a7d8a7e6e6ec19141f60decf4",
+              "phase": "active",
+              "target_intersection_cells": 23279,
+              "reachable_pool": 143,
+              "reachable_selected": 5,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                5,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            }
+          ]
+        },
+        "tb3": {
+          "final_received_activity": {
+            "epoch": "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e",
+            "estimated_path_m": 1.9993159024550078,
+            "last_odom_source_stamp": 91.193,
+            "path_observation_complete": true,
+            "sample_count": 200,
+            "schema": "mr3-received-activity-v1",
+            "started_at": 71.22,
+            "state_sequence": 911
+          },
+          "received_path_gt_0_05m": true,
+          "final_received_accepted_goal_count": 2,
+          "unique_snapshots": 21,
+          "snapshots_with_target_intersection": 21,
+          "snapshots_with_zero_target_intersection": 0,
+          "snapshots_with_joint_legal_goal": 15,
+          "snapshots_with_pool_zero": 0,
+          "own_seed_reason_counts": {
+            "None": 21
+          },
+          "submitted_action_digits": [
+            1,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            9,
+            9,
+            9,
+            1,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8
+          ],
+          "actual_decision_sources": 20,
+          "decision_sources_with_joint_legal_goal": 14,
+          "decision_sources_with_zero_target_intersection": 0,
+          "submitted_goal_components": 2,
+          "native_sends": [
+            {
+              "command_id": 1,
+              "goal_id": "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e:tb3:1",
+              "pose": {
+                "frame_id": "map",
+                "orientation": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  1.0
+                ],
+                "stamp": 71.22,
+                "x": 0.8997142222065584,
+                "y": -0.04697357244447975
+              },
+              "robot": "tb3"
+            },
+            {
+              "command_id": 14,
+              "goal_id": "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e:tb3:14",
+              "pose": {
+                "frame_id": "map",
+                "orientation": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  1.0
+                ],
+                "stamp": 84.22,
+                "x": 5.432830609608965,
+                "y": 0.02627541630135788
+              },
+              "robot": "tb3"
+            }
+          ],
+          "native_send_targets_bound_to_submitted_candidate_snapshots": true,
+          "actual_accept_receipts": [
+            {
+              "epoch": "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e",
+              "generated_stamp": 71.22,
+              "payload": {
+                "goal_id": "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e:tb3:1",
+                "robot": "tb3",
+                "type": "accept",
+                "value": true
+              },
+              "received_stamp": 71.22,
+              "sequence": 1,
+              "source": "tb3",
+              "source_stamp": 71.22,
+              "stream": "receipt",
+              "version": 1
+            },
+            {
+              "epoch": "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e",
+              "generated_stamp": 84.22,
+              "payload": {
+                "goal_id": "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e:tb3:14",
+                "robot": "tb3",
+                "type": "accept",
+                "value": true
+              },
+              "received_stamp": 84.24,
+              "sequence": 3,
+              "source": "tb3",
+              "source_stamp": 84.22,
+              "stream": "receipt",
+              "version": 3
+            }
+          ],
+          "actual_accepted_goal_ids": [
+            "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e:tb3:1",
+            "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e:tb3:14"
+          ],
+          "actual_result_receipts": [
+            {
+              "epoch": "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e",
+              "generated_stamp": 73.2,
+              "payload": {
+                "goal_id": "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e:tb3:1",
+                "robot": "tb3",
+                "type": "result",
+                "value": 4
+              },
+              "received_stamp": 73.2,
+              "sequence": 2,
+              "source": "tb3",
+              "source_stamp": 73.2,
+              "stream": "receipt",
+              "version": 2
+            },
+            {
+              "epoch": "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e",
+              "generated_stamp": 91.24,
+              "payload": {
+                "goal_id": "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e:tb3:14",
+                "robot": "tb3",
+                "type": "result",
+                "value": 5
+              },
+              "received_stamp": 91.44,
+              "sequence": 5,
+              "source": "tb3",
+              "source_stamp": 91.24,
+              "stream": "receipt",
+              "version": 5
+            }
+          ],
+          "actual_result_status_counts": {
+            "4": 1,
+            "5": 1
+          },
+          "snapshot_geometry_and_mask_diagnostics": [
+            {
+              "sequence": 1,
+              "digest": "97f48c72f5624a3b24ed8786c8d3d467a4a464421c810fefc7c55bd3d3a6a1da",
+              "phase": "idle",
+              "target_intersection_cells": 82,
+              "reachable_pool": 13,
+              "reachable_selected": 1,
+              "joint_legal_goal_choices": [
+                1
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 2,
+              "digest": "c97ad2a5eca72bfc4c3dec0207968c1c41f88713a5531d9599ddc0aa971db9a2",
+              "phase": "active",
+              "target_intersection_cells": 80,
+              "reachable_pool": 13,
+              "reachable_selected": 1,
+              "joint_legal_goal_choices": [],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 3,
+              "digest": "946a41c496f8ca611c2550e3d14bf8ead4a0616780406ce514e90a0dca2fcb43",
+              "phase": "idle",
+              "target_intersection_cells": 2922,
+              "reachable_pool": 183,
+              "reachable_selected": 8,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 4,
+              "digest": "d0a6fef19a789cfff621321f28d5da0a759a8852ccf7d2d5feec83412994f2bc",
+              "phase": "idle",
+              "target_intersection_cells": 5605,
+              "reachable_pool": 207,
+              "reachable_selected": 8,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 5,
+              "digest": "7c74243263207c5300d18ab2c63a8e090f3373253d410829fa5c41bc90b00880",
+              "phase": "idle",
+              "target_intersection_cells": 7159,
+              "reachable_pool": 232,
+              "reachable_selected": 8,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 6,
+              "digest": "8c48b60fe470860fbf402b37fadcdae8ec7294746aed0e675f8567e846e75b46",
+              "phase": "idle",
+              "target_intersection_cells": 9848,
+              "reachable_pool": 199,
+              "reachable_selected": 6,
+              "joint_legal_goal_choices": [
+                1,
+                2,
+                3,
+                5,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 7,
+              "digest": "0b70faae0e9ea5aa94babc5321179f9ca1e92beea56806b5a652ed17dfc6b1db",
+              "phase": "idle",
+              "target_intersection_cells": 18176,
+              "reachable_pool": 173,
+              "reachable_selected": 8,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 8,
+              "digest": "6a0c2de402fbcc9934d97fcca94dfc0355b2650ca631223fec9f06dafb94c718",
+              "phase": "idle",
+              "target_intersection_cells": 18962,
+              "reachable_pool": 181,
+              "reachable_selected": 6,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                2,
+                4,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 9,
+              "digest": "78363f4babad1a5dbd56e0406e5cf2615216b7a86dc972d69a997be531647b13",
+              "phase": "idle",
+              "target_intersection_cells": 18962,
+              "reachable_pool": 181,
+              "reachable_selected": 6,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                2,
+                4,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 10,
+              "digest": "663aa60e0d50e524fa93f880cab2a6f897c3855c233ba459b1c4103766ca5a10",
+              "phase": "idle",
+              "target_intersection_cells": 18962,
+              "reachable_pool": 181,
+              "reachable_selected": 6,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                2,
+                4,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 11,
+              "digest": "d72b5c899aefa886e65c8e094c1d22e6baa3bbb9275b9a2f00635a1bd2b6484e",
+              "phase": "idle",
+              "target_intersection_cells": 18962,
+              "reachable_pool": 181,
+              "reachable_selected": 6,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                2,
+                4,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 12,
+              "digest": "06f46253db8c8a06c69cc6cb27d78f660668ad3acd2f48f5518e14760743455b",
+              "phase": "idle",
+              "target_intersection_cells": 18962,
+              "reachable_pool": 181,
+              "reachable_selected": 6,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                2,
+                4,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 13,
+              "digest": "7cbee5ef8bb9ada2b6667a6c90712f563ece9fc162d498e0e82ff9ac5c48f24c",
+              "phase": "idle",
+              "target_intersection_cells": 18962,
+              "reachable_pool": 181,
+              "reachable_selected": 6,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                2,
+                4,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 14,
+              "digest": "ee187823905e15e4cbc6c52a262bff190560054d7b8378b2c0b20ed20d8b0f36",
+              "phase": "idle",
+              "target_intersection_cells": 18962,
+              "reachable_pool": 181,
+              "reachable_selected": 6,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                2,
+                4,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 15,
+              "digest": "971a848cdd8d5507d1b10019731075f5e30c12771938e564b8946c3f3f3a9494",
+              "phase": "active",
+              "target_intersection_cells": 19111,
+              "reachable_pool": 168,
+              "reachable_selected": 7,
+              "joint_legal_goal_choices": [],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 16,
+              "digest": "6a67de1b52b67cadc3b3ef490b054df7d60273e4c029aef451f297cd39f53ebe",
+              "phase": "active",
+              "target_intersection_cells": 20378,
+              "reachable_pool": 125,
+              "reachable_selected": 7,
+              "joint_legal_goal_choices": [],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 17,
+              "digest": "e0c02c38a145b8b58389c43073e9d32670682657bdd7417b2b7f092505860fcf",
+              "phase": "active",
+              "target_intersection_cells": 21272,
+              "reachable_pool": 117,
+              "reachable_selected": 8,
+              "joint_legal_goal_choices": [],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 18,
+              "digest": "65cbf4e700cf19f9d284ccad5ae5413cd4a579a4ecb5522372bff5ae3fee8f81",
+              "phase": "active",
+              "target_intersection_cells": 21855,
+              "reachable_pool": 114,
+              "reachable_selected": 5,
+              "joint_legal_goal_choices": [],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 19,
+              "digest": "21cc22db83beb2067ef9bf76647876a9abea5c0de0cc99092dd03d67905059b2",
+              "phase": "active",
+              "target_intersection_cells": 22018,
+              "reachable_pool": 114,
+              "reachable_selected": 4,
+              "joint_legal_goal_choices": [],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 20,
+              "digest": "e28de07be0bd4dc806b6e488b3fb65df93b5bbf0056ff0fa95d9f16323d26fa5",
+              "phase": "active",
+              "target_intersection_cells": 22141,
+              "reachable_pool": 115,
+              "reachable_selected": 3,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                4
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 21,
+              "digest": "9628e751d9c306cfcf13f13a766d4eb348c2583a7d8a7e6e6ec19141f60decf4",
+              "phase": "active",
+              "target_intersection_cells": 22725,
+              "reachable_pool": 133,
+              "reachable_selected": 3,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                7
+              ],
+              "own_seed_reason": null
+            }
+          ]
+        }
+      },
+      "preserved_native_navigation_failure_lines": [],
+      "all_candidates_nav2_executable_proven": false
+    }
+  ],
+  "jobs": {
+    "ROS_messages": 0,
+    "services": 0,
+    "native_starts": 0,
+    "process_signals": 0,
+    "GPU": 0,
+    "repository_writes": 0
+  },
+  "scope": "Independent seven-map/native-navigation NumPy provenance, exact frozen-source candidate/mask/raster/activity replay and terminal reuse. Snapshot inputs are only received maps/states/receipts; reward diagnostics and isolated evaluator truth fields are not used, and evaluator output is not loaded.",
+  "limits": [
+    "No policy efficacy, physical safety envelope, 95% success or multi-day stability claim.",
+    "The benchmark's complete native/scalar/ACK gates are audited separately."
+  ]
+}

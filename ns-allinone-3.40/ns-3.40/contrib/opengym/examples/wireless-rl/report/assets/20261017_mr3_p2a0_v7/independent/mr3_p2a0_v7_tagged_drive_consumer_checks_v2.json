@@ -1,0 +1,78 @@
+{
+  "schema": "mr3-p2a0-v7-tagged-drive-consumer-checks-v2",
+  "source_sha256": {
+    "/tmp/mr3_independent_drive_trace_v4.py": "6aa1a8409e031f225f0acb3a61ab2c9ec16a156cc85a430fd7069bdea411f35d",
+    "/tmp/mr3_independent_drive_trace_v4_tests.py": "82422414688e39c418cb0471b35274b74311b1e6cbbdcaf2cc663c9014bc2e73"
+  },
+  "checks": [
+    {
+      "name": "stdlib_mutation_tests",
+      "command_argv": [
+        "/usr/bin/python3",
+        "/tmp/mr3_independent_drive_trace_v4_tests.py",
+        "-v"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "test_actual_spawn_must_load_the_exact_effective_file (__main__.DriveMutationTests) ... ok\ntest_actuation_must_use_latest_tagged_target_identity (__main__.DriveMutationTests) ... ok\ntest_all_three_valid_and_no_world_body_credit (__main__.DriveMutationTests) ... ok\ntest_applied_value_must_use_one_common_alpha (__main__.DriveMutationTests) ... ok\ntest_common_fraction_and_nominal_fraction_required (__main__.DriveMutationTests) ... ok\ntest_consumed_status_is_exact_storage_publication_not_a_synthetic_receipt (__main__.DriveMutationTests) ... ok\ntest_delayed_first_prerelease_update_keeps_task_cadence_strict (__main__.DriveMutationTests) ... ok\ntest_different_source_successor_dt_rejected (__main__.DriveMutationTests) ... ok\ntest_effective_model_physics_and_epoch_mutations (__main__.DriveMutationTests) ... ok\ntest_epoch_record_sequence_clock_and_types_mutations (__main__.DriveMutationTests) ... ok\ntest_exact_cached_status_may_be_reobserved_and_consumed_without_fake_physical_credit (__main__.DriveMutationTests) ... ok\ntest_exact_terminal_fixture_dispatch (__main__.DriveMutationTests) ... ok\ntest_first_dt_does_not_assume_configuration_clock_is_last_update (__main__.DriveMutationTests) ... ok\ntest_guard_source_age_is_bounded_even_when_driver_receipt_is_fresh (__main__.DriveMutationTests) ... ok\ntest_gzip_logs_and_explicit_archived_binary_mode (__main__.DriveMutationTests) ... ok\ntest_input_mutation_detected_at_end (__main__.DriveMutationTests) ... ok\ntest_latest_received_command_cannot_be_held_stale_after_release (__main__.DriveMutationTests) ... ok\ntest_latest_received_sequence_and_value_not_a_synthetic_command (__main__.DriveMutationTests) ... ok\ntest_legacy_twist_trace_cannot_supply_tagged_matrix_credit (__main__.DriveMutationTests) ... ok\ntest_missing_actual_phase_receipt_or_consumption_permission_or_completion_fails (__main__.DriveMutationTests) ... ok\ntest_missing_guard_source_and_future_guard_source_rejected (__main__.DriveMutationTests) ... ok\ntest_missing_one_robot_trace_fails_whole_episode (__main__.DriveMutationTests) ... ok\ntest_missing_publication_or_topology_source_fails_whole_episode (__main__.DriveMutationTests) ... ok\ntest_missing_worker_phase_file_fails_whole_episode (__main__.DriveMutationTests) ... ok\ntest_old_cached_ack_cannot_replace_a_newer_actual_drive_receipt (__main__.DriveMutationTests) ... ok\ntest_one_binary64_ulp_over_budget_is_not_a_math_tolerance (__main__.DriveMutationTests) ... ok\ntest_only_prerelease_duplicate_zero_guard_clocks_are_legal (__main__.DriveMutationTests) ... ok\ntest_only_proven_initial_boundary_prewarm_commands_may_have_old_zero_source (__main__.DriveMutationTests) ... ok\ntest_only_proven_zero_before_initial_storage_at_same_release_is_prewarm (__main__.DriveMutationTests) ... ok\ntest_prerelease_rejection_retains_state_and_task_rejection_fails (__main__.DriveMutationTests) ... ok\ntest_publication_ledger_exactly_covers_guard_decisions_and_protocol_fields (__main__.DriveMutationTests) ... ok\ntest_qos_one_can_skip_guard_publications_without_fabricating_ack (__main__.DriveMutationTests) ... ok\ntest_real_alignment_shape_is_continuous_and_release_is_an_actual_boundary (__main__.DriveMutationTests) ... ok\ntest_received_command_outside_limits_rejected (__main__.DriveMutationTests) ... ok\ntest_reset_initial_receipts_must_be_actual_consumed_release_ack (__main__.DriveMutationTests) ... ok\ntest_selected_gzip_archive_restores_original_absolute_paths_from_manifest (__main__.DriveMutationTests) ... ok\ntest_tagged_target_must_bind_unique_guard_identity_and_not_just_equal_twist (__main__.DriveMutationTests) ... ok\ntest_task_reset_rejected (__main__.DriveMutationTests) ... ok\ntest_terminal_near_prerelease_sample_no_response_credit (__main__.DriveMutationTests) ... ok\ntest_topology_requires_actual_unique_target_status_endpoints_and_no_legacy_driver (__main__.DriveMutationTests) ... ok\ntest_worker_ack_cannot_invent_native_status_identity_value_or_time (__main__.DriveMutationTests) ... ok\ntest_worker_advance_cannot_change_request_id_steps_start_or_actual_completion (__main__.DriveMutationTests) ... ok\ntest_worker_advance_cannot_precede_ack_or_completion_precede_permission (__main__.DriveMutationTests) ... ok\ntest_worker_phase_binds_all_actual_advances (__main__.DriveMutationTests) ... ok\ntest_worker_phase_must_use_exact_expected_motion_and_three_roles (__main__.DriveMutationTests) ... ok\ntest_worker_topic_robot_binding_and_paused_boundary_are_mandatory (__main__.DriveMutationTests) ... ok\ntest_wrong_30hz_tick_dt_and_nonfinite_current_rejected (__main__.DriveMutationTests) ... ok\ntest_wrong_binary_or_wrong_proof_compiled_source_rejected (__main__.DriveMutationTests) ... ok\ntest_wrong_compiled_source_and_physical_configuration (__main__.DriveMutationTests) ... ok\ntest_wrong_right_left_body_transform (__main__.DriveMutationTests) ... ok\n\n----------------------------------------------------------------------\nRan 50 tests in 0.823s\n\nOK\n",
+      "wall_sec": 1.2668597120791674
+    },
+    {
+      "name": "syntax",
+      "command_argv": [
+        "/usr/bin/python3",
+        "-m",
+        "py_compile",
+        "/tmp/mr3_independent_drive_trace_v4.py",
+        "/tmp/mr3_independent_drive_trace_v4_tests.py"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "",
+      "wall_sec": 0.1261482802219689
+    }
+  ],
+  "producer_schema_example_compatibility_only": {
+    "path": "/tmp/mr3_p2a0_v7_drive_trace_schema_example_v1.json",
+    "sha256": "6ceaaa1be9b1dea4ead875803c4da0d2360b30177c7f07e9c501d5b0cf28a664",
+    "passed": true,
+    "compiled_working_tree_sources": {
+      "compiled_source_sha256": "09f741ee154d620fb3d62f8473853929231093fd8cc0b9a4be62b535b514dc05",
+      "compiled_header_sha256": "a7c237943e8728f72cd39e815b8aa47c0bff45374941293aacf77384e3c4b63e",
+      "compiled_helper_sha256": "80cf2e51f1b39f7bb89ef8b61b4b6eaf7c9be68c418bf0bb7ef57640d82c99d9",
+      "compiled_target_contract_sha256": "a1a11a73ac5c416d6d548249829717ccb262005498566c0bcc8dc1997999b9ba"
+    },
+    "scope": "Synthetic producer field/schema example only, not native or full phase proof; exact postcommit Git freeze/binary proof still pending."
+  },
+  "historical_review_bytes": {
+    "/tmp/mr3_independent_drive_trace_v3_before_release_scope.py": {
+      "sha256": "7338feef30423f2cbdea1492013c1f2e98627e497c49ecdc25ae97b97995b706",
+      "bytes": 49276
+    },
+    "/tmp/mr3_independent_drive_trace_v3_tests_before_release_scope.py": {
+      "sha256": "3db541bd6ac5fc4659fc8ea672020782f1e10234a66ce9dd370e18974f3a0f56",
+      "bytes": 46798
+    }
+  },
+  "test_development_failures_preserved": [
+    {
+      "tests": 47,
+      "returncode": 1,
+      "failure": "Two missing-input test assertions expected raise; production review correctly returned explicit per-episode FAIL. Tests changed to assert FAIL + FileNotFoundError."
+    },
+    {
+      "tests": 49,
+      "returncode": 1,
+      "failure": "Initial-receipt mutation was rejected earlier in native robot audit after stronger initial storage binding; old assertion expected later phase error. Test changed to require real initial-identity rejection."
+    }
+  ],
+  "task_boundary_rule": "Initial storage must exactly bind reset.initial_drive_receipts actualcommand at release. Only earlier native command_received(localcmdseq lower, record before actualinitialcommand, clock<=release, exactzero and guard.started=False) is prewarm with no taskinput/responsecredit; allothercommand source delays retain160ms, includinginitialstorage/afterstorage/allclock>release. Only sameclock release zeroactuation before actualinitialcommand with lowerlocalcmdseq and guard.started=False is pretask anchor; fullidentity/math/source remainchecked; allotheractuations/taskfreshness remainstrict160ms. No responsecreditforanchors.",
+  "preserved_v6_outcome": "Original92be drive FAIL and v2 diagnostic genuine task age FAIL remain unchanged. Headerless/Twist v6 is not accepted as tagged-v7 native credit.",
+  "cli": "/usr/bin/python3 SCRIPT EP_OR_RUN --freeze EXACT40 --binary-proof POSTCOMMIT_FOUR_SOURCE_PROOF --output NEW_JSON [--archived]",
+  "passed": true,
+  "scope": "50 stdlib synthetic mutation tests + syntax + producer synthetic field compatibility. New v4 only closes proven initial-storage startupscope forzero receivedtargets; preserves oldcanonical v3/49receipt and v6 genuine task-ageFAIL. No simulator, ROS/control, production source edits, world-body/newnative/task PASS.",
+  "prior_receipt": {
+    "path": "/tmp/mr3_p2a0_v7_tagged_drive_consumer_checks_v1.json",
+    "sha256": "75fa17ffb169df9e8dcc5adfbe8efa84e0fa41c41df62323ba8012ee7c005566"
+  }
+}

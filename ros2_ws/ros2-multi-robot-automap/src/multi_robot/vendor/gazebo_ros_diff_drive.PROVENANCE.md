@@ -31,12 +31,23 @@ accumulation, including the upstream near-target branch's stale instruction
 state. It is a property of the issued wheel references, not a proof of the
 physical body's response under contact, slip or finite torque.
 
-The original wheel geometry, torque, acceleration, update cadence, ROS topics,
+The original wheel geometry, torque, acceleration, update cadence,
 odometry source and odometry computations remain controlled by the same SDF
 parameters. The active model retains 30 Hz, separation 0.287 m, diameter
 0.066 m, acceleration 1 m/s², torque 20 Nm and WORLD odometry. No truth state
 enters actuation: it uses only the final command topic and its own joint
 velocity feedback. The inherited WORLD odometry remains an output calculation.
+
+SDF `mr3_tagged_commands` selects the actuator input contract. False retains
+the baseline Twist subscription. The adapter selects true: only the unique
+guard's epoch/robot/clock/decision-sequence target on `mr3_drive/target` can
+update desired velocity. A rejected or older target cannot overwrite state.
+After storing a valid target under the command mutex, the driver publishes
+`mr3_drive/status` with its actual world clock and exact target identity.
+The stepped worker requires all three matching stored-target receipts before
+each 20 ms physical advance. This receipt establishes target storage, not a
+30 Hz actuator update or physical body response. Both endpoints use reliable
+transient-local depth-one latest-target/status delivery.
 
 Optional SDF `mr3_audit_path` enables exclusive-create JSONL execution records;
 `mr3_epoch` is then required. Empty audit path disables writing. Records include
@@ -45,10 +56,11 @@ command receipt and the command consumed at every actuator update, exact
 simulation timestamps, measured/desired/applied wheel rim speeds and the common
 fraction. Command selection, actuation and its record are locked together.
 Writes are flushed and failures propagate as native failures. CMake embeds the
-implementation/header/helper hashes and tracks them as configure dependencies.
+implementation/header/wheel-helper/target-contract hashes and tracks them as
+configure dependencies.
 The actual installed shared-object hash must also be captured independently.
 The public plugin cancels update/subscription producers before releasing its
-private state. Both callbacks capture a weak pointer and temporarily retain
+private state. The callbacks capture a weak pointer and temporarily retain
 state only while executing, avoiding raw-private callbacks and ownership cycles.
 
 These traces establish the executed command/actuator chain. They do not replace

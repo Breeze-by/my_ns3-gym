@@ -1,7 +1,7 @@
 # MR3 环境与采样契约 v2（P2A.0准备修订）
 
 2026-10-17用户要求继续完成P2A.0。下列v3快照、v2张量、机器人导航图合成、最终速度门及
-`mr3-paired-joint-feedback-drive-v1`执行合同为本次新接口，
+`mr3-paired-joint-feedback-drive-v1`及`mr3-drive-target-consumed-v1`实际目标存储相位为本次新接口，
 须由新冻结原生矩阵验证；不继承W7或旧P2A的成绩。旧任务指标、reward及20ms评价器相位门禁保持。
 
 本轮P1C验证2026-10-15启动，实际完成时刻见P1C报告。用户于2026-10-16验收P1C并授权P2A；P2A进行中，P2B及后续未开始。
@@ -62,7 +62,9 @@ frame改变或超过`.5s`间隙使路径完整性失效，并单独编码有效/
 原始own、hub及实际发布的三个navigation地图共七份输入按SHA归档，不用后来的图重算旧候选。
 
 adapter模式的controller和behavior速度统一经过Nav2 smoother及`/motion_safety`最终门，
-该门是三个`/tbN/cmd_vel`的唯一发布者，不选方向或目标。完整请求因接近方向被拒绝时，
+该门是三个`/tbN/cmd_vel`及`/tbN/mr3_drive/target`的唯一发布者，不选方向或目标。
+`cmd_vel`保留Twist输出与本地FIFO核验，实际adapter驱动只订阅带唯一来源标记的target。
+完整请求因接近方向被拒绝时，
 只在线速度归零、原角速度不变的请求重新通过全部同一几何/源龄/残余移动检查后保留该转向；
 状态无效、包络不足或超界不能走此分支。否则保持原请求或全零，每次分量过滤及重验均留证。
 命令硬上限为线速度`.26m/s`、角速度`.8rad/s`；三份实际`params/nav2_params_tbN_0.yaml`
@@ -83,7 +85,10 @@ worker在任务放行前等待三台运动输入就绪，并保存图上唯一�
 或Gazebo执行器消费确认。另存实际global/local
 master costmap完整输出和源头/接收时钟。这些诊断不进入actor，也不冒充planner同刻消费确认。
 
-最终`cmd_vel`由局部构建的`libmr3_gazebo_diff_drive.so`执行，合同标识为
+最终门将同一有界速度写为`/tbN/mr3_drive/target`上的String JSON：schema为
+`mr3-drive-target-v1`，恰含`schema,epoch,robot,clock_ns,decision_sequence,linear_x,angular_z`。
+source clock为原保护决策时刻，序号为该机单调保护决策序号；不能从后来的值或时间补造。
+adapter的局部`libmr3_gazebo_diff_drive.so`以tagged模式订阅该唯一入口，合同算法仍为
 `mr3-paired-joint-feedback-drive-v1`。该插件以Gazebo ROS 3.9.0为来源，保留BSD许可及
 [来源说明](../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot/vendor/gazebo_ros_diff_drive.PROVENANCE.md)，
 不替换系统库。每次实际驱动更新从本机两个轮关节的实测轮缘速度出发，以同一个插值比例朝
@@ -96,13 +101,29 @@ master costmap完整输出和源头/接收时钟。这些诊断不进入actor，
 原`.30m/s`机体平面速度、`1.2rad/s`角速度、`7rad/s²`转向加速度、`.78s/.144m`每机停止响应、
 `.50m`队友包络及任务/接触/关闭门禁保持，须在同一冻结原生矩阵独立核验。
 
-正式原件另存三个`drive_tbN.jsonl`及实际spawn使用的`drive_model_tbN.sdf`。
-驱动trace的schema为`mr3-drive-actuation-v1`，记录epoch、本机、精确仿真纳秒、实际库路径和
-编译来源摘要；`command_received`是Gazebo插件实际回调收到的最终命令，`actuation`绑定该次
-更新使用的最新命令序号、实测/目标/施加的两轮速度、共同插值比例及真实`dt`。
-订阅保留QoS depth 1和最新目标语义，实际接收可为最终输出FIFO的有序子序列，不能要求或
-伪造每个命令的执行ACK。驱动记录与已保存的唯一发布者/输出FIFO配对，并独立绑定实际加载库
-文件的SHA；它补充执行消费证据，不将本地topic接收ACK升级为Gazebo逐命令执行确认。
+驱动在本机mutex内验证tag的epoch/robot、有限硬界、非未来/不回退源clock和严格增加的决策序号，
+完成目标存储后在`/tbN/mr3_drive/status`发布`mr3-drive-target-consumed-v1`。
+该状态恰含`schema,epoch,robot,clock_ns,decision_sequence,source_clock_ns,cmd_seq,linear_x,angular_z`；
+clock为实际回调时的Gazebo世界时刻，source clock及值来自收到的tag，cmd_seq为本机接收序号。
+目标及状态均使用reliable/transient-local/depth1；预热期间仍是最新目标语义。
+
+worker按订阅topic核对机器人身份，保存真实状态。初次释放前、每次任务及关闭阶段的正步物理推进前，
+要求三台状态与当前暂停physical/ROS clock、保护决策序号和两个速度值完全一致，且仍是各驱动的最新目标。
+三台实际回执全部到达并consume后才向step helper发送下一20ms推进请求；等待使用10墙秒保护。
+同一暂停边界的已消费cache可复用，不能跨clock、借用未来或历史回执；callback错误、身份冲突或边界改变
+阻止推进。初次尚未放行的暂停query与1ms clock对齐保留原例外，必须在放行前完成相同三台目标存储门。
+这证明驱动回调已经存储该目标；30Hz轮指令与机体运动由另外的原始证据核验，ACK不保证即时施加或身体停车。
+
+正式原件另存三个`drive_tbN.jsonl`、实际spawn的`drive_model_tbN.sdf`、`drive_targets.jsonl`、
+`drive_phase_worker.jsonl`及`drive_topology.json`。驱动schema为`mr3-drive-actuation-v2`，记录
+epoch、本机、精确仿真ns、实际库路径及四份编译源摘要（cpp、插件header、paired helper、target合同header）。
+`command_received/status_publish`绑定真实tag接收和状态发布，`target_rejected`保留拒绝；
+`actuation`绑定该次30Hz更新实际使用的最新cmd_seq/target序号与源clock、两轮实测/目标/施加值、alpha及dt。
+worker原件区分`ack_received/ack_consumed/advance_permitted/physics_completed`，保留expected motion、
+三台状态、request_id及physical receipt；不能用发布或存储事件补成30Hz执行事件。
+图审计要求target唯一发布者为motion_safety，status为该机实际驱动节点，tagged驱动没有cmd_vel订阅旁路。
+独立消费者绑定tag原JSON、驱动状态、推进顺序、实际源延迟和加载库SHA；原160ms及物理/任务门保持。
+旧`mr3-drive-actuation-v1`及headerless Twist消费仅按其原冻结历史/非tagged兼容范围解释。
 缺省audit路径为空时不写驱动原件；正式worker提供路径和epoch，独占创建且写入失败仍为原生失败。
 
 ## 本机SDK状态响应等待（W7已验证配置）

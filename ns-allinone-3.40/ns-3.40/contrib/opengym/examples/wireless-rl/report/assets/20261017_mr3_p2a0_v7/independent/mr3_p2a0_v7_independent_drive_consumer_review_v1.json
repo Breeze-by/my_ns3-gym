@@ -1,0 +1,44 @@
+{
+  "checks": [
+    "configuration exact fields match production mr3-drive-actuation-v2 and four compiled source hashes",
+    "tagged actual SDF flag=true and whitelist normalized original physics; actual spawn file path checked",
+    "command_received and status_publish target tuple matches production lock scope and common captured worldclock",
+    "status publication scope is publish call returned plus target storage, not physical actuation",
+    "Reset keeps anti-replay target watermarks and cmdseq; consumer allows only pre-release already-zero target and rejects task Reset",
+    "actuation consumes latest stored cmdseq/v/w/targetseq/targetclock under producer lock",
+    "first pre-release dt bracket permits Load-to-first-update elapsed time while task cadence remains 30Hz physical tick bound",
+    "binary current/archived captured bytes plus frozen Git source hashes match producer declared proof schema",
+    "exact Fraction per-wheel budget and shared alpha remain strict; no epsilon budget relaxation",
+    "worker status topic_robot, callback history, latest receipt, consumed/advance/completed ordering match current producer",
+    "publication ledger covers every logged guard decision via global record line ordering"
+  ],
+  "created_wall_ns": 1792215523845013320,
+  "findings": [],
+  "git_edited": false,
+  "inputs": {
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/src/mr3_gazebo_diff_drive.cpp": {
+      "bytes": 33094,
+      "sha256": "09f741ee154d620fb3d62f8473853929231093fd8cc0b9a4be62b535b514dc05"
+    },
+    "/tmp/mr3_independent_drive_trace_v3.py": {
+      "bytes": 49276,
+      "sha256": "7338feef30423f2cbdea1492013c1f2e98627e497c49ecdc25ae97b97995b706"
+    },
+    "/tmp/mr3_independent_drive_trace_v3_tests.py": {
+      "bytes": 46798,
+      "sha256": "3db541bd6ac5fc4659fc8ea672020782f1e10234a66ce9dd370e18974f3a0f56"
+    }
+  },
+  "limitations": [
+    "Source/synthetic review gives no native model or actuator timing/body credit.",
+    "Typed malformed evidence may raise a parsing exception; this review checks canonical producer compatibility and critical fail-closed causal bindings."
+  ],
+  "native_started": false,
+  "passed": true,
+  "review_kind": "read_only_cross_review_not_test_execution",
+  "schema": "mr3-v7-independent-drive-consumer-source-review-v1",
+  "test_execution": {
+    "candidate_reported": 47,
+    "executed_by_this_review": false
+  }
+}

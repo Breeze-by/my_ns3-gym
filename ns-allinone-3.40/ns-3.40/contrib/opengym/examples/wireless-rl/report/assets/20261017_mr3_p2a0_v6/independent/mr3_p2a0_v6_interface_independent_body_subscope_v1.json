@@ -1,0 +1,588 @@
+{
+  "schema": "mr3-v6-interface-independent-angular-physical-subscope-v1",
+  "freeze": "448ceb6a26e9fef1f1c47e26292ba64c1b93c732",
+  "epoch": "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e",
+  "episode": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101",
+  "fixed_consumers": {
+    "angular_sha256": "7a472ba7efdd55addc710b98c66c89feff7f5092f214f76fd76cd4ca526343d0",
+    "angular_passed": true,
+    "bounds_passed": true,
+    "stimulus_coverage_passed": true,
+    "physics_sha256": "2516e394f60eac5dd24fd66b51c4c48fc37245090eb1626ebe1c7a3a23f8bafb",
+    "physics_passed": true
+  },
+  "release_time_ns": 71220000000,
+  "final_physics_time_ns": 91440000000,
+  "robots": {
+    "tb1": {
+      "maximum_planar_speed_task": 0.26206059692039596,
+      "maximum_angular_norm_task": 0.8199303592278344,
+      "maximum_raw_odom_chord_speed_task": 0.262101128080986,
+      "maximum_task_source_gap_ns": 34000000,
+      "bound_violation_counts": {
+        "planar_speed_over_.30": 0,
+        "angular_norm_over_1.2": 0,
+        "chord_speed_over_.30": 0
+      },
+      "hard_zero_evidence_complete": true,
+      "cancel_end_to_end_evidence_complete": false,
+      "credited_sampled_stop_events": 1,
+      "credited_cancel_stop_events": 0,
+      "angular_vector_acceleration_peak": 1.5642004931415268,
+      "angular_peak_source_ns": 75966000000,
+      "angular_peak_original_line": 63249,
+      "source_samples": 595,
+      "positive_sign_span": true,
+      "negative_sign_span": true,
+      "credited_stops": [
+        {
+          "event_clock_ns": 76240000000,
+          "zero_w": 0.0,
+          "event_category": "A_final_linear_zero",
+          "prior_nonzero_command_span_ns": 1740000000,
+          "status": "sampled_response_within_declared_bounds",
+          "eligible": true,
+          "initial_observed_planar_speed": 0.20655477081003062,
+          "rest_source_ns": 76952000000,
+          "observed_latency_sec": 0.712,
+          "observed_odom_polyline_m": 0.07447337457982818,
+          "maximum_observation_gap_ns": 34000000,
+          "observed_nonrest_beyond_horizon": false
+        }
+      ]
+    },
+    "tb2": {
+      "maximum_planar_speed_task": 0.2602178208517182,
+      "maximum_angular_norm_task": 0.7674276760886488,
+      "maximum_raw_odom_chord_speed_task": 0.26023960294305754,
+      "maximum_task_source_gap_ns": 34000000,
+      "bound_violation_counts": {
+        "planar_speed_over_.30": 0,
+        "angular_norm_over_1.2": 0,
+        "chord_speed_over_.30": 0
+      },
+      "hard_zero_evidence_complete": true,
+      "cancel_end_to_end_evidence_complete": false,
+      "credited_sampled_stop_events": 1,
+      "credited_cancel_stop_events": 0,
+      "angular_vector_acceleration_peak": 1.4362868321245674,
+      "angular_peak_source_ns": 76184000000,
+      "angular_peak_original_line": 63627,
+      "source_samples": 595,
+      "positive_sign_span": true,
+      "negative_sign_span": true,
+      "credited_stops": [
+        {
+          "event_clock_ns": 76860000000,
+          "zero_w": -0.05894736842105258,
+          "event_category": "A_final_linear_zero",
+          "prior_nonzero_command_span_ns": 2400000000,
+          "status": "sampled_response_within_declared_bounds",
+          "eligible": true,
+          "initial_observed_planar_speed": 0.16045095303241474,
+          "rest_source_ns": 77442000000,
+          "observed_latency_sec": 0.582,
+          "observed_odom_polyline_m": 0.05719986735833448,
+          "maximum_observation_gap_ns": 34000000,
+          "observed_nonrest_beyond_horizon": false
+        }
+      ]
+    },
+    "tb3": {
+      "maximum_planar_speed_task": 0.2605873149587749,
+      "maximum_angular_norm_task": 0.28817591195244213,
+      "maximum_raw_odom_chord_speed_task": 0.2606124166152852,
+      "maximum_task_source_gap_ns": 34000000,
+      "bound_violation_counts": {
+        "planar_speed_over_.30": 0,
+        "angular_norm_over_1.2": 0,
+        "chord_speed_over_.30": 0
+      },
+      "hard_zero_evidence_complete": true,
+      "cancel_end_to_end_evidence_complete": false,
+      "credited_sampled_stop_events": 1,
+      "credited_cancel_stop_events": 0,
+      "angular_vector_acceleration_peak": 1.3878722581045155,
+      "angular_peak_source_ns": 85685000000,
+      "angular_peak_original_line": 90329,
+      "source_samples": 595,
+      "positive_sign_span": true,
+      "negative_sign_span": true,
+      "credited_stops": [
+        {
+          "event_clock_ns": 73160000000,
+          "zero_w": 0.0,
+          "event_category": "A_final_linear_zero",
+          "prior_nonzero_command_span_ns": 1480000000,
+          "status": "sampled_response_within_declared_bounds",
+          "eligible": true,
+          "initial_observed_planar_speed": 0.20560065833574906,
+          "rest_source_ns": 73717000000,
+          "observed_latency_sec": 0.557,
+          "observed_odom_polyline_m": 0.07044181737385437,
+          "maximum_observation_gap_ns": 34000000,
+          "observed_nonrest_beyond_horizon": false
+        }
+      ]
+    }
+  },
+  "closure": {
+    "passed": true,
+    "errors": [],
+    "checks": {
+      "epoch": true,
+      "worker_return0": true,
+      "no_forced": true,
+      "not_failed_sample": true,
+      "no_recorded_remaining": true,
+      "no_live_saved_identity": true,
+      "launch_return0": true,
+      "native_server_clean": true,
+      "nav_finalized": true,
+      "ordered_complete": true,
+      "all_started_exited_zero": true
+    },
+    "processes_seen": 44,
+    "started_processes": 39,
+    "exited_processes": 39,
+    "still_present_saved_identities": [],
+    "finalized_nodes": [
+      [
+        "tb1",
+        "controller_server",
+        4
+      ],
+      [
+        "tb1",
+        "planner_server",
+        4
+      ],
+      [
+        "tb1",
+        "behavior_server",
+        4
+      ],
+      [
+        "tb1",
+        "bt_navigator",
+        4
+      ],
+      [
+        "tb1",
+        "waypoint_follower",
+        4
+      ],
+      [
+        "tb1",
+        "velocity_smoother",
+        4
+      ],
+      [
+        "tb2",
+        "controller_server",
+        4
+      ],
+      [
+        "tb2",
+        "planner_server",
+        4
+      ],
+      [
+        "tb2",
+        "behavior_server",
+        4
+      ],
+      [
+        "tb2",
+        "bt_navigator",
+        4
+      ],
+      [
+        "tb2",
+        "waypoint_follower",
+        4
+      ],
+      [
+        "tb2",
+        "velocity_smoother",
+        4
+      ],
+      [
+        "tb3",
+        "controller_server",
+        4
+      ],
+      [
+        "tb3",
+        "planner_server",
+        4
+      ],
+      [
+        "tb3",
+        "behavior_server",
+        4
+      ],
+      [
+        "tb3",
+        "bt_navigator",
+        4
+      ],
+      [
+        "tb3",
+        "waypoint_follower",
+        4
+      ],
+      [
+        "tb3",
+        "velocity_smoother",
+        4
+      ]
+    ]
+  },
+  "saved_owned_plus_parent_launcher_identity_count": 46,
+  "current_pid_identity_checks": [
+    {
+      "pid": 2464362,
+      "saved_start_ticks": 395929290,
+      "current_start_ticks": null,
+      "same_identity_present": false
+    },
+    {
+      "pid": 2464392,
+      "saved_start_ticks": 395929450,
+      "current_start_ticks": null,
+      "same_identity_present": false
+    },
+    {
+      "pid": 2464461,
+      "saved_start_ticks": 395929484,
+      "current_start_ticks": null,
+      "same_identity_present": false
+    },
+    {
+      "pid": 2464473,
+      "saved_start_ticks": 395929523,
+      "current_start_ticks": null,
+      "same_identity_present": false
+    },
+    {
+      "pid": 2464504,
+      "saved_start_ticks": 395929650,
+      "current_start_ticks": null,
+      "same_identity_present": false
+    },
+    {
+      "pid": 2464511,
+      "saved_start_ticks": 395929807,
+      "current_start_ticks": null,
+      "same_identity_present": false
+    },
+    {
+      "pid": 2464513,
+      "saved_start_ticks": 395929807,
+      "current_start_ticks": null,
+      "same_identity_present": false
+    },
+    {
+      "pid": 2464515,
+      "saved_start_ticks": 395929808,
+      "current_start_ticks": null,
+      "same_identity_present": false
+    },
+    {
+      "pid": 2464517,
+      "saved_start_ticks": 395929808,
+      "current_start_ticks": null,
+      "same_identity_present": false
+    },
+    {
+      "pid": 2464519,
+      "saved_start_ticks": 395929808,
+      "current_start_ticks": null,
+      "same_identity_present": false
+    },
+    {
+      "pid": 2464521,
+      "saved_start_ticks": 395929808,
+      "current_start_ticks": null,
+      "same_identity_present": false
+    },
+    {
+      "pid": 2464523,
+      "saved_start_ticks": 395929808,
+      "current_start_ticks": null,
+      "same_identity_present": false
+    },
+    {
+      "pid": 2464525,
+      "saved_start_ticks": 395929808,
+      "current_start_ticks": null,
+      "same_identity_present": false
+    },
+    {
+      "pid": 2464983,
+      "saved_start_ticks": 395930140,
+      "current_start_ticks": null,
+      "same_identity_present": false
+    },
+    {
+      "pid": 2464985,
+      "saved_start_ticks": 395930140,
+      "current_start_ticks": null,
+      "same_identity_present": false
+    },
+    {
+      "pid": 2464987,
+      "saved_start_ticks": 395930140,
+      "current_start_ticks": null,
+      "same_identity_present": false
+    },
+    {
+      "pid": 2465078,
+      "saved_start_ticks": 395930431,
+      "current_start_ticks": null,
+      "same_identity_present": false
+    },
+    {
+      "pid": 2465080,
+      "saved_start_ticks": 395930431,
+      "current_start_ticks": null,
+      "same_identity_present": false
+    },
+    {
+      "pid": 2465082,
+      "saved_start_ticks": 395930431,
+      "current_start_ticks": null,
+      "same_identity_present": false
+    },
+    {
+      "pid": 2465147,
+      "saved_start_ticks": 395930746,
+      "current_start_ticks": null,
+      "same_identity_present": false
+    },
+    {
+      "pid": 2465242,
+      "saved_start_ticks": 395931914,
+      "current_start_ticks": null,
+      "same_identity_present": false
+    },
+    {
+      "pid": 2465244,
+      "saved_start_ticks": 395931914,
+      "current_start_ticks": null,
+      "same_identity_present": false
+    },
+    {
+      "pid": 2465246,
+      "saved_start_ticks": 395931914,
+      "current_start_ticks": null,
+      "same_identity_present": false
+    },
+    {
+      "pid": 2465248,
+      "saved_start_ticks": 395931914,
+      "current_start_ticks": null,
+      "same_identity_present": false
+    },
+    {
+      "pid": 2465250,
+      "saved_start_ticks": 395931915,
+      "current_start_ticks": null,
+      "same_identity_present": false
+    },
+    {
+      "pid": 2465253,
+      "saved_start_ticks": 395931916,
+      "current_start_ticks": null,
+      "same_identity_present": false
+    },
+    {
+      "pid": 2465255,
+      "saved_start_ticks": 395931916,
+      "current_start_ticks": null,
+      "same_identity_present": false
+    },
+    {
+      "pid": 2465560,
+      "saved_start_ticks": 395936398,
+      "current_start_ticks": null,
+      "same_identity_present": false
+    },
+    {
+      "pid": 2465562,
+      "saved_start_ticks": 395936399,
+      "current_start_ticks": null,
+      "same_identity_present": false
+    },
+    {
+      "pid": 2465564,
+      "saved_start_ticks": 395936399,
+      "current_start_ticks": null,
+      "same_identity_present": false
+    },
+    {
+      "pid": 2465566,
+      "saved_start_ticks": 395936399,
+      "current_start_ticks": null,
+      "same_identity_present": false
+    },
+    {
+      "pid": 2465568,
+      "saved_start_ticks": 395936399,
+      "current_start_ticks": null,
+      "same_identity_present": false
+    },
+    {
+      "pid": 2465570,
+      "saved_start_ticks": 395936399,
+      "current_start_ticks": null,
+      "same_identity_present": false
+    },
+    {
+      "pid": 2465572,
+      "saved_start_ticks": 395936399,
+      "current_start_ticks": null,
+      "same_identity_present": false
+    },
+    {
+      "pid": 2465886,
+      "saved_start_ticks": 395940901,
+      "current_start_ticks": null,
+      "same_identity_present": false
+    },
+    {
+      "pid": 2465888,
+      "saved_start_ticks": 395940902,
+      "current_start_ticks": null,
+      "same_identity_present": false
+    },
+    {
+      "pid": 2465890,
+      "saved_start_ticks": 395940902,
+      "current_start_ticks": null,
+      "same_identity_present": false
+    },
+    {
+      "pid": 2465892,
+      "saved_start_ticks": 395940902,
+      "current_start_ticks": null,
+      "same_identity_present": false
+    },
+    {
+      "pid": 2465894,
+      "saved_start_ticks": 395940902,
+      "current_start_ticks": null,
+      "same_identity_present": false
+    },
+    {
+      "pid": 2465896,
+      "saved_start_ticks": 395940902,
+      "current_start_ticks": null,
+      "same_identity_present": false
+    },
+    {
+      "pid": 2465898,
+      "saved_start_ticks": 395940902,
+      "current_start_ticks": null,
+      "same_identity_present": false
+    },
+    {
+      "pid": 2466032,
+      "saved_start_ticks": 395941571,
+      "current_start_ticks": null,
+      "same_identity_present": false
+    },
+    {
+      "pid": 2466034,
+      "saved_start_ticks": 395941571,
+      "current_start_ticks": null,
+      "same_identity_present": false
+    },
+    {
+      "pid": 2466063,
+      "saved_start_ticks": 395941817,
+      "current_start_ticks": null,
+      "same_identity_present": false
+    },
+    {
+      "pid": 2466068,
+      "saved_start_ticks": 395941857,
+      "current_start_ticks": null,
+      "same_identity_present": false
+    },
+    {
+      "pid": 2468403,
+      "saved_start_ticks": 395972985,
+      "current_start_ticks": null,
+      "same_identity_present": false
+    }
+  ],
+  "all_same_identities_gone": true,
+  "original_driver_audit": {
+    "passed": false,
+    "error": "ValueError('discontinuous/inconsistent actual physics steps')",
+    "first_actual_physics_start_ns": 71207000000,
+    "first_actual_physics_steps": 0,
+    "all_actual_physics_rows_adjacent_contiguous": true,
+    "total_physics_rows": 1025,
+    "pre_release_prefix_rows": 14,
+    "pre_release_prefix_end_ns": 71220000000,
+    "required_driver_audit_resolution_pending": true
+  },
+  "inputs": {
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/metadata.json": {
+      "bytes": 2426,
+      "sha256": "3c38ab9a5037fe4fcb70ed73088bde90d683190021c98281cb2aa56c28f37a7f"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/transitions.jsonl": {
+      "bytes": 822070,
+      "sha256": "7184284e4863d6bbfe52e1be3bcb963cfafd5caa7aa31f11342c4299857542db"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/physics.jsonl": {
+      "bytes": 258204,
+      "sha256": "1e198252f6b7f80f4e073592a8dae8f3117b7229f4bb43b8f2f5fda7e65d5d54"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/motion_safety.jsonl": {
+      "bytes": 114509303,
+      "sha256": "0e9e9debc2ecd9b8ef0b70ffe9250f72515f47d30e2122e2f4c6e7665e41f4c4"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/adapter.jsonl": {
+      "bytes": 2072923,
+      "sha256": "0046d7dbd53ef82e12f089346efe2430acf7c08635cbaf2783eb0544535194c9"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/supervisor_shutdown.json": {
+      "bytes": 7480,
+      "sha256": "1d6f8316c942621cbf82fb7dc0836f2a51fc2da4eda01be733e8ba6b76994703"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/summary.json": {
+      "bytes": 13353,
+      "sha256": "a9568bba4cb72d482e2e7cbc158bdea8864f9ef0bcaded5c840af6f7a8346eba"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/nav2_shutdown.json": {
+      "bytes": 11652,
+      "sha256": "b11915a2324d8a142edaebff060d852f5266a29be093fc9fbad8c4d23ba64980"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101/native_stop.json": {
+      "bytes": 129,
+      "sha256": "36ea4c33917b0de1e639cb0174fa04d705e04d296f84e93a88855a9723f201bb"
+    },
+    "/tmp/mr3_p2a0_v6_interface_fixed_angular_v1.json": {
+      "bytes": 44632,
+      "sha256": "2489bd126cf11160ee1b351575f186634d6f539c6350a299f9ddf5ec86e83f57"
+    },
+    "/tmp/mr3_p2a0_v6_interface_fixed_physics_v1.json": {
+      "bytes": 22089,
+      "sha256": "35f23b692586ea3d5f0c5ced1349a8a3e24fcae1cf420dea6b97223db8006717"
+    },
+    "/tmp/mr3_p2a0_v6_interface_drive_review_v1.json": {
+      "bytes": 3862,
+      "sha256": "01295a876c8cedc6c5532e20fcdda43cbc681e6f3584b61d3330bb2a25797182"
+    },
+    "/tmp/mr3_p2a0_v6_interface_launch.json": {
+      "bytes": 1355,
+      "sha256": "2f6ac66ad4f99eac15ce3f960720ec5c40f41a97d666e5a98ca66192bb5a4ad7"
+    }
+  },
+  "scope": "Independent original frozen angular/physics consumers and raw identity evidence only. A hard-linear-zero sampled stop credit is present for each robot; B native-cancel-to-rest evidence missing due short final tail. No continuous path proof, final driver audit PASS, complete preparation/95%/policy/training credit."
+}

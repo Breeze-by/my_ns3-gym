@@ -186,7 +186,7 @@ v6原session的无重试停止和全部失败保持，累计pilot余额1870决�
 这不是P2A策略出口，也不证明三台总有安全可执行候选或任意轨迹协同安全。用户已要求继续完成本步，
 因此v2将导航图来源、**运动途中的安全输入→costmap→实际速度链**和**仅已交付信息的累计参与观测**
 并入本步修复，不再把已阻塞出口的问题仅留给下一准备步。具体新版本及同冻结矩阵见
-[v6计划/报告](report/20261017_mr3_p2a0_v6.md)：own已知权威/shared补unknown、实际导航图v5候选、
+[v7计划/报告](report/20261017_mr3_p2a0_v7.md)：own已知权威/shared补unknown、实际导航图v5候选、
 唯一最终速度门/20ms输出完成ACK、快照v3/张量v2的received-odom/accepted-goal累计状态。
 原95%/300秒、地图质量、三台参与、18路接触与`.50m`失败门不变，旧原件/第一版FAIL保持。
 v2同冻结原生仍FAIL：received JSON丢odom及全速度停止妨碍转向；保留全部原件。v3补真实生产链回归、
@@ -194,6 +194,7 @@ v2同冻结原生仍FAIL：received JSON丢odom及全速度停止妨碍转向；
 v3终态完整审计PASS，但reset真实角速度1.256657超过原1.2界，完整FAIL且deadline跳过。v4把实际三机controller/behavior/smoother/最终门的指令角速度降至.8，保留测量1.2，修正odom源龄并加入失败即停与首动作前九节点参数读回；20步interface及八轮reset后重验完整同冻结矩阵。
 v4首动作前参数观察器未继承worker局部loopback UDP transport，回执超时，0step整体FAIL且正常关闭。v5仅修复该固定配置/Git来源接线，保留所有物理/活动/停止标准，新冻结完整重跑四阶段。
 v5已打通transport/九参数及三台实际活动，但tb2第二目标期间角速1.3969超原1.2，整体FAIL。v6保留物理参数与所有门禁，修局部轮驱动的隐藏指令积分为paired joint-feedback，并保留实际wheel/command/库及有效SDF原件，新冻结完整重验。
+v6原完整/机体/活动子审计通过，但实际目标值落后guard约.727s违反160ms，整体FAIL保留；独立reader预释放误设另列。v7新增唯一tagged目标与native真实存储receipt，worker每20ms推进前须三台exactclock/seq/value消费屏障，修实际执行时序且保留全部物理门，新冻结完整重验。
 只有该新矩阵通过、代码与证据推送并获用户验收后才确定同冻结训练/开发验证；
 不凭少量旧样本换算法、减95%或放宽参与/安全门禁。
 当前诊断见[独立审计](report/20261017_mr3_p2a0_audit.md)，预声明及结果见

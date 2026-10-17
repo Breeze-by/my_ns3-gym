@@ -1,0 +1,123 @@
+{
+  "schema": "mr3-p2a0-v7-drive-phase-independent-checks-v1",
+  "base_source_freeze": "448ceb6a26e9fef1f1c47e26292ba64c1b93c732",
+  "source_status": "working candidate, no native run",
+  "source_files": {
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_drive_phase.py": {
+      "bytes": 4429,
+      "sha256": "0525230f4719e7279826810f0c177f6a6317a961d50711ac76d8a0338f93d987"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_drive_phase.py": {
+      "bytes": 16828,
+      "sha256": "0d59cecde243bf79da55b433197c8e963da1e33dc0bd8df97064b5e8a6336a7b"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py": {
+      "bytes": 60306,
+      "sha256": "8da048d4c26bcef4438ed3f6db727b14b648bf257dc0d06e08be7000b6ad2f5b"
+    }
+  },
+  "history": [
+    {
+      "name": "initial_unsourced_system_pytest",
+      "exit_code": 2,
+      "command": "rtk proxy env PYTHONDONTWRITEBYTECODE=1 PYTHONNOUSERSITE=1 /usr/bin/python3 -m pytest -q src/multi_robot_exploration/test/test_mr3_drive_phase.py",
+      "result": "Collection ModuleNotFoundError multi_robot_exploration; corrected to canonical ROS source/install environment. Initial full stdout exists only in tool transcript; not claimed as a saved raw artifact."
+    },
+    {
+      "name": "focused_01",
+      "exit_code": 1,
+      "passed": 58,
+      "failed": 2,
+      "raw_log": "/tmp/mr3_p2a0_v7_drive_phase_tests_01.txt",
+      "result": "Only test regex required callback wording; production correctly rejected both cases with boundary failed message. Changed assertion to RuntimeError plus no helper.send."
+    },
+    {
+      "name": "focused_02",
+      "exit_code": 0,
+      "passed": 63,
+      "test_seconds": 2.34,
+      "raw_log": "/tmp/mr3_p2a0_v7_drive_phase_tests_02.txt"
+    },
+    {
+      "name": "related_01",
+      "exit_code": 1,
+      "passed": 133,
+      "failed": 2,
+      "test_seconds": 3.82,
+      "raw_log": "/tmp/mr3_p2a0_v7_drive_phase_related_tests_01.txt",
+      "result": "Old evaluator reset fixture mocks only motion topology, lacks new drive topology node and drive phase. Root owns fixture update; no production gate loosened."
+    },
+    {
+      "name": "system_flake8",
+      "exit_code": 0,
+      "argv": [
+        "/usr/bin/python3",
+        "-m",
+        "flake8",
+        "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_drive_phase.py",
+        "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_drive_phase.py",
+        "--max-line-length=99"
+      ]
+    }
+  ],
+  "focused_environment": {
+    "cwd": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap",
+    "setup": [
+      "source /opt/ros/humble/setup.bash",
+      "source install/setup.bash"
+    ],
+    "PYTHONNOUSERSITE": "1",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "python": "/usr/bin/python3"
+  },
+  "focused_command": [
+    "/usr/bin/python3",
+    "-m",
+    "pytest",
+    "-q",
+    "src/multi_robot_exploration/test/test_mr3_drive_phase.py"
+  ],
+  "related_command": [
+    "/usr/bin/python3",
+    "-m",
+    "pytest",
+    "-q",
+    "src/multi_robot_exploration/test/test_mr3_drive_phase.py",
+    "src/multi_robot_exploration/test/test_mr3_worker_bootstrap.py",
+    "src/multi_robot_exploration/test/test_mr3_evaluator_phase.py",
+    "src/multi_robot_exploration/test/test_mr3_worker_shutdown.py"
+  ],
+  "raw_outputs": [
+    {
+      "path": "/tmp/mr3_p2a0_v7_drive_phase_tests_01.txt",
+      "bytes": 7574,
+      "sha256": "6f7230805a55c52d5cf8b8ca832ab40df023c1ae7f6434b1382c3d14342a8a27"
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v7_drive_phase_tests_02.txt",
+      "bytes": 99,
+      "sha256": "bfc64f5b1eb60beeea566c1e2e45b258413f87bac1213a4e3f0629b0bdce07da"
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v7_drive_phase_related_tests_01.txt",
+      "bytes": 7455,
+      "sha256": "2bf2ebb3df1feb4c4c05708a23628bc9f4b100df6dbc14d15e88f651b9bdd83d"
+    }
+  ],
+  "production_fixes_reviewed": [
+    "Worker callback topic name bound to payload.robot",
+    "Worker checks fatal callback errors/current clock before cached or fresh consumption and send under condition lock",
+    "Pure helper matching requires current latest target equal pending receipt; prior ACK cannot mask new driver target",
+    "Nonobject JSON/invalid nested motion fields and oversized numeric targets fail as protocol ValueError"
+  ],
+  "regressions": [
+    "Actual old seq3771/source75.56 target cannot permit seq3806/clock76.26 zero-output quantum",
+    "Three actual receive calls precede consumption and helper.send; two ACKs insufficient",
+    "Future or wrong sequence/clock/value/epoch cannot be borrowed",
+    "Cache only same paused boundary/current latest targets, next quantum must receive new ACKs",
+    "Conflict callback blocks even full/cache phase and error between wait and send",
+    "Real Python thread/Condition releases nested RLock while waiting, consumes real ACKs before physics send",
+    "Only initial reset query/alignment bypass phase wait; task and cleanup _physics calls use barrier"
+  ],
+  "scope": "Pure protocol and actual worker-method CPU causality tests. No ROS node construction, simulator, actual DDS/target-storage/actuation/body response or overall preparation credit."
+}

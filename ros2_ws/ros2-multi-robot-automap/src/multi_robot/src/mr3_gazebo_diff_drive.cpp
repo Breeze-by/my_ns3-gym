@@ -61,6 +61,7 @@
 #include <gazebo_ros/node.hpp>
 #include <geometry_msgs/msg/pose2_d.hpp>
 #include <geometry_msgs/msg/twist.hpp>
+#include <std_msgs/msg/string.hpp>
 #include <nav_msgs/msg/odometry.hpp>
 #include <sdf/sdf.hh>
 
@@ -86,6 +87,7 @@
 #include <string>
 #include <vector>
 #include "multi_robot/paired_wheel_slew.hpp"
+#include "multi_robot/mr3_drive_target.hpp"
 
 namespace mr3_gazebo_plugins
 {
@@ -129,6 +131,8 @@ public:
   /// Callback when a velocity command is received.
   /// \param[in] _msg Twist command message.
   void OnCmdVel(const geometry_msgs::msg::Twist::SharedPtr _msg);
+  /// Consume a versioned guard target in adapter mode, rejecting stale state.
+  void OnTarget(const std_msgs::msg::String::SharedPtr message);
 
   /// Update wheel velocities according to latest target velocities.
   void UpdateWheelVelocities();
@@ -159,6 +163,9 @@ public:
 
   /// Subscriber to command velocities
   rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr cmd_vel_sub_;
+  rclcpp::Subscription<std_msgs::msg::String>::SharedPtr target_sub_;
+  rclcpp::Publisher<std_msgs::msg::String>::SharedPtr status_pub_;
+  bool tagged_commands_{false};
 
   /// Odometry publisher
   rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr odometry_pub_;
@@ -206,6 +213,10 @@ public:
   // received later cannot change the provenance of the current update.
   uint64_t command_sequence_{0};
   uint64_t consumed_command_sequence_{0};
+  int64_t target_decision_sequence_{0};
+  int64_t target_clock_ns_{0};
+  int64_t consumed_target_decision_sequence_{0};
+  int64_t consumed_target_clock_ns_{0};
   double consumed_x_{0.0};
   double consumed_rot_{0.0};
   uint64_t actuation_sequence_{0};
@@ -269,6 +280,7 @@ MR3GazeboDiffDrive::~MR3GazeboDiffDrive()
   if (state) {
     state->update_connection_.reset();
     state->cmd_vel_sub_.reset();
+    state->target_sub_.reset();
   }
 }
 
@@ -283,6 +295,10 @@ void MR3GazeboDiffDrive::Load(gazebo::physics::ModelPtr _model, sdf::ElementPtr 
     impl_->robot_.erase(0, 1);
   }
   impl_->epoch_ = _sdf->Get<std::string>("mr3_epoch", "").first;
+  impl_->tagged_commands_ = _sdf->Get<bool>("mr3_tagged_commands", false).first;
+  if (impl_->tagged_commands_ && (impl_->epoch_.empty() || impl_->robot_.empty())) {
+    throw std::invalid_argument("tagged drive commands require epoch and robot namespace");
+  }
   const auto audit_path = _sdf->Get<std::string>("mr3_audit_path", "").first;
   if (!audit_path.empty()) {
     if (impl_->epoch_.empty()) {
@@ -474,7 +490,12 @@ void MR3GazeboDiffDrive::Load(gazebo::physics::ModelPtr _model, sdf::ElementPtr 
     {"compiled_source_sha256", MR3_DRIVE_SOURCE_SHA256},
     {"compiled_header_sha256", MR3_DRIVE_HEADER_SHA256},
     {"compiled_helper_sha256", MR3_DRIVE_HELPER_SHA256},
-    {"command_topic", impl_->ros_node_->get_node_topics_interface()->resolve_topic_name("cmd_vel")},
+    {"compiled_target_contract_sha256", MR3_DRIVE_TARGET_SHA256},
+    {"command_mode", impl_->tagged_commands_ ? "tagged" : "twist"},
+    {"command_topic", impl_->ros_node_->get_node_topics_interface()->resolve_topic_name(
+      impl_->tagged_commands_ ? "mr3_drive/target" : "cmd_vel")},
+    {"status_topic", impl_->tagged_commands_ ?
+      impl_->ros_node_->get_node_topics_interface()->resolve_topic_name("mr3_drive/status") : ""},
     {"wheel_order", {"right", "left"}}, {"joint_names", joint_names},
     {"wheel_separation_m", impl_->wheel_separation_},
     {"wheel_diameter_m", impl_->wheel_diameter_},
@@ -486,18 +507,34 @@ void MR3GazeboDiffDrive::Load(gazebo::physics::ModelPtr _model, sdf::ElementPtr 
   }
 
   // Subscribe after configuration so the first command has declared provenance.
-  impl_->cmd_vel_sub_ = impl_->ros_node_->create_subscription<geometry_msgs::msg::Twist>(
-    "cmd_vel", qos.get_subscription_qos("cmd_vel", rclcpp::QoS(1)),
-    [weak = std::weak_ptr<MR3GazeboDiffDrivePrivate>(impl_)](
-      const geometry_msgs::msg::Twist::SharedPtr message)
-    {
-      if (auto state = weak.lock()) {
-        state->OnCmdVel(message);
-      }
-    });
-  RCLCPP_INFO(
-    impl_->ros_node_->get_logger(), "Subscribed to [%s]",
-    impl_->cmd_vel_sub_->get_topic_name());
+  if (impl_->tagged_commands_) {
+    const auto status_qos = rclcpp::QoS(1).reliable().transient_local();
+    impl_->status_pub_ = impl_->ros_node_->create_publisher<std_msgs::msg::String>(
+      "mr3_drive/status", status_qos);
+    impl_->target_sub_ = impl_->ros_node_->create_subscription<std_msgs::msg::String>(
+      "mr3_drive/target", rclcpp::QoS(1).reliable().transient_local(),
+      [weak = std::weak_ptr<MR3GazeboDiffDrivePrivate>(impl_)](
+        const std_msgs::msg::String::SharedPtr message)
+      {
+        if (auto state = weak.lock()) {
+          state->OnTarget(message);
+        }
+      });
+    RCLCPP_INFO(impl_->ros_node_->get_logger(), "Subscribed tagged targets to [%s]",
+      impl_->target_sub_->get_topic_name());
+  } else {
+    impl_->cmd_vel_sub_ = impl_->ros_node_->create_subscription<geometry_msgs::msg::Twist>(
+      "cmd_vel", qos.get_subscription_qos("cmd_vel", rclcpp::QoS(1)),
+      [weak = std::weak_ptr<MR3GazeboDiffDrivePrivate>(impl_)](
+        const geometry_msgs::msg::Twist::SharedPtr message)
+      {
+        if (auto state = weak.lock()) {
+          state->OnCmdVel(message);
+        }
+      });
+    RCLCPP_INFO(impl_->ros_node_->get_logger(), "Subscribed to [%s]",
+      impl_->cmd_vel_sub_->get_topic_name());
+  }
 
   // Listen to the update event (broadcast every simulation iteration)
   impl_->update_connection_ = gazebo::event::Events::ConnectWorldUpdateBegin(
@@ -534,6 +571,8 @@ void MR3GazeboDiffDrive::Reset()
   std::fill(impl_->wheel_speed_instr_.begin(), impl_->wheel_speed_instr_.end(), 0.0);
   impl_->Audit("reset", SimNanoseconds(impl_->last_update_time_), {
     {"cmd_seq", impl_->command_sequence_}, {"target_reset", true},
+    {"target_decision_sequence", impl_->target_decision_sequence_},
+    {"target_clock_ns", impl_->target_clock_ns_},
     {"desired_v", 0.0}, {"desired_w", 0.0},
     {"internal_instruction_rim_mps", impl_->wheel_speed_instr_}});
 }
@@ -624,6 +663,8 @@ void MR3GazeboDiffDrivePrivate::OnUpdate(const gazebo::common::UpdateInfo & _inf
     Audit("actuation", SimNanoseconds(_info.simTime), {
       {"actuation_seq", actuation_sequence_}, {"pair_index", i},
       {"cmd_seq", consumed_command_sequence_},
+      {"target_decision_sequence", consumed_target_decision_sequence_},
+      {"target_clock_ns", consumed_target_clock_ns_},
       {"desired_v", consumed_x_}, {"desired_w", consumed_rot_},
       {"dt_ns", dt_ns}, {"dt_sec", seconds_since_last_update},
       {"current_rim_mps", current}, {"desired_rim_mps", desired},
@@ -639,6 +680,8 @@ void MR3GazeboDiffDrivePrivate::UpdateWheelVelocities()
   double vr = target_x_;
   double va = target_rot_;
   consumed_command_sequence_ = command_sequence_;
+  consumed_target_decision_sequence_ = target_decision_sequence_;
+  consumed_target_clock_ns_ = target_clock_ns_;
   consumed_x_ = vr;
   consumed_rot_ = va;
 
@@ -655,7 +698,50 @@ void MR3GazeboDiffDrivePrivate::OnCmdVel(const geometry_msgs::msg::Twist::Shared
   target_rot_ = _msg->angular.z;
   ++command_sequence_;
   Audit("command_received", SimNanoseconds(model_->GetWorld()->SimTime()), {
-    {"cmd_seq", command_sequence_}, {"desired_v", target_x_}, {"desired_w", target_rot_}});
+    {"cmd_seq", command_sequence_}, {"desired_v", target_x_}, {"desired_w", target_rot_},
+    {"target_decision_sequence", 0}, {"target_clock_ns", 0}});
+}
+
+void MR3GazeboDiffDrivePrivate::OnTarget(const std_msgs::msg::String::SharedPtr message)
+{
+  std::lock_guard<std::mutex> scoped_lock(lock_);
+  const auto clock_ns = SimNanoseconds(model_->GetWorld()->SimTime());
+  multi_robot::DriveTarget target;
+  try {
+    target = multi_robot::ParseDriveTarget(nlohmann::json::parse(message->data));
+    multi_robot::ValidateDriveTarget(target, epoch_, robot_, clock_ns,
+      target_decision_sequence_, target_clock_ns_);
+  } catch (const std::exception & error) {
+    Audit("target_rejected", clock_ns, {
+      {"reason", error.what()}, {"raw_target", message->data},
+      {"retained_target_decision_sequence", target_decision_sequence_},
+      {"retained_target_clock_ns", target_clock_ns_}, {"retained_cmd_seq", command_sequence_}});
+    return;
+  }
+  // Validation completes before any command state changes. In particular a
+  // delayed older decision can never overwrite a newer already consumed one.
+  target_x_ = target.linear_x;
+  target_rot_ = target.angular_z;
+  target_decision_sequence_ = target.decision_sequence;
+  target_clock_ns_ = target.clock_ns;
+  ++command_sequence_;
+  Audit("command_received", clock_ns, {
+    {"cmd_seq", command_sequence_}, {"desired_v", target_x_}, {"desired_w", target_rot_},
+    {"target_decision_sequence", target_decision_sequence_},
+    {"target_clock_ns", target_clock_ns_}});
+  const nlohmann::json status{
+    {"schema", "mr3-drive-target-consumed-v1"}, {"epoch", epoch_}, {"robot", robot_},
+    {"clock_ns", clock_ns}, {"decision_sequence", target_decision_sequence_},
+    {"source_clock_ns", target_clock_ns_}, {"cmd_seq", command_sequence_},
+    {"linear_x", target_x_}, {"angular_z", target_rot_}};
+  std_msgs::msg::String response;
+  response.data = status.dump();
+  status_pub_->publish(response);
+  Audit("status_publish", clock_ns, {
+    {"cmd_seq", command_sequence_}, {"desired_v", target_x_}, {"desired_w", target_rot_},
+    {"target_decision_sequence", target_decision_sequence_},
+    {"target_clock_ns", target_clock_ns_}, {"status", status},
+    {"scope", "target_storage_and_status_publication"}});
 }
 
 void MR3GazeboDiffDrivePrivate::Audit(
@@ -665,7 +751,7 @@ void MR3GazeboDiffDrivePrivate::Audit(
     return;
   }
   std::lock_guard<std::mutex> guard(audit_lock_);
-  fields.update({{"schema", "mr3-drive-actuation-v1"}, {"kind", kind},
+  fields.update({{"schema", "mr3-drive-actuation-v2"}, {"kind", kind},
     {"epoch", epoch_}, {"robot", robot_},
     {"record_sequence", ++audit_sequence_}, {"sim_time_ns", sim_time_ns}});
   const auto line = fields.dump() + "\n";

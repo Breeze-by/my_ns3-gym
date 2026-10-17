@@ -4179,3 +4179,183 @@ v1独立25项review保留，仅覆当时字节；最终26项由candidate执行�
 真实postcommit来源和实际Load/执行仍需新冻结原生证明。无ROS/新native/机体安全或停止信用。
 
 冻结前staged `git diff --cached --check`因原始CMake/gtest stdout尾空格返回2，未commit/native；将10份canonical raw日志无损gzip（源/tmp原件不动），`offline_stdout_encoding_v2.json`保存原selected→gzip/encoded+decodedSHA映射，原checks和offline_archive_v1原始SHA均保留。重新执行diff/check、add-n后冻结。
+
+
+## 2026-10-17 MR3-P2A.0 v6 — 原生interface与实际执行时序FAIL
+
+源码冻结`448ceb6a26e9fef1f1c47e26292ba64c1b93c732`已推送、启动前clean；95项源码、15份独立脚本及实际
+`.so`源/编译库e4671d82dc1c410fbf3c710f82b4e6768f6c603894a4bf23d8621e04ecc75c81预检通过。
+只运行single-worker open101 interface（domain180/port12641），每环境严格tb1/tb2/tb3，
+conda ns3gym/PYTHONNOUSERSITE1/PYTHONPATH unset，cwd W；原launcher精确argv：
+
+```bash
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -u -m mr3_learning.benchmark --workers 1 --schedule open:101 --steps 20 --preparation-motion-probe --base-domain 180 --base-port 12641 --output-root /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0 --run-id mr3_p2a0_20261017_v6_interface --preparation-parameter-review
+```
+
+原full audit精确命令（cwd W，conda ns3gym）：
+
+```bash
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -m mr3_learning.audit_preparation /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface --freeze 448ceb6a26e9fef1f1c47e26292ba64c1b93c732 --output /tmp/mr3_p2a0_v6_interface_full_audit.json
+```
+
+原full audit exit0/PASS/errors[]，95 frozen-source bindings及native/scalar/evaluator/motion/contact/activity门通过。
+它未纳入新独立driver消费证明，不能据此将整体准备任务记PASS。返回reset1、step20，共21 API；
+20个command均返回，无未返回差额，adapter接受19、拒绝1（command6@76.22，navigation_changed_since_observation）。
+协议按原19/1结算通过，拒绝原件/处罚不抹去；6个真实GOAL接受、各台2个。
+全部dt/physical_dt1.0，最后正常truncated/external_sampler_limit，不是95%任务成功。
+
+任务物理20.0秒，release71.22→末快照91.22；cleanup另.22秒到91.44；
+初次暂停71.207→release有.013秒受控对齐，不计为有效任务采样。
+benchmark墙秒438.77938038110733，launcher439.23543471097946分列，不相加。
+九实际节点参数PASS，21 wholeobs/七图/活动/GOAL独立回放PASS；三台received path
+2.050096574561806/2.1043245914592292/1.9993159024550078米，不能替代孤立评价器的95%完整任务门。
+18接触持续fresh/原序列及零contact PASS，三台各4565 decision/actual FIFO对应，1012 motion阶段ACK；
+39 native exit0，18 Nav2 finalized，worker0/forcedfalse/failed_samplefalse；44owned加两父共46保存PID/start身份均消失。
+
+原固定body消费者精确命令（cwd Git根、system Python，原工具前缀rtk proxy）：
+
+```bash
+rtk proxy env PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v4/independent/mr3_independent_angular_interface_v1.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101 --output /tmp/mr3_p2a0_v6_interface_fixed_angular_v1.json
+rtk proxy env PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v3/independent/mr3_independent_physics_review.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface/worker0/episode001_open_101 --output /tmp/mr3_p2a0_v6_interface_fixed_physics_v1.json
+```
+
+原7a472angular与2516physics均exit0/PASS，完整原JSON不改。angular bounds/双signcoverage均true，
+三台各595 task-source samples、最大间隙34ms；原始全平面速度峰
+.26206059692039596/.2602178208517182/.2605873149587749m/s，
+odom chord峰.262101128080986/.26023960294305754/.2606124166152852m/s，均<.30；
+三轴角范数峰.8199303592278344/.7674276760886488/.28817591195244213<1.2，
+三轴相邻源差分峰1.5642004931415268/1.4362868321245674/1.3878722581045155<7。
+三台每台各1个A_final_linear_zero有意义样本：
+初始平面速度.20655477081003062/.16045095303241474/.20560065833574906m/s，
+停时延.712/.582/.557秒、原始odom折线路程.07447337457982818/.05719986735833448/.07044181737385437米，
+均在原.78s/.144m；tb2 zero_w=-.05894736842105258，保角而刹平移也得到有限采样证据。
+B_native_cancel_end_to_end只在末尾cleanup .22秒，三台均missing_rest_evidence，
+不能说B通过或把有限sampled/chord当连续路径与所有停车条件保证。
+
+新增固定driver消费者原始精确命令（cwd Git根、PYTHONDONTWRITEBYTECODE=1、system Python）：
+
+```bash
+/usr/bin/python3 ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v6/independent/mr3_independent_drive_trace_v1.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v6_interface --freeze 448ceb6a26e9fef1f1c47e26292ba64c1b93c732 --binary-proof /tmp/mr3_p2a0_v6_binaryproof.json --output /tmp/mr3_p2a0_v6_interface_drive_review_v1.json
+```
+
+原92be消费者FAIL保留：discontinuous/inconsistent actual physics steps。其previous=release假设不适用于
+真实paused query+alignment前缀；原1025行全部邻行连续，前14行终点恰为release。
+只读修前缀/合法同clock零值的v2诊断仍FAIL（160ms），不覆盖固定原件，也不重新授native信用。
+latest received目标到actuation的记录年龄>160ms，每台595含cleanup样本中186/217/263，
+nonzero98/120/119；这一项年龄本身不等于新的变化命令反应延迟。
+
+进一步原值/源时刻复核确认**实际执行时序失败**：task内源到actuation兼容年龄最大.712/.712/.727秒，
+超过原.16s的样本220/236/147。tb1 source76.272仍施加(.20526315789473687,-.7157894736842105)，
+最后同值guard75.56、最新guard76.26已(0,0)；tb3 source87.147仍(.26,-.21052631578947367)，
+最新guard87.14已(.26,+.21052631578947367)。因此旧目标确在较新不同保护值后继续施加；
+不是仅重复同值、reader包装或postcleanup年龄，也不从headerless值关联冒称per-packet身份。
+实际末端消费不及时使原.16反应前提未获保证；零接触、body界及三个A停车片段PASS不能修复该缺口。
+原值诊断脚本/JSON/console、receipt-age诊断及全部原readerFAIL均留档。
+
+整体v6 interface FAIL，后续terminal/reset/deadline按预声明全部SKIP，无same-freeze原生重试，
+无PPO/GPU/optimizer、无95%信用；pilot已用2226/11494.045260453597、余额1870/2905.954739546403不变。
+后续新v7需要唯一tagged epoch/guardseq/clock/value到driver实际接收/消费状态，
+三台同clockACK齐后才推进下一20ms，并修独立reader边界与整段延迟审计；160ms/所有物理和任务门不降。
+
+canonical完整选存411份native（含三路drive_jsonl和三份effectiveSDF），raw128187705/selected7030600bytes，
+encoded/decoded/original字节均一致；95个精确448ceb6 Git payload一并验证。
+初55项prefreeze资产和inventory完全不改，新增inventory_native_v2及增量manifest/accounting_v2保存新诊断，
+不覆写original native/fullauditPASS/driverFAIL。首archive工具误假设20条均accepted而断言失败，
+已改为20 submitted=19 accepted+1 rejection，仅修统计，不改任何native原件；初失败脚本也保留。
+无需detached重新大矩阵；原完整audit95绑定和原源包保留。证据位于
+`report/assets/20261017_mr3_p2a0_v6/{native/interface,independent,accounting}`，详见v6报告。
+
+
+## 2026-10-17 MR3-P2A.0 v7：tagged实际存储屏障离线验证（原生尚未开始）
+
+本轮以v6冻结`448ceb6a26e9fef1f1c47e26292ba64c1b93c732`为base，在提交前v7 working-source上实现实际target消费屏障。v6真实.712/.712/.727秒执行滞后FAIL及所有原件不变；未把工作源码检查改称旧freeze结果。guard最终输出经唯一epoch/robot/decision_sequence/clock/value目标送actual driver，真实desired存储status由worker三台exact-clock收齐后才允许下一20ms推进。ACK仅证明存储和status publish返回，不证明30Hz setpoint/物理响应或机体停稳。共同轮反馈/物理配置、actor/candidates/masks/reward和原95%/.50m/160ms/.30/1.2/7/.78s/.144m门不变。
+
+canonical：`report/assets/20261017_mr3_p2a0_v7/`。新正式库1,999,120 bytes、SHA `d0d31b0ff62de498182073b4dd2715a78e17201844d8d8a360e385f4d2531dd6`，gzip及四源hash已在`build_drive_binary_v7.json`，不是旧v6 e467库。编译CPP09f741ee…、plugin header a7c23794…、paired helper80cf2e51…、target header a1a11a73…与final build02相符；33 reviewed pins/ENV和非pin immutable AST由独立合同receipt核验。后续clean-pushed冻结及native前preflight另绑定。
+
+C++ build01 PASS为中间volatile目标输入版本；build02 PASS才为最终reliable/transient-local depth1双端点。均保留原stdout gzip。实际执行构造（cwd ROS=`/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap`，system ROS Python，工具前缀rtk proxy）：
+
+```bash
+source /opt/ros/humble/setup.bash
+export PYTHONNOUSERSITE=1
+/usr/bin/python3 /usr/bin/colcon build --packages-select multi_robot --symlink-install --event-handlers console_direct+
+/usr/bin/python3 /usr/bin/colcon test --packages-select multi_robot --event-handlers console_direct+
+```
+
+4个CTest target共30 gtest PASS，包括9个新增target契约用例。另从Git根严格独立编译并运行同9例PASS，保存的编译argv：
+
+```bash
+g++ -std=c++17 -Wall -Wextra -Werror -pedantic -Iros2_ws/ros2-multi-robot-automap/src/multi_robot/include ros2_ws/ros2-multi-robot-automap/src/multi_robot/test/test_drive_target.cpp -lgtest -lgtest_main -pthread -o /tmp/mr3_p2a0_v7_drive_target_test
+/tmp/mr3_p2a0_v7_drive_target_test
+```
+
+同9例另加`-fsanitize=undefined -fno-sanitize-recover=undefined`运行PASS/noUB；原receipt保存严格编译argv与额外UBSan flags，不能将这三次运行相加为48个不同用例。静态/工厂验证命令（cwd Git根）：
+
+```bash
+python3 /tmp/mr3_v7_drive_static_verify.py
+/tmp/mr3_v6_drive_dlopen_cpu /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/lib/libmr3_gazebo_diff_drive.so
+```
+
+静态五份原odometry函数不变、四编译源hash匹配/weak callback结构PASS；1000次实际新库factory/create/destroy PASS，未调用ModelPlugin::Load、未创建模型或世界；ldd-r无缺库/未定义符号。复用v6 factory工具源码/编译构造凭据原canonical，不复制其ELF。全部检查/原输出见`independent/mr3_p2a0_v7_drive_checks_v1.json`及原件manifest。
+
+phase/helper与实际worker方法因果回归（cwd ROS）：
+
+```bash
+source /opt/ros/humble/setup.bash
+source install/setup.bash
+export PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test/test_mr3_drive_phase.py
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test/test_mr3_drive_phase.py src/multi_robot_exploration/test/test_mr3_worker_bootstrap.py src/multi_robot_exploration/test/test_mr3_evaluator_phase.py src/multi_robot_exploration/test/test_mr3_worker_shutdown.py
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test/test_mr3_evaluator_phase.py
+```
+
+首次未source环境collection失败，完整stdout仅工具记录；proper focused首轮58 PASS/2措辞断言FAIL（生产正确阻止send），断言修正及新增线程因果后63 PASS/2.34测试秒。真实v6 seq3771/source75.56不能授权seq3806/76.26零输出；三台真实receive→consume→helper.send、future/错epoch/clock/value/seq、cache latest、callback fatal和真实Python Condition线程均覆盖，未构造ROS节点。相关4文件首轮133 PASS/2 FAIL为旧evaluator reset fixture缺新drive topology/phase mock；仅补fixture后该文件38 PASS/.88测试秒，生产barrier不放宽。初失败及后PASS分别在phase_checks_v1/v2和各原stdout，未抹去。
+
+合同/pin9项最终命令（cwd W=`/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl`，conda ns3gym，明确无ROS PYTHONPATH）：
+
+```bash
+env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -m unittest mr3_learning.tests.test_audit_ppo -v
+```
+
+9 PASS，5.34184193611145总墙秒；33 exact reviewed pins和ENV before/after、非pin AST与base相同、24本地链接PASS。首次并发PROVENANCE更新触发精确静态拒绝，原FAIL JSON保留；更新该pin后通过，未改审计判断。audit_ppo单独system flake8（cwd Git根）：
+
+```bash
+/usr/bin/python3 -m flake8 ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_ppo.py --max-line-length=99
+```
+
+最终tagged独立consumer（cwd Git根，system Python，stdlib）：
+
+```bash
+/usr/bin/python3 /tmp/mr3_independent_drive_trace_v3_tests.py -v
+/usr/bin/python3 -m py_compile /tmp/mr3_independent_drive_trace_v3.py /tmp/mr3_independent_drive_trace_v3_tests.py
+```
+
+49 synthetic mutation tests PASS/.852测试秒/1.2801893879659474墙秒，syntax PASS/.11994046904146671墙秒；final script SHA dc10bf03cde4d9b7b8aad9d5f7e5524097bc43bd4055ef21a97638c0374048e9、tests SHA0b393e5b0867094276230d6bdc13f650e9065c2cfc84bbb1507daf876699c07d。same-release初次真实storage前zero/started=false低序号锚仅属预热、不授响应，160ms/task30Hz/精确轮预算不降。开发47与49首轮各一处测试期望拒绝位置错误记于原receipt；旧headerless v2兼容28 PASS只作旧格式CPU证据。runtime对旧7338feef…/3db541bd…字节的source-only审阅记录candidate_reported47且executed_by_this_review=false，旧备份原样保留，不改称独立执行最终49。Python生产cross-review亦只读，不能替代DDS/native/物理实证。
+
+root最终三包build、相关执行、完整ROS及conda命令如下。build/focused/full ROS cwd ROS、system `/usr/bin/python3`，source `/opt/ros/humble/setup.bash`和`install/setup.bash`；PYTHONNOUSERSITE=1。全conda cwd W，resolved Python为`/home/zhuyulab/miniconda3/envs/ns3gym/bin/python`，learner无ROS PYTHONPATH。
+
+```bash
+/usr/bin/python3 /usr/bin/colcon build --symlink-install --packages-select merge_map multi_robot_exploration multi_robot
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test/test_motion_safety.py src/multi_robot_exploration/test/test_mr3_worker_bootstrap.py src/multi_robot_exploration/test/test_mr3_drive_launch.py
+/usr/bin/python3 -m pytest -q src/multi_robot_exploration/test
+/usr/bin/python3 -m pytest -q src/merge_map/test src/multi_robot_exploration/test --ignore=src/merge_map/test/test_copyright.py --ignore=src/merge_map/test/test_flake8.py --ignore=src/merge_map/test/test_pep257.py --ignore=src/multi_robot_exploration/test/test_copyright.py --ignore=src/multi_robot_exploration/test/test_flake8.py --ignore=src/multi_robot_exploration/test/test_pep257.py
+# cwd W, resolved conda ns3gym Python
+python -m unittest discover -s mr3_learning/tests -q
+```
+
+三包build PASS/6.920743669848889墙秒；focused61 PASS/3.37测试秒/4.408640984911472墙秒，与phase63及full suite有覆盖重叠。首次ROS调用误省既有lint ignores，扫描cwd旧log/upstream等，996 PASS/1 skipped/2 FAIL（39034flake8、189pep257，78.99测试秒/80.8567682900466墙秒）；`ros_semantic_v7.json`及完整gzip保留。没有改旧日志或扩大本轮修复范围。恢复与v6相同canonical双包+6原ament文件ignore后1008 PASS/30.64测试秒/31.916257780976593墙秒。full conda208 PASS/12.775测试秒/18.26953538879752墙秒。最终两个完整检查所有记录source_before==source_after，包含已完成三份contract/pin字节。
+
+root changed/new non-asset Python风格精确argv（cwd Git根，system Python）为：
+
+```bash
+/usr/bin/python3 -m flake8 --max-line-length=99 ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py ros2_ws/ros2-multi-robot-automap/src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/motion_safety.py ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_drive_phase.py ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_motion_safety.py ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_drive_launch.py ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_drive_phase.py ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_evaluator_phase.py ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_worker_bootstrap.py
+```
+
+exit0/1.3379605347290635墙秒；audit_ppo另行PASS如上。installed_assets_v7对10份实际安装解析路径/source bytes绑定PASS，runtime_modules_v7对7份实际system ROS import路径/source SHA PASS；这些不代表启动/物理测试。
+
+证据首批`independent/offline_checks_originals_manifest_v1.json`保留33份检查原件、旧canonical复用与历史review别名；增量`offline_checks_originals_increment_v2.json`补final49原件和preflight脚本。所有receipt原字节不改，stdout `.txt`/`.log`只lossless gzip，raw/encoded SHA映射和解压重验；首批33份及6份增量原件一致。纯strict/UBSan/factory ELF未纳入，唯一保留ELF是声明的正式驱动库gzip。root的plan/final prefreeze inventory另绑定launcher/capture/live等脚本。没有重复测试或新native。
+
+v7原生尚未开始；后续同一clean pushed新freeze依次interface20、terminal两轮每轮4步API共8、2workers八轮20step reset、300KEEP，≤488API/487脚本动作/7000原生墙秒，逐阶段全必需门通过才推进，不拼旧PASS。无PPO/GPU/optimizer、无95%/P2A完成信用。pilot已用2226/11494.045260453597，余额1870/2905.954739546403不变。
+
+冻结前最终独立reader v4：`/usr/bin/python3 /tmp/mr3_independent_drive_trace_v4_tests.py -v`及`/usr/bin/python3 -m py_compile /tmp/mr3_independent_drive_trace_v4.py /tmp/mr3_independent_drive_trace_v4_tests.py`，50 synthetic检查/语法/producer字段compat PASS，原argv/stdout/耗时/SHA见v7 independent/mr3_p2a0_v7_tagged_drive_consumer_checks_v2.json。仅将有真实initial storage顺序证明的prewarm zero command/actuation与放行后的task区分，初始storage及后续/clock>release160ms、原物理/停止界不改；v3/49与v6实际stale FAIL原件不改，无native/PPO信用。
+
+提交前staged diff静态检查发现原始effective SDF自带尾空格，三份原件未改；沿已有CSV原件保字节约定，在.gitattributes仅为canonical native/drive_model_tb[123].sdf声明-text/-whitespace，保留实际spawn输入逐字原件及原manifest/inventory哈希，source SDF/Python等风格检查不变。重跑全根diff/check及add-n后提交，无新增仿真或修改历史失败。

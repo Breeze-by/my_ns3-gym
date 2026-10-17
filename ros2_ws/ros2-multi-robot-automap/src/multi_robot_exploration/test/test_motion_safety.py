@@ -4,6 +4,7 @@ import ast
 import copy
 from collections import deque
 import json
+import io
 import math
 from pathlib import Path
 import time
@@ -334,6 +335,7 @@ def node_fixture():
     states = {name: state(name, index * 3., 0.) for index, name in enumerate(ROBOTS)}
     node = SimpleNamespace(
         epoch="episode", received={"robots": list(states.values())}, started=False,
+        drive_audit=io.StringIO(), drive_record_sequence=0,
         halted=None, stop_time=None, failure_sent=False,
         decision_sequences=dict.fromkeys(ROBOTS, 0),
         pending_outputs={name: deque() for name in ROBOTS},
@@ -351,7 +353,9 @@ def node_fixture():
         status_pub=SimpleNamespace(publish=lambda msg: events.append(
             ("status", json.loads(msg.data)))),
         outputs={name: SimpleNamespace(publish=lambda msg, name=name: events.append(
-            ("output", name, msg.linear.x, msg.angular.z))) for name in ROBOTS})
+            ("output", name, msg.linear.x, msg.angular.z))) for name in ROBOTS},
+        drive_targets={name: SimpleNamespace(publish=lambda msg, name=name: events.append(
+            ("drive_target", name, json.loads(msg.data)))) for name in ROBOTS})
     node.publish_completed_status = lambda clock_ns: MotionSafety.publish_completed_status(
         node, clock_ns)
     node.twist = MotionSafety.twist
@@ -372,6 +376,15 @@ def test_ready_precedes_release_and_exact_status_follows_all_actual_publish_call
     assert status[0] == "status" and status[1]["clock_ns"] == 1_000_000_000
     assert status[1]["decision_sequences"] == {name: 1 for name in ROBOTS}
     assert status[1]["completion_scope"] == "publication_and_local_topic_receipt"
+    targets = {row[1]: row[2] for row in events if row[0] == "drive_target"}
+    assert set(targets) == set(ROBOTS)
+    for name, target in targets.items():
+        assert target == {"schema": "mr3-drive-target-v1", "epoch": "episode", "robot": name,
+                          "clock_ns": status[1]["clock_ns"], "decision_sequence": 1,
+                          **status[1]["outputs"][name]}
+    records = [json.loads(line) for line in node.drive_audit.getvalue().splitlines()]
+    assert [row["record_sequence"] for row in records] == [1, 2, 3]
+    assert [json.loads(row["target_json"]) for row in records] == list(targets.values())
     node.started = True
     events.clear()
     MotionSafety.tick(node)

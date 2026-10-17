@@ -263,7 +263,9 @@ def test_initial_phase_follows_reward_binding_and_terminal_cannot_return_live_re
     instance.initial_inputs_ready = {"stamp": 10., "state_sequence": 100}
     instance.motion_ready = True
     instance.verify_motion_output_topology = lambda: None
+    instance.verify_drive_topology = lambda: None
     instance.wait_motion_phase = lambda: {"ready": True}
+    instance.wait_drive_phase = lambda _motion: {}
     instance.reward_ready = {"start_sim_time": 10.}
     order = []
     instance._physics = lambda *_args, **_kwargs: {"end_time_ns": START}

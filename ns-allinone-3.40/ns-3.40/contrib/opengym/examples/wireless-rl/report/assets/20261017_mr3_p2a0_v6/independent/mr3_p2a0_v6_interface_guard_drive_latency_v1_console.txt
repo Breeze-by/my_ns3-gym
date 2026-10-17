@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/tmp/mr3_v6_guard_drive_latency.py", line 114, in <module>
+    main()
+  File "/tmp/mr3_v6_guard_drive_latency.py", line 26, in main
+    guards = module.guard_outputs(rows(args.episode/'motion_safety.jsonl'), traces['tb1'][0]['epoch'])
+  File "/tmp/mr3_independent_drive_trace_v1.py", line 191, in guard_outputs
+    require(value['clock_ns'] > outputs[name][-1]['clock_ns'], 'guard source clock rewind')
+  File "/tmp/mr3_independent_drive_trace_v1.py", line 34, in require
+    raise ValueError(message)
+ValueError: guard source clock rewind

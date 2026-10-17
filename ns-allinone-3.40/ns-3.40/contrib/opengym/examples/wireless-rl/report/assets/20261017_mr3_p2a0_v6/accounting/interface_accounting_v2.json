@@ -1,0 +1,70 @@
+{
+  "schema": "mr3-p2a0-v6-interface-accounting-v2",
+  "freeze": "448ceb6a26e9fef1f1c47e26292ba64c1b93c732",
+  "benchmark_raw_passed": true,
+  "overall_preparation_passed": false,
+  "returned_reset_api_rows": 1,
+  "returned_step_api_rows": 20,
+  "submitted_action_commands": 20,
+  "adapter_accepted_action_rows": 19,
+  "adapter_rejected_action_rows": 1,
+  "rejected_actions": [
+    {
+      "epoch": "mr3_p2a0_20261017_v6_interface_w0_e1_423f830e",
+      "kind": "action_rejected",
+      "payload": {
+        "command_id": 6,
+        "observation_sequence": 6,
+        "reason": "navigation_changed_since_observation"
+      },
+      "stamp": 76.22
+    }
+  ],
+  "unreturned_action_ids": [],
+  "release_time_ns": 71220000000,
+  "last_returned_snapshot_ns": 91220000000,
+  "final_physics_clock_ns": 91440000000,
+  "returned_effective_ns": 20000000000,
+  "returned_physical_ns": 20000000000,
+  "cleanup_physics_ns": 220000000,
+  "controlled_warmup_alignment_ns": 13000000,
+  "post_release_physics_ns": 20220000000,
+  "benchmark_wall_sec": 438.77938038110733,
+  "launcher_wall_sec": 439.23543471097946,
+  "launcher_returncode": 0,
+  "stage_outcomes": {
+    "interface": {
+      "status": "FAIL",
+      "cause": "required original driver reader FAIL and independently confirmed actual stale-value execution beyond160ms; both retained",
+      "native_full_audit_passed": true,
+      "fixed_angular_passed": true,
+      "fixed_physics_passed": true,
+      "fixed_driver_passed": false,
+      "fixed_driver_error": "ValueError('discontinuous/inconsistent actual physics steps')",
+      "value_state_max_compatible_age_ns": {
+        "tb1": 712000000,
+        "tb2": 712000000,
+        "tb3": 727000000
+      },
+      "task_value_state_over160ms_counts": {
+        "tb1": 220,
+        "tb2": 236,
+        "tb3": 147
+      }
+    },
+    "terminal": {
+      "status": "SKIP",
+      "reason": "required interface reader failed; declared stop rule"
+    },
+    "reset": {
+      "status": "SKIP",
+      "reason": "required interface reader failed; declared stop rule"
+    },
+    "deadline": {
+      "status": "SKIP",
+      "reason": "required interface reader failed; declared stop rule"
+    }
+  },
+  "scope": "Actual20-step normal truncated native prefix. Existing native/body subauditsPASS do not repair actual actuation-delivery boundFAIL or independent-readerFAIL. Later3 stagesSKIP; no policy/95%/PPO/GPU/pilot credit.",
+  "prior_accounting_sha256": "eed199db0f19ea0477944581e75e81dc1f60883feac0c9b06d884c93b9f072ba"
+}

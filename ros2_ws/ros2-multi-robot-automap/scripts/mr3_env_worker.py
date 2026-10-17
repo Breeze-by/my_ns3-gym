@@ -19,6 +19,10 @@ from ros_smoke_test import configure_mr3_transport_environment, native_launch_fa
 from multi_robot_exploration.mr3_evaluator_phase import (
     PHASE_PROTOCOL, PHASE_WALL_GUARD_SEC, PhaseClient,
 )
+from multi_robot_exploration.mr3_drive_phase import (
+    DrivePhaseClient, PROTOCOL as DRIVE_PROTOCOL, WALL_GUARD_SEC as DRIVE_WALL_GUARD_SEC,
+    valid_output,
+)
 
 
 ROS_ROOT = Path(__file__).resolve().parents[1]
@@ -60,6 +64,8 @@ class Worker:
         self.monitor_ready = False
         self.motion_ready = False
         self.motion_status = None
+        self.drive_phase = DrivePhaseClient(self.epoch)
+        self.consumed_drive_phase = None
         self.initial_inputs_ready = None
         self.snapshots = {}
         self.drains = {}
@@ -93,6 +99,8 @@ class Worker:
         self.evaluator_phase_file = (directory / "evaluator_phase_worker.jsonl").open(
             "x", buffering=1)
         self.motion_phase_file = (directory / "motion_phase_worker.jsonl").open("x", buffering=1)
+        self.drive_phase_file = (directory / "drive_phase_worker.jsonl").open("x", buffering=1)
+        self.outputs.append(self.drive_phase_file)
         self.transport_environment = configure_mr3_transport_environment()
 
         import rclpy
@@ -237,6 +245,10 @@ class Worker:
             self.node.create_subscription(String, "/exploration_failure", callback(failure), qos),
         ]
         for name in ("tb1", "tb2", "tb3"):
+            self.subscriptions.append(self.node.create_subscription(
+                String, f"/{name}/mr3_drive/status",
+                callback(lambda message, name=name: self.receive_drive_status(
+                    name, json.loads(message.data))), qos))
             for layer in ("global", "local"):
                 self.subscriptions.append(self.node.create_subscription(
                     OccupancyGrid, f"/{name}/{layer}_costmap/costmap",
@@ -347,7 +359,19 @@ class Worker:
     def _physics(self, steps, wait_clock=True):
         self.physics_number += 1
         request_id = f"q{self.physics_number}"
-        self.helper_peer.send({"request_id": request_id, "steps": steps, "epoch": self.epoch})
+        if steps > 0 and wait_clock:
+            with self.condition:
+                motion = self.motion_status
+                receipts = self.wait_drive_phase(motion)
+                if self.callback_error or self.motion_status != motion:
+                    raise RuntimeError("native drive callback failed or guard target changed")
+                self._trace_drive_phase(
+                    "advance_permitted", request_id=request_id, steps=steps,
+                    start_time_ns=self.physical_ns, expected_motion=motion, receipts=receipts)
+                self.helper_peer.send({"request_id": request_id, "steps": steps,
+                                       "epoch": self.epoch})
+        else:
+            self.helper_peer.send({"request_id": request_id, "steps": steps, "epoch": self.epoch})
         receipt = self.helper_peer.receive(15.)
         if receipt.get("ok") is not True or receipt.get("request_id") != request_id:
             raise RuntimeError("physical step rejected: " + json.dumps(receipt))
@@ -356,6 +380,7 @@ class Worker:
                 or receipt["end_time_ns"] - receipt["start_time_ns"] != steps * 1000000):
             raise RuntimeError("physical iteration/time receipt mismatch")
         self.physics_file.write(json.dumps(receipt, sort_keys=True) + "\n")
+        self._trace_drive_phase("physics_completed", receipt=receipt)
         if wait_clock:
             self._wait(lambda: self.clock_ns >= receipt["end_time_ns"], 10.,
                        "ROS /clock did not reach the paused physical boundary")
@@ -371,13 +396,16 @@ class Worker:
         if value.get("epoch") != self.epoch:
             return
         sequences = value.get("decision_sequences")
+        outputs = value.get("outputs")
         if (value.get("schema") != "mr3-motion-safety-status-v1"
                 or value.get("completion_scope") != MOTION_PHASE_COMPLETION
                 or type(value.get("clock_ns")) is not int or value["clock_ns"] < 0
                 or type(value.get("ready")) is not bool or not isinstance(sequences, dict)
                 or set(sequences) != {"tb1", "tb2", "tb3"}
                 or any(type(sequence) is not int or sequence <= 0
-                       for sequence in sequences.values())):
+                       for sequence in sequences.values())
+                or not isinstance(outputs, dict) or set(outputs) != {"tb1", "tb2", "tb3"}
+                or any(not valid_output(output) for output in outputs.values())):
             raise ValueError("invalid motion gate phase status")
         previous = self.motion_status
         if previous is not None:
@@ -419,6 +447,43 @@ class Worker:
             "wall_monotonic_ns": time.monotonic_ns(),
         }, sort_keys=True) + "\n")
         return ack
+
+    def _trace_drive_phase(self, kind, **payload):
+        with self.condition:
+            self.drive_phase_file.write(json.dumps({
+                "kind": kind, "epoch": self.epoch, "wall_monotonic_ns": time.monotonic_ns(),
+                "worker_clock_ns": self.clock_ns,
+                "worker_physical_ns": getattr(self, "physical_ns", None), **payload,
+            }, sort_keys=True, allow_nan=False) + "\n")
+
+    def receive_drive_status(self, name, value):
+        if not isinstance(value, dict) or value.get("robot") != name:
+            raise ValueError("native drive receipt does not match its subscribed robot")
+        self.drive_phase.receive(value)
+        self._trace_drive_phase("ack_received", topic_robot=name, ack=value)
+
+    def wait_drive_phase(self, motion):
+        """Require each actual driver to store this exact tagged guard target."""
+        def paused():
+            if (self.callback_error or motion is None or self.motion_status != motion
+                    or self.clock_ns != motion["clock_ns"]
+                    or self.physical_ns != motion["clock_ns"]):
+                raise RuntimeError("native drive boundary has failed or changed")
+
+        paused()
+        if (self.consumed_drive_phase is not None
+                and self.consumed_drive_phase["expected_motion"] == motion
+                and all(self.drive_phase.latest.get(name) == ack for name, ack in
+                        self.consumed_drive_phase["receipts"].items())):
+            return self.consumed_drive_phase["receipts"]
+        self._wait(lambda: self.drive_phase.matching(motion) is not None,
+                   DRIVE_WALL_GUARD_SEC, "native drive exact-target phase wall guard expired")
+        with self.condition:
+            paused()
+            receipts = self.drive_phase.consume(motion)
+            self.consumed_drive_phase = {"expected_motion": motion, "receipts": receipts}
+            self._trace_drive_phase("ack_consumed", expected_motion=motion, receipts=receipts)
+        return receipts
 
     def _snapshot(self, allow_terminal=False):
         from multi_robot_exploration.mr3_observation import snapshot_digest
@@ -599,11 +664,50 @@ class Worker:
             json.dump(receipt, output, sort_keys=True, indent=2, allow_nan=False)
             output.write("\n")
 
+    def verify_drive_topology(self):
+        """Bind tagged targets and receipts to the actual unique native endpoints."""
+        publishers, subscribers, legacy_subscribers = {}, {}, {}
+
+        def endpoint(entry):
+            return {"namespace": entry.node_namespace, "node": entry.node_name,
+                    "topic_type": entry.topic_type,
+                    "endpoint_gid": bytes(entry.endpoint_gid).hex()}
+
+        def ready():
+            for name in ("tb1", "tb2", "tb3"):
+                driver = (f"/{name}", "turtlebot3_diff_drive")
+                target, status = f"/{name}/mr3_drive/target", f"/{name}/mr3_drive/status"
+                for topic, owner in ((target, MOTION_OUTPUT_PUBLISHER), (status, driver)):
+                    entries = self.node.get_publishers_info_by_topic(topic)
+                    if any((entry.node_namespace, entry.node_name) != owner
+                           or entry.topic_type != "std_msgs/msg/String" for entry in entries):
+                        raise RuntimeError(f"unexpected native drive publisher on {topic}")
+                    publishers[topic] = [endpoint(entry) for entry in entries]
+                entries = self.node.get_subscriptions_info_by_topic(target)
+                if any((entry.node_namespace, entry.node_name) != driver
+                       or entry.topic_type != "std_msgs/msg/String" for entry in entries):
+                    raise RuntimeError(f"unexpected native drive target subscriber on {target}")
+                subscribers[target] = [endpoint(entry) for entry in entries]
+                legacy = self.node.get_subscriptions_info_by_topic(f"/{name}/cmd_vel")
+                if any((entry.node_namespace, entry.node_name) == driver for entry in legacy):
+                    raise RuntimeError("tagged native driver still consumes an untagged Twist")
+                legacy_subscribers[f"/{name}/cmd_vel"] = [endpoint(entry) for entry in legacy]
+            return all(len(rows) == 1 for rows in (*publishers.values(), *subscribers.values()))
+
+        self._wait(ready, 10., "unique native drive target/status endpoints were not discovered")
+        receipt = {"schema": "mr3-drive-topology-v1", "epoch": self.epoch,
+                   "clock_ns": self.clock_ns, "publishers": publishers,
+                   "target_subscribers": subscribers, "legacy_subscribers": legacy_subscribers}
+        with (self.directory / "drive_topology.json").open("x") as output:
+            json.dump(receipt, output, sort_keys=True, indent=2, allow_nan=False)
+            output.write("\n")
+
     def reset(self):
         self._wait(lambda: self.monitor_ready and self.initial_inputs_ready is not None
                    and self.motion_ready,
                    400., "three-robot delivered-input startup guard expired")
         self.verify_motion_output_topology()
+        self.verify_drive_topology()
         output = (self.directory / "step_helper.log").open("w")
         self.outputs.append(output)
         self.helper = subprocess.Popen([
@@ -632,6 +736,7 @@ class Worker:
         initial_motion_status = self.wait_motion_phase()
         if initial_motion_status["ready"] is not True:
             raise RuntimeError("initial paused motion inputs are not ready for task release")
+        initial_drive_receipts = self.wait_drive_phase(initial_motion_status)
         self._snapshot()
         if self.watermarks["state_sequence"] < self.initial_inputs_ready["state_sequence"]:
             raise RuntimeError("initial snapshot predates delivered-input acknowledgement")
@@ -655,6 +760,8 @@ class Worker:
                       "initial_pause_time_ns": receipt["end_time_ns"],
                       "initial_inputs_ready": self.initial_inputs_ready,
                       "initial_motion_status": initial_motion_status,
+                      "drive_phase_protocol": DRIVE_PROTOCOL,
+                      "initial_drive_receipts": initial_drive_receipts,
                       "release_time_ns": self.start_ns}}
         self.transition_file.write(json.dumps({"kind": "reset", **result}, sort_keys=True) + "\n")
         return result

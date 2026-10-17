@@ -32,9 +32,13 @@ class MotionSafety(Node):
         if not self.epoch:
             raise ValueError("motion safety requires an episode epoch")
         self.audit = None
+        self.drive_audit = None
         if audit_path:
             Path(audit_path).parent.mkdir(parents=True, exist_ok=True)
             self.audit = Path(audit_path).open("x", buffering=1)
+            self.drive_audit = Path(audit_path).with_name("drive_targets.jsonl").open(
+                "x", buffering=1)
+        self.drive_record_sequence = 0
         self.record_sequence = 0
         self.odometry, self.transforms, self.requests = {}, {}, {}
         self.input_sequences = {name: {"odom": 0, "tf": 0, "request": 0} for name in ROBOTS}
@@ -51,6 +55,9 @@ class MotionSafety(Node):
         durable = QoSProfile(depth=1, durability=DurabilityPolicy.TRANSIENT_LOCAL)
         self.outputs = {name: self.create_publisher(Twist, f"/{name}/cmd_vel", 20)
                         for name in ROBOTS}
+        self.drive_targets = {
+            name: self.create_publisher(String, f"/{name}/mr3_drive/target", durable)
+            for name in ROBOTS}
         self.ready_pub = self.create_publisher(Bool, "/motion_safety/ready", durable)
         self.status_pub = self.create_publisher(String, "/motion_safety/status", durable)
         self.failure_pub = self.create_publisher(String, "/exploration_failure", durable)
@@ -280,6 +287,7 @@ class MotionSafety(Node):
             self.failure_sent = True
             self.failure_pub.publish(String(data=json.dumps({
                 "component": "motion_safety", "reason": self.halted})))
+        phase_outputs = {}
         for name in ROBOTS:
             peers = {peer: states.get(peer) for peer in ROBOTS if peer != name}
             request = self.requests.get(name)
@@ -318,12 +326,25 @@ class MotionSafety(Node):
             output = Twist()
             output.linear.x, output.angular.z = decision["output"]
             self.outputs[name].publish(output)
+            target = {"schema": "mr3-drive-target-v1", "epoch": self.epoch, "robot": name,
+                      "clock_ns": clock_ns, "decision_sequence": self.decision_sequences[name],
+                      "linear_x": output.linear.x, "angular_z": output.angular.z}
+            encoded = json.dumps(target, sort_keys=True, allow_nan=False)
+            self.drive_targets[name].publish(String(data=encoded))
+            if self.drive_audit is not None:
+                self.drive_record_sequence += 1
+                self.drive_audit.write(json.dumps({
+                    "schema": "mr3-drive-target-publication-v1", "epoch": self.epoch,
+                    "record_sequence": self.drive_record_sequence,
+                    "wall_monotonic_ns": time.monotonic_ns(), "target_json": encoded,
+                }, sort_keys=True, allow_nan=False) + "\n")
+            phase_outputs[name] = {"linear_x": output.linear.x, "angular_z": output.angular.z}
         if self.get_clock().now().nanoseconds == clock_ns:
             self.pending_status = {clock_ns: {
                 "schema": "mr3-motion-safety-status-v1", "epoch": self.epoch,
                 "clock_ns": clock_ns, "ready": healthy,
                 "completion_scope": "publication_and_local_topic_receipt",
-                "decision_sequences": dict(self.decision_sequences)}}
+                "decision_sequences": dict(self.decision_sequences), "outputs": phase_outputs}}
             self.publish_completed_status(clock_ns)
         else:
             self.record("clock_changed_during_decision", {"decision_clock_ns": clock_ns})
@@ -342,6 +363,8 @@ def main(args=None):
         executor.shutdown(timeout_sec=5.)
         if node.audit is not None:
             node.audit.close()
+        if node.drive_audit is not None:
+            node.drive_audit.close()
         node.destroy_node()
         if rclpy.ok():
             rclpy.shutdown()

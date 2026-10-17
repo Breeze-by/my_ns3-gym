@@ -134,6 +134,8 @@ def motion_ack(clock_ns=10**10):
     return {"schema": "mr3-motion-safety-status-v1", "epoch": "current",
             "completion_scope": "publication_and_local_topic_receipt",
             "clock_ns": clock_ns, "ready": True,
+            "outputs": {name: {"linear_x": 0., "angular_z": 0.}
+                        for name in ("tb1", "tb2", "tb3")},
             "decision_sequences": {name: clock_ns // 20_000_000
                                    for name in ("tb1", "tb2", "tb3")}}
 

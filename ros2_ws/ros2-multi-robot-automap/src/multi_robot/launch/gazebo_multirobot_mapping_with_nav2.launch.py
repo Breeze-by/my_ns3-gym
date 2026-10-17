@@ -31,14 +31,17 @@ from launch_ros.actions import Node
 from nav2_common.launch import RewrittenYaml
 
 
-def drive_spawn_model(model_path, robot_name, audit_path, epoch):
-    """Set diagnostic tags without reserializing any physical model bytes."""
+def drive_spawn_model(model_path, robot_name, audit_path, epoch, tagged_commands=False):
+    """Select target protocol/audit tags without changing physical model bytes."""
+    if type(tagged_commands) is not bool or (tagged_commands and not epoch):
+        raise ValueError("tagged drive requires an explicit adapter epoch")
     with open(model_path, encoding="utf-8") as stream:
         model = stream.read()
     tags = {
         "mr3_audit_path": (os.path.join(os.path.dirname(audit_path), f"drive_{robot_name}.jsonl")
                            if audit_path else ""),
         "mr3_epoch": epoch,
+        "mr3_tagged_commands": "true" if tagged_commands else "false",
     }
     for tag, value in tags.items():
         placeholder = f"<{tag}/>"
@@ -700,7 +703,7 @@ def launch_setup(context, *args, **kwargs):
         robot_name = robot["name"]
         namespace = "/" + robot_name
         spawn_model = drive_spawn_model(
-            model, robot_name, adapter_audit_path, episode_epoch.perform(context))
+            model, robot_name, adapter_audit_path, episode_epoch.perform(context), adapter_mode)
         if not adapter_audit_path:
             actions.append(RegisterEventHandler(OnShutdown(
                 on_shutdown=lambda event, event_context, path=spawn_model:
