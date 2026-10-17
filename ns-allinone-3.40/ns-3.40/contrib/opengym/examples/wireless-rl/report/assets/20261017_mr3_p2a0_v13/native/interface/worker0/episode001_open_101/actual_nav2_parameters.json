@@ -1,0 +1,289 @@
+{
+  "schema": "mr3-actual-nav2-parameter-readback-v2",
+  "profile": "mr3-nav2-shim-dwb-020-v1",
+  "passed": false,
+  "freeze": "1cfe74b4ad32cf72246bcf755b0c090748e6c575",
+  "episode_directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v13_interface/worker0/episode001_open_101",
+  "script_sha256": "9eb963457a8dc8297e4686004ea08c7a06e1e0e9ede7cd795ba9505da9d8f701",
+  "nodes": [],
+  "errors": [
+    "ValueError('finite wall guard expired: /tb1/controller_server/get_parameters response')"
+  ],
+  "expected_typed_parameters": {
+    "controller_server": {
+      "FollowPath.max_vel_theta": [
+        3,
+        0.8
+      ],
+      "FollowPath.max_vel_x": [
+        3,
+        0.2
+      ],
+      "FollowPath.max_speed_xy": [
+        3,
+        0.2
+      ],
+      "FollowPath.min_vel_x": [
+        3,
+        0.0
+      ],
+      "FollowPath.max_vel_y": [
+        3,
+        0.0
+      ],
+      "use_sim_time": [
+        1,
+        true
+      ],
+      "controller_frequency": [
+        3,
+        10.0
+      ],
+      "controller_plugins": [
+        9,
+        [
+          "FollowPath"
+        ]
+      ],
+      "FollowPath.plugin": [
+        4,
+        "nav2_rotation_shim_controller::RotationShimController"
+      ],
+      "FollowPath.primary_controller": [
+        4,
+        "dwb_core::DWBLocalPlanner"
+      ],
+      "FollowPath.angular_dist_threshold": [
+        3,
+        0.5
+      ],
+      "FollowPath.angular_disengage_threshold": [
+        3,
+        0.5
+      ],
+      "FollowPath.forward_sampling_distance": [
+        3,
+        0.3
+      ],
+      "FollowPath.rotate_to_heading_angular_vel": [
+        3,
+        0.8
+      ],
+      "FollowPath.max_angular_accel": [
+        3,
+        3.2
+      ],
+      "FollowPath.simulate_ahead_time": [
+        3,
+        1.0
+      ],
+      "FollowPath.rotate_to_goal_heading": [
+        1,
+        false
+      ],
+      "FollowPath.closed_loop": [
+        1,
+        true
+      ],
+      "FollowPath.acc_lim_x": [
+        3,
+        0.5
+      ],
+      "FollowPath.decel_lim_x": [
+        3,
+        -0.5
+      ],
+      "FollowPath.acc_lim_theta": [
+        3,
+        3.2
+      ],
+      "FollowPath.decel_lim_theta": [
+        3,
+        -3.2
+      ],
+      "FollowPath.min_speed_xy": [
+        3,
+        0.0
+      ],
+      "FollowPath.min_speed_theta": [
+        3,
+        0.0
+      ],
+      "FollowPath.critics": [
+        9,
+        [
+          "RotateToGoal",
+          "Oscillation",
+          "BaseObstacle",
+          "GoalAlign",
+          "PathAlign",
+          "PathDist",
+          "GoalDist"
+        ]
+      ],
+      "FollowPath.BaseObstacle.scale": [
+        3,
+        0.02
+      ],
+      "FollowPath.PathAlign.scale": [
+        3,
+        32.0
+      ],
+      "FollowPath.PathAlign.forward_point_distance": [
+        3,
+        0.1
+      ],
+      "FollowPath.GoalAlign.scale": [
+        3,
+        24.0
+      ],
+      "FollowPath.GoalAlign.forward_point_distance": [
+        3,
+        0.1
+      ],
+      "FollowPath.PathDist.scale": [
+        3,
+        32.0
+      ],
+      "FollowPath.GoalDist.scale": [
+        3,
+        24.0
+      ],
+      "FollowPath.RotateToGoal.scale": [
+        3,
+        32.0
+      ],
+      "FollowPath.RotateToGoal.slowing_factor": [
+        3,
+        5.0
+      ],
+      "FollowPath.RotateToGoal.lookahead_time": [
+        3,
+        -1.0
+      ],
+      "goal_checker.xy_goal_tolerance": [
+        3,
+        0.1
+      ],
+      "goal_checker.yaw_goal_tolerance": [
+        3,
+        3.14
+      ],
+      "progress_checker.required_movement_radius": [
+        3,
+        0.15
+      ],
+      "progress_checker.movement_time_allowance": [
+        3,
+        15.0
+      ]
+    },
+    "behavior_server": {
+      "max_rotational_vel": [
+        3,
+        0.8
+      ],
+      "min_rotational_vel": [
+        3,
+        0.4
+      ],
+      "rotational_acc_lim": [
+        3,
+        3.2
+      ],
+      "use_sim_time": [
+        1,
+        true
+      ]
+    },
+    "velocity_smoother": {
+      "max_velocity": [
+        8,
+        [
+          0.2,
+          0.0,
+          0.8
+        ]
+      ],
+      "min_velocity": [
+        8,
+        [
+          -0.2,
+          0.0,
+          -0.8
+        ]
+      ],
+      "feedback": [
+        4,
+        "OPEN_LOOP"
+      ],
+      "smoothing_frequency": [
+        3,
+        20.0
+      ],
+      "use_sim_time": [
+        1,
+        true
+      ],
+      "max_accel": [
+        8,
+        [
+          0.5,
+          0.0,
+          3.2
+        ]
+      ],
+      "max_decel": [
+        8,
+        [
+          -0.5,
+          0.0,
+          -3.2
+        ]
+      ]
+    }
+  },
+  "scope": "GetParameters read-only actual responses from nine namespaced nodes; source clock is durable same-epoch motion completion matched to paused reset release; no parameter writes, control publications or physical stepping",
+  "epoch": "mr3_p2a0_20261017_v13_interface_w0_e1_97105a97",
+  "source_clock_ns": 77520000000,
+  "metadata_sha256": "b84754e74630df26104596e2f50a7c21e760bfec0607c33fa9c0f42de1c98ead",
+  "reset_transition_sha256": "6d7fa36e38cc280cd9706968a6eae540165f95d794af57df32ac3e3d8d2eab5d",
+  "motion_status_receipts": [
+    {
+      "receipt_wall_monotonic_ns": 3986684472424300,
+      "status": {
+        "schema": "mr3-motion-safety-status-v1",
+        "epoch": "mr3_p2a0_20261017_v13_interface_w0_e1_97105a97",
+        "clock_ns": 77520000000,
+        "ready": true,
+        "completion_scope": "publication_and_local_topic_receipt",
+        "decision_sequences": {
+          "tb1": 3860,
+          "tb2": 3860,
+          "tb3": 3860
+        },
+        "outputs": {
+          "tb1": {
+            "linear_x": 0.0,
+            "angular_z": 0.0
+          },
+          "tb2": {
+            "linear_x": 0.0,
+            "angular_z": 0.0
+          },
+          "tb3": {
+            "linear_x": 0.0,
+            "angular_z": 0.0
+          }
+        }
+      }
+    }
+  ],
+  "cleanup": {
+    "executor_shutdown": true,
+    "node_destroyed": true,
+    "context_shutdown": true
+  },
+  "cleanup_errors": [],
+  "wall_duration_sec": 30.366513008717448
+}

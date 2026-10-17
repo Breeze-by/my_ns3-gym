@@ -1286,11 +1286,20 @@
   },
   "mr3_p2a0_v13": {
     "recorded_date": "2026-10-17",
-    "source_freeze": null,
-    "source_status": "reviewed source/build/CPU readiness; actual exact40 admission requires clean pushed preflight",
-    "status": "offline checks complete; full same-freeze native matrix pending",
+    "source_freeze": "1cfe74b4ad32cf72246bcf755b0c090748e6c575",
+    "source_status": "source/build/CPU and actual clean pushed preflight passed",
+    "status": "interface FAIL before first step: actual parameter response-reader matching timeout; terminal/reset/deadline SKIPPED",
     "report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261017_mr3_p2a0_v13.md",
     "assets": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13",
-    "scope": "Local Shim/DWB execution and .20 command cap; full model-invalid failfast c and strict inward wheel arithmetic. Original physics/task/stop gates remain. No PPO/pilot/gateway credit."
+    "scope": "Local Shim/DWB execution and .20 command cap; full model-invalid failfast c and strict inward wheel arithmetic. Original physics/task/stop gates remain. No PPO/pilot/gateway credit.",
+    "inventory": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/inventory_native_v1.json",
+    "inventory_sha256": "470740a5d84dfb97ddc0ee3394709b2a7a0895ed761599762b537595711f4c74",
+    "archive_verification_sha256": "0fa87bd368a316355c7338dc7beeb6a4fd05b3fbf4089b1c88ea75bdb5347f7c",
+    "closed_cost": {
+      "resets": 1,
+      "steps": 0,
+      "native_wall_seconds": 183.4526445940137,
+      "native_optimizer_steps": 0
+    }
   }
 }

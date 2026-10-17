@@ -5384,3 +5384,28 @@ V13冻结前补充：Shim实际mapping wrapper先调用原7126969f观察器，�
 最终独立nested/source复核3cd8134a PASS：新增3fixtures独立复跑通过（.21test/.670wall），剥离新增stable-read/终读AST后旧闭合逻辑完全相同，mandatory 10/7/10/7及顺序不变。所有/tmp原件写者结束后执行 `rtk proxy env PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 /tmp/mr3_archive_common_offline_v13_v1.py`（cwd Git root）：471原件/raw2125525B/encoded689862B，manifest0a2b3313b2414b3c94b9f4deee59e337fcd09345f6d7a8501d38c3678deed46b；每项encoded/decoded/source-before-after SHA+stat均验证，排除6个compiled/cache项，按绝对source去重已有Safety156、candidate219和addendum17原件。Safety canonical manifest cec4f7d4、candidate9280f4a2、addendume348c6be保持不覆。无新native。
 
 冻结前inventory/白名单/链接核验：`rtk proxy env PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 /tmp/mr3_p2a0_v13_prefreeze_inventory_verify_v1.py --inventory /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/inventory_prefreeze_v1.json --report /tmp/mr3_p2a0_v13_prefreeze_inventory_review_v1.json --allow-canonical-inventory`（cwd Git root）exit0/PASS；891 prefreeze assets、96 independent、35pins、168本地链接、863 archive rows、旧日志前缀与V12原FAIL原件、白名单及所有读后哈希一致。inventory自身独立记录不纳入自身。`rtk git diff --check` PASS，提交前实际 `git add -n .` 逐path对照显式代码/文档白名单及完整inventory，排除build/runtime/cache/CPU ELF。
+
+### 2026-10-17 MR3-P2A.0 V13 原生关闭：interface FAIL，后三阶段 SKIP
+
+实际源码冻结`1cfe74b4ad32cf72246bcf755b0c090748e6c575`，planSHA71d274bb85e762dd2108bc7ea919dc6010aad1e75d4c7020f62455e07c001212。工作区干净且HEAD=origin/main；actual preflight100runtime/96independent/a014 SO通过，exact Git source pack100文件/350458encoded B，manifestb286c0b1/tarc84801b9。冻结提交前额外逐index-byte核验924文件全部一致；该辅助脚本并发commit后打印已清空的cached stat末行触发IndexError，原错误保留。后续不可变commit-tar一次核验924路径与worktree全部一致且clean PASS；不影响已完成的提交前diffcheck/白名单审查。
+
+实际命令（cwd wireless-rl；conda保持env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1；不安装新依赖）：
+
+```bash
+rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python report/assets/20261017_mr3_p2a0_v13/independent/mr3_p2a0_v13_buildproof_preflight.py
+rtk proxy env PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 /tmp/mr3_p2a0_v10_pack_source_bindings_v1.py --preflight /tmp/mr3_p2a0_v13_source_preflight.json
+rtk proxy env PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 -u report/assets/20261017_mr3_p2a0_v13/independent/mr3_p2a0_v13_cross_stage_mapping_monitor_v1.py --freeze 1cfe74b4ad32cf72246bcf755b0c090748e6c575
+rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -u /tmp/mr3_p2a0_v13_run_matrix_v1.py 1cfe74b4ad32cf72246bcf755b0c090748e6c575
+```
+
+父编排12:45:53.521 UTC开始，实际interface launcher 12:45:53.974884至12:48:57.428084 UTC，**183.4526445940137原生墙秒**；不再加benchmark182.99565472826362或父wrapper183.75556804100052。1成功reset、0step、0有效transition/学习样本；release77.52秒之后始终未执行策略动作。physics helper共17请求/54ticks=.054秒（.034 pre-release与.020 abort-cleanup），不是正常任务样本。固定seed101/open/三机/domain140/port13301不变。
+
+首次/tb1/controller_server/get_parameters返回超过原30秒整体墙钟guard，actual_nav2_parameters.json passedFalse/nodes空/cleanup全真，原script总30.366513008717448含退出清理。原launch.log的exact `client will not receive response`证实send_response匹配等待分支，非尚未发现service或未收到motion release。39原生start与39 clean exit、supervisor44保存identity rows和全部自有身份消失均真实保留；Shim完整逐EP映射核验PASS。closure总体FAIL，不能用干净退出冒充参数/全部门通过。
+
+11个正式jobs全部结束，runner_errors=[]、all_submitted_jobs_finished=True、aggregateFAIL；FIFO及information PASS，其余full/input/drive/peer/control/settled/angular/physics/closure按实际无动作/覆盖/参数失败保留各自原FAIL。父编排12:51:17.527939 UTC记version_failed_later_stages_skip并exit1，terminal/reset/deadline未启动。只读watcher已自然结束。没有外部signal、盲重试、训练/GPU/pilot；原pilot2226/11494.045260453597已用与1870/2905.954739546403余额保持。
+
+对应本机rmw_fastrtps6.2.10/FastDDS2.6.11官方源码与独立复核：该exact错误先等待特定响应reader GUID匹配并读取writer.max_blocking_time，发生在序列化/write之前。旧6参数期望reply344B、新39参数期望reply2400B只是按冻结期望值构造的CDR，不是实际wire包；不能把变大归为此次已证失败原因。现9参数服务writer工厂QoS均默认100ms且无精确profile；最小/tmp proposal只为这9reply增1秒，CPU原生XML parser逐9精确匹配、其余36保持。1秒充分性未知，30秒client/45秒hook与全部任务/动作/物理门不变。service_is_ready已经核本地双向计数，不能替代服务端specific GUID匹配证明。V14仍仅修复草稿，必须新冻结/新预声明完整矩阵。
+
+关闭归档实际命令 `/usr/bin/python3 /tmp/mr3_p2a0_v13_archive_closed_v1.py --publish --mode stopped --stop-stage interface`（cwd/tmp；PYTHONNOUSERSITE=1/PYTHONDONTWRITEBYTECODE=1）：exit0/8.233846455812454wall，只读保管不运行新native/auditor。helper初style FAIL及原源码快照保留；最终13CPU fixtures+style PASS。此前interface selected pack182文件raw162247979B→9541953B；canonical新增支持163原件，671原件按raw bytes与既有canonical去重、4CPU ELF排除。完整inventory1243条 SHA470740a5d84dfb97ddc0ee3394709b2a7a0895ed761599762b537595711f4c74；verification0fa87bd368a316355c7338dc7beeb6a4fd05b3fbf4089b1c88ea75bdb5347f7c PASS（保管一致），冻结891+100runtime+96indie、4宏/当前及archive a014、48union保存PID/start fresh全部gone。不授整体闭合/physical/95%/策略通过；formal原FAIL与skip无更动。证据链接见[V13报告](report/20261017_mr3_p2a0_v13.md)。
+
+关闭文档最终静态核验（tool inline stdlib runner；原JSON /tmp/mr3_p2a0_v14_v13_closure_static_review_v1.json）：100runtime/96independent/35pins+ENV逐SHA、1243 inventory各bytes/SHA、141当前关闭文档本地链接及11非asset显式白名单全部PASS。实际 `git add -n .` 的363路径逐项对比11文档或inventory，无unexpected；`git diff --check` PASS。仅关闭文档/证据提交，不为文档重跑simulator/学习。

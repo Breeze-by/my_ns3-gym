@@ -470,9 +470,9 @@ Nav2 接受/取消终态默认期限为10仿真秒，对应
 180仿真秒上限、基体接触记录为零、原生干净退出；未重跑完整多种子矩阵或95%任务。
 详见 [工程修复报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261013_p1c_engineering_repair.md)。
 
-## MR3-P2A.0 v13 当前训练前工程准备
+## MR3-P2A.0 v13 已关闭失败的工程准备
 
-V12失败原件保留，不重跑。V13实际三份参数启用Rotation Shim→原DWB；命令线速度.20、角.8，DWB与smoother线加减速度±.5/角±3.2。通用配置保持DWB但同步命令与加速度。WORLD里程计、SDF、实测.30/1.2、停止.78秒/.144米、任务95%/300秒/参与及接触门均不放宽。fullnorm模型不符的normal commit返回明确负ACK，沿原abort_cleanup清理，数据禁止训练；不改正常state→peer→motion→storage→evaluator顺序。
+V13冻结`1cfe74b4ad32`在首个参数服务响应reader匹配超时处FAIL，1reset/0step；后三stage均SKIP。下列保留原声明，不自动重跑。V12失败原件保留。V13实际三份参数启用Rotation Shim→原DWB；命令线速度.20、角.8，DWB与smoother线加减速度±.5/角±3.2。通用配置保持DWB但同步命令与加速度。WORLD里程计、SDF、实测.30/1.2、停止.78秒/.144米、任务95%/300秒/参与及接触门均不放宽。fullnorm模型不符的normal commit返回明确负ACK，沿原abort_cleanup清理，数据禁止训练；不改正常state→peer→motion→storage→evaluator顺序。
 
 先按上文system ROS环境构建实际库（本版helper与target header已变，必须重新configure以嵌入4源码摘要）：
 

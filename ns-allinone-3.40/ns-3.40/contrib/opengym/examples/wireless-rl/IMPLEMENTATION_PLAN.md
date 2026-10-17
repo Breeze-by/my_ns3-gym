@@ -336,3 +336,5 @@ v11实际interface32与关闭及独立门通过，原full仅旧readiness协议�
 V12实际冻结`6b1b4a010835` interface32与terminal全部正式门PASS；reset八轮原生严格关闭，但活动不足、完整平面速度.305828>.30、持续停止响应和driver精确向内舍入门FAIL。26项正式jobs全结束，deadline按规则SKIP；所有原件/FAIL已lossless归档，P2A.0仍未完成。继续修复必须以新clean pushed冻结/新预声明完整重验，不重试旧失败版或拼接PASS。
 
 当前V13实现局部Shim/DWB及.20命令配置、完整own/peer测量范数的normal负ACK隔离和paired严格向内舍入。原任务/物理/源龄/停止门不变，V12持久静止失败仍待同冻结原生验证；新版本计划仍四stage/608API/596动作/18000墙秒，源码、实际新库与离线审计已通过，待clean push后exact40 preflight准入，不授PPO或跨冻结PASS。详见[V13](report/20261017_mr3_p2a0_v13.md)。
+
+V13实际冻结`1cfe74b4ad32`的interface在首个GetParameters响应匹配超时而FAIL（1reset/0step），其余三stage SKIP；39原生干净退出、所有保存身份消失，原aggregate FAIL保留。现仅在/tmp准备九个精确参数response writer有限等待修复，不改client guard、任务/物理门，须新冻结全矩阵。
