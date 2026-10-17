@@ -1,6 +1,6 @@
 # wireless-rl memory — MR3
 
-2026-10-18: V21_ray准备一次三机open101普通4step/最多5API的实际射线命中来源诊断，新增只读SensorPlugin，原SLAM、候选、几何与安全门不变。源码/SDK/实际canonical库及入口检查通过后，仍须新clean pushed exact40预检，单次native≤350墙秒且累计原3600额度不重置；150未选、P2A.0未完成。见[V21](report/20261018_mr3_p2a0_v21_ray.md)。
+2026-10-18: V21_ray冻结099a8eea已自然闭合三机open101普通4step来源诊断，原生219.82827906589955墙秒，39进程exit0、48保存身份消失。三机实际近身回波均命中自身base_collision；原物理因tb1/tb2缺停车刺激保持FAIL，150尚未选用，P2A.0未完成。累计诊断2938.48922518407930/3600墙秒，无PPO或四阶段信用。见[V21](report/20261018_mr3_p2a0_v21_ray.md)。
 
 2026-10-18: V19 freeze72d0465ddd1bbee09af117cfd9d89b7e729f8578 fixed50/150 diagnostic pair closed. Both admission/1ms capture/strict close PASS; baseline original physical PASS, contrast original physical FAIL because all33 snapshots have zero GOAL for every robot and no stopping stimulation. Own maps already retain near-seed100; no occupied clearing or .29 relaxation. 150 not selected, V17 stopping failure unresolved. Native1638.4207719592378sec; V18+V19=2489.3860735194758 of3600 ceiling. 78/78 native exits0; fresh91 PID/start identities gone. No matrix/PPO credit, pilot balance unchanged. See [V19](report/20261018_mr3_p2a0_v19.md).
 

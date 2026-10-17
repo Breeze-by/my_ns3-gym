@@ -1,0 +1,108 @@
+--- /tmp/mr3_p2a0_v20_sensor_pack_closed_v1.py
++++ /tmp/mr3_p2a0_v21_ray_pack_closed_v1.py
+@@ -129,6 +129,51 @@
+     return files, directories
+ 
+ 
++ROOT = Path('/home/zhuyulab/ns3-workspace')
++FIXED_FREEZE = '099a8eeaa00676f7e6e00d7f5ef51294aac5edcb'
++FIXED_RUN = ROOT / 'ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v21_ray'
++FIXED_CAPTURE = Path('/tmp/mr3_p2a0_v21_ray_capture_v1')
++FIXED_EXECUTION = Path('/tmp/mr3_p2a0_v21_ray_execution_v1.json')
++A21 = 'ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v21_ray'
++
++
++def validate_selection(source, target, prospective, execution_path, source_kind):
++    expected = {'native': (FIXED_RUN, A21 + '/native/iters150'),
++                'sensor_capture': (FIXED_CAPTURE, A21 + '/sensor_capture')}
++    assert type(source_kind) is str and source_kind in expected
++    fixed_source, fixed_prospective = expected[source_kind]
++    assert source == fixed_source and prospective == fixed_prospective
++    assert execution_path == FIXED_EXECUTION
++    assert target.is_absolute() and target.is_relative_to(Path('/tmp'))
++    assert target != source and not target.is_relative_to(source)
++
++
++def validate_execution_identity(execution):
++    assert execution['schema'] == 'mr3-startup-sensor-execution-v1'
++    assert execution['status'] == 'completed' and execution['stage'] == 'iters150'
++    assert execution['freeze'] == FIXED_FREEZE
++    assert type(execution['passed']) is bool
++    assert type(execution['capture_process_completed']) is bool
++    assert type(execution['strict_native_closure_passed']) is bool
++    assert execution['benchmark_summary']['path'] == str(FIXED_RUN / 'benchmark_summary.json')
++    expected_episode = FIXED_RUN / 'worker0/episode001_open_101'
++    assert execution['actual_workload']['protocol']['path'] == str(expected_episode / 'transitions.jsonl')
++    assert execution['recorder_final']['path'] == str(FIXED_CAPTURE / 'final.json')
++    ray = execution['ray_measurement_availability']
++    assert type(ray['passed']) is bool and type(ray['robots']) is dict
++    assert set(ray['robots']) == {'tb1', 'tb2', 'tb3'}
++    for robot, row in ray['robots'].items():
++        assert type(row['passed']) is bool
++        assert row['path'] == str(expected_episode / ('ray_' + robot + '.jsonl'))
++        assert type(row['process_id']) is int and row['process_id'] > 0
++        assert row['sensor_identity'] == {
++            'parent': robot + '::base_scan',
++            'scoped_name': 'p1c_open::' + robot + '::base_scan::hls_lfcd_lds'}
++        assert type(row['scans']) is int and row['scans'] >= 0
++        assert type(row['configuration']) is int and type(row['sensor_connected']) is int
++    return ray
++
++
+ def main():
+     parser = argparse.ArgumentParser(description=__doc__)
+     parser.add_argument('--source', type=Path, required=True)
+@@ -142,14 +187,11 @@
+     source = args.source.resolve(strict=True)
+     target = args.target
+     assert target.is_absolute() and target.resolve().is_relative_to(Path('/tmp'))
+-    expected_names = {'native': 'mr3_p2a0_20261018_v20_sensor_iters150',
+-                      'sensor_capture': 'mr3_p2a0_v20_sensor_capture_v1'}
+-    suffixes = {'native': '/native/iters150', 'sensor_capture': '/sensor_capture'}
+-    assert source.name == expected_names[args.source_kind]
+-    assert args.prospective_prefix.endswith('/20261018_mr3_p2a0_v20_sensor' + suffixes[args.source_kind])
++    validate_selection(source, target, args.prospective_prefix, args.execution, args.source_kind)
+     assert not target.exists(), 'refuse overwrite of any custody attempt'
+     execution_raw = args.execution.read_bytes()
+     execution = json.loads(execution_raw)
++    basic_ray = validate_execution_identity(execution)
+     assert execution['status'] == 'completed' and execution['stage'] == 'iters150'
+     assert type(execution['passed']) is bool, 'closed execution verdict must be an actual boolean'
+     assert type(execution['freeze']) is str and len(execution['freeze']) == 40
+@@ -185,9 +227,11 @@
+     metadata = json.loads(metadata_raw)
+     assert metadata['freeze'] == execution['freeze'] and recorder['epoch'] == metadata['epoch']
+     files, directories = inventory(source)
++    if args.source_kind == 'sensor_capture':
++        assert not directories and {path.name for path, _ in files} == {'messages.cdr', 'records.jsonl', 'final.json'}
+     target.mkdir(parents=True)
+     source_code = Path(__file__).read_bytes()
+-    configuration = {'schema': 'mr3-v20-sensor-custody-helper-configuration-v1',
++    configuration = {'schema': 'mr3-v21-ray-custody-helper-configuration-v1',
+         'argv': sys.argv, 'python_executable': sys.executable, 'python_version': platform.python_version(),
+         'cwd': os.getcwd(), 'environment_exact': dict(os.environ), 'source_sha256': sha(source_code),
+         'source': str(source), 'target': str(target), 'prospective_prefix': args.prospective_prefix,
+@@ -229,7 +273,14 @@
+         if artifact['available']:
+             assert sha(Path(artifact['source']).read_bytes()) == artifact['sha256'], 'closed consumer artifact changed'
+     rows.sort(key=lambda row: row['relative_path'])
+-    manifest = {'schema': 'mr3-v20-sensor-byte-custody-v1', 'passed': True,
++    by_relative = {row['relative_path']: row for row in rows}
++    if args.source_kind == 'native':
++        for robot, original in basic_ray['robots'].items():
++            packed = by_relative['worker0/episode001_open_101/ray_' + robot + '.jsonl']
++            assert (packed['raw_sha256'], packed['raw_bytes']) == (original['sha256'], original['bytes'])
++    else:
++        assert by_relative['final.json']['raw_sha256'] == sha(recorder_raw)
++    manifest = {'schema': 'mr3-v21-ray-byte-custody-v1', 'passed': True,
+         'pass_scope': 'Lossless byte custody and codec/stat verification only; stage results copied from completed original.',
+         'stage': 'iters150', 'source_kind': args.source_kind, 'source': str(source), 'freeze': execution['freeze'],
+         'plan_sha256': execution['plan_sha256'], 'prospective_prefix': args.prospective_prefix,
+@@ -239,6 +290,7 @@
+         'original_execution_errors': execution.get('errors'),
+         'original_physical_4step': execution['original_physical_4step'],
+         'original_physical_passed': execution['original_physical_passed'],
++        'original_ray_measurement_availability': basic_ray,
+         'strict_native_closure_passed': execution['strict_native_closure_passed'],
+         'actual_workload_original': execution['actual_workload'],
+         'e61c_original': execution['e61c'],

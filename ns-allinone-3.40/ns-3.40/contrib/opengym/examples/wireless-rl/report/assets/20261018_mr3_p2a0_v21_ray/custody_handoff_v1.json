@@ -1,0 +1,74 @@
+{
+  "schema": "mr3-v21-closed-byte-custody-handoff-v1",
+  "passed": true,
+  "freeze": "099a8eeaa00676f7e6e00d7f5ef51294aac5edcb",
+  "source_writers_stopped": true,
+  "source_tree": "/tmp/mr3_p2a0_v21_ray_selected_v1",
+  "single_copy_mapping": {
+    "source": "/tmp/mr3_p2a0_v21_ray_selected_v1/.",
+    "destination": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v21_ray/"
+  },
+  "command_for_root_review_only": [
+    "cp",
+    "-a",
+    "/tmp/mr3_p2a0_v21_ray_selected_v1/.",
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v21_ray/"
+  ],
+  "copied_by_this_agent": false,
+  "native_manifests": [
+    {
+      "path": "/tmp/mr3_p2a0_v21_ray_selected_v1/native/iters150/manifest.json",
+      "sha256": "0cef2f1b6c0a68291fddae0040fec01e98a9afffc5c4569d04a1bfe10ec258af",
+      "passed": true,
+      "source_files": 175,
+      "raw_bytes": 334667634,
+      "selected_bytes": 53105674,
+      "selected_parts": 181,
+      "largest_encoded_part_bytes": 7663281
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v21_ray_selected_v1/sensor_capture/manifest.json",
+      "sha256": "ec9ba6df2b4b3c03f2db4b2fb22c0a7a2f4c113000a5521da1bafd88ec37f1f5",
+      "passed": true,
+      "source_files": 3,
+      "raw_bytes": 58295621,
+      "selected_bytes": 4302819,
+      "selected_parts": 4,
+      "largest_encoded_part_bytes": 2163314
+    }
+  ],
+  "support_manifest": {
+    "path": "/tmp/mr3_p2a0_v21_ray_selected_v1/independent/byte_custody_v1/manifest.json",
+    "sha256": "38fe71832302527616961c92823de5d8aabf9a0ee08cd6d622996cbb0d09419b",
+    "originals": 14
+  },
+  "actual_execution_receipt": {
+    "path": "/tmp/mr3_p2a0_v21_ray_pack_execution_v1.json",
+    "sha256": "0b5e532a5bb248292cc2f5ac091a7c05e7c9280f643e0f66417b9e81dc96dbdf"
+  },
+  "totals": {
+    "raw_originals": 178,
+    "raw_bytes": 392963255,
+    "encoded_parts": 185,
+    "encoded_bytes": 57408493,
+    "largest_encoded_part_bytes": 7663281
+  },
+  "new_selection_identity_tests": 6,
+  "codec_functions_AST_unchanged": true,
+  "codec_tests_repeated": false,
+  "every_raw_file_full_SHA_and_roundtrip_verified": true,
+  "all_source_inventories_before_after_stable": true,
+  "all_3_ray_original_SHA_equal_closed_execution": true,
+  "original_outcomes": {
+    "capture_process_completed": true,
+    "basic_ray_measurement": true,
+    "original_2516_physical": false,
+    "strict_native_closure": true
+  },
+  "no_native_or_formal_rerun": true,
+  "limits": [
+    "Custody PASS is only exact byte preservation, not new scientific/physical/matrix/task credit.",
+    "Original gz files are encoded as opaque original bytes; ordered decoded parts concatenate to that original.gz, not automatically its decoded content.",
+    "The encoded native tree is a custody tree, not a directly runnable EP; use the per-file reassembly rule in each manifest."
+  ]
+}
