@@ -554,11 +554,11 @@ python report/assets/20261017_mr3_p2a0_v15/independent/mr3_p2a0_v15_audit_stage.
 新reset包装器仅识别V4/32工作量，归一化版本与文案后AST仍为A8；原physical2516/angular7a472数学、八轮/33条API记录及原pool/活动门不变。原A13 Shim观察/reader及实际a014库复用，V15只在review期间将binaryproof路径13→15并finally恢复。实际命令、失败、限制和结果见[V15报告与预声明](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261017_mr3_p2a0_v15.md)。完成本步并提交推送证据后等待用户验收，不自动启动PPO/P2B/gateway。
 
 
-## MR3-P2A.0 V16 完整准备矩阵（待新冻结准入）
+## MR3-P2A.0 V16 完整准备矩阵（已关闭失败）
 
 V15失败闭包55da440保持。V5/32仅在V4生命周期及原joint合法子集中筛除直线接近队友的新GOAL，KEEP/WAIT与原5秒承诺、运动取消、3秒首WAIT和typed返回记账保持。原V4默认/旧V2/V3可复现；这是外部工程刺激，无生产探索兜底。两reset包装器只变精确V5 metadata；原每机A或B停止信用、每机一转向段/总体正负/至少一机双向及全部bounds/contacts/严格关闭门保持。
 
-clean pushed冻结和exact40 preflight后，串行父编排依次执行下列入口；各阶段所有mandatory收齐并PASS才准下一阶段，失败保留并SKIP后续，不同版重试或拼接PASS。被动mapping观察器只读实际进程。预算仍608API/596动作/18000原生墙秒，无PPO/pilot。
+以下保留V16实际入口供复核；冻结ebe7d51b已因interface的tb1制停覆盖FAIL关闭，后三阶段SKIP，禁止重跑该冻结。原串行父编排按下列入口执行；各阶段所有mandatory收齐并PASS才准下一阶段，失败保留并SKIP后续，不同版重试或拼接PASS。被动mapping观察器只读实际进程。预算仍608API/596动作/18000原生墙秒，无PPO/pilot。
 
 ```bash
 # cwd: wireless-rl；先按P1C段激活conda ns3gym并保持PYTHONNOUSERSITE=1

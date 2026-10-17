@@ -5575,3 +5575,34 @@ rtk proxy env PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 /tmp
 一次publish exit0/22.695107930805534wall，主manifest e5b8a3903f92847fa71da7a005977c9bf4d6f55c48b79511ce23a6b4046195e0：165new/raw1968417B→encoded495796B，49旧raw去重引用，946mock/fake/active/continuation等排除；新/旧raw与encoded/decoded/source-stat均后验通过（aef9c81c），无native/formal。初NaN反例、旧6980/templateFAIL及各observer/style/source与282/39/23/14全部原stdout/argv在原件中，未重标。
 
 最终prefreeze实际`rtk proxy env PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 /tmp/mr3_p2a0_v16_prefreeze_inventory_verify_v1.py`，exit0/PASS：134bindings/101runtime/36pins、全部源末验、actual库/四宏、165原件/49旧ref、162链接、实际git add -n .197路径白名单及git diff --check通过，179资产初inventory c52feb7a。发布后原回执和prefreeze helper/结果/dryrun追加独立保管：`rtk proxy env PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 /tmp/mr3_p2a0_v16_capture_publish_addendum_v1.py`，exit0，8原件raw71097/encoded9801，manifest c4b723e00b5f960998a44722f180813a20e0bcf2c97b20fe0fe20c013269f544。最终inventory_prefreeze_v2覆盖189项/自身排除，SHAf15564cf2e231bdbfdf1a608f216307cab67a728a6e9ffd1f58525cc704fcfb7，初库存和主manifest保持。只做静态/保管，不提供native/PPO/pilot信用。
+
+
+### 2026-10-17 MR3-P2A.0 V16 原生关闭：仅 tb1 制停覆盖 FAIL
+
+实际clean pushed冻结ebe7d51bdb7bf9d77a28b77cfb4296876afb0100，plan5eca58447b8075782bb56ef2506c2bcb8a84e01b5a8233242fe08d963b46bd07。exact101runtime/134independent/a014 preflight PASS，receipt88aa16d07898761b45168d011f01f6b37b20a66d0119396d1e7eb6aca654045f；101sourcepack manifest3b1913d28485117763381205baa4a34d4b8cc080d26d5ebf62d683b1f41effdb、encoded31524df906ac39be5b098e248c1a83f165b2ef09dfdec84b0145893bf55780ed、tar63805fc608edcf8f03acc16c8e5c8718b3afb332c39b72c9f100da27078050cc/355352B，实际parent d6702003与已归档raw逐byte相同。
+
+实际命令（cwd wireless-rl，PYTHONPATH unset/PYTHONNOUSERSITE=1/PYTHONDONTWRITEBYTECODE=1）：
+
+```bash
+rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python report/assets/20261017_mr3_p2a0_v16/independent/mr3_p2a0_v16_buildproof_preflight.py
+rtk proxy env PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 /tmp/mr3_p2a0_v10_pack_source_bindings_v1.py --preflight /tmp/mr3_p2a0_v16_source_preflight.json
+rtk proxy env PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 -u report/assets/20261017_mr3_p2a0_v16/independent/mr3_p2a0_v16_cross_stage_mapping_monitor_v1.py --freeze ebe7d51bdb7bf9d77a28b77cfb4296876afb0100
+rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -u /tmp/mr3_p2a0_v16_matrix_draft_v1/mr3_p2a0_v16_run_matrix_v1.py ebe7d51bdb7bf9d77a28b77cfb4296876afb0100
+```
+
+父编排15:28:00.283062 UTC启动；interface launcher 2026-10-17T15:28:00.791829+00:00 至 2026-10-17T15:40:35.211485+00:00，计费754.4184093018994原生墙秒，1reset/32step/33API、32effective+physicalsim秒、open101/三机/domain140/port13301，V5/32。九实际参数服务器读回PASS；最后external_sampler_limit正常截断。benchmark与parent wrapper计时另报不叠加。11formal全结束，runner_errors=[]，唯一mandatory fixed_physics_v1 FAIL，其他9及额外FIFO PASS；aggregate99fcf2535b5a52b375a0f33400b1ea976fc7ba347e8c60bda918fc686504f372。read-onlyformal300.7870844551362wall不计native。父15:45:36.428786 UTC正常按规则exit1/skip terminal/reset/deadline，watcher自然exit0；源码/二进制/Git整个native与formal期间未变，无signal/盲重试/原生PPO/GPU/optimizer/pilot。
+
+full/input活动门PASS：三机完整received路径约.0877008/1.218166/.953723m、accepted1/2/2，不能冒作每机1m/95任务成功。angular7b1ca095 PASS：正tb2/tb3、负全3、双向tb2/tb3；peer/control/drive/information/settled/closure通过。physical78ff4b8b FAIL仅tb1缺stop资格：38 A的prior非零段20/40/60/80ms为2/17/14/5次，全<.1s，事件初速度最高.0354386<.05；task独立peak.065825不替事件资格，唯一B no_active_prior_linear_output。tb2 creditedA2/B2，tb3A1/B1；三机errors为空、planar/angular/chord counters为0、无observed_bound_violation和nonrestBeyondHorizon，仍不得给tb1制停信用。39native start/exit0、18Nav2finalized、48保存PID/start身份freshgone，严格关闭PASS。原leaf摘要91b6025b，只读4正式JSON+1.3MBtransitions/.3472wall，精确source/argv/原输出保留，不重跑formal或扫描大raw。
+
+小快照逐32实际command/typed post-step重放全部一致。tb1在t13/14 fresh/valid/idle、首WAIT已过3/4秒、received abs(v)=.00013848/.00010338合格，V4 lifecycle未阻断；原8GOAL mask全false、path_distances全null，非V5过滤引起。path_maps.tb1存在且非missing，seed_cell_body_clearance约.14492222687338152<原.29，使reachabletarget/pool/selected全0；全局pool仍215，非全局无候选。t0/1 seedclearance.6373259/reachable552，t1无GOAL另有activecommit，不能把1..21一概归为seed失效。t21仍.14492，t22恢复.7456696、reachabletarget21576/pool129并重新有8合法GOAL。t22..25实际快照中单tb1GOAL+队友WAIT仅099/499同时满足原jointmask及V5非接近；5秒commit最早取消27/28/29/30，至32余5/4/3/2秒。这仅合法机会及预算，不提供新轨迹/停车证据。根因汇总b53da794及2aafd/0e87/9367/8f3d源、argv、execution、stdout全部保留；未读mapraw或ModelStates，不降低原seed/制停门。
+
+V16已闭原件保管实际命令（cwd Git root，PYTHONPATH unset/PYTHONNOUSERSITE=1/PYTHONDONTWRITEBYTECODE=1）：
+
+```bash
+rtk proxy /usr/bin/python3 /tmp/mr3_p2a0_v16_pack_native_v1.py interface
+rtk proxy /usr/bin/python3 /tmp/mr3_p2a0_v16_archive_closed_v1.py --publish --mode stopped --stop-stage interface
+```
+
+23helper元数据/custody反例与非行长style PASS；archive b4116df8 AST经version及inventory_v2单literal逆换同V15，packer d3f8cba6逆byte相同。实际context2.6678465376608074wall、pack32.96681893616915wholewall（内部32.202946595），568raw545668315B→33913593B，manifest322339fdde0b693b66480ac8dca45e55ba59c03d5a6ffd92abfe8455f7fe8233；最大encoded14642978B，全<100000000B及100MiB，无需分卷，未谎称现packer自动限额。publish exit0/14.924305682070553wall，255new support/raw17311911B→encoded1490654B及214旧raw去重引用，supportmanifest2ad71a46aea951258c3e39168619d4e7bcece832a0d1c79edc44dac9864f6a6c。101Git/tar源、134indie、189prefreezev2、actuala014/四宏与48身份freshgone均核验PASS。inventory1019 SHA cabcc3dff59b569bf430966958df82a26559a3c7f1a80f875cc3746e78fae848；verification a3d01c1967bd9af5daa44b2e96aa8412f45ea03099f32795900681cd9fdffa75，成本93050341472a30925a5de95e0a2c7605bdd500b3ef2ddf97756f5fc191411aa1。归档耗时不加native成本，保管PASS不改原physicalFAIL/3SKIP；pilot已用2226/11494.045260453597与余1870/2905.954739546403保持，P2A.0未完成，修复仅新冻结完整矩阵。
+
+V16关闭静态实际命令（cwd Git root）：`rtk proxy env PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 /tmp/root_mr3_v16_closure_static_review_v1.py`，exit0/.9502595849335194wall；1019库存SHA/bytes、152链接、原log前缀、真实唯一physicsFAIL/11jobs闭合均通过。实际git add -n .841路径全属11关闭文档或库存白名单、diff-check PASS，无native/formal重跑。5份发布后原件/静态helper和回执追加closure_static_v1，保留初库存，最终inventory_native_v2另覆盖后置保管。
