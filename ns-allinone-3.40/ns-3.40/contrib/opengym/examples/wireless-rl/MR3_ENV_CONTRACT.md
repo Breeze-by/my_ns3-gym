@@ -69,6 +69,10 @@ adapter模式的controller和behavior速度统一经过Nav2 smoother及`/motion_
 状态无效、包络不足或超界不能走此分支。否则保持原请求或全零，每次分量过滤及重验均留证。
 命令硬上限为线速度`.20m/s`、角速度`.8rad/s`；三份实际`params/nav2_params_tbN_0.yaml`
 中的controller、实际`behavior_server`及smoother共同绑定此上限；通用DWB配置同步线速度和加速度。
+V15将导航队友预测速度界独立固定为原`.26m/s`，用于`peer_safety_radius`、
+`body_points`障碍cloud和`grid_with_peers`导航栅格；不得再alias命令上限而随降速缩小。
+该界恢复原冻结导航几何，不能替代最终保护门的`.30m/s`实测执行模型或原`.50m`任务门。
+V14同输入cloud回放已证实原alias的实际几何回归，原FAIL保留，新冻结仍须完整原生重验。
 实际三份FollowPath使用已安装Nav2 RotationShimController，primary仍为原DWB：路径前向采样`.30m`，角差启用/退出均`.5rad`，旋转参考`.8rad/s`，角加速度参数`3.2rad/s²`，closed_loop使用本机实测角速度。短路径、变换或旋转检查失败时仍可委托DWB，不承诺所有候选安全可执行或必有平移。Shim不选择探索目标，原critic权重/规划器/goal checker不变。
 smoother显式`20Hz/OPEN_LOOP`，线加/减速度参数`±.5m/s²`、角`±3.2rad/s²`；DWB一致。理想指令组合`.5 + (.287/2)*3.2 = .9592m/s²`位于原轮缘`1.0m/s²`预算内；这不证明实测机体、每次墙钟插值或连续制动界。Shim参考`.8`也不保证其每个原始输出不超该值，最终smoother/保护门仍核严格硬界。
 Nav2插值恰好高出`.20m/s`或`.8rad/s`一个binary64相邻值时，明确记录原值并规范到上限；
@@ -306,6 +310,17 @@ GPU探针仅做固定接口forward/backward且无optimizer step，不是策略�
 短工程采样不证明多日稳定或95%任务成功。真实短步和零时长终态的rollout、时间折扣及GAE处理
 必须在P2A明确验证，不能把本接口完成当成标准PPO可直接使用的证明。
 用户已于2026-10-16验收P1C并授权P2A；P2A须独立实现和验证上述消费方规则，不能追认P1C为策略训练证据。
+
+P2A.0的`mr3-p2a0-outward-cancel-v4`是显式32步外部工程刺激，不供生产探索或训练兜底。
+保留初始`[0,1.5)`与第二次`[13,15)`合法GOAL窗口及v3 received反向bearing/outward排名；
+已交付状态须fresh/valid、目标active/owned且有接受记录、线速度至少`.08m/s`、
+本phase received路径增量至少`.05m`，并且原per-robot及joint mask均允许WAIT，才请求运动中取消。
+`[10,13)`及`[28,32)`为有限WAIT截止窗口；WAIT被掩码禁止时只合法KEEP并保存missing，不越过5秒承诺。
+只有实际step返回且command的epoch/观测序号/digest/action/正整数command_id全部绑定后，才锁存已提交WAIT；
+显式action_submitted非bool拒绝，False不计提交。第二GOAL还要求本机首阶段成功WAIT至少3秒、
+fresh且导航idle、received线速度绝对值至多`.01m/s`；缺WAIT记录不发第二GOAL。该速度只作选择代理，
+不代替独立raw完整平面速度、三连续rest样本、.78秒/.144米及实际cancel闭合的原物理门。
+旧v2/v3行为保持，未知版本及错误步数仍拒绝；工程capacity资格适配不提供历史P1C吞吐信用。
 
 
 ## P2A.0 v10 显式受控执行阶段（待同冻结原生验证）

@@ -76,6 +76,15 @@
         "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261017_mr3_p2a0_v13.md"
       ],
       "scope": "V14 completed1reset/32steps and strict native shutdown, but peer/control exact geometry and physical stopping coverage FAIL; later three stages SKIP. Lowering COMMAND_SPEED_LIMIT to .20 in V13 indirectly shrank navigation peer geometry through a control.py alias; exact same-input .20/.26 cloud replay confirms actual geometry regression despite unchanged consumer source. Earlier static source-identity claims do not prove geometry unchanged. Original receipts, FAILs, gates and pilot balance remain unchanged; a new freeze is required."
+    },
+    {
+      "recorded_date": "2026-10-17",
+      "review_base_commit": "f7376d02b12da00c4bf44754c4b976c9fcf2b20c",
+      "report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261017_mr3_p2a0_v15.md",
+      "affected_reports": [
+        "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261017_mr3_p2a0_v14.md"
+      ],
+      "scope": "V14 formal geometry/stopping-coverage FAIL and all later SKIPs remain immutable. V15 restores independent navigation peer .26 with command .20, adds received-only legalV4 cancellation stimulus and exact32 workload metadata wrappers while retaining original physical/angular math, gates and V2/V3. New same-freeze full matrix required; offline checks do not grant native or PPO credit."
     }
   ],
   "files": [

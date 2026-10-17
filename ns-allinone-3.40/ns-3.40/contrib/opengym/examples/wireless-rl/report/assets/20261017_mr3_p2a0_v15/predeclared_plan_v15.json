@@ -1,0 +1,1501 @@
+{
+  "schema": "mr3-p2a0-predeclaration-v15",
+  "date": "2026-10-17",
+  "authorization": "Continue P2A.0 only; no PPO/pilot/GPU, no P2B/gateway; new matrix requires reviewed clean pushed freeze",
+  "source_binding": "One reviewed new clean pushed V15 exact40 source freeze resolved by mandatory post-push preflight;101 runtime paths and121 independent bindings; no inherited native credit",
+  "robots_per_environment": 3,
+  "kind": "scripted_engineering_not_training",
+  "gpu_calls": 0,
+  "optimizer_steps": 0,
+  "max_api_records": 608,
+  "max_submitted_script_decisions": 596,
+  "stages": [
+    {
+      "stage": "interface",
+      "command": [
+        "python",
+        "-m",
+        "mr3_learning.benchmark",
+        "--workers",
+        "1",
+        "--schedule",
+        "open:101",
+        "--steps",
+        "32",
+        "--preparation-motion-probe",
+        "--preparation-probe-version",
+        "mr3-p2a0-outward-cancel-v4",
+        "--base-domain",
+        "140",
+        "--base-port",
+        "13301",
+        "--output-root",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0",
+        "--run-id",
+        "mr3_p2a0_20261017_v15_interface",
+        "--preparation-parameter-review"
+      ],
+      "run_directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v15_interface",
+      "on_error": "stop this failed run and later matrix stages; preserve all originals; diagnose and repair under current P2A.0 authorization, then use a new reviewed pushed source freeze and complete new predeclaration; no blind same-freeze retry",
+      "required_audits": [
+        "source_freeze",
+        "native",
+        "contact",
+        "clock",
+        "command",
+        "scalar",
+        "evaluator_phase",
+        "owned_identity_absence",
+        "each robot legal GOAL, native accepted goal and received-odom displacement > 0.05m per episode",
+        "actual unique velocity publisher graph",
+        "seven exact map inputs and navigation reconstruction",
+        "received activity independent replay",
+        "motion phase, raw request, decision and actual output provenance",
+        "actual global/local master costmap bytes",
+        "non-null complete post-release activity and preceding owned native accepts",
+        "strict final velocity limits and one-ULP endpoint records",
+        "rotation-only filtering requires full independent same-input geometry check",
+        "actual planar/angular motion and measured braking distance/time within declared conditional bounds",
+        "read-only actual nine Nav2 parameter servers at paused reset release",
+        "independent raw angular full-vector bounds, sampled acceleration and bidirectional coverage",
+        "actual driver protocol/source/library/effective SDF identity",
+        "three raw actuator traces: latest received target, joint-feedback paired slew, per-wheel acceleration budget and source coverage",
+        "exact tagged guard target→native stored-target receipt→worker ACK-before-advance, plus raw30Hz actuation, entire source age<=160ms and unchanged body response",
+        "independent settled-turn audit: every actual conditional activation/continuation checked against full raw own-source and native zero-target provenance; no observed activation is skipped",
+        "settled-turn independent consumer --require-use: at least one actual native conditional activation; all three activity/angular/physical gates remain separately necessary",
+        "actual information raw ingress/causal odometry and TF selection/send/bundle provenance; complete independent information diagnostic audit",
+        "controlled state publication -> six actual peer callback/obstacle publication -> unique normal guard/self receipt -> native three stored targets -> physics; immutable normal and strict permanent-zero stop; exact one pre-release bootstrap20 with original actual zero takeover/storage; independent peer-only and complete control-chain review",
+        "V13 final guard/target publication/native received and desired actuation commands exact<=.20/.8; full immutable v5 drive gate retained",
+        "fresh latest-causal full-vector execution-model invalidity failfast-c must preserve infrastructure FAIL/real zero-storage closure, no fabricated task failure",
+        "actual installed RotationShim plugin/library/config source identity; actual9 readback alone not execution proof",
+        "per-episode actual3 controller_server PID/start/namespace/worker --run-dir ancestry and mapped Shim ec301e... custody with wrapper/base original JSON, rawSHA/source7126/actualCLI equality; required nested closure supplement"
+      ],
+      "external_input_rule": "Explicit32-step received-only v4 engineering stimulus: preserve legal GOAL windows [0,1.5)/[13,15) and original v3 outward/opposite received-turn ranking. Per robot request WAIT only with original per/joint mask legality, fresh valid active owned accepted goal, received v>=.08 and phase path increase>=.05m; latch only after actual returned typed command binding. Hold submitted WAIT; finite deadlines10..13 and28..32, KEEP when WAIT masked. Second GOAL requires first actual WAIT>=3s and fresh idle received |v|<=.01 proxy. Missing opportunities remain diagnostic; full immutable raw physical/cancel/stop/angular consumers decide credit. No truth/raw guard input, production policy or fallback.",
+      "wall_ceiling_seconds": 1800,
+      "required_audit_receipts": [
+        "/tmp/mr3_p2a0_v15_interface_full_audit.json",
+        "/tmp/mr3_p2a0_v15_interface_drive_review_v1.json",
+        "/tmp/mr3_p2a0_v15_interface_input_review_v1.json",
+        "/tmp/mr3_p2a0_v15_interface_fixed_angular_v1.json",
+        "/tmp/mr3_p2a0_v15_interface_fixed_physics_v1.json",
+        "/tmp/mr3_p2a0_v15_interface_settled_review_v1.json",
+        "/tmp/mr3_p2a0_v15_interface_closure_binary_review_v1.json",
+        "/tmp/mr3_p2a0_v15_interface_information_review_v1.json",
+        "/tmp/mr3_p2a0_v15_interface_peer_review_v1.json",
+        "/tmp/mr3_p2a0_v15_interface_control_review_v1.json"
+      ],
+      "worker_bindings": [
+        {
+          "worker_id": 0,
+          "robots": [
+            "tb1",
+            "tb2",
+            "tb3"
+          ],
+          "domain": 140,
+          "port": 13301
+        }
+      ],
+      "settled_turn_audit_command_template": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v8/independent/mr3_independent_settled_turn_v3.py",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v15_interface",
+        "--freeze",
+        "{freeze}",
+        "--output",
+        "/tmp/mr3_p2a0_v15_interface_settled_review_v1.json",
+        "--require-use"
+      ],
+      "information_audit_command_template": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_independent_information_v2.py",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v15_interface",
+        "--freeze",
+        "{freeze}",
+        "--output",
+        "/tmp/mr3_p2a0_v15_interface_information_review_v1.json"
+      ],
+      "peer_audit_command_template": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v11/independent/mr3_independent_control_phase_v2.py",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v15_interface",
+        "--freeze",
+        "{freeze}",
+        "--output",
+        "/tmp/mr3_p2a0_v15_interface_peer_review_v1.json",
+        "--peer-only"
+      ],
+      "control_audit_command_template": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v11/independent/mr3_independent_control_phase_v2.py",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v15_interface",
+        "--freeze",
+        "{freeze}",
+        "--output",
+        "/tmp/mr3_p2a0_v15_interface_control_review_v1.json"
+      ]
+    },
+    {
+      "stage": "terminal",
+      "command": [
+        "python",
+        "-m",
+        "mr3_learning.benchmark",
+        "--workers",
+        "1",
+        "--schedule",
+        "open:101,open:101",
+        "--steps",
+        "4",
+        "--terminal-probe",
+        "--base-domain",
+        "142",
+        "--base-port",
+        "13311",
+        "--output-root",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0",
+        "--run-id",
+        "mr3_p2a0_20261017_v15_terminal"
+      ],
+      "run_directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v15_terminal",
+      "on_error": "stop this failed run and later matrix stages; preserve all originals; diagnose and repair under current P2A.0 authorization, then use a new reviewed pushed source freeze and complete new predeclaration; no blind same-freeze retry",
+      "required_audits": [
+        "source_freeze",
+        "native",
+        "contact",
+        "clock",
+        "command",
+        "scalar",
+        "evaluator_phase",
+        "owned_identity_absence",
+        "actual driver protocol/source/library/effective SDF identity",
+        "three raw actuator traces: latest received target, joint-feedback paired slew, per-wheel acceleration budget and source coverage",
+        "exact tagged guard target→native stored-target receipt→worker ACK-before-advance, plus raw30Hz actuation, entire source age<=160ms and unchanged body response",
+        "independent settled-turn audit: every actual conditional activation/continuation checked against full raw own-source and native zero-target provenance; no observed activation is skipped",
+        "actual information raw ingress/causal odometry and TF selection/send/bundle provenance; complete independent information diagnostic audit",
+        "controlled state publication -> six actual peer callback/obstacle publication -> unique normal guard/self receipt -> native three stored targets -> physics; immutable normal and strict permanent-zero stop; exact one pre-release bootstrap20 with original actual zero takeover/storage; independent peer-only and complete control-chain review",
+        "V13 final guard/target publication/native received and desired actuation commands exact<=.20/.8; full immutable v5 drive gate retained",
+        "fresh latest-causal full-vector execution-model invalidity failfast-c must preserve infrastructure FAIL/real zero-storage closure, no fabricated task failure",
+        "actual installed RotationShim plugin/library/config source identity; actual9 readback alone not execution proof",
+        "per-episode actual3 controller_server PID/start/namespace/worker --run-dir ancestry and mapped Shim ec301e... custody with wrapper/base original JSON, rawSHA/source7126/actualCLI equality; required nested closure supplement"
+      ],
+      "wall_ceiling_seconds": 1800,
+      "required_audit_receipts": [
+        "/tmp/mr3_p2a0_v15_terminal_full_audit.json",
+        "/tmp/mr3_p2a0_v15_terminal_drive_review_v1.json",
+        "/tmp/mr3_p2a0_v15_terminal_settled_review_v1.json",
+        "/tmp/mr3_p2a0_v15_terminal_closure_binary_review_v1.json",
+        "/tmp/mr3_p2a0_v15_terminal_information_review_v1.json",
+        "/tmp/mr3_p2a0_v15_terminal_peer_review_v1.json",
+        "/tmp/mr3_p2a0_v15_terminal_control_review_v1.json"
+      ],
+      "worker_bindings": [
+        {
+          "worker_id": 0,
+          "robots": [
+            "tb1",
+            "tb2",
+            "tb3"
+          ],
+          "domain": 142,
+          "port": 13311
+        }
+      ],
+      "settled_turn_audit_command_template": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v8/independent/mr3_independent_settled_turn_v3.py",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v15_terminal",
+        "--freeze",
+        "{freeze}",
+        "--output",
+        "/tmp/mr3_p2a0_v15_terminal_settled_review_v1.json"
+      ],
+      "information_audit_command_template": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_independent_information_v2.py",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v15_terminal",
+        "--freeze",
+        "{freeze}",
+        "--output",
+        "/tmp/mr3_p2a0_v15_terminal_information_review_v1.json"
+      ],
+      "peer_audit_command_template": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v11/independent/mr3_independent_control_phase_v2.py",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v15_terminal",
+        "--freeze",
+        "{freeze}",
+        "--output",
+        "/tmp/mr3_p2a0_v15_terminal_peer_review_v1.json",
+        "--peer-only"
+      ],
+      "control_audit_command_template": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v11/independent/mr3_independent_control_phase_v2.py",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v15_terminal",
+        "--freeze",
+        "{freeze}",
+        "--output",
+        "/tmp/mr3_p2a0_v15_terminal_control_review_v1.json"
+      ]
+    },
+    {
+      "stage": "reset",
+      "command": [
+        "python",
+        "-m",
+        "mr3_learning.benchmark",
+        "--workers",
+        "2",
+        "--schedule",
+        "open:101,open:101,rooms:101,corridors:101",
+        "--steps",
+        "32",
+        "--preparation-motion-probe",
+        "--preparation-probe-version",
+        "mr3-p2a0-outward-cancel-v4",
+        "--base-domain",
+        "144",
+        "--base-port",
+        "13321",
+        "--output-root",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0",
+        "--run-id",
+        "mr3_p2a0_20261017_v15_reset"
+      ],
+      "run_directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v15_reset",
+      "on_error": "stop this failed run and later matrix stages; preserve all originals; diagnose and repair under current P2A.0 authorization, then use a new reviewed pushed source freeze and complete new predeclaration; no blind same-freeze retry",
+      "required_audits": [
+        "source_freeze",
+        "native",
+        "contact",
+        "clock",
+        "command",
+        "scalar",
+        "evaluator_phase",
+        "owned_identity_absence",
+        "each robot legal GOAL, native accepted goal and received-odom displacement > 0.05m per episode",
+        "actual unique velocity publisher graph",
+        "seven exact map inputs and navigation reconstruction",
+        "received activity independent replay",
+        "motion phase, raw request, decision and actual output provenance",
+        "actual global/local master costmap bytes",
+        "non-null complete post-release activity and preceding owned native accepts",
+        "strict final velocity limits and one-ULP endpoint records",
+        "rotation-only filtering requires full independent same-input geometry check",
+        "actual planar/angular motion and measured braking distance/time within declared conditional bounds",
+        "actual driver protocol/source/library/effective SDF identity",
+        "three raw actuator traces: latest received target, joint-feedback paired slew, per-wheel acceleration budget and source coverage",
+        "exact tagged guard target→native stored-target receipt→worker ACK-before-advance, plus raw30Hz actuation, entire source age<=160ms and unchanged body response",
+        "independent settled-turn audit: every actual conditional activation/continuation checked against full raw own-source and native zero-target provenance; no observed activation is skipped",
+        "actual information raw ingress/causal odometry and TF selection/send/bundle provenance; complete independent information diagnostic audit",
+        "controlled state publication -> six actual peer callback/obstacle publication -> unique normal guard/self receipt -> native three stored targets -> physics; immutable normal and strict permanent-zero stop; exact one pre-release bootstrap20 with original actual zero takeover/storage; independent peer-only and complete control-chain review",
+        "V13 final guard/target publication/native received and desired actuation commands exact<=.20/.8; full immutable v5 drive gate retained",
+        "fresh latest-causal full-vector execution-model invalidity failfast-c must preserve infrastructure FAIL/real zero-storage closure, no fabricated task failure",
+        "actual installed RotationShim plugin/library/config source identity; actual9 readback alone not execution proof",
+        "per-episode actual3 controller_server PID/start/namespace/worker --run-dir ancestry and mapped Shim ec301e... custody with wrapper/base original JSON, rawSHA/source7126/actualCLI equality; required nested closure supplement"
+      ],
+      "external_input_rule": "Explicit32-step received-only v4 engineering stimulus: preserve legal GOAL windows [0,1.5)/[13,15) and original v3 outward/opposite received-turn ranking. Per robot request WAIT only with original per/joint mask legality, fresh valid active owned accepted goal, received v>=.08 and phase path increase>=.05m; latch only after actual returned typed command binding. Hold submitted WAIT; finite deadlines10..13 and28..32, KEEP when WAIT masked. Second GOAL requires first actual WAIT>=3s and fresh idle received |v|<=.01 proxy. Missing opportunities remain diagnostic; full immutable raw physical/cancel/stop/angular consumers decide credit. No truth/raw guard input, production policy or fallback.",
+      "wall_ceiling_seconds": 6400,
+      "required_audit_receipts": [
+        "/tmp/mr3_p2a0_v15_reset_full_audit.json",
+        "/tmp/mr3_p2a0_v15_reset_drive_review_v1.json",
+        "/tmp/mr3_p2a0_v15_reset_input_review_v1.json",
+        "/tmp/mr3_p2a0_v15_reset_angular_matrix_v1.json",
+        "/tmp/mr3_p2a0_v15_reset_physics_matrix_v1.json",
+        "/tmp/mr3_p2a0_v15_reset_settled_review_v1.json",
+        "/tmp/mr3_p2a0_v15_reset_closure_binary_review_v1.json",
+        "/tmp/mr3_p2a0_v15_reset_information_review_v1.json",
+        "/tmp/mr3_p2a0_v15_reset_peer_review_v1.json",
+        "/tmp/mr3_p2a0_v15_reset_control_review_v1.json"
+      ],
+      "worker_bindings": [
+        {
+          "worker_id": 0,
+          "robots": [
+            "tb1",
+            "tb2",
+            "tb3"
+          ],
+          "domain": 144,
+          "port": 13321
+        },
+        {
+          "worker_id": 1,
+          "robots": [
+            "tb1",
+            "tb2",
+            "tb3"
+          ],
+          "domain": 145,
+          "port": 13322
+        }
+      ],
+      "settled_turn_audit_command_template": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v8/independent/mr3_independent_settled_turn_v3.py",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v15_reset",
+        "--freeze",
+        "{freeze}",
+        "--output",
+        "/tmp/mr3_p2a0_v15_reset_settled_review_v1.json"
+      ],
+      "angular_matrix_audit_command_template": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v8/independent/mr3_independent_angular_reset_matrix_v8.py",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v15_reset",
+        "--freeze",
+        "{freeze}",
+        "--angular-consumer",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v4/independent/mr3_independent_angular_interface_v1.py",
+        "--output",
+        "/tmp/mr3_p2a0_v15_reset_angular_matrix_v1.json"
+      ],
+      "physics_matrix_audit_command_template": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v8/independent/mr3_independent_physics_matrix_v8.py",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v15_reset",
+        "--freeze",
+        "{freeze}",
+        "--per-episode-report",
+        "/tmp/mr3_p2a0_v15_reset_physical_per_episode_v1.json",
+        "--output",
+        "/tmp/mr3_p2a0_v15_reset_physics_matrix_v1.json"
+      ],
+      "information_audit_command_template": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_independent_information_v2.py",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v15_reset",
+        "--freeze",
+        "{freeze}",
+        "--output",
+        "/tmp/mr3_p2a0_v15_reset_information_review_v1.json"
+      ],
+      "peer_audit_command_template": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v11/independent/mr3_independent_control_phase_v2.py",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v15_reset",
+        "--freeze",
+        "{freeze}",
+        "--output",
+        "/tmp/mr3_p2a0_v15_reset_peer_review_v1.json",
+        "--peer-only"
+      ],
+      "control_audit_command_template": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v11/independent/mr3_independent_control_phase_v2.py",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v15_reset",
+        "--freeze",
+        "{freeze}",
+        "--output",
+        "/tmp/mr3_p2a0_v15_reset_control_review_v1.json"
+      ]
+    },
+    {
+      "stage": "deadline",
+      "command": [
+        "python",
+        "-m",
+        "mr3_learning.benchmark",
+        "--workers",
+        "1",
+        "--schedule",
+        "open:101",
+        "--steps",
+        "300",
+        "--deadline-probe",
+        "--base-domain",
+        "148",
+        "--base-port",
+        "13331",
+        "--output-root",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0",
+        "--run-id",
+        "mr3_p2a0_20261017_v15_deadline"
+      ],
+      "run_directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v15_deadline",
+      "on_error": "stop this failed run and later matrix stages; preserve all originals; diagnose and repair under current P2A.0 authorization, then use a new reviewed pushed source freeze and complete new predeclaration; no blind same-freeze retry",
+      "required_audits": [
+        "source_freeze",
+        "native",
+        "contact",
+        "clock",
+        "command",
+        "scalar",
+        "evaluator_phase",
+        "owned_identity_absence",
+        "actual driver protocol/source/library/effective SDF identity",
+        "three raw actuator traces: latest received target, joint-feedback paired slew, per-wheel acceleration budget and source coverage",
+        "exact tagged guard target→native stored-target receipt→worker ACK-before-advance, plus raw30Hz actuation, entire source age<=160ms and unchanged body response",
+        "independent settled-turn audit: every actual conditional activation/continuation checked against full raw own-source and native zero-target provenance; no observed activation is skipped",
+        "actual information raw ingress/causal odometry and TF selection/send/bundle provenance; complete independent information diagnostic audit",
+        "controlled state publication -> six actual peer callback/obstacle publication -> unique normal guard/self receipt -> native three stored targets -> physics; immutable normal and strict permanent-zero stop; exact one pre-release bootstrap20 with original actual zero takeover/storage; independent peer-only and complete control-chain review",
+        "V13 final guard/target publication/native received and desired actuation commands exact<=.20/.8; full immutable v5 drive gate retained",
+        "fresh latest-causal full-vector execution-model invalidity failfast-c must preserve infrastructure FAIL/real zero-storage closure, no fabricated task failure",
+        "actual installed RotationShim plugin/library/config source identity; actual9 readback alone not execution proof",
+        "per-episode actual3 controller_server PID/start/namespace/worker --run-dir ancestry and mapped Shim ec301e... custody with wrapper/base original JSON, rawSHA/source7126/actualCLI equality; required nested closure supplement"
+      ],
+      "wall_ceiling_seconds": 8000,
+      "required_audit_receipts": [
+        "/tmp/mr3_p2a0_v15_deadline_full_audit.json",
+        "/tmp/mr3_p2a0_v15_deadline_drive_review_v1.json",
+        "/tmp/mr3_p2a0_v15_deadline_settled_review_v1.json",
+        "/tmp/mr3_p2a0_v15_deadline_closure_binary_review_v1.json",
+        "/tmp/mr3_p2a0_v15_deadline_information_review_v1.json",
+        "/tmp/mr3_p2a0_v15_deadline_peer_review_v1.json",
+        "/tmp/mr3_p2a0_v15_deadline_control_review_v1.json"
+      ],
+      "worker_bindings": [
+        {
+          "worker_id": 0,
+          "robots": [
+            "tb1",
+            "tb2",
+            "tb3"
+          ],
+          "domain": 148,
+          "port": 13331
+        }
+      ],
+      "settled_turn_audit_command_template": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v8/independent/mr3_independent_settled_turn_v3.py",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v15_deadline",
+        "--freeze",
+        "{freeze}",
+        "--output",
+        "/tmp/mr3_p2a0_v15_deadline_settled_review_v1.json"
+      ],
+      "information_audit_command_template": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_independent_information_v2.py",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v15_deadline",
+        "--freeze",
+        "{freeze}",
+        "--output",
+        "/tmp/mr3_p2a0_v15_deadline_information_review_v1.json"
+      ],
+      "peer_audit_command_template": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v11/independent/mr3_independent_control_phase_v2.py",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v15_deadline",
+        "--freeze",
+        "{freeze}",
+        "--output",
+        "/tmp/mr3_p2a0_v15_deadline_peer_review_v1.json",
+        "--peer-only"
+      ],
+      "control_audit_command_template": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v11/independent/mr3_independent_control_phase_v2.py",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v15_deadline",
+        "--freeze",
+        "{freeze}",
+        "--output",
+        "/tmp/mr3_p2a0_v15_deadline_control_review_v1.json"
+      ]
+    }
+  ],
+  "pilot_budget_unchanged": {
+    "charged_decisions": 2226,
+    "charged_wall_seconds": "11494.045260453597",
+    "remaining_decisions": 1870,
+    "remaining_wall_seconds": "2905.954739546403",
+    "new_pilot_authorized_by_this_plan": false
+  },
+  "unchanged_gates": [
+    "95 percent",
+    "300 simulation seconds",
+    "quality",
+    "each robot one metre and one goal",
+    "18 contact streams",
+    "peer centre envelope 0.50m",
+    "strict native closure"
+  ],
+  "scope_limits": [
+    "no policy training or optimizer/GPU calls",
+    "no P2A learned-policy or 95-percent success credit",
+    "guard is conditional on delivered-estimate, speed, reaction and braking bounds; no unbounded localization/delay guarantee",
+    "synthetic head-on/crossing/stationary-bypass fixtures test geometry; native scripted Nav2 matrix tests actual pipeline and motion, not an exhaustive trajectory guarantee",
+    "native optimizer/GPU zero excludes synthetic CPU optimizer unit tests",
+    "three-robot short movement probes do not establish every target executability or learned exploration reliability",
+    "braking is a global stopping envelope, not a claim of instantaneous minimum centre deceleration during wheel-coupled turns",
+    "parameter readback establishes actual parameter values at paused release, not Gazebo actuator consumption",
+    "OPEN_LOOP smoother wall timer can run while physics paused; its configured acceleration is not a sim-time physical acceleration proof",
+    "angular finite source differences are sampled evidence only; arbitrary between-source dynamics remain outside empirical proof",
+    "driver world odometry functions remain original own-local sensor behavior; paired control reads only local joint feedback",
+    "native actuator trace is isolated diagnostics and never an actor/candidate/mask input",
+    "new controller/compiled execution contract requires new complete matrix; no old physical PASS assembled",
+    "settled-turn sampled planar speed/chord checks are necessary empirical gates only; continuous full-planar<=.01m/s and whole-segment centre path<=.0078m remain explicit conditional assumptions",
+    "no completed v10 native result exists at predeclaration; source-freeze resolved after clean push and source preflight only",
+    "pending causal odometry fixes latest-future overwrite/skip path; it does not prove the unrecorded v8 hub callback cause or eliminate all possible same-clock delivery races",
+    "v10 freeze631d8c35 interface FAIL at reset; terminal/reset/deadline SKIP. V11 supplies no inherited native PASS. Mandatory control v2 additionally enforces sticky actual negativeACK on abandoned identity; v10 original59bindings/actual failures retained historically.",
+    "Frozen external v3/32 stimulus and all immutable angular/physical/raw gates are unchanged; no new goal planner/fallback, no claim every candidate executable or PPO effective."
+  ],
+  "next_gate": "complete this preparation and present evidence for user acceptance; no new pilot or later checkpoint",
+  "max_total_wall_seconds": 18000,
+  "offline_prerequisites": [
+    "semantic and source-freeze checks",
+    "unchanged global occupied-wins merge regression",
+    "owner-known/shared-unknown static obstacle and fractional-grid regressions",
+    "native archived tb2 starvation and lethal-start counterfactual map replay",
+    "received odometry/accepted-goal reset, duplicates, conflicts and independent mutations",
+    "motion geometry head-on, crossing, parallel, stationary bypass, reverse and turning, fail-closed callback and launch topology tests",
+    "new V13 directed-helper/target four-source rebuilt driver/build proof plus current reviewed ROS/conda, settled-turn source geometry and independent mutation suites at recorded working inputs",
+    "final v5 independent tagged-reader with immutable v4 math mutation suite, retaining v6 original/different-value latency FAIL; no old-native credit",
+    "final four compiled-source/consumer/binary/installed-path bindings, physical model bytes and static links",
+    "legacy v2/v3 probe timing/ranking and exact capacity eligibility regressions; launcher/preflight budget, failed predecessor, missing receipt and binary mutation checks",
+    "new independent settled-turn consumer mutations and current producer synthetic schema compatibility; synthetic fixtures do not establish native activation or model validity",
+    "causal odometry queue boundaries, out-of-order/duplicate/invalid/frame/reset/overflow and real hub ingress-selection ledger CPU regressions",
+    "independent information selection/raw ingress consumer and typed mutations; complete actual native ledger validation in every new stage",
+    "typed controlled state/peer/guard clients and actual publication/self-receipt/storage pipeline mutations; sticky negative ACK despite stop race; one normal target per clock even before takeover; latest tuple required at takeover"
+  ],
+  "new_execution_contracts": {
+    "navigation": "mr3-own-known-shared-unknown-v1",
+    "candidate": "mr3-navigation-geometric-staging-v5",
+    "observation": "mr3-observation-v3",
+    "tensor": "mr3-learning-tensors-v2",
+    "robot_feature_count": 71,
+    "body_failure_distance_m": 0.5,
+    "policy_step_sec": 1,
+    "physical_gate_phase_sec": 0.02,
+    "turn_stop_padding_sec": 0.02,
+    "command_angular_limit_radps": 0.8,
+    "measured_angular_limit_radps": 1.2,
+    "sampled_angular_acceleration_limit_radps2": 7,
+    "preparation_probe_version": "mr3-p2a0-outward-cancel-v3",
+    "drive": "mr3-paired-joint-feedback-drive-v1",
+    "drive_trace": "mr3-drive-actuation-v2",
+    "drive_target": "mr3-drive-target-v1",
+    "drive_target_consumed": "mr3-drive-target-consumed-v1",
+    "drive_phase": "exact epoch/robot/guardseq/sourceclock/target; actual receivedWorldclock==pausedboundary before every positive task/cleanup20tick request",
+    "settled_turn": "mr3-settled-turn-v1",
+    "information_selection": "latest received causal odometry at state clock; trace mr3-information-state-audit-v1",
+    "controlled_execution": "mr3-controlled-execution-phase-v1",
+    "controlled_state_period_sec": 0.02,
+    "noncontrolled_state_period_sec": 0.1,
+    "zero_stop": "permanent phase_kind=stop; ready=false; only zero; dedicated status; never overwrite normal",
+    "command_linear_limit_mps": 0.2,
+    "nav2_primary_controller": "dwb_core::DWBLocalPlanner",
+    "nav2_wrapper": "nav2_rotation_shim_controller::RotationShimController",
+    "nav2_wrapper_profile": "mr3-nav2-shim-dwb-020-v1",
+    "explicit_linear_command_accel_mps2": 0.5,
+    "explicit_angular_command_accel_radps2": 3.2,
+    "full_model_failfast": "option-c: typed guard model-invalid negative -> infrastructure attempt FAIL -> original permanent-zero cleanup/real storage, no synthetic task terminal or reward rescue"
+  },
+  "revision_reasons": [
+    "v7 tagged target storage/ACK-before-advance and driver/body audits retained their original evidence; interface failed received movement of tb1/tb2 and angular stimulus coverage, so terminal/reset/deadline were skipped",
+    "fix the measured pure-turn deadlock using a declared conditional settled-turn model with persistent own zero segment and reserved drift; no change to task95/300/participation/contact/body separation or robot physics",
+    "external v3 fixture32s retains the first outward GOAL/10-13s cancellation, seeks received-goal opposite turn stimulus at13-15s, and adds28-32s cancellation; no native success is inferred from candidate or synthetic checks",
+    "v8 interface passed all declared mandatory checks; terminal first episode failed at+0.06s because received tb3 TF source age.520s crossed unchanged.500s limit before same-clock fresh received bundle callback. Reset/deadline skipped; all originals and strict native closure retained.",
+    "v9 selects latest actually received causal odometry at each information clock and keeps future inputs pending; diagnostic ingress/selection ledger will distinguish actual selection from skip/cache hypotheses. Existing native v8 evidence did not record hub raw ingress and does not prove the specific maxstamp skip cause.",
+    "v9 actual producer ingress/selection ledger proves timer selected old TF before same-clock late fresh TF and paused10Hz starvation. V10 adds explicit20ms state/peer/guard/storage phase, permanent independent zero-stop and invalid-startup orderly closure; original freshness/body/task gates retained.",
+    "v10 actual native peer takeover ACK was published but offeredVOLATILE/requestedTRANSIENT_LOCAL mismatch made worker timeout; invalid pre-release adapter early return blocked real exploration_stopped and ordered closure. V11 corrects concrete QoS/stop wiring; unchanged task/source/body/reward/physical math and full matrix required.",
+    "V11 actual interface native32, all independent drive/information/peer/control/input/angular/physical/settled/FIFO/closure gates PASS, original full FAIL retained because immutable W7+contact readiness consumer only recognizes old reset marker. V12 changes consumers only: exact new protocol composite readiness evidence plus explicit old prewarm ACK subpredicate; all ROS/native/task/body/source gates unchanged; new freeze complete matrix required.",
+    "V12 new same-freeze interface and terminal passed, but reset had genuine per-episode received activity failures; full raw DWB late passive corridor diagnostics support a general path-heading alignment limitation, not unique old open-case attribution. V12 originals/FAIL/deadlineSKIP remain intact; no same-freeze retry credit.",
+    "V13 proposes existing installed RotationShim + same DWB critics, command.20, explicit.5/3.2 slew, directed numerical helper and explicit full-model failfast-c. No safety/task/participation gate reduced; native execution remains unverified until complete new matrix.",
+    "V13 first GetParameters response failed exact rmw response-reader matching timeout; proposed only nine exact RELIABLE response writer max_blocking_time1s, client30s unchanged; new freeze required and sufficiency remains unproven."
+  ],
+  "physical_response_criteria": {
+    "consumer": "independent stdlib consumer; no production geometry imports",
+    "meaningful_prior_motion": {
+      "nonzero_linear_output_segment_seconds": 0.1,
+      "recent_measured_planar_norm_min_mps": 0.05,
+      "odom_age_max_seconds": 0.1
+    },
+    "sampled_rest": {
+      "planar_norm_max_mps": 0.01,
+      "consecutive_source_samples": 3
+    },
+    "bounds": {
+      "elapsed_to_rest_seconds": 0.78,
+      "observed_path_to_rest_m": 0.144
+    },
+    "event_families": {
+      "A": "final cmd_vel linear zero from meaningful preceding output; hard-zero response",
+      "B": "actual native_cancel call attempt, corroborated by cancel response/CANCELED terminal; cancel→smoother→actuator total response, not a hard-zero latency proof"
+    },
+    "limits": [
+      "interrupted stop intent/no fresh rest samples yields no evidence credit",
+      "report observed speed range; finite samples do not prove continuous upper bounds",
+      "no meaningful segments means stopping bound remains unverified"
+    ],
+    "matrix_coverage": {
+      "all_8_reset_episodes": "all raw source integrity, speed/chord/angular bounds, every observed meaningful stop bound and strict closure must pass",
+      "each_robot_across_same_freeze_reset_matrix": "at least one credited meaningful A or B response per tb1/tb2/tb3 across the eight episodes",
+      "per_episode_missing_stop": "report missing; do not relabel the strict per-episode physical-completeness result",
+      "excluded_from_response_pool": [
+        "interface",
+        "terminal",
+        "deadline"
+      ],
+      "independent_per_episode_motion_requirement": "each robot received path >.05m and native accepted goal remains mandatory in every reset episode"
+    },
+    "matrix_consumer": {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v8/independent/mr3_independent_physics_matrix_v8.py",
+      "sha256": "b89403fdec92e81fab52ea4eae3ffd6dd35f4674132128b7c3f4cacbd5b70d5d"
+    },
+    "raw_per_episode_consumer": {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v3/independent/mr3_independent_physics_review.py",
+      "sha256": "2516e394f60eac5dd24fd66b51c4c48fc37245090eb1626ebe1c7a3a23f8bafb"
+    },
+    "matrix_eligibility": "v3/32-step same-freeze exact eight episodes, raw one reset plus32 nonterminal step records ending external_sampler_limit; original physical/closure/meaningful-stop pool unchanged"
+  },
+  "capacity_scope": "Explicit v2(20),v3(32),v4(32) engineering workloads are ineligible for historical P1C capacity credit; legacy dispatch and oldV2/V3 behavior unchanged.",
+  "angular_interface_criteria": {
+    "consumer": "independent stdlib, no production imports",
+    "raw_sources": "task release through final physical boundary; exact int sec/nsec; all three own odometry streams",
+    "integrity": "same-source dedupe only if complete raw payload identical; reject conflict, backwards source, frame change; first/last and internal source gaps<=0.10s",
+    "bounds": {
+      "full_angular_norm_radps": 1.2,
+      "sampled_vector_delta_omega_per_source_delta_time_radps2": 7
+    },
+    "coverage": "each robot at least one same-sign |wz|>=0.1 segment of >=3 consecutive fresh source samples; aggregate positive and negative; at least one robot both signs; stop/restart bidirectional coverage, not direct maximum-speed reversal proof",
+    "missing": "FAIL, never impute samples or use terminal/deadline motion credit"
+  },
+  "angular_reset_criteria": {
+    "consumer": "same immutable angular interface consumer SHA 7a472ba7efdd55addc710b98c66c89feff7f5092f214f76fd76cd4ca526343d0",
+    "all_eight_reset_episodes": "sampled_bounds_passed must be true for every episode; source integrity/full-vector norm<=1.2/vector difference<=7; no stimulus sign-coverage requirement in reset",
+    "coverage_scope": "per-episode angular stimulus_coverage_passed/missing retained unchanged; only interface requires full coverage",
+    "comparison": "finite sampled response evidence; not a continuous-time dynamics theorem",
+    "matrix_consumer": {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v8/independent/mr3_independent_angular_reset_matrix_v8.py",
+      "sha256": "83f1cabcebda11d431f30e4a752bf87534864f344f7c48755015fbd401f6fee4"
+    },
+    "raw_per_episode_consumer": {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v4/independent/mr3_independent_angular_interface_v1.py",
+      "sha256": "7a472ba7efdd55addc710b98c66c89feff7f5092f214f76fd76cd4ca526343d0"
+    },
+    "exact_workload": "v3/32-step, two workers, four scheduled scenes per worker, one reset plus32 actual step records; old20/v2 and mixed workloads rejected; original sampled bounds unchanged"
+  },
+  "independent_source_bindings": [
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v4/independent/mr3_actual_nav2_parameters_v4.py",
+      "sha256": "fe0a91eec1aaf6d45bc3aedd4de9223b53e77721be878136a96d02ef1bd5c0ae"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v4/independent/mr3_actual_nav2_parameters_v4_ros_cpu_test.py",
+      "sha256": "00c67eb9a90ac7b438315254c407d0c163c39b4838f98b949cd0eeb48e7186df"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v4/independent/mr3_actual_nav2_parameters_v4_tests.py",
+      "sha256": "23f0be02403b9af5e6a9ff4422470c24b73a848807bb2e37a716b26364b1b54c"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v4/independent/mr3_independent_angular_interface_v1.py",
+      "sha256": "7a472ba7efdd55addc710b98c66c89feff7f5092f214f76fd76cd4ca526343d0"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v4/independent/mr3_independent_angular_interface_v1_tests.py",
+      "sha256": "474735b1c8364787124a68eed01c72df93b4131b6ea4a89e6a48263d9e97b289"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v4/independent/mr3_independent_angular_reset_matrix_v1.py",
+      "sha256": "6f4b0c3ce7b3cd2eba18c9e264c6d0cdc980ab486b5d235f1f2b06f7a8a774c1"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v4/independent/mr3_independent_angular_reset_matrix_v1_tests.py",
+      "sha256": "051a7c46ff62ab6a55746bd0affea65accdf1eda1a77398e6f93ec3cda26f691"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v4/independent/mr3_independent_physics_matrix_v4.py",
+      "sha256": "c6dcad54743a2d04ce64dd3f4feb329b1a4e3116b384f9269db342df4f6fa655"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v4/independent/mr3_independent_physics_matrix_v4_tests.py",
+      "sha256": "4082ca7e8149881ee94ccc99cce2d2262563232efd801bb9f4243b35dcfa6988"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v4/independent/mr3_p2a0_v4_independent_input_episode_review_v1.py",
+      "sha256": "ab102c02bff6b3dbd916e07552ea4250b0bf2f935da74f97d21ed5f766261c05"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v7/independent/mr3_independent_drive_trace_v3.py",
+      "sha256": "dc10bf03cde4d9b7b8aad9d5f7e5524097bc43bd4055ef21a97638c0374048e9"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v7/independent/mr3_independent_drive_trace_v3_tests.py",
+      "sha256": "0b393e5b0867094276230d6bdc13f650e9065c2cfc84bbb1507daf876699c07d"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v7/independent/mr3_p2a0_v7_buildproof_preflight.py",
+      "sha256": "c7f4ed485927234bfc2e6c50ea947354fc7046e1c7af2b0f9ab9872f58aac1fd"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v7/independent/mr3_p2a0_v7_launch_stage.py",
+      "sha256": "69eef206286376fb2a3ff2d19e42e6cabc9751586c5ed4cc4bee0f12106a1410"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v7/independent/mr3_p2a0_v7_capture_check.py",
+      "sha256": "b466a96b309f65f9aa31fa74f7f1b3e74d71db3a6ffc7c0bc952eba90cb8fbd4"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v7/independent/mr3_readonly_v7_drive_process_monitor.py",
+      "sha256": "52dbacbed2d7baad1761fcb54dc33a58dc8398cbc91e5de9500026d6f351aae9"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v7/independent/mr3_independent_drive_trace_v4.py",
+      "sha256": "6aa1a8409e031f225f0acb3a61ab2c9ec16a156cc85a430fd7069bdea411f35d"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v7/independent/mr3_independent_drive_trace_v4_tests.py",
+      "sha256": "82422414688e39c418cb0471b35274b74311b1e6cbbdcaf2cc663c9014bc2e73"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v8/independent/mr3_p2a0_v8_buildproof_preflight.py",
+      "sha256": "1f687c8afbf225b614b2ea69cba797cb731a715c0d2bad49768da1933949ca1f"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v8/independent/mr3_p2a0_v8_launch_stage.py",
+      "sha256": "7cac8843ed51c3867378898d3c281cf083541525167b14fdcf70175a03b5a253"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v8/independent/mr3_p2a0_v8_capture_check.py",
+      "sha256": "a33a7f5663c847e436b46df14d91fbe13b2ba937ad7c59717a1eac5c8ee4939c"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v8/independent/mr3_independent_settled_turn_v3.py",
+      "sha256": "c43fadbb74bef948f14c39e74fefb64fc9103b45191f593b8c089a63127b0a69"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v8/independent/mr3_independent_settled_turn_v3_tests.py",
+      "sha256": "671ae1944d537b0479f84f0c00c78b5ae5c5a4c1fcadc43f33addd41e52cd7f6"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v8/independent/mr3_p2a0_v8_plan_launch_tests_v1.py",
+      "sha256": "e5592dbad60667474bd6c1b7fdf6039bf060841415a55e81226b3dc6e509818d"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v8/independent/mr3_independent_angular_reset_matrix_v8.py",
+      "sha256": "83f1cabcebda11d431f30e4a752bf87534864f344f7c48755015fbd401f6fee4"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v8/independent/mr3_independent_physics_matrix_v8.py",
+      "sha256": "b89403fdec92e81fab52ea4eae3ffd6dd35f4674132128b7c3f4cacbd5b70d5d"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v8/independent/mr3_independent_reset_wrappers_v8_tests.py",
+      "sha256": "2bec0f8c75cac408eb6e3587b6f709af6b46b19d7039981802ee4df6c1fbbf0f"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v9/independent/mr3_p2a0_v9_buildproof_preflight.py",
+      "sha256": "627ba3a3be8adf681dc669d17d86ff9043ffb0fc8429eab45015a1f3676c13c9"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v9/independent/mr3_p2a0_v9_launch_stage.py",
+      "sha256": "518a9308040ec21ff8548147762cb45521e5c00dde63e8c1b4e43df8442a9a66"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v9/independent/mr3_p2a0_v9_plan_launcher_tests_v1.py",
+      "sha256": "91ede18c0262439cd9ecd239da19669ae75b4768ebea001d2aacb5469cd72cb0"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v9/independent/mr3_p2a0_v9_contract_checks.py",
+      "sha256": "7d9c65dc6173b3dab38e80cc36b4a81f84d647cebe878e252724ea0c2e15badb"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v9/independent/mr3_independent_information_v1.py",
+      "sha256": "ba3e89fa6feda9406f984310adccf17c2f0638644fd0d26f0c2e9040ec0e7653"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v9/independent/mr3_independent_information_v1_tests.py",
+      "sha256": "bfd8838318f5d343f469619d53524882e917b3e975418fa5cf2c834e8aa70d93"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_independent_control_phase_v1.py",
+      "sha256": "04cd7d079c16004b20320868943bcdac899da7646304d30cbad0804d1a6ee8d3"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_independent_control_phase_v1_tests.py",
+      "sha256": "9d89029457a7975d22dd78e8963a3b92ce1a16352d9db9355c995740a5e6eed3"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_independent_drive_trace_v5.py",
+      "sha256": "1010c0192233c2c649924bda2709479c991b18b34a753bda265779cf5bbf57a5"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_independent_drive_trace_v5_tests.py",
+      "sha256": "1bfdf83d155d3306915ecbd24249453af5c31811abd36d3cf3da6644f02116a4"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_independent_information_v2.py",
+      "sha256": "f73600551a68e833a4c0a2063b12b75038a748466c838c8583c00605a34b948b"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_independent_information_v2_tests.py",
+      "sha256": "3981293302be2fc761371592408fe60d42a1a1c6f7695bfd908da79ec337621f"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_p2a0_v10_audit_stage.py",
+      "sha256": "136582b28cb2cd8168f70a090b1310c415ea3df7ecdf42d3dcac94754af72e4a"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_p2a0_v10_buildproof_preflight.py",
+      "sha256": "be0cfcd4e35a2c4270599467595ffc135fecc2a345ef1e4c8476e051c5f2947a"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_p2a0_v10_contract_checks.py",
+      "sha256": "238ea18998f0ee50da46c031426c555adcfe5836456f90db58ffb36912fd5843"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_p2a0_v10_launch_stage.py",
+      "sha256": "cd6e725d422fb6cd7ea090e94cb610c18b13f8d43a1e483abb919177d39a7e8b"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_p2a0_v10_plan_launcher_tests_v1.py",
+      "sha256": "e27dded20d39dfab77fcec64bb159fdb29cdcf2453a72f33e0a1585c1ae9b9f4"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_p2a0_v10_runtime_import_check.py",
+      "sha256": "5d2e0bc48fa872ca2194eb85a9636fe9c820c78a4f6a0a87c5c2bd235c346324"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_readonly_v10_body_live.py",
+      "sha256": "7981bd287c02a4f22eea93947bd4ef665271204593363d30ed4115dcd753dd77"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_readonly_v10_drive_process_monitor.py",
+      "sha256": "7126969f615d768c5b8fe18039ffd5e0f9d090941e7a857e75b2c44436fb3d13"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_readonly_v10_process_sampler.py",
+      "sha256": "f4b9d29af9d3300fe380164a413e245e8a5a8ed7eb19b5d99231c09aaaa7c10f"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_v10_fifo_phase_review.py",
+      "sha256": "232d4240aa546281f9ebf7e48271e8d581b897662a9fc0932fbe346c4795f945"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_v10_multiepoch_closure_binary_review_v1.py",
+      "sha256": "2be28ca04d9ccfb909c9b3b5a4caea478b4f78becb2f3f1ee310267bf277f174"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_motion.py",
+      "sha256": "5254fcc83ea9c36fb38cd2b300b77390d23d6633be8c04a1f4a6915f4d893359"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_preparation.py",
+      "sha256": "43488c1698469ced58d2097cfccac7e262cd09f7503661a11f9c2b06213ec408"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_ppo.py",
+      "sha256": "3883ea62eded4860f0c300d125d98ef8728e1546cc4e91d3cbeee15a8aa76483"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_controlled_physics.py",
+      "sha256": "3080521c368c5dc9b47c74337ea200945c80c125231146ac39cb90a71080dc3e"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_motion.py",
+      "sha256": "a6b580170046b3d9d47244ec79d3633d43154fdef4abea074231edbf40eddd6f"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_preparation.py",
+      "sha256": "6655f6dc763d9609e35605321756fb40a5e067ca7adecf70506de84c8c51bfe4"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_preparation_execution.py",
+      "sha256": "044ce8582ecac19f6693012924e95bbbef4716e5550a772878aa60b94981edf1"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_ppo.py",
+      "sha256": "ef3d11cb592d70ed1409f0d3e054c658165ebc63226387f4a3b76556a8d0cdec"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_controlled_physics.py",
+      "sha256": "3ab008def6da4c119da38b4d67a8baed4b3a9ad5ed5e82e4f6e9d5bae950022b"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v11/independent/mr3_independent_control_phase_v2.py",
+      "sha256": "3089ba774055b53e4c64e4e3e601398535554bc0bd15eb5d952bcfdf027b9a4b"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v11/independent/mr3_independent_control_phase_v2_tests.py",
+      "sha256": "367ea1809ca55a14a02f52be5bfe00192e38a381964906a936528a2dca2d77ca"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v11/independent/mr3_p2a0_v11_audit_stage.py",
+      "sha256": "84d59b746695d1223ce59a6470a56af0966c52d2c14dc126428f81e18c8e3acb"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v11/independent/mr3_p2a0_v11_buildproof_preflight.py",
+      "sha256": "2a6cb1d75411e2a921f257d1bf34a4c5cb17162ef3ae5ffa0a71891167cb3031"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v11/independent/mr3_p2a0_v11_contract_checks.py",
+      "sha256": "21d849c17fb461f17927c3e9be8ff260143eb0464383c287540582069989fcd5"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v11/independent/mr3_p2a0_v11_launch_stage.py",
+      "sha256": "ac6fdcaf015b9629ce79535352d5ec896ffcf967d963d857e8698bf9922739ac"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v11/independent/mr3_p2a0_v11_plan_launcher_tests_v1.py",
+      "sha256": "f49fdd5158a25447ef4a6ada2fee1dc52b680d64b5198b037152085e3279cd81"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v11/independent/mr3_v11_multiepoch_closure_binary_review_v1.py",
+      "sha256": "fedd6034db772b805f40ccb349216ceedd9f677249cf490238f8ea52dd20cf5b"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_protocol.py",
+      "sha256": "8bc1ee209761be2108a3d1d0248f2d0ab40b9fc68539ecedffec11cb81fd1647"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v12/independent/mr3_p2a0_v12_audit_stage.py",
+      "sha256": "dfa208cc1e71bdd5d3ccf51d7e4077fbc590b66be1563379dd1469eb433f2620"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v12/independent/mr3_p2a0_v12_audit_stage_tests_v1.py",
+      "sha256": "efe6bd04ed6d25e44b160096cff0261a6447bc66f31418521e240f98a8e91fcc"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v12/independent/mr3_p2a0_v12_buildproof_preflight.py",
+      "sha256": "b14e179241a992fcb8dab7de607694d430fc3ecb86db043472fde61df20d62ac"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v12/independent/mr3_p2a0_v12_contract_checks.py",
+      "sha256": "c68ff0b822ec679390e411b7c666dd01177c4d6dda824a20f6fcd4317ee04a86"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v12/independent/mr3_p2a0_v12_launch_stage.py",
+      "sha256": "e52d8615db014de939cdf16d88215d876333cfefa706692fccfc71d2f282a196"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v12/independent/mr3_p2a0_v12_plan_launcher_tests_v1.py",
+      "sha256": "aa18342665a1f9eb1f2866017032f4521815a8d0f3049407f65f37f823ee7c5e"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v12/independent/mr3_v12_multiepoch_closure_binary_review_v1.py",
+      "sha256": "4299ec25773b185b4e581fcef2b03bb7451b453d1ebbc209b77a80466edabeca"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_controlled_readiness.py",
+      "sha256": "cb2940797cfa079e48d41caf04cd1855e4cf92afa9d96a71ade74f3bd5896048"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/binary/mr3_p2a0_v13_drive_build_receipt_v1.json",
+      "sha256": "85484c6d7a32f793c943b7d9778067cd77ef99b4220f3aba50aa38021675f474"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_actual_nav2_parameters_v13.py",
+      "sha256": "9eb963457a8dc8297e4686004ea08c7a06e1e0e9ede7cd795ba9505da9d8f701"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_actual_nav2_parameters_v13_tests.py",
+      "sha256": "23b56be1dd514518732a0787af7bd1ea986ffac5a6783be0862365593de019dd"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_independent_drive_trace_v6.py",
+      "sha256": "a1885f8f4f751e5b1a4ef5d48976dcbb3cbfceeb1384cb5310340e98d543ed54"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_independent_drive_trace_v6_tests.py",
+      "sha256": "829af60170757ffd7d89ef748c0239ec043aaba85dacc35e0874565049b1ebd3"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_p2a0_v13_audit_stage.py",
+      "sha256": "d43d4f68ac44781e03f36c6714aede25b6dfdb1a1d78daba5a189f1d6e11da10"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_p2a0_v13_buildproof_preflight.py",
+      "sha256": "9eacf18ad62ba51234f2ea962fce214634f041b89cb190294eac096a9d1cb4a6"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_p2a0_v13_launch_stage.py",
+      "sha256": "3852d6aae2a1beba8c4034a095caf36e97a763f07ab545a351ce430520156eb6"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_readonly_v13_drive_shim_process_monitor_v2.py",
+      "sha256": "45d33e163848da42a73c41f67a8f4c0cd27d36d19ffe645b62072e42994aaae8"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_readonly_v13_drive_shim_process_monitor_v2_tests.py",
+      "sha256": "f21ebf1c6b742c8c0ad8dce155fd9c91f8fe992538de3aa7828a228131a8ce9a"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_v13_multiepoch_closure_binary_review_v1.py",
+      "sha256": "e2ac6796eabe6148115d7de55b584b08cebb6516dcec7ba8c15a71d45022ee7e"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_v13_shim_binding_v1.json",
+      "sha256": "cae1d33c858609dfccb249231645bc4843856054031f53168f52fbd244f728a3"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_v13_shim_mapping_review_v1.py",
+      "sha256": "775a5f012e6098f7083735cd2064e1963d855a9c5b5356af99eebd21e4737282"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_v13_shim_mapping_review_v1_tests.py",
+      "sha256": "c319e031f88f1cdbc54b824b5b5e57668f009be54c3857571f589c73cd881bb2"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_v13_upstream_rotation_shim_1_1_20.cpp",
+      "sha256": "e06b6c6a64853334b20398f750c517018c17a2017bec864c626726fcea261288"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_p2a0_v13_plan_launcher_tests_v1.py",
+      "sha256": "95ce984ec66dbebac76fd1f54758b0be1e91e577aaf208c6eac3fb84d104c5e6"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_p2a0_v13_audit_stage_tests_v1.py",
+      "sha256": "a64a9b9af991e273dca5ac3f7ba170e5fc8e6b3c7d43eb3e3afbefa5d42ddc85"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_p2a0_v13_cross_stage_mapping_monitor_v1.py",
+      "sha256": "e44bfc85d7c39257bd84f7c0037ac10b10ef59959e4d6856386d386ae2b25fc2"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_p2a0_v13_cross_stage_mapping_monitor_v1_tests.py",
+      "sha256": "61eb1b57af7a0723c1d9b6f0c1d99d01a0d395286489586f973048710cf4165c"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_v13_nested_closure_read_tests_v1.py",
+      "sha256": "ca598a748e8e55c9644f740015b8b2553b2dfedd14d5c180b808f41cc87f4776"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v14/independent/mr3_p2a0_v14_launch_stage.py",
+      "sha256": "1a712e6a435baa3576426533d182d6790009adaad7038b5c0ad6ba588abdd201"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v14/independent/mr3_p2a0_v14_audit_stage.py",
+      "sha256": "11b4754c0687e4e41c025d76c344e4c747ca010a53769bd1fb32fb536d997644"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v14/independent/mr3_p2a0_v14_buildproof_preflight.py",
+      "sha256": "8abcc7e2f83c413dd8f1242a3f46587d8fb97fe3b5995bb1542426aa5ae3b1d1"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v14/independent/mr3_p2a0_v14_cross_stage_mapping_monitor_v1.py",
+      "sha256": "e2a9a4a2b3da5be79f36dc6801bf806b61ba015a06ce47ac0a804c2f61e65436"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v14/independent/mr3_v14_multiepoch_closure_binary_review_v1.py",
+      "sha256": "06877d3c2ff77b80ad6b06ba06ab2b781ad5cf016ecd1d794625c356f13e36ca"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v14/independent/mr3_p2a0_v14_plan_launcher_tests_v1.py",
+      "sha256": "e3ed4220a1a28dca5ca092273bf46c86e15eedff666e8572d754153626966d45"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v14/independent/mr3_p2a0_v14_audit_stage_tests_v1.py",
+      "sha256": "35e99a267a7ad895ea6d268866cceff72d54f01144dd0795fc001c45f3eb9e55"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v14/independent/mr3_v14_nested_closure_read_tests_v1.py",
+      "sha256": "05c600b0a07a0a8a9426062caf8dde6940b220dbc266ded5a625d1bb4a631f41"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v14/independent/mr3_v14_shim_path_adapter_tests_v1.py",
+      "sha256": "d586e25422135466cb5bea4da61c447299df92a8c244b5c2100482df9e9afccd"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v15/independent/mr3_p2a0_v15_audit_stage.py",
+      "sha256": "a6fabc3b9dce82854b98b0dd8ae5871e877dcd169f457f50eb51f235dc5da2d2"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v15/independent/mr3_p2a0_v15_audit_stage_tests_v1.py",
+      "sha256": "f5dc12175f92fcf3c854ba3b423821403e50d038beda34acae11287f81daae07"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v15/independent/mr3_p2a0_v15_buildproof_preflight.py",
+      "sha256": "bd933c5549b47fbe48fe4d3d6c71154faa1533fc8cbbab177983d7923444f17c"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v15/independent/mr3_p2a0_v15_cross_stage_mapping_monitor_v1.py",
+      "sha256": "491dae26b32608717ba3bb0e9457af4b331ef3aaac199762dfb3cafe8a00c366"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v15/independent/mr3_p2a0_v15_launch_stage.py",
+      "sha256": "0b75d64b01c226296522a278e9714f09ae482a1ca10f57c5e44b1acba378fd46"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v15/independent/mr3_p2a0_v15_plan_launcher_tests_v1.py",
+      "sha256": "3a890945646575cf9c9642f95300170684d5c8101dbc422cb9ec7ccbbf09dd26"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v15/independent/mr3_v15_multiepoch_closure_binary_review_v1.py",
+      "sha256": "0a9974888474b78987469bca2cdefcf8c930fd4cf1f38d68421a67cdd870cca0"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v15/independent/mr3_v15_nested_closure_read_tests_v1.py",
+      "sha256": "7920b3799076a244b0bedcf6a692690432d4cc9c30b3b3ae01e7dc004e622e1a"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v15/independent/mr3_v15_shim_path_adapter_tests_v1.py",
+      "sha256": "e5e33b394ed508555b01ebbf1a6280a1dbe965e2d567e83102238f869047bcea"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/benchmark.py",
+      "sha256": "b720f6417bcdf216b5bfd77b0654b3277d1a0868e1dd1c8b9f9eb2e991977e1c"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_preparation_comparison.py",
+      "sha256": "bca4c606c337e82ef67cd13c82ae33bc8ccb83b658288df8c1e9ebbf5dc3035b"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_benchmark_stimulus_v4.py",
+      "sha256": "8e29203f013dc409553941faeeca4e7e02fd73230c68cea33803859d94809569"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_navigation_peer_geometry.py",
+      "sha256": "f4eb9dfec347060f095597853686d2b498977a4c03d75a1490db5d88ca751c46"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v15/independent/mr3_independent_angular_reset_matrix_v15.py",
+      "sha256": "73128aed50763f6a50426bc2b7e0ce98bce6bfa6d8db3a560d265be5a6df8ae2"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v15/independent/mr3_independent_physics_matrix_v15.py",
+      "sha256": "fa988a29465f928eb425f626f246b85f36ddee5bc168c24ffce9d125e7a51754"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v15/independent/mr3_independent_reset_wrappers_v15_tests.py",
+      "sha256": "df161f934a05855133d8529f3c67ca12dab20e8692873b94283827b3aec4b947"
+    }
+  ],
+  "transport_readback_scope": "only fixed native transport keys, validated canonical profile path/SHA and exact Git bytes; None keys removed before child start; same domain and paused clock; read-only nine-node GetParameters",
+  "drive_contract": {
+    "protocol": "mr3-drive-actuation-v2",
+    "implementation": "locally namespaced vendor of gazebo_plugins3.9.0, paired common-fraction update from measured current joint rim speeds; original odometry preserved",
+    "algorithm": "Directed interval bounds on maxa*dt and largest pair error; common alpha always rounded inward; measured-current joint feedback and exact Fraction wheel budgets retained. Reviewed actual source/build and offline CPU gates passed; actual clean-pushed exact40 preflight and complete same-freeze native matrix remain mandatory.",
+    "unchanged_physics": {
+      "wheel_acceleration_mps2": 1,
+      "wheel_torque_nm": 20,
+      "track_m": 0.287,
+      "wheel_diameter_m": 0.066,
+      "update_rate_hz": 30,
+      "odom_source": 1
+    },
+    "audit": "three drive_tbN.jsonl/effectiveSDF + exact drive_targets.jsonl/drive_phase_worker.jsonl/drive_topology.json; four compiled sources/actual library proof",
+    "consumption_scope": "adapter tagged target identity; receipt proves native target storage before physical advance, not30Hz execution or physical response",
+    "native_gate": "original rawbody planar.30/angular1.2/accel7, peer.50/contact18/activity/closure/stop criteria all retained",
+    "model_limit": "joint feedback/setpoint properties do not prove real body tracking, slip or continuous dynamics; native sample and stop gates remain required",
+    "terminal_coverage_limit": "only explicitly marked zero-tail terminal may use a fresh pre-release actuation anchor <=0.1s; sampled_response_credit remains false; all other steps require post-release actuation",
+    "first_prerelease_interval": "first actuation only: valid Load/config/reset bracket 0<=source_ns-dt_ns<=config/reset_ns<=source_ns; tasks and all later actuation intervals retain strict30Hz bound and exact successor dt",
+    "command_mode": "tagged for adapter only; baseline Twist mode explicit false, no untagged Twist actuator subscription in adapter",
+    "target_ack": "schema mr3-drive-target-consumed-v1; same epoch/robot/guardseq/source_clock/value; actual_world_clock equals paused boundary before physical send",
+    "full_latency_bound_seconds": 0.16,
+    "independent_consumer": {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_independent_drive_trace_v6.py",
+      "sha256": "a1885f8f4f751e5b1a4ef5d48976dcbb3cbfceeb1384cb5310340e98d543ed54"
+    },
+    "binary_build_receipt": {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/binary/mr3_p2a0_v13_drive_build_receipt_v1.json",
+      "sha256": "85484c6d7a32f793c943b7d9778067cd77ef99b4220f3aba50aa38021675f474",
+      "status": "reviewed_actual_rebuild_no_native_credit"
+    },
+    "release_timestamp_phase": "only zero actuation at release, strictly before raw initial target storage matching reset.initial_drive_receipts, old localcmdseq and guard.started=False, is prerelease anchor with no physical response credit; all initial-storage successors and sourceclock>release retain task160ms; command_received bounds unchanged",
+    "prewarm_command_scope": "only zero/before_release guard target received strictly before raw initial storage command line/localcmdseq, receiveclock<=release, can be prewarm; complete identities/monotonic/math kept, no taskinput/response credit; initial storage and all successors/clock>release retain strict160ms",
+    "stop_interface": "v5 extends immutable v4 only for explicitly evidenced permanent zero-stop same-clock higher sequence; no normal resume, fake self receipt, storage or physical credit; all original v4 math/160ms/source/library/body gates retained"
+  },
+  "wall_budget_basis": {
+    "predeclared_before_v8_native": true,
+    "v7_interface_observed_release_to_20s_wall_seconds": 372.526576771,
+    "naive_300s_sim_progress_extrapolation_wall_seconds": 5587.898651565,
+    "interpretation": "diagnostic extrapolation motivates deadline ceiling8000; not predicted completion or native evidence",
+    "scope": "v10 engineering matrix only; pilot balance unchanged; explicit paused DDS phases may change throughput; old v8 figures are budget rationale only",
+    "stage_ceilings_sum_seconds": 18000,
+    "enforcement": "launcher reserves stage ceiling from remaining total before admission, records actual finite stage duration, fails budget excess and blocks later stages; no timeout signals, retry or hidden budget reset",
+    "v8_interface_total_launcher_wall_seconds": 625.2535761622712,
+    "v8_interface_submitted_steps": 32,
+    "v8_interface_simple_300step_totalwall_extrapolation_seconds": 5861.7522765212925,
+    "v8_terminal_observed_failed_stage_wall_seconds": 336.1551110469736,
+    "v8_scope": "Historical d41485df source; interface wall/runtime observed, terminal unexpected first-episode stale-state FAIL. Simple extrapolation is budget rationale only, not predicted v10 completion or native credit;8000 deadline ceiling and18000total unchanged."
+  },
+  "api_budget_breakdown": {
+    "interface": {
+      "submitted_decisions": 32,
+      "resets": 1,
+      "max_api_records": 33
+    },
+    "terminal": {
+      "submitted_decisions": 8,
+      "resets": 2,
+      "max_api_records": 10
+    },
+    "reset": {
+      "submitted_decisions": 256,
+      "resets": 8,
+      "max_api_records": 264
+    },
+    "deadline": {
+      "submitted_decisions": 300,
+      "resets": 1,
+      "max_api_records": 301
+    },
+    "total_submitted_decisions": 596,
+    "total_resets": 12,
+    "total_api_records": 608,
+    "scope": "API step calls counted conservatively, including terminal reused zero-tail calls; no optimizer or learning samples"
+  },
+  "external_probe_v3": {
+    "version": "mr3-p2a0-outward-cancel-v3",
+    "steps_per_episode": 32,
+    "timeline_seconds": [
+      {
+        "interval": "[0,1.5)",
+        "action": "received legal GOAL, outward ranking"
+      },
+      {
+        "interval": "[1.5,10)",
+        "action": "KEEP"
+      },
+      {
+        "interval": "[10,13)",
+        "action": "WAIT/cancel"
+      },
+      {
+        "interval": "[13,15)",
+        "action": "received legal GOAL, opposite first measured sign opportunity then outward ranking"
+      },
+      {
+        "interval": "[15,28)",
+        "action": "KEEP"
+      },
+      {
+        "interval": "[28,32)",
+        "action": "WAIT/cancel"
+      }
+    ],
+    "reference": "first fresh finite received |wz|>=.1 at elapsed<10s per robot; immutable per episode; source/snapshot bindings in benchmark diagnostics",
+    "legacy": "v2 explicit/default20s fixture and legacy default long-path stress remain byte-behavior compatible; v3 is an opt-in external engineering fixture",
+    "limits": "candidate turn-bearing preference does not prove actual sign reversal, safety or execution; fixed raw consumers decide native coverage; no fabricated GOAL, coordinates, seeds, truth or production fallback"
+  },
+  "settled_turn_criteria": {
+    "contract": "mr3-settled-turn-v1",
+    "model": "explicit conditional delivered-estimate model; throughout each active zero segment true continuous own planar norm<=.01m/s and whole centre path<=.0078m, never reset by repeated grants; not a theorem derived from finite samples",
+    "history": "unique task release bound to reset transition; zero eligibility restarts from max(existing zero start, task release); own zero publications>=.94s plus three later fresh rest samples; independent actual tagged zero storage>=.78s and existing full160ms driver consumer remain required; duplicate/late active release rejected",
+    "required_scope": "every actual settled-turn activation/continuation in every stage; interface additionally --require-use and at least one actual activation",
+    "raw_empirical_checks": "full planar source norm<=.01 and all consecutive source chords/entire zero-segment sampled chord sum<=.0078; include every raw sample anchor.source<source<=actual nonzero target storage or final physics, including late-arriving prefix and continuation/tail observations. Samples are necessary gates, not a continuous upper bound proof",
+    "counterfactual_geometry": "independent same received raw input geometry and drift reserve; normal guard/rotation-only gates retained",
+    "consumer": {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v8/independent/mr3_independent_settled_turn_v3.py",
+      "sha256": "c43fadbb74bef948f14c39e74fefb64fc9103b45191f593b8c089a63127b0a69"
+    },
+    "cli": "/usr/bin/python3 CONSUMER EP_OR_RUN --freeze EXACT40 --output NEW_JSON [--require-use]",
+    "does_not_replace": [
+      "original physical source/body/angular/braking consumers",
+      "strict activity and raw map/input replay",
+      "tagged driver freshness/physical wheel budget/ACK-before-advance",
+      "contacts, peer centre .50m and native closure"
+    ]
+  },
+  "information_selection_audit": {
+    "status": "ready",
+    "producer_fix": "actual causal own input selection; stepped explicit20ms publish after takeover; noncontrolled original10Hz and age<=500000000ns remain",
+    "native_evidence_required": "actual hub raw ingress/causal selection/send/bundle ledger; no substitution of motion-local raw peer data for delivered state",
+    "cause_limit": "v9 native ledger directly proves timer/callback paused starvation; new chain still requires full native validation",
+    "source_freeze": "one new reviewed clean pushed V13 exact40 source, resolved by preflight; no inherited native credit",
+    "schema": "mr3-information-state-audit-v1",
+    "required_episode_file": "information_states.jsonl (or lossless selected gzip)",
+    "consumer": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_independent_information_v2.py",
+    "scope": "raw callback→causal selection→transport envelopes→actual publication calls→motion actual received bundle/decision original order; does not replace full native/body/driver/settled/physical gates; explicit takeover/normal commits/actual terminal cancellation and unchanged-watermark terminal drain; no new state publication in drain",
+    "consumer_sha256": "f73600551a68e833a4c0a2063b12b75038a748466c838c8583c00605a34b948b",
+    "tests_sha256": "3981293302be2fc761371592408fe60d42a1a1c6f7695bfd908da79ec337621f",
+    "offline_readiness": "Final frozen stdlib consumer/tests and genuine producer CPU compatibility checked before native; clean pushed source+complete same-freeze matrix still required"
+  },
+  "launcher_failure_cleanup_scope": "If orchestration/reporting fails after child spawn, wait for the same finite owned benchmark without signals/retry, preserve the exception as launchFAIL and block all later stages; this is not an active wall-time kill mechanism.",
+  "controlled_execution_audit": {
+    "status": "ready",
+    "consumer": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_independent_control_phase_v1.py",
+    "normal": "one exact clock/request/epoch state publication -> actual main/sixside callbacks -> actual obstacle publication -> actual dependencies received and guard local receipt -> three native actual storage -> evaluator -> positive physics",
+    "precontrolled": "only original pre-release1ms alignment with actual zero storage and original bounds",
+    "bootstrap_zero": "exactly one pre-release20ticks after three takeover ACKs and actual oldclock three-zero self-receipt/storage; no fresh geometry, task or safety credit; newclock normal chain before release",
+    "stop": "permanent zero-only category may increase seq at sameclock; ready=false; dedicated status does not overwrite normal; every shutdown advance still three actual zero storage",
+    "terminal_drain": "only genuine matching task_terminal permits reuse of last real state commit references without new publication/source-age wash; no LIVE advance",
+    "wall_guard_seconds": 10,
+    "consumer_sha256": "3089ba774055b53e4c64e4e3e601398535554bc0bd15eb5d952bcfdf027b9a4b",
+    "tests_sha256": "367ea1809ca55a14a02f52be5bfe00192e38a381964906a936528a2dca2d77ca",
+    "scope": "Actual callback and publication call windows with exact typed raw refs, independent original peer cloud/scan byte reconstruction, native command_received/status_publish and worker storage-before-physics; packet publication identity for identical untagged side ROS payloads is not asserted",
+    "asynchronous_stop_scope": "No normal advance/resume after worker actually processed stop or actively requested stop; all new guard outputs after its stop latch are zero. A guard-source stop still in DDS transit is not an atomic global cutoff: record overlaps diagnostically and retain original<=20ms terminal drain/full160ms driver/body gates, no zero-latency assertion.",
+    "shared_physics_dispatch": {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_controlled_physics.py",
+      "sha256": "3080521c368c5dc9b47c74337ea200945c80c125231146ac39cb90a71080dc3e",
+      "scope": "Same stdlib metadata-restricted real-zero bootstrap dispatch in engineering and policy evidence consumers; complete original raw rows passed to unchanged W7 integer/continuity/quantum math with setup-to-controlled threshold only. True task release, legacy path and policy capacity/objective unchanged; original function restored even on exception; no policy sampling or optimizer evidence."
+    },
+    "consumer_path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v11/independent/mr3_independent_control_phase_v2.py",
+    "readiness_consumer_revision": "new strict composite proof for paused-controlled-state-peer-guard-storage-v1; prewarm initialACK original predicate only via explicitly scoped read-only view; actual T0/20tick zero bootstrap/T1 state-peer-guard-native storage/seq0/release independently required; unchanged contact audit and finally restored hooks",
+    "shared_readiness_consumer": {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_controlled_physics.py",
+      "sha256": "3080521c368c5dc9b47c74337ea200945c80c125231146ac39cb90a71080dc3e",
+      "scope": "Strict protocol-restricted actual T0/bootstrap/T1 composite proof and scoped legacy prewarm ACK predicate; unchanged complete contact audit; both hooks restored even on failure."
+    }
+  },
+  "audit_orchestration": {
+    "script": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v15/independent/mr3_p2a0_v15_audit_stage.py",
+    "cli": "conda ns3gym python SCRIPT STAGE EXACT40; after actual native stage close; up to4 independent read-only subprocess auditors concurrently, rawphysical before pooledmatrix and allFIFO before closure; finally drain all futures/children; retain every original exit/output and require all mandatory receipts",
+    "reset_raw_physics_report": "The original per-episode completeness FAIL remains visible. The unchanged predeclared reset-only pooled wrapper decides matrix coverage while enforcing every raw/closure/observed eligible-response hard bound.",
+    "resource_scope": "4 auditor subprocesses bounded; native stages remain sequential; no native budget, math/gates or retry changes"
+  },
+  "historical_bindings_scope": "Original A14 plan105 remains immutable. V15 retains103 unchanged original path/SHA bindings, refreshes only current audit_ppo.py digest pins and current audit_preparation.py explicitV4 capacity qualification; appends9 versioned coordinators/tests plus7 reviewed producer/test/workload-wrapper sources. Original raw physics/angular math, mandatory receipts and historical FAILs are unchanged.",
+  "readiness": {
+    "status": "ready",
+    "freeze": null,
+    "freeze_resolution": "Mandatory post-push preflight resolves actual clean HEAD=upstream exact40 and current plan/source/binary bytes before any launch",
+    "pending_bindings": [],
+    "no_native_or_formal_authorized_by_this_template": false,
+    "scope": "Reviewed source/CPU readiness only; all four same-freeze native stages and every mandatory audit still required. No PPO/pilot/P2B/gateway."
+  },
+  "navigation_profile": {
+    "status": "ready_source_build_CPU_installed_binding_only_native_verification_required",
+    "plugin": "nav2_rotation_shim_controller::RotationShimController",
+    "primary_controller": "dwb_core::DWBLocalPlanner",
+    "angular_dist_threshold_rad": 0.5,
+    "angular_disengage_threshold_rad": 0.5,
+    "forward_sampling_distance_m": 0.3,
+    "rotate_to_heading_angular_vel_radps": 0.8,
+    "max_angular_accel_radps2": 3.2,
+    "closed_loop": true,
+    "simulate_ahead_time_sec": 1.0,
+    "rotate_to_goal_heading": false,
+    "dwb_and_smoother_linear_command_limit_mps": 0.2,
+    "dwb_and_smoother_linear_accel_mps2": 0.5,
+    "smoother_feedback": "OPEN_LOOP",
+    "smoother_frequency_hz": 20.0,
+    "critics_and_global_planner": "All original critics/scales/goalchecker/progresschecker/GridBased/BT retained",
+    "limitations": [
+      "legal goals remain only>.10m; no .30m candidate minimum; short paths may delegate DWB",
+      "sampling uses path.front and actual TF; nominal1Hz/.20 is a design scale, not a freshness proof",
+      "closed-loop Shim feasibility clamp is not a standalone absolute angular cap; final caps/body gates stay mandatory",
+      "readback alone does not prove plugin implementation use or physical progress"
+    ]
+  },
+  "full_execution_model_failfast": {
+    "status": "ready_reviewed_source_CPU_only_native_verification_required",
+    "strategy": "c",
+    "normal_order": "unchanged state -> peer -> guard/self receipt -> three native storage -> evaluator -> advance",
+    "invalid_path": "fresh latest-causal complete raw linear/angular vectors with finite typed scalar/raw consistency -> typed negative guard ACK -> sticky worker infrastructure failure -> existing abort_cleanup permanent stop/local receipt/three zero storage/strict close",
+    "before_release": "failed reset/no fake task transition or reward",
+    "after_release_or_already_real_terminal": "enclosing attempt invalid; original evaluator outcome/times retained; no task sample rescue",
+    "forbidden": [
+      "generic readiness retry",
+      "advance to wait for freshness",
+      "exploration_failure used to fabricate navigation terminal",
+      "source-age/model threshold widening"
+    ],
+    "unchanged_bounds": {
+      "measured_planar_norm_mps": 0.3,
+      "full_angular_norm_radps": 1.2,
+      "sampled_angular_accel_radps2": 7.0,
+      "stop_horizon_sec": 0.78,
+      "stop_path_m": 0.144
+    }
+  },
+  "drive_command_cap_audit": {
+    "status": "ready_source_CPU_only_no_native",
+    "consumer": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_independent_drive_trace_v6.py",
+    "composition": "Actually call immutable v5 original full review; preserve original result and every failure; then exact final guard/target publication/native received and actuation desired commands <=.20/.8 without epsilon or raw rewrite",
+    "old_v5": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_independent_drive_trace_v5.py",
+    "old_v5_sha256": "1010c0192233c2c649924bda2709479c991b18b34a753bda265779cf5bbf57a5",
+    "source_sha256": "a1885f8f4f751e5b1a4ef5d48976dcbb3cbfceeb1384cb5310340e98d543ed54"
+  },
+  "new_source_bindings_pending": [],
+  "shim_runtime_custody": {
+    "status": "independent_reviewed_source_CPU_only_not_native",
+    "binding": {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_v13_shim_binding_v1.json",
+      "sha256": "cae1d33c858609dfccb249231645bc4843856054031f53168f52fbd244f728a3"
+    },
+    "monitor": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_readonly_v13_drive_shim_process_monitor_v2.py",
+    "supplement_consumer": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_v13_shim_mapping_review_v1.py",
+    "formal_gate": "Required within original complete closure verdict, every real episode own worker PID/start/epoch/run-dir plus3controller namespace/ancestry/maps/library identity; original wrapper minus Shim must equal saved original7126 base JSON and exact raw/source/CLI/console SHA. No cross-episode worker credit.",
+    "output_template": "/tmp/mr3_p2a0_v15_{stage}_shim_mapping_review_v1.json",
+    "sampling": "Read-only capture interval<=20wall seconds while a stage actually runs; startup pending is not itself FAIL. At least1 actual complete active capture per actual EP required by formal closure; repeated snapshots are not independent experiments. Natural stop on actual stage failure/skip/closed ledger.",
+    "scope_limit": "Actual loaded installed ELF/path/inode/disk-SHA and independent installed header/XML/package+official tag source identity. No process-memory read, compiler-reproducibility or source-to-ELF build proof, body/95%/PPO credit.",
+    "watcher": {
+      "source": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v15/independent/mr3_p2a0_v15_cross_stage_mapping_monitor_v1.py",
+      "command_template": [
+        "/usr/bin/python3",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v15/independent/mr3_p2a0_v15_cross_stage_mapping_monitor_v1.py",
+        "--freeze",
+        "{freeze}"
+      ],
+      "cadence_wall_seconds": 20,
+      "max_observer_wall_seconds": 30000,
+      "termination": "Natural complete four stages, actual launch/audit failure or actual samefreeze remaining-matrix failure/skip ledger; own observer wall ceiling. No native process control."
+    }
+  },
+  "shim_reader_binary_path_adapter": {
+    "immutable_reader": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_v13_shim_mapping_review_v1.py",
+    "immutable_reader_sha256": "775a5f012e6098f7083735cd2064e1963d855a9c5b5356af99eebd21e4737282",
+    "original_binaryproof_path": "/tmp/mr3_p2a0_v13_binaryproof.json",
+    "new_binaryproof_path": "/tmp/mr3_p2a0_v15_binaryproof.json",
+    "scope": "New closure verifies original reader bytes against fixed SHA and plan, compiles checked bytes, then temporarily changes only BINARY during review and restores it in finally. MONITOR/BINDING remain A13. No math/argv/type/map/worker relaxation."
+  },
+  "parameter_reply_wait": {
+    "status": "reviewed_source_CPU_only_no_native",
+    "scope": "Nine exact rr/tb{1,2,3}/{controller_server,behavior_server,velocity_smoother}/get_parametersReply reliable writer matching/write waits of1 wall second; original36 lifecycle profiles unchanged",
+    "original_default_wait_sec": 0.1,
+    "new_exact_wait_sec": 1,
+    "client_total_wall_guard_sec": 30,
+    "hook_wall_guard_sec": 45,
+    "no_retry_or_packet_split": true,
+    "cause_limit": "V13 exact error locates specific response-reader matching timeout before serialization/write. No measured discovery-latency range or sufficient-bound proof; new full native matrix required.",
+    "runtime_source_pin": "Explicit current XML pin is newly added to PREPARATION_RUNTIME_PINS, original immutable auditors remain untouched; ENV digest refreshed, all production function ASTs unchanged",
+    "command_body_task_contracts": "All V13 command/body/stop/native/task/math gates unchanged; actual a014 drive SO and immutable A13 consumers reused"
+  },
+  "draft_baseline": {
+    "source_commit": "f7376d02b12da00c4bf44754c4b976c9fcf2b20c",
+    "source_plan_sha256": "5bb69b0af1ff36caace7174252a29cdf904f5cf6d2c80a01359e200e5a14f1d2",
+    "previous_105_bindings_kept_as_history_not_current_source_claim": true,
+    "unchanged_workload_steps": 32,
+    "unchanged_api_ceiling": 608,
+    "unchanged_action_ceiling": 596,
+    "unchanged_native_wall_ceiling": 18000,
+    "legal_dynamic_cancel_v4_pending": true,
+    "command_scope": "Current v3 command is a historical placeholder, not V15 final workload.",
+    "versioned_coordinator_draft_bindings_appended": 9,
+    "final_current_source_bindings_owned_by_root": true
+  },
+  "external_probe_v4": {
+    "version": "mr3-p2a0-outward-cancel-v4",
+    "steps_per_episode": 32,
+    "goal_windows_seconds": [
+      [
+        0,
+        1.5
+      ],
+      [
+        13,
+        15
+      ]
+    ],
+    "wait_deadline_windows_seconds": [
+      [
+        10,
+        13
+      ],
+      [
+        28,
+        32
+      ]
+    ],
+    "motion_trigger": {
+      "received_fresh_and_valid": true,
+      "active_owned_accepted_goal": true,
+      "minimum_received_linear_speed_mps": 0.08,
+      "minimum_phase_received_path_increase_m": 0.05,
+      "original_per_robot_and_joint_WAIT_legal": true
+    },
+    "submitted_wait_latch": "Only after returned actual step command with matching epoch/observation_sequence/digest/action/positive integer command_id; explicit nonbool action_submitted rejected, False not counted. Original normal info may omit this field.",
+    "second_goal_readiness": "First successful submitted WAIT at least3s earlier, fresh idle and finite received abs(v)<=.01; this is selection proxy, not full raw rest or stopping credit. Missing first WAIT prevents second GOAL.",
+    "same_input_counterfactual": "V14 first actual-prefix action difference at19s: three legal WAIT, received speeds~.179/.179/.190 and original prior nonzero spans5.92/4.18/4.76s. Later trajectory differs, no prospective native credit.",
+    "legacy_behavior": "Original _probe_goal_order, probe_action V2 and probe_action_v3 AST unchanged; scripted preparation only; no production/training fallback.",
+    "reset_metadata_wrappers": [
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v15/independent/mr3_independent_angular_reset_matrix_v15.py",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v15/independent/mr3_independent_physics_matrix_v15.py",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v15/independent/mr3_independent_reset_wrappers_v15_tests.py"
+    ],
+    "original_physical_coverage_scope": "Per robot at least one credited A or B, full unchanged errors/bounds/nonrest gates; A/B separately reported, no new A-and-B requirement."
+  },
+  "navigation_peer_geometry_repair": {
+    "navigation_peer_speed_bound_mps": 0.26,
+    "final_command_linear_cap_mps": 0.2,
+    "measured_planar_model_bound_mps": 0.3,
+    "task_peer_failure_distance_m": 0.5,
+    "production_source": "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/control.py",
+    "source_sha256": "3b6fb71f2c90a055ef3bb922bd3f08332eb366d8becde577106d1ed5bd56cedd",
+    "scope": "Restore original peer_safety_radius/body_points/grid_with_peers geometry by independent .26 constant; remove accidental command-cap alias; original reader unchanged."
+  }
+}

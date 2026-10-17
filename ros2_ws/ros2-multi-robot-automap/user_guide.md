@@ -3,7 +3,7 @@
 2026-10-17当前边界：用户明确要求继续完成P2A.0。第一版SLAM生命周期、失败采样保存、
 候选v4及诊断修复的[原始结果](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261017_mr3_p2a0.md)保持；
 当前将own权威导航合成、实际导航图v5候选、最终运动门及累计参与观测并入本步，
-MR3适配器每20ms物理推进前依次等待实际causal状态、peer障碍、guard回收与三台原生tagged目标存储回执。受控状态有效50Hz，非受控10Hz；存储ACK不代表机体响应，仍须原物理/时序门。实际三份Shim→原DWB局部控制使用.20/.8命令与显式加速度配置，完整速度模型不符时normal负ACK并严格清理，数据禁止训练。V14九参数/32步/严格关闭通过，但peer/control几何及停止覆盖FAIL，后三stage SKIP；导航peer速度界经alias受commandcap影响的回归已确认，下一新冻结须解耦并修外部取消刺激后完整重验。详见[V14报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261017_mr3_p2a0_v14.md)。
+MR3适配器每20ms物理推进前依次等待实际causal状态、peer障碍、guard回收与三台原生tagged目标存储回执。受控状态有效50Hz，非受控10Hz；存储ACK不代表机体响应，仍须原物理/时序门。实际三份Shim→原DWB局部控制使用.20/.8命令与显式加速度配置，完整速度模型不符时normal负ACK并严格清理，数据禁止训练。V14几何及停止覆盖FAIL已封存；V15将导航peer .26与commandcap .20解耦，新增合法received运动取消刺激V4/32，1200 ROS/270 CPU通过后仍须新冻结完整四阶段原生重验。旧失败/门禁保持，详见[V15报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261017_mr3_p2a0_v15.md)。
 实际Gazebo使用本包构建的paired joint-feedback驱动，物理参数保持原值，详见报告；本轮只做无训练的原生工程矩阵，不重启pilot；95%/300秒/三台参与/安全门禁及累计pilot余额不变。
 第一版6次原生严格关闭正常；terminal通过，reset真实peer失败、deadline跳过的原整体FAIL不改。
 须以新冻结完整验证导航、三台实际执行、20ms运动输出相位及300秒关闭，再待用户验收。
@@ -166,3 +166,5 @@ P1B仅为脚本适配与理想逻辑交付证据，两者均没有导航RL/通�
 本文只说明当前实现；历史或上游README的任务步骤不作为当前路线指令。
 
 当前P2A.0 V14实际九参数读回、32步执行和严格关闭通过，但peer/control几何及停止覆盖FAIL，后三stage SKIP。确认较低命令cap通过control alias缩小了导航peer包络；需解耦该依赖并改外部取消刺激，以新冻结完整重验。原30秒client/45秒hook及任务/身体/停止门保持；原FAIL保留，见[V14](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261017_mr3_p2a0_v14.md)。
+
+P2A.0当前V15源码、离线及独立审查完成后，只允许同一新clean pushed冻结完整四阶段准入；无原生结果时不称准备完成。V4/32为外部工程输入，按真实received运动和原合法WAIT掩码触发取消，旧V2/V3可复现；全raw停车/角速度/接触/关闭仍由原独立门判断。

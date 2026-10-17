@@ -5462,3 +5462,46 @@ rtk proxy /usr/bin/python3 /tmp/mr3_p2a0_v14_archive_closed_v1.py --publish --mo
 pack source721f6af4，exit0/33.405632538720965wall；archive最终source9f905ca7，exit0/15.566353520844132wall；只作已关闭原件保管，不运行新native/formal。不重复加到776.4856320801191原生墙秒。原18helper fixtures后增加冻结Git/tar身份回归，最终19项/style PASS，初styleFAIL保留。新helper核V14 Git blobs+原101source tar，而不把后续授权V15工作区编辑当作V14字节。冻结184项保持，101source/105indie、四宏/a014及48 actual union保存身份fresh全gone。支持565新增原件/285旧canonical逐raw去重；原生572文件raw560832704B/selected34143760B。inventory1328 SHA2ba5492c49545fd01619d12e76b1e75b9e072d312e068a5ee00900a6f85fd14e，verification892b033c7d5ada9f2e2e7d3b79f5487c3e0a62ec5b2fc5ee0443349d6f65add4，supportmanifest3a046936b3c02c86f8a9d145e887e817b79a945bdcb4ca13dbbb173ca110a982。保管PASS不改3 formal FAIL；几何static过宽推断和parent错误文案解释见canonical runtime_closeout_corrections原件与[V14报告](report/20261017_mr3_p2a0_v14.md)。
 
 V14关闭文档静态检查：第一次inline白名单将新V15测试名误写为test_peer_geometry_bounds.py，实际新test_navigation_peer_geometry.py被正确拒绝；无文件/门变动。修白名单后仅静态重验PASS（/tmp/root_mr3_v14_closure_static_review_v2.json）：1328库存encoded bytes/SHA、144链接、旧log前缀与原FAIL/SKIP不变；实际git add -n .的1155路径全属11关闭文档、canonical库存或两项授权V15生产改动。后两项不纳入此关闭提交。git diff --check PASS，不为文档重跑native/formal。
+
+
+### 2026-10-17 MR3-P2A.0 V15 开发与离线回归（尚无新原生）
+
+V14原FAIL/全部原件在f7376d02已push。当前working修复将control.py的导航PEER_SPEED_BOUND_MPS独立固定.26，解除COMMAND_SPEED_LIMIT=.20 alias；保护门/命令/身体及任务门保持。新test_navigation_peer_geometry.py包括三个V14实际pose/age cloud全byte摘要、三个年龄的grid/cloud共同几何和隔离重导入时commandcap=.07不缩grid，共7cases。旧源码7RED→修复后4相关ROS文件56PASS（1.74test/3.543wall）；真实PeerObstacles._publish_inputs六callback/in-memory publisher捕获3scan/3cloud均与immutableA10全payload精确匹配。原第一次bytes差异报告长跑由owner核PID/start后SIGINT，pytest diff渲染IndexError及首次styleFAIL保留，改shape+SHA全byte绑定后完成RED/green，不属native失败。最终control SHA3b6fb71f2c90a055ef3bb922bd3f08332eb366d8becde577106d1ed5bd56cedd，test f4eb9dfec347060f095597853686d2b498977a4c03d75a1490db5d88ca751c46；29原件manifest61cca34a03f194f15011c78125f209155ec39e695c0ee19c60ce5984f66a63d1。逆AST恢复原import+删除新常量后whole control与原相同；这只证明delta范围，几何行为由上述真实方法/字节测试核验。
+
+Root完整systemROS回归实际命令（cwd Git root）：
+
+```bash
+rtk proxy env PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 /tmp/mr3_p2a0_v15_ros_semantic_full_v1.py
+```
+
+复用V14两package/原6 lint ignores、ROS overlay/domain211与清除conda/旧路径的相同argv，新增geometry测试纳入167源；exit0，1200PASS（35.95test/38.12466774787754wall），167source before/after SHA恒定。确切命令/env/exit/raw stdout/encoded-decoded SHA与source before/after见同prefix JSON/log.gz，无Gazebo/原生/GPU/PPO/pilot。其余新工程fixture/编排仍待离线审查与独立核验，不据CPU检查宣告P2A.0完成。
+
+
+V15 external工程刺激与metadata接线：benchmark新增V4/32，原_probe_goal_order/probe_action/probe_action_v3及abort helpers AST保持，动作只来自received snapshot与原per/joint mask；active/owned/accepted、fresh/valid、received v>=.08及phase path>=.05才请求合法WAIT，实际返回typed command绑定后才锁存。首WAIT至少3秒/fresh idle/received abs(v)<=.01才准第二GOAL；该proxy不授raw停车信用。原固定窗口10/28仍有限，masked只KEEP并诚实missing。离线V14前缀首次动作差异在t19，999合法且原线输出span5.92/4.18/4.76秒；仅反事实prefix，不是新native或实际停止证据。Safety原版两个边界反例原样保留（explicit0/None提交flag、无首WAIT便第二GOAL），修后明确拒非bool及缺首WAIT不发第二GOAL，独立10组CPU小核PASS（ce39b8cb/0.4916wall）。
+
+候选最终checks_v5=14offline+13portable PASS；checks_v4=8capacity+17reset wrapper PASS（重叠范围不合为学习量）。初v1 synthetic B timestamp/style、v2 harnessstyle、v3 metadata-only equivalence fixture/style失败均保留；handoff fd291141、promote1d7e2fd0逐7文件SHA/AST/局部diffcheck通过后STOP。benchmark b720f6417bcdf216b5bfd77b0654b3277d1a0868e1dd1c8b9f9eb2e991977e1c，audit_preparation43488c1698469ced58d2097cfccac7e262cd09f7503661a11f9c2b06213ec408。后者仅新增精确V4/32工程capacity声明，旧V2/V3/未知拒绝/native全部门保持。独立确认actual A4 wholeinput consumer仅回显probe version，无V3 workload分派，不误改observation-v3 schema。原A8不动，新A15 reset angular73128aed/physicalfa988a29仅metadata版本/doc/diagnostic字面量适配；归一化后wholeAST同原A8，原angular7a472/physical2516、8EP/33rows/32steps、body/A-or-B pool和独立活动门保持。独立wrapper/pin复核233d9271 PASS/0.6167wall，仅static，不调用formal或重复17tests。
+
+Root同步ENV新行为说明与control pin，audit_ppo只刷新两个digest literal，逆恢复后wholeAST同f737，36pins+ENV逐currentSHA匹配。ENV2e95bf8a76b9216088d10e1ad1125b3d341e55144e2452cde852a869c4b7cf36，audit_ppo3883ea62eded4860f0c300d125d98ef8728e1546cc4e91d3cbeee15a8aa76483。root最终接线A15 audit_stage仅两条reset wrapper A8→A15路径，scheduler fixture仅两physics basename相应变更，原poolFAIL/required gates不削弱。
+
+完整conda CPU实际命令（cwd Git root，runner子进程cwd wireless-rl）：
+
+```bash
+rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 CUDA_VISIBLE_DEVICES= /usr/bin/python3 /tmp/mr3_p2a0_v15_conda_cpu_full_v1.py
+```
+
+子进程仍为既有ns3gym/python -m unittest discover -s mr3_learning/tests -v，CUDA_VISIBLE_DEVICES空、PYTHONPATH unset；exit0，270PASS（46.264test/51.713289932813495wall），46source前后恒定。含CPU synthetic SB3 optimizer/checkpoint测试，不计原生PPO/pilot；无新Gazebo/ROS native/GPU。完整命令/env/source hashes/raw stdout在conda_cpu_full_v1/checks_v1.json。原完整ROS1200PASS仍为其已稳定167源范围，不为仅文档/路径变动重复运行。
+
+
+V15新编排初39 distinct methods（14launcher/9scheduler/4Shim/3nested/9parent）PASS，最初parent style4处FAIL及原源保留。parent仅把旧合并require等价拆为job关闭与required失败两条诊断，32逻辑组合保持；无signals/retry/放行FAIL。Root切换两reset wrapper路径及两个fakebasename后，对canonical scheduler仅相关9methods重验PASS（.622test/.759633743wall），fatal Python lint E9/F63/F7/F82及diff whitespace PASS（不冒称继承旧代码的全format lint）。source前后稳定，checks01 886ea197、wiring static a3226d67；原mandatory receipts/reader/hardgates/pilot/608/596/18000对A14逐值不变。旧v1/v2等开发style/fixtures未覆。
+
+root最终plan置ready后实际只读命令（cwd Git root）：`rtk proxy env PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 /tmp/mr3_p2a0_v15_final_source_review_v1.py`，exit0/.41639423789456487wall；plan fc52f0e5a632ba8114a68da73f2ee048408a3f795609351469f446a88ab68804，121bindings=103old unchanged+仅current audit_ppo/audit_preparation刷新+16新增；101runtime只有control/ENV/audit_ppo/audit_preparation/benchmark五处已声明delta。36pins、原hardgates/各stage预算、audit_ppo两digest-only和audit_preparation V4资格适配wholeAST、六legacy probe/abort helpers AST、actual current/install/archive a014和4embedded宏均PASS。静态source readiness不授权跳过clean exact40 preflight，也不代替native结果。
+
+Offline helper b828135cfb2123fe816bb00c1c2e26da67445675cb9d4062c1279ceca1b32b70 的7custody反例/style PASS，实际A14+A13旧9manifest/2067distinct raw只读校验PASS（17.924358824733645wall）。执行反例包括in-place突变、symlink拒绝、codec/selected/index篡改和重复发布，不把实现中的inode检查冒作另跑的inode替换实验。首style失败保留。所有writers停止后实际命令（cwd Git root，PYTHONPATH unset/PYTHONNOUSERSITE=1）：
+
+```bash
+rtk proxy env PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 /tmp/mr3_p2a0_v15_archive_offline_originals_v1.py --writers-stopped
+```
+
+exit0/18.15223528118804wall，主manifest2d65e1aba3664c6f63922f9949e17d27cc98a34dc9da74e94972b7e017c8c040：193原件raw2412971B→encoded497809B，85旧raw去重引用，780排除=60fakecoord/164fakeruntimeleaf/554mock/1activeconsole/1continuation。新193及旧85逐bytes/codec/source-stat与readyplan末验PASS。一次发布不覆写；后产生观察脚本verify_v1因比较tuple而非bytes误报FAIL，原脚本/exit1/traceback保留，v2只取[1]后完整核验PASS(d8ceedd4)。实际publishreceipt5b199dc6和这些后置原件以补充保管：`rtk proxy env PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 /tmp/mr3_p2a0_v15_capture_publish_addendum_v1.py`，exit0，8原件raw12342B/encoded6323B，manifest5053c471c0cb6833dc86f9d614bff4faf94bdca7f95aa6f40ca68dc72181acf0；旧主manifest不改。无新native/formal/PPO/pilot。
+
+最终prefreeze实际命令（cwd Git root）：`rtk proxy env PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 /tmp/mr3_p2a0_v15_prefreeze_inventory_verify_v1.py`，exit0/PASS：source/math ready原件逐当前SHA、101runtime/121independent/36pins、actual a014+4宏、主193+后置8原件和85旧raw custody引用全匹配。216asset逐encoded/decoded SHA核验，inventory2eecec50724a8204cf41b6aed61064c1e51bfff975b4c290fd8776114ab9257c自身排除；161本地链接PASS。实际git add -n . 236路径逐19非asset代码/文档或完整inventory白名单，无unexpected，git diff --check PASS；父编排/tmp源码SHA与已归档raw字节一致。只做静态准入，不运行native/PPO。

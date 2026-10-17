@@ -28,6 +28,7 @@ TRANSPORT_ENV_KEYS = (
     "RMW_FASTRTPS_PUBLICATION_MODE")
 PREPARATION_PROBE_V2 = "mr3-p2a0-outward-cancel-v2"
 PREPARATION_PROBE_V3 = "mr3-p2a0-outward-cancel-v3"
+PREPARATION_PROBE_V4 = "mr3-p2a0-outward-cancel-v4"
 
 
 def _probe_goal_order(snapshot, action, outward_goals):
@@ -130,6 +131,106 @@ def probe_action_v3(snapshot, diagnostics):
     if 10. <= elapsed < 13. or elapsed >= 28.:
         return next(action for action in range(999, -1, -1) if mask[action])
     return 888
+
+
+def probe_action_v4(snapshot, diagnostics):
+    """Received-only bounded motion/cancel stimulus; never physical credit."""
+    state = diagnostics.setdefault("v4_stimulus", {"rounds": {}, "decisions": []})
+    if state.get("pending_submission") is not None:
+        raise ValueError("previous preparation action submission is unresolved")
+    elapsed = snapshot["task_elapsed_sec"]
+    round_id = "initial" if elapsed < 13. else "second"
+    current = state["rounds"].setdefault(round_id, {"waits": {}, "baseline_path_m": {
+        robot["name"]: robot["activity"].get("estimated_path_m") or 0.
+        for robot in snapshot["robots"]}})
+    deadline = 10. <= elapsed < 13. or elapsed >= 28.
+    goal_window = elapsed < 1.5 or 13. <= elapsed < 15.
+    desired, reasons = [], {}
+    for index, robot in enumerate(snapshot["robots"]):
+        name, nav, activity = robot["name"], robot["navigation"], robot["activity"]
+        speed, path = robot.get("v"), activity.get("estimated_path_m")
+        moving = (robot.get("fresh") is True and robot.get("valid") is True
+                  and nav.get("phase") == "active" and nav.get("owned") is True
+                  and type(nav.get("goal_id")) is str and bool(nav["goal_id"])
+                  and type(nav.get("accepted_goal_count")) is int
+                  and nav["accepted_goal_count"] > 0
+                  and type(speed) in (int, float) and math.isfinite(speed) and speed >= .08
+                  and activity.get("path_observation_complete") is True
+                  and type(path) in (int, float) and math.isfinite(path)
+                  and path - current["baseline_path_m"][name] >= .05)
+        reason = ("held_after_submitted_wait" if name in current["waits"] else
+                  "bounded_deadline" if deadline else
+                  "received_motion" if moving else None)
+        if reason is not None and snapshot["per_robot_action_mask"][index][9]:
+            desired.append((9,))
+            reasons[name] = reason
+            continue
+        if reason is not None:
+            reasons[name] = reason + "_wait_masked"
+        first_wait = state["rounds"].get("initial", {}).get("waits", {}).get(name)
+        recovering = (round_id == "second"
+                      and (first_wait is None
+                           or elapsed - first_wait["task_elapsed_sec"] < 3.
+                           or nav.get("phase") != "idle"
+                           or robot.get("fresh") is not True
+                           or type(speed) not in (int, float) or not math.isfinite(speed)
+                           or abs(speed) > .01))
+        desired.append(tuple(range(9)) if goal_window and not recovering else (8,))
+    legal = [valid and all(choice in desired[index] for index, choice in
+             enumerate((action // 100, action // 10 % 10, action % 10)))
+             for action, valid in enumerate(snapshot["joint_action_mask"])]
+    if not any(legal):
+        raise ValueError("no legal joint preparation action; never override a mask")
+    filtered = dict(snapshot, joint_action_mask=legal)
+    ranked = probe_action_v3(filtered, diagnostics)
+    if goal_window:
+        action = ranked
+    else:
+        action = min(index for index, valid in enumerate(legal) if valid)
+    if legal[action] is not True:
+        raise ValueError("preparation action lost exact joint legality")
+    request = {"epoch": snapshot["epoch"], "observation_sequence": snapshot["sequence"],
+               "observation_digest": snapshot["digest"], "round": round_id,
+               "task_elapsed_sec": elapsed, "action": action, "reasons": reasons,
+               "wait_robots": [robot["name"] for index, robot in enumerate(snapshot["robots"])
+                               if (action // (100, 10, 1)[index]) % 10 == 9],
+               "received_motion_robots": [name for name, reason in reasons.items()
+                                          if reason == "received_motion"],
+               "scope": "planned legal input only, not submitted/cancelled/stopped credit"}
+    state["pending_submission"] = request
+    state["decisions"].append(dict(request))
+    return action
+
+
+def record_probe_v4_submission(diagnostics, info):
+    """Called only after the actual step RPC returns; actual cancel is audited later."""
+    state = diagnostics["v4_stimulus"]
+    request = state.get("pending_submission")
+    if request is None:
+        raise ValueError("no planned preparation action")
+    if "action_submitted" in info and type(info["action_submitted"]) is not bool:
+        raise ValueError("explicit action_submitted must be bool")
+    if info.get("action_submitted", True) is False:
+        state.setdefault("not_submitted", []).append(dict(request))
+        state["pending_submission"] = None
+        return
+    command = info.get("command")
+    if (not isinstance(command, dict) or type(command.get("command_id")) is not int
+            or command["command_id"] <= 0
+            or any(type(command.get(key)) is not str for key in
+                   ("epoch", "observation_digest"))
+            or any(type(command.get(key)) is not int for key in
+                   ("observation_sequence", "action"))
+            or any(command.get(key) != request[key] for key in
+                   ("epoch", "observation_sequence", "observation_digest", "action"))):
+        raise ValueError("returned step does not bind the actual planned submission")
+    current = state["rounds"][request["round"]]
+    for name in request["wait_robots"]:
+        current["waits"].setdefault(name, {
+            "task_elapsed_sec": request["task_elapsed_sec"],
+            "command_id": command.get("command_id"), "reason": request["reasons"].get(name),
+            "scope": "actual step command submitted; native cancel/stop credit audited separately"})
+    state["pending_submission"] = None
 
 
 def _new_preparation_abort():
@@ -303,7 +404,7 @@ def run_worker(args, worker_id, preparation_abort=None):
                            for robot in initial["robots"]], "transitions": 0,
                        "transition_wall_sec": 0., "reward_sum": 0., "dt_values": []}
             if (preparation and getattr(args, "preparation_probe_version", None)
-                    == PREPARATION_PROBE_V3):
+                    in (PREPARATION_PROBE_V3, PREPARATION_PROBE_V4)):
                 episode["preparation_probe_diagnostics"] = {
                     "reference_turn_samples": {}, "goal_decisions": []}
             result["episodes"].append(episode)
@@ -338,8 +439,10 @@ def run_worker(args, worker_id, preparation_abort=None):
                         raise RuntimeError("killed worker was accepted as a valid transition")
                     break
                 if "preparation_probe_diagnostics" in episode:
-                    action = probe_action_v3(supervisor.last_result["snapshot"],
-                                             episode["preparation_probe_diagnostics"])
+                    probe = (probe_action_v4 if args.preparation_probe_version
+                             == PREPARATION_PROBE_V4 else probe_action_v3)
+                    action = probe(supervisor.last_result["snapshot"],
+                                   episode["preparation_probe_diagnostics"])
                 else:
                     action = (888 if args.deadline_probe or args.terminal_probe else
                               probe_action(supervisor.last_result["snapshot"],
@@ -350,6 +453,8 @@ def run_worker(args, worker_id, preparation_abort=None):
                 episode["transitions"] += 1
                 episode["reward_sum"] += reward
                 episode["dt_values"].append(info["dt"])
+                if getattr(args, "preparation_probe_version", None) == PREPARATION_PROBE_V4:
+                    record_probe_v4_submission(episode["preparation_probe_diagnostics"], info)
                 if terminated or truncated:
                     episode.update(terminated=terminated, truncated=truncated,
                                    reason=info.get("reason"))
@@ -423,7 +528,7 @@ def main():
     parser.add_argument("--preparation-motion-probe", action="store_true",
                         help="external engineering inputs: prefer outward legal goals; no policy")
     parser.add_argument("--preparation-probe-version",
-                        choices=(PREPARATION_PROBE_V2, PREPARATION_PROBE_V3),
+                        choices=(PREPARATION_PROBE_V2, PREPARATION_PROBE_V3, PREPARATION_PROBE_V4),
                         help="explicit external fixture version; v2=20 steps, v3=32 steps")
     parser.add_argument("--preparation-parameter-review", action="store_true",
                         help="paused one-worker open101: frozen readonly ROS parameter audit")
@@ -455,7 +560,8 @@ def main():
         parser.error("preparation probe version requires preparation motion probe")
     if args.preparation_motion_probe:
         args.preparation_probe_version = args.preparation_probe_version or PREPARATION_PROBE_V2
-        expected_steps = 32 if args.preparation_probe_version == PREPARATION_PROBE_V3 else 20
+        expected_steps = (32 if args.preparation_probe_version in
+                          (PREPARATION_PROBE_V3, PREPARATION_PROBE_V4) else 20)
         if args.steps != expected_steps:
             parser.error("preparation motion probe requires the explicit "
                          f"{expected_steps}-step fixture")
