@@ -11,7 +11,7 @@ from unittest.mock import Mock
 
 from mr3_learning import audit_ppo
 from mr3_learning.audit_preparation import (
-    PREPARATION_PROBE_VERSION, exclude_preparation_capacity_comparison,
+    PREPARATION_PROBE_VERSION, PREPARATION_PROBE_V3, exclude_preparation_capacity_comparison,
 )
 
 
@@ -43,6 +43,20 @@ class PreparationComparisonTests(unittest.TestCase):
             self.assertFalse(result["eligible"])
             self.assertTrue(result["native_episode_gates_unchanged"])
             self.assertIs(self.auditor.audit_episode, self.native_gate)
+
+    def test_v3_only_excludes_its_32_step_workload_and_preserves_native_gates(self):
+        for workers in (1, 2):
+            metadata, summary = self.fixture(workers)
+            for row in (metadata, summary):
+                row.update(preparation_probe_version=PREPARATION_PROBE_V3, steps_per_episode=32)
+            result = self.auditor.comparison_statistics(metadata, summary)
+            self.assertFalse(result["eligible"])
+            self.assertEqual(result["preparation_probe_version"], PREPARATION_PROBE_V3)
+            self.assertIs(self.auditor.audit_episode, self.native_gate)
+            for steps in (20, 40, 32.):
+                metadata["steps_per_episode"] = summary["steps_per_episode"] = steps
+                with self.subTest(workers=workers, steps=steps), self.assertRaises(ValueError):
+                    self.auditor.comparison_statistics(metadata, summary)
 
     def test_legacy_and_old_preparation_records_keep_original_comparison(self):
         for metadata in ({}, {"preparation_motion_probe": True, "steps_per_episode": 16},

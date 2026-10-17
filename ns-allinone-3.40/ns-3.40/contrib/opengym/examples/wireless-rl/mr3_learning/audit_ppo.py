@@ -62,9 +62,9 @@ PREPARATION_RUNTIME_PINS = {
     ROS + 'src/multi_robot_exploration/multi_robot_exploration/mr3_protocol.py':
         '5a2b90efd162b19a35964750002fe549413fec6e07f9679ea611d3fe6b1e4ada',
     ROS + 'src/multi_robot_exploration/multi_robot_exploration/mr3_motion_safety.py':
-        '34cc0877069ddb7c07ebe14fbac7ac9a58bd328265a2336ace7d13d129a9da28',
+        'fc1adb189922e5b7f7d62ece2a3bdf9720fb3766916bc98b3f74d71930906ef8',
     ROS + 'src/multi_robot_exploration/multi_robot_exploration/motion_safety.py':
-        '65cb3632691bf189655946baee6c05ce6228d9a78e540ab92db09a5ecd2ce34e',
+        '49bfee501384c9274eb9660c879ef3610032262b708efad2087cfc8599409920',
     ROS + 'src/multi_robot_exploration/multi_robot_exploration/control.py':
         'f595fd1e999a5cbe9d0f33db549d7aba0af615703b589ef14ff2538a871e380c',
     ROS + 'src/multi_robot_exploration/multi_robot_exploration/mr3_drive_phase.py':
@@ -149,11 +149,11 @@ EXECUTION_CONFIG_PINS = {
     ROS + 'src/multi_robot/vendor/gazebo_ros_diff_drive.BSD-3-Clause.txt':
         '771978f82c58310201ccdfdfd66e8ca798d26c2202d77f32a131d60bd297a545',
     WIRELESS + 'MR3_ADAPTER_CONTRACT.md':
-        '4be8064528b996d988549a802ed69074dc50fdefe08e88840734785c23666766',
+        '4cc62c7ac015b7489bd14d4e346723ef7a15fef7212f21ff67aa9e5d0a6aa3bb',
     ROS + 'src/multi_robot/include/multi_robot/mr3_drive_target.hpp':
         'a1a11a73ac5c416d6d548249829717ccb262005498566c0bcc8dc1997999b9ba',
 }
-ENV_DOCUMENT_SHA256 = "0880e49d112fa3461b336364132eb7fa3639a0599d79474636239d3fb65cf265"
+ENV_DOCUMENT_SHA256 = "ef2a59e54bbde820a9a55a502b4dd0624527e689f1a3bd4dcfbc46f3a41a1440"
 TASK_DOCUMENT_SHA256 = "f96f5ba785a39daa882b3c2ea217c58dd968550b65bf0ee15faf07ca079f8991"
 PRIOR_TASK_DOCUMENT_SHA256 = "5e4400396e4aaf5a5094fb4c0c04c85810c327cc85be88b7d03fa3faeade07d2"
 TASK_BASE_FREEZE = "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a"

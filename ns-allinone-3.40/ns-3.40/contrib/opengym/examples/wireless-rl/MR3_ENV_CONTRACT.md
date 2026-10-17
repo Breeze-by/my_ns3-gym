@@ -80,6 +80,10 @@ trace分别保存两项source stamp/age。模型依赖实测平面速度`.30m/s`
 降低命令上限不能替代完整原始twist向量、源时间、转向响应及停止路程的原生核验。
 轮耦合停止另有`.02s`余量，同时计入`.78s`完整转向/制动时域和双方累计停止reserve；
 `.5m/s²`是全局停止包络参数，不声称中心速度每瞬时都以此减速。这是依赖输入/速度/反应/制动界的执行保护，不能保证任意定位跳变或无界迟到下安全。
+v8增加`mr3-settled-turn-v1`旁证分支，只对原near nonclosing拒绝后的零线速度、原角速度请求生效。own连续最终零线速度publication≥`.94s`，之后三条完整去重own odom的全平面速度≤`.01m/s`、每源age及gap≤`.10s`，才可建立资格；资格起点不得早于任务release；worker初始三台真实stored-zero屏障先于同clock release，不把驱动出生前预热publication计入。实际native连续存储零线速度≥`.78s`及全量160ms时延由独立消费审计另核验。每个原body margin仍含原位置/TF源龄误差和`.02m`余量，并须至少`.1518m`：自身完整零线速度段总漂移预算`.0078m`加队友完整制动`.144m`。
+
+该分支依赖新增条件物理模型：从activation前最后完整own odom锚到下一实际非零线速度存入/结束，持续全平面速度≤`.01m/s`且连续总中心路程≤`.0078m`。重复授权不能刷新整段预算；runtime及独立消费者对原始速度、相邻odom chord速度、整段累计弦长和源完整性作硬检查，违例记真实failure。有限采样弦长是连续路径下界，过去静止样本也不能证明未来，因此这些记录只提供必要采样证据，不授连续或无条件安全定理。publication到actual storage的资格终点须由三ACK-before-advance屏障与独立实际回执绑定，不能提前撤证掩盖违例。全部新增状态只来自本机原odom与自身最终输出历史，不进入actor、候选、掩码或奖励；队友仍只读已交付状态。原unsupported/state/body门、原方向检查及所有任务/物理门保持。
+
 worker在任务放行前等待三台运动输入就绪，并保存图上唯一速度发布者端点、本地actual接收FIFO及
 同clock三台输出消费后的ACK。当前Humble的身份范围是`graph_at_callback`，不是逐包MessageInfo
 或Gazebo执行器消费确认。另存实际global/local

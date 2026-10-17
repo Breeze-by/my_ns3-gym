@@ -2,9 +2,11 @@
 
 from concurrent.futures import ThreadPoolExecutor
 import contextlib
+import copy
 import hashlib
 import io
 import json
+import math
 from pathlib import Path
 import subprocess
 import tempfile
@@ -18,6 +20,124 @@ from mr3_learning.benchmark import probe_action
 
 
 class PreparationProbeTests(unittest.TestCase):
+    def v3_snapshot(self, elapsed=0.):
+        mask = [False] * 1000
+        for action in (12, 345, 388, 888, 999):
+            mask[action] = True
+        points = ((-1., -1.4), (-1., 1.4), (1.45, 0.), (1., 0.),
+                  (1., .5), (-1., 0.), (0., 0.), (0., 0.))
+        return {"epoch": "received-epoch", "sequence": 1, "task_elapsed_sec": elapsed,
+                "joint_action_mask": mask,
+                "candidates": [{"x": x, "y": y, "path_distances_m": [1., 1., 1.]}
+                               for x, y in points],
+                "robots": [{"name": name, "x": x, "y": y, "yaw": 0., "w": 0.,
+                            "fresh": True, "source_stamp": 10., "odom_source_stamp": 10.}
+                           for name, (x, y) in zip(("tb1", "tb2", "tb3"),
+                                                   ((0., -.45), (0., .45), (.45, 0.)))]}
+
+    def test_v3_explicit_32_step_phases_keep_v2_timing_unchanged(self):
+        for elapsed, expected in ((0., 12), (1.49, 12), (1.5, 888), (9.99, 888),
+                                  (10., 999), (12.99, 999), (13., 12), (14.99, 12),
+                                  (15., 888), (27.99, 888), (28., 999), (31.99, 999)):
+            with self.subTest(elapsed=elapsed):
+                snapshot = self.v3_snapshot(elapsed)
+                original = copy.deepcopy(snapshot)
+                self.assertEqual(benchmark.probe_action_v3(snapshot, {}), expected)
+                self.assertEqual(snapshot, original)
+                if elapsed >= 28.:
+                    self.assertEqual(probe_action(snapshot, outward_goals=True), 888)
+
+    def test_v3_prefers_opposite_received_turn_opportunity_only_in_second_goal_stage(self):
+        snapshot, diagnostics = self.v3_snapshot(1.), {}
+        snapshot["robots"][0]["w"] = -.2
+        self.assertEqual(benchmark.probe_action_v3(snapshot, diagnostics), 12)
+        self.assertEqual(diagnostics["reference_turn_samples"]["tb1"]["sign"], -1.)
+        snapshot["task_elapsed_sec"] = 13.
+        self.assertEqual(benchmark.probe_action_v3(snapshot, diagnostics), 345)
+        selected = diagnostics["goal_decisions"][-1]
+        self.assertEqual(selected["selected_reverse_robots"], ["tb1"])
+        self.assertEqual(selected["max_legal_goal_components"], 3)
+        self.assertEqual(selected["max_reverse_robot_opportunities"], 1)
+        snapshot["joint_action_mask"][345] = False
+        self.assertEqual(benchmark.probe_action_v3(snapshot, diagnostics), 12)
+        self.assertEqual(diagnostics["goal_decisions"][-1]["max_reverse_robot_opportunities"], 0)
+
+    def test_v3_reference_sign_requires_fresh_actual_finite_turn_and_does_not_flip(self):
+        snapshot, diagnostics = self.v3_snapshot(1.), {}
+        for w, fresh in ((.8, False), (True, True), (float("nan"), True), (.09, True)):
+            snapshot["robots"][0].update(w=w, fresh=fresh)
+            benchmark.probe_action_v3(snapshot, diagnostics)
+            self.assertEqual(diagnostics["reference_turn_samples"], {})
+        snapshot["robots"][0].update(w=-.2, fresh=True)
+        benchmark.probe_action_v3(snapshot, diagnostics)
+        reference = copy.deepcopy(diagnostics["reference_turn_samples"])
+        snapshot["task_elapsed_sec"] = 9.
+        snapshot["robots"][0]["w"] = .8
+        benchmark.probe_action_v3(snapshot, diagnostics)
+        snapshot["task_elapsed_sec"] = 10.
+        snapshot["robots"][1]["w"] = .8
+        benchmark.probe_action_v3(snapshot, diagnostics)
+        self.assertEqual(diagnostics["reference_turn_samples"], reference)
+
+    def test_v3_rule_is_invariant_to_common_frame_rotation_translation_and_scene_label(self):
+        for scene in ("open", "rooms", "corridors"):
+            snapshot = self.v3_snapshot(13.)
+            snapshot.update(scene=scene, seed=999)
+            diagnostic = {"reference_turn_samples": {"tb1": {"sign": -1.}}}
+            expected = benchmark.probe_action_v3(snapshot, copy.deepcopy(diagnostic))
+            theta = .72
+            for point in (*snapshot["robots"], *snapshot["candidates"]):
+                x, y = point["x"], point["y"]
+                point["x"] = x*math.cos(theta)-y*math.sin(theta)-7.
+                point["y"] = x*math.sin(theta)+y*math.cos(theta)+8.
+                if "yaw" in point:
+                    point["yaw"] += theta
+            self.assertEqual(benchmark.probe_action_v3(snapshot, diagnostic), expected)
+
+    def test_v3_version_requires_its_exact_declared_budget_and_flag(self):
+        for version, steps, motion in ((benchmark.PREPARATION_PROBE_V3, 20, True),
+                                       (benchmark.PREPARATION_PROBE_V3, 40, True),
+                                       (benchmark.PREPARATION_PROBE_V2, 32, True),
+                                       (benchmark.PREPARATION_PROBE_V3, 32, False)):
+            with self.subTest(version=version, steps=steps), tempfile.TemporaryDirectory() as root:
+                argv = ["benchmark", "--workers", "1", "--steps", str(steps),
+                        "--run-id", "rejected",
+                        "--output-root", root, "--preparation-probe-version", version]
+                if motion:
+                    argv.append("--preparation-motion-probe")
+                with patch("sys.argv", argv), contextlib.redirect_stderr(io.StringIO()):
+                    with self.assertRaises(SystemExit) as error:
+                        benchmark.main()
+                self.assertEqual(error.exception.code, 2)
+                self.assertEqual(list(Path(root).iterdir()), [])
+
+    def test_v3_cli_records_explicit_version_and_32_step_budget_without_native_start(self):
+        def complete(args, worker_id, abort):
+            self.assertEqual(args.preparation_probe_version, benchmark.PREPARATION_PROBE_V3)
+            self.assertEqual(args.steps, 32)
+            return {"worker_id": worker_id, "error": None, "episodes": [
+                {"transitions": 32, "terminated": False, "truncated": True,
+                 "dt_values": [1.] * 32}], "shutdown_receipts": [
+                    {"remaining_owned_processes": [], "remaining_owned_zombies": [],
+                     "forced_shutdown": False, "worker_returncode": 0}]}
+        with tempfile.TemporaryDirectory() as root:
+            argv = ["benchmark", "--workers", "1", "--steps", "32", "--run-id", "cpu_only",
+                    "--schedule", "open:101", "--output-root", root,
+                    "--preparation-motion-probe", "--preparation-probe-version",
+                    benchmark.PREPARATION_PROBE_V3]
+            with patch("sys.argv", argv), \
+                    patch.object(benchmark, "run_worker", side_effect=complete), \
+                    patch.object(benchmark, "resource_sample", return_value={}), \
+                    patch.object(benchmark.subprocess, "check_output", return_value="a" * 40), \
+                    contextlib.redirect_stdout(io.StringIO()):
+                self.assertEqual(benchmark.main(), 0)
+            for name in ("benchmark_metadata.json", "benchmark_summary.json"):
+                value = json.loads((Path(root) / "cpu_only" / name).read_text())
+                self.assertEqual(value["preparation_probe_version"],
+                                 benchmark.PREPARATION_PROBE_V3)
+                self.assertEqual(value["steps_per_episode"], 32)
+            self.assertNotIn("rclpy", __import__("sys").modules)
+
     def test_outward_goals_do_not_reuse_crossing_stress_order(self):
         mask = [False] * 1000
         for action in (12, 345, 889):
@@ -308,6 +428,30 @@ class CooperativeAbortTests(unittest.TestCase):
             self.assertTrue(episode["truncated"])
             self.assertFalse(episode["terminated"])
             self.assertNotIn("intentional_abort_prefix", episode)
+
+    def test_v3_keeps_full_32_step_real_fakeenv_returns_and_separate_episode_diagnostics(self):
+        args = self.args()
+        args.steps = 32
+        args.preparation_probe_version = benchmark.PREPARATION_PROBE_V3
+        abort = benchmark._new_preparation_abort()
+        supervisor, environment = self.fakes()
+        with supervisor, environment:
+            result = benchmark.run_worker(args, 0, abort)
+        instance = self.environments[0]
+        self.assertEqual((instance.reset_calls, instance.step_calls, instance.close_calls),
+                         (2, 64, 1))
+        self.assertFalse(abort["event"].is_set())
+        first, second = [episode["preparation_probe_diagnostics"]
+                         for episode in result["episodes"]]
+        self.assertIsNot(first, second)
+        for episode, diagnostic in zip(result["episodes"], (first, second)):
+            self.assertEqual(episode["transitions"], 32)
+            self.assertEqual(episode["dt_values"], [1.] * 32)
+            self.assertTrue(episode["truncated"])
+            self.assertEqual(diagnostic["reference_turn_samples"], {})
+            self.assertEqual(len(diagnostic["goal_decisions"]), 4)
+            self.assertTrue(all(row["max_reverse_robot_opportunities"] == 0
+                                for row in diagnostic["goal_decisions"]))
 
     def test_later_reset_exception_does_not_claim_previous_epoch(self):
         abort = benchmark._new_preparation_abort()

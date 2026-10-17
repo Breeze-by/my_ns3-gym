@@ -1,0 +1,22 @@
+{
+  "schema": "mr3-v8-probe-initial-style-failure-v1",
+  "command_argv": [
+    "/usr/bin/python3",
+    "-m",
+    "flake8",
+    "--max-line-length=99",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/benchmark.py",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_preparation.py",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_benchmark.py",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_preparation_comparison.py"
+  ],
+  "returncode": 1,
+  "stdout": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/benchmark.py:126:100: E501 line too long (105 > 99 characters)\nns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/benchmark.py:307:59: E128 continuation line under-indented for visual indent\nns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/benchmark.py:459:100: E501 line too long (105 > 99 characters)\nns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_benchmark.py:103:100: E501 line too long (101 > 99 characters)\nns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_benchmark.py:127:100: E501 line too long (104 > 99 characters)\nns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_benchmark.py:134:100: E501 line too long (100 > 99 characters)\nns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_benchmark.py:438:100: E501 line too long (103 > 99 characters)\nns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_benchmark.py:440:100: E501 line too long (100 > 99 characters)\n",
+  "source_sha256": {
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/benchmark.py": "b1bfbe288ab88de370411c7ffb216a7730ceba48327341005f7580bf54e24a30",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_preparation.py": "c70bcc8e04e4239cba8c9bf1286ee0b327b00e41e69ef85ca07cbf40d7221aaa",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_benchmark.py": "242c25a50866b9bb202bab3d8564efb9d3e3c0b7943193cc0fa7981af78ca59c",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_preparation_comparison.py": "08af19865e7c1330539e06d3be6d978083faa3f3d7028897f6e4df348016d5af"
+  },
+  "scope": "Initial new-code formatting failure before wrapping; no native or functional gate failure."
+}

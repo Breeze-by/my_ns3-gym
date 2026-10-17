@@ -1,0 +1,17 @@
+{
+  "schema": "mr3-v8-legacy-typed-cli-first-failure-v1",
+  "argv": [
+    "env",
+    "-u",
+    "PYTHONPATH",
+    "PYTHONNOUSERSITE=1",
+    "PYTHONDONTWRITEBYTECODE=1",
+    "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+    "/tmp/mr3_p2a0_v8_legacy_typed_own_state_v1.py"
+  ],
+  "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+  "exit_code": 1,
+  "stderr": "ModuleNotFoundError: No module named 'mr3_learning'",
+  "cause": "direct /tmp script sets sys.path[0] to /tmp rather than learner cwd; no production failure",
+  "correction": "execute saved script through standard Python -c/runpy with learner cwd, keeping PYTHONPATH unset"
+}

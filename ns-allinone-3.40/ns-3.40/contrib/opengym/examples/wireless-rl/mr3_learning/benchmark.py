@@ -26,6 +26,34 @@ TRANSPORT_ENV_KEYS = (
     "RMW_IMPLEMENTATION", "ROS_LOCALHOST_ONLY", "FASTRTPS_DEFAULT_PROFILES_FILE",
     "SKIP_DEFAULT_XML", "FASTDDS_DEFAULT_PROFILES_FILE", "RMW_FASTRTPS_USE_QOS_FROM_XML",
     "RMW_FASTRTPS_PUBLICATION_MODE")
+PREPARATION_PROBE_V2 = "mr3-p2a0-outward-cancel-v2"
+PREPARATION_PROBE_V3 = "mr3-p2a0-outward-cancel-v3"
+
+
+def _probe_goal_order(snapshot, action, outward_goals):
+    choices = (action // 100, action // 10 % 10, action % 10)
+    paths = sum(snapshot["candidates"][choice]["path_distances_m"][index] or 0.
+                for index, choice in enumerate(choices) if choice < 8)
+    goal_count = sum(choice < 8 for choice in choices)
+    if not outward_goals:
+        return (-goal_count, -paths, action)
+    margins = []
+    for index, choice in enumerate(choices):
+        if choice >= 8:
+            continue
+        own, goal = snapshot["robots"][index], snapshot["candidates"][choice]
+        gx, gy = goal["x"] - own["x"], goal["y"] - own["y"]
+        goal_distance = math.hypot(gx, gy)
+        peer_margins = []
+        for peer_index, peer in enumerate(snapshot["robots"]):
+            if peer_index == index:
+                continue
+            px, py = peer["x"] - own["x"], peer["y"] - own["y"]
+            denominator = goal_distance * math.hypot(px, py)
+            peer_margins.append(-(gx * px + gy * py) / denominator
+                                if denominator else -1.)
+        margins.append(min(peer_margins, default=-1.))
+    return (-goal_count, -min(margins, default=-1.), -sum(margins), paths, action)
 
 
 def probe_action(snapshot, *, outward_goals=False):
@@ -35,34 +63,71 @@ def probe_action(snapshot, *, outward_goals=False):
     second_goal_start, second_goal_end = (13., 15.) if outward_goals else (10., 12.)
     goal_window = elapsed < 1.5 or second_goal_start <= elapsed < second_goal_end
     if goal_window:
-        def order(action):
-            choices = (action // 100, action // 10 % 10, action % 10)
-            paths = sum(snapshot["candidates"][choice]["path_distances_m"][index] or 0.
-                        for index, choice in enumerate(choices) if choice < 8)
-            goal_count = sum(choice < 8 for choice in choices)
-            if not outward_goals:
-                return (-goal_count, -paths, action)
-            margins = []
-            for index, choice in enumerate(choices):
-                if choice >= 8:
-                    continue
-                own, goal = snapshot["robots"][index], snapshot["candidates"][choice]
-                gx, gy = goal["x"] - own["x"], goal["y"] - own["y"]
-                goal_distance = math.hypot(gx, gy)
-                peer_margins = []
-                for peer_index, peer in enumerate(snapshot["robots"]):
-                    if peer_index == index:
-                        continue
-                    px, py = peer["x"] - own["x"], peer["y"] - own["y"]
-                    denominator = goal_distance * math.hypot(px, py)
-                    peer_margins.append(-(gx * px + gy * py) / denominator
-                                        if denominator else -1.)
-                margins.append(min(peer_margins, default=-1.))
-            # External diagnostic inputs exercise outward Nav2 motion. This is
-            # neither a policy nor an adapter fallback or safety certificate.
-            return (-goal_count, -min(margins, default=-1.), -sum(margins), paths, action)
-        return min((action for action, valid in enumerate(mask) if valid), key=order)
+        return min((action for action, valid in enumerate(mask) if valid),
+                   key=lambda action: _probe_goal_order(snapshot, action, outward_goals))
     if (10. <= elapsed < 13. if outward_goals else elapsed >= 7.):
+        return next(action for action in range(999, -1, -1) if mask[action])
+    return 888
+
+
+def probe_action_v3(snapshot, diagnostics):
+    """32-step external turn/stop stimulus, never a policy or safety proof."""
+    elapsed, mask = snapshot["task_elapsed_sec"], snapshot["joint_action_mask"]
+    samples = diagnostics.setdefault("reference_turn_samples", {})
+    if elapsed < 10.:
+        for robot in snapshot["robots"]:
+            w = robot.get("w")
+            if (robot.get("fresh") is True and type(w) in (int, float)
+                    and math.isfinite(w) and abs(w) >= .1 and robot["name"] not in samples):
+                samples[robot["name"]] = {
+                    "sign": math.copysign(1., w), "w": w,
+                    "snapshot_sequence": snapshot.get("sequence"),
+                    "source_stamp": robot.get("source_stamp"),
+                    "odom_source_stamp": robot.get("odom_source_stamp"),
+                }
+
+    def reverse_robots(action):
+        result = []
+        for index, choice in enumerate((action // 100, action // 10 % 10, action % 10)):
+            own = snapshot["robots"][index]
+            reference = samples.get(own["name"])
+            if choice >= 8 or reference is None:
+                continue
+            goal = snapshot["candidates"][choice]
+            dx, dy = goal["x"] - own["x"], goal["y"] - own["y"]
+            if not math.hypot(dx, dy):
+                continue
+            angle = math.atan2(dy, dx) - own["yaw"]
+            bearing = math.atan2(math.sin(angle), math.cos(angle))
+            if bearing * reference["sign"] <= -.25:
+                result.append(own["name"])
+        return result
+
+    second_goal = 13. <= elapsed < 15.
+    if elapsed < 1.5 or second_goal:
+        legal = [action for action, valid in enumerate(mask) if valid]
+
+        def order(action):
+            base = _probe_goal_order(snapshot, action, True)
+            return ((base[0], -len(reverse_robots(action)), *base[1:])
+                    if second_goal else base)
+
+        action = min(legal, key=order)
+        max_goals = -_probe_goal_order(snapshot, action, True)[0]
+        opportunities = [value for value in legal
+                         if -_probe_goal_order(snapshot, value, True)[0] == max_goals]
+        diagnostics.setdefault("goal_decisions", []).append({
+            "snapshot_sequence": snapshot.get("sequence"), "task_elapsed_sec": elapsed,
+            "stage": "second_goal" if second_goal else "initial_goal", "action": action,
+            "max_legal_goal_components": max_goals,
+            "max_reverse_robot_opportunities": max(len(reverse_robots(value))
+                                                   for value in opportunities),
+            "selected_reverse_robots": reverse_robots(action),
+            "scope": ("received goal-bearing stimulus only; actual turn/stop coverage "
+                      "audited separately"),
+        })
+        return action
+    if 10. <= elapsed < 13. or elapsed >= 28.:
         return next(action for action in range(999, -1, -1) if mask[action])
     return 888
 
@@ -237,6 +302,10 @@ def run_worker(args, worker_id, preparation_abort=None):
                            {key: robot.get(key) for key in ("name", "x", "y", "yaw")}
                            for robot in initial["robots"]], "transitions": 0,
                        "transition_wall_sec": 0., "reward_sum": 0., "dt_values": []}
+            if (preparation and getattr(args, "preparation_probe_version", None)
+                    == PREPARATION_PROBE_V3):
+                episode["preparation_probe_diagnostics"] = {
+                    "reference_turn_samples": {}, "goal_decisions": []}
             result["episodes"].append(episode)
             if _abort_requested(abort):
                 episode["intentional_abort_prefix"] = {
@@ -268,9 +337,13 @@ def run_worker(args, worker_id, preparation_abort=None):
                     else:
                         raise RuntimeError("killed worker was accepted as a valid transition")
                     break
-                action = (888 if args.deadline_probe or args.terminal_probe else
-                          probe_action(supervisor.last_result["snapshot"],
-                                       outward_goals=args.preparation_motion_probe))
+                if "preparation_probe_diagnostics" in episode:
+                    action = probe_action_v3(supervisor.last_result["snapshot"],
+                                             episode["preparation_probe_diagnostics"])
+                else:
+                    action = (888 if args.deadline_probe or args.terminal_probe else
+                              probe_action(supervisor.last_result["snapshot"],
+                                           outward_goals=args.preparation_motion_probe))
                 step_started = time.monotonic()
                 observation, reward, terminated, truncated, info = environment.step(action)
                 episode["transition_wall_sec"] += time.monotonic() - step_started
@@ -349,6 +422,9 @@ def main():
     parser.add_argument("--terminal-probe", action="store_true")
     parser.add_argument("--preparation-motion-probe", action="store_true",
                         help="external engineering inputs: prefer outward legal goals; no policy")
+    parser.add_argument("--preparation-probe-version",
+                        choices=(PREPARATION_PROBE_V2, PREPARATION_PROBE_V3),
+                        help="explicit external fixture version; v2=20 steps, v3=32 steps")
     parser.add_argument("--preparation-parameter-review", action="store_true",
                         help="paused one-worker open101: frozen readonly ROS parameter audit")
     args = parser.parse_args()
@@ -375,8 +451,14 @@ def main():
     if args.preparation_motion_probe and any((
             args.terminal_probe, args.deadline_probe, args.fault_probe)):
         parser.error("preparation motion probe cannot be combined with other probes")
-    if args.preparation_motion_probe and args.steps != 20:
-        parser.error("preparation motion probe requires the explicit 20-step fixture")
+    if args.preparation_probe_version and not args.preparation_motion_probe:
+        parser.error("preparation probe version requires preparation motion probe")
+    if args.preparation_motion_probe:
+        args.preparation_probe_version = args.preparation_probe_version or PREPARATION_PROBE_V2
+        expected_steps = 32 if args.preparation_probe_version == PREPARATION_PROBE_V3 else 20
+        if args.steps != expected_steps:
+            parser.error("preparation motion probe requires the explicit "
+                         f"{expected_steps}-step fixture")
     if args.preparation_parameter_review and (
             not args.preparation_motion_probe or args.workers != 1
             or args.schedule != [("open", 101)]):
@@ -416,8 +498,7 @@ def main():
                 "deadline_probe": args.deadline_probe,
                 "terminal_probe": args.terminal_probe,
                 "preparation_motion_probe": args.preparation_motion_probe,
-                "preparation_probe_version": (
-                    "mr3-p2a0-outward-cancel-v2" if args.preparation_motion_probe else None),
+                "preparation_probe_version": args.preparation_probe_version,
                 "preparation_parameter_review": args.preparation_parameter_review,
                 "preparation_parameter_review_source": args.preparation_parameter_review_source,
                 "resource_scope": "host counters include unrelated activity; GPU driver reports",

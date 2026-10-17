@@ -1,0 +1,41 @@
+{
+  "passed": true,
+  "checks": {
+    "ros_semantic_v8_final.json": {
+      "exit_code": 0,
+      "source_before_after_equal": true
+    },
+    "conda_cpu_v8_final_v2.json": {
+      "exit_code": 0,
+      "source_before_after_equal": true
+    },
+    "build_v8_final.json": {
+      "exit_code": 0,
+      "source_before_after_equal": true
+    },
+    "style_v8_final.json": {
+      "exit_code": 0,
+      "source_before_after_equal": true
+    },
+    "contract_static_v8_final.json": {
+      "exit_code": 0,
+      "source_before_after_equal": true
+    }
+  },
+  "verified_final_runtime_sources": {
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/motion_safety.py": "49bfee501384c9274eb9660c879ef3610032262b708efad2087cfc8599409920",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_motion_safety.py": "fc1adb189922e5b7f7d62ece2a3bdf9720fb3766916bc98b3f74d71930906ef8",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_motion_safety.py": "a32771eb2e420e50705f1890c9968fcddc9cc4ea7dbacb3c19f8b32cbb60c08c",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_settled_turn.py": "192c142a7caacd036dcd1591644df00f32155fe23c3ae9eadecdac0ff98a5832",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_ADAPTER_CONTRACT.md": "4cc62c7ac015b7489bd14d4e346723ef7a15fef7212f21ff67aa9e5d0a6aa3bb",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_ENV_CONTRACT.md": "ef2a59e54bbde820a9a55a502b4dd0624527e689f1a3bd4dcfbc46f3a41a1440",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_motion.py": "60c9b2534a22f8bf00adfdf46dbc0ac324f1021e71be35ca4ff9f8a502f7fff1",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_ppo.py": "eed53d2704fd077feb13f204f8a7b3156bd0d2eea7af9545a90c286b17ca9ab1",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_preparation.py": "c70bcc8e04e4239cba8c9bf1286ee0b327b00e41e69ef85ca07cbf40d7221aaa",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/benchmark.py": "f0575da2133db240d5359167d46765643a1e57f5a3c2d1067715c9a992a28e0f",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_motion.py": "d08149889780a91a9ae57e0a0b788af11557448c527ab809d9dee1b43afee510",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_benchmark.py": "206252f1d3c6ad400cc7e276c8fd2f45ad36a42d7fb547ea1ba0e23a5395a42e",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_preparation_comparison.py": "08af19865e7c1330539e06d3be6d978083faa3f3d7028897f6e4df348016d5af"
+  },
+  "scope": "ROS checked source retained byte-exact; final conda recheck includes typed audit repair and all reviewed doc pins; no native credit"
+}

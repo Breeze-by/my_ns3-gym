@@ -1,0 +1,76 @@
+{
+  "schema": "mr3-p2a0-v7-interface-accounting-v1",
+  "freeze": "01cfa040dcb73f8931dd11d66b69ce765cb8412f",
+  "benchmark_raw_passed": true,
+  "overall_preparation_passed": false,
+  "returned_reset_api_rows": 1,
+  "returned_step_api_rows": 20,
+  "returned_api_rows": 21,
+  "submitted_action_commands": 20,
+  "adapter_accepted_action_rows": 20,
+  "adapter_rejected_action_rows": 0,
+  "rejected_actions": [],
+  "unreturned_action_ids": [],
+  "release_time_ns": 72320000000,
+  "last_returned_snapshot_ns": 92320000000,
+  "final_physics_clock_ns": 92520000000,
+  "returned_effective_ns": 20000000000,
+  "returned_physical_ns": 20000000000,
+  "cleanup_physics_ns": 200000000,
+  "controlled_warmup_alignment_ns": 18000000,
+  "post_release_physics_ns": 20200000000,
+  "benchmark_wall_sec": 531.8874822380021,
+  "launcher_wall_sec": 532.3876321972348,
+  "launcher_returncode": 0,
+  "activity": {
+    "tb1": {
+      "estimated_path_m": 0.00356081911561923,
+      "sample_count": 200,
+      "path_observation_complete": true,
+      "accepted_goal_count": 2
+    },
+    "tb2": {
+      "estimated_path_m": 0.03635914136860959,
+      "sample_count": 200,
+      "path_observation_complete": true,
+      "accepted_goal_count": 2
+    },
+    "tb3": {
+      "estimated_path_m": 0.2532397853692473,
+      "sample_count": 200,
+      "path_observation_complete": true,
+      "accepted_goal_count": 2
+    }
+  },
+  "stage_outcomes": {
+    "interface": {
+      "status": "FAIL",
+      "native_full_audit_passed": true,
+      "full_preparation_passed": false,
+      "full_errors": [
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v7_interface/worker0/episode001_open_101: ValueError('tb1: probe lacks native accepted goal and received movement >0.05m')"
+      ],
+      "fixed_driver_passed": true,
+      "fixed_angular_passed": false,
+      "sampled_angular_bounds_passed": true,
+      "angular_missing": [
+        "one_robot_with_sequential_opposite_sign_spans"
+      ],
+      "fixed_physics_passed": false,
+      "cause": "required per-robot movement and angular/stopping stimulus coverage incomplete; bounds not relaxed"
+    },
+    "terminal": {
+      "status": "SKIP",
+      "reason": "required interface failed; predeclared stop rule"
+    },
+    "reset": {
+      "status": "SKIP",
+      "reason": "required interface failed; predeclared stop rule"
+    },
+    "deadline": {
+      "status": "SKIP",
+      "reason": "required interface failed; predeclared stop rule"
+    }
+  },
+  "scope": "Complete normal engineering truncated prefix; strict closure and actual tagged latency PASS are component evidence only. No95percent/PPO/GPU/pilot credit; no later native stages."
+}

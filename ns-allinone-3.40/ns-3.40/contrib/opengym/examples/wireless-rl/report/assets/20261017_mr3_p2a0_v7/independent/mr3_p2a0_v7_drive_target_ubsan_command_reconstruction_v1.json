@@ -1,0 +1,31 @@
+{
+  "schema": "mr3-v7-pure-ubsan-command-reconstruction-v1",
+  "created_wall_ns": 1792216310678906283,
+  "cwd": "/home/zhuyulab/ns3-workspace",
+  "compile_argv": [
+    "g++",
+    "-std=c++17",
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+    "-pedantic",
+    "-fsanitize=undefined",
+    "-fno-sanitize-recover=undefined",
+    "-Iros2_ws/ros2-multi-robot-automap/src/multi_robot/include",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/test/test_drive_target.cpp",
+    "-lgtest",
+    "-lgtest_main",
+    "-pthread",
+    "-o",
+    "/tmp/mr3_p2a0_v7_drive_target_test_ubsan"
+  ],
+  "run_argv": [
+    "/tmp/mr3_p2a0_v7_drive_target_test_ubsan"
+  ],
+  "evidence_basis": "Reconstructed after execution from retained strict compiler argv, retained UBSan extra flags, existing named output artifact and saved stdout. Original full UBSan tool-call argv no longer present in current agent context; this is not an execve trace and no rerun occurred.",
+  "stdout": {
+    "path": "/tmp/mr3_p2a0_v7_drive_target_tests_ubsan.txt",
+    "sha256": "77ddadacc5a1656e01c2ce715c539d8cede5f62d72155e82cbc92fd964fbf829"
+  },
+  "result": "Original saved stdout has 9 tests PASS; not newly executed by this reconstruction."
+}

@@ -1,0 +1,1223 @@
+{
+  "schema": "mr3-v8-historical-settled-turn-opportunity-v2",
+  "passed": true,
+  "epoch": "mr3_p2a0_20261017_v7_interface_w0_e1_97204f47",
+  "sources_before": {
+    "mr3_motion_safety.py": "fc1adb189922e5b7f7d62ece2a3bdf9720fb3766916bc98b3f74d71930906ef8",
+    "motion_safety.py": "49bfee501384c9274eb9660c879ef3610032262b708efad2087cfc8599409920",
+    "mr3_episode.py": "9145d2ad23789b252e32f0afdfe18cf2eeec8e2c7e9ca7e89127a532288e411b"
+  },
+  "sources_after": {
+    "mr3_motion_safety.py": "fc1adb189922e5b7f7d62ece2a3bdf9720fb3766916bc98b3f74d71930906ef8",
+    "motion_safety.py": "49bfee501384c9274eb9660c879ef3610032262b708efad2087cfc8599409920",
+    "mr3_episode.py": "9145d2ad23789b252e32f0afdfe18cf2eeec8e2c7e9ca7e89127a532288e411b"
+  },
+  "sources_unchanged": true,
+  "original_input": {
+    "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v7_interface/worker0/episode001_open_101/motion_safety.jsonl",
+    "bytes": 132184457,
+    "sha256": "4fbc8de1e4d442b36c375add8c06f0340147dcda4640a6dbe47c4d5a65c8bacc"
+  },
+  "robot_counts": {
+    "tb1": {
+      "historical_decisions": 4607,
+      "qualified_prefixes": 4292,
+      "new_rotation_opportunities": 536
+    },
+    "tb2": {
+      "historical_decisions": 4607,
+      "qualified_prefixes": 3628,
+      "new_rotation_opportunities": 153
+    },
+    "tb3": {
+      "historical_decisions": 4607,
+      "qualified_prefixes": 3626,
+      "new_rotation_opportunities": 248
+    }
+  },
+  "first_examples": {
+    "tb1": [
+      {
+        "line": 50563,
+        "clock_ns": 73460000000,
+        "decision_sequence": 3654,
+        "original_reason": "peer_braking_nonclosing",
+        "original_output": [
+          0.0,
+          0.0
+        ],
+        "hypothetical_reason": "linear_brake_preserve_requested_turn",
+        "hypothetical_output": [
+          0.0,
+          -0.8
+        ],
+        "raw_request": [
+          0.01368421052631579,
+          -0.8
+        ],
+        "body_margin_m": 0.17361791058281437,
+        "required_body_margin_m": 0.1518,
+        "reserve_slack_m": 0.021817910582814376,
+        "own_planar_speed_mps": 0.0003151840540479463,
+        "zero_since_ns": 72320000000,
+        "qualification_source_samples_ns": [
+          73374000000,
+          73408000000,
+          73442000000
+        ]
+      },
+      {
+        "line": 50603,
+        "clock_ns": 73480000000,
+        "decision_sequence": 3655,
+        "original_reason": "peer_braking_nonclosing",
+        "original_output": [
+          0.0,
+          0.0
+        ],
+        "hypothetical_reason": "linear_brake_preserve_requested_turn",
+        "hypothetical_output": [
+          0.0,
+          -0.8
+        ],
+        "raw_request": [
+          0.01368421052631579,
+          -0.8
+        ],
+        "body_margin_m": 0.1616067959078746,
+        "required_body_margin_m": 0.1518,
+        "reserve_slack_m": 0.009806795907874616,
+        "own_planar_speed_mps": 0.0003081998241633581,
+        "zero_since_ns": 72320000000,
+        "qualification_source_samples_ns": [
+          73408000000,
+          73442000000,
+          73476000000
+        ]
+      },
+      {
+        "line": 50867,
+        "clock_ns": 73620000000,
+        "decision_sequence": 3662,
+        "original_reason": "peer_braking_nonclosing",
+        "original_output": [
+          0.0,
+          0.0
+        ],
+        "hypothetical_reason": "linear_brake_preserve_requested_turn",
+        "hypothetical_output": [
+          0.0,
+          -0.8
+        ],
+        "raw_request": [
+          0.01368421052631579,
+          -0.8
+        ],
+        "body_margin_m": 0.15473615372063476,
+        "required_body_margin_m": 0.1518,
+        "reserve_slack_m": 0.002936153720634771,
+        "own_planar_speed_mps": 0.00014430842198651962,
+        "zero_since_ns": 72320000000,
+        "qualification_source_samples_ns": [
+          73544000000,
+          73578000000,
+          73612000000
+        ]
+      }
+    ],
+    "tb2": [
+      {
+        "line": 50491,
+        "clock_ns": 73420000000,
+        "decision_sequence": 3652,
+        "original_reason": "peer_braking_nonclosing",
+        "original_output": [
+          0.0,
+          0.0
+        ],
+        "hypothetical_reason": "linear_brake_preserve_requested_turn",
+        "hypothetical_output": [
+          0.0,
+          0.8
+        ],
+        "raw_request": [
+          0.02736842105263158,
+          0.8
+        ],
+        "body_margin_m": 0.16190660968756473,
+        "required_body_margin_m": 0.1518,
+        "reserve_slack_m": 0.010106609687564744,
+        "own_planar_speed_mps": 0.0002106439153718404,
+        "zero_since_ns": 72320000000,
+        "qualification_source_samples_ns": [
+          73330000000,
+          73364000000,
+          73398000000
+        ]
+      },
+      {
+        "line": 50604,
+        "clock_ns": 73480000000,
+        "decision_sequence": 3655,
+        "original_reason": "peer_braking_nonclosing",
+        "original_output": [
+          0.0,
+          0.0
+        ],
+        "hypothetical_reason": "linear_brake_preserve_requested_turn",
+        "hypothetical_output": [
+          0.0,
+          0.8
+        ],
+        "raw_request": [
+          0.04105263157894737,
+          0.8
+        ],
+        "body_margin_m": 0.18561174754050538,
+        "required_body_margin_m": 0.1518,
+        "reserve_slack_m": 0.033811747540505394,
+        "own_planar_speed_mps": 0.00012864743372672166,
+        "zero_since_ns": 72320000000,
+        "qualification_source_samples_ns": [
+          73398000000,
+          73432000000,
+          73466000000
+        ]
+      },
+      {
+        "line": 50681,
+        "clock_ns": 73520000000,
+        "decision_sequence": 3657,
+        "original_reason": "peer_braking_nonclosing",
+        "original_output": [
+          0.0,
+          0.0
+        ],
+        "hypothetical_reason": "linear_brake_preserve_requested_turn",
+        "hypothetical_output": [
+          0.0,
+          0.8
+        ],
+        "raw_request": [
+          0.02736842105263158,
+          0.8
+        ],
+        "body_margin_m": 0.1738726421146354,
+        "required_body_margin_m": 0.1518,
+        "reserve_slack_m": 0.022072642114635416,
+        "own_planar_speed_mps": 0.0002386432056497591,
+        "zero_since_ns": 72320000000,
+        "qualification_source_samples_ns": [
+          73432000000,
+          73466000000,
+          73500000000
+        ]
+      }
+    ],
+    "tb3": [
+      {
+        "line": 104127,
+        "clock_ns": 85480000000,
+        "decision_sequence": 4255,
+        "original_reason": "peer_braking_nonclosing",
+        "original_output": [
+          0.0,
+          0.0
+        ],
+        "hypothetical_reason": "linear_brake_preserve_requested_turn",
+        "hypothetical_output": [
+          0.0,
+          0.8
+        ],
+        "raw_request": [
+          0.1094736842105263,
+          0.8
+        ],
+        "body_margin_m": 0.1766865099424584,
+        "required_body_margin_m": 0.1518,
+        "reserve_slack_m": 0.024886509942458418,
+        "own_planar_speed_mps": 0.00021853692731486134,
+        "zero_since_ns": 82020000000,
+        "qualification_source_samples_ns": [
+          85397000000,
+          85431000000,
+          85465000000
+        ]
+      },
+      {
+        "line": 104162,
+        "clock_ns": 85500000000,
+        "decision_sequence": 4256,
+        "original_reason": "peer_braking_nonclosing",
+        "original_output": [
+          0.0,
+          0.0
+        ],
+        "hypothetical_reason": "linear_brake_preserve_requested_turn",
+        "hypothetical_output": [
+          0.0,
+          0.8
+        ],
+        "raw_request": [
+          0.1094736842105263,
+          0.8
+        ],
+        "body_margin_m": 0.16468494491805302,
+        "required_body_margin_m": 0.1518,
+        "reserve_slack_m": 0.012884944918053032,
+        "own_planar_speed_mps": 0.00034329711641807034,
+        "zero_since_ns": 82020000000,
+        "qualification_source_samples_ns": [
+          85431000000,
+          85465000000,
+          85499000000
+        ]
+      },
+      {
+        "line": 104203,
+        "clock_ns": 85520000000,
+        "decision_sequence": 4257,
+        "original_reason": "peer_braking_nonclosing",
+        "original_output": [
+          0.0,
+          0.0
+        ],
+        "hypothetical_reason": "linear_brake_preserve_requested_turn",
+        "hypothetical_output": [
+          0.0,
+          0.8
+        ],
+        "raw_request": [
+          0.1094736842105263,
+          0.8
+        ],
+        "body_margin_m": 0.2123840551273996,
+        "required_body_margin_m": 0.1518,
+        "reserve_slack_m": 0.060584055127399616,
+        "own_planar_speed_mps": 0.00034329711641807034,
+        "zero_since_ns": 82020000000,
+        "qualification_source_samples_ns": [
+          85431000000,
+          85465000000,
+          85499000000
+        ]
+      }
+    ]
+  },
+  "opportunity_windows": {
+    "tb1": [
+      {
+        "start_ns": 73460000000,
+        "end_ns": 73480000000,
+        "samples": 2,
+        "min_reserve_slack_m": 0.009806795907874616
+      },
+      {
+        "start_ns": 73620000000,
+        "end_ns": 73620000000,
+        "samples": 1,
+        "min_reserve_slack_m": 0.002936153720634771
+      },
+      {
+        "start_ns": 73720000000,
+        "end_ns": 73720000000,
+        "samples": 1,
+        "min_reserve_slack_m": 0.008309246637243278
+      },
+      {
+        "start_ns": 73820000000,
+        "end_ns": 73900000000,
+        "samples": 5,
+        "min_reserve_slack_m": 0.015177710112096926
+      },
+      {
+        "start_ns": 74040000000,
+        "end_ns": 74160000000,
+        "samples": 7,
+        "min_reserve_slack_m": 0.004262440092476921
+      },
+      {
+        "start_ns": 74220000000,
+        "end_ns": 74220000000,
+        "samples": 1,
+        "min_reserve_slack_m": 0.03193068668601104
+      },
+      {
+        "start_ns": 74300000000,
+        "end_ns": 74340000000,
+        "samples": 3,
+        "min_reserve_slack_m": 0.022447810994316447
+      },
+      {
+        "start_ns": 74420000000,
+        "end_ns": 74520000000,
+        "samples": 6,
+        "min_reserve_slack_m": 0.03795245334278716
+      },
+      {
+        "start_ns": 74620000000,
+        "end_ns": 74680000000,
+        "samples": 4,
+        "min_reserve_slack_m": 0.03888282886752206
+      },
+      {
+        "start_ns": 74720000000,
+        "end_ns": 74780000000,
+        "samples": 4,
+        "min_reserve_slack_m": 0.002850395888261109
+      },
+      {
+        "start_ns": 74880000000,
+        "end_ns": 74980000000,
+        "samples": 6,
+        "min_reserve_slack_m": 0.00254372033230002
+      },
+      {
+        "start_ns": 75020000000,
+        "end_ns": 75100000000,
+        "samples": 5,
+        "min_reserve_slack_m": 0.02684019758929415
+      },
+      {
+        "start_ns": 75180000000,
+        "end_ns": 75180000000,
+        "samples": 1,
+        "min_reserve_slack_m": 0.0032500980601239127
+      },
+      {
+        "start_ns": 75220000000,
+        "end_ns": 75360000000,
+        "samples": 8,
+        "min_reserve_slack_m": 0.01523253481371048
+      },
+      {
+        "start_ns": 75500000000,
+        "end_ns": 75580000000,
+        "samples": 5,
+        "min_reserve_slack_m": 0.0032292844127483067
+      },
+      {
+        "start_ns": 75620000000,
+        "end_ns": 75700000000,
+        "samples": 5,
+        "min_reserve_slack_m": 0.039221522148882665
+      },
+      {
+        "start_ns": 75820000000,
+        "end_ns": 75980000000,
+        "samples": 9,
+        "min_reserve_slack_m": 0.008751462249204506
+      },
+      {
+        "start_ns": 76020000000,
+        "end_ns": 76020000000,
+        "samples": 1,
+        "min_reserve_slack_m": 0.04476635984122304
+      },
+      {
+        "start_ns": 76100000000,
+        "end_ns": 76200000000,
+        "samples": 6,
+        "min_reserve_slack_m": 0.0050289866423754714
+      },
+      {
+        "start_ns": 76240000000,
+        "end_ns": 76280000000,
+        "samples": 3,
+        "min_reserve_slack_m": 0.01672631801849836
+      },
+      {
+        "start_ns": 76380000000,
+        "end_ns": 76600000000,
+        "samples": 12,
+        "min_reserve_slack_m": 0.004720963670963474
+      },
+      {
+        "start_ns": 76680000000,
+        "end_ns": 76720000000,
+        "samples": 3,
+        "min_reserve_slack_m": 0.05344392388363686
+      },
+      {
+        "start_ns": 76760000000,
+        "end_ns": 76860000000,
+        "samples": 6,
+        "min_reserve_slack_m": 0.005425712611333261
+      },
+      {
+        "start_ns": 76960000000,
+        "end_ns": 77060000000,
+        "samples": 6,
+        "min_reserve_slack_m": 0.006038393002957637
+      },
+      {
+        "start_ns": 77100000000,
+        "end_ns": 77180000000,
+        "samples": 5,
+        "min_reserve_slack_m": 0.018395982550172052
+      },
+      {
+        "start_ns": 77260000000,
+        "end_ns": 77400000000,
+        "samples": 8,
+        "min_reserve_slack_m": 0.006390962154368657
+      },
+      {
+        "start_ns": 77440000000,
+        "end_ns": 77440000000,
+        "samples": 1,
+        "min_reserve_slack_m": 0.10209877295469172
+      },
+      {
+        "start_ns": 77540000000,
+        "end_ns": 77720000000,
+        "samples": 10,
+        "min_reserve_slack_m": 0.006078657297468454
+      },
+      {
+        "start_ns": 77800000000,
+        "end_ns": 78020000000,
+        "samples": 12,
+        "min_reserve_slack_m": 0.006675264638538653
+      },
+      {
+        "start_ns": 78120000000,
+        "end_ns": 78320000000,
+        "samples": 11,
+        "min_reserve_slack_m": 0.007030327753680149
+      },
+      {
+        "start_ns": 78420000000,
+        "end_ns": 78420000000,
+        "samples": 1,
+        "min_reserve_slack_m": 0.05536196165049226
+      },
+      {
+        "start_ns": 78460000000,
+        "end_ns": 78600000000,
+        "samples": 8,
+        "min_reserve_slack_m": 0.007953807400043172
+      },
+      {
+        "start_ns": 78680000000,
+        "end_ns": 78760000000,
+        "samples": 5,
+        "min_reserve_slack_m": 0.031893935031198195
+      },
+      {
+        "start_ns": 78800000000,
+        "end_ns": 78880000000,
+        "samples": 5,
+        "min_reserve_slack_m": 0.007887639988641754
+      },
+      {
+        "start_ns": 78960000000,
+        "end_ns": 79100000000,
+        "samples": 8,
+        "min_reserve_slack_m": 0.007869385694444203
+      },
+      {
+        "start_ns": 79140000000,
+        "end_ns": 79140000000,
+        "samples": 1,
+        "min_reserve_slack_m": 0.04355751974810457
+      },
+      {
+        "start_ns": 79240000000,
+        "end_ns": 79420000000,
+        "samples": 10,
+        "min_reserve_slack_m": 0.007299328017611323
+      },
+      {
+        "start_ns": 79500000000,
+        "end_ns": 79680000000,
+        "samples": 10,
+        "min_reserve_slack_m": 0.007581165007744445
+      },
+      {
+        "start_ns": 79780000000,
+        "end_ns": 79960000000,
+        "samples": 10,
+        "min_reserve_slack_m": 0.007571125552814945
+      },
+      {
+        "start_ns": 80040000000,
+        "end_ns": 80240000000,
+        "samples": 11,
+        "min_reserve_slack_m": 0.007530473908849339
+      },
+      {
+        "start_ns": 80320000000,
+        "end_ns": 80460000000,
+        "samples": 8,
+        "min_reserve_slack_m": 0.007513623336618452
+      },
+      {
+        "start_ns": 80500000000,
+        "end_ns": 80540000000,
+        "samples": 3,
+        "min_reserve_slack_m": 0.042902136394767504
+      },
+      {
+        "start_ns": 80660000000,
+        "end_ns": 80800000000,
+        "samples": 8,
+        "min_reserve_slack_m": 0.007170565117605582
+      },
+      {
+        "start_ns": 80840000000,
+        "end_ns": 80840000000,
+        "samples": 1,
+        "min_reserve_slack_m": 0.10346911423457306
+      },
+      {
+        "start_ns": 80940000000,
+        "end_ns": 81120000000,
+        "samples": 10,
+        "min_reserve_slack_m": 0.007451602177712485
+      },
+      {
+        "start_ns": 81200000000,
+        "end_ns": 81200000000,
+        "samples": 1,
+        "min_reserve_slack_m": 0.007437976821297793
+      },
+      {
+        "start_ns": 81260000000,
+        "end_ns": 81380000000,
+        "samples": 7,
+        "min_reserve_slack_m": 0.007423529571119386
+      },
+      {
+        "start_ns": 81480000000,
+        "end_ns": 81480000000,
+        "samples": 1,
+        "min_reserve_slack_m": 0.08411247363471289
+      },
+      {
+        "start_ns": 81520000000,
+        "end_ns": 81660000000,
+        "samples": 8,
+        "min_reserve_slack_m": 0.012098048699136305
+      },
+      {
+        "start_ns": 81780000000,
+        "end_ns": 81820000000,
+        "samples": 3,
+        "min_reserve_slack_m": 0.01208458002831922
+      },
+      {
+        "start_ns": 81860000000,
+        "end_ns": 82000000000,
+        "samples": 8,
+        "min_reserve_slack_m": 0.012055829352278419
+      },
+      {
+        "start_ns": 82080000000,
+        "end_ns": 82160000000,
+        "samples": 5,
+        "min_reserve_slack_m": 0.036042343702914675
+      },
+      {
+        "start_ns": 82200000000,
+        "end_ns": 82280000000,
+        "samples": 5,
+        "min_reserve_slack_m": 0.012038467483744902
+      },
+      {
+        "start_ns": 82360000000,
+        "end_ns": 82360000000,
+        "samples": 1,
+        "min_reserve_slack_m": 0.036629329390226034
+      },
+      {
+        "start_ns": 85520000000,
+        "end_ns": 85560000000,
+        "samples": 3,
+        "min_reserve_slack_m": 0.036577881078980995
+      },
+      {
+        "start_ns": 85600000000,
+        "end_ns": 85740000000,
+        "samples": 8,
+        "min_reserve_slack_m": 0.012570127398831066
+      },
+      {
+        "start_ns": 85820000000,
+        "end_ns": 86020000000,
+        "samples": 11,
+        "min_reserve_slack_m": 0.012826690892367515
+      },
+      {
+        "start_ns": 86140000000,
+        "end_ns": 86360000000,
+        "samples": 12,
+        "min_reserve_slack_m": 0.012502624725143463
+      },
+      {
+        "start_ns": 86480000000,
+        "end_ns": 86580000000,
+        "samples": 6,
+        "min_reserve_slack_m": 0.024758711419226004
+      },
+      {
+        "start_ns": 86620000000,
+        "end_ns": 86660000000,
+        "samples": 3,
+        "min_reserve_slack_m": 0.04874790498193585
+      },
+      {
+        "start_ns": 86740000000,
+        "end_ns": 86920000000,
+        "samples": 10,
+        "min_reserve_slack_m": 0.021202469268008894
+      },
+      {
+        "start_ns": 86960000000,
+        "end_ns": 86960000000,
+        "samples": 1,
+        "min_reserve_slack_m": 0.04547840337009321
+      },
+      {
+        "start_ns": 87060000000,
+        "end_ns": 87240000000,
+        "samples": 10,
+        "min_reserve_slack_m": 0.008859326776993998
+      },
+      {
+        "start_ns": 87360000000,
+        "end_ns": 87580000000,
+        "samples": 12,
+        "min_reserve_slack_m": 0.021448215442237156
+      },
+      {
+        "start_ns": 87660000000,
+        "end_ns": 87840000000,
+        "samples": 10,
+        "min_reserve_slack_m": 0.021406081086556145
+      },
+      {
+        "start_ns": 87960000000,
+        "end_ns": 88180000000,
+        "samples": 12,
+        "min_reserve_slack_m": 0.020794882508237383
+      },
+      {
+        "start_ns": 88320000000,
+        "end_ns": 88520000000,
+        "samples": 11,
+        "min_reserve_slack_m": 0.02105399867178398
+      },
+      {
+        "start_ns": 88620000000,
+        "end_ns": 88800000000,
+        "samples": 10,
+        "min_reserve_slack_m": 0.02132297163453098
+      },
+      {
+        "start_ns": 88880000000,
+        "end_ns": 88960000000,
+        "samples": 5,
+        "min_reserve_slack_m": 0.04530922628398679
+      },
+      {
+        "start_ns": 89000000000,
+        "end_ns": 89080000000,
+        "samples": 5,
+        "min_reserve_slack_m": 0.021308567597851352
+      },
+      {
+        "start_ns": 89160000000,
+        "end_ns": 89300000000,
+        "samples": 8,
+        "min_reserve_slack_m": 0.021303505346403767
+      },
+      {
+        "start_ns": 89340000000,
+        "end_ns": 89340000000,
+        "samples": 1,
+        "min_reserve_slack_m": 0.057283105384700966
+      },
+      {
+        "start_ns": 89440000000,
+        "end_ns": 89620000000,
+        "samples": 10,
+        "min_reserve_slack_m": 0.03502882817807915
+      },
+      {
+        "start_ns": 89700000000,
+        "end_ns": 89860000000,
+        "samples": 9,
+        "min_reserve_slack_m": 0.03473477561440613
+      },
+      {
+        "start_ns": 89940000000,
+        "end_ns": 89980000000,
+        "samples": 3,
+        "min_reserve_slack_m": 0.04701946259376319
+      },
+      {
+        "start_ns": 90020000000,
+        "end_ns": 90120000000,
+        "samples": 6,
+        "min_reserve_slack_m": 0.023011427446550353
+      },
+      {
+        "start_ns": 90240000000,
+        "end_ns": 90320000000,
+        "samples": 5,
+        "min_reserve_slack_m": 0.07099863177486912
+      },
+      {
+        "start_ns": 90360000000,
+        "end_ns": 90460000000,
+        "samples": 6,
+        "min_reserve_slack_m": 0.03498679980922889
+      },
+      {
+        "start_ns": 90560000000,
+        "end_ns": 90660000000,
+        "samples": 6,
+        "min_reserve_slack_m": 0.03468065059745645
+      },
+      {
+        "start_ns": 90700000000,
+        "end_ns": 90740000000,
+        "samples": 3,
+        "min_reserve_slack_m": 0.070670492337812
+      },
+      {
+        "start_ns": 90820000000,
+        "end_ns": 91000000000,
+        "samples": 10,
+        "min_reserve_slack_m": 0.034659771503680215
+      },
+      {
+        "start_ns": 91100000000,
+        "end_ns": 91280000000,
+        "samples": 10,
+        "min_reserve_slack_m": 0.03465006413696342
+      },
+      {
+        "start_ns": 91360000000,
+        "end_ns": 91560000000,
+        "samples": 11,
+        "min_reserve_slack_m": 0.03464582354082307
+      },
+      {
+        "start_ns": 91680000000,
+        "end_ns": 91680000000,
+        "samples": 1,
+        "min_reserve_slack_m": 0.1066286039942736
+      },
+      {
+        "start_ns": 91720000000,
+        "end_ns": 91900000000,
+        "samples": 10,
+        "min_reserve_slack_m": 0.03461561854556833
+      },
+      {
+        "start_ns": 91980000000,
+        "end_ns": 92020000000,
+        "samples": 3,
+        "min_reserve_slack_m": 0.034316996095261426
+      },
+      {
+        "start_ns": 92060000000,
+        "end_ns": 92160000000,
+        "samples": 6,
+        "min_reserve_slack_m": 0.05829937713291655
+      },
+      {
+        "start_ns": 92260000000,
+        "end_ns": 92320000000,
+        "samples": 4,
+        "min_reserve_slack_m": 0.08288430194398325
+      }
+    ],
+    "tb2": [
+      {
+        "start_ns": 73420000000,
+        "end_ns": 73420000000,
+        "samples": 1,
+        "min_reserve_slack_m": 0.010106609687564744
+      },
+      {
+        "start_ns": 73480000000,
+        "end_ns": 73480000000,
+        "samples": 1,
+        "min_reserve_slack_m": 0.033811747540505394
+      },
+      {
+        "start_ns": 73520000000,
+        "end_ns": 73540000000,
+        "samples": 2,
+        "min_reserve_slack_m": 0.010074728944960504
+      },
+      {
+        "start_ns": 73620000000,
+        "end_ns": 73640000000,
+        "samples": 2,
+        "min_reserve_slack_m": 0.02099157990934994
+      },
+      {
+        "start_ns": 73680000000,
+        "end_ns": 73780000000,
+        "samples": 6,
+        "min_reserve_slack_m": 0.00450652158216594
+      },
+      {
+        "start_ns": 73820000000,
+        "end_ns": 73820000000,
+        "samples": 1,
+        "min_reserve_slack_m": 0.05040516117545882
+      },
+      {
+        "start_ns": 73920000000,
+        "end_ns": 74040000000,
+        "samples": 7,
+        "min_reserve_slack_m": 0.011124078809452514
+      },
+      {
+        "start_ns": 74080000000,
+        "end_ns": 74160000000,
+        "samples": 5,
+        "min_reserve_slack_m": 0.038088696352395784
+      },
+      {
+        "start_ns": 74200000000,
+        "end_ns": 74220000000,
+        "samples": 2,
+        "min_reserve_slack_m": 0.014092983629235223
+      },
+      {
+        "start_ns": 74280000000,
+        "end_ns": 74420000000,
+        "samples": 8,
+        "min_reserve_slack_m": 0.02425887875869917
+      },
+      {
+        "start_ns": 74500000000,
+        "end_ns": 74500000000,
+        "samples": 1,
+        "min_reserve_slack_m": 0.0910213192413192
+      },
+      {
+        "start_ns": 74540000000,
+        "end_ns": 74620000000,
+        "samples": 5,
+        "min_reserve_slack_m": 0.03216105574084524
+      },
+      {
+        "start_ns": 74680000000,
+        "end_ns": 74820000000,
+        "samples": 8,
+        "min_reserve_slack_m": 0.03223116032099879
+      },
+      {
+        "start_ns": 74900000000,
+        "end_ns": 75020000000,
+        "samples": 7,
+        "min_reserve_slack_m": 0.03803338924456762
+      },
+      {
+        "start_ns": 75060000000,
+        "end_ns": 75160000000,
+        "samples": 6,
+        "min_reserve_slack_m": 0.06316818719056091
+      },
+      {
+        "start_ns": 75280000000,
+        "end_ns": 75520000000,
+        "samples": 13,
+        "min_reserve_slack_m": 0.03923780268316099
+      },
+      {
+        "start_ns": 75620000000,
+        "end_ns": 75840000000,
+        "samples": 12,
+        "min_reserve_slack_m": 0.039359458152217947
+      },
+      {
+        "start_ns": 75920000000,
+        "end_ns": 76200000000,
+        "samples": 15,
+        "min_reserve_slack_m": 0.03940664339965835
+      },
+      {
+        "start_ns": 76340000000,
+        "end_ns": 76540000000,
+        "samples": 11,
+        "min_reserve_slack_m": 0.04763219307217134
+      },
+      {
+        "start_ns": 76580000000,
+        "end_ns": 76620000000,
+        "samples": 3,
+        "min_reserve_slack_m": 0.04768754847399578
+      },
+      {
+        "start_ns": 85480000000,
+        "end_ns": 85720000000,
+        "samples": 13,
+        "min_reserve_slack_m": 0.0471275779915131
+      },
+      {
+        "start_ns": 85820000000,
+        "end_ns": 86000000000,
+        "samples": 10,
+        "min_reserve_slack_m": 0.0473948136613922
+      },
+      {
+        "start_ns": 86080000000,
+        "end_ns": 86340000000,
+        "samples": 14,
+        "min_reserve_slack_m": 0.04707487570026089
+      }
+    ],
+    "tb3": [
+      {
+        "start_ns": 85480000000,
+        "end_ns": 85580000000,
+        "samples": 6,
+        "min_reserve_slack_m": 0.012884944918053032
+      },
+      {
+        "start_ns": 85620000000,
+        "end_ns": 85760000000,
+        "samples": 8,
+        "min_reserve_slack_m": 0.012259688871984392
+      },
+      {
+        "start_ns": 85840000000,
+        "end_ns": 85920000000,
+        "samples": 5,
+        "min_reserve_slack_m": 0.012542024777459193
+      },
+      {
+        "start_ns": 85960000000,
+        "end_ns": 86060000000,
+        "samples": 6,
+        "min_reserve_slack_m": 0.036516815837502686
+      },
+      {
+        "start_ns": 86160000000,
+        "end_ns": 86260000000,
+        "samples": 6,
+        "min_reserve_slack_m": 0.024512792646986498
+      },
+      {
+        "start_ns": 86300000000,
+        "end_ns": 86340000000,
+        "samples": 3,
+        "min_reserve_slack_m": 0.01279323478879768
+      },
+      {
+        "start_ns": 86420000000,
+        "end_ns": 86600000000,
+        "samples": 10,
+        "min_reserve_slack_m": 0.012471619127801092
+      },
+      {
+        "start_ns": 86640000000,
+        "end_ns": 86640000000,
+        "samples": 1,
+        "min_reserve_slack_m": 0.048751946627296566
+      },
+      {
+        "start_ns": 86740000000,
+        "end_ns": 86940000000,
+        "samples": 11,
+        "min_reserve_slack_m": 0.02119045896300925
+      },
+      {
+        "start_ns": 87040000000,
+        "end_ns": 87220000000,
+        "samples": 10,
+        "min_reserve_slack_m": 0.021168656348529102
+      },
+      {
+        "start_ns": 87320000000,
+        "end_ns": 87520000000,
+        "samples": 11,
+        "min_reserve_slack_m": 0.021434343410587142
+      },
+      {
+        "start_ns": 87620000000,
+        "end_ns": 87620000000,
+        "samples": 1,
+        "min_reserve_slack_m": 0.0694199233086791
+      },
+      {
+        "start_ns": 87660000000,
+        "end_ns": 87840000000,
+        "samples": 10,
+        "min_reserve_slack_m": 0.021412229897280644
+      },
+      {
+        "start_ns": 87920000000,
+        "end_ns": 87960000000,
+        "samples": 3,
+        "min_reserve_slack_m": 0.04479224777367097
+      },
+      {
+        "start_ns": 88000000000,
+        "end_ns": 88100000000,
+        "samples": 6,
+        "min_reserve_slack_m": 0.020780966332569234
+      },
+      {
+        "start_ns": 88200000000,
+        "end_ns": 88300000000,
+        "samples": 6,
+        "min_reserve_slack_m": 0.021057111965114894
+      },
+      {
+        "start_ns": 88340000000,
+        "end_ns": 88420000000,
+        "samples": 5,
+        "min_reserve_slack_m": 0.03305453363762048
+      },
+      {
+        "start_ns": 88500000000,
+        "end_ns": 88640000000,
+        "samples": 8,
+        "min_reserve_slack_m": 0.021347084127105287
+      },
+      {
+        "start_ns": 88680000000,
+        "end_ns": 88720000000,
+        "samples": 3,
+        "min_reserve_slack_m": 0.021325861926254075
+      },
+      {
+        "start_ns": 88800000000,
+        "end_ns": 88980000000,
+        "samples": 10,
+        "min_reserve_slack_m": 0.021310099428327067
+      },
+      {
+        "start_ns": 89020000000,
+        "end_ns": 89020000000,
+        "samples": 1,
+        "min_reserve_slack_m": 0.06930300930316571
+      },
+      {
+        "start_ns": 89120000000,
+        "end_ns": 89300000000,
+        "samples": 10,
+        "min_reserve_slack_m": 0.02128717647041678
+      },
+      {
+        "start_ns": 89380000000,
+        "end_ns": 89600000000,
+        "samples": 12,
+        "min_reserve_slack_m": 0.021267414652863526
+      },
+      {
+        "start_ns": 89700000000,
+        "end_ns": 89880000000,
+        "samples": 10,
+        "min_reserve_slack_m": 0.035033828285565005
+      },
+      {
+        "start_ns": 89960000000,
+        "end_ns": 90000000000,
+        "samples": 3,
+        "min_reserve_slack_m": 0.03501035408977901
+      },
+      {
+        "start_ns": 90040000000,
+        "end_ns": 90140000000,
+        "samples": 6,
+        "min_reserve_slack_m": 0.03470128475835571
+      },
+      {
+        "start_ns": 90240000000,
+        "end_ns": 90340000000,
+        "samples": 6,
+        "min_reserve_slack_m": 0.03498365907762113
+      },
+      {
+        "start_ns": 90380000000,
+        "end_ns": 90420000000,
+        "samples": 3,
+        "min_reserve_slack_m": 0.08297763511582404
+      },
+      {
+        "start_ns": 90480000000,
+        "end_ns": 90660000000,
+        "samples": 10,
+        "min_reserve_slack_m": 0.034973763922799495
+      },
+      {
+        "start_ns": 90740000000,
+        "end_ns": 90920000000,
+        "samples": 10,
+        "min_reserve_slack_m": 0.034655056560702946
+      },
+      {
+        "start_ns": 91020000000,
+        "end_ns": 91020000000,
+        "samples": 1,
+        "min_reserve_slack_m": 0.08265585886218993
+      },
+      {
+        "start_ns": 91060000000,
+        "end_ns": 91200000000,
+        "samples": 8,
+        "min_reserve_slack_m": 0.034644645827378084
+      },
+      {
+        "start_ns": 91280000000,
+        "end_ns": 91360000000,
+        "samples": 5,
+        "min_reserve_slack_m": 0.03433801185213628
+      },
+      {
+        "start_ns": 91400000000,
+        "end_ns": 91500000000,
+        "samples": 6,
+        "min_reserve_slack_m": 0.03492251094863286
+      },
+      {
+        "start_ns": 91600000000,
+        "end_ns": 91700000000,
+        "samples": 6,
+        "min_reserve_slack_m": 0.03460776271805216
+      },
+      {
+        "start_ns": 91740000000,
+        "end_ns": 91820000000,
+        "samples": 5,
+        "min_reserve_slack_m": 0.05860762106773856
+      },
+      {
+        "start_ns": 91900000000,
+        "end_ns": 92040000000,
+        "samples": 8,
+        "min_reserve_slack_m": 0.03460674484840359
+      },
+      {
+        "start_ns": 92080000000,
+        "end_ns": 92080000000,
+        "samples": 1,
+        "min_reserve_slack_m": 0.04629607655966794
+      },
+      {
+        "start_ns": 92180000000,
+        "end_ns": 92320000000,
+        "samples": 8,
+        "min_reserve_slack_m": 0.034578515393934584
+      }
+    ]
+  },
+  "ordering_cpu_checks": {
+    "backward_output_clock_rejected": true,
+    "nonincreasing_output_sequence_rejected": true
+  },
+  "release_prefix_restarted": true,
+  "errors": [],
+  "wall_sec": 7.071837340947241,
+  "scope": "Full original odom/linear-target histories plus hypothetical branch queries at historical inputs. No hypothetical angular output fed to physics or future tracker activation; windows are opportunity observations, not a replayed new closed-loop trajectory or proof of physical invariant/movement."
+}

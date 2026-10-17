@@ -1,0 +1,12 @@
+{
+  "schema": "mr3-v7-native-archive-first-attempt-v1",
+  "created_wall_ns": 1792217151558573353,
+  "script": "/tmp/archive_mr3_p2a0_v7_interface_v1.py",
+  "script_sha256": "325c0d9561b26e5b1ce54196a1aea62faecc111db1c49afd8cf5f8569881248a",
+  "exit_code": 1,
+  "error": "FileExistsError at preserve(path,target), line110: canonical independent/mr3_readonly_v7_drive_process_monitor.py already existed from prefreeze",
+  "native_pack_completed": true,
+  "native_copy_completed": true,
+  "original_native_or_existing_asset_overwritten": false,
+  "correction": "v2 verifies exact existing destination bytes, reuses them without rewriting, and proves original prefreeze assets against source Git freeze; does not rerun native/audits."
+}

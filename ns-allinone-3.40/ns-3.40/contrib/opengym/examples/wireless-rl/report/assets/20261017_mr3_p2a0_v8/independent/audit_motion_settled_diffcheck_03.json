@@ -1,0 +1,29 @@
+{
+  "schema": "mr3-v8-audit-motion-cpu-check-v1",
+  "argv": [
+    "git",
+    "diff",
+    "--check",
+    "--",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_motion.py",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_motion.py"
+  ],
+  "cwd": "/home/zhuyulab/ns3-workspace",
+  "exit_code": 0,
+  "wall_sec": 0.025397468823939562,
+  "source_before": {
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_motion.py": "966c6b651b854041ac29966a1949adc55b7551ad7c8ef9d7570cdaa2fafd39fc",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_motion.py": "9dde16392d9d577e3c3e76b422ec0d6c31eba2172f941749e79b4d33b0799e8b",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_motion_safety.py": "fc1adb189922e5b7f7d62ece2a3bdf9720fb3766916bc98b3f74d71930906ef8",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/motion_safety.py": "49bfee501384c9274eb9660c879ef3610032262b708efad2087cfc8599409920"
+  },
+  "source_after": {
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_motion.py": "966c6b651b854041ac29966a1949adc55b7551ad7c8ef9d7570cdaa2fafd39fc",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_motion.py": "9dde16392d9d577e3c3e76b422ec0d6c31eba2172f941749e79b4d33b0799e8b",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_motion_safety.py": "fc1adb189922e5b7f7d62ece2a3bdf9720fb3766916bc98b3f74d71930906ef8",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/motion_safety.py": "49bfee501384c9274eb9660c879ef3610032262b708efad2087cfc8599409920"
+  },
+  "source_unchanged": true,
+  "stdout": "audit_motion_settled_diffcheck_03.txt",
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

@@ -1,0 +1,94 @@
+{
+  "schema": "mr3-p2a0-v8-external-probe-checks-v1",
+  "base_freeze": "01cfa040dcb73f8931dd11d66b69ce765cb8412f",
+  "source_sha256": {
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/benchmark.py": "f0575da2133db240d5359167d46765643a1e57f5a3c2d1067715c9a992a28e0f",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_preparation.py": "c70bcc8e04e4239cba8c9bf1286ee0b327b00e41e69ef85ca07cbf40d7221aaa",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_benchmark.py": "206252f1d3c6ad400cc7e276c8fd2f45ad36a42d7fb547ea1ba0e23a5395a42e",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_preparation_comparison.py": "08af19865e7c1330539e06d3be6d978083faa3f3d7028897f6e4df348016d5af"
+  },
+  "checks": [
+    {
+      "name": "conda_52_affected",
+      "command_argv": [
+        "env",
+        "-u",
+        "PYTHONPATH",
+        "PYTHONNOUSERSITE=1",
+        "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+        "-m",
+        "unittest",
+        "mr3_learning.tests.test_benchmark",
+        "mr3_learning.tests.test_preparation_comparison",
+        "mr3_learning.tests.test_audit_preparation",
+        "mr3_learning.tests.test_preparation_execution",
+        "-v"
+      ],
+      "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.\nPlease upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.\nUsers of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.\nSee the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.\ntest_already_aborted_worker_closes_without_any_reset (mr3_learning.tests.test_benchmark.CooperativeAbortTests) ... ok\ntest_close_exception_does_not_skip_other_worker_close (mr3_learning.tests.test_benchmark.CooperativeAbortTests) ... ok\ntest_complete_flag_fixture_keeps_both_twenty_step_episodes (mr3_learning.tests.test_benchmark.CooperativeAbortTests) ... ok\ntest_early_truncation_is_real_failure_not_completed_fixture (mr3_learning.tests.test_benchmark.CooperativeAbortTests) ... ok\ntest_later_reset_exception_does_not_claim_previous_epoch (mr3_learning.tests.test_benchmark.CooperativeAbortTests) ... ok\ntest_legacy_keeps_existing_reset_after_real_termination (mr3_learning.tests.test_benchmark.CooperativeAbortTests) ... ok\ntest_main_complete_flag_fixture_passes_without_abort (mr3_learning.tests.test_benchmark.CooperativeAbortTests) ... ok\ntest_main_legacy_metadata_has_no_preparation_version_or_abort (mr3_learning.tests.test_benchmark.CooperativeAbortTests) ... ok\ntest_main_parameter_review_source_binding_is_in_metadata_and_summary (mr3_learning.tests.test_benchmark.CooperativeAbortTests) ... ok\ntest_main_records_version_and_real_first_failure (mr3_learning.tests.test_benchmark.CooperativeAbortTests) ... ok\ntest_parameter_review_bad_transport_stops_before_spawn_or_step_and_closes (mr3_learning.tests.test_benchmark.CooperativeAbortTests) ... ok\ntest_parameter_review_failure_aborts_closes_and_saves_no_fake_step (mr3_learning.tests.test_benchmark.CooperativeAbortTests) ... ok\ntest_parameter_review_runs_after_reset_before_any_step_in_system_ros_environment (mr3_learning.tests.test_benchmark.CooperativeAbortTests) ... ok\ntest_parameter_review_timeout_retains_partial_output_and_closes_without_step (mr3_learning.tests.test_benchmark.CooperativeAbortTests) ... ok\ntest_real_termination_saved_before_peer_abort_and_all_workers_close (mr3_learning.tests.test_benchmark.CooperativeAbortTests) ... ok\ntest_reset_exception_closes_both_without_resetting_again (mr3_learning.tests.test_benchmark.CooperativeAbortTests) ... ok\ntest_step_exception_adds_no_transition_but_retains_peer_return (mr3_learning.tests.test_benchmark.CooperativeAbortTests) ... ok\ntest_v3_keeps_full_32_step_real_fakeenv_returns_and_separate_episode_diagnostics (mr3_learning.tests.test_benchmark.CooperativeAbortTests) ... ok\ntest_changed_disk_profile_rejected_even_if_native_sha_updated (mr3_learning.tests.test_benchmark.ParameterReviewTransportTests) ... ok\ntest_missing_none_key_is_not_silently_inherited (mr3_learning.tests.test_benchmark.ParameterReviewTransportTests) ... ok\ntest_native_declared_profile_must_equal_frozen_git_bytes (mr3_learning.tests.test_benchmark.ParameterReviewTransportTests) ... ok\ntest_native_discovery_keys_are_exact_none_values_remove_parent_defaults (mr3_learning.tests.test_benchmark.ParameterReviewTransportTests) ... ok\ntest_native_metadata_epoch_and_freeze_bindings_required (mr3_learning.tests.test_benchmark.ParameterReviewTransportTests) ... ok\ntest_symlinked_profile_is_not_an_alternate_execution_path (mr3_learning.tests.test_benchmark.ParameterReviewTransportTests) ... ok\ntest_wrong_rmw_profile_hash_or_transport_key_rejected (mr3_learning.tests.test_benchmark.ParameterReviewTransportTests) ... ok\ntest_flag_rejects_old_sixteen_step_fixture_before_creating_run (mr3_learning.tests.test_benchmark.PreparationProbeTests) ... ok\ntest_outward_goals_do_not_reuse_crossing_stress_order (mr3_learning.tests.test_benchmark.PreparationProbeTests) ... ok\ntest_parameter_review_rejects_other_worker_schedule_or_probe_before_run (mr3_learning.tests.test_benchmark.PreparationProbeTests) ... ok\ntest_parameter_review_requires_exact_tracked_freeze_bytes (mr3_learning.tests.test_benchmark.PreparationProbeTests) ... ok\ntest_v3_cli_records_explicit_version_and_32_step_budget_without_native_start (mr3_learning.tests.test_benchmark.PreparationProbeTests) ... ok\ntest_v3_explicit_32_step_phases_keep_v2_timing_unchanged (mr3_learning.tests.test_benchmark.PreparationProbeTests) ... ok\ntest_v3_prefers_opposite_received_turn_opportunity_only_in_second_goal_stage (mr3_learning.tests.test_benchmark.PreparationProbeTests) ... ok\ntest_v3_reference_sign_requires_fresh_actual_finite_turn_and_does_not_flip (mr3_learning.tests.test_benchmark.PreparationProbeTests) ... ok\ntest_v3_rule_is_invariant_to_common_frame_rotation_translation_and_scene_label (mr3_learning.tests.test_benchmark.PreparationProbeTests) ... ok\ntest_v3_version_requires_its_exact_declared_budget_and_flag (mr3_learning.tests.test_benchmark.PreparationProbeTests) ... ok\ntest_legacy_and_old_preparation_records_keep_original_comparison (mr3_learning.tests.test_preparation_comparison.PreparationComparisonTests) ... ok\ntest_numeric_aliases_and_summary_type_or_flag_changes_are_rejected (mr3_learning.tests.test_preparation_comparison.PreparationComparisonTests) ... ok\ntest_only_declared_new_fixtures_are_ineligible_without_changing_episode_gate (mr3_learning.tests.test_preparation_comparison.PreparationComparisonTests) ... ok\ntest_real_immutable_legacy_comparison_keeps_old_sixteen_step_failure (mr3_learning.tests.test_preparation_comparison.PreparationComparisonTests) ... ok\ntest_unknown_budget_seed_flags_or_summary_cannot_skip_comparison (mr3_learning.tests.test_preparation_comparison.PreparationComparisonTests) ... ok\ntest_v3_only_excludes_its_32_step_workload_and_preserves_native_gates (mr3_learning.tests.test_preparation_comparison.PreparationComparisonTests) ... ok\ntest_four_payloads_bind_two_snapshots_and_are_deduplicated (mr3_learning.tests.test_audit_preparation.ReceivedArchiveTests) ... ok\ntest_missing_transition_manifest_or_received_payload_is_rejected (mr3_learning.tests.test_audit_preparation.ReceivedArchiveTests) ... ok\ntest_modified_decoded_payload_and_noncanonical_raw_bytes_are_rejected (mr3_learning.tests.test_audit_preparation.ReceivedArchiveTests) ... ok\ntest_snapshot_identity_and_map_metadata_must_match_actual_transition (mr3_learning.tests.test_audit_preparation.ReceivedArchiveTests) ... ok\ntest_complete_output_bytes_and_exact_phase_pass_without_faking_source_clock (mr3_learning.tests.test_preparation_execution.ExecutionEvidenceTests) ... ok\ntest_missing_robot_costmap_stream_is_rejected (mr3_learning.tests.test_preparation_execution.ExecutionEvidenceTests) ... ok\ntest_replaced_source_header_does_not_match_native_bytes (mr3_learning.tests.test_preparation_execution.ExecutionEvidenceTests) ... ok\ntest_unreceived_or_missing_phase_cannot_authorize_physics (mr3_learning.tests.test_preparation_execution.ExecutionEvidenceTests) ... ok\ntest_visible_behavior_bypass_is_rejected (mr3_learning.tests.test_preparation_execution.ExecutionEvidenceTests) ... ok\ntest_per_robot_candidate_does_not_replace_joint_action_legality (mr3_learning.tests.test_preparation_execution.ProbeExecutionTests) ... ok\ntest_real_sends_accepts_and_observed_movement_are_all_required (mr3_learning.tests.test_preparation_execution.ProbeExecutionTests) ... ok\n\n----------------------------------------------------------------------\nRan 52 tests in 0.307s\n\nOK\n",
+      "wall_sec": 4.9082911419682205
+    },
+    {
+      "name": "flake8",
+      "command_argv": [
+        "/usr/bin/python3",
+        "-m",
+        "flake8",
+        "--max-line-length=99",
+        "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/benchmark.py",
+        "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_preparation.py",
+        "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_benchmark.py",
+        "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_preparation_comparison.py"
+      ],
+      "cwd": "/home/zhuyulab/ns3-workspace",
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "",
+      "wall_sec": 1.092924459837377
+    },
+    {
+      "name": "syntax",
+      "command_argv": [
+        "/usr/bin/python3",
+        "-m",
+        "py_compile",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/benchmark.py",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_preparation.py",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_benchmark.py",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_preparation_comparison.py"
+      ],
+      "cwd": "/home/zhuyulab/ns3-workspace",
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "",
+      "wall_sec": 0.11913648806512356
+    },
+    {
+      "name": "git_diff_check",
+      "command_argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "cwd": "/home/zhuyulab/ns3-workspace",
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "",
+      "wall_sec": 0.047752829734236
+    }
+  ],
+  "preserved_initial_style_failure": {
+    "path": "/tmp/mr3_p2a0_v8_probe_initial_style_failure_v1.json",
+    "sha256": "0718ea1aeaa0759397e7110db5ca814754bf55cdd3b1dad604f0c7494dd14b3d"
+  },
+  "version": "mr3-p2a0-outward-cancel-v3",
+  "steps": 32,
+  "schedule": "GOAL<1.5; KEEP1.5\u201310; WAIT10\u201313; GOAL13\u201315; KEEP15\u201328; WAIT28\u201332; external truncation32",
+  "ranking": "max legalGOALcount; secondstage maximize count of received goalbearing opposite firstfresh |w|>=.1 sign by>=.25rad; then outward perrobot minpeer/minall/sumall, minpath, stableaction",
+  "diagnostics": "Per-episode firstturn samples(source stamps/snapshotseq) collectedonlyt<10; actualmax/selected reverse goal opportunities saved. No angularresponse or stopcoverage inferred from goalbearing.",
+  "legacy": "v2/default20 and old noflag cancellation stress retain existing timing/ranking; comparison exclusion v2=20/v3=32 exact declared1or2worker workload only, native/phase/scalar/contact/physical/receivedmovement gates unchanged",
+  "scope": "52 CPU affected checks, source style/syntax/diff only. No native simulation, ROS messages/services, process control, sourcefreeze, trainingupdate or native/safety/movement/turn/stop PASS. Only benchmark.py, audit_preparation.py and their2tests edited; no adapter/PPO fallback or truth input.",
+  "passed": true
+}

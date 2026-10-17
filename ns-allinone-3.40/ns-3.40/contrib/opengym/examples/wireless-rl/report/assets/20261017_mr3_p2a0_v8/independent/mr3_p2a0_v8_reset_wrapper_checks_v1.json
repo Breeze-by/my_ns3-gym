@@ -1,0 +1,77 @@
+{
+  "schema": "mr3-p2a0-v8-reset-wrapper-adaptation-checks-v1",
+  "passed": true,
+  "source_status": "new evidence adapters only; production and original frozen consumers unmodified",
+  "files": {
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v8/independent/mr3_independent_angular_reset_matrix_v8.py": {
+      "sha256": "83f1cabcebda11d431f30e4a752bf87534864f344f7c48755015fbd401f6fee4",
+      "bytes": 10402
+    },
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v8/independent/mr3_independent_physics_matrix_v8.py": {
+      "sha256": "b89403fdec92e81fab52ea4eae3ffd6dd35f4674132128b7c3f4cacbd5b70d5d",
+      "bytes": 13893
+    },
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v8/independent/mr3_independent_reset_wrappers_v8_tests.py": {
+      "sha256": "2bec0f8c75cac408eb6e3587b6f709af6b46b19d7039981802ee4df6c1fbbf0f",
+      "bytes": 16981
+    }
+  },
+  "original_files_checked": [
+    {
+      "kind": "angular",
+      "old_source": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v4/independent/mr3_independent_angular_reset_matrix_v1.py",
+      "old_sha256": "6f4b0c3ce7b3cd2eba18c9e264c6d0cdc980ab486b5d235f1f2b06f7a8a774c1",
+      "new_source": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v8/independent/mr3_independent_angular_reset_matrix_v8.py",
+      "new_sha256": "83f1cabcebda11d431f30e4a752bf87534864f344f7c48755015fbd401f6fee4",
+      "inverse_normalized_sha256": "6f4b0c3ce7b3cd2eba18c9e264c6d0cdc980ab486b5d235f1f2b06f7a8a774c1",
+      "exact_text_restored": true,
+      "AST_restored": true,
+      "extra_allowed_workload_block": null,
+      "fixed_consumer_source_binding_added": "physical checks original2516 file; angular default explicitly original7a472 path"
+    },
+    {
+      "kind": "physical",
+      "old_source": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v4/independent/mr3_independent_physics_matrix_v4.py",
+      "old_sha256": "c6dcad54743a2d04ce64dd3f4feb329b1a4e3116b384f9269db342df4f6fa655",
+      "new_source": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v8/independent/mr3_independent_physics_matrix_v8.py",
+      "new_sha256": "b89403fdec92e81fab52ea4eae3ffd6dd35f4674132128b7c3f4cacbd5b70d5d",
+      "inverse_normalized_sha256": "c6dcad54743a2d04ce64dd3f4feb329b1a4e3116b384f9269db342df4f6fa655",
+      "exact_text_restored": true,
+      "AST_restored": true,
+      "extra_allowed_workload_block": "physical only: gzip/plain exact33/reset+32/nonterminal final external truncation + raw SHA",
+      "fixed_consumer_source_binding_added": "physical checks original2516 file; angular default explicitly original7a472 path"
+    }
+  ],
+  "tests": {
+    "command": [
+      "rtk",
+      "proxy",
+      "env",
+      "PYTHONDONTWRITEBYTECODE=1",
+      "/usr/bin/python3",
+      "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v8/independent/mr3_independent_reset_wrappers_v8_tests.py",
+      "-v"
+    ],
+    "cwd": "/home/zhuyulab/ns3-workspace",
+    "returncode": 0,
+    "test_methods": 16,
+    "test_seconds": 28.977,
+    "output": "/tmp/mr3_p2a0_v8_reset_wrappers_tests_01.log",
+    "output_sha256": "33ba0e1ddfc4c062b76880b16115c664f3b8fd32f0cffab4ba0ee330afc8a5a3",
+    "original_suites": "All6angular+4physics original test methods run with AST-only workload constants/import adaptation and33-record raw fixtures;6additional eligibility/equivalence methods include subcases.",
+    "meaningful_mutations": [
+      "oldv2/20 ineligible for both",
+      "short/mixed20 actualprefix/terminal/earlytrunc/otherreason ineligible",
+      "less than8/missingrawrobot/onebadclosure/rawlimit/stopviolation fails",
+      "no meaningful A or B stop for any one robot fails",
+      "fixed original7a472/2516 byteSHA required",
+      "actual33source plain/gzip and originalraw SHA retained",
+      "angular sampled-bounds gate does not relabel original missing stimulus as PASS"
+    ]
+  },
+  "syntax_three_files": true,
+  "receipt_generation_history": [
+    "First inline receipt generator had a Python syntax typo; no receipt or source was written. Corrected generator only, without test rerun."
+  ],
+  "scope": "Workload eligibility only: v3/32 and33actualrecords; original fixed angular/body/closure/stopresponsepool/eight-episode/perrobot criteria retained byte-for-byte after explicit allowed normalization. Physical actual33/externaltrunc raw eligibility and original2516 file binding are declared stricter additions, not claimed AST-equivalent. Synthetic CPU evidence, no native or task credit."
+}

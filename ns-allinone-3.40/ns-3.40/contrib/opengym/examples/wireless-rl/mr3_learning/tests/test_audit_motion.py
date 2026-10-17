@@ -4,6 +4,7 @@ import copy
 import gzip
 import importlib.util
 import json
+import math
 from pathlib import Path
 import sys
 import tempfile
@@ -134,10 +135,291 @@ def write_files(directory, files):
         (directory / name).write_text(payload)
 
 
+def write_settled_fixture(directory, helper, mixed=False, prewarm=False):
+    """A full zero-output prefix, raw rest sources and two actual turn quanta."""
+    epoch, release = "fixture-settled-motion", 1_000_000_000
+    original = write_fixture(directory, helper)
+    endpoints = original["motion_topology.json"]["endpoints"]
+    rows, phase = [], []
+    trackers = {name: helper.SettledTurnTracker() for name in ROBOTS}
+
+    def record(kind, payload, clock):
+        rows.append({"schema": "mr3-motion-safety-v1", "epoch": epoch,
+                     "record_sequence": len(rows) + 1, "kind": kind, "payload": payload,
+                     "sim_time_sec": clock / 1e9, "wall_monotonic_ns": 1000 + len(rows) * 10})
+
+    start = 20_000_000 if prewarm else 1_000_000_000
+    record("configuration", {
+        "robots": list(ROBOTS), "twist_source_stamp_available": False,
+        "publisher_identity_scope": "graph_at_callback; packet MessageInfo unavailable "
+                                    "on installed Humble",
+        "settled_turn_contract": "mr3-settled-turn-v1; synthetic complete source history",
+    }, start)
+    for sequence, clock in enumerate(range(start, 2_000_000_001, 20_000_000), 1):
+        own, requests = {}, {}
+        for index, name in enumerate(ROBOTS):
+            v = .001 if name == "tb1" else 0.
+            x, y = ((.001 * (clock / 1e9 - 1.), 0.) if name == "tb1" else
+                    ((.75, 0.) if name == "tb2" else (4., 4.)))
+            rotation = {"x": 0., "y": 0., "z": 0., "w": 1.}
+            sec, nano = divmod(clock, 10**9)
+            tf_sec, tf_nano = divmod(clock + 200_000_000, 10**9)
+            odom = {"header": {"frame_id": "odom", "stamp": {"sec": sec, "nanosec": nano}},
+                    "child_frame_id": "base_footprint",
+                    "pose": {"pose": {"position": {"x": x, "y": y, "z": 0.},
+                                      "orientation": rotation}},
+                    "twist": {"twist": twist(v)}}
+            transform = {"header": {"frame_id": "map", "stamp": {
+                "sec": tf_sec, "nanosec": tf_nano}}, "child_frame_id": "odom", "transform": {
+                "translation": {"x": 0., "y": 0., "z": 0.}, "rotation": rotation}}
+            record("own_odom", {"robot": name, "input_sequence": sequence,
+                                "message": odom}, clock)
+            trackers[name].observe(odom, sequence)
+            record("own_tf", {"robot": name, "input_sequence": sequence,
+                              "message": transform}, clock)
+            source = sec + nano / 1e9
+            validity = tf_sec + tf_nano / 1e9
+            own[name] = {"robot": name, "name": name, "epoch": epoch, "valid": True,
+                         "x": x, "y": y, "yaw": 0., "v": v, "w": 0.,
+                         "odom_source_stamp": source, "tf_source_stamp": validity - .2,
+                         "tf_validity_stamp": validity, "tf_validity_lead_sec": .2,
+                         "source_stamp": min(source, validity - .2),
+                         "input_sequences": {"odom": sequence, "tf": sequence}}
+        received = copy.deepcopy(own)
+        record("received_states", {"epoch": epoch, "robots": list(received.values())}, clock)
+        for index, name in enumerate(ROBOTS):
+            v, w = ((.2 if mixed else 0., .5) if name == "tb1" else (0., 0.))
+            request_identity = {
+                "scope": "graph_at_callback", "topic": f"/{name}/cmd_vel_unguarded",
+                "valid": True,
+                "endpoints": [{
+                    "namespace": f"/{name}", "node": "velocity_smoother",
+                    "topic_type": "geometry_msgs/msg/Twist",
+                    "endpoint_gid": f"{index + 10:032x}",
+                }],
+            }
+            requests[name] = {
+                "v": v, "w": w, "received_stamp": clock / 1e9, "sequence": sequence,
+                "supported": True, "publisher_identity": request_identity,
+            }
+            record("raw_request", {"robot": name, "request": requests[name],
+                                   "twist": twist(v, w)}, clock)
+            own[name]["planar_speed_mps"] = math.hypot(own[name]["v"], 0.)
+            own[name]["settled_turn"] = trackers[name].certificate(clock)
+        outputs = {}
+        for name in ROBOTS:
+            request = requests[name]
+            peers = {peer: value for peer, value in received.items() if peer != name}
+            if clock > release:
+                decision = helper.guard_motion(
+                    [request["v"], request["w"]], own[name], peers, clock / 1e9, epoch)
+            else:
+                decision = {"allow": False, "reason": "before_release", "output": [0., 0.],
+                            "minimum_margin_m": None}
+            rotation = (decision.get("component_filter") or {}).get("rotation_check", {})
+            if (decision["reason"] == "settled_turn_drift_reserve"
+                    or rotation.get("reason") == "settled_turn_drift_reserve"):
+                trackers[name].activate(clock)
+            trackers[name].output(decision["output"][0], clock, sequence)
+            record("decision", {"robot": name, "clock_ns": clock,
+                                "decision_sequence": sequence, "request": request,
+                                "own_state": copy.deepcopy(own[name]), "received_peers": peers,
+                                "decision": decision, "started": clock > release,
+                                "ready": True}, clock)
+            outputs[name] = decision["output"]
+        for name in ROBOTS:
+            record("actual_cmd_vel", {
+                "robot": name, "twist": twist(*outputs[name]),
+                "observed_decision_sequence": sequence, "publisher_identity": {
+                    "scope": "graph_at_callback", "topic": f"/{name}/cmd_vel", "valid": True,
+                    "endpoints": endpoints[f"/{name}/cmd_vel"]}}, clock)
+        if clock >= release:
+            ack = {"schema": "mr3-motion-safety-status-v1", "epoch": epoch,
+                   "clock_ns": clock, "ready": True,
+                   "completion_scope": "publication_and_local_topic_receipt",
+                   "decision_sequences": dict.fromkeys(ROBOTS, sequence),
+                   "outputs": {name: dict(zip(("linear_x", "angular_z"), outputs[name]))
+                               for name in ROBOTS}}
+            for offset, kind in enumerate(("ack_received", "ack_consumed"), 1):
+                phase.append({"kind": kind, "epoch": epoch, "ack": copy.deepcopy(ack),
+                              "worker_clock_ns": clock, "worker_physical_ns": clock,
+                              "wall_monotonic_ns": rows[-1]["wall_monotonic_ns"] + offset})
+        if clock == release:
+            record("release", {"stamp": release / 1e9}, clock)
+            for tracker in trackers.values():
+                tracker.release(release)
+    files = {"metadata.json": {"epoch": epoch, "freeze": "0" * 40},
+             "motion_topology.json": {"schema": "mr3-motion-output-topology-v1",
+                                      "epoch": epoch, "stamp": release / 1e9,
+                                      "endpoints": endpoints},
+             "transitions.jsonl": [{"kind": "reset", "snapshot": {"epoch": epoch},
+                                    "info": {"release_time_ns": release}},
+                                   {"kind": "step", "snapshot": {"epoch": epoch}}],
+             "physics.jsonl": [{"end_time_ns": clock}
+                               for clock in range(release + 20_000_000,
+                                                  2_000_000_001, 20_000_000)],
+             "motion_safety.jsonl": rows, "motion_phase_worker.jsonl": phase}
+    write_files(directory, files)
+    return files
+
+
 class MotionAuditTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.helper = helper_module()
+
+    def test_settled_raw_history_activation_and_mixed_turn_fifo_are_replayed(self):
+        for mixed in (False, True):
+            with self.subTest(mixed=mixed), tempfile.TemporaryDirectory() as temporary:
+                directory = Path(temporary)
+                files = write_settled_fixture(directory, self.helper, mixed)
+                result = _audit_records(directory, self.helper, {})
+                self.assertTrue(result["passed"])
+                self.assertEqual(result["settled_turn_replay"]["qualifying_decisions"]["tb1"], 2)
+                self.assertEqual(result["robots"]["tb1"]["rotation_only_filtered"],
+                                 2 if mixed else 0)
+                last = next(row["payload"] for row in reversed(files["motion_safety.jsonl"])
+                            if row["kind"] == "decision" and row["payload"]["robot"] == "tb1")
+                certificate = last["own_state"]["settled_turn"]
+                self.assertEqual(certificate["active_since_ns"], 1_980_000_000)
+                self.assertGreater(certificate["active_path_m"], 0.)
+
+    def test_release_discards_qualified_prewarm_sources_before_new_task_qualification(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            files = write_settled_fixture(directory, self.helper, prewarm=True)
+            self.assertTrue(_audit_records(directory, self.helper, {})["passed"])
+            decisions = [row["payload"] for row in files["motion_safety.jsonl"]
+                         if row["kind"] == "decision" and row["payload"]["robot"] == "tb1"]
+            before_release = next(value for value in decisions
+                                  if value["clock_ns"] == 1_000_000_000)
+            first_task = next(value for value in decisions if value["started"])
+            self.assertIsNotNone(before_release["own_state"]["settled_turn"])
+            self.assertIsNone(first_task["own_state"]["settled_turn"])
+            first_grant = next(value for value in decisions
+                               if value["decision"]["reason"] == "settled_turn_drift_reserve")
+            self.assertEqual(first_grant["clock_ns"], 1_980_000_000)
+            first_task["own_state"]["settled_turn"] = copy.deepcopy(
+                before_release["own_state"]["settled_turn"])
+            write_files(directory, files)
+            with self.assertRaisesRegex(ValueError, "own state differs"):
+                _audit_records(directory, self.helper, {})
+
+    def test_settled_certificate_cannot_forge_zero_history_raw_hash_or_full_planar_speed(self):
+        for fault in ("zero_start", "last_zero", "source", "hash", "planar", "path"):
+            with self.subTest(fault=fault), tempfile.TemporaryDirectory() as temporary:
+                directory = Path(temporary)
+                files = write_settled_fixture(directory, self.helper)
+                decision = next(row["payload"] for row in reversed(files["motion_safety.jsonl"])
+                                if row["kind"] == "decision" and row["payload"]["robot"] == "tb1")
+                own = decision["own_state"]
+                certificate = own["settled_turn"]
+                if fault == "zero_start":
+                    certificate["zero_since_ns"] -= 1
+                elif fault == "last_zero":
+                    certificate["last_zero_decision_sequence"] -= 1
+                elif fault == "source":
+                    certificate["samples"][-1]["source_ns"] -= 1
+                elif fault == "hash":
+                    certificate["samples"][-1]["odom_sha256"] = "f" * 64
+                elif fault == "planar":
+                    own["planar_speed_mps"] = 0.
+                else:
+                    certificate["active_path_m"] = 0.
+                write_files(directory, files)
+                with self.assertRaisesRegex(ValueError, "own state differs"):
+                    _audit_records(directory, self.helper, {})
+
+    def test_settled_active_raw_speed_path_or_source_gap_breach_is_fatal(self):
+        for fault in ("speed", "path", "gap"):
+            with self.subTest(fault=fault), tempfile.TemporaryDirectory() as temporary:
+                directory = Path(temporary)
+                files = write_settled_fixture(directory, self.helper)
+                raw = next(row["payload"]["message"]
+                           for row in reversed(files["motion_safety.jsonl"])
+                           if row["kind"] == "own_odom" and row["payload"]["robot"] == "tb1")
+                if fault == "speed":
+                    raw["twist"]["twist"]["linear"]["y"] = .02
+                elif fault == "path":
+                    raw["pose"]["pose"]["position"]["x"] += .01
+                else:
+                    raw["header"]["stamp"]["nanosec"] = 120_000_001
+                write_files(directory, files)
+                with self.assertRaisesRegex(ValueError, "active settled turn"):
+                    _audit_records(directory, self.helper, {})
+
+    def test_settled_reason_requires_configured_complete_rotation_check(self):
+        for fault in ("configuration", "missing_check", "check_math"):
+            with self.subTest(fault=fault), tempfile.TemporaryDirectory() as temporary:
+                directory = Path(temporary)
+                files = write_settled_fixture(directory, self.helper, mixed=True)
+                row = next(row["payload"] for row in files["motion_safety.jsonl"]
+                           if row["kind"] == "decision" and row["payload"]["robot"] == "tb1"
+                           and row["payload"]["decision"].get("component_filter") is not None)
+                rotation = row["decision"]["component_filter"]["rotation_check"]
+                if fault == "configuration":
+                    del files["motion_safety.jsonl"][0]["payload"]["settled_turn_contract"]
+                elif fault == "missing_check":
+                    del rotation["settled_turn_check"]
+                else:
+                    rotation["settled_turn_check"]["required_body_margin_m"] = 0.
+                write_files(directory, files)
+                with self.assertRaises(ValueError):
+                    _audit_records(directory, self.helper, {})
+
+    def test_actual_settled_model_failure_event_never_becomes_ignored_telemetry(self):
+        for configured in (False, True):
+            with self.subTest(configured=configured), tempfile.TemporaryDirectory() as temporary:
+                directory = Path(temporary)
+                files = (write_settled_fixture(directory, self.helper) if configured else
+                         write_fixture(directory, self.helper))
+                row = files["motion_safety.jsonl"][-1]
+                row.update(kind="settled_turn_model_failure", payload={
+                    "robot": "tb1", "reason": "active settled turn total drift budget exceeded"})
+                write_files(directory, files)
+                with self.assertRaisesRegex(ValueError, "actual settled turn model failure"):
+                    _audit_records(directory, self.helper, {})
+
+    def test_typed_json_provenance_rejects_bool_for_equal_numeric_value(self):
+        for fault in ("own", "peers", "request", "decision", "raw_request"):
+            with self.subTest(fault=fault), tempfile.TemporaryDirectory() as temporary:
+                directory = Path(temporary)
+                files = write_fixture(directory, self.helper)
+                value = next(row["payload"] for row in files["motion_safety.jsonl"]
+                             if row["kind"] == "decision" and row["payload"]["started"])
+                if fault == "own":
+                    value["own_state"]["v"] = False
+                elif fault == "peers":
+                    value["received_peers"]["tb2"]["w"] = False
+                elif fault == "request":
+                    value["request"]["w"] = False
+                elif fault == "decision":
+                    value["decision"]["output"][1] = False
+                else:
+                    raw = next(row["payload"] for row in files["motion_safety.jsonl"]
+                               if row["kind"] == "raw_request")
+                    raw["request"]["w"] = False
+                write_files(directory, files)
+                with self.assertRaises(ValueError):
+                    _audit_records(directory, self.helper, {})
+
+    def test_false_active_path_never_passes_recorded_certificate_or_decision_replay(self):
+        for field in ("own", "decision"):
+            with self.subTest(field=field), tempfile.TemporaryDirectory() as temporary:
+                directory = Path(temporary)
+                files = write_settled_fixture(directory, self.helper)
+                value = next(row["payload"] for row in files["motion_safety.jsonl"]
+                             if row["kind"] == "decision" and row["payload"]["decision"]["reason"]
+                             == "settled_turn_drift_reserve")
+                if field == "own":
+                    value["own_state"]["settled_turn"]["active_path_m"] = False
+                    self.assertFalse(self.helper.valid_settled_turn(
+                        value["own_state"], value["clock_ns"] / 1e9))
+                else:
+                    value["decision"]["settled_turn_check"]["certificate"]["active_path_m"] = False
+                write_files(directory, files)
+                with self.assertRaises(ValueError):
+                    _audit_records(directory, self.helper, {})
 
     def test_independent_exact_endpoint_consumer_rejects_wider_or_unbounded_changes(self):
         import math

@@ -1,0 +1,168 @@
+{
+  "schema": "mr3-p2a0-v8-independent-settled-turn-checks-v1",
+  "passed": true,
+  "base_source_freeze": "01cfa040dcb73f8931dd11d66b69ce765cb8412f",
+  "source_status": "v8 working candidate, no new native",
+  "final_consumer_sources": {
+    "/tmp/mr3_independent_settled_turn_v3.py": {
+      "canonical": "report/assets/20261017_mr3_p2a0_v8/independent/mr3_independent_settled_turn_v3.py",
+      "sha256": "c43fadbb74bef948f14c39e74fefb64fc9103b45191f593b8c089a63127b0a69"
+    },
+    "/tmp/mr3_independent_settled_turn_v3_tests.py": {
+      "canonical": "report/assets/20261017_mr3_p2a0_v8/independent/mr3_independent_settled_turn_v3_tests.py",
+      "sha256": "671ae1944d537b0479f84f0c00c78b5ae5c5a4c1fcadc43f33addd41e52cd7f6"
+    }
+  },
+  "final_tests": {
+    "command": [
+      "env",
+      "PYTHONDONTWRITEBYTECODE=1",
+      "/usr/bin/python3",
+      "/tmp/mr3_independent_settled_turn_v3_tests.py",
+      "-v"
+    ],
+    "cwd": "/home/zhuyulab/ns3-workspace",
+    "returncode": 0,
+    "tests": 42,
+    "test_seconds": 0.123,
+    "output": "/tmp/mr3_p2a0_v8_settled_turn_consumer_tests_v3_01.log"
+  },
+  "syntax": {
+    "command": [
+      "env",
+      "PYTHONDONTWRITEBYTECODE=1",
+      "/usr/bin/python3",
+      "-m",
+      "py_compile",
+      "/tmp/mr3_independent_settled_turn_v3.py",
+      "/tmp/mr3_independent_settled_turn_v3_tests.py",
+      "/tmp/mr3_p2a0_v8_settled_turn_producer_compat_v5.py"
+    ],
+    "cwd": "/home/zhuyulab/ns3-workspace",
+    "returncode": 0,
+    "output": "/tmp/mr3_p2a0_v8_settled_turn_consumer_syntax_v3.log"
+  },
+  "synthetic_actual_producer_compatibility": {
+    "command": [
+      "env",
+      "PYTHONDONTWRITEBYTECODE=1",
+      "/usr/bin/python3",
+      "/tmp/mr3_p2a0_v8_settled_turn_producer_compat_v5.py"
+    ],
+    "cwd": "/home/zhuyulab/ns3-workspace",
+    "returncode": 0,
+    "output": "/tmp/mr3_p2a0_v8_settled_turn_producer_compat_v5.log",
+    "receipt": "/tmp/mr3_p2a0_v8_settled_turn_producer_compat_v5.json",
+    "producer_source_sha256": "fc1adb189922e5b7f7d62ece2a3bdf9720fb3766916bc98b3f74d71930906ef8",
+    "producer_source_before_equals_after": true,
+    "scope": "Synthetic real pure-tracker+guard output consumed by independent module. No ROS construction, driver process, world movement, actual storage or physical claim."
+  },
+  "read_only_historical_no_use_rejection": {
+    "command": [
+      "env",
+      "PYTHONDONTWRITEBYTECODE=1",
+      "/usr/bin/python3",
+      "/tmp/mr3_independent_settled_turn_v3.py",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v7_interface",
+      "--freeze",
+      "01cfa040dcb73f8931dd11d66b69ce765cb8412f",
+      "--require-use",
+      "--output",
+      "/tmp/mr3_p2a0_v8_consumer_on_v7_no_use_v3.json"
+    ],
+    "returncode": 1,
+    "expected_failure": true,
+    "receipt": "/tmp/mr3_p2a0_v8_consumer_on_v7_no_use_v3.json",
+    "reason": "Old v7 never activated the new conditional branch; integrity true/trigger coverage false. No old native credit relabelled."
+  },
+  "development_checks_history": [
+    {
+      "path": "/tmp/mr3_p2a0_v8_settled_turn_consumer_tests_01.log",
+      "tests": 28,
+      "test_seconds": 0.026,
+      "passed": false,
+      "raw_sha256": "f872b300507247d1944c41326ba2c0824965f930791d66087174d9da2361556c"
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v8_settled_turn_consumer_tests_02.log",
+      "tests": 30,
+      "test_seconds": 0.032,
+      "passed": false,
+      "raw_sha256": "0fe93b50517ab0c4f8548703a76f52505b8a9a37734726ea2206beadffac7d67"
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v8_settled_turn_consumer_tests_03.log",
+      "tests": 30,
+      "test_seconds": 0.032,
+      "passed": true,
+      "raw_sha256": "00c24864dfd7395ef71d29b66d3e2d757042ff87be90e3c21a1cfea0269ef944"
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v8_settled_turn_consumer_tests_04.log",
+      "tests": 32,
+      "test_seconds": 0.037,
+      "passed": true,
+      "raw_sha256": "bb8e52c08b18a890b14690759e2915281af4d8878c6a03c74ab7f56d6285234c"
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v8_settled_turn_consumer_tests_05.log",
+      "tests": 34,
+      "test_seconds": 0.095,
+      "passed": true,
+      "raw_sha256": "81dbfcf06df7381c6e5a830964b86fb2338e0e6c87f8e6db2106f53851f8afd6"
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v8_settled_turn_consumer_tests_06.log",
+      "tests": 35,
+      "test_seconds": 0.095,
+      "passed": true,
+      "raw_sha256": "65d70965cd1069c72000568680811aff0c1345c72e7edfca02c4a4f5a0651879"
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v8_settled_turn_consumer_tests_07.log",
+      "tests": 36,
+      "test_seconds": 0.097,
+      "passed": true,
+      "raw_sha256": "8d4235037cd145f27266d8149ad0c6e81fdb50d34425d115e3cdc6f48ccc8d52"
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v8_settled_turn_consumer_tests_08.log",
+      "tests": 36,
+      "test_seconds": 0.099,
+      "passed": true,
+      "raw_sha256": "eb6e30f18400f9c0d32f7c8ec9cf27263a648978fec183e97da6a67cc09468c3"
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v8_settled_turn_consumer_tests_v2_01.log",
+      "tests": 39,
+      "test_seconds": 0.108,
+      "passed": true,
+      "raw_sha256": "c89910e746d4c5abf0c5e2ea6e3d4490543ecf20868a455d758ba6a32327e1dc"
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v8_settled_turn_consumer_tests_v3_01.log",
+      "tests": 42,
+      "test_seconds": 0.123,
+      "passed": true,
+      "raw_sha256": "7408e16b6ebfbf0789b8c255c373a801a8006c0495ea2c08800a12b55ed57c55"
+    }
+  ],
+  "development_limitations": [
+    "Early v1 test1 failed because fixture literal.0078 differed from computed binary64 .01*.78, masking later assertions; fixture corrected without relaxing comparisons.",
+    "v1 test2 source-gap mutation moved sample outside final physics end; added explicit source<=actual end and corrected coverage tests.",
+    "Early development source snapshots were not all retained; stdout histories are not frozen-source credit. Retained before-coverage v1 bytes bind initial real-v7 no-use analysis.",
+    "v1/36 and v2/39 PASS are intermediate: independent review required closed(anchor,actual-end] sampling and matching uncertainty operation order; v3/42 additionally binds unique task release/reset and restarts qualification. Old files not overwritten."
+  ],
+  "criteria": {
+    "rest_planar_mps": 0.01,
+    "whole_zero_interval_drift_m": 0.0078000000000000005,
+    "peer_full_reserve_m": 0.144,
+    "body_margin_required_m": 0.1518,
+    "published_settle_ns": 940000000,
+    "actual_zero_storage_settle_at_grant_ns": 780000000,
+    "source_gap_and_each_entry_age_max_ns": 100000000,
+    "actual_source_latency_max_ns": 160000000,
+    "interval": "entry raw anchor source < raw source <= next actual nonzero storage or final physics, without repeat-grant budget reset"
+  },
+  "scope": "42 external stdlib mutation tests, syntax, real pure-producer synthetic schema compatibility and read-only old-v7 no-use rejection only. Consumer imports no production tracker. Actual v8 native/full driver/old body consumers remain required; speed/path continuous assumptions are explicit conditional models, sampled chords only necessary evidence."
+}

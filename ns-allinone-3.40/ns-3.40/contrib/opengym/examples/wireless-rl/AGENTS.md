@@ -1,6 +1,6 @@
 # wireless-rl memory — MR3
 
-2026-10-17 continuation: continue completing authorized P2A.0. All earlier originals retained. v6 physical/input/native subaudits passed but actual actuator target values lagged guard output by up to.727s, violating160ms; overallFAIL and later stagesSKIP. v7 binds unique tagged guard targets to native stored-target receipts and requires three exact receipts before each20ms physics advance; preserves paired-wheel physics, task/actor/body/stop gates. New complete one-clean-pushed-freeze matrix required. No pilot/P2B/gateway; balance1870 decisions/2905.954739546403 wallsec remains. See wireless-rl/report/20261017_mr3_p2a0_v7.md. User acceptance follows completion.
+2026-10-17 continuation: P2A.0 remains authorized. v7 source01cfa040dcb7 passed exact tagged consumption,160ms timing and39 clean native exits, but tb1/tb2 received movement and angular/stop stimulus gates failed; later stages SKIP, originals retained. v8 adds an own-only settled-turn conditional total-drift reserve with independent raw interval checks, preserving peer/task/actor/body gates; requires a new complete clean pushed source matrix. No pilot/P2B/gateway; balance1870 decisions/2905.954739546403 wallsec unchanged. See wireless-rl/report/20261017_mr3_p2a0_v8.md. User acceptance follows completion.
 
 Historical first P2A.0 closure (2026-10-17): source freeze f8694025; six native episodes
 closed cleanly, terminal audit PASS, reset benchmark/full audit FAIL with one

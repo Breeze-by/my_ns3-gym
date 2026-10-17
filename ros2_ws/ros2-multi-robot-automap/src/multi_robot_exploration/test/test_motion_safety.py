@@ -20,7 +20,8 @@ import yaml
 
 from multi_robot_exploration.motion_safety import MotionSafety
 from multi_robot_exploration.mr3_motion_safety import (
-    BRAKING_DECEL_MPS2, COMMAND_TURN_LIMIT, ROBOTS, TURN_STOP_PADDING_SEC, guard_motion,
+    BRAKING_DECEL_MPS2, COMMAND_TURN_LIMIT, ROBOTS, TURN_STOP_PADDING_SEC, SettledTurnTracker,
+    guard_motion,
     maximum_heading_projection, valid_state,
 )
 
@@ -336,6 +337,7 @@ def node_fixture():
     node = SimpleNamespace(
         epoch="episode", received={"robots": list(states.values())}, started=False,
         drive_audit=io.StringIO(), drive_record_sequence=0,
+        settled_turn={name: SettledTurnTracker() for name in ROBOTS},
         halted=None, stop_time=None, failure_sent=False,
         decision_sequences=dict.fromkeys(ROBOTS, 0),
         pending_outputs={name: deque() for name in ROBOTS},

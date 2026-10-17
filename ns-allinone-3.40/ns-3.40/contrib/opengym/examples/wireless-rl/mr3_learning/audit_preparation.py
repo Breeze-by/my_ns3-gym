@@ -16,27 +16,30 @@ from .audit_motion import audit_episode as audit_motion
 
 
 PREPARATION_PROBE_VERSION = "mr3-p2a0-outward-cancel-v2"
+PREPARATION_PROBE_V3 = "mr3-p2a0-outward-cancel-v3"
 
 
 def exclude_preparation_capacity_comparison(auditor):
     """The new engineering inputs are not the historical P1C capacity workload.
 
     Keep every native gate and the original comparison function for legacy
-    inputs. Only the explicit, prospectively declared v2 fixture is excluded
+    inputs. Only the explicit, prospectively declared v2/v3 fixtures are excluded
     from capacity comparison; it still has to pass all episode gates.
     """
     original = auditor.comparison_statistics
 
     def comparison(metadata, summary):
-        if metadata.get("preparation_probe_version") != PREPARATION_PROBE_VERSION:
+        version = metadata.get("preparation_probe_version")
+        if version not in (PREPARATION_PROBE_VERSION, PREPARATION_PROBE_V3):
             return original(metadata, summary)
+        expected_steps = 32 if version == PREPARATION_PROBE_V3 else 20
         count, schedule = metadata.get("workers"), metadata.get("schedule")
         expected = ([['open', 101]] if count == 1 else
                     [['open', 101], ['open', 101], ['rooms', 101], ['corridors', 101]])
         require(type(count) is int and count in (1, 2) and schedule == expected
                 and all(type(cell[1]) is int for cell in schedule)
                 and type(metadata.get("steps_per_episode")) is int
-                and metadata["steps_per_episode"] == 20
+                and metadata["steps_per_episode"] == expected_steps
                 and metadata.get("preparation_motion_probe") is True
                 and all(metadata.get(key) is False for key in
                         ("terminal_probe", "deadline_probe", "fault_probe")),
@@ -52,7 +55,7 @@ def exclude_preparation_capacity_comparison(auditor):
         return {
             "eligible": False,
             "reason": "explicit preparation fixture; no historical P1C capacity comparison",
-            "preparation_probe_version": PREPARATION_PROBE_VERSION,
+            "preparation_probe_version": version,
             "original_comparison_source": original.__code__.co_filename,
             "native_episode_gates_unchanged": True,
         }

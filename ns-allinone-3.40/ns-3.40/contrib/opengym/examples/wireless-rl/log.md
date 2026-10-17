@@ -4359,3 +4359,66 @@ v7原生尚未开始；后续同一clean pushed新freeze依次interface20、term
 冻结前最终独立reader v4：`/usr/bin/python3 /tmp/mr3_independent_drive_trace_v4_tests.py -v`及`/usr/bin/python3 -m py_compile /tmp/mr3_independent_drive_trace_v4.py /tmp/mr3_independent_drive_trace_v4_tests.py`，50 synthetic检查/语法/producer字段compat PASS，原argv/stdout/耗时/SHA见v7 independent/mr3_p2a0_v7_tagged_drive_consumer_checks_v2.json。仅将有真实initial storage顺序证明的prewarm zero command/actuation与放行后的task区分，初始storage及后续/clock>release160ms、原物理/停止界不改；v3/49与v6实际stale FAIL原件不改，无native/PPO信用。
 
 提交前staged diff静态检查发现原始effective SDF自带尾空格，三份原件未改；沿已有CSV原件保字节约定，在.gitattributes仅为canonical native/drive_model_tb[123].sdf声明-text/-whitespace，保留实际spawn输入逐字原件及原manifest/inventory哈希，source SDF/Python等风格检查不变。重跑全根diff/check及add-n后提交，无新增仿真或修改历史失败。
+
+
+## 2026-10-17 MR3-P2A.0 v7：实际 tagged 存储屏障通过，interface 参与及刺激覆盖 FAIL
+
+本次原生仅使用已 clean-pushed 的冻结 `01cfa040dcb73f8931dd11d66b69ce765cb8412f`，场景 open/seed101、三台 tb1/tb2/tb3、domain190/port12701。启动前 source preflight PASS：97 个精确 Git source、18 个独立脚本、四个编译源宏和实际 d0d31b…库全部绑定；`independent/mr3_p2a0_v7_source_preflight.json`、`mr3_p2a0_v7_binaryproof.json`保留原件。没有同冻结原生重试，没有 PPO/GPU/optimizer 更新。实际 benchmark argv（cwd W，PYTHONNOUSERSITE=1、learner 无 ROS PYTHONPATH）为：
+
+```bash
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -u -m mr3_learning.benchmark --workers 1 --schedule open:101 --steps 20 --preparation-motion-probe --base-domain 190 --base-port 12701 --output-root /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0 --run-id mr3_p2a0_20261017_v7_interface --preparation-parameter-review
+```
+
+原命令、parent/launcher PID/start、开始/结束时间和 returncode 保存在 `accounting/mr3_p2a0_v7_interface_launch.json`；benchmark metadata/summary 在 `native/interface/`。输入策略版本为预声明的 `mr3-p2a0-outward-cancel-v2`，仅属外部工程刺激，不能作为 RL、探索 fallback 或协同安全证明。预声明总矩阵仍是 488 API/487 脚本动作/7000 原生墙秒；本次只执行 interface：1 reset+20 返回 step=21 API、20 个实际动作命令，20 accepted、0 rejected、0 未返回动作。20 条有效/物理返回时间均为 1s，共 20s；真实暂停 query 起点72.302s、release72.320s，18 个1ms预热对齐tick；final92.520s，任务后清理0.200s。总受控物理20.218s，含20s返回样本、.018s预热和.200s清理。benchmark 墙秒531.8874822380021；launcher 墙秒532.3876321972348、exit0，不能把包装层墙秒相加。
+
+实际9节点 Nav2 typed readback PASS，source/release72.320s、epoch `mr3_p2a0_20261017_v7_interface_w0_e1_97204f47`，原报告 SHA `7fa0d1b9e6b5deaedb9b380e66df6c783982db6ffb5763382469034a8574563e`。实际三份 spawn SDF 的 tagged=true/epoch/audit路径与原物理配置绑定；真实 graph 中 target publisher 唯一 root motion_safety，target subscriber/status publisher 唯一各 `/tbN/turtlebot3_diff_drive`，驱动没有 Twist 订阅。`/proc/2538729/maps`实际加载 canonical d0d31b0ff62de498182073b4dd2715a78e17201844d8d8a360e385f4d2531dd6 库，dev08:03/inode73558744、当前字节/真实解析路径/四编译源hash与冻结proof一致，未映射旧系统 diff-drive；monitor01–04原件保留。此项是实际映射及磁盘字节证据，没有读取进程内存字节。
+
+新 tagged 独立消费者按预声明最终 **v4/SHA6aa1a8409e031f225f0acb3a61ab2c9ec16a156cc85a430fd7069bdea411f35d** 执行，原结果 `independent/mr3_p2a0_v7_interface_drive_review_v1.json.gz` PASS。guard 七字段唯一身份→真实 desired 存储/九字段 status→worker 三台 exact ACK-before-advance→30Hz measured-joint paired actuation，全链门通过。task 内三台各594条 actuation，guard→实际存储 callback 源龄最大均0ns；guard→actuation 最大分别20/20/19ms，无>160ms、无task target_rejected；不再用相同 Twist 值猜逐包身份。worker 1010次 consumed/advance 屏障覆盖全部1010个正20tick任务及清理推进；motion 本地 telemetry 的1011个 consumed ACK独立闭合至final92.520s。每台4607条 decision和4607条真实本地 Twist receipt 完整FIFO、队列空。status仅证明真实目标存储和publication返回，不能称轮速施加或物理停止 ACK；body/停止仍由原raw消费者单独判断，未放宽160ms或任何物理界。
+
+严格关闭独立复核 PASS：39个 actual native starts 均39 clean exits，worker0、forced=false、failed_sample=false，真实 Nav2 SHUTDOWN及18个finalized状态/serial关闭/owned native stop完整。supervisor44个保存身份加benchmark parent2538463/start396171528及launcher2538382/start396171359，共46个PID/start精确身份均gone，无剩余或zombie。原关闭与SO/FIFO事实见 `independent/mr3_p2a0_v7_interface_{closure_binary_review_v1,fifo_phase_final}.json`，不外推整体阶段PASS。
+
+**正式 interface FAIL，terminal/reset/deadline 全部 SKIP，未启动。** 原 benchmark包装 `passed=true`仅表示完整工程前缀和严格关闭，不足以通过全部前置门。原完整 preparation audit（97 source）FAIL，第一条错误为 tb1 缺 native accepted goal及received movement>0.05m；nested W7 native、scalar、evaluator phase、payload archive、execution、received-activity integrity和motion审计均PASS。真实三台各收到2个owned native goal accept、activity均有200个完整path样本，但最终received path仅tb1=.00356081911561923m、tb2=.03635914136860959m、tb3=.2532397853692473m，tb1/tb2未达到预声明最低.05m；不降低参与门，也不把rotation-only输出算作平移成功。
+
+原独立 angular 消费者 sampled bounds PASS，但缺同一机器人有先后相反符号的充分角运动刺激；positive span仅tb2、negative span为tb1/tb3、opposite-sign robot为空，故其正式PASS=false。raw task最大平面速率分别.00042732678904499396/.03197676551684015/.21910370679078653m/s，最大角norm分别.16776369645719155/.21265346254561435/.40227545101068224rad/s，最大采样角加速度1.4563686072859117rad/s²；.30/1.2/7及chord采样界未发现违反，不能据低刺激声称充分驱动验证。原严格physical消费者完整性也FAIL：tb1/tb2均无有意义A或B停止credit；tb3仅一个A片段，从.06851361472920896m/s到3个rest样本，.109s/.0032011257394714975m，满足.78s/.144m但只属于该有限速度/采样片段；其它有线性恢复的事件保留原状态，不称全部zero已停车。无actual bound violation不补足缺失刺激，后续reset停止聚合池尚未运行，不借terminal/deadline或旧版本拼credit。
+
+全部原生原件419份选存到 `report/assets/20261017_mr3_p2a0_v7/native/interface`，raw173672700bytes、encoded9357651bytes；含三份实际SDF、三路drive trace、drive_targets和drive_phase_worker，stream逐份核验encoded SHA、decoded SHA及原件SHA/字节数相同。另45份原始检查/console/live/closure/pack工具及97个精确Git source payload无损选存，原full FAIL、driver PASS、angular/physical coverage FAIL均不改。`independent/interface_originals_manifest_v1.json`、`interface_archive_verification_v1.json`和`accounting/interface_accounting_v1.json`给出映射/精确成本；66份冻结前资产与01cfa040 Git对象逐字一致。`inventory_native_v2.json`记录533份新增及既有资产（self-excluded），SHA c00183a9947c96d3c795725ac151e4667ec6cbd3e1c10471a3bd6b56d28ac270；原prefreeze inventory不改。未重跑 detached full audit或原生以替换已有结果。
+
+本轮只读工具失败也保留：首次本地FIFO observer整份物化132MB JSONL后无输出/预期receipt，未保存exit、原因未证实，不能归咎native；改为流式只存小tuple后exit0/6.700854305墙秒，原件无改。archive v1在已完成native选存后遇到同名prefreeze monitor脚本的FileExistsError，未覆盖原件；v2只核验并复用相同destination字节，重新证明所有66份prefreeze Git对象。失败脚本、失败JSON和后续成功工具均保留，不把包装失败改写为生产失败或新native重试。
+
+本次没有训练、没有95%任务成功或P2A完成信用。累计pilot已用2226 decisions/11494.045260453597墙秒，余额1870/2905.954739546403完全不变；本轮准备成本单列。v7后续三阶段按预声明停止，下一版本须另行review/freeze/predeclare并解决安全可执行性/充分刺激，不降低失败门。
+
+
+## 2026-10-17 MR3-P2A.0 v8：条件性静止转向接口及完整离线检查（原生尚未开始）
+
+本轮以已冻结的v7 `01cfa040dcb73f8931dd11d66b69ce765cb8412f` 为base，在新v8 working source上继续P2A.0；以下CPU/build/static结果不冒称旧freeze已含新实现。v7原生interface参与/刺激覆盖FAIL、后续三阶段SKIP及其原件不变。新增条件性静止转向只保留Nav2原angular请求，不能产生探索目标或替代RL。原95%任务、三台参与、.50m机体门、160ms真实存储时序、.30m/s/1.2rad/s/7rad/s²、.78s/.144m停止界以及实际tagged消费屏障均保留。正式驱动仍复用v7四源及d0d31b…库；`independent/mr3_p2a0_v8_binary_reuse_readonly_v1.json`只证明旧源/库身份，不能代替新freeze后的preflight或原生映射。
+
+新分支要求唯一release之后零linear输出前缀至少.94s、三个完整平面速率≤.01m/s且各自新鲜≤.1s的raw own-odom样本、原几何/source-age门及至少.1518m余量（自身整段漂移预算.0078m+队友完整制动预算.144m）。release截断预热资格；最后output clock非回退且seq严格递增。激活后到真实下一非零linear存储或物理结束，持续零linear段的速率、chord速度、累计raw中心路径及源间隔受监测；观测到超速、路径超.0078m或有效性断裂会产生fatal model failure，不能只撤证后继续。有限的过去静止样本不能证明未来无限零命令不漂移；这是显式条件plant模型，raw采样折线是必要证据，不能证明采样间连续路径上界。新增独立reader和原driver/body/停止reader必须同时通过。
+
+只读旧v7机会窗反事实完整处理133951行、每台4607个历史decision，按真实own-odom及事实linear输出历史重放新tracker+guard，未将假想angular输出回馈物理或宣称新闭环轨迹。release cutoff后的v2得到tb1/tb2/tb3分别536/153/248个可保留转向的离散机会；最早时刻为73.460/73.420/85.480s，余量超过.1518m的slack分别.021817910582814376/.010106609687564744/.024886509942458418m。输入132184457bytes、SHA4fbc8de1…，三份源码before==after；7.071837340947241墙秒。未加release截断的v1结果537/154/248保留为中间历史。准确命令、复放源码和JSON分别在 `report/assets/20261017_mr3_p2a0_v8/independent/settled_turn_counterfactual_v{1,2}/`；这些是条件机会窗，不是实际移动、安全不变量或v8原生信用。
+
+motion离线审计同步真实record顺序：raw own-odom→frozen tracker.observe、唯一release→tracker.release、完整own_state证书重建→同helper guard→激活/output记账，实际model_failure一律FAIL。完整own_state、received peer、raw request和decision使用typed canonical JSON比较。修前实际counterexample将证书active_path_m从0.0改为False，Python相等误判仍使旧审计PASS，而guard会拒绝；该真实假PASS、修前966c6b65…源码和fixture均保存在 `independent/audit_motion_typed_bool_counterexample_v1.json`、`typed_bool_counterexample_v1/`。修后七类bool/数值类型mutation均拒绝；final审计60c9b253…与tests d0814988… before==after。最终16项conda测试PASS/6.674959795083851墙秒、两文件flake8及diff PASS，完整argv/cwd/源hash见 `independent/audit_motion_settled_final_checks_v5.json`。旧日志13821个own_state严格JSON复核PASS，仅属legacy兼容；初次从/tmp直接运行误使sys.path缺W而ModuleNotFoundError，改为同cwd的标准runpy运行后通过，初FAIL及准确命令分别保留。没有添加ROS PYTHONPATH。
+
+该组开发原件全部保留：早期13项PASS和style失败；加入release后14项中的三个fixture选择错误TypeError及一处style错误；选择实际已资格化turn后14项PASS；最终typed版16项PASS。失败属于相应fixture/style或已证审计实现缺陷，不改写为生产native失败，也不隐藏实际False==0.0假PASS。`audit_motion_settled_tests_01..06`、style/diff和final_checks_v1..v5保留原版本，不把不同版本测试数相加。
+
+独立settled-turn stdlib reader最终v3/SHAc43fadbb…、tests671ae194…，42项mutation PASS/.123测试秒，syntax及真实pure-producer合成schema兼容PASS；不导入生产tracker。它独立绑定raw anchor直到真实下一非零linear存储/physics end的闭区间、唯一release/reset、actual连续零存储至少.78s、三样本资格、160ms、全平面速度/chord及整段累计漂移，不因重复grant重置预算。初v1的28/30测试失败、后续30/32/34/35/36 PASS、只读review补闭区间/anchor后v2的39 PASS、release cutoff后的v3/42均在 `independent/mr3_p2a0_v8_settled_turn_consumer_checks_v1.json`及原stdout中按原版本保留；早期并未全部保存每次源码，不能用最终字节冒称旧版本source credit。对旧v7加--require-use确实exit1（从未激活新分支），不把旧native补成新接口PASS。
+
+外部工程刺激新增显式 `mr3-p2a0-outward-cancel-v3`/32step；保留v2/20及默认旧行为。只在第二次GOAL阶段以received几何和前段首次fresh实际转向符号优先反向bearing机会，仍从合法joint action中选择，不能据bearing宣称实际双向角运动。相关benchmark/comparison/archive/execution共52项conda PASS/.307测试秒/4.9082911419682205墙秒，四文件flake8、syntax、diff PASS；首style失败原件不改。完整命令和stdout在 `independent/mr3_p2a0_v8_probe_checks_v1.json`及gzip。新reset两wrapper只适配v3/32及33条实际记录，并严格绑定原7a472…angular、2516…physical reader；逆规范化原文/AST还原证明原body/closure/八episode/每台stop pool逻辑不变，physics另加raw33/external truncation和固定consumer字节资格。16项合成测试PASS/28.977测试秒，准确argv/cwd/原SHA及允许差异见 `independent/mr3_p2a0_v8_reset_wrapper_checks_v1.json`、equivalence/patch_spec；首receipt生成器语法错误未写任何源码/receipt，修生成器后保存结果，未重跑或虚构首次成功。
+
+root完整离线命令及原stdout在各同名JSON/gzip。ROS检查cwd为canonical ROS，source `/opt/ros/humble/setup.bash`和`install/setup.bash`、system `/usr/bin/python3`；conda检查cwd W、resolved Python为 `/home/zhuyulab/miniconda3/envs/ns3gym/bin/python`、PYTHONNOUSERSITE=1且无ROS PYTHONPATH。关键准确argv为：
+
+```bash
+# cwd ros2_ws/ros2-multi-robot-automap
+/usr/bin/python3 /usr/bin/colcon build --symlink-install --packages-select merge_map multi_robot_exploration multi_robot
+/usr/bin/python3 -m pytest -q src/merge_map/test src/multi_robot_exploration/test --ignore=src/merge_map/test/test_copyright.py --ignore=src/merge_map/test/test_flake8.py --ignore=src/merge_map/test/test_pep257.py --ignore=src/multi_robot_exploration/test/test_copyright.py --ignore=src/multi_robot_exploration/test/test_flake8.py --ignore=src/multi_robot_exploration/test/test_pep257.py
+# cwd W, resolved conda ns3gym Python
+python -m unittest discover -s mr3_learning/tests -q
+python report/assets/20261017_mr3_p2a0_v8/independent/mr3_p2a0_v8_contract_checks.py /tmp/mr3_p2a0_v8_contract_static_final.json
+```
+
+最终三包build PASS/6.702978136949241墙秒（首build PASS/6.714897582307458亦保留）；完整ROS **1042 PASS/34.08测试秒/35.37158735189587墙秒**。此前focused01/02/03分别62/66/67 PASS，原stdout/源版本各自保存；最终settled_turn+原motion_safety合计68由完整ROS覆盖，未另跑一轮68，不能称68个新增例，也不与完整套件相加；相对v7完整1008净增加34例。root style01/02分别4/5处失败原样保留，03及final PASS。完整conda首轮216 tests+1 setUpClass ERROR/28.370测试秒/33.81996887596324墙秒，原因是ADAPTER文档精确pin遗漏更新，原 `conda_cpu_v8_final.json`与stdout不改；修正精确doc pin后最终 **224 PASS/19.960测试秒/25.34131052903831墙秒**，见 `conda_cpu_v8_final_v2.json`。这里的CPU synthetic optimizer unit tests不构成native GPU/训练更新。
+
+最终changed-source风格PASS/1.0487249284051359墙秒；contract静态PASS/5.120832566637546墙秒，33 reviewed pins、166本地链接及非pin AST不变。实际system imports七模块路径/字节PASS，仅import、未构造ROS节点或启动world；脚本和binding在 `independent/mr3_p2a0_v8_runtime_import_{check.py,bindings.json}`。所有准确source_before/after、cwd、resolved Python、argv、exit及原输出由canonical receipts保留，不凭检查数替代行为验收。
+
+预声明plan最终b7487cd0…、27 independent bindings，plan/preflight/launcher最终22项CPU及syntax/flake8/diff/static PASS，完整命令见 `independent/mr3_p2a0_v8_plan_launch_checks_v3.json`。旧initial/provisional/v2开发失败及旧22-test脚本保留，canonical最终tests e5592dba…不冒充/tmp旧版。后续新clean pushed freeze才可顺序启动interface32（含实际9节点参数及new-branch --require-use）、terminal两轮4、2workers八轮32step reset、deadline300KEEP，总上限608 API/596 submitted script decisions/18000原生墙秒；阶段墙秒上限1800+1800+6400+8000，准确domains/ports/argv及所有门见 `report/assets/20261017_mr3_p2a0_v8/predeclared_plan_v8.json`。这是prospective工程预算，本记录时尚无v8 native，不改pilot余额或既有失败门。
+
+统一 `independent/offline_originals_manifest_v1.json` 逐份核验84个/tmp→canonical原件映射、14份root命令/gzip回执及150份独立原件绑定；已有43份settled原件映射复用同字节，stdout新增选存采用lossless gzip并记录raw/encoded SHA，历史已canonical的原件不覆写。首manifest草稿误列ignored Python cache，原草稿另存为历史JSON；最终manifest排除cache，未删除或改写任何研究原件。最终manifest SHA32011ebb619e0b5c871673918b446c7b7ad44c2de556725cb3f8fa6cebadd2f2；它不是最终prefreeze inventory，后者由root在全部agent停编辑后统一生成。当前v8 native/GPU/optimizer均0，无95%或P2A完成信用；累计pilot已用2226 decisions/11494.045260453597墙秒、余额1870/2905.954739546403不变。

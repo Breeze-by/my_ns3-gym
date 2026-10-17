@@ -29,6 +29,12 @@ def require(value, message):
         raise ValueError(message)
 
 
+def same_json(left, right):
+    """Compare recorded types as well as values; bool must not equal zero/one."""
+    return json.dumps(left, sort_keys=True, separators=(",", ":"), allow_nan=False) == json.dumps(
+        right, sort_keys=True, separators=(",", ":"), allow_nan=False)
+
+
 def ns(value):
     require(type(value) in (int, float) and math.isfinite(value) and value >= 0,
             "invalid motion timestamp")
@@ -92,7 +98,7 @@ def yaw(quaternion):
     return math.atan2(2 * (w * z + x * y), 1 - 2 * (y ** 2 + z ** 2))
 
 
-def own_state(name, sources, sequences, epoch):
+def own_state(name, sources, sequences, epoch, settled_tracker=None, clock_ns=None):
     if "odom" not in sources or "tf" not in sources:
         return None
     odom, transform = sources["odom"], sources["tf"]
@@ -110,17 +116,24 @@ def own_state(name, sources, sequences, epoch):
     point, translation = odom["pose"]["pose"]["position"], transform["transform"]["translation"]
     odom_time, validity = stamp(odom["header"]), stamp(transform["header"])
     tf_time = validity - .2
-    return {"robot": name, "name": name, "epoch": epoch, "valid": True,
-            "x": translation["x"] + math.cos(angle) * point["x"] - math.sin(angle) * point["y"],
-            "y": translation["y"] + math.sin(angle) * point["x"] + math.cos(angle) * point["y"],
-            "yaw": math.atan2(math.sin(angle + yaw(orientation)),
-                              math.cos(angle + yaw(orientation))),
-            "v": odom["twist"]["twist"]["linear"]["x"],
-            "w": odom["twist"]["twist"]["angular"]["z"],
-            "odom_source_stamp": odom_time, "tf_source_stamp": tf_time,
-            "tf_validity_stamp": validity, "tf_validity_lead_sec": .2,
-            "source_stamp": min(odom_time, tf_time),
-            "input_sequences": {key: sequences[key] for key in ("odom", "tf")}}
+    value = {
+        "robot": name, "name": name, "epoch": epoch, "valid": True,
+        "x": translation["x"] + math.cos(angle) * point["x"] - math.sin(angle) * point["y"],
+        "y": translation["y"] + math.sin(angle) * point["x"] + math.cos(angle) * point["y"],
+        "yaw": math.atan2(math.sin(angle + yaw(orientation)),
+                          math.cos(angle + yaw(orientation))),
+        "v": odom["twist"]["twist"]["linear"]["x"],
+        "w": odom["twist"]["twist"]["angular"]["z"],
+        "odom_source_stamp": odom_time, "tf_source_stamp": tf_time,
+        "tf_validity_stamp": validity, "tf_validity_lead_sec": .2,
+        "source_stamp": min(odom_time, tf_time),
+        "input_sequences": {key: sequences[key] for key in ("odom", "tf")},
+    }
+    if settled_tracker is not None:
+        linear = odom["twist"]["twist"]["linear"]
+        value["planar_speed_mps"] = math.hypot(linear["x"], linear["y"])
+        value["settled_turn"] = settled_tracker.certificate(clock_ns)
+    return value
 
 
 def identity(value, name, actual, topology):
@@ -150,7 +163,7 @@ def twist_pair(value):
     return [value["linear"]["x"], value["angular"]["z"]]
 
 
-def command_boundary(decision, request):
+def command_boundary(decision, request, settled_enabled=False):
     """Enforce hard limits, exact endpoint normalization and sole component filter."""
     output = decision["output"]
     require(abs(output[0]) <= .26 and abs(output[1]) <= .8, "final motion hard limit exceeded")
@@ -172,6 +185,8 @@ def command_boundary(decision, request):
                 and normalization["canonical"] == canonical,
                 "motion normalization metadata differs from exact endpoints")
     component = decision.get("component_filter")
+    if decision.get("reason") == "settled_turn_drift_reserve":
+        settled_boundary(decision, settled_enabled)
     if component is None:
         if decision["allow"]:
             require(output == canonical, "allowed motion differs from canonical endpoint request")
@@ -187,11 +202,24 @@ def command_boundary(decision, request):
             and rejected["output"] == [0., 0.] and rejected.get("component_filter") is None
             and rejected.get("command_normalization") == normalization,
             "component filter bypassed a different mixed-command rejection")
-    require(rotation["allow"] is True and rotation["reason"] == "clear"
+    require(rotation["allow"] is True and rotation["reason"] in (
+                "clear", "settled_turn_drift_reserve")
             and rotation.get("component_filter") is None
             and rotation.get("command_normalization") is None
             and rotation["output"] == output == [0., canonical[1]],
-            "component filter changed angular direction or lacks clear rotation check")
+            "component filter changed angular direction or lacks valid rotation check")
+    if rotation["reason"] == "settled_turn_drift_reserve":
+        settled_boundary(rotation, settled_enabled)
+
+
+def settled_boundary(decision, enabled):
+    """Require explicit provenance; full history and math are replayed separately."""
+    check = decision.get("settled_turn_check")
+    require(enabled and isinstance(check, dict)
+            and check.get("schema") == "mr3-settled-turn-check-v1"
+            and isinstance(check.get("certificate"), dict)
+            and decision["output"][0] == 0. and decision["output"][1] != 0.,
+            "settled turn lacks configured complete certificate/check")
 
 
 def _audit_records(directory, helper, source_proof):
@@ -228,6 +256,15 @@ def _audit_records(directory, helper, source_proof):
             and configuration["publisher_identity_scope"] ==
             "graph_at_callback; packet MessageInfo unavailable on installed Humble",
             "unknown motion identity scope/configuration")
+    settled_enabled = "settled_turn_contract" in configuration
+    if settled_enabled:
+        contract = configuration["settled_turn_contract"]
+        require(isinstance(contract, str) and contract.startswith("mr3-settled-turn-v1;")
+                and callable(getattr(helper, "SettledTurnTracker", None)),
+                "unknown settled turn configuration/helper")
+    trackers = ({name: helper.SettledTurnTracker() for name in ROBOTS}
+                if settled_enabled else {})
+    settled_activations = dict.fromkeys(ROBOTS, 0)
     sources = {name: {} for name in ROBOTS}
     sequences = {name: dict.fromkeys(("odom", "tf", "request", "decision"), 0) for name in ROBOTS}
     requests, states, decisions = {}, {}, {}
@@ -260,6 +297,8 @@ def _audit_records(directory, helper, source_proof):
                         and value["message"]["child_frame_id"].lstrip("/") == "odom",
                         "own TF is not local map-to-odom")
             else:
+                if settled_enabled:
+                    trackers[name].observe(value["message"], value["input_sequence"])
                 twist = value["message"]["twist"]["twist"]
                 for axis, key in (("linear", "v"), ("angular", "w")):
                     measured = abs(twist[axis]["x" if key == "v" else "z"])
@@ -290,7 +329,7 @@ def _audit_records(directory, helper, source_proof):
                     "raw motion request binding mismatch")
             sequences[name]["request"] += 1
             if request["supported"]:
-                require(twist_pair(value["twist"]) == [request["v"], request["w"]],
+                require(same_json(twist_pair(value["twist"]), [request["v"], request["w"]]),
                         "raw motion request differs from callback Twist")
             else:
                 require(request["v"] is None and request["w"] is None and value["twist"] is None,
@@ -307,6 +346,9 @@ def _audit_records(directory, helper, source_proof):
             states = {}
         elif kind == "release":
             require(not started and ns(value["stamp"]) == release_ns, "motion release mismatch")
+            if settled_enabled:
+                for tracker in trackers.values():
+                    tracker.release(release_ns)
             started = True
         elif kind == "stop_request":
             stop_ns = clock
@@ -316,6 +358,8 @@ def _audit_records(directory, helper, source_proof):
         elif kind in ("invalid_terminal_notice", "failure"):
             halted = ("invalid_terminal_notice" if kind == "invalid_terminal_notice"
                       else "external_safety_failure")
+        elif kind == "settled_turn_model_failure":
+            raise ValueError("actual settled turn model failure: " + str(value))
         elif kind == "decision":
             name = value["robot"]
             require(name in ROBOTS
@@ -326,14 +370,15 @@ def _audit_records(directory, helper, source_proof):
                     "motion decision identity/phase mismatch")
             sequences[name]["decision"] += 1
             decision_clock = value["clock_ns"]
-            own = own_state(name, sources[name], sequences[name], epoch)
+            own = own_state(name, sources[name], sequences[name], epoch,
+                            trackers.get(name), decision_clock)
             peers = {peer: states.get(peer) for peer in ROBOTS if peer != name}
             request = requests.get(name)
-            require(value["own_state"] == own,
+            require(same_json(value["own_state"], own),
                     "own state differs from raw local odom/TF input sequences")
-            require(value["received_peers"] == peers,
+            require(same_json(value["received_peers"], peers),
                     "peer geometry bypassed original received states")
-            require(value["request"] == request,
+            require(same_json(value["request"], request),
                     "decision request differs from raw callback sequence/content/GID")
             if value["ready"]:
                 require(all(helper.valid_state(
@@ -362,9 +407,17 @@ def _audit_records(directory, helper, source_proof):
                                             decision_clock / 1e9, epoch) if reason is None else
                         {"allow": False, "reason": reason, "output": [0., 0.],
                          "minimum_margin_m": None})
-            command_boundary(value["decision"], request)
-            require(value["decision"] == expected,
+            command_boundary(value["decision"], request, settled_enabled)
+            require(same_json(value["decision"], expected),
                     "motion decision differs from frozen helper replay")
+            if settled_enabled:
+                rotation = (expected.get("component_filter") or {}).get("rotation_check", {})
+                if (expected["reason"] == "settled_turn_drift_reserve"
+                        or rotation.get("reason") == "settled_turn_drift_reserve"):
+                    trackers[name].activate(decision_clock)
+                    settled_activations[name] += 1
+                trackers[name].output(expected["output"][0], decision_clock,
+                                      value["decision_sequence"])
             key = (name, value["decision_sequence"])
             decisions[key] = {"clock_ns": decision_clock, "ready": value["ready"], "wall_ns": wall}
             queues[name].append((expected["output"], key))
@@ -455,14 +508,25 @@ def _audit_records(directory, helper, source_proof):
     stop_responses.extend(pending_stops.values())
     for response in stop_responses:
         response.pop("last_point", None)
-    return {"passed": True, "epoch": epoch, "records": len(rows), "robots": stats,
-            "passed_nonzero_scope": ("complete canonical request passed; "
-                                     "rotation-only filters separate"),
-            "consumed_motion_phases": len(consumed), "stop_responses": stop_responses,
-            "artifact_proof": proof, "source_proof": source_proof,
-            "scope": "callback graph identity, raw input/received-state provenance, frozen-helper "
-                     "replay and observed final Twist FIFO; no packet MessageInfo, independent "
-                     "geometric proof or blanket physical stop guarantee"}
+    result = {
+        "passed": True, "epoch": epoch, "records": len(rows), "robots": stats,
+        "passed_nonzero_scope": ("complete canonical request passed; "
+                                 "rotation-only filters separate"),
+        "consumed_motion_phases": len(consumed), "stop_responses": stop_responses,
+        "artifact_proof": proof, "source_proof": source_proof,
+        "scope": "callback graph identity, raw input/received-state provenance, frozen-helper "
+                 "replay and observed final Twist FIFO; no packet MessageInfo, independent "
+                 "geometric proof or blanket physical stop guarantee",
+    }
+    if settled_enabled:
+        result["settled_turn_replay"] = {
+            "configured_contract": configuration["settled_turn_contract"],
+            "qualifying_decisions": settled_activations,
+            "scope": "Exact frozen tracker raw-odom/issued-target history, certificate, "
+                     "activation and model-failure replay; not an independent proof of "
+                     "the conditional continuous plant drift bound",
+        }
+    return result
 
 
 def audit_episode(directory):

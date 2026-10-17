@@ -1,0 +1,113 @@
+{
+  "schema": "mr3-v7-final-telemetry-fifo-phase-observation-v1",
+  "epoch": "mr3_p2a0_20261017_v7_interface_w0_e1_97204f47",
+  "freeze": "01cfa040dcb73f8931dd11d66b69ce765cb8412f",
+  "capture_wall_monotonic_ns": 3962334496600229,
+  "release_ns": 72320000000,
+  "final_physics_ns": 92520000000,
+  "returned_steps": 20,
+  "counts": {
+    "tb1": {
+      "decisions": 4607,
+      "actual": 4607
+    },
+    "tb2": {
+      "decisions": 4607,
+      "actual": 4607
+    },
+    "tb3": {
+      "decisions": 4607,
+      "actual": 4607
+    }
+  },
+  "unmatched": {
+    "tb1": 0,
+    "tb2": 0,
+    "tb3": 0
+  },
+  "motion_consumed_acks": 1011,
+  "last_motion_ack": {
+    "clock_ns": 92520000000,
+    "completion_scope": "publication_and_local_topic_receipt",
+    "decision_sequences": {
+      "tb1": 4607,
+      "tb2": 4607,
+      "tb3": 4607
+    },
+    "epoch": "mr3_p2a0_20261017_v7_interface_w0_e1_97204f47",
+    "outputs": {
+      "tb1": {
+        "angular_z": 0.0,
+        "linear_x": 0.0
+      },
+      "tb2": {
+        "angular_z": 0.0,
+        "linear_x": 0.0
+      },
+      "tb3": {
+        "angular_z": 0.0,
+        "linear_x": 0.0
+      }
+    },
+    "ready": true,
+    "schema": "mr3-motion-safety-status-v1"
+  },
+  "robots": {
+    "tb1": {
+      "task_actuations": 594,
+      "max_exact_target_age_ns": 20000000,
+      "task_command_receipts": 1010,
+      "max_exact_receive_age_ns": 0,
+      "over160ms_actuations": 0,
+      "target_rejected_task": 0
+    },
+    "tb2": {
+      "task_actuations": 594,
+      "max_exact_target_age_ns": 20000000,
+      "task_command_receipts": 1010,
+      "max_exact_receive_age_ns": 0,
+      "over160ms_actuations": 0,
+      "target_rejected_task": 0
+    },
+    "tb3": {
+      "task_actuations": 594,
+      "max_exact_target_age_ns": 19000000,
+      "task_command_receipts": 1010,
+      "max_exact_receive_age_ns": 0,
+      "over160ms_actuations": 0,
+      "target_rejected_task": 0
+    }
+  },
+  "errors": [],
+  "bindings": {
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v7_interface/worker0/episode001_open_101/transitions.jsonl": {
+      "bytes": 835281,
+      "sha256": "ca116b8a39df3871b1ae336dcbbea6c9d82763474e74bd803fb2a2aa78903b6e"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v7_interface/worker0/episode001_open_101/physics.jsonl": {
+      "bytes": 259211,
+      "sha256": "3ca655e5230a9de115471c72d6f498ab64b8fc8695c8280f2a9ac980abad2eb6"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v7_interface/worker0/episode001_open_101/motion_safety.jsonl": {
+      "bytes": 132184457,
+      "sha256": "4fbc8de1e4d442b36c375add8c06f0340147dcda4640a6dbe47c4d5a65c8bacc"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v7_interface/worker0/episode001_open_101/motion_phase_worker.jsonl": {
+      "bytes": 3366938,
+      "sha256": "36063d58d885e477fdeff953c7252c5f3d07be002c56e8d7887e918407f3a2a9"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v7_interface/worker0/episode001_open_101/drive_tb1.jsonl": {
+      "bytes": 5387253,
+      "sha256": "72cd95cadb47efc2cf1629451e20cf91ebfb7922a64c4c2cd838804a88690e9c"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v7_interface/worker0/episode001_open_101/drive_tb2.jsonl": {
+      "bytes": 5264536,
+      "sha256": "d2a2a2cc82b2e735080102e3415436acb636abb496fd85c6b1a9fcca9a260604"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v7_interface/worker0/episode001_open_101/drive_tb3.jsonl": {
+      "bytes": 5151397,
+      "sha256": "03b86c7de0c73b3090a493051c696be6a004bda2a93e7b80c031a3f5c0758965"
+    }
+  },
+  "scope": "Actual telemetry FIFO/local completion and exact tagged target-age observations. Frozen drive consumer remains the complete independent acceptance gate; no body/braking credit."
+}

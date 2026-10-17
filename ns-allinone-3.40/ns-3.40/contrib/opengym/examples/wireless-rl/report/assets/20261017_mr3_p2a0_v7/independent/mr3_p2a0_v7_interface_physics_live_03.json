@@ -1,0 +1,70 @@
+{
+  "schema": "mr3-frozen-physics-live-diagnostic-v1",
+  "run": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v7_interface",
+  "wall_monotonic_ns": 3961890865216646,
+  "episodes": [
+    {
+      "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v7_interface/worker0/episode001_open_101",
+      "stage": "active returned reset",
+      "last_returned_snapshot": 74.32,
+      "physics_end_ns": 75160000000,
+      "robots": {
+        "tb1": {
+          "errors": [],
+          "maximum_planar_speed_task": 0.00042732678904499396,
+          "maximum_angular_norm_task": 0.14770435683838612,
+          "maximum_raw_odom_chord_speed_task": 0.0004204667700013121,
+          "maximum_task_source_gap_ns": 34000000,
+          "bound_violation_counts": {
+            "planar_speed_over_.30": 0,
+            "angular_norm_over_1.2": 0,
+            "chord_speed_over_.30": 0
+          },
+          "eligible_stop_events": 0,
+          "credited_sampled_stop_events": 0,
+          "native_cancel_events": 0,
+          "eligible_cancel_stop_events": 0,
+          "credited_cancel_stop_events": 0,
+          "observed_stop_bound_violations": []
+        },
+        "tb2": {
+          "errors": [],
+          "maximum_planar_speed_task": 0.0006388801556805422,
+          "maximum_angular_norm_task": 0.21265346254561435,
+          "maximum_raw_odom_chord_speed_task": 0.000542449040381319,
+          "maximum_task_source_gap_ns": 34000000,
+          "bound_violation_counts": {
+            "planar_speed_over_.30": 0,
+            "angular_norm_over_1.2": 0,
+            "chord_speed_over_.30": 0
+          },
+          "eligible_stop_events": 0,
+          "credited_sampled_stop_events": 0,
+          "native_cancel_events": 0,
+          "eligible_cancel_stop_events": 0,
+          "credited_cancel_stop_events": 0,
+          "observed_stop_bound_violations": []
+        },
+        "tb3": {
+          "errors": [],
+          "maximum_planar_speed_task": 0.21910370679078653,
+          "maximum_angular_norm_task": 0.40227545101068224,
+          "maximum_raw_odom_chord_speed_task": 0.21874190132287852,
+          "maximum_task_source_gap_ns": 34000000,
+          "bound_violation_counts": {
+            "planar_speed_over_.30": 0,
+            "angular_norm_over_1.2": 0,
+            "chord_speed_over_.30": 0
+          },
+          "eligible_stop_events": 8,
+          "credited_sampled_stop_events": 1,
+          "native_cancel_events": 0,
+          "eligible_cancel_stop_events": 0,
+          "credited_cancel_stop_events": 0,
+          "observed_stop_bound_violations": []
+        }
+      }
+    }
+  ],
+  "scope": "partial live inputs; missing/pending may resolve later; only observed violations are alerts, no acceptance credit"
+}

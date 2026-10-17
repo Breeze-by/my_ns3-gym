@@ -1,0 +1,513 @@
+{
+  "schema": "mr3-actual-nav2-parameter-readback-v1",
+  "passed": true,
+  "freeze": "01cfa040dcb73f8931dd11d66b69ce765cb8412f",
+  "episode_directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v7_interface/worker0/episode001_open_101",
+  "script_sha256": "fe0a91eec1aaf6d45bc3aedd4de9223b53e77721be878136a96d02ef1bd5c0ae",
+  "nodes": [
+    {
+      "node": "/tb1/controller_server",
+      "service": "/tb1/controller_server/get_parameters",
+      "request_wall_monotonic_ns": 3961853016022486,
+      "response_wall_monotonic_ns": 3961853017628238,
+      "epoch": "mr3_p2a0_20261017_v7_interface_w0_e1_97204f47",
+      "source_clock_ns": 72320000000,
+      "typed_parameters": [
+        {
+          "name": "FollowPath.max_vel_theta",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.8
+        },
+        {
+          "name": "FollowPath.max_vel_x",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.26
+        },
+        {
+          "name": "FollowPath.max_speed_xy",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.26
+        },
+        {
+          "name": "FollowPath.min_vel_x",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.0
+        },
+        {
+          "name": "FollowPath.max_vel_y",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.0
+        },
+        {
+          "name": "use_sim_time",
+          "type": 1,
+          "type_field": "bool_value",
+          "value": true
+        }
+      ]
+    },
+    {
+      "node": "/tb1/behavior_server",
+      "service": "/tb1/behavior_server/get_parameters",
+      "request_wall_monotonic_ns": 3961853022959809,
+      "response_wall_monotonic_ns": 3961853024300273,
+      "epoch": "mr3_p2a0_20261017_v7_interface_w0_e1_97204f47",
+      "source_clock_ns": 72320000000,
+      "typed_parameters": [
+        {
+          "name": "max_rotational_vel",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.8
+        },
+        {
+          "name": "min_rotational_vel",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.4
+        },
+        {
+          "name": "rotational_acc_lim",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 3.2
+        },
+        {
+          "name": "use_sim_time",
+          "type": 1,
+          "type_field": "bool_value",
+          "value": true
+        }
+      ]
+    },
+    {
+      "node": "/tb1/velocity_smoother",
+      "service": "/tb1/velocity_smoother/get_parameters",
+      "request_wall_monotonic_ns": 3961853029708096,
+      "response_wall_monotonic_ns": 3961853031108324,
+      "epoch": "mr3_p2a0_20261017_v7_interface_w0_e1_97204f47",
+      "source_clock_ns": 72320000000,
+      "typed_parameters": [
+        {
+          "name": "max_velocity",
+          "type": 8,
+          "type_field": "double_array_value",
+          "value": [
+            0.26,
+            0.0,
+            0.8
+          ]
+        },
+        {
+          "name": "min_velocity",
+          "type": 8,
+          "type_field": "double_array_value",
+          "value": [
+            -0.26,
+            0.0,
+            -0.8
+          ]
+        },
+        {
+          "name": "feedback",
+          "type": 4,
+          "type_field": "string_value",
+          "value": "OPEN_LOOP"
+        },
+        {
+          "name": "smoothing_frequency",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 20.0
+        },
+        {
+          "name": "use_sim_time",
+          "type": 1,
+          "type_field": "bool_value",
+          "value": true
+        }
+      ]
+    },
+    {
+      "node": "/tb2/controller_server",
+      "service": "/tb2/controller_server/get_parameters",
+      "request_wall_monotonic_ns": 3961853036857430,
+      "response_wall_monotonic_ns": 3961853038995695,
+      "epoch": "mr3_p2a0_20261017_v7_interface_w0_e1_97204f47",
+      "source_clock_ns": 72320000000,
+      "typed_parameters": [
+        {
+          "name": "FollowPath.max_vel_theta",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.8
+        },
+        {
+          "name": "FollowPath.max_vel_x",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.26
+        },
+        {
+          "name": "FollowPath.max_speed_xy",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.26
+        },
+        {
+          "name": "FollowPath.min_vel_x",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.0
+        },
+        {
+          "name": "FollowPath.max_vel_y",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.0
+        },
+        {
+          "name": "use_sim_time",
+          "type": 1,
+          "type_field": "bool_value",
+          "value": true
+        }
+      ]
+    },
+    {
+      "node": "/tb2/behavior_server",
+      "service": "/tb2/behavior_server/get_parameters",
+      "request_wall_monotonic_ns": 3961853044825481,
+      "response_wall_monotonic_ns": 3961853046410798,
+      "epoch": "mr3_p2a0_20261017_v7_interface_w0_e1_97204f47",
+      "source_clock_ns": 72320000000,
+      "typed_parameters": [
+        {
+          "name": "max_rotational_vel",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.8
+        },
+        {
+          "name": "min_rotational_vel",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.4
+        },
+        {
+          "name": "rotational_acc_lim",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 3.2
+        },
+        {
+          "name": "use_sim_time",
+          "type": 1,
+          "type_field": "bool_value",
+          "value": true
+        }
+      ]
+    },
+    {
+      "node": "/tb2/velocity_smoother",
+      "service": "/tb2/velocity_smoother/get_parameters",
+      "request_wall_monotonic_ns": 3961853052190983,
+      "response_wall_monotonic_ns": 3961853053909039,
+      "epoch": "mr3_p2a0_20261017_v7_interface_w0_e1_97204f47",
+      "source_clock_ns": 72320000000,
+      "typed_parameters": [
+        {
+          "name": "max_velocity",
+          "type": 8,
+          "type_field": "double_array_value",
+          "value": [
+            0.26,
+            0.0,
+            0.8
+          ]
+        },
+        {
+          "name": "min_velocity",
+          "type": 8,
+          "type_field": "double_array_value",
+          "value": [
+            -0.26,
+            0.0,
+            -0.8
+          ]
+        },
+        {
+          "name": "feedback",
+          "type": 4,
+          "type_field": "string_value",
+          "value": "OPEN_LOOP"
+        },
+        {
+          "name": "smoothing_frequency",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 20.0
+        },
+        {
+          "name": "use_sim_time",
+          "type": 1,
+          "type_field": "bool_value",
+          "value": true
+        }
+      ]
+    },
+    {
+      "node": "/tb3/controller_server",
+      "service": "/tb3/controller_server/get_parameters",
+      "request_wall_monotonic_ns": 3961853060128513,
+      "response_wall_monotonic_ns": 3961853062245977,
+      "epoch": "mr3_p2a0_20261017_v7_interface_w0_e1_97204f47",
+      "source_clock_ns": 72320000000,
+      "typed_parameters": [
+        {
+          "name": "FollowPath.max_vel_theta",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.8
+        },
+        {
+          "name": "FollowPath.max_vel_x",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.26
+        },
+        {
+          "name": "FollowPath.max_speed_xy",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.26
+        },
+        {
+          "name": "FollowPath.min_vel_x",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.0
+        },
+        {
+          "name": "FollowPath.max_vel_y",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.0
+        },
+        {
+          "name": "use_sim_time",
+          "type": 1,
+          "type_field": "bool_value",
+          "value": true
+        }
+      ]
+    },
+    {
+      "node": "/tb3/behavior_server",
+      "service": "/tb3/behavior_server/get_parameters",
+      "request_wall_monotonic_ns": 3961853068122982,
+      "response_wall_monotonic_ns": 3961853069942433,
+      "epoch": "mr3_p2a0_20261017_v7_interface_w0_e1_97204f47",
+      "source_clock_ns": 72320000000,
+      "typed_parameters": [
+        {
+          "name": "max_rotational_vel",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.8
+        },
+        {
+          "name": "min_rotational_vel",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.4
+        },
+        {
+          "name": "rotational_acc_lim",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 3.2
+        },
+        {
+          "name": "use_sim_time",
+          "type": 1,
+          "type_field": "bool_value",
+          "value": true
+        }
+      ]
+    },
+    {
+      "node": "/tb3/velocity_smoother",
+      "service": "/tb3/velocity_smoother/get_parameters",
+      "request_wall_monotonic_ns": 3961853075609268,
+      "response_wall_monotonic_ns": 3961853077364558,
+      "epoch": "mr3_p2a0_20261017_v7_interface_w0_e1_97204f47",
+      "source_clock_ns": 72320000000,
+      "typed_parameters": [
+        {
+          "name": "max_velocity",
+          "type": 8,
+          "type_field": "double_array_value",
+          "value": [
+            0.26,
+            0.0,
+            0.8
+          ]
+        },
+        {
+          "name": "min_velocity",
+          "type": 8,
+          "type_field": "double_array_value",
+          "value": [
+            -0.26,
+            0.0,
+            -0.8
+          ]
+        },
+        {
+          "name": "feedback",
+          "type": 4,
+          "type_field": "string_value",
+          "value": "OPEN_LOOP"
+        },
+        {
+          "name": "smoothing_frequency",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 20.0
+        },
+        {
+          "name": "use_sim_time",
+          "type": 1,
+          "type_field": "bool_value",
+          "value": true
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "expected_typed_parameters": {
+    "controller_server": {
+      "FollowPath.max_vel_theta": [
+        3,
+        0.8
+      ],
+      "FollowPath.max_vel_x": [
+        3,
+        0.26
+      ],
+      "FollowPath.max_speed_xy": [
+        3,
+        0.26
+      ],
+      "FollowPath.min_vel_x": [
+        3,
+        0.0
+      ],
+      "FollowPath.max_vel_y": [
+        3,
+        0.0
+      ],
+      "use_sim_time": [
+        1,
+        true
+      ]
+    },
+    "behavior_server": {
+      "max_rotational_vel": [
+        3,
+        0.8
+      ],
+      "min_rotational_vel": [
+        3,
+        0.4
+      ],
+      "rotational_acc_lim": [
+        3,
+        3.2
+      ],
+      "use_sim_time": [
+        1,
+        true
+      ]
+    },
+    "velocity_smoother": {
+      "max_velocity": [
+        8,
+        [
+          0.26,
+          0.0,
+          0.8
+        ]
+      ],
+      "min_velocity": [
+        8,
+        [
+          -0.26,
+          0.0,
+          -0.8
+        ]
+      ],
+      "feedback": [
+        4,
+        "OPEN_LOOP"
+      ],
+      "smoothing_frequency": [
+        3,
+        20.0
+      ],
+      "use_sim_time": [
+        1,
+        true
+      ]
+    }
+  },
+  "scope": "GetParameters read-only actual responses from nine namespaced nodes; source clock is durable same-epoch motion completion matched to paused reset release; no parameter writes, control publications or physical stepping",
+  "epoch": "mr3_p2a0_20261017_v7_interface_w0_e1_97204f47",
+  "source_clock_ns": 72320000000,
+  "metadata_sha256": "02e7c0444d6796cc8a1f14b9c0aaed1f772c68be3d14c85a1d9bc96b5efecd35",
+  "reset_transition_sha256": "fdaf251cc4adb30dcc0dcd15131efa42650cf601aba4c7ef25ed5e63141b0d61",
+  "motion_status_receipts": [
+    {
+      "receipt_wall_monotonic_ns": 3961853010504976,
+      "status": {
+        "schema": "mr3-motion-safety-status-v1",
+        "epoch": "mr3_p2a0_20261017_v7_interface_w0_e1_97204f47",
+        "clock_ns": 72320000000,
+        "ready": true,
+        "completion_scope": "publication_and_local_topic_receipt",
+        "decision_sequences": {
+          "tb1": 3597,
+          "tb2": 3597,
+          "tb3": 3597
+        },
+        "outputs": {
+          "tb1": {
+            "linear_x": 0.0,
+            "angular_z": 0.0
+          },
+          "tb2": {
+            "linear_x": 0.0,
+            "angular_z": 0.0
+          },
+          "tb3": {
+            "linear_x": 0.0,
+            "angular_z": 0.0
+          }
+        }
+      }
+    }
+  ],
+  "cleanup": {
+    "executor_shutdown": true,
+    "node_destroyed": true,
+    "context_shutdown": true
+  },
+  "cleanup_errors": [],
+  "wall_duration_sec": 2.583875599782914
+}

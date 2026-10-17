@@ -1,0 +1,653 @@
+{
+  "schema": "mr3-v8-settled-turn-producer-schema-compat-v1",
+  "passed": true,
+  "producer_source": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_motion_safety.py",
+  "source_before": "0a85e22087a0a6c459ad5b7d1f1fb420fdcadb4ff661595a9e481a8668d06f3a",
+  "source_after": "0a85e22087a0a6c459ad5b7d1f1fb420fdcadb4ff661595a9e481a8668d06f3a",
+  "consumer_sha256": "c3a0c2ae2062310f5758788d9f48a079b5388c55933f78a9b7063c5284352a50",
+  "fixture": {
+    "metadata": {
+      "epoch": "synthetic-epoch",
+      "freeze": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "motion": [
+      {
+        "epoch": "synthetic-epoch",
+        "record_sequence": 1,
+        "kind": "decision",
+        "payload": {
+          "robot": "tb1",
+          "clock_ns": 20000000,
+          "decision_sequence": 1,
+          "decision": {
+            "allow": true,
+            "reason": "before_release",
+            "output": [
+              0.0,
+              0.0
+            ]
+          },
+          "started": true,
+          "ready": true,
+          "request": null,
+          "own_state": null,
+          "received_peers": {
+            "tb2": {
+              "name": "tb2",
+              "x": 0.7,
+              "y": 0.0,
+              "yaw": 0.0,
+              "v": 0.0,
+              "w": 0.0,
+              "source_stamp": 2.98,
+              "epoch": "synthetic-epoch",
+              "valid": true
+            },
+            "tb3": {
+              "name": "tb3",
+              "x": -0.9,
+              "y": 0.0,
+              "yaw": 0.0,
+              "v": 0.0,
+              "w": 0.0,
+              "source_stamp": 2.98,
+              "epoch": "synthetic-epoch",
+              "valid": true
+            }
+          }
+        }
+      },
+      {
+        "epoch": "synthetic-epoch",
+        "record_sequence": 2,
+        "kind": "decision",
+        "payload": {
+          "robot": "tb1",
+          "clock_ns": 2900000000,
+          "decision_sequence": 2,
+          "decision": {
+            "allow": true,
+            "reason": "clear",
+            "output": [
+              0.0,
+              0.0
+            ]
+          },
+          "started": true,
+          "ready": true,
+          "request": null,
+          "own_state": null,
+          "received_peers": {
+            "tb2": {
+              "name": "tb2",
+              "x": 0.7,
+              "y": 0.0,
+              "yaw": 0.0,
+              "v": 0.0,
+              "w": 0.0,
+              "source_stamp": 2.98,
+              "epoch": "synthetic-epoch",
+              "valid": true
+            },
+            "tb3": {
+              "name": "tb3",
+              "x": -0.9,
+              "y": 0.0,
+              "yaw": 0.0,
+              "v": 0.0,
+              "w": 0.0,
+              "source_stamp": 2.98,
+              "epoch": "synthetic-epoch",
+              "valid": true
+            }
+          }
+        }
+      },
+      {
+        "epoch": "synthetic-epoch",
+        "record_sequence": 3,
+        "kind": "own_odom",
+        "payload": {
+          "robot": "tb1",
+          "input_sequence": 1,
+          "message": {
+            "header": {
+              "stamp": {
+                "sec": 2,
+                "nanosec": 920000000
+              },
+              "frame_id": "odom"
+            },
+            "child_frame_id": "base_footprint",
+            "pose": {
+              "pose": {
+                "position": {
+                  "x": 0.000584,
+                  "y": 0.0,
+                  "z": 0.0
+                }
+              }
+            },
+            "twist": {
+              "twist": {
+                "linear": {
+                  "x": 0.0002,
+                  "y": 0.0,
+                  "z": 0.0
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "epoch": "synthetic-epoch",
+        "record_sequence": 4,
+        "kind": "own_odom",
+        "payload": {
+          "robot": "tb1",
+          "input_sequence": 2,
+          "message": {
+            "header": {
+              "stamp": {
+                "sec": 2,
+                "nanosec": 950000000
+              },
+              "frame_id": "odom"
+            },
+            "child_frame_id": "base_footprint",
+            "pose": {
+              "pose": {
+                "position": {
+                  "x": 0.00059,
+                  "y": 0.0,
+                  "z": 0.0
+                }
+              }
+            },
+            "twist": {
+              "twist": {
+                "linear": {
+                  "x": 0.0002,
+                  "y": 0.0,
+                  "z": 0.0
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "epoch": "synthetic-epoch",
+        "record_sequence": 5,
+        "kind": "own_odom",
+        "payload": {
+          "robot": "tb1",
+          "input_sequence": 3,
+          "message": {
+            "header": {
+              "stamp": {
+                "sec": 2,
+                "nanosec": 980000000
+              },
+              "frame_id": "odom"
+            },
+            "child_frame_id": "base_footprint",
+            "pose": {
+              "pose": {
+                "position": {
+                  "x": 0.0005960000000000001,
+                  "y": 0.0,
+                  "z": 0.0
+                }
+              }
+            },
+            "twist": {
+              "twist": {
+                "linear": {
+                  "x": 0.0002,
+                  "y": 0.0,
+                  "z": 0.0
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "epoch": "synthetic-epoch",
+        "record_sequence": 6,
+        "kind": "decision",
+        "payload": {
+          "robot": "tb1",
+          "clock_ns": 3000000000,
+          "decision_sequence": 3,
+          "decision": {
+            "allow": true,
+            "reason": "settled_turn_drift_reserve",
+            "output": [
+              0.0,
+              -0.8
+            ],
+            "minimum_margin_m": 0.016199999999999964,
+            "body_margin_m": 0.16799999999999995,
+            "braking_zone_margin_m": -0.12000000000000002,
+            "near_peer_checks": [
+              {
+                "peer": "tb2",
+                "centre_distance_m": 0.7,
+                "source_uncertainty_m": 0.012,
+                "body_margin_m": 0.16799999999999995,
+                "braking_zone_margin_m": -0.12000000000000002,
+                "near": true,
+                "direction_checks": [
+                  {
+                    "sign": 1.0,
+                    "horizon_sec": 0.78,
+                    "turn_bound_radps": 0.8,
+                    "geometry_source_stamp": 2.98,
+                    "geometry_source_age_sec": 0.02,
+                    "angular_velocity_source_stamp": 2.98,
+                    "angular_velocity_source_age_sec": 0.02,
+                    "source_yaw_uncertainty_rad": 0.024,
+                    "heading_half_angle_rad": 0.6480000000000001,
+                    "maximum_projection_m": 0.7,
+                    "nonclosing_margin_m": -0.712
+                  }
+                ]
+              },
+              {
+                "peer": "tb3",
+                "centre_distance_m": 0.9,
+                "source_uncertainty_m": 0.012,
+                "body_margin_m": 0.368,
+                "braking_zone_margin_m": 0.08000000000000002,
+                "near": false,
+                "direction_checks": []
+              }
+            ],
+            "command_normalization": null,
+            "component_filter": null,
+            "settled_turn_check": {
+              "schema": "mr3-settled-turn-check-v1",
+              "certificate": {
+                "schema": "mr3-settled-turn-v1",
+                "zero_since_ns": 20000000,
+                "last_zero_decision_sequence": 2,
+                "samples": [
+                  {
+                    "source_ns": 2920000000,
+                    "input_sequence": 1,
+                    "planar_speed_mps": 0.0002,
+                    "odom_sha256": "1264a43911f77a6214d699787f6242c3279aee00341b51d4df71f22bd4e53b71"
+                  },
+                  {
+                    "source_ns": 2950000000,
+                    "input_sequence": 2,
+                    "planar_speed_mps": 0.0002,
+                    "odom_sha256": "6e8adb0b40ddb43e2eef9361d6831d04bfcfb6427029b79a4709d87ae4f4eae3"
+                  },
+                  {
+                    "source_ns": 2980000000,
+                    "input_sequence": 3,
+                    "planar_speed_mps": 0.0002,
+                    "odom_sha256": "b2da29c73729b20bccde3ea3c331ef761d4d6f168e7d5297fba142be3aabd834"
+                  }
+                ],
+                "active_since_ns": null,
+                "active_anchor_source_ns": null,
+                "active_path_m": 0.0
+              },
+              "horizon_sec": 0.78,
+              "own_drift_reserve_m": 0.0078000000000000005,
+              "peer_braking_reserve_m": 0.144,
+              "required_body_margin_m": 0.1518
+            }
+          },
+          "started": true,
+          "ready": true,
+          "request": {
+            "v": 0.0,
+            "w": -0.8
+          },
+          "own_state": {
+            "name": "tb1",
+            "robot": "tb1",
+            "x": 0.0,
+            "y": 0.0,
+            "yaw": 0.0,
+            "v": 0.0002,
+            "w": -0.1,
+            "source_stamp": 2.98,
+            "odom_source_stamp": 2.98,
+            "tf_source_stamp": 2.98,
+            "epoch": "synthetic-epoch",
+            "valid": true,
+            "planar_speed_mps": 0.0002,
+            "settled_turn": {
+              "schema": "mr3-settled-turn-v1",
+              "zero_since_ns": 20000000,
+              "last_zero_decision_sequence": 2,
+              "samples": [
+                {
+                  "source_ns": 2920000000,
+                  "input_sequence": 1,
+                  "planar_speed_mps": 0.0002,
+                  "odom_sha256": "1264a43911f77a6214d699787f6242c3279aee00341b51d4df71f22bd4e53b71"
+                },
+                {
+                  "source_ns": 2950000000,
+                  "input_sequence": 2,
+                  "planar_speed_mps": 0.0002,
+                  "odom_sha256": "6e8adb0b40ddb43e2eef9361d6831d04bfcfb6427029b79a4709d87ae4f4eae3"
+                },
+                {
+                  "source_ns": 2980000000,
+                  "input_sequence": 3,
+                  "planar_speed_mps": 0.0002,
+                  "odom_sha256": "b2da29c73729b20bccde3ea3c331ef761d4d6f168e7d5297fba142be3aabd834"
+                }
+              ],
+              "active_since_ns": null,
+              "active_anchor_source_ns": null,
+              "active_path_m": 0.0
+            }
+          },
+          "received_peers": {
+            "tb2": {
+              "name": "tb2",
+              "x": 0.7,
+              "y": 0.0,
+              "yaw": 0.0,
+              "v": 0.0,
+              "w": 0.0,
+              "source_stamp": 2.98,
+              "epoch": "synthetic-epoch",
+              "valid": true
+            },
+            "tb3": {
+              "name": "tb3",
+              "x": -0.9,
+              "y": 0.0,
+              "yaw": 0.0,
+              "v": 0.0,
+              "w": 0.0,
+              "source_stamp": 2.98,
+              "epoch": "synthetic-epoch",
+              "valid": true
+            }
+          }
+        }
+      },
+      {
+        "epoch": "synthetic-epoch",
+        "record_sequence": 7,
+        "kind": "own_odom",
+        "payload": {
+          "robot": "tb1",
+          "input_sequence": 4,
+          "message": {
+            "header": {
+              "stamp": {
+                "sec": 3,
+                "nanosec": 20000000
+              },
+              "frame_id": "odom"
+            },
+            "child_frame_id": "base_footprint",
+            "pose": {
+              "pose": {
+                "position": {
+                  "x": 0.000604,
+                  "y": 0.0,
+                  "z": 0.0
+                }
+              }
+            },
+            "twist": {
+              "twist": {
+                "linear": {
+                  "x": 0.0002,
+                  "y": 0.0,
+                  "z": 0.0
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "epoch": "synthetic-epoch",
+        "record_sequence": 8,
+        "kind": "own_odom",
+        "payload": {
+          "robot": "tb1",
+          "input_sequence": 5,
+          "message": {
+            "header": {
+              "stamp": {
+                "sec": 3,
+                "nanosec": 60000000
+              },
+              "frame_id": "odom"
+            },
+            "child_frame_id": "base_footprint",
+            "pose": {
+              "pose": {
+                "position": {
+                  "x": 0.000612,
+                  "y": 0.0,
+                  "z": 0.0
+                }
+              }
+            },
+            "twist": {
+              "twist": {
+                "linear": {
+                  "x": 0.0002,
+                  "y": 0.0,
+                  "z": 0.0
+                }
+              }
+            }
+          }
+        }
+      }
+    ],
+    "publications": [
+      {
+        "epoch": "synthetic-epoch",
+        "target_json": "{\"schema\": \"mr3-drive-target-v1\", \"epoch\": \"synthetic-epoch\", \"robot\": \"tb1\", \"clock_ns\": 20000000, \"decision_sequence\": 1, \"linear_x\": 0.0, \"angular_z\": 0.0}"
+      },
+      {
+        "epoch": "synthetic-epoch",
+        "target_json": "{\"schema\": \"mr3-drive-target-v1\", \"epoch\": \"synthetic-epoch\", \"robot\": \"tb1\", \"clock_ns\": 2900000000, \"decision_sequence\": 2, \"linear_x\": 0.0, \"angular_z\": 0.0}"
+      },
+      {
+        "epoch": "synthetic-epoch",
+        "target_json": "{\"schema\": \"mr3-drive-target-v1\", \"epoch\": \"synthetic-epoch\", \"robot\": \"tb1\", \"clock_ns\": 3000000000, \"decision_sequence\": 3, \"linear_x\": 0.0, \"angular_z\": -0.8}"
+      }
+    ],
+    "native": {
+      "tb1": [
+        {
+          "epoch": "synthetic-epoch",
+          "robot": "tb1",
+          "record_sequence": 1,
+          "kind": "command_received",
+          "cmd_seq": 1,
+          "sim_time_ns": 20000000,
+          "target_clock_ns": 20000000,
+          "target_decision_sequence": 1,
+          "desired_v": 0.0,
+          "desired_w": 0.0
+        },
+        {
+          "epoch": "synthetic-epoch",
+          "robot": "tb1",
+          "record_sequence": 2,
+          "kind": "command_received",
+          "cmd_seq": 2,
+          "sim_time_ns": 2900000000,
+          "target_clock_ns": 2900000000,
+          "target_decision_sequence": 2,
+          "desired_v": 0.0,
+          "desired_w": 0.0
+        },
+        {
+          "epoch": "synthetic-epoch",
+          "robot": "tb1",
+          "record_sequence": 3,
+          "kind": "command_received",
+          "cmd_seq": 3,
+          "sim_time_ns": 3000000000,
+          "target_clock_ns": 3000000000,
+          "target_decision_sequence": 3,
+          "desired_v": 0.0,
+          "desired_w": -0.8
+        }
+      ],
+      "tb2": [
+        {
+          "epoch": "synthetic-epoch",
+          "robot": "tb2",
+          "record_sequence": 1,
+          "kind": "command_received",
+          "cmd_seq": 1,
+          "sim_time_ns": 20000000,
+          "target_clock_ns": 20000000,
+          "target_decision_sequence": 1,
+          "desired_v": 0.0,
+          "desired_w": 0.0
+        },
+        {
+          "epoch": "synthetic-epoch",
+          "robot": "tb2",
+          "record_sequence": 2,
+          "kind": "command_received",
+          "cmd_seq": 2,
+          "sim_time_ns": 2900000000,
+          "target_clock_ns": 2900000000,
+          "target_decision_sequence": 2,
+          "desired_v": 0.0,
+          "desired_w": 0.0
+        },
+        {
+          "epoch": "synthetic-epoch",
+          "robot": "tb2",
+          "record_sequence": 3,
+          "kind": "command_received",
+          "cmd_seq": 3,
+          "sim_time_ns": 3000000000,
+          "target_clock_ns": 3000000000,
+          "target_decision_sequence": 3,
+          "desired_v": 0.0,
+          "desired_w": -0.8
+        }
+      ],
+      "tb3": [
+        {
+          "epoch": "synthetic-epoch",
+          "robot": "tb3",
+          "record_sequence": 1,
+          "kind": "command_received",
+          "cmd_seq": 1,
+          "sim_time_ns": 20000000,
+          "target_clock_ns": 20000000,
+          "target_decision_sequence": 1,
+          "desired_v": 0.0,
+          "desired_w": 0.0
+        },
+        {
+          "epoch": "synthetic-epoch",
+          "robot": "tb3",
+          "record_sequence": 2,
+          "kind": "command_received",
+          "cmd_seq": 2,
+          "sim_time_ns": 2900000000,
+          "target_clock_ns": 2900000000,
+          "target_decision_sequence": 2,
+          "desired_v": 0.0,
+          "desired_w": 0.0
+        },
+        {
+          "epoch": "synthetic-epoch",
+          "robot": "tb3",
+          "record_sequence": 3,
+          "kind": "command_received",
+          "cmd_seq": 3,
+          "sim_time_ns": 3000000000,
+          "target_clock_ns": 3000000000,
+          "target_decision_sequence": 3,
+          "desired_v": 0.0,
+          "desired_w": -0.8
+        }
+      ]
+    },
+    "physics_end": 3080000000
+  },
+  "independent_result": {
+    "schema": "mr3-independent-settled-turn-v2",
+    "passed": true,
+    "coverage_errors": [],
+    "integrity_and_sampled_model_bounds_passed": true,
+    "stimulus_coverage_passed": true,
+    "qualification_intervals": [
+      {
+        "robot": "tb1",
+        "clock_ns": 3000000000,
+        "decision_sequence": 3,
+        "actual_storage_clock_ns": 3000000000,
+        "actual_record_index": 3,
+        "native_zero_since_ns": 20000000,
+        "last_entry_sample": {
+          "source_ns": 2980000000,
+          "input_sequence": 3,
+          "planar_speed_mps": 0.0002,
+          "odom_sha256": "b2da29c73729b20bccde3ea3c331ef761d4d6f168e7d5297fba142be3aabd834",
+          "line": 5,
+          "frames": [
+            "odom",
+            "base_footprint"
+          ],
+          "position_xy": [
+            0.0005960000000000001,
+            0.0
+          ],
+          "linear_xyz": [
+            0.0002,
+            0.0,
+            0.0
+          ]
+        },
+        "pair_margins": {
+          "tb2": {
+            "centre_distance_m": 0.7,
+            "source_uncertainty_m": 0.012,
+            "body_margin_m": 0.16799999999999995
+          },
+          "tb3": {
+            "centre_distance_m": 0.9,
+            "source_uncertainty_m": 0.012,
+            "body_margin_m": 0.368
+          }
+        },
+        "actual_zero_interval_end_ns": 3080000000,
+        "future_raw_unique_samples": 2,
+        "maximum_planar_speed_mps": 0.0002,
+        "whole_interval_sampled_odom_polyline_m": 1.5999999999999955e-05,
+        "drift_anchor_source_ns": 2980000000
+      }
+    ],
+    "criteria": {
+      "published_settle_ns": 940000000,
+      "actual_settle_ns": 780000000,
+      "rest_speed_mps": 0.01,
+      "own_drift_reserve_m": 0.0078000000000000005,
+      "peer_full_reserve_m": 0.144,
+      "pair_required_body_margin_m": 0.1518
+    },
+    "scope": "Additional conditional body-invariant sampled evidence only. Entire zero-only interval speed and cumulative raw odom chords are checked, on the closed sampled interval after the entry anchor through the actual nonzero-storage/final-physics endpoint, with no budget reset at repeated grants. Chords are a sampled lower bound, not proof of a continuous upper path bound. Full driver/native/physical/task consumers required; no continuous-body theorem or overall task credit."
+  },
+  "scope": "Synthetic real pure-tracker+guard output consumed by independent module. No ROS construction, driver process, world movement, actual storage or physical claim."
+}

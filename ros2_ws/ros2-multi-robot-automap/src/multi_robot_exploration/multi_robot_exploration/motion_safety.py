@@ -18,7 +18,7 @@ from tf2_msgs.msg import TFMessage
 from multi_robot_exploration.mr3_information import odom_payload, state_payload, transform_payload
 from multi_robot_exploration.mr3_episode import elapsed_ns, timestamp_ns
 from multi_robot_exploration.mr3_motion_safety import (
-    COMMAND_TIMEOUT_SEC, PERIOD_SEC, ROBOTS, guard_motion, valid_state,
+    COMMAND_TIMEOUT_SEC, PERIOD_SEC, ROBOTS, SettledTurnTracker, guard_motion, valid_state,
 )
 
 
@@ -41,6 +41,7 @@ class MotionSafety(Node):
         self.drive_record_sequence = 0
         self.record_sequence = 0
         self.odometry, self.transforms, self.requests = {}, {}, {}
+        self.settled_turn = {name: SettledTurnTracker() for name in ROBOTS}
         self.input_sequences = {name: {"odom": 0, "tf": 0, "request": 0} for name in ROBOTS}
         self.decision_sequences = dict.fromkeys(ROBOTS, 0)
         self.pending_outputs = {name: deque() for name in ROBOTS}
@@ -91,6 +92,10 @@ class MotionSafety(Node):
             "output_topics": [f"/{name}/cmd_vel" for name in ROBOTS],
             "source_scope": "each own local odom/TF plus received peer states only",
             "twist_source_stamp_available": False,
+            "settled_turn_contract": "mr3-settled-turn-v1; own zero publications .94s, "
+            "three later fresh rest samples; conditional persistent planar speed<=.01m/s "
+            "and whole zero-segment centre path<=.0078m, never reset by repeated grants; "
+            "independent actual zero storage>=.78s and full160ms driver audit required",
             "publisher_identity_scope": "graph_at_callback; packet MessageInfo unavailable "
             "on installed Humble",
         })
@@ -124,9 +129,15 @@ class MotionSafety(Node):
     def receive_odom(self, message, name):
         self.odometry[name] = message
         self.input_sequences[name]["odom"] += 1
+        payload = odom_payload(message)
         self.record("own_odom", {"robot": name,
                                  "input_sequence": self.input_sequences[name]["odom"],
-                                 "message": odom_payload(message)})
+                                 "message": payload})
+        try:
+            self.settled_turn[name].observe(payload, self.input_sequences[name]["odom"])
+        except (ValueError, KeyError, TypeError) as error:
+            self.halted = "settled_turn_model_failure"
+            self.record("settled_turn_model_failure", {"robot": name, "reason": str(error)})
 
     def receive_tf(self, message, name):
         for transform in message.transforms:
@@ -214,6 +225,14 @@ class MotionSafety(Node):
 
     def receive_start(self, message):
         if message.frame_id == "map":
+            release_ns = message.stamp.sec * 1_000_000_000 + message.stamp.nanosec
+            try:
+                for tracker in self.settled_turn.values():
+                    tracker.release(release_ns)
+            except ValueError as error:
+                self.halted = "invalid_exploration_release"
+                self.record("failure", {"data": str(error)})
+                return
             self.started = True
             self.record("release", {"stamp": message.stamp.sec + message.stamp.nanosec / 1e9})
 
@@ -257,6 +276,15 @@ class MotionSafety(Node):
                      source_stamp=min(value["odom_source_stamp"], value["tf_source_stamp"]),
                      input_sequences={key: self.input_sequences[name][key]
                                       for key in ("odom", "tf")})
+        value["planar_speed_mps"] = math.hypot(odometry.twist.twist.linear.x,
+                                               odometry.twist.twist.linear.y)
+        try:
+            value["settled_turn"] = self.settled_turn[name].certificate(
+                self.get_clock().now().nanoseconds)
+        except ValueError as error:
+            self.halted = "settled_turn_model_failure"
+            self.record("settled_turn_model_failure", {"robot": name, "reason": str(error)})
+            return None
         return value
 
     def topology_ready(self):
@@ -315,6 +343,12 @@ class MotionSafety(Node):
                 decision = {"allow": False, "reason": reason,
                             "output": [0., 0.], "minimum_margin_m": None}
             self.decision_sequences[name] += 1
+            rotation = (decision.get("component_filter") or {}).get("rotation_check", {})
+            if (decision["reason"] == "settled_turn_drift_reserve"
+                    or rotation.get("reason") == "settled_turn_drift_reserve"):
+                self.settled_turn[name].activate(clock_ns)
+            self.settled_turn[name].output(decision["output"][0], clock_ns,
+                                           self.decision_sequences[name])
             self.record("decision", {"robot": name, "clock_ns": clock_ns,
                                      "decision_sequence": self.decision_sequences[name],
                                      "request": request, "own_state": own[name],
