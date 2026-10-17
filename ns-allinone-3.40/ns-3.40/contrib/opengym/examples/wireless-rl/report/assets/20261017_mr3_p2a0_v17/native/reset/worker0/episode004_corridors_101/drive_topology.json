@@ -1,0 +1,107 @@
+{
+  "clock_ns": 73460000000,
+  "epoch": "mr3_p2a0_20261017_v17_reset_w0_e4_1c7a0f81",
+  "legacy_subscribers": {
+    "/tb1/cmd_vel": [
+      {
+        "endpoint_gid": "010f3cc0687b60cd0000000000001e040000000000000000",
+        "namespace": "/",
+        "node": "motion_safety",
+        "topic_type": "geometry_msgs/msg/Twist"
+      }
+    ],
+    "/tb2/cmd_vel": [
+      {
+        "endpoint_gid": "010f3cc0687b60cd00000000000022040000000000000000",
+        "namespace": "/",
+        "node": "motion_safety",
+        "topic_type": "geometry_msgs/msg/Twist"
+      }
+    ],
+    "/tb3/cmd_vel": [
+      {
+        "endpoint_gid": "010f3cc0687b60cd00000000000026040000000000000000",
+        "namespace": "/",
+        "node": "motion_safety",
+        "topic_type": "geometry_msgs/msg/Twist"
+      }
+    ]
+  },
+  "publishers": {
+    "/tb1/mr3_drive/status": [
+      {
+        "endpoint_gid": "010f3cc06a7b027d000000000000db030000000000000000",
+        "namespace": "/tb1",
+        "node": "turtlebot3_diff_drive",
+        "topic_type": "std_msgs/msg/String"
+      }
+    ],
+    "/tb1/mr3_drive/target": [
+      {
+        "endpoint_gid": "010f3cc0687b60cd00000000000015030000000000000000",
+        "namespace": "/",
+        "node": "motion_safety",
+        "topic_type": "std_msgs/msg/String"
+      }
+    ],
+    "/tb2/mr3_drive/status": [
+      {
+        "endpoint_gid": "010f3cc06a7b027d00000000000188030000000000000000",
+        "namespace": "/tb2",
+        "node": "turtlebot3_diff_drive",
+        "topic_type": "std_msgs/msg/String"
+      }
+    ],
+    "/tb2/mr3_drive/target": [
+      {
+        "endpoint_gid": "010f3cc0687b60cd00000000000016030000000000000000",
+        "namespace": "/",
+        "node": "motion_safety",
+        "topic_type": "std_msgs/msg/String"
+      }
+    ],
+    "/tb3/mr3_drive/status": [
+      {
+        "endpoint_gid": "010f3cc06a7b027d00000000000234030000000000000000",
+        "namespace": "/tb3",
+        "node": "turtlebot3_diff_drive",
+        "topic_type": "std_msgs/msg/String"
+      }
+    ],
+    "/tb3/mr3_drive/target": [
+      {
+        "endpoint_gid": "010f3cc0687b60cd00000000000017030000000000000000",
+        "namespace": "/",
+        "node": "motion_safety",
+        "topic_type": "std_msgs/msg/String"
+      }
+    ]
+  },
+  "schema": "mr3-drive-topology-v1",
+  "target_subscribers": {
+    "/tb1/mr3_drive/target": [
+      {
+        "endpoint_gid": "010f3cc06a7b027d000000000000dc040000000000000000",
+        "namespace": "/tb1",
+        "node": "turtlebot3_diff_drive",
+        "topic_type": "std_msgs/msg/String"
+      }
+    ],
+    "/tb2/mr3_drive/target": [
+      {
+        "endpoint_gid": "010f3cc06a7b027d00000000000189040000000000000000",
+        "namespace": "/tb2",
+        "node": "turtlebot3_diff_drive",
+        "topic_type": "std_msgs/msg/String"
+      }
+    ],
+    "/tb3/mr3_drive/target": [
+      {
+        "endpoint_gid": "010f3cc06a7b027d00000000000236040000000000000000",
+        "namespace": "/tb3",
+        "node": "turtlebot3_diff_drive",
+        "topic_type": "std_msgs/msg/String"
+      }
+    ]
+  }
+}

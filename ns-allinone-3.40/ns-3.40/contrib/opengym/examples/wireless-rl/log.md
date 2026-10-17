@@ -5641,3 +5641,50 @@ rtk proxy env PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 /tmp
 实际静态`rtk proxy env PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 /tmp/mr3_p2a0_v17_prefreeze_inventory_verify_v1.py`，exit0/PASS：147绑定/101runtime/36pins、源末验、actuala014/四宏、194原件/106引用、164链接、真实git add -n .226路径白名单及diff-check通过；初208项库存SHA b9c02622aa4fd232effa32ca0fc4ef40d1055c5886526e78f737ee73156b223a。随后`rtk proxy env PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 /tmp/mr3_p2a0_v17_capture_publish_addendum_v1.py` exit0，发布回执/静态helper/result/dryrun等8原件raw72494B→encoded9028B，后置manifest d24c3d6ad3a7e093ec46ea21b7bf2125662e00c9db191212cad394f1ad35a9ad。最终inventory_prefreeze_v2覆盖218项/自身排除，SHA35848c92d649265c354c025a537b13a026dc68ea46e569692170f18e2391afcf，旧inventory及主manifest保持。只授静态保管信用；原生完整矩阵尚待clean pushed新冻结。
 
 最终提交前静态命令（cwd Git root）：`rtk proxy env PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 /tmp/mr3_p2a0_v17_final_static_review_v1.py`，exit0/PASS：218库存与全部219资产、194+8新原件/106旧ref、源/实际库/四宏、167本地链接、原db641 log前缀、实际git add -n .236路径白名单与diff-check全部通过；不覆盖旧静态原件，不提供native信用。
+
+
+### 2026-10-18（北京时间） MR3-P2A.0 V17 闭包：两阶段PASS，重置真实停车响应FAIL
+
+clean pushed冻结eee6b2f90f697b28a1c20a2af5d1a6d2f044465e（source commit/push自然成功），plan de619095444706e83d59704928ccdcd099dd18d9222b20ed5cff34a1d135430f。101runtime/147independent/actuala014 preflight PASS，receipt341cf225115a5abb394c3034927f845abf30fed6019a6f80fdafead2f643828a。101sourcepack manifest05065d4b1ffe408e7cf222d85a8f2bd120755d66e86077f1ab4d2dce9995ae2c、encoded5a800a4510d5a0f0a6b40884f88ce1d6729f5e2dbfddb906c73ddd04335a8425、tar3b51f13cac63e15200e31e5a14a8cd6420fd4246e6ec6288b72318ab697c7d3f/356131B。实际parent2f746a56828cadc27c2888013607642e4f009a0e187a3abea8df0ab10d7f9741与已归档raw逐byte相同。
+
+实际命令（cwd wireless-rl，PYTHONPATH unset/PYTHONNOUSERSITE=1/PYTHONDONTWRITEBYTECODE=1）：
+
+```bash
+rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python report/assets/20261017_mr3_p2a0_v17/independent/mr3_p2a0_v17_buildproof_preflight.py
+rtk proxy env PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 /tmp/mr3_p2a0_v10_pack_source_bindings_v1.py --preflight /tmp/mr3_p2a0_v17_source_preflight.json
+rtk proxy env PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 -u report/assets/20261017_mr3_p2a0_v17/independent/mr3_p2a0_v17_cross_stage_mapping_monitor_v1.py --freeze eee6b2f90f697b28a1c20a2af5d1a6d2f044465e > /tmp/mr3_p2a0_v17_cross_stage_mapping_console.log 2>&1
+rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -u /tmp/mr3_p2a0_v17_matrix_draft_v1/mr3_p2a0_v17_run_matrix_v1.py eee6b2f90f697b28a1c20a2af5d1a6d2f044465e
+```
+
+父2026-10-17T16:18:34.681840 UTC开始，18:17:56.753427依规则exit1，watcher自然exit0。interface1reset/32step/33API，V6/open101/domain140/port13301，launcher814.0720555749722wall；11formal jobs全PASS/10mandatory，aggregate168bd0a877e219e223ac35327ff44ea9a35ffb829867e913c7c783819c396a1d。三机路径1.192978971393869/1.2008765881850492/1.1712691564881748m，accepted2/2/2；每机原A或B信用及原angular覆盖PASS。39/39native exit0，严格关闭/18流接触等原门通过，仍不提供95%任务/学习信用。
+
+terminal2reset/8step返回/10API、实际提交7命令，open101/domain142/port13311；launcher393.5368322748691wall，9formal jobs全PASS/7mandatory，aggregatea2833418f21b7bc6fbe5b0323058c9bf2da7756bd5e7cb95a23f0bca7be46ae1。e1最后command存在、dt.02、ACK齐，task3.02s；e2最后command=null、dt0、action_submitted=false/bootstrap0，提交前已终态、task3.0s。两分支注入navigation_failure，精确8返回/7提交/6.02s，未补造命令或物理推进；各39native均exit0。
+
+reset2workers各open101/open101/rooms101/corridors101，domain144/145、port13321/13322，8reset/256step/264API，256实际命令/256task物理秒，launcher3217.3981215129606wall（benchmark3216.857041723095）。8轮均正常external_sampler_limit，26formal jobs全结束、runner_errors=[]，仅diagnostic physical_per_episode与mandatoryphysicsmatrix FAIL，其他24PASS；aggregate4a1176995ca658351b85f338318c9ec170089b3e6fc5f254dca287aca237f842。8input/8FIFO、原angular sampled bounds、peer/control/drive/information/settled/closure皆PASS；312/312native exit0，347保存身份freshgone。逐轮活动完整、每机accepted>=1，三机最小path依次worker0=1.1341977210073684/1.072213750809963/0.9339615166247045/0.2731297173596091m，worker1=1.1415969791367133/0.8923317275290962/0.9120054589462833/0.1388037983349296m。小摘要b7e1da5a保留全部精确值；首次summary因嵌套结果无CLI-only SHA字段退出1，v1原件保留，v2仅修摘要绑定，无正式重跑。root状态显示脚本也曾未处理terminal command=null而退出，原v1/v2/v3/v4源均保留；正式任务未受影响。
+
+失败不是原pool缺信用：tb1 A12/B9、tb2 A15/B13、tb3 A13/B6，已有跨回合原A或B；worker1 corridors tb3单回合缺信用按原pool不新增mandatoryFAIL。真正违规为worker1 e2open/e3rooms的tb1第二次A/B。e2 A96.22/B96.18s，首3rest109.684/109.718/109.752s，延迟13.464/13.504s，polyline.0225408/.030097m、nonrestBeyondHorizon；e3 A90.36/B90.26s至104.275仍missing_rest/nonrestBeyondHorizon。raw机器人errors[]、其余planar/angular/chord计数0和其他合格事件均不能抵消此违规。deadline按规则SKIP，不重试本冻结或拼接旧PASS。
+
+独立小文件重放两ep各32真实V6/typedcommand完全匹配（7768c48e）；第二GOAL均command14，command19(t18)按received_motion选合法WAIT，之后14条TB1 WAIT锁存、navidle/samegoal14/accepted2、无新GOAL，B cancel/result齐且new_goal_clock_ns=null。单次流式原raw提取22.42wall（精确argv/env/source/行号/SHA在execution原件），e2/e3各433/432唯一ownodom，duplicate0；e2 actual v/w自96.22双零、zero desired96.254、applied双轮自96.424恒零至110.194；e3 v/w自90.36双零、zero desired90.369、applied双轮自90.539恒零至104.275。不是高层继续发运动命令或paired slew残留。
+
+超.78后raw横向vy约.011–.012m/s而前向vx很小，vy正号100%且取消前即存在；34ms样本覆盖20ms的10种offset但无步内数据。尾段worldXY差分平均速度约.0003745/.0003072、polyline.004749/.004032m，原raw norm均值约.011239/.011430；不能改用位移替代原hypot/三样本/.01/.78门。独立441f9b63逐433/432行核验与原rest精确一致，floatyaw范数误差<4.2e-8；API/SDF不支持CoG原点错配，仍无独立1ms/contact/solver状态，不能宣称噪声/误报或唯一根因。最终custody c05402de含38件/10264865B、12源finalstat稳定；精确source/argv/output均在支持原件。先隔离补充物理观测再选择修复，不改任务/原物理门。
+
+3个已闭native pack使用精确86e3e49e helper（23metadata fixtures+非行长lint PASS），实际顺序driver命令（cwd Git root）：
+
+```bash
+rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 -u /tmp/mr3_p2a0_v17_pack_closed_stages_driver_v1.py
+```
+
+内部依次`/usr/bin/python3 /tmp/mr3_p2a0_v17_pack_native_v1.py interface`、`terminal`、`reset`，exit0各wall33.950209392700344/22.062499911058694/262.30156127596274。interface576/raw568477393/selected34627144B，manifest9210cbc28fdfc6d41e6d3d62ff25f5f8e829c3439398619dbc98b70deb870c56；terminal415/raw362203920/selected21961857B，f84c0acca616301dceb65b9ebdab43827a5cdb2ee9c74f884bcb909fd208910a；reset4543/raw4430364243/selected271190339B，4ef73a03c6210dfb46ff8b1211c447e5cfa6a3fb09947ccd3598aec241999116。最大encoded14878018B<100000000/100MiB，未分卷，不声称packer自带限额。原始文件全部保留。
+
+全部native/formal/observer/诊断writer停止后实际（cwd Git root，PYTHONPATH unset/PYTHONNOUSERSITE=1/PYTHONDONTWRITEBYTECODE=1）：
+
+```bash
+rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 /tmp/mr3_p2a0_v17_archive_closed_v1.py --review-output /tmp/mr3_p2a0_v17_closed_archive_prepublish_review_v1.json
+rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 -u /tmp/mr3_p2a0_v17_closed_publish_driver_v1.py
+```
+
+publish driver实际调用`/usr/bin/python3 /tmp/mr3_p2a0_v17_archive_closed_v1.py --publish --mode stopped --stop-stage reset`，source1904fdaa42e22c47a335e7118ed16c395b9453353567baeb5a29d624fdabbdde，exit0/102.41948467679322wall。1167支持原件manifest257e72264e79878ee6a0f655b68a1372de6aedb75fd6e799217ea3dc0d1e2353；3stage总5534native/raw5361045556B→selected327779340B；库存6928项/自身排除，SHAa711b076280676eff18c53708e108f7afd0c24edd27b46f704490693f7b916df。verification ebbe1048afb890bacba74549dd10f25a8b5ca3d58c3a71c3a015cad795afb9e3，成本36f6872a70170ebecc9d55fed77079ce552eccfa547306bf77210473b48c62d2：101Git/tar源、147独立源、218prefreeze、actuala014/四宏与487保存PID/start身份freshgone均核验PASS，保管不重标physicsFAIL。
+
+共11reset/296step/307API、295实际命令/294.02task物理秒，计费4425.007009362802native launcher墙秒；父audit CLI墙秒362.9459742582403/256.85878604091704/2112.325802913867单列，压缩/归档不计native成本。原生PPO/GPU/optimizer/learning samples均0；pilot已用2226/11494.045260453597、余1870/2905.954739546403保持。P2A.0仍未完成，后续修复使用新冻结，不把本版两阶段PASS拼接成完成信用。
+
+V17闭包静态实际命令（cwd Git root）：`rtk proxy env PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 /tmp/root_mr3_v17_closure_static_review_v1.py`，exit0/6.137763304170221wall：6928库存SHA/bytes、101runtime/147independent仍原源、487身份消失原核验、11/9/26 jobs与原FAIL保持、155链接、原eee6日志前缀、真实git add -n .6721路径白名单及diff-check PASS。发布后7份实际静态/发布原件以`rtk proxy env PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 /tmp/root_mr3_v17_capture_closure_static_v1.py`无损后置保存，raw1558070B→encoded224891B，manifest ef521cad309074701460a6be51d01a3c5e9b7f86063e8ef55f680d7cf892ddb4；最终inventory_native_v2覆盖6937项/自身排除，SHA42a6df7973301b17e0cf47ca314e1c88f6acf0c98683909f75690d3f8a24b856，旧库存和全部原件不改。无native/formal重跑。

@@ -580,11 +580,11 @@ python report/assets/20261017_mr3_p2a0_v16/independent/mr3_p2a0_v16_audit_stage.
 原A13实际九参数reader、Shim观察及a014库保持；V16 closure只在核旧SHA后暂时切binaryproof路径13→16并finally还原。准确冻结、原件、所有FAIL及限制见[V16报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261017_mr3_p2a0_v16.md)。完整准备证据提交推送后等待用户P2A.0验收，不自动启动训练/P2B/gateway。
 
 
-## MR3-P2A.0 V17 完整准备矩阵（待新冻结准入）
+## MR3-P2A.0 V17 完整准备矩阵（已关闭失败，不重跑）
 
 V16失败原件已封存db6410f。外部V6/32增晚目标机会，真实elapsed换算整数ns按[15e9,26e9)分类，保持旧V4/V5默认及原early排名；late只在原joint/lifecycle+V5非接近合法subset用旧outward排序。seed.29/路径/actor mask、5秒承诺、首WAIT3秒及moving/typed实际提交门不变。正常整数25秒最后新GOAL、30秒才可WAIT、32秒前剩2秒只是设计机会，仍须原raw物理/角向/接触/关闭门。没有生产探索兜底。
 
-完成clean pushed冻结及exact40 preflight后，串行父编排依次调用以下入口；各阶段全mandatory结束并PASS才准下一阶段，FAIL保留并SKIP后续，不同版重试或拼接PASS。被动mapping观察器只读实际进程。预算仍608API/596动作/18000原生墙秒，无PPO/pilot。
+实际冻结eee6b2f9已完成interface/terminal PASS；reset物理停车FAIL，deadline SKIP，所有进程自然关闭。以下命令只保留原执行入口，不重跑该失败版。新修复须另立冻结和预声明。原串行父编排依次调用以下入口；各阶段全mandatory结束并PASS才准下一阶段，FAIL保留并SKIP后续，不同版重试或拼接PASS。被动mapping观察器只读实际进程。预算仍608API/596动作/18000原生墙秒，无PPO/pilot。
 
 ```bash
 # cwd: wireless-rl；先按P1C段激活conda ns3gym并保持PYTHONNOUSERSITE=1

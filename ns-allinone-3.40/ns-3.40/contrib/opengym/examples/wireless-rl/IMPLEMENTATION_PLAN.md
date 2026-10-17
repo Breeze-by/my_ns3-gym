@@ -19,7 +19,7 @@ P2B及后续保持未开始，gateway不在当前授权范围内。
 | MR3-P1A | 固定三机器人、95% 任务与测量契约 | 已验收（2026-10-15） |
 | MR3-P1B | RL 可独占的稳定目标/观测接口 | 已验收（2026-10-15） |
 | MR3-P1C | 训练环境、可靠 reset、采样吞吐 | 已验收（2026-10-16） |
-| MR3-P2A.0 | 生命周期、候选及安全执行、参与观测准备 | 继续实施/验证；V16 FAIL已封存；V17晚合法目标刺激/294 CPU通过，须新冻结完整重验 |
+| MR3-P2A.0 | 生命周期、候选及安全执行、参与观测准备 | 未完成；V17 interface/terminal PASS，reset真实停车响应FAIL，deadline SKIP；先隔离诊断物理响应 |
 | MR3-P2A | 联合 MaskablePPO 最小训练闭环 | 未完成；v6停止，当前先做P2A.0 |
 | MR3-P2B | 同接口算法对照与方法选择 | 未开始 |
 | MR3-P2C | 理想通信完整验收、冻结模型 | 未开始 |
@@ -347,3 +347,5 @@ V16仅增加V5/32外部新GOAL非接近筛选，复用V4生命周期和原合法
 V16实际冻结ebe7d51b的interface32及9 mandatory通过，唯tb1无有意义A/B而physicalFAIL，后三阶段SKIP。原t13/t14 GOAL mask全false、t22恢复，须核验候选和窗口后新冻结完整重验；不改原门。
 
 V17仅增V6/32工程晚目标窗口（按整数ns的15..26），原V4/V5默认及安全候选/seed/lifecycle门保持。原晚目标机会不授运动或制停信用，须同冻结完整矩阵；见[V17](report/20261017_mr3_p2a0_v17.md)。
+
+V17实际冻结`eee6b2f90f697b28a1c20a2af5d1a6d2f044465e` interface与terminal完整PASS；reset8轮/256步原生正常关闭，24/26正式jobs通过，仅raw physical诊断及mandatory physics矩阵因worker1 open/rooms tb1停车超时FAIL，deadline SKIP。487保存身份freshgone、429native exit0。不是缺制停刺激：各机已有跨回合A或B信用，不能抵消合格事件违规。持续WAIT、actual v/w双零与native applied轮双零后仍有raw横向约.011m/s；先隔离核验1ms物理响应/量测语义，原.01三样本/.78s/.144m及其余门保持，再新冻结完整矩阵。详见[V17闭包](report/20261017_mr3_p2a0_v17.md)。
