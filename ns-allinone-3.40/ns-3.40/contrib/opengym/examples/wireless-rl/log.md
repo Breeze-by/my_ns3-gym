@@ -4449,3 +4449,5 @@ python report/assets/20261017_mr3_p2a0_v8/independent/mr3_p2a0_v8_contract_check
 
 - 最终docs新增预声明链接后的contract复核：`python report/assets/20261017_mr3_p2a0_v9/independent/mr3_p2a0_v9_contract_checks.py /tmp/mr3_p2a0_v9_contract_static_final.json`（conda ns3gym），exit0/5.539200895000249墙秒，33 reviewed pins/164相对链接/非pinAST相等及原task/actor/reward/motion/benchmark字节不变PASS。A9 `contract_static_v9_final.json`与`final_runtime_test_bindings_v2.json`绑定六项最终检查及相同最终runtime/docpin字节。
 - 三组离线原件归档分别information_offline34项、information_consumer_offline35项、launcher_offline36项，各原/编码/解码逐字核验通过。两个模块使用同一合成producer fixture，其重叠不计独立native信用；缺失的9条早draft字节与post-hoc重建preflight严格标明，不用最终源码冒充历史结果。V8归档完成stdout/stderr补件另列，final库存v2 SHA9488753b0225ac4257166296f10d8fcd5a601066e6f0cf7eef0a2140ead45834，原v1库存保持。原生尚未开始。
+
+- Git保全检查更正：源码/证据提交e27f5c60前cached diff检查发现归档的原始`mr3_v8_terminal_e1_failure_diagnostic_v1.py`第16行尾随空格，root未正确拦住后续commit；未push/未启动native。保留原raw SHA不修改字节，追加该单一归档路径的`-text -whitespace`属性（沿现原生SDF精确保全规则），再核验原脚本/manifest SHA及整个e27变更diff检查；独立binding/执行源未变。补丁另提交，不重写历史。
