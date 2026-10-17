@@ -3,10 +3,10 @@
 2026-10-17当前边界：用户明确要求继续完成P2A.0。第一版SLAM生命周期、失败采样保存、
 候选v4及诊断修复的[原始结果](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261017_mr3_p2a0.md)保持；
 当前将own权威导航合成、实际导航图v5候选、最终运动门及累计参与观测并入本步，
-MR3适配器每20ms物理推进前依次等待实际causal状态、peer障碍、guard回收与三台原生tagged目标存储回执。受控状态有效50Hz，非受控10Hz；存储ACK不代表机体响应，仍须原物理/时序门。当前V13使用实际三份Shim→原DWB局部控制、.20/.8命令与显式加速度配置，完整速度模型不符时normal负ACK并严格清理，数据禁止训练。新源码/实际库/离线检查及preflight通过后，V13首个参数响应匹配超时，interface FAIL、后三stage SKIP（1reset/0step）；修复仍待新冻结完整动作矩阵；V12四类FAIL保留，须新冻结完整矩阵。详见[V13报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261017_mr3_p2a0_v13.md)。
+MR3适配器每20ms物理推进前依次等待实际causal状态、peer障碍、guard回收与三台原生tagged目标存储回执。受控状态有效50Hz，非受控10Hz；存储ACK不代表机体响应，仍须原物理/时序门。实际三份Shim→原DWB局部控制使用.20/.8命令与显式加速度配置，完整速度模型不符时normal负ACK并严格清理，数据禁止训练。V14九参数/32步/严格关闭通过，但peer/control几何及停止覆盖FAIL，后三stage SKIP；导航peer速度界经alias受commandcap影响的回归已确认，下一新冻结须解耦并修外部取消刺激后完整重验。详见[V14报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261017_mr3_p2a0_v14.md)。
 实际Gazebo使用本包构建的paired joint-feedback驱动，物理参数保持原值，详见报告；本轮只做无训练的原生工程矩阵，不重启pilot；95%/300秒/三台参与/安全门禁及累计pilot余额不变。
 第一版6次原生严格关闭正常；terminal通过，reset真实peer失败、deadline跳过的原整体FAIL不改。
-v6须以新冻结完整验证导航、三台实际执行、20ms运动输出相位及300秒关闭，再待用户验收。
+须以新冻结完整验证导航、三台实际执行、20ms运动输出相位及300秒关闭，再待用户验收。
 P2A未完成，P2B/gateway未开始。
 
 本轮P1C验证2026-10-15启动，实际完成时刻见P1C报告；MR3-P1A/P1B用户已验收，用户于2026-10-16验收P1C并授权P2A；`c9344e1`是历史工程冻结。
@@ -165,4 +165,4 @@ P1B仅为脚本适配与理想逻辑交付证据，两者均没有导航RL/通�
 新研究的验收次序、RL方法/奖励、gateway无旁路和时钟规则都在共享研究/实施计划。
 本文只说明当前实现；历史或上游README的任务步骤不作为当前路线指令。
 
-当前P2A.0 V14只补九个精确Nav2参数响应writer的1秒有限匹配等待，30秒client与45秒hook、任务/物理门不改；三机运动源码与a014库复用。源码/CPU与root计划ready，尚须clean-pushed preflight及全矩阵，无新原生结果，V13失败原件保留；见[V14](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261017_mr3_p2a0_v14.md)。
+当前P2A.0 V14实际九参数读回、32步执行和严格关闭通过，但peer/control几何及停止覆盖FAIL，后三stage SKIP。确认较低命令cap通过control alias缩小了导航peer包络；需解耦该依赖并改外部取消刺激，以新冻结完整重验。原30秒client/45秒hook及任务/身体/停止门保持；原FAIL保留，见[V14](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261017_mr3_p2a0_v14.md)。

@@ -503,9 +503,9 @@ python report/assets/20261017_mr3_p2a0_v13/independent/mr3_p2a0_v13_audit_stage.
 
 上面的每一个audit入口包括完整原门和独立consumer，不直接绕过launcher调用benchmark。新drive v6先完整调用旧V5/V4严格数学/源/时延/停止验证，再附加最终guard、target与native实用值的精确.20/.8硬界。参数readback仍在首次动作前对9实际节点只读查询；插件映射原件证明实际加载身份，均不能代替身体运动/停止核验。脚本v3仅外部工程刺激，不是探索fallback。结果及限制见[V13报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261017_mr3_p2a0_v13.md)。完成本步后待用户验收，不自动训练。
 
-## MR3-P2A.0 V14 参数服务等待修复（源码计划ready）
+## MR3-P2A.0 V14 已关闭失败的参数服务修复
 
-V13完整失败原件已在60f932ed保留。V14仅为三台各controller/behavior/smoother的精确get_parametersReply writer增加1秒匹配/写入等待；旧36规则、30秒client总guard、45秒hook与原任务/身体/停止门保持。实际模型/驱动/运动源码与a014库没有变更，不为XML再次编译驱动；canonical source profile由新ROS child启动加载，成功CPU解析不等于原生应用证明。
+V14冻结`aa16d6541ef54a9c676e78367ba8a8b13c2589b9`已执行interface32步，九参数与严格关闭通过，peer/control实际几何回归及停止覆盖FAIL，后三stage SKIP。下列为已执行声明，不自动重跑。须解耦导航peer bound与command cap并修外部取消刺激，再用新冻结完整矩阵。V13完整失败原件已在60f932ed保留。V14仅为三台各controller/behavior/smoother的精确get_parametersReply writer增加1秒匹配/写入等待；旧36规则、30秒client总guard、45秒hook与原任务/身体/停止门保持。实际模型/驱动/运动源码与a014库没有变更，不为XML再次编译驱动；canonical source profile由新ROS child启动加载，成功CPU解析不等于原生应用证明。
 
 以下命令仅在源码/离线核验完成、plan ready、clean commit/push与actual exact40 preflight后运行；root计划ready仍必须实际clean-pushed preflight才准入。先按上文进入conda ns3gym，ROS child仍system Python。四stage逐项全部mandatory通过才前进，任何FAIL保留、后续SKIP，不同freeze不拼接，608API/596动作/18000原生墙秒不变。PPO/GPU/pilot/P2B/gateway不启动。
 

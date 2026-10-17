@@ -5429,3 +5429,36 @@ parent7 fakeCLI/2 AST/style检查通过，旧断言全部保留；initial styleF
 归档适配最终helper ca6cb556：显式encoding/compression优先，unknown/conflict拒绝，无字段旧row才suffixfallback；9身份/gzip/编码反例及原3错误SHA拒绝都PASS，实际old_originals只读核验6份A13manifest/899唯一rawSHA PASS（5.35wall），未改旧原件。全部writers停止后实际再次执行`rtk proxy env PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 -B /tmp/mr3_p2a0_v14_archive_offline_originals_v1.py --writers-stopped`（cwd Git root）exit0：173selected/raw2505402B/encoded481857B、113A13 raw-byte去重引用、1125 cache/mock/ELF/active等排除；每源fd stat/SHA前后及整体末验、gzip roundtrip硬校验。canonical单一manifest8eeab185a57c94957a2aa8cb66ee0a2a56717b52a97d36f315667625ab64dd01，首归档FAIL未改标。这是离线保管，非原生重试或simulator/PPO开销。
 
 最终prefreeze第一次inline检查用旧100 map时未把已审阅audit_ppo的新SHA替换，早assert FAIL且未写inventory；失败范围/无source mutation保存在prefreeze_attempt01_failure_v1.json。修正仅是当前101预期集合的构建（旧100中ENV/audit_ppo用已绑定新SHA，新增XML），新独占helper `rtk proxy env PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 /tmp/mr3_p2a0_v14_prefreeze_final_verify_v2.py`（cwd Git root）PASS：101source、105independent、36pins、actual a014+四宏、173原件编码/解码及113旧custody引用、184asset逐SHA、155链接；inventory3d358245390f878840a110b1224f003be44ad6fb0cca94da5a143f64e0110ce0。实际`git add -n .`201路径逐16代码/文档白名单或inventory，无unexpected；`git diff --check`PASS。仅本地源码/保管核验，不运行新native。
+
+### 2026-10-17 MR3-P2A.0 V14 原生关闭：几何及制停覆盖 FAIL
+
+实际源码冻结`aa16d6541ef54a9c676e78367ba8a8b13c2589b9`，planSHA5bb69b0af1ff36caace7174252a29cdf904f5cf6d2c80a01359e200e5a14f1d2；clean HEAD=origin/main，101runtime/105independent/a014 preflight PASS，sourcepack101文件/352008encoded B，manifest a4298b2073361c6e7d0e485eb465e547ddc865261d75e6acd603fa363a6cc9ab。上段prefreeze检查和CPU结果属于离线范围，不提供本次native通过信用。
+
+实际命令（cwd wireless-rl；conda调用保持 env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1）：
+
+```bash
+rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python report/assets/20261017_mr3_p2a0_v14/independent/mr3_p2a0_v14_buildproof_preflight.py
+rtk proxy env PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 /tmp/mr3_p2a0_v10_pack_source_bindings_v1.py --preflight /tmp/mr3_p2a0_v14_source_preflight.json
+rtk proxy env PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 -u report/assets/20261017_mr3_p2a0_v14/independent/mr3_p2a0_v14_cross_stage_mapping_monitor_v1.py --freeze aa16d6541ef54a9c676e78367ba8a8b13c2589b9
+rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -u /tmp/mr3_p2a0_v14_run_matrix_v1.py aa16d6541ef54a9c676e78367ba8a8b13c2589b9
+```
+
+父编排13:29:00.324 UTC启动；实际interface launcher13:29:00.801045至13:41:57.287265 UTC，计费776.4856320801191原生墙秒，1reset/32step/33 API records，open101/三机/domain140/port13301。九节点参数读回2.525004710070789墙秒，九次RPC约1.443–4.646ms，首个tb1/controller4.309913ms；本次通过不证明长期可靠性。release73.24s，结束physics105.26s，未补造尾步/终态。Nav2一次tb2 halt result错误原样保留，不无依据写作审计失败根因。
+
+11正式jobs全结束，all_submitted_jobs_finished=True、runner_errors=[]，10 mandatory receipts中peer/control/fixed_physics三项FAIL，其他7项PASS，额外FIFO PASS。39原生start/39 exit0、18 Nav2 finalized、实际PID/start关闭证据保持。父编排13:46:45.823419 UTC记version_failed_later_stages_skip并exit1，terminal/reset/deadline未启动；watcher自然结束。父脚本将aggregate成功与job关闭混为一条require，导致错误文案“did not close every required job”；原件不改，其实是已收齐的required FAIL。无外部signal、同版盲重试或训练/GPU/pilot。
+
+peer/control同报peer_phase line5544首条normal obstacles_published cloud与immutable A10几何不一致；三scan均匹配。独立同输入回放仅改namespace speed .20/.26，前者逐bit复现actual三cloud(1925/1927/1952points)，后者逐bit复现原reader(2341/2343/2366points)。control.py间接alias COMMAND_SPEED_LIMIT导致V13命令降.20时同时缩导航peer envelope，body_points与grid_with_peers均受影响。原静态receipt只核consumer源码/AST同值，不能推出依赖常量的运行几何不变；该过宽推断由此明确纠正，原receipt和FAIL不重写。修复须分离导航peer .26界与commandcap .20，不改原几何reader或任务.50门。
+
+physics无三台planar>.30/angular>1.2记录，仍因停止coverage FAIL：tb1 A2/B1有信用；tb2 A1/B0，10s取消时no_active_prior_linear_output；tb3 A0，eligible三A均resumed_before_proven_rest，28s取消初速.01057379677<.05，无B资格。不得把无bound violation改成physical PASS。三台各两个接受目标与约3.131/1.689/2.663m received路径仅是工程活动。本次32 native动作无原生学习样本、PPO/GPU/optimizer，pilot2226/11494.045260453597已用及1870/2905.954739546403余额保持。后续改外部刺激时机并保留所有原资格/响应门，以新clean pushed冻结完整矩阵。
+
+
+V14失败关闭归档（cwd/tmp，PYTHONNOUSERSITE=1/PYTHONDONTWRITEBYTECODE=1）实际顺序：
+
+```bash
+rtk proxy /usr/bin/python3 /tmp/mr3_p2a0_v14_pack_native_v1.py interface
+rtk proxy /usr/bin/python3 /tmp/mr3_p2a0_v14_archive_closed_v1.py --publish --mode stopped --stop-stage interface
+```
+
+pack source721f6af4，exit0/33.405632538720965wall；archive最终source9f905ca7，exit0/15.566353520844132wall；只作已关闭原件保管，不运行新native/formal。不重复加到776.4856320801191原生墙秒。原18helper fixtures后增加冻结Git/tar身份回归，最终19项/style PASS，初styleFAIL保留。新helper核V14 Git blobs+原101source tar，而不把后续授权V15工作区编辑当作V14字节。冻结184项保持，101source/105indie、四宏/a014及48 actual union保存身份fresh全gone。支持565新增原件/285旧canonical逐raw去重；原生572文件raw560832704B/selected34143760B。inventory1328 SHA2ba5492c49545fd01619d12e76b1e75b9e072d312e068a5ee00900a6f85fd14e，verification892b033c7d5ada9f2e2e7d3b79f5487c3e0a62ec5b2fc5ee0443349d6f65add4，supportmanifest3a046936b3c02c86f8a9d145e887e817b79a945bdcb4ca13dbbb173ca110a982。保管PASS不改3 formal FAIL；几何static过宽推断和parent错误文案解释见canonical runtime_closeout_corrections原件与[V14报告](report/20261017_mr3_p2a0_v14.md)。
+
+V14关闭文档静态检查：第一次inline白名单将新V15测试名误写为test_peer_geometry_bounds.py，实际新test_navigation_peer_geometry.py被正确拒绝；无文件/门变动。修白名单后仅静态重验PASS（/tmp/root_mr3_v14_closure_static_review_v2.json）：1328库存encoded bytes/SHA、144链接、旧log前缀与原FAIL/SKIP不变；实际git add -n .的1155路径全属11关闭文档、canonical库存或两项授权V15生产改动。后两项不纳入此关闭提交。git diff --check PASS，不为文档重跑native/formal。
