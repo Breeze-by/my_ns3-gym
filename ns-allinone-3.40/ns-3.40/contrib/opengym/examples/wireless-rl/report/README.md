@@ -9,6 +9,7 @@
 
 | 文件 | 用途 | 能提供的信用 |
 | --- | --- | --- |
+| [P2A.0 V20 启动来源测量准备](20261018_mr3_p2a0_v20_sensor.md) | 独立raw CDR/TF/SLAM读回；单次普通4step | 新exact40准入后执行；150未选、无矩阵/训练信用 |
 | [P2A.0 V19 固定物理对照闭合](20261018_mr3_p2a0_v19.md) | 两组采集/关闭PASS；150组候选饥饿、无停车刺激 | 原物理FAIL保留，150未选用；P2A.0未完成 |
 | [20261018_mr3_p2a0_v18.md](20261018_mr3_p2a0_v18.md) | 停车响应隔离物理诊断 | baseline32原生/原停车/关闭PASS，版本文件名准入FAIL；1ms正式consumer及对照SKIP，整体FAIL，P2A.0未完成 |
 | [20261017_mr3_p2a0_v17.md](20261017_mr3_p2a0_v17.md) | 晚GOAL机会及完整准备验证 | interface/terminal PASS，reset真实停车响应FAIL，deadline SKIP；原件封存，P2A.0未完成 |

@@ -5840,3 +5840,45 @@ V19 A19/closed_scan_static_v1源码与静态原件保留精确Gazebo/ROS/Karto�
 
 闭合独立复核ffdc2b48…与root静态155源摘要/160本地链接/JSON/diff检查通过，actual git add -n .初次1170路径均在白名单；原生与formal没有重跑。
 该补充实际仅静态/只读端点CPU，无新原生；旧结构化字段选择错误明确保留，更正无结果重标。
+
+
+### 2026-10-18 — 未选用150提案离线保管与V20_sensor单次来源测量准备
+
+V19追加静态保管A19/unselected_proposals_v1：182原件1285725B→305377B，archiveSHAc0c0efae…/manifestd82e16dd…，全部逐member解码及final源SHA/stat一致。
+条件150世界六文件/严格W7投影audit/ENV文案以及四阶段v1失败draft和v2draft均未应用、未运行、未选择；3 SDK CPU ELF排除但保留bytes/SHA/编译出处。
+原离线检查及精确命令见成员：SDFormat真实SDK每图43个规范化字段仅iters50→150不同（不是43测试）、原几何/ROI字节一致，正例6/变异负例8；
+任务loader旧JSON+新world必须拒绝、匹配新SHA才接受，三truth masks/freecells43812/51760/48560不变。首轮可选ODE父节点处理CPU FAIL原件保持。
+条件audit严格固定6SHA字节投影回原W7，12方法CPU通过、80独立static检查（不是80测试），无调用者任意新pins；当前生产audit/ENV/世界均未变。
+四阶段draft仅静态39检查/独立28门检查，无原生信用；命令/源版本/失败/成本在原封存回执，不拼接V17 PASS。
+
+V20_sensor source_base为已推送9f7ab6e7fe7e85ff1f6bf3ee6e3fcba7d960549e。新增独立passive C++ rclcpp recorder，不改ROS生产包/SLAM/候选/驱动/配置。
+CPP4707c8eaef49e4b763023b2b5d18e9be003ceed04bc9cebcd5c2bbf11f187caf、CMake2bc57b1b37468d588e9b92bccd8439e8d123568a373d5c3ddf2ff9c0c6e5a0f7。
+实际独立TMP CMake SDK build01（112.918秒、exit2）仅Werror misleading-indentation，source/stdout/stderr原件保留；窄修后build02 exit0/112.37127894628793wall。
+CPU自检1次15项，0.17197621520608664wall，无rclcpp init/DDS；±inf/两NaN payload/finite bits CDR、offset/bound、实际MessageInfo字段、半写pending与错误身份、typed config、-1/0/100占据和全TF frame均核验。
+精确CMake/编译/selftest argv/env/SDK flags/link文本和两source在A20_sensor/offline/recorder原件，不以当前环境重建旧命令。
+
+单次真实ROS SDK合成probe（非Gazebo、非任务/真实机器人）：cwd Git root，`bash --noprofile --norc -c 'source /opt/ros/humble/setup.bash; export PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1; /usr/bin/python3 -B /tmp/mr3_p2a0_v20_sensor_recorder_proposal_v1/ros_loopback_probe_v1.py'`。
+实际安全wrapper完整env/argv/sourcebeforeafter见checks/ros_probe01.json及probe result08dd269c…；domain171预检空闲，仅外部合成publisher，22订阅ready后实际3×104B CDR逐byte/SHA一致、GID匹配同recorder graph。
+实际publication seq1/2/3可用、reception unsupported→value null/rawsentinel，不做ABI hack。正常stop/exit0，总3.3036216092295945wall，recorder userCPU.0951/sys.0339秒。
+保存recorderPID3512882/start401720948已自然消失；合成参数states awaiting_first_map，未声称SLAM RPC实际验证；首轮probe style错误保留。
+独立interface review8bd1bdaf…核实际CPP宏/flags/ready/final/ELF一致；45原件175896B→48422B tar61961a63…，manifest a3177dc9…，全member往返一致。
+实际runtimeELF efd8a8f849da96c54753d168762dd8b4d5200077d5c490aaac070ea66f881f64/2659040B；root用gzip6无损编码482717B/SHA541aa760…，不跟踪buildcache/CPU ELF。
+
+协调器TMP最终parent8259eefc…/preflight28da0a64…/testsfd013928…；checks_v3最终14相关CPU4.216660556wall+fatalstyle.810770823wall通过（旧11/14版本和checked_sources均保留，未累加宣称42新测试）。
+使用有限fake Python children检查ready半写/冲突、正常stop、失败保留、真实early terminal原benchmarkFalse/CLI1；event加唯一Lock，join后核源不变；无signals/自动重试。
+既有e61c两小函数profile_record/validate_profile只核首boundary50→150/setter1/其它字段不变，原V19小正例+ERP变异反例CPU通过，不调用其32step正式CLI。
+32原件277503B→70402B tar完整往返+末源SHA一致，见A20_sensor/offline/coordinator。最终独立协调/plan review5c102d52…无阻断，不重跑CPU/DDS/native。
+Root exactbytes promotion5新源(CPP/CMake/3Python)，旧155 bindings全保持，新160；原103runtime/三个实际SO不变。
+plan相对sealed draft仅6处准备字段变化：status/pending两列表/newbindings/archivebinary/readiness；所有预算/command/动作/关闭语义全same。
+初promotion辅助错用manifest source而非path，在空目录创建后即失败、未复制源/改变原件；promotion_v2仅修保管接线，归档元数据如实保留。
+
+预声明只一次3robots/open101/单worker普通benchmark请求4step/最多1reset+4step=5API，域170/端口13451，≤900原生墙秒。
+现有V6强制32step，因此去掉preparation3flags，默认probe_action(snapshot,outward_goals=False)原源码绑定，不加生产特例/手工探索fallback。
+真任务提前终态原返回数/原benchmark FAIL保留；无真实终态却少步或RPC/strictclose失败仍过程FAIL。
+原e61c CLI明确SKIP；原2516物理结果原样保存，仅strictclose用于过程核验。150仍未选择、无V6/32step/矩阵/物理修复信用。
+Recorder先ready后benchmark，正常有限benchmark自然结束后父进程独占marker，recorder自身flush/close；另1000秒steady wallguard仅控制recorder，不能截断benchmark。
+raw CDR+实际GID/时戳/seq、scan/TF/odom/processedpose/ownmap及真实SLAM List/Get逐项来源可用性分别保存；best-effort首scan缺失/pose代理/map header聚合限制不掩盖。
+实际source admission与native入口在V20报告；本条为source准备，尚未执行新Gazebo/native/PPO/GPU/optimizer。须新clean pushed exact40预检后才单次启动。
+V18+V19 charged2489.3860735194758，900新上限累计3389.386073519476<3600；pilot余1870决策/2905.954739546403wall不动。P2A.0仍未完成，完整四阶段在真正修复的新冻结另验。
+
+V20准备root静态PASS：160实际源摘要（旧155全保持）、3Python AST、真实ELF与唯一canonical gzip逐字一致、174本地文档链接/JSON、git diff --check；actual git add -n .首30路径白名单及只对已声明runtime ELF gzip的force-dry-run1路径通过，build cache/objects不入Git。原始静态与dry-run在A20_sensor/offline/root_static_v1。无native/source准入或formal重跑。

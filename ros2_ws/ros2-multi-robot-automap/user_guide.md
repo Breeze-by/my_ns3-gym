@@ -1,5 +1,7 @@
 # 三机器人 ROS 建图导航：当前实现指南
 
+V20_sensor准备一次三机open101普通4step/至多5API启动期rawscan/TF/SLAM参数归因采集，新增独立只读测量器；原生产源码、门禁与pilot余额不变。SDK/CPU/合成ROS回环和独立审查通过后，仍须新clean pushed exact40预检，单次native≤900wall、原e61c32步CLI明确SKIP；150未选用、P2A.0未完成。见[V20](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_v20_sensor.md)。
+
 V19固定50/150隔离诊断已关闭：两组加载、逐毫秒采集和严格关闭通过；150组三机全程没有合法GOAL或停车刺激，原物理FAIL，150尚未采用，P2A.0仍未完成。详见[V19](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_v19.md)。原启动命令、物理门和pilot余额不变。
 
 2026-10-17当前边界：用户明确要求继续完成P2A.0。第一版SLAM生命周期、失败采样保存、
