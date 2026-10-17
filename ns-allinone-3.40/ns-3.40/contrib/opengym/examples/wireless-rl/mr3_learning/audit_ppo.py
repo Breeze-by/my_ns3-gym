@@ -23,7 +23,7 @@ import torch
 from sb3_contrib import MaskablePPO
 
 from . import audit_evaluator_phase, audit_protocol, audit_scalar
-from .audit_controlled_physics import dispatch_controlled_physics
+from .audit_controlled_physics import dispatch_controlled_physics, dispatch_controlled_readiness
 from .observation import encode_snapshot, observation_space
 
 
@@ -562,11 +562,15 @@ def audit_run(directory, freeze):
             native_meta = load_json(native / "metadata.json")
             epoch = native_meta["epoch"]
             row.update(epoch=epoch, scene=native_meta["scene"], seed=native_meta["seed"])
-            original_physics = dispatch_controlled_physics(native_auditor, [native], {})
+            motion_cache = {}
+            original_readiness = native_auditor.audit_initial_inputs_ready
+            original_physics = dispatch_controlled_physics(native_auditor, [native], motion_cache)
             try:
+                dispatch_controlled_readiness(native_auditor, [native], motion_cache)
                 row["native"] = phase.corrected_audit(base, native_auditor, command, [native])
             finally:
                 native_auditor.audit_physics = original_physics
+                native_auditor.audit_initial_inputs_ready = original_readiness
             row["scalar"] = scalar.audit_episode(native, freeze)
             row["evaluator_phase"] = audit_evaluator_phase.audit_episode(native)
             evaluation = load_json(native / (epoch + ".json"))

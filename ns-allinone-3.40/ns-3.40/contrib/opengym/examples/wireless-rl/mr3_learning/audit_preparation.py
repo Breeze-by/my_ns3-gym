@@ -15,7 +15,7 @@ from .audit_activity import audit_episode as audit_activity, audit_probe_activit
 from .audit_motion import audit_episode as audit_motion
 from .audit_controlled_physics import (
     CONTROL_PROTOCOL, controlled_bootstrap as _controlled_bootstrap,
-    dispatch_controlled_physics, verify_motion_artifacts,
+    dispatch_controlled_physics, dispatch_controlled_readiness, verify_motion_artifacts,
 )
 
 
@@ -345,11 +345,14 @@ def audit(directory, root, freeze):
     phase, base, native, command, scalar, sources = load_native_gates(root, freeze)
     exclude_preparation_capacity_comparison(native)
     motion_cache = {}
+    original_readiness = native.audit_initial_inputs_ready
     original_physics = dispatch_controlled_physics(native, [directory], motion_cache)
     try:
+        dispatch_controlled_readiness(native, [directory], motion_cache)
         result = phase.corrected_audit(base, native, command, [directory])
     finally:
         native.audit_physics = original_physics
+        native.audit_initial_inputs_ready = original_readiness
     episodes = []
     metadata = json.loads((directory / "benchmark_metadata.json").read_text())
     motion_probe = not any(metadata.get(key) for key in (

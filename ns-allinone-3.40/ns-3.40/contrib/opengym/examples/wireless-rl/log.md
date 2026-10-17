@@ -5177,3 +5177,130 @@ python report/assets/20261017_mr3_p2a0_v8/independent/mr3_p2a0_v8_contract_check
 ```
 
 实际端点QoS+真实ACK交付/adapter focused67PASS，初red7FAIL1PASS（2真实缺口+5初test默认liveliness警告误判）及原fixture/source-before-after/准确argv在A11 independent/runtime_offline/originals_manifest_v1.json，SHA cb3a37ddfc1a3ffea2311ff91dabf64cd65419103a40da2c9c5921d1ac994320，19原件254967raw；缺失初中间test bytes明确标注。独立control v2只继承原04cd/旧58，新增9sticky negativemutation；旧CLI真实反例exit0/PASS、新CLI exit1/FAIL正确拒绝，同raw输入恒定，wrapper AST原实际拒绝。27原件manifest181217d13cdb5671b27eda8352e7b8ac29a5ffd8e8035e04aaed12ec20501930，raw184890→27865B；无native信用。root原件manifestf87fac9539a6813b0a7cc2f9181e658111366f34bfeec56217f0d4494749d15f。新plan68bindings/18000wall/608API596actions与原四stage门保持；仍需新clean-push preflight及完整新原生矩阵。无PPO/GPU/optimizer，pilot余额不变。
+
+
+### 2026-10-17 MR3-P2A.0 v11 原生接口32闭合：独立执行/物理PASS，完整旧握手消费者FAIL
+
+冻结ba018fe3122c478836eb4e5da9c14306cd832c1b。clean push后同conda/unset PYTHONPATH/PYTHONNOUSERSITE=1/PYTHONDONTWRITEBYTECODE=1执行A11 mr3_p2a0_v11_buildproof_preflight.py：100runtime/68independent/实际d0d库PASS。sourcepack精确命令 `/usr/bin/python3 /tmp/mr3_p2a0_v10_pack_source_bindings_v1.py --preflight /tmp/mr3_p2a0_v11_source_preflight.json`，100Git payload及68indie逐旧Git核验，不取后续working source。
+
+实际入口conda python `report/assets/20261017_mr3_p2a0_v11/independent/mr3_p2a0_v11_launch_stage.py interface ba018fe3122c478836eb4e5da9c14306cd832c1b`（cwd W），benchmark精确argv `python -u -m mr3_learning.benchmark --workers 1 --schedule open:101 --steps 32 --preparation-motion-probe --preparation-probe-version mr3-p2a0-outward-cancel-v3 --base-domain 120 --base-port 13101 --output-root /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0 --run-id mr3_p2a0_20261017_v11_interface --preparation-parameter-review`。08:55:24.992672–09:07:48.833582 UTC，launcher743.8402884537354wall/sampler743.3724391502328wall，不相加两个包装时间；exit0，1reset+32step=33API/32提交/32任务秒，0GPUupdate。firstpause73.548，12×1ms对齐→T0 73.560，唯一bootstrap20→T1/release73.580，末105.600含1stop20ticks。严格关闭39native clean、3manager/18managed finalized、worker0/forcedFalse/failedFalse，46真实PID/start fresh全部gone；实际/proc mapped库、3SDF/topology/4compiled源均匹配d0d冻结proof。
+
+正式命令同conda env `python report/assets/20261017_mr3_p2a0_v11/independent/mr3_p2a0_v11_audit_stage.py interface ba018fe3122c478836eb4e5da9c14306cd832c1b`，cwd W。11条实际审计CLI的完整argv/cwd/returncode/wall/stdout/outputSHA无损保存在A11 independent/native_originals_v1/mr3_p2a0_v11_interface_audit_execution_v1.json.gz。10PASS，唯fullaudit FAIL：旧W7 initial-input函数只认旧reset_handshake，原contact context同函数不能建立paused-release证明；完整physics/32transition/protocol/orderedclosure子PASS，raw18stream sequence/zero_contact不能覆盖contact proof FAIL。9/10mandatory PASS不足通过该stage，terminal/reset/deadline全部SKIP未启动。以下是实际11条审计成本，不计native/pilot：
+
+- full_audit: exit1, 206.88751414837316 wallsec, passed=False
+- drive_review_v1: exit0, 116.45206854585558 wallsec, passed=True
+- information_review_v1: exit0, 141.64619582612067 wallsec, passed=True
+- peer_review_v1: exit0, 43.0843420708552 wallsec, passed=True
+- control_review_v1: exit0, 106.98342876508832 wallsec, passed=True
+- settled_turn_review_v1: exit0, 26.744677194859833 wallsec, passed=True
+- input_001: exit0, 176.87942467583343 wallsec, passed=True
+- fixed_angular_v1: exit0, 24.606267692055553 wallsec, passed=True
+- fixed_physics_v1: exit0, 23.56654698587954 wallsec, passed=True
+- episode001_fifo_phase_final: exit0, 13.472752128727734 wallsec, passed=True
+- closure_binary_review_v1: exit0, 4.6481345552019775 wallsec, passed=True
+
+原生pack `/usr/bin/python3 /tmp/mr3_p2a0_v11_pack_native_v1.py interface`：574原件557216344raw→34201275选择字节，manifest118604b2bb6df5b73a18e9b1be8400a34d964fb232e5c9858400e47600941f22。79support含全部原FAIL/prefix/console/tools；100Git runtime及68indie oldobjects全exact，旧A11 91Git/90prefreeze逐字不变。最终inventory_native_v1排cache/self750项SHAc6018d3293dc926af113df06f9fb28de043066e3b94d5f690c546d592793571b，verification SHAdab30299b9e1b04c1284a2e88d1d037fb5f339e1cec15d7f48b288160261bfa7，canonical无ignored。初prefix仅诊断，两个版本轨迹差异不作单因ablation。V12仅修受限消费者并新freeze整矩阵，原FAIL/门保持；pilot余额1870/2905.954739546403不变，无95%学习/P2A信用。
+
+
+### 2026-10-17 MR3-P2A.0 v12 受限readiness消费者与最终离线验证
+
+基准ba018fe3122c478836eb4e5da9c14306cd832c1b，ROS/任务/actor/奖励/候选/全部body/source/physical/contact数学不变，只有shared readiness与PPO/preparation显式安装/还原接线。97运行与合同源逐Git字节相同；旧4个shared函数AST相同；PPO/preparation除精确reviewed import、共享cache及两hook try/finally接线外全AST相等。原contact/W7函数仍真调用。新协议只读复合证明先做真实T0/20bootstrap/T1/3storage/adapter投影/seq0/LIVE→首quantum，再在明确子predicate视图使用原prewarm ACK规则，不改原metadata或把它装成旧协议；同clock late-map原合法路径允许，snapshot/seq0原门保持。
+
+root完整conda247 PASS（46.953test/52.430579245090485wall）、5coordinator style、13launcher、35pins/122links/97源及AST检查PASS。root_style_v12_01曾误将dense档案CLI fixture纳入style：372个fixture格式项及2个checker长行FAIL原stdout保留；2checker长行已修，最终style范围5个实际coordinator，不声称档案fixture lint-clean，不改旧原件。该fixture的7个真实main调度语义检查均PASS。ROS源码无变，V11原1175PASS适用字节不变，不再启动ROS/build。所有root原argv/cwd/source-before-after/exit/wall/无损stdout在A12根JSON，最终4check before==after；索引：
+
+```json
+[
+  {
+    "command": [
+      "/usr/bin/env",
+      "-u",
+      "PYTHONPATH",
+      "PYTHONNOUSERSITE=1",
+      "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "mr3_learning/tests",
+      "-q"
+    ],
+    "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+    "exit_code": 0,
+    "wall_seconds": 52.430579245090485,
+    "stdout_stderr_gzip": "conda_cpu_v12_final.log.gz",
+    "decoded_sha256": "ee0fb8085cb905c33d0c55b5747e2b330dc375551b1b79ec5bd94481114423e2"
+  },
+  {
+    "command": [
+      "/usr/bin/env",
+      "-u",
+      "PYTHONPATH",
+      "PYTHONNOUSERSITE=1",
+      "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+      "report/assets/20261017_mr3_p2a0_v12/independent/mr3_p2a0_v12_contract_checks.py",
+      "/tmp/mr3_p2a0_v12_contract_static_final.json"
+    ],
+    "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+    "exit_code": 0,
+    "wall_seconds": 5.720741203986108,
+    "stdout_stderr_gzip": "contract_static_v12_final.log.gz",
+    "decoded_sha256": "10f62bdb5d26887d08c2a8d3b729317c330f5b47bac3e00cf11fd83f188fabe5"
+  },
+  {
+    "command": [
+      "/usr/bin/env",
+      "-u",
+      "PYTHONPATH",
+      "PYTHONNOUSERSITE=1",
+      "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+      "report/assets/20261017_mr3_p2a0_v12/independent/mr3_p2a0_v12_plan_launcher_tests_v1.py"
+    ],
+    "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+    "exit_code": 0,
+    "wall_seconds": 0.2877263040281832,
+    "stdout_stderr_gzip": "plan_launcher_v12_final.log.gz",
+    "decoded_sha256": "8e8f32b64b12b3f119919b9253db0b16fa1544f6956d4878b20a15243297b552"
+  },
+  {
+    "command": [
+      "/usr/bin/python3",
+      "-m",
+      "flake8",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v12/independent/mr3_p2a0_v12_contract_checks.py",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v12/independent/mr3_p2a0_v12_audit_stage.py",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v12/independent/mr3_p2a0_v12_audit_stage_tests_v1.py",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v12/independent/mr3_p2a0_v12_launch_stage.py",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v12/independent/mr3_p2a0_v12_buildproof_preflight.py",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v12/independent/mr3_p2a0_v12_plan_launcher_tests_v1.py",
+      "--max-line-length=99"
+    ],
+    "cwd": "/home/zhuyulab/ns3-workspace",
+    "exit_code": 1,
+    "wall_seconds": 0.8029936011880636,
+    "stdout_stderr_gzip": "root_style_v12_01.log.gz",
+    "decoded_sha256": "7cde02a34e2bcc1a2dbca7cfed56f576e5d6547daf8b9113224e119c6d5f6018"
+  },
+  {
+    "command": [
+      "/usr/bin/python3",
+      "-m",
+      "flake8",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v12/independent/mr3_p2a0_v12_contract_checks.py",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v12/independent/mr3_p2a0_v12_audit_stage.py",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v12/independent/mr3_p2a0_v12_launch_stage.py",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v12/independent/mr3_p2a0_v12_buildproof_preflight.py",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v12/independent/mr3_p2a0_v12_plan_launcher_tests_v1.py",
+      "--max-line-length=99"
+    ],
+    "cwd": "/home/zhuyulab/ns3-workspace",
+    "exit_code": 0,
+    "wall_seconds": 0.8457756321877241,
+    "stdout_stderr_gzip": "root_style_v12_final.log.gz",
+    "decoded_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+]
+```
+
+agent初19/11/14版fixture/字段/style失败、diagnostic01 FAIL及02/03/04 working-consumer真实组合PASS（末43.643547wall）原件均保留。最终15focused PASS/20.840test/25.594564wall；其范围与root247重叠不相加。实际V11原输入/旧正式FAIL/本working source前后SHA恒定，原W7 ACK子predicate+原contact.release_context真实入口均运行；该诊断不重新采样、不冒新freeze或95%信用。Runtime50原件raw689428/encoded664924，manifestb00632762c643844d2396a98bec5e94b1442ef3a4b264d524549ce426e993e4c；缺失早draft字节明确记录。独立Safety review v1/v2源码/结果均在该manifest，v2 SHA2219a0a44b9d361ed4057a1ab73a11f8bd6be0c9d4ba67fc7f27ba185c368bc8。
+
+bounded4 ThreadPoolExecutor只调度原独立审计subprocess，rawphysical先于pooledmatrix、全部FIFO先于closure、主/子异常也finally等待全部已提交任务，完成后才组装mandatory；7个actual main/fakeCLI测试涵盖4上限/两依赖/失败保留/两层异常drain/不覆盖。runner10原件manifest0d3c19aaa4d314e333de4cfbe538f92a000eee93c1f01382cf4686581aa88ac9，最终源码/fixtures明确，未复制mock树或重造早draft。root原件manifest183e39c30d8f49bd59042d6e2f431785d2b4eb7e2b18fdd49847e63afcfe5e51。新plan76bindings/100runtime待preflight，四阶段608API/596actions/18000nativewall原门不变。V12尚无原生/PPO/GPU/optimizer，pilot余额1870/2905.954739546403不变。

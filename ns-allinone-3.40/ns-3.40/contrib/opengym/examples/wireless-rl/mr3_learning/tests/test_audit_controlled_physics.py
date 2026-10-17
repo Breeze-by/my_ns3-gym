@@ -78,14 +78,14 @@ class SharedControlledPhysicsTests(unittest.TestCase):
                 continue
             if any(isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute)
                    and node.func.attr == "corrected_audit" for node in ast.walk(container)):
-                self.assertEqual(len(container.body), 1)
-                self.assertEqual(len(container.finalbody), 1)
+                self.assertEqual(len(container.body), 2)
+                self.assertEqual(len(container.finalbody), 2)
                 # Dispatch assignment is immediately before this exact try.
                 parent = next(node for node in ast.walk(function)
                               if isinstance(getattr(node, "body", None), list)
                               and container in node.body)
                 index = parent.body.index(container)
-                return compile(ast.Module(body=[parent.body[index - 1], container],
+                return compile(ast.Module(body=parent.body[index - 3:index] + [container],
                                           type_ignores=[]), audit_ppo.__file__, "exec")
         self.fail("PPO native call has no call-scoped restoration")
 
@@ -94,7 +94,11 @@ class SharedControlledPhysicsTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             directory, files, _ = self.fixture.setup_episode(Path(temporary))
             capacity = object()
+
+            def original_readiness(*args):
+                return {"required": False, "proven": False}
             auditor = SimpleNamespace(audit_physics=self.original,
+                                      audit_initial_inputs_ready=original_readiness,
                                       comparison_statistics=capacity)
             for fail_after_math in (False, True):
                 def traverse(base, actual_auditor, command, directories):
@@ -108,6 +112,7 @@ class SharedControlledPhysicsTests(unittest.TestCase):
                     return result
 
                 namespace = {"dispatch_controlled_physics": shared.dispatch_controlled_physics,
+                             "dispatch_controlled_readiness": shared.dispatch_controlled_readiness,
                              "native_auditor": auditor, "native": directory,
                              "phase": SimpleNamespace(corrected_audit=traverse),
                              "base": object(), "command": object(), "row": {}}
@@ -123,7 +128,26 @@ class SharedControlledPhysicsTests(unittest.TestCase):
                         exec(block, namespace)
                         self.assertIn("controlled_bootstrap", namespace["row"]["native"])
                 self.assertIs(auditor.audit_physics, self.original)
+                self.assertIs(auditor.audit_initial_inputs_ready, original_readiness)
                 self.assertIs(auditor.comparison_statistics, capacity)
+
+    def test_second_installer_error_still_restores_both_original_callables(self):
+        block = self.ppo_call_block()
+        with tempfile.TemporaryDirectory() as temporary:
+            directory, _, _ = self.fixture.setup_episode(Path(temporary))
+            original_readiness = object()
+            auditor = SimpleNamespace(audit_physics=self.original,
+                                      audit_initial_inputs_ready=original_readiness)
+
+            def broken(*args):
+                raise ValueError("fixture readiness installer error")
+            namespace = {"dispatch_controlled_physics": shared.dispatch_controlled_physics,
+                         "dispatch_controlled_readiness": broken,
+                         "native_auditor": auditor, "native": directory}
+            with self.assertRaisesRegex(ValueError, "installer error"):
+                exec(block, namespace)
+            self.assertIs(auditor.audit_physics, self.original)
+            self.assertIs(auditor.audit_initial_inputs_ready, original_readiness)
 
     def test_controlled_dispatch_cannot_bypass_original_integer_quantum_math(self):
         with tempfile.TemporaryDirectory() as temporary:

@@ -197,7 +197,7 @@ python -m mr3_learning.audit_preparation \
 工程成本单列，不使用/重置pilot余额。每worker始终三台；300秒KEEP用于截止与关闭验证，
 不证明探索或三台参与成功。旧版原件保持；用户随后要求继续完成P2A.0，新版见下节。
 
-## MR3-P2A.0 v11 当前训练前工程准备
+## MR3-P2A.0 v12 当前训练前工程准备
 
 v1至v9失败及原件保留，详见 dated reports。当前导航合成own已知权威/shared补unknown、候选`mr3-navigation-geometric-staging-v5`、快照v3/张量v2及71列活动观测延续。实际速度链为controller/behavior→`cmd_vel_nav`→smoother→`cmd_vel_unguarded`→唯一`motion_safety`→`cmd_vel`。受控每20ms暂停完成state实际发布→peer实际接收/障碍发布→guard实际回收→三台native目标存储后才推进。三机实际Nav2配置和安全门的角速度指令上限均为`.8rad/s`，测量门仍为`1.2rad/s`；精确一ULP规范、完整转向复验及保守停止包络延续。
 
@@ -214,29 +214,29 @@ source install/setup.bash
 
 adapter唯一guard发布tagged target，driver实际存储后回执，worker核对三台exactclock/seq/value；Twist仍观察，baseline显式Twist模式。原paired轮模型、四编译源/库、所有机体门保持。条件静止转向原每个body margin≥.1518m及整段漂移须独立核验。新增显式因果提交修复暂停期间定时发布饥饿，隔离`information_states.jsonl`、`peer_phase.jsonl`和控制账本逐实际callback核验。工程与训练结果审计共用唯一零bootstrap的受限版本入口，不改变真实任务release或原整数物理数学；本轮没有训练信用。
 
-再按P1C段激活conda `ns3gym`，仅在下面wireless-rl目录执行Python入口；ROS子进程仍使用system ROS Python。只在一个干净且已提交推送、完成源码和installed路径核验的冻结运行。interface通过后才开始terminal，再完整reset，最后deadline；每阶段完整审计通过再前进。上限608 API/596脚本动作、18000墙秒，无原生GPU/optimizer；pilot余额不动。真实失败保留并停止该版后续阶段，修复后新冻结/新预声明重验，不拼PASS。详见[v11报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261017_mr3_p2a0_v11.md)。
+再按P1C段激活conda `ns3gym`，仅在下面wireless-rl目录执行Python入口；ROS子进程仍使用system ROS Python。只在一个干净且已提交推送、完成源码和installed路径核验的冻结运行。interface通过后才开始terminal，再完整reset，最后deadline；每阶段完整审计通过再前进。上限608 API/596脚本动作、18000墙秒，无原生GPU/optimizer；pilot余额不动。真实失败保留并停止该版后续阶段，修复后新冻结/新预声明重验，不拼PASS。详见[v12报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261017_mr3_p2a0_v12.md)。
 
 ```bash
 cd /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl
 unset PYTHONPATH
 export PYTHONNOUSERSITE=1
-MR3_P2A0_V11_FREEZE=$(git rev-parse HEAD)
-python report/assets/20261017_mr3_p2a0_v11/independent/mr3_p2a0_v11_buildproof_preflight.py
-python report/assets/20261017_mr3_p2a0_v11/independent/mr3_p2a0_v11_launch_stage.py interface "$MR3_P2A0_V11_FREEZE"
-python report/assets/20261017_mr3_p2a0_v11/independent/mr3_p2a0_v11_audit_stage.py interface "$MR3_P2A0_V11_FREEZE"
+MR3_P2A0_V12_FREEZE=$(git rev-parse HEAD)
+python report/assets/20261017_mr3_p2a0_v12/independent/mr3_p2a0_v12_buildproof_preflight.py
+python report/assets/20261017_mr3_p2a0_v12/independent/mr3_p2a0_v12_launch_stage.py interface "$MR3_P2A0_V12_FREEZE"
+python report/assets/20261017_mr3_p2a0_v12/independent/mr3_p2a0_v12_audit_stage.py interface "$MR3_P2A0_V12_FREEZE"
 
-python report/assets/20261017_mr3_p2a0_v11/independent/mr3_p2a0_v11_launch_stage.py terminal "$MR3_P2A0_V11_FREEZE"
-python report/assets/20261017_mr3_p2a0_v11/independent/mr3_p2a0_v11_audit_stage.py terminal "$MR3_P2A0_V11_FREEZE"
+python report/assets/20261017_mr3_p2a0_v12/independent/mr3_p2a0_v12_launch_stage.py terminal "$MR3_P2A0_V12_FREEZE"
+python report/assets/20261017_mr3_p2a0_v12/independent/mr3_p2a0_v12_audit_stage.py terminal "$MR3_P2A0_V12_FREEZE"
 
-python report/assets/20261017_mr3_p2a0_v11/independent/mr3_p2a0_v11_launch_stage.py reset "$MR3_P2A0_V11_FREEZE"
-python report/assets/20261017_mr3_p2a0_v11/independent/mr3_p2a0_v11_audit_stage.py reset "$MR3_P2A0_V11_FREEZE"
+python report/assets/20261017_mr3_p2a0_v12/independent/mr3_p2a0_v12_launch_stage.py reset "$MR3_P2A0_V12_FREEZE"
+python report/assets/20261017_mr3_p2a0_v12/independent/mr3_p2a0_v12_audit_stage.py reset "$MR3_P2A0_V12_FREEZE"
 
-python report/assets/20261017_mr3_p2a0_v11/independent/mr3_p2a0_v11_launch_stage.py deadline "$MR3_P2A0_V11_FREEZE"
-python report/assets/20261017_mr3_p2a0_v11/independent/mr3_p2a0_v11_audit_stage.py deadline "$MR3_P2A0_V11_FREEZE"
+python report/assets/20261017_mr3_p2a0_v12/independent/mr3_p2a0_v12_launch_stage.py deadline "$MR3_P2A0_V12_FREEZE"
+python report/assets/20261017_mr3_p2a0_v12/independent/mr3_p2a0_v12_audit_stage.py deadline "$MR3_P2A0_V12_FREEZE"
 
 ```
 
-上述native入口使用[预声明launcher](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v11/predeclared_plan_v11.json)的精确命令与累计预算，不直接绕过它调用benchmark。`audit_preparation`只是完整门中的一项；interface须补齐full/input/driver/angular/physical/settled/closure及information并新增peer/control精确独立回执；准确清单以本版预声明为准，全部`passed=true`才允许下一stage。各文件名与调用模板在预声明中，真实FAIL或缺件都拒绝继续；不能手写PASS。preflight仅在同一clean+pushed冻结创建新`/tmp`凭据，不覆盖旧凭据。
+上述native入口使用[预声明launcher](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v12/predeclared_plan_v12.json)的精确命令与累计预算，不直接绕过它调用benchmark。`audit_preparation`只是完整门中的一项；interface须补齐full/input/driver/angular/physical/settled/closure及information并新增peer/control精确独立回执；准确清单以本版预声明为准，全部`passed=true`才允许下一stage。各文件名与调用模板在预声明中，真实FAIL或缺件都拒绝继续；不能手写PASS。preflight仅在同一clean+pushed冻结创建新`/tmp`凭据，不覆盖旧凭据。
 
 interface的`--preparation-parameter-review`只读固定、源码绑定的九节点参数脚本；使用原native metadata声明并经canonical profile/Git字节核验的相同loopback UDP配置；reset返回后、首step前物理保持暂停，失败走严格关闭。原件`actual_nav2_parameters.json`保存在episode目录。interface还须通过冻结独立angular消费者及至少一次实际settled-turn触发、完整持续漂移审计；所有阶段driver消费门保持。reset须通过冻结独立物理matrix及所有触发漂移段；规则和脚本SHA见预声明资产。
 

@@ -1,0 +1,137 @@
+{
+  "scope": "Post-run faithful presentation of retained tool commands; not an execve capture. Final checks also record complete argv directly in their executing runner receipts.",
+  "commands": [
+    {
+      "label": "focused_01",
+      "argv": [
+        "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+        "-m",
+        "unittest",
+        "mr3_learning.tests.test_audit_controlled_readiness",
+        "-v"
+      ],
+      "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+      "environment": {
+        "PYTHONNOUSERSITE": "1"
+      },
+      "stdout_stderr": "/tmp/mr3_p2a0_v12_readiness_focused_01.log"
+    },
+    {
+      "label": "focused_02",
+      "argv": [
+        "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+        "-m",
+        "unittest",
+        "mr3_learning.tests.test_audit_controlled_readiness",
+        "mr3_learning.tests.test_audit_controlled_physics",
+        "-v"
+      ],
+      "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+      "environment": {
+        "PYTHONNOUSERSITE": "1"
+      },
+      "stdout_stderr": "/tmp/mr3_p2a0_v12_readiness_focused_02.log"
+    },
+    {
+      "label": "focused_03",
+      "argv": [
+        "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+        "-m",
+        "unittest",
+        "mr3_learning.tests.test_audit_controlled_readiness",
+        "mr3_learning.tests.test_audit_controlled_physics",
+        "-v"
+      ],
+      "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+      "environment": {
+        "PYTHONNOUSERSITE": "1"
+      },
+      "stdout_stderr": "/tmp/mr3_p2a0_v12_readiness_focused_03.log"
+    },
+    {
+      "label": "style_01",
+      "argv": [
+        "/usr/bin/python3",
+        "-m",
+        "flake8",
+        "--max-line-length=100",
+        "--ignore=E128,E129,W503",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_controlled_physics.py",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_preparation.py",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_ppo.py",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_controlled_physics.py",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_controlled_readiness.py"
+      ],
+      "cwd": "/home/zhuyulab/ns3-workspace",
+      "stdout_stderr": "/tmp/mr3_p2a0_v12_readiness_style_01.log"
+    },
+    {
+      "label": "style_02",
+      "argv": [
+        "/usr/bin/python3",
+        "-m",
+        "flake8",
+        "--max-line-length=100",
+        "--ignore=E128,E129,W503,W504",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_controlled_physics.py",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_preparation.py",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_ppo.py",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_controlled_physics.py",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_controlled_readiness.py"
+      ],
+      "cwd": "/home/zhuyulab/ns3-workspace",
+      "stdout_stderr": "/tmp/mr3_p2a0_v12_readiness_style_02.log"
+    },
+    {
+      "label": "native_working_diagnostic_02",
+      "argv": [
+        "/usr/bin/python3",
+        "/tmp/mr3_p2a0_v12_readiness_native_diagnostic_v1.py",
+        "/tmp/mr3_p2a0_v12_readiness_native_diagnostic_02.json"
+      ],
+      "cwd": "/home/zhuyulab/ns3-workspace",
+      "environment": {
+        "PYTHONNOUSERSITE": "1"
+      },
+      "stdout_stderr": "/tmp/mr3_p2a0_v12_readiness_native_diagnostic_02.log",
+      "scope": "read-only working-consumer on unchanged old native artifacts; not a native launch or formal V11 rewrite"
+    },
+    {
+      "label": "native_working_diagnostic_03",
+      "argv": [
+        "/usr/bin/python3",
+        "/tmp/mr3_p2a0_v12_readiness_native_diagnostic_v1.py",
+        "/tmp/mr3_p2a0_v12_readiness_native_diagnostic_03.json"
+      ],
+      "cwd": "/home/zhuyulab/ns3-workspace",
+      "environment": {
+        "PYTHONNOUSERSITE": "1"
+      },
+      "stdout_stderr": "/tmp/mr3_p2a0_v12_readiness_native_diagnostic_03.log",
+      "scope": "read-only working-consumer on unchanged old native artifacts; not a native launch or formal V11 rewrite"
+    },
+    {
+      "label": "native_working_diagnostic_04",
+      "argv": [
+        "/usr/bin/python3",
+        "/tmp/mr3_p2a0_v12_readiness_native_diagnostic_v1.py",
+        "/tmp/mr3_p2a0_v12_readiness_native_diagnostic_04.json"
+      ],
+      "cwd": "/home/zhuyulab/ns3-workspace",
+      "environment": {
+        "PYTHONNOUSERSITE": "1"
+      },
+      "stdout_stderr": "/tmp/mr3_p2a0_v12_readiness_native_diagnostic_04.log",
+      "scope": "read-only working-consumer on unchanged old native artifacts; not a native launch or formal V11 rewrite"
+    }
+  ],
+  "history_limits": [
+    "Earliest focused01 helper/test source bytes were not independently retained; no final source is substituted for them. Its original stdout FAIL is retained.",
+    "diagnostic01 was a stdin working-helper call, not an originally saved script. The 602-byte original traceback is retained; its pre-fix helper source snapshot is unavailable.",
+    "focused03 executed 19 TestCase invocations because importing the 5-case TestCase exposed it to unittest twice. Finalv1 14 and finalv2 15 are unique case counts; no overlapping totals are added.",
+    "style01 initially omitted the existing W504 ignore as well as finding new style violations. Both failed logs remain.",
+    "source_snapshot_02 binds the diagnostic02 production/helper/script bytes; source_snapshot_03 is the focused03 development source; source_prebind_v1 binds final-v1/diagnostic03 pre-parameter-check bytes.",
+    "No raw monitor Bool or initial reward-ready packet was archived by the producer; this hook explicitly uses the pinned source causal implication plus actual initial ACK/seq0 and the full saved controlled chain.",
+    "Original V11 full audit remains FAIL; its SHA is independently bound in all successful working diagnostic02/03/04 receipts."
+  ]
+}

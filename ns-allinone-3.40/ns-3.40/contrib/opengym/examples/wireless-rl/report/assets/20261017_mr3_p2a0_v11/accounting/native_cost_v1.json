@@ -1,0 +1,105 @@
+{
+  "schema": "mr3-v11-closed-engineering-cost-v1",
+  "freeze": "ba018fe3122c478836eb4e5da9c14306cd832c1b",
+  "stage": "interface",
+  "formal_stage_passed": false,
+  "launcher_benchmark_only_passed": true,
+  "launcher_wall_seconds": 743.8402884537354,
+  "benchmark_wall_seconds_including_attempts": 743.3724391502328,
+  "returned_resets": 1,
+  "returned_steps": 32,
+  "saved_transition_records": 33,
+  "gpu_calls": 0,
+  "optimizer_updates": 0,
+  "pilot_budget_unchanged": {
+    "remaining_decisions": 1870,
+    "remaining_wall_seconds": 2905.954739546403
+  },
+  "formal_commands": [
+    {
+      "label": "full_audit",
+      "returncode": 1,
+      "passed": false,
+      "output_exists": true
+    },
+    {
+      "label": "drive_review_v1",
+      "returncode": 0,
+      "passed": true,
+      "output_exists": true
+    },
+    {
+      "label": "information_review_v1",
+      "returncode": 0,
+      "passed": true,
+      "output_exists": true
+    },
+    {
+      "label": "peer_review_v1",
+      "returncode": 0,
+      "passed": true,
+      "output_exists": true
+    },
+    {
+      "label": "control_review_v1",
+      "returncode": 0,
+      "passed": true,
+      "output_exists": true
+    },
+    {
+      "label": "settled_turn_review_v1",
+      "returncode": 0,
+      "passed": true,
+      "output_exists": true
+    },
+    {
+      "label": "input_001",
+      "returncode": 0,
+      "passed": true,
+      "output_exists": true
+    },
+    {
+      "label": "fixed_angular_v1",
+      "returncode": 0,
+      "passed": true,
+      "output_exists": true
+    },
+    {
+      "label": "fixed_physics_v1",
+      "returncode": 0,
+      "passed": true,
+      "output_exists": true
+    },
+    {
+      "label": "episode001_fifo_phase_final",
+      "returncode": 0,
+      "passed": true,
+      "output_exists": true
+    },
+    {
+      "label": "closure_binary_review_v1",
+      "returncode": 0,
+      "passed": true,
+      "output_exists": true
+    }
+  ],
+  "later_stages": {
+    "terminal": "SKIPPED_after_interface_formal_failure",
+    "reset": "SKIPPED_after_interface_formal_failure",
+    "deadline": "SKIPPED_after_interface_formal_failure"
+  },
+  "strict_supervisor_facts": {
+    "epoch": "mr3_p2a0_20261017_v11_interface_w0_e1_79638242",
+    "worker_returncode": 0,
+    "forced_shutdown": false,
+    "failed_sample": false,
+    "remaining_owned_processes": [],
+    "remaining_owned_zombies": []
+  },
+  "sourcepack_files": 100,
+  "independent_source_bindings": 68,
+  "native_selected_files": 574,
+  "native_raw_bytes": 557216344,
+  "native_selected_bytes": 34201275,
+  "scope": "Costs and original gate outcomes only. No partial-PASS combination gives a complete version, task95%, learned-policy or P2A.0 acceptance credit."
+}

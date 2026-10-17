@@ -1,0 +1,148 @@
+{
+  "schema": "mr3-controlled-readiness-compatibility-design-v1",
+  "status": "design_only_waiting_GO_EDIT",
+  "native_freeze": "ba018fe3122c478836eb4e5da9c14306cd832c1b",
+  "original_full_audit": {
+    "path": "/tmp/mr3_p2a0_v11_interface_full_audit.json",
+    "sha256": "eef4cb52dd5c88bbff9f341c7af139f53bb5dbf4fd8f6060d9543881758d8740",
+    "passed": false
+  },
+  "known_failure": "Old audit_initial_inputs_ready recognizes only delivered_inputs_before_pause-v1; both original native episode and immutable contact release_context call this same hook.",
+  "immutable_constraints": [
+    "Do not edit metadata, transitions, rows, original FAIL, original W7 function or contact18stream mathematics",
+    "Do not rewrite release or bootstrap receipts",
+    "New top protocol is the exact controlled handshake; legacy untouched delegate",
+    "No new simulation/training or retrospective native PASS"
+  ],
+  "readiness_dispatch": {
+    "exact_control_protocol": "mr3-controlled-execution-phase-v1",
+    "exact_new_handshake": "paused-controlled-state-peer-guard-storage-v1",
+    "hook": "audit.audit_initial_inputs_ready",
+    "consumers": [
+      "original native episode check",
+      "original contact phase release_context",
+      "engineering audit_preparation",
+      "PPO audit_run"
+    ],
+    "restoration": "install alongside physics dispatch using same motion_cache; finally restore both original callables"
+  },
+  "requirements": [
+    "actual original prewarm ACK schema/epoch/canonical values and unique matching adapter initial_inputs_ready; old W7 payload/time/map/robot predicates preserved",
+    "actual initial pause remains first physics receipt end; all original alignment and tick math remain",
+    "all3 actual same-id T0 takeovers and immutable completed local zero normal status",
+    "actual3 native zero targets stored and consumed before unique20tick bootstrap",
+    "bootstrap end equals exact actual releaseT1",
+    "T1 actual state and peer publication windows/request callbacks/worker receipts and consumption before downstream request; one state seq and bundle SHA",
+    "T1 guard actual received deps+bundle, full motion provenance replay, readyTrue normal3zero tuple matches reset initial_motion_status",
+    "T1 reset initial_drive_receipts exactly match actual driver command/status and actual worker callback/consumption before first evaluator phase request",
+    "actual adapter state_update of committed sequence/hash precedes initial snapshot request/start/observation/completed; exact initial snapshot/mapwatermark/seq0/resetrelease consistency",
+    "initial evaluator request/actual received LIVE ACK and seq0 complete before first positive task physics",
+    "all inputs/raw/sourceproof hashes remain unchanged; cached proof never launders mutation"
+  ],
+  "return_fields": [
+    "required",
+    "proven",
+    "protocol",
+    "ack_stamp",
+    "initial_pause_stamp",
+    "ack_state_sequence",
+    "first_snapshot_state_sequence",
+    "ack_map_payload_sha256",
+    "controlled_release",
+    "prewarm_initial_ACK_subpredicate",
+    "monitor_scope",
+    "scope"
+  ],
+  "prewarm_view": "Only after full controlled-release proof succeeds, pass an explicit read-only metadata view whose reset_handshake field names the old prewarm subpredicate to the unchanged W7 function. Original actual metadata is never mutated; top protocol remains controlled and subpredicate is not a full new handshake proof.",
+  "monitor_limit": "Raw monitor Bool and initial reward_ready packets are not independently retained. Preserve original source-pinned ACK producer guard/Worker wait/seq0 causality and actual evaluator/contact bootstrap; do not claim raw Bool packet provenance.",
+  "observed_native_values": {
+    "initial_ACK_stamp": 72.86,
+    "initial_ACK_state_sequence": 705,
+    "first_pause_ns": 73548000000,
+    "T0_ns": 73560000000,
+    "T1_release_ns": 73580000000,
+    "committed_state_sequence": 713,
+    "initial_motion": {
+      "clock_ns": 73580000000,
+      "completion_scope": "publication_and_local_topic_receipt",
+      "decision_sequences": {
+        "tb1": 3669,
+        "tb2": 3669,
+        "tb3": 3669
+      },
+      "epoch": "mr3_p2a0_20261017_v11_interface_w0_e1_79638242",
+      "outputs": {
+        "tb1": {
+          "angular_z": 0.0,
+          "linear_x": 0.0
+        },
+        "tb2": {
+          "angular_z": 0.0,
+          "linear_x": 0.0
+        },
+        "tb3": {
+          "angular_z": 0.0,
+          "linear_x": 0.0
+        }
+      },
+      "ready": true,
+      "schema": "mr3-motion-safety-status-v1"
+    },
+    "initial_drive_receipts": {
+      "tb1": {
+        "angular_z": 0.0,
+        "clock_ns": 73580000000,
+        "cmd_seq": 3658,
+        "decision_sequence": 3669,
+        "epoch": "mr3_p2a0_20261017_v11_interface_w0_e1_79638242",
+        "linear_x": 0.0,
+        "robot": "tb1",
+        "schema": "mr3-drive-target-consumed-v1",
+        "source_clock_ns": 73580000000
+      },
+      "tb2": {
+        "angular_z": 0.0,
+        "clock_ns": 73580000000,
+        "cmd_seq": 3558,
+        "decision_sequence": 3669,
+        "epoch": "mr3_p2a0_20261017_v11_interface_w0_e1_79638242",
+        "linear_x": 0.0,
+        "robot": "tb2",
+        "schema": "mr3-drive-target-consumed-v1",
+        "source_clock_ns": 73580000000
+      },
+      "tb3": {
+        "angular_z": 0.0,
+        "clock_ns": 73580000000,
+        "cmd_seq": 3449,
+        "decision_sequence": 3669,
+        "epoch": "mr3_p2a0_20261017_v11_interface_w0_e1_79638242",
+        "linear_x": 0.0,
+        "robot": "tb3",
+        "schema": "mr3-drive-target-consumed-v1",
+        "source_clock_ns": 73580000000
+      }
+    }
+  },
+  "planned_mutations": [
+    "unknown/missing/mixed protocol",
+    "missing/late/noncanonical initial ACK or robot/map fields",
+    "missing/changed T0 takeover",
+    "nonzero T0 target or missing real storage",
+    "duplicate/shifted bootstrap",
+    "wrong T1 state seq/SHA/dependency/pub window",
+    "missing/changed initial3 native storage",
+    "old snapshot state or wrong map/seq0/release",
+    "wrong/missing initial LIVE ACK",
+    "cached raw input change",
+    "legacy byte/AST delegate and hook finally restoration"
+  ],
+  "source_bindings": {
+    "ros2_ws/ros2-multi-robot-automap/scripts/audit_mr3_env.py": "5ba60bc89f3c87059cd5d4342fa433de25548c7d95c66ea0ce7708eb4ae8dad2",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/audit_mr3_env_contact_phase_v2.py": "3ce800bfa0455d25a1c3257635c7c4d593478082bbbf1c4dab6a10eed2fc6991",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261015_mr3_p1c/audit_mr3_env_contact_phase_v3.py": "4e2a24e3465fa45c06c05c37b57b8b77b6e462845b3227be10c1fecb85c2c7d7",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_controlled_physics.py": "49e89212b6edd5b5de7f1bb0cecacd8ae0447ccf37f68dd6d8f25d17bfb2cf69",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_preparation.py": "cdcc91734449cbb7ce7900799b72fd21a581e73cac91d03dcf09b12660dbd9d7",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_ppo.py": "2bd552a12c14b06dc23e731f8cdded7303b00dfbea17b56a65d01cdf7503d9f4"
+  }
+}
