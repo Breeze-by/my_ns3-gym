@@ -1,0 +1,118 @@
+{
+  "consumer_sha256": "ba3e89fa6feda9406f984310adccf17c2f0638644fd0d26f0c2e9040ec0e7653",
+  "diagnostic_provenance_replay_passed": true,
+  "episode": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v9_interface/worker0/episode001_open_101",
+  "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+  "errors": [],
+  "freeze": "26534fae40409e266376baf0995fb15dc0223e4b",
+  "inputs": [
+    {
+      "decoded_bytes": 2426,
+      "decoded_sha256": "41233b6661122fe8f897b029dcc15fecb137f5572d94aac52004e1e65f802ea0",
+      "encoded_bytes": 2426,
+      "encoded_sha256": "41233b6661122fe8f897b029dcc15fecb137f5572d94aac52004e1e65f802ea0",
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v9_interface/worker0/episode001_open_101/metadata.json"
+    },
+    {
+      "decoded_bytes": 4491,
+      "decoded_sha256": "a49a06ecd8f30a80cc4adc91f42caa70030158ae2be1e4885e89a5e8e5b60748",
+      "encoded_bytes": 4491,
+      "encoded_sha256": "a49a06ecd8f30a80cc4adc91f42caa70030158ae2be1e4885e89a5e8e5b60748",
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v9_interface/worker0/episode001_open_101/physics.jsonl"
+    },
+    {
+      "decoded_bytes": 0,
+      "decoded_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "encoded_bytes": 0,
+      "encoded_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v9_interface/worker0/episode001_open_101/transitions.jsonl"
+    },
+    {
+      "decoded_bytes": 33047512,
+      "decoded_sha256": "59f6e203908ba2fce10468d1a981f9937395ccc4e3b9b584682abb58b85928c8",
+      "encoded_bytes": 33047512,
+      "encoded_sha256": "59f6e203908ba2fce10468d1a981f9937395ccc4e3b9b584682abb58b85928c8",
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v9_interface/worker0/episode001_open_101/information_states.jsonl"
+    },
+    {
+      "decoded_bytes": 73401340,
+      "decoded_sha256": "aa830d105c9b27350292357d344fb15e5a489f75dab2d5fdb0839db6c805b2db",
+      "encoded_bytes": 73401340,
+      "encoded_sha256": "aa830d105c9b27350292357d344fb15e5a489f75dab2d5fdb0839db6c805b2db",
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v9_interface/worker0/episode001_open_101/motion_safety.jsonl"
+    }
+  ],
+  "model_failure_count": 0,
+  "motion_actual_receipt_and_decision_binding": {
+    "decisions": 11061,
+    "received_bundles": 716
+  },
+  "nominal_state_cycles": 716,
+  "overall_stage_passed": false,
+  "passed": false,
+  "physics_end_ns": 74340000000,
+  "producer_counts": {
+    "configuration": 1,
+    "odom_future_ingress": 3588,
+    "odom_ingress": 4780,
+    "selections_retaining_future_odom": 295,
+    "state_publish": 716,
+    "state_selection": 2148,
+    "state_send": 2084,
+    "tf_future_ingress": 78,
+    "tf_ingress": 16101,
+    "tf_promote": 2024
+  },
+  "release_count": 0,
+  "remaining_pending_inputs": {
+    "odom:tb1": [
+      {
+        "input_sequence": 1681,
+        "raw_sha256": "0043b8e8b0067d197506d62b4bec1ad369b6dfc9632bd8ef65ebc054914e28d8",
+        "source_ns": 74326000000
+      }
+    ],
+    "odom:tb2": [],
+    "odom:tb3": [
+      {
+        "input_sequence": 1487,
+        "raw_sha256": "7e8188e406b831494dda001907556733915c4d8c8b5625e66cfe2a0cd61a55b3",
+        "source_ns": 74322000000
+      }
+    ],
+    "tf:tb1": [
+      {
+        "input_sequence": 5295,
+        "raw_sha256": "cf149623ab11188556a74149eaa170f568a7735dde440e4bd6263dcba2d16c64",
+        "source_ns": 74042000000
+      },
+      {
+        "input_sequence": 5298,
+        "raw_sha256": "a9de89d04b148949d30b78dcbd00af250c8de6ab7162d36bd14f7cafc7e6df26",
+        "source_ns": 74242000000
+      }
+    ],
+    "tf:tb2": [
+      {
+        "input_sequence": 5176,
+        "raw_sha256": "0220741ba6b1203104d706027cea8027cb1b0fd37bc954b294b13caa644eda74",
+        "source_ns": 74195000000
+      }
+    ],
+    "tf:tb3": [
+      {
+        "input_sequence": 4998,
+        "raw_sha256": "47e63f88b661f7d9b20de15aa835482b82141122057ea6089b6aee1f44ebdf63",
+        "source_ns": 74110000000
+      },
+      {
+        "input_sequence": 5012,
+        "raw_sha256": "0e99b32bacfd2aab0abf61546daee14c6017adfb35cd4a050d4acdfd21290bf2",
+        "source_ns": 74310000000
+      }
+    ]
+  },
+  "returned_transition_records": 0,
+  "schema": "mr3-v9-failed-startup-information-diagnostic-v1",
+  "scope": "Isolated full raw producer/actual-receiver provenance replay only; no completed reset/step/release, no formal episode/safety/physical/angular/settled credit."
+}

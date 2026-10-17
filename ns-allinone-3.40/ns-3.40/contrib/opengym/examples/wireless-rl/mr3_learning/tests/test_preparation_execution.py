@@ -24,6 +24,7 @@ class ExecutionEvidenceTests(unittest.TestCase):
         self.temporary = tempfile.TemporaryDirectory()
         self.addCleanup(self.temporary.cleanup)
         self.root = Path(self.temporary.name)
+        write_json(self.root / "metadata.json", {"epoch": "fixture"})
         self.release = 10**10
         self.boundary = self.release + 20_000_000
         write_rows(self.root / "transitions.jsonl", [{

@@ -422,11 +422,25 @@ def test_only_initial_reset_alignment_may_advance_without_the_driver_barrier():
                     and call.func.attr == "_physics"
                     and any(x.arg == "wait_clock" and isinstance(x.value, ast.Constant)
                             and x.value.value is False for x in call.keywords)):
-                bypass.append((method.name, call.lineno))
-    assert len(bypass) == 2 and all(name == "reset" for name, _ in bypass)
+                assert call.args and isinstance(call.args[0], ast.Constant)
+                bypass.append((method.name, call.args[0].value, call.lineno))
+    # Zero-step pause also serves invalid startup cleanup. Only the dedicated
+    # pre-control clock alignment may advance without a tagged-storage barrier.
+    assert sorted((name, steps) for name, steps, _ in bypass) == [
+        ("_align_initial_clock", 1), ("abort_cleanup", 0), ("reset", 0)]
     reset = next(x for x in cls.body if isinstance(x, ast.FunctionDef) and x.name == "reset")
     drive_line = next(x.lineno for x in ast.walk(reset) if isinstance(x, ast.Call)
                       and isinstance(x.func, ast.Attribute) and x.func.attr == "wait_drive_phase")
     snapshot_line = next(x.lineno for x in ast.walk(reset) if isinstance(x, ast.Call)
                          and isinstance(x.func, ast.Attribute) and x.func.attr == "_snapshot")
-    assert max(line for _, line in bypass) < drive_line < snapshot_line
+    bootstrap = [x for x in ast.walk(reset) if isinstance(x, ast.Call)
+                 and isinstance(x.func, ast.Attribute) and x.func.attr == "_physics"
+                 and x.args and isinstance(x.args[0], ast.Constant) and x.args[0].value == 20]
+    assert len(bootstrap) == 1 and not bootstrap[0].keywords
+    takeover = [x for x in ast.walk(reset) if isinstance(x, ast.Call)
+                and isinstance(x.func, ast.Attribute) and x.func.attr == "_control_rpc"
+                and len(x.args) > 1 and isinstance(x.args[1], ast.Constant)
+                and x.args[1].value == "takeover"]
+    assert len(takeover) == 3 and {x.args[0].value for x in takeover} == {
+        "state", "peer", "motion"}
+    assert max(x.lineno for x in takeover) < drive_line < bootstrap[0].lineno < snapshot_line

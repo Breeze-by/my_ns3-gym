@@ -1,0 +1,55 @@
+{
+  "consumer_sha256": "ba3e89fa6feda9406f984310adccf17c2f0638644fd0d26f0c2e9040ec0e7653",
+  "criteria": {
+    "full_payload_sha_and_actual_publish_calls": true,
+    "future_pending_preserved": true,
+    "raw_ingress_to_latest_causal_selection": true,
+    "received_callback_before_decision_binding": true,
+    "state_age_limit_sec_unchanged": 0.5,
+    "tf_source_is_validity_minus_point2": true
+  },
+  "episodes": [
+    {
+      "episode": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v9_interface/worker0/episode001_open_101",
+      "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+      "errors": [
+        "missing required input /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v9_interface/worker0/episode001_open_101/summary.json"
+      ],
+      "inputs": [
+        {
+          "decoded_bytes": 2426,
+          "decoded_sha256": "41233b6661122fe8f897b029dcc15fecb137f5572d94aac52004e1e65f802ea0",
+          "encoded_bytes": 2426,
+          "encoded_sha256": "41233b6661122fe8f897b029dcc15fecb137f5572d94aac52004e1e65f802ea0",
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v9_interface/worker0/episode001_open_101/metadata.json"
+        },
+        {
+          "decoded_bytes": 4491,
+          "decoded_sha256": "a49a06ecd8f30a80cc4adc91f42caa70030158ae2be1e4885e89a5e8e5b60748",
+          "encoded_bytes": 4491,
+          "encoded_sha256": "a49a06ecd8f30a80cc4adc91f42caa70030158ae2be1e4885e89a5e8e5b60748",
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v9_interface/worker0/episode001_open_101/physics.jsonl"
+        },
+        {
+          "decoded_bytes": 0,
+          "decoded_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "encoded_bytes": 0,
+          "encoded_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v9_interface/worker0/episode001_open_101/transitions.jsonl"
+        }
+      ],
+      "passed": false,
+      "physics_end_ns": 74340000000,
+      "scope": "recorded producer ingress/selection/send/delivery/publish and actual motion receipt order; does not prove middleware completeness, eliminate all timer races, or award task success"
+    }
+  ],
+  "errors": [],
+  "freeze": "26534fae40409e266376baf0995fb15dc0223e4b",
+  "limitations": [
+    "A producer callback ledger documents that callback; it does not prove absence of DDS loss.",
+    "Successful provenance replay cannot substitute for original full safety, phase, shutdown, contact, physical, activity, or task acceptance gates."
+  ],
+  "passed": false,
+  "root": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v9_interface",
+  "schema": "mr3-independent-information-review-v1"
+}

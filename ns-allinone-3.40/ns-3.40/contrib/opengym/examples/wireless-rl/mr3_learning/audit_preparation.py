@@ -13,6 +13,13 @@ from .audit_ppo import load_native_gates, load_rows, require
 from .audit_evaluator_phase import audit_episode as audit_phase
 from .audit_activity import audit_episode as audit_activity, audit_probe_activity
 from .audit_motion import audit_episode as audit_motion
+from .audit_controlled_physics import (
+    CONTROL_PROTOCOL, controlled_bootstrap as _controlled_bootstrap,
+    dispatch_controlled_physics, verify_motion_artifacts,
+)
+
+
+controlled_bootstrap = _controlled_bootstrap
 
 
 PREPARATION_PROBE_VERSION = "mr3-p2a0-outward-cancel-v2"
@@ -63,7 +70,7 @@ def exclude_preparation_capacity_comparison(auditor):
     auditor.comparison_statistics = comparison
 
 
-def audit_execution_inputs(directory):
+def audit_execution_inputs(directory, motion_review=None):
     """Verify actual graph and complete master-costmap copies independently."""
     transitions = load_rows(directory / "transitions.jsonl")
     epoch = transitions[0]["snapshot"]["epoch"]
@@ -154,8 +161,29 @@ def audit_execution_inputs(directory):
     release = transitions[0]["info"]["release_time_ns"]
     physics = load_rows(directory / "physics.jsonl")
     required_clocks = [row["end_time_ns"] for row in physics if row["end_time_ns"] > release]
-    require([clock for clock in consumed if clock > release] == required_clocks,
-            "a task/cleanup quantum advanced without exact motion gate completion")
+    metadata = json.loads((directory / "metadata.json").read_text())
+    protocol = metadata.get("execution_phase_protocol")
+    require(protocol is None or protocol == CONTROL_PROTOCOL,
+            "unknown metadata execution phase protocol")
+    controlled_replay = None
+    if protocol == CONTROL_PROTOCOL:
+        motion_review = audit_motion(directory) if motion_review is None else motion_review
+        require(motion_review.get("passed") is True and motion_review.get("epoch") == epoch,
+                "controlled execution inputs lack complete actual motion replay")
+        verify_motion_artifacts(motion_review)
+        controlled_replay = motion_review.get("controlled_execution_replay")
+        require(isinstance(controlled_replay, dict)
+                and controlled_replay.get("bootstrap_zero_quanta") == 1,
+                "controlled inputs lack the reviewed execution-phase proof")
+        stop_clocks = set(controlled_replay["stop_clocks"])
+        normal_clocks = {clock for clock in consumed if clock > release}
+        require(set(required_clocks) <= normal_clocks | stop_clocks
+                and normal_clocks <= set(required_clocks)
+                and {clock for clock in stop_clocks if clock > release} <= set(required_clocks),
+                "controlled task/cleanup quantum lacks exact normal or actual stop completion")
+    else:
+        require([clock for clock in consumed if clock > release] == required_clocks,
+                "a task/cleanup quantum advanced without exact motion gate completion")
     initial = transitions[0]["info"]["initial_motion_status"]
     require(initial["ready"] is True and initial["clock_ns"] == release
             and received.get(release) == initial and release in consumed,
@@ -163,6 +191,7 @@ def audit_execution_inputs(directory):
     return {"passed": True, "topology": topology, "costmap_receipts": count,
             "unique_costmaps": len(blobs), "streams": sorted(streams),
             "consumed_motion_phases": len(consumed),
+            "controlled_execution_replay": controlled_replay,
             "maximum_source_clock_lead_ns": maximum_source_clock_lead_ns,
             "scope": "actual output bytes and graph; receipt clock is not planner consumption"}
 
@@ -315,7 +344,12 @@ def audit_archives(directory):
 def audit(directory, root, freeze):
     phase, base, native, command, scalar, sources = load_native_gates(root, freeze)
     exclude_preparation_capacity_comparison(native)
-    result = phase.corrected_audit(base, native, command, [directory])
+    motion_cache = {}
+    original_physics = dispatch_controlled_physics(native, [directory], motion_cache)
+    try:
+        result = phase.corrected_audit(base, native, command, [directory])
+    finally:
+        native.audit_physics = original_physics
     episodes = []
     metadata = json.loads((directory / "benchmark_metadata.json").read_text())
     motion_probe = not any(metadata.get(key) for key in (
@@ -330,9 +364,10 @@ def audit(directory, root, freeze):
             row["scalar"] = scalar.audit_episode(episode, freeze)
             row["evaluator_phase"] = audit_phase(episode)
             row["observation_archives"] = audit_archives(episode)
-            row["execution_inputs"] = audit_execution_inputs(episode)
+            row["motion"] = (motion_cache[episode] if episode in motion_cache
+                             else audit_motion(episode))
+            row["execution_inputs"] = audit_execution_inputs(episode, row["motion"])
             row["activity"] = audit_activity(episode)
-            row["motion"] = audit_motion(episode)
             if motion_probe:
                 row["activity_availability"] = audit_probe_activity(episode)
                 row["probe_execution"] = audit_probe_execution(episode)

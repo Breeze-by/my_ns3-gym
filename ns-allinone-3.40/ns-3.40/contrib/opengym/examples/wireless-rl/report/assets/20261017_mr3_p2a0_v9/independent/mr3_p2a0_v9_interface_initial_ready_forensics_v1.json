@@ -1,0 +1,4107 @@
+{
+  "actual_consumed_initial_motion_ack": {
+    "ack": {
+      "clock_ns": 74340000000,
+      "completion_scope": "publication_and_local_topic_receipt",
+      "decision_sequences": {
+        "tb1": 3687,
+        "tb2": 3687,
+        "tb3": 3687
+      },
+      "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+      "outputs": {
+        "tb1": {
+          "angular_z": 0.0,
+          "linear_x": 0.0
+        },
+        "tb2": {
+          "angular_z": 0.0,
+          "linear_x": 0.0
+        },
+        "tb3": {
+          "angular_z": 0.0,
+          "linear_x": 0.0
+        }
+      },
+      "ready": false,
+      "schema": "mr3-motion-safety-status-v1"
+    },
+    "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+    "kind": "ack_consumed",
+    "wall_monotonic_ns": 3967637270539246,
+    "worker_clock_ns": 74340000000,
+    "worker_physical_ns": 74340000000
+  },
+  "diagnostic_selected_raw_consistency_passed": true,
+  "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+  "findings": [
+    "Last cycle716 selected TB2 causal odom74.313 and then-latest accepted TF73.795; skip_reason=None.",
+    "Actual TB2 fresh TF74.195 ingress5176 arrived after cycle716 actual publication27218, at the same74.32clock.",
+    "No later actual state publication occurred before closure; fresh TF remained pending while physics paused74.34.",
+    "At74.34 received TB2 TF/source age545ms exceeded unchanged500ms, independently sufficient to make global readyFalse.",
+    "All last own odom/TF ages were nonfuture and below500ms; no settled model failure or task release occurred.",
+    "Cycle716 TB3 selected causal odom73.982 and retained future input1487; no new latest-only future discard is shown.",
+    "Topology snapshot at73.7 records unique motion_safety outputs; per-decision topology is not separately recorded.",
+    "Current worker forbids changed motion ACK within oneclock; paused source flushing alone is not an authorized sameclock phase replay."
+  ],
+  "freeze": "26534fae40409e266376baf0995fb15dc0223e4b",
+  "independent_age_recomputation": {
+    "tb1": {
+      "own_ages_ns": {
+        "odom_source_stamp": 14000000,
+        "source_stamp": 98000000,
+        "tf_source_stamp": 98000000
+      },
+      "peer_ages_ns": {
+        "tb2": {
+          "odom_source_stamp": 27000000,
+          "source_stamp": 545000000,
+          "tf_source_stamp": 545000000
+        },
+        "tb3": {
+          "odom_source_stamp": 358000000,
+          "source_stamp": 358000000,
+          "tf_source_stamp": 230000000
+        }
+      }
+    },
+    "tb2": {
+      "own_ages_ns": {
+        "odom_source_stamp": 27000000,
+        "source_stamp": 145000000,
+        "tf_source_stamp": 145000000
+      },
+      "peer_ages_ns": {
+        "tb1": {
+          "odom_source_stamp": 48000000,
+          "source_stamp": 298000000,
+          "tf_source_stamp": 298000000
+        },
+        "tb3": {
+          "odom_source_stamp": 358000000,
+          "source_stamp": 358000000,
+          "tf_source_stamp": 230000000
+        }
+      }
+    },
+    "tb3": {
+      "own_ages_ns": {
+        "odom_source_stamp": 18000000,
+        "source_stamp": 30000000,
+        "tf_source_stamp": 30000000
+      },
+      "peer_ages_ns": {
+        "tb1": {
+          "odom_source_stamp": 48000000,
+          "source_stamp": 298000000,
+          "tf_source_stamp": 298000000
+        },
+        "tb2": {
+          "odom_source_stamp": 27000000,
+          "source_stamp": 545000000,
+          "tf_source_stamp": 545000000
+        }
+      }
+    }
+  },
+  "info_kind_counts": {
+    "configuration": 1,
+    "odom_ingress": 4780,
+    "state_publish": 716,
+    "state_selection": 2148,
+    "state_send": 2084,
+    "tf_ingress": 16101,
+    "tf_promote": 2024
+  },
+  "inputs": {
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v9_interface/worker0/episode001_open_101/adapter.jsonl": {
+      "bytes": 44632,
+      "sha256": "539150d4fd854f99a86aa4086e2bab61a10fbc1bad9c293d1e8314defc0c5274"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v9_interface/worker0/episode001_open_101/information_states.jsonl": {
+      "bytes": 33047512,
+      "sha256": "59f6e203908ba2fce10468d1a981f9937395ccc4e3b9b584682abb58b85928c8"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v9_interface/worker0/episode001_open_101/metadata.json": {
+      "bytes": 2426,
+      "sha256": "41233b6661122fe8f897b029dcc15fecb137f5572d94aac52004e1e65f802ea0"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v9_interface/worker0/episode001_open_101/motion_phase_worker.jsonl": {
+      "bytes": 2184488,
+      "sha256": "3bd91deb0b175e6f4b52a567808260aeea063af3ccc615bb4f54450477556c22"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v9_interface/worker0/episode001_open_101/motion_safety.jsonl": {
+      "bytes": 73401340,
+      "sha256": "aa830d105c9b27350292357d344fb15e5a489f75dab2d5fdb0839db6c805b2db"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v9_interface/worker0/episode001_open_101/motion_topology.json": {
+      "bytes": 901,
+      "sha256": "dce8cfe71981e1e8b1e833584228bc0f5fb33d61494fa57e00c22cef99e68731"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v9_interface/worker0/episode001_open_101/physics.jsonl": {
+      "bytes": 4491,
+      "sha256": "a49a06ecd8f30a80cc4adc91f42caa70030158ae2be1e4885e89a5e8e5b60748"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v9_interface/worker0/episode001_open_101/supervisor_shutdown.json": {
+      "bytes": 7314,
+      "sha256": "193b55e6e3f095f3795d30be2837361471b53d10721d310a3b292447a9e85831"
+    }
+  },
+  "last_actual_received_bundle": {
+    "line": 46376,
+    "row": {
+      "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+      "kind": "received_states",
+      "payload": {
+        "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+        "information_diagnostics": {
+          "capture_wall_sec": 0.12891999259591103,
+          "completed": 50,
+          "pending": true,
+          "publish_wall_sec": 0.26665726909413934,
+          "queued": false,
+          "replaced_queued": 22,
+          "state_wall_sec": 0.04838563594967127,
+          "submitted": 51,
+          "worker_wall_sec": 2.532167498022318
+        },
+        "map_payload_sha256": "8294f67127d51d87431ceec4ed896744879bb5716588ed7d889a31ddbe130473",
+        "map_received_stamp": 72.0,
+        "map_source_stamp": 69.394,
+        "map_sources": {
+          "tb1": {
+            "payload_sha256": "bc5e2a1c67ed1fd6233f5836e2f80a854fa976f91306dc2b0351bcc8849adbc0",
+            "received_stamp": 72.0,
+            "sequence": 71,
+            "source_stamp": 70.242,
+            "version": 23
+          },
+          "tb2": {
+            "payload_sha256": "5e2ca573164fbed37a415cd052ec09f87e1a45fa05958d90b735a4da439de9a7",
+            "received_stamp": 72.0,
+            "sequence": 69,
+            "source_stamp": 69.394,
+            "version": 22
+          },
+          "tb3": {
+            "payload_sha256": "8da2d2b1c897efc8211bb9112019efbd1782a0af3b449ee2026be5a46d7bc352",
+            "received_stamp": 72.0,
+            "sequence": 67,
+            "source_stamp": 70.909,
+            "version": 22
+          }
+        },
+        "map_version": 46,
+        "navigation_composition": {
+          "version": "mr3-own-known-shared-unknown-v1"
+        },
+        "navigation_sources": {
+          "tb1": {
+            "composition_version": "mr3-own-known-shared-unknown-v1",
+            "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+            "input_own_map_payload_sha256": "bc5e2a1c67ed1fd6233f5836e2f80a854fa976f91306dc2b0351bcc8849adbc0",
+            "input_own_source_stamp": 70.242,
+            "input_shared_map_payload_sha256": "8294f67127d51d87431ceec4ed896744879bb5716588ed7d889a31ddbe130473",
+            "payload_sha256": "39ac6351c66eec8e027abed13ffff2700ce1e14b240cb8c923f3358b57bde59c",
+            "received_stamp": 74.0,
+            "received_stamp_scope": "shared_map_delivery_used_by_navigation",
+            "sequence": 50,
+            "shared_map_version": 46,
+            "source_stamp": 69.394,
+            "version": 50
+          },
+          "tb2": {
+            "composition_version": "mr3-own-known-shared-unknown-v1",
+            "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+            "input_own_map_payload_sha256": "5e2ca573164fbed37a415cd052ec09f87e1a45fa05958d90b735a4da439de9a7",
+            "input_own_source_stamp": 69.394,
+            "input_shared_map_payload_sha256": "8294f67127d51d87431ceec4ed896744879bb5716588ed7d889a31ddbe130473",
+            "payload_sha256": "e9af93372cb03d98d080ed0eefe6a289f749fdf49748b94a1227fdc84c5ebeb3",
+            "received_stamp": 74.0,
+            "received_stamp_scope": "shared_map_delivery_used_by_navigation",
+            "sequence": 50,
+            "shared_map_version": 46,
+            "source_stamp": 69.394,
+            "version": 50
+          },
+          "tb3": {
+            "composition_version": "mr3-own-known-shared-unknown-v1",
+            "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+            "input_own_map_payload_sha256": "8da2d2b1c897efc8211bb9112019efbd1782a0af3b449ee2026be5a46d7bc352",
+            "input_own_source_stamp": 70.909,
+            "input_shared_map_payload_sha256": "8294f67127d51d87431ceec4ed896744879bb5716588ed7d889a31ddbe130473",
+            "payload_sha256": "8294f67127d51d87431ceec4ed896744879bb5716588ed7d889a31ddbe130473",
+            "received_stamp": 74.0,
+            "received_stamp_scope": "shared_map_delivery_used_by_navigation",
+            "sequence": 50,
+            "shared_map_version": 46,
+            "source_stamp": 69.394,
+            "version": 50
+          }
+        },
+        "robots": [
+          {
+            "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+            "name": "tb1",
+            "odom_source_stamp": 74.292,
+            "odometry": {
+              "child_frame_id": "base_footprint",
+              "header": {
+                "frame_id": "odom",
+                "stamp": {
+                  "nanosec": 292000000,
+                  "sec": 74
+                }
+              },
+              "pose": {
+                "covariance": [
+                  1e-05,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1e-05,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1000000000000.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1000000000000.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1000000000000.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.001
+                ],
+                "pose": {
+                  "orientation": {
+                    "w": 0.9999923423369127,
+                    "x": 3.2496674844078495e-06,
+                    "y": 0.0033467978347210547,
+                    "z": 0.002028349385118203
+                  },
+                  "position": {
+                    "x": 0.0022449652694032365,
+                    "y": -0.4499954457003313,
+                    "z": 0.007828230532260302
+                  }
+                }
+              },
+              "twist": {
+                "covariance": [
+                  1e-05,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1e-05,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1000000000000.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1000000000000.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1000000000000.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.001
+                ],
+                "twist": {
+                  "angular": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 4.8539539861487644e-05
+                  },
+                  "linear": {
+                    "x": -1.6120486238604903e-05,
+                    "y": -5.9533200779734365e-05,
+                    "z": 0.0
+                  }
+                }
+              }
+            },
+            "received_stamp": 74.32,
+            "robot": "tb1",
+            "sequence": 712,
+            "source_stamp": 74.042,
+            "tf_source_stamp": 74.042,
+            "tf_validity_lead_sec": 0.2,
+            "tf_validity_stamp": 74.242,
+            "v": -1.6120486238604903e-05,
+            "valid": true,
+            "version": 712,
+            "w": 4.8539539861487644e-05,
+            "x": 0.002280007772452137,
+            "y": -0.4499966554695808,
+            "yaw": 0.004057456885326607
+          },
+          {
+            "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+            "name": "tb2",
+            "odom_source_stamp": 74.313,
+            "odometry": {
+              "child_frame_id": "base_footprint",
+              "header": {
+                "frame_id": "odom",
+                "stamp": {
+                  "nanosec": 313000000,
+                  "sec": 74
+                }
+              },
+              "pose": {
+                "covariance": [
+                  1e-05,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1e-05,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1000000000000.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1000000000000.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1000000000000.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.001
+                ],
+                "pose": {
+                  "orientation": {
+                    "w": 0.9999924227077784,
+                    "x": 5.492060752509338e-06,
+                    "y": 0.003347976938986348,
+                    "z": 0.0019863401725515894
+                  },
+                  "position": {
+                    "x": 0.002199970736408722,
+                    "y": 0.45000432573977495,
+                    "z": 0.007830351765519281
+                  }
+                }
+              },
+              "twist": {
+                "covariance": [
+                  1e-05,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1e-05,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1000000000000.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1000000000000.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1000000000000.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.001
+                ],
+                "twist": {
+                  "angular": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 4.895648716748061e-05
+                  },
+                  "linear": {
+                    "x": -2.49626400448654e-06,
+                    "y": -5.6873741119736174e-05,
+                    "z": 0.0
+                  }
+                }
+              }
+            },
+            "received_stamp": 74.32,
+            "robot": "tb2",
+            "sequence": 697,
+            "source_stamp": 73.795,
+            "tf_source_stamp": 73.795,
+            "tf_validity_lead_sec": 0.2,
+            "tf_validity_stamp": 73.995,
+            "v": -2.49626400448654e-06,
+            "valid": false,
+            "version": 697,
+            "w": 4.895648716748061e-05,
+            "x": 0.002234414392846493,
+            "y": 0.4500031263344003,
+            "yaw": 0.003973451949097558
+          },
+          {
+            "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+            "name": "tb3",
+            "odom_source_stamp": 73.982,
+            "odometry": {
+              "child_frame_id": "base_footprint",
+              "header": {
+                "frame_id": "odom",
+                "stamp": {
+                  "nanosec": 982000000,
+                  "sec": 73
+                }
+              },
+              "pose": {
+                "covariance": [
+                  1e-05,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1e-05,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1000000000000.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1000000000000.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1000000000000.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.001
+                ],
+                "pose": {
+                  "orientation": {
+                    "w": 0.999992559590728,
+                    "x": 7.3998743103441455e-06,
+                    "y": 0.0033463286639309163,
+                    "z": 0.0019190604209561378
+                  },
+                  "position": {
+                    "x": 0.4521285604065101,
+                    "y": 4.004167050876861e-06,
+                    "z": 0.007806944712773437
+                  }
+                }
+              },
+              "twist": {
+                "covariance": [
+                  1e-05,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1e-05,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1000000000000.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1000000000000.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1000000000000.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.001
+                ],
+                "twist": {
+                  "angular": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 4.8909745968595545e-05
+                  },
+                  "linear": {
+                    "x": -2.4857439378573045e-05,
+                    "y": -5.991479678816314e-05,
+                    "z": 0.0
+                  }
+                }
+              }
+            },
+            "received_stamp": 74.32,
+            "robot": "tb3",
+            "sequence": 675,
+            "source_stamp": 73.982,
+            "tf_source_stamp": 74.11,
+            "tf_validity_lead_sec": 0.2,
+            "tf_validity_stamp": 74.31,
+            "v": -2.4857439378573045e-05,
+            "valid": true,
+            "version": 675,
+            "w": 4.8909745968595545e-05,
+            "x": 0.45216761621244417,
+            "y": 2.7995201205263626e-06,
+            "yaw": 0.003838902613764697
+          }
+        ],
+        "sequence": 716
+      },
+      "record_sequence": 46376,
+      "schema": "mr3-motion-safety-v1",
+      "sim_time_sec": 74.32,
+      "wall_monotonic_ns": 3967633772463115
+    }
+  },
+  "last_motion_decisions": {
+    "tb1": {
+      "line": 46888,
+      "row": {
+        "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+        "kind": "decision",
+        "payload": {
+          "clock_ns": 74340000000,
+          "decision": {
+            "allow": false,
+            "minimum_margin_m": null,
+            "output": [
+              0.0,
+              0.0
+            ],
+            "reason": "state_or_topology_unavailable"
+          },
+          "decision_sequence": 3687,
+          "own_state": {
+            "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+            "input_sequences": {
+              "odom": 2170,
+              "tf": 6040
+            },
+            "name": "tb1",
+            "odom_source_stamp": 74.326,
+            "planar_speed_mps": 6.681107278859722e-05,
+            "robot": "tb1",
+            "settled_turn": {
+              "active_anchor_source_ns": null,
+              "active_path_m": 0.0,
+              "active_since_ns": null,
+              "last_zero_decision_sequence": 3686,
+              "samples": [
+                {
+                  "input_sequence": 2168,
+                  "odom_sha256": "2aea2bc884b3db9587e9a9b8917f53806f7e8c526fb31ba204b72d64f3ee85dd",
+                  "planar_speed_mps": 5.5856902981636704e-05,
+                  "source_ns": 74258000000
+                },
+                {
+                  "input_sequence": 2169,
+                  "odom_sha256": "93b271adb55f8c4e4d280d437ce19c0181630a53dfb4f11fe2301c1cc2686b60",
+                  "planar_speed_mps": 6.167716004850754e-05,
+                  "source_ns": 74292000000
+                },
+                {
+                  "input_sequence": 2170,
+                  "odom_sha256": "0043b8e8b0067d197506d62b4bec1ad369b6dfc9632bd8ef65ebc054914e28d8",
+                  "planar_speed_mps": 6.681107278859722e-05,
+                  "source_ns": 74326000000
+                }
+              ],
+              "schema": "mr3-settled-turn-v1",
+              "zero_since_ns": 20000000
+            },
+            "source_stamp": 74.24199999999999,
+            "tf_source_stamp": 74.24199999999999,
+            "tf_validity_lead_sec": 0.2,
+            "tf_validity_stamp": 74.442,
+            "v": -3.255680252291195e-05,
+            "valid": true,
+            "w": 4.887133810044144e-05,
+            "x": 0.0022810883879748464,
+            "y": -0.4499966605956834,
+            "yaw": 0.004059322101226832
+          },
+          "ready": false,
+          "received_peers": {
+            "tb2": {
+              "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+              "name": "tb2",
+              "odom_source_stamp": 74.313,
+              "odometry": {
+                "child_frame_id": "base_footprint",
+                "header": {
+                  "frame_id": "odom",
+                  "stamp": {
+                    "nanosec": 313000000,
+                    "sec": 74
+                  }
+                },
+                "pose": {
+                  "covariance": [
+                    1e-05,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1e-05,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.001
+                  ],
+                  "pose": {
+                    "orientation": {
+                      "w": 0.9999924227077784,
+                      "x": 5.492060752509338e-06,
+                      "y": 0.003347976938986348,
+                      "z": 0.0019863401725515894
+                    },
+                    "position": {
+                      "x": 0.002199970736408722,
+                      "y": 0.45000432573977495,
+                      "z": 0.007830351765519281
+                    }
+                  }
+                },
+                "twist": {
+                  "covariance": [
+                    1e-05,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1e-05,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.001
+                  ],
+                  "twist": {
+                    "angular": {
+                      "x": 0.0,
+                      "y": 0.0,
+                      "z": 4.895648716748061e-05
+                    },
+                    "linear": {
+                      "x": -2.49626400448654e-06,
+                      "y": -5.6873741119736174e-05,
+                      "z": 0.0
+                    }
+                  }
+                }
+              },
+              "received_stamp": 74.32,
+              "robot": "tb2",
+              "sequence": 697,
+              "source_stamp": 73.795,
+              "tf_source_stamp": 73.795,
+              "tf_validity_lead_sec": 0.2,
+              "tf_validity_stamp": 73.995,
+              "v": -2.49626400448654e-06,
+              "valid": false,
+              "version": 697,
+              "w": 4.895648716748061e-05,
+              "x": 0.002234414392846493,
+              "y": 0.4500031263344003,
+              "yaw": 0.003973451949097558
+            },
+            "tb3": {
+              "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+              "name": "tb3",
+              "odom_source_stamp": 73.982,
+              "odometry": {
+                "child_frame_id": "base_footprint",
+                "header": {
+                  "frame_id": "odom",
+                  "stamp": {
+                    "nanosec": 982000000,
+                    "sec": 73
+                  }
+                },
+                "pose": {
+                  "covariance": [
+                    1e-05,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1e-05,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.001
+                  ],
+                  "pose": {
+                    "orientation": {
+                      "w": 0.999992559590728,
+                      "x": 7.3998743103441455e-06,
+                      "y": 0.0033463286639309163,
+                      "z": 0.0019190604209561378
+                    },
+                    "position": {
+                      "x": 0.4521285604065101,
+                      "y": 4.004167050876861e-06,
+                      "z": 0.007806944712773437
+                    }
+                  }
+                },
+                "twist": {
+                  "covariance": [
+                    1e-05,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1e-05,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.001
+                  ],
+                  "twist": {
+                    "angular": {
+                      "x": 0.0,
+                      "y": 0.0,
+                      "z": 4.8909745968595545e-05
+                    },
+                    "linear": {
+                      "x": -2.4857439378573045e-05,
+                      "y": -5.991479678816314e-05,
+                      "z": 0.0
+                    }
+                  }
+                }
+              },
+              "received_stamp": 74.32,
+              "robot": "tb3",
+              "sequence": 675,
+              "source_stamp": 73.982,
+              "tf_source_stamp": 74.11,
+              "tf_validity_lead_sec": 0.2,
+              "tf_validity_stamp": 74.31,
+              "v": -2.4857439378573045e-05,
+              "valid": true,
+              "version": 675,
+              "w": 4.8909745968595545e-05,
+              "x": 0.45216761621244417,
+              "y": 2.7995201205263626e-06,
+              "yaw": 0.003838902613764697
+            }
+          },
+          "request": null,
+          "robot": "tb1",
+          "started": false
+        },
+        "record_sequence": 46888,
+        "schema": "mr3-motion-safety-v1",
+        "sim_time_sec": 74.34,
+        "wall_monotonic_ns": 3967637171640113
+      }
+    },
+    "tb2": {
+      "line": 46889,
+      "row": {
+        "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+        "kind": "decision",
+        "payload": {
+          "clock_ns": 74340000000,
+          "decision": {
+            "allow": false,
+            "minimum_margin_m": null,
+            "output": [
+              0.0,
+              0.0
+            ],
+            "reason": "state_or_topology_unavailable"
+          },
+          "decision_sequence": 3687,
+          "own_state": {
+            "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+            "input_sequences": {
+              "odom": 2124,
+              "tf": 5917
+            },
+            "name": "tb2",
+            "odom_source_stamp": 74.313,
+            "planar_speed_mps": 5.692849693198359e-05,
+            "robot": "tb2",
+            "settled_turn": {
+              "active_anchor_source_ns": null,
+              "active_path_m": 0.0,
+              "active_since_ns": null,
+              "last_zero_decision_sequence": 3686,
+              "samples": [
+                {
+                  "input_sequence": 2122,
+                  "odom_sha256": "3648bd9d2859da68148d81fd47b57d24a2017e8eb2c7b870576cd66f16c91c7b",
+                  "planar_speed_mps": 6.758999988147416e-05,
+                  "source_ns": 74245000000
+                },
+                {
+                  "input_sequence": 2123,
+                  "odom_sha256": "5db0f2f68f3a995c29da8a694ef26a50fe7c61590bcb1edd6b31a65f777401b7",
+                  "planar_speed_mps": 5.6432065300102705e-05,
+                  "source_ns": 74279000000
+                },
+                {
+                  "input_sequence": 2124,
+                  "odom_sha256": "30e847646c988573cc905c4e9a3a870e35d4484428aa916f32a6fbd96f5a148b",
+                  "planar_speed_mps": 5.692849693198359e-05,
+                  "source_ns": 74313000000
+                }
+              ],
+              "schema": "mr3-settled-turn-v1",
+              "zero_since_ns": 20000000
+            },
+            "source_stamp": 74.195,
+            "tf_source_stamp": 74.195,
+            "tf_validity_lead_sec": 0.2,
+            "tf_validity_stamp": 74.395,
+            "v": -2.49626400448654e-06,
+            "valid": true,
+            "w": 4.895648716748061e-05,
+            "x": 0.002234414392846493,
+            "y": 0.4500031263344003,
+            "yaw": 0.003973451949097558
+          },
+          "ready": false,
+          "received_peers": {
+            "tb1": {
+              "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+              "name": "tb1",
+              "odom_source_stamp": 74.292,
+              "odometry": {
+                "child_frame_id": "base_footprint",
+                "header": {
+                  "frame_id": "odom",
+                  "stamp": {
+                    "nanosec": 292000000,
+                    "sec": 74
+                  }
+                },
+                "pose": {
+                  "covariance": [
+                    1e-05,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1e-05,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.001
+                  ],
+                  "pose": {
+                    "orientation": {
+                      "w": 0.9999923423369127,
+                      "x": 3.2496674844078495e-06,
+                      "y": 0.0033467978347210547,
+                      "z": 0.002028349385118203
+                    },
+                    "position": {
+                      "x": 0.0022449652694032365,
+                      "y": -0.4499954457003313,
+                      "z": 0.007828230532260302
+                    }
+                  }
+                },
+                "twist": {
+                  "covariance": [
+                    1e-05,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1e-05,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.001
+                  ],
+                  "twist": {
+                    "angular": {
+                      "x": 0.0,
+                      "y": 0.0,
+                      "z": 4.8539539861487644e-05
+                    },
+                    "linear": {
+                      "x": -1.6120486238604903e-05,
+                      "y": -5.9533200779734365e-05,
+                      "z": 0.0
+                    }
+                  }
+                }
+              },
+              "received_stamp": 74.32,
+              "robot": "tb1",
+              "sequence": 712,
+              "source_stamp": 74.042,
+              "tf_source_stamp": 74.042,
+              "tf_validity_lead_sec": 0.2,
+              "tf_validity_stamp": 74.242,
+              "v": -1.6120486238604903e-05,
+              "valid": true,
+              "version": 712,
+              "w": 4.8539539861487644e-05,
+              "x": 0.002280007772452137,
+              "y": -0.4499966554695808,
+              "yaw": 0.004057456885326607
+            },
+            "tb3": {
+              "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+              "name": "tb3",
+              "odom_source_stamp": 73.982,
+              "odometry": {
+                "child_frame_id": "base_footprint",
+                "header": {
+                  "frame_id": "odom",
+                  "stamp": {
+                    "nanosec": 982000000,
+                    "sec": 73
+                  }
+                },
+                "pose": {
+                  "covariance": [
+                    1e-05,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1e-05,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.001
+                  ],
+                  "pose": {
+                    "orientation": {
+                      "w": 0.999992559590728,
+                      "x": 7.3998743103441455e-06,
+                      "y": 0.0033463286639309163,
+                      "z": 0.0019190604209561378
+                    },
+                    "position": {
+                      "x": 0.4521285604065101,
+                      "y": 4.004167050876861e-06,
+                      "z": 0.007806944712773437
+                    }
+                  }
+                },
+                "twist": {
+                  "covariance": [
+                    1e-05,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1e-05,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.001
+                  ],
+                  "twist": {
+                    "angular": {
+                      "x": 0.0,
+                      "y": 0.0,
+                      "z": 4.8909745968595545e-05
+                    },
+                    "linear": {
+                      "x": -2.4857439378573045e-05,
+                      "y": -5.991479678816314e-05,
+                      "z": 0.0
+                    }
+                  }
+                }
+              },
+              "received_stamp": 74.32,
+              "robot": "tb3",
+              "sequence": 675,
+              "source_stamp": 73.982,
+              "tf_source_stamp": 74.11,
+              "tf_validity_lead_sec": 0.2,
+              "tf_validity_stamp": 74.31,
+              "v": -2.4857439378573045e-05,
+              "valid": true,
+              "version": 675,
+              "w": 4.8909745968595545e-05,
+              "x": 0.45216761621244417,
+              "y": 2.7995201205263626e-06,
+              "yaw": 0.003838902613764697
+            }
+          },
+          "request": null,
+          "robot": "tb2",
+          "started": false
+        },
+        "record_sequence": 46889,
+        "schema": "mr3-motion-safety-v1",
+        "sim_time_sec": 74.34,
+        "wall_monotonic_ns": 3967637172818690
+      }
+    },
+    "tb3": {
+      "line": 46890,
+      "row": {
+        "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+        "kind": "decision",
+        "payload": {
+          "clock_ns": 74340000000,
+          "decision": {
+            "allow": false,
+            "minimum_margin_m": null,
+            "output": [
+              0.0,
+              0.0
+            ],
+            "reason": "state_or_topology_unavailable"
+          },
+          "decision_sequence": 3687,
+          "own_state": {
+            "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+            "input_sequences": {
+              "odom": 2062,
+              "tf": 5741
+            },
+            "name": "tb3",
+            "odom_source_stamp": 74.322,
+            "planar_speed_mps": 5.867057625621388e-05,
+            "robot": "tb3",
+            "settled_turn": {
+              "active_anchor_source_ns": null,
+              "active_path_m": 0.0,
+              "active_since_ns": null,
+              "last_zero_decision_sequence": 3686,
+              "samples": [
+                {
+                  "input_sequence": 2060,
+                  "odom_sha256": "91f1b7649ebb76a6deb85cec6e0d4f8b59482868a1ea506641fe983cf75f2c86",
+                  "planar_speed_mps": 5.6157170855604924e-05,
+                  "source_ns": 74254000000
+                },
+                {
+                  "input_sequence": 2061,
+                  "odom_sha256": "eec565260674dd5505e3cce67507764bb3ec0611f20631aac5c0ca8fcdcd3edc",
+                  "planar_speed_mps": 5.670833988366772e-05,
+                  "source_ns": 74288000000
+                },
+                {
+                  "input_sequence": 2062,
+                  "odom_sha256": "7e8188e406b831494dda001907556733915c4d8c8b5625e66cfe2a0cd61a55b3",
+                  "planar_speed_mps": 5.867057625621388e-05,
+                  "source_ns": 74322000000
+                }
+              ],
+              "schema": "mr3-settled-turn-v1",
+              "zero_since_ns": 20000000
+            },
+            "source_stamp": 74.31,
+            "tf_source_stamp": 74.31,
+            "tf_validity_lead_sec": 0.2,
+            "tf_validity_stamp": 74.51,
+            "v": -1.0209904258685583e-05,
+            "valid": true,
+            "w": 4.884816688410784e-05,
+            "x": 0.45217749057716233,
+            "y": 2.8512938630425918e-06,
+            "yaw": 0.0038575577455220505
+          },
+          "ready": false,
+          "received_peers": {
+            "tb1": {
+              "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+              "name": "tb1",
+              "odom_source_stamp": 74.292,
+              "odometry": {
+                "child_frame_id": "base_footprint",
+                "header": {
+                  "frame_id": "odom",
+                  "stamp": {
+                    "nanosec": 292000000,
+                    "sec": 74
+                  }
+                },
+                "pose": {
+                  "covariance": [
+                    1e-05,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1e-05,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.001
+                  ],
+                  "pose": {
+                    "orientation": {
+                      "w": 0.9999923423369127,
+                      "x": 3.2496674844078495e-06,
+                      "y": 0.0033467978347210547,
+                      "z": 0.002028349385118203
+                    },
+                    "position": {
+                      "x": 0.0022449652694032365,
+                      "y": -0.4499954457003313,
+                      "z": 0.007828230532260302
+                    }
+                  }
+                },
+                "twist": {
+                  "covariance": [
+                    1e-05,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1e-05,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.001
+                  ],
+                  "twist": {
+                    "angular": {
+                      "x": 0.0,
+                      "y": 0.0,
+                      "z": 4.8539539861487644e-05
+                    },
+                    "linear": {
+                      "x": -1.6120486238604903e-05,
+                      "y": -5.9533200779734365e-05,
+                      "z": 0.0
+                    }
+                  }
+                }
+              },
+              "received_stamp": 74.32,
+              "robot": "tb1",
+              "sequence": 712,
+              "source_stamp": 74.042,
+              "tf_source_stamp": 74.042,
+              "tf_validity_lead_sec": 0.2,
+              "tf_validity_stamp": 74.242,
+              "v": -1.6120486238604903e-05,
+              "valid": true,
+              "version": 712,
+              "w": 4.8539539861487644e-05,
+              "x": 0.002280007772452137,
+              "y": -0.4499966554695808,
+              "yaw": 0.004057456885326607
+            },
+            "tb2": {
+              "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+              "name": "tb2",
+              "odom_source_stamp": 74.313,
+              "odometry": {
+                "child_frame_id": "base_footprint",
+                "header": {
+                  "frame_id": "odom",
+                  "stamp": {
+                    "nanosec": 313000000,
+                    "sec": 74
+                  }
+                },
+                "pose": {
+                  "covariance": [
+                    1e-05,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1e-05,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.001
+                  ],
+                  "pose": {
+                    "orientation": {
+                      "w": 0.9999924227077784,
+                      "x": 5.492060752509338e-06,
+                      "y": 0.003347976938986348,
+                      "z": 0.0019863401725515894
+                    },
+                    "position": {
+                      "x": 0.002199970736408722,
+                      "y": 0.45000432573977495,
+                      "z": 0.007830351765519281
+                    }
+                  }
+                },
+                "twist": {
+                  "covariance": [
+                    1e-05,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1e-05,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.001
+                  ],
+                  "twist": {
+                    "angular": {
+                      "x": 0.0,
+                      "y": 0.0,
+                      "z": 4.895648716748061e-05
+                    },
+                    "linear": {
+                      "x": -2.49626400448654e-06,
+                      "y": -5.6873741119736174e-05,
+                      "z": 0.0
+                    }
+                  }
+                }
+              },
+              "received_stamp": 74.32,
+              "robot": "tb2",
+              "sequence": 697,
+              "source_stamp": 73.795,
+              "tf_source_stamp": 73.795,
+              "tf_validity_lead_sec": 0.2,
+              "tf_validity_stamp": 73.995,
+              "v": -2.49626400448654e-06,
+              "valid": false,
+              "version": 697,
+              "w": 4.895648716748061e-05,
+              "x": 0.002234414392846493,
+              "y": 0.4500031263344003,
+              "yaw": 0.003973451949097558
+            }
+          },
+          "request": null,
+          "robot": "tb3",
+          "started": false
+        },
+        "record_sequence": 46890,
+        "schema": "mr3-motion-safety-v1",
+        "sim_time_sec": 74.34,
+        "wall_monotonic_ns": 3967637173698860
+      }
+    }
+  },
+  "latest_future_odom_ingress_examples": {
+    "tb1": {
+      "line": 27334,
+      "row": {
+        "clock_ns": 74320000000,
+        "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+        "kind": "odom_ingress",
+        "payload": {
+          "admission": "queued",
+          "input_sequence": 1681,
+          "matched_input_sequence": null,
+          "raw": {
+            "child_frame_id": "base_footprint",
+            "header": {
+              "frame_id": "odom",
+              "stamp": {
+                "nanosec": 326000000,
+                "sec": 74
+              }
+            },
+            "pose": {
+              "covariance": [
+                1e-05,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1e-05,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1000000000000.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1000000000000.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1000000000000.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.001
+              ],
+              "pose": {
+                "orientation": {
+                  "w": 0.9999923467119636,
+                  "x": 3.6815094525881655e-06,
+                  "y": 0.0033449251551290094,
+                  "z": 0.0020292805752420485
+                },
+                "position": {
+                  "x": 0.002246045884922535,
+                  "y": -0.449995450827153,
+                  "z": 0.007806975494241255
+                }
+              }
+            },
+            "twist": {
+              "covariance": [
+                1e-05,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1e-05,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1000000000000.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1000000000000.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1000000000000.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.001
+              ],
+              "twist": {
+                "angular": {
+                  "x": 0.0,
+                  "y": 0.0,
+                  "z": 4.887133810044144e-05
+                },
+                "linear": {
+                  "x": -3.255680252291195e-05,
+                  "y": -5.834187224153292e-05,
+                  "z": 0.0
+                }
+              }
+            }
+          },
+          "raw_sha256": "0043b8e8b0067d197506d62b4bec1ad369b6dfc9632bd8ef65ebc054914e28d8",
+          "robot": "tb1",
+          "source_ns": 74326000000
+        },
+        "record_sequence": 27334,
+        "schema": "mr3-information-state-audit-v1",
+        "wall_monotonic_ns": 3967634270594205
+      }
+    },
+    "tb2": {
+      "line": 27193,
+      "row": {
+        "clock_ns": 74000000000,
+        "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+        "kind": "odom_ingress",
+        "payload": {
+          "admission": "queued",
+          "input_sequence": 1611,
+          "matched_input_sequence": null,
+          "raw": {
+            "child_frame_id": "base_footprint",
+            "header": {
+              "frame_id": "odom",
+              "stamp": {
+                "nanosec": 7000000,
+                "sec": 74
+              }
+            },
+            "pose": {
+              "covariance": [
+                1e-05,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1e-05,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1000000000000.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1000000000000.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1000000000000.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.001
+              ],
+              "pose": {
+                "orientation": {
+                  "w": 0.9999924433804043,
+                  "x": 7.4250606566914295e-06,
+                  "y": 0.0033467646319225892,
+                  "z": 0.001977951833621317
+                },
+                "position": {
+                  "x": 0.002190984582448022,
+                  "y": 0.45000425244780357,
+                  "z": 0.007822734767306282
+                }
+              }
+            },
+            "twist": {
+              "covariance": [
+                1e-05,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1e-05,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1000000000000.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1000000000000.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1000000000000.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.001
+              ],
+              "twist": {
+                "angular": {
+                  "x": 0.0,
+                  "y": 0.0,
+                  "z": 4.910376855851438e-05
+                },
+                "linear": {
+                  "x": 2.9155440334418656e-06,
+                  "y": -5.7335321253668984e-05,
+                  "z": 0.0
+                }
+              }
+            }
+          },
+          "raw_sha256": "a6055e77cb5b25a861a16aef0caabe0d274cf82379a9275097e2cc5623533672",
+          "robot": "tb2",
+          "source_ns": 74007000000
+        },
+        "record_sequence": 27193,
+        "schema": "mr3-information-state-audit-v1",
+        "wall_monotonic_ns": 3967633180942179
+      }
+    },
+    "tb3": {
+      "line": 27208,
+      "row": {
+        "clock_ns": 74320000000,
+        "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+        "kind": "odom_ingress",
+        "payload": {
+          "admission": "queued",
+          "input_sequence": 1487,
+          "matched_input_sequence": null,
+          "raw": {
+            "child_frame_id": "base_footprint",
+            "header": {
+              "frame_id": "odom",
+              "stamp": {
+                "nanosec": 322000000,
+                "sec": 74
+              }
+            },
+            "pose": {
+              "covariance": [
+                1e-05,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1e-05,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1000000000000.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1000000000000.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1000000000000.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.001
+              ],
+              "pose": {
+                "orientation": {
+                  "w": 0.999992541722417,
+                  "x": 6.838726771379264e-06,
+                  "y": 0.00334630631751148,
+                  "z": 0.0019283896912585536
+                },
+                "position": {
+                  "x": 0.4521384347712627,
+                  "y": 4.055934222785619e-06,
+                  "z": 0.007830317747468861
+                }
+              }
+            },
+            "twist": {
+              "covariance": [
+                1e-05,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1e-05,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1000000000000.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1000000000000.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1000000000000.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.001
+              ],
+              "twist": {
+                "angular": {
+                  "x": 0.0,
+                  "y": 0.0,
+                  "z": 4.884816688410784e-05
+                },
+                "linear": {
+                  "x": -1.0209904258685583e-05,
+                  "y": -5.7775378607713873e-05,
+                  "z": 0.0
+                }
+              }
+            }
+          },
+          "raw_sha256": "7e8188e406b831494dda001907556733915c4d8c8b5625e66cfe2a0cd61a55b3",
+          "robot": "tb3",
+          "source_ns": 74322000000
+        },
+        "record_sequence": 27208,
+        "schema": "mr3-information-state-audit-v1",
+        "wall_monotonic_ns": 3967633726047759
+      }
+    }
+  },
+  "motion_kind_counts": {
+    "actual_cmd_vel": 11061,
+    "configuration": 1,
+    "decision": 11061,
+    "own_odom": 6356,
+    "own_tf": 17777,
+    "received_states": 716
+  },
+  "other_motion_failures": [],
+  "overall_stage_passed": false,
+  "returned_reset_count": 0,
+  "returned_step_count": 0,
+  "schema": "mr3-v9-initial-ready-forensics-v1",
+  "scope": "failed pre-release warmup only; no formal complete-episode consumer, task physical/angular/settled/95percent credit, or native retry",
+  "selected_information_rows": [
+    {
+      "line": 27178,
+      "row": {
+        "clock_ns": 73900000000,
+        "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+        "kind": "tf_ingress",
+        "payload": {
+          "admission": "queued",
+          "input_sequence": 5173,
+          "matched_input_sequence": null,
+          "raw": {
+            "child_frame_id": "odom",
+            "header": {
+              "frame_id": "map",
+              "stamp": {
+                "nanosec": 995000000,
+                "sec": 73
+              }
+            },
+            "transform": {
+              "rotation": {
+                "w": 0.9999976011510213,
+                "x": -7.598963627436176e-05,
+                "y": -0.0021890449402545992,
+                "z": 1.6636287094411835e-07
+              },
+              "translation": {
+                "x": 3.474309866706912e-05,
+                "y": -1.20086918121788e-06,
+                "z": -0.007867318303610468
+              }
+            }
+          },
+          "raw_sha256": "b0c405f6047b11409ec432ab3303e1de807448dfffcc4e0a2641fb24661b315e",
+          "robot": "tb2",
+          "source_ns": 73795000000
+        },
+        "record_sequence": 27178,
+        "schema": "mr3-information-state-audit-v1",
+        "wall_monotonic_ns": 3967632984474384
+      }
+    },
+    {
+      "line": 27191,
+      "row": {
+        "clock_ns": 73980000000,
+        "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+        "kind": "odom_ingress",
+        "payload": {
+          "admission": "queued",
+          "input_sequence": 1486,
+          "matched_input_sequence": null,
+          "raw": {
+            "child_frame_id": "base_footprint",
+            "header": {
+              "frame_id": "odom",
+              "stamp": {
+                "nanosec": 982000000,
+                "sec": 73
+              }
+            },
+            "pose": {
+              "covariance": [
+                1e-05,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1e-05,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1000000000000.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1000000000000.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1000000000000.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.001
+              ],
+              "pose": {
+                "orientation": {
+                  "w": 0.999992559590728,
+                  "x": 7.3998743103441455e-06,
+                  "y": 0.0033463286639309163,
+                  "z": 0.0019190604209561378
+                },
+                "position": {
+                  "x": 0.4521285604065101,
+                  "y": 4.004167050876861e-06,
+                  "z": 0.007806944712773437
+                }
+              }
+            },
+            "twist": {
+              "covariance": [
+                1e-05,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1e-05,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1000000000000.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1000000000000.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1000000000000.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.001
+              ],
+              "twist": {
+                "angular": {
+                  "x": 0.0,
+                  "y": 0.0,
+                  "z": 4.8909745968595545e-05
+                },
+                "linear": {
+                  "x": -2.4857439378573045e-05,
+                  "y": -5.991479678816314e-05,
+                  "z": 0.0
+                }
+              }
+            }
+          },
+          "raw_sha256": "308f818fbb11f8f9ec33d776a2b38df33cdc53f1d45458721c4ffe43a7a62459",
+          "robot": "tb3",
+          "source_ns": 73982000000
+        },
+        "record_sequence": 27191,
+        "schema": "mr3-information-state-audit-v1",
+        "wall_monotonic_ns": 3967633091916000
+      }
+    },
+    {
+      "line": 27208,
+      "row": {
+        "clock_ns": 74320000000,
+        "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+        "kind": "odom_ingress",
+        "payload": {
+          "admission": "queued",
+          "input_sequence": 1487,
+          "matched_input_sequence": null,
+          "raw": {
+            "child_frame_id": "base_footprint",
+            "header": {
+              "frame_id": "odom",
+              "stamp": {
+                "nanosec": 322000000,
+                "sec": 74
+              }
+            },
+            "pose": {
+              "covariance": [
+                1e-05,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1e-05,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1000000000000.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1000000000000.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1000000000000.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.001
+              ],
+              "pose": {
+                "orientation": {
+                  "w": 0.999992541722417,
+                  "x": 6.838726771379264e-06,
+                  "y": 0.00334630631751148,
+                  "z": 0.0019283896912585536
+                },
+                "position": {
+                  "x": 0.4521384347712627,
+                  "y": 4.055934222785619e-06,
+                  "z": 0.007830317747468861
+                }
+              }
+            },
+            "twist": {
+              "covariance": [
+                1e-05,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1e-05,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1000000000000.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1000000000000.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1000000000000.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.001
+              ],
+              "twist": {
+                "angular": {
+                  "x": 0.0,
+                  "y": 0.0,
+                  "z": 4.884816688410784e-05
+                },
+                "linear": {
+                  "x": -1.0209904258685583e-05,
+                  "y": -5.7775378607713873e-05,
+                  "z": 0.0
+                }
+              }
+            }
+          },
+          "raw_sha256": "7e8188e406b831494dda001907556733915c4d8c8b5625e66cfe2a0cd61a55b3",
+          "robot": "tb3",
+          "source_ns": 74322000000
+        },
+        "record_sequence": 27208,
+        "schema": "mr3-information-state-audit-v1",
+        "wall_monotonic_ns": 3967633726047759
+      }
+    },
+    {
+      "line": 27212,
+      "row": {
+        "clock_ns": 74320000000,
+        "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+        "kind": "state_selection",
+        "payload": {
+          "cycle_id": 716,
+          "odom_input_sequence": 1680,
+          "odom_source_ns": 74292000000,
+          "pending_odom_input_sequences": [],
+          "pending_tf_input_sequences": [],
+          "robot": "tb1",
+          "skip_reason": null,
+          "tf_input_sequence": 5294,
+          "tf_source_ns": 74042000000
+        },
+        "record_sequence": 27212,
+        "schema": "mr3-information-state-audit-v1",
+        "wall_monotonic_ns": 3967633763701558
+      }
+    },
+    {
+      "line": 27213,
+      "row": {
+        "clock_ns": 74320000000,
+        "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+        "kind": "state_send",
+        "payload": {
+          "cycle_id": 716,
+          "envelope": {
+            "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+            "generated_stamp": 74.32,
+            "payload": {
+              "name": "tb1",
+              "odom_source_stamp": 74.292,
+              "odometry": {
+                "child_frame_id": "base_footprint",
+                "header": {
+                  "frame_id": "odom",
+                  "stamp": {
+                    "nanosec": 292000000,
+                    "sec": 74
+                  }
+                },
+                "pose": {
+                  "covariance": [
+                    1e-05,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1e-05,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.001
+                  ],
+                  "pose": {
+                    "orientation": {
+                      "w": 0.9999923423369127,
+                      "x": 3.2496674844078495e-06,
+                      "y": 0.0033467978347210547,
+                      "z": 0.002028349385118203
+                    },
+                    "position": {
+                      "x": 0.0022449652694032365,
+                      "y": -0.4499954457003313,
+                      "z": 0.007828230532260302
+                    }
+                  }
+                },
+                "twist": {
+                  "covariance": [
+                    1e-05,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1e-05,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.001
+                  ],
+                  "twist": {
+                    "angular": {
+                      "x": 0.0,
+                      "y": 0.0,
+                      "z": 4.8539539861487644e-05
+                    },
+                    "linear": {
+                      "x": -1.6120486238604903e-05,
+                      "y": -5.9533200779734365e-05,
+                      "z": 0.0
+                    }
+                  }
+                }
+              },
+              "robot": "tb1",
+              "tf_source_stamp": 74.042,
+              "tf_validity_lead_sec": 0.2,
+              "tf_validity_stamp": 74.242,
+              "transform": {
+                "child_frame_id": "odom",
+                "header": {
+                  "frame_id": "map",
+                  "stamp": {
+                    "nanosec": 242000000,
+                    "sec": 74
+                  }
+                },
+                "transform": {
+                  "rotation": {
+                    "w": 0.9999976011510213,
+                    "x": -7.598963627435675e-05,
+                    "y": -0.002189044940254594,
+                    "z": 1.663628709441068e-07
+                  },
+                  "translation": {
+                    "x": 3.474306672954927e-05,
+                    "y": -1.2112631956716208e-06,
+                    "z": -0.008004099976302966
+                  }
+                }
+              },
+              "v": -1.6120486238604903e-05,
+              "w": 4.8539539861487644e-05,
+              "x": 0.002280007772452137,
+              "y": -0.4499966554695808,
+              "yaw": 0.004057456885326607
+            },
+            "received_stamp": null,
+            "sequence": 712,
+            "source": "tb1",
+            "source_stamp": 74.042,
+            "stream": "state",
+            "version": 712
+          },
+          "payload_sha256": "5ef3847165f28ee89e2ea1d47e58bdbee232d3153e4e7ecb35b6a72eacfe0dfd",
+          "robot": "tb1"
+        },
+        "record_sequence": 27213,
+        "schema": "mr3-information-state-audit-v1",
+        "wall_monotonic_ns": 3967633765440822
+      }
+    },
+    {
+      "line": 27214,
+      "row": {
+        "clock_ns": 74320000000,
+        "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+        "kind": "state_selection",
+        "payload": {
+          "cycle_id": 716,
+          "odom_input_sequence": 1612,
+          "odom_source_ns": 74313000000,
+          "pending_odom_input_sequences": [],
+          "pending_tf_input_sequences": [],
+          "robot": "tb2",
+          "skip_reason": null,
+          "tf_input_sequence": 5173,
+          "tf_source_ns": 73795000000
+        },
+        "record_sequence": 27214,
+        "schema": "mr3-information-state-audit-v1",
+        "wall_monotonic_ns": 3967633765882032
+      }
+    },
+    {
+      "line": 27215,
+      "row": {
+        "clock_ns": 74320000000,
+        "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+        "kind": "state_send",
+        "payload": {
+          "cycle_id": 716,
+          "envelope": {
+            "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+            "generated_stamp": 74.32,
+            "payload": {
+              "name": "tb2",
+              "odom_source_stamp": 74.313,
+              "odometry": {
+                "child_frame_id": "base_footprint",
+                "header": {
+                  "frame_id": "odom",
+                  "stamp": {
+                    "nanosec": 313000000,
+                    "sec": 74
+                  }
+                },
+                "pose": {
+                  "covariance": [
+                    1e-05,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1e-05,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.001
+                  ],
+                  "pose": {
+                    "orientation": {
+                      "w": 0.9999924227077784,
+                      "x": 5.492060752509338e-06,
+                      "y": 0.003347976938986348,
+                      "z": 0.0019863401725515894
+                    },
+                    "position": {
+                      "x": 0.002199970736408722,
+                      "y": 0.45000432573977495,
+                      "z": 0.007830351765519281
+                    }
+                  }
+                },
+                "twist": {
+                  "covariance": [
+                    1e-05,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1e-05,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.001
+                  ],
+                  "twist": {
+                    "angular": {
+                      "x": 0.0,
+                      "y": 0.0,
+                      "z": 4.895648716748061e-05
+                    },
+                    "linear": {
+                      "x": -2.49626400448654e-06,
+                      "y": -5.6873741119736174e-05,
+                      "z": 0.0
+                    }
+                  }
+                }
+              },
+              "robot": "tb2",
+              "tf_source_stamp": 73.795,
+              "tf_validity_lead_sec": 0.2,
+              "tf_validity_stamp": 73.995,
+              "transform": {
+                "child_frame_id": "odom",
+                "header": {
+                  "frame_id": "map",
+                  "stamp": {
+                    "nanosec": 995000000,
+                    "sec": 73
+                  }
+                },
+                "transform": {
+                  "rotation": {
+                    "w": 0.9999976011510213,
+                    "x": -7.598963627436176e-05,
+                    "y": -0.0021890449402545992,
+                    "z": 1.6636287094411835e-07
+                  },
+                  "translation": {
+                    "x": 3.474309866706912e-05,
+                    "y": -1.20086918121788e-06,
+                    "z": -0.007867318303610468
+                  }
+                }
+              },
+              "v": -2.49626400448654e-06,
+              "w": 4.895648716748061e-05,
+              "x": 0.002234414392846493,
+              "y": 0.4500031263344003,
+              "yaw": 0.003973451949097558
+            },
+            "received_stamp": null,
+            "sequence": 697,
+            "source": "tb2",
+            "source_stamp": 73.795,
+            "stream": "state",
+            "version": 697
+          },
+          "payload_sha256": "70b1763870bc7ca2afd5500707b155d41bb821ce36754560511b1f3d0c688084",
+          "robot": "tb2"
+        },
+        "record_sequence": 27215,
+        "schema": "mr3-information-state-audit-v1",
+        "wall_monotonic_ns": 3967633766328653
+      }
+    },
+    {
+      "line": 27216,
+      "row": {
+        "clock_ns": 74320000000,
+        "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+        "kind": "state_selection",
+        "payload": {
+          "cycle_id": 716,
+          "odom_input_sequence": 1486,
+          "odom_source_ns": 73982000000,
+          "pending_odom_input_sequences": [
+            1487
+          ],
+          "pending_tf_input_sequences": [],
+          "robot": "tb3",
+          "skip_reason": null,
+          "tf_input_sequence": 4997,
+          "tf_source_ns": 74110000000
+        },
+        "record_sequence": 27216,
+        "schema": "mr3-information-state-audit-v1",
+        "wall_monotonic_ns": 3967633766648346
+      }
+    },
+    {
+      "line": 27217,
+      "row": {
+        "clock_ns": 74320000000,
+        "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+        "kind": "state_send",
+        "payload": {
+          "cycle_id": 716,
+          "envelope": {
+            "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+            "generated_stamp": 74.32,
+            "payload": {
+              "name": "tb3",
+              "odom_source_stamp": 73.982,
+              "odometry": {
+                "child_frame_id": "base_footprint",
+                "header": {
+                  "frame_id": "odom",
+                  "stamp": {
+                    "nanosec": 982000000,
+                    "sec": 73
+                  }
+                },
+                "pose": {
+                  "covariance": [
+                    1e-05,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1e-05,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.001
+                  ],
+                  "pose": {
+                    "orientation": {
+                      "w": 0.999992559590728,
+                      "x": 7.3998743103441455e-06,
+                      "y": 0.0033463286639309163,
+                      "z": 0.0019190604209561378
+                    },
+                    "position": {
+                      "x": 0.4521285604065101,
+                      "y": 4.004167050876861e-06,
+                      "z": 0.007806944712773437
+                    }
+                  }
+                },
+                "twist": {
+                  "covariance": [
+                    1e-05,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1e-05,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1000000000000.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.001
+                  ],
+                  "twist": {
+                    "angular": {
+                      "x": 0.0,
+                      "y": 0.0,
+                      "z": 4.8909745968595545e-05
+                    },
+                    "linear": {
+                      "x": -2.4857439378573045e-05,
+                      "y": -5.991479678816314e-05,
+                      "z": 0.0
+                    }
+                  }
+                }
+              },
+              "robot": "tb3",
+              "tf_source_stamp": 74.11,
+              "tf_validity_lead_sec": 0.2,
+              "tf_validity_stamp": 74.31,
+              "transform": {
+                "child_frame_id": "odom",
+                "header": {
+                  "frame_id": "map",
+                  "stamp": {
+                    "nanosec": 310000000,
+                    "sec": 74
+                  }
+                },
+                "transform": {
+                  "rotation": {
+                    "w": 0.9999976011510213,
+                    "x": -7.598963627435656e-05,
+                    "y": -0.0021890449402546096,
+                    "z": 1.663628709441052e-07
+                  },
+                  "translation": {
+                    "x": 3.90558086986056e-05,
+                    "y": -1.5055026690466377e-06,
+                    "z": -0.009905844848738802
+                  }
+                }
+              },
+              "v": -2.4857439378573045e-05,
+              "w": 4.8909745968595545e-05,
+              "x": 0.45216761621244417,
+              "y": 2.7995201205263626e-06,
+              "yaw": 0.003838902613764697
+            },
+            "received_stamp": null,
+            "sequence": 675,
+            "source": "tb3",
+            "source_stamp": 73.982,
+            "stream": "state",
+            "version": 675
+          },
+          "payload_sha256": "3c73d27be79ac01311d87f11142a016c567455326a5bad143e8be6ee44ec23a0",
+          "robot": "tb3"
+        },
+        "record_sequence": 27217,
+        "schema": "mr3-information-state-audit-v1",
+        "wall_monotonic_ns": 3967633767092458
+      }
+    },
+    {
+      "line": 27218,
+      "row": {
+        "clock_ns": 74320000000,
+        "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+        "kind": "state_publish",
+        "payload": {
+          "cycle_id": 716,
+          "envelopes": {
+            "tb1": {
+              "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+              "generated_stamp": 74.32,
+              "payload": {
+                "name": "tb1",
+                "odom_source_stamp": 74.292,
+                "odometry": {
+                  "child_frame_id": "base_footprint",
+                  "header": {
+                    "frame_id": "odom",
+                    "stamp": {
+                      "nanosec": 292000000,
+                      "sec": 74
+                    }
+                  },
+                  "pose": {
+                    "covariance": [
+                      1e-05,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1e-05,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1000000000000.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1000000000000.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1000000000000.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.001
+                    ],
+                    "pose": {
+                      "orientation": {
+                        "w": 0.9999923423369127,
+                        "x": 3.2496674844078495e-06,
+                        "y": 0.0033467978347210547,
+                        "z": 0.002028349385118203
+                      },
+                      "position": {
+                        "x": 0.0022449652694032365,
+                        "y": -0.4499954457003313,
+                        "z": 0.007828230532260302
+                      }
+                    }
+                  },
+                  "twist": {
+                    "covariance": [
+                      1e-05,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1e-05,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1000000000000.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1000000000000.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1000000000000.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.001
+                    ],
+                    "twist": {
+                      "angular": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 4.8539539861487644e-05
+                      },
+                      "linear": {
+                        "x": -1.6120486238604903e-05,
+                        "y": -5.9533200779734365e-05,
+                        "z": 0.0
+                      }
+                    }
+                  }
+                },
+                "robot": "tb1",
+                "tf_source_stamp": 74.042,
+                "tf_validity_lead_sec": 0.2,
+                "tf_validity_stamp": 74.242,
+                "transform": {
+                  "child_frame_id": "odom",
+                  "header": {
+                    "frame_id": "map",
+                    "stamp": {
+                      "nanosec": 242000000,
+                      "sec": 74
+                    }
+                  },
+                  "transform": {
+                    "rotation": {
+                      "w": 0.9999976011510213,
+                      "x": -7.598963627435675e-05,
+                      "y": -0.002189044940254594,
+                      "z": 1.663628709441068e-07
+                    },
+                    "translation": {
+                      "x": 3.474306672954927e-05,
+                      "y": -1.2112631956716208e-06,
+                      "z": -0.008004099976302966
+                    }
+                  }
+                },
+                "v": -1.6120486238604903e-05,
+                "w": 4.8539539861487644e-05,
+                "x": 0.002280007772452137,
+                "y": -0.4499966554695808,
+                "yaw": 0.004057456885326607
+              },
+              "received_stamp": 74.32,
+              "sequence": 712,
+              "source": "tb1",
+              "source_stamp": 74.042,
+              "stream": "state",
+              "version": 712
+            },
+            "tb2": {
+              "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+              "generated_stamp": 74.32,
+              "payload": {
+                "name": "tb2",
+                "odom_source_stamp": 74.313,
+                "odometry": {
+                  "child_frame_id": "base_footprint",
+                  "header": {
+                    "frame_id": "odom",
+                    "stamp": {
+                      "nanosec": 313000000,
+                      "sec": 74
+                    }
+                  },
+                  "pose": {
+                    "covariance": [
+                      1e-05,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1e-05,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1000000000000.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1000000000000.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1000000000000.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.001
+                    ],
+                    "pose": {
+                      "orientation": {
+                        "w": 0.9999924227077784,
+                        "x": 5.492060752509338e-06,
+                        "y": 0.003347976938986348,
+                        "z": 0.0019863401725515894
+                      },
+                      "position": {
+                        "x": 0.002199970736408722,
+                        "y": 0.45000432573977495,
+                        "z": 0.007830351765519281
+                      }
+                    }
+                  },
+                  "twist": {
+                    "covariance": [
+                      1e-05,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1e-05,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1000000000000.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1000000000000.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1000000000000.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.001
+                    ],
+                    "twist": {
+                      "angular": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 4.895648716748061e-05
+                      },
+                      "linear": {
+                        "x": -2.49626400448654e-06,
+                        "y": -5.6873741119736174e-05,
+                        "z": 0.0
+                      }
+                    }
+                  }
+                },
+                "robot": "tb2",
+                "tf_source_stamp": 73.795,
+                "tf_validity_lead_sec": 0.2,
+                "tf_validity_stamp": 73.995,
+                "transform": {
+                  "child_frame_id": "odom",
+                  "header": {
+                    "frame_id": "map",
+                    "stamp": {
+                      "nanosec": 995000000,
+                      "sec": 73
+                    }
+                  },
+                  "transform": {
+                    "rotation": {
+                      "w": 0.9999976011510213,
+                      "x": -7.598963627436176e-05,
+                      "y": -0.0021890449402545992,
+                      "z": 1.6636287094411835e-07
+                    },
+                    "translation": {
+                      "x": 3.474309866706912e-05,
+                      "y": -1.20086918121788e-06,
+                      "z": -0.007867318303610468
+                    }
+                  }
+                },
+                "v": -2.49626400448654e-06,
+                "w": 4.895648716748061e-05,
+                "x": 0.002234414392846493,
+                "y": 0.4500031263344003,
+                "yaw": 0.003973451949097558
+              },
+              "received_stamp": 74.32,
+              "sequence": 697,
+              "source": "tb2",
+              "source_stamp": 73.795,
+              "stream": "state",
+              "version": 697
+            },
+            "tb3": {
+              "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+              "generated_stamp": 74.32,
+              "payload": {
+                "name": "tb3",
+                "odom_source_stamp": 73.982,
+                "odometry": {
+                  "child_frame_id": "base_footprint",
+                  "header": {
+                    "frame_id": "odom",
+                    "stamp": {
+                      "nanosec": 982000000,
+                      "sec": 73
+                    }
+                  },
+                  "pose": {
+                    "covariance": [
+                      1e-05,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1e-05,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1000000000000.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1000000000000.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1000000000000.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.001
+                    ],
+                    "pose": {
+                      "orientation": {
+                        "w": 0.999992559590728,
+                        "x": 7.3998743103441455e-06,
+                        "y": 0.0033463286639309163,
+                        "z": 0.0019190604209561378
+                      },
+                      "position": {
+                        "x": 0.4521285604065101,
+                        "y": 4.004167050876861e-06,
+                        "z": 0.007806944712773437
+                      }
+                    }
+                  },
+                  "twist": {
+                    "covariance": [
+                      1e-05,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1e-05,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1000000000000.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1000000000000.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1000000000000.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.001
+                    ],
+                    "twist": {
+                      "angular": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 4.8909745968595545e-05
+                      },
+                      "linear": {
+                        "x": -2.4857439378573045e-05,
+                        "y": -5.991479678816314e-05,
+                        "z": 0.0
+                      }
+                    }
+                  }
+                },
+                "robot": "tb3",
+                "tf_source_stamp": 74.11,
+                "tf_validity_lead_sec": 0.2,
+                "tf_validity_stamp": 74.31,
+                "transform": {
+                  "child_frame_id": "odom",
+                  "header": {
+                    "frame_id": "map",
+                    "stamp": {
+                      "nanosec": 310000000,
+                      "sec": 74
+                    }
+                  },
+                  "transform": {
+                    "rotation": {
+                      "w": 0.9999976011510213,
+                      "x": -7.598963627435656e-05,
+                      "y": -0.0021890449402546096,
+                      "z": 1.663628709441052e-07
+                    },
+                    "translation": {
+                      "x": 3.90558086986056e-05,
+                      "y": -1.5055026690466377e-06,
+                      "z": -0.009905844848738802
+                    }
+                  }
+                },
+                "v": -2.4857439378573045e-05,
+                "w": 4.8909745968595545e-05,
+                "x": 0.45216761621244417,
+                "y": 2.7995201205263626e-06,
+                "yaw": 0.003838902613764697
+              },
+              "received_stamp": 74.32,
+              "sequence": 675,
+              "source": "tb3",
+              "source_stamp": 73.982,
+              "stream": "state",
+              "version": 675
+            }
+          },
+          "message": {
+            "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+            "information_diagnostics": {
+              "capture_wall_sec": 0.12891999259591103,
+              "completed": 50,
+              "pending": true,
+              "publish_wall_sec": 0.26665726909413934,
+              "queued": false,
+              "replaced_queued": 22,
+              "state_wall_sec": 0.04838563594967127,
+              "submitted": 51,
+              "worker_wall_sec": 2.532167498022318
+            },
+            "map_payload_sha256": "8294f67127d51d87431ceec4ed896744879bb5716588ed7d889a31ddbe130473",
+            "map_received_stamp": 72.0,
+            "map_source_stamp": 69.394,
+            "map_sources": {
+              "tb1": {
+                "payload_sha256": "bc5e2a1c67ed1fd6233f5836e2f80a854fa976f91306dc2b0351bcc8849adbc0",
+                "received_stamp": 72.0,
+                "sequence": 71,
+                "source_stamp": 70.242,
+                "version": 23
+              },
+              "tb2": {
+                "payload_sha256": "5e2ca573164fbed37a415cd052ec09f87e1a45fa05958d90b735a4da439de9a7",
+                "received_stamp": 72.0,
+                "sequence": 69,
+                "source_stamp": 69.394,
+                "version": 22
+              },
+              "tb3": {
+                "payload_sha256": "8da2d2b1c897efc8211bb9112019efbd1782a0af3b449ee2026be5a46d7bc352",
+                "received_stamp": 72.0,
+                "sequence": 67,
+                "source_stamp": 70.909,
+                "version": 22
+              }
+            },
+            "map_version": 46,
+            "navigation_composition": {
+              "version": "mr3-own-known-shared-unknown-v1"
+            },
+            "navigation_sources": {
+              "tb1": {
+                "composition_version": "mr3-own-known-shared-unknown-v1",
+                "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+                "input_own_map_payload_sha256": "bc5e2a1c67ed1fd6233f5836e2f80a854fa976f91306dc2b0351bcc8849adbc0",
+                "input_own_source_stamp": 70.242,
+                "input_shared_map_payload_sha256": "8294f67127d51d87431ceec4ed896744879bb5716588ed7d889a31ddbe130473",
+                "payload_sha256": "39ac6351c66eec8e027abed13ffff2700ce1e14b240cb8c923f3358b57bde59c",
+                "received_stamp": 74.0,
+                "received_stamp_scope": "shared_map_delivery_used_by_navigation",
+                "sequence": 50,
+                "shared_map_version": 46,
+                "source_stamp": 69.394,
+                "version": 50
+              },
+              "tb2": {
+                "composition_version": "mr3-own-known-shared-unknown-v1",
+                "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+                "input_own_map_payload_sha256": "5e2ca573164fbed37a415cd052ec09f87e1a45fa05958d90b735a4da439de9a7",
+                "input_own_source_stamp": 69.394,
+                "input_shared_map_payload_sha256": "8294f67127d51d87431ceec4ed896744879bb5716588ed7d889a31ddbe130473",
+                "payload_sha256": "e9af93372cb03d98d080ed0eefe6a289f749fdf49748b94a1227fdc84c5ebeb3",
+                "received_stamp": 74.0,
+                "received_stamp_scope": "shared_map_delivery_used_by_navigation",
+                "sequence": 50,
+                "shared_map_version": 46,
+                "source_stamp": 69.394,
+                "version": 50
+              },
+              "tb3": {
+                "composition_version": "mr3-own-known-shared-unknown-v1",
+                "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+                "input_own_map_payload_sha256": "8da2d2b1c897efc8211bb9112019efbd1782a0af3b449ee2026be5a46d7bc352",
+                "input_own_source_stamp": 70.909,
+                "input_shared_map_payload_sha256": "8294f67127d51d87431ceec4ed896744879bb5716588ed7d889a31ddbe130473",
+                "payload_sha256": "8294f67127d51d87431ceec4ed896744879bb5716588ed7d889a31ddbe130473",
+                "received_stamp": 74.0,
+                "received_stamp_scope": "shared_map_delivery_used_by_navigation",
+                "sequence": 50,
+                "shared_map_version": 46,
+                "source_stamp": 69.394,
+                "version": 50
+              }
+            },
+            "robots": [
+              {
+                "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+                "name": "tb1",
+                "odom_source_stamp": 74.292,
+                "odometry": {
+                  "child_frame_id": "base_footprint",
+                  "header": {
+                    "frame_id": "odom",
+                    "stamp": {
+                      "nanosec": 292000000,
+                      "sec": 74
+                    }
+                  },
+                  "pose": {
+                    "covariance": [
+                      1e-05,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1e-05,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1000000000000.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1000000000000.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1000000000000.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.001
+                    ],
+                    "pose": {
+                      "orientation": {
+                        "w": 0.9999923423369127,
+                        "x": 3.2496674844078495e-06,
+                        "y": 0.0033467978347210547,
+                        "z": 0.002028349385118203
+                      },
+                      "position": {
+                        "x": 0.0022449652694032365,
+                        "y": -0.4499954457003313,
+                        "z": 0.007828230532260302
+                      }
+                    }
+                  },
+                  "twist": {
+                    "covariance": [
+                      1e-05,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1e-05,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1000000000000.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1000000000000.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1000000000000.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.001
+                    ],
+                    "twist": {
+                      "angular": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 4.8539539861487644e-05
+                      },
+                      "linear": {
+                        "x": -1.6120486238604903e-05,
+                        "y": -5.9533200779734365e-05,
+                        "z": 0.0
+                      }
+                    }
+                  }
+                },
+                "received_stamp": 74.32,
+                "robot": "tb1",
+                "sequence": 712,
+                "source_stamp": 74.042,
+                "tf_source_stamp": 74.042,
+                "tf_validity_lead_sec": 0.2,
+                "tf_validity_stamp": 74.242,
+                "v": -1.6120486238604903e-05,
+                "valid": true,
+                "version": 712,
+                "w": 4.8539539861487644e-05,
+                "x": 0.002280007772452137,
+                "y": -0.4499966554695808,
+                "yaw": 0.004057456885326607
+              },
+              {
+                "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+                "name": "tb2",
+                "odom_source_stamp": 74.313,
+                "odometry": {
+                  "child_frame_id": "base_footprint",
+                  "header": {
+                    "frame_id": "odom",
+                    "stamp": {
+                      "nanosec": 313000000,
+                      "sec": 74
+                    }
+                  },
+                  "pose": {
+                    "covariance": [
+                      1e-05,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1e-05,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1000000000000.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1000000000000.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1000000000000.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.001
+                    ],
+                    "pose": {
+                      "orientation": {
+                        "w": 0.9999924227077784,
+                        "x": 5.492060752509338e-06,
+                        "y": 0.003347976938986348,
+                        "z": 0.0019863401725515894
+                      },
+                      "position": {
+                        "x": 0.002199970736408722,
+                        "y": 0.45000432573977495,
+                        "z": 0.007830351765519281
+                      }
+                    }
+                  },
+                  "twist": {
+                    "covariance": [
+                      1e-05,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1e-05,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1000000000000.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1000000000000.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1000000000000.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.001
+                    ],
+                    "twist": {
+                      "angular": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 4.895648716748061e-05
+                      },
+                      "linear": {
+                        "x": -2.49626400448654e-06,
+                        "y": -5.6873741119736174e-05,
+                        "z": 0.0
+                      }
+                    }
+                  }
+                },
+                "received_stamp": 74.32,
+                "robot": "tb2",
+                "sequence": 697,
+                "source_stamp": 73.795,
+                "tf_source_stamp": 73.795,
+                "tf_validity_lead_sec": 0.2,
+                "tf_validity_stamp": 73.995,
+                "v": -2.49626400448654e-06,
+                "valid": false,
+                "version": 697,
+                "w": 4.895648716748061e-05,
+                "x": 0.002234414392846493,
+                "y": 0.4500031263344003,
+                "yaw": 0.003973451949097558
+              },
+              {
+                "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+                "name": "tb3",
+                "odom_source_stamp": 73.982,
+                "odometry": {
+                  "child_frame_id": "base_footprint",
+                  "header": {
+                    "frame_id": "odom",
+                    "stamp": {
+                      "nanosec": 982000000,
+                      "sec": 73
+                    }
+                  },
+                  "pose": {
+                    "covariance": [
+                      1e-05,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1e-05,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1000000000000.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1000000000000.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1000000000000.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.001
+                    ],
+                    "pose": {
+                      "orientation": {
+                        "w": 0.999992559590728,
+                        "x": 7.3998743103441455e-06,
+                        "y": 0.0033463286639309163,
+                        "z": 0.0019190604209561378
+                      },
+                      "position": {
+                        "x": 0.4521285604065101,
+                        "y": 4.004167050876861e-06,
+                        "z": 0.007806944712773437
+                      }
+                    }
+                  },
+                  "twist": {
+                    "covariance": [
+                      1e-05,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1e-05,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1000000000000.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1000000000000.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1000000000000.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.0,
+                      0.001
+                    ],
+                    "twist": {
+                      "angular": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 4.8909745968595545e-05
+                      },
+                      "linear": {
+                        "x": -2.4857439378573045e-05,
+                        "y": -5.991479678816314e-05,
+                        "z": 0.0
+                      }
+                    }
+                  }
+                },
+                "received_stamp": 74.32,
+                "robot": "tb3",
+                "sequence": 675,
+                "source_stamp": 73.982,
+                "tf_source_stamp": 74.11,
+                "tf_validity_lead_sec": 0.2,
+                "tf_validity_stamp": 74.31,
+                "v": -2.4857439378573045e-05,
+                "valid": true,
+                "version": 675,
+                "w": 4.8909745968595545e-05,
+                "x": 0.45216761621244417,
+                "y": 2.7995201205263626e-06,
+                "yaw": 0.003838902613764697
+              }
+            ],
+            "sequence": 716
+          },
+          "message_sha256": "d1eb5fb423366fbbb4311f66b0261afd2312e5eaf333a8e5ebffef182869a1a5",
+          "publish_completed_wall_monotonic_ns": 3967633771299738,
+          "publish_started_wall_monotonic_ns": 3967633771140064,
+          "scope": "actual_publish_calls_returned",
+          "side_publications": [
+            {
+              "envelope_sequence": 712,
+              "odom_sha256": "93b271adb55f8c4e4d280d437ce19c0181630a53dfb4f11fe2301c1cc2686b60",
+              "odom_topic": "/mr3/received/tb1/odom",
+              "robot": "tb1",
+              "tf_sha256": "cf149623ab11188556a74149eaa170f568a7735dde440e4bd6263dcba2d16c64",
+              "tf_topic": "/mr3/received/tb1/tf"
+            },
+            {
+              "envelope_sequence": 697,
+              "odom_sha256": "30e847646c988573cc905c4e9a3a870e35d4484428aa916f32a6fbd96f5a148b",
+              "odom_topic": "/mr3/received/tb2/odom",
+              "robot": "tb2",
+              "tf_sha256": "b0c405f6047b11409ec432ab3303e1de807448dfffcc4e0a2641fb24661b315e",
+              "tf_topic": "/mr3/received/tb2/tf"
+            },
+            {
+              "envelope_sequence": 675,
+              "odom_sha256": "308f818fbb11f8f9ec33d776a2b38df33cdc53f1d45458721c4ffe43a7a62459",
+              "odom_topic": "/mr3/received/tb3/odom",
+              "robot": "tb3",
+              "tf_sha256": "47e63f88b661f7d9b20de15aa835482b82141122057ea6089b6aee1f44ebdf63",
+              "tf_topic": "/mr3/received/tb3/tf"
+            }
+          ]
+        },
+        "record_sequence": 27218,
+        "schema": "mr3-information-state-audit-v1",
+        "wall_monotonic_ns": 3967633771966515
+      }
+    },
+    {
+      "line": 27220,
+      "row": {
+        "clock_ns": 74320000000,
+        "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+        "kind": "tf_ingress",
+        "payload": {
+          "admission": "queued",
+          "input_sequence": 5176,
+          "matched_input_sequence": null,
+          "raw": {
+            "child_frame_id": "odom",
+            "header": {
+              "frame_id": "map",
+              "stamp": {
+                "nanosec": 395000000,
+                "sec": 74
+              }
+            },
+            "transform": {
+              "rotation": {
+                "w": 0.9999976011510213,
+                "x": -7.598963627436176e-05,
+                "y": -0.0021890449402545992,
+                "z": 1.6636287094411835e-07
+              },
+              "translation": {
+                "x": 3.474309866706912e-05,
+                "y": -1.20086918121788e-06,
+                "z": -0.007867318303610468
+              }
+            }
+          },
+          "raw_sha256": "0220741ba6b1203104d706027cea8027cb1b0fd37bc954b294b13caa644eda74",
+          "robot": "tb2",
+          "source_ns": 74195000000
+        },
+        "record_sequence": 27220,
+        "schema": "mr3-information-state-audit-v1",
+        "wall_monotonic_ns": 3967633775244721
+      }
+    }
+  ],
+  "source_bindings": [
+    {
+      "matches_freeze_git_bytes": true,
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_information.py",
+      "sha256": "b9830fa5089201920e05196d923e82fff62344946a43987204b1f43aaeb3e1b5"
+    },
+    {
+      "matches_freeze_git_bytes": true,
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/motion_safety.py",
+      "sha256": "49bfee501384c9274eb9660c879ef3610032262b708efad2087cfc8599409920"
+    },
+    {
+      "matches_freeze_git_bytes": true,
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py",
+      "sha256": "8da048d4c26bcef4438ed3f6db727b14b648bf257dc0d06e08be7000b6ad2f5b"
+    }
+  ]
+}

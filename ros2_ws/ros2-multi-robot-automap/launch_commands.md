@@ -197,54 +197,52 @@ python -m mr3_learning.audit_preparation \
 工程成本单列，不使用/重置pilot余额。每worker始终三台；300秒KEEP用于截止与关闭验证，
 不证明探索或三台参与成功。旧版原件保持；用户随后要求继续完成P2A.0，新版见下节。
 
-## MR3-P2A.0 v9 当前训练前工程准备
+## MR3-P2A.0 v10 当前训练前工程准备
 
-v1至v8原件保留，不重跑旧命令。当前导航合成own已知权威/shared补unknown、候选`mr3-navigation-geometric-staging-v5`、快照v3/张量v2及71列活动观测延续。实际速度链为controller/behavior→`cmd_vel_nav`→smoother→`cmd_vel_unguarded`→唯一`motion_safety`→`cmd_vel`，每20ms暂停等待实际topic完成ACK。三机实际Nav2配置和安全门的角速度指令上限均为`.8rad/s`，测量门仍为`1.2rad/s`；精确一ULP规范、完整转向复验及保守停止包络延续。
+v1至v9失败及原件保留，详见 dated reports。当前导航合成own已知权威/shared补unknown、候选`mr3-navigation-geometric-staging-v5`、快照v3/张量v2及71列活动观测延续。实际速度链为controller/behavior→`cmd_vel_nav`→smoother→`cmd_vel_unguarded`→唯一`motion_safety`→`cmd_vel`。受控每20ms暂停完成state实际发布→peer实际接收/障碍发布→guard实际回收→三台native目标存储后才推进。三机实际Nav2配置和安全门的角速度指令上限均为`.8rad/s`，测量门仍为`1.2rad/s`；精确一ULP规范、完整转向复验及保守停止包络延续。
 
 当前model显式使用本包`libmr3_gazebo_diff_drive.so`，只改轮指令反馈算法，物理参数保持。audit启用时保存实际spawn的三份SDF及drive_tbN.jsonl，不能用未构建的系统插件替代。
 
-系统ROS环境先构建并source当前install，再按P1C段切换conda `ns3gym`并清除`PYTHONPATH`，在wireless-rl执行：
+系统ROS环境先在canonical ROS目录构建并source当前install：
 
 ```bash
+cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
 /usr/bin/python3 /usr/bin/colcon build --symlink-install \
   --packages-select merge_map multi_robot_exploration multi_robot
 source install/setup.bash
 ```
 
-本版修复v6实际目标消费约.727秒滞后：adapter唯一guard发布tagged target，driver实际存储后回执，worker每20ms推进前等待三台exactclock/seq/value；Twist仍观察，baseline显式Twist模式。新库与四编译源须核验，原paired轮模型及全部门保持，v7消费/时延与关闭通过但活动及刺激整体FAIL；v8补条件静止转向整段漂移预算，原新分支每个body margin≥.1518m，实际速度与整段总漂移必须独立核验。v8接口完整PASS但terminal提前旧received状态过期，后两阶段SKIP。本版修producer causal odom选择并保存隔离的`information_states.jsonl`入站/选取账本；所有阶段须追加独立information审计。旧子PASS不能代替本版矩阵。
+adapter唯一guard发布tagged target，driver实际存储后回执，worker核对三台exactclock/seq/value；Twist仍观察，baseline显式Twist模式。原paired轮模型、四编译源/库、所有机体门保持。条件静止转向原每个body margin≥.1518m及整段漂移须独立核验。新增显式因果提交修复暂停期间定时发布饥饿，隔离`information_states.jsonl`、`peer_phase.jsonl`和控制账本逐实际callback核验。工程与训练结果审计共用唯一零bootstrap的受限版本入口，不改变真实任务release或原整数物理数学；本轮没有训练信用。
 
-只在一个干净且已提交推送、完成源码和installed路径核验的冻结运行。interface通过后才开始terminal，再完整reset，最后deadline；每阶段完整审计通过再前进。上限608 API/596脚本动作、18000墙秒，无原生GPU/optimizer；pilot余额不动。真实失败保留并停止该版后续阶段，修复后新冻结/新预声明重验，不拼PASS。详见[v9报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261017_mr3_p2a0_v9.md)。
+再按P1C段激活conda `ns3gym`，仅在下面wireless-rl目录执行Python入口；ROS子进程仍使用system ROS Python。只在一个干净且已提交推送、完成源码和installed路径核验的冻结运行。interface通过后才开始terminal，再完整reset，最后deadline；每阶段完整审计通过再前进。上限608 API/596脚本动作、18000墙秒，无原生GPU/optimizer；pilot余额不动。真实失败保留并停止该版后续阶段，修复后新冻结/新预声明重验，不拼PASS。详见[v10报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261017_mr3_p2a0_v10.md)。
 
 ```bash
-MR3_P2A0_V9_FREEZE=$(git rev-parse HEAD)
-python report/assets/20261017_mr3_p2a0_v9/independent/mr3_p2a0_v9_buildproof_preflight.py
-python report/assets/20261017_mr3_p2a0_v9/independent/mr3_p2a0_v9_launch_stage.py interface "$MR3_P2A0_V9_FREEZE"
-python -m mr3_learning.audit_preparation \
-  /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v9_interface \
-  --freeze "$MR3_P2A0_V9_FREEZE" --output /tmp/mr3_p2a0_v9_interface_full_audit.json
+cd /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl
+unset PYTHONPATH
+export PYTHONNOUSERSITE=1
+MR3_P2A0_V10_FREEZE=$(git rev-parse HEAD)
+python report/assets/20261017_mr3_p2a0_v10/independent/mr3_p2a0_v10_buildproof_preflight.py
+python report/assets/20261017_mr3_p2a0_v10/independent/mr3_p2a0_v10_launch_stage.py interface "$MR3_P2A0_V10_FREEZE"
+python report/assets/20261017_mr3_p2a0_v10/independent/mr3_p2a0_v10_audit_stage.py interface "$MR3_P2A0_V10_FREEZE"
 
-python report/assets/20261017_mr3_p2a0_v9/independent/mr3_p2a0_v9_launch_stage.py terminal "$MR3_P2A0_V9_FREEZE"
-python -m mr3_learning.audit_preparation \
-  /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v9_terminal \
-  --freeze "$MR3_P2A0_V9_FREEZE" --output /tmp/mr3_p2a0_v9_terminal_full_audit.json
+python report/assets/20261017_mr3_p2a0_v10/independent/mr3_p2a0_v10_launch_stage.py terminal "$MR3_P2A0_V10_FREEZE"
+python report/assets/20261017_mr3_p2a0_v10/independent/mr3_p2a0_v10_audit_stage.py terminal "$MR3_P2A0_V10_FREEZE"
 
-python report/assets/20261017_mr3_p2a0_v9/independent/mr3_p2a0_v9_launch_stage.py reset "$MR3_P2A0_V9_FREEZE"
-python -m mr3_learning.audit_preparation \
-  /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v9_reset \
-  --freeze "$MR3_P2A0_V9_FREEZE" --output /tmp/mr3_p2a0_v9_reset_full_audit.json
+python report/assets/20261017_mr3_p2a0_v10/independent/mr3_p2a0_v10_launch_stage.py reset "$MR3_P2A0_V10_FREEZE"
+python report/assets/20261017_mr3_p2a0_v10/independent/mr3_p2a0_v10_audit_stage.py reset "$MR3_P2A0_V10_FREEZE"
 
-python report/assets/20261017_mr3_p2a0_v9/independent/mr3_p2a0_v9_launch_stage.py deadline "$MR3_P2A0_V9_FREEZE"
-python -m mr3_learning.audit_preparation \
-  /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v9_deadline \
-  --freeze "$MR3_P2A0_V9_FREEZE" --output /tmp/mr3_p2a0_v9_deadline_full_audit.json
+python report/assets/20261017_mr3_p2a0_v10/independent/mr3_p2a0_v10_launch_stage.py deadline "$MR3_P2A0_V10_FREEZE"
+python report/assets/20261017_mr3_p2a0_v10/independent/mr3_p2a0_v10_audit_stage.py deadline "$MR3_P2A0_V10_FREEZE"
 
 ```
 
-上述native入口使用[预声明launcher](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v9/predeclared_plan_v9.json)的精确命令与累计预算，不直接绕过它调用benchmark。`audit_preparation`只是完整门中的一项；interface须补齐full/input/driver/angular/physical/settled/closure及information共八份精确独立回执，terminal五份、reset八份、deadline五份，全部`passed=true`才允许下一stage。各文件名与调用模板在预声明中，真实FAIL或缺件都拒绝继续；不能手写PASS。preflight仅在同一clean+pushed冻结创建新`/tmp`凭据，不覆盖旧凭据。
+上述native入口使用[预声明launcher](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/predeclared_plan_v10.json)的精确命令与累计预算，不直接绕过它调用benchmark。`audit_preparation`只是完整门中的一项；interface须补齐full/input/driver/angular/physical/settled/closure及information并新增peer/control精确独立回执；准确清单以本版预声明为准，全部`passed=true`才允许下一stage。各文件名与调用模板在预声明中，真实FAIL或缺件都拒绝继续；不能手写PASS。preflight仅在同一clean+pushed冻结创建新`/tmp`凭据，不覆盖旧凭据。
 
 interface的`--preparation-parameter-review`只读固定、源码绑定的九节点参数脚本；使用原native metadata声明并经canonical profile/Git字节核验的相同loopback UDP配置；reset返回后、首step前物理保持暂停，失败走严格关闭。原件`actual_nav2_parameters.json`保存在episode目录。interface还须通过冻结独立angular消费者及至少一次实际settled-turn触发、完整持续漂移审计；所有阶段driver消费门保持。reset须通过冻结独立物理matrix及所有触发漂移段；规则和脚本SHA见预声明资产。
 
 `--preparation-motion-probe --preparation-probe-version mr3-p2a0-outward-cancel-v3`为32步外部工程输入：GOAL[0,1.5)/[13,15)、WAIT[10,13)/[28,32)，其余KEEP；第二GOAL优先首阶段实际received转向符号的反向合法目标机会，不保证实际反向响应。旧v2仍20步，不能混用。三台每轮均需合法GOAL、原生接受及received路径>.05m，首失败共享标志阻止后续调用而不补造终态。该脚本不是生产探索策略或fallback。terminal/deadline没有95%/参与信用；完成后待用户验收P2A.0。
+
+受控stepped在暂停中以state_phase→peer_phase→motion control→三台storage显式提交，状态有效50Hz；非受控10Hz保持。独立zero-stop同clock更高序号仅三零、不覆normal ACK；启动invalid也走实际cancel/Nav2/native有序关闭。所有原源龄/任务/机体安全门不变。
 
 ## MR3-P2A联合MaskablePPO（v6历史命令，本轮不重启pilot）
 

@@ -12,7 +12,7 @@ from mr3_learning import audit_ppo
 
 
 class NativeBindingTests(unittest.TestCase):
-    def loader(self, document_digest, *, machine_changed=False):
+    def loader(self, document_digest, *, machine_changed=False, shared_changed=False):
         """Mock document bytes/hashes, retaining the real loader's gate logic."""
         root = Path("/offline-fixture")
         freeze = "a" * 40
@@ -40,6 +40,8 @@ class NativeBindingTests(unittest.TestCase):
             if relative == task:
                 return document_payload
             if "/mr3_learning/" in relative:
+                if shared_changed and relative.endswith("/audit_controlled_physics.py"):
+                    return learner_payload + b"changed-shared-physics"
                 return learner_payload
             if machine_changed and revision == freeze and relative == config:
                 return machine_payload + b"changed"
@@ -79,6 +81,13 @@ class NativeBindingTests(unittest.TestCase):
                                  audit_ppo.TASK_DOCUMENT_SHA256)
                 self.assertTrue(proof[config]["normative_source"].startswith(
                     audit_ppo.TASK_BASE_FREEZE + ":"))
+
+    def test_shared_physics_is_source_bound_and_changed_bytes_are_rejected(self):
+        proof, _, _ = self.loader(audit_ppo.TASK_DOCUMENT_SHA256)
+        relative = audit_ppo.WIRELESS + "mr3_learning/audit_controlled_physics.py"
+        self.assertIn(relative, proof)
+        with self.assertRaisesRegex(ValueError, "learner worktree differs.*controlled_physics"):
+            self.loader(audit_ppo.TASK_DOCUMENT_SHA256, shared_changed=True)
 
     def test_unknown_status_document_is_rejected(self):
         with self.assertRaisesRegex(ValueError, "explicitly pinned"):

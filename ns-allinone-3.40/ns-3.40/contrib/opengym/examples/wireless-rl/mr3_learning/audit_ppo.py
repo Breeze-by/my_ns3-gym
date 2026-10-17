@@ -23,6 +23,7 @@ import torch
 from sb3_contrib import MaskablePPO
 
 from . import audit_evaluator_phase, audit_protocol, audit_scalar
+from .audit_controlled_physics import dispatch_controlled_physics
 from .observation import encode_snapshot, observation_space
 
 
@@ -34,9 +35,9 @@ REWARD_SOURCE = ROS + "src/multi_robot_exploration/multi_robot_exploration/mr3_r
 W7_REWARD_SHA256 = "77485e7988489a146e4c44207343a0a4be7c12b5ffe36906dde59257cac16f88"
 EVALUATOR_PHASE_PINS = {
     ROS + 'scripts/mr3_env_worker.py':
-        '8da048d4c26bcef4438ed3f6db727b14b648bf257dc0d06e08be7000b6ad2f5b',
+        '2da3ba79c20c1d2516c74eb6201384847fe08e1f6a41b0a64d7ec6013d4fd712',
     ROS + 'src/multi_robot_exploration/multi_robot_exploration/task_evaluator.py':
-        '9b029f21d433f694b79118c113e23df5921401e3be88f89599201bcecf84cc91',
+        '3aa0655113c0c2402c6e587730fa1f457d1f837ff0ce00928e6c8ca433f3c8d6',
     ROS + 'src/multi_robot_exploration/multi_robot_exploration/mr3_evaluator_phase.py':
         '9c43ace376354edbdf496fe920d04a539ed47912fd0840f6d290c459450d69fa',
 }
@@ -52,11 +53,11 @@ PREPARATION_RUNTIME_PINS = {
     ROS + 'src/multi_robot_exploration/multi_robot_exploration/mr3_observation_archive.py':
         '03da72d5e989e6c7af99b90aaddf357120c2239fc08e99febb858554b1fefea8',
     ROS + 'src/multi_robot_exploration/multi_robot_exploration/peer_obstacles.py':
-        '54e6eeccac7d93ac42c3783b7826fed14296c527c7d68a7ecdb76e77a50102d4',
+        'ac0834ab362a771efddbbb656d27edee176b9089be81a83f55ad3a2440065898',
     ROS + 'src/merge_map/merge_map/merge_map.py':
         '76c3d2c604f38f61116be1f39263472f9074b4f69fe7a0428b532da977530078',
     ROS + 'src/multi_robot_exploration/multi_robot_exploration/mr3_information.py':
-        'b9830fa5089201920e05196d923e82fff62344946a43987204b1f43aaeb3e1b5',
+        'b46d098cb9a762a7558ea84adf85d943f1e631b248b478a9ce1a2d6b0b07e644',
     ROS + 'src/multi_robot_exploration/multi_robot_exploration/mr3_activity.py':
         '7af918d75c05b6f8fb1a65899e43aad11a315640e8b00fdb589c31f693ad696e',
     ROS + 'src/multi_robot_exploration/multi_robot_exploration/mr3_protocol.py':
@@ -64,11 +65,15 @@ PREPARATION_RUNTIME_PINS = {
     ROS + 'src/multi_robot_exploration/multi_robot_exploration/mr3_motion_safety.py':
         'fc1adb189922e5b7f7d62ece2a3bdf9720fb3766916bc98b3f74d71930906ef8',
     ROS + 'src/multi_robot_exploration/multi_robot_exploration/motion_safety.py':
-        '49bfee501384c9274eb9660c879ef3610032262b708efad2087cfc8599409920',
+        'd6f3d950736d927efc3bafba31bc55d3fed73b480d941de22dbab13e77bbb6a3',
     ROS + 'src/multi_robot_exploration/multi_robot_exploration/control.py':
         'f595fd1e999a5cbe9d0f33db549d7aba0af615703b589ef14ff2538a871e380c',
     ROS + 'src/multi_robot_exploration/multi_robot_exploration/mr3_drive_phase.py':
         '0525230f4719e7279826810f0c177f6a6317a961d50711ac76d8a0338f93d987',
+    ROS + 'src/multi_robot_exploration/multi_robot_exploration/mr3_control_phase.py':
+        '9d7b0cc64d2eb9cd4aee49de50feb63ebf117a31b41cc000119c2f4ea2741e15',
+    ROS + 'src/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py':
+        '6f13f59d0959c92ef5bf4e3492285e7e5b086958daa4fd33a0362db484e8627e',
 }
 SLAM = ROS + "src/slam_toolbox/"
 SLAM_RUNTIME_PINS = {
@@ -125,7 +130,7 @@ EXECUTION_CONFIG_PINS = {
     ROS + 'src/multi_robot/config/nav2_params.yaml':
         '53b1fd403a55b6567a238efe954fadd40f572347f18bd0d258993b0e8d10d723',
     ROS + 'src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py':
-        '5345a8e583a779847f7b1a6e63a4c3a7b9585d308fdb1e3b9f4790309c0ce9ec',
+        '9a281992530cd0b4f36f72e1ae5a9ccfed441599b511e5599ee738a0e889a4a7',
     ROS + 'src/multi_robot/launch/nav2_bringup/bringup_launch.py':
         '41b7e5e65c2c61ce6f1efb5a9288c3875e60f6c9054d77f96f7fc6f0a6f2aa53',
     ROS + 'src/multi_robot/launch/nav2_bringup/navigation_launch.py':
@@ -149,11 +154,11 @@ EXECUTION_CONFIG_PINS = {
     ROS + 'src/multi_robot/vendor/gazebo_ros_diff_drive.BSD-3-Clause.txt':
         '771978f82c58310201ccdfdfd66e8ca798d26c2202d77f32a131d60bd297a545',
     WIRELESS + 'MR3_ADAPTER_CONTRACT.md':
-        '4cc62c7ac015b7489bd14d4e346723ef7a15fef7212f21ff67aa9e5d0a6aa3bb',
+        'b8a61963772dd8a6410d11647435e386c056e5c64e56325b650c447bbe21df04',
     ROS + 'src/multi_robot/include/multi_robot/mr3_drive_target.hpp':
         'a1a11a73ac5c416d6d548249829717ccb262005498566c0bcc8dc1997999b9ba',
 }
-ENV_DOCUMENT_SHA256 = "98a627ce780d2f384ed62a4a726e23327a743f16cd8cb4dba95c2681837a95d3"
+ENV_DOCUMENT_SHA256 = "8af96ffd3a49d294a051e41eb501881109fe3f582fd6dca675c5bef24f2b9bee"
 TASK_DOCUMENT_SHA256 = "f96f5ba785a39daa882b3c2ea217c58dd968550b65bf0ee15faf07ca079f8991"
 PRIOR_TASK_DOCUMENT_SHA256 = "5e4400396e4aaf5a5094fb4c0c04c85810c327cc85be88b7d03fa3faeade07d2"
 TASK_BASE_FREEZE = "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a"
@@ -378,7 +383,8 @@ def load_native_gates(root, freeze):
                            "normative_source": TASK_BASE_FREEZE + ":" + relative}
     for filename in ("audit_ppo.py", "audit_scalar.py", "audit_protocol.py",
                      "audit_evaluator_phase.py", "audit_preparation.py", "audit_activity.py",
-                     "audit_motion.py", "navigation_archive.py", "ppo.py",
+                     "audit_motion.py", "audit_controlled_physics.py",
+                     "navigation_archive.py", "ppo.py",
                      "rollout.py", "policy.py",
                      "model.py", "env.py", "ipc.py", "benchmark.py",
                      "observation.py", "supervisor.py", "requirements-env.txt",
@@ -556,7 +562,11 @@ def audit_run(directory, freeze):
             native_meta = load_json(native / "metadata.json")
             epoch = native_meta["epoch"]
             row.update(epoch=epoch, scene=native_meta["scene"], seed=native_meta["seed"])
-            row["native"] = phase.corrected_audit(base, native_auditor, command, [native])
+            original_physics = dispatch_controlled_physics(native_auditor, [native], {})
+            try:
+                row["native"] = phase.corrected_audit(base, native_auditor, command, [native])
+            finally:
+                native_auditor.audit_physics = original_physics
             row["scalar"] = scalar.audit_episode(native, freeze)
             row["evaluator_phase"] = audit_evaluator_phase.audit_episode(native)
             evaluation = load_json(native / (epoch + ".json"))

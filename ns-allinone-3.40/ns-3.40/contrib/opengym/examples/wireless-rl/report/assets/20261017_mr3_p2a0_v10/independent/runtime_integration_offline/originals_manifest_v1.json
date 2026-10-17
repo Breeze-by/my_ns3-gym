@@ -1,0 +1,270 @@
+{
+  "schema": "mr3-offline-originals-custody-v1",
+  "passed": true,
+  "scope": "Shared engineering/PPO physics audit integration only; no native/GPU/training",
+  "prior_runtime_manifest_unchanged_sha256": "32613f9f143b05ea93e2f7374de21fc3ad398961b4abea4a48b18aa9db0cbc64",
+  "check_results": {
+    "focused_01": "21 PASS",
+    "style_01": "4 style errors retained",
+    "focused_02": "21 PASS",
+    "style_02": "PASS",
+    "focused_03": "22 PASS",
+    "style_03": "PASS",
+    "AST_static_v1": "PASS"
+  },
+  "source_history": "Exact pre-extraction four files and final six files retained. Intermediate initial-style-failure source bytes were not separately saved; its original commands, stdout and receipt remain. Final snapshots are not attributed to earlier iterations.",
+  "new_test_coverage": "5 tests: stdlib/no-cycle/re-export; episode-entry unchanged math/capacity/legacy/unknown; actual PPO call AST plus full consumer and W7 physics with finally success/error restoration; original tick math rejection; new learner Git/worktree source binding rejection.",
+  "frozen_helper_claim": "Synthetic fixtures inject only the actual pure helper at the frozen-source loader seam; no claim of committed synthetic source identity.",
+  "entries": [
+    {
+      "source": "/tmp/mr3_p2a0_v10_runtime_shared_physics_archive_v1.py",
+      "artifact": "originals/mr3_p2a0_v10_runtime_shared_physics_archive_v1.py",
+      "encoding": "identity",
+      "raw_bytes": 4180,
+      "raw_sha256": "8d031ebfa69cb5cf60ba99d9ef5d679a823acb0f6100fd680ed202e8cdad6dc7",
+      "encoded_bytes": 4180,
+      "encoded_sha256": "8d031ebfa69cb5cf60ba99d9ef5d679a823acb0f6100fd680ed202e8cdad6dc7",
+      "decoded_sha256": "8d031ebfa69cb5cf60ba99d9ef5d679a823acb0f6100fd680ed202e8cdad6dc7"
+    },
+    {
+      "source": "/tmp/mr3_p2a0_v10_runtime_shared_physics_focused_01.json",
+      "artifact": "originals/mr3_p2a0_v10_runtime_shared_physics_focused_01.json",
+      "encoding": "identity",
+      "raw_bytes": 638,
+      "raw_sha256": "662725e8011b21589bbf61f9735d580ec44d4aca6846f5b53ab1c6710617b406",
+      "encoded_bytes": 638,
+      "encoded_sha256": "662725e8011b21589bbf61f9735d580ec44d4aca6846f5b53ab1c6710617b406",
+      "decoded_sha256": "662725e8011b21589bbf61f9735d580ec44d4aca6846f5b53ab1c6710617b406"
+    },
+    {
+      "source": "/tmp/mr3_p2a0_v10_runtime_shared_physics_focused_01.log",
+      "artifact": "originals/mr3_p2a0_v10_runtime_shared_physics_focused_01.log.gz",
+      "encoding": "gzip",
+      "raw_bytes": 3557,
+      "raw_sha256": "6809c580ceb5c8424dcc70801193c5c457375914fe5fbd45fad1bbdb1b9ae9a6",
+      "encoded_bytes": 1112,
+      "encoded_sha256": "9eca23d6576a880d76dfa0716b6165545a7b4001c08c850d1869e2715f9afadb",
+      "decoded_sha256": "6809c580ceb5c8424dcc70801193c5c457375914fe5fbd45fad1bbdb1b9ae9a6"
+    },
+    {
+      "source": "/tmp/mr3_p2a0_v10_runtime_shared_physics_focused_02.json",
+      "artifact": "originals/mr3_p2a0_v10_runtime_shared_physics_focused_02.json",
+      "encoding": "identity",
+      "raw_bytes": 638,
+      "raw_sha256": "c0609a0e0fbf73802b4681df37d1c5b501d89cd51d7027746ec4716492ad81a0",
+      "encoded_bytes": 638,
+      "encoded_sha256": "c0609a0e0fbf73802b4681df37d1c5b501d89cd51d7027746ec4716492ad81a0",
+      "decoded_sha256": "c0609a0e0fbf73802b4681df37d1c5b501d89cd51d7027746ec4716492ad81a0"
+    },
+    {
+      "source": "/tmp/mr3_p2a0_v10_runtime_shared_physics_focused_02.log",
+      "artifact": "originals/mr3_p2a0_v10_runtime_shared_physics_focused_02.log.gz",
+      "encoding": "gzip",
+      "raw_bytes": 3557,
+      "raw_sha256": "1e8a3679fd8c550c078817d293718c7516162acc84692b08ac1bb989e29c86d4",
+      "encoded_bytes": 1112,
+      "encoded_sha256": "5c60a8354766ca3de0345e9d4b0646e9a385e580fc9690ba73c6cb72b1d5b9b1",
+      "decoded_sha256": "1e8a3679fd8c550c078817d293718c7516162acc84692b08ac1bb989e29c86d4"
+    },
+    {
+      "source": "/tmp/mr3_p2a0_v10_runtime_shared_physics_focused_03.json",
+      "artifact": "originals/mr3_p2a0_v10_runtime_shared_physics_focused_03.json",
+      "encoding": "identity",
+      "raw_bytes": 638,
+      "raw_sha256": "83bf6a1265c4f31b196805f7e431079503e6dfc7e5664638c19ca3162db25a3e",
+      "encoded_bytes": 638,
+      "encoded_sha256": "83bf6a1265c4f31b196805f7e431079503e6dfc7e5664638c19ca3162db25a3e",
+      "decoded_sha256": "83bf6a1265c4f31b196805f7e431079503e6dfc7e5664638c19ca3162db25a3e"
+    },
+    {
+      "source": "/tmp/mr3_p2a0_v10_runtime_shared_physics_focused_03.log",
+      "artifact": "originals/mr3_p2a0_v10_runtime_shared_physics_focused_03.log.gz",
+      "encoding": "gzip",
+      "raw_bytes": 3686,
+      "raw_sha256": "ad5ee2e16201de03e3c23889f20242d46544869902a93cdd33582e9c4461f4d8",
+      "encoded_bytes": 1133,
+      "encoded_sha256": "d5482b419e036b3aa2bb3cdebcfd5b735facce58526e3c8c2a47ea6061aac642",
+      "decoded_sha256": "ad5ee2e16201de03e3c23889f20242d46544869902a93cdd33582e9c4461f4d8"
+    },
+    {
+      "source": "/tmp/mr3_p2a0_v10_runtime_shared_physics_static_v1.json",
+      "artifact": "originals/mr3_p2a0_v10_runtime_shared_physics_static_v1.json",
+      "encoding": "identity",
+      "raw_bytes": 1344,
+      "raw_sha256": "1806c404836abae0f272cf49e73bc1d9e71bb0f39499ba42f8a7d319667dbafd",
+      "encoded_bytes": 1344,
+      "encoded_sha256": "1806c404836abae0f272cf49e73bc1d9e71bb0f39499ba42f8a7d319667dbafd",
+      "decoded_sha256": "1806c404836abae0f272cf49e73bc1d9e71bb0f39499ba42f8a7d319667dbafd"
+    },
+    {
+      "source": "/tmp/mr3_p2a0_v10_runtime_shared_physics_static_v1.py",
+      "artifact": "originals/mr3_p2a0_v10_runtime_shared_physics_static_v1.py",
+      "encoding": "identity",
+      "raw_bytes": 4572,
+      "raw_sha256": "c1e9dacd32f6a4f72c9e2272646e3a8091560862c33a3a809afd36dddbb1bd4f",
+      "encoded_bytes": 4572,
+      "encoded_sha256": "c1e9dacd32f6a4f72c9e2272646e3a8091560862c33a3a809afd36dddbb1bd4f",
+      "decoded_sha256": "c1e9dacd32f6a4f72c9e2272646e3a8091560862c33a3a809afd36dddbb1bd4f"
+    },
+    {
+      "source": "/tmp/mr3_p2a0_v10_runtime_shared_physics_style_01.json",
+      "artifact": "originals/mr3_p2a0_v10_runtime_shared_physics_style_01.json",
+      "encoding": "identity",
+      "raw_bytes": 752,
+      "raw_sha256": "f23eafac84cf114bd92bb44888c34f7f77d2b148b59bb5d785139dc4b65de389",
+      "encoded_bytes": 752,
+      "encoded_sha256": "f23eafac84cf114bd92bb44888c34f7f77d2b148b59bb5d785139dc4b65de389",
+      "decoded_sha256": "f23eafac84cf114bd92bb44888c34f7f77d2b148b59bb5d785139dc4b65de389"
+    },
+    {
+      "source": "/tmp/mr3_p2a0_v10_runtime_shared_physics_style_01.log",
+      "artifact": "originals/mr3_p2a0_v10_runtime_shared_physics_style_01.log.gz",
+      "encoding": "gzip",
+      "raw_bytes": 385,
+      "raw_sha256": "bbf2a25ca5f003a6f493a76c6165c8901cc9281028c8792da588abd6a5593531",
+      "encoded_bytes": 221,
+      "encoded_sha256": "71b9db1fcffa1e560577cb7a1ae072b67f75e2c718a5e876711d8dd411a485f4",
+      "decoded_sha256": "bbf2a25ca5f003a6f493a76c6165c8901cc9281028c8792da588abd6a5593531"
+    },
+    {
+      "source": "/tmp/mr3_p2a0_v10_runtime_shared_physics_style_02.json",
+      "artifact": "originals/mr3_p2a0_v10_runtime_shared_physics_style_02.json",
+      "encoding": "identity",
+      "raw_bytes": 752,
+      "raw_sha256": "0ae33762c0321d67bfe0964e6cab5849f78cd605aa9371e5f1ba63cf37ae2c01",
+      "encoded_bytes": 752,
+      "encoded_sha256": "0ae33762c0321d67bfe0964e6cab5849f78cd605aa9371e5f1ba63cf37ae2c01",
+      "decoded_sha256": "0ae33762c0321d67bfe0964e6cab5849f78cd605aa9371e5f1ba63cf37ae2c01"
+    },
+    {
+      "source": "/tmp/mr3_p2a0_v10_runtime_shared_physics_style_02.log",
+      "artifact": "originals/mr3_p2a0_v10_runtime_shared_physics_style_02.log.gz",
+      "encoding": "gzip",
+      "raw_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "encoded_bytes": 20,
+      "encoded_sha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64",
+      "decoded_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/mr3_p2a0_v10_runtime_shared_physics_style_03.json",
+      "artifact": "originals/mr3_p2a0_v10_runtime_shared_physics_style_03.json",
+      "encoding": "identity",
+      "raw_bytes": 752,
+      "raw_sha256": "5eea1056b7f1898ffca79970c043f3db148a8ea77b50ff2a0a8ce08eac4a05a4",
+      "encoded_bytes": 752,
+      "encoded_sha256": "5eea1056b7f1898ffca79970c043f3db148a8ea77b50ff2a0a8ce08eac4a05a4",
+      "decoded_sha256": "5eea1056b7f1898ffca79970c043f3db148a8ea77b50ff2a0a8ce08eac4a05a4"
+    },
+    {
+      "source": "/tmp/mr3_p2a0_v10_runtime_shared_physics_style_03.log",
+      "artifact": "originals/mr3_p2a0_v10_runtime_shared_physics_style_03.log.gz",
+      "encoding": "gzip",
+      "raw_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "encoded_bytes": 20,
+      "encoded_sha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64",
+      "decoded_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/mr3_p2a0_v10_shared_physics_before_v1/audit_ppo.py",
+      "artifact": "before_sources/audit_ppo.py",
+      "encoding": "identity",
+      "raw_bytes": 41096,
+      "raw_sha256": "95df7a4cee5c824219398e2cce7577aabb0f52612b725ef17ce57a1b24e6e965",
+      "encoded_bytes": 41096,
+      "encoded_sha256": "95df7a4cee5c824219398e2cce7577aabb0f52612b725ef17ce57a1b24e6e965",
+      "decoded_sha256": "95df7a4cee5c824219398e2cce7577aabb0f52612b725ef17ce57a1b24e6e965"
+    },
+    {
+      "source": "/tmp/mr3_p2a0_v10_shared_physics_before_v1/audit_preparation.py",
+      "artifact": "before_sources/audit_preparation.py",
+      "encoding": "identity",
+      "raw_bytes": 31703,
+      "raw_sha256": "7e4f4db8770b9a721b2653961218dd449bc9483da50709581395a1dac4712d80",
+      "encoded_bytes": 31703,
+      "encoded_sha256": "7e4f4db8770b9a721b2653961218dd449bc9483da50709581395a1dac4712d80",
+      "decoded_sha256": "7e4f4db8770b9a721b2653961218dd449bc9483da50709581395a1dac4712d80"
+    },
+    {
+      "source": "/tmp/mr3_p2a0_v10_shared_physics_before_v1/tests/test_audit_ppo.py",
+      "artifact": "before_sources/tests/test_audit_ppo.py",
+      "encoding": "identity",
+      "raw_bytes": 12268,
+      "raw_sha256": "1bce6e8055ffa8df20f9dd0240dfd8dca196ddf0d92fb784e844a658704c00b4",
+      "encoded_bytes": 12268,
+      "encoded_sha256": "1bce6e8055ffa8df20f9dd0240dfd8dca196ddf0d92fb784e844a658704c00b4",
+      "decoded_sha256": "1bce6e8055ffa8df20f9dd0240dfd8dca196ddf0d92fb784e844a658704c00b4"
+    },
+    {
+      "source": "/tmp/mr3_p2a0_v10_shared_physics_before_v1/tests/test_audit_preparation.py",
+      "artifact": "before_sources/tests/test_audit_preparation.py",
+      "encoding": "identity",
+      "raw_bytes": 14453,
+      "raw_sha256": "6655f6dc763d9609e35605321756fb40a5e067ca7adecf70506de84c8c51bfe4",
+      "encoded_bytes": 14453,
+      "encoded_sha256": "6655f6dc763d9609e35605321756fb40a5e067ca7adecf70506de84c8c51bfe4",
+      "decoded_sha256": "6655f6dc763d9609e35605321756fb40a5e067ca7adecf70506de84c8c51bfe4"
+    },
+    {
+      "source": "/tmp/mr3_p2a0_v10_runtime_shared_physics_final_sources_v1/audit_controlled_physics.py",
+      "artifact": "final_sources/audit_controlled_physics.py",
+      "encoding": "identity",
+      "raw_bytes": 8432,
+      "raw_sha256": "49e89212b6edd5b5de7f1bb0cecacd8ae0447ccf37f68dd6d8f25d17bfb2cf69",
+      "encoded_bytes": 8432,
+      "encoded_sha256": "49e89212b6edd5b5de7f1bb0cecacd8ae0447ccf37f68dd6d8f25d17bfb2cf69",
+      "decoded_sha256": "49e89212b6edd5b5de7f1bb0cecacd8ae0447ccf37f68dd6d8f25d17bfb2cf69"
+    },
+    {
+      "source": "/tmp/mr3_p2a0_v10_runtime_shared_physics_final_sources_v1/audit_ppo.py",
+      "artifact": "final_sources/audit_ppo.py",
+      "encoding": "identity",
+      "raw_bytes": 41409,
+      "raw_sha256": "3523160ab037c6d5665302c7e6feea4e29982a3fb6d9f78d0963b72140354d9d",
+      "encoded_bytes": 41409,
+      "encoded_sha256": "3523160ab037c6d5665302c7e6feea4e29982a3fb6d9f78d0963b72140354d9d",
+      "decoded_sha256": "3523160ab037c6d5665302c7e6feea4e29982a3fb6d9f78d0963b72140354d9d"
+    },
+    {
+      "source": "/tmp/mr3_p2a0_v10_runtime_shared_physics_final_sources_v1/audit_preparation.py",
+      "artifact": "final_sources/audit_preparation.py",
+      "encoding": "identity",
+      "raw_bytes": 24096,
+      "raw_sha256": "cdcc91734449cbb7ce7900799b72fd21a581e73cac91d03dcf09b12660dbd9d7",
+      "encoded_bytes": 24096,
+      "encoded_sha256": "cdcc91734449cbb7ce7900799b72fd21a581e73cac91d03dcf09b12660dbd9d7",
+      "decoded_sha256": "cdcc91734449cbb7ce7900799b72fd21a581e73cac91d03dcf09b12660dbd9d7"
+    },
+    {
+      "source": "/tmp/mr3_p2a0_v10_runtime_shared_physics_final_sources_v1/tests/test_audit_controlled_physics.py",
+      "artifact": "final_sources/tests/test_audit_controlled_physics.py",
+      "encoding": "identity",
+      "raw_bytes": 7967,
+      "raw_sha256": "1c5143ac5a6bb6640bdf91aa7b3af5e655631d3722cddea11615725eb00ab105",
+      "encoded_bytes": 7967,
+      "encoded_sha256": "1c5143ac5a6bb6640bdf91aa7b3af5e655631d3722cddea11615725eb00ab105",
+      "decoded_sha256": "1c5143ac5a6bb6640bdf91aa7b3af5e655631d3722cddea11615725eb00ab105"
+    },
+    {
+      "source": "/tmp/mr3_p2a0_v10_runtime_shared_physics_final_sources_v1/tests/test_audit_ppo.py",
+      "artifact": "final_sources/tests/test_audit_ppo.py",
+      "encoding": "identity",
+      "raw_bytes": 12895,
+      "raw_sha256": "3aecf998fb0c56afe6862c35daec2f02efc5d72cad77fd1b4745b5237c895e46",
+      "encoded_bytes": 12895,
+      "encoded_sha256": "3aecf998fb0c56afe6862c35daec2f02efc5d72cad77fd1b4745b5237c895e46",
+      "decoded_sha256": "3aecf998fb0c56afe6862c35daec2f02efc5d72cad77fd1b4745b5237c895e46"
+    },
+    {
+      "source": "/tmp/mr3_p2a0_v10_runtime_shared_physics_final_sources_v1/tests/test_audit_preparation.py",
+      "artifact": "final_sources/tests/test_audit_preparation.py",
+      "encoding": "identity",
+      "raw_bytes": 14453,
+      "raw_sha256": "6655f6dc763d9609e35605321756fb40a5e067ca7adecf70506de84c8c51bfe4",
+      "encoded_bytes": 14453,
+      "encoded_sha256": "6655f6dc763d9609e35605321756fb40a5e067ca7adecf70506de84c8c51bfe4",
+      "decoded_sha256": "6655f6dc763d9609e35605321756fb40a5e067ca7adecf70506de84c8c51bfe4"
+    }
+  ]
+}

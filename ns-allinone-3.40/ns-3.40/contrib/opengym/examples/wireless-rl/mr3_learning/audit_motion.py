@@ -136,6 +136,24 @@ def own_state(name, sources, sequences, epoch, settled_tracker=None, clock_ns=No
     return value
 
 
+def causal_own_inputs(histories, sequences, clock_ns):
+    """Reproduce the producer's bounded raw callback history, including ties."""
+    selected, selected_sequences = {}, dict(sequences)
+    for stream, lead_ns in (("odom", 0), ("tf", 200_000_000)):
+        eligible = []
+        for sequence, message in histories[stream]:
+            header = message["header"]["stamp"]
+            stamp(message["header"])
+            source_ns = header["sec"] * 10**9 + header["nanosec"] - lead_ns
+            if source_ns <= clock_ns:
+                eligible.append((header["sec"], header["nanosec"], sequence, message))
+        if not eligible:
+            return {}, selected_sequences
+        _, _, sequence, message = max(eligible, key=lambda item: item[:3])
+        selected[stream], selected_sequences[stream] = message, sequence
+    return selected, selected_sequences
+
+
 def identity(value, name, actual, topology):
     topic = f"/{name}/cmd_vel" + ("" if actual else "_unguarded")
     expected = ("/", "motion_safety") if actual else (f"/{name}", "velocity_smoother")
@@ -222,6 +240,189 @@ def settled_boundary(decision, enabled):
             "settled turn lacks configured complete certificate/check")
 
 
+def audit_control_worker(load, epoch, physics, node_requests, node_acks, published,
+                         completed, output_windows):
+    """Bind the worker's causal chain to actual callbacks, outputs and advances.
+
+    The separate independent control reader validates side-topic delivery and
+    obstacle payload construction. This check never claims costmap consumption.
+    """
+    records = load("control_phase_worker.jsonl", True)
+    requests, received, consumed, motion, motion_references = {}, {}, {}, [], {}
+    rejected, cancellations, observed_stops = {}, set(), []
+    previous_wall = -1
+    for row in records:
+        wall, kind = row["wall_monotonic_ns"], row["kind"]
+        require(row.get("schema") == "mr3-controlled-execution-phase-v1"
+                and row.get("epoch") == epoch and type(wall) is int and wall >= previous_wall,
+                "worker control ledger identity/wall order mismatch")
+        previous_wall = wall
+        if kind == "request":
+            component, request = row["component"], row["request"]
+            key = (component, request["request_id"])
+            schema = ("mr3-motion-control-request-v1" if component == "motion"
+                      else f"mr3-{component}-phase-request-v1")
+            require(component in ("state", "peer", "motion") and key not in requests
+                    and request.get("schema") == schema
+                    and request.get("epoch") == epoch
+                    and request.get("operation") in ("takeover", "commit", "stop")
+                    and type(request.get("target_time_ns")) is int
+                    and request["target_time_ns"] == row["worker_clock_ns"]
+                    == row["worker_physical_ns"], "worker control request was not paused/exact")
+            if component == "motion":
+                require(same_json(node_requests.get(request["request_id"]), request),
+                        "worker motion request has no actual guard callback")
+            requests[key] = (request, wall)
+        elif kind == "ack_received":
+            component, ack = row["component"], row["ack"]
+            if ack.get("epoch") != epoch:
+                continue
+            key = (component, ack.get("request_id"))
+            require(key in requests, "worker control receipt has no preceding request")
+            require(key not in received or same_json(received[key][0], ack),
+                    "worker actual control receipt changed")
+            received[key] = (ack, min(wall, received.get(key, (None, wall))[1]))
+        elif kind in ("ack_consumed", "ack_rejected"):
+            component, ack = row["component"], row["ack"]
+            key = (component, ack.get("request_id"))
+            require(key in requests and key in received
+                    and same_json(received[key][0], ack) and received[key][1] <= wall,
+                    "worker consumed control ACK without its actual receipt")
+            request = requests[key][0]
+            target = request["target_time_ns"]
+            schema = ("mr3-motion-control-ack-v1" if component == "motion"
+                      else f"mr3-{component}-phase-ack-v1")
+            require(ack.get("epoch") == epoch
+                    and ack.get("schema") == schema
+                    and type(ack.get("target_time_ns")) is int
+                    and ack.get("target_time_ns") == target
+                    and ack.get("operation") == request["operation"]
+                    and type(ack.get("clock_ns")) is int and type(ack.get("ok")) is bool
+                    and row["worker_clock_ns"] == row["worker_physical_ns"] == target,
+                    "worker control ACK identity or paused boundary differs")
+            if kind == "ack_rejected":
+                require(ack.get("ok") is False and component == "state"
+                        and ack.get("error") == "state_phase_task_terminal"
+                        and ack.get("scope") == "terminal_cancelled_uncommitted_state_phase"
+                        and 0 <= ack["clock_ns"] <= target,
+                        "actual rejected control phase is not a terminal cancellation")
+                rejected[key] = ack
+                continue
+            require(ack.get("ok") is True and ack["clock_ns"] == target and key not in consumed,
+                    "worker control success was duplicated, failed or inexact")
+            if component == "motion":
+                require(same_json(node_acks.get(ack["request_id"]), ack)
+                        and any(start <= received[key][1] for start, _ in published.get(
+                            ack["request_id"], [])),
+                        "worker guard ACK has no matching actual publication interval")
+                status = ack["status"]
+                status_key = (target, status.get("phase_kind", "normal"),
+                              tuple(status["decision_sequences"][name] for name in ROBOTS))
+                require(same_json(completed.get(status_key), status),
+                        "worker controlled motion lacks completed actual outputs")
+                if request["operation"] == "commit" and status.get("phase_kind") != "stop":
+                    for dependency in ("state", "peer"):
+                        dependency_key = (dependency, request["request_id"])
+                        require(dependency_key in consumed
+                                and same_json(consumed[dependency_key][0],
+                                              request[dependency + "_commit"])
+                                and consumed[dependency_key][1] <= requests[key][1],
+                                "guard request preceded consumed state/peer commits")
+                motion.append((status, wall))
+                motion_references[status_key] = (ack["request_id"], request["operation"])
+            elif component == "peer" and request["operation"] == "commit":
+                state_key = ("state", request["request_id"])
+                require(state_key in consumed and consumed[state_key][1] <= requests[key][1]
+                        and same_json(consumed[state_key][0], request["state_commit"])
+                        and same_json(ack.get("state_commit"), request["state_commit"]),
+                        "peer request/ACK preceded or changed consumed state commit")
+            consumed[key] = (ack, wall)
+        elif kind == "stop_observed":
+            status = row["status"]
+            key = (status["clock_ns"], "stop",
+                   tuple(status["decision_sequences"][name] for name in ROBOTS))
+            require(row.get("origin") in ("stop_topic", "control_ack")
+                    and same_json(completed.get(key), status),
+                    "worker stop observation lacks an actual zero output completion")
+            if row["origin"] == "stop_topic":
+                require(output_windows[key][0] <= wall,
+                        "stop callback preceded actual stop publication start")
+            observed_stops.append((status, wall))
+        elif kind == "terminal_cancelled":
+            key = (row["component"], row["ack"].get("request_id"))
+            notice = row["terminal_notice"]
+            require(key in rejected and same_json(rejected[key], row["ack"])
+                    and same_json(notice, row["ack"].get("terminal_notice"))
+                    and notice.get("epoch") == epoch
+                    and ns(notice["end_sim_time_sec"]) <= row["worker_physical_ns"],
+                    "worker terminal cancellation lost its real notice/failed ACK")
+            cancellations.add(key)
+        else:
+            raise ValueError("unknown or actual failed worker control event: " + kind)
+    require(records and set(rejected) == cancellations, "unsettled worker control cancellation")
+    require(motion, "no consumed actual controlled motion")
+    takeovers = [ack for (component, _), (ack, _) in consumed.items()
+                 if component == "motion" and ack["operation"] == "takeover"]
+    require(len(takeovers) == 1, "controlled execution takeover missing/duplicated")
+    takeover_clock = takeovers[0]["clock_ns"]
+    takeover_id = takeovers[0]["request_id"]
+    require(all((component, takeover_id) in consumed
+                and consumed[(component, takeover_id)][0].get("operation") == "takeover"
+                and consumed[(component, takeover_id)][0].get("clock_ns") == takeover_clock
+                for component in ("state", "peer", "motion")),
+            "bootstrap lacks three actual consumed takeovers")
+    require(all(output == {"linear_x": 0., "angular_z": 0.}
+                for output in takeovers[0]["status"]["outputs"].values()),
+            "takeover did not preserve real pre-release zeros")
+    drive = load("drive_phase_worker.jsonl", True)
+    permitted, bootstraps = {}, 0
+    for row in drive:
+        if row["kind"] != "advance_permitted":
+            continue
+        status, wall = row["expected_motion"], row["wall_monotonic_ns"]
+        candidates = [(value, stamp) for value, stamp in motion
+                      if stamp <= wall and value["clock_ns"] == row["start_time_ns"]]
+        require(candidates and same_json(max(candidates, key=lambda item: item[1])[0], status),
+                "physics advance did not use latest consumed controlled motion")
+        status_key = (status["clock_ns"], status.get("phase_kind", "normal"),
+                      tuple(status["decision_sequences"][name] for name in ROBOTS))
+        reference, operation = motion_references[status_key]
+        expected_kind = ("bootstrap_zero" if operation == "takeover" else
+                         "stop" if status.get("phase_kind") == "stop" else "normal")
+        require(row.get("control_kind") == expected_kind
+                and row.get("control_request_id") == reference,
+                "physical advance control kind/request binding differs")
+        if expected_kind == "bootstrap_zero":
+            bootstraps += 1
+            require(bootstraps == 1 and row["steps"] == 20
+                    and row["start_time_ns"] == takeover_clock
+                    and all(consumed[(component, takeover_id)][1] <= wall
+                            for component in ("state", "peer", "motion")),
+                    "bootstrap was repeated or preceded its real three takeover receipts")
+        stops = [(value, stamp) for value, stamp in observed_stops
+                 if stamp <= wall and value["clock_ns"] == row["start_time_ns"]]
+        require(not stops or same_json(max(stops, key=lambda item: item[1])[0], status),
+                "physics advanced using normal motion after a permanent stop observation")
+        require(row["request_id"] not in permitted, "duplicate controlled physical advance")
+        permitted[row["request_id"]] = row
+    for row in physics:
+        if row.get("steps", 0) > 0 and row["start_time_ns"] >= takeover_clock:
+            permission = permitted.get(row["request_id"])
+            require(permission is not None and permission["steps"] == row["steps"]
+                    and permission["start_time_ns"] == row["start_time_ns"],
+                    "actual controlled physical quantum lacked the commit/storage chain")
+    require(bootstraps == 1, "the single real zero bootstrap quantum is missing")
+    return {"records": len(records), "consumed_motion_phases": len(motion),
+            "stop_clocks": sorted({value["clock_ns"] for value, _ in motion
+                                   if value.get("phase_kind") == "stop"}),
+            "normal_clocks": sorted({value["clock_ns"] for value, _ in motion
+                                     if value.get("phase_kind") != "stop"}),
+            "terminal_cancellations": len(cancellations),
+            "bootstrap_zero_quanta": bootstraps,
+            "scope": ("worker causal request/actual receipt/guard output provenance; actual side "
+                      "delivery and obstacles require the separate independent control reader")}
+
+
 def _audit_records(directory, helper, source_proof):
     """Actual consumer, split only so synthetic fixtures need no fabricated Git freeze."""
     directory = Path(directory)
@@ -257,6 +458,14 @@ def _audit_records(directory, helper, source_proof):
             "graph_at_callback; packet MessageInfo unavailable on installed Humble",
             "unknown motion identity scope/configuration")
     settled_enabled = "settled_turn_contract" in configuration
+    causal_selection = configuration.get("own_input_selection") == "latest_causal_v1"
+    require("own_input_selection" not in configuration or causal_selection,
+            "unknown own motion input selection")
+    controlled = configuration.get("controlled_execution", False)
+    require(type(controlled) is bool, "invalid controlled execution configuration")
+    if controlled:
+        require(causal_selection and metadata.get("execution_phase_protocol")
+                == "mr3-controlled-execution-phase-v1", "unknown controlled motion protocol")
     if settled_enabled:
         contract = configuration["settled_turn_contract"]
         require(isinstance(contract, str) and contract.startswith("mr3-settled-turn-v1;")
@@ -266,17 +475,57 @@ def _audit_records(directory, helper, source_proof):
                 if settled_enabled else {})
     settled_activations = dict.fromkeys(ROBOTS, 0)
     sources = {name: {} for name in ROBOTS}
+    histories = {name: {stream: deque(maxlen=256) for stream in ("odom", "tf")}
+                 for name in ROBOTS}
     sequences = {name: dict.fromkeys(("odom", "tf", "request", "decision"), 0) for name in ROBOTS}
     requests, states, decisions = {}, {}, {}
     queues = {name: deque() for name in ROBOTS}
     stats = {name: {"nonzero_requests": 0, "passed_nonzero": 0, "stopped_nonzero": 0,
                     "rotation_only_filtered": 0,
+                    "controlled_stop_decisions": 0,
                     "decisions": 0, "actual_outputs": 0, "near_events": 0,
                     "maximum_measured_abs_v": 0., "maximum_measured_abs_w": 0.,
                     "minimum_body_margin_m": None} for name in ROBOTS}
     started, halted, stop_ns = False, None, None
     previous_wall, previous_clock = -1, -1
     pending_stops, stop_responses = {}, []
+    control_requests, control_acks, control_dependencies = {}, {}, {}
+    control_commits, completed_outputs = {}, {}
+    control_publish_windows, output_publish_windows = {}, {}
+
+    def selected_own(name, target, tracker=None):
+        selected, selected_sequences = sources[name], sequences[name]
+        if causal_selection:
+            selected, selected_sequences = causal_own_inputs(
+                histories[name], sequences[name], target)
+        return own_state(name, selected, selected_sequences, epoch, tracker, target)
+
+    def completed_status(status, wall):
+        require(isinstance(status, dict) and status.get("epoch") == epoch
+                and status.get("schema") == "mr3-motion-safety-status-v1"
+                and type(status.get("clock_ns")) is int and type(status.get("ready")) is bool
+                and status.get("completion_scope") == "publication_and_local_topic_receipt"
+                and set(status.get("decision_sequences", {})) == set(ROBOTS)
+                and set(status.get("outputs", {})) == set(ROBOTS),
+                "invalid completed motion status")
+        kind = status.get("phase_kind", "normal")
+        require(kind in ("normal", "stop") and (kind != "stop" or controlled
+                and status["ready"] is False), "unconfigured completed stop status")
+        for name in ROBOTS:
+            sequence = status["decision_sequences"][name]
+            require(type(sequence) is int and (name, sequence) in decisions,
+                    "completed output has no actual decision")
+            decision = decisions[(name, sequence)]
+            require(decision["clock_ns"] == status["clock_ns"]
+                    and decision["phase_kind"] == kind
+                    and decision["ready"] is status["ready"]
+                    and same_json(status["outputs"][name], {
+                        "linear_x": decision["output"][0], "angular_z": decision["output"][1]})
+                    and decision.get("actual_wall_ns", 10**30) <= wall,
+                    "completed output lacks exact decision/local topic receipt")
+        return (status["clock_ns"], kind,
+                tuple(status["decision_sequences"][name] for name in ROBOTS))
+
     for index, row in enumerate(rows, 1):
         clock, wall = ns(row["sim_time_sec"]), row["wall_monotonic_ns"]
         require(row["schema"] == "mr3-motion-safety-v1" and row["epoch"] == epoch
@@ -292,6 +541,7 @@ def _audit_records(directory, helper, source_proof):
                     "motion raw input sequence mismatch")
             sequences[name][stream] += 1
             sources[name][stream] = value["message"]
+            histories[name][stream].append((value["input_sequence"], value["message"]))
             if stream == "tf":
                 require(value["message"]["header"]["frame_id"].lstrip("/") == "map"
                         and value["message"]["child_frame_id"].lstrip("/") == "odom",
@@ -370,8 +620,7 @@ def _audit_records(directory, helper, source_proof):
                     "motion decision identity/phase mismatch")
             sequences[name]["decision"] += 1
             decision_clock = value["clock_ns"]
-            own = own_state(name, sources[name], sequences[name], epoch,
-                            trackers.get(name), decision_clock)
+            own = selected_own(name, decision_clock, trackers.get(name))
             peers = {peer: states.get(peer) for peer in ROBOTS if peer != name}
             request = requests.get(name)
             require(same_json(value["own_state"], own),
@@ -380,15 +629,22 @@ def _audit_records(directory, helper, source_proof):
                     "peer geometry bypassed original received states")
             require(same_json(value["request"], request),
                     "decision request differs from raw callback sequence/content/GID")
-            if value["ready"]:
+            is_stop = value.get("phase_kind") == "stop"
+            require("phase_kind" not in value or controlled and is_stop,
+                    "unknown/unconfigured motion phase kind")
+            if is_stop:
+                require(value["ready"] is False, "stop decision falsely claims input readiness")
+            elif value["ready"]:
                 require(all(helper.valid_state(
-                    own_state(peer, sources[peer], sequences[peer], epoch),
+                    selected_own(peer, decision_clock),
                     decision_clock / 1e9, epoch)
                             and helper.valid_state(states.get(peer), decision_clock / 1e9, epoch)
                             for peer in ROBOTS), "ready motion decision used unhealthy source")
             elif started and halted is None:
                 halted = "motion_state_or_topology_unavailable"
-            if not value["ready"]:
+            if is_stop:
+                reason = halted or "controlled_stop"
+            elif not value["ready"]:
                 reason = "state_or_topology_unavailable"
             elif not started:
                 reason = "before_release"
@@ -419,15 +675,18 @@ def _audit_records(directory, helper, source_proof):
                 trackers[name].output(expected["output"][0], decision_clock,
                                       value["decision_sequence"])
             key = (name, value["decision_sequence"])
-            decisions[key] = {"clock_ns": decision_clock, "ready": value["ready"], "wall_ns": wall}
+            decisions[key] = {"clock_ns": decision_clock, "ready": value["ready"],
+                              "wall_ns": wall, "phase_kind": "stop" if is_stop else "normal",
+                              "output": expected["output"]}
             queues[name].append((expected["output"], key))
             item = stats[name]
             item["decisions"] += 1
+            item["controlled_stop_decisions"] += is_stop
             nonzero = bool(request and request["supported"] and (request["v"] or request["w"]))
             item["nonzero_requests"] += nonzero
             filtered = expected.get("component_filter") is not None
             item["passed_nonzero"] += nonzero and expected["allow"] and not filtered
-            item["stopped_nonzero"] += nonzero and not expected["allow"]
+            item["stopped_nonzero"] += nonzero and not expected["allow"] and not is_stop
             item["rotation_only_filtered"] += filtered
             item["near_events"] += sum(check["near"]
                                        for check in expected.get("near_peer_checks", []))
@@ -458,9 +717,105 @@ def _audit_records(directory, helper, source_proof):
                     "actual output sequence differs from publication FIFO")
             decisions[key]["actual_wall_ns"] = wall
             stats[name]["actual_outputs"] += 1
+        elif kind == "output_completed":
+            require(causal_selection, "unconfigured completed-output event")
+            status = value["status"]
+            start, end = value.get("publish_started_wall_monotonic_ns"), value.get(
+                "publish_completed_wall_monotonic_ns")
+            require(type(start) is int and type(end) is int and 0 <= start <= end <= wall,
+                    "completed output publication window invalid")
+            key = completed_status(status, start)
+            require(key not in completed_outputs or same_json(completed_outputs[key], status),
+                    "completed output status changed")
+            completed_outputs[key] = status
+            output_publish_windows[key] = (start, end)
+        elif kind == "control_failure":
+            raise ValueError("actual motion controlled phase failure: " + str(value))
+        elif kind == "control_request":
+            require(controlled and value.get("schema") == "mr3-motion-control-request-v1"
+                    and value.get("epoch") == epoch
+                    and isinstance(value.get("request_id"), str) and value["request_id"]
+                    and type(value.get("target_time_ns")) is int
+                    and value["target_time_ns"] >= clock
+                    and value.get("operation") in ("takeover", "commit", "stop"),
+                    "invalid actual motion control request")
+            key = value["request_id"]
+            require(key not in control_requests or same_json(control_requests[key], value),
+                    "motion control request identity changed")
+            control_requests[key] = value
+        elif kind == "control_dependency":
+            component, ack = value["component"], value["value"]
+            require(controlled and component in ("state", "peer") and ack.get("epoch") == epoch
+                    and isinstance(ack.get("request_id"), str),
+                    "invalid actual control dependency")
+            key = (component, ack["request_id"])
+            require(key not in control_dependencies or same_json(control_dependencies[key], ack),
+                    "actual control dependency changed")
+            control_dependencies[key] = ack
+        elif kind == "control_commit":
+            request = value["request"]
+            require(controlled and request.get("operation") == "commit"
+                    and request.get("target_time_ns") == clock
+                    and same_json(control_requests.get(request.get("request_id")), request),
+                    "normal control commit lacks its actual request")
+            for component in ("state", "peer"):
+                dependency = request[component + "_commit"]
+                require(same_json(control_dependencies.get((component, request["request_id"])),
+                                  dependency)
+                        and dependency.get("schema") == f"mr3-{component}-phase-ack-v1"
+                        and dependency.get("operation") == "commit"
+                        and dependency.get("ok") is True and dependency.get("epoch") == epoch
+                        and type(dependency.get("clock_ns")) is int
+                        and dependency["clock_ns"] == dependency["target_time_ns"] == clock
+                        and dependency.get("request_id") == request["request_id"],
+                        "normal control commit lacks exact actually received dependencies")
+            state, peer = request["state_commit"], request["peer_commit"]
+            require(same_json(peer.get("state_commit"), state)
+                    and type(state.get("state_sequence")) is int and state["state_sequence"] > 0
+                    and type(peer.get("commit_sequence")) is int and peer["commit_sequence"] > 0
+                    and isinstance(state.get("bundle_sha256"), str)
+                    and re.fullmatch(r"[0-9a-f]{64}", state.get("bundle_sha256", ""))
+                    and peer.get("bundle_sha256") == state["bundle_sha256"]
+                    and clock not in control_commits, "normal control boundary changed/duplicated")
+            control_commits[clock] = request
+        elif kind == "control_ack":
+            request = control_requests.get(value.get("request_id"))
+            require(controlled and request is not None
+                    and value.get("schema") == "mr3-motion-control-ack-v1"
+                    and value.get("epoch") == epoch and value.get("ok") is True
+                    and type(value.get("clock_ns")) is int
+                    and value["clock_ns"] == value["target_time_ns"] == clock
+                    and value["target_time_ns"] == request["target_time_ns"]
+                    and value.get("operation") == request["operation"],
+                    "invalid or failed actual motion control ACK")
+            status = value["status"]
+            key = completed_status(status, wall)
+            require(same_json(completed_outputs.get(key), status),
+                    "motion control ACK lacks actual completed output status")
+            if status.get("phase_kind") != "stop" and request["operation"] == "commit":
+                require(clock in control_commits, "normal control ACK lacks dependency commit")
+            require(request["operation"] != "stop" or status.get("phase_kind") == "stop",
+                    "stop control ACK returned normal motion")
+            identity_key = value["request_id"]
+            require(identity_key not in control_acks
+                    or same_json(control_acks[identity_key], value),
+                    "actual control ACK changed")
+            control_acks[identity_key] = value
+        elif kind == "control_abandoned":
+            require(controlled and value.get("operation") != "stop"
+                    and same_json(control_requests.get(value.get("request_id")), value),
+                    "invalid abandoned normal control request")
+        elif kind in ("control_ack_published", "control_cached_ack_published"):
+            ack = value["ack"]
+            start, end = value.get("publish_started_wall_monotonic_ns"), value.get(
+                "publish_completed_wall_monotonic_ns")
+            require(controlled and same_json(control_acks.get(ack.get("request_id")), ack)
+                    and type(start) is int and type(end) is int and 0 <= start <= end <= wall,
+                    "control ACK publication window lacks recorded actual ACK")
+            control_publish_windows.setdefault(ack["request_id"], []).append((start, end))
         else:
-            require(kind in ("configuration", "clock_changed_during_decision",
-                             "output_observer_wait"), "unknown motion event")
+            require(kind in ("clock_changed_during_decision", "output_observer_wait")
+                    or kind == "configuration" and index == 1, "unknown/duplicate motion event")
     require(started and all(not queue for queue in queues.values()),
             "motion output observer did not close every published command FIFO")
     require(all(item["decisions"] and item["actual_outputs"] for item in stats.values()),
@@ -477,6 +832,7 @@ def _audit_records(directory, helper, source_proof):
                 and set(ack["decision_sequences"]) == set(ROBOTS)
                 and row["wall_monotonic_ns"] >= previous_wall,
                 "motion phase identity/wall order mismatch")
+        require("phase_kind" not in ack, "stop status overwrote the normal motion ACK channel")
         previous_wall = row["wall_monotonic_ns"]
         clock = ack["clock_ns"]
         for name, sequence in ack["decision_sequences"].items():
@@ -484,16 +840,21 @@ def _audit_records(directory, helper, source_proof):
                     "motion ACK sequence has no actual decision")
             decision = decisions[(name, sequence)]
             require(decision["clock_ns"] == clock and decision["ready"] == ack["ready"]
+                    and decision["phase_kind"] == "normal"
                     and decision.get("actual_wall_ns", 10**30) <= row["wall_monotonic_ns"],
                     "motion ACK does not bind three same-clock published decisions")
+            if controlled:
+                require(same_json(ack.get("outputs", {}).get(name), {
+                    "linear_x": decision["output"][0], "angular_z": decision["output"][1]}),
+                    "normal phase outputs differ from exact published decisions")
         if row["kind"] == "ack_received":
             require(clock >= previous_clock, "motion ACK source clock regressed")
             if clock in received:
-                require(received[clock] == ack, "motion ACK changed at same clock")
+                require(same_json(received[clock], ack), "motion ACK changed at same clock")
             received[clock] = ack
             previous_clock = clock
         else:
-            require(row["kind"] == "ack_consumed" and received.get(clock) == ack
+            require(row["kind"] == "ack_consumed" and same_json(received.get(clock), ack)
                     and row["worker_clock_ns"] == row["worker_physical_ns"] == clock
                     and (not consumed or clock > consumed[-1]),
                     "motion ACK consumed without exact receipt")
@@ -503,8 +864,20 @@ def _audit_records(directory, helper, source_proof):
             "motion initial release-clock healthy completion missing")
     physics = load("physics.jsonl", True)
     required = [row["end_time_ns"] for row in physics if row["end_time_ns"] > release_ns]
-    require([clock for clock in consumed if clock > release_ns] == required,
-            "motion ACK missed a native policy/cleanup quantum")
+    controlled_result = None
+    if controlled:
+        controlled_result = audit_control_worker(
+            load, epoch, physics, control_requests, control_acks, control_publish_windows,
+            completed_outputs, output_publish_windows)
+        stop_clocks = set(controlled_result["stop_clocks"])
+        normal_clocks = {clock for clock in consumed if clock > release_ns}
+        require(set(required) <= normal_clocks | stop_clocks
+                and normal_clocks <= set(required)
+                and {clock for clock in stop_clocks if clock > release_ns} <= set(required),
+                "controlled normal/stop completion missed a native policy/cleanup quantum")
+    else:
+        require([clock for clock in consumed if clock > release_ns] == required,
+                "motion ACK missed a native policy/cleanup quantum")
     stop_responses.extend(pending_stops.values())
     for response in stop_responses:
         response.pop("last_point", None)
@@ -526,6 +899,10 @@ def _audit_records(directory, helper, source_proof):
                      "activation and model-failure replay; not an independent proof of "
                      "the conditional continuous plant drift bound",
         }
+    if controlled_result is not None:
+        result["controlled_execution_replay"] = controlled_result
+    if causal_selection:
+        result["own_input_selection_replay"] = "latest_causal_v1; raw callback deque256"
     return result
 
 

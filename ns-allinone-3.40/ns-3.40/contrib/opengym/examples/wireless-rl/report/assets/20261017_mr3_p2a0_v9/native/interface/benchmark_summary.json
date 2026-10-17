@@ -1,0 +1,456 @@
+{
+  "kind": "scripted_p1c_sampling_not_rl",
+  "workers": 1,
+  "robots_per_worker": 3,
+  "schedule": [
+    [
+      "open",
+      101
+    ]
+  ],
+  "steps_per_episode": 32,
+  "command": [
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/benchmark.py",
+    "--workers",
+    "1",
+    "--schedule",
+    "open:101",
+    "--steps",
+    "32",
+    "--preparation-motion-probe",
+    "--preparation-probe-version",
+    "mr3-p2a0-outward-cancel-v3",
+    "--base-domain",
+    "100",
+    "--base-port",
+    "12901",
+    "--output-root",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0",
+    "--run-id",
+    "mr3_p2a0_20261017_v9_interface",
+    "--preparation-parameter-review"
+  ],
+  "python": "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+  "freeze": "26534fae40409e266376baf0995fb15dc0223e4b",
+  "base_domain": 100,
+  "base_port": 12901,
+  "fault_probe": false,
+  "deadline_probe": false,
+  "terminal_probe": false,
+  "preparation_motion_probe": true,
+  "preparation_probe_version": "mr3-p2a0-outward-cancel-v3",
+  "preparation_parameter_review": true,
+  "preparation_parameter_review_source": {
+    "relative_path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v4/independent/mr3_actual_nav2_parameters_v4.py",
+    "freeze": "26534fae40409e266376baf0995fb15dc0223e4b",
+    "sha256": "fe0a91eec1aaf6d45bc3aedd4de9223b53e77721be878136a96d02ef1bd5c0ae"
+  },
+  "resource_scope": "host counters include unrelated activity; GPU driver reports",
+  "num_logical_cpus": 80,
+  "cpu_affinity_count": 80,
+  "passed": false,
+  "wall_sec_including_all_attempts": 139.54778913920745,
+  "valid_transitions": 0,
+  "effective_transition_per_wall_sec": 0.0,
+  "workers_results": [
+    {
+      "worker_id": 0,
+      "episodes": [],
+      "error": "InfrastructureError(\"RuntimeError('initial paused motion inputs are not ready for task release')\")",
+      "reset_attempts": [
+        {
+          "episode_index": 0,
+          "scene": "open",
+          "seed": 101,
+          "reset_returned": false
+        }
+      ],
+      "preparation_abort": {
+        "requested": true,
+        "first_failure": {
+          "worker_id": 0,
+          "kind": "rpc_or_worker_exception",
+          "reason": "InfrastructureError(\"RuntimeError('initial paused motion inputs are not ready for task release')\")",
+          "episode_index": 0,
+          "epoch": null,
+          "observed_wall_monotonic_ns": 3967648033225481
+        },
+        "scope": "cooperative stop after real RPC return; no synthetic transition"
+      },
+      "wall_sec": 139.53361521987244,
+      "shutdown_receipts": [
+        {
+          "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+          "worker_returncode": 1,
+          "forced_shutdown": true,
+          "failed_sample": true,
+          "owned_processes_seen": [
+            {
+              "pid": 2748206,
+              "parent": 2748125,
+              "group": 2748206,
+              "session": 2748206,
+              "start_ticks": 396750850,
+              "state": "Z"
+            },
+            {
+              "pid": 2748230,
+              "parent": 2748206,
+              "group": 2748206,
+              "session": 2748206,
+              "start_ticks": 396750889,
+              "state": "R"
+            },
+            {
+              "pid": 2748289,
+              "parent": 2748206,
+              "group": 2748206,
+              "session": 2748206,
+              "start_ticks": 396751021,
+              "state": "Z"
+            },
+            {
+              "pid": 2748346,
+              "parent": 2748206,
+              "group": 2748206,
+              "session": 2748206,
+              "start_ticks": 396751179,
+              "state": "Z"
+            },
+            {
+              "pid": 2748348,
+              "parent": 2748206,
+              "group": 2748206,
+              "session": 2748206,
+              "start_ticks": 396751179,
+              "state": "Z"
+            },
+            {
+              "pid": 2748350,
+              "parent": 2748206,
+              "group": 2748206,
+              "session": 2748206,
+              "start_ticks": 396751180,
+              "state": "Z"
+            },
+            {
+              "pid": 2748352,
+              "parent": 2748206,
+              "group": 2748206,
+              "session": 2748206,
+              "start_ticks": 396751180,
+              "state": "Z"
+            },
+            {
+              "pid": 2748354,
+              "parent": 2142,
+              "group": 2748206,
+              "session": 2748206,
+              "start_ticks": 396751180,
+              "state": "S"
+            },
+            {
+              "pid": 2748356,
+              "parent": 2748206,
+              "group": 2748206,
+              "session": 2748206,
+              "start_ticks": 396751180,
+              "state": "Z"
+            },
+            {
+              "pid": 2748358,
+              "parent": 2748289,
+              "group": 2748206,
+              "session": 2748206,
+              "start_ticks": 396751180,
+              "state": "R"
+            },
+            {
+              "pid": 2748360,
+              "parent": 2748206,
+              "group": 2748206,
+              "session": 2748206,
+              "start_ticks": 396751180,
+              "state": "Z"
+            },
+            {
+              "pid": 2748920,
+              "parent": 2748206,
+              "group": 2748206,
+              "session": 2748206,
+              "start_ticks": 396751548,
+              "state": "Z"
+            },
+            {
+              "pid": 2748922,
+              "parent": 2748289,
+              "group": 2748206,
+              "session": 2748206,
+              "start_ticks": 396751548,
+              "state": "S"
+            },
+            {
+              "pid": 2748924,
+              "parent": 2748206,
+              "group": 2748206,
+              "session": 2748206,
+              "start_ticks": 396751548,
+              "state": "Z"
+            },
+            {
+              "pid": 2749056,
+              "parent": 2748206,
+              "group": 2748206,
+              "session": 2748206,
+              "start_ticks": 396751798,
+              "state": "Z"
+            },
+            {
+              "pid": 2749058,
+              "parent": 2748289,
+              "group": 2748206,
+              "session": 2748206,
+              "start_ticks": 396751798,
+              "state": "S"
+            },
+            {
+              "pid": 2749060,
+              "parent": 2748206,
+              "group": 2748206,
+              "session": 2748206,
+              "start_ticks": 396751798,
+              "state": "Z"
+            },
+            {
+              "pid": 2749260,
+              "parent": 2748289,
+              "group": 2748206,
+              "session": 2748206,
+              "start_ticks": 396752133,
+              "state": "R"
+            },
+            {
+              "pid": 2749667,
+              "parent": 2748206,
+              "group": 2748206,
+              "session": 2748206,
+              "start_ticks": 396753286,
+              "state": "Z"
+            },
+            {
+              "pid": 2749670,
+              "parent": 2748206,
+              "group": 2748206,
+              "session": 2748206,
+              "start_ticks": 396753286,
+              "state": "Z"
+            },
+            {
+              "pid": 2749676,
+              "parent": 2748206,
+              "group": 2748206,
+              "session": 2748206,
+              "start_ticks": 396753286,
+              "state": "Z"
+            },
+            {
+              "pid": 2749678,
+              "parent": 2748206,
+              "group": 2748206,
+              "session": 2748206,
+              "start_ticks": 396753286,
+              "state": "Z"
+            },
+            {
+              "pid": 2749680,
+              "parent": 2748206,
+              "group": 2748206,
+              "session": 2748206,
+              "start_ticks": 396753286,
+              "state": "Z"
+            },
+            {
+              "pid": 2749682,
+              "parent": 2748206,
+              "group": 2748206,
+              "session": 2748206,
+              "start_ticks": 396753288,
+              "state": "Z"
+            },
+            {
+              "pid": 2749684,
+              "parent": 2748206,
+              "group": 2748206,
+              "session": 2748206,
+              "start_ticks": 396753289,
+              "state": "Z"
+            },
+            {
+              "pid": 2751228,
+              "parent": 2748206,
+              "group": 2748206,
+              "session": 2748206,
+              "start_ticks": 396757786,
+              "state": "Z"
+            },
+            {
+              "pid": 2751230,
+              "parent": 2748206,
+              "group": 2748206,
+              "session": 2748206,
+              "start_ticks": 396757786,
+              "state": "Z"
+            },
+            {
+              "pid": 2751232,
+              "parent": 2748206,
+              "group": 2748206,
+              "session": 2748206,
+              "start_ticks": 396757787,
+              "state": "Z"
+            },
+            {
+              "pid": 2751234,
+              "parent": 2748206,
+              "group": 2748206,
+              "session": 2748206,
+              "start_ticks": 396757787,
+              "state": "Z"
+            },
+            {
+              "pid": 2751236,
+              "parent": 2748206,
+              "group": 2748206,
+              "session": 2748206,
+              "start_ticks": 396757787,
+              "state": "Z"
+            },
+            {
+              "pid": 2751238,
+              "parent": 2748206,
+              "group": 2748206,
+              "session": 2748206,
+              "start_ticks": 396757787,
+              "state": "Z"
+            },
+            {
+              "pid": 2751240,
+              "parent": 2748206,
+              "group": 2748206,
+              "session": 2748206,
+              "start_ticks": 396757787,
+              "state": "Z"
+            },
+            {
+              "pid": 2752829,
+              "parent": 2748206,
+              "group": 2748206,
+              "session": 2748206,
+              "start_ticks": 396762297,
+              "state": "Z"
+            },
+            {
+              "pid": 2752831,
+              "parent": 2748206,
+              "group": 2748206,
+              "session": 2748206,
+              "start_ticks": 396762297,
+              "state": "Z"
+            },
+            {
+              "pid": 2752833,
+              "parent": 2748206,
+              "group": 2748206,
+              "session": 2748206,
+              "start_ticks": 396762297,
+              "state": "Z"
+            },
+            {
+              "pid": 2752835,
+              "parent": 2748206,
+              "group": 2748206,
+              "session": 2748206,
+              "start_ticks": 396762297,
+              "state": "Z"
+            },
+            {
+              "pid": 2752837,
+              "parent": 2748206,
+              "group": 2748206,
+              "session": 2748206,
+              "start_ticks": 396762297,
+              "state": "Z"
+            },
+            {
+              "pid": 2752839,
+              "parent": 2748206,
+              "group": 2748206,
+              "session": 2748206,
+              "start_ticks": 396762298,
+              "state": "Z"
+            },
+            {
+              "pid": 2752841,
+              "parent": 2748206,
+              "group": 2748206,
+              "session": 2748206,
+              "start_ticks": 396762298,
+              "state": "Z"
+            },
+            {
+              "pid": 2753123,
+              "parent": 2748206,
+              "group": 2748206,
+              "session": 2748206,
+              "start_ticks": 396762950,
+              "state": "Z"
+            },
+            {
+              "pid": 2753125,
+              "parent": 2748206,
+              "group": 2748206,
+              "session": 2748206,
+              "start_ticks": 396762951,
+              "state": "Z"
+            },
+            {
+              "pid": 2753248,
+              "parent": 2748206,
+              "group": 2748206,
+              "session": 2748206,
+              "start_ticks": 396763265,
+              "state": "Z"
+            },
+            {
+              "pid": 2753256,
+              "parent": 2748206,
+              "group": 2748206,
+              "session": 2748206,
+              "start_ticks": 396763306,
+              "state": "Z"
+            }
+          ],
+          "remaining_owned_processes": [],
+          "remaining_owned_zombies": [],
+          "process_scan_statistics": {
+            "count": 1001,
+            "max_scan_wall_sec": 0.34186482382938266,
+            "max_observed_interval_sec": 0.3918313477188349
+          }
+        }
+      ]
+    }
+  ],
+  "preparation_abort": {
+    "requested": true,
+    "first_failure": {
+      "worker_id": 0,
+      "kind": "rpc_or_worker_exception",
+      "reason": "InfrastructureError(\"RuntimeError('initial paused motion inputs are not ready for task release')\")",
+      "episode_index": 0,
+      "epoch": null,
+      "observed_wall_monotonic_ns": 3967648033225481
+    },
+    "scope": "first observed failing RPC/worker; other in-flight RPCs finish then close"
+  }
+}

@@ -88,7 +88,8 @@ observation_digest, command_id, created_at, expires_at, action`。
 消息信封含epoch、stream、source、source/generated/received stamp、sequence、version、
 完整不可变JSON payload。`ReceivedStore`只能由显式delivery更新，拒绝旧版/跨epoch。
 地图为完整快照（含header、几何、每个occupancy值），无增量、无地图传输压缩；
-地图重发不刷新传感源龄。状态10Hz、地图/共享图1Hz、回执和租约5Hz；目标/取消即时。
+地图重发不刷新传感源龄。非受控状态10Hz、地图/共享图1Hz、回执和租约5Hz；目标/取消即时。
+P2A.0 v10的受控stepped状态改为20ms显式提交（有效50Hz），经实际peer接收/障碍发布、guard回收及三台原生storage后才推进；唯一三零启动交接、独立永久zero-stop和callback前缀边界见[环境契约](MR3_ENV_CONTRACT.md)。非受控10Hz及原源龄门保持，无新策略输入。
 状态/地图发送队列每源只留最新一项；目标/回执为有界64项可靠顺序队列，溢出报错。
 按ROS timer采样的流不再被二次限频；原生action回执最多等待下一5Hz交付槽，
 交付等待计入协议期限，不能按原始回调时间回填已超时的回执。

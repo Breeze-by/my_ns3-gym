@@ -71,6 +71,10 @@ def bridge():
         state_input_sequences={(kind, name): 0 for kind in ("odom", "tf") for name in names},
         state_input_refs={kind: {} for kind in ("odom", "tf")},
         state_audit_stream=None, state_audit_sequence=0, state_input_failed=False,
+        state_phase_controlled=False, pending_state_phase=None, state_phase_responses={},
+        state_phase_last_commit=None, state_phase_timeout_sec=10., stepped_mode=True,
+        state_terminal_notice=None,
+        state_phase_publisher=Publisher(),
         clock_failed=False,
         transport=IdealTransport("episode-a"), received=ReceivedStore("episode-a"),
         edges={name: ReceivedStore("episode-a") for name in names},
@@ -93,7 +97,9 @@ def bridge():
     )
     node.publish_navigation_map = MethodType(IdealInformation.publish_navigation_map, node)
     for method in ("promote_transforms", "promote_odometry", "record_state", "prune_input_refs",
-                   "fail_state_input"):
+                   "fail_state_input", "publish_state_phase_ack", "poll_state_phase",
+                   "state_phase_inputs_ready", "receive_state_phase_request", "publish_states",
+                   "publish_drain_response", "receive_state_terminal"):
         setattr(node, method, MethodType(getattr(IdealInformation, method), node))
     node.submit_map_job = MethodType(IdealInformation.submit_map_job, node)
     node.finish_maps = MethodType(IdealInformation.finish_maps, node)

@@ -403,6 +403,11 @@ def launch_setup(context, *args, **kwargs):
         name="peer_obstacles", output="screen",
         parameters=[{"robot_count": robot_count, "use_sim_time": use_sim_time,
                      "task_release_start": adapter_mode,
+                     "episode_epoch": episode_epoch,
+                     "stepped_mode": stepped_mode,
+                     "phase_audit_path": (
+                         os.path.join(os.path.dirname(adapter_audit_path), "peer_phase.jsonl")
+                         if adapter_audit_path and stepped_mode else ""),
                      "tf_source_lead_sec": .2 if adapter_mode else 0.}],
         remappings=([
             (f"/{robot['name']}/{topic}", f"/mr3/received/{robot['name']}/{topic}")
@@ -414,6 +419,7 @@ def launch_setup(context, *args, **kwargs):
             package="multi_robot_exploration", executable="motion_safety",
             name="motion_safety", output="screen",
             parameters=[{"use_sim_time": use_sim_time, "episode_epoch": episode_epoch,
+                         "stepped_mode": stepped_mode,
                          "audit_path": (os.path.join(os.path.dirname(adapter_audit_path),
                                                      "motion_safety.jsonl")
                                         if adapter_audit_path else "")}],

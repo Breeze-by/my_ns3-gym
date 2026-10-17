@@ -23,6 +23,10 @@ from multi_robot_exploration.mr3_drive_phase import (
     DrivePhaseClient, PROTOCOL as DRIVE_PROTOCOL, WALL_GUARD_SEC as DRIVE_WALL_GUARD_SEC,
     valid_output,
 )
+from multi_robot_exploration.mr3_control_phase import (
+    ControlPhaseClient, PROTOCOL as CONTROL_PROTOCOL,
+    WALL_GUARD_SEC as CONTROL_WALL_GUARD_SEC, canonical, valid_motion_status,
+)
 
 
 ROS_ROOT = Path(__file__).resolve().parents[1]
@@ -64,6 +68,14 @@ class Worker:
         self.monitor_ready = False
         self.motion_ready = False
         self.motion_status = None
+        self.stop_status = None
+        self.controlled = False
+        self.stopping = False
+        self.cleanup_mode = False
+        self.cleanup_deadline = None
+        self.control_phase = ControlPhaseClient(self.epoch)
+        self.state_commit = None
+        self.peer_commit = None
         self.drive_phase = DrivePhaseClient(self.epoch)
         self.consumed_drive_phase = None
         self.initial_inputs_ready = None
@@ -101,6 +113,8 @@ class Worker:
         self.motion_phase_file = (directory / "motion_phase_worker.jsonl").open("x", buffering=1)
         self.drive_phase_file = (directory / "drive_phase_worker.jsonl").open("x", buffering=1)
         self.outputs.append(self.drive_phase_file)
+        self.control_phase_file = (directory / "control_phase_worker.jsonl").open("x", buffering=1)
+        self.outputs.append(self.control_phase_file)
         self.transport_environment = configure_mr3_transport_environment()
 
         import rclpy
@@ -131,6 +145,13 @@ class Worker:
         self.finalize_pub = self.node.create_publisher(String, "/mr3/training_finalize", 10)
         self.evaluator_phase_pub = self.node.create_publisher(
             String, "/mr3/evaluator_phase_request", 10)
+        self.control_publishers = {
+            name: self.node.create_publisher(String, topic, 10) for name, topic in (
+                ("state", "/mr3/state_phase_request"),
+                ("peer", "/mr3/peer_phase_request"),
+                ("motion", "/motion_safety/control_request"))}
+        self.infrastructure_abort_pub = self.node.create_publisher(
+            String, "/mr3/infrastructure_abort", 10)
         self.probe_pub = (self.node.create_publisher(String, "/mr3/diagnostic_failure", 10)
                           if self.terminal_probe else None)
         self.stop_pub = self.node.create_publisher(Header, "/exploration_stop_request", qos)
@@ -215,6 +236,9 @@ class Worker:
         def motion_status(message):
             self.receive_motion_status(json.loads(message.data))
 
+        def stop_status(message):
+            self.receive_stop_status(json.loads(message.data))
+
         def failure(message):
             self.failures.append(message.data)
 
@@ -227,6 +251,8 @@ class Worker:
                                           callback(motion_ready), qos),
             self.node.create_subscription(String, "/motion_safety/status",
                                           callback(motion_status), qos),
+            self.node.create_subscription(String, "/motion_safety/stop_status",
+                                          callback(stop_status), qos),
             self.node.create_subscription(String, "/mr3/snapshot_response",
                                           callback(snapshot_response), 10),
             self.node.create_subscription(String, "/mr3/information_drained",
@@ -244,6 +270,13 @@ class Worker:
             self.node.create_subscription(String, "/exploration_stopped", callback(stopped), qos),
             self.node.create_subscription(String, "/exploration_failure", callback(failure), qos),
         ]
+        for name, topic in (("state", "/mr3/state_phase_ack"),
+                            ("peer", "/mr3/peer_phase_ack"),
+                            ("motion", "/motion_safety/control_ack")):
+            self.subscriptions.append(self.node.create_subscription(
+                String, topic, callback(lambda message, name=name: self.receive_control_phase(
+                    name, json.loads(message.data))),
+                qos))
         for name in ("tb1", "tb2", "tb3"):
             self.subscriptions.append(self.node.create_subscription(
                 String, f"/{name}/mr3_drive/status",
@@ -291,7 +324,9 @@ class Worker:
                     "environment": {key: os.environ.get(key) for key in (
                         "ROS_DOMAIN_ID", "GAZEBO_MASTER_URI", "PYTHONNOUSERSITE")},
                     "python": sys.executable, "quantum_steps": 20,
-                    "reset_handshake": "delivered_inputs_before_pause-v1",
+                    "reset_handshake": "paused-controlled-state-peer-guard-storage-v1",
+                    "execution_phase_protocol": CONTROL_PROTOCOL,
+                    "execution_phase_wall_guard_sec": CONTROL_WALL_GUARD_SEC,
                     "terminal_protocol": "mr3-task-terminal-v1",
                     "evaluator_phase_protocol": PHASE_PROTOCOL,
                     "evaluator_phase_wall_guard_sec": PHASE_WALL_GUARD_SEC,
@@ -307,6 +342,12 @@ class Worker:
                                        stderr=subprocess.STDOUT)
 
     def _healthy(self):
+        if getattr(self, "cleanup_mode", False):
+            if time.monotonic() >= self.cleanup_deadline:
+                raise TimeoutError("infrastructure cleanup total wall guard expired")
+            if self.launch.poll() is not None and not self.finished:
+                raise RuntimeError("launch exited during infrastructure cleanup")
+            return
         if self.callback_error:
             raise RuntimeError("ROS callback failed: " + self.callback_error)
         if time.monotonic() - self.last_native_check > .2:
@@ -320,8 +361,10 @@ class Worker:
 
     def _wait(self, predicate, timeout, label):
         deadline = time.monotonic() + timeout
-        while not predicate():
+        while True:
             self._healthy()
+            if predicate():
+                return
             remaining = deadline - time.monotonic()
             if remaining <= 0:
                 raise TimeoutError(label)
@@ -330,6 +373,132 @@ class Worker:
 
     def _publish(self, publisher, payload):
         publisher.publish(self.String(data=json.dumps(payload, allow_nan=False)))
+
+    def _trace_control_phase(self, kind, **payload):
+        self.control_phase_file.write(json.dumps({
+            "schema": CONTROL_PROTOCOL, "kind": kind, "epoch": self.epoch,
+            "worker_clock_ns": self.clock_ns,
+            "worker_physical_ns": getattr(self, "physical_ns", None),
+            "wall_monotonic_ns": time.monotonic_ns(), **payload,
+        }, sort_keys=True, allow_nan=False) + "\n")
+
+    def receive_control_phase(self, component, value):
+        self._trace_control_phase("ack_received", component=component, ack=value)
+        if (isinstance(value, dict) and value.get("epoch") == self.epoch
+                and value.get("ok") is False
+                and not (component == "state"
+                         and value.get("error") == "state_phase_task_terminal"
+                         and value.get("scope") == "terminal_cancelled_uncommitted_state_phase"
+                         and isinstance(value.get("terminal_notice"), dict))):
+            raise RuntimeError("actual controlled execution failure: " + canonical(value))
+        self.control_phase.receive(component, value, getattr(self, "physical_ns", None),
+                                   self.clock_ns)
+
+    def receive_stop_status(self, value, origin="stop_topic"):
+        if not isinstance(value, dict):
+            raise ValueError("invalid permanent stop notification")
+        if value.get("epoch") != self.epoch:
+            return
+        target = value.get("clock_ns")
+        if (type(target) is not int
+                or not valid_motion_status(value, self.epoch, target, stop=True)):
+            raise ValueError("invalid permanent stop status")
+        normal = self.motion_status
+        if normal is not None and any(
+                value["decision_sequences"][name] <= normal["decision_sequences"][name]
+                for name in ("tb1", "tb2", "tb3")):
+            raise ValueError("permanent stop does not supersede the normal target")
+        previous = self.stop_status
+        if previous is not None:
+            if canonical(previous) == canonical(value):
+                self._trace_control_phase("stop_observed", status=value, origin=origin,
+                                          duplicate=True)
+                return
+            if (target < previous["clock_ns"] or any(
+                    value["decision_sequences"][name] <= previous["decision_sequences"][name]
+                    for name in ("tb1", "tb2", "tb3"))):
+                raise ValueError("permanent stop status regressed or changed identity")
+        self.stop_status = value
+        self.stopping = True
+        self._trace_control_phase("stop_observed", status=value, origin=origin, duplicate=False)
+
+    def _control_rpc(self, component, operation, request_id=None, **references):
+        target = self.physical_ns
+        with self.condition:
+            if self.clock_ns != target:
+                raise RuntimeError("execution request requires an exact paused clock")
+            request = self.control_phase.begin(component, operation, target,
+                                               request_id=request_id, **references)
+            self._trace_control_phase("request", component=component, request=request)
+        self._publish(self.control_publishers[component], request)
+        self._wait(lambda: self.control_phase.response is not None or (
+            operation != "stop" and self.stopping), CONTROL_WALL_GUARD_SEC,
+            component + " controlled execution phase wall guard expired")
+        with self.condition:
+            if self.control_phase.response is None:
+                self.control_phase.abandon_for_stop()
+                return None
+            response = self.control_phase.consume(allow_error=True)
+            if response["ok"] is not True:
+                self._trace_control_phase("ack_rejected", component=component, ack=response)
+                notice = response.get("terminal_notice")
+                if (component == "state" and response.get("error") == "state_phase_task_terminal"
+                        and response.get("scope") == "terminal_cancelled_uncommitted_state_phase"
+                        and isinstance(notice, dict)):
+                    self._wait(lambda: self.task_terminal is not None, CONTROL_WALL_GUARD_SEC,
+                               "state cancellation has no actual evaluator terminal notice")
+                    if (canonical(notice) != canonical(self.task_terminal)
+                            or self._evaluation() is None):
+                        raise RuntimeError("state cancellation differs from actual task terminal")
+                    self.stopping = True
+                    self.control_phase.abandon_for_stop()
+                    self._trace_control_phase("terminal_cancelled", component=component,
+                                              ack=response, terminal_notice=self.task_terminal)
+                    return None
+                raise RuntimeError("execution phase rejected: " + canonical(response))
+            self._trace_control_phase("ack_consumed", component=component, ack=response)
+            return response
+
+    def _execution_motion(self):
+        return self.stop_status if getattr(self, "stopping", False) else self.motion_status
+
+    def _commit_stop(self, reason):
+        self.stopping = True
+        if self.control_phase.pending is not None:
+            self.control_phase.abandon_for_stop()
+        cached = getattr(self, "stop_control_ack", None)
+        if (cached is None or cached["clock_ns"] != self.physical_ns
+                or canonical(cached["status"]) != canonical(self.stop_status)):
+            response = self._control_rpc("motion", "stop", request_id=(
+                f"stop{self.physical_ns}"), reason=reason)
+            self.receive_stop_status(response["status"], origin="control_ack")
+            self.stop_control_ack = response
+        self.execution_request_id = self.stop_control_ack["request_id"]
+        self.wait_drive_phase(self.stop_status)
+        return self.stop_status
+
+    def _commit_boundary(self):
+        if self.stopping:
+            return self._commit_stop("permanent_stop")
+        identity = f"boundary{self.physical_ns}"
+        state = self._control_rpc("state", "commit", request_id=identity)
+        if state is None or self.stopping:
+            return self._commit_stop("stop_during_state_commit")
+        peer = self._control_rpc("peer", "commit", request_id=identity, state_commit=state)
+        if peer is None or self.stopping:
+            return self._commit_stop("stop_during_peer_commit")
+        motion = self._control_rpc("motion", "commit", request_id=identity,
+                                   state_commit=state, peer_commit=peer)
+        if motion is None or motion["status"].get("phase_kind") == "stop" or self.stopping:
+            if motion is not None and motion["status"].get("phase_kind") == "stop":
+                self.receive_stop_status(motion["status"], origin="control_ack")
+            return self._commit_stop("stop_during_guard_commit")
+        self.state_commit, self.peer_commit = state, peer
+        self.execution_request_id = motion["request_id"]
+        self.receive_motion_status(motion["status"])
+        self.wait_motion_phase()
+        self.wait_drive_phase(self.motion_status)
+        return self._execution_motion()
 
     def _trace_evaluator_phase(self, kind, **payload):
         with self.condition:
@@ -361,13 +530,31 @@ class Worker:
         request_id = f"q{self.physics_number}"
         if steps > 0 and wait_clock:
             with self.condition:
-                motion = self.motion_status
+                if getattr(self, "controlled", False) and self.stopping:
+                    self._commit_stop("before_physics_advance")
+                motion = self._execution_motion()
                 receipts = self.wait_drive_phase(motion)
-                if self.callback_error or self.motion_status != motion:
+                motion = self._execution_motion()
+                if ((self.callback_error and not getattr(self, "cleanup_mode", False))
+                        or any(receipts[name]["decision_sequence"]
+                               != motion["decision_sequences"][name] for name in receipts)):
                     raise RuntimeError("native drive callback failed or guard target changed")
+                control = {}
+                if getattr(self, "controlled", False):
+                    bootstrap = getattr(self, "bootstrap_pending", False) and not self.stopping
+                    if bootstrap:
+                        if (steps != 20 or set(self.takeover_acks) != {"state", "peer", "motion"}
+                                or any(output != {"linear_x": 0., "angular_z": 0.}
+                                       for output in motion["outputs"].values())):
+                            raise RuntimeError("bootstrap needs three takeovers and actual zeros")
+                        self.bootstrap_pending = False
+                    control = {"control_kind": ("bootstrap_zero" if bootstrap else
+                                                "stop" if self.stopping else "normal"),
+                               "control_request_id": self.execution_request_id}
                 self._trace_drive_phase(
                     "advance_permitted", request_id=request_id, steps=steps,
-                    start_time_ns=self.physical_ns, expected_motion=motion, receipts=receipts)
+                    start_time_ns=self.physical_ns, expected_motion=motion, receipts=receipts,
+                    **control)
                 self.helper_peer.send({"request_id": request_id, "steps": steps,
                                        "epoch": self.epoch})
         else:
@@ -388,7 +575,10 @@ class Worker:
                 raise RuntimeError("ROS /clock advanced beyond the paused physical boundary")
         self.physical_ns = receipt["end_time_ns"]
         if wait_clock:
-            self.wait_motion_phase()
+            if getattr(self, "controlled", False):
+                self._commit_boundary()
+            else:
+                self.wait_motion_phase()
         return receipt
 
     def receive_motion_status(self, value):
@@ -464,8 +654,14 @@ class Worker:
 
     def wait_drive_phase(self, motion):
         """Require each actual driver to store this exact tagged guard target."""
+        if (getattr(self, "stopping", False) and isinstance(motion, dict)
+                and motion.get("phase_kind") != "stop"):
+            self._commit_stop("stop_before_native_storage_wait")
+            return self.consumed_drive_phase["receipts"]
+
         def paused():
-            if (self.callback_error or motion is None or self.motion_status != motion
+            if ((self.callback_error and not getattr(self, "cleanup_mode", False))
+                    or motion is None or self._execution_motion() != motion
                     or self.clock_ns != motion["clock_ns"]
                     or self.physical_ns != motion["clock_ns"]):
                 raise RuntimeError("native drive boundary has failed or changed")
@@ -476,9 +672,14 @@ class Worker:
                 and all(self.drive_phase.latest.get(name) == ack for name, ack in
                         self.consumed_drive_phase["receipts"].items())):
             return self.consumed_drive_phase["receipts"]
-        self._wait(lambda: self.drive_phase.matching(motion) is not None,
+        self._wait(lambda: (getattr(self, "stopping", False)
+                            and motion.get("phase_kind") != "stop")
+                   or self.drive_phase.matching(motion) is not None,
                    DRIVE_WALL_GUARD_SEC, "native drive exact-target phase wall guard expired")
         with self.condition:
+            if getattr(self, "stopping", False) and motion.get("phase_kind") != "stop":
+                self._commit_stop("stop_during_native_storage_wait")
+                return self.consumed_drive_phase["receipts"]
             paused()
             receipts = self.drive_phase.consume(motion)
             self.consumed_drive_phase = {"expected_motion": motion, "receipts": receipts}
@@ -490,11 +691,18 @@ class Worker:
         self.snapshot_number += 1
         request_id = f"s{self.snapshot_number}"
         self._publish(self.drain_pub, {
-            "epoch": self.epoch, "request_id": request_id, "target_time_ns": self.physical_ns})
+            "epoch": self.epoch, "request_id": request_id, "target_time_ns": self.physical_ns,
+            "allow_terminal": allow_terminal})
         self._wait(lambda: request_id in self.drains, 30., "information drain guard expired")
         drained = self.drains.pop(request_id)
         if drained.get("ok") is not True:
             raise RuntimeError("information pipeline failed to drain: " + json.dumps(drained))
+        if (getattr(self, "controlled", False) and not allow_terminal
+                and (self.state_commit is None
+                     or canonical(drained["state_sequence"])
+                     != canonical(self.state_commit["state_sequence"])
+                     or drained.get("state_bundle_sha256") != self.state_commit["bundle_sha256"])):
+            raise RuntimeError("snapshot drain changed the committed execution state")
         minimum_state_sequence = drained["state_sequence"] - 1
         payload = {"epoch": self.epoch, "request_id": request_id,
                    "target_time_ns": self.physical_ns, "allow_terminal": allow_terminal,
@@ -529,6 +737,7 @@ class Worker:
             raise RuntimeError("reward rejected: " + json.dumps(response))
         if not initialize:
             self.reward_number = sequence
+        self.last_reward_response = response
         return response
 
     def receive_terminal(self, value):
@@ -702,13 +911,8 @@ class Worker:
             json.dump(receipt, output, sort_keys=True, indent=2, allow_nan=False)
             output.write("\n")
 
-    def reset(self):
-        self._wait(lambda: self.monitor_ready and self.initial_inputs_ready is not None
-                   and self.motion_ready,
-                   400., "three-robot delivered-input startup guard expired")
-        self.verify_motion_output_topology()
-        self.verify_drive_topology()
-        output = (self.directory / "step_helper.log").open("w")
+    def _start_step_helper(self):
+        output = (self.directory / "step_helper.log").open("x")
         self.outputs.append(output)
         self.helper = subprocess.Popen([
             "ros2", "run", "multi_robot", "mr3_gazebo_step", "--jsonl", "--world",
@@ -716,9 +920,8 @@ class Worker:
             stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=output)
         self.helper_peer = ipc.JsonLinePeer(self.helper.stdout.fileno(),
                                             self.helper.stdin.fileno())
-        receipt = self._physics(0, wait_clock=False)
-        if receipt["end_time_ns"] / 1e9 < self.initial_inputs_ready["stamp"] - 1e-8:
-            raise RuntimeError("initial input acknowledgement is ahead of physical pause")
+
+    def _align_initial_clock(self):
         # Match the actual clock publisher phase before task release. These
         # are real warmup ticks, never counted as policy transition time.
         for _ in range(50):
@@ -733,9 +936,39 @@ class Worker:
             self._physics(1, wait_clock=False)
         else:
             raise RuntimeError("could not align the real /clock phase before release")
-        initial_motion_status = self.wait_motion_phase()
-        if initial_motion_status["ready"] is not True:
-            raise RuntimeError("initial paused motion inputs are not ready for task release")
+
+    def reset(self):
+        self._wait(lambda: self.monitor_ready and self.initial_inputs_ready is not None
+                   and self.motion_ready,
+                   400., "three-robot delivered-input startup guard expired")
+        self.verify_motion_output_topology()
+        self.verify_drive_topology()
+        self._start_step_helper()
+        receipt = self._physics(0, wait_clock=False)
+        if receipt["end_time_ns"] / 1e9 < self.initial_inputs_ready["stamp"] - 1e-8:
+            raise RuntimeError("initial input acknowledgement is ahead of physical pause")
+        self._align_initial_clock()
+        # Freeze already-issued T0 output. Re-running the timer here could
+        # overwrite a clock which its real observers have already acknowledged.
+        identity = f"takeover{self.physical_ns}"
+        takeover = self._control_rpc("motion", "takeover", request_id=identity)
+        if takeover is None or takeover["status"].get("phase_kind") == "stop":
+            raise RuntimeError("motion stopped during controlled execution takeover")
+        self.receive_motion_status(takeover["status"])
+        if any(output != {"linear_x": 0., "angular_z": 0.}
+               for output in takeover["status"]["outputs"].values()):
+            raise RuntimeError("pre-release takeover contains a nonzero actuator target")
+        self.takeover_acks = {"motion": takeover}
+        self.takeover_acks["state"] = self._control_rpc("state", "takeover", request_id=identity)
+        self.takeover_acks["peer"] = self._control_rpc("peer", "takeover", request_id=identity)
+        self.controlled = True
+        self.execution_request_id = identity
+        self.bootstrap_pending = True
+        self.wait_drive_phase(takeover["status"])
+        self._physics(20)
+        initial_motion_status = self._execution_motion()
+        if initial_motion_status["ready"] is not True or self.stopping:
+            raise RuntimeError("initial controlled motion inputs are not ready for task release")
         initial_drive_receipts = self.wait_drive_phase(initial_motion_status)
         self._snapshot()
         if self.watermarks["state_sequence"] < self.initial_inputs_ready["state_sequence"]:
@@ -984,9 +1217,22 @@ class Worker:
                     raise TimeoutError(proof["failures"][-1])
         return proof
 
-    def shutdown_episode(self, reason):
+    def shutdown_episode(self, reason, infrastructure=False):
         from run_mr3_adapter_probe import native_stop_receipt
         start = time.monotonic()
+        if getattr(self, "controlled", False):
+            self._commit_stop(reason)
+        if infrastructure:
+            self._wait(lambda: self.infrastructure_abort_pub.get_subscription_count() > 0,
+                       10., "infrastructure abort evaluator subscriber unavailable")
+            self._publish(self.infrastructure_abort_pub, {
+                "epoch": self.epoch, "reason": "infrastructure_failure", "operation": "begin"})
+            self._wait(lambda: self.finalize_ack is not None and self.finalize_ack.get("kind") in (
+                "training_infrastructure_abort_started", "training_infrastructure_abort_error"),
+                10., "infrastructure abort begin acknowledgement missing")
+            if self.finalize_ack["kind"] != "training_infrastructure_abort_started":
+                raise RuntimeError("evaluator rejected infrastructure abort: "
+                                   + json.dumps(self.finalize_ack))
         request = self.Header()
         request.stamp.sec, request.stamp.nanosec = divmod(self.physical_ns, 10**9)
         request.frame_id = "map"
@@ -1005,15 +1251,24 @@ class Worker:
             raise RuntimeError("physical step helper did not exit cleanly")
         self.finalize_request = {
             "epoch": self.epoch, "ack_sequence": self.reward_number, "reason": reason}
-        self._publish(self.finalize_pub, self.finalize_request)
-        self.launch.wait(timeout=45.)
+        if infrastructure:
+            self.finalize_request = {"epoch": self.epoch, "reason": reason,
+                                     "operation": "finalize"}
+            self._publish(self.infrastructure_abort_pub, self.finalize_request)
+        else:
+            self._publish(self.finalize_pub, self.finalize_request)
+        wait = min(45., max(.001, self.cleanup_deadline - time.monotonic())) if (
+            getattr(self, "cleanup_mode", False)) else 45.
+        self.launch.wait(timeout=wait)
         launch_text = (self.directory / "launch.log").read_text(errors="replace")
         failures = native_launch_failures(launch_text)
         native_stop = native_stop_receipt(launch_text)
         (self.directory / "native_stop.json").write_text(json.dumps(native_stop, indent=2) + "\n")
         if failures or self.launch.returncode != 0:
             raise RuntimeError("native shutdown failed: " + repr(failures))
-        if not self.finalize_ack or self.finalize_ack.get("kind") == "training_finalize_error":
+        expected_ack = ("training_infrastructure_abort_ack" if infrastructure
+                        else "training_finalize_ack")
+        if not self.finalize_ack or self.finalize_ack.get("kind") != expected_ack:
             raise RuntimeError("evaluator finalization acknowledgement is missing or failed")
         self.finished = True
         self.summary = {"epoch": self.epoch, "scene": self.scene, "seed": self.seed,
@@ -1027,6 +1282,34 @@ class Worker:
                         "cleanup_wall_sec": time.monotonic() - start,
                         "wall_duration_sec": time.monotonic() - self.started_wall}
         (self.directory / "summary.json").write_text(json.dumps(self.summary, indent=2) + "\n")
+
+    def abort_cleanup(self, error):
+        """Attempt real zero/goal/native closure without inventing a reset or reward.
+
+        A failed attempt stays an infrastructure failure. The parent retains its
+        existing bounded owned-process fallback if any required endpoint is gone.
+        """
+        self.cleanup_mode = True
+        self.cleanup_deadline = time.monotonic() + 60.
+        self.control_phase.abandon_for_stop()
+        self._trace_control_phase("infrastructure_abort_started", error=repr(error))
+        if self.helper is None:
+            self._start_step_helper()
+            self._physics(0, wait_clock=False)
+            self._align_initial_clock()
+        if self.clock_ns != self.physical_ns:
+            raise RuntimeError("cannot stop infrastructure failure without an exact paused clock")
+        self.controlled = True
+        self._commit_stop("infrastructure_failure")
+        response = getattr(self, "last_reward_response", None)
+        if response and (response.get("terminated") or response.get("truncated")):
+            # A ledger already sealed by a real reward response keeps its
+            # original finalization protocol. The surrounding RPC stays failed.
+            self.shutdown_episode("task_terminal" if response["terminated"]
+                                  else "external_truncation")
+        else:
+            self.shutdown_episode("infrastructure_failure", infrastructure=True)
+        self._trace_control_phase("infrastructure_abort_closed", invalid_sample=True)
 
     def close(self):
         if not self.finished and self.snapshot is not None:
@@ -1102,6 +1385,20 @@ def main():
             (args.run_dir / "infrastructure_failure.json").write_text(json.dumps({
                 "request": request, "error": repr(error),
                 "scope": "invalid infrastructure sample, never a task success"}, indent=2) + "\n")
+            if worker is not None and not worker.finished:
+                cleanup = {"epoch": worker.epoch, "original_error": repr(error),
+                           "scope": "best-effort ordered invalid-sample cleanup; no reward/sample",
+                           "wall_guard_sec": 60., "passed": False}
+                started = time.monotonic()
+                try:
+                    worker.abort_cleanup(error)
+                    worker.close()
+                    cleanup["passed"] = True
+                except Exception as cleanup_error:
+                    cleanup["cleanup_error"] = repr(cleanup_error)
+                cleanup["wall_sec"] = time.monotonic() - started
+                (args.run_dir / "infrastructure_cleanup.json").write_text(
+                    json.dumps(cleanup, indent=2) + "\n")
             peer.send({"id": request["id"], "epoch": request["epoch"],
                        "ok": False, "error": repr(error)})
             # Keep the recorded session leader alive until the parent has

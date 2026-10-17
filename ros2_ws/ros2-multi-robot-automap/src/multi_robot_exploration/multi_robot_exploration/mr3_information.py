@@ -48,6 +48,7 @@ from tf2_msgs.msg import TFMessage
 from multi_robot_exploration.mr3_transport import (
     IdealTransport, MAP_PERIOD_SEC, ReceivedStore, STATE_PERIOD_SEC,
 )
+from multi_robot_exploration.mr3_episode import TASK_FAILURE_REASONS, timestamp_ns
 
 
 def stamp_seconds(stamp):
@@ -275,6 +276,12 @@ class IdealInformation(Node):
         self.state_audit_sequence = 0
         self.state_audit_stream = None
         self.state_input_failed = False
+        self.state_phase_controlled = False
+        self.pending_state_phase = None
+        self.state_phase_responses = {}
+        self.state_phase_last_commit = None
+        self.state_phase_timeout_sec = 10.0
+        self.state_terminal_notice = None
         self.map_version = 0
         self.map_signature = None
         self.hub_map = None
@@ -311,6 +318,11 @@ class IdealInformation(Node):
         self.state_publisher = self.create_publisher(String, "/mr3/received/states", 1)
         self.map_failure_publisher = self.create_publisher(
             String, "/exploration_failure", map_qos)
+        self.state_phase_publisher = self.create_publisher(String, "/mr3/state_phase_ack", map_qos)
+        self.state_phase_subscription = self.create_subscription(
+            String, "/mr3/state_phase_request", self.receive_state_phase_request, 10)
+        self.state_terminal_subscription = self.create_subscription(
+            String, "/mr3/task_terminal", self.receive_state_terminal, map_qos)
         state_audit_path = self.declare_parameter("state_audit_path", "").value
         if state_audit_path:
             self.state_audit_stream = Path(state_audit_path).open("x", buffering=1)
@@ -362,15 +374,20 @@ class IdealInformation(Node):
                 raise ValueError("invalid_request_id")
             if type(request["target_time_ns"]) is not int or request["target_time_ns"] < 0:
                 raise ValueError("invalid_target_time")
+            if type(request.get("allow_terminal", False)) is not bool:
+                raise ValueError("invalid_allow_terminal")
+            self.record_state("state_drain_request", {"request": request})
             cached = self.drain_responses.get(request["request_id"])
             if cached is not None:
-                if cached["target_time_ns"] != request["target_time_ns"]:
+                if (cached["target_time_ns"] != request["target_time_ns"]
+                        or cached.get("allow_terminal", False)
+                        != request.get("allow_terminal", False)):
                     raise ValueError("drain_request_id_conflict")
-                self.drain_publisher.publish(String(data=json.dumps(cached)))
+                self.publish_drain_response(cached, cached=True)
                 return
             if self.pending_drain is not None:
-                if all(self.pending_drain[key] == request[key] for key in
-                       ("epoch", "request_id", "target_time_ns")):
+                if all(self.pending_drain.get(key, False) == request.get(key, False) for key in
+                       ("epoch", "request_id", "target_time_ns", "allow_terminal")):
                     return
                 raise ValueError("information_drain_busy")
             self.pending_drain = {**request, "requested_wall": monotonic()}
@@ -379,11 +396,184 @@ class IdealInformation(Node):
             if isinstance(request, dict):
                 response.update({key: request.get(key)
                                  for key in ("request_id", "target_time_ns")})
-            self.drain_publisher.publish(String(data=json.dumps(response)))
+            self.publish_drain_response(response)
+
+    def publish_drain_response(self, response, cached=False):
+        started = monotonic_ns()
+        self.drain_publisher.publish(String(data=json.dumps(response, allow_nan=False)))
+        self.record_state("state_drain_ack", {
+            "ack": response, "cached": cached,
+            "publish_started_wall_monotonic_ns": started,
+            "publish_completed_wall_monotonic_ns": monotonic_ns(),
+        })
+
+    def receive_state_terminal(self, message):
+        try:
+            notice = json.loads(message.data)
+            if not isinstance(notice, dict) or set(notice) != {
+                    "epoch", "end_sim_time_sec", "termination_reason"}:
+                raise ValueError("invalid_state_terminal_fields")
+            if not self.stepped_mode or notice["epoch"] != self.epoch:
+                return
+            end = notice["end_sim_time_sec"]
+            if type(end) not in (int, float) or not math.isfinite(end) or end < 0:
+                raise ValueError("invalid_state_terminal_time")
+            if notice["termination_reason"] not in TASK_FAILURE_REASONS | {"coverage_reached"}:
+                raise ValueError("invalid_state_terminal_reason")
+            previous = self.state_terminal_notice
+            if previous is not None and previous != notice:
+                raise ValueError("conflicting_state_terminal")
+            self.state_terminal_notice = copy.deepcopy(notice)
+            self.record_state("state_terminal_received", {"notice": notice,
+                                                          "duplicate": previous is not None})
+            self.poll_state_phase()
+        except (ValueError, TypeError, KeyError) as error:
+            self.fail_state_input("all", str(error))
 
     def maintain_deliveries(self):
         self.finish_maps()
+        self.poll_state_phase()
         self.poll_drain()
+
+    def publish_state_phase_ack(self, response, cached=False):
+        started = monotonic_ns()
+        self.state_phase_publisher.publish(String(data=json.dumps(response, allow_nan=False)))
+        completed = monotonic_ns()
+        self.record_state("state_phase_ack", {
+            "ack": response, "cached": cached,
+            "publish_started_wall_monotonic_ns": started,
+            "publish_completed_wall_monotonic_ns": completed,
+        })
+
+    def receive_state_phase_request(self, message):
+        request = None
+        try:
+            request = json.loads(message.data)
+            if (not isinstance(request, dict) or set(request) != {
+                    "schema", "epoch", "request_id", "operation", "target_time_ns"}):
+                raise ValueError("invalid_state_phase_request_fields")
+            if request["schema"] != "mr3-state-phase-request-v1":
+                raise ValueError("invalid_state_phase_request_schema")
+            if not self.stepped_mode or request["epoch"] != self.epoch:
+                raise ValueError("wrong_mode_or_epoch")
+            if not isinstance(request["request_id"], str) or not request["request_id"]:
+                raise ValueError("invalid_state_phase_request_id")
+            if request["operation"] not in ("takeover", "commit"):
+                raise ValueError("invalid_state_phase_operation")
+            if type(request["target_time_ns"]) is not int or request["target_time_ns"] < 0:
+                raise ValueError("invalid_state_phase_target_time")
+            encoded = json.dumps(request, sort_keys=True, allow_nan=False, separators=(",", ":"))
+            cached = self.state_phase_responses.get(request["request_id"])
+            if cached is not None:
+                if cached[0] != encoded:
+                    raise ValueError("state_phase_request_id_conflict")
+                self.record_state("state_phase_request", {"request": request, "duplicate": True})
+                self.publish_state_phase_ack(cached[1], cached=True)
+                return
+            if self.pending_state_phase is not None:
+                if self.pending_state_phase["encoded"] == encoded:
+                    self.record_state("state_phase_request", {
+                        "request": request, "duplicate": True})
+                    return
+                raise ValueError("state_phase_busy")
+            previous = self.state_phase_last_commit
+            if (request["operation"] == "commit" and previous is not None
+                    and request["target_time_ns"] <= previous["clock_ns"]):
+                raise ValueError("state_phase_clock_already_committed")
+            self.state_phase_controlled = True
+            self.pending_state_phase = {"request": copy.deepcopy(request), "encoded": encoded,
+                                        "requested_wall": monotonic()}
+            self.record_state("state_phase_request", {"request": request, "duplicate": False})
+            self.poll_state_phase()
+        except (ValueError, TypeError, KeyError) as error:
+            response = {"schema": "mr3-state-phase-ack-v1", "epoch": self.epoch,
+                        "ok": False, "error": str(error),
+                        "clock_ns": self.get_clock().now().nanoseconds}
+            if isinstance(request, dict):
+                response.update({key: request.get(key) for key in
+                                 ("request_id", "target_time_ns", "operation")})
+            self.publish_state_phase_ack(response)
+
+    def state_phase_inputs_ready(self, clock_ns):
+        # Inspect the callback prefix without changing pending/current identities.
+        # Actual promotion and selection occur once, only when a commit can publish.
+        for name in self.names:
+            odom = ([self.local_odometry[name]] if name in self.local_odometry else [])
+            odom += self.pending_odometry[name]
+            transforms = ([self.local_transforms[name]] if name in self.local_transforms else [])
+            transforms += self.pending_transforms[name]
+            odom = [item for item in odom if stamp_ns(item.header.stamp) <= clock_ns]
+            transforms = [item for item in transforms
+                          if stamp_ns(item.header.stamp) - round(self.tf_validity_lead_sec * 1e9)
+                          <= clock_ns]
+            if not odom or not transforms:
+                return False
+            selected_odom = max(odom, key=lambda item: stamp_ns(item.header.stamp))
+            selected_tf = max(transforms, key=lambda item: stamp_ns(item.header.stamp))
+            source = min(stamp_ns(selected_odom.header.stamp),
+                         stamp_ns(selected_tf.header.stamp)
+                         - round(self.tf_validity_lead_sec * 1e9))
+            if source <= 0 or not 0 <= clock_ns - source <= 500_000_000:
+                return False
+            payload = state_payload(name, selected_odom, selected_tf, self.tf_validity_lead_sec)
+            if not all(math.isfinite(payload[key]) for key in ("x", "y", "yaw", "v", "w")):
+                return False
+        return True
+
+    def poll_state_phase(self):
+        pending = self.pending_state_phase
+        if pending is None:
+            return
+        request = pending["request"]
+        now_ns = self.get_clock().now().nanoseconds
+        response = {"schema": "mr3-state-phase-ack-v1", "epoch": self.epoch,
+                    **{key: request[key] for key in ("request_id", "target_time_ns", "operation")},
+                    "clock_ns": now_ns, "ok": True}
+        error = None
+        if (request["operation"] == "commit" and self.state_terminal_notice is not None
+                and timestamp_ns(self.state_terminal_notice["end_sim_time_sec"])
+                <= request["target_time_ns"]):
+            error = "state_phase_task_terminal"
+            response.update({"terminal_notice": copy.deepcopy(self.state_terminal_notice),
+                             "scope": "terminal_cancelled_uncommitted_state_phase"})
+        elif self.clock_failed:
+            error = "state_phase_input_failed"
+        elif now_ns > request["target_time_ns"]:
+            error = "state_phase_target_passed"
+        elif monotonic() - pending["requested_wall"] >= self.state_phase_timeout_sec:
+            error = "state_phase_wall_timeout"
+        elif now_ns != request["target_time_ns"]:
+            return
+        elif request["operation"] == "takeover":
+            response.update({"state_sequence": None, "bundle_sha256": None, "robots": {},
+                             "scope": "periodic_state_publication_disabled"})
+        elif not self.state_phase_inputs_ready(now_ns):
+            return
+        else:
+            try:
+                commit = self.publish_states(phase=True)
+            except (ValueError, TypeError, OverflowError) as failure:
+                commit = None
+                error = "state_phase_publication_failed:" + repr(failure)
+            if error is not None:
+                pass
+            elif commit is None or commit["clock_ns"] != request["target_time_ns"]:
+                error = "state_phase_publication_clock_changed"
+            elif self.get_clock().now().nanoseconds != request["target_time_ns"]:
+                error = "state_phase_publication_clock_changed"
+            else:
+                response.update(commit)
+                response["scope"] = "actual_state_and_side_publish_calls_returned"
+                self.state_phase_last_commit = copy.deepcopy(response)
+        if error is not None:
+            response.update({"ok": False, "error": error})
+            if error != "state_phase_task_terminal":
+                self.fail_state_input("all", error)
+        self.state_phase_responses[request["request_id"]] = (pending["encoded"], response)
+        while len(self.state_phase_responses) > 16:
+            del self.state_phase_responses[next(iter(self.state_phase_responses))]
+        self.pending_state_phase = None
+        self.publish_state_phase_ack(response)
 
     def poll_drain(self):
         request = self.pending_drain
@@ -398,12 +588,25 @@ class IdealInformation(Node):
         ready = (
             now_ns == request["target_time_ns"] and self.map_future is None
             and self.queued_map_job is None and not self.map_timer.is_ready()
-            and not self.state_timer.is_ready() and self.map_payload_sha256 is not None
+            and (self.state_phase_controlled or not self.state_timer.is_ready())
+            and self.map_payload_sha256 is not None
         )
+        if self.state_phase_controlled:
+            commit = self.state_phase_last_commit
+            terminal = (request.get("allow_terminal") is True
+                        and self.state_terminal_notice is not None
+                        and timestamp_ns(self.state_terminal_notice["end_sim_time_sec"])
+                        <= request["target_time_ns"])
+            exact = commit is not None and commit["clock_ns"] == request["target_time_ns"]
+            reuse = (terminal and commit is not None
+                     and commit["clock_ns"] <= request["target_time_ns"])
+            if not exact and not reuse:
+                ready = False
         if not ready and error is None:
             return
         response = {"epoch": self.epoch, "request_id": request["request_id"],
-                    "target_time_ns": request["target_time_ns"], "ok": error is None}
+                    "target_time_ns": request["target_time_ns"], "ok": error is None,
+                    "allow_terminal": request.get("allow_terminal", False)}
         if error is not None:
             response["error"] = error
         else:
@@ -412,11 +615,19 @@ class IdealInformation(Node):
                              "state_sequence": self.state_sequence,
                              "map_jobs_submitted": self.map_diagnostics["submitted"],
                              "map_jobs_completed": self.map_diagnostics["completed"]})
+            if self.state_phase_controlled:
+                response["state_sequence"] = self.state_phase_last_commit["state_sequence"]
+                response["state_bundle_sha256"] = self.state_phase_last_commit["bundle_sha256"]
+                response["state_commit_clock_ns"] = self.state_phase_last_commit["clock_ns"]
+                response["state_reuse_scope"] = (
+                    "exact_commit" if exact else "terminal_last_committed")
+                if not exact:
+                    response["terminal_notice"] = copy.deepcopy(self.state_terminal_notice)
         self.drain_responses[request["request_id"]] = response
         while len(self.drain_responses) > 16:
             del self.drain_responses[next(iter(self.drain_responses))]
         self.pending_drain = None
-        self.drain_publisher.publish(String(data=json.dumps(response, allow_nan=False)))
+        self.publish_drain_response(response)
 
     def destroy_node(self):
         self.map_executor.shutdown(wait=True, cancel_futures=True)
@@ -723,7 +934,9 @@ class IdealInformation(Node):
             job, self.queued_map_job = self.queued_map_job, None
             self.submit_map_job(job)
 
-    def publish_states(self):
+    def publish_states(self, *, phase=False):
+        if self.state_phase_controlled and not phase:
+            return
         started = perf_counter()
         now = self.now()
         if now is None:
@@ -774,6 +987,7 @@ class IdealInformation(Node):
             return
         self.transport.deliver(self.received, now, sampled=True)
         robots, envelopes, side_publications = [], {}, []
+        side_publish_started = monotonic_ns()
         for name in self.names:
             record = self.received.get("state", name)
             envelopes[name] = None if record is None else record.to_dict()
@@ -835,11 +1049,31 @@ class IdealInformation(Node):
             "cycle_id": cycle_id, "message": published_payload,
             "message_sha256": payload_digest(published_payload), "envelopes": envelopes,
             "side_publications": side_publications,
+            "side_publish_started_wall_monotonic_ns": side_publish_started,
             "publish_started_wall_monotonic_ns": publish_started,
             "publish_completed_wall_monotonic_ns": publish_completed,
             "scope": "actual_publish_calls_returned",
         }, round(now * 1e9))
         self.map_diagnostics["state_wall_sec"] = perf_counter() - started
+        side_by_robot = {item["robot"]: item for item in side_publications}
+        return {
+            "clock_ns": round(now * 1e9), "state_sequence": self.state_sequence,
+            "bundle_sha256": payload_digest(published_payload),
+            "side_publish_started_wall_monotonic_ns": side_publish_started,
+            "bundle_publish_started_wall_monotonic_ns": publish_started,
+            "bundle_publish_completed_wall_monotonic_ns": publish_completed,
+            "robots": {
+                name: {
+                    "sequence": record["sequence"], "version": record["version"],
+                    "source_stamp": record["source_stamp"],
+                    "source_ns": round(record["source_stamp"] * 1e9),
+                    "odom_source_ns": round(record["payload"]["odom_source_stamp"] * 1e9),
+                    "tf_source_ns": round(record["payload"]["tf_source_stamp"] * 1e9),
+                    **{key: side_by_robot[name][key] for key in
+                       ("odom_topic", "tf_topic", "odom_sha256", "tf_sha256")},
+                } for name, record in envelopes.items() if record is not None
+            },
+        }
 
 
 def main(args=None):

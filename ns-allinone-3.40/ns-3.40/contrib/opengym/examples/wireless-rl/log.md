@@ -4451,3 +4451,521 @@ python report/assets/20261017_mr3_p2a0_v8/independent/mr3_p2a0_v8_contract_check
 - 三组离线原件归档分别information_offline34项、information_consumer_offline35项、launcher_offline36项，各原/编码/解码逐字核验通过。两个模块使用同一合成producer fixture，其重叠不计独立native信用；缺失的9条早draft字节与post-hoc重建preflight严格标明，不用最终源码冒充历史结果。V8归档完成stdout/stderr补件另列，final库存v2 SHA9488753b0225ac4257166296f10d8fcd5a601066e6f0cf7eef0a2140ead45834，原v1库存保持。原生尚未开始。
 
 - Git保全检查更正：源码/证据提交e27f5c60前cached diff检查发现归档的原始`mr3_v8_terminal_e1_failure_diagnostic_v1.py`第16行尾随空格，root未正确拦住后续commit；未push/未启动native。保留原raw SHA不修改字节，追加该单一归档路径的`-text -whitespace`属性（沿现原生SDF精确保全规则），再核验原脚本/manifest SHA及整个e27变更diff检查；独立binding/执行源未变。补丁另提交，不重写历史。
+
+
+### 2026-10-17 MR3-P2A.0 v9 原生启动失败闭合
+
+- 源冻结26534fae40409e266376baf0995fb15dc0223e4b；clean+pushed preflight命令`python report/assets/20261017_mr3_p2a0_v9/independent/mr3_p2a0_v9_buildproof_preflight.py`，cwd本wireless-rl，conda ns3gym/unset PYTHONPATH/PYTHONNOUSERSITE=1，97 runtime/33 independent源及实际d0d驱动库匹配PASS。原`/tmp/mr3_p2a0_v9_source_preflight.json` SHA545844e18f8ceb61c741e84c6af9f17f49fb2ad29f01acd43687609579d04ee1已归档。
+- 原生`python report/assets/20261017_mr3_p2a0_v9/independent/mr3_p2a0_v9_launch_stage.py interface 26534fae40409e266376baf0995fb15dc0223e4b`；精确benchmark argv/domain100/port12901/环境与PID原件见A9/accounting/mr3_p2a0_v9_interface_launch.json。07:28:33.084717–07:30:53.148215 UTC，140.06299758609384墙秒/exit1，0返回reset、0step、0任务秒。真实initial paused motion not ready错误；本版terminal/reset/deadline均SKIP，不盲重试。
+- 初始74.323暂停加17×1ms到74.340，tb2 received source73.795/age545ms>500，own均fresh。producer716实际pub先选TFref5173，freshTFref5176同74.320晚9.363墙毫秒入站；暂停导致下一10Hzpub不触发。新ledger直接证明timer/order starvation。futureodom保留正常；没有队列overflow/conflict。全部原.5源龄/物理门保持。
+- 正式full/input/driver/information审计均FAIL缺reset/summary；isolated来源诊断4780odom（3588future）/16101TF/716pub/716motionreceived/11061decision replay provenance通过但overallFalse。执行`python /tmp/mr3_p2a0_v9_root_audit_runner_diagnostic_v2.py interface`，fullaudit exit1/5.867655317764729墙秒、旧不可变driveV4 exit1/.22970817796885967墙秒；准确CLI/console/SHA在A9独立原件。45实际saved身份均消失；forcedcleanup=true，仅4正常spawn/ready退出，无完整native_stop/Nav2final，严格关闭不可PASS。
+- 原生pack `/usr/bin/python3 /tmp/mr3_p2a0_v9_pack_native_v1.py interface`及归档`/usr/bin/python3 /tmp/archive_mr3_p2a0_v9_closed_v1.py` exit0：165文件131198920原字节→7508070无损选择，97Git源、137prefreeze assets、54独立原件核验；manifest SHA4401e4570e7a130b9fc1b5df6e1bfb2a8fba302dfc50b111b9a269ab2c67f3d1；inventory_native_v1 SHAf357ba0945a2411225ef9c8e0588aeed2ac3d8b8668b3db875fb8624a279dfb4。所有失败原件保留，后续v10显式阶段与startup invalid有序关闭。原生GPU/optimizer=0，pilot余额1870/2905.954739546403保持。
+
+
+### 2026-10-17 MR3-P2A.0 v10 冻结前显式执行阶段修复与完整离线验证
+
+以已push的26534fae40409e266376baf0995fb15dc0223e4b为base继续P2A.0。v9实际FAIL不改，补件archive_completion_v2及inventory_native_v2（365项，SHA b76b7a28a4a230dae045e63268131b49d6a95cf67ebef35753fc1f9d6b1148a2）另列原件。v10每20ms真实state/peer/guard/localreceipt/native storage有序ACK、唯一零bootstrap、永久stop及invalid启动有序关闭；受控状态有效50Hz是明确接口变更，非受控10Hz、.5s源龄及全部原task/body/stop/160ms/settled门不变。没有原生训练或optimizer，pilot余额1870/2905.954739546403不变。
+
+最终ROS1167 PASS、conda236 PASS、27文件style及3包build/10实际system import PASS。早期ROS3 FAIL、conda2 ERROR、guard及style/fixture/工作目录检查失败均保留原stdout和准确版本；没有把合成检查作为native信用。每项root检查的完整实际argv/cwd/Python/source-before-after/exit/wall及gzip decoded SHA在A10根同名JSON，以下是本次实际CPU调用的索引（`source_status=precommit working bytes`，不是旧freeze native结果）：
+
+```json
+[
+  {
+    "receipt": "build_v10_final.json",
+    "exit_code": 0,
+    "wall_seconds": 9.288078633137047,
+    "command": [
+      "/usr/bin/bash",
+      "--noprofile",
+      "--norc",
+      "-c",
+      "source /opt/ros/humble/setup.bash && export PYTHONNOUSERSITE=1 && /usr/bin/python3 /usr/bin/colcon build --symlink-install --packages-select merge_map multi_robot_exploration multi_robot"
+    ],
+    "cwd": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap"
+  },
+  {
+    "receipt": "conda_cpu_v10_final.json",
+    "exit_code": 1,
+    "wall_seconds": 25.73184002377093,
+    "command": [
+      "/usr/bin/env",
+      "-u",
+      "PYTHONPATH",
+      "PYTHONNOUSERSITE=1",
+      "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "mr3_learning/tests",
+      "-q"
+    ],
+    "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl"
+  },
+  {
+    "receipt": "conda_cpu_v10_final_v2.json",
+    "exit_code": 0,
+    "wall_seconds": 35.147919084876776,
+    "command": [
+      "/usr/bin/env",
+      "-u",
+      "PYTHONPATH",
+      "PYTHONNOUSERSITE=1",
+      "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "mr3_learning/tests",
+      "-q"
+    ],
+    "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl"
+  },
+  {
+    "receipt": "conda_cpu_v10_final_v3.json",
+    "exit_code": 0,
+    "wall_seconds": 25.82693194784224,
+    "command": [
+      "/usr/bin/env",
+      "-u",
+      "PYTHONPATH",
+      "PYTHONNOUSERSITE=1",
+      "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "mr3_learning/tests",
+      "-q"
+    ],
+    "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl"
+  },
+  {
+    "receipt": "conda_cpu_v10_final_v4.json",
+    "exit_code": 0,
+    "wall_seconds": 25.107419546693563,
+    "command": [
+      "/usr/bin/env",
+      "-u",
+      "PYTHONPATH",
+      "PYTHONNOUSERSITE=1",
+      "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "mr3_learning/tests",
+      "-q"
+    ],
+    "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl"
+  },
+  {
+    "receipt": "contract_static_draft_01.json",
+    "exit_code": 0,
+    "wall_seconds": 5.160603567957878,
+    "command": [
+      "/usr/bin/env",
+      "-u",
+      "PYTHONPATH",
+      "PYTHONNOUSERSITE=1",
+      "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+      "report/assets/20261017_mr3_p2a0_v10/independent/mr3_p2a0_v10_contract_checks.py",
+      "/tmp/mr3_p2a0_v10_contract_static_draft_01.json"
+    ],
+    "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl"
+  },
+  {
+    "receipt": "guard_focused_01.json",
+    "exit_code": 1,
+    "wall_seconds": 4.693017710931599,
+    "command": [
+      "/usr/bin/bash",
+      "--noprofile",
+      "--norc",
+      "-c",
+      "source /opt/ros/humble/setup.bash && source install/setup.bash && export PYTHONNOUSERSITE=1 && /usr/bin/python3 -m pytest -q src/multi_robot_exploration/test/test_mr3_motion_control.py src/multi_robot_exploration/test/test_motion_safety.py src/multi_robot_exploration/test/test_settled_turn.py"
+    ],
+    "cwd": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap"
+  },
+  {
+    "receipt": "guard_focused_02.json",
+    "exit_code": 1,
+    "wall_seconds": 4.614243202842772,
+    "command": [
+      "/usr/bin/bash",
+      "--noprofile",
+      "--norc",
+      "-c",
+      "source /opt/ros/humble/setup.bash && source install/setup.bash && export PYTHONNOUSERSITE=1 && /usr/bin/python3 -m pytest -q src/multi_robot_exploration/test/test_mr3_motion_control.py src/multi_robot_exploration/test/test_motion_safety.py src/multi_robot_exploration/test/test_settled_turn.py && /usr/bin/python3 -m flake8 src/multi_robot_exploration/multi_robot_exploration/motion_safety.py src/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py src/multi_robot_exploration/test/test_mr3_motion_control.py src/multi_robot_exploration/test/test_motion_safety.py src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py --max-line-length=99"
+    ],
+    "cwd": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap"
+  },
+  {
+    "receipt": "guard_focused_03.json",
+    "exit_code": 1,
+    "wall_seconds": 5.5136871873401105,
+    "command": [
+      "/usr/bin/bash",
+      "--noprofile",
+      "--norc",
+      "-c",
+      "source /opt/ros/humble/setup.bash && source install/setup.bash && export PYTHONNOUSERSITE=1 && /usr/bin/python3 -m pytest -q src/multi_robot_exploration/test/test_mr3_motion_control.py src/multi_robot_exploration/test/test_motion_safety.py src/multi_robot_exploration/test/test_settled_turn.py && /usr/bin/python3 -m flake8 src/multi_robot_exploration/multi_robot_exploration/motion_safety.py src/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py src/multi_robot_exploration/test/test_mr3_motion_control.py src/multi_robot_exploration/test/test_motion_safety.py src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py --max-line-length=99"
+    ],
+    "cwd": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap"
+  },
+  {
+    "receipt": "guard_focused_04.json",
+    "exit_code": 0,
+    "wall_seconds": 5.603635247796774,
+    "command": [
+      "/usr/bin/bash",
+      "--noprofile",
+      "--norc",
+      "-c",
+      "source /opt/ros/humble/setup.bash && source install/setup.bash && export PYTHONNOUSERSITE=1 && /usr/bin/python3 -m pytest -q src/multi_robot_exploration/test/test_mr3_motion_control.py src/multi_robot_exploration/test/test_motion_safety.py src/multi_robot_exploration/test/test_settled_turn.py && /usr/bin/python3 -m flake8 src/multi_robot_exploration/multi_robot_exploration/motion_safety.py src/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py src/multi_robot_exploration/test/test_mr3_motion_control.py src/multi_robot_exploration/test/test_motion_safety.py src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py --max-line-length=99"
+    ],
+    "cwd": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap"
+  },
+  {
+    "receipt": "guard_focused_05.json",
+    "exit_code": 0,
+    "wall_seconds": 4.583252803888172,
+    "command": [
+      "/usr/bin/bash",
+      "--noprofile",
+      "--norc",
+      "-c",
+      "source /opt/ros/humble/setup.bash && source install/setup.bash && export PYTHONNOUSERSITE=1 && /usr/bin/python3 -m pytest -q src/multi_robot_exploration/test/test_mr3_motion_control.py src/multi_robot_exploration/test/test_motion_safety.py src/multi_robot_exploration/test/test_settled_turn.py"
+    ],
+    "cwd": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap"
+  },
+  {
+    "receipt": "launch_phase_wiring_01.json",
+    "exit_code": 0,
+    "wall_seconds": 5.50466783484444,
+    "command": [
+      "/usr/bin/bash",
+      "--noprofile",
+      "--norc",
+      "-c",
+      "source /opt/ros/humble/setup.bash && source install/setup.bash && export PYTHONNOUSERSITE=1 && /usr/bin/python3 -m pytest -q src/multi_robot_exploration/test/test_mr3_adapter_launch.py"
+    ],
+    "cwd": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap"
+  },
+  {
+    "receipt": "launcher_style_v10_final.json",
+    "exit_code": 1,
+    "wall_seconds": 0.7774994573555887,
+    "command": [
+      "/usr/bin/python3",
+      "-m",
+      "flake8",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_p2a0_v10_buildproof_preflight.py",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_p2a0_v10_launch_stage.py",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_p2a0_v10_plan_launcher_tests_v1.py",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_p2a0_v10_audit_stage.py",
+      "--max-line-length=99"
+    ],
+    "cwd": "/home/zhuyulab/ns3-workspace"
+  },
+  {
+    "receipt": "launcher_style_v10_final_v2.json",
+    "exit_code": 0,
+    "wall_seconds": 0.792501084972173,
+    "command": [
+      "/usr/bin/python3",
+      "-m",
+      "flake8",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_p2a0_v10_buildproof_preflight.py",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_p2a0_v10_launch_stage.py",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_p2a0_v10_plan_launcher_tests_v1.py",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_p2a0_v10_audit_stage.py",
+      "--max-line-length=99"
+    ],
+    "cwd": "/home/zhuyulab/ns3-workspace"
+  },
+  {
+    "receipt": "observer_syntax_plan_01.json",
+    "exit_code": 0,
+    "wall_seconds": 0.491785628721118,
+    "command": [
+      "/usr/bin/python3",
+      "-c",
+      "import ast,runpy; from pathlib import Path; p=Path('ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent'); [ast.parse(f.read_text()) for f in p.glob('mr3*v10*.py')]; runpy.run_path(str(p/'mr3_p2a0_v10_plan_launcher_tests_v1.py'),run_name='__main__')"
+    ],
+    "cwd": "/home/zhuyulab/ns3-workspace"
+  },
+  {
+    "receipt": "plan_launcher_draft_01.json",
+    "exit_code": 0,
+    "wall_seconds": 0.25144996028393507,
+    "command": [
+      "/usr/bin/python3",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_p2a0_v10_plan_launcher_tests_v1.py"
+    ],
+    "cwd": "/home/zhuyulab/ns3-workspace"
+  },
+  {
+    "receipt": "plan_launcher_v10_final.json",
+    "exit_code": 0,
+    "wall_seconds": 0.25509231397882104,
+    "command": [
+      "/usr/bin/python3",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_p2a0_v10_plan_launcher_tests_v1.py"
+    ],
+    "cwd": "/home/zhuyulab/ns3-workspace"
+  },
+  {
+    "receipt": "plan_launcher_v10_final_v2.json",
+    "exit_code": 0,
+    "wall_seconds": 0.7794155701994896,
+    "command": [
+      "/usr/bin/python3",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_p2a0_v10_plan_launcher_tests_v1.py"
+    ],
+    "cwd": "/home/zhuyulab/ns3-workspace"
+  },
+  {
+    "receipt": "root_style_01.json",
+    "exit_code": 1,
+    "wall_seconds": 1.0927389599382877,
+    "command": [
+      "/usr/bin/python3",
+      "-m",
+      "flake8",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/motion_safety.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_motion_control.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_motion_safety.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_adapter_launch.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_p2a0_v10_audit_stage.py",
+      "--max-line-length=99"
+    ],
+    "cwd": "/home/zhuyulab/ns3-workspace"
+  },
+  {
+    "receipt": "root_style_02.json",
+    "exit_code": 1,
+    "wall_seconds": 1.0394070306792855,
+    "command": [
+      "/usr/bin/python3",
+      "-m",
+      "flake8",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/motion_safety.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_motion_control.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_motion_safety.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_adapter_launch.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_p2a0_v10_audit_stage.py",
+      "--max-line-length=99"
+    ],
+    "cwd": "/home/zhuyulab/ns3-workspace"
+  },
+  {
+    "receipt": "root_style_03.json",
+    "exit_code": 0,
+    "wall_seconds": 1.0692494758404791,
+    "command": [
+      "/usr/bin/python3",
+      "-m",
+      "flake8",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/motion_safety.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_motion_control.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_motion_safety.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_adapter_launch.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_p2a0_v10_audit_stage.py",
+      "--max-line-length=99"
+    ],
+    "cwd": "/home/zhuyulab/ns3-workspace"
+  },
+  {
+    "receipt": "ros_semantic_v10_final.json",
+    "exit_code": 1,
+    "wall_seconds": 37.42907654680312,
+    "command": [
+      "/usr/bin/bash",
+      "--noprofile",
+      "--norc",
+      "-c",
+      "source /opt/ros/humble/setup.bash && source install/setup.bash && export PYTHONNOUSERSITE=1 && /usr/bin/python3 -m pytest -q src/merge_map/test src/multi_robot_exploration/test --ignore=src/merge_map/test/test_copyright.py --ignore=src/merge_map/test/test_flake8.py --ignore=src/merge_map/test/test_pep257.py --ignore=src/multi_robot_exploration/test/test_copyright.py --ignore=src/multi_robot_exploration/test/test_flake8.py --ignore=src/multi_robot_exploration/test/test_pep257.py"
+    ],
+    "cwd": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap"
+  },
+  {
+    "receipt": "ros_semantic_v10_final_v2.json",
+    "exit_code": 0,
+    "wall_seconds": 35.342729937750846,
+    "command": [
+      "/usr/bin/bash",
+      "--noprofile",
+      "--norc",
+      "-c",
+      "source /opt/ros/humble/setup.bash && source install/setup.bash && export PYTHONNOUSERSITE=1 && /usr/bin/python3 -m pytest -q src/merge_map/test src/multi_robot_exploration/test --ignore=src/merge_map/test/test_copyright.py --ignore=src/merge_map/test/test_flake8.py --ignore=src/merge_map/test/test_pep257.py --ignore=src/multi_robot_exploration/test/test_copyright.py --ignore=src/multi_robot_exploration/test/test_flake8.py --ignore=src/multi_robot_exploration/test/test_pep257.py"
+    ],
+    "cwd": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap"
+  },
+  {
+    "receipt": "ros_semantic_v10_final_v3.json",
+    "exit_code": 0,
+    "wall_seconds": 36.722919282037765,
+    "command": [
+      "/usr/bin/bash",
+      "--noprofile",
+      "--norc",
+      "-c",
+      "source /opt/ros/humble/setup.bash && source install/setup.bash && export PYTHONNOUSERSITE=1 && /usr/bin/python3 -m pytest -q src/merge_map/test src/multi_robot_exploration/test --ignore=src/merge_map/test/test_copyright.py --ignore=src/merge_map/test/test_flake8.py --ignore=src/merge_map/test/test_pep257.py --ignore=src/multi_robot_exploration/test/test_copyright.py --ignore=src/multi_robot_exploration/test/test_flake8.py --ignore=src/multi_robot_exploration/test/test_pep257.py"
+    ],
+    "cwd": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap"
+  },
+  {
+    "receipt": "runtime_imports_v10_final.json",
+    "exit_code": 0,
+    "wall_seconds": 2.3329720706678927,
+    "command": [
+      "/usr/bin/bash",
+      "--noprofile",
+      "--norc",
+      "-c",
+      "source /opt/ros/humble/setup.bash && source install/setup.bash && export PYTHONNOUSERSITE=1 && /usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_p2a0_v10_runtime_import_check.py /tmp/mr3_p2a0_v10_runtime_import_bindings.json"
+    ],
+    "cwd": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap"
+  },
+  {
+    "receipt": "runtime_imports_v10_final_v2.json",
+    "exit_code": 0,
+    "wall_seconds": 2.312925858888775,
+    "command": [
+      "/usr/bin/bash",
+      "--noprofile",
+      "--norc",
+      "-c",
+      "source /opt/ros/humble/setup.bash && source install/setup.bash && export PYTHONNOUSERSITE=1 && /usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_p2a0_v10_runtime_import_check.py /tmp/mr3_p2a0_v10_runtime_import_bindings_v2.json"
+    ],
+    "cwd": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap"
+  },
+  {
+    "receipt": "style_v10_final.json",
+    "exit_code": 0,
+    "wall_seconds": 1.6993079599924386,
+    "command": [
+      "/usr/bin/python3",
+      "-m",
+      "flake8",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_motion.py",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_ppo.py",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_preparation.py",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_motion.py",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_preparation.py",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_preparation_execution.py",
+      "ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/motion_safety.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_control_phase.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_information.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/peer_obstacles.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/task_evaluator.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_motion_safety.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_adapter_launch.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_control_phase.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_drive_phase.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_evaluator_phase.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_information.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_information_phase.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_infrastructure_abort.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_motion_control.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_peer_phase.py",
+      "--max-line-length=99"
+    ],
+    "cwd": "/home/zhuyulab/ns3-workspace"
+  },
+  {
+    "receipt": "style_v10_final_v2.json",
+    "exit_code": 0,
+    "wall_seconds": 1.740019764751196,
+    "command": [
+      "/usr/bin/python3",
+      "-m",
+      "flake8",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_controlled_physics.py",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_motion.py",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_ppo.py",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_preparation.py",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_controlled_physics.py",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_motion.py",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_ppo.py",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_preparation.py",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_preparation_execution.py",
+      "ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/motion_safety.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_control_phase.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_information.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/peer_obstacles.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/task_evaluator.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_motion_safety.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_adapter_launch.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_control_phase.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_drive_phase.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_evaluator_phase.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_information.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_information_phase.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_infrastructure_abort.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_motion_control.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_peer_phase.py",
+      "--max-line-length=99"
+    ],
+    "cwd": "/home/zhuyulab/ns3-workspace"
+  },
+  {
+    "receipt": "style_v10_final_v3.json",
+    "exit_code": 0,
+    "wall_seconds": 1.7285019289702177,
+    "command": [
+      "/usr/bin/python3",
+      "-m",
+      "flake8",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_controlled_physics.py",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_motion.py",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_ppo.py",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_preparation.py",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_controlled_physics.py",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_motion.py",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_ppo.py",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_preparation.py",
+      "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_preparation_execution.py",
+      "ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/motion_safety.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_control_phase.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_information.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/peer_obstacles.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/task_evaluator.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_motion_safety.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_adapter_launch.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_control_phase.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_drive_phase.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_evaluator_phase.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_information.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_information_phase.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_infrastructure_abort.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_motion_control.py",
+      "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_peer_phase.py",
+      "--max-line-length=99"
+    ],
+    "cwd": "/home/zhuyulab/ns3-workspace"
+  }
+]
+```
+
+各agent离线执行的准确argv、原早期失败、producer fixture、source snapshot可用范围与原/编码/解码SHA分别在A10 `independent/{information_offline,drive_offline,guard_review_offline,runner_offline,runtime_offline,runtime_integration_offline,peer_control_offline}/manifest.json`。其中runtime76原件+integration25原件，information27、drive7、guard18、runner371、peer/control68原件；mock13个runner路径/10实际CLI help不代表native执行。58个peer/control、63个drive（含原50+13stop）、18个information方法及root87个guard检查与完整检查有重叠，不相加。最终root工具原件/源码仅代表最终版本，未独立快照的早期draft明确标为缺失，不用最终源码冒充。
+
+共享stdlib physics dispatcher使preparation与audit_ppo识别同一真实零bootstrap，保留所有原物理数学/完整行/真实任务release/legacy/策略容量和目标。仅此一import、一文件binding和try/finally调用替换由静态AST精确许可，不豁免整个函数。没有PPO采样、GPU或优化器。四阶段正式原生尚未开始；clean push后preflight和实际binary/proc映射须新核验。
+
+冻结前补充两项实际检查：`plan_launcher_v10_final_v3`13 PASS/0.7238266966305673墙秒，准确命令conda python A10/independent/mr3_p2a0_v10_plan_launcher_tests_v1.py；`contract_static_v10_final`35pins/156links/AST PASS/4.826862648129463墙秒，准确命令`env -u PYTHONPATH PYTHONNOUSERSITE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python report/assets/20261017_mr3_p2a0_v10/independent/mr3_p2a0_v10_contract_checks.py /tmp/mr3_p2a0_v10_contract_static_final.json`，均cwd W。实际argv/source/console在同名JSON。root_offline manifest SHA 9d8249bcc8c08af322bc045f655d1badde34f0ea404e28716da309245467c2c5，最终预声明SHA 0456d6100e44bf93afe66edf2d057d5c71161dbbdcdd2f12cbf37f0fe63a1e52、59bindings。静态检查后仅补结果文字，不改执行合同/pins/代码。

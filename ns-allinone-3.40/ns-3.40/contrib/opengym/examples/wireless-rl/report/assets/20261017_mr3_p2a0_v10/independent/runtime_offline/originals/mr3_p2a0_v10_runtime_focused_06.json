@@ -1,0 +1,18 @@
+{
+  "argv": [
+    "/usr/bin/bash",
+    "--noprofile",
+    "--norc",
+    "-c",
+    "source /opt/ros/humble/setup.bash && source install/setup.bash && export PYTHONNOUSERSITE=1 && /usr/bin/python3 -m pytest -q src/multi_robot_exploration/test/test_mr3_control_phase.py src/multi_robot_exploration/test/test_mr3_infrastructure_abort.py src/multi_robot_exploration/test/test_mr3_worker_bootstrap.py src/multi_robot_exploration/test/test_mr3_worker_shutdown.py src/multi_robot_exploration/test/test_task_evaluator.py src/multi_robot_exploration/test/test_mr3_reward_time.py src/multi_robot_exploration/test/test_mr3_reward.py src/multi_robot_exploration/test/test_mr3_stepped.py"
+  ],
+  "cwd": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap",
+  "env": {
+    "PYTHONNOUSERSITE": "1",
+    "PYTHONPATH": null
+  },
+  "returncode": 0,
+  "wall_sec": 4.441616798751056,
+  "stdout": "/tmp/mr3_p2a0_v10_runtime_focused_06.log",
+  "stdout_sha256": "680b2ed833b619a77b0e21d9db1808d2cea655a71d4e61c2517dd6a1712f04bd"
+}

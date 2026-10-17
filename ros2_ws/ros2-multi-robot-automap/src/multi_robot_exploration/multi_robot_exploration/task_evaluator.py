@@ -412,6 +412,8 @@ class TaskEvaluator(Node):
         self.training_acknowledged = False
         self.training_ack_deadline_wall = None
         self.pending_training_finalize = None
+        self.infrastructure_abort = None
+        self.infrastructure_abort_ack = None
         self.task_terminal_notice_published = False
         self.diagnostic_failure_request = None
         self.pending_diagnostic_failure = None
@@ -467,6 +469,8 @@ class TaskEvaluator(Node):
             self.reward_ready_publisher = self.create_publisher(
                 String, "/mr3/reward_ready", map_qos,
             )
+            self.infrastructure_failure_publisher = self.create_publisher(
+                String, "/exploration_failure", map_qos)
             self.input_subscriptions.extend([
                 self.create_subscription(String, "/mr3/evaluator_phase_request",
                                          self._evaluator_phase_callback, 10),
@@ -475,6 +479,9 @@ class TaskEvaluator(Node):
                 ),
                 self.create_subscription(
                     String, "/mr3/training_finalize", self._training_finalize_callback, 20,
+                ),
+                self.create_subscription(
+                    String, "/mr3/infrastructure_abort", self._infrastructure_abort_callback, 10,
                 ),
                 self.create_subscription(String, "/mr3/events", self._reward_event_callback, 100),
             ])
@@ -616,6 +623,8 @@ class TaskEvaluator(Node):
                 self.pending_contacts.append((stamp, robot, component, message))
 
     def _release_callback(self, message):
+        if getattr(self, "infrastructure_abort", None) is not None:
+            return
         if self.finalized or self.start_sim_time is not None:
             return
         stamp = message.stamp.sec + message.stamp.nanosec / 1e9
@@ -659,6 +668,27 @@ class TaskEvaluator(Node):
             self._drain_reward_requests()
 
     def _stopped_callback(self, message):
+        if getattr(self, "infrastructure_abort", None) is not None:
+            try:
+                acknowledgment = json.loads(message.data)
+                stop = acknowledgment["stop_sim_time_sec"]
+                if (acknowledgment.get("epoch") != self.episode_id
+                        or acknowledgment.get("robot_names") != self.robot_names
+                        or type(acknowledgment.get("pending_goal_count")) is not int
+                        or acknowledgment["pending_goal_count"] != 0
+                        or type(stop) not in (int, float) or not math.isfinite(stop)
+                        or stop < 0 or type(acknowledgment.get("navigation_failure")) is not bool):
+                    raise ValueError("invalid infrastructure navigation closure")
+                if stop > self._now():
+                    self.pending_stop_ack = message
+                    return
+                self.stop_acknowledgment = acknowledgment
+                self.navigation_protocol_closed = True
+            except (ValueError, TypeError, KeyError) as error:
+                self._publish_reward_response({"epoch": self.episode_id,
+                                               "kind": "training_infrastructure_abort_error",
+                                               "error": str(error)})
+            return
         external_cut = getattr(self, "training_external_cut", None)
         requested_stop = self.stop_requested_sim_time
         if requested_stop is None and external_cut is not None:
@@ -822,6 +852,11 @@ class TaskEvaluator(Node):
             self._timer_callback()
 
     def _control_failure_callback(self, message):
+        if getattr(self, "infrastructure_abort", None) is not None:
+            # The explicit invalid-sample abort has no reward/task terminal.
+            # Its real navigation closure and worker finalize still precede exit.
+            self.control_failure = message.data
+            return
         if self.finalized:
             return
         self.control_failure = message.data
@@ -880,6 +915,8 @@ class TaskEvaluator(Node):
         self._control_failure_callback(String(data=pending["reason"]))
 
     def _timer_callback(self):
+        if getattr(self, "infrastructure_abort", None) is not None:
+            return
         if self.finalized:
             return
         if self.task_contract:
@@ -1120,6 +1157,11 @@ class TaskEvaluator(Node):
             }
 
     def _reward_request_callback(self, message):
+        if getattr(self, "infrastructure_abort", None) is not None:
+            self._publish_reward_response({"epoch": self.episode_id,
+                                           "kind": "training_infrastructure_abort_error",
+                                           "error": "reward request during invalid-sample abort"})
+            return
         request = None
         try:
             request = json.loads(message.data)
@@ -1267,6 +1309,8 @@ class TaskEvaluator(Node):
             })
 
     def _drain_reward_requests(self):
+        if getattr(self, "infrastructure_abort", None) is not None:
+            return
         now = self._now()
         for sequence, pending in sorted(tuple(self.pending_reward_requests.items())):
             request = pending["request"]
@@ -1284,6 +1328,56 @@ class TaskEvaluator(Node):
                     self.pending_reward_requests[sequence]["deadline_wall"] = (
                         pending["deadline_wall"]
                     )
+
+    def _infrastructure_abort_callback(self, message):
+        """Close an invalid unsealed attempt without manufacturing a reward."""
+        try:
+            request = json.loads(message.data)
+            if (not isinstance(request, dict)
+                    or set(request) != {"epoch", "reason", "operation"}
+                    or request["epoch"] != self.episode_id
+                    or request["reason"] != "infrastructure_failure"
+                    or request["operation"] not in ("begin", "finalize")):
+                raise ValueError("invalid infrastructure abort request")
+            if self.reward_ledger is not None and self.reward_ledger.sealed:
+                raise ValueError("sealed reward ledger requires normal training finalization")
+            previous = getattr(self, "infrastructure_abort", None)
+            if request["operation"] == "begin":
+                if previous is not None:
+                    if previous != request:
+                        raise ValueError("infrastructure abort identity changed")
+                    self._publish_reward_response({
+                        "epoch": self.episode_id, "kind": "training_infrastructure_abort_started",
+                        "reason": "infrastructure_failure", "invalid_sample": True})
+                    return
+                self.infrastructure_abort = request
+                self.infrastructure_failure_publisher.publish(String(data=json.dumps({
+                    "component": "mr3_environment_worker", "reason": "infrastructure_failure",
+                    "epoch": self.episode_id, "invalid_sample": True})))
+                self._publish_reward_response({
+                    "epoch": self.episode_id, "kind": "training_infrastructure_abort_started",
+                    "reason": "infrastructure_failure", "invalid_sample": True})
+                return
+            if previous is None:
+                raise ValueError("infrastructure abort finalize lacks begin")
+            if not self.navigation_protocol_closed:
+                raise ValueError("infrastructure abort requires actual navigation closure")
+            if getattr(self, "infrastructure_abort_ack", None) is not None:
+                self._publish_reward_response(self.infrastructure_abort_ack)
+                return
+            if not self.finalized:
+                self.finalize("shutdown")
+            self.training_acknowledged = True
+            self.infrastructure_abort_ack = {
+                "epoch": self.episode_id, "kind": "training_infrastructure_abort_ack",
+                "reason": "infrastructure_failure", "invalid_sample": True,
+                "scope": ("no synthetic transition or reward; actual navigation closure "
+                          "before exit")}
+            self._publish_reward_response(self.infrastructure_abort_ack)
+        except (ValueError, TypeError, KeyError) as error:
+            self._publish_reward_response({"epoch": self.episode_id,
+                                           "kind": "training_infrastructure_abort_error",
+                                           "error": str(error)})
 
     def _training_finalize_callback(self, message):
         request = None
@@ -1326,7 +1420,8 @@ class TaskEvaluator(Node):
             # messages whose unchanged source time has now actually arrived.
             now = self._now()
             pending_ack = getattr(self, "pending_stop_ack", None)
-            if not self.finalized and pending_ack is not None and (
+            if (not self.finalized or getattr(self, "infrastructure_abort", None) is not None) \
+                    and pending_ack is not None and (
                     json.loads(pending_ack.data)["stop_sim_time_sec"] <= now):
                 self.pending_stop_ack = None
                 self._stopped_callback(pending_ack)

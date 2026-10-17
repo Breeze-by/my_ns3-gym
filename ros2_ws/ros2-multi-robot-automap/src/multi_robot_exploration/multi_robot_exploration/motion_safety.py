@@ -20,6 +20,7 @@ from multi_robot_exploration.mr3_episode import elapsed_ns, timestamp_ns
 from multi_robot_exploration.mr3_motion_safety import (
     COMMAND_TIMEOUT_SEC, PERIOD_SEC, ROBOTS, SettledTurnTracker, guard_motion, valid_state,
 )
+from multi_robot_exploration.mr3_motion_control import MotionControlPhase
 
 
 class MotionSafety(Node):
@@ -28,6 +29,7 @@ class MotionSafety(Node):
     def __init__(self):
         super().__init__("motion_safety")
         self.epoch = self.declare_parameter("episode_epoch", "").value
+        stepped = self.declare_parameter("stepped_mode", False).value
         audit_path = self.declare_parameter("audit_path", "").value
         if not self.epoch:
             raise ValueError("motion safety requires an episode epoch")
@@ -41,6 +43,10 @@ class MotionSafety(Node):
         self.drive_record_sequence = 0
         self.record_sequence = 0
         self.odometry, self.transforms, self.requests = {}, {}, {}
+        self.own_input_history = {
+            name: {kind: deque(maxlen=256) for kind in ("odom", "tf")} for name in ROBOTS}
+        self.issued_motion = set()
+        self.completed_motion = {}
         self.settled_turn = {name: SettledTurnTracker() for name in ROBOTS}
         self.input_sequences = {name: {"odom": 0, "tf": 0, "request": 0} for name in ROBOTS}
         self.decision_sequences = dict.fromkeys(ROBOTS, 0)
@@ -86,12 +92,15 @@ class MotionSafety(Node):
                                      durable),
         ])
         self.timer = self.create_timer(PERIOD_SEC, self.tick)
+        self.control_phase = MotionControlPhase(self) if stepped else None
         self.record("configuration", {
             "robots": list(ROBOTS),
             "input_topics": [f"/{name}/cmd_vel_unguarded" for name in ROBOTS],
             "output_topics": [f"/{name}/cmd_vel" for name in ROBOTS],
             "source_scope": "each own local odom/TF plus received peer states only",
             "twist_source_stamp_available": False,
+            "own_input_selection": "latest_causal_v1",
+            "controlled_execution": stepped,
             "settled_turn_contract": "mr3-settled-turn-v1; own zero publications .94s, "
             "three later fresh rest samples; conditional persistent planar speed<=.01m/s "
             "and whole zero-segment centre path<=.0078m, never reset by repeated grants; "
@@ -129,6 +138,8 @@ class MotionSafety(Node):
     def receive_odom(self, message, name):
         self.odometry[name] = message
         self.input_sequences[name]["odom"] += 1
+        self.own_input_history[name]["odom"].append(
+            (self.input_sequences[name]["odom"], message))
         payload = odom_payload(message)
         self.record("own_odom", {"robot": name,
                                  "input_sequence": self.input_sequences[name]["odom"],
@@ -138,6 +149,7 @@ class MotionSafety(Node):
         except (ValueError, KeyError, TypeError) as error:
             self.halted = "settled_turn_model_failure"
             self.record("settled_turn_model_failure", {"robot": name, "reason": str(error)})
+            self.stop_controlled()
 
     def receive_tf(self, message, name):
         for transform in message.transforms:
@@ -145,6 +157,8 @@ class MotionSafety(Node):
                     and transform.child_frame_id.lstrip("/") == "odom"):
                 self.transforms[name] = transform
                 self.input_sequences[name]["tf"] += 1
+                self.own_input_history[name]["tf"].append(
+                    (self.input_sequences[name]["tf"], transform))
                 self.record("own_tf", {"robot": name,
                                        "input_sequence": self.input_sequences[name]["tf"],
                                        "message": transform_payload(transform)})
@@ -196,14 +210,32 @@ class MotionSafety(Node):
                                        "observed_decision_sequence": observed})
         if observed is not None:
             self.publish_completed_status(output["clock_ns"])
+        else:
+            self.stop_controlled()
 
     def publish_completed_status(self, clock_ns):
-        status = self.pending_status.get(clock_ns)
-        if (status is not None and self.get_clock().now().nanoseconds == clock_ns
-                and all(self.observed_sequences[name] >= status["decision_sequences"][name]
-                        for name in ROBOTS)):
-            self.status_pub.publish(String(data=json.dumps(status)))
-            self.pending_status.pop(clock_ns)
+        for key, status in list(self.pending_status.items()):
+            if (status["clock_ns"] != clock_ns
+                    or self.get_clock().now().nanoseconds != clock_ns
+                    or not all(self.observed_sequences[name] >= status["decision_sequences"][name]
+                               for name in ROBOTS)):
+                continue
+            kind = status.get("phase_kind", "normal")
+            started = time.monotonic_ns()
+            if kind == "normal":
+                self.status_pub.publish(String(data=json.dumps(status)))
+            else:
+                self.control_phase.stop_publisher.publish(String(data=json.dumps(status)))
+            if hasattr(self, "completed_motion"):
+                self.completed_motion[(clock_ns, kind)] = status
+                while len(self.completed_motion) > 128:
+                    del self.completed_motion[next(iter(self.completed_motion))]
+            self.pending_status.pop(key)
+            self.record("output_completed", {
+                "status": status, "publish_started_wall_monotonic_ns": started,
+                "publish_completed_wall_monotonic_ns": time.monotonic_ns()})
+        if getattr(self, "control_phase", None) is not None:
+            self.control_phase.poll()
 
     def local_observers_ready(self):
         return all(self.outputs[name].get_subscription_count() > 0 and any(
@@ -239,6 +271,7 @@ class MotionSafety(Node):
     def receive_stop(self, message):
         self.stop_time = self.now()
         self.record("stop_request", {"stamp": message.stamp.sec + message.stamp.nanosec / 1e9})
+        self.stop_controlled()
 
     def receive_terminal(self, message):
         try:
@@ -249,18 +282,42 @@ class MotionSafety(Node):
                     raise ValueError("terminal time must be finite")
                 self.stop_time = stamp
                 self.record("terminal", value)
+                self.stop_controlled()
         except (ValueError, KeyError, TypeError) as error:
             self.halted = "invalid_terminal_notice"
             self.record("invalid_terminal_notice", {"reason": str(error)})
+            self.stop_controlled()
 
     def receive_failure(self, message):
-        self.halted = "external_safety_failure"
+        self.halted = self.halted or "external_safety_failure"
         self.record("failure", {"data": message.data})
+        self.stop_controlled()
+
+    def stop_controlled(self):
+        if getattr(self, "control_phase", None) is not None:
+            self.control_phase.ensure_stop()
 
     def local_state(self, name):
         if name not in self.odometry or name not in self.transforms:
             return None
         odometry, transform = self.odometry[name], self.transforms[name]
+        sequences = {key: self.input_sequences[name][key] for key in ("odom", "tf")}
+        if hasattr(self, "own_input_history"):
+            now_ns = self.get_clock().now().nanoseconds
+            for kind, lead in (("odom", 0), ("tf", 200_000_000)):
+                eligible = [(sequence, item) for sequence, item
+                            in self.own_input_history[name][kind]
+                            if item.header.stamp.sec * 1_000_000_000
+                            + item.header.stamp.nanosec - lead <= now_ns]
+                if not eligible:
+                    return None
+                sequence, selected = max(eligible, key=lambda value: (
+                    value[1].header.stamp.sec, value[1].header.stamp.nanosec, value[0]))
+                sequences[kind] = sequence
+                if kind == "odom":
+                    odometry = selected
+                else:
+                    transform = selected
         if (odometry.header.frame_id.lstrip("/") != "odom"
                 or odometry.child_frame_id.lstrip("/") not in ("base_footprint", "base_link")):
             return None
@@ -269,13 +326,12 @@ class MotionSafety(Node):
             if (not all(math.isfinite(value) for value in values)
                     or abs(sum(value * value for value in values) - 1.) > .01):
                 return None
-        value = state_payload(name, self.odometry[name], self.transforms[name], .2)
+        value = state_payload(name, odometry, transform, .2)
         value.pop("odometry")
         value.pop("transform")
         value.update(epoch=self.epoch, valid=True,
                      source_stamp=min(value["odom_source_stamp"], value["tf_source_stamp"]),
-                     input_sequences={key: self.input_sequences[name][key]
-                                      for key in ("odom", "tf")})
+                     input_sequences=sequences)
         value["planar_speed_mps"] = math.hypot(odometry.twist.twist.linear.x,
                                                odometry.twist.twist.linear.y)
         try:
@@ -294,10 +350,33 @@ class MotionSafety(Node):
                    for name in ROBOTS)
 
     def tick(self):
+        phase = getattr(self, "control_phase", None)
+        if phase is not None:
+            if not phase.controlled:
+                self.ensure_motion_output(self.get_clock().now().nanoseconds)
+            return
+        self.emit_motion()
+
+    def control_inputs_ready(self, clock_ns):
+        now = clock_ns / 1e9
+        states = {row["name"]: row for row in self.received["robots"]} if self.received else {}
+        return (self.local_observers_ready() and self.topology_ready()
+                and all(valid_state(self.local_state(name), now, self.epoch)
+                        and valid_state(states.get(name), now, self.epoch) for name in ROBOTS))
+
+    def ensure_motion_output(self, clock_ns, stop=False):
+        key = (clock_ns, "stop" if stop else "normal")
+        if key in self.issued_motion:
+            return
+        if self.get_clock().now().nanoseconds != clock_ns:
+            raise ValueError("motion output clock differs from phase")
+        self.emit_motion(stop=stop)
+
+    def emit_motion(self, stop=False):
         clock_ns = self.get_clock().now().nanoseconds
         now = clock_ns / 1e9
         observers_ready = self.local_observers_ready()
-        if not observers_ready and not self.observers_started:
+        if not observers_ready and not self.observers_started and not stop:
             self.ready_pub.publish(Bool(data=False))
             self.record("output_observer_wait", {"clock_ns": clock_ns})
             return
@@ -307,9 +386,12 @@ class MotionSafety(Node):
         healthy = (observers_ready and self.topology_ready()
                    and all(valid_state(own[name], now, self.epoch)
                    and valid_state(states.get(name), now, self.epoch) for name in ROBOTS))
+        if hasattr(self, "issued_motion"):
+            self.issued_motion.add((clock_ns, "stop" if stop else "normal"))
+        healthy = healthy and not stop
         ready = Bool(data=healthy)
         self.ready_pub.publish(ready)
-        if self.started and not healthy and self.halted is None:
+        if self.started and not healthy and not stop and self.halted is None:
             self.halted = "motion_state_or_topology_unavailable"
         if self.halted and self.started and not self.failure_sent:
             self.failure_sent = True
@@ -319,7 +401,9 @@ class MotionSafety(Node):
         for name in ROBOTS:
             peers = {peer: states.get(peer) for peer in ROBOTS if peer != name}
             request = self.requests.get(name)
-            if not healthy:
+            if stop:
+                reason = self.halted or "controlled_stop"
+            elif not healthy:
                 reason = "state_or_topology_unavailable"
             elif not self.started:
                 reason = "before_release"
@@ -353,7 +437,8 @@ class MotionSafety(Node):
                                      "decision_sequence": self.decision_sequences[name],
                                      "request": request, "own_state": own[name],
                                      "received_peers": peers, "decision": decision,
-                                     "started": self.started, "ready": healthy})
+                                     "started": self.started, "ready": healthy,
+                                     **({"phase_kind": "stop"} if stop else {})})
             self.pending_outputs[name].append({"sequence": self.decision_sequences[name],
                                                "clock_ns": clock_ns,
                                                "output": decision["output"]})
@@ -374,11 +459,14 @@ class MotionSafety(Node):
                 }, sort_keys=True, allow_nan=False) + "\n")
             phase_outputs[name] = {"linear_x": output.linear.x, "angular_z": output.angular.z}
         if self.get_clock().now().nanoseconds == clock_ns:
-            self.pending_status = {clock_ns: {
+            status = {
                 "schema": "mr3-motion-safety-status-v1", "epoch": self.epoch,
                 "clock_ns": clock_ns, "ready": healthy,
                 "completion_scope": "publication_and_local_topic_receipt",
-                "decision_sequences": dict(self.decision_sequences), "outputs": phase_outputs}}
+                "decision_sequences": dict(self.decision_sequences), "outputs": phase_outputs}
+            if stop:
+                status["phase_kind"] = "stop"
+            self.pending_status[(clock_ns, "stop" if stop else "normal")] = status
             self.publish_completed_status(clock_ns)
         else:
             self.record("clock_changed_during_decision", {"decision_clock_ns": clock_ns})

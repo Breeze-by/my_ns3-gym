@@ -621,3 +621,285 @@ class MotionAuditTests(unittest.TestCase):
                     (directory / "motion_topology.json").unlink()
                 with self.assertRaises((ValueError, FileNotFoundError)):
                     _audit_records(directory, self.helper, {})
+
+
+def write_controlled_fixture(directory, helper):
+    """Two real controlled quanta and a same-clock permanent zero stop."""
+    files = write_fixture(directory, helper)
+    original = files["motion_safety.jsonl"]
+    first_decision = next(i for i, row in enumerate(original) if row["kind"] == "decision")
+    rows = copy.deepcopy(original[:first_decision])
+    epoch = files["metadata.json"]["epoch"]
+    configuration = rows[0]["payload"]
+    configuration.update(own_input_selection="latest_causal_v1", controlled_execution=True)
+    files["metadata.json"]["execution_phase_protocol"] = "mr3-controlled-execution-phase-v1"
+    base = {row["payload"]["robot"]: copy.deepcopy(row["payload"])
+            for row in original if row["kind"] == "decision"
+            and row["payload"]["decision_sequence"] == 1}
+    worker, normal_phase, drive = [], [], []
+    native = {name: [] for name in ROBOTS}
+    wall = rows[-1]["wall_monotonic_ns"] + 10
+
+    def tick():
+        nonlocal wall
+        wall += 10
+        return wall
+
+    def node(kind, value, clock):
+        rows.append({"schema": "mr3-motion-safety-v1", "epoch": epoch,
+                     "record_sequence": len(rows) + 1, "kind": kind, "payload": value,
+                     "sim_time_sec": clock / 1e9, "wall_monotonic_ns": tick()})
+
+    def event(kind, clock, **values):
+        worker.append({"schema": "mr3-controlled-execution-phase-v1", "epoch": epoch,
+                       "kind": kind, "worker_clock_ns": clock, "worker_physical_ns": clock,
+                       "wall_monotonic_ns": tick(), **values})
+
+    def request(component, operation, clock, identity, **refs):
+        value = {"schema": f"mr3-{component}-phase-request-v1", "epoch": epoch,
+                 "request_id": identity, "target_time_ns": clock, "operation": operation, **refs}
+        if component == "motion":
+            value["schema"] = "mr3-motion-control-request-v1"
+        event("request", clock, component=component, request=value)
+        return value
+
+    def ack(req, **fields):
+        identity = {key: req[key] for key in (
+            "epoch", "request_id", "target_time_ns", "operation")}
+        return {**identity,
+                "schema": req["schema"].replace("request", "ack"),
+                "clock_ns": req["target_time_ns"], "ok": True, **fields}
+
+    def consume(component, response):
+        for kind in ("ack_received", "ack_consumed"):
+            event(kind, response["clock_ns"], component=component, ack=copy.deepcopy(response))
+
+    def emit(clock, sequence, released=False, stop=False):
+        outputs = {}
+        for name in ROBOTS:
+            value = copy.deepcopy(base[name])
+            value.update(clock_ns=clock, decision_sequence=sequence, started=released,
+                         ready=not stop)
+            if stop:
+                value["phase_kind"] = "stop"
+            value["decision"] = ({"allow": False, "reason": "controlled_stop" if stop
+                                  else "before_release", "output": [0., 0.],
+                                  "minimum_margin_m": None} if stop or not released else
+                                 helper.guard_motion([.2, 0.], value["own_state"],
+                                                     value["received_peers"], clock / 1e9, epoch))
+            node("decision", value, clock)
+            outputs[name] = {"linear_x": value["decision"]["output"][0],
+                             "angular_z": value["decision"]["output"][1]}
+        for name in ROBOTS:
+            source = next(row["payload"] for row in original if row["kind"] == "actual_cmd_vel"
+                          and row["payload"]["robot"] == name)
+            value = copy.deepcopy(source)
+            value.update(observed_decision_sequence=sequence,
+                         twist=twist(outputs[name]["linear_x"], outputs[name]["angular_z"]))
+            node("actual_cmd_vel", value, clock)
+        status = {"schema": "mr3-motion-safety-status-v1", "epoch": epoch, "clock_ns": clock,
+                  "ready": not stop, "completion_scope": "publication_and_local_topic_receipt",
+                  "decision_sequences": dict.fromkeys(ROBOTS, sequence), "outputs": outputs}
+        if stop:
+            status["phase_kind"] = "stop"
+        start, end = tick(), tick()
+        node("output_completed", {"status": status,
+                                  "publish_started_wall_monotonic_ns": start,
+                                  "publish_completed_wall_monotonic_ns": end}, clock)
+        return status
+
+    def motion_response(req, status):
+        response = ack(req, status=status)
+        clock = response["clock_ns"]
+        node("control_ack", response, clock)
+        start, end = tick(), tick()
+        node("control_ack_published", {"ack": response,
+                                       "publish_started_wall_monotonic_ns": start,
+                                       "publish_completed_wall_monotonic_ns": end}, clock)
+        consume("motion", response)
+        if "phase_kind" not in status:
+            for kind in ("ack_received", "ack_consumed"):
+                normal_phase.append({"kind": kind, "epoch": epoch, "ack": status,
+                                     "worker_clock_ns": clock, "worker_physical_ns": clock,
+                                     "wall_monotonic_ns": tick()})
+        return response
+
+    def advance(identity, clock, status):
+        kind = ("bootstrap_zero" if clock == 1_000_000_000 else
+                "stop" if status.get("phase_kind") == "stop" else "normal")
+        reference = (f"takeover{clock}" if kind == "bootstrap_zero" else
+                     f"stop{clock}" if kind == "stop" else f"boundary{clock}")
+        receipts = {}
+        for name in ROBOTS:
+            sequence = status["decision_sequences"][name]
+            receipt = {"schema": "mr3-drive-target-consumed-v1", "epoch": epoch,
+                       "robot": name, "clock_ns": clock, "source_clock_ns": clock,
+                       "cmd_seq": sequence, "decision_sequence": sequence,
+                       **status["outputs"][name]}
+            receipts[name] = receipt
+            command = {"schema": "mr3-drive-actuation-v2", "epoch": epoch, "robot": name,
+                       "kind": "command_received", "cmd_seq": sequence, "sim_time_ns": clock,
+                       "target_clock_ns": clock, "target_decision_sequence": sequence,
+                       "desired_v": receipt["linear_x"], "desired_w": receipt["angular_z"],
+                       "record_sequence": len(native[name]) + 1}
+            native[name].append(command)
+            native[name].append({**command, "kind": "status_publish", "status": receipt,
+                                 "record_sequence": len(native[name]) + 1})
+            drive.append({"kind": "ack_received", "epoch": epoch, "topic_robot": name,
+                          "ack": receipt, "wall_monotonic_ns": tick()})
+        drive.append({"kind": "ack_consumed", "epoch": epoch, "expected_motion": status,
+                      "receipts": receipts, "wall_monotonic_ns": tick()})
+        drive.append({"kind": "advance_permitted", "epoch": epoch, "request_id": identity,
+                      "start_time_ns": clock, "steps": 20, "expected_motion": status,
+                      "control_kind": kind, "control_request_id": reference,
+                      "receipts": receipts, "worker_clock_ns": clock,
+                      "worker_physical_ns": clock,
+                      "wall_monotonic_ns": tick()})
+
+    initial = emit(1_000_000_000, 1)
+    req = request("motion", "takeover", 1_000_000_000, "takeover1000000000")
+    node("control_request", req, 1_000_000_000)
+    motion_response(req, initial)
+    for component in ("state", "peer"):
+        req = request(component, "takeover", 1_000_000_000, "takeover1000000000")
+        consume(component, ack(req))
+    advance("q2", 1_000_000_000, initial)
+    for sequence, clock in ((2, 1_020_000_000), (3, 1_040_000_000)):
+        identity = f"boundary{clock}"
+        state_req = request("state", "commit", clock, identity)
+        state = ack(state_req, state_sequence=sequence, bundle_sha256="a" * 64,
+                    scope="actual_state_and_side_publish_calls_returned")
+        consume("state", state)
+        peer_req = request("peer", "commit", clock, identity, state_commit=state)
+        peer = ack(peer_req, state_commit=state, commit_sequence=sequence,
+                   bundle_sha256="a" * 64, scope="actual_obstacle_publish_calls_returned")
+        consume("peer", peer)
+        node("control_dependency", {"component": "state", "value": state}, clock)
+        node("control_dependency", {"component": "peer", "value": peer}, clock)
+        req = request("motion", "commit", clock, identity, state_commit=state, peer_commit=peer)
+        node("control_request", req, clock)
+        status = emit(clock, sequence, released=sequence == 3)
+        node("control_commit", {"request": req}, clock)
+        motion_response(req, status)
+        if sequence == 2:
+            node("release", {"stamp": clock / 1e9}, clock)
+            advance("q3", clock, status)
+    node("stop_request", {"stamp": 1.04}, 1_040_000_000)
+    req = request("motion", "stop", 1_040_000_000, "stop1040000000", reason="task_terminal")
+    node("control_request", req, 1_040_000_000)
+    stopped = emit(1_040_000_000, 4, released=True, stop=True)
+    event("stop_observed", 1_040_000_000, status=stopped, origin="stop_topic", duplicate=False)
+    motion_response(req, stopped)
+    advance("q4", 1_040_000_000, stopped)
+    req = request("motion", "stop", 1_060_000_000, "stop1060000000", reason="task_terminal")
+    node("control_request", req, 1_060_000_000)
+    stopped = emit(1_060_000_000, 5, released=True, stop=True)
+    motion_response(req, stopped)
+    files.update({"motion_safety.jsonl": rows, "motion_phase_worker.jsonl": normal_phase,
+                  "control_phase_worker.jsonl": worker, "drive_phase_worker.jsonl": drive,
+                  "transitions.jsonl": [
+                      {"kind": "reset", "snapshot": {"epoch": epoch, "source_stamp": 1.02},
+                       "info": {"release_time_ns": 1_020_000_000,
+                                "initial_motion_status": normal_phase[2]["ack"]}},
+                      {"kind": "step", "snapshot": {"epoch": epoch, "source_stamp": 1.04}}],
+                  "physics.jsonl": [
+                      {"request_id": "q1", "steps": 0, "start_time_ns": 1_000_000_000,
+                       "end_time_ns": 1_000_000_000},
+                      {"request_id": "q2", "steps": 20, "start_time_ns": 1_000_000_000,
+                       "end_time_ns": 1_020_000_000},
+                      {"request_id": "q3", "steps": 20, "start_time_ns": 1_020_000_000,
+                       "end_time_ns": 1_040_000_000},
+                      {"request_id": "q4", "steps": 20, "start_time_ns": 1_040_000_000,
+                       "end_time_ns": 1_060_000_000}]})
+    files.update({f"drive_{name}.jsonl": values for name, values in native.items()})
+    for row in files["physics.jsonl"]:
+        row.update(epoch=epoch, ok=True, paused=True, step_ns=1_000_000,
+                   start_iterations=row["start_time_ns"] // 1_000_000,
+                   end_iterations=row["end_time_ns"] // 1_000_000)
+    write_files(directory, files)
+    return json.loads(json.dumps(files))
+
+
+class ControlledMotionAuditTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.helper = helper_module()
+
+    def test_same_clock_explicit_stop_retains_full_fifo_and_distinct_normal_ack(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            write_controlled_fixture(directory, self.helper)
+            result = _audit_records(directory, self.helper, {})
+            self.assertTrue(result["passed"])
+            self.assertEqual(result["controlled_execution_replay"]["stop_clocks"],
+                             [1040000000, 1060000000])
+            self.assertEqual(result["robots"]["tb1"]["controlled_stop_decisions"], 2)
+
+    def test_control_mutations_cannot_hide_missing_side_order_or_zero_completion(self):
+        for mutation in ("failure", "nonzero_stop", "missing_self", "wrong_dependency",
+                         "missing_publication", "normal_overwrite", "advance_without_chain",
+                         "bootstrap_kind"):
+            with self.subTest(mutation=mutation), tempfile.TemporaryDirectory() as temporary:
+                directory = Path(temporary)
+                files = write_controlled_fixture(directory, self.helper)
+                rows = files["motion_safety.jsonl"]
+                if mutation == "failure":
+                    target = next(row for row in rows if row["kind"] == "control_commit")
+                    target.update(kind="control_failure", payload={"error": "actual timeout"})
+                elif mutation == "nonzero_stop":
+                    target = next(row for row in rows if row["kind"] == "decision"
+                                  and row["payload"].get("phase_kind") == "stop")
+                    target["payload"]["decision"]["output"][0] = .01
+                elif mutation == "missing_self":
+                    target = next(row for row in rows if row["kind"] == "actual_cmd_vel"
+                                  and row["payload"]["observed_decision_sequence"] == 4)
+                    target["payload"]["observed_decision_sequence"] = 3
+                elif mutation == "wrong_dependency":
+                    target = next(row for row in rows if row["kind"] == "control_commit")
+                    target["payload"]["request"]["state_commit"]["bundle_sha256"] = "b" * 64
+                elif mutation == "missing_publication":
+                    for row in rows:
+                        if row["kind"] == "control_ack_published":
+                            row["kind"] = "configuration"
+                elif mutation == "normal_overwrite":
+                    files["motion_phase_worker.jsonl"][-1]["ack"]["phase_kind"] = "stop"
+                elif mutation == "advance_without_chain":
+                    files["drive_phase_worker.jsonl"] = []
+                else:
+                    next(row for row in files["drive_phase_worker.jsonl"]
+                         if row.get("control_kind") == "bootstrap_zero")["control_kind"] = "normal"
+                write_files(directory, files)
+                with self.assertRaises(ValueError):
+                    _audit_records(directory, self.helper, {})
+
+    def test_future_and_late_old_own_callbacks_do_not_replace_latest_causal_source(self):
+        for source in (1.04, .98):
+            with self.subTest(source=source), tempfile.TemporaryDirectory() as temporary:
+                directory = Path(temporary)
+                files = write_fixture(directory, self.helper)
+                rows = files["motion_safety.jsonl"]
+                rows[0]["payload"]["own_input_selection"] = "latest_causal_v1"
+                index = next(i for i, row in enumerate(rows) if row["kind"] == "decision")
+                injected = []
+                for name in ROBOTS:
+                    original = next(row for row in rows if row["kind"] == "own_odom"
+                                    and row["payload"]["robot"] == name)
+                    row = copy.deepcopy(original)
+                    row["payload"]["input_sequence"] = 2
+                    row["payload"]["message"]["header"]["stamp"] = {
+                        "sec": int(source), "nanosec": round((source % 1) * 1e9)}
+                    injected.append(row)
+                rows[index:index] = injected
+                for i, row in enumerate(rows, 1):
+                    row["record_sequence"] = i
+                    row["wall_monotonic_ns"] = 1000 + i * 10
+                # Keep real ACK receipts after the newly inserted actual outputs.
+                for row in files["motion_phase_worker.jsonl"]:
+                    row["wall_monotonic_ns"] += (len(injected) + 1) * 10
+                write_files(directory, files)
+                self.assertTrue(_audit_records(directory, self.helper, {})["passed"])
+                target = next(row for row in rows if row["kind"] == "decision")
+                target["payload"]["own_state"]["input_sequences"]["odom"] = 2
+                write_files(directory, files)
+                with self.assertRaisesRegex(ValueError, "raw local"):
+                    _audit_records(directory, self.helper, {})

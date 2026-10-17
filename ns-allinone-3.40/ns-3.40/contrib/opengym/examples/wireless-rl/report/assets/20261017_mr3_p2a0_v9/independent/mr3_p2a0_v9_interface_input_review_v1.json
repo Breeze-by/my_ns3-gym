@@ -1,0 +1,105 @@
+{
+  "schema": "mr3-p2a0-v4-independent-input-episode-review-v1",
+  "passed": false,
+  "whole_observation_and_seven_map_replay_passed": false,
+  "episode": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v9_interface/worker0/episode001_open_101",
+  "freeze": "26534fae40409e266376baf0995fb15dc0223e4b",
+  "error": "AssertionError('episode not closed yet')",
+  "traceback": [
+    "Traceback (most recent call last):\n",
+    "  File \"/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v4/independent/mr3_p2a0_v4_independent_input_episode_review_v1.py\", line 126, in <module>\n    assert (ARGS.episode / \"summary.json\").exists(), \"episode not closed yet\"\n",
+    "AssertionError: episode not closed yet\n"
+  ],
+  "inputs": {
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v9_interface/worker0/episode001_open_101/metadata.json": {
+      "bytes": 2426,
+      "sha256": "41233b6661122fe8f897b029dcc15fecb137f5572d94aac52004e1e65f802ea0"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v9_interface/benchmark_metadata.json": {
+      "bytes": 1631,
+      "sha256": "242ff57a80daa86be4d63ff51a263b5d7b83c93ca7fe404b426a74a239bab41d"
+    },
+    "/tmp/mr3_p2a0_v4_frozen_26534fae4040_vtktpirf/multi_robot_exploration/mr3_observation.py": {
+      "bytes": 47258,
+      "sha256": "b81da18c256ff307a4afc09c5115d0057e5a142a246555f39c1f7a5cee88c6e8"
+    },
+    "/tmp/mr3_p2a0_v4_frozen_26534fae4040_vtktpirf/multi_robot_exploration/mr3_episode.py": {
+      "bytes": 1379,
+      "sha256": "9145d2ad23789b252e32f0afdfe18cf2eeec8e2c7e9ca7e89127a532288e411b"
+    },
+    "/tmp/mr3_p2a0_v4_frozen_26534fae4040_vtktpirf/multi_robot_exploration/mr3_observation_archive.py": {
+      "bytes": 4459,
+      "sha256": "03da72d5e989e6c7af99b90aaddf357120c2239fc08e99febb858554b1fefea8"
+    },
+    "/tmp/mr3_p2a0_v4_frozen_26534fae4040_vtktpirf/multi_robot_exploration/mr3_adapter.py": {
+      "bytes": 45330,
+      "sha256": "90444564b04b86982553a7fe6e0b98beb290ba92c3ab1e32e503998e6411fc1c"
+    },
+    "/tmp/mr3_p2a0_v4_frozen_26534fae4040_vtktpirf/multi_robot_exploration/mr3_information.py": {
+      "bytes": 42614,
+      "sha256": "b9830fa5089201920e05196d923e82fff62344946a43987204b1f43aaeb3e1b5"
+    },
+    "/tmp/mr3_p2a0_v4_frozen_26534fae4040_vtktpirf/multi_robot_exploration/mr3_activity.py": {
+      "bytes": 6162,
+      "sha256": "7af918d75c05b6f8fb1a65899e43aad11a315640e8b00fdb589c31f693ad696e"
+    },
+    "/tmp/mr3_p2a0_v4_frozen_26534fae4040_vtktpirf/mr3_learning/navigation_archive.py": {
+      "bytes": 4655,
+      "sha256": "b509cc0d19ca443c0776cae4d728d35f399670bda08c171d590c8738964c48bd"
+    },
+    "/tmp/mr3_p2a0_v4_frozen_26534fae4040_vtktpirf/mr3_learning/audit_activity.py": {
+      "bytes": 15707,
+      "sha256": "0fa0c47262ccf29f140cc2b915431461e830f87680b65f524cbda6a6ffff4407"
+    }
+  },
+  "source_proof": {
+    "mr3_observation.py": {
+      "freeze": "26534fae40409e266376baf0995fb15dc0223e4b",
+      "sha256": "b81da18c256ff307a4afc09c5115d0057e5a142a246555f39c1f7a5cee88c6e8",
+      "source": "26534fae40409e266376baf0995fb15dc0223e4b:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py",
+      "current_worktree_matches_native_freeze": true
+    },
+    "mr3_episode.py": {
+      "freeze": "26534fae40409e266376baf0995fb15dc0223e4b",
+      "sha256": "9145d2ad23789b252e32f0afdfe18cf2eeec8e2c7e9ca7e89127a532288e411b",
+      "source": "26534fae40409e266376baf0995fb15dc0223e4b:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_episode.py",
+      "current_worktree_matches_native_freeze": true
+    },
+    "mr3_observation_archive.py": {
+      "freeze": "26534fae40409e266376baf0995fb15dc0223e4b",
+      "sha256": "03da72d5e989e6c7af99b90aaddf357120c2239fc08e99febb858554b1fefea8",
+      "source": "26534fae40409e266376baf0995fb15dc0223e4b:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation_archive.py",
+      "current_worktree_matches_native_freeze": true
+    },
+    "mr3_adapter.py": {
+      "freeze": "26534fae40409e266376baf0995fb15dc0223e4b",
+      "sha256": "90444564b04b86982553a7fe6e0b98beb290ba92c3ab1e32e503998e6411fc1c",
+      "source": "26534fae40409e266376baf0995fb15dc0223e4b:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_adapter.py",
+      "current_worktree_matches_native_freeze": true
+    },
+    "mr3_information.py": {
+      "freeze": "26534fae40409e266376baf0995fb15dc0223e4b",
+      "sha256": "b9830fa5089201920e05196d923e82fff62344946a43987204b1f43aaeb3e1b5",
+      "source": "26534fae40409e266376baf0995fb15dc0223e4b:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_information.py",
+      "current_worktree_matches_native_freeze": true
+    },
+    "mr3_activity.py": {
+      "freeze": "26534fae40409e266376baf0995fb15dc0223e4b",
+      "sha256": "7af918d75c05b6f8fb1a65899e43aad11a315640e8b00fdb589c31f693ad696e",
+      "source": "26534fae40409e266376baf0995fb15dc0223e4b:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_activity.py",
+      "current_worktree_matches_native_freeze": true
+    },
+    "mr3_learning/navigation_archive.py": {
+      "freeze": "26534fae40409e266376baf0995fb15dc0223e4b",
+      "sha256": "b509cc0d19ca443c0776cae4d728d35f399670bda08c171d590c8738964c48bd",
+      "source": "26534fae40409e266376baf0995fb15dc0223e4b:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/navigation_archive.py"
+    },
+    "mr3_learning/audit_activity.py": {
+      "freeze": "26534fae40409e266376baf0995fb15dc0223e4b",
+      "sha256": "0fa0c47262ccf29f140cc2b915431461e830f87680b65f524cbda6a6ffff4407",
+      "source": "26534fae40409e266376baf0995fb15dc0223e4b:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_activity.py"
+    }
+  },
+  "script_sha256": "ab102c02bff6b3dbd916e07552ea4250b0bf2f935da74f97d21ed5f766261c05",
+  "scope": "read-only replay failure; no native or task credit"
+}

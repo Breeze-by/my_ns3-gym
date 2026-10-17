@@ -1,0 +1,199 @@
+{
+  "schema": "mr3-v9-startup-state-timer-order-diagnostic-v1",
+  "freeze": "26534fae40409e266376baf0995fb15dc0223e4b",
+  "input": {
+    "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v9_interface/worker0/episode001_open_101/information_states.jsonl",
+    "bytes": 33047512,
+    "sha256": "59f6e203908ba2fce10468d1a981f9937395ccc4e3b9b584682abb58b85928c8"
+  },
+  "rows": [
+    {
+      "clock_ns": 73900000000,
+      "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+      "kind": "tf_promote",
+      "payload": {
+        "pending_tf_input_sequences": [],
+        "robot": "tb2",
+        "selected_input_sequence": 5165
+      },
+      "record_sequence": 27168,
+      "schema": "mr3-information-state-audit-v1",
+      "wall_monotonic_ns": 3967632971801967
+    },
+    {
+      "clock_ns": 73900000000,
+      "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+      "kind": "tf_ingress",
+      "payload": {
+        "admission": "queued",
+        "input_sequence": 5173,
+        "matched_input_sequence": null,
+        "raw": {
+          "child_frame_id": "odom",
+          "header": {
+            "frame_id": "map",
+            "stamp": {
+              "nanosec": 995000000,
+              "sec": 73
+            }
+          },
+          "transform": {
+            "rotation": {
+              "w": 0.9999976011510213,
+              "x": -7.598963627436176e-05,
+              "y": -0.0021890449402545992,
+              "z": 1.6636287094411835e-07
+            },
+            "translation": {
+              "x": 3.474309866706912e-05,
+              "y": -1.20086918121788e-06,
+              "z": -0.007867318303610468
+            }
+          }
+        },
+        "raw_sha256": "b0c405f6047b11409ec432ab3303e1de807448dfffcc4e0a2641fb24661b315e",
+        "robot": "tb2",
+        "source_ns": 73795000000
+      },
+      "record_sequence": 27178,
+      "schema": "mr3-information-state-audit-v1",
+      "wall_monotonic_ns": 3967632984474384
+    },
+    {
+      "clock_ns": 74000000000,
+      "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+      "kind": "tf_promote",
+      "payload": {
+        "pending_tf_input_sequences": [],
+        "robot": "tb2",
+        "selected_input_sequence": 5173
+      },
+      "record_sequence": 27196,
+      "schema": "mr3-information-state-audit-v1",
+      "wall_monotonic_ns": 3967633265339967
+    },
+    {
+      "clock_ns": 74320000000,
+      "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+      "kind": "state_selection",
+      "payload": {
+        "cycle_id": 716,
+        "odom_input_sequence": 1680,
+        "odom_source_ns": 74292000000,
+        "pending_odom_input_sequences": [],
+        "pending_tf_input_sequences": [],
+        "robot": "tb1",
+        "skip_reason": null,
+        "tf_input_sequence": 5294,
+        "tf_source_ns": 74042000000
+      },
+      "record_sequence": 27212,
+      "schema": "mr3-information-state-audit-v1",
+      "wall_monotonic_ns": 3967633763701558
+    },
+    {
+      "clock_ns": 74320000000,
+      "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+      "kind": "state_selection",
+      "payload": {
+        "cycle_id": 716,
+        "odom_input_sequence": 1612,
+        "odom_source_ns": 74313000000,
+        "pending_odom_input_sequences": [],
+        "pending_tf_input_sequences": [],
+        "robot": "tb2",
+        "skip_reason": null,
+        "tf_input_sequence": 5173,
+        "tf_source_ns": 73795000000
+      },
+      "record_sequence": 27214,
+      "schema": "mr3-information-state-audit-v1",
+      "wall_monotonic_ns": 3967633765882032
+    },
+    {
+      "clock_ns": 74320000000,
+      "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+      "kind": "state_selection",
+      "payload": {
+        "cycle_id": 716,
+        "odom_input_sequence": 1486,
+        "odom_source_ns": 73982000000,
+        "pending_odom_input_sequences": [
+          1487
+        ],
+        "pending_tf_input_sequences": [],
+        "robot": "tb3",
+        "skip_reason": null,
+        "tf_input_sequence": 4997,
+        "tf_source_ns": 74110000000
+      },
+      "record_sequence": 27216,
+      "schema": "mr3-information-state-audit-v1",
+      "wall_monotonic_ns": 3967633766648346
+    },
+    {
+      "schema": "mr3-information-state-audit-v1",
+      "record_sequence": 27218,
+      "kind": "state_publish",
+      "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+      "clock_ns": 74320000000,
+      "wall_monotonic_ns": 3967633771966515,
+      "payload_summary": {
+        "cycle_id": 716,
+        "payload_keys": [
+          "cycle_id",
+          "envelopes",
+          "message",
+          "message_sha256",
+          "publish_completed_wall_monotonic_ns",
+          "publish_started_wall_monotonic_ns",
+          "scope",
+          "side_publications"
+        ],
+        "robots": []
+      },
+      "original_line_sha256": "f537fe0201db83100fc90b9d913ad9cd4e51c9351cb42d2c7a541cece4c89ec0"
+    },
+    {
+      "clock_ns": 74320000000,
+      "epoch": "mr3_p2a0_20261017_v9_interface_w0_e1_684831bd",
+      "kind": "tf_ingress",
+      "payload": {
+        "admission": "queued",
+        "input_sequence": 5176,
+        "matched_input_sequence": null,
+        "raw": {
+          "child_frame_id": "odom",
+          "header": {
+            "frame_id": "map",
+            "stamp": {
+              "nanosec": 395000000,
+              "sec": 74
+            }
+          },
+          "transform": {
+            "rotation": {
+              "w": 0.9999976011510213,
+              "x": -7.598963627436176e-05,
+              "y": -0.0021890449402545992,
+              "z": 1.6636287094411835e-07
+            },
+            "translation": {
+              "x": 3.474309866706912e-05,
+              "y": -1.20086918121788e-06,
+              "z": -0.007867318303610468
+            }
+          }
+        },
+        "raw_sha256": "0220741ba6b1203104d706027cea8027cb1b0fd37bc954b294b13caa644eda74",
+        "robot": "tb2",
+        "source_ns": 74195000000
+      },
+      "record_sequence": 27220,
+      "schema": "mr3-information-state-audit-v1",
+      "wall_monotonic_ns": 3967633775244721
+    }
+  ],
+  "inference": "A fresh tb2 TF source74.195 was queued by real hub ingress after last timer selection/publication at74.320. No later tf_promote exists before failure with world paused74.340. This directly establishes a pending-delivery/publication phase gap; it does not establish other components were otherwise ready or that a new version will pass.",
+  "separate_whole_native_result": "FAIL reset0/step0, forced supervisor closure, all45 saved exact identities gone."
+}

@@ -10,7 +10,8 @@ from pathlib import Path
 import time
 from types import SimpleNamespace
 
-from geometry_msgs.msg import Twist
+from geometry_msgs.msg import TransformStamped, Twist
+from nav_msgs.msg import Odometry
 import pytest
 import rclpy
 from rclpy.executors import SingleThreadedExecutor
@@ -360,10 +361,83 @@ def node_fixture():
             ("drive_target", name, json.loads(msg.data)))) for name in ROBOTS})
     node.publish_completed_status = lambda clock_ns: MotionSafety.publish_completed_status(
         node, clock_ns)
+    node.emit_motion = lambda stop=False: MotionSafety.emit_motion(node, stop=stop)
+    node.stop_controlled = lambda: MotionSafety.stop_controlled(node)
     node.twist = MotionSafety.twist
     node.publisher_identity = lambda *args: {"scope": "graph_at_callback", "valid": True,
                                              "endpoints": [{"endpoint_gid": "010203"}]}
     return node, clock, events
+
+
+def test_guard_selects_causal_own_history_without_discarding_future_sources():
+    def odom(nanoseconds, x):
+        message = Odometry()
+        message.header.frame_id, message.child_frame_id = 'odom', 'base_footprint'
+        message.header.stamp.sec, message.header.stamp.nanosec = divmod(nanoseconds, 10**9)
+        message.pose.pose.orientation.w = 1.
+        message.pose.pose.position.x = x
+        return message
+
+    def transform(nanoseconds, x):
+        message = TransformStamped()
+        message.header.frame_id, message.child_frame_id = 'map', 'odom'
+        message.header.stamp.sec, message.header.stamp.nanosec = divmod(nanoseconds, 10**9)
+        message.transform.rotation.w = 1.
+        message.transform.translation.x = x
+        return message
+
+    old, future = odom(999_000_000, 1.), odom(1_001_000_000, 9.)
+    tf_old, tf_future = transform(1_199_000_000, 2.), transform(1_201_000_000, 18.)
+    node = SimpleNamespace(
+        epoch='episode', odometry={'tb1': future}, transforms={'tb1': tf_future},
+        own_input_history={'tb1': {'odom': deque([(1, old), (2, future)]),
+                                   'tf': deque([(1, tf_old), (2, tf_future)])}},
+        input_sequences={'tb1': {'odom': 2, 'tf': 2}},
+        get_clock=lambda: SimpleNamespace(now=lambda: SimpleNamespace(nanoseconds=1_000_000_000)),
+        settled_turn={'tb1': SettledTurnTracker()})
+    selected = MotionSafety.local_state(node, 'tb1')
+    assert selected['x'] == 3. and selected['input_sequences'] == {'odom': 1, 'tf': 1}
+    assert len(node.own_input_history['tb1']['odom']) == 2
+    node.get_clock = lambda: SimpleNamespace(
+        now=lambda: SimpleNamespace(nanoseconds=1_001_000_000))
+    selected = MotionSafety.local_state(node, 'tb1')
+    assert selected['x'] == 27. and selected['input_sequences'] == {'odom': 2, 'tf': 2}
+
+
+def test_stop_outputs_zero_without_fresh_geometry_or_normal_safety_credit():
+    node, clock, events = node_fixture()
+    node.started = True
+    node.local_state = lambda name: None
+    node.received = None
+    node.topology_ready = lambda: False
+    node.completed_motion, node.issued_motion = {}, set()
+    node.control_phase = SimpleNamespace(
+        stop_publisher=SimpleNamespace(publish=lambda msg: events.append(
+            ('stop_status', json.loads(msg.data)))), poll=lambda: None)
+    MotionSafety.emit_motion(node, stop=True)
+    assert node.halted is None and not node.failure_sent
+    assert all(event[2:] == (0., 0.) for event in events if event[0] == 'output')
+    assert not any(event[0] in ('status', 'stop_status') for event in events)
+    for name in ROBOTS:
+        MotionSafety.receive_actual(node, Twist(), name)
+    stop = next(event[1] for event in events if event[0] == 'stop_status')
+    assert stop['phase_kind'] == 'stop' and stop['ready'] is False
+    assert not any(event[0] == 'status' for event in events)
+    assert (clock[0], 'stop') in node.completed_motion
+
+
+def test_stepped_warmup_timer_cannot_issue_two_normal_targets_at_one_clock():
+    node, clock, events = node_fixture()
+    node.control_phase = SimpleNamespace(controlled=False, poll=lambda: None)
+    node.completed_motion, node.issued_motion = {}, set()
+    node.ensure_motion_output = lambda clock_ns: MotionSafety.ensure_motion_output(node, clock_ns)
+    MotionSafety.tick(node)
+    MotionSafety.tick(node)
+    assert node.decision_sequences == dict.fromkeys(ROBOTS, 1)
+    for name in ROBOTS:
+        MotionSafety.receive_actual(node, Twist(), name)
+    assert len([event for event in events if event[0] == 'status']) == 1
+    assert (clock[0], 'normal') in node.completed_motion
 
 
 def test_ready_precedes_release_and_exact_status_follows_all_actual_publish_calls():
@@ -374,7 +448,7 @@ def test_ready_precedes_release_and_exact_status_follows_all_actual_publish_call
     assert not any(event[0] == "status" for event in events)
     for name in ROBOTS:
         MotionSafety.receive_actual(node, Twist(), name)
-    status = events[-1]
+    status = next(event for event in events if event[0] == "status")
     assert status[0] == "status" and status[1]["clock_ns"] == 1_000_000_000
     assert status[1]["decision_sequences"] == {name: 1 for name in ROBOTS}
     assert status[1]["completion_scope"] == "publication_and_local_topic_receipt"

@@ -1,0 +1,38 @@
+{
+  "passed": true,
+  "ppo_only_allowed_AST_changes": [
+    "one shared stdlib module import",
+    "one source-bound learner filename",
+    "one corrected_audit call-scoped dispatch/finally restoration"
+  ],
+  "moved_bootstrap_and_artifact_proof_AST_equal": true,
+  "dispatch_only_extra_explicit_episode_path_admission": true,
+  "capacity_exclusion_not_imported_into_PPO": true,
+  "no_ROS_task_actor_reward_sampling_optimizer_changes": true,
+  "bindings": {
+    "audit_controlled_physics.py": {
+      "sha256": "49e89212b6edd5b5de7f1bb0cecacd8ae0447ccf37f68dd6d8f25d17bfb2cf69",
+      "bytes": 8432
+    },
+    "audit_preparation.py": {
+      "sha256": "cdcc91734449cbb7ce7900799b72fd21a581e73cac91d03dcf09b12660dbd9d7",
+      "bytes": 24096
+    },
+    "audit_ppo.py": {
+      "sha256": "3523160ab037c6d5665302c7e6feea4e29982a3fb6d9f78d0963b72140354d9d",
+      "bytes": 41409
+    },
+    "tests/test_audit_controlled_physics.py": {
+      "sha256": "1c5143ac5a6bb6640bdf91aa7b3af5e655631d3722cddea11615725eb00ab105",
+      "bytes": 7967
+    },
+    "tests/test_audit_preparation.py": {
+      "sha256": "6655f6dc763d9609e35605321756fb40a5e067ca7adecf70506de84c8c51bfe4",
+      "bytes": 14453
+    },
+    "tests/test_audit_ppo.py": {
+      "sha256": "3aecf998fb0c56afe6862c35daec2f02efc5d72cad77fd1b4745b5237c895e46",
+      "bytes": 12895
+    }
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "schema": "mr3-p2a0-check-v1",
+  "command": [
+    "/usr/bin/bash",
+    "--noprofile",
+    "--norc",
+    "-c",
+    "source /opt/ros/humble/setup.bash && source install/setup.bash && export PYTHONNOUSERSITE=1 && /usr/bin/python3 -m pytest -q src/multi_robot_exploration/test/test_mr3_motion_control.py src/multi_robot_exploration/test/test_motion_safety.py src/multi_robot_exploration/test/test_settled_turn.py"
+  ],
+  "cwd": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap",
+  "python": "/usr/bin/python3",
+  "exit_code": 1,
+  "wall_seconds": 4.693017710931599,
+  "source_before": {
+    "ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py": "484501df75445e8a43a09888710ba5777b92277419ab25b48a3c20e3dde28be7",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py": "9a281992530cd0b4f36f72e1ae5a9ccfed441599b511e5599ee738a0e889a4a7",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/motion_safety.py": "314d26d3923aa9d40b27878e29dfcf25d657780ab14b1e773335f234472b959a",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_control_phase.py": "94cde22be31bfcf6a050298b5ed4cdabe76aa1d18b6bdabc201687889d3e28b1",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_information.py": "b46d098cb9a762a7558ea84adf85d943f1e631b248b478a9ce1a2d6b0b07e644",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py": "dd3b2142f3905985e60b8e6c9afded96218c19753daa6a3368d1b03ebe44b4db",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/peer_obstacles.py": "49c85a36710a6ce7ba33e91b203320bf33aa8111ce84ae5757a5f36b8f37f7d8",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/task_evaluator.py": "3aa0655113c0c2402c6e587730fa1f457d1f837ff0ce00928e6c8ca433f3c8d6",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_control_phase.py": "be0ab00f5a656fd055d636bbb6ad75de0fd4aa632ea3f3f9029327c6c0d4ebd1",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_information.py": "db280a5510a9448b3f6c5350c1526a7f9d531449892452c256d0c6ea7baf738d",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_information_phase.py": "65597b68de0bc9eaf43d767e4e86f223fbab4293117d4af2aa2f046ab4b3a8ec",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_infrastructure_abort.py": "8a34523781ec452ea93962d2b1439f70b93a5a107d80bb440ec68b8a3b73a0cb",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_motion_control.py": "5f99909b759f77cb098bc62430a13c356878c1c45569b76a24f44d5cd70f55c3",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_peer_phase.py": "70cd9911293291c24da6c44aa3c3c7c3d55339f74a720744f1713041ce5a974a"
+  },
+  "source_after": {
+    "ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py": "484501df75445e8a43a09888710ba5777b92277419ab25b48a3c20e3dde28be7",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py": "9a281992530cd0b4f36f72e1ae5a9ccfed441599b511e5599ee738a0e889a4a7",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/motion_safety.py": "314d26d3923aa9d40b27878e29dfcf25d657780ab14b1e773335f234472b959a",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_control_phase.py": "94cde22be31bfcf6a050298b5ed4cdabe76aa1d18b6bdabc201687889d3e28b1",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_information.py": "b46d098cb9a762a7558ea84adf85d943f1e631b248b478a9ce1a2d6b0b07e644",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py": "dd3b2142f3905985e60b8e6c9afded96218c19753daa6a3368d1b03ebe44b4db",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/peer_obstacles.py": "49c85a36710a6ce7ba33e91b203320bf33aa8111ce84ae5757a5f36b8f37f7d8",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/task_evaluator.py": "3aa0655113c0c2402c6e587730fa1f457d1f837ff0ce00928e6c8ca433f3c8d6",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_control_phase.py": "be0ab00f5a656fd055d636bbb6ad75de0fd4aa632ea3f3f9029327c6c0d4ebd1",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_information.py": "db280a5510a9448b3f6c5350c1526a7f9d531449892452c256d0c6ea7baf738d",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_information_phase.py": "65597b68de0bc9eaf43d767e4e86f223fbab4293117d4af2aa2f046ab4b3a8ec",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_infrastructure_abort.py": "8a34523781ec452ea93962d2b1439f70b93a5a107d80bb440ec68b8a3b73a0cb",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_motion_control.py": "5f99909b759f77cb098bc62430a13c356878c1c45569b76a24f44d5cd70f55c3",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_peer_phase.py": "70cd9911293291c24da6c44aa3c3c7c3d55339f74a720744f1713041ce5a974a"
+  },
+  "stdout_stderr_gzip": "guard_focused_01.log.gz",
+  "decoded_sha256": "9a320b21967aff570e94a520b94b23259af7a8f95cf38d56ffef66bd0ff5b87b",
+  "stdout_tail": "thout_resume_bypass _\n\n    def test_cancel_timeout_terminal_and_unhealthy_topology_emit_zero_without_resume_bypass():\n        node, clock, events = node_fixture()\n        node.started = True\n        clock[0] += 201_000_000\n>       MotionSafety.tick(node)\n\nsrc/multi_robot_exploration/test/test_motion_safety.py:400: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nself = namespace(epoch='episode', received={'robots': [{'name': 'tb1', 'epoch': 'episode', 'valid': True, 'x': 0.0, 'y': 0.0,... MotionSafety.twist at 0x7caf80feca60>, publisher_identity=<function node_fixture.<locals>.<lambda> at 0x7caf80f948b0>)\n\n    def tick(self):\n        if getattr(self, \"control_phase\", None) is not None and self.control_phase.controlled:\n            return\n>       self.emit_motion()\nE       AttributeError: 'types.SimpleNamespace' object has no attribute 'emit_motion'\n\nbuild/multi_robot_exploration/multi_robot_exploration/motion_safety.py:352: AttributeError\n_ test_recovered_nanosecond_endpoints_do_not_add_freshness_or_timeout_tolerance _\n\n    def test_recovered_nanosecond_endpoints_do_not_add_freshness_or_timeout_tolerance():\n        value = state(\"tb1\", 0., 0., stamp=1.2 - .2)\n        value[\"tf_source_stamp\"] = 1.2 - .2\n        assert valid_state(value, 1., \"episode\")\n        value[\"tf_source_stamp\"] = 1.000000001\n        assert not valid_state(value, 1., \"episode\")\n        value[\"tf_source_stamp\"] = .5\n        assert valid_state(value, 1., \"episode\")\n        value[\"tf_source_stamp\"] = .499999999\n        assert not valid_state(value, 1., \"episode\")\n        node, clock, events = node_fixture()\n        node.started = True\n        clock[0] = 1_200_000_000\n>       MotionSafety.tick(node)\n\nsrc/multi_robot_exploration/test/test_motion_safety.py:454: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nself = namespace(epoch='episode', received={'robots': [{'name': 'tb1', 'epoch': 'episode', 'valid': True, 'x': 0.0, 'y': 0.0,... MotionSafety.twist at 0x7caf80feca60>, publisher_identity=<function node_fixture.<locals>.<lambda> at 0x7caf80f95e10>)\n\n    def tick(self):\n        if getattr(self, \"control_phase\", None) is not None and self.control_phase.controlled:\n            return\n>       self.emit_motion()\nE       AttributeError: 'types.SimpleNamespace' object has no attribute 'emit_motion'\n\nbuild/multi_robot_exploration/multi_robot_exploration/motion_safety.py:352: AttributeError\n=========================== short test summary info ============================\nFAILED src/multi_robot_exploration/test/test_motion_safety.py::test_ready_precedes_release_and_exact_status_follows_all_actual_publish_calls\nFAILED src/multi_robot_exploration/test/test_motion_safety.py::test_cancel_timeout_terminal_and_unhealthy_topology_emit_zero_without_resume_bypass\nFAILED src/multi_robot_exploration/test/test_motion_safety.py::test_recovered_nanosecond_endpoints_do_not_add_freshness_or_timeout_tolerance\n3 failed, 80 passed in 2.74s\n"
+}

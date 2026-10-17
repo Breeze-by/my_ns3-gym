@@ -80,7 +80,7 @@ trace分别保存两项source stamp/age。模型依赖实测平面速度`.30m/s`
 降低命令上限不能替代完整原始twist向量、源时间、转向响应及停止路程的原生核验。
 轮耦合停止另有`.02s`余量，同时计入`.78s`完整转向/制动时域和双方累计停止reserve；
 `.5m/s²`是全局停止包络参数，不声称中心速度每瞬时都以此减速。这是依赖输入/速度/反应/制动界的执行保护，不能保证任意定位跳变或无界迟到下安全。
-v9的ideal information发布器以pending队列保留未到当前clock的本机odom，选取最近且source≤clock的已入站样本；不能让future最新样本抹去仍有效的causal缓存而跳过整次发送。256有界队列、冲突/溢出明确失败，并以真实入站/选取账本独立核验。选取及`.5s`有效门以整数纳秒比较：源不得晚于clock，源龄闭区间`[0,500000000]ns`，多1ns仍拒；wire原double源字段保留，无epsilon。修正原double相减将精确`.5s`误判为`.5000000000000001s`的端点错误，与现guard时间规范一致。状态发布仍`.1s`、源龄门仍`.5s`，不借未交付的队友raw状态。`state_audit_path`仅诊断文件，原始入站与选取引用不进入actor、候选、掩码或奖励。该缓存修复不证明跨节点同clock回调总顺序或所有时刻无竞态。
+v9的ideal information发布器以pending队列保留未到当前clock的本机odom，选取最近且source≤clock的已入站样本；不能让future最新样本抹去仍有效的causal缓存而跳过整次发送。256有界队列、冲突/溢出明确失败，并以真实入站/选取账本独立核验。选取及`.5s`有效门以整数纳秒比较：源不得晚于clock，源龄闭区间`[0,500000000]ns`，多1ns仍拒；wire原double源字段保留，无epsilon。修正原double相减将精确`.5s`误判为`.5000000000000001s`的端点错误，与现guard时间规范一致。非受控状态发布仍`.1s`、源龄门仍`.5s`，不借未交付的队友raw状态。`state_audit_path`仅诊断文件，原始入站与选取引用不进入actor、候选、掩码或奖励。该缓存修复不证明跨节点同clock回调总顺序或所有时刻无竞态。
 
 v8增加`mr3-settled-turn-v1`旁证分支，只对原near nonclosing拒绝后的零线速度、原角速度请求生效。own连续最终零线速度publication≥`.94s`，之后三条完整去重own odom的全平面速度≤`.01m/s`、每源age及gap≤`.10s`，才可建立资格；资格起点不得早于任务release；worker初始三台真实stored-zero屏障先于同clock release，不把驱动出生前预热publication计入。实际native连续存储零线速度≥`.78s`及全量160ms时延由独立消费审计另核验。每个原body margin仍含原位置/TF源龄误差和`.02m`余量，并须至少`.1518m`：自身完整零线速度段总漂移预算`.0078m`加队友完整制动`.144m`。
 
@@ -298,3 +298,14 @@ GPU探针仅做固定接口forward/backward且无optimizer step，不是策略�
 短工程采样不证明多日稳定或95%任务成功。真实短步和零时长终态的rollout、时间折扣及GAE处理
 必须在P2A明确验证，不能把本接口完成当成标准PPO可直接使用的证明。
 用户已于2026-10-16验收P1C并授权P2A；P2A须独立实现和验证上述消费方规则，不能追认P1C为策略训练证据。
+
+
+## P2A.0 v10 显式受控执行阶段（待同冻结原生验证）
+
+在`mr3_stepped=true`时，启动实际旧零输出/三存储ACK后接管timer，再真实推进20ticks到新clock；每一物理边界暂停，完成state_phase→peer_phase→motion control→三台driver存储→evaluator相位后再推进。三阶段共用epoch/request_id/target_time_ns且成功normal必须clock完全相等。状态节点取消周期state发布，选择自身实际causal入站、真实发布bundle及side消息；受控有效状态节拍改为50Hz，warmup/非stepped原10Hz保持。peer必须实际收到匹配SHA、sequence和publication开始后callback的六side及main bundle，才能真实发布障碍并ACK；guard必须实际收到两份ACK及main bundle、own causal输入，唯一正常输出并回收后ACK。墙超时10秒使本轮invalid，不推进仿真/修改源时间。诊断引用、raw ingress与协议ACK不进入actor/奖励。
+
+normal回执同clock不可覆；独立`phase_kind=stop`只能永久三零、ready=false，可在相同clock用更高seq，单独`/motion_safety/stop_status`及控制ACK，不授几何/缺输入安全信用。终止或取消需真实通知，随后每次20ticks关闭推进仍等真实零存储。真实terminal可取消pending state commit；仅排空可复用最后真实水位原引用且保留源时间，不能再发布新state或LIVE推进。未返回reset的基础设施失败以隔离abort begin→真实cancel/zero/Nav2/helper/navigation_closed→finalize→原有序native关闭，不产生reward/伪造transition；正常sealed评价器规则不变。新的peer/control/information独立原件审计与所有旧任务/物理门均必需，详见[本版报告](report/20261017_mr3_p2a0_v10.md)。
+
+阶段ACK绑定各节点实际callback前缀，不构成跨进程原子事务。worker已实际处理stop或主动发stop请求后不得再用normal推进或恢复；guard一旦stop，新输出只能为零。guard发出但DDS尚在途的窗口保留原最多20ms终态排空和完整160ms驱动/机体反应门；源stop与旧normal permit的窗口另作诊断，不声称零延迟跨进程封闭。
+
+工程与策略结果审计共用受限bootstrap审计入口：仅精确v1元数据、唯一实际三零交接、三takeover、实际回收/原生存储以及完整控制账本均成立时，原W7物理审计的setup→受控量子切换参数取bootstrap起点T0；输入仍为全部原始receipts，原整数/连续/量子数学不改。真实任务release仍为交接终点T1，奖励/接触/终态等继续使用T1。legacy保留原release调用，未知协议拒绝，每次调用后还原原审计函数；工程fixture的capacity排除不进入策略审计。本轮只验证接线，无新采样/优化或策略效果信用。

@@ -264,40 +264,88 @@ def test_initial_phase_follows_reward_binding_and_terminal_cannot_return_live_re
     instance.motion_ready = True
     instance.verify_motion_output_topology = lambda: None
     instance.verify_drive_topology = lambda: None
-    instance.wait_motion_phase = lambda: {"ready": True}
-    instance.wait_drive_phase = lambda _motion: {}
-    instance.reward_ready = {"start_sim_time": 10.}
+    instance.stopping = False
+    instance.controlled = False
+    instance.stop_status = instance.motion_status = None
+    release = START + QUANTUM_NS
+    instance.reward_ready = {"start_sim_time": release / 1e9}
     order = []
-    instance._physics = lambda *_args, **_kwargs: {"end_time_ns": START}
-    instance._snapshot = lambda: None
+    instance._start_step_helper = lambda: order.append("helper_ready")
+    instance._align_initial_clock = lambda: order.append("warmup_aligned")
+    instance._snapshot = lambda: order.append("initial_snapshot")
     instance._wait = lambda predicate, *_: predicate() or pytest.fail("initial readiness missing")
 
+    def motion_status(clock, ready, sequence):
+        return {"schema": "mr3-motion-safety-status-v1", "epoch": "current", "clock_ns": clock,
+                "ready": ready, "completion_scope": "publication_and_local_topic_receipt",
+                "decision_sequences": {name: sequence for name in ("tb1", "tb2", "tb3")},
+                "outputs": {name: {"linear_x": 0., "angular_z": 0.}
+                            for name in ("tb1", "tb2", "tb3")}}
+
+    def control(component, operation, request_id=None, **references):
+        order.append(component + "_" + operation)
+        if operation == "takeover":
+            assert instance.physical_ns == START and request_id == f"takeover{START}"
+            return ({"request_id": request_id, "status": motion_status(START, False, 1)}
+                    if component == "motion" else {"request_id": request_id})
+        assert operation == "commit" and instance.physical_ns == release
+        assert request_id == f"boundary{release}"
+        return ({"request_id": request_id, "status": motion_status(release, True, 2)}
+                if component == "motion" else {"state_sequence": 100})
+
+    instance._control_rpc = control
+    instance.receive_motion_status = lambda value: setattr(instance, "motion_status", value)
+    instance.wait_motion_phase = lambda: instance.motion_status
+
+    def stored(value):
+        order.append("actual_zero_storage" if value["clock_ns"] == START else "new_storage")
+        assert all(item == {"linear_x": 0., "angular_z": 0.}
+                   for item in value["outputs"].values())
+        return {}
+
+    instance.wait_drive_phase = stored
+
+    def physics(steps, wait_clock=True):
+        if steps == 0:
+            assert wait_clock is False
+            order.append("pause0")
+            return {"end_time_ns": START}
+        assert steps == 20 and wait_clock and instance.bootstrap_pending
+        assert set(instance.takeover_acks) == {"state", "peer", "motion"}
+        order.append("bootstrap_zero20")
+        instance.bootstrap_pending = False
+        instance.clock_ns = instance.physical_ns = release
+        instance._commit_boundary()
+        return {"end_time_ns": release}
+
+    instance._physics = physics
+
     def reward(start, end, initialize=False):
-        assert initialize and start == end == 10.
+        assert initialize and start == end == release / 1e9
         order.append("bound_reward_sequence0")
         return {"reward": 0., "terminated": False, "truncated": False}
 
     def publish(_, request):
-        assert order == ["bound_reward_sequence0"]
+        assert order[-1] == "bound_reward_sequence0"
         order.append("initial_phase_request")
-        ack = evaluator.request(request, START, terminal() if terminal_at_reset else None, 0)
-        instance.evaluator_phase.receive(ack, START, START)
+        ack = evaluator.request(request, release,
+                                terminal(release) if terminal_at_reset else None, 0)
+        instance.evaluator_phase.receive(ack, release, release)
 
     instance._reward, instance._publish = reward, publish
-    stream = SimpleNamespace(fileno=lambda: 0)
-    try:
-        with (patch.object(WORKER.subprocess, "Popen", return_value=SimpleNamespace(
-                stdin=stream, stdout=stream)), patch.object(WORKER.ipc, "JsonLinePeer")):
-            if terminal_at_reset:
-                with pytest.raises(RuntimeError, match="initial evaluator phase is already"):
-                    instance.reset()
-                assert instance.transition_file.getvalue() == ""
-            else:
-                assert instance.reset()["terminated"] is False
-        assert order == ["bound_reward_sequence0", "initial_phase_request"]
-    finally:
-        for output in instance.outputs:
-            output.close()
+    if terminal_at_reset:
+        with pytest.raises(RuntimeError, match="initial evaluator phase is already"):
+            instance.reset()
+        assert instance.transition_file.getvalue() == ""
+    else:
+        result = instance.reset()
+        assert result["terminated"] is False and result["info"]["release_time_ns"] == release
+        assert result["info"]["initial_pause_time_ns"] == START
+    assert order == ["helper_ready", "pause0", "warmup_aligned", "motion_takeover",
+                     "state_takeover", "peer_takeover", "actual_zero_storage",
+                     "bootstrap_zero20", "state_commit", "peer_commit", "motion_commit",
+                     "new_storage", "new_storage", "initial_snapshot",
+                     "bound_reward_sequence0", "initial_phase_request"]
 
 
 def test_actual_step_missing_ack_stops_after_one_quantum_before_snapshot_or_reward():

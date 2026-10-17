@@ -100,6 +100,23 @@ def test_adapter_rejects_every_compatible_non_three_robot_configuration(monkeypa
         configured_launch(monkeypatch, execution_mode="adapter", robot_count=count)
 
 
+@pytest.mark.parametrize("stepped", [False, True])
+def test_state_peer_and_guard_takeover_share_the_explicit_stepped_contract(
+        monkeypatch, tmp_path, stepped):
+    context, actions, nodes, _ = configured_launch(
+        monkeypatch, execution_mode="adapter", mr3_stepped=str(stepped).lower(),
+        mr3_audit_path=str(tmp_path / "adapter.jsonl"))
+    active = released_nodes(context, actions, nodes)
+    for executable in ("mr3_information", "peer_obstacles", "motion_safety"):
+        parameters = next(item["parameters"][0] for item in active
+                          if item["executable"] == executable)
+        assert parameters["stepped_mode"] is stepped
+        assert parameters["episode_epoch"].perform(context) == "mr3-p1b"
+        if executable == "peer_obstacles":
+            assert parameters["phase_audit_path"] == (
+                str(tmp_path / "peer_phase.jsonl") if stepped else "")
+
+
 @pytest.mark.parametrize("enabled", ["true", "True", "1"])
 def test_adapter_rejects_every_true_launch_condition_for_another_velocity_owner(
         monkeypatch, enabled):
