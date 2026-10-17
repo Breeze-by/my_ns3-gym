@@ -1,0 +1,1168 @@
+{
+  "kind": "scripted_p1c_sampling_not_rl",
+  "workers": 1,
+  "robots_per_worker": 3,
+  "schedule": [
+    [
+      "open",
+      101
+    ]
+  ],
+  "steps_per_episode": 32,
+  "command": [
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/benchmark.py",
+    "--workers",
+    "1",
+    "--schedule",
+    "open:101",
+    "--steps",
+    "32",
+    "--preparation-motion-probe",
+    "--preparation-probe-version",
+    "mr3-p2a0-outward-cancel-v4",
+    "--base-domain",
+    "140",
+    "--base-port",
+    "13301",
+    "--output-root",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0",
+    "--run-id",
+    "mr3_p2a0_20261017_v15_interface",
+    "--preparation-parameter-review"
+  ],
+  "python": "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+  "freeze": "17ef3cb212aacd6e9e4fcde65783bdf2528da955",
+  "base_domain": 140,
+  "base_port": 13301,
+  "fault_probe": false,
+  "deadline_probe": false,
+  "terminal_probe": false,
+  "preparation_motion_probe": true,
+  "preparation_probe_version": "mr3-p2a0-outward-cancel-v4",
+  "preparation_parameter_review": true,
+  "preparation_parameter_review_source": {
+    "relative_path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_actual_nav2_parameters_v13.py",
+    "freeze": "17ef3cb212aacd6e9e4fcde65783bdf2528da955",
+    "sha256": "9eb963457a8dc8297e4686004ea08c7a06e1e0e9ede7cd795ba9505da9d8f701"
+  },
+  "resource_scope": "host counters include unrelated activity; GPU driver reports",
+  "num_logical_cpus": 80,
+  "cpu_affinity_count": 80,
+  "passed": true,
+  "wall_sec_including_all_attempts": 803.1176295201294,
+  "valid_transitions": 32,
+  "effective_transition_per_wall_sec": 0.03984472364169158,
+  "workers_results": [
+    {
+      "worker_id": 0,
+      "episodes": [
+        {
+          "epoch": "mr3_p2a0_20261017_v15_interface_w0_e1_e3cc23ab",
+          "scene": "open",
+          "seed": 101,
+          "initial_observation_digest": "214825c76ce0fde5e4abcfaed4b0653f401df7a7a63e25564414b492c992dcc9",
+          "output_directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v15_interface/worker0/episode001_open_101",
+          "startup_wall_sec": 133.12350142514333,
+          "initial_estimated_poses": [
+            {
+              "name": "tb1",
+              "x": 0.0023683838020360512,
+              "y": -0.4499963282701091,
+              "yaw": 0.0042215850435151515
+            },
+            {
+              "name": "tb2",
+              "x": 0.002303769419308326,
+              "y": 0.4500033165880996,
+              "yaw": 0.004102192437909246
+            },
+            {
+              "name": "tb3",
+              "x": 0.4522514168541385,
+              "y": 3.085491788681663e-06,
+              "yaw": 0.003993743702653058
+            }
+          ],
+          "transitions": 32,
+          "transition_wall_sec": 663.0395424631424,
+          "reward_sum": 6.646734228065376,
+          "dt_values": [
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "preparation_probe_diagnostics": {
+            "reference_turn_samples": {
+              "tb2": {
+                "sign": 1.0,
+                "w": 0.23475725888176274,
+                "snapshot_sequence": 2,
+                "source_stamp": 78.227,
+                "odom_source_stamp": 78.312
+              },
+              "tb3": {
+                "sign": -1.0,
+                "w": -0.44000758160177533,
+                "snapshot_sequence": 2,
+                "source_stamp": 78.228,
+                "odom_source_stamp": 78.302
+              },
+              "tb1": {
+                "sign": -1.0,
+                "w": -0.3236760214997723,
+                "snapshot_sequence": 3,
+                "source_stamp": 79.226,
+                "odom_source_stamp": 79.293
+              }
+            },
+            "goal_decisions": [
+              {
+                "snapshot_sequence": 1,
+                "task_elapsed_sec": 0.0,
+                "stage": "initial_goal",
+                "action": 412,
+                "max_legal_goal_components": 3,
+                "max_reverse_robot_opportunities": 0,
+                "selected_reverse_robots": [],
+                "scope": "received goal-bearing stimulus only; actual turn/stop coverage audited separately"
+              },
+              {
+                "snapshot_sequence": 2,
+                "task_elapsed_sec": 1.0,
+                "stage": "initial_goal",
+                "action": 888,
+                "max_legal_goal_components": 0,
+                "max_reverse_robot_opportunities": 0,
+                "selected_reverse_robots": [],
+                "scope": "received goal-bearing stimulus only; actual turn/stop coverage audited separately"
+              },
+              {
+                "snapshot_sequence": 14,
+                "task_elapsed_sec": 13.0,
+                "stage": "second_goal",
+                "action": 145,
+                "max_legal_goal_components": 3,
+                "max_reverse_robot_opportunities": 3,
+                "selected_reverse_robots": [
+                  "tb1",
+                  "tb2",
+                  "tb3"
+                ],
+                "scope": "received goal-bearing stimulus only; actual turn/stop coverage audited separately"
+              },
+              {
+                "snapshot_sequence": 15,
+                "task_elapsed_sec": 14.0,
+                "stage": "second_goal",
+                "action": 888,
+                "max_legal_goal_components": 0,
+                "max_reverse_robot_opportunities": 0,
+                "selected_reverse_robots": [],
+                "scope": "received goal-bearing stimulus only; actual turn/stop coverage audited separately"
+              }
+            ],
+            "v4_stimulus": {
+              "rounds": {
+                "initial": {
+                  "waits": {
+                    "tb2": {
+                      "task_elapsed_sec": 6.0,
+                      "command_id": 7,
+                      "reason": "received_motion",
+                      "scope": "actual step command submitted; native cancel/stop credit audited separately"
+                    },
+                    "tb1": {
+                      "task_elapsed_sec": 10.0,
+                      "command_id": 11,
+                      "reason": "bounded_deadline",
+                      "scope": "actual step command submitted; native cancel/stop credit audited separately"
+                    },
+                    "tb3": {
+                      "task_elapsed_sec": 10.0,
+                      "command_id": 11,
+                      "reason": "bounded_deadline",
+                      "scope": "actual step command submitted; native cancel/stop credit audited separately"
+                    }
+                  },
+                  "baseline_path_m": {
+                    "tb1": 0.0,
+                    "tb2": 0.0,
+                    "tb3": 0.0
+                  }
+                },
+                "second": {
+                  "waits": {
+                    "tb1": {
+                      "task_elapsed_sec": 28.0,
+                      "command_id": 29,
+                      "reason": "bounded_deadline",
+                      "scope": "actual step command submitted; native cancel/stop credit audited separately"
+                    },
+                    "tb2": {
+                      "task_elapsed_sec": 28.0,
+                      "command_id": 29,
+                      "reason": "bounded_deadline",
+                      "scope": "actual step command submitted; native cancel/stop credit audited separately"
+                    },
+                    "tb3": {
+                      "task_elapsed_sec": 28.0,
+                      "command_id": 29,
+                      "reason": "bounded_deadline",
+                      "scope": "actual step command submitted; native cancel/stop credit audited separately"
+                    }
+                  },
+                  "baseline_path_m": {
+                    "tb1": 0.0027609735939857875,
+                    "tb2": 0.27917651657179154,
+                    "tb3": 0.2406839700566659
+                  }
+                }
+              },
+              "decisions": [
+                {
+                  "epoch": "mr3_p2a0_20261017_v15_interface_w0_e1_e3cc23ab",
+                  "observation_sequence": 1,
+                  "observation_digest": "214825c76ce0fde5e4abcfaed4b0653f401df7a7a63e25564414b492c992dcc9",
+                  "round": "initial",
+                  "task_elapsed_sec": 0.0,
+                  "action": 412,
+                  "reasons": {},
+                  "wait_robots": [],
+                  "received_motion_robots": [],
+                  "scope": "planned legal input only, not submitted/cancelled/stopped credit"
+                },
+                {
+                  "epoch": "mr3_p2a0_20261017_v15_interface_w0_e1_e3cc23ab",
+                  "observation_sequence": 2,
+                  "observation_digest": "bcf470e96a5282523a5714906dbf1fa3e84937af65d5247acd74315ee8ac3185",
+                  "round": "initial",
+                  "task_elapsed_sec": 1.0,
+                  "action": 888,
+                  "reasons": {
+                    "tb3": "received_motion_wait_masked"
+                  },
+                  "wait_robots": [],
+                  "received_motion_robots": [],
+                  "scope": "planned legal input only, not submitted/cancelled/stopped credit"
+                },
+                {
+                  "epoch": "mr3_p2a0_20261017_v15_interface_w0_e1_e3cc23ab",
+                  "observation_sequence": 3,
+                  "observation_digest": "0e744a551f39f7df3fb6a85c220aeb035ff17f21f2b393ec28416d2779e04c7e",
+                  "round": "initial",
+                  "task_elapsed_sec": 2.0,
+                  "action": 888,
+                  "reasons": {},
+                  "wait_robots": [],
+                  "received_motion_robots": [],
+                  "scope": "planned legal input only, not submitted/cancelled/stopped credit"
+                },
+                {
+                  "epoch": "mr3_p2a0_20261017_v15_interface_w0_e1_e3cc23ab",
+                  "observation_sequence": 4,
+                  "observation_digest": "fd31f94183cb25531cb6aeda6c232c3874557fbe1e4aac70adf72f5383da667c",
+                  "round": "initial",
+                  "task_elapsed_sec": 3.0,
+                  "action": 888,
+                  "reasons": {},
+                  "wait_robots": [],
+                  "received_motion_robots": [],
+                  "scope": "planned legal input only, not submitted/cancelled/stopped credit"
+                },
+                {
+                  "epoch": "mr3_p2a0_20261017_v15_interface_w0_e1_e3cc23ab",
+                  "observation_sequence": 5,
+                  "observation_digest": "af1d12ef1c1e959c4fc9d5251b3c183cffef2503fd0f22d00f3932fb26a20dbb",
+                  "round": "initial",
+                  "task_elapsed_sec": 4.0,
+                  "action": 888,
+                  "reasons": {},
+                  "wait_robots": [],
+                  "received_motion_robots": [],
+                  "scope": "planned legal input only, not submitted/cancelled/stopped credit"
+                },
+                {
+                  "epoch": "mr3_p2a0_20261017_v15_interface_w0_e1_e3cc23ab",
+                  "observation_sequence": 6,
+                  "observation_digest": "a417edd8d8bf6b0133c6855e051563f5ed253738e4657c8285648ed736208bec",
+                  "round": "initial",
+                  "task_elapsed_sec": 5.0,
+                  "action": 888,
+                  "reasons": {},
+                  "wait_robots": [],
+                  "received_motion_robots": [],
+                  "scope": "planned legal input only, not submitted/cancelled/stopped credit"
+                },
+                {
+                  "epoch": "mr3_p2a0_20261017_v15_interface_w0_e1_e3cc23ab",
+                  "observation_sequence": 7,
+                  "observation_digest": "9fff5240efc2e76b919c93ce78db7dd8b66b74c373b1b13ca110767b29254a78",
+                  "round": "initial",
+                  "task_elapsed_sec": 6.0,
+                  "action": 898,
+                  "reasons": {
+                    "tb2": "received_motion"
+                  },
+                  "wait_robots": [
+                    "tb2"
+                  ],
+                  "received_motion_robots": [
+                    "tb2"
+                  ],
+                  "scope": "planned legal input only, not submitted/cancelled/stopped credit"
+                },
+                {
+                  "epoch": "mr3_p2a0_20261017_v15_interface_w0_e1_e3cc23ab",
+                  "observation_sequence": 8,
+                  "observation_digest": "a8f27c4eb8c2d82a4f41caafe43cd961f90a61883b8b5594422e84ce543a7b21",
+                  "round": "initial",
+                  "task_elapsed_sec": 7.0,
+                  "action": 898,
+                  "reasons": {
+                    "tb2": "held_after_submitted_wait"
+                  },
+                  "wait_robots": [
+                    "tb2"
+                  ],
+                  "received_motion_robots": [],
+                  "scope": "planned legal input only, not submitted/cancelled/stopped credit"
+                },
+                {
+                  "epoch": "mr3_p2a0_20261017_v15_interface_w0_e1_e3cc23ab",
+                  "observation_sequence": 9,
+                  "observation_digest": "482198f72ab64b7d9b6c6b328be43a932615f3464069208dec484b19b1eefca0",
+                  "round": "initial",
+                  "task_elapsed_sec": 8.0,
+                  "action": 898,
+                  "reasons": {
+                    "tb2": "held_after_submitted_wait"
+                  },
+                  "wait_robots": [
+                    "tb2"
+                  ],
+                  "received_motion_robots": [],
+                  "scope": "planned legal input only, not submitted/cancelled/stopped credit"
+                },
+                {
+                  "epoch": "mr3_p2a0_20261017_v15_interface_w0_e1_e3cc23ab",
+                  "observation_sequence": 10,
+                  "observation_digest": "0c3dd23e894e9be06f0623064b99b88cfb920df1761824fa2bdafdf68e8ef135",
+                  "round": "initial",
+                  "task_elapsed_sec": 9.0,
+                  "action": 898,
+                  "reasons": {
+                    "tb2": "held_after_submitted_wait"
+                  },
+                  "wait_robots": [
+                    "tb2"
+                  ],
+                  "received_motion_robots": [],
+                  "scope": "planned legal input only, not submitted/cancelled/stopped credit"
+                },
+                {
+                  "epoch": "mr3_p2a0_20261017_v15_interface_w0_e1_e3cc23ab",
+                  "observation_sequence": 11,
+                  "observation_digest": "fa7520199c148c4d15d82a93bb69eae7d5115312fd915add7546dfd85da429c3",
+                  "round": "initial",
+                  "task_elapsed_sec": 10.0,
+                  "action": 999,
+                  "reasons": {
+                    "tb1": "bounded_deadline",
+                    "tb2": "held_after_submitted_wait",
+                    "tb3": "bounded_deadline"
+                  },
+                  "wait_robots": [
+                    "tb1",
+                    "tb2",
+                    "tb3"
+                  ],
+                  "received_motion_robots": [],
+                  "scope": "planned legal input only, not submitted/cancelled/stopped credit"
+                },
+                {
+                  "epoch": "mr3_p2a0_20261017_v15_interface_w0_e1_e3cc23ab",
+                  "observation_sequence": 12,
+                  "observation_digest": "22060cccf2d76eb2fb9362b6445477b20d0dd033aede6e8575b2bb2ce3b47906",
+                  "round": "initial",
+                  "task_elapsed_sec": 11.0,
+                  "action": 999,
+                  "reasons": {
+                    "tb1": "held_after_submitted_wait",
+                    "tb2": "held_after_submitted_wait",
+                    "tb3": "held_after_submitted_wait"
+                  },
+                  "wait_robots": [
+                    "tb1",
+                    "tb2",
+                    "tb3"
+                  ],
+                  "received_motion_robots": [],
+                  "scope": "planned legal input only, not submitted/cancelled/stopped credit"
+                },
+                {
+                  "epoch": "mr3_p2a0_20261017_v15_interface_w0_e1_e3cc23ab",
+                  "observation_sequence": 13,
+                  "observation_digest": "17c8485be2a6fedcdae28385bcb76b60864fd9369d7085bcf208841c778b8a21",
+                  "round": "initial",
+                  "task_elapsed_sec": 12.0,
+                  "action": 999,
+                  "reasons": {
+                    "tb1": "held_after_submitted_wait",
+                    "tb2": "held_after_submitted_wait",
+                    "tb3": "held_after_submitted_wait"
+                  },
+                  "wait_robots": [
+                    "tb1",
+                    "tb2",
+                    "tb3"
+                  ],
+                  "received_motion_robots": [],
+                  "scope": "planned legal input only, not submitted/cancelled/stopped credit"
+                },
+                {
+                  "epoch": "mr3_p2a0_20261017_v15_interface_w0_e1_e3cc23ab",
+                  "observation_sequence": 14,
+                  "observation_digest": "82142cf2d4521fac13ae08be82879c6a38d3797c95ea1ceba937173fb6697263",
+                  "round": "second",
+                  "task_elapsed_sec": 13.0,
+                  "action": 145,
+                  "reasons": {},
+                  "wait_robots": [],
+                  "received_motion_robots": [],
+                  "scope": "planned legal input only, not submitted/cancelled/stopped credit"
+                },
+                {
+                  "epoch": "mr3_p2a0_20261017_v15_interface_w0_e1_e3cc23ab",
+                  "observation_sequence": 15,
+                  "observation_digest": "c74522520b5540fd7e8f782e39f5642cd6703d24b779be46fe9e4cfc7bd4c9c9",
+                  "round": "second",
+                  "task_elapsed_sec": 14.0,
+                  "action": 888,
+                  "reasons": {},
+                  "wait_robots": [],
+                  "received_motion_robots": [],
+                  "scope": "planned legal input only, not submitted/cancelled/stopped credit"
+                },
+                {
+                  "epoch": "mr3_p2a0_20261017_v15_interface_w0_e1_e3cc23ab",
+                  "observation_sequence": 16,
+                  "observation_digest": "30431cb1d3e8a926083eb3aacb460e76624ba620eec61a9894a44b0ccceec587",
+                  "round": "second",
+                  "task_elapsed_sec": 15.0,
+                  "action": 888,
+                  "reasons": {},
+                  "wait_robots": [],
+                  "received_motion_robots": [],
+                  "scope": "planned legal input only, not submitted/cancelled/stopped credit"
+                },
+                {
+                  "epoch": "mr3_p2a0_20261017_v15_interface_w0_e1_e3cc23ab",
+                  "observation_sequence": 17,
+                  "observation_digest": "063560362b7b3e0ff3c849d3f1ca2839e470aea9c6edde842d0dd4b448b859bf",
+                  "round": "second",
+                  "task_elapsed_sec": 16.0,
+                  "action": 888,
+                  "reasons": {
+                    "tb2": "received_motion_wait_masked"
+                  },
+                  "wait_robots": [],
+                  "received_motion_robots": [],
+                  "scope": "planned legal input only, not submitted/cancelled/stopped credit"
+                },
+                {
+                  "epoch": "mr3_p2a0_20261017_v15_interface_w0_e1_e3cc23ab",
+                  "observation_sequence": 18,
+                  "observation_digest": "dea5f2b7cf8089ee7b2fe9527b7f7cc45c48320fb99fc2922af0ce877591c585",
+                  "round": "second",
+                  "task_elapsed_sec": 17.0,
+                  "action": 888,
+                  "reasons": {},
+                  "wait_robots": [],
+                  "received_motion_robots": [],
+                  "scope": "planned legal input only, not submitted/cancelled/stopped credit"
+                },
+                {
+                  "epoch": "mr3_p2a0_20261017_v15_interface_w0_e1_e3cc23ab",
+                  "observation_sequence": 19,
+                  "observation_digest": "364ecb76149acdf172d647362a870045181b1ce86373655970aee6bbb4c9c3b4",
+                  "round": "second",
+                  "task_elapsed_sec": 18.0,
+                  "action": 888,
+                  "reasons": {},
+                  "wait_robots": [],
+                  "received_motion_robots": [],
+                  "scope": "planned legal input only, not submitted/cancelled/stopped credit"
+                },
+                {
+                  "epoch": "mr3_p2a0_20261017_v15_interface_w0_e1_e3cc23ab",
+                  "observation_sequence": 20,
+                  "observation_digest": "a5604e81c4cf4ad4dfbc69b2ab7ce7283101c9a631124b31d5244d3ad72860a7",
+                  "round": "second",
+                  "task_elapsed_sec": 19.0,
+                  "action": 888,
+                  "reasons": {},
+                  "wait_robots": [],
+                  "received_motion_robots": [],
+                  "scope": "planned legal input only, not submitted/cancelled/stopped credit"
+                },
+                {
+                  "epoch": "mr3_p2a0_20261017_v15_interface_w0_e1_e3cc23ab",
+                  "observation_sequence": 21,
+                  "observation_digest": "398d14bd2787cab857be0ae60f0e3d4a7718672adf53d290a9b9bc10a5d72017",
+                  "round": "second",
+                  "task_elapsed_sec": 20.0,
+                  "action": 888,
+                  "reasons": {},
+                  "wait_robots": [],
+                  "received_motion_robots": [],
+                  "scope": "planned legal input only, not submitted/cancelled/stopped credit"
+                },
+                {
+                  "epoch": "mr3_p2a0_20261017_v15_interface_w0_e1_e3cc23ab",
+                  "observation_sequence": 22,
+                  "observation_digest": "8250804cd877fab66ca29f2d489f9d081dcde49c439e5aefbda1a69678df254f",
+                  "round": "second",
+                  "task_elapsed_sec": 21.0,
+                  "action": 888,
+                  "reasons": {},
+                  "wait_robots": [],
+                  "received_motion_robots": [],
+                  "scope": "planned legal input only, not submitted/cancelled/stopped credit"
+                },
+                {
+                  "epoch": "mr3_p2a0_20261017_v15_interface_w0_e1_e3cc23ab",
+                  "observation_sequence": 23,
+                  "observation_digest": "677b58d50a6fcb66df18e375d530361903799b3fc8ab799490c061e04b869359",
+                  "round": "second",
+                  "task_elapsed_sec": 22.0,
+                  "action": 888,
+                  "reasons": {},
+                  "wait_robots": [],
+                  "received_motion_robots": [],
+                  "scope": "planned legal input only, not submitted/cancelled/stopped credit"
+                },
+                {
+                  "epoch": "mr3_p2a0_20261017_v15_interface_w0_e1_e3cc23ab",
+                  "observation_sequence": 24,
+                  "observation_digest": "8b1b35d7a895cbbae0037a0f5e989a98d5395d158446d6398cda0fe37ec15f51",
+                  "round": "second",
+                  "task_elapsed_sec": 23.0,
+                  "action": 888,
+                  "reasons": {},
+                  "wait_robots": [],
+                  "received_motion_robots": [],
+                  "scope": "planned legal input only, not submitted/cancelled/stopped credit"
+                },
+                {
+                  "epoch": "mr3_p2a0_20261017_v15_interface_w0_e1_e3cc23ab",
+                  "observation_sequence": 25,
+                  "observation_digest": "28ec95f63976aac674ac43a7df3a8e520272c0650a1d0d0cc447496c75d3eb79",
+                  "round": "second",
+                  "task_elapsed_sec": 24.0,
+                  "action": 888,
+                  "reasons": {},
+                  "wait_robots": [],
+                  "received_motion_robots": [],
+                  "scope": "planned legal input only, not submitted/cancelled/stopped credit"
+                },
+                {
+                  "epoch": "mr3_p2a0_20261017_v15_interface_w0_e1_e3cc23ab",
+                  "observation_sequence": 26,
+                  "observation_digest": "d01752d756c7ce0aa11f47ad216723bad2dfc523a057857853acd1df268bf75c",
+                  "round": "second",
+                  "task_elapsed_sec": 25.0,
+                  "action": 888,
+                  "reasons": {},
+                  "wait_robots": [],
+                  "received_motion_robots": [],
+                  "scope": "planned legal input only, not submitted/cancelled/stopped credit"
+                },
+                {
+                  "epoch": "mr3_p2a0_20261017_v15_interface_w0_e1_e3cc23ab",
+                  "observation_sequence": 27,
+                  "observation_digest": "c4f060a31ba05689e4e48f6b385a8ba539d3777a92ebf84cdf0c67e375afda98",
+                  "round": "second",
+                  "task_elapsed_sec": 26.0,
+                  "action": 888,
+                  "reasons": {},
+                  "wait_robots": [],
+                  "received_motion_robots": [],
+                  "scope": "planned legal input only, not submitted/cancelled/stopped credit"
+                },
+                {
+                  "epoch": "mr3_p2a0_20261017_v15_interface_w0_e1_e3cc23ab",
+                  "observation_sequence": 28,
+                  "observation_digest": "699be8f3524db7e43d6a9ac6312ace1edb782fc69ccbd2644c3a667c75c636f7",
+                  "round": "second",
+                  "task_elapsed_sec": 27.0,
+                  "action": 888,
+                  "reasons": {},
+                  "wait_robots": [],
+                  "received_motion_robots": [],
+                  "scope": "planned legal input only, not submitted/cancelled/stopped credit"
+                },
+                {
+                  "epoch": "mr3_p2a0_20261017_v15_interface_w0_e1_e3cc23ab",
+                  "observation_sequence": 29,
+                  "observation_digest": "4857e807fcb5fcf58de71e50263bc2dc004b03e2b96cf3b3ce3bbe5cfe397322",
+                  "round": "second",
+                  "task_elapsed_sec": 28.0,
+                  "action": 999,
+                  "reasons": {
+                    "tb1": "bounded_deadline",
+                    "tb2": "bounded_deadline",
+                    "tb3": "bounded_deadline"
+                  },
+                  "wait_robots": [
+                    "tb1",
+                    "tb2",
+                    "tb3"
+                  ],
+                  "received_motion_robots": [],
+                  "scope": "planned legal input only, not submitted/cancelled/stopped credit"
+                },
+                {
+                  "epoch": "mr3_p2a0_20261017_v15_interface_w0_e1_e3cc23ab",
+                  "observation_sequence": 30,
+                  "observation_digest": "a5bb80e4e0ff6cf516a29c22f4bf500e3aeeff119f68a60bee43cd79a3d5861f",
+                  "round": "second",
+                  "task_elapsed_sec": 29.0,
+                  "action": 999,
+                  "reasons": {
+                    "tb1": "held_after_submitted_wait",
+                    "tb2": "held_after_submitted_wait",
+                    "tb3": "held_after_submitted_wait"
+                  },
+                  "wait_robots": [
+                    "tb1",
+                    "tb2",
+                    "tb3"
+                  ],
+                  "received_motion_robots": [],
+                  "scope": "planned legal input only, not submitted/cancelled/stopped credit"
+                },
+                {
+                  "epoch": "mr3_p2a0_20261017_v15_interface_w0_e1_e3cc23ab",
+                  "observation_sequence": 31,
+                  "observation_digest": "7b0fec0d31ac65dab1883676b468331af9a9661c64fd99915c475df1773da09b",
+                  "round": "second",
+                  "task_elapsed_sec": 30.0,
+                  "action": 999,
+                  "reasons": {
+                    "tb1": "held_after_submitted_wait",
+                    "tb2": "held_after_submitted_wait",
+                    "tb3": "held_after_submitted_wait"
+                  },
+                  "wait_robots": [
+                    "tb1",
+                    "tb2",
+                    "tb3"
+                  ],
+                  "received_motion_robots": [],
+                  "scope": "planned legal input only, not submitted/cancelled/stopped credit"
+                },
+                {
+                  "epoch": "mr3_p2a0_20261017_v15_interface_w0_e1_e3cc23ab",
+                  "observation_sequence": 32,
+                  "observation_digest": "7384568a70616bcda8e6377bc7d7540a24c40990b4d190735eb08dd95ad56758",
+                  "round": "second",
+                  "task_elapsed_sec": 31.0,
+                  "action": 999,
+                  "reasons": {
+                    "tb1": "held_after_submitted_wait",
+                    "tb2": "held_after_submitted_wait",
+                    "tb3": "held_after_submitted_wait"
+                  },
+                  "wait_robots": [
+                    "tb1",
+                    "tb2",
+                    "tb3"
+                  ],
+                  "received_motion_robots": [],
+                  "scope": "planned legal input only, not submitted/cancelled/stopped credit"
+                }
+              ],
+              "pending_submission": null
+            }
+          },
+          "preparation_parameter_review": {
+            "source": {
+              "relative_path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_actual_nav2_parameters_v13.py",
+              "freeze": "17ef3cb212aacd6e9e4fcde65783bdf2528da955",
+              "sha256": "9eb963457a8dc8297e4686004ea08c7a06e1e0e9ede7cd795ba9505da9d8f701"
+            },
+            "command_argv": [
+              "bash",
+              "-c",
+              "source /opt/ros/humble/setup.bash && source \"$1\" && shift && exec /usr/bin/python3 \"$@\"",
+              "mr3_parameter_review",
+              "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/setup.bash",
+              "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_actual_nav2_parameters_v13.py",
+              "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v15_interface/worker0/episode001_open_101",
+              "--freeze",
+              "17ef3cb212aacd6e9e4fcde65783bdf2528da955",
+              "--output",
+              "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v15_interface/worker0/episode001_open_101/actual_nav2_parameters.json",
+              "--wall-timeout-sec",
+              "30"
+            ],
+            "wall_timeout_sec": 45,
+            "scope": "after returned reset, paused before first step; readonly GetParameters",
+            "transport": {
+              "native_transport_environment": {
+                "RMW_IMPLEMENTATION": "rmw_fastrtps_cpp",
+                "ROS_LOCALHOST_ONLY": "0",
+                "FASTRTPS_DEFAULT_PROFILES_FILE": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_fastdds_loopback_udp.xml",
+                "SKIP_DEFAULT_XML": "1",
+                "FASTDDS_DEFAULT_PROFILES_FILE": null,
+                "RMW_FASTRTPS_USE_QOS_FROM_XML": null,
+                "RMW_FASTRTPS_PUBLICATION_MODE": null,
+                "profile_sha256": "0b909216206301a5bee45cb1fd755f67a92481d98cec39d818b2dc8764844e37"
+              },
+              "selected_transport_environment": {
+                "RMW_IMPLEMENTATION": "rmw_fastrtps_cpp",
+                "ROS_LOCALHOST_ONLY": "0",
+                "FASTRTPS_DEFAULT_PROFILES_FILE": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_fastdds_loopback_udp.xml",
+                "SKIP_DEFAULT_XML": "1",
+                "FASTDDS_DEFAULT_PROFILES_FILE": null,
+                "RMW_FASTRTPS_USE_QOS_FROM_XML": null,
+                "RMW_FASTRTPS_PUBLICATION_MODE": null
+              },
+              "metadata_sha256": "2d8f65b923f60d1dcd8db3d2e73ef0aaa1204e5c8dc82fc5f544f01f9e04986d",
+              "profile_source": {
+                "relative_path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_fastdds_loopback_udp.xml",
+                "freeze": "17ef3cb212aacd6e9e4fcde65783bdf2528da955",
+                "sha256": "0b909216206301a5bee45cb1fd755f67a92481d98cec39d818b2dc8764844e37"
+              }
+            },
+            "returncode": 0,
+            "stdout": "{\"passed\": true, \"nodes\": 9, \"errors\": [], \"output\": \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261017_v15_interface/worker0/episode001_open_101/actual_nav2_parameters.json\"}\n",
+            "stderr": ""
+          },
+          "terminated": false,
+          "truncated": true,
+          "reason": "external_sampler_limit",
+          "wall_sec_including_startup_and_closure": 803.0653049168177
+        }
+      ],
+      "error": null,
+      "reset_attempts": [
+        {
+          "episode_index": 0,
+          "scene": "open",
+          "seed": 101,
+          "reset_returned": true
+        }
+      ],
+      "preparation_abort": {
+        "requested": false,
+        "first_failure": null,
+        "scope": "cooperative stop after real RPC return; no synthetic transition"
+      },
+      "wall_sec": 803.0653332429938,
+      "shutdown_receipts": [
+        {
+          "epoch": "mr3_p2a0_20261017_v15_interface_w0_e1_e3cc23ab",
+          "worker_returncode": 0,
+          "forced_shutdown": false,
+          "failed_sample": false,
+          "owned_processes_seen": [
+            {
+              "pid": 3361163,
+              "parent": 3361094,
+              "group": 3361163,
+              "session": 3361163,
+              "start_ticks": 399279034,
+              "state": "Z"
+            },
+            {
+              "pid": 3361175,
+              "parent": 3361163,
+              "group": 3361163,
+              "session": 3361163,
+              "start_ticks": 399279075,
+              "state": "R"
+            },
+            {
+              "pid": 3361204,
+              "parent": 3361163,
+              "group": 3361163,
+              "session": 3361163,
+              "start_ticks": 399279205,
+              "state": "R"
+            },
+            {
+              "pid": 3361213,
+              "parent": 3361204,
+              "group": 3361163,
+              "session": 3361163,
+              "start_ticks": 399279361,
+              "state": "S"
+            },
+            {
+              "pid": 3361215,
+              "parent": 3361204,
+              "group": 3361163,
+              "session": 3361163,
+              "start_ticks": 399279361,
+              "state": "S"
+            },
+            {
+              "pid": 3361217,
+              "parent": 3361204,
+              "group": 3361163,
+              "session": 3361163,
+              "start_ticks": 399279362,
+              "state": "S"
+            },
+            {
+              "pid": 3361219,
+              "parent": 3361204,
+              "group": 3361163,
+              "session": 3361163,
+              "start_ticks": 399279362,
+              "state": "S"
+            },
+            {
+              "pid": 3361221,
+              "parent": 3361204,
+              "group": 3361163,
+              "session": 3361163,
+              "start_ticks": 399279362,
+              "state": "Z"
+            },
+            {
+              "pid": 3361223,
+              "parent": 3361204,
+              "group": 3361163,
+              "session": 3361163,
+              "start_ticks": 399279362,
+              "state": "S"
+            },
+            {
+              "pid": 3361225,
+              "parent": 3361204,
+              "group": 3361163,
+              "session": 3361163,
+              "start_ticks": 399279362,
+              "state": "S"
+            },
+            {
+              "pid": 3361227,
+              "parent": 3361204,
+              "group": 3361163,
+              "session": 3361163,
+              "start_ticks": 399279362,
+              "state": "S"
+            },
+            {
+              "pid": 3361663,
+              "parent": 3361204,
+              "group": 3361163,
+              "session": 3361163,
+              "start_ticks": 399279720,
+              "state": "S"
+            },
+            {
+              "pid": 3361665,
+              "parent": 3361204,
+              "group": 3361163,
+              "session": 3361163,
+              "start_ticks": 399279720,
+              "state": "S"
+            },
+            {
+              "pid": 3361667,
+              "parent": 3361204,
+              "group": 3361163,
+              "session": 3361163,
+              "start_ticks": 399279720,
+              "state": "S"
+            },
+            {
+              "pid": 3361733,
+              "parent": 3361204,
+              "group": 3361163,
+              "session": 3361163,
+              "start_ticks": 399280031,
+              "state": "S"
+            },
+            {
+              "pid": 3361735,
+              "parent": 3361204,
+              "group": 3361163,
+              "session": 3361163,
+              "start_ticks": 399280031,
+              "state": "S"
+            },
+            {
+              "pid": 3361737,
+              "parent": 3361204,
+              "group": 3361163,
+              "session": 3361163,
+              "start_ticks": 399280031,
+              "state": "R"
+            },
+            {
+              "pid": 3361801,
+              "parent": 3361204,
+              "group": 3361163,
+              "session": 3361163,
+              "start_ticks": 399280344,
+              "state": "S"
+            },
+            {
+              "pid": 3361862,
+              "parent": 3361204,
+              "group": 3361163,
+              "session": 3361163,
+              "start_ticks": 399281494,
+              "state": "S"
+            },
+            {
+              "pid": 3361864,
+              "parent": 3361204,
+              "group": 3361163,
+              "session": 3361163,
+              "start_ticks": 399281494,
+              "state": "S"
+            },
+            {
+              "pid": 3361866,
+              "parent": 3361204,
+              "group": 3361163,
+              "session": 3361163,
+              "start_ticks": 399281494,
+              "state": "S"
+            },
+            {
+              "pid": 3361868,
+              "parent": 3361204,
+              "group": 3361163,
+              "session": 3361163,
+              "start_ticks": 399281495,
+              "state": "S"
+            },
+            {
+              "pid": 3361870,
+              "parent": 3361204,
+              "group": 3361163,
+              "session": 3361163,
+              "start_ticks": 399281495,
+              "state": "S"
+            },
+            {
+              "pid": 3361872,
+              "parent": 3361204,
+              "group": 3361163,
+              "session": 3361163,
+              "start_ticks": 399281497,
+              "state": "S"
+            },
+            {
+              "pid": 3361874,
+              "parent": 3361204,
+              "group": 3361163,
+              "session": 3361163,
+              "start_ticks": 399281497,
+              "state": "S"
+            },
+            {
+              "pid": 3362249,
+              "parent": 3361204,
+              "group": 3361163,
+              "session": 3361163,
+              "start_ticks": 399285997,
+              "state": "S"
+            },
+            {
+              "pid": 3362251,
+              "parent": 3361204,
+              "group": 3361163,
+              "session": 3361163,
+              "start_ticks": 399285998,
+              "state": "S"
+            },
+            {
+              "pid": 3362253,
+              "parent": 3361204,
+              "group": 3361163,
+              "session": 3361163,
+              "start_ticks": 399285998,
+              "state": "S"
+            },
+            {
+              "pid": 3362255,
+              "parent": 3361204,
+              "group": 3361163,
+              "session": 3361163,
+              "start_ticks": 399285998,
+              "state": "S"
+            },
+            {
+              "pid": 3362257,
+              "parent": 3361204,
+              "group": 3361163,
+              "session": 3361163,
+              "start_ticks": 399285998,
+              "state": "S"
+            },
+            {
+              "pid": 3362259,
+              "parent": 3361204,
+              "group": 3361163,
+              "session": 3361163,
+              "start_ticks": 399285998,
+              "state": "S"
+            },
+            {
+              "pid": 3362261,
+              "parent": 3361204,
+              "group": 3361163,
+              "session": 3361163,
+              "start_ticks": 399285998,
+              "state": "S"
+            },
+            {
+              "pid": 3362563,
+              "parent": 3361204,
+              "group": 3361163,
+              "session": 3361163,
+              "start_ticks": 399290496,
+              "state": "S"
+            },
+            {
+              "pid": 3362565,
+              "parent": 3361204,
+              "group": 3361163,
+              "session": 3361163,
+              "start_ticks": 399290496,
+              "state": "S"
+            },
+            {
+              "pid": 3362567,
+              "parent": 3361204,
+              "group": 3361163,
+              "session": 3361163,
+              "start_ticks": 399290496,
+              "state": "S"
+            },
+            {
+              "pid": 3362569,
+              "parent": 3361204,
+              "group": 3361163,
+              "session": 3361163,
+              "start_ticks": 399290496,
+              "state": "S"
+            },
+            {
+              "pid": 3362571,
+              "parent": 3361204,
+              "group": 3361163,
+              "session": 3361163,
+              "start_ticks": 399290496,
+              "state": "S"
+            },
+            {
+              "pid": 3362573,
+              "parent": 3361204,
+              "group": 3361163,
+              "session": 3361163,
+              "start_ticks": 399290496,
+              "state": "S"
+            },
+            {
+              "pid": 3362575,
+              "parent": 3361204,
+              "group": 3361163,
+              "session": 3361163,
+              "start_ticks": 399290497,
+              "state": "S"
+            },
+            {
+              "pid": 3362706,
+              "parent": 3361204,
+              "group": 3361163,
+              "session": 3361163,
+              "start_ticks": 399291293,
+              "state": "S"
+            },
+            {
+              "pid": 3362708,
+              "parent": 3361204,
+              "group": 3361163,
+              "session": 3361163,
+              "start_ticks": 399291293,
+              "state": "S"
+            },
+            {
+              "pid": 3362740,
+              "parent": 3361163,
+              "group": 3361163,
+              "session": 3361163,
+              "start_ticks": 399291587,
+              "state": "R"
+            },
+            {
+              "pid": 3362745,
+              "parent": 3362740,
+              "group": 3361163,
+              "session": 3361163,
+              "start_ticks": 399291627,
+              "state": "S"
+            },
+            {
+              "pid": 3367405,
+              "parent": 3361204,
+              "group": 3361163,
+              "session": 3361163,
+              "start_ticks": 399358960,
+              "state": "R"
+            }
+          ],
+          "remaining_owned_processes": [],
+          "remaining_owned_zombies": [],
+          "process_scan_statistics": {
+            "count": 5833,
+            "max_scan_wall_sec": 0.4114012261852622,
+            "max_observed_interval_sec": 0.38306213077157736
+          }
+        }
+      ]
+    }
+  ],
+  "preparation_abort": {
+    "requested": false,
+    "first_failure": null,
+    "scope": "first observed failing RPC/worker; other in-flight RPCs finish then close"
+  }
+}

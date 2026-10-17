@@ -1,6 +1,6 @@
 # ROS component memory — MR3
 
-2026-10-17 continuation: P2A.0 remains authorized and incomplete. V14 freeze aa16d6541ef5 failed peer/control geometry and physical stopping coverage; all originals and skipped later stages are closed in pushed f7376d02. V15 restores navigation peer .26 independently of command cap .20 and adds legal received-motion cancellation stimulus V4/32; original V2/V3, immutable physical/angular math and all task/body/stop gates remain. Offline1200 ROS and270 conda CPU checks passed; no V15 native result yet. Complete the reviewed clean pushed same-freeze interface/terminal/reset/deadline matrix and every mandatory audit, commit/push evidence, then await user acceptance. No PPO/P2B/gateway; pilot balance1870 decisions/2905.954739546403 wallsec unchanged. See wireless-rl/report/20261017_mr3_p2a0_v15.md.
+# Codex Monorepo Memory — MR3
 
 Historical first P2A.0 closure (2026-10-17): source freeze f8694025; six native episodes
 closed cleanly, terminal audit PASS, reset benchmark/full audit FAIL with one

@@ -528,11 +528,11 @@ python report/assets/20261017_mr3_p2a0_v14/independent/mr3_p2a0_v14_audit_stage.
 
 只读mapping wrapper与Shim reader仍复用原A13字节；V14 closure的显式binaryproof路径adapter先核旧SHA，只在review时切换13→14并finally还原，actual argv/typed base/maps门不变。[报告与预声明](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261017_mr3_p2a0_v14.md)记录所有失败和原件；完成全矩阵及证据commit/push后等用户P2A.0验收。
 
-## MR3-P2A.0 V15 完整准备矩阵（待新冻结准入）
+## MR3-P2A.0 V15 完整准备矩阵（已关闭失败）
 
 V14失败原件已封存于f7376d02。V15导航peer预测界独立为原`.26`，命令仍`.20/.8`；V4/32外部刺激只读received snapshot和原mask，在运动且WAIT合法时取消，实际step返回并绑定command后才锁存，保留5秒承诺。初次WAIT至少3秒且fresh idle/received速度代理合格后才准第二GOAL；原raw物理、A/B分报、角速度/接触/实际关闭门保持。旧V2/V3可复现，无生产探索兜底。代码及离线回归不能替代同冻结原生通过。
 
-在干净且已push的新冻结完成preflight后，实际串行父编排依次调用以下原生入口及其完整审计；每阶段全部mandatory通过才允许下一阶段，真实失败保留并跳过后续，不自动同版重试。被动mapping观察器只读实际进程并随父编排ledger自然结束。预算仍608 API/596动作/18000原生墙秒，无原生GPU/PPO/pilot。
+以下保留实际V15入口供复核；冻结17ef3cb212aa已在interface活动/停止覆盖门FAIL并关闭，terminal/reset/deadline SKIP，禁止重跑该冻结。原实际串行父编排按以下原生入口及其完整审计执行；每阶段全部mandatory通过才允许下一阶段，真实失败保留并跳过后续，不自动同版重试。被动mapping观察器只读实际进程并随父编排ledger自然结束。预算仍608 API/596动作/18000原生墙秒，无原生GPU/PPO/pilot。
 
 ```bash
 # cwd: wireless-rl；先按P1C段激活conda ns3gym并保持PYTHONNOUSERSITE=1

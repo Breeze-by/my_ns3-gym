@@ -3,7 +3,7 @@
 版本：2026-10-17；路线标识：`MR3`。本文取代旧的目标搜索、充电、集合和通信调度 RL 路线。
 唯一 Git 根：`/home/zhuyulab/ns3-workspace`。P0/P1A/P1B已验收；用户于2026-10-16验收P1C并授权P2A。
 P2A未完成；v6原session基础设施失败后停止。2026-10-17用户授权继续解决并允许前置准备，
-当前[MR3-P2A.0](IMPLEMENTATION_PLAN.md)仍未完成：V14几何及停止覆盖FAIL原件已关闭在f7376d02。V15恢复导航peer独立.26界，并新增遵守原mask/5秒承诺的received运动取消工程刺激；1200 ROS/270 CPU回归通过，仍须新冻结完整四阶段矩阵，见[V15报告](report/20261017_mr3_p2a0_v15.md)。
+当前[MR3-P2A.0](IMPLEMENTATION_PLAN.md)仍未完成：V15冻结17ef3cb212aa的interface32和严格关闭完成，导航peer/完整控制重放通过，但full/input活动与physical制停覆盖FAIL，后三阶段SKIP。需保留原件，核验工程刺激后以新冻结完整重验，见[V15报告](report/20261017_mr3_p2a0_v15.md)。
 本轮无新pilot、不重置其余额；P2B及后续未开始。
 任务定义见[MR3_TASK_CONTRACT.md](MR3_TASK_CONTRACT.md)，环境实现与接口见[MR3_ENV_CONTRACT.md](MR3_ENV_CONTRACT.md)；
 当前停在P2A，完整联合MaskablePPO训练/验证出口未达；gateway不在授权范围内。
