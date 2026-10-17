@@ -320,7 +320,9 @@ def main():
     preflight,preflight_proof=read(Path('/tmp/mr3_p2a0_v20_sensor_source_preflight_v1.json'))
     require(preflight.get('passed') is True and preflight['freeze']==args.freeze
             and preflight['plan_sha256']==planproof['sha256'],'actual source preflight missing/mismatched')
-    bindings=plan['independent_source_bindings']+preflight['source_bindings']
+    bindings=plan['independent_source_bindings']+[
+        {'path':path,'sha256':value['sha256']}
+        for path,value in preflight['source_bindings'].items()]
     def unchanged():
         require(subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()==args.freeze==
                 subprocess.check_output(['git','rev-parse','@{u}'],cwd=ROOT,text=True).strip(),'source not exact pushed HEAD')

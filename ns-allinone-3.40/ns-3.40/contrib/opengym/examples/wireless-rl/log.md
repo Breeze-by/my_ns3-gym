@@ -5888,3 +5888,19 @@ V20准备root静态PASS：160实际源摘要（旧155全保持）、3Python AST�
 冻结340b13d8909fc58f0faf346780f7cfd75e5e93f8已推送。首次实际预检误用/usr/bin/python3，在preflight149导入audit_ppo22的torch时ModuleNotFoundError，session33288 exit1；源码准入未完成、未生成preflight文件，native/预算消耗0。
 精确argv/cwd/源码SHA与工具返回错误文本副本在A20_sensor/offline/entry_correction_v1，未重复执行失败调用。原runtime/独立160源、库/配置均未改。
 按项目无线学习侧环境规则将V20报告预检入口改用/home/zhuyulab/miniconda3/envs/ns3gym/bin/python，parent保持system Python并对子C++明确source ROS；此为CLI文档修正，不重跑CPU/SDK/合成ROS、不改变原门或首次失败。
+
+
+### 2026-10-18 — V20实际准入PASS后入口来源形状修复（仍0原生）
+
+941ae862eecc2420b75b7245f15bfd3f682ae6b5新推送冻结实际使用conda ns3gym预检exit0，103runtime/160independent、三原库/新recorder ELF/域170端口13451全部PASS；原件SHA69da…保留A20/offline/launcher_binding_correction_v1。
+父入口原命令cwd wireless-rl：`rtk proxy bash -c 'env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 -B report/assets/20261018_mr3_p2a0_v20_sensor/independent/mr3_p2a0_v20_sensor_run_v1.py 941ae862eecc2420b75b7245f15bfd3f682ae6b5 > /tmp/mr3_p2a0_v20_sensor_parent_v1.log 2>&1'`。
+实际parent main323 list+dict TypeError，exit1/工具wall.482034109；lock/execution/lifecycle/runtimeconfig均未创建，无recorder/native child，无原生或pilot预算消耗。
+实际工厂source_bindings为dict[path]含sha256及8种其它审计元数据形状；不能假设三个keys或与独立list直接相加。成功准入原JSON完整归档并无损rename至/tmp/mr3_p2a0_v20_sensor_source_preflight_941ae862_original.json，固定x输出路径留给新freeze，未覆盖/删除研究原件。
+
+新TMP parent1fc9f1725b9685880bcbc224083332084c08c7e07a63824e67aa8792ec4c7ede仅三行items→path/sha rows，逆全字节/AST同8259；原263逐摘要/sourcefreeze/plan/binary检查不变。
+旧14 CPU4.224846918wall、新实际main4 CPU.468960245wall、fatal lint.825898096wall通过，精确argv/env/sourcebeforeafter在A20/offline/coordinator_v2；无ROS/DDS/Gazebo。
+新4实际fixture覆盖old TypeError/new真实103+160全部SHA/badSHA/non-dict，Popen禁止。首轮fixture强制三key产生3FAIL，完整旧source/log/receipt保留，仅改测试过强断言，不改实际修复/来源规则。
+独立review300052ff…无阻断，未重复18tests或SDK/DDS/native。root也只读实际103原path SHA全部与worktree一致，额外normative/status不删；原JSON完整保留。
+Root只替换canonical parent相同验证bytes和160bindings中的1项hash；额外新回归仅offline证据，不增加native消费者。CPP4707/实际ELFefd8/原103runtime/预算和原门均未变。
+新26原件321278B固定tar逐member+final SHA核验；初root辅助保管误读manifest files而实际entries、后误取不存在的optional review.py均在archive说明保留，仅保管辅助失败，source/数据与结果不变。
+唯一V20 native尚未开始，修复完成新clean pushed exact40准入后再首次启动；原生charge仍0，V18+V19仍2489.3860735194758，pilot余额不变。
