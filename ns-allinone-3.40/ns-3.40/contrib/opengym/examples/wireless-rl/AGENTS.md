@@ -1,6 +1,6 @@
 # wireless-rl memory — MR3
 
-V23冻结9160543e真实前检PASS110/198并进入ROS/Gazebo；corrector在WorldCreated读取未初始化iteration的guard设计缺陷，gzserver-6，1个reset未返回/0有效transition，后三SKIP。17保存身份gone但forced cleanup/failed sample保留，非normal strictclose PASS；累计32.342406/18000。原物理/停车/95%不变，待生命周期修复新冻结完整重验。见[V23](report/20261018_mr3_p2a0_v23_entry.md)。
+V24修复WorldCreated安装阶段的无效计数读取：保留Load-before-Init回调，以有定义的加载/传感器状态和零时钟准入，iteration明确null而不伪造零；Running实值仅记录。实际新库782d与源码f826及固定审计绑定已准备，原数学/1ms/停车/安全/95%门不变。原V23联合guard具体失败分项未观测，全部FAIL保留。累计71.97839368507266/18000，须新clean pushed冻结完整四阶段重验；P2A.0未完成、无PPO。见[V24](report/20261018_mr3_p2a0_v24_install.md)。
 
 2026-10-18: V19 freeze72d0465ddd1bbee09af117cfd9d89b7e729f8578 fixed50/150 diagnostic pair closed. Both admission/1ms capture/strict close PASS; baseline original physical PASS, contrast original physical FAIL because all33 snapshots have zero GOAL for every robot and no stopping stimulation. Own maps already retain near-seed100; no occupied clearing or .29 relaxation. 150 not selected, V17 stopping failure unresolved. Native1638.4207719592378sec; V18+V19=2489.3860735194758 of3600 ceiling. 78/78 native exits0; fresh91 PID/start identities gone. No matrix/PPO credit, pilot balance unchanged. See [V19](report/20261018_mr3_p2a0_v19.md).
 

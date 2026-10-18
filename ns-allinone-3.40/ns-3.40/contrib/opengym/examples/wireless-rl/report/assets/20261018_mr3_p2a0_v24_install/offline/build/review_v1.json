@@ -1,0 +1,1617 @@
+{
+  "schema": "mr3-v24-canonical-build-independent-readonly-review-v1",
+  "passed": true,
+  "scope": "Read-only checks of actual final V24 build bytes, flags, commands, recorded factory/math results, ELF dependency metadata, source binding and gzip roundtrip. No compiler, factory, math, simulator, ROS/DDS or native execution repeated.",
+  "actual_library_sha256": "782d388fea8df3646524e54f41d71de5f53480b9d04cc0ea1c453c70e2c1f7d8",
+  "actual_library_bytes": 398080,
+  "source3": {
+    "src/mr3_ray_box_corrector.cpp": "f82646c8434b77c42f585ac1828eda84640bac873f70cc7de6848cfbd6493473",
+    "src/mr3_ray_box_collision.cpp": "d556dda57250da3680a7d5a9862416f6196cab9763e495ee75269307b87715cb",
+    "include/multi_robot/mr3_ray_box_collision.hpp": "c619442d038e4bc6ea0695ada34d7074ee83d775b2137222ab9fb6bf8193879b"
+  },
+  "old_four_current_before_after_byte_equal": true,
+  "build_install_samefile_and_bytes": true,
+  "source3_macro_and_elf_strings_match": true,
+  "canonical_receipt_exact_copy_of_execution": true,
+  "actual_probe_linked_target": {
+    "recorded_compile_links_only_probe_source_and_actual_so": true,
+    "elf_needed_corrector_and_canonical_runpath": true,
+    "imported_corrector_functions_undefined_in_probe_elf": true,
+    "recorded_passed": true,
+    "named_both_orders": 36,
+    "deterministic_oriented": 512,
+    "invalid_rejections": 3,
+    "live_process_maps_not_available": "This completed CPU process was not instrumented by this review; actual linking is established by existing compiler argv plus ELF imports/NEEDED/RUNPATH and the captured sanitized environment."
+  },
+  "factory_recorded_system_noLoad_noInit": true,
+  "ldd_recorded_no_unresolved": true,
+  "native_getter_readback_source_present": [
+    "native_ode_quickstep_iterations",
+    "physics_max_step_size_sec"
+  ],
+  "getters_not_executed_by_factory_or_pure_collision_probe": true,
+  "custody_helper_initial_parse_failure_preserved": "The reused V22 custody helper early parse failure remains in its original sealed evidence; this V24 custody invocation does not rewrite or duplicate that old failure.",
+  "current_build_cost": {
+    "top_wall_seconds": 59.77381576690823,
+    "colcon_wall_seconds": 46.744956012349576,
+    "kind": "CPU/SDK only, not native budget"
+  },
+  "prior_builds_kept_separate": "Original V22 b992/f9a and b165/7be79 builds remain historical evidence with separate costs. This review binds only final V24 f826/782d build59.77381576690823 wall seconds.",
+  "read_only_metadata_commands": [
+    {
+      "argv": [
+        "/usr/bin/readelf",
+        "-W",
+        "-d",
+        "/tmp/mr3_p2a0_v24_canonical_build_v1/actual_installed_probe"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.004355980083346367
+    },
+    {
+      "argv": [
+        "/usr/bin/readelf",
+        "-W",
+        "--dyn-syms",
+        "--demangle",
+        "/tmp/mr3_p2a0_v24_canonical_build_v1/actual_installed_probe"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.010269204154610634
+    }
+  ],
+  "inputs": [
+    {
+      "path": "/tmp/mr3_p2a0_v24_canonical_build_v1/execution.json",
+      "resolved_path": "/tmp/mr3_p2a0_v24_canonical_build_v1/execution.json",
+      "bytes": 17467,
+      "sha256": "6ee8d2739a62d4432122b47aface5abbbc56242737528e2284c03696fd6b7ef6",
+      "is_elf": false,
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78653594,
+        "st_size": 17467,
+        "st_mtime_ns": 1792281406880472981,
+        "st_mode": 33204
+      },
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78653594,
+        "st_size": 17467,
+        "st_mtime_ns": 1792281406880472981,
+        "st_mode": 33204
+      },
+      "lstat_before": {
+        "st_dev": 2051,
+        "st_ino": 78653594,
+        "st_size": 17467,
+        "st_mtime_ns": 1792281406880472981,
+        "st_mode": 33204
+      },
+      "lstat_after": {
+        "st_dev": 2051,
+        "st_ino": 78653594,
+        "st_size": 17467,
+        "st_mtime_ns": 1792281406880472981,
+        "st_mode": 33204
+      }
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/src/mr3_ray_box_corrector.cpp",
+      "resolved_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/src/mr3_ray_box_corrector.cpp",
+      "bytes": 14395,
+      "sha256": "f82646c8434b77c42f585ac1828eda84640bac873f70cc7de6848cfbd6493473",
+      "is_elf": false,
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 73564035,
+        "st_size": 14395,
+        "st_mtime_ns": 1792281345135424984,
+        "st_mode": 33204
+      },
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 73564035,
+        "st_size": 14395,
+        "st_mtime_ns": 1792281345135424984,
+        "st_mode": 33204
+      },
+      "lstat_before": {
+        "st_dev": 2051,
+        "st_ino": 73564035,
+        "st_size": 14395,
+        "st_mtime_ns": 1792281345135424984,
+        "st_mode": 33204
+      },
+      "lstat_after": {
+        "st_dev": 2051,
+        "st_ino": 73564035,
+        "st_size": 14395,
+        "st_mtime_ns": 1792281345135424984,
+        "st_mode": 33204
+      }
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/src/mr3_ray_box_collision.cpp",
+      "resolved_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/src/mr3_ray_box_collision.cpp",
+      "bytes": 4624,
+      "sha256": "d556dda57250da3680a7d5a9862416f6196cab9763e495ee75269307b87715cb",
+      "is_elf": false,
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 73564036,
+        "st_size": 4624,
+        "st_mtime_ns": 1792277782416203564,
+        "st_mode": 33204
+      },
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 73564036,
+        "st_size": 4624,
+        "st_mtime_ns": 1792277782416203564,
+        "st_mode": 33204
+      },
+      "lstat_before": {
+        "st_dev": 2051,
+        "st_ino": 73564036,
+        "st_size": 4624,
+        "st_mtime_ns": 1792277782416203564,
+        "st_mode": 33204
+      },
+      "lstat_after": {
+        "st_dev": 2051,
+        "st_ino": 73564036,
+        "st_size": 4624,
+        "st_mtime_ns": 1792277782416203564,
+        "st_mode": 33204
+      }
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/mr3_ray_box_collision.hpp",
+      "resolved_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/mr3_ray_box_collision.hpp",
+      "bytes": 1486,
+      "sha256": "c619442d038e4bc6ea0695ada34d7074ee83d775b2137222ab9fb6bf8193879b",
+      "is_elf": false,
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 73564037,
+        "st_size": 1486,
+        "st_mtime_ns": 1792277782416203564,
+        "st_mode": 33204
+      },
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 73564037,
+        "st_size": 1486,
+        "st_mtime_ns": 1792277782416203564,
+        "st_mode": 33204
+      },
+      "lstat_before": {
+        "st_dev": 2051,
+        "st_ino": 73564037,
+        "st_size": 1486,
+        "st_mtime_ns": 1792277782416203564,
+        "st_mode": 33204
+      },
+      "lstat_after": {
+        "st_dev": 2051,
+        "st_ino": 73564037,
+        "st_size": 1486,
+        "st_mtime_ns": 1792277782416203564,
+        "st_mode": 33204
+      }
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/CMakeLists.txt",
+      "resolved_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/CMakeLists.txt",
+      "bytes": 9198,
+      "sha256": "12b994e0fc0c01ec8761aaf23a7ae4722fe3026391b0622d13b842d0b425ebdc",
+      "is_elf": false,
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 70259615,
+        "st_size": 9198,
+        "st_mtime_ns": 1792277782416203564,
+        "st_mode": 33204
+      },
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 70259615,
+        "st_size": 9198,
+        "st_mtime_ns": 1792277782416203564,
+        "st_mode": 33204
+      },
+      "lstat_before": {
+        "st_dev": 2051,
+        "st_ino": 70259615,
+        "st_size": 9198,
+        "st_mtime_ns": 1792277782416203564,
+        "st_mode": 33204
+      },
+      "lstat_after": {
+        "st_dev": 2051,
+        "st_ino": 70259615,
+        "st_size": 9198,
+        "st_mtime_ns": 1792277782416203564,
+        "st_mode": 33204
+      }
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py",
+      "resolved_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py",
+      "bytes": 58703,
+      "sha256": "814f5b6256ac8badfb7f74dae21f0c66423c6e8ca7181266639d8865dc09cfd1",
+      "is_elf": false,
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 70259629,
+        "st_size": 58703,
+        "st_mtime_ns": 1792277782418203663,
+        "st_mode": 33204
+      },
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 70259629,
+        "st_size": 58703,
+        "st_mtime_ns": 1792277782418203663,
+        "st_mode": 33204
+      },
+      "lstat_before": {
+        "st_dev": 2051,
+        "st_ino": 70259629,
+        "st_size": 58703,
+        "st_mtime_ns": 1792277782418203663,
+        "st_mode": 33204
+      },
+      "lstat_after": {
+        "st_dev": 2051,
+        "st_ino": 70259629,
+        "st_size": 58703,
+        "st_mtime_ns": 1792277782418203663,
+        "st_mode": 33204
+      }
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/vendor/mr3_ray_box_corrector/LICENSE-BSD.TXT",
+      "resolved_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/vendor/mr3_ray_box_corrector/LICENSE-BSD.TXT",
+      "bytes": 1626,
+      "sha256": "fe012d262cf04a701cc856e2d12780261a60d7b17f4f7cb9cd589ff65b3f4f32",
+      "is_elf": false,
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78653565,
+        "st_size": 1626,
+        "st_mtime_ns": 1792277782416203564,
+        "st_mode": 33204
+      },
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78653565,
+        "st_size": 1626,
+        "st_mtime_ns": 1792277782416203564,
+        "st_mode": 33204
+      },
+      "lstat_before": {
+        "st_dev": 2051,
+        "st_ino": 78653565,
+        "st_size": 1626,
+        "st_mtime_ns": 1792277782416203564,
+        "st_mode": 33204
+      },
+      "lstat_after": {
+        "st_dev": 2051,
+        "st_ino": 78653565,
+        "st_size": 1626,
+        "st_mtime_ns": 1792277782416203564,
+        "st_mode": 33204
+      }
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/lib/libmr3_gazebo_diff_drive.so",
+      "resolved_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_gazebo_diff_drive.so",
+      "bytes": 1999200,
+      "sha256": "a014f2c618e38fc8a306d76c100083d952606333045a2e35bffce6f8b25b10c8",
+      "is_elf": true,
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 73531513,
+        "st_size": 1999200,
+        "st_mtime_ns": 1792238739380650305,
+        "st_mode": 33277
+      },
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 73531513,
+        "st_size": 1999200,
+        "st_mtime_ns": 1792238739380650305,
+        "st_mode": 33277
+      },
+      "lstat_before": {
+        "st_dev": 2051,
+        "st_ino": 73570184,
+        "st_size": 107,
+        "st_mtime_ns": 1792212847172581881,
+        "st_mode": 41471
+      },
+      "lstat_after": {
+        "st_dev": 2051,
+        "st_ino": 73570184,
+        "st_size": 107,
+        "st_mtime_ns": 1792212847172581881,
+        "st_mode": 41471
+      }
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/lib/libmr3_stop_response_observer.so",
+      "resolved_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_stop_response_observer.so",
+      "bytes": 497648,
+      "sha256": "9a1d76b0d9a6585bb2d40fb348bc5636bdd256838291e8ea605d1d05b18806bf",
+      "is_elf": true,
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 73531505,
+        "st_size": 497648,
+        "st_mtime_ns": 1792263540989191772,
+        "st_mode": 33277
+      },
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 73531505,
+        "st_size": 497648,
+        "st_mtime_ns": 1792263540989191772,
+        "st_mode": 33277
+      },
+      "lstat_before": {
+        "st_dev": 2051,
+        "st_ino": 73558161,
+        "st_size": 112,
+        "st_mtime_ns": 1792263541119199083,
+        "st_mode": 41471
+      },
+      "lstat_after": {
+        "st_dev": 2051,
+        "st_ino": 73558161,
+        "st_size": 112,
+        "st_mtime_ns": 1792263541119199083,
+        "st_mode": 41471
+      }
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/lib/libmr3_physics_diagnostic_profile.so",
+      "resolved_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_physics_diagnostic_profile.so",
+      "bytes": 496360,
+      "sha256": "09321ea65a2c893d2e65316f43d5ee54d5dda7014a5d40e2186b6b720055fcc1",
+      "is_elf": true,
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 73531498,
+        "st_size": 496360,
+        "st_mtime_ns": 1792263538550054559,
+        "st_mode": 33277
+      },
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 73531498,
+        "st_size": 496360,
+        "st_mtime_ns": 1792263538550054559,
+        "st_mode": 33277
+      },
+      "lstat_before": {
+        "st_dev": 2051,
+        "st_ino": 73560458,
+        "st_size": 116,
+        "st_mtime_ns": 1792263541196203413,
+        "st_mode": 41471
+      },
+      "lstat_after": {
+        "st_dev": 2051,
+        "st_ino": 73560458,
+        "st_size": 116,
+        "st_mtime_ns": 1792263541196203413,
+        "st_mode": 41471
+      }
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/lib/libmr3_ray_provenance_observer.so",
+      "resolved_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_ray_provenance_observer.so",
+      "bytes": 463272,
+      "sha256": "b76138132ae7dbb35936c2e0971e909f688189d240de3910516157b3553d57b8",
+      "is_elf": true,
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 73531509,
+        "st_size": 463272,
+        "st_mtime_ns": 1792274792923463781,
+        "st_mode": 33277
+      },
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 73531509,
+        "st_size": 463272,
+        "st_mtime_ns": 1792274792923463781,
+        "st_mode": 33277
+      },
+      "lstat_before": {
+        "st_dev": 2051,
+        "st_ino": 73556788,
+        "st_size": 113,
+        "st_mtime_ns": 1792274793846506160,
+        "st_mode": 41471
+      },
+      "lstat_after": {
+        "st_dev": 2051,
+        "st_ino": 73556788,
+        "st_size": 113,
+        "st_mtime_ns": 1792274793846506160,
+        "st_mode": 41471
+      }
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/lib/libmr3_ray_box_corrector.so",
+      "resolved_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_ray_box_corrector.so",
+      "bytes": 398080,
+      "sha256": "782d388fea8df3646524e54f41d71de5f53480b9d04cc0ea1c453c70e2c1f7d8",
+      "is_elf": true,
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 73531511,
+        "st_size": 398080,
+        "st_mtime_ns": 1792281393393829577,
+        "st_mode": 33277
+      },
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 73531511,
+        "st_size": 398080,
+        "st_mtime_ns": 1792281393393829577,
+        "st_mode": 33277
+      },
+      "lstat_before": {
+        "st_dev": 2051,
+        "st_ino": 73558738,
+        "st_size": 107,
+        "st_mtime_ns": 1792277904010261873,
+        "st_mode": 41471
+      },
+      "lstat_after": {
+        "st_dev": 2051,
+        "st_ino": 73558738,
+        "st_size": 107,
+        "st_mtime_ns": 1792277904010261873,
+        "st_mode": 41471
+      }
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_ray_box_corrector.so",
+      "resolved_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_ray_box_corrector.so",
+      "bytes": 398080,
+      "sha256": "782d388fea8df3646524e54f41d71de5f53480b9d04cc0ea1c453c70e2c1f7d8",
+      "is_elf": true,
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 73531511,
+        "st_size": 398080,
+        "st_mtime_ns": 1792281393393829577,
+        "st_mode": 33277
+      },
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 73531511,
+        "st_size": 398080,
+        "st_mtime_ns": 1792281393393829577,
+        "st_mode": 33277
+      },
+      "lstat_before": {
+        "st_dev": 2051,
+        "st_ino": 73531511,
+        "st_size": 398080,
+        "st_mtime_ns": 1792281393393829577,
+        "st_mode": 33277
+      },
+      "lstat_after": {
+        "st_dev": 2051,
+        "st_ino": 73531511,
+        "st_size": 398080,
+        "st_mtime_ns": 1792281393393829577,
+        "st_mode": 33277
+      }
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/CMakeFiles/mr3_ray_box_corrector.dir/flags.make",
+      "resolved_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/CMakeFiles/mr3_ray_box_corrector.dir/flags.make",
+      "bytes": 1486,
+      "sha256": "b7c1409e9c18fdf1b39b6ee716803e0ddcf2c2721e5ff1a7d716e02300c54e24",
+      "is_elf": false,
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78653591,
+        "st_size": 1486,
+        "st_mtime_ns": 1792281351516744698,
+        "st_mode": 33204
+      },
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78653591,
+        "st_size": 1486,
+        "st_mtime_ns": 1792281351516744698,
+        "st_mode": 33204
+      },
+      "lstat_before": {
+        "st_dev": 2051,
+        "st_ino": 78653591,
+        "st_size": 1486,
+        "st_mtime_ns": 1792281351516744698,
+        "st_mode": 33204
+      },
+      "lstat_after": {
+        "st_dev": 2051,
+        "st_ino": 78653591,
+        "st_size": 1486,
+        "st_mtime_ns": 1792281351516744698,
+        "st_mode": 33204
+      }
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/CMakeFiles/mr3_ray_box_corrector.dir/link.txt",
+      "resolved_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/CMakeFiles/mr3_ray_box_corrector.dir/link.txt",
+      "bytes": 2725,
+      "sha256": "2b59d470cabbd543b1112c8742a119847608f26c9aec60202b48b330bf57a3e8",
+      "is_elf": false,
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78653596,
+        "st_size": 2725,
+        "st_mtime_ns": 1792277870160574262,
+        "st_mode": 33204
+      },
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78653596,
+        "st_size": 2725,
+        "st_mtime_ns": 1792277870160574262,
+        "st_mode": 33204
+      },
+      "lstat_before": {
+        "st_dev": 2051,
+        "st_ino": 78653596,
+        "st_size": 2725,
+        "st_mtime_ns": 1792277870160574262,
+        "st_mode": 33204
+      },
+      "lstat_after": {
+        "st_dev": 2051,
+        "st_ino": 78653596,
+        "st_size": 2725,
+        "st_mtime_ns": 1792277870160574262,
+        "st_mode": 33204
+      }
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v22_ray_box_corrector_proposal_v1/probe.cpp",
+      "resolved_path": "/tmp/mr3_p2a0_v22_ray_box_corrector_proposal_v1/probe.cpp",
+      "bytes": 9636,
+      "sha256": "f6bfe9aa11c8d3c5b13a567f0520b9429ec72a150839fc0f261e00ea2659bd2a",
+      "is_elf": false,
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78653468,
+        "st_size": 9636,
+        "st_mtime_ns": 1792277516164985766,
+        "st_mode": 33204
+      },
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78653468,
+        "st_size": 9636,
+        "st_mtime_ns": 1792277516164985766,
+        "st_mode": 33204
+      },
+      "lstat_before": {
+        "st_dev": 2051,
+        "st_ino": 78653468,
+        "st_size": 9636,
+        "st_mtime_ns": 1792277516164985766,
+        "st_mode": 33204
+      },
+      "lstat_after": {
+        "st_dev": 2051,
+        "st_ino": 78653468,
+        "st_size": 9636,
+        "st_mtime_ns": 1792277516164985766,
+        "st_mode": 33204
+      }
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v22_ray_box_corrector_proposal_v1/factory",
+      "resolved_path": "/tmp/mr3_p2a0_v22_ray_box_corrector_proposal_v1/factory",
+      "bytes": 224512,
+      "sha256": "cad9b5336a1c4f51e1259c45b362b8a2835e7f5affc3548241d23ce492b422b6",
+      "is_elf": true,
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78653554,
+        "st_size": 224512,
+        "st_mtime_ns": 1792277752567718170,
+        "st_mode": 33277
+      },
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78653554,
+        "st_size": 224512,
+        "st_mtime_ns": 1792277752567718170,
+        "st_mode": 33277
+      },
+      "lstat_before": {
+        "st_dev": 2051,
+        "st_ino": 78653554,
+        "st_size": 224512,
+        "st_mtime_ns": 1792277752567718170,
+        "st_mode": 33277
+      },
+      "lstat_after": {
+        "st_dev": 2051,
+        "st_ino": 78653554,
+        "st_size": 224512,
+        "st_mtime_ns": 1792277752567718170,
+        "st_mode": 33277
+      }
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v24_canonical_build_v1/actual_installed_probe",
+      "resolved_path": "/tmp/mr3_p2a0_v24_canonical_build_v1/actual_installed_probe",
+      "bytes": 145336,
+      "sha256": "5114383dc1e369cc54941ac44e5e898356f5c781503db63e7884b2f5ae487434",
+      "is_elf": true,
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78654864,
+        "st_size": 145336,
+        "st_mtime_ns": 1792281406332446821,
+        "st_mode": 33277
+      },
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78654864,
+        "st_size": 145336,
+        "st_mtime_ns": 1792281406332446821,
+        "st_mode": 33277
+      },
+      "lstat_before": {
+        "st_dev": 2051,
+        "st_ino": 78654864,
+        "st_size": 145336,
+        "st_mtime_ns": 1792281406332446821,
+        "st_mode": 33277
+      },
+      "lstat_after": {
+        "st_dev": 2051,
+        "st_ino": 78654864,
+        "st_size": 145336,
+        "st_mtime_ns": 1792281406332446821,
+        "st_mode": 33277
+      }
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v24_canonical_build_v1/colcon.stdout.log",
+      "resolved_path": "/tmp/mr3_p2a0_v24_canonical_build_v1/colcon.stdout.log",
+      "bytes": 43246,
+      "sha256": "d1bf88ca571ff86b4c38b6858804cb62b33ebe802fc864cb23cd7eea575801f4",
+      "is_elf": false,
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78654846,
+        "st_size": 43246,
+        "st_mtime_ns": 1792281393673842928,
+        "st_mode": 33204
+      },
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78654846,
+        "st_size": 43246,
+        "st_mtime_ns": 1792281393673842928,
+        "st_mode": 33204
+      },
+      "lstat_before": {
+        "st_dev": 2051,
+        "st_ino": 78654846,
+        "st_size": 43246,
+        "st_mtime_ns": 1792281393673842928,
+        "st_mode": 33204
+      },
+      "lstat_after": {
+        "st_dev": 2051,
+        "st_ino": 78654846,
+        "st_size": 43246,
+        "st_mtime_ns": 1792281393673842928,
+        "st_mode": 33204
+      }
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v24_canonical_build_v1/colcon.stderr.log",
+      "resolved_path": "/tmp/mr3_p2a0_v24_canonical_build_v1/colcon.stderr.log",
+      "bytes": 6686,
+      "sha256": "70cf80ea8542ade1cc88a5fa39c73dfcb9d85dcf6f323433ed6336d19f2f91ac",
+      "is_elf": false,
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78654847,
+        "st_size": 6686,
+        "st_mtime_ns": 1792281393642841450,
+        "st_mode": 33204
+      },
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78654847,
+        "st_size": 6686,
+        "st_mtime_ns": 1792281393642841450,
+        "st_mode": 33204
+      },
+      "lstat_before": {
+        "st_dev": 2051,
+        "st_ino": 78654847,
+        "st_size": 6686,
+        "st_mtime_ns": 1792281393642841450,
+        "st_mode": 33204
+      },
+      "lstat_after": {
+        "st_dev": 2051,
+        "st_ino": 78654847,
+        "st_size": 6686,
+        "st_mtime_ns": 1792281393642841450,
+        "st_mode": 33204
+      }
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v24_canonical_build_v1/factory.stdout.log",
+      "resolved_path": "/tmp/mr3_p2a0_v24_canonical_build_v1/factory.stdout.log",
+      "bytes": 71,
+      "sha256": "2940229b1c94a6beb226a00fe4b56bf6de137a0017532403ba7176d5119d8ec4",
+      "is_elf": false,
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78653602,
+        "st_size": 71,
+        "st_mtime_ns": 1792281394500882362,
+        "st_mode": 33204
+      },
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78653602,
+        "st_size": 71,
+        "st_mtime_ns": 1792281394500882362,
+        "st_mode": 33204
+      },
+      "lstat_before": {
+        "st_dev": 2051,
+        "st_ino": 78653602,
+        "st_size": 71,
+        "st_mtime_ns": 1792281394500882362,
+        "st_mode": 33204
+      },
+      "lstat_after": {
+        "st_dev": 2051,
+        "st_ino": 78653602,
+        "st_size": 71,
+        "st_mtime_ns": 1792281394500882362,
+        "st_mode": 33204
+      }
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v24_canonical_build_v1/factory.stderr.log",
+      "resolved_path": "/tmp/mr3_p2a0_v24_canonical_build_v1/factory.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "is_elf": false,
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78653687,
+        "st_size": 0,
+        "st_mtime_ns": 1792281393879852750,
+        "st_mode": 33204
+      },
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78653687,
+        "st_size": 0,
+        "st_mtime_ns": 1792281393879852750,
+        "st_mode": 33204
+      },
+      "lstat_before": {
+        "st_dev": 2051,
+        "st_ino": 78653687,
+        "st_size": 0,
+        "st_mtime_ns": 1792281393879852750,
+        "st_mode": 33204
+      },
+      "lstat_after": {
+        "st_dev": 2051,
+        "st_ino": 78653687,
+        "st_size": 0,
+        "st_mtime_ns": 1792281393879852750,
+        "st_mode": 33204
+      }
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v24_canonical_build_v1/ldd.stdout.log",
+      "resolved_path": "/tmp/mr3_p2a0_v24_canonical_build_v1/ldd.stdout.log",
+      "bytes": 26125,
+      "sha256": "d212c349f0d876139d0efac61907431a62fc43298862194cfd0491627dedb231",
+      "is_elf": false,
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78654858,
+        "st_size": 26125,
+        "st_mtime_ns": 1792281394830898098,
+        "st_mode": 33204
+      },
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78654858,
+        "st_size": 26125,
+        "st_mtime_ns": 1792281394830898098,
+        "st_mode": 33204
+      },
+      "lstat_before": {
+        "st_dev": 2051,
+        "st_ino": 78654858,
+        "st_size": 26125,
+        "st_mtime_ns": 1792281394830898098,
+        "st_mode": 33204
+      },
+      "lstat_after": {
+        "st_dev": 2051,
+        "st_ino": 78654858,
+        "st_size": 26125,
+        "st_mtime_ns": 1792281394830898098,
+        "st_mode": 33204
+      }
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v24_canonical_build_v1/ldd.stderr.log",
+      "resolved_path": "/tmp/mr3_p2a0_v24_canonical_build_v1/ldd.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "is_elf": false,
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78654861,
+        "st_size": 0,
+        "st_mtime_ns": 1792281394515883077,
+        "st_mode": 33204
+      },
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78654861,
+        "st_size": 0,
+        "st_mtime_ns": 1792281394515883077,
+        "st_mode": 33204
+      },
+      "lstat_before": {
+        "st_dev": 2051,
+        "st_ino": 78654861,
+        "st_size": 0,
+        "st_mtime_ns": 1792281394515883077,
+        "st_mode": 33204
+      },
+      "lstat_after": {
+        "st_dev": 2051,
+        "st_ino": 78654861,
+        "st_size": 0,
+        "st_mtime_ns": 1792281394515883077,
+        "st_mode": 33204
+      }
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v24_canonical_build_v1/compile_actual_probe.stdout.log",
+      "resolved_path": "/tmp/mr3_p2a0_v24_canonical_build_v1/compile_actual_probe.stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "is_elf": false,
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78654862,
+        "st_size": 0,
+        "st_mtime_ns": 1792281394833898241,
+        "st_mode": 33204
+      },
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78654862,
+        "st_size": 0,
+        "st_mtime_ns": 1792281394833898241,
+        "st_mode": 33204
+      },
+      "lstat_before": {
+        "st_dev": 2051,
+        "st_ino": 78654862,
+        "st_size": 0,
+        "st_mtime_ns": 1792281394833898241,
+        "st_mode": 33204
+      },
+      "lstat_after": {
+        "st_dev": 2051,
+        "st_ino": 78654862,
+        "st_size": 0,
+        "st_mtime_ns": 1792281394833898241,
+        "st_mode": 33204
+      }
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v24_canonical_build_v1/compile_actual_probe.stderr.log",
+      "resolved_path": "/tmp/mr3_p2a0_v24_canonical_build_v1/compile_actual_probe.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "is_elf": false,
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78654863,
+        "st_size": 0,
+        "st_mtime_ns": 1792281394833898241,
+        "st_mode": 33204
+      },
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78654863,
+        "st_size": 0,
+        "st_mtime_ns": 1792281394833898241,
+        "st_mode": 33204
+      },
+      "lstat_before": {
+        "st_dev": 2051,
+        "st_ino": 78654863,
+        "st_size": 0,
+        "st_mtime_ns": 1792281394833898241,
+        "st_mode": 33204
+      },
+      "lstat_after": {
+        "st_dev": 2051,
+        "st_ino": 78654863,
+        "st_size": 0,
+        "st_mtime_ns": 1792281394833898241,
+        "st_mode": 33204
+      }
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v24_canonical_build_v1/actual_installed_probe.stdout.log",
+      "resolved_path": "/tmp/mr3_p2a0_v24_canonical_build_v1/actual_installed_probe.stdout.log",
+      "bytes": 38960,
+      "sha256": "0cd545b172bb211a7e8e49c841ea7af375832d5015960c1d7765abb9e34ae63c",
+      "is_elf": false,
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78654865,
+        "st_size": 38960,
+        "st_mtime_ns": 1792281406857471883,
+        "st_mode": 33204
+      },
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78654865,
+        "st_size": 38960,
+        "st_mtime_ns": 1792281406857471883,
+        "st_mode": 33204
+      },
+      "lstat_before": {
+        "st_dev": 2051,
+        "st_ino": 78654865,
+        "st_size": 38960,
+        "st_mtime_ns": 1792281406857471883,
+        "st_mode": 33204
+      },
+      "lstat_after": {
+        "st_dev": 2051,
+        "st_ino": 78654865,
+        "st_size": 38960,
+        "st_mtime_ns": 1792281406857471883,
+        "st_mode": 33204
+      }
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v24_canonical_build_v1/actual_installed_probe.stderr.log",
+      "resolved_path": "/tmp/mr3_p2a0_v24_canonical_build_v1/actual_installed_probe.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "is_elf": false,
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78654866,
+        "st_size": 0,
+        "st_mtime_ns": 1792281406349447633,
+        "st_mode": 33204
+      },
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78654866,
+        "st_size": 0,
+        "st_mtime_ns": 1792281406349447633,
+        "st_mode": 33204
+      },
+      "lstat_before": {
+        "st_dev": 2051,
+        "st_ino": 78654866,
+        "st_size": 0,
+        "st_mtime_ns": 1792281406349447633,
+        "st_mode": 33204
+      },
+      "lstat_after": {
+        "st_dev": 2051,
+        "st_ino": 78654866,
+        "st_size": 0,
+        "st_mtime_ns": 1792281406349447633,
+        "st_mode": 33204
+      }
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v24_canonical_build_independent_review_v1/actual_probe_dynamic.stdout",
+      "resolved_path": "/tmp/mr3_p2a0_v24_canonical_build_independent_review_v1/actual_probe_dynamic.stdout",
+      "bytes": 1908,
+      "sha256": "9c2f1e2314709bcf1d1af7066981059361f0feab5898d2f53df3cd198308da27",
+      "is_elf": false,
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78654898,
+        "st_size": 1908,
+        "st_mtime_ns": 1792281669756141897,
+        "st_mode": 33204
+      },
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78654898,
+        "st_size": 1908,
+        "st_mtime_ns": 1792281669756141897,
+        "st_mode": 33204
+      },
+      "lstat_before": {
+        "st_dev": 2051,
+        "st_ino": 78654898,
+        "st_size": 1908,
+        "st_mtime_ns": 1792281669756141897,
+        "st_mode": 33204
+      },
+      "lstat_after": {
+        "st_dev": 2051,
+        "st_ino": 78654898,
+        "st_size": 1908,
+        "st_mtime_ns": 1792281669756141897,
+        "st_mode": 33204
+      }
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v24_canonical_build_independent_review_v1/actual_probe_dynamic.stderr",
+      "resolved_path": "/tmp/mr3_p2a0_v24_canonical_build_independent_review_v1/actual_probe_dynamic.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "is_elf": false,
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78654899,
+        "st_size": 0,
+        "st_mtime_ns": 1792281669756141897,
+        "st_mode": 33204
+      },
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78654899,
+        "st_size": 0,
+        "st_mtime_ns": 1792281669756141897,
+        "st_mode": 33204
+      },
+      "lstat_before": {
+        "st_dev": 2051,
+        "st_ino": 78654899,
+        "st_size": 0,
+        "st_mtime_ns": 1792281669756141897,
+        "st_mode": 33204
+      },
+      "lstat_after": {
+        "st_dev": 2051,
+        "st_ino": 78654899,
+        "st_size": 0,
+        "st_mtime_ns": 1792281669756141897,
+        "st_mode": 33204
+      }
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v24_canonical_build_independent_review_v1/actual_probe_symbols.stdout",
+      "resolved_path": "/tmp/mr3_p2a0_v24_canonical_build_independent_review_v1/actual_probe_symbols.stdout",
+      "bytes": 37094,
+      "sha256": "b7e9dc288c1f92b2dba96a0afc89963e12c5dbcbfeb2338862b561f4fe408d26",
+      "is_elf": false,
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78654900,
+        "st_size": 37094,
+        "st_mtime_ns": 1792281669766142383,
+        "st_mode": 33204
+      },
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78654900,
+        "st_size": 37094,
+        "st_mtime_ns": 1792281669766142383,
+        "st_mode": 33204
+      },
+      "lstat_before": {
+        "st_dev": 2051,
+        "st_ino": 78654900,
+        "st_size": 37094,
+        "st_mtime_ns": 1792281669766142383,
+        "st_mode": 33204
+      },
+      "lstat_after": {
+        "st_dev": 2051,
+        "st_ino": 78654900,
+        "st_size": 37094,
+        "st_mtime_ns": 1792281669766142383,
+        "st_mode": 33204
+      }
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v24_canonical_build_independent_review_v1/actual_probe_symbols.stderr",
+      "resolved_path": "/tmp/mr3_p2a0_v24_canonical_build_independent_review_v1/actual_probe_symbols.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "is_elf": false,
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78654901,
+        "st_size": 0,
+        "st_mtime_ns": 1792281669766142383,
+        "st_mode": 33204
+      },
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78654901,
+        "st_size": 0,
+        "st_mtime_ns": 1792281669766142383,
+        "st_mode": 33204
+      },
+      "lstat_before": {
+        "st_dev": 2051,
+        "st_ino": 78654901,
+        "st_size": 0,
+        "st_mtime_ns": 1792281669766142383,
+        "st_mode": 33204
+      },
+      "lstat_after": {
+        "st_dev": 2051,
+        "st_ino": 78654901,
+        "st_size": 0,
+        "st_mtime_ns": 1792281669766142383,
+        "st_mode": 33204
+      }
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v24_install/binary/receipt_v1.json",
+      "resolved_path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v24_install/binary/receipt_v1.json",
+      "bytes": 7954,
+      "sha256": "84bbd6bd4b5a8802222dfff9ef8f5a741b89a5d670b71170f46e9a8ae67b4ac8",
+      "is_elf": false,
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78654885,
+        "st_size": 7954,
+        "st_mtime_ns": 1792281472084593868,
+        "st_mode": 33204
+      },
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78654885,
+        "st_size": 7954,
+        "st_mtime_ns": 1792281472084593868,
+        "st_mode": 33204
+      },
+      "lstat_before": {
+        "st_dev": 2051,
+        "st_ino": 78654885,
+        "st_size": 7954,
+        "st_mtime_ns": 1792281472084593868,
+        "st_mode": 33204
+      },
+      "lstat_after": {
+        "st_dev": 2051,
+        "st_ino": 78654885,
+        "st_size": 7954,
+        "st_mtime_ns": 1792281472084593868,
+        "st_mode": 33204
+      }
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v24_install/binary/canonical_build_receipt_v1.json",
+      "resolved_path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v24_install/binary/canonical_build_receipt_v1.json",
+      "bytes": 17467,
+      "sha256": "6ee8d2739a62d4432122b47aface5abbbc56242737528e2284c03696fd6b7ef6",
+      "is_elf": false,
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78654884,
+        "st_size": 17467,
+        "st_mtime_ns": 1792281472072593292,
+        "st_mode": 33204
+      },
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78654884,
+        "st_size": 17467,
+        "st_mtime_ns": 1792281472072593292,
+        "st_mode": 33204
+      },
+      "lstat_before": {
+        "st_dev": 2051,
+        "st_ino": 78654884,
+        "st_size": 17467,
+        "st_mtime_ns": 1792281472072593292,
+        "st_mode": 33204
+      },
+      "lstat_after": {
+        "st_dev": 2051,
+        "st_ino": 78654884,
+        "st_size": 17467,
+        "st_mtime_ns": 1792281472072593292,
+        "st_mode": 33204
+      }
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v24_install/binary/libmr3_ray_box_corrector.so.gz",
+      "resolved_path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v24_install/binary/libmr3_ray_box_corrector.so.gz",
+      "bytes": 129776,
+      "sha256": "41c1ae6ad5fd1c80a220ecde90328271e2f4e0668d4d240beb44bc0dce67abed",
+      "is_elf": false,
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78654883,
+        "st_size": 129776,
+        "st_mtime_ns": 1792281472072593292,
+        "st_mode": 33204
+      },
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78654883,
+        "st_size": 129776,
+        "st_mtime_ns": 1792281472072593292,
+        "st_mode": 33204
+      },
+      "lstat_before": {
+        "st_dev": 2051,
+        "st_ino": 78654883,
+        "st_size": 129776,
+        "st_mtime_ns": 1792281472072593292,
+        "st_mode": 33204
+      },
+      "lstat_after": {
+        "st_dev": 2051,
+        "st_ino": 78654883,
+        "st_size": 129776,
+        "st_mtime_ns": 1792281472072593292,
+        "st_mode": 33204
+      }
+    },
+    {
+      "path": "/lib/x86_64-linux-gnu/libgazebo_ode.so.11",
+      "resolved_path": "/usr/lib/x86_64-linux-gnu/libgazebo_ode.so.11.10.2",
+      "bytes": 719240,
+      "sha256": "a94a424df0b3af9d8a04c58ef1562734cc81728253bcedd25c7705330289c258",
+      "is_elf": true,
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 95980922,
+        "st_size": 719240,
+        "st_mtime_ns": 1647719917000000000,
+        "st_mode": 33188
+      },
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 95980922,
+        "st_size": 719240,
+        "st_mtime_ns": 1647719917000000000,
+        "st_mode": 33188
+      },
+      "lstat_before": {
+        "st_dev": 2051,
+        "st_ino": 95980952,
+        "st_size": 24,
+        "st_mtime_ns": 1647719917000000000,
+        "st_mode": 41471
+      },
+      "lstat_after": {
+        "st_dev": 2051,
+        "st_ino": 95980952,
+        "st_size": 24,
+        "st_mtime_ns": 1647719917000000000,
+        "st_mode": 41471
+      }
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v24_install_lifecycle_proposal_v1/mr3_ray_box_corrector.proposed.cpp",
+      "resolved_path": "/tmp/mr3_p2a0_v24_install_lifecycle_proposal_v1/mr3_ray_box_corrector.proposed.cpp",
+      "bytes": 14395,
+      "sha256": "f82646c8434b77c42f585ac1828eda84640bac873f70cc7de6848cfbd6493473",
+      "is_elf": false,
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78392982,
+        "st_size": 14395,
+        "st_mtime_ns": 1792281077895036640,
+        "st_mode": 33204
+      },
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78392982,
+        "st_size": 14395,
+        "st_mtime_ns": 1792281077895036640,
+        "st_mode": 33204
+      },
+      "lstat_before": {
+        "st_dev": 2051,
+        "st_ino": 78392982,
+        "st_size": 14395,
+        "st_mtime_ns": 1792281077895036640,
+        "st_mode": 33204
+      },
+      "lstat_after": {
+        "st_dev": 2051,
+        "st_ino": 78392982,
+        "st_size": 14395,
+        "st_mtime_ns": 1792281077895036640,
+        "st_mode": 33204
+      }
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v24_install_lifecycle_proposal_v1/source_review_v1.json",
+      "resolved_path": "/tmp/mr3_p2a0_v24_install_lifecycle_proposal_v1/source_review_v1.json",
+      "bytes": 7177,
+      "sha256": "b7cc129df84488cd0be329feae579669d9d3a9c4d21d0103da641c6db11c225f",
+      "is_elf": false,
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78393001,
+        "st_size": 7177,
+        "st_mtime_ns": 1792281244531384667,
+        "st_mode": 33204
+      },
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78393001,
+        "st_size": 7177,
+        "st_mtime_ns": 1792281244531384667,
+        "st_mode": 33204
+      },
+      "lstat_before": {
+        "st_dev": 2051,
+        "st_ino": 78393001,
+        "st_size": 7177,
+        "st_mtime_ns": 1792281244531384667,
+        "st_mode": 33204
+      },
+      "lstat_after": {
+        "st_dev": 2051,
+        "st_ino": 78393001,
+        "st_size": 7177,
+        "st_mtime_ns": 1792281244531384667,
+        "st_mode": 33204
+      }
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v24_install_lifecycle_proposal_v1/handoff_v1.json",
+      "resolved_path": "/tmp/mr3_p2a0_v24_install_lifecycle_proposal_v1/handoff_v1.json",
+      "bytes": 1401,
+      "sha256": "8cf0d86b93d78a1f0ce2e01d3f68cdaa51410f9d9268387d9dc77b42d59d94b5",
+      "is_elf": false,
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78393003,
+        "st_size": 1401,
+        "st_mtime_ns": 1792281244619389075,
+        "st_mode": 33204
+      },
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78393003,
+        "st_size": 1401,
+        "st_mtime_ns": 1792281244619389075,
+        "st_mode": 33204
+      },
+      "lstat_before": {
+        "st_dev": 2051,
+        "st_ino": 78393003,
+        "st_size": 1401,
+        "st_mtime_ns": 1792281244619389075,
+        "st_mode": 33204
+      },
+      "lstat_after": {
+        "st_dev": 2051,
+        "st_ino": 78393003,
+        "st_size": 1401,
+        "st_mtime_ns": 1792281244619389075,
+        "st_mode": 33204
+      }
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v24_install_lifecycle_proposal_v1/review_only.patch",
+      "resolved_path": "/tmp/mr3_p2a0_v24_install_lifecycle_proposal_v1/review_only.patch",
+      "bytes": 5655,
+      "sha256": "50aee08eda2948ea25e9d4d1cdfeb5f0c45e0c5895825469a03e7e87fac9234c",
+      "is_elf": false,
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78392983,
+        "st_size": 5655,
+        "st_mtime_ns": 1792281077896036690,
+        "st_mode": 33204
+      },
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78392983,
+        "st_size": 5655,
+        "st_mtime_ns": 1792281077896036690,
+        "st_mode": 33204
+      },
+      "lstat_before": {
+        "st_dev": 2051,
+        "st_ino": 78392983,
+        "st_size": 5655,
+        "st_mtime_ns": 1792281077896036690,
+        "st_mode": 33204
+      },
+      "lstat_after": {
+        "st_dev": 2051,
+        "st_ino": 78392983,
+        "st_size": 5655,
+        "st_mtime_ns": 1792281077896036690,
+        "st_mode": 33204
+      }
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v24_install_lifecycle_proposal_v1/created_callback_v1.txt",
+      "resolved_path": "/tmp/mr3_p2a0_v24_install_lifecycle_proposal_v1/created_callback_v1.txt",
+      "bytes": 4144,
+      "sha256": "88a38a8c9acb97e5a6b17f50f3b4539707edd1440a15d02bbe5d17ca29da9da3",
+      "is_elf": false,
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78392981,
+        "st_size": 4144,
+        "st_mtime_ns": 1792281077790031379,
+        "st_mode": 33204
+      },
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78392981,
+        "st_size": 4144,
+        "st_mtime_ns": 1792281077790031379,
+        "st_mode": 33204
+      },
+      "lstat_before": {
+        "st_dev": 2051,
+        "st_ino": 78392981,
+        "st_size": 4144,
+        "st_mtime_ns": 1792281077790031379,
+        "st_mode": 33204
+      },
+      "lstat_after": {
+        "st_dev": 2051,
+        "st_ino": 78392981,
+        "st_size": 4144,
+        "st_mtime_ns": 1792281077790031379,
+        "st_mode": 33204
+      }
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v24_canonical_build_v1.py",
+      "resolved_path": "/tmp/mr3_p2a0_v24_canonical_build_v1.py",
+      "bytes": 5640,
+      "sha256": "7b63cd6f8704985aa4fcb533e1d63977196a54d4a35e593c56ebfcd754ca1132",
+      "is_elf": false,
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 76642633,
+        "st_size": 5640,
+        "st_mtime_ns": 1792281345135424984,
+        "st_mode": 33204
+      },
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 76642633,
+        "st_size": 5640,
+        "st_mtime_ns": 1792281345135424984,
+        "st_mode": 33204
+      },
+      "lstat_before": {
+        "st_dev": 2051,
+        "st_ino": 76642633,
+        "st_size": 5640,
+        "st_mtime_ns": 1792281345135424984,
+        "st_mode": 33204
+      },
+      "lstat_after": {
+        "st_dev": 2051,
+        "st_ino": 76642633,
+        "st_size": 5640,
+        "st_mtime_ns": 1792281345135424984,
+        "st_mode": 33204
+      }
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v22_ray_box_corrector_proposal_v1/factory.cpp",
+      "resolved_path": "/tmp/mr3_p2a0_v22_ray_box_corrector_proposal_v1/factory.cpp",
+      "bytes": 776,
+      "sha256": "ff76d2720e3618c7e17521580a998b24111fc9c4c331c04443909ba1f6205cae",
+      "is_elf": false,
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78653553,
+        "st_size": 776,
+        "st_mtime_ns": 1792277735945891332,
+        "st_mode": 33204
+      },
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78653553,
+        "st_size": 776,
+        "st_mtime_ns": 1792277735945891332,
+        "st_mode": 33204
+      },
+      "lstat_before": {
+        "st_dev": 2051,
+        "st_ino": 78653553,
+        "st_size": 776,
+        "st_mtime_ns": 1792277735945891332,
+        "st_mode": 33204
+      },
+      "lstat_after": {
+        "st_dev": 2051,
+        "st_ino": 78653553,
+        "st_size": 776,
+        "st_mtime_ns": 1792277735945891332,
+        "st_mode": 33204
+      }
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v24_canonical_build_independent_review_v1/review_and_custody_v1.py",
+      "resolved_path": "/tmp/mr3_p2a0_v24_canonical_build_independent_review_v1/review_and_custody_v1.py",
+      "bytes": 17186,
+      "sha256": "9f64e0cd8fec8be4f603b778e14333d185c13042db4f4bf1eca8f990b7e38cdc",
+      "is_elf": false,
+      "stat_before": {
+        "st_dev": 2051,
+        "st_ino": 78654897,
+        "st_size": 17186,
+        "st_mtime_ns": 1792281669202114983,
+        "st_mode": 33204
+      },
+      "stat_after": {
+        "st_dev": 2051,
+        "st_ino": 78654897,
+        "st_size": 17186,
+        "st_mtime_ns": 1792281669202114983,
+        "st_mode": 33204
+      },
+      "lstat_before": {
+        "st_dev": 2051,
+        "st_ino": 78654897,
+        "st_size": 17186,
+        "st_mtime_ns": 1792281669202114983,
+        "st_mode": 33204
+      },
+      "lstat_after": {
+        "st_dev": 2051,
+        "st_ino": 78654897,
+        "st_size": 17186,
+        "st_mtime_ns": 1792281669202114983,
+        "st_mode": 33204
+      }
+    }
+  ],
+  "input_count": 44,
+  "all_inputs_final_sha_stat_stable": true,
+  "no_native_or_matrix_credit": true,
+  "execution": {
+    "argv": [
+      "/tmp/mr3_p2a0_v24_canonical_build_independent_review_v1/review_and_custody_v1.py"
+    ],
+    "executable": "/usr/bin/python3",
+    "cwd": "/home/zhuyulab/ns3-workspace",
+    "began_utc": "2026-10-18T00:01:09.707887+00:00",
+    "wall_seconds": 0.11853112932294607
+  }
+}

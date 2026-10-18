@@ -6061,3 +6061,41 @@ actual launch32.096621671225876wall，V22 .24578428314998746+本次=32.342405954
 closed_support13小原件tar36275B/ad934352…，manifest0c933cf4…；seal_v1提示误留A22，原tar/manifest/错误seal均保留，另seal_v2/correct_copy_hint只纠复制说明，89实际part prospective始终正确A23/native。root逐文件copySHA/stat/bytes稳定，未复制到A22，全部writer已闭合后才改docs/Git。
 SDK源码复核已证worldCreated发生World.Load414、iteration到World.Init497才被赋0，WorldPrivate此前无初始化；旧guard提前读取不可用counter是实现缺陷。get_world已在create_world push可达，不以world注册次序作错误归因；SystemPlugin.Init也早于创建world，不能盲换。原V23无逐项guard字段，原counter具体值未知；先前“created即actualiter0”推断撤回，不回填后续probe。原Running getter是!stop，创建时true，不作为线程已运行/已停证据。继续在SDK证实的Load-before-Init阶段安装、用有定义字段保留before-first-physics含义，并版本化consumer/ENV；原物理/停车数学与95%不改。
 P2A.0未完成；下一source版本须真实SDK阶段/新CPP/实际库+新限定身份源审后，新clean pushed冻结完整四阶段。V23失败保留，不同source拼PASS、不盲重跑，无GPU/optimizer/PPO/P2B/gateway。
+
+## 2026-10-18 MR3-P2A.0 V24 安装生命周期修正准备（尚无新原生矩阵）
+
+保留V23联合guard处FAIL、gzserver-6/forcedcleanup、reset未返回/零有效transitions及后三SKIP。旧日志未记录单条件值；独立源码发现preInit Iterations未初始化缺陷，不把新SDK读数说成旧失败分支/唯一原因。撤回created=>iteration0、world未注册、盲改SystemPlugin.Init等推断。新corrector f82646c8只替created块，phase为world_created_during_load_before_world_init；counter null/availableFalse而非0，Running实际true合法，原150/.001读回和core/header/hotpath/CAS/dSet均不改。
+
+SDK执行脚本根 `/tmp/mr3_p2a0_v24_install_lifecycle_proposal_v1/run_probe_v1.py`，cwd同目录；`pkg-config --cflags --libs gazebo`展开的原始完整g++ argv、环境、exit、输出SHA在 [SDK originals](report/assets/20261018_mr3_p2a0_v24_install/offline/sdk/originals.tar.gz) 的compile_v1/probe_v1.json，未删重复-std参数。实际run：
+
+```text
+/tmp/mr3_p2a0_v24_install_lifecycle_proposal_v1/lifecycle_probe /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/worlds/p1c_open.world
+```
+
+compile exit0/37.52403453504667wall；run exit0/2.1119531956501305wall，created RunningTrue/loadedFalse/sensorsFalse/150/.001，不读counter；仅afterInit读0。只有Load/Init/Fini，Run/Step/ROS/robotspawn各0，未加载actualcorrector，不授原生/停车/V23重执行信用。syntax01真实FAIL exit1/27.221719437278807wall（外部SDK-I警告-Werror）；syntax02仅外部-isystem，同f826源码严格syntax exit0/27.285107973963022wall，旧FAIL/stderr原样留。[SDK handoff](report/assets/20261018_mr3_p2a0_v24_install/offline/sdk/handoff_v1.json)、[独审](report/assets/20261018_mr3_p2a0_v24_install/offline/independent_source_review/review_v1.json)。
+
+canonical构建脚本 `/tmp/mr3_p2a0_v24_canonical_build_v1.py`，cwd `/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap`，systemROS及PYTHONNOUSERSITE=1/PYTHONDONTWRITEBYTECODE=1。实际colcon：
+
+```text
+/usr/bin/python3 /usr/bin/colcon build --symlink-install --packages-select multi_robot --allow-overriding nav2_bringup --parallel-workers 2 --event-handlers console_direct+
+```
+
+colcon/factory(noLoad)/ldd-r/actual-linked纯CPUprobe均exit0，整体59.77381576690823wall；精确全部argv/cwd/CPU/wall/source前后/原输出见 [buildreceipt](report/assets/20261018_mr3_p2a0_v24_install/binary/canonical_build_receipt_v1.json) SHA6ee8d273…。actual ELF782d388fea8df3646524e54f41d71de5f53480b9d04cc0ea1c453c70e2c1f7d8/398080B；gzip41c1ae6a…/129776B；[binaryreceipt](report/assets/20261018_mr3_p2a0_v24_install/binary/receipt_v1.json)84bbd6bd…。ODE/旧四库字节不变；无world/步进/ROS/DDS/训练，未将CPU几何PASS当actual安装完成。
+
+根实际canonical原unit（cwd W；PYTHONPATH unset，PYTHONNOUSERSITE=1/PYTHONDONTWRITEBYTECODE=1/CUDA_VISIBLE_DEVICES空）：
+
+```text
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m unittest mr3_learning.tests.test_audit_ppo
+```
+
+16PASS/.503test/5.608815073035657wall，`/tmp/mr3_p2a0_v24_canonical_audit_unit_v1`原回执钉e128e90b…/ENV27dfaf84…/test43e13e59…源稳定。随后只改ENV因果措辞+3常量，finalauditorcc467064…/ENVf1e0be60…，不改函数；新增2项finalENV正例/repinned坏prefix拒绝PASS/.018284440971910954wall；不把旧16冒称最终文字重跑。最终实际冻结前检仍PENDING。
+
+V22+V23启动32.34240595437586wall加SDK compile/run39.6359877306968，根给定18k工程台账累计71.97839368507266，余17928.021606314927；V24新任务API0。原34mandatory/12EP/608API/596decision及全部95%任务/物理停车A OR B池/逐实际违界/角运动interface与reset差异scope/18contact/严格关闭/真值隔离门保持。新freeze/最终210binding计划与准入、同冻结全4stage仍PENDING，无PPO/GPU/策略95%出口信用。
+
+
+Root于源码文案转录复核时更正agent草稿中交换的ENV/auditor标签；原草稿四件完整保管于A24/offline/report_preparation，哈希本身未变。实际build由独立读取44输入复核PASS（review59e7462c…），35原件407779B→75990B tar117e3eafa…，2CPU可执行物只记身份排除；A24/offline/build原件全量decode核验。根source promotion、actual binary archiver、原16 unit stdout/stderr/receipt共13件19894B保管A24/offline/root，非新native。
+CI新增preInit consumer6方法级检查（最终f65c/test1192，源字段strictbool/null/phase/原bounds）与4项固定binary身份正负检查PASS；最终因果措辞后只补2 ENV身份正负检查，不重复16 unit/旧ROS170/旧SDK/旧数学套件。初稿watcher路径残留A22、binding额外metadata、原测试TMP依赖及inline handoff SyntaxError均在执行native前发现，原件保留；仅修接线/便携性，不把失败改为实际原生成功。最终plan中active SO scalar残留7be亦在独立审查时发现，待唯一元数据更正后声明新计划哈希，未运行旧声明。
+
+最终作者SOURCE/PLAN/METADATA/离线writer均STOP。Root按handoff先提升12项中的8项新文件、4项已同一文件只核字节；随后仅将plan /native_ray_box_correction/actual_library_sha256残留7be改782d，finalplan d682f40c01a660f598cdf6c81d9faa640c25af1ba87d9e96e56701bb2fec4ffc，binding f21b16dbbf6101483c002c1fabd726ca0b8ea4c4051c1691d1d109adb786c854。原631d、其handoff及错误scalar原件保留，未执行。作者88件1147551rawB→335024B tar677bd247…，addendum5件155343rawB→37840B tar0eea5836…，逐字往返/源末stat稳定；canonical分别offline/candidate和metadata_addendum_v2。最终210＝旧198中196同SHA＋currentCPP/auditor明确刷新2＋12新身份，原test43e13/其他source/34数学及累计71.97839368507266全不变。Root更新当前guide/路线及launch_commands中的准确Conda/monitor/parent命令，未启新native；新clean pushed冻结实际准入仍待执行。
+
+最终源码独审 d2e0e6c4bc433b9c44333e3f459927e50559c714fe11790ca034d0941c208630 PASS，无阻断，229实际输入末SHA/stat稳定；5member往返封包a57e94de82886aa4dbd06d52a6c1a30cbaf50d00a9856077a7f6a4238b0b1738/28686B，全保管offline/admission_review。首review文字匹配断言失败属中文跨行的reviewer脚本问题，初源和说明保留；原工具traceback未独立保存成console，不伪造原件。根实际命令 rtk proxy /usr/bin/python3 -B /tmp/mr3_p2a0_v24_final_root_static_v1.py exit0：210实际SHA、196旧exact/2明确源更新/12新、原34门/608/596/71.97839368507266成本、8PythonAST/27当时JSON/187文档链接及actual782dgzip均PASS。此为worktree静态准备，无实际冻结准入或新native。接下来short checks、git diff --check及git add -n .后commit/push，再以报告/launch_commands准确Conda命令做实际冻结前检；唯一四阶段parent必须等待该PASS。

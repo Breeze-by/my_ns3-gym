@@ -1,0 +1,61 @@
+{
+  "schema": "mr3-v24-matrix-pack-preparation-handoff-v1",
+  "all_writers_stopped": true,
+  "source": {
+    "path": "/tmp/mr3_p2a0_v24_matrix_pack_proposal_v1/mr3_p2a0_v24_matrix_pack_closed_v1.py",
+    "sha256": "c2651688874bbc7379dfd0e317c916f2eee3fc845194831524d5780e2af035e6",
+    "bytes": 22110
+  },
+  "cli": [
+    "env",
+    "-i",
+    "PATH=/usr/bin:/bin",
+    "PYTHONNOUSERSITE=1",
+    "PYTHONDONTWRITEBYTECODE=1",
+    "LANG=C.UTF-8",
+    "LC_ALL=C.UTF-8",
+    "TZ=UTC",
+    "/usr/bin/python3",
+    "-B",
+    "/tmp/mr3_p2a0_v24_matrix_pack_proposal_v1/mr3_p2a0_v24_matrix_pack_closed_v1.py",
+    "--freeze",
+    "EXACT40",
+    "--target",
+    "/tmp/mr3_p2a0_v24_selected_closed_v1",
+    "--all-writers-closed"
+  ],
+  "plan_path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v24_install/predeclared_plan_v24.json",
+  "prospective_native_prefix": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v24_install/native",
+  "fixed_stages": [
+    "interface",
+    "terminal",
+    "reset",
+    "deadline"
+  ],
+  "fixed_run_paths": [
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v24_interface",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v24_terminal",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v24_reset",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v24_deadline"
+  ],
+  "automatic_metadata": [
+    "All exact /tmp/mr3_p2a0_v24_STAGE_* originals, recursively for any original directory, covering actual launch/cost/commands, every consumer job+console, processmonitor/corrector proofs, FIFO/closure receipts and all FAIL/partial outputs.",
+    "Global remaining_matrix_v1.jsonl, source_preflight, binaryproof and cross_stage_mapping start/calls/summary/lock."
+  ],
+  "mandatory_extra_selection_at_actual_GO": [
+    "/tmp/mr3_p2a0_v24_matrix_parent_console_v1.log",
+    "/tmp/mr3_p2a0_v24_cross_stage_mapping_parent_console_v1.log",
+    "/tmp/mr3_p2a0_v24_actual_preflight_execution_v1/execution.json",
+    "/tmp/mr3_p2a0_v24_actual_preflight_execution_v1/stdout.txt",
+    "/tmp/mr3_p2a0_v24_actual_preflight_execution_v1/stderr.txt",
+    "/tmp/mr3_p2a0_v24_run_actual_preflight_v1.py",
+    "Every actual closed mr3_p2a0_v24_preflight_learner_entry_* regular file, enumerated individually through --extra (never shell-unexpanded wildcard).",
+    "Actual root final static script/JSON/dry/pathspec and original wall-budget/closure summary files if outside the automatic stage/global prefix selection, individually named with --extra."
+  ],
+  "scope": "Byte custody only, does not require scientific PASS. Real failures, forcecleanup, missing/partial data and later SKIP are preserved; no task or native credit filled.",
+  "operator_GO": "Run only after root explicitly confirms all native+mandatory consumer+watcher writers naturally closed; helper also requires actual matrixfinal/watcherfinal/submittedjobsfinished metadata. --all-writers-closed is operator GO assertion, not independent scientific proof.",
+  "codec_policy": "Six unchanged A21 codec functions via validated V22 nested-extra v2/V23;32MiB raw chunks, each encoded part strict<100MB, encoded+decoded part/whole SHA roundtrip, final whole originalSHA/stat stable. All regular original files including empty and already-gzip bytes retained.",
+  "no_extra_tests_or_pack_run": true,
+  "canonical_write": false,
+  "note": "Final V24 plan/freeze names must be confirmed by root source STOP; no pending plan or future artifact was executed or credited."
+}

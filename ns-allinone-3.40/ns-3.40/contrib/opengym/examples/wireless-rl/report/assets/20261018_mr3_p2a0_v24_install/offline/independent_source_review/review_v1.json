@@ -1,0 +1,399 @@
+{
+  "schema": "mr3-v24-world-created-independent-source-review-v1",
+  "passed": true,
+  "blockers": [],
+  "scope": "Read-only exact primary/installed-header source and single proposed callback delta review. No SDK probe, test, build, ELF loading, native, ROS or DDS invocation.",
+  "inputs": {
+    "world": {
+      "path": "/tmp/mr3_p2a0_v18_driver_diagnostic_proposal_v5/World_11.10.2.cc",
+      "sha256": "96c84a88275584ed0f6ba5bd27c31be372f30c371ecf1b78befeb1d2f348c034",
+      "bytes": 101620,
+      "mtime_ns": 1792261787804419234,
+      "inode": 78545429,
+      "device": 2051
+    },
+    "private": {
+      "path": "/tmp/mr3_p2a0_v24_install_lifecycle_proposal_v1/primary/WorldPrivate.hh",
+      "sha256": "d16664bd8f4c7a911a9aa37738536a4c21d417be6b81ea652df891c7e9a05182",
+      "bytes": 13399,
+      "mtime_ns": 1792280823097273825,
+      "inode": 78392965,
+      "device": 2051
+    },
+    "server": {
+      "path": "/tmp/mr3_p2a0_v22_ray_box_corrector_proposal_v1/primary/Server_11.10.2.cc",
+      "sha256": "28a70b55cec0ca87543df0666927436529d85884c17176faea65495dbb61b4d4",
+      "bytes": 27548,
+      "mtime_ns": 1792277640074127469,
+      "inode": 78653535,
+      "device": 2051
+    },
+    "physics_iface": {
+      "path": "/tmp/mr3_p2a0_v22_ray_box_corrector_proposal_v1/primary/PhysicsIface_11.10.2.cc",
+      "sha256": "73e44181b5255fae02305d5e5ffb8e4e5b8e82b060c7819a130346fc691fca55",
+      "bytes": 4647,
+      "mtime_ns": 1792277640479147575,
+      "inode": 78653536,
+      "device": 2051
+    },
+    "gazebo": {
+      "path": "/tmp/mr3_p2a0_v22_ray_box_corrector_proposal_v1/primary/gazebo_11.10.2.cc",
+      "sha256": "3f1d1424237b4165d44301dba7018e22563167bf5bd97af7c8b5c7ad6ddbbbb4",
+      "bytes": 4668,
+      "mtime_ns": 1792277701653186280,
+      "inode": 78653545,
+      "device": 2051
+    },
+    "shared": {
+      "path": "/tmp/mr3_p2a0_v24_install_lifecycle_proposal_v1/primary/gazebo_shared.cc",
+      "sha256": "3c01f4797b3b099730c5815f2080ce31ff5f972d2d75f9215d846a8c10a0c96e",
+      "bytes": 2745,
+      "mtime_ns": 1792280823494293710,
+      "inode": 78392966,
+      "device": 2051
+    },
+    "ode": {
+      "path": "/tmp/mr3_p2a0_v18_driver_diagnostic_proposal_v5/ODEPhysics_11.10.2.cc",
+      "sha256": "207b6c19068e7b9965fe836f14fe425b09c53b2ba5be3198e0b4b859b2a55487",
+      "bytes": 55181,
+      "mtime_ns": 1792263516467808783,
+      "inode": 78545456,
+      "device": 2051
+    },
+    "sensor_manager": {
+      "path": "/tmp/mr3_p2a0_v21_ray_cache_lock_review_v1/SensorManager_11.10.2.cc",
+      "sha256": "acad3929adf7caaef4a662f437e25524baadbb1304fdf4ca82cb3acfde5005f9",
+      "bytes": 32014,
+      "mtime_ns": 1792274191470408572,
+      "inode": 78652015,
+      "device": 2051
+    },
+    "event_header": {
+      "path": "/usr/include/gazebo-11/gazebo/common/Event.hh",
+      "sha256": "a6d858ea89e81602e01ff510c80474d0c881544c25917b66f181ac1e0e326a87",
+      "bytes": 23406,
+      "mtime_ns": 1647664932000000000,
+      "inode": 97288874,
+      "device": 2051
+    },
+    "world_header": {
+      "path": "/usr/include/gazebo-11/gazebo/physics/World.hh",
+      "sha256": "a44bbb985a38ff6185dba26fbf117eb3a69b0a4d484b816af4eb91823633d449",
+      "bytes": 27673,
+      "mtime_ns": 1647664932000000000,
+      "inode": 97386739,
+      "device": 2051
+    },
+    "model_header": {
+      "path": "/usr/include/gazebo-11/gazebo/physics/Model.hh",
+      "sha256": "090486133438db1f66686f9a84defd3ba1f141b74feca1abb8f552608686938b",
+      "bytes": 22955,
+      "mtime_ns": 1647664932000000000,
+      "inode": 97386717,
+      "device": 2051
+    },
+    "link": {
+      "path": "/tmp/mr3_p2a0_v13_stop_point_review_v1/Link.cc",
+      "sha256": "d2f9d6d9efb392c632d34d7d00e2167ef4fe169f11ab7e47de502f3b55a4c571",
+      "bytes": 56893,
+      "mtime_ns": 1792237844814316011,
+      "inode": 78406846,
+      "device": 2051
+    },
+    "time": {
+      "path": "/tmp/mr3_p2a0_v24_world_created_independent_review_v1/Time_11.10.2.cc",
+      "sha256": "73eee798580ab3acaa6d3e3d79b1e7ef06964ab64cfd2aaa29cc33ec84557005",
+      "bytes": 20292,
+      "mtime_ns": 1792281006190444694,
+      "inode": 78654603,
+      "device": 2051
+    },
+    "old_cpp": {
+      "path": "/tmp/mr3_p2a0_v22_ray_box_corrector_native_readback_proposal_v2/mr3_ray_box_corrector.cpp",
+      "sha256": "b165ce49eaf5b3d52853cd759e4809962192d1922f0f210f5c82cff79c2a6b2a",
+      "bytes": 12094,
+      "mtime_ns": 1792278027212410256,
+      "inode": 78653657,
+      "device": 2051
+    },
+    "proposed_cpp": {
+      "path": "/tmp/mr3_p2a0_v24_install_lifecycle_proposal_v1/mr3_ray_box_corrector.proposed.cpp",
+      "sha256": "f82646c8434b77c42f585ac1828eda84640bac873f70cc7de6848cfbd6493473",
+      "bytes": 14395,
+      "mtime_ns": 1792281077895036640,
+      "inode": 78392982,
+      "device": 2051
+    },
+    "previous_own_review": {
+      "path": "/tmp/mr3_p2a0_v22_corrector_source_independent_review_v2/review_v2.json",
+      "sha256": "0152e83ec312adf5d620d233a8bf9a968024698b99cbac51bb9c8a04e16238c0",
+      "bytes": 10481,
+      "mtime_ns": 1792277894009763207,
+      "inode": 78653650,
+      "device": 2051
+    }
+  },
+  "inputs_after": {
+    "world": {
+      "path": "/tmp/mr3_p2a0_v18_driver_diagnostic_proposal_v5/World_11.10.2.cc",
+      "sha256": "96c84a88275584ed0f6ba5bd27c31be372f30c371ecf1b78befeb1d2f348c034",
+      "bytes": 101620,
+      "mtime_ns": 1792261787804419234,
+      "inode": 78545429,
+      "device": 2051
+    },
+    "private": {
+      "path": "/tmp/mr3_p2a0_v24_install_lifecycle_proposal_v1/primary/WorldPrivate.hh",
+      "sha256": "d16664bd8f4c7a911a9aa37738536a4c21d417be6b81ea652df891c7e9a05182",
+      "bytes": 13399,
+      "mtime_ns": 1792280823097273825,
+      "inode": 78392965,
+      "device": 2051
+    },
+    "server": {
+      "path": "/tmp/mr3_p2a0_v22_ray_box_corrector_proposal_v1/primary/Server_11.10.2.cc",
+      "sha256": "28a70b55cec0ca87543df0666927436529d85884c17176faea65495dbb61b4d4",
+      "bytes": 27548,
+      "mtime_ns": 1792277640074127469,
+      "inode": 78653535,
+      "device": 2051
+    },
+    "physics_iface": {
+      "path": "/tmp/mr3_p2a0_v22_ray_box_corrector_proposal_v1/primary/PhysicsIface_11.10.2.cc",
+      "sha256": "73e44181b5255fae02305d5e5ffb8e4e5b8e82b060c7819a130346fc691fca55",
+      "bytes": 4647,
+      "mtime_ns": 1792277640479147575,
+      "inode": 78653536,
+      "device": 2051
+    },
+    "gazebo": {
+      "path": "/tmp/mr3_p2a0_v22_ray_box_corrector_proposal_v1/primary/gazebo_11.10.2.cc",
+      "sha256": "3f1d1424237b4165d44301dba7018e22563167bf5bd97af7c8b5c7ad6ddbbbb4",
+      "bytes": 4668,
+      "mtime_ns": 1792277701653186280,
+      "inode": 78653545,
+      "device": 2051
+    },
+    "shared": {
+      "path": "/tmp/mr3_p2a0_v24_install_lifecycle_proposal_v1/primary/gazebo_shared.cc",
+      "sha256": "3c01f4797b3b099730c5815f2080ce31ff5f972d2d75f9215d846a8c10a0c96e",
+      "bytes": 2745,
+      "mtime_ns": 1792280823494293710,
+      "inode": 78392966,
+      "device": 2051
+    },
+    "ode": {
+      "path": "/tmp/mr3_p2a0_v18_driver_diagnostic_proposal_v5/ODEPhysics_11.10.2.cc",
+      "sha256": "207b6c19068e7b9965fe836f14fe425b09c53b2ba5be3198e0b4b859b2a55487",
+      "bytes": 55181,
+      "mtime_ns": 1792263516467808783,
+      "inode": 78545456,
+      "device": 2051
+    },
+    "sensor_manager": {
+      "path": "/tmp/mr3_p2a0_v21_ray_cache_lock_review_v1/SensorManager_11.10.2.cc",
+      "sha256": "acad3929adf7caaef4a662f437e25524baadbb1304fdf4ca82cb3acfde5005f9",
+      "bytes": 32014,
+      "mtime_ns": 1792274191470408572,
+      "inode": 78652015,
+      "device": 2051
+    },
+    "event_header": {
+      "path": "/usr/include/gazebo-11/gazebo/common/Event.hh",
+      "sha256": "a6d858ea89e81602e01ff510c80474d0c881544c25917b66f181ac1e0e326a87",
+      "bytes": 23406,
+      "mtime_ns": 1647664932000000000,
+      "inode": 97288874,
+      "device": 2051
+    },
+    "world_header": {
+      "path": "/usr/include/gazebo-11/gazebo/physics/World.hh",
+      "sha256": "a44bbb985a38ff6185dba26fbf117eb3a69b0a4d484b816af4eb91823633d449",
+      "bytes": 27673,
+      "mtime_ns": 1647664932000000000,
+      "inode": 97386739,
+      "device": 2051
+    },
+    "model_header": {
+      "path": "/usr/include/gazebo-11/gazebo/physics/Model.hh",
+      "sha256": "090486133438db1f66686f9a84defd3ba1f141b74feca1abb8f552608686938b",
+      "bytes": 22955,
+      "mtime_ns": 1647664932000000000,
+      "inode": 97386717,
+      "device": 2051
+    },
+    "link": {
+      "path": "/tmp/mr3_p2a0_v13_stop_point_review_v1/Link.cc",
+      "sha256": "d2f9d6d9efb392c632d34d7d00e2167ef4fe169f11ab7e47de502f3b55a4c571",
+      "bytes": 56893,
+      "mtime_ns": 1792237844814316011,
+      "inode": 78406846,
+      "device": 2051
+    },
+    "time": {
+      "path": "/tmp/mr3_p2a0_v24_world_created_independent_review_v1/Time_11.10.2.cc",
+      "sha256": "73eee798580ab3acaa6d3e3d79b1e7ef06964ab64cfd2aaa29cc33ec84557005",
+      "bytes": 20292,
+      "mtime_ns": 1792281006190444694,
+      "inode": 78654603,
+      "device": 2051
+    },
+    "old_cpp": {
+      "path": "/tmp/mr3_p2a0_v22_ray_box_corrector_native_readback_proposal_v2/mr3_ray_box_corrector.cpp",
+      "sha256": "b165ce49eaf5b3d52853cd759e4809962192d1922f0f210f5c82cff79c2a6b2a",
+      "bytes": 12094,
+      "mtime_ns": 1792278027212410256,
+      "inode": 78653657,
+      "device": 2051
+    },
+    "proposed_cpp": {
+      "path": "/tmp/mr3_p2a0_v24_install_lifecycle_proposal_v1/mr3_ray_box_corrector.proposed.cpp",
+      "sha256": "f82646c8434b77c42f585ac1828eda84640bac873f70cc7de6848cfbd6493473",
+      "bytes": 14395,
+      "mtime_ns": 1792281077895036640,
+      "inode": 78392982,
+      "device": 2051
+    },
+    "previous_own_review": {
+      "path": "/tmp/mr3_p2a0_v22_corrector_source_independent_review_v2/review_v2.json",
+      "sha256": "0152e83ec312adf5d620d233a8bf9a968024698b99cbac51bb9c8a04e16238c0",
+      "bytes": 10481,
+      "mtime_ns": 1792277894009763207,
+      "inode": 78653650,
+      "device": 2051
+    }
+  },
+  "final_source_sha_stat_stable": true,
+  "findings": [
+    {
+      "id": "uninitialized-counter",
+      "conclusion": "WorldPrivate iterations is an uninitialized fundamental member before World::Init, because new WorldPrivate is default-initialized and neither its class nor World constructor/Load initializes the counter. Reading it in WorldCreated is invalid; reject that read, not the physical limits.",
+      "evidence": [
+        {
+          "input": "private",
+          "path": "/tmp/mr3_p2a0_v24_install_lifecycle_proposal_v1/primary/WorldPrivate.hh",
+          "line_1based": 307,
+          "anchor": "public: uint64_t iterations;"
+        },
+        {
+          "input": "world",
+          "path": "/tmp/mr3_p2a0_v18_driver_diagnostic_proposal_v5/World_11.10.2.cc",
+          "line_1based": 113,
+          "anchor": ": dataPtr(new WorldPrivate)"
+        },
+        {
+          "input": "world",
+          "path": "/tmp/mr3_p2a0_v18_driver_diagnostic_proposal_v5/World_11.10.2.cc",
+          "line_1based": 497,
+          "anchor": "  this->dataPtr->iterations = 0;\n  this->dataPtr->logPrevIteration = 0;"
+        }
+      ]
+    },
+    {
+      "id": "Running-not-thread-state",
+      "conclusion": "Running returns !stop and ctor sets stop=false. Thus normal preInit Running may be true; its false value is not a legal prerequisite. Record typed actual value only.",
+      "evidence": [
+        {
+          "input": "world",
+          "path": "/tmp/mr3_p2a0_v18_driver_diagnostic_proposal_v5/World_11.10.2.cc",
+          "line_1based": 564,
+          "anchor": "bool World::Running() const"
+        },
+        {
+          "input": "world",
+          "path": "/tmp/mr3_p2a0_v18_driver_diagnostic_proposal_v5/World_11.10.2.cc",
+          "line_1based": 133,
+          "anchor": "  this->dataPtr->stop = false;\n  this->dataPtr->sensorsInitialized = false;"
+        }
+      ]
+    },
+    {
+      "id": "defined-getters",
+      "conclusion": "IsLoaded and SensorsInitialized are explicitly initialized false. SimTime contains a default-constructed Time with sec=nsec=0. Models/GetLinks/GetSensorCount use fully constructed vector containers; no analogous uninitialized scalar count.",
+      "time_primary_url": "https://raw.githubusercontent.com/gazebosim/gazebo-classic/gazebo11_11.10.2/gazebo/common/Time.cc",
+      "link_primary_url": "https://raw.githubusercontent.com/gazebosim/gazebo-classic/gazebo11_11.10.2/gazebo/physics/Link.cc"
+    },
+    {
+      "id": "before-first-physics-and-sensor",
+      "conclusion": "On the declared initial single-world Server startup path, worldCreated runs synchronously inside World::Load, after ODE constructor/Load and entity loading, before Load completes and World::Init. Server first run_once/sensor threads/world threads occur later. Rejecting already-created model sensors preserves the sensor-free installation precondition. This source/event ordering, not Running=false, establishes the intended phase.",
+      "evidence": [
+        {
+          "input": "world",
+          "path": "/tmp/mr3_p2a0_v18_driver_diagnostic_proposal_v5/World_11.10.2.cc",
+          "line_1based": 414,
+          "anchor": "  event::Events::worldCreated(this->Name());"
+        },
+        {
+          "input": "server",
+          "path": "/tmp/mr3_p2a0_v22_ray_box_corrector_proposal_v1/primary/Server_11.10.2.cc",
+          "line_1based": 554,
+          "anchor": "      physics::load_world(world, worldElem);"
+        },
+        {
+          "input": "server",
+          "path": "/tmp/mr3_p2a0_v22_ray_box_corrector_proposal_v1/primary/Server_11.10.2.cc",
+          "line_1based": 591,
+          "anchor": "    physics::init_worlds(nullptr);"
+        },
+        {
+          "input": "server",
+          "path": "/tmp/mr3_p2a0_v22_ray_box_corrector_proposal_v1/primary/Server_11.10.2.cc",
+          "line_1based": 651,
+          "anchor": "  sensors::run_once(true);"
+        },
+        {
+          "input": "server",
+          "path": "/tmp/mr3_p2a0_v22_ray_box_corrector_proposal_v1/primary/Server_11.10.2.cc",
+          "line_1based": 654,
+          "anchor": "  sensors::run_threads();"
+        },
+        {
+          "input": "server",
+          "path": "/tmp/mr3_p2a0_v22_ray_box_corrector_proposal_v1/primary/Server_11.10.2.cc",
+          "line_1based": 673,
+          "anchor": "  physics::run_worlds(iterations);"
+        }
+      ]
+    },
+    {
+      "id": "system-Init-too-early",
+      "conclusion": "SystemPlugin Load/Init runs in gazebo_shared.setup during Server.PreLoad before the world/ODE engine exists. Moving installation blindly to SystemPlugin::Init would lose required native ODE world/table availability.",
+      "evidence": [
+        {
+          "input": "shared",
+          "path": "/tmp/mr3_p2a0_v24_install_lifecycle_proposal_v1/primary/gazebo_shared.cc",
+          "line_1based": 92,
+          "anchor": "    (*iter)->Init();"
+        },
+        {
+          "input": "server",
+          "path": "/tmp/mr3_p2a0_v22_ray_box_corrector_proposal_v1/primary/Server_11.10.2.cc",
+          "line_1based": 513,
+          "anchor": "  return gazebo::setupServer(this->dataPtr->systemPluginsArgc,"
+        }
+      ]
+    },
+    {
+      "id": "narrow-proposal",
+      "conclusion": "Only the created callback body changes from exact b165 to f826. It does not read Iterations, records explicit phase/null/availability/reason, validates initialized actual getters, preserves actual150/.001 native readback, CAS/dSetColliderOverride/lifetime/core math and failures remain source-bound. No physical/braking/task gate was lowered."
+    }
+  ],
+  "correction_to_previous_own_review": {
+    "path": "/tmp/mr3_p2a0_v22_corrector_source_independent_review_v2/review_v2.json",
+    "sha256": "0152e83ec312adf5d620d233a8bf9a968024698b99cbac51bb9c8a04e16238c0",
+    "withdrawn_inference": "WorldCreated implies a valid/initialized iteration0 getter. The old source event ordering observation remains, but iteration0 at that event was not established and the old guard read was invalid.",
+    "old_bytes_preserved": true,
+    "not_retroactively_fixed": "V23 crash/forced cleanup and all old failures remain original. Future afterInit SDK result may establish0 only for its own probe; never fill or relabel past native data."
+  },
+  "limits": [
+    "This is the declared initial one-world/no-sensor Server path, not a general guarantee for arbitrary custom plugins, live reload, manual early Run or multi-world concurrency.",
+    "Source review does not assert actual future library load, native installed-ledger, callback use or complete matrix PASS; new source/ELF/consumer pins and same-freeze native gates remain necessary.",
+    "No author SDK probe/test was rerun or independently claimed. No new threshold, physical bound, stopping coverage or reward/task rule introduced."
+  ],
+  "argv": [
+    "/tmp/mr3_p2a0_v24_world_created_independent_review_v1/review_v1.py"
+  ],
+  "cwd": "/home/zhuyulab/ns3-workspace",
+  "wall_seconds": 0.009262303821742535,
+  "writers_stopped": true
+}

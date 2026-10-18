@@ -2,7 +2,7 @@
 
 # Codex Monorepo Memory — MR3
 
-2026-10-18: V23 9160543e actual preflight passed110/198 and native startup reached corrector. WorldCreated guard reads iterations before World.Init initializes it; gzserver-6, first reset failed, zero valid transitions, later3 SKIP. Saved17 identities gone but actual forced cleanup/failed sample retained, not strictclose PASS. Prior32.342406/18000 charged; lifecycle repair/new full frozen matrix required. Physics/stopping/95% gates unchanged, P2A.0 incomplete/no PPO. See wireless-rl/report/20261018_mr3_p2a0_v23_entry.md.
+2026-10-18: V24 repairs undefined preInit iteration measurement in the existing WorldCreated callback. Counter is explicitly unavailable/null; source-bound Load-before-Init flags/clock0/noSensors and actual ODE150/.001 remain required. Running is recorded, not a thread-start gate. Actual new SO782d/sourcef826/fixed auditorcc467064 prepared; all math/stopping/safety/95% unchanged. V23 individual failing guard branch was not measured; all failures retained. Prior71.97839368507266/18000, new clean pushed full4stage remains necessary. P2A.0 incomplete/no PPO. See wireless-rl/report/20261018_mr3_p2a0_v24_install.md.
 
 2026-10-18: V20_sensor freeze b33ff700 closed ordinary4 source capture/strict native shutdown; 39 exits0 and47 saved PID/start identities gone. Legal near raw scan returns persist and map to own100, actual hit geometry still unknown; ROS synchronous throttling and SDK stationary-refresh semantics differ, so the early missing-setter bug inference is withdrawn. No production SLAM change/150 selection/matrix or PPO credit; P2A.0 remains incomplete. See wireless-rl/report/20261018_mr3_p2a0_v20_sensor.md.
 

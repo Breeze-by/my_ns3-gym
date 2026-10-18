@@ -250,30 +250,63 @@ class RayBoxCorrector : public gazebo::SystemPlugin
     {
       const auto state = weak.lock();
       if (!state) return;
-      const auto world = gazebo::physics::get_world(name);
-      if (!world || !world->Physics() || world->Physics()->GetType() != "ode" ||
-          world->Iterations() != 0 || TimeNs(world->SimTime()) != 0)
-        throw std::runtime_error("ray-box installation requires unstarted ODE world");
-      for (const auto &model : world->Models())
-        for (const auto &link : model->GetLinks())
-          if (link->GetSensorCount() != 0)
-            throw std::runtime_error("ray-box installation occurred after sensor creation");
-      const auto ode = boost::dynamic_pointer_cast<gazebo::physics::ODEPhysics>(
-        world->Physics());
-      if (!ode || !ode->GetWorldId())
-        throw std::runtime_error("native ODE world unavailable during collider installation");
+      Json observed{{"world", name},
+        {"installation_phase", "world_created_during_load_before_world_init"},
+        {"world_iterations", nullptr}, {"world_iterations_available", false},
+        {"world_iterations_unavailable_reason", "counter_initialized_only_in_World_Init"}};
+      gazebo::physics::WorldPtr world;
+      try { world = gazebo::physics::get_world(name); }
+      catch (const std::exception &error) { observed["world_lookup_error"] = error.what(); }
+      catch (...) { observed["world_lookup_error"] = "non_std_world_lookup_exception"; }
+      const auto physics = world ? world->Physics() : gazebo::physics::PhysicsEnginePtr();
+      const auto ode = boost::dynamic_pointer_cast<gazebo::physics::ODEPhysics>(physics);
+      observed["world_lookup_succeeded"] = bool(world);
+      observed["physics_available"] = bool(physics);
+      observed["physics_type"] = physics ? Json(physics->GetType()) : Json(nullptr);
+      observed["native_ode_world_available"] = bool(ode && ode->GetWorldId());
+      observed["world_clock_ns"] = world ? Json(TimeNs(world->SimTime())) : Json(nullptr);
+      observed["world_load_completed"] = world ? Json(world->IsLoaded()) : Json(nullptr);
+      observed["world_sensors_initialized"] = world ? Json(world->SensorsInitialized()) : Json(nullptr);
+      // Running() returns !stop; the constructor sets stop=false before Run.
+      // Preserve its actual value without mistaking it for a thread-start flag.
+      observed["world_running_getter"] = world ? Json(world->Running()) : Json(nullptr);
+      std::size_t sensorCount = 0;
+      if (world)
+        for (const auto &model : world->Models())
+          for (const auto &link : model->GetLinks()) sensorCount += link->GetSensorCount();
+      observed["model_sensor_count"] = world ? Json(sensorCount) : Json(nullptr);
+      Json failures = Json::array();
+      if (!world) failures.push_back("world_lookup_failed");
+      if (!physics) failures.push_back("physics_unavailable");
+      else if (physics->GetType() != "ode") failures.push_back("physics_type_not_ode");
+      if (world && TimeNs(world->SimTime()) != 0) failures.push_back("world_clock_not_zero");
+      if (world && world->IsLoaded()) failures.push_back("world_load_already_completed");
+      if (world && world->SensorsInitialized()) failures.push_back("world_sensors_already_initialized");
+      if (world && sensorCount != 0) failures.push_back("model_sensor_already_created");
+      if (!ode || !ode->GetWorldId()) failures.push_back("native_ode_world_unavailable");
+      if (!failures.empty())
+      {
+        observed["failed_preconditions"] = failures;
+        state->Emit("fatal_installation_precondition", observed);
+        throw std::runtime_error("ray-box installation precondition failed: " + failures.dump());
+      }
       const int nativeIterations = dWorldGetQuickStepNumIterations(ode->GetWorldId());
-      const double maxStepSize = world->Physics()->GetMaxStepSize();
+      const double maxStepSize = physics->GetMaxStepSize();
       state->world = name;
       Runtime *expected = nullptr;
       if (!installedRuntime.compare_exchange_strong(expected, state.get(), std::memory_order_acq_rel))
+      {
+        observed["failed_preconditions"] = Json::array({"process_runtime_already_installed"});
+        state->Emit("fatal_installation_precondition", observed);
         throw std::runtime_error("ray-box collider already installed / second world unsupported");
+      }
       dSetColliderOverride(dRayClass, dBoxClass, &InstalledCollider);
-      state->Emit("installed", {{"world", name}, {"world_clock_ns", 0},
-        {"world_iterations", 0}, {"registered_pair", {"dRayClass", "dBoxClass"}},
-        {"native_ode_quickstep_iterations", nativeIterations},
-        {"physics_max_step_size_sec", maxStepSize},
-        {"scope", "WorldCreated after ODEPhysics constructor dInitODE2; before any model sensor or physics update in this single MR3 world."}});
+      observed["registered_pair"] = {"dRayClass", "dBoxClass"};
+      observed["native_ode_quickstep_iterations"] = nativeIterations;
+      observed["physics_max_step_size_sec"] = maxStepSize;
+      observed["failed_preconditions"] = failures;
+      observed["scope"] = "WorldCreated during World::Load, after ODE construction and before Load completes/World::Init/Run/sensor creation. The iteration counter is not initialized at this phase and is not read.";
+      state->Emit("installed", std::move(observed));
     });
     ended = gazebo::event::Events::ConnectWorldUpdateEnd([weak]()
     {

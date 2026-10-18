@@ -164,7 +164,7 @@ EXECUTION_CONFIG_PINS = {
     ROS + 'src/multi_robot/include/multi_robot/mr3_drive_target.hpp':
         '4be4d77de247a5bcd427eb6948165e85098eb361030cf89d278d6df92e959d41',
 }
-ENV_DOCUMENT_SHA256 = "cace2f98cca4553f6cc618e7f43d7ead24451c7d802aac816583b74527eb5377"
+ENV_DOCUMENT_SHA256 = 'f1e0be60d35db3677fb9194341c1ae4133a5c74ed7199056fe18f7e797f40416'
 TASK_DOCUMENT_SHA256 = "f96f5ba785a39daa882b3c2ea217c58dd968550b65bf0ee15faf07ca079f8991"
 PRIOR_TASK_DOCUMENT_SHA256 = "5e4400396e4aaf5a5094fb4c0c04c85810c327cc85be88b7d03fa3faeade07d2"
 TASK_BASE_FREEZE = "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a"
@@ -258,8 +258,8 @@ def verify_machine_task_file(root, freeze, relative):
 
 ENV_NORMATIVE_FREEZE = "4f8bd0e509e6f958c5993a50008955afac72c345"
 ENV_NORMATIVE_SHA256 = "96d9bd3e3d597899b3d44a69ef9138e77b62b3641bd7261eb38846d5b003f155"
-ENV_EXECUTION_APPENDIX_SHA256 = "29d59c3d0c9f023d961ae9a17c2ce397cd537401576c436ead8a95af45e8c7c2"
-ENV_EXECUTION_APPENDIX_BYTES = 7535
+ENV_EXECUTION_APPENDIX_SHA256 = 'b9bae951da6102af67bb3e106b0136dd0067eca9677cfaf3394f5095f87124a3'
+ENV_EXECUTION_APPENDIX_BYTES = 9875
 
 def verify_environment_appendix(root, freeze):
     relative = WIRELESS + "MR3_ENV_CONTRACT.md"
@@ -328,7 +328,7 @@ SENSOR_DIAGNOSTIC_CONFIG_PINS = {'ros2_ws/ros2-multi-robot-automap/src/multi_rob
  'ros2_ws/ros2-multi-robot-automap/src/multi_robot/CMakeLists.txt': '170eb49947c4daa61d30f45ab8fde637aa12766182dddfda15c9ca6453d0cc0d'}
 RAY_BOX_EXECUTION_PINS = {'ros2_ws/ros2-multi-robot-automap/src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py': '814f5b6256ac8badfb7f74dae21f0c66423c6e8ca7181266639d8865dc09cfd1',
  'ros2_ws/ros2-multi-robot-automap/src/multi_robot/CMakeLists.txt': '12b994e0fc0c01ec8761aaf23a7ae4722fe3026391b0622d13b842d0b425ebdc'}
-RAY_BOX_SOURCE_PINS = {'ros2_ws/ros2-multi-robot-automap/src/multi_robot/src/mr3_ray_box_corrector.cpp': 'b165ce49eaf5b3d52853cd759e4809962192d1922f0f210f5c82cff79c2a6b2a',
+RAY_BOX_SOURCE_PINS = {'ros2_ws/ros2-multi-robot-automap/src/multi_robot/src/mr3_ray_box_corrector.cpp': 'f82646c8434b77c42f585ac1828eda84640bac873f70cc7de6848cfbd6493473',
  'ros2_ws/ros2-multi-robot-automap/src/multi_robot/src/mr3_ray_box_collision.cpp': 'd556dda57250da3680a7d5a9862416f6196cab9763e495ee75269307b87715cb',
  'ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/mr3_ray_box_collision.hpp': 'c619442d038e4bc6ea0695ada34d7074ee83d775b2137222ab9fb6bf8193879b'}
 RAY_BOX_LICENSE_PINS = {'ros2_ws/ros2-multi-robot-automap/src/multi_robot/vendor/mr3_ray_box_corrector/LICENSE-BSD.TXT': 'fe012d262cf04a701cc856e2d12780261a60d7b17f4f7cb9cd589ff65b3f4f32'}
@@ -465,19 +465,19 @@ def verify_execution_configs(root, freeze):
 
 
 
-RAY_BOX_LIBRARY_SPEC = {'receipt': {'path': 'ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v22_ray_box/binary/receipt_v1.json',
-             'sha256': 'e522c3000097fcf4fd5c065fbcbd074f0f56167cc82da663081d84b60f0d6670',
+RAY_BOX_LIBRARY_SPEC = {'receipt': {'path': 'ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v24_install/binary/receipt_v1.json',
+             'sha256': '84bbd6bd4b5a8802222dfff9ef8f5a741b89a5d670b71170f46e9a8ae67b4ac8',
              'bytes': 7954},
- 'build': {'path': 'ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v22_ray_box/binary/canonical_build_receipt_v1.json',
-           'sha256': 'ec91e83376219fb4d4d78b7ed42760fc36bff0b9ee9984518d0316299c840d50',
-           'bytes': 17457},
- 'archive': {'path': 'ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v22_ray_box/binary/libmr3_ray_box_corrector.so.gz',
-             'sha256': '5adc1aa8eaac84c34c08351c1829ba9e14005ec215e058c1f784cc652220c026',
-             'bytes': 125793},
+ 'build': {'path': 'ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v24_install/binary/canonical_build_receipt_v1.json',
+           'sha256': '6ee8d2739a62d4432122b47aface5abbbc56242737528e2284c03696fd6b7ef6',
+           'bytes': 17467},
+ 'archive': {'path': 'ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v24_install/binary/libmr3_ray_box_corrector.so.gz',
+             'sha256': '41c1ae6ad5fd1c80a220ecde90328271e2f4e0668d4d240beb44bc0dce67abed',
+             'bytes': 129776},
  'library': {'path': 'ros2_ws/ros2-multi-robot-automap/install/multi_robot/lib/libmr3_ray_box_corrector.so',
              'resolved': 'ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_ray_box_corrector.so',
-             'bytes': 389312,
-             'sha256': '7be79c7f3d2cac53a9d1692aa868d91d4b9977e2b7541203ce4ffe90c605a08f'},
+             'bytes': 398080,
+             'sha256': '782d388fea8df3646524e54f41d71de5f53480b9d04cc0ea1c453c70e2c1f7d8'},
  'ode_library': {'path': '/lib/x86_64-linux-gnu/libgazebo_ode.so.11',
                  'resolved': '/usr/lib/x86_64-linux-gnu/libgazebo_ode.so.11.10.2',
                  'bytes': 719240,

@@ -17,7 +17,7 @@ V19冻结72d0465d的固定50/150诊断已关闭，两组加载/逐毫秒采集/�
 150组三机全程无合法GOAL和有效停车刺激，原物理FAIL。150未选用，V17真实停车问题仍未解决。
 本版原生1638.4207719592378墙秒，V18+V19合计2489.3860735194758；无训练或四阶段矩阵信用，见[V19](report/20261018_mr3_p2a0_v19.md)。
 
-V23冻结9160543e真实前检PASS110/198并进入ROS/Gazebo；corrector在WorldCreated读取未初始化iteration的guard设计缺陷，gzserver-6，1个reset未返回/0有效transition，后三SKIP。17保存身份gone但forced cleanup/failed sample保留，非normal strictclose PASS；累计32.342406/18000。原物理/停车/95%不变，待生命周期修复新冻结完整重验。见[V23](report/20261018_mr3_p2a0_v23_entry.md)。
+V24修复WorldCreated安装阶段的无效计数读取：保留Load-before-Init回调，以有定义的加载/传感器状态和零时钟准入，iteration明确null而不伪造零；Running实值仅记录。实际新库782d与源码f826及固定审计绑定已准备，原数学/1ms/停车/安全/95%门不变。原V23联合guard具体失败分项未观测，全部FAIL保留。累计71.97839368507266/18000，须新clean pushed冻结完整四阶段重验；P2A.0未完成、无PPO。见[V24](report/20261018_mr3_p2a0_v24_install.md)。
 
 ## 1. 研究问题与范围
 

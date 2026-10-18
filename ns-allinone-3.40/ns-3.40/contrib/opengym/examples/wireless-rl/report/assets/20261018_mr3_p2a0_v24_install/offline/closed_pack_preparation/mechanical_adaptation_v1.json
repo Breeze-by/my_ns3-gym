@@ -1,0 +1,52 @@
+{
+  "schema": "mr3-v24-pack-mechanical-adaptation-v1",
+  "passed": true,
+  "source": {
+    "path": "/tmp/mr3_p2a0_v24_matrix_pack_proposal_v1/mr3_p2a0_v24_matrix_pack_closed_v1.py",
+    "sha256": "c2651688874bbc7379dfd0e317c916f2eee3fc845194831524d5780e2af035e6",
+    "bytes": 22110
+  },
+  "base": {
+    "path": "/tmp/mr3_p2a0_v23_matrix_pack_proposal_v1/mr3_p2a0_v23_matrix_pack_closed_v1.py",
+    "sha256": "88a8a40b2969c0354397a1890e96a23f4888effbbdccd23542d2c5ebb4bb492e"
+  },
+  "only_delta": [
+    "literal v23 namespace -> v24",
+    "A24 directory suffix entry -> install"
+  ],
+  "exact_inverse_restores_validated_v23_whole_bytes": true,
+  "six_codec_functions_exact_source_bytes": [
+    {
+      "function": "sha",
+      "sha256": "166ad903d6d1b4f98706f40c535e6a84f4a6268f81640d32bb1d0f02c6857de1"
+    },
+    {
+      "function": "identity",
+      "sha256": "816320249b7b22b0ada9d030c3192fc6b3aed34e317fc70139e72e55da024aad"
+    },
+    {
+      "function": "file_digest",
+      "sha256": "0e155235b138ddf73545ea98ddbbae4f96afb8709be3b16752915d21d611696e"
+    },
+    {
+      "function": "verify_file",
+      "sha256": "8cbf5544291aa973793109686392074401bd31be0a7a26366132d56659aba2bb"
+    },
+    {
+      "function": "pack_file",
+      "sha256": "24ec922bffb2544077c330ebe36cbfe03eff7e7d388443849a0715b1113a31a2"
+    },
+    {
+      "function": "inventory",
+      "sha256": "da9586144c460fc42389267e3ce4666e7fe740e97eca3f7b0af928afa755b941"
+    }
+  ],
+  "syntax_compiled_without_execution": true,
+  "old_codec_or_selection_suite_rerun": false,
+  "actual_pack_invoked": false,
+  "active_or_future_run_file_read": false,
+  "native_formal_SDK_called": false,
+  "canonical_write": false,
+  "fixed_plan_path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v24_install/predeclared_plan_v24.json",
+  "source_writers_stopped": true
+}

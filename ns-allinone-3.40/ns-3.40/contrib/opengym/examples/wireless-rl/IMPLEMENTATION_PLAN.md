@@ -16,7 +16,7 @@ V19冻结72d0465d的固定50/150诊断已关闭，两组加载/逐毫秒采集/�
 150组三机全程无合法GOAL和有效停车刺激，原物理FAIL。150未选用，V17真实停车问题仍未解决。
 本版原生1638.4207719592378墙秒，V18+V19合计2489.3860735194758；无训练或四阶段矩阵信用，见[V19](report/20261018_mr3_p2a0_v19.md)。
 
-V23冻结9160543e真实前检PASS110/198并进入ROS/Gazebo；corrector在WorldCreated读取未初始化iteration的guard设计缺陷，gzserver-6，1个reset未返回/0有效transition，后三SKIP。17保存身份gone但forced cleanup/failed sample保留，非normal strictclose PASS；累计32.342406/18000。原物理/停车/95%不变，待生命周期修复新冻结完整重验。见[V23](report/20261018_mr3_p2a0_v23_entry.md)。
+V24修复WorldCreated安装阶段的无效计数读取：保留Load-before-Init回调，以有定义的加载/传感器状态和零时钟准入，iteration明确null而不伪造零；Running实值仅记录。实际新库782d与源码f826及固定审计绑定已准备，原数学/1ms/停车/安全/95%门不变。原V23联合guard具体失败分项未观测，全部FAIL保留。累计71.97839368507266/18000，须新clean pushed冻结完整四阶段重验；P2A.0未完成、无PPO。见[V24](report/20261018_mr3_p2a0_v24_install.md)。
 
 ## 1. 当前状态
 
@@ -26,7 +26,7 @@ V23冻结9160543e真实前检PASS110/198并进入ROS/Gazebo；corrector在WorldC
 | MR3-P1A | 固定三机器人、95% 任务与测量契约 | 已验收（2026-10-15） |
 | MR3-P1B | RL 可独占的稳定目标/观测接口 | 已验收（2026-10-15） |
 | MR3-P1C | 训练环境、可靠 reset、采样吞吐 | 已验收（2026-10-16） |
-| MR3-P2A.0 | 生命周期、候选及安全执行、参与观测准备 | 未完成；V17 reset真实停车FAIL保持；V22修正RayBox并选择quick150工程候选，待新冻结完整四阶段重验 |
+| MR3-P2A.0 | 生命周期、候选及安全执行、参与观测准备 | 未完成；V24修复安装生命周期测量，RayBox/quick150候选须新冻结完整四阶段重验；V17/V23失败保留 |
 | MR3-P2A | 联合 MaskablePPO 最小训练闭环 | 未完成；v6停止，当前先做P2A.0 |
 | MR3-P2B | 同接口算法对照与方法选择 | 未开始 |
 | MR3-P2C | 理想通信完整验收、冻结模型 | 未开始 |
