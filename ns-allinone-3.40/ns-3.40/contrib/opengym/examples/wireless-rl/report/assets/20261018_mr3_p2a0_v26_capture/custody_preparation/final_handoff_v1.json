@@ -1,0 +1,38 @@
+{
+  "schema": "mr3-v26-capture-consistency-author-seal-handoff-v1",
+  "source_status": "STOP",
+  "metadata_status": "STOP",
+  "writer_status": "STOP",
+  "archive": {
+    "path": "/tmp/mr3_p2a0_v26_capture_consistency_sealed_v1/originals.tar.gz",
+    "sha256": "74d170b842982c7c88147b9cb980c6abeb867371fdc55d866106f4c0b706ce2e",
+    "bytes": 113027,
+    "encoding": "gzip_tar",
+    "decoded_tar_sha256": "9813c701abb43760ba3868e1452364b490d2e7ac41d73ed9c1a562e3c1d7185a",
+    "decoded_tar_bytes": 542720,
+    "member_count": 20,
+    "original_payload_bytes": 524184
+  },
+  "manifest": {
+    "path": "/tmp/mr3_p2a0_v26_capture_consistency_sealed_v1/manifest.json",
+    "sha256": "89dcb2c38ba0728bda646347fde40f0b3a17f67d2f10a0e94e366980207f177b",
+    "bytes": 22216
+  },
+  "proposal_file_count": 19,
+  "packing_helper_file_count": 1,
+  "source_roots": [
+    "/tmp/mr3_p2a0_v26_capture_consistency_proposal_v1",
+    "/tmp/mr3_p2a0_v26_capture_consistency_proposal_v2"
+  ],
+  "final_module": {
+    "source": "/tmp/mr3_p2a0_v26_capture_consistency_proposal_v2/mr3_v26_smoother_custody_v2.py",
+    "sha256": "ac90b7f896592a5a08430ee859ad73332a4e0cd3292e53e20ada310179841c30"
+  },
+  "final_auditor": {
+    "source": "/tmp/mr3_p2a0_v26_capture_consistency_proposal_v2/audit_ppo.proposed_v26.py",
+    "sha256": "f45c214856d73f57ebc0622c2da20c6c96b663a975f14a2d00215cbe088377c2"
+  },
+  "byte_custody_passed": true,
+  "execution_scope": "Packing and byte/stat roundtrip only. No tests, formal consumer, build, ROS/DDS, native or canonical/Git mutation; no old failures rewritten.",
+  "canonical_publication": "Root may copy this archive, manifest and final handoff into A26 offline custody; not published by author."
+}

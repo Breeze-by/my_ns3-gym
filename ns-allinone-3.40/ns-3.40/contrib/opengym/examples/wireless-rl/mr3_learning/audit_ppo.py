@@ -550,7 +550,7 @@ def verify_ray_box_library(root, freeze):
 
 
 SMOOTHER_OVERLAY_PINS = {
-    'ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v25_smoother/independent/mr3_v25_smoother_custody_v1.py': '6edeb3a7e814fb024594be724ef98dce39e1d23a84af5d34d6d6faac0b5cb88b',
+    'ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v26_capture/independent/mr3_v26_smoother_custody_v2.py': 'ac90b7f896592a5a08430ee859ad73332a4e0cd3292e53e20ada310179841c30',
     'ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v25_smoother/independent/mr3_v25_smoother_binding_v1.json': '61276e5b98a8fb641ecae464386a7f1403acc73789df5251cd82bb35ab83b5e0',
 }
 
@@ -558,7 +558,7 @@ SMOOTHER_OVERLAY_PINS = {
 def verify_velocity_smoother_overlay(root, freeze):
     """Fixed official 1.1.20 two-timer overlay; old math and validators unchanged."""
     proof = verify_frozen_pins(root, freeze, SMOOTHER_OVERLAY_PINS, 'node-clock smoother overlay')
-    source = 'ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v25_smoother/independent/mr3_v25_smoother_custody_v1.py'
+    source = 'ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v26_capture/independent/mr3_v26_smoother_custody_v2.py'
     binding = root / 'ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v25_smoother/independent/mr3_v25_smoother_binding_v1.json'
     module = load_pinned('mr3_v25_smoother_overlay_custody', root / source,
                          SMOOTHER_OVERLAY_PINS[source])

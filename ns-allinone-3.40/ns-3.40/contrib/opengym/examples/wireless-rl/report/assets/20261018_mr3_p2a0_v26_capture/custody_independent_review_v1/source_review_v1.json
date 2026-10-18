@@ -1,0 +1,292 @@
+{
+  "schema": "mr3-v26-capture-consistency-independent-static-review-v1",
+  "status": "blocker_found_in_after_identity_check_order",
+  "original_v25_fail_retained": true,
+  "source_sha256": "7ff18f1a1628a24367cfeff69b65c6c5ea0177c9a6c178a6839172c1688e649e",
+  "changed_existing_functions": [
+    "observe",
+    "review"
+  ],
+  "added_functions": [
+    "capture_after_ancestry"
+  ],
+  "all_other_function_bytes_identical": true,
+  "all_other_module_AST_identical": true,
+  "binding_scope": "ASSET remains A25, same fixed binding/build/exe/core/old source hashes; appropriate for unchanged runtime overlay.",
+  "existing_author_checks_read_not_rerun": {
+    "case_count": 9,
+    "direct_observe_calls": 18,
+    "passed": true,
+    "results": {
+      "unrelated_vma": {
+        "original_6ede": {
+          "passed": false,
+          "errors": [
+            "process/ancestry/maps changed during capture"
+          ],
+          "episode_complete": false,
+          "pending_reason": null
+        },
+        "prospective": {
+          "passed": true,
+          "errors": [],
+          "episode_complete": true,
+          "pending_reason": null
+        }
+      },
+      "ancestor_z": {
+        "original_6ede": {
+          "passed": false,
+          "errors": [
+            "process/ancestry/maps changed during capture"
+          ],
+          "episode_complete": false,
+          "pending_reason": null
+        },
+        "prospective": {
+          "passed": false,
+          "errors": [],
+          "episode_complete": false,
+          "pending_reason": "known same-identity ancestor naturally closed; no credit"
+        }
+      },
+      "ancestor_gone": {
+        "original_6ede": {
+          "passed": false,
+          "errors": [
+            "process/ancestry/maps changed during capture"
+          ],
+          "episode_complete": false,
+          "pending_reason": null
+        },
+        "prospective": {
+          "passed": false,
+          "errors": [],
+          "episode_complete": false,
+          "pending_reason": "known same-identity ancestor naturally closed; no credit"
+        }
+      },
+      "wrong_core_inode": {
+        "original_6ede": {
+          "passed": false,
+          "errors": [
+            "process/ancestry/maps changed during capture"
+          ],
+          "episode_complete": false,
+          "pending_reason": null
+        },
+        "prospective": {
+          "passed": false,
+          "errors": [
+            "core mapped from another/deleted inode/path/device"
+          ],
+          "episode_complete": false,
+          "pending_reason": null
+        }
+      },
+      "wrong_core_path": {
+        "original_6ede": {
+          "passed": false,
+          "errors": [
+            "process/ancestry/maps changed during capture"
+          ],
+          "episode_complete": false,
+          "pending_reason": null
+        },
+        "prospective": {
+          "passed": false,
+          "errors": [
+            "core mapped from another/deleted inode/path/device"
+          ],
+          "episode_complete": false,
+          "pending_reason": null
+        }
+      },
+      "process_reuse": {
+        "original_6ede": {
+          "passed": false,
+          "errors": [
+            "process/ancestry/maps changed during capture"
+          ],
+          "episode_complete": false,
+          "pending_reason": null
+        },
+        "prospective": {
+          "passed": false,
+          "errors": [
+            "smoother PID reused during capture"
+          ],
+          "episode_complete": false,
+          "pending_reason": null
+        }
+      },
+      "ancestor_reuse_z": {
+        "original_6ede": {
+          "passed": false,
+          "errors": [
+            "process/ancestry/maps changed during capture"
+          ],
+          "episode_complete": false,
+          "pending_reason": null
+        },
+        "prospective": {
+          "passed": false,
+          "errors": [
+            "ancestor PID reused during capture"
+          ],
+          "episode_complete": false,
+          "pending_reason": null
+        }
+      },
+      "wrong_argv": {
+        "original_6ede": {
+          "passed": false,
+          "errors": [
+            "process/ancestry/maps changed during capture"
+          ],
+          "episode_complete": false,
+          "pending_reason": null
+        },
+        "prospective": {
+          "passed": false,
+          "errors": [
+            "capture predicate failed: argv_same"
+          ],
+          "episode_complete": false,
+          "pending_reason": null
+        }
+      },
+      "hash_error_plus_ancestor_z": {
+        "original_6ede": {
+          "passed": false,
+          "errors": [
+            "fixed installed ELF/path/size/SHA differs"
+          ],
+          "episode_complete": false,
+          "pending_reason": null
+        },
+        "prospective": {
+          "passed": false,
+          "errors": [
+            "fixed installed ELF/path/size/SHA differs"
+          ],
+          "episode_complete": false,
+          "pending_reason": null
+        }
+      }
+    },
+    "scope": "Only nine isolated fakeproc cases using exact6ede and prospective source direct observe; no original21suite, formal review/consumer CLI, real /proc, ROS/DDS/build/native or native035 rerun. Reproduces possible false rejections, not actual035 cause."
+  },
+  "new_targeted_counterexample": {
+    "path": "/tmp/mr3_p2a0_v26_capture_consistency_independent_review_v1/reuse_z_missing_exe_v1.json",
+    "sha256": "45fa6367620a6661f31b0663d2473019db3ed42b95587705c51f0e2854fc48e1",
+    "reproduced": true,
+    "summary": "Already-observed different PID/start is swallowed as no-error disappearance pending before hard pair check."
+  },
+  "findings": [
+    {
+      "severity": "blocker",
+      "detail": "Already observed different PID/start can be converted to pending by FileNotFound from subsequent exe resolution, before pid_start_same hard check. Check pair immediately after non-None after identity.",
+      "source_function": "observe: after identity read -> after proc reads -> pid_start_same"
+    }
+  ],
+  "static_nonblocking_observations": [
+    "Both before/after audited core rows, path/device/inode/executable-map permissions remain required, with raw/SHA telemetry. Unrelated VMA is descriptive and does not bypass the relevant mapping checks.",
+    "Known ancestor closure is separately recorded and gives no complete proof credit; ancestor reuse/group/session/unexplained reparenting remain hard.",
+    "Closed review continues to reject every snapshot with errors and requires at least one actual complete three-namespace proof for each exact episode.",
+    "No math/task/physical gate or runtime library changed by this source-only custody diff. Native035 failed conjunct remains unknown; synthetic evidence is not native attribution."
+  ],
+  "scope": "No original9/21 suite, formal CLI, ROS/native/SDK, or canonical write. One new isolated fakeproc case only.",
+  "input_bindings": {
+    "/tmp/mr3_p2a0_v26_capture_consistency_proposal_v1/handoff_v1.json": {
+      "sha256": "5efb0d19d4743a8d99ef9c93cf35a94d981da1a97aa95bb2c20503e3018240fc",
+      "bytes": 5015,
+      "stat": [
+        2051,
+        78660785,
+        5015,
+        1792287584042729485,
+        1792287584042729485
+      ]
+    },
+    "/tmp/mr3_p2a0_v26_capture_consistency_proposal_v1/counterexamples_result_v1.json": {
+      "sha256": "3f2066fdb1996480482bd936925c05289a735d28e039d0729b8f82edcc19458b",
+      "bytes": 109663,
+      "stat": [
+        2051,
+        78660779,
+        109663,
+        1792287462701593856,
+        1792287462701593856
+      ]
+    },
+    "/tmp/mr3_p2a0_v26_capture_consistency_proposal_v1/counterexamples_v1.py": {
+      "sha256": "f005af053ba5e1662cd225aef227928e9f5aa67204ec74fd892db6ba834452be",
+      "bytes": 6500,
+      "stat": [
+        2051,
+        78660778,
+        6500,
+        1792287461942552164,
+        1792287461942552164
+      ]
+    },
+    "/tmp/mr3_p2a0_v26_capture_consistency_proposal_v1/mr3_v25_smoother_custody.base_6ede.py": {
+      "sha256": "6edeb3a7e814fb024594be724ef98dce39e1d23a84af5d34d6d6faac0b5cb88b",
+      "bytes": 32537,
+      "stat": [
+        2051,
+        78660776,
+        32537,
+        1792287416539057138,
+        1792287416539057138
+      ]
+    },
+    "/tmp/mr3_p2a0_v26_capture_consistency_proposal_v1/mr3_v26_smoother_custody_v2.py": {
+      "sha256": "7ff18f1a1628a24367cfeff69b65c6c5ea0177c9a6c178a6839172c1688e649e",
+      "bytes": 38522,
+      "stat": [
+        2051,
+        78660777,
+        38522,
+        1792287461942552164,
+        1792287461942552164
+      ]
+    },
+    "/tmp/mr3_p2a0_v26_capture_consistency_proposal_v1/prospective_changes.patch": {
+      "sha256": "bdc5e0cd088f52e6090bcee685c43a2ea4e794a04cb8adbaa30d394d56de6225",
+      "bytes": 13801,
+      "stat": [
+        2051,
+        78660783,
+        13801,
+        1792287584039729465,
+        1792287584039729465
+      ]
+    },
+    "/tmp/mr3_p2a0_v26_capture_consistency_proposal_v1/source_scope_v1.json": {
+      "sha256": "7853700c0ae6a5e1b1a58eb0ea573785b61f6eac5811a06cb7dcbfd76d90fa09",
+      "bytes": 626,
+      "stat": [
+        2051,
+        78660784,
+        626,
+        1792287584040729472,
+        1792287584040729472
+      ]
+    },
+    "/tmp/mr3_p2a0_v26_capture_consistency_independent_review_v1/reuse_z_missing_exe_v1.json": {
+      "sha256": "45fa6367620a6661f31b0663d2473019db3ed42b95587705c51f0e2854fc48e1",
+      "bytes": 6029,
+      "stat": [
+        2051,
+        78660817,
+        6029,
+        1792287708795108186,
+        1792287708795108186
+      ]
+    }
+  },
+  "wall_seconds": 0.6794456969946623,
+  "input_end_sha_stat_stable": true
+}

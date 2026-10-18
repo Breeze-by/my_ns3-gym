@@ -1,0 +1,152 @@
+{
+  "schema": "mr3-v26-capture-consistency-independent-final-review-v2",
+  "verdict": "no_identified_blocker_for_exact_promotion_and_fresh_preflight",
+  "reviewed_module_sha256": "ac90b7f896592a5a08430ee859ad73332a4e0cd3292e53e20ada310179841c30",
+  "v2_to_v1_whole_byte_inverse": true,
+  "v2_only_changed_function": "observe",
+  "v2_other_function_bytes_and_module_AST_identical": true,
+  "auditor_sha256": "f45c214856d73f57ebc0622c2da20c6c96b663a975f14a2d00215cbe088377c2",
+  "auditor_fixed_module_path_and_sha_only_inverse_to_7d1": true,
+  "independent_single_case": {
+    "scope": "Exact same reuse-Z/missing-exe case on v2; no original9/21 rerun.",
+    "path": "/tmp/mr3_p2a0_v26_capture_consistency_independent_review_v2/reuse_z_missing_exe_v2.json",
+    "sha256": "2758452f3b964bd0847c7a9f1dc5c27c852158da81dafadc4fcd63686f2b773e",
+    "result": "hard rejection with named pid_start_same=False before after proc reads"
+  },
+  "preserved_v1_red": "/tmp/mr3_p2a0_v26_capture_consistency_independent_review_v1/handoff_v1.json",
+  "author_new_case_read_not_rerun": {
+    "case_count": 1,
+    "direct_observe_calls": 2,
+    "passed": true,
+    "scope": "original6ede hard rejection and newv2 hard rejection; independent Safety red7ff receipt45fa establishes removedregression"
+  },
+  "conclusions": [
+    "Relevant fixed core rows are validated before and after; unrelated VMA changes are descriptive, with both raw snapshots retained.",
+    "Already observed reuse is hard before any later file disappearance can classify pending. Same-identity closure gives no proof credit.",
+    "Known ancestor closure remains pending/no credit; reuse, unexplained lineage, core/argv/exe/hash errors remain hard.",
+    "Named conjuncts and collected facts remain saved on error; unavailable facts are not invented.",
+    "ASSET intentionally stays A25: actual overlay build/source/ELF/binding are unchanged. Auditor only updates fixed module path and hash.",
+    "Original source/runtime resolution/build verification and old numerical task gates remain unchanged.",
+    "Native035 cause remains unknown; V25 original FAIL is retained. No retrospective or assembled matrix PASS."
+  ],
+  "limits": "Static review plus one isolated new fakeproc case. No formal consumer CLI, old9/21 suite, ROS/DDS/SDK/native, canonical/source/bin or Git write.",
+  "source_diff": "--- \n+++ \n@@ -421,7 +421,13 @@\n                         and file_proof(binding['installed']['core'], read) == core, 'ELF identity changed during capture')\n                 after = util.proc_identity(identity['pid'], proc_root)\n                 attempt['identity_after'] = after\n-                if after is None or (pair(after) == pair(identity) and after['state'] == 'Z'):\n+                if after is None:\n+                    result['pending_reason'] = 'same process naturally closed during capture; no credit'\n+                    continue\n+                checks = attempt['checks']\n+                checks['pid_start_same'] = pair(after) == pair(identity)\n+                require(checks['pid_start_same'], 'smoother PID reused during capture')\n+                if after['state'] == 'Z':\n                     result['pending_reason'] = 'same process naturally closed during capture; no credit'\n                     continue\n                 maps_after = maps_path.read_bytes()\n@@ -434,9 +440,6 @@\n                                exe_after={'resolved': str(exe_after_path), 'inode': exe_after_stat.st_ino,\n                                           'device': exe_after_stat.st_dev},\n                                whole_maps_same=maps_after == maps_raw)\n-                checks = attempt['checks']\n-                checks['pid_start_same'] = pair(after) == pair(identity)\n-                require(checks['pid_start_same'], 'smoother PID reused during capture')\n                 after_lines = map_lines(maps_after, core)\n                 attempt['core_maps_after'] = after_lines\n                 checks['core_mapping_same'] = after_lines == lines\n",
+  "input_bindings": {
+    "/tmp/mr3_p2a0_v26_capture_consistency_proposal_v2/handoff_v2.json": {
+      "sha256": "96b3a0bb4fe12ca6c25714dbaaca5f48ddd7e4ffe21096f5ee8a4a69af2bd74b",
+      "bytes": 3364,
+      "stat": [
+        2051,
+        78662548,
+        3364,
+        1792287831740396943,
+        1792287831740396943
+      ]
+    },
+    "/tmp/mr3_p2a0_v26_capture_consistency_proposal_v2/audit_ppo.proposed_v26.py": {
+      "sha256": "f45c214856d73f57ebc0622c2da20c6c96b663a975f14a2d00215cbe088377c2",
+      "bytes": 66562,
+      "stat": [
+        2051,
+        78662546,
+        66562,
+        1792287831735396835,
+        1792287831735396835
+      ]
+    },
+    "/tmp/mr3_p2a0_v26_capture_consistency_proposal_v2/counterexamples.executed_v2.py": {
+      "sha256": "7a97030d405255bd85a4b23d5b3fca9d22289f3efaf5d350d9a879042abe4f45",
+      "bytes": 7299,
+      "stat": [
+        2051,
+        78662545,
+        7299,
+        1792287831252386310,
+        1792287831252386310
+      ]
+    },
+    "/tmp/mr3_p2a0_v26_capture_consistency_proposal_v2/counterexamples_result_v2.json": {
+      "sha256": "5091c1f0bcf9fcbd8e1cdf6767c69803485abb7d89d903ea2c49501447288d67",
+      "bytes": 9940,
+      "stat": [
+        2051,
+        78660829,
+        9940,
+        1792287777192281375,
+        1792287777192281375
+      ]
+    },
+    "/tmp/mr3_p2a0_v26_capture_consistency_proposal_v2/counterexamples_v1.py": {
+      "sha256": "6cd69bbc643f2301d740bec8d357c59c6c0e930d486b84c8c2f20f995be94ac3",
+      "bytes": 7308,
+      "stat": [
+        2051,
+        78660827,
+        7308,
+        1792287831252386310,
+        1792287831252386310
+      ]
+    },
+    "/tmp/mr3_p2a0_v26_capture_consistency_proposal_v2/guard_order_delta.patch": {
+      "sha256": "4e612392b223c25405e757c77263a158099026b0c7f7232d956e9583f6d73e74",
+      "bytes": 1682,
+      "stat": [
+        2051,
+        78662547,
+        1682,
+        1792287831738396900,
+        1792287831738396900
+      ]
+    },
+    "/tmp/mr3_p2a0_v26_capture_consistency_proposal_v2/mr3_v26_smoother_custody_v2.py": {
+      "sha256": "ac90b7f896592a5a08430ee859ad73332a4e0cd3292e53e20ada310179841c30",
+      "bytes": 38637,
+      "stat": [
+        2051,
+        78660826,
+        38637,
+        1792287776898275774,
+        1792287776898275774
+      ]
+    },
+    "/tmp/mr3_p2a0_v26_capture_consistency_proposal_v2/prospective_v1_7ff18.py": {
+      "sha256": "7ff18f1a1628a24367cfeff69b65c6c5ea0177c9a6c178a6839172c1688e649e",
+      "bytes": 38522,
+      "stat": [
+        2051,
+        78660828,
+        38522,
+        1792287776539268947,
+        1792287776539268947
+      ]
+    },
+    "/tmp/mr3_p2a0_v25_smoother_custody_proposal_v3/audit_ppo.proposed_v25.py": {
+      "sha256": "7d1a1a70761115b2582d7c08315e42cce97ddacdae067e066fa1e5487853294d",
+      "bytes": 66564,
+      "stat": [
+        2051,
+        78658252,
+        66564,
+        1792285370707568046,
+        1792285370707568046
+      ]
+    },
+    "/tmp/mr3_p2a0_v26_capture_consistency_independent_review_v2/reuse_z_missing_exe_v2.json": {
+      "sha256": "2758452f3b964bd0847c7a9f1dc5c27c852158da81dafadc4fcd63686f2b773e",
+      "bytes": 6152,
+      "stat": [
+        2051,
+        78662562,
+        6152,
+        1792287877258437285,
+        1792287877258437285
+      ]
+    }
+  },
+  "argv": [
+    "/tmp/mr3_p2a0_v26_capture_consistency_independent_review_v2/final_static_review_v2.py"
+  ],
+  "script_sha256": "bb3ba4e348788aedb785bf7bb123d596411cd5a45c239cbeb11ab505d035a4c2",
+  "wall_seconds": 0.6930804410949349,
+  "input_end_sha_stat_stable": true
+}

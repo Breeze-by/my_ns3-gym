@@ -1,5 +1,7 @@
 @/home/zhuyulab/.codex/RTK.md
 
+2026-10-18: V26 source-ready observation consistency repair only, original V25 C++/ELFs/ENV/parameters/math unchanged. 230 actual bindings; original34/608API/596decisions/full4stages and cumulative1369.6459453934804/18000 retained. Fresh clean-pushed preflight and complete native matrix still pending; P2A.0 incomplete, no PPO. Original035 and prospective7ff PIDreuse failures preserved. See wireless-rl/report/20261018_mr3_p2a0_v26_capture.md.
+
 # Codex Monorepo Memory — MR3
 
 2026-10-18: V25 freeze579f7ad2 CLOSED FAIL. Interface32/native39 clean/old nine formal gates passed; new smoother custody capture035 failed. All11 submitted audits finished10PASS1FAIL (10 declared mandatory9PASS1FAIL plus required FIFO PASS), later terminal/reset/deadline SKIP;50 saved PID/start identities freshgone. Cumulative engineering debit1369.6459453934804/18000, remaining16630.35405460652. Capture035 lacks per-conjunct before/after facts; false rejection is unproven. Preserve FAIL, repair observer and repeat complete matrix under new freeze; P2A.0 incomplete, no PPO. See wireless-rl/report/20261018_mr3_p2a0_v25_smoother.md.
