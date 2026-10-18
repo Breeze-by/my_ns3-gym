@@ -1,6 +1,6 @@
 # 当前三机器人基线与MR3适配启动命令
 
-2026-10-18用户已验收P2A.0并要求继续P2A。V7当前命令见下一节；原V26父编排中断保留，P2A未完成。 原V26命令仅供追溯；原生阶段已完成、最后只读审计单独补完，原编排中断不改记PASS。见[V26](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_v26_capture.md)和[复盘](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_reflection.md)。
+2026-10-18用户已验收P2A.0并要求继续P2A。V7命令为已关闭失败的历史入口，不能重跑；原V26父编排中断保留，P2A未完成。 原V26命令仅供追溯；原生阶段已完成、最后只读审计单独补完，原编排中断不改记PASS。见[V26](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_v26_capture.md)和[复盘](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_reflection.md)。
 
 新路线为 [MR3](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/RESEARCH_PLAN.md)，P0/P1A/P1B已验收，用户于2026-10-16验收P1C并授权P2A；P2B及后续未开始。
 默认`execution_mode:=baseline`启动前沿控制器；`adapter`为显式联合动作接口。P2A联合MaskablePPO正在实现与验证；gateway未开始。
@@ -156,9 +156,9 @@ phase3固定绑定原contact task-phase与独立命令时间门禁；scalar rewa
 [环境契约](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_ENV_CONTRACT.md)。
 每次实际执行均是需追加共享log的实验，不能把入口存在当成P1C通过。
 
-## MR3-P2A V7 当前训练与验证入口
+## MR3-P2A V7 历史入口（最小链科学门FAIL，pilot/验证SKIP）
 
-2026-10-18已验收P2A.0；以下V7必须在干净已提交推送的同一freeze执行，每项成功且完整审计通过才进入下一项。
+2026-10-18已验收P2A.0。V7在8d7f19fc8执行最小链16决策/8更新/702.565秒，但转向模型科学门FAIL；原两份审计保留，pilot及验证未执行。以下仅保留原命令供追溯，不重启旧run-id、不代用工程final。后续代码保护未获新原生信用；新工程预算待明确。
 使用下文conda `ns3gym`环境和wireless-rl目录；保留`PYTHONNOUSERSITE=1`、unset PYTHONPATH，ROS子进程仍system Python。
 [预声明](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a_v7/predeclared_plan_v7.json)与
 [本版结果](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a_v7.md)记录同冻结和所有失败。

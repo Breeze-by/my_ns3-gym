@@ -1,7 +1,7 @@
-# MR3-P2A 联合 MaskablePPO pilot 契约（V7继续）
+# MR3-P2A 联合 MaskablePPO pilot 契约（V7最小链科学门失败）
 
 2026-10-16：用户验收 P1C 并授权 P2A。P2A未完成，v6原session基础设施失败后按预声明停止。
-2026-10-18用户已验收P2A.0并明确要求继续P2A。当前执行[V7预声明](report/assets/20261018_mr3_p2a_v7/predeclared_plan_v7.json)：先fresh16/900工程最小链，再独立fresh的双worker、64步外部采集截断pilot，采集窗口2100墙秒；原pilot余额1870/2905.9547395464029不重置。仅正常final及两份完整审计通过后执行原三场final-only开发验证；P2A未完成，P2B及后续未开始。
+2026-10-18用户已验收P2A.0并要求继续P2A。V7按[原预声明](report/assets/20261018_mr3_p2a_v7/predeclared_plan_v7.json)完成16决策最小链，但真实settled-turn plant反例使完整/补充科学门FAIL；pilot与三场final-only验证均SKIPPED，原余额1870/2905.9547395464029不动。仅后续reader/无效round拒训练完成CPU准备，plant尚未修复；新工程预算待明确，P2A未完成，P2B未开始。
 正式任务沿用 [任务契约](MR3_TASK_CONTRACT.md) 与 [环境契约](MR3_ENV_CONTRACT.md)：
 原生 Gazebo、恰好三机器人、95%/300 仿真秒、原地图质量/参与/18 路接触及导航闭合门禁。
 本契约不授权二维替代、gateway 或历史候选 500k/72h 配额。
@@ -29,7 +29,7 @@ value coefficient=.5、max grad norm=.5、target KL=.03、每 round 最多 4 epo
 
 ## 完整 episode rollout 与终态
 
-每 round 同一只读策略在 1/2/4 个隔离三机器人环境采样；所有 episode 关闭并核验原生退出后才更新。V7 pilot选两个worker、每段最多64决策外部截断；95%/300秒任务保持，短前缀value尾项可能未校准，不称其等价完整任务训练或95%成功。完整任务只由final-only开发验证独立判断。
+每 round 同一只读策略在 1/2/4 个隔离三机器人环境采样；所有 episode 关闭并核验原生退出后才更新。后续代码还在buffer/GAE之前核对已闭合worker的epoch/failures，精确拒绝motion_safety/settled_turn_model_failure，保留真实返回样本而不调用optimizer；不把普通导航/碰撞任务失败一律作基础设施错误。该新保护只有CPU验证，物理反例和原8次更新/FAIL保持。V7原预声明pilot拟选两个worker、每段最多64决策外部截断；95%/300秒任务保持，短前缀value尾项可能未校准，不称其等价完整任务训练或95%成功。完整任务只由final-only开发验证独立判断。
 不跨 optimizer 更新保留尚未结算的动作，从而避免末步在更新后收到零时长终态通知。
 
 - 普通真实决策为 1 秒；有动作的短终态（包括有效 dt=0、真实物理推进20ms）保留为 actor 样本。
@@ -42,7 +42,7 @@ value coefficient=.5、max grad norm=.5、target KL=.03、每 round 最多 4 epo
   最后 singleton minibatch 并入前一批，避免标准优势标准化的单样本标准差产生 NaN。
 - 基础设施错误抛出且整 round 不更新；保留所有成功、任务失败、故障前缀和 cleanup 回执，不静默补样本。
 
-## 当前执行修订与预声明范围
+## 历史执行修订与预声明范围（v1–v6）
 
 v1/v2最小链各完成8真实决策和4次GPU optimizer.step；v1首次文档SHA绑定失败与修正PASS并列保留。
 v2 pilot在首个完整round返回前诊断中断：实际390条原生已执行决策、389.10奖励仿真秒、

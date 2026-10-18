@@ -1,0 +1,92 @@
+{
+  "schema": "mr3-p2a-v7-execution-receipts-v1",
+  "freeze": "8d7f19fc8225eae0ccdc6609b828ee8e832f7c93",
+  "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+  "shell_prefix": [
+    "rtk",
+    "proxy",
+    "env",
+    "-u",
+    "PYTHONPATH",
+    "PYTHONNOUSERSITE=1",
+    "PYTHONDONTWRITEBYTECODE=1"
+  ],
+  "records": [
+    {
+      "label": "minimal",
+      "argv": [
+        "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+        "-B",
+        "-m",
+        "mr3_learning.ppo",
+        "--mode",
+        "train",
+        "--workers",
+        "1",
+        "--schedule",
+        "open:101",
+        "--decisions",
+        "16",
+        "--episode-steps",
+        "16",
+        "--wall-seconds",
+        "900",
+        "--seed",
+        "41",
+        "--base-domain",
+        "180",
+        "--base-port",
+        "14001",
+        "--run-id",
+        "mr3_p2a_v7_minimal"
+      ],
+      "actual_tool_exit_code": 0,
+      "result": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v7_minimal/summary.json"
+    },
+    {
+      "label": "full_audit",
+      "argv": [
+        "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+        "-B",
+        "-m",
+        "mr3_learning.audit_ppo",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v7_minimal",
+        "--freeze",
+        "8d7f19fc8225eae0ccdc6609b828ee8e832f7c93",
+        "--output",
+        "/tmp/mr3_p2a_v7_minimal_full_audit_v1.json"
+      ],
+      "actual_tool_exit_code": 1,
+      "result": "/tmp/mr3_p2a_v7_minimal_full_audit_v1.json"
+    },
+    {
+      "label": "input_audit",
+      "argv": [
+        "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+        "-B",
+        "-m",
+        "mr3_learning.audit_policy_inputs",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v7_minimal",
+        "--freeze",
+        "8d7f19fc8225eae0ccdc6609b828ee8e832f7c93",
+        "--output",
+        "/tmp/mr3_p2a_v7_minimal_input_audit_v1.json"
+      ],
+      "actual_tool_exit_code": 1,
+      "result": "/tmp/mr3_p2a_v7_minimal_input_audit_v1.json"
+    }
+  ],
+  "returncode_authority": "Actual exec_command/write_stdin completions in this session; not inferred from report flags. No external wrapper elapsed time or missing PID identities fabricated.",
+  "pilot": {
+    "status": "SKIPPED",
+    "reason": "required same-freeze minimal scientific audit failed",
+    "native_decisions": 0,
+    "optimizer_steps": 0,
+    "wall_charge": 0
+  },
+  "validation": {
+    "status": "SKIPPED",
+    "reason": "no V7 pilot final exists; engineering final forbidden as substitution"
+  },
+  "signals_sent_by_root_or_agents": 0
+}

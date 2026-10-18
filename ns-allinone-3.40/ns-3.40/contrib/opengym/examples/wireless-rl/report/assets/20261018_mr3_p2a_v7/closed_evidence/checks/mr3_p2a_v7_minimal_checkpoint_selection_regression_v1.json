@@ -1,0 +1,34 @@
+{
+  "schema": "mr3-p2a-checkpoint-selection-regression-v1",
+  "observed_utc": "2026-10-18T15:05:05.756227+00:00",
+  "passed": true,
+  "reports": {
+    "original_frozen_consumer": {
+      "tests_run": 1,
+      "successful": false,
+      "failures": 1,
+      "errors": 0,
+      "output": "test_rejected_first_native_round_retains_failure_without_wrong_later_replay (mr3_learning.tests.test_audit_checkpoint_selection.CollectingCheckpointTests) ... FAIL\n\n======================================================================\nFAIL: test_rejected_first_native_round_retains_failure_without_wrong_later_replay (mr3_learning.tests.test_audit_checkpoint_selection.CollectingCheckpointTests)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_checkpoint_selection.py\", line 127, in test_rejected_first_native_round_retains_failure_without_wrong_later_replay\n    self.assertEqual(len(result[\"errors\"]), 1)\nAssertionError: 2 != 1\n\n----------------------------------------------------------------------\nRan 1 test in 0.013s\n\nFAILED (failures=1)\n",
+      "source_git": "8d7f19fc8225eae0ccdc6609b828ee8e832f7c93:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_ppo.py",
+      "source_sha256": "f45c214856d73f57ebc0622c2da20c6c96b663a975f14a2d00215cbe088377c2"
+    },
+    "repaired_current_consumer": {
+      "tests_run": 4,
+      "successful": true,
+      "failures": 0,
+      "errors": 0,
+      "output": "test_latest_declared_update_survives_missing_native_round_and_update_gap (mr3_learning.tests.test_audit_checkpoint_selection.CollectingCheckpointTests) ... ok\ntest_missing_declared_checkpoint_does_not_fall_back_to_another_policy (mr3_learning.tests.test_audit_checkpoint_selection.CollectingCheckpointTests) ... ok\ntest_no_prior_update_and_evaluation_use_initial_policy (mr3_learning.tests.test_audit_checkpoint_selection.CollectingCheckpointTests) ... ok\ntest_rejected_first_native_round_retains_failure_without_wrong_later_replay (mr3_learning.tests.test_audit_checkpoint_selection.CollectingCheckpointTests) ... ok\n\n----------------------------------------------------------------------\nRan 4 tests in 0.012s\n\nOK\n",
+      "source_path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_ppo.py",
+      "source_sha256": "12f9320ee0cb1416c27addaf2cd6c32a743e63bb407a4ecdfe8a6797ef416af9"
+    }
+  },
+  "test_source": {
+    "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_checkpoint_selection.py",
+    "sha256": "5180b0ed876553e0182af83b3e354d0d19bff095f916dbe09306f647c74e36be"
+  },
+  "scope": "CPU fixtures only; original8d7 auditor is compiled unchanged in memory; repaired auditor preserves the physical failure while avoiding a false later value mismatch. No original report or source is overwritten.",
+  "native_runs_started": 0,
+  "gpu_operations_requested": 0,
+  "runtime_changes": 0,
+  "wall_seconds": 0.054581699427217245
+}

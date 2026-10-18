@@ -6572,3 +6572,42 @@ reset: all_original_fields_deep_equal=true；666.9372907830402只读墙秒。
 只读环境检查实际Conda=/home/zhuyulab/miniconda3/envs/ns3gym/bin/python，numpy2.2.6、torch2.11.0+cu128、gymnasium1.3.0、SB3/sb3-contrib2.9.0，CUDA可用/2设备；没有重装依赖。当前source loader的127项pin/build/source proof通过，无新native。
 
 V7源码准备最短检查：现有test_ppo/test_finite_horizon/test_rollout共42项通过；新增补充审计6项通过，覆盖空/未知attempt、leaf失败汇总、motion单次调用、源码绑定和输出拒覆盖；143个本地Markdown链接无缺件，计划JSON/Decimal预算/参数经独立只读复核一致。仅增加只读audit_policy_inputs入口，不改生产/训练算法。
+
+
+## 2026-10-18：V7最小链真实反例与闭合（pilot/验证SKIPPED）
+
+实际clean+pushed冻结 `8d7f19fc8225eae0ccdc6609b828ee8e832f7c93`，学习seed41、open/Gazebo seed101、每worker tb1/tb2/tb3。
+实际前检127项native/source/build与7项补充source绑定通过。当前运行命令均从wireless-rl目录执行：
+
+```bash
+rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.ppo --mode train --workers 1 --schedule open:101 --decisions 16 --episode-steps 16 --wall-seconds 900 --seed 41 --base-domain 180 --base-port 14001 --run-id mr3_p2a_v7_minimal
+```
+
+工具真实退出0，16原生=16collector返回，15.22有效/15.24物理秒，2round/8次实际GPU optimizer.step，702.5650296038948墙秒，cleanup_errors=[]、原completed=true。
+首round8决策、7.22秒navigation_failure、覆盖.7129097051036246、地图质量/参与/导航闭合均未通过、接触0；第二round8决策、8秒外部截断、覆盖.5889025837670044、质量/参与未通过，接触0/导航闭合true。
+第二round评价器最终8.2秒含关闭阶段，不给8秒学习步补样本。两回合原collision_monitoring_fresh=true；不以此抵销独立模型证明失败。
+
+正式只读审计精确命令（工具实际均return1，原报告不改写）：
+
+```bash
+rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.audit_ppo /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v7_minimal --freeze 8d7f19fc8225eae0ccdc6609b828ee8e832f7c93 --output /tmp/mr3_p2a_v7_minimal_full_audit_v1.json
+rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.audit_policy_inputs /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v7_minimal --freeze 8d7f19fc8225eae0ccdc6609b828ee8e832f7c93 --output /tmp/mr3_p2a_v7_minimal_input_audit_v1.json
+```
+
+真实首因：tb3原own odom record70968、input1482/source54.155，平面速度.02020358683181293>.01，下一record70969触发settled_turn_model_failure。WORLD速度来自native WorldLinearVel，非map/TF假象。
+此前154条存储target线速度零，最新总弦长.005674432986632134<.0078；首次违反速度条件。54.12零转/54.14恢复.8均真实，但因果未隔离。
+早期future odom猜测已更正：零输出早于future raw入站，最老资格源龄101ms>100ms，拒绝符合原规则；不调宽门或保持旧授权。
+因此原模型/物理证明失败，真实终态/正常退出/实际8更新都不能转成有效训练链信用。原完整报告保留物理、初始握手、接触相位证明级联及round1 value错误；补充报告保留motion与execution_inputs两叶错误。
+
+独立只读CPU诊断另证round1值误差是reader权重误选：round0被物理门排除后旧reader错误选initial；actual checkpoint0000重放全部原tensor/action/value/logprob/reward/dt/GAE通过，value最大绝对差7.152557373046875e-7；initial误用时最大差2.7784765288233757、8/8失败。原容差未改。
+原诊断policy_sha256字段误标为zip SHA的独占字段说明并列保留，不冒称state_dict SHA。
+
+只完成两项后续代码准备，无新native/GPU：reader按真实summary更新顺序选checkpoint（独立于前序native通过与否），4项CPU回归原红/新绿；collector所有native关闭后、buffer/GAE/optimizer前，读取epoch绑定的worker summary.failures，精确拒绝已知settled-turn模型失效，保留真实返回决策至failed_collection。普通任务失败/零尾/真实截断规则不变；test_ppo+finite_horizon共31项CPU通过，已闭合首回合只读拒绝校验通过。这些不修plant、不覆盖原8次更新或原FAIL。
+
+V7 pilot/三场开发验证均SKIPPED，0新pilot决策/0墙秒；余额1870/2905.9547395464029不重置、不扩额，工程最小链702.5650296038948另列。所有supervisor原保存身份88组PID/start均gone；独立活动单快照39组及实加载库来源单列，0终止信号，不虚构未保存的瞬时进程。
+唯一原件保管：[V7闭合清单](report/assets/20261018_mr3_p2a_v7/closed_evidence/manifest.json)，459原文件共422601115字节，native gzip/tar归档41359879字节/1块，完整逐文件往返SHA、编码SHA和源末stat通过；四份模型仅工程诊断、不代用pilot final。
+
+完整结果与物理对照提案见[V7报告](report/20261018_mr3_p2a_v7.md)。原工程余6579.143210123293，即使不扣本次702.565，仍不足历史完整矩阵10051.210844483227。
+拟申请工程累计上限18000→30000（新增12000，将V7最小链纳入记账），pilot/验证不扩额；当前仅提案未授权、未执行。不自动原生重试/借预算/P2B/gateway。P2A未完成，P2A.0已验收边界及原V26中断/所有旧FAIL保留。
+
+V7最终静态交付核验：181个当前本地链接无缺，闭合包13份直接原件SHA及单归档块SHA/大小正确，4份后续源码SHA匹配，4 Python AST通过；独立只读审查无阻断。git diff --check与git add -n .通过，仅选定闭合证据（约41.36MB归档）及代码/文档，无build/install或未关闭runtime混入。原16决策/8更新及两门FAIL不变；新增工程提案未授权、未执行。

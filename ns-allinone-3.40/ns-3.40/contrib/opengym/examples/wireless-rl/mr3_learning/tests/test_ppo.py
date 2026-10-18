@@ -24,9 +24,10 @@ import torch
 from mr3_learning.observation import encode_snapshot, observation_space
 from mr3_learning.policy import policy_kwargs
 from mr3_learning.ppo import (
-    ContractSpaces, collect_episodes, infer, main, native_record_accounting,
+    ContractSpaces, closed_episode_training_eligibility, collect_episodes, infer, main, native_record_accounting,
     save_failed_collection, save_rollout, write_json)
 from mr3_learning.rollout import build_rollout_buffer
+from mr3_learning.supervisor import InfrastructureError
 from mr3_learning.tests.test_observation import fixture
 
 
@@ -34,7 +35,7 @@ class ReceiptEnv:
     """Scripted API receipts with honest no-action and external-stop flags."""
 
     def __init__(self, script, *, epoch="fixture-episode", reset_error=None,
-                 close_error=None, events=None):
+                 close_error=None, events=None, native_failures=None):
         self.script = list(script)
         self.epoch = epoch
         self.reset_error = reset_error
@@ -46,8 +47,11 @@ class ReceiptEnv:
         self.actions = []
         self.observation = encode_snapshot(fixture())
         self.last_info = None
+        self.native_failures = [] if native_failures is None else native_failures
+        temporary = tempfile.TemporaryDirectory()
+        unittest.addModuleCleanup(temporary.cleanup)
         self.supervisor = SimpleNamespace(
-            episode=SimpleNamespace(directory=Path("/fixture") / epoch), receipts=[])
+            episode=SimpleNamespace(directory=Path(temporary.name)), receipts=[])
 
     def reset(self, *, seed, options):
         self.events.append((self.epoch, "reset", seed, options))
@@ -99,8 +103,8 @@ class ReceiptEnv:
             "watermarks": {"state_sequence": self._steps + 1},
             "command": {"observation_sequence": self._steps,
                         "observation_digest": f"observation-{self._steps}"},
-            "reason": "task_success" if terminated else (
-                "external_sampler_limit" if truncated else None),
+            "reason": item.get("reason", "task_success" if terminated else (
+                "external_sampler_limit" if truncated else None)),
             "reward_diagnostics": {"epoch": self.epoch, "sequence": self._steps,
                                    "step_start": float(self._steps - 1),
                                    "effective_step_end": float(self._steps - 1) + dt}}
@@ -113,6 +117,8 @@ class ReceiptEnv:
         self.events.append((self.epoch, "close"))
         if self.close_error:
             raise self.close_error
+        write_json(self.supervisor.episode.directory / "summary.json", {
+            "epoch": self.epoch, "failures": self.native_failures})
         self.supervisor.receipts.append({"op": "close", "clean": True})
 
 
@@ -245,6 +251,69 @@ class CollectorTests(unittest.TestCase):
         self.assertIn("infrastructure_error", journal["summaries"][0])
         self.assertTrue(journal["summaries"][1]["shutdown"]["clean"])
 
+    def test_closed_model_failure_rejects_round_and_preserves_real_terminal_receipts(self):
+        environments = [ReceiptEnv([
+            {"reward": .2}, {"reward": -20., "terminated": True,
+                             "reason": "navigation_failure", "dt": .22,
+                             "physical_dt": .24}], epoch="model-failure", native_failures=[
+                                 json.dumps({"component": "motion_safety",
+                                             "reason": "settled_turn_model_failure"})]),
+                        ReceiptEnv([{"terminated": True}], epoch="peer")]
+        journal = {}
+
+        def eligibility(directory, epoch):
+            self.assertTrue(all(environment.closed == 1 for environment in environments))
+            return closed_episode_training_eligibility(directory, epoch)
+
+        with patch("mr3_learning.ppo.closed_episode_training_eligibility",
+                   side_effect=eligibility), self.assertRaisesRegex(
+                       InfrastructureError, "settled_turn_model_failure") as failure:
+            self.collect(environments, journal=journal)
+        self.assertEqual([len(episode) for episode in journal["episodes"]], [2, 1])
+        terminal = journal["episodes"][0][-1]
+        self.assertTrue(terminal.terminated)
+        self.assertFalse(terminal.truncated)
+        self.assertEqual((terminal.reward, terminal.dt, terminal.next_value), (-20., .22, 0.))
+        self.assertTrue(all(summary["shutdown"]["clean"] for summary in journal["summaries"]))
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "failed_collection.npz"
+            save_failed_collection(path, journal, failure.exception)
+            diagnostic = json.loads(path.with_suffix(".json").read_text())
+            self.assertFalse(diagnostic["training_eligible"])
+            self.assertEqual(diagnostic["collector_returned_decisions"], 3)
+            with np.load(path, allow_pickle=False) as data:
+                np.testing.assert_array_equal(data["terminated"], [False, True, True])
+                np.testing.assert_array_equal(data["truncated"], [False, False, False])
+                self.assertNotIn("advantages", data.files)
+                self.assertNotIn("returns", data.files)
+
+    def test_ordinary_task_failures_remain_eligible(self):
+        for reason, message in (
+                ("navigation_failure", "ordinary navigation failure"),
+                ("collision", json.dumps({"component": "motion_safety", "reason": "contact"})),
+                ("navigation_failure", json.dumps({"component": "other",
+                                                   "reason": "settled_turn_model_failure"}))):
+            with self.subTest(reason=reason, message=message):
+                environment = ReceiptEnv([{"reward": -20., "terminated": True, "reason": reason}],
+                                         native_failures=[message])
+                episodes, summaries = self.collect([environment])
+                self.assertTrue(episodes[0][-1].terminated)
+                self.assertEqual(episodes[0][-1].reward, -20.)
+                self.assertEqual(summaries[0]["reason"], reason)
+                self.assertTrue(summaries[0]["training_eligibility"]["training_eligible"])
+
+    def test_missing_malformed_or_wrong_epoch_eligibility_receipt_fails_closed(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "summary.json"
+            for receipt in (None, "not json", "null", json.dumps({"epoch": "other", "failures": []}),
+                            json.dumps({"epoch": "expected"}),
+                            json.dumps({"epoch": "expected", "failures": [None]})):
+                with self.subTest(receipt=receipt):
+                    if receipt is not None:
+                        path.write_text(receipt)
+                    with self.assertRaisesRegex(InfrastructureError, "eligibility receipt"):
+                        closed_episode_training_eligibility(directory, "expected")
+
     def test_empty_or_mismatched_worker_tasks_are_rejected_before_reset(self):
         environment = ReceiptEnv([{"terminated": True}])
         for environments, tasks in (([], []), ([environment], []), ([], tasks_for([environment]))):
@@ -375,6 +444,51 @@ class PPOIntegrationTests(unittest.TestCase):
 
 
 class NativeAccountingTests(unittest.TestCase):
+    def test_main_rejects_closed_model_failure_before_targets_or_optimizer(self):
+        environment = ReceiptEnv([{}, {"reward": -20., "terminated": True,
+                                      "reason": "navigation_failure"}], native_failures=[
+                                          json.dumps({"component": "motion_safety",
+                                                      "reason": "settled_turn_model_failure"})])
+        original_check_output = subprocess.check_output
+
+        def source_query(command, **kwargs):
+            if command[:2] == ["git", "rev-parse"]:
+                return "a" * 40
+            if command[:2] == ["git", "status"]:
+                return ""
+            return original_check_output(command, **kwargs)
+
+        with tempfile.TemporaryDirectory() as temporary, patch(
+                "mr3_learning.ppo.subprocess.check_output", side_effect=source_query), patch(
+                "mr3_learning.ppo.resource_sample", return_value={}), patch(
+                "mr3_learning.ppo.Supervisor"), patch(
+                "mr3_learning.ppo.MR3Env", return_value=environment), patch(
+                "mr3_learning.ppo.infer", side_effect=fixture_infer), patch(
+                "mr3_learning.ppo.next_value", return_value=.25), patch(
+                "mr3_learning.ppo.build_rollout_buffer") as targets, patch.object(
+                MaskablePPO, "train") as train, contextlib.redirect_stdout(io.StringIO()):
+            status = main(["--run-id", "fixture", "--output-root", temporary,
+                           "--decisions", "2", "--wall-seconds", "60", "--device", "cpu"])
+            directory = Path(temporary) / "fixture"
+            summary = json.loads((directory / "summary.json").read_text())
+            diagnostic = json.loads((directory / "failed_collection_0000.json").read_text())
+            self.assertFalse(any((directory / name).exists() for name in (
+                "final.zip", "rollout_0000.npz", "checkpoint_0000.zip")))
+            with np.load(directory / "failed_collection_0000.npz", allow_pickle=False) as data:
+                np.testing.assert_array_equal(data["terminated"], [False, True])
+                np.testing.assert_array_equal(data["truncated"], [False, False])
+                self.assertNotIn("advantages", data.files)
+                self.assertNotIn("returns", data.files)
+        targets.assert_not_called()
+        train.assert_not_called()
+        self.assertEqual(status, 1)
+        self.assertEqual(summary["error_type"], "InfrastructureError")
+        self.assertEqual(summary["optimizer_updates"], 0)
+        self.assertEqual(summary["collector_observed_decisions"], 2)
+        self.assertEqual(summary["closed_episode_decisions"], 0)
+        self.assertFalse(diagnostic["training_eligible"])
+        self.assertEqual(diagnostic["collector_returned_decisions"], 2)
+
     def test_main_preserves_failed_collection_and_never_updates_or_writes_final(self):
         environment = ReceiptEnv([{}, RuntimeError("native shutdown abort")])
         original_check_output = subprocess.check_output

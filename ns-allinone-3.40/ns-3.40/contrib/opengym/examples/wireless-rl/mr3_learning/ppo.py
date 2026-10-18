@@ -29,7 +29,7 @@ from .env import MR3Env
 from .observation import observation_space
 from .policy import policy_kwargs
 from .rollout import DecisionTransition, build_rollout_buffer, merge_zero_terminal
-from .supervisor import SCENES, Supervisor, WORKSPACE
+from .supervisor import InfrastructureError, SCENES, Supervisor, WORKSPACE
 
 
 # This is a finite, time-limited episodic task. Preserve the accepted total
@@ -142,11 +142,44 @@ def next_value(model, observation):
         return float(model.policy.predict_values(tensors).cpu().item())
 
 
+def closed_episode_training_eligibility(directory, epoch):
+    """Reject the known invalid plant model before building any learning targets.
+
+    A real task failure and clean process exit can still contain this model
+    violation. Read only the closed worker's scalar failure receipts; ordinary
+    navigation/contact failures remain valid task outcomes. No evaluator truth
+    or full offline replay enters the collector or policy.
+    """
+    path = Path(directory) / "summary.json"
+    try:
+        raw = path.read_bytes()
+        summary = json.loads(raw)
+        if (summary["epoch"] != epoch or not isinstance(summary["failures"], list)
+                or any(not isinstance(message, str) for message in summary["failures"])):
+            raise ValueError("closed worker epoch/failure receipts differ")
+    except (OSError, ValueError, KeyError, TypeError) as error:
+        raise InfrastructureError("native training eligibility receipt: " + str(path)
+                                  + ": " + str(error)) from error
+    for message in summary["failures"]:
+        try:
+            failure = json.loads(message)
+        except ValueError:
+            continue  # Ordinary task-failure messages need not be JSON.
+        if (isinstance(failure, dict) and failure.get("component") == "motion_safety"
+                and failure.get("reason") == "settled_turn_model_failure"):
+            raise InfrastructureError("native training ineligible: motion_safety "
+                                      "settled_turn_model_failure in " + str(path))
+    return {"training_eligible": True, "source_summary": str(path),
+            "source_sha256": hashlib.sha256(raw).hexdigest(),
+            "scope": "known settled-turn model rejection; not a full offline audit"}
+
+
 def collect_episodes(model, environments, tasks, *, deadline, deterministic=False,
                      progress=None, journal=None):
     """Collect a fixed round, retaining every task outcome and API receipt.
 
-    No optimizer runs until all workers close. A wall stop is requested through
+    No optimizer runs until all workers close and pass the known-model receipt
+    check. A wall stop is requested through
     the existing external truncation path on the next physical step, followed
     by bounded native cancellation and cleanup; it is not a task failure.
     """
@@ -233,6 +266,14 @@ def collect_episodes(model, environments, tasks, *, deadline, deterministic=Fals
         except Exception as error:
             summary["infrastructure_error"] = repr(error)
             errors.append(error)
+    if not errors:
+        for summary in summaries:
+            try:
+                summary["training_eligibility"] = closed_episode_training_eligibility(
+                    summary["directory"], summary["epoch"])
+            except Exception as error:
+                summary["infrastructure_error"] = repr(error)
+                errors.append(error)
     if progress:
         progress(summaries)
     if errors:

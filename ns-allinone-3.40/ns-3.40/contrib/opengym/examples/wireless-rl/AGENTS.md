@@ -1,6 +1,6 @@
 # wireless-rl memory — MR3
 
-2026-10-18: 用户已明确验收P2A.0并授权继续完成P2A；P2A进行中、尚未完成，本轮准备新冻结的训练/验证，不重跑已验收的完整P2A.0矩阵。 原V26父编排中断永久保留；源码冻结`92f8bdf5bba1ba245dc53ca0964eef81a7fff938`的四阶段/12回合、34必需科学角色全部通过，最后一个information只读消费者在原父进程组消失后单独补完；原ledger/未知返回码/缺失最终回执不补造。 原生468/468正常退出，枚举元数据中543个保存PID/start均gone。 reset非必需逐回合停车覆盖FAIL及所有旧FAIL保留，原合并覆盖门通过。 工程累计11420.856789876707/18000墙秒，pilot余额1870决策/2905.954739546403墙秒未用且不重置。 后续短回合仅为外部截断采集，不替代95%/300秒任务；P2B及gateway未启动。 详见共享V26报告与20261018_mr3_p2a0_reflection.md。
+2026-10-18：P2A.0已获用户验收；P2A V7最小链科学门FAIL，P2A未完成。执行冻结`8d7f19fc8225eae0ccdc6609b828ee8e832f7c93`，两回合16原生/返回决策、8实际更新、702.5650296038948墙秒；tb3真实纯转向平面速度.0202035868超过原.01条件，原完整及补充审计均FAIL。pilot/三场验证SKIPPED，原余额1870决策/2905.9547395464029墙秒不动。原V26验收、父编排中断及所有旧FAIL保留。仅完成后续reader权重选择和无效模型round优化前拒绝的CPU代码准备，没有新plant修复或新native通过。已保存原件/原FAIL及88个保存PID/start均gone；新增工程预算待明确，P2B/gateway未启动。详见V7报告。
 
 P1C validation started 2026-10-15; actual closure time is in the P1C report. The active contract is [RESEARCH_PLAN.md](RESEARCH_PLAN.md),
 then [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md). Follow root AGENTS.md.

@@ -871,6 +871,14 @@ def audit_rollout(path, decisions, *, gamma=.99, gae_lambda=.95):
             "policy_cpu_atol": POLICY_ATOL, "policy_cpu_rtol": POLICY_RTOL}
 
 
+def collecting_checkpoint(directory, mode, round_index, updated_rounds):
+    """Use actual update chronology even if prior native evidence failed."""
+    previous = ([row["round"] for row in updated_rounds if row["round"] < round_index]
+                if mode == "train" else [])
+    return (directory / f"checkpoint_{max(previous):04d}.zip" if previous
+            else directory / "initial.zip")
+
+
 def audit_run(directory, freeze):
     directory = Path(directory).resolve()
     root = next(parent for parent in Path(__file__).resolve().parents
@@ -956,11 +964,11 @@ def audit_run(directory, freeze):
             row["errors"].append(str(error))
             result["errors"].append(str(native) + ": " + str(error))
         result["episodes"].append(row)
-    previous = directory / "initial.zip"
+    initial = directory / "initial.zip"
     check("initial checkpoint hash", lambda: require(
-        sha(previous) == summary["initial_checkpoint_sha256"], "initial checkpoint hash differs"))
+        sha(initial) == summary["initial_checkpoint_sha256"], "initial checkpoint hash differs"))
     for index, entries in sorted(rounds.items()):
-        checkpoint = previous if metadata["mode"] == "train" else directory / "initial.zip"
+        checkpoint = collecting_checkpoint(directory, metadata["mode"], index, summary["rounds"])
         round_result = {"round": index, "collecting_checkpoint": str(checkpoint)}
 
         def replay_round():
@@ -987,8 +995,6 @@ def audit_run(directory, freeze):
                                     changed_parameter_tensors=changed)
             return decisions
         check("round " + str(index), replay_round)
-        if metadata["mode"] == "train" and (directory / f"checkpoint_{index:04d}.zip").exists():
-            previous = directory / f"checkpoint_{index:04d}.zip"
         result["rounds"].append(round_result)
     check("completed run", lambda: require(summary["completed"] and summary["error"] is None
           and not summary["cleanup_errors"], "run has an error/incomplete native closure"))
