@@ -156,9 +156,9 @@ phase3固定绑定原contact task-phase与独立命令时间门禁；scalar rewa
 [环境契约](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_ENV_CONTRACT.md)。
 每次实际执行均是需追加共享log的实验，不能把入口存在当成P1C通过。
 
-## MR3-P2A V8 工程诊断（显式关闭默认值）
+## MR3-P2A V8 已关闭原生诊断（历史入口，不重跑）
 
-2026-10-19用户批准累计30000工程墙秒；V7 FAIL和pilot余额不变。新增`mr3_plant_stimulus_arm`默认空，仅`continuous|pulse`启用固定open101三机稀疏布局与tb3真正smoother工程输入；不要用于正常训练/评估。普通adapter的目标、timer、安全门及出生位置保持原行为。完整预声明、有效性门和预算见[V8报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v8.md)。
+2026-10-19用户批准累计30000工程墙秒。V8同冻结两臂已完成，刺激VALID/关闭PASS，原V7反例未复现；以下命令仅保留追溯，不重跑已有run-id。V7 FAIL和pilot余额不变。新增`mr3_plant_stimulus_arm`默认空，仅`continuous|pulse`启用固定open101三机稀疏布局与tb3真正smoother工程输入；不要用于正常训练/评估。普通adapter的目标、timer、安全门及出生位置保持原行为。完整预声明、有效性门和预算见[V8报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v8.md)。
 
 在conda ns3gym、`PYTHONNOUSERSITE=1`、wireless-rl目录，从新clean+pushed冻结使用单次新run-id：
 

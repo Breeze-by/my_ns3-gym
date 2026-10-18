@@ -1,0 +1,566 @@
+{
+  "schema": "mr3-p2a-v8-centre-priority-wheel-projection-algebra-review-v1",
+  "scope": "Read-only source/raw extraction and exact rational CPU enumeration. No native run, runtime edit, library rebuild, driver implementation, optimizer or plant-fix credit.",
+  "native_evidence_freeze": "8d7f19fc8225eae0ccdc6609b828ee8e832f7c93",
+  "epoch": "round0000_w0_e1_71c66e9e",
+  "coordinate_convention": {
+    "rims": [
+      "right",
+      "left"
+    ],
+    "v": "(R+L)/2",
+    "w": "(R-L)/b",
+    "b_m": {
+      "exact_rational": "287/1000",
+      "float_display": 0.287
+    }
+  },
+  "candidate_definition_exact_arithmetic": {
+    "feasible_set": "|R_next-R_current|<=h and |L_next-L_current|<=h; h=a*dt",
+    "equivalent_body_twist_set": "|delta_v| + (b/2)*|delta_w| <= h",
+    "objective": "Lexicographically minimize absolute requested centre-v error, then absolute requested angular-w error; squared errors give the same scalar projections.",
+    "formula": [
+      "delta_v=clip(requested_v-current_v,-h,+h)",
+      "remaining_H=h-abs(delta_v)",
+      "delta_w=clip(requested_w-current_w,-2*remaining_H/b,+2*remaining_H/b)",
+      "v_next=current_v+delta_v; w_next=current_w+delta_w",
+      "R_next=v_next+b*w_next/2; L_next=v_next-b*w_next/2"
+    ],
+    "domain": "Finite quantities, a>0, dt>=0, b>0. Existing a==0 disabled-limiter semantics and invalid-input handling would need explicit retention if implementation is authorized."
+  },
+  "proofs_and_inherited_assumptions": [
+    {
+      "claim": "Individual wheel slew bound retained in the same measured-current-to-issued-target sense as the original helper.",
+      "proof": "max(abs(delta_R),abs(delta_L))=abs(delta_v)+(b/2)*abs(delta_w)<=h.",
+      "limitation": "This is not a bound on actual joint acceleration, consecutive issued-target increments, real body acceleration or tracking error when measured feedback differs from the preceding target."
+    },
+    {
+      "claim": "Wheel-derived angular change per dt is <=2a/b =6.968641114982578...rad/s^2, below the retained7 bound.",
+      "exact_bound": {
+        "exact_rational": "2000/287",
+        "float_display": 6.968641114982578
+      },
+      "limitation": "Applying this bound to actual body angular velocity requires the same ideal no-slip/actuation tracking assumptions as the original wheel-derived contract and independent native checks."
+    },
+    {
+      "claim": "Both v_next and w_next are between current and requested values; a feasible requested_v is attained exactly.",
+      "proof": "Each coordinate uses a scalar clamp toward its requested value. For fixed delta_v the residual diamond budget gives the full feasible angular interval."
+    },
+    {
+      "claim": "For zero v/w targets, absolute centre v decreases by min(h,abs(v)); wheel infinity norm decreases by min(h,max(abs(R),abs(L))).",
+      "proof": "max(abs(R),abs(L))=abs(v)+(b/2)*abs(w). Translation takes min(h,abs(v)) first; angular reduction uses any remaining budget. Their weighted sum therefore drops by h until zero."
+    },
+    {
+      "claim": "The retained .50m/s^2 braking reserve is conservative in the ideal self-feedback zero-target command/joint model.",
+      "proof": "Projected abs(v) decays by a*dt with a=1 until zero. Under abs(v)<=.30, abs(w)<=1.2, b=.287, dt=.034, initial maximum rim norm<=.4722m/s, hence at most14 updates. Including original .16s plus one34ms-frame reaction yields .67s<.78s. Left-held-speed centre path is maximal at abs(v)=.30 and is .108384m<.144m; a more conservative integral bound is .30*(.16+.034)+.30^2/(2*1)+.30*.034=.1134m<.144m.",
+      "limitation": "These are conditional ideal-model calculations only; they do not establish the actual body .50 braking, .01 rest or .0078 drift invariants."
+    }
+  ],
+  "exact_rational_grid_check": {
+    "cases": 2989,
+    "checked_updates": 22618,
+    "linear_grid": "linear=-30..30, initial_v=linear/100m/s",
+    "angular_grid": "angular=-24..24, initial_w=angular/20rad/s",
+    "parameters": {
+      "wheel_a_mps2": {
+        "exact_rational": "1",
+        "float_display": 1.0
+      },
+      "dt_sec": {
+        "exact_rational": "17/500",
+        "float_display": 0.034
+      },
+      "separation_m": {
+        "exact_rational": "287/1000",
+        "float_display": 0.287
+      },
+      "reaction_sec": {
+        "exact_rational": "4/25",
+        "float_display": 0.16
+      },
+      "path_limit_m": {
+        "exact_rational": "18/125",
+        "float_display": 0.144
+      },
+      "horizon_sec": {
+        "exact_rational": "39/50",
+        "float_display": 0.78
+      }
+    },
+    "all_exact_wheel_step_bounds_pass": true,
+    "all_exact_turn_step_bounds_pass": true,
+    "all_zero_target_coordinate_monotonicity_pass": true,
+    "all_max_rim_norm_reduction_identities_pass": true,
+    "all_path_and_horizon_limits_pass": true,
+    "maximum_frames": 14,
+    "maximum_path_m": {
+      "exact_rational": "3387/31250",
+      "float_display": 0.108384
+    },
+    "maximum_elapsed_sec": {
+      "exact_rational": "67/100",
+      "float_display": 0.67
+    },
+    "canonical_all_case_results_sha256": "e3a2be47d91cc538f2af52e7e68441d172787df47554671bd77b2749ff803a0c",
+    "interpretation": "Rational arithmetic on declared decimal parameters reproduces the original ideal proof grid scope; it does not execute a binary64 candidate or simulate Gazebo physics."
+  },
+  "v7_exact_binary64_input_example": {
+    "original_zero_update": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v7_minimal/native/round0000/worker0/episode001_open_101/drive_tb3.jsonl",
+      "line_1based": 6514,
+      "raw_line_sha256_with_newline": "a483eebfad1735801588c3a58174167f2e5eaf490d367e8cbf5c966a42e3f17c",
+      "raw": {
+        "actuation_seq": 1481,
+        "alpha": 0.23353499817142526,
+        "applied_rim_mps": [
+          0.11158845683182124,
+          -0.09806585271277637
+        ],
+        "cmd_seq": 2516,
+        "current_rim_mps": [
+          0.14558845683182123,
+          -0.1279456367594322
+        ],
+        "desired_rim_mps": [
+          0.0,
+          0.0
+        ],
+        "desired_v": 0.0,
+        "desired_w": 0.0,
+        "dt_ns": 34000000,
+        "dt_sec": 0.034,
+        "epoch": "round0000_w0_e1_71c66e9e",
+        "kind": "actuation",
+        "max_acceleration_mps2": 1.0,
+        "pair_index": 0,
+        "record_sequence": 6514,
+        "robot": "tb3",
+        "schema": "mr3-drive-actuation-v2",
+        "sim_time_ns": 54121000000,
+        "target_clock_ns": 54120000000,
+        "target_decision_sequence": 2704
+      }
+    },
+    "followup_resume_update": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v7_minimal/native/round0000/worker0/episode001_open_101/drive_tb3.jsonl",
+      "line_1based": 6517,
+      "raw_line_sha256_with_newline": "f8e4ed20b299292cbedde0a3ae0a998e481d688eb67b9c394cf65f64f6bf457a",
+      "raw": {
+        "actuation_seq": 1482,
+        "alpha": 1.0,
+        "applied_rim_mps": [
+          0.1148,
+          -0.1148
+        ],
+        "cmd_seq": 2517,
+        "current_rim_mps": [
+          0.14164197776399473,
+          -0.11404858373606355
+        ],
+        "desired_rim_mps": [
+          0.1148,
+          -0.1148
+        ],
+        "desired_v": 0.0,
+        "desired_w": 0.8,
+        "dt_ns": 34000000,
+        "dt_sec": 0.034,
+        "epoch": "round0000_w0_e1_71c66e9e",
+        "kind": "actuation",
+        "max_acceleration_mps2": 1.0,
+        "pair_index": 0,
+        "record_sequence": 6517,
+        "robot": "tb3",
+        "schema": "mr3-drive-actuation-v2",
+        "sim_time_ns": 54155000000,
+        "target_clock_ns": 54140000000,
+        "target_decision_sequence": 2705
+      }
+    },
+    "prior_source_odom": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v7_minimal/native/round0000/worker0/episode001_open_101/motion_safety.jsonl",
+      "line_1based": 70900,
+      "raw_line_sha256_with_newline": "7e28a6afb2a127298179d308d4e86fbbd86293f4a34e816910b716bc69d88562",
+      "raw": {
+        "schema": "mr3-motion-safety-v1",
+        "epoch": "round0000_w0_e1_71c66e9e",
+        "record_sequence": 70900,
+        "kind": "own_odom",
+        "sim_time_sec": 54.12,
+        "wall_monotonic_ns": 4080190423459186,
+        "payload": {
+          "robot": "tb3",
+          "input_sequence": 1481,
+          "message": {
+            "header": {
+              "stamp": {
+                "sec": 54,
+                "nanosec": 121000000
+              },
+              "frame_id": "odom"
+            },
+            "child_frame_id": "base_footprint",
+            "pose": {
+              "pose": {
+                "position": {
+                  "x": 0.8280766464253957,
+                  "y": -0.02891110428857605,
+                  "z": 0.007943108782741808
+                },
+                "orientation": {
+                  "x": -0.0026329477592830328,
+                  "y": 0.0014523109480097892,
+                  "z": 0.8770289528743966,
+                  "w": 0.4804281155376384
+                }
+              },
+              "covariance": [
+                1e-05,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1e-05,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1000000000000.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1000000000000.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1000000000000.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.001
+              ]
+            },
+            "twist": {
+              "twist": {
+                "linear": {
+                  "x": 0.007705626181236469,
+                  "y": 0.0019536619318586135,
+                  "z": 0.0
+                },
+                "angular": {
+                  "x": 0.0,
+                  "y": 0.0,
+                  "z": 0.9413467844917375
+                }
+              },
+              "covariance": [
+                1e-05,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1e-05,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1000000000000.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1000000000000.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1000000000000.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.001
+              ]
+            }
+          }
+        }
+      }
+    },
+    "first_failure_source_odom": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v7_minimal/native/round0000/worker0/episode001_open_101/motion_safety.jsonl",
+      "line_1based": 70968,
+      "raw_line_sha256_with_newline": "fe8ddcccb779347b42517cf07b7d070eba8056dfdc19a3ba45bedca1e039c77b",
+      "raw": {
+        "schema": "mr3-motion-safety-v1",
+        "epoch": "round0000_w0_e1_71c66e9e",
+        "record_sequence": 70968,
+        "kind": "own_odom",
+        "sim_time_sec": 54.14,
+        "wall_monotonic_ns": 4080190750570042,
+        "payload": {
+          "robot": "tb3",
+          "input_sequence": 1482,
+          "message": {
+            "header": {
+              "stamp": {
+                "sec": 54,
+                "nanosec": 155000000
+              },
+              "frame_id": "odom"
+            },
+            "child_frame_id": "base_footprint",
+            "pose": {
+              "pose": {
+                "position": {
+                  "x": 0.8278104701834125,
+                  "y": -0.02854161887374116,
+                  "z": 0.007949994400774608
+                },
+                "orientation": {
+                  "x": -0.0026458805127252192,
+                  "y": 0.0013879620892181283,
+                  "z": 0.8845113386498463,
+                  "w": 0.46650912603871786
+                }
+              },
+              "covariance": [
+                1e-05,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1e-05,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1000000000000.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1000000000000.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1000000000000.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.001
+              ]
+            },
+            "twist": {
+              "twist": {
+                "linear": {
+                  "x": 0.019766829596618123,
+                  "y": 0.004178201595048607,
+                  "z": 0.0
+                },
+                "angular": {
+                  "x": 0.0,
+                  "y": 0.0,
+                  "z": 0.9257677498590783
+                }
+              },
+              "covariance": [
+                1e-05,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1e-05,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1000000000000.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1000000000000.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1000000000000.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.001
+              ]
+            }
+          }
+        }
+      }
+    },
+    "first_model_failure": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v7_minimal/native/round0000/worker0/episode001_open_101/motion_safety.jsonl",
+      "line_1based": 70969,
+      "raw_line_sha256_with_newline": "556ab1ae1abf27b3ea94f1a235bcc41257f2444d4beb3b3e4bcc64557c440641",
+      "raw": {
+        "schema": "mr3-motion-safety-v1",
+        "epoch": "round0000_w0_e1_71c66e9e",
+        "record_sequence": 70969,
+        "kind": "settled_turn_model_failure",
+        "sim_time_sec": 54.14,
+        "wall_monotonic_ns": 4080190751103589,
+        "payload": {
+          "robot": "tb3",
+          "reason": "active settled turn drift bound exceeded"
+        }
+      }
+    },
+    "original_issued_mean_rim_mps": {
+      "exact_rational": "974406317945747/144115188075855872",
+      "float_display": 0.006761302059522432
+    },
+    "real_formula_exact_output": {
+      "right": {
+        "exact_rational": "2010198930426555/18014398509481984",
+        "float_display": 0.11158845683182123
+      },
+      "left": {
+        "exact_rational": "-2010198930426555/18014398509481984",
+        "float_display": -0.11158845683182123
+      },
+      "v": {
+        "exact_rational": "0",
+        "float_display": 0.0
+      },
+      "w": {
+        "exact_rational": "4020397860853110/5170132372221329",
+        "float_display": 0.777619908235688
+      }
+    },
+    "one_verified_representable_symmetric_point": {
+      "right": {
+        "exact_rational": "8040795721706221/72057594037927936",
+        "float_display": 0.11158845683182124
+      },
+      "left": {
+        "exact_rational": "-8040795721706221/72057594037927936",
+        "float_display": -0.11158845683182124
+      },
+      "mean_v": {
+        "exact_rational": "0",
+        "float_display": 0.0
+      },
+      "wheel_kinematic_w": {
+        "exact_rational": "349599813987227/449576728019246",
+        "float_display": 0.7776199082356882
+      },
+      "right_delta": {
+        "exact_rational": "-2449958197289549/72057594037927936",
+        "float_display": -0.03399999999999999
+      },
+      "left_delta": {
+        "exact_rational": "1178659030829135/72057594037927936",
+        "float_display": 0.016357179927610974
+      },
+      "each_abs_delta_le_exact_binary64_input_budget": true,
+      "exact_binary64_input_budget": {
+        "exact_rational": "1224979098644775/36028797018963968",
+        "float_display": 0.034
+      },
+      "wheel_kinematic_angular_change_rate": {
+        "exact_rational": "-32683678392850934685359855894528/6333304093197855955080249405975",
+        "float_display": -5.160604624678311
+      }
+    },
+    "causal_limit": "The zero was genuinely consumed at54.121. The first violating body odom sample54.155 precedes that same update's resumed wheel write. This example distinguishes original and candidate issued targets but does not prove that either target causes or eliminates the native violation."
+  },
+  "tradeoffs_and_necessary_future_checks": [
+    "The original algorithm keeps the whole body-twist command on one common-fraction segment from measured current to requested; the candidate sacrifices that segment/curvature property to prioritize centre translation.",
+    "A coordinate-wise body-twist monotone projection can move an individual wheel past its own target. Example R=.2,L=0,zero target,a=1,dt=.034: candidate R=.166,L=-.034; its wheel bounds hold and mean v decays faster, but the left wheel reverses relative to its own zero target. Original R=.166,L=0 does not reverse that wheel.",
+    "At V7zero the symmetric feasible point leaves more wheel-derived yaw than original (.7776199082 versus .7305028207rad/s), while cancelling issued mean rim speed. This can change rotational duration, contact forces and slip; a real body benefit is unproven.",
+    "Naive binary64 evaluation of the real formula is not automatically safe. Directed inward feasible bounds/output rounding and exact Fraction tests against the existing tiny-current/native-boundary regressions are necessary before any implementation; the one represented V7point is not a general floating-point proof.",
+    "Normal target transitions, reversal, disabled-limit semantics, dt0, nonfinite/overflow, arbitrary finite feedback, actual wheel/status causality and unchanged three-robot18contact/body gates need independent verification if a production change is later authorized.",
+    "The .01/.0078/.50/95percent/300s contracts and sensing/guard causal requirements remain unchanged. Wait for valid continuous/pulse observer results before deciding whether the driver candidate is warranted."
+  ],
+  "input_provenance": [
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v7_minimal/native/round0000/worker0/episode001_open_101/metadata.json",
+      "bytes": 2493,
+      "sha256": "fce5403c64ffa4777919eaf5980097a139da0058753118676e4414b0a259348a"
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v7_minimal/native/round0000/worker0/episode001_open_101/drive_tb3.jsonl",
+      "bytes": 2787473,
+      "sha256": "f1d99272e6fbc8962c8b3a64c18ff8159bd9262518b45a4974059605d0aad34f"
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v7_minimal/native/round0000/worker0/episode001_open_101/motion_safety.jsonl",
+      "bytes": 86920137,
+      "sha256": "fbd71aee60076334a77ac55343452c56d99ab25d4cd4914280518b726b61f103"
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/paired_wheel_slew.hpp",
+      "bytes": 3592,
+      "sha256": "dca3dbaf01251cf7ffe167f1dabb23a45b4fc95d6ad317dcc3290ff50ecf9a1b"
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/test/test_paired_wheel_slew.cpp",
+      "bytes": 9220,
+      "sha256": "e049874cf0b52452fde0779524500695ae9acc34a21a234d8d4aab0a12421b40"
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_motion_safety.py",
+      "bytes": 25472,
+      "sha256": "06ca6ece92ca49072df9eedbdd5396148ca2e09d4f2560204448e460e3e73ae7"
+    }
+  ],
+  "extractor": {
+    "path": "/tmp/mr3_p2a_v8_centre_priority_projection_review_extract_v1.py",
+    "bytes": 13384,
+    "sha256": "e3d26212a385194b59055ecd9a5c610c046099b4675135c9b3a0cbd3eeec5c65"
+  },
+  "reproduce": "PYTHONNOUSERSITE=1 /usr/bin/python3 /tmp/mr3_p2a_v8_centre_priority_projection_review_extract_v1.py --output NEW.json"
+}

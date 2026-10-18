@@ -1,0 +1,517 @@
+{
+  "schema": "mr3-p2a-v8-gazebo-world-velocity-semantics-readonly-v1",
+  "scope": "Read-only local header, preserved spawn-SDF and exact-version official Gazebo source inspection; no runtime/library edits or native run.",
+  "freeze": "8d7f19fc8225eae0ccdc6609b828ee8e832f7c93",
+  "epoch": "round0000_w0_e1_71c66e9e",
+  "proven_api_semantics": {
+    "Model_WorldLinearVel": "Returns canonical-link WorldLinearVel; not an aggregate model CoG velocity.",
+    "Link_WorldLinearVel_no_argument": "Dispatches to WorldLinearVel(offset=Vector3d::Zero), documented as link-frame origin velocity expressed in world.",
+    "ODELink_WorldLinearVel_offset": "Subtracts inertial.CoG from the requested link-origin-relative point offset, then asks ODE dBodyGetRelPointVel for velocity at that point. At zero offset, this actively corrects CoG-to-origin motion.",
+    "ODELink_WorldCoGLinearVel": "Separately returns dBodyGetLinearVel, the body CoG velocity.",
+    "Model_WorldPose": "Model parent pose is updated from canonical-link pose and its initial relative pose; this does not make Model::WorldLinearVel a generic arbitrary-model-origin correction when a canonical link has nonzero initial pose."
+  },
+  "official_primary_source_proof": [
+    {
+      "path": "/tmp/mr3_p2a0_v13_stop_point_review_v1/Model.cc",
+      "url": "https://raw.githubusercontent.com/gazebosim/gazebo-classic/gazebo11_11.10.2/gazebo/physics/Model.cc",
+      "sha256": "b73ad18d96f8b610ffb5fe48698a09915ab99bc95b004c928fb8e100872d9c62",
+      "retrieval_check": "Refetched exact gazebosim upstream gazebo11_11.10.2 URL on2026-10-19, bytes matched this cache exactly. Installed gazebo/libgazebo11 package11.10.2+dfsg-1. No local library disassembly or new native execution is claimed.",
+      "excerpts": [
+        {
+          "path": "/tmp/mr3_p2a0_v13_stop_point_review_v1/Model.cc",
+          "first_line_1based": 181,
+          "last_line_1based": 186,
+          "lines": [
+            {
+              "line_1based": 181,
+              "text": "      /// \\TODO: canonical link is hardcoded to the first link."
+            },
+            {
+              "line_1based": 182,
+              "text": "      ///        warn users for now, need  to add parsing of"
+            },
+            {
+              "line_1based": 183,
+              "text": "      ///        the canonical tag in sdf"
+            },
+            {
+              "line_1based": 184,
+              "text": ""
+            },
+            {
+              "line_1based": 185,
+              "text": "      // find canonical link - there should only be one within a tree of models"
+            },
+            {
+              "line_1based": 186,
+              "text": "      if (!this->canonicalLink)"
+            }
+          ]
+        },
+        {
+          "path": "/tmp/mr3_p2a0_v13_stop_point_review_v1/Model.cc",
+          "first_line_1based": 210,
+          "last_line_1based": 212,
+          "lines": [
+            {
+              "line_1based": 210,
+              "text": "          // first link found, set as canonical link"
+            },
+            {
+              "line_1based": 211,
+              "text": "          link->SetCanonicalLink(true);"
+            },
+            {
+              "line_1based": 212,
+              "text": "          this->canonicalLink = link;"
+            }
+          ]
+        },
+        {
+          "path": "/tmp/mr3_p2a0_v13_stop_point_review_v1/Model.cc",
+          "first_line_1based": 783,
+          "last_line_1based": 790,
+          "lines": [
+            {
+              "line_1based": 783,
+              "text": "ignition::math::Vector3d Model::WorldLinearVel() const"
+            },
+            {
+              "line_1based": 784,
+              "text": "{"
+            },
+            {
+              "line_1based": 785,
+              "text": "  if (this->GetLink(\"canonical\"))"
+            },
+            {
+              "line_1based": 786,
+              "text": "  {"
+            },
+            {
+              "line_1based": 787,
+              "text": "    return this->GetLink(\"canonical\")->WorldLinearVel();"
+            },
+            {
+              "line_1based": 788,
+              "text": "  }"
+            },
+            {
+              "line_1based": 789,
+              "text": "  else"
+            },
+            {
+              "line_1based": 790,
+              "text": "    return ignition::math::Vector3d::Zero;"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v13_stop_point_review_v1/Link.cc",
+      "url": "https://raw.githubusercontent.com/gazebosim/gazebo-classic/gazebo11_11.10.2/gazebo/physics/Link.cc",
+      "sha256": "d2f9d6d9efb392c632d34d7d00e2167ef4fe169f11ab7e47de502f3b55a4c571",
+      "retrieval_check": "Refetched exact gazebosim upstream gazebo11_11.10.2 URL on2026-10-19, bytes matched this cache exactly. Installed gazebo/libgazebo11 package11.10.2+dfsg-1. No local library disassembly or new native execution is claimed.",
+      "excerpts": [
+        {
+          "path": "/tmp/mr3_p2a0_v13_stop_point_review_v1/Link.cc",
+          "first_line_1based": 1919,
+          "last_line_1based": 1922,
+          "lines": [
+            {
+              "line_1based": 1919,
+              "text": "ignition::math::Vector3d Link::WorldLinearVel() const"
+            },
+            {
+              "line_1based": 1920,
+              "text": "{"
+            },
+            {
+              "line_1based": 1921,
+              "text": "  return this->WorldLinearVel(ignition::math::Vector3d::Zero);"
+            },
+            {
+              "line_1based": 1922,
+              "text": "}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v13_stop_point_review_v1/ODELink.cc",
+      "url": "https://raw.githubusercontent.com/gazebosim/gazebo-classic/gazebo11_11.10.2/gazebo/physics/ode/ODELink.cc",
+      "sha256": "286a471bb182d458a77dc990dd0702c7eaea1631d9ff039e5ff6d1365302236a",
+      "retrieval_check": "Refetched exact gazebosim upstream gazebo11_11.10.2 URL on2026-10-19, bytes matched this cache exactly. Installed gazebo/libgazebo11 package11.10.2+dfsg-1. No local library disassembly or new native execution is claimed.",
+      "excerpts": [
+        {
+          "path": "/tmp/mr3_p2a0_v13_stop_point_review_v1/ODELink.cc",
+          "first_line_1based": 435,
+          "last_line_1based": 448,
+          "lines": [
+            {
+              "line_1based": 435,
+              "text": "ignition::math::Vector3d ODELink::WorldLinearVel("
+            },
+            {
+              "line_1based": 436,
+              "text": "    const ignition::math::Vector3d &_offset) const"
+            },
+            {
+              "line_1based": 437,
+              "text": "{"
+            },
+            {
+              "line_1based": 438,
+              "text": "  ignition::math::Vector3d vel;"
+            },
+            {
+              "line_1based": 439,
+              "text": ""
+            },
+            {
+              "line_1based": 440,
+              "text": "  if (this->linkId)"
+            },
+            {
+              "line_1based": 441,
+              "text": "  {"
+            },
+            {
+              "line_1based": 442,
+              "text": "    dVector3 dvel;"
+            },
+            {
+              "line_1based": 443,
+              "text": "    GZ_ASSERT(this->inertial != nullptr, \"Inertial pointer is null\");"
+            },
+            {
+              "line_1based": 444,
+              "text": "    ignition::math::Vector3d offsetFromCoG = _offset -"
+            },
+            {
+              "line_1based": 445,
+              "text": "      this->inertial->CoG();"
+            },
+            {
+              "line_1based": 446,
+              "text": "    dBodyGetRelPointVel(this->linkId, offsetFromCoG.X(), offsetFromCoG.Y(),"
+            },
+            {
+              "line_1based": 447,
+              "text": "        offsetFromCoG.Z(), dvel);"
+            },
+            {
+              "line_1based": 448,
+              "text": "    vel.Set(dvel[0], dvel[1], dvel[2]);"
+            }
+          ]
+        },
+        {
+          "path": "/tmp/mr3_p2a0_v13_stop_point_review_v1/ODELink.cc",
+          "first_line_1based": 489,
+          "last_line_1based": 497,
+          "lines": [
+            {
+              "line_1based": 489,
+              "text": "ignition::math::Vector3d ODELink::WorldCoGLinearVel() const"
+            },
+            {
+              "line_1based": 490,
+              "text": "{"
+            },
+            {
+              "line_1based": 491,
+              "text": "  ignition::math::Vector3d vel;"
+            },
+            {
+              "line_1based": 492,
+              "text": ""
+            },
+            {
+              "line_1based": 493,
+              "text": "  if (this->linkId)"
+            },
+            {
+              "line_1based": 494,
+              "text": "  {"
+            },
+            {
+              "line_1based": 495,
+              "text": "    const dReal *dvel;"
+            },
+            {
+              "line_1based": 496,
+              "text": "    dvel = dBodyGetLinearVel(this->linkId);"
+            },
+            {
+              "line_1based": 497,
+              "text": "    vel.Set(dvel[0], dvel[1], dvel[2]);"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v13_stop_point_review_v1/Entity.cc",
+      "url": "https://raw.githubusercontent.com/gazebosim/gazebo-classic/gazebo11_11.10.2/gazebo/physics/Entity.cc",
+      "sha256": "e8b7c4651401dd087eda179db2fdb6be781fbeb0d783f024d32dc7cb5f2bc8b5",
+      "retrieval_check": "Refetched exact gazebosim upstream gazebo11_11.10.2 URL on2026-10-19, bytes matched this cache exactly. Installed gazebo/libgazebo11 package11.10.2+dfsg-1. No local library disassembly or new native execution is claimed.",
+      "excerpts": [
+        {
+          "path": "/tmp/mr3_p2a0_v13_stop_point_review_v1/Entity.cc",
+          "first_line_1based": 396,
+          "last_line_1based": 407,
+          "lines": [
+            {
+              "line_1based": 396,
+              "text": "  EntityPtr parentEnt = this->parentEntity;"
+            },
+            {
+              "line_1based": 397,
+              "text": "  ignition::math::Pose3d relativePose = this->initialRelativePose;"
+            },
+            {
+              "line_1based": 398,
+              "text": "  ignition::math::Pose3d updatePose = _pose;"
+            },
+            {
+              "line_1based": 399,
+              "text": ""
+            },
+            {
+              "line_1based": 400,
+              "text": "  // recursively update parent model pose based on new canonical link pose"
+            },
+            {
+              "line_1based": 401,
+              "text": "  while (parentEnt && parentEnt->HasType(MODEL))"
+            },
+            {
+              "line_1based": 402,
+              "text": "  {"
+            },
+            {
+              "line_1based": 403,
+              "text": "    // setting parent Model world pose from canonical link world pose"
+            },
+            {
+              "line_1based": 404,
+              "text": "    // where _pose is the canonical link's world pose"
+            },
+            {
+              "line_1based": 405,
+              "text": "    parentEnt->worldPose = ignition::math::Pose3d(-relativePose) + updatePose;"
+            },
+            {
+              "line_1based": 406,
+              "text": ""
+            },
+            {
+              "line_1based": 407,
+              "text": "    parentEnt->worldPose.Correct();"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "local_headers": [
+    {
+      "path": "/usr/include/gazebo-11/gazebo/physics/Model.hh",
+      "bytes": 22955,
+      "sha256": "090486133438db1f66686f9a84defd3ba1f141b74feca1abb8f552608686938b"
+    },
+    {
+      "path": "/usr/include/gazebo-11/gazebo/physics/Link.hh",
+      "bytes": 29856,
+      "sha256": "e2b8fe6439df95134e8aba53825d7ba597b21abbb1e87fdcd1560d090f34d5bd"
+    }
+  ],
+  "preserved_spawn_model": {
+    "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v7_minimal/native/round0000/worker0/episode001_open_101/drive_model_tb3.sdf",
+    "bytes": 18600,
+    "sha256": "9fbc0d29fe66b0e8ff4a2b374c541bccbb5135bed0449248a9317c1f3d59b985",
+    "model_attributes": {
+      "name": "turtlebot3_waffle"
+    },
+    "first_link": {
+      "name": "base_footprint",
+      "link_pose": null,
+      "inertial_pose": null,
+      "mass": null
+    },
+    "links": [
+      {
+        "name": "base_footprint",
+        "link_pose": null,
+        "inertial_pose": null,
+        "mass": null
+      },
+      {
+        "name": "base_link",
+        "link_pose": null,
+        "inertial_pose": "-0.064 0 0.048 0 0 0",
+        "mass": "1.3729096e+00"
+      },
+      {
+        "name": "imu_link",
+        "link_pose": null,
+        "inertial_pose": null,
+        "mass": null
+      },
+      {
+        "name": "base_scan",
+        "link_pose": null,
+        "inertial_pose": "-0.052 0 0.111 0 0 0",
+        "mass": "0.114"
+      },
+      {
+        "name": "wheel_left_link",
+        "link_pose": null,
+        "inertial_pose": "0.0 0.144 0.023 -1.57 0 0",
+        "mass": "0.1"
+      },
+      {
+        "name": "wheel_right_link",
+        "link_pose": null,
+        "inertial_pose": "0.0 -0.144 0.023 -1.57 0 0",
+        "mass": "0.1"
+      },
+      {
+        "name": "caster_back_right_link",
+        "link_pose": "-0.177 -0.064 -0.004 -1.57 0 0",
+        "inertial_pose": null,
+        "mass": "0.001"
+      },
+      {
+        "name": "caster_back_left_link",
+        "link_pose": "-0.177 0.064 -0.004 -1.57 0 0",
+        "inertial_pose": null,
+        "mass": "0.001"
+      },
+      {
+        "name": "camera_link",
+        "link_pose": null,
+        "inertial_pose": null,
+        "mass": null
+      },
+      {
+        "name": "camera_rgb_frame",
+        "link_pose": "0.069 -0.047 0.107 0 0 0",
+        "inertial_pose": "0.069 -0.047 0.107 0 0 0",
+        "mass": "0.035"
+      }
+    ],
+    "base_fixed_joint": "<joint name=\"base_joint\" type=\"fixed\">\n      <parent>base_footprint</parent>\n      <child>base_link</child>\n    </joint>\n\n    ",
+    "interpretation": "Actual preserved spawn input has firstlink base_footprint with no pose/inertial override; top-level model has no explicit canonical override. Exact-version Model::LoadLinks selects the firstlink as canonical. Thus source+spawn input predicts base_footprint as canonical and canonical/model origins coincident; this is not a newly observed runtime canonical-link snapshot. base_link has no link-origin pose and its inertial(-.064,0,.048) is a CoG offset within base_link, not an offset of canonical/model origin."
+  },
+  "local_schema_defaults": [
+    {
+      "path": "/usr/share/sdformat9/1.5/link.sdf",
+      "bytes": 2162,
+      "sha256": "5bb6477eea1fd64cc5fd1326e02b867c697f6acd3710cba970133320aedb2dba"
+    },
+    {
+      "path": "/usr/share/sdformat9/1.5/inertial.sdf",
+      "bytes": 1707,
+      "sha256": "2a8666ff7be9170d469a910d7b98f517eb385e5f1749ff6bd7873070cb0c54b6"
+    },
+    {
+      "path": "/usr/share/sdformat9/1.5/pose.sdf",
+      "bytes": 395,
+      "sha256": "addff0f39599c4244d7603aa57f6686e5f44162a508ea147812efacd326611f1"
+    }
+  ],
+  "offset_calculation_under_explicit_hypothesis": {
+    "hypothesis": "A fixed reference origin is at rest and all recorded planar velocity is generated only by pure yaw about that origin; roll/pitch rates and actual origin translation are zero. This hypothesis is not established by V7data.",
+    "identity": "v_point=v_origin+omega cross(point-origin); under pure yaw in body axes, v_x=-omega_z*r_y, v_y=omega_z*r_x.",
+    "base_link_inertial_offset_m": [
+      -0.064,
+      0,
+      0.048
+    ],
+    "base_link_cog_pure_yaw_velocity_if_base_origin_at_rest_at_first_failure_mps": [
+      0,
+      -0.059249135990981014,
+      0
+    ],
+    "canonical_default_cog_pure_yaw_offset_prediction": "Zero link-local offset means no such pure-yaw offset term. API also explicitly returns origin rather than CoG velocity.",
+    "first_failure_hypothetical_radius_m": 0.02182360190759329,
+    "table": [
+      {
+        "source_clock_ns": 54019000000,
+        "motion_record_sequence": 70503,
+        "angular_z_radps": 0.9117992325145942,
+        "planar_speed_mps": 0.002256071741345474,
+        "hypothetical_pure_yaw_rest_origin_offset_norm_m": 0.002474307567822353,
+        "hypothetical_body_offset_x_m": -0.0022413075136171598,
+        "hypothetical_body_offset_y_m": 0.0010482073123129
+      },
+      {
+        "source_clock_ns": 54053000000,
+        "motion_record_sequence": 70639,
+        "angular_z_radps": 0.9210994433242088,
+        "planar_speed_mps": 0.0061920929488317325,
+        "hypothetical_pure_yaw_rest_origin_offset_norm_m": 0.006722502107356326,
+        "hypothetical_body_offset_x_m": 0.004955546351197323,
+        "hypothetical_body_offset_y_m": -0.004542531776943903
+      },
+      {
+        "source_clock_ns": 54087000000,
+        "motion_record_sequence": 70784,
+        "angular_z_radps": 0.9290469459966083,
+        "planar_speed_mps": 0.004919825465020974,
+        "hypothetical_pure_yaw_rest_origin_offset_norm_m": 0.0052955617433771045,
+        "hypothetical_body_offset_x_m": 0.00236479874233534,
+        "hypothetical_body_offset_y_m": -0.004738217078835494
+      },
+      {
+        "source_clock_ns": 54121000000,
+        "motion_record_sequence": 70900,
+        "angular_z_radps": 0.9413467844917375,
+        "planar_speed_mps": 0.007949432041910318,
+        "hypothetical_pure_yaw_rest_origin_offset_norm_m": 0.008444743396242082,
+        "hypothetical_body_offset_x_m": 0.002075390243047844,
+        "hypothetical_body_offset_y_m": -0.008185746536965096
+      },
+      {
+        "source_clock_ns": 54155000000,
+        "motion_record_sequence": 70968,
+        "angular_z_radps": 0.9257677498590783,
+        "planar_speed_mps": 0.02020358683181293,
+        "hypothetical_pure_yaw_rest_origin_offset_norm_m": 0.02182360190759329,
+        "hypothetical_body_offset_x_m": 0.004513228718201319,
+        "hypothetical_body_offset_y_m": -0.02135182349960566
+      },
+      {
+        "source_clock_ns": 54189000000,
+        "motion_record_sequence": 72048,
+        "angular_z_radps": 0.9492131774651766,
+        "planar_speed_mps": 0.01678196434931402,
+        "hypothetical_pure_yaw_rest_origin_offset_norm_m": 0.017679868703602875,
+        "hypothetical_body_offset_x_m": 0.005771788301543756,
+        "hypothetical_body_offset_y_m": -0.016711200351225492
+      }
+    ],
+    "limitation": "A numerically sufficient hypothetical radius is not evidence that the API uses that point. Effective hypothetical radius varies across samples despite near-constant yaw rate; simple constant-offset pure-yaw-only explanation is insufficient without actual origin motion or 3Drotation. These facts do not identify a solver or physical root cause."
+  },
+  "future_observer_discriminators": {
+    "record_same_sim_tick": [
+      "actual canonical scoped name",
+      "model, canonical, base_footprint and base_link world poses",
+      "each relevant link WorldLinearVel(origin), WorldCoGLinearVel, WorldCoGPose and full3D WorldAngularVel",
+      "model WorldLinearVel and WorldAngularVel",
+      "event phase/capture clock and driver actuation sequence references"
+    ],
+    "check_rigid_point_identity": "For each link, compute residual v_CoG-v_origin-omega cross(p_CoG-p_origin) using all3D vectors. Small residual supports API point semantics; do not subtract only yaw-times-assumed-offset.",
+    "check_model_origin_identity": "Model WorldLinearVel should equal actual canonical WorldLinearVel by source dispatch. If model and canonical origins differ, velocity at model origin is v_can+omega cross(p_model-p_can), and that point correction must be kept separate from CoG.",
+    "classifications": [
+      "If model/canonical/base_footprint origin velocities all exceed.01 while their points coincide and point-velocity identities hold, CoG/origin confusion does not explain the rest-speed breach.",
+      "If only an offset point has excessive velocity and differences match the measured omega cross r while the intended centre stays within bound, this supports a measurement-point mismatch; any fix still needs new-freeze native gates.",
+      "If velocity fields and same-point pose finite differences disagree, preserve both with exact update phases; sampled pose chords alone cannot establish instantaneous rest or continuous total-path safety."
+    ],
+    "no_claim": "No historical FAIL is relabeled, no odometry change is recommended from this read-only finding, and no plant repair or native PASS is claimed."
+  }
+}
