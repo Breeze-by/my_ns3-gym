@@ -829,7 +829,10 @@ def review(args, *, proc_root=Path("/proc")):
                     if component in ("smoother","controller"):
                         require(binding["tools"].namespace(process["argv"]) == process["robot"], "captured namespace differs")
                         node="velocity_smoother" if component=="smoother" else "controller_server"
-                        require(process["argv"].count("__node:="+node)==1,"captured native node name differs")
+                        node_overrides=[x for x in process["argv"] if "__node:=" in x or "__name:=" in x]
+                        require(node_overrides==["__node:="+node]
+                                or (component=="controller" and not node_overrides),
+                                "captured native node name differs")
                     if component == "smoother":
                         check_normal_parameter_records(process["argv"],process["normal_smoother_parameter_files"])
                     if component == "recorder":

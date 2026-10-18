@@ -6678,3 +6678,5 @@ V11仅将启动命令设为同一ELF的绝对别名、修正完整映射文件�
 工程入口预算13952.7184512926018/30000；预声明matrix14900（1500/1200/4500/7700，native1250/850/3900/6600，close120）、fresh minimum900和尾部247.2815487073982。阶段实际节余仅在原matrix额度内向后分配。三处平台入口修复不改物理/安全/任务/38数学角色，真实源码与ELF保持新冻结后再验。组合70conda CPU+30ROS launch检查通过，无本版原生/PPO已启动。准确argv、quota与条件见[计划](report/assets/20261019_mr3_p2a_v11/predeclared_plan_v11.json)及[V11报告](report/20261019_mr3_p2a_v11.md)。pilot原1870/2905.9547395464029及final-only验证不扩额；旧FAIL全部保留。
 
 V10封包核验补记：833成员/579696592原字节，10实际ELF与277冻结来源；archive44079458字节，SHA `e708e0e42de2bcd09635c3c3506ca2bb8f93198941fe9a0641088f341066df9d`，manifest SHA `76ef7f4984bf6eb544fa84e8a27ddb1aaf05be8d64a3a1b294cc0a4b2083cdff`，逐文件roundtrip/gzip CRC/拼接SHA/源末stat+SHA全部通过。封包为CPU只读工作，不增原生信用。
+
+V11原生启动前最终复核：关闭review中另有一处旧controller显式名复验，现与live capture采用相同默认/唯一正确override规则。新增完整review默认名正例和错误/冲突/重复/scoped/name负例，29取证CPU通过。此修复在任何V11 native启动前完成，新binding/pins/plan均已刷新；1676dc4仅准备提交，未用于原生。原27项收据保留其原字节，最终新增v2收据另列。

@@ -1,0 +1,33 @@
+{
+  "schema": "mr3-native-custody-cpu-v1",
+  "recorded_at_utc": "2026-10-18T18:50:49.330433+00:00",
+  "passed": true,
+  "returncode": 0,
+  "command": [
+    "env",
+    "PYTHONNOUSERSITE=1",
+    "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+    "-m",
+    "unittest",
+    "mr3_learning.tests.test_native_custody",
+    "-q"
+  ],
+  "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+  "observed_output": "Ran 29 tests in 1.108s\n\nOK",
+  "tests": 29,
+  "failures": 0,
+  "errors": 0,
+  "source_files": {
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/native_custody.py": {
+      "sha256": "4edcdb6b33105e274c1c908c9d78e8c5d24461ff6733ed0f976e41bad3f2d928",
+      "bytes": 56281
+    },
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_native_custody.py": {
+      "sha256": "c5eed7cf9534ddb52bef95890bde1ef68d6e36a1c715b41db860607bd5516008",
+      "bytes": 24645
+    }
+  },
+  "diff_check_returncode": 0,
+  "change": "Review now repeats the exact capture node-overrides rule: bound controller may use its standard default name; otherwise only one exact expected __node remap is accepted. Wrong/conflicting/duplicate/scoped/__name overrides fail. Positive full-closure default-controller and tampered saved-capture negative regressions added.",
+  "scope": "CPU only; no native/build/library/root-source changes or commit. Prior29 source version supersedes the27-test version, not original failed captures."
+}

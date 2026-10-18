@@ -222,6 +222,30 @@ class NativeCustodyTests(unittest.TestCase):
             self.make_proc(pid,101,argv,Path(self.specs["controller_executable"]["path"]),["rotation_shim"])
         self.assertEqual(sum(x["component"]=="controller"for x in self.capture()["processes"]),3)
 
+    def test_review_accepts_bound_controller_default_name(self):
+        for i in range(3):
+            pid=400+i
+            argv=[x.decode()for x in (self.proc/str(pid)/"cmdline").read_bytes().rstrip(b"\0").split(b"\0")]
+            at=argv.index("__node:=controller_server")
+            del argv[at-1:at+1]
+            self.make_proc(pid,101,argv,Path(self.specs["controller_executable"]["path"]),["rotation_shim"])
+        result=self.review(self.close_fixture())
+        self.assertTrue(result["passed"],result["errors"])
+
+    def test_review_rejects_wrong_conflicting_duplicate_and_scoped_node_overrides(self):
+        args=self.close_fixture()
+        original=json.loads(args.capture.read_bytes())
+        for extra in ["__node:=wrong","__node:=controller_server","controller_server:__node:=wrong","__name:=wrong"]:
+            with self.subTest(extra=extra):
+                value=copy.deepcopy(original)
+                controller=next(x for x in value["episodes"][0]["processes"]if x["component"]=="controller")
+                controller["argv"] += ["-r",extra]
+                controller["argv_raw_sha256"]=gate.sha(b"\0".join(x.encode()for x in controller["argv"])+b"\0")
+                write_json(args.capture,value)
+                result=self.review(args)
+                self.assertFalse(result["passed"])
+                self.assertTrue(any("captured native node name differs"in x for x in result["errors"]),result["errors"])
+
     def test_controller_wrong_conflicting_duplicate_or_scoped_overrides_reject(self):
         p=self.proc/"400/cmdline"
         base=[x.decode()for x in p.read_bytes().rstrip(b"\0").split(b"\0")]
