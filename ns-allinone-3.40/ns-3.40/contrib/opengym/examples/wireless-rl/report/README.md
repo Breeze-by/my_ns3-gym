@@ -9,7 +9,8 @@
 
 | 文件 | 用途 | 能提供的信用 |
 | --- | --- | --- |
-| [P2A.0 V26 进程取证一致性](20261018_mr3_p2a0_v26_capture.md) | 逐项事实与相关ELF映射稳定核验，保留PID复用硬拒 | source-ready，待新冻结完整四阶段；P2A.0未完成 |
+| [P2A.0 V26 同冻结记录与补验](20261018_mr3_p2a0_v26_capture.md) | 四阶段12回合、原34科学角色及同源码信息补验；索引三组等价、额外deadline中止另列 | 工程科学门补齐、待用户验收；原parent中断/unknown及所有FAIL保留，无PPO信用 |
+| [P2A.0 会话复盘](20261018_mr3_p2a0_reflection.md) | 区分生产缺陷、验证工具错误、审计成本与路线边界 | 复盘和收口原则；不推断150单参数因果、95%RL或多日稳定 |
 | [P2A.0 V25 平滑器节点时钟](20261018_mr3_p2a0_v25_smoother.md) | 两timer最小修复及实际组件对照 | interface32/原9门PASS，新取证035 FAIL；后三SKIP，P2A.0未完成 |
 | [P2A.0 V24 安装生命周期](20261018_mr3_p2a0_v24_install.md) | 修正preInit计数测量并绑定实际新库 | 真实安装生效；14步后角速越界FAIL/后三SKIP，待平滑器时钟修复 |
 | [P2A.0 V23 显式解释器](20261018_mr3_p2a0_v23_entry.md) | 固定学习侧conda/失败回执/真实CLI前检 | 真实前检PASS；native安装guard异常，0有效transition/后三SKIP，生命周期待修 |

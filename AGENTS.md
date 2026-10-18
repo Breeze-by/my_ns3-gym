@@ -1,32 +1,8 @@
 @/home/zhuyulab/.codex/RTK.md
 
-2026-10-18: V26 source-ready observation consistency repair only, original V25 C++/ELFs/ENV/parameters/math unchanged. 230 actual bindings; original34/608API/596decisions/full4stages and cumulative1369.6459453934804/18000 retained. Fresh clean-pushed preflight and complete native matrix still pending; P2A.0 incomplete, no PPO. Original035 and prospective7ff PIDreuse failures preserved. See wireless-rl/report/20261018_mr3_p2a0_v26_capture.md.
-
 # Codex Monorepo Memory — MR3
 
-2026-10-18: V25 freeze579f7ad2 CLOSED FAIL. Interface32/native39 clean/old nine formal gates passed; new smoother custody capture035 failed. All11 submitted audits finished10PASS1FAIL (10 declared mandatory9PASS1FAIL plus required FIFO PASS), later terminal/reset/deadline SKIP;50 saved PID/start identities freshgone. Cumulative engineering debit1369.6459453934804/18000, remaining16630.35405460652. Capture035 lacks per-conjunct before/after facts; false rejection is unproven. Preserve FAIL, repair observer and repeat complete matrix under new freeze; P2A.0 incomplete, no PPO. See wireless-rl/report/20261018_mr3_p2a0_v25_smoother.md.
-
-2026-10-18: V20_sensor freeze b33ff700 closed ordinary4 source capture/strict native shutdown; 39 exits0 and47 saved PID/start identities gone. Legal near raw scan returns persist and map to own100, actual hit geometry still unknown; ROS synchronous throttling and SDK stationary-refresh semantics differ, so the early missing-setter bug inference is withdrawn. No production SLAM change/150 selection/matrix or PPO credit; P2A.0 remains incomplete. See wireless-rl/report/20261018_mr3_p2a0_v20_sensor.md.
-
-2026-10-18: V20_sensor准备一次三机open101普通4step/至多5API启动期rawscan/TF/SLAM参数归因采集，新增独立只读测量器；原生产源码、门禁与pilot余额不变。SDK/CPU/合成ROS回环和独立审查通过后，仍须新clean pushed exact40预检，单次native≤900wall、原e61c32步CLI明确SKIP；150未选用、P2A.0未完成。见wireless-rl/report/20261018_mr3_p2a0_v20_sensor.md。
-
-2026-10-18: V19 freeze72d0465ddd1bbee09af117cfd9d89b7e729f8578 fixed50/150 diagnostic pair closed. Both admission/1ms capture/strict close PASS; baseline original physical PASS, contrast original physical FAIL because all33 snapshots have zero GOAL for every robot and no stopping stimulation. Own maps already retain near-seed100; no occupied clearing or .29 relaxation. 150 not selected, V17 stopping failure unresolved. Native1638.4207719592378sec; V18+V19=2489.3860735194758 of3600 ceiling. 78/78 native exits0; fresh91 PID/start identities gone. No matrix/PPO credit, pilot balance unchanged. See wireless-rl/report/20261018_mr3_p2a0_v19.md.
-
-2026-10-17 continuation (updated2026-10-18 Asia/Shanghai): P2A.0 remains authorized and incomplete. V17 freeze eee6b2f90f697b28a1c20a2af5d1a6d2f044465e passed interface and terminal completely; reset8x32 native/closure and 24 of 26 formal jobs passed, but tb1 real stopping response failed in worker1 open/rooms. Deadline SKIPPED, no retry. All originals preserved; 487 saved PID/start identities absent, 429/429 native processes exited normally. Actual zero commands and applied wheel zeros do not eliminate lateral raw vy about .011m/s; original .01/three-sample/.78s gates remain. Diagnose physics with isolated evidence before a new reviewed clean pushed complete matrix; no cross-freeze PASS. No PPO/P2B/gateway; pilot balance1870 decisions/2905.954739546403 wallsec unchanged. See wireless-rl/report/20261017_mr3_p2a0_v17.md.
-
-Historical first P2A.0 closure (2026-10-17): source freeze f8694025; six native episodes
-closed cleanly, terminal audit PASS, reset benchmark/full audit FAIL with one
-real peer-envelope task failure. The 300-step deadline was SKIPPED under the
-prospective stop rule. P2A.0 exit is unmet; await user review, do not restart
-pilot. Shared navigation-map occupied starts are now proved from exact raw maps.
-
-2026-10-17 update: the user authorized continuing P2A and adding preparation.
-Current work is MR3-P2A.0 (SLAM ownership teardown, failed collection evidence,
-versioned received-frontier union and safety diagnostics). No new pilot is run
-in this substep; the cumulative pilot balance remains 1870 decisions /
-2905.954739546403 wall seconds. P2A.0 requires its own evidence and user
-acceptance before the next preparation/training substep; P2A is unfinished.
-See `wireless-rl/report/20261017_mr3_p2a0.md` at the canonical path below.
+2026-10-18: P2A.0工程科学门已补验通过，待用户验收；原V26父编排中断保留，P2A未完成，未启动PPO。 源码冻结`92f8bdf5bba1ba245dc53ca0964eef81a7fff938`；同冻结四阶段/12回合、34必需科学角色全部通过，最后一个information只读消费者在原父进程组消失后单独补完；原ledger/未知返回码/缺失最终回执不补造。 原生468/468正常退出，枚举元数据中543个保存PID/start均gone。 reset非必需逐回合停车覆盖FAIL及所有旧FAIL保留，原合并覆盖门通过。 工程累计11420.856789876707/18000墙秒，pilot余额1870决策/2905.954739546403墙秒未用。 详见共享V26报告与20261018_mr3_p2a0_reflection.md；验收前不进入训练或后续步骤。
 
 ## Canonical checkout and components
 

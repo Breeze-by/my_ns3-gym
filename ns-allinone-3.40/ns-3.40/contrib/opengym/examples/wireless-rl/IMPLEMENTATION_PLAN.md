@@ -1,24 +1,6 @@
 # MR3 研发检查点与逐步验收
 
-V26仅修进程取证一致性与逐项前后记录，复用V25实际C++/库/参数/ENV和全部原门。窄反例发现的拟议PID复用误分类已修，旧红例保留；230实际绑定与原34/608/596计划source-ready，携带1369.6459453934804/18000。仍须新clean pushed冻结前检与完整四阶段，P2A.0未完成，无PPO。见[V26](report/20261018_mr3_p2a0_v26_capture.md)。
-
-版本：2026-10-18。研究契约以 [RESEARCH_PLAN.md](RESEARCH_PLAN.md) 为准。
-`MR3-P…` 是新路线编号，与历史 P1C/P2C 不互通；旧步骤的 PASS 不自动完成任何新步骤。
-用户于2026-10-14验收MR3-P0，2026-10-15验收MR3-P1A/P1B并授权P1C。
-**用户于2026-10-16验收MR3-P1C，并授权继续执行MR3-P2A**；P2A联合MaskablePPO最小训练/验证出口未达，v6基础设施失败后停止。
-2026-10-17用户授权继续解决并允许前置准备，随后明确要求继续完成P2A.0；原失败保持，
-当前在本步内修复导航来源、途中执行和累计参与观测，以新冻结重验，不启动新pilot。
-P2B及后续保持未开始，gateway不在当前授权范围内。
-本轮验证2026-10-15启动，实际完成时刻、容量与条件预算见[P1C报告](report/20261015_mr3_p1c.md)。
-[快速二维独立选项](report/20261015_mr3_2d_option.md)另待用户验收；每run50万/72小时仍是候选，
-不是已批准训练预算，也未批准替换正式Gazebo环境。
-
-
-V19冻结72d0465d的固定50/150诊断已关闭，两组加载/逐毫秒采集/严格关闭均通过；baseline原停车PASS，
-150组三机全程无合法GOAL和有效停车刺激，原物理FAIL。150未选用，V17真实停车问题仍未解决。
-本版原生1638.4207719592378墙秒，V18+V19合计2489.3860735194758；无训练或四阶段矩阵信用，见[V19](report/20261018_mr3_p2a0_v19.md)。
-
-V25冻结579f7ad2已关闭FAIL：实际interface32步、39原生exit0、原物理/运动等9个正式门通过，仅新增平滑器来源采集035失败；11个实际审计全部结束（10PASS/1FAIL，含必需FIFO），terminal/reset/deadline SKIP。50个保存PID/start新鲜核验均消失。累计1369.6459453934804/18000，余16630.35405460652；P2A.0未完成，须修复取证并以新冻结完整重验。035未保存具体失败子条件，不能认定误报；所有原FAIL与原门保持，无PPO。见[V25](report/20261018_mr3_p2a0_v25_smoother.md)。
+P2A.0工程科学门已补验通过，待用户验收；原V26父编排中断保留，P2A未完成，未启动PPO。 V26冻结`92f8bdf5bba1ba245dc53ca0964eef81a7fff938`的四阶段原生均正常闭合；34必需科学门经原回执及一个原f736同源码完整只读补充全部通过。 原父编排未正常结束，不能写成原parent PASS；恢复记录和所有旧FAIL保持。 见[V26结果](report/20261018_mr3_p2a0_v26_capture.md)与[会话复盘](report/20261018_mr3_p2a0_reflection.md)。
 
 ## 1. 当前状态
 
@@ -28,7 +10,7 @@ V25冻结579f7ad2已关闭FAIL：实际interface32步、39原生exit0、原物�
 | MR3-P1A | 固定三机器人、95% 任务与测量契约 | 已验收（2026-10-15） |
 | MR3-P1B | RL 可独占的稳定目标/观测接口 | 已验收（2026-10-15） |
 | MR3-P1C | 训练环境、可靠 reset、采样吞吐 | 已验收（2026-10-16） |
-| MR3-P2A.0 | 生命周期、候选及安全执行、参与观测准备 | 未完成；V26窄取证修复source-ready，待新冻结全四阶段；V25/所有旧FAIL及原门保留 |
+| MR3-P2A.0 | 生命周期、候选及安全执行、参与观测准备 | 工程科学门补验通过，待用户验收；原V26编排中断保留 |
 | MR3-P2A | 联合 MaskablePPO 最小训练闭环 | 未完成；v6停止，当前先做P2A.0 |
 | MR3-P2B | 同接口算法对照与方法选择 | 未开始 |
 | MR3-P2C | 理想通信完整验收、冻结模型 | 未开始 |
@@ -37,48 +19,6 @@ V25冻结579f7ad2已关闭FAIL：实际interface32步、39原生exit0、原物�
 | MR3-P4A | 1 AP + 3 STA 的真实 Wi-Fi 分组场景 | 未开始 |
 | MR3-P4B | Gazebo/ROS/ns-3 因果时间闭环 | 未开始 |
 | MR3-P5 | 冻结策略的配对网络影响实验 | 未开始 |
-
-现有 `main` 默认传统前沿探索，新增互斥的理想adapter，保留SLAM/Nav2。P1A已实现95%合同、18路接触监测和
-任务放行/停止闭合。冻结`5e47802`累计10次尝试含1次保留的原生关闭基础设施失败；
-事前预声明的同冻结补测后，9个有效单元为6次严格成功、3次peer包络安全失败，
-各图成功数为rooms2/3、corridors1/3、open3/3；corridors202另有地图质量失败。
-SDK关闭崩溃未证明根治，完整尝试及补充审计见 [P1A报告](report/20261014_mr3_p1a.md)。
-原修复冻结 `c9344e1`、路线切换前文档 `81b2f8b`及90%单种子证据保持历史范围。
-P2A v1/v2最小链各有8决策工程checkpoint、4次GPU更新，仍无95%任务信用或ROS/ns-3联合实验。
-v2 pilot在首round未完成时诊断中断，保留390原生决策、389.10仿真秒、1752.957494墙秒、
-0更新、两次peer安全失败及两个正常关闭前缀；顶层完整round计数0不表示没有采样。
-v3修订候选代表性、目标到达圆盘及SLAM/Nav2短子目标参数，16决策/4更新最小链已关闭；
-原scalar审计六项同边界switch归因失败保留，尚无完整审计PASS，v3 pilot/验证未开始。
-v4日志隔离/因果审计修订后，最小链16决策/4更新完整审计PASS；pilot因源级折扣目标缺陷在0更新时
-诊断停止，保留242原生/239已返回决策、241.66仿真秒、1051.0549356047995墙秒，
-1次peer安全失败及3条正常关闭前缀，无成功或final checkpoint；不是学习效果结论。
-v5以gamma=lambda=1运行，最小链16/4更新完整审计PASS；pilot三round797保存样本/48GPU更新，
-全尝试876原生/875返回、870.12有效秒/870.20物理秒、5212.525802815799墙秒。
-3次原生成功为1次初始策略和2次16更新后，不能推断学习收益或可靠性；全部失败/前缀保留。
-最后一次40ms终态检测滞后超过20ms门禁导致自动基础设施停止，无final.zip，final-only验证SKIPPED。
-原完整audit_v5_original FAIL不改。v6在`af37b2aaa3cb9980434f7f16c1f52dec2506319d`补
-每20tick评价器同executor clock/终态phase ACK，原20ms门禁及reward/actor/候选/地图/安全不变。
-工程terminal-probe两episode8API/7脚本决策、343.196831619367墙秒，native/scalar/ACK审计PASS；
-最小链16决策/4次GPU更新、297.1948199640028墙秒，完整审计与独立一次bootstrap复核PASS。
-pilot718原生/717返回、716.64有效/物理秒、3477.507027802989墙秒，首round未完成、0更新。
-w0 tb1 SLAM受控SIGINT后karto::Exception/exit -6使严格有序关闭失败，native-stop CLI未启动；
-原完整审计八项FAIL保持，具体SDK throw/stack未证，不声称修复。无final/checkpoint/rollout0000，
-open401/402/403 final-only验证SKIPPED，不代用其他权重；167组原生PID/start及父进程消失。
-两条300秒timeout虽覆盖约97%/质量过但参与失败；另两次peer失败，无v6任务成功。
-按预声明无重试infra规则停止，本session不自动重试/v7，不进入P2B。用户确认4096决策/14400墙秒
-是累计pilot额度，v2/v4/v5/v6共2226/约11494.045260453597，余1870/约2905.954739546403，
-未花不重置、不自动使用；三场开发验证另列。见[记账](report/assets/20261016_mr3_p2a/v6_closure_accounting.json)
-及[预算](report/assets/20261016_mr3_p2a/budget_acceptance_20261016.json)。所有open固定world/起姿，
-Gazebo seed变化不构成开发姿态/布局变化。P2A未完成；后续P2A.0首冻结已实现v4前沿union，当前v5另以实际导航图为路径/目标来源。
-
-P1B冻结`f9928fe`的open/rooms/corridors各seed101完整同冻结脚本矩阵严格审计通过，
-前三次失败保留，详见[P1B报告](report/20261015_mr3_p1b.md)。独占目标接口、理想交付副本、
-K8/KEEP/WAIT与5秒承诺已在本接口版本验证；没有训练或95%任务成功信用。
-P1B异步名义1秒快照在rooms实际有2/3秒间隔，保留原范围。P1C以独立stepped路径验证1秒步长，
-不改变非stepped当前行为；完整进程重建、私有JSONL IPC、物理tick、交付水位和独立奖励均已实现。
-W7 `cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a`完成完整八阶段原生矩阵及phase3/命令时间/scalar审计；762项ROS、40项CPU检查通过。
-GPU保留`b328f84`原固定接口3F/3B/0更新范围，P1C没有新GPU训练；详见[环境契约](MR3_ENV_CONTRACT.md)
-及[P1C报告](report/20261015_mr3_p1c.md)。P1C已于2026-10-16验收；P2A未完成且v6停止，不宣称多日稳定或可靠95%策略。
 
 ## 2. 每步统一交付与用户验收
 
@@ -168,51 +108,21 @@ W7独立验证重复reset/采样、最后短步/零尾步与关闭门禁；GPU�
 可复现最小 GPU forward/backward；实测预算。只有确有采样瓶颈时才提交快速二维预训练
 的独立方案给用户验收，不直接替换 Gazebo 正式环境。
 
-### MR3-P2A.0：训练前工程与接口准备（2026-10-17授权继续完成）
+### MR3-P2A.0：训练前工程与接口准备（工程科学门补验通过，待用户验收）
 
-用户要求继续解决P2A，并允许增加前置准备。本步先解决可独立复现的SLAM所有权生命周期、
-失败round已返回样本未保存、融合前沿单一来源及安全触发输入缺失；不启动新pilot。
-v6原session的无重试停止和全部失败保持，累计pilot余额1870决策/2905.954739546403墙秒不重置。
+本步授权范围保持：修复SLAM所有权生命周期、保留失败round真实返回样本且禁止训练、修复导航来源与候选、安全执行链和已交付信息累计参与观测，不启动新pilot。
 
-实际冻结`f8694025`已推送，860 ROS/140 CPU/2项真实ROS生命周期检查通过。
-同冻结6次原生episode均严格关闭，terminal完整审计PASS；reset保留1真实peer任务FAIL/3外部截断，
-原整体benchmark/完整审计FAIL，300KEEP截止按预声明SKIPPED。本步未验收、不启动新pilot。
-新增原图精确复现own free但同bundle共享导航图seed occupied；前沿并集不能修该问题。
-继续修复必须闭合此导航图冲突和途中安全反应链，再以新冻结完整准备矩阵核验，不能跳过失败出口。
+- SLAM停止线程后按依赖释放；不捕获忽略Karto异常或追认v6唯一throw根因。
+- 本机已知权威、共享补unknown的导航副本与v5候选；保留K8/合法mask/真实占据和无手工探索兜底。
+- received-only odom/accepted-goal累计状态；失败样本不补造终态、GAE或训练信用。
+- 每20ms真实state→peer→guard→三机native storage→evaluator→正物理推进；实际机体/停车/源龄/接触门仍独立必需。
+- 同一源码冻结完整执行interface、terminal、双worker八轮reset及300 KEEP截止，均为脚本工程任务，无PPO/GPU训练更新。
 
-- 用实际ROS节点CPU回归证明修复前后析构/sensor注销，修复强引用环、在线程join后按依赖释放。
-  不捕获忽略Karto异常，不把已证所有权缺陷直接写成v6具体throw/stack根因。
-- 失败round保存真实已返回张量/掩码/动作/概率和值，明确禁止训练；无GAE/return、无补造终态，
-  原生已执行未返回的差额仍从worker原件计数。所有环境严格关闭成功后才更新的门禁不改。
-- 候选v4使用融合与三台合法已交付本地图前沿的几何并集；保留原路径/目标净空、K8/FPS/掩码。
-  历史原图只作离线反例重放；不清除占据seed，不声称已解决V6全部候选饥饿或安全可执行性。
-- 保存安全触发pair、距离、完整实际odom/TF和源时间；隔离评价器保存明确无source stamp的
-  ModelStates接收缓存，不能将其当作触发同刻真值或送入策略。
-- 同一新推送冻结执行终态探针、双worker重复reset及300秒KEEP截止的有界原生工程矩阵，
-  无GPU/optimizer调用；独立native/contact/clock/command/scalar/phase审计，失败不自动重试。
+V26原生12回合和34科学门已由原回执及唯一缺失information消费者的只读补验闭合。原父编排在最后审计期消失，返回码未知、原final/aggregate缺失永久保留；这不是原parent自然完成。原seed101/三机/95%与300秒/地图质量/参与/18路接触/.50m及原物理数学不变。reset非必需逐回合覆盖FAIL不改写，原预声明合并覆盖门通过。
 
-出口：上述修复与工程矩阵通过，证据、命令、预算、限制和代码提交推送后待用户验收。
-这不是P2A策略出口，也不证明三台总有安全可执行候选或任意轨迹协同安全。用户已要求继续完成本步，
-因此v2将导航图来源、**运动途中的安全输入→costmap→实际速度链**和**仅已交付信息的累计参与观测**
-并入本步修复，不再把已阻塞出口的问题仅留给下一准备步。具体新版本及同冻结矩阵见
-[v12计划/报告](report/20261017_mr3_p2a0_v12.md)：own已知权威/shared补unknown、实际导航图v5候选、
-唯一最终速度门/20ms输出完成ACK、快照v3/张量v2的received-odom/accepted-goal累计状态。
-原95%/300秒、地图质量、三台参与、18路接触与`.50m`失败门不变，旧原件/第一版FAIL保持。
-v2同冻结原生仍FAIL：received JSON丢odom及全速度停止妨碍转向；保留全部原件。v3补真实生产链回归、
-一ULP精确规范、经全检查的原角速度保留、20ms轮耦合停止余量及独立活动可用性门禁，再重验完整矩阵。
-v3终态完整审计PASS，但reset真实角速度1.256657超过原1.2界，完整FAIL且deadline跳过。v4把实际三机controller/behavior/smoother/最终门的指令角速度降至.8，保留测量1.2，修正odom源龄并加入失败即停与首动作前九节点参数读回；20步interface及八轮reset后重验完整同冻结矩阵。
-v4首动作前参数观察器未继承worker局部loopback UDP transport，回执超时，0step整体FAIL且正常关闭。v5仅修复该固定配置/Git来源接线，保留所有物理/活动/停止标准，新冻结完整重跑四阶段。
-v5已打通transport/九参数及三台实际活动，但tb2第二目标期间角速1.3969超原1.2，整体FAIL。v6保留物理参数与所有门禁，修局部轮驱动的隐藏指令积分为paired joint-feedback，并保留实际wheel/command/库及有效SDF原件，新冻结完整重验。
-v6原完整/机体/活动子审计通过，但实际目标值落后guard约.727s违反160ms，整体FAIL保留；独立reader预释放误设另列。v7新增唯一tagged目标与native真实存储receipt，worker每20ms推进前须三台exactclock/seq/value消费屏障，修实际执行时序且保留全部物理门，新冻结完整重验。
-v7完整消费/时延及39native严格关闭通过，但两台received位移不足、双向转动及三台停车刺激不全，整体FAIL、后3阶段SKIP。v8仅对已持续零线速度且3fresh完整rest样本的原请求角速度建立条件总漂移预算，保留源龄和队友完整制动reserve；新分支全区间需独立raw速度/chord/总路程与真实消费核验，不能从过去静止推未来定理。一个新冻结重验完整32步接口/八轮reset、terminal及deadline。
-v8冻结d41485dfd937接口32全部正式门通过，但terminal首轮提前因旧received源龄.52>.5失败，后两阶段SKIP。v9用pending causal odom保留有效旧样本与未来样本，补producer真实入站/选取账本及独立核验，修可复现的future-latest skip缺陷；没有producer旧raw证据，故不把该缺陷写成本次原生具体根因。v9真实原件现证定时callback顺序及暂停饥饿；v10以暂停期间显式20ms状态→障碍→guard→storage阶段接管stepped，非受控原10Hz及原.5源龄与全部任务/安全门保持，以新冻结整套重验。
-V15冻结17ef3cb212aa完成interface32/严格关闭，导航peer独立.26和完整控制链重放通过；full/input活动及physical制停覆盖FAIL，后三阶段SKIP。tb1路径约.00436m，tb1/tb3缺有效停止证据。初始away方向因队友移动变closing，第二阶段reverse优先也选择closing目标；不据此放宽安全门。保留原v2/v3、8轮/32步及physical/angular数学，新修复须新clean pushed冻结完整重验，见[V15报告](report/20261017_mr3_p2a0_v15.md)。
-只有该新矩阵通过、代码与证据推送并获用户验收后才确定同冻结训练/开发验证；
-不凭少量旧样本换算法、减95%或放宽参与/安全门禁。
-当前诊断见[独立审计](report/20261017_mr3_p2a0_audit.md)，预声明及结果见
-[P2A.0报告](report/20261017_mr3_p2a0.md)。
+详见[V26结果](report/20261018_mr3_p2a0_v26_capture.md)和[复盘](report/20261018_mr3_p2a0_reflection.md)。历史失败与详细时间线在日期报告和log，不能借本次补验推断95%策略、连续安全、多日稳定、150单参数因果或未见布局泛化。工程科学门补齐不等于用户验收；验收前保持P2A.0边界和pilot余额。
 
-### MR3-P2A：联合 PPO 最小闭环（2026-10-16已授权，未完成；当前先做P2A.0）
+### MR3-P2A：联合 PPO 最小闭环（2026-10-16已授权，未完成；P2A.0待用户验收）
 
 使用成熟的 MaskablePPO 与自定义地图/状态编码，前馈联合 actor、集中式 critic。
 掩码保存在 rollout 中；评估使用 mask-aware 接口；训练日志包括熵、KL、价值误差、
@@ -339,22 +249,5 @@ P1A/P1B/P1C已验收，P2A已授权但未完成，v6停止；工程证据与后�
 | payload/缓存/断链/重试、无 raw 信息泄漏 | P3A/P3B | 无法把任务差异归因于网络 |
 | 实际 Wi-Fi/墙损耗/流量、统一时钟与最终理想等价 | P4A/P4B | 只能演示，或把调度影响混成网络效应 |
 
-当前v10真实peer ACK QoS不匹配使reset等待超时；未release adapter早return遮住真实stop ACK，invalid关闭也超时。v11统一实际durable ACK和未启动但已实际dispatcher.closed的stop闭合，保留所有原门、新冻结完整重验，不借旧PASS。
 
-v11实际interface32与关闭及独立门通过，原full仅旧readiness协议识别FAIL。v12只修consumer真实复合证明，保持ROS/任务/接触/物理；使用4个有界独立read-only audit subprocess减等待，依赖与全部receipt门保留。新freeze整矩阵，不重贴旧FAIL。
-
-V12实际冻结`6b1b4a010835` interface32与terminal全部正式门PASS；reset八轮原生严格关闭，但活动不足、完整平面速度.305828>.30、持续停止响应和driver精确向内舍入门FAIL。26项正式jobs全结束，deadline按规则SKIP；所有原件/FAIL已lossless归档，P2A.0仍未完成。继续修复必须以新clean pushed冻结/新预声明完整重验，不重试旧失败版或拼接PASS。
-
-当前V13实现局部Shim/DWB及.20命令配置、完整own/peer测量范数的normal负ACK隔离和paired严格向内舍入。原任务/物理/源龄/停止门不变，V12持久静止失败仍待同冻结原生验证；新版本计划仍四stage/608API/596动作/18000墙秒，源码、实际新库与离线审计已通过，待clean push后exact40 preflight准入，不授PPO或跨冻结PASS。详见[V13](report/20261017_mr3_p2a0_v13.md)。
-
-V13实际冻结`1cfe74b4ad32`的interface在首个GetParameters响应匹配超时而FAIL（1reset/0step），其余三stage SKIP；39原生干净退出、所有保存身份消失，原aggregate FAIL保留。现仅在/tmp准备九个精确参数response writer有限等待修复，不改client guard、任务/物理门，须新冻结全矩阵。
-
-V14仅修9个精确参数reply writer的有限匹配等待，复用V13运动源码/实际库/原审计数学。当前新编排/105绑定/36显式pins、ROS1193与conda255均核验通过，root计划ready，必须clean push/preflight后按原608/596/18000完整矩阵，首FAIL停止后续；见[V14报告](report/20261017_mr3_p2a0_v14.md)。
-
-V16仅增加V5/32外部新GOAL非接近筛选，复用V4生命周期和原合法mask；不改生产探索/安全门。原输入重放及282 CPU通过，不能代替完整原生四阶段；原角门只要求至少一机双向，停车每机A或B且其他原门仍必需。详见[V16](report/20261017_mr3_p2a0_v16.md)。
-
-V16实际冻结ebe7d51b的interface32及9 mandatory通过，唯tb1无有意义A/B而physicalFAIL，后三阶段SKIP。原t13/t14 GOAL mask全false、t22恢复，须核验候选和窗口后新冻结完整重验；不改原门。
-
-V17仅增V6/32工程晚目标窗口（按整数ns的15..26），原V4/V5默认及安全候选/seed/lifecycle门保持。原晚目标机会不授运动或制停信用，须同冻结完整矩阵；见[V17](report/20261017_mr3_p2a0_v17.md)。
-
-V17实际冻结`eee6b2f90f697b28a1c20a2af5d1a6d2f044465e` interface与terminal完整PASS；reset8轮/256步原生正常关闭，24/26正式jobs通过，仅raw physical诊断及mandatory physics矩阵因worker1 open/rooms tb1停车超时FAIL，deadline SKIP。487保存身份freshgone、429native exit0。不是缺制停刺激：各机已有跨回合A或B信用，不能抵消合格事件违规。持续WAIT、actual v/w双零与native applied轮双零后仍有raw横向约.011m/s；先隔离核验1ms物理响应/量测语义，原.01三样本/.78s/.144m及其余门保持，再新冻结完整矩阵。详见[V17闭包](report/20261017_mr3_p2a0_v17.md)。
+当前P2A.0工程科学门补验结果及原编排中断见[V26](report/20261018_mr3_p2a0_v26_capture.md)；早期版本只保留历史适用范围，不再作为当前待办。

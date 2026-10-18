@@ -138,6 +138,62 @@
         "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_v24_install.md"
       ],
       "scope": "V24 FAIL remains unchanged. V25 replaces two Nav2 wall timers with node-clock timers; single real stock/fixed component comparison passes. No complete same-freeze matrix/PPO credit yet. Selected source/build/component originals are canonical A25."
+    },
+    {
+      "recorded_date": "2026-10-18",
+      "review_base_commit": "92f8bdf5bba1ba245dc53ca0964eef81a7fff938",
+      "scope": "P2A.0 current-document consolidation: superseded status and repeated chronology moved to immutable dated evidence, with original text recoverable from the named Git objects; historical failures and native source bindings unchanged.",
+      "report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_v26_capture.md",
+      "affected_current_documents": [
+        {
+          "path": "AGENTS.md",
+          "original_git_object": "92f8bdf5bba1ba245dc53ca0964eef81a7fff938:AGENTS.md",
+          "original_sha256": "1dd3ab3b9ba8e76daa88b56de0a7d662f55bd1a10ea493331e0606626d396aa0",
+          "current_sha256": "afb5141233be50832cebfdb3246cb407a5770532dc95757cc0f292e5ff37feed"
+        },
+        {
+          "path": "ns-allinone-3.40/AGENTS.md",
+          "original_git_object": "92f8bdf5bba1ba245dc53ca0964eef81a7fff938:ns-allinone-3.40/AGENTS.md",
+          "original_sha256": "4e1a9699f0cbfbb441ea4fe52da2659c0d051562f07af504c665d62852ab0f2b",
+          "current_sha256": "2504d45ab3af7af5ce8618e3d9eba77fa63858ea5683623a7ca2295a1a155ccf"
+        },
+        {
+          "path": "ros2_ws/ros2-multi-robot-automap/AGENTS.md",
+          "original_git_object": "92f8bdf5bba1ba245dc53ca0964eef81a7fff938:ros2_ws/ros2-multi-robot-automap/AGENTS.md",
+          "original_sha256": "d677b57437e64304e63f952cd5bc9b13d31355477a04785640f44b859fd4b748",
+          "current_sha256": "20c0216d08824830f7cc7625cfd43cc00ca5271fde87a774d1ef9a0ce10eb9b4"
+        },
+        {
+          "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/AGENTS.md",
+          "original_git_object": "92f8bdf5bba1ba245dc53ca0964eef81a7fff938:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/AGENTS.md",
+          "original_sha256": "70682cffca847148217ba5c99c3b5283b3ceb2e2911477926c4bf7cd66cd1831",
+          "current_sha256": "6545b9831c99f62d2835c9416535413f47683322d2083db5c089363eddfa9c51"
+        },
+        {
+          "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/RESEARCH_PLAN.md",
+          "original_git_object": "92f8bdf5bba1ba245dc53ca0964eef81a7fff938:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/RESEARCH_PLAN.md",
+          "original_sha256": "163ef5e20f55e4a8fc0c3418d4147d1aa1fd016a56748f80fe6349b2f6f0399a",
+          "current_sha256": "c4e8cd0161788681a79bb932c5a5409580f60f4609d3605c7e3398f1d3549a28"
+        },
+        {
+          "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/IMPLEMENTATION_PLAN.md",
+          "original_git_object": "92f8bdf5bba1ba245dc53ca0964eef81a7fff938:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/IMPLEMENTATION_PLAN.md",
+          "original_sha256": "155ecd6dc5799fea8fb7ec36ca6bd74973af212cb0c28e69099cabb4b2e5b7e1",
+          "current_sha256": "6446f930d053d60f6c852dc65ceb91110cf9ca942de9978ea028c15acf64664d"
+        },
+        {
+          "path": "ros2_ws/ros2-multi-robot-automap/user_guide.md",
+          "original_git_object": "92f8bdf5bba1ba245dc53ca0964eef81a7fff938:ros2_ws/ros2-multi-robot-automap/user_guide.md",
+          "original_sha256": "848a7d3293417ee1bdcd6f6623c0a7bcd18bc4c5fc3c0c9791750433bf59fc1a",
+          "current_sha256": "e49f2d125f2ab853aa57d8c35cb27575299ea67df64f3d31cb6e149f0052361b"
+        },
+        {
+          "path": "ros2_ws/ros2-multi-robot-automap/launch_commands.md",
+          "original_git_object": "92f8bdf5bba1ba245dc53ca0964eef81a7fff938:ros2_ws/ros2-multi-robot-automap/launch_commands.md",
+          "original_sha256": "25adfed8f0c3bb43e2aee4072cb1edb23ced19564f7a1fa96cc4289c5f484029",
+          "current_sha256": "768f344a353b74ed24f26d6c1370c8456bb871e5158cd8fc83fbad0e121a2e58"
+        }
+      ]
     }
   ],
   "files": [
@@ -1567,16 +1623,75 @@
   },
   "mr3_p2a0_v26_capture": {
     "recorded_date": "2026-10-18",
-    "status": "source-ready, actual clean pushed freeze preflight and whole4stage pending; no P2A.0/PPO credit",
-    "report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_v26_capture.md",
-    "assets": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v26_capture",
+    "source_freeze": "92f8bdf5bba1ba245dc53ca0964eef81a7fff938",
     "plan_sha256": "fe5a2a7bfb5b6708c396687ece361ba603de76cc35ef443ba4ae50cc739efa0a",
-    "scope": "Only observational capture consistency and fixed shared-loader path/SHA. V25 source/binary/ENV/math unchanged, original035/prospective7ff FAILs retained.",
-    "source_bindings": 230,
-    "old_exact": 221,
-    "old_changed": 1,
-    "new": 8,
-    "prior_engineering_wall_seconds": 1369.6459453934804,
-    "remaining_wall_seconds": 16630.35405460652
+    "status": "scientific engineering roles completed with original-source read-only supplement; indexed repair verified against three complete original stage reports; optional indexed deadline intentionally stopped/incomplete/-15; awaiting user acceptance; original parent INTERRUPTED/returncode unknown",
+    "report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_v26_capture.md",
+    "reflection": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_reflection.md",
+    "assets": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v26_capture",
+    "historical_source_preparation": {
+      "recorded_date": "2026-10-18",
+      "status": "source-ready, actual clean pushed freeze preflight and whole4stage pending; no P2A.0/PPO credit",
+      "report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_v26_capture.md",
+      "assets": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v26_capture",
+      "plan_sha256": "fe5a2a7bfb5b6708c396687ece361ba603de76cc35ef443ba4ae50cc739efa0a",
+      "scope": "Only observational capture consistency and fixed shared-loader path/SHA. V25 source/binary/ENV/math unchanged, original035/prospective7ff FAILs retained.",
+      "source_bindings": 230,
+      "old_exact": 221,
+      "old_changed": 1,
+      "new": 8,
+      "prior_engineering_wall_seconds": 1369.6459453934804,
+      "remaining_wall_seconds": 16630.35405460652
+    },
+    "historical_report_source": "92f8bdf5bba1ba245dc53ca0964eef81a7fff938:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_v26_capture.md",
+    "historical_report_sha256": "b9200e950ec1a6bf67d1f109f3c110079f9ae26c673218bcd5f85531bb5e2b26",
+    "native_manifest_sha256": "b9b23938ad44664732d637fdd3833fd3fbc473555ed5bb0ffa8864a0f59e073e",
+    "mandatory_roles": 34,
+    "episodes": 12,
+    "resets": 12,
+    "steps": 596,
+    "API": 608,
+    "actual_submitted_actions": 595,
+    "original_parent_status": "INTERRUPTED",
+    "original_parent_returncode": null,
+    "original_missing_final_paths": [
+      "/tmp/mr3_p2a0_v26_matrix_capture_v1.json",
+      "/tmp/mr3_p2a0_v26_deadline_audit_execution_v1.json",
+      "/tmp/mr3_p2a0_v26_deadline_information_review_v1.json"
+    ],
+    "original_completed_commands": 53,
+    "original_passes": 52,
+    "original_nonrequired_failures": 1,
+    "selected_information_receipt": {
+      "path": "/tmp/mr3_p2a0_v26_deadline_information_supplemental_v1.json",
+      "sha256": "4254219b07e635517652daf723b146f53c7f362ab5541da57f9c4468e1fb29e9"
+    },
+    "selected_information_reader_kind": "original_f736_readonly_continuation",
+    "indexed_three_stage_comparison_addendum_sha256": "fd9b894e2bae26c26e9ebb86caeb926b1e064b16e3ff19b06860884eae2f6054",
+    "indexed_optional_deadline": {
+      "status": "intentionally_stopped/incomplete",
+      "returncode": -15,
+      "signal_count": 1,
+      "signal": "SIGTERM",
+      "signal_targeting": "pidfd bound and saved start identity checked",
+      "stop_receipt_sha256": "1d3bf2fef5987f7e4d16bad5eb73fcdc125a2f65b9c544162b48a89b7bead6bc",
+      "output_exists": false,
+      "source_tail_unchanged": true
+    },
+    "saved_identity_count": 543,
+    "saved_identity_scope": "Only actual PID/start pairs saved in the enumerated ledger, captures, launch, supervisor and process-monitor metadata. Unsaved formal child identities are not invented; this is not a census of all machine processes.",
+    "native_clean_exits": 468,
+    "native_started": 468,
+    "cumulative_engineering_wall_seconds": 11420.856789876707,
+    "remaining_engineering_wall_seconds": 6579.143210123293,
+    "pilot_remaining_decisions": 1870,
+    "pilot_remaining_wall_seconds": 2905.954739546403,
+    "custody_counts": {
+      "source_files": 11561,
+      "raw_bytes": 9265402604,
+      "selected_parts": 11766,
+      "selected_bytes": 627021272
+    },
+    "scope": "Original FAILs, missing finals and interrupted orchestration retained; supplemental scientific evidence is distinct from original execution success and user acceptance."
   }
 }

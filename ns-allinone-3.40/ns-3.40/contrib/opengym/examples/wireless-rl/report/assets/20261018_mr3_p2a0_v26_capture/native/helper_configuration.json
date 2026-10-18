@@ -1,0 +1,46 @@
+{
+  "schema": "mr3-v26-recovery-custody-configuration-v1",
+  "information_mode": "original",
+  "argv": [
+    "/tmp/mr3_p2a0_v26_recovery_closure_proposal_v1/recover_closed_v3.py",
+    "--all-writers-closed",
+    "--information-mode",
+    "original",
+    "--target",
+    "/tmp/mr3_p2a0_v26_recovered_packet_v1",
+    "--extra",
+    "/tmp/mr3_p2a0_v26_three_closed_stages_summary_v1.tar.gz",
+    "--extra",
+    "/tmp/mr3_p2a0_v26_closed_schema_review_v1.tar.gz",
+    "--extra",
+    "/tmp/mr3_p2a0_v26_recovery_closure_proposal_v1/handoff_v3.json",
+    "--extra",
+    "/tmp/mr3_p2a0_v26_recovery_closure_proposal_v1/v2_to_v3.diff",
+    "--extra",
+    "/tmp/mr3_p2a0_v26_promote_packet_v1.py",
+    "--extra",
+    "/tmp/mr3_p2a0_v26_promote_packet_handoff_v1.json"
+  ],
+  "environment_exact": {
+    "PATH": "/usr/bin:/bin",
+    "LANG": "C.UTF-8",
+    "PYTHONNOUSERSITE": "1",
+    "PYTHONDONTWRITEBYTECODE": "1"
+  },
+  "wrapper_source": "/tmp/mr3_p2a0_v26_recovery_closure_proposal_v1/recover_closed_v3.py",
+  "wrapper_sha256": "2038fde74f439018d60f2bd0ab98caeb2003052637a390775fe1b345c95763ea",
+  "reused_pack_helper": "/tmp/mr3_p2a0_v26_matrix_pack_proposal_v1/mr3_p2a0_v26_matrix_pack_closed_v1.py",
+  "reused_pack_helper_sha256": "8df79388e8d9e85fa0dbe08d24f52f5b7b4f880043ba7d6fe199417ed13585cd",
+  "reused_codec_functions": [
+    "sha",
+    "identity",
+    "file_digest",
+    "verify_file",
+    "pack_file",
+    "inventory"
+  ],
+  "reused_identity_helper": "/tmp/mr3_p2a0_v26_closed_pid_observer_proposal_v1/observe_closed_v1.py",
+  "reused_identity_helper_sha256": "d34767d448edbd526925e43b4fcd9ba7aca5c1ee5af030cc5d4f6d4df544c88d",
+  "original_helper_mains_called": false,
+  "root_state_dependency": false
+}

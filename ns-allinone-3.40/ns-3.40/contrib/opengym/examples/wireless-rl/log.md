@@ -6210,3 +6210,356 @@ launch796.7103692898527wall计native预算，prior572.9355761036277，累计1369
 新声明domain218/220/222+223/226与port13901/11/21+22/31，interface32、terminal两轮4、reset双worker各[open101,open101,rooms101,corridors101]×32、deadline300KEEP；原seed101、三机、真实gate不变。携带1369.6459453934804/18000，余16630.35405460652；pilot1870/2905.954739546403未动。准备source-ready不授nativePASS；须新clean pushed实际Conda前检+START再唯一parent，首FAIL后续SKIP，不同冻结不拼PASS。无PPO/pilot/GPU/P2B/gateway。
 
 V26最终独立接线审实际exit0/.417686wall，244输入末SHA/stat稳定；230/原34/608/596/8resetpool/carry、固定A25 helper及actual二ELF、根6字段白名单均核验，无阻断，所有reader已STOP。8件封包26709B roundtrip通过，保管final_wiring_review。根最短静态核230绑定/8PythonAST/原ENV/186本地链接并git diff --check通过，未重任何suite/consumer。
+
+
+## 2026-10-18 V26 同冻结原生矩阵、原编排中断及等价只读补验
+
+源码冻结`92f8bdf5bba1ba245dc53ca0964eef81a7fff938`，计划`fe5a2a7bfb5b6708c396687ece361ba603de76cc35ef443ba4ae50cc739efa0a`。工作目录为`/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl`；各真实argv以原JSON为准，未重跑原生。
+实际preflight入口wrapper为`/tmp/mr3_p2a0_v26_actual_preflight_once_v1.py`，source SHA`38d1733ad64e5f2e532fc23774eeb2e085c3deb578ff90ebc20c5e53e79fb481`。其execution/started回执保存的是内层Conda argv，不另发明外层shell启动argv：
+```bash
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v26_capture/independent/mr3_p2a0_v26_buildproof_preflight.py
+```
+实际前检exit0/20.413090414833277墙秒；source_preflight SHA`48ed730b01c3a8e14dc4ca4393bd283e20c1be286f23c31bb60933c7ecbd8bd3`。
+watcher捕获wrapper `/tmp/mr3_p2a0_v26_capture_matrix_job_v1.py` SHA`0e34bbc88348e2fba34084ad42a7391578ad49a7f86984c9dff13954ad4350a8`；原START只保存内层argv与job，没有外层shell的逐字启动记录，不补造。真实内层：
+```bash
+/usr/bin/python3 -B /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v26_capture/independent/mr3_p2a0_v26_cross_stage_mapping_monitor_v1.py --freeze 92f8bdf5bba1ba245dc53ca0964eef81a7fff938
+```
+matrix捕获wrapper `/tmp/mr3_p2a0_v26_capture_matrix_job_v1.py` SHA`0e34bbc88348e2fba34084ad42a7391578ad49a7f86984c9dff13954ad4350a8`；原START只保存内层argv与job，没有外层shell的逐字启动记录，不补造。真实内层：
+```bash
+/usr/bin/python3 -B /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v26_capture/independent/mr3_p2a0_v26_run_matrix_v1.py 92f8bdf5bba1ba245dc53ca0964eef81a7fff938
+```
+实际前检内三个CPU imports/argparse-help命令：
+```bash
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -c 'import json,sys,gymnasium,torch; print(json.dumps({"interpreter":sys.executable,"gymnasium":gymnasium.__version__,"torch":torch.__version__,"gymnasium_file":gymnasium.__file__,"torch_file":torch.__file__}))'
+```
+imports: returncode=0, wall_seconds=4.410975709091872。
+```bash
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.benchmark --help
+```
+benchmark_help: returncode=0, wall_seconds=0.4397054649889469。
+```bash
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.audit_preparation --help
+```
+full_audit_help: returncode=0, wall_seconds=4.810751297045499。
+interface实际benchmark（launch.json键command_argv）：
+```bash
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -u -m mr3_learning.benchmark --workers 1 --schedule open:101 --steps 32 --preparation-motion-probe --preparation-probe-version mr3-p2a0-outward-cancel-v6 --base-domain 218 --base-port 13901 --output-root /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0 --run-id mr3_p2a0_20261018_v26_interface --preparation-parameter-review
+```
+terminal实际benchmark（launch.json键command_argv）：
+```bash
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -u -m mr3_learning.benchmark --workers 1 --schedule open:101,open:101 --steps 4 --terminal-probe --base-domain 220 --base-port 13911 --output-root /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0 --run-id mr3_p2a0_20261018_v26_terminal
+```
+reset实际benchmark（launch.json键command_argv）：
+```bash
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -u -m mr3_learning.benchmark --workers 2 --schedule open:101,open:101,rooms:101,corridors:101 --steps 32 --preparation-motion-probe --preparation-probe-version mr3-p2a0-outward-cancel-v6 --base-domain 222 --base-port 13921 --output-root /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0 --run-id mr3_p2a0_20261018_v26_reset
+```
+deadline实际benchmark（launch.json键command_argv）：
+```bash
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -u -m mr3_learning.benchmark --workers 1 --schedule open:101 --steps 300 --deadline-probe --base-domain 226 --base-port 13931 --output-root /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0 --run-id mr3_p2a0_20261018_v26_deadline
+```
+原已完成53条正式子命令（52PASS/1个reset非必需FAIL）逐条真实argv如下；未完成的原information命令不冒称完成：
+- interface/peer_review_v1: returncode=0, passed=True, required_success=True。
+
+```bash
+/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v11/independent/mr3_independent_control_phase_v2.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_interface --freeze 92f8bdf5bba1ba245dc53ca0964eef81a7fff938 --output /tmp/mr3_p2a0_v26_interface_peer_review_v1.json --peer-only
+```
+- interface/drive_review_v1: returncode=0, passed=True, required_success=True。
+
+```bash
+/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_independent_drive_trace_v6.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_interface --freeze 92f8bdf5bba1ba245dc53ca0964eef81a7fff938 --binary-proof /tmp/mr3_p2a0_v26_binaryproof.json --output /tmp/mr3_p2a0_v26_interface_drive_review_v1.json
+```
+- interface/settled_turn_review_v1: returncode=0, passed=True, required_success=True。
+
+```bash
+/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v8/independent/mr3_independent_settled_turn_v3.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_interface --freeze 92f8bdf5bba1ba245dc53ca0964eef81a7fff938 --output /tmp/mr3_p2a0_v26_interface_settled_review_v1.json --require-use
+```
+- interface/information_review_v1: returncode=0, passed=True, required_success=True。
+
+```bash
+/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_independent_information_v2.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_interface --freeze 92f8bdf5bba1ba245dc53ca0964eef81a7fff938 --output /tmp/mr3_p2a0_v26_interface_information_review_v1.json
+```
+- interface/fixed_angular_v1: returncode=0, passed=True, required_success=True。
+
+```bash
+/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v4/independent/mr3_independent_angular_interface_v1.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_interface/worker0/episode001_open_101 --output /tmp/mr3_p2a0_v26_interface_fixed_angular_v1.json
+```
+- interface/control_review_v1: returncode=0, passed=True, required_success=True。
+
+```bash
+/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v11/independent/mr3_independent_control_phase_v2.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_interface --freeze 92f8bdf5bba1ba245dc53ca0964eef81a7fff938 --output /tmp/mr3_p2a0_v26_interface_control_review_v1.json
+```
+- interface/episode001_fifo_phase_final: returncode=0, passed=True, required_success=True。
+
+```bash
+/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_v10_fifo_phase_review.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_interface/worker0/episode001_open_101 --freeze 92f8bdf5bba1ba245dc53ca0964eef81a7fff938 --output /tmp/mr3_p2a0_v26_interface_episode001_fifo_phase_final.json
+```
+- interface/fixed_physics_v1: returncode=0, passed=True, required_success=True。
+
+```bash
+/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v3/independent/mr3_independent_physics_review.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_interface/worker0/episode001_open_101 --output /tmp/mr3_p2a0_v26_interface_fixed_physics_v1.json
+```
+- interface/closure_binary_review_v1: returncode=0, passed=True, required_success=True。
+
+```bash
+/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v26_capture/independent/mr3_v26_multiepoch_closure_binary_review_v1.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_interface --prefix mr3_p2a0_v26_interface --freeze 92f8bdf5bba1ba245dc53ca0964eef81a7fff938 --expected-episodes 1 --require-parameters
+```
+- interface/full_audit: returncode=0, passed=True, required_success=True。
+
+```bash
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -m mr3_learning.audit_preparation /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_interface --freeze 92f8bdf5bba1ba245dc53ca0964eef81a7fff938 --output /tmp/mr3_p2a0_v26_interface_full_audit.json
+```
+- interface/input_001: returncode=0, passed=True, required_success=True。
+
+```bash
+/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v4/independent/mr3_p2a0_v4_independent_input_episode_review_v1.py --episode /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_interface/worker0/episode001_open_101 --output /tmp/mr3_p2a0_v26_interface_input_review_v1.json
+```
+- terminal/peer_review_v1: returncode=0, passed=True, required_success=True。
+
+```bash
+/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v11/independent/mr3_independent_control_phase_v2.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_terminal --freeze 92f8bdf5bba1ba245dc53ca0964eef81a7fff938 --output /tmp/mr3_p2a0_v26_terminal_peer_review_v1.json --peer-only
+```
+- terminal/drive_review_v1: returncode=0, passed=True, required_success=True。
+
+```bash
+/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_independent_drive_trace_v6.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_terminal --freeze 92f8bdf5bba1ba245dc53ca0964eef81a7fff938 --binary-proof /tmp/mr3_p2a0_v26_binaryproof.json --output /tmp/mr3_p2a0_v26_terminal_drive_review_v1.json
+```
+- terminal/information_review_v1: returncode=0, passed=True, required_success=True。
+
+```bash
+/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_independent_information_v2.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_terminal --freeze 92f8bdf5bba1ba245dc53ca0964eef81a7fff938 --output /tmp/mr3_p2a0_v26_terminal_information_review_v1.json
+```
+- terminal/episode001_fifo_phase_final: returncode=0, passed=True, required_success=True。
+
+```bash
+/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_v10_fifo_phase_review.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_terminal/worker0/episode001_open_101 --freeze 92f8bdf5bba1ba245dc53ca0964eef81a7fff938 --output /tmp/mr3_p2a0_v26_terminal_episode001_fifo_phase_final.json
+```
+- terminal/episode002_fifo_phase_final: returncode=0, passed=True, required_success=True。
+
+```bash
+/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_v10_fifo_phase_review.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_terminal/worker0/episode002_open_101 --freeze 92f8bdf5bba1ba245dc53ca0964eef81a7fff938 --output /tmp/mr3_p2a0_v26_terminal_episode002_fifo_phase_final.json
+```
+- terminal/settled_turn_review_v1: returncode=0, passed=True, required_success=True。
+
+```bash
+/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v8/independent/mr3_independent_settled_turn_v3.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_terminal --freeze 92f8bdf5bba1ba245dc53ca0964eef81a7fff938 --output /tmp/mr3_p2a0_v26_terminal_settled_review_v1.json
+```
+- terminal/control_review_v1: returncode=0, passed=True, required_success=True。
+
+```bash
+/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v11/independent/mr3_independent_control_phase_v2.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_terminal --freeze 92f8bdf5bba1ba245dc53ca0964eef81a7fff938 --output /tmp/mr3_p2a0_v26_terminal_control_review_v1.json
+```
+- terminal/closure_binary_review_v1: returncode=0, passed=True, required_success=True。
+
+```bash
+/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v26_capture/independent/mr3_v26_multiepoch_closure_binary_review_v1.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_terminal --prefix mr3_p2a0_v26_terminal --freeze 92f8bdf5bba1ba245dc53ca0964eef81a7fff938 --expected-episodes 2
+```
+- terminal/full_audit: returncode=0, passed=True, required_success=True。
+
+```bash
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -m mr3_learning.audit_preparation /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_terminal --freeze 92f8bdf5bba1ba245dc53ca0964eef81a7fff938 --output /tmp/mr3_p2a0_v26_terminal_full_audit.json
+```
+- reset/peer_review_v1: returncode=0, passed=True, required_success=True。
+
+```bash
+/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v11/independent/mr3_independent_control_phase_v2.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset --freeze 92f8bdf5bba1ba245dc53ca0964eef81a7fff938 --output /tmp/mr3_p2a0_v26_reset_peer_review_v1.json --peer-only
+```
+- reset/drive_review_v1: returncode=0, passed=True, required_success=True。
+
+```bash
+/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_independent_drive_trace_v6.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset --freeze 92f8bdf5bba1ba245dc53ca0964eef81a7fff938 --binary-proof /tmp/mr3_p2a0_v26_binaryproof.json --output /tmp/mr3_p2a0_v26_reset_drive_review_v1.json
+```
+- reset/settled_turn_review_v1: returncode=0, passed=True, required_success=True。
+
+```bash
+/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v8/independent/mr3_independent_settled_turn_v3.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset --freeze 92f8bdf5bba1ba245dc53ca0964eef81a7fff938 --output /tmp/mr3_p2a0_v26_reset_settled_review_v1.json
+```
+- reset/information_review_v1: returncode=0, passed=True, required_success=True。
+
+```bash
+/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_independent_information_v2.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset --freeze 92f8bdf5bba1ba245dc53ca0964eef81a7fff938 --output /tmp/mr3_p2a0_v26_reset_information_review_v1.json
+```
+- reset/input_001: returncode=0, passed=True, required_success=True。
+
+```bash
+/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v4/independent/mr3_p2a0_v4_independent_input_episode_review_v1.py --episode /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker0/episode001_open_101 --output /tmp/mr3_p2a0_v26_reset_episode001_input_v1.json
+```
+- reset/control_review_v1: returncode=0, passed=True, required_success=True。
+
+```bash
+/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v11/independent/mr3_independent_control_phase_v2.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset --freeze 92f8bdf5bba1ba245dc53ca0964eef81a7fff938 --output /tmp/mr3_p2a0_v26_reset_control_review_v1.json
+```
+- reset/input_002: returncode=0, passed=True, required_success=True。
+
+```bash
+/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v4/independent/mr3_p2a0_v4_independent_input_episode_review_v1.py --episode /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker0/episode002_open_101 --output /tmp/mr3_p2a0_v26_reset_episode002_input_v1.json
+```
+- reset/input_004: returncode=0, passed=True, required_success=True。
+
+```bash
+/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v4/independent/mr3_p2a0_v4_independent_input_episode_review_v1.py --episode /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker0/episode004_corridors_101 --output /tmp/mr3_p2a0_v26_reset_episode004_input_v1.json
+```
+- reset/input_003: returncode=0, passed=True, required_success=True。
+
+```bash
+/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v4/independent/mr3_p2a0_v4_independent_input_episode_review_v1.py --episode /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker0/episode003_rooms_101 --output /tmp/mr3_p2a0_v26_reset_episode003_input_v1.json
+```
+- reset/input_005: returncode=0, passed=True, required_success=True。
+
+```bash
+/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v4/independent/mr3_p2a0_v4_independent_input_episode_review_v1.py --episode /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker1/episode001_open_101 --output /tmp/mr3_p2a0_v26_reset_episode005_input_v1.json
+```
+- reset/input_006: returncode=0, passed=True, required_success=True。
+
+```bash
+/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v4/independent/mr3_p2a0_v4_independent_input_episode_review_v1.py --episode /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker1/episode002_open_101 --output /tmp/mr3_p2a0_v26_reset_episode006_input_v1.json
+```
+- reset/input_008: returncode=0, passed=True, required_success=True。
+
+```bash
+/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v4/independent/mr3_p2a0_v4_independent_input_episode_review_v1.py --episode /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker1/episode004_corridors_101 --output /tmp/mr3_p2a0_v26_reset_episode008_input_v1.json
+```
+- reset/input_007: returncode=0, passed=True, required_success=True。
+
+```bash
+/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v4/independent/mr3_p2a0_v4_independent_input_episode_review_v1.py --episode /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker1/episode003_rooms_101 --output /tmp/mr3_p2a0_v26_reset_episode007_input_v1.json
+```
+- reset/episode001_fifo_phase_final: returncode=0, passed=True, required_success=True。
+
+```bash
+/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_v10_fifo_phase_review.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker0/episode001_open_101 --freeze 92f8bdf5bba1ba245dc53ca0964eef81a7fff938 --output /tmp/mr3_p2a0_v26_reset_episode001_fifo_phase_final.json
+```
+- reset/episode002_fifo_phase_final: returncode=0, passed=True, required_success=True。
+
+```bash
+/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_v10_fifo_phase_review.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker0/episode002_open_101 --freeze 92f8bdf5bba1ba245dc53ca0964eef81a7fff938 --output /tmp/mr3_p2a0_v26_reset_episode002_fifo_phase_final.json
+```
+- reset/episode003_fifo_phase_final: returncode=0, passed=True, required_success=True。
+
+```bash
+/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_v10_fifo_phase_review.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker0/episode003_rooms_101 --freeze 92f8bdf5bba1ba245dc53ca0964eef81a7fff938 --output /tmp/mr3_p2a0_v26_reset_episode003_fifo_phase_final.json
+```
+- reset/episode004_fifo_phase_final: returncode=0, passed=True, required_success=True。
+
+```bash
+/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_v10_fifo_phase_review.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker0/episode004_corridors_101 --freeze 92f8bdf5bba1ba245dc53ca0964eef81a7fff938 --output /tmp/mr3_p2a0_v26_reset_episode004_fifo_phase_final.json
+```
+- reset/episode005_fifo_phase_final: returncode=0, passed=True, required_success=True。
+
+```bash
+/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_v10_fifo_phase_review.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker1/episode001_open_101 --freeze 92f8bdf5bba1ba245dc53ca0964eef81a7fff938 --output /tmp/mr3_p2a0_v26_reset_episode005_fifo_phase_final.json
+```
+- reset/episode006_fifo_phase_final: returncode=0, passed=True, required_success=True。
+
+```bash
+/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_v10_fifo_phase_review.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker1/episode002_open_101 --freeze 92f8bdf5bba1ba245dc53ca0964eef81a7fff938 --output /tmp/mr3_p2a0_v26_reset_episode006_fifo_phase_final.json
+```
+- reset/physical_per_episode_v1: returncode=1, passed=False, required_success=False。
+
+```bash
+/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v3/independent/mr3_independent_physics_review.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset --output /tmp/mr3_p2a0_v26_reset_physical_per_episode_v1.json
+```
+- reset/episode007_fifo_phase_final: returncode=0, passed=True, required_success=True。
+
+```bash
+/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_v10_fifo_phase_review.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker1/episode003_rooms_101 --freeze 92f8bdf5bba1ba245dc53ca0964eef81a7fff938 --output /tmp/mr3_p2a0_v26_reset_episode007_fifo_phase_final.json
+```
+- reset/physics_matrix_v1: returncode=0, passed=True, required_success=True。
+
+```bash
+/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v17/independent/mr3_independent_physics_matrix_v17.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset --freeze 92f8bdf5bba1ba245dc53ca0964eef81a7fff938 --per-episode-report /tmp/mr3_p2a0_v26_reset_physical_per_episode_v1.json --output /tmp/mr3_p2a0_v26_reset_physics_matrix_v1.json
+```
+- reset/episode008_fifo_phase_final: returncode=0, passed=True, required_success=True。
+
+```bash
+/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_v10_fifo_phase_review.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker1/episode004_corridors_101 --freeze 92f8bdf5bba1ba245dc53ca0964eef81a7fff938 --output /tmp/mr3_p2a0_v26_reset_episode008_fifo_phase_final.json
+```
+- reset/angular_matrix_v1: returncode=0, passed=True, required_success=True。
+
+```bash
+/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v17/independent/mr3_independent_angular_reset_matrix_v17.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset --freeze 92f8bdf5bba1ba245dc53ca0964eef81a7fff938 --output /tmp/mr3_p2a0_v26_reset_angular_matrix_v1.json
+```
+- reset/full_audit: returncode=0, passed=True, required_success=True。
+
+```bash
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -m mr3_learning.audit_preparation /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset --freeze 92f8bdf5bba1ba245dc53ca0964eef81a7fff938 --output /tmp/mr3_p2a0_v26_reset_full_audit.json
+```
+- reset/closure_binary_review_v1: returncode=0, passed=True, required_success=True。
+
+```bash
+/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v26_capture/independent/mr3_v26_multiepoch_closure_binary_review_v1.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset --prefix mr3_p2a0_v26_reset --freeze 92f8bdf5bba1ba245dc53ca0964eef81a7fff938 --expected-episodes 8
+```
+- deadline/peer_review_v1: returncode=0, passed=True, required_success=True。
+
+```bash
+/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v11/independent/mr3_independent_control_phase_v2.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_deadline --freeze 92f8bdf5bba1ba245dc53ca0964eef81a7fff938 --output /tmp/mr3_p2a0_v26_deadline_peer_review_v1.json --peer-only
+```
+- deadline/control_review_v1: returncode=0, passed=True, required_success=True。
+
+```bash
+/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v11/independent/mr3_independent_control_phase_v2.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_deadline --freeze 92f8bdf5bba1ba245dc53ca0964eef81a7fff938 --output /tmp/mr3_p2a0_v26_deadline_control_review_v1.json
+```
+- deadline/settled_turn_review_v1: returncode=0, passed=True, required_success=True。
+
+```bash
+/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v8/independent/mr3_independent_settled_turn_v3.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_deadline --freeze 92f8bdf5bba1ba245dc53ca0964eef81a7fff938 --output /tmp/mr3_p2a0_v26_deadline_settled_review_v1.json
+```
+- deadline/episode001_fifo_phase_final: returncode=0, passed=True, required_success=True。
+
+```bash
+/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_v10_fifo_phase_review.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_deadline/worker0/episode001_open_101 --freeze 92f8bdf5bba1ba245dc53ca0964eef81a7fff938 --output /tmp/mr3_p2a0_v26_deadline_episode001_fifo_phase_final.json
+```
+- deadline/full_audit: returncode=0, passed=True, required_success=True。
+
+```bash
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -m mr3_learning.audit_preparation /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_deadline --freeze 92f8bdf5bba1ba245dc53ca0964eef81a7fff938 --output /tmp/mr3_p2a0_v26_deadline_full_audit.json
+```
+- deadline/closure_binary_review_v1: returncode=0, passed=True, required_success=True。
+
+```bash
+/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v26_capture/independent/mr3_v26_multiepoch_closure_binary_review_v1.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_deadline --prefix mr3_p2a0_v26_deadline --freeze 92f8bdf5bba1ba245dc53ca0964eef81a7fff938 --expected-episodes 1
+```
+- deadline/drive_review_v1: returncode=0, passed=True, required_success=True。
+
+```bash
+/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_independent_drive_trace_v6.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_deadline --freeze 92f8bdf5bba1ba245dc53ca0964eef81a7fff938 --binary-proof /tmp/mr3_p2a0_v26_binaryproof.json --output /tmp/mr3_p2a0_v26_deadline_drive_review_v1.json
+```
+选定原f736只读科学补充声明的真实消费者argv（自然PASS/return0/no signals；不与另外索引验证合并）：
+```bash
+/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_independent_information_v2.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_deadline --freeze 92f8bdf5bba1ba245dc53ca0964eef81a7fff938 --output /tmp/mr3_p2a0_v26_deadline_information_supplemental_v1.json
+```
+原f736补充真实returncode=0/PASS、2909.4306966429576墙秒、signals_sent=0；输出SHA`4254219b07e635517652daf723b146f53c7f362ab5541da57f9c4468e1fb29e9`。
+索引等价CPU及三组完整对照的保存argv（不替代原f736科学回执；仅provenance的argv不记录Python启动flags）：
+```bash
+/usr/bin/python3 /tmp/mr3_p2a0_v26_information_index_proposal_v1/proposal.py cpu
+```
+```bash
+/usr/bin/python3 /tmp/mr3_p2a0_v26_information_index_proposal_v1/proposal.py stage --stage interface
+```
+interface: all_original_fields_deep_equal=true；85.67490080790594只读墙秒。
+```bash
+/usr/bin/python3 -B /tmp/mr3_p2a0_v26_information_index_proposal_v1/proposal.py stage --stage terminal
+```
+terminal: all_original_fields_deep_equal=true；46.96104751387611只读墙秒。
+```bash
+/usr/bin/python3 -B /tmp/mr3_p2a0_v26_information_index_proposal_v1/proposal.py stage --stage reset
+```
+reset: all_original_fields_deep_equal=true；666.9372907830402只读墙秒。
+最终三组对照addendum SHA`fd9b894e2bae26c26e9ebb86caeb926b1e064b16e3ff19b06860884eae2f6054`；只删除唯一新增implementation provenance后完整dict相等。
+独立deadline索引执行器和声明的真实consumer argv：
+```bash
+/usr/bin/python3 -B /tmp/mr3_p2a0_v26_information_index_proposal_v1/execute_deadline.py
+```
+```bash
+/usr/bin/python3 -B /tmp/mr3_p2a0_v26_information_index_proposal_v1/deadline_indexed.py --output /tmp/mr3_p2a0_v26_information_index_proposal_v1/deadline_optimized_information_review_v1.json
+```
+额外deadline索引尝试有意中止：root以保存PID/start=3915500/405102066核对后通过pidfd发送一次SIGTERM；实际executor wait返回-15，630.2861267556436墙秒，passed=false、输出仍缺失、源末SHA不变。这是intentionally_stopped/incomplete，不获得第四组等价信用，不影响已自然PASS的原f736科学角色。 stop receipt SHA`1d3bf2fef5987f7e4d16bad5eb73fcdc125a2f65b9c544162b48a89b7bead6bc`。独立执行receipt保留真实-15和无输出；没有第四组结果SHA或等价信用。 A9:350静态计数推导46302次selection→约1071914451次keys，不声称runtime profile；本轮不追加第二优化。
+实际完整保管helper argv（来自最终helper_configuration.json；其中argv不含解释器，原样列出）：
+```bash
+/tmp/mr3_p2a0_v26_recovery_closure_proposal_v1/recover_closed_v3.py --all-writers-closed --information-mode original --target /tmp/mr3_p2a0_v26_recovered_packet_v1 --extra /tmp/mr3_p2a0_v26_three_closed_stages_summary_v1.tar.gz --extra /tmp/mr3_p2a0_v26_closed_schema_review_v1.tar.gz --extra /tmp/mr3_p2a0_v26_recovery_closure_proposal_v1/handoff_v3.json --extra /tmp/mr3_p2a0_v26_recovery_closure_proposal_v1/v2_to_v3.diff --extra /tmp/mr3_p2a0_v26_promote_packet_v1.py --extra /tmp/mr3_p2a0_v26_promote_packet_handoff_v1.json
+```
+封包346.97013730276376墙秒；11561原文件/9265402604原字节→11766parts/627021272编码字节，完整往返/source末SHA/stat核验；manifest SHA`b9b23938ad44664732d637fdd3833fd3fbc473555ed5bb0ffa8864a0f59e073e`。
+最终12reset+596step=608API，595实际提交动作；34科学角色10/7/10/7已由原回执和一个同源码补验核齐，索引三组完整等价与额外deadline中止另列，原parent INTERRUPTED/返回码unknown、三个缺失final永久保留。468/468原生退出转录与543个保存身份gone各保留原范围。reset两corridors tb3逐回合停车覆盖不足的非必需FAIL及旧035/全部历史FAIL不改。工程累计计费11420.856789876707/18000，其中本矩阵native 10051.210844483227、携带1369.6459453934804；余6579.143210123293墙秒；CPU、只读恢复、封包另列，pilot余1870/2905.954739546403未用。P2A.0仅工程科学门补齐待用户验收；无PPO/GPU/P2B/gateway、95%策略或连续/多日稳定信用。
+
+交付静态核验：230原源码绑定、171本地Markdown链接、10份JSON、11776提升文件的SHA/大小全部通过；git diff --check绿，git add -n .已执行，11777新文件恰为11776选定证据副本加一份复盘，无build/install或未封存runtime混入。独立只读审查无剩余阻断；8份活动文档删减仅过期状态/版本时间线，原文Git对象与SHA已在ARCHIVE_INDEX登记。
+
+额外静态交接：训练器ppo.py默认每回合上限300步，collect_episodes完整返回后才构造buffer并model.train；已有300 KEEP实测5368.246922858991墙秒大于pilot余2905.954739546403。此为现有代码/原件的预算对照，不是新实验或PPO吞吐结论，不断言策略不能提前终止；不新增P2A.0门、不启动/扩额pilot。详见复盘采样预算段。

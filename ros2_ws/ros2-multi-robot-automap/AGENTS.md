@@ -1,22 +1,6 @@
 # ROS component memory — MR3
 
-2026-10-18: V25 canonical Nav2 1.1.20 overlay changes only two timer factories plus include to node clock. Actual stock/fixed component pair and independent review passed (paused output7/3 versus0/0); all parameters and task/body/stop gates retained. Engineering debit572.9355761036277/18000. Full same-freeze four-stage/34-gate matrix remains pending; P2A.0 incomplete, no PPO. All prior failures preserved. See wireless-rl/report/20261018_mr3_p2a0_v25_smoother.md.
-
-2026-10-18: V20_sensor b33ff700 ordinary4 source capture and strict close completed; 39 native exits0 and47 identities gone. Legitimate near scan returns persist and map to own100; actual hit geometry remains unknown. Same-name ROS synchronous throttling and Karto stationary-refresh parameters have different semantics, so missing forwarding alone is not a proven bug. Production SLAM/physics/gates unchanged,150 not selected,P2A.0 incomplete. See shared report/20261018_mr3_p2a0_v20_sensor.md.
-
-2026-10-17 continuation (updated2026-10-18 Asia/Shanghai): P2A.0 remains authorized and incomplete. V17 freeze eee6b2f90f697b28a1c20a2af5d1a6d2f044465e passed interface and terminal completely; reset8x32 native/closure and 24 of 26 formal jobs passed, but tb1 real stopping response failed in worker1 open/rooms. Deadline SKIPPED, no retry. All originals preserved; 487 saved PID/start identities absent, 429/429 native processes exited normally. Actual zero commands and applied wheel zeros do not eliminate lateral raw vy about .011m/s; original .01/three-sample/.78s gates remain. Diagnose physics with isolated evidence before a new reviewed clean pushed complete matrix; no cross-freeze PASS. No PPO/P2B/gateway; pilot balance1870 decisions/2905.954739546403 wallsec unchanged. See wireless-rl/report/20261017_mr3_p2a0_v17.md.
-
-Historical first P2A.0 closure (2026-10-17): source freeze f8694025; six native episodes
-closed cleanly, terminal audit PASS, reset benchmark/full audit FAIL with one
-real peer-envelope task failure. The 300-step deadline was SKIPPED under the
-prospective stop rule. P2A.0 exit is unmet; await user review, do not restart
-pilot. Shared navigation-map occupied starts are now proved from exact raw maps.
-
-2026-10-17: user authorized P2A continuation/preparation. Current substep is
-MR3-P2A.0, with no new pilot: repair SLAM teardown ownership, retain failed
-collection evidence, version the received-frontier union and add safety input
-diagnostics. See shared `report/20261017_mr3_p2a0.md`; user acceptance of this
-substep precedes later preparation/training. P2A remains incomplete.
+2026-10-18: P2A.0工程科学门已补验通过，待用户验收；原V26父编排中断保留，P2A未完成，未启动PPO。 源码冻结`92f8bdf5bba1ba245dc53ca0964eef81a7fff938`；同冻结四阶段/12回合、34必需科学角色全部通过，最后一个information只读消费者在原父进程组消失后单独补完；原ledger/未知返回码/缺失最终回执不补造。 原生468/468正常退出，枚举元数据中543个保存PID/start均gone。 reset非必需逐回合停车覆盖FAIL及所有旧FAIL保留，原合并覆盖门通过。 工程累计11420.856789876707/18000墙秒，pilot余额1870决策/2905.954739546403墙秒未用。 详见共享V26报告与20261018_mr3_p2a0_reflection.md；验收前不进入训练或后续步骤。
 
 Follow `/home/zhuyulab/ns3-workspace/AGENTS.md`. Read the shared
 `ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/RESEARCH_PLAN.md`

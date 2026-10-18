@@ -1,25 +1,8 @@
 # MR3 研究路线：三机器人 RL 联合建图与冻结策略的 Wi-Fi 网络影响
 
-V26仅修进程取证一致性与逐项前后记录，复用V25实际C++/库/参数/ENV和全部原门。窄反例发现的拟议PID复用误分类已修，旧红例保留；230实际绑定与原34/608/596计划source-ready，携带1369.6459453934804/18000。仍须新clean pushed冻结前检与完整四阶段，P2A.0未完成，无PPO。见[V26](report/20261018_mr3_p2a0_v26_capture.md)。
+P2A.0工程科学门已补验通过，待用户验收；原V26父编排中断保留，P2A未完成，未启动PPO。 V26冻结`92f8bdf5bba1ba245dc53ca0964eef81a7fff938`的四阶段原生均正常闭合；34必需科学门经原回执及一个原f736同源码完整只读补充全部通过。 原父编排未正常结束，不能写成原parent PASS；恢复记录和所有旧FAIL保持。 见[V26结果](report/20261018_mr3_p2a0_v26_capture.md)与[会话复盘](report/20261018_mr3_p2a0_reflection.md)。
 
-版本：2026-10-18；路线标识：`MR3`。本文取代旧的目标搜索、充电、集合和通信调度 RL 路线。
-唯一 Git 根：`/home/zhuyulab/ns3-workspace`。P0/P1A/P1B已验收；用户于2026-10-16验收P1C并授权P2A。
-P2A未完成；v6原session基础设施失败后停止。2026-10-17用户授权继续解决并允许前置准备，
-当前[MR3-P2A.0](IMPLEMENTATION_PLAN.md)仍未完成：V17冻结eee6b2f9的interface与terminal完整PASS，reset8x32原生正常关闭，但worker1 open/rooms的tb1真实停车响应FAIL，deadline按规则SKIP。零命令和双轮目标已证实归零，raw横向速度约.011仍超原静止门；先做隔离物理诊断，再新冻结完整重验，不拼接旧PASS，见[V17报告](report/20261017_mr3_p2a0_v17.md)。
-本轮无新pilot、不重置其余额；P2B及后续未开始。
-任务定义见[MR3_TASK_CONTRACT.md](MR3_TASK_CONTRACT.md)，环境实现与接口见[MR3_ENV_CONTRACT.md](MR3_ENV_CONTRACT.md)；
-当前停在P2A，完整联合MaskablePPO训练/验证出口未达；gateway不在授权范围内。
-快速二维独立选项及每run50万/72小时候选预算未获验收，不以P2A授权代替其单独验收。
-工程步骤、状态和逐步验收以 [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) 为准；
-代码审计、文献和取舍依据见 [路线审计](report/20261014_mr3_route_audit.md)；
-本轮矫正见 [复核报告](report/20261014_mr3_correction_review.md)。
-
-
-V19冻结72d0465d的固定50/150诊断已关闭，两组加载/逐毫秒采集/严格关闭均通过；baseline原停车PASS，
-150组三机全程无合法GOAL和有效停车刺激，原物理FAIL。150未选用，V17真实停车问题仍未解决。
-本版原生1638.4207719592378墙秒，V18+V19合计2489.3860735194758；无训练或四阶段矩阵信用，见[V19](report/20261018_mr3_p2a0_v19.md)。
-
-V25冻结579f7ad2已关闭FAIL：实际interface32步、39原生exit0、原物理/运动等9个正式门通过，仅新增平滑器来源采集035失败；11个实际审计全部结束（10PASS/1FAIL，含必需FIFO），terminal/reset/deadline SKIP。50个保存PID/start新鲜核验均消失。累计1369.6459453934804/18000，余16630.35405460652；P2A.0未完成，须修复取证并以新冻结完整重验。035未保存具体失败子条件，不能认定误报；所有原FAIL与原门保持，无PPO。见[V25](report/20261018_mr3_p2a0_v25_smoother.md)。
+路线MR3固定三台tb1/tb2/tb3：先理想通信下的集中式联合RL子目标，再冻结策略接入真正ns-3 Wi-Fi。P0/P1A/P1B/P1C已验收；P2A在进行中，P2B及gateway未开始。P2A.0补验不提供95%策略可靠性、连续动力学安全或多日训练稳定性信用。
 
 ## 1. 研究问题与范围
 
@@ -441,5 +424,3 @@ MAC 重试、命令到达/执行龄、回执闭合率及时间耦合误差。
 [归档索引](report/ARCHIVE_INDEX.json)明确历史内容的适用版本。
 旧报告保留数据，只作为历史证据，不指挥新工作；原路线最新完整版留在
 `p2c1/global-mission-20261012@8fe1495`，当前 MR3 在 `main`。
-
-当前继续P2A.0的[V14服务匹配等待修复](report/20261017_mr3_p2a0_v14.md)：只增9个精确参数reply writer有限1秒等待，旧任务/物理/client门不变，原运动源码与库保持。V13已关闭FAIL，V14源码/CPU及root计划ready，待clean-pushed exact40 preflight及完整同冻结四stage，尚无原生信用。

@@ -1,10 +1,6 @@
 # 当前三机器人基线与MR3适配启动命令
 
-V26仅修进程取证一致性与逐项前后记录，复用V25实际C++/库/参数/ENV和全部原门。窄反例发现的拟议PID复用误分类已修，旧红例保留；230实际绑定与原34/608/596计划source-ready，携带1369.6459453934804/18000。仍须新clean pushed冻结前检与完整四阶段，P2A.0未完成，无PPO。见[V26](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_v26_capture.md)。
-
-V25冻结579f7ad2已关闭FAIL：实际interface32步、39原生exit0、原物理/运动等9个正式门通过，仅新增平滑器来源采集035失败；11个实际审计全部结束（10PASS/1FAIL，含必需FIFO），terminal/reset/deadline SKIP。50个保存PID/start新鲜核验均消失。累计1369.6459453934804/18000，余16630.35405460652；P2A.0未完成，须修复取证并以新冻结完整重验。035未保存具体失败子条件，不能认定误报；所有原FAIL与原门保持，无PPO。见[V25](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_v25_smoother.md)。
-
-V19固定50/150隔离诊断已关闭：两组加载、逐毫秒采集和严格关闭通过；150组三机全程没有合法GOAL或停车刺激，原物理FAIL，150尚未采用，P2A.0仍未完成。详见[V19](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_v19.md)。原启动命令、物理门和pilot余额不变。
+P2A.0工程科学门已补验通过，待用户验收；原V26父编排中断保留，P2A未完成，未启动PPO。 原V26命令仅供追溯；原生阶段已完成、最后只读审计单独补完，原编排中断不改记PASS。见[V26](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_v26_capture.md)和[复盘](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_reflection.md)。
 
 新路线为 [MR3](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/RESEARCH_PLAN.md)，P0/P1A/P1B已验收，用户于2026-10-16验收P1C并授权P2A；P2B及后续未开始。
 默认`execution_mode:=baseline`启动前沿控制器；`adapter`为显式联合动作接口。P2A联合MaskablePPO正在实现与验证；gateway未开始。
@@ -721,9 +717,9 @@ parent串行执行interface32、terminal2、reset双worker共8x32、deadline300K
 reader和watcher全部自然结束及原件封存。P2A.0实际PASS并获用户验收后才进入训练。
 
 
-## MR3-P2A.0 V26 取证修复后的完整工程入口
+## MR3-P2A.0 V26 历史工程入口（原生已完成，审计补完；不重跑）
 
-此为单次新冻结全矩阵；不得用已失败V25重试或拼接PASS。在wireless-rl目录：
+以下保留实际冻结92f8bdf5的历史入口。原生四阶段已完成，父编排在离线审计期间中断；最后一个只读消费者另名补验，详见V26报告。不要再次执行这些原生命令。
 
 ```bash
 env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B report/assets/20261018_mr3_p2a0_v26_capture/independent/mr3_p2a0_v26_buildproof_preflight.py
@@ -732,15 +728,15 @@ env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /home/zhuyulab/mi
 实际前检PASS后，先在独立终端启动watcher，保存START后在另一终端启动唯一parent：
 
 ```bash
-MR3_V26_FREEZE=$(git rev-parse HEAD)
+MR3_V26_FREEZE=92f8bdf5bba1ba245dc53ca0964eef81a7fff938
 env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 -B report/assets/20261018_mr3_p2a0_v26_capture/independent/mr3_p2a0_v26_cross_stage_mapping_monitor_v1.py --freeze "$MR3_V26_FREEZE"
 ```
 
 ```bash
-MR3_V26_FREEZE=$(git rev-parse HEAD)
+MR3_V26_FREEZE=92f8bdf5bba1ba245dc53ca0964eef81a7fff938
 env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 -B report/assets/20261018_mr3_p2a0_v26_capture/independent/mr3_p2a0_v26_run_matrix_v1.py "$MR3_V26_FREEZE"
 ```
 
 原四stage、12episode、608API/596脚本动作、34门及额外必需FIFO均保持，累计工程18000墙秒
 携带1369.6459453934804；先FAIL后续SKIP。所有native、已提交reader及watcher关闭并封存前
-source/bin/Git不变。没有PPO、pilot、P2B或gateway；本准备实际通过并获用户验收后才训练。
+source/bin/Git不变。本次工程科学门补验通过，原编排中断保持；无PPO/pilot/P2B/gateway，仍待用户验收后才进入后续训练。

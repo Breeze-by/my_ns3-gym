@@ -1,27 +1,6 @@
 # wireless-rl memory — MR3
 
-V26仅修进程取证一致性与逐项前后记录，复用V25实际C++/库/参数/ENV和全部原门。窄反例发现的拟议PID复用误分类已修，旧红例保留；230实际绑定与原34/608/596计划source-ready，携带1369.6459453934804/18000。仍须新clean pushed冻结前检与完整四阶段，P2A.0未完成，无PPO。见[V26](report/20261018_mr3_p2a0_v26_capture.md)。
-
-V25冻结579f7ad2已关闭FAIL：实际interface32步、39原生exit0、原物理/运动等9个正式门通过，仅新增平滑器来源采集035失败；11个实际审计全部结束（10PASS/1FAIL，含必需FIFO），terminal/reset/deadline SKIP。50个保存PID/start新鲜核验均消失。累计1369.6459453934804/18000，余16630.35405460652；P2A.0未完成，须修复取证并以新冻结完整重验。035未保存具体失败子条件，不能认定误报；所有原FAIL与原门保持，无PPO。见[V25](report/20261018_mr3_p2a0_v25_smoother.md)。
-
-2026-10-18: V19 freeze72d0465ddd1bbee09af117cfd9d89b7e729f8578 fixed50/150 diagnostic pair closed. Both admission/1ms capture/strict close PASS; baseline original physical PASS, contrast original physical FAIL because all33 snapshots have zero GOAL for every robot and no stopping stimulation. Own maps already retain near-seed100; no occupied clearing or .29 relaxation. 150 not selected, V17 stopping failure unresolved. Native1638.4207719592378sec; V18+V19=2489.3860735194758 of3600 ceiling. 78/78 native exits0; fresh91 PID/start identities gone. No matrix/PPO credit, pilot balance unchanged. See [V19](report/20261018_mr3_p2a0_v19.md).
-
-2026-10-18: V18 freeze85abe391 baseline32/native/original sampled stopping/strict close passed, but root witness rejected actual gzserver-11.10.2 basename. OverallFAIL; formal1ms and iters150 SKIPPED. All39 native exits0,46 saved identities gone,850.965301560238 nativewall charged. V17 physical failure remains unresolved; fix executable entity admission in a fresh freeze, no blind retry or retroactive PASS. See [V18](report/20261018_mr3_p2a0_v18.md). P2A.0 remains incomplete; no PPO/pilot/P2B/gateway.
-
-2026-10-17 continuation (updated2026-10-18 Asia/Shanghai): P2A.0 remains authorized and incomplete. V17 freeze eee6b2f90f697b28a1c20a2af5d1a6d2f044465e passed interface and terminal completely; reset8x32 native/closure and 24 of 26 formal jobs passed, but tb1 real stopping response failed in worker1 open/rooms. Deadline SKIPPED, no retry. All originals preserved; 487 saved PID/start identities absent, 429/429 native processes exited normally. Actual zero commands and applied wheel zeros do not eliminate lateral raw vy about .011m/s; original .01/three-sample/.78s gates remain. Diagnose physics with isolated evidence before a new reviewed clean pushed complete matrix; no cross-freeze PASS. No PPO/P2B/gateway; pilot balance1870 decisions/2905.954739546403 wallsec unchanged. See wireless-rl/report/20261017_mr3_p2a0_v17.md.
-
-Historical first P2A.0 closure (2026-10-17): source freeze f8694025; six native episodes
-closed cleanly, terminal audit PASS, reset benchmark/full audit FAIL with one
-real peer-envelope task failure. The 300-step deadline was SKIPPED under the
-prospective stop rule. P2A.0 exit is unmet; await user review, do not restart
-pilot. Shared navigation-map occupied starts are now proved from exact raw maps.
-
-2026-10-17: user authorized P2A continuation and preparation. Current substep
-MR3-P2A.0 repairs SLAM ownership teardown, preserves failed collection evidence,
-adds versioned received-frontier union and safety diagnostics. No new pilot is
-run; its cumulative balance stays 1870 decisions/2905.954739546403 wall seconds.
-See [P2A.0 report](report/20261017_mr3_p2a0.md). This substep needs its own user
-acceptance before later preparation/training; P2A remains incomplete.
+2026-10-18: P2A.0工程科学门已补验通过，待用户验收；原V26父编排中断保留，P2A未完成，未启动PPO。 源码冻结`92f8bdf5bba1ba245dc53ca0964eef81a7fff938`；同冻结四阶段/12回合、34必需科学角色全部通过，最后一个information只读消费者在原父进程组消失后单独补完；原ledger/未知返回码/缺失最终回执不补造。 原生468/468正常退出，枚举元数据中543个保存PID/start均gone。 reset非必需逐回合停车覆盖FAIL及所有旧FAIL保留，原合并覆盖门通过。 工程累计11420.856789876707/18000墙秒，pilot余额1870决策/2905.954739546403墙秒未用。 详见共享V26报告与20261018_mr3_p2a0_reflection.md；验收前不进入训练或后续步骤。
 
 P1C validation started 2026-10-15; actual closure time is in the P1C report. The active contract is [RESEARCH_PLAN.md](RESEARCH_PLAN.md),
 then [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md). Follow root AGENTS.md.

@@ -1,36 +1,10 @@
 # 三机器人 ROS 建图导航：当前实现指南
 
-V26仅修进程取证一致性与逐项前后记录，复用V25实际C++/库/参数/ENV和全部原门。窄反例发现的拟议PID复用误分类已修，旧红例保留；230实际绑定与原34/608/596计划source-ready，携带1369.6459453934804/18000。仍须新clean pushed冻结前检与完整四阶段，P2A.0未完成，无PPO。见[V26](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_v26_capture.md)。
+P2A.0工程科学门已补验通过，待用户验收；原V26父编排中断保留，P2A未完成，未启动PPO。 源冻结`92f8bdf5bba1ba245dc53ca0964eef81a7fff938`；原生四阶段和34科学角色已补齐，原父编排中断/未知返回码及reset非必需覆盖FAIL保留。见[V26](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_v26_capture.md)与[复盘](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_reflection.md)。
 
-V25冻结579f7ad2已关闭FAIL：实际interface32步、39原生exit0、原物理/运动等9个正式门通过，仅新增平滑器来源采集035失败；11个实际审计全部结束（10PASS/1FAIL，含必需FIFO），terminal/reset/deadline SKIP。50个保存PID/start新鲜核验均消失。累计1369.6459453934804/18000，余16630.35405460652；P2A.0未完成，须修复取证并以新冻结完整重验。035未保存具体失败子条件，不能认定误报；所有原FAIL与原门保持，无PPO。见[V25](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_v25_smoother.md)。
+默认仍为传统前沿baseline；互斥adapter独占稳定目标、使用本机已知权威/已交付共享导航副本、v5候选和received-only累计参与观测。受控20ms推进先完成实际state→peer→guard→三台native storage→evaluator，再推进物理；存储回执不能代替机体响应。
 
-V19固定50/150隔离诊断已关闭：两组加载、逐毫秒采集和严格关闭通过；150组三机全程没有合法GOAL或停车刺激，原物理FAIL，150尚未采用，P2A.0仍未完成。详见[V19](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_v19.md)。原启动命令、物理门和pilot余额不变。
-
-2026-10-17当前边界：用户明确要求继续完成P2A.0。第一版SLAM生命周期、失败采样保存、
-候选v4及诊断修复的[原始结果](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261017_mr3_p2a0.md)保持；
-当前将own权威导航合成、实际导航图v5候选、最终运动门及累计参与观测并入本步，
-MR3适配器每20ms物理推进前依次等待实际causal状态、peer障碍、guard回收与三台原生tagged目标存储回执。受控状态有效50Hz，非受控10Hz；存储ACK不代表机体响应，仍须原物理/时序门。实际三份Shim→原DWB局部控制使用.20/.8命令与显式加速度配置，完整速度模型不符时normal负ACK并严格清理，数据禁止训练。V17冻结eee6b2f9的interface/terminal完整PASS，reset8轮原生与严格关闭通过，但tb1在worker1 open/rooms的停车响应FAIL，deadline SKIP。持续零命令/轮目标后raw横向速度仍约.011m/s，尚不能认定误报；先隔离诊断物理响应，原静止门保持，新冻结完整重验。旧失败/门禁保持，详见[V17报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261017_mr3_p2a0_v17.md)。
-实际Gazebo使用本包构建的paired joint-feedback驱动，物理参数保持原值，详见报告；本轮只做无训练的原生工程矩阵，不重启pilot；95%/300秒/三台参与/安全门禁及累计pilot余额不变。
-第一版6次原生严格关闭正常；terminal通过，reset真实peer失败、deadline跳过的原整体FAIL不改。
-须以新冻结完整验证导航、三台实际执行、20ms运动输出相位及300秒关闭，再待用户验收。
-P2A未完成，P2B/gateway未开始。
-
-本轮P1C验证2026-10-15启动，实际完成时刻见P1C报告；MR3-P1A/P1B用户已验收，用户于2026-10-16验收P1C并授权P2A；`c9344e1`是历史工程冻结。
-新研究契约在 [RESEARCH_PLAN.md](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/RESEARCH_PLAN.md)，步骤在
-[IMPLEMENTATION_PLAN.md](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/IMPLEMENTATION_PLAN.md)。MR3-P0/P1A/P1B/P1C已验收，P2A进行中，P2B及后续未开始。
-默认仍为**传统前沿控制器**；互斥adapter已验收。P1C已实现Gymnasium/IPC、独立奖励和完整reset，并在W7完成原生采样工程验证；
-762项ROS/40项CPU检查通过。GPU保留b328原固定接口3F/3B/0更新范围，P2A已有seed17/41各8决策、各4次GPU更新的独立工程checkpoint；v2 pilot诊断中断保留390原生决策、0更新和两次peer安全失败。v4已完成16步/4更新的原生与奖励/策略审计工程链；pilot在242原生决策、0更新时因折扣目标问题诊断停止。v5改用有限时域γ=λ=1，最小链审计通过；pilot保留48次更新、797条训练样本，随后因40ms终止同步错误停止，未产生final.zip，冻结验证跳过。三次严格成功仅为随机采样描述。v6增加逐20ms评估器实际时钟/终止ACK，终止探针与16决策/4更新最小链独立审计通过；pilot保留718原生决策/0更新后，因SLAM在受控关闭时Karto异常退出(-6)失败，未生成final，开发验证跳过。全部167个保存进程身份及父进程已退出。本轮按no-retry规则停在P2A；用户批准的累计4096决策/4小时pilot已用2226/11494.045260453597墙秒，剩余额度不自动重试。尚无冻结策略可靠性、P2A验收信用或通信gateway。
-复制运行统一使用 [launch_commands.md](launch_commands.md)，其中全部显式传三台。
-冻结`f9928fe`的open/rooms/corridors各seed101脚本适配审计均通过；功能、原失败及证据见
-[P1B报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261015_mr3_p1b.md)。
-P1C已于2026-10-16验收；时钟、张量、奖励与reset规则见
-[MR3_ENV_CONTRACT.md](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_ENV_CONTRACT.md)。
-P1C在W7保留18个精确Nav2状态响应writer的1墙秒匹配窗口，客户端2秒超时不变；
-原有18个状态切换响应writer仍为5秒。此配置与有序关闭已在完整W7工程矩阵中核验，
-历史P1A/P1B证据保持其原profile范围，细节见启动命令和P1C报告。
-v6长KEEP截止发现的两次合法TTL浮点误拒、原始审计和扣分保留。W7 `cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a`
-以整数纳秒端点统一命令、心跳租约、承诺mask和导航期限，完成全新八阶段及独立命令时间门禁，
-不使用v6结果填补v7信用；P1C验收不宣称SDK竞态根治或多日稳定。
+当前stepped研究配置含paired joint-feedback驱动、RayBox修正、quickstep150和使用节点时钟的Nav2 smoother；命令.20/.8，实测及原停车门保持。完整新配置通过不证明150独立修复停车。P0/P1A/P1B/P1C已验收，P2A未完成；本次无新pilot，P2B/gateway未开始。复制命令见[launch_commands.md](launch_commands.md)，任务/环境定义见共享研究、实施计划与MR3_ENV_CONTRACT；详细旧历史见日期报告。
 
 ## 1. 路径与环境
 
@@ -170,7 +144,3 @@ P1B仅为脚本适配与理想逻辑交付证据，两者均没有导航RL/通�
 
 新研究的验收次序、RL方法/奖励、gateway无旁路和时钟规则都在共享研究/实施计划。
 本文只说明当前实现；历史或上游README的任务步骤不作为当前路线指令。
-
-当前P2A.0 V14实际九参数读回、32步执行和严格关闭通过，但peer/control几何及停止覆盖FAIL，后三stage SKIP。确认较低命令cap通过control alias缩小了导航peer包络；需解耦该依赖并改外部取消刺激，以新冻结完整重验。原30秒client/45秒hook及任务/身体/停止门保持；原FAIL保留，见[V14](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261017_mr3_p2a0_v14.md)。
-
-P2A.0的V15冻结17ef3cb212aa已因interface活动/停止覆盖FAIL关闭，后三阶段SKIP，不重跑该冻结。后续修复必须另立新clean pushed冻结并完整四阶段准入；当前准备未完成。V4/32为外部工程输入，按真实received运动和原合法WAIT掩码触发取消，旧V2/V3可复现；全raw停车/角速度/接触/关闭仍由原独立门判断。

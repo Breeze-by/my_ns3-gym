@@ -1,0 +1,62 @@
+{
+  "schema": "mr3-v26-interrupted-parent-recovered-byte-custody-v1",
+  "passed": true,
+  "scope": "Lossless byte custody only. Original parent INTERRUPTED/returncode unknown, original missing finals/ledger preserved; scientific completion is stated only in recovery summary.",
+  "freeze": "92f8bdf5bba1ba245dc53ca0964eef81a7fff938",
+  "plan_sha256": "fe5a2a7bfb5b6708c396687ece361ba603de76cc35ef443ba4ae50cc739efa0a",
+  "original_parent_status": "INTERRUPTED",
+  "original_parent_returncode": null,
+  "recovery_summary": {
+    "path": "/tmp/mr3_p2a0_v26_recovery_close_summary_v1.json",
+    "sha256": "d4c7fbfb47b35111f2e7e185af3d52e596467deaf17671cb48683f1c1ab57e35"
+  },
+  "scientific_mandatory_passed": true,
+  "native": {
+    "interface": {
+      "source_exists": true,
+      "manifest": "/tmp/mr3_p2a0_v26_recovered_packet_v1/native/interface/manifest.json",
+      "manifest_sha256": "2c01d52de21355ce1fd27472811382ea256e83f3b421e41e1fc23208b2ae5fc0",
+      "source_files": 511,
+      "raw_bytes": 495707961,
+      "selected_bytes": 32419820,
+      "selected_parts": 522
+    },
+    "terminal": {
+      "source_exists": true,
+      "manifest": "/tmp/mr3_p2a0_v26_recovered_packet_v1/native/terminal/manifest.json",
+      "manifest_sha256": "87bab8876bc09ec0558b1dc6fff932c0a637a482688b90371a67e39169e523fe",
+      "source_files": 324,
+      "raw_bytes": 264912789,
+      "selected_bytes": 16510626,
+      "selected_parts": 328
+    },
+    "reset": {
+      "source_exists": true,
+      "manifest": "/tmp/mr3_p2a0_v26_recovered_packet_v1/native/reset/manifest.json",
+      "manifest_sha256": "534c13c284ce0151f85bc5076be12948cc2df0e783555782855148ee9f788d8b",
+      "source_files": 4074,
+      "raw_bytes": 4019336486,
+      "selected_bytes": 262687847,
+      "selected_parts": 4162
+    },
+    "deadline": {
+      "source_exists": true,
+      "manifest": "/tmp/mr3_p2a0_v26_recovered_packet_v1/native/deadline/manifest.json",
+      "manifest_sha256": "20fd36605d5aab55f0038537475a8208c7b6a2054c954cf005ffcc0de39f7e9e",
+      "source_files": 3540,
+      "raw_bytes": 3667665882,
+      "selected_bytes": 239359949,
+      "selected_parts": 3641
+    }
+  },
+  "metadata": {
+    "manifest": "/tmp/mr3_p2a0_v26_recovered_packet_v1/metadata/manifest.json",
+    "manifest_sha256": "c9ce8a87e24cfb25b64cfecd65d4990c3414c34354770268ce255da317d8a44d",
+    "source_files": 3112,
+    "raw_bytes": 817779486,
+    "selected_bytes": 76043030,
+    "selected_parts": 3113
+  },
+  "all_original_stat_and_whole_sha_rechecked": true,
+  "custody_wall_seconds": 346.97013730276376
+}
