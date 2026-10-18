@@ -6837,3 +6837,8 @@ root综合124检查有123PASS+1旧ENV附录身份FAIL，修正identity后原16�
 资格闭合后实际生成plan rc0，SHAa2477e5a90fd4b41624e54fc4f4148b09dadaec9b688c1677fd3e2cbfc7cf245；
 矩阵14000、fresh16 minimum900、尾27.7205487563982，所有真实关闭/消费者/间隔计费，超额FAIL仍计实际成本。
 准确新冻结原生命令及边界见[V12预声明](report/20261019_mr3_p2a_v12.md)；本段不宣称新native、95%或P2A完成。
+
+V12准备提交134bfe6包含真实SDK解析SDF/输出，暂存check曾返回2（原件已有行尾空白）；
+root把检查/提交放同一批而未先拦下，原返回码和事实保留。未启动native。
+后续仅按仓库既有.gitattributes做法，对这五份原SDF及run.log指定-text/-whitespace，
+保留实际解析输入及SHA，不修改/规范化证据字节、不影响源码数学或数值门；完整检查后再推送新冻结。
