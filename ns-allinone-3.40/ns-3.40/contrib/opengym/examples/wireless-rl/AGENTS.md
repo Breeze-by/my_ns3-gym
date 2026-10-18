@@ -1,6 +1,6 @@
 # wireless-rl memory — MR3
 
-2026-10-19：P2A.0已验收，P2A未完成。V10在ab03d9ea冻结返回32原生步且正常关闭，但取证入口误拒裸gzserver argv，整体FAIL；49实际保存身份均gone，全部旧FAIL保留。V11只修绝对启动路径、精确映射名和默认controller节点名，按同一总额借用阶段实际节余，待新冻结完整四阶段38角色重验，再进入新PPO minimum/原余额pilot/final-only验证。工程累计13952.7184512926018/30000、余16047.2815487073982（V10保守上界903.879658900）；pilot1870决策/2905.9547395464029秒不变，未启动P2B/gateway。详见V10/V11报告。
+2026-10-19：P2A.0已验收，P2A未完成。V11在2500e9e7冻结原生32步、live取证、full/peer/information均通过，但旧drive physical_model拒绝新增观测配置项，正式FAIL；53保存身份gone，后三stage/PPO跳过。原件已完整封存。V12已将tagged观测固定20ms并删冗余SDF项，原物理reader可直接核验；四组完整旧报告等价及CPU通过，计划已seal待新冻结原生，原数学/安全/任务门均保留。工程累计15072.2794512436018/30000、余14927.7205487563982；pilot1870决策/2905.9547395464029秒不变，未启动P2B/gateway。详见V11报告，所有旧FAIL保留。
 
 P1C validation started 2026-10-15; actual closure time is in the P1C report. The active contract is [RESEARCH_PLAN.md](RESEARCH_PLAN.md),
 then [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md). Follow root AGENTS.md.

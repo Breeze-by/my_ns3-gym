@@ -1,0 +1,35 @@
+{
+  "schema": "mr3-motion-memo-production-cpu-v1",
+  "argv": [
+    "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+    "-B",
+    "-m",
+    "unittest",
+    "mr3_learning.tests.test_audit_motion",
+    "mr3_learning.tests.test_motion_selection_memo",
+    "-q"
+  ],
+  "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+  "scope": "Original 25 motion tests plus 10 direct production-closure memo differential/negative cases. CPU only, no native/GPU/scientific credit.",
+  "started_wall_monotonic_ns": 4097241751816302,
+  "returncode": 0,
+  "ended_wall_monotonic_ns": 4097252337656156,
+  "wall_seconds": "10.585839854",
+  "observed_output": "----------------------------------------------------------------------\nRan 35 tests in 10.232s\n\nOK\n",
+  "tests": 35,
+  "passed": true,
+  "source_files": {
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_motion.py": {
+      "sha256": "202d233600921be6c820fb4f96ec3bd0a4c442df318df140b4d7d375b556d0fc",
+      "bytes": 56410
+    },
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_motion_selection_memo.py": {
+      "sha256": "008f11f3e15d21edf1f55f78a05571752b312f5f8e91aca26453e03f0b238491",
+      "bytes": 9412
+    },
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_motion.py": {
+      "sha256": "a6b580170046b3d9d47244ec79d3633d43154fdef4abea074231edbf40eddd6f",
+      "bytes": 59510
+    }
+  }
+}

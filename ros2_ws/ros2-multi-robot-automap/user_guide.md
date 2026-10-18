@@ -1,10 +1,11 @@
 # 三机器人 ROS 建图导航：当前实现指南
 
-当前V9已关闭：固定action非法0决策，gzserver版本化ELF身份取证FAIL；V10修精确身份绑定并待完整新冻结重验，P2A仍未完成。见[V10](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v10.md)。
+当前V11已关闭：32步/live/full/peer/information通过，但旧drive对新增观测tag准入FAIL，53保存身份gone。V12已将tagged观测固定20ms并删除冗余SDF选项、准备新冻结完整重验；P2A未完成。见[V12](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v12.md)。
 
-2026-10-19用户批准工程累计30000墙秒；V8两组固定稀疏布局诊断已完整采集并正常关闭，但未复现V7近身反例，不能提供修复或95%信用。普通训练默认关闭工程刺激。WORLD odom/TF独立50Hz时序修订及只读真实DDS接收记录器已实现，原轮执行器30Hz与安全门保持，待新冻结原生重验（[V9预声明](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v9.md)）。见[V8预声明](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v8.md)。
-
-2026-10-18用户已验收P2A.0；随后V7最小链16决策/8实际更新正常返回，但真实转向模型失效使科学审计FAIL，pilot/验证SKIPPED。P2A未完成；两项后续代码保护只有CPU准备，物理执行尚未修复。原V26中断与旧FAIL保留，见[V7结果](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a_v7.md)。
+P2A.0已验收，用户授权继续P2A并批准工程累计30000墙秒；pilot和final-only开发验证额度不变。
+WORLD odom/TF独立50Hz与真实DDS接收记录器已实现，轮执行器仍为30Hz；新固定模式须完整原生重验。
+V7真实转向模型FAIL、V8未复现的诊断及V9—V11失败均保留，不能提供修复或95%策略信用；详细事实见日期报告。
+普通训练默认关闭工程刺激，P2B/gateway未启动。
 
 默认仍为传统前沿baseline；互斥adapter独占稳定目标、使用本机已知权威/已交付共享导航副本、v5候选和received-only累计参与观测。受控20ms推进先完成实际state→peer→guard→三台native storage→evaluator，再推进物理；存储回执不能代替机体响应。
 

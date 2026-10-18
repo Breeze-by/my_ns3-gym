@@ -63,8 +63,7 @@ class TraceCollectionTests(unittest.TestCase):
                     sdf = (audit.WORKSPACE / audit.MODEL).read_text()
                     for tag, value in {
                             "mr3_audit_path": str(episode / f"drive_{robot}.jsonl"),
-                            "mr3_epoch": epoch, "mr3_tagged_commands": "true",
-                            "mr3_odometry_period_ns": "20000000"}.items():
+                            "mr3_epoch": epoch, "mr3_tagged_commands": "true"}.items():
                         sdf = sdf.replace(f"<{tag}/>", f"<{tag}>{value}</{tag}>")
                     if observer:
                         sdf = sdf.replace("</model>", f'<plugin name="mr3_stop_response_observer_{robot}" '
@@ -201,6 +200,13 @@ class TraceCollectionTests(unittest.TestCase):
                     rows.pop()
                 path.write_text("".join(json.dumps(row) + "\n" for row in rows))
                 self.assertFalse(self.review(episode, freeze)["passed"])
+
+    def test_removed_odometry_sdf_option_is_rejected(self):
+        episode, freeze = self.fixture()
+        path = episode / "drive_model_tb1.sdf"
+        path.write_text(path.read_text().replace("</plugin>",
+            "<mr3_odometry_period_ns>20000000</mr3_odometry_period_ns></plugin>", 1))
+        self.assertFalse(self.review(episode, freeze)["passed"])
 
     def test_real_launch_spawn_and_physical_sdf_are_bound_not_estimated_slam_pose(self):
         for field in ("spawn", "model", "arm", "shutdown"):

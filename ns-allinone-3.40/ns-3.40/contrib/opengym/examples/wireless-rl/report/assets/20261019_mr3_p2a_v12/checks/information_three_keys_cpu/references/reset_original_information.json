@@ -1,0 +1,637 @@
+{
+  "consumer_sha256": "f73600551a68e833a4c0a2063b12b75038a748466c838c8583c00605a34b948b",
+  "criteria": {
+    "controlled_periodic_publication_forbidden": true,
+    "duplicate_request_preserves_committed_bundle": true,
+    "explicit_state_phase_request_to_real_publication": true,
+    "full_payload_sha_and_actual_publish_calls": true,
+    "future_pending_preserved": true,
+    "raw_ingress_to_latest_causal_selection": true,
+    "received_callback_before_decision_binding": true,
+    "state_age_limit_sec_unchanged": 0.5,
+    "tf_source_is_validity_minus_point2": true
+  },
+  "episodes": [
+    {
+      "episode": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker0/episode001_open_101",
+      "epoch": "mr3_p2a0_20261018_v26_reset_w0_e1_a18053be",
+      "errors": [],
+      "inputs": [
+        {
+          "decoded_bytes": 2533,
+          "decoded_sha256": "48663aa81d501e783af12d9b6abba6b6632bab8d38563698ac0d669457f7dfc2",
+          "encoded_bytes": 2533,
+          "encoded_sha256": "48663aa81d501e783af12d9b6abba6b6632bab8d38563698ac0d669457f7dfc2",
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker0/episode001_open_101/metadata.json"
+        },
+        {
+          "decoded_bytes": 402630,
+          "decoded_sha256": "4297dc0cf4f57077604259c726d06c28f3bb0743db52d05bd9fd3e2ec1ea857d",
+          "encoded_bytes": 402630,
+          "encoded_sha256": "4297dc0cf4f57077604259c726d06c28f3bb0743db52d05bd9fd3e2ec1ea857d",
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker0/episode001_open_101/physics.jsonl"
+        },
+        {
+          "decoded_bytes": 1292538,
+          "decoded_sha256": "b86bfd1ab0adbc886a4451a724287d92d8e81128b1cd7ea251e65bd10013b408",
+          "encoded_bytes": 1292538,
+          "encoded_sha256": "b86bfd1ab0adbc886a4451a724287d92d8e81128b1cd7ea251e65bd10013b408",
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker0/episode001_open_101/transitions.jsonl"
+        },
+        {
+          "decoded_bytes": 13332,
+          "decoded_sha256": "f9b000dbf6e46983cee440479f3a95f578c307475c8dd5d4a2962c7cd8954940",
+          "encoded_bytes": 13332,
+          "encoded_sha256": "f9b000dbf6e46983cee440479f3a95f578c307475c8dd5d4a2962c7cd8954940",
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker0/episode001_open_101/summary.json"
+        },
+        {
+          "decoded_bytes": 147899430,
+          "decoded_sha256": "70322b34f8e1ad710cce4e0ac79727b6fd3c92708ee8641cc15b9ba528b9a6e4",
+          "encoded_bytes": 147899430,
+          "encoded_sha256": "70322b34f8e1ad710cce4e0ac79727b6fd3c92708ee8641cc15b9ba528b9a6e4",
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker0/episode001_open_101/information_states.jsonl"
+        },
+        {
+          "decoded_bytes": 194811702,
+          "decoded_sha256": "5dc5101f2c543467b33a20968c2c74a62a371e109c81419dc6d666195cd838ff",
+          "encoded_bytes": 194811702,
+          "encoded_sha256": "5dc5101f2c543467b33a20968c2c74a62a371e109c81419dc6d666195cd838ff",
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker0/episode001_open_101/motion_safety.jsonl"
+        }
+      ],
+      "motion_binding_counts": {
+        "decisions": 10782,
+        "received_bundles": 1999
+      },
+      "passed": true,
+      "physics_end_ns": 71880000000,
+      "producer_counts": {
+        "configuration": 1,
+        "odom_future_ingress": 5280,
+        "odom_ingress": 5883,
+        "selections_retaining_future_odom": 79,
+        "state_commit_acks": 1601,
+        "state_drain_ack": 33,
+        "state_drain_request": 33,
+        "state_phase_ack": 1602,
+        "state_phase_request": 1602,
+        "state_publish": 1999,
+        "state_selection": 5997,
+        "state_send": 5924,
+        "takeover_acks": 1,
+        "tf_future_ingress": 240,
+        "tf_ingress": 126973,
+        "tf_promote": 5919
+      },
+      "publications_at_or_after_task_release": 1601,
+      "scope": "recorded producer ingress/selection/send/delivery/publish and actual motion receipt order; does not prove middleware completeness, eliminate all timer races, or award task success",
+      "task_release_ns": 39860000000
+    },
+    {
+      "episode": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker0/episode002_open_101",
+      "epoch": "mr3_p2a0_20261018_v26_reset_w0_e2_a789bb35",
+      "errors": [],
+      "inputs": [
+        {
+          "decoded_bytes": 2533,
+          "decoded_sha256": "bb2b88478c90ea2c6e2e91aa104561fe292e4dd94b83a96903e6fb4f96cec267",
+          "encoded_bytes": 2533,
+          "encoded_sha256": "bb2b88478c90ea2c6e2e91aa104561fe292e4dd94b83a96903e6fb4f96cec267",
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker0/episode002_open_101/metadata.json"
+        },
+        {
+          "decoded_bytes": 404373,
+          "decoded_sha256": "edc5fb67954deb2b473562b10703de4f932fbd28cb767a69c1b82414616ac974",
+          "encoded_bytes": 404373,
+          "encoded_sha256": "edc5fb67954deb2b473562b10703de4f932fbd28cb767a69c1b82414616ac974",
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker0/episode002_open_101/physics.jsonl"
+        },
+        {
+          "decoded_bytes": 1287340,
+          "decoded_sha256": "0c1d6e4b2ebde813ca58936b08463f692e75850549226d1ea586ca5eaf1928cc",
+          "encoded_bytes": 1287340,
+          "encoded_sha256": "0c1d6e4b2ebde813ca58936b08463f692e75850549226d1ea586ca5eaf1928cc",
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker0/episode002_open_101/transitions.jsonl"
+        },
+        {
+          "decoded_bytes": 13331,
+          "decoded_sha256": "584e6fe8c6153ed074e1eaec575f1412756b16046e0076756ca73960a10b1c48",
+          "encoded_bytes": 13331,
+          "encoded_sha256": "584e6fe8c6153ed074e1eaec575f1412756b16046e0076756ca73960a10b1c48",
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker0/episode002_open_101/summary.json"
+        },
+        {
+          "decoded_bytes": 150532940,
+          "decoded_sha256": "5056ed1870ac4ed4e8769aa3e4f776d3e7f8dab895fe4a7a7eae6c6d5920690b",
+          "encoded_bytes": 150532940,
+          "encoded_sha256": "5056ed1870ac4ed4e8769aa3e4f776d3e7f8dab895fe4a7a7eae6c6d5920690b",
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker0/episode002_open_101/information_states.jsonl"
+        },
+        {
+          "decoded_bytes": 196561148,
+          "decoded_sha256": "7066db7703296fc4931bae55c7bd33b79a1268a858d4503031c577058aaf1c9d",
+          "encoded_bytes": 196561148,
+          "encoded_sha256": "7066db7703296fc4931bae55c7bd33b79a1268a858d4503031c577058aaf1c9d",
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker0/episode002_open_101/motion_safety.jsonl"
+        }
+      ],
+      "motion_binding_counts": {
+        "decisions": 10560,
+        "received_bundles": 1985
+      },
+      "passed": true,
+      "physics_end_ns": 70500000000,
+      "producer_counts": {
+        "configuration": 1,
+        "odom_future_ingress": 5191,
+        "odom_ingress": 5846,
+        "selections_retaining_future_odom": 60,
+        "state_commit_acks": 1601,
+        "state_drain_ack": 33,
+        "state_drain_request": 33,
+        "state_phase_ack": 1602,
+        "state_phase_request": 1602,
+        "state_publish": 1985,
+        "state_selection": 5955,
+        "state_send": 5909,
+        "takeover_acks": 1,
+        "tf_future_ingress": 53,
+        "tf_ingress": 130757,
+        "tf_promote": 5906
+      },
+      "publications_at_or_after_task_release": 1601,
+      "scope": "recorded producer ingress/selection/send/delivery/publish and actual motion receipt order; does not prove middleware completeness, eliminate all timer races, or award task success",
+      "task_release_ns": 38480000000
+    },
+    {
+      "episode": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker0/episode003_rooms_101",
+      "epoch": "mr3_p2a0_20261018_v26_reset_w0_e3_e0920a49",
+      "errors": [],
+      "inputs": [
+        {
+          "decoded_bytes": 2538,
+          "decoded_sha256": "2ec1a07ef4fa6a84bccf3657dda552e0c8bed50cd824cd44916dfbce0f4e593d",
+          "encoded_bytes": 2538,
+          "encoded_sha256": "2ec1a07ef4fa6a84bccf3657dda552e0c8bed50cd824cd44916dfbce0f4e593d",
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker0/episode003_rooms_101/metadata.json"
+        },
+        {
+          "decoded_bytes": 401634,
+          "decoded_sha256": "f09219dcb242a28842e940f7b2484f2830f7b451aba7ac8130420e773569c3c5",
+          "encoded_bytes": 401634,
+          "encoded_sha256": "f09219dcb242a28842e940f7b2484f2830f7b451aba7ac8130420e773569c3c5",
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker0/episode003_rooms_101/physics.jsonl"
+        },
+        {
+          "decoded_bytes": 1285349,
+          "decoded_sha256": "5677afc52f112b65840e5d01a10997181d4a29b5afb8b613a81216f0125942d0",
+          "encoded_bytes": 1285349,
+          "encoded_sha256": "5677afc52f112b65840e5d01a10997181d4a29b5afb8b613a81216f0125942d0",
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker0/episode003_rooms_101/transitions.jsonl"
+        },
+        {
+          "decoded_bytes": 13330,
+          "decoded_sha256": "b5b85d7a49c05e7ec5ac2403f06a399682fc69114ed93aee7aa05f2066f68633",
+          "encoded_bytes": 13330,
+          "encoded_sha256": "b5b85d7a49c05e7ec5ac2403f06a399682fc69114ed93aee7aa05f2066f68633",
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker0/episode003_rooms_101/summary.json"
+        },
+        {
+          "decoded_bytes": 150299224,
+          "decoded_sha256": "bd88342da26a40f0eeea686db8b88ae429fd4c51bb996c159e01a5ecf5ac252c",
+          "encoded_bytes": 150299224,
+          "encoded_sha256": "bd88342da26a40f0eeea686db8b88ae429fd4c51bb996c159e01a5ecf5ac252c",
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker0/episode003_rooms_101/information_states.jsonl"
+        },
+        {
+          "decoded_bytes": 195657322,
+          "decoded_sha256": "213f51202fdaa5357bc0aeda1eaa6f1f6a406f166cc9207b5f20f30cc0085487",
+          "encoded_bytes": 195657322,
+          "encoded_sha256": "213f51202fdaa5357bc0aeda1eaa6f1f6a406f166cc9207b5f20f30cc0085487",
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker0/episode003_rooms_101/motion_safety.jsonl"
+        }
+      ],
+      "motion_binding_counts": {
+        "decisions": 10260,
+        "received_bundles": 1964
+      },
+      "passed": true,
+      "physics_end_ns": 68400000000,
+      "producer_counts": {
+        "configuration": 1,
+        "odom_future_ingress": 4922,
+        "odom_ingress": 5713,
+        "selections_retaining_future_odom": 59,
+        "state_commit_acks": 1601,
+        "state_drain_ack": 33,
+        "state_drain_request": 33,
+        "state_phase_ack": 1602,
+        "state_phase_request": 1602,
+        "state_publish": 1964,
+        "state_selection": 5892,
+        "state_send": 5838,
+        "takeover_acks": 1,
+        "tf_future_ingress": 21,
+        "tf_ingress": 131099,
+        "tf_promote": 5836
+      },
+      "publications_at_or_after_task_release": 1601,
+      "scope": "recorded producer ingress/selection/send/delivery/publish and actual motion receipt order; does not prove middleware completeness, eliminate all timer races, or award task success",
+      "task_release_ns": 36380000000
+    },
+    {
+      "episode": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker0/episode004_corridors_101",
+      "epoch": "mr3_p2a0_20261018_v26_reset_w0_e4_8cea53cc",
+      "errors": [],
+      "inputs": [
+        {
+          "decoded_bytes": 2558,
+          "decoded_sha256": "e67d3066c72c29d5d65198db34dbac0e09ca96eaf0562747f5c924338e67527b",
+          "encoded_bytes": 2558,
+          "encoded_sha256": "e67d3066c72c29d5d65198db34dbac0e09ca96eaf0562747f5c924338e67527b",
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker0/episode004_corridors_101/metadata.json"
+        },
+        {
+          "decoded_bytes": 401634,
+          "decoded_sha256": "e92b0e469f768003065872cf77d2ca367fe8e374fa7a4a9cd85413f700dc4970",
+          "encoded_bytes": 401634,
+          "encoded_sha256": "e92b0e469f768003065872cf77d2ca367fe8e374fa7a4a9cd85413f700dc4970",
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker0/episode004_corridors_101/physics.jsonl"
+        },
+        {
+          "decoded_bytes": 1243440,
+          "decoded_sha256": "2e840e90d75d4ee6a27496e0e7809c4b0f23c9f5d1a0ecad77332e492a36d31d",
+          "encoded_bytes": 1243440,
+          "encoded_sha256": "2e840e90d75d4ee6a27496e0e7809c4b0f23c9f5d1a0ecad77332e492a36d31d",
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker0/episode004_corridors_101/transitions.jsonl"
+        },
+        {
+          "decoded_bytes": 13338,
+          "decoded_sha256": "044518bf77e67edac37532c2632b85c459b6f7ab995e43638a82b3fa172071e2",
+          "encoded_bytes": 13338,
+          "encoded_sha256": "044518bf77e67edac37532c2632b85c459b6f7ab995e43638a82b3fa172071e2",
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker0/episode004_corridors_101/summary.json"
+        },
+        {
+          "decoded_bytes": 140347830,
+          "decoded_sha256": "2904c7fa243dd4364299cb79d6170956ca2d613b972d7fbb2ac974331ba64061",
+          "encoded_bytes": 140347830,
+          "encoded_sha256": "2904c7fa243dd4364299cb79d6170956ca2d613b972d7fbb2ac974331ba64061",
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker0/episode004_corridors_101/information_states.jsonl"
+        },
+        {
+          "decoded_bytes": 190511349,
+          "decoded_sha256": "f094247380d4c359afc733baaa3e5a0abf9c23affb4732356a5aeb2081b207b2",
+          "encoded_bytes": 190511349,
+          "encoded_sha256": "f094247380d4c359afc733baaa3e5a0abf9c23affb4732356a5aeb2081b207b2",
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker0/episode004_corridors_101/motion_safety.jsonl"
+        }
+      ],
+      "motion_binding_counts": {
+        "decisions": 10815,
+        "received_bundles": 2001
+      },
+      "passed": true,
+      "physics_end_ns": 72080000000,
+      "producer_counts": {
+        "configuration": 1,
+        "odom_future_ingress": 5262,
+        "odom_ingress": 6081,
+        "selections_retaining_future_odom": 26,
+        "state_commit_acks": 1601,
+        "state_drain_ack": 33,
+        "state_drain_request": 33,
+        "state_phase_ack": 1602,
+        "state_phase_request": 1602,
+        "state_publish": 2001,
+        "state_selection": 6003,
+        "state_send": 5934,
+        "takeover_acks": 1,
+        "tf_future_ingress": 102,
+        "tf_ingress": 116074,
+        "tf_promote": 5933
+      },
+      "publications_at_or_after_task_release": 1601,
+      "scope": "recorded producer ingress/selection/send/delivery/publish and actual motion receipt order; does not prove middleware completeness, eliminate all timer races, or award task success",
+      "task_release_ns": 40060000000
+    },
+    {
+      "episode": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker1/episode001_open_101",
+      "epoch": "mr3_p2a0_20261018_v26_reset_w1_e1_51d0d28c",
+      "errors": [],
+      "inputs": [
+        {
+          "decoded_bytes": 2533,
+          "decoded_sha256": "c4cf97c45acb807a10cdb7f8e19bb6ebac710d06f74f4ad1eec558d39d0ed48c",
+          "encoded_bytes": 2533,
+          "encoded_sha256": "c4cf97c45acb807a10cdb7f8e19bb6ebac710d06f74f4ad1eec558d39d0ed48c",
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker1/episode001_open_101/metadata.json"
+        },
+        {
+          "decoded_bytes": 403875,
+          "decoded_sha256": "36fb894c1af07894ffb3fe0b914e8e5fdccb7db9ae78f85bed6212562fa0d230",
+          "encoded_bytes": 403875,
+          "encoded_sha256": "36fb894c1af07894ffb3fe0b914e8e5fdccb7db9ae78f85bed6212562fa0d230",
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker1/episode001_open_101/physics.jsonl"
+        },
+        {
+          "decoded_bytes": 1297304,
+          "decoded_sha256": "baec4ed54db236e5a2fe4cb7f8e41357a0b05d5b168c2a995f6786792eec18e7",
+          "encoded_bytes": 1297304,
+          "encoded_sha256": "baec4ed54db236e5a2fe4cb7f8e41357a0b05d5b168c2a995f6786792eec18e7",
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker1/episode001_open_101/transitions.jsonl"
+        },
+        {
+          "decoded_bytes": 13326,
+          "decoded_sha256": "8f0f774778af2060653620f2377cf2805161a5c809dbf24072391e16e469d00f",
+          "encoded_bytes": 13326,
+          "encoded_sha256": "8f0f774778af2060653620f2377cf2805161a5c809dbf24072391e16e469d00f",
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker1/episode001_open_101/summary.json"
+        },
+        {
+          "decoded_bytes": 149368012,
+          "decoded_sha256": "74b4104437fe5231227de9dbd811bd494073ad42004b9ce4db74d10cdb2f2841",
+          "encoded_bytes": 149368012,
+          "encoded_sha256": "74b4104437fe5231227de9dbd811bd494073ad42004b9ce4db74d10cdb2f2841",
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker1/episode001_open_101/information_states.jsonl"
+        },
+        {
+          "decoded_bytes": 197269502,
+          "decoded_sha256": "a423ffdb0706e4d2617319595eca8773001906118744524e8107afe5366c82da",
+          "encoded_bytes": 197269502,
+          "encoded_sha256": "a423ffdb0706e4d2617319595eca8773001906118744524e8107afe5366c82da",
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker1/episode001_open_101/motion_safety.jsonl"
+        }
+      ],
+      "motion_binding_counts": {
+        "decisions": 10776,
+        "received_bundles": 1999
+      },
+      "passed": true,
+      "physics_end_ns": 71920000000,
+      "producer_counts": {
+        "configuration": 1,
+        "odom_future_ingress": 5146,
+        "odom_ingress": 5958,
+        "selections_retaining_future_odom": 59,
+        "state_commit_acks": 1601,
+        "state_drain_ack": 33,
+        "state_drain_request": 33,
+        "state_phase_ack": 1602,
+        "state_phase_request": 1602,
+        "state_publish": 1999,
+        "state_selection": 5997,
+        "state_send": 5934,
+        "takeover_acks": 1,
+        "tf_future_ingress": 152,
+        "tf_ingress": 128637,
+        "tf_promote": 5930
+      },
+      "publications_at_or_after_task_release": 1601,
+      "scope": "recorded producer ingress/selection/send/delivery/publish and actual motion receipt order; does not prove middleware completeness, eliminate all timer races, or award task success",
+      "task_release_ns": 39900000000
+    },
+    {
+      "episode": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker1/episode002_open_101",
+      "epoch": "mr3_p2a0_20261018_v26_reset_w1_e2_58d8e702",
+      "errors": [],
+      "inputs": [
+        {
+          "decoded_bytes": 2533,
+          "decoded_sha256": "988a61d771d8511e8aeaf7e24f9a92bcea6ffe4ad45d438d90d52dfabb899076",
+          "encoded_bytes": 2533,
+          "encoded_sha256": "988a61d771d8511e8aeaf7e24f9a92bcea6ffe4ad45d438d90d52dfabb899076",
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker1/episode002_open_101/metadata.json"
+        },
+        {
+          "decoded_bytes": 399642,
+          "decoded_sha256": "5bddb7790064eaac2edef7b57eca2f9e97ea0b66b0158a4016d0a4c94dd47cb9",
+          "encoded_bytes": 399642,
+          "encoded_sha256": "5bddb7790064eaac2edef7b57eca2f9e97ea0b66b0158a4016d0a4c94dd47cb9",
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker1/episode002_open_101/physics.jsonl"
+        },
+        {
+          "decoded_bytes": 1283724,
+          "decoded_sha256": "e47f49fba890abb90c02557d539a90875003a540e0a720a298ec4689f4f057d5",
+          "encoded_bytes": 1283724,
+          "encoded_sha256": "e47f49fba890abb90c02557d539a90875003a540e0a720a298ec4689f4f057d5",
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker1/episode002_open_101/transitions.jsonl"
+        },
+        {
+          "decoded_bytes": 13332,
+          "decoded_sha256": "9bb52ff08aa7a082c4aef5f51736ae659bf26ed6261acfb8f7a534486c1889d9",
+          "encoded_bytes": 13332,
+          "encoded_sha256": "9bb52ff08aa7a082c4aef5f51736ae659bf26ed6261acfb8f7a534486c1889d9",
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker1/episode002_open_101/summary.json"
+        },
+        {
+          "decoded_bytes": 151064516,
+          "decoded_sha256": "85e426c87be7d7c8b0b845201f193710f636022ccd92298db18be5385e973026",
+          "encoded_bytes": 151064516,
+          "encoded_sha256": "85e426c87be7d7c8b0b845201f193710f636022ccd92298db18be5385e973026",
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker1/episode002_open_101/information_states.jsonl"
+        },
+        {
+          "decoded_bytes": 196613429,
+          "decoded_sha256": "98fd56b44cd4daaa1c43cffe5a460a62793e7682110abb3ecbdee770a1511be1",
+          "encoded_bytes": 196613429,
+          "encoded_sha256": "98fd56b44cd4daaa1c43cffe5a460a62793e7682110abb3ecbdee770a1511be1",
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker1/episode002_open_101/motion_safety.jsonl"
+        }
+      ],
+      "motion_binding_counts": {
+        "decisions": 10659,
+        "received_bundles": 1991
+      },
+      "passed": true,
+      "physics_end_ns": 71040000000,
+      "producer_counts": {
+        "configuration": 1,
+        "odom_future_ingress": 5609,
+        "odom_ingress": 5950,
+        "selections_retaining_future_odom": 45,
+        "state_commit_acks": 1601,
+        "state_drain_ack": 33,
+        "state_drain_request": 33,
+        "state_phase_ack": 1602,
+        "state_phase_request": 1602,
+        "state_publish": 1991,
+        "state_selection": 5973,
+        "state_send": 5920,
+        "takeover_acks": 1,
+        "tf_future_ingress": 110,
+        "tf_ingress": 130996,
+        "tf_promote": 5918
+      },
+      "publications_at_or_after_task_release": 1601,
+      "scope": "recorded producer ingress/selection/send/delivery/publish and actual motion receipt order; does not prove middleware completeness, eliminate all timer races, or award task success",
+      "task_release_ns": 39020000000
+    },
+    {
+      "episode": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker1/episode003_rooms_101",
+      "epoch": "mr3_p2a0_20261018_v26_reset_w1_e3_92585646",
+      "errors": [],
+      "inputs": [
+        {
+          "decoded_bytes": 2538,
+          "decoded_sha256": "2d1400699734c5e5474d3d483fcc88fef1980dc1e08299f4d17f2a572678d15f",
+          "encoded_bytes": 2538,
+          "encoded_sha256": "2d1400699734c5e5474d3d483fcc88fef1980dc1e08299f4d17f2a572678d15f",
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker1/episode003_rooms_101/metadata.json"
+        },
+        {
+          "decoded_bytes": 403875,
+          "decoded_sha256": "0e528ce212c616d0f1af588610e526fa96ea021d5d9270b50cbf03e841af2810",
+          "encoded_bytes": 403875,
+          "encoded_sha256": "0e528ce212c616d0f1af588610e526fa96ea021d5d9270b50cbf03e841af2810",
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker1/episode003_rooms_101/physics.jsonl"
+        },
+        {
+          "decoded_bytes": 1278769,
+          "decoded_sha256": "a582ca87d9121e005b4b2011b3571e23adad5b8544552dceff0e92c19e03dab5",
+          "encoded_bytes": 1278769,
+          "encoded_sha256": "a582ca87d9121e005b4b2011b3571e23adad5b8544552dceff0e92c19e03dab5",
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker1/episode003_rooms_101/transitions.jsonl"
+        },
+        {
+          "decoded_bytes": 13336,
+          "decoded_sha256": "e066ca1c81505af1fc45f4ea050c993c0f4b3c89d822aaf8720c97537adaf913",
+          "encoded_bytes": 13336,
+          "encoded_sha256": "e066ca1c81505af1fc45f4ea050c993c0f4b3c89d822aaf8720c97537adaf913",
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker1/episode003_rooms_101/summary.json"
+        },
+        {
+          "decoded_bytes": 151890796,
+          "decoded_sha256": "74f6ed109e0de8442e9a2fbf409fad8e56dcfe040f20590c7cbac6d15aada9bb",
+          "encoded_bytes": 151890796,
+          "encoded_sha256": "74f6ed109e0de8442e9a2fbf409fad8e56dcfe040f20590c7cbac6d15aada9bb",
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker1/episode003_rooms_101/information_states.jsonl"
+        },
+        {
+          "decoded_bytes": 197683363,
+          "decoded_sha256": "1f4c0ee47f48e69dba2087b26d5eca80c0e872939c521d0e43834942841c105b",
+          "encoded_bytes": 197683363,
+          "encoded_sha256": "1f4c0ee47f48e69dba2087b26d5eca80c0e872939c521d0e43834942841c105b",
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker1/episode003_rooms_101/motion_safety.jsonl"
+        }
+      ],
+      "motion_binding_counts": {
+        "decisions": 10620,
+        "received_bundles": 1989
+      },
+      "passed": true,
+      "physics_end_ns": 70900000000,
+      "producer_counts": {
+        "configuration": 1,
+        "odom_future_ingress": 5042,
+        "odom_ingress": 5869,
+        "selections_retaining_future_odom": 42,
+        "state_commit_acks": 1601,
+        "state_drain_ack": 33,
+        "state_drain_request": 33,
+        "state_phase_ack": 1602,
+        "state_phase_request": 1602,
+        "state_publish": 1989,
+        "state_selection": 5967,
+        "state_send": 5903,
+        "takeover_acks": 1,
+        "tf_future_ingress": 56,
+        "tf_ingress": 132413,
+        "tf_promote": 5899
+      },
+      "publications_at_or_after_task_release": 1601,
+      "scope": "recorded producer ingress/selection/send/delivery/publish and actual motion receipt order; does not prove middleware completeness, eliminate all timer races, or award task success",
+      "task_release_ns": 38880000000
+    },
+    {
+      "episode": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker1/episode004_corridors_101",
+      "epoch": "mr3_p2a0_20261018_v26_reset_w1_e4_f5b9b9a1",
+      "errors": [],
+      "inputs": [
+        {
+          "decoded_bytes": 2558,
+          "decoded_sha256": "53310de169442c516290e1cc3100b773aaaec1428a8f51309ed6ae35a7af74a8",
+          "encoded_bytes": 2558,
+          "encoded_sha256": "53310de169442c516290e1cc3100b773aaaec1428a8f51309ed6ae35a7af74a8",
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker1/episode004_corridors_101/metadata.json"
+        },
+        {
+          "decoded_bytes": 401136,
+          "decoded_sha256": "5e2f800f6388ae9c51f48d97fdecd1f441b48466aab7050deddc7ddfe799e857",
+          "encoded_bytes": 401136,
+          "encoded_sha256": "5e2f800f6388ae9c51f48d97fdecd1f441b48466aab7050deddc7ddfe799e857",
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker1/episode004_corridors_101/physics.jsonl"
+        },
+        {
+          "decoded_bytes": 1252443,
+          "decoded_sha256": "2e850e4dd4193f93a026dfc40df6dee05a60830bf8b9dcb285513fe1cde75bf6",
+          "encoded_bytes": 1252443,
+          "encoded_sha256": "2e850e4dd4193f93a026dfc40df6dee05a60830bf8b9dcb285513fe1cde75bf6",
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker1/episode004_corridors_101/transitions.jsonl"
+        },
+        {
+          "decoded_bytes": 13339,
+          "decoded_sha256": "54451989b58bfb24320ec10eb0e0dea3c4227113c919e5bf472fec69413efe7d",
+          "encoded_bytes": 13339,
+          "encoded_sha256": "54451989b58bfb24320ec10eb0e0dea3c4227113c919e5bf472fec69413efe7d",
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker1/episode004_corridors_101/summary.json"
+        },
+        {
+          "decoded_bytes": 138827508,
+          "decoded_sha256": "3dc9ca0aee8a97f0e5624629ff2c83631a4bbbafbc2e6e38474de5109df67ae0",
+          "encoded_bytes": 138827508,
+          "encoded_sha256": "3dc9ca0aee8a97f0e5624629ff2c83631a4bbbafbc2e6e38474de5109df67ae0",
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker1/episode004_corridors_101/information_states.jsonl"
+        },
+        {
+          "decoded_bytes": 189615373,
+          "decoded_sha256": "25d5249be646ce056add8eb68edbc71893f8ff6353f08e228a51cb03b962a262",
+          "encoded_bytes": 189615373,
+          "encoded_sha256": "25d5249be646ce056add8eb68edbc71893f8ff6353f08e228a51cb03b962a262",
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset/worker1/episode004_corridors_101/motion_safety.jsonl"
+        }
+      ],
+      "motion_binding_counts": {
+        "decisions": 10764,
+        "received_bundles": 1999
+      },
+      "passed": true,
+      "physics_end_ns": 71860000000,
+      "producer_counts": {
+        "configuration": 1,
+        "odom_future_ingress": 5349,
+        "odom_ingress": 6114,
+        "selections_retaining_future_odom": 25,
+        "state_commit_acks": 1601,
+        "state_drain_ack": 33,
+        "state_drain_request": 33,
+        "state_phase_ack": 1602,
+        "state_phase_request": 1602,
+        "state_publish": 1999,
+        "state_selection": 5997,
+        "state_send": 5929,
+        "takeover_acks": 1,
+        "tf_future_ingress": 290,
+        "tf_ingress": 114288,
+        "tf_promote": 5929
+      },
+      "publications_at_or_after_task_release": 1601,
+      "scope": "recorded producer ingress/selection/send/delivery/publish and actual motion receipt order; does not prove middleware completeness, eliminate all timer races, or award task success",
+      "task_release_ns": 39840000000
+    }
+  ],
+  "errors": [],
+  "freeze": "92f8bdf5bba1ba245dc53ca0964eef81a7fff938",
+  "immutable_raw_replay": {
+    "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v9/independent/mr3_independent_information_v1.py",
+    "sha256": "ba3e89fa6feda9406f984310adccf17c2f0638644fd0d26f0c2e9040ec0e7653"
+  },
+  "limitations": [
+    "A producer callback ledger documents that callback; it does not prove absence of DDS loss.",
+    "Successful provenance replay cannot substitute for original full safety, phase, shutdown, contact, physical, activity, or task acceptance gates."
+  ],
+  "passed": true,
+  "root": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_reset",
+  "schema": "mr3-independent-information-review-v2"
+}

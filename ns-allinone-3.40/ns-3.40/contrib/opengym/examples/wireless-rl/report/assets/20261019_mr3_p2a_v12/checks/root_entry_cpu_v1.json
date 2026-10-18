@@ -1,0 +1,66 @@
+{
+  "schema": "mr3-p2a-v12-root-cpu-checks-v1",
+  "native_started": false,
+  "checks": [
+    {
+      "scope": "initial two-module entry check after new ENV appendix, before refreshing its identity",
+      "modules": [
+        "test_audit_ppo",
+        "test_native_custody"
+      ],
+      "tests": 45,
+      "actual_tool_returncode": 1,
+      "reported_seconds": "3.555",
+      "error": "one ENV Git/worktree identity differs; old appendix identity retained after doc append"
+    },
+    {
+      "scope": "combined changed components before ENV identity fix",
+      "modules": [
+        "test_audit_ppo",
+        "test_native_custody",
+        "test_preparation",
+        "test_audit_information",
+        "test_audit_motion",
+        "test_motion_selection_memo",
+        "test_audit_odometry_cadence",
+        "test_audit_action_trace"
+      ],
+      "tests": 124,
+      "actual_tool_returncode": 1,
+      "reported_seconds": "27.384",
+      "errors": 1,
+      "passed_other_tests": 123,
+      "error": "same one ENV identity mismatch"
+    },
+    {
+      "scope": "after refreshing complete ENV digest and exact fixed appendix SHA/bytes, normative prefix unchanged",
+      "modules": [
+        "test_audit_ppo"
+      ],
+      "tests": 16,
+      "actual_tool_returncode": 0,
+      "reported_seconds": "1.954",
+      "normative_prefix_preserved_exact": true
+    },
+    {
+      "scope": "ROS launch and actual driver schedule/Load config branches",
+      "pytest_files": [
+        "test_mr3_plant_launch.py",
+        "test_mr3_adapter_launch.py",
+        "test_mr3_drive_launch.py",
+        "test_driver_odometry_schedule.py"
+      ],
+      "tests": 53,
+      "actual_tool_returncode": 0,
+      "reported_seconds": "6.76"
+    }
+  ],
+  "common_environment": {
+    "PYTHONNOUSERSITE": "1",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONPATH": "removed"
+  },
+  "conda_python": "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+  "ros_python": "/usr/bin/python3",
+  "scope": "Actual CPU results, including earlier failures; no native/GPU/PPO or new-freeze scientific credit."
+}

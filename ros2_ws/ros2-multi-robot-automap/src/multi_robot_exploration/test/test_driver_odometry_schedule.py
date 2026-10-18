@@ -66,3 +66,60 @@ def test_driver_actuation_tail_and_wheel_tf_remain_exact_accepted_source_bytes()
     helper = "ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/paired_wheel_slew.hpp"
     assert (root / helper).read_bytes() == subprocess.check_output([
         "git", "show", "92f8bdf5bba1ba245dc53ca0964eef81a7fff938:" + helper], cwd=root)
+
+
+def test_actual_driver_load_fixes_tagged20ms_and_preserves_untagged_contract(tmp_path):
+    root = Path(__file__).resolve().parents[5]
+    relative = "ros2_ws/ros2-multi-robot-automap/src/multi_robot/src/mr3_gazebo_diff_drive.cpp"
+    current = (root / relative).read_text()
+    start = current.index('  if (_sdf->HasElement("mr3_odometry_period_ns")) {')
+    end = current.index('  impl_->last_odometry_time_ns_ =', start)
+    actual_period_branch = current[start:end]
+    start = current.index('  if (impl_->odometry_period_ns_ != 0) {', end)
+    end = current.index('    if (impl_->audit_) {', start)
+    actual_publication_guard = current[start:end] + '  }\n'
+    # Compile the actual Load branches with only their independent input fields.
+    # This exercises the real production decisions without a Gazebo world/node.
+    head = r"""
+#include <cassert>
+#include <cstdint>
+#include <stdexcept>
+#include <string>
+struct Sdf {
+  bool obsolete;
+  bool HasElement(const std::string & key) const {
+    assert(key == "mr3_odometry_period_ns"); return obsolete;
+  }
+};
+struct MR3GazeboDiffDrivePrivate {
+  enum { WORLD = 1 };
+  bool tagged_commands_; int odom_source_; int64_t odometry_period_ns_;
+  bool publish_odom_; bool publish_odom_tf_;
+};
+struct Result { bool accepted; int64_t period; };
+Result actual(bool tagged, int source, bool obsolete, bool odom, bool tf) {
+  Sdf sdf{obsolete}; auto * _sdf = &sdf;
+  MR3GazeboDiffDrivePrivate data{tagged, source, 0, odom, tf}; auto * impl_ = &data;
+  try {
+"""
+    tail = r"""
+    return {true, impl_->odometry_period_ns_};
+  } catch (const std::invalid_argument &) { return {false, -1}; }
+}
+int main() {
+  for (bool tagged : {false, true}) for (int source : {0, 1})
+  for (bool obsolete : {false, true}) for (bool odom : {false, true})
+  for (bool tf : {false, true}) {
+    auto result = actual(tagged, source, obsolete, odom, tf);
+    bool expected = !obsolete && (!tagged || (source == 1 && odom && tf));
+    assert(result.accepted == expected);
+    if (result.accepted) assert(result.period == (tagged ? 20000000 : 0));
+  }
+}
+"""
+    source = tmp_path / "actual_load_contract.cpp"
+    source.write_text(head + actual_period_branch + actual_publication_guard + tail)
+    binary = tmp_path / "actual_load_contract"
+    subprocess.run(["g++", "-std=c++17", "-Wall", "-Wextra", "-Werror",
+                    str(source), "-o", str(binary)], check=True, capture_output=True, text=True)
+    subprocess.run([str(binary)], check=True, capture_output=True, text=True)

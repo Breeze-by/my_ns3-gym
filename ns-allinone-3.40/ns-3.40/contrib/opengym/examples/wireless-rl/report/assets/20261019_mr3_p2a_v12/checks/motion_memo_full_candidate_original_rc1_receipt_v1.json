@@ -1,0 +1,51 @@
+{
+  "schema": "mr3-motion-memo-single-full-cpu-comparison-v1",
+  "freeze": "2500e9e7837a9efc208772d5dc6cf0373ebcb551",
+  "started_wall_monotonic_ns": 4096895316669633,
+  "actual_full_calls": 1,
+  "scope": "External CPU optimization diagnostic only. Original formal full PASS remains unchanged. Candidate code is not misrepresented by the unchanged formal source_proof fields; its separate actual source identity and one-block proof are explicit here. No new native/GPU or scientific credit.",
+  "process_identity": {
+    "pid": 935855
+  },
+  "passed": false,
+  "errors": [],
+  "before": {
+    "actual_closed_files_SHA_stat_verified": 579,
+    "plan_frozen_source_files_SHA_stat_verified": 273,
+    "original_manifest_sha256": "528f6544d0d3ad7e142d09750be8727e584c164cc240efcd3945f214bf2217cb"
+  },
+  "candidate_source": {
+    "path": "/tmp/mr3_p2a_v11_audit_motion_memo_candidate_v1.py",
+    "sha256": "202d233600921be6c820fb4f96ec3bd0a4c442df318df140b4d7d375b556d0fc",
+    "original_git_source": "2500e9e7837a9efc208772d5dc6cf0373ebcb551:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_motion.py",
+    "original_sha256": "5254fcc83ea9c36fb38cd2b300b77390d23d6633be8c04a1f4a6915f4d893359",
+    "only_single_selected_own_block_replaced": true,
+    "exact_inverse_whole_source_bytes_equal": true,
+    "cpu_proof_path": "/tmp/mr3_p2a_v11_motion_memo_cpu_v1.json",
+    "cpu_proof_sha256": "d46556bf5ac6fb53c8bc7aeab2a89e9422b1d5b7f18541cced196afc0416c5af"
+  },
+  "private_process_binding_changes": [
+    "audit_preparation.audit_motion",
+    "audit_controlled_physics.audit_motion"
+  ],
+  "baseline": {
+    "path": "/tmp/mr3_p2a_v11_matrix_evidence/interface/full_result.json",
+    "sha256": "74a49af54e0ca827dafa9f3be6bafbb113a117ca99576fba4c5a45ad71b5c5bb",
+    "passed": true
+  },
+  "audit_wall_seconds": "163.659735447",
+  "result": {
+    "path": "/tmp/mr3_p2a_v11_motion_memo_full_candidate_result_v1.json",
+    "sha256": "74a49af54e0ca827dafa9f3be6bafbb113a117ca99576fba4c5a45ad71b5c5bb",
+    "passed": true
+  },
+  "entire_result_dict_equal_to_formal_full": false,
+  "canonical_result_bytes_equal": true,
+  "after": {
+    "all_before_bound_source_original_and_library_SHA_stat_stable": true,
+    "actual_closed_files": 579,
+    "plan_frozen_sources": 273
+  },
+  "ended_wall_monotonic_ns": 4097072406873687,
+  "complete_script_wall_seconds": "177.090204054"
+}

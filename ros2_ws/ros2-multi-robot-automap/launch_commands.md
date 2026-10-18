@@ -156,16 +156,17 @@ phase3固定绑定原contact task-phase与独立命令时间门禁；scalar rewa
 [环境契约](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_ENV_CONTRACT.md)。
 每次实际执行均是需追加共享log的实验，不能把入口存在当成P1C通过。
 
-## MR3-P2A V11 完整新冻结重验
+## MR3-P2A V12 固定观测周期重验（新冻结预声明）
 
-V10返回32原生步，但取证入口FAIL，旧run-id不可重启。V11启动命令显式使用`/usr/bin/gzserver`，
-仍为原绑定版本化ELF；精确映射名和默认controller节点名检查修复，物理/任务门不变。
-同一14900矩阵预约内允许前阶段实际节余向后分配，38角色全部新冻结通过才进入PPO。
-准确preflight/matrix/PPO命令、条件和预算见[V11](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v11.md)。
+V11原生32/live/full/peer/information通过，但旧drive拒绝新增观测tag，正式FAIL保留。
+当前tagged模式固定20ms WORLD odometry/同源TF，已删除多余SDF选项；旧period tag残留会被拒绝。
+untagged保留原耦合发布，30Hz判据/实际34ms轮执行器及所有物理/安全/任务门保持。
+只读审计仅消除经过完整报告等价对照的重复计算，新版仍须新冻结四阶段38角色全部通过才进入PPO。
+准确预算与准入状态见[V12](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v12.md)；四组旧报告整字节等价及生产CPU通过，计划已seal待clean+pushed preflight，当前未启动本版native。
 
 ## MR3-P2A V9 真实WORLD odometry时序（已关闭历史入口）
 
-带MR3协议标签的adapter驱动现在使用`mr3_odometry_period_ns=20000000`真实发布WORLD odometry及同源TF，
+V9冻结的adapter驱动曾使用`mr3_odometry_period_ns=20000000`真实发布WORLD odometry及同源TF；该历史参数已由V12固定模式取代，
 轮执行器仍原30Hz。非空adapter audit路径同时启动只读`mr3_odometry_recorder`，worker等待三台各odom/驱动TF
 实际接收ready；baseline空配置保持旧耦合发布。该默认组件变化须新冻结近身采集及四阶段工程复验，
 当前未取得新的原生PASS。准确预声明argv与单次preflight/trace/matrix入口见[V9报告执行段](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v9.md)。工程刺激默认空，正常矩阵/训练必须清除`MR3_PHYSICS_DIAGNOSTIC_CONFIG_FILE`

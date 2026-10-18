@@ -65,10 +65,9 @@ class MR3GazeboDiffDrivePrivate;
       <!-- Update rate in Hz -->
       <update_rate>50</update_rate>
 
-      <!-- Optional MR3 tagged WORLD odometry/odom-TF period, integer ns.
-           Empty/0 keeps legacy coupling; 20000000 publishes real own samples
-           independently, without changing wheel actuation or wheel TF rate. -->
-      <mr3_odometry_period_ns/>
+      <!-- MR3 tagged WORLD mode fixes real own odometry/odom-TF samples at
+           20000000ns independently of wheel actuation and wheel TF. Untagged
+           mode retains legacy coupling; no odometry-period SDF option exists. -->
 
       <!-- wheels -->
       <left_joint>left_wheel_joint</left_joint>

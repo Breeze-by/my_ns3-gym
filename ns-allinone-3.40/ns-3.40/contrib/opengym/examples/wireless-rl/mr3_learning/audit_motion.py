@@ -504,11 +504,17 @@ def _audit_records(directory, helper, source_proof):
     control_commits, completed_outputs = {}, {}
     control_publish_windows, output_publish_windows = {}, {}
 
+    own_selection_cache = {}
+
     def selected_own(name, target, tracker=None):
         selected, selected_sequences = sources[name], sequences[name]
         if causal_selection:
-            selected, selected_sequences = causal_own_inputs(
-                histories[name], sequences[name], target)
+            key = (name, target, tuple(sequences[name].items()))
+            cached = own_selection_cache.get(name)
+            if cached is None or cached[0] != key:
+                cached = (key, causal_own_inputs(histories[name], sequences[name], target))
+                own_selection_cache[name] = cached
+            selected, selected_sequences = cached[1]
         return own_state(name, selected, selected_sequences, epoch, tracker, target,
                          full_velocity=full_velocity)
 

@@ -1,0 +1,52 @@
+{
+  "schema": "mr3-v11-old32-source-admission-diagnostic-cpu-v1",
+  "recorded_at_utc": "2026-10-18T19:19:25.387934+00:00",
+  "diagnostic_only": true,
+  "formal_v11_result_relabelled": false,
+  "new_freeze_credit": false,
+  "diagnostic_command": [
+    "env",
+    "PYTHONNOUSERSITE=1",
+    "PYTHONDONTWRITEBYTECODE=1",
+    "/usr/bin/python3",
+    "/tmp/mr3_v12_drive_model_admission_draft_v1.py",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v11/mr3_p2a_v11_interface",
+    "--freeze",
+    "2500e9e7837a9efc208772d5dc6cf0373ebcb551",
+    "--binary-proof",
+    "/tmp/mr3_p2a_v11_binaryproof.json",
+    "--binding",
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v11/native_custody_binding.json",
+    "--output",
+    "/tmp/mr3_p2a_v11_old32_drive_diagnostic_admission_v1.json"
+  ],
+  "diagnostic_returncode": 0,
+  "diagnostic_passed": true,
+  "negative_tests": {
+    "command": [
+      "/usr/bin/python3",
+      "/tmp/test_mr3_v12_drive_model_admission_draft_v1.py",
+      "-q"
+    ],
+    "returncode": 0,
+    "tests": 4,
+    "failures": 0,
+    "errors": 0,
+    "observed_output": "Ran 4 tests in 0.128s\n\nOK"
+  },
+  "files": {
+    "/tmp/mr3_v12_drive_model_admission_draft_v1.py": {
+      "sha256": "81de96a554058930eea702551331bdae3617a05faa06066d3d1bdf2975bdd76a",
+      "bytes": 8424
+    },
+    "/tmp/test_mr3_v12_drive_model_admission_draft_v1.py": {
+      "sha256": "893d43c37ee9d51e5a4d1c1adaa6cf6ae9d82d3b6c2b41009ed167363242c260",
+      "bytes": 3676
+    },
+    "/tmp/mr3_p2a_v11_old32_drive_diagnostic_admission_v1.json": {
+      "sha256": "ae9c1c019de40b073a369700da573af4505f0ebc9bf7376ce29a065cdfbe8450",
+      "bytes": 7266424
+    }
+  },
+  "scope": "Strictly validate the extra fourth measurement tag before one detached XML source-admission projection, then execute the complete original immutable drivev6/v5/v4 review on original32 records. All raw bytes/original math/source files remain unchanged. Native world-body response is not proven by the drive reader; V11 formal FAIL stays FAIL. This diagnostic adapter will not be used as the production solution; fixed tagged20ms with no added SDF option is preferred."
+}

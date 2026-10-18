@@ -1,0 +1,31 @@
+{
+  "schema": "mr3-information-three-key-pending-observation-v3",
+  "status": "RUNNING_NOT_SELECTED",
+  "observed_wall_monotonic_ns": 4099058411541689,
+  "actual_identity": {
+    "pid": 937224,
+    "start_ticks": 409715282,
+    "state": "R",
+    "actual_argv": [
+      "/usr/bin/python3",
+      "-B",
+      "/tmp/mr3_information_three_key_candidate_v1.py",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_deadline",
+      "--freeze",
+      "92f8bdf5bba1ba245dc53ca0964eef81a7fff938",
+      "--reference",
+      "/tmp/mr3_p2a0_v26_deadline_information_supplemental_v1.json",
+      "--output",
+      "/tmp/mr3_information_three_key_candidate_closed_v1/deadline_report.json",
+      "--receipt",
+      "/tmp/mr3_information_three_key_candidate_closed_v1/deadline_equivalence.json"
+    ]
+  },
+  "cpu_seconds": "1905.34",
+  "process_age_seconds_from_quantized_proc_start": "1905.591541689355",
+  "report_present": false,
+  "equivalence_receipt_present": false,
+  "outer_actual_wait_returncode": null,
+  "scope": "Descriptive running nonselected CPU candidate; proc start is quantized clock ticks, not a manufactured exact launch timestamp. No result, completion, PASS, native credit, signal or retry inferred.",
+  "correction_note": "v2 saved argv as one string containing nulls because its delimiter literal was escaped incorrectly; v3 decodes actual proc bytes on null bytes. CPU/stat fields in v2 remain descriptive originals."
+}

@@ -1,0 +1,29 @@
+{
+  "schema": "mr3-information-three-key-production-short-cpu-v1",
+  "passed": true,
+  "returncode": 0,
+  "command": [
+    "/usr/bin/python3",
+    "-B",
+    "-m",
+    "unittest",
+    "mr3_learning.tests.test_preparation",
+    "mr3_learning.tests.test_audit_information",
+    "-v"
+  ],
+  "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+  "tests": 26,
+  "reported_test_seconds": "1.585",
+  "tool_wall_seconds": 3.681793542,
+  "stdout_stderr": "test_derived_argv_and_budget_reach_real_cpu_wait_receipt_default_unchanged (mr3_learning.tests.test_preparation.BorrowedBudgetTests) ... ok\ntest_engineering_remaining_is_a_separate_upper_bound (mr3_learning.tests.test_preparation.BorrowedBudgetTests) ... ok\ntest_initial_source_admission_overhead_does_not_consume_later_base_reservations (mr3_learning.tests.test_preparation.BorrowedBudgetTests) ... ok\ntest_last_stage_uses_remaining_matrix_without_raising_total_quota (mr3_learning.tests.test_preparation.BorrowedBudgetTests) ... ok\ntest_only_actual_unused_prior_wall_can_be_borrowed (mr3_learning.tests.test_preparation.BorrowedBudgetTests) ... ok\ntest_prior_overhead_deficit_is_debited_instead_of_leaking_past_ceiling (mr3_learning.tests.test_preparation.BorrowedBudgetTests) ... ok\ntest_round_down_and_copy_leave_every_other_declared_cli_argument_intact (mr3_learning.tests.test_preparation.BorrowedBudgetTests) ... ok\ntest_source_and_ready_rechecks_never_move_cumulative_deadline (mr3_learning.tests.test_preparation.BorrowedBudgetTests) ... ok\ntest_unknown_or_exhausted_wall_never_creates_admission_or_returncode (mr3_learning.tests.test_preparation.BorrowedBudgetTests) ... ok\ntest_actual_cpu_ready_wait_stop_and_fifo_match_production_boundary_readers (mr3_learning.tests.test_preparation.PreparationTests) ... ok\ntest_aggregate_and_fifo_manifest_preserve_actual_members_without_inventing_rc (mr3_learning.tests.test_preparation.PreparationTests) ... ok\ntest_builder_preserves_original38_roles_workloads_and_draft_admission (mr3_learning.tests.test_preparation.PreparationTests) ... ok\ntest_command_output_cannot_override_actual_nonzero_wait_result_or_overwrite (mr3_learning.tests.test_preparation.PreparationTests) ... ok\ntest_exhausted_budget_submits_no_child (mr3_learning.tests.test_preparation.PreparationTests) ... ok\ntest_explicit_trace_capture_key_never_overrides_actual_rc_or_claims_science (mr3_learning.tests.test_preparation.PreparationTests) ... ok\ntest_first_required_failure_drains_submitted_child_and_skips_dependant (mr3_learning.tests.test_preparation.PreparationTests) ... ok\ntest_information_implementation_requires_explicit_flag_and_changes_only_four_roles (mr3_learning.tests.test_preparation.PreparationTests) ... ok\ntest_missing_role_math_replacement_or_cycle_is_rejected_before_native (mr3_learning.tests.test_preparation.PreparationTests) ... ok\ntest_new_information_flag_cannot_replace_other_roles_or_omit_source_identity (mr3_learning.tests.test_preparation.PreparationTests) ... ok\ntest_optional_real_nonzero_rc_does_not_suppress_dependent_pooled_review (mr3_learning.tests.test_preparation.PreparationTests) ... ok\ntest_reset_retains_optional_raw_failure_and_eight_leaf_pooled_contract (mr3_learning.tests.test_preparation.PreparationTests) ... ok\ntest_exact_inverse_and_same_method_as_closed_four_stage_candidate (mr3_learning.tests.test_audit_information.InformationImplementationTests) ... ok\ntest_existing_implementation_provenance_is_not_silently_replaced (mr3_learning.tests.test_audit_information.InformationImplementationTests) ... ok\ntest_full_selection_state_and_invalid_input_predicates_remain_unchanged (mr3_learning.tests.test_audit_information.InformationImplementationTests) ... ok\ntest_one_provenance_field_preserves_every_original_pass_or_failure_field (mr3_learning.tests.test_audit_information.InformationImplementationTests) ... ok\ntest_wrong_original_source_is_rejected_before_any_audit (mr3_learning.tests.test_audit_information.InformationImplementationTests) ... ok\n\n----------------------------------------------------------------------\nRan 26 tests in 1.585s\n\nOK\n",
+  "sources_sha256": {
+    "mr3_learning/audit_information.py": "eb4d9716503dcfb99797f1b09497c229adeb8b1efb149c93ae0acb5688722cf7",
+    "mr3_learning/preparation.py": "0c0019ecc23e5a03fd9184c12002e8dd3e1ac497927cfbf9fc3ce6c04daa225c",
+    "mr3_learning/tests/test_audit_information.py": "61dc4c74d6704988a2ccf93ae233abf4e2ab5d09494e98bbc12c76d9cb68d7e4",
+    "mr3_learning/tests/test_preparation.py": "305a8f2033054c0fd2426a5947d54527f9b8d89b407529b4c85db0287411984a"
+  },
+  "git_diff_check_returncode": 0,
+  "effective_selection_method_sha256": "f9ea7d7f1f6faa5114a430f80758c2d78137b1050950d745462f715aa16bc5f5",
+  "active_closed_candidate_sha256": "834e5aa1e37fc2a238bcb8979ba90060f263a6ca8c87c757ef6c373b94a0848e",
+  "scope": "CPU-only production API/provenance/default-original opt-in wiring and actual finite-child boundary/budget regressions. Three of four historical complete-report comparisons have passed so far; deadline is still running unchanged. This receipt does not admit or claim four-stage equivalence, ready freeze or native success."
+}

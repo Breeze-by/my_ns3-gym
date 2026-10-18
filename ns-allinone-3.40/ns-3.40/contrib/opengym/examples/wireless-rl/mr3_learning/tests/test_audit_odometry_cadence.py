@@ -101,7 +101,7 @@ def fixture(directory):
         lines(directory / ("drive_" + robot + ".jsonl"), driver)
         (directory / ("drive_model_" + robot + ".sdf")).write_text(
             '<sdf><model><plugin name="turtlebot3_diff_drive"><update_rate>30</update_rate>'
-            '<mr3_odometry_period_ns>20000000</mr3_odometry_period_ns></plugin></model></sdf>')
+            '<mr3_tagged_commands>true</mr3_tagged_commands></plugin></model></sdf>')
         # The first two sources are already received at the first query: source time
         # need not follow callback/query ordering, and future source may not be used.
         for sequence, clock in enumerate(clocks, 1):
@@ -182,6 +182,20 @@ class OdometryCadenceTests(unittest.TestCase):
                 directory = self.case()
                 mutate(directory / "driver_odometry_receipts.jsonl", lambda rows: rows[2].update(publisher_gid=gid))
                 self.assertFalse(audit.audit(directory, FREEZE)["passed"])
+
+    def test_removed_period_option_and_untagged_mode_cannot_claim_fixed20ms(self):
+        for declaration in ("<mr3_odometry_period_ns/>",
+                            "<mr3_odometry_period_ns>20000000</mr3_odometry_period_ns>"):
+            with self.subTest(declaration=declaration):
+                directory = self.case()
+                path = directory / "drive_model_tb3.sdf"
+                path.write_text(path.read_text().replace("</plugin>", declaration + "</plugin>"))
+                self.assertFalse(audit.audit(directory, FREEZE)["passed"])
+        directory = self.case()
+        path = directory / "drive_model_tb3.sdf"
+        path.write_text(path.read_text().replace("<mr3_tagged_commands>true</mr3_tagged_commands>",
+                                               "<mr3_tagged_commands>false</mr3_tagged_commands>"))
+        self.assertFalse(audit.audit(directory, FREEZE)["passed"])
 
     def test_wheel20ms_change_cannot_be_counted_as_unchanged30hz_actuation(self):
         directory = self.case()

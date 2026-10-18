@@ -23,10 +23,10 @@ class PreparationTests(unittest.TestCase):
         self.root = Path(self.temporary.name)
         self.events = []
 
-    def plan(self):
+    def plan(self, **kwargs):
         return prep.build_plan(output_directory=self.root / "execution", run_root=self.root / "native",
                                custody_binding=self.root / "binding.json", binary_proof=self.root / "binary.json",
-                               preflight=self.root / "preflight.json", engineering_remaining_seconds="17164.4756821603982")
+                               preflight=self.root / "preflight.json", engineering_remaining_seconds="17164.4756821603982", **kwargs)
 
     def runner(self):
         directory = self.root / "receipts"
@@ -84,6 +84,38 @@ class PreparationTests(unittest.TestCase):
         self.assertEqual(len(jobs["input"]["members"]), 8)
         self.assertEqual(len(jobs["fifo_manifest"]["members"]), 8)
         self.assertEqual(jobs["closure"]["depends_on"], ["fifo_manifest"])
+
+    def test_information_implementation_requires_explicit_flag_and_changes_only_four_roles(self):
+        original = self.plan()
+        new = self.plan(information_implementation="admitted_index_three_keys_v1")
+        self.assertEqual(original["information_implementation"], "original")
+        changed = []
+        for old_stage, new_stage in zip(original["stages"], new["stages"]):
+            self.assertEqual(old_stage["native"], new_stage["native"])
+            for old_job, new_job in zip(old_stage["audits"], new_stage["audits"]):
+                if old_job != new_job:
+                    changed.append((new_stage["stage"], new_job["role"]))
+                    self.assertEqual(new_job["argv"][:3], ["/usr/bin/python3", "-m", "mr3_learning.audit_information"])
+                    self.assertEqual({k: v for k, v in old_job.items() if k != "argv"},
+                                     {k: v for k, v in new_job.items() if k != "argv"})
+        self.assertEqual(changed, [(stage, "information") for stage in prep.STAGES])
+        new["readiness"] = {"ready": True}
+        prep.validate_plan(new)
+        new["information_implementation"] = "original"
+        with self.assertRaisesRegex(ValueError, "original mathematical consumer replaced"):
+            prep.validate_plan(new)
+
+    def test_new_information_flag_cannot_replace_other_roles_or_omit_source_identity(self):
+        for fault in ("source", "peer"):
+            plan = self.plan(information_implementation="admitted_index_three_keys_v1")
+            plan["readiness"] = {"ready": True}
+            if fault == "source":
+                del plan["source_bindings"][str(prep.WIRELESS_RELATIVE / "mr3_learning/audit_information.py")]
+            else:
+                peer = next(job for job in plan["stages"][0]["audits"] if job.get("role") == "peer")
+                peer["argv"] = ["/usr/bin/python3", "-m", "mr3_learning.audit_information", *peer["argv"][2:]]
+            with self.assertRaises(ValueError):
+                prep.validate_plan(plan)
 
     def test_first_required_failure_drains_submitted_child_and_skips_dependant(self):
         runner = self.runner()

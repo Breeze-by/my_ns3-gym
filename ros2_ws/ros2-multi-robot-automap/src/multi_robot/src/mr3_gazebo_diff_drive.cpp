@@ -439,14 +439,11 @@ void MR3GazeboDiffDrive::Load(gazebo::physics::ModelPtr _model, sdf::ElementPtr 
   impl_->robot_base_frame_ = _sdf->Get<std::string>("robot_base_frame", "base_footprint").first;
   impl_->odom_source_ = static_cast<MR3GazeboDiffDrivePrivate::OdomSource>(
     _sdf->Get<int>("odometry_source", 1).first);
-  const auto odometry_period = _sdf->Get<std::string>("mr3_odometry_period_ns", "").first;
-  if (odometry_period != "" && odometry_period != "0" && odometry_period != "20000000") {
-    throw std::invalid_argument("MR3 odometry period must be coupled or exactly 20000000ns");
+  if (_sdf->HasElement("mr3_odometry_period_ns")) {
+    throw std::invalid_argument("MR3 odometry period is fixed by tagged mode; remove the obsolete SDF tag");
   }
-  impl_->odometry_period_ns_ = odometry_period == "20000000" ? 20000000 : 0;
-  if (impl_->odometry_period_ns_ != 0 &&
-    (!impl_->tagged_commands_ || impl_->odom_source_ != MR3GazeboDiffDrivePrivate::WORLD))
-  {
+  impl_->odometry_period_ns_ = impl_->tagged_commands_ ? 20000000 : 0;
+  if (impl_->tagged_commands_ && impl_->odom_source_ != MR3GazeboDiffDrivePrivate::WORLD) {
     throw std::invalid_argument("independent MR3 odometry requires tagged WORLD source");
   }
   impl_->last_odometry_time_ns_ = SimNanoseconds(impl_->last_update_time_);

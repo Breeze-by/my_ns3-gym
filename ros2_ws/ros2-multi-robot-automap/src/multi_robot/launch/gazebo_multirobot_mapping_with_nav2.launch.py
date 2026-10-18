@@ -260,7 +260,6 @@ def drive_spawn_model(model_path, robot_name, audit_path, epoch, tagged_commands
                            if audit_path else ""),
         "mr3_epoch": epoch,
         "mr3_tagged_commands": "true" if tagged_commands else "false",
-        "mr3_odometry_period_ns": "20000000" if tagged_commands else "",
     }
     for tag, value in tags.items():
         placeholder = f"<{tag}/>"

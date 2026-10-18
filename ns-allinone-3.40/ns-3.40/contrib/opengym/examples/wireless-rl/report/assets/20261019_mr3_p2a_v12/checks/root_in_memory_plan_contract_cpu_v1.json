@@ -1,0 +1,38 @@
+{
+  "schema": "mr3-p2a-v12-in-memory-plan-contract-cpu-v1",
+  "scope": "Pure CPU synthetic readiness on copied draft only; no plan file, no actual readiness qualification, no admission or native",
+  "passed": true,
+  "unready_draft_rejected": "new preparation plan is not sealed and ready",
+  "synthetic_ready_contract_valid": true,
+  "mandatory_roles": 38,
+  "information_entries": [
+    [
+      "/usr/bin/python3",
+      "-m",
+      "mr3_learning.audit_information"
+    ],
+    [
+      "/usr/bin/python3",
+      "-m",
+      "mr3_learning.audit_information"
+    ],
+    [
+      "/usr/bin/python3",
+      "-m",
+      "mr3_learning.audit_information"
+    ],
+    [
+      "/usr/bin/python3",
+      "-m",
+      "mr3_learning.audit_information"
+    ]
+  ],
+  "source_bindings": 244,
+  "wall_monotonic_ns": 4098848638988224,
+  "elapsed_ns": 65056276,
+  "earlier_call": {
+    "actual_tool_returncode": 1,
+    "reason": "root test invoked validator on default unready draft; expected guard raised; no plan was written"
+  },
+  "preparation_sha256": "2128b5be64ba129527e5cd988edc4615535de4ca39d7640b6b5208a666f38ac7"
+}

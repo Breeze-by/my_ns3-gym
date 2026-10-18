@@ -6657,7 +6657,7 @@ FIFO、严格取证及38科学角色未提交，terminal/reset/deadline和所有
 只读重放通过，仅是未来修复的CPU/诊断支持，不补授V10 live捕获信用。
 
 完整运行、真实wait、原生关闭、只读observer一次实际143中断及第二版自然0退出、debug、10ELF和冻结源码
-封存于[closed_evidence](assets/20261019_mr3_p2a_v10/closed_evidence/manifest.json)。
+封存于[closed_evidence](report/assets/20261019_mr3_p2a_v10/closed_evidence/manifest.json)。
 实际outer开始到final内部观察903.613392543秒，再加整个final工具调用0.266266357秒，
 保守charge上界903.879658900（观察前部分重复计，不补造未知结束时间）。
 工程累计13952.7184512926018/30000，余16047.2815487073982；pilot1870决策/2905.9547395464029及条件验证不变。
@@ -6670,7 +6670,7 @@ rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /usr/bi
 ```
 
 V11仅将启动命令设为同一ELF的绝对别名、修正完整映射文件名与默认节点名检查，并在批准总额内分配实际节余。
-原物理/安全/任务/38科学角色均保持，须新冻结完整重验。见[V11预声明](20261019_mr3_p2a_v11.md)。
+原物理/安全/任务/38科学角色均保持，须新冻结完整重验。见[V11预声明](report/20261019_mr3_p2a_v11.md)。
 
 
 ## 2026-10-19 MR3-P2A V11执行前声明
@@ -6680,3 +6680,160 @@ V11仅将启动命令设为同一ELF的绝对别名、修正完整映射文件�
 V10封包核验补记：833成员/579696592原字节，10实际ELF与277冻结来源；archive44079458字节，SHA `e708e0e42de2bcd09635c3c3506ca2bb8f93198941fe9a0641088f341066df9d`，manifest SHA `76ef7f4984bf6eb544fa84e8a27ddb1aaf05be8d64a3a1b294cc0a4b2083cdff`，逐文件roundtrip/gzip CRC/拼接SHA/源末stat+SHA全部通过。封包为CPU只读工作，不增原生信用。
 
 V11原生启动前最终复核：关闭review中另有一处旧controller显式名复验，现与live capture采用相同默认/唯一正确override规则。新增完整review默认名正例和错误/冲突/重复/scoped/name负例，29取证CPU通过。此修复在任何V11 native启动前完成，新binding/pins/plan均已刷新；1676dc4仅准备提交，未用于原生。原27项收据保留其原字节，最终新增v2收据另列。
+
+
+## 2026-10-19 MR3-P2A V11：32步与取证通过，旧model准入FAIL（已关闭）
+
+实际clean+pushed冻结`2500e9e7837a9efc208772d5dc6cf0373ebcb551`，真实preflight通过。
+interface open101/原near spawn/三台返回32 step（另有1reset），末步真实外部截断，native rc0/883.492686950墙秒；
+正式watcher rc0/884.582440696秒、1完整八角色capture、errors=[]。
+首批四个真实科学consumer：full PASS0/218.921608909，peer PASS0/42.852126686，
+information PASS0/125.714005753，drive FAIL1/10.585478371。
+失败来自原immutable v6→v5→v4的模板physical_model比较：新增empty `mr3_odometry_period_ns`未被原投影移除，
+因此其将非物理配置schema差当成物理模型差；实际spawn比较也会同样拒绝。
+当前正式FAIL保留；34其它科学角色及FIFO/严格closure未提交，后三stage和所有PPO/pilot/验证SKIPPED。
+
+outer真实rc1/1111.638298092秒，内部协调者计费1111.464594791；
+独立final_closure在outer真正退出后确认53保存PID/start均gone、closure_passed=true，
+但execution_passed=false、脚本仍rc1，不重标总体PASS。
+工程保守上界charge1119.560999951 = (4096038655921517 - 4094919372573578)/1e9 + 完整final工具wall0.277652012；
+重复计观察前工具部分，不补造未知end。累计15072.2794512436018/30000，余14927.7205487563982。
+pilot1870决策/2905.9547395464029秒及final-only验证额度不变。
+
+真实命令（cwd wireless-rl，原run-id只追溯、不重跑）：
+
+```bash
+rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 -B report/assets/20261019_mr3_p2a_v9/execute.py --plan report/assets/20261019_mr3_p2a_v11/predeclared_plan_v11.json --scope matrix --freeze 2500e9e7837a9efc208772d5dc6cf0373ebcb551 --receipt /tmp/mr3_p2a_v11_matrix_execution_receipt.json
+rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 -B report/assets/20261019_mr3_p2a_v9/final_closure.py --receipt /tmp/mr3_p2a_v11_matrix_execution_receipt.json --root /tmp/mr3_p2a_v11_matrix_evidence --root /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v11/mr3_p2a_v11_interface --summary /tmp/mr3_p2a_v11_matrix_evidence/summary.json --freeze 2500e9e7837a9efc208772d5dc6cf0373ebcb551 --output /tmp/mr3_p2a_v11_matrix_final_closure.json
+```
+
+[完整闭合包](report/assets/20261019_mr3_p2a_v11/closed_evidence/manifest.json)：861成员、10实际ELF与282冻结来源，
+archive45327877字节，SHA `f22b630ab0a8c7d5b6259809bd8509683249a52227f648be08c604dda2070a5e`；
+manifest SHA `528f6544d0d3ad7e142d09750be8727e584c164cc240efcd3945f214bf2217cb`，
+完整roundtrip/CRC/拼接SHA/源末stat+SHA通过。尚未用于原生的PPO外部工具另标effective SHA/CPU scope。
+
+关闭后只读诊断：严格仅移除已核唯一观测tag的detached XML视图，再调用完整原驱动数学审计，
+32步原件诊断通过；该/tmp适配不长期采用，不改V11正式结果、不供新freeze信用。
+后续选择固定tagged20ms/untagged旧耦合、删除冗余SDF项，恢复原reader直接物理模型核验；
+所有实际20ms source、34ms actuation、消息/causal/安全/任务/32/300门仍必要。
+
+关闭后的只读CPU诊断另列：`/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m cProfile -o /tmp/mr3_p2a_v11_full_diagnostic_profile_v2.pstats -m mr3_learning.audit_preparation /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v11/mr3_p2a_v11_interface --freeze 2500e9e7837a9efc208772d5dc6cf0373ebcb551 --output /tmp/mr3_p2a_v11_full_profile_diagnostic_result_v2.json`真实工具rc0、完整report与正式full_result整dict相同；profile记录168831230调用/305.85119375999966累计timer秒（不是完整outer墙秒）。主要热点为causal_own_inputs45660次反复扫相同有界256源历史。初次v1多传不支持的`--mode interface`产生argparse error、result缺失；cProfile外层工具实际rc0，两份pstats均保留。该CPU诊断无新native，不改V11 verdict，不从PPO余额计费；完整wall未保存则留null。见V12/checks中的精确receipt。
+
+
+## 2026-10-19 MR3-P2A V12 准备闭合（尚无本版原生）
+
+CPU/构建发生在V11 HEAD `2500e9e7837a9efc208772d5dc6cf0373ebcb551`加明确dirty源SHA，
+不冒称它已包含新源码。tagged模式固定20ms WORLD odom/TF，删除冗余SDF选项并拒绝残留；
+轮执行器/实际34ms门、原物理/安全/95%任务门不变。实际构建rc0/99.770194716s，driver ELF
+`c2051fecdaa3aabbfad9f2d763c3f501f29a7952db500034f7f293ae608bbda0`，其余九角色不变。
+构建精确命令、cwd、实际wait、源及库before/after见[v12_build](report/assets/20261019_mr3_p2a_v12/checks/v12_build.json)：
+
+```json
+[
+  {
+    "argv": [
+      "/bin/bash",
+      "/tmp/mr3_p2a_v12_ros_cpu_v1.bash"
+    ],
+    "cwd": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap",
+    "returncode": 0,
+    "start_wall_monotonic_ns": 4097193057529766,
+    "end_wall_monotonic_ns": 4097197638231967,
+    "wall_seconds": 4.580702201,
+    "stdout_stderr": {
+      "path": "/tmp/mr3_p2a_v12_ros_cpu_v1.log",
+      "sha256": "56d222857f4881b54534d2aea401b076d4f428218ef299b0a2cc015ef611ab14"
+    },
+    "environment": {
+      "PYTHONNOUSERSITE": "1"
+    },
+    "shell_script": {
+      "path": "/tmp/mr3_p2a_v12_ros_cpu_v1.bash",
+      "sha256": "c90e3b9f0bf0417120485e7342b93bc8b5ce50e4cb59b03c331a55a2050fd6f4",
+      "text": "#!/bin/bash\nset -e\nsource /opt/ros/humble/setup.bash\nsource /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/setup.bash\nexport PYTHONNOUSERSITE=1\nexec /usr/bin/python3 -m pytest -q src/multi_robot_exploration/test/test_mr3_drive_launch.py src/multi_robot_exploration/test/test_driver_odometry_schedule.py\n"
+    },
+    "kind": "ros_cpu",
+    "receipt_path": "/tmp/mr3_p2a_v12_ros_cpu_receipt_v1.json",
+    "receipt_sha256": "24724faa217f20a9d3ad522c2a6accb0d50bea99c3ad108a21f262b1a78102fd"
+  },
+  {
+    "argv": [
+      "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+      "-m",
+      "unittest",
+      "mr3_learning.tests.test_audit_odometry_cadence",
+      "mr3_learning.tests.test_audit_action_trace",
+      "-q"
+    ],
+    "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+    "returncode": 0,
+    "start_wall_monotonic_ns": 4097193057503289,
+    "end_wall_monotonic_ns": 4097207673419999,
+    "wall_seconds": 14.61591671,
+    "stdout_stderr": {
+      "path": "/tmp/mr3_p2a_v12_python_cpu_v1.log",
+      "sha256": "64a66189cc649bbaf79019c0a1958921884b45d1cc704d5867c521e7a20ec847"
+    },
+    "environment": {
+      "PYTHONNOUSERSITE": "1"
+    },
+    "shell_script": null,
+    "kind": "python_cpu",
+    "receipt_path": "/tmp/mr3_p2a_v12_python_cpu_receipt_v1.json",
+    "receipt_sha256": "5059b566337e559b63953b6705cc27d7907d17c70aad31bb13acea9e2b9c3ba3"
+  },
+  {
+    "argv": [
+      "/bin/bash",
+      "/tmp/mr3_p2a_v12_build_v1.bash"
+    ],
+    "cwd": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap",
+    "returncode": 0,
+    "start_wall_monotonic_ns": 4097215313933126,
+    "end_wall_monotonic_ns": 4097315084127842,
+    "wall_seconds": 99.770194716,
+    "stdout_stderr": {
+      "path": "/tmp/mr3_p2a_v12_build_v1.log",
+      "sha256": "878cd137d007aa0d8376897552f006e0124bc9eb8c0fe3d1f7937438a50ea467"
+    },
+    "environment": {
+      "PYTHONNOUSERSITE": "1"
+    },
+    "shell_script": {
+      "path": "/tmp/mr3_p2a_v12_build_v1.bash",
+      "sha256": "e5b8455f0977ddcb6491752b565166f3f8937adc2db591ae1a8c5e70906d640e",
+      "text": "#!/bin/bash\nset -e\nsource /opt/ros/humble/setup.bash\nsource /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/setup.bash\nexport PYTHONNOUSERSITE=1\nexec /usr/bin/python3 /usr/bin/colcon build --symlink-install --packages-select multi_robot\n"
+    },
+    "kind": "build",
+    "receipt_path": "/tmp/mr3_p2a_v12_build_receipt_v1.json",
+    "receipt_sha256": "2ccd504dbb56fa045d14e8477b9b3c949b4fff04485821ca7c76c8f5cd74fcd8"
+  }
+]
+```
+
+只读组合审计对原V26/92f8bdf5四组完整报告math dict+序列化bytes等价，真实wait全部0：
+interface74.843787501s、terminal43.130978525s、reset596.329526099s、deadline480.892852795s；
+四路并行gross596.352945361s，六个实际保存CPU身份gone。12短CPU/14448六流对象identity差分通过；
+初次base/subclass额外phase字段比较造成2项测试harness FAIL完整保留，算法字节未改。
+生产双方法源码`c384b1b3cfc2817a770ea9a2ee5ea5e2f3dadb402df8f869d3eae6c76a38c020`，
+原数学host f736/raw ba3e不改；生产29相关CPU通过。新provenance分别绑定原数学与实际有效入口，
+只替换原不变量下两项查询，不加新判据/阈值，不读actor真值、不隐藏手工策略。
+精确候选/runner/tests、每组完整argv/seed101/实际wait及所有原source/reference SHA在
+[资格汇总](report/assets/20261019_mr3_p2a_v12/checks/information_combined_cpu/summary.json)与
+[47文件索引](report/assets/20261019_mr3_p2a_v12/checks/information_combined_cpu/index.json)。
+旧非选中的单三键候选前三组通过，deadline当时仍运行，不造rc/PASS；独立监控及最终wait另存/tmp，冻结期间原host/raw和候选保持不变。
+
+motion memo只缓存每台完整输入序号+目标clock的raw选择，保留每次own_state/tracker核验；
+35相关CPU通过。旧V11/2500原32步完整输出475420bytes等于正式报告，SHA74a49af54e0ca827dafa9f3be6bafbb113a117ca99576fba4c5a45ad71b5c5bb。
+比较wrapper原rc1（内存对象与JSON表示直接比较）保留，后续独立stored-JSON对照PASS不覆盖旧rc；
+实际full163.659735447s/完整wait178.585498062s不是受控提速或未来预算保证。
+精确命令与原件在本版checks/motion_memo_*；full profile初次CLI错误及修正后等于原报告都留存。
+root综合124检查有123PASS+1旧ENV附录身份FAIL，修正identity后原16个audit_ppo全部通过；
+规范前缀未改。ROS四文件53通过，真实sdformat9.7.0纯解析5/5通过，不加载world/ROS节点。
+内存draft检查初次因未ready拒绝，后续显式synthetic副本合同核验38角色通过；没有因此seal真实计划。
+
+本次纯CPU/构建/已关闭数据等价不新增native工程墙秒信用。入口累计仍15072.2794512436018/30000，
+余14927.7205487563982；pilot1870/2905.9547395464029和三场final-only验证原额度未动。
+资格闭合后实际生成plan rc0，SHAa2477e5a90fd4b41624e54fc4f4148b09dadaec9b688c1677fd3e2cbfc7cf245；
+矩阵14000、fresh16 minimum900、尾27.7205487563982，所有真实关闭/消费者/间隔计费，超额FAIL仍计实际成本。
+准确新冻结原生命令及边界见[V12预声明](report/20261019_mr3_p2a_v12.md)；本段不宣称新native、95%或P2A完成。

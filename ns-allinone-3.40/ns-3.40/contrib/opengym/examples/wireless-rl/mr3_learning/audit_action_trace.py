@@ -108,13 +108,13 @@ def _spawn(episode, epoch, read, observer, observer_library=None):
         require(len(plugin) == 1 and plugin[0].get("filename") == "libmr3_gazebo_diff_drive.so"
                 and plugin[0].findtext("mr3_tagged_commands") == "true"
                 and plugin[0].findtext("mr3_epoch") == epoch
-                and plugin[0].findtext("mr3_odometry_period_ns") == "20000000"
+                and not plugin[0].findall("mr3_odometry_period_ns")
                 and plugin[0].findtext("mr3_audit_path") == str(episode / f"drive_{robot}.jsonl"),
                 "actual spawn SDF driver/epoch/measurement source differs")
         # Compare every remaining physical SDF field to the frozen normal model.
         # Only the actual audit/protocol tags and the declared read-only observer
         # plugin are removed from this in-memory view.
-        for key in ("mr3_audit_path", "mr3_epoch", "mr3_tagged_commands", "mr3_odometry_period_ns"):
+        for key in ("mr3_audit_path", "mr3_epoch", "mr3_tagged_commands"):
             require(len(plugin[0].findall(key)) == 1, "effective SDF repeated protocol field")
             plugin[0].find(key).text = None
         extras = tree.findall(f".//plugin[@name='mr3_stop_response_observer_{robot}']")

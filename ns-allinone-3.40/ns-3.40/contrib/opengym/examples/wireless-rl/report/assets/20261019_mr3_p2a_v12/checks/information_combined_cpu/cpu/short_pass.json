@@ -1,0 +1,18 @@
+{
+  "schema": "mr3-information-combined-short-cpu-v2",
+  "passed": true,
+  "actual_wait_returncode": 0,
+  "command": [
+    "/usr/bin/python3",
+    "-B",
+    "/tmp/test_mr3_information_combined_candidate_v2.py"
+  ],
+  "tests": 12,
+  "reported_seconds": "1.278",
+  "candidate_sha256": "38a24866f140f49796633954b716ab5f85b154c278cce009c6cd7b60769144ed",
+  "test_source_sha256": "4002783faf3e8b75a44d1fd01f301f25d2d7fdcc7b5fc31c09e308cf69aa088d",
+  "original_test_source_sha256": "3903bdea873216050779eb3c895ab8b3fd75a40c1aab181014c10331a3d6b450",
+  "oracle_queries": 14448,
+  "initial_test_harness_failure_receipt": "/tmp/mr3_information_combined_short_cpu_initial_v2.json",
+  "scope": "CPU differential only; original/combined six-stream original-object identity, sameclock append, future/retrograde/giantinteger/tie, no originalstate mutation, original exact exception types/messages and selection failures. No native calls or closed-stage result inferred."
+}

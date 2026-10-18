@@ -1,0 +1,641 @@
+{
+  "schema": "mr3-p2a-v12-multi-robot-build-v1",
+  "passed": true,
+  "source_head_at_build": "2500e9e7837a9efc208772d5dc6cf0373ebcb551",
+  "worktree_sources_committed_at_build": false,
+  "freeze_note": "Built before the future V12 source commit; this receipt does not claim an unknown future freeze. Exact source and installed ELF bytes are explicit below.",
+  "commands": [
+    {
+      "argv": [
+        "/bin/bash",
+        "/tmp/mr3_p2a_v12_ros_cpu_v1.bash"
+      ],
+      "cwd": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap",
+      "returncode": 0,
+      "start_wall_monotonic_ns": 4097193057529766,
+      "end_wall_monotonic_ns": 4097197638231967,
+      "wall_seconds": 4.580702201,
+      "stdout_stderr": {
+        "path": "/tmp/mr3_p2a_v12_ros_cpu_v1.log",
+        "sha256": "56d222857f4881b54534d2aea401b076d4f428218ef299b0a2cc015ef611ab14"
+      },
+      "environment": {
+        "PYTHONNOUSERSITE": "1"
+      },
+      "shell_script": {
+        "path": "/tmp/mr3_p2a_v12_ros_cpu_v1.bash",
+        "sha256": "c90e3b9f0bf0417120485e7342b93bc8b5ce50e4cb59b03c331a55a2050fd6f4",
+        "text": "#!/bin/bash\nset -e\nsource /opt/ros/humble/setup.bash\nsource /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/setup.bash\nexport PYTHONNOUSERSITE=1\nexec /usr/bin/python3 -m pytest -q src/multi_robot_exploration/test/test_mr3_drive_launch.py src/multi_robot_exploration/test/test_driver_odometry_schedule.py\n"
+      },
+      "kind": "ros_cpu",
+      "receipt_path": "/tmp/mr3_p2a_v12_ros_cpu_receipt_v1.json",
+      "receipt_sha256": "24724faa217f20a9d3ad522c2a6accb0d50bea99c3ad108a21f262b1a78102fd"
+    },
+    {
+      "argv": [
+        "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+        "-m",
+        "unittest",
+        "mr3_learning.tests.test_audit_odometry_cadence",
+        "mr3_learning.tests.test_audit_action_trace",
+        "-q"
+      ],
+      "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+      "returncode": 0,
+      "start_wall_monotonic_ns": 4097193057503289,
+      "end_wall_monotonic_ns": 4097207673419999,
+      "wall_seconds": 14.61591671,
+      "stdout_stderr": {
+        "path": "/tmp/mr3_p2a_v12_python_cpu_v1.log",
+        "sha256": "64a66189cc649bbaf79019c0a1958921884b45d1cc704d5867c521e7a20ec847"
+      },
+      "environment": {
+        "PYTHONNOUSERSITE": "1"
+      },
+      "shell_script": null,
+      "kind": "python_cpu",
+      "receipt_path": "/tmp/mr3_p2a_v12_python_cpu_receipt_v1.json",
+      "receipt_sha256": "5059b566337e559b63953b6705cc27d7907d17c70aad31bb13acea9e2b9c3ba3"
+    },
+    {
+      "argv": [
+        "/bin/bash",
+        "/tmp/mr3_p2a_v12_build_v1.bash"
+      ],
+      "cwd": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap",
+      "returncode": 0,
+      "start_wall_monotonic_ns": 4097215313933126,
+      "end_wall_monotonic_ns": 4097315084127842,
+      "wall_seconds": 99.770194716,
+      "stdout_stderr": {
+        "path": "/tmp/mr3_p2a_v12_build_v1.log",
+        "sha256": "878cd137d007aa0d8376897552f006e0124bc9eb8c0fe3d1f7937438a50ea467"
+      },
+      "environment": {
+        "PYTHONNOUSERSITE": "1"
+      },
+      "shell_script": {
+        "path": "/tmp/mr3_p2a_v12_build_v1.bash",
+        "sha256": "e5b8455f0977ddcb6491752b565166f3f8937adc2db591ae1a8c5e70906d640e",
+        "text": "#!/bin/bash\nset -e\nsource /opt/ros/humble/setup.bash\nsource /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/setup.bash\nexport PYTHONNOUSERSITE=1\nexec /usr/bin/python3 /usr/bin/colcon build --symlink-install --packages-select multi_robot\n"
+      },
+      "kind": "build",
+      "receipt_path": "/tmp/mr3_p2a_v12_build_receipt_v1.json",
+      "receipt_sha256": "2ccd504dbb56fa045d14e8477b9b3c949b4fff04485821ca7c76c8f5cd74fcd8"
+    }
+  ],
+  "before_snapshot": {
+    "path": "/tmp/mr3_p2a_v12_build_before_v1.json",
+    "sha256": "52b854a6afc847131e1ab281a5b109313f23deaed164749b01f9aebf5050de55"
+  },
+  "compiled_sources": {
+    "driver": {
+      "compiled_source_sha256": {
+        "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot/src/mr3_gazebo_diff_drive.cpp",
+        "sha256": "15f54f0786330ac78d5d75853295050a69c0b6d431d19a82f3ae005d288ad8f1",
+        "present_as_literal_sha256_in_actual_elf": true
+      },
+      "compiled_header_sha256": {
+        "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/mr3_gazebo_diff_drive.hpp",
+        "sha256": "c86c9b3469e0d81c6a037840cb3c091411c023115c563f454d1ce4399ec08e64",
+        "present_as_literal_sha256_in_actual_elf": true
+      },
+      "compiled_helper_sha256": {
+        "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/paired_wheel_slew.hpp",
+        "sha256": "dca3dbaf01251cf7ffe167f1dabb23a45b4fc95d6ad317dcc3290ff50ecf9a1b",
+        "present_as_literal_sha256_in_actual_elf": true
+      },
+      "compiled_target_contract_sha256": {
+        "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/mr3_drive_target.hpp",
+        "sha256": "4be4d77de247a5bcd427eb6948165e85098eb361030cf89d278d6df92e959d41",
+        "present_as_literal_sha256_in_actual_elf": true
+      },
+      "compiled_odometry_json_sha256": {
+        "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/mr3_odometry_json.hpp",
+        "sha256": "4b251bff9336a6005a4fff9b6a981286687e99cbff86bf8b3410163e32392c74",
+        "present_as_literal_sha256_in_actual_elf": true
+      }
+    },
+    "observer": {
+      "compiled_source_sha256": {
+        "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot/src/mr3_stop_response_observer.cpp",
+        "sha256": "b6619d3d246385f34b720c365a584d157ef75fc6a6cff64d58ff0ddedb0354c7",
+        "present_as_literal_sha256_in_actual_elf": true
+      }
+    },
+    "ray_box": {
+      "compiled_source_sha256": {
+        "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot/src/mr3_ray_box_corrector.cpp",
+        "sha256": "f82646c8434b77c42f585ac1828eda84640bac873f70cc7de6848cfbd6493473",
+        "present_as_literal_sha256_in_actual_elf": true
+      },
+      "compiled_collision_source_sha256": {
+        "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot/src/mr3_ray_box_collision.cpp",
+        "sha256": "d556dda57250da3680a7d5a9862416f6196cab9763e495ee75269307b87715cb",
+        "present_as_literal_sha256_in_actual_elf": true
+      },
+      "compiled_collision_header_sha256": {
+        "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/mr3_ray_box_collision.hpp",
+        "sha256": "c619442d038e4bc6ea0695ada34d7074ee83d775b2137222ab9fb6bf8193879b",
+        "present_as_literal_sha256_in_actual_elf": true
+      }
+    },
+    "recorder": {
+      "compiled_source_sha256": {
+        "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot/src/mr3_odometry_recorder.cpp",
+        "sha256": "d70502556ca840d8e01ce0183db7befbeecefc3bf267ba239867937013cb6168",
+        "present_as_literal_sha256_in_actual_elf": true
+      },
+      "compiled_odometry_json_sha256": {
+        "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/mr3_odometry_json.hpp",
+        "sha256": "4b251bff9336a6005a4fff9b6a981286687e99cbff86bf8b3410163e32392c74",
+        "present_as_literal_sha256_in_actual_elf": true
+      }
+    }
+  },
+  "binaries": {
+    "gzserver_executable": {
+      "path": "/usr/bin/gzserver",
+      "resolved_path": "/usr/bin/gzserver-11.10.2",
+      "sha256": "689e61236ef90aeb17099bd9cab70280bc457d18fd3bf37a32b9bae77b1bf9d8",
+      "bytes": 159232,
+      "stat": {
+        "dev": 2051,
+        "ino": 95980975,
+        "mtime_ns": 1647719917000000000,
+        "ctime_ns": 1777547816996924846
+      }
+    },
+    "driver": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/lib/libmr3_gazebo_diff_drive.so",
+      "resolved_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_gazebo_diff_drive.so",
+      "sha256": "c2051fecdaa3aabbfad9f2d763c3f501f29a7952db500034f7f293ae608bbda0",
+      "bytes": 2047960,
+      "stat": {
+        "dev": 2051,
+        "ino": 73531513,
+        "mtime_ns": 1792351919518487875,
+        "ctime_ns": 1792351919518487875
+      }
+    },
+    "observer": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/lib/libmr3_stop_response_observer.so",
+      "resolved_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_stop_response_observer.so",
+      "sha256": "008d68be02b367760049671680e9a63a69d8952705d4b6c1593b56e95c2a6d84",
+      "bytes": 502320,
+      "stat": {
+        "dev": 2051,
+        "ino": 73531505,
+        "mtime_ns": 1792342791069745899,
+        "ctime_ns": 1792342791069745899
+      }
+    },
+    "ray_box": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/lib/libmr3_ray_box_corrector.so",
+      "resolved_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_ray_box_corrector.so",
+      "sha256": "782d388fea8df3646524e54f41d71de5f53480b9d04cc0ea1c453c70e2c1f7d8",
+      "bytes": 398080,
+      "stat": {
+        "dev": 2051,
+        "ino": 73531511,
+        "mtime_ns": 1792281393393829577,
+        "ctime_ns": 1792281393393829577
+      }
+    },
+    "ode": {
+      "path": "/lib/x86_64-linux-gnu/libgazebo_ode.so.11",
+      "resolved_path": "/usr/lib/x86_64-linux-gnu/libgazebo_ode.so.11.10.2",
+      "sha256": "a94a424df0b3af9d8a04c58ef1562734cc81728253bcedd25c7705330289c258",
+      "bytes": 719240,
+      "stat": {
+        "dev": 2051,
+        "ino": 95980922,
+        "mtime_ns": 1647719917000000000,
+        "ctime_ns": 1777547812053675618
+      }
+    },
+    "smoother_core": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/nav2_velocity_smoother/lib/libvelocity_smoother_core.so",
+      "resolved_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/nav2_velocity_smoother/libvelocity_smoother_core.so",
+      "sha256": "fc2a590d2c75b92f7fe12f2adf380dcd8210444f8b601f8b16313c47aae2226f",
+      "bytes": 11826504,
+      "stat": {
+        "dev": 2051,
+        "ino": 78654126,
+        "mtime_ns": 1792343583237625354,
+        "ctime_ns": 1792343583237625354
+      }
+    },
+    "smoother_executable": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/nav2_velocity_smoother/lib/nav2_velocity_smoother/velocity_smoother",
+      "resolved_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/nav2_velocity_smoother/velocity_smoother",
+      "sha256": "2da81a591908de6ad74618c47119c280134246b584e4509751179f15fcfd0dae",
+      "bytes": 708656,
+      "stat": {
+        "dev": 2051,
+        "ino": 78653950,
+        "mtime_ns": 1792343584306667191,
+        "ctime_ns": 1792343584306667191
+      }
+    },
+    "odometry_recorder_executable": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/lib/multi_robot/mr3_odometry_recorder",
+      "resolved_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/mr3_odometry_recorder",
+      "sha256": "2b22e115aaf48c1898f51b0bb281d098d74406989f186e885daa554b18c53e0c",
+      "bytes": 1058696,
+      "stat": {
+        "dev": 2051,
+        "ino": 73555701,
+        "mtime_ns": 1792345327227582160,
+        "ctime_ns": 1792345327227582160
+      }
+    },
+    "controller_executable": {
+      "path": "/opt/ros/humble/lib/nav2_controller/controller_server",
+      "resolved_path": "/opt/ros/humble/lib/nav2_controller/controller_server",
+      "sha256": "d8f732a95f19684c9aeb0658a3bb982292729490eced2f17d0fa0e8a619cc55c",
+      "bytes": 18760,
+      "stat": {
+        "dev": 2051,
+        "ino": 20473784,
+        "mtime_ns": 1774488178000000000,
+        "ctime_ns": 1777548036762936117
+      }
+    },
+    "rotation_shim": {
+      "path": "/opt/ros/humble/lib/libnav2_rotation_shim_controller.so",
+      "resolved_path": "/opt/ros/humble/lib/libnav2_rotation_shim_controller.so",
+      "sha256": "ec301e3ef10e7e71dfdfc77d0164dfecfba2408ea0523bb05ebf1983da13fc15",
+      "bytes": 292664,
+      "stat": {
+        "dev": 2051,
+        "ino": 20474049,
+        "mtime_ns": 1774488501000000000,
+        "ctime_ns": 1777548047839488046
+      }
+    }
+  },
+  "artifact_changes": {
+    "gzserver_executable": {
+      "before": {
+        "path": "/usr/bin/gzserver",
+        "resolved_path": "/usr/bin/gzserver-11.10.2",
+        "sha256": "689e61236ef90aeb17099bd9cab70280bc457d18fd3bf37a32b9bae77b1bf9d8",
+        "bytes": 159232,
+        "stat": {
+          "dev": 2051,
+          "ino": 95980975,
+          "mtime_ns": 1647719917000000000,
+          "ctime_ns": 1777547816996924846
+        }
+      },
+      "after": {
+        "path": "/usr/bin/gzserver",
+        "resolved_path": "/usr/bin/gzserver-11.10.2",
+        "sha256": "689e61236ef90aeb17099bd9cab70280bc457d18fd3bf37a32b9bae77b1bf9d8",
+        "bytes": 159232,
+        "stat": {
+          "dev": 2051,
+          "ino": 95980975,
+          "mtime_ns": 1647719917000000000,
+          "ctime_ns": 1777547816996924846
+        }
+      },
+      "same_bytes": true,
+      "same_output_identity_and_all_timestamps": true,
+      "evidence_scope": "Original ELF bytes and output identity/timestamps retained; no artifact rewrite observed in this invocation."
+    },
+    "driver": {
+      "before": {
+        "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/lib/libmr3_gazebo_diff_drive.so",
+        "resolved_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_gazebo_diff_drive.so",
+        "sha256": "7ef79cb965fa8b3729942e461bdfbd573884fc1790fcdc9f291e035d5ba50391",
+        "bytes": 2047960,
+        "stat": {
+          "dev": 2051,
+          "ino": 73531513,
+          "mtime_ns": 1792345665172536272,
+          "ctime_ns": 1792345665172536272
+        }
+      },
+      "after": {
+        "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/lib/libmr3_gazebo_diff_drive.so",
+        "resolved_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_gazebo_diff_drive.so",
+        "sha256": "c2051fecdaa3aabbfad9f2d763c3f501f29a7952db500034f7f293ae608bbda0",
+        "bytes": 2047960,
+        "stat": {
+          "dev": 2051,
+          "ino": 73531513,
+          "mtime_ns": 1792351919518487875,
+          "ctime_ns": 1792351919518487875
+        }
+      },
+      "same_bytes": false,
+      "same_output_identity_and_all_timestamps": false,
+      "evidence_scope": "Actual output changed in this invocation; before/after bytes and filesystem identity recorded."
+    },
+    "observer": {
+      "before": {
+        "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/lib/libmr3_stop_response_observer.so",
+        "resolved_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_stop_response_observer.so",
+        "sha256": "008d68be02b367760049671680e9a63a69d8952705d4b6c1593b56e95c2a6d84",
+        "bytes": 502320,
+        "stat": {
+          "dev": 2051,
+          "ino": 73531505,
+          "mtime_ns": 1792342791069745899,
+          "ctime_ns": 1792342791069745899
+        }
+      },
+      "after": {
+        "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/lib/libmr3_stop_response_observer.so",
+        "resolved_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_stop_response_observer.so",
+        "sha256": "008d68be02b367760049671680e9a63a69d8952705d4b6c1593b56e95c2a6d84",
+        "bytes": 502320,
+        "stat": {
+          "dev": 2051,
+          "ino": 73531505,
+          "mtime_ns": 1792342791069745899,
+          "ctime_ns": 1792342791069745899
+        }
+      },
+      "same_bytes": true,
+      "same_output_identity_and_all_timestamps": true,
+      "evidence_scope": "Original ELF bytes and output identity/timestamps retained; no artifact rewrite observed in this invocation."
+    },
+    "ray_box": {
+      "before": {
+        "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/lib/libmr3_ray_box_corrector.so",
+        "resolved_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_ray_box_corrector.so",
+        "sha256": "782d388fea8df3646524e54f41d71de5f53480b9d04cc0ea1c453c70e2c1f7d8",
+        "bytes": 398080,
+        "stat": {
+          "dev": 2051,
+          "ino": 73531511,
+          "mtime_ns": 1792281393393829577,
+          "ctime_ns": 1792281393393829577
+        }
+      },
+      "after": {
+        "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/lib/libmr3_ray_box_corrector.so",
+        "resolved_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_ray_box_corrector.so",
+        "sha256": "782d388fea8df3646524e54f41d71de5f53480b9d04cc0ea1c453c70e2c1f7d8",
+        "bytes": 398080,
+        "stat": {
+          "dev": 2051,
+          "ino": 73531511,
+          "mtime_ns": 1792281393393829577,
+          "ctime_ns": 1792281393393829577
+        }
+      },
+      "same_bytes": true,
+      "same_output_identity_and_all_timestamps": true,
+      "evidence_scope": "Original ELF bytes and output identity/timestamps retained; no artifact rewrite observed in this invocation."
+    },
+    "ode": {
+      "before": {
+        "path": "/lib/x86_64-linux-gnu/libgazebo_ode.so.11",
+        "resolved_path": "/usr/lib/x86_64-linux-gnu/libgazebo_ode.so.11.10.2",
+        "sha256": "a94a424df0b3af9d8a04c58ef1562734cc81728253bcedd25c7705330289c258",
+        "bytes": 719240,
+        "stat": {
+          "dev": 2051,
+          "ino": 95980922,
+          "mtime_ns": 1647719917000000000,
+          "ctime_ns": 1777547812053675618
+        }
+      },
+      "after": {
+        "path": "/lib/x86_64-linux-gnu/libgazebo_ode.so.11",
+        "resolved_path": "/usr/lib/x86_64-linux-gnu/libgazebo_ode.so.11.10.2",
+        "sha256": "a94a424df0b3af9d8a04c58ef1562734cc81728253bcedd25c7705330289c258",
+        "bytes": 719240,
+        "stat": {
+          "dev": 2051,
+          "ino": 95980922,
+          "mtime_ns": 1647719917000000000,
+          "ctime_ns": 1777547812053675618
+        }
+      },
+      "same_bytes": true,
+      "same_output_identity_and_all_timestamps": true,
+      "evidence_scope": "Original ELF bytes and output identity/timestamps retained; no artifact rewrite observed in this invocation."
+    },
+    "smoother_core": {
+      "before": {
+        "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/nav2_velocity_smoother/lib/libvelocity_smoother_core.so",
+        "resolved_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/nav2_velocity_smoother/libvelocity_smoother_core.so",
+        "sha256": "fc2a590d2c75b92f7fe12f2adf380dcd8210444f8b601f8b16313c47aae2226f",
+        "bytes": 11826504,
+        "stat": {
+          "dev": 2051,
+          "ino": 78654126,
+          "mtime_ns": 1792343583237625354,
+          "ctime_ns": 1792343583237625354
+        }
+      },
+      "after": {
+        "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/nav2_velocity_smoother/lib/libvelocity_smoother_core.so",
+        "resolved_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/nav2_velocity_smoother/libvelocity_smoother_core.so",
+        "sha256": "fc2a590d2c75b92f7fe12f2adf380dcd8210444f8b601f8b16313c47aae2226f",
+        "bytes": 11826504,
+        "stat": {
+          "dev": 2051,
+          "ino": 78654126,
+          "mtime_ns": 1792343583237625354,
+          "ctime_ns": 1792343583237625354
+        }
+      },
+      "same_bytes": true,
+      "same_output_identity_and_all_timestamps": true,
+      "evidence_scope": "Original ELF bytes and output identity/timestamps retained; no artifact rewrite observed in this invocation."
+    },
+    "smoother_executable": {
+      "before": {
+        "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/nav2_velocity_smoother/lib/nav2_velocity_smoother/velocity_smoother",
+        "resolved_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/nav2_velocity_smoother/velocity_smoother",
+        "sha256": "2da81a591908de6ad74618c47119c280134246b584e4509751179f15fcfd0dae",
+        "bytes": 708656,
+        "stat": {
+          "dev": 2051,
+          "ino": 78653950,
+          "mtime_ns": 1792343584306667191,
+          "ctime_ns": 1792343584306667191
+        }
+      },
+      "after": {
+        "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/nav2_velocity_smoother/lib/nav2_velocity_smoother/velocity_smoother",
+        "resolved_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/nav2_velocity_smoother/velocity_smoother",
+        "sha256": "2da81a591908de6ad74618c47119c280134246b584e4509751179f15fcfd0dae",
+        "bytes": 708656,
+        "stat": {
+          "dev": 2051,
+          "ino": 78653950,
+          "mtime_ns": 1792343584306667191,
+          "ctime_ns": 1792343584306667191
+        }
+      },
+      "same_bytes": true,
+      "same_output_identity_and_all_timestamps": true,
+      "evidence_scope": "Original ELF bytes and output identity/timestamps retained; no artifact rewrite observed in this invocation."
+    },
+    "odometry_recorder_executable": {
+      "before": {
+        "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/lib/multi_robot/mr3_odometry_recorder",
+        "resolved_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/mr3_odometry_recorder",
+        "sha256": "2b22e115aaf48c1898f51b0bb281d098d74406989f186e885daa554b18c53e0c",
+        "bytes": 1058696,
+        "stat": {
+          "dev": 2051,
+          "ino": 73555701,
+          "mtime_ns": 1792345327227582160,
+          "ctime_ns": 1792345327227582160
+        }
+      },
+      "after": {
+        "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/lib/multi_robot/mr3_odometry_recorder",
+        "resolved_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/mr3_odometry_recorder",
+        "sha256": "2b22e115aaf48c1898f51b0bb281d098d74406989f186e885daa554b18c53e0c",
+        "bytes": 1058696,
+        "stat": {
+          "dev": 2051,
+          "ino": 73555701,
+          "mtime_ns": 1792345327227582160,
+          "ctime_ns": 1792345327227582160
+        }
+      },
+      "same_bytes": true,
+      "same_output_identity_and_all_timestamps": true,
+      "evidence_scope": "Original ELF bytes and output identity/timestamps retained; no artifact rewrite observed in this invocation."
+    },
+    "controller_executable": {
+      "before": {
+        "path": "/opt/ros/humble/lib/nav2_controller/controller_server",
+        "resolved_path": "/opt/ros/humble/lib/nav2_controller/controller_server",
+        "sha256": "d8f732a95f19684c9aeb0658a3bb982292729490eced2f17d0fa0e8a619cc55c",
+        "bytes": 18760,
+        "stat": {
+          "dev": 2051,
+          "ino": 20473784,
+          "mtime_ns": 1774488178000000000,
+          "ctime_ns": 1777548036762936117
+        }
+      },
+      "after": {
+        "path": "/opt/ros/humble/lib/nav2_controller/controller_server",
+        "resolved_path": "/opt/ros/humble/lib/nav2_controller/controller_server",
+        "sha256": "d8f732a95f19684c9aeb0658a3bb982292729490eced2f17d0fa0e8a619cc55c",
+        "bytes": 18760,
+        "stat": {
+          "dev": 2051,
+          "ino": 20473784,
+          "mtime_ns": 1774488178000000000,
+          "ctime_ns": 1777548036762936117
+        }
+      },
+      "same_bytes": true,
+      "same_output_identity_and_all_timestamps": true,
+      "evidence_scope": "Original ELF bytes and output identity/timestamps retained; no artifact rewrite observed in this invocation."
+    },
+    "rotation_shim": {
+      "before": {
+        "path": "/opt/ros/humble/lib/libnav2_rotation_shim_controller.so",
+        "resolved_path": "/opt/ros/humble/lib/libnav2_rotation_shim_controller.so",
+        "sha256": "ec301e3ef10e7e71dfdfc77d0164dfecfba2408ea0523bb05ebf1983da13fc15",
+        "bytes": 292664,
+        "stat": {
+          "dev": 2051,
+          "ino": 20474049,
+          "mtime_ns": 1774488501000000000,
+          "ctime_ns": 1777548047839488046
+        }
+      },
+      "after": {
+        "path": "/opt/ros/humble/lib/libnav2_rotation_shim_controller.so",
+        "resolved_path": "/opt/ros/humble/lib/libnav2_rotation_shim_controller.so",
+        "sha256": "ec301e3ef10e7e71dfdfc77d0164dfecfba2408ea0523bb05ebf1983da13fc15",
+        "bytes": 292664,
+        "stat": {
+          "dev": 2051,
+          "ino": 20474049,
+          "mtime_ns": 1774488501000000000,
+          "ctime_ns": 1777548047839488046
+        }
+      },
+      "same_bytes": true,
+      "same_output_identity_and_all_timestamps": true,
+      "evidence_scope": "Original ELF bytes and output identity/timestamps retained; no artifact rewrite observed in this invocation."
+    }
+  },
+  "changed_owned_source_files": [
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot/src/mr3_gazebo_diff_drive.cpp",
+      "sha256": "15f54f0786330ac78d5d75853295050a69c0b6d431d19a82f3ae005d288ad8f1"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/mr3_gazebo_diff_drive.hpp",
+      "sha256": "c86c9b3469e0d81c6a037840cb3c091411c023115c563f454d1ce4399ec08e64"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot/models/turtlebot3_waffle/model.sdf",
+      "sha256": "c8131da065085475bdb0ce1e4c3abfc8c009811af6851fadf1fc33bd38b1d8a1"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py",
+      "sha256": "02f2ba2ace96819752b3f587ae4230e2eb3f1b254dd673fcfa25583bb7d71f27"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_odometry_cadence.py",
+      "sha256": "14519650bc7bab8fbea3d1a0d8407dbd75b8fb32c9c504d8864202bac81b2a6b"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_action_trace.py",
+      "sha256": "b9b6ef807c58e810feff036aab2b8efaf41d4eecfdb9fa13251287d50a5481ad"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_drive_launch.py",
+      "sha256": "1c0de31f51c82b5955dc1d27122c94d9821f22ce3bc8c2fbc569568fc637a559"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_odometry_cadence.py",
+      "sha256": "ed4ea2589c7ae9ba04bc13d3da13c2cc1979bbeae5a4c470e1639701c29d80ec"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_action_trace.py",
+      "sha256": "f1da08c8f2d7c0ab3bf2f8b5f3a0d33ad602564a8c7833a82c73b219d9dd73d4"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_driver_odometry_schedule.py",
+      "sha256": "3f18fc2c1b4038ecc13c33f9f47c93edc555659e4ca910a6c6b5d2166bf71ca5"
+    }
+  ],
+  "driver_compile_flags": {
+    "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/CMakeFiles/mr3_gazebo_diff_drive.dir/flags.make",
+    "sha256": "f3a0bf7a41e401f43a4e52d42a77f833e5b336298418f569a9dad4bd47f26355",
+    "all_five_actual_source_sha_macros_match": true
+  },
+  "colcon_raw_logs": {
+    "stdout_stderr.log": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/build_2026-10-19_03-30-21/multi_robot/stdout_stderr.log",
+      "sha256": "76bca610acd85c90e1f1be2957455ea91d5a9ba1248218d5804974415bec8694",
+      "bytes": 44293
+    },
+    "command.log": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/build_2026-10-19_03-30-21/multi_robot/command.log",
+      "sha256": "9f4e99ce8bade6f235db7554f2c9e2cb94f92c0ee9d73d95b602c7461e859caa",
+      "bytes": 10254
+    },
+    "stderr.log": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/build_2026-10-19_03-30-21/multi_robot/stderr.log",
+      "sha256": "bdf04cc759b0e75f18196a154d64affd50c928ae823dec86eeb4bd5d106be45d",
+      "bytes": 1878
+    },
+    "stdout.log": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/build_2026-10-19_03-30-21/multi_robot/stdout.log",
+      "sha256": "340d33aa31dc37da2d72a59a6fe321c3a0f298d8964fa5622e43b88078706219",
+      "bytes": 42415
+    }
+  },
+  "wall_monotonic_ns": 4097348941404837,
+  "scope": "Only multi_robot was selected for this build/install. No native world, ROS graph, training or simulation was run. Recorder/observer/RayBox and all external roles retain their exact original ELF bytes as individually reported; the original V8 smoother23-test receipt remains separate and is not relabelled as a new build."
+}

@@ -537,3 +537,18 @@ Odometry/选中的驱动 TF、真实端点图与接收时钟；同一个 TF topi
 worker 在真实 reset release 前等待该条件。该只读记录器不证明 Nav2 接收，也不参与 actor/奖励。
 新 cadence 审计补充原 34 项科学角色，逐个真实发布/收到源、全消息、20ms cadence 和原 34ms
 执行器时序核验。新的原生冻结矩阵通过前，不追认旧工程 PASS，不宣称 V7 反例已修复。
+
+
+## P2A V12：固定 tagged WORLD 观测周期
+
+本节取代V9附录的可选SDF周期声明，V9原冻结与失败原件仍按其原合同解释。
+MR3 tagged驱动固定真实WORLD odometry及同源odom→base TF为20000000ns，untagged驱动保留原耦合发布；
+不再存在`mr3_odometry_period_ns` SDF选项，残留该tag（即使为空）明确拒绝。
+tagged+非WORLD或未同时发布odom/odom-TF仍拒绝。观测producer/实际DDS receipt/driver配置均须实证20ms，
+原30Hz判据/实际34ms执行器、轮TF与paired反馈算法保持。
+
+删除冗余观测配置项后，原物理模型reader直接核对冻结模板和每份实际spawn模型，不增加放行物理差异的投影桥。
+独立cadence门改核tag不存在、tagged=true与原update_rate30，全部真实发布/接收/GID、消息、时钟和因果来源门不变。
+新冻结仍须完整四阶段38角色、关闭与后续PPO链验证；旧V11的32步、取证和部分科学PASS不能拼入新矩阵。
+纯只读审计可消除已证明完全等价的重复计算：不得改变输入覆盖、错误、任何数值门或任务结论；
+必须绑定有效实现与原数学来源，保留完整报告对照，不冒充旧实现的执行来源。

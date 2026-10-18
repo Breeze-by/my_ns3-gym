@@ -212,8 +212,11 @@ def audit_episode(directory, freeze, inputs):
                 "raw actuator trace is not complete original34ms cadence")
         model = ET.fromstring(inputs.raw(directory / ("drive_model_" + robot + ".sdf")))
         plugins = model.findall(".//plugin[@name='turtlebot3_diff_drive']")
-        require(len(plugins) == 1 and plugins[0].findtext("mr3_odometry_period_ns") == str(PERIOD)
-                and float(plugins[0].findtext("update_rate")) == 30., "effective SDF periods differ")
+        require(len(plugins) == 1 and not plugins[0].findall("mr3_odometry_period_ns")
+                and len(plugins[0].findall("mr3_tagged_commands")) == 1
+                and plugins[0].findtext("mr3_tagged_commands") == "true"
+                and float(plugins[0].findtext("update_rate")) == 30.,
+                "effective SDF tagged fixed cadence or original actuator rate differs")
         result["robots"][robot] = {"publications": len(actual), "period_ns": PERIOD,
                                      "actuations": len(actuation), "actuation_period_ns": ACTUATION}
 

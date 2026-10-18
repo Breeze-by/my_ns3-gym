@@ -26,7 +26,7 @@ def original_model():
 
 def original_physical_bytes(rendered):
     restored = rendered.replace("libmr3_gazebo_diff_drive.so", "libgazebo_ros_diff_drive.so")
-    for tag in ("mr3_audit_path", "mr3_epoch", "mr3_tagged_commands", "mr3_odometry_period_ns"):
+    for tag in ("mr3_audit_path", "mr3_epoch", "mr3_tagged_commands"):
         restored, count = re.subn(
             rf"      <{tag}(?:/>|>.*?</{tag}>)\n", "", restored, flags=re.DOTALL)
         assert count == 1
@@ -52,7 +52,7 @@ def test_physical_model_preserved_with_explicit_empty_sensor_protocol_tags():
     assert plugin.findtext("mr3_audit_path") == ""
     assert plugin.findtext("mr3_epoch") == ""
     assert plugin.findtext("mr3_tagged_commands") == ""
-    assert plugin.findtext("mr3_odometry_period_ns") == ""
+    assert plugin.find("mr3_odometry_period_ns") is None
     assert {tag: plugin.findtext(tag) for tag in (
         "update_rate", "wheel_separation", "wheel_diameter", "max_wheel_acceleration",
         "max_wheel_torque", "odometry_source")} == {
@@ -79,7 +79,7 @@ def test_actual_spawn_paths_preserve_three_effective_models_and_adapter_epoch(
         assert plugin.findtext("mr3_audit_path") == str(evidence / f"drive_{name}.jsonl")
         assert plugin.findtext("mr3_epoch") == epoch
         assert plugin.findtext("mr3_tagged_commands") == "true"
-        assert plugin.findtext("mr3_odometry_period_ns") == "20000000"
+        assert plugin.find("mr3_odometry_period_ns") is None
     assert not list(evidence.glob("*tb4*"))
     assert len(list(evidence.iterdir())) == 3
     assert not any(isinstance(action, RegisterEventHandler)
@@ -109,7 +109,7 @@ def test_empty_audit_baseline_uses_owned_temp_files_and_shutdown_cleanup(monkeyp
         assert plugin.findtext("mr3_audit_path") == ""
         assert plugin.findtext("mr3_epoch") == ""
         assert plugin.findtext("mr3_tagged_commands") == "false"
-        assert plugin.findtext("mr3_odometry_period_ns") == ""
+        assert plugin.find("mr3_odometry_period_ns") is None
     handlers = [action.event_handler for action in actions
                 if isinstance(action, RegisterEventHandler)
                 and isinstance(action.event_handler, OnShutdown)]

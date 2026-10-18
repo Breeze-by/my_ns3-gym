@@ -140,7 +140,7 @@ EXECUTION_CONFIG_PINS = {
     ROS + 'src/multi_robot_exploration/setup.py':
         'a23cd0dc598ebb59d9eae325bd1a6ee0ae700751986cac6858fe2c2949b68a15',
     ROS + 'src/multi_robot/models/turtlebot3_waffle/model.sdf':
-        'ab438fb4f6d52e1d38a3dc83f05d85b060f9266eb65bd4e0a8b8cee9f53d484a',
+        'c8131da065085475bdb0ce1e4c3abfc8c009811af6851fadf1fc33bd38b1d8a1',
     ROS + 'src/multi_robot/CMakeLists.txt':
         '7ebe737cdec686b08b02702846ca27998d1f67e9f1070979fa9123bfd6ea08b7',
     ROS + 'src/multi_robot/src/mr3_stop_response_observer.cpp':
@@ -150,9 +150,9 @@ EXECUTION_CONFIG_PINS = {
     ROS + 'src/multi_robot/package.xml':
         '170fb26fb5557b94107afc991ac9625359834415172119ebce43b822d94387cf',
     ROS + 'src/multi_robot/src/mr3_gazebo_diff_drive.cpp':
-        '6af0b638eed9b8cd73a009eb40b2566fd93952a5270fb2288cab7ef479dc0cb4',
+        '15f54f0786330ac78d5d75853295050a69c0b6d431d19a82f3ae005d288ad8f1',
     ROS + 'src/multi_robot/include/multi_robot/mr3_gazebo_diff_drive.hpp':
-        '4563abf72c2be5b3593c939543eaa823506e8b45da0fcfc94c6e7458087dc5a8',
+        'c86c9b3469e0d81c6a037840cb3c091411c023115c563f454d1ce4399ec08e64',
     ROS + 'src/multi_robot/include/multi_robot/paired_wheel_slew.hpp':
         'dca3dbaf01251cf7ffe167f1dabb23a45b4fc95d6ad317dcc3290ff50ecf9a1b',
     ROS + 'src/multi_robot/vendor/gazebo_ros_diff_drive.PROVENANCE.md':
@@ -165,7 +165,7 @@ EXECUTION_CONFIG_PINS = {
         '4be4d77de247a5bcd427eb6948165e85098eb361030cf89d278d6df92e959d41',
 }
 EXECUTION_CONFIG_PINS.update({'ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/mr3_odometry_json.hpp': '4b251bff9336a6005a4fff9b6a981286687e99cbff86bf8b3410163e32392c74', 'ros2_ws/ros2-multi-robot-automap/src/multi_robot/src/mr3_odometry_recorder.cpp': 'd70502556ca840d8e01ce0183db7befbeecefc3bf267ba239867937013cb6168'})
-ENV_DOCUMENT_SHA256 = '4c1569febaf7188196873cd9bc13215b30412e84cfeff55f4b6f4d75d034642e'
+ENV_DOCUMENT_SHA256 = 'a30419335428f53fdfbe88f9805eab2d742d177428b6b45db0c3c77be752b15c'
 TASK_DOCUMENT_SHA256 = "f96f5ba785a39daa882b3c2ea217c58dd968550b65bf0ee15faf07ca079f8991"
 PRIOR_TASK_DOCUMENT_SHA256 = "5e4400396e4aaf5a5094fb4c0c04c85810c327cc85be88b7d03fa3faeade07d2"
 TASK_BASE_FREEZE = "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a"
@@ -259,8 +259,8 @@ def verify_machine_task_file(root, freeze, relative):
 
 ENV_NORMATIVE_FREEZE = "4f8bd0e509e6f958c5993a50008955afac72c345"
 ENV_NORMATIVE_SHA256 = "96d9bd3e3d597899b3d44a69ef9138e77b62b3641bd7261eb38846d5b003f155"
-ENV_EXECUTION_APPENDIX_SHA256 = 'bb53c51aa1a34ff81ea4de223439fabd4fc05ffd6d55e81382fa5d5a5e85830f'
-ENV_EXECUTION_APPENDIX_BYTES = 13526
+ENV_EXECUTION_APPENDIX_SHA256 = 'f150768f6e3a4eedb4a2b5ff2336935249368436c1a82567a4604ac54acf4966'
+ENV_EXECUTION_APPENDIX_BYTES = 14761
 
 def verify_environment_appendix(root, freeze):
     relative = WIRELESS + "MR3_ENV_CONTRACT.md"
@@ -434,8 +434,8 @@ def project_ray_box_runtime(relative, current):
     return text.encode()
 
 
-REVIEWED_EXECUTION_DELTA = WIRELESS + "report/assets/20261019_mr3_p2a_v11/reviewed_execution_delta.json"
-REVIEWED_EXECUTION_DELTA_SHA256 = "9a1947f8e523cdb20872ba56dc67802d7773f6bd71feb32ecf180b1958f21532"
+REVIEWED_EXECUTION_DELTA = WIRELESS + "report/assets/20261019_mr3_p2a_v12/reviewed_execution_delta.json"
+REVIEWED_EXECUTION_DELTA_SHA256 = "3ff0e754cb733b9c2557410978e59bfe567c99092639dca26316158df6196082"
 
 
 def project_reviewed_execution(root, freeze, relative, actual):
@@ -591,8 +591,8 @@ SMOOTHER_OVERLAY_PINS = {
 }
 
 
-CURRENT_NATIVE_BINDING = WIRELESS + 'report/assets/20261019_mr3_p2a_v11/native_custody_binding.json'
-CURRENT_NATIVE_BINDING_SHA256 = '697767ce851852a27dc9f61bed2f5671297eacb8242cb5331d030027504a9ff6'
+CURRENT_NATIVE_BINDING = WIRELESS + 'report/assets/20261019_mr3_p2a_v12/native_custody_binding.json'
+CURRENT_NATIVE_BINDING_SHA256 = '65a20bf73c2eda4350cdfdc587f7f9688ea57b2a998d467f0f7a1f2e8e5e3934'
 CURRENT_NATIVE_CUSTODY_SOURCE_SHA256 = '4edcdb6b33105e274c1c908c9d78e8c5d24461ff6733ed0f976e41bad3f2d928'
 
 

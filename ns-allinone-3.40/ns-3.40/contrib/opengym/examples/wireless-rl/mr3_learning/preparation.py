@@ -130,6 +130,14 @@ def validate_plan(plan, workspace=WORKSPACE):
             "overall matrix needs external coordinator absence after its actual exit")
     require(type(plan["budget"].get("borrow_unused_prior_stage_reservations", False)) is bool,
             "borrow flag must be boolean")
+    information = plan.get("information_implementation", "original")
+    require(information in ("original", "admitted_index_three_keys_v1"), "unknown information implementation")
+    if information == "admitted_index_three_keys_v1":
+        for relative in ("mr3_learning/audit_information.py",
+                "report/assets/20261017_mr3_p2a0_v10/independent/mr3_independent_information_v2.py",
+                "report/assets/20261017_mr3_p2a0_v9/independent/mr3_independent_information_v1.py"):
+            require(str(WIRELESS_RELATIVE / relative) in plan["source_bindings"],
+                    "information entry or immutable mathematical helper is not source-bound")
     require([stage["stage"] for stage in plan["stages"]] == list(STAGES), "four-stage order differs")
     require(Decimal(plan["budget"]["matrix_wall_seconds"]) > 0
             and Decimal(plan["budget"]["engineering_remaining_seconds"])
@@ -196,8 +204,12 @@ def validate_plan(plan, workspace=WORKSPACE):
             role = job.get("role")
             require(isinstance(command, list) and all(isinstance(value, str) for value in command), "argv must be strings")
             if role in LEGACY:
-                require(command[0] == "/usr/bin/python3" and command[1] == str(assets / LEGACY[role]),
-                        "original mathematical consumer replaced: " + str(role))
+                if role == "information" and information == "admitted_index_three_keys_v1":
+                    require(command[:3] == ["/usr/bin/python3", "-m", "mr3_learning.audit_information"],
+                            "declared three-key information entry differs")
+                else:
+                    require(command[0] == "/usr/bin/python3" and command[1] == str(assets / LEGACY[role]),
+                            "original mathematical consumer replaced: " + str(role))
                 require(("--peer-only" in command) is (role == "peer"), "peer/control mode changed")
             elif role in ("input", "angular", "physics") or job["id"].startswith("input_"):
                 path = {
@@ -369,7 +381,8 @@ def run_audits(jobs, runner, deadline_ns):
 
 
 def build_plan(*, output_directory, run_root, custody_binding, binary_proof, preflight,
-               engineering_remaining_seconds, run_prefix="mr3_p2a_odom50", workspace=WORKSPACE):
+               engineering_remaining_seconds, run_prefix="mr3_p2a_odom50", workspace=WORKSPACE,
+               information_implementation="original"):
     """Draft a new plan from the exact original workload, not its old admission code.
 
     Root must seal current source/library bindings and readiness before execution.
@@ -377,6 +390,8 @@ def build_plan(*, output_directory, run_root, custody_binding, binary_proof, pre
     """
     workspace, output_directory, run_root = map(lambda value: Path(value).resolve(),
                                                (workspace, output_directory, run_root))
+    require(information_implementation in ("original", "admitted_index_three_keys_v1"),
+            "unknown information implementation")
     assets = workspace / WIRELESS_RELATIVE / "report/assets"
     original_path = assets / "20261018_mr3_p2a0_v26_capture/predeclared_plan_v26.json"
     original = json.loads(original_path.read_text())
@@ -393,6 +408,7 @@ def build_plan(*, output_directory, run_root, custody_binding, binary_proof, pre
             "robots_per_environment": 3, "optimizer_steps": 0, "gpu_calls": 0,
             "pilot_budget_changed": False, "normal_spawn": True, "plant_stimulus_enabled": False,
             "physics_diagnostic_enabled": False, "final_external_coordinator_absence_required": True,
+            "information_implementation": information_implementation,
             "stages": []}
     caps = (1500, 1200, 4500, 6800)
     allocations = (1250, 850, 3900, 5700)
@@ -442,6 +458,10 @@ def build_plan(*, output_directory, run_root, custody_binding, binary_proof, pre
         add("full", [learner, "-m", "mr3_learning.audit_preparation", run, "--freeze", "{freeze}"], role="full")
         legacy("drive", LEGACY["drive"], extra=("--binary-proof", str(Path(binary_proof).resolve())))
         for role in ("information", "peer", "control", "settled"):
+            if role == "information" and information_implementation == "admitted_index_three_keys_v1":
+                add("information", ["/usr/bin/python3", "-m", "mr3_learning.audit_information",
+                    run, "--freeze", "{freeze}"], role="information")
+                continue
             extra = (("--peer-only",) if role == "peer" else
                      ("--require-use",) if role == "settled" and name == "interface" else ())
             legacy(role, LEGACY[role], extra=extra)
@@ -502,6 +522,9 @@ def build_plan(*, output_directory, run_root, custody_binding, binary_proof, pre
         plan["source_bindings"][str(path.relative_to(workspace))] = sha(path)
     for path in sorted((assets / "20261019_mr3_p2a_v9").glob("*.py")):
         plan["source_bindings"][str(path.relative_to(workspace))] = sha(path)
+    if information_implementation == "admitted_index_three_keys_v1":
+        relative = WIRELESS_RELATIVE / "mr3_learning/audit_information.py"
+        plan["source_bindings"][str(relative)] = sha(workspace / relative)
     return plan
 
 
@@ -687,6 +710,8 @@ def main(argv=None):
     parser.add_argument("--preflight", type=Path)
     parser.add_argument("--engineering-remaining-seconds")
     parser.add_argument("--run-prefix", default="mr3_p2a_odom50")
+    parser.add_argument("--information-implementation", choices=("original", "admitted_index_three_keys_v1"),
+                        default="original")
     args = parser.parse_args(argv)
     if args.build_plan is not None:
         if args.plan is not None or args.freeze is not None or any(value is None for value in (
@@ -696,7 +721,7 @@ def main(argv=None):
         value = build_plan(output_directory=args.execution_directory, run_root=args.run_root,
                            custody_binding=args.custody_binding, binary_proof=args.binary_proof,
                            preflight=args.preflight, engineering_remaining_seconds=args.engineering_remaining_seconds,
-                           run_prefix=args.run_prefix)
+                           run_prefix=args.run_prefix, information_implementation=args.information_implementation)
         dump(args.build_plan, value)
         print(json.dumps({"draft_plan": str(args.build_plan), "native_admitted": False}))
         return 0

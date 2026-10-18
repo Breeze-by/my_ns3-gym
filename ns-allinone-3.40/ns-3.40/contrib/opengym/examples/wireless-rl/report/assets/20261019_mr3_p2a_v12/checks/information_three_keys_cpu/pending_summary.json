@@ -1,0 +1,65 @@
+{
+  "actual_last_live_observation": "execution/pending_observation_v3.json",
+  "actual_wait_returncodes": {
+    "deadline": null,
+    "interface": 0,
+    "reset": 0,
+    "terminal": 0
+  },
+  "all_four_stages_complete": false,
+  "all_saved_cpu_identities_gone": false,
+  "completed_stages": [
+    {
+      "actual_wait_returncode": 0,
+      "all_report_fields_deep_equal": true,
+      "serialized_report_bytes_equal": true,
+      "stage": "interface"
+    },
+    {
+      "actual_wait_returncode": 0,
+      "all_report_fields_deep_equal": true,
+      "serialized_report_bytes_equal": true,
+      "stage": "terminal"
+    },
+    {
+      "actual_wait_returncode": 0,
+      "all_report_fields_deep_equal": true,
+      "serialized_report_bytes_equal": true,
+      "stage": "reset"
+    }
+  ],
+  "deadline_receipt_present_at_observation": false,
+  "deadline_report_present_at_observation": false,
+  "later_actual_wait_destination": "New /tmp original outputs and receipt; any canonical closed supplement only after frozen native activity ends. This pending snapshot/index will not be rewritten.",
+  "observed_cpu_seconds": "1905.34",
+  "omitted_live_files": [
+    "deadline_console.log (live output may grow; no immutable closed receipt exists)"
+  ],
+  "outer_actual_wait_returncode": null,
+  "qualification_passed": false,
+  "schema": "mr3-information-three-key-nonselected-pending-snapshot-v1",
+  "scientific_result": null,
+  "scope": "Nonselected old single-oracle CPU comparison only. Three completed original report equalities preserved; no fourth result or returncode invented and no combined qualification/native credit. Older temporary production source snapshots are explicitly unselected and never replace the selected dual-oracle entry.",
+  "selected_for_production": false,
+  "snapshot_observed_wall_monotonic_ns": 4099135480697162,
+  "status": "RUNNING_NOT_SELECTED",
+  "still_running_identity": {
+    "actual_argv": [
+      "/usr/bin/python3",
+      "-B",
+      "/tmp/mr3_information_three_key_candidate_v1.py",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_deadline",
+      "--freeze",
+      "92f8bdf5bba1ba245dc53ca0964eef81a7fff938",
+      "--reference",
+      "/tmp/mr3_p2a0_v26_deadline_information_supplemental_v1.json",
+      "--output",
+      "/tmp/mr3_information_three_key_candidate_closed_v1/deadline_report.json",
+      "--receipt",
+      "/tmp/mr3_information_three_key_candidate_closed_v1/deadline_equivalence.json"
+    ],
+    "pid": 937224,
+    "start_ticks": 409715282,
+    "state": "R"
+  }
+}
