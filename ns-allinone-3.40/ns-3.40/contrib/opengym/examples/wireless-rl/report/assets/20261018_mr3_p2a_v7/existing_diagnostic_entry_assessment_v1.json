@@ -1,0 +1,26 @@
+{
+  "schema": "mr3-p2a-v7-existing-diagnostic-entry-assessment-v1",
+  "read_only": true,
+  "native_started": false,
+  "signal_sent": false,
+  "budget_observation": "The conservative existing engineering balance5876.5781805193982 can cover a short probe; the obstacle to exact isolation is the current stimulus interface, not the cost of a short probe.",
+  "available_entries": [
+    {
+      "entry": "mr3_learning.benchmark",
+      "limitation": "Only K8/KEEP/WAIT; resulting Nav2 trajectory does not specify an actuator waveform."
+    },
+    {
+      "entry": "P2A.0 V18/V19 physics diagnostics",
+      "limitation": "Read-only1ms observer and ODE parameter comparison, no waveform input; old profile demands initial iters50 and cannot directly launch against current150 production worlds."
+    },
+    {
+      "entry": "system ROS cmd_vel_nav request fixture (not implemented)",
+      "limitation": "Preserves genuine velocity_smoother->guard->typed drive and contacts, but smooths0.8->0 over about0.25s at3.2rad/s^2; cannot reproduce the guard-generated20ms stored-zero pulse."
+    }
+  ],
+  "source_boundary": "motion_safety requires the real velocity_smoother as unique cmd_vel_unguarded publisher; no spoofing this publisher or directly writing final cmd_vel/typed driver targets.",
+  "continuous_arm_validity": "The original100ms three-sample certificate can interrupt nominally continuous requests; latest-three age101ms was actually observed. A continuous request is not evidence of continuous stored actuation.",
+  "required_before_new_native": "Prepare an explicit diagnostic stimulus/validity interface preserving the guard and source identities. Verify actual decision/typed storage/1ms body stimulus; if the guard interrupts a required arm, record INCOMPLETE rather than bypassing or relaxing it. No already available safe exact fixture or physical fix is claimed.",
+  "unproven": "Braking/restart as cause of original plant drift remains unproven; an upstream-only probe would not establish that causal result.",
+  "decision": "Do not blindly rerun the same policy or spend the balance on a confounded two-arm comparison. Complete this read-only capability assessment and request the additional engineering budget needed for a genuine new diagnostic/fix/same-freeze validation chain; pilot/validation remain unexpanded."
+}

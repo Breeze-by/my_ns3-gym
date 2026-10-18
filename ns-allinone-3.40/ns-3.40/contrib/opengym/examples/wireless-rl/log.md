@@ -6611,3 +6611,5 @@ V7 pilot/三场开发验证均SKIPPED，0新pilot决策/0墙秒；余额1870/290
 拟申请工程累计上限18000→30000（新增12000，将V7最小链纳入记账），pilot/验证不扩额；当前仅提案未授权、未执行。不自动原生重试/借预算/P2B/gateway。P2A未完成，P2A.0已验收边界及原V26中断/所有旧FAIL保留。
 
 V7最终静态交付核验：181个当前本地链接无缺，闭合包13份直接原件SHA及单归档块SHA/大小正确，4份后续源码SHA匹配，4 Python AST通过；独立只读审查无阻断。git diff --check与git add -n .通过，仅选定闭合证据（约41.36MB归档）及代码/文档，无build/install或未关闭runtime混入。原16决策/8更新及两门FAIL不变；新增工程提案未授权、未执行。
+
+V7预算申请前补充只读入口核查：现有余额足够短探针，但现有benchmark/物理diagnostic无精确波形输入；旧profile限定初始ODE50，不可直接复用当前150。cmd_vel_nav短零经smoother变缓，连续请求可能被100ms资格门中断，故不能假称原guard后20ms零脉冲的精确对照。未启动新native/未发信号；[能力评估](report/assets/20261018_mr3_p2a_v7/existing_diagnostic_entry_assessment_v1.json)与预算提案明确新诊断接口仍需源码/CPU准备，未知物理因果不冒称已修。没有为了用余额盲重跑。
