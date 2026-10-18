@@ -1,0 +1,42 @@
+{
+  "schema": "mr3-information-three-key-equivalence-execution-v1",
+  "freeze_of_historical_inputs": "92f8bdf5bba1ba245dc53ca0964eef81a7fff938",
+  "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v26_deadline",
+  "effective_new_entry": {
+    "path": "/tmp/mr3_information_three_key_candidate_v1.py",
+    "sha256": "834e5aa1e37fc2a238bcb8979ba90060f263a6ca8c87c757ef6c373b94a0848e"
+  },
+  "effective_transformation": {
+    "original_host": {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_independent_information_v2.py",
+      "sha256": "f73600551a68e833a4c0a2063b12b75038a748466c838c8583c00605a34b948b"
+    },
+    "immutable_raw_replay": {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v9/independent/mr3_independent_information_v1.py",
+      "sha256": "ba3e89fa6feda9406f984310adccf17c2f0638644fd0d26f0c2e9040ec0e7653"
+    },
+    "original_selection_sha256": "9f406ebf57065ca6a51c5ab49711dc5138d44e8344346b862c8fba287bc4bcd7",
+    "candidate_selection_sha256": "f9ea7d7f1f6faa5114a430f80758c2d78137b1050950d745462f715aa16bc5f5",
+    "only_expression_before": "all(item['clock_ns'] == clock for (number, _), item in self.selections.items()\n                if number == cycle)",
+    "only_expression_after": "all(self.selections[cycle, name]['clock_ns'] == clock for name in ROBOTS\n                if (cycle, name) in self.selections)",
+    "method_ast_reverts_exactly": true,
+    "invariant": "Original selection validates robot in ROBOTS and unique(cycle,robot) before this predicate. Only that method writes selections; therefore all keys for a cycle are exactly a subset of the three fixed robot keys."
+  },
+  "reference": {
+    "path": "/tmp/mr3_p2a0_v26_deadline_information_supplemental_v1.json",
+    "sha256": "4254219b07e635517652daf723b146f53c7f362ab5541da57f9c4468e1fb29e9"
+  },
+  "output": {
+    "path": "/tmp/mr3_information_three_key_candidate_closed_v1/deadline_report.json",
+    "sha256": "4254219b07e635517652daf723b146f53c7f362ab5541da57f9c4468e1fb29e9"
+  },
+  "all_report_fields_deep_equal": true,
+  "serialized_report_bytes_equal": true,
+  "candidate_report_passed": true,
+  "source_and_reference_stable_end": true,
+  "started_wall_monotonic_ns": 4097153093743170,
+  "ended_wall_monotonic_ns": 4099569045645852,
+  "wall_seconds": "2415.951902682",
+  "passed": true,
+  "scope": "New CPU-only offline candidate against saved original reports. Report consumer_sha256 names the unchanged original host source; THIS receipt identifies the different effective code. No native run, current V11 repair/PASS, new math predicate, changed threshold, old-source overwrite, old-reader rerun or training credit."
+}

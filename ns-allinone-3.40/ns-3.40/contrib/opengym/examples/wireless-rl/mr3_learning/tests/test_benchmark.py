@@ -210,6 +210,51 @@ class PreparationProbeTests(unittest.TestCase):
                 with self.assertRaisesRegex(RuntimeError, "differs from the declared source"):
                     benchmark._parameter_review_binding("freeze")
 
+    def test_gentle_profile_binds_actual_entry_immutable_reader_and_three_yaml_sources(self):
+        def frozen(argv, cwd):
+            return (Path(cwd) / argv[2].split(":", 1)[1]).read_bytes()
+        with patch.object(benchmark.subprocess, "check_output", side_effect=frozen) as git:
+            binding = benchmark._parameter_review_binding("cpu-freeze", "gentle_turn_v1")
+        self.assertEqual(binding["relative_path"], benchmark.GENTLE_PARAMETER_REVIEW_SCRIPT.as_posix())
+        self.assertEqual(binding["profile_selection"], "gentle_turn_v1")
+        self.assertEqual(binding["immutable_reader"]["relative_path"], benchmark.PARAMETER_REVIEW_SCRIPT.as_posix())
+        self.assertEqual(len(binding["deployment_yaml_sources"]), 3)
+        self.assertEqual(len(binding["profile_definition_sha256"]), 64)
+        self.assertEqual(git.call_count, 5)
+        with self.assertRaisesRegex(ValueError, "unknown exact"):
+            benchmark._parameter_review_binding("cpu-freeze", "arbitrary_lower")
+
+    def test_nonoriginal_parameter_profile_without_readback_submits_no_work(self):
+        with tempfile.TemporaryDirectory() as root:
+            argv = ["benchmark", "--workers", "1", "--steps", "20", "--run-id", "rejected",
+                    "--output-root", root, "--schedule", "open:101",
+                    "--preparation-parameter-profile", "gentle_turn_v1"]
+            with patch("sys.argv", argv), contextlib.redirect_stderr(io.StringIO()):
+                with self.assertRaises(SystemExit) as error:
+                    benchmark.main()
+            self.assertEqual(error.exception.code, 2)
+            self.assertEqual(list(Path(root).iterdir()), [])
+
+    def test_gentle_profile_runs_bound_entry_with_original_system_ros_readback_argv(self):
+        with tempfile.TemporaryDirectory() as root:
+            binding = {"relative_path": benchmark.GENTLE_PARAMETER_REVIEW_SCRIPT.as_posix(),
+                       "freeze": "cpu-freeze", "sha256": "entry", "profile_selection": "gentle_turn_v1"}
+            args = SimpleNamespace(freeze="cpu-freeze", preparation_parameter_profile="gentle_turn_v1",
+                                   preparation_parameter_review_source=binding)
+            episode = {"output_directory": root}
+            with patch.object(benchmark, "_parameter_review_binding", return_value=binding) as source, \
+                    patch.object(benchmark, "_parameter_review_environment", return_value=({}, {})), \
+                    patch.object(benchmark.subprocess, "run", return_value=SimpleNamespace(
+                        returncode=0, stdout="actual-readback-fixture", stderr="")) as child:
+                benchmark._run_parameter_review(args, 0, episode)
+            source.assert_called_once_with("cpu-freeze", "gentle_turn_v1")
+            argv = child.call_args.args[0]
+            self.assertIn(str(benchmark.WORKSPACE / benchmark.GENTLE_PARAMETER_REVIEW_SCRIPT), argv)
+            self.assertNotIn(str(benchmark.WORKSPACE / benchmark.PARAMETER_REVIEW_SCRIPT), argv)
+            self.assertEqual(argv[-6:], ["--freeze", "cpu-freeze", "--output",
+                str(Path(root) / "actual_nav2_parameters.json"), "--wall-timeout-sec", "30"])
+            self.assertEqual(episode["preparation_parameter_review"]["source"], binding)
+
 
 class CooperativeAbortTests(unittest.TestCase):
     def setUp(self):

@@ -117,6 +117,40 @@ class PreparationTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 prep.validate_plan(plan)
 
+    def test_gentle_parameter_profile_changes_only_interface_readback_selection(self):
+        original, gentle = self.plan(), self.plan(nav2_parameter_profile="gentle_turn_v1")
+        self.assertEqual(original["nav2_parameter_profile"], "original")
+        for old, new in zip(original["stages"], gentle["stages"]):
+            self.assertEqual(old["audits"], new["audits"])
+            if new["stage"] == "interface":
+                self.assertEqual(new["native"]["argv"], old["native"]["argv"] +
+                    ["--preparation-parameter-profile", "gentle_turn_v1"])
+            else:
+                self.assertEqual(old, new)
+        gentle["readiness"] = {"ready": True}
+        prep.validate_plan(gentle)
+
+    def test_parameter_profile_rejects_wrong_flag_scope_and_missing_bound_sources(self):
+        for fault in ("entry", "helper", "yaml", "flag", "scope", "unknown"):
+            plan = self.plan(nav2_parameter_profile="gentle_turn_v1")
+            plan["readiness"] = {"ready": True}
+            sources = plan["source_bindings"]
+            if fault == "entry":
+                del sources[str(prep.WIRELESS_RELATIVE / "mr3_learning/audit_nav2_parameters.py")]
+            elif fault == "helper":
+                del sources[str(prep.WIRELESS_RELATIVE / "report/assets/20261017_mr3_p2a0_v13/independent/mr3_actual_nav2_parameters_v13.py")]
+            elif fault == "yaml":
+                del sources["ros2_ws/ros2-multi-robot-automap/src/multi_robot/params/nav2_params_tb1_0.yaml"]
+            elif fault == "flag":
+                argv = plan["stages"][0]["native"]["argv"]
+                argv[-1] = "original"
+            elif fault == "scope":
+                plan["stages"][1]["native"]["argv"] += ["--preparation-parameter-profile", "gentle_turn_v1"]
+            else:
+                plan["nav2_parameter_profile"] = "any_lower_value"
+            with self.assertRaises(ValueError):
+                prep.validate_plan(plan)
+
     def test_first_required_failure_drains_submitted_child_and_skips_dependant(self):
         runner = self.runner()
         jobs = [self.job("failure", code=7, passed=False), self.job("already_submitted", delay=.08),

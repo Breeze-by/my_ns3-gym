@@ -142,7 +142,7 @@ def test_odom_angular_age_is_distinct_from_older_geometry_and_yaw_source_age():
     assert not evaluate(states, "tb1", [.2, .1])["allow"]
 
 
-def test_actual_nav2_node_parameters_share_the_guard_command_limits():
+def test_actual_nav2_node_parameters_respect_guard_and_gentle_turn_profile():
     component = Path(__file__).resolve().parents[2] / "multi_robot"
     assert COMMAND_TURN_LIMIT == .8
     sources = [component / "config/nav2_params.yaml"] + [
@@ -154,15 +154,28 @@ def test_actual_nav2_node_parameters_share_the_guard_command_limits():
         smoother = params["velocity_smoother"]["ros__parameters"]
         assert controller["max_vel_x"] == controller["max_speed_xy"] == .20
         if source.parent.name == "params":
+            angular_limit, angular_accel = .3, 1.0
             assert controller["plugin"] == "nav2_rotation_shim_controller::RotationShimController"
             assert controller["primary_controller"] == "dwb_core::DWBLocalPlanner"
+            assert controller["rotate_to_heading_angular_vel"] == angular_limit
+            assert controller["max_angular_accel"] == angular_accel
+            assert controller["min_speed_theta"] == 0.
+            recovery = params["recoveries_server"]["ros__parameters"]
+            for turn_source in (behavior, recovery):
+                assert turn_source["max_rotational_vel"] == angular_limit
+                assert turn_source["min_rotational_vel"] == .15
+                assert turn_source["rotational_acc_lim"] == angular_accel
         else:
+            angular_limit, angular_accel = .8, 3.2
             assert controller["plugin"] == "dwb_core::DWBLocalPlanner"
-        assert controller["max_vel_theta"] == behavior["max_rotational_vel"] == .8
+        assert controller["max_vel_theta"] == behavior["max_rotational_vel"] == angular_limit
+        assert 0. < angular_limit <= COMMAND_TURN_LIMIT
         assert controller["acc_lim_x"] == .5 and controller["decel_lim_x"] == -.5
-        assert smoother["max_velocity"] == [.20, 0., .8]
-        assert smoother["min_velocity"] == [-.20, 0., -.8]
-        assert smoother["max_accel"] == [.5, 0., 3.2]
+        assert controller["acc_lim_theta"] == angular_accel
+        assert controller["decel_lim_theta"] == -3.2
+        assert smoother["max_velocity"] == [.20, 0., angular_limit]
+        assert smoother["min_velocity"] == [-.20, 0., -angular_limit]
+        assert smoother["max_accel"] == [.5, 0., angular_accel]
         assert smoother["max_decel"] == [-.5, 0., -3.2]
         assert smoother["smoothing_frequency"] == 20. and smoother["feedback"] == "OPEN_LOOP"
         assert smoother["use_sim_time"] is True and behavior["use_sim_time"] is True

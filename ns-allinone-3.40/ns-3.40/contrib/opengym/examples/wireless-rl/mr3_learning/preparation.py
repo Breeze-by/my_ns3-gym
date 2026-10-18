@@ -138,6 +138,16 @@ def validate_plan(plan, workspace=WORKSPACE):
                 "report/assets/20261017_mr3_p2a0_v9/independent/mr3_independent_information_v1.py"):
             require(str(WIRELESS_RELATIVE / relative) in plan["source_bindings"],
                     "information entry or immutable mathematical helper is not source-bound")
+    nav2_profile = plan.get("nav2_parameter_profile", "original")
+    require(nav2_profile in ("original", "gentle_turn_v1"), "unknown exact Nav2 parameter profile")
+    if nav2_profile == "gentle_turn_v1":
+        for relative in (
+                WIRELESS_RELATIVE / "mr3_learning/audit_nav2_parameters.py",
+                WIRELESS_RELATIVE / "report/assets/20261017_mr3_p2a0_v13/independent/mr3_actual_nav2_parameters_v13.py",
+                *(Path("ros2_ws/ros2-multi-robot-automap/src/multi_robot/params") /
+                  f"nav2_params_tb{robot}_0.yaml" for robot in (1, 2, 3))):
+            require(str(relative) in plan["source_bindings"],
+                    "Nav2 profile entry, immutable reader or deployment YAML is not source-bound")
     require([stage["stage"] for stage in plan["stages"]] == list(STAGES), "four-stage order differs")
     require(Decimal(plan["budget"]["matrix_wall_seconds"]) > 0
             and Decimal(plan["budget"]["engineering_remaining_seconds"])
@@ -171,6 +181,12 @@ def validate_plan(plan, workspace=WORKSPACE):
                 and ("--deadline-probe" in argv) is (name == "deadline")
                 and ("--preparation-parameter-review" in argv) is (name == "interface"),
                 "matrix fixture flags changed")
+        profile_flag = "--preparation-parameter-profile"
+        require(argv.count(profile_flag) <= 1 and (profile_flag not in argv or name == "interface"),
+                "parameter profile flag outside the original interface readback")
+        selected_profile = argument(argv, profile_flag) if profile_flag in argv else "original"
+        require(selected_profile == (nav2_profile if name == "interface" else "original"),
+                "native exact parameter profile differs from the plan")
         if name in ("interface", "reset"):
             require(argument(argv, "--preparation-probe-version") == "mr3-p2a0-outward-cancel-v6",
                     "original received-only V6 stimulus changed")
@@ -382,7 +398,7 @@ def run_audits(jobs, runner, deadline_ns):
 
 def build_plan(*, output_directory, run_root, custody_binding, binary_proof, preflight,
                engineering_remaining_seconds, run_prefix="mr3_p2a_odom50", workspace=WORKSPACE,
-               information_implementation="original"):
+               information_implementation="original", nav2_parameter_profile="original"):
     """Draft a new plan from the exact original workload, not its old admission code.
 
     Root must seal current source/library bindings and readiness before execution.
@@ -392,6 +408,7 @@ def build_plan(*, output_directory, run_root, custody_binding, binary_proof, pre
                                                (workspace, output_directory, run_root))
     require(information_implementation in ("original", "admitted_index_three_keys_v1"),
             "unknown information implementation")
+    require(nav2_parameter_profile in ("original", "gentle_turn_v1"), "unknown exact Nav2 parameter profile")
     assets = workspace / WIRELESS_RELATIVE / "report/assets"
     original_path = assets / "20261018_mr3_p2a0_v26_capture/predeclared_plan_v26.json"
     original = json.loads(original_path.read_text())
@@ -409,6 +426,7 @@ def build_plan(*, output_directory, run_root, custody_binding, binary_proof, pre
             "pilot_budget_changed": False, "normal_spawn": True, "plant_stimulus_enabled": False,
             "physics_diagnostic_enabled": False, "final_external_coordinator_absence_required": True,
             "information_implementation": information_implementation,
+            "nav2_parameter_profile": nav2_parameter_profile,
             "stages": []}
     caps = (1500, 1200, 4500, 6800)
     allocations = (1250, 850, 3900, 5700)
@@ -422,6 +440,8 @@ def build_plan(*, output_directory, run_root, custody_binding, binary_proof, pre
                             ("--base-domain", str(domains[index])), ("--base-port", str(ports[index]))):
             command[command.index(flag) + 1] = value
         command += ["--work-wall-seconds", str(allocations[index]), "--close-reserve-seconds", "120"]
+        if name == "interface" and nav2_parameter_profile != "original":
+            command += ["--preparation-parameter-profile", nav2_parameter_profile]
         run, local = run_root / (run_prefix + "_" + name), output_directory / name
         native_receipt = local / "native.json"
         stage = {"stage": name, "run_directory": str(run), "wall_seconds": str(caps[index]),
@@ -525,6 +545,13 @@ def build_plan(*, output_directory, run_root, custody_binding, binary_proof, pre
     if information_implementation == "admitted_index_three_keys_v1":
         relative = WIRELESS_RELATIVE / "mr3_learning/audit_information.py"
         plan["source_bindings"][str(relative)] = sha(workspace / relative)
+    if nav2_parameter_profile == "gentle_turn_v1":
+        for relative in (
+                WIRELESS_RELATIVE / "mr3_learning/audit_nav2_parameters.py",
+                WIRELESS_RELATIVE / "report/assets/20261017_mr3_p2a0_v13/independent/mr3_actual_nav2_parameters_v13.py",
+                *(Path("ros2_ws/ros2-multi-robot-automap/src/multi_robot/params") /
+                  f"nav2_params_tb{robot}_0.yaml" for robot in (1, 2, 3))):
+            plan["source_bindings"][str(relative)] = sha(workspace / relative)
     return plan
 
 
@@ -712,6 +739,8 @@ def main(argv=None):
     parser.add_argument("--run-prefix", default="mr3_p2a_odom50")
     parser.add_argument("--information-implementation", choices=("original", "admitted_index_three_keys_v1"),
                         default="original")
+    parser.add_argument("--nav2-parameter-profile", choices=("original", "gentle_turn_v1"),
+                        default="original")
     args = parser.parse_args(argv)
     if args.build_plan is not None:
         if args.plan is not None or args.freeze is not None or any(value is None for value in (
@@ -721,7 +750,8 @@ def main(argv=None):
         value = build_plan(output_directory=args.execution_directory, run_root=args.run_root,
                            custody_binding=args.custody_binding, binary_proof=args.binary_proof,
                            preflight=args.preflight, engineering_remaining_seconds=args.engineering_remaining_seconds,
-                           run_prefix=args.run_prefix, information_implementation=args.information_implementation)
+                           run_prefix=args.run_prefix, information_implementation=args.information_implementation,
+                           nav2_parameter_profile=args.nav2_parameter_profile)
         dump(args.build_plan, value)
         print(json.dumps({"draft_plan": str(args.build_plan), "native_admitted": False}))
         return 0

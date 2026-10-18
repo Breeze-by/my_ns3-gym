@@ -17,3 +17,7 @@ ros2_ws/ros2-multi-robot-automap/src/nav2_velocity_smoother/README.md -text -whi
 # Exact V12 SDK parser inputs/output preserve the bytes that were actually parsed.
 ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v12/checks/sdformat_parse_cpu/*.sdf -text -whitespace
 ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v12/checks/sdformat_parse_cpu/run.log -text -whitespace
+# Exact closed-data diagnostic CSV keeps its native line endings.
+ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v13/checks/mr3_p2a_v12_reset_tb1_path_separation_v1.csv -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+# Profile qualification retains exact source YAML bytes and original whitespace.
+ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v13/checks/nav2_profile_cpu/final_sources/ros2_ws/ros2-multi-robot-automap/src/multi_robot/params/nav2_params_tb[123]_0.yaml -text -whitespace

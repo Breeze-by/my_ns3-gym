@@ -552,3 +552,12 @@ tagged+非WORLD或未同时发布odom/odom-TF仍拒绝。观测producer/实际DD
 新冻结仍须完整四阶段38角色、关闭与后续PPO链验证；旧V11的32步、取证和部分科学PASS不能拼入新矩阵。
 纯只读审计可消除已证明完全等价的重复计算：不得改变输入覆盖、错误、任何数值门或任务结论；
 必须绑定有效实现与原数学来源，保留完整报告对照，不冒充旧实现的执行来源。
+
+
+## P2A V13 prospective navigation operating profile (2026-10-19)
+
+V12 reset retained a real local odometry planar-speed peak .01636094718877706 m/s during a qualified zero-linear turn, above the unchanged .01 m/s condition. V13 prospectively configures the three active robot YAML files with symmetric angular command limits .3 rad/s and angular acceleration 1.0 rad/s² in Rotation Shim, DWB, behavior/recovery and velocity smoother. Behavior/recovery minimum angular speed is .15; smoother angular deceleration remains -3.2. Linear .20 commands and ±.5 acceleration/deceleration remain unchanged. The generic compatibility YAML is not this MR3 three-robot profile.
+
+This is a smaller operating region within the original .8 command, 1.2 measured angular and 7.0 angular acceleration upper bounds; those mathematical bounds, .01 rest speed, .0078 total drift, reaction/stopping, freshness, received-only inputs and all 95%/300s/quality/participation/contact task gates are unchanged. The physical SDF, wheel acceleration, paired driver, sources and compiled ELFs are unchanged. Lower configured rates are a prospective physical remedy candidate, not a guarantee or existing repair credit. Do not average away or filter a raw twist peak.
+
+The historical exact parameter reader remains immutable. The new exact `gentle_turn_v1` readback contract reuses its nine live node/service sources and original logic, explicitly identifies the changed typed deployment values and effective entry, and binds the complete active YAML bytes. The unused compatibility recoveries block has static source provenance only, not an invented extra live node readback. A new same-freeze full engineering matrix and fresh PPO minimum are mandatory; V12 partial PASS cannot be reused as native evidence for V13. No actor observation/action/normalization, reward, algorithm, pilot or final-only validation budget changes are made.

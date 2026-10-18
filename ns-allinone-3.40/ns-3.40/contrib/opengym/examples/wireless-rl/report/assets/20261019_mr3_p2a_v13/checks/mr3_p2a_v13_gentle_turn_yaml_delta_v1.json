@@ -1,0 +1,81 @@
+{
+  "schema": "mr3-p2a-v13-gentle-turn-yaml-exact-delta-v1",
+  "files": [
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot/params/nav2_params_tb1_0.yaml",
+      "before_sha256": "8854aac6fe3083aa1156072830358e9331f0e0a45144ab3df499f743a37c1b8a",
+      "after_sha256": "d2d01844885fd76ab6e8cd996c37b8994c6cf801010988db12e6dc6e67e38d53",
+      "exact_changed_lines": 13,
+      "exact_inverse_restores_original_bytes": true
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot/params/nav2_params_tb2_0.yaml",
+      "before_sha256": "9c7a0f9c197c5b3eedc3567c0b70d4920a5ca8cc6057b5059f5c5844ab275386",
+      "after_sha256": "5f2ab024dd590a2cc6656072311a11cddbbaf646423a3fe502569b466e92dc33",
+      "exact_changed_lines": 13,
+      "exact_inverse_restores_original_bytes": true
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot/params/nav2_params_tb3_0.yaml",
+      "before_sha256": "8794b037c1ef31f57c8d99ab05c57a646afe6653717c2f21100e00b6a5435fae",
+      "after_sha256": "b3d47508e69d2e5b6d93805435dbe42b3a5ec262b06015466d5a92f214106192",
+      "exact_changed_lines": 13,
+      "exact_inverse_restores_original_bytes": true
+    }
+  ],
+  "replacements": [
+    {
+      "before": "      rotate_to_heading_angular_vel: 0.8\n",
+      "after": "      rotate_to_heading_angular_vel: 0.3\n",
+      "count_each_file": 1
+    },
+    {
+      "before": "      max_angular_accel: 3.2\n",
+      "after": "      max_angular_accel: 1.0\n",
+      "count_each_file": 1
+    },
+    {
+      "before": "      max_vel_theta: 0.8\n",
+      "after": "      max_vel_theta: 0.3\n",
+      "count_each_file": 1
+    },
+    {
+      "before": "      acc_lim_theta: 3.2\n",
+      "after": "      acc_lim_theta: 1.0\n",
+      "count_each_file": 1
+    },
+    {
+      "before": "    max_rotational_vel: 0.8\n",
+      "after": "    max_rotational_vel: 0.3\n",
+      "count_each_file": 2
+    },
+    {
+      "before": "    min_rotational_vel: 0.4\n",
+      "after": "    min_rotational_vel: 0.15\n",
+      "count_each_file": 2
+    },
+    {
+      "before": "    rotational_acc_lim: 3.2\n",
+      "after": "    rotational_acc_lim: 1.0\n",
+      "count_each_file": 2
+    },
+    {
+      "before": "    max_velocity: [0.20, 0.0, 0.8]\n",
+      "after": "    max_velocity: [0.20, 0.0, 0.3]\n",
+      "count_each_file": 1
+    },
+    {
+      "before": "    min_velocity: [-0.20, 0.0, -0.8]\n",
+      "after": "    min_velocity: [-0.20, 0.0, -0.3]\n",
+      "count_each_file": 1
+    },
+    {
+      "before": "    max_accel: [0.5, 0.0, 3.2]\n",
+      "after": "    max_accel: [0.5, 0.0, 1.0]\n",
+      "count_each_file": 1
+    }
+  ],
+  "production_math_changed": false,
+  "native_run": false,
+  "elf_rebuilt": false
+}

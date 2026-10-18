@@ -6842,3 +6842,51 @@ V12准备提交134bfe6包含真实SDK解析SDF/输出，暂存check曾返回2（
 root把检查/提交放同一批而未先拦下，原返回码和事实保留。未启动native。
 后续仅按仓库既有.gitattributes做法，对这五份原SDF及run.log指定-text/-whitespace，
 保留实际解析输入及SHA，不修改/规范化证据字节、不影响源码数学或数值门；完整检查后再推送新冻结。
+
+
+## 2026-10-19 MR3-P2A V12 原生关闭（reset模型反例，后续跳过）
+
+冻结ea759bea57d1e2ddd126d56c3a81801a072535a0，clean+pushed preflight真实rc0，命令完全按[V12入口](report/20261019_mr3_p2a_v12.md)。
+原native精确argv/实际借用workwall在封存matrix各stage/native.json，未以计划基数冒充实际：interface1243.957、reset5018.501；
+完整场景/seed/epoch/command与返回在[manifest](report/assets/20261019_mr3_p2a_v12/closed_evidence/manifest.json)原件中。
+interface open101/32step全部11科学角色PASS，1052.005804348s；terminal open101×2各4step、8角色PASS，523.457854735s。
+reset实际仅两worker各首open101，4step+4step，未进入后续open/rooms/corridors；worker0 fourth dt.24/terminated navigation_failure，
+首因motion_safety52827 tb1 settled-turn raw speed.01636094718877706>.01（source43.561，callbackclock43.56）。
+raw path.00395219354828877<.0078；TF校正非此分支原因，连续2.301s stored(0,+.8)后峰，后续43.565零命令是后果。
+这是真实producer conditional model反例，非已证Nav2abort/进程crash；reset科学消费者未提交，不能造其独立FAIL/PASS。
+worker1保留在途step真实返回后外部截断，双worker实际exit0/forcedfalse；native benchmark1、watcher0，deadline和PPO均跳过。
+53真实API记录=5reset+48step，0optimizer，不新增pilot决策或任务成功信用。
+outer实际rc1/wall1849.821587123，coordinator1849.622196721；独立final工具actualrc1、closure_passedtrue/253保存身份gone，整体FAIL保留。
+保守实际全wait上界charge1851.306438272，累计16923.5858895156018/30000，余13076.4141104843982；
+pilot1870/2905.9547395464029及三场final-only验证原额度未动。
+封存1718文件/1320736482rawbytes，archive94816168/SHAeba5118a1d9c5a02cf78f38a708281b60cf59fe47c93fb76a0b075fbb75dd0f6，
+manifest7cc6a9e2894fbfab082b79ffa17823d7bafadfbd51d448e218a162751c2b4480；相关Git source395（非全Git树）/10ELF单独捕获；
+roundtrip/逐fileSHA/CRC/concat/输入stat末稳全部PASS，CPU pack真实rc0/73.937495747s。
+全已提交native/consumer实际关闭后方准备V13一致较低转向profile，新source/ELF证据完整重验，不拼上述19旧PASS。
+
+
+## 2026-10-19 MR3-P2A V13 部署候选准备（无本版native）
+
+在ea759bea HEAD加明确dirty源码上准备一致gentle_turn_v1。三活动robot YAML每份恰13行：
+Shim/DWB/behavior/recovery/smoother角速度双向.3、起转加速1.0；behavior/recovery min.15；角decel-3.2、线.2/±.5保持。
+3文件逆投影逐字还原V12，installed symlink byteequal；driver/SDF/wheel_accel1及10ELF完全未改/未重建。
+这些是前瞻部署事实，不放宽原.8/1.2/7/.01/.0078/95%/300秒及全部停止、源龄、接触、参与门，也不称已修复plant。
+新audit_nav2_parameters.py SHA848dd05ebd9558a4ec8d47866909662030d24cfce837742a409907ff6c5bfdf3，
+profile SHAaf5bf20bf17ed160dd3476653c21eef94d0ba6f30d119c1bbbe66190e78c68a5，
+复用immutable v13源SHA9eb963457a8dc8297e4686004ea08c7a06e1e0e9ede7cd795ba9505da9d8f701及原9服务/typed状态/时钟/cleanup函数，
+只声明10项exact typed部署值与profile，新/旧source身份分开；recoveries3项只有静态source，不造第12个live节点。
+原38角色/transitive静态兼容核验无新schema/profile/scriptSHA阻断，不对新真实读回作保证。
+
+68 CPU tests实际rc0/3.368s：
+`env PYTHONNOUSERSITE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m unittest mr3_learning.tests.test_nav2_parameter_profile mr3_learning.tests.test_benchmark mr3_learning.tests.test_preparation -v`。
+初轮1个minimal fake-binding接线FAIL与原源/console完整保留，固定profile reader路径后68项全复验，数学/参数门未改。
+精确命令/cwd/源SHA/typed值/原件在[CPU资格及索引](report/assets/20261019_mr3_p2a_v13/checks/nav2_profile_cpu/index.json)。
+root另45项audit_ppo/native_custody实际rc0/3.060s，精确命令和source身份在本版checks/root_entry_cpu_v1.json；
+ROS配置test实际1PASS/1.37s，见checks/mr3_p2a_v13_gentle_turn_config_cpu_receipt_v1.json。
+本次纯CPU与闭合数据诊断均无新native；旧峰值、path与驱动命令分离原件保存本版checks，不把pose均值代瞬时twist。
+
+工程入口16923.5858895156018/30000、余13076.4141104843982；新matrix12100+minimum900+尾76.4141104843982，
+四stage base1400/900/4200/5600，native1150/600/3600/4500，close120，仅前实际节余向后借用，超额仍FAIL/计费。
+已生成[预声明](report/assets/20261019_mr3_p2a_v13/predeclared_plan_v13.json)，actualrc0，SHA15d1ec389105e45a445871b069e5b01ec49ffa609e1cb0318bb5246b4cd6ec0d。
+新qualification/source/ELF严格准入后再执行[V13精确原生命令](report/20261019_mr3_p2a_v13.md)；原pilot1870/2905.9547395464029与3场final-only验证不扩额。
+本段无新native/GPU/任务信用，P2A未完成。

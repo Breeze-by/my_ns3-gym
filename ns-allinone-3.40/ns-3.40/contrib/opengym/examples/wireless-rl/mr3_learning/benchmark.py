@@ -20,6 +20,9 @@ from .supervisor import InfrastructureError, Supervisor, WORKSPACE, identity_ali
 PARAMETER_REVIEW_SCRIPT = Path(
     "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/"
     "20261017_mr3_p2a0_v13/independent/mr3_actual_nav2_parameters_v13.py")
+GENTLE_PARAMETER_REVIEW_SCRIPT = Path(
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/"
+    "mr3_learning/audit_nav2_parameters.py")
 PARAMETER_REVIEW_PROFILE = Path(
     "ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_fastdds_loopback_udp.xml")
 TRANSPORT_ENV_KEYS = (
@@ -364,15 +367,31 @@ def _wall_admission(args, abort, worker_id, operation, *, episode_index=None, ep
     return not _abort_requested(abort)
 
 
-def _parameter_review_binding(freeze):
+def _parameter_review_binding(freeze, profile="original"):
     """The only review executable must equal its tracked source at this freeze."""
-    raw = (WORKSPACE / PARAMETER_REVIEW_SCRIPT).read_bytes()
-    frozen = subprocess.check_output(
-        ["git", "show", f"{freeze}:{PARAMETER_REVIEW_SCRIPT.as_posix()}"], cwd=WORKSPACE)
-    if raw != frozen:
-        raise RuntimeError("parameter review script differs from the declared source freeze")
-    return {"relative_path": PARAMETER_REVIEW_SCRIPT.as_posix(), "freeze": freeze,
-            "sha256": hashlib.sha256(raw).hexdigest()}
+    if profile not in ("original", "gentle_turn_v1"):
+        raise ValueError("unknown exact parameter readback profile")
+
+    def bind(relative):
+        raw = (WORKSPACE / relative).read_bytes()
+        frozen = subprocess.check_output(
+            ["git", "show", f"{freeze}:{relative.as_posix()}"], cwd=WORKSPACE)
+        if raw != frozen:
+            raise RuntimeError("parameter review script differs from the declared source freeze")
+        return {"relative_path": relative.as_posix(), "freeze": freeze,
+                "sha256": hashlib.sha256(raw).hexdigest()}
+
+    binding = bind(PARAMETER_REVIEW_SCRIPT if profile == "original"
+                   else GENTLE_PARAMETER_REVIEW_SCRIPT)
+    if profile == "gentle_turn_v1":
+        from .audit_nav2_parameters import load_profile
+        _, proof = load_profile(WORKSPACE)
+        binding.update(profile_selection=profile,
+                       profile_definition_sha256=proof["profile_sha256"],
+                       immutable_reader=bind(PARAMETER_REVIEW_SCRIPT),
+                       deployment_yaml_sources=[bind(Path(row["path"]))
+                                                for row in proof["yaml_sources"]])
+    return binding
 
 
 def _parameter_review_environment(args, worker_id, episode):
@@ -418,7 +437,8 @@ def _parameter_review_environment(args, worker_id, episode):
 
 
 def _run_parameter_review(args, worker_id, episode):
-    binding = _parameter_review_binding(args.freeze)
+    binding = _parameter_review_binding(
+        args.freeze, getattr(args, "preparation_parameter_profile", "original"))
     if binding != args.preparation_parameter_review_source:
         raise RuntimeError("parameter review script binding changed after preflight")
     directory = Path(episode["output_directory"])
@@ -428,7 +448,9 @@ def _run_parameter_review(args, worker_id, episode):
         'source "$1" && shift && exec /usr/bin/python3 "$@"',
         "mr3_parameter_review",
         str(WORKSPACE / "ros2_ws/ros2-multi-robot-automap/install/setup.bash"),
-        str(WORKSPACE / PARAMETER_REVIEW_SCRIPT), str(directory),
+        str(WORKSPACE / (GENTLE_PARAMETER_REVIEW_SCRIPT if getattr(
+            args, "preparation_parameter_profile", "original") == "gentle_turn_v1"
+            else PARAMETER_REVIEW_SCRIPT)), str(directory),
         "--freeze", args.freeze, "--output", str(directory / "actual_nav2_parameters.json"),
         "--wall-timeout-sec", "30"]
     trace = {"source": binding, "command_argv": command, "wall_timeout_sec": 45,
@@ -669,6 +691,8 @@ def main():
                         help="explicit external fixture version; v2=20 steps, v3=32 steps")
     parser.add_argument("--preparation-parameter-review", action="store_true",
                         help="paused one-worker open101: frozen readonly ROS parameter audit")
+    parser.add_argument("--preparation-parameter-profile", choices=("original", "gentle_turn_v1"),
+                        default="original", help="exact readback profile; never sets ROS parameters")
     args = parser.parse_args()
     if (not math.isfinite(args.close_reserve_seconds) or args.close_reserve_seconds <= 0
             or (args.work_wall_seconds is not None and (
@@ -714,14 +738,17 @@ def main():
             not args.preparation_motion_probe or args.workers != 1
             or args.schedule != [("open", 101)]):
         parser.error("parameter review requires preparation motion probe, one worker, one open101")
+    if args.preparation_parameter_profile != "original" and not args.preparation_parameter_review:
+        parser.error("nonoriginal parameter profile requires the explicit parameter review")
     args.freeze = None
     args.preparation_parameter_review_source = None
     if args.preparation_parameter_review:
         args.freeze = subprocess.check_output(
             ["git", "rev-parse", "HEAD"], cwd=WORKSPACE, text=True).strip()
         try:
-            args.preparation_parameter_review_source = _parameter_review_binding(args.freeze)
-        except (OSError, subprocess.CalledProcessError, RuntimeError) as error:
+            args.preparation_parameter_review_source = _parameter_review_binding(
+                args.freeze, args.preparation_parameter_profile)
+        except (OSError, subprocess.CalledProcessError, RuntimeError, ValueError) as error:
             parser.error(f"frozen parameter review source unavailable: {error}")
     output_root = args.output_root or (
         WORKSPACE / "ros2_ws/ros2-multi-robot-automap/log/mr3_learning")
@@ -751,6 +778,7 @@ def main():
                 "preparation_motion_probe": args.preparation_motion_probe,
                 "preparation_probe_version": args.preparation_probe_version,
                 "preparation_parameter_review": args.preparation_parameter_review,
+                "preparation_parameter_profile": args.preparation_parameter_profile,
                 "preparation_parameter_review_source": args.preparation_parameter_review_source,
                 "resource_scope": "host counters include unrelated activity; GPU driver reports",
                 "num_logical_cpus": os.cpu_count(),

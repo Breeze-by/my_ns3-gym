@@ -1,0 +1,27 @@
+{
+  "schema": "mr3-v12-root-actual-tool-waits-v1",
+  "freeze": "ea759bea57d1e2ddd126d56c3a81801a072535a0",
+  "outer_final_poll": {
+    "chunk_id": "25201e",
+    "wall_time_seconds": 27.869217098,
+    "exit_code": 1,
+    "original_token_count": 33,
+    "output": "{\"passed\": false, \"charged_wall_seconds\": \"1849.622196721\"}\n{\"scope\": \"matrix\", \"returncode\": 1, \"wall_seconds\": \"1849.821587123\"}\n"
+  },
+  "independent_final_closure": {
+    "chunk_id": "79f248",
+    "wall_time_seconds": 0.574215782,
+    "exit_code": 1,
+    "original_token_count": 18,
+    "output": "{\"passed\": false, \"closure_passed\": true, \"saved_identity_count\": 253}\n",
+    "aggregate_tool_wait_seconds": 0.574215782
+  },
+  "post_final_observation": {
+    "chunk_id": "f9685f",
+    "wall_time_seconds": 0.285442056,
+    "exit_code": 0,
+    "original_token_count": 127,
+    "output": "{\"schema\": \"mr3-v12-root-final-wait-observation-v1\", \"freeze\": \"ea759bea57d1e2ddd126d56c3a81801a072535a0\", \"outer_started_wall_monotonic_ns\": 4099378824559633, \"after_final_wait_wall_monotonic_ns\": 4101229845555849, \"gross_to_observation_seconds\": \"1851.020996216\", \"matrix_execution_passed\": false, \"matrix_independent_final_passed\": false, \"final_saved_identity_count\": 253, \"scope\": \"Observed only after actual outer and independent final consumer process/tool waits returned; no unknown end invented.\"}\n"
+  },
+  "scope": "Exact tools' returned metadata. A final poll's wall is not the entire native phase; outer receipt gives its total. Independent final tool actually returned 1 while closure_passed=true; no unknown process end invented."
+}

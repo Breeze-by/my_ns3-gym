@@ -1,0 +1,690 @@
+{
+  "jobs": {
+    "elf_modifications": 0,
+    "new_consumer_runs": 0,
+    "new_native_runs": 0,
+    "new_profile_or_benchmark_runs": 0,
+    "plan_modifications": 0,
+    "source_modifications": 0,
+    "thread_environment_changes": 0
+  },
+  "limits": [
+    "Static source review only: no profiler, threadpool query, consumer run or timing attribution was performed by this review.",
+    "No native/science/task/training PASS or controlled performance claim. Source-byte checks and this analysis do not add a new scientific gate."
+  ],
+  "matrix_input_is_a_different_consumer": {
+    "consequence": "Its measured158 seconds cannot be used as a measured PPO policy_inputs runtime, BLAS attribution, or pilot-tail upper bound.",
+    "evidence": "This original matrix reader explicitly asserts torch not in sys.modules; per transition it decompresses/parses/canonicalizes seven map roles, reconstructs three navigation maps and invokes frozen mr3_observation.build_snapshot for each unique snapshot. It is not audit_policy_inputs.",
+    "source": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v4/independent/mr3_p2a0_v4_independent_input_episode_review_v1.py"
+  },
+  "observed_wall_monotonic_ns": 4100766322893154,
+  "pilot_budget": {
+    "collector_soft_wall_seconds": "2100",
+    "post_soft_reserve_seconds": "805.9547395464029",
+    "reserve_is_proven_upper_bound": false,
+    "total_phase_wall_allocation_seconds": "2905.9547395464029",
+    "total_phase_wall_scope": "Actual outer entry through final absence reader, write and tool wait completion; includes ready/source, native, close/save and all required consumer waits"
+  },
+  "pilot_tail_risk": {
+    "conclusion": "805.9547395464029 is a reserve, not a guaranteed consumer window or proven upper bound.",
+    "reasons": [
+      "Outer admission/source/watch/import work starts before the PPO collector starts its own2100-second clock; total phase accounting includes both.",
+      "PPO starts a new round while its own clock is still before deadline and resolves all reset/step futures. At deadline it requests truncation through the next actual step, then closes, optimizes/saves and writes real receipts; these operations still consume the total pool.",
+      "After native/watch closure, FIFO leaves precede their manifest and custody review; full/input jobs share max-four execution slots with eligible FIFO jobs, so many actual attempts can delay their submission. Submitted jobs are always waited and an overrun remains charged FAIL.",
+      "All attempts are audited; multi-episode64-step pilot data and CPU collecting-policy replay have no established runtime bound from this single32-decision matrix sample. Concurrent full/input walls are neither safely summed as a deterministic tail nor treated as a maximum."
+    ],
+    "remaining_formula": "Actual available tail = total2905.9547395464029 minus actual complete outer elapsed, not the constant805.9547. No new quota, cross-pool transfer, retry or consumer bypass follows from this review."
+  },
+  "prior_receipt": {
+    "correction": "Descriptive motion helper function label corrected from controlled_worker_replay to actual audit_control_worker; all source bindings and substantive conclusions unchanged. Initial receipt retained.",
+    "path": "/tmp/mr3_p2a_v12_ppo_audit_cpu_static_review_v1.json",
+    "sha256": "b9ee79de75763c86d05fd425d546d7103a13cd275330e2ab5feebe11bd71bfbb"
+  },
+  "review_completed": true,
+  "runtime_values_provided_by_parent_not_remeasured": {
+    "audit_max_parallelism": 4,
+    "full_wall_seconds_approx": 169,
+    "interface_native_decisions": 32,
+    "matrix_input_wall_seconds_approx": 158,
+    "native_wall_seconds_approx": 791
+  },
+  "schema": "mr3-p2a-ppo-audit-cpu-static-review-v2",
+  "source_bindings": [
+    {
+      "bytes": 7081,
+      "matches_exact_freeze": true,
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_policy_inputs.py",
+      "sha256": "2bff01e3dc4dc78ab32ae04530f799abe04b585be6abb93293e5879557276036",
+      "top_level_function_lines": {
+        "audit_run": [
+          40,
+          128
+        ],
+        "main": [
+          131,
+          147
+        ],
+        "verify_sources": [
+          21,
+          37
+        ]
+      }
+    },
+    {
+      "bytes": 70030,
+      "matches_exact_freeze": true,
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_ppo.py",
+      "sha256": "a0e174ca690a82b12975dba9cfa88563b480b20b475967f2ab27ca56cffe5463",
+      "top_level_function_lines": {
+        "audit_rollout": [
+          867,
+          919
+        ],
+        "audit_run": [
+          930,
+          1090
+        ],
+        "collecting_checkpoint": [
+          922,
+          927
+        ],
+        "extend_snapshot_validator": [
+          619,
+          654
+        ],
+        "load_compatible_components": [
+          657,
+          736
+        ],
+        "load_json": [
+          289,
+          290
+        ],
+        "load_native_gates": [
+          739,
+          793
+        ],
+        "load_pinned": [
+          301,
+          307
+        ],
+        "load_rows": [
+          293,
+          298
+        ],
+        "main": [
+          1093,
+          1108
+        ],
+        "native_decisions": [
+          796,
+          825
+        ],
+        "parameter_changes": [
+          283,
+          286
+        ],
+        "policy_replay": [
+          828,
+          864
+        ],
+        "project_ray_box_runtime": [
+          425,
+          434
+        ],
+        "project_reviewed_execution": [
+          441,
+          461
+        ],
+        "project_sensor_diagnostic_runtime": [
+          402,
+          423
+        ],
+        "require": [
+          195,
+          197
+        ],
+        "sha": [
+          200,
+          201
+        ],
+        "verify_current_native_binding": [
+          599,
+          611
+        ],
+        "verify_environment_appendix": [
+          265,
+          281
+        ],
+        "verify_execution_configs": [
+          464,
+          495
+        ],
+        "verify_frozen_pins": [
+          310,
+          320
+        ],
+        "verify_machine_task_file": [
+          204,
+          256
+        ],
+        "verify_ray_box_library": [
+          533,
+          584
+        ],
+        "verify_velocity_smoother_overlay": [
+          614,
+          616
+        ]
+      }
+    },
+    {
+      "bytes": 24621,
+      "matches_exact_freeze": true,
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_preparation.py",
+      "sha256": "b7e07ee44188b43f09a94215430fac609d6753f7be5594ce9f4b2308ccf88cab",
+      "top_level_function_lines": {
+        "audit": [
+          347,
+          399
+        ],
+        "audit_archives": [
+          231,
+          344
+        ],
+        "audit_execution_inputs": [
+          76,
+          199
+        ],
+        "audit_probe_execution": [
+          202,
+          228
+        ],
+        "exclude_preparation_capacity_comparison": [
+          32,
+          73
+        ],
+        "main": [
+          402,
+          418
+        ]
+      }
+    },
+    {
+      "bytes": 56410,
+      "matches_exact_freeze": true,
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_motion.py",
+      "sha256": "202d233600921be6c820fb4f96ec3bd0a4c442df318df140b4d7d375b556d0fc",
+      "top_level_function_lines": {
+        "_audit_records": [
+          434,
+          952
+        ],
+        "audit_control_worker": [
+          251,
+          431
+        ],
+        "audit_episode": [
+          955,
+          960
+        ],
+        "causal_own_inputs": [
+          141,
+          156
+        ],
+        "command_boundary": [
+          186,
+          238
+        ],
+        "identity": [
+          159,
+          172
+        ],
+        "load_frozen_helper": [
+          56,
+          86
+        ],
+        "ns": [
+          38,
+          41
+        ],
+        "own_state": [
+          101,
+          138
+        ],
+        "read": [
+          44,
+          53
+        ],
+        "require": [
+          27,
+          29
+        ],
+        "same_json": [
+          32,
+          35
+        ],
+        "settled_boundary": [
+          241,
+          248
+        ],
+        "stamp": [
+          89,
+          93
+        ],
+        "twist_pair": [
+          175,
+          183
+        ],
+        "yaw": [
+          96,
+          98
+        ]
+      }
+    },
+    {
+      "bytes": 15707,
+      "matches_exact_freeze": true,
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_activity.py",
+      "sha256": "0fa0c47262ccf29f140cc2b915431461e830f87680b65f524cbda6a6ffff4407",
+      "top_level_function_lines": {
+        "_acceptance_history": [
+          151,
+          189
+        ],
+        "_activity_history": [
+          69,
+          148
+        ],
+        "_decode": [
+          35,
+          52
+        ],
+        "_load": [
+          29,
+          32
+        ],
+        "_ns": [
+          23,
+          26
+        ],
+        "_require": [
+          18,
+          20
+        ],
+        "_same": [
+          55,
+          66
+        ],
+        "audit_episode": [
+          192,
+          259
+        ],
+        "audit_probe_activity": [
+          262,
+          295
+        ]
+      }
+    },
+    {
+      "bytes": 4655,
+      "matches_exact_freeze": true,
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/navigation_archive.py",
+      "sha256": "b509cc0d19ca443c0776cae4d728d35f399670bda08c171d590c8738964c48bd",
+      "top_level_function_lines": {
+        "_project": [
+          34,
+          56
+        ],
+        "_validate": [
+          12,
+          31
+        ],
+        "reconstruct_navigation_payload": [
+          59,
+          88
+        ]
+      }
+    },
+    {
+      "bytes": 31898,
+      "matches_exact_freeze": true,
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/ppo.py",
+      "sha256": "c8c7beae32c4754b2cb005afd313d8b3c02f40c39fca81370bb97ea37b49478b",
+      "top_level_function_lines": {
+        "closed_episode_training_eligibility": [
+          145,
+          174
+        ],
+        "collect_episodes": [
+          177,
+          281
+        ],
+        "file_sha": [
+          54,
+          55
+        ],
+        "infer": [
+          123,
+          136
+        ],
+        "main": [
+          354,
+          601
+        ],
+        "native_record_accounting": [
+          75,
+          120
+        ],
+        "next_value": [
+          139,
+          142
+        ],
+        "parse_schedule": [
+          343,
+          351
+        ],
+        "policy_sha": [
+          58,
+          65
+        ],
+        "save_failed_collection": [
+          284,
+          316
+        ],
+        "save_rollout": [
+          319,
+          340
+        ],
+        "write_json": [
+          68,
+          72
+        ]
+      }
+    },
+    {
+      "bytes": 46281,
+      "matches_exact_freeze": true,
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/preparation.py",
+      "sha256": "2128b5be64ba129527e5cd988edc4615535de4ca39d7640b6b5208a666f38ac7",
+      "top_level_function_lines": {
+        "argument": [
+          70,
+          72
+        ],
+        "borrowed_stage_budget": [
+          79,
+          111
+        ],
+        "budgeted_native_job": [
+          114,
+          119
+        ],
+        "build_plan": [
+          383,
+          528
+        ],
+        "dump": [
+          55,
+          58
+        ],
+        "execute_plan": [
+          531,
+          698
+        ],
+        "identity": [
+          61,
+          67
+        ],
+        "main": [
+          701,
+          732
+        ],
+        "require": [
+          42,
+          44
+        ],
+        "roles": [
+          75,
+          76
+        ],
+        "run_audits": [
+          346,
+          380
+        ],
+        "sha": [
+          47,
+          52
+        ],
+        "validate_plan": [
+          122,
+          237
+        ]
+      }
+    },
+    {
+      "bytes": 22894,
+      "matches_exact_freeze": true,
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v4/independent/mr3_p2a0_v4_independent_input_episode_review_v1.py",
+      "sha256": "ab102c02bff6b3dbd916e07552ea4250b0bf2f935da74f97d21ed5f766261c05",
+      "top_level_function_lines": {
+        "load": [
+          44,
+          45
+        ],
+        "origin": [
+          59,
+          60
+        ],
+        "payload_grid": [
+          54,
+          56
+        ],
+        "preserve_failure": [
+          63,
+          76
+        ],
+        "read": [
+          37,
+          41
+        ],
+        "rows": [
+          48,
+          51
+        ],
+        "sha": [
+          33,
+          34
+        ]
+      }
+    },
+    {
+      "bytes": 137397,
+      "matches_exact_freeze": true,
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v12/predeclared_plan_v12.json",
+      "sha256": "a2477e5a90fd4b41624e54fc4f4148b09dadaec9b688c1677fd3e2cbfc7cf245"
+    },
+    {
+      "bytes": 47258,
+      "matches_exact_freeze": true,
+      "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py",
+      "sha256": "b81da18c256ff307a4afc09c5115d0057e5a142a246555f39c1f7a5cee88c6e8",
+      "top_level_function_lines": {
+        "_action_masks": [
+          647,
+          709
+        ],
+        "_age": [
+          113,
+          115
+        ],
+        "_candidate_frontiers": [
+          271,
+          311
+        ],
+        "_candidates": [
+          314,
+          457
+        ],
+        "_cell": [
+          195,
+          200
+        ],
+        "_finite": [
+          106,
+          110
+        ],
+        "_frontiers": [
+          265,
+          268
+        ],
+        "_known_line": [
+          236,
+          262
+        ],
+        "_own_map_paths": [
+          504,
+          605
+        ],
+        "_path_distances": [
+          203,
+          233
+        ],
+        "_point_offset": [
+          469,
+          472
+        ],
+        "_raster": [
+          614,
+          644
+        ],
+        "_raster_integrals": [
+          608,
+          611
+        ],
+        "_received_grid": [
+          460,
+          466
+        ],
+        "_robot_state": [
+          118,
+          192
+        ],
+        "_seed_diagnostics": [
+          475,
+          501
+        ],
+        "build_snapshot": [
+          712,
+          912
+        ],
+        "decode_joint_action": [
+          62,
+          68
+        ],
+        "decode_raster": [
+          79,
+          84
+        ],
+        "encode_joint_action": [
+          52,
+          59
+        ],
+        "native_traversable": [
+          87,
+          103
+        ],
+        "snapshot_digest": [
+          71,
+          76
+        ]
+      }
+    },
+    {
+      "bytes": 21110,
+      "git_identity_claimed": false,
+      "path": "/tmp/mr3_p2a_ppo_phase_runner_v2.py",
+      "scope": "Separate untracked outer-tool source inspected; not part of the Git freeze.",
+      "sha256": "dea0c280759cdc957f16e281a2bfe2520f15baab6a7a9cc8fc6d4cb4237cf88f"
+    }
+  ],
+  "source_freeze": "ea759bea57d1e2ddd126d56c3a81801a072535a0",
+  "static_work_sources": [
+    {
+      "evidence": "Per-snapshot manifest checks; per-unique-blob gzip+JSON+canonical JSON+SHA; per-unique(own,shared,nav) NumPy navigation reconstruction. It already caches blobs and reconstruction identities.",
+      "function": "audit_archives",
+      "source": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_preparation.py"
+    },
+    {
+      "evidence": "NumPy array conversion, floor/ceil, broadcasting, integer indexing, masks, maximum, where and tolist. No dot/matmul/linalg/einsum operation appears in this module; no BLAS-heavy hotspot is evidenced by this code.",
+      "functions": [
+        "_validate",
+        "_project",
+        "reconstruct_navigation_payload"
+      ],
+      "source": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/navigation_archive.py"
+    },
+    {
+      "evidence": "Parses adapter and transition JSON, rebuilds histories, loops actual snapshots and checks canonical snapshot hashes.",
+      "function": "audit_episode",
+      "source": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_activity.py"
+    },
+    {
+      "evidence": "Whole JSONL parsing/hash binding and sequential native/control replay with many Python loops. Existing selected_own cache avoids repeated identical causal selection; it still reconstructs own state/certificates. Controlled worker replay visibly scans motion candidates per drive advance; no profiling attribution is claimed.",
+      "functions": [
+        "read",
+        "_audit_records",
+        "audit_control_worker"
+      ],
+      "source": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_motion.py"
+    },
+    {
+      "evidence": "Re-reads transitions/costmaps/motion-phase/physics, gzip/JSON/hash-validates unique actual costmap payloads and loops complete receipts. Reuses the supplied motion review rather than recomputing it.",
+      "function": "audit_execution_inputs",
+      "source": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_preparation.py"
+    },
+    {
+      "evidence": "Full PPO audit sequentially audits all native attempts (original native/scalar/evaluator/real-cadence gates), then loads collecting/updated CPU checkpoints per round; saved-action value/log-prob evaluation uses batches16, while each nonterminal following value is predicted separately. This adds policy work absent from the matrix preparation full reader.",
+      "function": "audit_run/policy_replay",
+      "source": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_ppo.py"
+    }
+  ],
+  "thread_env_assessment": {
+    "can_preserve_command_argv": true,
+    "decision_from_parent": "No thread env/source/plan/phase-allocation change; continue the complete frozen matrix.",
+    "expected_gain": "No measured or statically established speedup. The input paths have substantial Python/JSON/gzip/hash/graph/elementwise work, and formal Torch replay is already intra-op1. Environment caps are not a justified cure for the observed158-second reader.",
+    "mechanism": "An external environment supplied before a future process starts can be inherited without changing argv or source bytes. An already-created Runner snapshots os.environ and already-running child environments cannot be changed this way.",
+    "scope_risk": "An outer-wide OMP/MKL/OpenBLAS change would also propagate to native/PPO/ROS descendants rather than selectively target audits; it is still a different recorded execution environment. Changing thread reductions can change floating arithmetic/order despite unchanged mathematical predicates."
+  },
+  "threading_findings": [
+    {
+      "finding": "main explicitly calls torch.set_num_threads(1) before audit_run. Formal PPO full CLI already fixes Torch intra-op parallelism to1. No explicit inter-op setting was found; eager policy code does not show task-fork graph parallelism.",
+      "line": 1101,
+      "source": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_ppo.py"
+    },
+    {
+      "finding": "Native PPO main also calls torch.set_num_threads(1), and L404 enables deterministic algorithms.",
+      "line": 403,
+      "source": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/ppo.py"
+    },
+    {
+      "finding": "Imports audit_preparation (which imports audit_ppo) but does not run audit_ppo.main or policy_replay. It serially invokes archive/activity/motion/execution-input audits for every actual episode.",
+      "lines": [
+        17,
+        20,
+        110,
+        124
+      ],
+      "source": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_policy_inputs.py"
+    },
+    {
+      "finding": "Runner copies the outer environment, adds PYTHONNOUSERSITE/PYTHONDONTWRITEBYTECODE and drops PYTHONPATH. No explicit OMP_NUM_THREADS/MKL_NUM_THREADS/OPENBLAS_NUM_THREADS setting exists in this Runner or the separate PPO outer tool. This describes source behavior, not an assertion about every inherited external environment.",
+      "lines": [
+        245,
+        247,
+        274
+      ],
+      "source": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/preparation.py"
+    }
+  ]
+}

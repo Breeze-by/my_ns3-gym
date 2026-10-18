@@ -156,13 +156,15 @@ phase3固定绑定原contact task-phase与独立命令时间门禁；scalar rewa
 [环境契约](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_ENV_CONTRACT.md)。
 每次实际执行均是需追加共享log的实验，不能把入口存在当成P1C通过。
 
-## MR3-P2A V12 固定观测周期重验（新冻结预声明）
+## MR3-P2A V13 温和转向profile重验（新冻结预声明）
 
-V11原生32/live/full/peer/information通过，但旧drive拒绝新增观测tag，正式FAIL保留。
-当前tagged模式固定20ms WORLD odometry/同源TF，已删除多余SDF选项；旧period tag残留会被拒绝。
-untagged保留原耦合发布，30Hz判据/实际34ms轮执行器及所有物理/安全/任务门保持。
-只读审计仅消除经过完整报告等价对照的重复计算，新版仍须新冻结四阶段38角色全部通过才进入PPO。
-准确预算与准入状态见[V12](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v12.md)；四组旧报告整字节等价及生产CPU通过，计划已seal待clean+pushed preflight，当前未启动本版native。
+V12的interface/terminal19角色通过，reset真实raw速度峰使原生模型门FAIL；253保存身份gone，deadline/PPO跳过，旧FAIL保留。
+当前三份活动robot YAML明确统一Shim/DWB/behavior/recovery/smoother双向角上限.3、起转加速1.0；
+行为最小角速.15，角减速-3.2、线.20/±.5不变。原driver/SDF/轮加速1.0及十个ELF不变。
+数学.8命令上界、1.2实测角速、.01 rest speed/.0078 drift及95%/300秒全部任务门不放宽。
+新exact参数reader只选择前瞻typed部署事实，保留原9live服务及原reader字节；不写参数、无新native通过信用。
+准确来源、预算和后续clean+pushed preflight命令见[V13](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v13.md)。
+准确计划已seal，配置/参数接线/来源CPU通过，待clean+pushed preflight；V13新冻结全38角色和独立关闭PASS后才可新PPO最小链。
 
 ## MR3-P2A V9 真实WORLD odometry时序（已关闭历史入口）
 

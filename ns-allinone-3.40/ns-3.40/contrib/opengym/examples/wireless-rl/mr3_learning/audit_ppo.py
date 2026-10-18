@@ -124,11 +124,11 @@ EXECUTION_CONFIG_PINS = {
     ROS + 'src/slam_toolbox/config/mapper_params_online_multi_async.yaml':
         '3ca81b5afb628d5787e60a266c6dc375a26f6b6a5c4fef70bd8a5261dc8dbb17',
     ROS + 'src/multi_robot/params/nav2_params_tb1_0.yaml':
-        '8854aac6fe3083aa1156072830358e9331f0e0a45144ab3df499f743a37c1b8a',
+        'd2d01844885fd76ab6e8cd996c37b8994c6cf801010988db12e6dc6e67e38d53',
     ROS + 'src/multi_robot/params/nav2_params_tb2_0.yaml':
-        '9c7a0f9c197c5b3eedc3567c0b70d4920a5ca8cc6057b5059f5c5844ab275386',
+        '5f2ab024dd590a2cc6656072311a11cddbbaf646423a3fe502569b466e92dc33',
     ROS + 'src/multi_robot/params/nav2_params_tb3_0.yaml':
-        '8794b037c1ef31f57c8d99ab05c57a646afe6653717c2f21100e00b6a5435fae',
+        'b3d47508e69d2e5b6d93805435dbe42b3a5ec262b06015466d5a92f214106192',
     ROS + 'src/multi_robot/config/nav2_params.yaml':
         '143b93aed93c0b71986844b7e3c00e1046e0b4fa9be8c94bcbc37b95e36b1e5b',
     ROS + 'src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py':
@@ -165,7 +165,8 @@ EXECUTION_CONFIG_PINS = {
         '4be4d77de247a5bcd427eb6948165e85098eb361030cf89d278d6df92e959d41',
 }
 EXECUTION_CONFIG_PINS.update({'ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/mr3_odometry_json.hpp': '4b251bff9336a6005a4fff9b6a981286687e99cbff86bf8b3410163e32392c74', 'ros2_ws/ros2-multi-robot-automap/src/multi_robot/src/mr3_odometry_recorder.cpp': 'd70502556ca840d8e01ce0183db7befbeecefc3bf267ba239867937013cb6168'})
-ENV_DOCUMENT_SHA256 = 'a30419335428f53fdfbe88f9805eab2d742d177428b6b45db0c3c77be752b15c'
+EXECUTION_CONFIG_PINS[WIRELESS + 'mr3_learning/audit_nav2_parameters.py'] = '848dd05ebd9558a4ec8d47866909662030d24cfce837742a409907ff6c5bfdf3'
+ENV_DOCUMENT_SHA256 = '756f1b6b24cea3c0d8eefe2098c78de254a57e8a273e9e27da2112092de82564'
 TASK_DOCUMENT_SHA256 = "f96f5ba785a39daa882b3c2ea217c58dd968550b65bf0ee15faf07ca079f8991"
 PRIOR_TASK_DOCUMENT_SHA256 = "5e4400396e4aaf5a5094fb4c0c04c85810c327cc85be88b7d03fa3faeade07d2"
 TASK_BASE_FREEZE = "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a"
@@ -259,8 +260,8 @@ def verify_machine_task_file(root, freeze, relative):
 
 ENV_NORMATIVE_FREEZE = "4f8bd0e509e6f958c5993a50008955afac72c345"
 ENV_NORMATIVE_SHA256 = "96d9bd3e3d597899b3d44a69ef9138e77b62b3641bd7261eb38846d5b003f155"
-ENV_EXECUTION_APPENDIX_SHA256 = 'f150768f6e3a4eedb4a2b5ff2336935249368436c1a82567a4604ac54acf4966'
-ENV_EXECUTION_APPENDIX_BYTES = 14761
+ENV_EXECUTION_APPENDIX_SHA256 = 'a568c73279826e05d861e03b1829119cd7e1c7d62d5e2df28ba13f8e2538b307'
+ENV_EXECUTION_APPENDIX_BYTES = 16670
 
 def verify_environment_appendix(root, freeze):
     relative = WIRELESS + "MR3_ENV_CONTRACT.md"
@@ -591,8 +592,8 @@ SMOOTHER_OVERLAY_PINS = {
 }
 
 
-CURRENT_NATIVE_BINDING = WIRELESS + 'report/assets/20261019_mr3_p2a_v12/native_custody_binding.json'
-CURRENT_NATIVE_BINDING_SHA256 = '65a20bf73c2eda4350cdfdc587f7f9688ea57b2a998d467f0f7a1f2e8e5e3934'
+CURRENT_NATIVE_BINDING = WIRELESS + 'report/assets/20261019_mr3_p2a_v13/native_custody_binding.json'
+CURRENT_NATIVE_BINDING_SHA256 = '882d3d22918e5165b51918f29a012b72f98178dfff35b727e350e7bbc6d786c8'
 CURRENT_NATIVE_CUSTODY_SOURCE_SHA256 = '4edcdb6b33105e274c1c908c9d78e8c5d24461ff6733ed0f976e41bad3f2d928'
 
 

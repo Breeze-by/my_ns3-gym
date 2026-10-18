@@ -1,0 +1,28 @@
+{
+  "schema": "mr3-p2a-v13-root-entry-cpu-v1",
+  "actual_wait_returncode": 0,
+  "tests": 45,
+  "reported_seconds": "3.060",
+  "command": [
+    "env",
+    "-u",
+    "PYTHONPATH",
+    "PYTHONNOUSERSITE=1",
+    "PYTHONDONTWRITEBYTECODE=1",
+    "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+    "-B",
+    "-m",
+    "unittest",
+    "mr3_learning.tests.test_audit_ppo",
+    "mr3_learning.tests.test_native_custody",
+    "-q"
+  ],
+  "source_sha256": {
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_ppo.py": "b2e0737d79826b7ecb319cc91b58ff45475ea831a9cb2b4cab2298aaf6474567",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/native_custody.py": "4edcdb6b33105e274c1c908c9d78e8c5d24461ff6733ed0f976e41bad3f2d928",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_ENV_CONTRACT.md": "756f1b6b24cea3c0d8eefe2098c78de254a57e8a273e9e27da2112092de82564",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v13/native_custody_binding.json": "882d3d22918e5165b51918f29a012b72f98178dfff35b727e350e7bbc6d786c8"
+  },
+  "new_native_calls": 0,
+  "scope": "Actual CPU source/custody checks; no native deployment readback, physical repair or task credit."
+}

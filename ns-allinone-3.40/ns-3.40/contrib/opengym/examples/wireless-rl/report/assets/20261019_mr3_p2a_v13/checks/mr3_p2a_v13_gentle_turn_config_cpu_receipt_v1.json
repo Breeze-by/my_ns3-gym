@@ -1,0 +1,31 @@
+{
+  "schema": "mr3-p2a-v13-gentle-turn-config-cpu-v1",
+  "passed": true,
+  "argv": [
+    "/bin/bash",
+    "/tmp/mr3_p2a_v13_gentle_turn_config_cpu_v1.bash"
+  ],
+  "cwd": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap",
+  "returncode": 0,
+  "start_wall_monotonic_ns": 4101745271884129,
+  "end_wall_monotonic_ns": 4101748384291810,
+  "wall_seconds": 3.112407681,
+  "script": {
+    "path": "/tmp/mr3_p2a_v13_gentle_turn_config_cpu_v1.bash",
+    "sha256": "54d0a85753c3e2d3f342933bb25393a9e81cacf86fc34aa9afbcc45e3245a829",
+    "text": "#!/bin/bash\nset -e\nsource /opt/ros/humble/setup.bash\nsource /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/setup.bash\nexport PYTHONNOUSERSITE=1\nexport PYTHONDONTWRITEBYTECODE=1\nexec /usr/bin/python3 -B -m pytest -q src/multi_robot_exploration/test/test_motion_safety.py::test_actual_nav2_node_parameters_respect_guard_and_gentle_turn_profile\n"
+  },
+  "stdout_stderr": {
+    "path": "/tmp/mr3_p2a_v13_gentle_turn_config_cpu_v1.log",
+    "sha256": "21a96a691c92fe45e75034007f207c9a0cf98e14fff2d1e56a2a0ba5eff07377"
+  },
+  "test_source": {
+    "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_motion_safety.py",
+    "sha256": "1b870945d6161e16229fb6a7281448eee48260be36312eb9b41b220084ff5777"
+  },
+  "delta_receipt": {
+    "path": "/tmp/mr3_p2a_v13_gentle_turn_yaml_delta_v1.json",
+    "sha256": "e90bd436aa64f933c1fdc0a3cc9df48fe678a2976093689c8c836a1eafa1a83c"
+  },
+  "scope": "Only YAML profile/launch selected input CPU facts. No native world, training or ELF rebuild; no claim that the physical failure is fixed."
+}

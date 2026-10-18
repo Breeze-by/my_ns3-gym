@@ -1,0 +1,196 @@
+{
+  "active_profile_selection": "gentle_turn_v1",
+  "actual_cpu_console": {
+    "bytes": 9160,
+    "path": "/tmp/mr3_p2a_v13_nav2_profile_cpu_v1.log",
+    "sha256": "7cc0ee24cd7d298a257b0f7ca2b25a5eca33b880bca47bc9b3fb267849aaf428"
+  },
+  "actual_wait_returncode": 0,
+  "benchmark_and_builder_wiring_passed": true,
+  "command": [
+    "env",
+    "PYTHONNOUSERSITE=1",
+    "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+    "-B",
+    "-m",
+    "unittest",
+    "mr3_learning.tests.test_nav2_parameter_profile",
+    "mr3_learning.tests.test_benchmark",
+    "mr3_learning.tests.test_preparation",
+    "-v"
+  ],
+  "consumer_compatibility_static_review": {
+    "formal_parameter_consumer": "native_custody.py854-856: passed is True, exactfreeze, exactepoch, len(nodes)==9; no v2 schema/020 profile/oldscript SHA pin. Historical multiepoch closure has the same predicate.",
+    "full_source_gate": "audit_preparation/full and audit_ppo do not inspect this deployment JSON/profile. Root must seal updated exact YAML/source/profile/binding identities; no physical/task mathematical pins changed.",
+    "original34_and_cadence": "Independent static actual argv and277 source-binding/transitive review found no required role consuming the changed schema/profile/EXPECTED/script identity; old readonly_v4_interface_review hardpins are historical diagnostics outside actual role graph.",
+    "passed_no_block_found": true
+  },
+  "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+  "deployment_yaml_sources": [
+    {
+      "bytes": 31292,
+      "changed_lines": 13,
+      "exact_inverse": true,
+      "inverse_original_sha256": "8854aac6fe3083aa1156072830358e9331f0e0a45144ab3df499f743a37c1b8a",
+      "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot/params/nav2_params_tb1_0.yaml",
+      "sha256": "d2d01844885fd76ab6e8cd996c37b8994c6cf801010988db12e6dc6e67e38d53"
+    },
+    {
+      "bytes": 31293,
+      "changed_lines": 13,
+      "exact_inverse": true,
+      "inverse_original_sha256": "9c7a0f9c197c5b3eedc3567c0b70d4920a5ca8cc6057b5059f5c5844ab275386",
+      "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot/params/nav2_params_tb2_0.yaml",
+      "sha256": "5f2ab024dd590a2cc6656072311a11cddbbaf646423a3fe502569b466e92dc33"
+    },
+    {
+      "bytes": 31293,
+      "changed_lines": 13,
+      "exact_inverse": true,
+      "inverse_original_sha256": "8794b037c1ef31f57c8d99ab05c57a646afe6653717c2f21100e00b6a5435fae",
+      "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot/params/nav2_params_tb3_0.yaml",
+      "sha256": "b3d47508e69d2e5b6d93805435dbe42b3a5ec262b06015466d5a92f214106192"
+    }
+  ],
+  "elf_rebuilds": 0,
+  "entry": {
+    "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_nav2_parameters.py",
+    "sha256": "848dd05ebd9558a4ec8d47866909662030d24cfce837742a409907ff6c5bfdf3"
+  },
+  "exact10_typed_facts": true,
+  "git_diff_check_returncode": 0,
+  "immutable_reader": {
+    "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_actual_nav2_parameters_v13.py",
+    "sha256": "9eb963457a8dc8297e4686004ea08c7a06e1e0e9ede7cd795ba9505da9d8f701"
+  },
+  "info_implementation_unchanged_sha256": "c384b1b3cfc2817a770ea9a2ee5ea5e2f3dadb402df8f869d3eae6c76a38c020",
+  "initial_failed_cpu_receipt": {
+    "note": "Initial68-test pass had one existing minimal fake-binding mismatch; preserved actualrc1 and source snapshot. Final argv chooses the fixed declared profile path, never an arbitrary binding field; same mathematical/transport rules retained.",
+    "path": "/tmp/mr3_p2a_v13_nav2_profile_cpu_initial_v1.json",
+    "sha256": "eb3d87440ff58d8bae614ec1fbd08ad71c87b366008bec7558df74cf081fd5c5"
+  },
+  "new_formal_consumer_calls": 0,
+  "new_native_calls": 0,
+  "old_reader_unchanged": true,
+  "original_reader_asset_modified": false,
+  "passed": true,
+  "profile": "mr3-nav2-shim-dwb-030-a1-v1",
+  "profile_definition_sha256": "af5bf20bf17ed160dd3476653c21eef94d0ba6f30d119c1bbbe66190e78c68a5",
+  "readback_functions_unchanged": true,
+  "readback_source_and_wiring_scope": "Fresh private immutable v13 reader source; only10 exact typed deployment facts and profile identity changed. Its decode/typed equality/status/nine GetParameters services/source release/finite timeout/cleanup functions remain byte-identical. Three additional recoveries_server source changes are static YAML facts, never claimed as new live nodes. Benchmark explicitprofile selector defaults original; onlyinterface gets the new flag; prep requires activeentry/helper/three YAML source bindings. No parameter writes or arbitrary lower range.",
+  "reported_test_seconds": "3.368",
+  "schema": "mr3-nav2-gentle-profile-cpu-qualification-v1",
+  "scope": "CPU-only exact deployment-reader and execution wiring qualification on pending source bytes. Not a native readback, plant repair guarantee, current/old native PASS, safety/model/task gate change or training permission. Source hashes must match the subsequently sealed source freeze.",
+  "source_sha256": {
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_nav2_parameters.py": "848dd05ebd9558a4ec8d47866909662030d24cfce837742a409907ff6c5bfdf3",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/benchmark.py": "60627cec2b147d9a46680c8e7c5915e9cf43321109823358e901e9429471f132",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/preparation.py": "850ab8947f711033f3f2fd17ef57d32098c02d569c1bea0f5cf58aaff8acd767",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_benchmark.py": "a2732e398e45f2e6c37c505a2732c591978eaa88562e780657c8ba94b6801aea",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_nav2_parameter_profile.py": "a754c394544984244c1464bf30726835041b91650f1cca03d86a5d2d09004257",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_preparation.py": "c8596f8804341355646d2b1c9cf4b9582dfdb9773f06e66a904a2a9f7b752ca8"
+  },
+  "tests": 68,
+  "three_yaml_exact13_inverse": true,
+  "typed_deployment_changes": [
+    {
+      "name": "FollowPath.rotate_to_heading_angular_vel",
+      "new": 0.3,
+      "node_kind": "controller_server",
+      "old": 0.8,
+      "type": 3
+    },
+    {
+      "name": "FollowPath.max_angular_accel",
+      "new": 1.0,
+      "node_kind": "controller_server",
+      "old": 3.2,
+      "type": 3
+    },
+    {
+      "name": "FollowPath.max_vel_theta",
+      "new": 0.3,
+      "node_kind": "controller_server",
+      "old": 0.8,
+      "type": 3
+    },
+    {
+      "name": "FollowPath.acc_lim_theta",
+      "new": 1.0,
+      "node_kind": "controller_server",
+      "old": 3.2,
+      "type": 3
+    },
+    {
+      "name": "max_velocity",
+      "new": [
+        0.2,
+        0.0,
+        0.3
+      ],
+      "node_kind": "velocity_smoother",
+      "old": [
+        0.2,
+        0.0,
+        0.8
+      ],
+      "type": 8
+    },
+    {
+      "name": "min_velocity",
+      "new": [
+        -0.2,
+        0.0,
+        -0.3
+      ],
+      "node_kind": "velocity_smoother",
+      "old": [
+        -0.2,
+        0.0,
+        -0.8
+      ],
+      "type": 8
+    },
+    {
+      "name": "max_accel",
+      "new": [
+        0.5,
+        0.0,
+        1.0
+      ],
+      "node_kind": "velocity_smoother",
+      "old": [
+        0.5,
+        0.0,
+        3.2
+      ],
+      "type": 8
+    },
+    {
+      "name": "max_rotational_vel",
+      "new": 0.3,
+      "node_kind": "behavior_server",
+      "old": 0.8,
+      "type": 3
+    },
+    {
+      "name": "min_rotational_vel",
+      "new": 0.15,
+      "node_kind": "behavior_server",
+      "old": 0.4,
+      "type": 3
+    },
+    {
+      "name": "rotational_acc_lim",
+      "new": 1.0,
+      "node_kind": "behavior_server",
+      "old": 3.2,
+      "type": 3
+    }
+  ],
+  "unchanged_readback_function_sha256": {
+    "collect": "0fffee9308fb51dff163b546b8f90dfc6c54dfda592fd8ff93f1b7bd28a0f25e",
+    "decode_parameters": "3c7786ad5c5ff803fb5e81dd748ff4b13c81265fd5bc1c31303a12566a41d05b",
+    "validate_parameters": "dbd6d73cf3b5901c561406747875a154ce569ae181506677f7e96645dff3a2da",
+    "validate_status": "bdfb7a33a896ef9e40f0ff0a119e996f71d6a5fbecfa1f26754854c7014fb0f0"
+  }
+}

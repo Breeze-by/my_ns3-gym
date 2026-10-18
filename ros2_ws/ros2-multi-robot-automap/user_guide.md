@@ -1,6 +1,6 @@
 # 三机器人 ROS 建图导航：当前实现指南
 
-当前V11已关闭：32步/live/full/peer/information通过，但旧drive对新增观测tag准入FAIL，53保存身份gone。V12已将tagged观测固定20ms并删除冗余SDF选项、准备新冻结完整重验；P2A未完成。见[V12](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v12.md)。
+当前V12已关闭：interface/terminal19角色PASS，reset raw速度峰触发原生模型FAIL，253身份gone；deadline/PPO跳过。V13准备统一三机Nav2角速度.3/起转加速1.0的新部署profile，原物理/安全/95%门不变，待新冻结完整重验；P2A未完成。见[V13](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v13.md)。
 
 P2A.0已验收，用户授权继续P2A并批准工程累计30000墙秒；pilot和final-only开发验证额度不变。
 WORLD odom/TF独立50Hz与真实DDS接收记录器已实现，轮执行器仍为30Hz；新固定模式须完整原生重验。
@@ -9,7 +9,7 @@ V7真实转向模型FAIL、V8未复现的诊断及V9—V11失败均保留，不�
 
 默认仍为传统前沿baseline；互斥adapter独占稳定目标、使用本机已知权威/已交付共享导航副本、v5候选和received-only累计参与观测。受控20ms推进先完成实际state→peer→guard→三台native storage→evaluator，再推进物理；存储回执不能代替机体响应。
 
-当前stepped研究配置含paired joint-feedback驱动、RayBox修正、quickstep150和使用节点时钟的Nav2 smoother；命令.20/.8，实测及原停车门保持。完整新配置通过不证明150独立修复停车。P0/P1A/P1B/P1C/P2A.0已验收，P2A进行中；V7原定pilot/三场final-only开发验证已因前门FAIL跳过，P2B/gateway未开始。复制命令见[launch_commands.md](launch_commands.md)，任务/环境定义见共享研究、实施计划与MR3_ENV_CONTRACT；详细旧历史见日期报告。
+当前stepped研究配置含paired joint-feedback驱动、RayBox修正、quickstep150和使用节点时钟的Nav2 smoother；活动三机Nav2转向上限.3/起转加速1.0、角减速-3.2；线命令.20/加减速±.5保持。数学命令上界.8、实测及原停车门保持；通用兼容YAML仍属旧配置。完整新配置通过不证明150独立修复停车。P0/P1A/P1B/P1C/P2A.0已验收，P2A进行中；V7原定pilot/三场final-only开发验证已因前门FAIL跳过，P2B/gateway未开始。复制命令见[launch_commands.md](launch_commands.md)，任务/环境定义见共享研究、实施计划与MR3_ENV_CONTRACT；详细旧历史见日期报告。
 
 ## 1. 路径与环境
 
