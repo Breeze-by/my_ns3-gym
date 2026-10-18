@@ -1,0 +1,1291 @@
+{
+  "schema": "mr3-v25-capture035-independent-small-original-review-v1",
+  "freeze": "579f7ad21d33c6de9351eb5308f155f0fc903fd7",
+  "review_status": "descriptive_closed_original_interpretation_completed",
+  "original_overall_passed": false,
+  "formal": {
+    "all_finished": true,
+    "runner_errors": [],
+    "jobs": 11,
+    "job_passes": 10,
+    "job_failures": 1,
+    "mandatory_receipts": [
+      {
+        "path": "/tmp/mr3_p2a0_v25_interface_full_audit.json",
+        "passed": true,
+        "sha256": "bc7289f4dcfb65db436d2c5eb1148ee228495c61617906a7542b8a1d37b0e6ba"
+      },
+      {
+        "path": "/tmp/mr3_p2a0_v25_interface_drive_review_v1.json",
+        "passed": true,
+        "sha256": "3b6f10eaeab383f476768263bba35227b50947bb4eba3e23b4ba19d9b5793a0a"
+      },
+      {
+        "path": "/tmp/mr3_p2a0_v25_interface_input_review_v1.json",
+        "passed": true,
+        "sha256": "c4e16885fabfb81fa71eb323ce0c8dce7a9baec053fcd9ccaa3863c86955ef78"
+      },
+      {
+        "path": "/tmp/mr3_p2a0_v25_interface_fixed_angular_v1.json",
+        "passed": true,
+        "sha256": "ac9154582ee61b2e56ca04cb2154ec652357e694115dedac1986576624384b34"
+      },
+      {
+        "path": "/tmp/mr3_p2a0_v25_interface_fixed_physics_v1.json",
+        "passed": true,
+        "sha256": "eb75037c33549f03f17132e2bbf3ba20a6a7d37db86733352d422fb5e1e62ba6"
+      },
+      {
+        "path": "/tmp/mr3_p2a0_v25_interface_settled_review_v1.json",
+        "passed": true,
+        "sha256": "b7afff6c63e7a8fafbb4d464aec48b7bbb6d317a522be62342f6a4b93a2be8c3"
+      },
+      {
+        "path": "/tmp/mr3_p2a0_v25_interface_closure_binary_review_v1.json",
+        "passed": false,
+        "sha256": "b5e00b1b1e391c6e298a22dd219073063766fff246ab41dc81b4e97314965b8e"
+      },
+      {
+        "path": "/tmp/mr3_p2a0_v25_interface_information_review_v1.json",
+        "passed": true,
+        "sha256": "12f44c77d952335cc8d2584d7ffbbfc396eb91ffa046f27155127a27ece036d1"
+      },
+      {
+        "path": "/tmp/mr3_p2a0_v25_interface_peer_review_v1.json",
+        "passed": true,
+        "sha256": "55e95b9babaa20836d3c9d4ae41bc0923e09f3cba2c268f529913adf68e3f2e9"
+      },
+      {
+        "path": "/tmp/mr3_p2a0_v25_interface_control_review_v1.json",
+        "passed": true,
+        "sha256": "9ebe7470633a5306f5b803f6f9fe7710d247ce9147f83e123e964257c6686db2"
+      }
+    ]
+  },
+  "original_closure": {
+    "passed": false,
+    "errors": [
+      "per-episode actual loaded smoother custody failed"
+    ],
+    "native_closure_and_binary_children_passed": true,
+    "native_started_total": 39,
+    "native_clean_exits_total": 39,
+    "saved_identity_count": 46,
+    "all_saved_identities_gone": true,
+    "shim_mapping_passed": true,
+    "corrector_custody_passed": true,
+    "smoother_custody_passed": false,
+    "input_bindings_rechecked": true
+  },
+  "root_closed_observation": {
+    "scope": "Verified fields of root saved fresh observation; no new live process probe.",
+    "saved_identity_count": 50,
+    "all_saved_identities_gone": true,
+    "all_formal_jobs_finished": true,
+    "native_started": 39,
+    "native_clean_exits": 39,
+    "native_wall": 796.7103692898527,
+    "carried_cumulative": 1369.6459453934804,
+    "remaining": 16630.35405460652,
+    "capture_returncodes": {
+      "matrix": 1,
+      "watcher": 0
+    },
+    "source_clean": true
+  },
+  "physical": {
+    "passed": true,
+    "per_robot": {
+      "tb1": {
+        "errors": [],
+        "task_odom_samples": 942,
+        "maximum_planar_speed_task": 0.20126663126891478,
+        "maximum_angular_norm_task": 0.7995290560042058,
+        "maximum_raw_odom_chord_speed_task": 0.20122763681866432,
+        "maximum_task_source_gap_ns": 34000000,
+        "bound_violation_counts": {
+          "planar_speed_over_.30": 0,
+          "angular_norm_over_1.2": 0,
+          "chord_speed_over_.30": 0
+        },
+        "eligible_stop_events": 5,
+        "credited_sampled_stop_events": 1,
+        "eligible_cancel_stop_events": 2,
+        "credited_cancel_stop_events": 2,
+        "hard_zero_evidence_complete": true,
+        "cancel_end_to_end_evidence_complete": true,
+        "physical_evidence_complete": true,
+        "response_status_counts": {
+          "A_final_linear_zero:insufficient_prior_movement": 2,
+          "A_final_linear_zero:resumed_before_proven_rest": 4,
+          "A_final_linear_zero:sampled_response_within_declared_bounds": 1,
+          "B_native_cancel_end_to_end:sampled_response_within_declared_bounds": 2
+        },
+        "observed_nonrest_beyond_horizon": false
+      },
+      "tb2": {
+        "errors": [],
+        "task_odom_samples": 942,
+        "maximum_planar_speed_task": 0.20076294211077722,
+        "maximum_angular_norm_task": 0.7959824542867249,
+        "maximum_raw_odom_chord_speed_task": 0.20069340609082803,
+        "maximum_task_source_gap_ns": 34000000,
+        "bound_violation_counts": {
+          "planar_speed_over_.30": 0,
+          "angular_norm_over_1.2": 0,
+          "chord_speed_over_.30": 0
+        },
+        "eligible_stop_events": 1,
+        "credited_sampled_stop_events": 0,
+        "eligible_cancel_stop_events": 1,
+        "credited_cancel_stop_events": 1,
+        "hard_zero_evidence_complete": false,
+        "cancel_end_to_end_evidence_complete": true,
+        "physical_evidence_complete": true,
+        "response_status_counts": {
+          "A_final_linear_zero:resumed_before_proven_rest": 1,
+          "A_final_linear_zero:insufficient_prior_movement": 2,
+          "B_native_cancel_end_to_end:sampled_response_within_declared_bounds": 1
+        },
+        "observed_nonrest_beyond_horizon": false
+      },
+      "tb3": {
+        "errors": [],
+        "task_odom_samples": 942,
+        "maximum_planar_speed_task": 0.20062681242147154,
+        "maximum_angular_norm_task": 0.8067250415510312,
+        "maximum_raw_odom_chord_speed_task": 0.20060342688406707,
+        "maximum_task_source_gap_ns": 34000000,
+        "bound_violation_counts": {
+          "planar_speed_over_.30": 0,
+          "angular_norm_over_1.2": 0,
+          "chord_speed_over_.30": 0
+        },
+        "eligible_stop_events": 0,
+        "credited_sampled_stop_events": 0,
+        "eligible_cancel_stop_events": 1,
+        "credited_cancel_stop_events": 1,
+        "hard_zero_evidence_complete": false,
+        "cancel_end_to_end_evidence_complete": true,
+        "physical_evidence_complete": true,
+        "response_status_counts": {
+          "A_final_linear_zero:insufficient_prior_movement": 3,
+          "B_native_cancel_end_to_end:sampled_response_within_declared_bounds": 1
+        },
+        "observed_nonrest_beyond_horizon": false
+      }
+    },
+    "original_scope": "independent source-time sampled physical/strict-close evidence; A final-linear-zero and B actual-native-cancel end-to-end remain separate. Meaningful evidence in either is reported by type, never native-cancel as sudden-zero proof. Missing meaningful segments never PASS; sampled norms/chords do not prove continuous truth",
+    "interpretation": "Original per-robot A OR B is met. TB2/TB3 lack A credit; their actual B credit is retained. No new requirement for A AND B."
+  },
+  "angular": {
+    "passed": true,
+    "sampled_bounds_passed": true,
+    "stimulus_coverage_passed": true,
+    "missing": [],
+    "release_time_ns": 40780000000,
+    "final_physics_time_ns": 72800000000,
+    "positive_span_robots": [
+      "tb1",
+      "tb2",
+      "tb3"
+    ],
+    "negative_span_robots": [
+      "tb1",
+      "tb2",
+      "tb3"
+    ],
+    "sequential_opposite_sign_span_robots": [
+      "tb1",
+      "tb2",
+      "tb3"
+    ],
+    "scope": "Only raw local own_odom diagnostics in source time. Opposite sign spans are stop/restart coverage, not peak-to-peak direct reversal or continuous acceleration proof. No control/truth/production actor imports. Whole-body linear/chord/strict-close and three-robot >0.05m activity gates are independently required elsewhere."
+  },
+  "angular_per_robot": {
+    "tb1": {
+      "bounds_passed": true,
+      "errors": [],
+      "missing": [],
+      "max_angular_norm_rad_s": 0.7995290560042058,
+      "max_sampled_angular_accel_rad_s2": 3.4760548521141925,
+      "max_source_gap_ns": 34000000
+    },
+    "tb2": {
+      "bounds_passed": true,
+      "errors": [],
+      "missing": [],
+      "max_angular_norm_rad_s": 0.7959824542867249,
+      "max_sampled_angular_accel_rad_s2": 3.5000082522598293,
+      "max_source_gap_ns": 34000000
+    },
+    "tb3": {
+      "bounds_passed": true,
+      "errors": [],
+      "missing": [],
+      "max_angular_norm_rad_s": 0.8067250415510312,
+      "max_sampled_angular_accel_rad_s2": 3.4278174347267223,
+      "max_source_gap_ns": 34000000
+    }
+  },
+  "full_and_input": {
+    "full_passed": true,
+    "full_errors": [],
+    "input_passed": true,
+    "whole_observation_and_seven_map_replay_passed": true,
+    "transition_rows": 33,
+    "received_activity": {
+      "tb1": {
+        "estimated_path_m": 1.16935843386143,
+        "sample_count": 940,
+        "path_observation_complete": true,
+        "accepted_goal_count": 2
+      },
+      "tb2": {
+        "estimated_path_m": 1.109349403317522,
+        "sample_count": 942,
+        "path_observation_complete": true,
+        "accepted_goal_count": 2
+      },
+      "tb3": {
+        "estimated_path_m": 1.118728360280657,
+        "sample_count": 940,
+        "path_observation_complete": true,
+        "accepted_goal_count": 2
+      }
+    }
+  },
+  "smoother_mapping": {
+    "snapshots": [
+      {
+        "path": "/tmp/mr3_p2a0_v25_interface_smoother_mapping_001.json",
+        "passed": false,
+        "errors": [],
+        "complete": [
+          false
+        ],
+        "wall_monotonic_ns": 4031467993098405
+      },
+      {
+        "path": "/tmp/mr3_p2a0_v25_interface_smoother_mapping_002.json",
+        "passed": false,
+        "errors": [],
+        "complete": [
+          false
+        ],
+        "wall_monotonic_ns": 4031490509712008
+      },
+      {
+        "path": "/tmp/mr3_p2a0_v25_interface_smoother_mapping_003.json",
+        "passed": false,
+        "errors": [],
+        "complete": [
+          false
+        ],
+        "wall_monotonic_ns": 4031513097820294
+      },
+      {
+        "path": "/tmp/mr3_p2a0_v25_interface_smoother_mapping_004.json",
+        "passed": false,
+        "errors": [],
+        "complete": [
+          false
+        ],
+        "wall_monotonic_ns": 4031535787413387
+      },
+      {
+        "path": "/tmp/mr3_p2a0_v25_interface_smoother_mapping_005.json",
+        "passed": false,
+        "errors": [],
+        "complete": [
+          false
+        ],
+        "wall_monotonic_ns": 4031558514806215
+      },
+      {
+        "path": "/tmp/mr3_p2a0_v25_interface_smoother_mapping_006.json",
+        "passed": true,
+        "errors": [],
+        "complete": [
+          true
+        ],
+        "wall_monotonic_ns": 4031581987403473
+      },
+      {
+        "path": "/tmp/mr3_p2a0_v25_interface_smoother_mapping_007.json",
+        "passed": true,
+        "errors": [],
+        "complete": [
+          true
+        ],
+        "wall_monotonic_ns": 4031605560066740
+      },
+      {
+        "path": "/tmp/mr3_p2a0_v25_interface_smoother_mapping_008.json",
+        "passed": true,
+        "errors": [],
+        "complete": [
+          true
+        ],
+        "wall_monotonic_ns": 4031609150031295
+      },
+      {
+        "path": "/tmp/mr3_p2a0_v25_interface_smoother_mapping_009.json",
+        "passed": true,
+        "errors": [],
+        "complete": [
+          true
+        ],
+        "wall_monotonic_ns": 4031632584120097
+      },
+      {
+        "path": "/tmp/mr3_p2a0_v25_interface_smoother_mapping_010.json",
+        "passed": true,
+        "errors": [],
+        "complete": [
+          true
+        ],
+        "wall_monotonic_ns": 4031656055739312
+      },
+      {
+        "path": "/tmp/mr3_p2a0_v25_interface_smoother_mapping_011.json",
+        "passed": true,
+        "errors": [],
+        "complete": [
+          true
+        ],
+        "wall_monotonic_ns": 4031679516640311
+      },
+      {
+        "path": "/tmp/mr3_p2a0_v25_interface_smoother_mapping_012.json",
+        "passed": true,
+        "errors": [],
+        "complete": [
+          true
+        ],
+        "wall_monotonic_ns": 4031703036921256
+      },
+      {
+        "path": "/tmp/mr3_p2a0_v25_interface_smoother_mapping_013.json",
+        "passed": true,
+        "errors": [],
+        "complete": [
+          true
+        ],
+        "wall_monotonic_ns": 4031726598320988
+      },
+      {
+        "path": "/tmp/mr3_p2a0_v25_interface_smoother_mapping_014.json",
+        "passed": true,
+        "errors": [],
+        "complete": [
+          true
+        ],
+        "wall_monotonic_ns": 4031750117830603
+      },
+      {
+        "path": "/tmp/mr3_p2a0_v25_interface_smoother_mapping_015.json",
+        "passed": true,
+        "errors": [],
+        "complete": [
+          true
+        ],
+        "wall_monotonic_ns": 4031773601479050
+      },
+      {
+        "path": "/tmp/mr3_p2a0_v25_interface_smoother_mapping_016.json",
+        "passed": true,
+        "errors": [],
+        "complete": [
+          true
+        ],
+        "wall_monotonic_ns": 4031797069092421
+      },
+      {
+        "path": "/tmp/mr3_p2a0_v25_interface_smoother_mapping_017.json",
+        "passed": true,
+        "errors": [],
+        "complete": [
+          true
+        ],
+        "wall_monotonic_ns": 4031820641795231
+      },
+      {
+        "path": "/tmp/mr3_p2a0_v25_interface_smoother_mapping_018.json",
+        "passed": true,
+        "errors": [],
+        "complete": [
+          true
+        ],
+        "wall_monotonic_ns": 4031844173334324
+      },
+      {
+        "path": "/tmp/mr3_p2a0_v25_interface_smoother_mapping_019.json",
+        "passed": true,
+        "errors": [],
+        "complete": [
+          true
+        ],
+        "wall_monotonic_ns": 4031867717207315
+      },
+      {
+        "path": "/tmp/mr3_p2a0_v25_interface_smoother_mapping_020.json",
+        "passed": true,
+        "errors": [],
+        "complete": [
+          true
+        ],
+        "wall_monotonic_ns": 4031891271110865
+      },
+      {
+        "path": "/tmp/mr3_p2a0_v25_interface_smoother_mapping_021.json",
+        "passed": true,
+        "errors": [],
+        "complete": [
+          true
+        ],
+        "wall_monotonic_ns": 4031914884353365
+      },
+      {
+        "path": "/tmp/mr3_p2a0_v25_interface_smoother_mapping_022.json",
+        "passed": true,
+        "errors": [],
+        "complete": [
+          true
+        ],
+        "wall_monotonic_ns": 4031938555020147
+      },
+      {
+        "path": "/tmp/mr3_p2a0_v25_interface_smoother_mapping_023.json",
+        "passed": true,
+        "errors": [],
+        "complete": [
+          true
+        ],
+        "wall_monotonic_ns": 4031962149155870
+      },
+      {
+        "path": "/tmp/mr3_p2a0_v25_interface_smoother_mapping_024.json",
+        "passed": true,
+        "errors": [],
+        "complete": [
+          true
+        ],
+        "wall_monotonic_ns": 4031985833747157
+      },
+      {
+        "path": "/tmp/mr3_p2a0_v25_interface_smoother_mapping_025.json",
+        "passed": true,
+        "errors": [],
+        "complete": [
+          true
+        ],
+        "wall_monotonic_ns": 4032009424691905
+      },
+      {
+        "path": "/tmp/mr3_p2a0_v25_interface_smoother_mapping_026.json",
+        "passed": true,
+        "errors": [],
+        "complete": [
+          true
+        ],
+        "wall_monotonic_ns": 4032033074647703
+      },
+      {
+        "path": "/tmp/mr3_p2a0_v25_interface_smoother_mapping_027.json",
+        "passed": true,
+        "errors": [],
+        "complete": [
+          true
+        ],
+        "wall_monotonic_ns": 4032056710788215
+      },
+      {
+        "path": "/tmp/mr3_p2a0_v25_interface_smoother_mapping_028.json",
+        "passed": true,
+        "errors": [],
+        "complete": [
+          true
+        ],
+        "wall_monotonic_ns": 4032080361168995
+      },
+      {
+        "path": "/tmp/mr3_p2a0_v25_interface_smoother_mapping_029.json",
+        "passed": true,
+        "errors": [],
+        "complete": [
+          true
+        ],
+        "wall_monotonic_ns": 4032103995579677
+      },
+      {
+        "path": "/tmp/mr3_p2a0_v25_interface_smoother_mapping_030.json",
+        "passed": true,
+        "errors": [],
+        "complete": [
+          true
+        ],
+        "wall_monotonic_ns": 4032127630722869
+      },
+      {
+        "path": "/tmp/mr3_p2a0_v25_interface_smoother_mapping_031.json",
+        "passed": true,
+        "errors": [],
+        "complete": [
+          true
+        ],
+        "wall_monotonic_ns": 4032151247129851
+      },
+      {
+        "path": "/tmp/mr3_p2a0_v25_interface_smoother_mapping_032.json",
+        "passed": true,
+        "errors": [],
+        "complete": [
+          true
+        ],
+        "wall_monotonic_ns": 4032174914369305
+      },
+      {
+        "path": "/tmp/mr3_p2a0_v25_interface_smoother_mapping_033.json",
+        "passed": true,
+        "errors": [],
+        "complete": [
+          true
+        ],
+        "wall_monotonic_ns": 4032198583242305
+      },
+      {
+        "path": "/tmp/mr3_p2a0_v25_interface_smoother_mapping_034.json",
+        "passed": true,
+        "errors": [],
+        "complete": [
+          true
+        ],
+        "wall_monotonic_ns": 4032222319630238
+      },
+      {
+        "path": "/tmp/mr3_p2a0_v25_interface_smoother_mapping_035.json",
+        "passed": false,
+        "errors": [
+          "process/ancestry/maps changed during capture"
+        ],
+        "complete": [
+          false
+        ],
+        "wall_monotonic_ns": 4032245734349272
+      },
+      {
+        "path": "/tmp/mr3_p2a0_v25_interface_smoother_mapping_036.json",
+        "passed": false,
+        "errors": [],
+        "complete": [
+          false
+        ],
+        "wall_monotonic_ns": 4032268629394743
+      }
+    ],
+    "snapshot_count": 36,
+    "complete_count": 29,
+    "error_snapshot_paths": [
+      "/tmp/mr3_p2a0_v25_interface_smoother_mapping_035.json"
+    ],
+    "source_and_binding_fields_match_actual_fixed_bytes": true,
+    "proof035_processes_saved": {},
+    "proof035_error": [
+      "process/ancestry/maps changed during capture"
+    ],
+    "missing_detail": [
+      "failing robot",
+      "fresh identity after value",
+      "before/after maps",
+      "before/after ancestry",
+      "fresh cmdline/exe postvalues",
+      "failing conjunct"
+    ],
+    "timing": {
+      "monitor034_wall_ns": 4032220814502421,
+      "monitor035_wall_ns": 4032244566741509,
+      "proof035_wall_ns": 4032245734349272,
+      "monitor036_wall_ns": 4032267831211675,
+      "nav_shutdown_start_ns": 4032235824172340,
+      "nav_shutdown_complete_ns": 4032244940892353,
+      "smoother_finalized_response_end_ns": {
+        "tb1": 4032238622074605,
+        "tb2": 4032242179185020,
+        "tb3": 4032244940863063
+      }
+    },
+    "monitor035_active_owned_count": 39,
+    "monitor036_active_owned_count": 0,
+    "source_excerpt": "359:             for captured in base['owned_current_processes']:\n360:                 argv, identity = captured['argv'], captured['identity']\n361:                 if not argv or Path(argv[0]).name != 'velocity_smoother':\n362:                     continue\n363:                 current = util.proc_identity(identity['pid'], proc_root)\n364:                 if current is None:\n365:                     continue\n366:                 require(pair(current) == pair(identity), 'smoother PID reused')\n367:                 if current['state'] == 'Z':\n368:                     continue\n369:                 chain = util.ancestor_chain(current, worker, inventory, proc_root)\n370:                 if chain is None:\n371:                     continue\n372:                 raw_argv = (proc_root / str(identity['pid']) / 'cmdline').read_bytes()\n373:                 actual_argv = raw_argv.decode().rstrip('\\0').split('\\0')\n374:                 require(actual_argv == argv and argv[0] == executable['path']\n375:                         and (proc_root / str(identity['pid']) / 'exe').resolve(strict=True)\n376:                         == Path(executable['resolved']), 'actual smoother executable/argv differs')\n377:                 executable_stat = (proc_root / str(identity['pid']) / 'exe').stat()\n378:                 require(executable_stat.st_ino == executable['inode']\n379:                         and executable_stat.st_dev == executable['stat'][0]\n380:                         and executable_stat.st_mode & 0o111, 'actual executable inode/device/permission differs')\n381:                 robot = util.namespace(argv)\n382:                 require(robot not in result['processes'], 'duplicate actual smoother namespace')\n383:                 maps_path = proc_root / str(identity['pid']) / 'maps'\n384:                 maps_raw = maps_path.read_bytes()\n385:                 lines = map_lines(maps_raw, core)\n386:                 require(file_proof(binding['installed']['executable'], read) == executable\n387:                         and file_proof(binding['installed']['core'], read) == core, 'ELF identity changed during capture')\n388:                 after = util.proc_identity(identity['pid'], proc_root)\n389:                 if after is None or (pair(after) == pair(identity) and after['state'] == 'Z'):\n390:                     result['pending_reason'] = 'same process naturally closed during capture; no credit'\n391:                     continue\n392:                 after_chain = util.ancestor_chain(after, worker, inventory, proc_root) or []\n393:                 same_chain = len(after_chain) == len(chain) and all(\n394:                     util.identity_equal(before, final) for before, final in zip(chain, after_chain))\n395:                 require(pair(after) == pair(identity)\n396:                         and maps_path.read_bytes() == maps_raw\n397:                         and (proc_root / str(identity['pid']) / 'cmdline').read_bytes() == raw_argv\n398:                         and (proc_root / str(identity['pid']) / 'exe').resolve(strict=True) == Path(executable['resolved'])\n399:                         and (proc_root / str(identity['pid']) / 'exe').stat().st_ino == executable['inode']\n400:                         and same_chain,\n401:                         'process/ancestry/maps changed during capture')\n402:                 result['processes'][robot] = {'identity': identity, 'identity_after': after,\n403:                     'argv': argv, 'actual_ancestry': chain, 'cmdline_sha256': sha(raw_argv),\n404:                     'maps_raw': maps_raw.decode(), 'maps_sha256': sha(maps_raw),\n405:                     'core_maps_lines': lines, 'executable': executable, 'core': core}\n406:             result['complete'] = (set(result['processes']) == set(ROBOTS)\n407:                                   and util.same(worker, proc_root) is not None\n408:                                   and (proc_root / str(worker['pid']) / 'cmdline').read_bytes() == actual_worker)\n409:             if not result['complete']:\n410:                 result.setdefault('pending_reason', 'awaiting three own active smoother processes')\n411:         except FileNotFoundError:\n412:             result['pending_reason'] = 'owned process naturally disappeared; no credit'\n413:         except (OSError, ValueError, KeyError, TypeError) as error:\n414:             result['errors'].append(str(error))\n415:             errors.append(str(error))\n416:     return {'schema': 'mr3-v25-smoother-live-mapping-v1', 'freeze': freeze,\n417:             'producer_source_sha256': sha(read(Path(__file__))),\n418:             'binding': {'path': str(binding_path), 'sha256': sha(read(Path(binding_path)))},\n419:             'monitor': {'path': str(monitor_path), 'sha256': sha(base_raw)},\n420:             'wall_monotonic_ns': time.monotonic_ns(), 'episodes': episodes, 'errors': errors,\n421:             'passed': not errors and any(row['complete'] for row in episodes),",
+    "interpretation": "035 spans Nav2 shutdown completion. This supports a lifecycle-race hypothesis only; no unique false rejection or real ELF/identity change is established. Compound short-circuit condition does not identify the failed conjunct. Earlier valid proofs cannot erase the original error."
+  },
+  "native_stop_saved": {
+    "returncode": 0,
+    "method": "owned_launch_native_stop",
+    "native_cli_pid": 3614706,
+    "server_clean_exit_recorded": true
+  },
+  "supervisor_shutdown_saved_flags": {
+    "forced_shutdown": false,
+    "failed_sample": false,
+    "worker_returncode": 0
+  },
+  "scope": "Only closed small original JSON/source. No raw scan, motion trace, consumer/test, SDK, ROS/DDS or native invocation. No retrospective PASS or replacement proof. Interface sampled passes are not whole-matrix, policy efficacy or 95% task credit.",
+  "script_sha256": "4c3b073e6c781aa8b6b7d60c4fd275695a14997757d8e99606f9180a15e8dc4b",
+  "argv": [
+    "/tmp/mr3_p2a0_v25_capture_035_independent_review_v1/review_v1.py"
+  ],
+  "cwd": "/home/zhuyulab/ns3-workspace",
+  "environment": {
+    "PYTHONNOUSERSITE": "1",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "ROS_DOMAIN_ID": null,
+    "RMW_IMPLEMENTATION": null,
+    "FASTRTPS_DEFAULT_PROFILES_FILE": null,
+    "RMW_FASTRTPS_USE_QOS_FROM_XML": null
+  },
+  "input_bindings": {
+    "/tmp/mr3_p2a0_v25_interface_audit_execution_v1.json": {
+      "bytes": 15102,
+      "sha256": "6add1e44c3ee39e930665de67bc6fa128e46e8154e4f5ffc432d33bd2e853dcf",
+      "stat": [
+        2051,
+        76643119,
+        15102,
+        1792287135580557197,
+        1792287135580557197
+      ]
+    },
+    "/tmp/mr3_p2a0_v25_interface_full_audit.json": {
+      "bytes": 460200,
+      "sha256": "bc7289f4dcfb65db436d2c5eb1148ee228495c61617906a7542b8a1d37b0e6ba",
+      "stat": [
+        2051,
+        76643117,
+        460200,
+        1792287069281879957,
+        1792287069281879957
+      ]
+    },
+    "/tmp/mr3_p2a0_v25_interface_drive_review_v1.json": {
+      "bytes": 7100244,
+      "sha256": "3b6f10eaeab383f476768263bba35227b50947bb4eba3e23b4ba19d9b5793a0a",
+      "stat": [
+        2051,
+        76643100,
+        7100244,
+        1792286948892176727,
+        1792286948892176727
+      ]
+    },
+    "/tmp/mr3_p2a0_v25_interface_input_review_v1.json": {
+      "bytes": 172853,
+      "sha256": "c4e16885fabfb81fa71eb323ce0c8dce7a9baec053fcd9ccaa3863c86955ef78",
+      "stat": [
+        2051,
+        76643118,
+        172853,
+        1792287134772512433,
+        1792287134772512433
+      ]
+    },
+    "/tmp/mr3_p2a0_v25_interface_fixed_angular_v1.json": {
+      "bytes": 45564,
+      "sha256": "ac9154582ee61b2e56ca04cb2154ec652357e694115dedac1986576624384b34",
+      "stat": [
+        2051,
+        76643107,
+        45564,
+        1792286995582780760,
+        1792286995582780760
+      ]
+    },
+    "/tmp/mr3_p2a0_v25_interface_fixed_physics_v1.json": {
+      "bytes": 19511,
+      "sha256": "eb75037c33549f03f17132e2bbf3ba20a6a7d37db86733352d422fb5e1e62ba6",
+      "stat": [
+        2051,
+        76643115,
+        19511,
+        1792287014579838642,
+        1792287014579838642
+      ]
+    },
+    "/tmp/mr3_p2a0_v25_interface_settled_review_v1.json": {
+      "bytes": 7056,
+      "sha256": "b7afff6c63e7a8fafbb4d464aec48b7bbb6d317a522be62342f6a4b93a2be8c3",
+      "stat": [
+        2051,
+        76643102,
+        7056,
+        1792286973275537366,
+        1792286973275537366
+      ]
+    },
+    "/tmp/mr3_p2a0_v25_interface_closure_binary_review_v1.json": {
+      "bytes": 86339,
+      "sha256": "b5e00b1b1e391c6e298a22dd219073063766fff246ab41dc81b4e97314965b8e",
+      "stat": [
+        2051,
+        76643116,
+        86339,
+        1792287015817907555,
+        1792287015817907555
+      ]
+    },
+    "/tmp/mr3_p2a0_v25_interface_information_review_v1.json": {
+      "bytes": 5463,
+      "sha256": "12f44c77d952335cc8d2584d7ffbbfc396eb91ffa046f27155127a27ece036d1",
+      "stat": [
+        2051,
+        76643104,
+        5463,
+        1792286975096638923,
+        1792286975096638923
+      ]
+    },
+    "/tmp/mr3_p2a0_v25_interface_peer_review_v1.json": {
+      "bytes": 5648,
+      "sha256": "55e95b9babaa20836d3c9d4ae41bc0923e09f3cba2c268f529913adf68e3f2e9",
+      "stat": [
+        2051,
+        76643098,
+        5648,
+        1792286904144675336,
+        1792286904144675336
+      ]
+    },
+    "/tmp/mr3_p2a0_v25_interface_control_review_v1.json": {
+      "bytes": 8912,
+      "sha256": "9ebe7470633a5306f5b803f6f9fe7710d247ce9147f83e123e964257c6686db2",
+      "stat": [
+        2051,
+        76643106,
+        8912,
+        1792286994913743488,
+        1792286994913743488
+      ]
+    },
+    "/tmp/mr3_p2a0_v25_root_final_close_observation_v1.json": {
+      "bytes": 13675,
+      "sha256": "2c926734781fa9ca4c8e2a63bc6f2ea074e521cfb39cd6929f57a2891fce2f99",
+      "stat": [
+        2051,
+        76643123,
+        13675,
+        1792287254761146696,
+        1792287254761146696
+      ]
+    },
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v25_smoother/independent/mr3_v25_smoother_custody_v1.py": {
+      "bytes": 32537,
+      "sha256": "6edeb3a7e814fb024594be724ef98dce39e1d23a84af5d34d6d6faac0b5cb88b",
+      "stat": [
+        2051,
+        78658278,
+        32537,
+        1792285442634267599,
+        1792285442634267599
+      ]
+    },
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v25_smoother/independent/mr3_v25_smoother_binding_v1.json": {
+      "bytes": 1942,
+      "sha256": "61276e5b98a8fb641ecae464386a7f1403acc73789df5251cd82bb35ab83b5e0",
+      "stat": [
+        2051,
+        78658282,
+        1942,
+        1792285442635267651,
+        1792285442635267651
+      ]
+    },
+    "/tmp/mr3_p2a0_v25_interface_smoother_mapping_001.json": {
+      "bytes": 1423,
+      "sha256": "e086af39b9e9f8cda85629748788533e99fdd7f75d58036f174eff5ea6c8d0bb",
+      "stat": [
+        2051,
+        76642916,
+        1423,
+        1792286073103203237,
+        1792286073103203237
+      ]
+    },
+    "/tmp/mr3_p2a0_v25_interface_smoother_mapping_002.json": {
+      "bytes": 1423,
+      "sha256": "2d255b288b6bd4552a1b191071bb1c27468068d255321b4de4ff4c10d6cbf1ab",
+      "stat": [
+        2051,
+        76642934,
+        1423,
+        1792286095629603702,
+        1792286095629603702
+      ]
+    },
+    "/tmp/mr3_p2a0_v25_interface_smoother_mapping_003.json": {
+      "bytes": 1423,
+      "sha256": "48ff6b15aaf4809568711e7e6dde95e56232109a67050dd5bbc28c4c9586111b",
+      "stat": [
+        2051,
+        76642938,
+        1423,
+        1792286118212000083,
+        1792286118212000083
+      ]
+    },
+    "/tmp/mr3_p2a0_v25_interface_smoother_mapping_004.json": {
+      "bytes": 1423,
+      "sha256": "8647f9e41d31449e9369138160017a58ffafed46da5b45a13bef91ac572a5cd8",
+      "stat": [
+        2051,
+        76642952,
+        1423,
+        1792286140900395719,
+        1792286140900395719
+      ]
+    },
+    "/tmp/mr3_p2a0_v25_interface_smoother_mapping_005.json": {
+      "bytes": 1423,
+      "sha256": "bb66607f6b8fc5e5d5bbc12f97c8a3f28bac9b7b0f5483047e7c0729f9911cde",
+      "stat": [
+        2051,
+        76642956,
+        1423,
+        1792286163626786674,
+        1792286163626786674
+      ]
+    },
+    "/tmp/mr3_p2a0_v25_interface_smoother_mapping_006.json": {
+      "bytes": 185576,
+      "sha256": "8c2d43551dbc0a9f4a23f455d5e96cc04277fa724831c2dbfb8ba4589a351269",
+      "stat": [
+        2051,
+        76642972,
+        185576,
+        1792286187104216548,
+        1792286187104216548
+      ]
+    },
+    "/tmp/mr3_p2a0_v25_interface_smoother_mapping_007.json": {
+      "bytes": 185576,
+      "sha256": "2f5f4b6eb0cf4b573b9b2ac08aa7e4dcd725db14e056fdbdf13d33ea28111a19",
+      "stat": [
+        2051,
+        76642977,
+        185576,
+        1792286210677645377,
+        1792286210677645377
+      ]
+    },
+    "/tmp/mr3_p2a0_v25_interface_smoother_mapping_008.json": {
+      "bytes": 185576,
+      "sha256": "a0de9034eadc37eb0d929c277e84f5dace129e442f7d9519de739c69fa4c9fa6",
+      "stat": [
+        2051,
+        76642981,
+        185576,
+        1792286214264862220,
+        1792286214264862220
+      ]
+    },
+    "/tmp/mr3_p2a0_v25_interface_smoother_mapping_009.json": {
+      "bytes": 185576,
+      "sha256": "1700cf8e65567b86cb4f726a3ab81544dadf53070ce7f984c9a09b66179f9d44",
+      "stat": [
+        2051,
+        76642985,
+        185576,
+        1792286237697274997,
+        1792286237697274997
+      ]
+    },
+    "/tmp/mr3_p2a0_v25_interface_smoother_mapping_010.json": {
+      "bytes": 185576,
+      "sha256": "3d2bf4399e83a934c0bb17beb54dbc3305f81469bc302e2755aff0843b3739cd",
+      "stat": [
+        2051,
+        76642989,
+        185576,
+        1792286261171684112,
+        1792286261171684112
+      ]
+    },
+    "/tmp/mr3_p2a0_v25_interface_smoother_mapping_011.json": {
+      "bytes": 185576,
+      "sha256": "3cc31eb511affa2080f85f1f4f40924066cff297508114dfadd8ce924f1a42be",
+      "stat": [
+        2051,
+        76642993,
+        185576,
+        1792286284634086587,
+        1792286284634086587
+      ]
+    },
+    "/tmp/mr3_p2a0_v25_interface_smoother_mapping_012.json": {
+      "bytes": 185576,
+      "sha256": "246616b44060f0a4643d50a26144aded483d4d2d894c10e8e4a756132b0f0a25",
+      "stat": [
+        2051,
+        76642997,
+        185576,
+        1792286308153486797,
+        1792286308153486797
+      ]
+    },
+    "/tmp/mr3_p2a0_v25_interface_smoother_mapping_013.json": {
+      "bytes": 185576,
+      "sha256": "870d5d2525fe861a50b2fbd8115011d965c5fa58308c4196398fd689078ac1e9",
+      "stat": [
+        2051,
+        76643001,
+        185576,
+        1792286331714884068,
+        1792286331714884068
+      ]
+    },
+    "/tmp/mr3_p2a0_v25_interface_smoother_mapping_014.json": {
+      "bytes": 185576,
+      "sha256": "9016f1b28ccd290d29e1802f9946f15c2d6bb06b0bbe153ba23148a54f389762",
+      "stat": [
+        2051,
+        76643005,
+        185576,
+        1792286355234273666,
+        1792286355234273666
+      ]
+    },
+    "/tmp/mr3_p2a0_v25_interface_smoother_mapping_015.json": {
+      "bytes": 185576,
+      "sha256": "57946d4e36ba408184c3e438834b8b3c91cdf48d15c9f6a7d3756afd50af9e0d",
+      "stat": [
+        2051,
+        76643010,
+        185576,
+        1792286378718656258,
+        1792286378718656258
+      ]
+    },
+    "/tmp/mr3_p2a0_v25_interface_smoother_mapping_016.json": {
+      "bytes": 185576,
+      "sha256": "66385ee3ca55c4e943e648737dc76e6a4db77cff346b00b3b47148d137edfd82",
+      "stat": [
+        2051,
+        76643014,
+        185576,
+        1792286402186033143,
+        1792286402186033143
+      ]
+    },
+    "/tmp/mr3_p2a0_v25_interface_smoother_mapping_017.json": {
+      "bytes": 185576,
+      "sha256": "cf993cf61465fcc3d29d84e0e3caf68c3d454f19e54d6358fe6b14662680ba6a",
+      "stat": [
+        2051,
+        76643018,
+        185576,
+        1792286425757411608,
+        1792286425757411608
+      ]
+    },
+    "/tmp/mr3_p2a0_v25_interface_smoother_mapping_018.json": {
+      "bytes": 185576,
+      "sha256": "10092d754cc3cc72cfcfacab9350c1ebc99b0fe000a8d2225412d70bc4768cab",
+      "stat": [
+        2051,
+        76643022,
+        185576,
+        1792286449289783472,
+        1792286449289783472
+      ]
+    },
+    "/tmp/mr3_p2a0_v25_interface_smoother_mapping_019.json": {
+      "bytes": 185576,
+      "sha256": "f30b3604cd8277ccdf4140c73ae93bfdde7626db81f04e7469ec96403916f9f3",
+      "stat": [
+        2051,
+        76643026,
+        185576,
+        1792286472835151971,
+        1792286472835151971
+      ]
+    },
+    "/tmp/mr3_p2a0_v25_interface_smoother_mapping_020.json": {
+      "bytes": 185576,
+      "sha256": "b3bff9cf85e8fbab15e7b5946a7e0efe5112b7415da097105338ee0dbc69c882",
+      "stat": [
+        2051,
+        76643030,
+        185576,
+        1792286496385516820,
+        1792286496385516820
+      ]
+    },
+    "/tmp/mr3_p2a0_v25_interface_smoother_mapping_021.json": {
+      "bytes": 185576,
+      "sha256": "2850beabe40992a783ee01ba4918253d2c4626bddd1b9b76146de1ac32a11488",
+      "stat": [
+        2051,
+        76643034,
+        185576,
+        1792286520001881715,
+        1792286520001881715
+      ]
+    },
+    "/tmp/mr3_p2a0_v25_interface_smoother_mapping_022.json": {
+      "bytes": 185576,
+      "sha256": "d8d294feb9db0960ce6a6f772818bba9f8fab581eb7a754f3609e9a3cbb086e4",
+      "stat": [
+        2051,
+        76643038,
+        185576,
+        1792286543670245987,
+        1792286543670245987
+      ]
+    },
+    "/tmp/mr3_p2a0_v25_interface_smoother_mapping_023.json": {
+      "bytes": 185576,
+      "sha256": "c069faa6ee02c2b9c54ba387467e185586d5e99f98f38c1ca59c8de6e69f0437",
+      "stat": [
+        2051,
+        76643042,
+        185576,
+        1792286567265602602,
+        1792286567265602602
+      ]
+    },
+    "/tmp/mr3_p2a0_v25_interface_smoother_mapping_024.json": {
+      "bytes": 185576,
+      "sha256": "a1a904da90bb670d57561e889c93d6cc72b2eaa4e8466601f6f18db12e3cc154",
+      "stat": [
+        2051,
+        76643046,
+        185576,
+        1792286590947960913,
+        1792286590947960913
+      ]
+    },
+    "/tmp/mr3_p2a0_v25_interface_smoother_mapping_025.json": {
+      "bytes": 185576,
+      "sha256": "a596d51b2dadd87532a781dde1005c824919477d5d2712f50e4623114413d7dd",
+      "stat": [
+        2051,
+        76643050,
+        185576,
+        1792286614539310856,
+        1792286614539310856
+      ]
+    },
+    "/tmp/mr3_p2a0_v25_interface_smoother_mapping_026.json": {
+      "bytes": 185576,
+      "sha256": "c2613a35059c83e631f0f16d18e8eb4000d68a88b55dcc10300114323682cb9d",
+      "stat": [
+        2051,
+        76643054,
+        185576,
+        1792286638188661111,
+        1792286638188661111
+      ]
+    },
+    "/tmp/mr3_p2a0_v25_interface_smoother_mapping_027.json": {
+      "bytes": 185576,
+      "sha256": "1556d4ccb48001316f7540519a19590b958ed8a6782204911f40c392ade9347f",
+      "stat": [
+        2051,
+        76643058,
+        185576,
+        1792286661826007806,
+        1792286661826007806
+      ]
+    },
+    "/tmp/mr3_p2a0_v25_interface_smoother_mapping_028.json": {
+      "bytes": 185576,
+      "sha256": "aca4bf540fce4e1456b684fcf44d2826e32a84b42c0845488a2b22373508561d",
+      "stat": [
+        2051,
+        76643062,
+        185576,
+        1792286685476352494,
+        1792286685476352494
+      ]
+    },
+    "/tmp/mr3_p2a0_v25_interface_smoother_mapping_029.json": {
+      "bytes": 185576,
+      "sha256": "295f8d9b4920679d0a7f1a08ee8a470bdef0f1fd20aeaa3f5ab9a43e8a7ef877",
+      "stat": [
+        2051,
+        76643066,
+        185576,
+        1792286709109693597,
+        1792286709109693597
+      ]
+    },
+    "/tmp/mr3_p2a0_v25_interface_smoother_mapping_030.json": {
+      "bytes": 185576,
+      "sha256": "159ff2c3da6262d872cbe7da598b839dfbf341afa67a5c558044aebaaad4bfe4",
+      "stat": [
+        2051,
+        76643070,
+        185576,
+        1792286732747032424,
+        1792286732747032424
+      ]
+    },
+    "/tmp/mr3_p2a0_v25_interface_smoother_mapping_031.json": {
+      "bytes": 185576,
+      "sha256": "2cb73fd3f7b85e6f0cfbe75e9b80d6e655be65d22d5a63b089c1c5e1923ba28b",
+      "stat": [
+        2051,
+        76643074,
+        185576,
+        1792286756362367621,
+        1792286756362367621
+      ]
+    },
+    "/tmp/mr3_p2a0_v25_interface_smoother_mapping_032.json": {
+      "bytes": 185576,
+      "sha256": "719e161cac16e316a9341bbacc0770614be2a39dc51af34c956095d7074286ba",
+      "stat": [
+        2051,
+        76643078,
+        185576,
+        1792286780030703530,
+        1792286780030703530
+      ]
+    },
+    "/tmp/mr3_p2a0_v25_interface_smoother_mapping_033.json": {
+      "bytes": 185576,
+      "sha256": "4c6ec1da50eb84fe4f93ecb96eed083c75d63b41b94a64a76f98582455bb145f",
+      "stat": [
+        2051,
+        76643082,
+        185576,
+        1792286803699037254,
+        1792286803699037254
+      ]
+    },
+    "/tmp/mr3_p2a0_v25_interface_smoother_mapping_034.json": {
+      "bytes": 185576,
+      "sha256": "dddf1e244196eac55f22e09852c06191bc3362a7528b599617135c855320dbf3",
+      "stat": [
+        2051,
+        76643086,
+        185576,
+        1792286827435372717,
+        1792286827435372717
+      ]
+    },
+    "/tmp/mr3_p2a0_v25_interface_smoother_mapping_035.json": {
+      "bytes": 1992,
+      "sha256": "ebaa197fc3ba3cc2ec985d4cd326f1b0edbb771ea4bb8f5b3d3044faef919f8f",
+      "stat": [
+        2051,
+        76643090,
+        1992,
+        1792286850847687990,
+        1792286850847687990
+      ]
+    },
+    "/tmp/mr3_p2a0_v25_interface_smoother_mapping_036.json": {
+      "bytes": 1423,
+      "sha256": "f15d294d1c5bf0e721bf6625f5ba7a4c59a8162a33feaf1559ba92650984dd3e",
+      "stat": [
+        2051,
+        76643096,
+        1423,
+        1792286873742972416,
+        1792286873742972416
+      ]
+    },
+    "/tmp/mr3_p2a0_v25_interface_process_monitor_035.json": {
+      "bytes": 71046,
+      "sha256": "724bc015dce9b3b4706e2c5ab4d3c2d27bdf4b3ebf4b4d1f5dd53e769ef1b1a7",
+      "stat": [
+        2051,
+        76643088,
+        71046,
+        1792286849758626849,
+        1792286849758626849
+      ]
+    },
+    "/tmp/mr3_p2a0_v25_interface_process_monitor_034.json": {
+      "bytes": 71042,
+      "sha256": "ef6fc14903ad9be57b6a546eeac1ed2717303404012478cb8b523e930c7ff252",
+      "stat": [
+        2051,
+        76643084,
+        71042,
+        1792286825994291697,
+        1792286825994291697
+      ]
+    },
+    "/tmp/mr3_p2a0_v25_interface_process_monitor_036.json": {
+      "bytes": 20951,
+      "sha256": "71d844c098c9ccca057fb0251f7af3ad73d40a7e0340c9bf2a64b6ac62cec73e",
+      "stat": [
+        2051,
+        76643094,
+        20951,
+        1792286872882924198,
+        1792286872882924198
+      ]
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v25_interface/worker0/episode001_open_101/nav2_shutdown.json": {
+      "bytes": 11650,
+      "sha256": "7f265a9a321ff6caf0a78ef92298e3db49e6c86c375444cf26a6eea37c8b267d",
+      "stat": [
+        2051,
+        78659033,
+        11650,
+        1792286849928636394,
+        1792286849928636394
+      ]
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v25_interface/worker0/episode001_open_101/supervisor_shutdown.json": {
+      "bytes": 7481,
+      "sha256": "8e2002f84dcd45757efea767e1759fa69c1a829bdca6f68a8db2051ac7a15435",
+      "stat": [
+        2051,
+        78659044,
+        7481,
+        1792286861154266404,
+        1792286861154266404
+      ]
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v25_interface/worker0/episode001_open_101/native_stop.json": {
+      "bytes": 129,
+      "sha256": "ad4c8535711d9c6a3ae3a2297663644590aeb9dee40d3b4a8156afa54e2ba6ff",
+      "stat": [
+        2051,
+        78659040,
+        129,
+        1792286859342164733,
+        1792286859342164733
+      ]
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v25_interface/worker0/episode001_open_101/metadata.json": {
+      "bytes": 2553,
+      "sha256": "5756d82c40d4e3db77b6c5e7457419d3199c5a409bb8918507aceeadb41102fb",
+      "stat": [
+        2051,
+        78658388,
+        2553,
+        1792286066679802466,
+        1792286066679802466
+      ]
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v25_interface/worker0/episode001_open_101/supervisor_metadata.json": {
+      "bytes": 965,
+      "sha256": "a057a068835bd606df9693938c6552369b65c2ad698c0e67bdfee18db4f449a3",
+      "stat": [
+        2051,
+        78658380,
+        965,
+        1792286064962695223,
+        1792286064962695223
+      ]
+    }
+  },
+  "input_end_sha_and_stat_stable": true,
+  "wall_seconds": 0.579281800892204,
+  "writer_status": "STOP after exclusive output"
+}

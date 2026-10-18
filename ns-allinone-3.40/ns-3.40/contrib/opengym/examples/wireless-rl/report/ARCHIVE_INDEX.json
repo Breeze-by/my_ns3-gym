@@ -1534,5 +1534,35 @@
     "recorder_binary_sha256": "efd8a8f849da96c54753d168762dd8b4d5200077d5c490aaac070ea66f881f64",
     "independent_bindings": 160,
     "runtime_bindings": 103
+  },
+  "mr3_p2a0_v25_smoother": {
+    "recorded_date": "2026-10-18",
+    "source_freeze": "579f7ad21d33c6de9351eb5308f155f0fc903fd7",
+    "status": "CLOSED FAIL: interface32/old nine formal gates PASS, new smoother custody035 FAIL; later3 SKIP; preserved",
+    "report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_v25_smoother.md",
+    "assets": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v25_smoother",
+    "native_manifest_sha256": "a6c143e7e55cf41eed26627ad7fece0da47e3768220e2003bb00b9ff63541c17",
+    "original_files": 832,
+    "raw_bytes": 524266668,
+    "encoded_parts": 843,
+    "encoded_part_bytes": 35179876,
+    "all_submitted_jobs_finished": 11,
+    "submitted_pass": 10,
+    "submitted_fail": 1,
+    "declared_formal_pass": 9,
+    "declared_formal_fail": 1,
+    "additional_required_fifo_pass": true,
+    "fresh_saved_identities_gone": 50,
+    "native_exits_zero": 39,
+    "closed_cost": {
+      "resets": 1,
+      "steps": 32,
+      "API": 33,
+      "native_wall_seconds": 796.7103692898527,
+      "optimizer_updates": 0
+    },
+    "cumulative_engineering_wall_seconds": 1369.6459453934804,
+    "remaining_engineering_wall_seconds": 16630.35405460652,
+    "scope": "Lossless custody only, no matrix/PPO credit. Failed035 lacks per-conjunct before/after facts; false rejection unproven."
   }
 }

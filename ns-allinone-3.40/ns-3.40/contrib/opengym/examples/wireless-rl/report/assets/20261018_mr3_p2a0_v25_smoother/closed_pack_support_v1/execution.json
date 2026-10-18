@@ -1,0 +1,822 @@
+{
+  "schema": "mr3-v25-closed-pack-invocation-v1",
+  "argv": [
+    "/usr/bin/python3",
+    "-B",
+    "/tmp/mr3_p2a0_v25_matrix_pack_execution_v1/mr3_p2a0_v25_matrix_pack_closed_v2.py",
+    "--freeze",
+    "579f7ad21d33c6de9351eb5308f155f0fc903fd7",
+    "--target",
+    "/tmp/mr3_p2a0_v25_selected_closed_v1",
+    "--all-writers-closed",
+    "--extra",
+    "/tmp/mr3_p2a0_v25_matrix_parent_console_v1.log",
+    "--extra",
+    "/tmp/mr3_p2a0_v25_watcher_parent_console_v1.log",
+    "--extra",
+    "/tmp/mr3_p2a0_v25_capture_matrix_job_v1.py",
+    "--extra",
+    "/tmp/mr3_p2a0_v25_matrix_capture_v1.json",
+    "--extra",
+    "/tmp/mr3_p2a0_v25_matrix_capture_v1_started.json",
+    "--extra",
+    "/tmp/mr3_p2a0_v25_watcher_capture_v1.json",
+    "--extra",
+    "/tmp/mr3_p2a0_v25_watcher_capture_v1_started.json",
+    "--extra",
+    "/tmp/mr3_p2a0_v25_actual_preflight_once_v1.py",
+    "--extra",
+    "/tmp/mr3_p2a0_v25_actual_preflight_delta_v1.json",
+    "--extra",
+    "/tmp/mr3_p2a0_v25_root_final_close_observation_v1.json",
+    "--extra",
+    "/tmp/mr3_p2a0_v25_launch.lock",
+    "--extra",
+    "/tmp/mr3_p2a0_v25_actual_preflight_execution_v1/execution_v1.json",
+    "--extra",
+    "/tmp/mr3_p2a0_v25_actual_preflight_execution_v1/started_v1.json",
+    "--extra",
+    "/tmp/mr3_p2a0_v25_actual_preflight_execution_v1/stderr.txt",
+    "--extra",
+    "/tmp/mr3_p2a0_v25_actual_preflight_execution_v1/stdout.txt",
+    "--extra",
+    "/tmp/mr3_p2a0_v25_capture_035_review_v1/review_v1.json",
+    "--extra",
+    "/tmp/mr3_p2a0_v25_capture_035_review_v1/review_v1.py",
+    "--extra",
+    "/tmp/mr3_p2a0_v25_preflight_learner_entry_benchmark_help.stderr.log",
+    "--extra",
+    "/tmp/mr3_p2a0_v25_preflight_learner_entry_benchmark_help.stdout.log",
+    "--extra",
+    "/tmp/mr3_p2a0_v25_preflight_learner_entry_full_audit_help.stderr.log",
+    "--extra",
+    "/tmp/mr3_p2a0_v25_preflight_learner_entry_full_audit_help.stdout.log",
+    "--extra",
+    "/tmp/mr3_p2a0_v25_preflight_learner_entry_imports.stderr.log",
+    "--extra",
+    "/tmp/mr3_p2a0_v25_preflight_learner_entry_imports.stdout.log",
+    "--extra",
+    "/tmp/mr3_p2a0_v25_preflight_learner_entry_probe_v1.json"
+  ],
+  "cwd": "/home/zhuyulab/ns3-workspace",
+  "environment_exact": {
+    "PATH": "/usr/bin:/bin",
+    "PYTHONNOUSERSITE": "1",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "LANG": "C.UTF-8",
+    "LC_ALL": "C.UTF-8",
+    "TZ": "UTC"
+  },
+  "bound_inputs_before": [
+    {
+      "path": "/tmp/mr3_p2a0_v25_matrix_pack_execution_v1/run_pack_once_v1.py",
+      "sha256": "5fce32c5caba014643b5feca6de8b7f92ebf41a71d1cebf559e3a841474a238b",
+      "bytes": 10630,
+      "stat": [
+        2051,
+        78659081,
+        10630,
+        1792287378698975978,
+        1792287378698975978
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v25_matrix_pack_execution_v1/mr3_p2a0_v25_matrix_pack_closed_v2.py",
+      "sha256": "d05b4d052fb72ad6b4fcc82b8fe99c40a52f9e5506aac431d0380bb443fed845",
+      "bytes": 22422,
+      "stat": [
+        2051,
+        78659072,
+        22422,
+        1792287335873618539,
+        1792287335873618539
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v25_smoother/predeclared_plan_v25.json",
+      "sha256": "27a5027c930e2d805187ea9e7d53fd16e797ab395c0931c4b76f707a1f6ae051",
+      "bytes": 151640,
+      "stat": [
+        2051,
+        78658317,
+        151640,
+        1792285610360054385,
+        1792285610360054385
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v25_matrix_parent_console_v1.log",
+      "sha256": "0e87a761688b20e3161cd2cef3bddd527b4733f455a2cfca444f29427bfc96c3",
+      "bytes": 6212,
+      "stat": [
+        2051,
+        76642896,
+        6212,
+        1792287135922576144,
+        1792287135922576144
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v25_watcher_parent_console_v1.log",
+      "sha256": "9e7bc84cf39fc66c5b970dfe7801561e9cd94a0093b5b45da300d94510d97f3c",
+      "bytes": 54091,
+      "stat": [
+        2051,
+        76642891,
+        54091,
+        1792287144277038887,
+        1792287144277038887
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v25_capture_matrix_job_v1.py",
+      "sha256": "8cd251b94f314c4f2bde3cb6792390ee680855d1344b0f223cfc6011b3bc9bf9",
+      "bytes": 3639,
+      "stat": [
+        2051,
+        76642890,
+        3639,
+        1792286049978757395,
+        1792286049978757395
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v25_matrix_capture_v1.json",
+      "sha256": "63ffa7daf1c1dbf5ccbbcb2f51499d8981bfc483683f942818314aaca28efc5d",
+      "bytes": 1558,
+      "stat": [
+        2051,
+        76643120,
+        1558,
+        1792287135945577418,
+        1792287135945577418
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v25_matrix_capture_v1_started.json",
+      "sha256": "1a0f79b67264e7dffc0c53419eb3417873d78ed8c2adecb3b9e94dd1415c966f",
+      "bytes": 1348,
+      "stat": [
+        2051,
+        76642897,
+        1348,
+        1792286063493603431,
+        1792286063493603431
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v25_watcher_capture_v1.json",
+      "sha256": "5145f37b1bec4fee78cb4ca6c662d47eba293340349c70982e06af4af7e28f89",
+      "bytes": 1593,
+      "stat": [
+        2051,
+        76643122,
+        1593,
+        1792287144316041046,
+        1792287144316041046
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v25_watcher_capture_v1_started.json",
+      "sha256": "076ee7ba0a0e3421e16b2040d8377de3d02029c4053aa55948024c7c9f558c00",
+      "bytes": 1383,
+      "stat": [
+        2051,
+        76642892,
+        1383,
+        1792286050597796209,
+        1792286050597796209
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v25_actual_preflight_once_v1.py",
+      "sha256": "602cce1d775e1258dc79ce323501500f42f181ba6f490bc0a8304ee26e5136c9",
+      "bytes": 2213,
+      "stat": [
+        2051,
+        76642880,
+        2213,
+        1792285966371454443,
+        1792285966371454443
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v25_actual_preflight_delta_v1.json",
+      "sha256": "21dadf9d63413f1d51f065611096d3659e511944943af229d9f669ef20649dcb",
+      "bytes": 3031,
+      "stat": [
+        2051,
+        76643006,
+        3031,
+        1792286362781718532,
+        1792286362781718532
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v25_root_final_close_observation_v1.json",
+      "sha256": "2c926734781fa9ca4c8e2a63bc6f2ea074e521cfb39cd6929f57a2891fce2f99",
+      "bytes": 13675,
+      "stat": [
+        2051,
+        76643123,
+        13675,
+        1792287254761146696,
+        1792287254761146696
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v25_launch.lock",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "stat": [
+        2051,
+        76642900,
+        0,
+        1792286064607673042,
+        1792286064607673042
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v25_actual_preflight_execution_v1/execution_v1.json",
+      "sha256": "c0b3a2bd6d316c6eaaad34d066b1746334d54efeaba81f8d1c74a4fb804b5a7b",
+      "bytes": 1109,
+      "stat": [
+        2051,
+        78658366,
+        1109,
+        1792285987529808259,
+        1792285987529808259
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v25_actual_preflight_execution_v1/started_v1.json",
+      "sha256": "916d4ec993c5e511e16a47de02fe1ad218c4b1c487118adba21dae2d371db119",
+      "bytes": 696,
+      "stat": [
+        2051,
+        78658361,
+        696,
+        1792285966954491864,
+        1792285966954491864
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v25_actual_preflight_execution_v1/stderr.txt",
+      "sha256": "31e9e55c7c34f2e946aac190a7699de04de6549778b12199f2621663a69df0bc",
+      "bytes": 500,
+      "stat": [
+        2051,
+        78658363,
+        500,
+        1792285980468357363,
+        1792285980468357363
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v25_actual_preflight_execution_v1/stdout.txt",
+      "sha256": "0a773533a9233d81edbf99a6633e6f0a48a6e84e46e1beba8d36fe5fbe7cf58d",
+      "bytes": 209,
+      "stat": [
+        2051,
+        78658362,
+        209,
+        1792285986049713828,
+        1792285986049713828
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v25_capture_035_review_v1/review_v1.json",
+      "sha256": "c9860c131f9e101e3441d9f8b962b529ed152e29b8fdeb8c66b659a7824207c3",
+      "bytes": 16124,
+      "stat": [
+        2051,
+        78659069,
+        16124,
+        1792287234567031851,
+        1792287234567031851
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v25_capture_035_review_v1/review_v1.py",
+      "sha256": "3cc71763e01120a754529aa9301bc7bd6fa1bfd37cc5f4aaab559d2a619de528",
+      "bytes": 9008,
+      "stat": [
+        2051,
+        78659068,
+        9008,
+        1792287234452025500,
+        1792287234452025500
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v25_preflight_learner_entry_benchmark_help.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "stat": [
+        2051,
+        76642884,
+        0,
+        1792285972158825585,
+        1792285972158825585
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v25_preflight_learner_entry_benchmark_help.stdout.log",
+      "sha256": "eefc0d494d273141f09751d973746b132032c47080f69378b385c396d747e318",
+      "bytes": 1512,
+      "stat": [
+        2051,
+        76642883,
+        1512,
+        1792285972158825585,
+        1792285972158825585
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v25_preflight_learner_entry_full_audit_help.stderr.log",
+      "sha256": "31e9e55c7c34f2e946aac190a7699de04de6549778b12199f2621663a69df0bc",
+      "bytes": 500,
+      "stat": [
+        2051,
+        76642886,
+        500,
+        1792285976869127186,
+        1792285976869127186
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v25_preflight_learner_entry_full_audit_help.stdout.log",
+      "sha256": "7c9ea8d6ac0802e61b3f76e08f70fff9a93c5541b93770e3e41a2e5ad23c9c91",
+      "bytes": 281,
+      "stat": [
+        2051,
+        76642885,
+        281,
+        1792285976869127186,
+        1792285976869127186
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v25_preflight_learner_entry_imports.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "stat": [
+        2051,
+        76642882,
+        0,
+        1792285971725797836,
+        1792285971725797836
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v25_preflight_learner_entry_imports.stdout.log",
+      "sha256": "f6dd9d1a557e479ff1201e4dda4a0e7e71a5047f0018cdec834c20ee48a3a42f",
+      "bytes": 327,
+      "stat": [
+        2051,
+        76642881,
+        327,
+        1792285971725797836,
+        1792285971725797836
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v25_preflight_learner_entry_probe_v1.json",
+      "sha256": "e982d0ef69419eb7d92b62b234e7230b43bd304f29fe3f1ddae1c248124db11f",
+      "bytes": 3518,
+      "stat": [
+        2051,
+        76642887,
+        3518,
+        1792285976869127186,
+        1792285976869127186
+      ]
+    }
+  ],
+  "prepack_selection": {
+    "path": "/tmp/mr3_p2a0_v25_matrix_pack_execution_v1/prepack_selection_v1.json",
+    "sha256": "21c3e1917a2414beeb464f1abfbb3c158152d10e39f92a3fcb4eeb66ea18f832",
+    "bytes": 380539,
+    "stat": [
+      2051,
+      78659082,
+      380539,
+      1792287390691635742,
+      1792287390691635742
+    ]
+  },
+  "operator_GO": "Root confirmed all native, mandatory/formal, parent, watcher and selected diagnostic writers closed; only one pack authorized.",
+  "scope": "Lossless byte custody; all original FAIL/SKIP/035 preserved; no native/formal/canonical/Git mutation.",
+  "bound_inputs_after": [
+    {
+      "path": "/tmp/mr3_p2a0_v25_matrix_pack_execution_v1/run_pack_once_v1.py",
+      "sha256": "5fce32c5caba014643b5feca6de8b7f92ebf41a71d1cebf559e3a841474a238b",
+      "bytes": 10630,
+      "stat": [
+        2051,
+        78659081,
+        10630,
+        1792287378698975978,
+        1792287378698975978
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v25_matrix_pack_execution_v1/mr3_p2a0_v25_matrix_pack_closed_v2.py",
+      "sha256": "d05b4d052fb72ad6b4fcc82b8fe99c40a52f9e5506aac431d0380bb443fed845",
+      "bytes": 22422,
+      "stat": [
+        2051,
+        78659072,
+        22422,
+        1792287335873618539,
+        1792287335873618539
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v25_smoother/predeclared_plan_v25.json",
+      "sha256": "27a5027c930e2d805187ea9e7d53fd16e797ab395c0931c4b76f707a1f6ae051",
+      "bytes": 151640,
+      "stat": [
+        2051,
+        78658317,
+        151640,
+        1792285610360054385,
+        1792285610360054385
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v25_matrix_parent_console_v1.log",
+      "sha256": "0e87a761688b20e3161cd2cef3bddd527b4733f455a2cfca444f29427bfc96c3",
+      "bytes": 6212,
+      "stat": [
+        2051,
+        76642896,
+        6212,
+        1792287135922576144,
+        1792287135922576144
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v25_watcher_parent_console_v1.log",
+      "sha256": "9e7bc84cf39fc66c5b970dfe7801561e9cd94a0093b5b45da300d94510d97f3c",
+      "bytes": 54091,
+      "stat": [
+        2051,
+        76642891,
+        54091,
+        1792287144277038887,
+        1792287144277038887
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v25_capture_matrix_job_v1.py",
+      "sha256": "8cd251b94f314c4f2bde3cb6792390ee680855d1344b0f223cfc6011b3bc9bf9",
+      "bytes": 3639,
+      "stat": [
+        2051,
+        76642890,
+        3639,
+        1792286049978757395,
+        1792286049978757395
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v25_matrix_capture_v1.json",
+      "sha256": "63ffa7daf1c1dbf5ccbbcb2f51499d8981bfc483683f942818314aaca28efc5d",
+      "bytes": 1558,
+      "stat": [
+        2051,
+        76643120,
+        1558,
+        1792287135945577418,
+        1792287135945577418
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v25_matrix_capture_v1_started.json",
+      "sha256": "1a0f79b67264e7dffc0c53419eb3417873d78ed8c2adecb3b9e94dd1415c966f",
+      "bytes": 1348,
+      "stat": [
+        2051,
+        76642897,
+        1348,
+        1792286063493603431,
+        1792286063493603431
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v25_watcher_capture_v1.json",
+      "sha256": "5145f37b1bec4fee78cb4ca6c662d47eba293340349c70982e06af4af7e28f89",
+      "bytes": 1593,
+      "stat": [
+        2051,
+        76643122,
+        1593,
+        1792287144316041046,
+        1792287144316041046
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v25_watcher_capture_v1_started.json",
+      "sha256": "076ee7ba0a0e3421e16b2040d8377de3d02029c4053aa55948024c7c9f558c00",
+      "bytes": 1383,
+      "stat": [
+        2051,
+        76642892,
+        1383,
+        1792286050597796209,
+        1792286050597796209
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v25_actual_preflight_once_v1.py",
+      "sha256": "602cce1d775e1258dc79ce323501500f42f181ba6f490bc0a8304ee26e5136c9",
+      "bytes": 2213,
+      "stat": [
+        2051,
+        76642880,
+        2213,
+        1792285966371454443,
+        1792285966371454443
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v25_actual_preflight_delta_v1.json",
+      "sha256": "21dadf9d63413f1d51f065611096d3659e511944943af229d9f669ef20649dcb",
+      "bytes": 3031,
+      "stat": [
+        2051,
+        76643006,
+        3031,
+        1792286362781718532,
+        1792286362781718532
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v25_root_final_close_observation_v1.json",
+      "sha256": "2c926734781fa9ca4c8e2a63bc6f2ea074e521cfb39cd6929f57a2891fce2f99",
+      "bytes": 13675,
+      "stat": [
+        2051,
+        76643123,
+        13675,
+        1792287254761146696,
+        1792287254761146696
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v25_launch.lock",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "stat": [
+        2051,
+        76642900,
+        0,
+        1792286064607673042,
+        1792286064607673042
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v25_actual_preflight_execution_v1/execution_v1.json",
+      "sha256": "c0b3a2bd6d316c6eaaad34d066b1746334d54efeaba81f8d1c74a4fb804b5a7b",
+      "bytes": 1109,
+      "stat": [
+        2051,
+        78658366,
+        1109,
+        1792285987529808259,
+        1792285987529808259
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v25_actual_preflight_execution_v1/started_v1.json",
+      "sha256": "916d4ec993c5e511e16a47de02fe1ad218c4b1c487118adba21dae2d371db119",
+      "bytes": 696,
+      "stat": [
+        2051,
+        78658361,
+        696,
+        1792285966954491864,
+        1792285966954491864
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v25_actual_preflight_execution_v1/stderr.txt",
+      "sha256": "31e9e55c7c34f2e946aac190a7699de04de6549778b12199f2621663a69df0bc",
+      "bytes": 500,
+      "stat": [
+        2051,
+        78658363,
+        500,
+        1792285980468357363,
+        1792285980468357363
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v25_actual_preflight_execution_v1/stdout.txt",
+      "sha256": "0a773533a9233d81edbf99a6633e6f0a48a6e84e46e1beba8d36fe5fbe7cf58d",
+      "bytes": 209,
+      "stat": [
+        2051,
+        78658362,
+        209,
+        1792285986049713828,
+        1792285986049713828
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v25_capture_035_review_v1/review_v1.json",
+      "sha256": "c9860c131f9e101e3441d9f8b962b529ed152e29b8fdeb8c66b659a7824207c3",
+      "bytes": 16124,
+      "stat": [
+        2051,
+        78659069,
+        16124,
+        1792287234567031851,
+        1792287234567031851
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v25_capture_035_review_v1/review_v1.py",
+      "sha256": "3cc71763e01120a754529aa9301bc7bd6fa1bfd37cc5f4aaab559d2a619de528",
+      "bytes": 9008,
+      "stat": [
+        2051,
+        78659068,
+        9008,
+        1792287234452025500,
+        1792287234452025500
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v25_preflight_learner_entry_benchmark_help.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "stat": [
+        2051,
+        76642884,
+        0,
+        1792285972158825585,
+        1792285972158825585
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v25_preflight_learner_entry_benchmark_help.stdout.log",
+      "sha256": "eefc0d494d273141f09751d973746b132032c47080f69378b385c396d747e318",
+      "bytes": 1512,
+      "stat": [
+        2051,
+        76642883,
+        1512,
+        1792285972158825585,
+        1792285972158825585
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v25_preflight_learner_entry_full_audit_help.stderr.log",
+      "sha256": "31e9e55c7c34f2e946aac190a7699de04de6549778b12199f2621663a69df0bc",
+      "bytes": 500,
+      "stat": [
+        2051,
+        76642886,
+        500,
+        1792285976869127186,
+        1792285976869127186
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v25_preflight_learner_entry_full_audit_help.stdout.log",
+      "sha256": "7c9ea8d6ac0802e61b3f76e08f70fff9a93c5541b93770e3e41a2e5ad23c9c91",
+      "bytes": 281,
+      "stat": [
+        2051,
+        76642885,
+        281,
+        1792285976869127186,
+        1792285976869127186
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v25_preflight_learner_entry_imports.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "stat": [
+        2051,
+        76642882,
+        0,
+        1792285971725797836,
+        1792285971725797836
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v25_preflight_learner_entry_imports.stdout.log",
+      "sha256": "f6dd9d1a557e479ff1201e4dda4a0e7e71a5047f0018cdec834c20ee48a3a42f",
+      "bytes": 327,
+      "stat": [
+        2051,
+        76642881,
+        327,
+        1792285971725797836,
+        1792285971725797836
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v25_preflight_learner_entry_probe_v1.json",
+      "sha256": "e982d0ef69419eb7d92b62b234e7230b43bd304f29fe3f1ddae1c248124db11f",
+      "bytes": 3518,
+      "stat": [
+        2051,
+        76642887,
+        3518,
+        1792285976869127186,
+        1792285976869127186
+      ]
+    }
+  ],
+  "input_bindings_stable": true,
+  "exit_code": 0,
+  "wall_seconds": 18.65141849964857,
+  "child_user_cpu_seconds": 29.811044,
+  "child_system_cpu_seconds": 1.621872,
+  "stdout": {
+    "path": "/tmp/mr3_p2a0_v25_matrix_pack_execution_v1/stdout.txt",
+    "sha256": "923152611f18d906cdb2b1b54ceeb0ed764fa290c49da3631682c8976c6b1cbf",
+    "bytes": 345,
+    "stat": [
+      2051,
+      78659084,
+      345,
+      1792287409308659603,
+      1792287409308659603
+    ]
+  },
+  "stderr": {
+    "path": "/tmp/mr3_p2a0_v25_matrix_pack_execution_v1/stderr.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0,
+    "stat": [
+      2051,
+      78659085,
+      0,
+      1792287390695635962,
+      1792287390695635962
+    ]
+  },
+  "helper_invoked_once": true,
+  "retry_or_signals": false,
+  "custody_completed": true,
+  "output_manifest": {
+    "path": "/tmp/mr3_p2a0_v25_selected_closed_v1/manifest.json",
+    "sha256": "a6c143e7e55cf41eed26627ad7fece0da47e3768220e2003bb00b9ff63541c17",
+    "bytes": 113090,
+    "stat": [
+      2051,
+      78660773,
+      113090,
+      1792287409307659548,
+      1792287409307659548
+    ]
+  },
+  "selected_group_manifests": [
+    {
+      "path": "/tmp/mr3_p2a0_v25_selected_closed_v1/native/interface/manifest.json",
+      "sha256": "1cd2758a15f90e43a10072f9857c7f50fce07389d6de46978432d39453d0f1da",
+      "bytes": 929321,
+      "stat": [
+        2051,
+        78660141,
+        929321,
+        1792287407162541595,
+        1792287407162541595
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v25_selected_closed_v1/metadata/manifest.json",
+      "sha256": "5241b1685136c796a79b4a34ae6a0e684d98f3c2a3a340e1c33763e5da1bd756",
+      "bytes": 488825,
+      "stat": [
+        2051,
+        78660772,
+        488825,
+        1792287408384608793,
+        1792287408384608793
+      ]
+    }
+  ],
+  "native_and_metadata_original_files": 832,
+  "selected_encoded_parts": 843,
+  "selected_encoded_bytes": 35179876,
+  "selected_decoded_original_bytes": 524266668,
+  "largest_encoded_part": {
+    "index": 4,
+    "raw_offset": 134217728,
+    "raw_bytes": 33554432,
+    "raw_sha256": "8e1035372f8493bcbb69ae837ea2e5cfff4c688dee69856058c51f10da73a361",
+    "encoding": "gzip",
+    "selected": "blobs/000238/part000004.gz",
+    "selected_bytes": 2646017,
+    "selected_sha256": "5ea6380a06a24a9bebb6d137519bd7bc46dc776496bde81a9b77ebe1bb75d4f5",
+    "prospective_canonical": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v25_smoother/native/interface/blobs/000238/part000004.gz"
+  },
+  "all_prospective_canonical_paths_exact": true
+}

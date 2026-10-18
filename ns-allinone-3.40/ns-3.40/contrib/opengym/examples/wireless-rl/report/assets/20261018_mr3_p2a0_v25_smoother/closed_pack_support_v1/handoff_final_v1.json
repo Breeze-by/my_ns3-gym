@@ -1,0 +1,75 @@
+{
+  "schema": "mr3-v25-closed-byte-custody-final-handoff-v1",
+  "source_status": "STOP",
+  "metadata_status": "STOP",
+  "actual_pack_invocations": 1,
+  "actual_pack_exit": 0,
+  "actual_pack_wall_seconds": 18.65141849964857,
+  "cpu_user_seconds": 29.811044,
+  "cpu_system_seconds": 1.621872,
+  "top_manifest": {
+    "path": "/tmp/mr3_p2a0_v25_selected_closed_v1/manifest.json",
+    "sha256": "a6c143e7e55cf41eed26627ad7fece0da47e3768220e2003bb00b9ff63541c17",
+    "bytes": 113090,
+    "stat": [
+      2051,
+      78660773,
+      113090,
+      1792287409307659548,
+      1792287409307659548
+    ]
+  },
+  "execution": {
+    "path": "/tmp/mr3_p2a0_v25_matrix_pack_execution_v1/execution.json",
+    "sha256": "609e3725c26615cc4b6e245bb49f0002dd1e02f5f72998beaee1f86f8968546b"
+  },
+  "selected_root": "/tmp/mr3_p2a0_v25_selected_closed_v1",
+  "original_files": 832,
+  "original_raw_bytes": 524266668,
+  "encoded_parts": 843,
+  "encoded_part_bytes": 35179876,
+  "selected_tree_files_including_manifests": 847,
+  "selected_tree_bytes_including_manifests": 36714559,
+  "largest_encoded_part_bytes": 2646017,
+  "all_part_encoded_decoded_and_original_reassembly_SHA_verified": true,
+  "all_original_final_stat_SHA_and_selection_rechecked": true,
+  "all_extra_wrapper_plan_inputs_final_sha_stat_stable": true,
+  "all_part_prospective_canonical_paths_exact": true,
+  "source_support": {
+    "manifest": "/tmp/mr3_p2a0_v25_matrix_pack_execution_v1/source_execution_support_manifest_v1.json",
+    "manifest_sha256": "c9e06027ef88b2508b6d9c4f5259afd6c08ffc639f756a13b7378ebf964440de",
+    "source_count": 18,
+    "raw_bytes": 533888,
+    "tar": "/tmp/mr3_p2a0_v25_closed_pack_support_v1.tar.gz",
+    "encoded_sha256": "2f82aeaf7dbd5a709e03f8fbb560afb4cb9de647c3d625a07185d4b0698126bd",
+    "encoded_bytes": 78841,
+    "tar_members": 19,
+    "all_member_roundtrip_and_source_final_sha_stat_verified": true
+  },
+  "explicit_exclusions": [
+    "/tmp/mr3_p2a0_v25_root_state_v1.json (mutable; contents never selected)",
+    "all future V26/unrelated/non-STOP draft roots"
+  ],
+  "preserved_original_facts": {
+    "native_interface_39_clean_exits": 39,
+    "all11_formal_finished": true,
+    "all11_formal_pass": 10,
+    "all11_formal_fail": 1,
+    "mandatory_pass": 9,
+    "mandatory_fail": 1,
+    "failed_smoother_capture_035_retained": true,
+    "later3_stages_skip": [
+      "terminal",
+      "reset",
+      "deadline"
+    ],
+    "root_fresh_saved_identity_count": 50,
+    "root_fresh_saved_identities_gone": true,
+    "cumulative_wall_seconds": 1369.6459453934804,
+    "remaining_wall_seconds": 16630.35405460652
+  },
+  "canonical_copy_performed": false,
+  "source_binary_Git_mutation": false,
+  "native_or_formal_rerun": false,
+  "scope": "Passed describes lossless byte custody only. Original smoother/closure gate FAIL and later SKIP are not relabeled or filled; root remains sole canonical copy/commit owner."
+}

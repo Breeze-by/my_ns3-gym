@@ -1,6 +1,6 @@
 # 当前三机器人基线与MR3适配启动命令
 
-V25已构建官方1.1.20平滑器的节点时钟修复，仅改两个timer及include；实际stock/fixed组件对照与独立复核通过，暂停输出7/3→0/0，原参数及安全/任务门保持。累计572.9355761036277/18000；尚待新clean pushed冻结的完整四阶段与原34正式门，不授P2A.0/PPO信用。V24及所有旧FAIL保留。见[V25](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_v25_smoother.md)。
+V25冻结579f7ad2已关闭FAIL：实际interface32步、39原生exit0、原物理/运动等9个正式门通过，仅新增平滑器来源采集035失败；11个实际审计全部结束（10PASS/1FAIL，含必需FIFO），terminal/reset/deadline SKIP。50个保存PID/start新鲜核验均消失。累计1369.6459453934804/18000，余16630.35405460652；P2A.0未完成，须修复取证并以新冻结完整重验。035未保存具体失败子条件，不能认定误报；所有原FAIL与原门保持，无PPO。见[V25](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_v25_smoother.md)。
 
 V19固定50/150隔离诊断已关闭：两组加载、逐毫秒采集和严格关闭通过；150组三机全程没有合法GOAL或停车刺激，原物理FAIL，150尚未采用，P2A.0仍未完成。详见[V19](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_v19.md)。原启动命令、物理门和pilot余额不变。
 
@@ -676,7 +676,7 @@ benchmark/完整审计仍由绑定源码使用固定Conda，parent和ROS读者�
 原启动/物理/任务门及pilot余额不变，见[V24报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_v24_install.md)。
 
 
-## MR3-P2A.0 V25 节点时钟覆盖包
+## MR3-P2A.0 V25 历史节点时钟命令（已关闭失败，不重跑）
 
 从官方1.1.20导入的 `src/nav2_velocity_smoother` 由正常 ament overlay 选择。
 完整构建须允许覆盖此包；仅构建该包的命令如下（本次已执行，不作为矩阵重试命令）：
@@ -690,10 +690,10 @@ source install/setup.bash
 ```
 
 实际package/launch executable/ldd已核为canonical新库。组件对照只验证timer机制；
-完整四阶段仍待新冻结准入，不能由本构建或历史PASS授予P2A.0完成信用。
+随后同冻结实际interface32完成，但新取证035 FAIL，后三阶段SKIP；不能由本构建或局部PASS授予P2A.0完成信用。
 
 
-V25完整准备矩阵按以下绑定入口执行一次，必须是clean pushed main；同冻结失败不重试。
+以下为已执行的V25历史绑定入口，freeze579f7ad2；本版失败已封存，不再执行。
 在wireless-rl目录执行实际学习侧前检：
 
 ```bash

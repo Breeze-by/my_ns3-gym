@@ -1,6 +1,6 @@
 # wireless-rl memory — MR3
 
-V25已构建官方1.1.20平滑器的节点时钟修复，仅改两个timer及include；实际stock/fixed组件对照与独立复核通过，暂停输出7/3→0/0，原参数及安全/任务门保持。累计572.9355761036277/18000；尚待新clean pushed冻结的完整四阶段与原34正式门，不授P2A.0/PPO信用。V24及所有旧FAIL保留。见[V25](report/20261018_mr3_p2a0_v25_smoother.md)。
+V25冻结579f7ad2已关闭FAIL：实际interface32步、39原生exit0、原物理/运动等9个正式门通过，仅新增平滑器来源采集035失败；11个实际审计全部结束（10PASS/1FAIL，含必需FIFO），terminal/reset/deadline SKIP。50个保存PID/start新鲜核验均消失。累计1369.6459453934804/18000，余16630.35405460652；P2A.0未完成，须修复取证并以新冻结完整重验。035未保存具体失败子条件，不能认定误报；所有原FAIL与原门保持，无PPO。见[V25](report/20261018_mr3_p2a0_v25_smoother.md)。
 
 2026-10-18: V19 freeze72d0465ddd1bbee09af117cfd9d89b7e729f8578 fixed50/150 diagnostic pair closed. Both admission/1ms capture/strict close PASS; baseline original physical PASS, contrast original physical FAIL because all33 snapshots have zero GOAL for every robot and no stopping stimulation. Own maps already retain near-seed100; no occupied clearing or .29 relaxation. 150 not selected, V17 stopping failure unresolved. Native1638.4207719592378sec; V18+V19=2489.3860735194758 of3600 ceiling. 78/78 native exits0; fresh91 PID/start identities gone. No matrix/PPO credit, pilot balance unchanged. See [V19](report/20261018_mr3_p2a0_v19.md).
 

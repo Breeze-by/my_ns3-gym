@@ -1,0 +1,2461 @@
+{
+  "schema": "mr3-v25-closed-matrix-byte-custody-v1",
+  "passed": true,
+  "scope": "Lossless byte custody only; no new native/formal, no missing credit filled or scientific verdict changed.",
+  "freeze": "579f7ad21d33c6de9351eb5308f155f0fc903fd7",
+  "plan_sha256": "27a5027c930e2d805187ea9e7d53fd16e797ab395c0931c4b76f707a1f6ae051",
+  "native": {
+    "interface": {
+      "source_exists": true,
+      "manifest": "/tmp/mr3_p2a0_v25_selected_closed_v1/native/interface/manifest.json",
+      "manifest_sha256": "1cd2758a15f90e43a10072f9857c7f50fce07389d6de46978432d39453d0f1da",
+      "source_files": 518,
+      "raw_bytes": 494601164,
+      "selected_bytes": 32331656,
+      "selected_parts": 529,
+      "original_stage_state": {
+        "stage": "interface",
+        "run_directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v25_interface",
+        "run_directory_exists": true,
+        "events": [
+          {
+            "schema": "mr3-declared-matrix-orchestration-v2",
+            "freeze": "579f7ad21d33c6de9351eb5308f155f0fc903fd7",
+            "plan_sha256": "27a5027c930e2d805187ea9e7d53fd16e797ab395c0931c4b76f707a1f6ae051",
+            "wall_monotonic_ns": 4031459210305029,
+            "utc": "2026-10-18T01:14:24.197410+00:00",
+            "event": "command_started",
+            "stage": "interface",
+            "operation": "launch",
+            "argv": [
+              "/usr/bin/python3",
+              "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v25_smoother/independent/mr3_p2a0_v25_launch_stage.py",
+              "interface",
+              "579f7ad21d33c6de9351eb5308f155f0fc903fd7"
+            ],
+            "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+            "console": "/tmp/mr3_p2a0_v25_interface_controller_launch.log"
+          },
+          {
+            "schema": "mr3-declared-matrix-orchestration-v2",
+            "freeze": "579f7ad21d33c6de9351eb5308f155f0fc903fd7",
+            "plan_sha256": "27a5027c930e2d805187ea9e7d53fd16e797ab395c0931c4b76f707a1f6ae051",
+            "wall_monotonic_ns": 4031459211768513,
+            "utc": "2026-10-18T01:14:24.198872+00:00",
+            "event": "child_spawned",
+            "stage": "interface",
+            "operation": "launch",
+            "child_identity": {
+              "pid": 3609032,
+              "start_ticks": 403145921,
+              "parent": 3608987,
+              "state": "R"
+            }
+          },
+          {
+            "schema": "mr3-declared-matrix-orchestration-v2",
+            "freeze": "579f7ad21d33c6de9351eb5308f155f0fc903fd7",
+            "plan_sha256": "27a5027c930e2d805187ea9e7d53fd16e797ab395c0931c4b76f707a1f6ae051",
+            "wall_monotonic_ns": 4032256361557287,
+            "utc": "2026-10-18T01:27:41.348662+00:00",
+            "event": "command_completed",
+            "stage": "interface",
+            "operation": "launch",
+            "returncode": 0,
+            "errors": [],
+            "wall_seconds": 797.1508950171992,
+            "child_identity": {
+              "pid": 3609032,
+              "start_ticks": 403145921,
+              "parent": 3608987,
+              "state": "R"
+            },
+            "child_identity_after": null,
+            "console_sha256": "99b43a57dff6f4604ac1a49d8bf979ee119bc41154c01fa4e1571365dfca0a2d"
+          },
+          {
+            "schema": "mr3-declared-matrix-orchestration-v2",
+            "freeze": "579f7ad21d33c6de9351eb5308f155f0fc903fd7",
+            "plan_sha256": "27a5027c930e2d805187ea9e7d53fd16e797ab395c0931c4b76f707a1f6ae051",
+            "wall_monotonic_ns": 4032256673165492,
+            "utc": "2026-10-18T01:27:41.660270+00:00",
+            "event": "command_started",
+            "stage": "interface",
+            "operation": "audit",
+            "argv": [
+              "/usr/bin/python3",
+              "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v25_smoother/independent/mr3_p2a0_v25_audit_stage.py",
+              "interface",
+              "579f7ad21d33c6de9351eb5308f155f0fc903fd7"
+            ],
+            "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+            "console": "/tmp/mr3_p2a0_v25_interface_controller_audit.log"
+          },
+          {
+            "schema": "mr3-declared-matrix-orchestration-v2",
+            "freeze": "579f7ad21d33c6de9351eb5308f155f0fc903fd7",
+            "plan_sha256": "27a5027c930e2d805187ea9e7d53fd16e797ab395c0931c4b76f707a1f6ae051",
+            "wall_monotonic_ns": 4032256674691259,
+            "utc": "2026-10-18T01:27:41.661795+00:00",
+            "event": "child_spawned",
+            "stage": "interface",
+            "operation": "audit",
+            "child_identity": {
+              "pid": 3614797,
+              "start_ticks": 403225667,
+              "parent": 3608987,
+              "state": "R"
+            }
+          },
+          {
+            "schema": "mr3-declared-matrix-orchestration-v2",
+            "freeze": "579f7ad21d33c6de9351eb5308f155f0fc903fd7",
+            "plan_sha256": "27a5027c930e2d805187ea9e7d53fd16e797ab395c0931c4b76f707a1f6ae051",
+            "wall_monotonic_ns": 4032530626655336,
+            "utc": "2026-10-18T01:32:15.613761+00:00",
+            "event": "command_completed",
+            "stage": "interface",
+            "operation": "audit",
+            "returncode": 1,
+            "errors": [],
+            "wall_seconds": 273.9530649962835,
+            "child_identity": {
+              "pid": 3614797,
+              "start_ticks": 403225667,
+              "parent": 3608987,
+              "state": "R"
+            },
+            "child_identity_after": null,
+            "console_sha256": "b75de2a450c21389026fb70685ae6efa519140a90b7b14d4709b977089ec32b5"
+          },
+          {
+            "schema": "mr3-declared-matrix-orchestration-v2",
+            "freeze": "579f7ad21d33c6de9351eb5308f155f0fc903fd7",
+            "plan_sha256": "27a5027c930e2d805187ea9e7d53fd16e797ab395c0931c4b76f707a1f6ae051",
+            "wall_monotonic_ns": 4032530936113971,
+            "utc": "2026-10-18T01:32:15.923220+00:00",
+            "event": "version_failed_later_stages_skip",
+            "stage": "interface",
+            "native_ok": true,
+            "audit_ok": false,
+            "verdict": null,
+            "error": "ValueError('actual required audit gates failed after all submitted jobs finished')",
+            "later_stages": [
+              "terminal",
+              "reset",
+              "deadline"
+            ]
+          }
+        ],
+        "original_launch": {
+          "schema": "mr3-p2a0-native-launch-v2",
+          "freeze": "579f7ad21d33c6de9351eb5308f155f0fc903fd7",
+          "stage": "interface",
+          "status": "completed",
+          "command_argv": [
+            "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+            "-u",
+            "-m",
+            "mr3_learning.benchmark",
+            "--workers",
+            "1",
+            "--schedule",
+            "open:101",
+            "--steps",
+            "32",
+            "--preparation-motion-probe",
+            "--preparation-probe-version",
+            "mr3-p2a0-outward-cancel-v6",
+            "--base-domain",
+            "208",
+            "--base-port",
+            "13801",
+            "--output-root",
+            "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0",
+            "--run-id",
+            "mr3_p2a0_20261018_v25_interface",
+            "--preparation-parameter-review"
+          ],
+          "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+          "launcher_identity": {
+            "pid": 3609032,
+            "parent": 3608987,
+            "group": 3608959,
+            "session": 3608959,
+            "start_ticks": 403145921,
+            "state": "R"
+          },
+          "start_utc": "2026-10-18T01:14:24.609347+00:00",
+          "start_monotonic": 4031459.622074522,
+          "console": "/tmp/mr3_p2a0_v25_interface_console.log",
+          "budget": {
+            "max_total_wall_seconds": 18000,
+            "preceding_wall_seconds": 572.9355761036277,
+            "prior_engineering_wall_seconds": 572.9355761036277,
+            "remaining_before_stage_seconds": 17427.064423896372,
+            "stage_wall_ceiling_seconds": 1800,
+            "preceding_launch_receipts": [],
+            "preceding_formal_receipts": [],
+            "scope": "stage duration; no timeout signal; excess fails and blocks later stages"
+          },
+          "source_preflight": {
+            "path": "/tmp/mr3_p2a0_v25_source_preflight.json",
+            "sha256": "7bcc83bb0890e0f0503483cba7e01032b45a9ad1ad643558d98981561c6d8e28"
+          },
+          "plan_sha256": "27a5027c930e2d805187ea9e7d53fd16e797ab395c0931c4b76f707a1f6ae051",
+          "worker_bindings": [
+            {
+              "worker_id": 0,
+              "robots": [
+                "tb1",
+                "tb2",
+                "tb3"
+              ],
+              "domain": 208,
+              "port": 13801
+            }
+          ],
+          "benchmark_parent": {
+            "pid": 3609058,
+            "parent": 3609032,
+            "group": 3608959,
+            "session": 3608959,
+            "start_ticks": 403145962,
+            "state": "R"
+          },
+          "benchmark_parent_pid": 3609058,
+          "returncode": 0,
+          "wall_duration_sec": 796.7103692898527,
+          "end_utc": "2026-10-18T01:27:41.321066+00:00",
+          "benchmark_parent_after": null,
+          "cumulative_wall_seconds": 1369.6459453934804,
+          "within_wall_budget": true,
+          "benchmark_summary": {
+            "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v25_interface/benchmark_summary.json",
+            "sha256": "f582a07559e8cd47454493a751de2961f2481c197ca432573bf0789a9c63e038"
+          },
+          "passed": true,
+          "pass_scope": "launch/benchmark/budget; independent audits also required"
+        },
+        "original_audit_execution": {
+          "schema": "mr3-p2a0-audit-execution-v22",
+          "freeze": "579f7ad21d33c6de9351eb5308f155f0fc903fd7",
+          "scheduling_version": "mr3-formal-subprocess-pool-v1",
+          "max_workers": 4,
+          "stage": "interface",
+          "commands": [
+            {
+              "label": "peer_review_v1",
+              "argv": [
+                "/usr/bin/python3",
+                "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v11/independent/mr3_independent_control_phase_v2.py",
+                "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v25_interface",
+                "--freeze",
+                "579f7ad21d33c6de9351eb5308f155f0fc903fd7",
+                "--output",
+                "/tmp/mr3_p2a0_v25_interface_peer_review_v1.json",
+                "--peer-only"
+              ],
+              "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+              "console": "/tmp/mr3_p2a0_v25_interface_peer_review_v1_console.log",
+              "output": "/tmp/mr3_p2a0_v25_interface_peer_review_v1.json",
+              "required_success": true,
+              "passed": true,
+              "returncode": 0,
+              "output_exists": true,
+              "output_sha256": "55e95b9babaa20836d3c9d4ae41bc0923e09f3cba2c268f529913adf68e3f2e9",
+              "wall_seconds": 42.139946148730814,
+              "console_sha256": "70bffc52ba745653928bc9a28363a7c9955166f37fbf8989482c21a642ac3c6f"
+            },
+            {
+              "label": "drive_review_v1",
+              "argv": [
+                "/usr/bin/python3",
+                "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_independent_drive_trace_v6.py",
+                "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v25_interface",
+                "--freeze",
+                "579f7ad21d33c6de9351eb5308f155f0fc903fd7",
+                "--binary-proof",
+                "/tmp/mr3_p2a0_v25_binaryproof.json",
+                "--output",
+                "/tmp/mr3_p2a0_v25_interface_drive_review_v1.json"
+              ],
+              "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+              "console": "/tmp/mr3_p2a0_v25_interface_drive_review_v1_console.log",
+              "output": "/tmp/mr3_p2a0_v25_interface_drive_review_v1.json",
+              "required_success": true,
+              "passed": true,
+              "returncode": 0,
+              "output_exists": true,
+              "output_sha256": "3b6f10eaeab383f476768263bba35227b50947bb4eba3e23b4ba19d9b5793a0a",
+              "wall_seconds": 87.0357479727827,
+              "console_sha256": "151aedcee350f18b670df0a1d995424f417d1199da2463a5c332333fb71787ec"
+            },
+            {
+              "label": "settled_turn_review_v1",
+              "argv": [
+                "/usr/bin/python3",
+                "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v8/independent/mr3_independent_settled_turn_v3.py",
+                "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v25_interface",
+                "--freeze",
+                "579f7ad21d33c6de9351eb5308f155f0fc903fd7",
+                "--output",
+                "/tmp/mr3_p2a0_v25_interface_settled_review_v1.json",
+                "--require-use"
+              ],
+              "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+              "console": "/tmp/mr3_p2a0_v25_interface_settled_turn_review_v1_console.log",
+              "output": "/tmp/mr3_p2a0_v25_interface_settled_review_v1.json",
+              "required_success": true,
+              "passed": true,
+              "returncode": 0,
+              "output_exists": true,
+              "output_sha256": "b7afff6c63e7a8fafbb4d464aec48b7bbb6d317a522be62342f6a4b93a2be8c3",
+              "wall_seconds": 24.22234736988321,
+              "console_sha256": "c98a3880e96c162f77897d4b3efdd24c9d9d035581c3102aada1803bafcba432"
+            },
+            {
+              "label": "information_review_v1",
+              "argv": [
+                "/usr/bin/python3",
+                "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_independent_information_v2.py",
+                "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v25_interface",
+                "--freeze",
+                "579f7ad21d33c6de9351eb5308f155f0fc903fd7",
+                "--output",
+                "/tmp/mr3_p2a0_v25_interface_information_review_v1.json"
+              ],
+              "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+              "console": "/tmp/mr3_p2a0_v25_interface_information_review_v1_console.log",
+              "output": "/tmp/mr3_p2a0_v25_interface_information_review_v1.json",
+              "required_success": true,
+              "passed": true,
+              "returncode": 0,
+              "output_exists": true,
+              "output_sha256": "12f44c77d952335cc8d2584d7ffbbfc396eb91ffa046f27155127a27ece036d1",
+              "wall_seconds": 113.10282161599025,
+              "console_sha256": "236409a65743350831f71a587612e703058be27544920b30d1ee58e7068f5ced"
+            },
+            {
+              "label": "control_review_v1",
+              "argv": [
+                "/usr/bin/python3",
+                "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v11/independent/mr3_independent_control_phase_v2.py",
+                "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v25_interface",
+                "--freeze",
+                "579f7ad21d33c6de9351eb5308f155f0fc903fd7",
+                "--output",
+                "/tmp/mr3_p2a0_v25_interface_control_review_v1.json"
+              ],
+              "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+              "console": "/tmp/mr3_p2a0_v25_interface_control_review_v1_console.log",
+              "output": "/tmp/mr3_p2a0_v25_interface_control_review_v1.json",
+              "required_success": true,
+              "passed": true,
+              "returncode": 0,
+              "output_exists": true,
+              "output_sha256": "9ebe7470633a5306f5b803f6f9fe7710d247ce9147f83e123e964257c6686db2",
+              "wall_seconds": 91.34195118071511,
+              "console_sha256": "0e993406a50dc34d1056b55bf058ea6161b605f5737a05cee47bac618e37ae93"
+            },
+            {
+              "label": "fixed_angular_v1",
+              "argv": [
+                "/usr/bin/python3",
+                "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v4/independent/mr3_independent_angular_interface_v1.py",
+                "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v25_interface/worker0/episode001_open_101",
+                "--output",
+                "/tmp/mr3_p2a0_v25_interface_fixed_angular_v1.json"
+              ],
+              "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+              "console": "/tmp/mr3_p2a0_v25_interface_fixed_angular_v1_console.log",
+              "output": "/tmp/mr3_p2a0_v25_interface_fixed_angular_v1.json",
+              "required_success": true,
+              "passed": true,
+              "returncode": 0,
+              "output_exists": true,
+              "output_sha256": "ac9154582ee61b2e56ca04cb2154ec652357e694115dedac1986576624384b34",
+              "wall_seconds": 20.47661596396938,
+              "console_sha256": "9949eefadc48f43b1ede6ce8b96ab3d233515847a13f6c4dd8956634df30c446"
+            },
+            {
+              "label": "episode001_fifo_phase_final",
+              "argv": [
+                "/usr/bin/python3",
+                "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_v10_fifo_phase_review.py",
+                "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v25_interface/worker0/episode001_open_101",
+                "--freeze",
+                "579f7ad21d33c6de9351eb5308f155f0fc903fd7",
+                "--output",
+                "/tmp/mr3_p2a0_v25_interface_episode001_fifo_phase_final.json"
+              ],
+              "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+              "console": "/tmp/mr3_p2a0_v25_interface_episode001_fifo_phase_final_console.log",
+              "output": "/tmp/mr3_p2a0_v25_interface_episode001_fifo_phase_final.json",
+              "required_success": true,
+              "passed": true,
+              "returncode": 0,
+              "output_exists": true,
+              "output_sha256": "06b6eac71aee29bca9f815686a5fc86c35a8d622f6b603703dfc071ea56c24d5",
+              "wall_seconds": 11.121326319407672,
+              "console_sha256": "3cd0fc000123afcf74764de73612394d60398003d6c141b2f5d5f784efc5f563"
+            },
+            {
+              "label": "fixed_physics_v1",
+              "argv": [
+                "/usr/bin/python3",
+                "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v3/independent/mr3_independent_physics_review.py",
+                "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v25_interface/worker0/episode001_open_101",
+                "--output",
+                "/tmp/mr3_p2a0_v25_interface_fixed_physics_v1.json"
+              ],
+              "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+              "console": "/tmp/mr3_p2a0_v25_interface_fixed_physics_v1_console.log",
+              "output": "/tmp/mr3_p2a0_v25_interface_fixed_physics_v1.json",
+              "required_success": true,
+              "passed": true,
+              "returncode": 0,
+              "output_exists": true,
+              "output_sha256": "eb75037c33549f03f17132e2bbf3ba20a6a7d37db86733352d422fb5e1e62ba6",
+              "wall_seconds": 19.077162402216345,
+              "console_sha256": "40702fce696e2c017238560ebfe7fc64c899001b017963fe586954a576593125"
+            },
+            {
+              "label": "closure_binary_review_v1",
+              "argv": [
+                "/usr/bin/python3",
+                "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v25_smoother/independent/mr3_v25_multiepoch_closure_binary_review_v1.py",
+                "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v25_interface",
+                "--prefix",
+                "mr3_p2a0_v25_interface",
+                "--freeze",
+                "579f7ad21d33c6de9351eb5308f155f0fc903fd7",
+                "--expected-episodes",
+                "1",
+                "--require-parameters"
+              ],
+              "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+              "console": "/tmp/mr3_p2a0_v25_interface_closure_binary_review_v1_console.log",
+              "output": "/tmp/mr3_p2a0_v25_interface_closure_binary_review_v1.json",
+              "required_success": true,
+              "passed": false,
+              "returncode": 0,
+              "output_exists": true,
+              "output_sha256": "b5e00b1b1e391c6e298a22dd219073063766fff246ab41dc81b4e97314965b8e",
+              "wall_seconds": 9.066030968911946,
+              "console_sha256": "b04ef458a4530630255020ec379394b3a6088ef358303624340de53033b73d7e"
+            },
+            {
+              "label": "full_audit",
+              "argv": [
+                "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+                "-m",
+                "mr3_learning.audit_preparation",
+                "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v25_interface",
+                "--freeze",
+                "579f7ad21d33c6de9351eb5308f155f0fc903fd7",
+                "--output",
+                "/tmp/mr3_p2a0_v25_interface_full_audit.json"
+              ],
+              "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+              "console": "/tmp/mr3_p2a0_v25_interface_full_audit_console.log",
+              "output": "/tmp/mr3_p2a0_v25_interface_full_audit.json",
+              "required_success": true,
+              "passed": true,
+              "returncode": 0,
+              "output_exists": true,
+              "output_sha256": "bc7289f4dcfb65db436d2c5eb1148ee228495c61617906a7542b8a1d37b0e6ba",
+              "wall_seconds": 208.46175353135914,
+              "console_sha256": "567847f0eea5b376d9a81954d6a7201f238f7e5e4415414f8cde3c60f5cba350"
+            },
+            {
+              "label": "input_001",
+              "argv": [
+                "/usr/bin/python3",
+                "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v4/independent/mr3_p2a0_v4_independent_input_episode_review_v1.py",
+                "--episode",
+                "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v25_interface/worker0/episode001_open_101",
+                "--output",
+                "/tmp/mr3_p2a0_v25_interface_input_review_v1.json"
+              ],
+              "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+              "console": "/tmp/mr3_p2a0_v25_interface_input_001_console.log",
+              "output": "/tmp/mr3_p2a0_v25_interface_input_review_v1.json",
+              "required_success": true,
+              "passed": true,
+              "returncode": 0,
+              "output_exists": true,
+              "output_sha256": "c4e16885fabfb81fa71eb323ce0c8dce7a9baec053fcd9ccaa3863c86955ef78",
+              "wall_seconds": 161.99841738212854,
+              "console_sha256": "1628f757fd8a539132eebe5a2f2053882f7a349878f06ec3d65f80ab7b7465b8"
+            }
+          ],
+          "receipts": [
+            {
+              "path": "/tmp/mr3_p2a0_v25_interface_full_audit.json",
+              "sha256": "bc7289f4dcfb65db436d2c5eb1148ee228495c61617906a7542b8a1d37b0e6ba",
+              "passed": true
+            },
+            {
+              "path": "/tmp/mr3_p2a0_v25_interface_drive_review_v1.json",
+              "sha256": "3b6f10eaeab383f476768263bba35227b50947bb4eba3e23b4ba19d9b5793a0a",
+              "passed": true
+            },
+            {
+              "path": "/tmp/mr3_p2a0_v25_interface_input_review_v1.json",
+              "sha256": "c4e16885fabfb81fa71eb323ce0c8dce7a9baec053fcd9ccaa3863c86955ef78",
+              "passed": true
+            },
+            {
+              "path": "/tmp/mr3_p2a0_v25_interface_fixed_angular_v1.json",
+              "sha256": "ac9154582ee61b2e56ca04cb2154ec652357e694115dedac1986576624384b34",
+              "passed": true
+            },
+            {
+              "path": "/tmp/mr3_p2a0_v25_interface_fixed_physics_v1.json",
+              "sha256": "eb75037c33549f03f17132e2bbf3ba20a6a7d37db86733352d422fb5e1e62ba6",
+              "passed": true
+            },
+            {
+              "path": "/tmp/mr3_p2a0_v25_interface_settled_review_v1.json",
+              "sha256": "b7afff6c63e7a8fafbb4d464aec48b7bbb6d317a522be62342f6a4b93a2be8c3",
+              "passed": true
+            },
+            {
+              "path": "/tmp/mr3_p2a0_v25_interface_closure_binary_review_v1.json",
+              "sha256": "b5e00b1b1e391c6e298a22dd219073063766fff246ab41dc81b4e97314965b8e",
+              "passed": false
+            },
+            {
+              "path": "/tmp/mr3_p2a0_v25_interface_information_review_v1.json",
+              "sha256": "12f44c77d952335cc8d2584d7ffbbfc396eb91ffa046f27155127a27ece036d1",
+              "passed": true
+            },
+            {
+              "path": "/tmp/mr3_p2a0_v25_interface_peer_review_v1.json",
+              "sha256": "55e95b9babaa20836d3c9d4ae41bc0923e09f3cba2c268f529913adf68e3f2e9",
+              "passed": true
+            },
+            {
+              "path": "/tmp/mr3_p2a0_v25_interface_control_review_v1.json",
+              "sha256": "9ebe7470633a5306f5b803f6f9fe7710d247ce9147f83e123e964257c6686db2",
+              "passed": true
+            }
+          ],
+          "runner_errors": [],
+          "all_submitted_jobs_finished": true,
+          "plan_sha256": "27a5027c930e2d805187ea9e7d53fd16e797ab395c0931c4b76f707a1f6ae051",
+          "passed": false,
+          "raw_physical_report_scope": "Reset per-episode physical report keeps every original missing-coverage FAIL. The unchanged mandatory reset matrix consumer enforces all raw/closure/eligible-response bounds and declared pooled coverage."
+        },
+        "declared_later_stage_skip": false,
+        "scientific_verdict_not_recomputed": true,
+        "declared_receipts_availability": [
+          {
+            "path": "/tmp/mr3_p2a0_v25_interface_full_audit.json",
+            "exists": true
+          },
+          {
+            "path": "/tmp/mr3_p2a0_v25_interface_drive_review_v1.json",
+            "exists": true
+          },
+          {
+            "path": "/tmp/mr3_p2a0_v25_interface_input_review_v1.json",
+            "exists": true
+          },
+          {
+            "path": "/tmp/mr3_p2a0_v25_interface_fixed_angular_v1.json",
+            "exists": true
+          },
+          {
+            "path": "/tmp/mr3_p2a0_v25_interface_fixed_physics_v1.json",
+            "exists": true
+          },
+          {
+            "path": "/tmp/mr3_p2a0_v25_interface_settled_review_v1.json",
+            "exists": true
+          },
+          {
+            "path": "/tmp/mr3_p2a0_v25_interface_closure_binary_review_v1.json",
+            "exists": true
+          },
+          {
+            "path": "/tmp/mr3_p2a0_v25_interface_information_review_v1.json",
+            "exists": true
+          },
+          {
+            "path": "/tmp/mr3_p2a0_v25_interface_peer_review_v1.json",
+            "exists": true
+          },
+          {
+            "path": "/tmp/mr3_p2a0_v25_interface_control_review_v1.json",
+            "exists": true
+          }
+        ]
+      }
+    },
+    "terminal": {
+      "source_exists": false,
+      "original_stage_state": {
+        "stage": "terminal",
+        "run_directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v25_terminal",
+        "run_directory_exists": false,
+        "events": [],
+        "original_launch": null,
+        "original_audit_execution": null,
+        "declared_later_stage_skip": true,
+        "scientific_verdict_not_recomputed": true,
+        "declared_receipts_availability": [
+          {
+            "path": "/tmp/mr3_p2a0_v25_terminal_full_audit.json",
+            "exists": false
+          },
+          {
+            "path": "/tmp/mr3_p2a0_v25_terminal_drive_review_v1.json",
+            "exists": false
+          },
+          {
+            "path": "/tmp/mr3_p2a0_v25_terminal_settled_review_v1.json",
+            "exists": false
+          },
+          {
+            "path": "/tmp/mr3_p2a0_v25_terminal_closure_binary_review_v1.json",
+            "exists": false
+          },
+          {
+            "path": "/tmp/mr3_p2a0_v25_terminal_information_review_v1.json",
+            "exists": false
+          },
+          {
+            "path": "/tmp/mr3_p2a0_v25_terminal_peer_review_v1.json",
+            "exists": false
+          },
+          {
+            "path": "/tmp/mr3_p2a0_v25_terminal_control_review_v1.json",
+            "exists": false
+          }
+        ]
+      }
+    },
+    "reset": {
+      "source_exists": false,
+      "original_stage_state": {
+        "stage": "reset",
+        "run_directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v25_reset",
+        "run_directory_exists": false,
+        "events": [],
+        "original_launch": null,
+        "original_audit_execution": null,
+        "declared_later_stage_skip": true,
+        "scientific_verdict_not_recomputed": true,
+        "declared_receipts_availability": [
+          {
+            "path": "/tmp/mr3_p2a0_v25_reset_full_audit.json",
+            "exists": false
+          },
+          {
+            "path": "/tmp/mr3_p2a0_v25_reset_drive_review_v1.json",
+            "exists": false
+          },
+          {
+            "path": "/tmp/mr3_p2a0_v25_reset_input_review_v1.json",
+            "exists": false
+          },
+          {
+            "path": "/tmp/mr3_p2a0_v25_reset_angular_matrix_v1.json",
+            "exists": false
+          },
+          {
+            "path": "/tmp/mr3_p2a0_v25_reset_physics_matrix_v1.json",
+            "exists": false
+          },
+          {
+            "path": "/tmp/mr3_p2a0_v25_reset_settled_review_v1.json",
+            "exists": false
+          },
+          {
+            "path": "/tmp/mr3_p2a0_v25_reset_closure_binary_review_v1.json",
+            "exists": false
+          },
+          {
+            "path": "/tmp/mr3_p2a0_v25_reset_information_review_v1.json",
+            "exists": false
+          },
+          {
+            "path": "/tmp/mr3_p2a0_v25_reset_peer_review_v1.json",
+            "exists": false
+          },
+          {
+            "path": "/tmp/mr3_p2a0_v25_reset_control_review_v1.json",
+            "exists": false
+          }
+        ]
+      }
+    },
+    "deadline": {
+      "source_exists": false,
+      "original_stage_state": {
+        "stage": "deadline",
+        "run_directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v25_deadline",
+        "run_directory_exists": false,
+        "events": [],
+        "original_launch": null,
+        "original_audit_execution": null,
+        "declared_later_stage_skip": true,
+        "scientific_verdict_not_recomputed": true,
+        "declared_receipts_availability": [
+          {
+            "path": "/tmp/mr3_p2a0_v25_deadline_full_audit.json",
+            "exists": false
+          },
+          {
+            "path": "/tmp/mr3_p2a0_v25_deadline_drive_review_v1.json",
+            "exists": false
+          },
+          {
+            "path": "/tmp/mr3_p2a0_v25_deadline_settled_review_v1.json",
+            "exists": false
+          },
+          {
+            "path": "/tmp/mr3_p2a0_v25_deadline_closure_binary_review_v1.json",
+            "exists": false
+          },
+          {
+            "path": "/tmp/mr3_p2a0_v25_deadline_information_review_v1.json",
+            "exists": false
+          },
+          {
+            "path": "/tmp/mr3_p2a0_v25_deadline_peer_review_v1.json",
+            "exists": false
+          },
+          {
+            "path": "/tmp/mr3_p2a0_v25_deadline_control_review_v1.json",
+            "exists": false
+          }
+        ]
+      }
+    }
+  },
+  "metadata": {
+    "manifest": "/tmp/mr3_p2a0_v25_selected_closed_v1/metadata/manifest.json",
+    "manifest_sha256": "5241b1685136c796a79b4a34ae6a0e684d98f3c2a3a340e1c33763e5da1bd756",
+    "source_files": 314,
+    "raw_bytes": 29665504,
+    "selected_bytes": 2848220,
+    "selected_parts": 314
+  },
+  "original_closed_state": {
+    "orchestration_final_original": {
+      "schema": "mr3-declared-matrix-orchestration-v2",
+      "freeze": "579f7ad21d33c6de9351eb5308f155f0fc903fd7",
+      "plan_sha256": "27a5027c930e2d805187ea9e7d53fd16e797ab395c0931c4b76f707a1f6ae051",
+      "wall_monotonic_ns": 4032530936113971,
+      "utc": "2026-10-18T01:32:15.923220+00:00",
+      "event": "version_failed_later_stages_skip",
+      "stage": "interface",
+      "native_ok": true,
+      "audit_ok": false,
+      "verdict": null,
+      "error": "ValueError('actual required audit gates failed after all submitted jobs finished')",
+      "later_stages": [
+        "terminal",
+        "reset",
+        "deadline"
+      ]
+    },
+    "watcher_final_original": {
+      "schema": "mr3-v25-cross-stage-mapping-complete-v1",
+      "self_identity": {
+        "pid": 3608920,
+        "start_ticks": 403144561,
+        "parent": 3608889,
+        "state": "R"
+      },
+      "freeze": "579f7ad21d33c6de9351eb5308f155f0fc903fd7",
+      "closed_stages": [
+        "interface"
+      ],
+      "stop_reason": "actual matrix ledger declares version failure and later stages skip",
+      "stage_summaries": {
+        "interface": {
+          "schema": "mr3-v25-stage-mapping-observation-summary-v1",
+          "stage": "interface",
+          "freeze": "579f7ad21d33c6de9351eb5308f155f0fc903fd7",
+          "launch": {
+            "schema": "mr3-p2a0-native-launch-v2",
+            "freeze": "579f7ad21d33c6de9351eb5308f155f0fc903fd7",
+            "stage": "interface",
+            "status": "completed",
+            "command_argv": [
+              "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+              "-u",
+              "-m",
+              "mr3_learning.benchmark",
+              "--workers",
+              "1",
+              "--schedule",
+              "open:101",
+              "--steps",
+              "32",
+              "--preparation-motion-probe",
+              "--preparation-probe-version",
+              "mr3-p2a0-outward-cancel-v6",
+              "--base-domain",
+              "208",
+              "--base-port",
+              "13801",
+              "--output-root",
+              "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0",
+              "--run-id",
+              "mr3_p2a0_20261018_v25_interface",
+              "--preparation-parameter-review"
+            ],
+            "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+            "launcher_identity": {
+              "pid": 3609032,
+              "parent": 3608987,
+              "group": 3608959,
+              "session": 3608959,
+              "start_ticks": 403145921,
+              "state": "R"
+            },
+            "start_utc": "2026-10-18T01:14:24.609347+00:00",
+            "start_monotonic": 4031459.622074522,
+            "console": "/tmp/mr3_p2a0_v25_interface_console.log",
+            "budget": {
+              "max_total_wall_seconds": 18000,
+              "preceding_wall_seconds": 572.9355761036277,
+              "prior_engineering_wall_seconds": 572.9355761036277,
+              "remaining_before_stage_seconds": 17427.064423896372,
+              "stage_wall_ceiling_seconds": 1800,
+              "preceding_launch_receipts": [],
+              "preceding_formal_receipts": [],
+              "scope": "stage duration; no timeout signal; excess fails and blocks later stages"
+            },
+            "source_preflight": {
+              "path": "/tmp/mr3_p2a0_v25_source_preflight.json",
+              "sha256": "7bcc83bb0890e0f0503483cba7e01032b45a9ad1ad643558d98981561c6d8e28"
+            },
+            "plan_sha256": "27a5027c930e2d805187ea9e7d53fd16e797ab395c0931c4b76f707a1f6ae051",
+            "worker_bindings": [
+              {
+                "worker_id": 0,
+                "robots": [
+                  "tb1",
+                  "tb2",
+                  "tb3"
+                ],
+                "domain": 208,
+                "port": 13801
+              }
+            ],
+            "benchmark_parent": {
+              "pid": 3609058,
+              "parent": 3609032,
+              "group": 3608959,
+              "session": 3608959,
+              "start_ticks": 403145962,
+              "state": "R"
+            },
+            "benchmark_parent_pid": 3609058,
+            "returncode": 0,
+            "wall_duration_sec": 796.7103692898527,
+            "end_utc": "2026-10-18T01:27:41.321066+00:00",
+            "benchmark_parent_after": null,
+            "cumulative_wall_seconds": 1369.6459453934804,
+            "within_wall_budget": true,
+            "benchmark_summary": {
+              "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v25_interface/benchmark_summary.json",
+              "sha256": "f582a07559e8cd47454493a751de2961f2481c197ca432573bf0789a9c63e038"
+            },
+            "passed": true,
+            "pass_scope": "launch/benchmark/budget; independent audits also required"
+          },
+          "actual_workers": [
+            {
+              "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v25_interface/worker0/episode001_open_101",
+              "epoch": "mr3_p2a0_20261018_v25_interface_w0_e1_8f8f0822",
+              "worker_identity": {
+                "pid": 3609127,
+                "parent": 3609058,
+                "group": 3609127,
+                "session": 3609127,
+                "start_ticks": 403145997,
+                "state": "R"
+              },
+              "active_complete_proof_count": 29,
+              "actual_active_mapping_observed": true,
+              "two_snapshot_preference_met": true,
+              "proofs": [
+                {
+                  "monitor": "/tmp/mr3_p2a0_v25_interface_process_monitor_007.json",
+                  "monitor_sha256": "f720f17bb88b31e45a88f6bc9d401bcff6babb82859ea576ab840f57c2f16472",
+                  "actual_gz_identities": [
+                    {
+                      "pid": 3609182,
+                      "parent": 3609169,
+                      "group": 3609127,
+                      "session": 3609127,
+                      "start_ticks": 403146330,
+                      "state": "S"
+                    }
+                  ],
+                  "worker_identity": {
+                    "pid": 3609127,
+                    "parent": 3609058,
+                    "group": 3609127,
+                    "session": 3609127,
+                    "start_ticks": 403145997,
+                    "state": "R"
+                  },
+                  "metadata_sha256": "5756d82c40d4e3db77b6c5e7457419d3199c5a409bb8918507aceeadb41102fb",
+                  "supervisor_metadata_sha256": "a057a068835bd606df9693938c6552369b65c2ad698c0e67bdfee18db4f449a3"
+                },
+                {
+                  "monitor": "/tmp/mr3_p2a0_v25_interface_process_monitor_008.json",
+                  "monitor_sha256": "bef8331c8920df46af5c770c5a579efff18b89d8ba50719e8ab33a59aeb38424",
+                  "actual_gz_identities": [
+                    {
+                      "pid": 3609182,
+                      "parent": 3609169,
+                      "group": 3609127,
+                      "session": 3609127,
+                      "start_ticks": 403146330,
+                      "state": "R"
+                    }
+                  ],
+                  "worker_identity": {
+                    "pid": 3609127,
+                    "parent": 3609058,
+                    "group": 3609127,
+                    "session": 3609127,
+                    "start_ticks": 403145997,
+                    "state": "R"
+                  },
+                  "metadata_sha256": "5756d82c40d4e3db77b6c5e7457419d3199c5a409bb8918507aceeadb41102fb",
+                  "supervisor_metadata_sha256": "a057a068835bd606df9693938c6552369b65c2ad698c0e67bdfee18db4f449a3"
+                },
+                {
+                  "monitor": "/tmp/mr3_p2a0_v25_interface_process_monitor_009.json",
+                  "monitor_sha256": "eab96465aa17cf198e65d78a423a4bcbdb275e18442f216fc355368bf08b0dca",
+                  "actual_gz_identities": [
+                    {
+                      "pid": 3609182,
+                      "parent": 3609169,
+                      "group": 3609127,
+                      "session": 3609127,
+                      "start_ticks": 403146330,
+                      "state": "S"
+                    }
+                  ],
+                  "worker_identity": {
+                    "pid": 3609127,
+                    "parent": 3609058,
+                    "group": 3609127,
+                    "session": 3609127,
+                    "start_ticks": 403145997,
+                    "state": "R"
+                  },
+                  "metadata_sha256": "5756d82c40d4e3db77b6c5e7457419d3199c5a409bb8918507aceeadb41102fb",
+                  "supervisor_metadata_sha256": "a057a068835bd606df9693938c6552369b65c2ad698c0e67bdfee18db4f449a3"
+                },
+                {
+                  "monitor": "/tmp/mr3_p2a0_v25_interface_process_monitor_010.json",
+                  "monitor_sha256": "06c0e6405065d944c0a68b5ed2a85bce3ab9339de5aeaf9e09dd879401fdd5b1",
+                  "actual_gz_identities": [
+                    {
+                      "pid": 3609182,
+                      "parent": 3609169,
+                      "group": 3609127,
+                      "session": 3609127,
+                      "start_ticks": 403146330,
+                      "state": "S"
+                    }
+                  ],
+                  "worker_identity": {
+                    "pid": 3609127,
+                    "parent": 3609058,
+                    "group": 3609127,
+                    "session": 3609127,
+                    "start_ticks": 403145997,
+                    "state": "R"
+                  },
+                  "metadata_sha256": "5756d82c40d4e3db77b6c5e7457419d3199c5a409bb8918507aceeadb41102fb",
+                  "supervisor_metadata_sha256": "a057a068835bd606df9693938c6552369b65c2ad698c0e67bdfee18db4f449a3"
+                },
+                {
+                  "monitor": "/tmp/mr3_p2a0_v25_interface_process_monitor_011.json",
+                  "monitor_sha256": "5f7bbf871fec309f30cedfa25ef09d3843c89c3fcb244136750cd0bf85d5da04",
+                  "actual_gz_identities": [
+                    {
+                      "pid": 3609182,
+                      "parent": 3609169,
+                      "group": 3609127,
+                      "session": 3609127,
+                      "start_ticks": 403146330,
+                      "state": "S"
+                    }
+                  ],
+                  "worker_identity": {
+                    "pid": 3609127,
+                    "parent": 3609058,
+                    "group": 3609127,
+                    "session": 3609127,
+                    "start_ticks": 403145997,
+                    "state": "R"
+                  },
+                  "metadata_sha256": "5756d82c40d4e3db77b6c5e7457419d3199c5a409bb8918507aceeadb41102fb",
+                  "supervisor_metadata_sha256": "a057a068835bd606df9693938c6552369b65c2ad698c0e67bdfee18db4f449a3"
+                },
+                {
+                  "monitor": "/tmp/mr3_p2a0_v25_interface_process_monitor_012.json",
+                  "monitor_sha256": "dd47c133e97b845c219ca9b134c98e26ac8416019dabfc6b8b71e2829ea7010b",
+                  "actual_gz_identities": [
+                    {
+                      "pid": 3609182,
+                      "parent": 3609169,
+                      "group": 3609127,
+                      "session": 3609127,
+                      "start_ticks": 403146330,
+                      "state": "S"
+                    }
+                  ],
+                  "worker_identity": {
+                    "pid": 3609127,
+                    "parent": 3609058,
+                    "group": 3609127,
+                    "session": 3609127,
+                    "start_ticks": 403145997,
+                    "state": "R"
+                  },
+                  "metadata_sha256": "5756d82c40d4e3db77b6c5e7457419d3199c5a409bb8918507aceeadb41102fb",
+                  "supervisor_metadata_sha256": "a057a068835bd606df9693938c6552369b65c2ad698c0e67bdfee18db4f449a3"
+                },
+                {
+                  "monitor": "/tmp/mr3_p2a0_v25_interface_process_monitor_013.json",
+                  "monitor_sha256": "39367ee28dc411c624f10c655100a1f609e4d28ca8ca72d8312a6c841ee0b5de",
+                  "actual_gz_identities": [
+                    {
+                      "pid": 3609182,
+                      "parent": 3609169,
+                      "group": 3609127,
+                      "session": 3609127,
+                      "start_ticks": 403146330,
+                      "state": "S"
+                    }
+                  ],
+                  "worker_identity": {
+                    "pid": 3609127,
+                    "parent": 3609058,
+                    "group": 3609127,
+                    "session": 3609127,
+                    "start_ticks": 403145997,
+                    "state": "R"
+                  },
+                  "metadata_sha256": "5756d82c40d4e3db77b6c5e7457419d3199c5a409bb8918507aceeadb41102fb",
+                  "supervisor_metadata_sha256": "a057a068835bd606df9693938c6552369b65c2ad698c0e67bdfee18db4f449a3"
+                },
+                {
+                  "monitor": "/tmp/mr3_p2a0_v25_interface_process_monitor_014.json",
+                  "monitor_sha256": "893a109f6736f72e3290e21d013171af02ead9da2c3e36372a430cc17f8165b6",
+                  "actual_gz_identities": [
+                    {
+                      "pid": 3609182,
+                      "parent": 3609169,
+                      "group": 3609127,
+                      "session": 3609127,
+                      "start_ticks": 403146330,
+                      "state": "S"
+                    }
+                  ],
+                  "worker_identity": {
+                    "pid": 3609127,
+                    "parent": 3609058,
+                    "group": 3609127,
+                    "session": 3609127,
+                    "start_ticks": 403145997,
+                    "state": "R"
+                  },
+                  "metadata_sha256": "5756d82c40d4e3db77b6c5e7457419d3199c5a409bb8918507aceeadb41102fb",
+                  "supervisor_metadata_sha256": "a057a068835bd606df9693938c6552369b65c2ad698c0e67bdfee18db4f449a3"
+                },
+                {
+                  "monitor": "/tmp/mr3_p2a0_v25_interface_process_monitor_015.json",
+                  "monitor_sha256": "c679753909af4e4b48b89de5290d6bc77405986f4f704d81d7c25eefdcc165d3",
+                  "actual_gz_identities": [
+                    {
+                      "pid": 3609182,
+                      "parent": 3609169,
+                      "group": 3609127,
+                      "session": 3609127,
+                      "start_ticks": 403146330,
+                      "state": "S"
+                    }
+                  ],
+                  "worker_identity": {
+                    "pid": 3609127,
+                    "parent": 3609058,
+                    "group": 3609127,
+                    "session": 3609127,
+                    "start_ticks": 403145997,
+                    "state": "R"
+                  },
+                  "metadata_sha256": "5756d82c40d4e3db77b6c5e7457419d3199c5a409bb8918507aceeadb41102fb",
+                  "supervisor_metadata_sha256": "a057a068835bd606df9693938c6552369b65c2ad698c0e67bdfee18db4f449a3"
+                },
+                {
+                  "monitor": "/tmp/mr3_p2a0_v25_interface_process_monitor_016.json",
+                  "monitor_sha256": "6c1500b96b6ddfbedcc294a3cafb5e6d06f50101183ae9168bbe51a2c5ecfda8",
+                  "actual_gz_identities": [
+                    {
+                      "pid": 3609182,
+                      "parent": 3609169,
+                      "group": 3609127,
+                      "session": 3609127,
+                      "start_ticks": 403146330,
+                      "state": "S"
+                    }
+                  ],
+                  "worker_identity": {
+                    "pid": 3609127,
+                    "parent": 3609058,
+                    "group": 3609127,
+                    "session": 3609127,
+                    "start_ticks": 403145997,
+                    "state": "R"
+                  },
+                  "metadata_sha256": "5756d82c40d4e3db77b6c5e7457419d3199c5a409bb8918507aceeadb41102fb",
+                  "supervisor_metadata_sha256": "a057a068835bd606df9693938c6552369b65c2ad698c0e67bdfee18db4f449a3"
+                },
+                {
+                  "monitor": "/tmp/mr3_p2a0_v25_interface_process_monitor_017.json",
+                  "monitor_sha256": "7fd17b6fdcfb7e9555bd046e91d10c2d72cd575a3c2e9774def5cb15b4d5d577",
+                  "actual_gz_identities": [
+                    {
+                      "pid": 3609182,
+                      "parent": 3609169,
+                      "group": 3609127,
+                      "session": 3609127,
+                      "start_ticks": 403146330,
+                      "state": "S"
+                    }
+                  ],
+                  "worker_identity": {
+                    "pid": 3609127,
+                    "parent": 3609058,
+                    "group": 3609127,
+                    "session": 3609127,
+                    "start_ticks": 403145997,
+                    "state": "R"
+                  },
+                  "metadata_sha256": "5756d82c40d4e3db77b6c5e7457419d3199c5a409bb8918507aceeadb41102fb",
+                  "supervisor_metadata_sha256": "a057a068835bd606df9693938c6552369b65c2ad698c0e67bdfee18db4f449a3"
+                },
+                {
+                  "monitor": "/tmp/mr3_p2a0_v25_interface_process_monitor_018.json",
+                  "monitor_sha256": "b62ae9480ae23a92ccd640c7dfa37b8f1ce33a8a48a551bd2206af5fd35fe209",
+                  "actual_gz_identities": [
+                    {
+                      "pid": 3609182,
+                      "parent": 3609169,
+                      "group": 3609127,
+                      "session": 3609127,
+                      "start_ticks": 403146330,
+                      "state": "S"
+                    }
+                  ],
+                  "worker_identity": {
+                    "pid": 3609127,
+                    "parent": 3609058,
+                    "group": 3609127,
+                    "session": 3609127,
+                    "start_ticks": 403145997,
+                    "state": "R"
+                  },
+                  "metadata_sha256": "5756d82c40d4e3db77b6c5e7457419d3199c5a409bb8918507aceeadb41102fb",
+                  "supervisor_metadata_sha256": "a057a068835bd606df9693938c6552369b65c2ad698c0e67bdfee18db4f449a3"
+                },
+                {
+                  "monitor": "/tmp/mr3_p2a0_v25_interface_process_monitor_019.json",
+                  "monitor_sha256": "74642e9edf82507d36a414094f7e8326272cb920e75f0731743aff42b5b4b681",
+                  "actual_gz_identities": [
+                    {
+                      "pid": 3609182,
+                      "parent": 3609169,
+                      "group": 3609127,
+                      "session": 3609127,
+                      "start_ticks": 403146330,
+                      "state": "S"
+                    }
+                  ],
+                  "worker_identity": {
+                    "pid": 3609127,
+                    "parent": 3609058,
+                    "group": 3609127,
+                    "session": 3609127,
+                    "start_ticks": 403145997,
+                    "state": "R"
+                  },
+                  "metadata_sha256": "5756d82c40d4e3db77b6c5e7457419d3199c5a409bb8918507aceeadb41102fb",
+                  "supervisor_metadata_sha256": "a057a068835bd606df9693938c6552369b65c2ad698c0e67bdfee18db4f449a3"
+                },
+                {
+                  "monitor": "/tmp/mr3_p2a0_v25_interface_process_monitor_020.json",
+                  "monitor_sha256": "1e245a5b279d5f85017f23c6082d8e312bf30f338ec00cd6a4343403cdc5d20d",
+                  "actual_gz_identities": [
+                    {
+                      "pid": 3609182,
+                      "parent": 3609169,
+                      "group": 3609127,
+                      "session": 3609127,
+                      "start_ticks": 403146330,
+                      "state": "S"
+                    }
+                  ],
+                  "worker_identity": {
+                    "pid": 3609127,
+                    "parent": 3609058,
+                    "group": 3609127,
+                    "session": 3609127,
+                    "start_ticks": 403145997,
+                    "state": "R"
+                  },
+                  "metadata_sha256": "5756d82c40d4e3db77b6c5e7457419d3199c5a409bb8918507aceeadb41102fb",
+                  "supervisor_metadata_sha256": "a057a068835bd606df9693938c6552369b65c2ad698c0e67bdfee18db4f449a3"
+                },
+                {
+                  "monitor": "/tmp/mr3_p2a0_v25_interface_process_monitor_021.json",
+                  "monitor_sha256": "1fafd2e60d2031e497ab45efc794d56053e91ad00031646a710071b3db5cf0ec",
+                  "actual_gz_identities": [
+                    {
+                      "pid": 3609182,
+                      "parent": 3609169,
+                      "group": 3609127,
+                      "session": 3609127,
+                      "start_ticks": 403146330,
+                      "state": "S"
+                    }
+                  ],
+                  "worker_identity": {
+                    "pid": 3609127,
+                    "parent": 3609058,
+                    "group": 3609127,
+                    "session": 3609127,
+                    "start_ticks": 403145997,
+                    "state": "R"
+                  },
+                  "metadata_sha256": "5756d82c40d4e3db77b6c5e7457419d3199c5a409bb8918507aceeadb41102fb",
+                  "supervisor_metadata_sha256": "a057a068835bd606df9693938c6552369b65c2ad698c0e67bdfee18db4f449a3"
+                },
+                {
+                  "monitor": "/tmp/mr3_p2a0_v25_interface_process_monitor_022.json",
+                  "monitor_sha256": "4b1c75b9cfc82b4659ca58b2deacfce3fd916d99d9b52ca145aeb9cbb0227e6b",
+                  "actual_gz_identities": [
+                    {
+                      "pid": 3609182,
+                      "parent": 3609169,
+                      "group": 3609127,
+                      "session": 3609127,
+                      "start_ticks": 403146330,
+                      "state": "S"
+                    }
+                  ],
+                  "worker_identity": {
+                    "pid": 3609127,
+                    "parent": 3609058,
+                    "group": 3609127,
+                    "session": 3609127,
+                    "start_ticks": 403145997,
+                    "state": "R"
+                  },
+                  "metadata_sha256": "5756d82c40d4e3db77b6c5e7457419d3199c5a409bb8918507aceeadb41102fb",
+                  "supervisor_metadata_sha256": "a057a068835bd606df9693938c6552369b65c2ad698c0e67bdfee18db4f449a3"
+                },
+                {
+                  "monitor": "/tmp/mr3_p2a0_v25_interface_process_monitor_023.json",
+                  "monitor_sha256": "d46139ab9c1f1c9edb73fec675289fb228704318e43caa12e42c9794552f602d",
+                  "actual_gz_identities": [
+                    {
+                      "pid": 3609182,
+                      "parent": 3609169,
+                      "group": 3609127,
+                      "session": 3609127,
+                      "start_ticks": 403146330,
+                      "state": "S"
+                    }
+                  ],
+                  "worker_identity": {
+                    "pid": 3609127,
+                    "parent": 3609058,
+                    "group": 3609127,
+                    "session": 3609127,
+                    "start_ticks": 403145997,
+                    "state": "R"
+                  },
+                  "metadata_sha256": "5756d82c40d4e3db77b6c5e7457419d3199c5a409bb8918507aceeadb41102fb",
+                  "supervisor_metadata_sha256": "a057a068835bd606df9693938c6552369b65c2ad698c0e67bdfee18db4f449a3"
+                },
+                {
+                  "monitor": "/tmp/mr3_p2a0_v25_interface_process_monitor_024.json",
+                  "monitor_sha256": "a79ab14d80db76bb1dab0319e75e38659a22c3007c9d58ee965cd6c8ec61b5d5",
+                  "actual_gz_identities": [
+                    {
+                      "pid": 3609182,
+                      "parent": 3609169,
+                      "group": 3609127,
+                      "session": 3609127,
+                      "start_ticks": 403146330,
+                      "state": "S"
+                    }
+                  ],
+                  "worker_identity": {
+                    "pid": 3609127,
+                    "parent": 3609058,
+                    "group": 3609127,
+                    "session": 3609127,
+                    "start_ticks": 403145997,
+                    "state": "R"
+                  },
+                  "metadata_sha256": "5756d82c40d4e3db77b6c5e7457419d3199c5a409bb8918507aceeadb41102fb",
+                  "supervisor_metadata_sha256": "a057a068835bd606df9693938c6552369b65c2ad698c0e67bdfee18db4f449a3"
+                },
+                {
+                  "monitor": "/tmp/mr3_p2a0_v25_interface_process_monitor_025.json",
+                  "monitor_sha256": "736d0f9fe325ffc50ec4caefe0b85802862675d15c461f0fd61b820a5f3080ea",
+                  "actual_gz_identities": [
+                    {
+                      "pid": 3609182,
+                      "parent": 3609169,
+                      "group": 3609127,
+                      "session": 3609127,
+                      "start_ticks": 403146330,
+                      "state": "S"
+                    }
+                  ],
+                  "worker_identity": {
+                    "pid": 3609127,
+                    "parent": 3609058,
+                    "group": 3609127,
+                    "session": 3609127,
+                    "start_ticks": 403145997,
+                    "state": "R"
+                  },
+                  "metadata_sha256": "5756d82c40d4e3db77b6c5e7457419d3199c5a409bb8918507aceeadb41102fb",
+                  "supervisor_metadata_sha256": "a057a068835bd606df9693938c6552369b65c2ad698c0e67bdfee18db4f449a3"
+                },
+                {
+                  "monitor": "/tmp/mr3_p2a0_v25_interface_process_monitor_026.json",
+                  "monitor_sha256": "3f6253eb50ae7cdb60bb8d554d923cdf45b2c9208d72981a1adfd1861c43c09f",
+                  "actual_gz_identities": [
+                    {
+                      "pid": 3609182,
+                      "parent": 3609169,
+                      "group": 3609127,
+                      "session": 3609127,
+                      "start_ticks": 403146330,
+                      "state": "S"
+                    }
+                  ],
+                  "worker_identity": {
+                    "pid": 3609127,
+                    "parent": 3609058,
+                    "group": 3609127,
+                    "session": 3609127,
+                    "start_ticks": 403145997,
+                    "state": "R"
+                  },
+                  "metadata_sha256": "5756d82c40d4e3db77b6c5e7457419d3199c5a409bb8918507aceeadb41102fb",
+                  "supervisor_metadata_sha256": "a057a068835bd606df9693938c6552369b65c2ad698c0e67bdfee18db4f449a3"
+                },
+                {
+                  "monitor": "/tmp/mr3_p2a0_v25_interface_process_monitor_027.json",
+                  "monitor_sha256": "47d20f8e7f7879ae1f496e7689a12e5ff6471ac60529fe76edcfea94cc332b18",
+                  "actual_gz_identities": [
+                    {
+                      "pid": 3609182,
+                      "parent": 3609169,
+                      "group": 3609127,
+                      "session": 3609127,
+                      "start_ticks": 403146330,
+                      "state": "S"
+                    }
+                  ],
+                  "worker_identity": {
+                    "pid": 3609127,
+                    "parent": 3609058,
+                    "group": 3609127,
+                    "session": 3609127,
+                    "start_ticks": 403145997,
+                    "state": "R"
+                  },
+                  "metadata_sha256": "5756d82c40d4e3db77b6c5e7457419d3199c5a409bb8918507aceeadb41102fb",
+                  "supervisor_metadata_sha256": "a057a068835bd606df9693938c6552369b65c2ad698c0e67bdfee18db4f449a3"
+                },
+                {
+                  "monitor": "/tmp/mr3_p2a0_v25_interface_process_monitor_028.json",
+                  "monitor_sha256": "3dbfdf3cf3eace15db116443b2686e5a6deec70aef068f124e7f73ea97b2d507",
+                  "actual_gz_identities": [
+                    {
+                      "pid": 3609182,
+                      "parent": 3609169,
+                      "group": 3609127,
+                      "session": 3609127,
+                      "start_ticks": 403146330,
+                      "state": "S"
+                    }
+                  ],
+                  "worker_identity": {
+                    "pid": 3609127,
+                    "parent": 3609058,
+                    "group": 3609127,
+                    "session": 3609127,
+                    "start_ticks": 403145997,
+                    "state": "R"
+                  },
+                  "metadata_sha256": "5756d82c40d4e3db77b6c5e7457419d3199c5a409bb8918507aceeadb41102fb",
+                  "supervisor_metadata_sha256": "a057a068835bd606df9693938c6552369b65c2ad698c0e67bdfee18db4f449a3"
+                },
+                {
+                  "monitor": "/tmp/mr3_p2a0_v25_interface_process_monitor_029.json",
+                  "monitor_sha256": "a77ce769948ab67869d62d6bc670152797997078b42eaabfaa06231cfac41474",
+                  "actual_gz_identities": [
+                    {
+                      "pid": 3609182,
+                      "parent": 3609169,
+                      "group": 3609127,
+                      "session": 3609127,
+                      "start_ticks": 403146330,
+                      "state": "S"
+                    }
+                  ],
+                  "worker_identity": {
+                    "pid": 3609127,
+                    "parent": 3609058,
+                    "group": 3609127,
+                    "session": 3609127,
+                    "start_ticks": 403145997,
+                    "state": "R"
+                  },
+                  "metadata_sha256": "5756d82c40d4e3db77b6c5e7457419d3199c5a409bb8918507aceeadb41102fb",
+                  "supervisor_metadata_sha256": "a057a068835bd606df9693938c6552369b65c2ad698c0e67bdfee18db4f449a3"
+                },
+                {
+                  "monitor": "/tmp/mr3_p2a0_v25_interface_process_monitor_030.json",
+                  "monitor_sha256": "c5f47a497d7dfa3d6c2aa8ba1ff7e3973653987567692ed0b6793955a67ada75",
+                  "actual_gz_identities": [
+                    {
+                      "pid": 3609182,
+                      "parent": 3609169,
+                      "group": 3609127,
+                      "session": 3609127,
+                      "start_ticks": 403146330,
+                      "state": "S"
+                    }
+                  ],
+                  "worker_identity": {
+                    "pid": 3609127,
+                    "parent": 3609058,
+                    "group": 3609127,
+                    "session": 3609127,
+                    "start_ticks": 403145997,
+                    "state": "R"
+                  },
+                  "metadata_sha256": "5756d82c40d4e3db77b6c5e7457419d3199c5a409bb8918507aceeadb41102fb",
+                  "supervisor_metadata_sha256": "a057a068835bd606df9693938c6552369b65c2ad698c0e67bdfee18db4f449a3"
+                },
+                {
+                  "monitor": "/tmp/mr3_p2a0_v25_interface_process_monitor_031.json",
+                  "monitor_sha256": "dca6cfced81645d27b0e5f6820c057448573b0d93aa1963512a6f2dd86bc99b6",
+                  "actual_gz_identities": [
+                    {
+                      "pid": 3609182,
+                      "parent": 3609169,
+                      "group": 3609127,
+                      "session": 3609127,
+                      "start_ticks": 403146330,
+                      "state": "S"
+                    }
+                  ],
+                  "worker_identity": {
+                    "pid": 3609127,
+                    "parent": 3609058,
+                    "group": 3609127,
+                    "session": 3609127,
+                    "start_ticks": 403145997,
+                    "state": "R"
+                  },
+                  "metadata_sha256": "5756d82c40d4e3db77b6c5e7457419d3199c5a409bb8918507aceeadb41102fb",
+                  "supervisor_metadata_sha256": "a057a068835bd606df9693938c6552369b65c2ad698c0e67bdfee18db4f449a3"
+                },
+                {
+                  "monitor": "/tmp/mr3_p2a0_v25_interface_process_monitor_032.json",
+                  "monitor_sha256": "4a2dbbfaac3d35f14b4f83166dbc2e9aa2f080b98a9a06b533d277fb841f121b",
+                  "actual_gz_identities": [
+                    {
+                      "pid": 3609182,
+                      "parent": 3609169,
+                      "group": 3609127,
+                      "session": 3609127,
+                      "start_ticks": 403146330,
+                      "state": "S"
+                    }
+                  ],
+                  "worker_identity": {
+                    "pid": 3609127,
+                    "parent": 3609058,
+                    "group": 3609127,
+                    "session": 3609127,
+                    "start_ticks": 403145997,
+                    "state": "R"
+                  },
+                  "metadata_sha256": "5756d82c40d4e3db77b6c5e7457419d3199c5a409bb8918507aceeadb41102fb",
+                  "supervisor_metadata_sha256": "a057a068835bd606df9693938c6552369b65c2ad698c0e67bdfee18db4f449a3"
+                },
+                {
+                  "monitor": "/tmp/mr3_p2a0_v25_interface_process_monitor_033.json",
+                  "monitor_sha256": "2885b5cfd47c3014ca1d2cfaa8bd3adbc0de3f56536182481b434241129fa84c",
+                  "actual_gz_identities": [
+                    {
+                      "pid": 3609182,
+                      "parent": 3609169,
+                      "group": 3609127,
+                      "session": 3609127,
+                      "start_ticks": 403146330,
+                      "state": "S"
+                    }
+                  ],
+                  "worker_identity": {
+                    "pid": 3609127,
+                    "parent": 3609058,
+                    "group": 3609127,
+                    "session": 3609127,
+                    "start_ticks": 403145997,
+                    "state": "R"
+                  },
+                  "metadata_sha256": "5756d82c40d4e3db77b6c5e7457419d3199c5a409bb8918507aceeadb41102fb",
+                  "supervisor_metadata_sha256": "a057a068835bd606df9693938c6552369b65c2ad698c0e67bdfee18db4f449a3"
+                },
+                {
+                  "monitor": "/tmp/mr3_p2a0_v25_interface_process_monitor_034.json",
+                  "monitor_sha256": "ef6fc14903ad9be57b6a546eeac1ed2717303404012478cb8b523e930c7ff252",
+                  "actual_gz_identities": [
+                    {
+                      "pid": 3609182,
+                      "parent": 3609169,
+                      "group": 3609127,
+                      "session": 3609127,
+                      "start_ticks": 403146330,
+                      "state": "S"
+                    }
+                  ],
+                  "worker_identity": {
+                    "pid": 3609127,
+                    "parent": 3609058,
+                    "group": 3609127,
+                    "session": 3609127,
+                    "start_ticks": 403145997,
+                    "state": "R"
+                  },
+                  "metadata_sha256": "5756d82c40d4e3db77b6c5e7457419d3199c5a409bb8918507aceeadb41102fb",
+                  "supervisor_metadata_sha256": "a057a068835bd606df9693938c6552369b65c2ad698c0e67bdfee18db4f449a3"
+                },
+                {
+                  "monitor": "/tmp/mr3_p2a0_v25_interface_process_monitor_035.json",
+                  "monitor_sha256": "724bc015dce9b3b4706e2c5ab4d3c2d27bdf4b3ebf4b4d1f5dd53e769ef1b1a7",
+                  "actual_gz_identities": [
+                    {
+                      "pid": 3609182,
+                      "parent": 3609169,
+                      "group": 3609127,
+                      "session": 3609127,
+                      "start_ticks": 403146330,
+                      "state": "S"
+                    }
+                  ],
+                  "worker_identity": {
+                    "pid": 3609127,
+                    "parent": 3609058,
+                    "group": 3609127,
+                    "session": 3609127,
+                    "start_ticks": 403145997,
+                    "state": "R"
+                  },
+                  "metadata_sha256": "5756d82c40d4e3db77b6c5e7457419d3199c5a409bb8918507aceeadb41102fb",
+                  "supervisor_metadata_sha256": "a057a068835bd606df9693938c6552369b65c2ad698c0e67bdfee18db4f449a3"
+                }
+              ]
+            }
+          ],
+          "corrector_mapping_outputs": [
+            "/tmp/mr3_p2a0_v25_interface_corrector_mapping_001.json",
+            "/tmp/mr3_p2a0_v25_interface_corrector_mapping_002.json",
+            "/tmp/mr3_p2a0_v25_interface_corrector_mapping_003.json",
+            "/tmp/mr3_p2a0_v25_interface_corrector_mapping_004.json",
+            "/tmp/mr3_p2a0_v25_interface_corrector_mapping_005.json",
+            "/tmp/mr3_p2a0_v25_interface_corrector_mapping_006.json",
+            "/tmp/mr3_p2a0_v25_interface_corrector_mapping_007.json",
+            "/tmp/mr3_p2a0_v25_interface_corrector_mapping_008.json",
+            "/tmp/mr3_p2a0_v25_interface_corrector_mapping_009.json",
+            "/tmp/mr3_p2a0_v25_interface_corrector_mapping_010.json",
+            "/tmp/mr3_p2a0_v25_interface_corrector_mapping_011.json",
+            "/tmp/mr3_p2a0_v25_interface_corrector_mapping_012.json",
+            "/tmp/mr3_p2a0_v25_interface_corrector_mapping_013.json",
+            "/tmp/mr3_p2a0_v25_interface_corrector_mapping_014.json",
+            "/tmp/mr3_p2a0_v25_interface_corrector_mapping_015.json",
+            "/tmp/mr3_p2a0_v25_interface_corrector_mapping_016.json",
+            "/tmp/mr3_p2a0_v25_interface_corrector_mapping_017.json",
+            "/tmp/mr3_p2a0_v25_interface_corrector_mapping_018.json",
+            "/tmp/mr3_p2a0_v25_interface_corrector_mapping_019.json",
+            "/tmp/mr3_p2a0_v25_interface_corrector_mapping_020.json",
+            "/tmp/mr3_p2a0_v25_interface_corrector_mapping_021.json",
+            "/tmp/mr3_p2a0_v25_interface_corrector_mapping_022.json",
+            "/tmp/mr3_p2a0_v25_interface_corrector_mapping_023.json",
+            "/tmp/mr3_p2a0_v25_interface_corrector_mapping_024.json",
+            "/tmp/mr3_p2a0_v25_interface_corrector_mapping_025.json",
+            "/tmp/mr3_p2a0_v25_interface_corrector_mapping_026.json",
+            "/tmp/mr3_p2a0_v25_interface_corrector_mapping_027.json",
+            "/tmp/mr3_p2a0_v25_interface_corrector_mapping_028.json",
+            "/tmp/mr3_p2a0_v25_interface_corrector_mapping_029.json",
+            "/tmp/mr3_p2a0_v25_interface_corrector_mapping_030.json",
+            "/tmp/mr3_p2a0_v25_interface_corrector_mapping_031.json",
+            "/tmp/mr3_p2a0_v25_interface_corrector_mapping_032.json",
+            "/tmp/mr3_p2a0_v25_interface_corrector_mapping_033.json",
+            "/tmp/mr3_p2a0_v25_interface_corrector_mapping_034.json",
+            "/tmp/mr3_p2a0_v25_interface_corrector_mapping_035.json",
+            "/tmp/mr3_p2a0_v25_interface_corrector_mapping_036.json"
+          ],
+          "smoother_mapping_outputs": [
+            "/tmp/mr3_p2a0_v25_interface_smoother_mapping_001.json",
+            "/tmp/mr3_p2a0_v25_interface_smoother_mapping_002.json",
+            "/tmp/mr3_p2a0_v25_interface_smoother_mapping_003.json",
+            "/tmp/mr3_p2a0_v25_interface_smoother_mapping_004.json",
+            "/tmp/mr3_p2a0_v25_interface_smoother_mapping_005.json",
+            "/tmp/mr3_p2a0_v25_interface_smoother_mapping_006.json",
+            "/tmp/mr3_p2a0_v25_interface_smoother_mapping_007.json",
+            "/tmp/mr3_p2a0_v25_interface_smoother_mapping_008.json",
+            "/tmp/mr3_p2a0_v25_interface_smoother_mapping_009.json",
+            "/tmp/mr3_p2a0_v25_interface_smoother_mapping_010.json",
+            "/tmp/mr3_p2a0_v25_interface_smoother_mapping_011.json",
+            "/tmp/mr3_p2a0_v25_interface_smoother_mapping_012.json",
+            "/tmp/mr3_p2a0_v25_interface_smoother_mapping_013.json",
+            "/tmp/mr3_p2a0_v25_interface_smoother_mapping_014.json",
+            "/tmp/mr3_p2a0_v25_interface_smoother_mapping_015.json",
+            "/tmp/mr3_p2a0_v25_interface_smoother_mapping_016.json",
+            "/tmp/mr3_p2a0_v25_interface_smoother_mapping_017.json",
+            "/tmp/mr3_p2a0_v25_interface_smoother_mapping_018.json",
+            "/tmp/mr3_p2a0_v25_interface_smoother_mapping_019.json",
+            "/tmp/mr3_p2a0_v25_interface_smoother_mapping_020.json",
+            "/tmp/mr3_p2a0_v25_interface_smoother_mapping_021.json",
+            "/tmp/mr3_p2a0_v25_interface_smoother_mapping_022.json",
+            "/tmp/mr3_p2a0_v25_interface_smoother_mapping_023.json",
+            "/tmp/mr3_p2a0_v25_interface_smoother_mapping_024.json",
+            "/tmp/mr3_p2a0_v25_interface_smoother_mapping_025.json",
+            "/tmp/mr3_p2a0_v25_interface_smoother_mapping_026.json",
+            "/tmp/mr3_p2a0_v25_interface_smoother_mapping_027.json",
+            "/tmp/mr3_p2a0_v25_interface_smoother_mapping_028.json",
+            "/tmp/mr3_p2a0_v25_interface_smoother_mapping_029.json",
+            "/tmp/mr3_p2a0_v25_interface_smoother_mapping_030.json",
+            "/tmp/mr3_p2a0_v25_interface_smoother_mapping_031.json",
+            "/tmp/mr3_p2a0_v25_interface_smoother_mapping_032.json",
+            "/tmp/mr3_p2a0_v25_interface_smoother_mapping_033.json",
+            "/tmp/mr3_p2a0_v25_interface_smoother_mapping_034.json",
+            "/tmp/mr3_p2a0_v25_interface_smoother_mapping_035.json",
+            "/tmp/mr3_p2a0_v25_interface_smoother_mapping_036.json"
+          ],
+          "each_actual_worker_active_mapping_observed": true,
+          "two_snapshot_preference_met": true,
+          "scope": "Read-only active mapped driver/worker ancestry, source/SDF/topology and per-episode actual three-controller loaded Shim custody only. Two snapshots are a monitoring preference, not a new acceptance gate or independent experiments. Original formal closure requires an actual active proof per real worker; full/body/physics/control/task gates remain separate. The separately bound smoother mapping outputs preserve actual three-robot loaded overlay provenance without changing original monitor rules."
+        }
+      },
+      "wall_seconds": 1093.5871849777177,
+      "native_or_formal_started": 0,
+      "native_process_control": false
+    },
+    "stages": {
+      "interface": {
+        "stage": "interface",
+        "run_directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v25_interface",
+        "run_directory_exists": true,
+        "events": [
+          {
+            "schema": "mr3-declared-matrix-orchestration-v2",
+            "freeze": "579f7ad21d33c6de9351eb5308f155f0fc903fd7",
+            "plan_sha256": "27a5027c930e2d805187ea9e7d53fd16e797ab395c0931c4b76f707a1f6ae051",
+            "wall_monotonic_ns": 4031459210305029,
+            "utc": "2026-10-18T01:14:24.197410+00:00",
+            "event": "command_started",
+            "stage": "interface",
+            "operation": "launch",
+            "argv": [
+              "/usr/bin/python3",
+              "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v25_smoother/independent/mr3_p2a0_v25_launch_stage.py",
+              "interface",
+              "579f7ad21d33c6de9351eb5308f155f0fc903fd7"
+            ],
+            "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+            "console": "/tmp/mr3_p2a0_v25_interface_controller_launch.log"
+          },
+          {
+            "schema": "mr3-declared-matrix-orchestration-v2",
+            "freeze": "579f7ad21d33c6de9351eb5308f155f0fc903fd7",
+            "plan_sha256": "27a5027c930e2d805187ea9e7d53fd16e797ab395c0931c4b76f707a1f6ae051",
+            "wall_monotonic_ns": 4031459211768513,
+            "utc": "2026-10-18T01:14:24.198872+00:00",
+            "event": "child_spawned",
+            "stage": "interface",
+            "operation": "launch",
+            "child_identity": {
+              "pid": 3609032,
+              "start_ticks": 403145921,
+              "parent": 3608987,
+              "state": "R"
+            }
+          },
+          {
+            "schema": "mr3-declared-matrix-orchestration-v2",
+            "freeze": "579f7ad21d33c6de9351eb5308f155f0fc903fd7",
+            "plan_sha256": "27a5027c930e2d805187ea9e7d53fd16e797ab395c0931c4b76f707a1f6ae051",
+            "wall_monotonic_ns": 4032256361557287,
+            "utc": "2026-10-18T01:27:41.348662+00:00",
+            "event": "command_completed",
+            "stage": "interface",
+            "operation": "launch",
+            "returncode": 0,
+            "errors": [],
+            "wall_seconds": 797.1508950171992,
+            "child_identity": {
+              "pid": 3609032,
+              "start_ticks": 403145921,
+              "parent": 3608987,
+              "state": "R"
+            },
+            "child_identity_after": null,
+            "console_sha256": "99b43a57dff6f4604ac1a49d8bf979ee119bc41154c01fa4e1571365dfca0a2d"
+          },
+          {
+            "schema": "mr3-declared-matrix-orchestration-v2",
+            "freeze": "579f7ad21d33c6de9351eb5308f155f0fc903fd7",
+            "plan_sha256": "27a5027c930e2d805187ea9e7d53fd16e797ab395c0931c4b76f707a1f6ae051",
+            "wall_monotonic_ns": 4032256673165492,
+            "utc": "2026-10-18T01:27:41.660270+00:00",
+            "event": "command_started",
+            "stage": "interface",
+            "operation": "audit",
+            "argv": [
+              "/usr/bin/python3",
+              "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v25_smoother/independent/mr3_p2a0_v25_audit_stage.py",
+              "interface",
+              "579f7ad21d33c6de9351eb5308f155f0fc903fd7"
+            ],
+            "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+            "console": "/tmp/mr3_p2a0_v25_interface_controller_audit.log"
+          },
+          {
+            "schema": "mr3-declared-matrix-orchestration-v2",
+            "freeze": "579f7ad21d33c6de9351eb5308f155f0fc903fd7",
+            "plan_sha256": "27a5027c930e2d805187ea9e7d53fd16e797ab395c0931c4b76f707a1f6ae051",
+            "wall_monotonic_ns": 4032256674691259,
+            "utc": "2026-10-18T01:27:41.661795+00:00",
+            "event": "child_spawned",
+            "stage": "interface",
+            "operation": "audit",
+            "child_identity": {
+              "pid": 3614797,
+              "start_ticks": 403225667,
+              "parent": 3608987,
+              "state": "R"
+            }
+          },
+          {
+            "schema": "mr3-declared-matrix-orchestration-v2",
+            "freeze": "579f7ad21d33c6de9351eb5308f155f0fc903fd7",
+            "plan_sha256": "27a5027c930e2d805187ea9e7d53fd16e797ab395c0931c4b76f707a1f6ae051",
+            "wall_monotonic_ns": 4032530626655336,
+            "utc": "2026-10-18T01:32:15.613761+00:00",
+            "event": "command_completed",
+            "stage": "interface",
+            "operation": "audit",
+            "returncode": 1,
+            "errors": [],
+            "wall_seconds": 273.9530649962835,
+            "child_identity": {
+              "pid": 3614797,
+              "start_ticks": 403225667,
+              "parent": 3608987,
+              "state": "R"
+            },
+            "child_identity_after": null,
+            "console_sha256": "b75de2a450c21389026fb70685ae6efa519140a90b7b14d4709b977089ec32b5"
+          },
+          {
+            "schema": "mr3-declared-matrix-orchestration-v2",
+            "freeze": "579f7ad21d33c6de9351eb5308f155f0fc903fd7",
+            "plan_sha256": "27a5027c930e2d805187ea9e7d53fd16e797ab395c0931c4b76f707a1f6ae051",
+            "wall_monotonic_ns": 4032530936113971,
+            "utc": "2026-10-18T01:32:15.923220+00:00",
+            "event": "version_failed_later_stages_skip",
+            "stage": "interface",
+            "native_ok": true,
+            "audit_ok": false,
+            "verdict": null,
+            "error": "ValueError('actual required audit gates failed after all submitted jobs finished')",
+            "later_stages": [
+              "terminal",
+              "reset",
+              "deadline"
+            ]
+          }
+        ],
+        "original_launch": {
+          "schema": "mr3-p2a0-native-launch-v2",
+          "freeze": "579f7ad21d33c6de9351eb5308f155f0fc903fd7",
+          "stage": "interface",
+          "status": "completed",
+          "command_argv": [
+            "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+            "-u",
+            "-m",
+            "mr3_learning.benchmark",
+            "--workers",
+            "1",
+            "--schedule",
+            "open:101",
+            "--steps",
+            "32",
+            "--preparation-motion-probe",
+            "--preparation-probe-version",
+            "mr3-p2a0-outward-cancel-v6",
+            "--base-domain",
+            "208",
+            "--base-port",
+            "13801",
+            "--output-root",
+            "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0",
+            "--run-id",
+            "mr3_p2a0_20261018_v25_interface",
+            "--preparation-parameter-review"
+          ],
+          "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+          "launcher_identity": {
+            "pid": 3609032,
+            "parent": 3608987,
+            "group": 3608959,
+            "session": 3608959,
+            "start_ticks": 403145921,
+            "state": "R"
+          },
+          "start_utc": "2026-10-18T01:14:24.609347+00:00",
+          "start_monotonic": 4031459.622074522,
+          "console": "/tmp/mr3_p2a0_v25_interface_console.log",
+          "budget": {
+            "max_total_wall_seconds": 18000,
+            "preceding_wall_seconds": 572.9355761036277,
+            "prior_engineering_wall_seconds": 572.9355761036277,
+            "remaining_before_stage_seconds": 17427.064423896372,
+            "stage_wall_ceiling_seconds": 1800,
+            "preceding_launch_receipts": [],
+            "preceding_formal_receipts": [],
+            "scope": "stage duration; no timeout signal; excess fails and blocks later stages"
+          },
+          "source_preflight": {
+            "path": "/tmp/mr3_p2a0_v25_source_preflight.json",
+            "sha256": "7bcc83bb0890e0f0503483cba7e01032b45a9ad1ad643558d98981561c6d8e28"
+          },
+          "plan_sha256": "27a5027c930e2d805187ea9e7d53fd16e797ab395c0931c4b76f707a1f6ae051",
+          "worker_bindings": [
+            {
+              "worker_id": 0,
+              "robots": [
+                "tb1",
+                "tb2",
+                "tb3"
+              ],
+              "domain": 208,
+              "port": 13801
+            }
+          ],
+          "benchmark_parent": {
+            "pid": 3609058,
+            "parent": 3609032,
+            "group": 3608959,
+            "session": 3608959,
+            "start_ticks": 403145962,
+            "state": "R"
+          },
+          "benchmark_parent_pid": 3609058,
+          "returncode": 0,
+          "wall_duration_sec": 796.7103692898527,
+          "end_utc": "2026-10-18T01:27:41.321066+00:00",
+          "benchmark_parent_after": null,
+          "cumulative_wall_seconds": 1369.6459453934804,
+          "within_wall_budget": true,
+          "benchmark_summary": {
+            "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v25_interface/benchmark_summary.json",
+            "sha256": "f582a07559e8cd47454493a751de2961f2481c197ca432573bf0789a9c63e038"
+          },
+          "passed": true,
+          "pass_scope": "launch/benchmark/budget; independent audits also required"
+        },
+        "original_audit_execution": {
+          "schema": "mr3-p2a0-audit-execution-v22",
+          "freeze": "579f7ad21d33c6de9351eb5308f155f0fc903fd7",
+          "scheduling_version": "mr3-formal-subprocess-pool-v1",
+          "max_workers": 4,
+          "stage": "interface",
+          "commands": [
+            {
+              "label": "peer_review_v1",
+              "argv": [
+                "/usr/bin/python3",
+                "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v11/independent/mr3_independent_control_phase_v2.py",
+                "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v25_interface",
+                "--freeze",
+                "579f7ad21d33c6de9351eb5308f155f0fc903fd7",
+                "--output",
+                "/tmp/mr3_p2a0_v25_interface_peer_review_v1.json",
+                "--peer-only"
+              ],
+              "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+              "console": "/tmp/mr3_p2a0_v25_interface_peer_review_v1_console.log",
+              "output": "/tmp/mr3_p2a0_v25_interface_peer_review_v1.json",
+              "required_success": true,
+              "passed": true,
+              "returncode": 0,
+              "output_exists": true,
+              "output_sha256": "55e95b9babaa20836d3c9d4ae41bc0923e09f3cba2c268f529913adf68e3f2e9",
+              "wall_seconds": 42.139946148730814,
+              "console_sha256": "70bffc52ba745653928bc9a28363a7c9955166f37fbf8989482c21a642ac3c6f"
+            },
+            {
+              "label": "drive_review_v1",
+              "argv": [
+                "/usr/bin/python3",
+                "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_independent_drive_trace_v6.py",
+                "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v25_interface",
+                "--freeze",
+                "579f7ad21d33c6de9351eb5308f155f0fc903fd7",
+                "--binary-proof",
+                "/tmp/mr3_p2a0_v25_binaryproof.json",
+                "--output",
+                "/tmp/mr3_p2a0_v25_interface_drive_review_v1.json"
+              ],
+              "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+              "console": "/tmp/mr3_p2a0_v25_interface_drive_review_v1_console.log",
+              "output": "/tmp/mr3_p2a0_v25_interface_drive_review_v1.json",
+              "required_success": true,
+              "passed": true,
+              "returncode": 0,
+              "output_exists": true,
+              "output_sha256": "3b6f10eaeab383f476768263bba35227b50947bb4eba3e23b4ba19d9b5793a0a",
+              "wall_seconds": 87.0357479727827,
+              "console_sha256": "151aedcee350f18b670df0a1d995424f417d1199da2463a5c332333fb71787ec"
+            },
+            {
+              "label": "settled_turn_review_v1",
+              "argv": [
+                "/usr/bin/python3",
+                "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v8/independent/mr3_independent_settled_turn_v3.py",
+                "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v25_interface",
+                "--freeze",
+                "579f7ad21d33c6de9351eb5308f155f0fc903fd7",
+                "--output",
+                "/tmp/mr3_p2a0_v25_interface_settled_review_v1.json",
+                "--require-use"
+              ],
+              "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+              "console": "/tmp/mr3_p2a0_v25_interface_settled_turn_review_v1_console.log",
+              "output": "/tmp/mr3_p2a0_v25_interface_settled_review_v1.json",
+              "required_success": true,
+              "passed": true,
+              "returncode": 0,
+              "output_exists": true,
+              "output_sha256": "b7afff6c63e7a8fafbb4d464aec48b7bbb6d317a522be62342f6a4b93a2be8c3",
+              "wall_seconds": 24.22234736988321,
+              "console_sha256": "c98a3880e96c162f77897d4b3efdd24c9d9d035581c3102aada1803bafcba432"
+            },
+            {
+              "label": "information_review_v1",
+              "argv": [
+                "/usr/bin/python3",
+                "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_independent_information_v2.py",
+                "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v25_interface",
+                "--freeze",
+                "579f7ad21d33c6de9351eb5308f155f0fc903fd7",
+                "--output",
+                "/tmp/mr3_p2a0_v25_interface_information_review_v1.json"
+              ],
+              "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+              "console": "/tmp/mr3_p2a0_v25_interface_information_review_v1_console.log",
+              "output": "/tmp/mr3_p2a0_v25_interface_information_review_v1.json",
+              "required_success": true,
+              "passed": true,
+              "returncode": 0,
+              "output_exists": true,
+              "output_sha256": "12f44c77d952335cc8d2584d7ffbbfc396eb91ffa046f27155127a27ece036d1",
+              "wall_seconds": 113.10282161599025,
+              "console_sha256": "236409a65743350831f71a587612e703058be27544920b30d1ee58e7068f5ced"
+            },
+            {
+              "label": "control_review_v1",
+              "argv": [
+                "/usr/bin/python3",
+                "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v11/independent/mr3_independent_control_phase_v2.py",
+                "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v25_interface",
+                "--freeze",
+                "579f7ad21d33c6de9351eb5308f155f0fc903fd7",
+                "--output",
+                "/tmp/mr3_p2a0_v25_interface_control_review_v1.json"
+              ],
+              "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+              "console": "/tmp/mr3_p2a0_v25_interface_control_review_v1_console.log",
+              "output": "/tmp/mr3_p2a0_v25_interface_control_review_v1.json",
+              "required_success": true,
+              "passed": true,
+              "returncode": 0,
+              "output_exists": true,
+              "output_sha256": "9ebe7470633a5306f5b803f6f9fe7710d247ce9147f83e123e964257c6686db2",
+              "wall_seconds": 91.34195118071511,
+              "console_sha256": "0e993406a50dc34d1056b55bf058ea6161b605f5737a05cee47bac618e37ae93"
+            },
+            {
+              "label": "fixed_angular_v1",
+              "argv": [
+                "/usr/bin/python3",
+                "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v4/independent/mr3_independent_angular_interface_v1.py",
+                "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v25_interface/worker0/episode001_open_101",
+                "--output",
+                "/tmp/mr3_p2a0_v25_interface_fixed_angular_v1.json"
+              ],
+              "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+              "console": "/tmp/mr3_p2a0_v25_interface_fixed_angular_v1_console.log",
+              "output": "/tmp/mr3_p2a0_v25_interface_fixed_angular_v1.json",
+              "required_success": true,
+              "passed": true,
+              "returncode": 0,
+              "output_exists": true,
+              "output_sha256": "ac9154582ee61b2e56ca04cb2154ec652357e694115dedac1986576624384b34",
+              "wall_seconds": 20.47661596396938,
+              "console_sha256": "9949eefadc48f43b1ede6ce8b96ab3d233515847a13f6c4dd8956634df30c446"
+            },
+            {
+              "label": "episode001_fifo_phase_final",
+              "argv": [
+                "/usr/bin/python3",
+                "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_v10_fifo_phase_review.py",
+                "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v25_interface/worker0/episode001_open_101",
+                "--freeze",
+                "579f7ad21d33c6de9351eb5308f155f0fc903fd7",
+                "--output",
+                "/tmp/mr3_p2a0_v25_interface_episode001_fifo_phase_final.json"
+              ],
+              "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+              "console": "/tmp/mr3_p2a0_v25_interface_episode001_fifo_phase_final_console.log",
+              "output": "/tmp/mr3_p2a0_v25_interface_episode001_fifo_phase_final.json",
+              "required_success": true,
+              "passed": true,
+              "returncode": 0,
+              "output_exists": true,
+              "output_sha256": "06b6eac71aee29bca9f815686a5fc86c35a8d622f6b603703dfc071ea56c24d5",
+              "wall_seconds": 11.121326319407672,
+              "console_sha256": "3cd0fc000123afcf74764de73612394d60398003d6c141b2f5d5f784efc5f563"
+            },
+            {
+              "label": "fixed_physics_v1",
+              "argv": [
+                "/usr/bin/python3",
+                "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v3/independent/mr3_independent_physics_review.py",
+                "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v25_interface/worker0/episode001_open_101",
+                "--output",
+                "/tmp/mr3_p2a0_v25_interface_fixed_physics_v1.json"
+              ],
+              "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+              "console": "/tmp/mr3_p2a0_v25_interface_fixed_physics_v1_console.log",
+              "output": "/tmp/mr3_p2a0_v25_interface_fixed_physics_v1.json",
+              "required_success": true,
+              "passed": true,
+              "returncode": 0,
+              "output_exists": true,
+              "output_sha256": "eb75037c33549f03f17132e2bbf3ba20a6a7d37db86733352d422fb5e1e62ba6",
+              "wall_seconds": 19.077162402216345,
+              "console_sha256": "40702fce696e2c017238560ebfe7fc64c899001b017963fe586954a576593125"
+            },
+            {
+              "label": "closure_binary_review_v1",
+              "argv": [
+                "/usr/bin/python3",
+                "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v25_smoother/independent/mr3_v25_multiepoch_closure_binary_review_v1.py",
+                "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v25_interface",
+                "--prefix",
+                "mr3_p2a0_v25_interface",
+                "--freeze",
+                "579f7ad21d33c6de9351eb5308f155f0fc903fd7",
+                "--expected-episodes",
+                "1",
+                "--require-parameters"
+              ],
+              "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+              "console": "/tmp/mr3_p2a0_v25_interface_closure_binary_review_v1_console.log",
+              "output": "/tmp/mr3_p2a0_v25_interface_closure_binary_review_v1.json",
+              "required_success": true,
+              "passed": false,
+              "returncode": 0,
+              "output_exists": true,
+              "output_sha256": "b5e00b1b1e391c6e298a22dd219073063766fff246ab41dc81b4e97314965b8e",
+              "wall_seconds": 9.066030968911946,
+              "console_sha256": "b04ef458a4530630255020ec379394b3a6088ef358303624340de53033b73d7e"
+            },
+            {
+              "label": "full_audit",
+              "argv": [
+                "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+                "-m",
+                "mr3_learning.audit_preparation",
+                "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v25_interface",
+                "--freeze",
+                "579f7ad21d33c6de9351eb5308f155f0fc903fd7",
+                "--output",
+                "/tmp/mr3_p2a0_v25_interface_full_audit.json"
+              ],
+              "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+              "console": "/tmp/mr3_p2a0_v25_interface_full_audit_console.log",
+              "output": "/tmp/mr3_p2a0_v25_interface_full_audit.json",
+              "required_success": true,
+              "passed": true,
+              "returncode": 0,
+              "output_exists": true,
+              "output_sha256": "bc7289f4dcfb65db436d2c5eb1148ee228495c61617906a7542b8a1d37b0e6ba",
+              "wall_seconds": 208.46175353135914,
+              "console_sha256": "567847f0eea5b376d9a81954d6a7201f238f7e5e4415414f8cde3c60f5cba350"
+            },
+            {
+              "label": "input_001",
+              "argv": [
+                "/usr/bin/python3",
+                "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v4/independent/mr3_p2a0_v4_independent_input_episode_review_v1.py",
+                "--episode",
+                "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v25_interface/worker0/episode001_open_101",
+                "--output",
+                "/tmp/mr3_p2a0_v25_interface_input_review_v1.json"
+              ],
+              "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+              "console": "/tmp/mr3_p2a0_v25_interface_input_001_console.log",
+              "output": "/tmp/mr3_p2a0_v25_interface_input_review_v1.json",
+              "required_success": true,
+              "passed": true,
+              "returncode": 0,
+              "output_exists": true,
+              "output_sha256": "c4e16885fabfb81fa71eb323ce0c8dce7a9baec053fcd9ccaa3863c86955ef78",
+              "wall_seconds": 161.99841738212854,
+              "console_sha256": "1628f757fd8a539132eebe5a2f2053882f7a349878f06ec3d65f80ab7b7465b8"
+            }
+          ],
+          "receipts": [
+            {
+              "path": "/tmp/mr3_p2a0_v25_interface_full_audit.json",
+              "sha256": "bc7289f4dcfb65db436d2c5eb1148ee228495c61617906a7542b8a1d37b0e6ba",
+              "passed": true
+            },
+            {
+              "path": "/tmp/mr3_p2a0_v25_interface_drive_review_v1.json",
+              "sha256": "3b6f10eaeab383f476768263bba35227b50947bb4eba3e23b4ba19d9b5793a0a",
+              "passed": true
+            },
+            {
+              "path": "/tmp/mr3_p2a0_v25_interface_input_review_v1.json",
+              "sha256": "c4e16885fabfb81fa71eb323ce0c8dce7a9baec053fcd9ccaa3863c86955ef78",
+              "passed": true
+            },
+            {
+              "path": "/tmp/mr3_p2a0_v25_interface_fixed_angular_v1.json",
+              "sha256": "ac9154582ee61b2e56ca04cb2154ec652357e694115dedac1986576624384b34",
+              "passed": true
+            },
+            {
+              "path": "/tmp/mr3_p2a0_v25_interface_fixed_physics_v1.json",
+              "sha256": "eb75037c33549f03f17132e2bbf3ba20a6a7d37db86733352d422fb5e1e62ba6",
+              "passed": true
+            },
+            {
+              "path": "/tmp/mr3_p2a0_v25_interface_settled_review_v1.json",
+              "sha256": "b7afff6c63e7a8fafbb4d464aec48b7bbb6d317a522be62342f6a4b93a2be8c3",
+              "passed": true
+            },
+            {
+              "path": "/tmp/mr3_p2a0_v25_interface_closure_binary_review_v1.json",
+              "sha256": "b5e00b1b1e391c6e298a22dd219073063766fff246ab41dc81b4e97314965b8e",
+              "passed": false
+            },
+            {
+              "path": "/tmp/mr3_p2a0_v25_interface_information_review_v1.json",
+              "sha256": "12f44c77d952335cc8d2584d7ffbbfc396eb91ffa046f27155127a27ece036d1",
+              "passed": true
+            },
+            {
+              "path": "/tmp/mr3_p2a0_v25_interface_peer_review_v1.json",
+              "sha256": "55e95b9babaa20836d3c9d4ae41bc0923e09f3cba2c268f529913adf68e3f2e9",
+              "passed": true
+            },
+            {
+              "path": "/tmp/mr3_p2a0_v25_interface_control_review_v1.json",
+              "sha256": "9ebe7470633a5306f5b803f6f9fe7710d247ce9147f83e123e964257c6686db2",
+              "passed": true
+            }
+          ],
+          "runner_errors": [],
+          "all_submitted_jobs_finished": true,
+          "plan_sha256": "27a5027c930e2d805187ea9e7d53fd16e797ab395c0931c4b76f707a1f6ae051",
+          "passed": false,
+          "raw_physical_report_scope": "Reset per-episode physical report keeps every original missing-coverage FAIL. The unchanged mandatory reset matrix consumer enforces all raw/closure/eligible-response bounds and declared pooled coverage."
+        },
+        "declared_later_stage_skip": false,
+        "scientific_verdict_not_recomputed": true,
+        "declared_receipts_availability": [
+          {
+            "path": "/tmp/mr3_p2a0_v25_interface_full_audit.json",
+            "exists": true
+          },
+          {
+            "path": "/tmp/mr3_p2a0_v25_interface_drive_review_v1.json",
+            "exists": true
+          },
+          {
+            "path": "/tmp/mr3_p2a0_v25_interface_input_review_v1.json",
+            "exists": true
+          },
+          {
+            "path": "/tmp/mr3_p2a0_v25_interface_fixed_angular_v1.json",
+            "exists": true
+          },
+          {
+            "path": "/tmp/mr3_p2a0_v25_interface_fixed_physics_v1.json",
+            "exists": true
+          },
+          {
+            "path": "/tmp/mr3_p2a0_v25_interface_settled_review_v1.json",
+            "exists": true
+          },
+          {
+            "path": "/tmp/mr3_p2a0_v25_interface_closure_binary_review_v1.json",
+            "exists": true
+          },
+          {
+            "path": "/tmp/mr3_p2a0_v25_interface_information_review_v1.json",
+            "exists": true
+          },
+          {
+            "path": "/tmp/mr3_p2a0_v25_interface_peer_review_v1.json",
+            "exists": true
+          },
+          {
+            "path": "/tmp/mr3_p2a0_v25_interface_control_review_v1.json",
+            "exists": true
+          }
+        ]
+      },
+      "terminal": {
+        "stage": "terminal",
+        "run_directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v25_terminal",
+        "run_directory_exists": false,
+        "events": [],
+        "original_launch": null,
+        "original_audit_execution": null,
+        "declared_later_stage_skip": true,
+        "scientific_verdict_not_recomputed": true,
+        "declared_receipts_availability": [
+          {
+            "path": "/tmp/mr3_p2a0_v25_terminal_full_audit.json",
+            "exists": false
+          },
+          {
+            "path": "/tmp/mr3_p2a0_v25_terminal_drive_review_v1.json",
+            "exists": false
+          },
+          {
+            "path": "/tmp/mr3_p2a0_v25_terminal_settled_review_v1.json",
+            "exists": false
+          },
+          {
+            "path": "/tmp/mr3_p2a0_v25_terminal_closure_binary_review_v1.json",
+            "exists": false
+          },
+          {
+            "path": "/tmp/mr3_p2a0_v25_terminal_information_review_v1.json",
+            "exists": false
+          },
+          {
+            "path": "/tmp/mr3_p2a0_v25_terminal_peer_review_v1.json",
+            "exists": false
+          },
+          {
+            "path": "/tmp/mr3_p2a0_v25_terminal_control_review_v1.json",
+            "exists": false
+          }
+        ]
+      },
+      "reset": {
+        "stage": "reset",
+        "run_directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v25_reset",
+        "run_directory_exists": false,
+        "events": [],
+        "original_launch": null,
+        "original_audit_execution": null,
+        "declared_later_stage_skip": true,
+        "scientific_verdict_not_recomputed": true,
+        "declared_receipts_availability": [
+          {
+            "path": "/tmp/mr3_p2a0_v25_reset_full_audit.json",
+            "exists": false
+          },
+          {
+            "path": "/tmp/mr3_p2a0_v25_reset_drive_review_v1.json",
+            "exists": false
+          },
+          {
+            "path": "/tmp/mr3_p2a0_v25_reset_input_review_v1.json",
+            "exists": false
+          },
+          {
+            "path": "/tmp/mr3_p2a0_v25_reset_angular_matrix_v1.json",
+            "exists": false
+          },
+          {
+            "path": "/tmp/mr3_p2a0_v25_reset_physics_matrix_v1.json",
+            "exists": false
+          },
+          {
+            "path": "/tmp/mr3_p2a0_v25_reset_settled_review_v1.json",
+            "exists": false
+          },
+          {
+            "path": "/tmp/mr3_p2a0_v25_reset_closure_binary_review_v1.json",
+            "exists": false
+          },
+          {
+            "path": "/tmp/mr3_p2a0_v25_reset_information_review_v1.json",
+            "exists": false
+          },
+          {
+            "path": "/tmp/mr3_p2a0_v25_reset_peer_review_v1.json",
+            "exists": false
+          },
+          {
+            "path": "/tmp/mr3_p2a0_v25_reset_control_review_v1.json",
+            "exists": false
+          }
+        ]
+      },
+      "deadline": {
+        "stage": "deadline",
+        "run_directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v25_deadline",
+        "run_directory_exists": false,
+        "events": [],
+        "original_launch": null,
+        "original_audit_execution": null,
+        "declared_later_stage_skip": true,
+        "scientific_verdict_not_recomputed": true,
+        "declared_receipts_availability": [
+          {
+            "path": "/tmp/mr3_p2a0_v25_deadline_full_audit.json",
+            "exists": false
+          },
+          {
+            "path": "/tmp/mr3_p2a0_v25_deadline_drive_review_v1.json",
+            "exists": false
+          },
+          {
+            "path": "/tmp/mr3_p2a0_v25_deadline_settled_review_v1.json",
+            "exists": false
+          },
+          {
+            "path": "/tmp/mr3_p2a0_v25_deadline_closure_binary_review_v1.json",
+            "exists": false
+          },
+          {
+            "path": "/tmp/mr3_p2a0_v25_deadline_information_review_v1.json",
+            "exists": false
+          },
+          {
+            "path": "/tmp/mr3_p2a0_v25_deadline_peer_review_v1.json",
+            "exists": false
+          },
+          {
+            "path": "/tmp/mr3_p2a0_v25_deadline_control_review_v1.json",
+            "exists": false
+          }
+        ]
+      }
+    }
+  },
+  "initial_final_bound_inputs": {
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v25_smoother/predeclared_plan_v25.json": {
+      "sha256": "27a5027c930e2d805187ea9e7d53fd16e797ab395c0931c4b76f707a1f6ae051",
+      "bytes": 151640,
+      "stat": [
+        2051,
+        78658317,
+        151640,
+        1792285610360054385,
+        1792285610360054385
+      ]
+    },
+    "/tmp/mr3_p2a0_v25_remaining_matrix_v1.jsonl": {
+      "sha256": "0e87a761688b20e3161cd2cef3bddd527b4733f455a2cfca444f29427bfc96c3",
+      "bytes": 6212,
+      "stat": [
+        2051,
+        76642898,
+        6212,
+        1792287135922576144,
+        1792287135922576144
+      ]
+    },
+    "/tmp/mr3_p2a0_v25_cross_stage_mapping_summary_v1.json": {
+      "sha256": "6c11569f2755e3b364ca00836eb8b877e3102eb24132568b6b80b488dd44e152",
+      "bytes": 38949,
+      "stat": [
+        2051,
+        76643121,
+        38949,
+        1792287144277038887,
+        1792287144277038887
+      ]
+    },
+    "/tmp/mr3_p2a0_v25_source_preflight.json": {
+      "sha256": "7bcc83bb0890e0f0503483cba7e01032b45a9ad1ad643558d98981561c6d8e28",
+      "bytes": 140502,
+      "stat": [
+        2051,
+        76642889,
+        140502,
+        1792285986047713700,
+        1792285986047713700
+      ]
+    },
+    "/tmp/mr3_p2a0_v25_interface_launch.json": {
+      "sha256": "1bf6fc410638da3133412607f9d35d68997552e0f468cd5c0bfa91cb3b344e4b",
+      "bytes": 2762,
+      "stat": [
+        2051,
+        76642901,
+        2762,
+        1792286861320275718,
+        1792286861320275718
+      ]
+    },
+    "/tmp/mr3_p2a0_v25_interface_audit_execution_v1.json": {
+      "sha256": "6add1e44c3ee39e930665de67bc6fa128e46e8154e4f5ffc432d33bd2e853dcf",
+      "bytes": 15102,
+      "stat": [
+        2051,
+        76643119,
+        15102,
+        1792287135580557197,
+        1792287135580557197
+      ]
+    }
+  },
+  "all_original_stat_and_whole_sha_rechecked": true,
+  "source_selections": "All regular originals under each existing fixed four-stage native tree and all exact stage-prefixed TMP files/trees, known global matrix/watcher/preflight/binary metadata, plus named root extras; empty and original gzip bytes retained.",
+  "reassembly": "Per original manifest: decode listed gzip parts and concatenate in index/raw_offset order to recover exact original bytes. Original .gz remains original .gz bytes after this layer. Verify all encoded, part-decoded and whole-decoded SHAs.",
+  "custody_wall_seconds": 18.501271017827094
+}

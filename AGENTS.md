@@ -2,7 +2,7 @@
 
 # Codex Monorepo Memory — MR3
 
-2026-10-18: V25 canonical Nav2 1.1.20 overlay changes only two timer factories plus include to node clock. Actual stock/fixed component pair and independent review passed (paused output7/3 versus0/0); all parameters and task/body/stop gates retained. Engineering debit572.9355761036277/18000. Full same-freeze four-stage/34-gate matrix remains pending; P2A.0 incomplete, no PPO. All prior failures preserved. See wireless-rl/report/20261018_mr3_p2a0_v25_smoother.md.
+2026-10-18: V25 freeze579f7ad2 CLOSED FAIL. Interface32/native39 clean/old nine formal gates passed; new smoother custody capture035 failed. All11 submitted audits finished10PASS1FAIL (10 declared mandatory9PASS1FAIL plus required FIFO PASS), later terminal/reset/deadline SKIP;50 saved PID/start identities freshgone. Cumulative engineering debit1369.6459453934804/18000, remaining16630.35405460652. Capture035 lacks per-conjunct before/after facts; false rejection is unproven. Preserve FAIL, repair observer and repeat complete matrix under new freeze; P2A.0 incomplete, no PPO. See wireless-rl/report/20261018_mr3_p2a0_v25_smoother.md.
 
 2026-10-18: V20_sensor freeze b33ff700 closed ordinary4 source capture/strict native shutdown; 39 exits0 and47 saved PID/start identities gone. Legal near raw scan returns persist and map to own100, actual hit geometry still unknown; ROS synchronous throttling and SDK stationary-refresh semantics differ, so the early missing-setter bug inference is withdrawn. No production SLAM change/150 selection/matrix or PPO credit; P2A.0 remains incomplete. See wireless-rl/report/20261018_mr3_p2a0_v20_sensor.md.
 
