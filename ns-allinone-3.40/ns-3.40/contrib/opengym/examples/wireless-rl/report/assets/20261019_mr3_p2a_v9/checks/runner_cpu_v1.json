@@ -1,0 +1,82 @@
+{
+  "schema": "mr3-p2a-v9-runner-cpu-v1",
+  "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+  "argv": [
+    "rtk",
+    "proxy",
+    "env",
+    "PYTHONNOUSERSITE=1",
+    "PYTHONDONTWRITEBYTECODE=1",
+    "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+    "-B",
+    "-m",
+    "unittest",
+    "mr3_learning.tests.test_benchmark",
+    "mr3_learning.tests.test_benchmark_wall",
+    "mr3_learning.tests.test_benchmark_stimulus_v4",
+    "mr3_learning.tests.test_benchmark_stimulus_v5",
+    "mr3_learning.tests.test_benchmark_stimulus_v6",
+    "mr3_learning.tests.test_action_trace",
+    "mr3_learning.tests.test_env",
+    "mr3_learning.tests.test_supervisor",
+    "mr3_learning.tests.test_plant_probe"
+  ],
+  "command": "rtk proxy env PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m unittest mr3_learning.tests.test_benchmark mr3_learning.tests.test_benchmark_wall mr3_learning.tests.test_benchmark_stimulus_v4 mr3_learning.tests.test_benchmark_stimulus_v5 mr3_learning.tests.test_benchmark_stimulus_v6 mr3_learning.tests.test_action_trace mr3_learning.tests.test_env mr3_learning.tests.test_supervisor mr3_learning.tests.test_plant_probe",
+  "started_utc": "2026-10-18T17:58:33.967865+00:00",
+  "ended_utc": "2026-10-18T17:58:41.420949+00:00",
+  "started_monotonic_ns": 4091708980787491,
+  "ended_monotonic_ns": 4091716433522792,
+  "wall_sec": 7.452735301,
+  "returncode": 0,
+  "tests_run": 110,
+  "stdout": "",
+  "stderr": "..............................................................................................................\n----------------------------------------------------------------------\nRan 110 tests in 6.549s\n\nOK\n",
+  "source_sha256_before": {
+    "mr3_learning/benchmark.py": "bb94a212e9784c540834f0f34340e0e1afeca1c245c2ea8a1db7a0ecd58c4473",
+    "mr3_learning/action_trace.py": "c32e27e50ada1804463e4e8bfd8601ba5ea06eaf5579017797e39e427504dd8d",
+    "mr3_learning/tests/test_benchmark_wall.py": "9df357813ce0bd82d52de52bde59a08a7e7738f82864fa376394fa7c574e6a36",
+    "mr3_learning/tests/test_action_trace.py": "5981cfe6839a7f9d8285e0389bb03c7e15043ede9e54d5a3c991e92753265fc1"
+  },
+  "source_sha256_after": {
+    "mr3_learning/benchmark.py": "bb94a212e9784c540834f0f34340e0e1afeca1c245c2ea8a1db7a0ecd58c4473",
+    "mr3_learning/action_trace.py": "c32e27e50ada1804463e4e8bfd8601ba5ea06eaf5579017797e39e427504dd8d",
+    "mr3_learning/tests/test_benchmark_wall.py": "9df357813ce0bd82d52de52bde59a08a7e7738f82864fa376394fa7c574e6a36",
+    "mr3_learning/tests/test_action_trace.py": "5981cfe6839a7f9d8285e0389bb03c7e15043ede9e54d5a3c991e92753265fc1"
+  },
+  "native_runs": 0,
+  "optimizer_calls": 0,
+  "prior_attempts": [
+    {
+      "command": "rtk proxy env PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m pytest -q mr3_learning/tests/test_benchmark.py mr3_learning/tests/test_benchmark_wall.py mr3_learning/tests/test_action_trace.py mr3_learning/tests/test_env.py",
+      "returncode": 1,
+      "tests_run": 0,
+      "stderr": "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python: No module named pytest",
+      "scope": "test-launch dependency unavailable; no tests or native process started"
+    },
+    {
+      "returncode": 0,
+      "tests_run": 61,
+      "modules": [
+        "test_benchmark",
+        "test_benchmark_wall",
+        "test_action_trace",
+        "test_env"
+      ]
+    },
+    {
+      "returncode": 0,
+      "tests_run": 109,
+      "modules": [
+        "test_benchmark",
+        "test_benchmark_wall",
+        "test_benchmark_stimulus_v4",
+        "test_benchmark_stimulus_v5",
+        "test_benchmark_stimulus_v6",
+        "test_action_trace",
+        "test_env",
+        "test_supervisor",
+        "test_plant_probe"
+      ]
+    }
+  ]
+}

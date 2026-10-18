@@ -22,7 +22,7 @@ import numpy as np
 import torch
 from sb3_contrib import MaskablePPO
 
-from . import audit_evaluator_phase, audit_protocol, audit_scalar
+from . import audit_evaluator_phase, audit_odometry_cadence, audit_protocol, audit_scalar
 from .audit_controlled_physics import dispatch_controlled_physics, dispatch_controlled_readiness
 from .observation import encode_snapshot, observation_space
 
@@ -35,7 +35,7 @@ REWARD_SOURCE = ROS + "src/multi_robot_exploration/multi_robot_exploration/mr3_r
 W7_REWARD_SHA256 = "77485e7988489a146e4c44207343a0a4be7c12b5ffe36906dde59257cac16f88"
 EVALUATOR_PHASE_PINS = {
     ROS + 'scripts/mr3_env_worker.py':
-        '2da3ba79c20c1d2516c74eb6201384847fe08e1f6a41b0a64d7ec6013d4fd712',
+        'f957d3fcfe480145b805ef3e0d82ec0bd2c882c6fd1ac8ed0bc7c6458e6d9bed',
     ROS + 'src/multi_robot_exploration/multi_robot_exploration/task_evaluator.py':
         '3aa0655113c0c2402c6e587730fa1f457d1f837ff0ce00928e6c8ca433f3c8d6',
     ROS + 'src/multi_robot_exploration/multi_robot_exploration/mr3_evaluator_phase.py':
@@ -67,7 +67,7 @@ PREPARATION_RUNTIME_PINS = {
     ROS + 'src/multi_robot_exploration/multi_robot_exploration/mr3_motion_safety.py':
         '06ca6ece92ca49072df9eedbdd5396148ca2e09d4f2560204448e460e3e73ae7',
     ROS + 'src/multi_robot_exploration/multi_robot_exploration/motion_safety.py':
-        '63d3a59e48cf34180308a494761bc467214fc30ea36b1017dd13e9bd33aa03fc',
+        '8ad1647dd76227ca763a72e3c635374c55185bd4891c11b6a6db7a1b5b6c05c1',
     ROS + 'src/multi_robot_exploration/multi_robot_exploration/control.py':
         '3b6fb71f2c90a055ef3bb922bd3f08332eb366d8becde577106d1ed5bd56cedd',
     ROS + 'src/multi_robot_exploration/multi_robot_exploration/mr3_drive_phase.py':
@@ -124,11 +124,11 @@ EXECUTION_CONFIG_PINS = {
     ROS + 'src/slam_toolbox/config/mapper_params_online_multi_async.yaml':
         '3ca81b5afb628d5787e60a266c6dc375a26f6b6a5c4fef70bd8a5261dc8dbb17',
     ROS + 'src/multi_robot/params/nav2_params_tb1_0.yaml':
-        '08a65f85b1e40f5655ee8c62197f6f86325e73b733cf9cfd83a3014b374eca52',
+        '8854aac6fe3083aa1156072830358e9331f0e0a45144ab3df499f743a37c1b8a',
     ROS + 'src/multi_robot/params/nav2_params_tb2_0.yaml':
-        '7f373997fe7aaf2f2a86b1f65362747e790567fc328510ff4ef708870cc173a5',
+        '9c7a0f9c197c5b3eedc3567c0b70d4920a5ca8cc6057b5059f5c5844ab275386',
     ROS + 'src/multi_robot/params/nav2_params_tb3_0.yaml':
-        '0cf37d44a5097f3ac60cf9385a9eee1d8c8349a64d7a5941f108dec3f6532580',
+        '8794b037c1ef31f57c8d99ab05c57a646afe6653717c2f21100e00b6a5435fae',
     ROS + 'src/multi_robot/config/nav2_params.yaml':
         '143b93aed93c0b71986844b7e3c00e1046e0b4fa9be8c94bcbc37b95e36b1e5b',
     ROS + 'src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py':
@@ -140,19 +140,19 @@ EXECUTION_CONFIG_PINS = {
     ROS + 'src/multi_robot_exploration/setup.py':
         'a23cd0dc598ebb59d9eae325bd1a6ee0ae700751986cac6858fe2c2949b68a15',
     ROS + 'src/multi_robot/models/turtlebot3_waffle/model.sdf':
-        'c8131da065085475bdb0ce1e4c3abfc8c009811af6851fadf1fc33bd38b1d8a1',
+        'ab438fb4f6d52e1d38a3dc83f05d85b060f9266eb65bd4e0a8b8cee9f53d484a',
     ROS + 'src/multi_robot/CMakeLists.txt':
         '7ebe737cdec686b08b02702846ca27998d1f67e9f1070979fa9123bfd6ea08b7',
     ROS + 'src/multi_robot/src/mr3_stop_response_observer.cpp':
-        '4e721e15ee7c67938c1f2c1dbd3005e0832adb0182c66d6dce6ddcafaf7c0396',
+        'b6619d3d246385f34b720c365a584d157ef75fc6a6cff64d58ff0ddedb0354c7',
     ROS + 'src/multi_robot/src/mr3_physics_diagnostic_profile.cpp':
         '26952e1cb8b17239a61b75ee98466daad65bafe116864557bbe92cc0b7fed7c0',
     ROS + 'src/multi_robot/package.xml':
-        '5b3ccb10c6d3c9e2cf92861ba214e186b267ebbcfc28f2747ba72509d7784abf',
+        '170fb26fb5557b94107afc991ac9625359834415172119ebce43b822d94387cf',
     ROS + 'src/multi_robot/src/mr3_gazebo_diff_drive.cpp':
-        '09f741ee154d620fb3d62f8473853929231093fd8cc0b9a4be62b535b514dc05',
+        '6af0b638eed9b8cd73a009eb40b2566fd93952a5270fb2288cab7ef479dc0cb4',
     ROS + 'src/multi_robot/include/multi_robot/mr3_gazebo_diff_drive.hpp':
-        'a7c237943e8728f72cd39e815b8aa47c0bff45374941293aacf77384e3c4b63e',
+        '4563abf72c2be5b3593c939543eaa823506e8b45da0fcfc94c6e7458087dc5a8',
     ROS + 'src/multi_robot/include/multi_robot/paired_wheel_slew.hpp':
         'dca3dbaf01251cf7ffe167f1dabb23a45b4fc95d6ad317dcc3290ff50ecf9a1b',
     ROS + 'src/multi_robot/vendor/gazebo_ros_diff_drive.PROVENANCE.md':
@@ -164,7 +164,8 @@ EXECUTION_CONFIG_PINS = {
     ROS + 'src/multi_robot/include/multi_robot/mr3_drive_target.hpp':
         '4be4d77de247a5bcd427eb6948165e85098eb361030cf89d278d6df92e959d41',
 }
-ENV_DOCUMENT_SHA256 = '41feac9a6d76adb839a615d7703e78e1b1c9f2ce22d55aba805387643536380e'
+EXECUTION_CONFIG_PINS.update({'ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/mr3_odometry_json.hpp': '4b251bff9336a6005a4fff9b6a981286687e99cbff86bf8b3410163e32392c74', 'ros2_ws/ros2-multi-robot-automap/src/multi_robot/src/mr3_odometry_recorder.cpp': 'd70502556ca840d8e01ce0183db7befbeecefc3bf267ba239867937013cb6168'})
+ENV_DOCUMENT_SHA256 = '4c1569febaf7188196873cd9bc13215b30412e84cfeff55f4b6f4d75d034642e'
 TASK_DOCUMENT_SHA256 = "f96f5ba785a39daa882b3c2ea217c58dd968550b65bf0ee15faf07ca079f8991"
 PRIOR_TASK_DOCUMENT_SHA256 = "5e4400396e4aaf5a5094fb4c0c04c85810c327cc85be88b7d03fa3faeade07d2"
 TASK_BASE_FREEZE = "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a"
@@ -258,8 +259,8 @@ def verify_machine_task_file(root, freeze, relative):
 
 ENV_NORMATIVE_FREEZE = "4f8bd0e509e6f958c5993a50008955afac72c345"
 ENV_NORMATIVE_SHA256 = "96d9bd3e3d597899b3d44a69ef9138e77b62b3641bd7261eb38846d5b003f155"
-ENV_EXECUTION_APPENDIX_SHA256 = 'c281693ef4755ae4c6760a87ec675c34e2d56da67ccceb79cc34a4d2f2f941c0'
-ENV_EXECUTION_APPENDIX_BYTES = 11913
+ENV_EXECUTION_APPENDIX_SHA256 = 'bb53c51aa1a34ff81ea4de223439fabd4fc05ffd6d55e81382fa5d5a5e85830f'
+ENV_EXECUTION_APPENDIX_BYTES = 13526
 
 def verify_environment_appendix(root, freeze):
     relative = WIRELESS + "MR3_ENV_CONTRACT.md"
@@ -433,6 +434,33 @@ def project_ray_box_runtime(relative, current):
     return text.encode()
 
 
+REVIEWED_EXECUTION_DELTA = WIRELESS + "report/assets/20261019_mr3_p2a_v9/reviewed_execution_delta.json"
+REVIEWED_EXECUTION_DELTA_SHA256 = "4b3cf4cf98061413d22c7f07350434986c187dfb0593ac2ee82ce234fce68c35"
+
+
+def project_reviewed_execution(root, freeze, relative, actual):
+    """Reverse only fixed reviewed V8/V9 edits before both older inverses."""
+    verify_frozen_pins(root, freeze, {REVIEWED_EXECUTION_DELTA: REVIEWED_EXECUTION_DELTA_SHA256},
+                       "reviewed execution delta")
+    delta = load_json(root / REVIEWED_EXECUTION_DELTA)
+    require(delta["schema"] == "mr3-reviewed-execution-delta-v1"
+            and delta["base_freeze"] == "92f8bdf5bba1ba245dc53ca0964eef81a7fff938",
+            "execution delta base identity differs")
+    item = delta["files"][relative]
+    require(hashlib.sha256(actual).hexdigest() == item["after_sha256"],
+            "reviewed execution source identity differs: " + relative)
+    lines = actual.decode().splitlines(keepends=True)
+    for change in reversed(item["changes"]):
+        at = change["new_line_start"]
+        added = change["after"].splitlines(keepends=True)
+        require(lines[at:at + len(added)] == added, "reviewed execution inverse differs")
+        lines[at:at + len(added)] = change["before"].splitlines(keepends=True)
+    projected = "".join(lines).encode()
+    require(hashlib.sha256(projected).hexdigest() == item["before_sha256"]
+            == RAY_BOX_EXECUTION_PINS[relative], "reviewed execution whole-source projection differs")
+    return projected, item["after_sha256"]
+
+
 def verify_execution_configs(root, freeze):
     require(all(EXECUTION_CONFIG_PINS.get(path) == digest
                 for path, digest in EXECUTION_NORMATIVE_PINS.items()),
@@ -442,9 +470,10 @@ def verify_execution_configs(root, freeze):
     proof = verify_frozen_pins(root, freeze, retained, 'execution config')
     for relative, expected in RAY_BOX_EXECUTION_PINS.items():
         actual = subprocess.check_output(['git', 'show', freeze + ':' + relative], cwd=root)
-        require(hashlib.sha256(actual).hexdigest() == expected and sha(root / relative) == expected,
+        require(sha(root / relative) == hashlib.sha256(actual).hexdigest(),
                 'ray-box execution source Git/worktree SHA mismatch: ' + relative)
-        intermediate = project_ray_box_runtime(relative, actual)
+        prior, current_digest = project_reviewed_execution(root, freeze, relative, actual)
+        intermediate = project_ray_box_runtime(relative, prior)
         require(hashlib.sha256(intermediate).hexdigest() == SENSOR_DIAGNOSTIC_CONFIG_PINS[relative],
                 'ray-box source does not project exactly to sensor diagnostic revision: ' + relative)
         normative = subprocess.check_output(
@@ -452,9 +481,11 @@ def verify_execution_configs(root, freeze):
         projected = project_sensor_diagnostic_runtime(relative, intermediate)
         require(hashlib.sha256(normative).hexdigest() == EXECUTION_NORMATIVE_PINS[relative]
                 and projected == normative, 'execution source does not restore normative whole bytes: ' + relative)
-        proof[relative] = {'sha256': expected, 'git_source': freeze + ':' + relative,
-                           'worktree_sha256': expected,
-                           'execution_revision': 'sensor_diagnostic_and_native_ray_box_only_v1',
+        proof[relative] = {'sha256': current_digest, 'git_source': freeze + ':' + relative,
+                           'worktree_sha256': current_digest,
+                           'execution_revision': 'v8_disabled_stimulus_v9_world_odometry_recorder',
+                           'reviewed_delta_sha256': REVIEWED_EXECUTION_DELTA_SHA256,
+                           'prior_ray_box_source_sha256': expected,
                            'intermediate_sha256': SENSOR_DIAGNOSTIC_CONFIG_PINS[relative],
                            'normative_source': EXECUTION_NORMATIVE_FREEZE + ':' + relative,
                            'normative_sha256': EXECUTION_NORMATIVE_PINS[relative],
@@ -529,7 +560,11 @@ def verify_ray_box_library(root, freeze):
         short = str(Path(relative).relative_to(ROS + 'src/multi_robot'))
         require(receipt['sources'][short]['sha256'] == expected,
                 'ray-box build receipt source identity differs: ' + relative)
-    for library in [spec['ode_library'], *spec['unchanged_libraries'].values()]:
+    # Driver/observer have an explicit new compiled-source/build identity below;
+    # the original corrector/ODE/archive and other unchanged ELFs stay exact.
+    revised = {'libmr3_gazebo_diff_drive.so', 'libmr3_stop_response_observer.so'}
+    for library in [spec['ode_library'], *(value for name, value in
+                   spec['unchanged_libraries'].items() if name not in revised)]:
         path = root / library['path']
         require(path.resolve(strict=True) == (root / library['resolved']).resolve(strict=True),
                 'reviewed ODE/unchanged library resolved path differs: ' + str(path))
@@ -545,6 +580,7 @@ def verify_ray_box_library(root, freeze):
         compiled_source_sha256=dict(RAY_BOX_SOURCE_PINS),
         actual_ode_library=spec['ode_library'],
         scope='actual file/build/archive identity; loaded process and callback/iterations are separate custody gates')
+    proof.update(verify_current_native_binding(root, freeze))
     return proof
 
 
@@ -555,17 +591,29 @@ SMOOTHER_OVERLAY_PINS = {
 }
 
 
-def verify_velocity_smoother_overlay(root, freeze):
-    """Fixed official 1.1.20 two-timer overlay; old math and validators unchanged."""
-    proof = verify_frozen_pins(root, freeze, SMOOTHER_OVERLAY_PINS, 'node-clock smoother overlay')
-    source = 'ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v26_capture/independent/mr3_v26_smoother_custody_v2.py'
-    binding = root / 'ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v25_smoother/independent/mr3_v25_smoother_binding_v1.json'
-    module = load_pinned('mr3_v25_smoother_overlay_custody', root / source,
-                         SMOOTHER_OVERLAY_PINS[source])
-    reader = module.Reader()
-    proof.update(module.verify_frozen_build(root, freeze, binding, reader))
-    reader.finish()
+CURRENT_NATIVE_BINDING = WIRELESS + 'report/assets/20261019_mr3_p2a_v9/native_custody_binding.json'
+CURRENT_NATIVE_BINDING_SHA256 = '6253dac890de2d2d915e86c2ba62522b88ab0eef178e601f02396ab58e16ff12'
+CURRENT_NATIVE_CUSTODY_SOURCE_SHA256 = '60c35cadf67d01c4f4a14fb9d345aab37114279aba50b297abce9c8e75340bbc'
+
+
+def verify_current_native_binding(root, freeze):
+    """Explicit V9 sources/build/ELFs; loaded custody is a separate real CLI."""
+    from . import native_custody
+    source = WIRELESS + 'mr3_learning/native_custody.py'
+    proof = verify_frozen_pins(root, freeze, {
+        CURRENT_NATIVE_BINDING: CURRENT_NATIVE_BINDING_SHA256,
+        source: CURRENT_NATIVE_CUSTODY_SOURCE_SHA256}, 'V9 native custody entry')
+    identity = native_custody.verify_binding(root, freeze, root / CURRENT_NATIVE_BINDING)
+    proof[CURRENT_NATIVE_BINDING]['identity_proof'] = identity
+    proof[CURRENT_NATIVE_BINDING]['scope'] = (
+        'actual files/build/compiled source only; per-episode loaded maps, received messages, '
+        'native close and all mathematical/body gates remain independently required')
     return proof
+
+
+def verify_velocity_smoother_overlay(root, freeze):
+    """Node-clock smoother with explicit default-off diagnostic build identity."""
+    return verify_current_native_binding(root, freeze)
 
 
 def extend_snapshot_validator(auditor, candidate_module):
@@ -928,6 +976,7 @@ def audit_run(directory, freeze):
                 native_auditor.audit_initial_inputs_ready = original_readiness
             row["scalar"] = scalar.audit_episode(native, freeze)
             row["evaluator_phase"] = audit_evaluator_phase.audit_episode(native)
+            row["odometry_cadence"] = audit_odometry_cadence.audit(native, freeze)
             evaluation = load_json(native / (epoch + ".json"))
             row["task"] = {key: evaluation[key] for key in (
                 "success", "termination_reason", "correct_free_coverage_ratio", "map_quality_pass",
@@ -937,6 +986,8 @@ def audit_run(directory, freeze):
                     "; ".join(row["native"]["errors"]))
             require(not row["scalar"]["errors"], "original scalar gates: " +
                     "; ".join(row["scalar"]["errors"]))
+            require(row["odometry_cadence"]["passed"] is True,
+                    "independent real odometry cadence/received-source gate failed")
             require(evaluation["schema_version"] == 4 and evaluation["robot_count"] == 3
                     and evaluation["coverage_threshold"] == .95
                     and evaluation["max_duration_sec"] == 300., "task contract gate changed")

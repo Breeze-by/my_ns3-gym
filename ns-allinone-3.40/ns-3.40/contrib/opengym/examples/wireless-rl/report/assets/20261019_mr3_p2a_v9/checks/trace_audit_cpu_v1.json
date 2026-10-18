@@ -1,0 +1,36 @@
+{
+  "schema": "mr3-p2a-v9-trace-audit-cpu-v1",
+  "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+  "argv": [
+    "rtk",
+    "proxy",
+    "env",
+    "PYTHONNOUSERSITE=1",
+    "PYTHONDONTWRITEBYTECODE=1",
+    "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+    "-B",
+    "-m",
+    "unittest",
+    "mr3_learning.tests.test_audit_action_trace"
+  ],
+  "command": "rtk proxy env PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m unittest mr3_learning.tests.test_audit_action_trace",
+  "returncode": 0,
+  "tests_run": 8,
+  "started_utc": "2026-10-18T18:08:54.608551+00:00",
+  "ended_utc": "2026-10-18T18:09:05.591744+00:00",
+  "started_monotonic_ns": 4092329621474387,
+  "ended_monotonic_ns": 4092340604336718,
+  "wall_sec": 10.982862331,
+  "source_sha256_before": {
+    "mr3_learning/audit_action_trace.py": "0ee52530036972d0394e8c565335e5a9f2cac0a283530cb6ede7fa7709693bc1",
+    "mr3_learning/tests/test_audit_action_trace.py": "15e3d4676a1820db6a15afef542518caf944c829c2bf9aba0e83c50ff767faf4"
+  },
+  "source_sha256_after": {
+    "mr3_learning/audit_action_trace.py": "0ee52530036972d0394e8c565335e5a9f2cac0a283530cb6ede7fa7709693bc1",
+    "mr3_learning/tests/test_audit_action_trace.py": "15e3d4676a1820db6a15afef542518caf944c829c2bf9aba0e83c50ff767faf4"
+  },
+  "stdout": "",
+  "stderr": "Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.\nPlease upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.\nUsers of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.\nSee the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.\n........\n----------------------------------------------------------------------\nRan 8 tests in 5.905s\n\nOK\n",
+  "native_runs": 0,
+  "scope": "Synthetic CPU fixtures and mocked original-gate dispatch; no native credit"
+}

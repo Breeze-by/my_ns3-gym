@@ -50,6 +50,23 @@ def test_initial_reset_does_not_pause_without_actual_delivered_input_ack():
         process.assert_not_called()
 
 
+def test_initial_pause_requires_the_real_six_stream_odometry_recorder_ready():
+    instance = worker()
+    instance.initial_inputs_ready = acknowledgement()
+    instance.motion_ready = True
+    instance.odometry_recorder_ready = False
+
+    def wait(predicate, timeout, label):
+        assert not predicate()
+        raise TimeoutError(label)
+
+    instance._wait = wait
+    with patch.object(instance, "verify_motion_output_topology") as topology:
+        with pytest.raises(TimeoutError, match="delivered-input startup"):
+            instance.reset()
+        topology.assert_not_called()
+
+
 def test_native_velocity_bypass_prevents_release_and_does_not_write_a_pass(tmp_path):
     instance = worker()
     instance.directory = tmp_path

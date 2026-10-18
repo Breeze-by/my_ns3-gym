@@ -98,6 +98,7 @@ class Worker:
         self.clock_ns = 0
         self.monitor_ready = False
         self.motion_ready = False
+        self.odometry_recorder_ready = False
         self.motion_status = None
         self.stop_status = None
         self.controlled = False
@@ -276,6 +277,9 @@ class Worker:
         def motion_ready(message):
             self.motion_ready = bool(message.data)
 
+        def odometry_recorder_ready(message):
+            self.odometry_recorder_ready = bool(message.data)
+
         def motion_status(message):
             self.receive_motion_status(json.loads(message.data))
 
@@ -292,6 +296,8 @@ class Worker:
             self.node.create_subscription(Bool, "/task_monitor_ready", callback(monitor), qos),
             self.node.create_subscription(Bool, "/motion_safety/ready",
                                           callback(motion_ready), qos),
+            self.node.create_subscription(Bool, "/mr3/odometry_recorder/ready",
+                                          callback(odometry_recorder_ready), qos),
             self.node.create_subscription(String, "/motion_safety/status",
                                           callback(motion_status), qos),
             self.node.create_subscription(String, "/motion_safety/stop_status",
@@ -1100,7 +1106,7 @@ class Worker:
 
     def reset(self):
         self._wait(lambda: self.monitor_ready and self.initial_inputs_ready is not None
-                   and self.motion_ready,
+                   and self.motion_ready and self.odometry_recorder_ready,
                    400., "three-robot delivered-input startup guard expired")
         self.verify_motion_output_topology()
         self.verify_drive_topology()

@@ -156,6 +156,14 @@ phase3固定绑定原contact task-phase与独立命令时间门禁；scalar rewa
 [环境契约](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_ENV_CONTRACT.md)。
 每次实际执行均是需追加共享log的实验，不能把入口存在当成P1C通过。
 
+## MR3-P2A V9 真实WORLD odometry时序准备
+
+带MR3协议标签的adapter驱动现在使用`mr3_odometry_period_ns=20000000`真实发布WORLD odometry及同源TF，
+轮执行器仍原30Hz。非空adapter audit路径同时启动只读`mr3_odometry_recorder`，worker等待三台各odom/驱动TF
+实际接收ready；baseline空配置保持旧耦合发布。该默认组件变化须新冻结近身采集及四阶段工程复验，
+当前未取得新的原生PASS。准确预声明argv与单次preflight/trace/matrix入口见[V9报告执行段](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v9.md)。工程刺激默认空，正常矩阵/训练必须清除`MR3_PHYSICS_DIAGNOSTIC_CONFIG_FILE`
+和plant arm。新入口、真实墙秒截止、38项必需角色及预算见[V9预声明](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v9.md)。
+
 ## MR3-P2A V8 已关闭原生诊断（历史入口，不重跑）
 
 2026-10-19用户批准累计30000工程墙秒。V8同冻结两臂已完成，刺激VALID/关闭PASS，原V7反例未复现；以下命令仅保留追溯，不重跑已有run-id。V7 FAIL和pilot余额不变。新增`mr3_plant_stimulus_arm`默认空，仅`continuous|pulse`启用固定open101三机稀疏布局与tb3真正smoother工程输入；不要用于正常训练/评估。普通adapter的目标、timer、安全门及出生位置保持原行为。完整预声明、有效性门和预算见[V8报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v8.md)。

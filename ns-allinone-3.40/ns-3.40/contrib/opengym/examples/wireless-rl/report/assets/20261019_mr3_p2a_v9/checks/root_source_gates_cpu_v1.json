@@ -1,0 +1,49 @@
+{
+  "schema": "mr3-p2a-v9-root-source-gates-cpu-v1",
+  "scope": "Observed real tool result; no native/GPU experiment. UTC not separately captured.",
+  "command": [
+    "rtk",
+    "proxy",
+    "env",
+    "-u",
+    "PYTHONPATH",
+    "PYTHONNOUSERSITE=1",
+    "PYTHONDONTWRITEBYTECODE=1",
+    "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+    "-B",
+    "-m",
+    "unittest",
+    "-q",
+    "mr3_learning.tests.test_audit_ppo",
+    "mr3_learning.tests.test_audit_action_trace",
+    "mr3_learning.tests.test_audit_controlled_physics",
+    "mr3_learning.tests.test_native_custody",
+    "mr3_learning.tests.test_audit_odometry_cadence"
+  ],
+  "returncode": 0,
+  "observed_tests": 56,
+  "observed_elapsed_seconds": 13.32,
+  "stdout": "Ran 56 tests in 13.320s\n\nOK",
+  "passed": true,
+  "sources": {
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_ppo.py": "5585a68c795f1f88c5092897030613b2da7ef9a81ca9e71a51511a032dda44ab",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/native_custody.py": "60c35cadf67d01c4f4a14fb9d345aab37114279aba50b297abce9c8e75340bbc",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_action_trace.py": "0ee52530036972d0394e8c565335e5a9f2cac0a283530cb6ede7fa7709693bc1",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v9/native_custody_binding.json": "6253dac890de2d2d915e86c2ba62522b88ab0eef178e601f02396ab58e16ff12"
+  },
+  "prior_attempts": [
+    {
+      "command": "conda python -m pytest -q mr3_learning/tests/test_audit_ppo.py",
+      "returncode": 1,
+      "observed_error": "No module named pytest; no tests ran; dependency not installed"
+    },
+    {
+      "command": "conda python -m unittest -q mr3_learning.tests.test_audit_ppo",
+      "returncode": 1,
+      "observed_tests": 8,
+      "observed_failures": 1,
+      "observed_errors": 2,
+      "reason": "During explicitly unfinished source rebind: old driver ELF pin still active; new projection rejection error text changed. Updated new custody entry and negative test expectation; old mathematical predicates retained."
+    }
+  ]
+}

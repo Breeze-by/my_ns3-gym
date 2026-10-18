@@ -88,6 +88,7 @@
 #include <vector>
 #include "multi_robot/paired_wheel_slew.hpp"
 #include "multi_robot/mr3_drive_target.hpp"
+#include "multi_robot/mr3_odometry_json.hpp"
 
 namespace mr3_gazebo_plugins
 {
@@ -138,6 +139,7 @@ public:
   void UpdateWheelVelocities();
   /// Append execution provenance without reading external robot information.
   void Audit(const char * kind, int64_t sim_time_ns, nlohmann::json fields);
+  void AuditOdometry(const char * kind, int64_t sim_time_ns, nlohmann::json fields);
 
   /// Update odometry according to encoder.
   /// \param[in] _current_time Current simulation time
@@ -148,7 +150,8 @@ public:
 
   /// Publish odometry transforms
   /// \param[in] _current_time Current simulation time
-  void PublishOdometryTf(const gazebo::common::Time & _current_time);
+  geometry_msgs::msg::TransformStamped PublishOdometryTf(
+    const gazebo::common::Time & _current_time);
 
   /// Publish trasforms for the wheels
   /// \param[in] _current_time Current simulation time
@@ -225,6 +228,11 @@ public:
   std::unique_ptr<std::FILE, decltype(&std::fclose)> audit_{nullptr, &std::fclose};
   std::mutex audit_lock_;
   uint64_t audit_sequence_{0};
+  std::unique_ptr<std::FILE, decltype(&std::fclose)> odometry_audit_{nullptr, &std::fclose};
+  uint64_t odometry_audit_sequence_{0};
+  uint64_t odometry_publication_sequence_{0};
+  int64_t odometry_period_ns_{0};
+  int64_t last_odometry_time_ns_{0};
 
   /// Update period in seconds.
   double update_period_;
@@ -431,6 +439,17 @@ void MR3GazeboDiffDrive::Load(gazebo::physics::ModelPtr _model, sdf::ElementPtr 
   impl_->robot_base_frame_ = _sdf->Get<std::string>("robot_base_frame", "base_footprint").first;
   impl_->odom_source_ = static_cast<MR3GazeboDiffDrivePrivate::OdomSource>(
     _sdf->Get<int>("odometry_source", 1).first);
+  const auto odometry_period = _sdf->Get<std::string>("mr3_odometry_period_ns", "").first;
+  if (odometry_period != "" && odometry_period != "0" && odometry_period != "20000000") {
+    throw std::invalid_argument("MR3 odometry period must be coupled or exactly 20000000ns");
+  }
+  impl_->odometry_period_ns_ = odometry_period == "20000000" ? 20000000 : 0;
+  if (impl_->odometry_period_ns_ != 0 &&
+    (!impl_->tagged_commands_ || impl_->odom_source_ != MR3GazeboDiffDrivePrivate::WORLD))
+  {
+    throw std::invalid_argument("independent MR3 odometry requires tagged WORLD source");
+  }
+  impl_->last_odometry_time_ns_ = SimNanoseconds(impl_->last_update_time_);
 
   // Advertise odometry topic
   impl_->publish_odom_ = _sdf->Get<bool>("publish_odom", false).first;
@@ -473,6 +492,20 @@ void MR3GazeboDiffDrive::Load(gazebo::physics::ModelPtr _model, sdf::ElementPtr 
   impl_->covariance_[1] = _sdf->Get<double>("covariance_y", 0.00001).first;
   impl_->covariance_[2] = _sdf->Get<double>("covariance_yaw", 0.001).first;
 
+  if (impl_->odometry_period_ns_ != 0) {
+    if (!impl_->publish_odom_ || !impl_->publish_odom_tf_) {
+      throw std::invalid_argument("independent MR3 odometry requires both odom and TF publication");
+    }
+    if (impl_->audit_) {
+      const auto path = std::filesystem::path(audit_path).parent_path() /
+        ("odometry_" + impl_->robot_ + ".jsonl");
+      impl_->odometry_audit_.reset(std::fopen(path.c_str(), "wx"));
+      if (!impl_->odometry_audit_) {
+        throw std::runtime_error("cannot exclusively create native odometry audit: " + path.string());
+      }
+    }
+  }
+
   if (impl_->audit_) {
     Dl_info library_info{};
     std::string library_path;
@@ -491,6 +524,7 @@ void MR3GazeboDiffDrive::Load(gazebo::physics::ModelPtr _model, sdf::ElementPtr 
     {"compiled_header_sha256", MR3_DRIVE_HEADER_SHA256},
     {"compiled_helper_sha256", MR3_DRIVE_HELPER_SHA256},
     {"compiled_target_contract_sha256", MR3_DRIVE_TARGET_SHA256},
+    {"compiled_odometry_json_sha256", MR3_ODOMETRY_JSON_HEADER_SHA256},
     {"command_mode", impl_->tagged_commands_ ? "tagged" : "twist"},
     {"command_topic", impl_->ros_node_->get_node_topics_interface()->resolve_topic_name(
       impl_->tagged_commands_ ? "mr3_drive/target" : "cmd_vel")},
@@ -501,9 +535,21 @@ void MR3GazeboDiffDrive::Load(gazebo::physics::ModelPtr _model, sdf::ElementPtr 
     {"wheel_diameter_m", impl_->wheel_diameter_},
     {"max_acceleration_mps2", impl_->max_wheel_accel_},
     {"max_torque_nm", impl_->max_wheel_torque_}, {"update_rate_hz", update_rate},
+    {"mr3_odometry_period_ns", impl_->odometry_period_ns_},
     {"odometry_source", static_cast<int>(impl_->odom_source_)},
     {"num_wheel_pairs", impl_->num_wheel_pairs_},
       {"actuation_algorithm", "measured_joint_rim_paired_common_fraction_v1"}});
+    impl_->AuditOdometry("configuration", SimNanoseconds(impl_->last_update_time_), {
+      {"period_ns", impl_->odometry_period_ns_}, {"actuation_update_rate_hz", update_rate},
+      {"provider", "WORLD"}, {"phase", "world_update_begin_before_actuation"},
+      {"odometry_frame", impl_->odometry_frame_}, {"robot_base_frame", impl_->robot_base_frame_},
+      {"loaded_library_path", library_path},
+      {"compiled_source_sha256", MR3_DRIVE_SOURCE_SHA256},
+      {"compiled_header_sha256", MR3_DRIVE_HEADER_SHA256},
+      {"compiled_helper_sha256", MR3_DRIVE_HELPER_SHA256},
+      {"compiled_target_contract_sha256", MR3_DRIVE_TARGET_SHA256},
+      {"compiled_odometry_json_sha256", MR3_ODOMETRY_JSON_HEADER_SHA256},
+      {"scope", "actual native publication calls; no DDS receipt or navigation consumption claim"}});
   }
 
   // Subscribe after configuration so the first command has declared provenance.
@@ -552,6 +598,7 @@ void MR3GazeboDiffDrive::Reset()
   std::lock_guard<std::mutex> scoped_lock(impl_->lock_);
   impl_->last_update_time_ =
     impl_->joints_[MR3GazeboDiffDrivePrivate::LEFT]->GetWorld()->SimTime();
+  impl_->last_odometry_time_ns_ = SimNanoseconds(impl_->last_update_time_);
   for (unsigned int i = 0; i < impl_->num_wheel_pairs_; ++i) {
     if (impl_->joints_[2 * i + MR3GazeboDiffDrivePrivate::LEFT] &&
       impl_->joints_[2 * i + MR3GazeboDiffDrivePrivate::RIGHT])
@@ -589,7 +636,12 @@ void MR3GazeboDiffDrivePrivate::OnUpdate(const gazebo::common::UpdateInfo & _inf
 
   double seconds_since_last_update = (_info.simTime - last_update_time_).Double();
 
-  if (seconds_since_last_update < update_period_) {
+  const auto now_ns = SimNanoseconds(_info.simTime);
+  const bool actuation_due = !(seconds_since_last_update < update_period_);
+  const bool independent_odometry = odometry_period_ns_ != 0;
+  const bool odometry_due = independent_odometry ?
+    now_ns - last_odometry_time_ns_ >= odometry_period_ns_ : actuation_due;
+  if (!actuation_due && !odometry_due) {
     return;
   }
 
@@ -597,32 +649,47 @@ void MR3GazeboDiffDrivePrivate::OnUpdate(const gazebo::common::UpdateInfo & _inf
   IGN_PROFILE_BEGIN("UpdateOdometryWorld");
 #endif
   // Update odom message if using ground truth
-  if (odom_source_ == WORLD) {
+  if (odometry_due && odom_source_ == WORLD) {
     UpdateOdometryWorld();
   }
 #ifdef IGN_PROFILER_ENABLE
   IGN_PROFILE_END();
   IGN_PROFILE_BEGIN("PublishOdometryMsg");
 #endif
-  if (publish_odom_) {
+  if (odometry_due && publish_odom_) {
     PublishOdometryMsg(_info.simTime);
   }
 #ifdef IGN_PROFILER_ENABLE
   IGN_PROFILE_END();
   IGN_PROFILE_BEGIN("PublishWheelsTf");
 #endif
-  if (publish_wheel_tf_) {
+  if (actuation_due && publish_wheel_tf_) {
     PublishWheelsTf(_info.simTime);
   }
 #ifdef IGN_PROFILER_ENABLE
   IGN_PROFILE_END();
   IGN_PROFILE_BEGIN("PublishOdometryTf");
 #endif
-  if (publish_odom_tf_) {
-    PublishOdometryTf(_info.simTime);
+  geometry_msgs::msg::TransformStamped published_transform;
+  if (odometry_due && publish_odom_tf_) {
+    published_transform = PublishOdometryTf(_info.simTime);
+  }
+  if (odometry_due && independent_odometry) {
+    last_odometry_time_ns_ = now_ns;
+    AuditOdometry("publication", now_ns, {
+      {"publication_sequence", ++odometry_publication_sequence_},
+      {"source_clock_ns", now_ns}, {"odometry", multi_robot::odometry_json::odometry(odom_)},
+      {"transform", multi_robot::odometry_json::transform(published_transform)},
+      {"odom_published", publish_odom_}, {"odom_tf_published", publish_odom_tf_},
+      {"publication_scope", "actual_publisher_calls_returned_not_delivery"}});
   }
 #ifdef IGN_PROFILER_ENABLE
   IGN_PROFILE_END();
+#endif
+  if (!actuation_due) {
+    return;
+  }
+#ifdef IGN_PROFILER_ENABLE
   IGN_PROFILE_BEGIN("UpdateWheelVelocities");
 #endif
   // Update robot in case new velocities have been requested
@@ -762,6 +829,24 @@ void MR3GazeboDiffDrivePrivate::Audit(
   }
 }
 
+void MR3GazeboDiffDrivePrivate::AuditOdometry(
+  const char * kind, int64_t sim_time_ns, nlohmann::json fields)
+{
+  if (!odometry_audit_) {
+    return;
+  }
+  std::lock_guard<std::mutex> guard(audit_lock_);
+  fields.update({{"schema", "mr3-world-odometry-publication-v1"}, {"kind", kind},
+    {"epoch", epoch_}, {"robot", robot_},
+    {"record_sequence", ++odometry_audit_sequence_}, {"sim_time_ns", sim_time_ns}});
+  const auto line = fields.dump() + "\n";
+  if (std::fwrite(line.data(), 1, line.size(), odometry_audit_.get()) != line.size() ||
+    std::fflush(odometry_audit_.get()) != 0)
+  {
+    throw std::runtime_error("cannot persist actual native odometry publication audit");
+  }
+}
+
 void MR3GazeboDiffDrivePrivate::UpdateOdometryEncoder(const gazebo::common::Time & _current_time)
 {
   double vl = joints_[LEFT]->GetVelocity(0);
@@ -825,7 +910,8 @@ void MR3GazeboDiffDrivePrivate::UpdateOdometryWorld()
   odom_.twist.twist.linear.y = cosf(yaw) * linear.Y() - sinf(yaw) * linear.X();
 }
 
-void MR3GazeboDiffDrivePrivate::PublishOdometryTf(const gazebo::common::Time & _current_time)
+geometry_msgs::msg::TransformStamped MR3GazeboDiffDrivePrivate::PublishOdometryTf(
+  const gazebo::common::Time & _current_time)
 {
   geometry_msgs::msg::TransformStamped msg;
   msg.header.stamp = gazebo_ros::Convert<builtin_interfaces::msg::Time>(_current_time);
@@ -836,6 +922,7 @@ void MR3GazeboDiffDrivePrivate::PublishOdometryTf(const gazebo::common::Time & _
   msg.transform.rotation = odom_.pose.pose.orientation;
 
   transform_broadcaster_->sendTransform(msg);
+  return msg;
 }
 
 void MR3GazeboDiffDrivePrivate::PublishWheelsTf(const gazebo::common::Time & _current_time)

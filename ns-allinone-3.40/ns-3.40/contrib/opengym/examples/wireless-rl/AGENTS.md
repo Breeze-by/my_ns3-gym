@@ -1,6 +1,6 @@
 # wireless-rl memory — MR3
 
-2026-10-19：P2A.0已验收，P2A仍未完成。V8同冻结`7bbf7ba97e12e3b5db47fb48d7ffa4ccf0740971`两组原生转向诊断共8决策/0策略调用/0优化，刺激与严格关闭均通过；两组4s的最大平面速度约.00229，未复现V7近身/~3s后反例，不能称物理修复。V7原FAIL、V26原父编排中断及所有旧失败保留。工程累计12835.5243178396018/30000墙秒，余17164.4756821603982；pilot余额1870决策/2905.9547395464029墙秒不动，验证不扩额。下一步仅准备真实WORLD odom/对应TF独立50Hz，保持轮执行器30Hz及全部旧门；尚无新修复native信用，P2B/gateway未启动。详见V8报告。
+2026-10-19：P2A.0已验收，P2A仍未完成。V8同冻结`7bbf7ba97e12e3b5db47fb48d7ffa4ccf0740971`两组原生转向诊断共8决策/0策略调用/0优化，刺激与严格关闭均通过；两组4s的最大平面速度约.00229，未复现V7近身/~3s后反例，不能称物理修复。V7原FAIL、V26原父编排中断及所有旧失败保留。工程累计12835.5243178396018/30000墙秒，余17164.4756821603982；pilot余额1870决策/2905.9547395464029墙秒不动，验证不扩额。V9真实WORLD odom/对应TF独立50Hz与实际DDS接收记录器已实现并完成CPU/编译准备，保持轮执行器30Hz及全部旧门；新冻结短采集、四阶段38科学角色和PPO最小链仍待执行，无新修复native信用。P2B/gateway未启动。详见V8/V9报告。
 
 P1C validation started 2026-10-15; actual closure time is in the P1C report. The active contract is [RESEARCH_PLAN.md](RESEARCH_PLAN.md),
 then [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md). Follow root AGENTS.md.

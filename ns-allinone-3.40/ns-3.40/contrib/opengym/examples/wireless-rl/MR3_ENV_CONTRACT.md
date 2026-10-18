@@ -518,3 +518,22 @@ ROS workspace 覆盖官方 `nav2_velocity_smoother` 1.1.20（上游 commit
 .78s/.144m 停车、完整平面静止 .01m/s 与三个唯一新鲜样本等门全部保持。
 组件 stock/fixed 对照只验证计时机制；P2A.0 仍须在新冻结完整通过原四阶段和
 全部正式独立审计，不拼接历史 PASS，不构成 PPO 或 95% 策略成功证明。
+
+
+## P2A V9：真实 WORLD odometry 与同源 TF 独立 50Hz
+
+本次修订仅适用于带 MR3 协议标签的 adapter 驱动：`mr3_odometry_period_ns=20000000`
+使 WORLD odometry 和同一测量时刻的 odom→base_footprint TF 每 20 个真实 1ms tick 发布。
+未设置该字段的 baseline 保持旧耦合发布。轮目标计算、paired joint-feedback helper、
+30Hz 更新判据、轮 TF、轮距/轮径/力矩/加速度及真实物理推进保持原实现。
+这修复旧 34ms 实际采样下三份最新唯一源在部分 20ms 边界跨度达 101ms 的资格空洞；
+100ms 源龄与三样本要求均保持。丢包、滞后、未来源和真实速度越界仍须拒绝，不能重标时间或复用过期授权。
+
+驱动将实际 WORLD 测量和实际 publish/sendTransform 调用另记 `odometry_tbN.jsonl`；
+原 `drive_tbN.jsonl` 的行种类、序号及执行器证明不增加合成事件。
+独立 C++ `mr3_odometry_recorder` 以 rclcpp MessageInfo 取得实际收到的包 GID，记录完整
+Odometry/选中的驱动 TF、真实端点图与接收时钟；同一个 TF topic 上允许其他合法发布者，
+但每个所选包必须匹配唯一真实驱动端点。三台 odom/驱动 TF 六流实际到达才发布 recorder ready，
+worker 在真实 reset release 前等待该条件。该只读记录器不证明 Nav2 接收，也不参与 actor/奖励。
+新 cadence 审计补充原 34 项科学角色，逐个真实发布/收到源、全消息、20ms cadence 和原 34ms
+执行器时序核验。新的原生冻结矩阵通过前，不追认旧工程 PASS，不宣称 V7 反例已修复。

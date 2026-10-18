@@ -349,6 +349,21 @@ def _preparation_failure(abort, worker_id, kind, reason, episode_index=None, epo
             abort["event"].set()
 
 
+def _wall_admission(args, abort, worker_id, operation, *, episode_index=None, epoch=None):
+    """Reserve the existing RPC upper bound and close time before submitting work."""
+    deadline = getattr(args, "allocation_deadline_monotonic_ns", None)
+    if deadline is not None and not _abort_requested(abort):
+        required = {"reset": 420., "step": 90., "after_rpc": 0.}[operation]
+        remaining = (deadline - time.monotonic_ns()) / 1e9
+        if remaining < required + args.close_reserve_seconds:
+            _preparation_failure(
+                abort, worker_id, "work_wall_allocation_exhausted",
+                f"{operation}: remaining={remaining:.9f}s requires "
+                f"{required + args.close_reserve_seconds:.9f}s including close reserve",
+                episode_index, epoch)
+    return not _abort_requested(abort)
+
+
 def _parameter_review_binding(freeze):
     """The only review executable must equal its tracked source at this freeze."""
     raw = (WORKSPACE / PARAMETER_REVIEW_SCRIPT).read_bytes()
@@ -460,7 +475,8 @@ def resource_sample():
 
 def run_worker(args, worker_id, preparation_abort=None):
     preparation = args.preparation_motion_probe
-    abort = (preparation_abort or _new_preparation_abort()) if preparation else None
+    budgeted = getattr(args, "allocation_deadline_monotonic_ns", None) is not None
+    abort = (preparation_abort or _new_preparation_abort()) if preparation or budgeted else None
     try:
         supervisor = Supervisor(run_id=args.run_id, worker_id=worker_id,
                                 domain_id=args.base_domain + worker_id,
@@ -477,7 +493,7 @@ def run_worker(args, worker_id, preparation_abort=None):
     episode, episode_index, episode_started = None, None, None
     try:
         for episode_index, (scene, seed) in enumerate(args.schedule):
-            if _abort_requested(abort):
+            if not _wall_admission(args, abort, worker_id, "reset", episode_index=episode_index):
                 break
             episode = None
             episode_started = time.monotonic()
@@ -502,14 +518,16 @@ def run_worker(args, worker_id, preparation_abort=None):
                 episode["preparation_probe_diagnostics"] = {
                     "reference_turn_samples": {}, "goal_decisions": []}
             result["episodes"].append(episode)
-            if _abort_requested(abort):
+            if not _wall_admission(args, abort, worker_id, "after_rpc",
+                                   episode_index=episode_index, epoch=episode["epoch"]):
                 episode["intentional_abort_prefix"] = {
                     "after_rpc": "reset", "first_failure": abort["first_failure"]}
                 break
             if getattr(args, "preparation_parameter_review", False):
                 _run_parameter_review(args, worker_id, episode)
             for step_index in range(args.steps):
-                if _abort_requested(abort):
+                if not _wall_admission(args, abort, worker_id, "step",
+                                       episode_index=episode_index, epoch=episode["epoch"]):
                     episode["intentional_abort_prefix"] = {
                         "after_rpc": "reset" if step_index == 0 else "step",
                         "first_failure": abort["first_failure"]}
@@ -519,6 +537,11 @@ def run_worker(args, worker_id, preparation_abort=None):
                         episode["diagnostic_failure_arm"] = supervisor.arm_failure_probe()
                     else:
                         episode["diagnostic_failure_terminal"] = supervisor.trigger_failure_probe()
+                    if not _wall_admission(args, abort, worker_id, "step",
+                                           episode_index=episode_index, epoch=episode["epoch"]):
+                        episode["intentional_abort_prefix"] = {
+                            "after_rpc": "terminal_probe", "first_failure": abort["first_failure"]}
+                        break
                 if args.fault_probe and worker_id == 0 and episode_index == 0 and step_index == 4:
                     identity = supervisor.episode.identity
                     if not identity_alive(identity):
@@ -545,6 +568,12 @@ def run_worker(args, worker_id, preparation_abort=None):
                     action = (888 if args.deadline_probe or args.terminal_probe else
                               probe_action(supervisor.last_result["snapshot"],
                                            outward_goals=args.preparation_motion_probe))
+                if not _wall_admission(args, abort, worker_id, "step",
+                                       episode_index=episode_index, epoch=episode["epoch"]):
+                    episode["intentional_abort_prefix"] = {
+                        "after_rpc": "reset" if step_index == 0 else "step",
+                        "first_failure": abort["first_failure"]}
+                    break
                 step_started = time.monotonic()
                 observation, reward, terminated, truncated, info = environment.step(action)
                 episode["transition_wall_sec"] += time.monotonic() - step_started
@@ -573,6 +602,9 @@ def run_worker(args, worker_id, preparation_abort=None):
                         _preparation_failure(
                             abort, worker_id, "early_truncation", info.get("reason"),
                             episode_index, episode["epoch"])
+                _wall_admission(args, abort, worker_id, "after_rpc",
+                                episode_index=episode_index, epoch=episode["epoch"])
+                if preparation or budgeted:
                     if _abort_requested(abort):
                         if not (terminated or truncated):
                             episode["intentional_abort_prefix"] = {
@@ -598,11 +630,11 @@ def run_worker(args, worker_id, preparation_abort=None):
             _preparation_failure(
                 abort, worker_id, "cleanup_exception", repr(error), episode_index,
                 None if episode is None else episode["epoch"])
-        if preparation:
+        if preparation or budgeted:
             if episode is not None:
                 episode["wall_sec_including_startup_and_closure"] = (
                     time.monotonic() - episode_started)
-            result["preparation_abort"] = {
+            result["preparation_abort" if preparation else "work_wall_abort"] = {
                 "requested": _abort_requested(abort), "first_failure": abort["first_failure"],
                 "scope": "cooperative stop after real RPC return; no synthetic transition"}
         result["wall_sec"] = time.monotonic() - started
@@ -613,6 +645,7 @@ def run_worker(args, worker_id, preparation_abort=None):
 
 
 def main():
+    main_started_ns = time.monotonic_ns()
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--workers", type=int, choices=(1, 2, 4), required=True)
     parser.add_argument("--schedule", default="open:101,open:101")
@@ -621,6 +654,10 @@ def main():
     parser.add_argument("--base-domain", type=int, default=120)
     parser.add_argument("--base-port", type=int, default=12001)
     parser.add_argument("--output-root", type=Path)
+    parser.add_argument("--work-wall-seconds", type=float,
+                        help="total native wall allocation from main entry, including close")
+    parser.add_argument("--close-reserve-seconds", type=float, default=120.,
+                        help="wall time reserved for normal close; default 120 seconds")
     parser.add_argument("--fault-probe", action="store_true")
     parser.add_argument("--deadline-probe", action="store_true")
     parser.add_argument("--terminal-probe", action="store_true")
@@ -633,6 +670,14 @@ def main():
     parser.add_argument("--preparation-parameter-review", action="store_true",
                         help="paused one-worker open101: frozen readonly ROS parameter audit")
     args = parser.parse_args()
+    if (not math.isfinite(args.close_reserve_seconds) or args.close_reserve_seconds <= 0
+            or (args.work_wall_seconds is not None and (
+                not math.isfinite(args.work_wall_seconds)
+                or args.work_wall_seconds <= args.close_reserve_seconds))):
+        parser.error("wall allocation must be finite and greater than the positive close reserve")
+    args.allocation_deadline_monotonic_ns = (
+        None if args.work_wall_seconds is None else
+        main_started_ns + round(args.work_wall_seconds * 1e9))
     if not 1 <= args.steps <= 300:
         parser.error("steps must be in [1,300]")
     try:
@@ -693,7 +738,7 @@ def main():
             stop.wait(1.)
 
     sampler = threading.Thread(target=sample_resources, name="mr3_resources", daemon=True)
-    started = time.monotonic()
+    started = (time.monotonic() if args.work_wall_seconds is None else main_started_ns / 1e9)
     metadata = {"kind": "scripted_p1c_sampling_not_rl", "workers": args.workers,
                 "robots_per_worker": 3, "schedule": args.schedule, "steps_per_episode": args.steps,
                 "command": sys.argv, "python": sys.executable,
@@ -710,9 +755,20 @@ def main():
                 "resource_scope": "host counters include unrelated activity; GPU driver reports",
                 "num_logical_cpus": os.cpu_count(),
                 "cpu_affinity_count": len(os.sched_getaffinity(0))}
+    if args.work_wall_seconds is not None:
+        metadata["work_wall_budget"] = {
+            "total_allocation_seconds": args.work_wall_seconds,
+            "close_reserve_seconds": args.close_reserve_seconds,
+            "started_wall_monotonic_ns": main_started_ns,
+            "allocation_deadline_monotonic_ns": args.allocation_deadline_monotonic_ns,
+            "work_deadline_monotonic_ns": args.allocation_deadline_monotonic_ns
+            - round(args.close_reserve_seconds * 1e9),
+            "scope": "cooperative admission; complete in-flight RPC then normal close; no hard kill",
+            "rpc_admission_upper_bounds_seconds": {"reset": 420., "step": 90.}}
     (directory / "benchmark_metadata.json").write_text(json.dumps(metadata, indent=2) + "\n")
     results = []
-    preparation_abort = _new_preparation_abort() if args.preparation_motion_probe else None
+    preparation_abort = (_new_preparation_abort() if args.preparation_motion_probe
+                         or args.work_wall_seconds is not None else None)
     sampler.start()
     try:
         with ThreadPoolExecutor(max_workers=args.workers) as pool:
@@ -763,15 +819,26 @@ def main():
         for worker in results)
     if preparation_abort is not None:
         passed = passed and not _abort_requested(preparation_abort)
+    wall_limit_exceeded = args.work_wall_seconds is not None and wall > args.work_wall_seconds
+    if wall_limit_exceeded:
+        _preparation_failure(preparation_abort, None, "wall_allocation_exceeded",
+                             f"actual wall including close={wall:.9f}s exceeds allocation")
+    if args.work_wall_seconds is not None:
+        passed = passed and all(len(worker["shutdown_receipts"]) == len(worker["episodes"])
+                                for worker in results)
+    passed = passed and not wall_limit_exceeded
     summary = {**metadata, "passed": passed, "wall_sec_including_all_attempts": wall,
                "valid_transitions": transitions,
                "effective_transition_per_wall_sec": transitions / wall,
                "workers_results": sorted(results, key=lambda value: value["worker_id"])}
     if preparation_abort is not None:
-        summary["preparation_abort"] = {
+        summary["preparation_abort" if args.preparation_motion_probe else "work_wall_abort"] = {
             "requested": _abort_requested(preparation_abort),
             "first_failure": preparation_abort["first_failure"],
             "scope": "first observed failing RPC/worker; other in-flight RPCs finish then close"}
+    if args.work_wall_seconds is not None:
+        summary.update(outcome="PASS" if passed else "FAIL" if wall_limit_exceeded else "INCOMPLETE",
+                       wall_limit_exceeded=wall_limit_exceeded)
     (directory / "benchmark_summary.json").write_text(json.dumps(summary, indent=2) + "\n")
     print(json.dumps({key: value for key, value in summary.items()
                       if key != "workers_results"}, indent=2))

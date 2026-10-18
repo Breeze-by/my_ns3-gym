@@ -260,6 +260,7 @@ def drive_spawn_model(model_path, robot_name, audit_path, epoch, tagged_commands
                            if audit_path else ""),
         "mr3_epoch": epoch,
         "mr3_tagged_commands": "true" if tagged_commands else "false",
+        "mr3_odometry_period_ns": "20000000" if tagged_commands else "",
     }
     for tag, value in tags.items():
         placeholder = f"<{tag}/>"
@@ -613,6 +614,15 @@ def launch_setup(context, *args, **kwargs):
         actions.append(LogInfo(msg="MR3_PHYSICS_DIAGNOSTIC_SELECTED " +
                                json.dumps(physics_diagnostic, sort_keys=True)))
     if adapter_mode:
+        if adapter_audit_path:
+            actions.append(Node(
+                package="multi_robot", executable="mr3_odometry_recorder",
+                name="mr3_odometry_recorder", output="screen",
+                parameters=[{"use_sim_time": use_sim_time,
+                             "episode_epoch": episode_epoch,
+                             "output_path": os.path.join(os.path.dirname(adapter_audit_path),
+                                                         "driver_odometry_receipts.jsonl")}],
+            ))
         actions.append(Node(
             package="multi_robot_exploration", executable="mr3_information",
             name="mr3_information", output="screen",

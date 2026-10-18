@@ -170,7 +170,7 @@ class ProductionExecutionProjectionTests(unittest.TestCase):
         changed = path.read_bytes() + b"\n# unrelated source change\n"
         with self.changed_bytes(path, changed), patch.dict(audit_ppo.RAY_BOX_EXECUTION_PINS, {
                 relative: hashlib.sha256(changed).hexdigest()}):
-            with self.assertRaisesRegex(ValueError, "sensor diagnostic revision"):
+            with self.assertRaisesRegex(ValueError, "reviewed execution source identity"):
                 self.call(audit_ppo.verify_execution_configs)
 
     def test_actual_installed_corrector_elf_cannot_be_substituted(self):
@@ -250,13 +250,21 @@ class VersionedNativeGateTests(unittest.TestCase):
                          audit_ppo.SCALAR_SHA256)
         for path, digest in audit_ppo.EXECUTION_CONFIG_PINS.items():
             if path in audit_ppo.RAY_BOX_EXECUTION_PINS:
-                actual_digest = audit_ppo.RAY_BOX_EXECUTION_PINS[path]
+                delta = audit_ppo.load_json(self.root / audit_ppo.REVIEWED_EXECUTION_DELTA)
+                actual_digest = delta['files'][path]['after_sha256']
                 self.assertEqual(self.proof[path]["sha256"], actual_digest)
                 self.assertEqual(self.proof[path]["worktree_sha256"], actual_digest)
                 self.assertEqual(self.proof[path]["normative_sha256"], digest)
                 self.assertEqual(self.proof[path]["projected_normative_sha256"], digest)
                 actual = (self.root / path).read_bytes()
-                intermediate = audit_ppo.project_ray_box_runtime(path, actual)
+                # The explicit new revision reverses to the exact previous
+                # ray-box source, then both original inverse gates still hold.
+                with patch.object(audit_ppo, 'verify_frozen_pins', return_value={}):
+                    prior, _ = audit_ppo.project_reviewed_execution(
+                        self.root, 'a' * 40, path, actual)
+                self.assertEqual(hashlib.sha256(prior).hexdigest(),
+                                 audit_ppo.RAY_BOX_EXECUTION_PINS[path])
+                intermediate = audit_ppo.project_ray_box_runtime(path, prior)
                 normative = audit_ppo.subprocess.check_output(
                     ["git", "show", audit_ppo.EXECUTION_NORMATIVE_FREEZE + ":" + path],
                     cwd=self.root)

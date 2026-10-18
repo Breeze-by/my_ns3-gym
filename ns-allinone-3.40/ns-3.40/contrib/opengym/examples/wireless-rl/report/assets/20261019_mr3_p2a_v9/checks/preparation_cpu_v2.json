@@ -1,0 +1,41 @@
+{
+  "schema": "mr3-preparation-cpu-test-receipt-v2",
+  "passed": true,
+  "returncode": 0,
+  "command": [
+    "/usr/bin/python3",
+    "-B",
+    "-m",
+    "unittest",
+    "mr3_learning.tests.test_preparation",
+    "-v"
+  ],
+  "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+  "tests": 10,
+  "reported_test_seconds": "1.312",
+  "tool_wall_seconds": 2.001255319,
+  "stdout_and_stderr": "test_actual_cpu_ready_wait_stop_and_fifo_match_production_boundary_readers (mr3_learning.tests.test_preparation.PreparationTests) ... ok\ntest_aggregate_and_fifo_manifest_preserve_actual_members_without_inventing_rc (mr3_learning.tests.test_preparation.PreparationTests) ... ok\ntest_builder_preserves_original38_roles_workloads_and_draft_admission (mr3_learning.tests.test_preparation.PreparationTests) ... ok\ntest_command_output_cannot_override_actual_nonzero_wait_result_or_overwrite (mr3_learning.tests.test_preparation.PreparationTests) ... ok\ntest_exhausted_budget_submits_no_child (mr3_learning.tests.test_preparation.PreparationTests) ... ok\ntest_explicit_trace_capture_key_never_overrides_actual_rc_or_claims_science (mr3_learning.tests.test_preparation.PreparationTests) ... ok\ntest_first_required_failure_drains_submitted_child_and_skips_dependant (mr3_learning.tests.test_preparation.PreparationTests) ... ok\ntest_missing_role_math_replacement_or_cycle_is_rejected_before_native (mr3_learning.tests.test_preparation.PreparationTests) ... ok\ntest_optional_real_nonzero_rc_does_not_suppress_dependent_pooled_review (mr3_learning.tests.test_preparation.PreparationTests) ... ok\ntest_reset_retains_optional_raw_failure_and_eight_leaf_pooled_contract (mr3_learning.tests.test_preparation.PreparationTests) ... ok\n\n----------------------------------------------------------------------\nRan 10 tests in 1.312s\n\nOK\n",
+  "scope": "CPU only: real finite subprocess wait, real current /proc PID/start and production ready/wait/stop/FIFO boundary functions; no simulation, native admission, training or physical/scientific PASS",
+  "sources_sha256": {
+    "mr3_learning/preparation.py": "2cb9391239ccc4ad0dedbc4fb3745d6c6760c0ea20c7ec474ed477fce9932118",
+    "mr3_learning/tests/test_preparation.py": "96c8411e9e00bddcebe69b4468c444af311d6243b14c1a912ae1e4daee6e00c8",
+    "mr3_learning/native_custody.py": "60c35cadf67d01c4f4a14fb9d345aab37114279aba50b297abce9c8e75340bbc"
+  },
+  "boundary_functions_exercised": [
+    "write_ready_receipt",
+    "read_ready_receipt",
+    "read_wait_boundary",
+    "read_fifo_receipts"
+  ],
+  "notable_checks": [
+    "38 original-plus-cadence required roles retained",
+    "default scientific passed predicate enforced",
+    "trace explicit capture key retains real nonzero-rc failure",
+    "first required failure drains submitted processes then skips",
+    "exclusive results and receipts cannot overwrite",
+    "persistent coordinator scope and actual argv retained",
+    "actual CPU child READY identity matches Runner actual PID/start",
+    "real waited receipt SHA binds stop receipt",
+    "actual aggregate FIFO manifest consumed by production reader and raw byte change rejected"
+  ]
+}

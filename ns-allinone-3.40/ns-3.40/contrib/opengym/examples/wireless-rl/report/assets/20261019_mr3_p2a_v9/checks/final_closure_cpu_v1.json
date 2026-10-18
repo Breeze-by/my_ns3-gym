@@ -1,0 +1,56 @@
+{
+  "schema": "mr3-final-closure-cpu-v1",
+  "scope": "Synthetic CPU evidence only. Actual finite subprocess PID/start gone positive and real still-live fixture owner negative; no ROS/native task or scientific credit.",
+  "source_sha256": "d26c6dab60ac3f68144832aa3cdb9356fd3cb53753e0025282d9c132edaeff57",
+  "cases": [
+    {
+      "name": "gone",
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v9/final_closure.py",
+        "--receipt",
+        "/tmp/mr3_v9_final_closure_cpu_ayc57s76/gone_receipt.json",
+        "--root",
+        "/tmp/mr3_v9_final_closure_cpu_ayc57s76",
+        "--summary",
+        "/tmp/mr3_v9_final_closure_cpu_ayc57s76/summary.json",
+        "--freeze",
+        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "--output",
+        "/tmp/mr3_v9_final_closure_cpu_ayc57s76/gone_result.json"
+      ],
+      "returncode": 0,
+      "expected_returncode": 0,
+      "stdout": "{\"passed\": true, \"closure_passed\": true, \"saved_identity_count\": 1}\n",
+      "stderr": "",
+      "closure_passed": true,
+      "passed": true
+    },
+    {
+      "name": "present",
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v9/final_closure.py",
+        "--receipt",
+        "/tmp/mr3_v9_final_closure_cpu_ayc57s76/present_receipt.json",
+        "--root",
+        "/tmp/mr3_v9_final_closure_cpu_ayc57s76",
+        "--summary",
+        "/tmp/mr3_v9_final_closure_cpu_ayc57s76/summary.json",
+        "--freeze",
+        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "--output",
+        "/tmp/mr3_v9_final_closure_cpu_ayc57s76/present_result.json"
+      ],
+      "returncode": 1,
+      "expected_returncode": 1,
+      "stdout": "{\"passed\": false, \"closure_passed\": false, \"saved_identity_count\": 1}\n",
+      "stderr": "",
+      "closure_passed": false,
+      "passed": true
+    }
+  ],
+  "passed": true
+}
