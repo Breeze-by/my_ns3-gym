@@ -1,6 +1,6 @@
 # wireless-rl memory — MR3
 
-V24修复WorldCreated安装阶段的无效计数读取：保留Load-before-Init回调，以有定义的加载/传感器状态和零时钟准入，iteration明确null而不伪造零；Running实值仅记录。实际新库782d与源码f826及固定审计绑定已准备，原数学/1ms/停车/安全/95%门不变。原V23联合guard具体失败分项未观测，全部FAIL保留。累计71.97839368507266/18000，须新clean pushed冻结完整四阶段重验；P2A.0未完成、无PPO。见[V24](report/20261018_mr3_p2a0_v24_install.md)。
+V24冻结5d684c46实际准入110/210及安装/参数读回通过，但14个返回step后tb2 raw角速1.206191>原1.2，整体FAIL、后三SKIP。48保存身份gone/39原生exit0与forced失败样本清理分别保留，strict close未通过。上游raw在20ms sim跳0→.1，guard原值放行；Humble平滑器walltimer时间接口待下一版修复并完整重验，全部原门/.8cap保持。累计569.733696886804/18000，无PPO。见[V24](report/20261018_mr3_p2a0_v24_install.md)。
 
 2026-10-18: V19 freeze72d0465ddd1bbee09af117cfd9d89b7e729f8578 fixed50/150 diagnostic pair closed. Both admission/1ms capture/strict close PASS; baseline original physical PASS, contrast original physical FAIL because all33 snapshots have zero GOAL for every robot and no stopping stimulation. Own maps already retain near-seed100; no occupied clearing or .29 relaxation. 150 not selected, V17 stopping failure unresolved. Native1638.4207719592378sec; V18+V19=2489.3860735194758 of3600 ceiling. 78/78 native exits0; fresh91 PID/start identities gone. No matrix/PPO credit, pilot balance unchanged. See [V19](report/20261018_mr3_p2a0_v19.md).
 

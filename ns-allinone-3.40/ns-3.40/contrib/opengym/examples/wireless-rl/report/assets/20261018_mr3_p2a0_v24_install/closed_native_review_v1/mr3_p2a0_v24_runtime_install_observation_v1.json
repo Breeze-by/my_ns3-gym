@@ -1,0 +1,31 @@
+{
+  "schema": "mr3-v24-runtime-install-observation-data-v1",
+  "scope": "Read-only active prefix observation, not formal review or final closure/capture PASS. No entrypoint, DDS, probe, test, signal or native started.",
+  "utc": "2026-10-18T00:14:39.713997+00:00",
+  "monotonic_ns": 4027874726956456,
+  "freeze": "5d684c46f9f99a867a94f1fed8c52e923e2486ef",
+  "source": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v24_interface/worker0/episode001_open_101/ray_box_corrector.jsonl",
+  "read_limit_bytes": 32768,
+  "bytes_read": 3723,
+  "prefix_sha256": "ec4221f6a48e95c36314e2e072f45274379c2d5e095ac5eeeb08082e75a83183",
+  "stat_before": {
+    "dev": 2051,
+    "ino": 78655064,
+    "size": 3723,
+    "mtime_ns": 1792282438008930286
+  },
+  "stat_after": {
+    "dev": 2051,
+    "ino": 78655064,
+    "size": 3723,
+    "mtime_ns": 1792282438008930286
+  },
+  "raw_prefix_utf8": "{\"actual_ode_library_path\":\"/usr/lib/x86_64-linux-gnu/libgazebo_ode.so.11.10.2\",\"compiled_collision_header_sha256\":\"c619442d038e4bc6ea0695ada34d7074ee83d775b2137222ab9fb6bf8193879b\",\"compiled_collision_source_sha256\":\"d556dda57250da3680a7d5a9862416f6196cab9763e495ee75269307b87715cb\",\"compiled_source_sha256\":\"f82646c8434b77c42f585ac1828eda84640bac873f70cc7de6848cfbd6493473\",\"epoch\":\"mr3_p2a0_20261018_v24_interface_w0_e1_004ab199\",\"kind\":\"configuration\",\"loaded_library_path\":\"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_ray_box_corrector.so\",\"plugin_type\":\"SystemPlugin\",\"process_id\":3585721,\"schema\":\"mr3-ray-box-corrector-audit-v1\",\"scope\":\"Process-global dRayClass/dBoxClass finite-segment correction; all other collider pairs unchanged. No raw range filtering.\"}\n{\"epoch\":\"mr3_p2a0_20261018_v24_interface_w0_e1_004ab199\",\"failed_preconditions\":[],\"installation_phase\":\"world_created_during_load_before_world_init\",\"kind\":\"installed\",\"model_sensor_count\":0,\"native_ode_quickstep_iterations\":150,\"native_ode_world_available\":true,\"physics_available\":true,\"physics_max_step_size_sec\":0.001,\"physics_type\":\"ode\",\"process_id\":3585721,\"registered_pair\":[\"dRayClass\",\"dBoxClass\"],\"schema\":\"mr3-ray-box-corrector-audit-v1\",\"scope\":\"WorldCreated during World::Load, after ODE construction and before Load completes/World::Init/Run/sensor creation. The iteration counter is not initialized at this phase and is not read.\",\"world\":\"p1c_open\",\"world_clock_ns\":0,\"world_iterations\":null,\"world_iterations_available\":false,\"world_iterations_unavailable_reason\":\"counter_initialized_only_in_World_Init\",\"world_load_completed\":false,\"world_lookup_succeeded\":true,\"world_running_getter\":true,\"world_sensors_initialized\":false}\n{\"box_lengths\":[0.5,2.8,1.5],\"box_rotation\":[0.9004471023526769,0.43496553411123023,0.0,0.0,-0.43496553411123023,0.9004471023526769,-0.0,0.0,-0.0,0.0,1.0,0.0],\"corrected_axis\":null,\"corrected_depth\":null,\"corrected_hit\":false,\"direction_box_local\":[-0.24125660641088054,0.9704613592838746,0.0],\"epoch\":\"mr3_p2a0_20261018_v24_interface_w0_e1_004ab199\",\"finite_ray_length\":9.88,\"kind\":\"first_actual_callback\",\"process_id\":3585721,\"published_world_clock_ns\":236000000,\"ray_body_is_null\":true,\"ray_direction_world\":[0.2048784313091034,0.9787874275777765,0.0],\"ray_start_world\":[-0.03941458824290759,-0.33254550869066685,0.131],\"schema\":\"mr3-ray-box-corrector-audit-v1\",\"scope\":\"Primitive copied inside actual collider callback. Nearparallel is a branch condition, not proof of a legacy false hit. No old collider shadow runs.\",\"start_box_local\":[-1.3681795216903658,-3.6955601682856276,-0.619]}\n{\"box_lengths\":[0.265,0.265,0.089],\"box_rotation\":[0.9999588040680607,-2.2157373480188492e-05,0.009076875884605118,0.0,2.3410396534876598e-05,0.9999999902123369,-0.0001379394049640195,0.0,-0.009076872739388802,0.00013814621568543733,0.9999587947995137,0.0],\"corrected_axis\":null,\"corrected_depth\":null,\"corrected_hit\":false,\"direction_box_local\":[0.5400596075672659,-0.8416267701744584,-7.806832447859735e-09],\"epoch\":\"mr3_p2a0_20261018_v24_interface_w0_e1_004ab199\",\"finite_ray_length\":9.88,\"kind\":\"first_outside_nearparallel_toward_slab\",\"process_id\":3585721,\"published_world_clock_ns\":1235000000,\"ray_body_is_null\":true,\"ray_direction_world\":[0.5400560074762455,-0.8416141189262567,-0.005018327689402254],\"ray_start_world\":[0.0020350007634536253,-0.5510131597946795,0.12865185915006574],\"schema\":\"mr3-ray-box-corrector-audit-v1\",\"scope\":\"Primitive copied inside actual collider callback. Nearparallel is a branch condition, not proof of a legacy false hit. No old collider shadow runs.\",\"start_box_local\":[0.06480696308902062,-0.10099530303983693,0.07299993166618353]}\n",
+  "kinds": [
+    "configuration",
+    "installed",
+    "first_actual_callback",
+    "first_outside_nearparallel_toward_slab"
+  ],
+  "whole_file_finality_claimed": false
+}

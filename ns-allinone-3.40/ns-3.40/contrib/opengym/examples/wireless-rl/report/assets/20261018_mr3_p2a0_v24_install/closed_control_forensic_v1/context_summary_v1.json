@@ -1,0 +1,375 @@
+{
+  "additional_bindings": {
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a0/mr3_p2a0_20261018_v24_interface/worker0/episode001_open_101/actual_nav2_parameters.json": {
+      "bytes": 33741,
+      "sha256": "d3e10d8ff95b34e673900f787161fa3453856e438b56c878d458a8c6e44548b9",
+      "stat": [
+        33741,
+        1792282567087331418,
+        78655194
+      ]
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/paired_wheel_slew.hpp": {
+      "bytes": 3592,
+      "sha256": "dca3dbaf01251cf7ffe167f1dabb23a45b4fc95d6ad317dcc3290ff50ecf9a1b",
+      "stat": [
+        3592,
+        1792238291514482992,
+        73570174
+      ]
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/src/mr3_gazebo_diff_drive.cpp": {
+      "bytes": 33094,
+      "sha256": "09f741ee154d620fb3d62f8473853929231093fd8cc0b9a4be62b535b514dc05",
+      "stat": [
+        33094,
+        1792214987178309315,
+        73570173
+      ]
+    },
+    "/tmp/mr3_p2a0_v24_model_fault_review_v1/chain_review_v1.json": {
+      "bytes": 220762,
+      "sha256": "44efd14c15533dc8e35b29350d387e98e36edae033eae26ec45a23b383da90df",
+      "stat": [
+        220762,
+        1792283291325342181,
+        78655486
+      ]
+    },
+    "/tmp/mr3_p2a0_v24_model_fault_review_v1/drive_tb2_window.jsonl.gz": {
+      "bytes": 9228,
+      "sha256": "e870314cc9a3df9c1f44369931dd8acc7855a5e7fe6089b7e966506b6df81776",
+      "stat": [
+        9228,
+        1792283291285340189,
+        78655484
+      ]
+    }
+  },
+  "all_incoming_targets_within_caps": {
+    "caps_pass": true,
+    "count": 110,
+    "max_abs_v": 0.2,
+    "max_abs_w": 0.8
+  },
+  "all_window_actuations_match_latest_received_tuple": true,
+  "argv": [
+    "/tmp/mr3_p2a0_v24_model_fault_review_v1/finalize_context_v1.py"
+  ],
+  "base_report": {
+    "bytes": 220762,
+    "path": "/tmp/mr3_p2a0_v24_model_fault_review_v1/chain_review_v1.json",
+    "sha256": "44efd14c15533dc8e35b29350d387e98e36edae033eae26ec45a23b383da90df",
+    "stat": [
+      220762,
+      1792283291325342181,
+      78655486
+    ]
+  },
+  "driver_configuration": {
+    "actuation_algorithm": "measured_joint_rim_paired_common_fraction_v1",
+    "command_mode": "tagged",
+    "command_topic": "/tb2/mr3_drive/target",
+    "compiled_header_sha256": "a7c237943e8728f72cd39e815b8aa47c0bff45374941293aacf77384e3c4b63e",
+    "compiled_helper_sha256": "dca3dbaf01251cf7ffe167f1dabb23a45b4fc95d6ad317dcc3290ff50ecf9a1b",
+    "compiled_source_sha256": "09f741ee154d620fb3d62f8473853929231093fd8cc0b9a4be62b535b514dc05",
+    "compiled_target_contract_sha256": "4be4d77de247a5bcd427eb6948165e85098eb361030cf89d278d6df92e959d41",
+    "epoch": "mr3_p2a0_20261018_v24_interface_w0_e1_004ab199",
+    "joint_names": [
+      "wheel_right_joint",
+      "wheel_left_joint"
+    ],
+    "kind": "configuration",
+    "library_filename": "libmr3_gazebo_diff_drive.so",
+    "loaded_library_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_gazebo_diff_drive.so",
+    "max_acceleration_mps2": 1.0,
+    "max_torque_nm": 20.0,
+    "num_wheel_pairs": 1,
+    "odometry_source": 1,
+    "record_sequence": 1,
+    "robot": "tb2",
+    "schema": "mr3-drive-actuation-v2",
+    "sim_time_ns": 2534000000,
+    "status_topic": "/tb2/mr3_drive/status",
+    "update_rate_hz": 30.0,
+    "upstream_source_sha256": "7a6ef5eb9b48292f1b4f3d9a16907815d5d5a751e0a5635a1cac84315b95b498",
+    "wheel_diameter_m": [
+      0.066
+    ],
+    "wheel_order": [
+      "right",
+      "left"
+    ],
+    "wheel_separation_m": [
+      0.287
+    ]
+  },
+  "freeze": "5d684c46f9f99a867a94f1fed8c52e923e2486ef",
+  "interpretation": [
+    "The angular violation occurs during pure-CW to forward-CW transition, while demanded yaw magnitude is decreasing; this window has no demanded angular sign reversal.",
+    "The first zero storage is at 56.98 after the 56.968 odometry sample, so it cannot be the preceding cancel cause of that sample.",
+    "Current wheel yaw proxy and actual body yaw exceed 1.2 while desired yaw is -0.378947; applied wheel yaw proxy remains -1.101559 because the limiter starts from measured current wheel rims.",
+    "The paired rim limiter bounds its instruction displacement from measured joint speed; it does not establish the measured body yaw limit.",
+    "WorldAngularVel().Z is copied directly to odometry angular.z; float yaw conversion is only used for linear x/y.",
+    "Actual OPEN_LOOP smoother settings are nominal .5/3.2 at 20Hz; observed received target differences do not obey those values as a sim-time target-slew theorem.",
+    "This evidence does not uniquely separate contact, slip, servo or numerical dynamics and does not prove a new angular cap or new ramp sufficient."
+  ],
+  "phase": {
+    "actual_second_goal_command": {
+      "command": {
+        "action": 625,
+        "command_id": 14,
+        "created_at": 55.0,
+        "epoch": "mr3_p2a0_20261018_v24_interface_w0_e1_004ab199",
+        "expires_at": 57.0,
+        "observation_digest": "ad4406f03de028f25b32c0cb08afbe558280caf16558c67b933f241a1cb95f74",
+        "observation_sequence": 14
+      },
+      "kind": "step",
+      "returned_elapsed_sec": 14.0,
+      "row_sha256": "37704dfe01513eeed426b0455893edb7c6d510b70992d9d5688137b998dab2ef",
+      "source_line": 15,
+      "source_offset": 547395
+    },
+    "first_fault_zero_storage": {
+      "cmd_seq": 2722,
+      "desired_v": 0.0,
+      "desired_w": 0.0,
+      "epoch": "mr3_p2a0_20261018_v24_interface_w0_e1_004ab199",
+      "kind": "command_received",
+      "record_sequence": 7045,
+      "robot": "tb2",
+      "schema": "mr3-drive-actuation-v2",
+      "sim_time_ns": 56980000000,
+      "target_clock_ns": 56980000000,
+      "target_decision_sequence": 2848
+    },
+    "first_forward_mixed_command": {
+      "cmd_seq": 2707,
+      "desired_v": 0.1,
+      "desired_w": -0.631578947368421,
+      "epoch": "mr3_p2a0_20261018_v24_interface_w0_e1_004ab199",
+      "kind": "command_received",
+      "record_sequence": 7006,
+      "robot": "tb2",
+      "schema": "mr3-drive-actuation-v2",
+      "sim_time_ns": 56680000000,
+      "target_clock_ns": 56680000000,
+      "target_decision_sequence": 2833
+    },
+    "immediately_previous_command": {
+      "cmd_seq": 2706,
+      "desired_v": 0.0,
+      "desired_w": -0.8,
+      "epoch": "mr3_p2a0_20261018_v24_interface_w0_e1_004ab199",
+      "kind": "command_received",
+      "record_sequence": 7003,
+      "robot": "tb2",
+      "schema": "mr3-drive-actuation-v2",
+      "sim_time_ns": 56660000000,
+      "target_clock_ns": 56660000000,
+      "target_decision_sequence": 2832
+    },
+    "nonzero_angular_signs": [
+      -1.0
+    ],
+    "observed_target_delta": {
+      "dv_over_dt_mps2": 5.0,
+      "dw_over_dt_radps2": 8.42105263157895,
+      "scope": "Actual received target finite difference, not measured body acceleration",
+      "target_clock_dt_sec": 0.02
+    },
+    "pure_turn_desired": {
+      "first_actuation_ns": 55574000000,
+      "last_actuation_ns": 56662000000,
+      "v": 0.0,
+      "w": -0.8
+    }
+  },
+  "prospective_repair_comparison_scope": [
+    "A smaller angular command cap is the narrower profile change but must be consistent across Shim, DWB, smoother, guard and actual parameter/source audit; its body-bound sufficiency still needs the new same-freeze full matrix.",
+    "An actual sim-time target ramp would address the observed 20ms target jumps explicitly, but is a larger actuator/control contract change with new initial/reset/stop treatment; a nominal smoother readback alone cannot supply that proof.",
+    "No change to measured .30/1.2/7 bounds, original stopping test, goal selection or failure attribution is implied."
+  ],
+  "raw_body_source_ref": {
+    "bytes": 1116,
+    "line_number": 111765,
+    "offset": 126134715,
+    "row": {
+      "epoch": "mr3_p2a0_20261018_v24_interface_w0_e1_004ab199",
+      "kind": "own_odom",
+      "payload": {
+        "input_sequence": 1601,
+        "message": {
+          "child_frame_id": "base_footprint",
+          "header": {
+            "frame_id": "odom",
+            "stamp": {
+              "nanosec": 968000000,
+              "sec": 56
+            }
+          },
+          "pose": {
+            "covariance": [
+              1e-05,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              1e-05,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              1000000000000.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              1000000000000.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              1000000000000.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.001
+            ],
+            "pose": {
+              "orientation": {
+                "w": 0.8851622296398457,
+                "x": -0.0013913219284140167,
+                "y": 0.0026322812116750475,
+                "z": 0.46527299786032184
+              },
+              "position": {
+                "x": 0.0009979273829707278,
+                "y": 0.8549750210923851,
+                "z": 0.007940547370264816
+              }
+            }
+          },
+          "twist": {
+            "covariance": [
+              1e-05,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              1e-05,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              1000000000000.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              1000000000000.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              1000000000000.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.001
+            ],
+            "twist": {
+              "angular": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": -1.206191435678961
+              },
+              "linear": {
+                "x": 0.08821024478321851,
+                "y": 0.011317212627953294,
+                "z": 0.0
+              }
+            }
+          }
+        },
+        "robot": "tb2"
+      },
+      "record_sequence": 111765,
+      "schema": "mr3-motion-safety-v1",
+      "sim_time_sec": 56.96,
+      "wall_monotonic_ns": 4028299965030204
+    },
+    "sha256": "52669e72876fa7b5b7849203edb83f565a22081daa5029d17cc2e5b71feb6ebc"
+  },
+  "same_clock_peak_actuation": {
+    "applied_joint_command_radps": [
+      -1.6445425650211463,
+      7.935685680352194
+    ],
+    "applied_rim_mps": [
+      -0.05426990464569783,
+      0.2618776274516224
+    ],
+    "cmd_seq": 2721,
+    "current_joint_radps": [
+      -2.6748455953241765,
+      7.974336317270593
+    ],
+    "current_rim_mps": [
+      -0.08826990464569782,
+      0.26315309846992957
+    ],
+    "desired_rim_mps": [
+      0.14562105263157898,
+      0.25437894736842104
+    ],
+    "desired_v": 0.2,
+    "desired_w": -0.3789473684210526,
+    "row_sha256": "897dec86315221bd4f6d6c99309ae8d9c4945c19d36c635a9c1fc065e9a79069",
+    "sim_time_ns": 56968000000,
+    "source_line": 7044,
+    "source_offset": 3212924,
+    "target_clock_ns": 56960000000,
+    "target_decision_sequence": 2847,
+    "wheel_applied_yaw_proxy_radps": -1.1015593452868302,
+    "wheel_current_yaw_proxy_radps": -1.2244703941311061,
+    "wheel_desired_yaw_radps": -0.3789473684210525
+  },
+  "schema": "mr3-v24-bounded-actuation-context-v1",
+  "scope": "Posthoc closed-log description only; no formal rerun or repair validation",
+  "script_sha256": "275238ebd61d33b370152a86dd4419fada96e21116c6c877689fe3007338bf58",
+  "trigger_math": {
+    "classification": "Actual fresh selectedown raw angularnorm gate, not stale/geometry/acceleration predicate; physical mechanism remains separately interpreted.",
+    "commit_task_elapsed_ns": 14980000000,
+    "full_angular_norm_radps": 1.206191435678961,
+    "original_limit_radps": 1.2,
+    "original_planar_limit_mps": 0.3,
+    "over_by_radps": 0.006191435678960966,
+    "planar_norm_mps": 0.08893327041316784,
+    "source_age_ns": 12000000
+  },
+  "wall_seconds": 0.015777093823999166
+}

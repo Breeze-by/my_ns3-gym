@@ -9,7 +9,7 @@
 
 | 文件 | 用途 | 能提供的信用 |
 | --- | --- | --- |
-| [P2A.0 V24 安装生命周期](20261018_mr3_p2a0_v24_install.md) | 修正preInit计数测量并绑定实际新库 | SDK/构建/窄CPU与独审通过；新冻结完整矩阵待准入 |
+| [P2A.0 V24 安装生命周期](20261018_mr3_p2a0_v24_install.md) | 修正preInit计数测量并绑定实际新库 | 真实安装生效；14步后角速越界FAIL/后三SKIP，待平滑器时钟修复 |
 | [P2A.0 V23 显式解释器](20261018_mr3_p2a0_v23_entry.md) | 固定学习侧conda/失败回执/真实CLI前检 | 真实前检PASS；native安装guard异常，0有效transition/后三SKIP，生命周期待修 |
 | [P2A.0 V22 RayBox与入口失败](20261018_mr3_p2a0_v22_ray_box.md) | 实际ODE求交修正、库构建及来源准入 | 来源PASS；解释器入口FAIL，0机器人/0API，后三SKIP；新冻结完整重验 |
 | [P2A.0 V21 实际射线来源闭合](20261018_mr3_p2a0_v21_ray.md) | 三机自身base碰撞回波，221040 beam与raw CDR逐位一致 | capture/严格关闭PASS；停车刺激不足physical FAIL，无矩阵/训练信用 |

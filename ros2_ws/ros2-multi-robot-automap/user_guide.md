@@ -1,6 +1,6 @@
 # 三机器人 ROS 建图导航：当前实现指南
 
-V24修复WorldCreated安装阶段的无效计数读取：保留Load-before-Init回调，以有定义的加载/传感器状态和零时钟准入，iteration明确null而不伪造零；Running实值仅记录。实际新库782d与源码f826及固定审计绑定已准备，原数学/1ms/停车/安全/95%门不变。原V23联合guard具体失败分项未观测，全部FAIL保留。累计71.97839368507266/18000，须新clean pushed冻结完整四阶段重验；P2A.0未完成、无PPO。见[V24](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_v24_install.md)。
+V24冻结5d684c46实际准入110/210及安装/参数读回通过，但14个返回step后tb2 raw角速1.206191>原1.2，整体FAIL、后三SKIP。48保存身份gone/39原生exit0与forced失败样本清理分别保留，strict close未通过。上游raw在20ms sim跳0→.1，guard原值放行；Humble平滑器walltimer时间接口待下一版修复并完整重验，全部原门/.8cap保持。累计569.733696886804/18000，无PPO。见[V24](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_v24_install.md)。
 
 V19固定50/150隔离诊断已关闭：两组加载、逐毫秒采集和严格关闭通过；150组三机全程没有合法GOAL或停车刺激，原物理FAIL，150尚未采用，P2A.0仍未完成。详见[V19](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_v19.md)。原启动命令、物理门和pilot余额不变。
 

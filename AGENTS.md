@@ -2,7 +2,7 @@
 
 # Codex Monorepo Memory — MR3
 
-2026-10-18: V24 repairs undefined preInit iteration measurement in the existing WorldCreated callback. Counter is explicitly unavailable/null; source-bound Load-before-Init flags/clock0/noSensors and actual ODE150/.001 remain required. Running is recorded, not a thread-start gate. Actual new SO782d/sourcef826/fixed auditorcc467064 prepared; all math/stopping/safety/95% unchanged. V23 individual failing guard branch was not measured; all failures retained. Prior71.97839368507266/18000, new clean pushed full4stage remains necessary. P2A.0 incomplete/no PPO. See wireless-rl/report/20261018_mr3_p2a0_v24_install.md.
+2026-10-18: V24 freeze5d684c46 actual preflight110/210 and installed preInit fields/ODE150/.001 passed, but tb2 raw1.206191>original1.2 after14 returned steps. OverallFAIL/later3SKIP;48 saved identities absent/39 native exits0 do not replace forced/failedsample/worker-15 strictcloseFAIL. Exact raw input jumps0→.1 within20ms sim and guard passes it unchanged; actual Humble smoother walltimer timing needs new-version repair. No .8cap/body/safety/task reduction or PPO;569.733696886804/18000 charged. See wireless-rl/report/20261018_mr3_p2a0_v24_install.md.
 
 2026-10-18: V20_sensor freeze b33ff700 closed ordinary4 source capture/strict native shutdown; 39 exits0 and47 saved PID/start identities gone. Legal near raw scan returns persist and map to own100, actual hit geometry still unknown; ROS synchronous throttling and SDK stationary-refresh semantics differ, so the early missing-setter bug inference is withdrawn. No production SLAM change/150 selection/matrix or PPO credit; P2A.0 remains incomplete. See wireless-rl/report/20261018_mr3_p2a0_v20_sensor.md.
 

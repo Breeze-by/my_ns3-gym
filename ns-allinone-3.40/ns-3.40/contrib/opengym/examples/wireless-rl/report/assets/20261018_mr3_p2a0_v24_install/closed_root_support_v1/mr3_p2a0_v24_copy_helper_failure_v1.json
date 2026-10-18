@@ -1,0 +1,8 @@
+{
+  "scope": "Root archive copy failure, no experiment/simulator retry. Original source packets unchanged; earlier copied bytes retained and checked identical on resume.",
+  "source": "/tmp/mr3_p2a0_v24_copy_closed_evidence_v1.py",
+  "error": "FileNotFoundError: /tmp/mr3_p2a0_v24_body_trigger_independent_v1/manifest_v1.json",
+  "cause": "Root assumed manifest basename before consuming handoff; actual source is sealed_manifest_v1.json.",
+  "fix": "Only source manifest mapping and byte-identical existing destination resume handling changed in v2.",
+  "original_tool_traceback_separately_saved": false
+}

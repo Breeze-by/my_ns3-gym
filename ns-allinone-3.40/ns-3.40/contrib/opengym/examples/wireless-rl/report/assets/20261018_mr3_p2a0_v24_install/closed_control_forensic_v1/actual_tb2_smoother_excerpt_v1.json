@@ -1,0 +1,82 @@
+{
+  "epoch": "mr3_p2a0_20261018_v24_interface_w0_e1_004ab199",
+  "input": {
+    "bytes": 33741,
+    "sha256": "d3e10d8ff95b34e673900f787161fa3453856e438b56c878d458a8c6e44548b9",
+    "stat": [
+      33741,
+      1792282567087331418,
+      78655194
+    ]
+  },
+  "node": {
+    "epoch": "mr3_p2a0_20261018_v24_interface_w0_e1_004ab199",
+    "node": "/tb2/velocity_smoother",
+    "request_wall_monotonic_ns": 4027961991246577,
+    "response_wall_monotonic_ns": 4027961993223430,
+    "service": "/tb2/velocity_smoother/get_parameters",
+    "source_clock_ns": 42000000000,
+    "typed_parameters": [
+      {
+        "name": "max_velocity",
+        "type": 8,
+        "type_field": "double_array_value",
+        "value": [
+          0.2,
+          0.0,
+          0.8
+        ]
+      },
+      {
+        "name": "min_velocity",
+        "type": 8,
+        "type_field": "double_array_value",
+        "value": [
+          -0.2,
+          0.0,
+          -0.8
+        ]
+      },
+      {
+        "name": "feedback",
+        "type": 4,
+        "type_field": "string_value",
+        "value": "OPEN_LOOP"
+      },
+      {
+        "name": "smoothing_frequency",
+        "type": 3,
+        "type_field": "double_value",
+        "value": 20.0
+      },
+      {
+        "name": "use_sim_time",
+        "type": 1,
+        "type_field": "bool_value",
+        "value": true
+      },
+      {
+        "name": "max_accel",
+        "type": 8,
+        "type_field": "double_array_value",
+        "value": [
+          0.5,
+          0.0,
+          3.2
+        ]
+      },
+      {
+        "name": "max_decel",
+        "type": 8,
+        "type_field": "double_array_value",
+        "value": [
+          -0.5,
+          0.0,
+          -3.2
+        ]
+      }
+    ]
+  },
+  "passed": true,
+  "scope": "Actual reset-hook parameter response, not an acceleration guarantee"
+}
