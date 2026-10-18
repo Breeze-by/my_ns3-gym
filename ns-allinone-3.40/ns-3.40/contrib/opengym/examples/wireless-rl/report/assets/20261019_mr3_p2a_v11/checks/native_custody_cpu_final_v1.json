@@ -1,0 +1,54 @@
+{
+  "schema": "mr3-native-custody-cpu-v1",
+  "recorded_at_utc": "2026-10-18T18:42:57.277988+00:00",
+  "passed": true,
+  "command": [
+    "env",
+    "PYTHONNOUSERSITE=1",
+    "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+    "-m",
+    "unittest",
+    "mr3_learning.tests.test_native_custody",
+    "-q"
+  ],
+  "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+  "returncode": 0,
+  "observed_output": "Ran 27 tests in 1.414s\n\nOK",
+  "tests": 27,
+  "failures": 0,
+  "errors": 0,
+  "source_files": {
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/native_custody.py": {
+      "sha256": "e304a8bc2352ba738915267cf9f28caf6379c19bc5347b0c67294c0f1c34d1ee",
+      "bytes": 56066
+    },
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_native_custody.py": {
+      "sha256": "c5602b983a591053ba753154fd1342ec97cd53f1220c49ff0ea69b270ab4bf32",
+      "bytes": 23198
+    }
+  },
+  "diff_check": {
+    "command": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "cwd": "/home/zhuyulab/ns3-workspace",
+    "returncode": 0
+  },
+  "preserved_debug_files": {
+    "/tmp/mr3_p2a_v11_candidate_seven_roles_debug_v1.json": {
+      "sha256": "77def322008918ff213c601bf2ac62aae49d510843ecbe0c653f1d96bf4821c6",
+      "bytes": 1095072
+    },
+    "/tmp/mr3_p2a_v11_native_custody_cpu_draft_receipt_v1.json": {
+      "sha256": "a2ff992f62bb2e29d0970a9ead8a0c6f6b01025f457c2dc112a1ca299f504505",
+      "bytes": 1591
+    },
+    "/tmp/mr3_p2a_v11_native_custody_candidate_v1.py": {
+      "sha256": "e304a8bc2352ba738915267cf9f28caf6379c19bc5347b0c67294c0f1c34d1ee",
+      "bytes": 56066
+    }
+  },
+  "scope": "After parent confirmed V10 all identities gone, applied only the exact map-basename selector with explicit deleted rejection and bound controller default-name handling to owned module/tests. Production source bytes equal the earlier /tmp seven-role debug candidate. No launch/library changes, new native, GPU, build or commit. Old V9/V10 failed captures remain failed; new freeze and true watch/review needed."
+}

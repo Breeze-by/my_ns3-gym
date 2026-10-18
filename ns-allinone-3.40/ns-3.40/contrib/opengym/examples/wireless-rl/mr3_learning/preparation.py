@@ -76,6 +76,49 @@ def roles(stage):
     return [job["role"] for job in stage["audits"] if job.get("role") is not None]
 
 
+def borrowed_stage_budget(plan, index, elapsed_ns):
+    """Allocate only real unused prior-stage wall; reserve all later base caps.
+
+    Re-evaluate after source/ready checks. Nothing is added to the matrix quota.
+    Integer nanoseconds remain exact; native CLI allocation rounds down to1ms.
+    """
+    require(type(elapsed_ns) is int and elapsed_ns >= 0, "elapsed wall must be known nonnegative ns")
+    require(type(index) is int and 0 <= index < len(plan["stages"]), "invalid stage index")
+    ns = lambda value: int(Decimal(value) * 10**9)
+    bases = [ns(stage["wall_seconds"]) for stage in plan["stages"]]
+    stage = plan["stages"][index]
+    base_native = ns(argument(stage["native"]["argv"], "--work-wall-seconds"))
+    close = ns(argument(stage["native"]["argv"], "--close-reserve-seconds"))
+    prior, future = sum(bases[:index]), sum(bases[index + 1:])
+    carry = max(0, prior - elapsed_ns)
+    remaining_matrix = ns(plan["budget"]["matrix_wall_seconds"]) - elapsed_ns
+    remaining_engineering = ns(plan["budget"]["engineering_remaining_seconds"]) - elapsed_ns
+    remaining = max(0, min(bases[index] + carry, remaining_matrix - future, remaining_engineering))
+    consumers = bases[index] - base_native
+    native = max(0, min(base_native + carry, remaining - consumers))
+    native = native // 1_000_000 * 1_000_000
+    deadline = min(elapsed_ns + remaining, ns(plan["budget"]["matrix_wall_seconds"]) - future,
+                   ns(plan["budget"]["engineering_remaining_seconds"]))
+    seconds = lambda value: str(Decimal(value) / 10**9)
+    return {"schema": "mr3-preparation-borrowed-stage-budget-v1", "stage": stage["stage"],
+            "elapsed_matrix_wall_ns": elapsed_ns, "base_stage_wall_ns": bases[index],
+            "base_native_allocation_ns": base_native, "base_consumer_reserve_ns": consumers,
+            "prior_base_reservations_ns": prior, "future_base_reservations_ns": future,
+            "unused_prior_reservations_ns": carry, "stage_remaining_ns": remaining,
+            "stage_cumulative_deadline_from_matrix_entry_ns": deadline,
+            "native_allocation_ns": native, "native_allocation_seconds": seconds(native),
+            "close_reserve_ns": close, "native_admission_possible": native > close,
+            "scope": "Forward allocation inside original matrix/engineering ceilings; source/ready overhead is charged, later base caps and original consumer reserve are reserved at derivation. All later dispatch/close/consumer wall remains charged. No physical/math/PPO change."}
+
+
+def budgeted_native_job(native, allocation):
+    """Copy the declared job; only its wall allocation can change."""
+    require(allocation["native_admission_possible"], "native allocation is not above close reserve")
+    argv = list(native["argv"])
+    argv[argv.index("--work-wall-seconds") + 1] = allocation["native_allocation_seconds"]
+    return dict(native, id="native", argv=argv, budget_allocation=allocation)
+
+
 def validate_plan(plan, workspace=WORKSPACE):
     readiness = plan.get("readiness", {})
     ready = (readiness.get("ready") is True and readiness.get("status") in (None, "ready")
@@ -85,6 +128,8 @@ def validate_plan(plan, workspace=WORKSPACE):
             "new preparation plan is not sealed and ready")
     require(plan.get("final_external_coordinator_absence_required") is True,
             "overall matrix needs external coordinator absence after its actual exit")
+    require(type(plan["budget"].get("borrow_unused_prior_stage_reservations", False)) is bool,
+            "borrow flag must be boolean")
     require([stage["stage"] for stage in plan["stages"]] == list(STAGES), "four-stage order differs")
     require(Decimal(plan["budget"]["matrix_wall_seconds"]) > 0
             and Decimal(plan["budget"]["engineering_remaining_seconds"])
@@ -208,6 +253,8 @@ class Runner:
                      coordinator_actual_argv=[part.decode(errors="replace") for part in
                          Path("/proc/self/cmdline").read_bytes().split(b"\0") if part],
                      launcher_identity_scope="persistent_coordinator_not_native_owned")
+        if "budget_allocation" in job:
+            value["budget_allocation"] = job["budget_allocation"]
         handle = {"value": value, "receipt": receipt, "console": None, "process": None}
         try:
             require(not Path(job["output"]).exists(), "output exists; never overwrite")
@@ -504,14 +551,21 @@ def execute_plan(plan_path, freeze, workspace=WORKSPACE):
                 ledger.flush()
         record(event="matrix_started", coordinator_identity=identity(os.getpid()),
                plan_path=str(plan_path), preflight_path=plan["preflight"]["path"])
-        for stage in plan["stages"]:
+        borrow = plan["budget"].get("borrow_unused_prior_stage_reservations", False)
+        for index, stage in enumerate(plan["stages"]):
             name = stage["stage"]
             cap_ns = int(Decimal(stage["wall_seconds"]) * 10**9)
             charged_ns = time.monotonic_ns() - matrix_started_ns
-            if (failed or opening - Decimal(charged_ns) / 10**9 < Decimal(stage["wall_seconds"])
+            allocation = borrowed_stage_budget(plan, index, charged_ns) if borrow else None
+            admission_cap_ns = allocation["stage_remaining_ns"] if borrow else cap_ns
+            if (failed or borrow and not allocation["native_admission_possible"]
+                    or opening - Decimal(charged_ns) / 10**9 < Decimal(admission_cap_ns) / 10**9
                     or Decimal(plan["budget"]["matrix_wall_seconds"]) - Decimal(charged_ns) / 10**9
-                    < Decimal(stage["wall_seconds"])):
-                result["stages"].append({"stage": name, "status": "SKIPPED", "reason": "prior_failure_or_insufficient_balance"})
+                    < Decimal(admission_cap_ns) / 10**9):
+                skipped = {"stage": name, "status": "SKIPPED", "reason": "prior_failure_or_insufficient_balance"}
+                if borrow:
+                    skipped["budget_allocation"] = allocation
+                result["stages"].append(skipped)
                 record(event="stage_skipped", stage=name)
                 failed = True
                 continue
@@ -524,12 +578,24 @@ def execute_plan(plan_path, freeze, workspace=WORKSPACE):
                                          "reason": "pre_native_source_admission_failure"})
                 record(event="stage_admission_failed", stage=name, error=repr(error))
                 continue
+            if borrow:
+                now = time.monotonic_ns()
+                allocation = borrowed_stage_budget(plan, index, now - matrix_started_ns)
+                cap_ns = now - started + allocation["stage_remaining_ns"]
+                if not allocation["native_admission_possible"]:
+                    failed = True
+                    result["stages"].append({"stage": name, "status": "SKIPPED",
+                        "reason": "native_allocation_not_above_close_after_sourcecheck",
+                        "budget_allocation": allocation})
+                    record(event="stage_skipped", stage=name, budget_allocation=allocation)
+                    continue
             directory = output / name
             directory.mkdir()
             runner = Runner(directory, workspace / WIRELESS_RELATIVE, freeze, plan_sha, record)
             watcher = dict(stage["watcher"], id="watcher")
             watch = runner.spawn(watcher)
             native_value, audit_values, skipped, error = None, {}, [], None
+            budget_skipped = False
             try:
                 ready_deadline = time.monotonic() + watcher.get("ready_timeout_seconds", 30.)
                 ready = None
@@ -548,7 +614,16 @@ def execute_plan(plan_path, freeze, workspace=WORKSPACE):
                                     "ready receipt is not the actually submitted watcher")
                             break
                     time.sleep(.05)
-                native_value = runner.command(dict(stage["native"], id="native"))
+                native_job = dict(stage["native"], id="native")
+                if borrow:
+                    now = time.monotonic_ns()
+                    allocation = borrowed_stage_budget(plan, index, now - matrix_started_ns)
+                    cap_ns = now - started + allocation["stage_remaining_ns"]
+                    budget_skipped = not allocation["native_admission_possible"]
+                    if not budget_skipped:
+                        native_job = budgeted_native_job(stage["native"], allocation)
+                if not budget_skipped:
+                    native_value = runner.command(native_job)
             except BaseException as failure:
                 error = repr(failure)
             finally:
@@ -562,7 +637,7 @@ def execute_plan(plan_path, freeze, workspace=WORKSPACE):
                             and "readiness timeout" in error else "pre_native_admission_failure"}
                 dump(watcher["stop"], stop)
                 watch_value = runner.finish(watch)
-            if not error and native_value["passed"] and watch_value["passed"]:
+            if not error and native_value is not None and native_value["passed"] and watch_value["passed"]:
                 audit_values, skipped = run_audits(stage["audits"], runner, started + cap_ns)
             ended = time.monotonic_ns()
             duration = ended - started
@@ -571,10 +646,13 @@ def execute_plan(plan_path, freeze, workspace=WORKSPACE):
                       and watch_value["passed"] and not skipped and duration <= cap_ns
                       and all(audit_values.get(job["id"], {}).get("passed") is True
                               for job in stage["audits"] if job.get("required", True)))
-            value = {"stage": name, "status": "PASS" if passed else "FAIL", "passed": passed,
+            value = {"stage": name, "status": "SKIPPED" if budget_skipped else "PASS" if passed else "FAIL", "passed": passed,
                      "wall_seconds": str(Decimal(duration) / 10**9), "native": native_value,
                      "watcher": watch_value, "audits": audit_values, "skipped_audits": skipped,
                      "error": error, "within_stage_wall_allocation": duration <= cap_ns}
+            if borrow:
+                value.update(budget_allocation=allocation, effective_stage_wall_cap_seconds=str(Decimal(cap_ns) / 10**9),
+                             budget_skipped_before_native=budget_skipped)
             result["stages"].append(value)
             dump(directory / "stage.json", value)
             record(event="stage_completed", stage=name, passed=passed, wall_seconds=value["wall_seconds"])

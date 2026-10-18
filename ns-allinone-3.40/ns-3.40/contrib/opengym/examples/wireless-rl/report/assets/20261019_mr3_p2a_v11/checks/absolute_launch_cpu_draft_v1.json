@@ -1,0 +1,33 @@
+{
+  "schema": "mr3-absolute-gzserver-launch-cpu-draft-v1",
+  "scope": "Only /tmp candidate source and projection; no repository/install changes or native run.",
+  "passed": true,
+  "command": [
+    "python3",
+    "/tmp/mr3_p2a_v11_absolute_gzserver_cpu_draft_v1.py",
+    "-q"
+  ],
+  "returncode": 0,
+  "observed_output": "Ran 4 tests in 0.189s\n\nOK",
+  "tests": 4,
+  "files": {
+    "/tmp/mr3_p2a_v11_absolute_gzserver_launch_v1.patch": {
+      "sha256": "1cab33b2b55cd2a155cc39a42516f151d212bd1900f31e5646d62cf8cfd8eec6",
+      "bytes": 781
+    },
+    "/tmp/mr3_p2a_v11_reviewed_execution_delta_draft_v1.json": {
+      "sha256": "9a1947f8e523cdb20872ba56dc67802d7773f6bd71feb32ecf180b1958f21532",
+      "bytes": 12330
+    },
+    "/tmp/mr3_p2a_v11_absolute_gzserver_launch_manifest_v1.json": {
+      "sha256": "642cdfdfbf0ca69e6cd60ae265d4a6b688dca2130e0c2e6c08d361e5758ba3e6",
+      "bytes": 913
+    },
+    "/tmp/mr3_p2a_v11_absolute_gzserver_cpu_draft_v1.py": {
+      "sha256": "0906efee80134e009b77dfbb5de29db0a652544d792261caef3c9c05286c4707",
+      "bytes": 2773
+    }
+  },
+  "historical_failure": "First draft test wrongly counted both stepped ExecuteProcess and unstepped IncludeLaunchDescription assignments; fixed AST selector to only gzserver_cmd=ExecuteProcess. First 4-test invocation had 2 failures, final invocation passed.",
+  "limitations": "The source projection is a draft only. Root must include chosen new changes in a new canonical delta and exact Git freeze; old V9/V10 artifacts remain unchanged."
+}

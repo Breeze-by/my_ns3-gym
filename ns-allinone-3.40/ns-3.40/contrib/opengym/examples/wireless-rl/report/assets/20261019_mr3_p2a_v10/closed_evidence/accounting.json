@@ -1,0 +1,23 @@
+{
+  "schema": "mr3-p2a-v10-parent-declared-conservative-charge-v1",
+  "freeze": "ab03d9ea867a05712d4d5e200761d33523fc9d20",
+  "outer_start_wall_monotonic_ns": 4093377122547103,
+  "outer_actual_wait_end_wall_monotonic_ns": 4094206130200899,
+  "outer_actual_wait_returncode": 1,
+  "outer_actual_wait_wall_seconds": "829.007653796",
+  "coordinator_internal_charge_wall_seconds": "828.826138662",
+  "final_closure_internal_observation_wall_monotonic_ns": 4094280735939646,
+  "final_closure_actual_script_end_timestamp": null,
+  "whole_final_closure_tool_wall_seconds_as_explicitly_reported_by_root": "0.266266357",
+  "final_closure_tool_returncode_as_explicitly_reported_by_root": 1,
+  "gross_to_final_internal_observation_seconds": "903.613392543",
+  "formula": "(4094280735939646 - 4093377122547103) / 1e9 + 0.266266357",
+  "charge_seconds_conservative_upper_bound": "903.879658900",
+  "engineering_used_before_seconds": "13048.8387923926018",
+  "engineering_used_after_seconds": "13952.7184512926018",
+  "engineering_remaining_after_seconds": "16047.2815487073982",
+  "engineering_authorized_total_seconds": "30000",
+  "pilot_decisions_remaining_unchanged": 1870,
+  "pilot_wall_seconds_remaining_unchanged": "2905.9547395464029",
+  "scope": "Root explicitly supplied the measured whole final tool wall. Adding that entire wall to the internal observation is a conservative upper bound, not an invented exact end timestamp or a fabricated old-script receipt. Archive CPU is excluded from native engineering charge."
+}

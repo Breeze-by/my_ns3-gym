@@ -156,12 +156,12 @@ phase3固定绑定原contact task-phase与独立命令时间门禁；scalar rewa
 [环境契约](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_ENV_CONTRACT.md)。
 每次实际执行均是需追加共享log的实验，不能把入口存在当成P1C通过。
 
-## MR3-P2A V10 完整新冻结重验
+## MR3-P2A V11 完整新冻结重验
 
-V9单次固定动作采集已关闭（首条动作非法0决策/身份取证FAIL），不能重启。
-V10显式绑定gzserver启动别名与实际版本化ELF/SHA/dev/inode；真实WORLD20ms里程计/TF、只读记录器、
-原轮执行器及所有任务/安全门保持。准确新preflight/matrix/PPO命令与条件见[V10](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v10.md)。
-此轮四阶段原34+4 cadence门与最终外部关闭必须先通过，再按原余额进入新训练；不重用旧PASS/工程权重。
+V10返回32原生步，但取证入口FAIL，旧run-id不可重启。V11启动命令显式使用`/usr/bin/gzserver`，
+仍为原绑定版本化ELF；精确映射名和默认controller节点名检查修复，物理/任务门不变。
+同一14900矩阵预约内允许前阶段实际节余向后分配，38角色全部新冻结通过才进入PPO。
+准确preflight/matrix/PPO命令、条件和预算见[V11](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v11.md)。
 
 ## MR3-P2A V9 真实WORLD odometry时序（已关闭历史入口）
 

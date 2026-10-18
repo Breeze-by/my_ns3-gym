@@ -6640,3 +6640,41 @@ Closed canonical tar/gzip part46817502bytes SHA48466a8f6eb1c88b465a05612d7bc8ce0
 - 结果：reset返回后action231在当前mask非法，0动作提交/返回，不替换；native rc1，shutdown_clean true。watcher rc1，actual gzserver executable basename判据错误（本机实际链接目标gzserver-11.10.2），无complete live capture；FIFO PASS、custody closure FAIL，8科学消费者/四阶段/PPO/pilot/验证未提交。最终absence检查51个实际保存PID/start均gone，但整体final脚本rc1不改PASS。没有物理反例复现/修复或95%信用。
 - native command153.209880702墙秒、outer实际wait160.659378744；保守总charge上界213.314474553秒=实际outer开始→final内部观察212.476236824+整个final工具调用0.838237729（保守重复其观察前部分，不补造未知end）。工程累计13048.8387923926018/30000，余16951.1612076073982。pilot1870决策/2905.9547395464029及条件验证余额不变。
 - 证据：`report/20261019_mr3_p2a_v9.md`、`report/assets/20261019_mr3_p2a_v9/closed_evidence/manifest.json`及accounting_root_v1.json。439原件/152123633原字节，archive14333523字节，SHA7662786c72fcde78892136550502c4347e74b23f2e84988797e441a35e3f58a1，完整roundtrip/末stat+SHA通过。原V7/V8/V9 FAIL均保留；新V10将修身份入口并完整新freeze重验，不重复固定8动作。
+
+
+## 2026-10-19 MR3-P2A V10：interface32正常关闭，取证入口FAIL（已关闭）
+
+实际冻结`ab03d9ea867a05712d4d5e200761d33523fc9d20`，clean+pushed preflight通过。
+interface open101、原near spawn、三台、32实际返回步，benchmark rc0；stage823.541149272秒。
+watcher实际rc1，1396次捕获均误拒：本机启动argv[0]为裸`gzserver`，与绝对别名绑定不等，
+而proc exe、SHA、设备及inode均为已绑定真实版本化ELF。两子进程均真实wait，outer rc1/829.007653796秒。
+FIFO、严格取证及38科学角色未提交，terminal/reset/deadline和所有PPO/pilot/验证SKIPPED。
+不能以32原生返回代替科学门PASS，V10整体FAIL保留。
+
+在真实outer退出后，独立final_closure确认49个实际保存PID/start均gone、closure_passed=true，
+但execution_passed=false，脚本仍rc1。只读诊断又定位两个后续入口问题：映射文件名子串会把smoother
+主程序与其core库混淆，controller_server默认节点名无显式__node override。新候选对7个实际角色
+只读重放通过，仅是未来修复的CPU/诊断支持，不补授V10 live捕获信用。
+
+完整运行、真实wait、原生关闭、只读observer一次实际143中断及第二版自然0退出、debug、10ELF和冻结源码
+封存于[closed_evidence](assets/20261019_mr3_p2a_v10/closed_evidence/manifest.json)。
+实际outer开始到final内部观察903.613392543秒，再加整个final工具调用0.266266357秒，
+保守charge上界903.879658900（观察前部分重复计，不补造未知结束时间）。
+工程累计13952.7184512926018/30000，余16047.2815487073982；pilot1870决策/2905.9547395464029及条件验证不变。
+
+实际命令，cwd=wireless-rl（旧run-id仅供追溯，不重跑）：
+
+```bash
+rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 -B report/assets/20261019_mr3_p2a_v9/execute.py --plan report/assets/20261019_mr3_p2a_v10/predeclared_plan_v10.json --scope matrix --freeze ab03d9ea867a05712d4d5e200761d33523fc9d20 --receipt /tmp/mr3_p2a_v10_matrix_execution_receipt.json
+rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 -B report/assets/20261019_mr3_p2a_v9/final_closure.py --receipt /tmp/mr3_p2a_v10_matrix_execution_receipt.json --root /tmp/mr3_p2a_v10_matrix_evidence --root /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v10/mr3_p2a_v10_interface --summary /tmp/mr3_p2a_v10_matrix_evidence/summary.json --freeze ab03d9ea867a05712d4d5e200761d33523fc9d20 --output /tmp/mr3_p2a_v10_matrix_final_closure.json
+```
+
+V11仅将启动命令设为同一ELF的绝对别名、修正完整映射文件名与默认节点名检查，并在批准总额内分配实际节余。
+原物理/安全/任务/38科学角色均保持，须新冻结完整重验。见[V11预声明](20261019_mr3_p2a_v11.md)。
+
+
+## 2026-10-19 MR3-P2A V11执行前声明
+
+工程入口预算13952.7184512926018/30000；预声明matrix14900（1500/1200/4500/7700，native1250/850/3900/6600，close120）、fresh minimum900和尾部247.2815487073982。阶段实际节余仅在原matrix额度内向后分配。三处平台入口修复不改物理/安全/任务/38数学角色，真实源码与ELF保持新冻结后再验。组合70conda CPU+30ROS launch检查通过，无本版原生/PPO已启动。准确argv、quota与条件见[计划](report/assets/20261019_mr3_p2a_v11/predeclared_plan_v11.json)及[V11报告](report/20261019_mr3_p2a_v11.md)。pilot原1870/2905.9547395464029及final-only验证不扩额；旧FAIL全部保留。
+
+V10封包核验补记：833成员/579696592原字节，10实际ELF与277冻结来源；archive44079458字节，SHA `e708e0e42de2bcd09635c3c3506ca2bb8f93198941fe9a0641088f341066df9d`，manifest SHA `76ef7f4984bf6eb544fa84e8a27ddb1aaf05be8d64a3a1b294cc0a4b2083cdff`，逐文件roundtrip/gzip CRC/拼接SHA/源末stat+SHA全部通过。封包为CPU只读工作，不增原生信用。

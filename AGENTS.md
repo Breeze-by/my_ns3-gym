@@ -2,7 +2,7 @@
 
 # Codex Monorepo Memory — MR3
 
-2026-10-19：P2A.0已验收，P2A未完成。V9固定动作首条非法，0决策；实际gzserver版本化ELF被取证入口误拒，watcher/closure FAIL，51个实际保存身份最终均gone。失败与原冻结原件已封存。V10仅修精确gzserver alias/ELF/dev/inode身份绑定，WORLD20ms观测/原34ms执行器及所有门保持；待新freeze完整四阶段38角色复验，再按原余额进入新PPO minimum/pilot/final-only验证。工程累计13048.8387923926018/30000、余16951.1612076073982（含V9保守上界计费）；pilot1870决策/2905.9547395464029秒不变，未启动P2B/gateway。详见V9/V10报告。
+2026-10-19：P2A.0已验收，P2A未完成。V10在ab03d9ea冻结返回32原生步且正常关闭，但取证入口误拒裸gzserver argv，整体FAIL；49实际保存身份均gone，全部旧FAIL保留。V11只修绝对启动路径、精确映射名和默认controller节点名，按同一总额借用阶段实际节余，待新冻结完整四阶段38角色重验，再进入新PPO minimum/原余额pilot/final-only验证。工程累计13952.7184512926018/30000、余16047.2815487073982（V10保守上界903.879658900）；pilot1870决策/2905.9547395464029秒不变，未启动P2B/gateway。详见V10/V11报告。
 
 ## Canonical checkout and components
 

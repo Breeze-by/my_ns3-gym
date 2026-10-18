@@ -1,0 +1,40 @@
+{
+  "schema": "mr3-entry-cpu-checks-v1",
+  "native_started": false,
+  "checks": [
+    {
+      "argv": [
+        "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+        "-B",
+        "-m",
+        "unittest",
+        "mr3_learning.tests.test_audit_ppo",
+        "mr3_learning.tests.test_native_custody",
+        "mr3_learning.tests.test_preparation",
+        "mr3_learning.tests.test_audit_action_trace",
+        "-q"
+      ],
+      "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+      "returncode": 0,
+      "tests": 70,
+      "reported_seconds": "13.426"
+    },
+    {
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "pytest",
+        "-q",
+        "src/multi_robot_exploration/test/test_mr3_plant_launch.py",
+        "src/multi_robot_exploration/test/test_mr3_adapter_launch.py",
+        "src/multi_robot_exploration/test/test_mr3_drive_launch.py"
+      ],
+      "environment": "source /opt/ros/humble/setup.bash; source install/setup.bash; PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1",
+      "cwd": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap",
+      "returncode": 0,
+      "tests": 30,
+      "reported_seconds": "6.67"
+    }
+  ]
+}

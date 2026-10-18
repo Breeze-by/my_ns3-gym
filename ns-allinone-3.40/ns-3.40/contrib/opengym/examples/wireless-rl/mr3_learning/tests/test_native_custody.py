@@ -202,6 +202,44 @@ class NativeCustodyTests(unittest.TestCase):
         p.write_text(p.read_text().replace(str(self.specs["driver"]["stat"]["ino"]),"999999999"))
         with self.assertRaisesRegex(ValueError,"mapped file differs"):self.capture()
 
+    def test_real_exe_and_core_names_are_distinct_exact_mappings(self):
+        source=Path(self.specs["smoother_core"]["path"])
+        actual=source.with_name("libvelocity_smoother_core.so")
+        source.rename(actual)
+        self.specs["smoother_core"]={"path":str(actual),**gate.file_proof(actual)}
+        for i in range(3):
+            pid=300+i
+            argv=[x.decode()for x in (self.proc/str(pid)/"cmdline").read_bytes().rstrip(b"\0").split(b"\0")]
+            self.make_proc(pid,101,argv,Path(self.specs["smoother_executable"]["path"]),["smoother_core"])
+        self.assertEqual(sum(x["component"]=="smoother"for x in self.capture()["processes"]),3)
+
+    def test_bound_controller_without_override_uses_default_node(self):
+        for i in range(3):
+            pid=400+i
+            argv=[x.decode()for x in (self.proc/str(pid)/"cmdline").read_bytes().rstrip(b"\0").split(b"\0")]
+            at=argv.index("__node:=controller_server")
+            del argv[at-1:at+1]
+            self.make_proc(pid,101,argv,Path(self.specs["controller_executable"]["path"]),["rotation_shim"])
+        self.assertEqual(sum(x["component"]=="controller"for x in self.capture()["processes"]),3)
+
+    def test_controller_wrong_conflicting_duplicate_or_scoped_overrides_reject(self):
+        p=self.proc/"400/cmdline"
+        base=[x.decode()for x in p.read_bytes().rstrip(b"\0").split(b"\0")]
+        for extra in ["__node:=wrong","__node:=controller_server","controller_server:__node:=wrong","__name:=wrong"]:
+            with self.subTest(extra=extra):
+                p.write_bytes(b"\0".join(x.encode()for x in base+["-r",extra])+b"\0")
+                with self.assertRaisesRegex(ValueError,"actual native node name differs"):self.capture()
+
+    def test_exact_basename_deleted_wrong_path_and_inode_still_reject(self):
+        expected=self.specs["smoother_executable"]
+        raw=self.map_line(Path(expected["path"]))
+        wrongs=[raw+" (deleted)",raw.replace(expected["resolved_path"],"/tmp/velocity_smoother"),
+                raw.replace(str(expected["stat"]["ino"]),"999999999")]
+        for value in wrongs:
+            with self.subTest(value=value):
+                with self.assertRaisesRegex(ValueError,"mapped file differs"):
+                    gate.mapped_lines((value+"\n").encode(),expected)
+
     def test_borrowed_recorder_from_another_worker_stays_pending(self):
         p=self.proc/"500/stat"
         p.write_text(p.read_text().replace(" S 101 "," S 999 "))

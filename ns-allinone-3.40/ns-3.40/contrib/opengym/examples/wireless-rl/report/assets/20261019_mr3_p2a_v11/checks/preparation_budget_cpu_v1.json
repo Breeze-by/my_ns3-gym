@@ -1,0 +1,36 @@
+{
+  "schema": "mr3-p2a-v11-preparation-borrowed-budget-cpu-v1",
+  "passed": true,
+  "returncode": 0,
+  "command": [
+    "/usr/bin/python3",
+    "-B",
+    "-m",
+    "unittest",
+    "mr3_learning.tests.test_preparation",
+    "-v"
+  ],
+  "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+  "tests": 19,
+  "reported_test_seconds": "1.369",
+  "tool_wall_seconds": 1.806118787,
+  "stdout_and_stderr": "test_derived_argv_and_budget_reach_real_cpu_wait_receipt_default_unchanged (mr3_learning.tests.test_preparation.BorrowedBudgetTests) ... ok\ntest_engineering_remaining_is_a_separate_upper_bound (mr3_learning.tests.test_preparation.BorrowedBudgetTests) ... ok\ntest_initial_source_admission_overhead_does_not_consume_later_base_reservations (mr3_learning.tests.test_preparation.BorrowedBudgetTests) ... ok\ntest_last_stage_uses_remaining_matrix_without_raising_total_quota (mr3_learning.tests.test_preparation.BorrowedBudgetTests) ... ok\ntest_only_actual_unused_prior_wall_can_be_borrowed (mr3_learning.tests.test_preparation.BorrowedBudgetTests) ... ok\ntest_prior_overhead_deficit_is_debited_instead_of_leaking_past_ceiling (mr3_learning.tests.test_preparation.BorrowedBudgetTests) ... ok\ntest_round_down_and_copy_leave_every_other_declared_cli_argument_intact (mr3_learning.tests.test_preparation.BorrowedBudgetTests) ... ok\ntest_source_and_ready_rechecks_never_move_cumulative_deadline (mr3_learning.tests.test_preparation.BorrowedBudgetTests) ... ok\ntest_unknown_or_exhausted_wall_never_creates_admission_or_returncode (mr3_learning.tests.test_preparation.BorrowedBudgetTests) ... ok\ntest_actual_cpu_ready_wait_stop_and_fifo_match_production_boundary_readers (mr3_learning.tests.test_preparation.PreparationTests) ... ok\ntest_aggregate_and_fifo_manifest_preserve_actual_members_without_inventing_rc (mr3_learning.tests.test_preparation.PreparationTests) ... ok\ntest_builder_preserves_original38_roles_workloads_and_draft_admission (mr3_learning.tests.test_preparation.PreparationTests) ... ok\ntest_command_output_cannot_override_actual_nonzero_wait_result_or_overwrite (mr3_learning.tests.test_preparation.PreparationTests) ... ok\ntest_exhausted_budget_submits_no_child (mr3_learning.tests.test_preparation.PreparationTests) ... ok\ntest_explicit_trace_capture_key_never_overrides_actual_rc_or_claims_science (mr3_learning.tests.test_preparation.PreparationTests) ... ok\ntest_first_required_failure_drains_submitted_child_and_skips_dependant (mr3_learning.tests.test_preparation.PreparationTests) ... ok\ntest_missing_role_math_replacement_or_cycle_is_rejected_before_native (mr3_learning.tests.test_preparation.PreparationTests) ... ok\ntest_optional_real_nonzero_rc_does_not_suppress_dependent_pooled_review (mr3_learning.tests.test_preparation.PreparationTests) ... ok\ntest_reset_retains_optional_raw_failure_and_eight_leaf_pooled_contract (mr3_learning.tests.test_preparation.PreparationTests) ... ok\n\n----------------------------------------------------------------------\nRan 19 tests in 1.369s\n\nOK\n",
+  "sources_sha256": {
+    "mr3_learning/preparation.py": "31c15be975f514aee4c50cc8494f745a3a96cf9e2046ed8577d42fe7544d58d1",
+    "mr3_learning/tests/test_preparation.py": "42c19b470f1e21564fb9adc43357e2521fd47cb2cecdb39263ee728deaebbb3e"
+  },
+  "scope": "CPU only. Nine forward-budget counterexample/actual-child receipt checks plus ten prior orchestration/custody-boundary regressions. No native execution, new physical/math gate, training or optimizer calls.",
+  "budget_cases": [
+    "generic14900 and legacy14000 plan totals",
+    "default absent/false does not add derived receipt field or change argv",
+    "actual unused prior stage wall only; future stage base reservations retained",
+    "initial/source/ready overhead debited before native argv derivation",
+    "same cumulative deadline after rechecks",
+    "last stage uses matrix remaining without enlarging quota",
+    "sub-ms CLI allocation rounds down",
+    "unknown/exhausted wall cannot create an admission or invented rc",
+    "actual CPU child sees derived wall argv; actual wait receipt retains same budget allocation",
+    "all original38 role predicates/DAG and actual ready/wait/stop/FIFO boundary checks retained"
+  ],
+  "git_diff_check_returncode": 0
+}

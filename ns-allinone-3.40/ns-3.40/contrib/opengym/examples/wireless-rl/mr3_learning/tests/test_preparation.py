@@ -1,6 +1,8 @@
 """CPU child-process and plan tests; no ROS/Gazebo/GPU or native admissions."""
 
 import json
+from copy import deepcopy
+from decimal import Decimal
 from pathlib import Path
 import sys
 import tempfile
@@ -55,7 +57,7 @@ class PreparationTests(unittest.TestCase):
         self.assertTrue(plan["final_external_coordinator_absence_required"])
 
     def test_missing_role_math_replacement_or_cycle_is_rejected_before_native(self):
-        for fault in ("role", "math", "cycle", "result_key"):
+        for fault in ("role", "math", "cycle", "result_key", "borrow_flag"):
             with self.subTest(fault=fault):
                 plan = self.plan()
                 plan["readiness"] = {"ready": True}
@@ -66,8 +68,10 @@ class PreparationTests(unittest.TestCase):
                     next(job for job in jobs if job.get("role") == "physics")["argv"][1] = "/tmp/substitute.py"
                 elif fault == "cycle":
                     jobs[0]["depends_on"] = [jobs[0]["id"]]
-                else:
+                elif fault == "result_key":
                     jobs[0]["result_pass_key"] = "completed_requested_collection"
+                else:
+                    plan["budget"]["borrow_unused_prior_stage_reservations"] = "true"
                 with self.assertRaises(ValueError):
                     prep.validate_plan(plan)
 
@@ -203,6 +207,115 @@ class PreparationTests(unittest.TestCase):
         raw_path.write_text("changed after actual CPU child returned")
         with self.assertRaisesRegex(ValueError, "raw binding changed"):
             custody.read_fifo_receipts(custody.Reader(), manifest["output"], FREEZE, 2)
+
+
+class BorrowedBudgetTests(unittest.TestCase):
+    def setUp(self):
+        self.plan = {"budget": {"matrix_wall_seconds": "14900",
+            "engineering_remaining_seconds": "16047.2815487073982",
+            "borrow_unused_prior_stage_reservations": True}, "stages": [
+                {"stage": name, "wall_seconds": str(cap), "native": {"argv": [
+                    "python", "-m", "mr3_learning.benchmark", "--work-wall-seconds", str(native),
+                    "--close-reserve-seconds", "120"]}}
+                for name, cap, native in zip(prep.STAGES, (1500, 1200, 4500, 7700), (1250, 850, 3900, 6600))]}
+
+    def budget(self, index, seconds):
+        return prep.borrowed_stage_budget(self.plan, index, int(Decimal(seconds) * 10**9))
+
+    def test_initial_source_admission_overhead_does_not_consume_later_base_reservations(self):
+        value = self.budget(0, "10")
+        self.assertEqual(value["unused_prior_reservations_ns"], 0)
+        self.assertEqual(value["stage_remaining_ns"], 1490 * 10**9)
+        self.assertEqual(value["native_allocation_ns"], 1240 * 10**9)
+        self.assertEqual(value["future_base_reservations_ns"], 13400 * 10**9)
+        self.assertEqual(10 * 10**9 + value["stage_remaining_ns"] + value["future_base_reservations_ns"], 14900 * 10**9)
+
+    def test_only_actual_unused_prior_wall_can_be_borrowed(self):
+        value = self.budget(1, "1000")
+        self.assertEqual(value["unused_prior_reservations_ns"], 500 * 10**9)
+        self.assertEqual(value["stage_remaining_ns"], 1700 * 10**9)
+        self.assertEqual(value["native_allocation_ns"], 1350 * 10**9)
+        self.assertEqual(value["close_reserve_ns"], 120 * 10**9)
+
+    def test_source_and_ready_rechecks_never_move_cumulative_deadline(self):
+        before, after = self.budget(1, "1000"), self.budget(1, "1025")
+        self.assertEqual(before["stage_cumulative_deadline_from_matrix_entry_ns"], 2700 * 10**9)
+        self.assertEqual(before["stage_cumulative_deadline_from_matrix_entry_ns"], after["stage_cumulative_deadline_from_matrix_entry_ns"])
+        self.assertEqual(after["native_allocation_ns"], before["native_allocation_ns"] - 25 * 10**9)
+
+    def test_last_stage_uses_remaining_matrix_without_raising_total_quota(self):
+        value = self.budget(3, "6500")
+        self.assertEqual(value["stage_remaining_ns"], 8400 * 10**9)
+        self.assertEqual(value["native_allocation_ns"], 7300 * 10**9)
+        self.assertEqual(value["future_base_reservations_ns"], 0)
+        self.assertEqual(6500 * 10**9 + value["stage_remaining_ns"], 14900 * 10**9)
+        # The same helper also supports the old14000 declaration without changing it.
+        self.plan["budget"]["matrix_wall_seconds"] = "14000"
+        self.plan["stages"][3]["wall_seconds"] = "6800"
+        self.plan["stages"][3]["native"]["argv"][4] = "5700"
+        legacy = self.budget(3, "6500")
+        self.assertEqual(legacy["stage_remaining_ns"], 7500 * 10**9)
+        self.assertEqual(legacy["native_allocation_ns"], 6400 * 10**9)
+
+    def test_prior_overhead_deficit_is_debited_instead_of_leaking_past_ceiling(self):
+        value = self.budget(3, "7210")
+        self.assertEqual(value["unused_prior_reservations_ns"], 0)
+        self.assertEqual(value["stage_remaining_ns"], 7690 * 10**9)
+        self.assertEqual(value["native_allocation_ns"], 6590 * 10**9)
+        self.assertEqual(value["stage_cumulative_deadline_from_matrix_entry_ns"], 14900 * 10**9)
+
+    def test_unknown_or_exhausted_wall_never_creates_admission_or_returncode(self):
+        for seconds in ("14800", "14900", "15000"):
+            value = self.budget(3, seconds)
+            self.assertFalse(value["native_admission_possible"])
+            self.assertEqual(value["native_allocation_ns"], 0)
+            self.assertLessEqual(value["stage_cumulative_deadline_from_matrix_entry_ns"], 14900 * 10**9)
+            self.assertNotIn("returncode", value)
+            with self.assertRaises(ValueError):
+                prep.budgeted_native_job(self.plan["stages"][3]["native"], value)
+        for elapsed in (-1, None, 1.2, True):
+            with self.assertRaises(ValueError):
+                prep.borrowed_stage_budget(self.plan, 0, elapsed)
+
+    def test_round_down_and_copy_leave_every_other_declared_cli_argument_intact(self):
+        before = deepcopy(self.plan)
+        value = self.budget(1, "1000.000000123")
+        self.assertEqual(value["native_allocation_ns"] % 1_000_000, 0)
+        self.assertLessEqual(value["native_allocation_ns"] + value["base_consumer_reserve_ns"], value["stage_remaining_ns"])
+        job = prep.budgeted_native_job(self.plan["stages"][1]["native"], value)
+        expected = list(self.plan["stages"][1]["native"]["argv"])
+        expected[expected.index("--work-wall-seconds") + 1] = value["native_allocation_seconds"]
+        self.assertEqual(job["argv"], expected)
+        self.assertEqual(self.plan, before)
+
+    def test_engineering_remaining_is_a_separate_upper_bound(self):
+        self.plan["budget"]["engineering_remaining_seconds"] = "1300"
+        value = self.budget(1, "1000")
+        self.assertEqual(value["stage_remaining_ns"], 300 * 10**9)
+        self.assertFalse(value["native_admission_possible"])
+
+    def test_derived_argv_and_budget_reach_real_cpu_wait_receipt_default_unchanged(self):
+        value = self.budget(1, "1000")
+        with tempfile.TemporaryDirectory() as tmp:
+            directory = Path(tmp)
+            runner = prep.Runner(directory, directory, "a" * 40, "b" * 64, lambda **event: None)
+            for with_budget in (False, True):
+                name = "cpu_" + str(with_budget)
+                output = directory / (name + "_output.json")
+                declared = {"id": name, "output": str(output), "argv": [sys.executable, "-B", "-c",
+                    "from pathlib import Path;import sys,json;Path(sys.argv[1]).write_text(json.dumps({'passed':True,'actual_seen_work':sys.argv[sys.argv.index('--work-wall-seconds')+1]})+'\\n')",
+                    str(output), "--work-wall-seconds", "850", "--close-reserve-seconds", "120"]}
+                job = prep.budgeted_native_job(declared, value) if with_budget else declared
+                if with_budget:
+                    job["receipt"], job["console"] = str(directory / "budget_wait.json"), str(directory / "budget_wait.log")
+                result = runner.command(job)
+                self.assertEqual(result["returncode"], 0)
+                self.assertTrue(result["passed"])
+                self.assertEqual("budget_allocation" in result, with_budget)
+                if with_budget:
+                    self.assertEqual(result["budget_allocation"], value)
+                self.assertEqual(json.loads(output.read_text())["actual_seen_work"], value["native_allocation_seconds"] if with_budget else "850")
+                self.assertEqual(result["argv"], job["argv"])
 
 
 if __name__ == "__main__":

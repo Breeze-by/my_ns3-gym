@@ -935,7 +935,7 @@ def launch_setup(context, *args, **kwargs):
         # Gazebo treats that tail as positional pass-through, so load the system plugin
         # explicitly before the ROS argument section, with separate argv tokens.
         gzserver_cmd = ExecuteProcess(
-            cmd=["gzserver", world, ["--seed=", gazebo_seed],
+            cmd=["/usr/bin/gzserver", world, ["--seed=", gazebo_seed],
                  "-s", "libgazebo_ros_init.so", "-s", "libgazebo_ros_factory.so",
                  "-s", "libgazebo_ros_force_system.so",
                  "-s", ray_box_plugin, "-s", step_plugin,

@@ -434,8 +434,8 @@ def project_ray_box_runtime(relative, current):
     return text.encode()
 
 
-REVIEWED_EXECUTION_DELTA = WIRELESS + "report/assets/20261019_mr3_p2a_v9/reviewed_execution_delta.json"
-REVIEWED_EXECUTION_DELTA_SHA256 = "4b3cf4cf98061413d22c7f07350434986c187dfb0593ac2ee82ce234fce68c35"
+REVIEWED_EXECUTION_DELTA = WIRELESS + "report/assets/20261019_mr3_p2a_v11/reviewed_execution_delta.json"
+REVIEWED_EXECUTION_DELTA_SHA256 = "9a1947f8e523cdb20872ba56dc67802d7773f6bd71feb32ecf180b1958f21532"
 
 
 def project_reviewed_execution(root, freeze, relative, actual):
@@ -591,9 +591,9 @@ SMOOTHER_OVERLAY_PINS = {
 }
 
 
-CURRENT_NATIVE_BINDING = WIRELESS + 'report/assets/20261019_mr3_p2a_v10/native_custody_binding.json'
-CURRENT_NATIVE_BINDING_SHA256 = 'a52d231b9076f337c51d47111466c45c205d8a310b7843b6befab1b3a00db5b2'
-CURRENT_NATIVE_CUSTODY_SOURCE_SHA256 = '7afcc1cfee479bf2ee2d467d32fabe04c0f8d774a28ece7da2b671a1183c3b8e'
+CURRENT_NATIVE_BINDING = WIRELESS + 'report/assets/20261019_mr3_p2a_v11/native_custody_binding.json'
+CURRENT_NATIVE_BINDING_SHA256 = '3aef1e047a54e5969026e9a97d771e0051fa4026ed196a067f184332d52e7712'
+CURRENT_NATIVE_CUSTODY_SOURCE_SHA256 = 'e304a8bc2352ba738915267cf9f28caf6379c19bc5347b0c67294c0f1c34d1ee'
 
 
 def verify_current_native_binding(root, freeze):

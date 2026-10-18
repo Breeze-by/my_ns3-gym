@@ -386,7 +386,7 @@ def mapped_lines(raw, expected):
     name = Path(expected["resolved_path"]).name
     for line in raw.decode().splitlines():
         fields = line.split(maxsplit=5)
-        if len(fields) != 6 or name not in Path(fields[5]).name:
+        if len(fields) != 6 or Path(fields[5]).name not in (name, name + " (deleted)"):
             continue
         major, minor = [int(x, 16) for x in fields[3].split(":")]
         require(fields[5] == expected["resolved_path"]
@@ -477,7 +477,10 @@ def capture_process(identity, worker, inventory, component, binding, proc_root, 
     if component in ("smoother", "controller"):
         namespace = tools.namespace(argv)
         node = "velocity_smoother" if component == "smoother" else "controller_server"
-        require(argv.count("__node:=" + node) == 1, "actual native node name differs")
+        node_overrides = [x for x in argv if "__node:=" in x or "__name:=" in x]
+        require(node_overrides == ["__node:=" + node]
+                or (component == "controller" and not node_overrides),
+                "actual native node name differs")
     if component == "recorder":
         require(argv.count("__node:=mr3_odometry_recorder") == 1, "actual recorder node differs")
     expected_exe_role = {"gzserver": "gzserver_executable",
