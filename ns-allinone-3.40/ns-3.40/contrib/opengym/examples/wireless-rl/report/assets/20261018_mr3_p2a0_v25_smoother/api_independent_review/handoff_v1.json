@@ -1,0 +1,36 @@
+{
+  "schema": "mr3-v25-probe-api-independent-review-handoff-v1",
+  "review": {
+    "source": "/tmp/mr3_p2a0_v25_probe_api_independent_review_v1/review_v2.json",
+    "bytes": 8244,
+    "sha256": "f10bbdf8bb5f619888b0f87e54db9ec841a440a26df268692e156f71db0ffaef",
+    "stat": [
+      2051,
+      78658048,
+      8244,
+      1792284693371593129,
+      1792284693371593129
+    ]
+  },
+  "manifest": {
+    "source": "/tmp/mr3_p2a0_v25_probe_api_independent_review_v1/manifest_v1.json",
+    "bytes": 3632,
+    "sha256": "3c2bdab066a4b3c4ab3b45492f3f2e2f7e6f6836550107f8dcde82c7aa8eea97",
+    "stat": [
+      2051,
+      78658065,
+      3632,
+      1792284720385995487,
+      1792284720385995487
+    ]
+  },
+  "verdict": "no_identified_static_API_or_fixture_blocker",
+  "all_writers_stopped": true,
+  "compile_ROS_DDS_build_or_probe_executed": false,
+  "limitations": [
+    "Actual compile/link/library selection/discovery and scheduling behavior still require root actual result.",
+    "Probe has no per-output increment assertion; no continuous acceleration/body/task proof.",
+    "10s cooperative work guard and15s measured natural-close ceiling; no preemptive timeout or signals."
+  ],
+  "false_positive_concern_resolved": "Zero-output stop return only after ROS velocity timeout;1.95-1.45=.5<default1.0, so5th10Hz step is not statically blocked."
+}

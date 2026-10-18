@@ -1,0 +1,110 @@
+{
+  "schema": "mr3-v25-stock-fixed-smoother-probe-pair-v1",
+  "passed": false,
+  "utc": "2026-10-18T00:52:18.039882+00:00",
+  "argv": [
+    "/tmp/mr3_p2a0_v25_smoother_clock_source_review_v1/probe/run_probe_pair_v1.py",
+    "--probe",
+    "/tmp/mr3_p2a0_v25_actual_probe_compile_v1/build/smoother_clock_probe",
+    "--probe-sha256",
+    "8efb49b67ec9d561dd6cdbdb7a265a30df2ca6553f28becc5679dbe6942e5f91",
+    "--stock-library",
+    "/opt/ros/humble/lib/libvelocity_smoother_core.so",
+    "--fixed-library",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/nav2_velocity_smoother/lib/libvelocity_smoother_core.so",
+    "--fixed-library-sha256",
+    "ceedf1b35cc501e9caa655c5b0a66f538395893664ec683a6290760f37d60b52",
+    "--fixed-build-receipt",
+    "/tmp/mr3_p2a0_v25_actual_overlay_build_v1/build_receipt_v1.json",
+    "--output-directory",
+    "/tmp/mr3_p2a0_v25_actual_probe_pair_v1",
+    "--domain-id",
+    "175"
+  ],
+  "cwd": "/home/zhuyulab/ns3-workspace",
+  "bindings": [
+    {
+      "path": "/tmp/mr3_p2a0_v25_smoother_clock_source_review_v1/probe/run_probe_pair_v1.py",
+      "sha256": "93a82e9129c4600a972d7c4ec7b4c83d2937c3473a6b89bfb6363bea2fe4ac54",
+      "stat": [
+        2051,
+        78657714,
+        8930,
+        1792284311113620819,
+        1792284311113620819
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v25_smoother_clock_source_review_v1/probe/smoother_clock_probe.cpp",
+      "sha256": "59b3cdc4f3be6fce6520a9a84fc96e71aecfcbf2c075b316e473ee3a3d8b10e0",
+      "stat": [
+        2051,
+        78657712,
+        13518,
+        1792284114364200528,
+        1792284114364200528
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v25_smoother_clock_source_review_v1/probe/CMakeLists.txt",
+      "sha256": "0f71850c9b38769cfd4c70835bb3f7a57faed2e28e4c7a2b988c085184b19319",
+      "stat": [
+        2051,
+        78657713,
+        695,
+        1792284076405174067,
+        1792284076405174067
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v25_actual_probe_compile_v1/build/smoother_clock_probe",
+      "sha256": "8efb49b67ec9d561dd6cdbdb7a265a30df2ca6553f28becc5679dbe6942e5f91",
+      "stat": [
+        2051,
+        78658056,
+        1030480,
+        1792284710535484237,
+        1792284710535484237
+      ]
+    },
+    {
+      "path": "/opt/ros/humble/lib/libvelocity_smoother_core.so",
+      "sha256": "3581b317ef094f77b6bdab8df122c438ff7a8f8d09154eed7cc5f736e10576cf",
+      "stat": [
+        2051,
+        20474900,
+        513088,
+        1774485995000000000,
+        1777548058909039378
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/nav2_velocity_smoother/lib/libvelocity_smoother_core.so",
+      "sha256": "ceedf1b35cc501e9caa655c5b0a66f538395893664ec683a6290760f37d60b52",
+      "stat": [
+        2051,
+        78657904,
+        10624056,
+        1792284635703596298,
+        1792284635703596298
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a0_v25_actual_overlay_build_v1/build_receipt_v1.json",
+      "sha256": "e56ff5ed5505fa66473b3cf9ac4e24f86ab378887f03b9d1adeef4362e011294",
+      "stat": [
+        2051,
+        78657960,
+        18842,
+        1792284646633164625,
+        1792284646633164625
+      ]
+    }
+  ],
+  "children": [],
+  "errors": [],
+  "native_or_gazebo_started": 0,
+  "retry_count": 0,
+  "signal_count": 0,
+  "scope": "Two finite real ROS component probes; no Gazebo, actor, policy or physics/task/matrix PASS. Stock expected to demonstrate wall-time behavior; fixed expected to demonstrate ROS-clock behavior."
+}

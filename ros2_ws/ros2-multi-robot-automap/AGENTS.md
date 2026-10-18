@@ -1,6 +1,6 @@
 # ROS component memory — MR3
 
-2026-10-18: V24 freeze5d684c46 actual preflight110/210 and installed preInit fields/ODE150/.001 passed, but tb2 raw1.206191>original1.2 after14 returned steps. OverallFAIL/later3SKIP;48 saved identities absent/39 native exits0 do not replace forced/failedsample/worker-15 strictcloseFAIL. Exact raw input jumps0→.1 within20ms sim and guard passes it unchanged; actual Humble smoother walltimer timing needs new-version repair. No .8cap/body/safety/task reduction or PPO;569.733696886804/18000 charged. See wireless-rl/report/20261018_mr3_p2a0_v24_install.md.
+2026-10-18: V25 canonical Nav2 1.1.20 overlay changes only two timer factories plus include to node clock. Actual stock/fixed component pair and independent review passed (paused output7/3 versus0/0); all parameters and task/body/stop gates retained. Engineering debit572.9355761036277/18000. Full same-freeze four-stage/34-gate matrix remains pending; P2A.0 incomplete, no PPO. All prior failures preserved. See wireless-rl/report/20261018_mr3_p2a0_v25_smoother.md.
 
 2026-10-18: V20_sensor b33ff700 ordinary4 source capture and strict close completed; 39 native exits0 and47 identities gone. Legitimate near scan returns persist and map to own100; actual hit geometry remains unknown. Same-name ROS synchronous throttling and Karto stationary-refresh parameters have different semantics, so missing forwarding alone is not a proven bug. Production SLAM/physics/gates unchanged,150 not selected,P2A.0 incomplete. See shared report/20261018_mr3_p2a0_v20_sensor.md.
 

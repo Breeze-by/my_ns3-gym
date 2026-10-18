@@ -1,0 +1,11 @@
+{
+  "schema": "mr3-v25-real-probe-compile-v1",
+  "utc": "2026-10-18T00:51:06.358819+00:00",
+  "command": "source /opt/ros/humble/setup.bash\nsource /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/setup.bash\nexport PYTHONNOUSERSITE=1\nexport PYTHONDONTWRITEBYTECODE=1\ncmake -S /tmp/mr3_p2a0_v25_smoother_clock_source_review_v1/probe -B /tmp/mr3_p2a0_v25_actual_probe_compile_v1/build -DCMAKE_BUILD_TYPE=Release -DCMAKE_EXPORT_COMPILE_COMMANDS=ON\ncmake --build /tmp/mr3_p2a0_v25_actual_probe_compile_v1/build --parallel 2\n",
+  "sources": {
+    "/tmp/mr3_p2a0_v25_smoother_clock_source_review_v1/probe/smoother_clock_probe.cpp": "59b3cdc4f3be6fce6520a9a84fc96e71aecfcbf2c075b316e473ee3a3d8b10e0",
+    "/tmp/mr3_p2a0_v25_smoother_clock_source_review_v1/probe/run_probe_pair_v1.py": "93a82e9129c4600a972d7c4ec7b4c83d2937c3473a6b89bfb6363bea2fe4ac54",
+    "/tmp/mr3_p2a0_v25_smoother_clock_source_review_v1/probe/CMakeLists.txt": "0f71850c9b38769cfd4c70835bb3f7a57faed2e28e4c7a2b988c085184b19319"
+  },
+  "passed": false
+}

@@ -1,6 +1,6 @@
 # 当前三机器人基线与MR3适配启动命令
 
-V24冻结5d684c46实际准入110/210及安装/参数读回通过，但14个返回step后tb2 raw角速1.206191>原1.2，整体FAIL、后三SKIP。48保存身份gone/39原生exit0与forced失败样本清理分别保留，strict close未通过。上游raw在20ms sim跳0→.1，guard原值放行；Humble平滑器walltimer时间接口待下一版修复并完整重验，全部原门/.8cap保持。累计569.733696886804/18000，无PPO。见[V24](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_v24_install.md)。
+V25已构建官方1.1.20平滑器的节点时钟修复，仅改两个timer及include；实际stock/fixed组件对照与独立复核通过，暂停输出7/3→0/0，原参数及安全/任务门保持。累计572.9355761036277/18000；尚待新clean pushed冻结的完整四阶段与原34正式门，不授P2A.0/PPO信用。V24及所有旧FAIL保留。见[V25](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_v25_smoother.md)。
 
 V19固定50/150隔离诊断已关闭：两组加载、逐毫秒采集和严格关闭通过；150组三机全程没有合法GOAL或停车刺激，原物理FAIL，150尚未采用，P2A.0仍未完成。详见[V19](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_v19.md)。原启动命令、物理门和pilot余额不变。
 
@@ -17,7 +17,7 @@ ROS 使用系统 Python 与 ROS 2 Humble，学习端 `ns3gym` 不用于启动 RO
 source /opt/ros/humble/setup.bash
 cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
 export PYTHONNOUSERSITE=1
-/usr/bin/python3 /usr/bin/colcon build --symlink-install --allow-overriding nav2_bringup
+/usr/bin/python3 /usr/bin/colcon build --symlink-install --allow-overriding nav2_bringup nav2_velocity_smoother
 source install/setup.bash
 source /usr/share/gazebo/setup.sh
 export TURTLEBOT3_MODEL=waffle
@@ -674,3 +674,46 @@ benchmark/完整审计仍由绑定源码使用固定Conda，parent和ROS读者�
 工程18000墙秒累计先扣71.97839368507266，所有native和必需消费者及monitor自然结束前不改源码、库或Git。
 失败保留并跳过后续stage，不在同冻结重试。此命令用于训练前工程验收；P2A.0证据提交推送并获用户验收后才进入训练。
 原启动/物理/任务门及pilot余额不变，见[V24报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_v24_install.md)。
+
+
+## MR3-P2A.0 V25 节点时钟覆盖包
+
+从官方1.1.20导入的 `src/nav2_velocity_smoother` 由正常 ament overlay 选择。
+完整构建须允许覆盖此包；仅构建该包的命令如下（本次已执行，不作为矩阵重试命令）：
+
+```bash
+source /opt/ros/humble/setup.bash
+cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
+export PYTHONNOUSERSITE=1
+/usr/bin/python3 /usr/bin/colcon build --symlink-install --packages-select nav2_velocity_smoother --allow-overriding nav2_bringup nav2_velocity_smoother --cmake-args -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DBUILD_TESTING=OFF
+source install/setup.bash
+```
+
+实际package/launch executable/ldd已核为canonical新库。组件对照只验证timer机制；
+完整四阶段仍待新冻结准入，不能由本构建或历史PASS授予P2A.0完成信用。
+
+
+V25完整准备矩阵按以下绑定入口执行一次，必须是clean pushed main；同冻结失败不重试。
+在wireless-rl目录执行实际学习侧前检：
+
+```bash
+export PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1
+env -u PYTHONPATH /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B report/assets/20261018_mr3_p2a0_v25_smoother/independent/mr3_p2a0_v25_buildproof_preflight.py
+```
+
+前检PASS后，在独立终端先启动只读watcher；保存的START回执出现后，在另一个终端
+启动唯一parent。两处使用同一clean pushed exact40（下例从HEAD取得）：
+
+```bash
+MR3_V25_FREEZE=$(git rev-parse HEAD)
+env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 -B report/assets/20261018_mr3_p2a0_v25_smoother/independent/mr3_p2a0_v25_cross_stage_mapping_monitor_v1.py --freeze "$MR3_V25_FREEZE"
+```
+
+```bash
+MR3_V25_FREEZE=$(git rev-parse HEAD)
+env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 -B report/assets/20261018_mr3_p2a0_v25_smoother/independent/mr3_p2a0_v25_run_matrix_v1.py "$MR3_V25_FREEZE"
+```
+
+parent串行执行interface32、terminal2、reset双worker共8x32、deadline300KEEP，原34门
+逐stage全部drain；首FAIL阻止后续，累计工程墙秒不重置。源/库/Git须保持到原生、正式
+reader和watcher全部自然结束及原件封存。P2A.0实际PASS并获用户验收后才进入训练。

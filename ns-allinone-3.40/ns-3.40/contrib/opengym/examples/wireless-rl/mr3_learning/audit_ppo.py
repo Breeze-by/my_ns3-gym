@@ -164,7 +164,7 @@ EXECUTION_CONFIG_PINS = {
     ROS + 'src/multi_robot/include/multi_robot/mr3_drive_target.hpp':
         '4be4d77de247a5bcd427eb6948165e85098eb361030cf89d278d6df92e959d41',
 }
-ENV_DOCUMENT_SHA256 = 'f1e0be60d35db3677fb9194341c1ae4133a5c74ed7199056fe18f7e797f40416'
+ENV_DOCUMENT_SHA256 = '41feac9a6d76adb839a615d7703e78e1b1c9f2ce22d55aba805387643536380e'
 TASK_DOCUMENT_SHA256 = "f96f5ba785a39daa882b3c2ea217c58dd968550b65bf0ee15faf07ca079f8991"
 PRIOR_TASK_DOCUMENT_SHA256 = "5e4400396e4aaf5a5094fb4c0c04c85810c327cc85be88b7d03fa3faeade07d2"
 TASK_BASE_FREEZE = "cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a"
@@ -258,8 +258,8 @@ def verify_machine_task_file(root, freeze, relative):
 
 ENV_NORMATIVE_FREEZE = "4f8bd0e509e6f958c5993a50008955afac72c345"
 ENV_NORMATIVE_SHA256 = "96d9bd3e3d597899b3d44a69ef9138e77b62b3641bd7261eb38846d5b003f155"
-ENV_EXECUTION_APPENDIX_SHA256 = 'b9bae951da6102af67bb3e106b0136dd0067eca9677cfaf3394f5095f87124a3'
-ENV_EXECUTION_APPENDIX_BYTES = 9875
+ENV_EXECUTION_APPENDIX_SHA256 = 'c281693ef4755ae4c6760a87ec675c34e2d56da67ccceb79cc34a4d2f2f941c0'
+ENV_EXECUTION_APPENDIX_BYTES = 11913
 
 def verify_environment_appendix(root, freeze):
     relative = WIRELESS + "MR3_ENV_CONTRACT.md"
@@ -548,6 +548,26 @@ def verify_ray_box_library(root, freeze):
     return proof
 
 
+
+SMOOTHER_OVERLAY_PINS = {
+    'ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v25_smoother/independent/mr3_v25_smoother_custody_v1.py': '6edeb3a7e814fb024594be724ef98dce39e1d23a84af5d34d6d6faac0b5cb88b',
+    'ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v25_smoother/independent/mr3_v25_smoother_binding_v1.json': '61276e5b98a8fb641ecae464386a7f1403acc73789df5251cd82bb35ab83b5e0',
+}
+
+
+def verify_velocity_smoother_overlay(root, freeze):
+    """Fixed official 1.1.20 two-timer overlay; old math and validators unchanged."""
+    proof = verify_frozen_pins(root, freeze, SMOOTHER_OVERLAY_PINS, 'node-clock smoother overlay')
+    source = 'ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v25_smoother/independent/mr3_v25_smoother_custody_v1.py'
+    binding = root / 'ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v25_smoother/independent/mr3_v25_smoother_binding_v1.json'
+    module = load_pinned('mr3_v25_smoother_overlay_custody', root / source,
+                         SMOOTHER_OVERLAY_PINS[source])
+    reader = module.Reader()
+    proof.update(module.verify_frozen_build(root, freeze, binding, reader))
+    reader.finish()
+    return proof
+
+
 def extend_snapshot_validator(auditor, candidate_module):
     """Extend the original validator for exact reviewed candidate/schema rules.
 
@@ -616,6 +636,7 @@ def load_compatible_components(phase, root, freeze):
     proof.update(verify_frozen_pins(root, freeze, CURRENT_AUDITOR_PINS, "current auditor"))
     proof.update(verify_execution_configs(root, freeze))
     proof.update(verify_ray_box_library(root, freeze))
+    proof.update(verify_velocity_smoother_overlay(root, freeze))
     for relative, expected in phase.PINNED_DOCUMENTS.items():
         payload = subprocess.check_output(["git", "show", freeze + ":" + relative], cwd=root)
         require(hashlib.sha256(payload).hexdigest() == expected,

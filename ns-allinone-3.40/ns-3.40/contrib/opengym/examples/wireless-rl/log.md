@@ -6112,3 +6112,79 @@ actualcorrector phase/null/可用preInit字段/native150/.001安装通过，firs
 执行后库存发现V24未使用worker_bindings元数据仍188/136xx，而实际CLI及运行198/13701，原source审查漏项保留、不回改旧plan；下版从实际command+workerindex派生并强制一致校核。该发现不替代已有真实角速失败。
 一次完整选存command/source及逐--extra精确argv见closed_pack_support_v1，rtk proxy env -i PATH=/usr/bin:/bin PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 LANG=C.UTF-8 LC_ALL=C.UTF-8 TZ=UTC /usr/bin/python3 -B /tmp/mr3_p2a0_v24_matrix_pack_proposal_v1/mr3_p2a0_v24_matrix_pack_closed_v1.py --freeze 5d684c46f9f99a867a94f1fed8c52e923e2486ef --target /tmp/mr3_p2a0_v24_selected_closed_v1 --all-writers-closed [逐原文件--extra清单保管原argv，未用未展开glob]，12.170313973911107wall；513原件318062459rawB→518parts20573758encodedB，max2429072B，各part/whole decodedSHA与末stat均PASS。522选存文件按prospective_canonical逐part复制A24/native/interface及metadata，不额外嵌套native；初rootcopy误猜manifest basename、resume guard漏改两个仅copy脚本失败保留，v3逐字续拷完成550件22401348B，不重跑任何原生或科学审计。
 本次native launch receipt497.7553032017313wall，prior71.97839368507266，累计569.733696886804/18000，余17430.266303113195；parentlaunch498.1903878697194、audit288.55652650492266及其他CPU/封存另列，不重复计费。pilot1870/2905.954739546403不动，无GPU/PPO/P2B/gateway。P2A.0未完成；保持全部FAIL，修复后新clean pushed冻结完整四阶段，成功证据提交推送再待用户验收。
+
+
+## 2026-10-18 MR3-P2A.0 V25：节点时钟覆盖包与真实stock/fixed组件对照
+
+源码基底`94a5e26b99402e49b4e116931f8b8f625e603b0d`，执行时worktree含本版未提交
+官方包及固定两timer补丁；source manifest/实际SHA保存在选定原件，不冒称clean freeze。
+无训练/checkpoint/GPU、无Gazebo或环境API；不使用任务种子。原95%/300s、三台参与、
+候选/actor/reward和全部原安全/速度/停车门不变。V24失败保持，不重跑失败冻结。
+
+实际命令（每项各一次；后两编译/解析脚本内完整system ROS命令见同名选定源码/收据）：
+
+```bash
+rtk proxy /usr/bin/python3 /tmp/mr3_p2a0_v25_build_overlay_v1.py
+rtk proxy /usr/bin/python3 /tmp/mr3_p2a0_v25_compile_probe_v1.py
+rtk proxy /usr/bin/python3 /tmp/mr3_p2a0_v25_resolve_overlay_v1.py
+rtk proxy env -u PYTHONPATH /bin/bash --noprofile --norc -e -c 'source /opt/ros/humble/setup.bash
+source /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/setup.bash
+export PYTHONNOUSERSITE=1
+export PYTHONDONTWRITEBYTECODE=1
+/usr/bin/python3 -B /tmp/mr3_p2a0_v25_smoother_clock_source_review_v1/probe/run_probe_pair_v1.py --probe /tmp/mr3_p2a0_v25_actual_probe_compile_v1/build/smoother_clock_probe --probe-sha256 8efb49b67ec9d561dd6cdbdb7a265a30df2ca6553f28becc5679dbe6942e5f91 --stock-library /opt/ros/humble/lib/libvelocity_smoother_core.so --fixed-library /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/nav2_velocity_smoother/lib/libvelocity_smoother_core.so --fixed-library-sha256 ceedf1b35cc501e9caa655c5b0a66f538395893664ec683a6290760f37d60b52 --fixed-build-receipt /tmp/mr3_p2a0_v25_actual_overlay_build_v1/build_receipt_v1.json --output-directory /tmp/mr3_p2a0_v25_actual_probe_pair_v1 --domain-id 175'
+```
+
+canonical包构建PASS68.82491580815986墙秒；所有六个现有MR3库stat/SHA严格不变。
+probe编译PASS44.30459033790976墙秒；两编译单列源码准备成本。正常ament/Launch/ldd
+解析PASS，实际standalone/core选中canonical overlay。组件各stock/fixed一次均exit0，
+normal_cleanup true，保存PID/start在wait后消失。原版paused20/10Hz输出7/3，修复版0/0；
+两timer实际is_steady原版true、修复false，actual加载ELF/dev/inode/SHA与单一非零GID核实。
+独立读取的fixed相邻回调增量在事先说明的4ULP减法舍入容差通过；无连续dv/dt/body证明。
+
+stock2.0057054478675127+fixed1.1961737689562142=3.201879216823727实际墙秒计入工程预算，
+累计572.9355761036277/18000，余额17427.064423896372。实际pair总wrapper3.728948475793004
+另列不重复计入；没有信号、重试、超时kill或孤儿。pilot余额1870/2905.954739546403未用。
+
+选定原件：[V25报告](report/20261018_mr3_p2a0_v25_smoother.md)、
+[组件manifest](report/assets/20261018_mr3_p2a0_v25_smoother/component_probe/selected_manifest_v1.json)、
+[ELF manifest](report/assets/20261018_mr3_p2a0_v25_smoother/build_evidence/selected_elf_manifest_v1.json)、
+[独立actual审查](report/assets/20261018_mr3_p2a0_v25_smoother/actual_independent_review/handoff_v1.json)。
+API静态审查发展稿引号SyntaxError/初seal-atime比较错误、原版官方来源网络记录保留各自原件；
+这些不是作者包编译/probe失败。无正式矩阵PASS，P2A.0未完成；待新clean pushed冻结四阶段。
+
+
+### 2026-10-18 V25新源码准入/有限CPU检查与完整矩阵预声明
+
+同一未提交准备worktree，最终module6edeb3a7…、auditor7d1a1a70…、ENV41feac9a…；
+尚无新原生freeze/PASS。作者v1 fakeproc缺group/session的3FAIL保留；18修复检查、
+v2增PIDreuse-Z及canonicalmanifest路径的19检查、v3增sameworker-Z/empty与reuseworker-Z
+的21检查依次实际通过。新增检查只修本helper分类：sameidentity合法关闭pending/no credit，
+reuse及wrongargv/hash硬拒。作者CPU通过wall分别2.157729092054069/2.19473171280697/
+2.2367755016312003；实际命令与stdout/stderr/缺失原console的范围分别见封存原件，
+未伪造最初direct-tool stdout。独立新反例旧e890红/8e08绿保留，不重跑作者套件。
+
+根实际命令：`rtk proxy /usr/bin/python3 /tmp/mr3_p2a0_v25_root_deployment_checks_v1.py`，
+脚本绑定的Conda命令原16 auditor单元PASS（测试2.599秒/进程7.736638186965138墙秒），
+一个canonical安装位置真实source/build/archive测试PASS（进程.880315454211086墙秒）。
+选定[检查收据](report/assets/20261018_mr3_p2a0_v25_smoother/deployment_checks/checks_v1.json)
+保存exact argv/SHA/console。无SDK/ROS/DDS/native/GPU调用，不重跑旧170套。
+RT六编排static逆/34门/workerhelper/fatal lint PASS（一次1.484900236595422墙秒），
+初机械发展稿、旧source与原检查全部保留[57成员封包](report/assets/20261018_mr3_p2a0_v25_smoother/matrix_preparation/handoff_final_v1.json)。
+
+root闭合review copy v1误假定两handoff共用name/archive键，KeyError前只建空目录；
+v2按实际API manifest/source basename完成，无source/bin修改或实验重跑。原v1/v2/helper
+与显式错误说明保存在root_preparation，不把工具发展错误改记为作者/probe/native失败。
+
+最终[计划](report/assets/20261018_mr3_p2a0_v25_smoother/predeclared_plan_v25.json)
+27a5027c930e2d805187ea9e7d53fd16e797ab395c0931c4b76f707a1f6ae051，222source
+bindings；原34/12episode/608API/596脚本动作/18000累计预算不变，携带572.9355761036277。
+各stage命令保持原工作量，domain208/210/212+213/216，port13801/11/21+22/31，均由actualCLI
+生成typed worker元数据并在三个入口交叉验证。source-ready仍需新clean pushed exact40
+实际Conda前检，随后先watcher START再唯一parent；任何FAIL后续SKIP，不同冻结PASS不拼接。
+无训练/pilot/P2B/gateway，本段不声称完整矩阵已运行。
+
+V25最终静态检查：222实际绑定、10包文件、6旧库、50061原ENV字节前缀和205本地链接通过；root初v1白名单漏列合法新V25报告，未产PASS，v2只增加该精确报告路径后通过，原失败说明/两脚本保留。最终git dry-run唯一ignored为root临时导入生成的单个pycache，已删除该自有缓存；无build/install/runtime产物进入选定source。所有独立review/source/metadata writer已STOP，尚待cleanpush与实际前检。
+
+V25首次cached diff-check指出9个原始README/构建/probe文本的26处原生空白。按既有.gitattributes保真惯例仅这9个精确路径设-text/-whitespace，原件不trim、不改hash，作者CPP和门禁代码不豁免；完整初检查输出与路径说明选定root_preparation。此为源码/证据格式处理，无实验重跑。
+
+V25最后静态v3因把新增已stage源/证据当旧production而断言，v4只修该分类并dedupe本地链接；保存的原空白诊断stdout自身保真改用lossless gzip。两次发展稿未授PASS，明确说明与原脚本已归档。最终v4的222绑定/10源/6旧库/205链接通过，cached diff-check通过；无额外ROS/native/测试或预算变动。
