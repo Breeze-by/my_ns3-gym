@@ -1,5 +1,9 @@
 # 当前三机器人基线与MR3适配启动命令
 
+当前V13原矩阵因reset阶段墙钟超限FAIL；同运行时独立只读补验后30/38科学角色通过，548保存身份gone。原FAIL及非必需逐回合覆盖FAIL保留，原pooled门通过。deadline8与PPO未启动，P2A未完成。
+
+工程累计30000墙秒上限已用23877.6秒，剩6122.4秒；新增4000至34000方案尚待用户批准。精确费用、原件、补验来源语义和未来入口见[V13结果](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v13.md)。pilot和三场final-only额度不变，不重跑已关闭run-id。
+
 2026-10-18用户已验收P2A.0并要求继续P2A。V7命令为已关闭失败的历史入口，不能重跑；原V26父编排中断保留，P2A未完成。 原V26命令仅供追溯；原生阶段已完成、最后只读审计单独补完，原编排中断不改记PASS。见[V26](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_v26_capture.md)和[复盘](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_reflection.md)。
 
 新路线为 [MR3](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/RESEARCH_PLAN.md)，P0/P1A/P1B已验收，用户于2026-10-16验收P1C并授权P2A；P2B及后续未开始。
@@ -156,15 +160,15 @@ phase3固定绑定原contact task-phase与独立命令时间门禁；scalar rewa
 [环境契约](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_ENV_CONTRACT.md)。
 每次实际执行均是需追加共享log的实验，不能把入口存在当成P1C通过。
 
-## MR3-P2A V13 温和转向profile重验（新冻结预声明）
+## MR3-P2A V13 温和转向profile（原矩阵已关闭FAIL，独立补验30/38）
 
-V12的interface/terminal19角色通过，reset真实raw速度峰使原生模型门FAIL；253保存身份gone，deadline/PPO跳过，旧FAIL保留。
+冻结`0063aa233ba3008ddcc1eb09ea8068112eea3965`的原矩阵因reset墙秒超额FAIL，原26角色通过；同runtime独立reset只读补验新增4角色，现30/38，548保存身份gone。原FAIL和非必需逐回合覆盖FAIL保留，原pooled覆盖PASS；deadline8与PPO未启动。
 当前三份活动robot YAML明确统一Shim/DWB/behavior/recovery/smoother双向角上限.3、起转加速1.0；
 行为最小角速.15，角减速-3.2、线.20/±.5不变。原driver/SDF/轮加速1.0及十个ELF不变。
 数学.8命令上界、1.2实测角速、.01 rest speed/.0078 drift及95%/300秒全部任务门不放宽。
-新exact参数reader只选择前瞻typed部署事实，保留原9live服务及原reader字节；不写参数、无新native通过信用。
-准确来源、预算和后续clean+pushed preflight命令见[V13](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v13.md)。
-准确计划已seal，配置/参数接线/来源CPU通过，待clean+pushed preflight；V13新冻结全38角色和独立关闭PASS后才可新PPO最小链。
+exact参数reader选择typed部署事实，保留原9live服务及原reader字节；参数读回不替代身体运动、停止和任务门。
+准确来源、关闭结果及待批准的8500+100+900续接方案见[V13](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v13.md)。
+未来独立38角色资格、真实关闭及预算准入全部通过后才可新PPO最小链；累计34000尚未批准，不重跑原矩阵或旧run-id。
 
 ## MR3-P2A V9 真实WORLD odometry时序（已关闭历史入口）
 

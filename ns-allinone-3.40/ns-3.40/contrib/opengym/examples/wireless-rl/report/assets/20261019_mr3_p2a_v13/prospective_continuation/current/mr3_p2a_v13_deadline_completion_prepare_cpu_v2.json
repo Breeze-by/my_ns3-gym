@@ -1,0 +1,44 @@
+{
+  "schema": "mr3-p2a-standalone-declaration-prepare-cpu-receipt-v1",
+  "argv": [
+    "/usr/bin/python3",
+    "-B",
+    "/tmp/mr3_p2a_v13_deadline_completion_v2.py",
+    "prepare",
+    "--output",
+    "/tmp/mr3_p2a_v13_deadline_completion_plan_v2.json",
+    "--evidence",
+    "/tmp/mr3_p2a_v13_deadline_completion_evidence_v2",
+    "--reset-plan",
+    "/tmp/mr3_p2a_v13_reset_completion_plan_v2.json",
+    "--reset-summary",
+    "/tmp/mr3_p2a_v13_reset_completion_evidence_v2/summary.json",
+    "--reset-final",
+    "/tmp/mr3_p2a_v13_reset_completion_final_absence_v2.json",
+    "--reset-outer",
+    "/tmp/mr3_p2a_v13_reset_completion_outer_wait_v2.json",
+    "--reset-accounting",
+    "/tmp/mr3_p2a_v13_reset_completion_accounting_root_v2.json"
+  ],
+  "cwd": "/home/zhuyulab/ns3-workspace",
+  "returncode": 0,
+  "started_wall_monotonic_ns": 4110928535794442,
+  "ended_wall_monotonic_ns": 4110946879814934,
+  "wall_seconds": "18.344020492",
+  "tool": {
+    "path": "/tmp/mr3_p2a_v13_deadline_completion_v2.py",
+    "bytes": 38672,
+    "sha256": "c516332877445f9d20f27f4a98efe586f6b09d1084e7016d08474750211e83bf"
+  },
+  "console": {
+    "path": "/tmp/mr3_p2a_v13_deadline_completion_prepare_cpu_v2.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "scope": "CPU only actual closed reset30/38/548current absence/source279/10ELF proof plus new exclusive prospective deadline plan. No scientific consumer/native/GPU/Git/ELF mutation; no budget acceptance fabricated.",
+  "plan": {
+    "path": "/tmp/mr3_p2a_v13_deadline_completion_plan_v2.json",
+    "bytes": 129023,
+    "sha256": "a35cad53be7ce788d348d10069708b5f2d78bb36c97db9b36dc8fc12beb1ddea"
+  }
+}

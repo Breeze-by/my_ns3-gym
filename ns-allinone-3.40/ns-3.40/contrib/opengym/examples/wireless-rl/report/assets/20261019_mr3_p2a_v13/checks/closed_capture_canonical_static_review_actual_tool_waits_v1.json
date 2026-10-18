@@ -1,0 +1,38 @@
+{
+  "schema": "mr3-v13-canonical-static-review-actual-tool-waits-v1",
+  "argv": [
+    "rtk",
+    "proxy",
+    "env",
+    "-u",
+    "PYTHONPATH",
+    "PYTHONNOUSERSITE=1",
+    "PYTHONDONTWRITEBYTECODE=1",
+    "/usr/bin/python3",
+    "-B",
+    "/tmp/mr3_p2a_v13_canonical_static_review_v1.py"
+  ],
+  "cwd": "/home/zhuyulab/ns3-workspace",
+  "source": {
+    "original_path": "/tmp/mr3_p2a_v13_canonical_static_review_v1.py",
+    "canonical_path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v13/checks/closed_capture_canonical_static_review_v1.py",
+    "bytes": 5826,
+    "sha256": "9951b81ced4c1367490c593a897e1c9398a15077cc7e475c3ca68af7a74e2a6d"
+  },
+  "tool_returns": [
+    {
+      "chunk_id": "c59df8",
+      "session_id": 63991,
+      "exit_code": null,
+      "tool_wall_seconds": "1.001795384"
+    },
+    {
+      "chunk_id": "d5d3c1",
+      "session_id": 63991,
+      "exit_code": 0,
+      "tool_wall_seconds": "1.678184527"
+    }
+  ],
+  "actual_final_wait_returncode": 0,
+  "scope": "Actual raw tool return metadata copied after true final wait; per-call wall_seconds are not total script duration. Script result stores own actual monotonic start/end. No new science/native/PPO or approval."
+}

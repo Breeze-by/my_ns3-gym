@@ -1,0 +1,22 @@
+{
+  "schema": "mr3-p2a-standalone-cpu-test-receipt-v1",
+  "argv": [
+    "/usr/bin/python3",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "test_mr3_p2a_v13_deadline_completion_v1",
+    "test_mr3_p2a_ppo_phase_runner_v3"
+  ],
+  "cwd": "/tmp",
+  "returncode": 1,
+  "started_wall_monotonic_ns": 4110308881866688,
+  "ended_wall_monotonic_ns": 4110312428374690,
+  "wall_seconds": 3.546508002,
+  "output": {
+    "path": "/tmp/mr3_p2a_v13_deadline_ppo_v3_cpu_initial_v1.log",
+    "sha256": "d4680f7e4d77eda584d90be60089566d01d56972d898ac86bc801f552a35d987"
+  },
+  "scope": "CPU only; no native or scientific consumer. Separate initial invocation with absolute unittest module arguments failed import before any tests; corrected by cwd=/tmp and module names."
+}

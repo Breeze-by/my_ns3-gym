@@ -1,0 +1,94 @@
+{
+  "schema": "mr3-v13-original-matrix-conservative-archive-account-v1",
+  "freeze": "0063aa233ba3008ddcc1eb09ea8068112eea3965",
+  "original_root_accounting": {
+    "schema": "mr3-p2a-external-root-accounting-v1",
+    "freeze": "0063aa233ba3008ddcc1eb09ea8068112eea3965",
+    "phase": "matrix",
+    "budget_pool": "engineering",
+    "engineering_ceiling_wall_seconds": "30000",
+    "prior_used_wall_seconds": "16923.5858895156018",
+    "gross_through_post_final_wait_observation_seconds": "6750.096230428",
+    "complete_observation_tool_wall_seconds": "1.951121248",
+    "charged_wall_seconds": "6752.047351676",
+    "cumulative_used_wall_seconds": "23675.6332411916018",
+    "remaining_wall_seconds": "6324.3667588083982",
+    "matrix_allocation_wall_seconds": "12100",
+    "matrix_within_allocation": true,
+    "cumulative_within_ceiling": true,
+    "accounted_through_wall_monotonic_ns": 4109365423665771,
+    "final_closure_passed": true,
+    "execution_passed": false,
+    "observation": {
+      "path": "/tmp/mr3_p2a_v13_matrix_root_wait_observation.json",
+      "sha256": "71561cbbe2e0d4e41c1f4d52cd1bceefc6762c69968ee84aeae459b5db2f7b6b"
+    },
+    "scope": "Conservative upper charge through actual independent final-closure wait; adds the entire observation tool call wall (deliberate overlap), no guessed process end."
+  },
+  "formula": "(4109365423665771 - 4102615327435343) / 1e9 + 1.951121248",
+  "original_outer_actual_wait": {
+    "schema": "mr3-p2a-v9-outer-actual-wait-v1",
+    "freeze": "0063aa233ba3008ddcc1eb09ea8068112eea3965",
+    "scope": "matrix",
+    "plan_sha256": "15d1ec389105e45a445871b069e5b01ec49ffa609e1cb0318bb5246b4cd6ec0d",
+    "argv": [
+      "/usr/bin/python3",
+      "-B",
+      "-m",
+      "mr3_learning.preparation",
+      "--plan",
+      "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v13/predeclared_plan_v13.json",
+      "--freeze",
+      "0063aa233ba3008ddcc1eb09ea8068112eea3965"
+    ],
+    "owner_identity": {
+      "pid": 979913,
+      "parent": 979909,
+      "group": 979909,
+      "session": 979909,
+      "start_ticks": 410261519,
+      "state": "R"
+    },
+    "started_wall_monotonic_ns": 4102615327435343,
+    "errors": [],
+    "returncode": 1,
+    "process_identity": {
+      "pid": 979916,
+      "parent": 979913,
+      "group": 979909,
+      "session": 979909,
+      "start_ticks": 410261534,
+      "state": "R"
+    },
+    "ended_wall_monotonic_ns": 4109362796250343,
+    "wall_seconds": "6747.468815"
+  },
+  "original_final_internal_observation_wall_monotonic_ns": 4109363890109389,
+  "original_final_exact_end_timestamp": null,
+  "actual_tool_completion_rows": [
+    {
+      "phase": "outer_poll",
+      "chunk_id": "e74255",
+      "wall_time_seconds": 24.636899211,
+      "exit_code": 1,
+      "original_token_count": 32
+    },
+    {
+      "phase": "final_closure_poll",
+      "chunk_id": "d62ddb",
+      "wall_time_seconds": 0.863723939,
+      "exit_code": 1,
+      "original_token_count": 0
+    },
+    {
+      "phase": "observation_poll",
+      "chunk_id": "5de667",
+      "wall_time_seconds": 0.949932246,
+      "exit_code": 0,
+      "original_token_count": 0
+    }
+  ],
+  "pilot_decisions_remaining_unchanged": 1870,
+  "pilot_wall_seconds_remaining_unchanged": "2905.9547395464029",
+  "scope": "Exact root conservative upper charge; original final no exact end is invented. Complete observation-tool wall includes all its actual wait portions and is deliberately added to the after-final-wait gross. Final poll alone is not whole phase wall. Packing CPU is excluded from native engineering charge."
+}

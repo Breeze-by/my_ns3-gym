@@ -1,0 +1,113 @@
+--- /tmp/mr3_p2a_v13_deadline_completion_v1.py
++++ /tmp/mr3_p2a_v13_deadline_completion_v2.py
+@@ -25,10 +25,10 @@
+ FREEZE='0063aa233ba3008ddcc1eb09ea8068112eea3965'
+ RESET=Path('/tmp/mr3_p2a_v13_reset_completion_v2.py')
+ RESET_SHA='3dd3e75b1d3be168099579d3b3aa9dcba8e8421c2b8f95a149dc6a7f3a85b275'
+-PLAN_SCHEMA='mr3-p2a-v13-deadline-completion-plan-v1'
+-RUN_SCHEMA='mr3-p2a-v13-deadline-completion-execution-v1'
+-WAIT_SCHEMA='mr3-p2a-v13-deadline-completion-actual-outer-wait-v1'
+-FINAL_SCHEMA='mr3-p2a-v13-deadline-completion-final-absence-v1'
++PLAN_SCHEMA='mr3-p2a-v13-deadline-completion-plan-v2'
++RUN_SCHEMA='mr3-p2a-v13-deadline-completion-execution-v2'
++WAIT_SCHEMA='mr3-p2a-v13-deadline-completion-actual-outer-wait-v2'
++FINAL_SCHEMA='mr3-p2a-v13-deadline-completion-final-absence-v2'
+ QUAL_SCHEMA='mr3-p2a-v13-completed-38-role-qualification-v1'
+ BALANCE_SCHEMA='mr3-p2a-external-accounted-balance-v1'
+ AUTH_SCHEMA='mr3-p2a-engineering-budget-acceptance-v1'
+@@ -108,8 +108,9 @@
+     base=original['base_plan']
+     tool.source_check(base)
+     paths={k:str(getattr(args,'reset_'+k)) for k in ('plan','summary','final','outer')}
+-    # Paths may be prospective at declaration time. They become required actual
+-    # successful inputs at run admission; no passed/reset result is synthesized.
++    reset=reset_proof(paths)
++    reset_bindings={k:spec(v) for k,v in paths.items()}
++    check_reset_accounting(args.reset_accounting,paths,reset['final'])
+     stage=deadline_stage(base,args.evidence)
+     require(not Path(stage['run_directory']).exists(),'original unsubmitted deadline output already exists')
+     value={'schema':PLAN_SCHEMA,'freeze':FREEZE,'tool':spec(__file__),'reset_tool':spec(RESET),
+@@ -117,6 +118,7 @@
+            'original_matrix_passed':False,'old_passed_scientific_roles':26,
+            'required_new_reset_roles':4,'required_new_deadline_roles':8,
+            'qualification_schema':QUAL_SCHEMA,'reset_completion_paths':paths,
++           'reset_completion_bindings':reset_bindings,'reset_completion_accounting':spec(args.reset_accounting),
+            'source_bindings':base['source_bindings'],'library_bindings':base['library_bindings'],
+            'input_bindings':original['input_bindings'],'evidence_directory':str(args.evidence),
+            'stage':stage,'total_batch_wall_allocation_seconds':str(CAP),
+@@ -157,7 +159,31 @@
+             and plan['stage']==deadline_stage(base,Path(plan['evidence_directory'])),
+             'completion declaration changed original sources/math/argv/DAG')
+     for value in plan['input_bindings'].values(): check_spec(value)
++    require(set(plan['reset_completion_bindings'])=={'plan','summary','final','outer'},'bound reset artifact inventory differs')
++    for key,bound in plan['reset_completion_bindings'].items():
++        require(bound==spec(plan['reset_completion_paths'][key]),'actual completed reset bytes differ from declaration')
++    check_spec(plan['reset_completion_accounting'])
++    check_reset_accounting(plan['reset_completion_accounting']['path'],plan['reset_completion_paths'],js(plan['reset_completion_paths']['final']))
+     return plan,original
++
++
++def check_reset_accounting(path,paths,final):
++    account=js(path)
++    require(account['schema']=='mr3-p2a-external-root-accounting-v1'
++            and account['freeze']==FREEZE and account['phase']=='reset_readonly_completion'
++            and account['budget_pool']=='engineering'
++            and Decimal(account['engineering_ceiling_wall_seconds'])==Decimal('30000')
++            and Decimal(account['charged_wall_seconds'])<=Decimal('600')
++            and Decimal(account['charged_wall_seconds'])>=Decimal(final['total_batch_wall_seconds'])
++            and account['within_allocation'] is True and account['cumulative_within_ceiling'] is True
++            and account['final_closure_passed'] is True and account['execution_passed'] is True
++            and Decimal(account['prior_used_wall_seconds'])+Decimal(account['charged_wall_seconds'])==Decimal(account['cumulative_used_wall_seconds'])
++            and Decimal(account['cumulative_used_wall_seconds'])+Decimal(account['remaining_wall_seconds'])==Decimal('30000')
++            and account['accounted_through_wall_monotonic_ns']>=final['wall_monotonic_ns'],
++            'reset external actual tail accounting did not close within600/original ceiling')
++    for bound in account['basis']:check_spec(bound)
++    require(all(spec(p) in account['basis'] for p in paths.values()),'reset external accounting did not bind all actual reset boundaries')
++    return account
+ 
+ 
+ def check_balance(balance,reset_final):
+@@ -480,7 +506,7 @@
+     check_external_completion_accounting(args.accounting,(args.plan,args.summary,args.final,args.outer),checked['final'])
+     plan=checked['plan'];original=checked['original'];tool=reset_tool()
+     role_rows=role_inventory(checked)
+-    paths=[args.plan,args.summary,args.final,args.outer,args.accounting,RESET,Path(__file__),
++    paths=[args.plan,args.summary,args.final,args.outer,args.accounting,Path(plan['reset_completion_accounting']['path']),RESET,Path(__file__),
+            *(Path(v) for v in plan['reset_completion_paths'].values())]
+     bindings={str(Path(p).resolve()):spec(p) for p in paths}
+     for row in role_rows:
+@@ -492,13 +518,15 @@
+            'old_saved_identity_count':539,'original_passed_scientific_roles':26,'new_reset_scientific_roles':4,
+            'new_deadline_scientific_roles':8,'completed_scientific_roles':38,'roles':role_rows,
+            'reset_completion_paths':plan['reset_completion_paths'],
++           'reset_completion_bindings':plan['reset_completion_bindings'],
++           'reset_completion_accounting':plan['reset_completion_accounting'],
+            'deadline_completion_paths':{k:str(getattr(args,k)) for k in ('plan','summary','final','outer')},
+            'deadline_final':spec(args.final),'external_tail_accounting':spec(args.accounting),
+            'source_admission':{**plan['source_admission'],'remote_head_at_qualification':subprocess.check_output(['git','rev-parse','origin/main'],cwd=ROOT,text=True).strip()},
+            'tool':spec(__file__),'reset_tool':spec(RESET),
+            'source_bindings':plan['source_bindings'],'library_bindings':plan['library_bindings'],
+            'input_bindings':bindings,'wall_monotonic_ns':time.monotonic_ns(),
+-           'ppo_admission_qualified':True,'scope':'Distinct same-runtime scientific completion26+4+8; never relabels original matrix PASS. Subsequent PPO still needs its original quotas, fresh actual external pool accounting and true wait/closure.'}
++           'ppo_admission_qualified':True,'scope':'Distinct same-runtime scientific completion26+4+8; never relabels original matrix PASS. Subsequent PPO still needs the separate100 engineering qualification-tail actual wait/absence/accounting, its original quotas, fresh external pool accounting and true wait/closure.'}
+     prep.dump(args.output,value)
+     return 0
+ 
+@@ -515,6 +543,8 @@
+     checked=verify_completion(*(Path(paths[k]) for k in ('plan','summary','final','outer')))
+     require(value['deadline_final']==spec(paths['final'])
+             and value['reset_completion_paths']==checked['plan']['reset_completion_paths']
++            and value['reset_completion_bindings']==checked['plan']['reset_completion_bindings']
++            and value['reset_completion_accounting']==checked['plan']['reset_completion_accounting']
+             and value['source_bindings']==checked['plan']['source_bindings']
+             and value['library_bindings']==checked['plan']['library_bindings']
+             and value['plan_sha256']==checked['plan']['plan_sha256']
+@@ -534,7 +564,7 @@
+ def main():
+     parser=argparse.ArgumentParser(description=__doc__);sub=parser.add_subparsers(dest='mode',required=True)
+     p=sub.add_parser('prepare')
+-    for name in ('output','evidence','reset-plan','reset-summary','reset-final','reset-outer'): p.add_argument('--'+name,type=Path,required=True)
++    for name in ('output','evidence','reset-plan','reset-summary','reset-final','reset-outer','reset-accounting'): p.add_argument('--'+name,type=Path,required=True)
+     for mode in ('run','outer'):
+         p=sub.add_parser(mode)
+         for name in ('plan','evidence','balance'): p.add_argument('--'+name,type=Path,required=True)

@@ -1,0 +1,34 @@
+{
+  "schema": "mr3-p2a-ppo-v3-specific-source-provenance-v1",
+  "original_v2": {
+    "path": "/tmp/mr3_p2a_ppo_phase_runner_v2.py",
+    "bytes": 21110,
+    "sha256": "dea0c280759cdc957f16e281a2bfe2520f15baab6a7a9cc8fc6d4cb4237cf88f"
+  },
+  "private_v3": {
+    "path": "/tmp/mr3_p2a_ppo_phase_runner_v3.py",
+    "bytes": 23342,
+    "sha256": "cc61355d247216be444c5e6ea82855da3b0cdea3151ac3030b63e4809f6f539d"
+  },
+  "exact_diff": {
+    "path": "/tmp/mr3_p2a_ppo_phase_runner_v3_from_v2.diff",
+    "bytes": 12708,
+    "sha256": "4c8a692205c415c25423fcc06f74f1530bff57a3a3750d4e28eab0c6d0348620"
+  },
+  "unchanged_function_AST": {
+    "require": true,
+    "digest": true,
+    "inputs_reader": true,
+    "check_ppo_counts": true,
+    "outer": true,
+    "final_absence": true
+  },
+  "explicit_changes": [
+    "distinct v3 execution/wait/final schema; old v2 remains unchanged",
+    "only new completed38 qualification accepted at minimum, exact qualification SHA carried through phases",
+    "latest external balances bind qualification and follow it; original pilot/validation pools preserved",
+    "exact clean HEAD0063 plus actual published origin/main ancestry; all runtime279source/10ELFs remain checked by completion",
+    "serialize outer evidence ledger writes across concurrent frozen Runner callbacks"
+  ],
+  "scope": "Standalone /tmp orchestration provenance, no runtime mathematical source or consumer changed; no native/GPU/scientific execution."
+}

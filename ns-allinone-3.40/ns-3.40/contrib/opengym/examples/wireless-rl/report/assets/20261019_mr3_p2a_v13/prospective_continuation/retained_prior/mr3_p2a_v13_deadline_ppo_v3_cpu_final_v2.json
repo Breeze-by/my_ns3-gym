@@ -1,0 +1,56 @@
+{
+  "schema": "mr3-p2a-standalone-cpu-test-receipt-v1",
+  "argv": [
+    "/usr/bin/python3",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "test_mr3_p2a_v13_deadline_completion_v2",
+    "test_mr3_p2a_ppo_phase_runner_v3_final_v2"
+  ],
+  "cwd": "/tmp",
+  "returncode": 0,
+  "passed": true,
+  "started_wall_monotonic_ns": 4110865551281016,
+  "ended_wall_monotonic_ns": 4110869322342299,
+  "wall_seconds": "3.771061283",
+  "console": {
+    "path": "/tmp/mr3_p2a_v13_deadline_ppo_v3_cpu_final_v2.log",
+    "bytes": 1998,
+    "sha256": "68442140e61455e9edb61a79e798be72d39fe33a0bac79b1bf5da10a00344214"
+  },
+  "sources": [
+    {
+      "path": "/tmp/mr3_p2a_v13_deadline_completion_v2.py",
+      "bytes": 38672,
+      "sha256": "c516332877445f9d20f27f4a98efe586f6b09d1084e7016d08474750211e83bf"
+    },
+    {
+      "path": "/tmp/mr3_p2a_ppo_phase_runner_v3_final_v2.py",
+      "bytes": 28988,
+      "sha256": "b8c673ce2e19eb82530c040a7c67a5c27d6a69c38ceea085409162d7625b95e4"
+    },
+    {
+      "path": "/tmp/test_mr3_p2a_v13_deadline_completion_v2.py",
+      "bytes": 8911,
+      "sha256": "c79496159156bb765538ceb4b8af3627383b7cbd45c92278b5efdef46b77b8eb"
+    },
+    {
+      "path": "/tmp/test_mr3_p2a_ppo_phase_runner_v3_final_v2.py",
+      "bytes": 7855,
+      "sha256": "8a8a63874da5afe97410c11dff6c5cb46f7fea5eca12cf1cf494236c3eec9eda"
+    },
+    {
+      "path": "/tmp/mr3_p2a_v13_reset_completion_v2.py",
+      "bytes": 37316,
+      "sha256": "3dd3e75b1d3be168099579d3b3aa9dcba8e8421c2b8f95a149dc6a7f3a85b275"
+    },
+    {
+      "path": "/tmp/mr3_p2a_ppo_phase_runner_v2.py",
+      "bytes": 21110,
+      "sha256": "dea0c280759cdc957f16e281a2bfe2520f15baab6a7a9cc8fc6d4cb4237cf88f"
+    }
+  ],
+  "scope": "17 CPU structural/negative/count/source checks, including finite actual CPU outer wait/failure absences. No scientific consumer/native/GPU/Git workspace or ELF mutation; earlier16CPU version and its declaration retained."
+}

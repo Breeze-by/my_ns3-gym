@@ -1,5 +1,9 @@
 # MR3 研究路线：三机器人 RL 联合建图与冻结策略的 Wi-Fi 网络影响
 
+2026-10-19：P2A.0已验收，P2A未完成。V13冻结`0063aa233ba3008ddcc1eb09ea8068112eea3965`的原矩阵因reset阶段5007.289807297>4762.762500128墙秒而FAIL，原26/38科学角色通过。随后同runtime独立reset只读补验新增4角色，现30/38；548保存PID/start均gone。原矩阵FAIL、非必需逐回合覆盖FAIL及原pooled覆盖PASS均保留，deadline8角色及PPO未启动；不提供物理已修复或95%策略信用，P2B/gateway未启动。
+
+工程累计23877.5745780506018/30000墙秒，余6122.4254219493982；pilot仍余1870决策/2905.9547395464029墙秒，三场final-only验证不扩额。未来deadline8500+资格尾账100+新最小链900=9500方案仅完成准备；累计34000（追加4000）尚待用户明确批准，已批准上限仍为30000。见[V13结果](report/20261019_mr3_p2a_v13.md)；[封存预算提案](report/assets/20261019_mr3_p2a_v13/prospective_continuation/mr3_p2a_v13_engineering_continuation_budget_proposal_v2.json)的SHA为`669c1b64305a9b25d00848a177c137cff848cb33dd2a7248fb74f80492bc4d44`，提案封存不等于授权。
+
 2026-10-19用户批准工程累计上限30000墙秒，入场已用12123.4218194806018、余17876.5781805193982；转向诊断、受影响工程重验及新最小链在此限内继续。pilot仍余1870决策/2905.9547395464029墙秒，final-only三场验证不扩额。见[批准记录](report/assets/20261019_mr3_p2a_v8/budget_acceptance_20261019.json)。
 
 2026-10-18用户已验收P2A.0并授权继续P2A。V7最小训练链已执行，但真实转向模型违例使科学门FAIL，pilot及三场验证SKIPPED；P2A未完成，P2B/gateway未启动。后续两项代码保护仅完成CPU准备，物理执行尚未修复。见[V7结果](report/20261018_mr3_p2a_v7.md)。原[V26](report/20261018_mr3_p2a0_v26_capture.md)工程验收、父编排中断及所有旧FAIL保留，不重写历史。

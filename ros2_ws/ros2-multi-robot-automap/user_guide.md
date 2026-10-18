@@ -1,9 +1,11 @@
 # 三机器人 ROS 建图导航：当前实现指南
 
-当前V12已关闭：interface/terminal19角色PASS，reset raw速度峰触发原生模型FAIL，253身份gone；deadline/PPO跳过。V13准备统一三机Nav2角速度.3/起转加速1.0的新部署profile，原物理/安全/95%门不变，待新冻结完整重验；P2A未完成。见[V13](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v13.md)。
+当前V13原矩阵因reset阶段墙钟超限FAIL；同运行时独立只读补验后30/38科学角色通过，548保存身份gone。原FAIL及非必需逐回合覆盖FAIL保留，原pooled门通过。deadline8与PPO未启动，P2A未完成。
+
+工程累计30000墙秒上限已用23877.6秒，剩6122.4秒；新增4000至34000方案尚待用户批准。精确费用、原件、补验来源语义和未来入口见[V13结果](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v13.md)。pilot和三场final-only额度不变，不重跑已关闭run-id。
 
 P2A.0已验收，用户授权继续P2A并批准工程累计30000墙秒；pilot和final-only开发验证额度不变。
-WORLD odom/TF独立50Hz与真实DDS接收记录器已实现，轮执行器仍为30Hz；新固定模式须完整原生重验。
+WORLD odom/TF独立50Hz与真实DDS接收记录器已实现，轮执行器仍为30Hz；当前V13尚缺deadline8角色，完整38角色资格未成立。
 V7真实转向模型FAIL、V8未复现的诊断及V9—V11失败均保留，不能提供修复或95%策略信用；详细事实见日期报告。
 普通训练默认关闭工程刺激，P2B/gateway未启动。
 

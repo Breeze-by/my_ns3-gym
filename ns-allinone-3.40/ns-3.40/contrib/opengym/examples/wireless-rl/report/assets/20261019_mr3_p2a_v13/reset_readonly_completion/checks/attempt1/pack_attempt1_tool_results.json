@@ -1,0 +1,23 @@
+{
+  "schema": "mr3-reset-packet-initial-cpu-archiver-tool-results-v1",
+  "freeze": "0063aa233ba3008ddcc1eb09ea8068112eea3965",
+  "initial_exec_command": {
+    "chunk_id": "620ca7",
+    "wall_time_seconds": 1.001935331,
+    "session_id": 84059,
+    "original_token_count": 21,
+    "output": "{\"phase\": \"started\", \"child_identity\": {\"pid\": 1045727, \"start_ticks\": 411109561}}\n"
+  },
+  "actual_creator_write_stdin_calls": [
+    {
+      "chunk_id": "2a3768",
+      "wall_time_seconds": 0.000019421,
+      "exit_code": 1,
+      "original_token_count": 377,
+      "output": "{\"schema\": \"mr3-v13-reset-completion-packet-actual-cpu-pack-child-wait-v1\", \"freeze\": \"0063aa233ba3008ddcc1eb09ea8068112eea3965\", \"argv\": [\"/usr/bin/python3\", \"-B\", \"-u\", \"/tmp/mr3_p2a_v13_reset_completion_packet_v2/checks/pack_reset_completion_v2.py\"], \"child_identity\": {\"pid\": 1045727, \"start_ticks\": 411109561}, \"started_wall_monotonic_ns\": 4111095611126925, \"ended_wall_monotonic_ns\": 4111096968615410, \"wall_seconds\": \"1.357488485\", \"actual_wait_returncode\": 1, \"log\": {\"path\": \"checks/pack.log\", \"bytes\": 706, \"sha256\": \"6558561aa1e0f6a776a9294a6e629354a0384305a92b7c91c52f3a413961e91d\"}, \"manifest\": null, \"scope\": \"Actual finite CPU-only archive child wait for already closed reset read-only evidence; no new native/consumer/test execution and no native engineering charge for this pack.\"}\n{\"file_count\": 56, \"raw_bytes\": 2482835, \"file_counts_by_group\": {\"actual_closed_completion\": 25, \"prepare_cpu_artifacts\": 22, \"actual_wait_accounting_inventory\": 6, \"optional_coverage_closed_review\": 1, \"original_raw_reference\": 1, \"postclose_static_proof\": 1}}\nTraceback (most recent call last):\n  File \"/tmp/mr3_p2a_v13_reset_completion_packet_v2/checks/pack_reset_completion_v2.py\", line 264, in <module>\n    main()\n  File \"/tmp/mr3_p2a_v13_reset_completion_packet_v2/checks/pack_reset_completion_v2.py\", line 254, in main\n    'derived_console_provenance': index['initial_console_provenance'], 'earlier12_cpu_evidence_scope': index['earlier_12_test_pass'],\nTypeError: 'int' object is not subscriptable\n\n"
+    }
+  ],
+  "actual_final_tool_exit_code": 1,
+  "actual_pack_child_phase_wall_seconds": "1.357488485",
+  "scope": "CPU archive implementation failure only: part loop variable index shadowed the prepare artifact index at final manifest construction. Original56 member bytes/closed reset receipts remain unchanged; no new native/scientific failure is implied. Full actual tool return walls retained individually, not relabeled whole phase wall."
+}

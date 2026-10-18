@@ -9,7 +9,7 @@
 
 | 文件 | 用途 | 能提供的信用 |
 | --- | --- | --- |
-| [P2A V13](20261019_mr3_p2a_v13.md) | 一致.3角速/1.0起转加速的Nav2部署候选及exact读回 | CPU68+45和配置检查通过、计划已seal；原物理/任务门不变，须新冻结38角色重验，尚无本版native |
+| [P2A V13](20261019_mr3_p2a_v13.md) | 温和转向原矩阵时间门FAIL，独立只读补验30/38 | 原26角色PASS、reset补4；原FAIL与optional覆盖FAIL保留，548身份gone；deadline8/PPO未启动，工程累计23877.574578/30000，新增34000方案待批准 |
 | [P2A V12](20261019_mr3_p2a_v12.md) | 固定tagged观测周期、等价审计索引与完整新冻结重验准备 | interface/terminal19角色PASS；reset真实速度峰触发原生模型FAIL，余科学角色未提交/跳过；253身份gone，无PPO信用 |
 | [P2A V11](20261019_mr3_p2a_v11.md) | 三处平台入口判据与实际节余分配 | 32步/live/full/peer/information通过，旧drive对观测tag准入FAIL；53身份gone，后三阶段/PPO跳过 |
 | [P2A V10](20261019_mr3_p2a_v10.md) | 精确gzserver真实ELF身份绑定的原生重验 | 32步正常关闭但取证FAIL，49身份gone；后三阶段/PPO跳过 |

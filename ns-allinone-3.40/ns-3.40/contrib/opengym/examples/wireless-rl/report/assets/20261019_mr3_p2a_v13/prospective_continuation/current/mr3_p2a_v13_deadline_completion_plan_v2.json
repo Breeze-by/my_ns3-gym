@@ -1,0 +1,1571 @@
+{
+  "schema": "mr3-p2a-v13-deadline-completion-plan-v2",
+  "freeze": "0063aa233ba3008ddcc1eb09ea8068112eea3965",
+  "tool": {
+    "path": "/tmp/mr3_p2a_v13_deadline_completion_v2.py",
+    "bytes": 38672,
+    "sha256": "c516332877445f9d20f27f4a98efe586f6b09d1084e7016d08474750211e83bf"
+  },
+  "reset_tool": {
+    "path": "/tmp/mr3_p2a_v13_reset_completion_v2.py",
+    "bytes": 37316,
+    "sha256": "3dd3e75b1d3be168099579d3b3aa9dcba8e8421c2b8f95a149dc6a7f3a85b275"
+  },
+  "base_plan": {
+    "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v13/predeclared_plan_v13.json",
+    "bytes": 138927,
+    "sha256": "15d1ec389105e45a445871b069e5b01ec49ffa609e1cb0318bb5246b4cd6ec0d"
+  },
+  "plan_sha256": "15d1ec389105e45a445871b069e5b01ec49ffa609e1cb0318bb5246b4cd6ec0d",
+  "original_matrix_passed": false,
+  "old_passed_scientific_roles": 26,
+  "required_new_reset_roles": 4,
+  "required_new_deadline_roles": 8,
+  "qualification_schema": "mr3-p2a-v13-completed-38-role-qualification-v1",
+  "reset_completion_paths": {
+    "plan": "/tmp/mr3_p2a_v13_reset_completion_plan_v2.json",
+    "summary": "/tmp/mr3_p2a_v13_reset_completion_evidence_v2/summary.json",
+    "final": "/tmp/mr3_p2a_v13_reset_completion_final_absence_v2.json",
+    "outer": "/tmp/mr3_p2a_v13_reset_completion_outer_wait_v2.json"
+  },
+  "reset_completion_bindings": {
+    "plan": {
+      "path": "/tmp/mr3_p2a_v13_reset_completion_plan_v2.json",
+      "bytes": 194927,
+      "sha256": "b7df79cea5432664f850affdaad0f41e138f71307191b7eff25ec496bd75b430"
+    },
+    "summary": {
+      "path": "/tmp/mr3_p2a_v13_reset_completion_evidence_v2/summary.json",
+      "bytes": 43703,
+      "sha256": "9c7ffbfa32e4750ef72dc78ea5b85cd1a009172b723f5311fd86084ef42deec1"
+    },
+    "final": {
+      "path": "/tmp/mr3_p2a_v13_reset_completion_final_absence_v2.json",
+      "bytes": 145863,
+      "sha256": "ed5c71259385cc17a28dcd01946622a15cea8528890ac6fa21db7a084bfcc00b"
+    },
+    "outer": {
+      "path": "/tmp/mr3_p2a_v13_reset_completion_outer_wait_v2.json",
+      "bytes": 1123,
+      "sha256": "e190f2bf012811422860cf05554806436a881b836dd40f2d6a19777374a4520a"
+    }
+  },
+  "reset_completion_accounting": {
+    "path": "/tmp/mr3_p2a_v13_reset_completion_accounting_root_v2.json",
+    "bytes": 2345,
+    "sha256": "3752b2d3e78944fb51c745480e14b5bbf6369de9e09c70c5afa0cbf7c5d9a3f8"
+  },
+  "source_bindings": {
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_independent_control_phase_v1.py": "04cd7d079c16004b20320868943bcdac899da7646304d30cbad0804d1a6ee8d3",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_independent_control_phase_v1_tests.py": "9d89029457a7975d22dd78e8963a3b92ce1a16352d9db9355c995740a5e6eed3",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_independent_drive_trace_v5.py": "1010c0192233c2c649924bda2709479c991b18b34a753bda265779cf5bbf57a5",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_independent_drive_trace_v5_tests.py": "1bfdf83d155d3306915ecbd24249453af5c31811abd36d3cf3da6644f02116a4",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_independent_information_v2.py": "f73600551a68e833a4c0a2063b12b75038a748466c838c8583c00605a34b948b",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_independent_information_v2_tests.py": "3981293302be2fc761371592408fe60d42a1a1c6f7695bfd908da79ec337621f",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_p2a0_v10_audit_stage.py": "136582b28cb2cd8168f70a090b1310c415ea3df7ecdf42d3dcac94754af72e4a",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_p2a0_v10_buildproof_preflight.py": "be0cfcd4e35a2c4270599467595ffc135fecc2a345ef1e4c8476e051c5f2947a",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_p2a0_v10_contract_checks.py": "238ea18998f0ee50da46c031426c555adcfe5836456f90db58ffb36912fd5843",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_p2a0_v10_launch_stage.py": "cd6e725d422fb6cd7ea090e94cb610c18b13f8d43a1e483abb919177d39a7e8b",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_p2a0_v10_plan_launcher_tests_v1.py": "e27dded20d39dfab77fcec64bb159fdb29cdcf2453a72f33e0a1585c1ae9b9f4",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_p2a0_v10_runtime_import_check.py": "5d2e0bc48fa872ca2194eb85a9636fe9c820c78a4f6a0a87c5c2bd235c346324",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_readonly_v10_body_live.py": "7981bd287c02a4f22eea93947bd4ef665271204593363d30ed4115dcd753dd77",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_readonly_v10_drive_process_monitor.py": "7126969f615d768c5b8fe18039ffd5e0f9d090941e7a857e75b2c44436fb3d13",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_readonly_v10_process_sampler.py": "f4b9d29af9d3300fe380164a413e245e8a5a8ed7eb19b5d99231c09aaaa7c10f",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_v10_fifo_phase_review.py": "232d4240aa546281f9ebf7e48271e8d581b897662a9fc0932fbe346c4795f945",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_v10_multiepoch_closure_binary_review_v1.py": "2be28ca04d9ccfb909c9b3b5a4caea478b4f78becb2f3f1ee310267bf277f174",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v11/independent/mr3_independent_control_phase_v2.py": "3089ba774055b53e4c64e4e3e601398535554bc0bd15eb5d952bcfdf027b9a4b",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v11/independent/mr3_independent_control_phase_v2_tests.py": "367ea1809ca55a14a02f52be5bfe00192e38a381964906a936528a2dca2d77ca",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v11/independent/mr3_p2a0_v11_audit_stage.py": "84d59b746695d1223ce59a6470a56af0966c52d2c14dc126428f81e18c8e3acb",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v11/independent/mr3_p2a0_v11_buildproof_preflight.py": "2a6cb1d75411e2a921f257d1bf34a4c5cb17162ef3ae5ffa0a71891167cb3031",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v11/independent/mr3_p2a0_v11_contract_checks.py": "21d849c17fb461f17927c3e9be8ff260143eb0464383c287540582069989fcd5",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v11/independent/mr3_p2a0_v11_launch_stage.py": "ac6fdcaf015b9629ce79535352d5ec896ffcf967d963d857e8698bf9922739ac",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v11/independent/mr3_p2a0_v11_plan_launcher_tests_v1.py": "f49fdd5158a25447ef4a6ada2fee1dc52b680d64b5198b037152085e3279cd81",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v11/independent/mr3_v11_multiepoch_closure_binary_review_v1.py": "fedd6034db772b805f40ccb349216ceedd9f677249cf490238f8ea52dd20cf5b",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v12/independent/mr3_p2a0_v12_audit_stage.py": "dfa208cc1e71bdd5d3ccf51d7e4077fbc590b66be1563379dd1469eb433f2620",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v12/independent/mr3_p2a0_v12_audit_stage_tests_v1.py": "efe6bd04ed6d25e44b160096cff0261a6447bc66f31418521e240f98a8e91fcc",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v12/independent/mr3_p2a0_v12_buildproof_preflight.py": "b14e179241a992fcb8dab7de607694d430fc3ecb86db043472fde61df20d62ac",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v12/independent/mr3_p2a0_v12_contract_checks.py": "c68ff0b822ec679390e411b7c666dd01177c4d6dda824a20f6fcd4317ee04a86",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v12/independent/mr3_p2a0_v12_launch_stage.py": "e52d8615db014de939cdf16d88215d876333cfefa706692fccfc71d2f282a196",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v12/independent/mr3_p2a0_v12_plan_launcher_tests_v1.py": "aa18342665a1f9eb1f2866017032f4521815a8d0f3049407f65f37f823ee7c5e",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v12/independent/mr3_v12_multiepoch_closure_binary_review_v1.py": "4299ec25773b185b4e581fcef2b03bb7451b453d1ebbc209b77a80466edabeca",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/binary/mr3_p2a0_v13_drive_build_receipt_v1.json": "85484c6d7a32f793c943b7d9778067cd77ef99b4220f3aba50aa38021675f474",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_actual_nav2_parameters_v13.py": "9eb963457a8dc8297e4686004ea08c7a06e1e0e9ede7cd795ba9505da9d8f701",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_actual_nav2_parameters_v13_tests.py": "23b56be1dd514518732a0787af7bd1ea986ffac5a6783be0862365593de019dd",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_independent_drive_trace_v6.py": "a1885f8f4f751e5b1a4ef5d48976dcbb3cbfceeb1384cb5310340e98d543ed54",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_independent_drive_trace_v6_tests.py": "829af60170757ffd7d89ef748c0239ec043aaba85dacc35e0874565049b1ebd3",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_p2a0_v13_audit_stage.py": "d43d4f68ac44781e03f36c6714aede25b6dfdb1a1d78daba5a189f1d6e11da10",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_p2a0_v13_audit_stage_tests_v1.py": "a64a9b9af991e273dca5ac3f7ba170e5fc8e6b3c7d43eb3e3afbefa5d42ddc85",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_p2a0_v13_buildproof_preflight.py": "9eacf18ad62ba51234f2ea962fce214634f041b89cb190294eac096a9d1cb4a6",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_p2a0_v13_cross_stage_mapping_monitor_v1.py": "e44bfc85d7c39257bd84f7c0037ac10b10ef59959e4d6856386d386ae2b25fc2",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_p2a0_v13_cross_stage_mapping_monitor_v1_tests.py": "61eb1b57af7a0723c1d9b6f0c1d99d01a0d395286489586f973048710cf4165c",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_p2a0_v13_launch_stage.py": "3852d6aae2a1beba8c4034a095caf36e97a763f07ab545a351ce430520156eb6",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_p2a0_v13_plan_launcher_tests_v1.py": "95ce984ec66dbebac76fd1f54758b0be1e91e577aaf208c6eac3fb84d104c5e6",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_readonly_v13_drive_shim_process_monitor_v2.py": "45d33e163848da42a73c41f67a8f4c0cd27d36d19ffe645b62072e42994aaae8",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_readonly_v13_drive_shim_process_monitor_v2_tests.py": "f21ebf1c6b742c8c0ad8dce155fd9c91f8fe992538de3aa7828a228131a8ce9a",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_v13_multiepoch_closure_binary_review_v1.py": "e2ac6796eabe6148115d7de55b584b08cebb6516dcec7ba8c15a71d45022ee7e",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_v13_nested_closure_read_tests_v1.py": "ca598a748e8e55c9644f740015b8b2553b2dfedd14d5c180b808f41cc87f4776",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_v13_shim_binding_v1.json": "cae1d33c858609dfccb249231645bc4843856054031f53168f52fbd244f728a3",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_v13_shim_mapping_review_v1.py": "775a5f012e6098f7083735cd2064e1963d855a9c5b5356af99eebd21e4737282",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_v13_shim_mapping_review_v1_tests.py": "c319e031f88f1cdbc54b824b5b5e57668f009be54c3857571f589c73cd881bb2",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_v13_upstream_rotation_shim_1_1_20.cpp": "e06b6c6a64853334b20398f750c517018c17a2017bec864c626726fcea261288",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v14/independent/mr3_p2a0_v14_audit_stage.py": "11b4754c0687e4e41c025d76c344e4c747ca010a53769bd1fb32fb536d997644",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v14/independent/mr3_p2a0_v14_audit_stage_tests_v1.py": "35e99a267a7ad895ea6d268866cceff72d54f01144dd0795fc001c45f3eb9e55",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v14/independent/mr3_p2a0_v14_buildproof_preflight.py": "8abcc7e2f83c413dd8f1242a3f46587d8fb97fe3b5995bb1542426aa5ae3b1d1",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v14/independent/mr3_p2a0_v14_cross_stage_mapping_monitor_v1.py": "e2a9a4a2b3da5be79f36dc6801bf806b61ba015a06ce47ac0a804c2f61e65436",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v14/independent/mr3_p2a0_v14_launch_stage.py": "1a712e6a435baa3576426533d182d6790009adaad7038b5c0ad6ba588abdd201",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v14/independent/mr3_p2a0_v14_plan_launcher_tests_v1.py": "e3ed4220a1a28dca5ca092273bf46c86e15eedff666e8572d754153626966d45",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v14/independent/mr3_v14_multiepoch_closure_binary_review_v1.py": "06877d3c2ff77b80ad6b06ba06ab2b781ad5cf016ecd1d794625c356f13e36ca",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v14/independent/mr3_v14_nested_closure_read_tests_v1.py": "05c600b0a07a0a8a9426062caf8dde6940b220dbc266ded5a625d1bb4a631f41",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v14/independent/mr3_v14_shim_path_adapter_tests_v1.py": "d586e25422135466cb5bea4da61c447299df92a8c244b5c2100482df9e9afccd",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v15/independent/mr3_independent_angular_reset_matrix_v15.py": "73128aed50763f6a50426bc2b7e0ce98bce6bfa6d8db3a560d265be5a6df8ae2",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v15/independent/mr3_independent_physics_matrix_v15.py": "fa988a29465f928eb425f626f246b85f36ddee5bc168c24ffce9d125e7a51754",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v15/independent/mr3_independent_reset_wrappers_v15_tests.py": "df161f934a05855133d8529f3c67ca12dab20e8692873b94283827b3aec4b947",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v15/independent/mr3_p2a0_v15_audit_stage.py": "a6fabc3b9dce82854b98b0dd8ae5871e877dcd169f457f50eb51f235dc5da2d2",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v15/independent/mr3_p2a0_v15_audit_stage_tests_v1.py": "f5dc12175f92fcf3c854ba3b423821403e50d038beda34acae11287f81daae07",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v15/independent/mr3_p2a0_v15_buildproof_preflight.py": "bd933c5549b47fbe48fe4d3d6c71154faa1533fc8cbbab177983d7923444f17c",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v15/independent/mr3_p2a0_v15_cross_stage_mapping_monitor_v1.py": "491dae26b32608717ba3bb0e9457af4b331ef3aaac199762dfb3cafe8a00c366",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v15/independent/mr3_p2a0_v15_launch_stage.py": "0b75d64b01c226296522a278e9714f09ae482a1ca10f57c5e44b1acba378fd46",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v15/independent/mr3_p2a0_v15_plan_launcher_tests_v1.py": "3a890945646575cf9c9642f95300170684d5c8101dbc422cb9ec7ccbbf09dd26",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v15/independent/mr3_v15_multiepoch_closure_binary_review_v1.py": "0a9974888474b78987469bca2cdefcf8c930fd4cf1f38d68421a67cdd870cca0",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v15/independent/mr3_v15_nested_closure_read_tests_v1.py": "7920b3799076a244b0bedcf6a692690432d4cc9c30b3b3ae01e7dc004e622e1a",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v15/independent/mr3_v15_shim_path_adapter_tests_v1.py": "e5e33b394ed508555b01ebbf1a6280a1dbe965e2d567e83102238f869047bcea",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v16/independent/mr3_independent_angular_reset_matrix_v16.py": "870ce0f85d637c60a8b9b0ea5cfa1393ba53c7c569a720e20d457dcc8b86666c",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v16/independent/mr3_independent_physics_matrix_v16.py": "f56053c890603450f37bb131ec1ba67486b79a2e6e74ba2d8f503eecf720a6d3",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v16/independent/mr3_independent_reset_wrappers_v16_tests.py": "ed2fb250d0f93b3a406dcca68108a05d1f6a069cab0ce35c498984195ec4b787",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v16/independent/mr3_p2a0_v16_audit_stage.py": "738ff4bc6b8d6067754ce4973e39bab35d844fcd59b469f0dc2775493e59dcbc",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v16/independent/mr3_p2a0_v16_audit_stage_tests_v1.py": "920c1900a0a11fec5d52a1f7b0d97066d0956c7bf3b3799a361d2c5de3a13ac5",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v16/independent/mr3_p2a0_v16_buildproof_preflight.py": "f92d9f7e5c88d16d92cf9d478ceb84029a2db7c576893ab4abe83f106cfac33f",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v16/independent/mr3_p2a0_v16_cross_stage_mapping_monitor_v1.py": "5c06937e65f0af949f6814b900c3302bf0e5f2e7046615bcee34dcfb850136e6",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v16/independent/mr3_p2a0_v16_launch_stage.py": "0a614a54704577a62fce79728abe02e7a6d5a4beeb7171a750951fbd6711b1cf",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v16/independent/mr3_p2a0_v16_plan_launcher_tests_v1.py": "6b7123873cff46c148727120c4be8dbd537178d01b5fe16153b7c80ab1d9d0d4",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v16/independent/mr3_v16_multiepoch_closure_binary_review_v1.py": "01370458c807596dd2a9eedc5d30061aad896d8eccfd920250ce6758773c532d",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v16/independent/mr3_v16_nested_closure_read_tests_v1.py": "2823f193ee7433bbbc623f795e8f29a753920243b03aec9b18f59f3019765c4a",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v16/independent/mr3_v16_shim_path_adapter_tests_v1.py": "cb744553b2391f6364698f14cc6e6dc84081333e2d91673236f9754009c6dc82",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v17/independent/mr3_independent_angular_reset_matrix_v17.py": "8c9f04929cd9a52df0bea22106d64756c42c51350adae9ee20823e0054028901",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v17/independent/mr3_independent_physics_matrix_v17.py": "50651f8b8ed5bee161f4c44a18e1ce68f7d8a27cda88fc466756b91f0f35cee8",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v17/independent/mr3_independent_reset_wrappers_v17_tests.py": "14345992457f540b06752bf8babce15f55d7ff76d03ccb8a99ec3b7e5f38c421",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v17/independent/mr3_p2a0_v17_audit_stage.py": "859714a501b7088d145cdda2bb113604cc8f0c9ac78f72859b832f16aa185b25",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v17/independent/mr3_p2a0_v17_audit_stage_tests_v1.py": "390fb49d7902a851abc5facb928a5fdea2591e26dec6c4d68bc679049589f733",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v17/independent/mr3_p2a0_v17_buildproof_preflight.py": "e7e1e7fe44971824bba3566a7fa8ce89154871b00e7d58b3c9084b3ebb47c5c6",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v17/independent/mr3_p2a0_v17_cross_stage_mapping_monitor_v1.py": "ee1f173753b14a9925b38119fc3eeb8b0e1931b521ae994f2c56ff6661a7c8ec",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v17/independent/mr3_p2a0_v17_launch_stage.py": "63891f7dec2603ae1e5a406d58866fdf4b22ca7b6ef26a1271045d6fb4db5a27",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v17/independent/mr3_p2a0_v17_plan_launcher_tests_v1.py": "6abeea1fb8cc6efc706161cf8bdf299aa02ac862fc7e0d8f79ad798eac6f630a",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v17/independent/mr3_v17_multiepoch_closure_binary_review_v1.py": "729f78f3425abd175b9daaa444b5a28e90e7b1bbc118246b83a58ee0b70d8c7e",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v17/independent/mr3_v17_nested_closure_read_tests_v1.py": "067fc3ba992dd2cd5d3ea6140e9f5456e1267e998c6da7568aa1c8dc945cc368",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v17/independent/mr3_v17_shim_path_adapter_tests_v1.py": "dfb0edcb356b5e9b3ff4191cb1dfa0aea8a4db6ec70df4504b9f084b13214226",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v4/independent/mr3_actual_nav2_parameters_v4.py": "fe0a91eec1aaf6d45bc3aedd4de9223b53e77721be878136a96d02ef1bd5c0ae",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v4/independent/mr3_actual_nav2_parameters_v4_ros_cpu_test.py": "00c67eb9a90ac7b438315254c407d0c163c39b4838f98b949cd0eeb48e7186df",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v4/independent/mr3_actual_nav2_parameters_v4_tests.py": "23f0be02403b9af5e6a9ff4422470c24b73a848807bb2e37a716b26364b1b54c",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v4/independent/mr3_independent_angular_interface_v1.py": "7a472ba7efdd55addc710b98c66c89feff7f5092f214f76fd76cd4ca526343d0",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v4/independent/mr3_independent_angular_interface_v1_tests.py": "474735b1c8364787124a68eed01c72df93b4131b6ea4a89e6a48263d9e97b289",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v4/independent/mr3_independent_angular_reset_matrix_v1.py": "6f4b0c3ce7b3cd2eba18c9e264c6d0cdc980ab486b5d235f1f2b06f7a8a774c1",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v4/independent/mr3_independent_angular_reset_matrix_v1_tests.py": "051a7c46ff62ab6a55746bd0affea65accdf1eda1a77398e6f93ec3cda26f691",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v4/independent/mr3_independent_physics_matrix_v4.py": "c6dcad54743a2d04ce64dd3f4feb329b1a4e3116b384f9269db342df4f6fa655",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v4/independent/mr3_independent_physics_matrix_v4_tests.py": "4082ca7e8149881ee94ccc99cce2d2262563232efd801bb9f4243b35dcfa6988",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v4/independent/mr3_p2a0_v4_independent_input_episode_review_v1.py": "ab102c02bff6b3dbd916e07552ea4250b0bf2f935da74f97d21ed5f766261c05",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v7/independent/mr3_independent_drive_trace_v3.py": "dc10bf03cde4d9b7b8aad9d5f7e5524097bc43bd4055ef21a97638c0374048e9",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v7/independent/mr3_independent_drive_trace_v3_tests.py": "0b393e5b0867094276230d6bdc13f650e9065c2cfc84bbb1507daf876699c07d",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v7/independent/mr3_independent_drive_trace_v4.py": "6aa1a8409e031f225f0acb3a61ab2c9ec16a156cc85a430fd7069bdea411f35d",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v7/independent/mr3_independent_drive_trace_v4_tests.py": "82422414688e39c418cb0471b35274b74311b1e6cbbdcaf2cc663c9014bc2e73",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v7/independent/mr3_p2a0_v7_buildproof_preflight.py": "c7f4ed485927234bfc2e6c50ea947354fc7046e1c7af2b0f9ab9872f58aac1fd",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v7/independent/mr3_p2a0_v7_capture_check.py": "b466a96b309f65f9aa31fa74f7f1b3e74d71db3a6ffc7c0bc952eba90cb8fbd4",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v7/independent/mr3_p2a0_v7_launch_stage.py": "69eef206286376fb2a3ff2d19e42e6cabc9751586c5ed4cc4bee0f12106a1410",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v7/independent/mr3_readonly_v7_drive_process_monitor.py": "52dbacbed2d7baad1761fcb54dc33a58dc8398cbc91e5de9500026d6f351aae9",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v8/independent/mr3_independent_angular_reset_matrix_v8.py": "83f1cabcebda11d431f30e4a752bf87534864f344f7c48755015fbd401f6fee4",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v8/independent/mr3_independent_physics_matrix_v8.py": "b89403fdec92e81fab52ea4eae3ffd6dd35f4674132128b7c3f4cacbd5b70d5d",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v8/independent/mr3_independent_reset_wrappers_v8_tests.py": "2bec0f8c75cac408eb6e3587b6f709af6b46b19d7039981802ee4df6c1fbbf0f",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v8/independent/mr3_independent_settled_turn_v3.py": "c43fadbb74bef948f14c39e74fefb64fc9103b45191f593b8c089a63127b0a69",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v8/independent/mr3_independent_settled_turn_v3_tests.py": "671ae1944d537b0479f84f0c00c78b5ae5c5a4c1fcadc43f33addd41e52cd7f6",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v8/independent/mr3_p2a0_v8_buildproof_preflight.py": "1f687c8afbf225b614b2ea69cba797cb731a715c0d2bad49768da1933949ca1f",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v8/independent/mr3_p2a0_v8_capture_check.py": "a33a7f5663c847e436b46df14d91fbe13b2ba937ad7c59717a1eac5c8ee4939c",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v8/independent/mr3_p2a0_v8_launch_stage.py": "7cac8843ed51c3867378898d3c281cf083541525167b14fdcf70175a03b5a253",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v8/independent/mr3_p2a0_v8_plan_launch_tests_v1.py": "e5592dbad60667474bd6c1b7fdf6039bf060841415a55e81226b3dc6e509818d",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v9/independent/mr3_independent_information_v1.py": "ba3e89fa6feda9406f984310adccf17c2f0638644fd0d26f0c2e9040ec0e7653",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v9/independent/mr3_independent_information_v1_tests.py": "bfd8838318f5d343f469619d53524882e917b3e975418fa5cf2c834e8aa70d93",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v9/independent/mr3_p2a0_v9_buildproof_preflight.py": "627ba3a3be8adf681dc669d17d86ff9043ffb0fc8429eab45015a1f3676c13c9",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v9/independent/mr3_p2a0_v9_contract_checks.py": "7d9c65dc6173b3dab38e80cc36b4a81f84d647cebe878e252724ea0c2e15badb",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v9/independent/mr3_p2a0_v9_launch_stage.py": "518a9308040ec21ff8548147762cb45521e5c00dde63e8c1b4e43df8442a9a66",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v9/independent/mr3_p2a0_v9_plan_launcher_tests_v1.py": "91ede18c0262439cd9ecd239da19669ae75b4768ebea001d2aacb5469cd72cb0",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v18/independent/mr3_independent_stop_observer_v1.py": "e61ce4e00907ab35e196f7abe9fadfd9da099af3542f98dc773d593c33ca2b65",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v18/independent/mr3_independent_stop_observer_v1_tests.py": "3b69cc1cc59fe4346fad5678209bc093a90ee567f3fca0d2d3060aef4e5ef997",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v18/independent/mr3_p2a0_v18_live_admission_v1.py": "fb7e5dd9da8a66a1a7ab72323c5de61ef8d59f1336b327a2aae09a6b7ba67457",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v18/independent/mr3_p2a0_v18_preflight_v1.py": "20e13c2ff753df6de724c3d10317dc75b75ac1b8fc9abb619c08f789ce67c434",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v18/independent/mr3_p2a0_v18_run_diagnostics_v1.py": "201e92a4ea4fe4ceda10d737b497ee172225abe59912ed9907d001b5a98067b3",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v19/independent/mr3_p2a0_v19_live_admission_v1.py": "9c737261631e3f6154433324ce912ea7c188b1cd8de97ad3c5caac298c0ce454",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v19/independent/mr3_p2a0_v19_preflight_v1.py": "1f2ad7ed0b47d7a8b3810304d1354fd43472ce629556cd693f2ed9e806fabaa7",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v19/independent/mr3_p2a0_v19_run_diagnostics_v1.py": "8125f7b3792cf5d27be6c2ef1a0366b3ec02dc175b09ded78a70518451e40d62",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v20_sensor/independent/CMakeLists.txt": "2bc57b1b37468d588e9b92bccd8439e8d123568a373d5c3ddf2ff9c0c6e5a0f7",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v20_sensor/independent/mr3_p2a0_v20_sensor_coordinator_tests_v1.py": "fd0139288826d6d72d3d529eeb45e4227767d507def5c2b31a87ca8ce8a3695a",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v20_sensor/independent/mr3_p2a0_v20_sensor_preflight_v1.py": "28da0a640a423ffc16ab122795728ee6454214899883aa04186b6207d99f86eb",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v20_sensor/independent/mr3_p2a0_v20_sensor_run_v1.py": "1fc9f1725b9685880bcbc224083332084c08c7e07a63824e67aa8792ec4c7ede",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v20_sensor/independent/mr3_startup_sensor_recorder.cpp": "4707c8eaef49e4b763023b2b5d18e9be003ceed04bc9cebcd5c2bbf11f187caf",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v21_ray/binary/canonical_build_receipt_v1.json": "015487b70f8add3593228d170201a7ba4b122252601bbfdd7f415545c5ec4cc2",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v21_ray/binary/libmr3_ray_provenance_observer.so.gz": "39f729a04c2aac90bdb03e1c292a904a528ad924e5f1061682f6f8ab48ff4529",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v21_ray/binary/receipt_v1.json": "cf589cf183d759a77caae7518c44b810c6186137f1c4b66e6b63a0d774448714",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v21_ray/configuration/iters150.json": "30f88abe7442c4fafbd94e119bb70a35d8b4706e72ec63fb413c460209a3f716",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v21_ray/configuration/recorder_template.json": "d92546eb1e06883d48cb634e49ce2375879013a4ce785f920749d4c41ed7130d",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v21_ray/independent/mr3_p2a0_v21_ray_live_admission_v1.py": "101c57802187647a27f3bdd4213a60fdfe7a98004ea8f276771eb9e55f0f0b9d",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v21_ray/independent/mr3_p2a0_v21_ray_preflight_v1.py": "deeb61c911b610981ffa35a67721c84adca723831e5926ffcb951e82c0389430",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v21_ray/independent/mr3_p2a0_v21_ray_run_v1.py": "93d43df2378accf13f9f01503ee921f90ad1d19a936e277ad1bc025f0dfac64e",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v21_ray/independent/test_launch_ray_binding.py": "030602880648294867a8475d3f02496ad567f28c1c11040af4a88e7911b353fe",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v21_ray/independent/test_ray_coordinator.py": "5b70f80a1ea3fbc7bba67cdb4f1d259cc4dd539ddc02005a1bcc515982b3bf06",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v21_ray/independent/test_ray_witness.py": "160f4cb2247c224030cb5212be33e92e8d465a6ba4362df58e240b0259e58571",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v21_ray/independent/test_runtime_projection.py": "b71f8e437f337758924bc80167fa6da050d3337380c3ced974555e3b54c2897a",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v22_ray_box/binary/canonical_build_receipt_v1.json": "ec91e83376219fb4d4d78b7ed42760fc36bff0b9ee9984518d0316299c840d50",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v22_ray_box/binary/libmr3_ray_box_corrector.so.gz": "5adc1aa8eaac84c34c08351c1829ba9e14005ec215e058c1f784cc652220c026",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v22_ray_box/binary/receipt_v1.json": "e522c3000097fcf4fd5c065fbcbd074f0f56167cc82da663081d84b60f0d6670",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v22_ray_box/independent/mr3_p2a0_v22_audit_stage.py": "86b6ac8e1e47dbb720618bf21e4367be695368a8a25bfcb6239595dc2df21087",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v22_ray_box/independent/mr3_p2a0_v22_buildproof_preflight.py": "77d10582878ade90c4f4bab018d8398cee8628317032b38f164fc35d4a02a292",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v22_ray_box/independent/mr3_p2a0_v22_cross_stage_mapping_monitor_v1.py": "878b9dfaa99804c5719c40bbe37581943ee4bb4066ed814913895ba6a36a4b34",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v22_ray_box/independent/mr3_p2a0_v22_launch_stage.py": "2f8952c50dcffda323d719253f3c4ca75a989bb613d3b8123452c2277efb990c",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v22_ray_box/independent/mr3_p2a0_v22_run_matrix_v1.py": "12111fa41c80befb0ff4cf18814e6dff2d8f09a1be225d07fe5eb8a625135cea",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v22_ray_box/independent/mr3_v22_corrector_binding_v1.json": "95ec473d92cde38674c5d17fa691e29ac68eb5a2eeef9823e4f0af36be1a986e",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v22_ray_box/independent/mr3_v22_corrector_custody_v2.py": "862e5b9aa674258975b5ac913d61125bc4b97d036cd6dec08d6296037619386d",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v22_ray_box/independent/mr3_v22_multiepoch_closure_binary_review_v1.py": "b39fe9454b92d1d4e709d48a9d88a840a5350a1a46270b514633d27d66216234",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v22_ray_box/independent/test_corrector_custody_race_v2.py": "da656624191d99b51c38fae49617093fb3a261cabc2fef7117db518f55963854",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v22_ray_box/independent/test_matrix_corrector_integration_v1.py": "735b44e545114ce6e3acdabd0ce66c8087fd79fa030e988d72f3b25447a57ddb",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v23_entry/independent/mr3_p2a0_v23_audit_stage.py": "d48dc1ce403f83f5781e3e81b337c7b4bc392ea39b5d5b7a661dc50268cb70e3",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v23_entry/independent/mr3_p2a0_v23_buildproof_preflight.py": "9a9129b7b3126f613b4398485d04af32aa45a4e59a37434271b4f793735b04c5",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v23_entry/independent/mr3_p2a0_v23_cross_stage_mapping_monitor_v1.py": "9bee08c42fed207619ed28803a795ef1c2b52733f8952ca6bd26e751b4b897ed",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v23_entry/independent/mr3_p2a0_v23_launch_stage.py": "37cd9be4513181a0898dd4e74901442337c39d2aba4b681150019ccc2caf0ac8",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v23_entry/independent/mr3_p2a0_v23_run_matrix_v1.py": "9f3b1ba81785d2305cdb2eade6e2fc0ab3f2f782b4c5ad2458692f4be3b04de5",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v23_entry/independent/mr3_v23_multiepoch_closure_binary_review_v1.py": "9d83971bcc8aabd9fcc1ed864f5cea3aee058b4dfa458e703d64a27282a3add8",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v23_entry/independent/test_entry_interpreters_v1.py": "c0677f158332f97b2258442127ee5f183aa93c4aad2194f16272c489dd16e9da",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v24_install/binary/canonical_build_receipt_v1.json": "6ee8d2739a62d4432122b47aface5abbbc56242737528e2284c03696fd6b7ef6",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v24_install/binary/libmr3_ray_box_corrector.so.gz": "41c1ae6ad5fd1c80a220ecde90328271e2f4e0668d4d240beb44bc0dce67abed",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v24_install/binary/receipt_v1.json": "84bbd6bd4b5a8802222dfff9ef8f5a741b89a5d670b71170f46e9a8ae67b4ac8",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v24_install/independent/mr3_p2a0_v24_audit_stage.py": "3299ccba4576a884afc2c38cb4d3d3c1e55feaa380914f56f75beafc5689b128",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v24_install/independent/mr3_p2a0_v24_buildproof_preflight.py": "3fafd8bfbb076b7602a25ed29b89a434489213322d2b8fe8f1c34a2a667d75b2",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v24_install/independent/mr3_p2a0_v24_cross_stage_mapping_monitor_v1.py": "a477f9d09c53aaadae11dbf06a5ab98a0e4d88be4bd5811122b850d259cd2b24",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v24_install/independent/mr3_p2a0_v24_launch_stage.py": "99c45526b7ac121b968fc210f383d87be77777770ad4351ccb59e6208e676b80",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v24_install/independent/mr3_p2a0_v24_run_matrix_v1.py": "9925f7e56e520ffbf3c9d69301366c9869479c2ab5077baa823177f97e3971e2",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v24_install/independent/mr3_v24_corrector_binding_v1.json": "f21b16dbbf6101483c002c1fabd726ca0b8ea4c4051c1691d1d109adb786c854",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v24_install/independent/mr3_v24_corrector_custody_v3.py": "f65c9c68e6203c499b53d4b75f0ee4e41b256250aae014c783f69cd41af14ab3",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v24_install/independent/mr3_v24_multiepoch_closure_binary_review_v1.py": "ad5e53c37c4ecf030f5d5c9b4c6c37558482a8b5fd55ddcdcdbaffd6af0a320b",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v24_install/independent/test_preinit_custody_v2.py": "1192a65a1727151b4b0c299a8137815036f9e471a6460d7a56e30ef59c1c8fd7",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v25_smoother/independent/mr3_p2a0_v25_audit_stage.py": "9954a43dc7bf33a5c5cd15a0a660b9b70e2a3ae9479cef204508b0d96962e43b",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v25_smoother/independent/mr3_p2a0_v25_buildproof_preflight.py": "a3789a976a4466c068d673a9517e73e372f0bfd71fbae8f5fdb14d110c69fac9",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v25_smoother/independent/mr3_p2a0_v25_cross_stage_mapping_monitor_v1.py": "3afa9507fe91b56b50014a406cdc977f6ff554039025963d92c97f689a5dfb54",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v25_smoother/independent/mr3_p2a0_v25_launch_stage.py": "93836b3f1dd10a08771896e5ac8a42e185f952e3920939fc62c211c7c916f3fe",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v25_smoother/independent/mr3_p2a0_v25_run_matrix_v1.py": "c49ca42355e013105b452d352e93d7b9850b393fde66e823aa4f76354fdb715b",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v25_smoother/independent/mr3_v25_multiepoch_closure_binary_review_v1.py": "7fc5fd25268b60693124fb4a9eabca10bf5c2de7fc2be5b4d3276ad59f7e2ba8",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v25_smoother/independent/mr3_v25_smoother_custody_v1.py": "6edeb3a7e814fb024594be724ef98dce39e1d23a84af5d34d6d6faac0b5cb88b",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v25_smoother/independent/mr3_v25_stage_worker_bindings_v1.py": "3b685448644d5e1ad50adf3f551107120e13c692865a4e7f6bc0facd2c844e70",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v25_smoother/independent/test_smoother_custody_v1.py": "d892ec45feac53c8bdf36a10a2f49f14fb443322a2f218cd8298f0fab8eaf15e",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v25_smoother/source_manifest_v1.json": "78fb9a78ff6d46eef55a1d951ffc43df10e82d7a039f7ac10741625a984d13bd",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v25_smoother/independent/mr3_v25_smoother_binding_v1.json": "61276e5b98a8fb641ecae464386a7f1403acc73789df5251cd82bb35ab83b5e0",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v25_smoother/build_evidence/selected_elf_manifest_v1.json": "74de23e208cc807f217d7dee45d3edb4d329038e6043da3eaae99b008bbdc45b",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v26_capture/independent/mr3_p2a0_v26_audit_stage.py": "5e8a9dead4940e9ea21a6a6a37b7edc918f5e16dc2c5aeffe473948f326c7b2e",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v26_capture/independent/mr3_p2a0_v26_buildproof_preflight.py": "0062278e1464c218078ee4fb84c2e6512495983eba3a08bbe60dba40cfa655ad",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v26_capture/independent/mr3_p2a0_v26_cross_stage_mapping_monitor_v1.py": "84388329426847015300b09b46972501521bc9045f48efb2c2aa347510a3382f",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v26_capture/independent/mr3_p2a0_v26_launch_stage.py": "d62c7d00de5412457f63b7d76e89b94d040729fc86b3b379f60cf49abd3f5d4a",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v26_capture/independent/mr3_p2a0_v26_run_matrix_v1.py": "c2f39939ded98990818581629f0e88e21217ebf9695565227c93252259294005",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v26_capture/independent/mr3_v26_multiepoch_closure_binary_review_v1.py": "a07ea52795ccf4197cc07aa15d214e8818a9a47205ab958c532049fc334d9b22",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v26_capture/independent/mr3_v26_smoother_custody_v2.py": "ac90b7f896592a5a08430ee859ad73332a4e0cd3292e53e20ada310179841c30",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v26_capture/independent/counterexamples_v1.py": "6cd69bbc643f2301d740bec8d357c59c6c0e930d486b84c8c2f20f995be94ac3",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/preparation.py": "850ab8947f711033f3f2fd17ef57d32098c02d569c1bea0f5cf58aaff8acd767",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v3/independent/mr3_independent_physics_review.py": "2516e394f60eac5dd24fd66b51c4c48fc37245090eb1626ebe1c7a3a23f8bafb",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a0_v26_capture/predeclared_plan_v26.json": "fe5a2a7bfb5b6708c396687ece361ba603de76cc35ef443ba4ae50cc739efa0a",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/__init__.py": "1ed62607abac81c63a25c885a23a52f0152d279db480f5c270abea3da55564ef",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/action_trace.py": "c32e27e50ada1804463e4e8bfd8601ba5ea06eaf5579017797e39e427504dd8d",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_action_trace.py": "b9b6ef807c58e810feff036aab2b8efaf41d4eecfdb9fa13251287d50a5481ad",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_activity.py": "0fa0c47262ccf29f140cc2b915431461e830f87680b65f524cbda6a6ffff4407",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_controlled_physics.py": "3080521c368c5dc9b47c74337ea200945c80c125231146ac39cb90a71080dc3e",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_evaluator_phase.py": "35095aaf99f2ee956ed02909ade7755de3974489031c1854287ed547d0628070",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_information.py": "c384b1b3cfc2817a770ea9a2ee5ea5e2f3dadb402df8f869d3eae6c76a38c020",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_motion.py": "202d233600921be6c820fb4f96ec3bd0a4c442df318df140b4d7d375b556d0fc",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_nav2_parameters.py": "848dd05ebd9558a4ec8d47866909662030d24cfce837742a409907ff6c5bfdf3",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_odometry_cadence.py": "14519650bc7bab8fbea3d1a0d8407dbd75b8fb32c9c504d8864202bac81b2a6b",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_policy_inputs.py": "2bff01e3dc4dc78ab32ae04530f799abe04b585be6abb93293e5879557276036",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_ppo.py": "b2e0737d79826b7ecb319cc91b58ff45475ea831a9cb2b4cab2298aaf6474567",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_preparation.py": "b7e07ee44188b43f09a94215430fac609d6753f7be5594ce9f4b2308ccf88cab",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_protocol.py": "8bc1ee209761be2108a3d1d0248f2d0ab40b9fc68539ecedffec11cb81fd1647",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_scalar.py": "fa26eddef15523cbbed40e4cdb02c19f93f90e372cad8cf9bffde9cd8f9888c8",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/benchmark.py": "60627cec2b147d9a46680c8e7c5915e9cf43321109823358e901e9429471f132",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/env.py": "3e2902ff9be5c1b5c0aec00e0e03f2e1b5046a2335a2e871b7ec846156e3a6ff",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/gpu_probe.py": "1505cef4cf4c148a026bac1c6ed4ba3c28ef30a874c9ac0e8e62180a83aa438e",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/ipc.py": "55c6cb4d4a985418ce43e9d753b2d84400bb48138d5588ef43080380bd33cf18",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/model.py": "589ef94730c3bb0785f2d9027e9affe666828a19aff6952dcc2098e4bc31ae41",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/native_custody.py": "4edcdb6b33105e274c1c908c9d78e8c5d24461ff6733ed0f976e41bad3f2d928",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/navigation_archive.py": "b509cc0d19ca443c0776cae4d728d35f399670bda08c171d590c8738964c48bd",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/observation.py": "69f446d601fd67e2cd51622c1e443891a3915587d8d1ba6b12745f7e15ad1723",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/plant_probe.py": "0648b6f7e56326543b52607a5c22b24bec7323a62e056019bfabff2c321a6e3a",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/plant_probe_audit.py": "56a0dbc0ef8e9f07c27023969507980c6c806c8858e83be474e8933b2dce2e05",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/policy.py": "b7d87473c1debf8939209ab7b2cea14e1c28d2639cae320a436c381faccd6452",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/ppo.py": "c8c7beae32c4754b2cb005afd313d8b3c02f40c39fca81370bb97ea37b49478b",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/rollout.py": "338f6b68505c39ea79b5db208a66080ce22c25199b0fc975e61bd5a1f935c87a",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/supervisor.py": "4479f6f00c0623f7af5844f83e5e73814d6605af8fc3d3a7b00aeeffbb426bac",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v9/execute.py": "e686ea2308bffce7b195db45b99037eaa3fa946b579672ae6bb5d83424549879",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v9/final_closure.py": "fb62660d6b0e74668526459f911262dacaa300ee92cc50fd56261f09da3a260f",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v9/preflight.py": "53426fc8d1e3e786430108786ce2348a481102ea21147a14f3d44acdf89b02c0",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v9/prepare_binding.py": "e26af2919686f29e33f66f0175d8b9cc750a5f014216aaf23dd6b529062bd6cc",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v9/prepare_plan.py": "a79f953f18ad7057e39be08a108320bd505ec9c48e06ff18c69fe93aedb81a07",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v9/run_trace.py": "0edf33c816f8933f1fe1f2a250bf537d3c0c592b73352a934a5e0ff774e142e4",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/params/nav2_params_tb1_0.yaml": "d2d01844885fd76ab6e8cd996c37b8994c6cf801010988db12e6dc6e67e38d53",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/params/nav2_params_tb2_0.yaml": "5f2ab024dd590a2cc6656072311a11cddbbaf646423a3fe502569b466e92dc33",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/params/nav2_params_tb3_0.yaml": "b3d47508e69d2e5b6d93805435dbe42b3a5ec262b06015466d5a92f214106192",
+    "ros2_ws/ros2-multi-robot-automap/src/nav2_velocity_smoother/src/velocity_smoother.cpp": "f8bb2400ee10588d803a7cbac619de16d42ad284c3e1ea91515e74ff9b6ec83c",
+    "ros2_ws/ros2-multi-robot-automap/src/nav2_velocity_smoother/include/nav2_velocity_smoother/velocity_smoother.hpp": "0a70071df388f1b911cfd1e43540dea5180cd7ca06fdb9c6f122604ed62cd51f",
+    "ros2_ws/ros2-multi-robot-automap/src/nav2_velocity_smoother/test/test_velocity_smoother.cpp": "0156cae53f4673b35b3705f1e4dbc8f444f39bb0e9bcdee83a1d5a608d5cd4be",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/CMakeLists.txt": "031012cfc77386f37034c430895e9e9ed4526a8f00d49877f3a37b501378b3b3",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/package.xml": "170fb26fb5557b94107afc991ac9625359834415172119ebce43b822d94387cf",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/models/turtlebot3_waffle/model.sdf": "c8131da065085475bdb0ce1e4c3abfc8c009811af6851fadf1fc33bd38b1d8a1",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py": "02f2ba2ace96819752b3f587ae4230e2eb3f1b254dd673fcfa25583bb7d71f27",
+    "ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py": "f957d3fcfe480145b805ef3e0d82ec0bd2c882c6fd1ac8ed0bc7c6458e6d9bed",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v8/checks/mr3_smoother_diagnostic_tests_installed_v2.xml": "701136b28045b61f04a252c4680f3f693edb784b6d2512abaccf9b1fed86402a",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v12/checks/v12_build.json": "4dc395dc8ea1167903e50d4c04b51bedd87b40bfdd0ba7f24415df492ebfb6bb",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v8/checks/mr3_smoother_diagnostic_installed_cpu_v2.json": "6025fe1c6e6fac2ea7542ab47acd2ede79e3795d56600cedb161606421bc52e0",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/src/mr3_gazebo_diff_drive.cpp": "15f54f0786330ac78d5d75853295050a69c0b6d431d19a82f3ae005d288ad8f1",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/mr3_gazebo_diff_drive.hpp": "c86c9b3469e0d81c6a037840cb3c091411c023115c563f454d1ce4399ec08e64",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/paired_wheel_slew.hpp": "dca3dbaf01251cf7ffe167f1dabb23a45b4fc95d6ad317dcc3290ff50ecf9a1b",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/mr3_drive_target.hpp": "4be4d77de247a5bcd427eb6948165e85098eb361030cf89d278d6df92e959d41",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/mr3_odometry_json.hpp": "4b251bff9336a6005a4fff9b6a981286687e99cbff86bf8b3410163e32392c74",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/src/mr3_stop_response_observer.cpp": "b6619d3d246385f34b720c365a584d157ef75fc6a6cff64d58ff0ddedb0354c7",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/src/mr3_ray_box_corrector.cpp": "f82646c8434b77c42f585ac1828eda84640bac873f70cc7de6848cfbd6493473",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/src/mr3_ray_box_collision.cpp": "d556dda57250da3680a7d5a9862416f6196cab9763e495ee75269307b87715cb",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/mr3_ray_box_collision.hpp": "c619442d038e4bc6ea0695ada34d7074ee83d775b2137222ab9fb6bf8193879b",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/src/mr3_odometry_recorder.cpp": "d70502556ca840d8e01ce0183db7befbeecefc3bf267ba239867937013cb6168",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v13/native_custody_binding.json": "882d3d22918e5165b51918f29a012b72f98178dfff35b727e350e7bbc6d786c8",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v13/preflight.py": "e1f1ca62eb2039ec82c510b41afaead5f59c4e7e2439f7e3ea1b9c086189c92d",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v13/prepare_binding.py": "4fb244c790ff5c2fd43cdd3dfaa7886f672a99bd3b69f76c17affca947a6a89a",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v13/prepare_plan.py": "c7fd7c7453795387189d73cae125d8838fab4cf3400bbd52e690c9200a9138b9",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v12/reviewed_execution_delta.json": "3ff0e754cb733b9c2557410978e59bfe567c99092639dca26316158df6196082",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v12/checks/information_combined_cpu/summary.json": "cdab1675a7ffa143c5af414baf019692d99751147a389555e5f9d9d21fe38b58",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v12/checks/information_combined_cpu/index.json": "f7e3794af547c2824dada2faa42c543fe090a64595821414e88eda7560a29476",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v13/checks/nav2_profile_cpu/qualification.json": "bacb73bcf728168434377e2e9d518b83314a1db1e0825adebd790dcb2d272858",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v13/checks/nav2_profile_cpu/index.json": "2d8d231762dbaa80b199a09353b190fd1fb519d0efa2f292f82748c3a1e4e35d",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_ENV_CONTRACT.md": "756f1b6b24cea3c0d8eefe2098c78de254a57e8a273e9e27da2112092de82564"
+  },
+  "library_bindings": {
+    "/usr/bin/gzserver": "689e61236ef90aeb17099bd9cab70280bc457d18fd3bf37a32b9bae77b1bf9d8",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/lib/libmr3_gazebo_diff_drive.so": "c2051fecdaa3aabbfad9f2d763c3f501f29a7952db500034f7f293ae608bbda0",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/lib/libmr3_stop_response_observer.so": "008d68be02b367760049671680e9a63a69d8952705d4b6c1593b56e95c2a6d84",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/lib/libmr3_ray_box_corrector.so": "782d388fea8df3646524e54f41d71de5f53480b9d04cc0ea1c453c70e2c1f7d8",
+    "/lib/x86_64-linux-gnu/libgazebo_ode.so.11": "a94a424df0b3af9d8a04c58ef1562734cc81728253bcedd25c7705330289c258",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/nav2_velocity_smoother/lib/libvelocity_smoother_core.so": "fc2a590d2c75b92f7fe12f2adf380dcd8210444f8b601f8b16313c47aae2226f",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/nav2_velocity_smoother/lib/nav2_velocity_smoother/velocity_smoother": "2da81a591908de6ad74618c47119c280134246b584e4509751179f15fcfd0dae",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/lib/multi_robot/mr3_odometry_recorder": "2b22e115aaf48c1898f51b0bb281d098d74406989f186e885daa554b18c53e0c",
+    "/opt/ros/humble/lib/nav2_controller/controller_server": "d8f732a95f19684c9aeb0658a3bb982292729490eced2f17d0fa0e8a619cc55c",
+    "/opt/ros/humble/lib/libnav2_rotation_shim_controller.so": "ec301e3ef10e7e71dfdfc77d0164dfecfba2408ea0523bb05ebf1983da13fc15"
+  },
+  "input_bindings": {
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v13/predeclared_plan_v13.json": {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v13/predeclared_plan_v13.json",
+      "bytes": 138927,
+      "sha256": "15d1ec389105e45a445871b069e5b01ec49ffa609e1cb0318bb5246b4cd6ec0d"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/summary.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/summary.json",
+      "bytes": 196670,
+      "sha256": "c9a8bcaa48a77ad91eaa7edca05f53cdaeb76780a1aba472592e8735bd3b19f7"
+    },
+    "/tmp/mr3_p2a_v13_matrix_final_closure.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_final_closure.json",
+      "bytes": 435300,
+      "sha256": "b076c947670bf6d9f311ed7cc443d877ad7bc46e7140656fc27ae3aa95e2ca52"
+    },
+    "/tmp/mr3_p2a_v13_matrix_execution_receipt.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_execution_receipt.json",
+      "bytes": 1025,
+      "sha256": "582c5f64e06d33c6715369851e0a57b683d594520c1e634094402cf767941a61"
+    },
+    "/tmp/mr3_p2a_v13_accounting_root_v1.json": {
+      "path": "/tmp/mr3_p2a_v13_accounting_root_v1.json",
+      "bytes": 1130,
+      "sha256": "c20eaf358270cb6981ae5973fc9c8caf6a27f1f3c9368d712a4445230e3864ee"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/stage.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/stage.json",
+      "bytes": 79015,
+      "sha256": "46f376891e29e24eb994a3cf26c9e76740335e50db21f4e88608f07994a13b0d"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/interface/native.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/interface/native.json",
+      "bytes": 4545,
+      "sha256": "c93c512eb8f442cab4c6a5a78469aefba47ca95a3ee2fae7b3d113f14b65f88c"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_interface/benchmark_summary.json": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_interface/benchmark_summary.json",
+      "bytes": 64785,
+      "sha256": "f0915d071528963a02b0bf5bd06bf84249bb5b659cdb1f20384e4ae16c69cdc1"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/interface/native.log": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/interface/native.log",
+      "bytes": 3961,
+      "sha256": "41a61ce596c369d98bd9df1e84cd47de30b5dd4daa123c4819432797ced95882"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/interface/watcher.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/interface/watcher.json",
+      "bytes": 3583,
+      "sha256": "9e11837801b34fac95cad1a4342a49bdccc5fc0154427b52c64fe6b2337fff12"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/interface/live_custody.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/interface/live_custody.json",
+      "bytes": 1918341,
+      "sha256": "dc836990a76b6a4f8307b72bb3b4c4438b46266984412b182d0f982b5f8b3d1a"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/interface/watcher.log": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/interface/watcher.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/interface/peer_command.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/interface/peer_command.json",
+      "bytes": 3112,
+      "sha256": "ea05abb4a3dcbcc9c89b5d1a8b6736f3240c246601242aa349fc2159a307dc25"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/interface/peer_result.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/interface/peer_result.json",
+      "bytes": 5582,
+      "sha256": "df6d6d106adc6cb9016bec3767b5c4544abf08a52af0d0850b2b020615b031c9"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/interface/peer.log": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/interface/peer.log",
+      "bytes": 126,
+      "sha256": "4438c81311c08f6c3c4c90fbd4a35f9e6550a5015ae8fe8d4b81d18a0d82655e"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/interface/information_command.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/interface/information_command.json",
+      "bytes": 2855,
+      "sha256": "57ec2c36ab171169d8793445254bfdc27cf02cb82a14e9708d1dfea1a73486b7"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/interface/information_result.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/interface/information_result.json",
+      "bytes": 8727,
+      "sha256": "0e61700c02172f1b258a8d3766c2cce00edd7120127ba179492fc33b1b447dfd"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/interface/information.log": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/interface/information.log",
+      "bytes": 97,
+      "sha256": "156a89d857e74cc654e83537e7e875587acc556ea46607edda0ac306f434e262"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/interface/drive_command.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/interface/drive_command.json",
+      "bytes": 3203,
+      "sha256": "0f78d10511018fb8b3647f01c92c7a4ed1006c95f39a1969cfb8b76e51d54fa6"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/interface/drive_result.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/interface/drive_result.json",
+      "bytes": 6781472,
+      "sha256": "547e5c6ed7ad04f285ad5b8333ce5a1ce9e06de7c6598f495733db2c5c797c14"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/interface/drive.log": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/interface/drive.log",
+      "bytes": 91,
+      "sha256": "8d6ba352c040c6aff8baa0d879bdeff7e54a63b87ffa82fb18ce74cec1fdcc76"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/interface/settled_command.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/interface/settled_command.json",
+      "bytes": 3133,
+      "sha256": "273c4869c6bc0d2bf46a79dc47aa62bc5fae0dd968a2dfc58ebfd190976fddfb"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/interface/settled_result.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/interface/settled_result.json",
+      "bytes": 7025,
+      "sha256": "807f2d8ec6f5c7012550f0f2c805b93c40de47f06e15f5c23ef3dc549e8089c0"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/interface/settled.log": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/interface/settled.log",
+      "bytes": 93,
+      "sha256": "3ccbb8b08007a0eaf52d3695b491d26fc70f09540d72bb7f166dd02cf66c657e"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/interface/cadence_command.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/interface/cadence_command.json",
+      "bytes": 2837,
+      "sha256": "bff507f515892b6cd1eb114b3f31c4abc2298a0df1cc7206a85a56393d81b928"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/interface/cadence_result.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/interface/cadence_result.json",
+      "bytes": 6229,
+      "sha256": "0fb6e98a2d8c48831bfc7c2e51c9cd120cf9e54bbdea6a53830e6fd1a62d82b0"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/interface/cadence.log": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/interface/cadence.log",
+      "bytes": 111,
+      "sha256": "02d2049ad5d21cbe5bc1d71acda42dfe1f2155859d051fbad55a0b2b2ebaee46"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/interface/fifo_001_command.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/interface/fifo_001_command.json",
+      "bytes": 3137,
+      "sha256": "8c9c316be7afa29d43c6c15b93932e54464099f0a79132e9bc6340549bb21e32"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/interface/fifo_001_result.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/interface/fifo_001_result.json",
+      "bytes": 4825,
+      "sha256": "e772f71be218b3fdf8448698d5c6f60fe243eefbde47448feddee22545893531"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/interface/fifo_001.log": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/interface/fifo_001.log",
+      "bytes": 816,
+      "sha256": "f454428280f94dde7be892dd9fecb76a5ca42d2935c719aa503df294d94b4452"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/interface/control_command.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/interface/control_command.json",
+      "bytes": 3095,
+      "sha256": "b1c368bee8fe06a6c82778a30b6de8f53e24a78dc9fcff4f867040f06fde2648"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/interface/control_result.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/interface/control_result.json",
+      "bytes": 8805,
+      "sha256": "5e88398a26049a162bc03bb57eb06a917814db40a75733dbe4dd64fdaa116f59"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/interface/control.log": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/interface/control.log",
+      "bytes": 147,
+      "sha256": "80e0114b94e2046898e3da295c6e9a111e457de8ba6dc59220b0f9a907b72c80"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/interface/physics_command.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/interface/physics_command.json",
+      "bytes": 3017,
+      "sha256": "67793add96e49ee6abbf98a3faa5fd60c6cefc70f59797fdcbfce1845edfb8d6"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/interface/physics_result.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/interface/physics_result.json",
+      "bytes": 18053,
+      "sha256": "bee56286d31d0c9d21879df04a40091a0865e32b61ace6bc3a947032a70f4cb9"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/interface/physics.log": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/interface/physics.log",
+      "bytes": 108,
+      "sha256": "3d0dc33f87989596449385e33ad187f47d19fa6b596600418f880d336ea497d1"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/interface/fifo_manifest_result.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/interface/fifo_manifest_result.json",
+      "bytes": 328,
+      "sha256": "f396ab6903b0a5af510d77ab836fd359dc994973d52f9fd676f9b083933c2e98"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/interface/angular_command.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/interface/angular_command.json",
+      "bytes": 3029,
+      "sha256": "1970cffaf563d8b3696a63901bc24641a50c3779027302e562548fc4b5694084"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/interface/angular_result.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/interface/angular_result.json",
+      "bytes": 43344,
+      "sha256": "fa36e93de2e4fcb072d655c3d348dcdf06a6ef256a258a96034fc7a5d03a8bfe"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/interface/angular.log": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/interface/angular.log",
+      "bytes": 93,
+      "sha256": "76b987d559d16b6894cebfc96b1117bd44cd0ed1e8cb6a5df4d6959a7f47f7d2"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/interface/full_command.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/interface/full_command.json",
+      "bytes": 2871,
+      "sha256": "5ccb7e2bca9b2aaddb16d94cf2be392f7d381705225300eb5cd5f2ac8f2d598e"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/interface/full_result.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/interface/full_result.json",
+      "bytes": 467823,
+      "sha256": "8abd52c24cdcd254caaa9b583d10bd323712957538ea322fe2a47dabcabbfed1"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/interface/full.log": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/interface/full.log",
+      "bytes": 604,
+      "sha256": "beea71b50f326079c13108fd84e16016923049c54e6215f14a848ad83dd34fb2"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/interface/closure_command.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/interface/closure_command.json",
+      "bytes": 3918,
+      "sha256": "78fba2f768e4252c10fe8be5dae1392d9c54d6987ad35f7eb2754153ddc836c7"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/interface/closure_result.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/interface/closure_result.json",
+      "bytes": 48159,
+      "sha256": "c27166420991ff1951e060121fbfa247163a7debfe173e445f3f2a5305d086cb"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/interface/closure.log": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/interface/closure.log",
+      "bytes": 107,
+      "sha256": "b36715d165c37e370ad9fbc48bb86d3b6e6ab8ee391e8f8694ef137c2797c844"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/interface/input_001_command.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/interface/input_001_command.json",
+      "bytes": 3096,
+      "sha256": "24ca5b96524c07e673ef3190155b42bd3eeb6290169c49a1a815e5147124dd25"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/interface/input_001_result.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/interface/input_001_result.json",
+      "bytes": 171126,
+      "sha256": "fe2185d6ff42a529372cc992f89e7ad926f9995a818a8e10a7c73ee8ef4aa502"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/interface/input_001.log": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/interface/input_001.log",
+      "bytes": 6664,
+      "sha256": "344cf25331558eb6b3af6e752a8d7e873ee948089b3f1fa43a908c7e705568b3"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/terminal/native.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/terminal/native.json",
+      "bytes": 4218,
+      "sha256": "e36a1c2301ba02e71f8d7e6908757864785b758dd4f167468deb2b20f2706533"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_terminal/benchmark_summary.json": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_terminal/benchmark_summary.json",
+      "bytes": 27058,
+      "sha256": "f84f632722305b4aa53c43e48d7f4622fa20480e25858318434f9368323b4bde"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/terminal/native.log": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/terminal/native.log",
+      "bytes": 2188,
+      "sha256": "1272e08528247a80835d0b96bb39f163605baeb10346beb6bfa578c645a06d32"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/terminal/watcher.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/terminal/watcher.json",
+      "bytes": 3572,
+      "sha256": "2b34c3c9fedc6eb63da385db053dc7080e45c22d4340f3543607840ceef7ef87"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/terminal/live_custody.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/terminal/live_custody.json",
+      "bytes": 3825092,
+      "sha256": "3facb24dfe803a90aa46c5f11ca5ac8e86c5e691cc2b7c4532250714697dc3fa"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/terminal/watcher.log": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/terminal/watcher.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/terminal/peer_command.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/terminal/peer_command.json",
+      "bytes": 3105,
+      "sha256": "5bc02be01b6f3c2c65ae417cf5af1eb649c2145bead062d195641d6a43471007"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/terminal/peer_result.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/terminal/peer_result.json",
+      "bytes": 8833,
+      "sha256": "fd4f7405d01662b87d1698fbca940d68ccb89255440cb86a0cfe6627632d0764"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/terminal/peer.log": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/terminal/peer.log",
+      "bytes": 125,
+      "sha256": "5cd7fd05f9043d292720a5f08556ff24cc0c12e2e72f313311771fea3d5934a1"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/terminal/information_command.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/terminal/information_command.json",
+      "bytes": 2848,
+      "sha256": "a25f9bbd1a2a3c3515b65f96c2efb7861b016d266f302edb3182c4385894719b"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/terminal/information_result.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/terminal/information_result.json",
+      "bytes": 12721,
+      "sha256": "128f3fdc9a7d6c4a35ba041189de81809dfafaf4dbf568556ba7117d67bf8141"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/terminal/information.log": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/terminal/information.log",
+      "bytes": 96,
+      "sha256": "6878426ae4128a2624894c457e9fefc7314c5a2bf3ce82c6511e218470f5e65b"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/terminal/drive_command.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/terminal/drive_command.json",
+      "bytes": 3196,
+      "sha256": "61ee70c108ae4345b4fc104aea403208958f7a116f7d4843f1b6a17f7b437d82"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/terminal/drive_result.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/terminal/drive_result.json",
+      "bytes": 10472236,
+      "sha256": "8039ad41d16dff945ec1026458e4d9241c1977fdbad465dedf65f9cd61e55758"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/terminal/drive.log": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/terminal/drive.log",
+      "bytes": 90,
+      "sha256": "610854f6b191ab4018a1ea8a37a3c3593f6fd67982ca71da0641b47bad4e8c24"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/terminal/settled_command.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/terminal/settled_command.json",
+      "bytes": 3084,
+      "sha256": "c2b0d867978b86accaecee8c352a55907779ffe48fabbea0006d88a3667dbc84"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/terminal/settled_result.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/terminal/settled_result.json",
+      "bytes": 7399,
+      "sha256": "0b6bd182c56ef659cf19fd017426969913c1c862b611248818777071e66316fd"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/terminal/settled.log": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/terminal/settled.log",
+      "bytes": 92,
+      "sha256": "a063804e8b33e8efe4ee75fca09d3f8c2b905d5b5c83d86ee95928a7ce8ae67f"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/terminal/fifo_001_command.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/terminal/fifo_001_command.json",
+      "bytes": 3130,
+      "sha256": "a9a81dad8eb0274a9c774a510c8176e82ca883bf3197eadcb7e9f399424d998f"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/terminal/fifo_001_result.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/terminal/fifo_001_result.json",
+      "bytes": 4798,
+      "sha256": "0c652f315335972b2ef709b345fe5b529122108aa70a68751349ca965a2179d2"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/terminal/fifo_001.log": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/terminal/fifo_001.log",
+      "bytes": 808,
+      "sha256": "c9cdf365d171e92acd447e627308b2b1daff8fee6537cfc275a69052873066f2"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/terminal/control_command.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/terminal/control_command.json",
+      "bytes": 3088,
+      "sha256": "7b249ce71b033e52662baf4cfcd143c3f9d37b234296d944ee65ad5244de94db"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/terminal/control_result.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/terminal/control_result.json",
+      "bytes": 15238,
+      "sha256": "e91367e4b2d7fd31980286313b54cf431d235305d43eec7aef17f8c633504f01"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/terminal/control.log": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/terminal/control.log",
+      "bytes": 146,
+      "sha256": "3e92ec79fbe16e9acdf06d0fcbb01c023ee38e08f0f060cdb702911bf1c84959"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/terminal/fifo_002_command.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/terminal/fifo_002_command.json",
+      "bytes": 3130,
+      "sha256": "ee1fa3c49ca881210e4c1c56ad038f8231f73e8191fd1376de4ee8dc44dd0e40"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/terminal/fifo_002_result.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/terminal/fifo_002_result.json",
+      "bytes": 4798,
+      "sha256": "bd494d66369773415d55229d84253eedc670659319dfb6c772ed28be6cd954ee"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/terminal/fifo_002.log": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/terminal/fifo_002.log",
+      "bytes": 808,
+      "sha256": "c4640b0cc9e95fea659a285c07efbff1060c92470dfb9ee803fbd45eb80e9e13"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/terminal/fifo_manifest_result.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/terminal/fifo_manifest_result.json",
+      "bytes": 649,
+      "sha256": "7296629234bbbd337d7601f59402664037f93211194fa3143356f76267ea3217"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/terminal/closure_command.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/terminal/closure_command.json",
+      "bytes": 3848,
+      "sha256": "7faf9b712a9d99937af14af65988bdbeca85aac7ed4fcc74b7a1aede22ce1bb8"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/terminal/closure_result.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/terminal/closure_result.json",
+      "bytes": 83755,
+      "sha256": "51c9ea0c3b061e17e610930a5296d27e407869c56e4f886f369e555469e25de1"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/terminal/closure.log": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/terminal/closure.log",
+      "bytes": 106,
+      "sha256": "817bb0a0545b3f5c73533e882717619de1520c8503ed14ffa17fb54a32a59346"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/terminal/cadence_command.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/terminal/cadence_command.json",
+      "bytes": 2830,
+      "sha256": "0e39c9859546e4fa33689811080ddf9155f6c1a530ef665c5730998bedfcab46"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/terminal/cadence_result.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/terminal/cadence_result.json",
+      "bytes": 11986,
+      "sha256": "35e6c6da193ac755cb39f8addd4c7b8c5229a7615fca724ce6aed4d0f174a6ad"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/terminal/cadence.log": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/terminal/cadence.log",
+      "bytes": 110,
+      "sha256": "ca814255eba64dabc011f784002901bf32ad29f1918d1e93d117474588b38609"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/terminal/full_command.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/terminal/full_command.json",
+      "bytes": 2864,
+      "sha256": "36a20e151c1f0f1cae4fd2971b06da01766128385e50b0756327afd0c9dc7bc6"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/terminal/full_result.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/terminal/full_result.json",
+      "bytes": 237365,
+      "sha256": "74d6ca37f53a7cc7075c5c6abe7b3bbcd1c245db3464c5e8c59864fa0c13e828"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/terminal/full.log": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/terminal/full.log",
+      "bytes": 603,
+      "sha256": "1be6f560135ff7298cfb39bfc2a67fda1ec44dc44785d296d5a8cf2c9f845472"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/native.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/native.json",
+      "bytes": 4414,
+      "sha256": "2fb3fcb096e9014c9e26ead8392801df0226d4c41f76859f796929b722466c82"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_reset/benchmark_summary.json": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_reset/benchmark_summary.json",
+      "bytes": 439203,
+      "sha256": "e6a5d8d4911b9bad497d9bec61ca21f8b96af4bf339cbfe5fba281c20e016277"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/native.log": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/native.log",
+      "bytes": 2399,
+      "sha256": "fa000000f1f4958f26cc2548b86c05e473d25a6ee67f07d788e31ff784c1ea44"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/watcher.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/watcher.json",
+      "bytes": 3540,
+      "sha256": "b96c5f74ba08003441d314cb2ca2dd378638c33975f75f5f79d84b0dd7e5f9e1"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/live_custody.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/live_custody.json",
+      "bytes": 15117803,
+      "sha256": "9f96db6402bd5af44e0cf9582fa3558ad1fae2b66ba651adeca513935bea2005"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/watcher.log": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/watcher.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/peer_command.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/peer_command.json",
+      "bytes": 3088,
+      "sha256": "7ab1c98ddfb5972806b7e3ee7cc26d46863a5683c0e5e5045ba7ec6f5bd59dca"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/peer_result.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/peer_result.json",
+      "bytes": 28464,
+      "sha256": "f907424815adfcfd8b2d5702c7536cbd4d6388a251884b06edcbd17374e20f0b"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/peer.log": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/peer.log",
+      "bytes": 122,
+      "sha256": "e71f8e0896bbf0a7dab90997f6a59ce2369cea4b0d0eea3da0aba86fbbc69ced"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/information_command.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/information_command.json",
+      "bytes": 2831,
+      "sha256": "eb9c2ef6eb4e0bc67ed618f73960fc98acf7c8af7403b057e218fe367d609f62"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/information_result.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/information_result.json",
+      "bytes": 36351,
+      "sha256": "c0786b3b00ba2c421c4285e71bf63bcbb737f3e3c38c75fddbc472193b166290"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/information.log": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/information.log",
+      "bytes": 93,
+      "sha256": "00ced2aab51b7763221053ffb1c75374f299750dae7662c09e50fde94504c77d"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/drive_command.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/drive_command.json",
+      "bytes": 3179,
+      "sha256": "bcf74649a756653b685b0904fa1b0b7a8980b738a60e7e6a91e4806979e40a92"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/drive_result.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/drive_result.json",
+      "bytes": 53996056,
+      "sha256": "a2a43a6af77a7dd2e4b5b7c10f1ef2b7d4aa9aa5300e8c733ff10a19c47175d7"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/drive.log": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/drive.log",
+      "bytes": 87,
+      "sha256": "e032d7515c4e0dfd688031878309117eaf42ffed71e722df03b86082980310bc"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/settled_command.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/settled_command.json",
+      "bytes": 3067,
+      "sha256": "e5c61ea3e669abc9fed8bfa4cd018e6ac4ad65c25e38152b056b35c02cc099f3"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/settled_result.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/settled_result.json",
+      "bytes": 59414,
+      "sha256": "f88fe0812a034197873bc65b23ed60388eeac3f09c500df44acbb3d6c9c4cfd5"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/settled.log": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/settled.log",
+      "bytes": 89,
+      "sha256": "85502318cfbb9dfe20b6be8fcf7c9709a7f015bec69d8fd2ebe4547b1e96b7e1"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/input_001_command.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/input_001_command.json",
+      "bytes": 3068,
+      "sha256": "2351613266d575b3c603bad6344d8c1254bba9cbde700a69fc6f46a3336c1151"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/input_001_result.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/input_001_result.json",
+      "bytes": 171162,
+      "sha256": "2c5d53dd600fe057ea68d0eca2dc5e0bf408781c3cdbc658ec5d6b428953fe86"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/input_001.log": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/input_001.log",
+      "bytes": 6562,
+      "sha256": "b45c2311dd8fcd5550cc1875b45bab85a8b998feff3d421da4c1959dfdf016a6"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/cadence_command.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/cadence_command.json",
+      "bytes": 2813,
+      "sha256": "75d43e4d6054aee0010adbb2c7c67737cc6775ea256192b5ad81f65d69505520"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/cadence_result.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/cadence_result.json",
+      "bytes": 46638,
+      "sha256": "d9d4bdb0c31ab5aa5119953bc02113db94e9284b606751a50cb4b7982585060c"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/cadence.log": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/cadence.log",
+      "bytes": 107,
+      "sha256": "be6d613c7689f382f43af63589e7dacaa3c9c553ae68ece594a15984b5c766ae"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/fifo_001_command.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/fifo_001_command.json",
+      "bytes": 3113,
+      "sha256": "42d7dc15ebf439b8a1eac2460c6c58e6260810d5a8a8f5f7a193977f1111de9c"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/fifo_001_result.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/fifo_001_result.json",
+      "bytes": 4780,
+      "sha256": "8bec84df20935ad91837509e907b0efdab4aa51978dc2879ffb070911a866f54"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/fifo_001.log": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/fifo_001.log",
+      "bytes": 812,
+      "sha256": "e9ea0182633cb351c998f20698f8d5f82537385fcc3fffe51c453c358afccd4b"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/fifo_002_command.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/fifo_002_command.json",
+      "bytes": 3113,
+      "sha256": "0e1a8eec4d5e6149afd903c568fdb22204b56a9f61cd8da9614da0cf5d3d96c8"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/fifo_002_result.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/fifo_002_result.json",
+      "bytes": 4780,
+      "sha256": "525b73890e63b60de9addea3c9bb334d39cdf02b35a866c4e9566724e2629d9a"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/fifo_002.log": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/fifo_002.log",
+      "bytes": 812,
+      "sha256": "e04b269be743da1b66839864eb41eaa1107117d430d86cf5c7b2764fec041a01"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/control_command.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/control_command.json",
+      "bytes": 3071,
+      "sha256": "ac1a2b17cc08d21be1d6b540bcc4f9c4651a3e66871f74ef7c104c68cd6cc6c4"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/control_result.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/control_result.json",
+      "bytes": 54016,
+      "sha256": "96723f867d6014b738580bd0095b3ec58361336d9b2450a0537dd465d9025a46"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/control.log": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/control.log",
+      "bytes": 143,
+      "sha256": "fe924df2009501db4fedde62c44a0f0dff7bd34d8b29bc99b6b68dd2caf9bc30"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/fifo_003_command.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/fifo_003_command.json",
+      "bytes": 3115,
+      "sha256": "5332c3c9bbe2b30ade75ba1fe33ad45c638a169b5c673e91cd455218348b8fc2"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/fifo_003_result.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/fifo_003_result.json",
+      "bytes": 4789,
+      "sha256": "2d9f54506601ba4fd0a07392533f47efe2f4e518495322c68ec0b0326d80713f"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/fifo_003.log": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/fifo_003.log",
+      "bytes": 812,
+      "sha256": "7b611e4fb5c09c4248e396269740cbaff3fb0f830ea4fbf9612676ed8ae95ff1"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/input_004_command.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/input_004_command.json",
+      "bytes": 3078,
+      "sha256": "44061a0b06cdf8614492d5138808a59b79048e315ea7560373779f69b3178b79"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/input_004_result.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/input_004_result.json",
+      "bytes": 169083,
+      "sha256": "4acf2a2433bf2b5aaf1ff6624ee88ecf83d123a05852ba129257e637830c414c"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/input_004.log": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/input_004.log",
+      "bytes": 6391,
+      "sha256": "15725ef1526cbd015c64a8767541a67d0f70709420a9a6723c29139c79daee3e"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/input_002_command.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/input_002_command.json",
+      "bytes": 3068,
+      "sha256": "19334e1538018af8f8e89569cb7a173be85d592267500b2947cc8778fe41a69f"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/input_002_result.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/input_002_result.json",
+      "bytes": 170357,
+      "sha256": "f97ce762da505c70a76f6412674d904e1673abaf7917071dd7f90a5693594e39"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/input_002.log": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/input_002.log",
+      "bytes": 6565,
+      "sha256": "15a397495c532238de33b75e677fa3f41e388a17e49edc8e152c1c9ed37866f2"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/fifo_004_command.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/fifo_004_command.json",
+      "bytes": 3123,
+      "sha256": "811e05574badc2a4d65d4693bd1b812535280136a01182cdf30b3993711fd789"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/fifo_004_result.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/fifo_004_result.json",
+      "bytes": 4825,
+      "sha256": "092eba8e79c97110966ac356cd757798da33e6a37c7a7245c3e88b674593b51c"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/fifo_004.log": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/fifo_004.log",
+      "bytes": 812,
+      "sha256": "6d6ffaf63fea28139c6ce798237d096ea552a143b4bcb1cd1b189bfa83b3b22b"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/full_command.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/full_command.json",
+      "bytes": 2847,
+      "sha256": "fa423cdd07bd94bc1a6c5a6fd14e2811783278109f91eb0ab4a9a80948475191"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/full_result.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/full_result.json",
+      "bytes": 3185214,
+      "sha256": "517ff1b4799e40ddeb240948c3102ec6bda3947e7b3daec61a8420d53129c5de"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/full.log": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/full.log",
+      "bytes": 600,
+      "sha256": "9267eaa9002ea6898a4457b68b5ff3955eab80d3d016aa51aafef933dccd8e3f"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/input_003_command.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/input_003_command.json",
+      "bytes": 3070,
+      "sha256": "28d5780f9900b73c3fad720d29d8146cd84a5bef616e8a11077e234fab3600d8"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/input_003_result.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/input_003_result.json",
+      "bytes": 169802,
+      "sha256": "464561a356c1df735575560330d0fc71302df86a248b5994d469dd84d22d5df5"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/input_003.log": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/input_003.log",
+      "bytes": 6569,
+      "sha256": "53f2f11e9750e641c472e068d941b185d7ba8b6d32dc1b6284f3b9de72eeda52"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/fifo_005_command.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/fifo_005_command.json",
+      "bytes": 3113,
+      "sha256": "75d9f3364bad2ca6e2257760de4208df26e7bfe864afb807043e20ed256a8faf"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/fifo_005_result.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/fifo_005_result.json",
+      "bytes": 4780,
+      "sha256": "9311b777da03214f4afe67da4ebdf0ea97c93c961c9843fac0b7245c31fb4661"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/fifo_005.log": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/fifo_005.log",
+      "bytes": 812,
+      "sha256": "4de4df00c156bc35cd83e0ad317600d49f1251742b1783504f8c07a142feec31"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/fifo_006_command.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/fifo_006_command.json",
+      "bytes": 3113,
+      "sha256": "9c7597d0ed4d6a01a386890b4727e752e0762caed69134f6575ea25fb1d4a2b1"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/fifo_006_result.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/fifo_006_result.json",
+      "bytes": 4780,
+      "sha256": "45c0c8c727d0c7c25b1544070c1f9a569f70ac4750e8aafa219f9d0c4d74f6d6"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/fifo_006.log": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/fifo_006.log",
+      "bytes": 812,
+      "sha256": "953f6f544f440c7f7978feca6a3096b82eb3eb317d53013a51165a4379ec27f9"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/input_005_command.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/input_005_command.json",
+      "bytes": 3068,
+      "sha256": "76a52588cf6be5b3366d916bf79d87430c4e9fae216da76dc2c2517091f8ce85"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/input_005_result.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/input_005_result.json",
+      "bytes": 170809,
+      "sha256": "2bd9a7eeb57c2ead6309588ff6fcc42de01eae7577a320a9bd187698aa29058d"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/input_005.log": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/input_005.log",
+      "bytes": 6568,
+      "sha256": "61f9245bc8ebadbac24c22ac2d188feac6a180fcb2de34202cb4af9f6aab3e9e"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/input_006_command.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/input_006_command.json",
+      "bytes": 3068,
+      "sha256": "67c269a9780d42370c20430d426eec20d1a98c8e976a6a91c2de9f11d0bf2f39"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/input_006_result.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/input_006_result.json",
+      "bytes": 170366,
+      "sha256": "015b87ef2251a087ffcf0b6ed4ef59d4aa6bfd9e141bca409ec3ea265557aea9"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/input_006.log": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/input_006.log",
+      "bytes": 6404,
+      "sha256": "438f02bcdc0e6b5a71ff4fa7e41d3b311c6b70038948db9511d05ecd651da77c"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/input_007_command.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/input_007_command.json",
+      "bytes": 3069,
+      "sha256": "6b114da169df6f73331a36e506c31a46e20587344b6ed0aaf7b28fe39129f796"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/input_007_result.json": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/input_007_result.json",
+      "bytes": 170468,
+      "sha256": "17ad09e03a879a84a3e425de12e4ead6da8551c15fe356c5d1097f0f09ce3bc9"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/reset/input_007.log": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/reset/input_007.log",
+      "bytes": 6569,
+      "sha256": "ccb6551949b9ec4a911b07a58f39148a4c13616749aa627e66e341d769545db5"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_interface/worker0/episode001_open_101/summary.json": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_interface/worker0/episode001_open_101/summary.json",
+      "bytes": 13295,
+      "sha256": "f2d3e396c472839f7b913804e948f54c3192df4a68915ae066548ce4426e73df"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_terminal/worker0/episode001_open_101/summary.json": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_terminal/worker0/episode001_open_101/summary.json",
+      "bytes": 13272,
+      "sha256": "457d6f5a26f6006f4da01a6bc67ed580eef5ac878cb16a78d42c9b9119ca6083"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_terminal/worker0/episode002_open_101/summary.json": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_terminal/worker0/episode002_open_101/summary.json",
+      "bytes": 13271,
+      "sha256": "f36944c94a033649a4862b1dd4097fd9d36b35b386cbcd0fe5de9c74c2e5cef7"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_reset/worker0/episode001_open_101/summary.json": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_reset/worker0/episode001_open_101/summary.json",
+      "bytes": 13264,
+      "sha256": "904ef0a910f77913d1baa80ce4bea8921ce1c729e992ce5eab7f55177b3fc249"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_reset/worker0/episode002_open_101/summary.json": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_reset/worker0/episode002_open_101/summary.json",
+      "bytes": 13269,
+      "sha256": "434828dbdd5985b43aa05e2075578099683f36d384dc85a6ee769ceff9d6bf96"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_reset/worker0/episode003_rooms_101/summary.json": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_reset/worker0/episode003_rooms_101/summary.json",
+      "bytes": 13275,
+      "sha256": "c2ff4da9ec269cd33cda51acfcf04715a3541623df6bc250366cb67c0de74f64"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_reset/worker0/episode004_corridors_101/summary.json": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_reset/worker0/episode004_corridors_101/summary.json",
+      "bytes": 13276,
+      "sha256": "7aa2498701c80ffb26114aebed9788cd755a3b09fc3a20ea597983a1d1c36b9f"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_reset/worker1/episode001_open_101/summary.json": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_reset/worker1/episode001_open_101/summary.json",
+      "bytes": 13273,
+      "sha256": "dcad85f9191bbd582bfd8ba2318a9b2bbc82651a65412431210e74b52b5c72cf"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_reset/worker1/episode002_open_101/summary.json": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_reset/worker1/episode002_open_101/summary.json",
+      "bytes": 13274,
+      "sha256": "e0421521430d9248ea17f3d80c7fd4a60898ce4a6053e8239216be72498101c7"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_reset/worker1/episode003_rooms_101/summary.json": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_reset/worker1/episode003_rooms_101/summary.json",
+      "bytes": 13277,
+      "sha256": "233bae816c27f90ce8f7ba4f8aa2369bedba452c3782a2f1df0a8f479b6a2830"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_reset/worker1/episode004_corridors_101/summary.json": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_reset/worker1/episode004_corridors_101/summary.json",
+      "bytes": 13276,
+      "sha256": "b99927f23bdbffe572564388ca2c717dc1f555c1d73c3d143ec47d2fb0dc5dfb"
+    },
+    "/tmp/mr3_p2a_v13_matrix_evidence/ledger.jsonl": {
+      "path": "/tmp/mr3_p2a_v13_matrix_evidence/ledger.jsonl",
+      "bytes": 281460,
+      "sha256": "fd556f76730cce02accf5e9f60cb36b4a8b19c1c33f50d22ba2b69016238bfbb"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_interface/worker0/episode001_open_101/supervisor_metadata.json": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_interface/worker0/episode001_open_101/supervisor_metadata.json",
+      "bytes": 1017,
+      "sha256": "c8ccdf45e7edbb1f6685cbbeade6d58408ce3a2a2d2c9b48511552ef795b56ed"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_interface/worker0/episode001_open_101/supervisor_shutdown.json": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_interface/worker0/episode001_open_101/supervisor_shutdown.json",
+      "bytes": 7452,
+      "sha256": "a0a40e62671847f879568a9106dc94f25fe47e1e8711c8f38d385e202d29c24b"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_reset/worker0/episode001_open_101/supervisor_metadata.json": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_reset/worker0/episode001_open_101/supervisor_metadata.json",
+      "bytes": 1009,
+      "sha256": "d8d05243b0f24d8246f66174b28dd2d9fd71626fe6a23b38eaaf6af4aab37691"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_reset/worker0/episode001_open_101/supervisor_shutdown.json": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_reset/worker0/episode001_open_101/supervisor_shutdown.json",
+      "bytes": 7291,
+      "sha256": "bdaf56869c73656192f647ed5446ad95edace8efd1963eaa359796dfbfeab0bb"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_reset/worker0/episode002_open_101/supervisor_metadata.json": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_reset/worker0/episode002_open_101/supervisor_metadata.json",
+      "bytes": 1012,
+      "sha256": "b157fd18d90c9b597fb7385b71d825e7d78b9c1068ba92b5aec63716be72b389"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_reset/worker0/episode002_open_101/supervisor_shutdown.json": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_reset/worker0/episode002_open_101/supervisor_shutdown.json",
+      "bytes": 7626,
+      "sha256": "45261087215d7ca56db1b97dbcc602c47e09536ce66fb91aaffd95823e36620f"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_reset/worker0/episode003_rooms_101/supervisor_metadata.json": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_reset/worker0/episode003_rooms_101/supervisor_metadata.json",
+      "bytes": 1014,
+      "sha256": "892443b67869aa888418ffbb9fed0b123341328435a695387aa61fa83613db6b"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_reset/worker0/episode003_rooms_101/supervisor_shutdown.json": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_reset/worker0/episode003_rooms_101/supervisor_shutdown.json",
+      "bytes": 7465,
+      "sha256": "6e5d7ee6b7028d75e435972d29f4ff733c09ff622ffe3fde6285d1b2903bdaf2"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_reset/worker0/episode004_corridors_101/supervisor_metadata.json": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_reset/worker0/episode004_corridors_101/supervisor_metadata.json",
+      "bytes": 1022,
+      "sha256": "66b79377526147a7ab967a3a40137579067141c87d16ed85a875cbb917fe45cd"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_reset/worker0/episode004_corridors_101/supervisor_shutdown.json": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_reset/worker0/episode004_corridors_101/supervisor_shutdown.json",
+      "bytes": 7626,
+      "sha256": "6a3533855729d8415f98703a9544ab3356e4f19273df369acf64bfb4854c8331"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_reset/worker1/episode001_open_101/supervisor_metadata.json": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_reset/worker1/episode001_open_101/supervisor_metadata.json",
+      "bytes": 1009,
+      "sha256": "840fcb5ff297435d671fe3debf8bbaac6bdcc6ace92f72dc17ff7791b3601d63"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_reset/worker1/episode001_open_101/supervisor_shutdown.json": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_reset/worker1/episode001_open_101/supervisor_shutdown.json",
+      "bytes": 7291,
+      "sha256": "560b972cedef00e17359605fe3e5c3e24d7b5f0ecc84aff4dfd06b2d7469db85"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_reset/worker1/episode002_open_101/supervisor_metadata.json": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_reset/worker1/episode002_open_101/supervisor_metadata.json",
+      "bytes": 1012,
+      "sha256": "26990372c82302100b493d73f79ef3990a591076d4aca35dc5f1a8030fd03542"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_reset/worker1/episode002_open_101/supervisor_shutdown.json": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_reset/worker1/episode002_open_101/supervisor_shutdown.json",
+      "bytes": 7464,
+      "sha256": "094915c5fa9456bd82de849741c7f02c775f59040529d842ddf19153f1e86f16"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_reset/worker1/episode003_rooms_101/supervisor_metadata.json": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_reset/worker1/episode003_rooms_101/supervisor_metadata.json",
+      "bytes": 1014,
+      "sha256": "75eac3a16daf5cb53803f3e8ce7d5931f1ddddff19b8f5f352800e58b8774094"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_reset/worker1/episode003_rooms_101/supervisor_shutdown.json": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_reset/worker1/episode003_rooms_101/supervisor_shutdown.json",
+      "bytes": 7465,
+      "sha256": "b87c1b977ecd797b5c96d6d05689d8c8b684071fa1ad6975970ce62538364de0"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_reset/worker1/episode004_corridors_101/supervisor_metadata.json": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_reset/worker1/episode004_corridors_101/supervisor_metadata.json",
+      "bytes": 1022,
+      "sha256": "0f89e3b3370502b3124d652300d240495ead664fb70dba2c3a72994ba916ce5b"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_reset/worker1/episode004_corridors_101/supervisor_shutdown.json": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_reset/worker1/episode004_corridors_101/supervisor_shutdown.json",
+      "bytes": 7465,
+      "sha256": "e9cfba7bcdebaa595dd4bb309936e9154d70221a6d67e22e80bda1f5789a2a4f"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_terminal/worker0/episode001_open_101/supervisor_metadata.json": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_terminal/worker0/episode001_open_101/supervisor_metadata.json",
+      "bytes": 1014,
+      "sha256": "fbb537b35fb143408a8ad825a7dfc93da7168a22decc332c6754a4e1f66e6c2e"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_terminal/worker0/episode001_open_101/supervisor_shutdown.json": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_terminal/worker0/episode001_open_101/supervisor_shutdown.json",
+      "bytes": 7451,
+      "sha256": "55cb3dd4e13a27f1c0729553fe1f6a37d0a94ab47778553f0b86d70d3d71812f"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_terminal/worker0/episode002_open_101/supervisor_metadata.json": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_terminal/worker0/episode002_open_101/supervisor_metadata.json",
+      "bytes": 1014,
+      "sha256": "569e66d800df4c93c0f36af744d679cae9079c2be28ccce6006bc9f0c6b916ff"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_terminal/worker0/episode002_open_101/supervisor_shutdown.json": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_terminal/worker0/episode002_open_101/supervisor_shutdown.json",
+      "bytes": 7451,
+      "sha256": "df540f6de844a398badd3e03048b89e2472af2034c88c1409fd3d1b9791335b3"
+    }
+  },
+  "evidence_directory": "/tmp/mr3_p2a_v13_deadline_completion_evidence_v2",
+  "stage": {
+    "stage": "deadline",
+    "run_directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_deadline",
+    "wall_seconds": "8500",
+    "expected_episodes": 1,
+    "native": {
+      "argv": [
+        "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+        "-m",
+        "mr3_learning.benchmark",
+        "--workers",
+        "1",
+        "--schedule",
+        "open:101",
+        "--steps",
+        "300",
+        "--deadline-probe",
+        "--base-domain",
+        "198",
+        "--base-port",
+        "14131",
+        "--output-root",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13",
+        "--run-id",
+        "mr3_p2a_v13_deadline",
+        "--work-wall-seconds",
+        "6200",
+        "--close-reserve-seconds",
+        "120"
+      ],
+      "output": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_deadline/benchmark_summary.json",
+      "receipt": "/tmp/mr3_p2a_v13_deadline_completion_evidence_v2/native.json",
+      "console": "/tmp/mr3_p2a_v13_deadline_completion_evidence_v2/native.log",
+      "id": "native"
+    },
+    "audits": [
+      {
+        "id": "full",
+        "role": "full",
+        "output": "/tmp/mr3_p2a_v13_deadline_completion_evidence_v2/full_result.json",
+        "required": true,
+        "depends_on": [],
+        "argv": [
+          "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+          "-m",
+          "mr3_learning.audit_preparation",
+          "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_deadline",
+          "--freeze",
+          "0063aa233ba3008ddcc1eb09ea8068112eea3965",
+          "--output",
+          "/tmp/mr3_p2a_v13_deadline_completion_evidence_v2/full_result.json"
+        ],
+        "receipt": "/tmp/mr3_p2a_v13_deadline_completion_evidence_v2/full_command.json",
+        "console": "/tmp/mr3_p2a_v13_deadline_completion_evidence_v2/full.log"
+      },
+      {
+        "id": "drive",
+        "role": "drive",
+        "output": "/tmp/mr3_p2a_v13_deadline_completion_evidence_v2/drive_result.json",
+        "required": true,
+        "depends_on": [],
+        "argv": [
+          "/usr/bin/python3",
+          "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_independent_drive_trace_v6.py",
+          "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_deadline",
+          "--freeze",
+          "0063aa233ba3008ddcc1eb09ea8068112eea3965",
+          "--binary-proof",
+          "/tmp/mr3_p2a_v13_binaryproof.json",
+          "--output",
+          "/tmp/mr3_p2a_v13_deadline_completion_evidence_v2/drive_result.json"
+        ],
+        "receipt": "/tmp/mr3_p2a_v13_deadline_completion_evidence_v2/drive_command.json",
+        "console": "/tmp/mr3_p2a_v13_deadline_completion_evidence_v2/drive.log"
+      },
+      {
+        "id": "information",
+        "role": "information",
+        "output": "/tmp/mr3_p2a_v13_deadline_completion_evidence_v2/information_result.json",
+        "required": true,
+        "depends_on": [],
+        "argv": [
+          "/usr/bin/python3",
+          "-m",
+          "mr3_learning.audit_information",
+          "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_deadline",
+          "--freeze",
+          "0063aa233ba3008ddcc1eb09ea8068112eea3965",
+          "--output",
+          "/tmp/mr3_p2a_v13_deadline_completion_evidence_v2/information_result.json"
+        ],
+        "receipt": "/tmp/mr3_p2a_v13_deadline_completion_evidence_v2/information_command.json",
+        "console": "/tmp/mr3_p2a_v13_deadline_completion_evidence_v2/information.log"
+      },
+      {
+        "id": "peer",
+        "role": "peer",
+        "output": "/tmp/mr3_p2a_v13_deadline_completion_evidence_v2/peer_result.json",
+        "required": true,
+        "depends_on": [],
+        "argv": [
+          "/usr/bin/python3",
+          "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v11/independent/mr3_independent_control_phase_v2.py",
+          "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_deadline",
+          "--freeze",
+          "0063aa233ba3008ddcc1eb09ea8068112eea3965",
+          "--peer-only",
+          "--output",
+          "/tmp/mr3_p2a_v13_deadline_completion_evidence_v2/peer_result.json"
+        ],
+        "receipt": "/tmp/mr3_p2a_v13_deadline_completion_evidence_v2/peer_command.json",
+        "console": "/tmp/mr3_p2a_v13_deadline_completion_evidence_v2/peer.log"
+      },
+      {
+        "id": "control",
+        "role": "control",
+        "output": "/tmp/mr3_p2a_v13_deadline_completion_evidence_v2/control_result.json",
+        "required": true,
+        "depends_on": [],
+        "argv": [
+          "/usr/bin/python3",
+          "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v11/independent/mr3_independent_control_phase_v2.py",
+          "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_deadline",
+          "--freeze",
+          "0063aa233ba3008ddcc1eb09ea8068112eea3965",
+          "--output",
+          "/tmp/mr3_p2a_v13_deadline_completion_evidence_v2/control_result.json"
+        ],
+        "receipt": "/tmp/mr3_p2a_v13_deadline_completion_evidence_v2/control_command.json",
+        "console": "/tmp/mr3_p2a_v13_deadline_completion_evidence_v2/control.log"
+      },
+      {
+        "id": "settled",
+        "role": "settled",
+        "output": "/tmp/mr3_p2a_v13_deadline_completion_evidence_v2/settled_result.json",
+        "required": true,
+        "depends_on": [],
+        "argv": [
+          "/usr/bin/python3",
+          "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v8/independent/mr3_independent_settled_turn_v3.py",
+          "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_deadline",
+          "--freeze",
+          "0063aa233ba3008ddcc1eb09ea8068112eea3965",
+          "--output",
+          "/tmp/mr3_p2a_v13_deadline_completion_evidence_v2/settled_result.json"
+        ],
+        "receipt": "/tmp/mr3_p2a_v13_deadline_completion_evidence_v2/settled_command.json",
+        "console": "/tmp/mr3_p2a_v13_deadline_completion_evidence_v2/settled.log"
+      },
+      {
+        "id": "cadence",
+        "role": "cadence",
+        "output": "/tmp/mr3_p2a_v13_deadline_completion_evidence_v2/cadence_result.json",
+        "required": true,
+        "depends_on": [],
+        "argv": [
+          "/usr/bin/python3",
+          "-m",
+          "mr3_learning.audit_odometry_cadence",
+          "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_deadline",
+          "--freeze",
+          "0063aa233ba3008ddcc1eb09ea8068112eea3965",
+          "--output",
+          "/tmp/mr3_p2a_v13_deadline_completion_evidence_v2/cadence_result.json"
+        ],
+        "receipt": "/tmp/mr3_p2a_v13_deadline_completion_evidence_v2/cadence_command.json",
+        "console": "/tmp/mr3_p2a_v13_deadline_completion_evidence_v2/cadence.log"
+      },
+      {
+        "id": "fifo_001",
+        "role": null,
+        "output": "/tmp/mr3_p2a_v13_deadline_completion_evidence_v2/fifo_001_result.json",
+        "required": true,
+        "depends_on": [],
+        "argv": [
+          "/usr/bin/python3",
+          "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_v10_fifo_phase_review.py",
+          "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_deadline/worker0/episode001_open_101",
+          "--freeze",
+          "0063aa233ba3008ddcc1eb09ea8068112eea3965",
+          "--output",
+          "/tmp/mr3_p2a_v13_deadline_completion_evidence_v2/fifo_001_result.json"
+        ],
+        "receipt": "/tmp/mr3_p2a_v13_deadline_completion_evidence_v2/fifo_001_command.json",
+        "console": "/tmp/mr3_p2a_v13_deadline_completion_evidence_v2/fifo_001.log"
+      },
+      {
+        "id": "fifo_manifest",
+        "role": null,
+        "output": "/tmp/mr3_p2a_v13_deadline_completion_evidence_v2/fifo_manifest_result.json",
+        "required": true,
+        "depends_on": [
+          "fifo_001"
+        ],
+        "kind": "fifo_manifest",
+        "members": [
+          "fifo_001"
+        ],
+        "leaves": [
+          {
+            "id": "fifo_001",
+            "episode_directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_deadline/worker0/episode001_open_101"
+          }
+        ]
+      },
+      {
+        "id": "closure",
+        "role": "closure",
+        "output": "/tmp/mr3_p2a_v13_deadline_completion_evidence_v2/closure_result.json",
+        "required": true,
+        "depends_on": [
+          "fifo_manifest"
+        ],
+        "argv": [
+          "/usr/bin/python3",
+          "-m",
+          "mr3_learning.native_custody",
+          "review",
+          "--run-directory",
+          "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_deadline",
+          "--freeze",
+          "0063aa233ba3008ddcc1eb09ea8068112eea3965",
+          "--binding",
+          "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v13/native_custody_binding.json",
+          "--capture",
+          "/tmp/mr3_p2a_v13_deadline_completion_evidence_v2/live_custody.json",
+          "--launch-receipt",
+          "/tmp/mr3_p2a_v13_deadline_completion_evidence_v2/native.json",
+          "--fifo-receipts",
+          "/tmp/mr3_p2a_v13_deadline_completion_evidence_v2/fifo_manifest_result.json",
+          "--expected-episodes",
+          "1",
+          "--output",
+          "/tmp/mr3_p2a_v13_deadline_completion_evidence_v2/closure_result.json"
+        ],
+        "receipt": "/tmp/mr3_p2a_v13_deadline_completion_evidence_v2/closure_command.json",
+        "console": "/tmp/mr3_p2a_v13_deadline_completion_evidence_v2/closure.log"
+      }
+    ],
+    "watcher": {
+      "argv": [
+        "/usr/bin/python3",
+        "-m",
+        "mr3_learning.native_custody",
+        "watch",
+        "--run-directory",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v13/mr3_p2a_v13_deadline",
+        "--freeze",
+        "0063aa233ba3008ddcc1eb09ea8068112eea3965",
+        "--binding",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v13/native_custody_binding.json",
+        "--ready-file",
+        "/tmp/mr3_p2a_v13_deadline_completion_evidence_v2/custody_ready.json",
+        "--stop-file",
+        "/tmp/mr3_p2a_v13_deadline_completion_evidence_v2/custody_stop.json",
+        "--output",
+        "/tmp/mr3_p2a_v13_deadline_completion_evidence_v2/live_custody.json"
+      ],
+      "ready": "/tmp/mr3_p2a_v13_deadline_completion_evidence_v2/custody_ready.json",
+      "stop": "/tmp/mr3_p2a_v13_deadline_completion_evidence_v2/custody_stop.json",
+      "output": "/tmp/mr3_p2a_v13_deadline_completion_evidence_v2/live_custody.json",
+      "receipt": "/tmp/mr3_p2a_v13_deadline_completion_evidence_v2/watcher.json",
+      "console": "/tmp/mr3_p2a_v13_deadline_completion_evidence_v2/watcher.log",
+      "id": "watcher"
+    },
+    "original_stage_wall_seconds": "5600",
+    "native_argv_delta": {
+      "flag": "--work-wall-seconds",
+      "old": "4500",
+      "new": "6200"
+    }
+  },
+  "total_batch_wall_allocation_seconds": "8500",
+  "native_work_wall_seconds": "6200",
+  "native_close_reserve_seconds": "120",
+  "engineering_minimum_ppo_reserve_seconds": "900",
+  "reserve_is_proven_upper_bound": false,
+  "native_admitted": false,
+  "execution_requires_new_explicit_authorization_and_actual_balance": true,
+  "overrun_verdict": "FAIL; all actual costs retained; no signal/retry/refund or pool transfer",
+  "source_admission": {
+    "required_HEAD": "0063aa233ba3008ddcc1eb09ea8068112eea3965",
+    "required_worktree": "clean",
+    "published_rule": "git merge-base --is-ancestor FREEZE origin/main must return0; remote may contain later evidence commits",
+    "remote_head_at_declaration": "0063aa233ba3008ddcc1eb09ea8068112eea3965"
+  },
+  "scope": "Future separate completion only. Old matrix FAIL and original cap remain unchanged."
+}
