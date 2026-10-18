@@ -1,10 +1,10 @@
 # 三机器人 ROS 建图导航：当前实现指南
 
-P2A.0工程科学门已补验通过，待用户验收；原V26父编排中断保留，P2A未完成，未启动PPO。 源冻结`92f8bdf5bba1ba245dc53ca0964eef81a7fff938`；原生四阶段和34科学角色已补齐，原父编排中断/未知返回码及reset非必需覆盖FAIL保留。见[V26](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_v26_capture.md)与[复盘](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_reflection.md)。
+2026-10-18用户已验收P2A.0并要求继续P2A；V7先执行新的最小训练链及受限pilot，P2A尚未完成。原V26父编排中断保留。 源冻结`92f8bdf5bba1ba245dc53ca0964eef81a7fff938`；原生四阶段和34科学角色已补齐，原父编排中断/未知返回码及reset非必需覆盖FAIL保留。见[V26](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_v26_capture.md)与[复盘](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_reflection.md)。
 
 默认仍为传统前沿baseline；互斥adapter独占稳定目标、使用本机已知权威/已交付共享导航副本、v5候选和received-only累计参与观测。受控20ms推进先完成实际state→peer→guard→三台native storage→evaluator，再推进物理；存储回执不能代替机体响应。
 
-当前stepped研究配置含paired joint-feedback驱动、RayBox修正、quickstep150和使用节点时钟的Nav2 smoother；命令.20/.8，实测及原停车门保持。完整新配置通过不证明150独立修复停车。P0/P1A/P1B/P1C已验收，P2A未完成；本次无新pilot，P2B/gateway未开始。复制命令见[launch_commands.md](launch_commands.md)，任务/环境定义见共享研究、实施计划与MR3_ENV_CONTRACT；详细旧历史见日期报告。
+当前stepped研究配置含paired joint-feedback驱动、RayBox修正、quickstep150和使用节点时钟的Nav2 smoother；命令.20/.8，实测及原停车门保持。完整新配置通过不证明150独立修复停车。P0/P1A/P1B/P1C/P2A.0已验收，P2A进行中；V7使用原pilot余额内的短采集和原三场final-only开发验证，P2B/gateway未开始。复制命令见[launch_commands.md](launch_commands.md)，任务/环境定义见共享研究、实施计划与MR3_ENV_CONTRACT；详细旧历史见日期报告。
 
 ## 1. 路径与环境
 

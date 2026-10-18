@@ -1,21 +1,21 @@
-# MR3-P2A 联合 MaskablePPO pilot 契约（v6停止；P2A.0准备）
+# MR3-P2A 联合 MaskablePPO pilot 契约（V7继续）
 
 2026-10-16：用户验收 P1C 并授权 P2A。P2A未完成，v6原session基础设施失败后按预声明停止。
-2026-10-17用户授权继续解决，并允许前置准备；本轮先做P2A.0，不启动新pilot，P2B及后续未开始。
+2026-10-18用户已验收P2A.0并明确要求继续P2A。当前执行[V7预声明](report/assets/20261018_mr3_p2a_v7/predeclared_plan_v7.json)：先fresh16/900工程最小链，再独立fresh的双worker、64步外部采集截断pilot，采集窗口2100墙秒；原pilot余额1870/2905.9547395464029不重置。仅正常final及两份完整审计通过后执行原三场final-only开发验证；P2A未完成，P2B及后续未开始。
 正式任务沿用 [任务契约](MR3_TASK_CONTRACT.md) 与 [环境契约](MR3_ENV_CONTRACT.md)：
 原生 Gazebo、恰好三机器人、95%/300 仿真秒、原地图质量/参与/18 路接触及导航闭合门禁。
 本契约不授权二维替代、gateway 或历史候选 500k/72h 配额。
 
 ## 模型与学习
 
-P2A.0无策略训练/模型更新。候选v4增加融合+合法已交付own-map前沿来源并独立版本化，
+已验收P2A.0本身无策略训练/模型更新；V7采用其生产冻结中的候选v5、快照v3/张量v2及71列received-only活动状态，从新权重开始。以下v4准备说明保留历史范围：候选v4增加融合+合法已交付own-map前沿来源并独立版本化，
 不改K8/路径/到达圆盘/联合掩码/策略张量/奖励/γ=λ=1。SLAM helper/solver改借用所属node，
 恢复真实析构和线程回收；串行原生关闭门禁不变。失败round另存
 `failed_collection_NNNN.npz/.json`，只有已返回真实决策，`training_eligible=false`，
 不含GAE/returns、不伪造截断，不解锁更新。安全诊断只增强证据，不改变.50m门槛。
 具体范围/原生工程矩阵与待证问题见[P2A.0报告](report/20261017_mr3_p2a0.md)。
 
-固定 `mr3-learning-tensors-v1`；二值地图不除以 255，不使用在线观测或 reward 归一化。
+V7固定 `mr3-learning-tensors-v2`（历史v1证据保持原范围）；二值地图不除以 255，不使用在线观测或 reward 归一化。
 复用 P1C 的全局 CNN、三台共享局部 CNN、状态/候选/历史/任务 MLP，融合为 256 维。
 直接输出联合 1000 类 actor 和一个集中式 value；无额外策略 MLP、循环网络或手工目标兜底。
 掩码不进入学习编码器，只作用于分布；采样时的候选、张量、掩码和 log probability 一并保存。
@@ -29,7 +29,7 @@ value coefficient=.5、max grad norm=.5、target KL=.03、每 round 最多 4 epo
 
 ## 完整 episode rollout 与终态
 
-每 round 同一只读策略在 1/2/4 个隔离三机器人环境采样；所有 episode 关闭并核验原生退出后才更新。
+每 round 同一只读策略在 1/2/4 个隔离三机器人环境采样；所有 episode 关闭并核验原生退出后才更新。V7 pilot选两个worker、每段最多64决策外部截断；95%/300秒任务保持，短前缀value尾项可能未校准，不称其等价完整任务训练或95%成功。完整任务只由final-only开发验证独立判断。
 不跨 optimizer 更新保留尚未结算的动作，从而避免末步在更新后收到零时长终态通知。
 
 - 普通真实决策为 1 秒；有动作的短终态（包括有效 dt=0、真实物理推进20ms）保留为 actor 样本。

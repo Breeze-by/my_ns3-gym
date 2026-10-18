@@ -6563,3 +6563,12 @@ reset: all_original_fields_deep_equal=true；666.9372907830402只读墙秒。
 交付静态核验：230原源码绑定、171本地Markdown链接、10份JSON、11776提升文件的SHA/大小全部通过；git diff --check绿，git add -n .已执行，11777新文件恰为11776选定证据副本加一份复盘，无build/install或未封存runtime混入。独立只读审查无剩余阻断；8份活动文档删减仅过期状态/版本时间线，原文Git对象与SHA已在ARCHIVE_INDEX登记。
 
 额外静态交接：训练器ppo.py默认每回合上限300步，collect_episodes完整返回后才构造buffer并model.train；已有300 KEEP实测5368.246922858991墙秒大于pilot余2905.954739546403。此为现有代码/原件的预算对照，不是新实验或PPO吞吐结论，不断言策略不能提前终止；不新增P2A.0门、不启动/扩额pilot。详见复盘采样预算段。
+
+
+## 2026-10-18：用户验收P2A.0，V7继续P2A（执行前声明）
+
+用户明确“p2a.0验收通过，继续完成p2a”。接受V26准备工程科学门，不改变原编排中断和所有旧FAIL。新计划见[预声明](report/assets/20261018_mr3_p2a_v7/predeclared_plan_v7.json)与[报告](report/20261018_mr3_p2a_v7.md)。生产源码不变；fresh16/900独立工程最小链通过后，才以独立fresh seed41、双worker open101/cap64运行余额内pilot：1870决策、采集2100墙秒，805.9547395464029预留收尾。短前缀一次bootstrap不当作95%成功；正常final与完整两项审计后才执行原open401/402/403、900/9000、0更新开发验证。新原生尚未启动，不预写PASS。
+
+只读环境检查实际Conda=/home/zhuyulab/miniconda3/envs/ns3gym/bin/python，numpy2.2.6、torch2.11.0+cu128、gymnasium1.3.0、SB3/sb3-contrib2.9.0，CUDA可用/2设备；没有重装依赖。当前source loader的127项pin/build/source proof通过，无新native。
+
+V7源码准备最短检查：现有test_ppo/test_finite_horizon/test_rollout共42项通过；新增补充审计6项通过，覆盖空/未知attempt、leaf失败汇总、motion单次调用、源码绑定和输出拒覆盖；143个本地Markdown链接无缺件，计划JSON/Decimal预算/参数经独立只读复核一致。仅增加只读audit_policy_inputs入口，不改生产/训练算法。

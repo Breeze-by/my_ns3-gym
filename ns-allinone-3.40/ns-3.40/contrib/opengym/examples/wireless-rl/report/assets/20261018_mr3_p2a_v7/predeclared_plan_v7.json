@@ -1,0 +1,161 @@
+{
+  "schema": "mr3-p2a-native-pilot-plan-v7",
+  "date": "2026-10-18",
+  "authorization": "User explicitly accepted P2A.0 and instructed continuing P2A in this session.",
+  "source_freeze": "ACTUAL_CLEAN_PUSHED_FREEZE_FROM_METADATA",
+  "prior_engineering_freeze": "92f8bdf5bba1ba245dc53ca0964eef81a7fff938",
+  "prior_engineering_acceptance": "34 required scientific roles accepted; original V26 parent INTERRUPTED/returncode unknown and every old FAIL remain unchanged. No repeat of the P2A.0 matrix.",
+  "scope": "Native Gazebo, exactly tb1/tb2/tb3 per worker, ideal communication, same open layout and fixed poses; no 2D/P2B/gateway.",
+  "production_change": false,
+  "contracts": {
+    "task": "95percent/300simulationseconds/schema4; all quality/participation/18contact/safety/navigation gates unchanged",
+    "candidate": "mr3-navigation-geometric-staging-v5",
+    "snapshot": "mr3-observation-v3",
+    "tensor": "mr3-learning-tensors-v2",
+    "gamma_per_second": 1,
+    "lambda_per_second": 1,
+    "online_normalization": false,
+    "short_prefix": "external sampler truncation only, one actual following-value bootstrap; not equivalent evidence for full-horizon learning"
+  },
+  "optimizer": {
+    "algorithm": "MaskablePPO 2.9.0",
+    "training_seed": 41,
+    "learning_rate": 0.0003,
+    "batch_size": 64,
+    "maximum_epochs_per_round": 4,
+    "target_kl": 0.03,
+    "entropy_coefficient": 0.01
+  },
+  "budget": {
+    "original_pilot_decisions": 4096,
+    "original_pilot_wall_seconds": 14400,
+    "charged_native_decisions": 2226,
+    "charged_wall_seconds_decimal": "11494.0452604535971",
+    "remaining_native_decisions": 1870,
+    "remaining_wall_seconds_decimal": "2905.9547395464029",
+    "pilot_sampling_cutoff_seconds": 2100,
+    "tail_reserve_seconds_decimal": "805.9547395464029",
+    "engineering_minimum_separate": true,
+    "validation_separate": {
+      "maximum_decisions": 900,
+      "maximum_wall_seconds": 9000
+    },
+    "charge_rule": "Every native pilot decision, including unreturned/rejected/failed actions, and actual run wall time; no refunds or reset. Cutoff is checked at next step boundary; strict closure/final update tails remain measured and charged."
+  },
+  "feasibility": {
+    "reference": "V26 reset: 2 workers, 8 episodes x32 steps, 3453.1814775690436 wallseconds. V26 300 KEEP: 5368.246922858991 wallseconds.",
+    "limitation": "Engineering stimuli are not policy throughput; 64-step rounds and early termination/reset costs differ. No guaranteed update count, round count, sample count or95percent exit."
+  },
+  "failure_rule": "No retry. Infrastructure error or any required audit failure stops remaining native stages; retain originals and diagnostic prefixes without manufacturing terminal/GAE/training credit.",
+  "closure_rule": "All round workers settle real terminal/external truncation, close and pass native cleanup before samples reach optimizer. Never train a failed round; no persistent-episode midrun updates.",
+  "audits": {
+    "full": "python -m mr3_learning.audit_ppo RUN_DIRECTORY --freeze EXACT40 --output NEW_JSON",
+    "received_policy_inputs": "python -m mr3_learning.audit_policy_inputs RUN_DIRECTORY --freeze EXACT40 --output NEW_JSON",
+    "required": "Both reports passed=true with actual returncode0 before next native stage. Same raw native attempts; original gates/source pins retained. Supplemental calls original archive, execution-input, motion and received-activity functions without requiring scripted probe stimulation.",
+    "scope": "New policy executions only; does not pretend to repeat all 34 P2A.0 stimulation roles or prove continuous safety."
+  },
+  "stages": [
+    {
+      "name": "minimal",
+      "argv": [
+        "python",
+        "-m",
+        "mr3_learning.ppo",
+        "--mode",
+        "train",
+        "--workers",
+        "1",
+        "--schedule",
+        "open:101",
+        "--decisions",
+        "16",
+        "--episode-steps",
+        "16",
+        "--wall-seconds",
+        "900",
+        "--seed",
+        "41",
+        "--base-domain",
+        "180",
+        "--base-port",
+        "14001",
+        "--run-id",
+        "mr3_p2a_v7_minimal"
+      ],
+      "run_directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v7_minimal",
+      "condition": "Actual conda entry and clean pushed source/build/pin preflight; P2A.0 accepted."
+    },
+    {
+      "name": "pilot",
+      "argv": [
+        "python",
+        "-m",
+        "mr3_learning.ppo",
+        "--mode",
+        "train",
+        "--workers",
+        "2",
+        "--schedule",
+        "open:101",
+        "--decisions",
+        "1870",
+        "--episode-steps",
+        "64",
+        "--wall-seconds",
+        "2100",
+        "--seed",
+        "41",
+        "--base-domain",
+        "182",
+        "--base-port",
+        "14011",
+        "--run-id",
+        "mr3_p2a_v7_pilot"
+      ],
+      "run_directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v7_pilot",
+      "condition": "Same-freeze fresh minimal full and supplemental audit PASS."
+    },
+    {
+      "name": "development_validation",
+      "argv": [
+        "python",
+        "-m",
+        "mr3_learning.ppo",
+        "--mode",
+        "evaluate",
+        "--workers",
+        "4",
+        "--checkpoint",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v7_pilot/final.zip",
+        "--schedule",
+        "open:401,open:402,open:403",
+        "--decisions",
+        "900",
+        "--episode-steps",
+        "300",
+        "--wall-seconds",
+        "9000",
+        "--seed",
+        "41",
+        "--base-domain",
+        "186",
+        "--base-port",
+        "14021",
+        "--run-id",
+        "mr3_p2a_v7_validation"
+      ],
+      "run_directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v7_validation",
+      "condition": "Same-freeze pilot completes without infrastructure error, both audits PASS and finite final.zip."
+    }
+  ],
+  "exit": "Complete reproducible training and final-only validation chain with actual strict95percent task success and evidence of policy decisions/learning/coordination; updates or completed flag alone do not complete P2A. Otherwise remain P2A and report all failures/limits; no P2B.",
+  "checkpoint_selection": "Fresh seed41 pilot distinct from engineering initial/final; final.zip only for validation, no earlier/other model substitution or validation-based selection.",
+  "preflight": {
+    "interpreter": "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+    "python_no_user_site": true,
+    "pythonpath_removed": true,
+    "source_and_build": "audit_ppo.load_native_gates(ROOT, EXACT40) checks original runtime/task/build pins and actual installed RayBox/ODE/driver/SLAM/smoother bytes. Supplemental CLI verifies its own and imported consumer Git/worktree bytes.",
+    "freeze": "HEAD equals origin/main, clean worktree; new exclusive run and audit paths; no conflicting Gazebo ports.",
+    "source_changes": "Only documentation and read-only supplemental audit; learner/production bytes remain accepted P2A.0 implementation."
+  }
+}

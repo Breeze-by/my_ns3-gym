@@ -1,6 +1,6 @@
 # 当前三机器人基线与MR3适配启动命令
 
-P2A.0工程科学门已补验通过，待用户验收；原V26父编排中断保留，P2A未完成，未启动PPO。 原V26命令仅供追溯；原生阶段已完成、最后只读审计单独补完，原编排中断不改记PASS。见[V26](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_v26_capture.md)和[复盘](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_reflection.md)。
+2026-10-18用户已验收P2A.0并要求继续P2A。V7当前命令见下一节；原V26父编排中断保留，P2A未完成。 原V26命令仅供追溯；原生阶段已完成、最后只读审计单独补完，原编排中断不改记PASS。见[V26](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_v26_capture.md)和[复盘](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_reflection.md)。
 
 新路线为 [MR3](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/RESEARCH_PLAN.md)，P0/P1A/P1B已验收，用户于2026-10-16验收P1C并授权P2A；P2B及后续未开始。
 默认`execution_mode:=baseline`启动前沿控制器；`adapter`为显式联合动作接口。P2A联合MaskablePPO正在实现与验证；gateway未开始。
@@ -155,6 +155,45 @@ phase3固定绑定原contact task-phase与独立命令时间门禁；scalar rewa
 固定1秒step、20ms量子、真实clock相位、seq0首格奖励绑定与外部截断/真实闭合规则见
 [环境契约](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_ENV_CONTRACT.md)。
 每次实际执行均是需追加共享log的实验，不能把入口存在当成P1C通过。
+
+## MR3-P2A V7 当前训练与验证入口
+
+2026-10-18已验收P2A.0；以下V7必须在干净已提交推送的同一freeze执行，每项成功且完整审计通过才进入下一项。
+使用下文conda `ns3gym`环境和wireless-rl目录；保留`PYTHONNOUSERSITE=1`、unset PYTHONPATH，ROS子进程仍system Python。
+[预声明](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a_v7/predeclared_plan_v7.json)与
+[本版结果](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a_v7.md)记录同冻结和所有失败。
+不重复V26矩阵，不加载工程模型进pilot。先16/900工程最小链，再fresh pilot；任一基础设施错误停止且不重试。
+
+```bash
+python -m mr3_learning.ppo --mode train --workers 1 --schedule open:101 \
+  --decisions 16 --episode-steps 16 --wall-seconds 900 --seed 41 \
+  --base-domain 180 --base-port 14001 --run-id mr3_p2a_v7_minimal
+
+python -m mr3_learning.ppo --mode train --workers 2 --schedule open:101 \
+  --decisions 1870 --episode-steps 64 --wall-seconds 2100 --seed 41 \
+  --base-domain 182 --base-port 14011 --run-id mr3_p2a_v7_pilot
+```
+
+每个run后对实际目录运行两项只读审计，输出使用新文件名；完整原生/奖励/概率/GAE及收到的地图/活动/执行链均须通过。
+
+```bash
+python -m mr3_learning.audit_ppo RUN_DIRECTORY --freeze EXACT40 --output NEW_FULL_AUDIT.json
+python -m mr3_learning.audit_policy_inputs RUN_DIRECTORY --freeze EXACT40 --output NEW_INPUT_AUDIT.json
+```
+
+64步仅为外部采集截断，不更改95%/300秒任务；关闭后一次bootstrap，不声明完整长回合训练等价或任务成功。
+pilot采集软限2100墙秒，原余额2905.9547395464029中的805.9547395464029预留在途请求/关闭/保存；实际总墙秒完整扣费。
+只有pilot正常闭合、两项审计通过且本次final.zip有限，才允许原三场完整开发验证（否则SKIP）：
+
+```bash
+python -m mr3_learning.ppo --mode evaluate --workers 4 \
+  --checkpoint /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo/mr3_p2a_v7_pilot/final.zip \
+  --schedule open:401,open:402,open:403 --decisions 900 --episode-steps 300 \
+  --wall-seconds 9000 --seed 41 --base-domain 186 --base-port 14021 \
+  --run-id mr3_p2a_v7_validation
+```
+
+验证同样执行上面两项审计；仅本次final、确定性mask-aware、0更新，所有失败保留。未达95%出口停P2A，不进入P2B。
 
 ## MR3-P2A.0 第一版历史命令（保留失败，不重跑）
 
