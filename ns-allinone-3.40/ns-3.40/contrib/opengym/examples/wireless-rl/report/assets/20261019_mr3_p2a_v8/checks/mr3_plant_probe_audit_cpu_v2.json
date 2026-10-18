@@ -1,0 +1,25 @@
+{
+  "schema": "mr3-plant-probe-auditor-cpu-tests-v1",
+  "command": [
+    "/usr/bin/python3",
+    "-B",
+    "-m",
+    "unittest",
+    "mr3_learning.tests.test_plant_probe_audit",
+    "-v"
+  ],
+  "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+  "returncode": 0,
+  "elapsed_wall_sec": 35.094428394921124,
+  "source_sha256_before": {
+    "mr3_learning/plant_probe_audit.py": "56a0dbc0ef8e9f07c27023969507980c6c806c8858e83be474e8933b2dce2e05",
+    "mr3_learning/tests/test_plant_probe_audit.py": "ea9c7bada13665c6d09b0ccfecd7eb15dedb1c1a544bdb68771aef9721bd643a"
+  },
+  "source_sha256_after": {
+    "mr3_learning/plant_probe_audit.py": "56a0dbc0ef8e9f07c27023969507980c6c806c8858e83be474e8933b2dce2e05",
+    "mr3_learning/tests/test_plant_probe_audit.py": "ea9c7bada13665c6d09b0ccfecd7eb15dedb1c1a544bdb68771aef9721bd643a"
+  },
+  "output_path": "/tmp/mr3_plant_probe_audit_cpu_v2.log",
+  "output_sha256": "3e046c078d22113cac64f78ab7ba430cc22effd06fd1e683b6fccd66109aa262",
+  "scope": "pure stdlib synthetic artifacts only; no native simulator or GPU launched"
+}

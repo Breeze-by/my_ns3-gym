@@ -14,7 +14,9 @@
 
 #include <math.h>
 #include <memory>
+#include <mutex>
 #include <string>
+#include <thread>
 #include <vector>
 #include <limits>
 
@@ -37,8 +39,8 @@ RclCppFixture g_rclcppfixture;
 class VelSmootherShim : public nav2_velocity_smoother::VelocitySmoother
 {
 public:
-  VelSmootherShim()
-  : VelocitySmoother() {}
+  explicit VelSmootherShim(const rclcpp::NodeOptions & options = rclcpp::NodeOptions())
+  : VelocitySmoother(options) {}
   void configure(const rclcpp_lifecycle::State & state) {this->on_configure(state);}
   void activate(const rclcpp_lifecycle::State & state) {this->on_activate(state);}
   void deactivate(const rclcpp_lifecycle::State & state) {this->on_deactivate(state);}
@@ -50,7 +52,230 @@ public:
   geometry_msgs::msg::Twist::SharedPtr lastCommandMsg() {return command_;}
 
   void sendCommandMsg(geometry_msgs::msg::Twist::SharedPtr msg) {inputCommandCallback(msg);}
+  bool hasTimer() {return timer_ != nullptr;}
+  bool hasDiagnosticService() {return diagnostic_service_ != nullptr;}
+  int64_t diagnosticSequence() {return diagnostic_sequence_;}
+  size_t outputSubscriptions() {return smoothed_cmd_pub_->get_subscription_count();}
+  void runTimer() {smootherTimer();}
+  void diagnosticTime(int64_t clock_ns)
+  {
+    std::lock_guard<std::mutex> lock(get_clock()->get_clock_mutex());
+    ASSERT_EQ(rcl_enable_ros_time_override(get_clock()->get_clock_handle()), RCL_RET_OK);
+    ASSERT_EQ(rcl_set_ros_time_override(get_clock()->get_clock_handle(), clock_ns), RCL_RET_OK);
+  }
+  using DiagnosticRequest = rcl_interfaces::srv::SetParametersAtomically::Request;
+  std::shared_ptr<rcl_interfaces::srv::SetParametersAtomically::Response> applyDiagnosticRequest(
+    const std::shared_ptr<DiagnosticRequest> request)
+  {
+    auto response =
+      std::make_shared<rcl_interfaces::srv::SetParametersAtomically::Response>();
+    applyDiagnostic(request, response);
+    return response;
+  }
 };
+
+rclcpp::NodeOptions diagnosticOptions(
+  std::string ns = "/tb3", bool simulated = true, std::string epoch = "diagnostic_epoch",
+  std::string arm = "pulse", bool request_boundary = true)
+{
+  rclcpp::NodeOptions options;
+  options.arguments({"--ros-args", "-r", "__ns:=" + ns, "-r",
+    std::string("cmd_vel_smoothed:=") +
+    (request_boundary ? "cmd_vel_unguarded" : "cmd_vel")});
+  options.parameter_overrides({rclcpp::Parameter("use_sim_time", simulated),
+    rclcpp::Parameter("mr3_diagnostic_enabled", true),
+    rclcpp::Parameter("mr3_diagnostic_epoch", epoch),
+    rclcpp::Parameter("mr3_diagnostic_arm", arm)});
+  return options;
+}
+
+std::shared_ptr<VelSmootherShim::DiagnosticRequest> diagnosticRequest(
+  int64_t sequence, int64_t clock_ns, int64_t angular)
+{
+  auto request = std::make_shared<VelSmootherShim::DiagnosticRequest>();
+  for (const auto & parameter : std::vector<rclcpp::Parameter>{
+      rclcpp::Parameter("epoch", std::string("diagnostic_epoch")),
+      rclcpp::Parameter("arm", std::string("pulse")),
+      rclcpp::Parameter("sequence", sequence), rclcpp::Parameter("clock_ns", clock_ns),
+      rclcpp::Parameter("angular_millirad", angular)})
+  {
+    request->parameters.push_back(parameter.to_parameter_msg());
+  }
+  return request;
+}
+
+TEST(VelocitySmootherDiagnosticTest, defaultOffAndRestrictedConfiguration)
+{
+  rclcpp_lifecycle::State state;
+  auto normal = std::make_shared<VelSmootherShim>();
+  normal->configure(state);
+  normal->activate(state);
+  EXPECT_TRUE(normal->hasTimer());
+  EXPECT_FALSE(normal->hasDiagnosticService());
+  EXPECT_FALSE(normal->applyDiagnosticRequest(diagnosticRequest(1, 44921000000, 800))
+    ->result.successful);
+  normal->deactivate(state);
+  normal->cleanup(state);
+  for (const auto & options : {diagnosticOptions("/other"),
+      diagnosticOptions("/tb3", false), diagnosticOptions("/tb3", true, ""),
+      diagnosticOptions("/tb3", true, "bad\"epoch"),
+      diagnosticOptions("/tb3", true, "diagnostic_epoch", "unknown"),
+      diagnosticOptions("/tb3", true, "diagnostic_epoch", "pulse", false)})
+  {
+    auto invalid = std::make_shared<VelSmootherShim>(options);
+    EXPECT_THROW(invalid->configure(state), std::runtime_error);
+  }
+}
+
+TEST(VelocitySmootherDiagnosticTest, exactPausedPublicationAndNoNormalTimerMixing)
+{
+  auto smoother = std::make_shared<VelSmootherShim>(diagnosticOptions());
+  rclcpp_lifecycle::State state;
+  smoother->configure(state);
+  const int64_t first_clock = 44921000000;  // Relative phase; not an absolute 20ms multiple.
+  smoother->diagnosticTime(first_clock);
+  EXPECT_FALSE(smoother->applyDiagnosticRequest(diagnosticRequest(1, first_clock, 0))
+    ->result.successful);
+  smoother->activate(state);
+  EXPECT_FALSE(smoother->hasTimer());
+  EXPECT_TRUE(smoother->hasDiagnosticService());
+  std::vector<geometry_msgs::msg::Twist> outputs;
+  auto subscription = smoother->create_subscription<geometry_msgs::msg::Twist>(
+    "cmd_vel_unguarded", 10,
+    [&](geometry_msgs::msg::Twist::SharedPtr msg) {outputs.push_back(*msg);});
+  auto deadline = std::chrono::steady_clock::now() + 1s;
+  while (smoother->outputSubscriptions() == 0 && std::chrono::steady_clock::now() < deadline) {
+    rclcpp::spin_some(smoother->get_node_base_interface());
+  }
+  ASSERT_GT(smoother->outputSubscriptions(), 0u);
+  for (int64_t index = 0; index < 4; ++index) {
+    const auto clock = first_clock + index * 20000000;
+    smoother->diagnosticTime(clock);
+    auto response = smoother->applyDiagnosticRequest(
+      diagnosticRequest(index + 1, clock, index == 2 ? 0 : 800));
+    ASSERT_TRUE(response->result.successful) << response->result.reason;
+    EXPECT_NE(response->result.reason.find("\"robot\":\"tb3\""), std::string::npos);
+    EXPECT_NE(response->result.reason.find("\"publication_clock_ns\":" + std::to_string(clock)),
+      std::string::npos);
+    EXPECT_NE(response->result.reason.find(
+        "\"output_topic\":\"/tb3/cmd_vel_unguarded\""), std::string::npos);
+    EXPECT_NE(response->result.reason.find("smoother_publication_only_not_guard_or_storage"),
+      std::string::npos);
+    auto normal_command = std::make_shared<geometry_msgs::msg::Twist>();
+    normal_command->linear.x = 0.2;
+    smoother->sendCommandMsg(normal_command);
+    smoother->runTimer();
+    EXPECT_EQ(smoother->lastCommandMsg(), nullptr);
+    deadline = std::chrono::steady_clock::now() + 1s;
+    while (outputs.size() < static_cast<size_t>(index + 1) &&
+      std::chrono::steady_clock::now() < deadline)
+    {
+      rclcpp::spin_some(smoother->get_node_base_interface());
+    }
+    ASSERT_EQ(outputs.size(), static_cast<size_t>(index + 1));
+    EXPECT_EQ(outputs.back().linear.x, 0.0);
+    EXPECT_EQ(outputs.back().linear.y, 0.0);
+    EXPECT_EQ(outputs.back().angular.z, index == 2 ? 0.0 : 0.8);
+  }
+  EXPECT_FALSE(smoother->set_parameters_atomically(
+      {rclcpp::Parameter("smoothing_frequency", 100.0)}).successful);
+  EXPECT_FALSE(smoother->hasTimer());
+  smoother->deactivate(state);
+  EXPECT_FALSE(smoother->applyDiagnosticRequest(
+      diagnosticRequest(5, first_clock + 80000000, 0))->result.successful);
+  smoother->cleanup(state);
+}
+
+TEST(VelocitySmootherDiagnosticTest, rejectedRequestsNeverConsumeSequence)
+{
+  auto smoother = std::make_shared<VelSmootherShim>(diagnosticOptions());
+  rclcpp_lifecycle::State state;
+  smoother->configure(state);
+  smoother->activate(state);
+  const int64_t clock = 44921000000;
+  smoother->diagnosticTime(clock);
+  std::vector<std::shared_ptr<VelSmootherShim::DiagnosticRequest>> invalid;
+  invalid.push_back(diagnosticRequest(0, clock, 800));
+  invalid.push_back(diagnosticRequest(2, clock, 800));
+  invalid.push_back(diagnosticRequest(1, clock - 1, 800));
+  invalid.push_back(diagnosticRequest(1, clock - 1000000, 800));
+  invalid.push_back(diagnosticRequest(1, clock + 1, 800));
+  invalid.push_back(diagnosticRequest(1, clock, -800));
+  invalid.push_back(diagnosticRequest(1, clock, 1));
+  auto old_epoch = diagnosticRequest(1, clock, 800);
+  old_epoch->parameters[0].value.string_value = "old_epoch";
+  invalid.push_back(old_epoch);
+  auto wrong_arm = diagnosticRequest(1, clock, 800);
+  wrong_arm->parameters[1].value.string_value = "continuous";
+  invalid.push_back(wrong_arm);
+  auto wrong_type = diagnosticRequest(1, clock, 800);
+  wrong_type->parameters[2] = rclcpp::Parameter("sequence", 1.0).to_parameter_msg();
+  invalid.push_back(wrong_type);
+  auto missing = diagnosticRequest(1, clock, 800);
+  missing->parameters.pop_back();
+  invalid.push_back(missing);
+  auto duplicate = diagnosticRequest(1, clock, 800);
+  duplicate->parameters.push_back(duplicate->parameters.back());
+  invalid.push_back(duplicate);
+  for (const auto & request : invalid) {
+    EXPECT_FALSE(smoother->applyDiagnosticRequest(request)->result.successful);
+    EXPECT_EQ(smoother->diagnosticSequence(), 0);
+  }
+  ASSERT_TRUE(smoother->applyDiagnosticRequest(diagnosticRequest(1, clock, 800))
+    ->result.successful);
+  EXPECT_FALSE(smoother->applyDiagnosticRequest(diagnosticRequest(1, clock, 800))
+    ->result.successful);
+  smoother->diagnosticTime(clock + 40000000);
+  EXPECT_FALSE(smoother->applyDiagnosticRequest(diagnosticRequest(2, clock + 40000000, 0))
+    ->result.successful);
+  EXPECT_EQ(smoother->diagnosticSequence(), 1);
+  smoother->diagnosticTime(clock + 20000000);
+  EXPECT_TRUE(smoother->applyDiagnosticRequest(diagnosticRequest(2, clock + 20000000, 0))
+    ->result.successful);
+  smoother->deactivate(state);
+  smoother->cleanup(state);
+}
+
+TEST(VelocitySmootherDiagnosticTest, waitsForIndependentClockReaderBeforeExactPublication)
+{
+  auto smoother = std::make_shared<VelSmootherShim>(diagnosticOptions());
+  rclcpp_lifecycle::State state;
+  smoother->configure(state);
+  const int64_t clock = 44921000000;
+  smoother->diagnosticTime(clock - 20000000);
+  smoother->activate(state);
+  std::vector<geometry_msgs::msg::Twist> outputs;
+  auto subscription = smoother->create_subscription<geometry_msgs::msg::Twist>(
+    "cmd_vel_unguarded", 10,
+    [&](geometry_msgs::msg::Twist::SharedPtr msg) {outputs.push_back(*msg);});
+  auto deadline = std::chrono::steady_clock::now() + 1s;
+  while (smoother->outputSubscriptions() == 0 && std::chrono::steady_clock::now() < deadline) {
+    rclcpp::spin_some(smoother->get_node_base_interface());
+  }
+  ASSERT_GT(smoother->outputSubscriptions(), 0u);
+  const auto started = std::chrono::steady_clock::now();
+  std::thread clock_reader([&]() {
+      std::this_thread::sleep_for(50ms);
+      smoother->diagnosticTime(clock);
+    });
+  auto response = smoother->applyDiagnosticRequest(diagnosticRequest(1, clock, 800));
+  const auto completed = std::chrono::steady_clock::now();
+  clock_reader.join();
+  ASSERT_TRUE(response->result.successful) << response->result.reason;
+  EXPECT_GE(completed - started, 40ms);
+  EXPECT_EQ(smoother->diagnosticSequence(), 1);
+  EXPECT_NE(response->result.reason.find("\"publication_clock_ns\":" + std::to_string(clock)),
+    std::string::npos);
+  deadline = std::chrono::steady_clock::now() + 1s;
+  while (outputs.empty() && std::chrono::steady_clock::now() < deadline) {
+    rclcpp::spin_some(smoother->get_node_base_interface());
+  }
+  ASSERT_EQ(outputs.size(), 1u);
+  EXPECT_EQ(outputs.front().linear.x, 0.0);
+  EXPECT_EQ(outputs.front().angular.z, 0.8);
+  smoother->deactivate(state);
+  smoother->cleanup(state);
+}
 
 TEST(VelocitySmootherTest, openLoopTestTimer)
 {

@@ -80,13 +80,17 @@ def prepare_physics_diagnostic(config_path, *, adapter_mode, stepped_mode,
     episode = audit.parent.resolve(strict=True)
     raw, input_sha = diagnostic_read(config_file)
     config = diagnostic_json(raw)
+    observer_only = (type(config) is dict and
+                     config.get("schema") == "mr3-physics-diagnostic-config-v2" and
+                     config.get("mode") == "observer_only")
     expected = {"schema", "run_directory", "episode_relative_directory", "scene", "seed",
-                "mode", "capture_start_ns", "capture_end_ns", "observer_library",
-                "profile_library"}
+                "mode", "capture_start_ns", "capture_end_ns", "observer_library"}
+    if not observer_only:
+        expected.add("profile_library")
     if (type(config) is not dict or set(config) not in (expected, expected | {"ray_provenance"}) or
-            config["schema"] != "mr3-physics-diagnostic-config-v1"):
+            (not observer_only and config["schema"] != "mr3-physics-diagnostic-config-v1")):
         raise ValueError("unknown physics diagnostic config schema/fields")
-    if config["mode"] not in ("baseline", "iters150"):
+    if not observer_only and config["mode"] not in ("baseline", "iters150"):
         raise ValueError("unknown physics diagnostic mode")
     if type(config["seed"]) is not int or config["seed"] < 0 or str(config["seed"]) != str(seed):
         raise ValueError("physics diagnostic seed mismatch")
@@ -112,6 +116,8 @@ def prepare_physics_diagnostic(config_path, *, adapter_mode, stepped_mode,
     libraries = {}
     for key, filename in (("observer_library", "libmr3_stop_response_observer.so"),
                           ("profile_library", "libmr3_physics_diagnostic_profile.so")):
+        if observer_only and key == "profile_library":
+            continue
         spec = config[key]
         if type(spec) is not dict or set(spec) != {"path", "sha256", "source_sha256"}:
             raise ValueError("physics diagnostic library fields mismatch")
@@ -160,16 +166,21 @@ def prepare_physics_diagnostic(config_path, *, adapter_mode, stepped_mode,
     world_path = Path(world).resolve(strict=True)
     _, world_sha = diagnostic_read(world_path)
     binding = {
-        "schema": "mr3-physics-diagnostic-binding-v1", "epoch": epoch,
+        "schema": ("mr3-physics-diagnostic-binding-v2" if observer_only else
+                   "mr3-physics-diagnostic-binding-v1"), "epoch": epoch,
         "episode_directory": str(episode), "config_source": str(config_file.resolve(strict=True)),
         "config_sha256": input_sha, "mode": config["mode"],
         "world_name": f"p1c_{config['scene']}", "world_path": str(world_path),
         "world_sha256": world_sha, "seed": config["seed"],
         "capture_start_ns": config["capture_start_ns"],
         "capture_end_ns": config["capture_end_ns"], **libraries,
-        "profile_output_path": str(episode / "physics_profile.jsonl"),
         "observer_outputs": {name: str(episode / f"physics_{name}.jsonl")
                              for name in ("tb1", "tb2", "tb3")}}
+    if observer_only:
+        binding["physics_intervention"] = "none_observer_only"
+        binding["observer_paused_only"] = True
+    else:
+        binding["profile_output_path"] = str(episode / "physics_profile.jsonl")
     if ray is not None:
         binding["ray_provenance"] = ray
     binding_path = episode / "physics_diagnostic_binding.json"
@@ -192,6 +203,8 @@ def append_physics_observer(model, robot_name, diagnostic):
         "output_path": binding["observer_outputs"][robot_name], "base_link": "base_link",
         "right_joint": "wheel_right_joint", "left_joint": "wheel_left_joint",
         "start_ns": str(binding["capture_start_ns"]), "end_ns": str(binding["capture_end_ns"])}
+    if binding.get("observer_paused_only") is True:
+        fields["paused_only"] = "true"
     filename = escape(binding["observer_library"]["path"], {'"': "&quot;"})
     block = (f'  <plugin name="{name}" filename="{filename}">\n' +
              "".join(f"    <{key}>{escape(value)}</{key}>\n" for key, value in fields.items()) +
@@ -514,6 +527,19 @@ def launch_setup(context, *args, **kwargs):
     stepped_mode = IfCondition(LaunchConfiguration("mr3_stepped")).evaluate(context)
     training_reward = IfCondition(LaunchConfiguration("training_reward_enabled")).evaluate(context)
     terminal_probe = IfCondition(LaunchConfiguration("training_terminal_probe")).evaluate(context)
+    plant_stimulus_arm = LaunchConfiguration("mr3_plant_stimulus_arm").perform(context)
+    if plant_stimulus_arm not in ("", "continuous", "pulse"):
+        raise ValueError("unknown mr3_plant_stimulus_arm")
+    if plant_stimulus_arm and not (adapter_mode and stepped_mode and training_reward
+                                  and robot_count == 3):
+        raise ValueError("plant stimulus requires stepped three-robot training adapter")
+    if plant_stimulus_arm:
+        if world_name.perform(context) != "p1c_open.world":
+            raise ValueError("plant stimulus requires the fixed open diagnostic world")
+        # Explicit engineering fixture, identical in both arms. Keep the normal
+        # research spawn untouched and retain the original peer safety bounds.
+        for robot, x in zip(robots, ("-1.6", "0.0", "1.6")):
+            robot.update(x_pose=x, y_pose="0.0")
     if stepped_mode and not adapter_mode:
         raise ValueError("mr3_stepped requires adapter mode")
     if training_reward and (not adapter_mode or not evaluation_contract.perform(context)
@@ -576,6 +602,8 @@ def launch_setup(context, *args, **kwargs):
         output="screen",
     )
     adapter_audit_path = LaunchConfiguration("mr3_audit_path").perform(context)
+    if plant_stimulus_arm and not (adapter_audit_path and episode_epoch.perform(context)):
+        raise ValueError("plant stimulus requires explicit audit path and episode epoch")
     physics_diagnostic = prepare_physics_diagnostic(
         context.environment.get(PHYSICS_DIAGNOSTIC_ENV, ""),
         adapter_mode=adapter_mode, stepped_mode=stepped_mode, robot_count=robot_count,
@@ -636,6 +664,7 @@ def launch_setup(context, *args, **kwargs):
             name="motion_safety", output="screen",
             parameters=[{"use_sim_time": use_sim_time, "episode_epoch": episode_epoch,
                          "stepped_mode": stepped_mode,
+                         "mr3_diagnostic_enabled": bool(plant_stimulus_arm),
                          "audit_path": (os.path.join(os.path.dirname(adapter_audit_path),
                                                      "motion_safety.jsonl")
                                         if adapter_audit_path else "")}],
@@ -888,7 +917,7 @@ def launch_setup(context, *args, **kwargs):
         gazebo_environment["MR3_RAY_BOX_CORRECTOR_AUDIT_PATH"] = ray_box_audit_path
         gazebo_environment["MR3_RAY_BOX_CORRECTOR_EPOCH"] = episode_epoch.perform(context)
         diagnostic_system_args = []
-        if physics_diagnostic is not None:
+        if physics_diagnostic is not None and "profile_library" in physics_diagnostic["binding"]:
             diagnostic_system_args = [
                 "-s", physics_diagnostic["binding"]["profile_library"]["path"]]
             gazebo_environment[PHYSICS_DIAGNOSTIC_ENV] = physics_diagnostic["binding_path"]
@@ -966,14 +995,22 @@ def launch_setup(context, *args, **kwargs):
         if adapter_mode:
             # Keep local sensing and every Nav2 parameter unchanged; only the
             # two global static-map inputs use the declared robot-side copy.
+            param_rewrites = {
+                "global_costmap.global_costmap.ros__parameters.map_topic":
+                    f"/{robot_name}/navigation_map",
+                "global_costmap.global_costmap.ros__parameters.static_layer.map_topic":
+                    f"/{robot_name}/navigation_map",
+            }
+            if plant_stimulus_arm and robot_name == "tb3":
+                param_rewrites.update({
+                    "velocity_smoother.ros__parameters.mr3_diagnostic_enabled": "true",
+                    "velocity_smoother.ros__parameters.mr3_diagnostic_epoch":
+                        episode_epoch.perform(context),
+                    "velocity_smoother.ros__parameters.mr3_diagnostic_arm": plant_stimulus_arm,
+                })
             params_file = RewrittenYaml(
                 source_file=params_file, convert_types=True,
-                param_rewrites={
-                    "global_costmap.global_costmap.ros__parameters.map_topic":
-                        f"/{robot_name}/navigation_map",
-                    "global_costmap.global_costmap.ros__parameters.static_layer.map_topic":
-                        f"/{robot_name}/navigation_map",
-                },
+                param_rewrites=param_rewrites,
             )
 
         print(f"Namespace: {namespace}, PARAM Config: {params_file}\n")
@@ -1083,6 +1120,23 @@ def launch_setup(context, *args, **kwargs):
         nav_bringups.append(bringup_cmd)
 
         last_spawn_action = spawn_robot
+
+    if plant_stimulus_arm:
+        _, launch_sha = diagnostic_read(Path(__file__))
+        _, selected_world_sha = diagnostic_read(world)
+        fixture = {
+            "schema": "mr3-fixed-sparse-plant-fixture-v1",
+            "epoch": episode_epoch.perform(context), "arm": plant_stimulus_arm,
+            "world_path": world, "world_sha256": selected_world_sha,
+            "launch_source_sha256": launch_sha,
+            "spawn_argument_values": {robot["name"]: {
+                key: robot[key] for key in ("x_pose", "y_pose", "z_pose", "roll", "pitch", "yaw")}
+                for robot in robots},
+            "scope": "pre-execution spawn configuration; actual pose requires passive native observations",
+        }
+        target = Path(adapter_audit_path).parent / "plant_fixture_binding.json"
+        with target.open("x") as stream:
+            stream.write(json.dumps(fixture, sort_keys=True, allow_nan=False) + "\n")
 
     # ========= RViz and optional drive nodes =========
     # Start RViz only after the last robot has been spawned.
@@ -1194,6 +1248,10 @@ def generate_launch_description():
     ld.add_action(DeclareLaunchArgument(
         "training_terminal_probe", default_value="false",
         description="Explicit P1C diagnostic-failure IPC probe; no task performance credit.",
+    ))
+    ld.add_action(DeclareLaunchArgument(
+        "mr3_plant_stimulus_arm", default_value="",
+        description="Engineering-only genuine smoother stimulus: continuous or pulse; disabled by default.",
     ))
     ld.add_action(DeclareLaunchArgument(
         "mr3_episode_epoch", default_value="mr3-p1b",

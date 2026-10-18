@@ -404,6 +404,9 @@ behavior_server:
 
 velocity_smoother:
   ros__parameters:
+    mr3_diagnostic_enabled: false
+    mr3_diagnostic_epoch: ""
+    mr3_diagnostic_arm: ""
     use_sim_time: True
     smoothing_frequency: 20.0
     feedback: "OPEN_LOOP"

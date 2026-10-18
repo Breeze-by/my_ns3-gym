@@ -26,6 +26,7 @@
 #include "nav2_util/node_utils.hpp"
 #include "nav2_util/odometry_utils.hpp"
 #include "nav2_util/robot_utils.hpp"
+#include "rcl_interfaces/srv/set_parameters_atomically.hpp"
 
 namespace nav2_velocity_smoother
 {
@@ -120,6 +121,13 @@ protected:
    */
   void smootherTimer();
 
+  // Explicit engineering stimulus at this node's normal output-request boundary.
+  // The existing motion guard and native actuator remain downstream owners.
+  using DiagnosticApply = rcl_interfaces::srv::SetParametersAtomically;
+  void applyDiagnostic(
+    const std::shared_ptr<DiagnosticApply::Request> request,
+    std::shared_ptr<DiagnosticApply::Response> response);
+
   /**
    * @brief Dynamic reconfigure callback
    * @param parameters Parameter list to change
@@ -133,6 +141,14 @@ protected:
     smoothed_cmd_pub_;
   rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr cmd_sub_;
   rclcpp::TimerBase::SharedPtr timer_;
+  rclcpp::Service<DiagnosticApply>::SharedPtr diagnostic_service_;
+  bool diagnostic_enabled_{false};
+  bool diagnostic_active_{false};
+  std::string diagnostic_epoch_;
+  std::string diagnostic_arm_;
+  std::string diagnostic_robot_;
+  int64_t diagnostic_sequence_{0};
+  int64_t diagnostic_clock_ns_{-1};
 
   rclcpp::Clock::SharedPtr clock_;
   geometry_msgs::msg::Twist last_cmd_;

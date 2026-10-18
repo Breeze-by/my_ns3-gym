@@ -1,6 +1,6 @@
 # ROS component memory — MR3
 
-2026-10-18：P2A.0已获用户验收；P2A V7最小链科学门FAIL，P2A未完成。执行冻结`8d7f19fc8225eae0ccdc6609b828ee8e832f7c93`，两回合16原生/返回决策、8实际更新、702.5650296038948墙秒；tb3真实纯转向平面速度.0202035868超过原.01条件，原完整及补充审计均FAIL。pilot/三场验证SKIPPED，原余额1870决策/2905.9547395464029墙秒不动。原V26验收、父编排中断及所有旧FAIL保留。仅完成后续reader权重选择和无效模型round优化前拒绝的CPU代码准备，没有新plant修复或新native通过。已保存原件/原FAIL及88个保存PID/start均gone；新增工程预算待明确，P2B/gateway未启动。详见V7报告。
+2026-10-18：P2A.0已获用户验收；P2A V7最小链科学门FAIL，P2A未完成。执行冻结`8d7f19fc8225eae0ccdc6609b828ee8e832f7c93`，两回合16原生/返回决策、8实际更新、702.5650296038948墙秒；tb3真实纯转向平面速度.0202035868超过原.01条件，原完整及补充审计均FAIL。pilot/三场验证SKIPPED，原余额1870决策/2905.9547395464029墙秒不动。原V26验收、父编排中断及所有旧FAIL保留。仅完成后续reader权重选择和无效模型round优化前拒绝的CPU代码准备，没有新plant修复或新native通过。已保存原件/原FAIL及88个保存PID/start均gone；2026-10-19用户已批准工程累计上限30000墙秒；入场已用12123.4218194806018、余17876.5781805193982，pilot/验证不扩额。P2B/gateway未启动。详见V7报告。
 
 Follow `/home/zhuyulab/ns3-workspace/AGENTS.md`. Read the shared
 `ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/RESEARCH_PLAN.md`

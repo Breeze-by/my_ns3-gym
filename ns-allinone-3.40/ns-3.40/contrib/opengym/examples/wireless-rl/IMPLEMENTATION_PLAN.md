@@ -1,5 +1,7 @@
 # MR3 研发检查点与逐步验收
 
+2026-10-19用户批准工程累计上限30000墙秒，入场已用12123.4218194806018、余17876.5781805193982；转向诊断、受影响工程重验及新最小链在此限内继续。pilot仍余1870决策/2905.9547395464029墙秒，final-only三场验证不扩额。见[批准记录](report/assets/20261019_mr3_p2a_v8/budget_acceptance_20261019.json)。
+
 2026-10-18用户已验收P2A.0并授权继续P2A。V7最小训练链已执行，但真实转向模型违例使科学门FAIL，pilot及三场验证SKIPPED；P2A未完成，P2B/gateway未启动。后续两项代码保护仅完成CPU准备，物理执行尚未修复。见[V7结果](report/20261018_mr3_p2a_v7.md)。原[V26](report/20261018_mr3_p2a0_v26_capture.md)工程验收、父编排中断及所有旧FAIL保留，不重写历史。
 
 ## 1. 当前状态
@@ -11,7 +13,7 @@
 | MR3-P1B | RL 可独占的稳定目标/观测接口 | 已验收（2026-10-15） |
 | MR3-P1C | 训练环境、可靠 reset、采样吞吐 | 已验收（2026-10-16） |
 | MR3-P2A.0 | 生命周期、候选及安全执行、参与观测准备 | 已验收（2026-10-18）；原V26编排中断保留 |
-| MR3-P2A | 联合 MaskablePPO 最小训练闭环 | 未完成；V7最小链科学门FAIL，pilot/验证SKIP；待转向执行修复及预算 |
+| MR3-P2A | 联合 MaskablePPO 最小训练闭环 | 未完成；V7最小链科学门FAIL，pilot/验证SKIP；待转向执行修复及重验 |
 | MR3-P2B | 同接口算法对照与方法选择 | 未开始 |
 | MR3-P2C | 理想通信完整验收、冻结模型 | 未开始 |
 | MR3-P3A | 双向 gateway、字节协议、消除旁路 | 未开始 |
@@ -132,7 +134,7 @@ P2A v6沿用v3候选/导航、v4日志/审计和v5未折扣目标，已补评价
 每台运动/目标仍由策略选择，不增加手工兜底，不放宽95%/300秒、参与或机体安全门禁。
 [各版原件、失败与诊断](report/20261016_mr3_p2a.md)和旧计划保留；v5/v6自动基础设施停止与原完整审计FAIL保留；v6工程链PASS不覆盖pilot infra或提供P2A完成信用。
 
-V7在`8d7f19fc8225eae0ccdc6609b828ee8e832f7c93`完成16决策/8实际更新/702.5650296038948墙秒，但首回合真实settled-turn模型失效；两份原科学审计FAIL，pilot和final-only验证均SKIPPED。原余额1870/2905.9547395464029未用。后续reader误选权重和无效模型round优化前拒绝已作最小CPU修复，不修plant、不提供新native通过。保留[原V7预声明](report/assets/20261018_mr3_p2a_v7/predeclared_plan_v7.json)与[全部结果](report/20261018_mr3_p2a_v7.md)；[工程预算提案](report/assets/20261018_mr3_p2a_v7/next_engineering_budget_proposal_v1.json)未授权、未执行，不自动扩额或借用pilot/验证。
+V7在`8d7f19fc8225eae0ccdc6609b828ee8e832f7c93`完成16决策/8实际更新/702.5650296038948墙秒，但首回合真实settled-turn模型失效；两份原科学审计FAIL，pilot和final-only验证均SKIPPED。原余额1870/2905.9547395464029未用。后续reader误选权重和无效模型round优化前拒绝已作最小CPU修复，不修plant、不提供新native通过。保留[原V7预声明](report/assets/20261018_mr3_p2a_v7/predeclared_plan_v7.json)与[全部结果](report/20261018_mr3_p2a_v7.md)；[工程预算提案](report/assets/20261018_mr3_p2a_v7/next_engineering_budget_proposal_v1.json)保留原提出时状态；2026-10-19已获上述明确批准，不借用pilot/验证。
 
 先验证固定开发布局能学习有效分工，随后加入预声明开发布局/姿态变化；不使用留出
 测试挑参数。每个训练 run 记录 seed、预算和模型版本，阶段性结果明确是 pilot。

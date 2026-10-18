@@ -33,8 +33,11 @@ class MotionSafety(Node):
         self.epoch = self.declare_parameter("episode_epoch", "").value
         stepped = self.declare_parameter("stepped_mode", False).value
         audit_path = self.declare_parameter("audit_path", "").value
+        diagnostic_enabled = self.declare_parameter("mr3_diagnostic_enabled", False).value
         if not self.epoch:
             raise ValueError("motion safety requires an episode epoch")
+        if type(diagnostic_enabled) is not bool or (diagnostic_enabled and not stepped):
+            raise ValueError("diagnostic request receipts require explicit stepped execution")
         self.audit = None
         self.drive_audit = None
         if audit_path:
@@ -71,6 +74,9 @@ class MotionSafety(Node):
         self.ready_pub = self.create_publisher(Bool, "/motion_safety/ready", durable)
         self.status_pub = self.create_publisher(String, "/motion_safety/status", durable)
         self.failure_pub = self.create_publisher(String, "/exploration_failure", durable)
+        self.diagnostic_receipt_pub = (
+            self.create_publisher(String, "/motion_safety/diagnostic_request_receipt", 20)
+            if diagnostic_enabled else None)
         self.inputs = []
         for name in ROBOTS:
             self.inputs.extend([
@@ -104,6 +110,7 @@ class MotionSafety(Node):
             "twist_source_stamp_available": False,
             "own_input_selection": "latest_causal_v1",
             "controlled_execution": stepped,
+            "diagnostic_request_receipts": diagnostic_enabled,
             "settled_turn_contract": "mr3-settled-turn-v1; own zero publications .94s, "
             "three later fresh rest samples; conditional persistent planar speed<=.01m/s "
             "and whole zero-segment centre path<=.0078m, never reset by repeated grants; "
@@ -192,6 +199,19 @@ class MotionSafety(Node):
         self.requests[name] = request
         self.record("raw_request", {"robot": name, "request": request,
                                     "twist": fields if supported else None})
+        if getattr(self, "diagnostic_receipt_pub", None) is not None and name == "tb3":
+            # This ACK is emitted by the real consuming callback. Twist has no
+            # source epoch/sequence: the worker pairs this observed input with
+            # its single in-flight, epoch-bound smoother service publication.
+            receipt = {"schema": "mr3-guard-diagnostic-receipt-v1", "epoch": self.epoch,
+                       "robot": name, "clock_ns": self.get_clock().now().nanoseconds,
+                       "input_sequence": request["sequence"], "v": request["v"],
+                       "w": request["w"], "supported": supported,
+                       "publisher_identity": request["publisher_identity"],
+                       "scope": "real_guard_request_callback; graph_at_callback_identity; "
+                                "not_guard_decision_or_driver_storage"}
+            self.diagnostic_receipt_pub.publish(String(data=json.dumps(receipt, allow_nan=False)))
+            self.record("diagnostic_request_receipt", receipt)
 
     def receive_actual(self, message, name):
         fields = self.twist(message)

@@ -1,5 +1,7 @@
 # 三机器人 ROS 建图导航：当前实现指南
 
+2026-10-19用户批准工程累计30000墙秒继续转向诊断；普通训练默认关闭新增工程刺激入口。该诊断使用固定三机稀疏布局、原安全门和真正smoother，不能作为V7近身事件复现或95%信用。见[V8预声明](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v8.md)。
+
 2026-10-18用户已验收P2A.0；随后V7最小链16决策/8实际更新正常返回，但真实转向模型失效使科学审计FAIL，pilot/验证SKIPPED。P2A未完成；两项后续代码保护只有CPU准备，物理执行尚未修复。原V26中断与旧FAIL保留，见[V7结果](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a_v7.md)。
 
 默认仍为传统前沿baseline；互斥adapter独占稳定目标、使用本机已知权威/已交付共享导航副本、v5候选和received-only累计参与观测。受控20ms推进先完成实际state→peer→guard→三台native storage→evaluator，再推进物理；存储回执不能代替机体响应。

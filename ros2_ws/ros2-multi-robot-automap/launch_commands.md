@@ -156,9 +156,21 @@ phase3固定绑定原contact task-phase与独立命令时间门禁；scalar rewa
 [环境契约](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_ENV_CONTRACT.md)。
 每次实际执行均是需追加共享log的实验，不能把入口存在当成P1C通过。
 
+## MR3-P2A V8 工程诊断（显式关闭默认值）
+
+2026-10-19用户批准累计30000工程墙秒；V7 FAIL和pilot余额不变。新增`mr3_plant_stimulus_arm`默认空，仅`continuous|pulse`启用固定open101三机稀疏布局与tb3真正smoother工程输入；不要用于正常训练/评估。普通adapter的目标、timer、安全门及出生位置保持原行为。完整预声明、有效性门和预算见[V8报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v8.md)。
+
+在conda ns3gym、`PYTHONNOUSERSITE=1`、wireless-rl目录，从新clean+pushed冻结使用单次新run-id：
+
+```bash
+rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.plant_probe --arm continuous --run-id mr3_p2a_v8_continuous --physics-config /tmp/mr3_p2a_v8_continuous_physics.json --domain 180 --port 14001
+```
+
+config必须预先绑定该run的唯一未来episode路径、当前原生observer库/源码SHA、v2 `observer_only`和原world；不加载旧profile。连续臂完整独立刺激审计与严格关闭通过后才允许pulse arm，准确命令/冻结由本版preflight记录。两arm各1800墙秒，全部实际成本计入累计余额，刺激不足也不重试。诊断结果不代替新冻结完整受影响矩阵、新PPO最小链或95%任务。
+
 ## MR3-P2A V7 历史入口（最小链科学门FAIL，pilot/验证SKIP）
 
-2026-10-18已验收P2A.0。V7在8d7f19fc8执行最小链16决策/8更新/702.565秒，但转向模型科学门FAIL；原两份审计保留，pilot及验证未执行。以下仅保留原命令供追溯，不重启旧run-id、不代用工程final。后续代码保护未获新原生信用；新工程预算待明确。
+2026-10-18已验收P2A.0。V7在8d7f19fc8执行最小链16决策/8更新/702.565秒，但转向模型科学门FAIL；原两份审计保留，pilot及验证未执行。以下仅保留原命令供追溯，不重启旧run-id、不代用工程final。后续代码保护未获新原生信用；2026-10-19用户已批准工程累计30000墙秒，pilot/验证不扩额。
 使用下文conda `ns3gym`环境和wireless-rl目录；保留`PYTHONNOUSERSITE=1`、unset PYTHONPATH，ROS子进程仍system Python。
 [预声明](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261018_mr3_p2a_v7/predeclared_plan_v7.json)与
 [本版结果](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a_v7.md)记录同冻结和所有失败。

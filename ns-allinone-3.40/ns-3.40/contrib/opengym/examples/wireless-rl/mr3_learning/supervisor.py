@@ -124,9 +124,19 @@ class Supervisor:
 
     def __init__(self, *, run_id=None, worker_id=0, domain_id=120, gazebo_port=12001,
                  output_root=None, startup_timeout=420., request_timeout=90.,
-                 quantum_steps=20, terminal_probe=False):
+                 quantum_steps=20, terminal_probe=False, plant_stimulus_arm=None,
+                 plant_stimulus_work_deadline_ns=None):
         if type(terminal_probe) is not bool:
             raise ValueError("terminal_probe must be a boolean")
+        if plant_stimulus_arm not in (None, "continuous", "pulse"):
+            raise ValueError("plant stimulus arm must be disabled, continuous or pulse")
+        if terminal_probe and plant_stimulus_arm is not None:
+            raise ValueError("plant stimulus and terminal probes are mutually exclusive")
+        if plant_stimulus_work_deadline_ns is not None and (
+                plant_stimulus_arm is None or type(plant_stimulus_work_deadline_ns) is not int
+                or not time.monotonic_ns() < plant_stimulus_work_deadline_ns
+                <= time.monotonic_ns() + 1_680_000_000_000):
+            raise ValueError("plant stimulus work deadline must fit its 1680s work allocation")
         self.run_id = run_id or (datetime.now(timezone.utc).strftime("mr3_%Y%m%d_%H%M%S_")
                                  + uuid.uuid4().hex[:8])
         allowed = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-"
@@ -153,6 +163,10 @@ class Supervisor:
         self.request_timeout = float(request_timeout)
         self.quantum_steps = quantum_steps
         self.terminal_probe = terminal_probe
+        self.plant_stimulus_arm = plant_stimulus_arm
+        self.plant_stimulus_work_deadline_ns = (
+            plant_stimulus_work_deadline_ns or time.monotonic_ns() + 1_680_000_000_000
+            if plant_stimulus_arm is not None else None)
         self.episode_number = 0
         self.request_number = 0
         self.episode = None
@@ -180,6 +194,8 @@ class Supervisor:
     def reset(self, scene="open", seed=101):
         if scene not in SCENES or type(seed) is not int or seed < 0:
             raise ValueError("reset requires a declared development scene and nonnegative seed")
+        if self.plant_stimulus_arm is not None and (scene, seed) != ("open", 101):
+            raise ValueError("the declared plant stimulus fixture is only open seed101")
         self.close()
         self.episode_number += 1
         epoch = f"{self.run_id}_w{self.worker_id}_e{self.episode_number}_{uuid.uuid4().hex[:8]}"
@@ -217,13 +233,17 @@ class Supervisor:
                     "domain_id": self.domain_id, "gazebo_port": self.gazebo_port,
                     "command": command, "reset_kind": "complete_process_rebuild",
                     "terminal_probe": self.terminal_probe,
+                    "plant_stimulus_arm": self.plant_stimulus_arm,
+                    "plant_stimulus_work_deadline_ns": self.plant_stimulus_work_deadline_ns,
                     "startup_wall_guard_sec": self.startup_timeout,
                     "request_wall_guard_sec": self.request_timeout}
         (directory / "supervisor_metadata.json").write_text(json.dumps(metadata, indent=2) + "\n")
         try:
             result = self._rpc("reset", timeout=self.startup_timeout, scene=scene, seed=seed,
                                quantum_steps=self.quantum_steps,
-                               terminal_probe=self.terminal_probe)
+                               terminal_probe=self.terminal_probe,
+                               plant_stimulus_arm=self.plant_stimulus_arm,
+                               plant_stimulus_work_deadline_ns=self.plant_stimulus_work_deadline_ns)
             if result["snapshot"]["epoch"] != epoch:
                 raise InfrastructureError("reset returned a previous episode snapshot")
             self.last_result = result

@@ -228,6 +228,7 @@ public:
   uint64_t before_record_sequence{0};
   bool pair_active{false};
   bool capture_complete{false};
+  bool paused_only{false};
 
   // These callbacks run on the world's physics-update thread. They never
   // publish ROS/Gazebo messages, call setters, or access another robot.
@@ -284,6 +285,9 @@ public:
       throw std::runtime_error("diagnostic prior physics pair not closed");
     }
     const auto clock_ns = Ns(info.simTime);
+    // V2 fixtures observe only real paused World::Step calls. Startup remains
+    // untouched; this is a read-only selection, not a pause/physics setter.
+    if (paused_only && !model->GetWorld()->IsPaused()) {return;}
     if (clock_ns < start_ns) {return;}
     if (clock_ns > end_ns) {
       if (!capture_complete) {
@@ -333,6 +337,7 @@ public:
     state->robot = sdf->Get<std::string>("robot", "").first;
     state->start_ns = ReadNanoseconds(sdf, "start_ns");
     state->end_ns = ReadNanoseconds(sdf, "end_ns");
+    state->paused_only = sdf->Get<bool>("paused_only", false).first;
     const auto path = sdf->Get<std::string>("output_path", "").first;
     if (state->epoch.empty() || state->robot.empty() || path.empty() ||
       state->start_ns < 0 || state->end_ns <= state->start_ns)
@@ -376,6 +381,7 @@ public:
       {"physics_parameters_scope", "public_GetParam; solver_type/iters/sor/cfm/erp_are_SDF_cached"},
       {"gravity_xyz", Vector(model->GetWorld()->Gravity())},
       {"start_ns", state->start_ns}, {"end_ns", state->end_ns},
+      {"paused_only", state->paused_only},
       {"canonical_name", state->canonical->GetScopedName()}, {"base_name", state->base->GetScopedName()},
       {"read_only", true}, {"per_packet_or_driver_private_sequence", false},
       {"flush_per_completed_pair", true},

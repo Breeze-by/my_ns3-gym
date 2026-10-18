@@ -39,6 +39,16 @@ NAV2_NODES = ("controller_server", "planner_server", "behavior_server",
 NAV2_SHUTDOWN_WALL_GUARD_SEC = 30.
 MOTION_OUTPUT_PUBLISHER = ("/", "motion_safety")
 MOTION_PHASE_COMPLETION = "publication_and_local_topic_receipt"
+PLANT_QUANTUM_NS = 20_000_000
+
+
+def plant_stimulus_angular(arm, relative_ns):
+    """Fixed from-rest engineering waveform; no state/truth-dependent trigger."""
+    if arm not in ("continuous", "pulse") or type(relative_ns) is not int or relative_ns < 0:
+        raise ValueError("invalid fixed plant stimulus coordinate")
+    turning = 1_200_000_000 <= relative_ns < 2_740_000_000
+    pulse = arm == "pulse" and 2_200_000_000 <= relative_ns < 2_240_000_000
+    return 800 if turning and not pulse else 0
 spec = importlib.util.spec_from_file_location("mr3_pipe_protocol", LEARNER / "ipc.py")
 ipc = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(ipc)
@@ -59,6 +69,27 @@ class Worker:
         self.terminal_probe = request.get("terminal_probe", False)
         if type(self.terminal_probe) is not bool:
             raise ValueError("terminal_probe must be a boolean")
+        self.plant_stimulus_arm = request.get("plant_stimulus_arm")
+        if self.plant_stimulus_arm not in (None, "continuous", "pulse"):
+            raise ValueError("invalid plant stimulus arm")
+        if self.plant_stimulus_arm is not None and (
+                self.terminal_probe or (self.scene, self.seed) != ("open", 101)):
+            raise ValueError("plant stimulus requires its exclusive open seed101 fixture")
+        self.plant_stimulus_work_deadline_ns = request.get("plant_stimulus_work_deadline_ns")
+        if self.plant_stimulus_arm is not None and (
+                type(self.plant_stimulus_work_deadline_ns) is not int
+                or not time.monotonic_ns() < self.plant_stimulus_work_deadline_ns
+                <= time.monotonic_ns() + 1_680_000_000_000):
+            raise ValueError("plant stimulus requires its bounded work deadline")
+        if self.plant_stimulus_arm is None and self.plant_stimulus_work_deadline_ns is not None:
+            raise ValueError("plant work deadline requires the explicit diagnostic arm")
+        self.plant_stimulus_sequence = 0
+        self.plant_stimulus_origin_ns = None
+        self.plant_stimulus_pending = None
+        self.plant_stimulus_receipt = None
+        self.plant_stimulus_input_sequence = None
+        self.plant_stimulus_publisher_gid = None
+        self.plant_stimulus_receipt_publisher_gid = None
         self.probe_armed = False
         self.probe_number = 0
         self.task_terminal = None
@@ -106,6 +137,11 @@ class Worker:
         self.outputs.append(self.execution_costmap_file)
         self.last_native_check = 0.
         self.started_wall = time.monotonic()
+        self.plant_stimulus_file = None
+        if self.plant_stimulus_arm is not None:
+            self.plant_stimulus_file = (directory / "plant_stimulus_worker.jsonl").open(
+                "x", buffering=1)
+            self.outputs.append(self.plant_stimulus_file)
         self.transition_file = (directory / "transitions.jsonl").open("x", buffering=1)
         self.physics_file = (directory / "physics.jsonl").open("x", buffering=1)
         self.evaluator_phase_file = (directory / "evaluator_phase_worker.jsonl").open(
@@ -126,6 +162,7 @@ class Worker:
         from lifecycle_msgs.srv import GetState
         from nav2_msgs.srv import ManageLifecycleNodes
         from nav_msgs.msg import OccupancyGrid
+        from rcl_interfaces.srv import SetParametersAtomically
         from multi_robot_exploration.mr3_information import map_payload
 
         rclpy.init()
@@ -134,6 +171,8 @@ class Worker:
         self.Header = Header
         self.GetState = GetState
         self.ManageLifecycleNodes = ManageLifecycleNodes
+        self.Parameter = Parameter
+        self.SetParametersAtomically = SetParametersAtomically
         self.map_payload = map_payload
         self.node = rclpy.create_node("mr3_environment_worker", parameter_overrides=[
             Parameter("use_sim_time", Parameter.Type.BOOL, True)])
@@ -155,6 +194,10 @@ class Worker:
         self.probe_pub = (self.node.create_publisher(String, "/mr3/diagnostic_failure", 10)
                           if self.terminal_probe else None)
         self.stop_pub = self.node.create_publisher(Header, "/exploration_stop_request", qos)
+        self.plant_stimulus_client = (
+            self.node.create_client(SetParametersAtomically,
+                                    "/tb3/velocity_smoother/mr3_diagnostic_apply")
+            if self.plant_stimulus_arm is not None else None)
 
         def callback(function):
             def wrapped(message):
@@ -277,6 +320,11 @@ class Worker:
                 String, topic, callback(lambda message, name=name: self.receive_control_phase(
                     name, json.loads(message.data))),
                 qos))
+        if self.plant_stimulus_arm is not None:
+            self.subscriptions.append(self.node.create_subscription(
+                String, "/motion_safety/diagnostic_request_receipt",
+                callback(lambda message: self.receive_plant_stimulus_receipt(
+                    json.loads(message.data))), 20))
         for name in ("tb1", "tb2", "tb3"):
             self.subscriptions.append(self.node.create_subscription(
                 String, f"/{name}/mr3_drive/status",
@@ -316,6 +364,8 @@ class Worker:
         ]
         if self.terminal_probe:
             self.command.append("training_terminal_probe:=true")
+        if self.plant_stimulus_arm is not None:
+            self.command.append(f"mr3_plant_stimulus_arm:={self.plant_stimulus_arm}")
         metadata = {"schema": "mr3-p1c-worker-v1", "epoch": self.epoch,
                     "scene": self.scene, "seed": self.seed, "command": self.command,
                     "freeze": subprocess.check_output(
@@ -333,6 +383,8 @@ class Worker:
                     "shutdown_protocol": SHUTDOWN_PROTOCOL,
                     "nav2_shutdown_wall_guard_sec": NAV2_SHUTDOWN_WALL_GUARD_SEC,
                     "terminal_probe": self.terminal_probe,
+                    "plant_stimulus_arm": self.plant_stimulus_arm,
+                    "plant_stimulus_work_deadline_ns": self.plant_stimulus_work_deadline_ns,
                     "physical_step_ns": 1000000, "policy_step_ns": 1000000000,
                     "startup_wall_guard_sec": 420., "closure_wall_guard_sec": 90.}
         (directory / "metadata.json").write_text(json.dumps(metadata, indent=2) + "\n")
@@ -348,6 +400,9 @@ class Worker:
             if self.launch.poll() is not None and not self.finished:
                 raise RuntimeError("launch exited during infrastructure cleanup")
             return
+        if (getattr(self, "plant_stimulus_arm", None) is not None
+                and time.monotonic_ns() >= self.plant_stimulus_work_deadline_ns):
+            raise TimeoutError("plant diagnostic work cutoff; 120s reserved for closure")
         if self.callback_error:
             raise RuntimeError("ROS callback failed: " + self.callback_error)
         if time.monotonic() - self.last_native_check > .2:
@@ -480,6 +535,8 @@ class Worker:
     def _commit_boundary(self):
         if self.stopping:
             return self._commit_stop("permanent_stop")
+        if getattr(self, "plant_stimulus_arm", None) is not None:
+            self._apply_plant_stimulus()
         identity = f"boundary{self.physical_ns}"
         state = self._control_rpc("state", "commit", request_id=identity)
         if state is None or self.stopping:
@@ -499,6 +556,110 @@ class Worker:
         self.wait_motion_phase()
         self.wait_drive_phase(self.motion_status)
         return self._execution_motion()
+
+    def _trace_plant_stimulus(self, kind, **payload):
+        with self.condition:
+            self.plant_stimulus_file.write(json.dumps({
+                "schema": "mr3-plant-stimulus-worker-v1", "kind": kind,
+                "epoch": self.epoch, "arm": self.plant_stimulus_arm,
+                "worker_clock_ns": self.clock_ns, "worker_physical_ns": self.physical_ns,
+                "origin_ns": self.plant_stimulus_origin_ns,
+                "relative_ns": (None if self.plant_stimulus_origin_ns is None else
+                                self.physical_ns - self.plant_stimulus_origin_ns),
+                "wall_monotonic_ns": time.monotonic_ns(), **payload,
+            }, sort_keys=True, allow_nan=False) + "\n")
+
+    def receive_plant_stimulus_receipt(self, receipt):
+        topic = "/motion_safety/diagnostic_request_receipt"
+        entries = self.node.get_publishers_info_by_topic(topic)
+        graph = {"scope": "graph_at_callback_not_per_packet_identity", "topic": topic,
+                 "endpoints": [{"namespace": value.node_namespace, "node": value.node_name,
+                                "type": value.topic_type,
+                                "endpoint_gid": bytes(value.endpoint_gid).hex()}
+                               for value in entries]}
+        self._trace_plant_stimulus("guard_request_receipt_received", receipt=receipt,
+                                  receipt_publisher_graph=graph)
+        if (len(entries) != 1 or entries[0].node_namespace != "/"
+                or entries[0].node_name != "motion_safety"
+                or entries[0].topic_type != "std_msgs/msg/String"
+                or not any(bytes(entries[0].endpoint_gid))
+                or (self.plant_stimulus_receipt_publisher_gid is not None
+                    and bytes(entries[0].endpoint_gid).hex()
+                    != self.plant_stimulus_receipt_publisher_gid)):
+            raise RuntimeError("diagnostic receipt lacks its unique actual guard publisher")
+        self.plant_stimulus_receipt_publisher_gid = bytes(entries[0].endpoint_gid).hex()
+        pending = self.plant_stimulus_pending
+        identity = receipt.get("publisher_identity", {})
+        endpoints = identity.get("endpoints", [])
+        expected_sequence = self.plant_stimulus_input_sequence
+        if (pending is None or self.plant_stimulus_receipt is not None
+                or receipt.get("schema") != "mr3-guard-diagnostic-receipt-v1"
+                or receipt.get("epoch") != self.epoch or receipt.get("robot") != "tb3"
+                or receipt.get("clock_ns") != pending["clock_ns"]
+                or self.clock_ns != self.physical_ns or self.clock_ns != pending["clock_ns"]
+                or receipt.get("v") != 0. or receipt.get("w") != pending["angular_millirad"] / 1000.
+                or receipt.get("supported") is not True
+                or type(receipt.get("input_sequence")) is not int
+                or receipt["input_sequence"] <= 0
+                or (expected_sequence is not None
+                    and receipt["input_sequence"] != expected_sequence + 1)
+                or identity.get("valid") is not True
+                or identity.get("topic") != "/tb3/cmd_vel_unguarded"
+                or len(endpoints) != 1 or endpoints[0].get("namespace") != "/tb3"
+                or endpoints[0].get("node") != "velocity_smoother"
+                or not endpoints[0].get("endpoint_gid")
+                or not any(value != "0" for value in endpoints[0]["endpoint_gid"])
+                or (self.plant_stimulus_publisher_gid is not None
+                    and endpoints[0]["endpoint_gid"] != self.plant_stimulus_publisher_gid)):
+            raise RuntimeError("diagnostic source lacks its exact real guard consumption receipt")
+        self.plant_stimulus_publisher_gid = endpoints[0]["endpoint_gid"]
+        self.plant_stimulus_receipt = receipt
+
+    def _apply_plant_stimulus(self):
+        """Publish only through the genuine smoother, then wait for real guard input."""
+        if self.clock_ns != self.physical_ns:
+            raise RuntimeError("diagnostic stimulus requires the exact paused physical clock")
+        if self.plant_stimulus_origin_ns is None:
+            self.plant_stimulus_origin_ns = self.physical_ns
+        relative_ns = self.physical_ns - self.plant_stimulus_origin_ns
+        if relative_ns != self.plant_stimulus_sequence * PLANT_QUANTUM_NS:
+            raise RuntimeError("diagnostic source lost its fixed 20ms boundary sequence")
+        request = {"epoch": self.epoch, "arm": self.plant_stimulus_arm,
+                   "sequence": self.plant_stimulus_sequence + 1,
+                   "clock_ns": self.physical_ns,
+                   "angular_millirad": plant_stimulus_angular(
+                       self.plant_stimulus_arm, relative_ns)}
+        self.plant_stimulus_pending = request
+        self.plant_stimulus_receipt = None
+        self._trace_plant_stimulus("source_request", request=request)
+        self._wait(self.plant_stimulus_client.service_is_ready, 10.,
+                   "genuine smoother diagnostic service is unavailable")
+        service_request = self.SetParametersAtomically.Request()
+        service_request.parameters = [self.Parameter(name, value=value).to_parameter_msg()
+                                      for name, value in request.items()]
+        future = self.plant_stimulus_client.call_async(service_request)
+        self._wait(future.done, 10., "genuine smoother diagnostic publication ACK expired")
+        response = future.result()
+        if response is None or response.result.successful is not True:
+            raise RuntimeError("genuine smoother rejected diagnostic publication: " +
+                               repr(response))
+        ack = json.loads(response.result.reason)
+        self._trace_plant_stimulus("service_ack", ack=ack)
+        if (ack.get("schema") != "mr3-smoother-diagnostic-ack-v1"
+                or any(ack.get(key) != value for key, value in request.items())
+                or ack.get("robot") != "tb3" or ack.get("linear_x") != 0.
+                or ack.get("publication_clock_ns") != request["clock_ns"]
+                or ack.get("completion_scope") != "smoother_publication_only_not_guard_or_storage"
+                or ack.get("output_topic") != "/tb3/cmd_vel_unguarded"):
+            raise RuntimeError("genuine smoother diagnostic publication identity mismatch")
+        self._wait(lambda: self.plant_stimulus_receipt is not None, 10.,
+                   "real guard diagnostic request consumption ACK expired")
+        receipt = self.plant_stimulus_receipt
+        self.plant_stimulus_input_sequence = receipt["input_sequence"]
+        self.plant_stimulus_sequence = request["sequence"]
+        self._trace_plant_stimulus("boundary_consumed", source_request=request,
+                                  smoother_ack=ack, guard_receipt=receipt)
+        self.plant_stimulus_pending = None
 
     def _trace_evaluator_phase(self, kind, **payload):
         with self.condition:

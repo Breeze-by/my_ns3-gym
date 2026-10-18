@@ -1,0 +1,38 @@
+{
+  "schema": "mr3-smoother-diagnostic-installed-cpu-v1",
+  "scope": "build/install plus isolated rclcpp CPU gtest using the installed core library; no Gazebo/native task/plant evidence",
+  "build_returncode": 0,
+  "build_summary": "1 package finished [13.5s]",
+  "build_command": "source /opt/ros/humble/setup.bash && PYTHONNOUSERSITE=1 /usr/bin/python3 /usr/bin/colcon build --symlink-install --packages-select nav2_velocity_smoother --allow-overriding nav2_velocity_smoother --cmake-args -DBUILD_TESTING=OFF",
+  "test_returncode": 0,
+  "tests": {
+    "tests": "22",
+    "failures": "0",
+    "disabled": "0",
+    "errors": "0",
+    "time": "3.552",
+    "timestamp": "2026-10-19T01:02:42",
+    "name": "AllTests"
+  },
+  "all_owned_compiler_sessions_completed": true,
+  "native_started": false,
+  "files": {
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/nav2_velocity_smoother/lib/libvelocity_smoother_core.so": {
+      "resolved_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/nav2_velocity_smoother/libvelocity_smoother_core.so",
+      "bytes": 11825648,
+      "sha256": "3f7eeba1b3d5792fe7b0159e80a548e93e0c48dfd8760b3c30266b9b7b428688"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/nav2_velocity_smoother/lib/nav2_velocity_smoother/velocity_smoother": {
+      "resolved_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/nav2_velocity_smoother/velocity_smoother",
+      "bytes": 708656,
+      "sha256": "2da81a591908de6ad74618c47119c280134246b584e4509751179f15fcfd0dae"
+    },
+    "/tmp/mr3_smoother_diagnostic_tests_installed_v1.xml": {
+      "resolved_path": "/tmp/mr3_smoother_diagnostic_tests_installed_v1.xml",
+      "bytes": 4206,
+      "sha256": "f7067318cb05c42c976534e21364175a0ba5f069bdeb31ae0517c96b87ffe67a"
+    }
+  },
+  "test_library_search_prefix": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/nav2_velocity_smoother/lib",
+  "test_binary": "/tmp/mr3_smoother_diagnostic_build_O6g6RC/test/velocity_smoother_tests"
+}

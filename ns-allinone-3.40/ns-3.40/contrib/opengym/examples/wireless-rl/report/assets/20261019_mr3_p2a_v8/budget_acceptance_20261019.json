@@ -1,0 +1,49 @@
+{
+  "schema": "mr3-p2a-engineering-budget-acceptance-v1",
+  "recorded_date": "2026-10-19",
+  "status": "USER_APPROVED",
+  "user_message": "批准，继续",
+  "accepted_proposal": "../20261018_mr3_p2a_v7/next_engineering_budget_proposal_v1.json",
+  "cumulative_engineering_ceiling_wall_seconds": 30000,
+  "previous_ceiling_wall_seconds": 18000,
+  "charged_on_entry_decimal": "12123.4218194806018",
+  "remaining_on_entry_decimal": "17876.5781805193982",
+  "charges_on_entry": [
+    {
+      "scope": "P2A.0 engineering cumulative",
+      "wall_seconds_decimal": "11420.856789876707"
+    },
+    {
+      "scope": "V7 minimum",
+      "wall_seconds_decimal": "702.5650296038948"
+    }
+  ],
+  "pilot_remaining_decisions": 1870,
+  "pilot_remaining_wall_seconds_decimal": "2905.9547395464029",
+  "pilot_expanded": false,
+  "validation_expanded": false,
+  "validation": {
+    "schedule": [
+      "open:401",
+      "open:402",
+      "open:403"
+    ],
+    "total_decisions": 900,
+    "total_wall_seconds": 9000,
+    "optimizer_steps": 0,
+    "source": "only successful new pilot final.zip"
+  },
+  "prospective_engineering_reservations": {
+    "two_distinct_diagnostic_arms_total_wall_seconds": 3600,
+    "per_arm_wall_seconds": 1800,
+    "affected_same_freeze_matrix_wall_seconds": 11000,
+    "fresh_minimum_wall_seconds": 900,
+    "unallocated_reserve_decimal": "2376.5781805193982"
+  },
+  "conditions": [
+    "All native attempts and failures charged; no blind same-freeze retry.",
+    "Original .01m/s, .0078m, .50m, source ages, 18 contact streams and task gates unchanged.",
+    "No P2B, gateway, 2D substitution, or new robot count.",
+    "Fresh source freeze and affected complete engineering gates precede fresh minimum, remaining pilot and conditional final-only validation."
+  ]
+}

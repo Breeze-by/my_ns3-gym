@@ -15,7 +15,10 @@
 #include <chrono>
 #include <limits>
 #include <memory>
+#include <map>
+#include <sstream>
 #include <string>
+#include <thread>
 #include <utility>
 #include <vector>
 
@@ -51,6 +54,38 @@ VelocitySmoother::on_configure(const rclcpp_lifecycle::State &)
   auto node = shared_from_this();
   std::string feedback_type;
   double velocity_timeout_dbl;
+
+  // Configure-only, default-off diagnostic input. Reuse an existing ROS service
+  // payload; these fields are not dynamic writes to the node's parameters.
+  rcl_interfaces::msg::ParameterDescriptor diagnostic_descriptor;
+  diagnostic_descriptor.read_only = true;
+  declare_parameter_if_not_declared(
+    node, "mr3_diagnostic_enabled", rclcpp::ParameterValue(false), diagnostic_descriptor);
+  declare_parameter_if_not_declared(
+    node, "mr3_diagnostic_epoch", rclcpp::ParameterValue(std::string("")),
+    diagnostic_descriptor);
+  declare_parameter_if_not_declared(
+    node, "mr3_diagnostic_arm", rclcpp::ParameterValue(std::string("")),
+    diagnostic_descriptor);
+  node->get_parameter("mr3_diagnostic_enabled", diagnostic_enabled_);
+  node->get_parameter("mr3_diagnostic_epoch", diagnostic_epoch_);
+  node->get_parameter("mr3_diagnostic_arm", diagnostic_arm_);
+  diagnostic_active_ = false;
+  diagnostic_sequence_ = 0;
+  diagnostic_clock_ns_ = -1;
+  if (diagnostic_enabled_) {
+    const std::string ns = get_namespace();
+    if (!get_parameter("use_sim_time").as_bool() ||
+      (ns != "/tb1" && ns != "/tb2" && ns != "/tb3") ||
+      diagnostic_epoch_.empty() || diagnostic_epoch_.size() > 200 ||
+      diagnostic_epoch_.find_first_not_of(
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-") != std::string::npos ||
+      (diagnostic_arm_ != "continuous" && diagnostic_arm_ != "pulse"))
+    {
+      throw std::runtime_error("Invalid explicit three-robot simulated diagnostic configuration");
+    }
+    diagnostic_robot_ = ns.substr(1);
+  }
 
   // Smoothing metadata
   declare_parameter_if_not_declared(node, "smoothing_frequency", rclcpp::ParameterValue(20.0));
@@ -122,9 +157,20 @@ VelocitySmoother::on_configure(const rclcpp_lifecycle::State &)
 
   // Setup inputs / outputs
   smoothed_cmd_pub_ = create_publisher<geometry_msgs::msg::Twist>("cmd_vel_smoothed", 1);
+  if (diagnostic_enabled_ && std::string(smoothed_cmd_pub_->get_topic_name()) !=
+    "/" + diagnostic_robot_ + "/cmd_vel_unguarded")
+  {
+    throw std::runtime_error("Diagnostic output must be the original unguarded request boundary");
+  }
   cmd_sub_ = create_subscription<geometry_msgs::msg::Twist>(
     "cmd_vel", rclcpp::QoS(1),
     std::bind(&VelocitySmoother::inputCommandCallback, this, std::placeholders::_1));
+  if (diagnostic_enabled_) {
+    diagnostic_service_ = create_service<DiagnosticApply>(
+      "~/mr3_diagnostic_apply",
+      std::bind(&VelocitySmoother::applyDiagnostic, this,
+      std::placeholders::_1, std::placeholders::_2));
+  }
 
   return nav2_util::CallbackReturn::SUCCESS;
 }
@@ -134,11 +180,14 @@ VelocitySmoother::on_activate(const rclcpp_lifecycle::State &)
 {
   RCLCPP_INFO(get_logger(), "Activating");
   smoothed_cmd_pub_->on_activate();
-  double timer_duration_ms = 1000.0 / smoothing_frequency_;
-  timer_ = rclcpp::create_timer(
-    get_node_base_interface(), get_node_timers_interface(), get_clock(),
-    rclcpp::Duration(std::chrono::milliseconds(static_cast<int>(timer_duration_ms))),
-    std::bind(&VelocitySmoother::smootherTimer, this));
+  diagnostic_active_ = diagnostic_enabled_;
+  if (!diagnostic_enabled_) {
+    double timer_duration_ms = 1000.0 / smoothing_frequency_;
+    timer_ = rclcpp::create_timer(
+      get_node_base_interface(), get_node_timers_interface(), get_clock(),
+      rclcpp::Duration(std::chrono::milliseconds(static_cast<int>(timer_duration_ms))),
+      std::bind(&VelocitySmoother::smootherTimer, this));
+  }
 
   dyn_params_handler_ = this->add_on_set_parameters_callback(
     std::bind(&VelocitySmoother::dynamicParametersCallback, this, _1));
@@ -152,6 +201,7 @@ nav2_util::CallbackReturn
 VelocitySmoother::on_deactivate(const rclcpp_lifecycle::State &)
 {
   RCLCPP_INFO(get_logger(), "Deactivating");
+  diagnostic_active_ = false;
   if (timer_) {
     timer_->cancel();
     timer_.reset();
@@ -168,9 +218,11 @@ nav2_util::CallbackReturn
 VelocitySmoother::on_cleanup(const rclcpp_lifecycle::State &)
 {
   RCLCPP_INFO(get_logger(), "Cleaning up");
+  diagnostic_active_ = false;
   smoothed_cmd_pub_.reset();
   odom_smoother_.reset();
   cmd_sub_.reset();
+  diagnostic_service_.reset();
   return nav2_util::CallbackReturn::SUCCESS;
 }
 
@@ -178,11 +230,15 @@ nav2_util::CallbackReturn
 VelocitySmoother::on_shutdown(const rclcpp_lifecycle::State &)
 {
   RCLCPP_INFO(get_logger(), "Shutting down");
+  diagnostic_active_ = false;
   return nav2_util::CallbackReturn::SUCCESS;
 }
 
 void VelocitySmoother::inputCommandCallback(const geometry_msgs::msg::Twist::SharedPtr msg)
 {
+  if (diagnostic_enabled_) {
+    return;
+  }
   // If message contains NaN or Inf, ignore
   if (!nav2_util::validateTwist(*msg)) {
     RCLCPP_ERROR(get_logger(), "Velocity message contains NaNs or Infs! Ignoring as invalid!");
@@ -191,6 +247,101 @@ void VelocitySmoother::inputCommandCallback(const geometry_msgs::msg::Twist::Sha
 
   command_ = msg;
   last_command_time_ = now();
+}
+
+void VelocitySmoother::applyDiagnostic(
+  const std::shared_ptr<DiagnosticApply::Request> request,
+  std::shared_ptr<DiagnosticApply::Response> response)
+{
+  auto & result = response->result;
+  result.successful = false;
+  result.reason = "diagnostic mode is disabled or inactive";
+  if (!diagnostic_enabled_ || !diagnostic_active_) {
+    return;
+  }
+  // Default mutually-exclusive callback group serializes this service with
+  // lifecycle callbacks. No timer exists in this mode, and normal input is ignored.
+  std::map<std::string, rcl_interfaces::msg::ParameterValue> fields;
+  for (const auto & parameter : request->parameters) {
+    if (!fields.emplace(parameter.name, parameter.value).second) {
+      result.reason = "duplicate diagnostic field";
+      return;
+    }
+  }
+  if (fields.size() != 5 || fields.count("epoch") != 1 || fields.count("arm") != 1 ||
+    fields.count("sequence") != 1 || fields.count("clock_ns") != 1 ||
+    fields.count("angular_millirad") != 1 ||
+    fields.at("epoch").type != ParameterType::PARAMETER_STRING ||
+    fields.at("arm").type != ParameterType::PARAMETER_STRING ||
+    fields.at("sequence").type != ParameterType::PARAMETER_INTEGER ||
+    fields.at("clock_ns").type != ParameterType::PARAMETER_INTEGER ||
+    fields.at("angular_millirad").type != ParameterType::PARAMETER_INTEGER)
+  {
+    result.reason = "diagnostic fields/types differ from the fixed contract";
+    return;
+  }
+  const auto sequence = fields.at("sequence").integer_value;
+  const auto clock_ns = fields.at("clock_ns").integer_value;
+  const auto angular = fields.at("angular_millirad").integer_value;
+  if (fields.at("epoch").string_value != diagnostic_epoch_ ||
+    fields.at("arm").string_value != diagnostic_arm_ ||
+    diagnostic_sequence_ == std::numeric_limits<int64_t>::max() ||
+    sequence != diagnostic_sequence_ + 1 || clock_ns <= 0 || clock_ns % 1000000 != 0 ||
+    (diagnostic_clock_ns_ >= 0 &&
+    (diagnostic_clock_ns_ > std::numeric_limits<int64_t>::max() - 20000000 ||
+    clock_ns != diagnostic_clock_ns_ + 20000000)) ||
+    (angular != 0 && angular != 800))
+  {
+    result.reason = "diagnostic epoch/arm/sequence/1ms clock/20ms phase/velocity rejected";
+    return;
+  }
+  // Humble's independent clock thread may not yet have consumed the paused
+  // boundary's /clock message when this service is taken. Wait only for that
+  // local clock reader; this does not step physics or retry a publication.
+  const auto clock_deadline = std::chrono::steady_clock::now() + 2s;
+  auto observed_clock = now().nanoseconds();
+  while (observed_clock < clock_ns) {
+    if (std::chrono::steady_clock::now() >= clock_deadline) {
+      result.reason = "diagnostic exact clock synchronization timed out";
+      return;
+    }
+    std::this_thread::sleep_for(1ms);
+    observed_clock = now().nanoseconds();
+  }
+  if (observed_clock != clock_ns) {
+    result.reason = "diagnostic requested clock is already past";
+    return;
+  }
+  geometry_msgs::msg::Twist command;
+  command.angular.z = angular == 800 ? 0.8 : 0.0;
+  const auto publication_clock = now().nanoseconds();
+  if (publication_clock != clock_ns) {
+    result.reason = "diagnostic clock changed before publication";
+    return;
+  }
+  const auto wall_ns = []() {
+      return std::chrono::duration_cast<std::chrono::nanoseconds>(
+        std::chrono::steady_clock::now().time_since_epoch()).count();
+    };
+  const auto started_wall = wall_ns();
+  smoothed_cmd_pub_->publish(command);
+  const auto completed_wall = wall_ns();
+  diagnostic_sequence_ = sequence;
+  diagnostic_clock_ns_ = clock_ns;
+  // The source ACK proves this publication only. The fixture must independently
+  // wait for the original guard's actual request/decision and native storage.
+  std::ostringstream receipt;
+  receipt << "{\"schema\":\"mr3-smoother-diagnostic-ack-v1\",\"epoch\":\""
+          << diagnostic_epoch_ << "\",\"robot\":\"" << diagnostic_robot_
+          << "\",\"arm\":\"" << diagnostic_arm_ << "\",\"sequence\":" << sequence
+          << ",\"clock_ns\":" << clock_ns << ",\"angular_millirad\":" << angular
+          << ",\"linear_x\":0.0,\"publication_clock_ns\":" << publication_clock
+          << ",\"publication_started_wall_monotonic_ns\":" << started_wall
+          << ",\"publication_completed_wall_monotonic_ns\":" << completed_wall
+          << ",\"output_topic\":\"" << smoothed_cmd_pub_->get_topic_name()
+          << "\",\"completion_scope\":\"smoother_publication_only_not_guard_or_storage\"}";
+  result.reason = receipt.str();
+  result.successful = true;
 }
 
 double VelocitySmoother::findEtaConstraint(
@@ -249,6 +400,9 @@ double VelocitySmoother::applyConstraints(
 
 void VelocitySmoother::smootherTimer()
 {
+  if (diagnostic_enabled_) {
+    return;
+  }
   // Wait until the first command is received
   if (!command_) {
     return;
@@ -330,6 +484,11 @@ VelocitySmoother::dynamicParametersCallback(std::vector<rclcpp::Parameter> param
 {
   rcl_interfaces::msg::SetParametersResult result;
   result.successful = true;
+  if (diagnostic_enabled_) {
+    result.successful = false;
+    result.reason = "diagnostic configuration is fixed until cleanup/reconfigure";
+    return result;
+  }
 
   for (auto parameter : parameters) {
     const auto & type = parameter.get_type();
