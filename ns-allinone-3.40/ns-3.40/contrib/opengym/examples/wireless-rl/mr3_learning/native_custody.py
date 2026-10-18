@@ -23,7 +23,7 @@ NAV2_NODES = {"controller_server", "planner_server", "behavior_server", "bt_navi
               "waypoint_follower", "velocity_smoother"}
 BINARY_ROLES = {"driver", "observer", "ray_box", "ode", "smoother_core",
                 "smoother_executable", "odometry_recorder_executable",
-                "controller_executable", "rotation_shim"}
+                "controller_executable", "rotation_shim", "gzserver_executable"}
 COMPILED_FIELDS = {
     "driver": {"compiled_source_sha256", "compiled_header_sha256", "compiled_helper_sha256",
                "compiled_target_contract_sha256", "compiled_odometry_json_sha256"},
@@ -225,6 +225,10 @@ def load_binding(path, freeze, *, root=WORKSPACE, read=None):
         actual = file_proof(expected["path"])
         require(all(actual[key] == expected[key] for key in ("resolved_path", "sha256", "bytes")),
                 "declared native ELF differs: " + role)
+        if role == "gzserver_executable":
+            require(all(type(expected["stat"][key]) is int
+                        and actual["stat"][key] == expected["stat"][key] for key in ("dev", "ino")),
+                    "declared gzserver ELF device/inode differs")
         binaries[role] = {**expected, **actual}
         read(expected["path"])
     for role, fields in binding["compiled_sources"].items():
@@ -476,16 +480,17 @@ def capture_process(identity, worker, inventory, component, binding, proc_root, 
         require(argv.count("__node:=" + node) == 1, "actual native node name differs")
     if component == "recorder":
         require(argv.count("__node:=mr3_odometry_recorder") == 1, "actual recorder node differs")
-    expected_exe_role = {"smoother": "smoother_executable", "controller": "controller_executable",
+    expected_exe_role = {"gzserver": "gzserver_executable",
+                         "smoother": "smoother_executable", "controller": "controller_executable",
                          "recorder": "odometry_recorder_executable"}.get(component)
     exe = file_proof(process / "exe")
-    if expected_exe_role:
-        expected = binding["binaries"][expected_exe_role]
-        require(argv[0] == expected["path"] and exe == {k: expected[k] for k in exe},
-                "actual proc exe/argv/device/inode/SHA differs: " + component)
-    else:
-        require(Path(argv[0]).name == "gzserver" and Path(exe["resolved_path"]).name == "gzserver",
-                "actual gzserver executable differs")
+    require(expected_exe_role is not None, "undeclared native executable component")
+    expected = binding["binaries"][expected_exe_role]
+    require(argv[0] == expected["path"] and exe == {k: expected[k] for k in exe},
+            "actual proc exe/argv/device/inode/SHA differs: " + component)
+    launch_alias = file_proof(argv[0]) if component == "gzserver" else None
+    require(launch_alias is None or launch_alias == exe,
+            "actual gzserver launch alias differs from bound proc executable")
     maps = (process / "maps").read_bytes()
     require(component != "gzserver" or b"libgazebo_ros_diff_drive.so" not in maps,
             "old untagged system driver is actually loaded")
@@ -502,6 +507,8 @@ def capture_process(identity, worker, inventory, component, binding, proc_root, 
     after_maps = (process / "maps").read_bytes()
     require(after_argv == argv_raw and file_proof(process / "exe") == exe,
             "actual argv/exe changed during capture")
+    require(launch_alias is None or file_proof(argv[0]) == launch_alias,
+            "actual gzserver launch alias changed during capture")
     require(all(mapped_lines(after_maps, binding["binaries"][role]) == lines for role,lines in mappings.items())
             and mapped_lines(after_maps, exe) == exe_maps, "required maps changed during capture")
     after_chain = [tools.proc_identity(x["pid"], proc_root) for x in chain]
@@ -520,7 +527,8 @@ def capture_process(identity, worker, inventory, component, binding, proc_root, 
     return {"component": component, "robot": namespace, "identity": identity,
             "identity_after": after_chain[0], "argv": argv,
             "argv_raw_sha256": sha(argv_raw), "actual_ancestry": chain, "ancestry_after": after_chain,
-            "executable": exe, "exe_maps": exe_maps, "maps_raw": maps.decode(),
+            "executable": exe, "gzserver_launch_alias": launch_alias,
+            "exe_maps": exe_maps, "maps_raw": maps.decode(),
             "maps_raw_sha256": sha(maps), "maps_after_raw": after_maps.decode(),
             "required_mappings": mappings, "normal_smoother_parameter_files": parameters,
             "benchmark_actual_argv":benchmark_argv,"benchmark_argv_raw_sha256":sha(benchmark_argv_raw),
@@ -796,11 +804,13 @@ def review(args, *, proc_root=Path("/proc")):
                     for role,lines in process["required_mappings"].items():
                         require(mapped_lines(raw_maps,binding["binaries"][role]) == lines
                                 and mapped_lines(process["maps_after_raw"].encode(),binding["binaries"][role]) == lines, "captured required mapping proof differs")
-                    exe_role = {"smoother":"smoother_executable","controller":"controller_executable","recorder":"odometry_recorder_executable"}.get(component)
+                    exe_role = {"gzserver":"gzserver_executable","smoother":"smoother_executable","controller":"controller_executable","recorder":"odometry_recorder_executable"}.get(component)
                     if exe_role:
                         expected = binding["binaries"][exe_role]
                         require(process["executable"] == {k:expected[k]for k in process["executable"]}
                                 and process["argv"][0] == expected["path"], "captured actual executable differs")
+                    require(process["gzserver_launch_alias"] == (process["executable"] if component == "gzserver" else None),
+                            "captured gzserver launch alias differs")
                     require(mapped_lines(raw_maps,process["executable"]) == process["exe_maps"]
                             and mapped_lines(process["maps_after_raw"].encode(),process["executable"]) == process["exe_maps"],
                             "captured actual executable mappings differ")

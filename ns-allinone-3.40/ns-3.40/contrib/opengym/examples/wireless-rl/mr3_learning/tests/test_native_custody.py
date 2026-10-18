@@ -36,7 +36,8 @@ class NativeCustodyTests(unittest.TestCase):
         spec.loader.exec_module(self.tools)
         self.specs = {}
         names = {"smoother_executable":"velocity_smoother", "controller_executable":"controller_server",
-                 "odometry_recorder_executable":"mr3_odometry_recorder"}
+                 "odometry_recorder_executable":"mr3_odometry_recorder",
+                 "gzserver_executable":"gzserver-11.10.2"}
         for role in gate.BINARY_ROLES:
             path = self.root / "bin" / names.get(role,"lib"+role+".so")
             path.parent.mkdir(exist_ok=True)
@@ -44,9 +45,9 @@ class NativeCustodyTests(unittest.TestCase):
             path.chmod(0o755)
             self.specs[role] = {"path":str(path),**gate.file_proof(path)}
         gz = self.root / "bin/gzserver"
-        gz.write_bytes(b"\x7fELFgzserver")
-        gz.chmod(0o755)
+        gz.symlink_to(self.specs["gzserver_executable"]["resolved_path"])
         self.gz_exe = gate.file_proof(gz)
+        self.specs["gzserver_executable"] = {"path":str(gz),**self.gz_exe}
         self.fields = {role:{key:{"path":"unused","sha256":str(i+1)*64} for i,key in enumerate(sorted(keys))}
                        for role,keys in gate.COMPILED_FIELDS.items()}
         self.corrector = SimpleNamespace(ledger_review=lambda *args:{"passed":True})
@@ -150,6 +151,51 @@ class NativeCustodyTests(unittest.TestCase):
         recorder=next(x for x in cap["processes"]if x["component"]=="recorder")
         self.assertEqual(recorder["executable"]["sha256"],self.specs["odometry_recorder_executable"]["sha256"])
         self.assertEqual(recorder["actual_ancestry"][-1]["pid"],90)
+
+    def test_versioned_gzserver_real_symlink_is_exactly_bound(self):
+        gz=next(x for x in self.capture()["processes"] if x["component"]=="gzserver")
+        self.assertEqual(Path(gz["argv"][0]).name,"gzserver")
+        self.assertEqual(Path(gz["executable"]["resolved_path"]).name,"gzserver-11.10.2")
+        self.assertEqual(gz["executable"],gz["gzserver_launch_alias"])
+        self.assertEqual(gz["executable"],self.gz_exe)
+
+    def test_gzserver_imposter_same_basename_or_same_bytes_is_rejected(self):
+        imposter=self.root/"imposter/gzserver"
+        imposter.parent.mkdir()
+        imposter.write_bytes(Path(self.gz_exe["resolved_path"]).read_bytes())
+        imposter.chmod(0o755)
+        self.make_proc(200,101,[self.specs["gzserver_executable"]["path"]],imposter,["driver","ray_box","ode"])
+        with self.assertRaisesRegex(ValueError,"actual proc exe/argv/device/inode/SHA differs"):
+            self.capture()
+
+    def test_gzserver_launch_alias_retargeted_to_imposter_is_rejected(self):
+        imposter=self.root/"bin/gzserver-99"
+        imposter.write_bytes(Path(self.gz_exe["resolved_path"]).read_bytes())
+        alias=Path(self.specs["gzserver_executable"]["path"])
+        # Keep the simulated live /proc/exe on the original actual ELF.
+        self.make_proc(200,101,[str(alias)],Path(self.gz_exe["resolved_path"]),["driver","ray_box","ode"])
+        alias.unlink();alias.symlink_to(imposter)
+        with self.assertRaisesRegex(ValueError,"launch alias differs"):
+            self.capture()
+
+    def test_gzserver_launch_alias_change_during_capture_is_rejected(self):
+        alias=Path(self.specs["gzserver_executable"]["path"])
+        original=gate.file_proof
+        changed=False
+        def read_then_retarget(path):
+            nonlocal changed
+            result=original(path)
+            if Path(path)==alias and not changed:
+                changed=True
+                other=self.root/"bin/gzserver-99"
+                other.write_bytes(Path(self.gz_exe["resolved_path"]).read_bytes())
+                alias.unlink();alias.symlink_to(other)
+            return result
+        # /proc/exe is the real process inode, independent of a later argv alias change.
+        self.make_proc(200,101,[str(alias)],Path(self.gz_exe["resolved_path"]),["driver","ray_box","ode"])
+        with patch.object(gate,"file_proof",side_effect=read_then_retarget):
+            with self.assertRaisesRegex(ValueError,"launch alias changed during capture"):
+                self.capture()
 
     def test_replaced_mapping_inode_never_gets_credit(self):
         p=self.proc/"200/maps"

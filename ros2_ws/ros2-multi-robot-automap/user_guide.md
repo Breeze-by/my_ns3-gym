@@ -1,5 +1,7 @@
 # 三机器人 ROS 建图导航：当前实现指南
 
+当前V9已关闭：固定action非法0决策，gzserver版本化ELF身份取证FAIL；V10修精确身份绑定并待完整新冻结重验，P2A仍未完成。见[V10](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v10.md)。
+
 2026-10-19用户批准工程累计30000墙秒；V8两组固定稀疏布局诊断已完整采集并正常关闭，但未复现V7近身反例，不能提供修复或95%信用。普通训练默认关闭工程刺激。WORLD odom/TF独立50Hz时序修订及只读真实DDS接收记录器已实现，原轮执行器30Hz与安全门保持，待新冻结原生重验（[V9预声明](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v9.md)）。见[V8预声明](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v8.md)。
 
 2026-10-18用户已验收P2A.0；随后V7最小链16决策/8实际更新正常返回，但真实转向模型失效使科学审计FAIL，pilot/验证SKIPPED。P2A未完成；两项后续代码保护只有CPU准备，物理执行尚未修复。原V26中断与旧FAIL保留，见[V7结果](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a_v7.md)。
