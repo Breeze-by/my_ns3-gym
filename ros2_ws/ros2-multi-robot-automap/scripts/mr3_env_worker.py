@@ -2,6 +2,7 @@
 """System-Python ROS worker behind private learner pipes; never a policy."""
 
 import argparse
+import copy
 import ctypes
 import gzip
 import hashlib
@@ -26,6 +27,10 @@ from multi_robot_exploration.mr3_drive_phase import (
 from multi_robot_exploration.mr3_control_phase import (
     ControlPhaseClient, PROTOCOL as CONTROL_PROTOCOL,
     WALL_GUARD_SEC as CONTROL_WALL_GUARD_SEC, canonical, valid_motion_status,
+    protocol_version,
+)
+from multi_robot_exploration.mr3_safety_intent import (
+    parse_json, payload_sha256, validate_intent, validate_intent_refs,
 )
 
 
@@ -62,6 +67,11 @@ class Worker:
         self.epoch = request["epoch"]
         self.scene = request["scene"]
         self.seed = request["seed"]
+        self.safety_contract = request.get("safety_contract", "legacy")
+        self.control_version = protocol_version(self.safety_contract)
+        self.safety_intents = {}
+        self.safety_intent_publishers = {}
+        self.bootstrap_intent_refs = None
         if self.scene not in ("open", "rooms", "corridors") or type(self.seed) is not int:
             raise ValueError("invalid scene or seed")
         if request.get("quantum_steps") != 20:
@@ -105,7 +115,7 @@ class Worker:
         self.stopping = False
         self.cleanup_mode = False
         self.cleanup_deadline = None
-        self.control_phase = ControlPhaseClient(self.epoch)
+        self.control_phase = ControlPhaseClient(self.epoch, safety_contract=self.safety_contract)
         self.state_commit = None
         self.peer_commit = None
         self.drive_phase = DrivePhaseClient(self.epoch)
@@ -281,10 +291,10 @@ class Worker:
             self.odometry_recorder_ready = bool(message.data)
 
         def motion_status(message):
-            self.receive_motion_status(json.loads(message.data))
+            self.receive_motion_status(parse_json(message.data) if getattr(self, "control_version", 1) == 2 else json.loads(message.data))
 
         def stop_status(message):
-            self.receive_stop_status(json.loads(message.data))
+            self.receive_stop_status(parse_json(message.data) if getattr(self, "control_version", 1) == 2 else json.loads(message.data))
 
         def failure(message):
             self.failures.append(message.data)
@@ -324,7 +334,7 @@ class Worker:
                             ("motion", "/motion_safety/control_ack")):
             self.subscriptions.append(self.node.create_subscription(
                 String, topic, callback(lambda message, name=name: self.receive_control_phase(
-                    name, json.loads(message.data))),
+                    name, parse_json(message.data) if getattr(self, "control_version", 1) == 2 else json.loads(message.data))),
                 qos))
         if self.plant_stimulus_arm is not None:
             self.subscriptions.append(self.node.create_subscription(
@@ -332,6 +342,12 @@ class Worker:
                 callback(lambda message: self.receive_plant_stimulus_receipt(
                     json.loads(message.data))), 20))
         for name in ("tb1", "tb2", "tb3"):
+            if self.safety_contract == "mr3-reach-v1":
+                self.subscriptions.append(self.node.create_subscription(
+                    String, f"/{name}/mr3/safety_intent",
+                    callback(lambda message, name=name: self.receive_safety_intent(name, message)),
+                    QoSProfile(depth=256, durability=DurabilityPolicy.VOLATILE,
+                               reliability=ReliabilityPolicy.RELIABLE)))
             self.subscriptions.append(self.node.create_subscription(
                 String, f"/{name}/mr3_drive/status",
                 callback(lambda message, name=name: self.receive_drive_status(
@@ -367,6 +383,7 @@ class Worker:
             "evaluation_contract_path:=" + str(
                 ROS_ROOT / f"src/multi_robot/config/mr3_p1a/{self.scene}.json"),
             f"evaluation_episode_id:={self.epoch}", f"evaluation_output_dir:={directory}",
+            f"mr3_safety_contract:={self.safety_contract}",
         ]
         if self.terminal_probe:
             self.command.append("training_terminal_probe:=true")
@@ -381,7 +398,8 @@ class Worker:
                         "ROS_DOMAIN_ID", "GAZEBO_MASTER_URI", "PYTHONNOUSERSITE")},
                     "python": sys.executable, "quantum_steps": 20,
                     "reset_handshake": "paused-controlled-state-peer-guard-storage-v1",
-                    "execution_phase_protocol": CONTROL_PROTOCOL,
+                    "execution_phase_protocol": (CONTROL_PROTOCOL if self.control_version == 1 else
+                                                 "mr3-controlled-execution-phase-v2"),
                     "execution_phase_wall_guard_sec": CONTROL_WALL_GUARD_SEC,
                     "terminal_protocol": "mr3-task-terminal-v1",
                     "evaluator_phase_protocol": PHASE_PROTOCOL,
@@ -393,6 +411,9 @@ class Worker:
                     "plant_stimulus_work_deadline_ns": self.plant_stimulus_work_deadline_ns,
                     "physical_step_ns": 1000000, "policy_step_ns": 1000000000,
                     "startup_wall_guard_sec": 420., "closure_wall_guard_sec": 90.}
+        if self.control_version == 2:
+            metadata["safety_contract"] = self.safety_contract
+            metadata["reset_handshake"] = "paused-controlled-state-peer-guard-storage-v2"
         (directory / "metadata.json").write_text(json.dumps(metadata, indent=2) + "\n")
         output = (directory / "launch.log").open("w")
         self.outputs.append(output)
@@ -437,7 +458,8 @@ class Worker:
 
     def _trace_control_phase(self, kind, **payload):
         self.control_phase_file.write(json.dumps({
-            "schema": CONTROL_PROTOCOL, "kind": kind, "epoch": self.epoch,
+            "schema": (CONTROL_PROTOCOL if getattr(self, "safety_contract", "legacy") == "legacy"
+                       else "mr3-controlled-execution-phase-v2"), "kind": kind, "epoch": self.epoch,
             "worker_clock_ns": self.clock_ns,
             "worker_physical_ns": getattr(self, "physical_ns", None),
             "wall_monotonic_ns": time.monotonic_ns(), **payload,
@@ -455,6 +477,51 @@ class Worker:
         self.control_phase.receive(component, value, getattr(self, "physical_ns", None),
                                    self.clock_ns)
 
+    def receive_safety_intent(self, name, message):
+        """Keep refs from actual owner-topic callbacks; never manufacture an intent."""
+        if self.safety_contract != "mr3-reach-v1" or name not in ("tb1", "tb2", "tb3"):
+            raise ValueError("unexpected safety intent subscription")
+        value = parse_json(message.data)
+        if type(value) is not dict:
+            raise ValueError("safety intent is not an object")
+        if value.get("epoch") != self.epoch:
+            return
+        value = validate_intent(value, epoch=self.epoch, robot=name)
+        topic = f"/{name}/mr3/safety_intent"
+        entries = self.node.get_publishers_info_by_topic(topic)
+        graph = [{"namespace": entry.node_namespace, "node": entry.node_name,
+                  "type": entry.topic_type, "endpoint_gid": bytes(entry.endpoint_gid).hex()} for entry in entries]
+        if (len(graph) != 1 or graph[0]["namespace"] != "/" or graph[0]["node"] != "motion_safety"
+                or graph[0]["type"] != "std_msgs/msg/String" or not graph[0]["endpoint_gid"]):
+            raise ValueError("safety intent owner graph differs")
+        previous_gid = self.safety_intent_publishers.get(name)
+        if previous_gid is not None and previous_gid != graph[0]["endpoint_gid"]:
+            raise ValueError("safety intent owner graph identity changed")
+        self.safety_intent_publishers[name] = graph[0]["endpoint_gid"]
+        previous = self.safety_intents.get(name)
+        if previous is not None and value != previous and (
+                value["intent_sequence"] <= previous["intent_sequence"]
+                or value["source_clock_ns"] < previous["source_clock_ns"]):
+            raise ValueError("actual safety intent regressed or changed identity")
+        self.safety_intents[name] = value
+        self._trace_control_phase("owner_intent_received", robot=name, intent=value,
+                                  payload_sha256=payload_sha256(value), publisher_graph=graph,
+                                  identity_scope="graph_at_callback_not_per_packet_identity")
+
+    def release_intent_refs(self, release_ns):
+        """Only three actually subscribed post-release HOLDs can bootstrap refs."""
+        if type(release_ns) is not int or release_ns < 0:
+            raise ValueError("release clock must be an actual nonnegative integer")
+        refs = {}
+        for name in ("tb1", "tb2", "tb3"):
+            value = self.safety_intents.get(name)
+            if (value is None or value["role"] != "HOLD"
+                    or value["lineage"].get("release_clock_ns") != release_ns):
+                return None
+            validate_intent(value, epoch=self.epoch, robot=name, now_ns=release_ns)
+            refs[name] = {"intent_sequence": value["intent_sequence"], "payload_sha256": payload_sha256(value)}
+        return validate_intent_refs(refs, robots=("tb1", "tb2", "tb3"))
+
     def receive_stop_status(self, value, origin="stop_topic"):
         if not isinstance(value, dict):
             raise ValueError("invalid permanent stop notification")
@@ -462,7 +529,8 @@ class Worker:
             return
         target = value.get("clock_ns")
         if (type(target) is not int
-                or not valid_motion_status(value, self.epoch, target, stop=True)):
+                or not valid_motion_status(value, self.epoch, target, stop=True,
+                        safety_contract=getattr(self, "safety_contract", "legacy"))):
             raise ValueError("invalid permanent stop status")
         normal = self.motion_status
         if normal is not None and any(
@@ -479,7 +547,7 @@ class Worker:
                     value["decision_sequences"][name] <= previous["decision_sequences"][name]
                     for name in ("tb1", "tb2", "tb3"))):
                 raise ValueError("permanent stop status regressed or changed identity")
-        self.stop_status = value
+        self.stop_status = copy.deepcopy(value)
         self.stopping = True
         self._trace_control_phase("stop_observed", status=value, origin=origin, duplicate=False)
 
@@ -544,9 +612,16 @@ class Worker:
         if getattr(self, "plant_stimulus_arm", None) is not None:
             self._apply_plant_stimulus()
         identity = f"boundary{self.physical_ns}"
-        state = self._control_rpc("state", "commit", request_id=identity)
+        references = {}
+        if getattr(self, "safety_contract", "legacy") == "mr3-reach-v1":
+            expected = (self.bootstrap_intent_refs if self.bootstrap_intent_refs is not None
+                        else self.motion_status["intent_refs"])
+            references["expected_intents"] = validate_intent_refs(expected, robots=("tb1", "tb2", "tb3"))
+        state = self._control_rpc("state", "commit", request_id=identity, **references)
         if state is None or self.stopping:
             return self._commit_stop("stop_during_state_commit")
+        if references:
+            self.bootstrap_intent_refs = None
         peer = self._control_rpc("peer", "commit", request_id=identity, state_commit=state)
         if peer is None or self.stopping:
             return self._commit_stop("stop_during_peer_commit")
@@ -693,6 +768,12 @@ class Worker:
         return response
 
     def _physics(self, steps, wait_clock=True):
+        if getattr(self, "safety_contract", "legacy") == "mr3-reach-v1":
+            if type(steps) is not int or steps < 0 or type(wait_clock) is not bool:
+                raise ValueError("invalid reach physical step request")
+            if (steps > 0 and wait_clock and getattr(self, "controlled", False)
+                    and not self.stopping and steps != 20):
+                raise ValueError("reach normal execution requires exactly one 20ms quantum")
         self.physics_number += 1
         request_id = f"q{self.physics_number}"
         if steps > 0 and wait_clock:
@@ -715,6 +796,10 @@ class Worker:
                                        for output in motion["outputs"].values())):
                             raise RuntimeError("bootstrap needs three takeovers and actual zeros")
                         self.bootstrap_pending = False
+                    elif (getattr(self, "safety_contract", "legacy") == "mr3-reach-v1" and not self.stopping
+                          and not valid_motion_status(motion, self.epoch, self.physical_ns,
+                              safety_contract=self.safety_contract, require_table=True)):
+                        raise RuntimeError("normal physical quantum has no actual bound safety table")
                     control = {"control_kind": ("bootstrap_zero" if bootstrap else
                                                 "stop" if self.stopping else "normal"),
                                "control_request_id": self.execution_request_id}
@@ -750,19 +835,14 @@ class Worker:
 
     def receive_motion_status(self, value):
         """Receive a real gate-executor completion, never synthesize its clock."""
+        if not isinstance(value, dict):
+            raise ValueError("invalid motion gate phase status")
         if value.get("epoch") != self.epoch:
             return
         sequences = value.get("decision_sequences")
         outputs = value.get("outputs")
-        if (value.get("schema") != "mr3-motion-safety-status-v1"
-                or value.get("completion_scope") != MOTION_PHASE_COMPLETION
-                or type(value.get("clock_ns")) is not int or value["clock_ns"] < 0
-                or type(value.get("ready")) is not bool or not isinstance(sequences, dict)
-                or set(sequences) != {"tb1", "tb2", "tb3"}
-                or any(type(sequence) is not int or sequence <= 0
-                       for sequence in sequences.values())
-                or not isinstance(outputs, dict) or set(outputs) != {"tb1", "tb2", "tb3"}
-                or any(not valid_output(output) for output in outputs.values())):
+        if not valid_motion_status(value, self.epoch, value.get("clock_ns"),
+                safety_contract=getattr(self, "safety_contract", "legacy")):
             raise ValueError("invalid motion gate phase status")
         previous = self.motion_status
         if previous is not None:
@@ -777,7 +857,7 @@ class Worker:
                 raise ValueError("motion gate clock advanced without new decisions")
             if value["clock_ns"] == previous["clock_ns"] and value != previous:
                 raise ValueError("motion gate phase changed within one clock")
-        self.motion_status = value
+        self.motion_status = copy.deepcopy(value)
         self.motion_phase_file.write(json.dumps({
             "kind": "ack_received", "epoch": self.epoch, "ack": value,
             "worker_clock_ns": self.clock_ns,
@@ -1126,7 +1206,9 @@ class Worker:
                for output in takeover["status"]["outputs"].values()):
             raise RuntimeError("pre-release takeover contains a nonzero actuator target")
         self.takeover_acks = {"motion": takeover}
-        self.takeover_acks["state"] = self._control_rpc("state", "takeover", request_id=identity)
+        references = ({"expected_intents": takeover["status"]["intent_refs"]}
+                      if getattr(self, "safety_contract", "legacy") == "mr3-reach-v1" else {})
+        self.takeover_acks["state"] = self._control_rpc("state", "takeover", request_id=identity, **references)
         self.takeover_acks["peer"] = self._control_rpc("peer", "takeover", request_id=identity)
         self.controlled = True
         self.execution_request_id = identity
@@ -1145,6 +1227,15 @@ class Worker:
                    "evaluator did not acknowledge the task release")
         if abs(self.reward_ready["start_sim_time"] - self.start_ns / 1e9) > 1e-8:
             raise RuntimeError("reward epoch start differs from the frozen initial snapshot")
+        if getattr(self, "safety_contract", "legacy") == "mr3-reach-v1":
+            self._wait(lambda: self.release_intent_refs(self.start_ns) is not None, 10.,
+                       "three actual owner post-release HOLD intents were not delivered")
+            with self.condition:
+                self.bootstrap_intent_refs = self.release_intent_refs(self.start_ns)
+                if self.bootstrap_intent_refs is None:
+                    raise RuntimeError("post-release intent bootstrap changed before capture")
+                self._trace_control_phase("release_intents_captured", release_clock_ns=self.start_ns,
+                                          intent_refs=self.bootstrap_intent_refs)
         response = self._reward(self.start_ns / 1e9, self.start_ns / 1e9, initialize=True)
         if response.get("reward") != 0 or response.get("terminated") or response.get("truncated"):
             raise RuntimeError("reward reset did not initialize an empty episode ledger")

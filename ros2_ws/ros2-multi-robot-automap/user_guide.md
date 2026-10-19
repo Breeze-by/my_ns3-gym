@@ -1,6 +1,6 @@
 # 三机器人 ROS 建图导航：当前实现指南
 
-2026-10-19：P2A.0已验收，P2A未完成。用户已批准安全契约数学/CPU重设计；V14提交固定anchor disk、普通运动/过渡的残差与终端reach、实际模式交付/actuation交接的候选合同及隔离CPU原型。候选待单独验收，当前生产仍执行原合同；本轮无新native/GPU/pilot/验证，P2B/gateway未启动。见[V14候选与验证](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v14.md)。
+2026-10-19：P2A.0已验收，P2A未完成。用户已批准V14科学候选并授权生产实现；V15实现显式`mr3-reach-v1`安全模式、真实应用/同源校准回执、完整模式交付及版本化必要审计器，当前完成CPU/编译准备，待新冻结完整原生资格。默认`legacy`保留，旧FAIL不改判；本轮无新native/GPU/pilot/验证，P2B/gateway未启动。见[V15实现与验证](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v15.md)和[新契约](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_REACH_CONTRACT.md)。
 
 工程仍已用31596.4775930946018/34000墙秒，余2403.5224069053982；pilot1870决策/2905.9547395464029墙秒及三场final-only额度未动。旧V13同冻结独立38/38仅有原工程信用，原矩阵/optional/minimum FAIL保留；minimum整轮ineligible、0 eligible/0更新。详见[V13原始结果](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v13.md)。
 
@@ -11,6 +11,11 @@ V7真实转向模型FAIL、V8未复现的诊断及V9—V11失败均保留，不�
 默认仍为传统前沿baseline；互斥adapter独占稳定目标、使用本机已知权威/已交付共享导航副本、v5候选和received-only累计参与观测。受控20ms推进先完成实际state→peer→guard→三台native storage→evaluator，再推进物理；存储回执不能代替机体响应。
 
 当前stepped研究配置含paired joint-feedback驱动、RayBox修正、quickstep150和使用节点时钟的Nav2 smoother；活动三机Nav2转向上限.3/起转加速1.0、角减速-3.2；线命令.20/加减速±.5保持。数学命令上界.8、实测及原停车门保持；通用兼容YAML仍属旧配置。完整新配置通过不证明150独立修复停车。P0/P1A/P1B/P1C/P2A.0已验收，P2A进行中；V7原定pilot/三场final-only开发验证已因前门FAIL跳过，P2B/gateway未开始。复制命令见[launch_commands.md](launch_commands.md)，任务/环境定义见共享研究、实施计划与MR3_ENV_CONTRACT；详细旧历史见日期报告。
+
+显式`mr3-reach-v1`另以同一state envelope交付模式承诺和同源calibration，加入真实轮应用回执。
+map与raw WORLD完整pair证书取AND，D/N用2R、过渡X用4R；固定anchor和有限H/D责任不能由未消费命令重置。
+原请求平移不能取得X余量时，只有完整D证书通过才保留该请求原角速度并将线速度归零；不生成方向或目标。
+新增profile的实际启动条件及工程入口见[launch_commands.md](launch_commands.md)。它尚未取得新冻结完整原生资格。
 
 ## 1. 路径与环境
 

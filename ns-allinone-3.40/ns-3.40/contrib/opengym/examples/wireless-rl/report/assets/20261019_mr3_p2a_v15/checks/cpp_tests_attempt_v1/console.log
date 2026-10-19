@@ -1,0 +1,143 @@
+Internal ctest changing into directory: /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot
+UpdateCTestConfiguration  from :/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/CTestConfiguration.ini
+Parse Config file:/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/CTestConfiguration.ini
+ Add coverage exclude regular expressions.
+UpdateCTestConfiguration  from :/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/CTestConfiguration.ini
+Parse Config file:/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/CTestConfiguration.ini
+Test project /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot
+Constructing a list of tests
+Done constructing a list of tests
+Updating test list for fixtures
+Added 0 tests to meet fixture requirements
+Checking test dependency graph...
+Checking test dependency graph end
+test 3
+    Start 3: test_paired_wheel_slew
+
+3: Test command: /usr/bin/python3 "-u" "/opt/ros/humble/share/ament_cmake_test/cmake/run_test.py" "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/test_results/multi_robot/test_paired_wheel_slew.gtest.xml" "--package-name" "multi_robot" "--output-file" "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/ament_cmake_gtest/test_paired_wheel_slew.txt" "--command" "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/test_paired_wheel_slew" "--gtest_output=xml:/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/test_results/multi_robot/test_paired_wheel_slew.gtest.xml"
+3: Test timeout computed to be: 60
+3: -- run_test.py: invoking following command in '/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot':
+3:  - /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/test_paired_wheel_slew --gtest_output=xml:/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/test_results/multi_robot/test_paired_wheel_slew.gtest.xml
+3: Running main() from /opt/ros/humble/src/gtest_vendor/src/gtest_main.cc
+3: [==========] Running 12 tests from 1 test suite.
+3: [----------] Global test environment set-up.
+3: [----------] 12 tests from PairedWheelSlew
+3: [ RUN      ] PairedWheelSlew.UsesOneFractionFromCurrentFeedbackInsteadOfRetainedInstruction
+3: [       OK ] PairedWheelSlew.UsesOneFractionFromCurrentFeedbackInsteadOfRetainedInstruction (0 ms)
+3: [ RUN      ] PairedWheelSlew.ZeroTargetBrakesBothWheelsWithoutInventingTurn
+3: [       OK ] PairedWheelSlew.ZeroTargetBrakesBothWheelsWithoutInventingTurn (0 ms)
+3: [ RUN      ] PairedWheelSlew.ReachesBothDesiredSpeedsTogetherAndHasNoDeadbandBranch
+3: [       OK ] PairedWheelSlew.ReachesBothDesiredSpeedsTogetherAndHasNoDeadbandBranch (0 ms)
+3: [ RUN      ] PairedWheelSlew.DisabledLimitAndZeroTimeHaveExplicitSeparateSemantics
+3: [       OK ] PairedWheelSlew.DisabledLimitAndZeroTimeHaveExplicitSeparateSemantics (0 ms)
+3: [ RUN      ] PairedWheelSlew.RejectsNegativeAndEveryNonfiniteInputEvenWithLimitDisabled
+3: [       OK ] PairedWheelSlew.RejectsNegativeAndEveryNonfiniteInputEvenWithLimitDisabled (0 ms)
+3: [ RUN      ] PairedWheelSlew.FiniteExtremesDoNotOverflowDifferenceOrMakeNan
+3: [       OK ] PairedWheelSlew.FiniteExtremesDoNotOverflowDifferenceOrMakeNan (0 ms)
+3: [ RUN      ] PairedWheelSlew.RandomPairsHaveExactRimBudgetSharedAlphaAndConvexBodyVelocity
+3: [       OK ] PairedWheelSlew.RandomPairsHaveExactRimBudgetSharedAlphaAndConvexBodyVelocity (199 ms)
+3: [ RUN      ] PairedWheelSlew.IdealNoSlipZeroTargetFitsRetainedGlobalStopEnvelope
+3: [       OK ] PairedWheelSlew.IdealNoSlipZeroTargetFitsRetainedGlobalStopEnvelope (510 ms)
+3: [ RUN      ] PairedWheelSlew.ActualZeroTargetNominalRatioCannotRoundOutward
+3: [       OK ] PairedWheelSlew.ActualZeroTargetNominalRatioCannotRoundOutward (0 ms)
+3: [ RUN      ] PairedWheelSlew.ActualMixedTargetNominalRatioCannotRoundOutward
+3: [       OK ] PairedWheelSlew.ActualMixedTargetNominalRatioCannotRoundOutward (0 ms)
+3: [ RUN      ] PairedWheelSlew.FastPathCannotLoseTinyCurrentAcrossTheExactBudgetBoundary
+3: [       OK ] PairedWheelSlew.FastPathCannotLoseTinyCurrentAcrossTheExactBudgetBoundary (0 ms)
+3: [ RUN      ] PairedWheelSlew.RoundedAppliedStepCannotHideTinyCurrentBeyondBudget
+3: [       OK ] PairedWheelSlew.RoundedAppliedStepCannotHideTinyCurrentBeyondBudget (0 ms)
+3: [----------] 12 tests from PairedWheelSlew (709 ms total)
+3: 
+3: [----------] Global test environment tear-down
+3: [==========] 12 tests from 1 test suite ran. (709 ms total)
+3: [  PASSED  ] 12 tests.
+3: -- run_test.py: return code 0
+3: -- run_test.py: inject classname prefix into gtest result file '/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/test_results/multi_robot/test_paired_wheel_slew.gtest.xml'
+3: -- run_test.py: verify result file '/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/test_results/multi_robot/test_paired_wheel_slew.gtest.xml'
+1/3 Test #3: test_paired_wheel_slew ...........   Passed    1.15 sec
+test 4
+    Start 4: test_drive_target
+
+4: Test command: /usr/bin/python3 "-u" "/opt/ros/humble/share/ament_cmake_test/cmake/run_test.py" "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/test_results/multi_robot/test_drive_target.gtest.xml" "--package-name" "multi_robot" "--output-file" "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/ament_cmake_gtest/test_drive_target.txt" "--command" "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/test_drive_target" "--gtest_output=xml:/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/test_results/multi_robot/test_drive_target.gtest.xml"
+4: Test timeout computed to be: 60
+4: -- run_test.py: invoking following command in '/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot':
+4:  - /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/test_drive_target --gtest_output=xml:/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/test_results/multi_robot/test_drive_target.gtest.xml
+4: Running main() from /opt/ros/humble/src/gtest_vendor/src/gtest_main.cc
+4: [==========] Running 10 tests from 1 test suite.
+4: [----------] Global test environment set-up.
+4: [----------] 10 tests from DriveTarget
+4: [ RUN      ] DriveTarget.ExactEndpointsAndCurrentWorldClockAreAccepted
+4: [       OK ] DriveTarget.ExactEndpointsAndCurrentWorldClockAreAccepted (0 ms)
+4: [ RUN      ] DriveTarget.MissingExtraWrongSchemaAndNonobjectAreRejected
+4: [       OK ] DriveTarget.MissingExtraWrongSchemaAndNonobjectAreRejected (0 ms)
+4: [ RUN      ] DriveTarget.IntegerFieldsDoNotCoerceFloatBoolOrOverflow
+4: [       OK ] DriveTarget.IntegerFieldsDoNotCoerceFloatBoolOrOverflow (1 ms)
+4: [ RUN      ] DriveTarget.TaggedCommandsRejectEvenOneUlpBeyondTheFinalGuardCaps
+4: [       OK ] DriveTarget.TaggedCommandsRejectEvenOneUlpBeyondTheFinalGuardCaps (0 ms)
+4: [ RUN      ] DriveTarget.NonfiniteAndNonNumericCommandsAndEmptyIdentityAreRejected
+4: [       OK ] DriveTarget.NonfiniteAndNonNumericCommandsAndEmptyIdentityAreRejected (0 ms)
+4: [ RUN      ] DriveTarget.WrongRobotOrEpochCannotEnterState
+4: [       OK ] DriveTarget.WrongRobotOrEpochCannotEnterState (0 ms)
+4: [ RUN      ] DriveTarget.FutureOneNanosecondIsRejectedWithoutTolerance
+4: [       OK ] DriveTarget.FutureOneNanosecondIsRejectedWithoutTolerance (0 ms)
+4: [ RUN      ] DriveTarget.EqualOrOlderDecisionCannotOverwriteNewerTarget
+4: [       OK ] DriveTarget.EqualOrOlderDecisionCannotOverwriteNewerTarget (0 ms)
+4: [ RUN      ] DriveTarget.SourceClockCannotRegressButSameClockHigherDecisionIsAllowed
+4: [       OK ] DriveTarget.SourceClockCannotRegressButSameClockHigherDecisionIsAllowed (0 ms)
+4: [ RUN      ] DriveTarget.PreviousLinearCapCannotBypassTheNarrowerTagContract
+4: [       OK ] DriveTarget.PreviousLinearCapCannotBypassTheNarrowerTagContract (0 ms)
+4: [----------] 10 tests from DriveTarget (1 ms total)
+4: 
+4: [----------] Global test environment tear-down
+4: [==========] 10 tests from 1 test suite ran. (1 ms total)
+4: [  PASSED  ] 10 tests.
+4: -- run_test.py: return code 0
+4: -- run_test.py: inject classname prefix into gtest result file '/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/test_results/multi_robot/test_drive_target.gtest.xml'
+4: -- run_test.py: verify result file '/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/test_results/multi_robot/test_drive_target.gtest.xml'
+2/3 Test #4: test_drive_target ................   Passed    0.88 sec
+test 5
+    Start 5: test_drive_feed
+
+5: Test command: /usr/bin/python3 "-u" "/opt/ros/humble/share/ament_cmake_test/cmake/run_test.py" "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/test_results/multi_robot/test_drive_feed.gtest.xml" "--package-name" "multi_robot" "--output-file" "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/ament_cmake_gtest/test_drive_feed.txt" "--command" "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/test_drive_feed" "--gtest_output=xml:/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/test_results/multi_robot/test_drive_feed.gtest.xml"
+5: Test timeout computed to be: 60
+5: -- run_test.py: invoking following command in '/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot':
+5:  - /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/test_drive_feed --gtest_output=xml:/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/test_results/multi_robot/test_drive_feed.gtest.xml
+5: Running main() from /opt/ros/humble/src/gtest_vendor/src/gtest_main.cc
+5: [==========] Running 7 tests from 1 test suite.
+5: [----------] Global test environment set-up.
+5: [----------] 7 tests from DriveFeed
+5: [ RUN      ] DriveFeed.AppliedBindsOriginalSevenFieldTargetAndEveryRightLeftPair
+5: [       OK ] DriveFeed.AppliedBindsOriginalSevenFieldTargetAndEveryRightLeftPair (1 ms)
+5: [ RUN      ] DriveFeed.AppliedCannotInventAnInitialOrFutureOrForeignTarget
+5: [       OK ] DriveFeed.AppliedCannotInventAnInitialOrFutureOrForeignTarget (0 ms)
+5: [ RUN      ] DriveFeed.MissingReorderedAndNonfinitePairsDoNotProducePlausibleReceipts
+5: [       OK ] DriveFeed.MissingReorderedAndNonfinitePairsDoNotProducePlausibleReceipts (0 ms)
+5: [ RUN      ] DriveFeed.CalibrationCarriesActualBinary32CoefficientsWithoutNormalising
+5: [       OK ] DriveFeed.CalibrationCarriesActualBinary32CoefficientsWithoutNormalising (0 ms)
+5: [ RUN      ] DriveFeed.CalibrationRejectsEvenOneNanosecondSourceMismatchAndInvalidCoefficients
+5: [       OK ] DriveFeed.CalibrationRejectsEvenOneNanosecondSourceMismatchAndInvalidCoefficients (0 ms)
+5: [ RUN      ] DriveFeed.PhysicsThreadMustUseRoundToNearestAndGradualUnderflow
+5: [       OK ] DriveFeed.PhysicsThreadMustUseRoundToNearestAndGradualUnderflow (0 ms)
+5: [ RUN      ] DriveFeed.PhysicsThreadRejectsIndependentSseDazFtzAndRoundingChanges
+5: [       OK ] DriveFeed.PhysicsThreadRejectsIndependentSseDazFtzAndRoundingChanges (0 ms)
+5: [----------] 7 tests from DriveFeed (1 ms total)
+5: 
+5: [----------] Global test environment tear-down
+5: [==========] 7 tests from 1 test suite ran. (1 ms total)
+5: [  PASSED  ] 7 tests.
+5: -- run_test.py: return code 0
+5: -- run_test.py: inject classname prefix into gtest result file '/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/test_results/multi_robot/test_drive_feed.gtest.xml'
+5: -- run_test.py: verify result file '/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/test_results/multi_robot/test_drive_feed.gtest.xml'
+3/3 Test #5: test_drive_feed ..................   Passed    0.18 sec
+
+The following tests passed:
+	test_paired_wheel_slew
+	test_drive_target
+	test_drive_feed
+
+100% tests passed, 0 tests failed out of 3
+
+Label Time Summary:
+gtest    =   2.22 sec*proc (3 tests)
+
+Total Test time (real) =   2.32 sec

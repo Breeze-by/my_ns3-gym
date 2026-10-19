@@ -9,6 +9,7 @@ from std_msgs.msg import String
 
 from multi_robot_exploration.mr3_control_phase import canonical
 from multi_robot_exploration.mr3_motion_control import MotionControlPhase
+from multi_robot_exploration.mr3_safety_intent import payload_sha256
 
 
 class Publisher:
@@ -256,3 +257,140 @@ def test_other_epoch_dependency_cannot_satisfy_current_commit():
     phase.receive_dependency(String(data=canonical(foreign)), 'state')
     send(phase, request(node, 'commit', 'boundary40000000', **refs))
     assert phase.pending and not phase.dependencies['state']
+
+
+def reach_bundle(epoch, clock):
+    rows = []
+    for name in ('tb1', 'tb2', 'tb3'):
+        vector = {'x': 0., 'y': 0., 'z': 0.}
+        odom = {'header': {'stamp': {'sec': clock//10**9, 'nanosec': clock%10**9}, 'frame_id': name+'/odom'},
+                'child_frame_id': name+'/base_footprint',
+                'pose': {'pose': {'position': vector, 'orientation': dict(vector, w=1.)}, 'covariance': [0.]*36},
+                'twist': {'twist': {'linear': vector, 'angular': vector}, 'covariance': [0.]*36}}
+        intent = {'schema': 'mr3-safety-intent-v1', 'epoch': epoch, 'robot': name,
+                  'intent_sequence': 1, 'source_clock_ns': clock, 'role': 'HOLD', 'anchor': None,
+                  'admitted_signs': [], 'lineage': {'release_clock_ns': None}, 'target': None}
+        calibration = {'schema': 'mr3-odom-calibration-v1', 'epoch': epoch, 'robot': name,
+                       'source_clock_ns': clock, 'publication_sequence': 1,
+                       'coefficient_c': 1., 'coefficient_s': 0., 'odometry': copy.deepcopy(odom),
+                       'conversion_contract': 'float32-trig-binary64-rn-v1',
+                       'producer_frame': 'world-common-model-origin-v1'}
+        rows.append({'robot': name, 'odometry': odom, 'safety': {'intent': intent, 'calibration': calibration}})
+    table = {row['robot']: row['safety'] for row in rows}
+    refs = {name: {'intent_sequence': 1, 'payload_sha256': payload_sha256(safety['intent'])}
+            for name, safety in table.items()}
+    return {'sequence': 1, 'robots': rows, 'safety_contract': 'mr3-reach-v1',
+            'intent_refs': refs, 'safety_table_sha256': payload_sha256(table)}
+
+
+class ReachGuard(Guard):
+    """A phase-only fake; no delivery or physical-model credit is inferred."""
+    def __init__(self):
+        super().__init__()
+        self.safety_contract = 'mr3-reach-v1'
+        self.received = reach_bundle(self.epoch, self.clock)
+        self.control_safety_context = None
+
+    def complete_output(self, key):
+        clock, kind = key
+        context = self.control_safety_context
+        refs = {name: {'intent_sequence': sequence,
+                       'payload_sha256': payload_sha256([name, sequence, clock])}
+                for name, sequence in self.decision_sequences.items()}
+        value = {'schema': 'mr3-motion-safety-status-v2', 'epoch': self.epoch,
+                 'clock_ns': clock, 'ready': kind != 'stop',
+                 'completion_scope': 'publication_and_local_topic_receipt',
+                 'decision_sequences': dict(self.decision_sequences),
+                 'outputs': {name: {'linear_x': 0., 'angular_z': 0.} for name in ('tb1', 'tb2', 'tb3')},
+                 'safety_contract': self.safety_contract, 'intent_refs': refs,
+                 'safety_table_sha256': context['safety_table_sha256'] if context else None}
+        if kind == 'stop':
+            value['phase_kind'] = 'stop'
+        self.completed_motion[key] = value
+        self.phase.poll()
+
+
+def reach_setup():
+    node = ReachGuard(); phase = MotionControlPhase(node); node.phase = phase
+    req = request(node, 'takeover'); req['schema'] = 'mr3-motion-control-request-v2'
+    send(phase, req)
+    assert phase.responses['takeover20000000'][1]['ok'] is True
+    node.clock += 20_000_000
+    return node, phase
+
+
+def reach_dependencies(node, phase, deliver=True):
+    common = {'epoch': node.epoch, 'request_id': 'boundary'+str(node.clock),
+              'target_time_ns': node.clock, 'clock_ns': node.clock, 'operation': 'commit', 'ok': True,
+              'state_sequence': node.received['sequence'], 'bundle_sha256': payload_sha256(node.received),
+              **{key: copy.deepcopy(node.received[key]) for key in ('safety_contract', 'intent_refs', 'safety_table_sha256')}}
+    state = dict(common, schema='mr3-state-phase-ack-v2', scope='actual_state_and_side_publish_calls_returned')
+    peer = dict(common, schema='mr3-peer-phase-ack-v2', state_commit=copy.deepcopy(state),
+                commit_sequence=1, scope='actual_obstacle_publish_calls_returned')
+    if deliver:
+        for component, value in (('state', state), ('peer', peer)):
+            phase.receive_dependency(String(data=canonical(value)), component)
+    return {'state_commit': state, 'peer_commit': peer}
+
+
+def reach_request(node, **refs):
+    result = request(node, 'commit', 'boundary'+str(node.clock), **refs)
+    result['schema'] = 'mr3-motion-control-request-v2'
+    return result
+
+
+def test_reach_phase_requires_actual_dependency_callbacks_and_same_full_table():
+    node, phase = reach_setup()
+    refs = reach_dependencies(node, phase, deliver=False)
+    send(phase, reach_request(node, **refs))
+    assert phase.pending and (node.clock, 'normal') not in node.calls
+    for component in ('state', 'peer'):
+        phase.receive_dependency(String(data=canonical(refs[component+'_commit'])), component)
+    response = phase.responses['boundary40000000'][1]
+    assert response['ok'] is True and response['schema'] == 'mr3-motion-control-ack-v2'
+    assert response['safety_table_sha256'] == node.received['safety_table_sha256']
+    assert node.control_safety_context['intent_refs'] == node.received['intent_refs']
+    assert response['intent_refs'] != node.received['intent_refs']
+
+
+@pytest.mark.parametrize('mutation', ['peer_table', 'intent_refs', 'calibration_binding'])
+def test_reach_table_or_source_substitution_latches_zero_without_normal_permission(mutation):
+    node, phase = reach_setup()
+    if mutation == 'calibration_binding':
+        node.received['robots'][0]['safety']['calibration']['odometry']['pose']['covariance'][0] = 1.
+        table = {row['robot']: row['safety'] for row in node.received['robots']}
+        node.received['safety_table_sha256'] = payload_sha256(table)
+    elif mutation == 'intent_refs':
+        node.received['intent_refs']['tb1']['payload_sha256'] = '0'*64
+    refs = reach_dependencies(node, phase, deliver=False)
+    if mutation == 'peer_table':
+        refs['peer_commit']['safety_table_sha256'] = '0'*64
+    for component in ('state', 'peer'):
+        phase.receive_dependency(String(data=canonical(refs[component+'_commit'])), component)
+    send(phase, reach_request(node, **refs))
+    assert node.halted and (node.clock, 'normal') not in node.calls
+    assert (node.clock, 'stop') in node.calls
+    assert phase.responses['boundary40000000'][1]['ok'] is False
+
+
+def test_reach_phase_rejects_legacy_request_even_with_valid_dependency_payloads():
+    node, phase = reach_setup()
+    refs = reach_dependencies(node, phase)
+    send(phase, request(node, 'commit', 'boundary40000000', **refs))
+    assert node.halted and (node.clock, 'normal') not in node.calls
+
+
+def test_completed_reach_response_cannot_be_relabelled_with_another_table():
+    node, phase = reach_setup()
+    refs = reach_dependencies(node, phase)
+    node.complete = False
+    send(phase, reach_request(node, **refs))
+    assert phase.pending
+    node.complete_output((node.clock, 'normal'))
+    # The actual normal response is immutable; a changed copy is never reused.
+    original = copy.deepcopy(phase.responses['boundary40000000'][1])
+    assert original['safety_table_sha256'] == refs['state_commit']['safety_table_sha256']
+    changed = copy.deepcopy(refs); changed['peer_commit']['safety_table_sha256'] = '0'*64
+    send(phase, reach_request(node, **changed))
+    assert phase.responses['boundary40000000'][1] == original
+    assert node.halted

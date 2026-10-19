@@ -125,7 +125,9 @@ class Supervisor:
     def __init__(self, *, run_id=None, worker_id=0, domain_id=120, gazebo_port=12001,
                  output_root=None, startup_timeout=420., request_timeout=90.,
                  quantum_steps=20, terminal_probe=False, plant_stimulus_arm=None,
-                 plant_stimulus_work_deadline_ns=None):
+                 plant_stimulus_work_deadline_ns=None, safety_contract="legacy"):
+        if type(safety_contract) is not str or safety_contract not in ("legacy", "mr3-reach-v1"):
+            raise ValueError("safety_contract must be legacy or mr3-reach-v1")
         if type(terminal_probe) is not bool:
             raise ValueError("terminal_probe must be a boolean")
         if plant_stimulus_arm not in (None, "continuous", "pulse"):
@@ -163,6 +165,7 @@ class Supervisor:
         self.request_timeout = float(request_timeout)
         self.quantum_steps = quantum_steps
         self.terminal_probe = terminal_probe
+        self.safety_contract = safety_contract
         self.plant_stimulus_arm = plant_stimulus_arm
         self.plant_stimulus_work_deadline_ns = (
             plant_stimulus_work_deadline_ns or time.monotonic_ns() + 1_680_000_000_000
@@ -233,6 +236,7 @@ class Supervisor:
                     "domain_id": self.domain_id, "gazebo_port": self.gazebo_port,
                     "command": command, "reset_kind": "complete_process_rebuild",
                     "terminal_probe": self.terminal_probe,
+                    "safety_contract": self.safety_contract,
                     "plant_stimulus_arm": self.plant_stimulus_arm,
                     "plant_stimulus_work_deadline_ns": self.plant_stimulus_work_deadline_ns,
                     "startup_wall_guard_sec": self.startup_timeout,
@@ -243,7 +247,9 @@ class Supervisor:
                                quantum_steps=self.quantum_steps,
                                terminal_probe=self.terminal_probe,
                                plant_stimulus_arm=self.plant_stimulus_arm,
-                               plant_stimulus_work_deadline_ns=self.plant_stimulus_work_deadline_ns)
+                               plant_stimulus_work_deadline_ns=self.plant_stimulus_work_deadline_ns,
+                               **({"safety_contract": self.safety_contract}
+                                  if self.safety_contract != "legacy" else {}))
             if result["snapshot"]["epoch"] != epoch:
                 raise InfrastructureError("reset returned a previous episode snapshot")
             self.last_result = result

@@ -1,0 +1,128 @@
+{
+  "schema": "mr3-v15-finite-preparation-actual-child-wait-v1",
+  "scope": "Finite CPU/build preparation only; no simulator run, GPU update, formal native scientific role, quota change or native admission.",
+  "actual_argv": [
+    "/usr/bin/python3",
+    "-B",
+    "-m",
+    "pytest",
+    "-q",
+    "test/test_mr3_reach_delivery_order.py"
+  ],
+  "cwd": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration",
+  "explicit_env": {
+    "PYTHONNOUSERSITE": "1",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONPATH": null
+  },
+  "actual_returncode": 1,
+  "actual_waited": true,
+  "coordinator_identity": {
+    "pid": 1232612,
+    "parent": 1232611,
+    "process_group": 1232611,
+    "session": 1232611,
+    "start_ticks": 415838503
+  },
+  "child_identity": {
+    "pid": 1232615,
+    "parent": 1232612,
+    "process_group": 1232611,
+    "session": 1232611,
+    "start_ticks": 415838510
+  },
+  "started_monotonic_ns": 4158385109426719,
+  "ended_monotonic_ns": 4158388584268084,
+  "actual_child_wait_seconds": "3.474841365",
+  "source_before": [
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_reach_runtime.py",
+      "bytes": 29086,
+      "sha256": "8f4f7b1faad44164f63dbec6c5f19aed356dbea657abf7b55c312e76c663a08b",
+      "stat": [
+        2051,
+        70313007,
+        29086,
+        1792412829072582417,
+        1792412829072582417
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_reach_delivery_order.py",
+      "bytes": 6559,
+      "sha256": "3631446b699b9d6177fea7decd93cf9d1268dae3b69b865d3bb4679d3747de97",
+      "stat": [
+        2051,
+        70312808,
+        6559,
+        1792412937860955894,
+        1792412937860955894
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_reach_runtime_independent.py",
+      "bytes": 18667,
+      "sha256": "61ca3da127be725c7f15cc09a22370044f3bb069e7bd70c803977ae05a8fc537",
+      "stat": [
+        2051,
+        70282191,
+        18667,
+        1792412086173999380,
+        1792412086173999380
+      ]
+    }
+  ],
+  "source_after": [
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_reach_runtime.py",
+      "bytes": 29086,
+      "sha256": "8f4f7b1faad44164f63dbec6c5f19aed356dbea657abf7b55c312e76c663a08b",
+      "stat": [
+        2051,
+        70313007,
+        29086,
+        1792412829072582417,
+        1792412829072582417
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_reach_delivery_order.py",
+      "bytes": 6559,
+      "sha256": "3631446b699b9d6177fea7decd93cf9d1268dae3b69b865d3bb4679d3747de97",
+      "stat": [
+        2051,
+        70312808,
+        6559,
+        1792412937860955894,
+        1792412937860955894
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_reach_runtime_independent.py",
+      "bytes": 18667,
+      "sha256": "61ca3da127be725c7f15cc09a22370044f3bb069e7bd70c803977ae05a8fc537",
+      "stat": [
+        2051,
+        70282191,
+        18667,
+        1792412086173999380,
+        1792412086173999380
+      ]
+    }
+  ],
+  "source_unchanged": true,
+  "console": {
+    "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v15/checks/delivery_order_cpu_attempt_v1/console.log",
+    "bytes": 9055,
+    "sha256": "ff070bd03c7cf19efa47f5fec318d559ba559655e3f49a2deafb776ca148276b",
+    "stat": [
+      2051,
+      79063897,
+      9055,
+      1792412993436277467,
+      1792412993436277467
+    ]
+  },
+  "passed": false,
+  "native_admission": false
+}

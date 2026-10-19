@@ -11,7 +11,11 @@ from rclpy.clock import Clock, ClockType
 from rclpy.qos import DurabilityPolicy, QoSProfile
 from std_msgs.msg import String
 
-from multi_robot_exploration.mr3_control_phase import canonical, WALL_GUARD_SEC
+from multi_robot_exploration.mr3_control_phase import (
+    canonical, WALL_GUARD_SEC, SAFETY_FIELDS, protocol_version,
+    validate_safety_fields, valid_motion_status, receipt_fields,
+)
+from multi_robot_exploration.mr3_safety_intent import parse_json, payload_sha256, validate_safety
 
 
 class MotionControlPhase:
@@ -23,6 +27,8 @@ class MotionControlPhase:
 
     def __init__(self, node):
         self.node = node
+        self.safety_contract = getattr(node, "safety_contract", "legacy")
+        self.version = protocol_version(self.safety_contract)
         self.controlled = False
         self.stopping = False
         self.polling = False
@@ -49,11 +55,19 @@ class MotionControlPhase:
 
     def receive_dependency(self, message, component):
         try:
-            value = json.loads(message.data)
+            value = parse_json(message.data) if self.version == 2 else json.loads(message.data)
             if not isinstance(value, dict):
                 raise ValueError("dependency ACK must be an object")
             if value.get("epoch") != self.node.epoch:
                 return
+            if not set(value) <= receipt_fields(component, self.version):
+                raise ValueError("unexpected actual dependency fields")
+            if self.version == 2 and value.get("schema") != f"mr3-{component}-phase-ack-v{self.version}":
+                raise ValueError("dependency profile/schema differs")
+            if self.version == 2:
+                validate_safety_fields(value, allow_none=value.get("operation") == "takeover" or value.get("ok") is False)
+            elif SAFETY_FIELDS & set(value):
+                raise ValueError("legacy dependency cannot carry reach fields")
             key = value["request_id"]
             if not isinstance(key, str) or not key:
                 raise ValueError("invalid dependency request identity")
@@ -73,18 +87,25 @@ class MotionControlPhase:
     def receive_request(self, message):
         request = None
         try:
-            request = json.loads(message.data)
+            request = parse_json(message.data) if self.version == 2 else json.loads(message.data)
             if not isinstance(request, dict):
                 raise ValueError("motion control request must be an object")
             if request.get("epoch") != self.node.epoch:
                 return
-            if (request.get("schema") != "mr3-motion-control-request-v1"
+            if (request.get("schema") != f"mr3-motion-control-request-v{self.version}"
                     or not isinstance(request.get("request_id"), str)
                     or not request["request_id"]
                     or type(request.get("target_time_ns")) is not int
                     or request["target_time_ns"] < 0
                     or request.get("operation") not in ("takeover", "commit", "stop")):
                 raise ValueError("invalid motion control request")
+            allowed = {"schema", "epoch", "request_id", "target_time_ns", "operation"}
+            if request["operation"] == "commit":
+                allowed.update(("state_commit", "peer_commit"))
+            elif request["operation"] == "stop":
+                allowed.add("reason")
+            if not set(request) <= allowed or self.version == 2 and request["operation"] == "commit" and set(request) != allowed:
+                raise ValueError("unexpected motion request fields or missing actual dependencies")
             key = request["request_id"]
             self.record("request", request)
             previous = self.responses.get(key)
@@ -139,7 +160,7 @@ class MotionControlPhase:
                 return False
             if canonical(actual) != canonical(expected):
                 raise ValueError("request substituted an unreceived dependency")
-            if (actual.get("schema") != "mr3-" + component + "-phase-ack-v1"
+            if (actual.get("schema") != f"mr3-{component}-phase-ack-v{self.version}"
                     or actual.get("epoch") != self.node.epoch or actual.get("request_id") != key
                     or actual.get("operation") != "commit" or actual.get("ok") is not True
                     or type(actual.get("target_time_ns")) is not int
@@ -161,9 +182,29 @@ class MotionControlPhase:
         if received is None:
             return False
         digest = hashlib.sha256(canonical(received).encode()).hexdigest()
-        return (type(state.get("state_sequence")) is int
-                and received.get("sequence") == state["state_sequence"]
-                and digest == state.get("bundle_sha256"))
+        if (received.get("sequence") != state["state_sequence"] or digest != state.get("bundle_sha256")):
+            return False
+        if self.version == 2:
+            for item in (state, peer, received):
+                validate_safety_fields(item)
+            if any(canonical(item[key]) != canonical(state[key]) for item in (peer, received) for key in SAFETY_FIELDS):
+                raise ValueError("three guard inputs do not share one actual frozen safety table")
+            rows = received.get("robots")
+            if (type(rows) is not list or len(rows) != 3
+                    or any(type(row) is not dict or row.get("robot") not in ("tb1", "tb2", "tb3") for row in rows)
+                    or len({row["robot"] for row in rows}) != 3):
+                raise ValueError("actual three-robot safety rows required")
+            table = {row["robot"]: validate_safety(row.get("safety"), epoch=self.node.epoch,
+                     robot=row["robot"], selected_odom=row.get("odometry"), now_ns=target) for row in rows}
+            if payload_sha256(table) != state["safety_table_sha256"]:
+                raise ValueError("actual delivered safety table hash differs")
+            refs = {name: {"intent_sequence": row["intent"]["intent_sequence"],
+                           "payload_sha256": payload_sha256(row["intent"])} for name, row in table.items()}
+            if canonical(refs) != canonical(state["intent_refs"]):
+                raise ValueError("actual safety table contains different intents")
+            self.node.control_safety_context = {key: copy.deepcopy(state[key]) for key in SAFETY_FIELDS}
+            self.node.control_safety_context.update(state_commit=copy.deepcopy(state), peer_commit=copy.deepcopy(peer))
+        return True
 
     def poll(self):
         if self.polling:
@@ -198,6 +239,8 @@ class MotionControlPhase:
             elif operation == "takeover":
                 if self.stopping or self.node.halted is not None:
                     raise ValueError("motion takeover was stopped")
+                if self.version == 2:
+                    self.node.control_safety_context = None
                 self.node.ensure_motion_output(target, stop=False)
             elif not pending["issued"]:
                 if (target in self.normal_clocks
@@ -239,7 +282,14 @@ class MotionControlPhase:
         if self.pending is None:
             return
         request = self.pending["request"]
-        value = {"schema": "mr3-motion-control-ack-v1", "epoch": self.node.epoch,
+        if error is None and self.version == 2:
+            stopped = isinstance(status, dict) and status.get("phase_kind") == "stop"
+            if not valid_motion_status(status, self.node.epoch, request["target_time_ns"], stop=stopped,
+                    safety_contract=self.safety_contract, require_table=request["operation"] == "commit" and not stopped):
+                raise ValueError("invalid actual reach motion status")
+            if request["operation"] == "commit" and not stopped and status["safety_table_sha256"] != request["state_commit"].get("safety_table_sha256"):
+                raise ValueError("actual guard status consumed a different frozen table")
+        value = {"schema": f"mr3-motion-control-ack-v{self.version}", "epoch": self.node.epoch,
                  "request_id": request["request_id"], "target_time_ns": request["target_time_ns"],
                  "clock_ns": self.node.get_clock().now().nanoseconds,
                  "operation": request["operation"], "ok": error is None}
@@ -247,6 +297,10 @@ class MotionControlPhase:
             value["status"] = copy.deepcopy(status)
         else:
             value["error"] = error
+        if self.version == 2:
+            value.update({"safety_contract": self.safety_contract,
+                          "intent_refs": copy.deepcopy(status["intent_refs"]) if error is None else None,
+                          "safety_table_sha256": status["safety_table_sha256"] if error is None else None})
         self.responses[request["request_id"]] = (copy.deepcopy(request), value)
         while len(self.responses) > 64:
             self.responses.popitem(last=False)

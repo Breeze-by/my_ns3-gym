@@ -1,6 +1,6 @@
 # MR3 研究路线：三机器人 RL 联合建图与冻结策略的 Wi-Fi 网络影响
 
-2026-10-19：P2A.0已验收，P2A未完成。用户已批准安全契约数学/CPU重设计；V14提交固定anchor disk、普通运动/过渡的残差与终端reach、实际模式交付/actuation交接的候选合同及隔离CPU原型。候选待单独验收，当前生产仍执行原合同；本轮无新native/GPU/pilot/验证，P2B/gateway未启动。见[V14候选与验证](report/20261019_mr3_p2a_v14.md)。
+2026-10-19：P2A.0已验收，P2A未完成。用户已批准V14科学候选并授权生产实现；V15实现显式`mr3-reach-v1`安全模式、真实应用/同源校准回执、完整模式交付及版本化必要审计器，当前完成CPU/编译准备，待新冻结完整原生资格。默认`legacy`保留，旧FAIL不改判；本轮无新native/GPU/pilot/验证，P2B/gateway未启动。见[V15实现与验证](report/20261019_mr3_p2a_v15.md)和[新契约](MR3_REACH_CONTRACT.md)。
 
 工程仍已用31596.4775930946018/34000墙秒，余2403.5224069053982；pilot1870决策/2905.9547395464029墙秒及三场final-only额度未动。旧V13同冻结独立38/38仅有原工程信用，原矩阵/optional/minimum FAIL保留；minimum整轮ineligible、0 eligible/0更新。详见[V13原始结果](report/20261019_mr3_p2a_v13.md)。
 

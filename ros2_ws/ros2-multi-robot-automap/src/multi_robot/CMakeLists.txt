@@ -26,15 +26,20 @@ set(mr3_drive_sources
   ${CMAKE_CURRENT_SOURCE_DIR}/include/multi_robot/mr3_gazebo_diff_drive.hpp
   ${CMAKE_CURRENT_SOURCE_DIR}/include/multi_robot/paired_wheel_slew.hpp
   ${CMAKE_CURRENT_SOURCE_DIR}/include/multi_robot/mr3_drive_target.hpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/include/multi_robot/mr3_odometry_json.hpp)
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/multi_robot/mr3_odometry_json.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/multi_robot/mr3_drive_feed.hpp)
 set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${mr3_drive_sources})
 file(SHA256 ${CMAKE_CURRENT_SOURCE_DIR}/src/mr3_gazebo_diff_drive.cpp mr3_drive_source_sha)
 file(SHA256 ${CMAKE_CURRENT_SOURCE_DIR}/include/multi_robot/mr3_gazebo_diff_drive.hpp mr3_drive_header_sha)
 file(SHA256 ${CMAKE_CURRENT_SOURCE_DIR}/include/multi_robot/paired_wheel_slew.hpp mr3_drive_helper_sha)
 file(SHA256 ${CMAKE_CURRENT_SOURCE_DIR}/include/multi_robot/mr3_drive_target.hpp mr3_drive_target_sha)
 file(SHA256 ${CMAKE_CURRENT_SOURCE_DIR}/include/multi_robot/mr3_odometry_json.hpp mr3_odometry_json_sha)
+file(SHA256 ${CMAKE_CURRENT_SOURCE_DIR}/include/multi_robot/mr3_drive_feed.hpp mr3_drive_feed_sha)
 add_library(mr3_gazebo_diff_drive SHARED src/mr3_gazebo_diff_drive.cpp)
 target_compile_features(mr3_gazebo_diff_drive PUBLIC cxx_std_17)
+# The published calibration contract requires these actual operation semantics.
+# Runtime checks additionally reject non-RN rounding and DAZ/FTZ on the physics thread.
+target_compile_options(mr3_gazebo_diff_drive PRIVATE -fno-fast-math -ffp-contract=off)
 target_include_directories(mr3_gazebo_diff_drive PRIVATE include ${GAZEBO_INCLUDE_DIRS})
 ament_target_dependencies(mr3_gazebo_diff_drive
   gazebo_ros geometry_msgs nav_msgs rclcpp std_msgs tf2 tf2_geometry_msgs tf2_ros tf2_msgs)
@@ -45,7 +50,8 @@ target_compile_definitions(mr3_gazebo_diff_drive PRIVATE
   MR3_DRIVE_HEADER_SHA256="${mr3_drive_header_sha}"
   MR3_DRIVE_HELPER_SHA256="${mr3_drive_helper_sha}"
   MR3_DRIVE_TARGET_SHA256="${mr3_drive_target_sha}"
-  MR3_ODOMETRY_JSON_HEADER_SHA256="${mr3_odometry_json_sha}")
+  MR3_ODOMETRY_JSON_HEADER_SHA256="${mr3_odometry_json_sha}"
+  MR3_DRIVE_FEED_HEADER_SHA256="${mr3_drive_feed_sha}")
 install(TARGETS mr3_gazebo_diff_drive DESTINATION lib)
 install(DIRECTORY vendor/ DESTINATION share/${PROJECT_NAME}/vendor)
 
@@ -108,6 +114,11 @@ if(BUILD_TESTING)
   target_include_directories(test_drive_target PRIVATE include)
   target_compile_features(test_drive_target PUBLIC cxx_std_17)
   target_link_libraries(test_drive_target nlohmann_json::nlohmann_json)
+  ament_add_gtest(test_drive_feed test/test_drive_feed.cpp)
+  target_include_directories(test_drive_feed PRIVATE include)
+  target_compile_features(test_drive_feed PUBLIC cxx_std_17)
+  target_compile_options(test_drive_feed PRIVATE -fno-fast-math -ffp-contract=off)
+  target_link_libraries(test_drive_feed nlohmann_json::nlohmann_json)
 endif()
 
 install(DIRECTORY launch/

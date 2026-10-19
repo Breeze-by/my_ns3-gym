@@ -1,0 +1,83 @@
+{
+  "schema": "mr3-p2a-reach-engineering-budget-proposal-v1",
+  "status": "SEALED_PROPOSAL_AWAITING_USER_APPROVAL",
+  "native_execution_ready": false,
+  "reason_not_ready": "New-profile full source/ELF custody, parameter/peer/control/FIFO/cadence and full qualification dispatch must be versioned, CPU-verified and frozen before any native launch; two new necessary readers are not full qualification.",
+  "current_approved_ceiling": "34000",
+  "used": "31596.4775930946018",
+  "current_remaining": "2403.5224069053982",
+  "proposed_ceiling": "52000",
+  "requested_increase": "18000",
+  "available_if_approved": "20403.5224069053982",
+  "proposed_reservations": {
+    "matrix_including_native_all_required_readers_and_closure": "18000",
+    "fresh_seed41_minimum_16_decisions_including_positive_optimizer_and_all_audits": "1800",
+    "external_final_absence_and_accounting_tail": "300",
+    "total": "20100",
+    "unallocated_if_approved": "303.5224069053982"
+  },
+  "stages": [
+    {
+      "stage": "interface",
+      "cap": "2400",
+      "workers": 1,
+      "schedule": "open:101",
+      "steps": 32,
+      "episodes": 1
+    },
+    {
+      "stage": "terminal",
+      "cap": "1200",
+      "workers": 1,
+      "schedule": "open:101,open:101",
+      "steps": 4,
+      "episodes": 2
+    },
+    {
+      "stage": "reset",
+      "cap": "6500",
+      "workers": 2,
+      "schedule": "open:101,open:101,rooms:101,corridors:101",
+      "steps": 32,
+      "episodes": 8
+    },
+    {
+      "stage": "deadline",
+      "cap": "7900",
+      "workers": 1,
+      "schedule": "open:101",
+      "steps": 300,
+      "episodes": 1
+    }
+  ],
+  "robots_per_environment": 3,
+  "historical_cost_basis": {
+    "scope": "Cost references only; no safety/source/result reuse.",
+    "v13_original_matrix_charge": "6752.047351676",
+    "v13_reset_readonly_completion_charge": "201.941336859",
+    "v13_deadline_completion_charge": "7023.863327403",
+    "v13_qualification_charge": "69.468194283",
+    "v13_failed_minimum_charge": "625.571493358",
+    "reference_sum": "14672.891703579",
+    "reason": "Deadline alone exceeded current remaining balance; fresh profile needs all four stages, complete versioned scientific roles, real waits and closure, not a partial matrix."
+  },
+  "prerequisites": [
+    "accepted V14 scientific contract and tested production implementation",
+    "new explicit role registry and v2 fixture/readback/FIFO/cadence/peer-control/full/custody adapters",
+    "all applicable CPU negative cases pass; build actual source/feed header and library hashes agree",
+    "clean committed pushed same-source/source-contract freeze for every matrix stage",
+    "exact predeclared new schema plan; actual source+ELF watcher ready before native; saved PID/start and real waits",
+    "no old38/38, settled L1 or v1 receipt credit for reach",
+    "all stages pass complete new qualification before fresh minimum",
+    "minimum actual eligible decisions and positive optimizer plus full independent audit before pilot"
+  ],
+  "failure_rule": "Any required negative stops later stages; preserve native prefix and every submitted reader, actual wait for all in-flight work and owned cleanup; charge complete tails even on overrun. No automatic retry or fee refund.",
+  "pilot_remaining_decisions": 1870,
+  "pilot_remaining_wall_seconds": "2905.9547395464029",
+  "pilot_budget_changed": false,
+  "final_only_development_validations": 3,
+  "validation_budget_changed": false,
+  "p2b_or_gateway_authorized": false,
+  "new_native_runs_this_turn": 0,
+  "budget_has_changed": false
+}

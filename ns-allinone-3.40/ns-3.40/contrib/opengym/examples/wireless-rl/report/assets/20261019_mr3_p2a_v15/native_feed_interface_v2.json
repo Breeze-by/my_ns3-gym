@@ -1,0 +1,55 @@
+{
+  "schema": "mr3-native-feed-implementation-interface-review-v2",
+  "scope": "Static implementation interface only. Author did not run build, tests, native, GPU, or a scientific consumer. Prior v1 remains historical.",
+  "source_files": {
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/src/mr3_gazebo_diff_drive.cpp": "df307bd4d24abb588ded81752c4b2750cfbc3bb01986295b2e850561811e058a",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/mr3_drive_feed.hpp": "693381dd6a7b4675e56b4a7da6d3ecf640bf85e9bef5775ff19785df3db5befa",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/test/test_drive_feed.cpp": "6aa3455f1545dcf6aaf0d74fffc51e4778b4ed8038dde5512411f6ded0b1006b",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/CMakeLists.txt": "e7618063e54963e91c8df1661c2fd22b413a6d09adf850b13e92c15ceac6abbf"
+  },
+  "mode": "Only configured tagged mode; nonempty epoch and robot, WORLD odometry and actual odom/TF publication required.",
+  "publisher": {
+    "node_name": "turtlebot3_diff_drive",
+    "node_namespace": "/{robot}",
+    "message_type": "std_msgs/msg/String",
+    "qos": {"history": "keep_last", "depth": 256, "reliability": "reliable", "durability": "volatile"},
+    "identity_limit": "Configured publisher identity; a live publisher GID is obtained by the actual runtime graph, never fabricated here."
+  },
+  "applied": {
+    "topic": "/{robot}/mr3_drive/applied",
+    "schema": "mr3-drive-applied-v1",
+    "exact_top_level_keys": ["schema", "epoch", "robot", "source_clock_ns", "actuation_sequence", "cmd_seq", "dt_ns", "target", "pairs"],
+    "target": "Exact immutable original seven-field parsed target object; no reconstruction from doubles.",
+    "pair_keys": ["pair_index", "current_rim_mps", "desired_rim_mps", "applied_rim_mps", "alpha", "max_acceleration_mps2"],
+    "pair_array_order": ["right", "left"],
+    "phase": "Existing OnUpdate mutex remains held. Every original wheel SetParam call and every original v2 pair audit occurs before this single feed publication. Both SetParam bool return values from every pair must be true; otherwise tagged update throws before an applied receipt is published.",
+    "scope": "all_wheel_SetParam_calls_returned_true; not_body_response",
+    "bootstrap": "No applied feed before a genuine tagged target is stored; no synthetic cmd_seq=0/null target. First published actuation_sequence may exceed one; all subsequent actual update sequences are native continuous."
+  },
+  "calibration": {
+    "topic": "/{robot}/mr3_drive/odometry_calibration",
+    "schema": "mr3-odom-calibration-v1",
+    "exact_top_level_keys": ["schema", "epoch", "robot", "source_clock_ns", "publication_sequence", "coefficient_c", "coefficient_s", "odometry", "conversion_contract", "producer_frame"],
+    "conversion_contract": "float32-trig-binary64-rn-v1",
+    "producer_frame": "world-common-model-origin-v1",
+    "coefficients": "The actual cached float cosf/sinf values used by that WORLD odometry conversion, promoted to binary64. They are not recomputed from transmitted yaw; their squared norm need not equal one.",
+    "binding": "Complete original odometry JSON from the same source and native publication_sequence, not a cross-language canonical SHA.",
+    "phase": "Original odometry and TF publisher calls and AuditOdometry complete first; then metadata is published with the same source. Raw odometry in a same-tick OnUpdate precedes wheel writes."
+  },
+  "numerical_contract": {
+    "compile_flags": ["-fno-fast-math", "-ffp-contract=off"],
+    "compile_checks": ["IEC559 binary32 and binary64", "FLT_EVAL_METHOD == 0", "fast-math macro rejected"],
+    "physics_thread_checks": ["round-to-nearest via fegetround", "SSE MXCSR round-to-nearest", "SSE DAZ and FTZ disabled", "gradual underflow via volatile denormal arithmetic"],
+    "checks_do_not_change_environment": true,
+    "physical_calibration_and_continuous_plant_proved": false
+  },
+  "native_provenance": {
+    "both_configuration_records": "compiled_drive_feed_sha256 uses the actual MR3_DRIVE_FEED_HEADER_SHA256 macro and records schema/conversion/frame labels.",
+    "drive_configuration": "Also records native_feeds_enabled, applied_feed_scope, and reliable volatile depth256 QoS.",
+    "binary_custody": "Root-owned actual build, loaded-library path and ELF hash custody remain necessary; static interface does not assert a live library identity."
+  },
+  "unchanged_contracts": ["Original seven-field target", "Original nine-field storage ACK", "Original wheel slew mathematics", "Original actuation-v2 audit event fields and pair ordering"],
+  "tests": "Seven pure C++ no-Gazebo GTests are authored; execution and real logs belong to the parent runner.",
+  "native_admission": false,
+  "new_scientific_or_budget_credit": false
+}

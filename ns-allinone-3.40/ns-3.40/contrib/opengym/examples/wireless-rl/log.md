@@ -7118,3 +7118,45 @@ rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /usr/bi
 最终只读静态命令：`rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 -B /tmp/mr3_p2a_v14_cpu_actual_runner_v1.py --output /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/checks/root_static_attempt_v1 --cwd /home/zhuyulab/ns3-workspace --source /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/checks/final_static_source_v1.py -- /usr/bin/python3 -B /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/checks/final_static_source_v1.py /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/checks/root_static_attempt_v1/result.json`。真实child rc0/9.374788712s、tool rc0/9.806127451s，29 exact copies/38JSON/46AST/33新增或完整链接/6原canonical raw SHA/九最终源码、log只追加、ARCHIVE只新增entry、生产code diff空及ENV规范正文不变通过。独立最终文档review另核51链接/27当时复制，不与root随后复制的2份review数混淆；无新unit/native/科学消费者。
 
 提交前cached diff检查最初将精确复制CSV的2413个标准CRLF判为trailing whitespace（实际tool rc2）；按已有closed-data CSV规则只新增该文件的`-text`与`cr-at-eol`属性，不转换任何原件字节。CSV SHA仍5524d54ff705f6cff9cf30ca5f3f846542e310e21cdbd2d268bf6dca27d84680。此为Git封存格式元数据修订，不是实验/科学门变更。
+
+
+## 2026-10-19 MR3-P2A V15：获批契约生产接线、CPU/build与资格边界
+
+用户本轮原文“批准”，候选SHA b1443df121a5ba1af0ff8c55417294bd8fd246fc85463776e1ce022c1752a043；opening Git1a5af58013f46f8638a2803e30f618eff044c4d6，working源码逐次精确快照；无新原生冻结/任务采集、GPU或pilot/验证。生产实现与失败边界见[报告](report/20261019_mr3_p2a_v15.md)。
+
+逐次实际完整command argv/cwd/env、真实child.wait、PID/start、elapsed和前后source/stat均在[唯一索引](report/assets/20261019_mr3_p2a_v15/validation_index_v1.json)所指actual_wait.json；各console与源快照同目录，不补造未知rc。以下为逐次实际实验记录：
+
+| Run | Actual rc | Child wait s | Scope |
+| --- | --- | --- | --- |
+| [actor_boundary_cpu_attempt_v1](report/assets/20261019_mr3_p2a_v15/checks/actor_boundary_cpu_attempt_v1/actual_wait.json) | 0 | 0.465321553 | CPU/build only; source stable |
+| [cpp_test_build_attempt_v1](report/assets/20261019_mr3_p2a_v15/checks/cpp_test_build_attempt_v1/actual_wait.json) | 0 | 25.99109069 | CPU/build only; source stable |
+| [cpp_tests_attempt_v1](report/assets/20261019_mr3_p2a_v15/checks/cpp_tests_attempt_v1/actual_wait.json) | 0 | 2.747712822 | CPU/build only; source stable |
+| [delivery_order_cpu_attempt_v1](report/assets/20261019_mr3_p2a_v15/checks/delivery_order_cpu_attempt_v1/actual_wait.json) | 1 | 3.474841365 | CPU/build only; source stable |
+| [final_ros_build_attempt_v1](report/assets/20261019_mr3_p2a_v15/checks/final_ros_build_attempt_v1/actual_wait.json) | 0 | 97.687508107 | CPU/build only; source stable |
+| [information_reader_cpu_attempt_v1](report/assets/20261019_mr3_p2a_v15/checks/information_reader_cpu_attempt_v1/actual_wait.json) | 0 | 2.318573405 | CPU/build only; source stable |
+| [information_reader_cpu_attempt_v2](report/assets/20261019_mr3_p2a_v15/checks/information_reader_cpu_attempt_v2/actual_wait.json) | 0 | 3.432646822 | CPU/build only; source stable |
+| [learning_entry_cpu_attempt_v1](report/assets/20261019_mr3_p2a_v15/checks/learning_entry_cpu_attempt_v1/actual_wait.json) | 1 | 0.045840904 | CPU/build only; source stable |
+| [learning_entry_cpu_attempt_v2](report/assets/20261019_mr3_p2a_v15/checks/learning_entry_cpu_attempt_v2/actual_wait.json) | 0 | 15.514846746 | CPU/build only; source stable |
+| [pure_cpu_attempt_v1](report/assets/20261019_mr3_p2a_v15/checks/pure_cpu_attempt_v1/actual_wait.json) | 1 | 12.64040448 | CPU/build only; source stable |
+| [pure_cpu_attempt_v2](report/assets/20261019_mr3_p2a_v15/checks/pure_cpu_attempt_v2/actual_wait.json) | 0 | 17.058343528 | CPU/build only; source stable |
+| [ros_build_attempt_v1](report/assets/20261019_mr3_p2a_v15/checks/ros_build_attempt_v1/actual_wait.json) | 0 | 102.753556201 | CPU/build only; source stable |
+| [ros_full_attempt_v1](report/assets/20261019_mr3_p2a_v15/checks/ros_full_attempt_v1/actual_wait.json) | 1 | 77.676495901 | CPU/build only; source stable |
+| [ros_full_attempt_v2](report/assets/20261019_mr3_p2a_v15/checks/ros_full_attempt_v2/actual_wait.json) | 0 | 75.606075428 | CPU/build only; source stable |
+| [ros_full_attempt_v3](report/assets/20261019_mr3_p2a_v15/checks/ros_full_attempt_v3/actual_wait.json) | 0 | 81.196482832 | CPU/build only; source stable |
+| [ros_regression_fixes_attempt_v1](report/assets/20261019_mr3_p2a_v15/checks/ros_regression_fixes_attempt_v1/actual_wait.json) | 0 | 5.738330556 | CPU/build only; source stable |
+| [ros_semantic_attempt_v1](report/assets/20261019_mr3_p2a_v15/checks/ros_semantic_attempt_v1/actual_wait.json) | 2 | 2.568742118 | CPU/build only; source stable |
+| [ros_semantic_attempt_v2](report/assets/20261019_mr3_p2a_v15/checks/ros_semantic_attempt_v2/actual_wait.json) | 1 | 22.946002052 | CPU/build only; source stable |
+| [ros_semantic_attempt_v3](report/assets/20261019_mr3_p2a_v15/checks/ros_semantic_attempt_v3/actual_wait.json) | 0 | 20.701686664 | CPU/build only; source stable |
+| [runtime_reader_cpu_attempt_v1](report/assets/20261019_mr3_p2a_v15/checks/runtime_reader_cpu_attempt_v1/actual_wait.json) | 0 | 12.64300452 | CPU/build only; source stable |
+
+最终ROS 1385 PASS；学习入口100、信息审计18、执行审计19、tensor边界1、C++29 cases/3 suites PASS。所有首轮FAIL、collection rc2和无pytest rc1原样保留，修复因果见报告。合成CPU优化不是native/GPU/PPO pilot信用。原shared log仅追加、V14原件及所有历史FAIL保持。
+
+工程31596.4775930946018/34000，余2403.5224069053982；pilot1870/2905.9547395464029及三final-only未动。新profile完整qualification dispatcher/其他v2角色尚须接通，旧38/38不得复用，PPO仍拒新profile；没有假称P2A完成。预算提案34000→52000（增加18000）尚未批准，详情[原件](report/assets/20261019_mr3_p2a_v15/engineering_budget_proposal_v1.json)。
+
+V15最终静态检查两次实际rc0，child5.914737227/5.821476889秒，完整argv与root实际tool chunk见[静态回执索引](report/assets/20261019_mr3_p2a_v15/static_verification_index_v1.json)。第二轮28JSON/576AST/204链接、append-only log、旧archive/V14原件及当前build源/feed SHA与flags通过；磁盘库不是live custody。文档review仅修两处陈旧状态。最终证据整理命令 `rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 -B ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v15/finalize_evidence_v1.py` root实际tool rc0/.610688623s（无独立child秒声明），整理20项实际CPU/build回执，不新增科学实验。
+
+提交前`git add -n .`实际rc0；上游opengym忽略`*.log`，本轮22份有限检查console按canonical科学证据显式force-add。仅为V15 checks的原始console/source_snapshots/actual_compile_flags增加`-text -whitespace`，保留真实FAIL与空白/行尾，不改原件字节；生产源码仍执行常规diff-check。
+
+V15 staged-byte只读检查首试root实际tool rc1/1.838021023s：验证helper用`*_control.py`后缀glob同时匹配`control.py`/`mr3_motion_control.py`，不是快照缺失或hash损坏。随后改用runner真实ordinal+basename精确名，固定入口为`report/assets/20261019_mr3_p2a_v15/check_staged_evidence_v1.py`；不修改任何原快照/console。该检查仅Git封存，不是科学门或原生实验。
+
+修复后的staged evidence checker实际退出rc0：403份源快照SHA、22份console Git字节及58个最新文档链接逐件通过；完整检查墙秒未另计，不以最后poll耗时替代。实际命令 `rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 -B ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v15/check_staged_evidence_v1.py`。最终cached diff-check实际rc0，无build/install/checkpoint/bag/二进制运行产物入暂存。

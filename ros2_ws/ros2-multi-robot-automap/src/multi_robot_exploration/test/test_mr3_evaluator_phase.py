@@ -213,6 +213,10 @@ def test_evaluator_pending_clock_drains_without_timer_gates_or_truth_fields():
 
 def phase_worker():
     instance = terminal_worker()
+    # This legacy fixture bypasses Worker.__init__.
+    instance.safety_contract = "legacy"
+    instance.control_version = 1
+    instance.bootstrap_intent_refs = None
     instance.task_terminal = None
     instance.evaluator_phase_pub = object()
     instance.evaluator_phase = PhaseClient("current")
@@ -262,6 +266,7 @@ def test_initial_phase_follows_reward_binding_and_terminal_cannot_return_live_re
     instance.started_wall = WORKER.time.monotonic()
     instance.initial_inputs_ready = {"stamp": 10., "state_sequence": 100}
     instance.motion_ready = True
+    instance.odometry_recorder_ready = True
     instance.verify_motion_output_topology = lambda: None
     instance.verify_drive_topology = lambda: None
     instance.stopping = False

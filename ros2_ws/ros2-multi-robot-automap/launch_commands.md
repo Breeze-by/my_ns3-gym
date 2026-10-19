@@ -1,6 +1,6 @@
 # 当前三机器人基线与MR3适配启动命令
 
-2026-10-19：P2A.0已验收，P2A未完成。用户已批准安全契约数学/CPU重设计；V14提交固定anchor disk、普通运动/过渡的残差与终端reach、实际模式交付/actuation交接的候选合同及隔离CPU原型。候选待单独验收，当前生产仍执行原合同；本轮无新native/GPU/pilot/验证，P2B/gateway未启动。见[V14候选与验证](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v14.md)。
+2026-10-19：P2A.0已验收，P2A未完成。用户已批准V14科学候选并授权生产实现；V15实现显式`mr3-reach-v1`安全模式、真实应用/同源校准回执、完整模式交付及版本化必要审计器，当前完成CPU/编译准备，待新冻结完整原生资格。默认`legacy`保留，旧FAIL不改判；本轮无新native/GPU/pilot/验证，P2B/gateway未启动。见[V15实现与验证](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v15.md)和[新契约](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_REACH_CONTRACT.md)。
 
 工程仍已用31596.4775930946018/34000墙秒，余2403.5224069053982；pilot1870决策/2905.9547395464029墙秒及三场final-only额度未动。旧V13同冻结独立38/38仅有原工程信用，原矩阵/optional/minimum FAIL保留；minimum整轮ineligible、0 eligible/0更新。详见[V13原始结果](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v13.md)。
 
@@ -30,6 +30,29 @@ export RMW_IMPLEMENTATION=rmw_fastrtps_cpp ROS_LOCALHOST_ONLY=1
 UDP-only配置。两者都不等于正式多主机部署或 ns-3 网络模拟。
 切换源码版本需要先评估旧 build/install 的路径/包缓存；必要时移到工作区外备份，
 从 underlay 干净重建，保留 log。重新开终端 source，不能认为增量构建已删除旧入口。
+
+## 新安全profile（V15工程准备）
+
+新增launch参数`mr3_safety_contract`仅接受`legacy`（默认）或`mr3-reach-v1`。
+后者只允许`execution_mode:=adapter`、`mr3_stepped:=true`及`robot_count:=3`，由Supervisor/worker
+传递到Information、peer和motion；直接launch不能替代worker的20ms暂停、相位及存储屏障。
+完整执行模型见[新契约](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_REACH_CONTRACT.md)。
+
+学习侧`Supervisor(..., safety_contract="mr3-reach-v1")`、benchmark与action_trace的
+`--safety-contract mr3-reach-v1`为显式工程入口。原旧preparation motion/参数读回组合会在启动前被拒绝；
+PPO train/evaluate也拒绝新profile，直至新版完整资格接通并实际通过。默认legacy原入口保持。
+下面是后续新冻结/预算预声明后的采集命令形态，本轮未执行，也不提供完整资格或训练信用：
+
+```bash
+cd /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl
+PYTHONNOUSERSITE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B \
+  -m mr3_learning.action_trace --run-id mr3_reach_v1_fresh_trace \
+  --safety-contract mr3-reach-v1 --domain 180 --port 14001
+```
+
+两项新版必要只读审计入口为`mr3_learning.audit_reach_information`与
+`mr3_learning.audit_reach_runtime`，参数为回合目录及`--output`新文件，可另指定`--freeze`。
+它们不能代替完整输入、接触、物理覆盖、peer云/scan、关闭及最终身份消失门；不能把旧38/38转记给新profile。
 
 ## 三台手动演示
 
@@ -163,12 +186,12 @@ phase3固定绑定原contact task-phase与独立命令时间门禁；scalar rewa
 ## MR3-P2A V13 温和转向profile（工程资格38/38，minimum真实FAIL）
 
 冻结`0063aa233ba3008ddcc1eb09ea8068112eea3965`的原矩阵因reset墙秒超额FAIL，原26角色通过；随后同runtime独立reset补4、deadline补8，新的38角色资格通过，原矩阵FAIL不改。fresh16 minimum出现tb3整段累计路径>.0078的真实模型FAIL，整轮ineligible、0更新，49保存身份gone；pilot与验证未启动。原非必需逐回合覆盖FAIL和pooled覆盖PASS仍保留。
-当前三份活动robot YAML明确统一Shim/DWB/behavior/recovery/smoother双向角上限.3、起转加速1.0；
-行为最小角速.15，角减速-3.2、线.20/±.5不变。原driver/SDF/轮加速1.0及十个ELF不变。
-数学.8命令上界、1.2实测角速、.01 rest speed/.0078 drift及95%/300秒全部任务门不放宽。
+V13当时三份活动robot YAML明确统一Shim/DWB/behavior/recovery/smoother双向角上限.3、起转加速1.0；
+行为最小角速.15，角减速-3.2、线.20/±.5不变。该轮温和参数profile未改原driver/SDF/轮加速1.0及当时十个ELF；V15后来新增feed并重新build，不能套用本节ELF不变声明。
+V13原数学.8命令上界、1.2实测角速、.01 rest speed/.0078累计drift及95%/300秒任务门不放宽；V15显式新profile另依新契约，不重判该轮FAIL。
 exact参数reader选择typed部署事实，保留原9live服务及原reader字节；参数读回不替代身体运动、停止和任务门。
 准确来源、已完成的8500+100+900续接和minimum失败见[V13](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v13.md)。
-累计34000已获批准，完整工程收费31596.4775930946018，余2403.5224069053982。最小链失败后不重跑原矩阵/旧run-id、不进入pilot；新安全模型仍为CPU/math评审，无新native入口或预算扩额。
+累计34000已获批准，完整工程收费31596.4775930946018，余2403.5224069053982。最小链失败后不重跑原矩阵/旧run-id、不进入pilot。V13关闭时新模型尚处CPU/math评审；后续V14已获用户接受，V15已实现显式工程入口和CPU/build准备，但完整新资格及原生预算扩额尚未就绪/获批。
 
 ## MR3-P2A V9 真实WORLD odometry时序（已关闭历史入口）
 

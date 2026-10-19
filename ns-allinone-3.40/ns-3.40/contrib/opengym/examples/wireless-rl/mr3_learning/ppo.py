@@ -24,7 +24,7 @@ import torch
 from sb3_contrib import MaskablePPO
 from stable_baselines3.common.logger import configure
 
-from .benchmark import resource_sample
+from .benchmark import SAFETY_CONTRACTS, resource_sample
 from .env import MR3Env
 from .observation import observation_space
 from .policy import policy_kwargs
@@ -354,6 +354,7 @@ def parse_schedule(text):
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--run-id", required=True)
+    parser.add_argument("--safety-contract", choices=SAFETY_CONTRACTS, default="legacy")
     parser.add_argument("--mode", choices=("train", "evaluate"), default="train")
     parser.add_argument("--checkpoint", type=Path)
     parser.add_argument("--workers", type=int, choices=(1, 2, 4), default=1)
@@ -369,6 +370,8 @@ def main(argv=None):
     parser.add_argument("--epochs", type=int, default=4)
     parser.add_argument("--output-root", type=Path)
     args = parser.parse_args(argv)
+    if args.safety_contract != "legacy":
+        parser.error("mr3-reach-v1 is engineering-only: PPO training/evaluation requires new-freeze scientific qualification; legacy receipts cannot authorize it")
     if (args.decisions < 2 or not 1 <= args.episode_steps <= 300
             or not np.isfinite(args.wall_seconds) or args.wall_seconds <= 0
             or args.batch_size < 2 or args.epochs <= 0 or args.seed < 0):
@@ -474,7 +477,8 @@ def main(argv=None):
                 supervisor = Supervisor(run_id=f"round{round_index:04d}", worker_id=i,
                                         domain_id=args.base_domain + i,
                                         gazebo_port=args.base_port + i,
-                                        output_root=directory / "native")
+                                        output_root=directory / "native",
+                                        safety_contract=args.safety_contract)
                 environments.append(MR3Env(supervisor))
                 episode_index += 1
 

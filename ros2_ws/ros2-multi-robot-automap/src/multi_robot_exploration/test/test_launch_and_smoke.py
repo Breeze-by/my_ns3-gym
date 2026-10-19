@@ -74,10 +74,10 @@ def test_stepped_server_plugin_is_a_real_option_before_ros_argument_terminator(
     launch, context, plugin = mapping_actions(monkeypatch, tmp_path, stepped=True)
     actions = launch.launch_setup(context)
     server = next(action for action in actions if isinstance(action, ExecuteProcess)
-                  and perform_substitutions(context, action.cmd[0]) == "gzserver")
+                  and perform_substitutions(context, action.cmd[0]) == "/usr/bin/gzserver")
     argv = [perform_substitutions(context, token) for token in server.cmd]
     assert argv == [
-        "gzserver", str(ROOT / "src/multi_robot/worlds/my_world.world"), "--seed=101",
+        "/usr/bin/gzserver", str(ROOT / "src/multi_robot/worlds/my_world.world"), "--seed=101",
         "-s", "libgazebo_ros_init.so", "-s", "libgazebo_ros_factory.so",
         "-s", "libgazebo_ros_force_system.so",
         "-s", str(plugin.parent / "libmr3_ray_box_corrector.so"), "-s", str(plugin),

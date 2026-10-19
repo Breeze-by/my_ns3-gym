@@ -45,10 +45,49 @@ from rclpy.qos import DurabilityPolicy, QoSProfile, ReliabilityPolicy
 from std_msgs.msg import String
 from tf2_msgs.msg import TFMessage
 
+from multi_robot_exploration.mr3_safety_intent import (
+    parse_json, payload_sha256, validate_calibration, validate_intent,
+    validate_intent_refs, validate_safety,
+)
+
 from multi_robot_exploration.mr3_transport import (
     IdealTransport, MAP_PERIOD_SEC, ReceivedStore, STATE_PERIOD_SEC,
 )
 from multi_robot_exploration.mr3_episode import TASK_FAILURE_REASONS, timestamp_ns
+
+
+def uses_reach_contract(node):
+    return getattr(node, "safety_contract", "legacy") == "mr3-reach-v1"
+
+
+def publisher_graph_identity(node, topic, node_name, namespace, previous_gid=None):
+    """Humble exposes the graph at callback time, not a packet publisher GID.
+
+    Its installed executor passes only the message to a subscription callback.
+    The observed unique graph endpoint is useful custody evidence, but is not
+    represented here as per-packet authentication or network isolation.
+    """
+    endpoints, error = [], None
+    try:
+        for row in node.get_publishers_info_by_topic(topic):
+            endpoints.append({
+                "node_name": row.node_name, "node_namespace": row.node_namespace,
+                "topic_type": row.topic_type,
+                "endpoint_gid": bytes(row.endpoint_gid).hex(),
+            })
+    except (RuntimeError, TypeError, ValueError, AttributeError) as failure:
+        error = str(failure)
+    endpoints.sort(key=lambda row: (row["node_namespace"], row["node_name"],
+                                    row["endpoint_gid"]))
+    valid = (error is None and len(endpoints) == 1
+             and endpoints[0]["node_name"] == node_name
+             and endpoints[0]["node_namespace"] == namespace
+             and endpoints[0]["topic_type"] == "std_msgs/msg/String"
+             and bool(endpoints[0]["endpoint_gid"])
+             and any(char != "0" for char in endpoints[0]["endpoint_gid"])
+             and (previous_gid is None or endpoints[0]["endpoint_gid"] == previous_gid))
+    return {"scope": "graph_at_callback", "packet_publisher_gid_available": False,
+            "topic": topic, "valid": valid, "endpoints": endpoints, "error": error}
 
 
 def stamp_seconds(stamp):
@@ -111,11 +150,11 @@ def odom_payload(odometry):
         "header": header_payload(odometry.header),
         "child_frame_id": odometry.child_frame_id,
         "pose": {"pose": pose_payload(odometry.pose.pose),
-                 "covariance": list(odometry.pose.covariance)},
+                 "covariance": [float(value) for value in odometry.pose.covariance]},
         "twist": {
             "twist": {"linear": vector_payload(odometry.twist.twist.linear),
                       "angular": vector_payload(odometry.twist.twist.angular)},
-            "covariance": list(odometry.twist.covariance),
+            "covariance": [float(value) for value in odometry.twist.covariance],
         },
     }
 
@@ -252,6 +291,10 @@ class IdealInformation(Node):
             raise ValueError("The MR3 information contract requires exactly three robots")
         self.epoch = self.declare_parameter("episode_epoch", "mr3-p1b").value
         self.stepped_mode = self.declare_parameter("stepped_mode", False).value
+        self.safety_contract = self.declare_parameter("safety_contract", "legacy").value
+        if (self.safety_contract not in ("legacy", "mr3-reach-v1")
+                or uses_reach_contract(self) and not self.stepped_mode):
+            raise ValueError("mr3-reach-v1 information requires explicit stepped execution")
         self.pending_drain = None
         self.drain_responses = {}
         self.drain_timeout_sec = 10.
@@ -260,6 +303,7 @@ class IdealInformation(Node):
         if not math.isfinite(self.tf_validity_lead_sec) or self.tf_validity_lead_sec < 0:
             raise ValueError("tf_validity_lead_sec must be finite and nonnegative")
         self.names = ("tb1", "tb2", "tb3")
+        self.initialize_safety_inputs()
         self.transport = IdealTransport(self.epoch)
         self.received = ReceivedStore(self.epoch)
         self.edges = {name: ReceivedStore(self.epoch) for name in self.names}
@@ -326,12 +370,17 @@ class IdealInformation(Node):
         state_audit_path = self.declare_parameter("state_audit_path", "").value
         if state_audit_path:
             self.state_audit_stream = Path(state_audit_path).open("x", buffering=1)
-            self.record_state("configuration", {
+            configuration = {
                 "tf_validity_lead_sec": self.tf_validity_lead_sec, "pending_limit": 256,
                 "state_period_sec": STATE_PERIOD_SEC,
                 "odom_pending_order": "source_ns_ascending",
                 "tf_pending_order": "accepted_header_ascending",
-            })
+            }
+            if uses_reach_contract(self):
+                configuration.update({"safety_contract": self.safety_contract,
+                                      "safety_identity_scope": "graph_at_callback",
+                                      "safety_history_limit": 256})
+            self.record_state("configuration", configuration)
         self.navigation_publishers = {
             name: self.create_publisher(OccupancyGrid, f"/{name}/navigation_map", map_qos)
             for name in self.names
@@ -357,12 +406,130 @@ class IdealInformation(Node):
                                          lambda msg, name=name: self.receive_local_tf(name, msg),
                                          20),
             ])
+            if uses_reach_contract(self):
+                safety_qos = QoSProfile(depth=256, reliability=ReliabilityPolicy.RELIABLE)
+                for kind, topic in (("intent", f"/{name}/mr3/safety_intent"),
+                                    ("calibration", f"/{name}/mr3_drive/odometry_calibration")):
+                    self.subscriptions_by_robot.append(self.create_subscription(
+                        String, topic,
+                        lambda message, kind=kind, name=name: self.receive_safety_input(
+                            kind, name, message), safety_qos))
         self.state_timer = self.create_timer(STATE_PERIOD_SEC, self.publish_states)
         self.map_timer = self.create_timer(MAP_PERIOD_SEC, self.publish_maps)
         timer_clock = (Clock(clock_type=ClockType.STEADY_TIME)
                        if self.stepped_mode else None)
         self.map_finish_timer = self.create_timer(
             0.02, self.maintain_deliveries, clock=timer_clock)
+
+    def initialize_safety_inputs(self):
+        self.safety_histories = {(kind, name): [] for kind in ("intent", "calibration")
+                                 for name in self.names}
+        self.safety_input_sequences = dict.fromkeys(self.safety_histories, 0)
+        self.safety_latest = {}
+        self.safety_publisher_gids = {}
+
+    def receive_safety_input(self, kind, name, message):
+        if not uses_reach_contract(self):
+            return
+        key = kind, name
+        self.safety_input_sequences[key] += 1
+        sequence = self.safety_input_sequences[key]
+        now_ns = self.get_clock().now().nanoseconds
+        topic = (f"/{name}/mr3/safety_intent" if kind == "intent" else
+                 f"/{name}/mr3_drive/odometry_calibration")
+        graph = publisher_graph_identity(
+            self, topic, "motion_safety" if kind == "intent" else "turtlebot3_diff_drive",
+            "/" if kind == "intent" else f"/{name}", self.safety_publisher_gids.get(key))
+        record = {"robot": name, "input_sequence": sequence, "topic": topic,
+                  "raw_json": message.data,
+                  "raw_json_sha256": hashlib.sha256(message.data.encode("utf-8")).hexdigest(),
+                  "publisher_identity": graph, "received_wall_monotonic_ns": monotonic_ns()}
+        try:
+            value = parse_json(message.data)
+            validator = validate_intent if kind == "intent" else validate_calibration
+            value = validator(value, epoch=self.epoch, robot=name)
+            source = value["source_clock_ns"]
+            producer_sequence = value["intent_sequence" if kind == "intent"
+                                      else "publication_sequence"]
+            digest = payload_sha256(value)
+            record.update({"value": value, "payload_sha256": digest,
+                           "source_clock_ns": source, "producer_sequence": producer_sequence})
+            if not graph["valid"]:
+                raise ValueError("safety publisher graph identity unavailable or changed")
+            previous = self.safety_latest.get(key)
+            if previous is not None and producer_sequence <= previous["producer_sequence"]:
+                matched = next((row for row in self.safety_histories[key]
+                                if row["producer_sequence"] == producer_sequence), None)
+                if matched is None and producer_sequence == previous["producer_sequence"]:
+                    matched = previous
+                if matched is not None and matched["payload_sha256"] != digest:
+                    raise ValueError("conflicting safety producer sequence")
+                record["admission"] = "duplicate" if matched is not None else "older"
+                record["matched_input_sequence"] = (None if matched is None
+                                                     else matched["input_sequence"])
+            else:
+                if previous is not None and (source < previous["source_clock_ns"]
+                        or kind == "calibration" and source == previous["source_clock_ns"]):
+                    raise ValueError("safety source clock regressed or calibration source repeated")
+                history = self.safety_histories[key]
+                expired = [row for row in history
+                           if row["source_clock_ns"] < now_ns - 500_000_000]
+                if expired:
+                    self.record_state(kind + "_prune", {
+                        "robot": name,
+                        "input_sequences": [row["input_sequence"] for row in expired]}, now_ns)
+                    history[:] = [row for row in history
+                                  if row["source_clock_ns"] >= now_ns - 500_000_000]
+                if len(history) >= 256:
+                    raise ValueError("safety causal history overflow")
+                record["admission"] = "queued_future" if source > now_ns else "queued"
+                captured = {"input_sequence": sequence, "producer_sequence": producer_sequence,
+                            "source_clock_ns": source, "payload_sha256": digest,
+                            "value": copy.deepcopy(value)}
+                history.append(captured)
+                self.safety_latest[key] = captured
+                self.safety_publisher_gids[key] = graph["endpoints"][0]["endpoint_gid"]
+        except (ValueError, TypeError, KeyError, OverflowError) as failure:
+            # A malformed NaN-bearing input remains a raw JSON string in the
+            # ledger; it must not make the audit writer emit nonfinite JSON.
+            record.pop("value", None)
+            record.update({"admission": "rejected", "error": str(failure)})
+            self.record_state(kind + "_ingress", record, now_ns)
+            self.fail_state_input(name, kind + "_input:" + str(failure))
+            return
+        self.record_state(kind + "_ingress", record, now_ns)
+        self.poll_state_phase()
+
+    def safety_for_state(self, name, odometry, clock_ns, expected=None):
+        intents = self.safety_histories["intent", name]
+        if expected is None:
+            eligible = [row for row in intents if row["source_clock_ns"] <= clock_ns]
+            intent = max(eligible, key=lambda row: (row["source_clock_ns"],
+                                                   row["producer_sequence"])) if eligible else None
+        else:
+            intent = next((row for row in intents
+                           if row["producer_sequence"] == expected["intent_sequence"]), None)
+            if intent is not None and intent["payload_sha256"] != expected["payload_sha256"]:
+                raise ValueError("state phase intent reference conflicts with actual ingress")
+        if intent is None or intent["source_clock_ns"] > clock_ns:
+            return None
+        source = stamp_ns(odometry.header.stamp)
+        if (intent["value"]["role"] == "N"
+                and intent["value"]["lineage"]["causal_source_clock_ns"] > source):
+            # Distinct native-odom and intent subscriptions can arrive in
+            # either order. Wait for the promised causal raw source rather
+            # than treating an incomplete callback prefix as a model breach.
+            return None
+        calibrations = [row for row in self.safety_histories["calibration", name]
+                        if row["source_clock_ns"] == source and source <= clock_ns]
+        if not calibrations:
+            return None
+        calibration = calibrations[-1]
+        value = validate_safety(
+            {"intent": intent["value"], "calibration": calibration["value"]},
+            epoch=self.epoch, robot=name, selected_odom=odom_payload(odometry), now_ns=clock_ns)
+        return {"value": value, "intent_input_sequence": intent["input_sequence"],
+                "calibration_input_sequence": calibration["input_sequence"]}
 
     def receive_drain_request(self, message):
         request = None
@@ -448,11 +615,15 @@ class IdealInformation(Node):
     def receive_state_phase_request(self, message):
         request = None
         try:
-            request = json.loads(message.data)
-            if (not isinstance(request, dict) or set(request) != {
-                    "schema", "epoch", "request_id", "operation", "target_time_ns"}):
+            request = (parse_json(message.data) if uses_reach_contract(self)
+                       else json.loads(message.data))
+            fields = {"schema", "epoch", "request_id", "operation", "target_time_ns"}
+            if uses_reach_contract(self):
+                fields.add("expected_intents")
+            if not isinstance(request, dict) or set(request) != fields:
                 raise ValueError("invalid_state_phase_request_fields")
-            if request["schema"] != "mr3-state-phase-request-v1":
+            version = 2 if uses_reach_contract(self) else 1
+            if request["schema"] != f"mr3-state-phase-request-v{version}":
                 raise ValueError("invalid_state_phase_request_schema")
             if not self.stepped_mode or request["epoch"] != self.epoch:
                 raise ValueError("wrong_mode_or_epoch")
@@ -462,6 +633,9 @@ class IdealInformation(Node):
                 raise ValueError("invalid_state_phase_operation")
             if type(request["target_time_ns"]) is not int or request["target_time_ns"] < 0:
                 raise ValueError("invalid_state_phase_target_time")
+            if uses_reach_contract(self):
+                request["expected_intents"] = validate_intent_refs(
+                    request["expected_intents"], robots=self.names)
             encoded = json.dumps(request, sort_keys=True, allow_nan=False, separators=(",", ":"))
             cached = self.state_phase_responses.get(request["request_id"])
             if cached is not None:
@@ -486,9 +660,13 @@ class IdealInformation(Node):
             self.record_state("state_phase_request", {"request": request, "duplicate": False})
             self.poll_state_phase()
         except (ValueError, TypeError, KeyError) as error:
-            response = {"schema": "mr3-state-phase-ack-v1", "epoch": self.epoch,
+            version = 2 if uses_reach_contract(self) else 1
+            response = {"schema": f"mr3-state-phase-ack-v{version}", "epoch": self.epoch,
                         "ok": False, "error": str(error),
                         "clock_ns": self.get_clock().now().nanoseconds}
+            if uses_reach_contract(self):
+                response.update({"safety_contract": "mr3-reach-v1", "intent_refs": None,
+                                 "safety_table_sha256": None})
             if isinstance(request, dict):
                 response.update({key: request.get(key) for key in
                                  ("request_id", "target_time_ns", "operation")})
@@ -518,6 +696,16 @@ class IdealInformation(Node):
             payload = state_payload(name, selected_odom, selected_tf, self.tf_validity_lead_sec)
             if not all(math.isfinite(payload[key]) for key in ("x", "y", "yaw", "v", "w")):
                 return False
+            if uses_reach_contract(self):
+                try:
+                    pending = self.pending_state_phase
+                    expected = (pending["request"]["expected_intents"][name]
+                                if pending is not None else None)
+                    if self.safety_for_state(name, selected_odom, clock_ns, expected) is None:
+                        return False
+                except ValueError as failure:
+                    self.fail_state_input(name, "safety_selection:" + str(failure))
+                    return False
         return True
 
     def poll_state_phase(self):
@@ -526,9 +714,13 @@ class IdealInformation(Node):
             return
         request = pending["request"]
         now_ns = self.get_clock().now().nanoseconds
-        response = {"schema": "mr3-state-phase-ack-v1", "epoch": self.epoch,
+        version = 2 if uses_reach_contract(self) else 1
+        response = {"schema": f"mr3-state-phase-ack-v{version}", "epoch": self.epoch,
                     **{key: request[key] for key in ("request_id", "target_time_ns", "operation")},
                     "clock_ns": now_ns, "ok": True}
+        if uses_reach_contract(self):
+            response.update({"safety_contract": "mr3-reach-v1", "intent_refs": None,
+                             "safety_table_sha256": None})
         error = None
         if (request["operation"] == "commit" and self.state_terminal_notice is not None
                 and timestamp_ns(self.state_terminal_notice["end_sim_time_sec"])
@@ -548,7 +740,10 @@ class IdealInformation(Node):
             response.update({"state_sequence": None, "bundle_sha256": None, "robots": {},
                              "scope": "periodic_state_publication_disabled"})
         elif not self.state_phase_inputs_ready(now_ns):
-            return
+            if self.clock_failed:
+                error = "state_phase_input_failed"
+            else:
+                return
         else:
             try:
                 commit = self.publish_states(phase=True)
@@ -652,7 +847,8 @@ class IdealInformation(Node):
             clock_ns = self.get_clock().now().nanoseconds
         self.state_audit_sequence += 1
         self.state_audit_stream.write(json.dumps({
-            "schema": "mr3-information-state-audit-v1", "epoch": self.epoch,
+            "schema": ("mr3-information-state-audit-v2" if uses_reach_contract(self)
+                       else "mr3-information-state-audit-v1"), "epoch": self.epoch,
             "record_sequence": self.state_audit_sequence, "kind": kind,
             "clock_ns": clock_ns, "wall_monotonic_ns": monotonic_ns(), "payload": payload,
         }, sort_keys=True, allow_nan=False, separators=(",", ":")) + "\n")
@@ -941,6 +1137,9 @@ class IdealInformation(Node):
         now = self.now()
         if now is None:
             return
+        if uses_reach_contract(self) and not phase and not self.state_phase_inputs_ready(
+                round(now * 1e9)):
+            return
         self.promote_odometry(now)
         self.promote_transforms(now)
         cycle_id = self.state_sequence + 1
@@ -951,6 +1150,7 @@ class IdealInformation(Node):
             tf_source = (None if transform is None else stamp_ns(transform.header.stamp)
                          - round(self.tf_validity_lead_sec * 1e9))
             payload = None
+            safety_selection = None
             if odometry is None:
                 skip = "missing_odom"
             elif transform is None:
@@ -962,6 +1162,14 @@ class IdealInformation(Node):
                 skip = (None if all(math.isfinite(payload[field])
                                     for field in ("x", "y", "yaw", "v", "w"))
                         else "nonfinite_state")
+                if skip is None and uses_reach_contract(self):
+                    expected = (self.pending_state_phase["request"]["expected_intents"][name]
+                                if phase else None)
+                    safety_selection = self.safety_for_state(
+                        name, odometry, round(now * 1e9), expected)
+                    if safety_selection is None:
+                        raise ValueError("state publication lacks actual safety ingress")
+                    payload["safety"] = safety_selection["value"]
             self.record_state("state_selection", {
                 "cycle_id": cycle_id, "robot": name,
                 "odom_input_sequence": self.state_input_refs["odom"].get(id(odometry)),
@@ -972,6 +1180,10 @@ class IdealInformation(Node):
                 "pending_tf_input_sequences": [self.state_input_refs["tf"].get(id(item))
                                                for item in self.pending_transforms[name]],
                 "skip_reason": skip,
+                **({"safety_input_sequences": {
+                    "intent": safety_selection["intent_input_sequence"],
+                    "calibration": safety_selection["calibration_input_sequence"]}}
+                   if safety_selection is not None else {}),
             }, round(now * 1e9))
             if skip is not None:
                 continue
@@ -1021,8 +1233,7 @@ class IdealInformation(Node):
             robots.append(payload)
         self.state_sequence += 1
         maps = self.published_map_records
-        message = String()
-        message.data = json.dumps({
+        published_bundle = {
             "epoch": self.epoch, "sequence": self.state_sequence, "robots": robots,
             "map_version": self.map_version,
             "map_source_stamp": self.hub_map_source_stamp,
@@ -1040,7 +1251,19 @@ class IdealInformation(Node):
             "information_diagnostics": dict(
                 self.map_diagnostics, pending=self.map_future is not None,
                 queued=self.queued_map_job is not None),
-        }, allow_nan=False, sort_keys=True)
+        }
+        if uses_reach_contract(self):
+            table = {row["name"]: row["safety"] for row in robots}
+            published_bundle.update({
+                "safety_contract": self.safety_contract,
+                "safety_table_sha256": payload_sha256(table),
+                "intent_refs": {
+                    name: {"intent_sequence": safety["intent"]["intent_sequence"],
+                           "payload_sha256": payload_sha256(safety["intent"])}
+                    for name, safety in table.items()},
+            })
+        message = String()
+        message.data = json.dumps(published_bundle, allow_nan=False, sort_keys=True)
         publish_started = monotonic_ns()
         self.state_publisher.publish(message)
         publish_completed = monotonic_ns()
@@ -1062,6 +1285,9 @@ class IdealInformation(Node):
             "side_publish_started_wall_monotonic_ns": side_publish_started,
             "bundle_publish_started_wall_monotonic_ns": publish_started,
             "bundle_publish_completed_wall_monotonic_ns": publish_completed,
+            **({key: copy.deepcopy(published_payload[key]) for key in
+                ("safety_contract", "safety_table_sha256", "intent_refs")}
+               if uses_reach_contract(self) else {}),
             "robots": {
                 name: {
                     "sequence": record["sequence"], "version": record["version"],
@@ -1071,6 +1297,8 @@ class IdealInformation(Node):
                     "tf_source_ns": round(record["payload"]["tf_source_stamp"] * 1e9),
                     **{key: side_by_robot[name][key] for key in
                        ("odom_topic", "tf_topic", "odom_sha256", "tf_sha256")},
+                    **({"safety_sha256": payload_sha256(record["payload"]["safety"])}
+                       if uses_reach_contract(self) else {}),
                 } for name, record in envelopes.items() if record is not None
             },
         }

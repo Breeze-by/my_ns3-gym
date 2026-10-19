@@ -525,6 +525,12 @@ def launch_setup(context, *args, **kwargs):
     adapter_mode = execution_mode == "adapter"
     probe_mode = IfCondition(LaunchConfiguration("adapter_probe")).evaluate(context)
     stepped_mode = IfCondition(LaunchConfiguration("mr3_stepped")).evaluate(context)
+    safety_contract = LaunchConfiguration("mr3_safety_contract").perform(context)
+    if safety_contract not in ("legacy", "mr3-reach-v1"):
+        raise ValueError("mr3_safety_contract must be legacy or mr3-reach-v1")
+    if safety_contract == "mr3-reach-v1" and not (
+            adapter_mode and stepped_mode and robot_count == 3):
+        raise ValueError("mr3-reach-v1 requires stepped three-robot adapter mode")
     training_reward = IfCondition(LaunchConfiguration("training_reward_enabled")).evaluate(context)
     terminal_probe = IfCondition(LaunchConfiguration("training_terminal_probe")).evaluate(context)
     plant_stimulus_arm = LaunchConfiguration("mr3_plant_stimulus_arm").perform(context)
@@ -628,6 +634,7 @@ def launch_setup(context, *args, **kwargs):
             parameters=[{"use_sim_time": use_sim_time, "robot_count": 3,
                          "episode_epoch": episode_epoch, "tf_validity_lead_sec": .2,
                          "stepped_mode": stepped_mode,
+                         "safety_contract": safety_contract,
                          "state_audit_path": (
                              os.path.join(os.path.dirname(adapter_audit_path),
                                           "information_states.jsonl")
@@ -658,6 +665,7 @@ def launch_setup(context, *args, **kwargs):
                      "task_release_start": adapter_mode,
                      "episode_epoch": episode_epoch,
                      "stepped_mode": stepped_mode,
+                     "safety_contract": safety_contract,
                      "phase_audit_path": (
                          os.path.join(os.path.dirname(adapter_audit_path), "peer_phase.jsonl")
                          if adapter_audit_path and stepped_mode else ""),
@@ -673,6 +681,7 @@ def launch_setup(context, *args, **kwargs):
             name="motion_safety", output="screen",
             parameters=[{"use_sim_time": use_sim_time, "episode_epoch": episode_epoch,
                          "stepped_mode": stepped_mode,
+                         "safety_contract": safety_contract,
                          "mr3_diagnostic_enabled": bool(plant_stimulus_arm),
                          "audit_path": (os.path.join(os.path.dirname(adapter_audit_path),
                                                      "motion_safety.jsonl")
@@ -1249,6 +1258,11 @@ def generate_launch_description():
     ld.add_action(DeclareLaunchArgument(
         "mr3_stepped", default_value="false",
         description="P1C paused physics stepping and explicit snapshot requests.",
+    ))
+    ld.add_action(DeclareLaunchArgument(
+        "mr3_safety_contract", default_value="legacy",
+        description="Explicit motion contract: legacy or mr3-reach-v1; "
+                    "mr3-reach-v1 requires the stepped three-robot adapter.",
     ))
     ld.add_action(DeclareLaunchArgument(
         "training_reward_enabled", default_value="false",

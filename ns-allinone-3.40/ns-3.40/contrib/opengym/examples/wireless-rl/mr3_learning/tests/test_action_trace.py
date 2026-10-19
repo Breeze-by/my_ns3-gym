@@ -15,12 +15,12 @@ from mr3_learning.tests.test_observation import seal
 
 class FixedActionTraceTests(unittest.TestCase):
     def run_fixture(self, *, illegal=None, terminate=None, reset_wall=0., step_wall=0.,
-                    close_wall=5., physics=None, error=None):
+                    close_wall=5., physics=None, error=None, safety_contract="legacy"):
         temporary = tempfile.TemporaryDirectory()
         self.addCleanup(temporary.cleanup)
         root, clock, instances = Path(temporary.name), [10 * 10**9], []
         args = SimpleNamespace(output_root=root, run_id="trace", domain=180, port=14001,
-                               physics_config=physics)
+                               physics_config=physics, safety_contract=safety_contract)
 
         class FakeSupervisor(SupervisorFixture):
             def __init__(self, **kwargs):
@@ -89,6 +89,25 @@ class FixedActionTraceTests(unittest.TestCase):
         self.assertTrue(result["shutdown_clean"])
         self.assertEqual(supervisor.closed, 1)
         self.assertEqual((result["policy_calls"], result["optimizer_steps"]), (0, 0))
+
+    def test_reach_trace_propagates_profile_but_does_not_inherit_legacy_scientific_credit(self):
+        result, supervisor = self.run_fixture(safety_contract="mr3-reach-v1")
+        self.assertEqual(supervisor.arguments["safety_contract"], "mr3-reach-v1")
+        self.assertEqual(result["safety_contract"], "mr3-reach-v1")
+        self.assertFalse(result["training_eligible"])
+        self.assertFalse(result["scientific_readers_applied"])
+        self.assertEqual(result["scientific_qualification"], "PENDING_NEW_FREEZE_INDEPENDENT_AUDITS")
+        metadata = json.loads((supervisor.directory.parent/"action_trace_metadata.json").read_text())
+        self.assertEqual(metadata["safety_contract"], "mr3-reach-v1")
+        self.assertEqual(result["native_decisions_returned"], 8)
+
+    def test_unknown_direct_trace_profile_cannot_create_artifacts_or_supervisor(self):
+        with tempfile.TemporaryDirectory() as root:
+            args = SimpleNamespace(safety_contract=True, output_root=Path(root), run_id="refused")
+            with patch.object(action_trace, "Supervisor") as owner, self.assertRaisesRegex(ValueError, "unknown safety contract"):
+                action_trace.run_trace(args)
+            owner.assert_not_called()
+            self.assertFalse((Path(root)/"refused").exists())
 
     def test_illegal_fixed_action_keeps_prefix_without_replacement(self):
         for decision in (0, 3, 7):

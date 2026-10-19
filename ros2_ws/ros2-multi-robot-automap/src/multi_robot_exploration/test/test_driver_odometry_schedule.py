@@ -49,7 +49,7 @@ def test_old_34ms_odd_phase_retains_its_real_340ms_qualification_holes():
     assert all(second - first == 340 for first, second in zip(failed, failed[1:]))
 
 
-def test_driver_actuation_tail_and_wheel_tf_remain_exact_accepted_source_bytes():
+def test_driver_math_and_wheel_tf_preserve_accepted_bytes_after_exact_feed_projection():
     root = Path(__file__).resolve().parents[5]
     relative = "ros2_ws/ros2-multi-robot-automap/src/multi_robot/src/mr3_gazebo_diff_drive.cpp"
     before = subprocess.check_output([
@@ -57,9 +57,62 @@ def test_driver_actuation_tail_and_wheel_tf_remain_exact_accepted_source_bytes()
     current = (root / relative).read_text()
     start = "  // Update robot in case new velocities have been requested\n"
     end = "\nvoid MR3GazeboDiffDrivePrivate::UpdateWheelVelocities()"
-    assert current.split(start, 1)[1].split(end, 1)[0] == before.split(start, 1)[1].split(end, 1)[0]
+    tail = current.split(start, 1)[1].split(end, 1)[0]
+    # V15 intentionally adds real write-result/receipt instrumentation. Remove
+    # only these exact declared additions, then compare the complete remaining
+    # actuator body to the accepted implementation; no math is wildcarded.
+    additions = [
+        '''  std::vector<multi_robot::drive_feed::AppliedPair> applied_pairs;
+  if (tagged_commands_ && !consumed_target_message_.is_null()) {
+    applied_pairs.reserve(num_wheel_pairs_);
+  }
+  bool wheel_writes_succeeded = true;
+''',
+        '    wheel_writes_succeeded = wheel_writes_succeeded && left_written && right_written;\n',
+        '''    if (tagged_commands_ && !consumed_target_message_.is_null()) {
+      applied_pairs.push_back({i, current, desired, limited.applied,
+        limited.alpha, max_wheel_accel_});
+    }
+''',
+        '''  // All pairs have actually been written in this WorldUpdateBegin phase.
+  // lock_ still protects this exact target snapshot against OnTarget.
+  if (tagged_commands_ && !consumed_target_message_.is_null()) {
+    if (!wheel_writes_succeeded) {
+      throw std::runtime_error("MR3 applied feed cannot acknowledge a failed wheel SetParam");
+    }
+    std_msgs::msg::String applied;
+    applied.data = multi_robot::drive_feed::Applied(
+      epoch_, robot_, now_ns, actuation_sequence_, consumed_command_sequence_,
+      dt_ns, consumed_target_message_, applied_pairs).dump();
+    applied_pub_->publish(applied);
+  }
+
+''',
+    ]
+    for addition in additions:
+        assert tail.count(addition) == 1
+        tail = tail.replace(addition, '')
+    for wheel in ('left', 'right'):
+        prefix = f'const bool {wheel}_written = joints_'
+        assert tail.count(prefix) == 1
+        tail = tail.replace(prefix, 'joints_')
+    assert tail == before.split(start, 1)[1].split(end, 1)[0]
     start = "void MR3GazeboDiffDrivePrivate::UpdateOdometryWorld()\n"
-    assert current.split(start, 1)[1].split("\n}\n", 1)[0] == before.split(start, 1)[1].split("\n}\n", 1)[0]
+    body = current.split(start, 1)[1].split("\n}\n", 1)[0]
+    environment = '''  if (tagged_commands_) {
+    multi_robot::drive_feed::ValidateConversionEnvironment();
+  }
+'''
+    coefficients = '''  const float coefficient_c = cosf(yaw);
+  const float coefficient_s = sinf(yaw);
+  odometry_coefficient_c_ = coefficient_c;
+  odometry_coefficient_s_ = coefficient_s;
+'''
+    for addition in (environment, coefficients):
+        assert body.count(addition) == 1
+        body = body.replace(addition, '')
+    body = body.replace('coefficient_c *', 'cosf(yaw) *').replace('coefficient_s *', 'sinf(yaw) *')
+    assert body == before.split(start, 1)[1].split("\n}\n", 1)[0]
     start = "void MR3GazeboDiffDrivePrivate::PublishWheelsTf("
     end = "\nvoid MR3GazeboDiffDrivePrivate::PublishOdometryMsg("
     assert current.split(start, 1)[1].split(end, 1)[0] == before.split(start, 1)[1].split(end, 1)[0]

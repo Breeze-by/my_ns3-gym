@@ -20,7 +20,12 @@ from sensor_msgs.msg import LaserScan, PointCloud2, PointField
 from std_msgs.msg import Header, String
 from tf2_msgs.msg import TFMessage
 
-from multi_robot_exploration.mr3_information import odom_payload, transform_payload
+from multi_robot_exploration.mr3_information import (
+    odom_payload, publisher_graph_identity, transform_payload, uses_reach_contract,
+)
+from multi_robot_exploration.mr3_safety_intent import (
+    parse_json, payload_sha256, validate_intent_refs, validate_safety,
+)
 
 from multi_robot_exploration.control import (
     PEER_BODY_RADIUS_M, peer_safety_radius, quaternion_yaw, transform_point_2d,
@@ -150,6 +155,10 @@ class PeerObstacles(Node):
         self.mission_started = False
         self.failed = False
         self.stepped_mode = self.declare_parameter("stepped_mode", False).value
+        self.safety_contract = self.declare_parameter("safety_contract", "legacy").value
+        if (self.safety_contract not in ("legacy", "mr3-reach-v1")
+                or uses_reach_contract(self) and (not self.stepped_mode or count != 3)):
+            raise ValueError("mr3-reach-v1 peer input requires stepped three-robot execution")
         self.epoch = self.declare_parameter("episode_epoch", "mr3-p1b").value
         self.phase_controlled = False
         self.phase_pending = None
@@ -162,6 +171,7 @@ class PeerObstacles(Node):
         self.phase_input_cache = {(kind, name): [] for kind in ("odom", "tf")
                                   for name in self.names}
         self.phase_bundles = []
+        self.phase_bundle_publisher_gid = None
         self.phase_input_topics = {}
         self.phase_audit = None
         self.tf_source_lead_sec = self.declare_parameter("tf_source_lead_sec", 0.).value
@@ -227,7 +237,8 @@ class PeerObstacles(Node):
             return
         self.phase_record_sequence += 1
         self.phase_audit.write(canonical({
-            "schema": "mr3-peer-phase-audit-v1", "epoch": self.epoch,
+            "schema": ("mr3-peer-phase-audit-v2" if uses_reach_contract(self)
+                       else "mr3-peer-phase-audit-v1"), "epoch": self.epoch,
             "record_sequence": self.phase_record_sequence, "kind": kind,
             "clock_ns": self.get_clock().now().nanoseconds,
             "wall_monotonic_ns": time.monotonic_ns(), "payload": payload}) + "\n")
@@ -244,31 +255,77 @@ class PeerObstacles(Node):
         self.record_phase("received_" + kind, value)
 
     def receive_state_bundle(self, message):
+        graph = None
         try:
-            value = json.loads(message.data)
+            value = (parse_json(message.data) if uses_reach_contract(self)
+                     else json.loads(message.data))
             if (value["epoch"] != self.epoch or len(value["robots"]) != 3
                     or {row["name"] for row in value["robots"]} != set(self.names)
                     or type(value["sequence"]) is not int or value["sequence"] < 1):
                 raise ValueError("state bundle epoch/identity")
             row = {"message": value, "message_sha256": payload_sha(value),
                    "received_wall_monotonic_ns": time.monotonic_ns()}
+            if uses_reach_contract(self):
+                graph = publisher_graph_identity(
+                    self, "/mr3/received/states", "mr3_information", "/",
+                    getattr(self, "phase_bundle_publisher_gid", None))
+                row["publisher_identity"] = graph
+                if not graph["valid"]:
+                    raise ValueError("received state publisher graph identity unavailable or changed")
+                self.safety_bundle_evidence(value)
+                self.phase_bundle_publisher_gid = graph["endpoints"][0]["endpoint_gid"]
             self.phase_bundles.append(row)
             self.phase_bundles = self.phase_bundles[-32:]
             self.record_phase("received_state_bundle", row)
         except (KeyError, ValueError, TypeError) as error:
-            self.record_phase("invalid_state_bundle", {"reason": str(error)})
+            self.record_phase("invalid_state_bundle", {
+                "reason": str(error),
+                **({"raw_json": message.data, "publisher_identity": graph}
+                   if uses_reach_contract(self) else {}),
+            })
+
+    def safety_bundle_evidence(self, bundle, clock_ns=None):
+        if bundle.get("safety_contract") != "mr3-reach-v1":
+            raise ValueError("received bundle lacks the explicit reach contract")
+        table = {}
+        for row in bundle["robots"]:
+            name = row["name"]
+            if name not in self.names or name in table or row.get("epoch") != self.epoch:
+                raise ValueError("received safety table has invalid robot/epoch identities")
+            table[name] = validate_safety(
+                row["safety"], epoch=self.epoch, robot=name,
+                selected_odom=row["odometry"], now_ns=clock_ns)
+        if set(table) != set(self.names):
+            raise ValueError("received safety table is incomplete")
+        references = validate_intent_refs(bundle["intent_refs"], robots=self.names)
+        actual = {name: {"intent_sequence": value["intent"]["intent_sequence"],
+                         "payload_sha256": payload_sha256(value["intent"])}
+                  for name, value in table.items()}
+        digest = payload_sha256(table)
+        if references != actual or bundle.get("safety_table_sha256") != digest:
+            raise ValueError("received safety table digest/intent refs differ from actual payload")
+        return {"safety_contract": "mr3-reach-v1", "safety_table_sha256": digest,
+                "intent_refs": references}
 
     def receive_phase_request(self, message):
         request = None
         try:
-            request = json.loads(message.data)
-            if (not self.stepped_mode or request["schema"] != "mr3-peer-phase-request-v1"
+            request = (parse_json(message.data) if uses_reach_contract(self)
+                       else json.loads(message.data))
+            version = 2 if uses_reach_contract(self) else 1
+            if (not self.stepped_mode or request["schema"] != f"mr3-peer-phase-request-v{version}"
                     or request["epoch"] != self.epoch
                     or type(request["request_id"]) is not str or not request["request_id"]
                     or type(request["target_time_ns"]) is not int
                     or request["target_time_ns"] < 0
                     or request["operation"] not in ("takeover", "commit")):
                 raise ValueError("invalid peer phase request")
+            if uses_reach_contract(self):
+                fields = {"schema", "epoch", "request_id", "target_time_ns", "operation"}
+                if request["operation"] == "commit":
+                    fields.add("state_commit")
+                if set(request) != fields:
+                    raise ValueError("invalid reach peer phase request fields")
             encoded = canonical(request)
             cached = self.phase_cache.get(request["request_id"])
             if cached is not None:
@@ -311,7 +368,8 @@ class PeerObstacles(Node):
     def validate_state_commit(self, request):
         state = request["state_commit"]
         target = request["target_time_ns"]
-        if (state["schema"] != "mr3-state-phase-ack-v1" or state["epoch"] != self.epoch
+        version = 2 if uses_reach_contract(self) else 1
+        if (state["schema"] != f"mr3-state-phase-ack-v{version}" or state["epoch"] != self.epoch
                 or state["request_id"] != request["request_id"] or state["ok"] is not True
                 or state["operation"] != "commit"
                 or type(state["target_time_ns"]) is not int or state["target_time_ns"] != target
@@ -328,6 +386,12 @@ class PeerObstacles(Node):
         digests = [state["bundle_sha256"]] + [
             row[key] for row in state["robots"].values()
             for key in ("odom_sha256", "tf_sha256")]
+        if uses_reach_contract(self):
+            if state.get("safety_contract") != "mr3-reach-v1":
+                raise ValueError("state commit safety contract differs")
+            validate_intent_refs(state["intent_refs"], robots=self.names)
+            digests += [state["safety_table_sha256"]]
+            digests += [row["safety_sha256"] for row in state["robots"].values()]
         for digest in digests:
             if (type(digest) is not str or len(digest) != 64
                     or any(char not in "0123456789abcdef" for char in digest)):
@@ -351,11 +415,16 @@ class PeerObstacles(Node):
                                  "publish_completed_wall_monotonic_ns": completed})
 
     def phase_response(self, request, ok, cache=True, **details):
-        response = {"schema": "mr3-peer-phase-ack-v1", "epoch": self.epoch,
+        version = 2 if uses_reach_contract(self) else 1
+        response = {"schema": f"mr3-peer-phase-ack-v{version}", "epoch": self.epoch,
                     "request_id": request.get("request_id"),
                     "target_time_ns": request.get("target_time_ns"),
                     "operation": request.get("operation"),
                     "clock_ns": self.get_clock().now().nanoseconds, "ok": ok, **details}
+        if uses_reach_contract(self):
+            response.update({"safety_contract": "mr3-reach-v1",
+                             "intent_refs": details.get("intent_refs"),
+                             "safety_table_sha256": details.get("safety_table_sha256")})
         self.publish_phase_ack(response)
         if cache and isinstance(request.get("request_id"), str):
             self.phase_cache[request["request_id"]] = (canonical(request), response)
@@ -373,6 +442,11 @@ class PeerObstacles(Node):
         if not bundles:
             return None
         bundle = bundles[-1]
+        safety = None
+        if uses_reach_contract(self):
+            safety = self.safety_bundle_evidence(bundle["message"], request["target_time_ns"])
+            if any(canonical(safety[key]) != canonical(state[key]) for key in safety):
+                raise ValueError("actual received safety table differs from state commit")
         rows = {row["name"]: row for row in bundle["message"]["robots"]}
         selected, refs = {}, {}
         for name in self.names:
@@ -385,6 +459,8 @@ class PeerObstacles(Node):
                     or round(row["odom_source_stamp"] * 1e9) != expected["odom_source_ns"]
                     or round(row["tf_source_stamp"] * 1e9) != expected["tf_source_ns"]):
                 raise ValueError("actual received bundle differs from state commit")
+            if uses_reach_contract(self) and payload_sha256(row["safety"]) != expected["safety_sha256"]:
+                raise ValueError("actual received robot safety payload differs from state commit")
             for kind in ("odom", "tf"):
                 matches = [item for item in self.phase_input_cache[kind, name]
                            if item[0]["raw_sha256"] == expected[kind + "_sha256"]
@@ -402,6 +478,9 @@ class PeerObstacles(Node):
         refs["bundle"] = {"state_sequence": state["state_sequence"],
                           "message_sha256": bundle["message_sha256"],
                           "received_wall_monotonic_ns": bundle["received_wall_monotonic_ns"]}
+        if safety is not None:
+            refs["safety"] = safety
+            refs["bundle"]["publisher_identity"] = copy.deepcopy(bundle["publisher_identity"])
         return selected, refs
 
     def poll_phase(self):
@@ -449,6 +528,9 @@ class PeerObstacles(Node):
                                 bundle_sha256=state["bundle_sha256"],
                                 inputs=refs, publications=outputs,
                                 obstacle_publication_sha256=payload_sha(outputs),
+                                 **({key: copy.deepcopy(refs["safety"][key]) for key in
+                                     ("safety_contract", "safety_table_sha256", "intent_refs")}
+                                    if uses_reach_contract(self) else {}),
                                 scope="actual_obstacle_publish_calls_returned")
         except (ValueError, KeyError, TypeError, OverflowError) as error:
             self.phase_pending = None

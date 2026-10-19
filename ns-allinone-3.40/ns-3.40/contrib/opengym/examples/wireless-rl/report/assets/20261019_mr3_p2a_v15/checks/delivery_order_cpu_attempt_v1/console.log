@@ -1,0 +1,195 @@
+F..F                                                                     [100%]
+=================================== FAILURES ===================================
+_ ReachDeliveryOrderTests.test_applied_first_waits_then_real_storage_recovers_without_early_normal _
+
+self = <multi_robot_exploration.mr3_reach_runtime.ReachTracker object at 0x7f467d4f8190>
+args = (2040000000,), kwargs = {}
+
+    @wraps(method)
+    def call(self, *args, **kwargs):
+        try:
+>           return method(self, *args, **kwargs)
+
+multi_robot_exploration/mr3_reach_runtime.py:40: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <multi_robot_exploration.mr3_reach_runtime.ReachTracker object at 0x7f467d4f8190>
+clock_ns = 2040000000
+
+    @latched
+    def synchronize(self, clock_ns):
+        if self.fault:
+            raise ValueError(self.fault)
+        if (type(clock_ns) is not int or clock_ns < 0
+                or self.last_clock is not None and clock_ns < self.last_clock):
+            self.fail("physical clock regressed")
+        for entry in sorted(self.events, key=lambda e: e[:2]):
+            source, kind, item = entry
+            key = (source, kind)
+            if key in self.processed or source > clock_ns:
+                continue
+            if kind == 0:
+                _, sequence, raw = item
+                calibration = self.calibrations.get(source)
+                if calibration is None:
+                    return False
+                if canonical_json(calibration["odometry"]) != canonical_json(raw):
+                    self.fail("calibration does not bind exact raw odometry")
+                self._raw(source, sequence, raw, calibration)
+            else:
+>               self._applied(item[1])
+
+multi_robot_exploration/mr3_reach_runtime.py:250: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <multi_robot_exploration.mr3_reach_runtime.ReachTracker object at 0x7f467d4f8190>
+value = {'actuation_sequence': 70, 'cmd_seq': 53, 'dt_ns': 34000000, 'epoch': 'independent-runtime-epoch', ...}
+
+    def _applied(self, value):
+        target = value["target"]
+        sequence = target["decision_sequence"]
+        if (sequence not in self.published
+                or canonical_json(target) != canonical_json(self.published[sequence])):
+            self.fail("actual application has no registered publication")
+        stored = self.storage.pending[self.robot].get(sequence)
+        if stored is None or stored["cmd_seq"] != value["cmd_seq"]:
+>           self.fail("actual application has no exact real storage")
+
+multi_robot_exploration/mr3_reach_runtime.py:276: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <multi_robot_exploration.mr3_reach_runtime.ReachTracker object at 0x7f467d4f8190>
+error = 'actual application has no exact real storage'
+
+    def fail(self, error):
+        self.fault = self.fault or str(error)
+>       raise ValueError(self.fault)
+E       ValueError: actual application has no exact real storage
+
+multi_robot_exploration/mr3_reach_runtime.py:151: ValueError
+
+During handling of the above exception, another exception occurred:
+
+self = <test_mr3_reach_delivery_order.ReachDeliveryOrderTests testMethod=test_applied_first_waits_then_real_storage_recovers_without_early_normal>
+
+    def test_applied_first_waits_then_real_storage_recovers_without_early_normal(self):
+        timeline, pending, frontier, previous = applied_before_storage()
+        anchor = copy.deepcopy(timeline.r.anchor)
+>       self.assert_pending(timeline, frontier, previous)
+
+test/test_mr3_reach_delivery_order.py:71: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+test/test_mr3_reach_delivery_order.py:60: in assert_pending
+    self.assertFalse(timeline.r.synchronize(timeline.now))
+multi_robot_exploration/mr3_reach_runtime.py:42: in call
+    self.fail(error)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <multi_robot_exploration.mr3_reach_runtime.ReachTracker object at 0x7f467d4f8190>
+error = ValueError('actual application has no exact real storage')
+
+    def fail(self, error):
+        self.fault = self.fault or str(error)
+>       raise ValueError(self.fault)
+E       ValueError: actual application has no exact real storage
+
+multi_robot_exploration/mr3_reach_runtime.py:151: ValueError
+_ ReachDeliveryOrderTests.test_permanently_missing_storage_never_closes_frontier_or_retires_disk _
+
+self = <multi_robot_exploration.mr3_reach_runtime.ReachTracker object at 0x7f467d557340>
+args = (2040000000,), kwargs = {}
+
+    @wraps(method)
+    def call(self, *args, **kwargs):
+        try:
+>           return method(self, *args, **kwargs)
+
+multi_robot_exploration/mr3_reach_runtime.py:40: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <multi_robot_exploration.mr3_reach_runtime.ReachTracker object at 0x7f467d557340>
+clock_ns = 2040000000
+
+    @latched
+    def synchronize(self, clock_ns):
+        if self.fault:
+            raise ValueError(self.fault)
+        if (type(clock_ns) is not int or clock_ns < 0
+                or self.last_clock is not None and clock_ns < self.last_clock):
+            self.fail("physical clock regressed")
+        for entry in sorted(self.events, key=lambda e: e[:2]):
+            source, kind, item = entry
+            key = (source, kind)
+            if key in self.processed or source > clock_ns:
+                continue
+            if kind == 0:
+                _, sequence, raw = item
+                calibration = self.calibrations.get(source)
+                if calibration is None:
+                    return False
+                if canonical_json(calibration["odometry"]) != canonical_json(raw):
+                    self.fail("calibration does not bind exact raw odometry")
+                self._raw(source, sequence, raw, calibration)
+            else:
+>               self._applied(item[1])
+
+multi_robot_exploration/mr3_reach_runtime.py:250: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <multi_robot_exploration.mr3_reach_runtime.ReachTracker object at 0x7f467d557340>
+value = {'actuation_sequence': 70, 'cmd_seq': 53, 'dt_ns': 34000000, 'epoch': 'independent-runtime-epoch', ...}
+
+    def _applied(self, value):
+        target = value["target"]
+        sequence = target["decision_sequence"]
+        if (sequence not in self.published
+                or canonical_json(target) != canonical_json(self.published[sequence])):
+            self.fail("actual application has no registered publication")
+        stored = self.storage.pending[self.robot].get(sequence)
+        if stored is None or stored["cmd_seq"] != value["cmd_seq"]:
+>           self.fail("actual application has no exact real storage")
+
+multi_robot_exploration/mr3_reach_runtime.py:276: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <multi_robot_exploration.mr3_reach_runtime.ReachTracker object at 0x7f467d557340>
+error = 'actual application has no exact real storage'
+
+    def fail(self, error):
+        self.fault = self.fault or str(error)
+>       raise ValueError(self.fault)
+E       ValueError: actual application has no exact real storage
+
+multi_robot_exploration/mr3_reach_runtime.py:151: ValueError
+
+During handling of the above exception, another exception occurred:
+
+self = <test_mr3_reach_delivery_order.ReachDeliveryOrderTests testMethod=test_permanently_missing_storage_never_closes_frontier_or_retires_disk>
+
+    def test_permanently_missing_storage_never_closes_frontier_or_retires_disk(self):
+        timeline, _, frontier, previous = applied_before_storage()
+        anchor = copy.deepcopy(timeline.r.anchor)
+        for _ in range(3):
+>           self.assert_pending(timeline, frontier, previous)
+
+test/test_mr3_reach_delivery_order.py:93: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+test/test_mr3_reach_delivery_order.py:60: in assert_pending
+    self.assertFalse(timeline.r.synchronize(timeline.now))
+multi_robot_exploration/mr3_reach_runtime.py:42: in call
+    self.fail(error)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <multi_robot_exploration.mr3_reach_runtime.ReachTracker object at 0x7f467d557340>
+error = ValueError('actual application has no exact real storage')
+
+    def fail(self, error):
+        self.fault = self.fault or str(error)
+>       raise ValueError(self.fault)
+E       ValueError: actual application has no exact real storage
+
+multi_robot_exploration/mr3_reach_runtime.py:151: ValueError
+=========================== short test summary info ============================
+FAILED test/test_mr3_reach_delivery_order.py::ReachDeliveryOrderTests::test_applied_first_waits_then_real_storage_recovers_without_early_normal
+FAILED test/test_mr3_reach_delivery_order.py::ReachDeliveryOrderTests::test_permanently_missing_storage_never_closes_frontier_or_retires_disk
+2 failed, 2 passed in 2.95s

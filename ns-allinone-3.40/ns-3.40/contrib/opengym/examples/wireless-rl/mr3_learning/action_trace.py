@@ -13,7 +13,10 @@ import subprocess
 import sys
 import time
 
-from .benchmark import _abort_requested, _new_preparation_abort, _preparation_failure, _wall_admission
+from .benchmark import (
+    SAFETY_CONTRACTS, _collection_safety_contract, _abort_requested,
+    _new_preparation_abort, _preparation_failure, _wall_admission,
+)
 from .env import MR3Env
 from .plant_probe import PHYSICS_CONFIG_ENV, physics_config
 from .supervisor import ROS_ROOT, WORKSPACE, Supervisor
@@ -35,6 +38,7 @@ def _clean_receipts(receipts, epoch):
 
 
 def run_trace(args, *, started_ns=None):
+    safety_contract = _collection_safety_contract(args)
     started_ns = time.monotonic_ns() if started_ns is None else started_ns
     args.close_reserve_seconds = CLOSE_RESERVE_SECONDS
     args.allocation_deadline_monotonic_ns = started_ns + round(WALL_SECONDS * 1e9)
@@ -51,6 +55,7 @@ def run_trace(args, *, started_ns=None):
         os.environ[PHYSICS_CONFIG_ENV] = str(config_path)
     summary = {
         "schema": "mr3-fixed-action-trace-v1", "scene": "open", "seed": 101,
+        "safety_contract": safety_contract,
         "robots": ["tb1", "tb2", "tb3"], "actions": list(ACTIONS),
         "spawn": "unchanged normal near-peer launch spawn; no plant stimulus arm",
         "policy_calls": 0, "optimizer_steps": 0, "training_eligible": False,
@@ -67,6 +72,10 @@ def run_trace(args, *, started_ns=None):
         "completed_requested_collection": False, "outcome": "INCOMPLETE",
         "cleanup_errors": [], "shutdown_receipts": [], "first_failure": None,
     }
+    if safety_contract == "mr3-reach-v1":
+        summary.update(scientific_readers_applied=False,
+                       scientific_qualification="PENDING_NEW_FREEZE_INDEPENDENT_AUDITS",
+                       qualification_scope="engineering_collection_only_no_legacy_qualification_credit")
 
     def save():
         summary_path.write_text(json.dumps(summary, indent=2, allow_nan=False) + "\n")
@@ -89,7 +98,8 @@ def run_trace(args, *, started_ns=None):
             indent=2, allow_nan=False) + "\n")
         save()
         supervisor = Supervisor(run_id=args.run_id, domain_id=args.domain, gazebo_port=args.port,
-                                output_root=args.output_root, startup_timeout=420., request_timeout=90.)
+                                output_root=args.output_root, startup_timeout=420., request_timeout=90.,
+                                safety_contract=safety_contract)
         environment = MR3Env(supervisor=supervisor, scene="open", max_steps=len(ACTIONS))
         if _wall_admission(args, abort, 0, "reset", episode_index=0):
             _, info = environment.reset(seed=101, options={"scene": "open"})
@@ -179,6 +189,7 @@ def main(argv=None):
     started_ns = time.monotonic_ns()
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--run-id", required=True)
+    parser.add_argument("--safety-contract", choices=SAFETY_CONTRACTS, default="legacy")
     parser.add_argument("--domain", type=int, default=180)
     parser.add_argument("--port", type=int, default=14001)
     parser.add_argument("--output-root", type=Path, default=ROS_ROOT / "log/mr3_action_trace")

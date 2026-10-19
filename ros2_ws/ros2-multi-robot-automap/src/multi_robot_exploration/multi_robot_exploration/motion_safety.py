@@ -1,6 +1,7 @@
 """The adapter's unique final Twist publisher with received-peer braking guards."""
 
 from collections import deque
+import copy
 import hashlib
 import json
 import math
@@ -16,13 +17,19 @@ from rclpy.qos import DurabilityPolicy, QoSProfile
 from std_msgs.msg import Bool, Header, String
 from tf2_msgs.msg import TFMessage
 
-from multi_robot_exploration.mr3_information import odom_payload, state_payload, transform_payload
+from multi_robot_exploration.mr3_information import (
+    odom_payload, publisher_graph_identity, state_payload, transform_payload,
+)
 from multi_robot_exploration.mr3_episode import elapsed_ns, timestamp_ns
 from multi_robot_exploration.mr3_motion_safety import (
     COMMAND_TIMEOUT_SEC, PERIOD_SEC, ROBOTS, SettledTurnTracker, guard_motion,
     measured_velocity_error, valid_state,
 )
 from multi_robot_exploration.mr3_motion_control import MotionControlPhase
+from multi_robot_exploration.mr3_reach_runtime import CONTRACT, ReachTracker
+from multi_robot_exploration.mr3_safety_intent import (
+    canonical_json, odometry_source_ns, parse_json, payload_sha256, validate_safety,
+)
 
 
 class MotionSafety(Node):
@@ -32,6 +39,11 @@ class MotionSafety(Node):
         super().__init__("motion_safety")
         self.epoch = self.declare_parameter("episode_epoch", "").value
         stepped = self.declare_parameter("stepped_mode", False).value
+        self.safety_contract = self.declare_parameter("safety_contract", "legacy").value
+        if (self.safety_contract not in ("legacy", CONTRACT)
+                or self.safety_contract == CONTRACT and not stepped):
+            raise ValueError("reach safety requires explicit stepped mr3-reach-v1")
+        self.reach_enabled = self.safety_contract == CONTRACT
         audit_path = self.declare_parameter("audit_path", "").value
         diagnostic_enabled = self.declare_parameter("mr3_diagnostic_enabled", False).value
         if not self.epoch:
@@ -53,6 +65,11 @@ class MotionSafety(Node):
         self.issued_motion = set()
         self.completed_motion = {}
         self.settled_turn = {name: SettledTurnTracker() for name in ROBOTS}
+        self.reach = {name: ReachTracker(self.epoch, name) for name in ROBOTS} if self.reach_enabled else {}
+        self.reach_pending_release = None
+        self._reach_emitting = False
+        self.reach_publisher_gids = {}
+        self.control_safety_context = None
         self.input_sequences = {name: {"odom": 0, "tf": 0, "request": 0} for name in ROBOTS}
         self.decision_sequences = dict.fromkeys(ROBOTS, 0)
         self.pending_outputs = {name: deque() for name in ROBOTS}
@@ -71,6 +88,9 @@ class MotionSafety(Node):
         self.drive_targets = {
             name: self.create_publisher(String, f"/{name}/mr3_drive/target", durable)
             for name in ROBOTS}
+        self.intent_publishers = ({name: self.create_publisher(
+            String, f"/{name}/mr3/safety_intent", 256) for name in ROBOTS}
+            if self.reach_enabled else {})
         self.ready_pub = self.create_publisher(Bool, "/motion_safety/ready", durable)
         self.status_pub = self.create_publisher(String, "/motion_safety/status", durable)
         self.failure_pub = self.create_publisher(String, "/exploration_failure", durable)
@@ -81,7 +101,8 @@ class MotionSafety(Node):
         for name in ROBOTS:
             self.inputs.extend([
                 self.create_subscription(Odometry, f"/{name}/odom",
-                                         lambda msg, name=name: self.receive_odom(msg, name), 10),
+                                         lambda msg, name=name: self.receive_odom(msg, name),
+                                         256 if self.reach_enabled else 10),
                 self.create_subscription(TFMessage, f"/{name}/tf",
                                          lambda msg, name=name: self.receive_tf(msg, name), 20),
                 self.create_subscription(
@@ -91,6 +112,13 @@ class MotionSafety(Node):
                     Twist, f"/{name}/cmd_vel",
                     lambda msg, name=name: self.receive_actual(msg, name), 20),
             ])
+            if getattr(self, "reach_enabled", False):
+                for kind, suffix in (("calibration", "odometry_calibration"),
+                                     ("applied", "applied"), ("storage", "status")):
+                    self.inputs.append(self.create_subscription(
+                        String, f"/{name}/mr3_drive/{suffix}",
+                        lambda msg, name=name, kind=kind: self.receive_reach_feed(msg, name, kind),
+                        durable if kind == "storage" else 256))
         self.inputs.extend([
             self.create_subscription(String, "/mr3/received/states", self.receive_states, 10),
             self.create_subscription(Header, "/exploration_start", self.receive_start, durable),
@@ -110,11 +138,14 @@ class MotionSafety(Node):
             "twist_source_stamp_available": False,
             "own_input_selection": "latest_causal_v1",
             "controlled_execution": stepped,
+            "safety_contract": self.safety_contract,
             "diagnostic_request_receipts": diagnostic_enabled,
-            "settled_turn_contract": "mr3-settled-turn-v1; own zero publications .94s, "
+            "settled_turn_contract": ("mr3-reach-v1; fixed anchors; D/N=2R, X=4R; "
+            "actual application plus strictly later raw; conditional plant, no continuous proof"
+            if self.reach_enabled else "mr3-settled-turn-v1; own zero publications .94s, "
             "three later fresh rest samples; conditional persistent planar speed<=.01m/s "
             "and whole zero-segment centre path<=.0078m, never reset by repeated grants; "
-            "independent actual zero storage>=.78s and full160ms driver audit required",
+            "independent actual zero storage>=.78s and full160ms driver audit required"),
             "publisher_identity_scope": "graph_at_callback; packet MessageInfo unavailable "
             "on installed Humble",
         })
@@ -155,11 +186,78 @@ class MotionSafety(Node):
                                  "input_sequence": self.input_sequences[name]["odom"],
                                  "message": payload})
         try:
-            self.settled_turn[name].observe(payload, self.input_sequences[name]["odom"])
+            if getattr(self, "reach_enabled", False):
+                self.reach[name].receive_raw(payload, self.input_sequences[name]["odom"])
+                self.try_reach_release()
+            else:
+                self.settled_turn[name].observe(payload, self.input_sequences[name]["odom"])
         except (ValueError, KeyError, TypeError) as error:
+            if getattr(self, "reach_enabled", False):
+                self.reach_failure(name, error)
+                return
             self.halted = "settled_turn_model_failure"
             self.record("settled_turn_model_failure", {"robot": name, "reason": str(error)})
             self.stop_controlled()
+
+    def receive_reach_feed(self, message, name, kind):
+        suffix = {"calibration":"odometry_calibration", "applied":"applied", "storage":"status"}[kind]
+        topic = f"/{name}/mr3_drive/{suffix}"
+        try:
+            value = parse_json(message.data)
+            key = (name, kind)
+            identity = publisher_graph_identity(self, topic, "turtlebot3_diff_drive", f"/{name}",
+                                                self.reach_publisher_gids.get(key))
+            self.record("reach_driver_ingress", {"robot":name,"kind":kind,
+                "message":value,"raw_json":message.data,"publisher_identity":identity})
+            if value.get("epoch") != self.epoch:
+                return
+            if not identity["valid"]:
+                raise ValueError("native reach feed publisher unavailable")
+            self.reach_publisher_gids[key] = identity["endpoints"][0]["endpoint_gid"]
+            getattr(self.reach[name], "receive_"+kind)(value)
+            self.try_reach_release()
+            if self.control_phase is not None:
+                self.control_phase.poll()
+        except (ValueError, KeyError, TypeError, OverflowError) as error:
+            self.record("invalid_reach_driver_ingress", {"robot":name,"kind":kind,
+                "raw_json":message.data,"reason":str(error)})
+            self.reach_failure(name, error)
+
+    def reach_failure(self, name, error):
+        self.halted = "normal_control_model_invalid"
+        self.reach_pending_release = None
+        if self.normal_control_model_fault is None:
+            self.normal_control_model_fault = {"schema":"mr3-reach-runtime-fault-v1",
+                "robot":name,"reason":str(error),"clock_ns":self.get_clock().now().nanoseconds}
+        self.record("reach_model_failure", self.normal_control_model_fault)
+        if not getattr(self, "_reach_emitting", False):
+            self.stop_controlled()
+
+    def publish_reach_intent(self, name, intent):
+        started = time.monotonic_ns()
+        self.intent_publishers[name].publish(String(data=canonical_json(intent)))
+        completed = time.monotonic_ns()
+        self.record("reach_intent_publish", {"robot":name,"intent":intent,
+            "payload_sha256":payload_sha256(intent),
+            "publish_started_wall_monotonic_ns":started,
+            "publish_completed_wall_monotonic_ns":completed,
+            "scope":"actual_publisher_call_returned_not_delivery"})
+
+    def try_reach_release(self):
+        release = self.reach_pending_release
+        if release is None:
+            return
+        if not all(tracker.synchronize(release) for tracker in self.reach.values()):
+            return
+        for tracker in self.reach.values():
+            tracker.check_release(release)
+        for name, tracker in self.reach.items():
+            tracker.release(release)
+            target = tracker.published[max(tracker.published)]
+            self.publish_reach_intent(name, tracker.make_intent(release, target))
+        self.reach_pending_release = None
+        self.record("reach_release_ready", {"clock_ns":release,
+            "scope":"post_release_actual_owner_HOLD_intent_publication"})
 
     def receive_tf(self, message, name):
         for transform in message.transforms:
@@ -268,7 +366,18 @@ class MotionSafety(Node):
 
     def receive_states(self, message):
         try:
-            value = json.loads(message.data)
+            reach = getattr(self, "reach_enabled", False)
+            value = parse_json(message.data) if reach else json.loads(message.data)
+            if reach:
+                if value.get("epoch") != self.epoch:
+                    return
+                identity = publisher_graph_identity(self, "/mr3/received/states", "mr3_information", "/",
+                    self.reach_publisher_gids.get("state_bundle"))
+                self.record("reach_state_ingress", {"message":value,"raw_json":message.data,
+                                                     "publisher_identity":identity})
+                if not identity["valid"]:
+                    raise ValueError("received reach state publisher unavailable or changed")
+                self.reach_publisher_gids["state_bundle"] = identity["endpoints"][0]["endpoint_gid"]
             if (value["epoch"] != self.epoch or len(value["robots"]) != 3
                     or set(row["name"] for row in value["robots"]) != set(ROBOTS)):
                 raise ValueError("received state epoch/robot identity mismatch")
@@ -277,14 +386,25 @@ class MotionSafety(Node):
         except (ValueError, KeyError, TypeError) as error:
             self.received = None
             self.record("invalid_received_states", {"reason": str(error)})
+            if getattr(self, "reach_enabled", False):
+                self.reach_failure("joint", error)
 
     def receive_start(self, message):
         if message.frame_id == "map":
             release_ns = message.stamp.sec * 1_000_000_000 + message.stamp.nanosec
             try:
-                for tracker in self.settled_turn.values():
-                    tracker.release(release_ns)
+                if getattr(self, "reach_enabled", False):
+                    if self.started or self.reach_pending_release is not None:
+                        raise ValueError("repeated reach release")
+                    self.reach_pending_release = release_ns
+                    self.try_reach_release()
+                else:
+                    for tracker in self.settled_turn.values():
+                        tracker.release(release_ns)
             except ValueError as error:
+                if getattr(self, "reach_enabled", False):
+                    self.reach_failure("joint", error)
+                    return
                 self.halted = "invalid_exploration_release"
                 self.record("failure", {"data": str(error)})
                 return
@@ -350,13 +470,22 @@ class MotionSafety(Node):
                     or abs(sum(value * value for value in values) - 1.) > .01):
                 return None
         value = state_payload(name, odometry, transform, .2)
-        value.pop("odometry")
-        value.pop("transform")
+        if not getattr(self, "reach_enabled", False):
+            value.pop("odometry")
+            value.pop("transform")
         value.update(epoch=self.epoch, valid=True,
                      source_stamp=min(value["odom_source_stamp"], value["tf_source_stamp"]),
                      input_sequences=sequences)
         value["planar_speed_mps"] = math.hypot(odometry.twist.twist.linear.x,
                                                odometry.twist.twist.linear.y)
+        if getattr(self, "reach_enabled", False):
+            source = odometry_source_ns(value["odometry"])
+            calibration = self.reach[name].calibrations.get(source)
+            states = {row["name"]:row for row in self.received["robots"]} if self.received else {}
+            intent = (states.get(name,{}).get("safety") or {}).get("intent")
+            if calibration is not None and intent is not None:
+                value["safety"] = {"intent":copy.deepcopy(intent),"calibration":copy.deepcopy(calibration)}
+            return value
         try:
             value["settled_turn"] = self.settled_turn[name].certificate(
                 self.get_clock().now().nanoseconds)
@@ -393,6 +522,14 @@ class MotionSafety(Node):
         """
         if type(clock_ns) is not int or clock_ns < 0:
             raise ValueError("invalid normal model check clock")
+        if getattr(self, "reach_enabled", False):
+            for name, tracker in self.reach.items():
+                try:
+                    tracker.synchronize(clock_ns)
+                except (ValueError, KeyError, TypeError, OverflowError) as error:
+                    return {"schema":"mr3-reach-runtime-fault-v1","robot":name,
+                            "reason":str(error),"commit_clock_ns":clock_ns}
+            return None
 
         def source_ns(payload):
             stamp = payload["header"]["stamp"]
@@ -472,6 +609,21 @@ class MotionSafety(Node):
     def control_inputs_ready(self, clock_ns):
         now = clock_ns / 1e9
         states = {row["name"]: row for row in self.received["robots"]} if self.received else {}
+        if getattr(self, "reach_enabled", False):
+            try:
+                if self.reach_pending_release is not None or not all(
+                        tracker.synchronize(clock_ns) for tracker in self.reach.values()):
+                    return False
+                for name in ROBOTS:
+                    own = self.local_state(name)
+                    for state in (own, states.get(name)):
+                        if not valid_state(state, now, self.epoch, require_raw=True):
+                            return False
+                        validate_safety(state["safety"], epoch=self.epoch, robot=name,
+                                        selected_odom=state["odometry"], now_ns=clock_ns)
+                return self.local_observers_ready() and self.topology_ready()
+            except (ValueError,KeyError,TypeError,OverflowError):
+                return False
         return (self.local_observers_ready() and self.topology_ready()
                 and all(valid_state(self.local_state(name), now, self.epoch)
                         and valid_state(states.get(name), now, self.epoch, require_raw=True)
@@ -486,6 +638,8 @@ class MotionSafety(Node):
         self.emit_motion(stop=stop)
 
     def emit_motion(self, stop=False):
+        if getattr(self, "reach_enabled", False):
+            return self.emit_reach_motion(stop)
         clock_ns = self.get_clock().now().nanoseconds
         now = clock_ns / 1e9
         observers_ready = self.local_observers_ready()
@@ -585,6 +739,110 @@ class MotionSafety(Node):
             self.publish_completed_status(clock_ns)
         else:
             self.record("clock_changed_during_decision", {"decision_clock_ns": clock_ns})
+
+    def emit_reach_motion(self, stop=False):
+        if getattr(self, "_reach_emitting", False):
+            return
+        self._reach_emitting = True
+        try:
+            self._emit_reach_motion(stop)
+        finally:
+            self._reach_emitting = False
+
+    def _emit_reach_motion(self, stop=False):
+        clock_ns = self.get_clock().now().nanoseconds
+        observers_ready = self.local_observers_ready()
+        if not observers_ready and not self.observers_started and not stop:
+            self.ready_pub.publish(Bool(data=False))
+            return
+        self.observers_started = True
+        frozen = copy.deepcopy(self.received)
+        states = {row["name"]:row for row in frozen["robots"]} if frozen else {}
+        healthy = not stop and self.control_inputs_ready(clock_ns)
+        own = {name:self.local_state(name) for name in ROBOTS}
+        context = self.control_safety_context
+        if self.started and context is None:
+            healthy = False
+        table_sha = None if context is None else context["safety_table_sha256"]
+        if context is not None and (set(states) != set(ROBOTS)
+                or frozen.get("safety_contract") != CONTRACT
+                or frozen.get("safety_table_sha256") != table_sha
+                or payload_sha256({name:states[name]["safety"] for name in ROBOTS}) != table_sha
+                or frozen.get("intent_refs") != context["intent_refs"]):
+            self.reach_failure("joint", ValueError("frozen safety table differs from actual phase"))
+            healthy = False
+        self.issued_motion.add((clock_ns,"stop" if stop else "normal"))
+        decisions = {}
+        # Complete every robot's admission before publishing any output. A
+        # late tb3 contradiction must also suppress tb1/tb2 in this phase.
+        for name, tracker in self.reach.items():
+            request = self.requests.get(name)
+            allowed_request = (healthy and self.started and self.halted is None
+                and self.stop_time is None and request is not None and request["supported"]
+                and request["publisher_identity"]["valid"]
+                and 0 <= elapsed_ns(request["received_stamp"], clock_ns/1e9)
+                <= timestamp_ns(COMMAND_TIMEOUT_SEC))
+            decision={"allow":False,"reason":"reach_zero","output":[0.,0.],"minimum_margin_m":None}
+            if healthy and self.started and self.halted is None and self.stop_time is None:
+                try:
+                    decision=tracker.decide([request["v"],request["w"]] if allowed_request else [0.,0.],own[name],
+                        {peer:states[peer] for peer in ROBOTS if peer!=name},clock_ns,
+                        states[name]["safety"]["intent"])
+                    if not allowed_request:
+                        decision["reason"]="request_unavailable_zero"
+                except (ValueError,KeyError,TypeError,OverflowError) as error:
+                    self.reach_failure(name,error)
+                    decision["reason"]="reach_model_failure"
+            decisions[name] = decision
+        stopping = stop or self.halted is not None or self.stop_time is not None
+        healthy = healthy and not stopping
+        self.ready_pub.publish(Bool(data=healthy))
+        outputs, refs = {}, {}
+        for name, tracker in self.reach.items():
+            request = self.requests.get(name)
+            decision = decisions[name]
+            if stopping:
+                decision["output"]=[0.,0.]
+                decision["allow"]=False
+            self.decision_sequences[name]+=1
+            v,w=decision["output"]
+            target={"schema":"mr3-drive-target-v1","epoch":self.epoch,"robot":name,
+                    "clock_ns":clock_ns,"decision_sequence":self.decision_sequences[name],
+                    "linear_x":v,"angular_z":w}
+            if stopping and tracker.current_intent is not None:
+                tracker.stop()
+            intent=tracker.publish_target(target)
+            if stopping and not tracker.stopped:
+                self.publish_reach_intent(name,intent)
+                tracker.stop()
+                intent=tracker.make_intent(clock_ns,target)
+            self.pending_outputs[name].append({"sequence":self.decision_sequences[name],
+                "clock_ns":clock_ns,"output":[v,w]})
+            output=Twist();output.linear.x=v;output.angular.z=w
+            self.outputs[name].publish(output)
+            encoded=canonical_json(target)
+            self.drive_targets[name].publish(String(data=encoded))
+            self.publish_reach_intent(name,intent)
+            if self.drive_audit is not None:
+                self.drive_record_sequence+=1
+                self.drive_audit.write(json.dumps({"schema":"mr3-drive-target-publication-v1",
+                    "epoch":self.epoch,"record_sequence":self.drive_record_sequence,
+                    "wall_monotonic_ns":time.monotonic_ns(),"target_json":encoded},sort_keys=True)+"\n")
+            self.record("reach_decision", {"robot":name,"clock_ns":clock_ns,
+                "decision_sequence":self.decision_sequences[name],"request":request,
+                "own_state":own[name],"received_peers":{p:states.get(p) for p in ROBOTS if p!=name},
+                "decision":decision,"intent":intent,"tracker":tracker.status(),
+                "safety_table_sha256":table_sha,"started":self.started,"ready":healthy,
+                **({"phase_kind":"stop"} if stop else {})})
+            refs[name]={"intent_sequence":intent["intent_sequence"],"payload_sha256":payload_sha256(intent)}
+            outputs[name]={"linear_x":v,"angular_z":w}
+        status={"schema":"mr3-motion-safety-status-v2","epoch":self.epoch,
+            "clock_ns":clock_ns,"ready":healthy,"completion_scope":"publication_and_local_topic_receipt",
+            "decision_sequences":dict(self.decision_sequences),"outputs":outputs,
+            "safety_contract":CONTRACT,"intent_refs":refs,"safety_table_sha256":table_sha}
+        if stop:status["phase_kind"]="stop"
+        self.pending_status[(clock_ns,"stop" if stop else "normal")]=status
+        self.publish_completed_status(clock_ns)
 
 
 def main(args=None):

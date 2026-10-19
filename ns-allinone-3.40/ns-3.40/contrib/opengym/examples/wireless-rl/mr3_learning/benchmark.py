@@ -34,6 +34,21 @@ PREPARATION_PROBE_V3 = "mr3-p2a0-outward-cancel-v3"
 PREPARATION_PROBE_V4 = "mr3-p2a0-outward-cancel-v4"
 PREPARATION_PROBE_V5 = "mr3-p2a0-outward-cancel-v5"
 PREPARATION_PROBE_V6 = "mr3-p2a0-outward-cancel-v6"
+SAFETY_CONTRACTS = ("legacy", "mr3-reach-v1")
+
+
+def _collection_safety_contract(args):
+    """Engineering selection cannot reuse legacy preparation qualification."""
+    profile = getattr(args, "safety_contract", "legacy")
+    if profile not in SAFETY_CONTRACTS:
+        raise ValueError("unknown safety contract")
+    if profile == "mr3-reach-v1" and (
+            getattr(args, "preparation_motion_probe", False)
+            or getattr(args, "preparation_probe_version", None) is not None
+            or getattr(args, "preparation_parameter_review", False)
+            or getattr(args, "preparation_parameter_profile", "original") != "original"):
+        raise ValueError("mr3-reach-v1 supports engineering collection only; legacy preparation probes and parameter readers have no new-contract qualification")
+    return profile
 
 
 def _probe_goal_order(snapshot, action, outward_goals):
@@ -496,6 +511,7 @@ def resource_sample():
 
 
 def run_worker(args, worker_id, preparation_abort=None):
+    safety_contract = _collection_safety_contract(args)
     preparation = args.preparation_motion_probe
     budgeted = getattr(args, "allocation_deadline_monotonic_ns", None) is not None
     abort = (preparation_abort or _new_preparation_abort()) if preparation or budgeted else None
@@ -503,7 +519,8 @@ def run_worker(args, worker_id, preparation_abort=None):
         supervisor = Supervisor(run_id=args.run_id, worker_id=worker_id,
                                 domain_id=args.base_domain + worker_id,
                                 gazebo_port=args.base_port + worker_id,
-                                output_root=args.output_root, terminal_probe=args.terminal_probe)
+                                output_root=args.output_root, terminal_probe=args.terminal_probe,
+                                safety_contract=safety_contract)
         environment = MR3Env(supervisor=supervisor, max_steps=args.steps)
     except Exception as error:
         _preparation_failure(abort, worker_id, "construction_exception", repr(error))
@@ -666,13 +683,15 @@ def run_worker(args, worker_id, preparation_abort=None):
     return result
 
 
-def main():
+def main(argv=None):
     main_started_ns = time.monotonic_ns()
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--workers", type=int, choices=(1, 2, 4), required=True)
     parser.add_argument("--schedule", default="open:101,open:101")
     parser.add_argument("--steps", type=int, default=16)
     parser.add_argument("--run-id", required=True)
+    parser.add_argument("--safety-contract", choices=SAFETY_CONTRACTS, default="legacy",
+                        help="mr3-reach-v1 collects engineering evidence only; new qualification required")
     parser.add_argument("--base-domain", type=int, default=120)
     parser.add_argument("--base-port", type=int, default=12001)
     parser.add_argument("--output-root", type=Path)
@@ -693,7 +712,11 @@ def main():
                         help="paused one-worker open101: frozen readonly ROS parameter audit")
     parser.add_argument("--preparation-parameter-profile", choices=("original", "gentle_turn_v1"),
                         default="original", help="exact readback profile; never sets ROS parameters")
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
+    try:
+        _collection_safety_contract(args)
+    except ValueError as error:
+        parser.error(str(error))
     if (not math.isfinite(args.close_reserve_seconds) or args.close_reserve_seconds <= 0
             or (args.work_wall_seconds is not None and (
                 not math.isfinite(args.work_wall_seconds)
@@ -767,8 +790,10 @@ def main():
     sampler = threading.Thread(target=sample_resources, name="mr3_resources", daemon=True)
     started = (time.monotonic() if args.work_wall_seconds is None else main_started_ns / 1e9)
     metadata = {"kind": "scripted_p1c_sampling_not_rl", "workers": args.workers,
+                "safety_contract": args.safety_contract,
                 "robots_per_worker": 3, "schedule": args.schedule, "steps_per_episode": args.steps,
-                "command": sys.argv, "python": sys.executable,
+                "command": (sys.argv if argv is None else
+                            [sys.executable, "-m", "mr3_learning.benchmark", *argv]), "python": sys.executable,
                 "freeze": args.freeze or subprocess.check_output(
                     ["git", "rev-parse", "HEAD"], cwd=WORKSPACE, text=True).strip(),
                 "base_domain": args.base_domain, "base_port": args.base_port,
@@ -783,6 +808,10 @@ def main():
                 "resource_scope": "host counters include unrelated activity; GPU driver reports",
                 "num_logical_cpus": os.cpu_count(),
                 "cpu_affinity_count": len(os.sched_getaffinity(0))}
+    if args.safety_contract == "mr3-reach-v1":
+        metadata.update(training_eligible=False, scientific_readers_applied=False,
+                        scientific_qualification="PENDING_NEW_FREEZE_INDEPENDENT_AUDITS",
+                        qualification_scope="engineering_collection_only_no_legacy_qualification_credit")
     if args.work_wall_seconds is not None:
         metadata["work_wall_budget"] = {
             "total_allocation_seconds": args.work_wall_seconds,

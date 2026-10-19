@@ -1,0 +1,1033 @@
+........................................................................ [ 16%]
+........................................................................ [ 32%]
+.......FFFFFFFFF.............................................FFFFFFFFFFF [ 49%]
+........................................................................ [ 65%]
+.................................F...................................... [ 82%]
+........................................................................ [ 98%]
+.....                                                                    [100%]
+=================================== FAILURES ===================================
+___________ test_rpc_refs_cannot_replace_real_safety_ingress[intent] ___________
+
+missing = 'intent'
+
+    @pytest.mark.parametrize('missing', ['intent', 'calibration'])
+    def test_rpc_refs_cannot_replace_real_safety_ingress(missing):
+        node = reach_bridge()
+>       _, intents, calibrations = prime(
+            node, send_intents=missing != 'intent', send_calibration=missing != 'calibration')
+
+test/test_mr3_information_reach.py:94: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+test/test_mr3_information_reach.py:70: in prime
+    ingress(node, 'calibration', robot, calibrations[robot])
+test/test_mr3_information_reach.py:54: in ingress
+    node.receive_safety_input(kind, robot, String(data=canonical_json(value)))
+multi_robot_exploration/mr3_safety_intent.py:43: in canonical_json
+    _json_value(value)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:33: in _json_value
+    _json_value(item)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 0.0
+
+    def _json_value(value):
+        if value is None or type(value) in (str, bool, int):
+            return
+        if type(value) is float and math.isfinite(value):
+            return
+        if type(value) is list:
+            for item in value:
+                _json_value(item)
+            return
+        if type(value) is dict and all(type(key) is str for key in value):
+            for item in value.values():
+                _json_value(item)
+            return
+>       raise ValueError("expected finite JSON values with string object keys")
+E       ValueError: expected finite JSON values with string object keys
+
+multi_robot_exploration/mr3_safety_intent.py:39: ValueError
+________ test_rpc_refs_cannot_replace_real_safety_ingress[calibration] _________
+
+missing = 'calibration'
+
+    @pytest.mark.parametrize('missing', ['intent', 'calibration'])
+    def test_rpc_refs_cannot_replace_real_safety_ingress(missing):
+        node = reach_bridge()
+        _, intents, calibrations = prime(
+            node, send_intents=missing != 'intent', send_calibration=missing != 'calibration')
+        commit(node, intents)
+        assert node.pending_state_phase is not None and not node.state_publisher.messages
+        for robot in node.names:
+>           ingress(node, missing, robot, intents[robot] if missing == 'intent' else calibrations[robot])
+
+test/test_mr3_information_reach.py:99: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+test/test_mr3_information_reach.py:54: in ingress
+    node.receive_safety_input(kind, robot, String(data=canonical_json(value)))
+multi_robot_exploration/mr3_safety_intent.py:43: in canonical_json
+    _json_value(value)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:33: in _json_value
+    _json_value(item)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 0.0
+
+    def _json_value(value):
+        if value is None or type(value) in (str, bool, int):
+            return
+        if type(value) is float and math.isfinite(value):
+            return
+        if type(value) is list:
+            for item in value:
+                _json_value(item)
+            return
+        if type(value) is dict and all(type(key) is str for key in value):
+            for item in value.values():
+                _json_value(item)
+            return
+>       raise ValueError("expected finite JSON values with string object keys")
+E       ValueError: expected finite JSON values with string object keys
+
+multi_robot_exploration/mr3_safety_intent.py:39: ValueError
+__ test_actual_envelope_preserves_raw_projection_and_binds_whole_safety_table __
+
+    def test_actual_envelope_preserves_raw_projection_and_binds_whole_safety_table():
+        node = reach_bridge()
+>       odoms, intents, calibrations = prime(node)
+
+test/test_mr3_information_reach.py:106: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+test/test_mr3_information_reach.py:70: in prime
+    ingress(node, 'calibration', robot, calibrations[robot])
+test/test_mr3_information_reach.py:54: in ingress
+    node.receive_safety_input(kind, robot, String(data=canonical_json(value)))
+multi_robot_exploration/mr3_safety_intent.py:43: in canonical_json
+    _json_value(value)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:33: in _json_value
+    _json_value(item)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 0.0
+
+    def _json_value(value):
+        if value is None or type(value) in (str, bool, int):
+            return
+        if type(value) is float and math.isfinite(value):
+            return
+        if type(value) is list:
+            for item in value:
+                _json_value(item)
+            return
+        if type(value) is dict and all(type(key) is str for key in value):
+            for item in value.values():
+                _json_value(item)
+            return
+>       raise ValueError("expected finite JSON values with string object keys")
+E       ValueError: expected finite JSON values with string object keys
+
+multi_robot_exploration/mr3_safety_intent.py:39: ValueError
+_________ test_future_safety_cannot_displace_an_exact_causal_reference _________
+
+    def test_future_safety_cannot_displace_an_exact_causal_reference():
+        node = reach_bridge()
+>       _, intents, _ = prime(node)
+
+test/test_mr3_information_reach.py:131: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+test/test_mr3_information_reach.py:70: in prime
+    ingress(node, 'calibration', robot, calibrations[robot])
+test/test_mr3_information_reach.py:54: in ingress
+    node.receive_safety_input(kind, robot, String(data=canonical_json(value)))
+multi_robot_exploration/mr3_safety_intent.py:43: in canonical_json
+    _json_value(value)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:33: in _json_value
+    _json_value(item)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 0.0
+
+    def _json_value(value):
+        if value is None or type(value) in (str, bool, int):
+            return
+        if type(value) is float and math.isfinite(value):
+            return
+        if type(value) is list:
+            for item in value:
+                _json_value(item)
+            return
+        if type(value) is dict and all(type(key) is str for key in value):
+            for item in value.values():
+                _json_value(item)
+            return
+>       raise ValueError("expected finite JSON values with string object keys")
+E       ValueError: expected finite JSON values with string object keys
+
+multi_robot_exploration/mr3_safety_intent.py:39: ValueError
+__ test_normal_intent_waits_for_its_independently_delivered_causal_raw_source __
+
+    def test_normal_intent_waits_for_its_independently_delivered_causal_raw_source():
+        node = reach_bridge()
+>       _, _, _ = prime(node)
+
+test/test_mr3_information_reach.py:151: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+test/test_mr3_information_reach.py:70: in prime
+    ingress(node, 'calibration', robot, calibrations[robot])
+test/test_mr3_information_reach.py:54: in ingress
+    node.receive_safety_input(kind, robot, String(data=canonical_json(value)))
+multi_robot_exploration/mr3_safety_intent.py:43: in canonical_json
+    _json_value(value)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:33: in _json_value
+    _json_value(item)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 0.0
+
+    def _json_value(value):
+        if value is None or type(value) in (str, bool, int):
+            return
+        if type(value) is float and math.isfinite(value):
+            return
+        if type(value) is list:
+            for item in value:
+                _json_value(item)
+            return
+        if type(value) is dict and all(type(key) is str for key in value):
+            for item in value.values():
+                _json_value(item)
+            return
+>       raise ValueError("expected finite JSON values with string object keys")
+E       ValueError: expected finite JSON values with string object keys
+
+multi_robot_exploration/mr3_safety_intent.py:39: ValueError
+_ test_intent_source_age_is_independent_of_fresh_measurement_age[500000000-True] _
+
+age_ns = 500000000, valid = True
+
+    @pytest.mark.parametrize('age_ns,valid', [(500_000_000, True), (500_000_001, False)])
+    def test_intent_source_age_is_independent_of_fresh_measurement_age(age_ns, valid):
+        node = reach_bridge()
+>       _, _, _ = prime(node, send_intents=False)
+
+test/test_mr3_information_reach.py:177: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+test/test_mr3_information_reach.py:70: in prime
+    ingress(node, 'calibration', robot, calibrations[robot])
+test/test_mr3_information_reach.py:54: in ingress
+    node.receive_safety_input(kind, robot, String(data=canonical_json(value)))
+multi_robot_exploration/mr3_safety_intent.py:43: in canonical_json
+    _json_value(value)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:33: in _json_value
+    _json_value(item)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 0.0
+
+    def _json_value(value):
+        if value is None or type(value) in (str, bool, int):
+            return
+        if type(value) is float and math.isfinite(value):
+            return
+        if type(value) is list:
+            for item in value:
+                _json_value(item)
+            return
+        if type(value) is dict and all(type(key) is str for key in value):
+            for item in value.values():
+                _json_value(item)
+            return
+>       raise ValueError("expected finite JSON values with string object keys")
+E       ValueError: expected finite JSON values with string object keys
+
+multi_robot_exploration/mr3_safety_intent.py:39: ValueError
+_ test_intent_source_age_is_independent_of_fresh_measurement_age[500000001-False] _
+
+age_ns = 500000001, valid = False
+
+    @pytest.mark.parametrize('age_ns,valid', [(500_000_000, True), (500_000_001, False)])
+    def test_intent_source_age_is_independent_of_fresh_measurement_age(age_ns, valid):
+        node = reach_bridge()
+>       _, _, _ = prime(node, send_intents=False)
+
+test/test_mr3_information_reach.py:177: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+test/test_mr3_information_reach.py:70: in prime
+    ingress(node, 'calibration', robot, calibrations[robot])
+test/test_mr3_information_reach.py:54: in ingress
+    node.receive_safety_input(kind, robot, String(data=canonical_json(value)))
+multi_robot_exploration/mr3_safety_intent.py:43: in canonical_json
+    _json_value(value)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:33: in _json_value
+    _json_value(item)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 0.0
+
+    def _json_value(value):
+        if value is None or type(value) in (str, bool, int):
+            return
+        if type(value) is float and math.isfinite(value):
+            return
+        if type(value) is list:
+            for item in value:
+                _json_value(item)
+            return
+        if type(value) is dict and all(type(key) is str for key in value):
+            for item in value.values():
+                _json_value(item)
+            return
+>       raise ValueError("expected finite JSON values with string object keys")
+E       ValueError: expected finite JSON values with string object keys
+
+multi_robot_exploration/mr3_safety_intent.py:39: ValueError
+______ test_wrong_calibration_raw_payload_fails_before_state_publication _______
+
+    def test_wrong_calibration_raw_payload_fails_before_state_publication():
+        node = reach_bridge()
+        _, intents, calibrations = prime(node, send_calibration=False)
+        calibrations['tb1']['odometry']['pose']['pose']['position']['x'] = .25
+        for robot in node.names:
+>           ingress(node, 'calibration', robot, calibrations[robot])
+
+test/test_mr3_information_reach.py:192: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+test/test_mr3_information_reach.py:54: in ingress
+    node.receive_safety_input(kind, robot, String(data=canonical_json(value)))
+multi_robot_exploration/mr3_safety_intent.py:43: in canonical_json
+    _json_value(value)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:33: in _json_value
+    _json_value(item)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 0.0
+
+    def _json_value(value):
+        if value is None or type(value) in (str, bool, int):
+            return
+        if type(value) is float and math.isfinite(value):
+            return
+        if type(value) is list:
+            for item in value:
+                _json_value(item)
+            return
+        if type(value) is dict and all(type(key) is str for key in value):
+            for item in value.values():
+                _json_value(item)
+            return
+>       raise ValueError("expected finite JSON values with string object keys")
+E       ValueError: expected finite JSON values with string object keys
+
+multi_robot_exploration/mr3_safety_intent.py:39: ValueError
+__ test_conflicting_requested_intent_hash_cannot_select_a_real_other_payload ___
+
+    def test_conflicting_requested_intent_hash_cannot_select_a_real_other_payload():
+        node = reach_bridge()
+>       _, intents, _ = prime(node)
+
+test/test_mr3_information_reach.py:202: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+test/test_mr3_information_reach.py:70: in prime
+    ingress(node, 'calibration', robot, calibrations[robot])
+test/test_mr3_information_reach.py:54: in ingress
+    node.receive_safety_input(kind, robot, String(data=canonical_json(value)))
+multi_robot_exploration/mr3_safety_intent.py:43: in canonical_json
+    _json_value(value)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:33: in _json_value
+    _json_value(item)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 0.0
+
+    def _json_value(value):
+        if value is None or type(value) in (str, bool, int):
+            return
+        if type(value) is float and math.isfinite(value):
+            return
+        if type(value) is list:
+            for item in value:
+                _json_value(item)
+            return
+        if type(value) is dict and all(type(key) is str for key in value):
+            for item in value.values():
+                _json_value(item)
+            return
+>       raise ValueError("expected finite JSON values with string object keys")
+E       ValueError: expected finite JSON values with string object keys
+
+multi_robot_exploration/mr3_safety_intent.py:39: ValueError
+___________ test_common_bundle_is_actually_received_before_reach_ack ___________
+
+    def test_common_bundle_is_actually_received_before_reach_ack():
+        node, _, odoms, tf = reach_fixture()
+        assert reach_takeover(node)['schema'] == 'mr3-peer-phase-ack-v2'
+>       request, bundle = reach_inputs(node, odoms, tf, before_callback=False)
+
+test/test_peer_reach_phase.py:62: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+test/test_peer_reach_phase.py:42: in reach_inputs
+    safety_table_sha256=payload_sha256(table))
+multi_robot_exploration/mr3_safety_intent.py:48: in payload_sha256
+    return hashlib.sha256(canonical_json(value).encode("utf-8")).hexdigest()
+multi_robot_exploration/mr3_safety_intent.py:43: in canonical_json
+    _json_value(value)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:33: in _json_value
+    _json_value(item)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 0.0
+
+    def _json_value(value):
+        if value is None or type(value) in (str, bool, int):
+            return
+        if type(value) is float and math.isfinite(value):
+            return
+        if type(value) is list:
+            for item in value:
+                _json_value(item)
+            return
+        if type(value) is dict and all(type(key) is str for key in value):
+            for item in value.values():
+                _json_value(item)
+            return
+>       raise ValueError("expected finite JSON values with string object keys")
+E       ValueError: expected finite JSON values with string object keys
+
+multi_robot_exploration/mr3_safety_intent.py:39: ValueError
+_____ test_phase_request_cannot_replace_actual_safety_table[table_digest] ______
+
+changed = 'table_digest'
+
+    @pytest.mark.parametrize('changed', ['table_digest', 'intent_ref', 'robot_safety_hash'])
+    def test_phase_request_cannot_replace_actual_safety_table(changed):
+        node, _, odoms, tf = reach_fixture()
+        reach_takeover(node)
+>       request, _ = reach_inputs(node, odoms, tf)
+
+test/test_peer_reach_phase.py:81: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+test/test_peer_reach_phase.py:42: in reach_inputs
+    safety_table_sha256=payload_sha256(table))
+multi_robot_exploration/mr3_safety_intent.py:48: in payload_sha256
+    return hashlib.sha256(canonical_json(value).encode("utf-8")).hexdigest()
+multi_robot_exploration/mr3_safety_intent.py:43: in canonical_json
+    _json_value(value)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:33: in _json_value
+    _json_value(item)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 0.0
+
+    def _json_value(value):
+        if value is None or type(value) in (str, bool, int):
+            return
+        if type(value) is float and math.isfinite(value):
+            return
+        if type(value) is list:
+            for item in value:
+                _json_value(item)
+            return
+        if type(value) is dict and all(type(key) is str for key in value):
+            for item in value.values():
+                _json_value(item)
+            return
+>       raise ValueError("expected finite JSON values with string object keys")
+E       ValueError: expected finite JSON values with string object keys
+
+multi_robot_exploration/mr3_safety_intent.py:39: ValueError
+______ test_phase_request_cannot_replace_actual_safety_table[intent_ref] _______
+
+changed = 'intent_ref'
+
+    @pytest.mark.parametrize('changed', ['table_digest', 'intent_ref', 'robot_safety_hash'])
+    def test_phase_request_cannot_replace_actual_safety_table(changed):
+        node, _, odoms, tf = reach_fixture()
+        reach_takeover(node)
+>       request, _ = reach_inputs(node, odoms, tf)
+
+test/test_peer_reach_phase.py:81: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+test/test_peer_reach_phase.py:42: in reach_inputs
+    safety_table_sha256=payload_sha256(table))
+multi_robot_exploration/mr3_safety_intent.py:48: in payload_sha256
+    return hashlib.sha256(canonical_json(value).encode("utf-8")).hexdigest()
+multi_robot_exploration/mr3_safety_intent.py:43: in canonical_json
+    _json_value(value)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:33: in _json_value
+    _json_value(item)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 0.0
+
+    def _json_value(value):
+        if value is None or type(value) in (str, bool, int):
+            return
+        if type(value) is float and math.isfinite(value):
+            return
+        if type(value) is list:
+            for item in value:
+                _json_value(item)
+            return
+        if type(value) is dict and all(type(key) is str for key in value):
+            for item in value.values():
+                _json_value(item)
+            return
+>       raise ValueError("expected finite JSON values with string object keys")
+E       ValueError: expected finite JSON values with string object keys
+
+multi_robot_exploration/mr3_safety_intent.py:39: ValueError
+___ test_phase_request_cannot_replace_actual_safety_table[robot_safety_hash] ___
+
+changed = 'robot_safety_hash'
+
+    @pytest.mark.parametrize('changed', ['table_digest', 'intent_ref', 'robot_safety_hash'])
+    def test_phase_request_cannot_replace_actual_safety_table(changed):
+        node, _, odoms, tf = reach_fixture()
+        reach_takeover(node)
+>       request, _ = reach_inputs(node, odoms, tf)
+
+test/test_peer_reach_phase.py:81: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+test/test_peer_reach_phase.py:42: in reach_inputs
+    safety_table_sha256=payload_sha256(table))
+multi_robot_exploration/mr3_safety_intent.py:48: in payload_sha256
+    return hashlib.sha256(canonical_json(value).encode("utf-8")).hexdigest()
+multi_robot_exploration/mr3_safety_intent.py:43: in canonical_json
+    _json_value(value)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:33: in _json_value
+    _json_value(item)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 0.0
+
+    def _json_value(value):
+        if value is None or type(value) in (str, bool, int):
+            return
+        if type(value) is float and math.isfinite(value):
+            return
+        if type(value) is list:
+            for item in value:
+                _json_value(item)
+            return
+        if type(value) is dict and all(type(key) is str for key in value):
+            for item in value.values():
+                _json_value(item)
+            return
+>       raise ValueError("expected finite JSON values with string object keys")
+E       ValueError: expected finite JSON values with string object keys
+
+multi_robot_exploration/mr3_safety_intent.py:39: ValueError
+_ test_bundle_payload_is_not_trusted_because_its_claims_match_a_request[calibration_raw] _
+
+change = 'calibration_raw'
+
+    @pytest.mark.parametrize('change', ['calibration_raw', 'table_claim', 'intent_claim'])
+    def test_bundle_payload_is_not_trusted_because_its_claims_match_a_request(change):
+        node, now, odoms, tf = reach_fixture()
+        reach_takeover(node)
+>       request, bundle = reach_inputs(node, odoms, tf, before_callback=False)
+
+test/test_peer_reach_phase.py:98: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+test/test_peer_reach_phase.py:42: in reach_inputs
+    safety_table_sha256=payload_sha256(table))
+multi_robot_exploration/mr3_safety_intent.py:48: in payload_sha256
+    return hashlib.sha256(canonical_json(value).encode("utf-8")).hexdigest()
+multi_robot_exploration/mr3_safety_intent.py:43: in canonical_json
+    _json_value(value)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:33: in _json_value
+    _json_value(item)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 0.0
+
+    def _json_value(value):
+        if value is None or type(value) in (str, bool, int):
+            return
+        if type(value) is float and math.isfinite(value):
+            return
+        if type(value) is list:
+            for item in value:
+                _json_value(item)
+            return
+        if type(value) is dict and all(type(key) is str for key in value):
+            for item in value.values():
+                _json_value(item)
+            return
+>       raise ValueError("expected finite JSON values with string object keys")
+E       ValueError: expected finite JSON values with string object keys
+
+multi_robot_exploration/mr3_safety_intent.py:39: ValueError
+_ test_bundle_payload_is_not_trusted_because_its_claims_match_a_request[table_claim] _
+
+change = 'table_claim'
+
+    @pytest.mark.parametrize('change', ['calibration_raw', 'table_claim', 'intent_claim'])
+    def test_bundle_payload_is_not_trusted_because_its_claims_match_a_request(change):
+        node, now, odoms, tf = reach_fixture()
+        reach_takeover(node)
+>       request, bundle = reach_inputs(node, odoms, tf, before_callback=False)
+
+test/test_peer_reach_phase.py:98: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+test/test_peer_reach_phase.py:42: in reach_inputs
+    safety_table_sha256=payload_sha256(table))
+multi_robot_exploration/mr3_safety_intent.py:48: in payload_sha256
+    return hashlib.sha256(canonical_json(value).encode("utf-8")).hexdigest()
+multi_robot_exploration/mr3_safety_intent.py:43: in canonical_json
+    _json_value(value)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:33: in _json_value
+    _json_value(item)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 0.0
+
+    def _json_value(value):
+        if value is None or type(value) in (str, bool, int):
+            return
+        if type(value) is float and math.isfinite(value):
+            return
+        if type(value) is list:
+            for item in value:
+                _json_value(item)
+            return
+        if type(value) is dict and all(type(key) is str for key in value):
+            for item in value.values():
+                _json_value(item)
+            return
+>       raise ValueError("expected finite JSON values with string object keys")
+E       ValueError: expected finite JSON values with string object keys
+
+multi_robot_exploration/mr3_safety_intent.py:39: ValueError
+_ test_bundle_payload_is_not_trusted_because_its_claims_match_a_request[intent_claim] _
+
+change = 'intent_claim'
+
+    @pytest.mark.parametrize('change', ['calibration_raw', 'table_claim', 'intent_claim'])
+    def test_bundle_payload_is_not_trusted_because_its_claims_match_a_request(change):
+        node, now, odoms, tf = reach_fixture()
+        reach_takeover(node)
+>       request, bundle = reach_inputs(node, odoms, tf, before_callback=False)
+
+test/test_peer_reach_phase.py:98: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+test/test_peer_reach_phase.py:42: in reach_inputs
+    safety_table_sha256=payload_sha256(table))
+multi_robot_exploration/mr3_safety_intent.py:48: in payload_sha256
+    return hashlib.sha256(canonical_json(value).encode("utf-8")).hexdigest()
+multi_robot_exploration/mr3_safety_intent.py:43: in canonical_json
+    _json_value(value)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:33: in _json_value
+    _json_value(item)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 0.0
+
+    def _json_value(value):
+        if value is None or type(value) in (str, bool, int):
+            return
+        if type(value) is float and math.isfinite(value):
+            return
+        if type(value) is list:
+            for item in value:
+                _json_value(item)
+            return
+        if type(value) is dict and all(type(key) is str for key in value):
+            for item in value.values():
+                _json_value(item)
+            return
+>       raise ValueError("expected finite JSON values with string object keys")
+E       ValueError: expected finite JSON values with string object keys
+
+multi_robot_exploration/mr3_safety_intent.py:39: ValueError
+________ test_reach_metadata_does_not_change_scan_or_full_body_geometry ________
+
+    def test_reach_metadata_does_not_change_scan_or_full_body_geometry():
+        old, _, odoms, tf = fixture()
+        takeover(old)
+        request, _ = inputs(old, odoms, tf)
+        old_ack = send(old, request)
+        new, _, odoms, tf = reach_fixture()
+        reach_takeover(new)
+>       request, _ = reach_inputs(new, odoms, tf)
+
+test/test_peer_reach_phase.py:128: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+test/test_peer_reach_phase.py:42: in reach_inputs
+    safety_table_sha256=payload_sha256(table))
+multi_robot_exploration/mr3_safety_intent.py:48: in payload_sha256
+    return hashlib.sha256(canonical_json(value).encode("utf-8")).hexdigest()
+multi_robot_exploration/mr3_safety_intent.py:43: in canonical_json
+    _json_value(value)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:33: in _json_value
+    _json_value(item)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 0.0
+
+    def _json_value(value):
+        if value is None or type(value) in (str, bool, int):
+            return
+        if type(value) is float and math.isfinite(value):
+            return
+        if type(value) is list:
+            for item in value:
+                _json_value(item)
+            return
+        if type(value) is dict and all(type(key) is str for key in value):
+            for item in value.values():
+                _json_value(item)
+            return
+>       raise ValueError("expected finite JSON values with string object keys")
+E       ValueError: expected finite JSON values with string object keys
+
+multi_robot_exploration/mr3_safety_intent.py:39: ValueError
+_ test_reach_state_age_keeps_the_original_exact_closed_endpoint[500000000-True] _
+
+age_ns = 500000000, valid = True
+
+    @pytest.mark.parametrize('age_ns,valid', [(500_000_000, True), (500_000_001, False)])
+    def test_reach_state_age_keeps_the_original_exact_closed_endpoint(age_ns, valid):
+        node, _, odoms, tf = reach_fixture(clock_ns=1_000_000_000 + age_ns)
+        reach_takeover(node)
+>       request, _ = reach_inputs(node, odoms, tf)
+
+test/test_peer_reach_phase.py:139: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+test/test_peer_reach_phase.py:42: in reach_inputs
+    safety_table_sha256=payload_sha256(table))
+multi_robot_exploration/mr3_safety_intent.py:48: in payload_sha256
+    return hashlib.sha256(canonical_json(value).encode("utf-8")).hexdigest()
+multi_robot_exploration/mr3_safety_intent.py:43: in canonical_json
+    _json_value(value)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:33: in _json_value
+    _json_value(item)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 0.0
+
+    def _json_value(value):
+        if value is None or type(value) in (str, bool, int):
+            return
+        if type(value) is float and math.isfinite(value):
+            return
+        if type(value) is list:
+            for item in value:
+                _json_value(item)
+            return
+        if type(value) is dict and all(type(key) is str for key in value):
+            for item in value.values():
+                _json_value(item)
+            return
+>       raise ValueError("expected finite JSON values with string object keys")
+E       ValueError: expected finite JSON values with string object keys
+
+multi_robot_exploration/mr3_safety_intent.py:39: ValueError
+_ test_reach_state_age_keeps_the_original_exact_closed_endpoint[500000001-False] _
+
+age_ns = 500000001, valid = False
+
+    @pytest.mark.parametrize('age_ns,valid', [(500_000_000, True), (500_000_001, False)])
+    def test_reach_state_age_keeps_the_original_exact_closed_endpoint(age_ns, valid):
+        node, _, odoms, tf = reach_fixture(clock_ns=1_000_000_000 + age_ns)
+        reach_takeover(node)
+>       request, _ = reach_inputs(node, odoms, tf)
+
+test/test_peer_reach_phase.py:139: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+test/test_peer_reach_phase.py:42: in reach_inputs
+    safety_table_sha256=payload_sha256(table))
+multi_robot_exploration/mr3_safety_intent.py:48: in payload_sha256
+    return hashlib.sha256(canonical_json(value).encode("utf-8")).hexdigest()
+multi_robot_exploration/mr3_safety_intent.py:43: in canonical_json
+    _json_value(value)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:33: in _json_value
+    _json_value(item)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 0.0
+
+    def _json_value(value):
+        if value is None or type(value) in (str, bool, int):
+            return
+        if type(value) is float and math.isfinite(value):
+            return
+        if type(value) is list:
+            for item in value:
+                _json_value(item)
+            return
+        if type(value) is dict and all(type(key) is str for key in value):
+            for item in value.values():
+                _json_value(item)
+            return
+>       raise ValueError("expected finite JSON values with string object keys")
+E       ValueError: expected finite JSON values with string object keys
+
+multi_robot_exploration/mr3_safety_intent.py:39: ValueError
+_______ test_foreign_state_publisher_never_supplies_a_common_mode_table ________
+
+    def test_foreign_state_publisher_never_supplies_a_common_mode_table():
+        node, _, odoms, tf = reach_fixture()
+        reach_takeover(node)
+        node.get_publishers_info_by_topic = lambda topic: [SimpleNamespace(
+            node_name='imposter', node_namespace='/',
+            topic_type='std_msgs/msg/String', endpoint_gid=bytes([11]) * 24)]
+>       _, bundle = reach_inputs(node, odoms, tf, before_callback=False)
+
+test/test_peer_reach_phase.py:151: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+test/test_peer_reach_phase.py:42: in reach_inputs
+    safety_table_sha256=payload_sha256(table))
+multi_robot_exploration/mr3_safety_intent.py:48: in payload_sha256
+    return hashlib.sha256(canonical_json(value).encode("utf-8")).hexdigest()
+multi_robot_exploration/mr3_safety_intent.py:43: in canonical_json
+    _json_value(value)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:37: in _json_value
+    _json_value(item)
+multi_robot_exploration/mr3_safety_intent.py:33: in _json_value
+    _json_value(item)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 0.0
+
+    def _json_value(value):
+        if value is None or type(value) in (str, bool, int):
+            return
+        if type(value) is float and math.isfinite(value):
+            return
+        if type(value) is list:
+            for item in value:
+                _json_value(item)
+            return
+        if type(value) is dict and all(type(key) is str for key in value):
+            for item in value.values():
+                _json_value(item)
+            return
+>       raise ValueError("expected finite JSON values with string object keys")
+E       ValueError: expected finite JSON values with string object keys
+
+multi_robot_exploration/mr3_safety_intent.py:39: ValueError
+_ test_all_three_actual_ack_factories_deliver_to_actual_worker_callback_statements _
+
+endpoints = ({'motion': <rclpy.publisher.Publisher object at 0x7d2b3f6c5780>, 'peer': <rclpy.publisher.Publisher object at 0x7d2b3...ode object at 0x7d2b406f27d0>, <rclpy.node.Node object at 0x7d2b406f2800>, <rclpy.node.Node object at 0x7d2b406f0f70>])
+
+    def test_all_three_actual_ack_factories_deliver_to_actual_worker_callback_statements(endpoints):
+        publishers, subscriptions, _, received, executor, _ = endpoints
+        for component, publisher in publishers.items():
+            check_compatibility(publisher.qos_profile, subscriptions[TOPICS[component]].qos_profile)
+            payload = {"purpose": "isolated actual-endpoint QoS regression", "component": component}
+            publisher.publish(String(data=json.dumps(payload)))
+        deadline = time.monotonic() + 5.
+        while len(received) < 3 and time.monotonic() < deadline:
+>           executor.spin_once(timeout_sec=.02)
+
+test/test_mr3_phase_qos.py:173: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py:808: in spin_once
+    self._spin_once_impl(timeout_sec)
+/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py:805: in _spin_once_impl
+    raise handler.exception()
+/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/task.py:272: in _execute_coroutine_step
+    result = coro.send(None)
+/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py:488: in handler
+    await call_coroutine(entity, arg)
+/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py:407: in _execute_subscription
+    await await_or_execute(sub.callback, msg)
+/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py:110: in await_or_execute
+    return callback(*args)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+message = std_msgs.msg.String(data='{"purpose": "isolated actual-endpoint QoS regression", "component": "state"}')
+name = 'state'
+
+    String, topic, callback(lambda message, name=name: self.receive_control_phase(
+>       name, parse_json(message.data) if self.control_version == 2 else json.loads(message.data))),
+    qos))
+E   AttributeError: 'types.SimpleNamespace' object has no attribute 'control_version'
+
+../../scripts/mr3_env_worker.py:337: AttributeError
+=========================== short test summary info ============================
+FAILED test/test_mr3_information_reach.py::test_rpc_refs_cannot_replace_real_safety_ingress[intent]
+FAILED test/test_mr3_information_reach.py::test_rpc_refs_cannot_replace_real_safety_ingress[calibration]
+FAILED test/test_mr3_information_reach.py::test_actual_envelope_preserves_raw_projection_and_binds_whole_safety_table
+FAILED test/test_mr3_information_reach.py::test_future_safety_cannot_displace_an_exact_causal_reference
+FAILED test/test_mr3_information_reach.py::test_normal_intent_waits_for_its_independently_delivered_causal_raw_source
+FAILED test/test_mr3_information_reach.py::test_intent_source_age_is_independent_of_fresh_measurement_age[500000000-True]
+FAILED test/test_mr3_information_reach.py::test_intent_source_age_is_independent_of_fresh_measurement_age[500000001-False]
+FAILED test/test_mr3_information_reach.py::test_wrong_calibration_raw_payload_fails_before_state_publication
+FAILED test/test_mr3_information_reach.py::test_conflicting_requested_intent_hash_cannot_select_a_real_other_payload
+FAILED test/test_peer_reach_phase.py::test_common_bundle_is_actually_received_before_reach_ack
+FAILED test/test_peer_reach_phase.py::test_phase_request_cannot_replace_actual_safety_table[table_digest]
+FAILED test/test_peer_reach_phase.py::test_phase_request_cannot_replace_actual_safety_table[intent_ref]
+FAILED test/test_peer_reach_phase.py::test_phase_request_cannot_replace_actual_safety_table[robot_safety_hash]
+FAILED test/test_peer_reach_phase.py::test_bundle_payload_is_not_trusted_because_its_claims_match_a_request[calibration_raw]
+FAILED test/test_peer_reach_phase.py::test_bundle_payload_is_not_trusted_because_its_claims_match_a_request[table_claim]
+FAILED test/test_peer_reach_phase.py::test_bundle_payload_is_not_trusted_because_its_claims_match_a_request[intent_claim]
+FAILED test/test_peer_reach_phase.py::test_reach_metadata_does_not_change_scan_or_full_body_geometry
+FAILED test/test_peer_reach_phase.py::test_reach_state_age_keeps_the_original_exact_closed_endpoint[500000000-True]
+FAILED test/test_peer_reach_phase.py::test_reach_state_age_keeps_the_original_exact_closed_endpoint[500000001-False]
+FAILED test/test_peer_reach_phase.py::test_foreign_state_publisher_never_supplies_a_common_mode_table
+FAILED test/test_mr3_phase_qos.py::test_all_three_actual_ack_factories_deliver_to_actual_worker_callback_statements
+21 failed, 416 passed in 20.85s

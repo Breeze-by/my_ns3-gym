@@ -1,0 +1,69 @@
+................................F...F.F..F....                           [100%]
+=================================== FAILURES ===================================
+_ IndependentReachRuntimeTests.test_empty_or_incomplete_peer_set_never_turns_all_empty_into_clearance _
+
+self = <test_mr3_reach_runtime_independent.IndependentReachRuntimeTests testMethod=test_empty_or_incomplete_peer_set_never_turns_all_empty_into_clearance>
+
+    def test_empty_or_incomplete_peer_set_never_turns_all_empty_into_clearance(self):
+        for missing in ({}, {"tb2": (3., 0.)}):
+            with self.subTest(missing=missing):
+                a = Feed().disk()
+                peers = {name: peer(name, a.now, xy) for name, xy in missing.items()}
+                try:
+                    decision = a.r.decide((0., .1), a.own(), peers, a.now,
+                                           a.r.current_intent)
+                except ValueError:
+                    continue
+>               self.assertFalse(decision["allow"])
+E               AssertionError: True is not false
+
+test/test_mr3_reach_runtime_independent.py:366: AssertionError
+_ IndependentReachRuntimeTests.test_malformed_native_calibration_latches_fault_instead_of_allowing_recovery _
+
+self = <test_mr3_reach_runtime_independent.IndependentReachRuntimeTests testMethod=test_malformed_native_calibration_latches_fault_instead_of_allowing_recovery>
+
+    def test_malformed_native_calibration_latches_fault_instead_of_allowing_recovery(self):
+        a = Feed().disk()
+        invalid = calibration(odometry(a.now+STEP), a.calibration_sequence+1)
+        invalid["robot"] = "tb2"
+        with self.assertRaises(ValueError):
+            a.r.receive_calibration(invalid)
+>       self.assertIsNotNone(a.r.fault)
+E       AssertionError: unexpectedly None
+
+test/test_mr3_reach_runtime_independent.py:246: AssertionError
+_ IndependentReachRuntimeTests.test_native_twenty_ms_source_hole_is_not_hidden_by_consecutive_calibration_ids _
+
+self = <test_mr3_reach_runtime_independent.IndependentReachRuntimeTests testMethod=test_native_twenty_ms_source_hole_is_not_hidden_by_consecutive_calibration_ids>
+
+    def test_native_twenty_ms_source_hole_is_not_hidden_by_consecutive_calibration_ids(self):
+        a = Feed().disk()
+        end = a.now+2*STEP
+        raw = odometry(end)
+        try:
+            a.r.receive_raw(raw, a.raw_sequence+1)
+            a.r.receive_calibration(calibration(raw, a.calibration_sequence+1))
+            a.actuations(end)
+            ready = a.r.synchronize(end)
+        except ValueError:
+            return
+>       self.assertFalse(ready)
+E       AssertionError: True is not false
+
+test/test_mr3_reach_runtime_independent.py:267: AssertionError
+_ IndependentReachRuntimeTests.test_raw_callback_sequence_gap_cannot_be_presented_as_complete_history _
+
+self = <test_mr3_reach_runtime_independent.IndependentReachRuntimeTests testMethod=test_raw_callback_sequence_gap_cannot_be_presented_as_complete_history>
+
+    def test_raw_callback_sequence_gap_cannot_be_presented_as_complete_history(self):
+        a = Feed().disk()
+>       with self.assertRaises(ValueError):
+E       AssertionError: ValueError not raised
+
+test/test_mr3_reach_runtime_independent.py:252: AssertionError
+=========================== short test summary info ============================
+FAILED test/test_mr3_reach_runtime_independent.py::IndependentReachRuntimeTests::test_empty_or_incomplete_peer_set_never_turns_all_empty_into_clearance
+FAILED test/test_mr3_reach_runtime_independent.py::IndependentReachRuntimeTests::test_malformed_native_calibration_latches_fault_instead_of_allowing_recovery
+FAILED test/test_mr3_reach_runtime_independent.py::IndependentReachRuntimeTests::test_native_twenty_ms_source_hole_is_not_hidden_by_consecutive_calibration_ids
+FAILED test/test_mr3_reach_runtime_independent.py::IndependentReachRuntimeTests::test_raw_callback_sequence_gap_cannot_be_presented_as_complete_history
+4 failed, 42 passed in 11.90s
