@@ -1,0 +1,315 @@
+{
+  "schema": "mr3-v20-independent-global-wall-union-review-v1",
+  "passed": true,
+  "scope": "Independent static accounting review of five existing closed engineering outer waits; not a new consumer, accounting-generator execution, approval or scientific qualification.",
+  "original_wait_inventory": [
+    {
+      "id": "profile_v1",
+      "original_receipt": {
+        "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261020_mr3_p2a_v20/closed_diagnostics_v1/profile_v1_outer/actual_wait.json",
+        "sha256": "f8e432a9dba905e8d013eb9b5d125893ae3303f45f4e2fe22a064331f53c4899",
+        "bytes": 4884
+      },
+      "actual_returncode": 0,
+      "actual_waited": true,
+      "original_passed": true,
+      "source_unchanged": true,
+      "started_monotonic_ns": 4176651076697718,
+      "ended_monotonic_ns": 4176788197361384,
+      "actual_child_wait_seconds": "137.120663666",
+      "incremental_global_wall_charge_seconds": "137.120663666",
+      "child_identity": {
+        "pid": 1398163,
+        "parent": 1398159,
+        "group": 1398157,
+        "session": 1398157,
+        "start_ticks": 417665107,
+        "state": "R"
+      },
+      "coordinator_identity": {
+        "pid": 1398159,
+        "parent": 1398157,
+        "group": 1398157,
+        "session": 1398157,
+        "start_ticks": 417665092,
+        "state": "R"
+      },
+      "child_start_ticks_to_seconds_using_current_host_clk_tck": "4176651.07",
+      "child_coarse_start_minus_receipt_start_seconds": "-0.006697718"
+    },
+    {
+      "id": "profile_v2",
+      "original_receipt": {
+        "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261020_mr3_p2a_v20/closed_diagnostics_v1/profile_v2_outer/actual_wait.json",
+        "sha256": "88930c9cbf066f0546653af6c67fa6be1c6faf79ed9c8a23dea7094fcc04fd2c",
+        "bytes": 4897
+      },
+      "actual_returncode": 1,
+      "actual_waited": true,
+      "original_passed": false,
+      "source_unchanged": true,
+      "started_monotonic_ns": 4177055462518303,
+      "ended_monotonic_ns": 4177324463247956,
+      "actual_child_wait_seconds": "269.000729653",
+      "incremental_global_wall_charge_seconds": "0",
+      "child_identity": {
+        "pid": 1401016,
+        "parent": 1401013,
+        "group": 1401011,
+        "session": 1401011,
+        "start_ticks": 417705546,
+        "state": "R"
+      },
+      "coordinator_identity": {
+        "pid": 1401013,
+        "parent": 1401011,
+        "group": 1401011,
+        "session": 1401011,
+        "start_ticks": 417705530,
+        "state": "R"
+      },
+      "child_start_ticks_to_seconds_using_current_host_clk_tck": "4177055.46",
+      "child_coarse_start_minus_receipt_start_seconds": "-0.002518303",
+      "zero_increment_reason": "Entire original outer interval is contained in information_v1; original269.000729653, rc1 and FAIL are retained; zero is global incremental wall only."
+    },
+    {
+      "id": "information_v1",
+      "original_receipt": {
+        "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261020_mr3_p2a_v20/closed_diagnostics_v1/information_outer/actual_wait.json",
+        "sha256": "f5469fc85ad0f3e0d6a55d4199b999e5eaf787d88863f0f04e4b1ce89bef4bbc",
+        "bytes": 37066
+      },
+      "actual_returncode": -2,
+      "actual_waited": true,
+      "original_passed": false,
+      "source_unchanged": true,
+      "started_monotonic_ns": 4177016256393222,
+      "ended_monotonic_ns": 4177849790282720,
+      "actual_child_wait_seconds": "833.533889498",
+      "incremental_global_wall_charge_seconds": "833.533889498",
+      "child_identity": {
+        "pid": 1400705,
+        "parent": 1400702,
+        "group": 1400697,
+        "session": 1400697,
+        "start_ticks": 417701625,
+        "state": "R"
+      },
+      "coordinator_identity": {
+        "pid": 1400702,
+        "parent": 1400699,
+        "group": 1400697,
+        "session": 1400697,
+        "start_ticks": 417701608,
+        "state": "R"
+      },
+      "child_start_ticks_to_seconds_using_current_host_clk_tck": "4177016.25",
+      "child_coarse_start_minus_receipt_start_seconds": "-0.006393222"
+    },
+    {
+      "id": "runtime_regression_v1",
+      "original_receipt": {
+        "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261020_mr3_p2a_v20/closed_regressions/runtime_regression_v1/outer/actual_wait.json",
+        "sha256": "d26c140fd2e8dc651bd9c3fd00b72711e5c6d8c341f58494a174d00ded16a1f6",
+        "bytes": 41051
+      },
+      "actual_returncode": 0,
+      "actual_waited": true,
+      "original_passed": true,
+      "source_unchanged": true,
+      "started_monotonic_ns": 4178603768568981,
+      "ended_monotonic_ns": 4178943476922532,
+      "actual_child_wait_seconds": "339.708353551",
+      "incremental_global_wall_charge_seconds": "339.708353551",
+      "child_identity": {
+        "pid": 1410460,
+        "parent": 1410459,
+        "group": 1410454,
+        "session": 1410454,
+        "start_ticks": 417860376,
+        "state": "R"
+      },
+      "coordinator_identity": {
+        "pid": 1410459,
+        "parent": 1410456,
+        "group": 1410454,
+        "session": 1410454,
+        "start_ticks": 417860359,
+        "state": "R"
+      },
+      "child_start_ticks_to_seconds_using_current_host_clk_tck": "4178603.76",
+      "child_coarse_start_minus_receipt_start_seconds": "-0.008568981"
+    },
+    {
+      "id": "information_regression_v2",
+      "original_receipt": {
+        "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261020_mr3_p2a_v20/closed_regressions/information_regression_v2/outer/actual_wait.json",
+        "sha256": "fa18aa437ea083a57509d665f41450550258352f7c7e9ea2e25e111beb5151ac",
+        "bytes": 39936
+      },
+      "actual_returncode": 0,
+      "actual_waited": true,
+      "original_passed": true,
+      "source_unchanged": true,
+      "started_monotonic_ns": 4178993085012912,
+      "ended_monotonic_ns": 4179415867823486,
+      "actual_child_wait_seconds": "422.782810574",
+      "incremental_global_wall_charge_seconds": "422.782810574",
+      "child_identity": {
+        "pid": 1412698,
+        "parent": 1412696,
+        "group": 1412687,
+        "session": 1412687,
+        "start_ticks": 417899308,
+        "state": "R"
+      },
+      "coordinator_identity": {
+        "pid": 1412696,
+        "parent": 1412689,
+        "group": 1412687,
+        "session": 1412687,
+        "start_ticks": 417899292,
+        "state": "R"
+      },
+      "child_start_ticks_to_seconds_using_current_host_clk_tck": "4178993.08",
+      "child_coarse_start_minus_receipt_start_seconds": "-0.005012912"
+    }
+  ],
+  "original_wait_count": 5,
+  "integer_nanosecond_durations_all_match_original_decimal_strings": true,
+  "interval_union": {
+    "rule": "Merge overlapping half-open intervals on the common host monotonic time axis; count each active engineering wall instant once. Do not count gaps between independent attempts. Per-attempt actual durations, caps, failures and return codes are unchanged.",
+    "merged_intervals": [
+      {
+        "started_monotonic_ns": 4176651076697718,
+        "ended_monotonic_ns": 4176788197361384,
+        "members": [
+          "profile_v1"
+        ],
+        "charged_union_seconds": "137.120663666"
+      },
+      {
+        "started_monotonic_ns": 4177016256393222,
+        "ended_monotonic_ns": 4177849790282720,
+        "members": [
+          "information_v1",
+          "profile_v2"
+        ],
+        "charged_union_seconds": "833.533889498"
+      },
+      {
+        "started_monotonic_ns": 4178603768568981,
+        "ended_monotonic_ns": 4178943476922532,
+        "members": [
+          "runtime_regression_v1"
+        ],
+        "charged_union_seconds": "339.708353551"
+      },
+      {
+        "started_monotonic_ns": 4178993085012912,
+        "ended_monotonic_ns": 4179415867823486,
+        "members": [
+          "information_regression_v2"
+        ],
+        "charged_union_seconds": "422.782810574"
+      }
+    ],
+    "profile_v2_fully_contained_in_information_v1": true,
+    "sum_of_five_original_actual_durations_seconds": "2002.146446942",
+    "deduplicated_global_wall_seconds": "1733.145717289",
+    "overlap_previously_counted_twice_seconds": "269.000729653",
+    "not_a_refund_of_unspent_reservations": true
+  },
+  "corrected_global_accounting": {
+    "approved_ceiling_seconds": "52000",
+    "v19_closed_baseline_seconds": "36483.3647801256018",
+    "baseline_receipt": {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v19/engineering_accounting_v1.json",
+      "sha256": "2c77c344f9e8a6fe09d8b1769c56743ffb8272a7d0abd28814f1d40d4ff07b88",
+      "bytes": 94050
+    },
+    "v20_increment_seconds": "1733.145717289",
+    "cumulative_seconds": "38216.5104974146018",
+    "remaining_seconds": "13783.4895025853982",
+    "hypothetical_sum_all_five_cumulative_seconds": "38485.5112270676018",
+    "difference_from_sum_all_five_seconds": "269.000729653",
+    "original_first_three_provisional_charge_seconds": "1239.655282817",
+    "correct_first_three_union_seconds": "970.654553164",
+    "first_three_provisional_is_retained_as_historical_observation": true,
+    "current_numeric_budget_authorization_unchanged": true
+  },
+  "rule_evidence": {
+    "v19_accounting_receipt": {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v19/engineering_accounting_v1.json",
+      "sha256": "2c77c344f9e8a6fe09d8b1769c56743ffb8272a7d0abd28814f1d40d4ff07b88",
+      "bytes": 94050
+    },
+    "v19_original_accounting_facts": {
+      "formula": "baseline + M + A1 + A2; C is contained in M; exact original outer ns differences/Decimal",
+      "not_charged_by_this_formula": "finite preparation/packaging CPU; sibling/native/watcher/consumer walls overlap M; toolwall is not added",
+      "operator_additional_charge_seconds": "0",
+      "operator_interval_contained_in_matrix": true,
+      "v19_closed_end_cumulative_used_seconds": "36483.3647801256018"
+    },
+    "accepted_budget_evidence": {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v16/budget_acceptance_v1.json",
+      "sha256": "37d0080ac70464576888d465ce25c5d3d68e562b69e27233b67c4a8c3b47bf0c",
+      "bytes": 1435
+    },
+    "v20_report_current_snapshot": {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261020_mr3_p2a_v20.md",
+      "sha256": "23308d3880d5e169c54cb5a9b8478ee767b0ed3f5b5fbe79667d04fdb1b47160",
+      "bytes": 10821
+    },
+    "v20_report_explicit_rule": "CPU单元/源投影/纯kernel/归档不作native费，nested/并行child不再双扣。",
+    "clock_producer_source": {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_execution.py",
+      "sha256": "fa7da30bf18a71a7a28698f733590074bdf164c8857028640aedba5d21fd8be4",
+      "bytes": 3222
+    },
+    "clock_producer_facts": "reach_execution.main uses time.monotonic_ns() immediately before Popen and after actual child.wait; scope engineering is retained on all five original receipts."
+  },
+  "common_clock_domain_evidence_and_limits": {
+    "original_receipts_store_boot_id": false,
+    "past_boot_id_reconstructed": false,
+    "native_epoch_metadata": {
+      "path": "ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/metadata.json",
+      "sha256": "1fa202112089af85d986d5d4d3602ff9733238a13af016d07a00623164a88f12",
+      "bytes": 2702
+    },
+    "native_epoch": "mr3_p2a_reach_v19_interface_w0_e1_0b120834",
+    "native_artifact_freeze": "3631c788ca46e03a52f34ad48c41611761c17f1e",
+    "native_epoch_is_a_boot_identity": false,
+    "native_epoch_alone_proves_same_boot": false,
+    "original_receipt_clock_evidence": "All five receipts are from the same canonical workspace host/session history, use the identical engineering actual-wait schema and producer clock semantics, retain real PID/start_ticks identities, and use monotonic ns compatible with their captured process start ticks. Earlier diagnostics and later regressions are chronologically ordered except the explicitly contained profile2.",
+    "captured_continuous_session_evidence_source": "Original live task execution and actual-wait records in this same continuing root session; no reboot or host migration has been reported. This is provenance evidence, not independently stored historical boot_id proof.",
+    "current_observation": {
+      "observed_monotonic_ns": 4179611735413310,
+      "observed_time_ns": 1792434216724173650,
+      "boot_id_observed_now_only": "c478c293-5b80-44af-a3f4-ba0fa05d4341",
+      "hostname_observed_now_only": "zhuyulab",
+      "clk_tck_observed_now_only": 100,
+      "uptime_raw_observed_now_only": "4179611.73 197953194.44",
+      "all_original_interval_ends_before_current_monotonic": true
+    },
+    "explicit_assumption_for_union": "The five original engineering receipts share one host/boot monotonic clock domain, consistent with the continuous session and original identities; current boot_id and native epoch do not retroactively prove or manufacture a boot_id for any past receipt.",
+    "historical_same_boot_proven_by_explicit_boot_id_receipts": false
+  },
+  "counterexamples_and_boundaries": [
+    "If intervals came from distinct hosts or boots, equal numeric monotonic ranges would not establish overlap; do not union without common-clock provenance.",
+    "If engineering budget were job-seconds/CPU-seconds rather than accepted global wall, summing concurrent jobs could be intended; existing accounting explicitly excludes contained/sibling overlapping walls and uses global wall.",
+    "For a partially overlapping later interval, charge its uncovered suffix/prefix; zero incremental charge is justified here only because profile2 is fully contained.",
+    "Keep each original actual wait and failure: profile2 rc1/269.000729653 and information_v1 rc-2/833.533889498 remain unchanged; their individual supervised allocation failures are not repaired by global deduplication.",
+    "Do not erase or rewrite generatorv1 actualrc1, original generator source/trace, provisional report totals or earlier draft proposal; append a distinct correction/ledger version.",
+    "Native/source/scientific gates and52000 authorization do not change; corrected balance still cannot fund strict18000 matrix."
+  ],
+  "validation_actions": {
+    "only_json_source_clock_reads_and_exact_decimal_interval_math": true,
+    "new_scientific_consumer_or_native_started": false,
+    "original_receipts_modified": false,
+    "production_or_test_sources_modified": false,
+    "generator_v1_rerun": false,
+    "new_generator_run_or_wait_result_claimed": false,
+    "writer_does_not_claim_own_later_absence": true
+  }
+}

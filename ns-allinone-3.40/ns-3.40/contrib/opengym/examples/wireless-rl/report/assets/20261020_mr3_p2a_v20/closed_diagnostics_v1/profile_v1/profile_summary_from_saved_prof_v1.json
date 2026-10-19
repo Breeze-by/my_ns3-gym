@@ -1,0 +1,404 @@
+{
+  "corrects_helper_summary_fields_only": true,
+  "function_entries": 195,
+  "inputs_after": [
+    {
+      "bytes": 25368,
+      "path": "/tmp/mr3_p2a_v20_runtime_bounded_profile_v1/original_audit_partial.prof",
+      "sha256": "c8123cfb306802f4f9963d6ad55a5c07a99c2a0a67d7fd0e3b0a2619a53385f7"
+    },
+    {
+      "bytes": 19432,
+      "path": "/tmp/mr3_p2a_v20_runtime_bounded_profile_v1/result.json",
+      "sha256": "bf5e77db5d28f5daad93fa97b8345a69f4b4241178b5d3e4e13e0b77ab9ea5f1"
+    }
+  ],
+  "inputs_before": [
+    {
+      "bytes": 25368,
+      "path": "/tmp/mr3_p2a_v20_runtime_bounded_profile_v1/original_audit_partial.prof",
+      "sha256": "c8123cfb306802f4f9963d6ad55a5c07a99c2a0a67d7fd0e3b0a2619a53385f7"
+    },
+    {
+      "bytes": 19432,
+      "path": "/tmp/mr3_p2a_v20_runtime_bounded_profile_v1/result.json",
+      "sha256": "bf5e77db5d28f5daad93fa97b8345a69f4b4241178b5d3e4e13e0b77ab9ea5f1"
+    }
+  ],
+  "native_admission": false,
+  "original_audit_rerun": false,
+  "original_result_preserved": true,
+  "primitive_calls": 37585490,
+  "ranked_functions": {
+    "cumulative": [
+      {
+        "calls": 1,
+        "cumtime_seconds": 125.33579155500001,
+        "file": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_runtime.py",
+        "function": "audit_episode",
+        "line": 1011,
+        "primitive_calls": 1,
+        "tottime_seconds": 4.798934487
+      },
+      {
+        "calls": 13,
+        "cumtime_seconds": 120.38138358600001,
+        "file": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_runtime.py",
+        "function": "read",
+        "line": 370,
+        "primitive_calls": 13,
+        "tottime_seconds": 0.001392784
+      },
+      {
+        "calls": 12,
+        "cumtime_seconds": 109.164324581,
+        "file": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_runtime.py",
+        "function": "<listcomp>",
+        "line": 391,
+        "primitive_calls": 12,
+        "tottime_seconds": 1.1917024200000002
+      },
+      {
+        "calls": 358784,
+        "cumtime_seconds": 107.83421718800001,
+        "file": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_runtime.py",
+        "function": "parse",
+        "line": 384,
+        "primitive_calls": 358784,
+        "tottime_seconds": 0.911009358
+      },
+      {
+        "calls": 358784,
+        "cumtime_seconds": 67.204213976,
+        "file": "/usr/lib/python3.10/json/__init__.py",
+        "function": "loads",
+        "line": 299,
+        "primitive_calls": 358784,
+        "tottime_seconds": 2.012357202
+      },
+      {
+        "calls": 358784,
+        "cumtime_seconds": 60.430904525,
+        "file": "/usr/lib/python3.10/json/decoder.py",
+        "function": "decode",
+        "line": 332,
+        "primitive_calls": 358784,
+        "tottime_seconds": 1.285307879
+      },
+      {
+        "calls": 358784,
+        "cumtime_seconds": 58.145899929,
+        "file": "/usr/lib/python3.10/json/decoder.py",
+        "function": "raw_decode",
+        "line": 343,
+        "primitive_calls": 358784,
+        "tottime_seconds": 18.825055874
+      },
+      {
+        "calls": 358784,
+        "cumtime_seconds": 39.718993854000004,
+        "file": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_runtime.py",
+        "function": "canonical",
+        "line": 44,
+        "primitive_calls": 358784,
+        "tottime_seconds": 0.541703014
+      },
+      {
+        "calls": 5644537,
+        "cumtime_seconds": 39.320844055,
+        "file": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_runtime.py",
+        "function": "unique",
+        "line": 378,
+        "primitive_calls": 5644537,
+        "tottime_seconds": 35.86266115
+      },
+      {
+        "calls": 358784,
+        "cumtime_seconds": 39.177290840000005,
+        "file": "/usr/lib/python3.10/json/__init__.py",
+        "function": "dumps",
+        "line": 183,
+        "primitive_calls": 358784,
+        "tottime_seconds": 1.309926001
+      },
+      {
+        "calls": 358784,
+        "cumtime_seconds": 37.315686083,
+        "file": "/usr/lib/python3.10/json/encoder.py",
+        "function": "encode",
+        "line": 182,
+        "primitive_calls": 358784,
+        "tottime_seconds": 1.127359335
+      },
+      {
+        "calls": 358784,
+        "cumtime_seconds": 35.883987284,
+        "file": "/usr/lib/python3.10/json/encoder.py",
+        "function": "iterencode",
+        "line": 204,
+        "primitive_calls": 358784,
+        "tottime_seconds": 35.883950545000005
+      },
+      {
+        "calls": 45,
+        "cumtime_seconds": 6.936270405,
+        "file": "~",
+        "function": "<built-in method _hashlib.openssl_sha256>",
+        "line": 0,
+        "primitive_calls": 45,
+        "tottime_seconds": 6.936270405
+      },
+      {
+        "calls": 22238751,
+        "cumtime_seconds": 3.458219274,
+        "file": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_runtime.py",
+        "function": "require",
+        "line": 39,
+        "primitive_calls": 22238751,
+        "tottime_seconds": 3.458219274
+      },
+      {
+        "calls": 1,
+        "cumtime_seconds": 3.37983745,
+        "file": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_runtime.py",
+        "function": "<dictcomp>",
+        "line": 1023,
+        "primitive_calls": 1,
+        "tottime_seconds": 0.0007989910000000001
+      },
+      {
+        "calls": 12,
+        "cumtime_seconds": 3.3048875250000003,
+        "file": "~",
+        "function": "<method 'splitlines' of 'bytes' objects>",
+        "line": 0,
+        "primitive_calls": 12,
+        "tottime_seconds": 3.3048875250000003
+      },
+      {
+        "calls": 1,
+        "cumtime_seconds": 2.125976317,
+        "file": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_runtime.py",
+        "function": "<dictcomp>",
+        "line": 1022,
+        "primitive_calls": 1,
+        "tottime_seconds": 0.000595949
+      },
+      {
+        "calls": 358784,
+        "cumtime_seconds": 1.9430998670000001,
+        "file": "/usr/lib/python3.10/json/decoder.py",
+        "function": "__init__",
+        "line": 284,
+        "primitive_calls": 358784,
+        "tottime_seconds": 1.9430998670000001
+      },
+      {
+        "calls": 358784,
+        "cumtime_seconds": 1.6798601990000002,
+        "file": "/usr/lib/python3.10/json/__init__.py",
+        "function": "detect_encoding",
+        "line": 244,
+        "primitive_calls": 358784,
+        "tottime_seconds": 1.0925040050000001
+      },
+      {
+        "calls": 57,
+        "cumtime_seconds": 1.087573437,
+        "file": "~",
+        "function": "<method 'read' of '_io.BufferedReader' objects>",
+        "line": 0,
+        "primitive_calls": 57,
+        "tottime_seconds": 1.087573437
+      }
+    ],
+    "tottime": [
+      {
+        "calls": 358784,
+        "cumtime_seconds": 35.883987284,
+        "file": "/usr/lib/python3.10/json/encoder.py",
+        "function": "iterencode",
+        "line": 204,
+        "primitive_calls": 358784,
+        "tottime_seconds": 35.883950545000005
+      },
+      {
+        "calls": 5644537,
+        "cumtime_seconds": 39.320844055,
+        "file": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_runtime.py",
+        "function": "unique",
+        "line": 378,
+        "primitive_calls": 5644537,
+        "tottime_seconds": 35.86266115
+      },
+      {
+        "calls": 358784,
+        "cumtime_seconds": 58.145899929,
+        "file": "/usr/lib/python3.10/json/decoder.py",
+        "function": "raw_decode",
+        "line": 343,
+        "primitive_calls": 358784,
+        "tottime_seconds": 18.825055874
+      },
+      {
+        "calls": 45,
+        "cumtime_seconds": 6.936270405,
+        "file": "~",
+        "function": "<built-in method _hashlib.openssl_sha256>",
+        "line": 0,
+        "primitive_calls": 45,
+        "tottime_seconds": 6.936270405
+      },
+      {
+        "calls": 1,
+        "cumtime_seconds": 125.33579155500001,
+        "file": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_runtime.py",
+        "function": "audit_episode",
+        "line": 1011,
+        "primitive_calls": 1,
+        "tottime_seconds": 4.798934487
+      },
+      {
+        "calls": 22238751,
+        "cumtime_seconds": 3.458219274,
+        "file": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_runtime.py",
+        "function": "require",
+        "line": 39,
+        "primitive_calls": 22238751,
+        "tottime_seconds": 3.458219274
+      },
+      {
+        "calls": 12,
+        "cumtime_seconds": 3.3048875250000003,
+        "file": "~",
+        "function": "<method 'splitlines' of 'bytes' objects>",
+        "line": 0,
+        "primitive_calls": 12,
+        "tottime_seconds": 3.3048875250000003
+      },
+      {
+        "calls": 358784,
+        "cumtime_seconds": 67.204213976,
+        "file": "/usr/lib/python3.10/json/__init__.py",
+        "function": "loads",
+        "line": 299,
+        "primitive_calls": 358784,
+        "tottime_seconds": 2.012357202
+      },
+      {
+        "calls": 358784,
+        "cumtime_seconds": 1.9430998670000001,
+        "file": "/usr/lib/python3.10/json/decoder.py",
+        "function": "__init__",
+        "line": 284,
+        "primitive_calls": 358784,
+        "tottime_seconds": 1.9430998670000001
+      },
+      {
+        "calls": 358784,
+        "cumtime_seconds": 39.177290840000005,
+        "file": "/usr/lib/python3.10/json/__init__.py",
+        "function": "dumps",
+        "line": 183,
+        "primitive_calls": 358784,
+        "tottime_seconds": 1.309926001
+      },
+      {
+        "calls": 358784,
+        "cumtime_seconds": 60.430904525,
+        "file": "/usr/lib/python3.10/json/decoder.py",
+        "function": "decode",
+        "line": 332,
+        "primitive_calls": 358784,
+        "tottime_seconds": 1.285307879
+      },
+      {
+        "calls": 12,
+        "cumtime_seconds": 109.164324581,
+        "file": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_runtime.py",
+        "function": "<listcomp>",
+        "line": 391,
+        "primitive_calls": 12,
+        "tottime_seconds": 1.1917024200000002
+      },
+      {
+        "calls": 358784,
+        "cumtime_seconds": 37.315686083,
+        "file": "/usr/lib/python3.10/json/encoder.py",
+        "function": "encode",
+        "line": 182,
+        "primitive_calls": 358784,
+        "tottime_seconds": 1.127359335
+      },
+      {
+        "calls": 358784,
+        "cumtime_seconds": 1.6798601990000002,
+        "file": "/usr/lib/python3.10/json/__init__.py",
+        "function": "detect_encoding",
+        "line": 244,
+        "primitive_calls": 358784,
+        "tottime_seconds": 1.0925040050000001
+      },
+      {
+        "calls": 57,
+        "cumtime_seconds": 1.087573437,
+        "file": "~",
+        "function": "<method 'read' of '_io.BufferedReader' objects>",
+        "line": 0,
+        "primitive_calls": 57,
+        "tottime_seconds": 1.087573437
+      },
+      {
+        "calls": 358805,
+        "cumtime_seconds": 0.985179848,
+        "file": "~",
+        "function": "<method 'decode' of 'bytes' objects>",
+        "line": 0,
+        "primitive_calls": 358805,
+        "tottime_seconds": 0.985179848
+      },
+      {
+        "calls": 358784,
+        "cumtime_seconds": 107.83421718800001,
+        "file": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_runtime.py",
+        "function": "parse",
+        "line": 384,
+        "primitive_calls": 358784,
+        "tottime_seconds": 0.911009358
+      },
+      {
+        "calls": 717568,
+        "cumtime_seconds": 0.73564898,
+        "file": "~",
+        "function": "<method 'match' of 're.Pattern' objects>",
+        "line": 0,
+        "primitive_calls": 717568,
+        "tottime_seconds": 0.73564898
+      },
+      {
+        "calls": 358784,
+        "cumtime_seconds": 0.551678756,
+        "file": "/usr/lib/python3.10/json/encoder.py",
+        "function": "__init__",
+        "line": 104,
+        "primitive_calls": 358784,
+        "tottime_seconds": 0.551678756
+      },
+      {
+        "calls": 358784,
+        "cumtime_seconds": 39.718993854000004,
+        "file": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_runtime.py",
+        "function": "canonical",
+        "line": 44,
+        "primitive_calls": 358784,
+        "tottime_seconds": 0.541703014
+      }
+    ]
+  },
+  "reason": "v1 pstats.Stats(profiler) cleared profiler.stats before structured JSON counters were read",
+  "schema": "mr3-v20-saved-partial-profile-summary-v1",
+  "scientific_pass_claimed": false,
+  "scope": "closed_profile_extraction_only",
+  "total_calls": 37585496,
+  "total_profiled_tottime_seconds": 125.33579290199992
+}

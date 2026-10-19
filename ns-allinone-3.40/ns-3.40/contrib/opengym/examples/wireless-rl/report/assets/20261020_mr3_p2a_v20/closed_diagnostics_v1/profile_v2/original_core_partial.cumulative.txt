@@ -1,0 +1,50 @@
+Tue Oct 20 01:45:29 2026    /tmp/mr3_p2a_v20_runtime_core_profile_v2/original_core_partial.prof
+
+         86419913 function calls (86347267 primitive calls) in 119.999 seconds
+
+   Ordered by: cumulative time
+   List reduced from 159 to 40 due to restriction <40>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1    0.238    0.238  119.999  119.999 audit_reach_runtime.py:845(_audit_records)
+        1    3.061    3.061   81.033   81.033 audit_reach_runtime.py:513(ingress_index)
+        1    0.824    0.824   32.100   32.100 audit_reach_runtime.py:441(native_index)
+   205576    0.393    0.000   28.843    0.000 audit_reach_runtime.py:44(canonical)
+   205576    0.889    0.000   28.450    0.000 __init__.py:183(dumps)
+   205576    0.781    0.000   27.195    0.000 encoder.py:182(encode)
+   205576   26.211    0.000   26.211    0.000 encoder.py:204(iterencode)
+    25301    1.399    0.000   23.061    0.001 audit_reach_runtime.py:114(raw_check)
+  2231042    4.219    0.000   21.701    0.000 audit_reach_runtime.py:70(number)
+     9999    0.057    0.000   19.575    0.002 audit_reach_runtime.py:648(copy_value)
+  2283160    4.152    0.000   16.876    0.000 fractions.py:167(from_float)
+    37665    0.301    0.000   15.666    0.000 __init__.py:299(loads)
+    37665    0.253    0.000   14.984    0.000 decoder.py:332(decode)
+     5985   14.552    0.002   14.552    0.002 audit_reach_runtime.py:485(<listcomp>)
+    37665   12.884    0.000   14.453    0.000 decoder.py:343(raw_decode)
+    10262    2.673    0.000   13.809    0.001 {built-in method builtins.sum}
+    77037    0.145    0.000   13.722    0.000 audit_reach_runtime.py:62(same)
+ 17274663    9.276    0.000   11.131    0.000 audit_reach_runtime.py:548(<genexpr>)
+     6039    2.733    0.000    8.804    0.001 {built-in method builtins.max}
+    27666    0.181    0.000    8.320    0.000 audit_reach_runtime.py:48(decode_text)
+  2388770    6.404    0.000    8.143    0.000 fractions.py:62(__new__)
+    10072    0.206    0.000    5.479    0.001 audit_reach_runtime.py:168(intent_check)
+  9463843    4.697    0.000    4.697    0.000 audit_reach_runtime.py:486(<lambda>)
+   103594    0.424    0.000    4.422    0.000 audit_reach_runtime.py:109(vector)
+  5158844    1.979    0.000    4.036    0.000 {built-in method builtins.isinstance}
+    13837    0.082    0.000    3.860    0.000 audit_reach_runtime.py:66(digest)
+   439817    0.269    0.000    3.751    0.000 audit_reach_runtime.py:111(<genexpr>)
+    10246    0.331    0.000    3.355    0.000 audit_reach_runtime.py:151(calibration_check)
+   446795    1.133    0.000    2.630    0.000 audit_reach_runtime.py:101(source)
+       55    1.453    0.026    2.529    0.046 audit_reach_runtime.py:924(<listcomp>)
+    26059    0.264    0.000    2.282    0.000 audit_reach_runtime.py:142(target_check)
+  2366818    0.919    0.000    2.058    0.000 abc.py:117(__instancecheck__)
+        1    0.126    0.126    1.981    1.981 audit_reach_runtime.py:866(<dictcomp>)
+17589899/17589895    1.966    0.000    1.966    0.000 {built-in method builtins.len}
+   428400    1.308    0.000    1.569    0.000 audit_reach_runtime.py:50(unique)
+   703290    1.431    0.000    1.565    0.000 audit_reach_runtime.py:80(fields)
+  7584486    1.396    0.000    1.396    0.000 audit_reach_runtime.py:39(require)
+   190688    0.301    0.000    1.374    0.000 audit_reach_runtime.py:926(<lambda>)
+  1548574    0.986    0.000    1.234    0.000 audit_reach_runtime.py:75(integer)
+  2283160    1.178    0.000    1.178    0.000 {method 'as_integer_ratio' of 'float' objects}
+
+

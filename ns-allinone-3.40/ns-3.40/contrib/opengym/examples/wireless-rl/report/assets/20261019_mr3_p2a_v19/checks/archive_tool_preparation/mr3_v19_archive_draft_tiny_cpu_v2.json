@@ -1,0 +1,327 @@
+{
+  "actual_argv": [
+    "/usr/bin/python3",
+    "-B",
+    "/tmp/mr3_v19_archive_draft_tiny_validation_v2.py"
+  ],
+  "cases": [
+    {
+      "actual_argv": [
+        "/usr/bin/python3",
+        "-B",
+        "/tmp/mr3_v19_archive_draft.py",
+        "--source-root",
+        "/tmp/mr3_v19_archive_tiny_v2_n_veenad/source",
+        "--output-dir",
+        "/tmp/mr3_v19_archive_tiny_v2_n_veenad/good",
+        "--label",
+        "tiny",
+        "--part-bytes",
+        "256"
+      ],
+      "actual_waited": true,
+      "assertions_passed": true,
+      "attempt_actual_argv_equal": true,
+      "console": {
+        "bytes": 154,
+        "path": "/tmp/mr3_v19_archive_tiny_v2_n_veenad/tiny.console.log",
+        "sha256": "6986364daf555cc3e6bb5571c68cb39f5a850a8602dcf124a88ad0cd82e56c60",
+        "stat": [
+          2051,
+          79063659,
+          154,
+          1792429588565851287,
+          1792429588565851287
+        ]
+      },
+      "ended_monotonic_ns": 4174983579259452,
+      "id": "tiny",
+      "manifest": {
+        "bytes": 12413,
+        "path": "/tmp/mr3_v19_archive_tiny_v2_n_veenad/good/manifest.json",
+        "sha256": "0f006ec4cf1ca06645cdbee370dd367b6619aae2b9f339674bc39ca8bab2eca4",
+        "stat": [
+          2051,
+          79063639,
+          12413,
+          1792429588382841829,
+          1792429588382841829
+        ]
+      },
+      "part_count": 18,
+      "returncode": 0,
+      "started_monotonic_ns": 4174981197941105,
+      "wall_seconds": 2.381318347
+    },
+    {
+      "actual_argv": [
+        "/usr/bin/python3",
+        "-B",
+        "/tmp/mr3_v19_archive_draft.py",
+        "--source-root",
+        "/tmp/mr3_v19_archive_tiny_v2_n_veenad/source",
+        "--output-dir",
+        "/tmp/mr3_v19_archive_tiny_v2_n_veenad/good",
+        "--label",
+        "existing"
+      ],
+      "actual_waited": true,
+      "assertions_passed": true,
+      "console": {
+        "bytes": 452,
+        "path": "/tmp/mr3_v19_archive_tiny_v2_n_veenad/existing.console.log",
+        "sha256": "b71f11a82f5808a9679305f589c725b5e63d4719e3e4d3274d6a6f50157087eb",
+        "stat": [
+          2051,
+          79063660,
+          452,
+          1792429589029875267,
+          1792429589029875267
+        ]
+      },
+      "ended_monotonic_ns": 4174984042823276,
+      "id": "existing",
+      "returncode": 1,
+      "started_monotonic_ns": 4174983585914303,
+      "wall_seconds": 0.456908973
+    },
+    {
+      "actual_argv": [
+        "/usr/bin/python3",
+        "-B",
+        "/tmp/mr3_v19_archive_draft.py",
+        "--source-root",
+        "/tmp/mr3_v19_archive_tiny_v2_n_veenad/linked-source",
+        "--output-dir",
+        "/tmp/mr3_v19_archive_tiny_v2_n_veenad/linked-output",
+        "--label",
+        "symlink"
+      ],
+      "actual_waited": true,
+      "assertions_passed": true,
+      "attempt_actual_argv_equal": true,
+      "console": {
+        "bytes": 273,
+        "path": "/tmp/mr3_v19_archive_tiny_v2_n_veenad/symlink.console.log",
+        "sha256": "6c39bd58d3cb0ba79dd8b7ee6973936eaf9d3786d2d25361b3025abd9a51ccee",
+        "stat": [
+          2051,
+          79063666,
+          273,
+          1792429591033978815,
+          1792429591033978815
+        ]
+      },
+      "ended_monotonic_ns": 4174986047466244,
+      "failed_manifest": {
+        "bytes": 1183,
+        "path": "/tmp/mr3_v19_archive_tiny_v2_n_veenad/linked-output/manifest.json",
+        "sha256": "9bfad4010df249b8bbb7de997c6b01ae94d7f10ccd97b019e2b5e1f2a9172ded",
+        "stat": [
+          2051,
+          79063665,
+          1183,
+          1792429590061928594,
+          1792429590061928594
+        ]
+      },
+      "id": "symlink",
+      "returncode": 1,
+      "started_monotonic_ns": 4174984045471831,
+      "wall_seconds": 2.001994413
+    },
+    {
+      "actual_argv": [
+        "/usr/bin/python3",
+        "-B",
+        "/tmp/mr3_v19_archive_draft.py",
+        "--source-root",
+        "/tmp/mr3_v19_archive_tiny_v2_n_veenad/special-source",
+        "--output-dir",
+        "/tmp/mr3_v19_archive_tiny_v2_n_veenad/special-output",
+        "--label",
+        "special"
+      ],
+      "actual_waited": true,
+      "assertions_passed": true,
+      "attempt_actual_argv_equal": true,
+      "console": {
+        "bytes": 270,
+        "path": "/tmp/mr3_v19_archive_tiny_v2_n_veenad/special.console.log",
+        "sha256": "8c47d54ee7a1f5bb4c500ac230cd5ed7fbc8dcb23fdbe031d76f4fd1f2e83cb6",
+        "stat": [
+          2051,
+          79063672,
+          270,
+          1792429593447103459,
+          1792429593447103459
+        ]
+      },
+      "ended_monotonic_ns": 4174988459942862,
+      "failed_manifest": {
+        "bytes": 1183,
+        "path": "/tmp/mr3_v19_archive_tiny_v2_n_veenad/special-output/manifest.json",
+        "sha256": "1729e9be0923a1f38696f33e02cdc6c3fe20a2928bb962c3ad90391581856aee",
+        "stat": [
+          2051,
+          79063671,
+          1183,
+          1792429592567058007,
+          1792429592567058007
+        ]
+      },
+      "id": "special",
+      "returncode": 1,
+      "started_monotonic_ns": 4174986048399744,
+      "wall_seconds": 2.411543118
+    },
+    {
+      "actual_argv": [
+        "/usr/bin/python3",
+        "-B",
+        "/tmp/mr3_v19_archive_draft.py",
+        "--source-root",
+        "/tmp/mr3_v19_archive_tiny_v2_n_veenad/source",
+        "--output-dir",
+        "/tmp/mr3_v19_archive_tiny_v2_n_veenad/source/nested/../bad-output",
+        "--label",
+        "overlap"
+      ],
+      "actual_waited": true,
+      "assertions_passed": true,
+      "console": {
+        "bytes": 440,
+        "path": "/tmp/mr3_v19_archive_tiny_v2_n_veenad/overlap.console.log",
+        "sha256": "870de724df24303f62866255389c4fc0033f8312dd5d97c46dc8b6d86f039416",
+        "stat": [
+          2051,
+          79063673,
+          440,
+          1792429593891126391,
+          1792429593891126391
+        ]
+      },
+      "ended_monotonic_ns": 4174988904920236,
+      "id": "overlap",
+      "returncode": 1,
+      "started_monotonic_ns": 4174988460669529,
+      "wall_seconds": 0.444250707
+    },
+    {
+      "actual_argv": [
+        "/usr/bin/python3",
+        "-B",
+        "/tmp/mr3_v19_archive_draft.py",
+        "--source-root",
+        "/tmp/mr3_v19_archive_tiny_v2_n_veenad/source",
+        "--output-dir",
+        "/tmp/mr3_v19_archive_tiny_v2_n_veenad/oversized-output",
+        "--label",
+        "oversized",
+        "--part-bytes",
+        "80000001"
+      ],
+      "actual_waited": true,
+      "assertions_passed": true,
+      "console": {
+        "bytes": 415,
+        "path": "/tmp/mr3_v19_archive_tiny_v2_n_veenad/oversized.console.log",
+        "sha256": "49cd4532e17a9613583aa0bc032c79b3577ae37dd41b0183afc7e5fed3f2baf0",
+        "stat": [
+          2051,
+          79063674,
+          415,
+          1792429594342149682,
+          1792429594342149682
+        ]
+      },
+      "ended_monotonic_ns": 4174989356378998,
+      "id": "oversized",
+      "returncode": 1,
+      "started_monotonic_ns": 4174988905335972,
+      "wall_seconds": 0.451043026
+    },
+    {
+      "actual_argv": [
+        "/usr/bin/python3",
+        "-B",
+        "/tmp/mr3_v19_archive_draft.py",
+        "--source-root",
+        "/tmp/mr3_v19_archive_tiny_v2_n_veenad/empty-source",
+        "--output-dir",
+        "/tmp/mr3_v19_archive_tiny_v2_n_veenad/empty-output",
+        "--label",
+        "empty",
+        "--part-bytes",
+        "64"
+      ],
+      "actual_waited": true,
+      "assertions_passed": true,
+      "attempt_actual_argv_equal": true,
+      "console": {
+        "bytes": 162,
+        "path": "/tmp/mr3_v19_archive_tiny_v2_n_veenad/empty.console.log",
+        "sha256": "256bebd562083d783f01e2d98ed22e9fcfa80f6eca3f05abe2f6a51c00308194",
+        "stat": [
+          2051,
+          79063683,
+          162,
+          1792429595138190786,
+          1792429595138190786
+        ]
+      },
+      "ended_monotonic_ns": 4174990152610902,
+      "id": "empty",
+      "manifest": {
+        "bytes": 2602,
+        "path": "/tmp/mr3_v19_archive_tiny_v2_n_veenad/empty-output/manifest.json",
+        "sha256": "2ebe4b017f2b0cd5ccaf7890c96fd0eb6341af0fc4a314975d014b5428455897",
+        "stat": [
+          2051,
+          79063679,
+          2602,
+          1792429595003183816,
+          1792429595003183816
+        ]
+      },
+      "returncode": 0,
+      "started_monotonic_ns": 4174989356862172,
+      "wall_seconds": 0.79574873
+    }
+  ],
+  "ended_monotonic_ns": 4174990153428792,
+  "errors": [],
+  "fixture_directory": "/tmp/mr3_v19_archive_tiny_v2_n_veenad",
+  "native_credit": false,
+  "passed": true,
+  "schema": "mr3-archive-draft-tiny-cpu-validation-v2",
+  "scientific_pass_claimed": false,
+  "scope": "packaging_only",
+  "source_after": {
+    "bytes": 14838,
+    "path": "/tmp/mr3_v19_archive_draft.py",
+    "sha256": "818753a0cdff3aad7a79e3f4774e3c8dc1342e5139ecb7e526faf37f1d540122",
+    "stat": [
+      2051,
+      76647765,
+      14838,
+      1792429576253214478,
+      1792429576253214478
+    ]
+  },
+  "source_before": {
+    "bytes": 14838,
+    "path": "/tmp/mr3_v19_archive_draft.py",
+    "sha256": "818753a0cdff3aad7a79e3f4774e3c8dc1342e5139ecb7e526faf37f1d540122",
+    "stat": [
+      2051,
+      76647765,
+      14838,
+      1792429576253214478,
+      1792429576253214478
+    ]
+  },
+  "source_unchanged": true,
+  "started_monotonic_ns": 4174981196614209,
+  "wall_seconds": 8.956814583
+}

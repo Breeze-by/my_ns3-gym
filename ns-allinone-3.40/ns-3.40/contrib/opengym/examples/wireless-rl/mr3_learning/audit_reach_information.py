@@ -797,14 +797,83 @@ def validate_applied(value, epoch, robot, base):
                 'applied pair limiter fields')
 
 
+class _AckPublicationIndex:
+    """Exact multi-value lookup along a validated nondecreasing wall prefix.
+
+    Rows stay in publisher-list order. Unreached tails and not-yet-causal ACK
+    bodies stay unencoded, preserving the original any() short circuit/errors.
+    Previously validated publications are immutable and retained by reference.
+    """
+    def __init__(self, publications):
+        self.publications = publications
+        self.by_payload = {}
+        self.future = []
+        self.position = 0
+        self.first = None
+
+    def contains(self, ack, wall):
+        key = None
+
+        def remember(position, publication):
+            nonlocal key
+            payload = canonical(publication['ack'])
+            if key is None:
+                key = canonical(ack)
+            matches = self.by_payload.setdefault(payload, [])
+            matches.append((position, publication))
+            matches.sort(key=lambda item: item[0])
+            self.first = position if self.first is None else min(self.first, position)
+            return payload == key
+
+        def pending_before(limit):
+            offset = 0
+            while offset < len(self.future) and self.future[offset][0] < limit:
+                position, publication = self.future[offset]
+                if publication['start'] <= wall:
+                    matched = remember(position, publication)
+                    self.future.pop(offset)
+                    if matched:
+                        return True
+                else:
+                    offset += 1
+            return False
+
+        # A formerly-future row before the first remembered publication must
+        # be inspected before encoding this query, including malformed bodies.
+        if pending_before(self.position if self.first is None else self.first):
+            return True
+        if self.first is not None and key is None:
+            key = canonical(ack)
+        matches = self.by_payload.get(key, ()) if key is not None else ()
+        if pending_before(matches[0][0] if matches else self.position):
+            return True
+        if matches:
+            return True
+        while self.position < len(self.publications):
+            position = self.position
+            publication = self.publications[position]
+            if publication['start'] <= wall:
+                matched = remember(position, publication)
+            else:
+                self.future.append((position, publication))
+                matched = False
+            self.position += 1
+            if matched:
+                return True
+        return False
+
+
 def audit_motion(rows, information, peer, epoch, base):
     counts = Counter(); current = None
     published = {name: {} for name in ROBOTS}
+    owners_by_target = {name: {} for name in ROBOTS}
     raw = {name: {} for name in ROBOTS}; raw_sequences = Counter()
     applied = {name: {} for name in ROBOTS}; applied_last = Counter()
+    applied_target_keys = {name: {} for name in ROBOTS}
     driver_gids, actual_ingress, decisions = {}, {}, {}
     control_acks, control_ack_publications = {}, set()
     deps = {'state': {}, 'peer': {}}
+    dependency_publications = {}
     pending_state_ingress = None
     state_gid = None
     known_other = {'own_tf', 'raw_request', 'actual_cmd_vel', 'output_completed', 'release',
@@ -842,10 +911,11 @@ def audit_motion(rows, information, peer, epoch, base):
                 require(seq > applied_last[name], 'actual applied receipt regressed/duplicated')
                 applied_last[name] = seq
                 command = message['target']
-                owners = [p for p in published[name].values() if p['intent']['target'] is not None
-                          and canonical(p['intent']['target']) == canonical(command)]
+                command_key = canonical(command)
+                owners = owners_by_target[name].get(command_key, ())
                 require(owners, 'actual applied target has no earlier real owner publication')
                 applied[name][seq] = copy.deepcopy(message)
+                applied_target_keys[name][seq] = command_key
             elif feed == 'calibration':
                 validate_calibration(message, epoch, name, base)
             else:
@@ -896,8 +966,8 @@ def audit_motion(rows, information, peer, epoch, base):
                 require(takeovers, 'N cannot be established from a stored-only or zero-only handoff')
                 delivered_takeovers = []
                 for applied_target in takeovers:
-                    owners = [p for p in published[name].values()
-                              if canonical(p['intent']['target']) == canonical(applied_target['target'])]
+                    owners = owners_by_target[name].get(
+                        applied_target_keys[name][applied_target['actuation_sequence']], ())
                     for owner in owners:
                         delivered = owner.get('_received_self')
                         if (delivered is not None and delivered['role'] in ('X', 'N')
@@ -915,6 +985,9 @@ def audit_motion(rows, information, peer, epoch, base):
             publication['_received_self'] = (copy.deepcopy(next(r['safety']['intent']
                 for r in current['robots'] if r['name'] == name)) if current else None)
             published[name][seq] = publication
+            if publication['intent']['target'] is not None:
+                target_key = canonical(publication['intent']['target'])
+                owners_by_target[name].setdefault(target_key, []).append(publication)
             actual_ingress[name, seq] = publication
         elif kind == 'reach_state_ingress':
             fields(value, ('message', 'raw_json', 'publisher_identity'), 'motion actual state ingress')
@@ -927,8 +1000,9 @@ def audit_motion(rows, information, peer, epoch, base):
             equal(value, pending_state_ingress, 'motion selected state differs from actual ingress')
             pending_state_ingress = None
             bundle_evidence(value, epoch, base)
+            incoming_bundle_sha256 = sha(value) if information.complete_publications else None
             matches = [p for p in information.complete_publications
-                       if p['message_sha256'] == sha(value) and p['publish_started_wall_monotonic_ns'] <= wall]
+                       if p['message_sha256'] == incoming_bundle_sha256 and p['publish_started_wall_monotonic_ns'] <= wall]
             require(matches and (current is None or value['sequence'] > current['sequence']),
                     'motion received bundle absent from real publication/sequence regressed')
             equal(value, matches[-1]['message'], 'motion changed complete actual received bundle')
@@ -952,8 +1026,10 @@ def audit_motion(rows, information, peer, epoch, base):
         elif kind == 'control_dependency':
             component, ack = value['component'], value['value']
             require(component in deps, 'control dependency component')
-            sources = information.ack_publications if component == 'state' else peer.ack_publications
-            require(any(p['start'] <= wall and canonical(p['ack']) == canonical(ack) for p in sources),
+            if component not in dependency_publications:
+                sources = information.ack_publications if component == 'state' else peer.ack_publications
+                dependency_publications[component] = _AckPublicationIndex(sources)
+            require(dependency_publications[component].contains(ack, wall),
                     'motion dependency not actual earlier published complete ACK')
             deps[component][ack['request_id']] = copy.deepcopy(ack)
         elif kind == 'control_commit':

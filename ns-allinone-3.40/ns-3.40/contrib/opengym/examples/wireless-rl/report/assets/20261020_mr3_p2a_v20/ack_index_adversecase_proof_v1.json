@@ -1,0 +1,25 @@
+{
+  "schema": "mr3-information-ack-index-draft-cpu-proof-v1",
+  "passed": true,
+  "tests": 22,
+  "failures": 0,
+  "errors": 0,
+  "immutable3631_source_sha256": "ab1bfe144e9ab85276718a6131fe87fd3c90a09a1bd71056acc203c0e0765e30",
+  "owner_candidate_source_sha256": "ffcb403badc8c05c863d9dec9aa7ede27e403567294bb3acc32b60c0e844a27f",
+  "effective_combined_source_sha256": "f17c6fd76c4a1682ba36bd084548f74c46fd3151da14a3084c6613d984c6e495",
+  "whole_ack_patch_inverse_equals_owner_candidate": true,
+  "inverse_source_sha256": "ffcb403badc8c05c863d9dec9aa7ede27e403567294bb3acc32b60c0e844a27f",
+  "patch": {
+    "path": "/tmp/mr3_information_ack_index_optimization.patch",
+    "bytes": 4372,
+    "sha256": "4be70a4344d16c06cdde6aaa2c817a9a1c90b0ba07721b96920c62607d8376dd"
+  },
+  "test_source": {
+    "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_reach_information_index_regression.py",
+    "bytes": 21850,
+    "sha256": "273aabcec9465740283a7a708d800a174638540bd55593f0719786d7c3277e51"
+  },
+  "production_source_unchanged": true,
+  "scope": "Synthetic CPU only. Existing9 whole-motion baseline comparisons plus new adverse cases; no closedV19 replay, formal scientific/native role, simulator/GPU/policy/contract change or new freeze admission.",
+  "valid_domain": "One original prefix() validates nondecreasing query wall; publisher ACKs are immutable recorded objects. Index retains original list offsets and object references, all duplicates; newly eligible earlier future publications are inspected before a cached match. Empty/noeligible sources do not canonicalize query; badsource precedes badquery; unused malformedtail is not inspected."
+}

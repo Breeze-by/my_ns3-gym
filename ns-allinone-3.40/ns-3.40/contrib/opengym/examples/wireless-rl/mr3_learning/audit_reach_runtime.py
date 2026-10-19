@@ -5,6 +5,7 @@ arithmetic checks observed implications; it cannot prove continuous dynamics,
 WORLD/heading calibration, future confinement, or native admission by itself.
 Old profile/source/schema artifacts cannot acquire credit from this reader.
 """
+from bisect import bisect_left, bisect_right
 from decimal import Decimal
 from fractions import Fraction as Q
 from functools import lru_cache
@@ -67,9 +68,14 @@ def digest(value):
     return hashlib.sha256(canonical(value).encode()).hexdigest()
 
 
+@lru_cache(maxsize=4096, typed=True)
+def _number_fraction(value):
+    return Q.from_float(value) if type(value) is float else Q(value)
+
+
 def number(value):
     require(type(value) in (int, float) and math.isfinite(value), "nonfinite/non-numeric scalar")
-    return Q.from_float(value) if type(value) is float else Q(value)
+    return _number_fraction(value)
 
 
 def integer(value, minimum=0):
@@ -457,6 +463,7 @@ def native_index(drivers, odometry_rows, epoch):
                 and ocfg.get("phase") == "world_update_begin_before_actuation",
                 "old or unreviewed odometry configuration")
         commands, acts, raw = {}, {}, {}
+        command_records, command_values = [], []
         for i, row in enumerate(drive, 1):
             integer(row.get("record_sequence"), 1)
             require(row.get("epoch") == epoch and row.get("robot") == robot
@@ -465,6 +472,8 @@ def native_index(drivers, odometry_rows, epoch):
                 seq = integer(row["cmd_seq"], 1)
                 require(seq == len(commands)+1, "native command sequence gap")
                 commands[seq] = row
+                command_records.append(row["record_sequence"])
+                command_values.append(row)
             elif row["kind"] == "actuation":
                 seq = integer(row["actuation_seq"], 1)
                 acts.setdefault(seq, []).append(row)
@@ -482,8 +491,8 @@ def native_index(drivers, odometry_rows, epoch):
                 command = commands.get(current["cmd_seq"])
                 require(command is not None and command["record_sequence"] < current["record_sequence"],
                         "actuation has no earlier native command")
-                eligible = [c for c in commands.values() if c["record_sequence"] < current["record_sequence"]]
-                require(max(eligible, key=lambda c: c["cmd_seq"])["cmd_seq"] == current["cmd_seq"],
+                latest = bisect_left(command_records, current["record_sequence"]) - 1
+                require(command_values[latest]["cmd_seq"] == current["cmd_seq"],
                         "native actuation did not select the latest stored command")
             previous = current
         previous_source = None
@@ -514,6 +523,7 @@ def ingress_index(motion, native, epoch):
     streams = {n: {"raw": {}, "tf": {}, "calibration": {}, "storage": {}, "applied": {},
                     "intent": {}, "requests": {}, "decisions": []} for n in ROBOTS}
     stable, received, state_ingress = {}, None, None
+    raw_callback_counts = {n: 0 for n in ROBOTS}
     configuration = None
     for i, row in enumerate(motion, 1):
         integer(row.get("record_sequence"), 1)
@@ -545,11 +555,12 @@ def ingress_index(motion, native, epoch):
             robot = p["robot"]; stream = streams[robot]
             raw = p["message"]; raw_check(raw); clock = source(raw)
             seq = integer(p["input_sequence"], 1)
-            require(seq == sum(len(v) for v in stream["raw"].values())+1, "own raw callback sequence gap")
+            require(seq == raw_callback_counts[robot]+1, "own raw callback sequence gap")
             require(clock in native[robot]["odometry"]
                     and same(raw, native[robot]["odometry"][clock]["odometry"]),
                     "own raw has no identical native publication")
             stream["raw"].setdefault(clock, []).append((i, raw))
+            raw_callback_counts[robot] += 1
         elif kind == "own_tf":
             robot=p["robot"]; stream=streams[robot]
             seq=integer(p["input_sequence"],1)
@@ -866,7 +877,15 @@ def _audit_records(metadata, motion, drivers, odometry_rows, physics, drive_work
     information_bundles = {digest(row["payload"]["message"]):row for row in information
                            if row.get("kind") == "state_publish"}
     groups = {}
+    missing_index = len(motion) + 1
     for robot in ROBOTS:
+        raw_times = raw_required = None
+        act_times = act_required = None
+        # Header parsing stays at the original TF gate; an unused malformed tail
+        # or future callback must not become an error at index construction.
+        tf_callbacks = iter(streams[robot]["tf"].values())
+        next_tf = next(tf_callbacks, None)
+        tf_keys, tf_values = [], []
         for index, decision, bundle in streams[robot]["decisions"]:
             clock = decision["clock_ns"]
             phase_kind = decision.get("phase_kind", "normal")
@@ -883,18 +902,45 @@ def _audit_records(metadata, motion, drivers, odometry_rows, physics, drive_work
                     "decision intent was not actually published")
             if not release_ns <= clock <= end:
                 continue
-            for s, publication in native[robot]["odometry"].items():
-                if release_ns <= s <= clock and phase_kind == "normal" and decision.get("ready") is True:
-                    require(s in streams[robot]["raw"] and s in streams[robot]["calibration"]
-                            and min(i for i,_ in streams[robot]["raw"][s]) < index
-                            and streams[robot]["calibration"][s][0] < index,
-                            "normal decision closed before an actual causal raw/calibration source")
-            for seq, pairs in native[robot]["actuations"].items():
-                p = pairs[0]
-                if (release_ns <= p["sim_time_ns"] <= clock and p["cmd_seq"]
-                        and phase_kind == "normal" and decision.get("ready") is True):
-                    require(seq in streams[robot]["applied"] and streams[robot]["applied"][seq][0] < index,
-                            "normal decision closed before a real causal application receipt")
+            normal_ready = phase_kind == "normal" and decision.get("ready") is True
+            if normal_ready:
+                if raw_required is None:
+                    # Native raw sources are integer and increasing. Missing
+                    # receipts remain requirements until the original gate.
+                    raw_times, raw_required = [], [0]
+                    for s in native[robot]["odometry"]:
+                        if s >= release_ns:
+                            rows = streams[robot]["raw"].get(s)
+                            calibration = streams[robot]["calibration"].get(s)
+                            needed = (missing_index if rows is None or calibration is None else
+                                      max(min(i for i, _ in rows), calibration[0]))
+                            raw_times.append(s)
+                            raw_required.append(max(raw_required[-1], needed))
+                require(raw_required[bisect_right(raw_times, clock)] < index,
+                        "normal decision closed before an actual causal raw/calibration source")
+            if act_required is None or not normal_ready:
+                # Preserve the original complete loop before indexing: even a
+                # STOP/nonready decision compares timestamps before its phase.
+                for seq, pairs in native[robot]["actuations"].items():
+                    p = pairs[0]
+                    if (release_ns <= p["sim_time_ns"] <= clock and p["cmd_seq"]
+                            and phase_kind == "normal" and decision.get("ready") is True):
+                        require(seq in streams[robot]["applied"] and streams[robot]["applied"][seq][0] < index,
+                                "normal decision closed before a real causal application receipt")
+                if normal_ready:
+                    # Only a successful original scan establishes that every
+                    # actual timestamp is comparable before building its index.
+                    act_times, act_required = [], [0]
+                    for seq, pairs in native[robot]["actuations"].items():
+                        p = pairs[0]
+                        if p["sim_time_ns"] >= release_ns and p["cmd_seq"]:
+                            receipt = streams[robot]["applied"].get(seq)
+                            needed = missing_index if receipt is None else receipt[0]
+                            act_times.append(p["sim_time_ns"])
+                            act_required.append(max(act_required[-1], needed))
+            else:
+                require(act_required[bisect_right(act_times, clock)] < index,
+                        "normal decision closed before a real causal application receipt")
             if decision.get("started") is True and phase_kind == "normal":
                 require(bundle is not None and digest(bundle) in information_bundles,
                         "guard received bundle has no actual Information publication")
@@ -921,9 +967,14 @@ def _audit_records(metadata, motion, drivers, odometry_rows, physics, drive_work
                         and same(own["odometry"], native[robot]["odometry"][own_source]["odometry"])
                         and same(own["safety"]["calibration"], streams[robot]["calibration"][own_source][1]),
                         "guard selected unreceived own raw/calibration")
-                eligible_tf=[value for value in streams[robot]["tf"].values() if value[0] < index
-                             and source({"header":value[1]["header"]})-200_000_000 <= clock]
-                require(eligible_tf and same(max(eligible_tf,key=lambda v:(source({"header":v[1]["header"]}),v[0]))[1],own["transform"]),
+                while next_tf is not None and next_tf[0] < index:
+                    key = source({"header": next_tf[1]["header"]}), next_tf[0]
+                    position = bisect_right(tf_keys, key)
+                    tf_keys.insert(position, key)
+                    tf_values.insert(position, next_tf)
+                    next_tf = next(tf_callbacks, None)
+                position = bisect_right(tf_keys, (clock + 200_000_000, missing_index)) - 1
+                require(position >= 0 and same(tf_values[position][1], own["transform"]),
                         "guard selected unreceived/noncausal own TF")
                 state_geometry(own,clock,epoch)
                 if decision["decision"]["allow"]:

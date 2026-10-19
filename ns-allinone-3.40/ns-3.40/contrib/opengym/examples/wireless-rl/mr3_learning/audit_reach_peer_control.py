@@ -247,7 +247,8 @@ def motion_replay_class(core):
                 self.state_gid = information.graph(value['publisher_identity'], '/mr3/received/states',
                                                    'mr3_information', '/', self.state_gid)
                 information.bundle_evidence(value['message'], self.epoch, self.base)
-                require(any(p['message_sha256'] == sha(value['message'])
+                incoming_bundle_sha256 = sha(value['message']) if self.information.complete_publications else None
+                require(any(p['message_sha256'] == incoming_bundle_sha256
                             and p['publish_started_wall_monotonic_ns'] <= wall
                             for p in self.information.complete_publications), 'state callback has no real complete publication')
                 self.state_ingress = copy.deepcopy(value['message'])

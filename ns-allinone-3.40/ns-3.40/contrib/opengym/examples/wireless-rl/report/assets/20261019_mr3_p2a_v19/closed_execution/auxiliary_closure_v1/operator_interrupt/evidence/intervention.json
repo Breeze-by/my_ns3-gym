@@ -1,0 +1,56 @@
+{
+  "schema": "mr3-reach-external-reader-interruption-v1",
+  "freeze": "3631c788ca46e03a52f34ad48c41611761c17f1e",
+  "scope": "controlled diagnostic interruption of sole remaining owned read-only consumer after irreversible stage wall failure",
+  "actual_control_argv": [
+    "/usr/bin/python3",
+    "-B",
+    "/tmp/mr3_v19_controlled_reader_interrupt_v1.py"
+  ],
+  "operator": {
+    "pid": 1384102,
+    "parent": 1384099,
+    "group": 1384097,
+    "session": 1384097,
+    "start_ticks": 417600612,
+    "state": "R"
+  },
+  "started_monotonic_ns": 4176006332264238,
+  "ledger_path": "/tmp/mr3_p2a_reach_v19_matrix/ledger.jsonl",
+  "ledger_snapshot_sha256": "ebd8c7fccd1e184feefa8fdb2036b65eef6804ddc575158952ba9881dd698dc6",
+  "signal_sent": true,
+  "signal_name": "SIGINT",
+  "scientific_pass_claimed": false,
+  "target_actual_wait_required_from_original_coordinator": true,
+  "fee_rule": "control operation overlapping matrix outer is included once in matrix wall, not added twice",
+  "errors": [],
+  "target_before": {
+    "pid": 1372897,
+    "parent": 1360806,
+    "group": 1360801,
+    "session": 1360801,
+    "start_ticks": 417336943,
+    "state": "R"
+  },
+  "coordinator_before": {
+    "pid": 1360806,
+    "parent": 1360803,
+    "group": 1360801,
+    "session": 1360801,
+    "start_ticks": 417223564,
+    "state": "S"
+  },
+  "target_actual_argv": [
+    "/usr/bin/python3",
+    "-m",
+    "mr3_learning.audit_reach_information",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface",
+    "--freeze",
+    "3631c788ca46e03a52f34ad48c41611761c17f1e",
+    "--output",
+    "/tmp/mr3_p2a_reach_v19_matrix/interface/information_result.json"
+  ],
+  "matrix_elapsed_at_intervention_ns": 3761202849870,
+  "signal_monotonic_ns": 4176006333171865,
+  "ended_monotonic_ns": 4176006333200067
+}

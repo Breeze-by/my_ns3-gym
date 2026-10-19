@@ -1,0 +1,82 @@
+{
+  "schema": "mr3-reach-native-wait-v1",
+  "freeze": "3631c788ca46e03a52f34ad48c41611761c17f1e",
+  "safety_contract": "mr3-reach-v1",
+  "plan_sha256": "331d83cb8fb7fb7498f9243eaccd49138f9117baae9ae69684d30b55ae8c2d3e",
+  "id": "input_001",
+  "role": "input",
+  "argv": [
+    "/usr/bin/python3",
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v4/independent/mr3_p2a0_v4_independent_input_episode_review_v1.py",
+    "--episode",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101",
+    "--output",
+    "/tmp/mr3_p2a_reach_v19_matrix/interface/input_001_result.json"
+  ],
+  "command_argv": [
+    "/usr/bin/python3",
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v4/independent/mr3_p2a0_v4_independent_input_episode_review_v1.py",
+    "--episode",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101",
+    "--output",
+    "/tmp/mr3_p2a_reach_v19_matrix/interface/input_001_result.json"
+  ],
+  "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+  "output": "/tmp/mr3_p2a_reach_v19_matrix/interface/input_001_result.json",
+  "receipt": "/tmp/mr3_p2a_reach_v19_matrix/interface/input_001_command.json",
+  "console": "/tmp/mr3_p2a_reach_v19_matrix/interface/input_001.log",
+  "required": true,
+  "started_wall_monotonic_ns": 4173319186677803,
+  "launcher_identity": {
+    "pid": 1360806,
+    "parent": 1360803,
+    "group": 1360801,
+    "session": 1360801,
+    "start_ticks": 417223564,
+    "state": "S"
+  },
+  "errors": [],
+  "returncode": 0,
+  "passed": true,
+  "result_pass_key": "passed",
+  "result_scope": "declared command result only; independent scientific and final closure gates remain necessary",
+  "coordinator_identity": {
+    "pid": 1360806,
+    "parent": 1360803,
+    "group": 1360801,
+    "session": 1360801,
+    "start_ticks": 417223564,
+    "state": "S"
+  },
+  "coordinator_actual_argv": [
+    "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+    "-m",
+    "mr3_learning.reach_preparation",
+    "--plan",
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v19/predeclared_plan_v1.json",
+    "--freeze",
+    "3631c788ca46e03a52f34ad48c41611761c17f1e"
+  ],
+  "launcher_identity_scope": "persistent_coordinator_not_native_owned",
+  "benchmark_parent": {
+    "pid": 1371088,
+    "parent": 1360806,
+    "group": 1360801,
+    "session": 1360801,
+    "start_ticks": 417331918,
+    "state": "R"
+  },
+  "process_identity": {
+    "pid": 1371088,
+    "parent": 1360806,
+    "group": 1360801,
+    "session": 1360801,
+    "start_ticks": 417331918,
+    "state": "R"
+  },
+  "pid": 1371088,
+  "ended_wall_monotonic_ns": 4173518745840928,
+  "wall_seconds": "199.559163125",
+  "execution_kind": "subprocess_waited",
+  "output_sha256": "59695981124da245e6dab5ed52e3b78f1d79dd74353a37f230205b907e6e7e7c"
+}

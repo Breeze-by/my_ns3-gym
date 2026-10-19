@@ -1,0 +1,1726 @@
+{
+  "schema": "mr3-independent-raw-physics-closure-review-v1",
+  "passed": true,
+  "episodes": [
+    {
+      "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101",
+      "epoch": "mr3_p2a_reach_v19_interface_w0_e1_0b120834",
+      "closure": {
+        "passed": true,
+        "errors": [],
+        "checks": {
+          "epoch": true,
+          "worker_return0": true,
+          "no_forced": true,
+          "not_failed_sample": true,
+          "no_recorded_remaining": true,
+          "no_live_saved_identity": true,
+          "launch_return0": true,
+          "native_server_clean": true,
+          "nav_finalized": true,
+          "ordered_complete": true,
+          "all_started_exited_zero": true
+        },
+        "processes_seen": 45,
+        "started_processes": 40,
+        "exited_processes": 40,
+        "still_present_saved_identities": [],
+        "finalized_nodes": [
+          [
+            "tb1",
+            "controller_server",
+            4
+          ],
+          [
+            "tb1",
+            "planner_server",
+            4
+          ],
+          [
+            "tb1",
+            "behavior_server",
+            4
+          ],
+          [
+            "tb1",
+            "bt_navigator",
+            4
+          ],
+          [
+            "tb1",
+            "waypoint_follower",
+            4
+          ],
+          [
+            "tb1",
+            "velocity_smoother",
+            4
+          ],
+          [
+            "tb2",
+            "controller_server",
+            4
+          ],
+          [
+            "tb2",
+            "planner_server",
+            4
+          ],
+          [
+            "tb2",
+            "behavior_server",
+            4
+          ],
+          [
+            "tb2",
+            "bt_navigator",
+            4
+          ],
+          [
+            "tb2",
+            "waypoint_follower",
+            4
+          ],
+          [
+            "tb2",
+            "velocity_smoother",
+            4
+          ],
+          [
+            "tb3",
+            "controller_server",
+            4
+          ],
+          [
+            "tb3",
+            "planner_server",
+            4
+          ],
+          [
+            "tb3",
+            "behavior_server",
+            4
+          ],
+          [
+            "tb3",
+            "bt_navigator",
+            4
+          ],
+          [
+            "tb3",
+            "waypoint_follower",
+            4
+          ],
+          [
+            "tb3",
+            "velocity_smoother",
+            4
+          ]
+        ]
+      },
+      "robots": {
+        "tb1": {
+          "errors": [],
+          "raw_unique_odom_samples": 3509,
+          "task_odom_samples": 1601,
+          "maximum_planar_speed_all": 0.19322443845287524,
+          "maximum_angular_norm_all": 0.30202348133027296,
+          "maximum_abs_angular_z_all": 0.30202348133027296,
+          "maximum_planar_speed_task": 0.19322443845287524,
+          "maximum_angular_norm_task": 0.30202348133027296,
+          "maximum_abs_angular_z_task": 0.30202348133027296,
+          "maximum_raw_odom_chord_speed_task": 0.19319227966549185,
+          "maximum_task_source_gap_ns": 20000000,
+          "bound_violation_counts": {
+            "planar_speed_over_.30": 0,
+            "angular_norm_over_1.2": 0,
+            "chord_speed_over_.30": 0
+          },
+          "bound_violation_examples": {
+            "planar_speed_over_.30": [],
+            "angular_norm_over_1.2": [],
+            "chord_speed_over_.30": []
+          },
+          "linear_zero_events": 81,
+          "eligible_stop_events": 1,
+          "credited_sampled_stop_events": 0,
+          "maximum_credited_initial_planar_speed": null,
+          "maximum_cancel_credited_initial_planar_speed": 0.18907425629744737,
+          "hard_zero_evidence_complete": false,
+          "cancel_end_to_end_evidence_complete": true,
+          "native_cancel_events": 2,
+          "eligible_cancel_stop_events": 1,
+          "credited_cancel_stop_events": 1,
+          "cancel_stop_responses": [
+            {
+              "event_category": "B_native_cancel_end_to_end",
+              "cancel_clock_ns": 48420000000,
+              "goal_id": "mr3_p2a_reach_v19_interface_w0_e1_0b120834:tb1:1",
+              "eligible": false,
+              "status": "no_active_prior_linear_output"
+            },
+            {
+              "event_clock_ns": 59420000000,
+              "zero_w": null,
+              "event_category": "B_native_cancel_end_to_end",
+              "prior_nonzero_command_span_ns": 260000000,
+              "status": "sampled_response_within_declared_bounds",
+              "eligible": true,
+              "initial_observed_planar_speed": 0.18907425629744737,
+              "rest_source_ns": 59763000000,
+              "observed_latency_sec": 0.343,
+              "observed_odom_polyline_m": 0.03479586979835005,
+              "maximum_observation_gap_ns": 20000000,
+              "observed_nonrest_beyond_horizon": false,
+              "cancel_clock_ns": 59420000000,
+              "goal_id": "mr3_p2a_reach_v19_interface_w0_e1_0b120834:tb1:14",
+              "completion_evidence": [
+                {
+                  "kind": "cancel",
+                  "value": true,
+                  "received_clock_ns": 59420000000,
+                  "source_clock_ns": 59420000000,
+                  "delivery_sequence": 5
+                },
+                {
+                  "kind": "result",
+                  "value": 5,
+                  "received_clock_ns": 59620000000,
+                  "source_clock_ns": 59420000000,
+                  "delivery_sequence": 6
+                }
+              ],
+              "new_goal_clock_ns": null
+            }
+          ],
+          "physical_evidence_complete": true,
+          "stop_responses": [
+            {
+              "event_clock_ns": 51680000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 3.033516210072641e-05
+            },
+            {
+              "event_clock_ns": 51780000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 6.325530274666033e-05
+            },
+            {
+              "event_clock_ns": 51880000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 7.559533118811797e-05
+            },
+            {
+              "event_clock_ns": 51980000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 6.405977547776661e-05
+            },
+            {
+              "event_clock_ns": 52080000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 5.9258165821032165e-05
+            },
+            {
+              "event_clock_ns": 52180000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.021492963374661517
+            },
+            {
+              "event_clock_ns": 52280000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 8.53166544535387e-05
+            },
+            {
+              "event_clock_ns": 52340000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.0010929584902102298
+            },
+            {
+              "event_clock_ns": 52380000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.03317278015250983
+            },
+            {
+              "event_clock_ns": 52440000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.03238664909738549
+            },
+            {
+              "event_clock_ns": 52480000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.06403514521395748
+            },
+            {
+              "event_clock_ns": 52540000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.062411734583395106
+            },
+            {
+              "event_clock_ns": 52580000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.09058624705493619
+            },
+            {
+              "event_clock_ns": 52640000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.08517421568195344
+            },
+            {
+              "event_clock_ns": 52700000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 40000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.14213165088089505
+            },
+            {
+              "event_clock_ns": 52740000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.10863006741014794
+            },
+            {
+              "event_clock_ns": 52800000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 40000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.16309415479091507
+            },
+            {
+              "event_clock_ns": 52900000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 80000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.17897341857362972
+            },
+            {
+              "event_clock_ns": 53000000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 80000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.19230567138158555
+            },
+            {
+              "event_clock_ns": 53180000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 160000000,
+              "status": "resumed_before_proven_rest",
+              "eligible": true,
+              "initial_observed_planar_speed": 0.17865505712019097,
+              "observed_nonrest_beyond_horizon": false
+            },
+            {
+              "event_clock_ns": 53240000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.11645456953976484
+            },
+            {
+              "event_clock_ns": 53300000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 40000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.0861631561660926
+            },
+            {
+              "event_clock_ns": 53400000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 80000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.11567474043689757
+            },
+            {
+              "event_clock_ns": 53440000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.11569531061978049
+            },
+            {
+              "event_clock_ns": 53500000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 40000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.08120948936821751
+            },
+            {
+              "event_clock_ns": 53540000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.13008744936585503
+            },
+            {
+              "event_clock_ns": 53580000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.1068586796350689
+            },
+            {
+              "event_clock_ns": 53640000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.07498340519720284
+            },
+            {
+              "event_clock_ns": 53680000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.07204736791973446
+            },
+            {
+              "event_clock_ns": 54880000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 7.184358630965952e-05
+            },
+            {
+              "event_clock_ns": 54980000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 7.528347770314035e-05
+            },
+            {
+              "event_clock_ns": 55080000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 5.7374158862206874e-05
+            },
+            {
+              "event_clock_ns": 55180000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 8.509893194182439e-05
+            },
+            {
+              "event_clock_ns": 55280000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 6.721416165372561e-05
+            },
+            {
+              "event_clock_ns": 55380000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 8.240566570069338e-05
+            },
+            {
+              "event_clock_ns": 55480000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 5.678653156935586e-05
+            },
+            {
+              "event_clock_ns": 55580000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.020513656839277587
+            },
+            {
+              "event_clock_ns": 55680000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.0001303932992680957
+            },
+            {
+              "event_clock_ns": 55780000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.00010108901625687879
+            },
+            {
+              "event_clock_ns": 55880000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 6.089033219226716e-05
+            },
+            {
+              "event_clock_ns": 55980000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.00011924621314053104
+            },
+            {
+              "event_clock_ns": 56080000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 7.224370744251603e-05
+            },
+            {
+              "event_clock_ns": 56180000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.0001493298463561649
+            },
+            {
+              "event_clock_ns": 56280000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 9.008457441934286e-05
+            },
+            {
+              "event_clock_ns": 56380000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 6.237171299387773e-05
+            },
+            {
+              "event_clock_ns": 56480000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 5.766093394133483e-05
+            },
+            {
+              "event_clock_ns": 56580000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.00010161584531084027
+            },
+            {
+              "event_clock_ns": 56680000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 6.288450317391436e-05
+            },
+            {
+              "event_clock_ns": 56780000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 8.029975543047371e-05
+            },
+            {
+              "event_clock_ns": 56880000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 6.336604692336691e-05
+            },
+            {
+              "event_clock_ns": 56980000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 6.969199217639964e-05
+            },
+            {
+              "event_clock_ns": 57080000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 8.075506690115189e-05
+            },
+            {
+              "event_clock_ns": 57180000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 5.3398905890287086e-05
+            },
+            {
+              "event_clock_ns": 57280000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.01981211311810996
+            },
+            {
+              "event_clock_ns": 57380000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.00012861902629328334
+            },
+            {
+              "event_clock_ns": 57480000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 6.298458348690708e-05
+            },
+            {
+              "event_clock_ns": 57580000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.00013055941213883674
+            },
+            {
+              "event_clock_ns": 57680000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 6.146751145167101e-05
+            },
+            {
+              "event_clock_ns": 57740000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.00027890925945642107
+            },
+            {
+              "event_clock_ns": 57780000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.030401637581235087
+            },
+            {
+              "event_clock_ns": 57840000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.02608408343488843
+            },
+            {
+              "event_clock_ns": 57880000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.054713642554911034
+            },
+            {
+              "event_clock_ns": 57940000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.04928194056430455
+            },
+            {
+              "event_clock_ns": 57980000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.016678263668923374
+            },
+            {
+              "event_clock_ns": 58040000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.012362859545421566
+            },
+            {
+              "event_clock_ns": 58080000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 6.810809200271439e-06
+            },
+            {
+              "event_clock_ns": 58140000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.0009774613207645683
+            },
+            {
+              "event_clock_ns": 58180000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 7.630552041889035e-05
+            },
+            {
+              "event_clock_ns": 58240000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.000503487741673213
+            },
+            {
+              "event_clock_ns": 58280000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 6.633396140191461e-05
+            },
+            {
+              "event_clock_ns": 58380000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 7.999631073619365e-05
+            },
+            {
+              "event_clock_ns": 58480000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 4.720456856975435e-05
+            },
+            {
+              "event_clock_ns": 58580000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 7.038251641187129e-05
+            },
+            {
+              "event_clock_ns": 58680000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 6.836755354065352e-05
+            },
+            {
+              "event_clock_ns": 58780000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 7.09317979550503e-05
+            },
+            {
+              "event_clock_ns": 58880000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 5.078256613412858e-05
+            },
+            {
+              "event_clock_ns": 58980000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.02288980348406151
+            },
+            {
+              "event_clock_ns": 59040000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.002498952378418683
+            },
+            {
+              "event_clock_ns": 59080000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.035465379270232106
+            },
+            {
+              "event_clock_ns": 59140000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.03674930378146847
+            },
+            {
+              "event_clock_ns": 59800000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 640000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.003983453148348828
+            }
+          ],
+          "scope": "finite sampled raw-odom response evidence at reported speed range; no continuous-path upper proof or claim that all zero commands are rest"
+        },
+        "tb2": {
+          "errors": [],
+          "raw_unique_odom_samples": 3362,
+          "task_odom_samples": 1601,
+          "maximum_planar_speed_all": 0.2007651273490482,
+          "maximum_angular_norm_all": 0.3121916243667857,
+          "maximum_abs_angular_z_all": 0.3121916243667857,
+          "maximum_planar_speed_task": 0.2007651273490482,
+          "maximum_angular_norm_task": 0.3121916243667857,
+          "maximum_abs_angular_z_task": 0.3121916243667857,
+          "maximum_raw_odom_chord_speed_task": 0.2006987328762086,
+          "maximum_task_source_gap_ns": 20000000,
+          "bound_violation_counts": {
+            "planar_speed_over_.30": 0,
+            "angular_norm_over_1.2": 0,
+            "chord_speed_over_.30": 0
+          },
+          "bound_violation_examples": {
+            "planar_speed_over_.30": [],
+            "angular_norm_over_1.2": [],
+            "chord_speed_over_.30": []
+          },
+          "linear_zero_events": 8,
+          "eligible_stop_events": 0,
+          "credited_sampled_stop_events": 0,
+          "maximum_credited_initial_planar_speed": null,
+          "maximum_cancel_credited_initial_planar_speed": 0.19355192292217788,
+          "hard_zero_evidence_complete": false,
+          "cancel_end_to_end_evidence_complete": true,
+          "native_cancel_events": 2,
+          "eligible_cancel_stop_events": 2,
+          "credited_cancel_stop_events": 2,
+          "cancel_stop_responses": [
+            {
+              "event_clock_ns": 47420000000,
+              "zero_w": null,
+              "event_category": "B_native_cancel_end_to_end",
+              "prior_nonzero_command_span_ns": 1000000000,
+              "status": "sampled_response_within_declared_bounds",
+              "eligible": true,
+              "initial_observed_planar_speed": 0.18291636474020742,
+              "rest_source_ns": 47870000000,
+              "observed_latency_sec": 0.45,
+              "observed_odom_polyline_m": 0.05138231243256309,
+              "maximum_observation_gap_ns": 20000000,
+              "observed_nonrest_beyond_horizon": false,
+              "cancel_clock_ns": 47420000000,
+              "goal_id": "mr3_p2a_reach_v19_interface_w0_e1_0b120834:tb2:1",
+              "completion_evidence": [
+                {
+                  "kind": "cancel",
+                  "value": true,
+                  "received_clock_ns": 47420000000,
+                  "source_clock_ns": 47420000000,
+                  "delivery_sequence": 2
+                },
+                {
+                  "kind": "result",
+                  "value": 5,
+                  "received_clock_ns": 47620000000,
+                  "source_clock_ns": 47440000000,
+                  "delivery_sequence": 3
+                }
+              ],
+              "new_goal_clock_ns": 51420000000
+            },
+            {
+              "event_clock_ns": 56420000000,
+              "zero_w": null,
+              "event_category": "B_native_cancel_end_to_end",
+              "prior_nonzero_command_span_ns": 4220000000,
+              "status": "sampled_response_within_declared_bounds",
+              "eligible": true,
+              "initial_observed_planar_speed": 0.19355192292217788,
+              "rest_source_ns": 56850000000,
+              "observed_latency_sec": 0.43,
+              "observed_odom_polyline_m": 0.052877096185620975,
+              "maximum_observation_gap_ns": 20000000,
+              "observed_nonrest_beyond_horizon": false,
+              "cancel_clock_ns": 56420000000,
+              "goal_id": "mr3_p2a_reach_v19_interface_w0_e1_0b120834:tb2:14",
+              "completion_evidence": [
+                {
+                  "kind": "cancel",
+                  "value": true,
+                  "received_clock_ns": 56420000000,
+                  "source_clock_ns": 56420000000,
+                  "delivery_sequence": 5
+                },
+                {
+                  "kind": "result",
+                  "value": 5,
+                  "received_clock_ns": 56620000000,
+                  "source_clock_ns": 56440000000,
+                  "delivery_sequence": 6
+                }
+              ],
+              "new_goal_clock_ns": null
+            }
+          ],
+          "physical_evidence_complete": true,
+          "stop_responses": [
+            {
+              "event_clock_ns": 46140000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.00040742091471659465
+            },
+            {
+              "event_clock_ns": 46180000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.061162079000671
+            },
+            {
+              "event_clock_ns": 46240000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.03634117078306951
+            },
+            {
+              "event_clock_ns": 46300000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 40000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.10337098735137262
+            },
+            {
+              "event_clock_ns": 46340000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.07405910858309275
+            },
+            {
+              "event_clock_ns": 46400000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 40000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.13934158963998597
+            },
+            {
+              "event_clock_ns": 47880000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 1460000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.00318920691546345
+            },
+            {
+              "event_clock_ns": 56880000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 4680000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 3.237907214972745e-05
+            }
+          ],
+          "scope": "finite sampled raw-odom response evidence at reported speed range; no continuous-path upper proof or claim that all zero commands are rest"
+        },
+        "tb3": {
+          "errors": [],
+          "raw_unique_odom_samples": 3305,
+          "task_odom_samples": 1602,
+          "maximum_planar_speed_all": 0.20004623399046323,
+          "maximum_angular_norm_all": 0.2997910062502164,
+          "maximum_abs_angular_z_all": 0.2997910062502164,
+          "maximum_planar_speed_task": 0.20004623399046323,
+          "maximum_angular_norm_task": 0.2997910062502164,
+          "maximum_abs_angular_z_task": 0.2997910062502164,
+          "maximum_raw_odom_chord_speed_task": 0.2001337917097196,
+          "maximum_task_source_gap_ns": 20000000,
+          "bound_violation_counts": {
+            "planar_speed_over_.30": 0,
+            "angular_norm_over_1.2": 0,
+            "chord_speed_over_.30": 0
+          },
+          "bound_violation_examples": {
+            "planar_speed_over_.30": [],
+            "angular_norm_over_1.2": [],
+            "chord_speed_over_.30": []
+          },
+          "linear_zero_events": 58,
+          "eligible_stop_events": 1,
+          "credited_sampled_stop_events": 0,
+          "maximum_credited_initial_planar_speed": null,
+          "maximum_cancel_credited_initial_planar_speed": 0.18973221860521164,
+          "hard_zero_evidence_complete": false,
+          "cancel_end_to_end_evidence_complete": true,
+          "native_cancel_events": 2,
+          "eligible_cancel_stop_events": 1,
+          "credited_cancel_stop_events": 1,
+          "cancel_stop_responses": [
+            {
+              "event_category": "B_native_cancel_end_to_end",
+              "cancel_clock_ns": 48420000000,
+              "goal_id": "mr3_p2a_reach_v19_interface_w0_e1_0b120834:tb3:1",
+              "eligible": false,
+              "status": "no_active_prior_linear_output"
+            },
+            {
+              "event_clock_ns": 59420000000,
+              "zero_w": null,
+              "event_category": "B_native_cancel_end_to_end",
+              "prior_nonzero_command_span_ns": 260000000,
+              "status": "sampled_response_within_declared_bounds",
+              "eligible": true,
+              "initial_observed_planar_speed": 0.18973221860521164,
+              "rest_source_ns": 59800000000,
+              "observed_latency_sec": 0.38,
+              "observed_odom_polyline_m": 0.03746832804351074,
+              "maximum_observation_gap_ns": 20000000,
+              "observed_nonrest_beyond_horizon": false,
+              "cancel_clock_ns": 59420000000,
+              "goal_id": "mr3_p2a_reach_v19_interface_w0_e1_0b120834:tb3:14",
+              "completion_evidence": [
+                {
+                  "kind": "cancel",
+                  "value": true,
+                  "received_clock_ns": 59420000000,
+                  "source_clock_ns": 59420000000,
+                  "delivery_sequence": 5
+                },
+                {
+                  "kind": "result",
+                  "value": 5,
+                  "received_clock_ns": 59620000000,
+                  "source_clock_ns": 59420000000,
+                  "delivery_sequence": 6
+                }
+              ],
+              "new_goal_clock_ns": null
+            }
+          ],
+          "physical_evidence_complete": true,
+          "stop_responses": [
+            {
+              "event_clock_ns": 53440000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 240000000,
+              "status": "resumed_before_proven_rest",
+              "eligible": true,
+              "initial_observed_planar_speed": 0.17918894235621083,
+              "observed_nonrest_beyond_horizon": false
+            },
+            {
+              "event_clock_ns": 53500000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 40000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.16874924513698525
+            },
+            {
+              "event_clock_ns": 53540000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.15825583216159472
+            },
+            {
+              "event_clock_ns": 53580000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.19917453018223236
+            },
+            {
+              "event_clock_ns": 53640000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.16802664587685578
+            },
+            {
+              "event_clock_ns": 53680000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.18988199189974667
+            },
+            {
+              "event_clock_ns": 54880000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.032710786905754956
+            },
+            {
+              "event_clock_ns": 54980000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.03279213470120478
+            },
+            {
+              "event_clock_ns": 55080000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.032760515520319514
+            },
+            {
+              "event_clock_ns": 55180000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.03217227121617066
+            },
+            {
+              "event_clock_ns": 55280000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.03152305172173359
+            },
+            {
+              "event_clock_ns": 55380000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.03068648012994592
+            },
+            {
+              "event_clock_ns": 55480000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.0281486546366934
+            },
+            {
+              "event_clock_ns": 55580000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.021079786726510574
+            },
+            {
+              "event_clock_ns": 55680000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 8.151677363537313e-05
+            },
+            {
+              "event_clock_ns": 55780000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.00010793653585092116
+            },
+            {
+              "event_clock_ns": 55880000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 6.166800680863985e-05
+            },
+            {
+              "event_clock_ns": 55980000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 5.4358840939516356e-05
+            },
+            {
+              "event_clock_ns": 56080000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 5.088177050389223e-05
+            },
+            {
+              "event_clock_ns": 56180000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 6.066710255368719e-05
+            },
+            {
+              "event_clock_ns": 56280000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 5.859098654882784e-05
+            },
+            {
+              "event_clock_ns": 56380000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 4.9001733461955804e-05
+            },
+            {
+              "event_clock_ns": 56480000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.03159454418611095
+            },
+            {
+              "event_clock_ns": 56580000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.03212519564070713
+            },
+            {
+              "event_clock_ns": 56680000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.032837653555668464
+            },
+            {
+              "event_clock_ns": 56780000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.034130794591878476
+            },
+            {
+              "event_clock_ns": 56880000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.03400859125711152
+            },
+            {
+              "event_clock_ns": 56980000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.03225717910520233
+            },
+            {
+              "event_clock_ns": 57080000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.03188513787857821
+            },
+            {
+              "event_clock_ns": 57180000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.028927775012865063
+            },
+            {
+              "event_clock_ns": 57280000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.021284930850599973
+            },
+            {
+              "event_clock_ns": 57380000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 6.824936512698483e-05
+            },
+            {
+              "event_clock_ns": 57480000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 5.496547006944144e-05
+            },
+            {
+              "event_clock_ns": 57580000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 4.5241866339159444e-05
+            },
+            {
+              "event_clock_ns": 57680000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 6.069315040365353e-05
+            },
+            {
+              "event_clock_ns": 57740000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 6.329457879065553e-05
+            },
+            {
+              "event_clock_ns": 57780000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 5.594418195488132e-05
+            },
+            {
+              "event_clock_ns": 57840000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.03282443333973749
+            },
+            {
+              "event_clock_ns": 57880000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.00014604504291488397
+            },
+            {
+              "event_clock_ns": 57940000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.03392109056925853
+            },
+            {
+              "event_clock_ns": 57980000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.0010528652276394945
+            },
+            {
+              "event_clock_ns": 58040000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.03326447651486083
+            },
+            {
+              "event_clock_ns": 58080000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.00047091256831178336
+            },
+            {
+              "event_clock_ns": 58140000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.03383263754508654
+            },
+            {
+              "event_clock_ns": 58180000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.06775265428524194
+            },
+            {
+              "event_clock_ns": 58240000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.06771142162067413
+            },
+            {
+              "event_clock_ns": 58280000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.10092503406556876
+            },
+            {
+              "event_clock_ns": 58380000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.06708375213812995
+            },
+            {
+              "event_clock_ns": 58480000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.03584385276318449
+            },
+            {
+              "event_clock_ns": 58580000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.034275843962184235
+            },
+            {
+              "event_clock_ns": 58680000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.03378741616051965
+            },
+            {
+              "event_clock_ns": 58780000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.032855955876245804
+            },
+            {
+              "event_clock_ns": 58880000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.029236077818930808
+            },
+            {
+              "event_clock_ns": 58980000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.021322059340221487
+            },
+            {
+              "event_clock_ns": 59040000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.00028294344903962684
+            },
+            {
+              "event_clock_ns": 59080000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 20000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.00010344520255425902
+            },
+            {
+              "event_clock_ns": 59140000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 40000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.06461190905828446
+            },
+            {
+              "event_clock_ns": 59780000000,
+              "zero_w": 0.0,
+              "event_category": "A_final_linear_zero",
+              "prior_nonzero_command_span_ns": 620000000,
+              "status": "insufficient_prior_movement",
+              "eligible": false,
+              "initial_observed_planar_speed": 0.014481535287777455
+            }
+          ],
+          "scope": "finite sampled raw-odom response evidence at reported speed range; no continuous-path upper proof or claim that all zero commands are rest"
+        }
+      },
+      "physical_evidence_complete": true,
+      "passed": true
+    }
+  ],
+  "criteria": {
+    "linear_stop_horizon_sec": 0.78,
+    "observed_path_bound_m_per_robot": 0.144,
+    "minimum_prior_nonzero_output_span_sec": 0.1,
+    "minimum_initial_observed_planar_speed_mps": 0.05,
+    "rest_planar_speed_mps": 0.01,
+    "rest_consecutive_samples": 3,
+    "maximum_source_gap_sec": 0.1
+  },
+  "scope": "independent source-time sampled physical/strict-close evidence; A final-linear-zero and B actual-native-cancel end-to-end remain separate. Meaningful evidence in either is reported by type, never native-cancel as sudden-zero proof. Missing meaningful segments never PASS; sampled norms/chords do not prove continuous truth",
+  "script_sha256": "2516e394f60eac5dd24fd66b51c4c48fc37245090eb1626ebe1c7a3a23f8bafb"
+}

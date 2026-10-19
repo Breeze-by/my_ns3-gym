@@ -1,0 +1,3375 @@
+{
+  "schema": "mr3-p2a0-v4-independent-input-episode-review-v1",
+  "passed": true,
+  "whole_observation_and_seven_map_replay_passed": true,
+  "freeze": "3631c788ca46e03a52f34ad48c41611761c17f1e",
+  "benchmark_complete": true,
+  "preparation_probe_version": "mr3-p2a-reach-outward-cancel-v1",
+  "motion_contract_scope": "Angular limits and motion safety metadata are checked by separate physics/angular consumers. This received-map/activity replay does not hard-code the old 1.2 or new 0.8 command cap, and never treats geometric reachability as executable/safe proof.",
+  "source_proof": {
+    "mr3_observation.py": {
+      "freeze": "3631c788ca46e03a52f34ad48c41611761c17f1e",
+      "sha256": "b81da18c256ff307a4afc09c5115d0057e5a142a246555f39c1f7a5cee88c6e8",
+      "source": "3631c788ca46e03a52f34ad48c41611761c17f1e:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py",
+      "current_worktree_matches_native_freeze": true
+    },
+    "mr3_episode.py": {
+      "freeze": "3631c788ca46e03a52f34ad48c41611761c17f1e",
+      "sha256": "9145d2ad23789b252e32f0afdfe18cf2eeec8e2c7e9ca7e89127a532288e411b",
+      "source": "3631c788ca46e03a52f34ad48c41611761c17f1e:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_episode.py",
+      "current_worktree_matches_native_freeze": true
+    },
+    "mr3_observation_archive.py": {
+      "freeze": "3631c788ca46e03a52f34ad48c41611761c17f1e",
+      "sha256": "03da72d5e989e6c7af99b90aaddf357120c2239fc08e99febb858554b1fefea8",
+      "source": "3631c788ca46e03a52f34ad48c41611761c17f1e:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation_archive.py",
+      "current_worktree_matches_native_freeze": true
+    },
+    "mr3_adapter.py": {
+      "freeze": "3631c788ca46e03a52f34ad48c41611761c17f1e",
+      "sha256": "d9121970b18e86a524ad4aad591a64661555bc15c0a59bf425896324473eecfc",
+      "source": "3631c788ca46e03a52f34ad48c41611761c17f1e:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_adapter.py",
+      "current_worktree_matches_native_freeze": true
+    },
+    "mr3_information.py": {
+      "freeze": "3631c788ca46e03a52f34ad48c41611761c17f1e",
+      "sha256": "597184b3620e8301771510ee777e7e88243cd4b352957f86f202031cc3a10acf",
+      "source": "3631c788ca46e03a52f34ad48c41611761c17f1e:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_information.py",
+      "current_worktree_matches_native_freeze": true
+    },
+    "mr3_activity.py": {
+      "freeze": "3631c788ca46e03a52f34ad48c41611761c17f1e",
+      "sha256": "7af918d75c05b6f8fb1a65899e43aad11a315640e8b00fdb589c31f693ad696e",
+      "source": "3631c788ca46e03a52f34ad48c41611761c17f1e:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_activity.py",
+      "current_worktree_matches_native_freeze": true
+    },
+    "mr3_learning/navigation_archive.py": {
+      "freeze": "3631c788ca46e03a52f34ad48c41611761c17f1e",
+      "sha256": "b509cc0d19ca443c0776cae4d728d35f399670bda08c171d590c8738964c48bd",
+      "source": "3631c788ca46e03a52f34ad48c41611761c17f1e:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/navigation_archive.py"
+    },
+    "mr3_learning/audit_activity.py": {
+      "freeze": "3631c788ca46e03a52f34ad48c41611761c17f1e",
+      "sha256": "0fa0c47262ccf29f140cc2b915431461e830f87680b65f524cbda6a6ffff4407",
+      "source": "3631c788ca46e03a52f34ad48c41611761c17f1e:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_activity.py"
+    }
+  },
+  "inputs": {
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/metadata.json": {
+      "bytes": 2702,
+      "sha256": "1fa202112089af85d986d5d4d3602ff9733238a13af016d07a00623164a88f12"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/benchmark_metadata.json": {
+      "bytes": 4706,
+      "sha256": "0f7cc0216a981f53cfd9b2e6d22e67d4952c0fd284097070fc3bfafb74149bfd"
+    },
+    "/tmp/mr3_p2a0_v4_frozen_3631c788ca46_q_rq4gdm/multi_robot_exploration/mr3_observation.py": {
+      "bytes": 47258,
+      "sha256": "b81da18c256ff307a4afc09c5115d0057e5a142a246555f39c1f7a5cee88c6e8"
+    },
+    "/tmp/mr3_p2a0_v4_frozen_3631c788ca46_q_rq4gdm/multi_robot_exploration/mr3_episode.py": {
+      "bytes": 1379,
+      "sha256": "9145d2ad23789b252e32f0afdfe18cf2eeec8e2c7e9ca7e89127a532288e411b"
+    },
+    "/tmp/mr3_p2a0_v4_frozen_3631c788ca46_q_rq4gdm/multi_robot_exploration/mr3_observation_archive.py": {
+      "bytes": 4459,
+      "sha256": "03da72d5e989e6c7af99b90aaddf357120c2239fc08e99febb858554b1fefea8"
+    },
+    "/tmp/mr3_p2a0_v4_frozen_3631c788ca46_q_rq4gdm/multi_robot_exploration/mr3_adapter.py": {
+      "bytes": 45408,
+      "sha256": "d9121970b18e86a524ad4aad591a64661555bc15c0a59bf425896324473eecfc"
+    },
+    "/tmp/mr3_p2a0_v4_frozen_3631c788ca46_q_rq4gdm/multi_robot_exploration/mr3_information.py": {
+      "bytes": 69850,
+      "sha256": "597184b3620e8301771510ee777e7e88243cd4b352957f86f202031cc3a10acf"
+    },
+    "/tmp/mr3_p2a0_v4_frozen_3631c788ca46_q_rq4gdm/multi_robot_exploration/mr3_activity.py": {
+      "bytes": 6162,
+      "sha256": "7af918d75c05b6f8fb1a65899e43aad11a315640e8b00fdb589c31f693ad696e"
+    },
+    "/tmp/mr3_p2a0_v4_frozen_3631c788ca46_q_rq4gdm/mr3_learning/navigation_archive.py": {
+      "bytes": 4655,
+      "sha256": "b509cc0d19ca443c0776cae4d728d35f399670bda08c171d590c8738964c48bd"
+    },
+    "/tmp/mr3_p2a0_v4_frozen_3631c788ca46_q_rq4gdm/mr3_learning/audit_activity.py": {
+      "bytes": 15707,
+      "sha256": "0fa0c47262ccf29f140cc2b915431461e830f87680b65f524cbda6a6ffff4407"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/transitions.jsonl": {
+      "bytes": 1289968,
+      "sha256": "5202a31e5c86e6b896ca9a3d7fe812be4b77f85910da58e230335a7b634a82df"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/adapter.jsonl": {
+      "bytes": 10464940,
+      "sha256": "50861713bd9657604a489b1e87e2873076f7a890d5055ecaddd2cb1940a70cc1"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/snapshots/00000001_d10837dfa3b7473f94d621cda17c9a2404e2293e42d964ecb4fb1ebeacac1e37.json": {
+      "bytes": 4270,
+      "sha256": "16e5001030b4b47edd06935828feac47c92111c1ced5a565415c2cf7f827be40"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/7b7fcf4528de86c088e3af868bac4ae568d828909ab9a429ec83214515b2650a.json.gz": {
+      "bytes": 824,
+      "sha256": "af1b161a7784ff10e3bded0359cce3aa05d8be38dcd7721f85ace6248c16ac0b"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/d715d8eb917e726b11cc65dad8a9c3a06e4e294a4b8401d9e0dcb3369eefe029.json.gz": {
+      "bytes": 794,
+      "sha256": "a297c8cd29c5c3733e9cb57743a331db67aa95afc75ced7c2cfbcc52c3a2b86e"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/2c3992c36e1c80d5d976bd46b34146f5db74f7c02e29e996702a77f7d9e56a6b.json.gz": {
+      "bytes": 813,
+      "sha256": "454fcb9dfc064b564fbcc6b07622f64f3f7f1add7690980f3484f951a5e6bb82"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/4c4387933bf8a84484805801f5996dc4976fb2903f533ad5e2dc5a1ae00926ce.json.gz": {
+      "bytes": 825,
+      "sha256": "c47a5c73a34a931179bca88dcad5421e43a01892e4e2bedb66956ccbbf68a2d1"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/6d2d303b27611eb1ce8bbf1c5860e19a809de4e1fe56bf1f4626f889a305dc4e.json.gz": {
+      "bytes": 877,
+      "sha256": "1d667370a8e4c3f429961e0d835218263a6e92076a5967298d588988c3635309"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/8e6c8f8616f807c00d885861b5a8a43ba2412c2b5685a73c5812e5ef4cf64b9f.json.gz": {
+      "bytes": 926,
+      "sha256": "194d7617123dc52458823d98c5d0d8903c7781ff9e6bc110253cae87c41d0728"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/d661a380b3129fd95badec091610f8c6ff4c8c01a17f9f7e5e1d454d15187a75.json.gz": {
+      "bytes": 888,
+      "sha256": "9d5cdabb0fbe551dc85c74fb71217dae2c48b65549efe9178a4020383e87ed54"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/snapshots/00000002_5695da87d7ee9e9e3b4185ed63ce641155f4318f6bf806dff7c075fa919aeddd.json": {
+      "bytes": 4264,
+      "sha256": "4439e073b1ba57ef15fa749528b513364c6c76de4c28ea79cf6a3059031445d7"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/e91c5ca48595df594faf508df96436947f6ac953b103fedf27a4d7d45e1ed99b.json.gz": {
+      "bytes": 823,
+      "sha256": "a5fac87dc7dcde007a598e844c171c3d220961b9333d74b0aaf7c0617cacbd9c"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/0696d6e8b73b017719f6c546716fd5c91dc6ec02a91457ab9678075c4fa58941.json.gz": {
+      "bytes": 794,
+      "sha256": "1ed74c617e03079e643a6ed5892af490483a0acfe554f14bb5be454d4ddd8098"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/d90e1a2d7cf37909b2717b85af967a05f67509be8303524c82180f5eedba89ee.json.gz": {
+      "bytes": 813,
+      "sha256": "b75cd5fa9ba44b8077637cb76e88b9830cb1e430ac3d8438b162e38196b6493d"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/59643e61f303da17aac192543bf929b9135c1a034dc500e693ec30a8c0e04943.json.gz": {
+      "bytes": 825,
+      "sha256": "3ea98abd028de0614542a4922c68a5291b51d61e907d75e8b49676207ae9e58a"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/8df14a42281efe533a3ee7cd7b49328ea77782176396f39d0d3c8fdc4c91f0a3.json.gz": {
+      "bytes": 879,
+      "sha256": "62388cd7179a2535dc8573c202669285edff408edff76cac3778a9ea5d66b09f"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/1af524cfcffab8812ccaa472d7cc568cb7b753ed3a2d2f2e70c8ba693c52de6a.json.gz": {
+      "bytes": 926,
+      "sha256": "b6a7e5d7b33bb10b5e1fb0bf806f4fbda5451e198fa364a3ae88e29eed6d703a"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/501fa9582e194b14ba080dfc10073e43f3b1b6a91e1a0d064c2c042785719609.json.gz": {
+      "bytes": 886,
+      "sha256": "f1fc726d635462c908cae2cf2c83914cfceec84a1b0dec06b226e23eafcaf4e2"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/snapshots/00000003_76e5f8819f18e5bf0e1df388966ad499aa5ecf20cbb75ce2ffc5dcd0bd31d946.json": {
+      "bytes": 4264,
+      "sha256": "0a19652bb8230ff4e8d7f267ea18c2676d4c31bcaa945135358c4c38b0755e29"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/bfe87a187d5d1fd7d3d5559af64b95f4f1f77d2d8b4c0fa5140b223047219468.json.gz": {
+      "bytes": 827,
+      "sha256": "8b00f18873a962cca47a468f937a49900e3b9f18ce9bd74bbcfdc2c3cf72df49"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/2aa1e7355df5716e6bf16cd6cf954822eb9f424465f1894676c7bbbb1c5ca84e.json.gz": {
+      "bytes": 798,
+      "sha256": "cf02b9af3bd44b89a9484ac0d9f9a9eb7560ff99f5ce9a19ffaabe9aa2cd2740"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/9b55b3ad5a1788f0dd45667a4ed6d45fb21135ce510c1cc58c2ffe2196bd4051.json.gz": {
+      "bytes": 816,
+      "sha256": "5a0e67063df8234cb0fe0e846bbb1ddbf8e606394f1f0bf20686622761fce958"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/8fbfa7bfe066115e24c31251a4762e891a78887298be88d7f23f69ac32edad5e.json.gz": {
+      "bytes": 828,
+      "sha256": "10d85169554bd518166ca7b4074fe5abb3d3e2a797beb87cb5c074db722c1ee2"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/860fb9fffd95ca9fef00b71929781b75c0a875b38e086659084a2d293aa137cb.json.gz": {
+      "bytes": 879,
+      "sha256": "6d000fe36a6f4aa8ed340780eefa236a7c1b90cc9b234f4de8db58b5224664bc"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/ca73d3022860aba0f147731f1ccd33962f8c1f9a9feb09dbd6ce7aa9d09b3566.json.gz": {
+      "bytes": 926,
+      "sha256": "7f56f0c3c33ac9afbdac3143b373bbc49f1a3ec9638d2c05ef355bcac7f4f70a"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/6bbabea0c6dc9d9f2e1025adafb8bc221256cf7ae90fb9c36190ad19ab908765.json.gz": {
+      "bytes": 886,
+      "sha256": "b8bf79fd27149a4ba6abf73c631667e428b7b973efaf7f51a6fe1e09b0b2c7ce"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/snapshots/00000004_b2a8fe134cdf43094ece5a7cf66c549016518d5cc7847b20a9f0af937ac33a78.json": {
+      "bytes": 4262,
+      "sha256": "7c8a5a6a42eb9001cb97c0ad3a5e6a750f5cff5161a6df9590da7d17d52c86e5"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/fbab7a18b1ac62cb5477e02fe4379c40ef4acbd25458f09ca2b53caf528a3de7.json.gz": {
+      "bytes": 2497,
+      "sha256": "84f9a8833e5c739136a798eb733177bc0c90798ce69284a17cca8b948de7431c"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/123a64481c7bc0bac01d203a290c92793da2b7c82a6e52d4d041c38710fc0c09.json.gz": {
+      "bytes": 2489,
+      "sha256": "bb6d874a2f68956b07c693d01ed4c5cf56295ffe22268308186fdae17a7c6a4f"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/a55c8ea4ea74a756f717e1fa02b15f9db6292fd61578500da8c9b713cc8826c7.json.gz": {
+      "bytes": 2493,
+      "sha256": "0db11c490b73551ea44d20abcf640fa3e83d66d4b14d3984965e22fd65c857ef"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/57d04c2a503c4572a7b5d222e6dbfb987c3e992744feec79f1d77ddd7388035b.json.gz": {
+      "bytes": 2495,
+      "sha256": "f57e82ff8428bf5ce772e9f7fdbdd1ce0531784514a4fe0b6769189028b55826"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/9d7ce0dc0beb933e11efbb4b14695320468d5d1fd0863b2fd0a6200c532307cf.json.gz": {
+      "bytes": 2852,
+      "sha256": "ae56e09424ad5357edd94b360bc5491878200fa35fdee19436f25dc3a1b50458"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/ecc48cde54e19e89a93b97027a171c2dcd2c4f8f68286c9f6b0283feb50b7161.json.gz": {
+      "bytes": 2906,
+      "sha256": "8f4767a525395c591eec45e65ce5e4d29aa6aa43896bd069a681ae64fe8e54f8"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/cf29ae1f605de3d8ee678fe86bf2e5894d91d57c5985e659e1490829410b78fc.json.gz": {
+      "bytes": 2780,
+      "sha256": "f1660b6c2a27332401ad59a82b0d72e8392a0647a57ec1a61a7d9218a0535228"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/snapshots/00000005_5c652b62b30461feee2e246d43961dedfa2569328554812b08bb98d5b307017c.json": {
+      "bytes": 4262,
+      "sha256": "922216b67946351a2b6b40c6b90542096055589a016b2247540d9d69ef6fd40c"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/99c66161939b6501571ff0b61ec10cbeb28d117ec6c20fa98b1ff15b578575c3.json.gz": {
+      "bytes": 4560,
+      "sha256": "ec971aa17f6fd6c54df054dc164876918a0cb97d54d992afcd3b9320c43dd8ae"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/619921befb1deb5a19fb47f8eefb0cedcc225c23ccba04d64cdd54a388385d7d.json.gz": {
+      "bytes": 4558,
+      "sha256": "147d431b6026b629a2b5a4681982b8444348c334ebb0d3e49874427a760c2d42"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/491e6f0b7644d41d6eb865310ba8d967c56d0ee2d393fee11781be2927f258bc.json.gz": {
+      "bytes": 4546,
+      "sha256": "ce1800dc351141904aa2a4c2f1a30bd6af2aad195ceb16e20a80254bdea4076f"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/5eb29e1317ce75e43de5df22284dd960a5d96f101dc121cf4097aae5587ee188.json.gz": {
+      "bytes": 4547,
+      "sha256": "fddd330893e9924d68927d26b2d9725eb0da1da8d3a9fb4bcd66894840b5095e"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/b2b47f6a8904c89a219fa3198ae45534534fcb018d1f11d7cbfd6a25e1bab7be.json.gz": {
+      "bytes": 5119,
+      "sha256": "f14f86de69c77490a5b29dc0e5ee4182a7fd1d8ad7ce2d6992326c9753a2a761"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/c627da28acf849a20ad0eccc3ceac0175d9271ef444d65720e639a8c3caae832.json.gz": {
+      "bytes": 5033,
+      "sha256": "0932784823459db18fa9d02219e6521ff51c3b444f4e48844ee4f222c044b9f1"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/944bf9e2d5e0af8cbac42452218344560c778e68597bf473a1cdaac301e3003b.json.gz": {
+      "bytes": 2781,
+      "sha256": "e8ba6d7ca282e7a386619a0e2da40eae31dadfaae941e0e2f4f7e2061907bcfb"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/snapshots/00000006_1893ab85f823ac60d0e7054433d7a55d8e54df4b0d479c7bd21f78ebe3bb9105.json": {
+      "bytes": 4264,
+      "sha256": "e1d3d664812782a4a86e73cbcdc69b0d9f828bb975c9dc8374bd9a0b23198253"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/c4a8f1f863121bf5a57f99e113f4da391f533a15de49f806d791739a70b55f2e.json.gz": {
+      "bytes": 4513,
+      "sha256": "a31884f738b13d869176f09ee6f21b70ec1831251f213b55dcc86d7a431400f4"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/166c8620cbf90c084495688c519543e88afe9a9fa617958888ae69a14a060ccd.json.gz": {
+      "bytes": 4540,
+      "sha256": "454cbcf272d94c5ded58b9d34f9847b3001c394c85648c9ec0d1dc249e0b0a13"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/ee92b24874da731e75f5e95a1d9c9330f8ab71d69716ea355b3449e13edbe374.json.gz": {
+      "bytes": 4518,
+      "sha256": "0975a8b1cc9bda214951c6a33b3f7e85c470214e213d2768c2b54ea10c0f4af4"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/5fcba5dffda945f14187a4a02d311cab51d5b31577260e30d25e7c254b99778b.json.gz": {
+      "bytes": 4500,
+      "sha256": "29bbfe567bcfa6ae2890bd19ef311981905b3b8630f2d2548d6745809ff10d98"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/0868c90d0be9286757753ec94333317f1e7d05659104643ae26a970b09c5aac4.json.gz": {
+      "bytes": 4720,
+      "sha256": "9466c6201c51fca1cbf53a264d1e28b74806febae03b66655cd8ad8cab4a53f6"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/335dc069c5f12a3857a6dfcef1cc319fc74b0218a482c2d683131b48d7cb8ea4.json.gz": {
+      "bytes": 4637,
+      "sha256": "27e7f94f4fc55d62e138e905cad5ed53996c366802dae315f4fb145f48087019"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/7b93d74799b4204c0339a9a1f224fcd04d74a8a1220eabf546db9f85164e91b0.json.gz": {
+      "bytes": 2781,
+      "sha256": "bca0f7c61c8ef48b45918bd34c52a9928cc0f5330e234f27c5583102880e46d7"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/snapshots/00000007_9f4bd39308f3a1c4124697586eb25c0807a7c7a815b62ae3a7ebfb2c2b33c31c.json": {
+      "bytes": 4262,
+      "sha256": "04ce5b1aedf7de89f10c94e54d90555245a2bc4c951718503406eb6f14fa54f4"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/ff422da0939b24ef71dc31c1bf1861e88872b6a2f624bc50ee31bd93649d7402.json.gz": {
+      "bytes": 4129,
+      "sha256": "b3a18466fe9640c8ddedbf19400b47913c238ac9f5a19ee02dc8c1138157e9cd"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/5936e62f5c1d12807b49985d47b8a019e42cb659d9bc752992a63b73f3f8b088.json.gz": {
+      "bytes": 4228,
+      "sha256": "bac51808ccac0af2f0f59b9f1c2bc587123ffe93dfbcb1267c2a3d613477de4e"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/e9a78f60e20628d069afb8ee99c0ad78ee0da0e85f5485e1e72b85b054e12b31.json.gz": {
+      "bytes": 4128,
+      "sha256": "47f292125dd945db11734bd0274dc829f3cb6e69e6245fb71d83b24d1ea40e7b"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/3a6ffb332a460d9bbd0dcff188bcc2d0febf43d3f13d39a846fa68a08e21e067.json.gz": {
+      "bytes": 4117,
+      "sha256": "bb180c2687d6d0b915d26ef11846fd9d3776470167f7c630e47b1dd3d2a0b8d6"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/94d4172367a6779e83f995d838e97f8dc4c78d52c283ca3d9047b847e7da6073.json.gz": {
+      "bytes": 4756,
+      "sha256": "47e120ba54692afbc8aebf769147086a16deafe2d33a4dbeece829fbe1739acc"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/eefa15c6425ab95bd2aefb37541e7292fe18030da47991763a53ce470aa7ddb9.json.gz": {
+      "bytes": 4240,
+      "sha256": "dd9a27600eacb9235bf6eccb16168179b9abb796e1a6a1fa0948a6e56ef4e60e"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/71979bc96d62b9f673f25274d72cfb6609cd0b0e77a6e0c6e52cd86cf5a34344.json.gz": {
+      "bytes": 2781,
+      "sha256": "20619f64ff3e229074d97b44c1bf2b03dd4a810a3dc50d7686f2423f1623379e"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/snapshots/00000008_3de833ebe4152003c972aab4b4d124d6506ca22a8308b55f4cb1148d756c210b.json": {
+      "bytes": 4266,
+      "sha256": "cc8d772feb3a10c28e42f9bb2a5e2188a5ddc65c4986486b5fcd83d91af2c912"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/741e5160ab7dc999c2490e1dda93bf35bca4e55654e419f3e03daed6cfebf6ef.json.gz": {
+      "bytes": 3547,
+      "sha256": "ccab7a714554f0265aca61d213d831fb90b02af52e861e822f30b5f7fbe04136"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/884aeba4b00ca67bad11ba7c4207b94f375824174b0a1f51c32079264cf5d658.json.gz": {
+      "bytes": 3665,
+      "sha256": "2ac558220b3b6d58faa36a9a2fe61d47968598180c32d5a470d6ca870bffa0b5"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/120dd2a75bf10784b7713edaa43881746d7818bdfc1a3f21096fc4a701aa8fd2.json.gz": {
+      "bytes": 3541,
+      "sha256": "d56731413e0958b6d42a408a01260d3c29c2f3689d96a5ed82b0ce8c16d52849"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/d8f329364e2be36ca9d59925c48f8252bc0d4467f820d763e93cad886e2dd9f6.json.gz": {
+      "bytes": 3540,
+      "sha256": "056f0ff54a5adfbcbdd29b10df2ca71c116981de533d0066f00e827008c346ce"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/4f47086ebcd1e18ca3b4a6ecaa65f5563d03c7eb619153e298a301f166ba532e.json.gz": {
+      "bytes": 4378,
+      "sha256": "1925ebc5c51bd9bed3fc7b29d66f9d2767bce27e061471babe505aceaca50cc2"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/54e496491882be2e96cc82d258c14e769de6c778b080b6e12ae5583633204e12.json.gz": {
+      "bytes": 3873,
+      "sha256": "45e94ce0c4b05cdeb7eac773a2363cd7a4cb4ccc35648514f8a8ba31a132feb7"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/0876b60a44aa474ef0f3e5e71b38e957eb1a3126897a6d5faf2fa05236cfb00e.json.gz": {
+      "bytes": 5000,
+      "sha256": "a90bea6b35cedb7e20f2ffbb00fe43dd28a537894a9fdb7e47307d141cfb702e"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/snapshots/00000009_f901f9d309de5703d48a7ed74060dd376230e1f5f1fba949b96c7ee89f5f5ff7.json": {
+      "bytes": 4264,
+      "sha256": "480fd3b7e836d698de9def904329712c596ab3fb9c0d66b3835603f19eb15134"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/f7598d4142d005015ce0af6c1c8c30067d5143ae861b7d4823976153d047dfa3.json.gz": {
+      "bytes": 3303,
+      "sha256": "4e4df213d748e24f31ecb8f22617d3c16045bf2cbbc6366fb75eca2c61d780d3"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/39ef726362131c81e99a584ba03ee00cdf3e3226a4d0760c7f4deb3ae73f8eb8.json.gz": {
+      "bytes": 3396,
+      "sha256": "6ef1adafe53a071703dcac320f96905fb987c29df0f967946fa4923368a226ab"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/a2883e19f54c521d8f48af2834d59d551a7a6170047b0dd9f379d902e962a0df.json.gz": {
+      "bytes": 3283,
+      "sha256": "34de5f33dd573c911084904ea398dffc050adb0cb0db00b278254adb619e283b"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/5a6b2782028dce08733fa26bcf02611fd1f3989a4c8692c1cd36118b21212933.json.gz": {
+      "bytes": 3295,
+      "sha256": "a5f26522b75501c3bf9b0316b5a88a02b3ac1958be901fe28b0a57ba43d0527b"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/7903957b1491f688fe98a5841ee71b910f0bf42dc83c467be247cadba156744d.json.gz": {
+      "bytes": 4378,
+      "sha256": "2877e6ce963cfa3c6cc446d161f8f566afcb5cf533af979667cb88ea7f2894dc"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/41f2615dec5fb1da76b402ee369e7f4dad7082c8d86d87fdc82fec35659ffe12.json.gz": {
+      "bytes": 3514,
+      "sha256": "9fa1788520e7b81be9d0053b726206589264745275fd59175930126b3a76dc58"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/183a02e63153235d9c0528a31d74158dfb305bc8c410c90e5e9f6cb34cd8f472.json.gz": {
+      "bytes": 4998,
+      "sha256": "81ad3a6f27394fb410dc72c3faa59a86bccbba7a56ed18d11268267e123fcdcb"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/snapshots/00000010_07f7654ec441c1f27b4086a175c18429bfda9e539475edd9a59c205f4881c188.json": {
+      "bytes": 4263,
+      "sha256": "2758e017039ae678082c456a8f4a6671e345c0679fba8501676fae5a598a9e34"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/21134f8f2e9ef055987ee565a3ef2e3d0f6380265ed85754ff3e084af9e0a7a0.json.gz": {
+      "bytes": 2874,
+      "sha256": "5fd6cc54ea52aa8d08198332cd4f14d46ad61924e9fd22e2a1388c4e0fae8d0f"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/93eaeb19505f16276fed7d16b149b658e9880d47bc34e5d6f28474dd44ee4083.json.gz": {
+      "bytes": 2973,
+      "sha256": "4383ef400863dd10ccd8ff0763c497cbd21dddc28d2e88767a22bdd5251f32d6"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/e5d2e04dd469fbe8b9fea1806f2b97175f464ca7703a3ebc27911fd727e8a2d4.json.gz": {
+      "bytes": 2847,
+      "sha256": "4cdab0e6f4079054da788eed5d56ba57f8d89815e6adef7e14bae77a7792df2c"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/95067d97fa1aa0781c898ddbed0202828f9b469ee77a7a72ff7147884f60e0b4.json.gz": {
+      "bytes": 2870,
+      "sha256": "7841f7ae70b9bee622fd26016e6bef91228693b7212bea3acbdecafee90cd363"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/3daf4cfa3e2d444d047b6dfaa201060304b80f6af9daec8a9c21105a8ae5c953.json.gz": {
+      "bytes": 3944,
+      "sha256": "9b7d63a46ec47556206eccf36e6fb7c9695cc1e0a295cc7796b5f7f1f101a32f"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/3c7045f48b39a726de8041ef493fed1a2f3ef4680d7e76c6d52b29334114aa55.json.gz": {
+      "bytes": 3303,
+      "sha256": "1b2da067977ae1a95a663e699caa474cab3afd9aa85384cc502f6ff67cca5b43"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/2cfa2eda16eb7963c4dda23770375fa4f0b7208446772ae006e0597ddc48e8e8.json.gz": {
+      "bytes": 4998,
+      "sha256": "34eb0d245f05c6608fd39616d75508626680fe230aa0c853ed5c21b8a09dd94d"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/snapshots/00000011_1d1149d336f7d57358908e85796d519e4320aab40523ade1ecb19c65f5a8372d.json": {
+      "bytes": 4263,
+      "sha256": "77a1632f8da33b9468192010296994338b197a4efe7a41bbcaf5a2a000636d70"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/792a10b653021b85e5fad108fdf8c057a642364bcd585778c2100f89d7b180ef.json.gz": {
+      "bytes": 2652,
+      "sha256": "6208cf0c36c9a8396aa1dab79f176feefe901249c67ae4e589d08056794b7577"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/511113b4124b9487c2b3443c68adea3f67815a8fba90c0059b55ab7aa332e444.json.gz": {
+      "bytes": 2765,
+      "sha256": "75c8477656f22f1207672a7f32d1e3dbc10ed3a03145a96b35bef96f9349d25d"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/7f982640a14113a627cf6f7735281b1cb92a0e68c093d0339e31c1928be806b4.json.gz": {
+      "bytes": 2624,
+      "sha256": "98729590f0f2b8ae7d452207734957ad70ab4ba7a76960ea31402ef130d7209b"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/e090a9e83868d7ee3c13f933cfe1b1459a18bcc0a1318d422c5cfb5a23319947.json.gz": {
+      "bytes": 2645,
+      "sha256": "3e361714dc73cc3d413789741c2222d7ecdebcf1f2cfbf698ad903c188ce7885"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/953aee410530425f3052a902183f4948d449a94e09dd05886f7c3cc8ee67bad3.json.gz": {
+      "bytes": 3944,
+      "sha256": "f0cfb0499182d5633d56e90db7f0b99b7bb455b4ee19b6125d56faed21a3411c"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/923e3f60141011c5bf3316532b9fbe5a02faa3568e3c6cebbe915e592813c163.json.gz": {
+      "bytes": 3004,
+      "sha256": "1787bc63cf96c174ac1444f3fe172be98a49ad4ee183c0bc3e9fa8527162ad49"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/1e8866672c4f8f5e1688c76e1ea20aec8f97fa6a3d3dc66ad78e6b1e9b319993.json.gz": {
+      "bytes": 4997,
+      "sha256": "2cb4448ec7ff6284f68245a5411446a8faf232b07ea7a226ecee0bc203fef7af"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/snapshots/00000012_c6bb371b8e1c48bde9d0d2953f42dc7de49cef180ff00194f701ac3f45e54795.json": {
+      "bytes": 4265,
+      "sha256": "2436c8085d1b79e52780382923676d1af3eded5bc14c924c1c75133739a10742"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/966024bdf6173ba1cc68cdd125b1d9523e70db69b606f2551ede32f0a85da71f.json.gz": {
+      "bytes": 2654,
+      "sha256": "84a34dccc0f80f3e08de7b4b6d4bd042902fd20c30a96bed25be1b2d9ad487b7"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/f033caa92cc4eb7e078e6410f101d5653cf8608372ac7d666f9166c2d62d0463.json.gz": {
+      "bytes": 2767,
+      "sha256": "e26640ba5fad53969d4df648fba1b0a4a735ce43926d070e53377814b2f7761e"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/3d727cede3403365ca38877e1fba6fdc32b5e1155d04160f7871edcde9073f66.json.gz": {
+      "bytes": 2625,
+      "sha256": "5023e6351dbbcc74940481c3128bae55d0b04198be185c84f9828e2830e1126b"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/3b4f1b9e96d3cfbbce295ffcb920782682613efd3b5121f86c68cb5b43f51fd6.json.gz": {
+      "bytes": 2647,
+      "sha256": "f6120e47db30754aec51b4c8a98e6f45c57dae859cbce7772e26518554e77cd1"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/8c65deaa8c5a20483ef211c10f9face654e0bd7fb48c02f42ef15b322df850ac.json.gz": {
+      "bytes": 3944,
+      "sha256": "e7bbec234e2bc3bb17b72d3ff9e916f45b534408de0ff427ae184e91a67f2566"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/01b754ab2110ad3355f17276f5c06cd9137a59aebb9124575ad4866b86a34ddb.json.gz": {
+      "bytes": 3007,
+      "sha256": "59150742802c0b343cc1df44a89cf20c4fc4f207fb41ebf594c8ef0bc729158a"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/6f2909bd5a1c228a01d9354b7b1ef7bd73a32e9af2bbadeaa7e52af80670dd3d.json.gz": {
+      "bytes": 4998,
+      "sha256": "499f525fd49370c9729288858035916fe51da88cc55ffe27da4513862a28cfe4"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/snapshots/00000013_bf78b599c86a8c9c56856f82b611621473a98e93d5f72c871e6eb474ca8bed98.json": {
+      "bytes": 4263,
+      "sha256": "d50f26ede22049b08bcb1a1859803c15cf393deafeff0bb8f06aec86dd57b63a"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/ea8552726543f49de65f907b89d36e59f2afc5bacf13265f85aed4405719529c.json.gz": {
+      "bytes": 2652,
+      "sha256": "05a6653181279a82283c0042158c888ee4d263c3d0f9558a765820fa04e6fc58"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/fbe379b6bee5ef8fde9a09084f1c069d059d8f0332dee299a81b8f382295d29f.json.gz": {
+      "bytes": 2764,
+      "sha256": "662d26506b6f2e100711148437b3d660a0048f6dac17ef359291acae979135d8"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/ab94a546f13e575b52c2db3d121c39dcf0a5842d3f4592cc7464986460d09378.json.gz": {
+      "bytes": 2624,
+      "sha256": "ed7058ced917836eac2b736d4e0396d78b24f6991726ea5b7dd50c73ae87396e"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/fff499418f070e199ae18de05afa7cd0d3ab59136bb267f71a7aeccf2b15c97b.json.gz": {
+      "bytes": 2645,
+      "sha256": "73916aa91fcb091699a90d25be7e855afbd1b1f703a99459af41339c3fa76554"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/3fb928c034e50399946cba0701e84bf5b06a4cf31c4a9277949dceff05b23489.json.gz": {
+      "bytes": 3944,
+      "sha256": "a700801bcdb54193208dc646fb3c44f37792be6e83fe903454c5496f62d34c9e"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/572d6e107f7f67f035b0054b81086b83602c6408ad6ec74fbe1c6dc1c5f9e126.json.gz": {
+      "bytes": 3005,
+      "sha256": "c3d0f20ca138626eb5482f94502dbdb106b5d2a5b0f1991cb235e73dfef7b73f"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/26d60dda395b378e8724151ff2d681544e3614b5cf110341f25f43c456839faf.json.gz": {
+      "bytes": 4998,
+      "sha256": "87a9a43a9a77b9c0566cc0be78e8b68066588ea4343b513148f991a23d0ce522"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/snapshots/00000014_2a778f25b7ccb740c6d4a24f0b48977068f9fe7fd9211e53d8aa0893bedc8648.json": {
+      "bytes": 4265,
+      "sha256": "bcfe806b3e3521a5ce2dfa5bc2028b128755a65b77ace21639f2faa42ba8a7f1"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/577c15975f411ab13a16748eeb76924815d8cec82eaa9b881b8c188b4e249c6c.json.gz": {
+      "bytes": 2654,
+      "sha256": "84e4e70454f3b46d9a39ed6e2922a2905e00ebc70b0b69e9b93fc9fbe25a0e52"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/c5b5776e000a217fa2a4e3502a06c1b614609db948fe7a76c4c79d0bb89501b3.json.gz": {
+      "bytes": 2767,
+      "sha256": "c60888c204d224813ecb8221562b3807bcba57917da7262044f0f9e39b7f0d15"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/3206872c6f6afe91a5a284e7d719c26307d99fe508afa7adce97b9015011453b.json.gz": {
+      "bytes": 2625,
+      "sha256": "efe7312d9d5eb0634db5073dfe3d71cfe690fe25d33021e56f074af93e2e8d63"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/24fefaf11ad5e22c33ec7bb2d2032827cd908d865d6f481b9701f62a209861f1.json.gz": {
+      "bytes": 2647,
+      "sha256": "e3dd317f91cbf74b9979c932790ec8b123511b087e075be26f6de83d2c2c0e09"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/528096560b51cb1d90a8f600f05a6d7524f1fb460c35ac26997ed3a79b9ba92f.json.gz": {
+      "bytes": 3943,
+      "sha256": "933ab7618af290ce34b68cb644ac44584b2b6cc017a25994a2f400b1f6fdf458"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/270f10906f64e0b81e908f890abffd11a5a3b3a3a5797df122b9da0f03e65ec9.json.gz": {
+      "bytes": 3006,
+      "sha256": "17ffe2592cbb7b83f91d61708b9b264069e0ce40312da84e50a0ba4aaf746b0d"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/30ab6d485864824a19ca4737c333e8fd88077cc2bba84b93972177723208f2b9.json.gz": {
+      "bytes": 4997,
+      "sha256": "ff480b6ef2d68d0c83dec68385023978516e0ff23f96172a505ef189448d6dfd"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/snapshots/00000015_1bf00afe7355b95cdb09b21c275f348c6a01cdd8e4c5e2dc9689b5702680d657.json": {
+      "bytes": 4265,
+      "sha256": "a05334edd6bb19a05e99f54a0d4a6bd4968777b7f444a21a554e1eee7611e2f4"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/513b01f28c853ffe8195eee3e9726823f79b1f94b046d26a3a1dd6d13ff1b627.json.gz": {
+      "bytes": 2652,
+      "sha256": "e1bbf2b9f04ed39cd03c4613f787ec6ee2b9d93e16c581c0f3c202be5c0c2551"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/92ab8a82546e2dc636528869714a8ae462871b2327756a31fd2e8f5726764c05.json.gz": {
+      "bytes": 2765,
+      "sha256": "717fdcbe17792c380be249c26f18eb4430bd0751cc09ec21502422ea31cbbc7a"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/270ac5e55a536eec4cb7cb761639e2bcac529c6178fda87b73797319aa3bbe06.json.gz": {
+      "bytes": 2623,
+      "sha256": "1273f6b5db4fb69750125f2a98de2cd350aacaf27da24abb71607c6c6cf82ca3"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/bcb469ea88993838f09df0194ec75949701fb0c490f7caebac0f3c800395dbcb.json.gz": {
+      "bytes": 2644,
+      "sha256": "92571b23d3202b8393b3638744bd46c3a473243162880620abdfc37b605ba596"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/df5f05eae0366cdbe24e20044e8a1ccf9bcee07c2b092be3fc66a3d4628d25aa.json.gz": {
+      "bytes": 3943,
+      "sha256": "ef1cfc267547bb04efb12906a2c73c18cf20314aca5d6c47aa9ade41bdc0f518"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/c72a75e93c740f4ae23592b40d5cc1254d1478be5b6dcafcfaa00b67bcbefd1e.json.gz": {
+      "bytes": 3007,
+      "sha256": "870fd62c5271b294ba511947740ae41bd2d885afb952d0477374a341b49c5114"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/e0cf6e3c86fe11ab57439d1abc286a3cd24a52cb5906bf9090aebcffbc087d97.json.gz": {
+      "bytes": 4998,
+      "sha256": "d8341a9b6e95458ce0f05acb040b6839a5b04f6560dc2564807f9c7fb42ff39e"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/snapshots/00000016_b9d9c0f2fe6142b40f4424ee4f6869cdfe4d5fce094940a253164684ee1bc88f.json": {
+      "bytes": 4264,
+      "sha256": "1eafa44c26a99b709c254b5c92daf5d4e648978a8c0dee9fea81bb8a4823e34f"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/8084cdc2593f56099b4fd002b35c27510d8672c7b4f4c0c884477de1a1f5783d.json.gz": {
+      "bytes": 2443,
+      "sha256": "f7ca602963ee524852b66ba8c863e1304334abdaf9d98f577439a50c714a3c27"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/ddbd9c049e0e1d2e18660a66e2525690475dd94a9b698b77011652352068be5e.json.gz": {
+      "bytes": 2539,
+      "sha256": "e99b550cae2b429f4296fc9e7844d10608409e5ccc9c52735bbe342efc789647"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/2f6f1897151c424079305b90945cd7e0274124d8e76b4719bf1a135e2658b76e.json.gz": {
+      "bytes": 2397,
+      "sha256": "9bd89f58735a0dd8a661e50bcc869b31c82cf711d8942326fe808b7faa2beb08"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/78832872b6bc25b28317a2b8a7bbb60a668a7015a7d88e1f3f8432278bdcd8ec.json.gz": {
+      "bytes": 2450,
+      "sha256": "c5745c684b9f1040789e179a1de81ee7d110327a37c4e011e1f84b3ab0caff87"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/6140cdee25944b3aaaaabd4a8de9cdd3729f5885d92ceb032ac59105b76898d3.json.gz": {
+      "bytes": 3944,
+      "sha256": "eb610ea0917a839002f7e106e49d6deba973eeeedf8d5c8be6cc53a8f1d2954b"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/5ef20001013ccb7c0a7c4e1ce5fea9033ebe8151dd27b140b95ebcb159d4f340.json.gz": {
+      "bytes": 2736,
+      "sha256": "456600ec9a09b894f88032f54826e7a701811336914a99619408ee917c0ba2dd"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/1ded5df5c36b895c94ff3ca7fcd89c840c3c0b48d6ba71e6bea0a2ecf2ed543d.json.gz": {
+      "bytes": 4827,
+      "sha256": "e67e698077a4b6399d8c480bc372bc49336bd3258d4a22f18ff7bcc0e6f5f69a"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/snapshots/00000017_a0b2383a613d00ece5efc7f3df2209691c7031a8fa93be9e82f7397e3df490ec.json": {
+      "bytes": 4268,
+      "sha256": "fab4b84ed7b1c7acbcacca0a1916a2e33832829b2cb06f9a6bfe3ec1f28177bf"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/3559faaf0d1b0d13b1ead051501113c23ce31d788d337ef675dc472cdfd5fa2c.json.gz": {
+      "bytes": 2137,
+      "sha256": "f5beeef3f0ac5a9ef860b81b65c9241fb8a3e6bb6c087f66512bb1959bf6356c"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/445beb990dcf49fcf9965c34cca1c4c0fe836f9fbd91f7ac39c9163a7ee78803.json.gz": {
+      "bytes": 2218,
+      "sha256": "4ecdfebf3f84b2e32fc60537a3bd0781bb86676cd58849fc60a811e935019ece"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/a45aa072396417dc12694c1aae480c397740bd0f4644080845087d33c4b0fea0.json.gz": {
+      "bytes": 2101,
+      "sha256": "f2ad38c0e634f30d4729142be47b135143c06fde67717a8a232ae2c62f934e7a"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/4b0af350f7684f172018f60973304bd088576dd8a691c391a174ab80b85ce326.json.gz": {
+      "bytes": 2143,
+      "sha256": "814f3a16cfa79a7c0b5b4dcc6b574ffd3c396cf0420b7dba265e693bca198f14"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/bec8f1f88245d882d8a5457f52568370d3da9cf1d9e70c393633a438c507cb2e.json.gz": {
+      "bytes": 3617,
+      "sha256": "032ace12e5fe2a762baf9185d81639679009809b74f799048d5a05a6ae332c6f"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/7815d97bd3b82952a5c60e60ab28297ff1caa31f736a7069dbcf5e37135917a6.json.gz": {
+      "bytes": 2374,
+      "sha256": "9f7d01cf601d8bb3fd37fea3a361fedc2ac5f58b1228b45a673a8e6fe60a1355"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/37c52330556c0d4c0b88b43f233dad53b28dc24bb2d904375591d3c57e823000.json.gz": {
+      "bytes": 4827,
+      "sha256": "b8178c47eca514a617485f24c8faa22e0109b2cc23f4dec980abbcb45c43675c"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/snapshots/00000018_4f21ed56d40e664917eb0070636e780dfa0b0b2cfdbb64693505f365c9c7ffe5.json": {
+      "bytes": 4268,
+      "sha256": "9d5c3eb38df8fde046d33e0b843c68769583a8c1d0af203b990d75a22ce0d3be"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/7bfacc3705d35c964fd8f384d8bfd0a49da894005f1ec45633605c3c16e78423.json.gz": {
+      "bytes": 1993,
+      "sha256": "dfe20236d64f94f8ace4b02a3579f96eb9084cd2252eadd2f0c5777566448bbc"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/12942a645640387a5165b51b61bc219a0f8addb484654080aed901b47ec0308e.json.gz": {
+      "bytes": 2069,
+      "sha256": "f1e23a46a9703813ca9f62b571e3e68fe13d8cc1b2473873c98908359d99c5ce"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/1ced239b55e827842dc27e0badabecb33f8a5b95d22d502336c57b4189ea046c.json.gz": {
+      "bytes": 1958,
+      "sha256": "ab5bdb1e3aff1fbeab4f78ccbda409bf3e2024ed31399f2cca15361f4e315819"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/f1fc5539cbc40c2ae5133b1e366d22e5c81eeca2f86396b504b4c294c53a73b4.json.gz": {
+      "bytes": 1998,
+      "sha256": "c595cc6341bd3c158574d0a32dd777c90b7f481c9f2474133813410f65033feb"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/ea0781a2f9e941f1dbc9b6a442b52a77386e71f6d721f8c48b1588579ae663a9.json.gz": {
+      "bytes": 3617,
+      "sha256": "acac531e13aa68fab07b09cee40f0984a8b1ced2457794747bd036ef39f939dd"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/7da171f2ef14fe0d3d380e58661137b28101faf22a38c0a60471168869a39907.json.gz": {
+      "bytes": 2117,
+      "sha256": "c634cb320d7a83a7a758156301e8a71700f12a5b3ca08abbbd32272de86bd1b1"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/e8e8226830954f43342727a1015dd945a3248ad063d2a87d80230b431dff24c3.json.gz": {
+      "bytes": 4827,
+      "sha256": "2c28946cee0382172832c8e412b5c3093154b849cf9ce022cc1b86696d51d4b8"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/snapshots/00000019_f993d4a2b1a229636466bd70e528398851b52cc7940f547277757b9758948011.json": {
+      "bytes": 4268,
+      "sha256": "4dcebc393bf6e6856c540263a7e6923a0f3e1ed118de50f4add16512228ee9e6"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/9c7d63421a1562deefc7f72a6f9530a0293071f0600a15b86dbb5e66606a94b7.json.gz": {
+      "bytes": 1852,
+      "sha256": "a4c2d492c721b3c05f7e7ce524c55f48f6f414f17c0e1b6ccb83fa37b4e62ae1"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/5a10784cccc523438bc886270c18bba76931b70e862ac96fc9d5834293379760.json.gz": {
+      "bytes": 1924,
+      "sha256": "9ef4d187133aa9d3dfb1c377d3ea236b002001262b28359aab58ebecaa5e3e77"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/76a549900900f5dd84a5ec38346b7e0e4aea73edeb0ea33728446f0bfcccc123.json.gz": {
+      "bytes": 1833,
+      "sha256": "ec3c1f44e104089e1c9dc6a4af391a4e875b85882487fdf12f2638f8f509e61e"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/387c111ae7ad07ba73d3fc64b04130e79614ded6517767dbb2e2c555809d9e11.json.gz": {
+      "bytes": 1857,
+      "sha256": "1f31c2b46d0fefb08d88afb5a8330aa1cc52f1a2b3cf9ccaa2b26a329be4948b"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/2625d89acb44ff86ca50ef52ac452014b5ce10e8521262f0611e0255eb19c535.json.gz": {
+      "bytes": 3617,
+      "sha256": "cdc4128f3f1984d2fc1b9147a8c8c853c9df3263e61b93490777a506ed9cca38"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/6be11fe736c933c873cdd637341908f55331e8def7c191aac577ff290c2fc14e.json.gz": {
+      "bytes": 1930,
+      "sha256": "31888f7fa718dd4da5f6e1a9628c3d7d166e7717b0a44a24f356004a32e930ae"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/b5c12030c7507badd78c9b5a85fd406827dedaf3efdd03fc9447397a0a222853.json.gz": {
+      "bytes": 4827,
+      "sha256": "7a500143b501fde2801a7ab453f4da43befee510c153fd4c86770b3ff33fa237"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/snapshots/00000020_3d9d14f53fc165707f5650c15fc0b777d166cccf47ab46b8af268723e68c358c.json": {
+      "bytes": 4266,
+      "sha256": "665532c420cc67158435789c5e271fb2c410f223442e6626ecfd4ace7cd060ad"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/7852eafea31f7c46444c08a40945caabd4a743330b8c9c4e39459a01c5249c08.json.gz": {
+      "bytes": 1826,
+      "sha256": "2f16661685e33a307b6ac1fc2ef08fa74a8e6187ece37aebc5f27bb7fb896c4a"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/aab3ba1e5c40882233d33a411359454e30ba6d3ea481ee2954bb581929192be2.json.gz": {
+      "bytes": 1917,
+      "sha256": "89dea4c1f49be2c99ca5b8e66c81df01433edfe9df3baa611f7142128dfaaa29"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/62aff4f8b9638c1f3062a626b587b5e87fba6a5422ff73462b823d7bb0f52733.json.gz": {
+      "bytes": 1812,
+      "sha256": "eeb81001baacda5e617b65ccc7ceddf176356e285dc156ac6ae329041cee744a"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/1a7971bdef8ee0df1f21caf11c39b2543e56366b341db1549415d4149c07bb8d.json.gz": {
+      "bytes": 1835,
+      "sha256": "d6a9f45acfe4e8db95126bf6ad1919aa963f52826330a5d410c197fbb56928b5"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/d223d94100d5c3153e255d82ca4e143d974c8efec40068d932c38ba479b0cc73.json.gz": {
+      "bytes": 3617,
+      "sha256": "a9eeda92aabd3eb4a0cf64bf2d360e3fe1a227ced82de57797d6209b7baedcc4"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/b7dc84b860e7006b7856c0da5898acd055ea52c6b5868c92d6e6f370a8187d67.json.gz": {
+      "bytes": 1883,
+      "sha256": "2195a4a3d17988b1f2992decbdd64af551bf9f3a2e3defdf7743a223465c5c1d"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/d0f2f93cbe95570dffd813296a13850437f3db529d64a7a4dc699a44ae9d5021.json.gz": {
+      "bytes": 4585,
+      "sha256": "482059bd529f0519edaf3a7e963efe0b100a47b8a162372ba51d76d943ea4ad4"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/snapshots/00000021_27d7c5e42d7254c43f7fc0e3ad354c3218c4a694bb729018e7ed55f07f52cd7d.json": {
+      "bytes": 4268,
+      "sha256": "45486a2c500348fab4f5db5578094178e729f33601936d1b8ddd4315d0afad63"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/06c7ed9aba746b7eb584ce3af170922ae65dad0bda25f90d68ee9e27027c87da.json.gz": {
+      "bytes": 1826,
+      "sha256": "0e5bbec5150ed590860fc0cccf885a0ad85354b6b2f3aff4b440e2659eb40ce6"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/35aa774ed822fd3a4668ebcfc752286b917cbf14cedf29d0356836727049f002.json.gz": {
+      "bytes": 1917,
+      "sha256": "115285da9ad58b6f8034e039b7f8b55bbae0d98b5dda2d3a6d293d9fb552723b"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/c209dd63d0766bd9c5c69c4c197d824e9146855092dcf82ef7f57e3e5a16ef92.json.gz": {
+      "bytes": 1812,
+      "sha256": "5269aecaea39b269ffb47fa6b2e0908d1b11f56660da75646a7cb30c71b4b017"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/88b48e94d0f9f48ed214ed0305679613bc9da12bc1df39c4a9fae94c4f3735aa.json.gz": {
+      "bytes": 1835,
+      "sha256": "0a3863c8f7536d438e3fdbf668da4c741117f9f41084490203cfc86880b9e64c"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/5cc9b20767f2ec026767ff8a35d8d4628e895b742e8fccba7635fed91cfc42aa.json.gz": {
+      "bytes": 3617,
+      "sha256": "fadbe95f805ec86329426c6870d7f6770bf412e46ce3eaf12ae155b0977890a6"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/3f90f27fd8fdfdf454747bfd9220490a2a051a54ca126c9312690db8dfc605ee.json.gz": {
+      "bytes": 1885,
+      "sha256": "08c89f405327176d979e5eeaf61db87634845d59319c4492fe7865ab1d38d911"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/1a3c9fc404d052d2668aa49a89f527eefbe0121e9ee80ca9d4e18529c000cd28.json.gz": {
+      "bytes": 4584,
+      "sha256": "9344ad08186a694a4f5a037afbe9797b792a3a04e1734a6937cb29725da34f86"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/snapshots/00000022_8c2e477779e3022e5e6b1b092fbfd49c567e1f6c0d62bce5be2ffe6e7f937eb1.json": {
+      "bytes": 4266,
+      "sha256": "8faa55206572555da699f4d104a191889cb0a526929faaadf2a3187f9019653a"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/ad23b00a27a3abfa3522f6f3bdedb1c364916a0d82d621ea8c3a5f21849b4bdc.json.gz": {
+      "bytes": 1825,
+      "sha256": "eb81ebebf0f4bfd8c6fa891ed25fcaa02606f4c7c240d44b54699624b6895cff"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/7cdbc84a6cf99a54ee5aa73d96d4c511634b4d48ec57f89d9f0837b39c0954b3.json.gz": {
+      "bytes": 1916,
+      "sha256": "963278ae5b1354f4c6b7102ac3b5279d41992f386dce4d2f80d69bb06db7b42d"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/b432e67a5a8ca5e4b9185439195715f50335c2bc7cc99d7407d78e5e3af7bfee.json.gz": {
+      "bytes": 1812,
+      "sha256": "90509b63377c165b2df45db3050a0bc761669b3a4418f88a8192ee866fcca2cd"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/7cc5db632aa5b9c81df4925b04f5eacd744b6a8301207d0154b44231ca05a29f.json.gz": {
+      "bytes": 1834,
+      "sha256": "5c27d7ed243f8a9edbc7f9126c845eaf80056a8a14aa659a3cf161ff9d188036"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/4ca7b0daee1973b5304fe9ac08c439aa4ae3ffdd9396aa33d883afecf8c49e9f.json.gz": {
+      "bytes": 3616,
+      "sha256": "3498c408fbe914c41ed66785a95e61340b5036beebb6dfd6f636743d736e94a7"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/6fc8cc61b881a6a1d73fa99389b3b9dd8056d34abd4fe3da0433e271dd48f9bc.json.gz": {
+      "bytes": 1883,
+      "sha256": "745493a3fbd019e60ab8df9f3ea80eb69be5a48da3269d4678430759a7c359f9"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/89fc39305edf51e432221addbc9e81599314a4d62b9d8be7fe65eb34afc93332.json.gz": {
+      "bytes": 4585,
+      "sha256": "ea09337f3ed10c649396adaa8002cf41773ff0ec97b6f8c380dbacab30b492ed"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/snapshots/00000023_43162eb0130306ecfb4333d752a37832a3177748466ec8317a164fd05f8618c4.json": {
+      "bytes": 4268,
+      "sha256": "48317152312d76ea4c0743fcc4cf630cf2977accb9ebeca9df2e1022fcf800f7"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/1332fbd042999dda44f4b7960599b27a9a5cf48293c0de08416830848f6052c8.json.gz": {
+      "bytes": 1817,
+      "sha256": "a58e14a00976884c3ba6bc0570542c7e6e8eee7f70f4153ac942558a33ba5d7b"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/9e1022d69a31de5a7968a2be9277da9ad584f00906ee688f52f6fccc44fa987e.json.gz": {
+      "bytes": 1881,
+      "sha256": "3653b3d33341bfb00b6f700c94e5eacfe832ce136859912c0edc9ef9793e1601"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/8e31dc9068d18b9c38a3804a1c9edd8f007c07d255c03bdc24fd30d3f1861e46.json.gz": {
+      "bytes": 1782,
+      "sha256": "496b400a5519dcb60ce673fae8f0604875f5b9902719d144913f8e1dba0e332b"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/fc4991372e7c05e019adb913f9f9d5527def11820054fd4809e6902a7ab655cc.json.gz": {
+      "bytes": 1814,
+      "sha256": "d64650b9cb1d79e7876d4bb471f5564b213ec98e2af2f68a78a689c761f541e5"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/455e6332eaa385c1a2093ff999283648d73b2e88624ab88b82791da905de2ea8.json.gz": {
+      "bytes": 3396,
+      "sha256": "bae8f74e94c263586c53a674d09ad6783880536eccf12c4dc6c7f389aff561d3"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/bba04baf418a50e3940412af5f78710ded36abbf936a72e4e1b4fa1133eb356d.json.gz": {
+      "bytes": 1885,
+      "sha256": "71ea9135b57712a65f24a704eeb428cb3b316f383cf6da6a4086bef15c6eb9e6"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/7ed056b7cd64bd7222c92e3cbb7814e723fc2edd11150909ab0e8bcf91bbbe4f.json.gz": {
+      "bytes": 4307,
+      "sha256": "f3dfd4d9115ea7aac5c84892d1435e3f4cdd0de078c479aa39d0b4a50595f47d"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/snapshots/00000024_2f9e9791ad831a9a9724491d0d0c3522d1a5b5c04e66fa870363d37a8f0f743d.json": {
+      "bytes": 4268,
+      "sha256": "71bf2e7fb25a7d398fd224e2a706ee59d6e00c8eb38f73c41fb3929745eb7f86"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/64b44e991ccae51c274b064a911078a96f480165f0d353292bec9b0acc869c92.json.gz": {
+      "bytes": 1817,
+      "sha256": "721151ee66af9bf6f9cdac24d96c08537eef24c02e9cd10d91276e503471b785"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/489ed272863fb6dfa1aef7c56e65daf09eeb1280dffb369d8aac8a41e0e30d29.json.gz": {
+      "bytes": 1880,
+      "sha256": "bb2839781ef49f7a02255abd93e9ed453a61cd1d0eaa5c3fd8db99a0a77fb8a9"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/eb82d01c36ee76baba3e8f257cc94e99cb1b37e0c0398e37a9b761a8b0cda63e.json.gz": {
+      "bytes": 1782,
+      "sha256": "3b243fbeba63cd6b7cea52fcb99ff51d4fb621f87d119a29a15e65d75a6faec8"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/d1ea63281128158b15249e5d72dc23aa4d74ec7e0ac16e6f95d5229575071be4.json.gz": {
+      "bytes": 1814,
+      "sha256": "565677e7086b102ccd074d80c120b6716fa28e496d89f0025aa92296ba806488"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/85cdb3329af33d0866eba33a9bd4bcf650841fa87df07cd71ce75a853fa8cd78.json.gz": {
+      "bytes": 3395,
+      "sha256": "f1fcbcc5f55836c2548b4896ee12eee157ab889eb831d27160e08f90b8fa0681"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/1aedb2690aba85f4ca2155c04c7e1518d5020738e35671862c40cc868ae56108.json.gz": {
+      "bytes": 1883,
+      "sha256": "0cb0a7a1dbede273b3ee8b595dcbfebb2bb5ee32c9fba00ae90834036a0c25d4"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/81a9516a0f2653e61b65a4ff21f2c0e391c48d6b0dd5142b29dc17e0bc416205.json.gz": {
+      "bytes": 4307,
+      "sha256": "fb8abd9a8746f644af72cf98bb82a5ffff9c2259e4620ed28768dfe4267ba115"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/snapshots/00000025_ab4708cbd9d96028b65b0e7255786c082bf5c7f65ef5a8658699487800efa3dc.json": {
+      "bytes": 4268,
+      "sha256": "0265213f2198522adac31f92121d855568dce0bb62c3a403d7701db44187fb84"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/554d2ed88b199b2b504c18e215b068afb540009f70a4f6e2599dd1257b8d5e85.json.gz": {
+      "bytes": 1820,
+      "sha256": "11904282e27abb5a00bfccdadc86e032850cfe32e294f238b6c911c333f54f4d"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/7c52403a1868fe744534dca158dc9faaeaf95a8001a30f4545b2d5dbd150697b.json.gz": {
+      "bytes": 1883,
+      "sha256": "671e89f10c5a297d10ee8044129ff69419ad2ffa7e953ba61645bdf6c088d939"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/37149ad7ba0181fa1583bdebcfa065212460f761b63daab04a412cab527da13f.json.gz": {
+      "bytes": 1785,
+      "sha256": "84b3ace47389e2ea7bc3a579a5aa19b69559952179fe36dd17429bc79f515d78"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/c5745be340551196094d2703a81058a0a01ce70d46f5ce0cb5cbcc71ab24b8bf.json.gz": {
+      "bytes": 1817,
+      "sha256": "9617a5865a23cc103c19644cd1bc21a4a63de63e8107f929ecad2227e5b0b2b4"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/1a2f5b030b43fadf136ea1e2ee222b1cbc866eb64573ed7e3d41e289f4aa2d85.json.gz": {
+      "bytes": 3395,
+      "sha256": "0e6eb6da4b4d7b57fab9b9bcb837c8a70e37879d69163e808bbe6fec03fb9505"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/6d6350744dcf2f0e4660aa0064f909bc5644917a4f420479f264bf19182c2f9c.json.gz": {
+      "bytes": 1886,
+      "sha256": "249349f3dbe0d7c14818d961238454bb2de6ef36379fdb960d51c5a00eb3b8b6"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/b651d04af8b0888b58b110daf35b48dd9729741c6db46efafedb37acbac34357.json.gz": {
+      "bytes": 4306,
+      "sha256": "75c5406358e7a55c204aa08c355b4ee83904c99d1a5760590389ab7e725a2bf4"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/snapshots/00000026_4ecb8f3290f87a4ffe5f3a5c51d18eca00d0c059ceace08992c5bfc2ffc55c49.json": {
+      "bytes": 4266,
+      "sha256": "c989d9eacea47cbc03329cc935ec2c3c387a9ec7184f62b612e828ccf3e88f12"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/b63e6202c0637812bc0408380f5718e5aa4733aac62c071b89b772eb8064e741.json.gz": {
+      "bytes": 1817,
+      "sha256": "c5906fd19f1e27d259234cda40081ed8e9253b71eadac3947c280b859864f57c"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/c7a2167d13d06a50c06601785673692ef5d365029336a8f51d7285eb04d39be5.json.gz": {
+      "bytes": 1880,
+      "sha256": "8fc99a65f1bf6754f69035b046d8701ee5b17636b2676c463d5a58f1cabef775"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/a88a2d4683c616ec4f080fa1847478e9d52c55b70096e96ce7ea580da12f07ef.json.gz": {
+      "bytes": 1782,
+      "sha256": "0854d6f480c877246b134a4ad4b1183fb3c72011bbf1d582a145617e5cdc3021"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/1e0abc5eee3044d3fa3252197b3edcf90b8266ab385f990b78f6adfd6ef8ee9f.json.gz": {
+      "bytes": 1815,
+      "sha256": "493409d28ee6906bdd42b6068b9053cce50084c1a6e20f882f842e8b4d08f6c4"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/2c69ea6c3898c478fc75a4c97bd53fac01cc799c9a84ef437953b49473ef9a22.json.gz": {
+      "bytes": 3394,
+      "sha256": "7bde0398f6557cc3bd1494ec2bd1ed8204fdd488449b8433cb15eff5b818ef03"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/0b345875969bcdef710a110e5d17dc60a0e34b46bf4ff74d13cbdf2d042bd49e.json.gz": {
+      "bytes": 1883,
+      "sha256": "19f549d677f5d64f6c8314fddc5c033d97a6245ec85e969228e9fc8b839e2ad6"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/9a87aecdd677de462101fd9b30fc3e3addf30a0a0f6727f8a82a6beecfdc38c4.json.gz": {
+      "bytes": 4307,
+      "sha256": "b1c2981b9f8dadb06eeb861593fcc51a600066df969ad5ef45f7d431855ceae1"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/snapshots/00000027_5b623bb0a902102e55bd1b1b32e450b615867c535610e184c1ec4aa451d9107c.json": {
+      "bytes": 4268,
+      "sha256": "19254140024bae9db2fb1a4159ef6f61ba3d03fcc421c5fff65af6f330944d72"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/7ba5bba051512627789d8926f5fce33ac9e0b1f50e81fa9e425d1a2bd832fd1b.json.gz": {
+      "bytes": 1817,
+      "sha256": "4f4b15c7122f4fcd402184685137607e1b53e39e653e6924177da0fdb22982db"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/5e58890b6a90ea8b1d4868a529280618d0406c0bd15e8704886cabc133071934.json.gz": {
+      "bytes": 1881,
+      "sha256": "3bf1b6bc595cd26663eeb746db2d985088b4a842894cf3102aa87b6676336b44"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/e67c12247e7495756af45a0c45c24d3c7a55bcd041f873b67de80eb06b33eefa.json.gz": {
+      "bytes": 1782,
+      "sha256": "8427e69825515a0b117b8460b7b35d26dba4c3b1a7fc1e35fd382b43b6d76949"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/2370d5a01b7705b172fc2c9a36346e048d82539f1da07e698f15c2d79a85a830.json.gz": {
+      "bytes": 1814,
+      "sha256": "0dc45bb8023af57ec41d8319cbe091b1b32771b98bc668cac32358b07d1b3614"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/e9a457b6ee0503f8abee0ecbe3fd78617659781f3ce3f04753b91e7b24229305.json.gz": {
+      "bytes": 3395,
+      "sha256": "361eb0f565632ce8d40ef0274d4b8140408c05f8e385e936fdc5bb1e55944bea"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/e154625e6bba4eeb562e26250a8dec884a711568a77b322f6b38619b91c47f59.json.gz": {
+      "bytes": 1885,
+      "sha256": "8bd7155628d4e12283331ba70396121b7564a08a90676ea9ed1b3e5c7a3989da"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/4fef9cccf618ae756f887905b31a93cc526cd1c3e5e4b365237cb97ecaaaeb72.json.gz": {
+      "bytes": 4307,
+      "sha256": "78cb3e83e3cb3febfec3769e033df1b4152bdcc67cf42d4a896d2ad307e73ed2"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/snapshots/00000028_785762d75d19c3684540c0e7c3dfb2bfcd00bb282095c2a267e1b1c79d8b8d3e.json": {
+      "bytes": 4266,
+      "sha256": "77353eaf0a66cf00ea756adad70fe756ac28fba8fa1b11ecaf5816664eb74682"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/fee7f70357603943aa4c9ead653da9040990fa34d58939a6205c297274c07261.json.gz": {
+      "bytes": 1817,
+      "sha256": "d50be4c25d2bb0f67b2d0a0a874597e8c1725d34d418d9b7ccfcfb1c38cb0505"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/dc26d8d416f8344d42daf1cbb69d88212a2d72fb816a9d9fd5a2825208487736.json.gz": {
+      "bytes": 1880,
+      "sha256": "316c3d5088aeada7ae6b704610524910de77ff214232142f1e6dc2eb12eb0aa7"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/00ffe1ae28aa1a7092fd200c02eed82bf969c0b9bab27471bb8fb76ed1bd6303.json.gz": {
+      "bytes": 1782,
+      "sha256": "5a1646f4f6605c9eda2b2c69ce603b6c7bec578bf0f6e6406f3031ca4c4fca33"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/7fbbfc096b90179d4ed141353c6bcffdf9c6e120e3736f75780178fa0c3346a4.json.gz": {
+      "bytes": 1815,
+      "sha256": "fbabc5102df19fd8d1654b1e2e7b199bde904c2b08d7e4bf942dbbd45743ffae"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/7295ea977e0dfc43e596ebb8ddc1b81b1b5747b2cea7fed061debc1a88b5fec6.json.gz": {
+      "bytes": 3394,
+      "sha256": "b997d6b8a91ee2c9cc44c14d242a91fcfed51e3c46e68277960e7eaed122cca8"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/772c6fe29ce72d9d7a70b7df1119c4fdbc5cce591920f57d2d16d16d7c09ac37.json.gz": {
+      "bytes": 1884,
+      "sha256": "ddd8dd53797235139f825ff9e7d11360e655f001f970382e5f143ad4d11799ea"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/a22364afcc066b82c52b4ccc6d13a8cafede930c4923dde010e88bdd01cc0600.json.gz": {
+      "bytes": 4307,
+      "sha256": "46c1df91388bc5c5f042e8b6a4c2370685a07b78621e93e3b27d406304fa4e74"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/snapshots/00000029_883b00d11cbb45f3d9e3d7345cf35bbd6c0a970685de348227037b98f411470f.json": {
+      "bytes": 4266,
+      "sha256": "42f9f3afc73fd0c40b0eb70072b47a643f3650d2d6cf2ddd58e3005de6529f56"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/429db28810038c02903e51bfcf98084d39e331cde16a272a3b75accd8ae55c2e.json.gz": {
+      "bytes": 1817,
+      "sha256": "916dce4c993eab169f088036dc58e619dec284dc18ec3c8d7b434ae0556fcdd6"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/1df827694955d47749bd6753bc708a3f8efaed252abccef995990c91450ef198.json.gz": {
+      "bytes": 1880,
+      "sha256": "ef164cea491aae5f49ac19da10eb6f30a3c3c75ac3ed713c0792313b6571ed0a"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/16d23de911c817a7856497a46942588836a03d86253b9b0c9dece15508c0bca4.json.gz": {
+      "bytes": 1782,
+      "sha256": "00494b01c51763d39518ef58dc77b2b6ae3d30cfd0544ef4dc1681a7a42ac0bc"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/ceafa88eb17cad7962bc26b5111b1470764d5a4d8f41ada813392ccd3153a2fc.json.gz": {
+      "bytes": 1815,
+      "sha256": "09f5f948d3c1eb3189c7ae772fc61c21cc8bdd5b48af6eda50c59d92550dcd0e"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/582fcc0c695f29553282a3124596c5bd8cd0e768fd9208e4e3209132a10dd972.json.gz": {
+      "bytes": 3395,
+      "sha256": "fb8d6ae2c768fbaa2ea57c7632547c3232fc1843066d4aad19a2cf8a919e9e23"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/277295b1fdca021088a262db7e573802d8170bfb5cd883931e11987066201115.json.gz": {
+      "bytes": 1883,
+      "sha256": "ea30b2961f1fb3f41cf7411f20c1e624bbf56386a3469db6bad839b92834ea3b"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/448a2cea2ffb2c977cc1184a91122d49f96f7d41c829552ffac558ca38dc7441.json.gz": {
+      "bytes": 4307,
+      "sha256": "0264f69896687c30824baa7b4fc979369a1bc0e93d4df4d82f10346f3bd5eb7e"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/snapshots/00000030_0991490a6684f7775edf1f53663333b7d68d6d98af94e1ed3d955d5fb196d2e8.json": {
+      "bytes": 4268,
+      "sha256": "46c75cb85bb890c6e3a0dbe03c67d86dd716b79bfd84398f6a9d987e2ce50ee8"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/1c47791ba821a9e3081511139358deb17cd306fa986062aeff2d73c733306c23.json.gz": {
+      "bytes": 1820,
+      "sha256": "99b177ac3a2d555a4173eef76712b750cf8cdf3bca8c7175da6e9db48d55f56e"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/6dcc508b0bee63c4485ee92f4678ba07b3b2ed00e640d7b972954c7ab18908c4.json.gz": {
+      "bytes": 1883,
+      "sha256": "a0ac922c036c4bf78147256444e0220f7ab21effe3dc01d57a3dbce023f9b652"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/eaaad2712adbbb89ed2e68c871ed16428df27698e8c578733055869f94db5fb6.json.gz": {
+      "bytes": 1785,
+      "sha256": "09461ae7a0b00445f00ad9088233b038fd3a044effc66cbcb644b67614be73f3"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/752d837cbfe6bf104c636dd0b917534ea63529aade5ec6241f663531318a1fb5.json.gz": {
+      "bytes": 1817,
+      "sha256": "4d9f9144c5b4aa54ffbf97eca7f98954f5983d99daf7885eab491bbe9c9910f2"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/5424f57a63eb9ff7ea26f568ef2b344bd2c3aaca103148b04b152ef3ccb1bf5b.json.gz": {
+      "bytes": 3395,
+      "sha256": "e02d9cc887bbf4395eee040a95e54936d8459e168d3091335194278a56cfef53"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/7bc98fbaf901770ffcbc67bbcecd1e2ecf6743c0958842cd81bcbc372a013f10.json.gz": {
+      "bytes": 1886,
+      "sha256": "e0e354feca21b506cadde272dc02298384d787bc262b6420cae792676cacfad0"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/eef5ce60da177e37bb9834709d4871eb74c97e13282e9f206fe32354a1f43ff3.json.gz": {
+      "bytes": 4307,
+      "sha256": "4381db775aa9c07165b1cd4beb871e061520ba85f28fcb6bf5f062851cbbb8fd"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/snapshots/00000031_13e5b73a34d871d8edebee0a8a1f0172509c51a14f292475e53f17dc1efd5d13.json": {
+      "bytes": 4266,
+      "sha256": "552683e3d46797691a3c0ef55e18063c3b8b67ba850ab17d9cdec00fa1a33e1a"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/766c6f41f6a08eef9cb79d725cb129db18ab40b843a1776d17dcccf039a2bcb5.json.gz": {
+      "bytes": 1817,
+      "sha256": "4e768d27ca220e9a20e2d941b6f74716a0e013e4b3ef77c071f09340d839ac8b"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/0c9fce5b7f14425530cfc0d83f1f96ba3a917f22a1982e958dab6fba905e5a0a.json.gz": {
+      "bytes": 1881,
+      "sha256": "61be8e9598e387c628417bdd722c1a0c8d8c591db7f471d46966558eec3b5cdd"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/56e8806646f33a1302e36c60a8b19cffff6d090427dabe756aee6192b648d567.json.gz": {
+      "bytes": 1782,
+      "sha256": "5cd9d6ff0f7ce200dabf25f70b9603661efa4bc11a0e1019b5bc06c2d9fe136d"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/7a2b12ab1ef64eaac820e8891ab19795470077f6ab67f4601b46add1f6e77702.json.gz": {
+      "bytes": 1814,
+      "sha256": "49d04d46c66b8e587e7734a0ff3eaa9901d1ed16762417befaaa20470a427a8a"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/e436bbf001ad48a1c9924d6c781da8804309332a34cf599f48149f93391a8ca0.json.gz": {
+      "bytes": 3395,
+      "sha256": "ba2010a2fcfe1bc7b7e32195843f92893a2ac8dfaea07b595b5fe4706849b84f"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/ebac9cdd181ba7312a3c7de340bc6b7e188fe1c0ec0ff879c93d69b4e3799346.json.gz": {
+      "bytes": 1883,
+      "sha256": "e22c56105049d41c4c1d54b13cca9e833ecad7714bf8fec8edaa10586265f637"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/54e0026971926074ded5e107cc574de9b27928ac06e8dac6509c2f99d2e59219.json.gz": {
+      "bytes": 4306,
+      "sha256": "fd1caab05a031adaec7a1e70367cd89c9e3b95d386f71cfa4fd143a6a2b86310"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/snapshots/00000032_e6f898db9b7a233ac169543b0041501e56b81f7738c8592f32cccc8193623896.json": {
+      "bytes": 4274,
+      "sha256": "672121f61ac43cb6fffa39c154be3167ed61849fbc978eabeb4d5f42d41a32c9"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/ce40c860604f33a84b0c919d9455c6650313b888a1f6ccfee490417eda056b97.json.gz": {
+      "bytes": 1817,
+      "sha256": "01dd62302655dd47c8e3b8e2207c014ea0b4eb227c32d6a708204b1a10a09346"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/61ff9de76c346b111e0f3ba5b612b9791e99311cfef73c19b19991131f0a3671.json.gz": {
+      "bytes": 1880,
+      "sha256": "84ff779fc6bb45090e17d8f89677cc93b2249b8396cd90247177808de2287e25"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/6a8fc1f455fd2d5623b202f6219814603625e9db30da25fb3dbd34ce9681ca47.json.gz": {
+      "bytes": 1782,
+      "sha256": "9ec7b170eb3f213ae3a25f8d797d1022a187a77aaa5d207e347fd5d90d175206"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/4a414836f9450e7c0f1e3fcb20a41845e6e7ddaf414010cdf2ed898d0ab8c1d9.json.gz": {
+      "bytes": 1814,
+      "sha256": "0dae415a9d2cc811a401f79c9ad9a8fd02806d139c71a6e7bb1e93ff0755f07d"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/c1a03e756543e1ab5b179814f8b2e6c8c3753e93138b766d5d69db4095dbd132.json.gz": {
+      "bytes": 3395,
+      "sha256": "aaebbed9d9ed2d26447699e6dbc48db06dc089e69235646af23bcc09a8841197"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/dd4a8fdae5c0578b3b0ec73df4ca990def924f99de085da27406ece43c65002d.json.gz": {
+      "bytes": 1886,
+      "sha256": "a8e5ca731a0c6dd3ded7a83aa5ad834ae0bf745ebb4f153428f10959c93ad886"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/a8792214e0b5bd9d76b92104a1848a5651f5cec9e1e77c0212c98d49e46cc3a5.json.gz": {
+      "bytes": 4308,
+      "sha256": "af4e698a0c4a6b991d49dbd5f304a4fde80012547ac882a0b2f77b982673cb60"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/snapshots/00000033_3d2b74562d824e70efb81da64b27e70137dc024689e4b317b623a840f9f31cc3.json": {
+      "bytes": 4266,
+      "sha256": "e33da129129b00f5c29d305357f1da6ce6f6567bc93b82a69ba906131a7ec10c"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/a5f7f129302ca20fd23175a20943b225a89a68418edd719eeef2b520cf02449d.json.gz": {
+      "bytes": 1817,
+      "sha256": "5c18e11e71e47ee9f018a8db4a7483f9020b6b7bb27e168515af65b6918f8ca9"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/5cc8e39c74d51aea49d63a63c8dc3f80a6f8c8a388baa617699d7e56ce97f3fd.json.gz": {
+      "bytes": 1880,
+      "sha256": "ff45830745564c6c91ca3be15dc154ba51cf80b3706f9034efba3a9d708dd842"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/f27b23d3186084d60c0265c6603f11f9b6acd916f655123229cefdc0263b655a.json.gz": {
+      "bytes": 1782,
+      "sha256": "edf8c7eb0d2fc1742338014e40b45e55a52d8824eb980222db4120dd1ff2292c"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/fd3e21cdc972b30a0a48fc08852df2d781d879552783f5a16fae38aaeb848e5e.json.gz": {
+      "bytes": 1815,
+      "sha256": "832e2fb99da70075d38c266e39fbbb40e68c1e174f32abc3680b5a9a5eaae6d0"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/3611fbb83cb867c3b3e8dfbfb9508c7cbac3de500b9d6f49ecdabd0dcd37fc55.json.gz": {
+      "bytes": 3397,
+      "sha256": "70b834acd52d0c6cb4f7132d6b951f526073b2f995536ab73732499f6080d867"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/55cc4e4dfba72bc1fa886cd5d12ad11b63d65acc23c51c0eec382568a58f8db8.json.gz": {
+      "bytes": 1883,
+      "sha256": "f766c541a1578283c19d31440ee8f41db183a83e7dcacebc2adc3fd18f6921eb"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/observation_inputs/maps/e52b8074f66b39c2eed9036b80923e769ec499b2dcd80a895c6181a991329385.json.gz": {
+      "bytes": 4307,
+      "sha256": "5cfa4edef92155e1f56077f18953c8c674dca922be4adc00aab231b308821d3e"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101/launch.log": {
+      "bytes": 243717,
+      "sha256": "e5abf0536214002d76bdcfed3d1e59413ff4451359ca3fa6b9d502a15cb2aeb4"
+    },
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v4/independent/mr3_p2a0_v4_independent_input_episode_review_v1.py": {
+      "bytes": 22894,
+      "sha256": "ab102c02bff6b3dbd916e07552ea4250b0bf2f935da74f97d21ed5f766261c05"
+    }
+  },
+  "script_sha256": "ab102c02bff6b3dbd916e07552ea4250b0bf2f935da74f97d21ed5f766261c05",
+  "exact_full_snapshot_replays": 33,
+  "short_20ms_terminal_steps": 0,
+  "zero_duration_reused_terminal_tails": 0,
+  "episodes": [
+    {
+      "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v19/mr3_p2a_reach_v19_interface/worker0/episode001_open_101",
+      "epoch": "mr3_p2a_reach_v19_interface_w0_e1_0b120834",
+      "activity_independent_replay": {
+        "schema": "mr3-received-activity-audit-v1",
+        "passed": true,
+        "integrity_passed": true,
+        "availability_passed": true,
+        "epoch": "mr3_p2a_reach_v19_interface_w0_e1_0b120834",
+        "latest_actor_activity": {
+          "tb1": {
+            "estimated_path_m": 0.2882233846780162,
+            "sample_count": 1600,
+            "path_observation_complete": true,
+            "accepted_goal_count": 2
+          },
+          "tb2": {
+            "estimated_path_m": 1.0569587649927936,
+            "sample_count": 1599,
+            "path_observation_complete": true,
+            "accepted_goal_count": 2
+          },
+          "tb3": {
+            "estimated_path_m": 0.21638440939185608,
+            "sample_count": 1580,
+            "path_observation_complete": true,
+            "accepted_goal_count": 2
+          }
+        },
+        "latest_snapshot_sequence": 33,
+        "owned_accepted_goal_ids": {
+          "tb1": [
+            "mr3_p2a_reach_v19_interface_w0_e1_0b120834:tb1:1",
+            "mr3_p2a_reach_v19_interface_w0_e1_0b120834:tb1:14"
+          ],
+          "tb2": [
+            "mr3_p2a_reach_v19_interface_w0_e1_0b120834:tb2:1",
+            "mr3_p2a_reach_v19_interface_w0_e1_0b120834:tb2:14"
+          ],
+          "tb3": [
+            "mr3_p2a_reach_v19_interface_w0_e1_0b120834:tb3:1",
+            "mr3_p2a_reach_v19_interface_w0_e1_0b120834:tb3:14"
+          ]
+        },
+        "activity_updates": 1601,
+        "unique_snapshots": 33,
+        "final_received_acceptance_counts": {
+          "tb1": 2,
+          "tb2": 2,
+          "tb3": 2
+        },
+        "adapter_sha256": "50861713bd9657604a489b1e87e2873076f7a890d5055ecaddd2cb1940a70cc1",
+        "transitions_sha256": "5202a31e5c86e6b896ca9a3d7fe812be4b77f85910da58e230335a7b634a82df",
+        "path_numeric_comparison": "relative 1e-12 / absolute 1e-10 metre arithmetic tolerance",
+        "scope": "integrity of raw delivered local odom/unique acceptance observations only; availability_passed is separate, no truth/task-success assertion"
+      },
+      "native_received_motion_probe": {
+        "schema": "mr3-received-activity-probe-audit-v1",
+        "passed": true,
+        "epoch": "mr3_p2a_reach_v19_interface_w0_e1_0b120834",
+        "robots": {
+          "tb1": {
+            "estimated_path_m": 0.2882233846780162,
+            "sample_count": 1600,
+            "path_observation_complete": true,
+            "accepted_goal_count": 2
+          },
+          "tb2": {
+            "estimated_path_m": 1.0569587649927936,
+            "sample_count": 1599,
+            "path_observation_complete": true,
+            "accepted_goal_count": 2
+          },
+          "tb3": {
+            "estimated_path_m": 0.21638440939185608,
+            "sample_count": 1580,
+            "path_observation_complete": true,
+            "accepted_goal_count": 2
+          }
+        },
+        "native_accepted_goal_ids": {
+          "tb1": [
+            "mr3_p2a_reach_v19_interface_w0_e1_0b120834:tb1:1",
+            "mr3_p2a_reach_v19_interface_w0_e1_0b120834:tb1:14"
+          ],
+          "tb2": [
+            "mr3_p2a_reach_v19_interface_w0_e1_0b120834:tb2:1",
+            "mr3_p2a_reach_v19_interface_w0_e1_0b120834:tb2:14"
+          ],
+          "tb3": [
+            "mr3_p2a_reach_v19_interface_w0_e1_0b120834:tb3:1",
+            "mr3_p2a_reach_v19_interface_w0_e1_0b120834:tb3:14"
+          ]
+        },
+        "integrity": {
+          "schema": "mr3-received-activity-audit-v1",
+          "passed": true,
+          "integrity_passed": true,
+          "availability_passed": true,
+          "epoch": "mr3_p2a_reach_v19_interface_w0_e1_0b120834",
+          "latest_actor_activity": {
+            "tb1": {
+              "estimated_path_m": 0.2882233846780162,
+              "sample_count": 1600,
+              "path_observation_complete": true,
+              "accepted_goal_count": 2
+            },
+            "tb2": {
+              "estimated_path_m": 1.0569587649927936,
+              "sample_count": 1599,
+              "path_observation_complete": true,
+              "accepted_goal_count": 2
+            },
+            "tb3": {
+              "estimated_path_m": 0.21638440939185608,
+              "sample_count": 1580,
+              "path_observation_complete": true,
+              "accepted_goal_count": 2
+            }
+          },
+          "latest_snapshot_sequence": 33,
+          "owned_accepted_goal_ids": {
+            "tb1": [
+              "mr3_p2a_reach_v19_interface_w0_e1_0b120834:tb1:1",
+              "mr3_p2a_reach_v19_interface_w0_e1_0b120834:tb1:14"
+            ],
+            "tb2": [
+              "mr3_p2a_reach_v19_interface_w0_e1_0b120834:tb2:1",
+              "mr3_p2a_reach_v19_interface_w0_e1_0b120834:tb2:14"
+            ],
+            "tb3": [
+              "mr3_p2a_reach_v19_interface_w0_e1_0b120834:tb3:1",
+              "mr3_p2a_reach_v19_interface_w0_e1_0b120834:tb3:14"
+            ]
+          },
+          "activity_updates": 1601,
+          "unique_snapshots": 33,
+          "final_received_acceptance_counts": {
+            "tb1": 2,
+            "tb2": 2,
+            "tb3": 2
+          },
+          "adapter_sha256": "50861713bd9657604a489b1e87e2873076f7a890d5055ecaddd2cb1940a70cc1",
+          "transitions_sha256": "5202a31e5c86e6b896ca9a3d7fe812be4b77f85910da58e230335a7b634a82df",
+          "path_numeric_comparison": "relative 1e-12 / absolute 1e-10 metre arithmetic tolerance",
+          "scope": "integrity of raw delivered local odom/unique acceptance observations only; availability_passed is separate, no truth/task-success assertion"
+        },
+        "scope": "received raw-odom availability and short native execution; no 1m/95% credit"
+      },
+      "actual_navigation_maps_reconstructed_independently": true,
+      "transition_rows": 33,
+      "unique_snapshots": 33,
+      "manifest_files": 33,
+      "unique_full_payloads": 231,
+      "zero_tail_rows": [],
+      "short_20ms_terminal_rows": [],
+      "no_extra_or_duplicate_manifest_or_blob": true,
+      "full_observation_replayed_exact": true,
+      "per_robot": {
+        "tb1": {
+          "final_received_activity": {
+            "epoch": "mr3_p2a_reach_v19_interface_w0_e1_0b120834",
+            "estimated_path_m": 0.2882233846780162,
+            "last_odom_source_stamp": 70.403,
+            "path_observation_complete": true,
+            "sample_count": 1600,
+            "schema": "mr3-received-activity-v1",
+            "started_at": 38.42,
+            "state_sequence": 1890
+          },
+          "received_path_gt_0_05m": true,
+          "final_received_accepted_goal_count": 2,
+          "unique_snapshots": 33,
+          "snapshots_with_target_intersection": 33,
+          "snapshots_with_zero_target_intersection": 0,
+          "snapshots_with_joint_legal_goal": 25,
+          "snapshots_with_pool_zero": 0,
+          "own_seed_reason_counts": {
+            "None": 33
+          },
+          "submitted_action_digits": [
+            6,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            9,
+            9,
+            9,
+            2,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            9,
+            9,
+            9,
+            9,
+            9,
+            9,
+            9,
+            9,
+            9,
+            9,
+            9
+          ],
+          "actual_decision_sources": 32,
+          "decision_sources_with_joint_legal_goal": 24,
+          "decision_sources_with_zero_target_intersection": 0,
+          "submitted_goal_components": 2,
+          "native_sends": [
+            {
+              "command_id": 1,
+              "goal_id": "mr3_p2a_reach_v19_interface_w0_e1_0b120834:tb1:1",
+              "pose": {
+                "frame_id": "map",
+                "orientation": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  1.0
+                ],
+                "stamp": 38.42,
+                "x": -0.050636718634134326,
+                "y": -0.8952978435053893
+              },
+              "robot": "tb1"
+            },
+            {
+              "command_id": 14,
+              "goal_id": "mr3_p2a_reach_v19_interface_w0_e1_0b120834:tb1:14",
+              "pose": {
+                "frame_id": "map",
+                "orientation": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  1.0
+                ],
+                "stamp": 51.42,
+                "x": -0.47050155913484115,
+                "y": -3.3042565988639874
+              },
+              "robot": "tb1"
+            }
+          ],
+          "native_send_targets_bound_to_submitted_candidate_snapshots": true,
+          "actual_accept_receipts": [
+            {
+              "epoch": "mr3_p2a_reach_v19_interface_w0_e1_0b120834",
+              "generated_stamp": 38.42,
+              "payload": {
+                "goal_id": "mr3_p2a_reach_v19_interface_w0_e1_0b120834:tb1:1",
+                "robot": "tb1",
+                "type": "accept",
+                "value": true
+              },
+              "received_stamp": 38.42,
+              "sequence": 1,
+              "source": "tb1",
+              "source_stamp": 38.42,
+              "stream": "receipt",
+              "version": 1
+            },
+            {
+              "epoch": "mr3_p2a_reach_v19_interface_w0_e1_0b120834",
+              "generated_stamp": 51.42,
+              "payload": {
+                "goal_id": "mr3_p2a_reach_v19_interface_w0_e1_0b120834:tb1:14",
+                "robot": "tb1",
+                "type": "accept",
+                "value": true
+              },
+              "received_stamp": 51.42,
+              "sequence": 4,
+              "source": "tb1",
+              "source_stamp": 51.42,
+              "stream": "receipt",
+              "version": 4
+            }
+          ],
+          "actual_accepted_goal_ids": [
+            "mr3_p2a_reach_v19_interface_w0_e1_0b120834:tb1:1",
+            "mr3_p2a_reach_v19_interface_w0_e1_0b120834:tb1:14"
+          ],
+          "actual_result_receipts": [
+            {
+              "epoch": "mr3_p2a_reach_v19_interface_w0_e1_0b120834",
+              "generated_stamp": 48.44,
+              "payload": {
+                "goal_id": "mr3_p2a_reach_v19_interface_w0_e1_0b120834:tb1:1",
+                "robot": "tb1",
+                "type": "result",
+                "value": 5
+              },
+              "received_stamp": 48.62,
+              "sequence": 3,
+              "source": "tb1",
+              "source_stamp": 48.44,
+              "stream": "receipt",
+              "version": 3
+            },
+            {
+              "epoch": "mr3_p2a_reach_v19_interface_w0_e1_0b120834",
+              "generated_stamp": 59.42,
+              "payload": {
+                "goal_id": "mr3_p2a_reach_v19_interface_w0_e1_0b120834:tb1:14",
+                "robot": "tb1",
+                "type": "result",
+                "value": 5
+              },
+              "received_stamp": 59.62,
+              "sequence": 6,
+              "source": "tb1",
+              "source_stamp": 59.42,
+              "stream": "receipt",
+              "version": 6
+            }
+          ],
+          "actual_result_status_counts": {
+            "5": 2
+          },
+          "snapshot_geometry_and_mask_diagnostics": [
+            {
+              "sequence": 1,
+              "digest": "d10837dfa3b7473f94d621cda17c9a2404e2293e42d964ecb4fb1ebeacac1e37",
+              "phase": "idle",
+              "target_intersection_cells": 547,
+              "reachable_pool": 46,
+              "reachable_selected": 8,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 2,
+              "digest": "5695da87d7ee9e9e3b4185ed63ce641155f4318f6bf806dff7c075fa919aeddd",
+              "phase": "active",
+              "target_intersection_cells": 547,
+              "reachable_pool": 46,
+              "reachable_selected": 8,
+              "joint_legal_goal_choices": [],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 3,
+              "digest": "76e5f8819f18e5bf0e1df388966ad499aa5ecf20cbb75ce2ffc5dcd0bd31d946",
+              "phase": "active",
+              "target_intersection_cells": 546,
+              "reachable_pool": 46,
+              "reachable_selected": 8,
+              "joint_legal_goal_choices": [],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 4,
+              "digest": "b2a8fe134cdf43094ece5a7cf66c549016518d5cc7847b20a9f0af937ac33a78",
+              "phase": "active",
+              "target_intersection_cells": 1410,
+              "reachable_pool": 115,
+              "reachable_selected": 8,
+              "joint_legal_goal_choices": [],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 5,
+              "digest": "5c652b62b30461feee2e246d43961dedfa2569328554812b08bb98d5b307017c",
+              "phase": "active",
+              "target_intersection_cells": 5620,
+              "reachable_pool": 205,
+              "reachable_selected": 8,
+              "joint_legal_goal_choices": [],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 6,
+              "digest": "1893ab85f823ac60d0e7054433d7a55d8e54df4b0d479c7bd21f78ebe3bb9105",
+              "phase": "active",
+              "target_intersection_cells": 7251,
+              "reachable_pool": 229,
+              "reachable_selected": 8,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 7,
+              "digest": "9f4bd39308f3a1c4124697586eb25c0807a7c7a815b62ae3a7ebfb2c2b33c31c",
+              "phase": "active",
+              "target_intersection_cells": 9071,
+              "reachable_pool": 177,
+              "reachable_selected": 8,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 8,
+              "digest": "3de833ebe4152003c972aab4b4d124d6506ca22a8308b55f4cb1148d756c210b",
+              "phase": "active",
+              "target_intersection_cells": 11424,
+              "reachable_pool": 185,
+              "reachable_selected": 8,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 9,
+              "digest": "f901f9d309de5703d48a7ed74060dd376230e1f5f1fba949b96c7ee89f5f5ff7",
+              "phase": "active",
+              "target_intersection_cells": 12535,
+              "reachable_pool": 207,
+              "reachable_selected": 8,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 10,
+              "digest": "07f7654ec441c1f27b4086a175c18429bfda9e539475edd9a59c205f4881c188",
+              "phase": "active",
+              "target_intersection_cells": 14740,
+              "reachable_pool": 189,
+              "reachable_selected": 7,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                2,
+                4,
+                5,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 11,
+              "digest": "1d1149d336f7d57358908e85796d519e4320aab40523ade1ecb19c65f5a8372d",
+              "phase": "active",
+              "target_intersection_cells": 15639,
+              "reachable_pool": 200,
+              "reachable_selected": 6,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                2,
+                3,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 12,
+              "digest": "c6bb371b8e1c48bde9d0d2953f42dc7de49cef180ff00194f701ac3f45e54795",
+              "phase": "idle",
+              "target_intersection_cells": 15639,
+              "reachable_pool": 200,
+              "reachable_selected": 6,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                2,
+                3,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 13,
+              "digest": "bf78b599c86a8c9c56856f82b611621473a98e93d5f72c871e6eb474ca8bed98",
+              "phase": "idle",
+              "target_intersection_cells": 15639,
+              "reachable_pool": 200,
+              "reachable_selected": 6,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                2,
+                3,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 14,
+              "digest": "2a778f25b7ccb740c6d4a24f0b48977068f9fe7fd9211e53d8aa0893bedc8648",
+              "phase": "idle",
+              "target_intersection_cells": 15639,
+              "reachable_pool": 200,
+              "reachable_selected": 6,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                2,
+                3,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 15,
+              "digest": "1bf00afe7355b95cdb09b21c275f348c6a01cdd8e4c5e2dc9689b5702680d657",
+              "phase": "active",
+              "target_intersection_cells": 15639,
+              "reachable_pool": 200,
+              "reachable_selected": 6,
+              "joint_legal_goal_choices": [],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 16,
+              "digest": "b9d9c0f2fe6142b40f4424ee4f6869cdfe4d5fce094940a253164684ee1bc88f",
+              "phase": "active",
+              "target_intersection_cells": 16792,
+              "reachable_pool": 175,
+              "reachable_selected": 8,
+              "joint_legal_goal_choices": [],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 17,
+              "digest": "a0b2383a613d00ece5efc7f3df2209691c7031a8fa93be9e82f7397e3df490ec",
+              "phase": "active",
+              "target_intersection_cells": 18168,
+              "reachable_pool": 190,
+              "reachable_selected": 8,
+              "joint_legal_goal_choices": [],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 18,
+              "digest": "4f21ed56d40e664917eb0070636e780dfa0b0b2cfdbb64693505f365c9c7ffe5",
+              "phase": "active",
+              "target_intersection_cells": 19272,
+              "reachable_pool": 190,
+              "reachable_selected": 8,
+              "joint_legal_goal_choices": [],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 19,
+              "digest": "f993d4a2b1a229636466bd70e528398851b52cc7940f547277757b9758948011",
+              "phase": "active",
+              "target_intersection_cells": 20169,
+              "reachable_pool": 152,
+              "reachable_selected": 7,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 20,
+              "digest": "3d9d14f53fc165707f5650c15fc0b777d166cccf47ab46b8af268723e68c358c",
+              "phase": "active",
+              "target_intersection_cells": 20839,
+              "reachable_pool": 143,
+              "reachable_selected": 7,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 21,
+              "digest": "27d7c5e42d7254c43f7fc0e3ad354c3218c4a694bb729018e7ed55f07f52cd7d",
+              "phase": "active",
+              "target_intersection_cells": 20839,
+              "reachable_pool": 143,
+              "reachable_selected": 7,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 22,
+              "digest": "8c2e477779e3022e5e6b1b092fbfd49c567e1f6c0d62bce5be2ffe6e7f937eb1",
+              "phase": "active",
+              "target_intersection_cells": 20842,
+              "reachable_pool": 143,
+              "reachable_selected": 7,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 23,
+              "digest": "43162eb0130306ecfb4333d752a37832a3177748466ec8317a164fd05f8618c4",
+              "phase": "idle",
+              "target_intersection_cells": 20767,
+              "reachable_pool": 126,
+              "reachable_selected": 7,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 24,
+              "digest": "2f9e9791ad831a9a9724491d0d0c3522d1a5b5c04e66fa870363d37a8f0f743d",
+              "phase": "idle",
+              "target_intersection_cells": 20767,
+              "reachable_pool": 126,
+              "reachable_selected": 7,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 25,
+              "digest": "ab4708cbd9d96028b65b0e7255786c082bf5c7f65ef5a8658699487800efa3dc",
+              "phase": "idle",
+              "target_intersection_cells": 20767,
+              "reachable_pool": 126,
+              "reachable_selected": 7,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 26,
+              "digest": "4ecb8f3290f87a4ffe5f3a5c51d18eca00d0c059ceace08992c5bfc2ffc55c49",
+              "phase": "idle",
+              "target_intersection_cells": 20767,
+              "reachable_pool": 126,
+              "reachable_selected": 7,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 27,
+              "digest": "5b623bb0a902102e55bd1b1b32e450b615867c535610e184c1ec4aa451d9107c",
+              "phase": "idle",
+              "target_intersection_cells": 20767,
+              "reachable_pool": 126,
+              "reachable_selected": 7,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 28,
+              "digest": "785762d75d19c3684540c0e7c3dfb2bfcd00bb282095c2a267e1b1c79d8b8d3e",
+              "phase": "idle",
+              "target_intersection_cells": 20767,
+              "reachable_pool": 126,
+              "reachable_selected": 7,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 29,
+              "digest": "883b00d11cbb45f3d9e3d7345cf35bbd6c0a970685de348227037b98f411470f",
+              "phase": "idle",
+              "target_intersection_cells": 20767,
+              "reachable_pool": 126,
+              "reachable_selected": 7,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 30,
+              "digest": "0991490a6684f7775edf1f53663333b7d68d6d98af94e1ed3d955d5fb196d2e8",
+              "phase": "idle",
+              "target_intersection_cells": 20767,
+              "reachable_pool": 126,
+              "reachable_selected": 7,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 31,
+              "digest": "13e5b73a34d871d8edebee0a8a1f0172509c51a14f292475e53f17dc1efd5d13",
+              "phase": "idle",
+              "target_intersection_cells": 20767,
+              "reachable_pool": 126,
+              "reachable_selected": 7,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 32,
+              "digest": "e6f898db9b7a233ac169543b0041501e56b81f7738c8592f32cccc8193623896",
+              "phase": "idle",
+              "target_intersection_cells": 20767,
+              "reachable_pool": 126,
+              "reachable_selected": 7,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 33,
+              "digest": "3d2b74562d824e70efb81da64b27e70137dc024689e4b317b623a840f9f31cc3",
+              "phase": "idle",
+              "target_intersection_cells": 20766,
+              "reachable_pool": 126,
+              "reachable_selected": 7,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            }
+          ]
+        },
+        "tb2": {
+          "final_received_activity": {
+            "epoch": "mr3_p2a_reach_v19_interface_w0_e1_0b120834",
+            "estimated_path_m": 1.0569587649927936,
+            "last_odom_source_stamp": 70.41,
+            "path_observation_complete": true,
+            "sample_count": 1599,
+            "schema": "mr3-received-activity-v1",
+            "started_at": 38.42,
+            "state_sequence": 1890
+          },
+          "received_path_gt_0_05m": true,
+          "final_received_accepted_goal_count": 2,
+          "unique_snapshots": 33,
+          "snapshots_with_target_intersection": 33,
+          "snapshots_with_zero_target_intersection": 0,
+          "snapshots_with_joint_legal_goal": 25,
+          "snapshots_with_pool_zero": 0,
+          "own_seed_reason_counts": {
+            "None": 33
+          },
+          "submitted_action_digits": [
+            2,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            9,
+            9,
+            9,
+            9,
+            3,
+            8,
+            8,
+            8,
+            8,
+            9,
+            9,
+            9,
+            9,
+            9,
+            9,
+            9,
+            9,
+            9,
+            9,
+            9,
+            9,
+            9,
+            9
+          ],
+          "actual_decision_sources": 32,
+          "decision_sources_with_joint_legal_goal": 24,
+          "decision_sources_with_zero_target_intersection": 0,
+          "submitted_goal_components": 2,
+          "native_sends": [
+            {
+              "command_id": 1,
+              "goal_id": "mr3_p2a_reach_v19_interface_w0_e1_0b120834:tb2:1",
+              "pose": {
+                "frame_id": "map",
+                "orientation": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  1.0
+                ],
+                "stamp": 38.42,
+                "x": -0.15063672012425044,
+                "y": 0.9047021833167008
+              },
+              "robot": "tb2"
+            },
+            {
+              "command_id": 14,
+              "goal_id": "mr3_p2a_reach_v19_interface_w0_e1_0b120834:tb2:14",
+              "pose": {
+                "frame_id": "map",
+                "orientation": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  1.0
+                ],
+                "stamp": 51.42,
+                "x": -0.7705015636051895,
+                "y": 4.1457435121496635
+              },
+              "robot": "tb2"
+            }
+          ],
+          "native_send_targets_bound_to_submitted_candidate_snapshots": true,
+          "actual_accept_receipts": [
+            {
+              "epoch": "mr3_p2a_reach_v19_interface_w0_e1_0b120834",
+              "generated_stamp": 38.42,
+              "payload": {
+                "goal_id": "mr3_p2a_reach_v19_interface_w0_e1_0b120834:tb2:1",
+                "robot": "tb2",
+                "type": "accept",
+                "value": true
+              },
+              "received_stamp": 38.42,
+              "sequence": 1,
+              "source": "tb2",
+              "source_stamp": 38.42,
+              "stream": "receipt",
+              "version": 1
+            },
+            {
+              "epoch": "mr3_p2a_reach_v19_interface_w0_e1_0b120834",
+              "generated_stamp": 51.42,
+              "payload": {
+                "goal_id": "mr3_p2a_reach_v19_interface_w0_e1_0b120834:tb2:14",
+                "robot": "tb2",
+                "type": "accept",
+                "value": true
+              },
+              "received_stamp": 51.42,
+              "sequence": 4,
+              "source": "tb2",
+              "source_stamp": 51.42,
+              "stream": "receipt",
+              "version": 4
+            }
+          ],
+          "actual_accepted_goal_ids": [
+            "mr3_p2a_reach_v19_interface_w0_e1_0b120834:tb2:1",
+            "mr3_p2a_reach_v19_interface_w0_e1_0b120834:tb2:14"
+          ],
+          "actual_result_receipts": [
+            {
+              "epoch": "mr3_p2a_reach_v19_interface_w0_e1_0b120834",
+              "generated_stamp": 47.44,
+              "payload": {
+                "goal_id": "mr3_p2a_reach_v19_interface_w0_e1_0b120834:tb2:1",
+                "robot": "tb2",
+                "type": "result",
+                "value": 5
+              },
+              "received_stamp": 47.62,
+              "sequence": 3,
+              "source": "tb2",
+              "source_stamp": 47.44,
+              "stream": "receipt",
+              "version": 3
+            },
+            {
+              "epoch": "mr3_p2a_reach_v19_interface_w0_e1_0b120834",
+              "generated_stamp": 56.44,
+              "payload": {
+                "goal_id": "mr3_p2a_reach_v19_interface_w0_e1_0b120834:tb2:14",
+                "robot": "tb2",
+                "type": "result",
+                "value": 5
+              },
+              "received_stamp": 56.62,
+              "sequence": 6,
+              "source": "tb2",
+              "source_stamp": 56.44,
+              "stream": "receipt",
+              "version": 6
+            }
+          ],
+          "actual_result_status_counts": {
+            "5": 2
+          },
+          "snapshot_geometry_and_mask_diagnostics": [
+            {
+              "sequence": 1,
+              "digest": "d10837dfa3b7473f94d621cda17c9a2404e2293e42d964ecb4fb1ebeacac1e37",
+              "phase": "idle",
+              "target_intersection_cells": 293,
+              "reachable_pool": 34,
+              "reachable_selected": 7,
+              "joint_legal_goal_choices": [
+                1,
+                2,
+                3,
+                4,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 2,
+              "digest": "5695da87d7ee9e9e3b4185ed63ce641155f4318f6bf806dff7c075fa919aeddd",
+              "phase": "active",
+              "target_intersection_cells": 293,
+              "reachable_pool": 34,
+              "reachable_selected": 7,
+              "joint_legal_goal_choices": [],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 3,
+              "digest": "76e5f8819f18e5bf0e1df388966ad499aa5ecf20cbb75ce2ffc5dcd0bd31d946",
+              "phase": "active",
+              "target_intersection_cells": 293,
+              "reachable_pool": 34,
+              "reachable_selected": 7,
+              "joint_legal_goal_choices": [],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 4,
+              "digest": "b2a8fe134cdf43094ece5a7cf66c549016518d5cc7847b20a9f0af937ac33a78",
+              "phase": "active",
+              "target_intersection_cells": 1387,
+              "reachable_pool": 114,
+              "reachable_selected": 7,
+              "joint_legal_goal_choices": [],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 5,
+              "digest": "5c652b62b30461feee2e246d43961dedfa2569328554812b08bb98d5b307017c",
+              "phase": "active",
+              "target_intersection_cells": 5595,
+              "reachable_pool": 204,
+              "reachable_selected": 8,
+              "joint_legal_goal_choices": [],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 6,
+              "digest": "1893ab85f823ac60d0e7054433d7a55d8e54df4b0d479c7bd21f78ebe3bb9105",
+              "phase": "active",
+              "target_intersection_cells": 7203,
+              "reachable_pool": 228,
+              "reachable_selected": 7,
+              "joint_legal_goal_choices": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 7,
+              "digest": "9f4bd39308f3a1c4124697586eb25c0807a7c7a815b62ae3a7ebfb2c2b33c31c",
+              "phase": "active",
+              "target_intersection_cells": 8972,
+              "reachable_pool": 170,
+              "reachable_selected": 8,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 8,
+              "digest": "3de833ebe4152003c972aab4b4d124d6506ca22a8308b55f4cb1148d756c210b",
+              "phase": "active",
+              "target_intersection_cells": 11277,
+              "reachable_pool": 181,
+              "reachable_selected": 8,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 9,
+              "digest": "f901f9d309de5703d48a7ed74060dd376230e1f5f1fba949b96c7ee89f5f5ff7",
+              "phase": "active",
+              "target_intersection_cells": 12399,
+              "reachable_pool": 202,
+              "reachable_selected": 7,
+              "joint_legal_goal_choices": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 10,
+              "digest": "07f7654ec441c1f27b4086a175c18429bfda9e539475edd9a59c205f4881c188",
+              "phase": "active",
+              "target_intersection_cells": 14581,
+              "reachable_pool": 183,
+              "reachable_selected": 7,
+              "joint_legal_goal_choices": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 11,
+              "digest": "1d1149d336f7d57358908e85796d519e4320aab40523ade1ecb19c65f5a8372d",
+              "phase": "idle",
+              "target_intersection_cells": 15482,
+              "reachable_pool": 196,
+              "reachable_selected": 7,
+              "joint_legal_goal_choices": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 12,
+              "digest": "c6bb371b8e1c48bde9d0d2953f42dc7de49cef180ff00194f701ac3f45e54795",
+              "phase": "idle",
+              "target_intersection_cells": 15482,
+              "reachable_pool": 196,
+              "reachable_selected": 7,
+              "joint_legal_goal_choices": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 13,
+              "digest": "bf78b599c86a8c9c56856f82b611621473a98e93d5f72c871e6eb474ca8bed98",
+              "phase": "idle",
+              "target_intersection_cells": 15482,
+              "reachable_pool": 196,
+              "reachable_selected": 7,
+              "joint_legal_goal_choices": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 14,
+              "digest": "2a778f25b7ccb740c6d4a24f0b48977068f9fe7fd9211e53d8aa0893bedc8648",
+              "phase": "idle",
+              "target_intersection_cells": 15482,
+              "reachable_pool": 196,
+              "reachable_selected": 7,
+              "joint_legal_goal_choices": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 15,
+              "digest": "1bf00afe7355b95cdb09b21c275f348c6a01cdd8e4c5e2dc9689b5702680d657",
+              "phase": "active",
+              "target_intersection_cells": 15481,
+              "reachable_pool": 196,
+              "reachable_selected": 7,
+              "joint_legal_goal_choices": [],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 16,
+              "digest": "b9d9c0f2fe6142b40f4424ee4f6869cdfe4d5fce094940a253164684ee1bc88f",
+              "phase": "active",
+              "target_intersection_cells": 16612,
+              "reachable_pool": 170,
+              "reachable_selected": 6,
+              "joint_legal_goal_choices": [],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 17,
+              "digest": "a0b2383a613d00ece5efc7f3df2209691c7031a8fa93be9e82f7397e3df490ec",
+              "phase": "active",
+              "target_intersection_cells": 18082,
+              "reachable_pool": 182,
+              "reachable_selected": 5,
+              "joint_legal_goal_choices": [],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 18,
+              "digest": "4f21ed56d40e664917eb0070636e780dfa0b0b2cfdbb64693505f365c9c7ffe5",
+              "phase": "active",
+              "target_intersection_cells": 19131,
+              "reachable_pool": 176,
+              "reachable_selected": 5,
+              "joint_legal_goal_choices": [],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 19,
+              "digest": "f993d4a2b1a229636466bd70e528398851b52cc7940f547277757b9758948011",
+              "phase": "active",
+              "target_intersection_cells": 20002,
+              "reachable_pool": 140,
+              "reachable_selected": 4,
+              "joint_legal_goal_choices": [
+                1,
+                2,
+                5,
+                6
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 20,
+              "digest": "3d9d14f53fc165707f5650c15fc0b777d166cccf47ab46b8af268723e68c358c",
+              "phase": "idle",
+              "target_intersection_cells": 20673,
+              "reachable_pool": 131,
+              "reachable_selected": 4,
+              "joint_legal_goal_choices": [
+                1,
+                2,
+                5,
+                6
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 21,
+              "digest": "27d7c5e42d7254c43f7fc0e3ad354c3218c4a694bb729018e7ed55f07f52cd7d",
+              "phase": "idle",
+              "target_intersection_cells": 20673,
+              "reachable_pool": 131,
+              "reachable_selected": 4,
+              "joint_legal_goal_choices": [
+                1,
+                2,
+                5,
+                6
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 22,
+              "digest": "8c2e477779e3022e5e6b1b092fbfd49c567e1f6c0d62bce5be2ffe6e7f937eb1",
+              "phase": "idle",
+              "target_intersection_cells": 20673,
+              "reachable_pool": 131,
+              "reachable_selected": 4,
+              "joint_legal_goal_choices": [
+                1,
+                2,
+                5,
+                6
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 23,
+              "digest": "43162eb0130306ecfb4333d752a37832a3177748466ec8317a164fd05f8618c4",
+              "phase": "idle",
+              "target_intersection_cells": 20763,
+              "reachable_pool": 116,
+              "reachable_selected": 5,
+              "joint_legal_goal_choices": [
+                1,
+                2,
+                4,
+                5,
+                6
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 24,
+              "digest": "2f9e9791ad831a9a9724491d0d0c3522d1a5b5c04e66fa870363d37a8f0f743d",
+              "phase": "idle",
+              "target_intersection_cells": 20763,
+              "reachable_pool": 116,
+              "reachable_selected": 5,
+              "joint_legal_goal_choices": [
+                1,
+                2,
+                4,
+                5,
+                6
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 25,
+              "digest": "ab4708cbd9d96028b65b0e7255786c082bf5c7f65ef5a8658699487800efa3dc",
+              "phase": "idle",
+              "target_intersection_cells": 20763,
+              "reachable_pool": 116,
+              "reachable_selected": 5,
+              "joint_legal_goal_choices": [
+                1,
+                2,
+                4,
+                5,
+                6
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 26,
+              "digest": "4ecb8f3290f87a4ffe5f3a5c51d18eca00d0c059ceace08992c5bfc2ffc55c49",
+              "phase": "idle",
+              "target_intersection_cells": 20763,
+              "reachable_pool": 116,
+              "reachable_selected": 5,
+              "joint_legal_goal_choices": [
+                1,
+                2,
+                4,
+                5,
+                6
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 27,
+              "digest": "5b623bb0a902102e55bd1b1b32e450b615867c535610e184c1ec4aa451d9107c",
+              "phase": "idle",
+              "target_intersection_cells": 20763,
+              "reachable_pool": 116,
+              "reachable_selected": 5,
+              "joint_legal_goal_choices": [
+                1,
+                2,
+                4,
+                5,
+                6
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 28,
+              "digest": "785762d75d19c3684540c0e7c3dfb2bfcd00bb282095c2a267e1b1c79d8b8d3e",
+              "phase": "idle",
+              "target_intersection_cells": 20763,
+              "reachable_pool": 116,
+              "reachable_selected": 5,
+              "joint_legal_goal_choices": [
+                1,
+                2,
+                4,
+                5,
+                6
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 29,
+              "digest": "883b00d11cbb45f3d9e3d7345cf35bbd6c0a970685de348227037b98f411470f",
+              "phase": "idle",
+              "target_intersection_cells": 20763,
+              "reachable_pool": 116,
+              "reachable_selected": 5,
+              "joint_legal_goal_choices": [
+                1,
+                2,
+                4,
+                5,
+                6
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 30,
+              "digest": "0991490a6684f7775edf1f53663333b7d68d6d98af94e1ed3d955d5fb196d2e8",
+              "phase": "idle",
+              "target_intersection_cells": 20763,
+              "reachable_pool": 116,
+              "reachable_selected": 5,
+              "joint_legal_goal_choices": [
+                1,
+                2,
+                4,
+                5,
+                6
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 31,
+              "digest": "13e5b73a34d871d8edebee0a8a1f0172509c51a14f292475e53f17dc1efd5d13",
+              "phase": "idle",
+              "target_intersection_cells": 20763,
+              "reachable_pool": 116,
+              "reachable_selected": 5,
+              "joint_legal_goal_choices": [
+                1,
+                2,
+                4,
+                5,
+                6
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 32,
+              "digest": "e6f898db9b7a233ac169543b0041501e56b81f7738c8592f32cccc8193623896",
+              "phase": "idle",
+              "target_intersection_cells": 20763,
+              "reachable_pool": 116,
+              "reachable_selected": 5,
+              "joint_legal_goal_choices": [
+                1,
+                2,
+                4,
+                5,
+                6
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 33,
+              "digest": "3d2b74562d824e70efb81da64b27e70137dc024689e4b317b623a840f9f31cc3",
+              "phase": "idle",
+              "target_intersection_cells": 20763,
+              "reachable_pool": 116,
+              "reachable_selected": 5,
+              "joint_legal_goal_choices": [
+                1,
+                2,
+                4,
+                5,
+                6
+              ],
+              "own_seed_reason": null
+            }
+          ]
+        },
+        "tb3": {
+          "final_received_activity": {
+            "epoch": "mr3_p2a_reach_v19_interface_w0_e1_0b120834",
+            "estimated_path_m": 0.21638440939185608,
+            "last_odom_source_stamp": 70.42,
+            "path_observation_complete": true,
+            "sample_count": 1580,
+            "schema": "mr3-received-activity-v1",
+            "started_at": 38.42,
+            "state_sequence": 1890
+          },
+          "received_path_gt_0_05m": true,
+          "final_received_accepted_goal_count": 2,
+          "unique_snapshots": 33,
+          "snapshots_with_target_intersection": 33,
+          "snapshots_with_zero_target_intersection": 0,
+          "snapshots_with_joint_legal_goal": 25,
+          "snapshots_with_pool_zero": 0,
+          "own_seed_reason_counts": {
+            "None": 33
+          },
+          "submitted_action_digits": [
+            1,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            9,
+            9,
+            9,
+            7,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            9,
+            9,
+            9,
+            9,
+            9,
+            9,
+            9,
+            9,
+            9,
+            9,
+            9
+          ],
+          "actual_decision_sources": 32,
+          "decision_sources_with_joint_legal_goal": 24,
+          "decision_sources_with_zero_target_intersection": 0,
+          "submitted_goal_components": 2,
+          "native_sends": [
+            {
+              "command_id": 1,
+              "goal_id": "mr3_p2a_reach_v19_interface_w0_e1_0b120834:tb3:1",
+              "pose": {
+                "frame_id": "map",
+                "orientation": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  1.0
+                ],
+                "stamp": 38.42,
+                "x": 0.9493632962670269,
+                "y": 0.05470217065071381
+              },
+              "robot": "tb3"
+            },
+            {
+              "command_id": 14,
+              "goal_id": "mr3_p2a_reach_v19_interface_w0_e1_0b120834:tb3:14",
+              "pose": {
+                "frame_id": "map",
+                "orientation": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  1.0
+                ],
+                "stamp": 51.42,
+                "x": 3.87949850568521,
+                "y": -1.304256569061665
+              },
+              "robot": "tb3"
+            }
+          ],
+          "native_send_targets_bound_to_submitted_candidate_snapshots": true,
+          "actual_accept_receipts": [
+            {
+              "epoch": "mr3_p2a_reach_v19_interface_w0_e1_0b120834",
+              "generated_stamp": 38.42,
+              "payload": {
+                "goal_id": "mr3_p2a_reach_v19_interface_w0_e1_0b120834:tb3:1",
+                "robot": "tb3",
+                "type": "accept",
+                "value": true
+              },
+              "received_stamp": 38.42,
+              "sequence": 1,
+              "source": "tb3",
+              "source_stamp": 38.42,
+              "stream": "receipt",
+              "version": 1
+            },
+            {
+              "epoch": "mr3_p2a_reach_v19_interface_w0_e1_0b120834",
+              "generated_stamp": 51.42,
+              "payload": {
+                "goal_id": "mr3_p2a_reach_v19_interface_w0_e1_0b120834:tb3:14",
+                "robot": "tb3",
+                "type": "accept",
+                "value": true
+              },
+              "received_stamp": 51.42,
+              "sequence": 4,
+              "source": "tb3",
+              "source_stamp": 51.42,
+              "stream": "receipt",
+              "version": 4
+            }
+          ],
+          "actual_accepted_goal_ids": [
+            "mr3_p2a_reach_v19_interface_w0_e1_0b120834:tb3:1",
+            "mr3_p2a_reach_v19_interface_w0_e1_0b120834:tb3:14"
+          ],
+          "actual_result_receipts": [
+            {
+              "epoch": "mr3_p2a_reach_v19_interface_w0_e1_0b120834",
+              "generated_stamp": 48.42,
+              "payload": {
+                "goal_id": "mr3_p2a_reach_v19_interface_w0_e1_0b120834:tb3:1",
+                "robot": "tb3",
+                "type": "result",
+                "value": 5
+              },
+              "received_stamp": 48.62,
+              "sequence": 3,
+              "source": "tb3",
+              "source_stamp": 48.42,
+              "stream": "receipt",
+              "version": 3
+            },
+            {
+              "epoch": "mr3_p2a_reach_v19_interface_w0_e1_0b120834",
+              "generated_stamp": 59.42,
+              "payload": {
+                "goal_id": "mr3_p2a_reach_v19_interface_w0_e1_0b120834:tb3:14",
+                "robot": "tb3",
+                "type": "result",
+                "value": 5
+              },
+              "received_stamp": 59.62,
+              "sequence": 6,
+              "source": "tb3",
+              "source_stamp": 59.42,
+              "stream": "receipt",
+              "version": 6
+            }
+          ],
+          "actual_result_status_counts": {
+            "5": 2
+          },
+          "snapshot_geometry_and_mask_diagnostics": [
+            {
+              "sequence": 1,
+              "digest": "d10837dfa3b7473f94d621cda17c9a2404e2293e42d964ecb4fb1ebeacac1e37",
+              "phase": "idle",
+              "target_intersection_cells": 72,
+              "reachable_pool": 15,
+              "reachable_selected": 3,
+              "joint_legal_goal_choices": [
+                1,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 2,
+              "digest": "5695da87d7ee9e9e3b4185ed63ce641155f4318f6bf806dff7c075fa919aeddd",
+              "phase": "active",
+              "target_intersection_cells": 72,
+              "reachable_pool": 15,
+              "reachable_selected": 3,
+              "joint_legal_goal_choices": [],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 3,
+              "digest": "76e5f8819f18e5bf0e1df388966ad499aa5ecf20cbb75ce2ffc5dcd0bd31d946",
+              "phase": "active",
+              "target_intersection_cells": 72,
+              "reachable_pool": 15,
+              "reachable_selected": 3,
+              "joint_legal_goal_choices": [],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 4,
+              "digest": "b2a8fe134cdf43094ece5a7cf66c549016518d5cc7847b20a9f0af937ac33a78",
+              "phase": "active",
+              "target_intersection_cells": 1327,
+              "reachable_pool": 114,
+              "reachable_selected": 7,
+              "joint_legal_goal_choices": [],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 5,
+              "digest": "5c652b62b30461feee2e246d43961dedfa2569328554812b08bb98d5b307017c",
+              "phase": "active",
+              "target_intersection_cells": 5554,
+              "reachable_pool": 204,
+              "reachable_selected": 8,
+              "joint_legal_goal_choices": [],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 6,
+              "digest": "1893ab85f823ac60d0e7054433d7a55d8e54df4b0d479c7bd21f78ebe3bb9105",
+              "phase": "active",
+              "target_intersection_cells": 7180,
+              "reachable_pool": 224,
+              "reachable_selected": 7,
+              "joint_legal_goal_choices": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 7,
+              "digest": "9f4bd39308f3a1c4124697586eb25c0807a7c7a815b62ae3a7ebfb2c2b33c31c",
+              "phase": "active",
+              "target_intersection_cells": 8901,
+              "reachable_pool": 169,
+              "reachable_selected": 8,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 8,
+              "digest": "3de833ebe4152003c972aab4b4d124d6506ca22a8308b55f4cb1148d756c210b",
+              "phase": "active",
+              "target_intersection_cells": 11187,
+              "reachable_pool": 179,
+              "reachable_selected": 7,
+              "joint_legal_goal_choices": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 9,
+              "digest": "f901f9d309de5703d48a7ed74060dd376230e1f5f1fba949b96c7ee89f5f5ff7",
+              "phase": "active",
+              "target_intersection_cells": 12273,
+              "reachable_pool": 198,
+              "reachable_selected": 6,
+              "joint_legal_goal_choices": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 10,
+              "digest": "07f7654ec441c1f27b4086a175c18429bfda9e539475edd9a59c205f4881c188",
+              "phase": "active",
+              "target_intersection_cells": 14434,
+              "reachable_pool": 176,
+              "reachable_selected": 6,
+              "joint_legal_goal_choices": [
+                1,
+                2,
+                4,
+                5,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 11,
+              "digest": "1d1149d336f7d57358908e85796d519e4320aab40523ade1ecb19c65f5a8372d",
+              "phase": "active",
+              "target_intersection_cells": 15307,
+              "reachable_pool": 190,
+              "reachable_selected": 5,
+              "joint_legal_goal_choices": [
+                1,
+                2,
+                3,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 12,
+              "digest": "c6bb371b8e1c48bde9d0d2953f42dc7de49cef180ff00194f701ac3f45e54795",
+              "phase": "idle",
+              "target_intersection_cells": 15307,
+              "reachable_pool": 190,
+              "reachable_selected": 5,
+              "joint_legal_goal_choices": [
+                1,
+                2,
+                3,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 13,
+              "digest": "bf78b599c86a8c9c56856f82b611621473a98e93d5f72c871e6eb474ca8bed98",
+              "phase": "idle",
+              "target_intersection_cells": 15307,
+              "reachable_pool": 190,
+              "reachable_selected": 5,
+              "joint_legal_goal_choices": [
+                1,
+                2,
+                3,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 14,
+              "digest": "2a778f25b7ccb740c6d4a24f0b48977068f9fe7fd9211e53d8aa0893bedc8648",
+              "phase": "idle",
+              "target_intersection_cells": 15307,
+              "reachable_pool": 190,
+              "reachable_selected": 5,
+              "joint_legal_goal_choices": [
+                1,
+                2,
+                3,
+                6,
+                7
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 15,
+              "digest": "1bf00afe7355b95cdb09b21c275f348c6a01cdd8e4c5e2dc9689b5702680d657",
+              "phase": "active",
+              "target_intersection_cells": 15307,
+              "reachable_pool": 190,
+              "reachable_selected": 5,
+              "joint_legal_goal_choices": [],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 16,
+              "digest": "b9d9c0f2fe6142b40f4424ee4f6869cdfe4d5fce094940a253164684ee1bc88f",
+              "phase": "active",
+              "target_intersection_cells": 16395,
+              "reachable_pool": 166,
+              "reachable_selected": 7,
+              "joint_legal_goal_choices": [],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 17,
+              "digest": "a0b2383a613d00ece5efc7f3df2209691c7031a8fa93be9e82f7397e3df490ec",
+              "phase": "active",
+              "target_intersection_cells": 17858,
+              "reachable_pool": 180,
+              "reachable_selected": 6,
+              "joint_legal_goal_choices": [],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 18,
+              "digest": "4f21ed56d40e664917eb0070636e780dfa0b0b2cfdbb64693505f365c9c7ffe5",
+              "phase": "active",
+              "target_intersection_cells": 18890,
+              "reachable_pool": 169,
+              "reachable_selected": 4,
+              "joint_legal_goal_choices": [],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 19,
+              "digest": "f993d4a2b1a229636466bd70e528398851b52cc7940f547277757b9758948011",
+              "phase": "active",
+              "target_intersection_cells": 19760,
+              "reachable_pool": 135,
+              "reachable_selected": 3,
+              "joint_legal_goal_choices": [
+                1,
+                2,
+                6
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 20,
+              "digest": "3d9d14f53fc165707f5650c15fc0b777d166cccf47ab46b8af268723e68c358c",
+              "phase": "active",
+              "target_intersection_cells": 20178,
+              "reachable_pool": 127,
+              "reachable_selected": 3,
+              "joint_legal_goal_choices": [
+                1,
+                2,
+                6
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 21,
+              "digest": "27d7c5e42d7254c43f7fc0e3ad354c3218c4a694bb729018e7ed55f07f52cd7d",
+              "phase": "active",
+              "target_intersection_cells": 20178,
+              "reachable_pool": 127,
+              "reachable_selected": 3,
+              "joint_legal_goal_choices": [
+                1,
+                2,
+                6
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 22,
+              "digest": "8c2e477779e3022e5e6b1b092fbfd49c567e1f6c0d62bce5be2ffe6e7f937eb1",
+              "phase": "active",
+              "target_intersection_cells": 20178,
+              "reachable_pool": 127,
+              "reachable_selected": 3,
+              "joint_legal_goal_choices": [
+                1,
+                2,
+                6
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 23,
+              "digest": "43162eb0130306ecfb4333d752a37832a3177748466ec8317a164fd05f8618c4",
+              "phase": "idle",
+              "target_intersection_cells": 20262,
+              "reachable_pool": 116,
+              "reachable_selected": 4,
+              "joint_legal_goal_choices": [
+                1,
+                2,
+                4,
+                6
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 24,
+              "digest": "2f9e9791ad831a9a9724491d0d0c3522d1a5b5c04e66fa870363d37a8f0f743d",
+              "phase": "idle",
+              "target_intersection_cells": 20262,
+              "reachable_pool": 116,
+              "reachable_selected": 4,
+              "joint_legal_goal_choices": [
+                1,
+                2,
+                4,
+                6
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 25,
+              "digest": "ab4708cbd9d96028b65b0e7255786c082bf5c7f65ef5a8658699487800efa3dc",
+              "phase": "idle",
+              "target_intersection_cells": 20262,
+              "reachable_pool": 116,
+              "reachable_selected": 4,
+              "joint_legal_goal_choices": [
+                1,
+                2,
+                4,
+                6
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 26,
+              "digest": "4ecb8f3290f87a4ffe5f3a5c51d18eca00d0c059ceace08992c5bfc2ffc55c49",
+              "phase": "idle",
+              "target_intersection_cells": 20262,
+              "reachable_pool": 116,
+              "reachable_selected": 4,
+              "joint_legal_goal_choices": [
+                1,
+                2,
+                4,
+                6
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 27,
+              "digest": "5b623bb0a902102e55bd1b1b32e450b615867c535610e184c1ec4aa451d9107c",
+              "phase": "idle",
+              "target_intersection_cells": 20262,
+              "reachable_pool": 116,
+              "reachable_selected": 4,
+              "joint_legal_goal_choices": [
+                1,
+                2,
+                4,
+                6
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 28,
+              "digest": "785762d75d19c3684540c0e7c3dfb2bfcd00bb282095c2a267e1b1c79d8b8d3e",
+              "phase": "idle",
+              "target_intersection_cells": 20262,
+              "reachable_pool": 116,
+              "reachable_selected": 4,
+              "joint_legal_goal_choices": [
+                1,
+                2,
+                4,
+                6
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 29,
+              "digest": "883b00d11cbb45f3d9e3d7345cf35bbd6c0a970685de348227037b98f411470f",
+              "phase": "idle",
+              "target_intersection_cells": 20262,
+              "reachable_pool": 116,
+              "reachable_selected": 4,
+              "joint_legal_goal_choices": [
+                1,
+                2,
+                4,
+                6
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 30,
+              "digest": "0991490a6684f7775edf1f53663333b7d68d6d98af94e1ed3d955d5fb196d2e8",
+              "phase": "idle",
+              "target_intersection_cells": 20262,
+              "reachable_pool": 116,
+              "reachable_selected": 4,
+              "joint_legal_goal_choices": [
+                1,
+                2,
+                4,
+                6
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 31,
+              "digest": "13e5b73a34d871d8edebee0a8a1f0172509c51a14f292475e53f17dc1efd5d13",
+              "phase": "idle",
+              "target_intersection_cells": 20262,
+              "reachable_pool": 116,
+              "reachable_selected": 4,
+              "joint_legal_goal_choices": [
+                1,
+                2,
+                4,
+                6
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 32,
+              "digest": "e6f898db9b7a233ac169543b0041501e56b81f7738c8592f32cccc8193623896",
+              "phase": "idle",
+              "target_intersection_cells": 20262,
+              "reachable_pool": 116,
+              "reachable_selected": 4,
+              "joint_legal_goal_choices": [
+                1,
+                2,
+                4,
+                6
+              ],
+              "own_seed_reason": null
+            },
+            {
+              "sequence": 33,
+              "digest": "3d2b74562d824e70efb81da64b27e70137dc024689e4b317b623a840f9f31cc3",
+              "phase": "idle",
+              "target_intersection_cells": 20262,
+              "reachable_pool": 116,
+              "reachable_selected": 4,
+              "joint_legal_goal_choices": [
+                1,
+                2,
+                4,
+                6
+              ],
+              "own_seed_reason": null
+            }
+          ]
+        }
+      },
+      "preserved_native_navigation_failure_lines": [
+        {
+          "line": 963,
+          "text": "[bt_navigator-20] [ERROR] [1792427302.751707385] [tb1.bt_navigator_navigate_to_pose_rclcpp_node]: Failed to get result for follow_path in node halt!"
+        }
+      ],
+      "all_candidates_nav2_executable_proven": false
+    }
+  ],
+  "jobs": {
+    "ROS_messages": 0,
+    "services": 0,
+    "native_starts": 0,
+    "process_signals": 0,
+    "GPU": 0,
+    "repository_writes": 0
+  },
+  "scope": "Independent seven-map/native-navigation NumPy provenance, exact frozen-source candidate/mask/raster/activity replay and terminal reuse. Snapshot inputs are only received maps/states/receipts; reward diagnostics and isolated evaluator truth fields are not used, and evaluator output is not loaded.",
+  "limits": [
+    "No policy efficacy, physical safety envelope, 95% success or multi-day stability claim.",
+    "The benchmark's complete native/scalar/ACK gates are audited separately."
+  ]
+}

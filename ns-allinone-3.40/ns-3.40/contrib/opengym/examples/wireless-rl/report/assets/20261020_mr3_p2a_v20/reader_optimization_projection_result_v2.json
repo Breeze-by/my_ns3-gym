@@ -1,0 +1,669 @@
+{
+  "actual_argv": [
+    "/usr/bin/python3",
+    "-B",
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261020_mr3_p2a_v20/check_reader_optimization_projection_v2.py",
+    "--patch",
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261020_mr3_p2a_v20/combined_reader_optimization_v2.patch",
+    "--manifest",
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261020_mr3_p2a_v20/reader_optimization_projection_manifest_v2.json",
+    "--output",
+    "/tmp/mr3_p2a_v20_reader_optimization_projection_v2.json"
+  ],
+  "commands": [
+    {
+      "actual_argv": [
+        "git",
+        "apply",
+        "--reverse",
+        "--check",
+        "--",
+        "/tmp/mr3_reader_optimization_inverse_nj9csuxx/combined_optimization.patch"
+      ],
+      "actual_waited": true,
+      "cwd": "/tmp/mr3_reader_optimization_inverse_nj9csuxx",
+      "ended_monotonic_ns": 4178550146315025,
+      "requested_argv": [
+        "git",
+        "apply",
+        "--reverse",
+        "--check",
+        "--",
+        "/tmp/mr3_reader_optimization_inverse_nj9csuxx/combined_optimization.patch"
+      ],
+      "returncode": 0,
+      "spawned": true,
+      "started_monotonic_ns": 4178550139765864,
+      "stderr": "",
+      "stdout_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "actual_argv": [
+        "git",
+        "apply",
+        "--reverse",
+        "--",
+        "/tmp/mr3_reader_optimization_inverse_nj9csuxx/combined_optimization.patch"
+      ],
+      "actual_waited": true,
+      "cwd": "/tmp/mr3_reader_optimization_inverse_nj9csuxx",
+      "ended_monotonic_ns": 4178550153268418,
+      "requested_argv": [
+        "git",
+        "apply",
+        "--reverse",
+        "--",
+        "/tmp/mr3_reader_optimization_inverse_nj9csuxx/combined_optimization.patch"
+      ],
+      "returncode": 0,
+      "spawned": true,
+      "started_monotonic_ns": 4178550146367574,
+      "stderr": "",
+      "stdout_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "actual_argv": [
+        "git",
+        "show",
+        "3631c788ca46e03a52f34ad48c41611761c17f1e:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_information.py"
+      ],
+      "actual_waited": true,
+      "cwd": "/home/zhuyulab/ns3-workspace",
+      "ended_monotonic_ns": 4178550162777394,
+      "requested_argv": [
+        "git",
+        "show",
+        "3631c788ca46e03a52f34ad48c41611761c17f1e:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_information.py"
+      ],
+      "returncode": 0,
+      "spawned": true,
+      "started_monotonic_ns": 4178550154492361,
+      "stderr": "",
+      "stdout_bytes": 71028,
+      "stdout_sha256": "ab1bfe144e9ab85276718a6131fe87fd3c90a09a1bd71056acc203c0e0765e30"
+    },
+    {
+      "actual_argv": [
+        "git",
+        "show",
+        "3631c788ca46e03a52f34ad48c41611761c17f1e:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_peer_control.py"
+      ],
+      "actual_waited": true,
+      "cwd": "/home/zhuyulab/ns3-workspace",
+      "ended_monotonic_ns": 4178550172340039,
+      "requested_argv": [
+        "git",
+        "show",
+        "3631c788ca46e03a52f34ad48c41611761c17f1e:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_peer_control.py"
+      ],
+      "returncode": 0,
+      "spawned": true,
+      "started_monotonic_ns": 4178550164479448,
+      "stderr": "",
+      "stdout_bytes": 45827,
+      "stdout_sha256": "b4fad008410e4e83de55c02718e28cdd12e9555ef551ca3149061634fcbb7917"
+    },
+    {
+      "actual_argv": [
+        "git",
+        "show",
+        "3631c788ca46e03a52f34ad48c41611761c17f1e:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_runtime.py"
+      ],
+      "actual_waited": true,
+      "cwd": "/home/zhuyulab/ns3-workspace",
+      "ended_monotonic_ns": 4178550182146091,
+      "requested_argv": [
+        "git",
+        "show",
+        "3631c788ca46e03a52f34ad48c41611761c17f1e:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_runtime.py"
+      ],
+      "returncode": 0,
+      "spawned": true,
+      "started_monotonic_ns": 4178550173569798,
+      "stderr": "",
+      "stdout_bytes": 70711,
+      "stdout_sha256": "62f4a7e010e1b339eb7bbe7754c56e71baea46dc084b3792d44ec3f1e7ae89d8"
+    }
+  ],
+  "ended_monotonic_ns": 4178550372455520,
+  "errors": [],
+  "freeze_reference": "3631c788ca46e03a52f34ad48c41611761c17f1e",
+  "gpu_calls": 0,
+  "manifest": {
+    "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261020_mr3_p2a_v20/reader_optimization_projection_manifest_v2.json",
+    "sha256": "b5fca1493af863043933f4f705b6de0d5c8585091acb19445b97cc54f4d03188",
+    "value": {
+      "freeze": "3631c788ca46e03a52f34ad48c41611761c17f1e",
+      "modules": [
+        {
+          "current_sha256": "f17c6fd76c4a1682ba36bd084548f74c46fd3151da14a3084c6613d984c6e495",
+          "frozen_sha256": "ab1bfe144e9ab85276718a6131fe87fd3c90a09a1bd71056acc203c0e0765e30",
+          "relative_path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_information.py"
+        },
+        {
+          "current_sha256": "29f074ecf0d704b4f484ccc1c0c990b0bdf7223e04ffbd44e4af887b038c989f",
+          "frozen_sha256": "b4fad008410e4e83de55c02718e28cdd12e9555ef551ca3149061634fcbb7917",
+          "relative_path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_peer_control.py"
+        },
+        {
+          "current_sha256": "4f6505f686945927641431a7cc64ee42e1fa5219b9d5f5144c82118fb96d88fa",
+          "frozen_sha256": "62f4a7e010e1b339eb7bbe7754c56e71baea46dc084b3792d44ec3f1e7ae89d8",
+          "relative_path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_runtime.py"
+        }
+      ],
+      "patch_sha256": "3cc61a8b24ed422ac2c1db7311d9fc613ff0417b36076008ff3c00f637894491",
+      "schema": "mr3-reach-reader-optimization-projection-manifest-v2"
+    }
+  },
+  "modules": [
+    {
+      "current_sha256": "f17c6fd76c4a1682ba36bd084548f74c46fd3151da14a3084c6613d984c6e495",
+      "git_blob_bytes": 71028,
+      "git_blob_sha256": "ab1bfe144e9ab85276718a6131fe87fd3c90a09a1bd71056acc203c0e0765e30",
+      "git_source": "3631c788ca46e03a52f34ad48c41611761c17f1e:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_information.py",
+      "relative_path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_information.py",
+      "restored_bytes": 71028,
+      "restored_sha256": "ab1bfe144e9ab85276718a6131fe87fd3c90a09a1bd71056acc203c0e0765e30",
+      "whole_file_inverse_equal": true
+    },
+    {
+      "current_sha256": "29f074ecf0d704b4f484ccc1c0c990b0bdf7223e04ffbd44e4af887b038c989f",
+      "git_blob_bytes": 45827,
+      "git_blob_sha256": "b4fad008410e4e83de55c02718e28cdd12e9555ef551ca3149061634fcbb7917",
+      "git_source": "3631c788ca46e03a52f34ad48c41611761c17f1e:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_peer_control.py",
+      "relative_path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_peer_control.py",
+      "restored_bytes": 45827,
+      "restored_sha256": "b4fad008410e4e83de55c02718e28cdd12e9555ef551ca3149061634fcbb7917",
+      "whole_file_inverse_equal": true
+    },
+    {
+      "current_sha256": "4f6505f686945927641431a7cc64ee42e1fa5219b9d5f5144c82118fb96d88fa",
+      "git_blob_bytes": 70711,
+      "git_blob_sha256": "62f4a7e010e1b339eb7bbe7754c56e71baea46dc084b3792d44ec3f1e7ae89d8",
+      "git_source": "3631c788ca46e03a52f34ad48c41611761c17f1e:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_runtime.py",
+      "relative_path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_runtime.py",
+      "restored_bytes": 70711,
+      "restored_sha256": "62f4a7e010e1b339eb7bbe7754c56e71baea46dc084b3792d44ec3f1e7ae89d8",
+      "whole_file_inverse_equal": true
+    }
+  ],
+  "native_admission": false,
+  "native_runs": 0,
+  "original_modules_unmodified": true,
+  "passed": true,
+  "patch": {
+    "bytes": 20813,
+    "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261020_mr3_p2a_v20/combined_reader_optimization_v2.patch",
+    "sha256": "3cc61a8b24ed422ac2c1db7311d9fc613ff0417b36076008ff3c00f637894491"
+  },
+  "project_reader_imported": false,
+  "runtime_unchanged_mathematical_sources": {
+    "current_ast_statement_count": 61,
+    "current_top_level_definition_count": 40,
+    "frozen_ast_statement_count": 59,
+    "frozen_top_level_definition_count": 39,
+    "immutable_definitions": [
+      {
+        "ast_equal": true,
+        "bytes": 89,
+        "complete_source_text_equal": true,
+        "current_sha256": "771470ca6047ea7b84814e6cc23c2357b927e95ad29ed2fbd7b34f2969c68de4",
+        "frozen_sha256": "771470ca6047ea7b84814e6cc23c2357b927e95ad29ed2fbd7b34f2969c68de4",
+        "name": "require"
+      },
+      {
+        "ast_equal": true,
+        "bytes": 107,
+        "complete_source_text_equal": true,
+        "current_sha256": "2a2f546dbd38a7985a1b983f66ad663051c47a020b48a8e08e42c5fe3440c89b",
+        "frozen_sha256": "2a2f546dbd38a7985a1b983f66ad663051c47a020b48a8e08e42c5fe3440c89b",
+        "name": "canonical"
+      },
+      {
+        "ast_equal": true,
+        "bytes": 471,
+        "complete_source_text_equal": true,
+        "current_sha256": "4f1f8a11a62d5a5a6aea4eefae38a2c38cf09a57571ec024649cbb9cffb7ae24",
+        "frozen_sha256": "4f1f8a11a62d5a5a6aea4eefae38a2c38cf09a57571ec024649cbb9cffb7ae24",
+        "name": "decode_text"
+      },
+      {
+        "ast_equal": true,
+        "bytes": 56,
+        "complete_source_text_equal": true,
+        "current_sha256": "e17e4bc4f0e172287890b34af21fde851eaf02b86ab844e850f067faa94101aa",
+        "frozen_sha256": "e17e4bc4f0e172287890b34af21fde851eaf02b86ab844e850f067faa94101aa",
+        "name": "same"
+      },
+      {
+        "ast_equal": true,
+        "bytes": 84,
+        "complete_source_text_equal": true,
+        "current_sha256": "2b686af939b58b99c3005e3656ea8bdc7cb6b55dcf09ff55f80dad5ceff7f164",
+        "frozen_sha256": "2b686af939b58b99c3005e3656ea8bdc7cb6b55dcf09ff55f80dad5ceff7f164",
+        "name": "digest"
+      },
+      {
+        "ast_equal": true,
+        "bytes": 129,
+        "complete_source_text_equal": true,
+        "current_sha256": "296c884cd4db24715c3e865c20f9cf1e329f498afdd35f16ebc5929d2c03f741",
+        "frozen_sha256": "296c884cd4db24715c3e865c20f9cf1e329f498afdd35f16ebc5929d2c03f741",
+        "name": "integer"
+      },
+      {
+        "ast_equal": true,
+        "bytes": 116,
+        "complete_source_text_equal": true,
+        "current_sha256": "9cc5cf9f6d080b4c6c1beeb44fc4d04f53a75212091c77feb1d73e45ac826ed1",
+        "frozen_sha256": "9cc5cf9f6d080b4c6c1beeb44fc4d04f53a75212091c77feb1d73e45ac826ed1",
+        "name": "fields"
+      },
+      {
+        "ast_equal": true,
+        "bytes": 180,
+        "complete_source_text_equal": true,
+        "current_sha256": "8dff2219247b9620fa523db2522f57646abd87dfe82fee1fb9e65645005fa798",
+        "frozen_sha256": "8dff2219247b9620fa523db2522f57646abd87dfe82fee1fb9e65645005fa798",
+        "name": "sec_ns"
+      },
+      {
+        "ast_equal": true,
+        "bytes": 380,
+        "complete_source_text_equal": true,
+        "current_sha256": "45cfeb18cda2e762e5174fc987fa866ebd08de6a5e33f1bdea8c8eda9f6f47bc",
+        "frozen_sha256": "45cfeb18cda2e762e5174fc987fa866ebd08de6a5e33f1bdea8c8eda9f6f47bc",
+        "name": "state_ns"
+      },
+      {
+        "ast_equal": true,
+        "bytes": 252,
+        "complete_source_text_equal": true,
+        "current_sha256": "6599da958073a16f1864e4f054b021bccb93da411263365693e7c2865045a319",
+        "frozen_sha256": "6599da958073a16f1864e4f054b021bccb93da411263365693e7c2865045a319",
+        "name": "source"
+      },
+      {
+        "ast_equal": true,
+        "bytes": 114,
+        "complete_source_text_equal": true,
+        "current_sha256": "bf5fa359a20d86a4655ed1e229aaad2f661791f799ab8951d628ec51f7b3439d",
+        "frozen_sha256": "bf5fa359a20d86a4655ed1e229aaad2f661791f799ab8951d628ec51f7b3439d",
+        "name": "vector"
+      },
+      {
+        "ast_equal": true,
+        "bytes": 767,
+        "complete_source_text_equal": true,
+        "current_sha256": "0dcb7c937d396e6f42d8d2c9d91e65d2a4221674a1cbea56e10913d1bd82b4a4",
+        "frozen_sha256": "0dcb7c937d396e6f42d8d2c9d91e65d2a4221674a1cbea56e10913d1bd82b4a4",
+        "name": "raw_check"
+      },
+      {
+        "ast_equal": true,
+        "bytes": 68,
+        "complete_source_text_equal": true,
+        "current_sha256": "9e94be759ca8f6eb8bcc8f791fa41b747cdde85d0103368cd25d7f3a22206692",
+        "frozen_sha256": "9e94be759ca8f6eb8bcc8f791fa41b747cdde85d0103368cd25d7f3a22206692",
+        "name": "xy"
+      },
+      {
+        "ast_equal": true,
+        "bytes": 227,
+        "complete_source_text_equal": true,
+        "current_sha256": "eff8d5d2ee06296820d16b33d0f1b0be3db821d6a5adf430422a33b30192f226",
+        "frozen_sha256": "eff8d5d2ee06296820d16b33d0f1b0be3db821d6a5adf430422a33b30192f226",
+        "name": "axis"
+      },
+      {
+        "ast_equal": true,
+        "bytes": 520,
+        "complete_source_text_equal": true,
+        "current_sha256": "6cabbc7335a341f8f4979a43612eba09b8a20d8f0f8abd6a4888c24bdaddfa78",
+        "frozen_sha256": "6cabbc7335a341f8f4979a43612eba09b8a20d8f0f8abd6a4888c24bdaddfa78",
+        "name": "target_check"
+      },
+      {
+        "ast_equal": true,
+        "bytes": 1156,
+        "complete_source_text_equal": true,
+        "current_sha256": "a2aa791fcde6d0ca799c3d95a2c48949035f1c5b250dead50138cce502e3c025",
+        "frozen_sha256": "a2aa791fcde6d0ca799c3d95a2c48949035f1c5b250dead50138cce502e3c025",
+        "name": "calibration_check"
+      },
+      {
+        "ast_equal": true,
+        "bytes": 3255,
+        "complete_source_text_equal": true,
+        "current_sha256": "3bc38fadf07a78ae836435cf94baa3249babe23349f1f5e88b7a17c94919170e",
+        "frozen_sha256": "3bc38fadf07a78ae836435cf94baa3249babe23349f1f5e88b7a17c94919170e",
+        "name": "intent_check"
+      },
+      {
+        "ast_equal": true,
+        "bytes": 1132,
+        "complete_source_text_equal": true,
+        "current_sha256": "ca60716cdf013981193313e7a75f1b3c0a7c99f0c90a161d7679da916b610f43",
+        "frozen_sha256": "ca60716cdf013981193313e7a75f1b3c0a7c99f0c90a161d7679da916b610f43",
+        "name": "residual_squared_upper"
+      },
+      {
+        "ast_equal": true,
+        "bytes": 599,
+        "complete_source_text_equal": true,
+        "current_sha256": "7b2813886240285dbe2edfd21437a8ba5e3e0294f1d70d78833f6179bc0aea1d",
+        "frozen_sha256": "7b2813886240285dbe2edfd21437a8ba5e3e0294f1d70d78833f6179bc0aea1d",
+        "name": "trig_bounds"
+      },
+      {
+        "ast_equal": true,
+        "bytes": 446,
+        "complete_source_text_equal": true,
+        "current_sha256": "73b6ed2c7f56352e4ae48457fc9b983a6b8da3ca589e549fc14a2b1e5a6a842b",
+        "frozen_sha256": "73b6ed2c7f56352e4ae48457fc9b983a6b8da3ca589e549fc14a2b1e5a6a842b",
+        "name": "nonclosing"
+      },
+      {
+        "ast_equal": true,
+        "bytes": 119,
+        "complete_source_text_equal": true,
+        "current_sha256": "41554e73bb21a76608a7f50e6d211b4c0657448312487f92fd3a7ede18f91073",
+        "frozen_sha256": "41554e73bb21a76608a7f50e6d211b4c0657448312487f92fd3a7ede18f91073",
+        "name": "intent_role"
+      },
+      {
+        "ast_equal": true,
+        "bytes": 2224,
+        "complete_source_text_equal": true,
+        "current_sha256": "d460330015321babab827825c56f3146f8fb3ae6a6c2f68680f490ff0c160467",
+        "frozen_sha256": "d460330015321babab827825c56f3146f8fb3ae6a6c2f68680f490ff0c160467",
+        "name": "state_geometry"
+      },
+      {
+        "ast_equal": true,
+        "bytes": 934,
+        "complete_source_text_equal": true,
+        "current_sha256": "1e4f194fb7b43c0d96d6deaa322528f530256b1f06578b4079d869cdfc80770a",
+        "frozen_sha256": "1e4f194fb7b43c0d96d6deaa322528f530256b1f06578b4079d869cdfc80770a",
+        "name": "independent_pair"
+      },
+      {
+        "ast_equal": true,
+        "bytes": 2360,
+        "complete_source_text_equal": true,
+        "current_sha256": "5c39c97003a01c37ac43fb03afccade71ac64cbe456543421b51b172d636d499",
+        "frozen_sha256": "5c39c97003a01c37ac43fb03afccade71ac64cbe456543421b51b172d636d499",
+        "name": "admitted_command"
+      },
+      {
+        "ast_equal": true,
+        "bytes": 1658,
+        "complete_source_text_equal": true,
+        "current_sha256": "a4992397f18682ac470251bb0c0334598cd2e8338a838d80dce174d764815624",
+        "frozen_sha256": "a4992397f18682ac470251bb0c0334598cd2e8338a838d80dce174d764815624",
+        "name": "Inputs"
+      },
+      {
+        "ast_equal": true,
+        "bytes": 977,
+        "complete_source_text_equal": true,
+        "current_sha256": "ae7a8374d12e42c0b2f7226d44fd5afac63a8920bc9cedfc8816811a29edff41",
+        "frozen_sha256": "ae7a8374d12e42c0b2f7226d44fd5afac63a8920bc9cedfc8816811a29edff41",
+        "name": "source_proof"
+      },
+      {
+        "ast_equal": true,
+        "bytes": 1267,
+        "complete_source_text_equal": true,
+        "current_sha256": "08e3a2e9b652cb63864f74eab88a0cff0058a10ff13933b73087f33551400c53",
+        "frozen_sha256": "08e3a2e9b652cb63864f74eab88a0cff0058a10ff13933b73087f33551400c53",
+        "name": "graph_identity"
+      },
+      {
+        "ast_equal": true,
+        "bytes": 63,
+        "complete_source_text_equal": true,
+        "current_sha256": "9e9303218296c3dee54b4547a6eea5658451abcf2fa4ea3f3e3b52fac1e9209b",
+        "frozen_sha256": "9e9303218296c3dee54b4547a6eea5658451abcf2fa4ea3f3e3b52fac1e9209b",
+        "name": "copy_value"
+      },
+      {
+        "ast_equal": true,
+        "bytes": 13366,
+        "complete_source_text_equal": true,
+        "current_sha256": "ec48702f260a0f396da4a79e518366c6ce3d8262ddf320a003fac9f868424298",
+        "frozen_sha256": "ec48702f260a0f396da4a79e518366c6ce3d8262ddf320a003fac9f868424298",
+        "name": "replay_robot"
+      },
+      {
+        "ast_equal": true,
+        "bytes": 2160,
+        "complete_source_text_equal": true,
+        "current_sha256": "96df76800c722092d04a2c377e886cb224faddfaf1724b9552aa90fc51794616",
+        "frozen_sha256": "96df76800c722092d04a2c377e886cb224faddfaf1724b9552aa90fc51794616",
+        "name": "audit_episode"
+      },
+      {
+        "ast_equal": true,
+        "bytes": 192,
+        "complete_source_text_equal": true,
+        "current_sha256": "db72de4eaaa12998e930f30663fa66cce362df66c733b0cb6e25998578b01237",
+        "frozen_sha256": "db72de4eaaa12998e930f30663fa66cce362df66c733b0cb6e25998578b01237",
+        "name": "run_workers"
+      },
+      {
+        "ast_equal": true,
+        "bytes": 477,
+        "complete_source_text_equal": true,
+        "current_sha256": "bb71b5f5c3d933bdc694b0921a6a52b5b41ef96a66c5a7561bae76ac52a6553a",
+        "frozen_sha256": "bb71b5f5c3d933bdc694b0921a6a52b5b41ef96a66c5a7561bae76ac52a6553a",
+        "name": "discover_attempts"
+      },
+      {
+        "ast_equal": true,
+        "bytes": 4770,
+        "complete_source_text_equal": true,
+        "current_sha256": "57d3b87e2ea52c835b1aa87e48d1918ee9adadf92b186c59855246b2fdb11927",
+        "frozen_sha256": "57d3b87e2ea52c835b1aa87e48d1918ee9adadf92b186c59855246b2fdb11927",
+        "name": "audit_episode_set"
+      },
+      {
+        "ast_equal": true,
+        "bytes": 596,
+        "complete_source_text_equal": true,
+        "current_sha256": "63281866ed3183860c15e8d2ddd4a821a63865e4d43e03357e5e685364ac2ead",
+        "frozen_sha256": "63281866ed3183860c15e8d2ddd4a821a63865e4d43e03357e5e685364ac2ead",
+        "name": "audit"
+      },
+      {
+        "ast_equal": true,
+        "bytes": 1491,
+        "complete_source_text_equal": true,
+        "current_sha256": "0e29b5056b4fc58ea416226b4ee2ff783a991174b238b2e0063ead62129db088",
+        "frozen_sha256": "0e29b5056b4fc58ea416226b4ee2ff783a991174b238b2e0063ead62129db088",
+        "name": "main"
+      }
+    ],
+    "number_conversion": {
+      "cache_maxsize": 4096,
+      "cache_typed": true,
+      "cached_conversion_sha256": "bec89721cf300679d8d154b499ad72229bfbbc191cbe4ade3b97fc0c07af52de",
+      "original_conversion_ast_equal": true,
+      "original_conversion_sha256": "bec89721cf300679d8d154b499ad72229bfbbc191cbe4ade3b97fc0c07af52de",
+      "original_validation_first_text_equal": true,
+      "original_validation_sha256": "840b4d961bc344130968ec8f71ca8bff0f133ad4eb7fcb4b281405f4d1785380",
+      "validation_outside_cache": true
+    },
+    "project_reader_imported": false
+  },
+  "schema": "mr3-reach-reader-optimization-whole-file-inverse-v2",
+  "scientific_pass_claimed": false,
+  "scope": "CPU source projection only; no scientific replay or qualification",
+  "source_after": [
+    {
+      "bytes": 16210,
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261020_mr3_p2a_v20/check_reader_optimization_projection_v2.py",
+      "sha256": "f6123a0e90d85f607603a67099d6f9fb2a67cf1a09e3bf61fac458e49d86a950",
+      "stat": [
+        2051,
+        79064455,
+        33204,
+        16210,
+        1792433098934448655,
+        1792433098934448655
+      ]
+    },
+    {
+      "bytes": 1198,
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261020_mr3_p2a_v20/reader_optimization_projection_manifest_v2.json",
+      "sha256": "b5fca1493af863043933f4f705b6de0d5c8585091acb19445b97cc54f4d03188",
+      "stat": [
+        2051,
+        79064457,
+        33204,
+        1198,
+        1792433106616132216,
+        1792433106616132216
+      ]
+    },
+    {
+      "bytes": 20813,
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261020_mr3_p2a_v20/combined_reader_optimization_v2.patch",
+      "sha256": "3cc61a8b24ed422ac2c1db7311d9fc613ff0417b36076008ff3c00f637894491",
+      "stat": [
+        2051,
+        79064456,
+        33204,
+        20813,
+        1792433106589129820,
+        1792433106589129820
+      ]
+    },
+    {
+      "bytes": 74171,
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_information.py",
+      "sha256": "f17c6fd76c4a1682ba36bd084548f74c46fd3151da14a3084c6613d984c6e495",
+      "stat": [
+        2051,
+        73560544,
+        33204,
+        74171,
+        1792433083077024908,
+        1792433083077024908
+      ]
+    },
+    {
+      "bytes": 45943,
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_peer_control.py",
+      "sha256": "29f074ecf0d704b4f484ccc1c0c990b0bdf7223e04ffbd44e4af887b038c989f",
+      "stat": [
+        2051,
+        73563986,
+        33204,
+        45943,
+        1792430828293234728,
+        1792430828293234728
+      ]
+    },
+    {
+      "bytes": 73388,
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_runtime.py",
+      "sha256": "4f6505f686945927641431a7cc64ee42e1fa5219b9d5f5144c82118fb96d88fa",
+      "stat": [
+        2051,
+        73563953,
+        33204,
+        73388,
+        1792432962924325340,
+        1792432962924325340
+      ]
+    }
+  ],
+  "source_before": [
+    {
+      "bytes": 16210,
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261020_mr3_p2a_v20/check_reader_optimization_projection_v2.py",
+      "sha256": "f6123a0e90d85f607603a67099d6f9fb2a67cf1a09e3bf61fac458e49d86a950",
+      "stat": [
+        2051,
+        79064455,
+        33204,
+        16210,
+        1792433098934448655,
+        1792433098934448655
+      ]
+    },
+    {
+      "bytes": 1198,
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261020_mr3_p2a_v20/reader_optimization_projection_manifest_v2.json",
+      "sha256": "b5fca1493af863043933f4f705b6de0d5c8585091acb19445b97cc54f4d03188",
+      "stat": [
+        2051,
+        79064457,
+        33204,
+        1198,
+        1792433106616132216,
+        1792433106616132216
+      ]
+    },
+    {
+      "bytes": 20813,
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261020_mr3_p2a_v20/combined_reader_optimization_v2.patch",
+      "sha256": "3cc61a8b24ed422ac2c1db7311d9fc613ff0417b36076008ff3c00f637894491",
+      "stat": [
+        2051,
+        79064456,
+        33204,
+        20813,
+        1792433106589129820,
+        1792433106589129820
+      ]
+    },
+    {
+      "bytes": 74171,
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_information.py",
+      "sha256": "f17c6fd76c4a1682ba36bd084548f74c46fd3151da14a3084c6613d984c6e495",
+      "stat": [
+        2051,
+        73560544,
+        33204,
+        74171,
+        1792433083077024908,
+        1792433083077024908
+      ]
+    },
+    {
+      "bytes": 45943,
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_peer_control.py",
+      "sha256": "29f074ecf0d704b4f484ccc1c0c990b0bdf7223e04ffbd44e4af887b038c989f",
+      "stat": [
+        2051,
+        73563986,
+        33204,
+        45943,
+        1792430828293234728,
+        1792430828293234728
+      ]
+    },
+    {
+      "bytes": 73388,
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_runtime.py",
+      "sha256": "4f6505f686945927641431a7cc64ee42e1fa5219b9d5f5144c82118fb96d88fa",
+      "stat": [
+        2051,
+        73563953,
+        33204,
+        73388,
+        1792432962924325340,
+        1792432962924325340
+      ]
+    }
+  ],
+  "source_unchanged": true,
+  "started_monotonic_ns": 4178550134931987,
+  "temporary_mirror": "/tmp/mr3_reader_optimization_inverse_nj9csuxx",
+  "temporary_mirror_removed": true,
+  "whole_file_inverse_equal": true
+}

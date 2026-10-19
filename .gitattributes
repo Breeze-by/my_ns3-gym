@@ -54,3 +54,15 @@ ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/2026
 
 # Exact failed V19 document packaging snapshot.
 ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v19/closed_preparation_failed_report_snapshot_v1.txt -text -whitespace
+
+# Preserve exact closed V19 consoles and V20 finite-check snapshots/patch evidence.
+ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v19/closed_execution/**/*.log -text -whitespace
+ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261020_mr3_p2a_v20/checks/*/console.log -text -whitespace
+ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261020_mr3_p2a_v20/checks/*/source_snapshots/** -text -whitespace
+ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261020_mr3_p2a_v20/*.patch -text -whitespace
+ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261020_mr3_p2a_v20/closed_diagnostics_v1/**/*.log -text -whitespace
+ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261020_mr3_p2a_v20/closed_diagnostics_v1/**/*.txt -text -whitespace
+ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261020_mr3_p2a_v20/closed_diagnostics_v1/*/source_snapshots/** -text -whitespace
+ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261020_mr3_p2a_v20/closed_diagnostics_v1/information_sources/** -text -whitespace
+ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261020_mr3_p2a_v20/closed_regressions/**/*.log -text -whitespace
+ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261020_mr3_p2a_v20/accounting_v1_failed_attempt/*.log -text -whitespace

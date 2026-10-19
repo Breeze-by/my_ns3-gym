@@ -1,0 +1,41 @@
+{
+  "schema": "mr3-v20-bounded-owned-read-only-child-wait-v1",
+  "actual_argv": [
+    "/usr/bin/python3",
+    "-B",
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261020_mr3_p2a_v20/closed_v19_runtime_regression_v1.py",
+    "--candidate-sha",
+    "4f6505f686945927641431a7cc64ee42e1fa5219b9d5f5144c82118fb96d88fa",
+    "--patch",
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261020_mr3_p2a_v20/runtime_index_optimization_v2.patch",
+    "--patch-sha",
+    "cfef27a0c669d09324d522005754c1575e68361c22263c140fb610ee0776731c",
+    "--output",
+    "/tmp/mr3_p2a_v20_closed_v19_runtime_regression_v1.json"
+  ],
+  "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+  "coordinator_identity": {
+    "pid": 1410460,
+    "parent": 1410459,
+    "start_ticks": 417860376,
+    "state": "R"
+  },
+  "child_identity": {
+    "pid": 1410461,
+    "parent": 1410460,
+    "start_ticks": 417860384,
+    "state": "R"
+  },
+  "started_monotonic_ns": 4178603846076710,
+  "ended_monotonic_ns": 4178943448186965,
+  "actual_child_wait_seconds": "339.602110255",
+  "supervised_wall_allocation_seconds": 600,
+  "timed_out": false,
+  "signals_sent": [],
+  "actual_returncode": 0,
+  "actual_waited": true,
+  "passed": true,
+  "scientific_qualification": false,
+  "native_runs": 0,
+  "gpu_calls": 0
+}
