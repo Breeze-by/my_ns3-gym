@@ -38,6 +38,10 @@ cone 半角使用全局 `1.2*(source_age+H)`，不能以旧测得零角速度忽
 map 与同一已交付状态的原始 common-WORLD odom 各自形成完整证书，最后 AND；不跨帧混距离和方向。
 共同坐标/真实heading校准及其误差界仍是明确的传感器/物理假设，不能从 metadata 声称已验证。
 
+## 来源cadence配置
+
+V19显式reach研究配置`mr3-reach-lidar-20hz-v1`只将生成SDF内`hls_lfcd_lds`真实采样率由5Hz改为20Hz；base/legacy仍5Hz，360 beam、噪声与碰撞/驱动参数保持。扫描和TF保留真实来源时间，不重戳、不减年龄U或放松双帧证书。更高cadence改变SLAM/地图与actor观测分布，须单独冻结并完整重验，不复用旧资格。20Hz只声明该仿真配置，不声称实体传感器可达。配置20Hz不证明持续实际到达或连续物理界；原每次来源、几何及关闭门仍必要。
+
 ## 实际交付和应用链
 
 launch 仅在 adapter、stepped、三台时接受 `mr3_safety_contract:=mr3-reach-v1`。
@@ -59,6 +63,7 @@ Information 真订阅 intent/calibration；RPC 只声明 expected refs，不创�
 选中的 `{intent,calibration}` 必须与原始 odom 在同一 state envelope、同一 send/delivery 和完整 bundle 中交付。
 表 SHA 是 canonical `{tb1:safety,tb2:safety,tb3:safety}`，每条机器人引用也绑定 safety SHA。
 peer/motion 均实际接收完整同 bundle，再核对原始内容、来源、引用和表 SHA；只比 digest 标签不够。
+V19另修复状态bundle消费时遗漏transform：仅reach保留同一实际交付envelope内完整原TF字段，转向cone从它计算；不以本机raw TF替补远端字段。legacy序列化仍按原规则移除该字段。独立交付reader对实际源/选择/envelope/side publication/bundle逐内容重建并取合取。
 输出 status 的 intent_refs 是本轮新发布的三条承诺，table SHA 是本轮实际消费的上一份表，二者不得混为一物。
 
 Humble 此安装的 callback 没有 MessageInfo。唯一发布者检查诚实标为 `graph_at_callback`，

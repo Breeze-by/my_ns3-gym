@@ -1,0 +1,147 @@
+{
+  "schema": "mr3-reach-outer-actual-wait-v1",
+  "scope": "engineering",
+  "safety_contract": "mr3-reach-v1",
+  "actual_argv": [
+    "/usr/bin/python3",
+    "-B",
+    "report/assets/20261019_mr3_p2a_v16/external_absence_v1.py",
+    "--matrix",
+    "/tmp/mr3_p2a_reach_v18_matrix",
+    "--outer",
+    "/tmp/mr3_p2a_reach_v18_matrix_wait",
+    "--run",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v18/mr3_p2a_reach_v18_interface",
+    "--output",
+    "/tmp/mr3_p2a_reach_v18_absence.json"
+  ],
+  "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+  "coordinator_identity": {
+    "pid": 1338655,
+    "parent": 1338653,
+    "group": 1338653,
+    "session": 1338653,
+    "start_ticks": 417045032,
+    "state": "R"
+  },
+  "child_identity": {
+    "pid": 1338658,
+    "parent": 1338655,
+    "group": 1338653,
+    "session": 1338653,
+    "start_ticks": 417045049,
+    "state": "R"
+  },
+  "actual_returncode": 0,
+  "actual_waited": true,
+  "errors": [],
+  "started_monotonic_ns": 4170450493757980,
+  "ended_monotonic_ns": 4170450677223145,
+  "actual_child_wait_seconds": "0.183465165",
+  "source_before": [
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v16/external_absence_v1.py",
+      "sha256": "cedae11c4b9bbf6f4887ae5afe2fa10fff04e5a28595f5c9e748669c8d18493f",
+      "bytes": 15052,
+      "stat": [
+        2051,
+        79062523,
+        15052,
+        1792421278850463343,
+        1792421278850463343
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a_reach_v18_matrix/summary.json",
+      "sha256": "0b4046a1166418dab5145e9d79d20d380841a83d631b760954b4dd802d5f3dfe",
+      "bytes": 15825,
+      "stat": [
+        2051,
+        79065550,
+        15825,
+        1792424806357151342,
+        1792424806357151342
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a_reach_v18_matrix/interface/live_custody.json",
+      "sha256": "35cca55bb3bea8a46cde21e3b6846a7cea19801c321dd6c48100d524ffed30ee",
+      "bytes": 1952897,
+      "stat": [
+        2051,
+        79065547,
+        1952897,
+        1792424800704696539,
+        1792424800704696539
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a_reach_v18_matrix_wait/actual_wait.json",
+      "sha256": "597191891a9ff152e18ed84f1dde9dca15dba52e25b86129a46e6ded4877b49b",
+      "bytes": 5910,
+      "stat": [
+        2051,
+        79065551,
+        5910,
+        1792424806408155438,
+        1792424806408155438
+      ]
+    }
+  ],
+  "source_after": [
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v16/external_absence_v1.py",
+      "sha256": "cedae11c4b9bbf6f4887ae5afe2fa10fff04e5a28595f5c9e748669c8d18493f",
+      "bytes": 15052,
+      "stat": [
+        2051,
+        79062523,
+        15052,
+        1792421278850463343,
+        1792421278850463343
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a_reach_v18_matrix/summary.json",
+      "sha256": "0b4046a1166418dab5145e9d79d20d380841a83d631b760954b4dd802d5f3dfe",
+      "bytes": 15825,
+      "stat": [
+        2051,
+        79065550,
+        15825,
+        1792424806357151342,
+        1792424806357151342
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a_reach_v18_matrix/interface/live_custody.json",
+      "sha256": "35cca55bb3bea8a46cde21e3b6846a7cea19801c321dd6c48100d524ffed30ee",
+      "bytes": 1952897,
+      "stat": [
+        2051,
+        79065547,
+        1952897,
+        1792424800704696539,
+        1792424800704696539
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a_reach_v18_matrix_wait/actual_wait.json",
+      "sha256": "597191891a9ff152e18ed84f1dde9dca15dba52e25b86129a46e6ded4877b49b",
+      "bytes": 5910,
+      "stat": [
+        2051,
+        79065551,
+        5910,
+        1792424806408155438,
+        1792424806408155438
+      ]
+    }
+  ],
+  "source_unchanged": true,
+  "passed": true,
+  "console": {
+    "path": "/tmp/mr3_p2a_reach_v18_absence_wait/console.log",
+    "sha256": "cf23f085b6b27e0d8d7ccb8c7fa77044faee60567ccfa575facb7e8de2b31a24"
+  }
+}

@@ -19,7 +19,7 @@ import re
 from types import ModuleType
 
 from . import audit_reach_information as information
-from .audit_information import load_implementation
+from .audit_reach_information import load_implementation
 
 ROOT = Path(__file__).resolve().parents[7]
 WIRELESS = Path('ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl')

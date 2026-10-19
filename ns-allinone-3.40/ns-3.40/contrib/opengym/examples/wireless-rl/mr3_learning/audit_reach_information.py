@@ -10,12 +10,14 @@ import argparse
 from collections import Counter
 import copy
 import hashlib
+import inspect
 import json
 import math
 from pathlib import Path
 import struct
+import textwrap
 
-from .audit_information import load_implementation
+from .audit_information import load_implementation as load_measurement_implementation
 
 ROBOTS = ('tb1', 'tb2', 'tb3')
 CONTRACT = 'mr3-reach-v1'
@@ -24,6 +26,42 @@ BUNDLE_KEYS = {'epoch', 'sequence', 'robots', 'map_version', 'map_source_stamp',
     'map_received_stamp', 'map_sources', 'map_payload_sha256', 'navigation_composition',
     'navigation_sources', 'information_diagnostics', 'safety_contract', 'intent_refs',
     'safety_table_sha256'}
+
+
+def load_implementation():
+    """Retain the exact delivered TF in the private new-profile row oracle.
+
+    The original loader and immutable files stay unchanged. The complete
+    envelope, actual raw TF selection, side publication and full row comparisons
+    still execute; this changes just the declared bundle projection.
+    """
+    host, provenance = load_measurement_implementation()
+    original = host.RawReplay.publish
+    source_path = Path(original.__code__.co_filename)
+    raw = source_path.read_bytes()
+    binding = next(item for item in provenance['unchanged_original_sources']
+                   if Path(item['path']).resolve() == source_path.resolve())
+    require(hashlib.sha256(raw).hexdigest() == binding['sha256'], 'immutable TF row oracle differs')
+    before = b"            transform = state.pop('transform')\n"
+    after = b"            transform = state['transform']\n"
+    require(raw.count(before) == 1 and after not in raw, 'ambiguous received TF projection')
+    projected = raw.replace(before, after, 1)
+    require(projected.count(after) == 1 and projected.replace(after, before, 1) == raw,
+            'whole TF row projection inverse differs')
+    method = inspect.getsource(original)
+    require(method.count(before.decode()) == 1, 'TF projection is outside the original publish method')
+    changed = textwrap.dedent(method.replace(before.decode(), after.decode(), 1))
+    namespace = dict(original.__globals__)
+    exec(compile(changed, str(Path(__file__).resolve()) + ':delivered_transform', 'exec'), namespace)
+    host.RawReplay.publish = namespace['publish']
+    provenance = dict(provenance, reach_delivery_transform_projection={
+        'original_source': binding, 'projected_whole_source_sha256': hashlib.sha256(projected).hexdigest(),
+        'whole_source_inverse_sha256': hashlib.sha256(raw).hexdigest(), 'whole_source_inverse_equal': True,
+        'literal_before': before.decode(), 'literal_after': after.decode(), 'literal_count': 1,
+        'effective_publish_method_sha256': hashlib.sha256(changed.encode()).hexdigest(),
+        'scope': 'keep actual delivered transform in new-profile whole row; all original raw/send/delivery/side comparisons remain',
+        'original_files_modified': False, 'native_inputs_modified': False})
+    return host, provenance
 
 
 def require(value, reason):

@@ -248,13 +248,44 @@ def append_ray_provenance(model, robot_name, diagnostic):
     return rendered
 
 
+def reach_lidar_model(model):
+    """The reach profile samples the real existing ray sensor at 20 Hz."""
+    tree = ET.fromstring(model)
+    models = tree.findall("model")
+    links = models[0].findall("link[@name='base_scan']") if len(models) == 1 else []
+    sensors = links[0].findall("sensor[@name='hls_lfcd_lds']") if len(links) == 1 else []
+    rates = sensors[0].findall("update_rate") if len(sensors) == 1 else []
+    if (len(sensors) != 1 or sensors[0].attrib != {"name":"hls_lfcd_lds", "type":"ray"}
+            or len(rates) != 1 or rates[0].text != "5"):
+        raise ValueError("reach LiDAR requires the unique canonical 5 Hz ray sensor")
+    link_start = model.index('<link name="base_scan">')
+    link_end = model.index("</link>", link_start)
+    start = model.index('<sensor name="hls_lfcd_lds" type="ray">', link_start, link_end)
+    end = model.index("</sensor>", start, link_end)
+    selected = model[start:end]
+    before, after = "<update_rate>5</update_rate>", "<update_rate>20</update_rate>"
+    if selected.count(before) != 1 or after in selected:
+        raise ValueError("reach LiDAR source rate bytes are ambiguous")
+    replacement = selected.replace(before, after, 1)
+    rendered = model[:start] + replacement + model[end:]
+    if replacement.replace(after, before, 1) != selected:
+        raise ValueError("reach LiDAR inverse changed original sensor bytes")
+    return rendered
+
+
 def drive_spawn_model(model_path, robot_name, audit_path, epoch, tagged_commands=False,
-                      *, physics_diagnostic=None):
-    """Select target protocol/audit tags without changing physical model bytes."""
+                      *, physics_diagnostic=None, safety_contract="legacy"):
+    """Fill drive tags and select the explicit reach-only sensor cadence."""
     if type(tagged_commands) is not bool or (tagged_commands and not epoch):
         raise ValueError("tagged drive requires an explicit adapter epoch")
+    if safety_contract not in ("legacy", "mr3-reach-v1"):
+        raise ValueError("unknown drive-model safety contract")
+    if safety_contract == "mr3-reach-v1" and not tagged_commands:
+        raise ValueError("reach LiDAR requires the tagged adapter model")
     with open(model_path, encoding="utf-8") as stream:
         model = stream.read()
+    if safety_contract == "mr3-reach-v1":
+        model = reach_lidar_model(model)
     tags = {
         "mr3_audit_path": (os.path.join(os.path.dirname(audit_path), f"drive_{robot_name}.jsonl")
                            if audit_path else ""),
@@ -999,7 +1030,14 @@ def launch_setup(context, *args, **kwargs):
         namespace = "/" + robot_name
         spawn_model = drive_spawn_model(
             model, robot_name, adapter_audit_path, episode_epoch.perform(context), adapter_mode,
-            physics_diagnostic=physics_diagnostic)
+            physics_diagnostic=physics_diagnostic, safety_contract=safety_contract)
+        if safety_contract == "mr3-reach-v1":
+            actions.append(LogInfo(msg="MR3_REACH_SENSOR_PROFILE " + json.dumps({
+                "schema":"mr3-reach-lidar-20hz-v1", "robot":robot_name,
+                "sensor_link":"base_scan", "sensor_name":"hls_lfcd_lds",
+                "source_update_rate_hz":5, "effective_update_rate_hz":20,
+                "effective_sdf":spawn_model,
+                "scope":"genuine sensor cadence; scan geometry/noise and body unchanged"}, sort_keys=True)))
         if not adapter_audit_path:
             actions.append(RegisterEventHandler(OnShutdown(
                 on_shutdown=lambda event, event_context, path=spawn_model:

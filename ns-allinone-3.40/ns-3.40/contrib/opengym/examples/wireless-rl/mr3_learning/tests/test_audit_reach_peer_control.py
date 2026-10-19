@@ -308,6 +308,23 @@ class ReachPeerControlTests(unittest.TestCase):
     def replay(self, data):
         return audit.replay_records(data, self.core, self.host)
 
+    def test_production_entry_uses_complete_delivered_transform_oracle(self):
+        self.assertIs(audit.load_implementation, audit.information.load_implementation)
+        _, proof = audit.load_implementation()
+        projection = proof['reach_delivery_transform_projection']
+        self.assertTrue(projection['whole_source_inverse_equal'])
+        self.assertFalse(projection['native_inputs_modified'])
+        self.assertEqual(projection['whole_source_inverse_sha256'], projection['original_source']['sha256'])
+
+    def test_side_tf_does_not_replace_missing_transform_in_actual_bundle(self):
+        data = make_fixture()
+        publication = next(row['payload'] for row in data['information_states.jsonl']
+                           if row['kind'] == 'state_publish')
+        publication['message']['robots'][0].pop('transform')
+        publication['message_sha256'] = audit.sha(publication['message'])
+        with self.assertRaisesRegex(ValueError, 'published state differs from delivered envelope'):
+            self.replay(data)
+
     def test_whole_source_inverse_and_no_original_audit_invocation(self):
         self.assertTrue(self.provenance['whole_inverse_exact'])
         self.assertEqual(self.provenance['whole_inverse_sha256'], audit.ORIGINAL_SHA)

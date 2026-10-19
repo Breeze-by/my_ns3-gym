@@ -1211,7 +1211,9 @@ class IdealInformation(Node):
                 continue
             payload = record.payload
             odometry = restore_message(Odometry(), payload["odometry"])
-            transform = restore_message(TransformStamped(), payload.pop("transform"))
+            transform_payload_value = (payload["transform"] if uses_reach_contract(self)
+                                       else payload.pop("transform"))
+            transform = restore_message(TransformStamped(), transform_payload_value)
             # An ideal broadcast delivery; no raw odom or TF is published here.
             # Future edge isolation and faulted fanout are P3A/P3B gates.
             self.odom_publishers[name].publish(odometry)

@@ -1,6 +1,7 @@
 """Check drive implementation/audit wiring without loading Gazebo or ROS nodes."""
 
 from pathlib import Path
+import importlib.util
 import re
 import subprocess
 import xml.etree.ElementTree as ET
@@ -117,3 +118,54 @@ def test_empty_audit_baseline_uses_owned_temp_files_and_shutdown_cleanup(monkeyp
     for handler in handlers:
         handler.handle(Shutdown(reason="headless test cleanup"), context)
     assert not any(path.exists() for path in models.values())
+
+
+def test_reach_effective_models_change_only_the_unique_real_lidar_rate(monkeypatch, tmp_path):
+    source = MODEL.read_bytes()
+    _, _, nodes, _ = configured_launch(monkeypatch, execution_mode="adapter",
+        mr3_stepped="true", mr3_safety_contract="mr3-reach-v1",
+        mr3_audit_path=str(tmp_path / "adapter.jsonl"), mr3_episode_epoch="reach-sensor-epoch")
+    models = spawned_models(nodes)
+    assert set(models) == {"tb1","tb2","tb3"}
+    for name,path in models.items():
+        rendered = path.read_text()
+        sensor = ET.fromstring(rendered).find("model/link[@name='base_scan']/sensor[@name='hls_lfcd_lds']")
+        assert sensor.attrib == {"name":"hls_lfcd_lds","type":"ray"}
+        assert sensor.findtext("update_rate") == "20"
+        start = rendered.index('<sensor name="hls_lfcd_lds" type="ray">')
+        end = rendered.index("</sensor>",start)
+        block = rendered[start:end]
+        assert block.count("<update_rate>20</update_rate>") == 1
+        restored = rendered[:start]+block.replace("<update_rate>20</update_rate>","<update_rate>5</update_rate>",1)+rendered[end:]
+        assert original_physical_bytes(restored) == original_model()
+        plugin = ET.fromstring(rendered).find(".//plugin[@name='turtlebot3_diff_drive']")
+        assert plugin.findtext("mr3_epoch") == "reach-sensor-epoch"
+        assert plugin.findtext("mr3_audit_path") == str(tmp_path/f"drive_{name}.jsonl")
+    assert MODEL.read_bytes() == source
+
+
+@pytest.mark.parametrize("replacement", [
+    ('name="hls_lfcd_lds"','name="other_lidar"'),
+    ('<update_rate>5</update_rate>','<update_rate>10</update_rate>'),
+    ('<update_rate>5</update_rate>','<update_rate>20</update_rate>'),
+    ('<update_rate>5</update_rate>','<update_rate>5</update_rate><update_rate>5</update_rate>'),
+])
+def test_reach_lidar_rejects_wrong_sensor_or_rate_without_writing(tmp_path,replacement):
+    spec = importlib.util.spec_from_file_location("reach_drive_launch",ROOT/"src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py")
+    module = importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
+    model = tmp_path/"source.sdf"
+    model.write_text(MODEL.read_text().replace(*replacement,1))
+    with pytest.raises(ValueError):
+        module.drive_spawn_model(model,"tb1",str(tmp_path/"adapter.jsonl"),"epoch",True,
+                                 safety_contract="mr3-reach-v1")
+    assert not (tmp_path/"drive_model_tb1.sdf").exists()
+
+
+@pytest.mark.parametrize("contract,tagged", [("unknown",True),("mr3-reach-v1",False)])
+def test_drive_model_rejects_unknown_or_untagged_reach_profile(tmp_path,contract,tagged):
+    spec = importlib.util.spec_from_file_location("invalid_reach_drive_launch",ROOT/"src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py")
+    module = importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
+    with pytest.raises(ValueError):
+        module.drive_spawn_model(MODEL,"tb1",str(tmp_path/"adapter.jsonl"),"epoch",tagged,
+                                 safety_contract=contract)
+    assert not (tmp_path/"drive_model_tb1.sdf").exists()

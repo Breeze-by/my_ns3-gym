@@ -9,6 +9,7 @@ import hashlib
 import subprocess
 
 from .reach_audit_projection import project_module
+from . import audit_reach_sensor_model
 
 PPO_READER_SHA256 = "b2e0737d79826b7ecb319cc91b58ff45475ea831a9cb2b4cab2298aaf6474567"
 ENV_SHA256 = "e21cade7fecc17461007903e74ccd870c26e1d1e4a766731c2850dd567a73869"
@@ -83,11 +84,16 @@ def load_native_gates(root, freeze, plan_path):
     legacy.verify_current_native_binding = native_binding
     legacy.verify_velocity_smoother_overlay = native_binding
     phase, base, auditor, command, scalar, proof = legacy.load_native_gates(root, freeze)
+    _,sensor_projection = audit_reach_sensor_model.load_spawn_impl()
+    audit_reach_sensor_model.attach_native_gate(phase,root,freeze)
     proof.update(source_proof)
     proof["reach_dispatch"] = {"schema": "mr3-reach-native-gate-dispatch-v1",
         "safety_contract": "mr3-reach-v1", "immutable_reader": projection,
         "versioned_runtime": revised_proof,
         "versioned_execution_config": sorted(REVISED_CONFIG),
+        "sensor_profile":audit_reach_sensor_model.PROFILE,
+        "sensor_reader_projection":sensor_projection,
+        "sensor_model_gate":"actual spawn and unique20Hz ray; whole-byte inverse restores original5Hz model",
         "original_mathematical_predicates_changed": False,
         "old_profile_qualification_credit_reused": False}
     return phase, base, auditor, command, scalar, proof

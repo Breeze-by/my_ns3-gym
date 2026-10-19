@@ -130,7 +130,7 @@ def fixture():
         info.add('state_send', {'cycle_id': 1, 'robot': name, 'envelope': envelope,
                                'payload_sha256': audit.sha(payload)}, wall); wall += 1
         delivered[name] = dict(copy.deepcopy(envelope), received_stamp=CLOCK/1e9)
-        row = copy.deepcopy(payload); row.pop('transform')
+        row = copy.deepcopy(payload)
         row.update(epoch=EPOCH, sequence=1, version=1, source_stamp=source,
                    received_stamp=CLOCK/1e9, valid=True)
         rows.append(row)
@@ -346,6 +346,41 @@ class ReachInformationTests(unittest.TestCase):
         self.assertFalse(result['historical_38_role_qualification'])
         self.assertFalse(result['native_admission'])
         self.assertEqual(result['motion_counts']['full_three_guard_commits'], 1)
+
+    def test_complete_new_profile_row_requires_actual_delivered_transform(self):
+        row = next(r for r in self.evidence['information_states.jsonl'] if r['kind'] == 'state_publish')
+        row['payload']['message']['robots'][0].pop('transform')
+        row['payload']['message_sha256'] = audit.sha(row['payload']['message'])
+        result = self.run_audit()
+        self.assertFalse(result['passed'])
+        self.assertIn('published state differs from delivered envelope', result['errors'][0])
+
+    def test_changed_bundle_transform_cannot_replace_the_exact_delivered_tf(self):
+        row = next(r for r in self.evidence['information_states.jsonl'] if r['kind'] == 'state_publish')
+        row['payload']['message']['robots'][0]['transform']['transform']['translation']['x'] = .01
+        row['payload']['message_sha256'] = audit.sha(row['payload']['message'])
+        result = self.run_audit()
+        self.assertFalse(result['passed'])
+        self.assertIn('published state differs from delivered envelope', result['errors'][0])
+
+    def test_changed_sent_transform_cannot_bypass_actual_raw_tf_selection(self):
+        row = next(r for r in self.evidence['information_states.jsonl'] if r['kind'] == 'state_send')
+        row['payload']['envelope']['payload']['transform']['transform']['translation']['x'] = .01
+        row['payload']['payload_sha256'] = audit.sha(row['payload']['envelope']['payload'])
+        result = self.run_audit()
+        self.assertFalse(result['passed'])
+        self.assertIn('sent state differs', result['errors'][0])
+
+    def test_private_new_projection_restores_entire_immutable_legacy_source(self):
+        import inspect
+        host, proof = audit.load_implementation()
+        projected = proof['reach_delivery_transform_projection']
+        self.assertTrue(projected['whole_source_inverse_equal'])
+        self.assertEqual(projected['whole_source_inverse_sha256'], projected['original_source']['sha256'])
+        self.assertEqual(projected['literal_count'], 1)
+        legacy, _ = audit.load_measurement_implementation()
+        self.assertIn("transform = state.pop('transform')", inspect.getsource(legacy.RawReplay.publish))
+        self.assertIsNot(host.RawReplay.publish, legacy.RawReplay.publish)
 
     def test_extra_metadata_cannot_be_masked_by_original_measurement_oracle(self):
         row = next(r for r in self.evidence['information_states.jsonl'] if r['kind'] == 'state_send')

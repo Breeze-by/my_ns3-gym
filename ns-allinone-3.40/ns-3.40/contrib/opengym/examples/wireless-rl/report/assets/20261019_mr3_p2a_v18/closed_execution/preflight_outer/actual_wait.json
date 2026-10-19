@@ -1,0 +1,241 @@
+{
+  "schema": "mr3-reach-outer-actual-wait-v1",
+  "scope": "cpu",
+  "safety_contract": "mr3-reach-v1",
+  "actual_argv": [
+    "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+    "-B",
+    "report/assets/20261019_mr3_p2a_v18/preflight_v1.py",
+    "--plan",
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v18/predeclared_plan_v1.json",
+    "--freeze",
+    "ed2306e9fa100f6ada4ab6496a53a3bd08e58017",
+    "--output",
+    "/tmp/mr3_p2a_reach_v18_preflight.json"
+  ],
+  "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+  "coordinator_identity": {
+    "pid": 1330075,
+    "parent": 1330073,
+    "group": 1330073,
+    "session": 1330073,
+    "start_ticks": 416992937,
+    "state": "R"
+  },
+  "child_identity": {
+    "pid": 1330078,
+    "parent": 1330075,
+    "group": 1330073,
+    "session": 1330073,
+    "start_ticks": 416992953,
+    "state": "R"
+  },
+  "actual_returncode": 0,
+  "actual_waited": true,
+  "errors": [],
+  "started_monotonic_ns": 4169929534475894,
+  "ended_monotonic_ns": 4169957489166909,
+  "actual_child_wait_seconds": "27.954691015",
+  "source_before": [
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v18/preflight_v1.py",
+      "sha256": "1e3b87570a743f0bf6dd68d37e4f70b1ed717da4a0f6eab521682eb67b61ccf5",
+      "bytes": 5193,
+      "stat": [
+        2051,
+        79065293,
+        5193,
+        1792424033654320675,
+        1792424033654320675
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v18/prepare_plan_v1.py",
+      "sha256": "956de18026b6119aee4f9f703516ec4d7525301b6aa1981811d0abc125660546",
+      "bytes": 14108,
+      "stat": [
+        2051,
+        79065374,
+        14108,
+        1792424091513187655,
+        1792424091513187655
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v18/check_continuation_preparation_v1.py",
+      "sha256": "59684247b9d27a2a3c91192ab495e52b4d3d62a4bf6e22cfabd95584b7b2b329",
+      "bytes": 39478,
+      "stat": [
+        2051,
+        79065324,
+        39478,
+        1792424117088453779,
+        1792424117088453779
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v17/check_closed_preparation_v1.py",
+      "sha256": "940dd0b8ff5e68b53e35f6d9299e79d2798c8d42c8c66d52d1194a65be808d9e",
+      "bytes": 18765,
+      "stat": [
+        2051,
+        79062536,
+        18765,
+        1792421635493366375,
+        1792421635493366375
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v16/check_preparation_v1.py",
+      "sha256": "9390062d1dfe47e14fa71792048a486498d35fa3988e502ab259984ea695b75c",
+      "bytes": 19171,
+      "stat": [
+        2051,
+        79061151,
+        19171,
+        1792418697369614739,
+        1792418697369614739
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v18/predeclared_plan_v1.json",
+      "sha256": "29294bba562f6e249166d6ffc4b4c20cc602f005d10d3c7f11ee598c9f1adb49",
+      "bytes": 210911,
+      "stat": [
+        2051,
+        79065375,
+        210911,
+        1792424217285408013,
+        1792424217285408013
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v18/native_custody_binding_v1.json",
+      "sha256": "0ebd64cc9db18df5fe6a86ea8b337b0532561c2b5302c9aecdc89c96516fffba",
+      "bytes": 33222,
+      "stat": [
+        2051,
+        79065292,
+        33222,
+        1792424216824385238,
+        1792424216824385238
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_gates.py",
+      "sha256": "2514146a5f8374276a1c6c27a91442b886d6fa17e293671f2cffc06ad75a6eca",
+      "bytes": 5531,
+      "stat": [
+        2051,
+        73563992,
+        5531,
+        1792417362416158193,
+        1792417362416158193
+      ]
+    }
+  ],
+  "source_after": [
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v18/preflight_v1.py",
+      "sha256": "1e3b87570a743f0bf6dd68d37e4f70b1ed717da4a0f6eab521682eb67b61ccf5",
+      "bytes": 5193,
+      "stat": [
+        2051,
+        79065293,
+        5193,
+        1792424033654320675,
+        1792424033654320675
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v18/prepare_plan_v1.py",
+      "sha256": "956de18026b6119aee4f9f703516ec4d7525301b6aa1981811d0abc125660546",
+      "bytes": 14108,
+      "stat": [
+        2051,
+        79065374,
+        14108,
+        1792424091513187655,
+        1792424091513187655
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v18/check_continuation_preparation_v1.py",
+      "sha256": "59684247b9d27a2a3c91192ab495e52b4d3d62a4bf6e22cfabd95584b7b2b329",
+      "bytes": 39478,
+      "stat": [
+        2051,
+        79065324,
+        39478,
+        1792424117088453779,
+        1792424117088453779
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v17/check_closed_preparation_v1.py",
+      "sha256": "940dd0b8ff5e68b53e35f6d9299e79d2798c8d42c8c66d52d1194a65be808d9e",
+      "bytes": 18765,
+      "stat": [
+        2051,
+        79062536,
+        18765,
+        1792421635493366375,
+        1792421635493366375
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v16/check_preparation_v1.py",
+      "sha256": "9390062d1dfe47e14fa71792048a486498d35fa3988e502ab259984ea695b75c",
+      "bytes": 19171,
+      "stat": [
+        2051,
+        79061151,
+        19171,
+        1792418697369614739,
+        1792418697369614739
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v18/predeclared_plan_v1.json",
+      "sha256": "29294bba562f6e249166d6ffc4b4c20cc602f005d10d3c7f11ee598c9f1adb49",
+      "bytes": 210911,
+      "stat": [
+        2051,
+        79065375,
+        210911,
+        1792424217285408013,
+        1792424217285408013
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v18/native_custody_binding_v1.json",
+      "sha256": "0ebd64cc9db18df5fe6a86ea8b337b0532561c2b5302c9aecdc89c96516fffba",
+      "bytes": 33222,
+      "stat": [
+        2051,
+        79065292,
+        33222,
+        1792424216824385238,
+        1792424216824385238
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_gates.py",
+      "sha256": "2514146a5f8374276a1c6c27a91442b886d6fa17e293671f2cffc06ad75a6eca",
+      "bytes": 5531,
+      "stat": [
+        2051,
+        73563992,
+        5531,
+        1792417362416158193,
+        1792417362416158193
+      ]
+    }
+  ],
+  "source_unchanged": true,
+  "passed": true,
+  "console": {
+    "path": "/tmp/mr3_p2a_reach_v18_preflight_wait/console.log",
+    "sha256": "e3cdd8aac72c87b79a36e5e03f70f13f3b4ec162c91f172e685cc2188688f3c1"
+  }
+}

@@ -129,12 +129,49 @@ def test_actual_envelope_preserves_raw_projection_and_binds_whole_safety_table()
         envelope = node.received.get('state', name)
         assert envelope.payload['safety'] == {'intent': intents[name], 'calibration': calibrations[name]}
         assert row['odometry'] == calibrations[name]['odometry'] == odom_payload(odoms[name])
+        assert row['transform'] == envelope.payload['transform']
+        side = input_rows(node, 'state_publish')[-1]['payload']['side_publications']
+        assert payload_sha256(row['transform']) == next(item for item in side if item['robot'] == name)['tf_sha256']
         assert result['robots'][name]['safety_sha256'] == payload_sha256(table[name])
         assert result['robots'][name]['source_ns'] == 1_990_000_000
     assert not any(p.messages for p in node.navigation_publishers.values())
     selected = input_rows(node, 'state_selection')
     assert all(row['schema'] == 'mr3-information-state-audit-v2' for row in selected)
     assert all(row['payload']['safety_input_sequences'] for row in selected)
+
+
+@pytest.mark.parametrize('role', ['X', 'N'])
+def test_real_received_bundle_supplies_transform_to_directional_reach_consumer(role):
+    from multi_robot_exploration.mr3_reach_runtime import reach_for
+    node = reach_bridge()
+    _, _, _ = prime(node)
+    intents = {}
+    for robot in node.names:
+        value = intent(node.epoch, robot, node.clock_ns, 3)
+        value.update(role=role, admitted_signs=[1], anchor={
+            'source_clock_ns': 1_980_000_000,
+            'odometry': odom_payload(input_odom(1_980_000_000))}, lineage={
+                'anchor_intent_sequence': 1, 'transition_intent_sequence': 2})
+        if role == 'N':
+            value['lineage'].update(actuation_sequence=1, actuation_source_clock_ns=1_984_000_000,
+                                    causal_source_clock_ns=1_990_000_000, cmd_seq=1)
+        intents[robot] = value
+        ingress(node, 'intent', robot, value)
+    commit(node, intents)
+    assert ack(node)['ok'] is True
+    bundle = json.loads(node.state_publisher.messages[-1].data)
+    for row in bundle['robots']:
+        assert row['transform'] == node.received.get('state', row['name']).payload['transform']
+        assert reach_for(row, node.clock_ns).buffer_m > 0
+
+
+def test_legacy_published_row_continues_to_omit_transform():
+    node = state_input_bridge()
+    prime(node, send_intents=False, send_calibration=False)
+    IdealInformation.publish_states(node)
+    bundle = json.loads(node.state_publisher.messages[-1].data)
+    assert all('transform' not in row for row in bundle['robots'])
+    assert all('transform' in node.received.get('state', name).payload for name in node.names)
 
 
 def test_future_safety_cannot_displace_an_exact_causal_reference():

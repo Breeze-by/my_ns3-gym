@@ -1,0 +1,112 @@
+........................................................................ [ 74%]
+.........................                                                [100%]
+97 passed in 23.00s
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+......................................F....FFEFF..F.F...............................................
+======================================================================
+ERROR: test_full_synthetic_chain_peer_control_fifo_and_bootstrap (mr3_learning.tests.test_audit_reach_peer_control.ReachPeerControlTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_reach_peer_control.py", line 318, in test_full_synthetic_chain_peer_control_fifo_and_bootstrap
+    result = self.replay(make_fixture())
+  File "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_reach_peer_control.py", line 309, in replay
+    return audit.replay_records(data, self.core, self.host)
+  File "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_peer_control.py", line 596, in replay_records
+    info.record(row)
+  File "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_information.py", line 356, in record
+    self.publish(value, clock, wall)
+  File "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_information.py", line 457, in publish
+    host.RawReplay.publish(self, value, clock, wall)
+  File "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v9/independent/mr3_independent_information_v1.py", line 483, in publish
+    require(canonical(robots[robot]) == canonical(state),
+  File "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v9/independent/mr3_independent_information_v1.py", line 23, in require
+    raise ValueError(reason)
+ValueError: published state differs from delivered envelope
+
+======================================================================
+FAIL: test_advance_before_actual_driver_ack_consumption_is_rejected (mr3_learning.tests.test_audit_reach_peer_control.ReachPeerControlTests)
+----------------------------------------------------------------------
+ValueError: published state differs from delivered envelope
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_reach_peer_control.py", line 396, in test_advance_before_actual_driver_ack_consumption_is_rejected
+    with self.assertRaisesRegex(ValueError, 'three receipts consumed'):
+AssertionError: "three receipts consumed" does not match "published state differs from delivered envelope"
+
+======================================================================
+FAIL: test_episode_api_binds_raw_files_and_exclusive_output (mr3_learning.tests.test_audit_reach_peer_control.ReachPeerControlTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_reach_peer_control.py", line 407, in test_episode_api_binds_raw_files_and_exclusive_output
+    self.assertTrue(result['passed'], result['errors'])
+AssertionError: False is not true : ['published state differs from delivered envelope']
+
+======================================================================
+FAIL: test_full_body_cloud_byte_tamper_is_rejected_even_with_rehashed_claims (mr3_learning.tests.test_audit_reach_peer_control.ReachPeerControlTests)
+----------------------------------------------------------------------
+ValueError: published state differs from delivered envelope
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_reach_peer_control.py", line 329, in test_full_body_cloud_byte_tamper_is_rejected_even_with_rehashed_claims
+    with self.assertRaisesRegex(ValueError, 'immutable independent geometry'):
+AssertionError: "immutable independent geometry" does not match "published state differs from delivered envelope"
+
+======================================================================
+FAIL: test_new_status_cannot_claim_old_consumed_refs_as_new_output_refs (mr3_learning.tests.test_audit_reach_peer_control.ReachPeerControlTests)
+----------------------------------------------------------------------
+ValueError: published state differs from delivered envelope
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_reach_peer_control.py", line 367, in test_new_status_cannot_claim_old_consumed_refs_as_new_output_refs
+    with self.assertRaisesRegex(ValueError, 'new refs'):
+AssertionError: "new refs" does not match "published state differs from delivered envelope"
+
+======================================================================
+FAIL: test_nonterminal_negative_callback_stays_failed_when_abandoned (mr3_learning.tests.test_audit_reach_peer_control.ReachPeerControlTests)
+----------------------------------------------------------------------
+ValueError: published state differs from delivered envelope
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_reach_peer_control.py", line 374, in test_nonterminal_negative_callback_stays_failed_when_abandoned
+    with self.assertRaisesRegex(ValueError, 'sticky'):
+AssertionError: "sticky" does not match "published state differs from delivered envelope"
+
+======================================================================
+FAIL: test_postrelease_refs_require_real_subscribed_hold_packets (mr3_learning.tests.test_audit_reach_peer_control.ReachPeerControlTests)
+----------------------------------------------------------------------
+ValueError: published state differs from delivered envelope
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_reach_peer_control.py", line 389, in test_postrelease_refs_require_real_subscribed_hold_packets
+    with self.assertRaisesRegex(ValueError, 'missing actual owner callbacks'):
+AssertionError: "missing actual owner callbacks" does not match "published state differs from delivered envelope"
+
+======================================================================
+FAIL: test_state_only_request_without_peer_actual_callback_cannot_move (mr3_learning.tests.test_audit_reach_peer_control.ReachPeerControlTests)
+----------------------------------------------------------------------
+ValueError: published state differs from delivered envelope
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_reach_peer_control.py", line 345, in test_state_only_request_without_peer_actual_callback_cannot_move
+    with self.assertRaisesRegex(ValueError, 'actually receive current dependency'):
+AssertionError: "actually receive current dependency" does not match "published state differs from delivered envelope"
+
+----------------------------------------------------------------------
+Ran 100 tests in 28.932s
+
+FAILED (failures=7, errors=1)

@@ -11,8 +11,122 @@ import unittest
 from unittest.mock import patch
 
 from mr3_learning import action_trace, audit_action_trace as audit
+from mr3_learning import audit_reach_sensor_model as sensor_audit
 from mr3_learning.tests.test_env import SupervisorFixture
 from mr3_learning.tests.test_observation import seal
+
+
+class ReachSensorModelTests(unittest.TestCase):
+    def fixture(self):
+        temporary = tempfile.TemporaryDirectory(); self.addCleanup(temporary.cleanup)
+        episode = Path(temporary.name)
+        epoch = "reach<&epoch>"
+        source = (audit.WORKSPACE/audit.MODEL).read_bytes()
+        generated = {}
+        starts = []
+        for robot,position in audit.SPAWN.items():
+            start = source.index(b'<sensor name="hls_lfcd_lds" type="ray">')
+            end = source.index(b"</sensor>",start)
+            raw = source[:start]+source[start:end].replace(b"<update_rate>5</update_rate>",b"<update_rate>20</update_rate>",1)+source[end:]
+            from xml.sax.saxutils import escape
+            for tag,value in (("mr3_audit_path",str(episode/f"drive_{robot}.jsonl")),
+                              ("mr3_epoch",epoch),("mr3_tagged_commands","true")):
+                raw = raw.replace(f"<{tag}/>".encode(),f"<{tag}>{escape(value)}</{tag}>".encode(),1)
+            path = episode/f"drive_model_{robot}.sdf"; path.write_bytes(raw)
+            generated[robot] = raw
+            argv = ["/usr/bin/python3","/opt/ros/humble/lib/gazebo_ros/spawn_entity.py",
+                "-file",str(path),"-entity",robot,"-robot_namespace","/"+robot,
+                "-x",str(position[0]),"-y",str(position[1]),"-z",str(position[2]),
+                "-R","0","-P","0","-Y","0"]
+            starts.append({"event":"process_started","epoch":epoch,"argv":argv})
+        (episode/"launch.log").write_text("".join("MR3_ORDERED_SHUTDOWN "+json.dumps(row)+"\n" for row in starts))
+        return episode,epoch,source,generated,starts
+
+    def test_independent_whole_source_and_model_inverse_preserves_original_reader(self):
+        episode,epoch,source,generated,_ = self.fixture()
+        module,projection = sensor_audit.load_spawn_impl()
+        self.assertTrue(projection['whole_source_inverse_equal'])
+        self.assertEqual(projection['inverse_sha256'],sensor_audit.ORIGINAL_READER_SHA256)
+        self.assertEqual(len(projection['literal_changes']),2)
+        original_code = audit._spawn.__code__
+        report = module._spawn(episode,epoch,Path.read_bytes,False)
+        self.assertEqual(set(report['robots']),set(audit.SPAWN))
+        for robot,row in report['robots'].items():
+            proof = row['reach_sensor_profile']
+            self.assertEqual(proof['effective_update_rate_hz'],20)
+            self.assertEqual(proof['whole_byte_inverse_sha256'],proof['source_sha256'])
+            restored,_ = sensor_audit.inverse_reach_lidar(generated[robot],source,robot,epoch,episode)
+            self.assertIn(b"<update_rate>5</update_rate>",restored)
+            self.assertEqual((episode/f"drive_model_{robot}.sdf").read_bytes(),generated[robot])
+        self.assertIs(audit._spawn.__code__,original_code)
+
+    def test_rejects_old_rate_and_any_unrelated_sensor_body_or_driver_byte_change(self):
+        episode,epoch,source,generated,_ = self.fixture()
+        raw = generated['tb1']
+        mutations = [
+            raw.replace(b'<sensor name="hls_lfcd_lds"',b'<sensor name="other_lidar"',1),
+            raw.replace(b"<update_rate>20</update_rate>",b"<update_rate>5</update_rate>"),
+            raw.replace(b"<samples>360</samples>",b"<samples>361</samples>",1),
+            raw.replace(b"<wheel_diameter>0.066</wheel_diameter>",b"<wheel_diameter>0.067</wheel_diameter>",1),
+            raw.replace(b"<model name=",b" <model name=",1),
+        ]
+        for changed in mutations:
+            self.assertNotEqual(changed,raw)
+            with self.subTest(change=changed[:40]),self.assertRaises(ValueError):
+                sensor_audit.inverse_reach_lidar(changed,source,'tb1',epoch,episode)
+        with self.assertRaises(ValueError):
+            sensor_audit.inverse_reach_lidar(raw,source,'tb2',epoch,episode)
+
+    def test_original_spawn_gate_still_rejects_changed_actual_pose_or_file(self):
+        episode,epoch,_,_,starts = self.fixture()
+        module,_ = sensor_audit.load_spawn_impl()
+        for argument,value in (("-x","3.0"),("-file",str(episode/"drive_model_tb2.sdf"))):
+            altered = copy.deepcopy(starts)
+            argv = altered[0]['argv']; argv[argv.index(argument)+1] = value
+            (episode/"launch.log").write_text("".join("MR3_ORDERED_SHUTDOWN "+json.dumps(row)+"\n" for row in altered))
+            with self.subTest(argument=argument),self.assertRaises(ValueError):
+                module._spawn(episode,epoch,Path.read_bytes,False)
+
+    def test_native_dispatch_conjoins_sensor_and_original_failures(self):
+        episode,_,_,_,_ = self.fixture()
+        (episode/"metadata.json").write_text("{}")
+        for old_pass,sensor_pass in ((True,True),(False,True),(True,False)):
+            calls = []
+            def original(*args,**kwargs):
+                calls.append(kwargs)
+                return {'passed':old_pass,'errors':[] if old_pass else ['original failure']}
+            phase = SimpleNamespace(corrected_audit=original)
+            sensor_audit.attach_native_gate(phase,Path('/source'),'a'*40)
+            with patch.object(sensor_audit,'audit_episode',side_effect=
+                    (None if sensor_pass else ValueError('wrong real sensor rate')),
+                    return_value={'passed':True}):
+                result = phase.corrected_audit(None,None,None,[episode],matrix=True,expected_fault=True)
+            self.assertEqual(result['passed'],old_pass and sensor_pass)
+            self.assertEqual(calls,[{'matrix':True,'expected_fault':True}])
+
+    def test_missing_native_episode_cannot_acquire_sensor_credit(self):
+        with tempfile.TemporaryDirectory() as directory:
+            phase = SimpleNamespace(corrected_audit=lambda *args,**kwargs:{'passed':True,'errors':[]})
+            sensor_audit.attach_native_gate(phase,Path('/source'),'a'*40)
+            self.assertFalse(phase.corrected_audit(None,None,None,[Path(directory)])['passed'])
+
+    def test_missing_metadata_attempt_is_reported_beside_a_complete_sibling(self):
+        with tempfile.TemporaryDirectory() as directory:
+            run = Path(directory)
+            complete = run/'worker0/episode001_open_101'; complete.mkdir(parents=True)
+            missing = run/'worker0/episode002_open_102'; missing.mkdir()
+            (complete/'metadata.json').write_text('{}')
+            phase = SimpleNamespace(corrected_audit=lambda *args,**kwargs:{'passed':True,'errors':[]})
+            sensor_audit.attach_native_gate(phase,Path('/source'),'a'*40)
+            def audit_attempt(path,*args):
+                if path == missing:
+                    raise FileNotFoundError('metadata.json')
+                return {'passed':True}
+            with patch.object(sensor_audit,'audit_episode',side_effect=audit_attempt) as checked:
+                result = phase.corrected_audit(None,None,None,[run])
+            self.assertFalse(result['passed'])
+            self.assertEqual(checked.call_count,2)
+            self.assertEqual({row['directory'] for row in result['reach_sensor_models']},{str(complete),str(missing)})
 
 
 class TraceCollectionTests(unittest.TestCase):
