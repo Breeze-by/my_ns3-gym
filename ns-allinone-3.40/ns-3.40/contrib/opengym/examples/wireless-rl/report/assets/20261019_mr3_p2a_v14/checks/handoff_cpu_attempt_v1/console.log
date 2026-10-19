@@ -1,0 +1,74 @@
+test_central_intent_or_forged_passed_does_not_substitute_delivery_and_witness (test_handoff_contract_v1.HandoffContractTests) ... ok
+test_conflicting_equal_source_and_fixed_disk_excursion_are_not_renewed (test_handoff_contract_v1.HandoffContractTests) ... ok
+test_future_raw_waits_for_both_stream_watermarks_then_peak_is_not_dropped (test_handoff_contract_v1.HandoffContractTests) ... ok
+test_intent_keeps_zero_and_missing_peer_delivery_rejects_translation (test_handoff_contract_v1.HandoffContractTests) ... ok
+test_phase_watermark_binds_exact_delivered_envelope_and_peer (test_handoff_contract_v1.HandoffContractTests) ... ok
+test_qualification_is_distinct_from_immutable_protection (test_handoff_contract_v1.HandoffContractTests) ... ok
+test_real_translation_handoff_needs_applied_seq_and_strict_later_source (test_handoff_contract_v1.HandoffContractTests) ... ok
+test_same_stamp_odom_is_before_actuation_and_cannot_hide_rest_peak (test_handoff_contract_v1.HandoffContractTests) ... ok
+test_source_gap_frame_conflict_and_global_peak_cannot_be_hidden_by_application (test_handoff_contract_v1.HandoffContractTests) ... ok
+test_successor_seq_can_actuate_without_first_seq_deadlock (test_handoff_contract_v1.HandoffContractTests) ... ok
+test_tiny_stored_but_never_applied_then_stop_cannot_reanchor (test_handoff_contract_v1.HandoffContractTests) ... ok
+test_unregistered_or_superseded_actual_target_is_not_an_application_proof (test_handoff_contract_v1.HandoffContractTests) ... ok
+test_bootstrap_cannot_rotate_without_any_protection_witness (test_handoff_adversarial_independent_v1.IndependentHandoffAttacks) ... FAIL
+test_complete_actuation_stream_cannot_hide_a_140ms_hole (test_handoff_adversarial_independent_v1.IndependentHandoffAttacks) ... FAIL
+test_fault_is_absorbing_and_cannot_certify_unprocessed_tail (test_handoff_adversarial_independent_v1.IndependentHandoffAttacks) ... FAIL
+test_first_bad_source_and_healthy_ready_tail_remain_owned (test_handoff_adversarial_independent_v1.IndependentHandoffAttacks) ... FAIL
+test_incomplete_current_source_cannot_authorize_new_rotation (test_handoff_adversarial_independent_v1.IndependentHandoffAttacks) ... FAIL
+test_permanent_stop_cannot_use_requalification_to_recover (test_handoff_adversarial_independent_v1.IndependentHandoffAttacks) ... ok
+test_real_normal_then_new_zero_qualification_can_establish_new_disk (test_handoff_adversarial_independent_v1.IndependentHandoffAttacks) ... ok
+test_same_frame_sequence_does_not_replace_epoch_robot_source_binding (test_handoff_adversarial_independent_v1.IndependentHandoffAttacks) ... FAIL
+test_witness_cannot_begin_at_a_future_actuation_then_restart_H (test_handoff_adversarial_independent_v1.IndependentHandoffAttacks) ... ok
+
+======================================================================
+FAIL: test_bootstrap_cannot_rotate_without_any_protection_witness (test_handoff_adversarial_independent_v1.IndependentHandoffAttacks)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/test_handoff_adversarial_independent_v1.py", line 130, in test_bootstrap_cannot_rotate_without_any_protection_witness
+    with self.assertRaises(h.ContractError):
+AssertionError: ContractError not raised
+
+======================================================================
+FAIL: test_complete_actuation_stream_cannot_hide_a_140ms_hole (test_handoff_adversarial_independent_v1.IndependentHandoffAttacks)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/test_handoff_adversarial_independent_v1.py", line 180, in test_complete_actuation_stream_cannot_hide_a_140ms_hole
+    with self.assertRaises(h.ContractError):
+AssertionError: ContractError not raised
+
+======================================================================
+FAIL: test_fault_is_absorbing_and_cannot_certify_unprocessed_tail (test_handoff_adversarial_independent_v1.IndependentHandoffAttacks)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/test_handoff_adversarial_independent_v1.py", line 155, in test_fault_is_absorbing_and_cannot_certify_unprocessed_tail
+    with self.assertRaises(h.ContractError):
+AssertionError: ContractError not raised
+
+======================================================================
+FAIL: test_first_bad_source_and_healthy_ready_tail_remain_owned (test_handoff_adversarial_independent_v1.IndependentHandoffAttacks)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/test_handoff_adversarial_independent_v1.py", line 170, in test_first_bad_source_and_healthy_ready_tail_remain_owned
+    self.assertIn(first.payload_sha256,retained)
+AssertionError: '3d6a2fe1587c8df14e4bdb4a21487630dacfd36a1af833801ae01f8d15eaada8' not found in "(('publication', 1000000000, 'cef55a1ddeb4b1cb258aec34696d644829c37dddb7592fd8f1a129d5e4beae5d'), ('storage', 1000000000, 'cef55a1ddeb4b1cb258aec34696d644829c37dddb7592fd8f1a129d5e4beae5d'), ('actuation', 1000000000, 'cef55a1ddeb4b1cb258aec34696d644829c37dddb7592fd8f1a129d5e4beae5d'), ('actuation', 1034000000, 'cef55a1ddeb4b1cb258aec34696d644829c37dddb7592fd8f1a129d5e4beae5d'), ('actuation', 1068000000, 'cef55a1ddeb4b1cb258aec34696d644829c37dddb7592fd8f1a129d5e4beae5d'), ('actuation', 1102000000, 'cef55a1ddeb4b1cb258aec34696d644829c37dddb7592fd8f1a129d5e4beae5d'), ('actuation', 1136000000, 'cef55a1ddeb4b1cb258aec34696d644829c37dddb7592fd8f1a129d5e4beae5d'), ('actuation', 1170000000, 'cef55a1ddeb4b1cb258aec34696d644829c37dddb7592fd8f1a129d5e4beae5d'), ('actuation', 1204000000, 'cef55a1ddeb4b1cb258aec34696d644829c37dddb7592fd8f1a129d5e4beae5d'), ('actuation', 1238000000, 'cef55a1ddeb4b1cb258aec34696d644829c37dddb7592fd8f1a129d5e4beae5d'), ('actuation', 1272000000, 'cef55a1ddeb4b1cb258aec34696d644829c37dddb7592fd8f1a129d5e4beae5d'), ('actuation', 1306000000, 'cef55a1ddeb4b1cb258aec34696d644829c37dddb7592fd8f1a129d5e4beae5d'), ('actuation', 1340000000, 'cef55a1ddeb4b1cb258aec34696d644829c37dddb7592fd8f1a129d5e4beae5d'), ('actuation', 1374000000, 'cef55a1ddeb4b1cb258aec34696d644829c37dddb7592fd8f1a129d5e4beae5d'), ('actuation', 1408000000, 'cef55a1ddeb4b1cb258aec34696d644829c37dddb7592fd8f1a129d5e4beae5d'), ('actuation', 1442000000, 'cef55a1ddeb4b1cb258aec34696d644829c37dddb7592fd8f1a129d5e4beae5d'), ('actuation', 1476000000, 'cef55a1ddeb4b1cb258aec34696d644829c37dddb7592fd8f1a129d5e4beae5d'), ('actuation', 1510000000, 'cef55a1ddeb4b1cb258aec34696d644829c37dddb7592fd8f1a129d5e4beae5d'), ('actuation', 1544000000, 'cef55a1ddeb4b1cb258aec34696d644829c37dddb7592fd8f1a129d5e4beae5d'), ('actuation', 1578000000, 'cef55a1ddeb4b1cb258aec34696d644829c37dddb7592fd8f1a129d5e4beae5d'), ('actuation', 1612000000, 'cef55a1ddeb4b1cb258aec34696d644829c37dddb7592fd8f1a129d5e4beae5d'), ('actuation', 1646000000, 'cef55a1ddeb4b1cb258aec34696d644829c37dddb7592fd8f1a129d5e4beae5d'), ('actuation', 1680000000, 'cef55a1ddeb4b1cb258aec34696d644829c37dddb7592fd8f1a129d5e4beae5d'), ('actuation', 1714000000, 'cef55a1ddeb4b1cb258aec34696d644829c37dddb7592fd8f1a129d5e4beae5d'), ('actuation', 1748000000, 'cef55a1ddeb4b1cb258aec34696d644829c37dddb7592fd8f1a129d5e4beae5d'), ('actuation', 1782000000, 'cef55a1ddeb4b1cb258aec34696d644829c37dddb7592fd8f1a129d5e4beae5d'), ('actuation', 1816000000, 'cef55a1ddeb4b1cb258aec34696d644829c37dddb7592fd8f1a129d5e4beae5d'), ('actuation', 1850000000, 'cef55a1ddeb4b1cb258aec34696d644829c37dddb7592fd8f1a129d5e4beae5d'), ('actuation', 1884000000, 'cef55a1ddeb4b1cb258aec34696d644829c37dddb7592fd8f1a129d5e4beae5d'), ('actuation', 1918000000, 'cef55a1ddeb4b1cb258aec34696d644829c37dddb7592fd8f1a129d5e4beae5d'), ('actuation', 1952000000, 'cef55a1ddeb4b1cb258aec34696d644829c37dddb7592fd8f1a129d5e4beae5d'), ('activate', 1980000000, '36d2e9e7d2a7c763379b20124a133e95386576d2ec9682e656aa0e5652449137'), ('actuation', 1986000000, 'cef55a1ddeb4b1cb258aec34696d644829c37dddb7592fd8f1a129d5e4beae5d'), ('fault', 2020000000, 'old disk frame/rest peak before actual handoff'))()[]"
+
+======================================================================
+FAIL: test_incomplete_current_source_cannot_authorize_new_rotation (test_handoff_adversarial_independent_v1.IndependentHandoffAttacks)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/test_handoff_adversarial_independent_v1.py", line 141, in test_incomplete_current_source_cannot_authorize_new_rotation
+    with self.assertRaises(h.ContractError):
+AssertionError: ContractError not raised
+
+======================================================================
+FAIL: test_same_frame_sequence_does_not_replace_epoch_robot_source_binding (test_handoff_adversarial_independent_v1.IndependentHandoffAttacks)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/test_handoff_adversarial_independent_v1.py", line 189, in test_same_frame_sequence_does_not_replace_epoch_robot_source_binding
+    with self.assertRaises(h.ContractError):
+AssertionError: ContractError not raised
+
+----------------------------------------------------------------------
+Ran 21 tests in 0.286s
+
+FAILED (failures=6)

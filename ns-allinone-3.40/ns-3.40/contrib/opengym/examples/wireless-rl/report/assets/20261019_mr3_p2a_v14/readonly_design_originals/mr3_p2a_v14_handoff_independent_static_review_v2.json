@@ -1,0 +1,76 @@
+{
+  "schema": "mr3-p2a-v14-independent-handoff-static-review-v2",
+  "scope": "read-only source audit and author-unexecuted independent CPU attack design",
+  "files": {
+    "handoff_contract_v1.py": {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/handoff_contract_v1.py",
+      "sha256": "4deb5f76441d5db4e1b81970b8d405efcc0fb0ec58d51331eddd479be30cc1a1",
+      "bytes": 29877
+    },
+    "test_handoff_adversarial_independent_v1.py": {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/test_handoff_adversarial_independent_v1.py",
+      "sha256": "a7ef872dfbe9d0812090e8fdda4337a9ba0ee4b742453360a8040911422e6a3b",
+      "bytes": 16292
+    }
+  },
+  "test_functions_defined": 17,
+  "tests_executed_by_author": 0,
+  "production_files_changed": false,
+  "native_or_scientific_consumer_started": false,
+  "native_admission": false,
+  "new_native_budget_authorized_or_requested": false,
+  "original_v13_L1_failure_remains_failure": true,
+  "static_findings": [
+    {
+      "id": "command-lease-not-H",
+      "source_lines": [
+        550,
+        556
+      ],
+      "finding": "Applied nonzero targets only need valid_from<=actual_time<=valid_through; H-sized backup proof validity is not a continuous nonzero command lease.",
+      "obligation": "At every controlled 20ms boundary obtain a fresh guard and triple exact storage ACK before advancing. Without renewal, previously authorized nonzero target must be superseded by all-zero storage at the next boundary and its actual actuation by T+20ms+34ms. H starts at T and includes this delay and backup.",
+      "attack": "test_H_backup_coverage_is_not_a_lease_to_keep_consuming_old_translation",
+      "attack_data": "T+88ms consumes old nonzero target after no renewal or zero storage; complete 34ms actual journal and 20ms causal raw; still before T+H.",
+      "result": "NOT EXECUTED BY AUTHOR"
+    },
+    {
+      "id": "normal-angular-terminal-lineage",
+      "source_lines": [
+        446,
+        550,
+        556
+      ],
+      "finding": "Actual NORMAL pure-rotation proof may carry a new terminal digest, but the stored normal terminal identity updates only when target.v!=0. Ordinary all-zero publication then inherits the superseded translation digest.",
+      "obligation": "Every actually applied command covered by NORMAL must either advance the terminal lineage to its exact proof, or explicitly enforce the identical terminal promise identity before accepting it. The following all-zero qualification must not accept a superseded identity.",
+      "attacks": [
+        "test_actual_normal_rotation_terminal_promise_is_inherited_by_new_disk",
+        "test_superseded_translation_terminal_cannot_replace_actual_rotation_promise"
+      ],
+      "result": "NOT EXECUTED BY AUTHOR"
+    }
+  ],
+  "additional_nonrelaxation_attack": {
+    "test": "test_new_disk_can_keep_old_L1_counterexample_only_with_permanent_diagnostic",
+    "semantics": "40 two-leg .0001m oscillations remain in a fixed reach disk and below .01 raw/chord speed, but cumulative unfiltered path .008m exceeds old .0078 L1 gate; the new-model trace never erases this diagnostic or relabels the old contract outcome."
+  },
+  "root_reported_actual_combined_v2": {
+    "scope": "parent report; root owns execution and evidence",
+    "tests": 34,
+    "failures": 2,
+    "errors": 1,
+    "child_rc": 1,
+    "child_wall_seconds": 1.066165631,
+    "tool_rc": 1,
+    "tool_wall_seconds": 1.579140156,
+    "evidence_directory": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/checks/handoff_cpu_attempt_v2",
+    "result": "lease failure and both terminal-lineage outcomes reproduce; original six defects pass"
+  },
+  "conditional_assumptions_still_external": [
+    "continuous full-planar residual and global H/D stopping bounds",
+    "permanent terminal confinement and correctly witnessed anchor transfer",
+    "raw source physical reference point, metric calibration, and provenance",
+    "actually delivered peer mode/intent bundle and shared current phase",
+    "three exact storage ACKs before physical clock advance and complete actual-actuation receipts"
+  ],
+  "conclusion": "17 independent tests sealed, root actual combined v2 preserved. Two source defects require repair before final CPU closure. No physical or native readiness conclusion."
+}

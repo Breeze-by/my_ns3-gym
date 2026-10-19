@@ -9,7 +9,8 @@
 
 | 文件 | 用途 | 能提供的信用 |
 | --- | --- | --- |
-| [P2A V13](20261019_mr3_p2a_v13.md) | 独立工程资格38/38；fresh16 minimum累计漂移FAIL | 原矩阵FAIL/optional FAIL保留；minimum整轮ineligible、0更新、49身份gone；pilot/验证未启动，工程31596.477593/34000，余2403.522407；现门不改，仅有新安全契约评审 |
+| [P2A V14](20261019_mr3_p2a_v14.md) | 候选安全契约与隔离数学/CPU原型 | 原FAIL保留；生产未启用，无新native/GPU/pilot/验证，候选待验收后实现；预算不变 |
+| [P2A V13](20261019_mr3_p2a_v13.md) | 独立工程资格38/38；fresh16 minimum累计漂移FAIL | 原矩阵FAIL/optional FAIL保留；minimum整轮ineligible、0更新、49身份gone；pilot/验证未启动，工程31596.477593/34000，余2403.522407；现门不改，后续V14候选另列 |
 | [P2A V12](20261019_mr3_p2a_v12.md) | 固定tagged观测周期、等价审计索引与完整新冻结重验准备 | interface/terminal19角色PASS；reset真实速度峰触发原生模型FAIL，余科学角色未提交/跳过；253身份gone，无PPO信用 |
 | [P2A V11](20261019_mr3_p2a_v11.md) | 三处平台入口判据与实际节余分配 | 32步/live/full/peer/information通过，旧drive对观测tag准入FAIL；53身份gone，后三阶段/PPO跳过 |
 | [P2A V10](20261019_mr3_p2a_v10.md) | 精确gzserver真实ELF身份绑定的原生重验 | 32步正常关闭但取证FAIL，49身份gone；后三阶段/PPO跳过 |

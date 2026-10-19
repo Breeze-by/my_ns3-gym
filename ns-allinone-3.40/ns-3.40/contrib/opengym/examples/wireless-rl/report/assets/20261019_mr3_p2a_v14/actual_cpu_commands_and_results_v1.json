@@ -1,0 +1,673 @@
+{
+  "schema": "mr3-v14-actual-cpu-command-index-v1",
+  "opening_commit": "a8e509726fa98cb9db1f01bc655e1b4eb8d63059",
+  "commands": [
+    {
+      "attempt": "geometry_cpu_attempt_v1",
+      "outer_argv": [
+        "rtk",
+        "proxy",
+        "env",
+        "-u",
+        "PYTHONPATH",
+        "PYTHONNOUSERSITE=1",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "/usr/bin/python3",
+        "-B",
+        "/tmp/mr3_p2a_v14_cpu_actual_runner_v1.py",
+        "--output",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/checks/geometry_cpu_attempt_v1",
+        "--cwd",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu",
+        "--source",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/reach_geometry_v1.py",
+        "--source",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/test_reach_geometry_independent_v1.py",
+        "--",
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "unittest",
+        "-v",
+        "test_reach_geometry_independent_v1"
+      ],
+      "shell_display": "rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 -B /tmp/mr3_p2a_v14_cpu_actual_runner_v1.py --output /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/checks/geometry_cpu_attempt_v1 --cwd /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu --source /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/reach_geometry_v1.py --source /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/test_reach_geometry_independent_v1.py -- /usr/bin/python3 -B -m unittest -v test_reach_geometry_independent_v1",
+      "actual_child_argv": [
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "unittest",
+        "-v",
+        "test_reach_geometry_independent_v1"
+      ],
+      "actual_returncode": 0,
+      "actual_child_wait_seconds": "0.246710291",
+      "actual_tool": {
+        "schema": "mr3-root-actual-exec-observation-v1",
+        "tool_chunk_id": "d2002b",
+        "actual_tool_exit_code": 0,
+        "actual_tool_wall_time_seconds": "0.729526235",
+        "observed_child_returncode": 0,
+        "observed_source_unchanged": true,
+        "observed_child_wait_seconds": "0.246710291",
+        "observed_tests": 19,
+        "scope": "Pure CPU geometry attempt v1, fully returned tool and child wait. This binds the source snapshots in this attempt only; later residual functions are not covered by its result. No native engineering or pilot charge."
+      },
+      "source_bindings": [
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/reach_geometry_v1.py",
+          "bytes": 8482,
+          "sha256": "14bb5a9fc663cdc86f640a0a2bd9e8a1d6fdf24ade36ab918ab7fcaa500f1804",
+          "stat": [
+            2051,
+            79061381,
+            8482,
+            1792397070975264362,
+            1792397070975264362
+          ]
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/test_reach_geometry_independent_v1.py",
+          "bytes": 14416,
+          "sha256": "4a541bb171b6d8a929827cf41476cab1d7de80e6c7191d655de75970d07ad66e",
+          "stat": [
+            2051,
+            79061388,
+            14416,
+            1792397195982407676,
+            1792397195982407676
+          ]
+        }
+      ],
+      "scope": "Isolated synthetic CPU; no native/scientific role, GPU or quota change."
+    },
+    {
+      "attempt": "geometry_cpu_attempt_v2",
+      "outer_argv": [
+        "rtk",
+        "proxy",
+        "env",
+        "-u",
+        "PYTHONPATH",
+        "PYTHONNOUSERSITE=1",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "/usr/bin/python3",
+        "-B",
+        "/tmp/mr3_p2a_v14_cpu_actual_runner_v1.py",
+        "--output",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/checks/geometry_cpu_attempt_v2",
+        "--cwd",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu",
+        "--source",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/reach_geometry_v1.py",
+        "--source",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/test_reach_geometry_independent_v1.py",
+        "--source",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/test_reach_geometry_frame_semantics_v1.py",
+        "--source",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/test_pair_model_obligations_v1.py",
+        "--",
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "unittest",
+        "-v",
+        "test_reach_geometry_independent_v1",
+        "test_reach_geometry_frame_semantics_v1",
+        "test_pair_model_obligations_v1"
+      ],
+      "shell_display": "rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 -B /tmp/mr3_p2a_v14_cpu_actual_runner_v1.py --output /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/checks/geometry_cpu_attempt_v2 --cwd /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu --source /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/reach_geometry_v1.py --source /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/test_reach_geometry_independent_v1.py --source /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/test_reach_geometry_frame_semantics_v1.py --source /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/test_pair_model_obligations_v1.py -- /usr/bin/python3 -B -m unittest -v test_reach_geometry_independent_v1 test_reach_geometry_frame_semantics_v1 test_pair_model_obligations_v1",
+      "actual_child_argv": [
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "unittest",
+        "-v",
+        "test_reach_geometry_independent_v1",
+        "test_reach_geometry_frame_semantics_v1",
+        "test_pair_model_obligations_v1"
+      ],
+      "actual_returncode": 0,
+      "actual_child_wait_seconds": "0.356907964",
+      "actual_tool": {
+        "schema": "mr3-root-actual-exec-observation-v1",
+        "tool_chunk_id": "48df54",
+        "actual_tool_exit_code": 0,
+        "actual_tool_wall_time_seconds": "1.015167696",
+        "observed_child_returncode": 0,
+        "observed_source_unchanged": true,
+        "observed_child_wait_seconds": "0.356907964",
+        "observed_tests": 46,
+        "scope": "Pure CPU geometry, independent frame semantics and plant-obligation fixtures; fully returned tool and child wait. No physical assumption, production enablement, native engineering or pilot credit."
+      },
+      "source_bindings": [
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/reach_geometry_v1.py",
+          "bytes": 9567,
+          "sha256": "9af4f85d26e23f6a5771111f2485d2fe26c827b4b9059305d0764ddf19f201d3",
+          "stat": [
+            2051,
+            79061381,
+            9567,
+            1792397351658031250,
+            1792397351658031250
+          ]
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/test_reach_geometry_independent_v1.py",
+          "bytes": 14416,
+          "sha256": "4a541bb171b6d8a929827cf41476cab1d7de80e6c7191d655de75970d07ad66e",
+          "stat": [
+            2051,
+            79061388,
+            14416,
+            1792397195982407676,
+            1792397195982407676
+          ]
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/test_reach_geometry_frame_semantics_v1.py",
+          "bytes": 2893,
+          "sha256": "1140afeb13c87301ac8ee9ea72eb6b422cae928add0bfdd87b3a35397f37e921",
+          "stat": [
+            2051,
+            79061403,
+            2893,
+            1792397383232398693,
+            1792397383232398693
+          ]
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/test_pair_model_obligations_v1.py",
+          "bytes": 15181,
+          "sha256": "1a5927a602ba4a1bd77528b3fe190a5c2ba9a2851618e7933eb68777d87e0aa5",
+          "stat": [
+            2051,
+            79061404,
+            15181,
+            1792397534078021353,
+            1792397534078021353
+          ]
+        }
+      ],
+      "scope": "Isolated synthetic CPU; no native/scientific role, GPU or quota change."
+    },
+    {
+      "attempt": "handoff_cpu_attempt_v1",
+      "outer_argv": [
+        "rtk",
+        "proxy",
+        "env",
+        "-u",
+        "PYTHONPATH",
+        "PYTHONNOUSERSITE=1",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "/usr/bin/python3",
+        "-B",
+        "/tmp/mr3_p2a_v14_cpu_actual_runner_v1.py",
+        "--output",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/checks/handoff_cpu_attempt_v1",
+        "--cwd",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu",
+        "--source",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/handoff_contract_v1.py",
+        "--source",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/test_handoff_contract_v1.py",
+        "--source",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/test_handoff_adversarial_independent_v1.py",
+        "--",
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "unittest",
+        "-v",
+        "test_handoff_contract_v1",
+        "test_handoff_adversarial_independent_v1"
+      ],
+      "shell_display": "rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 -B /tmp/mr3_p2a_v14_cpu_actual_runner_v1.py --output /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/checks/handoff_cpu_attempt_v1 --cwd /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu --source /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/handoff_contract_v1.py --source /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/test_handoff_contract_v1.py --source /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/test_handoff_adversarial_independent_v1.py -- /usr/bin/python3 -B -m unittest -v test_handoff_contract_v1 test_handoff_adversarial_independent_v1",
+      "actual_child_argv": [
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "unittest",
+        "-v",
+        "test_handoff_contract_v1",
+        "test_handoff_adversarial_independent_v1"
+      ],
+      "actual_returncode": 1,
+      "actual_child_wait_seconds": "0.473549311",
+      "actual_tool": {
+        "schema": "mr3-root-actual-exec-observation-v1",
+        "tool_chunk_id": "baf472",
+        "actual_tool_exit_code": 1,
+        "actual_tool_wall_time_seconds": "0.921128361",
+        "observed_child_returncode": 1,
+        "observed_source_unchanged": true,
+        "observed_child_wait_seconds": "0.473549311",
+        "observed_tests": 21,
+        "observed_failures": 6,
+        "observed_errors": 0,
+        "scope": "Pure CPU first handoff and independent attack attempt. Six actual failures are retained with the original source/tests/console; no native engineering or pilot charge, scientific PASS or production enablement."
+      },
+      "source_bindings": [
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/handoff_contract_v1.py",
+          "bytes": 22217,
+          "sha256": "483fa47fba62c0140cf2685bdeb3a2769cf8eef89521e4db05c983a0cf979705",
+          "stat": [
+            2051,
+            79061405,
+            22217,
+            1792397716902205711,
+            1792397716902205711
+          ]
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/test_handoff_contract_v1.py",
+          "bytes": 10455,
+          "sha256": "ae155516b87528a49aa14eb78a1e8b6f3e871ec6d231661fb5dbdb08834fdd4b",
+          "stat": [
+            2051,
+            79061406,
+            10455,
+            1792397716902205711,
+            1792397716902205711
+          ]
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/test_handoff_adversarial_independent_v1.py",
+          "bytes": 9774,
+          "sha256": "c8969e0f8429fc2e39ff24eeb8bd84feed15dd579ae4ece222698d994390d2b9",
+          "stat": [
+            2051,
+            79061445,
+            9774,
+            1792398182777649630,
+            1792398182777649630
+          ]
+        }
+      ],
+      "scope": "Isolated synthetic CPU; no native/scientific role, GPU or quota change."
+    },
+    {
+      "attempt": "calibration_cpu_attempt_v1",
+      "outer_argv": [
+        "rtk",
+        "proxy",
+        "env",
+        "-u",
+        "PYTHONPATH",
+        "PYTHONNOUSERSITE=1",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "/usr/bin/python3",
+        "-B",
+        "/tmp/mr3_p2a_v14_cpu_actual_runner_v1.py",
+        "--output",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/checks/calibration_cpu_attempt_v1",
+        "--cwd",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu",
+        "--source",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/reach_geometry_v1.py",
+        "--source",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/calibration_metric_v1.py",
+        "--source",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/test_calibration_metric_independent_v1.py",
+        "--",
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "unittest",
+        "-v",
+        "test_calibration_metric_independent_v1"
+      ],
+      "shell_display": "rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 -B /tmp/mr3_p2a_v14_cpu_actual_runner_v1.py --output /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/checks/calibration_cpu_attempt_v1 --cwd /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu --source /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/reach_geometry_v1.py --source /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/calibration_metric_v1.py --source /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/test_calibration_metric_independent_v1.py -- /usr/bin/python3 -B -m unittest -v test_calibration_metric_independent_v1",
+      "actual_child_argv": [
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "unittest",
+        "-v",
+        "test_calibration_metric_independent_v1"
+      ],
+      "actual_returncode": 0,
+      "actual_child_wait_seconds": "0.263916581",
+      "actual_tool": {
+        "schema": "mr3-root-actual-exec-observation-v1",
+        "tool_chunk_id": "23a222",
+        "actual_tool_exit_code": 0,
+        "actual_tool_wall_time_seconds": "0.733089323",
+        "observed_child_returncode": 0,
+        "observed_source_unchanged": true,
+        "observed_child_wait_seconds": "0.263916581",
+        "observed_tests": 12,
+        "scope": "Conditional coefficient metric and IEEE rounding CPU tests only; 240 finite-Fraction/FMA fixtures are subcases, not native checks. No source metadata, physical heading calibration, continuous plant or production permission is proved; no native engineering/pilot charge."
+      },
+      "source_bindings": [
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/reach_geometry_v1.py",
+          "bytes": 9567,
+          "sha256": "9af4f85d26e23f6a5771111f2485d2fe26c827b4b9059305d0764ddf19f201d3",
+          "stat": [
+            2051,
+            79061381,
+            9567,
+            1792397351658031250,
+            1792397351658031250
+          ]
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/calibration_metric_v1.py",
+          "bytes": 3188,
+          "sha256": "5034809589cd433b313760d92a977d5e041d098f57e1b53d1e88282ce90b1acf",
+          "stat": [
+            2051,
+            79061446,
+            3188,
+            1792398156703608582,
+            1792398156703608582
+          ]
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/test_calibration_metric_independent_v1.py",
+          "bytes": 10333,
+          "sha256": "c28e828baff2a2030fc769a1fb56fd501a5f3e16683c35aef7972e416230f790",
+          "stat": [
+            2051,
+            79061464,
+            10333,
+            1792398512599699929,
+            1792398512599699929
+          ]
+        }
+      ],
+      "scope": "Isolated synthetic CPU; no native/scientific role, GPU or quota change."
+    },
+    {
+      "attempt": "handoff_cpu_attempt_v2",
+      "outer_argv": [
+        "rtk",
+        "proxy",
+        "env",
+        "-u",
+        "PYTHONPATH",
+        "PYTHONNOUSERSITE=1",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "/usr/bin/python3",
+        "-B",
+        "/tmp/mr3_p2a_v14_cpu_actual_runner_v1.py",
+        "--output",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/checks/handoff_cpu_attempt_v2",
+        "--cwd",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu",
+        "--source",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/handoff_contract_v1.py",
+        "--source",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/test_handoff_contract_v1.py",
+        "--source",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/test_handoff_adversarial_independent_v1.py",
+        "--",
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "unittest",
+        "-v",
+        "test_handoff_contract_v1",
+        "test_handoff_adversarial_independent_v1"
+      ],
+      "shell_display": "rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 -B /tmp/mr3_p2a_v14_cpu_actual_runner_v1.py --output /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/checks/handoff_cpu_attempt_v2 --cwd /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu --source /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/handoff_contract_v1.py --source /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/test_handoff_contract_v1.py --source /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/test_handoff_adversarial_independent_v1.py -- /usr/bin/python3 -B -m unittest -v test_handoff_contract_v1 test_handoff_adversarial_independent_v1",
+      "actual_child_argv": [
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "unittest",
+        "-v",
+        "test_handoff_contract_v1",
+        "test_handoff_adversarial_independent_v1"
+      ],
+      "actual_returncode": 1,
+      "actual_child_wait_seconds": "1.066165631",
+      "actual_tool": {
+        "schema": "mr3-root-actual-exec-observation-v1",
+        "tool_chunk_id": "fe8a81",
+        "actual_tool_exit_code": 1,
+        "actual_tool_wall_time_seconds": "1.579140156",
+        "observed_child_returncode": 1,
+        "observed_source_unchanged": true,
+        "observed_child_wait_seconds": "1.066165631",
+        "observed_tests": 34,
+        "observed_failures": 2,
+        "observed_errors": 1,
+        "scope": "Second pure CPU handoff attempt: the first six attacks pass; backup-H versus command-lease and normal-rotation terminal-lineage defects remain. Original source/tests/console retained. No native engineering/pilot charge or production repair credit."
+      },
+      "source_bindings": [
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/handoff_contract_v1.py",
+          "bytes": 29877,
+          "sha256": "4deb5f76441d5db4e1b81970b8d405efcc0fb0ec58d51331eddd479be30cc1a1",
+          "stat": [
+            2051,
+            79061405,
+            29877,
+            1792398577692318647,
+            1792398577692318647
+          ]
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/test_handoff_contract_v1.py",
+          "bytes": 14906,
+          "sha256": "a2ea05d6d003fd1c3de8c8d5de813dba09edd0ba95b795a464e4dad64996fff4",
+          "stat": [
+            2051,
+            79061406,
+            14906,
+            1792398475134355817,
+            1792398475134355817
+          ]
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/test_handoff_adversarial_independent_v1.py",
+          "bytes": 16292,
+          "sha256": "a7ef872dfbe9d0812090e8fdda4337a9ba0ee4b742453360a8040911422e6a3b",
+          "stat": [
+            2051,
+            79061445,
+            16292,
+            1792398857318280781,
+            1792398857318280781
+          ]
+        }
+      ],
+      "scope": "Isolated synthetic CPU; no native/scientific role, GPU or quota change."
+    },
+    {
+      "attempt": "combined_cpu_attempt_v1",
+      "outer_argv": [
+        "rtk",
+        "proxy",
+        "env",
+        "-u",
+        "PYTHONPATH",
+        "PYTHONNOUSERSITE=1",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "/usr/bin/python3",
+        "-B",
+        "/tmp/mr3_p2a_v14_cpu_actual_runner_v1.py",
+        "--output",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/checks/combined_cpu_attempt_v1",
+        "--cwd",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu",
+        "--source",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/reach_geometry_v1.py",
+        "--source",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/calibration_metric_v1.py",
+        "--source",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/handoff_contract_v1.py",
+        "--source",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/test_reach_geometry_independent_v1.py",
+        "--source",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/test_reach_geometry_frame_semantics_v1.py",
+        "--source",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/test_pair_model_obligations_v1.py",
+        "--source",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/test_calibration_metric_independent_v1.py",
+        "--source",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/test_handoff_contract_v1.py",
+        "--source",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/test_handoff_adversarial_independent_v1.py",
+        "--",
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "unittest",
+        "-v",
+        "test_reach_geometry_independent_v1",
+        "test_reach_geometry_frame_semantics_v1",
+        "test_pair_model_obligations_v1",
+        "test_calibration_metric_independent_v1",
+        "test_handoff_contract_v1",
+        "test_handoff_adversarial_independent_v1"
+      ],
+      "shell_display": "rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 -B /tmp/mr3_p2a_v14_cpu_actual_runner_v1.py --output /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/checks/combined_cpu_attempt_v1 --cwd /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu --source /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/reach_geometry_v1.py --source /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/calibration_metric_v1.py --source /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/handoff_contract_v1.py --source /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/test_reach_geometry_independent_v1.py --source /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/test_reach_geometry_frame_semantics_v1.py --source /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/test_pair_model_obligations_v1.py --source /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/test_calibration_metric_independent_v1.py --source /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/test_handoff_contract_v1.py --source /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/test_handoff_adversarial_independent_v1.py -- /usr/bin/python3 -B -m unittest -v test_reach_geometry_independent_v1 test_reach_geometry_frame_semantics_v1 test_pair_model_obligations_v1 test_calibration_metric_independent_v1 test_handoff_contract_v1 test_handoff_adversarial_independent_v1",
+      "actual_child_argv": [
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "unittest",
+        "-v",
+        "test_reach_geometry_independent_v1",
+        "test_reach_geometry_frame_semantics_v1",
+        "test_pair_model_obligations_v1",
+        "test_calibration_metric_independent_v1",
+        "test_handoff_contract_v1",
+        "test_handoff_adversarial_independent_v1"
+      ],
+      "actual_returncode": 0,
+      "actual_child_wait_seconds": "1.438602974",
+      "actual_tool": {
+        "schema": "mr3-root-actual-exec-observation-v1",
+        "tool_chunk_id": "858956",
+        "actual_tool_exit_code": 0,
+        "actual_tool_wall_time_seconds": "3.7248462289999997",
+        "observed_child_returncode": 0,
+        "observed_source_unchanged": true,
+        "observed_child_wait_seconds": "1.438602974",
+        "observed_tests": 92,
+        "observed_failures": 0,
+        "observed_errors": 0,
+        "scope": "Final combined isolated CPU checks of nine stable source/test files. Earlier FAIL/ERROR snapshots remain unchanged. No actual 20ms renewal, real delivery, continuous plant, native engineering/scientific role, GPU update, policy/95% or production enablement credit."
+      },
+      "source_bindings": [
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/reach_geometry_v1.py",
+          "bytes": 9567,
+          "sha256": "9af4f85d26e23f6a5771111f2485d2fe26c827b4b9059305d0764ddf19f201d3",
+          "stat": [
+            2051,
+            79061381,
+            9567,
+            1792397351658031250,
+            1792397351658031250
+          ]
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/calibration_metric_v1.py",
+          "bytes": 3188,
+          "sha256": "5034809589cd433b313760d92a977d5e041d098f57e1b53d1e88282ce90b1acf",
+          "stat": [
+            2051,
+            79061446,
+            3188,
+            1792398156703608582,
+            1792398156703608582
+          ]
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/handoff_contract_v1.py",
+          "bytes": 30763,
+          "sha256": "07b68d57bce82dbe2f52114254e2be07b211a200da91c8470a68cab074d9349d",
+          "stat": [
+            2051,
+            79061405,
+            30763,
+            1792398954324280353,
+            1792398954324280353
+          ]
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/test_reach_geometry_independent_v1.py",
+          "bytes": 14416,
+          "sha256": "4a541bb171b6d8a929827cf41476cab1d7de80e6c7191d655de75970d07ad66e",
+          "stat": [
+            2051,
+            79061388,
+            14416,
+            1792397195982407676,
+            1792397195982407676
+          ]
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/test_reach_geometry_frame_semantics_v1.py",
+          "bytes": 2893,
+          "sha256": "1140afeb13c87301ac8ee9ea72eb6b422cae928add0bfdd87b3a35397f37e921",
+          "stat": [
+            2051,
+            79061403,
+            2893,
+            1792397383232398693,
+            1792397383232398693
+          ]
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/test_pair_model_obligations_v1.py",
+          "bytes": 15181,
+          "sha256": "1a5927a602ba4a1bd77528b3fe190a5c2ba9a2851618e7933eb68777d87e0aa5",
+          "stat": [
+            2051,
+            79061404,
+            15181,
+            1792397534078021353,
+            1792397534078021353
+          ]
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/test_calibration_metric_independent_v1.py",
+          "bytes": 10333,
+          "sha256": "c28e828baff2a2030fc769a1fb56fd501a5f3e16683c35aef7972e416230f790",
+          "stat": [
+            2051,
+            79061464,
+            10333,
+            1792398512599699929,
+            1792398512599699929
+          ]
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/test_handoff_contract_v1.py",
+          "bytes": 14906,
+          "sha256": "a2ea05d6d003fd1c3de8c8d5de813dba09edd0ba95b795a464e4dad64996fff4",
+          "stat": [
+            2051,
+            79061406,
+            14906,
+            1792398475134355817,
+            1792398475134355817
+          ]
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/test_handoff_adversarial_independent_v1.py",
+          "bytes": 16292,
+          "sha256": "a7ef872dfbe9d0812090e8fdda4337a9ba0ee4b742453360a8040911422e6a3b",
+          "stat": [
+            2051,
+            79061445,
+            16292,
+            1792398857318280781,
+            1792398857318280781
+          ]
+        }
+      ],
+      "scope": "Isolated synthetic CPU; no native/scientific role, GPU or quota change."
+    }
+  ],
+  "note": "Argument vectors reconstructed from the completed runner receipts and the actual root invocations; shell_display is canonical quoting, not an independent execution."
+}

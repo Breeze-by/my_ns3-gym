@@ -1,0 +1,129 @@
+{
+  "schema": "mr3-v14-isolated-cpu-actual-child-wait-v1",
+  "scope": "Mathematics/CPU implementation checks only; no native, simulator, GPU, production enablement, formal scientific role or quota change.",
+  "actual_argv": [
+    "/usr/bin/python3",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "test_handoff_contract_v1",
+    "test_handoff_adversarial_independent_v1"
+  ],
+  "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu",
+  "explicit_env": {
+    "PYTHONNOUSERSITE": "1",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONPATH": null
+  },
+  "actual_returncode": 1,
+  "actual_waited": true,
+  "coordinator_identity": {
+    "pid": 1172912,
+    "parent": 1172911,
+    "process_group": 1172911,
+    "session": 1172911,
+    "start_ticks": 414428130
+  },
+  "child_identity": {
+    "pid": 1172917,
+    "parent": 1172912,
+    "process_group": 1172911,
+    "session": 1172911,
+    "start_ticks": 414428152
+  },
+  "started_monotonic_ns": 4144281525539797,
+  "ended_monotonic_ns": 4144282591705428,
+  "actual_child_wait_seconds": "1.066165631",
+  "source_before": [
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/handoff_contract_v1.py",
+      "bytes": 29877,
+      "sha256": "4deb5f76441d5db4e1b81970b8d405efcc0fb0ec58d51331eddd479be30cc1a1",
+      "stat": [
+        2051,
+        79061405,
+        29877,
+        1792398577692318647,
+        1792398577692318647
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/test_handoff_contract_v1.py",
+      "bytes": 14906,
+      "sha256": "a2ea05d6d003fd1c3de8c8d5de813dba09edd0ba95b795a464e4dad64996fff4",
+      "stat": [
+        2051,
+        79061406,
+        14906,
+        1792398475134355817,
+        1792398475134355817
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/test_handoff_adversarial_independent_v1.py",
+      "bytes": 16292,
+      "sha256": "a7ef872dfbe9d0812090e8fdda4337a9ba0ee4b742453360a8040911422e6a3b",
+      "stat": [
+        2051,
+        79061445,
+        16292,
+        1792398857318280781,
+        1792398857318280781
+      ]
+    }
+  ],
+  "source_after": [
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/handoff_contract_v1.py",
+      "bytes": 29877,
+      "sha256": "4deb5f76441d5db4e1b81970b8d405efcc0fb0ec58d51331eddd479be30cc1a1",
+      "stat": [
+        2051,
+        79061405,
+        29877,
+        1792398577692318647,
+        1792398577692318647
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/test_handoff_contract_v1.py",
+      "bytes": 14906,
+      "sha256": "a2ea05d6d003fd1c3de8c8d5de813dba09edd0ba95b795a464e4dad64996fff4",
+      "stat": [
+        2051,
+        79061406,
+        14906,
+        1792398475134355817,
+        1792398475134355817
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/cpu/test_handoff_adversarial_independent_v1.py",
+      "bytes": 16292,
+      "sha256": "a7ef872dfbe9d0812090e8fdda4337a9ba0ee4b742453360a8040911422e6a3b",
+      "stat": [
+        2051,
+        79061445,
+        16292,
+        1792398857318280781,
+        1792398857318280781
+      ]
+    }
+  ],
+  "source_unchanged": true,
+  "console": {
+    "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v14/checks/handoff_cpu_attempt_v2/console.log",
+    "bytes": 6998,
+    "sha256": "92e165f86a8b27a8195b64a72181a83efaafa6b49f6d805eef77affc3ccb6086",
+    "stat": [
+      2051,
+      79061480,
+      6998,
+      1792398887544489424,
+      1792398887544489424
+    ]
+  },
+  "passed": false,
+  "native_admission": false
+}

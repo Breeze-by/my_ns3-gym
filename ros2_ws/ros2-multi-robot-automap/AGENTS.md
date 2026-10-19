@@ -1,8 +1,8 @@
 # ROS component memory — MR3
 
-2026-10-19：P2A.0已验收，P2A未完成。V13运行时冻结`0063aa233ba3008ddcc1eb09ea8068112eea3965`完成独立26+4+8=38/38工程资格，原矩阵时间FAIL及optional覆盖FAIL保留。fresh16 minimum随后因tb3整段累计路径.007800136333791129>.0078m而真实FAIL；瞬时速度未越.01，整轮ineligible，eligible训练决策/API记录/优化更新均0，49保存PID/start均gone。pilot与三场final-only未启动，P2B/gateway未启动。
+2026-10-19：P2A.0已验收，P2A未完成。用户已批准安全契约数学/CPU重设计；V14提交固定anchor disk、普通运动/过渡的残差与终端reach、实际模式交付/actuation交接的候选合同及隔离CPU原型。候选待单独验收，当前生产仍执行原合同；本轮无新native/GPU/pilot/验证，P2B/gateway未启动。见[V14候选与验证](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v14.md)。
 
-用户已批准工程累计34000墙秒，当前31596.4775930946018、余2403.5224069053982；pilot1870决策/2905.9547395464029墙秒及验证额度未动。安全/任务/源龄/接触门不变，无新native重试。下一步仅有安全契约CPU/math重设计评审，坐标/连续模型/真实执行交接未闭合，不能seal或启动native。见[V13完整结果](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v13.md)。
+工程仍已用31596.4775930946018/34000墙秒，余2403.5224069053982；pilot1870决策/2905.9547395464029墙秒及三场final-only额度未动。旧V13同冻结独立38/38仅有原工程信用，原矩阵/optional/minimum FAIL保留；minimum整轮ineligible、0 eligible/0更新。详见[V13原始结果](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v13.md)。
 
 Follow `/home/zhuyulab/ns3-workspace/AGENTS.md`. Read the shared
 `ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/RESEARCH_PLAN.md`

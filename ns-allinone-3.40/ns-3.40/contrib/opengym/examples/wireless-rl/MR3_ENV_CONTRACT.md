@@ -1,5 +1,7 @@
 # MR3 环境与采样契约 v2（P2A.0准备修订）
 
+2026-10-19：[V14候选科学合同](report/assets/20261019_mr3_p2a_v14/scientific_contract_candidate_v1.md)已完成数学/隔离CPU准备，待单独验收。本文件当前生产规范（含原整段累计路径门）未被替换；无新原生或训练信用，旧FAIL保留。
+
 2026-10-17用户要求继续完成P2A.0。下列v3快照、v2张量、机器人导航图合成、最终速度门及
 `mr3-paired-joint-feedback-drive-v1`及`mr3-drive-target-consumed-v1`实际目标存储相位为本次新接口，
 须由新冻结原生矩阵验证；不继承W7或旧P2A的成绩。旧任务指标、reward及20ms评价器相位门禁保持。
