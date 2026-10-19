@@ -10,6 +10,7 @@ from decimal import Decimal
 import hashlib
 import json
 from pathlib import Path
+import shlex
 import types
 import subprocess
 
@@ -32,6 +33,15 @@ SCHEMA_BUILD_BRIDGE = "mr3-reach-native-build-evidence-bridge-v1"
 V15_WAIT_SCHEMA = "mr3-v15-finite-preparation-actual-child-wait-v1"
 V15_BUILD_ARGV = ["/bin/bash", "-c", "source /opt/ros/humble/setup.bash; exec /usr/bin/python3 /usr/bin/colcon build --symlink-install --packages-select multi_robot --event-handlers console_direct+ --cmake-args -DBUILD_TESTING=ON"]
 V15_VERIFY_SCRIPT = WIRELESS / "report/assets/20261019_mr3_p2a_v15/verify_preparation_v1.py"
+V15_FLAGS_ARCHIVE = WIRELESS / "report/assets/20261019_mr3_p2a_v15/checks/static_preparation_attempt_v2/actual_compile_flags.make"
+DRIVER_FLAGS = Path("ros2_ws/ros2-multi-robot-automap/build/multi_robot/CMakeFiles/mr3_gazebo_diff_drive.dir/flags.make")
+DRIVER_DEFINITIONS = {
+    "MR3_DRIVE_SOURCE_SHA256":"compiled_source_sha256",
+    "MR3_DRIVE_HEADER_SHA256":"compiled_header_sha256",
+    "MR3_DRIVE_HELPER_SHA256":"compiled_helper_sha256",
+    "MR3_DRIVE_TARGET_SHA256":"compiled_target_contract_sha256",
+    "MR3_ODOMETRY_JSON_HEADER_SHA256":"compiled_odometry_json_sha256",
+    "MR3_DRIVE_FEED_HEADER_SHA256":"compiled_drive_feed_sha256"}
 ROBOTS = ("tb1", "tb2", "tb3")
 BINARY_ROLES = {"driver", "observer", "ray_box", "ode", "smoother_core",
                 "smoother_executable", "odometry_recorder_executable",
@@ -163,8 +173,10 @@ def verify_build_bridge(bridge_path, freeze, bound, *, root=WORKSPACE, read=None
     """Revalidate preserved V15 execution against the current actual driver ELF.
 
     This bridge is not a new build receipt. Its command row must be the exact
-    recorded original command/returncode; four original artifacts and console
-    bytes remain frozen inputs. A current driver bridge is mandatory, while
+    recorded original command/returncode; original artifacts, compiler flags
+    and console bytes remain frozen inputs. CMake is bound by the actual build
+    source inventory, not invented as an entry of the old Python/CPP/HPP-only
+    manifest. A current driver bridge is mandatory, while
     unchanged historical smoother/corrector receipts keep their original gates.
     """
     module, _ = load_implementation(root)
@@ -228,19 +240,61 @@ def verify_build_bridge(bridge_path, freeze, bound, *, root=WORKSPACE, read=None
     original_sources = {s["path"]:s for s in build["source_before"]}
     manifest_sources = {s["path"]:s for s in manifest["sources"]}
     required = [fields[k] for k in ("compiled_source_sha256","compiled_drive_feed_sha256")]
-    cmake = Path(root)/"ros2_ws/ros2-multi-robot-automap/src/multi_robot/CMakeLists.txt"
-    required.append({"path":str(cmake),"sha256":sha(read(cmake))})
     for spec in required:
         source_path = Path(spec["path"])
         source_path = source_path if source_path.is_absolute() else Path(root)/source_path
         name = str(source_path)
         require(name in original_sources and name in manifest_sources
-                and original_sources[name]["sha256"] == manifest_sources[name]["sha256"] == spec["sha256"],
-                "changed native source/CMake is absent from the original actual build and ELF manifest")
+                and original_sources[name]["sha256"] == manifest_sources[name]["sha256"] == spec["sha256"]
+                and original_sources[name]["bytes"] == manifest_sources[name]["bytes"] == len(read(source_path)),
+                "changed native source/feed header is absent from the original actual build and ELF manifest")
+    cmake = Path(root)/"ros2_ws/ros2-multi-robot-automap/src/multi_robot/CMakeLists.txt"
+    cmake_raw = read(cmake)
+    require(str(cmake) in original_sources
+            and original_sources[str(cmake)]["sha256"] == sha(cmake_raw)
+            and original_sources[str(cmake)]["bytes"] == len(cmake_raw),
+            "CMake is not bound by the original unchanged actual build and current frozen bytes")
+
+    archive_spec = bridge["compiler_flags_archive"]
+    require(archive_spec["path"] == str(Path(root)/V15_FLAGS_ARCHIVE),
+            "compiler flags archive is not the original canonical V15 artifact")
+    archived_flags = frozen_artifact(archive_spec,freeze,root,read)
+    flags = manifest["compiler_flags"]
+    flags_path = Path(root)/DRIVER_FLAGS
+    require(flags["path"] == str(flags_path) and flags["real_path"] == str(flags_path.resolve(strict=True)),
+            "compiler flags manifest does not name the current actual driver flags.make")
+    require(sha(archived_flags) == flags["sha256"] and len(archived_flags) == flags["bytes"]
+            and read(flags_path) == archived_flags,
+            "archived compiler flags, original ELF manifest and current actual flags differ")
+    assignments = {}
+    for label in ("CXX_DEFINES", "CXX_FLAGS"):
+        lines = [line.split(" = ",1)[1] for line in archived_flags.decode("utf-8").splitlines()
+                 if line.startswith(label+" = ")]
+        require(len(lines) == 1, "compiler flags assignment is missing or repeated: "+label)
+        assignments[label] = shlex.split(lines[0])
+    tokens = assignments["CXX_DEFINES"]+assignments["CXX_FLAGS"]
+    for macro, field in DRIVER_DEFINITIONS.items():
+        definitions = [token for token in tokens if token.split("=",1)[0] == "-D"+macro]
+        require(definitions == ['-D'+macro+'="'+fields[field]["sha256"]+'"']
+                and "-U"+macro not in tokens,
+                "actual compiler flags do not bind exactly one current native source SHA: "+macro)
+    options = assignments["CXX_FLAGS"]
+    require(options.count("-fno-fast-math") == 1 and options.count("-ffp-contract=off") == 1
+            and not any(token in ("-ffast-math", "-Ofast")
+                        or (token.startswith("-ffp-contract=") and token != "-ffp-contract=off")
+                        for token in tokens),
+            "actual driver compiler flags violate no-fast-math/fp-contract=off")
     if own_reader:
         read.finish()
     return {"schema":SCHEMA_BUILD_BRIDGE,"passed":True,"bridge_sha256":sha(raw),
             "original_wait_seconds":durations,"driver_sha256":driver["sha256"],
+            "source_scope":{"cpp_and_feed_header":"actual_build_before_after AND actual_ELF_manifest.sources",
+                "cmake":"actual_build_before_after AND current_frozen_bytes; not required in old manifest.sources",
+                "cmake_present_in_original_manifest":str(cmake) in manifest_sources},
+            "compiler_flags_archive":{"path":archive_spec["path"],"sha256":sha(archived_flags),"bytes":len(archived_flags)},
+            "actual_compiler_flags":{"path":str(flags_path),"sha256":sha(archived_flags),"bytes":len(archived_flags)},
+            "compiled_source_fields":sorted(DRIVER_DEFINITIONS.values()),
+            "numeric_compile_options":["-fno-fast-math","-ffp-contract=off"],
             "new_build_executed":False,"native_admission":False}
 
 

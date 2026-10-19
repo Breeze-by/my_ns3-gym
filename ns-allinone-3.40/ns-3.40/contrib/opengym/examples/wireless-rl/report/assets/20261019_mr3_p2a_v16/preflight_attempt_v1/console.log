@@ -1,0 +1,18 @@
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+Traceback (most recent call last):
+  File "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v16/preflight_v1.py", line 25, in <module>
+    identity = native_custody_reach.verify_binding(ROOT, args.freeze, plan['custody_binding'])
+  File "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/native_custody_reach.py", line 362, in verify_binding
+    result = module.verify_binding(root, freeze, binding_path)
+  File "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/native_custody.py", line 279, in verify_binding
+    bound = load_binding(binding_path, freeze, root=root, read=read)
+  File "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/native_custody_reach.py", line 276, in load_binding
+    bridges.append(verify_build_bridge(receipt_path,freeze,bound,root=root,read=bound["reader"]))
+  File "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/native_custody_reach.py", line 205, in verify_build_bridge
+    require(check["actual_argv"] == ["/usr/bin/python3","-B",verifier,bridge["manifest_result"]["path"]]
+  File "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/native_custody_reach.py", line 71, in require
+    raise ValueError(message)
+ValueError: manifest lacks its actual successful V15 preparation producer wait

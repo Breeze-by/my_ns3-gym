@@ -8,7 +8,7 @@
   "final_required": [
     "entry_cpu_attempt_v1",
     "independent_replay_cpu_attempt_v1",
-    "qualification_cpu_attempt_v4"
+    "qualification_cpu_attempt_v5"
   ],
   "runs": [
     {
@@ -165,6 +165,32 @@
       "actual_returncode": 0,
       "passed": true,
       "actual_child_wait_seconds": "17.220292026",
+      "actual_argv": [
+        "/usr/bin/env",
+        "CUDA_VISIBLE_DEVICES=",
+        "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+        "-B",
+        "-m",
+        "unittest",
+        "mr3_learning.tests.test_native_custody_reach",
+        "mr3_learning.tests.test_audit_reach_cadence",
+        "mr3_learning.tests.test_reach_qualification",
+        "mr3_learning.tests.test_reach_controlled_dispatch",
+        "mr3_learning.tests.test_audit_reach_ppo",
+        "mr3_learning.tests.test_reach_training_admission",
+        "mr3_learning.tests.test_reach_policy_chain",
+        "-v"
+      ],
+      "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+      "source_unchanged": true
+    },
+    {
+      "name": "qualification_cpu_attempt_v5",
+      "receipt": "checks/qualification_cpu_attempt_v5/actual_wait.json",
+      "receipt_sha256": "f1f846437457fdfd2571fd38bbcc8d790b6d94156be87dd9d7d466a2a89b00f9",
+      "actual_returncode": 0,
+      "passed": true,
+      "actual_child_wait_seconds": "18.372505006",
       "actual_argv": [
         "/usr/bin/env",
         "CUDA_VISIBLE_DEVICES=",

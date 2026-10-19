@@ -1,0 +1,33 @@
+{
+  "schema": "mr3-reach-native-build-evidence-bridge-v1",
+  "safety_contract": "mr3-reach-v1",
+  "passed": true,
+  "scope": "existing-v15-build-revalidated; no-new-build",
+  "commands": [
+    {
+      "argv": [
+        "/bin/bash",
+        "-c",
+        "source /opt/ros/humble/setup.bash; exec /usr/bin/python3 /usr/bin/colcon build --symlink-install --packages-select multi_robot --event-handlers console_direct+ --cmake-args -DBUILD_TESTING=ON"
+      ],
+      "returncode": 0,
+      "observed_returncode": 0
+    }
+  ],
+  "actual_wait": {
+    "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v15/checks/final_ros_build_attempt_v1/actual_wait.json",
+    "sha256": "3f62c8705d2674b3d96e9fe700eb04412f40d0202ea31bb6d865794e5213a8a0"
+  },
+  "manifest_actual_wait": {
+    "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v15/checks/static_preparation_attempt_v2/actual_wait.json",
+    "sha256": "9255175fa3a1e1702f4787f7d549c3cff2d9e1b07915cea84c2c7b32e656b147"
+  },
+  "manifest_result": {
+    "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v15/checks/static_preparation_attempt_v2/result.json",
+    "sha256": "4b9fec640dc356e0531a4ce713f865d721c3695d3fe2260e3785869e44518597"
+  },
+  "manifest": {
+    "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v15/checks/static_preparation_attempt_v2/source_binary_manifest.json",
+    "sha256": "03109c805c019055353f7bee170b44e3558c8a03f9753e2cf7e48aebdc9af74f"
+  }
+}

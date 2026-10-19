@@ -13,7 +13,7 @@ from mr3_learning import native_custody_reach as custody
 from mr3_learning.reach_preparation import build_plan, dump, sha
 
 parser = argparse.ArgumentParser(description=__doc__)
-parser.add_argument('--revision', type=int, default=3)
+parser.add_argument('--revision', type=int, default=5)
 args = parser.parse_args()
 assert args.revision >= 2
 
@@ -34,9 +34,22 @@ bridge = {'schema': custody.SCHEMA_BUILD_BRIDGE, 'safety_contract': custody.CONT
     'actual_wait': spec(actual_wait),
     'manifest_actual_wait': spec(prior/'static_preparation_attempt_v2/actual_wait.json'),
     'manifest_result': spec(prior/'static_preparation_attempt_v2/result.json'),
-    'manifest': spec(prior/'static_preparation_attempt_v2/source_binary_manifest.json')}
-bridge_path = A/'native_build_evidence_bridge_v1.json'
-assert json.loads(bridge_path.read_text()) == bridge
+    'manifest': spec(prior/'static_preparation_attempt_v2/source_binary_manifest.json'),
+    'compiler_flags_archive': spec(prior/'static_preparation_attempt_v2/actual_compile_flags.make')}
+for key in ('actual_wait','manifest_actual_wait','manifest_result','manifest','compiler_flags_archive'):
+    bridge[key]['path'] = str((ROOT/bridge[key]['path']).resolve())
+manifest_wait = json.loads(Path(bridge['manifest_actual_wait']['path']).read_text())
+manifest_result = json.loads(Path(bridge['manifest_result']['path']).read_text())
+assert manifest_wait['actual_argv'][-1] == bridge['manifest_result']['path']
+assert manifest_result['source_manifest']['path'] == bridge['manifest']['path']
+manifest_flags = json.loads(Path(bridge['manifest']['path']).read_text())['compiler_flags']
+assert bridge['compiler_flags_archive']['sha256'] == manifest_flags['sha256']
+assert Path(bridge['compiler_flags_archive']['path']).read_bytes() == Path(manifest_flags['path']).read_bytes()
+bridge_path = A/'native_build_evidence_bridge_v3.json'
+if bridge_path.exists():
+    assert json.loads(bridge_path.read_text()) == bridge
+else:
+    dump(bridge_path,bridge)
 binding = json.loads((W/'report/assets/20261019_mr3_p2a_v13/native_custody_binding.json').read_text())
 binding.update(schema=custody.SCHEMA_BINDING, safety_contract=custody.CONTRACT,
                execution_phase_protocol=custody.PROTOCOL)
@@ -117,6 +130,13 @@ plan['supersedes_unexecuted_draft'] = {'path':str(A/'predeclared_plan_v1.json'),
 plan['supersedes_unexecuted_archive_draft'] = {'path':str(A/'predeclared_plan_v2.json'),
     'sha256':sha(A/'predeclared_plan_v2.json'),
     'reason':'Complete closed episode archive inventory and failure-receipt preservation added before any freeze/native work; original revision2 retained, never executed.'}
+plan['supersedes_failed_preflight_plan'] = {'path':str(A/'predeclared_plan_v3.json'),
+    'sha256':sha(A/'predeclared_plan_v3.json'),
+    'freeze':'1833b8d40144e25149a9df0fd2196eaeb491e65f',
+    'reason':'CPU preflight failed before any native launch: bridge declaration used relative paths although original manifest command/result recorded absolute paths. Preserve failed bridge/plan; new bridge uses exact original absolute identities, unchanged strict predicates.'}
+plan['supersedes_unexecuted_build_scope_draft'] = {'path':str(A/'predeclared_plan_v4.json'),
+    'sha256':sha(A/'predeclared_plan_v4.json'),
+    'reason':'Read-only original evidence inspection before any new freeze/native run established the V15 ELF manifest did not inventory CMake. Bind CMake to its real build before/after and current freeze, and add the real archived/current compiler flags conjunction; never invent a missing old manifest entry.'}
 from mr3_learning.reach_policy_chain import stage_spec
 for name in plan['policy_stages']:
     stage_spec(plan,plan_path,Path(qualification),name)
