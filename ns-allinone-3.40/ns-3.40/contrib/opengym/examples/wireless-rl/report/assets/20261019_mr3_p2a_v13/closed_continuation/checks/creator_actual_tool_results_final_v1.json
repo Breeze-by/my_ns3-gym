@@ -1,0 +1,69 @@
+{
+  "scope": "Original creator exec/write_stdin tool return objects for CPU packing, saved after actual creator final exit0. Each tool wall is only that tool call; final poll wall is not total pack phase. Full external phase start/end remain unknown, and childwait is separately attributable.",
+  "actual_pack_initial_tool": {
+    "chunk_id": "022036",
+    "wall_time_seconds": 1.00114705,
+    "session_id": 11480,
+    "original_token_count": 0,
+    "output": ""
+  },
+  "actual_pack_poll_tools": [
+    {
+      "chunk_id": "3bedcd",
+      "wall_time_seconds": 10.000505144,
+      "session_id": 11480,
+      "original_token_count": 0,
+      "output": ""
+    },
+    {
+      "chunk_id": "abaf74",
+      "wall_time_seconds": 5.000692292,
+      "session_id": 11480,
+      "original_token_count": 0,
+      "output": ""
+    },
+    {
+      "chunk_id": "ca5fae",
+      "wall_time_seconds": 10.000805248,
+      "session_id": 11480,
+      "original_token_count": 0,
+      "output": ""
+    },
+    {
+      "chunk_id": "c1a190",
+      "wall_time_seconds": 10.001236818,
+      "session_id": 11480,
+      "original_token_count": 0,
+      "output": ""
+    },
+    {
+      "chunk_id": "4e674b",
+      "wall_time_seconds": 0.000021298,
+      "exit_code": 0,
+      "original_token_count": 565,
+      "output": "{\"scope\": \"Actual CPU archive child wait only, not scientific/native cost or creator tool metadata.\", \"actual_argv\": [\"/usr/bin/python3\", \"-B\", \"/tmp/mr3_p2a_v13_continuation_closed_packet_attempt_v1/checks/pack_cpu.py\", \"--selection\", \"/tmp/mr3_p2a_v13_continuation_closed_packet_attempt_v1/checks/root_closed_selection.json\", \"--output\", \"/tmp/mr3_p2a_v13_continuation_closed_packet_attempt_v1\"], \"coordinator_identity\": {\"pid\": 1148282, \"start_ticks\": 413981482, \"parent\": 1148281, \"process_group\": 1148281, \"session\": 1148281}, \"child_identity\": {\"pid\": 1148285, \"start_ticks\": 413981507, \"parent\": 1148282, \"process_group\": 1148281, \"session\": 1148281}, \"identity_capture_missing\": false, \"started_wall_monotonic_ns\": 4139815075383435, \"ended_wall_monotonic_ns\": 4140055220546431, \"actual_child_wait_wall_seconds\": \"240.145162996\", \"actual_child_wait_wall_nanoseconds\": 240145162996, \"actual_wait_returncode\": 0, \"wait_exceptions\": [], \"original_script\": {\"path\": \"/tmp/mr3_p2a_v13_incremental_pack_v1.py\", \"bytes\": 13825, \"sha256\": \"4cb98f6e0b4ab06bd5f0faa45bc343ccd644c5f2feeb109ded60595f383150a5\"}, \"original_selection\": {\"path\": \"/tmp/mr3_p2a_v13_continuation_closed_selection_v1.json\", \"bytes\": 117303, \"sha256\": \"fe3c8ad0a4a5ee8ee367863694a24ff4e4c42936c1a21e2d2f622b0d75dbec78\"}, \"copied_script\": {\"path\": \"/tmp/mr3_p2a_v13_continuation_closed_packet_attempt_v1/checks/pack_cpu.py\", \"bytes\": 13825, \"sha256\": \"4cb98f6e0b4ab06bd5f0faa45bc343ccd644c5f2feeb109ded60595f383150a5\"}, \"copied_selection\": {\"path\": \"/tmp/mr3_p2a_v13_continuation_closed_packet_attempt_v1/checks/root_closed_selection.json\", \"bytes\": 117303, \"sha256\": \"fe3c8ad0a4a5ee8ee367863694a24ff4e4c42936c1a21e2d2f622b0d75dbec78\"}, \"console\": {\"path\": \"/tmp/mr3_p2a_v13_continuation_closed_packet_attempt_v1/checks/pack.log\", \"bytes\": 1613, \"sha256\": \"69e84ed47b11290188db51a909a89a172cc643ffd2342ff27dc902733a3ed47d\"}, \"manifest\": {\"path\": \"/tmp/mr3_p2a_v13_continuation_closed_packet_attempt_v1/manifest.json\", \"bytes\": 2955925, \"sha256\": \"c0ce1e52e2132408c42ca99d7e6e0661259f67abc52055d2c8729cdbb87f61ee\"}, \"creator_actual_tool_returncode\": null, \"creator_actual_tool_metadata_scope\": \"Caller saves original actual tool results separately; never inferred from this child wait.\"}\n"
+    }
+  ],
+  "actual_prelaunch_check_tool": {
+    "chunk_id": "ce1d97",
+    "wall_time_seconds": 1.015730158,
+    "exit_code": 0,
+    "original_token_count": 29,
+    "output": "Approved selection SHA and all4296 preview source stats unchanged; exact0063 clean; no origin equality requirement.\n"
+  },
+  "prepack_selection_initial_tool": {
+    "chunk_id": "5ea474",
+    "wall_time_seconds": 1.001612858,
+    "session_id": 84510,
+    "original_token_count": 0,
+    "output": ""
+  },
+  "prepack_selection_final_tool": {
+    "chunk_id": "cc3c18",
+    "wall_time_seconds": 1.115693172,
+    "exit_code": 0,
+    "original_token_count": 381,
+    "output": "{\n  \"selection\": {\n    \"path\": \"/tmp/mr3_p2a_v13_continuation_closed_selection_v1.json\",\n    \"bytes\": 117303,\n    \"sha256\": \"fe3c8ad0a4a5ee8ee367863694a24ff4e4c42936c1a21e2d2f622b0d75dbec78\",\n    \"stat\": [\n      2051,\n      76647138,\n      117303,\n      1792394350155678973,\n      1792394350155678973\n    ]\n  },\n  \"inventory\": {\n    \"path\": \"/tmp/mr3_p2a_v13_continuation_prepack_inventory_v1.json\",\n    \"bytes\": 3365460,\n    \"sha256\": \"b089957d8d68f172c5b025ddbed060a5a57bfd981f263ec9ee9a1f332ab656ed\",\n    \"stat\": [\n      2051,\n      76647139,\n      3365460,\n      1792394351457792249,\n      1792394351457792249\n    ]\n  },\n  \"source_absence_proof\": {\n    \"path\": \"/tmp/mr3_p2a_v13_continuation_prepack_source_absence_proof_v1.json\",\n    \"bytes\": 248859,\n    \"sha256\": \"616ecb2ded447adfbf0acdfa8066975aafbdb71d68b47326cfceb091eda87e86\",\n    \"stat\": [\n      2051,\n      76647137,\n      248859,\n      1792394350134677145,\n      1792394350134677145\n    ]\n  },\n  \"file_count\": 4296,\n  \"raw_bytes\": 4343294556,\n  \"counts\": {\n    \"deadline_closed_evidence\": 37,\n    \"qualification_closed_evidence\": 5,\n    \"minimum_closed_evidence\": 9,\n    \"deadline_closed_runtime\": 3841,\n    \"minimum_closed_runtime\": 320,\n    \"external_actual_closed\": 24,\n    \"outside_git_closed_execution\": 4,\n    \"historical_cpu_preparation\": 34,\n    \"historical_bound_dependencies\": 5,\n    \"original_base_plan\": 1,\n    \"cpu_control_originals\": 4,\n    \"archiver_preparation\": 8,\n    \"archive_prepack_checks\": 2,\n    \"archive_cpu_control_failure\": 2\n  }\n}\n"
+  },
+  "creator_external_total_phase_wall_seconds": null
+}

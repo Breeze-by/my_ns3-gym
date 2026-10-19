@@ -1,0 +1,67 @@
+{
+  "schema": "mr3-p2a-external-root-accounting-v1",
+  "freeze": "0063aa233ba3008ddcc1eb09ea8068112eea3965",
+  "phase": "minimum",
+  "budget_pool": "engineering",
+  "engineering_ceiling_wall_seconds": "34000",
+  "prior_used_wall_seconds": "30970.9060997366018",
+  "gross_through_post_final_wait_observation_seconds": "624.763228505",
+  "complete_observation_tool_wall_seconds": "0.808264853",
+  "charged_wall_seconds": "625.571493358",
+  "cumulative_used_wall_seconds": "31596.4775930946018",
+  "remaining_wall_seconds": "2403.5224069053982",
+  "total_phase_wall_allocation_seconds": "900",
+  "within_allocation": true,
+  "cumulative_within_ceiling": true,
+  "accounted_through_wall_monotonic_ns": 4139109480039990,
+  "final_closure_passed": true,
+  "execution_passed": false,
+  "basis": [
+    {
+      "path": "/tmp/mr3_p2a_v13_preparation_qualification_tail_accounting_root_v1.json",
+      "bytes": 4320,
+      "sha256": "4404e47fda7d59d71b15b59b95e5fb218607bf5e1e9a663623136099282caeba"
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v13/predeclared_plan_v13.json",
+      "bytes": 138927,
+      "sha256": "15d1ec389105e45a445871b069e5b01ec49ffa609e1cb0318bb5246b4cd6ec0d"
+    },
+    {
+      "path": "/tmp/mr3_p2a_v13_ppo_minimum_evidence_v3/summary.json",
+      "bytes": 59604,
+      "sha256": "816c4686d6ebc7a69bc69f6cf16f5705ab33026bee806cca8dcd41c9eb311e2a"
+    },
+    {
+      "path": "/tmp/mr3_p2a_v13_ppo_minimum_outer_wait_v3.json",
+      "bytes": 1488,
+      "sha256": "9e1cfda56d7923bafb0d165c440017f769a307ae16fe692c0648ad9da01ae231"
+    },
+    {
+      "path": "/tmp/mr3_p2a_v13_ppo_minimum_final_absence_v3.json",
+      "bytes": 15331,
+      "sha256": "50c78bd3cf4305df8cdc9a6b8b7fc454d116c90ed964fb3e2ca9e745bb7d9234"
+    },
+    {
+      "path": "/tmp/mr3_p2a_v13_ppo_minimum_root_actual_tool_waits_v3.json",
+      "bytes": 6051,
+      "sha256": "6c7693e1da677992fa0f7f0f327ab3b971e60dbd1aef7ccc871b44ca8c5ceb64"
+    },
+    {
+      "path": "/tmp/mr3_p2a_v13_ppo_minimum_root_wait_observation_v3.json",
+      "bytes": 14648,
+      "sha256": "bbf4c0b8a3e9637cee3bd248e917236e744ca25d91825659c12c5caf68e868ec"
+    },
+    {
+      "path": "/tmp/mr3_p2a_v13_ppo_minimum_root_observation_actual_tool_wait_v3.json",
+      "bytes": 2497,
+      "sha256": "06ee1dcc79296b61e283faa2e5e05b3d8eedc87a6d90b37ae9d9eacbe4d14bea"
+    },
+    {
+      "path": "/tmp/mr3_p2a_v13_ppo_minimum_balance_v3.json",
+      "bytes": 1922,
+      "sha256": "8104ba03f0148367fe9325febd1e0f3bad4d698c9ba49bf4ea4fc2b8ce0d3980"
+    }
+  ],
+  "scope": "Failed minimum is fully charged including actual outer/final wait and root observation; only49-identity closure passes. Genuine settled_turn_model_failure retained,0training updates; pilot/validation unstarted and their original quotas unchanged. No failed full/input scientific audit is fabricated because they were not submitted."
+}

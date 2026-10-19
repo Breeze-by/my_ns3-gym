@@ -1,0 +1,82 @@
+{
+  "schema": "mr3-p2a-external-root-accounting-v1",
+  "freeze": "0063aa233ba3008ddcc1eb09ea8068112eea3965",
+  "phase": "deadline_completion",
+  "budget_pool": "engineering",
+  "engineering_ceiling_wall_seconds": "34000",
+  "prior_used_wall_seconds": "23877.5745780506018",
+  "gross_through_post_final_wait_observation_seconds": "7023.649233941",
+  "complete_observation_tool_wall_seconds": "0.214093462",
+  "charged_wall_seconds": "7023.863327403",
+  "cumulative_used_wall_seconds": "30901.4379054536018",
+  "remaining_wall_seconds": "3098.5620945463982",
+  "total_phase_wall_allocation_seconds": "8500",
+  "within_allocation": true,
+  "cumulative_within_ceiling": true,
+  "accounted_through_wall_monotonic_ns": 4138265979928556,
+  "final_closure_passed": true,
+  "execution_passed": true,
+  "basis": [
+    {
+      "path": "/tmp/mr3_p2a_v13_post_authorization_accounting_root_v1.json",
+      "bytes": 1316,
+      "sha256": "5547ffa98bc41712d5a5bc564fd0172df83da5b44db68f1785fc13af4e53ee33"
+    },
+    {
+      "path": "/tmp/mr3_p2a_v13_deadline_completion_plan_v2.json",
+      "bytes": 129023,
+      "sha256": "a35cad53be7ce788d348d10069708b5f2d78bb36c97db9b36dc8fc12beb1ddea"
+    },
+    {
+      "path": "/tmp/mr3_p2a_v13_deadline_completion_evidence_v2/summary.json",
+      "bytes": 82667,
+      "sha256": "485c63d3773b948b0d001a9bca15dc44a425d0ded8c603f5973912c04a282ed2"
+    },
+    {
+      "path": "/tmp/mr3_p2a_v13_deadline_completion_outer_wait_v2.json",
+      "bytes": 1120,
+      "sha256": "715953699eedf7fc117ca19b57f65a0a2bfaae88fdafd502410601c209bc46b1"
+    },
+    {
+      "path": "/tmp/mr3_p2a_v13_deadline_completion_final_absence_v2.json",
+      "bytes": 21497,
+      "sha256": "bfbd7357cd987c57c9c0db4a2d04ff2b8568eed41170df0e37431bbc10e0bdf1"
+    },
+    {
+      "path": "/tmp/mr3_p2a_v13_deadline_completion_root_actual_tool_waits_v2.json",
+      "bytes": 55300,
+      "sha256": "7a116ecd0f1b737e0dee71e83c5169a9fd42ecde0eeb491bba31d74f0db96c22"
+    },
+    {
+      "path": "/tmp/mr3_p2a_v13_deadline_completion_root_wait_observation_v2.json",
+      "bytes": 16799,
+      "sha256": "40e72343b664494bd4faa4ec8247747abbe54016abb064a21125062f2aa64c1a"
+    },
+    {
+      "path": "/tmp/mr3_p2a_v13_deadline_completion_root_observation_actual_tool_wait_v1.json",
+      "bytes": 1111,
+      "sha256": "5d84ed95b75e4aac3b49eb6701bc3e6a1ec906c63d7cb44ed2a5a62fbbfd052c"
+    },
+    {
+      "path": "/tmp/mr3_p2a_v13_engineering_budget_acceptance_34000_v1.json",
+      "bytes": 1521,
+      "sha256": "d484a5f8295f1f98ea09119117506234367e4a246a64715872207608663a463d"
+    },
+    {
+      "path": "/tmp/mr3_p2a_v13_deadline_root9500_admission_v1.json",
+      "bytes": 1345,
+      "sha256": "de144f63a2af342a50c068a1ea2be0ead50747fb91091d3c9a53abc3a7d07e8f"
+    },
+    {
+      "path": "/tmp/mr3_p2a_v13_deadline_completion_balance_v2.json",
+      "bytes": 1586,
+      "sha256": "bcf46b81de6a813818efff4125fd436e480059c89950d86d6f76a7ecd64e0fe5"
+    },
+    {
+      "path": "/tmp/mr3_p2a_v13_deadline_completion_v2.py",
+      "bytes": 38672,
+      "sha256": "c516332877445f9d20f27f4a98efe586f6b09d1084e7016d08474750211e83bf"
+    }
+  ],
+  "scope": "Conservative outer-entry charge through actual independent final write/tool wait and root observation, plus whole observation tool wall as intentional overlap. All8 deadline roles passed; original matrix FAIL remains. The subsequent qualification100 tail is not included and must be charged separately."
+}

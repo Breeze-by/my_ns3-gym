@@ -2,9 +2,9 @@
 
 # Codex Monorepo Memory — MR3
 
-2026-10-19：P2A.0已验收，P2A未完成。V13冻结`0063aa233ba3008ddcc1eb09ea8068112eea3965`的原矩阵因reset阶段5007.289807297>4762.762500128墙秒而FAIL，原26/38科学角色通过。随后同runtime独立reset只读补验新增4角色，现30/38；548保存PID/start均gone。原矩阵FAIL、非必需逐回合覆盖FAIL及原pooled覆盖PASS均保留，deadline8角色及PPO未启动；不提供物理已修复或95%策略信用，P2B/gateway未启动。
+2026-10-19：P2A.0已验收，P2A未完成。V13运行时冻结`0063aa233ba3008ddcc1eb09ea8068112eea3965`完成独立26+4+8=38/38工程资格，原矩阵时间FAIL及optional覆盖FAIL保留。fresh16 minimum随后因tb3整段累计路径.007800136333791129>.0078m而真实FAIL；瞬时速度未越.01，整轮ineligible，eligible训练决策/API记录/优化更新均0，49保存PID/start均gone。pilot与三场final-only未启动，P2B/gateway未启动。
 
-工程累计23877.5745780506018/30000墙秒，余6122.4254219493982；pilot仍余1870决策/2905.9547395464029墙秒，三场final-only验证不扩额。未来deadline8500+资格尾账100+新最小链900=9500方案仅完成准备；累计34000（追加4000）尚待用户明确批准，已批准上限仍为30000。见[V13结果](ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v13.md)与[待批准预算提案](ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v13/prospective_continuation/mr3_p2a_v13_engineering_continuation_budget_proposal_v2.json)。
+用户已批准工程累计34000墙秒，当前31596.4775930946018、余2403.5224069053982；pilot1870决策/2905.9547395464029墙秒及验证额度未动。安全/任务/源龄/接触门不变，无新native重试。下一步仅有安全契约CPU/math重设计评审，坐标/连续模型/真实执行交接未闭合，不能seal或启动native。见[V13完整结果](ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v13.md)。
 
 ## Canonical checkout and components
 

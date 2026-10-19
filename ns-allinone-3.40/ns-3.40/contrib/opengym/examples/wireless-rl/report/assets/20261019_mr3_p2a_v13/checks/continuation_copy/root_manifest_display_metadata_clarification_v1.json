@@ -1,0 +1,18 @@
+{
+  "schema": "mr3-root-control-display-metadata-clarification-v1",
+  "scope": "Clarifies attribution only; original control receipt and copied bytes retained.",
+  "original_file": "mr3_p2a_v13_root_manifest_display_control_error_v1.json",
+  "clarification": "The v1 actual_tool_result.output field is a root-written summary of the original output, not a byte-identical tool stdout capture. chunk_id, exit_code, wall_time_seconds and original_token_count are actual observed metadata. No command result or error classification changes.",
+  "actual_observed_tool_metadata": {
+    "chunk_id": "57498c",
+    "wall_time_seconds": 0.432962473,
+    "exit_code": 1,
+    "original_token_count": 182
+  },
+  "corrected_key_confirmed_by_actual_tool": {
+    "chunk_id": "e153f9",
+    "wall_time_seconds": 0.277677243,
+    "exit_code": 0
+  },
+  "effect": "Read-only display failed before canonical copier execution; corrected copier's first actual execution returned0. No source, runtime, original archive, science verdict or charge changed."
+}

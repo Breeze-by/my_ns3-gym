@@ -1,0 +1,99 @@
+{
+  "output": {
+    "path": "/tmp/mr3_p2a_v13_minimum_measurement_contract_review_v1.json",
+    "bytes": 628019,
+    "sha256": "11dbbac3c9fd1d3c72eb842f63a38926bf6fb1eb152c25d45451f67b0d81a1e5"
+  },
+  "cpu_duration_sec": 5.083884215,
+  "first_failure": {
+    "line": 107887,
+    "row": {
+      "schema": "mr3-motion-safety-v1",
+      "epoch": "round0000_w0_e1_e154087c",
+      "record_sequence": 107887,
+      "kind": "settled_turn_model_failure",
+      "sim_time_sec": 56.98,
+      "wall_monotonic_ns": 4139020123600448,
+      "payload": {
+        "robot": "tb3",
+        "reason": "active settled turn total drift budget exceeded"
+      }
+    }
+  },
+  "arithmetic": {
+    "sample_count": 587,
+    "source_first_ns": 45275000000,
+    "source_last_ns": 56995000000,
+    "duration_sec": 11.72,
+    "path_m": 0.007800136333791129,
+    "recorded_path_m": 0.007800136333791129,
+    "path_equals_recorded_exactly": true,
+    "net_xy_displacement_m": 0.0008845287405065454,
+    "mean_chord_speed_mps": 0.0006655406428149427,
+    "chord_speed_mps": {
+      "count": 586,
+      "minimum": 6.228509911072884e-06,
+      "maximum": 0.000933653016870293,
+      "mean": 0.0006655406428149434
+    },
+    "planar_speed_mps": {
+      "count": 587,
+      "minimum": 1.0444064717829581e-05,
+      "maximum": 0.0009291055640853354,
+      "mean": 0.0006694882749892092
+    },
+    "speed_trapezoid_integral_m": 0.007849770639666924,
+    "world_velocity_trapezoid_xy_m": [
+      0.0009023945570356738,
+      -4.146608422682332e-05
+    ],
+    "observed_endpoint_delta_xy_m": [
+      0.0008399484771780541,
+      0.0002772681887061035
+    ],
+    "angular_velocity_integral_rad": -0.19256289233140103,
+    "max_float_rotation_norm_relative_error": 3.750289923054595e-08,
+    "max_abs_roll_rad": 6.325366978591511e-05,
+    "max_abs_pitch_rad": 0.006720315717957143,
+    "all_body_linear_z_zero": true,
+    "every_received_odom_equals_native_publication": true,
+    "native_matches": 587,
+    "last_sample": {
+      "source_ns": 56995000000,
+      "motion_line": 107886,
+      "input_sequence": 2592,
+      "position_xyz": {
+        "x": 0.8529569241170821,
+        "y": 0.05872766089266698,
+        "z": 0.007847237115359522
+      },
+      "body_xy": [
+        -0.000817716963757738,
+        -7.065946823109166e-05
+      ],
+      "body_z": 0.0,
+      "planar_speed_mps": 0.0008207641520363049,
+      "world_xy_reconstructed": [
+        -0.0008192902063578837,
+        -4.9166353756504894e-05
+      ],
+      "angular_z": 0.2869219067490774,
+      "roll_rad": 2.0927245234970312e-05,
+      "pitch_rad": 0.006552489996906474,
+      "yaw_rad": -0.026257525271125536,
+      "float_yaw_norm_scale": 1.0000000153582016,
+      "dt_sec": 0.02,
+      "chord_m": 1.5898523731588608e-05,
+      "cumulative_path_m": 0.007800136333791129
+    },
+    "all_native_desired_v_zero": true,
+    "all_applied_rim_pair_means_zero": true,
+    "native_actuation_count": 345,
+    "measured_joint_pair_center_v_mps": {
+      "count": 345,
+      "minimum": -0.00041299477518391,
+      "maximum": 0.00042678461277977087,
+      "mean": 1.5898579699159067e-05
+    }
+  }
+}

@@ -6928,3 +6928,154 @@ ROS配置test实际1PASS/1.37s，见checks/mr3_p2a_v13_gentle_turn_config_cpu_re
 - reset小包纯CPU pack实际 `/usr/bin/python3 -B -u /tmp/mr3_p2a_v13_reset_completion_packet_v2/checks/pack_reset_completion_v2_final.py` rc0/1.244021195s；前次rc1/1.357488485s因index局部变量覆盖，完整原件留attempt1。两包逐memberSHA/size、gzipEOF/CRC、concat、原输入末stat/SHA、279Git/10ELF末稳及seal前clean HEAD=origin/main=0063实际PASS，独立postpack及canonical复制逐SHA核验。
 - 原bigpacket5432members/5534884383rawbytes，archive382472880、8分片/SHA2671b53407e1dc018094236dff9ddf3e2c5d30211f338822ee53789a60b92195，manifest914f9428cc0c0b2970e87571d77f977e144cd4f897c6d12f9747f67e0bb6d65d；小包56members/2482835rawbytes，单片295105/SHA b68e2bc7dc78bbe1f6a25785fb6578dfd9a871d83751f29370fb299c641899fd，manifest399caea5c6893689d8808c8c6fbc39486ac9d869df9f15a8da4503437d02bd86。小包显式映射原包186相关member，不重复5.53GB原native。canonical路径及每项原路径/SHA在closed_capture_canonical_copy_index_v1.json。
 - 新封存[预算提案v2](report/assets/20261019_mr3_p2a_v13/prospective_continuation/mr3_p2a_v13_engineering_continuation_budget_proposal_v2.json) SHA669c1b64305a9b25d00848a177c137cff848cb33dd2a7248fb74f80492bc4d44：工程当前30000，已用23877.5745780506018/余6122.4254219493982；拟+4000至34000，才有10122.4254219493982。9500预约=deadline全部tail8500+独立qualifier实际wait/absence尾100+fresh16minimum900，余622.4254219493982。该提案状态AWAITING；现有“批准继续”仅批准30000，不构成34000授权。Pilot1870/2905.9547395464029和三场final-only不变，不跨池、不退历史费用。新native/PPO须先获真实用户新增批准；目前未执行。精确未来命令见本版报告链接的usage，不能把该前瞻命令记成实际运行。
+
+
+## 2026-10-19 — V13 34000实际获批续接：工程38资格完成，minimum真实FAIL
+
+### 34000实际批准后的同冻结续接（已关闭）
+
+用户消息“批准，继续吧”对应封存的34000提案；另建的
+[实际批准原件](report/assets/20261019_mr3_p2a_v13/continuation_receipts/mr3_p2a_v13_engineering_budget_acceptance_34000_v1.json)
+SHA `d484a5f8295f1f98ea09119117506234367e4a246a64715872207608663a463d`证明授权。
+旧proposal字节及其提出时AWAITING状态不改。入场余额10122.4254219493982，
+root另存实际≥9500预约检查；没有只依赖工具9400下限而漏掉qualification尾100。
+
+唯一canonical checkout临时detach至已推送祖先0063；main/origin保持2f5c2a3，
+279 source/10 ELF逐SHA一致。全部执行、独立关闭、封包及末稳后才实际恢复main；
+[恢复回执](report/assets/20261019_mr3_p2a_v13/continuation_receipts/mr3_p2a_v13_runtime_restore_main_actual_tool_v1.json)
+保留真实工具返回，不要求后来报告commit与运行时HEAD相同。
+
+| 新scope | 实际结果 | 完整根收费墙秒 | 独立关闭保存身份 |
+| --- | --- | --- | --- |
+| deadline（8500预约） | 300个完整1秒KEEP，timeout；8角色/FIFO PASS | 7023.863327403 | 58/58 gone，outer/final实际rc0 |
+| qualification（100预约） | 新schema精确26+4+8=38角色 PASS；原matrix_passed=false | 69.468194283 | qualifier与launcher共2身份gone，实际rc0 |
+| fresh16 minimum（900预约） | 原生模型FAIL，0 eligible/0优化更新 | 625.571493358 | 49/49 gone；outer/final实际rc1，closure_passed=true |
+
+deadline open101、单worker/三机/action888，native实际rc0/5436.6476923秒，
+watcher实际rc0/5440.455872138秒；1 reset+300 step=301 API，dt全部1，
+terminated=true/truncated=false/reason=timeout。它是截止工程检查，不是95%任务成功。
+独立角色均实际rc0/PASS：full1352.09882067、drive1498.059969521、
+information535.290808453、peer342.08246489、control751.046237781、
+settled166.407781804、cadence249.693322856、closure52.068304359秒。
+FIFO001实际rc0/73.347362045秒，FIFO manifest是无子进程rc的真实聚合；无SKIP、signals0，全部已提交任务真实wait。
+并发子命令时间不相加充当gross。
+
+独立[新资格原件](report/assets/20261019_mr3_p2a_v13/continuation_receipts/mr3_p2a_v13_completed_38_role_qualification_v1.json)
+SHA `97d734c5580ce31a3e7c2f92b8a891c4729e866014c3d5dc7ddd6122840753cd`，
+schema为`mr3-p2a-v13-completed-38-role-qualification-v1`，与原bounded矩阵不同。
+qualify子命令真实wait24.502683817秒，finite wrapper内部24.518131625秒；
+资格尾按真实wait、保存及独立absence另收费，不藏入deadline内部elapsed。
+
+根收费顺序均覆盖实际outer/final tool wait和其后根观察，观察工具墙秒有意保守重叠：
+deadline 7023.649233941+.214093462=7023.863327403；
+资格尾69.107530411+.360663872=69.468194283；
+minimum 624.763228505+.808264853=625.571493358。
+累计23877.5745780506018+7023.863327403+69.468194283+625.571493358
+=31596.4775930946018/34000，余2403.5224069053982。
+[最新根账](report/assets/20261019_mr3_p2a_v13/continuation_receipts/mr3_p2a_v13_ppo_minimum_accounting_root_v3.json)
+SHA `87cd6357a446305dad1b0586a183bc76160ca7fb0970fc52cd63af1f96d3a37f`。
+三scope均在各自预约内；失败不退费、不跨pilot/验证池。
+
+### fresh16最小链的真实反例与只读诊断
+
+fresh seed41/open101单worker、16决策/16回合step上限、native wall700。
+native实际rc1/536.909661234秒，watcher实际rc0/537.973067921秒。
+1 reset+16原生step；前15个dt1，最后dt.86，terminated=true/truncated=false，
+reason=navigation_failure。PPO summary completed=false，报
+`native training ineligible: motion_safety settled_turn_model_failure`，整轮在入训练buffer前拒绝。
+保留failed_collection、initial.zip及所有native原件；原生16条step不是16个eligible训练样本。
+eligible decisions/API records0、optimizer_updates0，没有成功final.zip。
+原生失败后full/input/FIFO/独立custody科学消费者未提交，不补造其FAIL/PASS；
+watcher成功不代替独立科学审计。pilot与final-only验证均未启动。
+
+首故障为tb3，motion_safety.jsonl行/序号107887，nodeclock56.98，
+`active settled turn total drift budget exceeded`。触发的前一raw odom行107886，
+input2592/source56.995，平面速度.0008207641520363049m/s；
+56.975是此前已选择的causal样本，不能误标为触发样本。
+现有异步回调允许raw odom先到对应clock；本次没有改时钟或样本来源。
+
+从固定activation anchor source45.275到56.995共587样本/11.72秒，
+raw XY chord累计路径精确复算为.007800136333791129m，超过原.0078m。
+净位移.0008845287405065454m，不能替代总路径；
+max raw planar speed .0009291055640853354、max chord speed .000933653016870293，均低于.01。
+本次是低速往返累计耗尽预算，与V12瞬时速度峰不同。
+587个native/received odom payload同值；三边界触发payload一致。
+已排除垂向混入、SLAM/TF跳变进入累计器、CoG参考点误配和float yaw误差作为此失败的解释。
+
+active段实际请求转向+.3→0→−.3→0→+.3，linear始终0；
+345次轮更新alpha全1、issued rim pair mean全0，真实joint/body仍有小运动。
+第一次stop存储56.999，后续zero57.0覆盖它后首次实际制动57.005，均晚于触发样本56.995。
+不能用失败后的制动解释先前超界；具体轮地面/摩擦/ODE机理仍unknown。
+原18路监测记录fresh及零非支撑接触，不证明无地面接触力或侧滑。
+
+[独立测量审查](report/assets/20261019_mr3_p2a_v13/closed_minimum_forensics/originals/mr3_p2a_v13_minimum_measurement_contract_review_v1.md)
+和[原始时序法证](report/assets/20261019_mr3_p2a_v13/closed_minimum_forensics/originals/mr3_p2a_v13_minimum_failure_sequence_forensic_v2.md)
+均只读关闭文件。测量算术实际rc0/5.654110385秒；时序v1误读`odom`而非`odometry`，
+实际rc1/6.849729531秒，原源/console/回执保留；v2仅修解析键，实际rc0/9.406015419秒，
+raw/source前后stat/SHA不变。它们不是新科学消费者、仿真或GPU实验，不新增native收费或PASS信用。
+
+### 安全契约下一步评审边界
+
+现行[环境合同](MR3_ENV_CONTRACT.md)91–93明确要求同一连续零线速度段的总中心路径≤.0078，
+重复授权不能刷新预算；当前生产实现与所有原门保持。
+现有Shim/smoother/joint feedback没有可直接启用的参数来证明长段总变差界，
+降低角速、重置累计器、过滤细小路径或改净位移都不构成原合同修复。
+
+[科学契约评审稿](report/assets/20261019_mr3_p2a_v13/contract_review_only/mr3_p2a_v13_prospective_safety_contract_review_v1.md)
+比较维持旧L1门的actuator反馈、有限reach tube、固定anchor reach disk三条路线。
+建议下一步仅做独立CPU/math新合同设计：固定R=.0078m的anchor disk，
+从当前中心必须用2R而非R，几何余量为2R+.144=.1596m（原为.1518m）。
+这是不同的条件物理模型，不能自动替换现门或改写旧FAIL。
+坐标误差、采样间连续sweep、peer备份/终端集合以及translation实际storage/actuation交接尚未闭合；
+未闭合不得seal runtime或启动native。此稿未申请新native或预算扩额，亦无新fixture执行结果。
+若用户批准重设计方向，先完成明确旧/新差异、状态机和独立负例的CPU/math审查，
+再单独提交完整科学合同与新冻结/预算；不继承本次38角色或旧模型信用。
+
+### 新增封存包与复制核验
+
+[续接原件包](report/assets/20261019_mr3_p2a_v13/closed_continuation/manifest.json)
+含4296文件/4343294556原始字节，仅实际deadline/资格/minimum及所需CPU/授权/费用原件，
+没有未来pilot/validation目录。archive300436279字节，6×49000000+6436279共7分片，
+SHA `3d478529538d8307fee859667a2b33da203faef90f9c8175c79cf99a8fa99235`；
+manifest SHA `c0ce1e52e2132408c42ca99d7e6e0661259f67abc52055d2c8729cdbb87f61ee`。
+旧matrix/reset两包以原SHA引用，不重复原5.53GB/source/ELF。
+全部member SHA/size、gzip EOF/CRC、分片拼接、原文件stat/SHA和目录成员末稳通过；
+独立复验再次由分片串流完成。279source/10ELF、109保存身份gone及exact clean0063/祖先origin
+均在恢复main前实际末检通过；不是报告提交后仍exact0063的声明。
+
+CPU pack实际子wait rc0/240.145162996秒，creator实际工具rc0；最后poll耗时不是总打包耗时。
+清单准备v1错误读取qualification absence嵌套字段而rc1，原脚本/真实工具返回已封存；
+修正v2后才封清单，失败时未压缩。准备packer7项CPU fixture实际rc0/.015s，
+不是科学审计；原准备receipt单独记录真实tool墙秒。
+root一次只读manifest展示误用`members`键而rc1，`files`键确认后复制器首次执行rc0，均保留控制来源。
+
+[canonical复制索引](report/assets/20261019_mr3_p2a_v13/continuation_canonical_copy_index_v1.json)
+逐项记录77份byte-identical复制、312548714字节，涵盖完整24件续接包、24份小根回执、
+实际restore、23份forensic原件/官方源/草稿、选择清单及独立合同评审。
+草稿中placeholder/当时未运行表述保留其历史含义，当前事实以本文、实际原件及根账为准。
+新法证大raw只引用续接包成员，不复制第二份原始episode。短静态复核与实际工具返回另存checks。
+
+
+### 实际执行命令（历史记录，不重跑）
+
+Git root cwd，所有外层工具使用原实际/tmp来源。outer真实wait后立即独立final。
+
+```bash
+rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 -B /tmp/mr3_p2a_v13_deadline_completion_v2.py outer --plan /tmp/mr3_p2a_v13_deadline_completion_plan_v2.json --evidence /tmp/mr3_p2a_v13_deadline_completion_evidence_v2 --balance /tmp/mr3_p2a_v13_deadline_completion_balance_v2.json --output /tmp/mr3_p2a_v13_deadline_completion_outer_wait_v2.json
+rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 -B /tmp/mr3_p2a_v13_deadline_completion_v2.py final-absence --receipt /tmp/mr3_p2a_v13_deadline_completion_outer_wait_v2.json --evidence /tmp/mr3_p2a_v13_deadline_completion_evidence_v2 --output /tmp/mr3_p2a_v13_deadline_completion_final_absence_v2.json
+rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 -B /tmp/mr3_p2a_v13_qualify_finite_runner_wrapper_v1.py --evidence /tmp/mr3_p2a_v13_qualification_tail_evidence_v1 --deadline-accounting /tmp/mr3_p2a_v13_deadline_completion_accounting_root_v2.json --qualification /tmp/mr3_p2a_v13_completed_38_role_qualification_v1.json
+rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 -B /tmp/mr3_p2a_ppo_phase_runner_v3_final_v2.py outer --freeze 0063aa233ba3008ddcc1eb09ea8068112eea3965 --phase minimum --output /tmp/mr3_p2a_v13_ppo_minimum_outer_wait_v3.json -- --plan /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v13/predeclared_plan_v13.json --evidence /tmp/mr3_p2a_v13_ppo_minimum_evidence_v3 --balance /tmp/mr3_p2a_v13_ppo_minimum_balance_v3.json --prior-summary /tmp/mr3_p2a_v13_completed_38_role_qualification_v1.json --prior-final-closure /tmp/mr3_p2a_v13_deadline_completion_final_absence_v2.json --qualification /tmp/mr3_p2a_v13_completed_38_role_qualification_v1.json --freeze 0063aa233ba3008ddcc1eb09ea8068112eea3965 --phase minimum
+rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 -B /tmp/mr3_p2a_ppo_phase_runner_v3_final_v2.py final-absence --receipt /tmp/mr3_p2a_v13_ppo_minimum_outer_wait_v3.json --evidence /tmp/mr3_p2a_v13_ppo_minimum_evidence_v3 --output /tmp/mr3_p2a_v13_ppo_minimum_final_absence_v3.json --freeze 0063aa233ba3008ddcc1eb09ea8068112eea3965 --phase minimum
+```
+
+两次native的完整实际argv/场景/seed/环境/源码/返回在新包deadline_evidence/native.json和minimum_evidence/native.json；
+deadline原计划native work6200/close120、min seed41/16step/native700，任务95%/300秒与安全门不改。
+纯文件算术真实child argv分别为`/usr/bin/python3 -B /tmp/mr3_p2a_v13_minimum_measurement_contract_review_v1.py`
+及`/usr/bin/python3 /tmp/mr3_p2a_v13_minimum_failure_sequence_forensic_v2.py`；时序提取通过rtk proxy标准库有限subprocess wrapper执行，该child没有-B，未在该调用显式添加env；不得把建议命令当成实际argv。首个v1失败解析源和真实wait另存。
+CPU pack实际通过finite launcher以`/usr/bin/python3 -B /tmp/mr3_p2a_v13_incremental_pack_launcher_v1.py --script /tmp/mr3_p2a_v13_incremental_pack_v1.py --selection /tmp/mr3_p2a_v13_continuation_closed_selection_v1.json --output /tmp/mr3_p2a_v13_continuation_closed_packet_attempt_v1`执行，全部实际工具metadata在checks。
+canonical copy实际`rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 -B /tmp/mr3_p2a_v13_copy_continuation_canonical_v1.py` rc0；
+原始initial+final tool返回另存checks，缺少独立child全耗时保持unknown，不以最后poll或sum tool waits猜总耗时。
+本次其后只有文档/证据静态检查与commit/push，无新native、GPU、正式科学reader或生产合同变更。
+
+文档/证据最后静态复核实际rc0，命令`rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 -B /tmp/mr3_p2a_v13_continuation_static_review_v1.py`：77复制/7拼接/32新增链接/7 AST/47JSON/15raw引用/19冻结Git源/38角色/三段Decimal账/共享log只追加全部通过；脚本、输出、actual tool metadata在`report/assets/20261019_mr3_p2a_v13/checks/continuation_copy/`。独立文档审查纠正了指南旧当前状态和sequence child无-B的命令来源说明；未改任何科学原件或生产门。
+独立纯静态文档复核实际rc0/1.597619717秒，33新增链接/11文档事实一致、无未解决问题；JSON/简报和原actual字段在checks/continuation_copy。初轮literal断言把正确“原bounded矩阵”与“原矩阵”不匹配当异常，实际rc1/1.52536秒且未产生review，原control provenance保存，未改科学原件/门。3件独立原件的byte-exact canonical复制另有document_review_canonical_copy_index_v1.json。

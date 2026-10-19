@@ -1,0 +1,98 @@
+{
+  "scope": "Independent postpack CPU check after actual creator tool rc0. Original scientific FAIL, unsubmitted audits and original unknown metadata are unchanged.",
+  "manifest": {
+    "path": "/tmp/mr3_p2a_v13_continuation_closed_packet_attempt_v1/manifest.json",
+    "bytes": 2955925,
+    "sha256": "c0ce1e52e2132408c42ca99d7e6e0661259f67abc52055d2c8729cdbb87f61ee"
+  },
+  "member_count": 4296,
+  "raw_bytes": 4343294556,
+  "archive_sha256": "3d478529538d8307fee859667a2b33da203faef90f9c8175c79cf99a8fa99235",
+  "archive_bytes": 300436279,
+  "parts": [
+    {
+      "path": "closed.tar.gz.part0000",
+      "bytes": 49000000,
+      "sha256": "63d0d179d47cd0c59dcadb30dfeb045d847c5df24983d72487a62f4c6ea84c32"
+    },
+    {
+      "path": "closed.tar.gz.part0001",
+      "bytes": 49000000,
+      "sha256": "006e936a0400b818dd87fbe876d35ba1b766d714a09cfa55ea60955b3f0df6e2"
+    },
+    {
+      "path": "closed.tar.gz.part0002",
+      "bytes": 49000000,
+      "sha256": "af5067ba00a876fa75270802301471beed8959e9db6421dc877a8a80860b86cf"
+    },
+    {
+      "path": "closed.tar.gz.part0003",
+      "bytes": 49000000,
+      "sha256": "daee4e879e2aced53aed2dc7479399b71ee4272bda025d57d567fdd9ddeaba58"
+    },
+    {
+      "path": "closed.tar.gz.part0004",
+      "bytes": 49000000,
+      "sha256": "2ac477fbf72336563f117191e0ff6615b669dd9af726d6b9261ed9cc824f930b"
+    },
+    {
+      "path": "closed.tar.gz.part0005",
+      "bytes": 49000000,
+      "sha256": "62e8923667a402e6fd8b0b505145e4e0fa0f0e1c74050216f59c73b8dbdebdd6"
+    },
+    {
+      "path": "closed.tar.gz.part0006",
+      "bytes": 6436279,
+      "sha256": "2198e73d2b1bc6562c26b4731291fded294654d32753bae841eb51a5c8c1b37d"
+    }
+  ],
+  "independent_all_member_sha_size_roundtrip": true,
+  "independent_gzip_eof_crc": true,
+  "independent_part_sha_and_concatenation_sha": true,
+  "all_original_input_stats_stable_after_actual_pack_wait": true,
+  "directory_membership_stable_after_wait": true,
+  "frozen_source_count": 279,
+  "frozen_elf_count": 10,
+  "frozen_sources_and_elfs_end_stat_sha_verified": true,
+  "actual_runtime_saved_identity_counts": {
+    "deadline": 58,
+    "minimum": 49,
+    "qualification": 2
+  },
+  "actual_runtime_saved_identities_still_gone": true,
+  "cpu_pack_identities_gone": [
+    {
+      "saved": {
+        "pid": 1148282,
+        "start_ticks": 413981482,
+        "parent": 1148281,
+        "process_group": 1148281,
+        "session": 1148281
+      },
+      "current": null,
+      "same_identity_present": false
+    },
+    {
+      "saved": {
+        "pid": 1148285,
+        "start_ticks": 413981507,
+        "parent": 1148282,
+        "process_group": 1148281,
+        "session": 1148281
+      },
+      "current": null,
+      "same_identity_present": false
+    }
+  ],
+  "runtime_head_at_endcheck": "0063aa233ba3008ddcc1eb09ea8068112eea3965",
+  "origin_main_at_endcheck": "2f5c2a33e939bb0c61181a21c64d96981828a7a7",
+  "freeze_is_ancestor_actual_returncode": 0,
+  "runtime_worktree_clean_at_endcheck": true,
+  "observed_wall_monotonic_ns": 4140146454076033,
+  "actual_child_wait_returncode": 0,
+  "actual_child_wait_wall_seconds": "240.145162996",
+  "actual_creator_final_tool_returncode": 0,
+  "actual_creator_tool_final_poll_wall_seconds": 2.1298e-05,
+  "creator_external_total_phase_wall_seconds": null,
+  "timing_scope": "Final poll wall is not total pack wall. Child wait wall is exact nanosecond difference. No full external phase start/end was exposed; no native engineering charge added."
+}

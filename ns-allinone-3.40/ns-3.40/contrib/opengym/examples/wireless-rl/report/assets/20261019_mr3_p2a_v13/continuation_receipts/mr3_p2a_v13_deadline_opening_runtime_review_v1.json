@@ -1,0 +1,64 @@
+{
+  "schema": "mr3-p2a-v13-deadline-opening-root-review-v1",
+  "checks": [
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "returncode": 0,
+      "stdout": "0063aa233ba3008ddcc1eb09ea8068112eea3965",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "status",
+        "--porcelain"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "merge-base",
+        "--is-ancestor",
+        "0063aa233ba3008ddcc1eb09ea8068112eea3965",
+        "origin/main"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "main"
+      ],
+      "returncode": 0,
+      "stdout": "2f5c2a33e939bb0c61181a21c64d96981828a7a7",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "origin/main"
+      ],
+      "returncode": 0,
+      "stdout": "2f5c2a33e939bb0c61181a21c64d96981828a7a7",
+      "stderr": ""
+    }
+  ],
+  "tool_and_plan_sha": {
+    "/tmp/mr3_p2a_v13_deadline_completion_v2.py": "c516332877445f9d20f27f4a98efe586f6b09d1084e7016d08474750211e83bf",
+    "/tmp/mr3_p2a_v13_deadline_completion_plan_v2.json": "a35cad53be7ce788d348d10069708b5f2d78bb36c97db9b36dc8fc12beb1ddea"
+  },
+  "checked_wall_monotonic_ns": 4131228307542418,
+  "passed": true,
+  "scope": "Before experimental outer. Runtime exact0063 clean/pushed ancestor; main and remote report commit2f5c2a3 preserved. Full279source/10ELF source_check occurs inside charged outer."
+}

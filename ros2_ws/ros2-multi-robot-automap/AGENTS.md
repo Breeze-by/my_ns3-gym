@@ -1,6 +1,8 @@
 # ROS component memory — MR3
 
-2026-10-19：P2A.0已验收，P2A仍未完成。V8同冻结`7bbf7ba97e12e3b5db47fb48d7ffa4ccf0740971`两组原生转向诊断共8决策/0策略调用/0优化，刺激与严格关闭均通过；两组4s的最大平面速度约.00229，未复现V7近身/~3s后反例，不能称物理修复。V7原FAIL、V26原父编排中断及所有旧失败保留。工程累计12835.5243178396018/30000墙秒，余17164.4756821603982；pilot余额1870决策/2905.9547395464029墙秒不动，验证不扩额。下一步仅准备真实WORLD odom/对应TF独立50Hz，保持轮执行器30Hz及全部旧门；尚无新修复native信用，P2B/gateway未启动。详见V8报告。
+2026-10-19：P2A.0已验收，P2A未完成。V13运行时冻结`0063aa233ba3008ddcc1eb09ea8068112eea3965`完成独立26+4+8=38/38工程资格，原矩阵时间FAIL及optional覆盖FAIL保留。fresh16 minimum随后因tb3整段累计路径.007800136333791129>.0078m而真实FAIL；瞬时速度未越.01，整轮ineligible，eligible训练决策/API记录/优化更新均0，49保存PID/start均gone。pilot与三场final-only未启动，P2B/gateway未启动。
+
+用户已批准工程累计34000墙秒，当前31596.4775930946018、余2403.5224069053982；pilot1870决策/2905.9547395464029墙秒及验证额度未动。安全/任务/源龄/接触门不变，无新native重试。下一步仅有安全契约CPU/math重设计评审，坐标/连续模型/真实执行交接未闭合，不能seal或启动native。见[V13完整结果](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v13.md)。
 
 Follow `/home/zhuyulab/ns3-workspace/AGENTS.md`. Read the shared
 `ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/RESEARCH_PLAN.md`
