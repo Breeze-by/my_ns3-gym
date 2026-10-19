@@ -166,12 +166,13 @@ def closed_episode_training_eligibility(directory, epoch):
         except ValueError:
             continue  # Ordinary task-failure messages need not be JSON.
         if (isinstance(failure, dict) and failure.get("component") == "motion_safety"
-                and failure.get("reason") == "settled_turn_model_failure"):
+                and failure.get("reason") in ("settled_turn_model_failure",
+                    "normal_control_model_invalid", "reach_model_failure")):
             raise InfrastructureError("native training ineligible: motion_safety "
-                                      "settled_turn_model_failure in " + str(path))
+                                      + failure["reason"] + " in " + str(path))
     return {"training_eligible": True, "source_summary": str(path),
             "source_sha256": hashlib.sha256(raw).hexdigest(),
-            "scope": "known settled-turn model rejection; not a full offline audit"}
+            "scope": "known control-model rejection; not a full offline audit"}
 
 
 def collect_episodes(model, environments, tasks, *, deadline, deterministic=False,
@@ -355,6 +356,8 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--run-id", required=True)
     parser.add_argument("--safety-contract", choices=SAFETY_CONTRACTS, default="legacy")
+    parser.add_argument("--reach-plan", type=Path)
+    parser.add_argument("--reach-qualification", type=Path)
     parser.add_argument("--mode", choices=("train", "evaluate"), default="train")
     parser.add_argument("--checkpoint", type=Path)
     parser.add_argument("--workers", type=int, choices=(1, 2, 4), default=1)
@@ -370,8 +373,11 @@ def main(argv=None):
     parser.add_argument("--epochs", type=int, default=4)
     parser.add_argument("--output-root", type=Path)
     args = parser.parse_args(argv)
-    if args.safety_contract != "legacy":
-        parser.error("mr3-reach-v1 is engineering-only: PPO training/evaluation requires new-freeze scientific qualification; legacy receipts cannot authorize it")
+    if args.safety_contract == "legacy":
+        if args.reach_plan is not None or args.reach_qualification is not None:
+            parser.error("reach qualification cannot be mixed into the legacy profile")
+    elif args.reach_plan is None or args.reach_qualification is None:
+        parser.error("mr3-reach-v1 new-freeze scientific qualification requires exact frozen --reach-plan and --reach-qualification")
     if (args.decisions < 2 or not 1 <= args.episode_steps <= 300
             or not np.isfinite(args.wall_seconds) or args.wall_seconds <= 0
             or args.batch_size < 2 or args.epochs <= 0 or args.seed < 0):
@@ -386,6 +392,12 @@ def main(argv=None):
         parser.error("worker Gazebo ports outside supported range")
     if args.mode == "evaluate" and args.decisions != len(args.schedule) * args.episode_steps:
         parser.error("evaluation decision cap must cover each declared scheduled episode")
+
+    if args.safety_contract == "mr3-reach-v1":
+        from .reach_preparation import validate_qualification
+        admission_freeze = subprocess.check_output(["git", "rev-parse", "HEAD"],
+            cwd=WORKSPACE, text=True).strip()
+        validate_qualification(args.reach_qualification, args.reach_plan, admission_freeze)
 
     started = time.monotonic()
     deadline = started + args.wall_seconds
@@ -406,6 +418,10 @@ def main(argv=None):
     torch.set_num_threads(1)
     torch.use_deterministic_algorithms(True)
     metadata = {**vars(args), "output_root": str(root),
+                "reach_plan": str(args.reach_plan.resolve()) if args.reach_plan else None,
+                "reach_qualification": str(args.reach_qualification.resolve()) if args.reach_qualification else None,
+                "reach_plan_sha256": file_sha(args.reach_plan) if args.reach_plan else None,
+                "reach_qualification_sha256": file_sha(args.reach_qualification) if args.reach_qualification else None,
                 "checkpoint": str(args.checkpoint) if args.checkpoint else None,
                 "kind": "mr3-p2a-closed-episode-maskable-ppo-v1", "freeze": freeze,
                 "utc_start": datetime.now(timezone.utc).isoformat(),
@@ -427,7 +443,8 @@ def main(argv=None):
 
     sampler = threading.Thread(target=sample_resources, daemon=True)
     sampler.start()
-    result = {"freeze": freeze, "mode": args.mode, "episodes": [], "rounds": [],
+    result = {"freeze": freeze, "safety_contract": args.safety_contract,
+              "mode": args.mode, "episodes": [], "rounds": [],
               "decisions": 0, "api_records": 0, "optimizer_updates": 0, "error": None}
     environments = []
     model = None

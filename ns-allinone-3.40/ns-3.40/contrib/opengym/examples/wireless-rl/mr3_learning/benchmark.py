@@ -14,7 +14,10 @@ import threading
 import time
 
 from .env import MR3Env
-from .supervisor import InfrastructureError, Supervisor, WORKSPACE, identity_alive, ros_environment
+from .supervisor import (
+    InfrastructureError, Supervisor, WORKSPACE, identity_alive, ros_environment,
+    PREPARATION_PROBE_REACH_V1, validate_preparation_profile,
+)
 
 
 PARAMETER_REVIEW_SCRIPT = Path(
@@ -23,6 +26,7 @@ PARAMETER_REVIEW_SCRIPT = Path(
 GENTLE_PARAMETER_REVIEW_SCRIPT = Path(
     "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/"
     "mr3_learning/audit_nav2_parameters.py")
+REACH_PARAMETER_REVIEW_SCRIPT = GENTLE_PARAMETER_REVIEW_SCRIPT.with_name("audit_reach_nav2_parameters.py")
 PARAMETER_REVIEW_PROFILE = Path(
     "ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_fastdds_loopback_udp.xml")
 TRANSPORT_ENV_KEYS = (
@@ -42,12 +46,21 @@ def _collection_safety_contract(args):
     profile = getattr(args, "safety_contract", "legacy")
     if profile not in SAFETY_CONTRACTS:
         raise ValueError("unknown safety contract")
-    if profile == "mr3-reach-v1" and (
-            getattr(args, "preparation_motion_probe", False)
-            or getattr(args, "preparation_probe_version", None) is not None
-            or getattr(args, "preparation_parameter_review", False)
-            or getattr(args, "preparation_parameter_profile", "original") != "original"):
-        raise ValueError("mr3-reach-v1 supports engineering collection only; legacy preparation probes and parameter readers have no new-contract qualification")
+    version = getattr(args, "preparation_probe_version", None)
+    validate_preparation_profile(profile, version)
+    if version is not None and not getattr(args, "preparation_motion_probe", False):
+        raise ValueError("preparation probe version requires preparation motion probe")
+    if profile == "mr3-reach-v1":
+        preparation = getattr(args, "preparation_motion_probe", False)
+        review = getattr(args, "preparation_parameter_review", False)
+        selection = getattr(args, "preparation_parameter_profile", "original")
+        if preparation and version != PREPARATION_PROBE_REACH_V1:
+            raise ValueError("reach preparation requires its explicit new fixture version")
+        if review and (not preparation or version != PREPARATION_PROBE_REACH_V1
+                       or selection != "gentle_turn_v1"):
+            raise ValueError("reach parameter review requires the reach fixture and gentle_turn_v1")
+        if selection != "original" and not review:
+            raise ValueError("nonoriginal parameter profile requires the explicit parameter review")
     return profile
 
 
@@ -382,10 +395,13 @@ def _wall_admission(args, abort, worker_id, operation, *, episode_index=None, ep
     return not _abort_requested(abort)
 
 
-def _parameter_review_binding(freeze, profile="original"):
+def _parameter_review_binding(freeze, profile="original", safety_contract="legacy"):
     """The only review executable must equal its tracked source at this freeze."""
     if profile not in ("original", "gentle_turn_v1"):
         raise ValueError("unknown exact parameter readback profile")
+    validate_preparation_profile(safety_contract)
+    if safety_contract == "mr3-reach-v1" and profile != "gentle_turn_v1":
+        raise ValueError("reach readback requires unchanged gentle_turn_v1 deployment facts")
 
     def bind(relative):
         raw = (WORKSPACE / relative).read_bytes()
@@ -396,7 +412,8 @@ def _parameter_review_binding(freeze, profile="original"):
         return {"relative_path": relative.as_posix(), "freeze": freeze,
                 "sha256": hashlib.sha256(raw).hexdigest()}
 
-    binding = bind(PARAMETER_REVIEW_SCRIPT if profile == "original"
+    binding = bind(REACH_PARAMETER_REVIEW_SCRIPT if safety_contract == "mr3-reach-v1" else
+                   PARAMETER_REVIEW_SCRIPT if profile == "original"
                    else GENTLE_PARAMETER_REVIEW_SCRIPT)
     if profile == "gentle_turn_v1":
         from .audit_nav2_parameters import load_profile
@@ -406,6 +423,11 @@ def _parameter_review_binding(freeze, profile="original"):
                        immutable_reader=bind(PARAMETER_REVIEW_SCRIPT),
                        deployment_yaml_sources=[bind(Path(row["path"]))
                                                 for row in proof["yaml_sources"]])
+    if safety_contract == "mr3-reach-v1":
+        from .audit_reach_nav2_parameters import WIRE_RELATIVE
+        binding.update(safety_contract=safety_contract,
+                       deployment_entry=bind(GENTLE_PARAMETER_REVIEW_SCRIPT),
+                       shared_wire_source=bind(WIRE_RELATIVE))
     return binding
 
 
@@ -452,8 +474,10 @@ def _parameter_review_environment(args, worker_id, episode):
 
 
 def _run_parameter_review(args, worker_id, episode):
-    binding = _parameter_review_binding(
-        args.freeze, getattr(args, "preparation_parameter_profile", "original"))
+    selection = getattr(args, "preparation_parameter_profile", "original")
+    contract = getattr(args, "safety_contract", "legacy")
+    binding = (_parameter_review_binding(args.freeze, selection, contract)
+               if contract != "legacy" else _parameter_review_binding(args.freeze, selection))
     if binding != args.preparation_parameter_review_source:
         raise RuntimeError("parameter review script binding changed after preflight")
     directory = Path(episode["output_directory"])
@@ -463,7 +487,8 @@ def _run_parameter_review(args, worker_id, episode):
         'source "$1" && shift && exec /usr/bin/python3 "$@"',
         "mr3_parameter_review",
         str(WORKSPACE / "ros2_ws/ros2-multi-robot-automap/install/setup.bash"),
-        str(WORKSPACE / (GENTLE_PARAMETER_REVIEW_SCRIPT if getattr(
+        str(WORKSPACE / (REACH_PARAMETER_REVIEW_SCRIPT if contract == "mr3-reach-v1" else
+            GENTLE_PARAMETER_REVIEW_SCRIPT if getattr(
             args, "preparation_parameter_profile", "original") == "gentle_turn_v1"
             else PARAMETER_REVIEW_SCRIPT)), str(directory),
         "--freeze", args.freeze, "--output", str(directory / "actual_nav2_parameters.json"),
@@ -520,7 +545,9 @@ def run_worker(args, worker_id, preparation_abort=None):
                                 domain_id=args.base_domain + worker_id,
                                 gazebo_port=args.base_port + worker_id,
                                 output_root=args.output_root, terminal_probe=args.terminal_probe,
-                                safety_contract=safety_contract)
+                                safety_contract=safety_contract,
+                                **({"preparation_probe_version": getattr(args, "preparation_probe_version", None)}
+                                   if getattr(args, "preparation_probe_version", None) is not None else {}))
         environment = MR3Env(supervisor=supervisor, max_steps=args.steps)
     except Exception as error:
         _preparation_failure(abort, worker_id, "construction_exception", repr(error))
@@ -553,7 +580,7 @@ def run_worker(args, worker_id, preparation_abort=None):
                            for robot in initial["robots"]], "transitions": 0,
                        "transition_wall_sec": 0., "reward_sum": 0., "dt_values": []}
             if (preparation and getattr(args, "preparation_probe_version", None)
-                    in (PREPARATION_PROBE_V3, PREPARATION_PROBE_V4, PREPARATION_PROBE_V5, PREPARATION_PROBE_V6)):
+                    in (PREPARATION_PROBE_V3, PREPARATION_PROBE_V4, PREPARATION_PROBE_V5, PREPARATION_PROBE_V6, PREPARATION_PROBE_REACH_V1)):
                 episode["preparation_probe_diagnostics"] = {
                     "reference_turn_samples": {}, "goal_decisions": []}
             result["episodes"].append(episode)
@@ -596,7 +623,7 @@ def run_worker(args, worker_id, preparation_abort=None):
                     break
                 if "preparation_probe_diagnostics" in episode:
                     probe = (probe_action_v6 if args.preparation_probe_version
-                             == PREPARATION_PROBE_V6 else probe_action_v5
+                             in (PREPARATION_PROBE_V6, PREPARATION_PROBE_REACH_V1) else probe_action_v5
                              if args.preparation_probe_version
                              == PREPARATION_PROBE_V5 else probe_action_v4
                              if args.preparation_probe_version == PREPARATION_PROBE_V4
@@ -620,7 +647,7 @@ def run_worker(args, worker_id, preparation_abort=None):
                 episode["reward_sum"] += reward
                 episode["dt_values"].append(info["dt"])
                 if getattr(args, "preparation_probe_version", None) in (
-                        PREPARATION_PROBE_V4, PREPARATION_PROBE_V5, PREPARATION_PROBE_V6):
+                        PREPARATION_PROBE_V4, PREPARATION_PROBE_V5, PREPARATION_PROBE_V6, PREPARATION_PROBE_REACH_V1):
                     record_probe_v4_submission(episode["preparation_probe_diagnostics"], info)
                 if terminated or truncated:
                     episode.update(terminated=terminated, truncated=truncated,
@@ -706,7 +733,7 @@ def main(argv=None):
                         help="external engineering inputs: prefer outward legal goals; no policy")
     parser.add_argument("--preparation-probe-version",
                         choices=(PREPARATION_PROBE_V2, PREPARATION_PROBE_V3,
-                                 PREPARATION_PROBE_V4, PREPARATION_PROBE_V5, PREPARATION_PROBE_V6),
+                                 PREPARATION_PROBE_V4, PREPARATION_PROBE_V5, PREPARATION_PROBE_V6, PREPARATION_PROBE_REACH_V1),
                         help="explicit external fixture version; v2=20 steps, v3=32 steps")
     parser.add_argument("--preparation-parameter-review", action="store_true",
                         help="paused one-worker open101: frozen readonly ROS parameter audit")
@@ -753,7 +780,7 @@ def main(argv=None):
     if args.preparation_motion_probe:
         args.preparation_probe_version = args.preparation_probe_version or PREPARATION_PROBE_V2
         expected_steps = (32 if args.preparation_probe_version in
-                          (PREPARATION_PROBE_V3, PREPARATION_PROBE_V4, PREPARATION_PROBE_V5, PREPARATION_PROBE_V6) else 20)
+                          (PREPARATION_PROBE_V3, PREPARATION_PROBE_V4, PREPARATION_PROBE_V5, PREPARATION_PROBE_V6, PREPARATION_PROBE_REACH_V1) else 20)
         if args.steps != expected_steps:
             parser.error("preparation motion probe requires the explicit "
                          f"{expected_steps}-step fixture")
@@ -769,8 +796,10 @@ def main(argv=None):
         args.freeze = subprocess.check_output(
             ["git", "rev-parse", "HEAD"], cwd=WORKSPACE, text=True).strip()
         try:
-            args.preparation_parameter_review_source = _parameter_review_binding(
-                args.freeze, args.preparation_parameter_profile)
+            args.preparation_parameter_review_source = (
+                _parameter_review_binding(args.freeze, args.preparation_parameter_profile, args.safety_contract)
+                if args.safety_contract != "legacy" else
+                _parameter_review_binding(args.freeze, args.preparation_parameter_profile))
         except (OSError, subprocess.CalledProcessError, RuntimeError, ValueError) as error:
             parser.error(f"frozen parameter review source unavailable: {error}")
     output_root = args.output_root or (
@@ -812,6 +841,9 @@ def main(argv=None):
         metadata.update(training_eligible=False, scientific_readers_applied=False,
                         scientific_qualification="PENDING_NEW_FREEZE_INDEPENDENT_AUDITS",
                         qualification_scope="engineering_collection_only_no_legacy_qualification_credit")
+        if args.preparation_motion_probe:
+            metadata.update(preparation_fixture_implementation="unchanged_v6_external_actions",
+                            preparation_fixture_schema="mr3-reach-preparation-fixture-v1")
     if args.work_wall_seconds is not None:
         metadata["work_wall_budget"] = {
             "total_allocation_seconds": args.work_wall_seconds,

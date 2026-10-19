@@ -1043,6 +1043,113 @@ def audit_episode(directory, expected_freeze=None):
     return result
 
 
+def run_workers(directory):
+    """Worker directories distinguish a RUN from the original EP CLI shape."""
+    return sorted(path for path in Path(directory).glob("worker*") if path.is_dir())
+
+
+def discover_attempts(directory):
+    """Include incomplete attempt directories; a missing metadata is a FAIL."""
+    directory = Path(directory)
+    workers = run_workers(directory)
+    if not workers:
+        return [directory] if (directory / "metadata.json").is_file() else []
+    attempts = []
+    for worker in workers:
+        episodes = sorted(path for path in worker.glob("episode*") if path.is_dir())
+        attempts.extend(episodes or [worker])
+    return attempts
+
+
+def audit_episode_set(directory, expected_freeze, episode_auditor, *, schema):
+    """Shared run discovery only; each independent reader keeps its own math."""
+    directory = Path(directory).resolve()
+    result = {"schema": schema, "directory": str(directory), "freeze": expected_freeze,
+              "safety_contract": CONTRACT, "passed": False, "errors": [], "episodes": [],
+              "continuous_physical_model_proved": False}
+    attempts = discover_attempts(directory)
+    if not attempts:
+        result["errors"].append("no actual episode attempts found")
+    if run_workers(directory) and (directory / "metadata.json").exists():
+        result["errors"].append("ambiguous EP and RUN layout; top-level metadata cannot hide child attempts")
+    if expected_freeze is not None and (type(expected_freeze) is not str
+            or re.fullmatch(r"[0-9a-f]{40}", expected_freeze) is None):
+        result["errors"].append("exact source freeze required")
+    common_freeze = expected_freeze
+    epochs, resolved = set(), set()
+    metadata_inputs = {}
+    summary_path = directory / "benchmark_summary.json"
+    if summary_path.is_file():
+        try:
+            raw = summary_path.read_bytes(); metadata_inputs[summary_path] = raw
+            summary = decode_text(raw.decode())
+            declared = [Path(row["output_directory"]).resolve()
+                        for worker in summary["workers_results"] for row in worker["episodes"]]
+            require(len(declared) == len(set(declared))
+                    and set(declared) == {path.resolve() for path in attempts},
+                    "declared native episode attempt is missing or unlisted")
+        except (OSError, ValueError, TypeError, KeyError) as error:
+            result["errors"].append("benchmark episode inventory: "+str(error))
+    for episode in attempts:
+        row = {"directory": str(episode), "passed": False, "errors": []}
+        result["episodes"].append(row)
+        try:
+            require(episode.resolve() not in resolved, "episode path aliases another attempt")
+            resolved.add(episode.resolve())
+            if episode != directory:
+                require(re.fullmatch(r"worker[0-9]+", episode.parent.name) is not None
+                        and episode.name.startswith("episode"), "worker has no valid episode attempt")
+            path = episode / "metadata.json"
+            raw = path.read_bytes(); metadata_inputs[path] = raw
+            metadata = decode_text(raw.decode())
+            epoch, freeze = metadata["epoch"], metadata["freeze"]
+            row.update(epoch=epoch, freeze=freeze, metadata_sha256=hashlib.sha256(raw).hexdigest())
+            require(type(epoch) is str and bool(epoch) and epoch not in epochs,
+                    "empty or duplicate episode epoch")
+            epochs.add(epoch)
+            require(type(freeze) is str and re.fullmatch(r"[0-9a-f]{40}", freeze) is not None,
+                    "episode exact freeze missing")
+            if common_freeze is None:
+                common_freeze = freeze
+            require(freeze == common_freeze, "episode source freeze differs across attempts")
+            require(metadata.get("safety_contract") == CONTRACT
+                    and metadata.get("execution_phase_protocol") == "mr3-controlled-execution-phase-v2"
+                    and metadata.get("reset_handshake") == "paused-controlled-state-peer-guard-storage-v2",
+                    "episode is not the explicit reach/v2 profile")
+            report = episode_auditor(episode, common_freeze)
+            row["result"] = report
+            require(type(report) is dict and report.get("passed") is True and not report.get("errors"),
+                    "independent episode audit failed")
+            require(report.get("epoch") == epoch and report.get("freeze") == freeze,
+                    "episode report identity differs from original metadata")
+            row["passed"] = True
+        except (OSError, ValueError, TypeError, KeyError, IndexError, RuntimeError, OverflowError) as error:
+            row["errors"].append(str(error))
+            result["errors"].append(str(episode)+": "+str(error))
+    if discover_attempts(directory) != attempts:
+        result["errors"].append("episode attempt membership changed during audit")
+    for path, raw in metadata_inputs.items():
+        try:
+            require(path.read_bytes() == raw, "episode metadata changed during audit: "+str(path))
+        except (OSError, ValueError) as error:
+            result["errors"].append(str(error))
+    result.update(freeze=common_freeze, attempted_episodes=len(attempts),
+                  passed=bool(attempts) and not result["errors"]
+                  and all(row["passed"] for row in result["episodes"]))
+    return result
+
+
+def audit(directory, expected_freeze=None):
+    result = audit_episode_set(directory, expected_freeze, audit_episode,
+                               schema="mr3-reach-runtime-run-audit-v1")
+    result.update(contract=CONTRACT, independent_necessary_replay=result["passed"] and all(
+        row.get("result", {}).get("independent_necessary_replay") is True for row in result["episodes"]))
+    if result["passed"] and not result["independent_necessary_replay"]:
+        result["passed"] = False
+        result["errors"].append("episode result lacks independent necessary replay")
+    return result
+
+
 def main(argv=None):
     import argparse
     import sys
@@ -1061,9 +1168,9 @@ def main(argv=None):
                          allow_nan=False), file=sys.stderr)
         return 1
     try:
-        result = audit_episode(args.episode,args.freeze)
-        require(result.get("passed") is True, "necessary replay did not pass")
-        code = 0
+        result = (audit(args.episode,args.freeze) if run_workers(args.episode)
+                  else audit_episode(args.episode,args.freeze))
+        code = 0 if result.get("passed") is True else 1
     except Exception as error:
         result = {"passed":False,"contract":CONTRACT,"independent_necessary_replay":False,
                   "continuous_physical_model_proved":False,"error_type":type(error).__name__,

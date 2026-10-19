@@ -18,6 +18,19 @@ from .ipc import JsonLinePeer
 WORKSPACE = Path(__file__).resolve().parents[7]
 ROS_ROOT = WORKSPACE / "ros2_ws/ros2-multi-robot-automap"
 SCENES = ("open", "rooms", "corridors")
+LEGACY_PREPARATION_PROBES = tuple(f"mr3-p2a0-outward-cancel-v{version}" for version in range(2, 7))
+PREPARATION_PROBE_REACH_V1 = "mr3-p2a-reach-outward-cancel-v1"
+
+
+def validate_preparation_profile(safety_contract, preparation_probe_version=None):
+    """External fixture identity is independent of physical/task qualification."""
+    if type(safety_contract) is not str or safety_contract not in ("legacy", "mr3-reach-v1"):
+        raise ValueError("unknown safety contract")
+    if preparation_probe_version is not None:
+        allowed = (LEGACY_PREPARATION_PROBES if safety_contract == "legacy"
+                   else (PREPARATION_PROBE_REACH_V1,))
+        if type(preparation_probe_version) is not str or preparation_probe_version not in allowed:
+            raise ValueError("preparation fixture does not match safety contract")
 
 
 class InfrastructureError(RuntimeError):
@@ -125,9 +138,13 @@ class Supervisor:
     def __init__(self, *, run_id=None, worker_id=0, domain_id=120, gazebo_port=12001,
                  output_root=None, startup_timeout=420., request_timeout=90.,
                  quantum_steps=20, terminal_probe=False, plant_stimulus_arm=None,
-                 plant_stimulus_work_deadline_ns=None, safety_contract="legacy"):
+                 plant_stimulus_work_deadline_ns=None, safety_contract="legacy",
+                 preparation_probe_version=None):
         if type(safety_contract) is not str or safety_contract not in ("legacy", "mr3-reach-v1"):
             raise ValueError("safety_contract must be legacy or mr3-reach-v1")
+        validate_preparation_profile(safety_contract, preparation_probe_version)
+        if preparation_probe_version is not None and (terminal_probe or plant_stimulus_arm is not None):
+            raise ValueError("preparation fixture cannot combine with other diagnostic probes")
         if type(terminal_probe) is not bool:
             raise ValueError("terminal_probe must be a boolean")
         if plant_stimulus_arm not in (None, "continuous", "pulse"):
@@ -166,6 +183,7 @@ class Supervisor:
         self.quantum_steps = quantum_steps
         self.terminal_probe = terminal_probe
         self.safety_contract = safety_contract
+        self.preparation_probe_version = preparation_probe_version
         self.plant_stimulus_arm = plant_stimulus_arm
         self.plant_stimulus_work_deadline_ns = (
             plant_stimulus_work_deadline_ns or time.monotonic_ns() + 1_680_000_000_000
@@ -241,6 +259,10 @@ class Supervisor:
                     "plant_stimulus_work_deadline_ns": self.plant_stimulus_work_deadline_ns,
                     "startup_wall_guard_sec": self.startup_timeout,
                     "request_wall_guard_sec": self.request_timeout}
+        if self.preparation_probe_version is not None:
+            metadata.update(preparation_probe_version=self.preparation_probe_version,
+                            training_eligible=False,
+                            qualification_scope="external_fixture_collection_not_scientific_qualification")
         (directory / "supervisor_metadata.json").write_text(json.dumps(metadata, indent=2) + "\n")
         try:
             result = self._rpc("reset", timeout=self.startup_timeout, scene=scene, seed=seed,

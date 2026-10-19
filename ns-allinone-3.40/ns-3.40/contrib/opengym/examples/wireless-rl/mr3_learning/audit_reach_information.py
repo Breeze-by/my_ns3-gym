@@ -1037,6 +1037,15 @@ def audit_episode(directory, freeze=None):
     return result
 
 
+def audit(directory, expected_freeze=None):
+    """Discover every EP/RUN attempt without changing per-episode predicates."""
+    from .audit_reach_runtime import audit_episode_set
+    result = audit_episode_set(directory, expected_freeze, audit_episode,
+                               schema='mr3-reach-information-run-review-v1')
+    result.update(historical_38_role_qualification=False, native_admission=False)
+    return result
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('directory', type=Path)
@@ -1044,7 +1053,9 @@ def main(argv=None):
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args(argv)
     require(not args.output.exists(), 'exclusive new output required')
-    result = audit_episode(args.directory, args.freeze)
+    from .audit_reach_runtime import run_workers
+    result = (audit(args.directory, args.freeze) if run_workers(args.directory)
+              else audit_episode(args.directory, args.freeze))
     with args.output.open('x') as stream:
         json.dump(result, stream, indent=2, sort_keys=True, allow_nan=False)
         stream.write('\n')

@@ -7160,3 +7160,31 @@ V15最终静态检查两次实际rc0，child5.914737227/5.821476889秒，完整a
 V15 staged-byte只读检查首试root实际tool rc1/1.838021023s：验证helper用`*_control.py`后缀glob同时匹配`control.py`/`mr3_motion_control.py`，不是快照缺失或hash损坏。随后改用runner真实ordinal+basename精确名，固定入口为`report/assets/20261019_mr3_p2a_v15/check_staged_evidence_v1.py`；不修改任何原快照/console。该检查仅Git封存，不是科学门或原生实验。
 
 修复后的staged evidence checker实际退出rc0：403份源快照SHA、22份console Git字节及58个最新文档链接逐件通过；完整检查墙秒未另计，不以最后poll耗时替代。实际命令 `rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 -B ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v15/check_staged_evidence_v1.py`。最终cached diff-check实际rc0，无build/install/checkpoint/bag/二进制运行产物入暂存。
+
+
+## 2026-10-19 P2A V16：完整新契约资格路由及批准52000工程上限（原生前准备）
+
+用户原文“批准啊批准，以后你直接改就可以了”，批准V15已封存的52000墙秒提案并授权例行实现/修复自主继续。[批准记录](report/assets/20261019_mr3_p2a_v16/budget_acceptance_v1.json)绑定原提案SHA；不回写原提出时状态。入场工程31596.4775930946018/52000，余20403.5224069053982；pilot1870/2905.9547395464029及三场final-only不扩额。
+
+本轮CPU工作基于opening `17920bc6b9d4b20a32adcffad04afe3c24f068b6` 加每次实际快照（非原生冻结）；真实system parent `finite_actual_runner_v2.py` 调用conda `ns3gym`，均 `CUDA_VISIBLE_DEVICES=`、`PYTHONNOUSERSITE=1`、删除PYTHONPATH，实际wait且源前后稳定。精确实际argv/cwd及逐源ordinal快照/console SHA见[索引](report/assets/20261019_mr3_p2a_v16/validation_index_v1.json)，每项原件包含完整命令，不以tool poll耗时当child秒。
+
+| CPU实际调用 | rc | 实际child墙秒 | 结果 |
+| --- | --- | --- | --- |
+| [entry_cpu_attempt_v1](report/assets/20261019_mr3_p2a_v16/checks/entry_cpu_attempt_v1/actual_wait.json) | 0 | 19.727855316 | 113 PASS |
+| [independent_replay_cpu_attempt_v1](report/assets/20261019_mr3_p2a_v16/checks/independent_replay_cpu_attempt_v1/actual_wait.json) | 0 | 22.065744528 | 62 PASS |
+| [qualification_cpu_attempt_v1](report/assets/20261019_mr3_p2a_v16/checks/qualification_cpu_attempt_v1/actual_wait.json) | 1 | 11.067734222 | 49中42 PASS/7 fixture setUp ERROR，canonical binding在/tmp根外；未改生产约束 |
+| [qualification_cpu_attempt_v2](report/assets/20261019_mr3_p2a_v16/checks/qualification_cpu_attempt_v2/actual_wait.json) | 0 | 15.42356518 | 54 PASS；修测试夹具路径/完整wait后，攻击先核baseline再变异 |
+
+新增newprofile full/custody/readback/information/runtime/peer-control-FIFO/cadence/PPO路由；必要原科学数学保留，新DAG实际30角色（合并drive/reach与peer/control，不伪称旧38）。旧schema、替换原physics、空FIFO、借用wait、错误argv、rc7伪PASS、同PID/start zombie、改资格原件等CPU反例均保持拒绝。完整资格之后还需新的16决策正优化minimum、条件pilot及final-only链；当前未启动任何新native/GPU。
+
+准备命令 `rtk proxy python3 -B ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v16/prepare_plan_v1.py` 实际rc0，仅生成首版647source/10ELF计划与V15真实build桥接，无launch。该v1草案随后在任何原生执行/冻结前补完整policy阶段watcher/真实wait/最终absence路由，由新revision预声明取代；v1原字节保留，不计原生PASS。V15真实build不重跑，严格新bridge重新核原97.687508107秒wait、原source/console/manifest/currentELF链。
+
+新链初版policy_chain_cpu_attempt_v1实际15 PASS/rc0/.601705658秒；补上完整闭合EP档案清单与缺closure输出保留后，qualification_cpu_attempt_v3实际70 PASS/rc0/18.607284193秒，最终qualification_cpu_attempt_v4实际71 PASS/rc0/17.220292026秒，所有原snapshot/console与中间源范围保留。完整实际命令均在上述同一[索引](report/assets/20261019_mr3_p2a_v16/validation_index_v1.json) actual_argv；最终选择113+62+71=246项，final_required只选当前源码仍完全相同的三组，不把旧源CPU结果重标为新源。
+
+完整原生前计划生成命令 `rtk proxy python3 -B ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v16/prepare_plan_v1.py --revision 2` 与 `--revision 3` 各实际rc0，仅准备JSON。v1/v2在任何native/冻结前被后继明确取代，原字节保留；最终[revision3计划](report/assets/20261019_mr3_p2a_v16/predeclared_plan_v3.json) SHA `4deb328df2efaf1e0230c73a1de734db649e56789fdfae8fe0b1d12be130e9cf`，649源码/合同及10实际ELF绑定。四阶段12回合30科学角色；完整同冻结资格后才允许fresh seed41 minimum16/新pilot1870最多/最后唯一final.zip的open401/402/403三场原开发验证。pilot64步只作采集外部截断，95%/300秒评价任务不变。pipeline实际wait/外部savedPIDstart gone/已提交审计尾账全部保留，任一required fail停止后继，无自动retry。
+
+最终静态准备实际命令：`rtk proxy /usr/bin/python3 -B .../20261019_mr3_p2a_v15/finite_actual_runner_v2.py --output .../20261019_mr3_p2a_v16/checks/static_preparation_attempt_v1 --cwd /home/zhuyulab/ns3-workspace --source .../check_preparation_v1.py --source .../validation_index_v1.json -- /usr/bin/python3 -B .../check_preparation_v1.py --output .../checks/static_preparation_attempt_v1/result.json`；省略前缀在[实际回执](report/assets/20261019_mr3_p2a_v16/checks/static_preparation_attempt_v1/actual_wait.json)的actual_argv/cwd/source原字段完整记录。实际rc0、child8.874979538秒、源稳定；161selected文件、294AST、19JSON、216本地链接、旧595份V14/V15原件与38旧archive entries、append-only log均通过。首轮FAIL不隐藏；静态observer不能提供native/GPU信用。
+
+提交前根目录diff-check与`rtk git add -n .`/`rtk proxy git add -n .`实际rc0，选中源码/文档与有限CPU证据，无build/install/runtime/checkpoint/bag/ELF；8份真实console受上游忽略规则影响，将作为选定canonical证据显式force-add，并仅用A16 checks的窄-text/-whitespace规则保留原始字节。随后执行Git staged原字节检查，再提交/推送正式冻结。
+
+Git staged原始字节检查最终实际rc0，171选中文件、294AST/21JSON/217本地链接及全部ordinal快照/8console index原字节通过；完整[静态回执](report/assets/20261019_mr3_p2a_v16/staged_preparation_review_v1.json)由/tmp原件逐字节保存。实际命令 `rtk proxy python3 -B .../20261019_mr3_p2a_v16/check_preparation_v1.py --staged --output /tmp/mr3_p2a_v16_staged_preparation_v1.json`；本只读Git检查无独立child墙秒声明、不以poll耗时记费。随后仅追加本事实与原JSON拷贝，不改变实验源或前述原件。

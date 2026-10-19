@@ -1,0 +1,56 @@
+{
+  "schema": "mr3-reach-dispatch-independent-static-review-v1",
+  "scope": "Independent read-only review of root-owned dispatch sources and authored CPU attacks. No module import, test, build, native, GPU or scientific consumer was executed by this reviewer.",
+  "reviewed_source_sha256": {
+    "reach_gates.py": "2514146a5f8374276a1c6c27a91442b886d6fa17e293671f2cffc06ad75a6eca",
+    "reach_preparation.py": "dd660fddbcce34df883f640234c62cb1194dc5c70d4b22bc5e8900cebb97c010",
+    "audit_reach_preparation.py": "fe6a0fe8fbf71a2aee7bd8c5dd7d6ebf904488f2d8d3ccde76eb55878de928cd",
+    "audit_reach_controlled_physics.py": "36f105425a963e2acf6126b008c5b60c09b47b2d995c55c7306fdaf6dd355f42",
+    "reach_audit_projection.py": "c2f1c8334c57901a3415ed2c17a38467e75e502bbe2ce60b55c205a9f1372915"
+  },
+  "findings": [
+    {
+      "finding": "Immutable audit_ppo environment document pin rejected the explicit reach status addition.",
+      "resolution_observed": "Root now removes exactly one fixed status paragraph, restores the entire original document hash, and checks its original normative prefix and fixed execution appendix. New current document SHA is explicit. Old legacy numerical and failed L1 scope remains preserved."
+    },
+    {
+      "finding": "Whole-run runtime role initially called a single-episode entry.",
+      "resolution_status": "Root assigned a complete run wrapper to the entry agent. Final run discovery/source stability must be checked by the parent's actual tests; not asserted complete by this read-only review."
+    },
+    {
+      "finding": "New role-name inventory alone allowed substitution of original physics/input/angular consumers and vacuous FIFO aggregates.",
+      "resolution_observed": "Root validator now checks exact immutable consumer paths, all FIFO IDs/member/dependency/episode leaves, and closure/watcher binding paths. Independent attacks are authored."
+    },
+    {
+      "finding": "Qualifier initially trusted passed booleans without rederiving child returncode/output predicate and frozen argv.",
+      "resolution_observed": "Root now rederives actual child pass from returncode/errors/output, checks exact wait receipt/source plan/job argv/role/cwd/launcher identity, exact audit inventory and derived forward budget. Independent rc7, false output, errors, different argv and saved zombie attacks are authored."
+    },
+    {
+      "finding": "Existing custody generic build receipt shape could not directly validate the original V15 actual_wait format; an unchecked synthetic commands bridge was insufficient.",
+      "resolution_authored": "New custody mandates exactly one strict mr3-reach-native-build-evidence-bridge-v1. It checks the original actual wait and source before/after/console bytes, exact integer-ns duration against Decimal seconds, real positive PID/start identities, the original colcon command, actual static-verifier wait/result/manifest SHA chain, native changed-source/CMake identity and current actual driver ELF. It labels new_build_executed=false."
+    },
+    {
+      "finding": "New REACH contract and ENV document should be explicitly present in plan source bindings, in addition to execution-source inventory.",
+      "resolution_status": "Sent to root as an explicit source-bound contract requirement; subsequent root changes may supersede the source SHA snapshot above."
+    }
+  ],
+  "retained_obligations": [
+    "Exactly three robots and all original task/contact/reward/scalar/SLAM geometry obligations",
+    "Complete received-only information, peer cloud/scan, v2 causal phase and FIFO replays",
+    "Six compiled driver sources, actual current ELF and live PID/start/ancestry/alias/maps custody",
+    "Actual waits, all submitted-child drainage, original orderly-close and zombie absence predicates",
+    "All raw sources, calibration/application bindings, fixed anchor and finite-H stop/tail necessities",
+    "Separate continuous-plant assumptions and no implicit native admission from CPU results",
+    "All prior native/model/CPU failures remain preserved under their original scope"
+  ],
+  "authored_tests": {
+    "test_native_custody_reach.py": {"methods": 15, "executed_by_reviewer": false},
+    "test_audit_reach_cadence.py": {"methods": 9, "executed_by_reviewer": false},
+    "test_reach_qualification.py": {"methods": 7, "executed_by_reviewer": false}
+  },
+  "static_diff_check": "Owned paths only: git diff --check returned 0.",
+  "cpu_pass_claimed": false,
+  "continuous_plant_proved": false,
+  "native_admission": false,
+  "new_budget_or_scientific_credit": false
+}
