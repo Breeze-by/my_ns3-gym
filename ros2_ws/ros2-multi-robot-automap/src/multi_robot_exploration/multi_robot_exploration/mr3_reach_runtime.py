@@ -197,8 +197,10 @@ class ReachTracker:
             self.fail("storage robot/epoch differs from local owner")
         self.storage.receive(value)
         target = self.published.get(value["decision_sequence"])
-        if (target is None or value["clock_ns"] != target["clock_ns"]
-                or value["source_clock_ns"] != target["clock_ns"]
+        # Storage may happen after publication during free-running startup.
+        # receive() preserves that actual clock and checks source <= storage;
+        # matching() separately requires equality at a paused control boundary.
+        if (target is None or value["source_clock_ns"] != target["clock_ns"]
                 or any(value[k] != target[k] for k in ("linear_x", "angular_z"))):
             self.fail("storage substituted an unpublished target")
         if target["linear_x"] == target["angular_z"] == 0:

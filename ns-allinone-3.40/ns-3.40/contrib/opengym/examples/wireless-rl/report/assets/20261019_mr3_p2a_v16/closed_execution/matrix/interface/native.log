@@ -1,0 +1,132 @@
+{
+  "kind": "scripted_p1c_sampling_not_rl",
+  "workers": 1,
+  "safety_contract": "mr3-reach-v1",
+  "robots_per_worker": 3,
+  "schedule": [
+    [
+      "open",
+      101
+    ]
+  ],
+  "steps_per_episode": 32,
+  "command": [
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/benchmark.py",
+    "--workers",
+    "1",
+    "--schedule",
+    "open:101",
+    "--steps",
+    "32",
+    "--preparation-motion-probe",
+    "--preparation-probe-version",
+    "mr3-p2a-reach-outward-cancel-v1",
+    "--base-domain",
+    "190",
+    "--base-port",
+    "14101",
+    "--output-root",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v16",
+    "--run-id",
+    "mr3_p2a_reach_v16_interface",
+    "--preparation-parameter-review",
+    "--work-wall-seconds",
+    "1888.285",
+    "--close-reserve-seconds",
+    "120",
+    "--preparation-parameter-profile",
+    "gentle_turn_v1",
+    "--safety-contract",
+    "mr3-reach-v1"
+  ],
+  "python": "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+  "freeze": "d307a0b248a87bf1c03b41f4f7df4cb221253ac9",
+  "base_domain": 190,
+  "base_port": 14101,
+  "fault_probe": false,
+  "deadline_probe": false,
+  "terminal_probe": false,
+  "preparation_motion_probe": true,
+  "preparation_probe_version": "mr3-p2a-reach-outward-cancel-v1",
+  "preparation_parameter_review": true,
+  "preparation_parameter_profile": "gentle_turn_v1",
+  "preparation_parameter_review_source": {
+    "relative_path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_nav2_parameters.py",
+    "freeze": "d307a0b248a87bf1c03b41f4f7df4cb221253ac9",
+    "sha256": "53dcb0ce70a745956b92a916340019a94d6175074b766d101e5d8425d844b514",
+    "profile_selection": "gentle_turn_v1",
+    "profile_definition_sha256": "af5bf20bf17ed160dd3476653c21eef94d0ba6f30d119c1bbbe66190e78c68a5",
+    "immutable_reader": {
+      "relative_path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_actual_nav2_parameters_v13.py",
+      "freeze": "d307a0b248a87bf1c03b41f4f7df4cb221253ac9",
+      "sha256": "9eb963457a8dc8297e4686004ea08c7a06e1e0e9ede7cd795ba9505da9d8f701"
+    },
+    "deployment_yaml_sources": [
+      {
+        "relative_path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot/params/nav2_params_tb1_0.yaml",
+        "freeze": "d307a0b248a87bf1c03b41f4f7df4cb221253ac9",
+        "sha256": "d2d01844885fd76ab6e8cd996c37b8994c6cf801010988db12e6dc6e67e38d53"
+      },
+      {
+        "relative_path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot/params/nav2_params_tb2_0.yaml",
+        "freeze": "d307a0b248a87bf1c03b41f4f7df4cb221253ac9",
+        "sha256": "5f2ab024dd590a2cc6656072311a11cddbbaf646423a3fe502569b466e92dc33"
+      },
+      {
+        "relative_path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot/params/nav2_params_tb3_0.yaml",
+        "freeze": "d307a0b248a87bf1c03b41f4f7df4cb221253ac9",
+        "sha256": "b3d47508e69d2e5b6d93805435dbe42b3a5ec262b06015466d5a92f214106192"
+      }
+    ],
+    "safety_contract": "mr3-reach-v1",
+    "deployment_entry": {
+      "relative_path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_nav2_parameters.py",
+      "freeze": "d307a0b248a87bf1c03b41f4f7df4cb221253ac9",
+      "sha256": "848dd05ebd9558a4ec8d47866909662030d24cfce837742a409907ff6c5bfdf3"
+    },
+    "shared_wire_source": {
+      "relative_path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_safety_intent.py",
+      "freeze": "d307a0b248a87bf1c03b41f4f7df4cb221253ac9",
+      "sha256": "141d62a1cf4d90414bb6cf191aee146d099a7839d946d991514a05e9bfaaa6f7"
+    }
+  },
+  "resource_scope": "host counters include unrelated activity; GPU driver reports",
+  "num_logical_cpus": 80,
+  "cpu_affinity_count": 80,
+  "training_eligible": false,
+  "scientific_readers_applied": false,
+  "scientific_qualification": "PENDING_NEW_FREEZE_INDEPENDENT_AUDITS",
+  "qualification_scope": "engineering_collection_only_no_legacy_qualification_credit",
+  "preparation_fixture_implementation": "unchanged_v6_external_actions",
+  "preparation_fixture_schema": "mr3-reach-preparation-fixture-v1",
+  "work_wall_budget": {
+    "total_allocation_seconds": 1888.285,
+    "close_reserve_seconds": 120.0,
+    "started_wall_monotonic_ns": 4165902226651041,
+    "allocation_deadline_monotonic_ns": 4167790511651041,
+    "work_deadline_monotonic_ns": 4167670511651041,
+    "scope": "cooperative admission; complete in-flight RPC then normal close; no hard kill",
+    "rpc_admission_upper_bounds_seconds": {
+      "reset": 420.0,
+      "step": 90.0
+    }
+  },
+  "passed": false,
+  "wall_sec_including_all_attempts": 430.8302041613497,
+  "valid_transitions": 0,
+  "effective_transition_per_wall_sec": 0.0,
+  "preparation_abort": {
+    "requested": true,
+    "first_failure": {
+      "worker_id": 0,
+      "kind": "rpc_or_worker_exception",
+      "reason": "InfrastructureError('reset: IPC response wall guard expired')",
+      "episode_index": 0,
+      "epoch": null,
+      "observed_wall_monotonic_ns": 4166333032578338
+    },
+    "scope": "first observed failing RPC/worker; other in-flight RPCs finish then close"
+  },
+  "outcome": "INCOMPLETE",
+  "wall_limit_exceeded": false
+}

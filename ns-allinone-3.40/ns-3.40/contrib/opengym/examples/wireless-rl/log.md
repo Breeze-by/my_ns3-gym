@@ -7200,3 +7200,37 @@ Git staged原始字节检查最终实际rc0，171选中文件、294AST/21JSON/21
 `rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 python3 -B ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v16/prepare_plan_v1.py --revision 5`实际rc0，只生成bridge.v3/binding.v5/[plan5](report/assets/20261019_mr3_p2a_v16/predeclared_plan_v5.json)，SHA `bbc7ba93be40cc59b145dfff39ca1ea4b91aa903de25d83c748e63bc4554e806`，649source/10ELF；原plan1–4和失败CPU前置保留。工程/pilot余额未动，无新native/GPU。
 
 revision5提交前原始字节静态检查实际rc0，完整[结果](report/assets/20261019_mr3_p2a_v16/staged_preparation_review_v2.json)由/tmp逐字保存。实际命令`rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 python3 -B ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v16/check_preparation_v1.py --staged --output /tmp/mr3_p2a_v16_revision5_staged_v1.json`；无单独child墙秒声明，不以轮询时间记费。全部最终CPU源码SHA、原FAIL、旧595原件/38archive项、append-only log、本地链接及Git index实际snapshot/console字节通过；无native/GPU信用。
+
+V16第二冻结`d307a0b248a87bf1c03b41f4f7df4cb221253ac9`已实际push/clean。其CPU预检rc0/25.554919193秒，源前后稳定；随后同freeze实际启动一次matrix，first interface失败，后继terminal/reset/deadline与所有policy阶段均未启动。以下为三个真正子进程完整actual_argv（父入口均`reach_execution`，scope依次cpu/engineering/engineering；cwd为canonical wireless-rl，PYTHONNOUSERSITE=1/PYTHONDONTWRITEBYTECODE=1/unset PYTHONPATH）：
+
+```bash
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B report/assets/20261019_mr3_p2a_v16/preflight_v1.py --plan /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v16/predeclared_plan_v5.json --freeze d307a0b248a87bf1c03b41f4f7df4cb221253ac9 --output /tmp/mr3_p2a_reach_v16_preflight.json
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -m mr3_learning.reach_preparation --plan /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v16/predeclared_plan_v5.json --freeze d307a0b248a87bf1c03b41f4f7df4cb221253ac9
+/usr/bin/python3 -B report/assets/20261019_mr3_p2a_v16/external_absence_v1.py --output /tmp/mr3_p2a_reach_v16_absence.json
+```
+
+[实际outer原件](report/assets/20261019_mr3_p2a_v16/closed_execution/matrix_outer/actual_wait.json)rc1/448.826082101秒，all_submitted_children_waited=true/source_unchanged=true；interface FAIL，三后继SKIPPED。native真实wait rc1/431.295186949，watcher rc0/432.999931686；费用按outer完整墙秒一次计，不重加重叠child。首次fault在tb1 source420000000/actualstorage430000000：原target seq21/v=w0和ACK内容相同，runtime错误强制storageclock==sourceclock，把预热异步ACK误判未发布目标并锁存STOP。[原始行/冻结源码取证](report/assets/20261019_mr3_p2a_v16/closed_execution/ack_forensic_review_v1.json)保留；没有policytransition、GPU或optimizer。本次native FAIL不改判，不重试V16。reset启动守卫自然关闭；保留supervisor forced_shutdown=true/worker_returncode=-9，不宣称所有正常0。
+
+[完整native归档](report/assets/20261019_mr3_p2a_v16/closed_execution/native_closed_v1.tar.gz)含459件823412096字节，压缩后80515160字节；[逐件SHA](report/assets/20261019_mr3_p2a_v16/closed_execution/native_closed_manifest_v1.json)与全部解压字节、source前后清单均一致。实际归档命令`rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 python3 -B ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v16/archive_closed_native_v1.py` rc0，只封存闭合原件，无新实验/单独child秒声明。
+
+独立[外部absence结果](report/assets/20261019_mr3_p2a_v16/closed_execution/external_absence.json)实际48个保存PID/start全gone，present/unreadable/errors均空，39个launchPID均有保存start；实际outer rc0/.190795842秒source不变。该结果只证保存身份消失，不提供科学PASS。工程本版真实合计449.016877943，累计32045.4944710376018/52000，余19954.5055289623982；见[精确逐外层账](report/assets/20261019_mr3_p2a_v16/closed_execution/engineering_accounting_v1.json)。CPU/build准备另列，pilot1870/2905.9547395464029与三final-only未动。
+
+## 2026-10-19 P2A V17：异步存储ACK最小修复与新冻结准备
+
+V16单次矩阵已完整失败关闭，不重试该freeze。用户授权直接继续例行修复；生产仅去掉ReachTracker对actual storageclock==target sourceclock的错误强制，全部epoch/robot/seq/source/值/typedclock单调仍严审；DrivePhaseClient.matching paused同钟、.94/.78 release后资格、driver/ELF/独立物理数学/95%任务/reward原字节不改。
+
+实际ROS CPU child完整命令：
+
+```bash
+/bin/bash -c 'source /opt/ros/humble/setup.bash; source "$1/install/setup.bash"; exec /usr/bin/python3 -B -m pytest -q test/test_mr3_reach_runtime_independent.py test/test_mr3_drive_phase.py test/test_motion_safety_reach.py' mr3-ack-regression /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
+```
+
+parent为原`finite_actual_runner_v2.py --output .../20261019_mr3_p2a_v17/checks/ack_runtime_cpu_attempt_v1 --cwd .../src/multi_robot_exploration --source`五份源/测试原路径（完整canonical路径与snapshot/SHA在[原回执](report/assets/20261019_mr3_p2a_v17/checks/ack_runtime_cpu_attempt_v1/actual_wait.json)source_before）。环境unset PYTHONPATH/PYTHONNOUSERSITE=1/PYTHONDONTWRITEBYTECODE=1/CUDA_VISIBLE_DEVICES=；实际rc0、94 PASS、22.161525707秒、source前后稳定，不借CPU作native/GPU信用。
+
+`rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 python3 -B ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v17/prepare_plan_v1.py --engineering-remaining-seconds 19954.5055289623982`实际rc0，仅生成[全新plan1](report/assets/20261019_mr3_p2a_v17/predeclared_plan_v1.json)，SHA `0b9951b44e842ef2677234659d813d74c97447068fe34688cc4f4b4b04ae3833`，659源码/合同/先行真实账与10ELF；新binding SHA `2dd1d3f8367a83b40d9bd4cfc51ce3dc61941a7f9a17358ffa70dd73228a61ff`。V16失败/48gone/449.016877943费用原SHA全部绑定，不退费。仍完整四阶段18000及外部300，minimum1800只有实际矩阵节余足额后才允许；不得借pilot或缩门。新源必须全部同freeze重做12EP/30roles，当前尚无V17native/GPU。
+
+V17封存首次Git静态检查实际rc1，[原件](report/assets/20261019_mr3_p2a_v17/staged_preparation_review_v1.json)保留，error=`Git staged source inventory changed during check`。原因是root在大型归档git add尚未退出时尝试force-add日志（该调用实际128/index.lock，未移除锁），随后正确等待原add实际0并补stage六份原始日志；该check期间index发生变化，所以应拒绝。本次只是封存检查，不是native或科学角色。后续所有暂存结束后再开新检查，绝不把此FAIL改PASS。
+
+V17第二次稳定index静态检查实际rc0，[完整原JSON](report/assets/20261019_mr3_p2a_v17/staged_preparation_review_v2.json)逐字保存，实际命令为同A16/check_preparation_v1.py --staged --output /tmp/mr3_p2a_v17_staged_preparation_v2.json；无独立child秒声明。旧595份V14/V15原件、38旧archive项、append-only log、所有当前CPU源及Git原字节/链接通过；首轮index变更FAIL保留。
+
+[独立闭合打包检查](report/assets/20261019_mr3_p2a_v17/closed_preparation_integrity_v1.json)实际rc0，真实parent finite_actual_runner_v2.py的[完整argv/cwd/source与wait](report/assets/20261019_mr3_p2a_v17/checks/closed_preparation_cpu_attempt_v1/actual_wait.json)记录46.841968454 child秒、source前后完全相同；child为`/usr/bin/python3 -B .../20261019_mr3_p2a_v17/check_closed_preparation_v1.py --output /tmp/mr3_p2a_v17_closed_preparation_v1.json`。逐字核5份新94项CPU源/ordinal快照/console、全部closed copy对/tmp原件及index、459件archive SHA/bytes、48gone、449.016877943费用守恒、659新plan源及10实际ELF；production差异严格只runtime与对应test，其余driver/DrivePhaseClient/独立reader均原字节。本项仅封存CPU检查，无native/GPU或科学信用。

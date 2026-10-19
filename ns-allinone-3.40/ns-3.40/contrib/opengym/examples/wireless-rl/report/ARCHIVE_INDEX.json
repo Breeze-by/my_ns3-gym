@@ -1885,7 +1885,7 @@
   },
   "mr3_p2a_v16_reach_qualification_20261019": {
     "recorded_date": "2026-10-19",
-    "status": "CPU_BUILD_EVIDENCE_BRIDGE_REPAIRED_254_TESTS_PASS_PENDING_NEW_FREEZE",
+    "status": "FAIL_CLOSED_INTERFACE_STARTUP_ACK_CLOCK_SEMANTICS",
     "report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v16.md",
     "assets": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v16",
     "engineering_ceiling_wall_seconds": "52000",
@@ -1897,8 +1897,28 @@
     "scope": "Versioned full reach qualification route; no unexecuted native/GPU result claimed.",
     "source_freeze_before_preflight": "1833b8d40144e25149a9df0fd2196eaeb491e65f",
     "active_plan": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v16/predeclared_plan_v5.json",
-    "new_native_runs": 0,
+    "new_native_runs": 1,
     "new_gpu_calls": 0,
-    "active_plan_sha256": "bbc7ba93be40cc59b145dfff39ca1ea4b91aa903de25d83c748e63bc4554e806"
+    "active_plan_sha256": "bbc7ba93be40cc59b145dfff39ca1ea4b91aa903de25d83c748e63bc4554e806",
+    "source_freeze": "d307a0b248a87bf1c03b41f4f7df4cb221253ac9",
+    "charged_wall_seconds": "449.016877943",
+    "cumulative_engineering_used_seconds": "32045.4944710376018",
+    "remaining_engineering_seconds": "19954.5055289623982",
+    "saved_process_identities": 48,
+    "all_saved_identities_gone": true,
+    "full_scientific_qualification": false,
+    "policy_stage_started": false
+  },
+  "mr3_p2a_v17_ack_semantics_20261019": {
+    "status": "CPU_94_PASS_PACKAGING_PASS_FREEZE_READY",
+    "report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v17.md",
+    "assets": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v17",
+    "predecessor_failure_preserved": true,
+    "engineering_remaining_seconds": "19954.5055289623982",
+    "minimum_budget_conditional": true,
+    "native_runs": 0,
+    "gpu_calls": 0,
+    "active_plan": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v17/predeclared_plan_v1.json",
+    "active_plan_sha256": "0b9951b44e842ef2677234659d813d74c97447068fe34688cc4f4b4b04ae3833"
   }
 }

@@ -1,0 +1,384 @@
+{
+  "schema": "mr3-v16-closed-ack-forensic-review-v1",
+  "freeze": "d307a0b248a87bf1c03b41f4f7df4cb221253ac9",
+  "scientific_pass_claimed": false,
+  "new_native_or_gpu_execution": false,
+  "raw_motion_file": {
+    "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v16/mr3_p2a_reach_v16_interface/worker0/episode001_open_101/motion_safety.jsonl",
+    "bytes": 416517388,
+    "sha256": "4449d38fd0fe9c2410a3cb5452e753795ad0d220b180cf5cd105bae4696d5661"
+  },
+  "raw_driver_file": {
+    "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v16/mr3_p2a_reach_v16_interface/worker0/episode001_open_101/drive_tb1.jsonl",
+    "bytes": 7052149,
+    "sha256": "1a05163a0ec7d297cea9ce395876b82a0e86012df10ef6d3e168077cfbd3f20f"
+  },
+  "motion_rows": [
+    {
+      "line": 202,
+      "raw": "{\"schema\":\"mr3-motion-safety-v1\",\"epoch\":\"mr3_p2a_reach_v16_interface_w0_e1_f3a20de7\",\"record_sequence\":202,\"kind\":\"reach_intent_publish\",\"sim_time_sec\":0.42,\"wall_monotonic_ns\":4165908425243848,\"payload\":{\"robot\":\"tb1\",\"intent\":{\"admitted_signs\":[],\"anchor\":null,\"epoch\":\"mr3_p2a_reach_v16_interface_w0_e1_f3a20de7\",\"intent_sequence\":21,\"lineage\":{\"release_clock_ns\":null},\"robot\":\"tb1\",\"role\":\"HOLD\",\"schema\":\"mr3-safety-intent-v1\",\"source_clock_ns\":420000000,\"target\":{\"angular_z\":0.0,\"clock_ns\":420000000,\"decision_sequence\":21,\"epoch\":\"mr3_p2a_reach_v16_interface_w0_e1_f3a20de7\",\"linear_x\":0.0,\"robot\":\"tb1\",\"schema\":\"mr3-drive-target-v1\"}},\"payload_sha256\":\"fd0800fa0a9bcafdc2e529256a001ba78630caba5b0379677cbe64795bcd6aa7\",\"publish_started_wall_monotonic_ns\":4165908424942636,\"publish_completed_wall_monotonic_ns\":4165908425096441,\"scope\":\"actual_publisher_call_returned_not_delivery\"}}\n",
+      "record": {
+        "schema": "mr3-motion-safety-v1",
+        "epoch": "mr3_p2a_reach_v16_interface_w0_e1_f3a20de7",
+        "record_sequence": 202,
+        "kind": "reach_intent_publish",
+        "sim_time_sec": 0.42,
+        "wall_monotonic_ns": 4165908425243848,
+        "payload": {
+          "robot": "tb1",
+          "intent": {
+            "admitted_signs": [],
+            "anchor": null,
+            "epoch": "mr3_p2a_reach_v16_interface_w0_e1_f3a20de7",
+            "intent_sequence": 21,
+            "lineage": {
+              "release_clock_ns": null
+            },
+            "robot": "tb1",
+            "role": "HOLD",
+            "schema": "mr3-safety-intent-v1",
+            "source_clock_ns": 420000000,
+            "target": {
+              "angular_z": 0.0,
+              "clock_ns": 420000000,
+              "decision_sequence": 21,
+              "epoch": "mr3_p2a_reach_v16_interface_w0_e1_f3a20de7",
+              "linear_x": 0.0,
+              "robot": "tb1",
+              "schema": "mr3-drive-target-v1"
+            }
+          },
+          "payload_sha256": "fd0800fa0a9bcafdc2e529256a001ba78630caba5b0379677cbe64795bcd6aa7",
+          "publish_started_wall_monotonic_ns": 4165908424942636,
+          "publish_completed_wall_monotonic_ns": 4165908425096441,
+          "scope": "actual_publisher_call_returned_not_delivery"
+        }
+      }
+    },
+    {
+      "line": 203,
+      "raw": "{\"schema\":\"mr3-motion-safety-v1\",\"epoch\":\"mr3_p2a_reach_v16_interface_w0_e1_f3a20de7\",\"record_sequence\":203,\"kind\":\"reach_decision\",\"sim_time_sec\":0.42,\"wall_monotonic_ns\":4165908425496337,\"payload\":{\"robot\":\"tb1\",\"clock_ns\":420000000,\"decision_sequence\":21,\"request\":null,\"own_state\":null,\"received_peers\":{\"tb2\":null,\"tb3\":null},\"decision\":{\"allow\":false,\"reason\":\"reach_zero\",\"output\":[0.0,0.0],\"minimum_margin_m\":null},\"intent\":{\"admitted_signs\":[],\"anchor\":null,\"epoch\":\"mr3_p2a_reach_v16_interface_w0_e1_f3a20de7\",\"intent_sequence\":21,\"lineage\":{\"release_clock_ns\":null},\"robot\":\"tb1\",\"role\":\"HOLD\",\"schema\":\"mr3-safety-intent-v1\",\"source_clock_ns\":420000000,\"target\":{\"angular_z\":0.0,\"clock_ns\":420000000,\"decision_sequence\":21,\"epoch\":\"mr3_p2a_reach_v16_interface_w0_e1_f3a20de7\",\"linear_x\":0.0,\"robot\":\"tb1\",\"schema\":\"mr3-drive-target-v1\"}},\"tracker\":{\"role\":\"HOLD\",\"fault\":null,\"permanent_stop\":false,\"anchor_history\":[],\"raw_samples\":0,\"applied_samples\":0,\"cumulative_path_diagnostic_m\":0.0,\"backup_from_clock_ns\":null,\"terminal_anchor\":null,\"backup_zero_sequence\":null,\"finite_stop_path_lower_m\":\"None\",\"pending_resume\":null,\"continuous_physical_model_proved\":false},\"safety_table_sha256\":null,\"started\":false,\"ready\":false}}\n",
+      "record": {
+        "schema": "mr3-motion-safety-v1",
+        "epoch": "mr3_p2a_reach_v16_interface_w0_e1_f3a20de7",
+        "record_sequence": 203,
+        "kind": "reach_decision",
+        "sim_time_sec": 0.42,
+        "wall_monotonic_ns": 4165908425496337,
+        "payload": {
+          "robot": "tb1",
+          "clock_ns": 420000000,
+          "decision_sequence": 21,
+          "request": null,
+          "own_state": null,
+          "received_peers": {
+            "tb2": null,
+            "tb3": null
+          },
+          "decision": {
+            "allow": false,
+            "reason": "reach_zero",
+            "output": [
+              0.0,
+              0.0
+            ],
+            "minimum_margin_m": null
+          },
+          "intent": {
+            "admitted_signs": [],
+            "anchor": null,
+            "epoch": "mr3_p2a_reach_v16_interface_w0_e1_f3a20de7",
+            "intent_sequence": 21,
+            "lineage": {
+              "release_clock_ns": null
+            },
+            "robot": "tb1",
+            "role": "HOLD",
+            "schema": "mr3-safety-intent-v1",
+            "source_clock_ns": 420000000,
+            "target": {
+              "angular_z": 0.0,
+              "clock_ns": 420000000,
+              "decision_sequence": 21,
+              "epoch": "mr3_p2a_reach_v16_interface_w0_e1_f3a20de7",
+              "linear_x": 0.0,
+              "robot": "tb1",
+              "schema": "mr3-drive-target-v1"
+            }
+          },
+          "tracker": {
+            "role": "HOLD",
+            "fault": null,
+            "permanent_stop": false,
+            "anchor_history": [],
+            "raw_samples": 0,
+            "applied_samples": 0,
+            "cumulative_path_diagnostic_m": 0.0,
+            "backup_from_clock_ns": null,
+            "terminal_anchor": null,
+            "backup_zero_sequence": null,
+            "finite_stop_path_lower_m": "None",
+            "pending_resume": null,
+            "continuous_physical_model_proved": false
+          },
+          "safety_table_sha256": null,
+          "started": false,
+          "ready": false
+        }
+      }
+    },
+    {
+      "line": 208,
+      "raw": "{\"schema\":\"mr3-motion-safety-v1\",\"epoch\":\"mr3_p2a_reach_v16_interface_w0_e1_f3a20de7\",\"record_sequence\":208,\"kind\":\"actual_cmd_vel\",\"sim_time_sec\":0.42,\"wall_monotonic_ns\":4165908429726396,\"payload\":{\"robot\":\"tb1\",\"twist\":{\"linear\":{\"x\":0.0,\"y\":0.0,\"z\":0.0},\"angular\":{\"x\":0.0,\"y\":0.0,\"z\":0.0}},\"publisher_identity\":{\"scope\":\"graph_at_callback\",\"topic\":\"/tb1/cmd_vel\",\"valid\":true,\"endpoints\":[{\"namespace\":\"/\",\"node\":\"motion_safety\",\"endpoint_gid\":\"010f3cc029b2cc7d00000000000012030000000000000000\",\"topic_type\":\"geometry_msgs/msg/Twist\"}]},\"observed_decision_sequence\":21}}\n",
+      "record": {
+        "schema": "mr3-motion-safety-v1",
+        "epoch": "mr3_p2a_reach_v16_interface_w0_e1_f3a20de7",
+        "record_sequence": 208,
+        "kind": "actual_cmd_vel",
+        "sim_time_sec": 0.42,
+        "wall_monotonic_ns": 4165908429726396,
+        "payload": {
+          "robot": "tb1",
+          "twist": {
+            "linear": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "angular": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            }
+          },
+          "publisher_identity": {
+            "scope": "graph_at_callback",
+            "topic": "/tb1/cmd_vel",
+            "valid": true,
+            "endpoints": [
+              {
+                "namespace": "/",
+                "node": "motion_safety",
+                "endpoint_gid": "010f3cc029b2cc7d00000000000012030000000000000000",
+                "topic_type": "geometry_msgs/msg/Twist"
+              }
+            ]
+          },
+          "observed_decision_sequence": 21
+        }
+      }
+    },
+    {
+      "line": 211,
+      "raw": "{\"schema\":\"mr3-motion-safety-v1\",\"epoch\":\"mr3_p2a_reach_v16_interface_w0_e1_f3a20de7\",\"record_sequence\":211,\"kind\":\"output_completed\",\"sim_time_sec\":0.42,\"wall_monotonic_ns\":4165908431156629,\"payload\":{\"status\":{\"schema\":\"mr3-motion-safety-status-v2\",\"epoch\":\"mr3_p2a_reach_v16_interface_w0_e1_f3a20de7\",\"clock_ns\":420000000,\"ready\":false,\"completion_scope\":\"publication_and_local_topic_receipt\",\"decision_sequences\":{\"tb1\":21,\"tb2\":21,\"tb3\":21},\"outputs\":{\"tb1\":{\"linear_x\":0.0,\"angular_z\":0.0},\"tb2\":{\"linear_x\":0.0,\"angular_z\":0.0},\"tb3\":{\"linear_x\":0.0,\"angular_z\":0.0}},\"safety_contract\":\"mr3-reach-v1\",\"intent_refs\":{\"tb1\":{\"intent_sequence\":21,\"payload_sha256\":\"fd0800fa0a9bcafdc2e529256a001ba78630caba5b0379677cbe64795bcd6aa7\"},\"tb2\":{\"intent_sequence\":21,\"payload_sha256\":\"e09bfe61b6bacf453b579565bacecf0aed894a82b133c0476383d49393aad433\"},\"tb3\":{\"intent_sequence\":21,\"payload_sha256\":\"2bebb29dfc9d8fa02ecbad0d6fc0da795100bc8bee8b307251fb7c0d5228d143\"}},\"safety_table_sha256\":null},\"publish_started_wall_monotonic_ns\":4165908430906407,\"publish_completed_wall_monotonic_ns\":4165908431135017}}\n",
+      "record": {
+        "schema": "mr3-motion-safety-v1",
+        "epoch": "mr3_p2a_reach_v16_interface_w0_e1_f3a20de7",
+        "record_sequence": 211,
+        "kind": "output_completed",
+        "sim_time_sec": 0.42,
+        "wall_monotonic_ns": 4165908431156629,
+        "payload": {
+          "status": {
+            "schema": "mr3-motion-safety-status-v2",
+            "epoch": "mr3_p2a_reach_v16_interface_w0_e1_f3a20de7",
+            "clock_ns": 420000000,
+            "ready": false,
+            "completion_scope": "publication_and_local_topic_receipt",
+            "decision_sequences": {
+              "tb1": 21,
+              "tb2": 21,
+              "tb3": 21
+            },
+            "outputs": {
+              "tb1": {
+                "linear_x": 0.0,
+                "angular_z": 0.0
+              },
+              "tb2": {
+                "linear_x": 0.0,
+                "angular_z": 0.0
+              },
+              "tb3": {
+                "linear_x": 0.0,
+                "angular_z": 0.0
+              }
+            },
+            "safety_contract": "mr3-reach-v1",
+            "intent_refs": {
+              "tb1": {
+                "intent_sequence": 21,
+                "payload_sha256": "fd0800fa0a9bcafdc2e529256a001ba78630caba5b0379677cbe64795bcd6aa7"
+              },
+              "tb2": {
+                "intent_sequence": 21,
+                "payload_sha256": "e09bfe61b6bacf453b579565bacecf0aed894a82b133c0476383d49393aad433"
+              },
+              "tb3": {
+                "intent_sequence": 21,
+                "payload_sha256": "2bebb29dfc9d8fa02ecbad0d6fc0da795100bc8bee8b307251fb7c0d5228d143"
+              }
+            },
+            "safety_table_sha256": null
+          },
+          "publish_started_wall_monotonic_ns": 4165908430906407,
+          "publish_completed_wall_monotonic_ns": 4165908431135017
+        }
+      }
+    },
+    {
+      "line": 212,
+      "raw": "{\"schema\":\"mr3-motion-safety-v1\",\"epoch\":\"mr3_p2a_reach_v16_interface_w0_e1_f3a20de7\",\"record_sequence\":212,\"kind\":\"reach_driver_ingress\",\"sim_time_sec\":0.42,\"wall_monotonic_ns\":4165909273191186,\"payload\":{\"robot\":\"tb1\",\"kind\":\"storage\",\"message\":{\"angular_z\":0.0,\"clock_ns\":430000000,\"cmd_seq\":1,\"decision_sequence\":21,\"epoch\":\"mr3_p2a_reach_v16_interface_w0_e1_f3a20de7\",\"linear_x\":0.0,\"robot\":\"tb1\",\"schema\":\"mr3-drive-target-consumed-v1\",\"source_clock_ns\":420000000},\"raw_json\":\"{\\\"angular_z\\\":0.0,\\\"clock_ns\\\":430000000,\\\"cmd_seq\\\":1,\\\"decision_sequence\\\":21,\\\"epoch\\\":\\\"mr3_p2a_reach_v16_interface_w0_e1_f3a20de7\\\",\\\"linear_x\\\":0.0,\\\"robot\\\":\\\"tb1\\\",\\\"schema\\\":\\\"mr3-drive-target-consumed-v1\\\",\\\"source_clock_ns\\\":420000000}\",\"publisher_identity\":{\"scope\":\"graph_at_callback\",\"packet_publisher_gid_available\":false,\"topic\":\"/tb1/mr3_drive/status\",\"valid\":true,\"endpoints\":[{\"node_name\":\"turtlebot3_diff_drive\",\"node_namespace\":\"/tb1\",\"topic_type\":\"std_msgs/msg/String\",\"endpoint_gid\":\"010f3cc02bb25657000000000000db030000000000000000\"}],\"error\":null}}}\n",
+      "record": {
+        "schema": "mr3-motion-safety-v1",
+        "epoch": "mr3_p2a_reach_v16_interface_w0_e1_f3a20de7",
+        "record_sequence": 212,
+        "kind": "reach_driver_ingress",
+        "sim_time_sec": 0.42,
+        "wall_monotonic_ns": 4165909273191186,
+        "payload": {
+          "robot": "tb1",
+          "kind": "storage",
+          "message": {
+            "angular_z": 0.0,
+            "clock_ns": 430000000,
+            "cmd_seq": 1,
+            "decision_sequence": 21,
+            "epoch": "mr3_p2a_reach_v16_interface_w0_e1_f3a20de7",
+            "linear_x": 0.0,
+            "robot": "tb1",
+            "schema": "mr3-drive-target-consumed-v1",
+            "source_clock_ns": 420000000
+          },
+          "raw_json": "{\"angular_z\":0.0,\"clock_ns\":430000000,\"cmd_seq\":1,\"decision_sequence\":21,\"epoch\":\"mr3_p2a_reach_v16_interface_w0_e1_f3a20de7\",\"linear_x\":0.0,\"robot\":\"tb1\",\"schema\":\"mr3-drive-target-consumed-v1\",\"source_clock_ns\":420000000}",
+          "publisher_identity": {
+            "scope": "graph_at_callback",
+            "packet_publisher_gid_available": false,
+            "topic": "/tb1/mr3_drive/status",
+            "valid": true,
+            "endpoints": [
+              {
+                "node_name": "turtlebot3_diff_drive",
+                "node_namespace": "/tb1",
+                "topic_type": "std_msgs/msg/String",
+                "endpoint_gid": "010f3cc02bb25657000000000000db030000000000000000"
+              }
+            ],
+            "error": null
+          }
+        }
+      }
+    },
+    {
+      "line": 213,
+      "raw": "{\"schema\":\"mr3-motion-safety-v1\",\"epoch\":\"mr3_p2a_reach_v16_interface_w0_e1_f3a20de7\",\"record_sequence\":213,\"kind\":\"invalid_reach_driver_ingress\",\"sim_time_sec\":0.42,\"wall_monotonic_ns\":4165909273495735,\"payload\":{\"robot\":\"tb1\",\"kind\":\"storage\",\"raw_json\":\"{\\\"angular_z\\\":0.0,\\\"clock_ns\\\":430000000,\\\"cmd_seq\\\":1,\\\"decision_sequence\\\":21,\\\"epoch\\\":\\\"mr3_p2a_reach_v16_interface_w0_e1_f3a20de7\\\",\\\"linear_x\\\":0.0,\\\"robot\\\":\\\"tb1\\\",\\\"schema\\\":\\\"mr3-drive-target-consumed-v1\\\",\\\"source_clock_ns\\\":420000000}\",\"reason\":\"storage substituted an unpublished target\"}}\n",
+      "record": {
+        "schema": "mr3-motion-safety-v1",
+        "epoch": "mr3_p2a_reach_v16_interface_w0_e1_f3a20de7",
+        "record_sequence": 213,
+        "kind": "invalid_reach_driver_ingress",
+        "sim_time_sec": 0.42,
+        "wall_monotonic_ns": 4165909273495735,
+        "payload": {
+          "robot": "tb1",
+          "kind": "storage",
+          "raw_json": "{\"angular_z\":0.0,\"clock_ns\":430000000,\"cmd_seq\":1,\"decision_sequence\":21,\"epoch\":\"mr3_p2a_reach_v16_interface_w0_e1_f3a20de7\",\"linear_x\":0.0,\"robot\":\"tb1\",\"schema\":\"mr3-drive-target-consumed-v1\",\"source_clock_ns\":420000000}",
+          "reason": "storage substituted an unpublished target"
+        }
+      }
+    },
+    {
+      "line": 214,
+      "raw": "{\"schema\":\"mr3-motion-safety-v1\",\"epoch\":\"mr3_p2a_reach_v16_interface_w0_e1_f3a20de7\",\"record_sequence\":214,\"kind\":\"reach_model_failure\",\"sim_time_sec\":0.42,\"wall_monotonic_ns\":4165909273571595,\"payload\":{\"schema\":\"mr3-reach-runtime-fault-v1\",\"robot\":\"tb1\",\"reason\":\"storage substituted an unpublished target\",\"clock_ns\":420000000}}\n",
+      "record": {
+        "schema": "mr3-motion-safety-v1",
+        "epoch": "mr3_p2a_reach_v16_interface_w0_e1_f3a20de7",
+        "record_sequence": 214,
+        "kind": "reach_model_failure",
+        "sim_time_sec": 0.42,
+        "wall_monotonic_ns": 4165909273571595,
+        "payload": {
+          "schema": "mr3-reach-runtime-fault-v1",
+          "robot": "tb1",
+          "reason": "storage substituted an unpublished target",
+          "clock_ns": 420000000
+        }
+      }
+    }
+  ],
+  "driver_rows": [
+    {
+      "line": 2,
+      "raw": "{\"cmd_seq\":1,\"desired_v\":0.0,\"desired_w\":0.0,\"epoch\":\"mr3_p2a_reach_v16_interface_w0_e1_f3a20de7\",\"kind\":\"command_received\",\"record_sequence\":2,\"robot\":\"tb1\",\"schema\":\"mr3-drive-actuation-v2\",\"sim_time_ns\":430000000,\"target_clock_ns\":420000000,\"target_decision_sequence\":21}\n",
+      "record": {
+        "cmd_seq": 1,
+        "desired_v": 0.0,
+        "desired_w": 0.0,
+        "epoch": "mr3_p2a_reach_v16_interface_w0_e1_f3a20de7",
+        "kind": "command_received",
+        "record_sequence": 2,
+        "robot": "tb1",
+        "schema": "mr3-drive-actuation-v2",
+        "sim_time_ns": 430000000,
+        "target_clock_ns": 420000000,
+        "target_decision_sequence": 21
+      }
+    },
+    {
+      "line": 3,
+      "raw": "{\"cmd_seq\":1,\"desired_v\":0.0,\"desired_w\":0.0,\"epoch\":\"mr3_p2a_reach_v16_interface_w0_e1_f3a20de7\",\"kind\":\"status_publish\",\"record_sequence\":3,\"robot\":\"tb1\",\"schema\":\"mr3-drive-actuation-v2\",\"scope\":\"target_storage_and_status_publication\",\"sim_time_ns\":430000000,\"status\":{\"angular_z\":0.0,\"clock_ns\":430000000,\"cmd_seq\":1,\"decision_sequence\":21,\"epoch\":\"mr3_p2a_reach_v16_interface_w0_e1_f3a20de7\",\"linear_x\":0.0,\"robot\":\"tb1\",\"schema\":\"mr3-drive-target-consumed-v1\",\"source_clock_ns\":420000000},\"target_clock_ns\":420000000,\"target_decision_sequence\":21}\n",
+      "record": {
+        "cmd_seq": 1,
+        "desired_v": 0.0,
+        "desired_w": 0.0,
+        "epoch": "mr3_p2a_reach_v16_interface_w0_e1_f3a20de7",
+        "kind": "status_publish",
+        "record_sequence": 3,
+        "robot": "tb1",
+        "schema": "mr3-drive-actuation-v2",
+        "scope": "target_storage_and_status_publication",
+        "sim_time_ns": 430000000,
+        "status": {
+          "angular_z": 0.0,
+          "clock_ns": 430000000,
+          "cmd_seq": 1,
+          "decision_sequence": 21,
+          "epoch": "mr3_p2a_reach_v16_interface_w0_e1_f3a20de7",
+          "linear_x": 0.0,
+          "robot": "tb1",
+          "schema": "mr3-drive-target-consumed-v1",
+          "source_clock_ns": 420000000
+        },
+        "target_clock_ns": 420000000,
+        "target_decision_sequence": 21
+      }
+    }
+  ],
+  "frozen_runtime_source": {
+    "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_reach_runtime.py",
+    "sha256": "c6dcb207251ac4f04ef374b2ef9eec3663b23989d5f4402e8cfeb09b2f867dff",
+    "lines_190_to_207": [
+      "                self.fail(\"calibration publication stream gap/regression\")",
+      "        self.calibrations[source] = value",
+      "",
+      "    @latched",
+      "    def receive_storage(self, value):",
+      "        value = self._retain(\"storage\", value)",
+      "        if value.get(\"robot\") != self.robot or value.get(\"epoch\") != self.epoch:",
+      "            self.fail(\"storage robot/epoch differs from local owner\")",
+      "        self.storage.receive(value)",
+      "        target = self.published.get(value[\"decision_sequence\"])",
+      "        if (target is None or value[\"clock_ns\"] != target[\"clock_ns\"]",
+      "                or value[\"source_clock_ns\"] != target[\"clock_ns\"]",
+      "                or any(value[k] != target[k] for k in (\"linear_x\", \"angular_z\"))):",
+      "            self.fail(\"storage substituted an unpublished target\")",
+      "        if target[\"linear_x\"] == target[\"angular_z\"] == 0:",
+      "            if self.zero_storage is None:",
+      "                self.zero_storage = max(value[\"clock_ns\"], self.release_ns or 0)",
+      "        else:"
+    ]
+  },
+  "finding": "A genuinely published zero target decision21/source420000000 was stored at actual native clock430000000 with identical target fields. ReachTracker erroneously required actual storage clock equal source clock before controlled task release. Native reset failed, no actual policy transition or optimizer update exists.",
+  "repair_scope": "Preserve typed nine-field ACK, exact published target identity/source/values, monotonic storage receipt and paused matching gate; remove erroneous asynchronous storage clock equality only.",
+  "native_shutdown_scope": "Natural reset guard closure; supervisor forced_shutdown=true worker_returncode=-9 is retained, rather than claiming every process clean0."
+}

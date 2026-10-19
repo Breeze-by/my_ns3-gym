@@ -190,6 +190,101 @@ class Feed:
 
 
 class IndependentReachRuntimeTests(unittest.TestCase):
+    def test_startup_storage_retains_actual_later_clock_without_qualification(self):
+        r = reach.ReachTracker(EPOCH, ROBOT)
+        for source, stored_at, sequence, command in (
+                (420_000_000, 430_000_000, 21, 1),
+                (440_000_000, 444_000_000, 22, 2)):
+            value = target(source, sequence)
+            r.publish_target(value)
+            ack = {**storage(value, command), "clock_ns": stored_at}
+            r.receive_storage(ack)
+            self.assertEqual(r.storage.latest[ROBOT], ack)
+            self.assertEqual(r.storage.pending[ROBOT][sequence], ack)
+            self.assertEqual(r.ingress[-1], ("storage", ack))
+        self.assertEqual(r.zero_publication, 420_000_000)
+        self.assertEqual(r.zero_storage, 430_000_000)
+        self.assertEqual(r.role, "HOLD")
+        self.assertIsNone(r.release_ns)
+        self.assertIsNone(r.anchor)
+        self.assertFalse(r.actual_normal)
+        self.assertFalse(r.qualified(2_000_000_000))
+        self.assertIsNone(r.fault)
+
+    def test_release_cannot_borrow_later_storage_or_pre_release_rest(self):
+        r = reach.ReachTracker(EPOCH, ROBOT)
+        value = target(420_000_000, 21)
+        r.publish_target(value)
+        ack = {**storage(value, 1), "clock_ns": 430_000_000}
+        r.receive_storage(ack)
+        release = 1_400_000_000
+        for sequence, source in enumerate((release-2*STEP, release-STEP, release), 1):
+            raw = odometry(source)
+            r.receive_raw(raw, sequence)
+            r.receive_calibration(calibration(raw, sequence))
+        r.receive_applied(applied(value, release-1_000_000, 1, 1))
+        self.assertTrue(r.synchronize(release))
+        self.assertEqual(len(r.rest), 3)
+        self.assertIsNotNone(r.causal_applied)
+        self.assertFalse(r.qualified(release))
+        r.release(release)
+        self.assertEqual(r.zero_publication, release)
+        self.assertEqual(r.zero_storage, release)
+        self.assertEqual(r.rest, [])
+        self.assertEqual(r.role, "HOLD")
+        self.assertIsNone(r.anchor_sequence)
+        self.assertFalse(r.qualified(release))
+        self.assertEqual(r.storage.latest[ROBOT], ack)
+
+    def test_delayed_storage_keeps_exact_target_binding_and_latches_bad_receipts(self):
+        cases = (
+            ("source", {"source_clock_ns": 419_000_000}, "unpublished target"),
+            ("linear", {"linear_x": .01}, "unpublished target"),
+            ("angular", {"angular_z": .01}, "unpublished target"),
+            ("epoch", {"epoch": "foreign-epoch"}, "robot/epoch"),
+            ("robot", {"robot": "tb2"}, "robot/epoch"),
+            ("unpublished", {"decision_sequence": 22}, "unpublished target"),
+            ("source_after_storage", {"source_clock_ns": 430_000_001},
+             "invalid native drive receipt"),
+        )
+        for name, mutation, error in cases:
+            with self.subTest(name=name):
+                r = reach.ReachTracker(EPOCH, ROBOT)
+                value = target(420_000_000, 21)
+                r.publish_target(value)
+                ack = {**storage(value, 1), "clock_ns": 430_000_000, **mutation}
+                with self.assertRaisesRegex(ValueError, error):
+                    r.receive_storage(ack)
+                fault = r.fault
+                self.assertIsNotNone(fault)
+                self.assertEqual(r.ingress[-1], ("storage", ack))
+                successor = target(440_000_000, 23)
+                r.publish_target(successor)
+                r.receive_storage({**storage(successor, 2), "clock_ns": 444_000_000})
+                with self.assertRaises(ValueError) as raised:
+                    r.synchronize(444_000_000)
+                self.assertEqual(str(raised.exception), fault)
+                self.assertEqual(r.fault, fault)
+                self.assertEqual(r.role, "HOLD")
+                self.assertFalse(r.actual_normal)
+
+    def test_startup_later_ack_still_cannot_acknowledge_a_paused_control_boundary(self):
+        r = reach.ReachTracker(EPOCH, ROBOT)
+        value = target(420_000_000, 21)
+        r.publish_target(value)
+        ack = {**storage(value, 1), "clock_ns": 430_000_000}
+        r.receive_storage(ack)
+        for name in ("tb2", "tb3"):
+            r.storage.receive(storage(target(420_000_000, 21, robot=name), 1))
+        boundary = {"epoch": EPOCH, "clock_ns": 420_000_000,
+                    "decision_sequences": {name: 21 for name in reach.ROBOTS},
+                    "outputs": {name: {"linear_x": 0., "angular_z": 0.}
+                                for name in reach.ROBOTS}}
+        with self.assertRaisesRegex(ValueError, "paused guard target"):
+            r.storage.matching(boundary)
+        self.assertEqual(r.storage.pending[ROBOT][21], ack)
+        self.assertIsNone(r.fault)
+
     def test_complete_healthy_pipeline_reaches_disk_and_real_normal(self):
         a = Feed().normal()
         self.assertEqual(a.r.role, "N")

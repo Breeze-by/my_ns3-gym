@@ -1,10 +1,10 @@
 # 当前三机器人基线与MR3适配启动命令
 
-2026-10-19 V16：新契约完整资格路由及246项CPU核查已完成，正在冻结；原生四阶段、fresh minimum及条件pilot/验证尚待实际执行。PPO已改为仅接受新schema同冻结完整资格与实际退出证明；旧FAIL保留。见[V16记录](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v16.md)。
+2026-10-19 V16实际首阶段FAIL并闭合：异步storage ACK时钟被误当source同钟，后继三阶段及训练未启动；48个保存身份全gone。本版工程449.016877943秒，累计32045.4944710376018/52000，余19954.5055289623982。V17已做最小语义修复、94项针对性ROS检查通过，待新冻结完整资格；P2A未完成，pilot/验证额度不变。见[V16记录](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v16.md)。
 
 2026-10-19：P2A.0已验收，P2A未完成。用户已批准V14科学候选并授权生产实现；V15实现显式`mr3-reach-v1`安全模式、真实应用/同源校准回执、完整模式交付及版本化必要审计器，当前完成CPU/编译准备，待新冻结完整原生资格。默认`legacy`保留，旧FAIL不改判；本轮无新native/GPU/pilot/验证，P2B/gateway未启动。见[V15实现与验证](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v15.md)和[新契约](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_REACH_CONTRACT.md)。
 
-2026-10-19用户已批准工程累计上限52000墙秒，并授权后续实现/修复直接推进；工程已用31596.4775930946018/52000墙秒，余20403.5224069053982；pilot1870决策/2905.9547395464029墙秒及三场final-only额度未动。旧V13同冻结独立38/38仅有原工程信用，原矩阵/optional/minimum FAIL保留；minimum整轮ineligible、0 eligible/0更新。详见[V13原始结果](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v13.md)。
+2026-10-19用户已批准工程累计上限52000墙秒，并授权后续实现/修复直接推进；工程已用32045.4944710376018/52000墙秒，余19954.5055289623982；pilot1870决策/2905.9547395464029墙秒及三场final-only额度未动。旧V13同冻结独立38/38仅有原工程信用，原矩阵/optional/minimum FAIL保留；minimum整轮ineligible、0 eligible/0更新。详见[V13原始结果](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v13.md)。
 
 2026-10-18用户已验收P2A.0并要求继续P2A。V7命令为已关闭失败的历史入口，不能重跑；原V26父编排中断保留，P2A未完成。 原V26命令仅供追溯；原生阶段已完成、最后只读审计单独补完，原编排中断不改记PASS。见[V26](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_v26_capture.md)和[复盘](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261018_mr3_p2a0_reflection.md)。
 
@@ -12,7 +12,7 @@
 默认`execution_mode:=baseline`启动前沿控制器；`adapter`为显式联合动作接口。P2A联合MaskablePPO正在实现与验证；gateway未开始。
 所有推荐运行显式固定三台，活动默认已改为三台，保留1–4历史兼容。
 
-V16的P2A原生复验由冻结计划驱动：`mr3_learning.reach_preparation --plan PLAN --freeze EXACT40`
+新冻结的P2A原生复验由对应版本计划驱动：`mr3_learning.reach_preparation --plan PLAN --freeze EXACT40`
 执行四阶段；完整新资格及协调进程退出核验通过后，才由
 `mr3_learning.reach_policy_chain --plan PLAN --freeze EXACT40 --qualification RECEIPT --stage minimum`
 进入新的最小训练链。后继`pilot`和`validation`分别要求前阶段完整科学审计与外部退出回执。
