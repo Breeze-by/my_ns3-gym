@@ -5,9 +5,25 @@ from types import MethodType
 
 import pytest
 
-from multi_robot_exploration.motion_safety import MotionSafety
+from multi_robot_exploration.motion_safety import MotionSafety, storage_receipt_qos
 from multi_robot_exploration.mr3_safety_intent import payload_sha256
 from test_motion_safety import node_fixture
+
+
+@pytest.mark.parametrize('reach_enabled,depth', ((False, 1), (True, 256)))
+def test_storage_qos_changes_only_reach_history_capacity(reach_enabled, depth):
+    from rclpy.qos import DurabilityPolicy, HistoryPolicy, ReliabilityPolicy
+    qos = storage_receipt_qos(reach_enabled)
+    assert qos.depth == depth and qos.history == HistoryPolicy.KEEP_LAST
+    assert qos.reliability == ReliabilityPolicy.RELIABLE
+    assert qos.durability == DurabilityPolicy.TRANSIENT_LOCAL
+    assert storage_receipt_qos().depth == 1
+
+
+@pytest.mark.parametrize('value', (None, 0, 1, 'legacy', 'mr3-reach-v1'))
+def test_storage_qos_cannot_enable_reach_via_a_truthy_nonboolean(value):
+    with pytest.raises(ValueError, match='boolean'):
+        storage_receipt_qos(value)
 
 
 class Owner:
@@ -73,6 +89,67 @@ def fixture(decider=None):
 
 def outputs(events):
     return [row for row in events if row[0] == 'output']
+
+
+def readiness_fixture():
+    node, clock, events = fixture()
+    node.reach_pending_release = None
+    node.control_inputs_ready = MethodType(MotionSafety.control_inputs_ready, node)
+    calls, stopped = [], []
+    for name, owner in node.reach.items():
+        owner.fault = None
+        owner.synchronize = lambda value, name=name: calls.append(name) or True
+    node.stop_controlled = lambda: stopped.append(True)
+    return node, clock, events, calls, stopped
+
+
+@pytest.mark.parametrize('name', ('tb1', 'tb2', 'tb3'))
+def test_latched_tracker_fault_is_visible_even_before_another_prefix_is_ready(name):
+    node, clock, events, calls, stopped = readiness_fixture()
+    node.reach['tb1'].synchronize = lambda value: calls.append('tb1') or False
+    node.reach_pending_release = clock[0]
+    node.reach[name].fault = 'retained native causal contradiction'
+    assert node.control_inputs_ready(clock[0]) is False
+    assert calls == [] and stopped == [True]
+    assert node.halted == 'normal_control_model_invalid'
+    assert node.normal_control_model_fault['robot'] == name
+    assert node.normal_control_model_fault['reason'] == node.reach[name].fault
+    assert any(event[0] == 'reach_model_failure' for event in events)
+    assert outputs(events) == []
+
+
+@pytest.mark.parametrize('name', ('tb1', 'tb2', 'tb3'))
+def test_new_synchronization_fault_uses_the_existing_observable_failure_path(name):
+    node, clock, events, calls, stopped = readiness_fixture()
+    def fail(value):
+        calls.append(name)
+        node.reach[name].fault = 'new native causal contradiction'
+        raise ValueError(node.reach[name].fault)
+    node.reach[name].synchronize = fail
+    assert node.control_inputs_ready(clock[0]) is False
+    assert calls == list(node.reach)[:list(node.reach).index(name)+1]
+    assert stopped == [True] and node.halted == 'normal_control_model_invalid'
+    assert node.normal_control_model_fault['robot'] == name
+    assert node.normal_control_model_fault['reason'] == node.reach[name].fault
+    assert any(event[0] == 'reach_model_failure' for event in events)
+
+
+def test_pending_prefix_is_still_a_wait_without_a_model_failure():
+    node, clock, events, calls, stopped = readiness_fixture()
+    node.reach['tb1'].synchronize = lambda value: calls.append('tb1') or False
+    assert node.control_inputs_ready(clock[0]) is False
+    assert calls == ['tb1'] and stopped == []
+    assert node.halted is None and node.normal_control_model_fault is None
+    assert not any(event[0] == 'reach_model_failure' for event in events)
+
+
+def test_pending_release_is_still_a_wait_without_synchronization_or_failure():
+    node, clock, events, calls, stopped = readiness_fixture()
+    node.reach_pending_release = clock[0]
+    assert node.control_inputs_ready(clock[0]) is False
+    assert calls == [] and stopped == []
+    assert node.halted is None and node.normal_control_model_fault is None
+    assert not any(event[0] == 'reach_model_failure' for event in events)
 
 
 def test_late_third_robot_fault_suppresses_all_three_before_first_publication():

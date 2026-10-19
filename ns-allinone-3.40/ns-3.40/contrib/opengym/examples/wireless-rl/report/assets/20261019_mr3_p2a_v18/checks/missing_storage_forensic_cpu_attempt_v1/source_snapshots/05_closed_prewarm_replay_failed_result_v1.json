@@ -1,0 +1,546 @@
+{
+  "schema": "mr3-v18-closed-prewarm-replay-v1",
+  "passed": false,
+  "scientific_pass_claimed": false,
+  "native_admission": false,
+  "scope": "CPU counterfactual pure tracker on complete old actual pre-release zero input/publication trace including shutdown STOP; not a new node/native execution",
+  "full_suffix_scanned": true,
+  "old_native_failure_reclassified": false,
+  "new_native_runs": 0,
+  "gpu_calls": 0,
+  "optimizer_steps": 0,
+  "continuous_physical_model_proved": false,
+  "started_monotonic_ns": 4168266276364175,
+  "ended_monotonic_ns": 4168533956604294,
+  "python": "/usr/bin/python3",
+  "input_bindings": [
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v18/closed_prewarm_replay_v1.py",
+      "bytes": 20183,
+      "sha256": "c07379abf437c2d68a75f7c3fd7b0321ebaf8d709efc113d968dd8f4925e2204",
+      "stat": [
+        2051,
+        79065309,
+        20183,
+        1792422817721717961,
+        1792422817721717961
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v17/closed_execution/native_closed_manifest_v1.json",
+      "bytes": 129158,
+      "sha256": "05a4f0a2dfa03c8c4fabf9fac295ca63d26b5a115ea0a1bc5d4abfa78820db9b",
+      "stat": [
+        2051,
+        79065294,
+        129158,
+        1792422626406024222,
+        1792422626406024222
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v17/mr3_p2a_reach_v17_interface/worker0/episode001_open_101/metadata.json",
+      "bytes": 2702,
+      "sha256": "d1c00ca9556b45cc1ae16eaa6896e8ab057611e6624efd5e40bf3ee5418ac858",
+      "stat": [
+        2051,
+        79062571,
+        2702,
+        1792422012647197086,
+        1792422012647197086
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v17/mr3_p2a_reach_v17_interface/worker0/episode001_open_101/infrastructure_failure.json",
+      "bytes": 467,
+      "sha256": "e3481c898db43a8d329b4def6852eff1a7ad8773a59e1305b6ecc965eb00bb44",
+      "stat": [
+        2051,
+        79065239,
+        467,
+        1792422412651165587,
+        1792422412651165587
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v17/mr3_p2a_reach_v17_interface/worker0/episode001_open_101/motion_safety.jsonl",
+      "sha256": "7f26ab78d030bd65ae9a97544a2f10538ec67e918808c821a0159c155d57ed1d",
+      "bytes": 390357682,
+      "stat": [
+        2051,
+        79062583,
+        390357682,
+        1792422431337022120,
+        1792422431337022120
+      ]
+    }
+  ],
+  "runtime_source_bindings": [
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_reach_runtime.py",
+      "bytes": 29813,
+      "sha256": "c17d008905364616c4027aeb1b6c180e7f4d0b522e310e242659a08cf376eb9e",
+      "stat": [
+        2051,
+        70313007,
+        29813,
+        1792422605287044925,
+        1792422605287044925
+      ],
+      "module": "multi_robot_exploration.mr3_reach_runtime"
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_episode.py",
+      "bytes": 1379,
+      "sha256": "9145d2ad23789b252e32f0afdfe18cf2eeec8e2c7e9ca7e89127a532288e411b",
+      "stat": [
+        2051,
+        70311127,
+        1379,
+        1792060186867650995,
+        1792060186867650995
+      ],
+      "module": "multi_robot_exploration.mr3_episode"
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_drive_phase.py",
+      "bytes": 4429,
+      "sha256": "0525230f4719e7279826810f0c177f6a6317a961d50711ac76d8a0338f93d987",
+      "stat": [
+        2051,
+        70311461,
+        4429,
+        1792215097686882327,
+        1792215097686882327
+      ],
+      "module": "multi_robot_exploration.mr3_drive_phase"
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_safety_intent.py",
+      "bytes": 15128,
+      "sha256": "141d62a1cf4d90414bb6cf191aee146d099a7839d946d991514a05e9bfaaa6f7",
+      "stat": [
+        2051,
+        70312589,
+        15128,
+        1792410253923474600,
+        1792410253923474600
+      ],
+      "module": "multi_robot_exploration.mr3_safety_intent"
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_reach_geometry.py",
+      "bytes": 9878,
+      "sha256": "cf46b49f0740f84511f3d34f9a8eb3e56720744515d9eea1dc81bd8bacb85f0a",
+      "stat": [
+        2051,
+        70311967,
+        9878,
+        1792411707315048438,
+        1792411707315048438
+      ],
+      "module": "multi_robot_exploration.mr3_reach_geometry"
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_velocity_metric.py",
+      "bytes": 5743,
+      "sha256": "0a7a4c9ee3de72c1fddaab2441d9bc7a8ad6c543725e8af0f6f18a6ed783fae5",
+      "stat": [
+        2051,
+        70312267,
+        5743,
+        1792410061793396320,
+        1792410061793396320
+      ],
+      "module": "multi_robot_exploration.mr3_velocity_metric"
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/motion_safety.py",
+      "bytes": 47943,
+      "sha256": "b1455055df77931bf837e6b4c6089ba9cb5a57cabfefad089a347e994dd41673",
+      "stat": [
+        2051,
+        70311322,
+        47943,
+        1792422605288044971,
+        1792422605288044971
+      ],
+      "module": "call_order_reference_only"
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stat": [
+        2051,
+        70259822,
+        0,
+        1788341181225816490,
+        1788341181225816490
+      ],
+      "module": "call_order_reference_only"
+    }
+  ],
+  "trace": {
+    "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v17/mr3_p2a_reach_v17_interface/worker0/episode001_open_101/motion_safety.jsonl",
+    "sha256": "7f26ab78d030bd65ae9a97544a2f10538ec67e918808c821a0159c155d57ed1d",
+    "bytes": 390357682,
+    "stat": [
+      2051,
+      79062583,
+      390357682,
+      1792422431337022120,
+      1792422431337022120
+    ],
+    "records": 162691,
+    "last_record_sequence": 162691,
+    "epoch": "mr3_p2a_reach_v17_interface_w0_e1_72f1a48b",
+    "source_freeze": "023e488811743b3f325538d2854205466925c5c4",
+    "manifest_path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v17/closed_execution/native_closed_manifest_v1.json"
+  },
+  "replay": {
+    "new_faults": {},
+    "first_fault": null,
+    "first_original_fault": {
+      "record_sequence": 408,
+      "sim_time_sec": 0.72,
+      "wall_monotonic_ns": 4167413229726126,
+      "kind": "reach_decision",
+      "line_sha256": "4ba9d8600444aa02232a6787c45e38f263c060bba5f598e4c66de35528e5e5cf",
+      "robot": "tb1",
+      "reason": "actual application is not the latest stored target"
+    },
+    "counts": {
+      "configuration": 1,
+      "reach_intent_publish": 17601,
+      "reach_decision": 17601,
+      "original_ready_false": 17601,
+      "actual_cmd_vel": 17601,
+      "output_completed": 3643,
+      "reach_driver_ingress": 44728,
+      "tb1:storage": 5013,
+      "own_odom": 18854,
+      "tb1:calibration": 6369,
+      "tb1:applied": 3746,
+      "own_tf": 40634,
+      "tb2:storage": 4912,
+      "tb2:calibration": 6269,
+      "tb2:applied": 3688,
+      "tb3:storage": 4859,
+      "tb3:calibration": 6216,
+      "tb3:applied": 3656,
+      "reach_state_ingress": 1010,
+      "received_states": 1010,
+      "control_request": 2,
+      "control_ack": 2,
+      "control_ack_published": 2,
+      "failure": 1,
+      "stop_request": 1
+    },
+    "last_phase_clock_ns": 127820000000,
+    "last_watermarks": {
+      "tb1": {
+        "status": {
+          "role": "STOP",
+          "fault": null,
+          "permanent_stop": true,
+          "anchor_history": [],
+          "raw_samples": 6369,
+          "applied_samples": 3746,
+          "cumulative_path_diagnostic_m": 0.0010112640530193613,
+          "backup_from_clock_ns": null,
+          "terminal_anchor": null,
+          "backup_zero_sequence": null,
+          "finite_stop_path_lower_m": "None",
+          "pending_resume": null,
+          "continuous_physical_model_proved": false
+        },
+        "last_synchronized_clock_ns": 18580000000,
+        "last_raw_source_ns": 127819000000,
+        "last_calibration_source_ns": 127819000000,
+        "last_applied_sequence": 3746,
+        "last_applied_source_ns": 127803000000,
+        "last_storage": {
+          "angular_z": 0.0,
+          "clock_ns": 127820000000,
+          "cmd_seq": 5846,
+          "decision_sequence": 5867,
+          "epoch": "mr3_p2a_reach_v17_interface_w0_e1_72f1a48b",
+          "linear_x": 0.0,
+          "robot": "tb1",
+          "schema": "mr3-drive-target-consumed-v1",
+          "source_clock_ns": 127820000000
+        },
+        "last_published_sequence": 5867,
+        "registered_intents": 5867,
+        "retained_ingress": 33231,
+        "synchronize_calls": 15378,
+        "synchronize_ready": 2695
+      },
+      "tb2": {
+        "status": {
+          "role": "STOP",
+          "fault": null,
+          "permanent_stop": true,
+          "anchor_history": [],
+          "raw_samples": 6269,
+          "applied_samples": 3688,
+          "cumulative_path_diagnostic_m": 0.0015551239508939337,
+          "backup_from_clock_ns": null,
+          "terminal_anchor": null,
+          "backup_zero_sequence": null,
+          "finite_stop_path_lower_m": "None",
+          "pending_resume": null,
+          "continuous_physical_model_proved": false
+        },
+        "last_synchronized_clock_ns": 34580000000,
+        "last_raw_source_ns": 127807000000,
+        "last_calibration_source_ns": 127807000000,
+        "last_applied_sequence": 3688,
+        "last_applied_source_ns": 127819000000,
+        "last_storage": {
+          "angular_z": 0.0,
+          "clock_ns": 127820000000,
+          "cmd_seq": 5745,
+          "decision_sequence": 5867,
+          "epoch": "mr3_p2a_reach_v17_interface_w0_e1_72f1a48b",
+          "linear_x": 0.0,
+          "robot": "tb2",
+          "schema": "mr3-drive-target-consumed-v1",
+          "source_clock_ns": 127820000000
+        },
+        "last_published_sequence": 5867,
+        "registered_intents": 5867,
+        "retained_ingress": 32872,
+        "synchronize_calls": 15378,
+        "synchronize_ready": 4716
+      },
+      "tb3": {
+        "status": {
+          "role": "STOP",
+          "fault": null,
+          "permanent_stop": true,
+          "anchor_history": [],
+          "raw_samples": 6216,
+          "applied_samples": 3656,
+          "cumulative_path_diagnostic_m": 0.0008926865877242821,
+          "backup_from_clock_ns": null,
+          "terminal_anchor": null,
+          "backup_zero_sequence": null,
+          "finite_stop_path_lower_m": "None",
+          "pending_resume": null,
+          "continuous_physical_model_proved": false
+        },
+        "last_synchronized_clock_ns": 18580000000,
+        "last_raw_source_ns": 127816000000,
+        "last_calibration_source_ns": 127816000000,
+        "last_applied_sequence": 3656,
+        "last_applied_source_ns": 127800000000,
+        "last_storage": {
+          "angular_z": 0.0,
+          "clock_ns": 127820000000,
+          "cmd_seq": 5692,
+          "decision_sequence": 5867,
+          "epoch": "mr3_p2a_reach_v17_interface_w0_e1_72f1a48b",
+          "linear_x": 0.0,
+          "robot": "tb3",
+          "schema": "mr3-drive-target-consumed-v1",
+          "source_clock_ns": 127820000000
+        },
+        "last_published_sequence": 5867,
+        "registered_intents": 5867,
+        "retained_ingress": 32681,
+        "synchronize_calls": 15378,
+        "synchronize_ready": 2222
+      }
+    },
+    "pending": {
+      "tb1": {
+        "count": 8667,
+        "by_kind": {
+          "applied": 3210,
+          "raw": 5457
+        },
+        "causal_count": 8667,
+        "future_count": 0,
+        "first": {
+          "source_clock_ns": 18697000000,
+          "kind": "applied"
+        },
+        "last": {
+          "source_clock_ns": 127819000000,
+          "kind": "raw"
+        },
+        "unmatched_raw_calibration_sources": [],
+        "unmatched_raw_calibration_count": 0
+      },
+      "tb2": {
+        "count": 7393,
+        "by_kind": {
+          "applied": 2739,
+          "raw": 4654
+        },
+        "causal_count": 7393,
+        "future_count": 0,
+        "first": {
+          "source_clock_ns": 34727000000,
+          "kind": "applied"
+        },
+        "last": {
+          "source_clock_ns": 127819000000,
+          "kind": "applied"
+        },
+        "unmatched_raw_calibration_sources": [],
+        "unmatched_raw_calibration_count": 0
+      },
+      "tb3": {
+        "count": 8667,
+        "by_kind": {
+          "applied": 3210,
+          "raw": 5457
+        },
+        "causal_count": 8667,
+        "future_count": 0,
+        "first": {
+          "source_clock_ns": 18694000000,
+          "kind": "applied"
+        },
+        "last": {
+          "source_clock_ns": 127816000000,
+          "kind": "raw"
+        },
+        "unmatched_raw_calibration_sources": [],
+        "unmatched_raw_calibration_count": 0
+      }
+    },
+    "same_tick_original_support": [
+      {
+        "record_sequence": 400,
+        "sim_time_sec": 0.7,
+        "wall_monotonic_ns": 4167413217970535,
+        "kind": "reach_driver_ingress",
+        "line_sha256": "d1da103ed96562220c75e90581284ff4ca330aed77290e5657fc6954fa1c65da",
+        "robot": "tb1",
+        "feed": "applied",
+        "message": {
+          "actuation_sequence": 8,
+          "cmd_seq": 14,
+          "dt_ns": 34000000,
+          "epoch": "mr3_p2a_reach_v17_interface_w0_e1_72f1a48b",
+          "pairs": [
+            {
+              "alpha": 1.0,
+              "applied_rim_mps": [
+                0.0,
+                0.0
+              ],
+              "current_rim_mps": [
+                1.1768300550703277e-05,
+                6.308803686108006e-06
+              ],
+              "desired_rim_mps": [
+                0.0,
+                0.0
+              ],
+              "max_acceleration_mps2": 1.0,
+              "pair_index": 0
+            }
+          ],
+          "robot": "tb1",
+          "schema": "mr3-drive-applied-v1",
+          "source_clock_ns": 711000000,
+          "target": {
+            "angular_z": 0.0,
+            "clock_ns": 680000000,
+            "decision_sequence": 34,
+            "epoch": "mr3_p2a_reach_v17_interface_w0_e1_72f1a48b",
+            "linear_x": 0.0,
+            "robot": "tb1",
+            "schema": "mr3-drive-target-v1"
+          }
+        }
+      },
+      {
+        "record_sequence": 401,
+        "sim_time_sec": 0.7,
+        "wall_monotonic_ns": 4167413218766050,
+        "kind": "reach_driver_ingress",
+        "line_sha256": "3bf2131deab1cc018fb23645b2cafe7ab3bc139faf721a69ea4c48cd3f304360",
+        "robot": "tb1",
+        "feed": "storage",
+        "message": {
+          "angular_z": 0.0,
+          "clock_ns": 711000000,
+          "cmd_seq": 15,
+          "decision_sequence": 35,
+          "epoch": "mr3_p2a_reach_v17_interface_w0_e1_72f1a48b",
+          "linear_x": 0.0,
+          "robot": "tb1",
+          "schema": "mr3-drive-target-consumed-v1",
+          "source_clock_ns": 700000000
+        }
+      }
+    ],
+    "actual_shutdown_stop_sources": {
+      "tb1": {
+        "record_sequence": 160599,
+        "sim_time_sec": 127.8,
+        "wall_monotonic_ns": 4167812688934057,
+        "kind": "reach_intent_publish",
+        "line_sha256": "47014882e2199640969219a666455b8bfe89b16caca37a16d49ff23985669d33",
+        "reason": "actual STOP intent proves production stop-before-publication",
+        "lineage": {
+          "previous_intent_sequence": 5865,
+          "previous_role": "HOLD"
+        }
+      },
+      "tb2": {
+        "record_sequence": 160601,
+        "sim_time_sec": 127.8,
+        "wall_monotonic_ns": 4167812693672524,
+        "kind": "reach_intent_publish",
+        "line_sha256": "d99ee95a604a8456a9e961e68b6405971128a883e4d624e41c3a04a1f45d175d",
+        "reason": "actual STOP intent proves production stop-before-publication",
+        "lineage": {
+          "previous_intent_sequence": 5865,
+          "previous_role": "HOLD"
+        }
+      },
+      "tb3": {
+        "record_sequence": 160603,
+        "sim_time_sec": 127.8,
+        "wall_monotonic_ns": 4167812698827863,
+        "kind": "reach_intent_publish",
+        "line_sha256": "ab55fb12294d8d6be2411b6307fdeff046797fcfdfe0433e29824146d836db68",
+        "reason": "actual STOP intent proves production stop-before-publication",
+        "lineage": {
+          "previous_intent_sequence": 5865,
+          "previous_role": "HOLD"
+        }
+      }
+    },
+    "release_calls": 0,
+    "nonzero_publications": 0,
+    "errors": [
+      {
+        "robot": "tb1",
+        "phase": "closed_tail",
+        "reason": "required causal event/metadata remains unresolved"
+      },
+      {
+        "robot": "tb2",
+        "phase": "closed_tail",
+        "reason": "required causal event/metadata remains unresolved"
+      },
+      {
+        "robot": "tb3",
+        "phase": "closed_tail",
+        "reason": "required causal event/metadata remains unresolved"
+      }
+    ],
+    "error_count": 3
+  },
+  "errors": [],
+  "causal_rule": "Actual file record order; synchronize before first actual target registration per phase and at recorded decision/status clocks. Final drain uses only last actually recorded phase clock. Future samples stay pending; no original fault/model state is inherited.",
+  "limitations": "Sampled closed data exposes necessary implementation contradictions only. ready=false is not failure or qualification. No release, policy step, geometry admission or continuous plant proof is synthesized."
+}

@@ -281,9 +281,14 @@ class ReachTracker:
             return False
         if stored["cmd_seq"] != value["cmd_seq"]:
             self.fail("actual application has no exact real storage")
-        possible = [p for p in self.storage.pending[self.robot].values()
-                    if p["clock_ns"] <= value["source_clock_ns"]]
-        if not possible or max(possible, key=lambda p: p["cmd_seq"])["cmd_seq"] != value["cmd_seq"]:
+        if stored["clock_ns"] > value["source_clock_ns"]:
+            self.fail("actual application precedes its real storage")
+        # A same-clock callback can store a newer target after this wheel write.
+        # Nine-field ACKs and cross-topic arrival order do not establish that
+        # native order; the independent audit checks native record_sequence.
+        if any(p["cmd_seq"] > value["cmd_seq"]
+               and p["clock_ns"] < value["source_clock_ns"]
+               for p in self.storage.pending[self.robot].values()):
             self.fail("actual application is not the latest stored target")
         if target["linear_x"] != 0 or target["angular_z"] != 0:
             if value["source_clock_ns"]-target["clock_ns"] > RAW_PERIOD_NS:

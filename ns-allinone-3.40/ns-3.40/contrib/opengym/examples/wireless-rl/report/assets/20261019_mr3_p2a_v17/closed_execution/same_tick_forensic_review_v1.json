@@ -1,0 +1,476 @@
+{
+  "schema": "mr3-v17-closed-same-tick-causality-forensic-v1",
+  "freeze": "023e488811743b3f325538d2854205466925c5c4",
+  "scientific_pass_claimed": false,
+  "new_native_or_gpu_execution": false,
+  "raw_file_proofs": {
+    "drive_tb1.jsonl": {
+      "path": "mr3_p2a_reach_v17_interface/worker0/episode001_open_101/drive_tb1.jsonl",
+      "bytes": 6949408,
+      "sha256": "f96740cc3e645b7d12f3edcbcf593b77d5ba7c8cb23a681692b67d70a000d733"
+    },
+    "motion_safety.jsonl": {
+      "path": "mr3_p2a_reach_v17_interface/worker0/episode001_open_101/motion_safety.jsonl",
+      "bytes": 390357682,
+      "sha256": "7f26ab78d030bd65ae9a97544a2f10538ec67e918808c821a0159c155d57ed1d"
+    }
+  },
+  "motion_rows": [
+    {
+      "line": 400,
+      "raw": "{\"schema\":\"mr3-motion-safety-v1\",\"epoch\":\"mr3_p2a_reach_v17_interface_w0_e1_72f1a48b\",\"record_sequence\":400,\"kind\":\"reach_driver_ingress\",\"sim_time_sec\":0.7,\"wall_monotonic_ns\":4167413217970535,\"payload\":{\"robot\":\"tb1\",\"kind\":\"applied\",\"message\":{\"actuation_sequence\":8,\"cmd_seq\":14,\"dt_ns\":34000000,\"epoch\":\"mr3_p2a_reach_v17_interface_w0_e1_72f1a48b\",\"pairs\":[{\"alpha\":1.0,\"applied_rim_mps\":[0.0,0.0],\"current_rim_mps\":[1.1768300550703277e-05,6.308803686108006e-06],\"desired_rim_mps\":[0.0,0.0],\"max_acceleration_mps2\":1.0,\"pair_index\":0}],\"robot\":\"tb1\",\"schema\":\"mr3-drive-applied-v1\",\"source_clock_ns\":711000000,\"target\":{\"angular_z\":0.0,\"clock_ns\":680000000,\"decision_sequence\":34,\"epoch\":\"mr3_p2a_reach_v17_interface_w0_e1_72f1a48b\",\"linear_x\":0.0,\"robot\":\"tb1\",\"schema\":\"mr3-drive-target-v1\"}},\"raw_json\":\"{\\\"actuation_sequence\\\":8,\\\"cmd_seq\\\":14,\\\"dt_ns\\\":34000000,\\\"epoch\\\":\\\"mr3_p2a_reach_v17_interface_w0_e1_72f1a48b\\\",\\\"pairs\\\":[{\\\"alpha\\\":1.0,\\\"applied_rim_mps\\\":[0.0,0.0],\\\"current_rim_mps\\\":[1.1768300550703277e-05,6.308803686108006e-06],\\\"desired_rim_mps\\\":[0.0,0.0],\\\"max_acceleration_mps2\\\":1.0,\\\"pair_index\\\":0}],\\\"robot\\\":\\\"tb1\\\",\\\"schema\\\":\\\"mr3-drive-applied-v1\\\",\\\"source_clock_ns\\\":711000000,\\\"target\\\":{\\\"angular_z\\\":0.0,\\\"clock_ns\\\":680000000,\\\"decision_sequence\\\":34,\\\"epoch\\\":\\\"mr3_p2a_reach_v17_interface_w0_e1_72f1a48b\\\",\\\"linear_x\\\":0.0,\\\"robot\\\":\\\"tb1\\\",\\\"schema\\\":\\\"mr3-drive-target-v1\\\"}}\",\"publisher_identity\":{\"scope\":\"graph_at_callback\",\"packet_publisher_gid_available\":false,\"topic\":\"/tb1/mr3_drive/applied\",\"valid\":true,\"endpoints\":[{\"node_name\":\"turtlebot3_diff_drive\",\"node_namespace\":\"/tb1\",\"topic_type\":\"std_msgs/msg/String\",\"endpoint_gid\":\"010f3cc073fec2ea000000000000dc030000000000000000\"}],\"error\":null}}}\n",
+      "record": {
+        "schema": "mr3-motion-safety-v1",
+        "epoch": "mr3_p2a_reach_v17_interface_w0_e1_72f1a48b",
+        "record_sequence": 400,
+        "kind": "reach_driver_ingress",
+        "sim_time_sec": 0.7,
+        "wall_monotonic_ns": 4167413217970535,
+        "payload": {
+          "robot": "tb1",
+          "kind": "applied",
+          "message": {
+            "actuation_sequence": 8,
+            "cmd_seq": 14,
+            "dt_ns": 34000000,
+            "epoch": "mr3_p2a_reach_v17_interface_w0_e1_72f1a48b",
+            "pairs": [
+              {
+                "alpha": 1.0,
+                "applied_rim_mps": [
+                  0.0,
+                  0.0
+                ],
+                "current_rim_mps": [
+                  1.1768300550703277e-05,
+                  6.308803686108006e-06
+                ],
+                "desired_rim_mps": [
+                  0.0,
+                  0.0
+                ],
+                "max_acceleration_mps2": 1.0,
+                "pair_index": 0
+              }
+            ],
+            "robot": "tb1",
+            "schema": "mr3-drive-applied-v1",
+            "source_clock_ns": 711000000,
+            "target": {
+              "angular_z": 0.0,
+              "clock_ns": 680000000,
+              "decision_sequence": 34,
+              "epoch": "mr3_p2a_reach_v17_interface_w0_e1_72f1a48b",
+              "linear_x": 0.0,
+              "robot": "tb1",
+              "schema": "mr3-drive-target-v1"
+            }
+          },
+          "raw_json": "{\"actuation_sequence\":8,\"cmd_seq\":14,\"dt_ns\":34000000,\"epoch\":\"mr3_p2a_reach_v17_interface_w0_e1_72f1a48b\",\"pairs\":[{\"alpha\":1.0,\"applied_rim_mps\":[0.0,0.0],\"current_rim_mps\":[1.1768300550703277e-05,6.308803686108006e-06],\"desired_rim_mps\":[0.0,0.0],\"max_acceleration_mps2\":1.0,\"pair_index\":0}],\"robot\":\"tb1\",\"schema\":\"mr3-drive-applied-v1\",\"source_clock_ns\":711000000,\"target\":{\"angular_z\":0.0,\"clock_ns\":680000000,\"decision_sequence\":34,\"epoch\":\"mr3_p2a_reach_v17_interface_w0_e1_72f1a48b\",\"linear_x\":0.0,\"robot\":\"tb1\",\"schema\":\"mr3-drive-target-v1\"}}",
+          "publisher_identity": {
+            "scope": "graph_at_callback",
+            "packet_publisher_gid_available": false,
+            "topic": "/tb1/mr3_drive/applied",
+            "valid": true,
+            "endpoints": [
+              {
+                "node_name": "turtlebot3_diff_drive",
+                "node_namespace": "/tb1",
+                "topic_type": "std_msgs/msg/String",
+                "endpoint_gid": "010f3cc073fec2ea000000000000dc030000000000000000"
+              }
+            ],
+            "error": null
+          }
+        }
+      }
+    },
+    {
+      "line": 401,
+      "raw": "{\"schema\":\"mr3-motion-safety-v1\",\"epoch\":\"mr3_p2a_reach_v17_interface_w0_e1_72f1a48b\",\"record_sequence\":401,\"kind\":\"reach_driver_ingress\",\"sim_time_sec\":0.7,\"wall_monotonic_ns\":4167413218766050,\"payload\":{\"robot\":\"tb1\",\"kind\":\"storage\",\"message\":{\"angular_z\":0.0,\"clock_ns\":711000000,\"cmd_seq\":15,\"decision_sequence\":35,\"epoch\":\"mr3_p2a_reach_v17_interface_w0_e1_72f1a48b\",\"linear_x\":0.0,\"robot\":\"tb1\",\"schema\":\"mr3-drive-target-consumed-v1\",\"source_clock_ns\":700000000},\"raw_json\":\"{\\\"angular_z\\\":0.0,\\\"clock_ns\\\":711000000,\\\"cmd_seq\\\":15,\\\"decision_sequence\\\":35,\\\"epoch\\\":\\\"mr3_p2a_reach_v17_interface_w0_e1_72f1a48b\\\",\\\"linear_x\\\":0.0,\\\"robot\\\":\\\"tb1\\\",\\\"schema\\\":\\\"mr3-drive-target-consumed-v1\\\",\\\"source_clock_ns\\\":700000000}\",\"publisher_identity\":{\"scope\":\"graph_at_callback\",\"packet_publisher_gid_available\":false,\"topic\":\"/tb1/mr3_drive/status\",\"valid\":true,\"endpoints\":[{\"node_name\":\"turtlebot3_diff_drive\",\"node_namespace\":\"/tb1\",\"topic_type\":\"std_msgs/msg/String\",\"endpoint_gid\":\"010f3cc073fec2ea000000000000db030000000000000000\"}],\"error\":null}}}\n",
+      "record": {
+        "schema": "mr3-motion-safety-v1",
+        "epoch": "mr3_p2a_reach_v17_interface_w0_e1_72f1a48b",
+        "record_sequence": 401,
+        "kind": "reach_driver_ingress",
+        "sim_time_sec": 0.7,
+        "wall_monotonic_ns": 4167413218766050,
+        "payload": {
+          "robot": "tb1",
+          "kind": "storage",
+          "message": {
+            "angular_z": 0.0,
+            "clock_ns": 711000000,
+            "cmd_seq": 15,
+            "decision_sequence": 35,
+            "epoch": "mr3_p2a_reach_v17_interface_w0_e1_72f1a48b",
+            "linear_x": 0.0,
+            "robot": "tb1",
+            "schema": "mr3-drive-target-consumed-v1",
+            "source_clock_ns": 700000000
+          },
+          "raw_json": "{\"angular_z\":0.0,\"clock_ns\":711000000,\"cmd_seq\":15,\"decision_sequence\":35,\"epoch\":\"mr3_p2a_reach_v17_interface_w0_e1_72f1a48b\",\"linear_x\":0.0,\"robot\":\"tb1\",\"schema\":\"mr3-drive-target-consumed-v1\",\"source_clock_ns\":700000000}",
+          "publisher_identity": {
+            "scope": "graph_at_callback",
+            "packet_publisher_gid_available": false,
+            "topic": "/tb1/mr3_drive/status",
+            "valid": true,
+            "endpoints": [
+              {
+                "node_name": "turtlebot3_diff_drive",
+                "node_namespace": "/tb1",
+                "topic_type": "std_msgs/msg/String",
+                "endpoint_gid": "010f3cc073fec2ea000000000000db030000000000000000"
+              }
+            ],
+            "error": null
+          }
+        }
+      }
+    },
+    {
+      "line": 408,
+      "raw": "{\"schema\":\"mr3-motion-safety-v1\",\"epoch\":\"mr3_p2a_reach_v17_interface_w0_e1_72f1a48b\",\"record_sequence\":408,\"kind\":\"reach_decision\",\"sim_time_sec\":0.72,\"wall_monotonic_ns\":4167413229726126,\"payload\":{\"robot\":\"tb1\",\"clock_ns\":720000000,\"decision_sequence\":36,\"request\":null,\"own_state\":{\"robot\":\"tb1\",\"name\":\"tb1\",\"x\":0.0001708147034616309,\"y\":-0.4500034513702372,\"yaw\":6.94849765399943e-06,\"v\":0.00044638274962569626,\"w\":3.0227227833397023e-05,\"odom_source_stamp\":0.719,\"tf_source_stamp\":0.639,\"tf_validity_stamp\":0.839,\"tf_validity_lead_sec\":0.2,\"odometry\":{\"header\":{\"stamp\":{\"sec\":0,\"nanosec\":719000000},\"frame_id\":\"odom\"},\"child_frame_id\":\"base_footprint\",\"pose\":{\"pose\":{\"position\":{\"x\":0.00011731389682497766,\"y\":-0.4500022943713543,\"z\":0.007679610080363938},\"orientation\":{\"x\":0.00012367252591672374,\"y\":0.005481716640180374,\"z\":2.3037746592861302e-06,\"w\":0.9999849676282518}},\"covariance\":[1e-05,0.0,0.0,0.0,0.0,0.0,0.0,1e-05,0.0,0.0,0.0,0.0,0.0,0.0,1000000000000.0,0.0,0.0,0.0,0.0,0.0,0.0,1000000000000.0,0.0,0.0,0.0,0.0,0.0,0.0,1000000000000.0,0.0,0.0,0.0,0.0,0.0,0.0,0.001]},\"twist\":{\"twist\":{\"linear\":{\"x\":0.00044638274962569626,\"y\":-6.0040124265973875e-05,\"z\":0.0},\"angular\":{\"x\":0.0,\"y\":0.0,\"z\":3.0227227833397023e-05}},\"covariance\":[1e-05,0.0,0.0,0.0,0.0,0.0,0.0,1e-05,0.0,0.0,0.0,0.0,0.0,0.0,1000000000000.0,0.0,0.0,0.0,0.0,0.0,0.0,1000000000000.0,0.0,0.0,0.0,0.0,0.0,0.0,1000000000000.0,0.0,0.0,0.0,0.0,0.0,0.0,0.001]}},\"transform\":{\"header\":{\"stamp\":{\"sec\":0,\"nanosec\":839000000},\"frame_id\":\"map\"},\"child_frame_id\":\"odom\",\"transform\":{\"translation\":{\"x\":5.305765171159644e-05,\"y\":-1.1571146298976943e-06,\"z\":-0.007945443977600447},\"rotation\":{\"x\":-7.311862013828214e-05,\"y\":-0.0033668042643628,\"z\":2.4620600183286535e-07,\"w\":0.9999943296252496}}},\"epoch\":\"mr3_p2a_reach_v17_interface_w0_e1_72f1a48b\",\"valid\":true,\"source_stamp\":0.639,\"input_sequences\":{\"odom\":14,\"tf\":4},\"planar_speed_mps\":0.00045040245967941896},\"received_peers\":{\"tb2\":null,\"tb3\":null},\"decision\":{\"allow\":false,\"reason\":\"reach_zero\",\"output\":[0.0,0.0],\"minimum_margin_m\":null},\"intent\":{\"admitted_signs\":[],\"anchor\":null,\"epoch\":\"mr3_p2a_reach_v17_interface_w0_e1_72f1a48b\",\"intent_sequence\":36,\"lineage\":{\"release_clock_ns\":null},\"robot\":\"tb1\",\"role\":\"HOLD\",\"schema\":\"mr3-safety-intent-v1\",\"source_clock_ns\":720000000,\"target\":{\"angular_z\":0.0,\"clock_ns\":720000000,\"decision_sequence\":36,\"epoch\":\"mr3_p2a_reach_v17_interface_w0_e1_72f1a48b\",\"linear_x\":0.0,\"robot\":\"tb1\",\"schema\":\"mr3-drive-target-v1\"}},\"tracker\":{\"role\":\"HOLD\",\"fault\":\"actual application is not the latest stored target\",\"permanent_stop\":false,\"anchor_history\":[],\"raw_samples\":14,\"applied_samples\":8,\"cumulative_path_diagnostic_m\":0.00010767716057461204,\"backup_from_clock_ns\":null,\"terminal_anchor\":null,\"backup_zero_sequence\":null,\"finite_stop_path_lower_m\":\"None\",\"pending_resume\":null,\"continuous_physical_model_proved\":false},\"safety_table_sha256\":null,\"started\":false,\"ready\":false}}\n",
+      "record": {
+        "schema": "mr3-motion-safety-v1",
+        "epoch": "mr3_p2a_reach_v17_interface_w0_e1_72f1a48b",
+        "record_sequence": 408,
+        "kind": "reach_decision",
+        "sim_time_sec": 0.72,
+        "wall_monotonic_ns": 4167413229726126,
+        "payload": {
+          "robot": "tb1",
+          "clock_ns": 720000000,
+          "decision_sequence": 36,
+          "request": null,
+          "own_state": {
+            "robot": "tb1",
+            "name": "tb1",
+            "x": 0.0001708147034616309,
+            "y": -0.4500034513702372,
+            "yaw": 6.94849765399943e-06,
+            "v": 0.00044638274962569626,
+            "w": 3.0227227833397023e-05,
+            "odom_source_stamp": 0.719,
+            "tf_source_stamp": 0.639,
+            "tf_validity_stamp": 0.839,
+            "tf_validity_lead_sec": 0.2,
+            "odometry": {
+              "header": {
+                "stamp": {
+                  "sec": 0,
+                  "nanosec": 719000000
+                },
+                "frame_id": "odom"
+              },
+              "child_frame_id": "base_footprint",
+              "pose": {
+                "pose": {
+                  "position": {
+                    "x": 0.00011731389682497766,
+                    "y": -0.4500022943713543,
+                    "z": 0.007679610080363938
+                  },
+                  "orientation": {
+                    "x": 0.00012367252591672374,
+                    "y": 0.005481716640180374,
+                    "z": 2.3037746592861302e-06,
+                    "w": 0.9999849676282518
+                  }
+                },
+                "covariance": [
+                  1e-05,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1e-05,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1000000000000.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1000000000000.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1000000000000.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.001
+                ]
+              },
+              "twist": {
+                "twist": {
+                  "linear": {
+                    "x": 0.00044638274962569626,
+                    "y": -6.0040124265973875e-05,
+                    "z": 0.0
+                  },
+                  "angular": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 3.0227227833397023e-05
+                  }
+                },
+                "covariance": [
+                  1e-05,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1e-05,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1000000000000.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1000000000000.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  1000000000000.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.001
+                ]
+              }
+            },
+            "transform": {
+              "header": {
+                "stamp": {
+                  "sec": 0,
+                  "nanosec": 839000000
+                },
+                "frame_id": "map"
+              },
+              "child_frame_id": "odom",
+              "transform": {
+                "translation": {
+                  "x": 5.305765171159644e-05,
+                  "y": -1.1571146298976943e-06,
+                  "z": -0.007945443977600447
+                },
+                "rotation": {
+                  "x": -7.311862013828214e-05,
+                  "y": -0.0033668042643628,
+                  "z": 2.4620600183286535e-07,
+                  "w": 0.9999943296252496
+                }
+              }
+            },
+            "epoch": "mr3_p2a_reach_v17_interface_w0_e1_72f1a48b",
+            "valid": true,
+            "source_stamp": 0.639,
+            "input_sequences": {
+              "odom": 14,
+              "tf": 4
+            },
+            "planar_speed_mps": 0.00045040245967941896
+          },
+          "received_peers": {
+            "tb2": null,
+            "tb3": null
+          },
+          "decision": {
+            "allow": false,
+            "reason": "reach_zero",
+            "output": [
+              0.0,
+              0.0
+            ],
+            "minimum_margin_m": null
+          },
+          "intent": {
+            "admitted_signs": [],
+            "anchor": null,
+            "epoch": "mr3_p2a_reach_v17_interface_w0_e1_72f1a48b",
+            "intent_sequence": 36,
+            "lineage": {
+              "release_clock_ns": null
+            },
+            "robot": "tb1",
+            "role": "HOLD",
+            "schema": "mr3-safety-intent-v1",
+            "source_clock_ns": 720000000,
+            "target": {
+              "angular_z": 0.0,
+              "clock_ns": 720000000,
+              "decision_sequence": 36,
+              "epoch": "mr3_p2a_reach_v17_interface_w0_e1_72f1a48b",
+              "linear_x": 0.0,
+              "robot": "tb1",
+              "schema": "mr3-drive-target-v1"
+            }
+          },
+          "tracker": {
+            "role": "HOLD",
+            "fault": "actual application is not the latest stored target",
+            "permanent_stop": false,
+            "anchor_history": [],
+            "raw_samples": 14,
+            "applied_samples": 8,
+            "cumulative_path_diagnostic_m": 0.00010767716057461204,
+            "backup_from_clock_ns": null,
+            "terminal_anchor": null,
+            "backup_zero_sequence": null,
+            "finite_stop_path_lower_m": "None",
+            "pending_resume": null,
+            "continuous_physical_model_proved": false
+          },
+          "safety_table_sha256": null,
+          "started": false,
+          "ready": false
+        }
+      }
+    }
+  ],
+  "native_driver_rows": [
+    {
+      "line": 37,
+      "raw": "{\"actuation_seq\":8,\"alpha\":1.0,\"applied_rim_mps\":[0.0,0.0],\"cmd_seq\":14,\"current_rim_mps\":[1.1768300550703277e-05,6.308803686108006e-06],\"desired_rim_mps\":[0.0,0.0],\"desired_v\":0.0,\"desired_w\":0.0,\"dt_ns\":34000000,\"dt_sec\":0.034,\"epoch\":\"mr3_p2a_reach_v17_interface_w0_e1_72f1a48b\",\"kind\":\"actuation\",\"max_acceleration_mps2\":1.0,\"pair_index\":0,\"record_sequence\":37,\"robot\":\"tb1\",\"schema\":\"mr3-drive-actuation-v2\",\"sim_time_ns\":711000000,\"target_clock_ns\":680000000,\"target_decision_sequence\":34}\n",
+      "record": {
+        "actuation_seq": 8,
+        "alpha": 1.0,
+        "applied_rim_mps": [
+          0.0,
+          0.0
+        ],
+        "cmd_seq": 14,
+        "current_rim_mps": [
+          1.1768300550703277e-05,
+          6.308803686108006e-06
+        ],
+        "desired_rim_mps": [
+          0.0,
+          0.0
+        ],
+        "desired_v": 0.0,
+        "desired_w": 0.0,
+        "dt_ns": 34000000,
+        "dt_sec": 0.034,
+        "epoch": "mr3_p2a_reach_v17_interface_w0_e1_72f1a48b",
+        "kind": "actuation",
+        "max_acceleration_mps2": 1.0,
+        "pair_index": 0,
+        "record_sequence": 37,
+        "robot": "tb1",
+        "schema": "mr3-drive-actuation-v2",
+        "sim_time_ns": 711000000,
+        "target_clock_ns": 680000000,
+        "target_decision_sequence": 34
+      }
+    },
+    {
+      "line": 38,
+      "raw": "{\"cmd_seq\":15,\"desired_v\":0.0,\"desired_w\":0.0,\"epoch\":\"mr3_p2a_reach_v17_interface_w0_e1_72f1a48b\",\"kind\":\"command_received\",\"record_sequence\":38,\"robot\":\"tb1\",\"schema\":\"mr3-drive-actuation-v2\",\"sim_time_ns\":711000000,\"target_clock_ns\":700000000,\"target_decision_sequence\":35}\n",
+      "record": {
+        "cmd_seq": 15,
+        "desired_v": 0.0,
+        "desired_w": 0.0,
+        "epoch": "mr3_p2a_reach_v17_interface_w0_e1_72f1a48b",
+        "kind": "command_received",
+        "record_sequence": 38,
+        "robot": "tb1",
+        "schema": "mr3-drive-actuation-v2",
+        "sim_time_ns": 711000000,
+        "target_clock_ns": 700000000,
+        "target_decision_sequence": 35
+      }
+    },
+    {
+      "line": 39,
+      "raw": "{\"cmd_seq\":15,\"desired_v\":0.0,\"desired_w\":0.0,\"epoch\":\"mr3_p2a_reach_v17_interface_w0_e1_72f1a48b\",\"kind\":\"status_publish\",\"record_sequence\":39,\"robot\":\"tb1\",\"schema\":\"mr3-drive-actuation-v2\",\"scope\":\"target_storage_and_status_publication\",\"sim_time_ns\":711000000,\"status\":{\"angular_z\":0.0,\"clock_ns\":711000000,\"cmd_seq\":15,\"decision_sequence\":35,\"epoch\":\"mr3_p2a_reach_v17_interface_w0_e1_72f1a48b\",\"linear_x\":0.0,\"robot\":\"tb1\",\"schema\":\"mr3-drive-target-consumed-v1\",\"source_clock_ns\":700000000},\"target_clock_ns\":700000000,\"target_decision_sequence\":35}\n",
+      "record": {
+        "cmd_seq": 15,
+        "desired_v": 0.0,
+        "desired_w": 0.0,
+        "epoch": "mr3_p2a_reach_v17_interface_w0_e1_72f1a48b",
+        "kind": "status_publish",
+        "record_sequence": 39,
+        "robot": "tb1",
+        "schema": "mr3-drive-actuation-v2",
+        "scope": "target_storage_and_status_publication",
+        "sim_time_ns": 711000000,
+        "status": {
+          "angular_z": 0.0,
+          "clock_ns": 711000000,
+          "cmd_seq": 15,
+          "decision_sequence": 35,
+          "epoch": "mr3_p2a_reach_v17_interface_w0_e1_72f1a48b",
+          "linear_x": 0.0,
+          "robot": "tb1",
+          "schema": "mr3-drive-target-consumed-v1",
+          "source_clock_ns": 700000000
+        },
+        "target_clock_ns": 700000000,
+        "target_decision_sequence": 35
+      }
+    }
+  ],
+  "frozen_runtime_source": {
+    "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_reach_runtime.py",
+    "sha256": "e3e1c39d3900db4fffc3353e9d31deed954479df325d7bfc33dd4f90a1998f9c",
+    "lines_270_to_292": [
+      "",
+      "    def _applied(self, value):",
+      "        target = value[\"target\"]",
+      "        sequence = target[\"decision_sequence\"]",
+      "        if (sequence not in self.published",
+      "                or canonical_json(target) != canonical_json(self.published[sequence])):",
+      "            self.fail(\"actual application has no registered publication\")",
+      "        stored = self.storage.pending[self.robot].get(sequence)",
+      "        if stored is None:",
+      "            # Separate DDS topics have no callback-order guarantee. Retain the",
+      "            # actual event and keep physics paused until its real ACK arrives.",
+      "            return False",
+      "        if stored[\"cmd_seq\"] != value[\"cmd_seq\"]:",
+      "            self.fail(\"actual application has no exact real storage\")",
+      "        possible = [p for p in self.storage.pending[self.robot].values()",
+      "                    if p[\"clock_ns\"] <= value[\"source_clock_ns\"]]",
+      "        if not possible or max(possible, key=lambda p: p[\"cmd_seq\"])[\"cmd_seq\"] != value[\"cmd_seq\"]:",
+      "            self.fail(\"actual application is not the latest stored target\")",
+      "        if target[\"linear_x\"] != 0 or target[\"angular_z\"] != 0:",
+      "            if value[\"source_clock_ns\"]-target[\"clock_ns\"] > RAW_PERIOD_NS:",
+      "                self.fail(\"nonzero target missed the 20ms renewal boundary\")",
+      "        if target[\"linear_x\"] != 0 and self.role in (\"X\", \"N\", \"STOP\"):",
+      "            sign = 1 if target[\"linear_x\"] > 0 else -1"
+    ]
+  },
+  "finding": "Actual native record37 applies cmd14 at711000000 before record38 stores cmd15 at the same711000000 tick. Runtime later replays applied8 but clock<= selection falsely treats cmd15 as preceding. No target substitution or physical model violation is established; prerelease HOLD tracker fault is latched at0.72s and hidden behind readyfalse.",
+  "independent_gate_retained": "audit_reach_runtime.native_index already requires actual actuation cmd to equal max native command with record_sequence strictly earlier than actuation record_sequence. No independent mathematical predicate changes authorized or needed."
+}

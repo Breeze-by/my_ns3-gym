@@ -285,6 +285,74 @@ class IndependentReachRuntimeTests(unittest.TestCase):
         self.assertEqual(r.storage.pending[ROBOT][21], ack)
         self.assertIsNone(r.fault)
 
+    def test_same_clock_newer_storage_does_not_invent_native_order_from_delivery(self):
+        # Native V17 order was actuation8/cmd14, then store cmd15 at the same
+        # 711ms clock. The online feeds cannot infer that order from DDS arrival.
+        for applied_first in (True, False):
+            with self.subTest(applied_first=applied_first):
+                r = reach.ReachTracker(EPOCH, ROBOT)
+                old, newer = target(680_000_000, 34), target(700_000_000, 35)
+                r.publish_target(old)
+                r.receive_storage({**storage(old, 14), "clock_ns": 689_000_000})
+                r.publish_target(newer)
+                actual = applied(old, 711_000_000, 8, 14)
+                ack = {**storage(newer, 15), "clock_ns": 711_000_000}
+                feeds = [("applied", actual), ("storage", ack)]
+                for kind, value in (feeds if applied_first else reversed(feeds)):
+                    getattr(r, "receive_"+kind)(value)
+                raw = odometry(719_000_000)
+                r.receive_raw(raw, 1)
+                r.receive_calibration(calibration(raw, 1))
+                self.assertTrue(r.synchronize(720_000_000))
+                self.assertEqual(r.last_applied, actual)
+                self.assertEqual(r.causal_applied, actual)
+                self.assertEqual(r.storage.latest[ROBOT], ack)
+                self.assertEqual(r.role, "HOLD")
+                self.assertIsNone(r.release_ns)
+                self.assertFalse(r.actual_normal)
+                self.assertIsNone(r.fault)
+
+    def test_strictly_earlier_newer_storage_contradicts_an_old_actual_command(self):
+        r = reach.ReachTracker(EPOCH, ROBOT)
+        old, newer = target(680_000_000, 34), target(700_000_000, 35)
+        r.publish_target(old)
+        r.receive_storage({**storage(old, 14), "clock_ns": 689_000_000})
+        r.publish_target(newer)
+        r.receive_storage({**storage(newer, 15), "clock_ns": 710_999_999})
+        actual = applied(old, 711_000_000, 8, 14)
+        r.receive_applied(actual)
+        with self.assertRaisesRegex(ValueError, "not the latest stored target"):
+            r.synchronize(720_000_000)
+        fault = r.fault
+        self.assertIsNone(r.last_applied)
+        self.assertTrue(any(entry[1] == 1 and entry[2][1] == actual for entry in r.events))
+        with self.assertRaises(ValueError):
+            r.synchronize(740_000_000)
+        self.assertEqual(r.fault, fault)
+
+    def test_actual_still_requires_exact_target_command_and_no_future_storage(self):
+        for mutation in ("target", "command", "future_storage"):
+            with self.subTest(mutation=mutation):
+                r = reach.ReachTracker(EPOCH, ROBOT)
+                value = target(680_000_000, 34)
+                r.publish_target(value)
+                stored_at = 711_000_001 if mutation == "future_storage" else 689_000_000
+                r.receive_storage({**storage(value, 14), "clock_ns": stored_at})
+                actual = applied(value, 711_000_000, 8, 14)
+                if mutation == "target":
+                    actual["target"]["angular_z"] = .01
+                elif mutation == "command":
+                    actual["cmd_seq"] = 13
+                r.receive_applied(actual)
+                with self.assertRaisesRegex(ValueError, {
+                        "target": "no registered publication",
+                        "command": "no exact real storage",
+                        "future_storage": "precedes its real storage"}[mutation]):
+                    r.synchronize(720_000_000)
+                self.assertIsNotNone(r.fault)
+                self.assertIsNone(r.last_applied)
+                self.assertFalse(r.actual_normal)
+
     def test_complete_healthy_pipeline_reaches_disk_and_real_normal(self):
         a = Feed().normal()
         self.assertEqual(a.r.role, "N")

@@ -32,6 +32,14 @@ from multi_robot_exploration.mr3_safety_intent import (
 )
 
 
+def storage_receipt_qos(reach_enabled=False):
+    """Keep a bounded receipt history for reach's actual-application monitor."""
+    if type(reach_enabled) is not bool:
+        raise ValueError("reach_enabled must be a boolean")
+    return QoSProfile(depth=256 if reach_enabled else 1,
+                      durability=DurabilityPolicy.TRANSIENT_LOCAL)
+
+
 class MotionSafety(Node):
     """Three logical local gates; robot i never reads another robot's raw state."""
 
@@ -83,6 +91,7 @@ class MotionSafety(Node):
         self.failure_sent = False
         self.normal_control_model_fault = None
         durable = QoSProfile(depth=1, durability=DurabilityPolicy.TRANSIENT_LOCAL)
+        storage_qos = storage_receipt_qos(self.reach_enabled)
         self.outputs = {name: self.create_publisher(Twist, f"/{name}/cmd_vel", 20)
                         for name in ROBOTS}
         self.drive_targets = {
@@ -118,7 +127,7 @@ class MotionSafety(Node):
                     self.inputs.append(self.create_subscription(
                         String, f"/{name}/mr3_drive/{suffix}",
                         lambda msg, name=name, kind=kind: self.receive_reach_feed(msg, name, kind),
-                        durable if kind == "storage" else 256))
+                        storage_qos if kind == "storage" else 256))
         self.inputs.extend([
             self.create_subscription(String, "/mr3/received/states", self.receive_states, 10),
             self.create_subscription(Header, "/exploration_start", self.receive_start, durable),
@@ -610,10 +619,22 @@ class MotionSafety(Node):
         now = clock_ns / 1e9
         states = {row["name"]: row for row in self.received["robots"]} if self.received else {}
         if getattr(self, "reach_enabled", False):
-            try:
-                if self.reach_pending_release is not None or not all(
-                        tracker.synchronize(clock_ns) for tracker in self.reach.values()):
+            # A permanent contradiction must not become an unobservable input
+            # wait, including when another robot's prefix is still pending.
+            for name, tracker in self.reach.items():
+                if tracker.fault is not None:
+                    self.reach_failure(name, ValueError(tracker.fault))
                     return False
+            if self.reach_pending_release is not None:
+                return False
+            for name, tracker in self.reach.items():
+                try:
+                    if not tracker.synchronize(clock_ns):
+                        return False
+                except (ValueError,KeyError,TypeError,OverflowError) as error:
+                    self.reach_failure(name, error)
+                    return False
+            try:
                 for name in ROBOTS:
                     own = self.local_state(name)
                     for state in (own, states.get(name)):

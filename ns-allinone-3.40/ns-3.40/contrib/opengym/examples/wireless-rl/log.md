@@ -7234,3 +7234,53 @@ V17封存首次Git静态检查实际rc1，[原件](report/assets/20261019_mr3_p2
 V17第二次稳定index静态检查实际rc0，[完整原JSON](report/assets/20261019_mr3_p2a_v17/staged_preparation_review_v2.json)逐字保存，实际命令为同A16/check_preparation_v1.py --staged --output /tmp/mr3_p2a_v17_staged_preparation_v2.json；无独立child秒声明。旧595份V14/V15原件、38旧archive项、append-only log、所有当前CPU源及Git原字节/链接通过；首轮index变更FAIL保留。
 
 [独立闭合打包检查](report/assets/20261019_mr3_p2a_v17/closed_preparation_integrity_v1.json)实际rc0，真实parent finite_actual_runner_v2.py的[完整argv/cwd/source与wait](report/assets/20261019_mr3_p2a_v17/checks/closed_preparation_cpu_attempt_v1/actual_wait.json)记录46.841968454 child秒、source前后完全相同；child为`/usr/bin/python3 -B .../20261019_mr3_p2a_v17/check_closed_preparation_v1.py --output /tmp/mr3_p2a_v17_closed_preparation_v1.json`。逐字核5份新94项CPU源/ordinal快照/console、全部closed copy对/tmp原件及index、459件archive SHA/bytes、48gone、449.016877943费用守恒、659新plan源及10实际ELF；production差异严格只runtime与对应test，其余driver/DrivePhaseClient/独立reader均原字节。本项仅封存CPU检查，无native/GPU或科学信用。
+
+V17冻结`023e488811743b3f325538d2854205466925c5c4`已实际commit/push/clean。preflight真rc0/25.863617763秒，仅source/ELF CPU，不作native信用。实际同freeze矩阵父`reach_execution --scope engineering`，完整child命令：
+
+```bash
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -m mr3_learning.reach_preparation --plan /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v17/predeclared_plan_v1.json --freeze 023e488811743b3f325538d2854205466925c5c4
+```
+
+[原outer](report/assets/20261019_mr3_p2a_v17/closed_execution/matrix_outer/actual_wait.json)实际rc1/449.21890062秒/sourceunchanged；协调器all_submitted_children_waited=true，interface FAIL，terminal/reset/deadline SKIPPED，所有policy未启动/GPU0/optimizer0。native rc1/431.232161179，watcher rc0/433.22349528；不重复累加重叠child。本次延迟19ms storage ACK不再被旧==source错误误拒；但[新同tick因果取证](report/assets/20261019_mr3_p2a_v17/closed_execution/same_tick_forensic_review_v1.json)保留首fault原始行：native record37在711ms先应用cmd14，38才存cmd15；runtime<=时钟选最新错误将cmd15倒置到应用前，tb1在.72s锁存。显式kind故障行未出现不代表tracker无fault，监控已补查内部状态；该失败属于因果校验实现错误，不是已证动力学反例。
+
+reset守卫自然关闭，supervisor forced_shutdown=true/worker_returncode=-9保留，不能宣称所有clean0；watcher closed/PASS，remaining_owned/zombie为空。[外部实际absence](report/assets/20261019_mr3_p2a_v17/closed_execution/external_absence.json)48保存身份全gone，其outer rc0/.191114003秒；实际脚本仍A16/external_absence_v1.py，显式`--matrix /tmp/mr3_p2a_reach_v17_matrix --outer /tmp/mr3_p2a_reach_v17_matrix_wait --run .../mr3_p2a_reach_v17_interface --output /tmp/mr3_p2a_reach_v17_absence.json`，完整命令和source在[实际wait](report/assets/20261019_mr3_p2a_v17/closed_execution/absence_outer/actual_wait.json)。[账目](report/assets/20261019_mr3_p2a_v17/closed_execution/engineering_accounting_v1.json)按ns真值本版449.410014623，累计32494.9044856606018/52000，余19505.0955143393982，pilot1870/2905.9547395464029和三final-only未动。
+
+完整closed native461件789023247字节保存为[单一xz原件](report/assets/20261019_mr3_p2a_v17/closed_execution/native_closed_v1.tar.xz)，压缩36583984字节；[逐件SHA清单](report/assets/20261019_mr3_p2a_v17/closed_execution/native_closed_manifest_v1.json)全部回读和source前后集合/字节通过。实际命令`rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 python3 -B ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v17/archive_closed_native_v1.py` rc0；仅封存CPU，不新增实验或独立child费声明。V17不重试，不拼V16资格。
+
+## 2026-10-19 P2A V18：同tick因果修复与永久fault可见性
+
+V17原矩阵已经实际wait失败并全部关闭。例行修复范围仅runtime+对应test及motion_safety+对应test：消费ACK真实clock<=apply，strictly earlier highercmd才反证oldcmd；同clock不凭跨DDSarrival猜全序，原独立reader native_index全序严格门不改。node将永久tracker fault接入既有reach_failure，普通pending仍等；worker/driver/ELF/DrivePhaseClient与任务/奖励/门限均不改。
+
+实际CPU child完整命令：
+
+```bash
+/bin/bash -c 'source /opt/ros/humble/setup.bash; source "$1/install/setup.bash"; exec /usr/bin/python3 -B -m pytest -q test/test_mr3_reach_runtime_independent.py test/test_motion_safety_reach.py test/test_mr3_drive_phase.py test/test_mr3_motion_control.py' mr3-same-tick-regression /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
+```
+
+parent仍原finite_actual_runner_v2.py，output A18/checks/same_tick_runtime_cpu_attempt_v1、cwd canonical ROS/src/multi_robot_exploration，七份完整--source路径及ordinal快照在[真实wait](report/assets/20261019_mr3_p2a_v18/checks/same_tick_runtime_cpu_attempt_v1/actual_wait.json)。实际rc0、127 PASS、24.300563445秒/source前后稳定，unset PYTHONPATH/PYTHONNOUSERSITE=1/PYTHONDONTWRITEBYTECODE=1/CUDA_VISIBLE_DEVICES=；只source系统ROS+canonicalinstall，不混conda。该CPU不提供native/策略信用。下一步完整旧预热closed-data重放，尚无PASS声明或新原生。
+
+V18完整closed预热replay首轮真实[actualwait](report/assets/20261019_mr3_p2a_v18/checks/closed_prewarm_cpu_attempt_v1/actual_wait.json)rc1/269.896902167秒、九份source前后稳定；systemROS bash/exec完整argv/cwd在原件，output原/tmp逐字保存[失败result](report/assets/20261019_mr3_p2a_v18/closed_prewarm_replay_failed_result_v1.json)。全部162691条/390357682字节/原SHA完整扫描并保STOP尾，新tracker无latchedfault，但EOF三机causalpending未解，error_count3；不改判PASS。其同步次数是对旧原输入额外同步的pure tracker压力回放，不等同node原all-short-circuit逐调用，不证明真实ready/bootstrap或连续物理；无新native/GPU。
+
+进一步全原件只读比对证实Motion各缺833条storageACK；native已publish、worker首缺ACK已收到，具体RMW/reader覆盖层仍unknown。旧publisher/两subscriber实际KEEP_LAST1 reliable/transientlocal，原newfullfeeds另各256。不能从worker/nativeaudits补在线历史，也不能跳失败suffix。未执行的“旧replay必须PASS”准备草案保存[原件](report/assets/20261019_mr3_p2a_v18/unexecuted_full_replay_pass_draft_v1/scope.json)；尚无plan/nativefreeze，不伪造不存在的PASS。后续只修reach Motion subscriber容量，legacy/nativepublisher/worker/ELF/九字段/独立native完整门保持；有限真实ROS burst先验证，再新同freeze全矩阵实际检查完整prefix。旧FAIL与CPU费单列，native余额仍19505.0955143393982。
+
+V18最小prospective收集修复：仅Motion的reach storage subscriber使用production builder返回KEEP_LAST256/reliable/transient-local；default/legacy及nativepublisher、worker仍1，9字段、原actualclock、exacttarget/source/cmd、paused同钟屏障、driver/ELF和原独立完整因果门不改。有限缓存不承诺任意延迟完整；新native仍以真实actual prefix判门，缺失保持failclosed。
+
+三次真实有限CPU child完整argv如下（parent均原finite_actual_runner_v2.py，source_before/after/snapshot/cwd在各原回执；unset PYTHONPATH、PYTHONNOUSERSITE=1、PYTHONDONTWRITEBYTECODE=1、CUDA_VISIBLE_DEVICES=）：
+
+```bash
+/bin/bash -c 'source /opt/ros/humble/setup.bash; source "$1/install/setup.bash"; exec /usr/bin/python3 -B -m pytest -q test/test_mr3_reach_runtime_independent.py test/test_motion_safety_reach.py test/test_mr3_drive_phase.py test/test_mr3_motion_control.py test/test_mr3_phase_qos.py' mr3-storage-queue-regression /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap
+/usr/bin/python3 -B /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v18/missing_storage_receipt_review_v1.py --output /tmp/mr3_p2a_reach_v18_missing_storage_review.json
+/bin/bash -c 'source /opt/ros/humble/setup.bash; source "$1/install/setup.bash"; exec /usr/bin/python3 -B "$2" --output "$3"' mr3-storage-queue-burst /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v18/ros_storage_queue_burst_v1.py /tmp/mr3_p2a_reach_v18_ros_storage_queue_burst.json
+```
+
+[新targeted ROS](report/assets/20261019_mr3_p2a_v18/checks/storage_queue_runtime_cpu_attempt_v1/actual_wait.json)实际140 PASS/rc0/23.374654579秒（8源）；此前127项保持原b145 Motion源范围，不重标为新QoS最终。
+[全量ACK取证](report/assets/20261019_mr3_p2a_v18/missing_storage_receipt_review_result_v1.json)实际rc0/16.073019071秒（7源），native/Motion/worker cmd集whole9字段逐个相等，三机Motion各833条缺失；首缺ACK native和worker均有。只证明Motion原历史缺口，具体丢失层unknown，未注入或重建缺ACK，不改旧replay/native FAIL。
+[真实ROS burst](report/assets/20261019_mr3_p2a_v18/ros_storage_queue_burst_result_v1.json)实际rc0/2.312735939秒（9源），domain222实际readback、rmw_fastrtps_cpp，相同已匹配publisher深度1逐条128个synthetic九字段ACK且全部wait_for_all_acked=true，两subscriber延后spin。legacy配置深度1仅callback ID128，新production reach配置深度256 callback完整1..128且无重复/次序差，entity销毁及context shutdown完成。SDK实际entity qos_profile配置为1/256；graph查询history UNKNOWN/depth0原样记录，不能谎称graph报告了256深度。此有限DDS CPU对照不证明一般无损/任意延迟/完整Gazebo资格/策略安全；没有仿真、GPU、PPO或工程native扣费。
+
+旧[全suffix replay FAIL](report/assets/20261019_mr3_p2a_v18/closed_prewarm_replay_failed_result_v1.json)保持rc1/269.896902167和三EOF缺ACK错误。prospective前置改为绑定该实际FAIL及完整缺口取证，并要求新source140测试和有限DDS对照PASS；原未执行硬PASS草案保留，新的四阶段12EP30科学门一个不减、不可拼旧信用。
+
+取证表述补充：上述“九字段逐个相等”指各消费者实际收到的ACK与native对应项逐字段一致，并非三个cmd集合相同。worker原历史也分别缺10/8/10条（共28），Motion各缺833；导致Motion最早pending的三条恰在worker原件存在。worker现有phase同钟完整屏障与Motion历史流义务不同，未用任何worker ACK补Motion输入。
+
+V18 prospective计划已实际生成，命令`rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 -B ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v18/prepare_plan_v1.py --engineering-remaining-seconds 19505.0955143393982`实际rc0，仅准备数据/no native。新[plan1](report/assets/20261019_mr3_p2a_v18/predeclared_plan_v1.json) SHA `29294bba562f6e249166d6ffc4b4c20cc602f005d10d3c7f11ee598c9f1adb49`，715源码/合同/实际CPU原件和10ELF；新binding SHA `0ebd64cc9db18df5fe6a86ea8b337b0532561c2b5302c9aecdc89c96516fffba`。guarded准备门真实读取旧replay FAIL+新140/forensic/burst PASS，硬保留所有源版本/三个EOF缺失；不将CPU准备变原生信用。全四阶段18000+external300可负担；minimum1800只有实际matrix节余及尾账余额足额才准入，pilot/验证不变。尚无V18新native/GPU。
+
+V18独立[最终封存检查](report/assets/20261019_mr3_p2a_v18/closed_preparation_integrity_v1.json)实际rc0，真实child57.776698661秒、七份helper/plan/binding源前后稳定；[完整actual_argv/cwd/snapshot](report/assets/20261019_mr3_p2a_v18/checks/closed_preparation_cpu_attempt_v1/actual_wait.json)保留。实际child为`/usr/bin/python3 -B .../A18/check_continuation_preparation_v1.py --plan .../A18/predeclared_plan_v1.json --plan-sha 29294bba562f6e249166d6ffc4b4c20cc602f005d10d3c7f11ee598c9f1adb49 --output /tmp/mr3_p2a_v18_closed_preparation_v1.json`，父原finite_actual_runner_v2.py输出A18/checks/closed_preparation_cpu_attempt_v1，cwd canonical root、source包含三newhelpers/两oldpackaginghelpers/plan/binding。全部actualCPU及失败旧source版本/EOF缺口、真实DDS128对照/清理、715plan源与10ELF、闭合archive及copy对原/tmp/index原字节、48gone与449.410014623费用守恒、仅四生产/测试文件差异、oldassets零修改和新增AST/JSON/链接/暂存sanity均通过；检查不提供新native/GPU信用。

@@ -1,0 +1,273 @@
+{
+  "schema": "mr3-v15-finite-preparation-actual-child-wait-v1",
+  "scope": "Finite CPU/build preparation only; no simulator run, GPU update, formal native scientific role, quota change or native admission.",
+  "actual_argv": [
+    "/bin/bash",
+    "-c",
+    "source /opt/ros/humble/setup.bash; source \"$1/install/setup.bash\"; exec /usr/bin/python3 -B \"$2\" --output \"$3\"",
+    "mr3-closed-prewarm",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap",
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v18/closed_prewarm_replay_v1.py",
+    "/tmp/mr3_p2a_reach_v18_closed_prewarm_replay.json"
+  ],
+  "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+  "explicit_env": {
+    "PYTHONNOUSERSITE": "1",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONPATH": null
+  },
+  "actual_returncode": 1,
+  "actual_waited": true,
+  "coordinator_identity": {
+    "pid": 1318718,
+    "parent": 1318715,
+    "process_group": 1318713,
+    "session": 1318713,
+    "start_ticks": 416826522
+  },
+  "child_identity": {
+    "pid": 1318721,
+    "parent": 1318718,
+    "process_group": 1318713,
+    "session": 1318713,
+    "start_ticks": 416826530
+  },
+  "started_monotonic_ns": 4168265306690762,
+  "ended_monotonic_ns": 4168535203592929,
+  "actual_child_wait_seconds": "269.896902167",
+  "source_before": [
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v18/closed_prewarm_replay_v1.py",
+      "bytes": 20183,
+      "sha256": "c07379abf437c2d68a75f7c3fd7b0321ebaf8d709efc113d968dd8f4925e2204",
+      "stat": [
+        2051,
+        79065309,
+        20183,
+        1792422817721717961,
+        1792422817721717961
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_reach_runtime.py",
+      "bytes": 29813,
+      "sha256": "c17d008905364616c4027aeb1b6c180e7f4d0b522e310e242659a08cf376eb9e",
+      "stat": [
+        2051,
+        70313007,
+        29813,
+        1792422605287044925,
+        1792422605287044925
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_episode.py",
+      "bytes": 1379,
+      "sha256": "9145d2ad23789b252e32f0afdfe18cf2eeec8e2c7e9ca7e89127a532288e411b",
+      "stat": [
+        2051,
+        70311127,
+        1379,
+        1792060186867650995,
+        1792060186867650995
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_drive_phase.py",
+      "bytes": 4429,
+      "sha256": "0525230f4719e7279826810f0c177f6a6317a961d50711ac76d8a0338f93d987",
+      "stat": [
+        2051,
+        70311461,
+        4429,
+        1792215097686882327,
+        1792215097686882327
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_safety_intent.py",
+      "bytes": 15128,
+      "sha256": "141d62a1cf4d90414bb6cf191aee146d099a7839d946d991514a05e9bfaaa6f7",
+      "stat": [
+        2051,
+        70312589,
+        15128,
+        1792410253923474600,
+        1792410253923474600
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_reach_geometry.py",
+      "bytes": 9878,
+      "sha256": "cf46b49f0740f84511f3d34f9a8eb3e56720744515d9eea1dc81bd8bacb85f0a",
+      "stat": [
+        2051,
+        70311967,
+        9878,
+        1792411707315048438,
+        1792411707315048438
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_velocity_metric.py",
+      "bytes": 5743,
+      "sha256": "0a7a4c9ee3de72c1fddaab2441d9bc7a8ad6c543725e8af0f6f18a6ed783fae5",
+      "stat": [
+        2051,
+        70312267,
+        5743,
+        1792410061793396320,
+        1792410061793396320
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/motion_safety.py",
+      "bytes": 47943,
+      "sha256": "b1455055df77931bf837e6b4c6089ba9cb5a57cabfefad089a347e994dd41673",
+      "stat": [
+        2051,
+        70311322,
+        47943,
+        1792422605288044971,
+        1792422605288044971
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stat": [
+        2051,
+        70259822,
+        0,
+        1788341181225816490,
+        1788341181225816490
+      ]
+    }
+  ],
+  "source_after": [
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v18/closed_prewarm_replay_v1.py",
+      "bytes": 20183,
+      "sha256": "c07379abf437c2d68a75f7c3fd7b0321ebaf8d709efc113d968dd8f4925e2204",
+      "stat": [
+        2051,
+        79065309,
+        20183,
+        1792422817721717961,
+        1792422817721717961
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_reach_runtime.py",
+      "bytes": 29813,
+      "sha256": "c17d008905364616c4027aeb1b6c180e7f4d0b522e310e242659a08cf376eb9e",
+      "stat": [
+        2051,
+        70313007,
+        29813,
+        1792422605287044925,
+        1792422605287044925
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_episode.py",
+      "bytes": 1379,
+      "sha256": "9145d2ad23789b252e32f0afdfe18cf2eeec8e2c7e9ca7e89127a532288e411b",
+      "stat": [
+        2051,
+        70311127,
+        1379,
+        1792060186867650995,
+        1792060186867650995
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_drive_phase.py",
+      "bytes": 4429,
+      "sha256": "0525230f4719e7279826810f0c177f6a6317a961d50711ac76d8a0338f93d987",
+      "stat": [
+        2051,
+        70311461,
+        4429,
+        1792215097686882327,
+        1792215097686882327
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_safety_intent.py",
+      "bytes": 15128,
+      "sha256": "141d62a1cf4d90414bb6cf191aee146d099a7839d946d991514a05e9bfaaa6f7",
+      "stat": [
+        2051,
+        70312589,
+        15128,
+        1792410253923474600,
+        1792410253923474600
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_reach_geometry.py",
+      "bytes": 9878,
+      "sha256": "cf46b49f0740f84511f3d34f9a8eb3e56720744515d9eea1dc81bd8bacb85f0a",
+      "stat": [
+        2051,
+        70311967,
+        9878,
+        1792411707315048438,
+        1792411707315048438
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_velocity_metric.py",
+      "bytes": 5743,
+      "sha256": "0a7a4c9ee3de72c1fddaab2441d9bc7a8ad6c543725e8af0f6f18a6ed783fae5",
+      "stat": [
+        2051,
+        70312267,
+        5743,
+        1792410061793396320,
+        1792410061793396320
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/motion_safety.py",
+      "bytes": 47943,
+      "sha256": "b1455055df77931bf837e6b4c6089ba9cb5a57cabfefad089a347e994dd41673",
+      "stat": [
+        2051,
+        70311322,
+        47943,
+        1792422605288044971,
+        1792422605288044971
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stat": [
+        2051,
+        70259822,
+        0,
+        1788341181225816490,
+        1788341181225816490
+      ]
+    }
+  ],
+  "source_unchanged": true,
+  "console": {
+    "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v18/checks/closed_prewarm_cpu_attempt_v1/console.log",
+    "bytes": 209,
+    "sha256": "ad218b246f21b3061baa634b1466d6a3d191638b5c7c3320ab22fad709a0b2f7",
+    "stat": [
+      2051,
+      79065322,
+      209,
+      1792423140103080143,
+      1792423140103080143
+    ]
+  },
+  "passed": false,
+  "native_admission": false
+}

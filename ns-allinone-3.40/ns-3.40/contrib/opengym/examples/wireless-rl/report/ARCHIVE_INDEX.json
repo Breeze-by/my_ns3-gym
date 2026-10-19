@@ -1910,15 +1910,42 @@
     "policy_stage_started": false
   },
   "mr3_p2a_v17_ack_semantics_20261019": {
-    "status": "CPU_94_PASS_PACKAGING_PASS_FREEZE_READY",
+    "status": "FAIL_CLOSED_SAME_TICK_NATIVE_CAUSALITY",
     "report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v17.md",
     "assets": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v17",
     "predecessor_failure_preserved": true,
     "engineering_remaining_seconds": "19954.5055289623982",
     "minimum_budget_conditional": true,
-    "native_runs": 0,
+    "native_runs": 1,
     "gpu_calls": 0,
     "active_plan": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v17/predeclared_plan_v1.json",
-    "active_plan_sha256": "0b9951b44e842ef2677234659d813d74c97447068fe34688cc4f4b4b04ae3833"
+    "active_plan_sha256": "0b9951b44e842ef2677234659d813d74c97447068fe34688cc4f4b4b04ae3833",
+    "source_freeze": "023e488811743b3f325538d2854205466925c5c4",
+    "charged_wall_seconds": "449.410014623",
+    "cumulative_engineering_used_seconds": "32494.9044856606018",
+    "remaining_engineering_seconds": "19505.0955143393982",
+    "saved_process_identities": 48,
+    "all_saved_identities_gone": true,
+    "full_scientific_qualification": false,
+    "policy_stage_started": false
+  },
+  "mr3_p2a_v18_same_tick_causality_20261019": {
+    "status": "PREPARATION_PASS_FREEZE_READY_OLD_REPLAY_FAIL_PRESERVED",
+    "report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v18.md",
+    "assets": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v18",
+    "predecessor_failure_preserved": true,
+    "engineering_remaining_seconds": "19505.0955143393982",
+    "minimum_budget_conditional": true,
+    "native_runs": 0,
+    "gpu_calls": 0,
+    "old_replay_returncode": 1,
+    "old_replay_full_suffix_scanned": true,
+    "old_replay_failure_reclassified": false,
+    "prospective_queue_burst_returncode": 0,
+    "prospective_queue_burst_declared_messages": 128,
+    "prospective_reach_received": 128,
+    "prospective_legacy_received": 1,
+    "active_plan": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v18/predeclared_plan_v1.json",
+    "active_plan_sha256": "29294bba562f6e249166d6ffc4b4c20cc602f005d10d3c7f11ee598c9f1adb49"
   }
 }

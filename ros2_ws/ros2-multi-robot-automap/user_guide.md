@@ -1,10 +1,10 @@
 # 三机器人 ROS 建图导航：当前实现指南
 
-2026-10-19 V16实际首阶段FAIL并闭合：异步storage ACK时钟被误当source同钟，后继三阶段及训练未启动；48个保存身份全gone。本版工程449.016877943秒，累计32045.4944710376018/52000，余19954.5055289623982。V17已做最小语义修复、94项针对性ROS检查通过，待新冻结完整资格；P2A未完成，pilot/验证额度不变。见[V16记录](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v16.md)。
+2026-10-19 V18：同tick因果与reach接收队列修复，140项ROS及有限DDS对照通过；旧完整replay因历史缺ACK保持FAIL。新冻结完整资格待执行，P2A未完成。工程32494.9044856606018/52000，余19505.0955143393982；pilot/验证不扩额。见[V18记录](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v18.md)。
 
 2026-10-19：P2A.0已验收，P2A未完成。用户已批准V14科学候选并授权生产实现；V15实现显式`mr3-reach-v1`安全模式、真实应用/同源校准回执、完整模式交付及版本化必要审计器，当前完成CPU/编译准备，待新冻结完整原生资格。默认`legacy`保留，旧FAIL不改判；本轮无新native/GPU/pilot/验证，P2B/gateway未启动。见[V15实现与验证](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v15.md)和[新契约](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_REACH_CONTRACT.md)。
 
-2026-10-19用户已批准工程累计上限52000墙秒，并授权后续实现/修复直接推进；工程已用32045.4944710376018/52000墙秒，余19954.5055289623982；pilot1870决策/2905.9547395464029墙秒及三场final-only额度未动。旧V13同冻结独立38/38仅有原工程信用，原矩阵/optional/minimum FAIL保留；minimum整轮ineligible、0 eligible/0更新。详见[V13原始结果](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v13.md)。
+2026-10-19用户已批准工程累计上限52000墙秒，并授权后续实现/修复直接推进；工程已用32494.9044856606018/52000墙秒，余19505.0955143393982；pilot1870决策/2905.9547395464029墙秒及三场final-only额度未动。旧V13同冻结独立38/38仅有原工程信用，原矩阵/optional/minimum FAIL保留；minimum整轮ineligible、0 eligible/0更新。详见[V13原始结果](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v13.md)。
 
 WORLD odom/TF独立50Hz与真实DDS接收记录器已实现，轮执行器仍为30Hz；V13独立工程资格38/38通过，后续minimum仍出现真实模型FAIL。
 V7真实转向模型FAIL、V8未复现的诊断及V9—V11失败均保留，不能提供修复或95%策略信用；详细事实见日期报告。
