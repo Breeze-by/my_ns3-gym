@@ -1,0 +1,266 @@
+"""Manufactured journals and a mock scalar evaluator; no world/ROS Node runs."""
+import copy
+import gzip
+import importlib.util
+import json
+from pathlib import Path
+import tempfile
+import unittest
+
+import numpy as np
+
+from mr3_learning import audit_proxy2d_behavior as behavior
+from mr3_learning.proxy2d_codec import encode_arrays
+
+
+GRID = np.zeros((1, 1), dtype=np.int16)
+MAP = {"grid": GRID, "resolution": 1., "origin": [0., 0.]}
+
+
+class MockReward:
+    """A small test oracle, deliberately independent of saved PASS flags."""
+    def __init__(self, scene="open", epoch="fixture"):
+        self.epoch = epoch
+
+    def initialize(self, **fields):
+        return {"reward": 0., "terminated": False, "truncated": False, "reason": None,
+                "delta_sim_time": 0., "elapsed_sim_time": 0., "metrics": {"correct_free_coverage_ratio": .2},
+                "proxy_task_success": False}
+
+    def check(self, physical_state, now, navigation_failed=False):
+        reason = "timeout" if now >= 300. else "navigation_failure" if navigation_failed else \
+            "collision" if physical_state["collision_events"] else None
+        return {"terminal_reason": reason, "terminated": reason is not None}
+
+    def inspect(self, **fields):
+        return {"coverage_candidate": False}
+
+    def advance(self, **fields):
+        end, start = fields["step_end"], fields["step_start"]
+        reason = "timeout" if end >= 300. else fields["terminal_reason"]
+        terminal = reason is not None
+        return {"reward": -(end - start) / 300., "terminated": terminal,
+                "truncated": bool(fields["external_truncation"] and not terminal),
+                "reason": reason if terminal else fields["external_truncation"],
+                "delta_sim_time": end - start, "elapsed_sim_time": end,
+                "new_correct_free_cells": 0, "metrics": {"correct_free_coverage_ratio": .2,
+                    "map_quality_pass": False, "robot_participation_pass": False},
+                "proxy_task_success": reason == "coverage_reached" and not fields["physical_state"]["collision_events"]}
+
+
+def physical(now, contacts=0):
+    return {"time_ns": round(now * 1e9), "native_contact_monitoring": False,
+            "path_lengths": {name: 0. for name in behavior.ROBOTS}, "collision_events": contacts,
+            "contact_events": [{"kind": "fixture"}] * contacts}
+
+
+def journals(steps=1, *, reason=None, deadline_contact=False):
+    """Only JSON fixtures: generating a clock number does not advance a world."""
+    evaluator, records, returns = MockReward(), [], []
+    reset = {"snapshot": {"source_stamp": 0.}, **evaluator.initialize(), "dt": 0.}
+    reset["reward_diagnostics"] = evaluator.initialize()
+    def append(operation, request):
+        answer = {} if operation == "close" else getattr(evaluator, operation)(**request)
+        records.append({"operation": operation, "request": encode_arrays(request),
+                        "response": {"ok": True, "result": answer}})
+        return answer
+    append("initialize", {**MAP, "start_time": 0.})
+    for step in range(1, steps + 1):
+        for quantum in range(1, 51):
+            now = (step - 1) + quantum / 50.
+            append("check", {"physical_state": physical(now, int(deadline_contact and now == 300.)),
+                             "now": now, "navigation_failed": False})
+        state = physical(float(step), int(deadline_contact and step == 300))
+        append("inspect", {**MAP, "physical_state": state, "goal_counts": dict.fromkeys(behavior.ROBOTS, 0),
+                           "navigation_closed": False})
+        answer = append("advance", {**MAP, "sequence": step, "step_start": float(step - 1), "step_end": float(step),
+            "physical_state": state, "goal_counts": dict.fromkeys(behavior.ROBOTS, 0), "navigation_closed": True,
+            "goal_switches": 0, "rejected_actions": 0, "terminal_reason": reason if step == steps else None,
+            "external_truncation": "external_sampler_limit" if step == steps else None})
+        returns.append({"snapshot": {"source_stamp": float(step)}, **answer,
+                        "dt": answer["delta_sim_time"], "reward_diagnostics": copy.deepcopy(answer)})
+    append("close", {})
+    return records, reset, returns
+
+
+class BehaviorAuditFixtures(unittest.TestCase):
+    def replay(self, records, reset, returns):
+        return behavior.replay_evaluator(enumerate(records, 1), MockReward(), returns, reset,
+            lambda row: {"raw_grid": GRID, "resolution": 1., "origin": [0., 0.]},
+            {name: {} for name in behavior.ROBOTS}, "fixture")
+
+    def test_real300_second_timeout_is_complete_but_is_not_task_success(self):
+        records, reset, returns = journals(300)
+        result = self.replay(records, reset, returns)
+        self.assertEqual(result["errors"], [])
+        self.assertEqual(result["recomputed_operation_counts"]["check"], 15000)
+        self.assertEqual(result["recomputed_advance_count"], 300)
+        self.assertEqual(result["trace_matched_advance_count"], 300)
+        self.assertTrue(result["closed"])
+        final = behavior.terminal_assessment(0., returns[-1], result["last_response"], [])
+        self.assertTrue(final["full_task_terminal"])
+        self.assertFalse(final["proxy_task_success"])
+        self.assertFalse(result["last_response"]["truncated"])
+
+    def test_external_only_cut_is_not_a_complete_long_task(self):
+        records, reset, returns = journals()
+        result = self.replay(records, reset, returns)
+        self.assertFalse(behavior.terminal_assessment(0., returns[-1], result["last_response"], [])["full_task_terminal"])
+
+    def test_qualified_early_coverage_and_deadline_precedence_remain_distinct(self):
+        row = {"snapshot": {"source_stamp": 299.98}}
+        expected = {"reason": "coverage_reached", "terminated": True, "truncated": False, "proxy_task_success": True}
+        self.assertTrue(behavior.terminal_assessment(0., row, expected, [])["proxy_task_success"])
+        row["snapshot"]["source_stamp"] = 300.
+        self.assertFalse(behavior.terminal_assessment(0., row, expected, [])["full_task_terminal"])
+
+    def test_contact_at_deadline_is_unsafe_even_when_timeout_has_priority(self):
+        records, reset, returns = journals(300, deadline_contact=True)
+        result = self.replay(records, reset, returns)
+        self.assertEqual(result["errors"], [])
+        self.assertEqual(result["last_response"]["reason"], "timeout")
+        self.assertIn("proxy_contact", result["unsafe_observed"])
+        self.assertFalse(behavior.terminal_assessment(0., returns[-1], result["last_response"], result["unsafe_observed"])["proxy_task_success"])
+
+    def test_timeout_close_tail_check_may_precede_earlier_saved_boundary_advance(self):
+        records, reset, returns = journals(300)
+        fields = {"physical_state": physical(300.02), "now": 300.02, "navigation_failed": False}
+        tail = {"operation": "check", "request": encode_arrays(fields),
+                "response": {"ok": True, "result": MockReward().check(**fields)}}
+        records.insert(-2, tail)  # inspect(boundary), check(close tail), advance(boundary)
+        result = self.replay(records, reset, returns)
+        self.assertEqual(result["errors"], [])
+        self.assertEqual(result["recomputed_operation_counts"]["check"], 15001)
+        self.assertEqual(result["last_response"]["elapsed_sim_time"], 300.)
+
+    @unittest.skipUnless(importlib.util.find_spec("rclpy") is not None, "requires sourced system ROS Python")
+    def test_real_proxy_reward_schema_with_small_arrays_and_manual_private_states(self):
+        # Original truth/metric/reward libraries run, but no ProxyWorld, ROS
+        # Node, backend process, real episode or saved-run consumer is created.
+        from mr3_learning.proxy2d_codec import decode_arrays
+        records, reset, returns = journals()
+        producer = behavior.reward_factory("open", "fixture")
+        for row in records:
+            operation, fields = row["operation"], decode_arrays(row["request"])
+            expected = {} if operation == "close" else getattr(producer, operation)(**fields)
+            row["response"]["result"] = expected
+            if operation in ("initialize", "advance"):
+                target = reset if operation == "initialize" else returns[0]
+                target.update({key: expected[key] for key in ("reward", "terminated", "truncated", "reason")})
+                target.update(dt=expected["delta_sim_time"], reward_diagnostics=copy.deepcopy(expected))
+        actual = behavior.replay_evaluator(enumerate(records, 1), behavior.reward_factory("open", "fixture"), returns, reset,
+            lambda row: {"raw_grid": GRID, "resolution": 1., "origin": [0., 0.]},
+            {name: {} for name in behavior.ROBOTS}, "fixture")
+        self.assertEqual(actual["errors"], [])
+        self.assertEqual(actual["trace_matched_advance_count"], 1)
+        self.assertEqual(actual["last_response"]["evaluation_scope"], "isolated_2d_proxy_only")
+        self.assertFalse(actual["last_response"]["native_qualification"])
+
+    def test_trace_reward_tampering_is_not_hidden_by_equal_private_response(self):
+        records, reset, returns = journals()
+        returns[0]["reward"] += 1.
+        result = self.replay(records, reset, returns)
+        self.assertEqual(result["recomputed_advance_count"], 1)
+        self.assertEqual(result["trace_matched_advance_count"], 0)
+        self.assertTrue(any("trace reward/terminal" in error for error in result["errors"]))
+
+    def test_failure_retains_raw_suffix_counts_without_recalculation_credit(self):
+        records, reset, returns = journals()
+        records[1]["response"] = {"ok": False, "error": "real failure"}
+        result = self.replay(records, reset, returns)
+        self.assertEqual(result["raw_operation_counts"]["check"], 50)
+        self.assertEqual(result["raw_operation_counts"]["advance"], 1)
+        self.assertEqual(result["recomputed_advance_count"], 0)
+        self.assertFalse(result["closed"])
+        self.assertTrue(result["errors"])
+
+    def test_physical_clock_gap_map_change_and_goal_counter_mismatch_fail(self):
+        for case in ("gap", "grid", "goals"):
+            with self.subTest(case=case):
+                records, reset, returns = journals()
+                if case == "gap":
+                    del records[1]
+                else:
+                    request = records[-2]["request"]
+                    if case == "grid":
+                        request["grid"] = encode_arrays(np.ones((1, 1), dtype=np.int16))
+                    else:
+                        request["goal_counts"]["tb1"] = 1
+                self.assertTrue(self.replay(records, reset, returns)["errors"])
+
+    def test_bound_input_mutation_is_detected_without_touching_an_original_run(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            path = directory / "fixture.json"
+            path.write_bytes(b"{}")
+            bound = behavior.BoundFiles(directory)
+            bound.read(path)
+            path.write_bytes(b"changed")
+            with self.assertRaises(ValueError):
+                bound.verify()
+
+    def test_base_audit_failure_still_writes_raw_and_verified_prefix_statistics(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            episode = directory / "stages/group3/worker0/episode001_open_101"
+            episode.mkdir(parents=True)
+            records, reset, returns = journals()
+            def actor(row, sequence, event, event_sequence):
+                params = {"raw_grid": GRID, "resolution": 1., "origin": [0., 0.]}
+                raw = behavior.canonical(encode_arrays(params)); digest = behavior.sha(raw)
+                path = episode / f"inputs/{digest}.json.gz"; path.parent.mkdir(exist_ok=True)
+                path.write_bytes(gzip.compress(raw, mtime=0))
+                snapshot = {"source_stamp": float(sequence - 1), "sequence": sequence, "task_elapsed_sec": float(sequence - 1),
+                    "map_version": sequence, "candidates": [], "per_robot_action_mask": [[False] * 8 + [True, True]] * 3,
+                    "joint_action_mask": [False] * 888 + [True] + [False] * 111, "diagnostics": {}, "robots": []}
+                snapshot["digest"] = behavior.snapshot_digest(snapshot)
+                return {**row, "snapshot": snapshot, "event": event, "epoch": "fixture", "event_sequence": event_sequence,
+                        "actor_input_ref": {"path": str(path.relative_to(episode)), "sha256": digest}, "tensor_proofs": {}}
+            trace_reset = actor(reset, 1, "reset", 1)
+            trace_return = actor(returns[0], 2, "step_return", 3)
+            trace_return["ended_wall_ns"] = 100
+            trace = [trace_reset, {"event": "step_attempt", "epoch": "fixture", "started_wall_ns": 1}, trace_return,
+                     {"event": "close", "epoch": "fixture", "closed": True}]
+            def gzwrite(path, rows):
+                path.write_bytes(gzip.compress(b"".join(behavior.canonical(row) + b"\n" for row in rows), mtime=0))
+            gzwrite(episode / "trace.jsonl.gz", trace); gzwrite(episode / "private_evaluator.jsonl.gz", records)
+            gzwrite(episode / "protocol.jsonl.gz", [])
+            descriptor = {"directory": str(episode), "scene": "open", "seed": 101, "env_id": 0, "episode_index": 1}
+            metadata = {**descriptor, "epoch": "fixture", "freeze": "a" * 40, "profile_enabled": False}
+            (episode / "episode.json").write_bytes(behavior.canonical(metadata))
+            (episode / "backend_summary.json").write_bytes(behavior.canonical({"epoch": "fixture", "returned_steps": 1,
+                "navigation_closed": True, "navigation_failed": False, "evaluator_returncode": 0,
+                "final_snapshot_time": 1., "final_physical_time": 1., "closure_tail_seconds": 0.}))
+            bindings = behavior.BoundFiles(directory)
+            _, proof = behavior.actor_inputs(bindings, episode, trace_reset)
+            base_episode = {"directory": str(episode), "passed": False, "verified_actor_record_count": 1,
+                "verified_step_return_count": 0, "verified_action_count": 1, "verified_uniform_action_count": 1,
+                "actor_records": [proof], "trace_sha256": behavior.sha((episode / "trace.jsonl.gz").read_bytes())}
+            base = {"schema": "mr3-proxy2d-capacity-audit-v1", "directory": str(directory), "freeze": "a" * 40,
+                "passed": False, "errors": ["fixture fourth-return-like failure"], "run_source_bindings": {},
+                "episodes": [base_episode], "bound_bytes_unchanged": True}
+            (directory / "independent_audit.json").write_bytes(behavior.canonical(base))
+            summary = {"freeze": "a" * 40, "activity_spec": behavior.SPEC, "activity_kind": "full_behavior",
+                "policy_calls": 0, "gpu_calls": 0, "optimizer_steps": 0, "qualification": False,
+                "training_eligible": False, "native_credit": False, "source_bindings": {},
+                "activity_started_ns": 1, "activity_deadline_ns": 1 + 3600 * 10**9,
+                "collection_started_ns": 2, "collection_deadline_ns": 2 + 2100 * 10**9,
+                "groups": [{"workers": 3, "episodes": [descriptor], "wall_budget_seconds": 2100,
+                            "started_ns": 3, "ended_ns": 4, "deadline_ns": 2 + 2100 * 10**9}],
+                "step_attempts": 1, "step_returns": 1, "step_errors": 0}
+            (directory / "capacity_summary.json").write_bytes(behavior.canonical(summary))
+            result = behavior.audit_behavior(directory, "a" * 40, evaluator_factory=MockReward,
+                                             source_validator=lambda *args: ({}, {}, []))
+            self.assertFalse(result["passed"])
+            episode_result = result["episodes"][0]
+            self.assertEqual(episode_result["raw_counts"]["step_return"], 1)
+            self.assertEqual(episode_result["base_actor_credit_matched"], 1)
+            self.assertEqual(episode_result["verified_prefix_statistics"]["verified_returns"], 0)
+            self.assertEqual(episode_result["evaluator_recalculation"]["trace_matched_advance_count"], 1)
+            self.assertTrue(result["bound_bytes_unchanged"])
+            self.assertGreater(len(result["input_bindings"]), 5)
+            self.assertGreater(result["consumer_identity"]["start_ticks"], 0)
+
+
+if __name__ == "__main__":
+    unittest.main()

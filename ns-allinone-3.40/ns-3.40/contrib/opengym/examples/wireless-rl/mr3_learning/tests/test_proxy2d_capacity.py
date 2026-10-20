@@ -40,6 +40,58 @@ class CapacityFixtures(unittest.TestCase):
         self.assertEqual(budget.deadline_ns, 1000 * 10**9)
         self.assertFalse(budget.stop.is_set())
 
+    def test_full_behavior_exact_three_worker_cells_and_budgets(self):
+        spec = capacity.activity_spec("full_behavior")
+        expected = {"schema": "mr3-proxy2d-activity-spec-v1", "kind": "full_behavior",
+            "groups": [3], "cells": [["open", 101], ["rooms", 101], ["corridors", 101]],
+            "worker_cells": [[[["open", 101]], [["rooms", 101]], [["corridors", 101]]]],
+            "steps_per_episode": 300, "max_attempts": 900, "activity_seconds": 3600}
+        self.assertEqual(spec, expected)
+        for key, value in (("steps_per_episode", 300.), ("max_attempts", 901), ("groups", [1, 3]),
+                ("worker_cells", [[[spec["cells"]] for _ in range(3)]]),
+                ("cells", [["open", 103], ["rooms", 101], ["corridors", 101]]), ("extra", False)):
+            with self.subTest(key=key), self.assertRaises(ValueError):
+                capacity.validate_activity_spec({**spec, key: value})
+
+    def test_full_behavior_collect_assigns_one_scene_per_worker_and_only900_tickets(self):
+        calls = []
+        tickets = []
+        def worker(group, env_id, budget, freeze, **kwargs):
+            calls.append((env_id, kwargs))
+            episodes = []
+            for index, (scene, seed) in enumerate(kwargs["cells"], 1):
+                for _ in range(kwargs["steps_per_episode"]):
+                    ticket = budget.reserve(deadline_ns=kwargs["group_deadline_ns"])
+                    self.assertTrue(ticket)
+                    tickets.append(ticket)
+                    budget.returned()
+                episodes.append({"env_id": env_id, "episode_index": index, "scene": scene, "seed": seed})
+            return {"episodes": episodes, "error": None, "saved_identities": []}
+        with tempfile.TemporaryDirectory() as tmp, \
+                patch.object(capacity.time, "monotonic_ns", return_value=10**12), \
+                patch.object(capacity, "collect_worker", side_effect=worker):
+            summary = capacity.collect(Path(tmp), "a" * 40, {}, {}, 10**12, 10**12 + 3600 * 10**9,
+                activity_spec=capacity.activity_spec("full_behavior"), group_wall_seconds=[2100], profile=False)
+        self.assertEqual(summary["step_attempts"], 900)
+        self.assertEqual(summary["step_returns"], 900)
+        self.assertEqual(sorted(tickets), list(range(1, 901)))
+        self.assertEqual(len(summary["groups"]), 1)
+        self.assertEqual(len(summary["groups"][0]["episodes"]), 3)
+        self.assertEqual(summary["groups"][0]["workers"], 3)
+        self.assertEqual(summary["collection_deadline_ns"], 10**12 + 2100 * 10**9)
+        for env_id, kwargs in sorted(calls):
+            self.assertEqual(kwargs["cells"], [[("open", "rooms", "corridors")[env_id], 101]])
+            self.assertEqual(kwargs["steps_per_episode"], 300)
+            self.assertFalse(kwargs["profile"])
+
+    def test_full_behavior_changed_wall_or_profile_is_rejected_before_collecting(self):
+        with tempfile.TemporaryDirectory() as tmp, patch.object(capacity, "collect_worker") as worker:
+            for walls, profile in (([2400], False), ([2100], True), ([2100.], False), ([700, 700, 700], False)):
+                with self.subTest(walls=walls, profile=profile), self.assertRaises(ValueError):
+                    capacity.collect(Path(tmp), "a" * 40, {}, {}, 10**12, 10**12 + 3600 * 10**9,
+                        activity_spec=capacity.activity_spec("full_behavior"), group_wall_seconds=walls, profile=profile)
+            worker.assert_not_called()
+
     def test_collect_fixed_reservations_and_shared_global_budget_without_an_environment(self):
         for kind, walls, maximum, seconds in (("profile", [240], 8, 600),
                                                ("short_capacity", [400, 800], 240, 1800)):

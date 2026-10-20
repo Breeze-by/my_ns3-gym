@@ -7664,3 +7664,36 @@ short main735.849491694+pair.337749651+final.51818622三个outer union736.705427
 结论与下一AI路线见[V23](report/20261020_mr3_p2a_v23_performance.md)和更新后的[评估交接](report/20261020_mr3_p2a_assessment_handoff.md)：继续保留二维采样/原生正式验收方向，先具体化完整时长任务行为检查，再决定二维最小学习投入；8步短容量不能解锁长训练/native/PPO/gateway。未改_known_line/actor原纯构造字节、原任务/信息/安全门或旧FAIL。现工程余额不足旧20100完整资格预约，不扩52000；本轮授权两次活动已全部结束，下一活动需新具体范围/plan与实际授权，P2A仍未完成。
 
 V23闭合静态核查CPU rc0/1.499108469秒/source stable：`/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B report/assets/20261020_mr3_p2a_v23_performance/closed_static_check_v1.py`，由reach_execution --scope cpu独立实际wait，完整回执checks/closed_static_cpu_v1。核profile52/short598原件SHA/bytes、全部分片/metadata及13/16辅助原件copy、110绑定源与short冻结Git字节、原native纯actor/episode源码不变、精确费用/全87身份/proc、461相对链接、log只追加及旧ARCHIVE_INDEX记录/备份分支不变。结果closed_static_result_v1.json，仅有限CPU归档/源码/文档核查，无World/actor或正式audit重放、不新增工程费/资格。独立文档审阅另修正动作RNG为每组41+1000003×env_id且每worker跨六回合连续，V22旧余额明确历史；只修叙述，不改原运行/样本。
+
+
+## 2026-10-21 MR3-P2A V24 完整时长二维行为诊断准备
+
+用户“继续执行吧”续接V23完整时长行为检查建议；一次新freeze零训练活动，3并发env0/open101、env1/rooms101、env2/corridors101各一EP，每env仍三机器人，动作seed41+1000003×env_id且真实前序mask均匀抽样。各原300sim秒/最多300attempt，全局3EP/900attempt/3600工程秒，入场44068.6680536126018/52000、余7931.3319463873982，最坏余4331.3319463873982。conformity60/review20/collection2100/audit950/behaviorreport100，另external120及每阶段cleanup180动态保留；不足/异常FAIL，不重试/补样/换seed。pilot1870/2905.9547395464029与final-only401/402/403不动，0policy/GPU/optimizer，无native/gateway/扩额。原300timeout优先，外部cut不作完整任务信用。
+
+首项61条组合纯CPU/stub/人工snapshot检查PASS，非真实World/native/旧原件重放，真实rc0/80.466307479秒/source stable；其中900人工返回fixture核903 actor记录，不能当900新环境样本。范围、精确actualargv/cwd/source前后SHA/console/wait见A24/checks/activity_capacity_cpu_v1（A24=report/assets/20261021_mr3_p2a_v24_behavior）。实际子命令：
+
+```bash
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m unittest -v mr3_learning.tests.test_proxy2d_capacity mr3_learning.tests.test_audit_proxy2d mr3_learning.tests.test_proxy2d_performance mr3_learning.tests.test_proxy2d_activity
+```
+
+还在完成独立行为consumer/fixture；此处不预报正式PASS。原严格_duration函数字节未改，纯actor/任务/信息/安全/奖励规则保持；旧V21/V22失败和V23短容量范围不变。
+
+并行agent在统一检查通知到达前已经启动一次相同capacity/audit开发CPU检查，正常rc0/41项PASS；unittest自报76.707秒，未采独立outer纳秒/PID，明确null、不补造。完整exactargv/观察和原console保留A24/checks/development_direct_cpu_v1，仅重复开发检查，不累加独立项或新环境/工程信用。未启动其他formal consumer/World/native。
+
+V24入口/关闭保护补充：新scope入场账必须等于封存44068.6680536126018，collect CLI kind必须匹配context；预算或启动异常显式保存behavior_report跳过原因。phase已生成child后如pidfd/identity准备异常，仍通过原Popen unreaped owned handle受控SIGINT/必要KILL并实际wait、保存FAIL回执，不泄漏进程或伪报PASS。24项纯mock入口/预算/环境/异常关闭CPU通过，真实rc0/0.723031392秒/source stable；重复覆盖不累加。exact子命令：`/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m unittest -v mr3_learning.tests.test_proxy2d_performance mr3_learning.tests.test_proxy2d_activity`，回执A24/checks/activity_admission_cpu_v2。
+
+V24独立行为consumer11项纯CPU通过，真实rc0/5.634405988秒/source stable/0skip；system ROS Python实际运行真实ProxyReward 1×1小数组与人工private状态集成用例，未创建ProxyWorld/Node/真实episode、未消费历史原件。另测300timeout+close drain、deadline contact unsafe、地图/clock/goalcounter/奖励篡改、baseFAIL保留raw/verifiedprefix。exact actualargv（完整环境/source/wait/console见A24/checks/behavior_consumer_cpu_v1）：
+
+```bash
+/usr/bin/bash --noprofile --norc -c 'unset PYTHONPATH PYTHONHOME LD_LIBRARY_PATH AMENT_PREFIX_PATH CMAKE_PREFIX_PATH COLCON_PREFIX_PATH ROS_PACKAGE_PATH VIRTUAL_ENV; export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin; source /opt/ros/humble/setup.bash && source /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/setup.bash && exec /usr/bin/python3 -B -m unittest -v mr3_learning.tests.test_audit_proxy2d_behavior'
+```
+
+V24新plan build仅静态封存（无World），命令`/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.proxy2d_performance build --kind full_behavior --entry-seconds 44068.6680536126018` rc0；plan为A24/full_behavior_plan_v1.json。最终预冻结静态检查rc0/2.211512485秒/source stable，exact命令`/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B report/assets/20261021_mr3_p2a_v24_behavior/preparation_check_v1.py`；112执行/审计/场景/范围绑定、独立spec吻合、460相对链接、原纯actor/episode/_duration字节、log只追加和备份分支均通过。回执checks/preparation_static_cpu_v1，结果preparation_static_result_v1.json；所有准备检查见A24/cpu_preparation_index_v1.json。正式诊断待当前clean提交推送freeze和前检后执行，准备不供原生/训练或新环境信用。
+
+V24正式冻结前只读复核发现，同一clock ns内close/下一flush晚到accept不能按<=timestamp借给较早boundary；consumer已改为真实boundary snapshot accepted_goal_count精确对应，protocol strict-before/inclusive作因果上下界。coverage还独立核实际close完成时刻<原300秒，不接受恰deadline或超后关闭。新增同ticklateaccept及latecoverage CPU反例，12项system ROS CPU PASS/0skip，rc0/5.522226466秒/source stable；旧11CPU源码两.txt exclusive保存且SHA与旧receipt一致。原执行器/actor/reward/门限未改。旧未冻结/未执行plan保留full_behavior_plan_pre_review_v1.json，重新build新full_behavior_plan_v1.json。新static_v2 rc0/2.247378129秒/source stable，112绑定/460链接/原pure/_duration/log与备份保持；准备清单cpu_preparation_index_v2.json为当前，v1/旧源码/回执不覆盖。exact v2 CPU命令：
+
+```bash
+/usr/bin/bash --noprofile --norc -c 'unset PYTHONPATH PYTHONHOME LD_LIBRARY_PATH AMENT_PREFIX_PATH CMAKE_PREFIX_PATH COLCON_PREFIX_PATH ROS_PACKAGE_PATH VIRTUAL_ENV; export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin; source /opt/ros/humble/setup.bash && source /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/setup.bash && exec /usr/bin/python3 -B -m unittest -v mr3_learning.tests.test_audit_proxy2d_behavior'
+```
+
+static_v2 exact命令：`/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B report/assets/20261021_mr3_p2a_v24_behavior/preparation_check_v2.py`。两者均CPU，无World/Node/新episode或正式历史consumer重放、不计工程实验费。

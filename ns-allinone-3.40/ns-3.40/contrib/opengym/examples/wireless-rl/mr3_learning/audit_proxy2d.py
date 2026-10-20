@@ -446,18 +446,24 @@ def _activity_contract(summary):
         return {"kind": "legacy_v22", "groups": [1, 4], "cells": cells, "steps_per_episode": 300,
                 "max_attempts": 9000, "activity_seconds": 3600, "group_wall_seconds": None}
     spec = summary["activity_spec"]
-    require(isinstance(spec, dict) and spec.get("kind") in ("profile", "short_capacity"),
+    require(isinstance(spec, dict) and spec.get("kind") in ("profile", "short_capacity", "full_behavior"),
             "unknown bounded proxy activity specification")
     profile = spec["kind"] == "profile"
     expected = {"schema": "mr3-proxy2d-activity-spec-v1", "kind": spec["kind"],
                 "groups": [1] if profile else [1, 4], "cells": [["open", 101]] if profile else cells,
                 "steps_per_episode": 8, "max_attempts": 8 if profile else 240,
                 "activity_seconds": 600 if profile else 1800}
+    if spec["kind"] == "full_behavior":
+        expected = {"schema": "mr3-proxy2d-activity-spec-v1", "kind": "full_behavior",
+                    "groups": [3], "cells": [["open", 101], ["rooms", 101], ["corridors", 101]],
+                    "worker_cells": [[[["open", 101]], [["rooms", 101]], [["corridors", 101]]]],
+                    "steps_per_episode": 300, "max_attempts": 900, "activity_seconds": 3600}
     require(canonical(spec) == canonical(expected), "bounded proxy activity differs from its exact fixed specification")
     require(summary.get("activity_kind") == spec["kind"] and summary.get("profile_enabled") is profile
             and canonical(summary.get("scheduled_cells")) == canonical(expected["cells"]),
             "summary activity kind/profile/schedule differs from its fixed specification")
-    return {**expected, "group_wall_seconds": [240] if profile else [400, 800]}
+    walls = [240] if profile else [2100] if spec["kind"] == "full_behavior" else [400, 800]
+    return {**expected, "group_wall_seconds": walls}
 
 
 def verify_run_sources(bindings, freeze):
@@ -748,7 +754,8 @@ def audit_run(directory, freeze):
         if bounded:
             collection_started = summary["collection_started_ns"]
             require(type(collection_started) is int and start <= collection_started
-                    and collection - collection_started == (240 if contract["kind"] == "profile" else 1200) * 10**9
+                    and collection - collection_started == (240 if contract["kind"] == "profile" else
+                        2100 if contract["kind"] == "full_behavior" else 1200) * 10**9
                     and collection <= deadline - 120 * 10**9,
                     "bounded collection reservation differs from its exact fixed clock contract")
         result["conformity"], receipt = verify_conformity(directory, summary["conformity"], freeze)
@@ -773,7 +780,8 @@ def audit_run(directory, freeze):
         group_end = start
         for group_index, group in enumerate(groups):
             workers = group["workers"]
-            require(type(workers) is int and workers in (1, 4), "invalid environment-group identity")
+            allowed_workers = contract["groups"] if contract["kind"] == "full_behavior" else (1, 4)
+            require(type(workers) is int and workers in allowed_workers, "invalid environment-group identity")
             if not (type(group["started_ns"]) is int and type(group["ended_ns"]) is int
                     and group_end <= group["started_ns"] <= group["ended_ns"] <= deadline):
                 result["errors"].append("group denominator is outside the common activity or overlaps sequential groups")
@@ -791,13 +799,16 @@ def audit_run(directory, freeze):
                         "returned_steps_scope": "raw return events; duration/actor verification counted separately"}
             capacity.update({key: 0 for key in VERIFIED_COUNTS})
             for env_id in range(workers):
+                expected_cells = (contract["worker_cells"][group_index][env_id]
+                                  if contract["kind"] == "full_behavior" else contract["cells"])
+                local_cells = {tuple(cell) for cell in expected_cells}
                 entries = sorted((item for item in group["episodes"] if item["env_id"] == env_id),
                                  key=lambda item: item["episode_index"])
-                if not (len(entries) == len(cells)
-                        and [item["episode_index"] for item in entries] == list(range(1, len(cells) + 1))
-                        and {(item["scene"], item["seed"]) for item in entries} == cells):
+                if not (len(entries) == len(local_cells)
+                        and [item["episode_index"] for item in entries] == list(range(1, len(local_cells) + 1))
+                        and {(item["scene"], item["seed"]) for item in entries} == local_cells):
                     result["errors"].append(f"group{workers}/worker{env_id}: six fixed scene/seed cells were omitted/replaced/retried")
-                if bounded and [[item["scene"], item["seed"]] for item in entries] != contract["cells"]:
+                if bounded and [[item["scene"], item["seed"]] for item in entries] != expected_cells:
                     result["errors"].append(f"group{workers}/worker{env_id}: bounded fixed cell order differs")
                 rng = random.Random(41 + 1000003 * env_id)
                 uniform_stream_complete = True
@@ -840,10 +851,16 @@ def audit_run(directory, freeze):
                                     and report["verified_actor_record_count"] == actual_steps + 1,
                                     "bounded episode lacks complete verified coverage within its eight-step ceiling")
                             terminal = report["last_verified_return_terminal"]
-                            require(terminal and ((terminal["terminated"] and terminal["reason"] in ("coverage_reached", "timeout"))
-                                    or (terminal["truncated"]
-                                    and actual_steps == steps and terminal["reason"] == "external_sampler_limit")),
-                                    "bounded episode retained unsafe terminal or omitted its real external eight-step cut")
+                            if contract["kind"] == "full_behavior":
+                                require(terminal and terminal["terminated"] and not terminal["truncated"]
+                                        and terminal["reason"] in ("coverage_reached", "timeout")
+                                        and (terminal["reason"] != "timeout" or actual_steps == steps),
+                                        "full behavior requires genuine task termination; external cuts are incomplete")
+                            else:
+                                require(terminal and ((terminal["terminated"] and terminal["reason"] in ("coverage_reached", "timeout"))
+                                        or (terminal["truncated"]
+                                        and actual_steps == steps and terminal["reason"] == "external_sampler_limit")),
+                                        "bounded episode retained unsafe terminal or omitted its real external eight-step cut")
                     except ERRORS as error:
                         result["errors"].append(str(episode) + ": " + str(error))
                     report["wall_timestamp_coverage"] = _trace_wall_coverage(
@@ -862,7 +879,9 @@ def audit_run(directory, freeze):
                             complete_six_cells_per_worker=len(cells) == 6 and all(
                                 sum(item["env_id"] == env_id for item in group["episodes"]) == 6 for env_id in range(workers)),
                             complete_declared_cells_per_worker=all(
-                                sum(item["env_id"] == env_id for item in group["episodes"]) == len(cells) for env_id in range(workers)))
+                                sum(item["env_id"] == env_id for item in group["episodes"]) ==
+                                (len(contract["worker_cells"][group_index][env_id]) if contract["kind"] == "full_behavior"
+                                 else len(cells)) for env_id in range(workers)))
             result["group_capacity"].append(capacity)
         for episode in sorted(discovered - audited):
             report = audit_episode(episode, freeze, builder=builder)
@@ -904,6 +923,7 @@ def audit_run(directory, freeze):
     result["passed"] = bool(result["episodes"]) and not result["errors"]
     result["uniform_actions_independently_replayed"] = result["verified_uniform_action_count"]
     result["complete_short_capacity_matrix"] = result["passed"] and result.get("activity_kind") == "short_capacity"
+    result["complete_full_behavior_diagnostic"] = result["passed"] and result.get("activity_kind") == "full_behavior"
     return result
 
 

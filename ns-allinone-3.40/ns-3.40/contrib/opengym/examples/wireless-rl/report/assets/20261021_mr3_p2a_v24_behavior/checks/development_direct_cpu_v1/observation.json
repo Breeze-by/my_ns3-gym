@@ -1,0 +1,24 @@
+{
+  "classification": "duplicate CPU development observation; no additional independent coverage or formal credit",
+  "console_provenance": "Exact stdout concatenated from exec/wait tool outputs; copied after completion, not an independently instrumented actual-wait console",
+  "tool_command": "rtk proxy env PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 CUDA_VISIBLE_DEVICES= /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m unittest -v mr3_learning.tests.test_proxy2d_capacity mr3_learning.tests.test_audit_proxy2d",
+  "target_argv": [
+    "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+    "-B", "-m", "unittest", "-v",
+    "mr3_learning.tests.test_proxy2d_capacity",
+    "mr3_learning.tests.test_audit_proxy2d"
+  ],
+  "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+  "environment": {"PYTHONNOUSERSITE": "1", "PYTHONDONTWRITEBYTECODE": "1", "CUDA_VISIBLE_DEVICES": ""},
+  "tool_session_id": 78667,
+  "tool_reported_exit_code": 0,
+  "unittest_reported_tests": 41,
+  "unittest_reported_seconds": "76.707",
+  "process_identity": null,
+  "independent_started_monotonic_ns": null,
+  "independent_ended_monotonic_ns": null,
+  "actual_wait_receipt_available": false,
+  "runtime_experiments": 0,
+  "world_instances": 0,
+  "old_formal_consumers_replayed": 0
+}

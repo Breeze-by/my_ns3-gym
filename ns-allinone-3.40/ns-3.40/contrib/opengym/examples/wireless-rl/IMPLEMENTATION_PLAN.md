@@ -1,5 +1,7 @@
 # MR3 研发检查点与逐步验收
 
+2026-10-21 V24续接：用户“继续执行吧”授权一次完整时长二维行为诊断；3并发env各固定open/rooms/corridors101一场、三机/原300秒、最多3EP/900attempt/3600工程秒，入场余7931.3319463873982。新冻结/当轮符合性/独立trace及行为复算，真实错误早停、无重试补样；无训练/原生/扩额/gateway，pilot/final-only不动。准备与结果见[V24](report/20261021_mr3_p2a_v24_behavior.md)，P2A未完成。
+
 2026-10-20 V23闭合：profile与优化后短容量均PASS；短冻结2e8fcac9439a1a53e3913e45abccdc0b6645825d实跑1/4env、30短EP/240attempt/240verified return、0step错误/30正常关闭，73保存身份gone。含reset/close单env .240650848、四env合计 .610735060步/墙秒；仅8步短容量、无训练/原生资格。V23总实费806.844068675秒，累计44068.6680536126018/52000、余7931.3319463873982；pilot/final-only不动，旧FAIL保留，P2A未完成。见[V23](report/20261020_mr3_p2a_v23_performance.md)。
 
 2026-10-20 V23续接授权：用户“按你的想法继续”，推进新有界性能剖析/提速及短容量：profile最多1EP/8attempt/600秒，优化后一次1/4env短容量最多30EP/240attempt/1800秒，均含审计/外尾，工程仍限52000、入场余8738.1760150623982。旧V22 FAIL不重试/改判；训练、pilot/final-only、原生迁移/gateway/扩额不启动。见[V23预声明](report/20261020_mr3_p2a_v23_performance.md)，先测再优化、每次新freeze。

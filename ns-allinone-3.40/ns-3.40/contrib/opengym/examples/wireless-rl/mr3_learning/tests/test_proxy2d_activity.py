@@ -5,7 +5,7 @@ from pathlib import Path
 import sys
 import tempfile
 import unittest
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 from mr3_learning import proxy2d_activity as activity
 
@@ -112,6 +112,40 @@ class ActivityFixtures(unittest.TestCase):
         self.assertTrue(result["absence_passed"])
         self.assertFalse(result["budget_observed_within_3600"])
         self.assertFalse(result["passed"])
+
+    def test_explicit_phase_environment_does_not_inherit_learner_paths(self):
+        child = MagicMock(pid=2147483647)
+        child.wait.return_value = 0
+        identity = {"pid": child.pid, "start_ticks": 123}
+        with patch.object(activity.subprocess, "Popen", return_value=child) as spawn, \
+                patch.object(activity, "process_identity", return_value=identity), \
+                patch.object(activity, "pidfd_open", return_value=456), \
+                patch.object(activity.os, "close"), \
+                patch.dict(activity.os.environ, {"PYTHONPATH": "/learner", "CONDA_PREFIX": "/learner"}):
+            result = activity.phase(self.run, "system_fixture", ["/usr/bin/python3", "-B"], 1,
+                                    environment={"PATH": "/usr/bin"})
+        environment = spawn.call_args.kwargs["env"]
+        self.assertNotIn("PYTHONPATH", environment)
+        self.assertNotIn("CONDA_PREFIX", environment)
+        self.assertEqual(environment["PATH"], "/usr/bin")
+        self.assertEqual(environment["PYTHONNOUSERSITE"], "1")
+        self.assertTrue(result["passed"])
+
+    def test_pidfd_setup_failure_settles_owned_child_and_keeps_failed_receipt(self):
+        child = MagicMock(pid=2147483647)
+        child.wait.return_value = 0
+        identity = {"pid": child.pid, "start_ticks": 123}
+        with patch.object(activity.subprocess, "Popen", return_value=child), \
+                patch.object(activity, "process_identity", return_value=identity), \
+                patch.object(activity, "pidfd_open", side_effect=OSError("fixture pidfd failure")):
+            result = activity.phase(self.run, "failed_pidfd", ["/usr/bin/python3", "-B"], 1)
+        child.send_signal.assert_called_once_with(activity.signal.SIGINT)
+        child.wait.assert_called_once_with(timeout=180.)
+        self.assertFalse(result["passed"])
+        self.assertTrue(result["actual_waited"])
+        self.assertEqual(result["child_identity"], identity)
+        self.assertIn("fixture pidfd failure", result["errors"][0])
+        self.assertEqual(json.loads((self.run / "failed_pidfd_actual_wait.json").read_text()), result)
 
 
 if __name__ == "__main__":

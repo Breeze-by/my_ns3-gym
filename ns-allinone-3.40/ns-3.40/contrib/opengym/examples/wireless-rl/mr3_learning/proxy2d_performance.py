@@ -1,4 +1,4 @@
-"""Two prospectively frozen, zero-update P2A performance activities."""
+"""Prospectively frozen, zero-update P2A proxy engineering activities."""
 import argparse
 from decimal import Decimal
 import hashlib
@@ -12,13 +12,16 @@ import time
 
 from .proxy2d_activity import phase, sha, source_paths, write
 from .proxy2d_capacity import activity_spec, collect, validate_activity_spec
-from .supervisor import WORKSPACE as ROOT, ROS_ROOT, process_identity
+from .supervisor import WORKSPACE as ROOT, ROS_ROOT, process_identity, ros_environment
 
 W = Path(__file__).resolve().parents[1]
 A = W / "report/assets/20261020_mr3_p2a_v23_performance"
+B = W / "report/assets/20261021_mr3_p2a_v24_behavior"
 PHASES = {
     "profile": {"conformity": 60, "conformity_review": 20, "collection": 240, "audit": 120, "profile_report": 40},
     "short_capacity": {"conformity": 60, "conformity_review": 20, "collection": 1200, "audit": 300},
+    "full_behavior": {"conformity": 60, "conformity_review": 20, "collection": 2100,
+                      "audit": 950, "behavior_report": 100},
 }
 
 
@@ -28,7 +31,33 @@ def bindings():
 
 
 def plan_path(kind):
-    return A / (kind + "_plan_v1.json")
+    return (B if kind == "full_behavior" else A) / (kind + "_plan_v1.json")
+
+
+def activity_bindings(kind):
+    result = bindings()
+    if kind == "full_behavior":
+        path = B / "scope_acceptance_v1.json"
+        result[str(path.relative_to(ROOT))] = sha(path)
+    return result
+
+
+def activity_output(kind):
+    parent = "mr3_p2a_proxy2d_v24" if kind == "full_behavior" else "mr3_p2a_proxy2d_v23"
+    return ROS_ROOT / "log" / parent / (kind + "_v1")
+
+
+def group_walls(kind):
+    return {"profile": [240], "short_capacity": [400, 800], "full_behavior": [2100]}[kind]
+
+
+def check_entry(kind, entry):
+    if Decimal(entry) + activity_spec(kind)["activity_seconds"] > 52000:
+        raise ValueError("engineering admission exceeds existing ceiling")
+    if kind == "full_behavior":
+        scope = json.loads((B / "scope_acceptance_v1.json").read_text())
+        if Decimal(entry) != Decimal(scope["engineering_entry_used_seconds"]):
+            raise ValueError("full behavior entry must equal the sealed accepted ledger")
 
 
 def build(kind, entry):
@@ -36,14 +65,13 @@ def build(kind, entry):
     if path.exists():
         raise ValueError("plan exists; no overwrite")
     spec = activity_spec(kind)
-    if Decimal(entry) + spec["activity_seconds"] > 52000:
-        raise ValueError("engineering admission exceeds existing ceiling")
+    check_entry(kind, entry)
     value = {"schema": "mr3-proxy2d-performance-plan-v1", "activity_spec": spec,
-             "output": str(ROS_ROOT / "log/mr3_p2a_proxy2d_v23" / (kind + "_v1")),
+             "output": str(activity_output(kind)),
              "phase_seconds": PHASES[kind], "external_reserve_seconds": 120,
-             "group_wall_seconds": [240] if kind == "profile" else [400, 800],
+             "group_wall_seconds": group_walls(kind),
              "engineering_entry_used_seconds": entry, "engineering_ceiling_seconds": "52000",
-             "source_bindings": bindings(), "qualification": False, "training_eligible": False,
+             "source_bindings": activity_bindings(kind), "qualification": False, "training_eligible": False,
              "native_credit": False, "pilot_unchanged": True, "optimizer_steps": 0}
     write(path, value)
     return value
@@ -55,12 +83,12 @@ def check(kind, freeze):
     validate_activity_spec(plan["activity_spec"])
     assert plan["activity_spec"] == activity_spec(kind)
     assert plan["phase_seconds"] == PHASES[kind] and plan["external_reserve_seconds"] == 120
-    assert plan["group_wall_seconds"] == ([240] if kind == "profile" else [400, 800])
+    assert plan["group_wall_seconds"] == group_walls(kind)
     assert not plan["qualification"] and not plan["training_eligible"] and not plan["native_credit"]
     assert plan["pilot_unchanged"] and plan["optimizer_steps"] == 0
-    assert Decimal(plan["engineering_entry_used_seconds"]) + plan["activity_spec"]["activity_seconds"] <= 52000
-    assert plan["output"] == str(ROS_ROOT / "log/mr3_p2a_proxy2d_v23" / (kind + "_v1"))
-    assert plan["source_bindings"] == bindings()
+    check_entry(kind, plan["engineering_entry_used_seconds"])
+    assert plan["output"] == str(activity_output(kind))
+    assert plan["source_bindings"] == activity_bindings(kind)
     assert subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip() == freeze
     assert not subprocess.check_output(["git", "status", "--porcelain"], cwd=ROOT)
     subprocess.run(["git", "merge-base", "--is-ancestor", freeze, "origin/main"], cwd=ROOT, check=True)
@@ -107,12 +135,24 @@ def execute(kind, freeze):
                     "conformity": {"path": str(conformity), "sha256": sha(conformity)},
                     "activity_started_ns": started, "deadline_ns": deadline, "activity_spec": plan["activity_spec"],
                     "group_wall_seconds": plan["group_wall_seconds"]})
-            argv = [sys.executable, "-B", "-m", *commands[name]]
-            state["phases"][name] = phase(run, name, argv, admitted_seconds(deadline, maximum))
+            if name == "behavior_report":
+                argv = ["/usr/bin/bash", "--noprofile", "--norc", "-c",
+                        'source /opt/ros/humble/setup.bash && source "$1/install/setup.bash" '
+                        '&& exec /usr/bin/python3 -B -m mr3_learning.audit_proxy2d_behavior '
+                        '"$2" --freeze "$3" --output "$4"',
+                        "mr3-proxy-behavior", str(ROS_ROOT), str(run), freeze,
+                        str(run / "behavior_report.json")]
+                state["phases"][name] = phase(run, name, argv, admitted_seconds(deadline, maximum),
+                                             environment=ros_environment(238, 15910))
+            else:
+                argv = [sys.executable, "-B", "-m", *commands[name]]
+                state["phases"][name] = phase(run, name, argv, admitted_seconds(deadline, maximum))
         state["passed"] = all(item["passed"] for item in state["phases"].values())
     except Exception as error:
         state["errors"].append(repr(error))
-    state["source_unchanged"] = bindings() == plan["source_bindings"]
+        if kind == "full_behavior" and "behavior_report" not in state["phases"]:
+            state["behavior_report_skipped_reason"] = repr(error)
+    state["source_unchanged"] = activity_bindings(kind) == plan["source_bindings"]
     state["ended_ns"] = time.monotonic_ns()
     state["passed"] = state["passed"] and state["source_unchanged"] and state["ended_ns"] <= deadline
     write(run / "activity_result.json", state)
@@ -221,7 +261,7 @@ def final(kind, run, outer_path, output):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("operation", choices=("build", "preflight", "execute", "collect", "profile_report", "final"))
-    parser.add_argument("--kind", choices=("profile", "short_capacity"), required=True)
+    parser.add_argument("--kind", choices=("profile", "short_capacity", "full_behavior"), required=True)
     parser.add_argument("--freeze")
     parser.add_argument("--entry-seconds")
     parser.add_argument("--run", type=Path)
@@ -237,6 +277,8 @@ def main():
         result = execute(args.kind, args.freeze)
     elif args.operation == "collect":
         context = json.loads((args.run / "collection_context.json").read_text())
+        if context["activity_spec"]["kind"] != args.kind:
+            raise ValueError("collection CLI kind differs from its sealed context")
         result = collect(args.run, context["freeze"], context["source_bindings"], context["conformity"],
                          context["activity_started_ns"], context["deadline_ns"], activity_spec=context["activity_spec"],
                          group_wall_seconds=context["group_wall_seconds"], profile=args.kind == "profile")

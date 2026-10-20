@@ -185,7 +185,7 @@ class PerformanceFixtures(unittest.TestCase):
         self.assertTrue(self.final(proc="2147483647 (reused) " + " ".join(fields))["absence_passed"])
 
     def test_external_receipt_cannot_claim_pass_after_its_bounded_clock(self):
-        for kind, seconds in (("profile", 600), ("short_capacity", 1800)):
+        for kind, seconds in (("profile", 600), ("short_capacity", 1800), ("full_behavior", 3600)):
             outer, start = copy.deepcopy(self.outer), copy.deepcopy(self.start)
             start["kind"] = kind
             start["deadline_ns"] = start["started_ns"] + seconds * 10**9
@@ -196,6 +196,85 @@ class PerformanceFixtures(unittest.TestCase):
                 self.assertTrue(result["absence_passed"])
                 self.assertFalse(result["activity_passed"])
                 self.assertFalse(result["passed"])
+
+    def test_full_behavior_plan_has_one_group_and_complete_audit_tail(self):
+        scope = self.root / "scope_acceptance_v1.json"
+        scope.write_text(json.dumps({"engineering_entry_used_seconds": "44068.6680536126018"}))
+        with patch.object(performance, "B", self.root), \
+                patch.object(performance, "bindings", return_value={"original.py": "f" * 64}), \
+                patch.object(performance, "ROOT", self.root):
+            result = performance.build("full_behavior", "44068.6680536126018")
+        self.assertEqual(result["activity_spec"]["groups"], [3])
+        self.assertEqual(result["activity_spec"]["max_attempts"], 900)
+        self.assertEqual(result["group_wall_seconds"], [2100])
+        self.assertEqual(result["phase_seconds"], {
+            "conformity": 60, "conformity_review": 20, "collection": 2100,
+            "audit": 950, "behavior_report": 100})
+        self.assertEqual(result["external_reserve_seconds"], 120)
+        self.assertEqual(set(result["source_bindings"]), {"original.py", "scope_acceptance_v1.json"})
+        self.assertIn("mr3_p2a_proxy2d_v24/full_behavior_v1", result["output"])
+        self.assertFalse(result["training_eligible"])
+
+    def test_full_behavior_uses_clean_system_consumer_and_keeps_failed_collection(self):
+        spec = performance.activity_spec("full_behavior")
+        plan = {"activity_spec": spec, "output": str(self.root / "execute"),
+                "phase_seconds": performance.PHASES["full_behavior"],
+                "source_bindings": {}, "group_wall_seconds": [2100]}
+        calls = []
+
+        def phase(run, name, argv, seconds, **kwargs):
+            calls.append((name, argv, seconds, kwargs))
+            return {"passed": name != "collection"}
+
+        with patch.object(performance, "check", return_value=plan), \
+                patch.object(performance, "sha", return_value="0" * 64), \
+                patch.object(performance, "activity_bindings", return_value={}), \
+                patch.object(performance, "process_identity", return_value={"pid": 1, "start_ticks": 1}), \
+                patch.object(performance, "phase", side_effect=phase), \
+                patch.dict(performance.os.environ, {"PYTHONPATH": "/fake/conda", "CONDA_PREFIX": "/fake/conda"}):
+            result = performance.execute("full_behavior", "a" * 40)
+        self.assertEqual([call[0] for call in calls], list(performance.PHASES["full_behavior"]))
+        self.assertFalse(result["passed"])
+        report = calls[-1]
+        self.assertEqual(report[1][0:4], ["/usr/bin/bash", "--noprofile", "--norc", "-c"])
+        self.assertIn("exec /usr/bin/python3", report[1][4])
+        self.assertIn("audit_proxy2d_behavior", report[1][4])
+        self.assertEqual(report[2], 100)
+        self.assertNotIn("PYTHONPATH", report[3]["environment"])
+        self.assertNotIn("CONDA_PREFIX", report[3]["environment"])
+        self.assertEqual(result["deadline_ns"]-result["started_ns"], 3600 * 10**9)
+
+    def test_full_behavior_cannot_spend_more_than_the_existing_ceiling(self):
+        with patch.object(performance, "B", self.root), self.assertRaises(ValueError):
+            performance.build("full_behavior", "48400.000000001")
+
+    def test_full_behavior_cannot_understate_the_accepted_entry_ledger(self):
+        (self.root / "scope_acceptance_v1.json").write_text(json.dumps({
+            "engineering_entry_used_seconds": "44068.6680536126018"}))
+        with patch.object(performance, "B", self.root), self.assertRaises(ValueError):
+            performance.check_entry("full_behavior", "44000")
+
+    def test_collection_cli_kind_mismatch_is_rejected_before_collection(self):
+        (self.run / "collection_context.json").write_text(json.dumps({
+            "activity_spec": performance.activity_spec("full_behavior")}))
+        with patch.object(sys, "argv", ["fixture", "collect", "--kind", "short_capacity",
+                                        "--run", str(self.run)]), \
+                patch.object(performance, "collect") as collect, self.assertRaises(ValueError):
+            performance.main()
+        collect.assert_not_called()
+
+    def test_admission_failure_explicitly_records_why_behavior_report_was_skipped(self):
+        plan = {"activity_spec": performance.activity_spec("full_behavior"),
+                "output": str(self.root / "skipped"), "source_bindings": {},
+                "phase_seconds": performance.PHASES["full_behavior"]}
+        with patch.object(performance, "check", return_value=plan), \
+                patch.object(performance, "sha", return_value="0" * 64), \
+                patch.object(performance, "activity_bindings", return_value={}), \
+                patch.object(performance, "process_identity", return_value={"pid": 1, "start_ticks": 1}), \
+                patch.object(performance, "admitted_seconds", side_effect=RuntimeError("fixture reserve exhausted")):
+            result = performance.execute("full_behavior", "a" * 40)
+        self.assertFalse(result["passed"])
+        self.assertIn("fixture reserve exhausted", result["behavior_report_skipped_reason"])
 
 
 if __name__ == "__main__":

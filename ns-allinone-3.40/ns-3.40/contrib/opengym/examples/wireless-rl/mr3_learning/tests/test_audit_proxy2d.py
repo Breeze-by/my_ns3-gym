@@ -487,21 +487,24 @@ class ProxyAuditTests(unittest.TestCase):
             self.assertEqual(report["verified_step_return_count"], 0)
             self.assertEqual(report["validated_prefix_records"], 1)
 
-    def bounded_fixture(self, directory, kind, *, episode_limit=None, count=8, normal_terminal=False):
+    def bounded_fixture(self, directory, kind, *, episode_limit=None, count=8, normal_terminal=False,
+                        terminal_reason="coverage_reached"):
         """Saved actor/ticket fixtures only; no supervisor/world/environment call."""
         from mr3_learning.proxy2d_capacity import activity_spec
         spec = activity_spec(kind)
         started = time.monotonic_ns() - 2_000_000_000
         collection_started = started + 1000
-        collection = collection_started + (240 if kind == "profile" else 1200) * 10**9
+        collection = collection_started + (240 if kind == "profile" else 2100 if kind == "full_behavior" else 1200) * 10**9
         groups, saved_rows, ticket = [], [], 0
         previous_end = collection_started
-        for workers, wall in zip(spec["groups"], [240] if kind == "profile" else [400, 800]):
+        walls = [240] if kind == "profile" else [2100] if kind == "full_behavior" else [400, 800]
+        for group_index, (workers, wall) in enumerate(zip(spec["groups"], walls)):
             group_start = previous_end + 1000
             entries = []
             for env_id in range(workers):
                 rng = random.Random(41 + 1000003 * env_id)
-                for index, (scene, seed) in enumerate(spec["cells"], 1):
+                cells = spec["worker_cells"][group_index][env_id] if kind == "full_behavior" else spec["cells"]
+                for index, (scene, seed) in enumerate(cells, 1):
                     if episode_limit is not None and len(saved_rows) >= episode_limit:
                         continue
                     episode = directory / f"group{workers}/worker{env_id}/episode{index:03d}_{scene}_{seed}"
@@ -517,7 +520,7 @@ class ProxyAuditTests(unittest.TestCase):
                         elif row["event"] == "step_return":
                             row["ended_wall_ns"] = group_start + ticket * 1000 + 1
                     if normal_terminal:
-                        rows[-2].update(terminated=True, truncated=False, reason="coverage_reached")
+                        rows[-2].update(terminated=True, truncated=False, reason=terminal_reason)
                     self.write(episode, rows)
                     (episode / "episode.json").write_bytes(audit.canonical({"scene": scene, "seed": seed,
                         "env_id": env_id, "episode_index": index, "epoch": epoch, "freeze": "a" * 40,
@@ -583,6 +586,73 @@ class ProxyAuditTests(unittest.TestCase):
                 expected = 1 if kind == "profile" else 30
                 self.assertEqual(result["step_attempts"], expected)
                 self.assertEqual(result["verified_uniform_action_count"], expected)
+
+    def test_full_behavior_three_mapped_early_task_terminals_have_full_verified_coverage(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            summary, _ = self.bounded_fixture(directory, "full_behavior", count=2, normal_terminal=True)
+            result = self.bounded_review(directory, summary)
+            self.assertTrue(result["passed"], result["errors"])
+            self.assertTrue(result["complete_full_behavior_diagnostic"])
+            self.assertFalse(result["complete_short_capacity_matrix"])
+            self.assertEqual(len(result["episodes"]), 3)
+            self.assertEqual(result["verified_action_count"], 6)
+            self.assertEqual(result["verified_uniform_action_count"], 6)
+            self.assertEqual(result["verified_step_return_count"], 6)
+            self.assertEqual(result["verified_actor_record_count"], 9)
+            self.assertTrue(result["group_capacity"][0]["complete_declared_cells_per_worker"])
+            self.assertFalse(result["group_capacity"][0]["complete_six_cells_per_worker"])
+            self.assertFalse(result["qualification"] or result["training_eligible"] or result["native_credit"])
+
+    def test_full_behavior_three_timeout_fixtures_check_all900_attempts_and903_actor_records(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            summary, _ = self.bounded_fixture(directory, "full_behavior", count=300,
+                normal_terminal=True, terminal_reason="timeout")
+            result = self.bounded_review(directory, summary)
+            self.assertTrue(result["passed"], result["errors"])
+            self.assertTrue(result["complete_full_behavior_diagnostic"])
+            self.assertEqual(result["step_attempts"], 900)
+            self.assertEqual(result["verified_action_count"], 900)
+            self.assertEqual(result["verified_uniform_action_count"], 900)
+            self.assertEqual(result["verified_step_return_count"], 900)
+            self.assertEqual(result["verified_actor_record_count"], 903)
+
+    def test_full_behavior_external_cuts_unsafe_terminal_early_timeout_and_wrong_cell_fail(self):
+        for case in ("external", "unsafe", "early_timeout", "wrong_cell", "missing_cell", "ticket", "clock"):
+            with self.subTest(case=case), tempfile.TemporaryDirectory() as temporary:
+                directory = Path(temporary)
+                summary, saved = self.bounded_fixture(directory, "full_behavior", count=1,
+                    normal_terminal=case != "external", episode_limit=2 if case == "missing_cell" else None)
+                episode, rows = saved[0]
+                if case == "unsafe":
+                    rows[-2].update(reason="collision")
+                elif case == "early_timeout":
+                    rows[-2].update(reason="timeout")
+                elif case == "wrong_cell":
+                    summary["groups"][0]["episodes"][0]["scene"] = "rooms"
+                elif case == "ticket":
+                    rows[1]["global_attempt"] = 2
+                elif case == "clock":
+                    summary["collection_deadline_ns"] += 1
+                self.write(episode, rows)
+                result = self.bounded_review(directory, summary)
+                self.assertFalse(result["passed"])
+                self.assertFalse(result["complete_full_behavior_diagnostic"])
+
+    def test_full_behavior_independent_contract_rejects_assignment_spec_or_reservation_changes(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            summary, _ = self.bounded_fixture(Path(temporary), "full_behavior", count=1, normal_terminal=True)
+            for key, value in (("steps_per_episode", 300.), ("max_attempts", 901), ("groups", [1, 3]),
+                    ("worker_cells", [[[["rooms", 101]], [["open", 101]], [["corridors", 101]]]]),
+                    ("extra", False)):
+                altered = copy.deepcopy(summary)
+                altered["activity_spec"][key] = value
+                with self.subTest(key=key), self.assertRaises(ValueError):
+                    audit._activity_contract(altered)
+            for kind in ("profile", "short_capacity"):
+                original, _ = self.bounded_fixture(Path(temporary) / kind, kind, count=1, normal_terminal=True)
+                self.assertNotIn("worker_cells", audit._activity_contract(original))
 
     def test_missing_cells_ticket_metadata_clock_and_unsafe_terminal_do_not_pass(self):
         for case in ("missing_cells", "ticket", "metadata", "group_clock", "collection_clock", "unsafe", "early_external"):

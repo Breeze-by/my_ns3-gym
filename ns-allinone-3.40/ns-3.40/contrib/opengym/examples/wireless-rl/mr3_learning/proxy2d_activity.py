@@ -81,20 +81,19 @@ def check(plan_path, freeze, require_clean=True):
     return plan
 
 
-def phase(run, name, argv, seconds):
+def phase(run, name, argv, seconds, *, environment=None):
     started = time.monotonic_ns()
-    signals = []
+    signals, errors = [], []
     with (run / (name + ".log")).open("xb") as console:
         child = subprocess.Popen(argv, cwd=W, stdout=console, stderr=subprocess.STDOUT,
-            env={**os.environ, "PYTHONNOUSERSITE": "1", "PYTHONDONTWRITEBYTECODE": "1", "CUDA_VISIBLE_DEVICES": "",
+            env={**(os.environ if environment is None else environment), "PYTHONNOUSERSITE": "1", "PYTHONDONTWRITEBYTECODE": "1", "CUDA_VISIBLE_DEVICES": "",
                  "OPENBLAS_NUM_THREADS": "1", "OMP_NUM_THREADS": "1", "MKL_NUM_THREADS": "1"})
-        saved = process_identity(child.pid)
-        if saved is None:
-            child.wait()
-            raise RuntimeError("phase child lost before identity capture")
-        descriptor = pidfd_open(child.pid)
-        timed_out = False
+        saved, descriptor, timed_out = None, None, False
         try:
+            saved = process_identity(child.pid)
+            if saved is None:
+                raise RuntimeError("phase child lost before identity capture")
+            descriptor = pidfd_open(child.pid)
             try:
                 rc = child.wait(timeout=seconds)
             except subprocess.TimeoutExpired:
@@ -107,14 +106,27 @@ def phase(run, name, argv, seconds):
                     pidfd_send_signal(descriptor, signal.SIGKILL)
                     signals.append("SIGKILL")
                     rc = child.wait()
+        except Exception as error:
+            errors.append(repr(error))
+            # The Popen handle still owns this unreaped child, even if pidfd
+            # setup failed. Settle it and retain a failing actual-wait receipt.
+            child.send_signal(signal.SIGINT)
+            signals.append("SIGINT")
+            try:
+                rc = child.wait(timeout=180.)
+            except subprocess.TimeoutExpired:
+                child.kill()
+                signals.append("SIGKILL")
+                rc = child.wait()
         finally:
-            os.close(descriptor)
+            if descriptor is not None:
+                os.close(descriptor)
     ended = time.monotonic_ns()
     result = {"actual_argv": argv, "cwd": str(W), "child_identity": saved,
         "started_monotonic_ns": started, "ended_monotonic_ns": ended,
         "actual_child_wait_seconds": str(Decimal(ended - started) / Decimal(10**9)),
         "actual_returncode": rc, "actual_waited": True, "timed_out": timed_out,
-        "signals_sent": signals, "passed": rc == 0 and not timed_out}
+        "signals_sent": signals, "errors": errors, "passed": rc == 0 and not timed_out and not errors}
     write(run / (name + "_actual_wait.json"), result)
     return result
 

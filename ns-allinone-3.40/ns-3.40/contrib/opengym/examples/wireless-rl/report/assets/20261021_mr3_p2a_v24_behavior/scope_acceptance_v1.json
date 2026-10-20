@@ -1,0 +1,65 @@
+{
+  "schema": "mr3-proxy2d-full-behavior-scope-v1",
+  "recorded_date": "2026-10-21",
+  "user_instruction": "继续执行吧",
+  "accepted_continuation": "V23 proposed full-duration task behavior diagnosis before deciding training investment",
+  "activity_kind": "full_behavior",
+  "max_episodes": 3,
+  "max_env_step_attempts": 900,
+  "max_engineering_wall_seconds": 3600,
+  "concurrent_environments": 3,
+  "robots_per_environment": 3,
+  "worker_cells": [
+    [
+      [
+        "open",
+        101
+      ]
+    ],
+    [
+      [
+        "rooms",
+        101
+      ]
+    ],
+    [
+      [
+        "corridors",
+        101
+      ]
+    ]
+  ],
+  "action_seed_rule": "41 + 1000003 * env_id; uniform choice on the actual preceding legal mask",
+  "steps_per_episode": 300,
+  "original_task_duration_sim_seconds": 300,
+  "phase_seconds": {
+    "conformity": 60,
+    "conformity_review": 20,
+    "collection": 2100,
+    "audit": 950,
+    "behavior_report": 100
+  },
+  "external_reserve_seconds": 120,
+  "cleanup_reserve_seconds": 180,
+  "engineering_entry_used_seconds": "44068.6680536126018",
+  "engineering_ceiling_seconds": "52000",
+  "engineering_entry_remaining_seconds": "7931.3319463873982",
+  "worst_case_remaining_seconds": "4331.3319463873982",
+  "training": false,
+  "native_runs": false,
+  "gpu_calls": 0,
+  "optimizer_steps": 0,
+  "pilot_unchanged": true,
+  "final_only_unchanged": true,
+  "old_failures_preserved": true,
+  "automatic_retries_or_backfill": false,
+  "scientific_gates_relaxed": false,
+  "qualification": false,
+  "training_eligible": false,
+  "native_credit": false,
+  "stop_rules": [
+    "Any execution/IPC/clock/received-information or unsafe terminal failure stops further step admission globally; settle in-flight operations and close owned processes.",
+    "Wall-window or total budget exhaustion remains incomplete/FAIL; no fabricated timeout or coverage success.",
+    "Run one new source-frozen activity only; no replay of old run, new seeds, replacement cells, training, native migration, gateway or ceiling increase."
+  ]
+}

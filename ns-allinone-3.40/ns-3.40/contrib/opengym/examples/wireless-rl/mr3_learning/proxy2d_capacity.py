@@ -20,6 +20,11 @@ CELLS = [(scene, seed) for scene in ("open", "rooms", "corridors") for seed in (
 
 
 def activity_spec(kind):
+    if kind == "full_behavior":
+        return {"schema": "mr3-proxy2d-activity-spec-v1", "kind": kind,
+                "groups": [3], "cells": [["open", 101], ["rooms", 101], ["corridors", 101]],
+                "worker_cells": [[[["open", 101]], [["rooms", 101]], [["corridors", 101]]]],
+                "steps_per_episode": 300, "max_attempts": 900, "activity_seconds": 3600}
     if kind not in ("profile", "short_capacity"):
         raise ValueError("unknown bounded proxy activity kind")
     return {"schema": "mr3-proxy2d-activity-spec-v1", "kind": kind,
@@ -203,14 +208,15 @@ def collect(run, freeze, source_bindings, conformity_ref, activity_started_ns, d
     else:
         validate_activity_spec(activity_spec)
         kind = activity_spec["kind"]
-        expected_walls = [240] if kind == "profile" else [400, 800]
+        expected_walls = [240] if kind == "profile" else [2100] if kind == "full_behavior" else [400, 800]
         if canonical_bytes(group_wall_seconds) != canonical_bytes(expected_walls) or profile != (kind == "profile"):
             raise ValueError("activity group wall reservations/profile flag differ from the fixed specification")
         if (type(deadline_ns) is not int or type(activity_started_ns) is not int
                 or deadline_ns - activity_started_ns != activity_spec["activity_seconds"] * 10**9):
             raise ValueError("activity deadline differs from the exact bounded specification")
         collection_started = time.monotonic_ns()
-        collection_deadline = collection_started + (240 if profile else 1200) * 10**9
+        collection_seconds = 240 if profile else 2100 if kind == "full_behavior" else 1200
+        collection_deadline = collection_started + collection_seconds * 10**9
         if collection_deadline > deadline_ns - 120 * 10**9:
             raise ValueError("collection reservation lacks the required remaining activity tail")
         if collection_deadline_ns is not None and collection_deadline_ns != collection_deadline:
@@ -231,7 +237,12 @@ def collect(run, freeze, source_bindings, conformity_ref, activity_started_ns, d
             with ThreadPoolExecutor(max_workers=workers) as executor:
                 kwargs = {} if activity_spec is None else {"cells": cells, "steps_per_episode": steps,
                     "group_deadline_ns": local_deadline, "profile": profile}
-                futures = [executor.submit(collect_worker, group, index, budget, freeze, **kwargs) for index in range(workers)]
+                futures = []
+                for index in range(workers):
+                    worker_kwargs = kwargs
+                    if activity_spec is not None and activity_spec["kind"] == "full_behavior":
+                        worker_kwargs = {**kwargs, "cells": activity_spec["worker_cells"][group_index][index]}
+                    futures.append(executor.submit(collect_worker, group, index, budget, freeze, **worker_kwargs))
                 for future in as_completed(futures):
                     try:
                         results.append(future.result())
@@ -263,6 +274,8 @@ def collect(run, freeze, source_bindings, conformity_ref, activity_started_ns, d
     if activity_spec is not None:
         summary.update(activity_spec=activity_spec, activity_kind=activity_spec["kind"], profile_enabled=profile,
                        collection_started_ns=collection_started)
+        if activity_spec["kind"] == "full_behavior":
+            summary["scope"] = "bounded full-duration uniform-action proxy behavior; no training or native qualification"
     (run / "capacity_summary.json").write_text(json.dumps(summary, indent=2) + "\n")
     signal.signal(signal.SIGINT, previous_handler)
     return summary
