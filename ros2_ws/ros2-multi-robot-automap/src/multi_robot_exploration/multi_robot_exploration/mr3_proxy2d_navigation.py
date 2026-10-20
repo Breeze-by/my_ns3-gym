@@ -1,0 +1,102 @@
+"""Observed-grid execution of supplied subgoals; never exploration selection.
+
+This kinematic proxy is not Nav2 or the native reach guard. It reuses native
+observed-grid path geometry and necessary pair geometry, with explicit proxy
+state/frame assumptions. Truth geometry and evaluator state are not arguments.
+"""
+import math
+
+import numpy as np
+
+from .mr3_observation import GOAL_XY_TOLERANCE_M, _cell, _path_distances, native_traversable
+from .mr3_reach_geometry import Direction, disk, normal, pair_certificate
+
+ROBOTS = ("tb1", "tb2", "tb3")
+
+
+class ProxyNavigator:
+    def __init__(self):
+        self.paths = {}
+        self.blocked_quanta = {name: 0 for name in ROBOTS}
+
+    def target_velocity(self, name, state, goal, navigation):
+        if goal is None:
+            return (0., 0.), False
+        distance = math.hypot(goal["x"] - state["x"], goal["y"] - state["y"])
+        if distance <= GOAL_XY_TOLERANCE_M:
+            return (0., 0.), True
+        grid, resolution, origin = navigation["grid"], navigation["resolution"], navigation["origin"]
+        digest = navigation.get("payload_sha256")
+        if not isinstance(digest, str) or len(digest) != 64:
+            raise ValueError("delivered navigation map requires its content identity")
+        key = (digest, goal["x"], goal["y"])
+        cached = self.paths.get(name)
+        if cached is None or cached[0] != key:
+            traversable, _ = native_traversable(grid, resolution)
+            target = _cell(goal["x"], goal["y"], resolution, origin, grid.shape)
+            distances, ids = _path_distances(traversable, [target], resolution)
+            field = np.full(grid.shape, np.inf)
+            field[ids >= 0] = distances[0, ids[ids >= 0]]
+            cached = (key, traversable, field)
+            self.paths[name] = cached
+        _, traversable, field = cached
+        cell = _cell(state["x"], state["y"], resolution, origin, grid.shape)
+        if cell is None or not traversable[cell] or not math.isfinite(field[cell]):
+            self.blocked_quanta[name] += 1
+            return (0., 0.), False
+        row, col = cell
+        # Follow a bounded lookahead along the same no-corner-cut metric.
+        for _ in range(5):
+            choices = []
+            for dr, dc in ((-1, 0), (1, 0), (0, -1), (0, 1), (-1, -1), (-1, 1), (1, -1), (1, 1)):
+                r, c = row + dr, col + dc
+                if not (0 <= r < grid.shape[0] and 0 <= c < grid.shape[1]) or not traversable[r, c]:
+                    continue
+                if dr and dc and not (traversable[row, c] and traversable[r, col]):
+                    continue
+                if field[r, c] < field[row, col] - 1e-9:
+                    choices.append((field[r, c], r, c))
+            if not choices:
+                break
+            _, row, col = min(choices)
+        x, y = origin[0] + (col + .5) * resolution, origin[1] + (row + .5) * resolution
+        angle = math.atan2(y - state["y"], x - state["x"]) - state["yaw"]
+        angle = math.atan2(math.sin(angle), math.cos(angle))
+        return (.12 * max(0., math.cos(angle)) if abs(angle) < .45 else 0.,
+                max(-.6, min(.6, 2 * angle))), False
+
+    def commands(self, states, goals, navigation_maps, scans, now):
+        outputs, reached = {}, []
+        for name in ROBOTS:
+            output, done = self.target_velocity(name, states[name], goals.get(name), navigation_maps[name])
+            if done:
+                reached.append(name)
+            scan = scans[name]
+            # A local sensor stop is not an exploration fallback or truth test.
+            forward = np.cos(scan["angles"]) > .7
+            if output[0] > 0 and np.min(scan["ranges"][forward]) < .40:
+                output = (0., output[1])
+                self.blocked_quanta[name] += 1
+            outputs[name] = output
+        denied = set()
+        for index, left in enumerate(ROBOTS):
+            for right in ROBOTS[index + 1:]:
+                delta = tuple(states[right][k] - states[left][k] for k in ("x", "y"))
+                reaches = []
+                for name in (left, right):
+                    v, _ = outputs[name]
+                    yaw = states[name]["yaw"]
+                    direction = (math.cos(yaw), math.sin(yaw))
+                    reaches.append(normal((Direction(direction, direction, .05),)) if v else disk())
+                ages = [max(0, round((now - states[n]["source_stamp"]) * 1e9)) for n in (left, right)]
+                if max(ages) > 200_000_000:
+                    denied.update((left, right))
+                    continue
+                certificate = pair_certificate(delta, delta, ages, *reaches,
+                    legacy_hard_gates_passed=True, common_world_odom_calibrated=True)
+                if not certificate["geometric_necessary"]:
+                    denied.update((left, right))
+        for name in denied:
+            outputs[name] = (0., 0.)
+            self.blocked_quanta[name] += 1
+        return outputs, reached

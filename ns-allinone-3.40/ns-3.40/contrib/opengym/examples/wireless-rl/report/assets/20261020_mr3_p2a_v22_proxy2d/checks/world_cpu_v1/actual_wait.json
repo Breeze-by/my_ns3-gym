@@ -1,0 +1,55 @@
+{
+  "schema": "mr3-proxy2d-world-pure-cpu-unit-wait-v1",
+  "actual_argv": [
+    "/bin/bash",
+    "-c",
+    "source /opt/ros/humble/setup.bash\nsource install/setup.bash\nexec /usr/bin/python3 -B -m pytest -q src/multi_robot_exploration/test/test_mr3_proxy2d_world.py"
+  ],
+  "cwd": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap",
+  "coordinator_identity": {
+    "pid": 2165442,
+    "parent": 2165440,
+    "start_ticks": 423939088
+  },
+  "child_identity": {
+    "pid": 2165449,
+    "parent": 2165442,
+    "start_ticks": 423939095
+  },
+  "actual_waited": true,
+  "actual_returncode": 0,
+  "started_monotonic_ns": 4239390952124615,
+  "ended_monotonic_ns": 4239393876462551,
+  "actual_child_wait_seconds": "2.924337936",
+  "source_before": [
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_proxy2d_world.py",
+      "sha256": "6ff471613d9436d31df7d08dec38ac5527c7a04977974431f569f60cd9a8e644",
+      "bytes": 18647
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_proxy2d_world.py",
+      "sha256": "f7bd186bf60a5d401578b5155579ba1652c8448a39d8b4b7e6f6c77717d23a14",
+      "bytes": 9601
+    }
+  ],
+  "source_after": [
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_proxy2d_world.py",
+      "sha256": "6ff471613d9436d31df7d08dec38ac5527c7a04977974431f569f60cd9a8e644",
+      "bytes": 18647
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_proxy2d_world.py",
+      "sha256": "f7bd186bf60a5d401578b5155579ba1652c8448a39d8b4b7e6f6c77717d23a14",
+      "bytes": 9601
+    }
+  ],
+  "source_unchanged": true,
+  "passed": true,
+  "scope": "Finite temporary synthetic arrays/box fixtures only; no development-scene episode/capacity/conformity activity",
+  "native_runs": 0,
+  "gpu_calls": 0,
+  "optimizer_steps": 0,
+  "formal_activity_credit": false
+}

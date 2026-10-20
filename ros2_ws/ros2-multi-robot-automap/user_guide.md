@@ -1,6 +1,8 @@
 # 三机器人 ROS 建图导航：当前实现指南
 
-2026-10-20当前：P2A未完成。V21两次32步合法随机原生返回/关闭完成，但第一回合guard真实storage ACK回调晚于worker推进1.076029ms，Cadence内嵌Runtime失败；保留FAIL且不重试。真实guard屏障修复已有132项CPU通过，未取得修复后原生资格或训练。工程末账41480.3336378496018/52000，余10519.6663621503982；pilot和三final-only不动，60000/二维仍未批准。显式reach为20Hz激光，legacy/base为5Hz。见[V21闭合](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261020_mr3_p2a_v21_feasibility.md)及[具体后续提案](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261020_mr3_p2a_next_route_proposal.md)。
+2026-10-20 V22授权：用户答复“继续，同意”，已接受二维代理实现、接口符合性和一次零更新容量活动；9000次ENV.step尝试/3600墙秒/最多30回合，1及4env共用上限，0模型/GPU/optimizer，无重试或补样。入场工程余10519.6663621503982/52000，pilot/final-only不动；训练、原生重试/迁移、60000、冻结规则变更和gateway均未授权。见[V22](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261020_mr3_p2a_v22_proxy2d.md)。这是二维代理准备，不替代原生SLAM/Nav2正式环境。
+
+2026-10-20当前：P2A未完成。V21两次32步合法随机原生返回/关闭完成，但第一回合guard真实storage ACK回调晚于worker推进1.076029ms，Cadence内嵌Runtime失败；保留FAIL且不重试。真实guard屏障修复已有132项CPU通过，未取得修复后原生资格或训练。工程末账41480.3336378496018/52000，余10519.6663621503982；pilot和三final-only不动，60000仍未批准；顶部V22有限二维实现/符合性/零更新容量已获后续授权，训练/迁移未批准。显式reach为20Hz激光，legacy/base为5Hz。见[V21闭合](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261020_mr3_p2a_v21_feasibility.md)及[具体后续提案](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261020_mr3_p2a_next_route_proposal.md)。
 
 2026-10-19：P2A.0已验收，P2A未完成。用户已批准V14科学候选并授权生产实现；V15实现显式`mr3-reach-v1`安全模式、真实应用/同源校准回执、完整模式交付及版本化必要审计器，当前完成CPU/编译准备，待新冻结完整原生资格。默认`legacy`保留，旧FAIL不改判；本轮无新native/GPU/pilot/验证，P2B/gateway未启动。见[V15实现与验证](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v15.md)和[新契约](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_REACH_CONTRACT.md)。
 

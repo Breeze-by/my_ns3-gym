@@ -1,5 +1,7 @@
 # wireless-rl memory — MR3
 
+2026-10-20 V22授权：用户答复“继续，同意”，已接受二维代理实现、接口符合性和一次零更新容量活动；9000次ENV.step尝试/3600墙秒/最多30回合，1及4env共用上限，0模型/GPU/optimizer，无重试或补样。入场工程余10519.6663621503982/52000，pilot/final-only不动；训练、原生重试/迁移、60000、冻结规则变更和gateway均未授权。见[V22实现与预声明](report/20261020_mr3_p2a_v22_proxy2d.md)；旧V21/评估的“二维未批”是此前快照，以本授权为准。P2A未完成。
+
 2026-10-20 V21实际闭合：用户指示继续P2A后，冻结`c38e3e8ddc034bc0bf0b0cc4578cb6600ae51d90`完成两回合/64步合法随机原生诊断；第一回合guard独立storage ACK回调晚于worker推进1.076029ms，Cadence/Runtime明确FAIL，原FAIL保留、不重试。来源、其余读者与关闭通过，111保存身份gone；工程累计41480.3336378496018/52000，余10519.6663621503982，pilot/final-only不动。保持现门的真实guard屏障修复已通过132项CPU，尚无修复后native资格/PPO。见[V21闭合](report/20261020_mr3_p2a_v21_feasibility.md)和[下一路线具体提案](report/20261020_mr3_p2a_next_route_proposal.md)；二维9000step/3600秒零更新活动、60000及冻结规则调整均未批准，旧60000提案按新末账也不足完整20100预约。P2A未完成。
 
 2026-10-20交接：用户要求保存本次评估，先读活动计划后读[P2A评估与后续交接](report/20261020_mr3_p2a_assessment_handoff.md)。建议停止原样扩额重验循环，先具体化有限原生可行性/容量方案，再考虑二维预训练和执行/审计版本分层；这些调整尚未接受，本次不是新实验/训练或60000扩额授权。常规修改授权保留，P2A未完成、原FAIL/预算/资格门不变。
@@ -16,8 +18,7 @@ MR3-P0 was explicitly accepted on 2026-10-14; MR3-P1A was accepted on 2026-10-15
 P1B was accepted by the user on 2026-10-15. The user accepted P1C and authorized P2A's
 joint MaskablePPO minimum training/validation loop on 2026-10-16. The user accepted
 P2A.0 and explicitly authorized P2A continuation on 2026-10-18. P2A is in progress and incomplete;
-P2B and later remain unstarted. The separate 2D option and candidate 500k/72h per-run
-budget are not accepted; gateway work is not authorized.
+P2B and later remain unstarted. The 2026-10-20 2D implementation/conformity/9000-step/3600-second zero-update activity is accepted; 2D training and the candidate 500k/72h quota remain unaccepted; gateway work is not authorized.
 The implemented environment contract is [MR3_ENV_CONTRACT.md](MR3_ENV_CONTRACT.md).
 This route replaces the old search/charging/rally/communication-scheduler plan.
 

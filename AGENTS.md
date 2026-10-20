@@ -1,5 +1,7 @@
 @/home/zhuyulab/.codex/RTK.md
 
+2026-10-20 V22授权：用户答复“继续，同意”，已接受二维代理实现、接口符合性和一次零更新容量活动；9000次ENV.step尝试/3600墙秒/最多30回合，1及4env共用上限，0模型/GPU/optimizer，无重试或补样。入场工程余10519.6663621503982/52000，pilot/final-only不动；训练、原生重试/迁移、60000、冻结规则变更和gateway均未授权。见[V22实现与预声明](ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261020_mr3_p2a_v22_proxy2d.md)；旧V21/评估的“二维未批”是此前快照，以本授权为准。P2A未完成。
+
 2026-10-20 V21实际闭合：用户指示继续P2A后，冻结`c38e3e8ddc034bc0bf0b0cc4578cb6600ae51d90`完成两回合/64步合法随机原生诊断；第一回合guard独立storage ACK回调晚于worker推进1.076029ms，Cadence/Runtime明确FAIL，原FAIL保留、不重试。来源、其余读者与关闭通过，111保存身份gone；工程累计41480.3336378496018/52000，余10519.6663621503982，pilot/final-only不动。保持现门的真实guard屏障修复已通过132项CPU，尚无修复后native资格/PPO。见[V21闭合](ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261020_mr3_p2a_v21_feasibility.md)和[下一路线具体提案](ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261020_mr3_p2a_next_route_proposal.md)；二维9000step/3600秒零更新活动、60000及冻结规则调整均未批准，旧60000提案按新末账也不足完整20100预约。P2A未完成。
 
 2026-10-20交接：用户要求将本次P2A完成度/继续价值评估存档，见[P2A评估与后续交接](ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261020_mr3_p2a_assessment_handoff.md)。建议保留联合RL底座，先有限原生可行性与容量收口，再考虑二维预训练/原生迁移，并前瞻区分执行和离线审计版本；这些路线/规则调整及60000扩额尚未批准。下一会话先按下述顺序读活动计划，再读交接，优先形成具体有界方案，不直接重跑矩阵或启动二维/PPO；既有常规修改授权与P2A未完成状态不变。本次只有评估/文档，无新实验或费用。

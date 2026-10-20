@@ -1,0 +1,16 @@
+{
+  "schema": "mr3-proxy2d-platform-cpu-observation-v1",
+  "scope": "CPU host API observation only; no simulator/native/learning calls",
+  "conda_python": "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+  "os_pidfd_open_available": false,
+  "libc_pidfd_open_symbol_available": false,
+  "host_machine": "x86_64",
+  "verified_header": "/usr/include/x86_64-linux-gnu/asm/unistd_64.h",
+  "verified_NR_pidfd_open": 434,
+  "verified_NR_pidfd_send_signal": 424,
+  "actual_self_pidfd_signal_zero_probe": "PASS",
+  "limitations": "Original exploratory tool calls had no independent child monotonic-ns receipt; no such timestamps are synthesized. The final finite CPU combination includes the same self signal-zero observation as a test.",
+  "gpu_calls": 0,
+  "optimizer_steps": 0,
+  "engineering_fee_exempt_cpu_preparation": true
+}

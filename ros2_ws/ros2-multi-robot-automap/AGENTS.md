@@ -1,5 +1,7 @@
 # ROS component memory — MR3
 
+2026-10-20 V22授权：用户答复“继续，同意”，已接受二维代理实现、接口符合性和一次零更新容量活动；9000次ENV.step尝试/3600墙秒/最多30回合，1及4env共用上限，0模型/GPU/optimizer，无重试或补样。入场工程余10519.6663621503982/52000，pilot/final-only不动；训练、原生重试/迁移、60000、冻结规则变更和gateway均未授权。见[V22](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261020_mr3_p2a_v22_proxy2d.md)。
+
 2026-10-19 V18：同tick因果与reach接收队列修复，140项ROS及有限DDS对照通过；旧完整replay因历史缺ACK保持FAIL。新冻结完整资格待执行，P2A未完成。工程32494.9044856606018/52000，余19505.0955143393982；pilot/验证不扩额。见[V18记录](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v18.md)。
 
 2026-10-19：P2A.0已验收，P2A未完成。用户已批准V14科学候选并授权生产实现；V15实现显式`mr3-reach-v1`安全模式、真实应用/同源校准回执、完整模式交付及版本化必要审计器，当前完成CPU/编译准备，待新冻结完整原生资格。默认`legacy`保留，旧FAIL不改判；本轮无新native/GPU/pilot/验证，P2B/gateway未启动。见[V15实现与验证](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v15.md)和[新契约](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_REACH_CONTRACT.md)。
@@ -22,8 +24,7 @@ Freeze `5e47802` has 9 effective slots from 10 attempts, including one retained
 native infrastructure failure; see the [P1A report](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261014_mr3_p1a.md).
 The user accepted P1C and authorized P2A's joint MaskablePPO minimum training/validation loop on 2026-10-16.
 The user accepted P2A.0 and explicitly authorized continuing P2A on 2026-10-18.
-P2A is in progress and incomplete; P2B and later remain unstarted. The separate 2D option and candidate
-500k/72h per-run budget are not accepted; gateway work is not authorized. K8/5 s describe the interface version,
+P2A is in progress and incomplete; P2B and later remain unstarted. The bounded 2D implementation/conformity/zero-update capacity scope was accepted on 2026-10-20; 2D training and the candidate 500k/72h quota remain unaccepted; gateway work is not authorized. K8/5 s describe the interface version,
 not a 95% task proof. The nominal 1 s snapshot timer had 2/3 s rooms gaps;
 P1C provides separate W7 stepped fixed-dt/reset/1-2-4-worker engineering evidence.
 The non-stepped timer nominal cadence and skip rules remain unchanged. See the

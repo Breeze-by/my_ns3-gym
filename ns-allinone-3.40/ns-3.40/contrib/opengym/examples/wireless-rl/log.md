@@ -7481,3 +7481,16 @@ exec /usr/bin/python3 -B -m pytest -q src/multi_robot_exploration/test/test_mr3_
 
 
 V21最终有限静态检查实际CPU rc0/1.682505902秒/source stable，命令system Python -B report/assets/20261020_mr3_p2a_v21/check_closed_v1.py，经reach_execution --scope cpu、cwd canonical wireless-rl；完整argv与6份源SHA在report/assets/20261020_mr3_p2a_v21/checks/closure_static_v1/actual_wait.json。核三part及拼接SHA、53copy对原件、1033清单、FAIL/费用/111身份/132CPU/首轮失败保留、JSON/AST/新增链接与历史log仅追加；结果closed_integrity_v1.json。仅静态封存，不重放正式reader、不新增native或费用。
+
+
+## 2026-10-20 MR3-P2A V22 二维代理准备（用户已接受限定范围）
+
+用户“继续，同意”接受具体二维实现、接口符合性和一次零更新容量活动，9000 ENV.step尝试/3600秒/最多30回合；固定三机，1env六场后4env各六场，open/rooms/corridors×101/103，seed41合法mask均匀动作；不授权训练、native重试/迁移、扩额、pilot/final-only或gateway。工程入场41480.3336378496018/52000、余10519.6663621503982。V21原FAIL不改。
+
+本次仅CPU准备，最终106项通过（ROS50、learner29、独立审计13、符合性8、活动边界6）；所有开发复测、失败、实际命令/源码hash/退出/wait原件列在[CPU清单](report/assets/20261020_mr3_p2a_v22_proxy2d/cpu_preparation_index_v1.json)，不累计重复版本为独立覆盖。ROS组合v1路径拼写错误rc4未收集测试，learner组合v1的mock生命周期6ERROR rc1保留；早期pytest/SciPy缺失tool观察保留，未补造缺失纳秒或console原件。均纯fixture/stub与已隔离小合成模型，不消费正式V21重放或实际三场景episode，不收费、不提供native95资格。关键真实wait：ROS最终3.907126901秒、learner最终1.436260389秒、审计最终4.697330542秒、符合性最终5.622836000秒、边界.447793231秒。
+
+实现复用原received地图/状态传输、build_snapshot/encode_snapshot、GoalDispatcher、RewardLedger和地图质量/参与函数；plant为显式二维单车、编码器偏置、本机扫描积分与交付图局部执行，独立进程evaluator唯一读取特权物理状态。默认原生/PPO入口不变，training_eligible/native_credit=false。完整边界见[V22报告](report/20261020_mr3_p2a_v22_proxy2d.md)。冻结后唯一正式活动实际命令/结果随后追加，准备不预报PASS。
+
+V22冻结前有限静态检查通过：真实CPU rc0/1.513117174秒，107份绑定源、106关键fixture回执、活动文档链接和log历史只追加核验通过；完整命令与前后SHA在report/assets/20261020_mr3_p2a_v22_proxy2d/checks/preparation_static_v2/actual_wait.json。首轮脚本直接路径执行缺包搜索路径，rc1/.090726768秒，原console/回执保留；仅脚本显式定位canonical W后新目录复测，不改生产或预声明源。
+
+V22封存器准备：另12项纯小tempfile/分片/拒覆盖/非regular拒绝fixture PASS，真实CPU rc0/.458022174秒/source stable；checks/seal_cpu_v1保存完整命令/fixture/console/wait。无实际run封存或原件消费者重放；该文件封存工具不改变实验结果。
