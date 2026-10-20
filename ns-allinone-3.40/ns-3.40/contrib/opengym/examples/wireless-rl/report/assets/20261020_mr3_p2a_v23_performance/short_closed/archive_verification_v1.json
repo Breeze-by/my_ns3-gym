@@ -1,0 +1,48 @@
+{
+  "schema": "mr3-closed-archive-verification-v1",
+  "byte_verification_passed": true,
+  "scope": "archival CPU verification only; original PASS/FAIL unchanged; no experiment or audit replay",
+  "qualification": false,
+  "training_eligible": false,
+  "native_credit": false,
+  "original_run": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v23/short_capacity_v1",
+  "run_originals_unchanged": true,
+  "auxiliary_originals_unchanged": true,
+  "all_member_bytes_verified": true,
+  "all_auxiliary_copy_bytes_verified": true,
+  "archive_sha256": "791a6116237973276af8caf724b809bddf4e13e370fa2eda9910f73c1115da45",
+  "part_bytes": 33554432,
+  "parts": [
+    {
+      "path": "run.tar.xz.part0001",
+      "bytes": 13206468,
+      "sha256": "791a6116237973276af8caf724b809bddf4e13e370fa2eda9910f73c1115da45"
+    }
+  ],
+  "run_file_count": 598,
+  "run_total_bytes": 16310889,
+  "auxiliary_file_count": 16,
+  "archive_commands": {
+    "tar_argv": [
+      "tar",
+      "--hard-dereference",
+      "-c",
+      "-C",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v23/short_capacity_v1",
+      "."
+    ],
+    "xz_argv": [
+      "xz",
+      "-T4",
+      "-1",
+      "--stdout"
+    ],
+    "started_monotonic_ns": 4247661183342021,
+    "xz_returncode": 0,
+    "tar_returncode": 0,
+    "ended_monotonic_ns": 4247663721315255,
+    "actual_waited": true
+  },
+  "started_monotonic_ns": 4247660992069980,
+  "ended_monotonic_ns": 4247665090076841
+}

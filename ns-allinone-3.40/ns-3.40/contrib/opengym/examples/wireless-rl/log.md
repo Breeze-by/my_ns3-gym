@@ -7599,3 +7599,68 @@ profile worker totalself45.593秒、_known_line self12.0495/112491calls、update
 所有开发失败保留：merge v1新fixture错误假定CDR padding bytes可逐字固定（29pass/1fail）；worker v1原CDR测试通过，但改进fixture的v2错误将ROS wire float32 resolution.05直接等于原Python float（17pass/2fail），v3双边CDR往返/精确字段data bytes通过。原件与运行源码不改判，无actualepisode新增。short_capacity在新源码freeze/新plan下最多30EP/240attempt/1800秒，将先核当轮符合性再采集，无cProfile/训练。详见[V23](report/20261020_mr3_p2a_v23_performance.md)。
 
 V23 short冻结前证据属性修正：初次cached diff-check指出已封存map_packing_cpu_v1/console.txt pytest原文有尾空格，首次优化提交仍发生；原console不编辑/不覆盖。新增该证据console.txt的-text/-whitespace属性，与其他精确console保留规则一致，复查后另commit/push，不改运行源、原件SHA或实费/结果。
+
+
+## 2026-10-20 V23 short实际PASS闭合与最终账
+
+short freeze `2e8fcac9439a1a53e3913e45abccdc0b6645825d`，当时main=origin/main且clean，110绑定源/plan入场与末端稳定；无cProfile，0policy/GPU/optimizer。固定1/4env每worker open/rooms/corridors×101/103、动作RNG base41（每组41+1000003×env_id、跨该worker六EP连续）、每EP max_steps8，30EP/240attempt/240return/0step_error/30实际external_sampler_limit且正常关闭；240 action/uniform/return及270 actor records全verified，global ticket完整1..240、时钟完整0越界，无补样/重试。符合性6旧原件+3合成当轮核验与独立review通过，不产生新native run或资格。
+
+所有入口在canonical wireless-rl cwd，PYTHONNOUSERSITE=1/PYTHONDONTWRITEBYTECODE=1，engineering另CUDA_VISIBLE_DEVICES空及OPENBLAS_NUM_THREADS=OMP_NUM_THREADS=MKL_NUM_THREADS=1；下列exact actual_argv由reach_execution实际wait回执提取，完整wrapper/source before-after SHA/parent与child PID/start/console归档A23/short_closed/closed_execution，run原件含各实际env/epoch/动作与执行尾。
+
+short_preflight_outer scope=cpu rc0/1.154096144秒/source stable：
+
+```bash
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.proxy2d_performance preflight --kind short_capacity --freeze 2e8fcac9439a1a53e3913e45abccdc0b6645825d
+```
+
+short_outer scope=engineering rc0/735.849491694秒/source stable：
+
+```bash
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.proxy2d_performance execute --kind short_capacity --freeze 2e8fcac9439a1a53e3913e45abccdc0b6645825d
+```
+
+pair_outer scope=engineering rc0/0.337749651秒/source stable：
+
+```bash
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B /tmp/mr3_proxy2d_v23_pair_v1.py
+```
+
+short_final_outer scope=engineering rc0/0.51818622秒/source stable：
+
+```bash
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.proxy2d_performance final --kind short_capacity --run /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v23/short_capacity_v1 --outer /tmp/mr3_proxy2d_v23_short_outer/actual_wait.json --output /tmp/mr3_proxy2d_v23_short_absence.json
+```
+
+short_closed_metadata_cpu_v1 scope=cpu rc0/0.157588465秒/source stable：
+
+```bash
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B report/assets/20261020_mr3_p2a_v23_performance/close_activity_v2.py --kind short_capacity --run /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v23/short_capacity_v1 --outer /tmp/mr3_proxy2d_v23_short_outer/actual_wait.json --extra-outer /tmp/mr3_proxy2d_v23_pair_outer/actual_wait.json --extra-json /tmp/mr3_proxy2d_v23_pair_v1.json --final-outer /tmp/mr3_proxy2d_v23_short_final_outer/actual_wait.json --absence /tmp/mr3_proxy2d_v23_short_absence.json --output report/assets/20261020_mr3_p2a_v23_performance/short_metadata --entry 43331.9626260476018
+```
+
+short_archive_cpu_v1 scope=cpu rc0/4.213862725秒/source stable：
+
+```bash
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B report/assets/20261020_mr3_p2a_v22_proxy2d/seal_results_v1.py --run /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v23/short_capacity_v1 --outer /tmp/mr3_proxy2d_v23_short_outer --outer /tmp/mr3_proxy2d_v23_pair_outer --outer /tmp/mr3_proxy2d_v23_short_final_outer --copy /tmp/mr3_proxy2d_v23_short_preflight_outer --copy /tmp/mr3_proxy2d_v23_short_absence.json --copy report/assets/20261020_mr3_p2a_v23_performance/short_metadata --copy /tmp/mr3_proxy2d_v23_pair_v1.py --copy /tmp/mr3_proxy2d_v23_pair_v1.json --copy /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v23/short_capacity_v1/activity_result.json --copy /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v23/short_capacity_v1/independent_audit.json --copy /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v23/short_capacity_v1/capacity_summary.json --output report/assets/20261020_mr3_p2a_v23_performance/short_closed
+```
+
+主outer包含以下nested实际wait（不另加费）：
+
+- conformity rc0/12.799853446秒：`/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.proxy2d_conformity --freeze 2e8fcac9439a1a53e3913e45abccdc0b6645825d --output /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v23/short_capacity_v1/conformity.json`
+
+- conformity_review rc0/0.869791539秒：`/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.audit_proxy2d /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v23/short_capacity_v1 --freeze 2e8fcac9439a1a53e3913e45abccdc0b6645825d --conformity-only /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v23/short_capacity_v1/conformity.json --output /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v23/short_capacity_v1/conformity_independent.json`
+
+- collection rc0/514.334642721秒：`/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.proxy2d_performance collect --kind short_capacity --run /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v23/short_capacity_v1`
+
+- audit rc0/206.482445868秒：`/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.audit_proxy2d /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v23/short_capacity_v1 --freeze 2e8fcac9439a1a53e3913e45abccdc0b6645825d --output /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v23/short_capacity_v1/independent_audit.json`
+
+组1的6EP/48verified return耗199.459093428秒、.24065084812654514步/墙秒；组4的24EP/192verified耗314.375271233秒、四环境合计.6107350595578452步/墙秒，均含本组reset/close，不含之后独立审计。collection phase实际514.334642721秒；audit206.482445868秒在300秒原阶段限内，无超时/重试。不能和受剖析profile或V22长回合算整步加速倍数，更不代表95%/学习收益。
+
+预指定profile↔short共享open101/group1/worker0 reset+8行编码tensor dtype/shape/byteSHA、动作与reward/dt/physical_dt/终态/reason一致；只读已有proof/trace，无新World/actor重编码，只给该固定前缀等价观察。工程消费者.337749651秒已计费，源脚本/原结果已封存。external原69身份absent；后检额外覆盖pair父子与final父子，short共73保存PID/start全gone、0不可读/僵尸；profile另14gone，本轮共87身份gone。
+
+short main735.849491694+pair.337749651+final.51818622三个outer union736.705427565秒；profile70.13864111另计，V23合计806.844068675秒。精确累计44068.6680536126018/52000，余7931.3319463873982；首末outer含间隔真实跨度profile94.160533108<600、short953.206219195<1800，既满足活动上限也没有把nested并行重复加费。pilot仍1870决策/2905.9547395464029秒，final-only401/402/403未动。末账为A23/short_metadata/engineering_accounting_v1.json。
+
+完整598files/16,310,889bytes原件封存run.tar.xz.part0001（13,206,468bytes，SHA791a6116237973276af8caf724b809bddf4e13e370fa2eda9910f73c1115da45），16份aux exactcopies及所有成员bytes核对、原件前后不变。CPU封存/账目回执分别4.213862725/.157588465秒，无正式reader重放/新episode，不计工程费/资格。独立agent只读摘要、actual interval与/proc另核算通过，未新增实验。
+
+结论与下一AI路线见[V23](report/20261020_mr3_p2a_v23_performance.md)和更新后的[评估交接](report/20261020_mr3_p2a_assessment_handoff.md)：继续保留二维采样/原生正式验收方向，先具体化完整时长任务行为检查，再决定二维最小学习投入；8步短容量不能解锁长训练/native/PPO/gateway。未改_known_line/actor原纯构造字节、原任务/信息/安全门或旧FAIL。现工程余额不足旧20100完整资格预约，不扩52000；本轮授权两次活动已全部结束，下一活动需新具体范围/plan与实际授权，P2A仍未完成。
+
+V23闭合静态核查CPU rc0/1.499108469秒/source stable：`/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B report/assets/20261020_mr3_p2a_v23_performance/closed_static_check_v1.py`，由reach_execution --scope cpu独立实际wait，完整回执checks/closed_static_cpu_v1。核profile52/short598原件SHA/bytes、全部分片/metadata及13/16辅助原件copy、110绑定源与short冻结Git字节、原native纯actor/episode源码不变、精确费用/全87身份/proc、461相对链接、log只追加及旧ARCHIVE_INDEX记录/备份分支不变。结果closed_static_result_v1.json，仅有限CPU归档/源码/文档核查，无World/actor或正式audit重放、不新增工程费/资格。独立文档审阅另修正动作RNG为每组41+1000003×env_id且每worker跨六回合连续，V22旧余额明确历史；只修叙述，不改原运行/样本。

@@ -1,23 +1,21 @@
 # 当前三机器人基线与MR3适配启动命令
 
-## V23 有界性能剖析与短容量（新授权、冻结前）
+## V23 性能剖析与短容量已闭合（历史命令）
 
-profile已在caddd853ab8884b3e2fd1018069af2fdc139d3e8执行PASS、14保存身份gone，不可重跑。以下profile命令仅历史模板；short_capacity以优化后新freeze、新plan/输出运行。仅新run/freeze使用，不重跑V22。profile一次8attempt/600秒，优化后short一次240attempt/1800秒；均零模型/GPU/optimizer，source/原件/实际wait/费用与完整退出保存。先profile实测后再决定等价优化及short入场；详情见[V23](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261020_mr3_p2a_v23_performance.md)。学习端canonical wireless-rl、conda ns3gym、未source ROS；system worker/evaluator由Supervisor显式隔离启动。默认profile关闭，只有剖析活动显式打开；容量无剖析开销。
+profile冻结caddd853ab8884b3e2fd1018069af2fdc139d3e8、short冻结2e8fcac9439a1a53e3913e45abccdc0b6645825d均已PASS闭合，不可重跑。short实际30个8步EP/240verified返回/0step错误、73保存身份gone，V23合计806.844068675秒，累计44068.6680536126018/52000、余7931.3319463873982。以下仅历史模板；不能复用plan/输出或启动训练。默认profile关闭；学习端canonical wireless-rl/conda ns3gym，system worker/evaluator显式隔离。详见[V23](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261020_mr3_p2a_v23_performance.md)。
 
-冻结并推送后使用以下入口（EXACT40为各自完整freeze，不能复用旧输出）：
+当时冻结并推送后使用以下入口（EXACT40为各自完整freeze，不能复用旧输出）：
 
 ```bash
 PYTHONNOUSERSITE=1 CUDA_VISIBLE_DEVICES= /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.proxy2d_performance preflight --kind profile --freeze EXACT40
 PYTHONNOUSERSITE=1 CUDA_VISIBLE_DEVICES= /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.reach_execution --scope engineering --output /tmp/mr3_proxy2d_v23_profile_outer --source mr3_learning/proxy2d_performance.py -- /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.proxy2d_performance execute --kind profile --freeze EXACT40
 ```
 
-profile实际已完成外部final，70.13864111秒收费，余8668.0373739523982。short_capacity的新入口将同模板kind替换为short_capacity，独立outer /tmp/mr3_proxy2d_v23_short_outer，EXACT40使用新freeze。
-
-父进程真实wait后，以同样engineering wrapper运行`proxy2d_performance final --kind profile --run RUN --outer OUTER_ACTUAL_WAIT --output NEW_JSON`并计外尾；short_capacity另冻结、新plan与新目录，不能先调用collect绕过符合性或直接以当前profile计划运行训练。
+short实际使用同模板kind=short_capacity、outer=/tmp/mr3_proxy2d_v23_short_outer、EXACT40=2e8fcac9439a1a53e3913e45abccdc0b6645825d。父进程真实wait后，已由engineering wrapper完成`proxy2d_performance final --kind short_capacity --run RUN --outer OUTER_ACTUAL_WAIT --output NEW_JSON`，费用含外尾；有限共享前缀对照另计工程消费者。详细actual argv/源码/回执与完整封存见V23，不可先调用collect绕过符合性。下一正式活动需新的具体范围、冻结与plan，当前PASS只提供短容量，不解锁训练/原生/gateway。
 
 ## V22 二维活动已FAIL闭合（历史命令）
 
-本次唯一活动已在1dc2a1f601693f542479f9b6b7c54c69519b5460执行并FAIL闭合，17保存身份gone；下列仅保留历史命令，不是重试入口。当前余8738.1760150623982/52000，pilot/final-only未动。默认原生launch不变。此入口创建system Python无Node代理worker及独立evaluator，学习端仍conda ns3gym，不启动Gazebo/Nav2/ROS graph或训练。固定三机，1/4env共9000 ENV.step尝试、3600秒，包括正式符合性和独立审计；没有native资格信用。计划与入场条件见[V22](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261020_mr3_p2a_v22_proxy2d.md)。
+本次唯一活动已在1dc2a1f601693f542479f9b6b7c54c69519b5460执行并FAIL闭合，17保存身份gone；下列仅保留历史命令，不是重试入口。V22当时余8738.1760150623982/52000，最新余额以顶部V23为准，pilot/final-only未动。默认原生launch不变。此入口创建system Python无Node代理worker及独立evaluator，学习端仍conda ns3gym，不启动Gazebo/Nav2/ROS graph或训练。固定三机，1/4env共9000 ENV.step尝试、3600秒，包括正式符合性和独立审计；没有native资格信用。计划与入场条件见[V22](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261020_mr3_p2a_v22_proxy2d.md)。
 
 仅在当前版本clean commit/push、封存plan前检通过后，由单独actual-wait父进程执行一次，EXACT40是该实际完整freeze；不得直接调用collect绕过符合性。以下为当时模板形态，实际EXACT40为1dc2a1f601693f542479f9b6b7c54c69519b5460；实际argv/结果见V22，当前修复后的源不可冒充该freeze：
 

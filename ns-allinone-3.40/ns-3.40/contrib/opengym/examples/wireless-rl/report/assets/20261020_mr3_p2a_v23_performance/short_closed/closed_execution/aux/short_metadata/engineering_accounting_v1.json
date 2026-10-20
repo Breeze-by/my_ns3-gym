@@ -1,0 +1,46 @@
+{
+  "schema": "mr3-proxy2d-performance-accounting-v1",
+  "kind": "short_capacity",
+  "method": "union of actual engineering outer intervals; nested phases not added",
+  "outer_receipts": [
+    {
+      "path": "/tmp/mr3_proxy2d_v23_short_outer/actual_wait.json",
+      "sha256": "205d9fa20595bea8f7df76f09fe0363c12fa1d1d499af1a99583d866ae1ab92e"
+    },
+    {
+      "path": "/tmp/mr3_proxy2d_v23_pair_outer/actual_wait.json",
+      "sha256": "1fdbc0b25dc4a10b1acaf5d71e51c1c75233c7aa2cb2ce6c2f99d4cfb89cbfbc"
+    },
+    {
+      "path": "/tmp/mr3_proxy2d_v23_short_final_outer/actual_wait.json",
+      "sha256": "0407d98a0b06bc863928a473794809ab62366b1af6292a6789d1a3a15b112810"
+    }
+  ],
+  "union_intervals_ns": [
+    [
+      4246667973031238,
+      4247403822522932
+    ],
+    [
+      4247619781043909,
+      4247620118793560
+    ],
+    [
+      4247620661064213,
+      4247621179250433
+    ]
+  ],
+  "charge_seconds": "736.705427565",
+  "entry_used_seconds": "43331.9626260476018",
+  "ceiling_seconds": "52000",
+  "cumulative_used_seconds": "44068.6680536126018",
+  "remaining_seconds": "7931.3319463873982",
+  "pilot_remaining_decisions": 1870,
+  "pilot_remaining_wall_seconds": "2905.9547395464029",
+  "final_only_unused_seeds": [
+    401,
+    402,
+    403
+  ],
+  "qualification": false
+}

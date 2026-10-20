@@ -1,0 +1,149 @@
+{
+  "schema": "mr3-proxy2d-performance-activity-v1",
+  "kind": "short_capacity",
+  "freeze": "2e8fcac9439a1a53e3913e45abccdc0b6645825d",
+  "plan_sha256": "d85bfc621dcbd5b79fa5204993368b021db551fb01e8f94be98a97d6e6650fad",
+  "started_ns": 4246668151346455,
+  "deadline_ns": 4248468151346455,
+  "coordinator_identity": {
+    "pid": 2407903,
+    "parent": 2407895,
+    "group": 2407893,
+    "session": 2407893,
+    "start_ticks": 424666797,
+    "state": "R"
+  },
+  "phases": {
+    "conformity": {
+      "actual_argv": [
+        "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+        "-B",
+        "-m",
+        "mr3_learning.proxy2d_conformity",
+        "--freeze",
+        "2e8fcac9439a1a53e3913e45abccdc0b6645825d",
+        "--output",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v23/short_capacity_v1/conformity.json"
+      ],
+      "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+      "child_identity": {
+        "pid": 2408084,
+        "parent": 2407903,
+        "group": 2407893,
+        "session": 2407893,
+        "start_ticks": 424666920,
+        "state": "R"
+      },
+      "started_monotonic_ns": 4246669207423819,
+      "ended_monotonic_ns": 4246682007277265,
+      "actual_child_wait_seconds": "12.799853446",
+      "actual_returncode": 0,
+      "actual_waited": true,
+      "timed_out": false,
+      "signals_sent": [],
+      "passed": true
+    },
+    "conformity_review": {
+      "actual_argv": [
+        "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+        "-B",
+        "-m",
+        "mr3_learning.audit_proxy2d",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v23/short_capacity_v1",
+        "--freeze",
+        "2e8fcac9439a1a53e3913e45abccdc0b6645825d",
+        "--conformity-only",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v23/short_capacity_v1/conformity.json",
+        "--output",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v23/short_capacity_v1/conformity_independent.json"
+      ],
+      "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+      "child_identity": {
+        "pid": 2408491,
+        "parent": 2407903,
+        "group": 2407893,
+        "session": 2407893,
+        "start_ticks": 424668200,
+        "state": "R"
+      },
+      "started_monotonic_ns": 4246682007753695,
+      "ended_monotonic_ns": 4246682877545234,
+      "actual_child_wait_seconds": "0.869791539",
+      "actual_returncode": 0,
+      "actual_waited": true,
+      "timed_out": false,
+      "signals_sent": [],
+      "passed": true
+    },
+    "collection": {
+      "actual_argv": [
+        "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+        "-B",
+        "-m",
+        "mr3_learning.proxy2d_performance",
+        "collect",
+        "--kind",
+        "short_capacity",
+        "--run",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v23/short_capacity_v1"
+      ],
+      "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+      "child_identity": {
+        "pid": 2408540,
+        "parent": 2407903,
+        "group": 2407893,
+        "session": 2407893,
+        "start_ticks": 424668288,
+        "state": "R"
+      },
+      "started_monotonic_ns": 4246682879399521,
+      "ended_monotonic_ns": 4247197214042242,
+      "actual_child_wait_seconds": "514.334642721",
+      "actual_returncode": 0,
+      "actual_waited": true,
+      "timed_out": false,
+      "signals_sent": [],
+      "passed": true
+    },
+    "audit": {
+      "actual_argv": [
+        "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+        "-B",
+        "-m",
+        "mr3_learning.audit_proxy2d",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v23/short_capacity_v1",
+        "--freeze",
+        "2e8fcac9439a1a53e3913e45abccdc0b6645825d",
+        "--output",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v23/short_capacity_v1/independent_audit.json"
+      ],
+      "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+      "child_identity": {
+        "pid": 2412620,
+        "parent": 2407903,
+        "group": 2407893,
+        "session": 2407893,
+        "start_ticks": 424719721,
+        "state": "R"
+      },
+      "started_monotonic_ns": 4247197214515959,
+      "ended_monotonic_ns": 4247403696961827,
+      "actual_child_wait_seconds": "206.482445868",
+      "actual_returncode": 0,
+      "actual_waited": true,
+      "timed_out": false,
+      "signals_sent": [],
+      "passed": true
+    }
+  },
+  "errors": [],
+  "passed": true,
+  "qualification": false,
+  "training_eligible": false,
+  "native_credit": false,
+  "policy_calls": 0,
+  "gpu_calls": 0,
+  "optimizer_steps": 0,
+  "source_unchanged": true,
+  "ended_ns": 4247403716224549
+}

@@ -1,6 +1,6 @@
 # wireless-rl memory — MR3
 
-2026-10-20 V23中账：profile冻结caddd853ab8884b3e2fd1018069af2fdc139d3e8完整8步/审计/关闭PASS，14保存身份gone，实费70.13864111秒，累计43331.9626260476018/52000、余8668.0373739523982。按实测优化map打包，CPU等价/错误门通过；短1/4env240attempt/1800秒待新冻结执行，无训练/原生/pilot/final-only，旧V22 FAIL保留。见[V23](report/20261020_mr3_p2a_v23_performance.md)。
+2026-10-20 V23闭合：profile与优化后短容量均PASS；短冻结2e8fcac9439a1a53e3913e45abccdc0b6645825d实跑1/4env、30短EP/240attempt/240verified return、0step错误/30正常关闭，73保存身份gone。含reset/close单env .240650848、四env合计 .610735060步/墙秒；仅8步短容量、无训练/原生资格。V23总实费806.844068675秒，累计44068.6680536126018/52000、余7931.3319463873982；pilot/final-only不动，旧FAIL保留，P2A未完成。见[V23](report/20261020_mr3_p2a_v23_performance.md)。
 
 2026-10-20 V23续接授权：用户“按你的想法继续”，推进新有界性能剖析/提速及短容量：profile最多1EP/8attempt/600秒，优化后一次1/4env短容量最多30EP/240attempt/1800秒，均含审计/外尾，工程仍限52000、入场余8738.1760150623982。旧V22 FAIL不重试/改判；训练、pilot/final-only、原生迁移/gateway/扩额不启动。见[V23预声明](report/20261020_mr3_p2a_v23_performance.md)，先测再优化、每次新freeze。
 
