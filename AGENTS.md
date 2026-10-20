@@ -1,5 +1,7 @@
 @/home/zhuyulab/.codex/RTK.md
 
+2026-10-20交接：用户要求将本次P2A完成度/继续价值评估存档，见[P2A评估与后续交接](ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261020_mr3_p2a_assessment_handoff.md)。建议保留联合RL底座，先有限原生可行性与容量收口，再考虑二维预训练/原生迁移，并前瞻区分执行和离线审计版本；这些路线/规则调整及60000扩额尚未批准。下一会话先按下述顺序读活动计划，再读交接，优先形成具体有界方案，不直接重跑矩阵或启动二维/PPO；既有常规修改授权与P2A未完成状态不变。本次只有评估/文档，无新实验或费用。
+
 2026-10-20：P2A未完成。V19冻结`3631c788ca46e03a52f34ad48c41611761c17f1e`的32步原生接口及六项审计通过，阶段超时/Information -2和其余角色缺口保留，58原身份gone。V20三reader性能修复通过131项CPU、whole-source逆投影及两个完整闭合原件开发重放（Runtime339.708353551秒、Information422.782810574秒），不提供新冻结资格。末账按并行区间union纠正重复269.000729653秒：累计38216.5104974146018/52000，余13783.4895025853982。60000总额提案未批准，未启动新矩阵/PPO；pilot余额与三final-only不动。用户已授权P2A常规修改、修复和验证直接执行，不再重复询问修改批准。见[V19闭合](ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v19.md)与[V20末账/提案](ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261020_mr3_p2a_v20.md)。
 
 # Codex Monorepo Memory — MR3
