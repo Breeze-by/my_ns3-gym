@@ -7494,3 +7494,56 @@ V21最终有限静态检查实际CPU rc0/1.682505902秒/source stable，命令sy
 V22冻结前有限静态检查通过：真实CPU rc0/1.513117174秒，107份绑定源、106关键fixture回执、活动文档链接和log历史只追加核验通过；完整命令与前后SHA在report/assets/20261020_mr3_p2a_v22_proxy2d/checks/preparation_static_v2/actual_wait.json。首轮脚本直接路径执行缺包搜索路径，rc1/.090726768秒，原console/回执保留；仅脚本显式定位canonical W后新目录复测，不改生产或预声明源。
 
 V22封存器准备：另12项纯小tempfile/分片/拒覆盖/非regular拒绝fixture PASS，真实CPU rc0/.458022174秒/source stable；checks/seal_cpu_v1保存完整命令/fixture/console/wait。无实际run封存或原件消费者重放；该文件封存工具不改变实验结果。
+
+
+## 2026-10-20 MR3-P2A V22 唯一正式活动FAIL闭合
+
+冻结1dc2a1f601693f542479f9b6b7c54c69519b5460，clean/pushed前检通过；固定三机、9000尝试/3600秒上限、open/rooms/corridors×101/103、1env后4env、每episode最多300、均匀合法动作seed41，无模型/GPU/optimizer、无补样或重试。实际命令（每份receipt保存cwd/env/source SHA/stat/实际wait与console，路径均见V22辅助索引）：
+
+preflight_outer scope=cpu，真实rc0/1.747137385秒：
+
+```bash
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.proxy2d_activity preflight --freeze 1dc2a1f601693f542479f9b6b7c54c69519b5460
+```
+
+outer scope=engineering，真实rc1/1780.291538385秒：
+
+```bash
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.proxy2d_activity execute --freeze 1dc2a1f601693f542479f9b6b7c54c69519b5460
+```
+
+forensics_outer scope=engineering，真实rc0/0.866121738秒：
+
+```bash
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B /tmp/mr3_proxy2d_v22_forensics_v1.py
+```
+
+final_outer scope=engineering，真实rc0/0.332686965秒：
+
+```bash
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.proxy2d_activity final --run /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v22/run_v1 --outer /tmp/mr3_proxy2d_v22_outer/actual_wait.json --output /tmp/mr3_proxy2d_v22_absence.json
+```
+
+四nested阶段均含于主outer，不重复收费：
+
+- conformity：rc0/12.599340248秒，无timeout/signal。`/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.proxy2d_conformity --freeze 1dc2a1f601693f542479f9b6b7c54c69519b5460 --output /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v22/run_v1/conformity.json`
+
+- conformity_review：rc0/0.867650299秒，无timeout/signal。`/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.audit_proxy2d /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v22/run_v1 --freeze 1dc2a1f601693f542479f9b6b7c54c69519b5460 --conformity-only /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v22/run_v1/conformity.json --output /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v22/run_v1/conformity_independent.json`
+
+- capacity：rc0/1760.625803367秒，无timeout/signal。`/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.proxy2d_activity collect --run /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v22/run_v1`
+
+- audit：rc1/4.476738606秒，无timeout/signal。`/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.audit_proxy2d /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v22/run_v1 --freeze 1dc2a1f601693f542479f9b6b7c54c69519b5460 --output /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v22/run_v1/independent_audit.json`
+
+结果：符合性6条历史原件重建+3项合成及独立review PASS；采集284尝试/284原始返回/0step错误，仅group1首场open101未完成。group4空metadata、没有实际worker或数据，不能称四环境0吞吐。group1真实reset/close分母1760.142537073秒，原始返回率.16135056906940792/秒；不是全部验证的训练样本率，不外推训练。完整独立审计真实rc1/4.476738606秒，FAIL保留。
+
+明确工程缺陷：第4step event9的3.1→4.1与第64step event129的63.1→64.1，原始整数端点都正好1e9ns、RewardLedger dt1，但worker float(end-start)分别.9999999999999996/.9999999999999929，严格审计正确FAIL。有限标量取证独立核284 source-dt全1e9、reward dt全1、全部预约实际在group/collection区间内，未重建actor/张量/候选、不补资格。旧reader fail-first实际只到4action/3return/4actor/reset+首return完整重建，旧JSON声称uniform replay284属原始计数误信用，应作废该信用；其“not recorded before deadline”合并了覆盖不足，并不证明真实晚预约。原错误输出逐字保留。
+
+最后正确自由覆盖.8741897197114946、质量false/参与true/代理contact0，无代理任务成功。task elapsed284秒；close后physical284.92/snapshot284.1，尾.82秒，navigation_closed=true、evaluator rc0、supervisor actual wait rc0/forced=false。外部final与父进程退出后更晚17个保存PID/start全部gone，无同startZ/不可读，不用absence覆盖FAIL。
+
+主1780.291538385+有限取证.866121738+外尾.332686965三个实际区间union1781.490347088秒；累计43261.8239849376018/52000，余8738.1760150623982。pilot1870/2905.9547395464029秒、三final-only401/402/403不动，60000未批准。完整323原件/16,539,807bytes封存1part14,225,588bytes，SHA18e67dcf20b63759aab797d56547f0262bc98a22004caa88de871ab4b65297d8；逐成员SHA/bytes和原件前后不变通过，18辅助文件exactcopy。CPU封存真实rc0/5.093577816秒，不重放formal reader。详细原件与交接见[V22](report/20261020_mr3_p2a_v22_proxy2d.md)。
+
+V22旧冻结收口后常规修复：worker由原start_ns/end_ns差计算physical_dt，关闭尾排除；15项CPU stub PASS，rc0/2.23298176秒/source stable，checks/worker_integer_clock_cpu_v1保留。审计器分raw与verified动作/uniform/actor/return，raw close与verified close、deadline覆盖与真实越界，fail-first和严格_duration谓词保持；16项纯fixture PASS，rc0/13.57748793秒/source stable，checks/audit_verified_prefix_cpu_v1保留。284原始/第4return失败fixture只给4/4/4/3验证信用，不能借修复改判旧run。两份实际argv/source/wait/console均在V22 assets checks下，无actualepisode或旧reader重放、不新增工程实验费。
+
+后续建议先做有界分段剖析和等价缓存，后续容量改短固定覆盖以保证两group先有数据；另拟240尝试/1800秒只是未批候选，不启动新活动/训练/原生重试/gateway。P2A仍未完成。
+
+V22收口静态检查：最终真实CPU rc0/1.412626768秒/source stable，核323原件SHA/bytes、14MB分片/18exactcopy、原FAIL/错误信用保留、费用/17保存身份、旧冻结107source与仅2份生产修复差、459相对链接/log只追加，回执checks/closed_static_cpu_v2，结果closed_static_result_v1.json。首轮静态脚本假定所有回执都同schema且应匹配当前全部依赖，rc1/1.323912929秒；原件保留。worker首次15项回归时auditor为原严格版本，随后verified报告修复变化；为核最终组合，原worker测试按同一stub在当前auditor下复测15PASS，真实CPU rc0/2.281090497秒/source stable，checks/worker_integer_clock_cpu_v2。静态脚本按两份真实回执schema分别核SHA后通过；原严格_duration未改、无正式重审或新模拟。

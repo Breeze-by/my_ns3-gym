@@ -31,6 +31,8 @@ SCHEMA = "mr3-proxy2d-trace-v1"
 CONTRACT = "mr3-own-known-shared-unknown-v1"
 ERRORS = (OSError, ValueError, TypeError, KeyError, IndexError, OverflowError, EOFError, RuntimeError,
           AssertionError, subprocess.SubprocessError)
+VERIFIED_COUNTS = ("verified_action_count", "verified_uniform_action_count", "verified_actor_record_count",
+                   "verified_step_return_count")
 
 
 def require(condition, reason):
@@ -279,11 +281,17 @@ def audit_episode(directory, freeze, *, builder=None, verify_sources=True, rng=N
               "freeze": freeze, "passed": False, "errors": [], "qualification": False,
               "training_eligible": False, "native_credit": False, "step_attempts": 0,
               "step_returns": 0, "step_errors": 0, "records": 0,
+              "event_count_scope": "raw parsed event rows, including the unverified suffix after a failure",
+              "raw_event_counts_complete": False, "raw_close_records": 0, "raw_closed_true_records": 0,
+              "validated_prefix_records": 0, "causal_validation_complete": False,
+              "verified_count_scope": "action=preceding mask/digest/version; uniform=successful RNG comparison; "
+                                      "actor=saved input/digest/tensor checks; return=settled duration/actor/timestamp checks",
               "attempt_start_wall_ns": [], "return_end_wall_ns": [],
               "actor_records": [], "full_rebuild_event_sequences": [],
               "scope": "All trace pairing, saved masks and tensor encodings; reset, first and last returned "
                        "steps receive full build_snapshot replay. Other candidate constructions are not replayed. "
                        "Received-only source architecture and hidden-truth perturbations require separate conformity evidence."}
+    result.update({key: 0 for key in VERIFIED_COUNTS})
     stable, previous, pending, last_return = {}, None, None, None
     epoch, env_id, episode_index, closed, done = None, None, None, False, False
     processed_returns = 0
@@ -308,6 +316,10 @@ def audit_episode(directory, freeze, *, builder=None, verify_sources=True, rng=N
             except ERRORS as error:
                 result["errors"].append(f"trace row {number}: {error}")
         result["records"] = len(lines)
+        result["raw_event_counts_complete"] = len(rows) == len(lines)
+        result["raw_close_records"] = sum(row.get("event") == "close" for _, row in rows)
+        result["raw_closed_true_records"] = sum(row.get("event") == "close" and row.get("closed") is True
+                                                 for _, row in rows)
         for key, event in (("step_attempts", "step_attempt"), ("step_returns", "step_return"),
                            ("step_errors", "step_error")):
             result[key] = sum(row.get("event") == event for _, row in rows)
@@ -342,10 +354,12 @@ def audit_episode(directory, freeze, *, builder=None, verify_sources=True, rng=N
                         and row["preceding_digest"] == previous["digest"]
                         and row["candidate_version"] == previous["candidate_version"],
                         "action/mask differs from actual preceding actor snapshot")
+                result["verified_action_count"] += 1
                 pending = row
                 if rng is not None:
                     require(action == rng.choice([i for i, legal in enumerate(mask) if legal]),
                             "action differs from the declared independent uniform random stream")
+                    result["verified_uniform_action_count"] += 1
                 if "started_wall_ns" in row:
                     require(type(row["started_wall_ns"]) is int and row["started_wall_ns"] > 0,
                             "attempt start wall timestamp is invalid")
@@ -366,6 +380,7 @@ def audit_episode(directory, freeze, *, builder=None, verify_sources=True, rng=N
                             "step returned before its actual attempt")
                     result["return_end_wall_ns"].append(row["ended_wall_ns"])
                 previous, last_return, pending = row["snapshot"], row, None
+                result["verified_step_return_count"] += 1
                 done = row["terminated"] or row["truncated"]
             elif event == "step_error":
                 require(pending is not None and isinstance(row.get("error"), str) and row["error"],
@@ -378,6 +393,7 @@ def audit_episode(directory, freeze, *, builder=None, verify_sources=True, rng=N
                 closed = True
             else:
                 raise ValueError("unknown trace event: " + str(event))
+            result["validated_prefix_records"] = number
         require(closed and previous is not None and pending is None, "episode trace is not closed")
         require(result["step_attempts"] == result["step_returns"] + result["step_errors"],
                 "attempt accounting excluded failed ENV.step calls")
@@ -386,6 +402,7 @@ def audit_episode(directory, freeze, *, builder=None, verify_sources=True, rng=N
             stable[binding[0]] = binding[1]
             result["last_return_full_rebuild"] = report
             result["full_rebuild_event_sequences"].append(last_return["event_sequence"])
+        result["causal_validation_complete"] = True
     except ERRORS as error:
         result["errors"].append(str(error))
     try:
@@ -396,7 +413,24 @@ def audit_episode(directory, freeze, *, builder=None, verify_sources=True, rng=N
         result["bound_bytes_unchanged"] = False
         result["errors"].append(str(error))
     result.update(epoch=epoch, env_id=env_id, episode_index=episode_index,
-                  closed=closed, passed=closed and not result["errors"])
+                  verified_actor_record_count=len(result["actor_records"]),
+                  verified_close=closed, closed=closed,
+                  closed_scope="causal validation reached the close record; raw observed close counts are separate",
+                  passed=closed and not result["errors"])
+    return result
+
+
+def _trace_wall_coverage(report, group_start, collection_deadline, group_end):
+    """Separate checked-prefix coverage from any observed clock violation."""
+    result = {}
+    for name, values, expected, lower, upper in (
+            ("attempt_start", report["attempt_start_wall_ns"], report["step_attempts"], group_start, collection_deadline),
+            ("return_end", report["return_end_wall_ns"], report["step_returns"], None, group_end)):
+        result[name] = {"expected_raw_count": expected, "verified_timestamp_count": len(values),
+                        "coverage_complete": report["raw_event_counts_complete"] and len(values) == expected,
+                        "observed_out_of_bounds_count": sum(value > upper or (lower is not None and value < lower)
+                                                            for value in values),
+                        "lower_bound_ns": lower, "upper_bound_ns": upper}
     return result
 
 
@@ -651,8 +685,11 @@ def audit_run(directory, freeze):
               "passed": False, "errors": [], "episodes": [], "qualification": False,
               "training_eligible": False, "native_credit": False, "step_attempts": 0,
               "step_returns": 0, "step_errors": 0,
+              "event_count_scope": "raw parsed trace events; verified coverage is counted separately",
+              "uniform_actions_independently_replayed": 0,
               "scope": "Independent finite proxy capacity/trace audit; no learning, native qualification, "
                        "long-training capacity, transfer or95% reliability credit."}
+    result.update({key: 0 for key in VERIFIED_COUNTS})
     stable, builder = {}, None
     try:
         proof, sources = source_proof(freeze)
@@ -706,7 +743,9 @@ def audit_run(directory, freeze):
                 result["errors"].append("group denominator is outside the common activity or overlaps sequential groups")
             group_end = group["ended_ns"]
             capacity = {"workers": workers, "started_ns": group["started_ns"], "ended_ns": group["ended_ns"],
-                        "step_attempts": 0, "step_returns": 0, "step_errors": 0}
+                        "step_attempts": 0, "step_returns": 0, "step_errors": 0,
+                        "returned_steps_scope": "raw return events; duration/actor verification counted separately"}
+            capacity.update({key: 0 for key in VERIFIED_COUNTS})
             for env_id in range(workers):
                 entries = sorted((item for item in group["episodes"] if item["env_id"] == env_id),
                                  key=lambda item: item["episode_index"])
@@ -714,31 +753,38 @@ def audit_run(directory, freeze):
                         and {(item["scene"], item["seed"]) for item in entries} == cells):
                     result["errors"].append(f"group{workers}/worker{env_id}: six fixed scene/seed cells were omitted/replaced/retried")
                 rng = random.Random(41 + 1000003 * env_id)
+                uniform_stream_complete = True
                 for item in entries:
                     episode = Path(item["directory"]).resolve()
                     if not episode.is_relative_to(directory) or episode in audited:
                         result["errors"].append("episode path escaped run or its trace was duplicated")
                         continue
                     audited.add(episode)
-                    report = audit_episode(episode, freeze, builder=builder, rng=rng)
+                    report = audit_episode(episode, freeze, builder=builder,
+                                           rng=rng if uniform_stream_complete else None)
                     result["episodes"].append(report)
-                    for key in ("step_attempts", "step_returns", "step_errors"):
+                    for key in ("step_attempts", "step_returns", "step_errors", *VERIFIED_COUNTS):
                         result[key] += report[key]
                         capacity[key] += report[key]
+                    uniform_stream_complete = (uniform_stream_complete and report["raw_event_counts_complete"]
+                                               and report["verified_uniform_action_count"] == report["step_attempts"])
                     result["errors"].extend(str(episode) + ": " + error for error in report["errors"])
                     try:
                         require(item["action_seed"] == 41 + 1000003 * env_id,
                                 "independent random-stream seed differs")
                         require(report["env_id"] == env_id and report["episode_index"] == item["episode_index"]
                                 and report["epoch"] not in epochs, "reset reused epoch or mixed environment identity")
-                        require(len(report["attempt_start_wall_ns"]) == report["step_attempts"]
-                                and all(group["started_ns"] <= value <= collection
-                                        for value in report["attempt_start_wall_ns"]),
-                                "attempt was not recorded before the common collection deadline")
-                        require(all(value <= group["ended_ns"] for value in report["return_end_wall_ns"]),
-                                "return timestamp exceeded actual group close")
                     except ERRORS as error:
                         result["errors"].append(str(episode) + ": " + str(error))
+                    report["wall_timestamp_coverage"] = _trace_wall_coverage(
+                        report, group["started_ns"], collection, group["ended_ns"])
+                    for name, check in report["wall_timestamp_coverage"].items():
+                        if not check["coverage_complete"]:
+                            result["errors"].append(f"{episode}: {name} wall timestamp coverage incomplete: "
+                                f"{check['verified_timestamp_count']}/{check['expected_raw_count']} verified")
+                        if check["observed_out_of_bounds_count"]:
+                            result["errors"].append(f"{episode}: {name} timestamp outside its declared wall bounds: "
+                                                    f"{check['observed_out_of_bounds_count']} observed")
                     epochs.add(report["epoch"])
             wall = (group["ended_ns"] - group["started_ns"]) / 1e9
             capacity.update(wall_seconds_including_reset_and_close=wall,
@@ -751,7 +797,7 @@ def audit_run(directory, freeze):
             result["episodes"].append(report)
             result["errors"].append(str(episode) + ": trace is outside the declared worker/episode inventory")
             result["errors"].extend(str(episode) + ": " + error for error in report["errors"])
-            for key in ("step_attempts", "step_returns", "step_errors"):
+            for key in ("step_attempts", "step_returns", "step_errors", *VERIFIED_COUNTS):
                 result[key] += report[key]
         require(result["step_attempts"] <= 9000
                 and result["step_attempts"] == result["step_returns"] + result["step_errors"],
@@ -761,7 +807,6 @@ def audit_run(directory, freeze):
                 "summary attempt/return/error counters differ from original trace")
         require(time.monotonic_ns() <= deadline, "required independent audit exceeded the activity budget")
         result.update(declared_learning_calls={key: summary[key] for key in ("policy_calls", "gpu_calls", "optimizer_steps")},
-                      uniform_actions_independently_replayed=result["step_attempts"],
                       activity_started_ns=start, activity_deadline_ns=deadline)
     except ERRORS as error:
         result["errors"].append(str(error))
@@ -779,6 +824,7 @@ def audit_run(directory, freeze):
         result["bound_bytes_unchanged"] = False
         result["errors"].append(str(error))
     result["passed"] = bool(result["episodes"]) and not result["errors"]
+    result["uniform_actions_independently_replayed"] = result["verified_uniform_action_count"]
     return result
 
 

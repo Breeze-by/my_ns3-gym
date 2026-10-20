@@ -10,7 +10,9 @@ import numpy as np
 import pytest
 
 from multi_robot_exploration.mr3_protocol import GoalDispatcher
+from multi_robot_exploration.mr3_episode import elapsed_ns
 from multi_robot_exploration.mr3_proxy2d_navigation import ProxyNavigator
+from multi_robot_exploration.mr3_reward import RewardLedger
 from multi_robot_exploration.mr3_transport import IdealTransport, ReceivedStore
 
 
@@ -185,7 +187,7 @@ def step_boundary_fixture(now=5., *, coverage=False, tail=.4):
         truncated = reason is None and bool(fields["external_truncation"])
         return {"reward": 0., "terminated": reason is not None, "truncated": truncated,
                 "reason": reason if reason is not None else fields["external_truncation"],
-                "delta_sim_time": fields["step_end"] - fields["step_start"],
+                "delta_sim_time": elapsed_ns(fields["step_start"], fields["step_end"]) / 1e9,
                 "proxy_task_success": reason == "coverage_reached"}
     value.evaluate = evaluate
     return value
@@ -216,3 +218,41 @@ def test_coverage_candidate_cannot_become_success_after_closure_crosses_task_dea
         assert not result["info"]["reward_diagnostics"]["proxy_task_success"]
     assert value.now > 300.
     assert not any(call["terminal_reason"] == "coverage_reached" for call in value.reward_calls)
+
+
+@pytest.mark.parametrize("start", [.1, 3.1, 7.1, 127.1])
+def test_integer_physical_span_equals_original_reward_clock_for_one_second(start):
+    value = step_boundary_fixture(start)
+    result = value.step(888)
+    truth = np.ones((2, 2), dtype=bool)
+    original = RewardLedger(value.epoch, start, truth, np.zeros_like(truth))
+    expected = original.advance(epoch=value.epoch, sequence=1, step_start=start, step_end=start + 1.,
+        current_correct_free_mask=np.zeros_like(truth), collision_events=0,
+        goal_switches=0, rejected_actions=0)
+    assert result["info"]["physical_dt"] == expected["delta_sim_time"] == 1.
+    assert result["info"]["dt"] == result["info"]["physical_dt"]
+    assert result["snapshot"]["source_stamp"] == (round(start * 1e9) + 1_000_000_000) / 1e9
+
+
+@pytest.mark.parametrize("start", [.1, 3.1, 7.1, 127.1])
+def test_twenty_millisecond_terminal_span_excludes_real_closure_tail(start):
+    value = step_boundary_fixture(start, tail=.4)
+    def first_terminal(**kwargs):
+        value.world.time_ns += 20_000_000
+        return {"terminal_reason": "collision"}
+    value.advance_quantum = first_terminal
+    value.private_state = lambda: {"captured_at": value.now,
+        "path_lengths": {name: 1. for name in ROBOTS}, "collision_events": 1}
+    result = value.step(888)
+    endpoint = (round(start * 1e9) + 20_000_000) / 1e9
+    truth = np.ones((2, 2), dtype=bool)
+    original = RewardLedger(value.epoch, start, truth, np.zeros_like(truth))
+    expected = original.advance(epoch=value.epoch, sequence=1, step_start=start, step_end=endpoint,
+        current_correct_free_mask=np.zeros_like(truth), collision_events=1,
+        goal_switches=0, rejected_actions=0, terminal_reason="collision")
+    assert result["terminated"] and result["info"]["reason"] == "collision"
+    assert result["info"]["physical_dt"] == expected["delta_sim_time"] == .02
+    assert result["info"]["dt"] == result["info"]["physical_dt"]
+    assert result["snapshot"]["source_stamp"] == endpoint
+    assert value.reward_calls[0]["physical_state"]["captured_at"] == endpoint
+    assert value.now == (round(start * 1e9) + 420_000_000) / 1e9

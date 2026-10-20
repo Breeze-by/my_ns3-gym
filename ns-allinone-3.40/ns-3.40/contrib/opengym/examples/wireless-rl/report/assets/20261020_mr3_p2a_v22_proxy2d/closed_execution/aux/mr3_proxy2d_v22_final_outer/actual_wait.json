@@ -1,0 +1,99 @@
+{
+  "schema": "mr3-reach-outer-actual-wait-v1",
+  "scope": "engineering",
+  "safety_contract": "mr3-reach-v1",
+  "actual_argv": [
+    "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+    "-B",
+    "-m",
+    "mr3_learning.proxy2d_activity",
+    "final",
+    "--run",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v22/run_v1",
+    "--outer",
+    "/tmp/mr3_proxy2d_v22_outer/actual_wait.json",
+    "--output",
+    "/tmp/mr3_proxy2d_v22_absence.json"
+  ],
+  "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+  "coordinator_identity": {
+    "pid": 2292363,
+    "parent": 2292361,
+    "group": 2292361,
+    "session": 2292361,
+    "start_ticks": 424334031,
+    "state": "R"
+  },
+  "child_identity": {
+    "pid": 2292371,
+    "parent": 2292363,
+    "group": 2292361,
+    "session": 2292361,
+    "start_ticks": 424334047,
+    "state": "R"
+  },
+  "actual_returncode": 0,
+  "actual_waited": true,
+  "errors": [],
+  "started_monotonic_ns": 4243340479451109,
+  "ended_monotonic_ns": 4243340812138074,
+  "actual_child_wait_seconds": "0.332686965",
+  "source_before": [
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d_activity.py",
+      "sha256": "3919360e922e8c365ca102db13c41f2b911a8525d167efd23213af4867791dd4",
+      "bytes": 14074,
+      "stat": [
+        2051,
+        73564070,
+        14074,
+        1792495679948592549,
+        1792495679948592549
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d_process.py",
+      "sha256": "a975de72416cb8e49a706412957fc15c8dab678b7ac39c7912a3d576542d6331",
+      "bytes": 1384,
+      "stat": [
+        2051,
+        73564073,
+        1384,
+        1792495122458734929,
+        1792495122458734929
+      ]
+    }
+  ],
+  "source_after": [
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d_activity.py",
+      "sha256": "3919360e922e8c365ca102db13c41f2b911a8525d167efd23213af4867791dd4",
+      "bytes": 14074,
+      "stat": [
+        2051,
+        73564070,
+        14074,
+        1792495679948592549,
+        1792495679948592549
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d_process.py",
+      "sha256": "a975de72416cb8e49a706412957fc15c8dab678b7ac39c7912a3d576542d6331",
+      "bytes": 1384,
+      "stat": [
+        2051,
+        73564073,
+        1384,
+        1792495122458734929,
+        1792495122458734929
+      ]
+    }
+  ],
+  "source_unchanged": true,
+  "passed": true,
+  "console": {
+    "path": "/tmp/mr3_proxy2d_v22_final_outer/console.log",
+    "sha256": "193777fb194e9a7677a51523c942d6a2daf3bf7589ba213e48dd4eb7d10bdda0"
+  }
+}

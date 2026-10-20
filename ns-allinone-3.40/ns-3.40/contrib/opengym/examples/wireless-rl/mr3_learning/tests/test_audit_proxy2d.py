@@ -4,6 +4,7 @@ import copy
 import gzip
 import json
 from pathlib import Path
+import random
 import tempfile
 import time
 import unittest
@@ -96,6 +97,15 @@ class ProxyAuditTests(unittest.TestCase):
             self.assertFalse(result["qualification"])
             self.assertFalse(result["training_eligible"])
             self.assertFalse(result["native_credit"])
+            self.assertEqual(result["verified_action_count"], 2)
+            self.assertEqual(result["verified_uniform_action_count"], 0)
+            self.assertEqual(result["verified_actor_record_count"], 3)
+            self.assertEqual(result["verified_step_return_count"], 2)
+            self.assertTrue(result["raw_event_counts_complete"])
+            self.assertEqual(result["raw_closed_true_records"], 1)
+            self.assertTrue(result["verified_close"])
+            self.assertTrue(result["causal_validation_complete"])
+            self.assertEqual(result["validated_prefix_records"], 6)
 
     def test_rehashed_mask_change_still_fails_actual_input_rebuild(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -387,6 +397,95 @@ class ProxyAuditTests(unittest.TestCase):
             self.assertEqual((report["step_attempts"], report["step_returns"]), (4, 4))
             self.assertEqual(len(report["group_capacity"]), 2)
             self.assertTrue(report["pure_builder_actual_wait"]["actual_waited"])
+
+    def test_fourth_return_failure_does_not_claim_raw284_verified_or_unobserved_lateness(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            episode = directory / "group1/worker0/episode001_open_101"
+            episode.mkdir(parents=True)
+            rows = self.fixture(episode, count=284)
+            started = time.monotonic_ns() - 1_000_000_000
+            rng, attempt = random.Random(41), 0
+            for row in rows:
+                if row["event"] == "step_attempt":
+                    attempt += 1
+                    row["action"] = rng.choice([index for index, legal in enumerate(row["joint_action_mask"]) if legal])
+                    row["started_wall_ns"] = started + attempt * 1000
+                elif row["event"] == "step_return":
+                    row["ended_wall_ns"] = started + attempt * 1000 + 100
+            rows[8]["physical_dt"] = .98  # original duration predicate must still reject return4
+            self.write(episode, rows)
+            groups = [
+                {"workers": 1, "started_ns": started, "ended_ns": started + 1_000_000,
+                 "episodes": [{"directory": str(episode), "env_id": 0, "episode_index": 1,
+                               "scene": "open", "seed": 101, "action_seed": 41}]},
+                {"workers": 4, "started_ns": started + 2_000_000, "ended_ns": started + 3_000_000,
+                 "episodes": []}]
+            summary = {"schema": "mr3-proxy2d-capacity-summary-v1", "freeze": "a" * 40,
+                "qualification": False, "training_eligible": False, "native_credit": False,
+                "policy_calls": 0, "gpu_calls": 0, "optimizer_steps": 0,
+                "source_bindings": {"fixture": "fixture"}, "conformity": {},
+                "activity_started_ns": started, "activity_deadline_ns": started + 3600 * 10**9,
+                "collection_deadline_ns": started + 2700 * 10**9, "closed": True, "errors": [],
+                "forbidden_framework_imports": [], "groups": groups,
+                "step_attempts": 284, "step_returns": 284, "step_errors": 0}
+            (directory / "capacity_summary.json").write_bytes(audit.canonical(summary))
+            stable = {Path(audit.__file__): Path(audit.__file__).read_bytes()}
+            with patch.object(audit, "source_proof", return_value=({}, stable)), \
+                    patch.object(audit, "verify_run_sources", return_value=({}, {}, ["manufactured fixture"])), \
+                    patch.object(audit, "verify_conformity", return_value=({"passed": True}, {})):
+                report = audit.audit_run(directory, "a" * 40)
+            self.assertFalse(report["passed"])
+            checked = report["episodes"][0]
+            self.assertEqual((checked["step_attempts"], checked["step_returns"]), (284, 284))
+            self.assertEqual(checked["verified_action_count"], 4)
+            self.assertEqual(checked["verified_uniform_action_count"], 4)
+            self.assertEqual(checked["verified_actor_record_count"], 4)
+            self.assertEqual(checked["verified_step_return_count"], 3)
+            self.assertEqual(checked["validated_prefix_records"], 8)
+            self.assertEqual(checked["full_rebuild_event_sequences"], [1, 3])
+            self.assertEqual(checked["raw_close_records"], 1)
+            self.assertEqual(checked["raw_closed_true_records"], 1)
+            self.assertFalse(checked["verified_close"])
+            self.assertFalse(checked["causal_validation_complete"])
+            self.assertEqual(report["uniform_actions_independently_replayed"], 4)
+            self.assertEqual(report["verified_step_return_count"], 3)
+            for name, count in (("attempt_start", 4), ("return_end", 3)):
+                coverage = checked["wall_timestamp_coverage"][name]
+                self.assertFalse(coverage["coverage_complete"])
+                self.assertEqual(coverage["expected_raw_count"], 284)
+                self.assertEqual(coverage["verified_timestamp_count"], count)
+                self.assertEqual(coverage["observed_out_of_bounds_count"], 0)
+            self.assertTrue(any("transition physical/reward time differs" in error for error in report["errors"]))
+            self.assertTrue(any("coverage incomplete" in error for error in report["errors"]))
+            self.assertFalse(any("outside" in error or "not recorded before" in error for error in report["errors"]))
+            self.assertFalse(report["qualification"])
+            self.assertFalse(report["training_eligible"])
+
+    def test_actual_timestamp_violation_is_reported_separately_from_coverage(self):
+        result = audit._trace_wall_coverage({"attempt_start_wall_ns": [99, 201], "return_end_wall_ns": [301],
+            "step_attempts": 4, "step_returns": 3, "raw_event_counts_complete": True}, 100, 200, 300)
+        self.assertFalse(result["attempt_start"]["coverage_complete"])
+        self.assertEqual(result["attempt_start"]["observed_out_of_bounds_count"], 2)
+        self.assertFalse(result["return_end"]["coverage_complete"])
+        self.assertEqual(result["return_end"]["observed_out_of_bounds_count"], 1)
+
+    def test_legal_action_failing_uniform_comparison_has_no_uniform_credit(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            rows = self.fixture(directory)
+            legal = [index for index, valid in enumerate(rows[1]["joint_action_mask"]) if valid]
+            expected = random.Random(41).choice(legal)
+            rows[1]["action"] = next(index for index in legal if index != expected)
+            self.write(directory, rows)
+            report = audit.audit_episode(directory, "a" * 40, verify_sources=False,
+                                         builder=self.builder, rng=random.Random(41))
+            self.assertFalse(report["passed"])
+            self.assertEqual(report["verified_action_count"], 1)
+            self.assertEqual(report["verified_uniform_action_count"], 0)
+            self.assertEqual(report["verified_actor_record_count"], 1)
+            self.assertEqual(report["verified_step_return_count"], 0)
+            self.assertEqual(report["validated_prefix_records"], 1)
 
 
 if __name__ == "__main__":

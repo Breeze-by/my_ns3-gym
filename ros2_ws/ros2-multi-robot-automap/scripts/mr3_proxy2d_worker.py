@@ -286,7 +286,8 @@ class ProxyWorker:
         snapshot = self.last_snapshot
         if not snapshot["joint_action_mask"][action]:
             raise ValueError("joint action not in its actual preceding mask")
-        start = self.now
+        start_ns = self.world.time_ns
+        start = start_ns / 1e9
         for name, choice in zip(self.dispatcher.robots, decode_joint_action(action)):
             state = self.dispatcher.states[name]
             if choice < 8 and state.goal_id is not None:
@@ -309,7 +310,8 @@ class ProxyWorker:
                                   goal_counts=self.goal_counts(), navigation_closed=self.dispatcher.closed)
         if reason is None and inspection.get("coverage_candidate"):
             reason = "coverage_reached"
-        end = self.now
+        end_ns = self.world.time_ns
+        end = end_ns / 1e9
         boundary_snapshot = self.snapshot()
         boundary_inputs = self.last_inputs
         boundary_maps = self.map_arguments()
@@ -325,7 +327,7 @@ class ProxyWorker:
             navigation_closed=self.dispatcher.closed, goal_switches=self.goal_switches,
             rejected_actions=self.rejected_actions, external_truncation=external_truncation, terminal_reason=reason)
         self.last_inputs = boundary_inputs
-        result = self.payload(boundary_snapshot, diagnostic, physical_dt=end - start)
+        result = self.payload(boundary_snapshot, diagnostic, physical_dt=(end_ns - start_ns) / 1e9)
         self.finished = result["terminated"] or result["truncated"]
         return result
 

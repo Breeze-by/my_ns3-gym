@@ -1,0 +1,615 @@
+{
+  "schema": "mr3-proxy2d-finite-scalar-forensics-v1",
+  "scope": "Finite descriptive original trace scalars only; no candidate/tensor/actor/reward replay, new world or old outcome replacement",
+  "identity": {
+    "pid": 2292022,
+    "start_ticks": 424332870,
+    "parent": 2292018,
+    "group": 2292011,
+    "session": 2292011
+  },
+  "trace": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v22/run_v1/stages/group1/worker0/episode001_open_101/trace.jsonl.gz",
+  "trace_sha256": "b6c8d74e6ef55492fb643b9a2d45a14b766664cccdc320cfe7b78feed9d9ca1b",
+  "raw_attempts": 284,
+  "raw_returns": 284,
+  "raw_records": 570,
+  "all_tickets_exact_1_through_N": true,
+  "all_attempts_within_group_and_collection": true,
+  "all_physical_clock_deltas_exactly_1e9ns": true,
+  "all_reward_dt_exactly_one": true,
+  "strict_duration_failures": [
+    {
+      "event_sequence": 9,
+      "dt": 1.0,
+      "physical_dt": 0.9999999999999996,
+      "previous_source_stamp": 3.1,
+      "source_stamp": 4.1,
+      "integer_elapsed_ns": 1000000000
+    },
+    {
+      "event_sequence": 129,
+      "dt": 1.0,
+      "physical_dt": 0.9999999999999929,
+      "previous_source_stamp": 63.1,
+      "source_stamp": 64.1,
+      "integer_elapsed_ns": 1000000000
+    }
+  ],
+  "formal_auditor_verified_prefix": {
+    "attempt_timestamps": 4,
+    "return_timestamps": 3,
+    "actor_records": 4,
+    "full_rebuild_event_sequences": [
+      1,
+      3
+    ]
+  },
+  "formal_auditor_uniform_claim": 284,
+  "formal_claim_is_not_full_trace_validation": true,
+  "step_call_seconds": {
+    "min": 1.401125438,
+    "max": 10.70430861,
+    "median": 6.132431127,
+    "first16_mean": 3.5872232763125,
+    "last16_mean": 5.3692919585
+  },
+  "last_reward_diagnostics": {
+    "schema": "mr3-reward-v1",
+    "epoch": "proxy2d_w0_e1_db714d2d",
+    "sequence": 284,
+    "step_start": 283.1,
+    "effective_step_end": 284.1,
+    "delta_sim_time": 1.0,
+    "elapsed_sim_time": 284.0,
+    "remaining_sim_time": 16.0,
+    "reward": -0.003105085364740254,
+    "reward_terms": {
+      "coverage": 0.00022824796859307952,
+      "time": -0.0033333333333333335,
+      "collision": -0.0,
+      "switch": -0.0,
+      "invalid": -0.0,
+      "success": 0.0,
+      "failure": 0.0
+    },
+    "reward_weights": {
+      "coverage": 10.0,
+      "time": 1.0,
+      "collision": 20.0,
+      "switch": 0.01,
+      "invalid": 0.05,
+      "success": 10.0,
+      "failure": 20.0
+    },
+    "terminated": false,
+    "truncated": false,
+    "reason": null,
+    "new_correct_free_cells": 1,
+    "rewarded_correct_free_cells": 8500,
+    "initial_correct_free_cells": 30789,
+    "current_correct_free_cells": 38300,
+    "truth_free_cell_count": 43812,
+    "collision_events_delta": 0,
+    "goal_switches_delta": 0,
+    "rejected_actions_delta": 0,
+    "metrics": {
+      "truth_cell_count": 49776,
+      "truth_free_cell_count": 43812,
+      "truth_occupied_cell_count": 5964,
+      "known_truth_cell_count": 40976,
+      "correct_truth_cell_count": 39776,
+      "correct_free_cell_count": 38300,
+      "false_free_cell_count": 153,
+      "known_coverage_ratio": 0.8232079717132754,
+      "correct_coverage_ratio": 0.7990999678559949,
+      "correct_free_coverage_ratio": 0.8741897197114946,
+      "observed_accuracy": 0.970714564623194,
+      "occupied_iou": 0.21052631578947367,
+      "false_free_ratio": 0.025653923541247486,
+      "false_free_denominator": "truth_occupied_cell_count",
+      "map_quality_pass": false,
+      "robot_participation_pass": true,
+      "navigation_protocol_closed": false,
+      "proxy_contact_events": 0
+    },
+    "evaluation_scope": "isolated_2d_proxy_only",
+    "proxy_task_success": false,
+    "native_task_success": false,
+    "native_qualification": false,
+    "native_gates_unprovided": {
+      "native_slam": null,
+      "native_nav2": null,
+      "native_dds": null,
+      "native_18_stream_contact_monitoring": null,
+      "native_rigid_body_safety": null,
+      "native_process_reset_and_closure": null,
+      "native_95_task": null
+    }
+  },
+  "last_snapshot_robots": [
+    {
+      "name": "tb1",
+      "x": -1.6486662358130753,
+      "y": -0.576437735170627,
+      "yaw": -2.1158244759666656,
+      "v": 1.2326957455913168e-05,
+      "w": -0.6000049853357293,
+      "valid": true,
+      "fresh": true,
+      "epoch": "proxy2d_w0_e1_db714d2d",
+      "sequence": 14201,
+      "version": 14201,
+      "odom_source_stamp": 284.1,
+      "tf_source_stamp": 284.1,
+      "tf_validity_stamp": 284.1,
+      "tf_validity_lead_sec": 0.0,
+      "sin_yaw": -0.8551126974018638,
+      "cos_yaw": -0.5184421614241153,
+      "source_stamp": 284.1,
+      "received_stamp": 284.1,
+      "source_age_sec": 0.0,
+      "received_age_sec": 0.0,
+      "missing": false,
+      "navigation": {
+        "phase": "active",
+        "goal_id": "proxy2d_w0_e1_db714d2d:tb1:283",
+        "goal_x": -4.2749999999999995,
+        "goal_y": 1.825000000000001,
+        "commitment_until": 288.1,
+        "commitment_remaining_sec": 4.0,
+        "source_stamp": 282.9,
+        "received_stamp": 283.1,
+        "source_age_sec": 1.2000000000000455,
+        "received_age_sec": 1.0,
+        "missing": false,
+        "receipt_missing": false,
+        "source_metadata_missing": false,
+        "receipt_sequence": 133,
+        "progress_m": 11.786855475178543,
+        "accepted_goal_count": 45,
+        "last_failure": null,
+        "requested_at": 282.7,
+        "accepted_at": 283.1,
+        "created_at": 282.1,
+        "expires_at": 284.1,
+        "lease_until": 285.8,
+        "command_id": 283,
+        "observation_version": 283,
+        "stop_reason": null,
+        "last_terminal": "CANCELED",
+        "last_goal_id": "proxy2d_w0_e1_db714d2d:tb1:277",
+        "owned": true,
+        "cancel_requested": false,
+        "goal_age_sec": 1.400000000000034,
+        "acceptance_age_sec": 1.0,
+        "goal_distance_m": 3.5587262098691568
+      },
+      "history": [
+        {
+          "x": -1.568088987394928,
+          "y": -0.6865587852701152,
+          "source_stamp": 268.1
+        },
+        {
+          "x": -1.4846526206716073,
+          "y": -0.6005403135455616,
+          "source_stamp": 269.1
+        },
+        {
+          "x": -1.3851059771703325,
+          "y": -0.5395784418935562,
+          "source_stamp": 270.1
+        },
+        {
+          "x": -1.3851059771703325,
+          "y": -0.5395784418935562,
+          "source_stamp": 271.1
+        },
+        {
+          "x": -1.385115414518947,
+          "y": -0.539586082966387,
+          "source_stamp": 272.1
+        },
+        {
+          "x": -1.3851188889666013,
+          "y": -0.5395977181611165,
+          "source_stamp": 273.1
+        },
+        {
+          "x": -1.41082756873603,
+          "y": -0.48680799521983,
+          "source_stamp": 274.1
+        },
+        {
+          "x": -1.487987038112073,
+          "y": -0.395987750510446,
+          "source_stamp": 275.1
+        },
+        {
+          "x": -1.5715902894049734,
+          "y": -0.3101138214200073,
+          "source_stamp": 276.1
+        },
+        {
+          "x": -1.5715902894049734,
+          "y": -0.3101138214200073,
+          "source_stamp": 277.1
+        },
+        {
+          "x": -1.5715795441899174,
+          "y": -0.31011947738113704,
+          "source_stamp": 278.1
+        },
+        {
+          "x": -1.5715674821923356,
+          "y": -0.31011807818235465,
+          "source_stamp": 279.1
+        },
+        {
+          "x": -1.6028009616878751,
+          "y": -0.34826610955291337,
+          "source_stamp": 280.1
+        },
+        {
+          "x": -1.6439992718047938,
+          "y": -0.4583502106547286,
+          "source_stamp": 281.1
+        },
+        {
+          "x": -1.648663290178409,
+          "y": -0.5764259549847491,
+          "source_stamp": 282.1
+        },
+        {
+          "x": -1.648663290178409,
+          "y": -0.5764259549847491,
+          "source_stamp": 283.1
+        }
+      ],
+      "activity": {
+        "schema": "mr3-received-activity-v1",
+        "epoch": "proxy2d_w0_e1_db714d2d",
+        "started_at": 0.1,
+        "state_sequence": 14201,
+        "estimated_path_m": 11.786855475178543,
+        "path_observation_complete": true,
+        "sample_count": 14201,
+        "last_odom_source_stamp": 284.1
+      },
+      "path_map_available": true,
+      "path_map_source": "delivered_navigation_map"
+    },
+    {
+      "name": "tb2",
+      "x": -0.7629647124636733,
+      "y": 0.5946426539808234,
+      "yaw": 2.3611975083479977,
+      "v": 0.11977464794962261,
+      "w": 0.12257036928033095,
+      "valid": true,
+      "fresh": true,
+      "epoch": "proxy2d_w0_e1_db714d2d",
+      "sequence": 14201,
+      "version": 14201,
+      "odom_source_stamp": 284.1,
+      "tf_source_stamp": 284.1,
+      "tf_validity_stamp": 284.1,
+      "tf_validity_lead_sec": 0.0,
+      "sin_yaw": 0.7035602783900335,
+      "cos_yaw": -0.7106355850024247,
+      "source_stamp": 284.1,
+      "received_stamp": 284.1,
+      "source_age_sec": 0.0,
+      "received_age_sec": 0.0,
+      "missing": false,
+      "navigation": {
+        "phase": "active",
+        "goal_id": "proxy2d_w0_e1_db714d2d:tb2:279",
+        "goal_x": -4.125,
+        "goal_y": 4.425000000000001,
+        "commitment_until": 283.5,
+        "commitment_remaining_sec": 0.0,
+        "source_stamp": 278.3,
+        "received_stamp": 278.5,
+        "source_age_sec": 5.800000000000011,
+        "received_age_sec": 5.600000000000023,
+        "missing": false,
+        "receipt_missing": false,
+        "source_metadata_missing": false,
+        "receipt_sequence": 109,
+        "progress_m": 12.542455520229,
+        "accepted_goal_count": 37,
+        "last_failure": null,
+        "requested_at": 278.1,
+        "accepted_at": 278.5,
+        "created_at": 278.1,
+        "expires_at": 280.1,
+        "lease_until": 285.6,
+        "command_id": 279,
+        "observation_version": 279,
+        "stop_reason": null,
+        "last_terminal": "CANCELED",
+        "last_goal_id": "proxy2d_w0_e1_db714d2d:tb2:271",
+        "owned": true,
+        "cancel_requested": false,
+        "goal_age_sec": 6.0,
+        "acceptance_age_sec": 5.600000000000023,
+        "goal_distance_m": 5.096559493701859
+      },
+      "history": [
+        {
+          "x": -0.43590392427893393,
+          "y": 0.22873539667203494,
+          "source_stamp": 268.1
+        },
+        {
+          "x": -0.5205870475839742,
+          "y": 0.14391188903000246,
+          "source_stamp": 269.1
+        },
+        {
+          "x": -0.6164666262261536,
+          "y": 0.07448054623860757,
+          "source_stamp": 270.1
+        },
+        {
+          "x": -0.6164666262261536,
+          "y": 0.07448054623860757,
+          "source_stamp": 271.1
+        },
+        {
+          "x": -0.6164660633040653,
+          "y": 0.07448065713645549,
+          "source_stamp": 272.1
+        },
+        {
+          "x": -0.616465536086545,
+          "y": 0.07448043081523077,
+          "source_stamp": 273.1
+        },
+        {
+          "x": -0.6164652287452174,
+          "y": 0.07447994633518085,
+          "source_stamp": 274.1
+        },
+        {
+          "x": -0.615765751622657,
+          "y": 0.0765303326284302,
+          "source_stamp": 275.1
+        },
+        {
+          "x": -0.552480819164959,
+          "y": 0.1734355874834144,
+          "source_stamp": 276.1
+        },
+        {
+          "x": -0.4700970070604307,
+          "y": 0.26028941988050164,
+          "source_stamp": 277.1
+        },
+        {
+          "x": -0.4700970070604307,
+          "y": 0.26028941988050164,
+          "source_stamp": 278.1
+        },
+        {
+          "x": -0.4700968109675261,
+          "y": 0.2602897068631148,
+          "source_stamp": 279.1
+        },
+        {
+          "x": -0.47009674261111645,
+          "y": 0.2602902765182839,
+          "source_stamp": 280.1
+        },
+        {
+          "x": -0.513986391241439,
+          "y": 0.33566536419053916,
+          "source_stamp": 281.1
+        },
+        {
+          "x": -0.5944145754874548,
+          "y": 0.4242362717379027,
+          "source_stamp": 282.1
+        },
+        {
+          "x": -0.6784645304823077,
+          "y": 0.5096418903514333,
+          "source_stamp": 283.1
+        }
+      ],
+      "activity": {
+        "schema": "mr3-received-activity-v1",
+        "epoch": "proxy2d_w0_e1_db714d2d",
+        "started_at": 0.1,
+        "state_sequence": 14201,
+        "estimated_path_m": 12.542455520229,
+        "path_observation_complete": true,
+        "sample_count": 14201,
+        "last_odom_source_stamp": 284.1
+      },
+      "path_map_available": true,
+      "path_map_source": "delivered_navigation_map"
+    },
+    {
+      "name": "tb3",
+      "x": 2.514512404042078,
+      "y": -1.008084341026207,
+      "yaw": 0.7536988389176542,
+      "v": 0.11996181224762387,
+      "w": -0.04900557026624248,
+      "valid": true,
+      "fresh": true,
+      "epoch": "proxy2d_w0_e1_db714d2d",
+      "sequence": 14201,
+      "version": 14201,
+      "odom_source_stamp": 284.1,
+      "tf_source_stamp": 284.1,
+      "tf_validity_stamp": 284.1,
+      "tf_validity_lead_sec": 0.0,
+      "sin_yaw": 0.684340490231785,
+      "cos_yaw": 0.7291625973877982,
+      "source_stamp": 284.1,
+      "received_stamp": 284.1,
+      "source_age_sec": 0.0,
+      "received_age_sec": 0.0,
+      "missing": false,
+      "navigation": {
+        "phase": "active",
+        "goal_id": "proxy2d_w0_e1_db714d2d:tb3:280",
+        "goal_x": 4.075000000000001,
+        "goal_y": 4.225000000000001,
+        "commitment_until": 284.5,
+        "commitment_remaining_sec": 0.4,
+        "source_stamp": 279.3,
+        "received_stamp": 279.5,
+        "source_age_sec": 4.800000000000011,
+        "received_age_sec": 4.600000000000023,
+        "missing": false,
+        "receipt_missing": false,
+        "source_metadata_missing": false,
+        "receipt_sequence": 91,
+        "progress_m": 8.661837707952284,
+        "accepted_goal_count": 31,
+        "last_failure": null,
+        "requested_at": 279.1,
+        "accepted_at": 279.5,
+        "created_at": 279.1,
+        "expires_at": 281.1,
+        "lease_until": 285.6,
+        "command_id": 280,
+        "observation_version": 280,
+        "stop_reason": null,
+        "last_terminal": "CANCELED",
+        "last_goal_id": "proxy2d_w0_e1_db714d2d:tb3:271",
+        "owned": true,
+        "cancel_requested": false,
+        "goal_age_sec": 5.0,
+        "acceptance_age_sec": 4.600000000000023,
+        "goal_distance_m": 5.460796027817945
+      },
+      "history": [
+        {
+          "x": 2.4391268204979224,
+          "y": -0.32858708040598533,
+          "source_stamp": 268.1
+        },
+        {
+          "x": 2.439122863318261,
+          "y": -0.32857220008361193,
+          "source_stamp": 269.1
+        },
+        {
+          "x": 2.4070809896519028,
+          "y": -0.4181426123207511,
+          "source_stamp": 270.1
+        },
+        {
+          "x": 2.4070809896519028,
+          "y": -0.4181426123207511,
+          "source_stamp": 271.1
+        },
+        {
+          "x": 2.3827507249414808,
+          "y": -0.5085495582656011,
+          "source_stamp": 272.1
+        },
+        {
+          "x": 2.374821989367798,
+          "y": -0.6280039786277285,
+          "source_stamp": 273.1
+        },
+        {
+          "x": 2.373855146768477,
+          "y": -0.7479868714349857,
+          "source_stamp": 274.1
+        },
+        {
+          "x": 2.374181026227857,
+          "y": -0.8679856028709273,
+          "source_stamp": 275.1
+        },
+        {
+          "x": 2.3745498504591747,
+          "y": -0.9879843187148694,
+          "source_stamp": 276.1
+        },
+        {
+          "x": 2.374781275723053,
+          "y": -1.107983370306844,
+          "source_stamp": 277.1
+        },
+        {
+          "x": 2.374781275723053,
+          "y": -1.107983370306844,
+          "source_stamp": 278.1
+        },
+        {
+          "x": 2.374781275723053,
+          "y": -1.107983370306844,
+          "source_stamp": 279.1
+        },
+        {
+          "x": 2.3747829585888636,
+          "y": -1.1079925452363053,
+          "source_stamp": 280.1
+        },
+        {
+          "x": 2.3747924160931033,
+          "y": -1.1080046959102938,
+          "source_stamp": 281.1
+        },
+        {
+          "x": 2.3748070824792737,
+          "y": -1.108009384234249,
+          "source_stamp": 282.1
+        },
+        {
+          "x": 2.423387297488804,
+          "y": -1.0847190847395198,
+          "source_stamp": 283.1
+        }
+      ],
+      "activity": {
+        "schema": "mr3-received-activity-v1",
+        "epoch": "proxy2d_w0_e1_db714d2d",
+        "started_at": 0.1,
+        "state_sequence": 14201,
+        "estimated_path_m": 8.661837707952284,
+        "path_observation_complete": true,
+        "sample_count": 14201,
+        "last_odom_source_stamp": 284.1
+      },
+      "path_map_available": true,
+      "path_map_source": "delivered_navigation_map"
+    }
+  ],
+  "group_capacity_reported": [
+    {
+      "workers": 1,
+      "started_ns": 4241443892760756,
+      "ended_ns": 4243204035297829,
+      "step_attempts": 284,
+      "step_returns": 284,
+      "step_errors": 0,
+      "wall_seconds_including_reset_and_close": 1760.142537073,
+      "returned_steps_per_wall_second": 0.16135056906940792,
+      "complete_six_cells_per_worker": false
+    },
+    {
+      "workers": 4,
+      "started_ns": 4243204035533721,
+      "ended_ns": 4243204035566796,
+      "step_attempts": 0,
+      "step_returns": 0,
+      "step_errors": 0,
+      "wall_seconds_including_reset_and_close": 3.3075e-05,
+      "returned_steps_per_wall_second": 0.0,
+      "complete_six_cells_per_worker": false
+    }
+  ],
+  "run_error": [],
+  "old_fail_unchanged": true,
+  "qualification": false,
+  "training_eligible": false
+}
