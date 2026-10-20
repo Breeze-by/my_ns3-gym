@@ -1,0 +1,478 @@
+{
+  "schema": "mr3-reach-ack-order-forensics-v1",
+  "freeze": "c38e3e8ddc034bc0bf0b0cc4578cb6600ae51d90",
+  "current_head_observed": "c38e3e8ddc034bc0bf0b0cc4578cb6600ae51d90",
+  "native_root_relative_to_workspace": "ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v21_diagnostic/uniform_two_episodes",
+  "episode": "worker0/episode001_open_101",
+  "epoch": "uniform_two_episodes_w0_e1_3c77c432",
+  "robot": "tb3",
+  "clock_ns": 68980000000,
+  "cmd_seq": 3059,
+  "decision_sequence": 3231,
+  "physics_request_id": "q1547",
+  "qualification": false,
+  "training_eligible": false,
+  "formal_reaudit": false,
+  "original_failure_preserved": true,
+  "scope": "Read-only exact extraction of seven existing raw records and their source inventory references. No native execution, formal consumer replay, source edit, field synthesis, threshold change or PASS reassignment.",
+  "reader_gate": {
+    "source_relative_to_workspace": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_runtime.py",
+    "source_sha256": "4f6505f686945927641431a7cc64ee42e1fa5219b9d5f5144c82118fb96d88fa",
+    "current_source_equals_git_freeze": true,
+    "line_numbers_1_based": [
+      1030,
+      1031,
+      1032,
+      1033
+    ],
+    "original_source_lines": [
+      "            actual = streams[name][\"storage\"].get(ack[\"cmd_seq\"])",
+      "            require(actual is not None and same(actual[1],ack)",
+      "                    and motion[actual[0]-1][\"wall_monotonic_ns\"] <= permitted[\"wall_monotonic_ns\"],",
+      "                    \"worker substituted an unreceived storage ACK\")"
+    ]
+  },
+  "inventory_reference": {
+    "path_relative_to_workspace": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261020_mr3_p2a_v21/native_inventory_v1.json",
+    "sha256": "637de80adb7e991def2128231e7f5c0d692a0c56d30c3ec4bc8da29d7e5d50b4",
+    "schema": "mr3-closed-byte-inventory-v1"
+  },
+  "original_failure_reference": {
+    "path": "/tmp/mr3_p2a_v21_diagnostic/cadence_result.json",
+    "sha256": "1a45f0c3c7d251542e6a650b990e8f2ba51fd57e2970c6e2219590e2f898eeb4",
+    "passed": false,
+    "status": "FAIL",
+    "errors": [
+      {
+        "episode": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v21_diagnostic/uniform_two_episodes/worker0/episode001_open_101",
+        "error": "ValueError('worker substituted an unreceived storage ACK')"
+      }
+    ]
+  },
+  "sources": [
+    {
+      "source_relative_to_workspace": "ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v21_diagnostic/uniform_two_episodes/worker0/episode001_open_101/drive_phase_worker.jsonl",
+      "source_relative_to_native_root": "worker0/episode001_open_101/drive_phase_worker.jsonl",
+      "full_file_sha256": "34c19966800f88be6c05941df5a92f8cecb8447eff427dd0babad760221667cf",
+      "full_file_bytes": 11464360,
+      "full_file_sha256_basis": "existing sealed native_inventory_v1.json; independently equal to base audit input_proof; large source file not rehashed by this extraction",
+      "inventory_json_key": [
+        "files",
+        "worker0/episode001_open_101/drive_phase_worker.jsonl"
+      ],
+      "stat_before_after_equals_inventory": true,
+      "stat": {
+        "st_dev": 2051,
+        "st_ino": 79064642,
+        "st_size": 11464360,
+        "st_mtime_ns": 1792484027912055998,
+        "st_ctime_ns": 1792484027912055998
+      },
+      "records": [
+        {
+          "line_number_1_based": 14009,
+          "original_line_sha256_including_line_ending": "9c5702867bf45d7a0967cf0094648bcc98d7e3f9375af39045854f5f7fb02b7b",
+          "original_line_bytes": 452,
+          "line_ending": "LF",
+          "json": {
+            "ack": {
+              "angular_z": 0.3,
+              "clock_ns": 68980000000,
+              "cmd_seq": 3059,
+              "decision_sequence": 3231,
+              "epoch": "uniform_two_episodes_w0_e1_3c77c432",
+              "linear_x": 0.0,
+              "robot": "tb3",
+              "schema": "mr3-drive-target-consumed-v1",
+              "source_clock_ns": 68980000000
+            },
+            "epoch": "uniform_two_episodes_w0_e1_3c77c432",
+            "kind": "ack_received",
+            "topic_robot": "tb3",
+            "wall_monotonic_ns": 4229387098966908,
+            "worker_clock_ns": 68980000000,
+            "worker_physical_ns": 68980000000
+          }
+        },
+        {
+          "line_number_1_based": 14010,
+          "original_line_sha256_including_line_ending": "cef65de4eedd4319749e781c7f2050ed6e5848317cc1b590f5c24da6932c054d",
+          "original_line_bytes": 1902,
+          "line_ending": "LF",
+          "json": {
+            "epoch": "uniform_two_episodes_w0_e1_3c77c432",
+            "expected_motion": {
+              "clock_ns": 68980000000,
+              "completion_scope": "publication_and_local_topic_receipt",
+              "decision_sequences": {
+                "tb1": 3231,
+                "tb2": 3231,
+                "tb3": 3231
+              },
+              "epoch": "uniform_two_episodes_w0_e1_3c77c432",
+              "intent_refs": {
+                "tb1": {
+                  "intent_sequence": 3232,
+                  "payload_sha256": "68fced5ca7e367e91a9d9a701bfb89f50834a857223e7c23686b4b98a68a02a9"
+                },
+                "tb2": {
+                  "intent_sequence": 3232,
+                  "payload_sha256": "ebb26ca8d3bc3d6367027cb417776ee044b6447513a5956106e8f391a6164938"
+                },
+                "tb3": {
+                  "intent_sequence": 3232,
+                  "payload_sha256": "5ecc4341c2ec0f3053e1499e5777ef2e1f2e96450698272c4e5a6c525c2a0107"
+                }
+              },
+              "outputs": {
+                "tb1": {
+                  "angular_z": 0.015789473684210478,
+                  "linear_x": 0.0
+                },
+                "tb2": {
+                  "angular_z": -0.3,
+                  "linear_x": 0.0
+                },
+                "tb3": {
+                  "angular_z": 0.3,
+                  "linear_x": 0.0
+                }
+              },
+              "ready": true,
+              "safety_contract": "mr3-reach-v1",
+              "safety_table_sha256": "731f4583dde2cc1c744aefef89f163a76eac4b9c8fcdf4feff0161966ce48f92",
+              "schema": "mr3-motion-safety-status-v2"
+            },
+            "kind": "ack_consumed",
+            "receipts": {
+              "tb1": {
+                "angular_z": 0.015789473684210478,
+                "clock_ns": 68980000000,
+                "cmd_seq": 3222,
+                "decision_sequence": 3231,
+                "epoch": "uniform_two_episodes_w0_e1_3c77c432",
+                "linear_x": 0.0,
+                "robot": "tb1",
+                "schema": "mr3-drive-target-consumed-v1",
+                "source_clock_ns": 68980000000
+              },
+              "tb2": {
+                "angular_z": -0.3,
+                "clock_ns": 68980000000,
+                "cmd_seq": 3113,
+                "decision_sequence": 3231,
+                "epoch": "uniform_two_episodes_w0_e1_3c77c432",
+                "linear_x": 0.0,
+                "robot": "tb2",
+                "schema": "mr3-drive-target-consumed-v1",
+                "source_clock_ns": 68980000000
+              },
+              "tb3": {
+                "angular_z": 0.3,
+                "clock_ns": 68980000000,
+                "cmd_seq": 3059,
+                "decision_sequence": 3231,
+                "epoch": "uniform_two_episodes_w0_e1_3c77c432",
+                "linear_x": 0.0,
+                "robot": "tb3",
+                "schema": "mr3-drive-target-consumed-v1",
+                "source_clock_ns": 68980000000
+              }
+            },
+            "wall_monotonic_ns": 4229387124514451,
+            "worker_clock_ns": 68980000000,
+            "worker_physical_ns": 68980000000
+          }
+        },
+        {
+          "line_number_1_based": 14011,
+          "original_line_sha256_including_line_ending": "12b6c4b2404f95750393399f2a11f14d06741c1516fbc518de7da3de04bf8e62",
+          "original_line_bytes": 2044,
+          "line_ending": "LF",
+          "json": {
+            "control_kind": "normal",
+            "control_request_id": "boundary68980000000",
+            "epoch": "uniform_two_episodes_w0_e1_3c77c432",
+            "expected_motion": {
+              "clock_ns": 68980000000,
+              "completion_scope": "publication_and_local_topic_receipt",
+              "decision_sequences": {
+                "tb1": 3231,
+                "tb2": 3231,
+                "tb3": 3231
+              },
+              "epoch": "uniform_two_episodes_w0_e1_3c77c432",
+              "intent_refs": {
+                "tb1": {
+                  "intent_sequence": 3232,
+                  "payload_sha256": "68fced5ca7e367e91a9d9a701bfb89f50834a857223e7c23686b4b98a68a02a9"
+                },
+                "tb2": {
+                  "intent_sequence": 3232,
+                  "payload_sha256": "ebb26ca8d3bc3d6367027cb417776ee044b6447513a5956106e8f391a6164938"
+                },
+                "tb3": {
+                  "intent_sequence": 3232,
+                  "payload_sha256": "5ecc4341c2ec0f3053e1499e5777ef2e1f2e96450698272c4e5a6c525c2a0107"
+                }
+              },
+              "outputs": {
+                "tb1": {
+                  "angular_z": 0.015789473684210478,
+                  "linear_x": 0.0
+                },
+                "tb2": {
+                  "angular_z": -0.3,
+                  "linear_x": 0.0
+                },
+                "tb3": {
+                  "angular_z": 0.3,
+                  "linear_x": 0.0
+                }
+              },
+              "ready": true,
+              "safety_contract": "mr3-reach-v1",
+              "safety_table_sha256": "731f4583dde2cc1c744aefef89f163a76eac4b9c8fcdf4feff0161966ce48f92",
+              "schema": "mr3-motion-safety-status-v2"
+            },
+            "kind": "advance_permitted",
+            "receipts": {
+              "tb1": {
+                "angular_z": 0.015789473684210478,
+                "clock_ns": 68980000000,
+                "cmd_seq": 3222,
+                "decision_sequence": 3231,
+                "epoch": "uniform_two_episodes_w0_e1_3c77c432",
+                "linear_x": 0.0,
+                "robot": "tb1",
+                "schema": "mr3-drive-target-consumed-v1",
+                "source_clock_ns": 68980000000
+              },
+              "tb2": {
+                "angular_z": -0.3,
+                "clock_ns": 68980000000,
+                "cmd_seq": 3113,
+                "decision_sequence": 3231,
+                "epoch": "uniform_two_episodes_w0_e1_3c77c432",
+                "linear_x": 0.0,
+                "robot": "tb2",
+                "schema": "mr3-drive-target-consumed-v1",
+                "source_clock_ns": 68980000000
+              },
+              "tb3": {
+                "angular_z": 0.3,
+                "clock_ns": 68980000000,
+                "cmd_seq": 3059,
+                "decision_sequence": 3231,
+                "epoch": "uniform_two_episodes_w0_e1_3c77c432",
+                "linear_x": 0.0,
+                "robot": "tb3",
+                "schema": "mr3-drive-target-consumed-v1",
+                "source_clock_ns": 68980000000
+              }
+            },
+            "request_id": "q1547",
+            "start_time_ns": 68980000000,
+            "steps": 20,
+            "wall_monotonic_ns": 4229387130022304,
+            "worker_clock_ns": 68980000000,
+            "worker_physical_ns": 68980000000
+          }
+        }
+      ]
+    },
+    {
+      "source_relative_to_workspace": "ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v21_diagnostic/uniform_two_episodes/worker0/episode001_open_101/motion_safety.jsonl",
+      "source_relative_to_native_root": "worker0/episode001_open_101/motion_safety.jsonl",
+      "full_file_sha256": "ceb4e0ca699431223f0f37fbed45c8c560b1d06c7c5234151d81441f9d5e3932",
+      "full_file_bytes": 466970132,
+      "full_file_sha256_basis": "existing sealed native_inventory_v1.json; independently equal to base audit input_proof; large source file not rehashed by this extraction",
+      "inventory_json_key": [
+        "files",
+        "worker0/episode001_open_101/motion_safety.jsonl"
+      ],
+      "stat_before_after_equals_inventory": true,
+      "stat": {
+        "st_dev": 2051,
+        "st_ino": 79064653,
+        "st_size": 466970132,
+        "st_mtime_ns": 1792484040782779964,
+        "st_ctime_ns": 1792484040782779964
+      },
+      "records": [
+        {
+          "line_number_1_based": 215001,
+          "original_line_sha256_including_line_ending": "5c38fcd2ad3045ed404c6664886a2afe22ccf8103452ce2cbb21d85269f41c07",
+          "original_line_bytes": 1060,
+          "line_ending": "LF",
+          "json": {
+            "schema": "mr3-motion-safety-v1",
+            "epoch": "uniform_two_episodes_w0_e1_3c77c432",
+            "record_sequence": 215001,
+            "kind": "reach_driver_ingress",
+            "sim_time_sec": 68.98,
+            "wall_monotonic_ns": 4229387131098333,
+            "payload": {
+              "robot": "tb3",
+              "kind": "storage",
+              "message": {
+                "angular_z": 0.3,
+                "clock_ns": 68980000000,
+                "cmd_seq": 3059,
+                "decision_sequence": 3231,
+                "epoch": "uniform_two_episodes_w0_e1_3c77c432",
+                "linear_x": 0.0,
+                "robot": "tb3",
+                "schema": "mr3-drive-target-consumed-v1",
+                "source_clock_ns": 68980000000
+              },
+              "raw_json": "{\"angular_z\":0.3,\"clock_ns\":68980000000,\"cmd_seq\":3059,\"decision_sequence\":3231,\"epoch\":\"uniform_two_episodes_w0_e1_3c77c432\",\"linear_x\":0.0,\"robot\":\"tb3\",\"schema\":\"mr3-drive-target-consumed-v1\",\"source_clock_ns\":68980000000}",
+              "publisher_identity": {
+                "scope": "graph_at_callback",
+                "packet_publisher_gid_available": false,
+                "topic": "/tb3/mr3_drive/status",
+                "valid": true,
+                "endpoints": [
+                  {
+                    "node_name": "turtlebot3_diff_drive",
+                    "node_namespace": "/tb3",
+                    "topic_type": "std_msgs/msg/String",
+                    "endpoint_gid": "010f3cc009ea35b900000000000239030000000000000000"
+                  }
+                ],
+                "error": null
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "source_relative_to_workspace": "ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v21_diagnostic/uniform_two_episodes/worker0/episode001_open_101/drive_tb3.jsonl",
+      "source_relative_to_native_root": "worker0/episode001_open_101/drive_tb3.jsonl",
+      "full_file_sha256": "0a519f5161f6ca5f0fb7c6aac96b270523e55eb4987a6e3fb301e5bf407e8a42",
+      "full_file_bytes": 3712963,
+      "full_file_sha256_basis": "existing sealed native_inventory_v1.json; independently equal to base audit input_proof; large source file not rehashed by this extraction",
+      "inventory_json_key": [
+        "files",
+        "worker0/episode001_open_101/drive_tb3.jsonl"
+      ],
+      "stat_before_after_equals_inventory": true,
+      "stat": {
+        "st_dev": 2051,
+        "st_ino": 79064664,
+        "st_size": 3712963,
+        "st_mtime_ns": 1792484027891054820,
+        "st_ctime_ns": 1792484027891054820
+      },
+      "records": [
+        {
+          "line_number_1_based": 8044,
+          "original_line_sha256_including_line_ending": "1ab64c99d028b1b1775028d2f925732e39dd6479054d55b3b87aeb35c0547808",
+          "original_line_bytes": 280,
+          "line_ending": "LF",
+          "json": {
+            "cmd_seq": 3059,
+            "desired_v": 0.0,
+            "desired_w": 0.3,
+            "epoch": "uniform_two_episodes_w0_e1_3c77c432",
+            "kind": "command_received",
+            "record_sequence": 8044,
+            "robot": "tb3",
+            "schema": "mr3-drive-actuation-v2",
+            "sim_time_ns": 68980000000,
+            "target_clock_ns": 68980000000,
+            "target_decision_sequence": 3231
+          }
+        },
+        {
+          "line_number_1_based": 8045,
+          "original_line_sha256_including_line_ending": "46b2da38ec24fb138416338516d658efa5604301c320cac19bf3ec3a3a1ebb82",
+          "original_line_bytes": 561,
+          "line_ending": "LF",
+          "json": {
+            "cmd_seq": 3059,
+            "desired_v": 0.0,
+            "desired_w": 0.3,
+            "epoch": "uniform_two_episodes_w0_e1_3c77c432",
+            "kind": "status_publish",
+            "record_sequence": 8045,
+            "robot": "tb3",
+            "schema": "mr3-drive-actuation-v2",
+            "scope": "target_storage_and_status_publication",
+            "sim_time_ns": 68980000000,
+            "status": {
+              "angular_z": 0.3,
+              "clock_ns": 68980000000,
+              "cmd_seq": 3059,
+              "decision_sequence": 3231,
+              "epoch": "uniform_two_episodes_w0_e1_3c77c432",
+              "linear_x": 0.0,
+              "robot": "tb3",
+              "schema": "mr3-drive-target-consumed-v1",
+              "source_clock_ns": 68980000000
+            },
+            "target_clock_ns": 68980000000,
+            "target_decision_sequence": 3231
+          }
+        }
+      ]
+    },
+    {
+      "source_relative_to_workspace": "ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v21_diagnostic/uniform_two_episodes/worker0/episode001_open_101/physics.jsonl",
+      "source_relative_to_native_root": "worker0/episode001_open_101/physics.jsonl",
+      "full_file_sha256": "785b57f3b43ed2e851e57577ba0dc60c0aae2e6775b5a759e7462cb3fed74961",
+      "full_file_bytes": 393028,
+      "full_file_sha256_basis": "existing sealed native_inventory_v1.json; independently equal to base audit input_proof; large source file not rehashed by this extraction",
+      "inventory_json_key": [
+        "files",
+        "worker0/episode001_open_101/physics.jsonl"
+      ],
+      "stat_before_after_equals_inventory": true,
+      "stat": {
+        "st_dev": 2051,
+        "st_ino": 79064639,
+        "st_size": 393028,
+        "st_mtime_ns": 1792484027857052914,
+        "st_ctime_ns": 1792484027857052914
+      },
+      "records": [
+        {
+          "line_number_1_based": 1547,
+          "original_line_sha256_including_line_ending": "ec782fc6a4b8e2bcb221d0f41494cb246bdeaee5381e72e203c38e992905b368",
+          "original_line_bytes": 243,
+          "line_ending": "LF",
+          "json": {
+            "end_iterations": 69000,
+            "end_time_ns": 69000000000,
+            "epoch": "uniform_two_episodes_w0_e1_3c77c432",
+            "ok": true,
+            "paused": true,
+            "request_id": "q1547",
+            "start_iterations": 68980,
+            "start_time_ns": 68980000000,
+            "step_ns": 1000000,
+            "steps": 20
+          }
+        }
+      ]
+    }
+  ],
+  "direct_checks": {
+    "worker_received_consumed_permitted_guard_native_status_ACK_objects_identical": true,
+    "guard_raw_json_decodes_to_identical_ACK": true,
+    "same_epoch_robot_clock_command_and_decision_sequences": true,
+    "guard_record_sequence_equals_1_based_line_number": true,
+    "native_command_matches_ACK_target": true
+  },
+  "wall_order": {
+    "worker_ack_received_ns": 4229387098966908,
+    "worker_ack_consumed_ns": 4229387124514451,
+    "worker_advance_permitted_ns": 4229387130022304,
+    "guard_storage_ingress_ns": 4229387131098333,
+    "guard_after_permission_ns": 1076029,
+    "worker_receive_before_permission_ns": 31055396,
+    "worker_consume_before_permission_ns": 5507853
+  },
+  "conclusion": "The existing Runtime gate fails on recorded cross-subscriber callback wall ordering: the worker received and consumed the identical native ACK before permission, while the guard recorded its own ingress 1076029 ns after permission. The cited records show no absent ACK, mixed epoch or off-by-one index. This does not establish that the declared gate is wrong and does not change the original FAIL."
+}

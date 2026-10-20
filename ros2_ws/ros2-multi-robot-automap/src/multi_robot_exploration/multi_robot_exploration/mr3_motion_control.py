@@ -16,6 +16,7 @@ from multi_robot_exploration.mr3_control_phase import (
     validate_safety_fields, valid_motion_status, receipt_fields,
 )
 from multi_robot_exploration.mr3_safety_intent import parse_json, payload_sha256, validate_safety
+from multi_robot_exploration.mr3_drive_phase import DrivePhaseClient, ROBOTS
 
 
 class MotionControlPhase:
@@ -215,6 +216,20 @@ class MotionControlPhase:
         finally:
             self.polling = False
 
+    def storage_ready(self, status):
+        """Use only storage ACKs actually received by this guard's trackers.
+
+        The worker has a separate DDS subscription. Its receipt cannot close
+        this local prefix, even while both subscriptions refer to one driver.
+        Reuse the exact target matcher without consuming tracker history.
+        """
+        storage = DrivePhaseClient(self.node.epoch)
+        for name in ROBOTS:
+            receipt = self.node.reach[name].storage.latest.get(name)
+            if receipt is not None:
+                storage.receive(receipt)
+        return storage.matching(status) is not None
+
     def poll_once(self):
         pending = self.pending
         if pending is None:
@@ -271,6 +286,8 @@ class MotionControlPhase:
                     canonical(output) != canonical({"linear_x": 0., "angular_z": 0.})
                     for output in status["outputs"].values()):
                 raise ValueError("takeover requires actual pre-release zero outputs")
+            if self.version == 2 and not self.storage_ready(status):
+                return
             self.finish(status=status)
         except (ValueError, KeyError, TypeError) as error:
             self.node.halted = self.node.halted or "motion_control_phase_failed"

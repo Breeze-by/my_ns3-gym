@@ -1,0 +1,91 @@
+{
+  "kind": "uniform_legal_engineering_diagnostic_not_rl",
+  "workers": 1,
+  "safety_contract": "mr3-reach-v1",
+  "robots_per_worker": 3,
+  "schedule": [
+    [
+      "open",
+      101
+    ],
+    [
+      "open",
+      101
+    ]
+  ],
+  "steps_per_episode": 32,
+  "command": [
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/benchmark.py",
+    "--workers",
+    "1",
+    "--schedule",
+    "open:101,open:101",
+    "--steps",
+    "32",
+    "--run-id",
+    "uniform_two_episodes",
+    "--output-root",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v21_diagnostic",
+    "--safety-contract",
+    "mr3-reach-v1",
+    "--diagnostic-uniform-seed",
+    "41",
+    "--base-domain",
+    "224",
+    "--base-port",
+    "14901",
+    "--work-wall-seconds",
+    "3200",
+    "--close-reserve-seconds",
+    "180"
+  ],
+  "python": "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+  "freeze": "c38e3e8ddc034bc0bf0b0cc4578cb6600ae51d90",
+  "base_domain": 224,
+  "base_port": 14901,
+  "fault_probe": false,
+  "deadline_probe": false,
+  "terminal_probe": false,
+  "preparation_motion_probe": false,
+  "preparation_probe_version": null,
+  "preparation_parameter_review": false,
+  "preparation_parameter_profile": "original",
+  "preparation_parameter_review_source": null,
+  "resource_scope": "host counters include unrelated activity; GPU driver reports",
+  "num_logical_cpus": 80,
+  "cpu_affinity_count": 80,
+  "training_eligible": false,
+  "scientific_readers_applied": false,
+  "scientific_qualification": "PENDING_NEW_FREEZE_INDEPENDENT_AUDITS",
+  "qualification_scope": "engineering_collection_only_no_legacy_qualification_credit",
+  "diagnostic_uniform_seed": 41,
+  "diagnostic_uniform_worker_seed_rule": "seed + 1000003 * worker_id",
+  "diagnostic_action_source": "random.Random.choice on the actual legal joint mask",
+  "policy_calls": 0,
+  "optimizer_steps": 0,
+  "gpu_calls": 0,
+  "policy_reliability_credit": false,
+  "work_wall_budget": {
+    "total_allocation_seconds": 3200.0,
+    "close_reserve_seconds": 180.0,
+    "started_wall_monotonic_ns": 4228399340119227,
+    "allocation_deadline_monotonic_ns": 4231599340119227,
+    "work_deadline_monotonic_ns": 4231419340119227,
+    "scope": "cooperative admission; complete in-flight RPC then normal close; no hard kill",
+    "rpc_admission_upper_bounds_seconds": {
+      "reset": 420.0,
+      "step": 90.0
+    }
+  },
+  "passed": true,
+  "wall_sec_including_all_attempts": 2073.377301622182,
+  "valid_transitions": 64,
+  "effective_transition_per_wall_sec": 0.0308675126084998,
+  "diagnostic_abort": {
+    "requested": false,
+    "first_failure": null,
+    "scope": "first observed failing RPC/worker; other in-flight RPCs finish then close"
+  },
+  "outcome": "PASS",
+  "wall_limit_exceeded": false
+}

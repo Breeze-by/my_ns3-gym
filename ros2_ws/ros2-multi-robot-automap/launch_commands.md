@@ -1,10 +1,10 @@
 # 当前三机器人基线与MR3适配启动命令
 
-## MR3 P2A V21 有限工程诊断
+## MR3 P2A V21 已闭合诊断（历史命令）
 
-用户已要求按评估继续 P2A。本次仅在原52000工程上限内预约6500秒，1worker、open101两次最多32步，真实合法掩码均匀随机动作，无模型/优化/训练资格；不启动完整矩阵或二维训练。运行参数与停止规则见[V21预声明](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261020_mr3_p2a_v21_feasibility.md)。native调用固定在已冻结plan内，失败不直接重跑benchmark。
+该唯一活动已在冻结c38e3e8ddc034bc0bf0b0cc4578cb6600ae51d90执行并FAIL闭合，全部保存身份gone；以下仅保留真实历史命令，不是重试入口。不得复用run/output目录，不因CPU修复直接重跑。本次原预约6500秒，实际3263.823140435秒，1worker、open101两次32步，合法均匀随机，无模型/优化/训练资格。运行参数与停止规则见[V21预声明](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261020_mr3_p2a_v21_feasibility.md)。native调用固定在已冻结plan内，失败不直接重跑benchmark。
 
-下列命令在wireless-rl目录、conda ns3gym且未source ROS的学习侧终端执行。先完成clean commit/push，将EXACT40替换为本次实际完整freeze；前检通过后才进入工程诊断。运行时不修改源码、库、Git或原件。
+以下保留当时的模板入口，实际执行时EXACT40已固定为c38e3e8ddc034bc0bf0b0cc4578cb6600ae51d90；完整真实argv见V21封存回执。它不适用于当前修复后的源码，也不得作为下一次诊断入口。该次执行的学习侧终端为wireless-rl目录、conda ns3gym、未source ROS，前检后运行期间源码/库/Git/原件保持不变。
 
 ```bash
 export PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1
@@ -23,9 +23,9 @@ python -m mr3_learning.reach_execution --scope engineering \
   --freeze EXACT40
 ```
 
-执行outer真实wait退出后，独立运行 `reach_diagnostic final --plan PLAN --outer /tmp/mr3_p2a_v21_diagnostic_outer/actual_wait.json --output NEW_ABSENCE_JSON`，同样保存真实wait并将该外部尾费用加入工程末账。进程全部gone与诊断成功分开报告，不能以absence PASS覆盖原生失败；之后封存原件和准确总账。本入口不能解锁minimum/pilot/验证，60000扩额仍未批准。
+本次执行outer真实wait退出后，已独立运行 `reach_diagnostic final --plan PLAN --outer /tmp/mr3_p2a_v21_diagnostic_outer/actual_wait.json --output NEW_ABSENCE_JSON`，同样保存真实wait并将该外部尾费用加入工程末账。进程全部gone与诊断成功分开报告，不能以absence PASS覆盖原生失败；之后封存原件和准确总账。本入口不能解锁minimum/pilot/验证，60000扩额仍未批准。
 
-2026-10-20状态：V19原生接口32步完成但审计阶段超时，原Information -2及矩阵FAIL保留。V20独立reader修复已通过131项CPU与两个完整只读开发重放；没有新冻结原生资格或PPO，P2A未完成。常规P2A修改直接推进；工程末账38216.5104974146018/52000，余13783.4895025853982，不足新矩阵18000预留，60000提案尚未批准。显式reach仍真实20Hz激光，legacy/base5Hz；没有验证策略或gateway。见[V19闭合](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v19.md)与[V20末账](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261020_mr3_p2a_v20.md)。
+2026-10-20当前：P2A未完成。V21两次32步合法随机原生返回/关闭完成，但第一回合guard真实storage ACK回调晚于worker推进1.076029ms，Cadence内嵌Runtime失败；保留FAIL且不重试。真实guard屏障修复已有132项CPU通过，未取得修复后原生资格或训练。工程末账41480.3336378496018/52000，余10519.6663621503982；pilot和三final-only不动，60000/二维仍未批准。显式reach为20Hz激光，legacy/base为5Hz。见[V21闭合](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261020_mr3_p2a_v21_feasibility.md)及[具体后续提案](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261020_mr3_p2a_next_route_proposal.md)。
 
 2026-10-19：P2A.0已验收，P2A未完成。用户已批准V14科学候选并授权生产实现；V15实现显式`mr3-reach-v1`安全模式、真实应用/同源校准回执、完整模式交付及版本化必要审计器，当前完成CPU/编译准备，待新冻结完整原生资格。默认`legacy`保留，旧FAIL不改判；本轮无新native/GPU/pilot/验证，P2B/gateway未启动。见[V15实现与验证](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v15.md)和[新契约](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_REACH_CONTRACT.md)。
 

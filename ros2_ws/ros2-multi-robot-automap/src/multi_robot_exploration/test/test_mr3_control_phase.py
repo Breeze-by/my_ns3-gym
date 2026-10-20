@@ -1,6 +1,7 @@
 """Paused phase identity, causal receipts and permanent zero-only interruption."""
 
 import copy
+from collections import OrderedDict
 import importlib.util
 import io
 from pathlib import Path
@@ -13,6 +14,8 @@ import pytest
 from multi_robot_exploration.mr3_control_phase import ControlPhaseClient, valid_motion_status, canonical
 from multi_robot_exploration.mr3_drive_phase import DrivePhaseClient
 from multi_robot_exploration.mr3_safety_intent import payload_sha256
+from multi_robot_exploration import mr3_motion_control
+from multi_robot_exploration.mr3_motion_control import MotionControlPhase
 
 
 def status(clock=20, stop=False, sequence=1):
@@ -574,3 +577,154 @@ def test_reach_worker_rejects_a_larger_or_untyped_normal_quantum_before_any_send
     worker.safety_contract, worker.controlled, worker.stopping = "mr3-reach-v1", True, False
     with pytest.raises(ValueError, match="physical step|20ms quantum"):
         worker._physics(steps)
+
+
+def storage_barrier_phase(operation="commit", *, reach=True, sequence=1):
+    """Real phase/matcher with literal feeds; no ROS graph or physical credit."""
+    clock, events = [20], []
+    motion = (reach_status(sequence=sequence, stop=operation == "stop",
+                           table=None if operation == "takeover" else "b" * 64)
+              if reach else status(sequence=sequence, stop=operation == "stop"))
+    kind = "stop" if operation == "stop" else "normal"
+    node = SimpleNamespace(
+        epoch="epoch", halted=None, stop_time=None,
+        get_clock=lambda: SimpleNamespace(now=lambda: SimpleNamespace(nanoseconds=clock[0])),
+        completed_motion={(20, kind): motion} if operation == "commit" else {},
+        decision_sequences=copy.deepcopy(motion["decision_sequences"]))
+    if reach:
+        node.reach = {name: SimpleNamespace(storage=DrivePhaseClient("epoch"))
+                      for name in motion["outputs"]}
+
+    def output(target, stop=False):
+        events.append(("zero_publication", target, stop))
+        # Zero publication is immediate; only the existing completion ACK waits.
+        value = copy.deepcopy(motion)
+        if stop:
+            value.update(phase_kind="stop", ready=False)
+        node.completed_motion[(target, "stop" if stop else "normal")] = value
+
+    node.ensure_motion_output = output
+    phase = MotionControlPhase.__new__(MotionControlPhase)
+    phase.node, phase.version = node, 2 if reach else 1
+    phase.safety_contract = "mr3-reach-v1" if reach else "legacy"
+    phase.controlled, phase.stopping, phase.polling = True, False, False
+    phase.responses = OrderedDict()
+    request = {"schema": f"mr3-motion-control-request-v{phase.version}", "epoch": "epoch",
+               "request_id": operation + "20", "target_time_ns": 20, "operation": operation}
+    if operation == "commit":
+        request["state_commit"] = {"safety_table_sha256": "b" * 64}
+    phase.pending = {"request": request, "started": mr3_motion_control.monotonic(),
+                     "issued": operation == "commit"}
+    phase.record = lambda name, value: events.append((name, copy.deepcopy(value)))
+    phase.publisher = SimpleNamespace(publish=lambda message: events.append(
+        ("actual_ack_publication", message.data)))
+    return phase, motion, clock, events
+
+
+def guard_storage_callback(phase, motion, name):
+    """Feed the same client used by the guard's real storage subscription."""
+    phase.node.reach[name].storage.receive(driver_ack(name, motion))
+    # receive_reach_feed already polls after a successfully validated callback.
+    phase.poll()
+
+
+def positive_control_acks(events):
+    return [value for name, *tail in events if name == "ack"
+            for value in tail if value.get("ok") is True]
+
+
+def test_reach_motion_ack_waits_for_all_three_guard_callbacks_despite_worker_receipts():
+    phase, motion, _, events = storage_barrier_phase()
+    worker = DrivePhaseClient("epoch")
+    for name in motion["outputs"]:
+        worker.receive(driver_ack(name, motion))
+    assert worker.matching(motion) is not None  # The old worker barrier alone is ready.
+    phase.poll()
+    assert not positive_control_acks(events)
+    for name in ("tb1", "tb2"):
+        guard_storage_callback(phase, motion, name)
+        assert phase.pending is not None and not positive_control_acks(events)
+    before = {name: copy.deepcopy(owner.storage.pending)
+              for name, owner in phase.node.reach.items()}
+    guard_storage_callback(phase, motion, "tb3")
+    assert phase.pending is None and len(positive_control_acks(events)) == 1
+    for name in ("tb1", "tb2"):
+        assert phase.node.reach[name].storage.pending == before[name]
+    assert all(owner.storage.pending[name] for name, owner in phase.node.reach.items())
+    phase.poll()
+    assert len(positive_control_acks(events)) == 1
+
+
+@pytest.mark.parametrize("field,value", [
+    ("epoch", "other"), ("robot", "tb1"), ("clock_ns", 21),
+    ("source_clock_ns", 19), ("decision_sequence", 2), ("linear_x", .001),
+    ("angular_z", .001), ("cmd_seq", 0), ("clock_ns", True),
+])
+def test_reach_guard_storage_mismatch_never_grants_success(field, value):
+    phase, motion, _, events = storage_barrier_phase()
+    for name in ("tb1", "tb2"):
+        guard_storage_callback(phase, motion, name)
+    bad = driver_ack("tb3", motion)
+    bad[field] = value
+    # Invalid schema/types are rejected by the existing client before poll.
+    try:
+        phase.node.reach["tb3"].storage.receive(bad)
+    except ValueError:
+        pass
+    phase.poll()
+    assert not positive_control_acks(events)
+
+
+def test_repeated_old_guard_receipt_cannot_release_a_new_target():
+    phase, motion, _, events = storage_barrier_phase(sequence=2)
+    old = reach_status(clock=0, sequence=1)
+    for name in ("tb1", "tb2", "tb3"):
+        client = phase.node.reach[name].storage
+        assert client.receive(driver_ack(name, old)) is True
+        assert client.receive(driver_ack(name, old)) is False
+    phase.poll()
+    assert phase.pending is not None and not positive_control_acks(events)
+    for name in motion["outputs"]:
+        guard_storage_callback(phase, motion, name)
+    assert len(positive_control_acks(events)) == 1
+
+
+@pytest.mark.parametrize("operation", ("takeover", "stop"))
+def test_takeover_and_stop_publish_zero_immediately_but_ack_waits_for_guard_storage(operation):
+    phase, motion, _, events = storage_barrier_phase(operation)
+    phase.poll()
+    assert any(row[0] == "zero_publication" for row in events)
+    assert all(output == {"linear_x": 0., "angular_z": 0.}
+               for output in motion["outputs"].values())
+    assert not positive_control_acks(events) and phase.pending is not None
+    for name in ("tb1", "tb2"):
+        guard_storage_callback(phase, motion, name)
+        assert not positive_control_acks(events)
+    guard_storage_callback(phase, motion, "tb3")
+    assert len(positive_control_acks(events)) == 1 and phase.pending is None
+    response = positive_control_acks(events)[0]
+    assert response["operation"] == operation
+    assert all(output == {"linear_x": 0., "angular_z": 0.}
+               for output in response["status"]["outputs"].values())
+
+
+@pytest.mark.parametrize("operation", ("commit", "takeover", "stop"))
+def test_legacy_phase_does_not_acquire_the_reach_storage_barrier(operation):
+    phase, _, _, events = storage_barrier_phase(operation, reach=False)
+    assert not hasattr(phase.node, "reach")
+    phase.poll()
+    assert phase.pending is None and len(positive_control_acks(events)) == 1
+
+
+def test_missing_guard_storage_keeps_the_original_wall_timeout_and_failure_ack(monkeypatch):
+    phase, _, _, events = storage_barrier_phase()
+    phase.poll()
+    assert phase.pending is not None and not positive_control_acks(events)
+    deadline = phase.pending["started"] + mr3_motion_control.WALL_GUARD_SEC
+    monkeypatch.setattr(mr3_motion_control, "monotonic", lambda: deadline)
+    phase.poll()
+    assert phase.pending is None and phase.node.halted == "motion_control_phase_failed"
+    assert not positive_control_acks(events)
+    response = phase.responses["commit20"][1]
+    assert response["ok"] is False and response["error"] == "motion control clock passed or wall timeout"
+    assert any(row[0] == "zero_publication" for row in events)

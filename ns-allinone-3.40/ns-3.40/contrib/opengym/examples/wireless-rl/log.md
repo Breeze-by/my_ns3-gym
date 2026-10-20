@@ -7403,3 +7403,81 @@ V20最终静态封存检查实际finite CPU rc0/.674876855秒/16源stable，[wai
 用户在评估交接后指示“好，现在按要求继续执行P2A吧”。既有52000工程上限和V20精确末账不变，在余13783.4895025853982秒内预约6500工程秒；1worker、open101重复两次各32步、合法掩码随机seed41，native3200含close180，全部独立读者和外部尾计入真实活动费用，失败不重试。不是完整资格矩阵，无PPO/GPU/optimizer/pilot/final-only/二维/gateway；实际原生尚未启动。
 
 准备基线f874cd04b，具体source/ELF计划、独立消费者和命令见 [V21](report/20261020_mr3_p2a_v21_feasibility.md)。组合CPU由conda ns3gym、PYTHONNOUSERSITE=1、CUDA_VISIBLE_DEVICES空的 `mr3_learning.reach_execution --scope cpu` 实际wait，100 tests PASS、outer rc0/9.975746618秒（unittest4.766秒），7份源前后稳定；完整argv与console在 `report/assets/20261020_mr3_p2a_v21/checks/combined_cpu_v1/actual_wait.json`。仅CPU准备，不收费或提供原生信用。封存plan SHA f2ddefb691944c17a8dfa5ea4d8d1f180fed6868378b41e06aca46ffd2a0eaf8，445源/10ELF；必须clean/pushed新freeze前检成功后才运行，后续真实结果另追加。
+
+
+## 2026-10-20 MR3 P2A V21 实际诊断FAIL闭合
+
+沿上节预声明，在clean/pushed冻结 `c38e3e8ddc034bc0bf0b0cc4578cb6600ae51d90`、plan SHA `f2ddefb691944c17a8dfa5ea4d8d1f180fed6868378b41e06aca46ffd2a0eaf8` 下执行。固定tb1/tb2/tb3、单worker、open101两次各32步、合法均匀随机seed41、domain224/port14901，native3200含close180、总6500预约。环境PYTHONNOUSERSITE=1、PYTHONDONTWRITEBYTECODE=1、CUDA_VISIBLE_DEVICES空；cwd canonical wireless-rl，learner使用conda ns3gym，readers各自真实Python见回执。无重试、无PPO/GPU/optimizer，pilot/final-only/二维/gateway不动。
+
+以下为实际outer child原argv，外层均由 `mr3_learning.reach_execution` 保存源快照与真实wait，完整argv/identity/时钟在对应回执，不用人工计时替代：
+
+CPU前检：
+
+```bash
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.reach_diagnostic preflight --plan report/assets/20261020_mr3_p2a_v21/predeclared_plan_v1.json --freeze c38e3e8ddc034bc0bf0b0cc4578cb6600ae51d90 --output /tmp/mr3_p2a_v21_diagnostic_preflight.json
+```
+
+真实rc0/26.057773539秒，actual_waited=true/source unchanged；[receipt](report/assets/20261020_mr3_p2a_v21/closed_execution/mr3_p2a_v21_diagnostic_preflight_outer/actual_wait.json)。
+
+engineering主活动：
+
+```bash
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -m mr3_learning.reach_diagnostic execute --plan /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261020_mr3_p2a_v21/predeclared_plan_v1.json --freeze c38e3e8ddc034bc0bf0b0cc4578cb6600ae51d90
+```
+
+真实rc1/3263.539596404秒，actual_waited=true/source unchanged；[receipt](report/assets/20261020_mr3_p2a_v21/closed_execution/mr3_p2a_v21_diagnostic_outer/actual_wait.json)。
+
+engineering外部final：
+
+```bash
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -m mr3_learning.reach_diagnostic final --plan /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261020_mr3_p2a_v21/predeclared_plan_v1.json --outer /tmp/mr3_p2a_v21_diagnostic_outer/actual_wait.json --output /tmp/mr3_p2a_v21_diagnostic_absence.json
+```
+
+真实rc0/0.283544031秒，actual_waited=true/source unchanged；[receipt](report/assets/20261020_mr3_p2a_v21/closed_execution/mr3_p2a_v21_diagnostic_final_outer/actual_wait.json)。
+
+实际九份nested command的原命令和wait（全部位于主outer内，不重复收费；完整回执/console见closed_execution）：
+
+- native：真实rc0/2073.892364923秒。`/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -m mr3_learning.benchmark --workers 1 --schedule open:101,open:101 --steps 32 --run-id uniform_two_episodes --output-root /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v21_diagnostic --safety-contract mr3-reach-v1 --diagnostic-uniform-seed 41 --base-domain 224 --base-port 14901 --work-wall-seconds 3200 --close-reserve-seconds 180`
+
+- watcher：真实rc0/2078.301772991秒。`/usr/bin/python3 -m mr3_learning.native_custody_reach watch --run-directory /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v21_diagnostic/uniform_two_episodes --freeze c38e3e8ddc034bc0bf0b0cc4578cb6600ae51d90 --binding /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261020_mr3_p2a_v21/native_custody_binding_v1.json --ready-file /tmp/mr3_p2a_v21_diagnostic/ready.json --stop-file /tmp/mr3_p2a_v21_diagnostic/stop.json --output /tmp/mr3_p2a_v21_diagnostic/live_custody.json`
+
+- information_002：真实rc0/449.354255872秒。`/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261020_mr3_p2a_v20/bounded_read_only_child_v1.py --output /tmp/mr3_p2a_v21_diagnostic/information_002_supervision --wall-seconds 900 -- /usr/bin/python3 -m mr3_learning.audit_reach_information /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v21_diagnostic/uniform_two_episodes/worker0/episode002_open_101 --freeze c38e3e8ddc034bc0bf0b0cc4578cb6600ae51d90 --output /tmp/mr3_p2a_v21_diagnostic/information_002_result.json`
+
+- information_001：真实rc0/479.393231365秒。`/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261020_mr3_p2a_v20/bounded_read_only_child_v1.py --output /tmp/mr3_p2a_v21_diagnostic/information_001_supervision --wall-seconds 900 -- /usr/bin/python3 -m mr3_learning.audit_reach_information /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v21_diagnostic/uniform_two_episodes/worker0/episode001_open_101 --freeze c38e3e8ddc034bc0bf0b0cc4578cb6600ae51d90 --output /tmp/mr3_p2a_v21_diagnostic/information_001_result.json`
+
+- fifo_001：真实rc0/496.724158484秒。`/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261020_mr3_p2a_v20/bounded_read_only_child_v1.py --output /tmp/mr3_p2a_v21_diagnostic/fifo_001_supervision --wall-seconds 900 -- /usr/bin/python3 -m mr3_learning.audit_reach_peer_control /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v21_diagnostic/uniform_two_episodes/worker0/episode001_open_101 --freeze c38e3e8ddc034bc0bf0b0cc4578cb6600ae51d90 --output /tmp/mr3_p2a_v21_diagnostic/fifo_001_result.json`
+
+- fifo_002：真实rc0/502.708009477秒。`/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261020_mr3_p2a_v20/bounded_read_only_child_v1.py --output /tmp/mr3_p2a_v21_diagnostic/fifo_002_supervision --wall-seconds 900 -- /usr/bin/python3 -m mr3_learning.audit_reach_peer_control /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v21_diagnostic/uniform_two_episodes/worker0/episode002_open_101 --freeze c38e3e8ddc034bc0bf0b0cc4578cb6600ae51d90 --output /tmp/mr3_p2a_v21_diagnostic/fifo_002_result.json`
+
+- closure：真实rc0/52.663460966秒。`/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261020_mr3_p2a_v20/bounded_read_only_child_v1.py --output /tmp/mr3_p2a_v21_diagnostic/closure_supervision --wall-seconds 900 -- /usr/bin/python3 -m mr3_learning.native_custody_reach review --run-directory /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v21_diagnostic/uniform_two_episodes --freeze c38e3e8ddc034bc0bf0b0cc4578cb6600ae51d90 --binding /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261020_mr3_p2a_v21/native_custody_binding_v1.json --capture /tmp/mr3_p2a_v21_diagnostic/live_custody.json --launch-receipt /tmp/mr3_p2a_v21_diagnostic/native_command.json --fifo-receipts /tmp/mr3_p2a_v21_diagnostic/fifo_manifest.json --expected-episodes 2 --output /tmp/mr3_p2a_v21_diagnostic/closure_result.json`
+
+- native_episode_checks：真实rc0/325.663984039秒。`/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261020_mr3_p2a_v20/bounded_read_only_child_v1.py --output /tmp/mr3_p2a_v21_diagnostic/native_episode_checks_supervision --wall-seconds 900 -- /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -m mr3_learning.audit_reach_diagnostic /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v21_diagnostic/uniform_two_episodes --freeze c38e3e8ddc034bc0bf0b0cc4578cb6600ae51d90 --plan /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261020_mr3_p2a_v21/predeclared_plan_v1.json --output /tmp/mr3_p2a_v21_diagnostic/native_episode_checks_result.json --fifo-result /tmp/mr3_p2a_v21_diagnostic/fifo_001_result.json --fifo-result /tmp/mr3_p2a_v21_diagnostic/fifo_002_result.json`
+
+- cadence：真实rc1/727.869397496秒。`/usr/bin/python3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261020_mr3_p2a_v20/bounded_read_only_child_v1.py --output /tmp/mr3_p2a_v21_diagnostic/cadence_supervision --wall-seconds 900 -- /usr/bin/python3 -m mr3_learning.audit_reach_cadence /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v21_diagnostic/uniform_two_episodes --freeze c38e3e8ddc034bc0bf0b0cc4578cb6600ae51d90 --output /tmp/mr3_p2a_v21_diagnostic/cadence_result.json`
+
+
+完整活动 **FAIL**：native rc0、两次完整进程重建，各32次step/32.0秒奖励与物理时间，关闭尾后evaluator32.2秒。FIFO两场、Information两场、native/scalar/观测/received输入基础核查和实际ELF来源关闭通过；Cadence含完整Runtime真实rc1/727.869397496秒，不是timeout、没有signal、没有跳过审计。第一回合报 `ValueError('worker substituted an unreceived storage ACK')`，第二回合通过；所有FAIL和原件保留，不补完整矩阵资格。
+
+有限只读取证精确定位e1 tb3、clock68980000000、cmd_seq3059/decision_seq3231/q1547：worker真实ACK接收4229387098966908、消费4229387124514451、推进许可4229387130022304；guard同一完整ACK ingress4229387131098333，晚1,076,029ns。native命令接收/发布一致。不是缺ACK或索引错位，当前reader要求的跨订阅先后真实不满足；不能直接改称误判或删谓词。7条精确原件、行SHA/全文件inventory引用见[forensics](report/assets/20261020_mr3_p2a_v21/ack_order_forensics_v1.json)。常规修复补真实guard完成屏障，CPU结果随后另列；无新native重试。
+
+两回合correct-free覆盖.7412124532091664/.7304619738884324；质量/三机参与/95成功均false。tb1/tb3路径仅(.015443/.007109)m和(.015166/.091113)m；目标接受不当运动。18接触源fresh/active、event0、ever_unhealthyfalse；最终导航closed=true/pending0，35目标全cancel/0success/0abort，Nav2全部finalized，无forced/残余owned/zombie。35/64步mask仅单合法，37/64动作888，不能把64返回当64次有效探索。native返回率.03085984648117/秒、全活动.01960890564416/秒仅描述本次短随机诊断；training_eligible=false、0policy/GPU/optimizer，不预测长期PPO容量。
+
+外部absence真实检查原109身份gone，通过不覆盖diagnostic FAIL；其真实outer退出后更晚复查加入helper与child，共111唯一PID/start全部absent，无不可读/同startZ。九nested不重复收费，主3263.539596404+外尾.283544031两区间不重叠，union **3263.823140435**。累计 **41480.3336378496018/52000**，余 **10519.6663621503982**；pilot1870/2905.9547395464029秒及三final-only不动。原未批60000提案当前也仅余18519.6663621503982，距20100预约缺1580.3336378496018，不再具有数值准入条件。
+
+全部1033份native原件/2,041,262,832字节保留并封存为三part xz，整archive SHA390ff3177eb0ff45685ce86dd6cea02c799e9e988ca38faa5ae93afd229dc6a3，解压全部成员SHA/bytes与原清单一致、原件前后不变。53份辅助原件精确复制及SHA索引、真实outer、完整消费者、封存方法、末账与描述性小原件见[V21完整报告](report/20261020_mr3_p2a_v21_feasibility.md)。CPU封存/小原件核算不提供实验资格。后续[二维具体提案](report/20261020_mr3_p2a_next_route_proposal.md)仅准备可审阅范围，9000step/3600秒零更新候选未批准/未执行，不能视为训练或扩额授权。
+
+
+V21闭合后真实guard存储屏障常规修复：生产mr3_motion_control.py仅17行，现有v2 motion-phase完成ACK前复用DrivePhaseClient对三个guard实际回调缓存匹配，真实ingress原行先于poll，保持worker独立存储门、reader原谓词、STOP/takeover立即零与完成屏障、legacy及超时失败；无新RPC/schema/sleep/重发/原件修改。
+
+系统ROS CPU实际命令：
+
+```bash
+/bin/bash -c 'source /opt/ros/humble/setup.bash
+source install/setup.bash
+exec /usr/bin/python3 -B -m pytest -q src/multi_robot_exploration/test/test_mr3_control_phase.py src/multi_robot_exploration/test/test_mr3_drive_phase.py src/multi_robot_exploration/test/test_mr3_reach_delivery_order.py'
+```
+
+真实v2 rc0/9.439727408秒/source stable，132 PASS（pytest7.64秒），回执和console在report/assets/20261020_mr3_p2a_v21/checks/guard_storage_barrier_cpu_v2。原v1相同测试组合真实rc1/11.345561775秒，115 PASS/17新fake clock缺now()失败；只修fixture并新目录复测，原v1回执/console/源SHA保留。首次precheck误匹配自身shell导致未spawn测试，原失败说明也保留。均CPU准备，不提供修复后native/科学资格、不收费、无重试/训练。新运行时源码不得冒充c38e3e8原native，后续需新冻结，P2A未完成。
+
+
+V21最终有限静态检查实际CPU rc0/1.682505902秒/source stable，命令system Python -B report/assets/20261020_mr3_p2a_v21/check_closed_v1.py，经reach_execution --scope cpu、cwd canonical wireless-rl；完整argv与6份源SHA在report/assets/20261020_mr3_p2a_v21/checks/closure_static_v1/actual_wait.json。核三part及拼接SHA、53copy对原件、1033清单、FAIL/费用/111身份/132CPU/首轮失败保留、JSON/AST/新增链接与历史log仅追加；结果closed_integrity_v1.json。仅静态封存，不重放正式reader、不新增native或费用。

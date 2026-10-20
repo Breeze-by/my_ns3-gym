@@ -1,0 +1,50 @@
+{
+  "schema": "mr3-v20-bounded-owned-read-only-child-wait-v1",
+  "actual_argv": [
+    "/usr/bin/python3",
+    "-m",
+    "mr3_learning.native_custody_reach",
+    "review",
+    "--run-directory",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v21_diagnostic/uniform_two_episodes",
+    "--freeze",
+    "c38e3e8ddc034bc0bf0b0cc4578cb6600ae51d90",
+    "--binding",
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261020_mr3_p2a_v21/native_custody_binding_v1.json",
+    "--capture",
+    "/tmp/mr3_p2a_v21_diagnostic/live_custody.json",
+    "--launch-receipt",
+    "/tmp/mr3_p2a_v21_diagnostic/native_command.json",
+    "--fifo-receipts",
+    "/tmp/mr3_p2a_v21_diagnostic/fifo_manifest.json",
+    "--expected-episodes",
+    "2",
+    "--output",
+    "/tmp/mr3_p2a_v21_diagnostic/closure_result.json"
+  ],
+  "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+  "coordinator_identity": {
+    "pid": 1899144,
+    "parent": 1827949,
+    "start_ticks": 423097615,
+    "state": "R"
+  },
+  "child_identity": {
+    "pid": 1899147,
+    "parent": 1899144,
+    "start_ticks": 423097623,
+    "state": "R"
+  },
+  "started_monotonic_ns": 4230976230910599,
+  "ended_monotonic_ns": 4231028796537824,
+  "actual_child_wait_seconds": "52.565627225",
+  "supervised_wall_allocation_seconds": 900,
+  "timed_out": false,
+  "signals_sent": [],
+  "actual_returncode": 0,
+  "actual_waited": true,
+  "passed": true,
+  "scientific_qualification": false,
+  "native_runs": 0,
+  "gpu_calls": 0
+}

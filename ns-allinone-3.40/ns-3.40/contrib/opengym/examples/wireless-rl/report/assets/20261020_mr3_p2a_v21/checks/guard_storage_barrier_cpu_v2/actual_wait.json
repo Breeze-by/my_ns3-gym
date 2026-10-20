@@ -1,0 +1,56 @@
+{
+  "schema": "mr3-v21-guard-storage-barrier-cpu-wait-v1",
+  "actual_argv": [
+    "/bin/bash",
+    "-c",
+    "source /opt/ros/humble/setup.bash\nsource install/setup.bash\nexec /usr/bin/python3 -B -m pytest -q src/multi_robot_exploration/test/test_mr3_control_phase.py src/multi_robot_exploration/test/test_mr3_drive_phase.py src/multi_robot_exploration/test/test_mr3_reach_delivery_order.py"
+  ],
+  "cwd": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap",
+  "coordinator_identity": {
+    "pid": 1928734,
+    "parent": 1928733,
+    "start_ticks": 423242479
+  },
+  "child_identity": {
+    "pid": 1928738,
+    "parent": 1928734,
+    "start_ticks": 423242491
+  },
+  "actual_waited": true,
+  "actual_returncode": 0,
+  "started_monotonic_ns": 4232424917260633,
+  "ended_monotonic_ns": 4232434356988041,
+  "actual_child_wait_seconds": "9.439727408",
+  "source_before": [
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py",
+      "sha256": "197ff4bfcca9f815e191dcddea7a2a6af46a033c68310e350b63ad9e48579a69",
+      "bytes": 18129
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_control_phase.py",
+      "sha256": "0a7cc9a4f23fe0beada5ea57c847af1f23a471845d8633d98dd21390a4dbd924",
+      "bytes": 34003
+    }
+  ],
+  "source_after": [
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py",
+      "sha256": "197ff4bfcca9f815e191dcddea7a2a6af46a033c68310e350b63ad9e48579a69",
+      "bytes": 18129
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_control_phase.py",
+      "sha256": "0a7cc9a4f23fe0beada5ea57c847af1f23a471845d8633d98dd21390a4dbd924",
+      "bytes": 34003
+    }
+  ],
+  "source_unchanged": true,
+  "passed": true,
+  "native_runs": 0,
+  "gpu_calls": 0,
+  "optimizer_steps": 0,
+  "qualification": false,
+  "engineering_fee_exempt_cpu_preparation": true,
+  "prior_failed_attempt": "guard_storage_barrier_cpu_v1; retained; fixture clock now() corrected only"
+}

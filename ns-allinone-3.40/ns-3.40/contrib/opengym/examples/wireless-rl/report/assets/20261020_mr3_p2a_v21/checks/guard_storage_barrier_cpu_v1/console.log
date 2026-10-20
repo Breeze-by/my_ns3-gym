@@ -1,0 +1,549 @@
+................................................FFFFFFFFFFFFFFFFF....... [ 54%]
+............................................................             [100%]
+=================================== FAILURES ===================================
+_ test_reach_motion_ack_waits_for_all_three_guard_callbacks_despite_worker_receipts _
+
+    def test_reach_motion_ack_waits_for_all_three_guard_callbacks_despite_worker_receipts():
+        phase, motion, _, events = storage_barrier_phase()
+        worker = DrivePhaseClient("epoch")
+        for name in motion["outputs"]:
+            worker.receive(driver_ack(name, motion))
+        assert worker.matching(motion) is not None  # The old worker barrier alone is ready.
+>       phase.poll()
+
+src/multi_robot_exploration/test/test_mr3_control_phase.py:642: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+build/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py:215: in poll
+    self.poll_once()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <multi_robot_exploration.mr3_motion_control.MotionControlPhase object at 0x7439cb2d8760>
+
+    def poll_once(self):
+        pending = self.pending
+        if pending is None:
+            return
+        request = pending["request"]
+        target, operation = request["target_time_ns"], request["operation"]
+>       now = self.node.get_clock().now().nanoseconds
+E       AttributeError: 'types.SimpleNamespace' object has no attribute 'now'
+
+build/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py:239: AttributeError
+_____ test_reach_guard_storage_mismatch_never_grants_success[epoch-other] ______
+
+field = 'epoch', value = 'other'
+
+    @pytest.mark.parametrize("field,value", [
+        ("epoch", "other"), ("robot", "tb1"), ("clock_ns", 21),
+        ("source_clock_ns", 19), ("decision_sequence", 2), ("linear_x", .001),
+        ("angular_z", .001), ("cmd_seq", 0), ("clock_ns", True),
+    ])
+    def test_reach_guard_storage_mismatch_never_grants_success(field, value):
+        phase, motion, _, events = storage_barrier_phase()
+        for name in ("tb1", "tb2"):
+>           guard_storage_callback(phase, motion, name)
+
+src/multi_robot_exploration/test/test_mr3_control_phase.py:666: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/multi_robot_exploration/test/test_mr3_control_phase.py:628: in guard_storage_callback
+    phase.poll()
+build/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py:215: in poll
+    self.poll_once()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <multi_robot_exploration.mr3_motion_control.MotionControlPhase object at 0x7439cb04ff10>
+
+    def poll_once(self):
+        pending = self.pending
+        if pending is None:
+            return
+        request = pending["request"]
+        target, operation = request["target_time_ns"], request["operation"]
+>       now = self.node.get_clock().now().nanoseconds
+E       AttributeError: 'types.SimpleNamespace' object has no attribute 'now'
+
+build/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py:239: AttributeError
+______ test_reach_guard_storage_mismatch_never_grants_success[robot-tb1] _______
+
+field = 'robot', value = 'tb1'
+
+    @pytest.mark.parametrize("field,value", [
+        ("epoch", "other"), ("robot", "tb1"), ("clock_ns", 21),
+        ("source_clock_ns", 19), ("decision_sequence", 2), ("linear_x", .001),
+        ("angular_z", .001), ("cmd_seq", 0), ("clock_ns", True),
+    ])
+    def test_reach_guard_storage_mismatch_never_grants_success(field, value):
+        phase, motion, _, events = storage_barrier_phase()
+        for name in ("tb1", "tb2"):
+>           guard_storage_callback(phase, motion, name)
+
+src/multi_robot_exploration/test/test_mr3_control_phase.py:666: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/multi_robot_exploration/test/test_mr3_control_phase.py:628: in guard_storage_callback
+    phase.poll()
+build/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py:215: in poll
+    self.poll_once()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <multi_robot_exploration.mr3_motion_control.MotionControlPhase object at 0x7439ca34d090>
+
+    def poll_once(self):
+        pending = self.pending
+        if pending is None:
+            return
+        request = pending["request"]
+        target, operation = request["target_time_ns"], request["operation"]
+>       now = self.node.get_clock().now().nanoseconds
+E       AttributeError: 'types.SimpleNamespace' object has no attribute 'now'
+
+build/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py:239: AttributeError
+_____ test_reach_guard_storage_mismatch_never_grants_success[clock_ns-21] ______
+
+field = 'clock_ns', value = 21
+
+    @pytest.mark.parametrize("field,value", [
+        ("epoch", "other"), ("robot", "tb1"), ("clock_ns", 21),
+        ("source_clock_ns", 19), ("decision_sequence", 2), ("linear_x", .001),
+        ("angular_z", .001), ("cmd_seq", 0), ("clock_ns", True),
+    ])
+    def test_reach_guard_storage_mismatch_never_grants_success(field, value):
+        phase, motion, _, events = storage_barrier_phase()
+        for name in ("tb1", "tb2"):
+>           guard_storage_callback(phase, motion, name)
+
+src/multi_robot_exploration/test/test_mr3_control_phase.py:666: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/multi_robot_exploration/test/test_mr3_control_phase.py:628: in guard_storage_callback
+    phase.poll()
+build/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py:215: in poll
+    self.poll_once()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <multi_robot_exploration.mr3_motion_control.MotionControlPhase object at 0x7439cb1dbd60>
+
+    def poll_once(self):
+        pending = self.pending
+        if pending is None:
+            return
+        request = pending["request"]
+        target, operation = request["target_time_ns"], request["operation"]
+>       now = self.node.get_clock().now().nanoseconds
+E       AttributeError: 'types.SimpleNamespace' object has no attribute 'now'
+
+build/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py:239: AttributeError
+__ test_reach_guard_storage_mismatch_never_grants_success[source_clock_ns-19] __
+
+field = 'source_clock_ns', value = 19
+
+    @pytest.mark.parametrize("field,value", [
+        ("epoch", "other"), ("robot", "tb1"), ("clock_ns", 21),
+        ("source_clock_ns", 19), ("decision_sequence", 2), ("linear_x", .001),
+        ("angular_z", .001), ("cmd_seq", 0), ("clock_ns", True),
+    ])
+    def test_reach_guard_storage_mismatch_never_grants_success(field, value):
+        phase, motion, _, events = storage_barrier_phase()
+        for name in ("tb1", "tb2"):
+>           guard_storage_callback(phase, motion, name)
+
+src/multi_robot_exploration/test/test_mr3_control_phase.py:666: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/multi_robot_exploration/test/test_mr3_control_phase.py:628: in guard_storage_callback
+    phase.poll()
+build/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py:215: in poll
+    self.poll_once()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <multi_robot_exploration.mr3_motion_control.MotionControlPhase object at 0x7439cb04e890>
+
+    def poll_once(self):
+        pending = self.pending
+        if pending is None:
+            return
+        request = pending["request"]
+        target, operation = request["target_time_ns"], request["operation"]
+>       now = self.node.get_clock().now().nanoseconds
+E       AttributeError: 'types.SimpleNamespace' object has no attribute 'now'
+
+build/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py:239: AttributeError
+_ test_reach_guard_storage_mismatch_never_grants_success[decision_sequence-2] __
+
+field = 'decision_sequence', value = 2
+
+    @pytest.mark.parametrize("field,value", [
+        ("epoch", "other"), ("robot", "tb1"), ("clock_ns", 21),
+        ("source_clock_ns", 19), ("decision_sequence", 2), ("linear_x", .001),
+        ("angular_z", .001), ("cmd_seq", 0), ("clock_ns", True),
+    ])
+    def test_reach_guard_storage_mismatch_never_grants_success(field, value):
+        phase, motion, _, events = storage_barrier_phase()
+        for name in ("tb1", "tb2"):
+>           guard_storage_callback(phase, motion, name)
+
+src/multi_robot_exploration/test/test_mr3_control_phase.py:666: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/multi_robot_exploration/test/test_mr3_control_phase.py:628: in guard_storage_callback
+    phase.poll()
+build/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py:215: in poll
+    self.poll_once()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <multi_robot_exploration.mr3_motion_control.MotionControlPhase object at 0x7439cb008cd0>
+
+    def poll_once(self):
+        pending = self.pending
+        if pending is None:
+            return
+        request = pending["request"]
+        target, operation = request["target_time_ns"], request["operation"]
+>       now = self.node.get_clock().now().nanoseconds
+E       AttributeError: 'types.SimpleNamespace' object has no attribute 'now'
+
+build/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py:239: AttributeError
+____ test_reach_guard_storage_mismatch_never_grants_success[linear_x-0.001] ____
+
+field = 'linear_x', value = 0.001
+
+    @pytest.mark.parametrize("field,value", [
+        ("epoch", "other"), ("robot", "tb1"), ("clock_ns", 21),
+        ("source_clock_ns", 19), ("decision_sequence", 2), ("linear_x", .001),
+        ("angular_z", .001), ("cmd_seq", 0), ("clock_ns", True),
+    ])
+    def test_reach_guard_storage_mismatch_never_grants_success(field, value):
+        phase, motion, _, events = storage_barrier_phase()
+        for name in ("tb1", "tb2"):
+>           guard_storage_callback(phase, motion, name)
+
+src/multi_robot_exploration/test/test_mr3_control_phase.py:666: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/multi_robot_exploration/test/test_mr3_control_phase.py:628: in guard_storage_callback
+    phase.poll()
+build/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py:215: in poll
+    self.poll_once()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <multi_robot_exploration.mr3_motion_control.MotionControlPhase object at 0x7439cb1c67d0>
+
+    def poll_once(self):
+        pending = self.pending
+        if pending is None:
+            return
+        request = pending["request"]
+        target, operation = request["target_time_ns"], request["operation"]
+>       now = self.node.get_clock().now().nanoseconds
+E       AttributeError: 'types.SimpleNamespace' object has no attribute 'now'
+
+build/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py:239: AttributeError
+___ test_reach_guard_storage_mismatch_never_grants_success[angular_z-0.001] ____
+
+field = 'angular_z', value = 0.001
+
+    @pytest.mark.parametrize("field,value", [
+        ("epoch", "other"), ("robot", "tb1"), ("clock_ns", 21),
+        ("source_clock_ns", 19), ("decision_sequence", 2), ("linear_x", .001),
+        ("angular_z", .001), ("cmd_seq", 0), ("clock_ns", True),
+    ])
+    def test_reach_guard_storage_mismatch_never_grants_success(field, value):
+        phase, motion, _, events = storage_barrier_phase()
+        for name in ("tb1", "tb2"):
+>           guard_storage_callback(phase, motion, name)
+
+src/multi_robot_exploration/test/test_mr3_control_phase.py:666: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/multi_robot_exploration/test/test_mr3_control_phase.py:628: in guard_storage_callback
+    phase.poll()
+build/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py:215: in poll
+    self.poll_once()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <multi_robot_exploration.mr3_motion_control.MotionControlPhase object at 0x7439cb00b790>
+
+    def poll_once(self):
+        pending = self.pending
+        if pending is None:
+            return
+        request = pending["request"]
+        target, operation = request["target_time_ns"], request["operation"]
+>       now = self.node.get_clock().now().nanoseconds
+E       AttributeError: 'types.SimpleNamespace' object has no attribute 'now'
+
+build/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py:239: AttributeError
+______ test_reach_guard_storage_mismatch_never_grants_success[cmd_seq-0] _______
+
+field = 'cmd_seq', value = 0
+
+    @pytest.mark.parametrize("field,value", [
+        ("epoch", "other"), ("robot", "tb1"), ("clock_ns", 21),
+        ("source_clock_ns", 19), ("decision_sequence", 2), ("linear_x", .001),
+        ("angular_z", .001), ("cmd_seq", 0), ("clock_ns", True),
+    ])
+    def test_reach_guard_storage_mismatch_never_grants_success(field, value):
+        phase, motion, _, events = storage_barrier_phase()
+        for name in ("tb1", "tb2"):
+>           guard_storage_callback(phase, motion, name)
+
+src/multi_robot_exploration/test/test_mr3_control_phase.py:666: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/multi_robot_exploration/test/test_mr3_control_phase.py:628: in guard_storage_callback
+    phase.poll()
+build/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py:215: in poll
+    self.poll_once()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <multi_robot_exploration.mr3_motion_control.MotionControlPhase object at 0x7439cb11fcd0>
+
+    def poll_once(self):
+        pending = self.pending
+        if pending is None:
+            return
+        request = pending["request"]
+        target, operation = request["target_time_ns"], request["operation"]
+>       now = self.node.get_clock().now().nanoseconds
+E       AttributeError: 'types.SimpleNamespace' object has no attribute 'now'
+
+build/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py:239: AttributeError
+____ test_reach_guard_storage_mismatch_never_grants_success[clock_ns-True] _____
+
+field = 'clock_ns', value = True
+
+    @pytest.mark.parametrize("field,value", [
+        ("epoch", "other"), ("robot", "tb1"), ("clock_ns", 21),
+        ("source_clock_ns", 19), ("decision_sequence", 2), ("linear_x", .001),
+        ("angular_z", .001), ("cmd_seq", 0), ("clock_ns", True),
+    ])
+    def test_reach_guard_storage_mismatch_never_grants_success(field, value):
+        phase, motion, _, events = storage_barrier_phase()
+        for name in ("tb1", "tb2"):
+>           guard_storage_callback(phase, motion, name)
+
+src/multi_robot_exploration/test/test_mr3_control_phase.py:666: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/multi_robot_exploration/test/test_mr3_control_phase.py:628: in guard_storage_callback
+    phase.poll()
+build/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py:215: in poll
+    self.poll_once()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <multi_robot_exploration.mr3_motion_control.MotionControlPhase object at 0x7439ca3b8d00>
+
+    def poll_once(self):
+        pending = self.pending
+        if pending is None:
+            return
+        request = pending["request"]
+        target, operation = request["target_time_ns"], request["operation"]
+>       now = self.node.get_clock().now().nanoseconds
+E       AttributeError: 'types.SimpleNamespace' object has no attribute 'now'
+
+build/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py:239: AttributeError
+_________ test_repeated_old_guard_receipt_cannot_release_a_new_target __________
+
+    def test_repeated_old_guard_receipt_cannot_release_a_new_target():
+        phase, motion, _, events = storage_barrier_phase(sequence=2)
+        old = reach_status(clock=0, sequence=1)
+        for name in ("tb1", "tb2", "tb3"):
+            client = phase.node.reach[name].storage
+            assert client.receive(driver_ack(name, old)) is True
+            assert client.receive(driver_ack(name, old)) is False
+>       phase.poll()
+
+src/multi_robot_exploration/test/test_mr3_control_phase.py:685: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+build/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py:215: in poll
+    self.poll_once()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <multi_robot_exploration.mr3_motion_control.MotionControlPhase object at 0x7439cb2b8f40>
+
+    def poll_once(self):
+        pending = self.pending
+        if pending is None:
+            return
+        request = pending["request"]
+        target, operation = request["target_time_ns"], request["operation"]
+>       now = self.node.get_clock().now().nanoseconds
+E       AttributeError: 'types.SimpleNamespace' object has no attribute 'now'
+
+build/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py:239: AttributeError
+_ test_takeover_and_stop_publish_zero_immediately_but_ack_waits_for_guard_storage[takeover] _
+
+operation = 'takeover'
+
+    @pytest.mark.parametrize("operation", ("takeover", "stop"))
+    def test_takeover_and_stop_publish_zero_immediately_but_ack_waits_for_guard_storage(operation):
+        phase, motion, _, events = storage_barrier_phase(operation)
+>       phase.poll()
+
+src/multi_robot_exploration/test/test_mr3_control_phase.py:695: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+build/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py:215: in poll
+    self.poll_once()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <multi_robot_exploration.mr3_motion_control.MotionControlPhase object at 0x7439cb008ee0>
+
+    def poll_once(self):
+        pending = self.pending
+        if pending is None:
+            return
+        request = pending["request"]
+        target, operation = request["target_time_ns"], request["operation"]
+>       now = self.node.get_clock().now().nanoseconds
+E       AttributeError: 'types.SimpleNamespace' object has no attribute 'now'
+
+build/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py:239: AttributeError
+_ test_takeover_and_stop_publish_zero_immediately_but_ack_waits_for_guard_storage[stop] _
+
+operation = 'stop'
+
+    @pytest.mark.parametrize("operation", ("takeover", "stop"))
+    def test_takeover_and_stop_publish_zero_immediately_but_ack_waits_for_guard_storage(operation):
+        phase, motion, _, events = storage_barrier_phase(operation)
+>       phase.poll()
+
+src/multi_robot_exploration/test/test_mr3_control_phase.py:695: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+build/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py:215: in poll
+    self.poll_once()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <multi_robot_exploration.mr3_motion_control.MotionControlPhase object at 0x7439cb2ba560>
+
+    def poll_once(self):
+        pending = self.pending
+        if pending is None:
+            return
+        request = pending["request"]
+        target, operation = request["target_time_ns"], request["operation"]
+>       now = self.node.get_clock().now().nanoseconds
+E       AttributeError: 'types.SimpleNamespace' object has no attribute 'now'
+
+build/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py:239: AttributeError
+_____ test_legacy_phase_does_not_acquire_the_reach_storage_barrier[commit] _____
+
+operation = 'commit'
+
+    @pytest.mark.parametrize("operation", ("commit", "takeover", "stop"))
+    def test_legacy_phase_does_not_acquire_the_reach_storage_barrier(operation):
+        phase, _, _, events = storage_barrier_phase(operation, reach=False)
+        assert not hasattr(phase.node, "reach")
+>       phase.poll()
+
+src/multi_robot_exploration/test/test_mr3_control_phase.py:715: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+build/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py:215: in poll
+    self.poll_once()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <multi_robot_exploration.mr3_motion_control.MotionControlPhase object at 0x7439ca3bb280>
+
+    def poll_once(self):
+        pending = self.pending
+        if pending is None:
+            return
+        request = pending["request"]
+        target, operation = request["target_time_ns"], request["operation"]
+>       now = self.node.get_clock().now().nanoseconds
+E       AttributeError: 'types.SimpleNamespace' object has no attribute 'now'
+
+build/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py:239: AttributeError
+____ test_legacy_phase_does_not_acquire_the_reach_storage_barrier[takeover] ____
+
+operation = 'takeover'
+
+    @pytest.mark.parametrize("operation", ("commit", "takeover", "stop"))
+    def test_legacy_phase_does_not_acquire_the_reach_storage_barrier(operation):
+        phase, _, _, events = storage_barrier_phase(operation, reach=False)
+        assert not hasattr(phase.node, "reach")
+>       phase.poll()
+
+src/multi_robot_exploration/test/test_mr3_control_phase.py:715: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+build/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py:215: in poll
+    self.poll_once()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <multi_robot_exploration.mr3_motion_control.MotionControlPhase object at 0x7439cb1da4d0>
+
+    def poll_once(self):
+        pending = self.pending
+        if pending is None:
+            return
+        request = pending["request"]
+        target, operation = request["target_time_ns"], request["operation"]
+>       now = self.node.get_clock().now().nanoseconds
+E       AttributeError: 'types.SimpleNamespace' object has no attribute 'now'
+
+build/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py:239: AttributeError
+______ test_legacy_phase_does_not_acquire_the_reach_storage_barrier[stop] ______
+
+operation = 'stop'
+
+    @pytest.mark.parametrize("operation", ("commit", "takeover", "stop"))
+    def test_legacy_phase_does_not_acquire_the_reach_storage_barrier(operation):
+        phase, _, _, events = storage_barrier_phase(operation, reach=False)
+        assert not hasattr(phase.node, "reach")
+>       phase.poll()
+
+src/multi_robot_exploration/test/test_mr3_control_phase.py:715: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+build/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py:215: in poll
+    self.poll_once()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <multi_robot_exploration.mr3_motion_control.MotionControlPhase object at 0x7439cb087250>
+
+    def poll_once(self):
+        pending = self.pending
+        if pending is None:
+            return
+        request = pending["request"]
+        target, operation = request["target_time_ns"], request["operation"]
+>       now = self.node.get_clock().now().nanoseconds
+E       AttributeError: 'types.SimpleNamespace' object has no attribute 'now'
+
+build/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py:239: AttributeError
+__ test_missing_guard_storage_keeps_the_original_wall_timeout_and_failure_ack __
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7439cb2b9f30>
+
+    def test_missing_guard_storage_keeps_the_original_wall_timeout_and_failure_ack(monkeypatch):
+        phase, _, _, events = storage_barrier_phase()
+>       phase.poll()
+
+src/multi_robot_exploration/test/test_mr3_control_phase.py:721: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+build/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py:215: in poll
+    self.poll_once()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <multi_robot_exploration.mr3_motion_control.MotionControlPhase object at 0x7439cb2b8520>
+
+    def poll_once(self):
+        pending = self.pending
+        if pending is None:
+            return
+        request = pending["request"]
+        target, operation = request["target_time_ns"], request["operation"]
+>       now = self.node.get_clock().now().nanoseconds
+E       AttributeError: 'types.SimpleNamespace' object has no attribute 'now'
+
+build/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py:239: AttributeError
+=========================== short test summary info ============================
+FAILED src/multi_robot_exploration/test/test_mr3_control_phase.py::test_reach_motion_ack_waits_for_all_three_guard_callbacks_despite_worker_receipts
+FAILED src/multi_robot_exploration/test/test_mr3_control_phase.py::test_reach_guard_storage_mismatch_never_grants_success[epoch-other]
+FAILED src/multi_robot_exploration/test/test_mr3_control_phase.py::test_reach_guard_storage_mismatch_never_grants_success[robot-tb1]
+FAILED src/multi_robot_exploration/test/test_mr3_control_phase.py::test_reach_guard_storage_mismatch_never_grants_success[clock_ns-21]
+FAILED src/multi_robot_exploration/test/test_mr3_control_phase.py::test_reach_guard_storage_mismatch_never_grants_success[source_clock_ns-19]
+FAILED src/multi_robot_exploration/test/test_mr3_control_phase.py::test_reach_guard_storage_mismatch_never_grants_success[decision_sequence-2]
+FAILED src/multi_robot_exploration/test/test_mr3_control_phase.py::test_reach_guard_storage_mismatch_never_grants_success[linear_x-0.001]
+FAILED src/multi_robot_exploration/test/test_mr3_control_phase.py::test_reach_guard_storage_mismatch_never_grants_success[angular_z-0.001]
+FAILED src/multi_robot_exploration/test/test_mr3_control_phase.py::test_reach_guard_storage_mismatch_never_grants_success[cmd_seq-0]
+FAILED src/multi_robot_exploration/test/test_mr3_control_phase.py::test_reach_guard_storage_mismatch_never_grants_success[clock_ns-True]
+FAILED src/multi_robot_exploration/test/test_mr3_control_phase.py::test_repeated_old_guard_receipt_cannot_release_a_new_target
+FAILED src/multi_robot_exploration/test/test_mr3_control_phase.py::test_takeover_and_stop_publish_zero_immediately_but_ack_waits_for_guard_storage[takeover]
+FAILED src/multi_robot_exploration/test/test_mr3_control_phase.py::test_takeover_and_stop_publish_zero_immediately_but_ack_waits_for_guard_storage[stop]
+FAILED src/multi_robot_exploration/test/test_mr3_control_phase.py::test_legacy_phase_does_not_acquire_the_reach_storage_barrier[commit]
+FAILED src/multi_robot_exploration/test/test_mr3_control_phase.py::test_legacy_phase_does_not_acquire_the_reach_storage_barrier[takeover]
+FAILED src/multi_robot_exploration/test/test_mr3_control_phase.py::test_legacy_phase_does_not_acquire_the_reach_storage_barrier[stop]
+FAILED src/multi_robot_exploration/test/test_mr3_control_phase.py::test_missing_guard_storage_keeps_the_original_wall_timeout_and_failure_ack
+17 failed, 115 passed in 9.53s

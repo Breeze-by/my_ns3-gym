@@ -1,0 +1,243 @@
+{
+  "schema": "mr3-short-diagnostic-descriptive-findings-v1",
+  "freeze": "c38e3e8ddc034bc0bf0b0cc4578cb6600ae51d90",
+  "references": [
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v21_diagnostic/uniform_two_episodes/worker0/worker_summary.json",
+      "sha256": "cac5bde7669dd228549381aa9a3d5f23851625744c2eb9b9d3136e85ce45eec7"
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261020_mr3_p2a_v21/closed_execution/mr3_p2a_v21_diagnostic/summary.json",
+      "sha256": "03b884a8843aacbc48c94a19d99aefde3f117b039a34bd5f5fd42ba5463393e0"
+    }
+  ],
+  "episodes": [
+    {
+      "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v21_diagnostic/uniform_two_episodes/worker0/episode001_open_101",
+      "epoch": "uniform_two_episodes_w0_e1_3c77c432",
+      "references": [
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v21_diagnostic/uniform_two_episodes/worker0/episode001_open_101/uniform_two_episodes_w0_e1_3c77c432.json",
+          "sha256": "9030a9e711deacc7535d83f0e1b171f518197e7b06a1344d9b40f13a11db620f"
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v21_diagnostic/uniform_two_episodes/worker0/episode001_open_101/transitions.jsonl",
+          "sha256": "fb6b70977631c260050602ebd1ad0b8c1f2510e46e5be5f1f2198407a8696b61"
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v21_diagnostic/uniform_two_episodes/worker0/episode001_open_101/summary.json",
+          "sha256": "0ceec3934620f5b0888f49ec4fa0ad1a51891faa9ac23336e3a3a98c0f49a15e"
+        }
+      ],
+      "api_records": 33,
+      "reset_records": 1,
+      "step_records": 32,
+      "reason": "external_sampler_limit",
+      "reward_time_seconds": 32.0,
+      "step_physical_time_seconds": 32.0,
+      "singleton_mask_steps": 22,
+      "keep_888_steps": 22,
+      "evaluator": {
+        "correct_free_coverage_ratio": 0.7412124532091664,
+        "observed_accuracy": 0.9598601358842426,
+        "occupied_iou": 0.17543144448974046,
+        "false_free_ratio": 0.002850435949027498,
+        "map_quality_pass": false,
+        "robot_participation_pass": false,
+        "success": false,
+        "elapsed_sim_time_sec": 32.2,
+        "collision_events": 0,
+        "collision_monitoring_active": true,
+        "collision_monitoring_fresh": true,
+        "nav_goal_count": 18,
+        "nav_succeeded": 0,
+        "nav_canceled": 18,
+        "nav_aborted": 0,
+        "navigation_protocol_closed": true
+      },
+      "contact_ever_unhealthy": false,
+      "robots": {
+        "tb1": {
+          "collision_duration_sec": 0.0,
+          "collision_events": 0,
+          "collision_message_count": 3954,
+          "end_x": 0.0005214763538571751,
+          "end_y": -0.454350268824469,
+          "nav_aborted": 0,
+          "nav_canceled": 6,
+          "nav_goal_count": 6,
+          "nav_succeeded": 0,
+          "path_length_m": 0.01544310491648432,
+          "start_x": 0.0015353187506964008,
+          "start_y": -0.4499990457845855,
+          "teleport_jump_count": 0,
+          "visited_cell_count": 2
+        },
+        "tb2": {
+          "collision_duration_sec": 0.0,
+          "collision_events": 0,
+          "collision_message_count": 3954,
+          "end_x": -2.073972141369819,
+          "end_y": 0.5681016282930407,
+          "nav_aborted": 0,
+          "nav_canceled": 6,
+          "nav_goal_count": 6,
+          "nav_succeeded": 0,
+          "path_length_m": 2.0981552115266706,
+          "start_x": 0.0014506963557016149,
+          "start_y": 0.4500008007241676,
+          "teleport_jump_count": 0,
+          "visited_cell_count": 25
+        },
+        "tb3": {
+          "collision_duration_sec": 0.0,
+          "collision_events": 0,
+          "collision_message_count": 3954,
+          "end_x": 0.4520651746585611,
+          "end_y": -0.0007841052296118224,
+          "nav_aborted": 0,
+          "nav_canceled": 6,
+          "nav_goal_count": 6,
+          "nav_succeeded": 0,
+          "path_length_m": 0.0071088783254507374,
+          "start_x": 0.45140869946431617,
+          "start_y": 7.479368038628599e-07,
+          "teleport_jump_count": 0,
+          "visited_cell_count": 2
+        }
+      },
+      "closure": {
+        "epoch": "uniform_two_episodes_w0_e1_3c77c432",
+        "start_sim_time_sec": 38.3,
+        "stop_sim_time_sec": 70.5,
+        "pending_goal_count": 0,
+        "robot_names": [
+          "tb1",
+          "tb2",
+          "tb3"
+        ],
+        "navigation_failure": false
+      }
+    },
+    {
+      "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v21_diagnostic/uniform_two_episodes/worker0/episode002_open_101",
+      "epoch": "uniform_two_episodes_w0_e2_28122183",
+      "references": [
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v21_diagnostic/uniform_two_episodes/worker0/episode002_open_101/uniform_two_episodes_w0_e2_28122183.json",
+          "sha256": "c0ff29289d3bbd2951cd6908ad068421bd1c1c2aef50cce76918759857a1a91a"
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v21_diagnostic/uniform_two_episodes/worker0/episode002_open_101/transitions.jsonl",
+          "sha256": "56b1f4b8e5cd8ec4b013b7837c3ff2538c3c960954547f6a325f7b52ac200db1"
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_v21_diagnostic/uniform_two_episodes/worker0/episode002_open_101/summary.json",
+          "sha256": "49a0f11e4e85777b958aefb509b01626fee71c980e122e92d4b7439a1d52c05f"
+        }
+      ],
+      "api_records": 33,
+      "reset_records": 1,
+      "step_records": 32,
+      "reason": "external_sampler_limit",
+      "reward_time_seconds": 32.0,
+      "step_physical_time_seconds": 32.0,
+      "singleton_mask_steps": 13,
+      "keep_888_steps": 15,
+      "evaluator": {
+        "correct_free_coverage_ratio": 0.7304619738884324,
+        "observed_accuracy": 0.9568883917046725,
+        "occupied_iou": 0.18192787236895025,
+        "false_free_ratio": 0.0013413816230717639,
+        "map_quality_pass": false,
+        "robot_participation_pass": false,
+        "success": false,
+        "elapsed_sim_time_sec": 32.2,
+        "collision_events": 0,
+        "collision_monitoring_active": true,
+        "collision_monitoring_fresh": true,
+        "nav_goal_count": 17,
+        "nav_succeeded": 0,
+        "nav_canceled": 17,
+        "nav_aborted": 0,
+        "navigation_protocol_closed": true
+      },
+      "contact_ever_unhealthy": false,
+      "robots": {
+        "tb1": {
+          "collision_duration_sec": 0.0,
+          "collision_events": 0,
+          "collision_message_count": 3924,
+          "end_x": 0.001524489657976674,
+          "end_y": -0.453993766023399,
+          "nav_aborted": 0,
+          "nav_canceled": 6,
+          "nav_goal_count": 6,
+          "nav_succeeded": 0,
+          "path_length_m": 0.015165647771232756,
+          "start_x": 0.0015299622337089176,
+          "start_y": -0.4499993313031044,
+          "teleport_jump_count": 0,
+          "visited_cell_count": 2
+        },
+        "tb2": {
+          "collision_duration_sec": 0.0,
+          "collision_events": 0,
+          "collision_message_count": 3924,
+          "end_x": -1.49829061438262,
+          "end_y": 0.655489133953102,
+          "nav_aborted": 0,
+          "nav_canceled": 5,
+          "nav_goal_count": 5,
+          "nav_succeeded": 0,
+          "path_length_m": 1.5234096938869295,
+          "start_x": 0.001453400904997236,
+          "start_y": 0.45000091763206873,
+          "teleport_jump_count": 0,
+          "visited_cell_count": 17
+        },
+        "tb3": {
+          "collision_duration_sec": 0.0,
+          "collision_events": 0,
+          "collision_message_count": 3924,
+          "end_x": 0.5153507383520238,
+          "end_y": 0.037748196528564835,
+          "nav_aborted": 0,
+          "nav_canceled": 6,
+          "nav_goal_count": 6,
+          "nav_succeeded": 0,
+          "path_length_m": 0.09111306312051222,
+          "start_x": 0.45140997861866317,
+          "start_y": 6.608064333972608e-07,
+          "teleport_jump_count": 0,
+          "visited_cell_count": 3
+        }
+      },
+      "closure": {
+        "epoch": "uniform_two_episodes_w0_e2_28122183",
+        "start_sim_time_sec": 38.24,
+        "stop_sim_time_sec": 70.44,
+        "pending_goal_count": 0,
+        "robot_names": [
+          "tb1",
+          "tb2",
+          "tb3"
+        ],
+        "navigation_failure": false
+      }
+    }
+  ],
+  "submitted": 64,
+  "returned": 64,
+  "native_actual_wait_seconds": "2073.892364923",
+  "full_activity_union_seconds": "3263.823140435",
+  "returned_per_native_wall_second": "0.03085984648117271417750279388",
+  "returned_per_full_activity_wall_second": "0.01960890564415513214505627824",
+  "rate_scope": "two short uniform-action diagnostic episodes, not qualified PPO training throughput",
+  "diagnostic_passed": false,
+  "qualification": false,
+  "training_eligible": false,
+  "policy_calls": 0,
+  "gpu_calls": 0,
+  "optimizer_steps": 0
+}
