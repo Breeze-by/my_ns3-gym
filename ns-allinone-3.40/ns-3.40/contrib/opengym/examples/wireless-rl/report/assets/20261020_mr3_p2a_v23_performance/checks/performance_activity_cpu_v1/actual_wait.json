@@ -1,0 +1,190 @@
+{
+  "schema": "mr3-reach-outer-actual-wait-v1",
+  "scope": "cpu",
+  "safety_contract": "mr3-reach-v1",
+  "actual_argv": [
+    "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+    "-B",
+    "-m",
+    "unittest",
+    "mr3_learning.tests.test_proxy2d_performance",
+    "-v"
+  ],
+  "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+  "coordinator_identity": {
+    "pid": 2373023,
+    "parent": 2373021,
+    "group": 2373021,
+    "session": 2373021,
+    "start_ticks": 424568530,
+    "state": "R"
+  },
+  "child_identity": {
+    "pid": 2373032,
+    "parent": 2373023,
+    "group": 2373021,
+    "session": 2373021,
+    "start_ticks": 424568546,
+    "state": "R"
+  },
+  "actual_returncode": 0,
+  "actual_waited": true,
+  "errors": [],
+  "started_monotonic_ns": 4245685464260039,
+  "ended_monotonic_ns": 4245686117499695,
+  "actual_child_wait_seconds": "0.653239656",
+  "source_before": [
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d_performance.py",
+      "sha256": "019f5d2c9658ff5ee4266ac74687d1ef3f26081f63c3955db3379d3f4ca0f0ab",
+      "bytes": 13901,
+      "stat": [
+        2051,
+        73564082,
+        13901,
+        1792500233302096778,
+        1792500233302096778
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d_capacity.py",
+      "sha256": "02c27ff396d745cf136df782e6c9165864e20243f000ba16988a0e1331e8f02c",
+      "bytes": 15127,
+      "stat": [
+        2051,
+        73564067,
+        15127,
+        1792500279678517023,
+        1792500279678517023
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d_activity.py",
+      "sha256": "3919360e922e8c365ca102db13c41f2b911a8525d167efd23213af4867791dd4",
+      "bytes": 14074,
+      "stat": [
+        2051,
+        73564070,
+        14074,
+        1792495679948592549,
+        1792495679948592549
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d_codec.py",
+      "sha256": "337244082676e08050d8872c6b9fcdc109840dcdb6ed188f854c5496e1d78981",
+      "bytes": 2386,
+      "stat": [
+        2051,
+        73564063,
+        2386,
+        1792493815204931208,
+        1792493815204931208
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_proxy2d.py",
+      "sha256": "06a2de3270e7efe7ef77489baa9a6075473174a8c95baa84be4d2c79609de7ca",
+      "bytes": 59013,
+      "stat": [
+        2051,
+        73564064,
+        59013,
+        1792500179448274040,
+        1792500179448274040
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_proxy2d_performance.py",
+      "sha256": "4127549025e9e3b6cb77077980f80c52812b3788640262675713fab7617e2c88",
+      "bytes": 10555,
+      "stat": [
+        2051,
+        73564083,
+        10555,
+        1792500213524061715,
+        1792500213524061715
+      ]
+    }
+  ],
+  "source_after": [
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d_performance.py",
+      "sha256": "019f5d2c9658ff5ee4266ac74687d1ef3f26081f63c3955db3379d3f4ca0f0ab",
+      "bytes": 13901,
+      "stat": [
+        2051,
+        73564082,
+        13901,
+        1792500233302096778,
+        1792500233302096778
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d_capacity.py",
+      "sha256": "02c27ff396d745cf136df782e6c9165864e20243f000ba16988a0e1331e8f02c",
+      "bytes": 15127,
+      "stat": [
+        2051,
+        73564067,
+        15127,
+        1792500279678517023,
+        1792500279678517023
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d_activity.py",
+      "sha256": "3919360e922e8c365ca102db13c41f2b911a8525d167efd23213af4867791dd4",
+      "bytes": 14074,
+      "stat": [
+        2051,
+        73564070,
+        14074,
+        1792495679948592549,
+        1792495679948592549
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d_codec.py",
+      "sha256": "337244082676e08050d8872c6b9fcdc109840dcdb6ed188f854c5496e1d78981",
+      "bytes": 2386,
+      "stat": [
+        2051,
+        73564063,
+        2386,
+        1792493815204931208,
+        1792493815204931208
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_proxy2d.py",
+      "sha256": "06a2de3270e7efe7ef77489baa9a6075473174a8c95baa84be4d2c79609de7ca",
+      "bytes": 59013,
+      "stat": [
+        2051,
+        73564064,
+        59013,
+        1792500179448274040,
+        1792500179448274040
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_proxy2d_performance.py",
+      "sha256": "4127549025e9e3b6cb77077980f80c52812b3788640262675713fab7617e2c88",
+      "bytes": 10555,
+      "stat": [
+        2051,
+        73564083,
+        10555,
+        1792500213524061715,
+        1792500213524061715
+      ]
+    }
+  ],
+  "source_unchanged": true,
+  "passed": true,
+  "console": {
+    "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261020_mr3_p2a_v23_performance/checks/performance_activity_cpu_v1/console.log",
+    "sha256": "1df151c5afa91e60e1d26b687ce754a7fa36b679b6eae15c810a60942a7a3bb8"
+  }
+}

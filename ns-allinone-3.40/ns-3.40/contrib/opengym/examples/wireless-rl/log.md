@@ -7547,3 +7547,12 @@ V22旧冻结收口后常规修复：worker由原start_ns/end_ns差计算physical
 后续建议先做有界分段剖析和等价缓存，后续容量改短固定覆盖以保证两group先有数据；另拟240尝试/1800秒只是未批候选，不启动新活动/训练/原生重试/gateway。P2A仍未完成。
 
 V22收口静态检查：最终真实CPU rc0/1.412626768秒/source stable，核323原件SHA/bytes、14MB分片/18exactcopy、原FAIL/错误信用保留、费用/17保存身份、旧冻结107source与仅2份生产修复差、459相对链接/log只追加，回执checks/closed_static_cpu_v2，结果closed_static_result_v1.json。首轮静态脚本假定所有回执都同schema且应匹配当前全部依赖，rc1/1.323912929秒；原件保留。worker首次15项回归时auditor为原严格版本，随后verified报告修复变化；为核最终组合，原worker测试按同一stub在当前auditor下复测15PASS，真实CPU rc0/2.281090497秒/source stable，checks/worker_integer_clock_cpu_v2。静态脚本按两份真实回执schema分别核SHA后通过；原严格_duration未改、无正式重审或新模拟。
+
+
+## 2026-10-20 MR3-P2A V23 性能续接准备
+
+用户“按你的想法继续”接受性能剖析/提速路线。预声明新profile最多1EP/8attempt/600秒和优化后新short最多30EP/240attempt/1800秒，共248attempt/31EP/2400秒最大预约，入场43261.8239849376018/52000、余8738.1760150623982；无新训练/原生/gateway/扩额或pilot/final-only。旧V22 FAIL/旧run不重试/改判。
+
+准备检查全部CPU：profile helper12项（真实2.278037488秒）、Supervisor profile开关12项（.370441004秒）、worker/helper组合29项（2.857794434秒）、活动预算/末账10项（.653239656秒）、原审计/codec/counter及新规格组合34项（37.892244021秒）。这些含重复覆盖，不累计成独立总数；所有真实command/cwd/env/source before/after或byteSHA/wait/console在[CPU清单](report/assets/20261020_mr3_p2a_v23_performance/cpu_preparation_index_v1.json)。无World实际episode或旧reader重放、不收费不供资格。
+
+profile显式cProfile独占新文件、原样传播非零SystemExit/异常，两子进程独立pstats；默认关闭并清除外部继承profile输出。新collect/audit_spec固定kind/groups/cells/maxstep/attempt/600或1800时钟；1/4组分别400/800窗口，全局共享ticket；正常提前终态不补样、安全终态显式error停止；验证全actual verified覆盖，原V22无spec行为/严格_duration不变。预算/原件预声明见[V23](report/20261020_mr3_p2a_v23_performance.md)，freeze后实际结果随后追加。

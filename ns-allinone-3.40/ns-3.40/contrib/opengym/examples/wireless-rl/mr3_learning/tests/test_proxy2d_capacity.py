@@ -12,12 +12,140 @@ import zlib
 
 import numpy as np
 
+from mr3_learning import proxy2d_capacity as capacity
 from mr3_learning.proxy2d_capacity import StepBudget, Trace
 from mr3_learning.proxy2d_codec import canonical_bytes, decode_arrays, encode_arrays, tensor_proofs
 from mr3_learning.proxy2d_process import pidfd_open, pidfd_send_signal
 
 
 class CapacityFixtures(unittest.TestCase):
+    def test_only_two_exact_bounded_specs_are_accepted(self):
+        for kind, attempts, seconds in (("profile", 8, 600), ("short_capacity", 240, 1800)):
+            spec = capacity.activity_spec(kind)
+            self.assertEqual(capacity.validate_activity_spec(spec), spec)
+            self.assertEqual(spec["max_attempts"], attempts)
+            self.assertEqual(spec["activity_seconds"], seconds)
+            for key, value in (("steps_per_episode", 8.), ("max_attempts", attempts + 1),
+                               ("extra", False), ("cells", [["open", 103]])):
+                with self.subTest(kind=kind, key=key), self.assertRaises(ValueError):
+                    capacity.validate_activity_spec({**spec, key: value})
+        with self.assertRaises(ValueError):
+            capacity.activity_spec("arbitrary")
+
+    def test_expired_group_does_not_consume_next_groups_shared_counter_or_deadline(self):
+        budget = StepBudget(1000 * 10**9, maximum=240)
+        with patch.object(capacity.time, "monotonic_ns", return_value=100 * 10**9):
+            self.assertFalse(budget.reserve(deadline_ns=145 * 10**9))
+            self.assertEqual(budget.reserve(deadline_ns=900 * 10**9), 1)
+        self.assertEqual(budget.deadline_ns, 1000 * 10**9)
+        self.assertFalse(budget.stop.is_set())
+
+    def test_collect_fixed_reservations_and_shared_global_budget_without_an_environment(self):
+        for kind, walls, maximum, seconds in (("profile", [240], 8, 600),
+                                               ("short_capacity", [400, 800], 240, 1800)):
+            calls = []
+            def worker(group, env_id, budget, freeze, **kwargs):
+                calls.append((env_id, kwargs))
+                episodes = []
+                for index, (scene, seed) in enumerate(kwargs["cells"], 1):
+                    for _ in range(kwargs["steps_per_episode"]):
+                        self.assertTrue(budget.reserve(deadline_ns=kwargs["group_deadline_ns"]))
+                        budget.returned()
+                    episodes.append({"env_id": env_id, "episode_index": index, "scene": scene, "seed": seed})
+                return {"episodes": episodes, "error": None, "saved_identities": []}
+            with self.subTest(kind=kind), tempfile.TemporaryDirectory() as tmp, \
+                    patch.object(capacity.time, "monotonic_ns", return_value=10**12), \
+                    patch.object(capacity, "collect_worker", side_effect=worker):
+                summary = capacity.collect(Path(tmp), "a" * 40, {}, {}, 10**12, 10**12 + seconds * 10**9,
+                    activity_spec=capacity.activity_spec(kind), group_wall_seconds=walls, profile=kind == "profile")
+                self.assertEqual(summary["step_attempts"], maximum)
+                self.assertEqual(summary["step_returns"], maximum)
+                self.assertEqual(summary["collection_started_ns"], 10**12)
+                self.assertEqual(summary["collection_deadline_ns"], 10**12 + sum(walls) * 10**9)
+                self.assertEqual(len(calls), 1 if kind == "profile" else 5)
+                self.assertTrue(all(kwargs["steps_per_episode"] == 8 for _, kwargs in calls))
+                self.assertEqual([g["wall_budget_seconds"] for g in summary["groups"]], walls)
+                self.assertEqual([g["deadline_ns"] for g in summary["groups"]],
+                    [10**12 + wall * 10**9 for wall in walls])
+
+    def test_legacy_collect_still_calls_four_argument_worker_stub(self):
+        calls = []
+        def worker(group, env_id, budget, freeze):
+            calls.append(env_id)
+            return {"episodes": [], "error": None, "saved_identities": []}
+        with tempfile.TemporaryDirectory() as tmp, patch.object(capacity, "collect_worker", side_effect=worker):
+            summary = capacity.collect(Path(tmp), "a" * 40, {}, {}, 1, 10**30)
+        self.assertEqual(len(calls), 5)
+        self.assertNotIn("activity_spec", summary)
+
+    def test_bounded_collection_rejects_changed_reservations_or_insufficient_tail(self):
+        spec = capacity.activity_spec("profile")
+        with tempfile.TemporaryDirectory() as tmp, patch.object(capacity.time, "monotonic_ns", return_value=10**12):
+            for kwargs in ({"group_wall_seconds": [241], "profile": True},
+                           {"group_wall_seconds": [240], "profile": False}):
+                with self.assertRaises(ValueError):
+                    capacity.collect(Path(tmp), "a" * 40, {}, {}, 10**12, 10**12 + 600 * 10**9,
+                                     activity_spec=spec, **kwargs)
+            with self.assertRaisesRegex(ValueError, "remaining activity tail"):
+                capacity.collect(Path(tmp), "a" * 40, {}, {}, 10**12 - 500 * 10**9, 10**12 + 100 * 10**9,
+                                 activity_spec=spec, group_wall_seconds=[240], profile=True)
+
+    def test_worker_profile_and_both_gym_creation_points_use_eight_steps(self):
+        created, supervisors = [], []
+        class Supervisor:
+            process = None
+            identities = []
+            def __init__(self, directory, env_id, profile=False):
+                supervisors.append(profile)
+                self.root, self.number = directory, 0
+                self.last_result = {"info": {"reason": "external_sampler_limit"}}
+        class Environment:
+            def __init__(self, supervisor, max_steps):
+                self.supervisor, self.maximum, self.count = supervisor, max_steps, 0
+                created.append(max_steps)
+                self._snapshot = {"epoch": "fixture", "digest": "a" * 64, "candidate_version": "fixture"}
+            def reset(self, **unused):
+                self.supervisor.number += 1
+                self.supervisor.directory = self.supervisor.root / str(self.supervisor.number)
+                self.supervisor.directory.mkdir(parents=True)
+                (self.supervisor.directory / "episode.json").write_text("{}")
+                return {}, {}
+            def action_masks(self):
+                return np.ones(1000, dtype=bool)
+            def step(self, action):
+                self.count += 1
+                return {}, 0., False, self.count == self.maximum, {}
+            def close(self):
+                pass
+        with tempfile.TemporaryDirectory() as tmp, patch.object(capacity, "ProxySupervisor", Supervisor), \
+                patch.object(capacity, "MR3Env", Environment), patch.object(capacity, "Trace"):
+            budget = StepBudget(10**30, maximum=16)
+            result = capacity.collect_worker(Path(tmp), 0, budget, "a" * 40,
+                cells=[["open", 101], ["rooms", 101]], steps_per_episode=8, profile=True)
+        self.assertIsNone(result["error"])
+        self.assertEqual(created, [8, 8, 8])
+        self.assertEqual(supervisors, [True])
+        self.assertEqual(budget.attempts, 16)
+        class UnsafeSupervisor(Supervisor):
+            def __init__(self, *args, **kwargs):
+                super().__init__(*args, **kwargs)
+                self.last_result = {"info": {"reason": "peer_contact"}}
+        class UnsafeEnvironment(Environment):
+            def step(self, action):
+                return {}, 0., True, False, {}
+        for explicit in (True, False):
+            with tempfile.TemporaryDirectory() as tmp, patch.object(capacity, "ProxySupervisor", UnsafeSupervisor), \
+                    patch.object(capacity, "MR3Env", UnsafeEnvironment), patch.object(capacity, "Trace"):
+                budget = StepBudget(10**30, maximum=8)
+                result = capacity.collect_worker(Path(tmp), 0, budget, "a" * 40,
+                    cells=[["open", 101]] if explicit else None, steps_per_episode=8)
+            self.assertTrue(budget.stop.is_set())
+            self.assertEqual(budget.attempts, 1)
+            if explicit:
+                self.assertIn("unsafe_terminal", result["error"])
+            else:
+                self.assertIsNone(result["error"])
+
     def test_host_pidfd_can_observe_this_process_without_sending_a_mutating_signal(self):
         descriptor = pidfd_open(os.getpid())
         try:

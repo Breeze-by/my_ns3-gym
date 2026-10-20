@@ -1,5 +1,7 @@
 # ROS component memory — MR3
 
+2026-10-20 V23续接授权：用户“按你的想法继续”，推进新有界性能剖析/提速及短容量：profile最多1EP/8attempt/600秒，优化后一次1/4env短容量最多30EP/240attempt/1800秒，均含审计/外尾，工程仍限52000、入场余8738.1760150623982。旧V22 FAIL不重试/改判；训练、pilot/final-only、原生迁移/gateway/扩额不启动。见[V23预声明](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261020_mr3_p2a_v23_performance.md)，先测再优化、每次新freeze。
+
 2026-10-20 V22闭合：冻结`1dc2a1f601693f542479f9b6b7c54c69519b5460`二维符合性6原件+3合成及独立review通过；唯一零更新容量活动284尝试/返回、0step错误，但首场open101未完成、无实际4env，严格时间差与审计verified计数缺陷使完整活动FAIL。旧FAIL不改/不重跑；17保存身份gone，新增1781.490347088秒，累计43261.8239849376018/52000，余8738.1760150623982。pilot/final-only不动，P2A未完成；常规整数时钟/审计信用CPU修复不供新资格，训练/迁移/gateway未启动。见[V22闭合与下一步](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261020_mr3_p2a_v22_proxy2d.md)。
 
 2026-10-20 V22授权：用户答复“继续，同意”，已接受二维代理实现、接口符合性和一次零更新容量活动；9000次ENV.step尝试/3600墙秒/最多30回合，1及4env共用上限，0模型/GPU/optimizer，无重试或补样。入场工程余10519.6663621503982/52000，pilot/final-only不动；训练、原生重试/迁移、60000、冻结规则变更和gateway均未授权。见[V22](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261020_mr3_p2a_v22_proxy2d.md)。

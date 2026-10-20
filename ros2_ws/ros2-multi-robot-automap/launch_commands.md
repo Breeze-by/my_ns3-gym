@@ -1,5 +1,18 @@
 # 当前三机器人基线与MR3适配启动命令
 
+## V23 有界性能剖析与短容量（新授权、冻结前）
+
+仅新run/freeze使用，不重跑V22。profile一次8attempt/600秒，优化后short一次240attempt/1800秒；均零模型/GPU/optimizer，source/原件/实际wait/费用与完整退出保存。先profile实测后再决定等价优化及short入场；详情见[V23](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261020_mr3_p2a_v23_performance.md)。学习端canonical wireless-rl、conda ns3gym、未source ROS；system worker/evaluator由Supervisor显式隔离启动。默认profile关闭，只有剖析活动显式打开；容量无剖析开销。
+
+冻结并推送后使用以下入口（EXACT40为各自完整freeze，不能复用旧输出）：
+
+```bash
+PYTHONNOUSERSITE=1 CUDA_VISIBLE_DEVICES= /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.proxy2d_performance preflight --kind profile --freeze EXACT40
+PYTHONNOUSERSITE=1 CUDA_VISIBLE_DEVICES= /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.reach_execution --scope engineering --output /tmp/mr3_proxy2d_v23_profile_outer --source mr3_learning/proxy2d_performance.py -- /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.proxy2d_performance execute --kind profile --freeze EXACT40
+```
+
+父进程真实wait后，以同样engineering wrapper运行`proxy2d_performance final --kind profile --run RUN --outer OUTER_ACTUAL_WAIT --output NEW_JSON`并计外尾；short_capacity另冻结、新plan与新目录，不能先调用collect绕过符合性或直接以当前profile计划运行训练。
+
 ## V22 二维活动已FAIL闭合（历史命令）
 
 本次唯一活动已在1dc2a1f601693f542479f9b6b7c54c69519b5460执行并FAIL闭合，17保存身份gone；下列仅保留历史命令，不是重试入口。当前余8738.1760150623982/52000，pilot/final-only未动。默认原生launch不变。此入口创建system Python无Node代理worker及独立evaluator，学习端仍conda ns3gym，不启动Gazebo/Nav2/ROS graph或训练。固定三机，1/4env共9000 ENV.step尝试、3600秒，包括正式符合性和独立审计；没有native资格信用。计划与入场条件见[V22](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261020_mr3_p2a_v22_proxy2d.md)。

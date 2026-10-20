@@ -25,26 +25,26 @@ class ProxyAuditTests(unittest.TestCase):
     def tearDownClass(cls):
         cls.builder.close()
 
-    def params(self, sequence, now):
+    def params(self, sequence, now, epoch="fixture-epoch"):
         grid = np.zeros((16, 16), dtype=np.int8)
-        robots = [{"name": name, "epoch": "fixture-epoch", "x": float(index - 1), "y": 0.,
+        robots = [{"name": name, "epoch": epoch, "x": float(index - 1), "y": 0.,
                    "yaw": 0., "v": 0., "w": 0., "valid": True,
                    "source_stamp": now, "received_stamp": now,
                    "navigation": {"phase": "idle"}, "history": []}
                   for index, name in enumerate(("tb1", "tb2", "tb3"))]
         navigation = {name: {"grid": grid.copy(), "resolution": .5, "origin": [-4., -4.],
-                            "epoch": "fixture-epoch", "version": sequence,
+                            "epoch": epoch, "version": sequence,
                             "source_stamp": now, "received_stamp": now,
                             "payload_sha256": "b" * 64,
                             "composition_version": audit.CONTRACT}
                       for name in ("tb1", "tb2", "tb3")}
         return {"raw_grid": grid, "resolution": .5, "origin": [-4., -4.], "robots": robots,
-                "now": now, "epoch": "fixture-epoch", "map_version": sequence,
+                "now": now, "epoch": epoch, "map_version": sequence,
                 "sequence": sequence, "map_source_stamp": now, "map_received_stamp": now,
                 "map_sources": {}, "task_start": 1., "navigation_maps": navigation}
 
-    def actor(self, directory, sequence, now, event, event_sequence):
-        params = self.params(sequence, now)
+    def actor(self, directory, sequence, now, event, event_sequence, epoch="fixture-epoch"):
+        params = self.params(sequence, now, epoch)
         snapshot = self.builder(**params)
         encoded = audit.canonical(encode_arrays(params))
         digest = audit.sha(encoded)
@@ -53,27 +53,27 @@ class ProxyAuditTests(unittest.TestCase):
         path.parent.mkdir(exist_ok=True)
         path.write_bytes(gzip.compress(encoded, mtime=0))
         return {"schema": audit.SCHEMA, "event": event, "event_sequence": event_sequence,
-                "env_id": 0, "episode_index": 1, "epoch": "fixture-epoch", "proxy_only": True,
+                "env_id": 0, "episode_index": 1, "epoch": epoch, "proxy_only": True,
                 "actor_input_ref": {"path": relative, "sha256": digest}, "snapshot": snapshot,
                 "tensor_proofs": audit.tensor_proofs(snapshot), "dt": 0. if event == "reset" else 1.,
                 "physical_dt": 0. if event == "reset" else 1., "reward": 0.,
                 "terminated": False, "truncated": False, "reason": None}
 
-    def fixture(self, directory, count=2):
-        rows = [self.actor(directory, 1, 1., "reset", 1)]
+    def fixture(self, directory, count=2, epoch="fixture-epoch"):
+        rows = [self.actor(directory, 1, 1., "reset", 1, epoch)]
         for index in range(count):
             previous = rows[-1]["snapshot"]
             action = next(i for i, valid in enumerate(previous["joint_action_mask"]) if valid)
             rows.append({"schema": audit.SCHEMA, "event": "step_attempt",
                          "event_sequence": len(rows) + 1, "env_id": 0, "episode_index": 1,
-                         "epoch": "fixture-epoch", "proxy_only": True,
+                         "epoch": epoch, "proxy_only": True,
                          "action": action, "preceding_digest": previous["digest"],
                          "candidate_version": previous["candidate_version"],
                          "joint_action_mask": previous["joint_action_mask"]})
-            rows.append(self.actor(directory, index + 2, index + 2., "step_return", len(rows) + 1))
+            rows.append(self.actor(directory, index + 2, index + 2., "step_return", len(rows) + 1, epoch))
         rows[-1].update(truncated=True, reason="external_sampler_limit")
         rows.append({"schema": audit.SCHEMA, "event": "close", "event_sequence": len(rows) + 1,
-                     "env_id": 0, "episode_index": 1, "epoch": "fixture-epoch", "proxy_only": True,
+                     "env_id": 0, "episode_index": 1, "epoch": epoch, "proxy_only": True,
                      "closed": True})
         return rows
 
@@ -486,6 +486,141 @@ class ProxyAuditTests(unittest.TestCase):
             self.assertEqual(report["verified_actor_record_count"], 1)
             self.assertEqual(report["verified_step_return_count"], 0)
             self.assertEqual(report["validated_prefix_records"], 1)
+
+    def bounded_fixture(self, directory, kind, *, episode_limit=None, count=8, normal_terminal=False):
+        """Saved actor/ticket fixtures only; no supervisor/world/environment call."""
+        from mr3_learning.proxy2d_capacity import activity_spec
+        spec = activity_spec(kind)
+        started = time.monotonic_ns() - 2_000_000_000
+        collection_started = started + 1000
+        collection = collection_started + (240 if kind == "profile" else 1200) * 10**9
+        groups, saved_rows, ticket = [], [], 0
+        previous_end = collection_started
+        for workers, wall in zip(spec["groups"], [240] if kind == "profile" else [400, 800]):
+            group_start = previous_end + 1000
+            entries = []
+            for env_id in range(workers):
+                rng = random.Random(41 + 1000003 * env_id)
+                for index, (scene, seed) in enumerate(spec["cells"], 1):
+                    if episode_limit is not None and len(saved_rows) >= episode_limit:
+                        continue
+                    episode = directory / f"group{workers}/worker{env_id}/episode{index:03d}_{scene}_{seed}"
+                    episode.mkdir(parents=True)
+                    epoch = f"fixture:g{workers}:w{env_id}:ep{index}"
+                    rows = self.fixture(episode, count=count, epoch=epoch)
+                    for row in rows:
+                        row.update(env_id=env_id, episode_index=index)
+                        if row["event"] == "step_attempt":
+                            ticket += 1
+                            row.update(global_attempt=ticket, started_wall_ns=group_start + ticket * 1000,
+                                action=rng.choice([n for n, legal in enumerate(row["joint_action_mask"]) if legal]))
+                        elif row["event"] == "step_return":
+                            row["ended_wall_ns"] = group_start + ticket * 1000 + 1
+                    if normal_terminal:
+                        rows[-2].update(terminated=True, truncated=False, reason="coverage_reached")
+                    self.write(episode, rows)
+                    (episode / "episode.json").write_bytes(audit.canonical({"scene": scene, "seed": seed,
+                        "env_id": env_id, "episode_index": index, "epoch": epoch, "freeze": "a" * 40,
+                        "profile_enabled": kind == "profile"}))
+                    entries.append({"directory": str(episode), "env_id": env_id, "episode_index": index,
+                                    "scene": scene, "seed": seed, "action_seed": 41 + 1000003 * env_id})
+                    saved_rows.append((episode, rows))
+            previous_end = group_start + 1_000_000
+            groups.append({"workers": workers, "started_ns": group_start, "ended_ns": previous_end,
+                           "deadline_ns": min(collection, group_start + wall * 10**9),
+                           "wall_budget_seconds": wall, "episodes": entries})
+        summary = {"schema": "mr3-proxy2d-capacity-summary-v1", "freeze": "a" * 40,
+            "activity_spec": spec, "activity_kind": kind, "profile_enabled": kind == "profile",
+            "scheduled_cells": spec["cells"], "qualification": False, "training_eligible": False,
+            "native_credit": False, "policy_calls": 0, "gpu_calls": 0, "optimizer_steps": 0,
+            "source_bindings": {"fixture": "fixture"}, "conformity": {},
+            "activity_started_ns": started, "activity_deadline_ns": started + spec["activity_seconds"] * 10**9,
+            "collection_started_ns": collection_started, "collection_deadline_ns": collection,
+            "closed": True, "errors": [], "forbidden_framework_imports": [], "groups": groups,
+            "step_attempts": ticket, "step_returns": ticket, "step_errors": 0}
+        return summary, saved_rows
+
+    def bounded_review(self, directory, summary):
+        (directory / "capacity_summary.json").write_bytes(audit.canonical(summary))
+        stable = {Path(audit.__file__): Path(audit.__file__).read_bytes()}
+        with patch.object(audit, "source_proof", return_value=({}, stable)), \
+                patch.object(audit, "verify_run_sources", return_value=({}, {}, ["manufactured fixture"])), \
+                patch.object(audit, "verify_conformity", return_value=({"passed": True}, {})):
+            return audit.audit_run(directory, "a" * 40)
+
+    def test_fixed_profile_eight_steps_can_pass_without_matrix_or_training_credit(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            summary, _ = self.bounded_fixture(directory, "profile")
+            result = self.bounded_review(directory, summary)
+            self.assertTrue(result["passed"], result["errors"])
+            self.assertEqual(result["verified_uniform_action_count"], 8)
+            self.assertFalse(result["full_matrix_credit"])
+            self.assertFalse(result["complete_short_capacity_matrix"])
+            self.assertFalse(result["qualification"])
+            self.assertFalse(result["training_eligible"])
+
+    def test_short_capacity_all_thirty_fixed_cells_and240_calls_have_full_verified_coverage(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            summary, _ = self.bounded_fixture(directory, "short_capacity")
+            result = self.bounded_review(directory, summary)
+            self.assertTrue(result["passed"], result["errors"])
+            self.assertEqual(len(result["episodes"]), 30)
+            self.assertEqual(result["step_attempts"], 240)
+            self.assertEqual(result["verified_uniform_action_count"], 240)
+            self.assertEqual(result["verified_actor_record_count"], 270)
+            self.assertTrue(result["complete_short_capacity_matrix"])
+            self.assertFalse(result["qualification"])
+
+    def test_normal_early_terminal_is_complete_without_fabricating_missing_calls(self):
+        for kind in ("profile", "short_capacity"):
+            with self.subTest(kind=kind), tempfile.TemporaryDirectory() as temporary:
+                directory = Path(temporary)
+                summary, _ = self.bounded_fixture(directory, kind, count=1, normal_terminal=True)
+                result = self.bounded_review(directory, summary)
+                self.assertTrue(result["passed"], result["errors"])
+                expected = 1 if kind == "profile" else 30
+                self.assertEqual(result["step_attempts"], expected)
+                self.assertEqual(result["verified_uniform_action_count"], expected)
+
+    def test_missing_cells_ticket_metadata_clock_and_unsafe_terminal_do_not_pass(self):
+        for case in ("missing_cells", "ticket", "metadata", "group_clock", "collection_clock", "unsafe", "early_external"):
+            with self.subTest(case=case), tempfile.TemporaryDirectory() as temporary:
+                directory = Path(temporary)
+                summary, saved = self.bounded_fixture(directory,
+                    "short_capacity" if case == "missing_cells" else "profile",
+                    episode_limit=1 if case == "missing_cells" else None,
+                    count=1 if case == "early_external" else 8)
+                episode, rows = saved[0]
+                if case == "ticket":
+                    rows[1]["global_attempt"] = 2
+                elif case == "metadata":
+                    path = episode / "episode.json"
+                    metadata = audit.parse(path.read_bytes()); metadata["seed"] = 103
+                    path.write_bytes(audit.canonical(metadata))
+                elif case == "group_clock":
+                    summary["groups"][0]["deadline_ns"] += 1
+                elif case == "collection_clock":
+                    summary["collection_deadline_ns"] += 1
+                elif case == "unsafe":
+                    rows[-2].update(terminated=True, truncated=False, reason="peer_contact")
+                self.write(episode, rows)
+                result = self.bounded_review(directory, summary)
+                self.assertFalse(result["passed"])
+                self.assertFalse(result["complete_short_capacity_matrix"])
+
+    def test_profile_spec_cannot_change_schedule_steps_types_or_relax_legacy_clock(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            summary, _ = self.bounded_fixture(Path(temporary), "profile")
+            for key, value in (("steps_per_episode", 9), ("steps_per_episode", 8.),
+                               ("extra", False), ("cells", [["rooms", 101]])):
+                altered = copy.deepcopy(summary)
+                altered["activity_spec"][key] = value
+                with self.assertRaises(ValueError):
+                    audit._activity_contract(altered)
+            legacy = {key: value for key, value in summary.items() if key != "activity_spec"}
+            self.assertEqual(audit._activity_contract(legacy)["activity_seconds"], 3600)
 
 
 if __name__ == "__main__":

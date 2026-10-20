@@ -283,6 +283,7 @@ def audit_episode(directory, freeze, *, builder=None, verify_sources=True, rng=N
               "step_returns": 0, "step_errors": 0, "records": 0,
               "event_count_scope": "raw parsed event rows, including the unverified suffix after a failure",
               "raw_event_counts_complete": False, "raw_close_records": 0, "raw_closed_true_records": 0,
+              "raw_global_attempt_tickets": [],
               "validated_prefix_records": 0, "causal_validation_complete": False,
               "verified_count_scope": "action=preceding mask/digest/version; uniform=successful RNG comparison; "
                                       "actor=saved input/digest/tensor checks; return=settled duration/actor/timestamp checks",
@@ -320,6 +321,8 @@ def audit_episode(directory, freeze, *, builder=None, verify_sources=True, rng=N
         result["raw_close_records"] = sum(row.get("event") == "close" for _, row in rows)
         result["raw_closed_true_records"] = sum(row.get("event") == "close" and row.get("closed") is True
                                                  for _, row in rows)
+        result["raw_global_attempt_tickets"] = [row.get("global_attempt") for _, row in rows
+                                                if row.get("event") == "step_attempt"]
         for key, event in (("step_attempts", "step_attempt"), ("step_returns", "step_return"),
                            ("step_errors", "step_error")):
             result[key] = sum(row.get("event") == event for _, row in rows)
@@ -414,6 +417,8 @@ def audit_episode(directory, freeze, *, builder=None, verify_sources=True, rng=N
         result["errors"].append(str(error))
     result.update(epoch=epoch, env_id=env_id, episode_index=episode_index,
                   verified_actor_record_count=len(result["actor_records"]),
+                  last_verified_return_terminal=(None if last_return is None else
+                      {key: last_return[key] for key in ("terminated", "truncated", "reason")}),
                   verified_close=closed, closed=closed,
                   closed_scope="causal validation reached the close record; raw observed close counts are separate",
                   passed=closed and not result["errors"])
@@ -432,6 +437,27 @@ def _trace_wall_coverage(report, group_start, collection_deadline, group_end):
                                                             for value in values),
                         "lower_bound_ns": lower, "upper_bound_ns": upper}
     return result
+
+
+def _activity_contract(summary):
+    """Independent fixed-spec checks; absence retains the strict V22 contract."""
+    cells = [[scene, seed] for scene in ("open", "rooms", "corridors") for seed in (101, 103)]
+    if "activity_spec" not in summary:
+        return {"kind": "legacy_v22", "groups": [1, 4], "cells": cells, "steps_per_episode": 300,
+                "max_attempts": 9000, "activity_seconds": 3600, "group_wall_seconds": None}
+    spec = summary["activity_spec"]
+    require(isinstance(spec, dict) and spec.get("kind") in ("profile", "short_capacity"),
+            "unknown bounded proxy activity specification")
+    profile = spec["kind"] == "profile"
+    expected = {"schema": "mr3-proxy2d-activity-spec-v1", "kind": spec["kind"],
+                "groups": [1] if profile else [1, 4], "cells": [["open", 101]] if profile else cells,
+                "steps_per_episode": 8, "max_attempts": 8 if profile else 240,
+                "activity_seconds": 600 if profile else 1800}
+    require(canonical(spec) == canonical(expected), "bounded proxy activity differs from its exact fixed specification")
+    require(summary.get("activity_kind") == spec["kind"] and summary.get("profile_enabled") is profile
+            and canonical(summary.get("scheduled_cells")) == canonical(expected["cells"]),
+            "summary activity kind/profile/schedule differs from its fixed specification")
+    return {**expected, "group_wall_seconds": [240] if profile else [400, 800]}
 
 
 def verify_run_sources(bindings, freeze):
@@ -700,6 +726,10 @@ def audit_run(directory, freeze):
         summary = parse(raw)
         require(summary.get("schema") == "mr3-proxy2d-capacity-summary-v1" and summary.get("freeze") == freeze,
                 "capacity summary schema/freeze differs")
+        contract = _activity_contract(summary)
+        bounded = contract["kind"] != "legacy_v22"
+        result.update(activity_kind=contract["kind"], activity_spec=summary.get("activity_spec"),
+                      full_matrix_credit=False)
         require(summary.get("qualification") is False and summary.get("training_eligible") is False
                 and summary.get("native_credit") is False,
                 "proxy summary acquired unapproved qualification/training credit")
@@ -712,15 +742,22 @@ def audit_run(directory, freeze):
         start, deadline, collection = (summary[key] for key in (
             "activity_started_ns", "activity_deadline_ns", "collection_deadline_ns"))
         require(all(type(value) is int for value in (start, deadline, collection))
-                and 0 < start < collection < deadline and deadline - start == 3600 * 10**9,
-                "activity must share one3600-second budget with a real close/audit reservation")
+                and 0 < start < collection < deadline
+                and deadline - start == contract["activity_seconds"] * 10**9,
+                "activity must share its exact declared wall budget with a real close/audit reservation")
+        if bounded:
+            collection_started = summary["collection_started_ns"]
+            require(type(collection_started) is int and start <= collection_started
+                    and collection - collection_started == (240 if contract["kind"] == "profile" else 1200) * 10**9
+                    and collection <= deadline - 120 * 10**9,
+                    "bounded collection reservation differs from its exact fixed clock contract")
         result["conformity"], receipt = verify_conformity(directory, summary["conformity"], freeze)
         stable.update(receipt)
         if summary.get("closed") is not True or summary.get("errors") != []:
             result["errors"].append("proxy collection retained errors or is not actually closed: " + str(summary.get("errors")))
         require(summary.get("forbidden_framework_imports") == [], "collection retained imported learning frameworks")
         groups = summary["groups"]
-        if [group["workers"] for group in groups] != [1, 4]:
+        if [group["workers"] for group in groups] != contract["groups"]:
             result["errors"].append("single/four-environment activity inventory differs")
         discovered = {path.parent.resolve() for path in directory.rglob("trace.jsonl.gz")
                       if "conformity" not in path.relative_to(directory).parts}
@@ -729,19 +766,26 @@ def audit_run(directory, freeze):
             result["errors"].append("attempted proxy episode inventory omitted/duplicated trace")
         require(not list(directory.rglob("*.zip")) and not list(directory.rglob("*.pt"))
                 and not list(directory.rglob("*.pth")), "model/checkpoint artifact appeared in zero-learning activity")
-        cells = {("open", 101), ("open", 103), ("rooms", 101), ("rooms", 103),
-                 ("corridors", 101), ("corridors", 103)}
+        cells = {tuple(cell) for cell in contract["cells"]}
         builder = PureBuilder()
         epochs, audited = set(), set()
         result["group_capacity"] = []
         group_end = start
-        for group in groups:
+        for group_index, group in enumerate(groups):
             workers = group["workers"]
             require(type(workers) is int and workers in (1, 4), "invalid environment-group identity")
             if not (type(group["started_ns"]) is int and type(group["ended_ns"]) is int
                     and group_end <= group["started_ns"] <= group["ended_ns"] <= deadline):
                 result["errors"].append("group denominator is outside the common activity or overlaps sequential groups")
             group_end = group["ended_ns"]
+            local_deadline = collection
+            if bounded:
+                wall = contract["group_wall_seconds"][group_index]
+                local_deadline = min(collection, group["started_ns"] + wall * 10**9)
+                require(type(group.get("wall_budget_seconds")) is int and group["wall_budget_seconds"] == wall
+                        and type(group.get("deadline_ns")) is int and group["deadline_ns"] == local_deadline
+                        and group["ended_ns"] <= local_deadline,
+                        "bounded group exceeded/changed its independent wall reservation")
             capacity = {"workers": workers, "started_ns": group["started_ns"], "ended_ns": group["ended_ns"],
                         "step_attempts": 0, "step_returns": 0, "step_errors": 0,
                         "returned_steps_scope": "raw return events; duration/actor verification counted separately"}
@@ -749,9 +793,12 @@ def audit_run(directory, freeze):
             for env_id in range(workers):
                 entries = sorted((item for item in group["episodes"] if item["env_id"] == env_id),
                                  key=lambda item: item["episode_index"])
-                if not (len(entries) == 6 and [item["episode_index"] for item in entries] == list(range(1, 7))
+                if not (len(entries) == len(cells)
+                        and [item["episode_index"] for item in entries] == list(range(1, len(cells) + 1))
                         and {(item["scene"], item["seed"]) for item in entries} == cells):
                     result["errors"].append(f"group{workers}/worker{env_id}: six fixed scene/seed cells were omitted/replaced/retried")
+                if bounded and [[item["scene"], item["seed"]] for item in entries] != contract["cells"]:
+                    result["errors"].append(f"group{workers}/worker{env_id}: bounded fixed cell order differs")
                 rng = random.Random(41 + 1000003 * env_id)
                 uniform_stream_complete = True
                 for item in entries:
@@ -774,10 +821,33 @@ def audit_run(directory, freeze):
                                 "independent random-stream seed differs")
                         require(report["env_id"] == env_id and report["episode_index"] == item["episode_index"]
                                 and report["epoch"] not in epochs, "reset reused epoch or mixed environment identity")
+                        if bounded:
+                            metadata_path = episode / "episode.json"
+                            metadata_raw = metadata_path.read_bytes()
+                            stable[metadata_path] = metadata_raw
+                            metadata = parse(metadata_raw)
+                            require(all(type(metadata[key]) is type(expected) and metadata[key] == expected for key, expected in (
+                                ("scene", item["scene"]), ("seed", item["seed"]), ("env_id", env_id),
+                                ("episode_index", item["episode_index"]), ("epoch", report["epoch"]), ("freeze", freeze)))
+                                and metadata["profile_enabled"] is (contract["kind"] == "profile"),
+                                "bounded episode metadata differs from its actual fixed cell/identity")
+                            steps = contract["steps_per_episode"]
+                            actual_steps = report["step_attempts"]
+                            require(actual_steps == report["step_returns"] and 1 <= actual_steps <= steps
+                                    and report["step_errors"] == 0 and report["causal_validation_complete"]
+                                    and report["verified_action_count"] == report["verified_uniform_action_count"] == actual_steps
+                                    and report["verified_step_return_count"] == actual_steps
+                                    and report["verified_actor_record_count"] == actual_steps + 1,
+                                    "bounded episode lacks complete verified coverage within its eight-step ceiling")
+                            terminal = report["last_verified_return_terminal"]
+                            require(terminal and ((terminal["terminated"] and terminal["reason"] in ("coverage_reached", "timeout"))
+                                    or (terminal["truncated"]
+                                    and actual_steps == steps and terminal["reason"] == "external_sampler_limit")),
+                                    "bounded episode retained unsafe terminal or omitted its real external eight-step cut")
                     except ERRORS as error:
                         result["errors"].append(str(episode) + ": " + str(error))
                     report["wall_timestamp_coverage"] = _trace_wall_coverage(
-                        report, group["started_ns"], collection, group["ended_ns"])
+                        report, group["started_ns"], local_deadline, group["ended_ns"])
                     for name, check in report["wall_timestamp_coverage"].items():
                         if not check["coverage_complete"]:
                             result["errors"].append(f"{episode}: {name} wall timestamp coverage incomplete: "
@@ -789,8 +859,10 @@ def audit_run(directory, freeze):
             wall = (group["ended_ns"] - group["started_ns"]) / 1e9
             capacity.update(wall_seconds_including_reset_and_close=wall,
                             returned_steps_per_wall_second=capacity["step_returns"] / wall if wall > 0 else None,
-                            complete_six_cells_per_worker=all(sum(item["env_id"] == env_id for item in group["episodes"]) == 6
-                                                              for env_id in range(workers)))
+                            complete_six_cells_per_worker=len(cells) == 6 and all(
+                                sum(item["env_id"] == env_id for item in group["episodes"]) == 6 for env_id in range(workers)),
+                            complete_declared_cells_per_worker=all(
+                                sum(item["env_id"] == env_id for item in group["episodes"]) == len(cells) for env_id in range(workers)))
             result["group_capacity"].append(capacity)
         for episode in sorted(discovered - audited):
             report = audit_episode(episode, freeze, builder=builder)
@@ -799,9 +871,15 @@ def audit_run(directory, freeze):
             result["errors"].extend(str(episode) + ": " + error for error in report["errors"])
             for key in ("step_attempts", "step_returns", "step_errors", *VERIFIED_COUNTS):
                 result[key] += report[key]
-        require(result["step_attempts"] <= 9000
+        require(result["step_attempts"] <= contract["max_attempts"]
                 and result["step_attempts"] == result["step_returns"] + result["step_errors"],
-                "global9000 attempt budget excluded errors or was exceeded")
+                "global attempt budget excluded errors or was exceeded")
+        if bounded:
+            tickets = [ticket for report in result["episodes"] for ticket in report["raw_global_attempt_tickets"]]
+            require(len(tickets) == result["step_attempts"] and all(type(ticket) is int for ticket in tickets)
+                    and sorted(tickets) == list(range(1, result["step_attempts"] + 1))
+                    and all(report["raw_global_attempt_tickets"] == sorted(report["raw_global_attempt_tickets"])
+                            for report in result["episodes"]), "bounded global attempt tickets omitted/repeated/reordered a call")
         require(all(type(summary[key]) is int and summary[key] == result[key]
                     for key in ("step_attempts", "step_returns", "step_errors")),
                 "summary attempt/return/error counters differ from original trace")
@@ -825,6 +903,7 @@ def audit_run(directory, freeze):
         result["errors"].append(str(error))
     result["passed"] = bool(result["episodes"]) and not result["errors"]
     result["uniform_actions_independently_replayed"] = result["verified_uniform_action_count"]
+    result["complete_short_capacity_matrix"] = result["passed"] and result.get("activity_kind") == "short_capacity"
     return result
 
 

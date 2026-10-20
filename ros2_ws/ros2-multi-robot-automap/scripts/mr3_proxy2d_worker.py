@@ -11,6 +11,7 @@ import gzip
 import importlib.util
 import json
 import math
+import os
 from pathlib import Path
 import subprocess
 import sys
@@ -37,6 +38,13 @@ codec = load("proxy_codec", "proxy2d_codec.py")
 def set_stamp(stamp, value):
     ns = round(value * 1e9)
     stamp.sec, stamp.nanosec = divmod(ns, 10**9)
+
+
+def evaluator_environment(directory):
+    environment = dict(os.environ)
+    if environment.get("MR3_PROXY2D_PROFILE_OUTPUT"):
+        environment["MR3_PROXY2D_PROFILE_OUTPUT"] = str(directory / "evaluator.pstats")
+    return environment
 
 
 class ProxyWorker:
@@ -67,7 +75,8 @@ class ProxyWorker:
         self.evaluator = subprocess.Popen([
             "/usr/bin/python3", "-B", str(Path(__file__).resolve()), "--role", "evaluator",
             "--directory", str(directory), "--epoch", epoch, "--scene", scene, "--seed", str(seed),
-        ], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=self.evaluator_log)
+        ], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=self.evaluator_log,
+            env=evaluator_environment(directory))
         self.eval_peer = ipc.JsonLinePeer(self.evaluator.stdout.fileno(), self.evaluator.stdin.fileno())
         stat = Path(f"/proc/{self.evaluator.pid}/stat").read_text().rsplit(")", 1)[1].split()
         (directory / "evaluator_identity.json").write_text(json.dumps({
@@ -422,4 +431,8 @@ def main():
 
 
 if __name__ == "__main__":
+    profile_output = os.environ.get("MR3_PROXY2D_PROFILE_OUTPUT")
+    if profile_output:
+        from multi_robot_exploration.mr3_proxy2d_profile import run_profiled
+        sys.exit(run_profiled(main, Path(profile_output)) or 0)
     sys.exit(main() or 0)

@@ -1,0 +1,41 @@
+{
+  "schema": "mr3-proxy2d-spec-pure-fixture-cpu-actual-wait-v1",
+  "scope": "manufactured saved actor/ticket traces, mocked collectors/supervisors and original pure builder only; no simulator, world integration, environment episode, old consumer replay, policy or learning",
+  "argv": [
+    "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+    "-B",
+    "-m",
+    "unittest",
+    "mr3_learning.tests.test_proxy2d_capacity",
+    "mr3_learning.tests.test_audit_proxy2d"
+  ],
+  "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+  "environment": {
+    "PYTHONPATH": "unset",
+    "PYTHONNOUSERSITE": "1",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "CUDA_VISIBLE_DEVICES": ""
+  },
+  "child_identity": {
+    "pid": 2374451,
+    "parent": 2374448,
+    "group": 2374445,
+    "session": 2374445,
+    "start_ticks": 424571950
+  },
+  "started_monotonic_ns": 4245719505679278,
+  "ended_monotonic_ns": 4245757397923299,
+  "wall_seconds": 37.892244021,
+  "actual_waited": true,
+  "returncode": 0,
+  "source_sha256": {
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d_capacity.py": "02c27ff396d745cf136df782e6c9165864e20243f000ba16988a0e1331e8f02c",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_proxy2d.py": "06a2de3270e7efe7ef77489baa9a6075473174a8c95baa84be4d2c79609de7ca",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_proxy2d_capacity.py": "2bf382e7705752111cb4b9e96d5af010964f05fc0067f2a972c6cb1b88e28b94",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_proxy2d.py": "ee0f8008ee5c29d14fe33ae91c171be2cf64b974ab1915fa15eff1ce0f20f258",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d_codec.py": "337244082676e08050d8872c6b9fcdc109840dcdb6ed188f854c5496e1d78981",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/observation.py": "69f446d601fd67e2cd51622c1e443891a3915587d8d1ba6b12745f7e15ad1723"
+  },
+  "source_bytes_unchanged": true,
+  "console_sha256": "8fee69effddc8c45fe17cb49618885ee64973984e60456da29593950bde40b17"
+}

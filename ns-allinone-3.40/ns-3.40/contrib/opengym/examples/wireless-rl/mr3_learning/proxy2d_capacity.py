@@ -19,15 +19,32 @@ from .proxy2d_codec import canonical_bytes, tensor_proofs
 CELLS = [(scene, seed) for scene in ("open", "rooms", "corridors") for seed in (101, 103)]
 
 
+def activity_spec(kind):
+    if kind not in ("profile", "short_capacity"):
+        raise ValueError("unknown bounded proxy activity kind")
+    return {"schema": "mr3-proxy2d-activity-spec-v1", "kind": kind,
+            "groups": [1] if kind == "profile" else [1, 4],
+            "cells": [["open", 101]] if kind == "profile" else [list(cell) for cell in CELLS],
+            "steps_per_episode": 8, "max_attempts": 8 if kind == "profile" else 240,
+            "activity_seconds": 600 if kind == "profile" else 1800}
+
+
+def validate_activity_spec(spec):
+    if not isinstance(spec, dict) or canonical_bytes(spec) != canonical_bytes(activity_spec(spec.get("kind"))):
+        raise ValueError("bounded proxy activity must match one exact fixed specification")
+    return spec
+
+
 class StepBudget:
     def __init__(self, deadline_ns, maximum=9000):
         self.deadline_ns, self.maximum = deadline_ns, maximum
         self.attempts = self.returns = self.errors = 0
         self.lock, self.stop = threading.Lock(), threading.Event()
 
-    def reserve(self):
+    def reserve(self, *, deadline_ns=None):
         with self.lock:
-            if self.stop.is_set() or self.attempts >= self.maximum or time.monotonic_ns() + 45_000_000_000 >= self.deadline_ns:
+            limit = self.deadline_ns if deadline_ns is None else min(self.deadline_ns, deadline_ns)
+            if self.stop.is_set() or self.attempts >= self.maximum or time.monotonic_ns() + 45_000_000_000 >= limit:
                 return False
             self.attempts += 1
             return self.attempts
@@ -77,15 +94,17 @@ class Trace:
         self.stream.close()
 
 
-def collect_worker(group, env_id, budget, freeze):
+def collect_worker(group, env_id, budget, freeze, *, cells=None, steps_per_episode=300,
+                   group_deadline_ns=None, profile=False):
     root = group / f"worker{env_id}"
-    supervisor = ProxySupervisor(root, env_id=env_id)
-    env = MR3Env(supervisor=supervisor, max_steps=300)
+    supervisor = ProxySupervisor(root, env_id=env_id, **({"profile": True} if profile else {}))
+    env = MR3Env(supervisor=supervisor, max_steps=steps_per_episode)
+    local_deadline = budget.deadline_ns if group_deadline_ns is None else min(budget.deadline_ns, group_deadline_ns)
     action_seed = 41 + 1_000_003 * env_id
     rng, episodes, error = random.Random(action_seed), [], None
     try:
-        for episode_index, (scene, seed) in enumerate(CELLS, 1):
-            if budget.stop.is_set() or time.monotonic_ns() + 90_000_000_000 >= budget.deadline_ns:
+        for episode_index, (scene, seed) in enumerate(CELLS if cells is None else cells, 1):
+            if budget.stop.is_set() or time.monotonic_ns() + 90_000_000_000 >= local_deadline:
                 break
             trace, directory = None, None
             begun = time.monotonic_ns()
@@ -99,13 +118,14 @@ def collect_worker(group, env_id, budget, freeze):
                 metadata_path = directory / "episode.json"
                 metadata = json.loads(metadata_path.read_text())
                 metadata.update(freeze=freeze, action_seed=action_seed,
-                                action_stream="per-group/env continuous across declared six cells")
+                                action_stream=("per-group/env continuous across declared six cells" if cells is None
+                                               else "per-group/env continuous across declared cells"))
                 metadata_path.write_text(json.dumps(metadata, indent=2) + "\n")
                 trace = Trace(directory, env_id, episode_index, env._snapshot["epoch"])
                 trace.actor("reset", supervisor.last_result, observation,
                             started_wall_ns=begun, ended_wall_ns=time.monotonic_ns())
-                for _ in range(300):
-                    ticket = budget.reserve()
+                for _ in range(steps_per_episode):
+                    ticket = budget.reserve() if group_deadline_ns is None else budget.reserve(deadline_ns=local_deadline)
                     if not ticket:
                         break
                     mask = env.action_masks().tolist()
@@ -132,6 +152,9 @@ def collect_worker(group, env_id, budget, freeze):
                                           terminated=terminated, truncated=truncated)
                         if terminated and descriptor["reason"] not in ("coverage_reached", "timeout"):
                             budget.stop.set()
+                            if cells is not None:
+                                error = "unsafe_terminal: " + str(descriptor["reason"])
+                                descriptor["error"] = error
                         break
             except Exception as exc:
                 error = repr(exc)
@@ -161,26 +184,54 @@ def collect_worker(group, env_id, budget, freeze):
                 break
             # MR3Env.close is final for one Gym instance; a new one reuses only
             # the supervisor's counters, never any backend process/state.
-            env = MR3Env(supervisor=supervisor, max_steps=300)
+            env = MR3Env(supervisor=supervisor, max_steps=steps_per_episode)
     finally:
         env.close()
     return {"env_id": env_id, "episodes": episodes, "error": error,
             "saved_identities": supervisor.identities}
 
 
-def collect(run, freeze, source_bindings, conformity_ref, activity_started_ns, deadline_ns):
-    collection_deadline = min(deadline_ns - 900_000_000_000, time.monotonic_ns() + 1_800_000_000_000)
-    budget = StepBudget(collection_deadline)
+def collect(run, freeze, source_bindings, conformity_ref, activity_started_ns, deadline_ns, *,
+            activity_spec=None, group_wall_seconds=None, profile=False, collection_deadline_ns=None):
+    if type(profile) is not bool:
+        raise ValueError("profile flag must be boolean")
+    if activity_spec is None:
+        if profile or group_wall_seconds is not None or collection_deadline_ns is not None:
+            raise ValueError("explicit performance flags require a bounded activity specification")
+        collection_deadline = min(deadline_ns - 900_000_000_000, time.monotonic_ns() + 1_800_000_000_000)
+        groups_expected, cells, steps, maximum = [1, 4], CELLS, 300, 9000
+    else:
+        validate_activity_spec(activity_spec)
+        kind = activity_spec["kind"]
+        expected_walls = [240] if kind == "profile" else [400, 800]
+        if canonical_bytes(group_wall_seconds) != canonical_bytes(expected_walls) or profile != (kind == "profile"):
+            raise ValueError("activity group wall reservations/profile flag differ from the fixed specification")
+        if (type(deadline_ns) is not int or type(activity_started_ns) is not int
+                or deadline_ns - activity_started_ns != activity_spec["activity_seconds"] * 10**9):
+            raise ValueError("activity deadline differs from the exact bounded specification")
+        collection_started = time.monotonic_ns()
+        collection_deadline = collection_started + (240 if profile else 1200) * 10**9
+        if collection_deadline > deadline_ns - 120 * 10**9:
+            raise ValueError("collection reservation lacks the required remaining activity tail")
+        if collection_deadline_ns is not None and collection_deadline_ns != collection_deadline:
+            raise ValueError("collection deadline differs from the fixed reservation")
+        groups_expected, cells = activity_spec["groups"], activity_spec["cells"]
+        steps, maximum = activity_spec["steps_per_episode"], activity_spec["max_attempts"]
+    budget = StepBudget(collection_deadline, maximum=maximum)
     previous_handler = signal.signal(signal.SIGINT, lambda *_: budget.stop.set())
     groups, all_errors, identities = [], [], []
-    for workers in (1, 4):
+    for group_index, workers in enumerate(groups_expected):
         group = run / "stages" / f"group{workers}"
         group.mkdir(parents=True, exist_ok=False)
         started = time.monotonic_ns()
+        local_deadline = (collection_deadline if activity_spec is None else
+                          min(collection_deadline, started + group_wall_seconds[group_index] * 10**9))
         results = []
-        if not budget.stop.is_set() and started + 90_000_000_000 < collection_deadline:
+        if not budget.stop.is_set() and started + 90_000_000_000 < local_deadline:
             with ThreadPoolExecutor(max_workers=workers) as executor:
-                futures = [executor.submit(collect_worker, group, index, budget, freeze) for index in range(workers)]
+                kwargs = {} if activity_spec is None else {"cells": cells, "steps_per_episode": steps,
+                    "group_deadline_ns": local_deadline, "profile": profile}
+                futures = [executor.submit(collect_worker, group, index, budget, freeze, **kwargs) for index in range(workers)]
                 for future in as_completed(futures):
                     try:
                         results.append(future.result())
@@ -192,13 +243,15 @@ def collect(run, freeze, source_bindings, conformity_ref, activity_started_ns, d
         identities.extend(identity for result in results for identity in result["saved_identities"])
         groups.append({"workers": workers, "started_ns": started, "ended_ns": time.monotonic_ns(),
                        "episodes": sorted(episodes, key=lambda e: (e["env_id"], e["episode_index"]))})
+        if activity_spec is not None:
+            groups[-1].update(deadline_ns=local_deadline, wall_budget_seconds=group_wall_seconds[group_index])
         if budget.stop.is_set():
             break
     summary = {"schema": "mr3-proxy2d-capacity-summary-v1", "freeze": freeze,
         "source_bindings": source_bindings, "conformity": conformity_ref,
         "activity_started_ns": activity_started_ns, "activity_deadline_ns": deadline_ns,
         "collection_deadline_ns": collection_deadline, "groups": groups,
-        "scheduled_cells": [list(cell) for cell in CELLS],
+        "scheduled_cells": [list(cell) for cell in cells],
         "step_attempts": budget.attempts, "step_returns": budget.returns, "step_errors": budget.errors,
         "policy_calls": 0, "gpu_calls": 0, "optimizer_steps": 0, "closed": True,
         "qualification": False, "training_eligible": False, "native_credit": False,
@@ -207,6 +260,9 @@ def collect(run, freeze, source_bindings, conformity_ref, activity_started_ns, d
         "saved_identities": identities,
         "forbidden_framework_imports": [name for name in ("torch", "stable_baselines3", "sb3_contrib") if name in sys.modules],
         "scope": "short uniform-action proxy capacity, not qualified training throughput"}
+    if activity_spec is not None:
+        summary.update(activity_spec=activity_spec, activity_kind=activity_spec["kind"], profile_enabled=profile,
+                       collection_started_ns=collection_started)
     (run / "capacity_summary.json").write_text(json.dumps(summary, indent=2) + "\n")
     signal.signal(signal.SIGINT, previous_handler)
     return summary

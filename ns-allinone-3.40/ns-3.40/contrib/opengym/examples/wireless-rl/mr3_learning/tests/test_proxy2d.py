@@ -108,6 +108,23 @@ class ProxySupervisorTests(unittest.TestCase):
         with patch.object(self.owner, "_rpc", side_effect=self.reset_result):
             return self.owner.reset(scene, seed)
 
+    def test_profile_switch_is_explicit_and_records_its_own_output(self):
+        self.owner.profile = True
+        self.add_process(50001)
+        self.successful_reset()
+        environment = proxy2d.subprocess.Popen.call_args.kwargs["env"]
+        self.assertEqual(environment["MR3_PROXY2D_PROFILE_OUTPUT"], str(self.owner.directory / "worker.pstats"))
+        metadata = json.loads((self.owner.directory / "episode.json").read_text())
+        self.assertTrue(metadata["profile_enabled"])
+        self.owner.close()
+
+    def test_normal_mode_removes_ambient_profile_output(self):
+        self.add_process(50002)
+        with patch.object(proxy2d, "ros_environment", return_value={"MR3_PROXY2D_PROFILE_OUTPUT": "/foreign/file"}):
+            self.successful_reset()
+        self.assertNotIn("MR3_PROXY2D_PROFILE_OUTPUT", proxy2d.subprocess.Popen.call_args.kwargs["env"])
+        self.owner.close()
+
     def test_two_episode_identity_history_does_not_choose_the_current_owner_by_list_offset(self):
         first = self.add_process(51001)
         second = self.add_process(51002, (

@@ -23,6 +23,18 @@ SPEC.loader.exec_module(worker_module)
 ROBOTS = ("tb1", "tb2", "tb3")
 
 
+def test_evaluator_profile_has_separate_output_without_mutating_parent(monkeypatch, tmp_path):
+    monkeypatch.setenv("MR3_PROXY2D_PROFILE_OUTPUT", str(tmp_path / "worker.pstats"))
+    environment = worker_module.evaluator_environment(tmp_path)
+    assert environment["MR3_PROXY2D_PROFILE_OUTPUT"] == str(tmp_path / "evaluator.pstats")
+    assert worker_module.os.environ["MR3_PROXY2D_PROFILE_OUTPUT"] == str(tmp_path / "worker.pstats")
+
+
+def test_evaluator_profile_remains_off_in_normal_mode(monkeypatch, tmp_path):
+    monkeypatch.delenv("MR3_PROXY2D_PROFILE_OUTPUT", raising=False)
+    assert "MR3_PROXY2D_PROFILE_OUTPUT" not in worker_module.evaluator_environment(tmp_path)
+
+
 def worker(now=1.):
     """Bypass production construction: no World, process, file or evaluator."""
     value = worker_module.ProxyWorker.__new__(worker_module.ProxyWorker)

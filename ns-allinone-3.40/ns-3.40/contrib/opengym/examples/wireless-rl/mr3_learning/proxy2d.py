@@ -17,7 +17,10 @@ class ProxySupervisor:
     training_eligible = False
     native_qualification = False
 
-    def __init__(self, directory, env_id=0):
+    def __init__(self, directory, env_id=0, *, profile=False):
+        if type(profile) is not bool:
+            raise ValueError("proxy profile switch must be boolean")
+        self.profile = profile
         self.root = Path(directory).resolve()
         self.root.mkdir(parents=True, exist_ok=False)
         self.env_id, self.episode_number = env_id, 0
@@ -51,6 +54,9 @@ class ProxySupervisor:
         env = ros_environment(230 + self.env_id, 15901 + self.env_id)
         env.update(PYTHONDONTWRITEBYTECODE="1", CUDA_VISIBLE_DEVICES="",
                    OPENBLAS_NUM_THREADS="1", OMP_NUM_THREADS="1", MKL_NUM_THREADS="1")
+        env.pop("MR3_PROXY2D_PROFILE_OUTPUT", None)
+        if self.profile:
+            env["MR3_PROXY2D_PROFILE_OUTPUT"] = str(self.directory / "worker.pstats")
         self.worker_identity = None
         try:
             self.process = subprocess.Popen(command, cwd=ROS_ROOT, env=env,
@@ -64,7 +70,8 @@ class ProxySupervisor:
             metadata = {"epoch": epoch, "scene": scene, "seed": seed, "env_id": self.env_id,
                         "episode_index": self.episode_number, "worker_identity": identity,
                         "actual_argv": command, "cwd": str(ROS_ROOT), "proxy_only": True,
-                        "training_eligible": False, "reset_kind": "complete_proxy_process_rebuild"}
+                        "training_eligible": False, "profile_enabled": self.profile,
+                        "reset_kind": "complete_proxy_process_rebuild"}
             (self.directory / "episode.json").write_text(json.dumps(metadata, indent=2) + "\n")
             self.last_result = self._rpc("reset")
             child = json.loads((self.directory / "evaluator_identity.json").read_text())
