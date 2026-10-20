@@ -7597,3 +7597,5 @@ profile worker totalself45.593秒、_known_line self12.0495/112491calls、update
 按测量优先优化已验证map的数组打包，merge/navigation、worker int8→arrayb走ROS本机快路径，restore仅exact builtin int/bool list conservative fastpath，溢出/非JSON Python类型/其他消息仍原setter；原fusion/path/_known_line/actor/reward/物理/信息年龄门未改。merge30+独立旧新32小图fixture、information/merge/proxy信息102、worker19 CPU通过，完整actualcommand/source前后SHA/console/wait在A23 checks/map_packing_cpu_v2、restore_packing_cpu_v1、worker_packing_cpu_v3；分别最终merge2.501076412秒/独立机制2.063845796秒、restore3.810323824秒、worker2.680710161秒，不合计重复检查为独立覆盖。局部100次setter中位48.175335ms→.323835ms，只证明该机制。
 
 所有开发失败保留：merge v1新fixture错误假定CDR padding bytes可逐字固定（29pass/1fail）；worker v1原CDR测试通过，但改进fixture的v2错误将ROS wire float32 resolution.05直接等于原Python float（17pass/2fail），v3双边CDR往返/精确字段data bytes通过。原件与运行源码不改判，无actualepisode新增。short_capacity在新源码freeze/新plan下最多30EP/240attempt/1800秒，将先核当轮符合性再采集，无cProfile/训练。详见[V23](report/20261020_mr3_p2a_v23_performance.md)。
+
+V23 short冻结前证据属性修正：初次cached diff-check指出已封存map_packing_cpu_v1/console.txt pytest原文有尾空格，首次优化提交仍发生；原console不编辑/不覆盖。新增该证据console.txt的-text/-whitespace属性，与其他精确console保留规则一致，复查后另commit/push，不改运行源、原件SHA或实费/结果。
