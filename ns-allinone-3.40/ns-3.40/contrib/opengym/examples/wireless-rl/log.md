@@ -7396,3 +7396,10 @@ V20完整新reader闭合与global wall区间末账纠正（所有旧FAIL不改�
 
 
 V20最终静态封存检查实际finite CPU rc0/.674876855秒/16源stable，[wait/全部actual_argv/cwd/源快照](report/assets/20261020_mr3_p2a_v20/checks/closed_preparation_cpu_attempt_v1/actual_wait.json)与[结果](report/assets/20261020_mr3_p2a_v20/closed_preparation_integrity_v1.json)保留。actual child为system Python -B ABS/A20/check_closed_preparation_v1.py --output /tmp/mr3_p2a_v20_closed_preparation_v1.json，parent原A15 finite_actual_runner_v2.py，cwd canonical root。核131 CPU当前source与全snapshot、3wholeinverse、7个runtime顶层声明AST/35数学原文的既有proof、两完整只读PASS与无信号truewait、v1失败原source、v2 union末账守恒、历史log仅append、133个selected/new本地links及22 live/helper Python AST/JSON。它只为当时input版本给静态CPU信用，不供新native/科学/PPO资格，不新增工程费；本条仅追加实际结果，未改原源码或原失败。
+
+
+## 2026-10-20 MR3 P2A V21 有界诊断准备
+
+用户在评估交接后指示“好，现在按要求继续执行P2A吧”。既有52000工程上限和V20精确末账不变，在余13783.4895025853982秒内预约6500工程秒；1worker、open101重复两次各32步、合法掩码随机seed41，native3200含close180，全部独立读者和外部尾计入真实活动费用，失败不重试。不是完整资格矩阵，无PPO/GPU/optimizer/pilot/final-only/二维/gateway；实际原生尚未启动。
+
+准备基线f874cd04b，具体source/ELF计划、独立消费者和命令见 [V21](report/20261020_mr3_p2a_v21_feasibility.md)。组合CPU由conda ns3gym、PYTHONNOUSERSITE=1、CUDA_VISIBLE_DEVICES空的 `mr3_learning.reach_execution --scope cpu` 实际wait，100 tests PASS、outer rc0/9.975746618秒（unittest4.766秒），7份源前后稳定；完整argv与console在 `report/assets/20261020_mr3_p2a_v21/checks/combined_cpu_v1/actual_wait.json`。仅CPU准备，不收费或提供原生信用。封存plan SHA f2ddefb691944c17a8dfa5ea4d8d1f180fed6868378b41e06aca46ffd2a0eaf8，445源/10ELF；必须clean/pushed新freeze前检成功后才运行，后续真实结果另追加。

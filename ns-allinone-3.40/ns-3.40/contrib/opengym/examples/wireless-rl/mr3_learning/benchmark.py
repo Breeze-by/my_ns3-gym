@@ -7,6 +7,7 @@ import json
 import math
 import os
 from pathlib import Path
+import random
 import signal
 import subprocess
 import sys
@@ -47,6 +48,16 @@ def _collection_safety_contract(args):
     if profile not in SAFETY_CONTRACTS:
         raise ValueError("unknown safety contract")
     version = getattr(args, "preparation_probe_version", None)
+    uniform_seed = getattr(args, "diagnostic_uniform_seed", None)
+    if uniform_seed is not None:
+        if type(uniform_seed) is not int or uniform_seed < 0:
+            raise ValueError("diagnostic uniform seed must be a nonnegative integer")
+        if (any(getattr(args, name, False) for name in (
+                "preparation_motion_probe", "preparation_parameter_review",
+                "terminal_probe", "deadline_probe", "fault_probe"))
+                or version is not None
+                or getattr(args, "preparation_parameter_profile", "original") != "original"):
+            raise ValueError("diagnostic uniform actions cannot be combined with other probes")
     validate_preparation_profile(profile, version)
     if version is not None and not getattr(args, "preparation_motion_probe", False):
         raise ValueError("preparation probe version requires preparation motion probe")
@@ -62,6 +73,18 @@ def _collection_safety_contract(args):
         if selection != "original" and not review:
             raise ValueError("nonoriginal parameter profile requires the explicit parameter review")
     return profile
+
+
+def diagnostic_uniform_action(snapshot, generator):
+    """Uniform legal joint input, without goal ranking, filtering or a model."""
+    mask = snapshot["joint_action_mask"]
+    if (type(mask) is not list or len(mask) != 1000
+            or any(type(valid) is not bool for valid in mask)):
+        raise ValueError("diagnostic uniform actions require the actual 1000-bit boolean mask")
+    legal = [action for action, valid in enumerate(mask) if valid]
+    if not legal:
+        raise ValueError("diagnostic uniform actions require at least one legal joint action")
+    return generator.choice(legal)
 
 
 def _probe_goal_order(snapshot, action, outward_goals):
@@ -538,8 +561,12 @@ def resource_sample():
 def run_worker(args, worker_id, preparation_abort=None):
     safety_contract = _collection_safety_contract(args)
     preparation = args.preparation_motion_probe
+    uniform_seed = getattr(args, "diagnostic_uniform_seed", None)
+    diagnostic = uniform_seed is not None
+    generator = random.Random(uniform_seed + 1000003 * worker_id) if diagnostic else None
     budgeted = getattr(args, "allocation_deadline_monotonic_ns", None) is not None
-    abort = (preparation_abort or _new_preparation_abort()) if preparation or budgeted else None
+    abort = ((preparation_abort or _new_preparation_abort())
+             if preparation or budgeted or diagnostic else None)
     try:
         supervisor = Supervisor(run_id=args.run_id, worker_id=worker_id,
                                 domain_id=args.base_domain + worker_id,
@@ -553,6 +580,8 @@ def run_worker(args, worker_id, preparation_abort=None):
         _preparation_failure(abort, worker_id, "construction_exception", repr(error))
         raise
     result = {"worker_id": worker_id, "episodes": [], "error": None}
+    if diagnostic:
+        result["diagnostic_uniform_worker_seed"] = uniform_seed + 1000003 * worker_id
     if preparation:
         result["reset_attempts"] = []
     started = time.monotonic()
@@ -584,6 +613,8 @@ def run_worker(args, worker_id, preparation_abort=None):
                 episode["preparation_probe_diagnostics"] = {
                     "reference_turn_samples": {}, "goal_decisions": []}
             result["episodes"].append(episode)
+            if diagnostic:
+                episode["diagnostic_uniform_actions"] = []
             if not _wall_admission(args, abort, worker_id, "after_rpc",
                                    episode_index=episode_index, epoch=episode["epoch"]):
                 episode["intentional_abort_prefix"] = {
@@ -621,7 +652,17 @@ def run_worker(args, worker_id, preparation_abort=None):
                     else:
                         raise RuntimeError("killed worker was accepted as a valid transition")
                     break
-                if "preparation_probe_diagnostics" in episode:
+                if diagnostic:
+                    snapshot = supervisor.last_result["snapshot"]
+                    action = diagnostic_uniform_action(snapshot, generator)
+                    episode["diagnostic_uniform_actions"].append({
+                        "decision": step_index, "action": action,
+                        "observation_sequence": snapshot.get("sequence"),
+                        "observation_digest": snapshot.get("digest"),
+                        "legal_joint_actions": sum(snapshot["joint_action_mask"]),
+                        "step_returned": False,
+                    })
+                elif "preparation_probe_diagnostics" in episode:
                     probe = (probe_action_v6 if args.preparation_probe_version
                              in (PREPARATION_PROBE_V6, PREPARATION_PROBE_REACH_V1) else probe_action_v5
                              if args.preparation_probe_version
@@ -642,6 +683,9 @@ def run_worker(args, worker_id, preparation_abort=None):
                     break
                 step_started = time.monotonic()
                 observation, reward, terminated, truncated, info = environment.step(action)
+                if diagnostic:
+                    episode["diagnostic_uniform_actions"][-1].update(
+                        step_returned=True, action_submitted=info.get("action_submitted", True))
                 episode["transition_wall_sec"] += time.monotonic() - step_started
                 episode["transitions"] += 1
                 episode["reward_sum"] += reward
@@ -668,9 +712,19 @@ def run_worker(args, worker_id, preparation_abort=None):
                         _preparation_failure(
                             abort, worker_id, "early_truncation", info.get("reason"),
                             episode_index, episode["epoch"])
+                if diagnostic:
+                    if terminated and info.get("reason") != "coverage_reached":
+                        _preparation_failure(
+                            abort, worker_id, "task_failure", info.get("reason"),
+                            episode_index, episode["epoch"])
+                    elif truncated and (info.get("reason") != "external_sampler_limit"
+                                        or step_index + 1 != args.steps):
+                        _preparation_failure(
+                            abort, worker_id, "unexpected_truncation", info.get("reason"),
+                            episode_index, episode["epoch"])
                 _wall_admission(args, abort, worker_id, "after_rpc",
                                 episode_index=episode_index, epoch=episode["epoch"])
-                if preparation or budgeted:
+                if preparation or budgeted or diagnostic:
                     if _abort_requested(abort):
                         if not (terminated or truncated):
                             episode["intentional_abort_prefix"] = {
@@ -696,11 +750,12 @@ def run_worker(args, worker_id, preparation_abort=None):
             _preparation_failure(
                 abort, worker_id, "cleanup_exception", repr(error), episode_index,
                 None if episode is None else episode["epoch"])
-        if preparation or budgeted:
+        if preparation or budgeted or diagnostic:
             if episode is not None:
                 episode["wall_sec_including_startup_and_closure"] = (
                     time.monotonic() - episode_started)
-            result["preparation_abort" if preparation else "work_wall_abort"] = {
+            result["diagnostic_abort" if diagnostic else
+                   "preparation_abort" if preparation else "work_wall_abort"] = {
                 "requested": _abort_requested(abort), "first_failure": abort["first_failure"],
                 "scope": "cooperative stop after real RPC return; no synthetic transition"}
         result["wall_sec"] = time.monotonic() - started
@@ -719,6 +774,8 @@ def main(argv=None):
     parser.add_argument("--run-id", required=True)
     parser.add_argument("--safety-contract", choices=SAFETY_CONTRACTS, default="legacy",
                         help="mr3-reach-v1 collects engineering evidence only; new qualification required")
+    parser.add_argument("--diagnostic-uniform-seed", type=int,
+                        help="nonnegative seed for uniform legal engineering inputs; never PPO or training")
     parser.add_argument("--base-domain", type=int, default=120)
     parser.add_argument("--base-port", type=int, default=12001)
     parser.add_argument("--output-root", type=Path)
@@ -739,7 +796,11 @@ def main(argv=None):
                         help="paused one-worker open101: frozen readonly ROS parameter audit")
     parser.add_argument("--preparation-parameter-profile", choices=("original", "gentle_turn_v1"),
                         default="original", help="exact readback profile; never sets ROS parameters")
-    args = parser.parse_args(argv)
+    command_line = list(sys.argv[1:] if argv is None else argv)
+    args = parser.parse_args(command_line)
+    if args.diagnostic_uniform_seed is not None and any(
+            flag.split("=", 1)[0].startswith("--preparation-") for flag in command_line):
+        parser.error("diagnostic uniform actions cannot be combined with preparation parameters")
     try:
         _collection_safety_contract(args)
     except ValueError as error:
@@ -844,6 +905,13 @@ def main(argv=None):
         if args.preparation_motion_probe:
             metadata.update(preparation_fixture_implementation="unchanged_v6_external_actions",
                             preparation_fixture_schema="mr3-reach-preparation-fixture-v1")
+    if args.diagnostic_uniform_seed is not None:
+        metadata.update(kind="uniform_legal_engineering_diagnostic_not_rl",
+                        diagnostic_uniform_seed=args.diagnostic_uniform_seed,
+                        diagnostic_uniform_worker_seed_rule="seed + 1000003 * worker_id",
+                        diagnostic_action_source="random.Random.choice on the actual legal joint mask",
+                        training_eligible=False, policy_calls=0, optimizer_steps=0, gpu_calls=0,
+                        policy_reliability_credit=False)
     if args.work_wall_seconds is not None:
         metadata["work_wall_budget"] = {
             "total_allocation_seconds": args.work_wall_seconds,
@@ -857,7 +925,8 @@ def main(argv=None):
     (directory / "benchmark_metadata.json").write_text(json.dumps(metadata, indent=2) + "\n")
     results = []
     preparation_abort = (_new_preparation_abort() if args.preparation_motion_probe
-                         or args.work_wall_seconds is not None else None)
+                         or args.work_wall_seconds is not None
+                         or args.diagnostic_uniform_seed is not None else None)
     sampler.start()
     try:
         with ThreadPoolExecutor(max_workers=args.workers) as pool:
@@ -883,6 +952,10 @@ def main(argv=None):
         and len(worker["episodes"]) == len(args.schedule)
         and all((args.fault_probe and worker["worker_id"] == 0 and index == 0
                  and episode.get("expected_infrastructure_fault") and episode["transitions"] == 4)
+                or (args.diagnostic_uniform_seed is not None
+                    and 0 < episode["transitions"] <= args.steps
+                    and episode.get("terminated") and not episode.get("truncated")
+                    and episode.get("reason") == "coverage_reached")
                 or (episode["transitions"] == args.steps
                     and ((args.deadline_probe and episode.get("terminated")
                           and not episode.get("truncated") and episode.get("reason") == "timeout")
@@ -912,7 +985,7 @@ def main(argv=None):
     if wall_limit_exceeded:
         _preparation_failure(preparation_abort, None, "wall_allocation_exceeded",
                              f"actual wall including close={wall:.9f}s exceeds allocation")
-    if args.work_wall_seconds is not None:
+    if args.work_wall_seconds is not None or args.diagnostic_uniform_seed is not None:
         passed = passed and all(len(worker["shutdown_receipts"]) == len(worker["episodes"])
                                 for worker in results)
     passed = passed and not wall_limit_exceeded
@@ -921,7 +994,8 @@ def main(argv=None):
                "effective_transition_per_wall_sec": transitions / wall,
                "workers_results": sorted(results, key=lambda value: value["worker_id"])}
     if preparation_abort is not None:
-        summary["preparation_abort" if args.preparation_motion_probe else "work_wall_abort"] = {
+        summary["diagnostic_abort" if args.diagnostic_uniform_seed is not None else
+                "preparation_abort" if args.preparation_motion_probe else "work_wall_abort"] = {
             "requested": _abort_requested(preparation_abort),
             "first_failure": preparation_abort["first_failure"],
             "scope": "first observed failing RPC/worker; other in-flight RPCs finish then close"}

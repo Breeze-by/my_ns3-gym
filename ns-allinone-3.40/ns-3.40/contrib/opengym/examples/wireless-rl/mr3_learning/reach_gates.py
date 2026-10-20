@@ -28,10 +28,22 @@ REVISED_CONFIG = {ROS + "src/multi_robot/CMakeLists.txt",
 
 def load_native_gates(root, freeze, plan_path):
     from .reach_preparation import load_plan, source_check
-    from . import native_custody_reach
     root, plan_path = Path(root), Path(plan_path)
     plan = load_plan(plan_path, root)
     source_proof = source_check(plan, plan_path, freeze, root, require_clean=False)
+    return _load_versioned_native_gates(root, freeze, source_proof,
+                                        plan["source_bindings"], plan["custody_binding"])
+
+
+def _load_versioned_native_gates(root, freeze, source_proof, source_bindings, custody_binding):
+    """Reuse unchanged native predicates after an explicit caller source check.
+
+    The public qualification entry above still requires its complete sealed
+    four-stage plan. A separately labelled diagnostic can bind its own finite
+    source inventory without manufacturing a qualification plan or receipt.
+    """
+    from . import native_custody_reach
+    root = Path(root)
     legacy, projection = project_module("audit_ppo.py", PPO_READER_SHA256, ())
     old_env_sha = legacy.ENV_DOCUMENT_SHA256
 
@@ -64,8 +76,8 @@ def load_native_gates(root, freeze, plan_path):
         pins = dict(getattr(legacy, name))
         for path in REVISED_RUNTIME & pins.keys():
             revised_proof[path] = {"previous_scope_sha256": pins[path],
-                                  "new_source_sha256": plan["source_bindings"][path]}
-            pins[path] = plan["source_bindings"][path]
+                                  "new_source_sha256": source_bindings[path]}
+            pins[path] = source_bindings[path]
         setattr(legacy, name, pins)
 
     def execution_configs(root, freeze):
@@ -76,8 +88,8 @@ def load_native_gates(root, freeze, plan_path):
         return proof
 
     def native_binding(root, freeze):
-        result = native_custody_reach.verify_binding(root, freeze, plan["custody_binding"])
-        return {plan["custody_binding"]: {"identity_proof": result,
+        result = native_custody_reach.verify_binding(root, freeze, custody_binding)
+        return {custody_binding: {"identity_proof": result,
                 "scope": "new six-source actual ELF identity; live maps/close are separate required roles"}}
 
     legacy.verify_execution_configs = execution_configs
