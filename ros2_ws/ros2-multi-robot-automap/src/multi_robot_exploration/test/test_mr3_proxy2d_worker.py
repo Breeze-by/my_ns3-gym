@@ -12,6 +12,7 @@ import pytest
 from multi_robot_exploration.mr3_protocol import GoalDispatcher
 from multi_robot_exploration.mr3_episode import elapsed_ns
 from multi_robot_exploration.mr3_proxy2d_navigation import ProxyNavigator
+from multi_robot_exploration.mr3_proxy2d_reward import ProxyReward
 from multi_robot_exploration.mr3_reward import RewardLedger
 from multi_robot_exploration.mr3_transport import IdealTransport, ReceivedStore
 
@@ -293,3 +294,176 @@ def test_twenty_millisecond_terminal_span_excludes_real_closure_tail(start):
     assert result["snapshot"]["source_stamp"] == endpoint
     assert value.reward_calls[0]["physical_state"]["captured_at"] == endpoint
     assert value.now == (round(start * 1e9) + 420_000_000) / 1e9
+
+
+def prepare_deadline_step(value, start_ns, *, task_start_ns=100_000_000):
+    """Use real protocol, check and reward kernels around a dummy 20ms clock."""
+    value.world.time_ns = start_ns
+    value.start_ns = task_start_ns
+    value.finished, value.sequence, value.state_sequence = False, 1, 1
+    value.goal_switches = value.rejected_actions = 0
+    value.last_heartbeat_ns = -1
+    value.paths = {name: 0. for name in ROBOTS}
+    value.applied_commands, value.private_checks, value.reward_calls = [], [], []
+    value.world.commands = {name: (0., 0.) for name in ROBOTS}
+    def apply(commands):
+        value.world.commands = copy.deepcopy(commands)
+        value.applied_commands.append((value.world.time_ns, copy.deepcopy(commands)))
+    def advance():
+        for name in ROBOTS:
+            value.paths[name] += abs(value.world.commands[name][0]) * .02
+        value.world.time_ns += 20_000_000
+    value.world.apply_commands, value.world.advance = apply, advance
+    value.world.own_sensors = lambda: {name: {"scan": {}} for name in ROBOTS}
+    value.information = SimpleNamespace(set_time=lambda now: None)
+    value.navigation_maps = {}
+    value.delivered_robots = lambda: [{"name": name} for name in ROBOTS]
+    value.navigator = SimpleNamespace(commands=lambda states, goals, maps, scans, now:
+        ({name: (.12, 0.) if name in goals else (0., 0.) for name in ROBOTS}, []))
+    value.observed_failures = []
+    value.update_states = lambda: value.observed_failures.append((value.world.time_ns, value.dispatcher.failed))
+    value.update_maps = lambda: None
+    value.map_arguments = lambda: {"grid": np.zeros((2, 2), dtype=np.int16),
+                                  "resolution": .25, "origin": (0., 0.)}
+    value.private_state = lambda: {"time_ns": value.world.time_ns,
+        "path_lengths": dict(value.paths), "collision_events": 0,
+        "contact_events": [], "native_contact_monitoring": False}
+    def snapshot():
+        value.sequence += 1
+        value.last_snapshot = {"sequence": value.sequence, "source_stamp": value.now,
+            "map_version": 1, "map": {"version": 1}, "joint_action_mask": [True] * 1000,
+            "candidates": [], "navigation": value.dispatcher.navigation()}
+        value.last_inputs = {"actor_time": value.now}
+        return copy.deepcopy(value.last_snapshot)
+    value.snapshot = snapshot
+    snapshot()
+    free = np.ones((2, 2), dtype=bool)
+    correct = np.zeros_like(free)
+    ledger = RewardLedger(value.epoch, task_start_ns / 1e9, free, correct)
+    if start_ns > task_start_ns:
+        ledger.advance(epoch=value.epoch, sequence=1, step_start=task_start_ns / 1e9,
+            step_end=start_ns / 1e9, current_correct_free_mask=correct,
+            collision_events=0, goal_switches=0, rejected_actions=0)
+    value.steps = ledger.last_sequence
+    evaluator = ProxyReward.__new__(ProxyReward)
+    evaluator._ledger = ledger  # No truth loader, ProxyWorld, Node or process.
+    def evaluate(operation, **fields):
+        if operation == "check":
+            value.private_checks.append(copy.deepcopy(fields))
+            return evaluator.check(**fields)
+        if operation == "inspect":
+            return {"coverage_candidate": False}
+        assert operation == "advance"
+        value.reward_calls.append(copy.deepcopy(fields))
+        return ledger.advance(epoch=value.epoch, sequence=fields["sequence"],
+            step_start=fields["step_start"], step_end=fields["step_end"],
+            current_correct_free_mask=correct, collision_events=fields["physical_state"]["collision_events"],
+            goal_switches=fields["goal_switches"], rejected_actions=fields["rejected_actions"],
+            terminal_reason=fields["terminal_reason"], external_truncation=fields["external_truncation"])
+    value.evaluate = evaluate
+    return value
+
+
+def active_deadline_fixture(kind, remaining_ns, *, task_deadline=False):
+    initial_ns = 298_100_000_000 if task_deadline else 1_100_000_000
+    value = worker(initial_ns / 1e9)
+    assert value.dispatcher.submit("tb1", "GOAL", value.now, 1, 0, value.now + 2.,
+        goal={"x": 2., "y": 0.}, command_epoch=value.epoch, created_at=value.now) == "sent"
+    value.flush_protocol()
+    value.flush_protocol()
+    assert value.dispatcher.states["tb1"].phase == "active"
+    if kind == "execution":
+        goal_id = value.dispatcher.states["tb1"].goal_id
+        # Keep the original 2s lease alive with real, bounded renewals; only
+        # the unchanged 60s execution deadline may expire in this fixture.
+        for elapsed in range(1, 60):
+            now = (initial_ns + elapsed * 1_000_000_000) / 1e9
+            assert value.dispatcher.renew("tb1", goal_id, value.epoch, now, now + 2.) == "renewed"
+        deadline_ns = initial_ns + 60_000_000_000
+    else:
+        deadline_ns = initial_ns + 2_000_000_000
+    prepare_deadline_step(value, deadline_ns - remaining_ns)
+    if kind == "lease":
+        value.heartbeat = lambda: None  # Explicit missing delivery, not KEEP renewal.
+    return value, deadline_ns
+
+
+@pytest.mark.parametrize("kind,reason", [("lease", "goal_lease_expired"),
+                                       ("execution", "navigation_execution_timeout")])
+def test_new_quantum_boundary_ticks_before_state_publication_and_terminal_check(kind, reason):
+    value, deadline = active_deadline_fixture(kind, 40_000_000)
+    first = value.advance_quantum()
+    assert value.world.time_ns == deadline - 20_000_000
+    assert first["terminal_reason"] is None and not value.dispatcher.failed
+    second = value.advance_quantum()
+    assert value.world.time_ns == deadline
+    assert second["terminal_reason"] == "navigation_failure" and second["terminated"]
+    assert value.dispatcher.states["tb1"].failure == reason
+    assert value.observed_failures[-1] == (deadline, True)
+    assert value.private_checks[-1]["navigation_failed"] is True
+
+
+@pytest.mark.parametrize("kind,reason", [("lease", "goal_lease_expired"),
+                                       ("execution", "navigation_execution_timeout")])
+@pytest.mark.parametrize("span_ns", [500_000_000, 1_000_000_000])
+def test_deadline_inside_or_at_last_step_quantum_returns_real_failure_and_closes(kind, reason, span_ns):
+    value, deadline = active_deadline_fixture(kind, span_ns)
+    result = value.step(888)
+    assert result["terminated"] and not result["truncated"]
+    assert result["info"]["reason"] == "navigation_failure"
+    assert result["info"]["physical_dt"] == result["info"]["dt"] == span_ns / 1e9
+    assert result["snapshot"]["source_stamp"] == result["proxy_actor_inputs"]["actor_time"] == deadline / 1e9
+    assert value.reward_calls[0]["step_end"] == deadline / 1e9
+    assert value.reward_calls[0]["physical_state"]["time_ns"] == deadline
+    assert value.dispatcher.closed and value.dispatcher.states["tb1"].last_terminal == "CANCELED"
+    assert value.dispatcher.states["tb1"].failure == reason
+    failures = [fields["event"] for kind_, fields in value.records
+                if kind_ == "dispatcher_event" and fields["event"]["type"] == "protocol_failure"]
+    assert len(failures) == 1 and failures[0]["reason"] == reason
+    assert 0 < value.world.time_ns - deadline <= 10_000_000_000
+    assert all(all(command == (0., 0.) for command in commands.values())
+               for clock, commands in value.applied_commands if clock >= deadline)
+    assert value.paths == value.reward_calls[0]["physical_state"]["path_lengths"]
+    commands_before = copy.deepcopy(value.dispatcher._last_command)
+    with pytest.raises(ValueError, match="closed episode"):
+        value.step(888)
+    assert value.dispatcher._last_command == commands_before
+
+
+def test_late_fifo_accept_does_not_renew_expired_lease_and_still_closes_real_owner():
+    value = worker(1.1)
+    assert value.dispatcher.submit("tb1", "GOAL", value.now, 1, 0, 3.1,
+        goal={"x": 2., "y": 0.}, command_epoch=value.epoch, created_at=value.now) == "sent"
+    command = value.events.popleft()
+    stale = {"type": "result", "goal_id": "old-owner", "value": "CANCELED"}
+    value.protocol.send("receipt", "tb1", stale, source_stamp=2.9, now=2.9)
+    value.protocol.send("command", "tb1", command, source_stamp=1.1, now=1.1)
+    value.protocol.send("receipt", "tb1", stale, source_stamp=2.9, now=2.9)
+    value.world.time_ns = 2_900_000_000
+    value.flush_protocol()  # Command delivered; accept is behind the older receipt.
+    assert value.dispatcher.states["tb1"].phase == "accepting"
+    prepare_deadline_step(value, 2_900_000_000)
+    result = value.step(888)
+    assert result["terminated"] and result["info"]["reason"] == "navigation_failure"
+    assert result["info"]["physical_dt"] == result["info"]["dt"] == .2
+    assert result["snapshot"]["source_stamp"] == 3.1
+    assert value.dispatcher.states["tb1"].failure == "goal_lease_expired"
+    assert value.dispatcher.closed and value.dispatcher.states["tb1"].last_terminal == "CANCELED"
+    accepted = [fields["envelope"] for kind_, fields in value.records if kind_ == "proxy_delivery"
+                and fields["envelope"]["stream"] == "receipt"
+                and fields["envelope"]["payload"].get("type") == "accept"]
+    assert len(accepted) == 1 and accepted[0]["generated_stamp"] == 2.9
+    assert accepted[0]["received_stamp"] > 3.1
+    assert result["snapshot"]["navigation"]["tb1"]["accepted_goal_count"] == 0
+    assert value.dispatcher.states["tb1"].accepted_goal_count == 1
+
+
+def test_task_deadline_still_wins_over_same_boundary_protocol_failure_and_external_cut():
+    value, deadline = active_deadline_fixture("lease", 1_000_000_000, task_deadline=True)
+    result = value.step(888, external_truncation="external_sampler_limit")
+    assert deadline == 300_100_000_000
+    assert result["terminated"] and not result["truncated"] and result["info"]["reason"] == "timeout"
+    assert result["info"]["dt"] == result["info"]["physical_dt"] == 1.
+    assert value.dispatcher.failed and value.dispatcher.states["tb1"].failure == "goal_lease_expired"
+    assert value.private_checks[-1]["navigation_failed"] is True
+    assert value.dispatcher.closed

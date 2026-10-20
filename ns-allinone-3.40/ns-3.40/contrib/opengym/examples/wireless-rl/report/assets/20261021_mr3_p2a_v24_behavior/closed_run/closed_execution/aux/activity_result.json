@@ -1,0 +1,185 @@
+{
+  "schema": "mr3-proxy2d-performance-activity-v1",
+  "kind": "full_behavior",
+  "freeze": "9b33cf9b6ab491fd5e3b15269adb30d43be1354c",
+  "plan_sha256": "c9d3ba17a96c8d3dad6c3a2536066301443bb64b1a80c985f824ff0446087362",
+  "started_ns": 4260804664890957,
+  "deadline_ns": 4264404664890957,
+  "coordinator_identity": {
+    "pid": 2461161,
+    "parent": 2461155,
+    "group": 2461153,
+    "session": 2461153,
+    "start_ticks": 426080432,
+    "state": "R"
+  },
+  "phases": {
+    "conformity": {
+      "actual_argv": [
+        "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+        "-B",
+        "-m",
+        "mr3_learning.proxy2d_conformity",
+        "--freeze",
+        "9b33cf9b6ab491fd5e3b15269adb30d43be1354c",
+        "--output",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v24/full_behavior_v1/conformity.json"
+      ],
+      "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+      "child_identity": {
+        "pid": 2461319,
+        "parent": 2461161,
+        "group": 2461153,
+        "session": 2461153,
+        "start_ticks": 426080607,
+        "state": "R"
+      },
+      "started_monotonic_ns": 4260806070857165,
+      "ended_monotonic_ns": 4260818868821733,
+      "actual_child_wait_seconds": "12.797964568",
+      "actual_returncode": 0,
+      "actual_waited": true,
+      "timed_out": false,
+      "signals_sent": [],
+      "errors": [],
+      "passed": true
+    },
+    "conformity_review": {
+      "actual_argv": [
+        "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+        "-B",
+        "-m",
+        "mr3_learning.audit_proxy2d",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v24/full_behavior_v1",
+        "--freeze",
+        "9b33cf9b6ab491fd5e3b15269adb30d43be1354c",
+        "--conformity-only",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v24/full_behavior_v1/conformity.json",
+        "--output",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v24/full_behavior_v1/conformity_independent.json"
+      ],
+      "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+      "child_identity": {
+        "pid": 2461385,
+        "parent": 2461161,
+        "group": 2461153,
+        "session": 2461153,
+        "start_ticks": 426081887,
+        "state": "R"
+      },
+      "started_monotonic_ns": 4260818869346887,
+      "ended_monotonic_ns": 4260819686489713,
+      "actual_child_wait_seconds": "0.817142826",
+      "actual_returncode": 0,
+      "actual_waited": true,
+      "timed_out": false,
+      "signals_sent": [],
+      "errors": [],
+      "passed": true
+    },
+    "collection": {
+      "actual_argv": [
+        "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+        "-B",
+        "-m",
+        "mr3_learning.proxy2d_performance",
+        "collect",
+        "--kind",
+        "full_behavior",
+        "--run",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v24/full_behavior_v1"
+      ],
+      "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+      "child_identity": {
+        "pid": 2461407,
+        "parent": 2461161,
+        "group": 2461153,
+        "session": 2461153,
+        "start_ticks": 426081968,
+        "state": "R"
+      },
+      "started_monotonic_ns": 4260819688264144,
+      "ended_monotonic_ns": 4262061824433872,
+      "actual_child_wait_seconds": "1242.136169728",
+      "actual_returncode": 1,
+      "actual_waited": true,
+      "timed_out": false,
+      "signals_sent": [],
+      "errors": [],
+      "passed": false
+    },
+    "audit": {
+      "actual_argv": [
+        "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+        "-B",
+        "-m",
+        "mr3_learning.audit_proxy2d",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v24/full_behavior_v1",
+        "--freeze",
+        "9b33cf9b6ab491fd5e3b15269adb30d43be1354c",
+        "--output",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v24/full_behavior_v1/independent_audit.json"
+      ],
+      "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+      "child_identity": {
+        "pid": 2464684,
+        "parent": 2461161,
+        "group": 2461153,
+        "session": 2461153,
+        "start_ticks": 426206182,
+        "state": "R"
+      },
+      "started_monotonic_ns": 4262061825703361,
+      "ended_monotonic_ns": 4262130173454333,
+      "actual_child_wait_seconds": "68.347750972",
+      "actual_returncode": 1,
+      "actual_waited": true,
+      "timed_out": false,
+      "signals_sent": [],
+      "errors": [],
+      "passed": false
+    },
+    "behavior_report": {
+      "actual_argv": [
+        "/usr/bin/bash",
+        "--noprofile",
+        "--norc",
+        "-c",
+        "source /opt/ros/humble/setup.bash && source \"$1/install/setup.bash\" && exec /usr/bin/python3 -B -m mr3_learning.audit_proxy2d_behavior \"$2\" --freeze \"$3\" --output \"$4\"",
+        "mr3-proxy-behavior",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v24/full_behavior_v1",
+        "9b33cf9b6ab491fd5e3b15269adb30d43be1354c",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v24/full_behavior_v1/behavior_report.json"
+      ],
+      "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+      "child_identity": {
+        "pid": 2465045,
+        "parent": 2461161,
+        "group": 2461153,
+        "session": 2461153,
+        "start_ticks": 426213017,
+        "state": "R"
+      },
+      "started_monotonic_ns": 4262130174480734,
+      "ended_monotonic_ns": 4262174758908634,
+      "actual_child_wait_seconds": "44.5844279",
+      "actual_returncode": 1,
+      "actual_waited": true,
+      "timed_out": false,
+      "signals_sent": [],
+      "errors": [],
+      "passed": false
+    }
+  },
+  "errors": [],
+  "passed": false,
+  "qualification": false,
+  "training_eligible": false,
+  "native_credit": false,
+  "policy_calls": 0,
+  "gpu_calls": 0,
+  "optimizer_steps": 0,
+  "source_unchanged": true,
+  "ended_ns": 4262174779303798
+}

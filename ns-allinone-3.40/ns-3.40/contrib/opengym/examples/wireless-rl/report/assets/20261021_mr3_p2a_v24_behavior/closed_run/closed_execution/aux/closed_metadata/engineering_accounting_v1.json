@@ -1,0 +1,38 @@
+{
+  "schema": "mr3-proxy2d-performance-accounting-v1",
+  "kind": "full_behavior",
+  "method": "union of actual engineering outer intervals; nested phases not added",
+  "outer_receipts": [
+    {
+      "path": "/tmp/mr3_proxy2d_v24_outer/actual_wait.json",
+      "sha256": "1bbb59d442c35fc790c6e5b4f4d94170f85c483fecdbbc2c28239bae0f70da0f"
+    },
+    {
+      "path": "/tmp/mr3_proxy2d_v24_final_outer/actual_wait.json",
+      "sha256": "a21153ae69f6157542fa3251be14d94cc7bfe322c7aae51022b94747d6e155f5"
+    }
+  ],
+  "union_intervals_ns": [
+    [
+      4260804320644651,
+      4262174896321752
+    ],
+    [
+      4262202296966187,
+      4262202846893985
+    ]
+  ],
+  "charge_seconds": "1371.125604899",
+  "entry_used_seconds": "44068.6680536126018",
+  "ceiling_seconds": "52000",
+  "cumulative_used_seconds": "45439.7936585116018",
+  "remaining_seconds": "6560.2063414883982",
+  "pilot_remaining_decisions": 1870,
+  "pilot_remaining_wall_seconds": "2905.9547395464029",
+  "final_only_unused_seeds": [
+    401,
+    402,
+    403
+  ],
+  "qualification": false
+}

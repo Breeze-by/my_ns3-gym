@@ -1,6 +1,6 @@
 # MR3 研究路线：三机器人 RL 联合建图与冻结策略的 Wi-Fi 网络影响
 
-2026-10-21 V24续接：用户“继续执行吧”授权一次完整时长二维行为诊断；3并发env各固定open/rooms/corridors101一场、三机/原300秒、最多3EP/900attempt/3600工程秒，入场余7931.3319463873982。新冻结/当轮符合性/独立trace及行为复算，真实错误早停、无重试补样；无训练/原生/扩额/gateway，pilot/final-only不动。准备与结果见[V24](report/20261021_mr3_p2a_v24_behavior.md)，P2A未完成。
+2026-10-21 V24闭合FAIL：冻结9b33cf9b6ab491fd5e3b15269adb30d43be1354c实跑三场，544attempt/543verified return/1rooms错误，205/173/165sim秒均未完成任务。协议确认173.1s goal_lease_expired而上次返回仍非终态、次submit才stopped；原FAIL不改/不重跑，post-advance tick分类修复已通过27项CPU，未正式重验，租约/频率/门限保持。含有限故障提取实费1371.868831523秒，累计45440.5368851356018/52000、余6559.4631148643982；20保存身份gone、无训练/原生/pilot/final-only。下一步先接口/代理质量与长步成本，不直接PPO。见[V24](report/20261021_mr3_p2a_v24_behavior.md)。
 
 2026-10-20 V23闭合：profile与优化后短容量均PASS；短冻结2e8fcac9439a1a53e3913e45abccdc0b6645825d实跑1/4env、30短EP/240attempt/240verified return、0step错误/30正常关闭，73保存身份gone。含reset/close单env .240650848、四env合计 .610735060步/墙秒；仅8步短容量、无训练/原生资格。V23总实费806.844068675秒，累计44068.6680536126018/52000、余7931.3319463873982；pilot/final-only不动，旧FAIL保留，P2A未完成。见[V23](report/20261020_mr3_p2a_v23_performance.md)。
 

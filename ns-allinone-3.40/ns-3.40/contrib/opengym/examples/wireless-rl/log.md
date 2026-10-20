@@ -7697,3 +7697,68 @@ V24正式冻结前只读复核发现，同一clock ns内close/下一flush晚到a
 ```
 
 static_v2 exact命令：`/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B report/assets/20261021_mr3_p2a_v24_behavior/preparation_check_v2.py`。两者均CPU，无World/Node/新episode或正式历史consumer重放、不计工程实验费。
+
+
+## 2026-10-21 V24 唯一长行为活动FAIL闭合
+
+冻结9b33cf9b6ab491fd5e3b15269adb30d43be1354c，clean/main=origin/main后前检rc0/1.884370267秒（CPU），再执行一次预声明full_behavior。0policy/GPU/optimizer，3env各固定一EP/三机器人，随机流41+1000003×env_id，各seed101。未达2100墙窗口或300sim任务截止，rooms真实执行异常触发全局stop，所有在途请求/实际后端关闭后继续独立审计与行为消费者；不重试/补样/换seed。
+
+全544attempt/543return/1step_error；动作/uniform544、actor546、return543各自完成既定验证，所有raw票据计费但没有训练资格。3EP分别open205return、rooms174attempt/173return/1error、corridors165return；终态均未完整，无95%/原生资格，活动/审计/行为报告全部FAIL，原失败不改判。
+
+exact子命令与scope/wait如下；完整wrapper/source before-after/identity/console原件在A24/closed_run/closed_execution（root=canonical wireless-rl，PYTHONNOUSERSITE=1/PYTHONDONTWRITEBYTECODE=1；主活动/阶段CUDA空、BLAS/OMP/MKL线程1）：
+
+preflight scope=cpu rc0/1.884370267秒/source stable：
+
+```bash
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.proxy2d_performance preflight --kind full_behavior --freeze 9b33cf9b6ab491fd5e3b15269adb30d43be1354c
+```
+
+main scope=engineering rc1/1370.575677101秒/source stable：
+
+```bash
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.proxy2d_performance execute --kind full_behavior --freeze 9b33cf9b6ab491fd5e3b15269adb30d43be1354c
+```
+
+externalfinal scope=engineering rc0/0.549927798秒/source stable：
+
+```bash
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.proxy2d_performance final --kind full_behavior --run /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v24/full_behavior_v1 --outer /tmp/mr3_proxy2d_v24_outer/actual_wait.json --output /tmp/mr3_proxy2d_v24_absence.json
+```
+
+failureextract scope=engineering rc0/0.743226624秒/source stable：
+
+```bash
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B /tmp/mr3_proxy2d_v24_failure_extract.py
+```
+
+主活动nested实际phase（均已包含，不重复加费）：
+
+- conformity rc0/12.797964568秒、timed_out=False：`/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.proxy2d_conformity --freeze 9b33cf9b6ab491fd5e3b15269adb30d43be1354c --output /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v24/full_behavior_v1/conformity.json`
+
+- conformity_review rc0/0.817142826秒、timed_out=False：`/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.audit_proxy2d /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v24/full_behavior_v1 --freeze 9b33cf9b6ab491fd5e3b15269adb30d43be1354c --conformity-only /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v24/full_behavior_v1/conformity.json --output /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v24/full_behavior_v1/conformity_independent.json`
+
+- collection rc1/1242.136169728秒、timed_out=False：`/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.proxy2d_performance collect --kind full_behavior --run /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v24/full_behavior_v1`
+
+- audit rc1/68.347750972秒、timed_out=False：`/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.audit_proxy2d /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v24/full_behavior_v1 --freeze 9b33cf9b6ab491fd5e3b15269adb30d43be1354c --output /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v24/full_behavior_v1/independent_audit.json`
+
+- behavior_report rc1/44.5844279秒、timed_out=False：`/usr/bin/bash --noprofile --norc -c 'source /opt/ros/humble/setup.bash && source "$1/install/setup.bash" && exec /usr/bin/python3 -B -m mr3_learning.audit_proxy2d_behavior "$2" --freeze "$3" --output "$4"' mr3-proxy-behavior /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v24/full_behavior_v1 9b33cf9b6ab491fd5e3b15269adb30d43be1354c /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v24/full_behavior_v1/behavior_report.json`
+
+本轮失败具体信息：rooms InfrastructureError("2D proxy IPC failed: RuntimeError('masked action rejected by original dispatcher: stopped')")。所有后端正常rc0关闭，独立复算initialize/check/inspect/advance/close全部与原响应一致（无replay error）；3场原终态不足所以完整活动明确FAIL，不能把复算一致当任务成功。open/rooms/corridors截至205/173/165sim秒的correct-free为.8628001460786999/.7101429675425038/.4215815485996705；occupied IoU .15059294184883554/.13669934201691958/.11716035081912957，均低原.20门，质量均false，rooms false_free .021858808290155442超.02；实际参与均true，proxy_contact均0，仅代理范围，不提供18路原生安全信用。关闭后的navigation_closed=true与最后奖励边界closed=false分别保留，不把尾回填快照。
+
+分实际返回序列三等分的mean step wall：open3.238783/6.079187/8.660685秒，rooms5.194743/4.410414/11.552949秒，corridors3.609456/9.354466/9.406572秒。最长全机无中心平移open28/rooms62/corridors25sim秒（可包含旋转）；blocked_quanta保留为原counter，不擅自当独立blocked时间。三机路径/接受目标数、候选和合法mask时间序列均在behavior_report。随机未达95%与真实模型/协议异常分开，不据未满300秒的本轮否定RL可学性。
+
+封存完整608files/31,996,063bytes，单分片26,290,008bytes，SHAdb44fe8b530a2d4522511f0f5a8b6a3a7f9229ab637aa657fa4d0c68b32f6876；13aux exactcopy及全成员字节通过，原件前后不变。封存CPU7.515402246秒，账目CPU v1 .199361989秒；不计工程/不重复消费reader。完整source112绑定在活动结束保持freeze字节；后续CPU修复另述，不继承资格。
+
+活动/final后保存18身份gone；为定位真实原因，在原3600预约余额内追加一次有限只读故障提取，预定<=30秒且无World/actor/奖励重放、无新样本或改判，实际engineering rc0/.743226624秒，精确脚本/输入protocol+trace SHA/输出/outer console全保留A24/failure_diagnostic。确认rooms173.1s tb3 goal:172是goal_lease_expired；accept generated172.9却received173.5（在失败之后），并非先前仅源码假设的60s执行上限。最后173.1s返回仍nonterminal，次submit在同一时刻tick才stopped。代理推进前tick、推进后check读旧failed是可复现的边界检测缺口；原FIFO/receipt cadence及pending命令原expiry必须保持，不能延长租约/丢失败。
+
+最终main1370.575677101+external.549927798+有限提取.743226624三个outer union1371.868831523秒；累计45440.5368851356018/52000，余6559.4631148643982。nested阶段与三worker并行不加计。旧closed_metadata为18身份/未含提取的中账，权威最新closed_metadata_v2含20保存身份全gone、0present/unreadable；CPU v2 .203904726秒。pilot1870/2905.9547395464029和final-only401/402/403全未动。后续仅普通CPU边界分类修复，不启动新formal重验或训练，旧FAIL保持，P2A未完成。
+
+V24收口后常规CPU修复完成：生产代码只在ProxyWorker.world.advance()后补一行dispatcher.tick(self.now)，再update_states/隔离check；全模块AST对照将静态核只此变更。原2sTTL/60s执行上限/FIFO及5Hz回执/心跳、原候选mask/原奖励不变。它仅让真实到期在当前物理20ms区间返回navigation_failure并原取消/result关闭，租约到期本身和本轮FAIL保持；未吞stopped/补KEEP/新formal重验。27项system ROS CPU/stub通过，rc0/2.911973945秒/source stable；真实dispatcher+IdealTransport配dummy20ms clock和原check/RewardLedger，无ProxyWorld/ROS Node/原生episode。覆盖lease/执行边界前后20ms、API中途/末量子正dt、迟到accept FIFO、关闭尾排除/finished后拒后续submit、300秒截止优先及unsafe latch。完整回执A24/checks/worker_boundary_cpu_v1；exact子命令：
+
+```bash
+/usr/bin/bash --noprofile --norc -c 'unset PYTHONPATH PYTHONHOME LD_LIBRARY_PATH AMENT_PREFIX_PATH CMAKE_PREFIX_PATH COLCON_PREFIX_PATH ROS_PACKAGE_PATH VIRTUAL_ENV; export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin; source /opt/ros/humble/setup.bash && source /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/setup.bash && cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap && exec /usr/bin/python3 -B -m pytest -q src/multi_robot_exploration/test/test_mr3_proxy2d_worker.py'
+```
+
+修复后源与正式9b冻结不同，无新长行为/原生/训练资格，不反改543个原返回或失败。后续路线先pendingTTL/FIFO与代理质量可达性、长步成本具体化，再新范围/冻结验证；不直接扩PPO或改质量/安全门。
+
+V24闭合静态检查PASS，scope=cpu、rc0、actual wait 1.898351381秒、source stable；exact命令（cwd=canonical wireless-rl）：`/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B report/assets/20261021_mr3_p2a_v24_behavior/closed_static_check_v1.py`。A24/checks/closed_static_cpu_v1保存原wait/console，closed_static_result_v1.json保存结论。核608原件31,996,063bytes、13aux及额外故障提取副本、3outer union1371.868831523秒/余6559.4631148643982、20身份gone、544/543/1及全活动FAIL保留；111其他绑定源与9b相同，worker完整AST只新增推进后tick，原pure/_duration保持；489相对链接、log只追加、旧ARCHIVE条目和backup不变。仅哈希/元数据/源码与文档检查，无World/Node/正式consumer重放或新样本，不计工程费用。

@@ -277,6 +277,7 @@ class ProxyWorker:
                         "value": "SUCCEEDED"}, source_stamp=self.now, now=self.now)
         self.world.apply_commands(commands)
         self.world.advance()
+        self.dispatcher.tick(self.now)
         self.information.set_time(self.now)
         self.update_states()  # Current controlled state delivery, every 20 ms.
         return self.evaluate("check", physical_state=self.private_state(), now=self.now,

@@ -1,15 +1,15 @@
 # 当前三机器人基线与MR3适配启动命令
 
-## V24 完整时长二维行为诊断
+## V24 长回合行为诊断已FAIL闭合（历史命令）
 
-本轮新授权固定3并发env各open101/rooms101/corridors101一个三机器人回合，最多3EP/900attempt/3600工程秒；无模型/GPU/训练。先CPU准备、clean commit/push和新plan前检，再唯一执行，不能复用V23输出。学习侧在canonical wireless-rl目录，用conda ns3gym且未source ROS；system worker/evaluator和行为消费者由入口显式隔离ROS环境。原默认native launch不变。详见[V24](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261021_mr3_p2a_v24_behavior.md)。
+本次已在9b33cf9b6ab491fd5e3b15269adb30d43be1354c执行并FAIL关闭：544attempt/543return/1rooms租约边界错误，20保存身份gone，余6559.4631148643982工程秒。以下仅真实历史入口模板，不重试/复用输出或训练；后续post-advance tick只是CPU修复，不提供新冻结资格。每env仍三台，默认native launch不变。详见[V24](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261021_mr3_p2a_v24_behavior.md)。
 
 ```bash
 PYTHONNOUSERSITE=1 CUDA_VISIBLE_DEVICES= /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.proxy2d_performance preflight --kind full_behavior --freeze EXACT40
 PYTHONNOUSERSITE=1 CUDA_VISIBLE_DEVICES= /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.reach_execution --scope engineering --output /tmp/mr3_proxy2d_v24_outer --source mr3_learning/proxy2d_performance.py -- /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.proxy2d_performance execute --kind full_behavior --freeze EXACT40
 ```
 
-EXACT40是本轮完整新freeze；父进程实际wait后，另用engineering wrapper执行`proxy2d_performance final --kind full_behavior --run RUN --outer OUTER_ACTUAL_WAIT --output NEW_JSON`并计外尾、核保存PID/start均gone。未完成/安全失败不补样或改成任务成功，P2A/原生训练资格保持未完成。
+EXACT40当时是9b33cf9b6ab491fd5e3b15269adb30d43be1354c；父进程实际wait后，已用engineering wrapper执行`proxy2d_performance final --kind full_behavior --run RUN --outer OUTER_ACTUAL_WAIT --output NEW_JSON`并计外尾、核保存PID/start均gone。未完成/安全失败不补样或改成任务成功，P2A/原生训练资格保持未完成。
 
 ## V23 性能剖析与短容量已闭合（历史命令）
 
