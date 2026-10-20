@@ -1,0 +1,20 @@
+{
+  "argv": [
+    "/usr/bin/bash",
+    "--noprofile",
+    "--norc",
+    "-c",
+    "source /opt/ros/humble/setup.bash && source install/setup.bash && exec /usr/bin/python3 -B -m pytest -q src/merge_map/test/test_merge_map.py"
+  ],
+  "cwd": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap",
+  "environment": {
+    "PYTHONNOUSERSITE": "1",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "CUDA_VISIBLE_DEVICES": ""
+  },
+  "source_sha256": {
+    "ros2_ws/ros2-multi-robot-automap/src/merge_map/merge_map/merge_map.py": "e4cf897d2c22e70f89d9293efc00f44dd4bf1eb01624713735e08afdee0cbfcc",
+    "ros2_ws/ros2-multi-robot-automap/src/merge_map/test/test_merge_map.py": "ac727c0823528fe77782fc9055e0ce4678f23f8a41120294e85edbd54c1714b8"
+  },
+  "classification": "CPU small map tests only; no episode/formal consumer/native/GPU"
+}

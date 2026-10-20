@@ -1,0 +1,145 @@
+{
+  "schema": "mr3-reach-outer-actual-wait-v1",
+  "scope": "engineering",
+  "safety_contract": "mr3-reach-v1",
+  "actual_argv": [
+    "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+    "-B",
+    "-m",
+    "mr3_learning.proxy2d_performance",
+    "execute",
+    "--kind",
+    "profile",
+    "--freeze",
+    "caddd853ab8884b3e2fd1018069af2fdc139d3e8"
+  ],
+  "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+  "coordinator_identity": {
+    "pid": 2381249,
+    "parent": 2381247,
+    "group": 2381247,
+    "session": 2381247,
+    "start_ticks": 424591344,
+    "state": "R"
+  },
+  "child_identity": {
+    "pid": 2381258,
+    "parent": 2381249,
+    "group": 2381247,
+    "session": 2381247,
+    "start_ticks": 424591360,
+    "state": "R"
+  },
+  "actual_returncode": 0,
+  "actual_waited": true,
+  "errors": [],
+  "started_monotonic_ns": 4245913605771597,
+  "ended_monotonic_ns": 4245983213499277,
+  "actual_child_wait_seconds": "69.60772768",
+  "source_before": [
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d_performance.py",
+      "sha256": "019f5d2c9658ff5ee4266ac74687d1ef3f26081f63c3955db3379d3f4ca0f0ab",
+      "bytes": 13901,
+      "stat": [
+        2051,
+        73564082,
+        13901,
+        1792500233302096778,
+        1792500233302096778
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d_capacity.py",
+      "sha256": "02c27ff396d745cf136df782e6c9165864e20243f000ba16988a0e1331e8f02c",
+      "bytes": 15127,
+      "stat": [
+        2051,
+        73564067,
+        15127,
+        1792500279678517023,
+        1792500279678517023
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_proxy2d.py",
+      "sha256": "06a2de3270e7efe7ef77489baa9a6075473174a8c95baa84be4d2c79609de7ca",
+      "bytes": 59013,
+      "stat": [
+        2051,
+        73564064,
+        59013,
+        1792500179448274040,
+        1792500179448274040
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261020_mr3_p2a_v23_performance/profile_plan_v1.json",
+      "sha256": "99b74457aa8abf0539f09ebda6070dadaca4f57a91abfa428b0b9286a23717d7",
+      "bytes": 19604,
+      "stat": [
+        2051,
+        79063027,
+        19604,
+        1792500298561499878,
+        1792500298561499878
+      ]
+    }
+  ],
+  "source_after": [
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d_performance.py",
+      "sha256": "019f5d2c9658ff5ee4266ac74687d1ef3f26081f63c3955db3379d3f4ca0f0ab",
+      "bytes": 13901,
+      "stat": [
+        2051,
+        73564082,
+        13901,
+        1792500233302096778,
+        1792500233302096778
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d_capacity.py",
+      "sha256": "02c27ff396d745cf136df782e6c9165864e20243f000ba16988a0e1331e8f02c",
+      "bytes": 15127,
+      "stat": [
+        2051,
+        73564067,
+        15127,
+        1792500279678517023,
+        1792500279678517023
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_proxy2d.py",
+      "sha256": "06a2de3270e7efe7ef77489baa9a6075473174a8c95baa84be4d2c79609de7ca",
+      "bytes": 59013,
+      "stat": [
+        2051,
+        73564064,
+        59013,
+        1792500179448274040,
+        1792500179448274040
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261020_mr3_p2a_v23_performance/profile_plan_v1.json",
+      "sha256": "99b74457aa8abf0539f09ebda6070dadaca4f57a91abfa428b0b9286a23717d7",
+      "bytes": 19604,
+      "stat": [
+        2051,
+        79063027,
+        19604,
+        1792500298561499878,
+        1792500298561499878
+      ]
+    }
+  ],
+  "source_unchanged": true,
+  "passed": true,
+  "console": {
+    "path": "/tmp/mr3_proxy2d_v23_profile_outer/console.log",
+    "sha256": "76989b83dac01867d8225a76d6056b0246a5fc4ca701776367b08e7e1ad8bf63"
+  }
+}

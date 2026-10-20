@@ -23,6 +23,7 @@ downlink receipts describe actual completed-result delivery, never worker start.
 Navigation uses the local snapshot captured for that job plus delivered sharing.
 """
 
+from array import array
 from concurrent.futures import ThreadPoolExecutor
 import copy
 import hashlib
@@ -176,6 +177,13 @@ def restore_message(message, payload):
         if isinstance(value, dict):
             restore_message(getattr(message, key), value)
         else:
+            if (isinstance(message, OccupancyGrid) and key == "data" and type(value) is list
+                    and all(type(item) in (int, bool) for item in value)):
+                try:
+                    value = array("b", value)
+                except OverflowError:
+                    # Keep the generated ROS setter's rejection and exception.
+                    pass
             setattr(message, key, value)
     return message
 

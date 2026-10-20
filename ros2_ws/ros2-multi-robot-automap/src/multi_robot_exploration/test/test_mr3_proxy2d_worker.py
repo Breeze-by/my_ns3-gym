@@ -35,6 +35,31 @@ def test_evaluator_profile_remains_off_in_normal_mode(monkeypatch, tmp_path):
     assert "MR3_PROXY2D_PROFILE_OUTPUT" not in worker_module.evaluator_environment(tmp_path)
 
 
+@pytest.mark.parametrize("dtype", [np.int8, np.int16])
+def test_map_packing_is_detached_cdr_identical_for_noncontiguous_source(dtype):
+    from rclpy.serialization import deserialize_message, serialize_message
+    value = worker(.1)
+    values = np.arange(-1, 101, dtype=dtype).reshape(6, 17)[:, ::2]
+    before = values.copy()
+    value.world.map_record = lambda name: {"grid": values, "source_stamp": .1,
+        "resolution": .05, "origin": (-1., -2.)}
+    captured = []
+    value.information = SimpleNamespace(set_time=lambda _: None,
+        receive_local_map=lambda name, grid: captured.append((name, grid)),
+        publish_maps=lambda: None, snapshot_inputs=lambda: {"navigation_maps": {}})
+    value.update_maps()
+    assert [name for name, _ in captured] == list(ROBOTS)
+    for _, message in captured:
+        expected = copy.deepcopy(message)
+        expected.data = values.ravel().tolist()
+        assert message == expected and message.data.tobytes() == expected.data.tobytes()
+        assert deserialize_message(serialize_message(message), type(message)) == deserialize_message(
+            serialize_message(expected), type(expected))
+    assert np.array_equal(before, values)
+    values[:] = 11
+    assert list(captured[0][1].data) == before.ravel().tolist()
+
+
 def worker(now=1.):
     """Bypass production construction: no World, process, file or evaluator."""
     value = worker_module.ProxyWorker.__new__(worker_module.ProxyWorker)

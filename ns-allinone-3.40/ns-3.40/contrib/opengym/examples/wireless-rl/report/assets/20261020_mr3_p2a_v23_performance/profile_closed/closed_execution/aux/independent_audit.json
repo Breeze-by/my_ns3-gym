@@ -1,0 +1,1526 @@
+{
+  "schema": "mr3-proxy2d-capacity-audit-v1",
+  "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v23/profile_v1",
+  "freeze": "caddd853ab8884b3e2fd1018069af2fdc139d3e8",
+  "passed": true,
+  "errors": [],
+  "episodes": [
+    {
+      "schema": "mr3-proxy2d-episode-trace-audit-v1",
+      "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v23/profile_v1/stages/group1/worker0/episode001_open_101",
+      "freeze": "caddd853ab8884b3e2fd1018069af2fdc139d3e8",
+      "passed": true,
+      "errors": [],
+      "qualification": false,
+      "training_eligible": false,
+      "native_credit": false,
+      "step_attempts": 8,
+      "step_returns": 8,
+      "step_errors": 0,
+      "records": 18,
+      "event_count_scope": "raw parsed event rows, including the unverified suffix after a failure",
+      "raw_event_counts_complete": true,
+      "raw_close_records": 1,
+      "raw_closed_true_records": 1,
+      "raw_global_attempt_tickets": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "validated_prefix_records": 18,
+      "causal_validation_complete": true,
+      "verified_count_scope": "action=preceding mask/digest/version; uniform=successful RNG comparison; actor=saved input/digest/tensor checks; return=settled duration/actor/timestamp checks",
+      "attempt_start_wall_ns": [
+        4245934846548815,
+        4245938110894951,
+        4245941420816618,
+        4245944720693662,
+        4245956991594782,
+        4245961669595220,
+        4245966263303174,
+        4245971018931818
+      ],
+      "return_end_wall_ns": [
+        4245938085707475,
+        4245941394319746,
+        4245944694995214,
+        4245956965290442,
+        4245961644475566,
+        4245966237417669,
+        4245970993651843,
+        4245976030511664
+      ],
+      "actor_records": [
+        {
+          "input_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v23/profile_v1/stages/group1/worker0/episode001_open_101/inputs/0dde23b267a9f6be97a49ee44ea928993046d87796d0054d00958c821bc75b59.json.gz",
+          "input_encoded_sha256": "b11efcf90eb5c5ba9aaec47b91210dde1328f77cee5f023620a54e6c49fc32de",
+          "input_canonical_sha256": "0dde23b267a9f6be97a49ee44ea928993046d87796d0054d00958c821bc75b59",
+          "input_bytes": 55003,
+          "snapshot_digest": "15a9d6ddb1157719cbfd751bcbd8c3ace8aeb389c133352ca30a84b788a816e8",
+          "tensor_proofs": {
+            "global_map": {
+              "shape": [
+                3,
+                128,
+                128
+              ],
+              "dtype": "uint8",
+              "sha256": "abd58f0acb840bf980460e840c6aa1990c6faaa1fa3d6e60dacde246e15a06b9"
+            },
+            "local_maps": {
+              "shape": [
+                3,
+                3,
+                64,
+                64
+              ],
+              "dtype": "uint8",
+              "sha256": "8b4f4816906307963fd6215e75e5fb7f54e754c4683286853201ba813c6e9b4c"
+            },
+            "robots": {
+              "shape": [
+                3,
+                71
+              ],
+              "dtype": "float32",
+              "sha256": "f9f95d242007f1e2fc24e5aefb7f5dddb3578f2e480873fb964f59b88bb188d7"
+            },
+            "candidates": {
+              "shape": [
+                8,
+                16
+              ],
+              "dtype": "float32",
+              "sha256": "30bd1baced5789f47554a4831d7c16d43d54e74a1c12f40e4ea907b7f51b2014"
+            },
+            "history": {
+              "shape": [
+                3,
+                16,
+                4
+              ],
+              "dtype": "float32",
+              "sha256": "ef115a0e0c15cdc41958ca46b5b14b456115f4baec5e3ca68599d2a8f435e3b8"
+            },
+            "task": {
+              "shape": [
+                12
+              ],
+              "dtype": "float32",
+              "sha256": "96217a574298707bab724899962bb3f575c1975f356f6f35926d526501e1db46"
+            },
+            "action_mask": {
+              "shape": [
+                1000
+              ],
+              "dtype": "int8",
+              "sha256": "4e3dba234e6eb7adc33c1f46296cccd301784f9966d9aa54de5b7e2805f15c30"
+            }
+          },
+          "full_snapshot_rebuilt": true
+        },
+        {
+          "input_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v23/profile_v1/stages/group1/worker0/episode001_open_101/inputs/0b1fe05a38cade84f47885b1a27d70d44e0354b4066a7558db8b90aca5cb1647.json.gz",
+          "input_encoded_sha256": "a76b55c716e64f6d29b0ec6f085b150e14b8287478033abe4b4d387fee3c0201",
+          "input_canonical_sha256": "0b1fe05a38cade84f47885b1a27d70d44e0354b4066a7558db8b90aca5cb1647",
+          "input_bytes": 38649,
+          "snapshot_digest": "5935742e2eca5ce767ecbee3af916f040ced31f84df2e520e34f1b954aafb30b",
+          "tensor_proofs": {
+            "global_map": {
+              "shape": [
+                3,
+                128,
+                128
+              ],
+              "dtype": "uint8",
+              "sha256": "e750cca3aa701385e8c629296e56a52a6acc39b3c0c16e73d7e49a658525ad7e"
+            },
+            "local_maps": {
+              "shape": [
+                3,
+                3,
+                64,
+                64
+              ],
+              "dtype": "uint8",
+              "sha256": "894e57f5a196e214b501caf54557acdff9142d81a9bbd1cd738f751727f40da4"
+            },
+            "robots": {
+              "shape": [
+                3,
+                71
+              ],
+              "dtype": "float32",
+              "sha256": "c3e0771ac3dbed434d3e7d15a75c262de5c8dd167f5bcd68bac58756a4bfb58d"
+            },
+            "candidates": {
+              "shape": [
+                8,
+                16
+              ],
+              "dtype": "float32",
+              "sha256": "22b9509a6950bda2badacb93a5b9713d17aeb8e3d542f39772f642808a474efd"
+            },
+            "history": {
+              "shape": [
+                3,
+                16,
+                4
+              ],
+              "dtype": "float32",
+              "sha256": "d3164e98c5f6923a7c1e2480d82bfec1234852a683949cf84457b5d418f6373e"
+            },
+            "task": {
+              "shape": [
+                12
+              ],
+              "dtype": "float32",
+              "sha256": "a8f5308e28c6c00cd2e0a7f9ae8fc06f965093e4e1cd386ba8fe2dd794c878e0"
+            },
+            "action_mask": {
+              "shape": [
+                1000
+              ],
+              "dtype": "int8",
+              "sha256": "d4d3c4333dea010e8f48bf30b61222ac920ed8710a9c32ce7a6a82bdd8616fd9"
+            }
+          },
+          "full_snapshot_rebuilt": true
+        },
+        {
+          "input_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v23/profile_v1/stages/group1/worker0/episode001_open_101/inputs/a9b2098a597f3ee805e5b4c6e9ffbf78b026e523107fab47276fec219276d45a.json.gz",
+          "input_encoded_sha256": "4f1dac6a94bb166bf25ff399f9bef9665a6e84ecb28cc2cfc6b081c717be1017",
+          "input_canonical_sha256": "a9b2098a597f3ee805e5b4c6e9ffbf78b026e523107fab47276fec219276d45a",
+          "input_bytes": 38603,
+          "snapshot_digest": "f32a8062c12eb300cd4bb69f2680118c94f2ddb6e5f9e48e520666a42bbca412",
+          "tensor_proofs": {
+            "global_map": {
+              "shape": [
+                3,
+                128,
+                128
+              ],
+              "dtype": "uint8",
+              "sha256": "88ad7ef67212d75c71abb6e652009bd2ac4a2d74fafa5db6b35dfca864d679f3"
+            },
+            "local_maps": {
+              "shape": [
+                3,
+                3,
+                64,
+                64
+              ],
+              "dtype": "uint8",
+              "sha256": "7bbb560d441fed4f69566945c1f0b1bf4a51f72a030d8d6a24ae9aaa171cf3d8"
+            },
+            "robots": {
+              "shape": [
+                3,
+                71
+              ],
+              "dtype": "float32",
+              "sha256": "c5cc97919c148cae4b0bf4f30f612dc801f00df75077f86e2de17caff41e7fc0"
+            },
+            "candidates": {
+              "shape": [
+                8,
+                16
+              ],
+              "dtype": "float32",
+              "sha256": "22b9509a6950bda2badacb93a5b9713d17aeb8e3d542f39772f642808a474efd"
+            },
+            "history": {
+              "shape": [
+                3,
+                16,
+                4
+              ],
+              "dtype": "float32",
+              "sha256": "f0aefcfee3b241720f66e9fba1b35d4162f28a9c378090508889dcb6a92b20cc"
+            },
+            "task": {
+              "shape": [
+                12
+              ],
+              "dtype": "float32",
+              "sha256": "2e502d3a8b64408dcfc8cbe2cf69189ecb60203567b5fee42612b13b2e7177ee"
+            },
+            "action_mask": {
+              "shape": [
+                1000
+              ],
+              "dtype": "int8",
+              "sha256": "d4d3c4333dea010e8f48bf30b61222ac920ed8710a9c32ce7a6a82bdd8616fd9"
+            }
+          },
+          "full_snapshot_rebuilt": false
+        },
+        {
+          "input_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v23/profile_v1/stages/group1/worker0/episode001_open_101/inputs/23cbfdb53533a9fbe2bc14b49cdee4012af28574aeddf2d27103d347661ce374.json.gz",
+          "input_encoded_sha256": "1ceb2b52b98545e40db42f44be79a85cb7775756f2cb6744d9c89f3eb532e699",
+          "input_canonical_sha256": "23cbfdb53533a9fbe2bc14b49cdee4012af28574aeddf2d27103d347661ce374",
+          "input_bytes": 38294,
+          "snapshot_digest": "a0e3d6451ae3ffa82af3f045a8d27015bc97027290b95d99485b29afbbeb463c",
+          "tensor_proofs": {
+            "global_map": {
+              "shape": [
+                3,
+                128,
+                128
+              ],
+              "dtype": "uint8",
+              "sha256": "748fe09662a7bf79dbc04cb0ef8f7ff02d294d84af4fcb321404c852f85ce199"
+            },
+            "local_maps": {
+              "shape": [
+                3,
+                3,
+                64,
+                64
+              ],
+              "dtype": "uint8",
+              "sha256": "e7b90deb13f63295ea81a188b62af2522a4fae83a575517ceab42261c4014696"
+            },
+            "robots": {
+              "shape": [
+                3,
+                71
+              ],
+              "dtype": "float32",
+              "sha256": "3f2faa2422966f48a8f28b31a8016411b907e161de8fe55831b4f4f1942bb463"
+            },
+            "candidates": {
+              "shape": [
+                8,
+                16
+              ],
+              "dtype": "float32",
+              "sha256": "22b9509a6950bda2badacb93a5b9713d17aeb8e3d542f39772f642808a474efd"
+            },
+            "history": {
+              "shape": [
+                3,
+                16,
+                4
+              ],
+              "dtype": "float32",
+              "sha256": "3c0ac940d2c14b6687dc7e29740d64ab6299ac91623954de001caa670e2bed5a"
+            },
+            "task": {
+              "shape": [
+                12
+              ],
+              "dtype": "float32",
+              "sha256": "3db953958dd4a4217b84eb3878cfef1a8605f8667931ff23f53bdc546aa04734"
+            },
+            "action_mask": {
+              "shape": [
+                1000
+              ],
+              "dtype": "int8",
+              "sha256": "d4d3c4333dea010e8f48bf30b61222ac920ed8710a9c32ce7a6a82bdd8616fd9"
+            }
+          },
+          "full_snapshot_rebuilt": false
+        },
+        {
+          "input_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v23/profile_v1/stages/group1/worker0/episode001_open_101/inputs/7250b6c305b3b1d781eac5b81bb3a812c8a207b330e3cffcb418ab9ab425819f.json.gz",
+          "input_encoded_sha256": "d0f129ecb5e1ca234d204dc5d49be1e0763fb28fb213796304d11b7d14d5c2e1",
+          "input_canonical_sha256": "7250b6c305b3b1d781eac5b81bb3a812c8a207b330e3cffcb418ab9ab425819f",
+          "input_bytes": 38363,
+          "snapshot_digest": "d2bc8b2dbe3af18284b18f9c44282e5a4c4fbfc93c19bdb1045191d9a28bb537",
+          "tensor_proofs": {
+            "global_map": {
+              "shape": [
+                3,
+                128,
+                128
+              ],
+              "dtype": "uint8",
+              "sha256": "db143536ca46005673daae5ffff0ad661e8196009557830820a2ef687513fe5b"
+            },
+            "local_maps": {
+              "shape": [
+                3,
+                3,
+                64,
+                64
+              ],
+              "dtype": "uint8",
+              "sha256": "cd1af66c7eb770d620513f2063afac914ba4f0025e74d2eb9a5cc65486564c1e"
+            },
+            "robots": {
+              "shape": [
+                3,
+                71
+              ],
+              "dtype": "float32",
+              "sha256": "0419eb96cf65d791179649523ce3ba079d3d31f09dcc81844481896921da1f24"
+            },
+            "candidates": {
+              "shape": [
+                8,
+                16
+              ],
+              "dtype": "float32",
+              "sha256": "b24ba04d8c91c929a5fa4dadb0921c790573a0d201c249a91c7cae0f2de7ef21"
+            },
+            "history": {
+              "shape": [
+                3,
+                16,
+                4
+              ],
+              "dtype": "float32",
+              "sha256": "84a5069dc9e93622f0dc73e67e21473d9747abbc2fb79a76d0944943f6f12350"
+            },
+            "task": {
+              "shape": [
+                12
+              ],
+              "dtype": "float32",
+              "sha256": "af3fa55c2419159f17bcf17a3da14ca3152a32b3acc336cfe3522ba64a56271d"
+            },
+            "action_mask": {
+              "shape": [
+                1000
+              ],
+              "dtype": "int8",
+              "sha256": "fa670b322091f27f2b71a22e49e57cb54a85cec6925bbeab859f5d86ebc4f868"
+            }
+          },
+          "full_snapshot_rebuilt": false
+        },
+        {
+          "input_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v23/profile_v1/stages/group1/worker0/episode001_open_101/inputs/d4c980a86c92355c1aa5cd476a78ab4424830b9475daf36bf13a7982e3d0eb62.json.gz",
+          "input_encoded_sha256": "18dc06155ef6cb9296ef7bc59fc451f2906957d6d1ed22e6a96d68596ebf2773",
+          "input_canonical_sha256": "d4c980a86c92355c1aa5cd476a78ab4424830b9475daf36bf13a7982e3d0eb62",
+          "input_bytes": 28882,
+          "snapshot_digest": "e46f9f78e41ee5f22252fd0f9c1f7b23f5f3acb6d07a6b1649a1fa205cb78e39",
+          "tensor_proofs": {
+            "global_map": {
+              "shape": [
+                3,
+                128,
+                128
+              ],
+              "dtype": "uint8",
+              "sha256": "b7ae7f84fea4737336c80d5c356294514b6623428c21344bd4e0a17b0425d38f"
+            },
+            "local_maps": {
+              "shape": [
+                3,
+                3,
+                64,
+                64
+              ],
+              "dtype": "uint8",
+              "sha256": "88d4d1e86aaf18faf95ca8cf0eb32038ffde1e7fc5ddae834ee30daaab1413cb"
+            },
+            "robots": {
+              "shape": [
+                3,
+                71
+              ],
+              "dtype": "float32",
+              "sha256": "5e230e571a4d5159a7fffbb895452c8edbe90ff74857f1da40dbf48d159e79b5"
+            },
+            "candidates": {
+              "shape": [
+                8,
+                16
+              ],
+              "dtype": "float32",
+              "sha256": "c90d60096803fddbbef819c13cf9c47592ee601ca2be8521527c225eac024bd5"
+            },
+            "history": {
+              "shape": [
+                3,
+                16,
+                4
+              ],
+              "dtype": "float32",
+              "sha256": "09f82b82a72001e8bb2025100a37284a732e295183b15f5b65ab12f87cb2551f"
+            },
+            "task": {
+              "shape": [
+                12
+              ],
+              "dtype": "float32",
+              "sha256": "474e4ce81d10ab06e70d7b07d04f3fd7955706d19be67b66994c66d610bd30c0"
+            },
+            "action_mask": {
+              "shape": [
+                1000
+              ],
+              "dtype": "int8",
+              "sha256": "d6bf636f2243ed0e6e4562c409b448db235b4192bda4e63f3277dbf9dfdf434f"
+            }
+          },
+          "full_snapshot_rebuilt": false
+        },
+        {
+          "input_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v23/profile_v1/stages/group1/worker0/episode001_open_101/inputs/2d87d235d0b95147a698489bb5cc379f7e00870038398ae79033c86e24267007.json.gz",
+          "input_encoded_sha256": "246f198cae1e7b0d057567a9a86d9e3e5a4857377a4f72d349de1da2c13953b8",
+          "input_canonical_sha256": "2d87d235d0b95147a698489bb5cc379f7e00870038398ae79033c86e24267007",
+          "input_bytes": 29269,
+          "snapshot_digest": "67dca3521c3dc034ea97752a98c28d26d980e98aedeea67cc6027c5a6be73bbb",
+          "tensor_proofs": {
+            "global_map": {
+              "shape": [
+                3,
+                128,
+                128
+              ],
+              "dtype": "uint8",
+              "sha256": "720acc4c759e78af2ed10758298308295b5d8e68c16c25091016fbf1602d7354"
+            },
+            "local_maps": {
+              "shape": [
+                3,
+                3,
+                64,
+                64
+              ],
+              "dtype": "uint8",
+              "sha256": "93a09adffb236a07ecbb40bf8a350536a9a542e0fecc79320403bb42ea4bab1d"
+            },
+            "robots": {
+              "shape": [
+                3,
+                71
+              ],
+              "dtype": "float32",
+              "sha256": "1e78d76c992cbe30bafa7a1cfc09f39994e9c274b51d6544ee071a21a760e1a3"
+            },
+            "candidates": {
+              "shape": [
+                8,
+                16
+              ],
+              "dtype": "float32",
+              "sha256": "13d01cf0656ceb33810c8640a08865d77e8b172f7f95f7c7e29c4db75afe1b5b"
+            },
+            "history": {
+              "shape": [
+                3,
+                16,
+                4
+              ],
+              "dtype": "float32",
+              "sha256": "a3b1fb85629948cfd7cee060ade0a0095cd02877c297bbe6122d95a8f6344a59"
+            },
+            "task": {
+              "shape": [
+                12
+              ],
+              "dtype": "float32",
+              "sha256": "41362a3ca5cbb2bdf43b067080382423c48de656458b37e1af389231a41cec45"
+            },
+            "action_mask": {
+              "shape": [
+                1000
+              ],
+              "dtype": "int8",
+              "sha256": "ad1e4b713e284a336774abec0dba060fe5399a098a513e8e221986fa83120f5c"
+            }
+          },
+          "full_snapshot_rebuilt": false
+        },
+        {
+          "input_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v23/profile_v1/stages/group1/worker0/episode001_open_101/inputs/38c0d7d83b22c06c984bc6d99ea19dfffa598dc0389fa2d28d26a49752cc8104.json.gz",
+          "input_encoded_sha256": "c7f40af27731ff610b5dfc3b2871aae52ed9c372fbdce4d90ae5114f26322e97",
+          "input_canonical_sha256": "38c0d7d83b22c06c984bc6d99ea19dfffa598dc0389fa2d28d26a49752cc8104",
+          "input_bytes": 29253,
+          "snapshot_digest": "cf007c5b1608131ab370198d08b918c9f37b1235205d6542a5c7d2b6971d5cf0",
+          "tensor_proofs": {
+            "global_map": {
+              "shape": [
+                3,
+                128,
+                128
+              ],
+              "dtype": "uint8",
+              "sha256": "11ed2156936096c6f719e08cfcd95c230277bd53de5ffd7bf365520a987c6f23"
+            },
+            "local_maps": {
+              "shape": [
+                3,
+                3,
+                64,
+                64
+              ],
+              "dtype": "uint8",
+              "sha256": "9a6ebd58c6cdfed01bba1f4b387069fb95074042decc208ba7ab2b171d9d2309"
+            },
+            "robots": {
+              "shape": [
+                3,
+                71
+              ],
+              "dtype": "float32",
+              "sha256": "f8c44a96d381cda1dbaf1408ffed7626bdfa47e320782e5301560bba3687047f"
+            },
+            "candidates": {
+              "shape": [
+                8,
+                16
+              ],
+              "dtype": "float32",
+              "sha256": "06b7323d645a738e8302683e73ca8ef8367216c89bf06cee78ef2b0dea1a55cf"
+            },
+            "history": {
+              "shape": [
+                3,
+                16,
+                4
+              ],
+              "dtype": "float32",
+              "sha256": "5752265c18005020749c867c252e139404dbb52864cd03c9ea37b064cb3fa778"
+            },
+            "task": {
+              "shape": [
+                12
+              ],
+              "dtype": "float32",
+              "sha256": "ca7200364653275eb43f0ac661f5dc334e4e1814a067665c14d1a3e78ec46ec0"
+            },
+            "action_mask": {
+              "shape": [
+                1000
+              ],
+              "dtype": "int8",
+              "sha256": "ad1e4b713e284a336774abec0dba060fe5399a098a513e8e221986fa83120f5c"
+            }
+          },
+          "full_snapshot_rebuilt": false
+        },
+        {
+          "input_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v23/profile_v1/stages/group1/worker0/episode001_open_101/inputs/48b78a47666ab53e407cf14bf9fe9f7d18849d25e98499ba6d7a4338b6fd05fc.json.gz",
+          "input_encoded_sha256": "d8d6476696a250e25cec3ab18c20666fd8f1d572a9b017f846d57bef497b4bda",
+          "input_canonical_sha256": "48b78a47666ab53e407cf14bf9fe9f7d18849d25e98499ba6d7a4338b6fd05fc",
+          "input_bytes": 29217,
+          "snapshot_digest": "04f1113dac4581ec4a34a13a463609a5e4e873001dd4594f48e62bb4a6c537e8",
+          "tensor_proofs": {
+            "global_map": {
+              "shape": [
+                3,
+                128,
+                128
+              ],
+              "dtype": "uint8",
+              "sha256": "c614751c14cc8bfe13696e4c95b6230a0fbaac6bd5f037ffb884986e23cffd80"
+            },
+            "local_maps": {
+              "shape": [
+                3,
+                3,
+                64,
+                64
+              ],
+              "dtype": "uint8",
+              "sha256": "0bfefed5dc193983fe5b5bcd04c4faacb6adb0551ed4b19921b8f7986ca5509d"
+            },
+            "robots": {
+              "shape": [
+                3,
+                71
+              ],
+              "dtype": "float32",
+              "sha256": "13ccc3bb0dc5251ca389d5f5184b3d327046056d879ec0fd9740578fa46f2f1e"
+            },
+            "candidates": {
+              "shape": [
+                8,
+                16
+              ],
+              "dtype": "float32",
+              "sha256": "32ef91c08539f57b9783bb6f3fe7ec0f17d20be518f2acddba4ef025ff0724f2"
+            },
+            "history": {
+              "shape": [
+                3,
+                16,
+                4
+              ],
+              "dtype": "float32",
+              "sha256": "4292d662491d0fe43b564f1bb147da03c5bc6af9f6c0768ab2f63033bc5e0f28"
+            },
+            "task": {
+              "shape": [
+                12
+              ],
+              "dtype": "float32",
+              "sha256": "f5c16285bbe4e8c05b78e01de5a559f197f557948d650622869b8f2c2aca65bf"
+            },
+            "action_mask": {
+              "shape": [
+                1000
+              ],
+              "dtype": "int8",
+              "sha256": "ad1e4b713e284a336774abec0dba060fe5399a098a513e8e221986fa83120f5c"
+            }
+          },
+          "full_snapshot_rebuilt": false
+        }
+      ],
+      "full_rebuild_event_sequences": [
+        1,
+        3,
+        17
+      ],
+      "scope": "All trace pairing, saved masks and tensor encodings; reset, first and last returned steps receive full build_snapshot replay. Other candidate constructions are not replayed. Received-only source architecture and hidden-truth perturbations require separate conformity evidence.",
+      "verified_action_count": 8,
+      "verified_uniform_action_count": 8,
+      "verified_actor_record_count": 9,
+      "verified_step_return_count": 8,
+      "source_proof": {
+        "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_proxy2d.py": {
+          "sha256": "06a2de3270e7efe7ef77489baa9a6075473174a8c95baa84be4d2c79609de7ca",
+          "git_source": "caddd853ab8884b3e2fd1018069af2fdc139d3e8:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_proxy2d.py"
+        },
+        "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/observation.py": {
+          "sha256": "69f446d601fd67e2cd51622c1e443891a3915587d8d1ba6b12745f7e15ad1723",
+          "git_source": "caddd853ab8884b3e2fd1018069af2fdc139d3e8:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/observation.py"
+        },
+        "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d_codec.py": {
+          "sha256": "337244082676e08050d8872c6b9fcdc109840dcdb6ed188f854c5496e1d78981",
+          "git_source": "caddd853ab8884b3e2fd1018069af2fdc139d3e8:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d_codec.py"
+        },
+        "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_episode.py": {
+          "sha256": "9145d2ad23789b252e32f0afdfe18cf2eeec8e2c7e9ca7e89127a532288e411b",
+          "git_source": "caddd853ab8884b3e2fd1018069af2fdc139d3e8:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_episode.py"
+        },
+        "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py": {
+          "sha256": "b81da18c256ff307a4afc09c5115d0057e5a142a246555f39c1f7a5cee88c6e8",
+          "git_source": "caddd853ab8884b3e2fd1018069af2fdc139d3e8:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py"
+        }
+      },
+      "trace_sha256": "ecc9bee13af7f0fac082b12908dee5fc09dd28790603e80e8e7d08be3bec84bd",
+      "last_return_full_rebuild": {
+        "input_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v23/profile_v1/stages/group1/worker0/episode001_open_101/inputs/48b78a47666ab53e407cf14bf9fe9f7d18849d25e98499ba6d7a4338b6fd05fc.json.gz",
+        "input_encoded_sha256": "d8d6476696a250e25cec3ab18c20666fd8f1d572a9b017f846d57bef497b4bda",
+        "input_canonical_sha256": "48b78a47666ab53e407cf14bf9fe9f7d18849d25e98499ba6d7a4338b6fd05fc",
+        "input_bytes": 29217,
+        "snapshot_digest": "04f1113dac4581ec4a34a13a463609a5e4e873001dd4594f48e62bb4a6c537e8",
+        "tensor_proofs": {
+          "global_map": {
+            "shape": [
+              3,
+              128,
+              128
+            ],
+            "dtype": "uint8",
+            "sha256": "c614751c14cc8bfe13696e4c95b6230a0fbaac6bd5f037ffb884986e23cffd80"
+          },
+          "local_maps": {
+            "shape": [
+              3,
+              3,
+              64,
+              64
+            ],
+            "dtype": "uint8",
+            "sha256": "0bfefed5dc193983fe5b5bcd04c4faacb6adb0551ed4b19921b8f7986ca5509d"
+          },
+          "robots": {
+            "shape": [
+              3,
+              71
+            ],
+            "dtype": "float32",
+            "sha256": "13ccc3bb0dc5251ca389d5f5184b3d327046056d879ec0fd9740578fa46f2f1e"
+          },
+          "candidates": {
+            "shape": [
+              8,
+              16
+            ],
+            "dtype": "float32",
+            "sha256": "32ef91c08539f57b9783bb6f3fe7ec0f17d20be518f2acddba4ef025ff0724f2"
+          },
+          "history": {
+            "shape": [
+              3,
+              16,
+              4
+            ],
+            "dtype": "float32",
+            "sha256": "4292d662491d0fe43b564f1bb147da03c5bc6af9f6c0768ab2f63033bc5e0f28"
+          },
+          "task": {
+            "shape": [
+              12
+            ],
+            "dtype": "float32",
+            "sha256": "f5c16285bbe4e8c05b78e01de5a559f197f557948d650622869b8f2c2aca65bf"
+          },
+          "action_mask": {
+            "shape": [
+              1000
+            ],
+            "dtype": "int8",
+            "sha256": "ad1e4b713e284a336774abec0dba060fe5399a098a513e8e221986fa83120f5c"
+          }
+        },
+        "full_snapshot_rebuilt": true
+      },
+      "bound_bytes_unchanged": true,
+      "epoch": "proxy2d_w0_e1_2c8c6f75",
+      "env_id": 0,
+      "episode_index": 1,
+      "last_verified_return_terminal": {
+        "terminated": false,
+        "truncated": true,
+        "reason": "external_sampler_limit"
+      },
+      "verified_close": true,
+      "closed": true,
+      "closed_scope": "causal validation reached the close record; raw observed close counts are separate",
+      "wall_timestamp_coverage": {
+        "attempt_start": {
+          "expected_raw_count": 8,
+          "verified_timestamp_count": 8,
+          "coverage_complete": true,
+          "observed_out_of_bounds_count": 0,
+          "lower_bound_ns": 4245929555244306,
+          "upper_bound_ns": 4246169554887768
+        },
+        "return_end": {
+          "expected_raw_count": 8,
+          "verified_timestamp_count": 8,
+          "coverage_complete": true,
+          "observed_out_of_bounds_count": 0,
+          "lower_bound_ns": null,
+          "upper_bound_ns": 4245976590194669
+        }
+      }
+    }
+  ],
+  "qualification": false,
+  "training_eligible": false,
+  "native_credit": false,
+  "step_attempts": 8,
+  "step_returns": 8,
+  "step_errors": 0,
+  "event_count_scope": "raw parsed trace events; verified coverage is counted separately",
+  "uniform_actions_independently_replayed": 8,
+  "scope": "Independent finite proxy capacity/trace audit; no learning, native qualification, long-training capacity, transfer or95% reliability credit.",
+  "verified_action_count": 8,
+  "verified_uniform_action_count": 8,
+  "verified_actor_record_count": 9,
+  "verified_step_return_count": 8,
+  "activity_kind": "profile",
+  "activity_spec": {
+    "schema": "mr3-proxy2d-activity-spec-v1",
+    "kind": "profile",
+    "groups": [
+      1
+    ],
+    "cells": [
+      [
+        "open",
+        101
+      ]
+    ],
+    "steps_per_episode": 8,
+    "max_attempts": 8,
+    "activity_seconds": 600
+  },
+  "full_matrix_credit": false,
+  "source_proof": {
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_proxy2d.py": {
+      "sha256": "06a2de3270e7efe7ef77489baa9a6075473174a8c95baa84be4d2c79609de7ca",
+      "git_source": "caddd853ab8884b3e2fd1018069af2fdc139d3e8:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_proxy2d.py"
+    },
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/observation.py": {
+      "sha256": "69f446d601fd67e2cd51622c1e443891a3915587d8d1ba6b12745f7e15ad1723",
+      "git_source": "caddd853ab8884b3e2fd1018069af2fdc139d3e8:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/observation.py"
+    },
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d_codec.py": {
+      "sha256": "337244082676e08050d8872c6b9fcdc109840dcdb6ed188f854c5496e1d78981",
+      "git_source": "caddd853ab8884b3e2fd1018069af2fdc139d3e8:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d_codec.py"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_episode.py": {
+      "sha256": "9145d2ad23789b252e32f0afdfe18cf2eeec8e2c7e9ca7e89127a532288e411b",
+      "git_source": "caddd853ab8884b3e2fd1018069af2fdc139d3e8:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_episode.py"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py": {
+      "sha256": "b81da18c256ff307a4afc09c5115d0057e5a142a246555f39c1f7a5cee88c6e8",
+      "git_source": "caddd853ab8884b3e2fd1018069af2fdc139d3e8:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py"
+    }
+  },
+  "run_source_bindings": {
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/__init__.py": "1ed62607abac81c63a25c885a23a52f0152d279db480f5c270abea3da55564ef",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/action_trace.py": "8a05bdf6e304b3850f9978ca4dd9f893f12645c86a920ac18a9fdc1d4151e212",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_action_trace.py": "b9b6ef807c58e810feff036aab2b8efaf41d4eecfdb9fa13251287d50a5481ad",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_activity.py": "0fa0c47262ccf29f140cc2b915431461e830f87680b65f524cbda6a6ffff4407",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_controlled_physics.py": "3080521c368c5dc9b47c74337ea200945c80c125231146ac39cb90a71080dc3e",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_evaluator_phase.py": "35095aaf99f2ee956ed02909ade7755de3974489031c1854287ed547d0628070",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_information.py": "c384b1b3cfc2817a770ea9a2ee5ea5e2f3dadb402df8f869d3eae6c76a38c020",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_motion.py": "202d233600921be6c820fb4f96ec3bd0a4c442df318df140b4d7d375b556d0fc",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_nav2_parameters.py": "848dd05ebd9558a4ec8d47866909662030d24cfce837742a409907ff6c5bfdf3",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_odometry_cadence.py": "14519650bc7bab8fbea3d1a0d8407dbd75b8fb32c9c504d8864202bac81b2a6b",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_policy_inputs.py": "2bff01e3dc4dc78ab32ae04530f799abe04b585be6abb93293e5879557276036",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_ppo.py": "b2e0737d79826b7ecb319cc91b58ff45475ea831a9cb2b4cab2298aaf6474567",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_preparation.py": "b7e07ee44188b43f09a94215430fac609d6753f7be5594ce9f4b2308ccf88cab",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_protocol.py": "8bc1ee209761be2108a3d1d0248f2d0ab40b9fc68539ecedffec11cb81fd1647",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_proxy2d.py": "06a2de3270e7efe7ef77489baa9a6075473174a8c95baa84be4d2c79609de7ca",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_cadence.py": "62c68c04cea9c4ea759a638813f7752e960439144064ac54794583b33b748c46",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_controlled_physics.py": "36f105425a963e2acf6126b008c5b60c09b47b2d995c55c7306fdaf6dd355f42",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_diagnostic.py": "432721002e6617084e240e136fecc34acb1ea59760a7e29d806b354dc82ed557",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_information.py": "f17c6fd76c4a1682ba36bd084548f74c46fd3151da14a3084c6613d984c6e495",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_nav2_parameters.py": "53dcb0ce70a745956b92a916340019a94d6175074b766d101e5d8425d844b514",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_peer_control.py": "29f074ecf0d704b4f484ccc1c0c990b0bdf7223e04ffbd44e4af887b038c989f",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_ppo.py": "5464420904020dd154f3e7267928a8a6802059d52690a0813d13b9418e11a914",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_preparation.py": "fe6a0fe8fbf71a2aee7bd8c5dd7d6ebf904488f2d8d3ccde76eb55878de928cd",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_runtime.py": "4f6505f686945927641431a7cc64ee42e1fa5219b9d5f5144c82118fb96d88fa",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_sensor_model.py": "069daad11f476eb00eeea57d2a97cac4e6d46defa59f7dbfd3c90152738d6c2a",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_scalar.py": "fa26eddef15523cbbed40e4cdb02c19f93f90e372cad8cf9bffde9cd8f9888c8",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/benchmark.py": "f3cb060f874acff954ec99ea0eff0f1fd132a8a081584bfe5f62cb9403359571",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/env.py": "3e2902ff9be5c1b5c0aec00e0e03f2e1b5046a2335a2e871b7ec846156e3a6ff",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/gpu_probe.py": "1505cef4cf4c148a026bac1c6ed4ba3c28ef30a874c9ac0e8e62180a83aa438e",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/ipc.py": "55c6cb4d4a985418ce43e9d753b2d84400bb48138d5588ef43080380bd33cf18",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/model.py": "589ef94730c3bb0785f2d9027e9affe666828a19aff6952dcc2098e4bc31ae41",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/native_custody.py": "4edcdb6b33105e274c1c908c9d78e8c5d24461ff6733ed0f976e41bad3f2d928",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/native_custody_reach.py": "e19cb7f1ae1f5ebe61de9c16edf0e387dd063f9f8cc8e9f42263fbdc0efb24db",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/navigation_archive.py": "b509cc0d19ca443c0776cae4d728d35f399670bda08c171d590c8738964c48bd",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/observation.py": "69f446d601fd67e2cd51622c1e443891a3915587d8d1ba6b12745f7e15ad1723",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/plant_probe.py": "0648b6f7e56326543b52607a5c22b24bec7323a62e056019bfabff2c321a6e3a",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/plant_probe_audit.py": "56a0dbc0ef8e9f07c27023969507980c6c806c8858e83be474e8933b2dce2e05",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/policy.py": "b7d87473c1debf8939209ab7b2cea14e1c28d2639cae320a436c381faccd6452",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/ppo.py": "f2bb1090259134f84310ad4aeb7be98a8c4b3c74f46938c16b5cfb138b1a8b54",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/preparation.py": "850ab8947f711033f3f2fd17ef57d32098c02d569c1bea0f5cf58aaff8acd767",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d.py": "0c3d2e3066b17ee2745f4dd966d6a8f0b6e6b809e4a3b9a010e375535b6ffad4",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d_activity.py": "3919360e922e8c365ca102db13c41f2b911a8525d167efd23213af4867791dd4",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d_capacity.py": "02c27ff396d745cf136df782e6c9165864e20243f000ba16988a0e1331e8f02c",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d_codec.py": "337244082676e08050d8872c6b9fcdc109840dcdb6ed188f854c5496e1d78981",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d_conformity.py": "eabedd13116cef00b80543dcd140174e8cf089054adeebe7431963e6d42629eb",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d_performance.py": "019f5d2c9658ff5ee4266ac74687d1ef3f26081f63c3955db3379d3f4ca0f0ab",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d_process.py": "a975de72416cb8e49a706412957fc15c8dab678b7ac39c7912a3d576542d6331",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_audit_projection.py": "c2f1c8334c57901a3415ed2c17a38467e75e502bbe2ce60b55c205a9f1372915",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_diagnostic.py": "96f44bb52057644f5fefacadb499a3596e0a18d093b9480280b4e9d1ace7e5da",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_execution.py": "fa7da30bf18a71a7a28698f733590074bdf164c8857028640aedba5d21fd8be4",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_gates.py": "4577d67bb65d4809ed6bdcf6f20035d0e6b1fc7cc99dab77d3b949dc34cf04f0",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_policy_chain.py": "27175031d8591a3be972d4ce1ac61f5d47cded55c8748507a6bf7b92f7bb7601",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_preparation.py": "6783856dd82cded8e0056e0517e55540ad25888e69e09adb91e9dc8e700af329",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/rollout.py": "338f6b68505c39ea79b5db208a66080ce22c25199b0fc975e61bd5a1f935c87a",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/supervisor.py": "512ff470307e6333698b8232e6ac9f58a23c2adf96bd7b270efd81fd6432eb16",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261020_mr3_p2a_v22_proxy2d/scope_acceptance_v1.json": "682db71f7dbd92140ca34977c7c377b2c5fa2530e2a4b1d10522fe095d9c6e69",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261020_mr3_p2a_v23_performance/scope_acceptance_v1.json": "935cfe2a68104353c1407d5170ce6160b6256c4320e4682eb4a2ce036850887d",
+    "ros2_ws/ros2-multi-robot-automap/scripts/mr3_proxy2d_worker.py": "dbb3dc8272d02d09038b277b73534983787c1fe1e03e374017c5f8239e300517",
+    "ros2_ws/ros2-multi-robot-automap/src/merge_map/merge_map/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "ros2_ws/ros2-multi-robot-automap/src/merge_map/merge_map/merge_map.py": "76c3d2c604f38f61116be1f39263472f9074b4f69fe7a0428b532da977530078",
+    "ros2_ws/ros2-multi-robot-automap/src/merge_map/merge_map/offline_merge_map.py": "34aaf70bb3761fff64fad00d5aca95cae36bd77eb7390d7b3da026d3f47d8fc1",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/confirmation_corridors.json": "127b1cab596167db4bc370335b18fb379eae0bf2d3b5775dade2dd90174ae3b5",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/confirmation_open.json": "2056689728d8faa6c84440b8be15c5f71d783fac97712d35ead0c2cf2f6f9304",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/confirmation_rooms.json": "10dd0973e1fab3f8871c01afc720ebef6643ca58ed51d06a0de0da6ef84aaf99",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/corridors.json": "44cc8593cf69206a36b3a7bf82b2008957d5454caaa040dc4b3ac815e1b778a6",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/open.json": "e4a3c25374bb482a0104530f1765f17b807377e0a5c85bc42d6645a63bfc5487",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/protocol.json": "8c89fadc38e5b305fe36d75d924135cc5a600d8edb8468810b35991fba58e142",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/rooms.json": "c4ddca59d8b955f5410a0e639736263c750d6e819a864020c3e4e6da783a811e",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/test_corridors.json": "5ed2850334f54ffdf8d0a7a8f100a136cca98be946d3b38b6de180bb66e1dbc0",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/test_open.json": "997f412fe1f5b9fcfb20987f386d1cc7a8a4488274829ed52a8979ba01775da0",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/test_rooms.json": "69705557587774a78f9b9c2d361656e600ad58295463179b1405215c7d6a4217",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/validation_corridors.json": "ca7f3d3d98e24a92f63a85a1f92304b45b74b6bc741f45b7a11acb02244bfe5b",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/validation_open.json": "a6704f4809580b9db432cf6361d8ece272b7c8179eae19b736ec60a970c4f57c",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/validation_rooms.json": "b01698ad96611ce51a2fa795be965deafcd8e4ad7ddefc6c870ee40a73e7e7b8",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/models/turtlebot3_waffle/model.sdf": "c8131da065085475bdb0ce1e4c3abfc8c009811af6851fadf1fc33bd38b1d8a1",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/worlds/p1c_corridors.world": "7e15f3ba716fd2f6cdc55310ab3064e61c8d0d34c4f8cba79a964260a8dac051",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/worlds/p1c_open.world": "ed3fcd526d7367e8e0eb5245c365ba60631a6f4a6d725c64134221217ddc4846",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/worlds/p1c_rooms.world": "92ac7dff82bdf03b9f1ce3e9f075a3f59ca07df23c2f89fca654b3f423742768",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/control.py": "3b6fb71f2c90a055ef3bb922bd3f08332eb366d8becde577106d1ed5bd56cedd",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/motion_safety.py": "60005f800760ee7adc58e32cc2e93cea40f30241bda195e79f7f048fe1b20549",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_activity.py": "7af918d75c05b6f8fb1a65899e43aad11a315640e8b00fdb589c31f693ad696e",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_adapter.py": "d9121970b18e86a524ad4aad591a64661555bc15c0a59bf425896324473eecfc",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_contacts.py": "9d661498b3748d409dbb59ccd59524d5152d85ec93ee30128aebaf0a8a09fa17",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_control_phase.py": "051b4e879daf8762af6f3252ca0e9c2857c0150ed7396eef9c9f2c523b992c85",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_drive_phase.py": "0525230f4719e7279826810f0c177f6a6317a961d50711ac76d8a0338f93d987",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_episode.py": "9145d2ad23789b252e32f0afdfe18cf2eeec8e2c7e9ca7e89127a532288e411b",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_evaluator_phase.py": "9c43ace376354edbdf496fe920d04a539ed47912fd0840f6d290c459450d69fa",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_information.py": "597184b3620e8301771510ee777e7e88243cd4b352957f86f202031cc3a10acf",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py": "197ff4bfcca9f815e191dcddea7a2a6af46a033c68310e350b63ad9e48579a69",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_motion_safety.py": "06ca6ece92ca49072df9eedbdd5396148ca2e09d4f2560204448e460e3e73ae7",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py": "b81da18c256ff307a4afc09c5115d0057e5a142a246555f39c1f7a5cee88c6e8",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation_archive.py": "03da72d5e989e6c7af99b90aaddf357120c2239fc08e99febb858554b1fefea8",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_owner.py": "6710dc8e38b55c40112cb2c0c7659cfb4c7c8fd591a0ff2dd5d4dc51992b0bc0",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_protocol.py": "5a2b90efd162b19a35964750002fe549413fec6e07f9679ea611d3fe6b1e4ada",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_proxy2d_information.py": "fa36ab2053be88f862b6d41ba4b69549f5d4d5ca5ea25fc0cba39300ae69c70e",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_proxy2d_navigation.py": "40076b07ad7bced55bc8afa8a73c21a9ec4da9d50c42eff6121328db46e2cc88",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_proxy2d_profile.py": "67a502ad29977ee02d4952dd408639271fecb2265f47dd3842f56c894c0964d1",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_proxy2d_reward.py": "7c78e5ff12187c9a828a9a87848dd67546faa5439cde3337e432f27cbf05f927",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_proxy2d_world.py": "746a93c19dcf9213ef35a516d455ce6271b4538a10527aa1786e534475fca754",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_reach_geometry.py": "cf46b49f0740f84511f3d34f9a8eb3e56720744515d9eea1dc81bd8bacb85f0a",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_reach_runtime.py": "c17d008905364616c4027aeb1b6c180e7f4d0b522e310e242659a08cf376eb9e",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_reward.py": "77485e7988489a146e4c44207343a0a4be7c12b5ffe36906dde59257cac16f88",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_safety_intent.py": "141d62a1cf4d90414bb6cf191aee146d099a7839d946d991514a05e9bfaaa6f7",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_task_contract.py": "a1eeec3eb4488c9900cd23b04e231053fcaa16614f92cc88b9edb318d564e526",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_transport.py": "426d9b777c2150bb690de3266c973dedfc8fe8da3fa36c7bf37cbe3c31d70eca",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_velocity_metric.py": "0a7a4c9ee3de72c1fddaab2441d9bc7a8ad6c543725e8af0f6f18a6ed783fae5",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/nav2_ready_gate.py": "0ebb8fa7bec3073f2a1c2a8d6ff0dd6e68f878bc8a58427be8d7968e41e40918",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/peer_obstacles.py": "25457537485c6eba5b199e8406fdedd73b2b23f382077b27c112f3156e54615a",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/task_evaluator.py": "3aa0655113c0c2402c6e587730fa1f457d1f837ff0ce00928e6c8ca433f3c8d6"
+  },
+  "proxy_sources_without_learning_framework_imports": [
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_proxy2d.py",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d.py",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d_activity.py",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d_capacity.py",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d_codec.py",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d_conformity.py",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d_performance.py",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d_process.py",
+    "ros2_ws/ros2-multi-robot-automap/scripts/mr3_proxy2d_worker.py",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_proxy2d_information.py",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_proxy2d_navigation.py",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_proxy2d_profile.py",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_proxy2d_reward.py",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_proxy2d_world.py"
+  ],
+  "conformity": {
+    "schema": "mr3-proxy2d-independent-conformity-review-v1",
+    "freeze": "caddd853ab8884b3e2fd1018069af2fdc139d3e8",
+    "passed": true,
+    "qualification": false,
+    "training_eligible": false,
+    "native_credit": false,
+    "formal_reference": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v23/profile_v1/conformity.json",
+      "sha256": "7b4553bd032604aa471c175608d6f18be823fc007e67ec9d1143cb0abf59fefd"
+    },
+    "native_records": [
+      {
+        "episode": "worker0/episode001_open_101",
+        "selection": "reset",
+        "verified_expected_actual": {
+          "snapshot_canonical_sha256": "eb93a7f3897af73e607008cb3b78bee34e9d68343ebdcdbc37a97ca02a4675d3",
+          "tensor_proofs": {
+            "global_map": {
+              "shape": [
+                3,
+                128,
+                128
+              ],
+              "dtype": "uint8",
+              "sha256": "9a004c0c7dc1d538cad8f56ccea5a9a1b3c12dfeb172e19df748d01e4aa9be86"
+            },
+            "local_maps": {
+              "shape": [
+                3,
+                3,
+                64,
+                64
+              ],
+              "dtype": "uint8",
+              "sha256": "374d4da1533fc1b8d152bd805b252457583de733d7774f08263aadca7c5f4f30"
+            },
+            "robots": {
+              "shape": [
+                3,
+                71
+              ],
+              "dtype": "float32",
+              "sha256": "3269b52eea1835eb37ee843e1669ce120fd5ff1007890028e5f92ba01694030d"
+            },
+            "candidates": {
+              "shape": [
+                8,
+                16
+              ],
+              "dtype": "float32",
+              "sha256": "c91e7bbdf36cb54554c706d8c11fcef90f7f2e3cfbefd522f2b9714bfc42e349"
+            },
+            "history": {
+              "shape": [
+                3,
+                16,
+                4
+              ],
+              "dtype": "float32",
+              "sha256": "3e157f9045f8c6cd227e6944c3e344817f6abbfd24d16ca97ef7b8bef3d61259"
+            },
+            "task": {
+              "shape": [
+                12
+              ],
+              "dtype": "float32",
+              "sha256": "2c67d3da505a05294fdf85e3ce121fd2e08efbafcd275ca9adfd30aec283bed7"
+            },
+            "action_mask": {
+              "shape": [
+                1000
+              ],
+              "dtype": "int8",
+              "sha256": "d188c3e5df59b8c4fd93e467aecf58a4a3f7350184339569258eb4b7a29934fe"
+            }
+          }
+        },
+        "recovery_scope": "saved normalized sufficient fields; navigation receipt_sequence/missing inverted; not unrecorded raw input"
+      },
+      {
+        "episode": "worker0/episode001_open_101",
+        "selection": "first_step",
+        "verified_expected_actual": {
+          "snapshot_canonical_sha256": "331ca89dcd66b2cf99dffd7fb0b011f2da815d9bba8ef6c9e278eae43bfb026c",
+          "tensor_proofs": {
+            "global_map": {
+              "shape": [
+                3,
+                128,
+                128
+              ],
+              "dtype": "uint8",
+              "sha256": "9a004c0c7dc1d538cad8f56ccea5a9a1b3c12dfeb172e19df748d01e4aa9be86"
+            },
+            "local_maps": {
+              "shape": [
+                3,
+                3,
+                64,
+                64
+              ],
+              "dtype": "uint8",
+              "sha256": "374d4da1533fc1b8d152bd805b252457583de733d7774f08263aadca7c5f4f30"
+            },
+            "robots": {
+              "shape": [
+                3,
+                71
+              ],
+              "dtype": "float32",
+              "sha256": "12c5df761fa37a34896d48332214fe06a185336cb0475e5dcbd4a9536f1b109a"
+            },
+            "candidates": {
+              "shape": [
+                8,
+                16
+              ],
+              "dtype": "float32",
+              "sha256": "2d3e9adca0b3acdfb977add08b6a3a90fd688f5663c675638630757b4d1b1611"
+            },
+            "history": {
+              "shape": [
+                3,
+                16,
+                4
+              ],
+              "dtype": "float32",
+              "sha256": "d9c5d14698888d08d525dd18c2e2eb6e8b9abca82f553ad36413675ac9068405"
+            },
+            "task": {
+              "shape": [
+                12
+              ],
+              "dtype": "float32",
+              "sha256": "6d21cbb35354abe725027a301ce6088706e925dd2bb75c079dcce74a4f8c0f8a"
+            },
+            "action_mask": {
+              "shape": [
+                1000
+              ],
+              "dtype": "int8",
+              "sha256": "ad1e4b713e284a336774abec0dba060fe5399a098a513e8e221986fa83120f5c"
+            }
+          }
+        },
+        "recovery_scope": "saved normalized sufficient fields; navigation receipt_sequence/missing inverted; not unrecorded raw input"
+      },
+      {
+        "episode": "worker0/episode001_open_101",
+        "selection": "last_step",
+        "verified_expected_actual": {
+          "snapshot_canonical_sha256": "48de034859ba7caa5923800a1fda1f97431721f5ad9649e185de1435c3d8599d",
+          "tensor_proofs": {
+            "global_map": {
+              "shape": [
+                3,
+                128,
+                128
+              ],
+              "dtype": "uint8",
+              "sha256": "206405ea0112a5640721f56b5541103791cab42512f71b256d4d021e4866daea"
+            },
+            "local_maps": {
+              "shape": [
+                3,
+                3,
+                64,
+                64
+              ],
+              "dtype": "uint8",
+              "sha256": "08d8f6456a88f2eccbcd4837a0decc54ea780c771965fa6970c376fd6905324b"
+            },
+            "robots": {
+              "shape": [
+                3,
+                71
+              ],
+              "dtype": "float32",
+              "sha256": "a0d12ab498a4d26019a7bc15234521f34d0aa7b846a79b209effb1bdced1e742"
+            },
+            "candidates": {
+              "shape": [
+                8,
+                16
+              ],
+              "dtype": "float32",
+              "sha256": "d382077176a86adc21492b6517ff558fee0dc559e9ccf54c9abd1f1601033ad0"
+            },
+            "history": {
+              "shape": [
+                3,
+                16,
+                4
+              ],
+              "dtype": "float32",
+              "sha256": "8696166803d6d57406f5da2e35bd6493bd37fec34d9879c49e56dd62eeebc6e9"
+            },
+            "task": {
+              "shape": [
+                12
+              ],
+              "dtype": "float32",
+              "sha256": "780f482bd746c27467d6ce6bea822e0ac55feccccc7a5885cd1275469379908f"
+            },
+            "action_mask": {
+              "shape": [
+                1000
+              ],
+              "dtype": "int8",
+              "sha256": "ad1e4b713e284a336774abec0dba060fe5399a098a513e8e221986fa83120f5c"
+            }
+          }
+        },
+        "recovery_scope": "saved normalized sufficient fields; navigation receipt_sequence/missing inverted; not unrecorded raw input"
+      },
+      {
+        "episode": "worker0/episode002_open_101",
+        "selection": "reset",
+        "verified_expected_actual": {
+          "snapshot_canonical_sha256": "899701b735401c342d17997af775782bc4b8644e5b64d906f9745ab672157f2a",
+          "tensor_proofs": {
+            "global_map": {
+              "shape": [
+                3,
+                128,
+                128
+              ],
+              "dtype": "uint8",
+              "sha256": "db6343045238444d2533a75d980e816b61bb9788007e9dac95902c9bff53a535"
+            },
+            "local_maps": {
+              "shape": [
+                3,
+                3,
+                64,
+                64
+              ],
+              "dtype": "uint8",
+              "sha256": "738c7177266b8df89017261b842fa3167ae7482de910f1a67362042e2a1b2afe"
+            },
+            "robots": {
+              "shape": [
+                3,
+                71
+              ],
+              "dtype": "float32",
+              "sha256": "032475d6e92425c15672410ad7464fbe255887c3fd0b027ab1258e4e05d08dc8"
+            },
+            "candidates": {
+              "shape": [
+                8,
+                16
+              ],
+              "dtype": "float32",
+              "sha256": "59c2cc78496e6dea09a212a458ecf0a4eb1aa90dbc9b9a0aebd7f652745e1491"
+            },
+            "history": {
+              "shape": [
+                3,
+                16,
+                4
+              ],
+              "dtype": "float32",
+              "sha256": "c1dad3ef6f22f64ac75a4a326c597a5505d8402343ece1f149b83fab55c7da92"
+            },
+            "task": {
+              "shape": [
+                12
+              ],
+              "dtype": "float32",
+              "sha256": "58f6ed594bff2264699407a87f9c1b7cc2e0fd728543aa9eff9748a80b8ef316"
+            },
+            "action_mask": {
+              "shape": [
+                1000
+              ],
+              "dtype": "int8",
+              "sha256": "1d95e9b70a4d97f99ac9ea9e15b5c87fd249ceba96e3d0039392c568a8116d81"
+            }
+          }
+        },
+        "recovery_scope": "saved normalized sufficient fields; navigation receipt_sequence/missing inverted; not unrecorded raw input"
+      },
+      {
+        "episode": "worker0/episode002_open_101",
+        "selection": "first_step",
+        "verified_expected_actual": {
+          "snapshot_canonical_sha256": "0b15a5ed62945f9311bef8acfae1d7597b7bbe7179085b271f753c77029b2321",
+          "tensor_proofs": {
+            "global_map": {
+              "shape": [
+                3,
+                128,
+                128
+              ],
+              "dtype": "uint8",
+              "sha256": "db6343045238444d2533a75d980e816b61bb9788007e9dac95902c9bff53a535"
+            },
+            "local_maps": {
+              "shape": [
+                3,
+                3,
+                64,
+                64
+              ],
+              "dtype": "uint8",
+              "sha256": "738c7177266b8df89017261b842fa3167ae7482de910f1a67362042e2a1b2afe"
+            },
+            "robots": {
+              "shape": [
+                3,
+                71
+              ],
+              "dtype": "float32",
+              "sha256": "784b0ed7cd02330452ff3ee841f614b4e2e031593c19cd8b38f0e01afd882866"
+            },
+            "candidates": {
+              "shape": [
+                8,
+                16
+              ],
+              "dtype": "float32",
+              "sha256": "3ccf7f460dcc24eb4b5f362196dbf991506e941e76083e2b3240ddb673bfec26"
+            },
+            "history": {
+              "shape": [
+                3,
+                16,
+                4
+              ],
+              "dtype": "float32",
+              "sha256": "964c46d15f6d84f782df30d527a73d809bcb42d1ca2005e6490407df38613163"
+            },
+            "task": {
+              "shape": [
+                12
+              ],
+              "dtype": "float32",
+              "sha256": "bc189868088c12b2e1ca339a203f0e60ef332d291860a2163a6cc3336255d077"
+            },
+            "action_mask": {
+              "shape": [
+                1000
+              ],
+              "dtype": "int8",
+              "sha256": "3a38521ee80bc24c855ecfaf5e39003b713387bb45d9be50c9e871b4bdfbd0f9"
+            }
+          }
+        },
+        "recovery_scope": "saved normalized sufficient fields; navigation receipt_sequence/missing inverted; not unrecorded raw input"
+      },
+      {
+        "episode": "worker0/episode002_open_101",
+        "selection": "last_step",
+        "verified_expected_actual": {
+          "snapshot_canonical_sha256": "4992c277f5e590b483e51fc569eecfb4adc57aa6816442d922c147a3496de998",
+          "tensor_proofs": {
+            "global_map": {
+              "shape": [
+                3,
+                128,
+                128
+              ],
+              "dtype": "uint8",
+              "sha256": "6a30bd2f5df24ba6b9871a05c92faad96c2ea5416cea1802bdecb9b82b55784d"
+            },
+            "local_maps": {
+              "shape": [
+                3,
+                3,
+                64,
+                64
+              ],
+              "dtype": "uint8",
+              "sha256": "a5a8c1ec30628168ac287745b5f9c328a9de9ea380028c73dac3875712900e1a"
+            },
+            "robots": {
+              "shape": [
+                3,
+                71
+              ],
+              "dtype": "float32",
+              "sha256": "666490ce8f694a06a89fd65576e881764ae21d2e73fa82d30ab3cfeb4748767a"
+            },
+            "candidates": {
+              "shape": [
+                8,
+                16
+              ],
+              "dtype": "float32",
+              "sha256": "b2a8225f8b67ea4f45aca8979b3e22b191ab898cb6ab2349ef092086af7f1ca4"
+            },
+            "history": {
+              "shape": [
+                3,
+                16,
+                4
+              ],
+              "dtype": "float32",
+              "sha256": "1292b99ce7675e0eeeac77475883e6788e2087ef3d16822f976cfcfc23a68d76"
+            },
+            "task": {
+              "shape": [
+                12
+              ],
+              "dtype": "float32",
+              "sha256": "36bc84d7749fc7bc5a0745d3a8cd279cfe0934d5319b6c930e25a22649fa3d52"
+            },
+            "action_mask": {
+              "shape": [
+                1000
+              ],
+              "dtype": "int8",
+              "sha256": "8eceaaa2d029bbf962dbac3ed39474e61ea7febc52c63cf5e127d19c22cc6528"
+            }
+          }
+        },
+        "recovery_scope": "saved normalized sufficient fields; navigation receipt_sequence/missing inverted; not unrecorded raw input"
+      }
+    ],
+    "synthetic_cases": [
+      {
+        "id": "forward_turn_stop_halved_integration",
+        "comparison_recalculated": true
+      },
+      {
+        "id": "hidden_obstacle_same_received_actor",
+        "comparison_recalculated": true
+      },
+      {
+        "id": "reward_truth_only_reward_branch",
+        "comparison_recalculated": true
+      }
+    ],
+    "helper_actual_waits": [
+      {
+        "argv": [
+          "/usr/bin/python3",
+          "-B",
+          "-m",
+          "mr3_learning.audit_proxy2d",
+          "--pure-builder"
+        ],
+        "pid": 2381474,
+        "child_identity": {
+          "pid": 2381474,
+          "parent": 2381442,
+          "group": 2381247,
+          "session": 2381247,
+          "start_ticks": 424591579,
+          "state": "R"
+        },
+        "started_monotonic_ns": 4245915795741379,
+        "ended_monotonic_ns": 4245926187602808,
+        "returncode": 0,
+        "actual_waited": true,
+        "pure_build_calls": 6
+      },
+      {
+        "argv": [
+          "/usr/bin/python3",
+          "-B",
+          "-m",
+          "mr3_learning.proxy2d_conformity",
+          "--synthetic-cases",
+          "--freeze",
+          "caddd853ab8884b3e2fd1018069af2fdc139d3e8",
+          "--output",
+          "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v23/profile_v1/conformity_synthetic.json"
+        ],
+        "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+        "started_monotonic_ns": 4245926188134038,
+        "actual_waited": true,
+        "termination_requested": false,
+        "kill_requested": false,
+        "child_identity": {
+          "pid": 2381770,
+          "parent": 2381442,
+          "start_ticks": 424592618
+        },
+        "returncode": 0,
+        "ended_monotonic_ns": 4245928208141823
+      }
+    ],
+    "reference_files_checked": 80,
+    "formal_producer_pass_flags_used": false,
+    "additional_native_snapshot_replays": 0
+  },
+  "group_capacity": [
+    {
+      "workers": 1,
+      "started_ns": 4245929555244306,
+      "ended_ns": 4245976590194669,
+      "step_attempts": 8,
+      "step_returns": 8,
+      "step_errors": 0,
+      "returned_steps_scope": "raw return events; duration/actor verification counted separately",
+      "verified_action_count": 8,
+      "verified_uniform_action_count": 8,
+      "verified_actor_record_count": 9,
+      "verified_step_return_count": 8,
+      "wall_seconds_including_reset_and_close": 47.034950363,
+      "returned_steps_per_wall_second": 0.17008628558675365,
+      "complete_six_cells_per_worker": false,
+      "complete_declared_cells_per_worker": true
+    }
+  ],
+  "declared_learning_calls": {
+    "policy_calls": 0,
+    "gpu_calls": 0,
+    "optimizer_steps": 0
+  },
+  "activity_started_ns": 4245913950345033,
+  "activity_deadline_ns": 4246513950345033,
+  "pure_builder_actual_wait": {
+    "argv": [
+      "/usr/bin/python3",
+      "-B",
+      "-m",
+      "mr3_learning.audit_proxy2d",
+      "--pure-builder"
+    ],
+    "pid": 2383476,
+    "child_identity": {
+      "pid": 2383476,
+      "parent": 2383291,
+      "group": 2381247,
+      "session": 2381247,
+      "start_ticks": 424597859,
+      "state": "R"
+    },
+    "started_monotonic_ns": 4245978592100569,
+    "ended_monotonic_ns": 4245982280160510,
+    "returncode": 0,
+    "actual_waited": true,
+    "pure_build_calls": 3
+  },
+  "bound_bytes_unchanged": true,
+  "complete_short_capacity_matrix": false
+}

@@ -1,0 +1,44 @@
+............F.................                                           [100%]
+=================================== FAILURES ===================================
+_ test_packed_output_matches_original_list_setter_cdr_for_full_value_range[unknown-False] _
+
+navigation = False, sharing = 'unknown'
+
+    @pytest.mark.parametrize("navigation", [False, True])
+    @pytest.mark.parametrize("sharing", ["unknown", "conflicts"])
+    def test_packed_output_matches_original_list_setter_cdr_for_full_value_range(navigation, sharing):
+        # Both old list validation and new byte packing must preserve signed -1,
+        # every intermediate occupancy value, row order and complete CDR bytes.
+        values = list(range(-1, 101))
+        shared_values = [-1] * len(values) if sharing == "unknown" else list(reversed(values))
+        own = make_grid(values, 17, origin_x=-.75)
+        shared = make_grid(shared_values, 17, origin_x=-.75)
+        for index, grid in enumerate((own, shared)):
+            grid.info.resolution = .25
+            grid.info.origin.position.y = -.5
+            grid.header.stamp.sec = 2 + index
+            grid.header.stamp.nanosec = 123
+            grid.info.map_load_time.sec = 1 + index
+        before = [serialize_message(grid) for grid in (own, shared)]
+        if navigation:
+            result = merge_navigation_map(own, shared)
+            expected = [left if left >= 0 else right for left, right in zip(values, shared_values)]
+        else:
+            result = merge_maps([own, shared])
+            expected = [max(left, right) for left, right in zip(values, shared_values)]
+        legacy = copy.deepcopy(result)
+        legacy.data = expected  # Exercise the previous Python-list setter branch.
+        assert isinstance(result.data, array) and result.data.typecode == 'b'
+        assert result.info.width == 17 and result.info.height == 6
+        assert list(result.data) == expected
+        assert serialize_message(result) == serialize_message(legacy)
+>       assert [serialize_message(grid) for grid in (own, shared)] == before
+E       assert [b'\x00\x01\x...\xff\xff\xff'] == [b'\x00\x01\x...\xff\xff\xff']
+E         At index 0 diff: b'\x00\x01\x00\x00\x02\x00\x00\x00{\x00\x00\x00\x04\x00\x00\x00map\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x80>\x11\x00\x00\x00\x06\x00\x00\x00e\x00\x00\x00\x00\x00\x00\x00\x00\x00\xe8\xbf\x00\x00\x00\x00\x00\x00\xe0\xbf\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xf0?f\x00\x00\x00\xff\x00\x01\x02\x03\x04\x05\x06\x07\x08\t\n\x0b\x0c\r\x0e\x0f\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1a\x1b\x1c\x1d\x1e\x1f !"#$%&\'()*+,-./0123456789:;<=>?@ABCDE...
+E         
+E         ...Full output truncated (50 lines hidden), use '-vv' to show
+
+src/merge_map/test/test_merge_map.py:137: AssertionError
+=========================== short test summary info ============================
+FAILED src/merge_map/test/test_merge_map.py::test_packed_output_matches_original_list_setter_cdr_for_full_value_range[unknown-False]
+1 failed, 29 passed in 0.81s

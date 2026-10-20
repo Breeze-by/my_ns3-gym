@@ -1,3 +1,4 @@
+from array import array
 import math
 
 import numpy as np
@@ -111,7 +112,7 @@ def merge_maps(maps, frame_id="map"):
     merged_map.info.origin.orientation.w = source_origin.orientation.w
     if merged_map.info.origin.orientation.w == 0.0:
         merged_map.info.origin.orientation.w = 1.0
-    merged_map.data = merged.ravel().tolist()
+    merged_map.data = array('b', merged.astype(np.int8).tobytes())
     return merged_map
 
 
@@ -129,7 +130,8 @@ def merge_navigation_map(own, delivered_shared, frame_id="map"):
         own, rows, columns, navigation.info.origin.position.x,
         navigation.info.origin.position.y, navigation.info.resolution)
     conservative = np.asarray(navigation.data, dtype=np.int16).reshape(rows.shape)
-    navigation.data = np.where(observed_own >= 0, observed_own, conservative).ravel().tolist()
+    composed = np.where(observed_own >= 0, observed_own, conservative)
+    navigation.data = array('b', composed.astype(np.int8).tobytes())
     return navigation
 
 

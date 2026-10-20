@@ -1,0 +1,64 @@
+..FF...............                                                      [100%]
+=================================== FAILURES ===================================
+__ test_map_packing_is_detached_cdr_identical_for_noncontiguous_source[int8] ___
+
+dtype = <class 'numpy.int8'>
+
+    @pytest.mark.parametrize("dtype", [np.int8, np.int16])
+    def test_map_packing_is_detached_cdr_identical_for_noncontiguous_source(dtype):
+        from rclpy.serialization import deserialize_message, serialize_message
+        value = worker(.1)
+        values = np.arange(-1, 101, dtype=dtype).reshape(6, 17)[:, ::2]
+        before = values.copy()
+        value.world.map_record = lambda name: {"grid": values, "source_stamp": .1,
+            "resolution": .05, "origin": (-1., -2.)}
+        captured = []
+        value.information = SimpleNamespace(set_time=lambda _: None,
+            receive_local_map=lambda name, grid: captured.append((name, grid)),
+            publish_maps=lambda: None, snapshot_inputs=lambda: {"navigation_maps": {}})
+        value.update_maps()
+        assert [name for name, _ in captured] == list(ROBOTS)
+        for _, message in captured:
+            expected = copy.deepcopy(message)
+            expected.data = values.ravel().tolist()
+            assert message == expected and message.data.tobytes() == expected.data.tobytes()
+>           assert deserialize_message(serialize_message(message), type(message)) == expected
+E           assert nav_msgs.msg.OccupancyGrid(header=std_msgs.msg.Header(stamp=builtin_interfaces.msg.Time(sec=0, nanosec=100000000), fra..., 47, 49, 50, 52, 54, 56, 58, 60, 62, 64, 66, 67, 69, 71, 73, 75, 77, 79, 81, 83, 84, 86, 88, 90, 92, 94, 96, 98, 100]) == nav_msgs.msg.OccupancyGrid(header=std_msgs.msg.Header(stamp=builtin_interfaces.msg.Time(sec=0, nanosec=100000000), fra..., 47, 49, 50, 52, 54, 56, 58, 60, 62, 64, 66, 67, 69, 71, 73, 75, 77, 79, 81, 83, 84, 86, 88, 90, 92, 94, 96, 98, 100])
+E            +  where nav_msgs.msg.OccupancyGrid(header=std_msgs.msg.Header(stamp=builtin_interfaces.msg.Time(sec=0, nanosec=100000000), fra..., 47, 49, 50, 52, 54, 56, 58, 60, 62, 64, 66, 67, 69, 71, 73, 75, 77, 79, 81, 83, 84, 86, 88, 90, 92, 94, 96, 98, 100]) = <function deserialize_message at 0x77cb328f6050>(b"\x00\x01\x00\x00\x00\x00\x00\x00\x00\xe1\xf5\x05\x04\x00\x00\x00map\x00\x00\x00\x00\x00\x00\x00\x00\x00\xcd\xccL=\t\...f0?6\x00\x00\x00\xff\x01\x03\x05\x07\t\x0b\r\x0f\x10\x12\x14\x16\x18\x1a\x1c\x1e !#%')+-/12468:<>@BCEGIKMOQSTVXZ\\^`bd", <class 'nav_msgs.msg._occupancy_grid.OccupancyGrid'>)
+E            +    where b"\x00\x01\x00\x00\x00\x00\x00\x00\x00\xe1\xf5\x05\x04\x00\x00\x00map\x00\x00\x00\x00\x00\x00\x00\x00\x00\xcd\xccL=\t\...f0?6\x00\x00\x00\xff\x01\x03\x05\x07\t\x0b\r\x0f\x10\x12\x14\x16\x18\x1a\x1c\x1e !#%')+-/12468:<>@BCEGIKMOQSTVXZ\\^`bd" = <function serialize_message at 0x77cb32a983a0>(nav_msgs.msg.OccupancyGrid(header=std_msgs.msg.Header(stamp=builtin_interfaces.msg.Time(sec=0, nanosec=100000000), fra..., 47, 49, 50, 52, 54, 56, 58, 60, 62, 64, 66, 67, 69, 71, 73, 75, 77, 79, 81, 83, 84, 86, 88, 90, 92, 94, 96, 98, 100]))
+E            +    and   <class 'nav_msgs.msg._occupancy_grid.OccupancyGrid'> = type(nav_msgs.msg.OccupancyGrid(header=std_msgs.msg.Header(stamp=builtin_interfaces.msg.Time(sec=0, nanosec=100000000), fra..., 47, 49, 50, 52, 54, 56, 58, 60, 62, 64, 66, 67, 69, 71, 73, 75, 77, 79, 81, 83, 84, 86, 88, 90, 92, 94, 96, 98, 100]))
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_proxy2d_worker.py:56: AssertionError
+__ test_map_packing_is_detached_cdr_identical_for_noncontiguous_source[int16] __
+
+dtype = <class 'numpy.int16'>
+
+    @pytest.mark.parametrize("dtype", [np.int8, np.int16])
+    def test_map_packing_is_detached_cdr_identical_for_noncontiguous_source(dtype):
+        from rclpy.serialization import deserialize_message, serialize_message
+        value = worker(.1)
+        values = np.arange(-1, 101, dtype=dtype).reshape(6, 17)[:, ::2]
+        before = values.copy()
+        value.world.map_record = lambda name: {"grid": values, "source_stamp": .1,
+            "resolution": .05, "origin": (-1., -2.)}
+        captured = []
+        value.information = SimpleNamespace(set_time=lambda _: None,
+            receive_local_map=lambda name, grid: captured.append((name, grid)),
+            publish_maps=lambda: None, snapshot_inputs=lambda: {"navigation_maps": {}})
+        value.update_maps()
+        assert [name for name, _ in captured] == list(ROBOTS)
+        for _, message in captured:
+            expected = copy.deepcopy(message)
+            expected.data = values.ravel().tolist()
+            assert message == expected and message.data.tobytes() == expected.data.tobytes()
+>           assert deserialize_message(serialize_message(message), type(message)) == expected
+E           assert nav_msgs.msg.OccupancyGrid(header=std_msgs.msg.Header(stamp=builtin_interfaces.msg.Time(sec=0, nanosec=100000000), fra..., 47, 49, 50, 52, 54, 56, 58, 60, 62, 64, 66, 67, 69, 71, 73, 75, 77, 79, 81, 83, 84, 86, 88, 90, 92, 94, 96, 98, 100]) == nav_msgs.msg.OccupancyGrid(header=std_msgs.msg.Header(stamp=builtin_interfaces.msg.Time(sec=0, nanosec=100000000), fra..., 47, 49, 50, 52, 54, 56, 58, 60, 62, 64, 66, 67, 69, 71, 73, 75, 77, 79, 81, 83, 84, 86, 88, 90, 92, 94, 96, 98, 100])
+E            +  where nav_msgs.msg.OccupancyGrid(header=std_msgs.msg.Header(stamp=builtin_interfaces.msg.Time(sec=0, nanosec=100000000), fra..., 47, 49, 50, 52, 54, 56, 58, 60, 62, 64, 66, 67, 69, 71, 73, 75, 77, 79, 81, 83, 84, 86, 88, 90, 92, 94, 96, 98, 100]) = <function deserialize_message at 0x77cb328f6050>(b"\x00\x01\x00\x00\x00\x00\x00\x00\x00\xe1\xf5\x05\x04\x00\x00\x00map\x00\x00\x00\x00\x00\x00\x00\x00\x00\xcd\xccL=\t\...f0?6\x00\x00\x00\xff\x01\x03\x05\x07\t\x0b\r\x0f\x10\x12\x14\x16\x18\x1a\x1c\x1e !#%')+-/12468:<>@BCEGIKMOQSTVXZ\\^`bd", <class 'nav_msgs.msg._occupancy_grid.OccupancyGrid'>)
+E            +    where b"\x00\x01\x00\x00\x00\x00\x00\x00\x00\xe1\xf5\x05\x04\x00\x00\x00map\x00\x00\x00\x00\x00\x00\x00\x00\x00\xcd\xccL=\t\...f0?6\x00\x00\x00\xff\x01\x03\x05\x07\t\x0b\r\x0f\x10\x12\x14\x16\x18\x1a\x1c\x1e !#%')+-/12468:<>@BCEGIKMOQSTVXZ\\^`bd" = <function serialize_message at 0x77cb32a983a0>(nav_msgs.msg.OccupancyGrid(header=std_msgs.msg.Header(stamp=builtin_interfaces.msg.Time(sec=0, nanosec=100000000), fra..., 47, 49, 50, 52, 54, 56, 58, 60, 62, 64, 66, 67, 69, 71, 73, 75, 77, 79, 81, 83, 84, 86, 88, 90, 92, 94, 96, 98, 100]))
+E            +    and   <class 'nav_msgs.msg._occupancy_grid.OccupancyGrid'> = type(nav_msgs.msg.OccupancyGrid(header=std_msgs.msg.Header(stamp=builtin_interfaces.msg.Time(sec=0, nanosec=100000000), fra..., 47, 49, 50, 52, 54, 56, 58, 60, 62, 64, 66, 67, 69, 71, 73, 75, 77, 79, 81, 83, 84, 86, 88, 90, 92, 94, 96, 98, 100]))
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_proxy2d_worker.py:56: AssertionError
+=========================== short test summary info ============================
+FAILED ../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_proxy2d_worker.py::test_map_packing_is_detached_cdr_identical_for_noncontiguous_source[int8]
+FAILED ../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_proxy2d_worker.py::test_map_packing_is_detached_cdr_identical_for_noncontiguous_source[int16]
+2 failed, 17 passed in 1.36s

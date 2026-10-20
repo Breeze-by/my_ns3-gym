@@ -1,0 +1,39 @@
+{
+  "schema": "mr3-map-packing-synthetic-cpu-v1",
+  "passed": true,
+  "classification": "tiny pure-map fixtures and local setter mechanism only",
+  "legacy_source_sha256": "76c3d2c604f38f61116be1f39263472f9074b4f69fe7a0428b532da977530078",
+  "current_source_sha256": "e4cf897d2c22e70f89d9293efc00f44dd4bf1eb01624713735e08afdee0cbfcc",
+  "exact_whole_message_and_data_byte_comparisons": 32,
+  "input_mutation": false,
+  "native_runs": 0,
+  "world_episodes": 0,
+  "setter_timing": {
+    "shape": [
+      32,
+      48
+    ],
+    "iterations_per_trial": 100,
+    "trials_ns": {
+      "legacy_list": [
+        48965683,
+        48477065,
+        47387995,
+        47850052,
+        48175335
+      ],
+      "packed_array": [
+        339651,
+        303641,
+        323835,
+        300465,
+        329647
+      ]
+    },
+    "median_batch_ns": {
+      "legacy_list": 48175335,
+      "packed_array": 323835
+    },
+    "scope": "not whole-step or qualified training throughput; no extrapolated speedup"
+  }
+}

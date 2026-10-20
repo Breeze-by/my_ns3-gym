@@ -4,15 +4,22 @@ import json
 import math
 import copy
 import io
+from array import array
 from concurrent.futures import Future
 from types import MethodType, SimpleNamespace
 
 from geometry_msgs.msg import TransformStamped
+from merge_map.merge_map import merge_maps
 from nav_msgs.msg import OccupancyGrid, Odometry
+import numpy as np
+import pytest
+from rclpy.serialization import serialize_message
+from std_msgs.msg import String
 from tf2_msgs.msg import TFMessage
 
 from multi_robot_exploration.mr3_information import (
     IdealInformation, map_digest, map_payload, payload_digest, restore_message, state_payload,
+    validate_local_map,
 )
 from multi_robot_exploration.mr3_transport import IdealTransport, ReceivedStore
 
@@ -322,6 +329,82 @@ def test_full_occupancy_json_round_trip_preserves_unknown_and_original_header():
     restored = restore_message(OccupancyGrid(), payload)
     assert restored == original
     assert list(restored.data) == [-1, 0, 100]
+
+
+class IntChild(int):
+    pass
+
+
+class IndexOnly:
+    def __index__(self):
+        return 0
+
+
+@pytest.mark.parametrize("values", [
+    [-1, 0, 1, 49, 50, 99, 100], [False, True],
+    [IntChild(-1), IntChild(0), IntChild(100)],
+    (-1, 0, 100), array("b", [-1, 0, 100]),
+])
+def test_restore_occupancy_packing_preserves_ros_message_cdr_payload_and_digest(values):
+    original = grid(values, stamp=7, origin=-.125)
+    original.header.stamp.nanosec = 123_456_789
+    original.info.map_load_time.sec = 3
+    original.info.map_load_time.nanosec = 456_789_123
+    original.info.origin.position.y = .75
+    original.info.origin.position.z = -.025
+    payload = map_payload(original)
+    payload["data"] = values
+    restored = restore_message(OccupancyGrid(), payload)
+    assert restored == original
+    assert serialize_message(restored) == serialize_message(original)
+    assert map_payload(restored) == map_payload(original)
+    assert map_digest(restored) == map_digest(original)
+    canonical = json.loads(json.dumps(map_payload(original), allow_nan=False))
+    from_json = restore_message(OccupancyGrid(), canonical)
+    assert serialize_message(from_json) == serialize_message(original)
+    assert map_payload(from_json) == canonical
+
+
+@pytest.mark.parametrize("values", [
+    [-129], [128], [2 ** 80], [IntChild(128)],
+    [0.0], [.5], [float("nan")], [float("inf")],
+    [None], ["0"], [[0]], [{"cell": 0}],
+    [np.int64(0)], [IndexOnly()], b"\xff", bytearray(b"\xff"),
+    array("h", [0]), "0", None, 0,
+])
+def test_restore_bad_occupancy_keeps_original_ros_exception_and_partial_mutation(values):
+    original = grid([49])
+    with pytest.raises(AssertionError) as expected:
+        original.data = values
+    restored = grid([49])
+    with pytest.raises(type(expected.value)):
+        restore_message(restored, {"header": {"frame_id": "changed-before-rejection"}, "data": values})
+    assert restored.header.frame_id == "changed-before-rejection"
+    assert list(restored.data) == list(original.data) == [49]
+
+
+@pytest.mark.parametrize("value", [-128, -2, 101, 127])
+def test_restore_int8_container_does_not_bypass_the_original_occupancy_domain_gate(value):
+    restored = restore_message(OccupancyGrid(), map_payload(grid([value])))
+    assert list(restored.data) == [value]
+    with pytest.raises(ValueError, match="Occupancy values"):
+        validate_local_map(restored, [])
+    with pytest.raises(ValueError, match="Occupancy values"):
+        merge_maps([restored])
+
+
+def test_restore_other_ros_data_and_nested_fields_keep_their_original_types():
+    text = restore_message(String(), {"data": "received text"})
+    assert text.data == "received text"
+    original = Odometry()
+    original.header.frame_id = "map"
+    original.header.stamp.nanosec = 17
+    original.pose.pose.position.x = .25
+    original.pose.covariance = [float(index) / 10 for index in range(36)]
+    source = state_payload("tb1", original, TransformStamped())["odometry"]
+    restored = restore_message(Odometry(), source)
+    assert restored == original
+    assert serialize_message(restored) == serialize_message(original)
 
 
 def test_map_digest_binds_data_header_and_origin():

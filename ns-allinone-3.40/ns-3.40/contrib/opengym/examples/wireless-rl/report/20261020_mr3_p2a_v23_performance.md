@@ -19,3 +19,18 @@ profile通过当轮源绑定/6条原件+3合成/独立review/完整本EP因果�
 尚未启动正式profile或新容量。剖析helper的12项dummy/stub CPU、Supervisor profile开关12项和worker/helper组合29项已通过，完整命令/源前后SHA/wait/console见assets checks；重复覆盖不累计独立项。预算/短规范审计和活动末账CPU准备完成后再freeze。具体实测、优化依据、正式结果与精确末账随后追加。
 
 准备检查已完成：短规格/原审计组合34项与活动末账10项CPU通过，分别真实37.892244021/.653239656秒；支持正常提前终态不补样、错误停止、独立group窗口和raw/verified区分。所有检查源稳定，见[CPU清单](assets/20261020_mr3_p2a_v23_performance/cpu_preparation_index_v1.json)。本轮未改原_duration谓词、原频率/奖励/路径/真值边界；此处不预报正式PASS。
+
+
+## 剖析实际闭合与优化依据
+
+profile冻结`caddd853ab8884b3e2fd1018069af2fdc139d3e8`clean/pushed前检后执行，主outer真实rc0/69.60772768秒，外部final rc0/.53091343秒；完整活动PASS，8attempt/8return/8action与return verified，真实第8步external_sampler_limit。无重试/补样/模型。原native六条/三合成与独立review通过，profile只给单场短工程信用。
+
+worker main profile总self45.593059415秒；_known_line112491calls自身12.0495秒，update_maps累计18.5024秒，build_snapshot累计15.4901秒，OccupancyGrid.data setter333calls累计9.9811秒，两逐元素genexpr各约955万次。evaluator main44.3843秒中43.0804秒为poll等待。以上函数累计/进程区间重叠，不能相加作互斥占比；cProfile仅包main入口，module初始导入及主outer还包括其他阶段。见[性能消费者原件](assets/20261020_mr3_p2a_v23_performance/profile_closed/closed_execution/aux/profile_summary.json)。
+
+本轮优先消除实测ROS map setter重复Python校验：merge_maps/navigation已验证[-1,100]的int16输出转int8 bytes与stdlib array('b')；worker int8本机map同样独占复制打包，其他dtype保留原list分支；restore_message仅OccupancyGrid.data、exact list且每项exact int/bool进入array fastpath，OverflowError回原setter，其他Python类型/其他消息递归保持。原几何/栅格融合、数据/shape/旋转/范围错误、频率/随机流/独立评价/received年龄及payload/digest不变。_known_line与原候选构造源码保持字节，未改观察/动作/门限或放宽旧原件准入。
+
+merge最终30项CPU通过，另独立改前源码×新源码32次小图全消息字段、signed data bytes与双边CDR roundtrip等价；局部100次setter中位旧48.175335ms、新.323835ms，只反映这段打包，不代表整步/训练倍数。restore/information/merge/proxy信息组合102项CPU通过（真实3.810323824秒）；worker打包19项通过（真实2.680710161秒）。精确回执在checks/map_packing_cpu_v2、restore_packing_cpu_v1、worker_packing_cpu_v3。首次merge fixture假设未改消息反复CDR全bytes固定，受未初始化padding影响失败，v1保留；worker v2误将wire反序列化直接等于原Python .05高精度值，原ROS float32同样量化，2fail保留。最终比较原新完整字段、数据bytes和双边CDR往返，并未给CDR padding或float32精度作新资格豁免。
+
+profile主+external两个不重叠真实outer union **70.13864111秒**，累计 **43331.9626260476018/52000**，余 **8668.0373739523982**；14个保存身份均已gone。52份/2,678,544 bytes完整原件已封存并全成员SHA验证，原件前后不变，见[profile manifest](assets/20261020_mr3_p2a_v23_performance/profile_closed/archive_manifest_v1.json)和[中账](assets/20261020_mr3_p2a_v23_performance/profile_metadata/engineering_accounting_v1.json)。CPU封存不重放正式consumer；pilot/final-only不动。
+
+下一次short_capacity已按本轮授权预声明：优化后另冻结、无cProfile、group1/4固定短矩阵，最多240attempt/1800秒，实际结果随后追加；不是训练或300秒任务验证。

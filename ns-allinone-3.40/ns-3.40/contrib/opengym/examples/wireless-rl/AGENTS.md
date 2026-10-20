@@ -1,5 +1,7 @@
 # wireless-rl memory — MR3
 
+2026-10-20 V23中账：profile冻结caddd853ab8884b3e2fd1018069af2fdc139d3e8完整8步/审计/关闭PASS，14保存身份gone，实费70.13864111秒，累计43331.9626260476018/52000、余8668.0373739523982。按实测优化map打包，CPU等价/错误门通过；短1/4env240attempt/1800秒待新冻结执行，无训练/原生/pilot/final-only，旧V22 FAIL保留。见[V23](report/20261020_mr3_p2a_v23_performance.md)。
+
 2026-10-20 V23续接授权：用户“按你的想法继续”，推进新有界性能剖析/提速及短容量：profile最多1EP/8attempt/600秒，优化后一次1/4env短容量最多30EP/240attempt/1800秒，均含审计/外尾，工程仍限52000、入场余8738.1760150623982。旧V22 FAIL不重试/改判；训练、pilot/final-only、原生迁移/gateway/扩额不启动。见[V23预声明](report/20261020_mr3_p2a_v23_performance.md)，先测再优化、每次新freeze。
 
 2026-10-20 V22闭合：冻结`1dc2a1f601693f542479f9b6b7c54c69519b5460`二维符合性6原件+3合成及独立review通过；唯一零更新容量活动284尝试/返回、0step错误，但首场open101未完成、无实际4env，严格时间差与审计verified计数缺陷使完整活动FAIL。旧FAIL不改/不重跑；17保存身份gone，新增1781.490347088秒，累计43261.8239849376018/52000，余8738.1760150623982。pilot/final-only不动，P2A未完成；常规整数时钟/审计信用CPU修复不供新资格，训练/迁移/gateway未启动。见[V22闭合与下一步](report/20261020_mr3_p2a_v22_proxy2d.md)。

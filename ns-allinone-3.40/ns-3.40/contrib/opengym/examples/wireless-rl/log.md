@@ -7556,3 +7556,44 @@ V22收口静态检查：最终真实CPU rc0/1.412626768秒/source stable，核32
 准备检查全部CPU：profile helper12项（真实2.278037488秒）、Supervisor profile开关12项（.370441004秒）、worker/helper组合29项（2.857794434秒）、活动预算/末账10项（.653239656秒）、原审计/codec/counter及新规格组合34项（37.892244021秒）。这些含重复覆盖，不累计成独立总数；所有真实command/cwd/env/source before/after或byteSHA/wait/console在[CPU清单](report/assets/20261020_mr3_p2a_v23_performance/cpu_preparation_index_v1.json)。无World实际episode或旧reader重放、不收费不供资格。
 
 profile显式cProfile独占新文件、原样传播非零SystemExit/异常，两子进程独立pstats；默认关闭并清除外部继承profile输出。新collect/audit_spec固定kind/groups/cells/maxstep/attempt/600或1800时钟；1/4组分别400/800窗口，全局共享ticket；正常提前终态不补样、安全终态显式error停止；验证全actual verified覆盖，原V22无spec行为/严格_duration不变。预算/原件预声明见[V23](report/20261020_mr3_p2a_v23_performance.md)，freeze后实际结果随后追加。
+
+
+## 2026-10-20 V23 profile实际PASS闭合及打包优化准备
+
+profile freeze caddd853ab8884b3e2fd1018069af2fdc139d3e8，open101/seed41，1EP最多8步；当轮符合性/独立review与完整episode审计PASS，8attempt/return全verified，第8步真实外部截断并正常关闭。真实命令：
+
+profile_preflight_outer scope=cpu rc0/1.907348852秒：
+
+```bash
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.proxy2d_performance preflight --kind profile --freeze caddd853ab8884b3e2fd1018069af2fdc139d3e8
+```
+
+profile_outer scope=engineering rc0/69.60772768秒：
+
+```bash
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.proxy2d_performance execute --kind profile --freeze caddd853ab8884b3e2fd1018069af2fdc139d3e8
+```
+
+profile_final_outer scope=engineering rc0/0.53091343秒：
+
+```bash
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.proxy2d_performance final --kind profile --run /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v23/profile_v1 --outer /tmp/mr3_proxy2d_v23_profile_outer/actual_wait.json --output /tmp/mr3_proxy2d_v23_profile_absence.json
+```
+
+全部nested实际命令与wait（已含在主outer、不重复收费）：
+
+- conformity rc0/12.950301833秒：`/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.proxy2d_conformity --freeze caddd853ab8884b3e2fd1018069af2fdc139d3e8 --output /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v23/profile_v1/conformity.json`
+
+- conformity_review rc0/0.867493909秒：`/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.audit_proxy2d /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v23/profile_v1 --freeze caddd853ab8884b3e2fd1018069af2fdc139d3e8 --conformity-only /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v23/profile_v1/conformity.json --output /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v23/profile_v1/conformity_independent.json`
+
+- collection rc0/47.547765784秒：`/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.proxy2d_performance collect --kind profile --run /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v23/profile_v1`
+
+- audit rc0/5.679486232秒：`/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.audit_proxy2d /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v23/profile_v1 --freeze caddd853ab8884b3e2fd1018069af2fdc139d3e8 --output /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v23/profile_v1/independent_audit.json`
+
+- profile_report rc0/0.666768711秒：`/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.proxy2d_performance profile_report --kind profile --run /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v23/profile_v1`
+
+profile worker totalself45.593秒、_known_line self12.0495/112491calls、update_maps cumulative18.5024、OccGrid data setter9.9811/333calls；evaluator44.384秒中43.08秒等输入。累计函数与进程重叠不能相加，instrumented速率不当真实未剖析容量。性能完整输出/pstats及52份原件封存在A23/profile_closed，14保存身份gone。主69.60772768+外尾.53091343实际union70.13864111，累计43331.9626260476018/52000，余8668.0373739523982；pilot/final-only不动。
+
+按测量优先优化已验证map的数组打包，merge/navigation、worker int8→arrayb走ROS本机快路径，restore仅exact builtin int/bool list conservative fastpath，溢出/非JSON Python类型/其他消息仍原setter；原fusion/path/_known_line/actor/reward/物理/信息年龄门未改。merge30+独立旧新32小图fixture、information/merge/proxy信息102、worker19 CPU通过，完整actualcommand/source前后SHA/console/wait在A23 checks/map_packing_cpu_v2、restore_packing_cpu_v1、worker_packing_cpu_v3；分别最终merge2.501076412秒/独立机制2.063845796秒、restore3.810323824秒、worker2.680710161秒，不合计重复检查为独立覆盖。局部100次setter中位48.175335ms→.323835ms，只证明该机制。
+
+所有开发失败保留：merge v1新fixture错误假定CDR padding bytes可逐字固定（29pass/1fail）；worker v1原CDR测试通过，但改进fixture的v2错误将ROS wire float32 resolution.05直接等于原Python float（17pass/2fail），v3双边CDR往返/精确字段data bytes通过。原件与运行源码不改判，无actualepisode新增。short_capacity在新源码freeze/新plan下最多30EP/240attempt/1800秒，将先核当轮符合性再采集，无cProfile/训练。详见[V23](report/20261020_mr3_p2a_v23_performance.md)。

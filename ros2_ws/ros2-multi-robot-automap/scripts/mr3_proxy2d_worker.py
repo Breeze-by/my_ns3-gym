@@ -5,6 +5,7 @@ No ROS graph, Gazebo, Nav2 or learner model is created. The evaluator role is a
 different process: truth and RewardLedger never enter the actor IPC response.
 """
 import argparse
+from array import array
 from collections import deque
 import copy
 import gzip
@@ -133,7 +134,9 @@ class ProxyWorker:
             grid.info.height, grid.info.width = source["grid"].shape
             grid.info.origin.position.x, grid.info.origin.position.y = map(float, source["origin"])
             grid.info.origin.orientation.w = 1.
-            grid.data = source["grid"].ravel().tolist()
+            values = source["grid"]
+            grid.data = (array("b", values.tobytes(order="C")) if values.dtype == np.dtype("int8")
+                         else values.ravel().tolist())
             self.information.receive_local_map(name, grid)
         self.information.publish_maps()
         self.navigation_maps = self.information.snapshot_inputs()["navigation_maps"]
