@@ -1,5 +1,7 @@
 # 三机器人 ROS 建图导航：当前实现指南
 
+2026-10-21 V25 CPU收口：协议117、人工建图7、导航缓存等价21项通过；仅按精确几何输入复用路径场，原scan/pair/源龄与pure源码保持。人工厚box的端点图IoU上限112/697低于.20，另有格线/2mm误差反例；不宣称实际三场不可达。下一步先量化代理质量可达性/逆传感器模型，不直接PPO或重跑V24。本轮无formal/工程新增，仍余6559.4631148643982秒，pilot/final-only不动；P2A未完成。见[V25](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261021_mr3_p2a_v25_cpu.md)。
+
 2026-10-21 V24闭合FAIL：冻结9b33cf9b6ab491fd5e3b15269adb30d43be1354c实跑三场，544attempt/543verified return/1rooms错误，205/173/165sim秒均未完成任务。协议确认173.1s goal_lease_expired而上次返回仍非终态、次submit才stopped；原FAIL不改/不重跑，post-advance tick分类修复已通过27项CPU，未正式重验，租约/频率/门限保持。含有限故障提取实费1371.868831523秒，累计45440.5368851356018/52000、余6559.4631148643982；20保存身份gone、无训练/原生/pilot/final-only。下一步先接口/代理质量与长步成本，不直接PPO。见[V24](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261021_mr3_p2a_v24_behavior.md)。
 
 2026-10-20 V22闭合：冻结`1dc2a1f601693f542479f9b6b7c54c69519b5460`二维符合性6原件+3合成及独立review通过；唯一零更新容量活动284尝试/返回、0step错误，但首场open101未完成、无实际4env，严格时间差与审计verified计数缺陷使完整活动FAIL。旧FAIL不改/不重跑；17保存身份gone，新增1781.490347088秒，累计43261.8239849376018/52000，余8738.1760150623982。pilot/final-only不动，P2A未完成；常规整数时钟/审计信用CPU修复不供新资格，训练/迁移/gateway未启动。见[V22闭合与下一步](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261020_mr3_p2a_v22_proxy2d.md)。

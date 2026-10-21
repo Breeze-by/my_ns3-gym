@@ -1,5 +1,9 @@
 # 当前三机器人基线与MR3适配启动命令
 
+## V25 CPU检查已完成
+
+协议/人工质量/缓存等价检查已完成，导航只调整私有几何缓存键；默认launch和参数不变。人工计时不代表ENV长回合吞吐，新源码没有正式资格；不重跑下列历史活动或直接PPO。下一步先核代理地图与原质量门相容性，见[V25](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261021_mr3_p2a_v25_cpu.md)。工程仍余6559.4631148643982秒，pilot/final-only未动。
+
 ## V24 长回合行为诊断已FAIL闭合（历史命令）
 
 本次已在9b33cf9b6ab491fd5e3b15269adb30d43be1354c执行并FAIL关闭：544attempt/543return/1rooms租约边界错误，20保存身份gone，余6559.4631148643982工程秒。以下仅真实历史入口模板，不重试/复用输出或训练；后续post-advance tick只是CPU修复，不提供新冻结资格。每env仍三台，默认native launch不变。详见[V24](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261021_mr3_p2a_v24_behavior.md)。

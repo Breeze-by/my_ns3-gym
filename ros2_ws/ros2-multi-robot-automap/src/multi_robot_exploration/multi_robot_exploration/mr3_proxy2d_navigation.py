@@ -29,7 +29,12 @@ class ProxyNavigator:
         digest = navigation.get("payload_sha256")
         if not isinstance(digest, str) or len(digest) != 64:
             raise ValueError("delivered navigation map requires its content identity")
-        key = (digest, goal["x"], goal["y"])
+        # Delivery/header identities still have to be present, but a new stamp
+        # alone does not change this purely geometric field. Pack the current
+        # bytes each time so mutable arrays or reused payload IDs cannot hide a
+        # changed input. Only one field per robot is retained.
+        key = (grid.dtype.str, grid.shape, grid.tobytes(order="C"), resolution,
+               tuple(origin), goal["x"], goal["y"])
         cached = self.paths.get(name)
         if cached is None or cached[0] != key:
             traversable, _ = native_traversable(grid, resolution)

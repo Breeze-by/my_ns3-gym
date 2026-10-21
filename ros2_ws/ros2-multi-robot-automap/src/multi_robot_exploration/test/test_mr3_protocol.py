@@ -5,6 +5,7 @@ import math
 import pytest
 
 from multi_robot_exploration.mr3_protocol import GoalDispatcher
+from multi_robot_exploration.mr3_transport import IdealTransport, ReceivedStore
 
 
 def protocol():
@@ -111,6 +112,136 @@ def test_switch_ttl_is_not_refreshed_while_waiting_for_terminal():
     assert dispatcher.closed and not dispatcher.failed
     assert events[-1]["type"] == "pending_goal_expired"
     assert len([event for event in events if event["type"] == "send_goal"]) == 1
+
+
+def deliver_callbacks(dispatcher, transport, store, now):
+    """Use the actual FIFO and the same receipt/heartbeat callbacks as the worker."""
+    delivered = transport.deliver(store, now)
+    results = []
+    for record in delivered:
+        value = record.payload
+        if record.stream == "heartbeat":
+            status = dispatcher.renew(
+                record.source, value["goal_id"], record.epoch, now, value["expires_at"])
+        else:
+            callback = {"accept": dispatcher.on_accept,
+                        "cancel": dispatcher.on_cancel_response,
+                        "result": dispatcher.on_result}[value["type"]]
+            status = callback(record.source, value["goal_id"], value["value"], now)
+        results.append(status)
+    return delivered, results
+
+
+def test_original_switch_lease_can_expire_behind_other_robots_real_fifo_receipts():
+    """Synthetic traffic, not a replay: generation is not causal delivery."""
+    dispatcher, events = protocol()
+    goals = {robot: start(dispatcher, robot=robot) for robot in dispatcher.robots}
+    for now in range(1, 6):
+        for robot, goal_id in goals.items():
+            assert dispatcher.renew(robot, goal_id, dispatcher.epoch, now, now + 2) == "renewed"
+    assert submit(dispatcher, now=5, sequence=2) == "switch_pending"
+    for robot in ("tb2", "tb3"):
+        assert submit(dispatcher, "WAIT", now=5, sequence=2, robot=robot) == "waiting"
+
+    # Renewing the canceled owner cannot renew the pending replacement.
+    assert dispatcher.renew("tb1", goals["tb1"], dispatcher.epoch, 5.2, 7.2) == "stopping"
+    assert dispatcher.on_cancel_response("tb1", goals["tb1"], True, 6.6) == "awaiting_terminal"
+    assert dispatcher.on_result("tb1", goals["tb1"], "CANCELED", 6.8) == "replacement_sent"
+    replacement = dispatcher.navigation()["tb1"]
+    assert replacement["created_at"] == 5
+    assert replacement["requested_at"] == 6.8
+    assert replacement["expires_at"] == replacement["lease_until"] == 7
+    new_goal = replacement["goal_id"]
+
+    transport, store = IdealTransport(dispatcher.epoch), ReceivedStore(dispatcher.epoch)
+    # Each actual cancel has a separate cancel ACK and terminal result. The
+    # per-robot 5 Hz receipt cadence plus global FIFO holds later traffic.
+    for robot in ("tb2", "tb3"):
+        for kind, value in (("cancel", True), ("result", "CANCELED")):
+            transport.send("receipt", robot,
+                           {"type": kind, "goal_id": goals[robot], "value": value},
+                           source_stamp=6.8, now=6.8)
+    acceptance = transport.send(
+        "receipt", "tb1", {"type": "accept", "goal_id": new_goal, "value": True},
+        source_stamp=6.8, now=6.8)
+    heartbeat = transport.send(
+        "heartbeat", "tb1", {"goal_id": new_goal, "expires_at": 8.8},
+        source_stamp=6.8, now=6.8)
+
+    delivered, statuses = deliver_callbacks(dispatcher, transport, store, 6.8)
+    assert [record.source for record in delivered] == ["tb2"]
+    assert statuses == ["awaiting_terminal"]
+    assert deliver_callbacks(dispatcher, transport, store, 6.9) == ((), [])
+    assert store.get("receipt", "tb1") is None
+    assert store.get("heartbeat", "tb1") is None
+    assert dispatcher.navigation()["tb1"]["phase"] == "accepting"
+    assert not dispatcher.failed
+
+    # The worker's post-advance boundary tick must expose this genuine failure
+    # before another policy action; queued acceptance/renewal cannot hide it.
+    dispatcher.tick(7)
+    assert dispatcher.navigation()["tb1"]["failure"] == "goal_lease_expired"
+    delivered, statuses = deliver_callbacks(dispatcher, transport, store, 7)
+    assert [record.source for record in delivered] == ["tb2", "tb3"]
+    assert statuses == ["terminal", "awaiting_terminal"]
+    assert store.get("receipt", "tb1") is None
+    delivered, statuses = deliver_callbacks(dispatcher, transport, store, 7.2)
+    assert [record.stream for record in delivered] == ["receipt", "receipt", "heartbeat"]
+    assert statuses == ["terminal", "canceling", "stopping"]
+    assert acceptance.generated_stamp == heartbeat.generated_stamp == 6.8
+    assert store.get("receipt", "tb1").received_stamp == 7.2
+    assert store.get("heartbeat", "tb1").received_stamp == 7.2
+    state = dispatcher.navigation()["tb1"]
+    assert state["accepted_at"] == 7.2 and state["lease_until"] == 7
+    assert state["phase"] == "canceling" and state["accepted_goal_count"] == 2
+    assert dispatcher.failed and not dispatcher.closed
+    assert submit(dispatcher, "KEEP", now=7.2, sequence=3) == "stopped"
+    assert dispatcher.on_cancel_response("tb1", new_goal, True, 7.3) == "awaiting_terminal"
+    assert not dispatcher.closed
+    assert dispatcher.on_result("tb1", new_goal, "CANCELED", 7.4) == "terminal"
+    assert dispatcher.closed and dispatcher.failed
+    failures = [event for event in events if event["type"] == "protocol_failure"]
+    assert len(failures) == 1 and failures[0]["reason"] == "goal_lease_expired"
+    assert len([event for event in events if event["type"] == "send_goal"]) == 4
+
+
+@pytest.mark.parametrize("accept_first", [False, True])
+def test_switch_is_renewed_only_by_heartbeat_delivered_before_original_expiry(accept_first):
+    dispatcher, events = protocol()
+    old = start(dispatcher)
+    renew_until(dispatcher, old, 5)
+    assert submit(dispatcher, now=5, sequence=2) == "switch_pending"
+    assert dispatcher.on_cancel_response("tb1", old, True, 6.6) == "awaiting_terminal"
+    assert dispatcher.on_result("tb1", old, "CANCELED", 6.8) == "replacement_sent"
+    new_goal = dispatcher.navigation()["tb1"]["goal_id"]
+    transport, store = IdealTransport(dispatcher.epoch), ReceivedStore(dispatcher.epoch)
+
+    def accept(now):
+        transport.send("receipt", "tb1", {"type": "accept", "goal_id": new_goal, "value": True},
+                       source_stamp=now, now=now)
+        _, statuses = deliver_callbacks(dispatcher, transport, store, now)
+        assert statuses == ["active"]
+
+    if accept_first:
+        accept(6.8)
+    transport.send("heartbeat", "tb1", {"goal_id": new_goal, "expires_at": 8.9},
+                   source_stamp=6.9, now=6.9)
+    _, statuses = deliver_callbacks(dispatcher, transport, store, 6.9)
+    assert statuses == ["renewed"]
+    dispatcher.tick(7)
+    state = dispatcher.navigation()["tb1"]
+    assert state["lease_until"] == 8.9 and state["expires_at"] == 7
+    assert state["phase"] == ("active" if accept_first else "accepting")
+    assert not dispatcher.failed and not dispatcher.closed
+    if not accept_first:
+        accept(7.2)
+    state = dispatcher.navigation()["tb1"]
+    assert state["accepted_at"] == (6.8 if accept_first else 7.2)
+    assert state["commitment_until"] == (11.8 if accept_first else 12.2)
+    assert state["lease_until"] == 8.9  # Acceptance does not renew a lease.
+    assert dispatcher.on_result("tb1", new_goal, "SUCCEEDED", 7.3) == "terminal"
+    assert dispatcher.closed and not dispatcher.failed
+    assert not [event for event in events if event["type"] == "protocol_failure"]
 
 
 def test_wait_during_cancel_discards_pending_replacement():

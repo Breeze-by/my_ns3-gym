@@ -1,0 +1,31 @@
+{
+  "schema": "mr3-p2a-v25-cpu-validation-index-v1",
+  "baseline": "9edad01ccdb3a1adf2c20d22f62b7d4f3a4733ed",
+  "scope": "Artificial inputs and source-only oracle; no World, Node, real episode, old actor/reward replay or qualification. Repeated helper coverage does not add independent credit.",
+  "checks": [
+    {
+      "receipt": "checks/protocol_cpu_v1/actual_wait.json",
+      "actual_child_wait_seconds": "2.366727921",
+      "pytest_passed": 117
+    },
+    {
+      "receipt": "checks/mapping_quality_cpu_v1/actual_wait.json",
+      "actual_child_wait_seconds": "4.010105222",
+      "pytest_passed": 7
+    },
+    {
+      "receipt": "checks/navigation_cache_cpu_v1/actual_wait.json",
+      "actual_child_wait_seconds": "2.480688749",
+      "pytest_passed": 21
+    },
+    {
+      "receipt": "checks/navigation_timing_cpu_v1/actual_wait.json",
+      "actual_child_wait_seconds": "2.11364337"
+    }
+  ],
+  "new_engineering_seconds": "0",
+  "remaining_engineering_seconds": "6559.4631148643982",
+  "qualification": false,
+  "training_eligible": false,
+  "native_credit": false
+}
