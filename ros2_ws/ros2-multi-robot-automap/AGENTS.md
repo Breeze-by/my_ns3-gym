@@ -1,6 +1,6 @@
 # ROS component memory — MR3
 
-2026-10-21 V26准备：按用户“继续”执行一次三开发场景只读几何审计，最多120工程秒（consumer90），不创建World/Node/episode或训练。几何21/守护10/元数据5项CPU通过；保留原ROI/质量门和全部旧FAIL。入场余6559.4631148643982，pilot/final-only不动；新clean冻结/前检后唯一执行，当前尚未实测。见[V26](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261021_mr3_p2a_v26_geometry.md)。
+2026-10-21 V26已闭合：三场实际几何条件上包络.390342/.484456/.513595均高于原.20门，未排除也未证明可达；ROI子界未收紧。仅计算/来源/关闭PASS，无World/episode/训练/native资格。main+final工程union4.886817531，累计45445.4237026666018/52000、余6554.5762973333982，7保存身份gone，pilot/final-only不动。下一步转sensor-only mapper-v2 CPU边界/证据累计候选，不再收紧静态界或直接PPO；P2A未完成。见[V26](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261021_mr3_p2a_v26_geometry.md)。
 
 2026-10-21 V25 CPU收口：协议117、人工建图7、导航缓存等价21项通过；仅按精确几何输入复用路径场，原scan/pair/源龄与pure源码保持。人工厚box的端点图IoU上限112/697低于.20，另有格线/2mm误差反例；不宣称实际三场不可达。下一步先量化代理质量可达性/逆传感器模型，不直接PPO或重跑V24。本轮无formal/工程新增，仍余6559.4631148643982秒，pilot/final-only不动；P2A未完成。见[V25](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261021_mr3_p2a_v25_cpu.md)。
 

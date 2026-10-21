@@ -2,7 +2,7 @@
 
 ## V26 实际几何只读诊断
 
-本轮只固定一次三开发场景的隔离几何消费者，0World/Node/episode/策略，默认launch不变。仅在新source clean提交推送、exact40与新计划前检后由guard执行，120工程秒总预约，源/几何/timeout异常不重试。原95%/质量门不变，结果不是完整任务资格，详见[V26](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261021_mr3_p2a_v26_geometry.md)。
+该唯一活动已在89a1b0543c5445bb5815162ae4ef07f1f7c728c0完成并闭合，不重跑/复用输出。三场条件上界未排除原.20门，也不证明任务可达；0World/Node/episode/策略，默认launch不变。实际前检/guard/final精确argv和原回执见[V26](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261021_mr3_p2a_v26_geometry.md)与共享log。工程余6554.5762973333982秒，pilot/final-only未动；下一步sensor-only建图CPU候选，不直接PPO。
 
 ## V25 CPU检查已完成
 

@@ -1,0 +1,97 @@
+{
+  "schema": "mr3-reach-outer-actual-wait-v1",
+  "scope": "engineering",
+  "safety_contract": "mr3-reach-v1",
+  "actual_argv": [
+    "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+    "-B",
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261021_mr3_p2a_v26_geometry/geometry_final_v1.py",
+    "--guard",
+    "/tmp/mr3_proxy2d_v26_guard_v1",
+    "--outer",
+    "/tmp/mr3_proxy2d_v26_outer/actual_wait.json",
+    "--output",
+    "/tmp/mr3_proxy2d_v26_final.json"
+  ],
+  "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+  "coordinator_identity": {
+    "pid": 2660151,
+    "parent": 2660149,
+    "group": 2660149,
+    "session": 2660149,
+    "start_ticks": 430196976,
+    "state": "R"
+  },
+  "child_identity": {
+    "pid": 2660154,
+    "parent": 2660151,
+    "group": 2660149,
+    "session": 2660149,
+    "start_ticks": 430196992,
+    "state": "R"
+  },
+  "actual_returncode": 0,
+  "actual_waited": true,
+  "errors": [],
+  "started_monotonic_ns": 4301969926549125,
+  "ended_monotonic_ns": 4301970019751227,
+  "actual_child_wait_seconds": "0.093202102",
+  "source_before": [
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261021_mr3_p2a_v26_geometry/geometry_final_v1.py",
+      "sha256": "e53f4436874f71748cf71fae14bfda1ef9276b6782d8132cd73f9745cb1e735f",
+      "bytes": 4812,
+      "stat": [
+        2051,
+        79069105,
+        4812,
+        1792556014362026291,
+        1792556014362026291
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261021_mr3_p2a_v26_geometry/predeclared_plan_v1.json",
+      "sha256": "c65c6c412e694ef0dd3146491d8f42b187e3b05041b1720f951f816152d1daa7",
+      "bytes": 5136,
+      "stat": [
+        2051,
+        79069182,
+        5136,
+        1792556320592862522,
+        1792556320592862522
+      ]
+    }
+  ],
+  "source_after": [
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261021_mr3_p2a_v26_geometry/geometry_final_v1.py",
+      "sha256": "e53f4436874f71748cf71fae14bfda1ef9276b6782d8132cd73f9745cb1e735f",
+      "bytes": 4812,
+      "stat": [
+        2051,
+        79069105,
+        4812,
+        1792556014362026291,
+        1792556014362026291
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261021_mr3_p2a_v26_geometry/predeclared_plan_v1.json",
+      "sha256": "c65c6c412e694ef0dd3146491d8f42b187e3b05041b1720f951f816152d1daa7",
+      "bytes": 5136,
+      "stat": [
+        2051,
+        79069182,
+        5136,
+        1792556320592862522,
+        1792556320592862522
+      ]
+    }
+  ],
+  "source_unchanged": true,
+  "passed": true,
+  "console": {
+    "path": "/tmp/mr3_proxy2d_v26_final_outer/console.log",
+    "sha256": "1683e2caebd3b39667d0b0a448d9cba11022639b853445ffb056e124800ab620"
+  }
+}
