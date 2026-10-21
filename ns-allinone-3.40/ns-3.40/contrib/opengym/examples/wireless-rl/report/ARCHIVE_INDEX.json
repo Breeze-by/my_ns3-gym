@@ -2278,8 +2278,42 @@
   "mr3_p2a_v31_karto_behavior_20261021": {
     "report": "20261021_mr3_p2a_v31_karto_behavior.md",
     "assets": "assets/20261021_mr3_p2a_v31_karto_behavior",
-    "status": "Predeclared conditional profile/behavior, not yet executed",
+    "status": "Engineering profile/full-duration behavior PASS; task0/3; finite source-bound clearance diagnosis closed",
     "engineering_block_max_seconds": 4500,
+    "qualification": false,
+    "training_eligible": false,
+    "freeze": "e7dc6903c0bb4c2fe09f0eb07266f46c9d259022",
+    "profile_attempts": 8,
+    "behavior_attempts": 900,
+    "behavior_returns": 900,
+    "behavior_verified_actor_records": 903,
+    "task_successes": 0,
+    "proxy_unsafe_events": 0,
+    "canonical_files": 1030,
+    "canonical_bytes": 53542627,
+    "saved_identities_absent": 36,
+    "engineering_actual_union_seconds": "1243.989041707",
+    "discovery_conservative_upper_charge_seconds": "2",
+    "engineering_charge_seconds": "1245.989041707",
+    "engineering_used": "46691.4127443736018",
+    "engineering_remaining": "5308.5872556263982"
+  },
+  "mr3_p2a_v32_seed_certificate_20261021": {
+    "report": "20261021_mr3_p2a_v32_seed_certificate.md",
+    "assets": "assets/20261021_mr3_p2a_v32_seed_certificate",
+    "baseline_production": "e7dc6903c0bb4c2fe09f0eb07266f46c9d259022",
+    "status": "Disabled exact point/same-seed bridge CPU hypothesis,14passed; production unchanged",
+    "cpu_attempts": 3,
+    "cpu_final_passed": 14,
+    "cpu_final_outer_seconds": "2.148375849",
+    "preserved_failures": [
+      "numpy.float64 artificial fixture rejected by strict exact scalar type",
+      "setup path missing ros2_ws, collection failed"
+    ],
+    "new_engineering_seconds": "0",
+    "engineering_used": "46691.4127443736018",
+    "engineering_remaining": "5308.5872556263982",
+    "production_enabled": false,
     "qualification": false,
     "training_eligible": false
   }

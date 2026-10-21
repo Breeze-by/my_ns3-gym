@@ -1,0 +1,127 @@
+{
+  "schema": "mr3-reach-outer-actual-wait-v1",
+  "scope": "engineering",
+  "safety_contract": "mr3-reach-v1",
+  "actual_argv": [
+    "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+    "-B",
+    "-m",
+    "mr3_learning.proxy2d_karto_activity",
+    "execute",
+    "--kind",
+    "karto_behavior",
+    "--freeze",
+    "e7dc6903c0bb4c2fe09f0eb07266f46c9d259022",
+    "--profile-outer",
+    "/tmp/mr3_p2a_v31_profile_outer/actual_wait.json",
+    "--profile-final",
+    "/tmp/mr3_p2a_v31_profile_final.json",
+    "--profile-final-outer",
+    "/tmp/mr3_p2a_v31_profile_final_outer/actual_wait.json"
+  ],
+  "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+  "coordinator_identity": {
+    "pid": 3037283,
+    "parent": 3037281,
+    "group": 3037281,
+    "session": 3037281,
+    "start_ticks": 432862945,
+    "state": "R"
+  },
+  "child_identity": {
+    "pid": 3037286,
+    "parent": 3037283,
+    "group": 3037281,
+    "session": 3037281,
+    "start_ticks": 432862961,
+    "state": "R"
+  },
+  "actual_returncode": 0,
+  "actual_waited": true,
+  "errors": [],
+  "started_monotonic_ns": 4328629611626544,
+  "ended_monotonic_ns": 4329794372532426,
+  "actual_child_wait_seconds": "1164.760905882",
+  "source_before": [
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d_karto_activity.py",
+      "sha256": "cdf5034ddd8bc057c49a4fcfe4a0e6962ad7ecb3eaec9cc0ce81171315ebaa10",
+      "bytes": 29027,
+      "stat": [
+        2051,
+        73564113,
+        29027,
+        1792582707200591981,
+        1792582707200591981
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261021_mr3_p2a_v31_karto_behavior/karto_behavior_plan_v1.json",
+      "sha256": "20871002ec7660adadd6c27e74006eacefee086963673c814e8db204f51de580",
+      "bytes": 23926,
+      "stat": [
+        2051,
+        79069415,
+        23926,
+        1792582877789676509,
+        1792582877789676509
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261021_mr3_p2a_v31_karto_behavior/native_manifest_v1.json",
+      "sha256": "06e49199347feaf4d2b3541c38c539143cbd9f82620f5d8b9b9e8f7365fd1802",
+      "bytes": 3284,
+      "stat": [
+        2051,
+        79069061,
+        3284,
+        1792582876506621518,
+        1792582876506621518
+      ]
+    }
+  ],
+  "source_after": [
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d_karto_activity.py",
+      "sha256": "cdf5034ddd8bc057c49a4fcfe4a0e6962ad7ecb3eaec9cc0ce81171315ebaa10",
+      "bytes": 29027,
+      "stat": [
+        2051,
+        73564113,
+        29027,
+        1792582707200591981,
+        1792582707200591981
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261021_mr3_p2a_v31_karto_behavior/karto_behavior_plan_v1.json",
+      "sha256": "20871002ec7660adadd6c27e74006eacefee086963673c814e8db204f51de580",
+      "bytes": 23926,
+      "stat": [
+        2051,
+        79069415,
+        23926,
+        1792582877789676509,
+        1792582877789676509
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261021_mr3_p2a_v31_karto_behavior/native_manifest_v1.json",
+      "sha256": "06e49199347feaf4d2b3541c38c539143cbd9f82620f5d8b9b9e8f7365fd1802",
+      "bytes": 3284,
+      "stat": [
+        2051,
+        79069061,
+        3284,
+        1792582876506621518,
+        1792582876506621518
+      ]
+    }
+  ],
+  "source_unchanged": true,
+  "passed": true,
+  "console": {
+    "path": "/tmp/mr3_p2a_v31_behavior_outer/console.log",
+    "sha256": "5f73dcaed0346b487f62154b2357970e2ec0e029fbf7fafba60ee23b96df8ee0"
+  }
+}

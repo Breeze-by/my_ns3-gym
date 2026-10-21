@@ -1,0 +1,46 @@
+F.............                                                           [100%]
+=================================== FAILURES ===================================
+___ test_original_pose_bound_0282843_rejects_but_exact_point_and_bridge_pass ___
+
+    def test_original_pose_bound_0282843_rejects_but_exact_point_and_bridge_pass():
+        grid = np.zeros((41, 41), dtype=np.int8)
+        grid[23, 26] = 100
+        res, origin, seed = .05, (-1.025, -1.025), (20, 20)
+        traversable, clearance = native_traversable(grid, res)
+        assert bool(traversable[seed])
+        offset = clearance[seed] - math.sqrt(.08)
+        pose = (0., -offset)
+        original_seed, _, diagnostic = _seed_diagnostics(grid, traversable, clearance,
+            {"fresh": True, "x": pose[0], "y": pose[1]}, res, origin)
+        assert original_seed == seed
+        assert diagnostic["seed_pose_clearance_lower_bound_m"] == pytest.approx(.282842712474619)
+        assert diagnostic["seed_rejection_reason"] == "seed_pose_body_clearance"
+>       result = certificate(grid, res, origin, pose, seed, seed_cell_traversable=True)
+
+report/assets/20261021_mr3_p2a_v32_seed_certificate/test_seed_certificate.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+report/assets/20261021_mr3_p2a_v32_seed_certificate/seed_certificate.py:86: in certificate
+    res, offset, pose = exact(resolution), point(origin), point(estimated_xy)
+../../../../../../ros2_ws/ros2-multi-robot-automap/build/multi_robot_exploration/multi_robot_exploration/mr3_reach_geometry.py:38: in point
+    return tuple(exact(x) for x in value)
+../../../../../../ros2_ws/ros2-multi-robot-automap/build/multi_robot_exploration/multi_robot_exploration/mr3_reach_geometry.py:38: in <genexpr>
+    return tuple(exact(x) for x in value)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = -0.017212145091022146
+
+    def exact(value):
+        """A binary64 input retains its exact value; booleans never mean numbers."""
+        if type(value) is float:
+            if not math.isfinite(value):
+                raise ValueError("nonfinite numeric input")
+            return Q.from_float(value)
+        if type(value) in (int, Q):
+            return Q(value)
+>       raise ValueError("expected int, finite float, or exact Fraction")
+E       ValueError: expected int, finite float, or exact Fraction
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/build/multi_robot_exploration/multi_robot_exploration/mr3_reach_geometry.py:32: ValueError
+=========================== short test summary info ============================
+FAILED report/assets/20261021_mr3_p2a_v32_seed_certificate/test_seed_certificate.py::test_original_pose_bound_0282843_rejects_but_exact_point_and_bridge_pass
+1 failed, 13 passed in 0.50s

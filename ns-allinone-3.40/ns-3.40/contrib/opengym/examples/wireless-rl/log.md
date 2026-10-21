@@ -8012,3 +8012,75 @@ CPU activity_cpu_v1：passed=True，actualwait=0.722467814秒；source unchanged
 接线v1为16pass/1fail：人工namespace缺resolution/origin，失败source_integration_failed_v1.py/raw保留；补fixture后v2为17pass，生产不变。activity10项通过。V31 metadata-only plan build（cwd wireless-rl）：`rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.proxy2d_karto_activity build --kind karto_profile`，再同命令kind=karto_behavior；rc0，生成exclusive两plan/native_manifest，未运行World/工程活动。
 
 V30 metadata-only最终静态：`rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.reach_execution --scope cpu --output report/assets/20261021_mr3_p2a_v30_adapter/checks/closed_static_cpu_v1 --source report/assets/20261021_mr3_p2a_v30_adapter/closed_check_v1.py -- /usr/bin/python3 -B report/assets/20261021_mr3_p2a_v30_adapter/closed_check_v1.py`；rc0/source stable/actualwait.271937509秒。静态核原件、原archive/log、当前ELF与冻结plan、链接及此前身份；外层退出后cpu_validation_index_v1.json重新按最终全部字节封存，并fresh核全部19保存身份gone（含本轮静态outer），不重跑World/SDK。静态运行中的console可能在其打印后才完成，最终完整字节以此独立post-wait index为准。
+
+
+## 2026-10-21 MR3 P2A V31 同冻结Karto完整闭环及有限诊断
+
+Freeze e7dc6903c0bb4c2fe09f0eb07266f46c9d259022 commit/push/clean。profile/behavior preflight均PASS，唯一两活动及final整链PASS，908总attempt/908return/0step错误，behavior900全部verified/903actor，三场各300秒timeout、0unsafe/contact、0任务成功。open质量/参与PASS；rooms/corridors两者FAIL。完整原件及指标/诊断见report/20261021_mr3_p2a_v31_karto_behavior.md。
+
+profile_outer：passed=True、rc=0、actualwait=72.421918153秒、source stable，cwd=/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl；等价绝对source路径的精确wrapper/child argv：
+
+```json
+["rtk", "proxy", "env", "-u", "PYTHONPATH", "PYTHONNOUSERSITE=1", "PYTHONDONTWRITEBYTECODE=1", "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python", "-B", "-m", "mr3_learning.reach_execution", "--scope", "engineering", "--output", "/tmp/mr3_p2a_v31_profile_outer", "--source", "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d_karto_activity.py", "--source", "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261021_mr3_p2a_v31_karto_behavior/karto_profile_plan_v1.json", "--source", "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261021_mr3_p2a_v31_karto_behavior/native_manifest_v1.json", "--", "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python", "-B", "-m", "mr3_learning.proxy2d_karto_activity", "execute", "--kind", "karto_profile", "--freeze", "e7dc6903c0bb4c2fe09f0eb07266f46c9d259022"]
+```
+
+profile_final_outer：passed=True、rc=0、actualwait=0.59326248秒、source stable，cwd=/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl；等价绝对source路径的精确wrapper/child argv：
+
+```json
+["rtk", "proxy", "env", "-u", "PYTHONPATH", "PYTHONNOUSERSITE=1", "PYTHONDONTWRITEBYTECODE=1", "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python", "-B", "-m", "mr3_learning.reach_execution", "--scope", "engineering", "--output", "/tmp/mr3_p2a_v31_profile_final_outer", "--source", "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d_karto_activity.py", "--source", "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261021_mr3_p2a_v31_karto_behavior/karto_profile_plan_v1.json", "--", "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python", "-B", "-m", "mr3_learning.proxy2d_karto_activity", "final", "--kind", "karto_profile", "--run", "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v31/karto_profile_v1", "--outer", "/tmp/mr3_p2a_v31_profile_outer/actual_wait.json", "--output", "/tmp/mr3_p2a_v31_profile_final.json"]
+```
+
+behavior_outer：passed=True、rc=0、actualwait=1164.760905882秒、source stable，cwd=/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl；等价绝对source路径的精确wrapper/child argv：
+
+```json
+["rtk", "proxy", "env", "-u", "PYTHONPATH", "PYTHONNOUSERSITE=1", "PYTHONDONTWRITEBYTECODE=1", "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python", "-B", "-m", "mr3_learning.reach_execution", "--scope", "engineering", "--output", "/tmp/mr3_p2a_v31_behavior_outer", "--source", "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d_karto_activity.py", "--source", "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261021_mr3_p2a_v31_karto_behavior/karto_behavior_plan_v1.json", "--source", "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261021_mr3_p2a_v31_karto_behavior/native_manifest_v1.json", "--", "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python", "-B", "-m", "mr3_learning.proxy2d_karto_activity", "execute", "--kind", "karto_behavior", "--freeze", "e7dc6903c0bb4c2fe09f0eb07266f46c9d259022", "--profile-outer", "/tmp/mr3_p2a_v31_profile_outer/actual_wait.json", "--profile-final", "/tmp/mr3_p2a_v31_profile_final.json", "--profile-final-outer", "/tmp/mr3_p2a_v31_profile_final_outer/actual_wait.json"]
+```
+
+behavior_final_outer：passed=True、rc=0、actualwait=0.774370344秒、source stable，cwd=/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl；等价绝对source路径的精确wrapper/child argv：
+
+```json
+["rtk", "proxy", "env", "-u", "PYTHONPATH", "PYTHONNOUSERSITE=1", "PYTHONDONTWRITEBYTECODE=1", "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python", "-B", "-m", "mr3_learning.reach_execution", "--scope", "engineering", "--output", "/tmp/mr3_p2a_v31_behavior_final_outer", "--source", "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d_karto_activity.py", "--source", "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261021_mr3_p2a_v31_karto_behavior/karto_behavior_plan_v1.json", "--", "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python", "-B", "-m", "mr3_learning.proxy2d_karto_activity", "final", "--kind", "karto_behavior", "--run", "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v31/karto_behavior_v1", "--outer", "/tmp/mr3_p2a_v31_behavior_outer/actual_wait.json", "--output", "/tmp/mr3_p2a_v31_behavior_final.json"]
+```
+
+forensic_outer：passed=False、rc=1、actualwait=1.317476475秒、source stable，cwd=/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl；等价绝对source路径的精确wrapper/child argv：
+
+```json
+["rtk", "proxy", "env", "-u", "PYTHONPATH", "PYTHONNOUSERSITE=1", "PYTHONDONTWRITEBYTECODE=1", "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python", "-B", "-m", "mr3_learning.reach_execution", "--scope", "engineering", "--output", "/tmp/mr3_p2a_v31_forensic_outer", "--source", "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261021_mr3_p2a_v31_karto_behavior/forensic_source_v1.py", "--source", "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261021_mr3_p2a_v31_karto_behavior/forensic_plan_v1.json", "--source", "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py", "--source", "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d_codec.py", "--", "/usr/bin/bash", "-c", "source /opt/ros/humble/setup.bash\nsource /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/setup.bash\nexec /usr/bin/python3 -B report/assets/20261021_mr3_p2a_v31_karto_behavior/forensic_source_v1.py"]
+```
+
+forensic_outer_v2：passed=True、rc=0、actualwait=4.121108373秒、source stable，cwd=/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl；等价绝对source路径的精确wrapper/child argv：
+
+```json
+["rtk", "proxy", "env", "-u", "PYTHONPATH", "PYTHONNOUSERSITE=1", "PYTHONDONTWRITEBYTECODE=1", "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python", "-B", "-m", "mr3_learning.reach_execution", "--scope", "engineering", "--output", "/tmp/mr3_p2a_v31_forensic_outer_v2", "--source", "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261021_mr3_p2a_v31_karto_behavior/forensic_source_v1.py", "--source", "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261021_mr3_p2a_v31_karto_behavior/forensic_plan_v2.json", "--source", "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py", "--source", "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d_codec.py", "--", "/usr/bin/bash", "-c", "source /opt/ros/humble/setup.bash\nsource /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/setup.bash\nexec /usr/bin/python3 -B -c 'import runpy; runpy.run_path(\"report/assets/20261021_mr3_p2a_v31_karto_behavior/forensic_source_v1.py\",run_name=\"__main__\")'"]
+```
+
+首次forensic启动导入失败在原件读取前停止，source/失败原件保持；v2只修launcher，同一预算，新exclusive输出，非任务重试。其前一原输入结构peek完整工具调用1.5秒保守计2秒，源/身份不满足formal consumer条件，不给资格信用；最终科学诊断依赖v2 SHA-bound原件9份。实际6outer union1243.989041707＋2秒保守上计＝1245.989041707；累计46691.4127443736018、余5308.5872556263982/52000，pilot/final-only不动。metadata-only闭合归档执行`rtk proxy python3 /tmp/mr3_p2a_v31_close_metadata.py`（准确源已保存close_metadata_source_v1.py），复制/hash/检查身份，不重放SDK/episode或增工程；1030原文件/53542627bytes，36保存身份全gone。
+
+V31 metadata-only最终静态：`rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.reach_execution --scope cpu --output /tmp/mr3_p2a_v31_static_outer --source report/assets/20261021_mr3_p2a_v31_karto_behavior/closed_check_v1.py --source report/assets/20261021_mr3_p2a_v31_karto_behavior/closed_metadata_v1.json -- /usr/bin/python3 -B report/assets/20261021_mr3_p2a_v31_karto_behavior/closed_check_v1.py`；rc0/source unchanged/actualwait2.471473577s，核1030canonical原件、费用union/2秒上计、source冻结、903actor/900return和三真终态、有限诊断源SHA、原log/archive及338相对链接。外层退出后fresh核原36＋本轮CPU2＝38保存身份全gone，原件移存A31/checks/closed_static_cpu_v1；只有metadata/hash，无SDK/World/奖励重放，新增工程0。
+
+
+## 2026-10-21 MR3 P2A V32 禁用精确point/bridge证书CPU
+
+基线source仍e7dc690生产冻结未改，仅新增artifact目录；三次均纯人工map，无World/scene/原件回放/SDK/actor/工程消费。第一次13pass/1fixture dtype fail；第二setup路径漏ros2_ws，收集前rc2；第三修正启动14pass，candidate算法未变。原failed test snapshot、预声明和全部actualwait/console保留；不把失败免费抹掉或改称PASS，工程新增0。
+
+geometry_cpu_v1：rc=1，actualwait=3.074038672秒，source stable，cwd=/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl；outer --scope cpu/output report/assets/20261021_mr3_p2a_v32_seed_certificate/checks/geometry_cpu_v1，source清单见actual_wait.json，准确child argv：
+
+```json
+["/usr/bin/bash", "-c", "source /opt/ros/humble/setup.bash\nsource /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/setup.bash\nexec /usr/bin/python3 -B -m pytest -q report/assets/20261021_mr3_p2a_v32_seed_certificate/test_seed_certificate.py"]
+```
+
+geometry_cpu_v2：rc=2，actualwait=1.720518848秒，source stable，cwd=/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl；outer --scope cpu/output report/assets/20261021_mr3_p2a_v32_seed_certificate/checks/geometry_cpu_v2，source清单见actual_wait.json，准确child argv：
+
+```json
+["/usr/bin/bash", "-c", "source /opt/ros/humble/setup.bash\nsource /home/zhuyulab/ns3-workspace/ros2-multi-robot-automap/install/setup.bash\nexec /usr/bin/python3 -B -m pytest -q report/assets/20261021_mr3_p2a_v32_seed_certificate/test_seed_certificate.py"]
+```
+
+geometry_cpu_v3：rc=0，actualwait=2.148375849秒，source stable，cwd=/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl；outer --scope cpu/output report/assets/20261021_mr3_p2a_v32_seed_certificate/checks/geometry_cpu_v3，source清单见actual_wait.json，准确child argv：
+
+```json
+["/usr/bin/bash", "-e", "-c", "source /opt/ros/humble/setup.bash\nsource /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/setup.bash\nexec /usr/bin/python3 -B -m pytest -q report/assets/20261021_mr3_p2a_v32_seed_certificate/test_seed_certificate.py"]
+```
+
+14项验证保留.29、unknown/outside和原seed-cell/graph gate；原型禁用、不提供真实rooms/native/安全/训练信用。独立只读数学审查无实质阻断；6保存CPU身份fresh gone，原件最终SHA见cpu_validation_index_v1.json。累计仍46691.4127443736018/52000、余5308.5872556263982，pilot/final-only不动，P2A未完成。
+
+V31/V32最后metadata静态（补V32文档/原型收口后才重核）：`rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.reach_execution --scope cpu --output /tmp/mr3_p2a_v31_static_outer_v2 --source report/assets/20261021_mr3_p2a_v31_karto_behavior/closed_check_v2.py --source report/assets/20261021_mr3_p2a_v31_karto_behavior/closed_metadata_v1.json --source report/assets/20261021_mr3_p2a_v32_seed_certificate/cpu_validation_index_v1.json -- /usr/bin/python3 -B report/assets/20261021_mr3_p2a_v31_karto_behavior/closed_check_v2.py`，rc0/actualwait2.498513541s/source stable。未重放任何SDK/任务/奖励，工程新增0；post-wait A31+V32合并46保存身份fresh gone（含两轮metadata CPU），最终SHA索引final_validation_index_v2.json覆盖全部canonical资产。

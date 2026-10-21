@@ -1,5 +1,15 @@
 # MR3 P2A 评估与后续交接
 
+V32后续准备也已完成：[禁用精确point/桥证书](20261021_mr3_p2a_v32_seed_certificate.md)有可审阅实现及14项人工CPU通过，保留.29m/unknown/outside/原seed cell及traversable graph，包含“桥中段危险而两端安全”的拒绝反例。只证明人工几何模型；没有读真实V31图来给新证书资格，没有生产改动或实际rooms修复。下一AI不要再从零重复做该人工原型；先读代码/边界，设计可审计的局部计算与显式科学版本、保留fresh/state/map/原cell门及V21兼容/准入，再声明有限实际验证。不得直接把4096格全遍历上限调大进World、删纯源字节门、调整margin/清占据或开始PPO。常规实现/CPU授权有效，无需重复询问修改批准；原生20100预约/二维训练额度及所有任务门保持。
+
+
+当前交接以[V31完整闭合](20261021_mr3_p2a_v31_karto_behavior.md)为准：Karto显式模式已真跑profile8步＋三场各300步，工程/独立输入/奖励行为/真实wait/来源ELF/关闭全部PASS；三场均timeout且未达95%，P2A未完成。open正确自由覆盖88.61%、质量/参与PASS；rooms58.31%/corridors38.41%，质量/参与均FAIL。rooms三机物理平移0、tb2/tb3全部301边界被起点净空拒绝，15秒后tb1也加入。诊断9原件显示own与navigation相同的.282843m保守下界低于.29m，不能直接PPO补救；不清occupied、不降门、不snap/手工兜底。
+
+下一具体工作：禁用CPU精确“估计pose点到非free closed-cell＋pose到同seed-centre桥”证书，保留原seed cell已traversable门/graph与.29m、unknown/outside blocked；人工证实原保守bound假阴性的条件与真正不足/桥不安全的拒绝。只有证书/prospective版本/观测兼容准入明确后，才接新显式版本做新有限验证；V21纯源逐字门不是可以直接删掉的限制。完整SLAM不是自动答案，不再扫mapper计数阈值或重复随机矩阵。原生完整20100预约仍超过余额；二维训练额度也需具体独立约定，不能据三开发场工程PASS给训练/native信用。
+
+最终工程46691.4127443736018/52000、余5308.5872556263982秒；本轮六outer union1243.989041707＋明确2秒discovery保守上计。两次forensic启动含一次import失败都计费且保留；1030原件/36身份gone。pilot1870/2905.9547395464029、final-only401/402/403保持。常规实现/CPU继续已授权，科学契约改变须有具体可审阅证明，不把一般“继续”解释为扩额/降任务门/PPO配额。下列V30及更早为历史快照。
+
+
 当前V30已把Karto nativeAddScan薄适配器和显式模式接线做完，24项人工接口/资源/并发检查通过，相关consumer80pass/1skip；不再把它描述为尚未实现。默认endpoint与全部任务门保持，六项人工稀疏图有上沿误占，不能称解决质量。接着执行[V31](20261021_mr3_p2a_v31_karto_behavior.md)新freeze/预算块：600秒8步profile完整PASS后最多3600秒三场长行为，另300秒forensic。actual source/ELF manifest、原输入重算与关闭均必须通过；失败保留、不重试/PPO。工程仍余6554.5762973333982，pilot/final-only不动。以下V29及更早为历史快照；本轮会继续真实执行并更新最终结果。
 
 

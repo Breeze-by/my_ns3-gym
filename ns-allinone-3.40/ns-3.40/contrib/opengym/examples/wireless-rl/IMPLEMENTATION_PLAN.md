@@ -1,5 +1,11 @@
 # MR3 研发检查点与逐步验收
 
+2026-10-21 V32 CPU：精确point/同seed-centre桥证书禁用原型14项人工通过，保留.29m、unknown/outside、原seed-cell及graph门；未接生产/真实rooms或改V21字节门。两次fixture/launcher失败原件保持，工程新增0。后续先明确新观测/科学版本及必要准入，不能据此PPO/重跑V31；工程仍余5308.5872556263982，pilot/final-only不动，P2A未完成。见[V32](report/20261021_mr3_p2a_v32_seed_certificate.md)。
+
+
+2026-10-21 V31闭合：e7dc690冻结Karto显式模式profile8步与三场各300步完整工程/独立行为PASS；behavior900/900/0、903actor，三场真timeout、任务0/3、0代理unsafe/contact。open质量/参与PASS，rooms/corridors未过；有限原件诊断定位own/navigation起点净空下界.282843<.29导致持续无GOAL，先做精确点/同seed桥证书CPU，不降门/PPO/重跑。1030原件/36保存身份gone，含失败启动及2秒discovery上计共1245.989041707秒；累计46691.4127443736018/52000、余5308.5872556263982。pilot/final-only不动，P2A未完成。见[V31](report/20261021_mr3_p2a_v31_karto_behavior.md)。
+
+
 2026-10-21 V30：Karto薄sensor adapter/显式接线已实现，当前24项人工CPU和consumer80项通过（1跳过），默认endpoint保持；不是SLAM/质量/95%或训练资格。V31将按新scope/freeze执行最多600秒8步profile，完整PASS后才最多3600秒三场长行为，另300秒forensic，总4500工程块；不重开旧活动、不PPO/扩额。当前工程45445.4237026666018/52000、余6554.5762973333982，pilot/final-only不动，P2A未完成。见[V30](report/20261021_mr3_p2a_v30_adapter.md)。
 
 
@@ -46,7 +52,7 @@
 | MR3-P1B | RL 可独占的稳定目标/观测接口 | 已验收（2026-10-15） |
 | MR3-P1C | 训练环境、可靠 reset、采样吞吐 | 已验收（2026-10-16） |
 | MR3-P2A.0 | 生命周期、候选及安全执行、参与观测准备 | 已验收（2026-10-18）；原V26编排中断保留 |
-| MR3-P2A | 联合 MaskablePPO 最小训练闭环 | 未完成；V24长行为FAIL、V27/V28候选禁用；V29仅Karto固定API复用CPU通过，下一步disabled薄sensor adapter，不是新mapper/质量或原生资格。工程余6554.5762973333982，pilot/final-only不动 |
+| MR3-P2A | 联合 MaskablePPO 最小训练闭环 | 未完成；V30薄适配器/显式接线完成，V31同冻结三场各300步工程/独立行为PASS、任务0/3；open质量/参与PASS，rooms/corridors行动/质量缺口保留。V32原.29m/同seed精确点/桥禁用原型14人工CPU通过，待新版本准入；工程余5308.5872556263982，pilot/final-only不动，不直接PPO/原生资格 |
 | MR3-P2B | 同接口算法对照与方法选择 | 未开始 |
 | MR3-P2C | 理想通信完整验收、冻结模型 | 未开始 |
 | MR3-P3A | 双向 gateway、字节协议、消除旁路 | 未开始 |

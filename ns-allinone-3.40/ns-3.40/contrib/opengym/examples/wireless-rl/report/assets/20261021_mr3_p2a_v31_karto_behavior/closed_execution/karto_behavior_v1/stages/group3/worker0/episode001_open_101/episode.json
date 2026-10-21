@@ -1,0 +1,40 @@
+{
+  "epoch": "proxy2d_w0_e1_c6eb7dda",
+  "scene": "open",
+  "seed": 101,
+  "env_id": 0,
+  "episode_index": 1,
+  "worker_identity": {
+    "pid": 3037646,
+    "parent": 3037642,
+    "group": 3037646,
+    "session": 3037646,
+    "start_ticks": 432864594,
+    "state": "R"
+  },
+  "actual_argv": [
+    "/usr/bin/bash",
+    "--noprofile",
+    "--norc",
+    "-c",
+    "source /opt/ros/humble/setup.bash && source \"$1/install/setup.bash\" && exec /usr/bin/python3 -B \"$1/scripts/mr3_proxy2d_worker.py\" --role worker --directory \"$2\" --epoch \"$3\" --scene \"$4\" --seed \"$5\" --mapper \"$6\" ${7:+--mapper-library \"$7\"}",
+    "mr3-proxy",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v31/karto_behavior_v1/stages/group3/worker0/episode001_open_101",
+    "proxy2d_w0_e1_c6eb7dda",
+    "open",
+    "101",
+    "karto",
+    "/tmp/mr3_p2a_v30_adapter_cpu_v2/libmr3_karto_adapter.so"
+  ],
+  "cwd": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap",
+  "proxy_only": true,
+  "training_eligible": false,
+  "profile_enabled": false,
+  "reset_kind": "complete_proxy_process_rebuild",
+  "mapper": "karto",
+  "mapper_library": "/tmp/mr3_p2a_v30_adapter_cpu_v2/libmr3_karto_adapter.so",
+  "freeze": "e7dc6903c0bb4c2fe09f0eb07266f46c9d259022",
+  "action_seed": 41,
+  "action_stream": "per-group/env continuous across declared cells"
+}

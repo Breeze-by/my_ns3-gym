@@ -1,0 +1,101 @@
+{
+  "schema": "mr3-reach-outer-actual-wait-v1",
+  "scope": "engineering",
+  "safety_contract": "mr3-reach-v1",
+  "actual_argv": [
+    "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+    "-B",
+    "-m",
+    "mr3_learning.proxy2d_karto_activity",
+    "final",
+    "--kind",
+    "karto_profile",
+    "--run",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v31/karto_profile_v1",
+    "--outer",
+    "/tmp/mr3_p2a_v31_profile_outer/actual_wait.json",
+    "--output",
+    "/tmp/mr3_p2a_v31_profile_final.json"
+  ],
+  "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+  "coordinator_identity": {
+    "pid": 3036886,
+    "parent": 3036884,
+    "group": 3036884,
+    "session": 3036884,
+    "start_ticks": 432859157,
+    "state": "R"
+  },
+  "child_identity": {
+    "pid": 3036889,
+    "parent": 3036886,
+    "group": 3036884,
+    "session": 3036884,
+    "start_ticks": 432859172,
+    "state": "R"
+  },
+  "actual_returncode": 0,
+  "actual_waited": true,
+  "errors": [],
+  "started_monotonic_ns": 4328591721169803,
+  "ended_monotonic_ns": 4328592314432283,
+  "actual_child_wait_seconds": "0.59326248",
+  "source_before": [
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d_karto_activity.py",
+      "sha256": "cdf5034ddd8bc057c49a4fcfe4a0e6962ad7ecb3eaec9cc0ce81171315ebaa10",
+      "bytes": 29027,
+      "stat": [
+        2051,
+        73564113,
+        29027,
+        1792582707200591981,
+        1792582707200591981
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261021_mr3_p2a_v31_karto_behavior/karto_profile_plan_v1.json",
+      "sha256": "4ffa64e89eb0bc61e7183bc05b2ea6dec502e13a481a3a8b9618b40c2cb7fe9b",
+      "bytes": 23526,
+      "stat": [
+        2051,
+        79069372,
+        23526,
+        1792582876722630774,
+        1792582876722630774
+      ]
+    }
+  ],
+  "source_after": [
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d_karto_activity.py",
+      "sha256": "cdf5034ddd8bc057c49a4fcfe4a0e6962ad7ecb3eaec9cc0ce81171315ebaa10",
+      "bytes": 29027,
+      "stat": [
+        2051,
+        73564113,
+        29027,
+        1792582707200591981,
+        1792582707200591981
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261021_mr3_p2a_v31_karto_behavior/karto_profile_plan_v1.json",
+      "sha256": "4ffa64e89eb0bc61e7183bc05b2ea6dec502e13a481a3a8b9618b40c2cb7fe9b",
+      "bytes": 23526,
+      "stat": [
+        2051,
+        79069372,
+        23526,
+        1792582876722630774,
+        1792582876722630774
+      ]
+    }
+  ],
+  "source_unchanged": true,
+  "passed": true,
+  "console": {
+    "path": "/tmp/mr3_p2a_v31_profile_final_outer/console.log",
+    "sha256": "d0ce0f77d1ae89d48b548102872c0b0d676aa809995a53f5c401423d4a070c79"
+  }
+}

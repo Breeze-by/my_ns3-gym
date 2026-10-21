@@ -1,5 +1,11 @@
 @/home/zhuyulab/.codex/RTK.md
 
+2026-10-21 V32 CPU：精确point/同seed-centre桥证书禁用原型14项人工通过，保留.29m、unknown/outside、原seed-cell及graph门；未接生产/真实rooms或改V21字节门。两次fixture/launcher失败原件保持，工程新增0。后续先明确新观测/科学版本及必要准入，不能据此PPO/重跑V31；工程仍余5308.5872556263982，pilot/final-only不动，P2A未完成。见[V32](ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261021_mr3_p2a_v32_seed_certificate.md)。
+
+
+2026-10-21 V31闭合：e7dc690冻结Karto显式模式profile8步与三场各300步完整工程/独立行为PASS；behavior900/900/0、903actor，三场真timeout、任务0/3、0代理unsafe/contact。open质量/参与PASS，rooms/corridors未过；有限原件诊断定位own/navigation起点净空下界.282843<.29导致持续无GOAL，先做精确点/同seed桥证书CPU，不降门/PPO/重跑。1030原件/36保存身份gone，含失败启动及2秒discovery上计共1245.989041707秒；累计46691.4127443736018/52000、余5308.5872556263982。pilot/final-only不动，P2A未完成。见[V31](ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261021_mr3_p2a_v31_karto_behavior.md)。
+
+
 2026-10-21 V30：Karto薄sensor adapter/显式接线已实现，当前24项人工CPU和consumer80项通过（1跳过），默认endpoint保持；不是SLAM/质量/95%或训练资格。V31将按新scope/freeze执行最多600秒8步profile，完整PASS后才最多3600秒三场长行为，另300秒forensic，总4500工程块；不重开旧活动、不PPO/扩额。当前工程45445.4237026666018/52000、余6554.5762973333982，pilot/final-only不动，P2A未完成。见[V30](ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261021_mr3_p2a_v30_adapter.md)。
 
 
