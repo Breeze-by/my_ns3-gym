@@ -1,0 +1,34 @@
+{
+  "schema": "mr3-p2a-v28-cpu-validation-index-v1",
+  "baseline": "ae7f9de8fcd033a0e6189054b2eb5f3427d28da8",
+  "scope": "One disabled V3 candidate; artificial measurement kernels only. Old fourteen fixtures are controlled regression comparison, not new independent task evidence. No World/Node/task-asset/episode/ENV.step/actor/reward replay.",
+  "checks": [
+    {
+      "receipt": "checks/mapper_cpu_v1/actual_wait.json",
+      "pytest_passed": 38,
+      "actual_child_wait_seconds": "4.537946596"
+    }
+  ],
+  "generated": [
+    {
+      "path": "mapping_v3_comparison_v1.json",
+      "sha256": "2c388c8d26bd6d2942c9502e9a8ef3f51a25b744339d8a2a4374e2ccab667315",
+      "bytes": 915429
+    },
+    {
+      "path": "route_decision_v1.json",
+      "sha256": "50a5cd08bd83ae002a82ab214ab86f49f3f196f35d1d020be4f6650c8a759ecd",
+      "bytes": 1582
+    }
+  ],
+  "new_engineering_seconds": "0",
+  "cumulative_engineering_seconds": "45445.4237026666018",
+  "remaining_engineering_seconds": "6554.5762973333982",
+  "pilot_decisions_remaining": 1870,
+  "pilot_seconds_remaining": "2905.9547395464029",
+  "final_only": "401/402/403 unused",
+  "production_enabled": false,
+  "qualification": false,
+  "training_eligible": false,
+  "native_credit": false
+}

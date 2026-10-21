@@ -1,0 +1,29 @@
+{
+  "schema": "mr3-p2a-v28-candidate-route-decision-v1",
+  "baseline": "ae7f9de8fcd033a0e6189054b2eb5f3427d28da8",
+  "technical_rules_implemented": true,
+  "technical_flags": 33,
+  "artificial_cases": 31,
+  "checkpoints": 133,
+  "map_records": 399,
+  "decision": "Retain disabled. Stop this round of endpoint-cell/score patch candidates. No formal behavior trial or PPO.",
+  "reasons": [
+    "Persistent current-hit veto works, but exact gridline observations lose occupied recall.",
+    "Closed-cell ambiguity cannot supply an obstacle normal or a range/pose uncertainty bound.",
+    "Prescribed persistent +2mm bias still gives false_free_ratio=0.04.",
+    "Local integrate cost grows; no measured task/ENV benefit supports spending engineering budget."
+  ],
+  "not_claimed": [
+    "All sensor-only mapping or RL is impossible.",
+    "A future behavior trial must fail.",
+    "All ambiguous cells become unknown: previous positive evidence is retained.",
+    "Every cell in a scan has no false-free: veto only covers the current hit candidates."
+  ],
+  "next": "First review/reuse the existing slam_toolbox/Karto measurement-to-map model with explicit own-estimated-pose, lattice/origin, beam counting, min/max and uncertainty assumptions. No threshold V4, truth filling or relaxed quality gates. Decide a finite CPU interface prototype before any fresh integrated behavior scope.",
+  "production_enabled": false,
+  "qualification": false,
+  "training_eligible": false,
+  "native_credit": false,
+  "new_engineering_seconds": "0",
+  "engineering_remaining": "6554.5762973333982"
+}

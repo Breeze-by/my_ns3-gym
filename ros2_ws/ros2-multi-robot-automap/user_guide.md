@@ -1,5 +1,7 @@
 # 三机器人 ROS 建图导航：当前实现指南
 
+2026-10-21 V28一致性CPU已闭合：38项检查、31组/133checkpoint三模型比较完整，current-hit持久否决free与closed-cell歧义按声明实现；但格线面TP归零、持续+2mm仍false-free=.04。v3保持禁用，停止本轮归格/计数补丁搜索，不做当前候选正式试跑/PPO；下一步先具体核现有SLAM/Karto量测到图复用及其格/量程/误差假设，不抄阈值作V4。工程新增0，仍45445.4237026666018/52000、余6554.5762973333982，pilot/final-only不动；P2A未完成。见[V28](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261021_mr3_p2a_v28_mapping.md)。
+
 2026-10-21 V27 CPU候选已闭合：sensor-only mapper-v2未接默认；68项检查、14组人工对比完整，局部格线改善伴随free覆盖下降、corner退化，持续+2mm仍false-free=.04，free饱和首次hit仍free。保留禁用候选，不直接完整行为/PPO；先明确当前hit否决free、歧义unknown与量测假设，再设计新版本。工程新增0，仍45445.4237026666018/52000、余6554.5762973333982，pilot/final-only不动；P2A未完成。见[V27](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261021_mr3_p2a_v27_mapping.md)。
 
 2026-10-21 V26已闭合：三场实际几何条件上包络.390342/.484456/.513595均高于原.20门，未排除也未证明可达；ROI子界未收紧。仅计算/来源/关闭PASS，无World/episode/训练/native资格。main+final工程union4.886817531，累计45445.4237026666018/52000、余6554.5762973333982，7保存身份gone，pilot/final-only不动。下一步转sensor-only mapper-v2 CPU边界/证据累计候选，不再收紧静态界或直接PPO；P2A未完成。见[V26](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261021_mr3_p2a_v26_geometry.md)。

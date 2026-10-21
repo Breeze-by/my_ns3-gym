@@ -7900,3 +7900,34 @@ rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /home/z
 ```
 
 rc0/actual wait/source stable，实际1.419023335秒；static_result_v1.json通过11比较绑定源、513相对链接、结果/consoleSHA、旧程序/config/证据、log追加、旧archive条目/backup和精确预算。静态内部先确认比较2身份gone；其actual wait后saved_process_absence_v1.json再fresh核两轮4保存CPU身份全gone（无Z/不可读），consumer匹配保存child，当前所有source/console仍精确。只做元数据/源检查，不重算mapping，不增加工程费/资格。报告末尾随后追加本真实回执链接；最终常规链接/diff/staging检查不重跑活动。
+
+
+## 2026-10-21 MR3-P2A V28 命中/格线一致性CPU取舍
+
+用户在V27后“继续”，沿既有常规实现/CPU授权执行一个固定V3规则集。入场main/clean ae7f9de8fcd033a0e6189054b2eb5f3427d28da8；实际CPU是修改工作树＋13项SHA/bytes/stat来源绑定，不把入场baseline当含新候选的正式freeze。新SensorMapperV3仅复用旧V2验证/score/ID/raywalk；不改旧v1/v2、World/worker/actor/evaluator/config或历史证据。无World/Node/task asset load/episode/ENV.step/actor/reward replay/GPU/optimizer/native/训练。
+
+比较前A28/predeclared_plan_v1.json固定规则：每轴4ULP closed-cell 1/2/4 raw候选（含zero dir），clip前判唯一；唯一hit+2、歧义不增positive，allhit候选剔除free，votes后负score归0持久否决free；旧positive保留。原scores[-4,4]/阈值、strict sourceID/幂等/newscan、range max nohit不改。不猜normal/厚度、不填truth，不扫阈值或追加V4/V5。closed候选非1cm/encoder误差区间。
+
+唯一CPU外层准确命令（cwd wireless-rl，历史输出不覆盖/盲重跑）：
+
+```bash
+rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.reach_execution --scope cpu --output /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261021_mr3_p2a_v28_mapping/checks/mapper_cpu_v1 --source /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_proxy2d_mapping_v3.py --source /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_proxy2d_mapping.py --source /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_proxy2d_mapping_v3.py --source /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/proxy2d_mapping_v3_comparison.py --source /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/proxy2d_mapping_comparison.py --source /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_proxy2d_mapping_quality.py --source /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_proxy2d_world.py --source /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_task_contract.py --source /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/task_evaluator.py --source /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_execution.py --source /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/preparation.py --source /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261021_mr3_p2a_v28_mapping/predeclared_plan_v1.json --source /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261021_mr3_p2a_v28_mapping/run_cpu_v1.sh -- /usr/bin/bash --noprofile --norc /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261021_mr3_p2a_v28_mapping/run_cpu_v1.sh
+```
+
+run_cpu_v1.sh清理混合Python/ROS环境并source原systemROS/install，system /usr/bin/python3 -B -m pytest -q src/multi_robot_exploration/test/test_mr3_proxy2d_mapping_v3.py；通过后exec system Python test/proxy2d_mapping_v3_comparison.py --output A28/mapping_v3_comparison_v1.json。首轮38passed（pytest.52秒）＋31case=旧14/新17、133checkpoint/399map、33技术flags全true、errors[]、source stable，actual wait rc0总4.537946596秒，未失败/重试/按输出调参。旧14组71scan SHA固定；独立只读JSON核对输入、v1/v2网格及完整指标与V27完全一致，399记录六count/原metrics完整分母恒等。
+
+取舍：离格free饱和后首hit0/unknown，unseen及dup保持，第二新hit2/occupied；raw map裁切不产生新确定性；同input异truth切线对和旋转单轴vertex不猜内侧。代价：四格线面v1/v2/v3 TP8/16/0、FP8/0/0、TN115/0/0；corner v2TP1/FP2/TN56→v3TP0/FP0/TN53；持续+2mm三版均falsefree2/50=.04/accuracy.875；veto只保护current C，不是全scan无误free，歧义保留旧positive（含潜在旧误占），不说全部歧义unknown。三版各133人工quality全false，稀疏/矛盾夹具不作任务判定；技术PASS非质量或安全PASS。
+
+48×48/360束/每模式每模型每轮12调用/3轮轮换有限计时：重复scan v1/v2/v3中位4.020247/2.681505/3.457147ms；newscan同几何4.053834/21.788385/30.767116ms。持久buffer16704/8104/8104 bytes不含对象/输入/临时workspace，不推RSS或ENV倍数。不同证据语义不称等价速度比较。
+
+route_decision_v1.json：保留V3禁用，停止本轮端点归格/计数补丁支线，不做当前候选2000秒等正式试跑、不PPO。此为收益不足判断，非试跑必败或实际三场/RL无解。下一步先具体化既有SLAM/Karto模型复用：本地SMapper::getOccupancyGrid→OccupancyGrid::CreateFromScans，SDK per-beam pass/hit、round格转换、pass>2/hitratio>.1及range min/max/threshold语义与proxy有差异；只读源码，未调用/编译/移植。不能抄阈值作V4；须先明确own估计/外参/格中心origin/相关重复束与误差冲突，再决定有限CPU接口原型及后续显式版本/新freeze/有界行为，不直接复用旧performance plan/输出/账。
+
+唯一原件A28/{predeclared_plan_v1.json,cpu_validation_index_v1.json,route_decision_v1.json,mapping_v3_comparison_v1.json}及checks/mapper_cpu_v1/{actual_wait.json,console.log}。工程新增0，累计45445.4237026666018/52000、余6554.5762973333982；pilot1870/2905.9547395464029与final-only401/402/403不动。原95%/300秒、完整ROI/质量门、三机、received-only、TTL/FIFO、原生准入与所有旧FAIL不改。P2A未完成，P2B/gateway未启动；报告/交接/计划/memory同步。
+
+V28最终静态CPU（cwd wireless-rl、既有输出不重跑）：
+
+```bash
+rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.reach_execution --scope cpu --output /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261021_mr3_p2a_v28_mapping/checks/closed_static_cpu_v1 --source /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261021_mr3_p2a_v28_mapping/closed_check_v1.py --source /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261021_mr3_p2a_v28_mapping/cpu_validation_index_v1.json --source /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261021_mr3_p2a_v28_mapping/predeclared_plan_v1.json --source /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_execution.py --source /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/preparation.py -- /usr/bin/python3 -B /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261021_mr3_p2a_v28_mapping/closed_check_v1.py
+```
+
+rc0/actual wait/source stable，1.258716071秒；static_result_v1.json通过13绑定源、525相对链接、结果/consoleSHA、旧程序/config/证据保持、log追加与旧archive/backup/预算。比较2身份先gone；静态wait后saved_process_absence_v1.json再fresh核两轮4保存CPU身份全gone，consumer与保存child匹配，当前source/console仍精确。没有mapping重算或工程新增；最终新增链接做常规检查。

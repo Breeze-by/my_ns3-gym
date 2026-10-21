@@ -1,5 +1,9 @@
 # 当前三机器人基线与MR3适配启动命令
 
+## V28 一致性CPU候选（已完成，未启用）
+
+38项新检查与31组人工三模型比较完成；结构一致性通过，格线占用召回/持续偏差代价使v3仍禁用，不做当前候选正式试跑或PPO。唯一实际CPU入口为 `report/assets/20261021_mr3_p2a_v28_mapping/run_cpu_v1.sh` 经reach actual-wait执行；完整argv/绑定/结果见[报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261021_mr3_p2a_v28_mapping.md)与共享log，既有输出不覆盖或盲重跑。World/worker/launch默认不变，工程0新增，P2A未完成；下一步先核既有SLAM量测模型复用。
+
 ## V27 人工CPU建图候选（已完成，未启用）
 
 本轮新增独立sensor-only mapper-v2与人工比较脚本，未更改World/worker/launch默认。68项检查和14组人工比较完成，但corner、持续偏差及首次hit延迟等反例使候选保持禁用，不据此启动完整行为或PPO。唯一实际CPU命令由 `report/assets/20261021_mr3_p2a_v27_mapping/run_cpu_v1.sh` 通过reach actual-wait执行；准确外层argv、源绑定和输出见[报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261021_mr3_p2a_v27_mapping.md)与共享log。已有输出仅供复核，不覆盖或盲重跑；无新工程费用或训练/native资格。

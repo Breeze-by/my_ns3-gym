@@ -1,0 +1,38 @@
+{
+  "schema": "mr3-p2a-v28-observation-consistency-cpu-plan-v1",
+  "baseline": "ae7f9de8fcd033a0e6189054b2eb5f3427d28da8",
+  "authorization": "User continued V27; routine P2A implementation/CPU validation already authorized.",
+  "scope": "One disabled sensor-only V3 candidate, fixed artificial measurements and finite timing. No World/Node/task-asset load/episode/ENV.step/policy/actor/reward replay/native/GPU.",
+  "candidate_model": "range_ray_closed_cell_veto_v3",
+  "rules_fixed_before_comparison": {
+    "reuse": "Unchanged V2 input validation, strict source scan identity, bounded per-cell/per-scan scores, integer/rint ray traversal, maximum nohit and workspace checks.",
+    "scores": "hit+2/free-1, clip[-4,4], occupied>=2/free<=-2, otherwise unknown; not probabilities.",
+    "closed_endpoint": "Every coordinate within four lattice ULPs of integer k has alternatives k-1 and k, including a zero ray component; other coordinates use floor. Cartesian product is 1/2/4 raw cells, before map clipping.",
+    "unique_hit": "Only a raw single-cell measured hit adds occupied evidence. Map clipping cannot turn ambiguity into a unique vote.",
+    "ambiguous_hit": "Adds no occupied evidence to any alternative. Historical positive evidence is retained, not strengthened.",
+    "within_scan": "All current measured-hit alternatives are removed from free votes. A unique hit in another beam can still supply its own one occupied vote in a shared cell. Beam order is irrelevant.",
+    "persistent_hit_veto": "After votes, reset negative evidence at every in-map current hit alternative to zero. At least unknown persists until new free evidence, not just a one-frame display mask.",
+    "limits": "Closed endpoints resolve numerical membership ambiguity only, not Gaussian range/encoder uncertainty. No inferred thickness, truth normal, occupied dilation, extra direction history or spatial noise band.",
+    "storage": "Same persistent score and latest payload as V2; endpoint-support array is temporary and cleared after integrate."
+  },
+  "fixed_comparison": "Reuse all 14 V27 case definitions and exact scan inputs; add off-grid new-hit persistence after an unobserving scan, identical-input opposite-side tangent truths, rotated single-axis vertex tangency, map-boundary raw ambiguity, numerical ties and mixed-vote permutations. Compare v1/v2/v3 without selecting favorable cases.",
+  "structural_checks": [
+    "Current measured-hit alternatives never output free after an accepted scan.",
+    "No new occupied evidence from an ambiguous hit, even after repetitions or map clipping.",
+    "Negative evidence reset persists during an unrelated later scan.",
+    "Ordinary non-tie hits can become occupied; ordinary free rays establish free after two new votes; saturated ghost can clear after genuine new free scans.",
+    "Duplicates, changed/old IDs, invalid inputs, same-cell new scans, maximum nohit, output copies, bounded memory/workspace and ray-order independence remain explicit."
+  ],
+  "interpretation": "Structural consistency checks are not task gates. All-gridline surfaces may remain unknown, losing the V2 occupied recall. Report this cost and persistent-bias counterexamples, original full quality metrics and unknown/free coverage. Do not automatically promote a structurally passing model to behavior readiness.",
+  "decision": "Evaluate exactly this rule set. If fixed-case costs do not justify a behavior trial, retain it disabled and stop this round's endpoint-only candidate search. Do not produce V4/V5 or sweep thresholds to improve exposed results. Implementation defects can be corrected with preserved failed CPU attempts.",
+  "timing": "48x48, at most 360 rays x12 calls/model/mode/round, three alternating rounds; duplicate and new-source same-geometry modes. Integrate-only CPU costs, not ENV throughput/RSS.",
+  "new_engineering_seconds": "0",
+  "engineering_used": "45445.4237026666018",
+  "engineering_remaining": "6554.5762973333982",
+  "engineering_limit": "52000",
+  "pilot_decisions_remaining": 1870,
+  "pilot_seconds_remaining": "2905.9547395464029",
+  "final_only": "401/402/403 unused",
+  "production_enabled": false,
+  "qualification": false
+}
