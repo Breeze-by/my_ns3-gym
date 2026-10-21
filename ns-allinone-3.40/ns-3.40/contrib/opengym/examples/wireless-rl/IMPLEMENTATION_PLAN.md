@@ -1,5 +1,7 @@
 # MR3 研发检查点与逐步验收
 
+2026-10-21 V26准备：按用户“继续”执行一次三开发场景只读几何审计，最多120工程秒（consumer90），不创建World/Node/episode或训练。几何21/守护10/元数据5项CPU通过；保留原ROI/质量门和全部旧FAIL。入场余6559.4631148643982，pilot/final-only不动；新clean冻结/前检后唯一执行，当前尚未实测。见[V26](report/20261021_mr3_p2a_v26_geometry.md)。
+
 2026-10-21 V25 CPU收口：协议117、人工建图7、导航缓存等价21项通过；仅按精确几何输入复用路径场，原scan/pair/源龄与pure源码保持。人工厚box的端点图IoU上限112/697低于.20，另有格线/2mm误差反例；不宣称实际三场不可达。下一步先量化代理质量可达性/逆传感器模型，不直接PPO或重跑V24。本轮无formal/工程新增，仍余6559.4631148643982秒，pilot/final-only不动；P2A未完成。见[V25](report/20261021_mr3_p2a_v25_cpu.md)。
 
 2026-10-21 V24闭合FAIL：冻结9b33cf9b6ab491fd5e3b15269adb30d43be1354c实跑三场，544attempt/543verified return/1rooms错误，205/173/165sim秒均未完成任务。协议确认173.1s goal_lease_expired而上次返回仍非终态、次submit才stopped；原FAIL不改/不重跑，post-advance tick分类修复已通过27项CPU，未正式重验，租约/频率/门限保持。含有限故障提取实费1371.868831523秒，累计45440.5368851356018/52000、余6559.4631148643982；20保存身份gone、无训练/原生/pilot/final-only。下一步先接口/代理质量与长步成本，不直接PPO。见[V24](report/20261021_mr3_p2a_v24_behavior.md)。

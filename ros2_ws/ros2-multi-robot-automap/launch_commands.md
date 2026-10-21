@@ -1,5 +1,9 @@
 # 当前三机器人基线与MR3适配启动命令
 
+## V26 实际几何只读诊断
+
+本轮只固定一次三开发场景的隔离几何消费者，0World/Node/episode/策略，默认launch不变。仅在新source clean提交推送、exact40与新计划前检后由guard执行，120工程秒总预约，源/几何/timeout异常不重试。原95%/质量门不变，结果不是完整任务资格，详见[V26](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261021_mr3_p2a_v26_geometry.md)。
+
 ## V25 CPU检查已完成
 
 协议/人工质量/缓存等价检查已完成，导航只调整私有几何缓存键；默认launch和参数不变。人工计时不代表ENV长回合吞吐，新源码没有正式资格；不重跑下列历史活动或直接PPO。下一步先核代理地图与原质量门相容性，见[V25](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261021_mr3_p2a_v25_cpu.md)。工程仍余6559.4631148643982秒，pilot/final-only未动。

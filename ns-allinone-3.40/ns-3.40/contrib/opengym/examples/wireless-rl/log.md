@@ -7797,3 +7797,32 @@ navigation_timing_cpu_v1：rc0/source stable，actual wait 2.11364337秒。学�
 导航生产仅把payload-time身份缓存键改为dtype/shape/Cbytes/res/origin/goal完整精确几何键，原身份检查、每机一条、逐次scan/pair/源龄保留；21项SHA绑定9b原nav oracle对照全字段与真实停止等价。人工48²两case各三轮×12次：stamp-only旧/新Dijkstra12/1，target总时间中位40.753699/4.535149ms；真变格12/12，中位39.054920/39.091095ms，字节打包在计时内。仅人工函数计时，不能冒充长ENV吞吐。原pure actor/geometry/reward、原worker post-tick与V24 FAIL保留。完整CPU清单A25/cpu_validation_index_v1.json，人工结果mapping_quality_artificial_v1.json/navigation_cache_artificial_v1.json；下一步先核实际代理质量可达性与逆传感器模型，再新具体范围/冻结长行为，不直接PPO或扩额。
 
 V25最终静态CPU PASS，rc0/actual wait .525533615秒/source stable；exact子命令（cwd=canonical wireless-rl）：`/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B report/assets/20261021_mr3_p2a_v25_cpu/static_check_v1.py`，由同一reach_execution --scope cpu --output A25/checks/static_cpu_v1 --source A25/static_check_v1.py实际wait。回执/console及static_result_v1.json保存四专项回执源码/console一致、8保存CPU身份gone、493相对链接、完整nav AST仅换key、原pure/协议/建图/评价/worker与V24证据不变、log相对9edad只追加、旧ARCHIVE条目/backup保持。工程仍新增0；本静态步骤不重放真实actor/奖励或提供任务资格。
+
+
+## 2026-10-21 V26 实际场景几何诊断准备
+
+用户在6e0b7316ac1683bff139311d960f3f58b3f7b376的V25收口后指示“继续”。新范围见A26/scope_acceptance_v1.json：一次固定open/rooms/corridors原SDF+合同的隔离静态表面支持上包络，0World/Node/EP/step/actor/奖励重放/GPU/native；全工程预约120秒，消费者90/TERM10/KILLreap5、external≤5为目标，若OS实际reap超额保留FAIL按实际收费。入场45440.5368851356018/52000、余6559.4631148643982，最坏余6439.4631148643982；pilot1870/2905.9547395464029及final-only401/402/403不动。当前仅CPU准备，正式consumer尚未启动，待clean commit/push新exactfreeze及前检。
+
+geometry_cpu_v1：21项通过，rc0/source stable，实际3.338148882秒。exact wrapper argv，cwd=canonical wireless-rl，PYTHONNOUSERSITE=1：
+
+```bash
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.reach_execution --scope cpu --output /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261021_mr3_p2a_v26_geometry/checks/geometry_cpu_v1 --source /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_proxy2d_quality_geometry.py --source /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_proxy2d_quality_geometry.py --source /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_task_contract.py --source /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_contacts.py -- /usr/bin/bash --noprofile --norc -c 'unset PYTHONPATH PYTHONHOME LD_LIBRARY_PATH AMENT_PREFIX_PATH CMAKE_PREFIX_PATH COLCON_PREFIX_PATH ROS_PACKAGE_PATH VIRTUAL_ENV; export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin; source /opt/ros/humble/setup.bash && source /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/setup.bash && cd /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap && exec /usr/bin/python3 -B -m pytest -q /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_proxy2d_quality_geometry.py'
+```
+
+guard_cpu_v1：10项通过，rc0/source stable，实际0.286320784秒。exact wrapper argv，cwd=canonical wireless-rl，PYTHONNOUSERSITE=1：
+
+```bash
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.reach_execution --scope cpu --output /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261021_mr3_p2a_v26_geometry/checks/guard_cpu_v1 --source /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261021_mr3_p2a_v26_geometry/geometry_guard_v1.py --source /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261021_mr3_p2a_v26_geometry/test_geometry_guard_v1.py -- /usr/bin/python3 -B -m unittest discover -s /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261021_mr3_p2a_v26_geometry -p test_geometry_guard_v1.py -v
+```
+
+final_metadata_cpu_v1：5项通过，rc0/source stable，实际0.234118018秒。exact wrapper argv，cwd=canonical wireless-rl，PYTHONNOUSERSITE=1：
+
+```bash
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.reach_execution --scope cpu --output /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261021_mr3_p2a_v26_geometry/checks/final_metadata_cpu_v1 --source /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261021_mr3_p2a_v26_geometry/geometry_final_v1.py --source /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261021_mr3_p2a_v26_geometry/test_geometry_final_v1.py -- /usr/bin/python3 -B /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261021_mr3_p2a_v26_geometry/test_geometry_final_v1.py
+```
+
+几何CPU含有理数闭cell的格线/旋转/重叠/ROI裁剪/乐观上界反例及mock CLI真实PID身份/错误partial回执；预执行源码review发现os.getsid缺pid已改getsid(0)，未启动坏版真实consumer，新增mock主路径通过。守护CPU含timeout/TERM/KILL真实wait契约、身份准备失败后清理、输出独占/源变化失败等纯mock，无真实子consumer。final metadata五项CPU用假source/JSON验证主FAIL、源变更、越权qualification及活PID不可当gone。完整CPU清单A26/cpu_preparation_index_v1.json。
+
+三真实几何输入尚未执行；预声明plan绑定20份源/原SDF/合同/范围与wrapper。生产mapper/evaluator/pure/协议/奖励/旧FAIL不改；all-surfaces主界保留被遮挡/外侧，ROI-origin子界仅严格背侧裁面且equality保留，并不裁原N。界限仅零range/pose误差+同格/无近距裁剪静态表面，不证明实际Gaussian/偏置编码器代理任务不可能或可达。
+
+V26预冻结静态CPU rc0/actual wait .683550509秒/source stable；exact子命令（cwd=canonical wireless-rl）：`/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B report/assets/20261021_mr3_p2a_v26_geometry/preparation_check_v1.py`，由reach_execution --scope cpu --output A26/checks/preparation_static_cpu_v1 --source A26/preparation_check_v1.py真实wait。20执行/资产绑定、21/10/5专项回执、原有生产源码/原三合同/质量门、476相对链接、log只追加与旧归档/备份不变均通过，结果A26/preparation_static_result_v1.json。原始实测尚未开始，不消费工程预算或提供新资格。
