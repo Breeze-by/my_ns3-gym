@@ -1,5 +1,7 @@
 # 报告与证据适用范围
 
+2026-10-21 V33进行中：显式exact-point-bridge-v1起点规则已接生产观测、二维及原生资格/训练参数链，legacy默认保留；几何/导航/信息桥、139项学习侧、9项原生重放及4项实际旧validator的CPU检查已收口；失败及精确旧源保留，尚无新运行信用。下一次短probe固定三场101各64步/总192尝试、1800工程秒含审计/外尾，未执行前不授结果信用。工程仍46691.4127443736018/52000；75000仅具体提案待答，pilot/final-only不动。继续推进至P2A原生学习与三final-only严格成功，不将二维/CPU当作验收；P2A未完成。见[V33](20261021_mr3_p2a_v33_seed_mode.md)。
+
 2026-10-21 V32 CPU：精确point/同seed-centre桥证书禁用原型14项人工通过，保留.29m、unknown/outside、原seed-cell及graph门；未接生产/真实rooms或改V21字节门。两次fixture/launcher失败原件保持，工程新增0。后续先明确新观测/科学版本及必要准入，不能据此PPO/重跑V31；工程仍余5308.5872556263982，pilot/final-only不动，P2A未完成。见[V32](20261021_mr3_p2a_v32_seed_certificate.md)。
 
 
@@ -36,6 +38,7 @@
 
 | 文件 | 用途 | 能提供的信用 |
 | --- | --- | --- |
+| [P2A V33 显式起点规则](20261021_mr3_p2a_v33_seed_mode.md) | 同seed精确点/桥、生产与新版本审计接线；固定三场64步短probe预声明 | 当前CPU准备；新probe/原生结果待执行，75000提案未批，P2A未完成 |
 | [P2A V29 Karto直接CPU复用](20261021_mr3_p2a_v29_karto.md) | 7 fixed API/counter case，canonical headers/ELF/actual loaded path与wait | 接口证明；未启用mapper，无质量/SLAM/native信用；工程0新增，余6554.5762973333982 |
 | [P2A V28 一致性与取舍](20261021_mr3_p2a_v28_mapping.md) | 38 CPU、31组133checkpoint三模型；持久hit veto/歧义规则实现及召回代价 | 保持v3禁用、停止归格/计数补丁支线；工程0新增/余6554.5762973333982，无task/训练/native资格 |
 | [P2A V27 传感器建图候选](20261021_mr3_p2a_v27_mapping.md) | 68项CPU、14组固定人工v1/v2对比；格线/瞬时收益及corner/持续偏差/延迟代价 | 候选禁用、非整体质量/安全修复，无工程新增/任务/训练/原生资格；余6554.5762973333982秒 |

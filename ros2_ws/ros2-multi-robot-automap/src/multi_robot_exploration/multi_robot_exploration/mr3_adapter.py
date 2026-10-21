@@ -25,7 +25,9 @@ from rclpy.node import Node
 from rclpy.qos import DurabilityPolicy, QoSProfile
 from std_msgs.msg import Bool, Header, String
 
-from multi_robot_exploration.mr3_observation import build_snapshot, NAVIGATION_COMPOSITION_VERSION
+from multi_robot_exploration.mr3_observation import (
+    build_snapshot, NAVIGATION_COMPOSITION_VERSION, SEED_RULES,
+)
 from multi_robot_exploration.mr3_observation_archive import archive_snapshot_inputs
 from multi_robot_exploration.mr3_information import map_digest, map_payload
 from multi_robot_exploration.mr3_owner import acquire_navigation_owner
@@ -56,6 +58,11 @@ class MR3Adapter(Node):
             raise ValueError("MR3 adapter requires exactly three robots")
         self.epoch = str(self.declare_parameter("episode_epoch", "mr3-p1b").value)
         self.stepped_mode = self.declare_parameter("stepped_mode", False).value
+        self.seed_rule = self.declare_parameter("seed_rule", "legacy").value
+        if type(self.seed_rule) is not str or self.seed_rule not in SEED_RULES:
+            raise ValueError("seed_rule must be legacy or exact-point-bridge-v1")
+        if self.seed_rule != "legacy" and not self.stepped_mode:
+            raise ValueError("exact-point-bridge-v1 requires stepped mode")
         self.snapshot_timeout_sec = self.declare_parameter("snapshot_timeout_sec", 10.).value
         if not math.isfinite(self.snapshot_timeout_sec) or self.snapshot_timeout_sec <= 0:
             raise ValueError("snapshot_timeout_sec must be finite and positive")
@@ -556,6 +563,7 @@ class MR3Adapter(Node):
             map_received_stamp=metadata["map_received_stamp"],
             map_sources=map_sources, task_start=self.started_at,
             robot_maps=path_maps, navigation_maps=navigation_maps, archive=archive,
+            **({"seed_rule": self.seed_rule} if self.seed_rule != "legacy" else {}),
         )
 
     def finish_observation(self):

@@ -1,0 +1,69 @@
+........................................................................ [ 24%]
+........................................................................ [ 48%]
+....................F................................................... [ 73%]
+........................................................................ [ 97%]
+.......                                                                  [100%]
+=================================== FAILURES ===================================
+_ test_exact_rule_is_bound_to_original_delivered_bundle_and_new_snapshot_version _
+
+    def test_exact_rule_is_bound_to_original_delivered_bundle_and_new_snapshot_version():
+        information = complete(seed_rule="exact-point-bridge-v1")
+        inputs = information.snapshot_inputs()
+        assert inputs.pop("seed_rule") == "exact-point-bridge-v1"
+        legacy = complete().snapshot_inputs()
+        for role in ("raw_grid",):
+            np.testing.assert_array_equal(inputs.pop(role), legacy.pop(role))
+        for role in ("robot_maps", "navigation_maps"):
+            for name in ROBOTS:
+                np.testing.assert_array_equal(inputs[role][name].pop("grid"), legacy[role][name].pop("grid"))
+        assert inputs == legacy
+>       result = information.build_snapshot([], 2., 1, task_start=2.)
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_proxy2d_information.py:170: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../../../../ros2_ws/ros2-multi-robot-automap/build/multi_robot_exploration/multi_robot_exploration/mr3_proxy2d_information.py:189: in build_snapshot
+    return build_snapshot(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+raw_grid = array([[ 0, -1,  0]], dtype=int16), resolution = 0.2
+origin = (0.0, 0.0), robots = [], now = 2.0, epoch = 'proxy-fixture'
+map_version = 1, sequence = 1
+
+    def build_snapshot(raw_grid, resolution, origin, robots, now, epoch, map_version,
+                       sequence, *, map_source_stamp=None, map_received_stamp=None,
+                       map_sources=None, task_start=None, robot_maps=None, navigation_maps=None,
+                       seed_rule="legacy"):
+        """Build one self-contained JSON snapshot; consumers save it with the action.
+    
+        Robots must be exactly tb1/tb2/tb3 with names, estimated x/y/yaw, measured
+        v/w, validity, source/receive stamps and navigation ownership context. Input
+        ordering does not matter. ``None`` map and missing/invalid state produce a
+        valid missing-data snapshot and KEEP actions, rather than invented free map.
+        Epoch and versions identify the immutable candidate/action meaning.
+        Runtime ``navigation_maps`` supplies the exact delivered navigation maps
+        used by Nav2 and candidate paths/arrival disks. Missing maps never fall back
+        to own/fused maps. Entries include grid, resolution, origin, source identity
+        and explicit composition metadata. ``robot_maps`` without navigation maps
+        retains the older received-own-map interface; omitting both retains the
+        fused-map legacy API. These legacy modes do not substitute for runtime data.
+        """
+        if seed_rule not in SEED_RULES:
+            raise ValueError("unknown seed certificate rule")
+        now, resolution = float(now), float(resolution)
+        if not math.isfinite(now) or not math.isfinite(resolution) or resolution <= 0:
+            raise ValueError("finite now and positive native resolution are required")
+        if len(origin) != 2 or any(_finite(value) is None for value in origin):
+            raise ValueError("map origin must contain finite x/y")
+        if not isinstance(epoch, str) or not epoch:
+            raise ValueError("a nonempty episode epoch is required")
+        if any(isinstance(value, bool) or not isinstance(value, (int, np.integer))
+               or value < 0 for value in (map_version, sequence)):
+            raise ValueError("map_version and sequence must be nonnegative integers")
+        if len(robots) != 3 or {robot.get("name") for robot in robots} != set(ROBOT_NAMES):
+>           raise ValueError("exactly tb1, tb2 and tb3 are required")
+E           ValueError: exactly tb1, tb2 and tb3 are required
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/build/multi_robot_exploration/multi_robot_exploration/mr3_observation.py:760: ValueError
+=========================== short test summary info ============================
+FAILED ../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_proxy2d_information.py::test_exact_rule_is_bound_to_original_delivered_bundle_and_new_snapshot_version
+1 failed, 294 passed in 16.76s

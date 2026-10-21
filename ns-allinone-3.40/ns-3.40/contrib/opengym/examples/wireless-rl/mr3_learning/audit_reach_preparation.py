@@ -23,6 +23,18 @@ def load_impl(plan_path):
         ("mr3-p2a0-outward-cancel-v6", "mr3-p2a-reach-outward-cancel-v1", 1),
     ))
     module.load_native_gates = lambda root, freeze: load_native_gates(root, freeze, plan_path)
+    plan = json.loads(Path(plan_path).read_text())
+    if plan.get("seed_rule", "legacy") == "exact-point-bridge-v1":
+        from .audit_seed_inputs import audit_episode
+        original_archives = module.audit_archives
+
+        def exact_archives(directory):
+            result = original_archives(directory)
+            metadata = json.loads((Path(directory) / "metadata.json").read_text())
+            result["exact_seed_full_replay"] = audit_episode(directory, metadata["freeze"])
+            return result
+
+        module.audit_archives = exact_archives
     return module, proof
 
 
@@ -31,12 +43,15 @@ def audit(directory, root, freeze, plan_path):
     paths = ([directory / "metadata.json"] if (directory / "metadata.json").is_file()
              else sorted(directory.glob("worker*/episode*/metadata.json")))
     require(paths, "no actual reach episodes")
+    plan = json.loads(Path(plan_path).read_text())
     for path in paths:
         metadata = json.loads(path.read_text())
         require(metadata.get("safety_contract") == "mr3-reach-v1"
                 and metadata.get("execution_phase_protocol") == "mr3-controlled-execution-phase-v2"
                 and metadata.get("reset_handshake") == "paused-controlled-state-peer-guard-storage-v2"
                 and metadata.get("freeze") == freeze, "missing/mixed new-profile declaration")
+        require(metadata.get("seed_rule", "legacy") == plan.get("seed_rule", "legacy"),
+                "native preparation seed rule differs from the qualification plan")
     module, proof = load_impl(plan_path)
     result = module.audit(directory, root, freeze)
     result.update(schema="mr3-reach-preparation-full-audit-v1", safety_contract="mr3-reach-v1",

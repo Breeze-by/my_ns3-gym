@@ -29,7 +29,7 @@ from .env import MR3Env
 from .observation import observation_space
 from .policy import policy_kwargs
 from .rollout import DecisionTransition, build_rollout_buffer, merge_zero_terminal
-from .supervisor import InfrastructureError, SCENES, Supervisor, WORKSPACE
+from .supervisor import InfrastructureError, SCENES, SEED_RULES, Supervisor, WORKSPACE
 
 
 # This is a finite, time-limited episodic task. Preserve the accepted total
@@ -356,6 +356,7 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--run-id", required=True)
     parser.add_argument("--safety-contract", choices=SAFETY_CONTRACTS, default="legacy")
+    parser.add_argument("--seed-rule", choices=SEED_RULES, default="legacy")
     parser.add_argument("--reach-plan", type=Path)
     parser.add_argument("--reach-qualification", type=Path)
     parser.add_argument("--mode", choices=("train", "evaluate"), default="train")
@@ -374,6 +375,8 @@ def main(argv=None):
     parser.add_argument("--output-root", type=Path)
     args = parser.parse_args(argv)
     if args.safety_contract == "legacy":
+        if args.seed_rule != "legacy":
+            parser.error("the exact seed rule requires its same-freeze reach qualification")
         if args.reach_plan is not None or args.reach_qualification is not None:
             parser.error("reach qualification cannot be mixed into the legacy profile")
     elif args.reach_plan is None or args.reach_qualification is None:
@@ -394,10 +397,12 @@ def main(argv=None):
         parser.error("evaluation decision cap must cover each declared scheduled episode")
 
     if args.safety_contract == "mr3-reach-v1":
-        from .reach_preparation import validate_qualification
+        from .reach_preparation import load_plan, validate_qualification
         admission_freeze = subprocess.check_output(["git", "rev-parse", "HEAD"],
             cwd=WORKSPACE, text=True).strip()
         validate_qualification(args.reach_qualification, args.reach_plan, admission_freeze)
+        if load_plan(args.reach_plan).get("seed_rule", "legacy") != args.seed_rule:
+            parser.error("PPO seed rule differs from the exact native qualification plan")
 
     started = time.monotonic()
     deadline = started + args.wall_seconds
@@ -495,7 +500,8 @@ def main(argv=None):
                                         domain_id=args.base_domain + i,
                                         gazebo_port=args.base_port + i,
                                         output_root=directory / "native",
-                                        safety_contract=args.safety_contract)
+                                        safety_contract=args.safety_contract,
+                                        **({"seed_rule": args.seed_rule} if args.seed_rule != "legacy" else {}))
                 environments.append(MR3Env(supervisor))
                 episode_index += 1
 

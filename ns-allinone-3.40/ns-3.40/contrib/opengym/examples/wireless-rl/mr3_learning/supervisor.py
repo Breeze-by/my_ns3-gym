@@ -18,6 +18,7 @@ from .ipc import JsonLinePeer
 WORKSPACE = Path(__file__).resolve().parents[7]
 ROS_ROOT = WORKSPACE / "ros2_ws/ros2-multi-robot-automap"
 SCENES = ("open", "rooms", "corridors")
+SEED_RULES = ("legacy", "exact-point-bridge-v1")
 LEGACY_PREPARATION_PROBES = tuple(f"mr3-p2a0-outward-cancel-v{version}" for version in range(2, 7))
 PREPARATION_PROBE_REACH_V1 = "mr3-p2a-reach-outward-cancel-v1"
 
@@ -31,6 +32,26 @@ def validate_preparation_profile(safety_contract, preparation_probe_version=None
                    else (PREPARATION_PROBE_REACH_V1,))
         if type(preparation_probe_version) is not str or preparation_probe_version not in allowed:
             raise ValueError("preparation fixture does not match safety contract")
+
+
+def validate_seed_rule(seed_rule):
+    if type(seed_rule) is not str or seed_rule not in SEED_RULES:
+        raise ValueError("seed_rule must be legacy or exact-point-bridge-v1")
+    return seed_rule
+
+
+def seed_rule_from_argv(argv):
+    """Read the sealed command's single canonical opt-in, defaulting to legacy."""
+    if type(argv) is not list or any(type(value) is not str for value in argv):
+        raise ValueError("sealed command must be a list of strings")
+    if argv.count("--seed-rule") > 1 or any(v.startswith("--seed-rule=") for v in argv):
+        raise ValueError("sealed seed_rule argument must be unique and explicit")
+    if "--seed-rule" not in argv:
+        return "legacy"
+    position = argv.index("--seed-rule") + 1
+    if position >= len(argv):
+        raise ValueError("seed_rule argument has no value")
+    return validate_seed_rule(argv[position])
 
 
 class InfrastructureError(RuntimeError):
@@ -139,10 +160,11 @@ class Supervisor:
                  output_root=None, startup_timeout=420., request_timeout=90.,
                  quantum_steps=20, terminal_probe=False, plant_stimulus_arm=None,
                  plant_stimulus_work_deadline_ns=None, safety_contract="legacy",
-                 preparation_probe_version=None):
+                 preparation_probe_version=None, seed_rule="legacy"):
         if type(safety_contract) is not str or safety_contract not in ("legacy", "mr3-reach-v1"):
             raise ValueError("safety_contract must be legacy or mr3-reach-v1")
         validate_preparation_profile(safety_contract, preparation_probe_version)
+        validate_seed_rule(seed_rule)
         if preparation_probe_version is not None and (terminal_probe or plant_stimulus_arm is not None):
             raise ValueError("preparation fixture cannot combine with other diagnostic probes")
         if type(terminal_probe) is not bool:
@@ -183,6 +205,7 @@ class Supervisor:
         self.quantum_steps = quantum_steps
         self.terminal_probe = terminal_probe
         self.safety_contract = safety_contract
+        self.seed_rule = seed_rule
         self.preparation_probe_version = preparation_probe_version
         self.plant_stimulus_arm = plant_stimulus_arm
         self.plant_stimulus_work_deadline_ns = (
@@ -259,6 +282,8 @@ class Supervisor:
                     "plant_stimulus_work_deadline_ns": self.plant_stimulus_work_deadline_ns,
                     "startup_wall_guard_sec": self.startup_timeout,
                     "request_wall_guard_sec": self.request_timeout}
+        if self.seed_rule != "legacy":
+            metadata["seed_rule"] = self.seed_rule
         if self.preparation_probe_version is not None:
             metadata.update(preparation_probe_version=self.preparation_probe_version,
                             training_eligible=False,
@@ -271,7 +296,8 @@ class Supervisor:
                                plant_stimulus_arm=self.plant_stimulus_arm,
                                plant_stimulus_work_deadline_ns=self.plant_stimulus_work_deadline_ns,
                                **({"safety_contract": self.safety_contract}
-                                  if self.safety_contract != "legacy" else {}))
+                                  if self.safety_contract != "legacy" else {}),
+                               **({"seed_rule": self.seed_rule} if self.seed_rule != "legacy" else {}))
             if result["snapshot"]["epoch"] != epoch:
                 raise InfrastructureError("reset returned a previous episode snapshot")
             self.last_result = result

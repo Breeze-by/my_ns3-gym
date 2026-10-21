@@ -1,5 +1,7 @@
 # 当前三机器人基线与MR3适配启动命令
 
+2026-10-21 V33进行中：显式exact-point-bridge-v1起点规则已接生产观测、二维及原生资格/训练参数链，legacy默认保留；几何/导航/信息桥、139项学习侧、9项原生重放及4项实际旧validator的CPU检查已收口；失败及精确旧源保留，尚无新运行信用。下一次短probe固定三场101各64步/总192尝试、1800工程秒含审计/外尾，未执行前不授结果信用。工程仍46691.4127443736018/52000；75000仅具体提案待答，pilot/final-only不动。继续推进至P2A原生学习与三final-only严格成功，不将二维/CPU当作验收；P2A未完成。见[V33](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261021_mr3_p2a_v33_seed_mode.md)。
+
 2026-10-21 V32 CPU：精确point/同seed-centre桥证书禁用原型14项人工通过，保留.29m、unknown/outside、原seed-cell及graph门；未接生产/真实rooms或改V21字节门。两次fixture/launcher失败原件保持，工程新增0。后续先明确新观测/科学版本及必要准入，不能据此PPO/重跑V31；工程仍余5308.5872556263982，pilot/final-only不动，P2A未完成。见[V32](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261021_mr3_p2a_v32_seed_certificate.md)。
 
 
@@ -137,6 +139,14 @@ UDP-only配置。两者都不等于正式多主机部署或 ns-3 网络模拟。
 从 underlay 干净重建，保留 log。重新开终端 source，不能认为增量构建已删除旧入口。
 
 ## 新安全profile（V15工程准备）
+
+V33增加独立的显式观测参数 `mr3_seed_rule:=exact-point-bridge-v1`，默认 `legacy`。
+新规则只允许三台、adapter及stepped；学习侧 `Supervisor(seed_rule=...)`、benchmark/PPO
+的 `--seed-rule exact-point-bridge-v1` 会传入同一worker/launch/adapter。
+新冻结资格计划、minimum、pilot和final必须使用同一参数及新候选版本；旧资格不能混用。
+完整科学门和运行预算通过后，才由冻结计划启动，不能自行追加这个参数重跑历史命令。
+二维显式 `ProxySupervisor(..., seed_rule="exact-point-bridge-v1")` 仅用于V33预声明短probe，
+不等于原生Nav2或训练入口。证书/版本详见[环境契约](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_ENV_CONTRACT.md)。
 
 新增launch参数`mr3_safety_contract`仅接受`legacy`（默认）或`mr3-reach-v1`。
 后者只允许`execution_mode:=adapter`、`mr3_stepped:=true`及`robot_count:=3`，由Supervisor/worker

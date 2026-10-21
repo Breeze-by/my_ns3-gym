@@ -41,6 +41,53 @@ class ReachQualificationTests(unittest.TestCase):
         self.assertEqual(sum(stage["expected_episodes"] for stage in self.plan["stages"]),12)
         self.assertTrue(all("--safety-contract" in s["native"]["argv"] for s in self.plan["stages"]))
 
+    def exact_plan(self):
+        p=copy.deepcopy(self.plan);p["seed_rule"]="exact-point-bridge-v1"
+        for stage in p["stages"]:
+            stage["native"]["argv"] += ["--seed-rule",p["seed_rule"]]
+            for job in stage["audits"]:
+                if job.get("kind")!="aggregate" and (job.get("role")=="input" or job["id"].startswith("input_")):
+                    job["argv"]=["/usr/bin/python3","-m","mr3_learning.audit_seed_inputs",*job["argv"][2:]]
+        relative="ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_seed_certificate.py"
+        p["source_bindings"][relative]=prep.sha(prep.WORKSPACE/relative)
+        return p
+
+    def test_exact_seed_rule_must_be_the_same_in_every_native_stage(self):
+        p=self.exact_plan()
+        prep.validate_plan(p)
+        for stage in p["stages"]:
+            changed=copy.deepcopy(p)
+            target=changed["stages"][p["stages"].index(stage)]["native"]["argv"]
+            target[target.index("--seed-rule")+1]="legacy"
+            with self.assertRaisesRegex(ValueError,"seed rule differs"):
+                prep.validate_plan(changed)
+        p["seed_rule"]="unknown"
+        with self.assertRaises(ValueError):prep.validate_plan(p)
+
+    def test_exact_input_cannot_read_another_episode_or_write_another_output(self):
+        original=self.exact_plan();prep.validate_plan(original)
+        for stage_name in ("interface","reset"):
+            for flag in ("--episode","--output"):
+                changed=copy.deepcopy(original)
+                stage=next(value for value in changed["stages"] if value["stage"]==stage_name)
+                job=next(value for value in stage["audits"] if value["id"]=="input_001")
+                job["argv"][job["argv"].index(flag)+1]="/synthetic/wrong-input-or-output"
+                with self.subTest(stage=stage_name,flag=flag), \
+                        self.assertRaisesRegex(ValueError,"input episode/output binding differs"):
+                    prep.validate_plan(changed)
+
+    def test_exact_input_cannot_omit_an_episode_or_duplicate_a_cli_flag(self):
+        original=self.exact_plan();prep.validate_plan(original)
+        for fault in ("missing","duplicate"):
+            changed=copy.deepcopy(original)
+            stage=next(value for value in changed["stages"] if value["stage"]=="reset")
+            if fault=="missing":
+                stage["audits"]=[value for value in stage["audits"] if value["id"]!="input_008"]
+            else:
+                job=next(value for value in stage["audits"] if value["id"]=="input_001")
+                job["argv"] += ["--episode","/synthetic/other-episode"]
+            with self.subTest(fault=fault),self.assertRaises(ValueError):prep.validate_plan(changed)
+
     def test_original_physics_consumer_cannot_be_replaced_by_an_always_pass_script(self):
         p=copy.deepcopy(self.plan)
         job=next(j for j in p["stages"][0]["audits"] if j.get("role")=="physics")
@@ -110,7 +157,10 @@ class ReachQualificationTests(unittest.TestCase):
                     write(path,{"freeze":FREEZE,"safety_contract":custody.CONTRACT,
                         "quantum_steps":20,"execution_phase_protocol":"mr3-controlled-execution-phase-v2",
                         "reset_handshake":"paused-controlled-state-peer-guard-storage-v2",
-                        "epoch":f"{i}:{worker}:{number}"})
+                        "epoch":f"{i}:{worker}:{number}",
+                        **({"seed_rule":self.plan["seed_rule"]} if "seed_rule" in self.plan else {})})
+                    write(path.parent/"supervisor_metadata.json",
+                        {"seed_rule":self.plan.get("seed_rule","legacy")})
         self.summary=Path(self.plan["output_directory"])/"summary.json";write(self.summary,summary)
         self.outer=self.root/"outer.json"
         write(self.outer,{"schema":"mr3-reach-outer-actual-wait-v1","scope":"engineering",
@@ -133,6 +183,16 @@ class ReachQualificationTests(unittest.TestCase):
         self.assertTrue(result["passed"])
         self.assertEqual(len(result["episodes"]),12)
         self.assertFalse(result["policy_reliability_credit"])
+
+    def test_worker_or_supervisor_cannot_borrow_a_different_seed_certificate(self):
+        self.evidence()
+        episode=Path(self.replay()["episodes"][0]["directory"])
+        for filename in ("metadata.json","supervisor_metadata.json"):
+            path=episode/filename;original=path.read_bytes()
+            value=json.loads(original);value["seed_rule"]="exact-point-bridge-v1";write(path,value)
+            with self.subTest(filename=filename),self.assertRaisesRegex(ValueError,"seed rule differs"):
+                self.replay()
+            path.write_bytes(original)
 
     def test_real_nonzero_return_or_output_false_cannot_hide_behind_passed_claims(self):
         for fault in ("rc","output","errors","argv"):

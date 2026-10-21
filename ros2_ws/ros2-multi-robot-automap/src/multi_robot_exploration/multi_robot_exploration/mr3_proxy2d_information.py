@@ -18,7 +18,7 @@ import numpy as np
 from multi_robot_exploration.mr3_information import (
     IdealInformation, map_payload, state_payload,
 )
-from multi_robot_exploration.mr3_observation import build_snapshot
+from multi_robot_exploration.mr3_observation import SEED_RULES, build_snapshot
 from multi_robot_exploration.mr3_transport import IdealTransport, ReceivedStore
 
 
@@ -62,7 +62,10 @@ class ProxyInformation:
     finish_maps = IdealInformation.finish_maps
     publish_navigation_map = IdealInformation.publish_navigation_map
 
-    def __init__(self, epoch):
+    def __init__(self, epoch, *, seed_rule="legacy"):
+        if seed_rule not in SEED_RULES:
+            raise ValueError("unsupported seed rule")
+        self.seed_rule = seed_rule
         # Epoch validation is delegated to the actual transport/store classes.
         self.names, self.epoch = ROBOTS, epoch
         self.transport, self.received = IdealTransport(epoch), ReceivedStore(epoch)
@@ -157,7 +160,7 @@ class ProxyInformation:
             navigation[name] = self._raster(nav, {
                 "epoch": self.epoch, **metadata["navigation_sources"][name]})
         hub = self.hub_map
-        return {
+        inputs = {
             "raw_grid": np.asarray(hub.data, dtype=np.int16).reshape(
                 hub.info.height, hub.info.width).copy(),
             "resolution": hub.info.resolution,
@@ -168,6 +171,9 @@ class ProxyInformation:
             "map_sources": copy.deepcopy(metadata["map_sources"]),
             "robot_maps": maps, "navigation_maps": navigation,
         }
+        if self.seed_rule != "legacy":
+            inputs["seed_rule"] = self.seed_rule
+        return inputs
 
     def snapshot_payloads(self):
         """Original complete message payloads, for detached snapshot archives."""
@@ -178,7 +184,7 @@ class ProxyInformation:
                    for name in ROBOTS}}
 
     def build_snapshot(self, robots, now, sequence, *, task_start=None):
-        """Invoke the original navigation-map staging-v5 snapshot builder."""
+        """Invoke the versioned builder using only the delivered map bundle."""
         inputs = self.snapshot_inputs()
         return build_snapshot(
             inputs.pop("raw_grid"), inputs.pop("resolution"), inputs.pop("origin"),

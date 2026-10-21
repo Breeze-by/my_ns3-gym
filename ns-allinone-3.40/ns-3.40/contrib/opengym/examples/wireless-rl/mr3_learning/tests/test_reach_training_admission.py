@@ -24,6 +24,27 @@ FREEZE = "a"*40
 
 
 class ReachTrainingAdmissionTests(unittest.TestCase):
+    def test_exact_seed_rule_cannot_bypass_native_qualification_through_legacy(self):
+        a,b,c,d,e,f,g=self.guards()
+        with a as mkdir,b as native,c as model,d as resources,e as threads,f as deterministic,g as gpu, \
+                contextlib.redirect_stderr(io.StringIO()),self.assertRaises(SystemExit) as error:
+            ppo.main(['--run-id','refused','--decisions','2','--wall-seconds','60',
+                      '--seed-rule','exact-point-bridge-v1'])
+        self.assertEqual(error.exception.code,2)
+        for operation in (mkdir,native,model,resources,threads,deterministic,gpu):operation.assert_not_called()
+
+    def test_qualified_plan_rule_must_match_ppo_before_side_effects(self):
+        a,b,c,d,e,f,g=self.guards()
+        with a as mkdir,b as native,c as model,d as resources,e as threads,f as deterministic,g as gpu, \
+                patch.object(ppo.subprocess,'check_output',return_value=FREEZE), \
+                patch.object(qualification,'validate_qualification',return_value={'passed':True}), \
+                patch.object(qualification,'load_plan',return_value={'seed_rule':'exact-point-bridge-v1'}), \
+                contextlib.redirect_stderr(io.StringIO()),self.assertRaises(SystemExit) as error:
+            ppo.main([*self.arguments('/unused'),'--reach-plan','/unused/plan',
+                      '--reach-qualification','/unused/qualification'])
+        self.assertEqual(error.exception.code,2)
+        for operation in (mkdir,native,model,resources,threads,deterministic,gpu):operation.assert_not_called()
+
     def guards(self):
         return (patch.object(ppo.Path, "mkdir"), patch.object(ppo, "Supervisor"),
                 patch.object(ppo, "MaskablePPO"), patch.object(ppo, "resource_sample"),

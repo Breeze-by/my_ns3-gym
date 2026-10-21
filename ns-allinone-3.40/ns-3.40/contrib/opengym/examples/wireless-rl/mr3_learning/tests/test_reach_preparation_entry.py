@@ -16,6 +16,35 @@ VERSION = benchmark.PREPARATION_PROBE_REACH_V1
 
 
 class ReachPreparationEntryTests(unittest.TestCase):
+    def test_seed_rule_rejects_unknown_values_before_any_native_side_effect(self):
+        for value in (None,True,0,"unknown"):
+            with self.subTest(value=value),patch.object(owner.Path,"mkdir") as mkdir:
+                with self.assertRaises(ValueError):owner.Supervisor(seed_rule=value)
+                mkdir.assert_not_called()
+        for argv in (["--seed-rule"],["--seed-rule=legacy"],
+                     ["--seed-rule","legacy","--seed-rule","exact-point-bridge-v1"]):
+            with self.subTest(argv=argv),self.assertRaises(ValueError):owner.seed_rule_from_argv(argv)
+
+    def test_exact_seed_rule_reaches_real_reset_rpc_and_supervisor_metadata(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            supervisor=owner.Supervisor(output_root=temporary,seed_rule="exact-point-bridge-v1")
+            identity={"pid":43121,"parent":1,"group":43121,"session":43121,"start_ticks":123,"state":"S"}
+            process=Mock(pid=identity["pid"])
+            process.stdout.fileno.return_value=9;process.stdin.fileno.return_value=10
+            def reset(operation,**payload):return {"snapshot":{"epoch":supervisor.episode.epoch}}
+            with patch.object(owner.subprocess,"Popen",return_value=process), \
+                    patch.object(owner,"process_identity",return_value=identity), \
+                    patch.object(owner,"JsonLinePeer",return_value=SimpleNamespace()), \
+                    patch.object(owner.threading,"Thread"),patch.object(supervisor,"close"), \
+                    patch.object(supervisor,"_rpc",side_effect=reset) as rpc:
+                try:
+                    supervisor.reset()
+                    self.assertEqual(rpc.call_args.kwargs["seed_rule"],"exact-point-bridge-v1")
+                    metadata=json.loads((supervisor.episode.directory/"supervisor_metadata.json").read_text())
+                    self.assertEqual(metadata["seed_rule"],"exact-point-bridge-v1")
+                finally:
+                    if supervisor.episode is not None:supervisor.episode.output.close()
+
     def test_cross_profile_implicit_version_and_wrong_budget_reject_before_any_work(self):
         for profile, flags in (
                 ("legacy", ["--preparation-motion-probe", "--preparation-probe-version", VERSION]),

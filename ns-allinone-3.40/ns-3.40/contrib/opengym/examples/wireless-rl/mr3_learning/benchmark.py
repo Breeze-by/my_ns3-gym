@@ -18,6 +18,7 @@ from .env import MR3Env
 from .supervisor import (
     InfrastructureError, Supervisor, WORKSPACE, identity_alive, ros_environment,
     PREPARATION_PROBE_REACH_V1, validate_preparation_profile,
+    SEED_RULES, validate_seed_rule,
 )
 
 
@@ -45,6 +46,7 @@ SAFETY_CONTRACTS = ("legacy", "mr3-reach-v1")
 def _collection_safety_contract(args):
     """Engineering selection cannot reuse legacy preparation qualification."""
     profile = getattr(args, "safety_contract", "legacy")
+    validate_seed_rule(getattr(args, "seed_rule", "legacy"))
     if profile not in SAFETY_CONTRACTS:
         raise ValueError("unknown safety contract")
     version = getattr(args, "preparation_probe_version", None)
@@ -573,6 +575,8 @@ def run_worker(args, worker_id, preparation_abort=None):
                                 gazebo_port=args.base_port + worker_id,
                                 output_root=args.output_root, terminal_probe=args.terminal_probe,
                                 safety_contract=safety_contract,
+                                **({"seed_rule": args.seed_rule}
+                                   if getattr(args, "seed_rule", "legacy") != "legacy" else {}),
                                 **({"preparation_probe_version": getattr(args, "preparation_probe_version", None)}
                                    if getattr(args, "preparation_probe_version", None) is not None else {}))
         environment = MR3Env(supervisor=supervisor, max_steps=args.steps)
@@ -774,6 +778,8 @@ def main(argv=None):
     parser.add_argument("--run-id", required=True)
     parser.add_argument("--safety-contract", choices=SAFETY_CONTRACTS, default="legacy",
                         help="mr3-reach-v1 collects engineering evidence only; new qualification required")
+    parser.add_argument("--seed-rule", choices=SEED_RULES, default="legacy",
+                        help="explicit candidate seed certificate; native qualification is version-specific")
     parser.add_argument("--diagnostic-uniform-seed", type=int,
                         help="nonnegative seed for uniform legal engineering inputs; never PPO or training")
     parser.add_argument("--base-domain", type=int, default=120)
@@ -898,6 +904,8 @@ def main(argv=None):
                 "resource_scope": "host counters include unrelated activity; GPU driver reports",
                 "num_logical_cpus": os.cpu_count(),
                 "cpu_affinity_count": len(os.sched_getaffinity(0))}
+    if args.seed_rule != "legacy":
+        metadata["seed_rule"] = args.seed_rule
     if args.safety_contract == "mr3-reach-v1":
         metadata.update(training_eligible=False, scientific_readers_applied=False,
                         scientific_qualification="PENDING_NEW_FREEZE_INDEPENDENT_AUDITS",

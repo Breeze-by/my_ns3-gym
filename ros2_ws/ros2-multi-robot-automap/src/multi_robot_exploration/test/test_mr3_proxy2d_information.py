@@ -30,8 +30,8 @@ def grid(data, *, stamp=1, origin=0., width=None):
     return message
 
 
-def complete(maps=None):
-    information = ProxyInformation("proxy-fixture")
+def complete(maps=None, **kwargs):
+    information = ProxyInformation("proxy-fixture", **kwargs)
     information.set_time(2.)
     maps = maps or {name: grid([0, -1, 0]) for name in ROBOTS}
     for name, message in maps.items():
@@ -154,6 +154,24 @@ def test_snapshot_is_the_original_staging_v5_builder_with_delivered_inputs():
     assert actual["schema"] == "mr3-observation-v3"
     assert actual["candidate_rule"]["version"] == "mr3-navigation-geometric-staging-v5"
     assert all(value["source"] == "delivered_navigation_map" for value in actual["path_maps"].values())
+
+
+def test_exact_rule_is_bound_to_original_delivered_bundle_and_new_snapshot_version():
+    information = complete(seed_rule="exact-point-bridge-v1")
+    inputs = information.snapshot_inputs()
+    assert inputs.pop("seed_rule") == "exact-point-bridge-v1"
+    legacy = complete().snapshot_inputs()
+    for role in ("raw_grid",):
+        np.testing.assert_array_equal(inputs.pop(role), legacy.pop(role))
+    for role in ("robot_maps", "navigation_maps"):
+        for name in ROBOTS:
+            np.testing.assert_array_equal(inputs[role][name].pop("grid"), legacy[role][name].pop("grid"))
+    assert inputs == legacy
+    result = information.build_snapshot([{"name": name, "valid": False} for name in ROBOTS],
+                                        2., 1, task_start=2.)
+    assert result["candidate_rule"]["version"] == "mr3-navigation-geometric-staging-v6-exact-seed-v1"
+    assert result["candidate_rule"]["seed_rule"] == "exact-point-bridge-v1"
+    assert all(item["seed_point_bridge_certificate"] is None for item in result["path_maps"].values())
 
 
 def test_estimated_state_requires_explicit_delivery_and_preserves_raw_inputs():

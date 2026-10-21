@@ -8,16 +8,58 @@ import math
 
 import numpy as np
 
-from .mr3_observation import GOAL_XY_TOLERANCE_M, _cell, _path_distances, native_traversable
+from .mr3_observation import (
+    CLEARANCE_M, GOAL_XY_TOLERANCE_M, SEED_RULES, _cell, _path_distances, native_traversable,
+)
 from .mr3_reach_geometry import Direction, disk, normal, pair_certificate
+from .mr3_seed_certificate import certify_estimated_segment, certify_seed_pose_bridge
 
 ROBOTS = ("tb1", "tb2", "tb3")
 
 
 class ProxyNavigator:
-    def __init__(self):
+    def __init__(self, *, seed_rule="legacy"):
+        if seed_rule not in SEED_RULES:
+            raise ValueError("unsupported seed rule")
+        self.seed_rule = seed_rule
         self.paths = {}
         self.blocked_quanta = {name: 0 for name in ROBOTS}
+
+    def _seed_bridge_velocity(self, name, state, navigation, cell, clearance):
+        """Exact-mode recentering only while the old scalar pose bound fails.
+
+        Rotation is in place. Translation has w=0 and is separately certified
+        over its proposed fixed 20ms straight segment. No curve is borrowed
+        from the pose-to-centre certificate; no graph/seed/pose is changed.
+        This remains estimated proxy geometry, not a plant-tracking proof.
+        """
+        grid, resolution, origin = navigation["grid"], navigation["resolution"], navigation["origin"]
+        x = origin[0] + (cell[1] + .5) * resolution
+        y = origin[1] + (cell[0] + .5) * resolution
+        pose = (state["x"], state["y"])
+        distance = math.dist(pose, (x, y))  # Same legacy offset primitive as observation.
+        if float(clearance[cell]) - distance >= CLEARANCE_M:
+            return None  # Resume the unchanged graph/lookahead controller.
+        bridge = certify_seed_pose_bridge(grid, resolution, origin, pose, cell,
+                                         seed_cell_traversable=True)
+        if not bridge["accepted"]:
+            self.blocked_quanta[name] += 1
+            return (0., 0.)
+        angle = math.atan2(y - pose[1], x - pose[0]) - state["yaw"]
+        angle = math.atan2(math.sin(angle), math.cos(angle))
+        if abs(angle) > .1:
+            return (0., max(-.6, min(.6, 2 * angle)))
+        # Fixed worker quantum, not a caller-tunable horizon. Limit displacement
+        # to remaining centre distance; angular tolerance alone authorizes none.
+        linear = min(.12, distance / .02)
+        if linear * .02 > distance:
+            linear = math.nextafter(linear, 0.)
+        proposed = (pose[0] + linear * .02 * math.cos(state["yaw"]),
+                    pose[1] + linear * .02 * math.sin(state["yaw"]))
+        if not certify_estimated_segment(grid, resolution, origin, pose, proposed)["accepted"]:
+            self.blocked_quanta[name] += 1
+            return (0., 0.)
+        return (linear, 0.)
 
     def target_velocity(self, name, state, goal, navigation):
         if goal is None:
@@ -37,18 +79,24 @@ class ProxyNavigator:
                tuple(origin), goal["x"], goal["y"])
         cached = self.paths.get(name)
         if cached is None or cached[0] != key:
-            traversable, _ = native_traversable(grid, resolution)
+            traversable, clearance = native_traversable(grid, resolution)
             target = _cell(goal["x"], goal["y"], resolution, origin, grid.shape)
             distances, ids = _path_distances(traversable, [target], resolution)
             field = np.full(grid.shape, np.inf)
             field[ids >= 0] = distances[0, ids[ids >= 0]]
             cached = (key, traversable, field)
+            if self.seed_rule != "legacy":
+                cached += (clearance,)
             self.paths[name] = cached
-        _, traversable, field = cached
+        _, traversable, field = cached[:3]
         cell = _cell(state["x"], state["y"], resolution, origin, grid.shape)
         if cell is None or not traversable[cell] or not math.isfinite(field[cell]):
             self.blocked_quanta[name] += 1
             return (0., 0.), False
+        if self.seed_rule != "legacy":
+            bridge_output = self._seed_bridge_velocity(name, state, navigation, cell, cached[3])
+            if bridge_output is not None:
+                return bridge_output, False
         row, col = cell
         # Follow a bounded lookahead along the same no-corner-cut metric.
         for _ in range(5):

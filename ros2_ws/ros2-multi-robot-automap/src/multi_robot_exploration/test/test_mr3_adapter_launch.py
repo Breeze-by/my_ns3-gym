@@ -129,6 +129,31 @@ def test_unknown_execution_mode_fails_before_constructing_a_launch_graph(monkeyp
         configured_launch(monkeypatch, execution_mode="hidden_fallback")
 
 
+def test_exact_seed_rule_is_explicit_only_on_the_stepped_three_robot_adapter(monkeypatch):
+    context,actions,nodes,_=configured_launch(monkeypatch,execution_mode="adapter",mr3_stepped="true",
+                                             mr3_seed_rule="exact-point-bridge-v1")
+    adapter=next(item for item in released_nodes(context,actions,nodes)
+                 if item["executable"]=="mr3_adapter")
+    assert adapter["parameters"][0]["seed_rule"]=="exact-point-bridge-v1"
+
+
+@pytest.mark.parametrize("overrides",[
+    {"mr3_seed_rule":"unknown"},
+    {"mr3_seed_rule":"exact-point-bridge-v1"},
+    {"execution_mode":"adapter","mr3_seed_rule":"exact-point-bridge-v1"},
+])
+def test_invalid_or_nonstepped_seed_rule_rejects_before_launch(monkeypatch,overrides):
+    with pytest.raises(ValueError,match="seed_rule|exact-point-bridge"):
+        configured_launch(monkeypatch,**overrides)
+
+
+def test_default_adapter_launch_keeps_the_legacy_parameter_payload(monkeypatch):
+    context,actions,nodes,_=configured_launch(monkeypatch,execution_mode="adapter")
+    adapter=next(item for item in released_nodes(context,actions,nodes)
+                 if item["executable"]=="mr3_adapter")
+    assert "seed_rule" not in adapter["parameters"][0]
+
+
 @pytest.mark.parametrize("mode", ["baseline", "adapter"])
 def test_nav2_rewrite_changes_only_the_two_global_map_inputs(monkeypatch, mode):
     context, _, _, includes = configured_launch(monkeypatch, execution_mode=mode)

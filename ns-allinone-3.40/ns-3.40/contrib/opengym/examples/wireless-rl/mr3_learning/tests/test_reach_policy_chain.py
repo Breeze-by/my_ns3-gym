@@ -66,6 +66,27 @@ def native_fixture(stage='minimum'):
 
 
 class ReachPolicyChainTests(unittest.TestCase):
+    def test_all_policy_stages_use_the_qualification_seed_rule(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            original,path,qualification=plan_fixture(Path(temporary))
+            original['seed_rule']='exact-point-bridge-v1'
+            for stage in chain.STAGES:
+                original['policy_stages'][stage]['argv'] += ['--seed-rule',original['seed_rule']]
+                chain.stage_spec(original,path,qualification,stage)
+                changed=copy.deepcopy(original)
+                argv=changed['policy_stages'][stage]['argv']
+                argv[argv.index('--seed-rule')+1]='legacy'
+                with self.subTest(stage=stage),self.assertRaisesRegex(ValueError,'seed rule differs'):
+                    chain.stage_spec(changed,path,qualification,stage)
+
+    def test_native_policy_result_cannot_claim_a_different_seed_rule(self):
+        metadata,native,audit,episodes,spec=native_fixture()
+        spec['argv'] += ['--seed-rule','exact-point-bridge-v1']
+        with self.assertRaisesRegex(ValueError,'seed rule differs'):
+            chain.check_native_result('minimum',metadata,native,audit,episodes,spec)
+        metadata['seed_rule']='exact-point-bridge-v1'
+        self.assertEqual(chain.check_native_result('minimum',metadata,native,audit,episodes,spec)['eligible_decisions'],16)
+
     def test_explicit_phase_contract_keeps_prefix_and_original_three_open_seeds(self):
         with tempfile.TemporaryDirectory() as temporary:
             plan, path, qualification = plan_fixture(Path(temporary))

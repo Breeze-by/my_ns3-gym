@@ -22,6 +22,7 @@ from scipy.sparse.csgraph import dijkstra
 from scipy.spatial import cKDTree
 
 from multi_robot_exploration.mr3_episode import elapsed_ns, timestamp_ns
+from multi_robot_exploration.mr3_seed_certificate import certify_seed_pose_bridge
 
 
 SCHEMA = "mr3-observation-v3"
@@ -40,6 +41,7 @@ TARGET_CLEARANCE_M = CLEARANCE_M + GOAL_XY_TOLERANCE_M
 CANDIDATE_RULE_VERSION = "mr3-per-robot-geometric-staging-v4"
 NAVIGATION_CANDIDATE_RULE_VERSION = "mr3-navigation-geometric-staging-v5"
 NAVIGATION_COMPOSITION_VERSION = "mr3-own-known-shared-unknown-v1"
+SEED_RULES = ("legacy", "exact-point-bridge-v1")
 TARGET_SEPARATION_M = 2.0 * TARGET_CLEARANCE_M
 STATE_MAX_AGE_SEC = 0.5
 FRONTIER_STAGING_MAX_M = 1.0
@@ -472,8 +474,10 @@ def _point_offset(point, cell, resolution, origin):
     return math.dist(point, centre)
 
 
-def _seed_diagnostics(grid, traversable, clearance, robot, resolution, origin):
+def _seed_diagnostics(grid, traversable, clearance, robot, resolution, origin, *, seed_rule="legacy"):
     """Certify the actual observed pose; never snap it to a nearby free cell."""
+    if seed_rule not in SEED_RULES:
+        raise ValueError("unknown seed certificate rule")
     seed = (_cell(robot["x"], robot["y"], resolution, origin, grid.shape)
             if robot["fresh"] else None)
     offset = (None if seed is None else _point_offset(
@@ -491,7 +495,7 @@ def _seed_diagnostics(grid, traversable, clearance, robot, resolution, origin):
         reason = "seed_cell_body_clearance"
     elif pose_clearance < CLEARANCE_M:
         reason = "seed_pose_body_clearance"
-    return seed, offset, {
+    diagnostic = {
         "seed_cell": None if seed is None else list(seed),
         "seed_cell_clearance_m": cell_clearance,
         "seed_pose_cell_offset_m": offset,
@@ -499,10 +503,21 @@ def _seed_diagnostics(grid, traversable, clearance, robot, resolution, origin):
         "seed_required_clearance_m": CLEARANCE_M,
         "seed_rejection_reason": reason,
     }
+    if seed_rule != "legacy":
+        certificate = None
+        # Preserve state/map/cell/graph gates. Only replace this conservative
+        # pose lower bound with a certificate for the same pose and seed bridge.
+        if reason == "seed_pose_body_clearance":
+            certificate = certify_seed_pose_bridge(grid,resolution,origin,
+                (robot["x"],robot["y"]),seed,seed_cell_traversable=bool(traversable[seed]))
+            if certificate["accepted"]:
+                diagnostic["seed_rejection_reason"] = None
+        diagnostic.update(seed_rule=seed_rule,seed_point_bridge_certificate=certificate)
+    return seed, offset, diagnostic
 
 
 def _own_map_paths(robot_maps, states, now, epoch, fused_resolution, fused_origin, target_cells,
-                   *, source="delivered_own_map"):
+                   *, source="delivered_own_map",seed_rule="legacy"):
     """Build each graph from that robot's unchanged, explicitly delivered map."""
     if not isinstance(robot_maps, dict) or set(robot_maps) - set(ROBOT_NAMES):
         raise ValueError("robot_maps must map only tb1/tb2/tb3 to delivered maps")
@@ -529,6 +544,8 @@ def _own_map_paths(robot_maps, states, now, epoch, fused_resolution, fused_origi
             "seed_required_clearance_m": CLEARANCE_M,
             "seed_rejection_reason": missing_reason,
         }
+        if seed_rule != "legacy":
+            metadata.update(seed_rule=seed_rule, seed_point_bridge_certificate=None)
         seed_valid = False
         if entry is not None and entry.get("grid") is not None:
             grid = _received_grid(entry["grid"])
@@ -566,7 +583,7 @@ def _own_map_paths(robot_maps, states, now, epoch, fused_resolution, fused_origi
             elif grid.size:
                 traversable, clearance = native_traversable(grid, resolution)
                 seed, seed_offset, seed_diagnostics = _seed_diagnostics(
-                    grid, traversable, clearance, robot, resolution, origin)
+                    grid, traversable, clearance, robot, resolution, origin,seed_rule=seed_rule)
                 metadata.update(seed_diagnostics)
                 seed_valid = seed_diagnostics["seed_rejection_reason"] is None
                 if seed_valid:
@@ -711,7 +728,8 @@ def _action_masks(robots, candidates, now):
 
 def build_snapshot(raw_grid, resolution, origin, robots, now, epoch, map_version,
                    sequence, *, map_source_stamp=None, map_received_stamp=None,
-                   map_sources=None, task_start=None, robot_maps=None, navigation_maps=None):
+                   map_sources=None, task_start=None, robot_maps=None, navigation_maps=None,
+                   seed_rule="legacy"):
     """Build one self-contained JSON snapshot; consumers save it with the action.
 
     Robots must be exactly tb1/tb2/tb3 with names, estimated x/y/yaw, measured
@@ -726,6 +744,8 @@ def build_snapshot(raw_grid, resolution, origin, robots, now, epoch, map_version
     retains the older received-own-map interface; omitting both retains the
     fused-map legacy API. These legacy modes do not substitute for runtime data.
     """
+    if seed_rule not in SEED_RULES:
+        raise ValueError("unknown seed certificate rule")
     now, resolution = float(now), float(resolution)
     if not math.isfinite(now) or not math.isfinite(resolution) or resolution <= 0:
         raise ValueError("finite now and positive native resolution are required")
@@ -749,7 +769,7 @@ def build_snapshot(raw_grid, resolution, origin, robots, now, epoch, map_version
         target_cells = np.argwhere(np.ones(grid.shape, dtype=bool))
         target_paths, path_maps, seeds_valid = _own_map_paths(
             navigation_maps, states, now, epoch, resolution, origin, target_cells,
-            source="delivered_navigation_map")
+            source="delivered_navigation_map",seed_rule=seed_rule)
         navigation_grids = []
         navigation_clearances = []
         for name in ROBOT_NAMES:
@@ -767,7 +787,7 @@ def build_snapshot(raw_grid, resolution, origin, robots, now, epoch, map_version
             navigation_grids.append(native)
             navigation_clearances.append(native_traversable(native, resolution)[1])
     elif robot_maps is None:
-        seed_data = [_seed_diagnostics(grid, traversable, clearance, robot, resolution, origin)
+        seed_data = [_seed_diagnostics(grid, traversable, clearance, robot, resolution, origin,seed_rule=seed_rule)
                      for robot in states]
         seeds_valid = [entry[2]["seed_rejection_reason"] is None for entry in seed_data]
         seeds = [entry[0] if valid else None for entry, valid in zip(seed_data, seeds_valid)]
@@ -786,6 +806,7 @@ def build_snapshot(raw_grid, resolution, origin, robots, now, epoch, map_version
     else:
         target_paths, path_maps, seeds_valid = _own_map_paths(
             robot_maps, states, now, epoch, resolution, origin, target_cells,
+            seed_rule=seed_rule,
         )
     if navigation_grids is None:
         frontier, frontier_sources = _candidate_frontiers(
@@ -839,6 +860,10 @@ def build_snapshot(raw_grid, resolution, origin, robots, now, epoch, map_version
             "frontier_projection": (
                 "same delivered fused native lattice; navigation-free sightlines"),
         })
+    if seed_rule != "legacy":
+        candidate_rule.update(seed_rule=seed_rule,version=(
+            "mr3-navigation-geometric-staging-v6-exact-seed-v1" if navigation_grids is not None
+            else "mr3-per-robot-geometric-staging-v5-exact-seed-v1"))
     candidate_version = hashlib.sha256(json.dumps({
         "epoch": epoch, "map_version": int(map_version), "sequence": int(sequence),
         "candidate_rule": candidate_rule, "candidates": candidates, "path_maps": path_maps,

@@ -526,6 +526,62 @@ def test_seed_diagnostics_account_for_actual_pose_offset_without_snapping():
     assert not any(candidate["reachable"][0] for candidate in result["candidates"])
 
 
+def test_explicit_exact_seed_rule_restores_only_false_scalar_rejection_and_binds_identity():
+    maps = own_maps()
+    maps["tb1"]["grid"][:, 36] = 100
+    states = robots()
+    states[0].update(x=-1.99, y=.01)
+    before = copy.deepcopy(maps)
+    legacy = snapshot(states=states, robot_maps=maps)
+    exact = snapshot(states=states, robot_maps=maps, seed_rule="exact-point-bridge-v1")
+    old, new = legacy["path_maps"]["tb1"], exact["path_maps"]["tb1"]
+    assert old["seed_rejection_reason"] == "seed_pose_body_clearance"
+    assert new["seed_rejection_reason"] is None
+    assert new["seed_cell"] == old["seed_cell"]
+    assert new["seed_pose_clearance_lower_bound_m"] == old["seed_pose_clearance_lower_bound_m"]
+    certificate = new["seed_point_bridge_certificate"]
+    assert certificate["accepted"] and certificate["required_m_exact"] == "29/100"
+    assert any(candidate["reachable"][0] for candidate in exact["candidates"])
+    assert exact["candidate_rule"]["version"] == "mr3-per-robot-geometric-staging-v5-exact-seed-v1"
+    assert exact["candidate_version"] != legacy["candidate_version"]
+    assert "seed_rule" not in legacy["candidate_rule"]
+    assert "seed_point_bridge_certificate" not in old
+    for name in maps:
+        np.testing.assert_array_equal(maps[name]["grid"], before[name]["grid"])
+    assert legacy == snapshot(states=states, robot_maps=maps, seed_rule="legacy")
+
+
+@pytest.mark.parametrize("change,reason", (
+    ("unknown", "seed_cell_unknown"), ("occupied", "seed_cell_occupied"),
+    ("stale_state", "state_missing_or_stale"), ("epoch", "cross_epoch"),
+    ("future", "future_map"), ("missing", "missing_received_own_map"),
+))
+def test_exact_seed_certificate_cannot_override_upstream_gates(monkeypatch, change, reason):
+    maps, states = own_maps(), robots()
+    if change in ("unknown", "occupied"):
+        maps["tb1"]["grid"][50, 40] = -1 if change == "unknown" else 100
+    elif change == "stale_state":
+        states[0]["source_stamp"] = 0.
+    elif change == "epoch":
+        maps["tb1"]["epoch"] = "another-epoch"
+    elif change == "future":
+        maps["tb1"]["source_stamp"] = 11.
+    else:
+        del maps["tb1"]
+    def forbidden(*args, **kwargs):
+        raise AssertionError("certificate called before original upstream gates")
+    monkeypatch.setattr(observation, "certify_seed_pose_bridge", forbidden)
+    result = snapshot(states=states, robot_maps=maps, seed_rule="exact-point-bridge-v1")
+    assert result["path_maps"]["tb1"]["seed_rejection_reason"] == reason
+    assert result["path_maps"]["tb1"]["seed_point_bridge_certificate"] is None
+    assert not any(candidate["reachable"][0] for candidate in result["candidates"])
+
+
+def test_unknown_seed_rule_is_rejected_before_snapshot_generation():
+    with pytest.raises(ValueError, match="seed"):
+        snapshot(seed_rule="relaxed")
+
+
 def test_candidate_rule_and_arrival_geometry_are_hash_bound(monkeypatch):
     result = snapshot()
     assert result["candidate_rule"]["version"] == observation.CANDIDATE_RULE_VERSION

@@ -36,6 +36,7 @@ class ReachPPOAuditTests(unittest.TestCase):
         (native/"metadata.json").write_text(json.dumps({"freeze": FREEZE, "safety_contract": entry.CONTRACT,
             "execution_phase_protocol": "mr3-controlled-execution-phase-v2",
             "reset_handshake": "paused-controlled-state-peer-guard-storage-v2"}))
+        (native/"supervisor_metadata.json").write_text('{}\n')
         result = {"passed": True, "errors": [], "native_attempts": 1, "task_successes": 1,
                   "episodes": [{"directory": str(native), "epoch": "fixture", "errors": [], "task": {"success": True}}]}
         return root, native, metadata, result

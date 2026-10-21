@@ -1,5 +1,7 @@
 # MR3 研发检查点与逐步验收
 
+2026-10-21 V33进行中：显式exact-point-bridge-v1起点规则已接生产观测、二维及原生资格/训练参数链，legacy默认保留；几何/导航/信息桥、139项学习侧、9项原生重放及4项实际旧validator的CPU检查已收口；失败及精确旧源保留，尚无新运行信用。下一次短probe固定三场101各64步/总192尝试、1800工程秒含审计/外尾，未执行前不授结果信用。工程仍46691.4127443736018/52000；75000仅具体提案待答，pilot/final-only不动。继续推进至P2A原生学习与三final-only严格成功，不将二维/CPU当作验收；P2A未完成。见[V33](report/20261021_mr3_p2a_v33_seed_mode.md)。
+
 2026-10-21 V32 CPU：精确point/同seed-centre桥证书禁用原型14项人工通过，保留.29m、unknown/outside、原seed-cell及graph门；未接生产/真实rooms或改V21字节门。两次fixture/launcher失败原件保持，工程新增0。后续先明确新观测/科学版本及必要准入，不能据此PPO/重跑V31；工程仍余5308.5872556263982，pilot/final-only不动，P2A未完成。见[V32](report/20261021_mr3_p2a_v32_seed_certificate.md)。
 
 

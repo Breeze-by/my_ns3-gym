@@ -1,0 +1,27 @@
+..........
+======================================================================
+ERROR: test_seed_only_provenance_rejects_stale_cross_epoch_and_future_map (mr3_learning.tests.test_proxy2d_seed_compatibility.SeedCompatibilityTests) (case='future')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_proxy2d_seed_compatibility.py", line 98, in test_seed_only_provenance_rejects_stale_cross_epoch_and_future_map
+    row = self.save_actor(Path(temporary), params)
+  File "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_proxy2d_seed_compatibility.py", line 54, in save_actor
+    "tensor_proofs": audit.tensor_proofs(snapshot),
+  File "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_proxy2d.py", line 120, in tensor_proofs
+    for name, value in encode_snapshot(snapshot).items()}
+  File "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/observation.py", line 297, in encode_snapshot
+    "robots": np.asarray([_robot(robot, now, snapshot.get("path_maps", {}).get(name))
+  File "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/observation.py", line 297, in <listcomp>
+    "robots": np.asarray([_robot(robot, now, snapshot.get("path_maps", {}).get(name))
+  File "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/observation.py", line 192, in _robot
+    "path_map_source_age_sec": _record_age(path_map or {}, now, "source", "path_map"),
+  File "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/observation.py", line 113, in _record_age
+    expected = _age(now, record.get(stamp_key), label + "." + stamp_key)
+  File "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/observation.py", line 105, in _age
+    raise ValueError(f"{label} refers to a future source")
+ValueError: path_map.source_stamp refers to a future source
+
+----------------------------------------------------------------------
+Ran 11 tests in 5.854s
+
+FAILED (errors=1)

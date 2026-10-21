@@ -17,10 +17,14 @@ class ProxySupervisor:
     training_eligible = False
     native_qualification = False
 
-    def __init__(self, directory, env_id=0, *, profile=False,mapper="endpoint",mapper_library=None):
+    def __init__(self, directory, env_id=0, *, profile=False,mapper="endpoint",mapper_library=None,
+                 seed_rule="legacy"):
         if type(profile) is not bool:
             raise ValueError("proxy profile switch must be boolean")
         self.profile = profile
+        if seed_rule not in ("legacy", "exact-point-bridge-v1"):
+            raise ValueError("unsupported seed rule")
+        self.seed_rule = seed_rule
         if mapper not in ("endpoint","karto") or (mapper=="karto") != (mapper_library is not None):
             raise ValueError("explicit supported mapper/library pair required")
         self.mapper = mapper
@@ -54,9 +58,12 @@ class ProxySupervisor:
                    'source /opt/ros/humble/setup.bash && source "$1/install/setup.bash" '
                    '&& exec /usr/bin/python3 -B "$1/scripts/mr3_proxy2d_worker.py" '
                    '--role worker --directory "$2" --epoch "$3" --scene "$4" --seed "$5" '
-                   '--mapper "$6" ${7:+--mapper-library "$7"}',
+                   '--mapper "$6" ${7:+--mapper-library "$7"}'
+                   + (' --seed-rule "$8"' if self.seed_rule != "legacy" else ''),
                    "mr3-proxy", str(ROS_ROOT), str(self.directory), epoch, scene, str(seed),
                    self.mapper,self.mapper_library or ""]
+        if self.seed_rule != "legacy":
+            command.append(self.seed_rule)
         env = ros_environment(230 + self.env_id, 15901 + self.env_id)
         env.update(PYTHONDONTWRITEBYTECODE="1", CUDA_VISIBLE_DEVICES="",
                    OPENBLAS_NUM_THREADS="1", OMP_NUM_THREADS="1", MKL_NUM_THREADS="1")
@@ -80,6 +87,8 @@ class ProxySupervisor:
                         "reset_kind": "complete_proxy_process_rebuild"}
             if self.mapper == "karto":
                 metadata.update(mapper=self.mapper,mapper_library=self.mapper_library)
+            if self.seed_rule != "legacy":
+                metadata["seed_rule"] = self.seed_rule
             (self.directory / "episode.json").write_text(json.dumps(metadata, indent=2) + "\n")
             self.last_result = self._rpc("reset")
             child = json.loads((self.directory / "evaluator_identity.json").read_text())

@@ -14,6 +14,7 @@ import subprocess
 
 from . import preparation as primitives
 from .reach_audit_projection import project_module
+from .supervisor import seed_rule_from_argv, validate_seed_rule
 
 WORKSPACE, WIRELESS_RELATIVE = primitives.WORKSPACE, primitives.WIRELESS_RELATIVE
 SCHEMA = "mr3-reach-preparation-plan-v1"
@@ -47,6 +48,7 @@ def source_inventory(root=WORKSPACE):
 
 
 def validate_plan(plan, workspace=WORKSPACE):
+    seed_rule = validate_seed_rule(plan.get("seed_rule", "legacy"))
     require(plan.get("schema") == SCHEMA and plan.get("safety_contract") == CONTRACT
             and plan.get("readiness") == {"ready": True, "pending_bindings": []},
             "reach plan is not explicitly sealed")
@@ -62,6 +64,10 @@ def validate_plan(plan, workspace=WORKSPACE):
             and plan["budget"].get("borrow_unused_prior_stage_reservations") is True,
             "matrix budget/forward allocation differs")
     require(source_inventory(workspace) <= plan["source_bindings"].keys(), "incomplete runtime inventory")
+    if seed_rule != "legacy":
+        require({"ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/" + name
+                 for name in ("mr3_observation.py", "mr3_seed_certificate.py", "mr3_reach_geometry.py", "mr3_adapter.py")}
+                <= plan["source_bindings"].keys(), "exact seed rule runtime inventory incomplete")
     outputs = [plan["output_directory"]]
     for i, stage in enumerate(plan["stages"]):
         name, jobs = stage["stage"], stage["audits"]
@@ -70,6 +76,8 @@ def validate_plan(plan, workspace=WORKSPACE):
         require(len(selected) == len(set(selected)) and set(selected) == EXPECTED_ROLES[name],
                 "reach scientific obligation inventory differs: " + name)
         argv = stage["native"]["argv"]
+        require(seed_rule_from_argv(argv) == seed_rule,
+                "native stage seed rule differs from the qualification plan: " + name)
         workers, schedule, steps, episodes = primitives.WORKLOADS[name]
         require(argv[:3] == [plan["learner_python"], "-m", "mr3_learning.benchmark"]
                 and argument(argv, "--safety-contract") == CONTRACT
@@ -101,6 +109,11 @@ def validate_plan(plan, workspace=WORKSPACE):
         expected_episodes = [run / f"worker{worker}" / (f"episode{number:03d}_" + item.replace(":", "_"))
             for worker in range(workers) for number, item in enumerate(schedule.split(","), 1)]
         fifo_ids = [f"fifo_{number:03d}" for number in range(1, episodes + 1)]
+        if seed_rule != "legacy":
+            expected_inputs = ({f"input_{number:03d}" for number in range(1, episodes + 1)}
+                               if name in ("interface", "reset") else set())
+            require({job["id"] for job in jobs if job["id"].startswith("input_")} == expected_inputs,
+                    "exact input episode inventory differs")
         require({j["id"] for j in jobs if j["id"].startswith("fifo_")} == set(fifo_ids) | {"fifo_manifest"},
                 "complete per-episode FIFO inventory required")
         for aggregate_id in ("peer_control", "fifo_manifest"):
@@ -161,8 +174,19 @@ def validate_plan(plan, workspace=WORKSPACE):
                         "physics": ("20261017_mr3_p2a0_v3/independent/mr3_independent_physics_review.py" if name == "interface"
                                     else "20261017_mr3_p2a0_v17/independent/mr3_independent_physics_matrix_v17.py"),
                         None: "20261017_mr3_p2a0_v3/independent/mr3_independent_physics_review.py"}[role]
-                    require(job["argv"][:2] == ["/usr/bin/python3", str(Path(workspace) / WIRELESS_RELATIVE / "report/assets" / relative)],
-                            "original input/angular/physics mathematical consumer replaced")
+                    expected_entry = (["/usr/bin/python3", "-m", "mr3_learning.audit_seed_inputs"]
+                        if role == "input" and seed_rule != "legacy" else
+                        ["/usr/bin/python3", str(Path(workspace) / WIRELESS_RELATIVE / "report/assets" / relative)])
+                    require(job["argv"][:len(expected_entry)] == expected_entry,
+                            "declared input/angular/physics mathematical consumer replaced")
+                    if role == "input" and seed_rule != "legacy":
+                        match = re.fullmatch(r"input_([0-9]{3})", job["id"])
+                        require(match is not None and 1 <= int(match[1]) <= len(expected_episodes),
+                                "exact input job has no declared episode")
+                        episode = expected_episodes[int(match[1]) - 1]
+                        require(job["argv"] == [*expected_entry, "--episode", str(episode),
+                                                "--output", job["output"]],
+                                "exact input episode/output binding differs")
             if job["id"].startswith("fifo_") and job.get("kind") != "fifo_manifest":
                 require(job["argv"][1:3] == ["-m", "mr3_learning.audit_reach_peer_control"],
                         "FIFO/peer/control requires complete new replay")
@@ -203,7 +227,8 @@ def source_check(plan, plan_path, freeze, root=WORKSPACE, require_clean=True):
     return proof
 
 
-def build_plan(*, plan_path, **kwargs):
+def build_plan(*, plan_path, seed_rule="legacy", **kwargs):
+    validate_seed_rule(seed_rule)
     plan = primitives.build_plan(**kwargs, information_implementation="admitted_index_three_keys_v1",
                                  nav2_parameter_profile="gentle_turn_v1")
     plan.update(schema=SCHEMA, safety_contract=CONTRACT,
@@ -213,6 +238,8 @@ def build_plan(*, plan_path, **kwargs):
                     "combined_runtime": "six-source drive, paired actuation, calibration and independent reach geometry",
                     "combined_peer_control": "complete peer cloud/scan, v2 causal phase and final command FIFO",
                     "old_profile_credit_reused": False})
+    if seed_rule != "legacy":
+        plan["seed_rule"] = seed_rule
     plan["preflight"]["schema"] = "mr3-reach-preflight-v1"
     plan["budget"].update(matrix_wall_seconds="18000", borrow_unused_prior_stage_reservations=True,
         engineering_remaining_basis="Approved 52000 cumulative engineering ceiling; all native/read-only/closure tails charged")
@@ -222,12 +249,18 @@ def build_plan(*, plan_path, **kwargs):
         argv = stage["native"]["argv"]
         argv[argv.index("--work-wall-seconds") + 1] = NATIVE_CAPS[i]
         argv += ["--safety-contract", CONTRACT]
+        if seed_rule != "legacy":
+            argv += ["--seed-rule", seed_rule]
         if name in ("interface", "reset"):
             argv[argv.index("--preparation-probe-version") + 1] = "mr3-p2a-reach-outward-cancel-v1"
         stage["wall_seconds"] = CAPS[i]
         stage["watcher"]["argv"][2] = "mr3_learning.native_custody_reach"
         retained = [j for j in stage["audits"] if j.get("role") in ("input", "angular", "physics")
                     or j["id"].startswith("input_") or j["id"] == "physical_per_episode"]
+        if seed_rule != "legacy":
+            for job in retained:
+                if job.get("kind") != "aggregate" and (job.get("role") == "input" or job["id"].startswith("input_")):
+                    job["argv"] = ["/usr/bin/python3", "-m", "mr3_learning.audit_seed_inputs", *job["argv"][2:]]
         stage["audits"] = retained
 
         def add(job_id, module=None, *, role=None, depends=(), extra=(), **fields):
@@ -268,6 +301,10 @@ def build_plan(*, plan_path, **kwargs):
     root = kwargs.get("workspace", WORKSPACE)
     for path in source_inventory(root):
         plan["source_bindings"][path] = sha(Path(root) / path)
+    if seed_rule != "legacy":
+        for name in ("mr3_observation.py", "mr3_seed_certificate.py", "mr3_reach_geometry.py", "mr3_adapter.py"):
+            relative = "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/" + name
+            plan["source_bindings"][relative] = sha(Path(root) / relative)
     binding = json.loads(Path(kwargs["custody_binding"]).read_text())
     for row in binding["source_bindings"]:
         path = Path(row["path"])
@@ -399,6 +436,11 @@ def _qualification_evidence(plan_path, freeze, outer_wait, root=WORKSPACE):
             require(meta.get("freeze") == freeze and meta.get("safety_contract") == CONTRACT
                     and meta.get("execution_phase_protocol") == "mr3-controlled-execution-phase-v2",
                     "episode source/contract differs")
+            require(meta.get("seed_rule", "legacy") == plan.get("seed_rule", "legacy"),
+                    "native episode seed rule differs from qualification plan")
+            supervisor_meta = read(path.parent / "supervisor_metadata.json")
+            require(supervisor_meta.get("seed_rule", "legacy") == plan.get("seed_rule", "legacy"),
+                    "native supervisor seed rule differs from qualification plan")
             episodes.append({"directory": str(path.parent), "epoch": meta["epoch"]})
             files = sorted(p for p in path.parent.rglob("*") if p.is_file())
             episode_files[str(path.parent)] = [str(p.relative_to(path.parent)) for p in files]

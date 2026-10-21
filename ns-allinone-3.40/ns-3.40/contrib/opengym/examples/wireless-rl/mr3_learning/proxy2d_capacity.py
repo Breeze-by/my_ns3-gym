@@ -20,6 +20,11 @@ CELLS = [(scene, seed) for scene in ("open", "rooms", "corridors") for seed in (
 
 
 def activity_spec(kind):
+    if kind == "seed_probe":
+        return {"schema": "mr3-proxy2d-activity-spec-v1", "kind": kind,
+                "groups": [3], "cells": [["open", 101], ["rooms", 101], ["corridors", 101]],
+                "worker_cells": [[[["open", 101]], [["rooms", 101]], [["corridors", 101]]]],
+                "steps_per_episode": 64, "max_attempts": 192, "activity_seconds": 1800}
     if kind in ("full_behavior", "karto_behavior"):
         return {"schema": "mr3-proxy2d-activity-spec-v1", "kind": kind,
                 "groups": [3], "cells": [["open", 101], ["rooms", 101], ["corridors", 101]],
@@ -100,11 +105,14 @@ class Trace:
 
 
 def collect_worker(group, env_id, budget, freeze, *, cells=None, steps_per_episode=300,
-                   group_deadline_ns=None, profile=False, mapper="endpoint", mapper_library=None):
+                   group_deadline_ns=None, profile=False, mapper="endpoint", mapper_library=None,
+                   seed_rule="legacy"):
     root = group / f"worker{env_id}"
     kwargs = {"profile":True} if profile else {}
     if mapper != "endpoint":
         kwargs.update(mapper=mapper,mapper_library=mapper_library)
+    if seed_rule != "legacy":
+        kwargs["seed_rule"] = seed_rule
     supervisor = ProxySupervisor(root, env_id=env_id, **kwargs)
     env = MR3Env(supervisor=supervisor, max_steps=steps_per_episode)
     local_deadline = budget.deadline_ns if group_deadline_ns is None else min(budget.deadline_ns, group_deadline_ns)
@@ -201,9 +209,13 @@ def collect_worker(group, env_id, budget, freeze, *, cells=None, steps_per_episo
 
 def collect(run, freeze, source_bindings, conformity_ref, activity_started_ns, deadline_ns, *,
             activity_spec=None, group_wall_seconds=None, profile=False, collection_deadline_ns=None,
-            mapper="endpoint",mapper_library=None,native_manifest=None):
+            mapper="endpoint",mapper_library=None,native_manifest=None,seed_rule="legacy"):
     if type(profile) is not bool:
         raise ValueError("profile flag must be boolean")
+    if seed_rule not in ("legacy", "exact-point-bridge-v1"):
+        raise ValueError("unsupported seed rule")
+    if (seed_rule != "legacy") != (activity_spec is not None and activity_spec.get("kind") == "seed_probe"):
+        raise ValueError("exact seed collection requires its new bounded seed-probe specification")
     if activity_spec is None:
         if profile or group_wall_seconds is not None or collection_deadline_ns is not None:
             raise ValueError("explicit performance flags require a bounded activity specification")
@@ -212,14 +224,16 @@ def collect(run, freeze, source_bindings, conformity_ref, activity_started_ns, d
     else:
         validate_activity_spec(activity_spec)
         kind = activity_spec["kind"]
-        expected_walls = [240] if kind in ("profile", "karto_profile") else [2100] if kind in ("full_behavior", "karto_behavior") else [400, 800]
+        expected_walls = ([900] if kind == "seed_probe" else [240] if kind in ("profile", "karto_profile")
+                          else [2100] if kind in ("full_behavior", "karto_behavior") else [400, 800])
         if canonical_bytes(group_wall_seconds) != canonical_bytes(expected_walls) or profile != (kind in ("profile", "karto_profile")):
             raise ValueError("activity group wall reservations/profile flag differ from the fixed specification")
         if (type(deadline_ns) is not int or type(activity_started_ns) is not int
                 or deadline_ns - activity_started_ns != activity_spec["activity_seconds"] * 10**9):
             raise ValueError("activity deadline differs from the exact bounded specification")
         collection_started = time.monotonic_ns()
-        collection_seconds = 240 if profile else 2100 if kind in ("full_behavior", "karto_behavior") else 1200
+        collection_seconds = (900 if kind == "seed_probe" else 240 if profile
+                              else 2100 if kind in ("full_behavior", "karto_behavior") else 1200)
         collection_deadline = collection_started + collection_seconds * 10**9
         if collection_deadline > deadline_ns - 120 * 10**9:
             raise ValueError("collection reservation lacks the required remaining activity tail")
@@ -227,10 +241,12 @@ def collect(run, freeze, source_bindings, conformity_ref, activity_started_ns, d
             raise ValueError("collection deadline differs from the fixed reservation")
         groups_expected, cells = activity_spec["groups"], activity_spec["cells"]
         steps, maximum = activity_spec["steps_per_episode"], activity_spec["max_attempts"]
-    if mapper == "karto" and (activity_spec is None or activity_spec["kind"] not in ("karto_profile","karto_behavior") or not native_manifest):
+    if mapper == "karto" and (activity_spec is None or activity_spec["kind"] not in ("karto_profile","karto_behavior","seed_probe") or not native_manifest):
         raise ValueError("Karto requires a new exact activity and native manifest")
     if activity_spec is not None and activity_spec["kind"].startswith("karto_") and mapper != "karto":
         raise ValueError("Karto activity cannot use the default mapper")
+    if seed_rule != "legacy" and mapper != "karto":
+        raise ValueError("seed probe requires its declared Karto mapper")
     budget = StepBudget(collection_deadline, maximum=maximum)
     previous_handler = signal.signal(signal.SIGINT, lambda *_: budget.stop.set())
     groups, all_errors, identities = [], [], []
@@ -247,10 +263,12 @@ def collect(run, freeze, source_bindings, conformity_ref, activity_started_ns, d
                     "group_deadline_ns": local_deadline, "profile": profile}
                 if mapper == "karto":
                     kwargs.update(mapper=mapper,mapper_library=mapper_library)
+                if seed_rule != "legacy":
+                    kwargs["seed_rule"] = seed_rule
                 futures = []
                 for index in range(workers):
                     worker_kwargs = kwargs
-                    if activity_spec is not None and activity_spec["kind"] in ("full_behavior", "karto_behavior"):
+                    if activity_spec is not None and activity_spec["kind"] in ("full_behavior", "karto_behavior", "seed_probe"):
                         worker_kwargs = {**kwargs, "cells": activity_spec["worker_cells"][group_index][index]}
                     futures.append(executor.submit(collect_worker, group, index, budget, freeze, **worker_kwargs))
                 for future in as_completed(futures):
@@ -283,11 +301,15 @@ def collect(run, freeze, source_bindings, conformity_ref, activity_started_ns, d
         "scope": "short uniform-action proxy capacity, not qualified training throughput"}
     if mapper == "karto":
         summary.update(mapper=mapper,mapper_library=mapper_library,native_manifest=native_manifest)
+    if seed_rule != "legacy":
+        summary["seed_rule"] = seed_rule
     if activity_spec is not None:
         summary.update(activity_spec=activity_spec, activity_kind=activity_spec["kind"], profile_enabled=profile,
                        collection_started_ns=collection_started)
         if activity_spec["kind"] in ("full_behavior", "karto_behavior"):
             summary["scope"] = "bounded full-duration uniform-action proxy behavior; no training or native qualification"
+        elif activity_spec["kind"] == "seed_probe":
+            summary["scope"] = "bounded 64-step received-grid seed probe; no training or native qualification"
     (run / "capacity_summary.json").write_text(json.dumps(summary, indent=2) + "\n")
     signal.signal(signal.SIGINT, previous_handler)
     return summary

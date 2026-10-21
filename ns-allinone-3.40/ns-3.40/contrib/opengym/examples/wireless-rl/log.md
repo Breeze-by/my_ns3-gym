@@ -8086,3 +8086,124 @@ geometry_cpu_v3：rc=0，actualwait=2.148375849秒，source stable，cwd=/home/z
 V31/V32最后metadata静态（补V32文档/原型收口后才重核）：`rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.reach_execution --scope cpu --output /tmp/mr3_p2a_v31_static_outer_v2 --source report/assets/20261021_mr3_p2a_v31_karto_behavior/closed_check_v2.py --source report/assets/20261021_mr3_p2a_v31_karto_behavior/closed_metadata_v1.json --source report/assets/20261021_mr3_p2a_v32_seed_certificate/cpu_validation_index_v1.json -- /usr/bin/python3 -B report/assets/20261021_mr3_p2a_v31_karto_behavior/closed_check_v2.py`，rc0/actualwait2.498513541s/source stable。未重放任何SDK/任务/奖励，工程新增0；post-wait A31+V32合并46保存身份fresh gone（含两轮metadata CPU），最终SHA索引final_validation_index_v2.json覆盖全部canonical资产。
 
 V31/V32归档后Git静态补正：81810b0736a83eae52b510f3de8c4b5ba6cb5f76首次cached --check返回2，提交前漏处理；随后未改写该commit，直接核实仅四份canonical synthetic model.sdf原有24处行尾空白，不是代码/文档新空白。原件SHA/实际证据不改，新增只限A31/closed_execution/**/*.sdf的-text/-whitespace属性并另作提交；重核原件staged/blob哈希与完整归档范围whitespace。无新增实验/工程。
+
+
+## 2026-10-21 MR3 P2A V33 exact-seed implementation CPU preparation
+
+Base main add5c4e7659def17d909a8b31085bdfe072fc987; uncommitted development sources individually bound before/after each actual wait. Artificial received-grid/archive fixtures only; no World/scene/native consumer/GPU/PPO. Engineering charge 0; 46691.4127443736018/52000 unchanged. Pilot/final-only unchanged.
+
+seed_observation_cpu_v1: 113 passed; local exact-distance oracle, unchanged upstream gates, rule identity; CPU only. rc=0, actual_wait=10.615552657s, source_unchanged=True. [Receipt](report/assets/20261021_mr3_p2a_v33_seed_mode/checks/seed_observation_cpu_v1/actual_wait.json)
+
+cwd: /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl
+
+```bash
+/usr/bin/bash --noprofile --norc -e -c 'source /opt/ros/humble/setup.bash && source /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/setup.bash && exec /usr/bin/python3 -B -m pytest -q /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_observation.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_seed_certificate.py'
+```
+
+conformity_cpu_v1: 11 tests, one error retained: future-map fixture was rejected by the existing encoder before legal actor construction; no production gate relaxation. rc=1, actual_wait=6.393946179s, source_unchanged=True. [Receipt](report/assets/20261021_mr3_p2a_v33_seed_mode/checks/conformity_cpu_v1/actual_wait.json)
+
+cwd: /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl
+
+```bash
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m unittest mr3_learning.tests.test_proxy2d_seed_compatibility
+```
+
+conformity_cpu_v2: 11 tests passed after asserting that the future-source fixture must be rejected; CPU only. rc=0, actual_wait=6.351450687s, source_unchanged=True. [Receipt](report/assets/20261021_mr3_p2a_v33_seed_mode/checks/conformity_cpu_v2/actual_wait.json)
+
+cwd: /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl
+
+```bash
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m unittest mr3_learning.tests.test_proxy2d_seed_compatibility
+```
+
+
+### V33 remaining CPU, isolated fixture failures and predeclared probe
+
+
+activity_cpu_v1: 3 artificial admission/failure-closure tests pass. rc=0, actual_wait=0.525615546s, source_unchanged=True. [Receipt](report/assets/20261021_mr3_p2a_v33_seed_mode/checks/activity_cpu_v1/actual_wait.json). Artificial CPU only, engineering charge 0.
+
+cwd: /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl
+
+```bash
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m unittest mr3_learning.tests.test_proxy2d_seed_activity
+```
+
+activity_cpu_v2: 4 tests pass including changed-trace raw/verified-prefix refusal. rc=0, actual_wait=0.555227439s, source_unchanged=True. [Receipt](report/assets/20261021_mr3_p2a_v33_seed_mode/checks/activity_cpu_v2/actual_wait.json). Artificial CPU only, engineering charge 0.
+
+cwd: /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl
+
+```bash
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m unittest mr3_learning.tests.test_proxy2d_seed_activity
+```
+
+exact_validator_cpu_v1: 4 tests pass through actual immutable audit_ppo, candidate module and W7 validator, with rule/hash/schema/epoch/raster attack refusals. rc=0, actual_wait=5.383481528s, source_unchanged=True. [Receipt](report/assets/20261021_mr3_p2a_v33_seed_mode/checks/exact_validator_cpu_v1/actual_wait.json). Artificial CPU only, engineering charge 0.
+
+cwd: /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl
+
+```bash
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m unittest mr3_learning.tests.test_exact_snapshot_validator
+```
+
+information_cpu_v3: 12 pass after fixture supplies three explicitly invalid states; production three-robot gate unchanged. rc=0, actual_wait=2.776087325s, source_unchanged=True. [Receipt](report/assets/20261021_mr3_p2a_v33_seed_mode/checks/information_cpu_v3/actual_wait.json). Artificial CPU only, engineering charge 0.
+
+cwd: /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl
+
+```bash
+/usr/bin/bash --noprofile --norc -e -c 'source /opt/ros/humble/setup.bash && source /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/setup.bash && exec /usr/bin/python3 -B -m pytest -q /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_proxy2d_information.py'
+```
+
+learner_dispatch_cpu_v1: 133 tests; errors in native reader fixture: 9 subcase errors due wrong conda environment missing SciPy, one actual protocol SHA typo; retained FAIL. rc=1, actual_wait=90.82775372s, source_unchanged=True. [Receipt](report/assets/20261021_mr3_p2a_v33_seed_mode/checks/learner_dispatch_cpu_v1/actual_wait.json). Artificial CPU only, engineering charge 0.
+
+cwd: /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl
+
+```bash
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m unittest mr3_learning.tests.test_audit_seed_inputs mr3_learning.tests.test_reach_qualification mr3_learning.tests.test_reach_policy_chain mr3_learning.tests.test_reach_training_admission mr3_learning.tests.test_reach_preparation_entry mr3_learning.tests.test_audit_reach_ppo mr3_learning.tests.test_audit_proxy2d mr3_learning.tests.test_proxy2d_conformity mr3_learning.tests.test_proxy2d_capacity mr3_learning.tests.test_proxy2d mr3_learning.tests.test_proxy2d_karto_activity mr3_learning.tests.test_proxy2d_seed_activity
+```
+
+learner_dispatch_cpu_v2: 139 learner admission/proxy/audit tests pass; native reader separated into original system environment. rc=0, actual_wait=105.059656122s, source_unchanged=True. [Receipt](report/assets/20261021_mr3_p2a_v33_seed_mode/checks/learner_dispatch_cpu_v2/actual_wait.json). Artificial CPU only, engineering charge 0.
+
+cwd: /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl
+
+```bash
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m unittest mr3_learning.tests.test_reach_qualification mr3_learning.tests.test_reach_policy_chain mr3_learning.tests.test_reach_training_admission mr3_learning.tests.test_reach_preparation_entry mr3_learning.tests.test_audit_reach_ppo mr3_learning.tests.test_audit_proxy2d mr3_learning.tests.test_proxy2d_conformity mr3_learning.tests.test_proxy2d_capacity mr3_learning.tests.test_proxy2d mr3_learning.tests.test_proxy2d_karto_activity mr3_learning.tests.test_proxy2d_seed_activity mr3_learning.tests.test_proxy2d_seed_compatibility
+```
+
+native_reader_cpu_v1: 9 tests; 8 error subcases after fixture rolled back all sys.modules and broke SciPy class caches; retained FAIL. rc=1, actual_wait=2.160620461s, source_unchanged=True. [Receipt](report/assets/20261021_mr3_p2a_v33_seed_mode/checks/native_reader_cpu_v1/actual_wait.json). Artificial CPU only, engineering charge 0.
+
+cwd: /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl
+
+```bash
+/usr/bin/bash --noprofile --norc -e -c 'source /opt/ros/humble/setup.bash && source /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/setup.bash && exec /usr/bin/python3 -B -m unittest mr3_learning.tests.test_audit_seed_inputs'
+```
+
+native_reader_cpu_v2: 9 tests pass after restricting fixture module isolation to multi_robot_exploration namespace. rc=0, actual_wait=3.20099798s, source_unchanged=True. [Receipt](report/assets/20261021_mr3_p2a_v33_seed_mode/checks/native_reader_cpu_v2/actual_wait.json). Artificial CPU only, engineering charge 0.
+
+cwd: /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl
+
+```bash
+/usr/bin/bash --noprofile --norc -e -c 'source /opt/ros/humble/setup.bash && source /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/setup.bash && exec /usr/bin/python3 -B -m unittest mr3_learning.tests.test_audit_seed_inputs'
+```
+
+ros_cpu_v1: 290 pass/5 fail from this implementation missing ProxyInformation._raster return; retained FAIL and source snapshot. rc=1, actual_wait=18.829645888s, source_unchanged=True. [Receipt](report/assets/20261021_mr3_p2a_v33_seed_mode/checks/ros_cpu_v1/actual_wait.json). Artificial CPU only, engineering charge 0.
+
+cwd: /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl
+
+```bash
+/usr/bin/bash --noprofile --norc -e -c 'source /opt/ros/humble/setup.bash && source /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/setup.bash && exec /usr/bin/python3 -B -m pytest -q /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_observation.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_seed_certificate.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_proxy2d_navigation_cache.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_proxy2d_navigation_seed.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_proxy2d_information.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_proxy2d_worker.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_proxy2d_karto_integration.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_adapter.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_adapter_launch.py'
+```
+
+ros_cpu_v2: 294 pass/1 fail after production return fix; new fixture empty robot list rejected by unchanged exactly-three gate. rc=1, actual_wait=18.746193804s, source_unchanged=True. [Receipt](report/assets/20261021_mr3_p2a_v33_seed_mode/checks/ros_cpu_v2/actual_wait.json). Artificial CPU only, engineering charge 0.
+
+cwd: /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl
+
+```bash
+/usr/bin/bash --noprofile --norc -e -c 'source /opt/ros/humble/setup.bash && source /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/setup.bash && exec /usr/bin/python3 -B -m pytest -q /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_observation.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_seed_certificate.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_proxy2d_navigation_cache.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_proxy2d_navigation_seed.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_proxy2d_information.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_proxy2d_worker.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_proxy2d_karto_integration.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_adapter.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_adapter_launch.py'
+```
+
+Plan generation (read-only source/ELF hash verification plus exclusive plan write; no World/consumer/model): cwd=/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl
+
+```bash
+PYTHONNOUSERSITE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.proxy2d_seed_activity build
+```
+
+Exact seed_probe open/rooms/corridors101, 64 each/192 maximum attempts, 1800s including audit/external tails, current 52000 cap. One fresh clean pushed freeze/one attempt/no retry; no PPO/GPU/native qualification. Engineering still46691.4127443736018, pilot/final-only untouched; 75000 proposal pending, not approval.

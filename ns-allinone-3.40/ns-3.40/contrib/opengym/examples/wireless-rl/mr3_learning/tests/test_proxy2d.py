@@ -118,6 +118,17 @@ class ProxySupervisorTests(unittest.TestCase):
         self.assertTrue(metadata["profile_enabled"])
         self.owner.close()
 
+    def test_exact_seed_rule_has_explicit_worker_argument_and_episode_binding(self):
+        self.owner = proxy2d.ProxySupervisor(self.root / "exact", seed_rule="exact-point-bridge-v1")
+        self.add_process(50003)
+        self.successful_reset()
+        command = proxy2d.subprocess.Popen.call_args.args[0]
+        self.assertEqual(command[-1], "exact-point-bridge-v1")
+        self.assertIn('--seed-rule "$8"', command[4])
+        metadata = json.loads((self.owner.directory / "episode.json").read_text())
+        self.assertEqual(metadata["seed_rule"], "exact-point-bridge-v1")
+        self.owner.close()
+
     def test_normal_mode_removes_ambient_profile_output(self):
         self.add_process(50002)
         with patch.object(proxy2d, "ros_environment", return_value={"MR3_PROXY2D_PROFILE_OUTPUT": "/foreign/file"}):

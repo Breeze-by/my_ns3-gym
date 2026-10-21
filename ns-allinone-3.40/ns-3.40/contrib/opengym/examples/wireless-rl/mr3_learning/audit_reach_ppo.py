@@ -66,6 +66,8 @@ def admission(metadata, freeze, plan_path=None, qualification_path=None, *, root
         require(metadata.get(name+"_sha256") == sha(snapshots[path]),
                 name+" bytes differ from original PPO admission metadata")
     proof = validate_qualification(qualification_path, plan_path, freeze, root=Path(root))
+    require(metadata.get("seed_rule", "legacy") == json.loads(snapshots[plan_path]).get("seed_rule", "legacy"),
+            "PPO seed rule differs from its native qualification")
     return plan_path, qualification_path, snapshots, proof
 
 
@@ -132,6 +134,12 @@ def audit_run(directory, freeze, plan_path=None, qualification_path=None):
                 and own.get("execution_phase_protocol") == "mr3-controlled-execution-phase-v2"
                 and own.get("reset_handshake") == "paused-controlled-state-peer-guard-storage-v2",
                 "native attempt has mixed/legacy profile identity: "+str(episode))
+        require(own.get("seed_rule", "legacy") == plan.get("seed_rule", "legacy"),
+                "native attempt seed rule differs from qualification plan")
+        supervisor_path = episode / "supervisor_metadata.json"
+        supervisor_raw = supervisor_path.read_bytes(); stable[supervisor_path] = supervisor_raw
+        require(json.loads(supervisor_raw).get("seed_rule", "legacy") == plan.get("seed_rule", "legacy"),
+                "native supervisor seed rule differs from qualification plan")
     module, projection = load_impl(plan_path)
     preparation, preparation_proof = audit_reach_preparation.load_impl(plan_path)
     result = module.audit_run(directory, freeze)

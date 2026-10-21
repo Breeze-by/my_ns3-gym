@@ -1,0 +1,173 @@
+.E..E.E
+======================================================================
+ERROR: test_complete_artificial_seven_map_and_snapshot_replay (mr3_learning.tests.test_audit_seed_inputs.ExactSeedInputAuditTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_seed_inputs.py", line 119, in test_complete_artificial_seven_map_and_snapshot_replay
+    directory = Path(temporary); self.fixture(directory)
+  File "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_seed_inputs.py", line 83, in fixture
+    snapshot = observation.build_snapshot(grid, .1, (-2.05, -2.05), robots, 10., "artificial", 1, 0,
+  File "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py", line 770, in build_snapshot
+    target_paths, path_maps, seeds_valid = _own_map_paths(
+  File "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py", line 590, in _own_map_paths
+    paths, ids = _path_distances(traversable, [seed], resolution)
+  File "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py", line 234, in _path_distances
+    distances[index] = dijkstra(graph, directed=False, indices=int(ids[seed]))
+  File "_shortest_path.pyx", line 517, in scipy.sparse.csgraph._shortest_path.dijkstra
+  File "/usr/lib/python3/dist-packages/scipy/sparse/csgraph/_validation.py", line 46, in validate_graph
+    csgraph = csgraph_from_dense(csgraph, null_value=null_value_in,
+  File "_tools.pyx", line 216, in scipy.sparse.csgraph._tools.csgraph_from_dense
+  File "_tools.pyx", line 141, in scipy.sparse.csgraph._tools.csgraph_masked_from_dense
+ValueError: graph should have two dimensions
+
+======================================================================
+ERROR: test_missing_navigation_recovers_empty_input_in_full_snapshot_replay (mr3_learning.tests.test_audit_seed_inputs.ExactSeedInputAuditTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_seed_inputs.py", line 141, in test_missing_navigation_recovers_empty_input_in_full_snapshot_replay
+    snapshot=self.fixture(directory,navigation_missing=True)
+  File "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_seed_inputs.py", line 83, in fixture
+    snapshot = observation.build_snapshot(grid, .1, (-2.05, -2.05), robots, 10., "artificial", 1, 0,
+  File "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py", line 770, in build_snapshot
+    target_paths, path_maps, seeds_valid = _own_map_paths(
+  File "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py", line 590, in _own_map_paths
+    paths, ids = _path_distances(traversable, [seed], resolution)
+  File "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py", line 234, in _path_distances
+    distances[index] = dijkstra(graph, directed=False, indices=int(ids[seed]))
+  File "_shortest_path.pyx", line 517, in scipy.sparse.csgraph._shortest_path.dijkstra
+  File "/usr/lib/python3/dist-packages/scipy/sparse/csgraph/_validation.py", line 46, in validate_graph
+    csgraph = csgraph_from_dense(csgraph, null_value=null_value_in,
+  File "_tools.pyx", line 216, in scipy.sparse.csgraph._tools.csgraph_from_dense
+  File "_tools.pyx", line 141, in scipy.sparse.csgraph._tools.csgraph_masked_from_dense
+ValueError: graph should have two dimensions
+
+======================================================================
+ERROR: test_mixed_seed_or_unreferenced_map_is_rejected (mr3_learning.tests.test_audit_seed_inputs.ExactSeedInputAuditTests) (fault='worker')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_seed_inputs.py", line 189, in test_mixed_seed_or_unreferenced_map_is_rejected
+    directory = Path(temporary); self.fixture(directory)
+  File "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_seed_inputs.py", line 83, in fixture
+    snapshot = observation.build_snapshot(grid, .1, (-2.05, -2.05), robots, 10., "artificial", 1, 0,
+  File "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py", line 770, in build_snapshot
+    target_paths, path_maps, seeds_valid = _own_map_paths(
+  File "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py", line 590, in _own_map_paths
+    paths, ids = _path_distances(traversable, [seed], resolution)
+  File "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py", line 234, in _path_distances
+    distances[index] = dijkstra(graph, directed=False, indices=int(ids[seed]))
+  File "_shortest_path.pyx", line 517, in scipy.sparse.csgraph._shortest_path.dijkstra
+  File "/usr/lib/python3/dist-packages/scipy/sparse/csgraph/_validation.py", line 46, in validate_graph
+    csgraph = csgraph_from_dense(csgraph, null_value=null_value_in,
+  File "_tools.pyx", line 216, in scipy.sparse.csgraph._tools.csgraph_from_dense
+  File "_tools.pyx", line 141, in scipy.sparse.csgraph._tools.csgraph_masked_from_dense
+ValueError: graph should have two dimensions
+
+======================================================================
+ERROR: test_mixed_seed_or_unreferenced_map_is_rejected (mr3_learning.tests.test_audit_seed_inputs.ExactSeedInputAuditTests) (fault='supervisor')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_seed_inputs.py", line 189, in test_mixed_seed_or_unreferenced_map_is_rejected
+    directory = Path(temporary); self.fixture(directory)
+  File "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_seed_inputs.py", line 83, in fixture
+    snapshot = observation.build_snapshot(grid, .1, (-2.05, -2.05), robots, 10., "artificial", 1, 0,
+  File "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py", line 770, in build_snapshot
+    target_paths, path_maps, seeds_valid = _own_map_paths(
+  File "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py", line 590, in _own_map_paths
+    paths, ids = _path_distances(traversable, [seed], resolution)
+  File "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py", line 234, in _path_distances
+    distances[index] = dijkstra(graph, directed=False, indices=int(ids[seed]))
+  File "_shortest_path.pyx", line 517, in scipy.sparse.csgraph._shortest_path.dijkstra
+  File "/usr/lib/python3/dist-packages/scipy/sparse/csgraph/_validation.py", line 46, in validate_graph
+    csgraph = csgraph_from_dense(csgraph, null_value=null_value_in,
+  File "_tools.pyx", line 216, in scipy.sparse.csgraph._tools.csgraph_from_dense
+  File "_tools.pyx", line 141, in scipy.sparse.csgraph._tools.csgraph_masked_from_dense
+ValueError: graph should have two dimensions
+
+======================================================================
+ERROR: test_mixed_seed_or_unreferenced_map_is_rejected (mr3_learning.tests.test_audit_seed_inputs.ExactSeedInputAuditTests) (fault='extra_map')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_seed_inputs.py", line 189, in test_mixed_seed_or_unreferenced_map_is_rejected
+    directory = Path(temporary); self.fixture(directory)
+  File "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_seed_inputs.py", line 83, in fixture
+    snapshot = observation.build_snapshot(grid, .1, (-2.05, -2.05), robots, 10., "artificial", 1, 0,
+  File "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py", line 770, in build_snapshot
+    target_paths, path_maps, seeds_valid = _own_map_paths(
+  File "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py", line 590, in _own_map_paths
+    paths, ids = _path_distances(traversable, [seed], resolution)
+  File "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py", line 234, in _path_distances
+    distances[index] = dijkstra(graph, directed=False, indices=int(ids[seed]))
+  File "_shortest_path.pyx", line 517, in scipy.sparse.csgraph._shortest_path.dijkstra
+  File "/usr/lib/python3/dist-packages/scipy/sparse/csgraph/_validation.py", line 46, in validate_graph
+    csgraph = csgraph_from_dense(csgraph, null_value=null_value_in,
+  File "_tools.pyx", line 216, in scipy.sparse.csgraph._tools.csgraph_from_dense
+  File "_tools.pyx", line 141, in scipy.sparse.csgraph._tools.csgraph_masked_from_dense
+ValueError: graph should have two dimensions
+
+======================================================================
+ERROR: test_other_normalized_missing_values_remain_sufficient_for_full_replay (mr3_learning.tests.test_audit_seed_inputs.ExactSeedInputAuditTests) (values={'history': [{'x': 1.0, 'y': None, 'source_stamp': 9.0}, {'x': 0.1, 'y': 0.2, 'source_stamp': 9.9}]})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_seed_inputs.py", line 158, in test_other_normalized_missing_values_remain_sufficient_for_full_replay
+    directory=Path(temporary);self.fixture(directory,robot_overrides=values)
+  File "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_seed_inputs.py", line 83, in fixture
+    snapshot = observation.build_snapshot(grid, .1, (-2.05, -2.05), robots, 10., "artificial", 1, 0,
+  File "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py", line 770, in build_snapshot
+    target_paths, path_maps, seeds_valid = _own_map_paths(
+  File "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py", line 590, in _own_map_paths
+    paths, ids = _path_distances(traversable, [seed], resolution)
+  File "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py", line 234, in _path_distances
+    distances[index] = dijkstra(graph, directed=False, indices=int(ids[seed]))
+  File "_shortest_path.pyx", line 517, in scipy.sparse.csgraph._shortest_path.dijkstra
+  File "/usr/lib/python3/dist-packages/scipy/sparse/csgraph/_validation.py", line 46, in validate_graph
+    csgraph = csgraph_from_dense(csgraph, null_value=null_value_in,
+  File "_tools.pyx", line 216, in scipy.sparse.csgraph._tools.csgraph_from_dense
+  File "_tools.pyx", line 141, in scipy.sparse.csgraph._tools.csgraph_masked_from_dense
+ValueError: graph should have two dimensions
+
+======================================================================
+ERROR: test_other_normalized_missing_values_remain_sufficient_for_full_replay (mr3_learning.tests.test_audit_seed_inputs.ExactSeedInputAuditTests) (values={'navigation': {'phase': 'invalid', 'source_stamp': None, 'received_stamp': None, 'sequence': None, 'owned': False, 'commitment_until': None}})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_seed_inputs.py", line 158, in test_other_normalized_missing_values_remain_sufficient_for_full_replay
+    directory=Path(temporary);self.fixture(directory,robot_overrides=values)
+  File "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_seed_inputs.py", line 83, in fixture
+    snapshot = observation.build_snapshot(grid, .1, (-2.05, -2.05), robots, 10., "artificial", 1, 0,
+  File "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py", line 770, in build_snapshot
+    target_paths, path_maps, seeds_valid = _own_map_paths(
+  File "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py", line 590, in _own_map_paths
+    paths, ids = _path_distances(traversable, [seed], resolution)
+  File "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py", line 234, in _path_distances
+    distances[index] = dijkstra(graph, directed=False, indices=int(ids[seed]))
+  File "_shortest_path.pyx", line 517, in scipy.sparse.csgraph._shortest_path.dijkstra
+  File "/usr/lib/python3/dist-packages/scipy/sparse/csgraph/_validation.py", line 46, in validate_graph
+    csgraph = csgraph_from_dense(csgraph, null_value=null_value_in,
+  File "_tools.pyx", line 216, in scipy.sparse.csgraph._tools.csgraph_from_dense
+  File "_tools.pyx", line 141, in scipy.sparse.csgraph._tools.csgraph_masked_from_dense
+ValueError: graph should have two dimensions
+
+======================================================================
+ERROR: test_standalone_replay_rejects_a_nonfrozen_helper_source (mr3_learning.tests.test_audit_seed_inputs.ExactSeedInputAuditTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_seed_inputs.py", line 130, in test_standalone_replay_rejects_a_nonfrozen_helper_source
+    directory=Path(temporary);self.fixture(directory)
+  File "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_seed_inputs.py", line 83, in fixture
+    snapshot = observation.build_snapshot(grid, .1, (-2.05, -2.05), robots, 10., "artificial", 1, 0,
+  File "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py", line 770, in build_snapshot
+    target_paths, path_maps, seeds_valid = _own_map_paths(
+  File "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py", line 590, in _own_map_paths
+    paths, ids = _path_distances(traversable, [seed], resolution)
+  File "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py", line 234, in _path_distances
+    distances[index] = dijkstra(graph, directed=False, indices=int(ids[seed]))
+  File "_shortest_path.pyx", line 517, in scipy.sparse.csgraph._shortest_path.dijkstra
+  File "/usr/lib/python3/dist-packages/scipy/sparse/csgraph/_validation.py", line 46, in validate_graph
+    csgraph = csgraph_from_dense(csgraph, null_value=null_value_in,
+  File "_tools.pyx", line 216, in scipy.sparse.csgraph._tools.csgraph_from_dense
+  File "_tools.pyx", line 141, in scipy.sparse.csgraph._tools.csgraph_masked_from_dense
+ValueError: graph should have two dimensions
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.770s
+
+FAILED (errors=8)

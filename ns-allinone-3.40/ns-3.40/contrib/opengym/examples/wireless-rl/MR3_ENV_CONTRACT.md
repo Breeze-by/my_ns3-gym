@@ -1,5 +1,9 @@
 # MR3 环境与采样契约 v2（P2A.0准备修订）
 
+2026-10-21：新增显式 `seed_rule=exact-point-bridge-v1` 观测规则，默认仍为 `legacy`。
+这是候选与掩码语义的新版本，须新冻结验证，不继承 V21/V31 原生或二维资格。
+本轮工程入口与状态见 [V33](report/20261021_mr3_p2a_v33_seed_mode.md)。
+
 2026-10-19：用户已接受[V14科学候选](report/assets/20261019_mr3_p2a_v14/scientific_contract_candidate_v1.md)。显式新profile的执行规则以[MR3_REACH_CONTRACT.md](MR3_REACH_CONTRACT.md)为准；本文件下述原速度/累计路径与v1相位规则继续描述默认`legacy`。V15已接线并完成CPU/编译准备，尚无新冻结原生资格、训练或95%信用；旧FAIL不改判。
 
 2026-10-17用户要求继续完成P2A.0。下列v3快照、v2张量、机器人导航图合成、最终速度门及
@@ -62,6 +66,25 @@ frame改变或超过`.5s`间隙使路径完整性失效，并单独编码有效/
 只以最后交付共享图补本机unknown；不按机器人位置清占据或吸附起点。全局hub仍occupied-wins。
 候选v5的路径、到达圆盘及前沿都来自与实际`/tbN/navigation_map`字节配对的已交付导航图。
 原始own、hub及实际发布的三个navigation地图共七份输入按SHA归档，不用后来的图重算旧候选。
+
+显式 `exact-point-bridge-v1` 保留上述地图合成、原seed cell、原图及 `.29m` 路径门。
+仅在原 `seed_pose_body_clearance` 拒绝后，才对估计点及估计点到同一原cell中心的整条线段
+计算精确几何证书。非零（含unknown）格的完整闭square及地图外部均阻挡；阈值是精确
+`29/100m`，没有浮点放行容差。未知/占据seed、不可通行cell、无效状态、跨epoch或未来地图
+不进入回退。证书不选相邻seed、不吸附位姿、不改地图或奖励；原cell中心图和目标到达圆盘门不变。
+距离平方是阈值封顶的最小值，只枚举线段AABB扩展 `.29m` 后的局部格；省略格与每个线段点
+至少有一个坐标距离大于阈值，不能改变通过判定。它不是全图最近障碍距离或原生跟踪安全证明。
+
+该模式的导航图候选版本为 `mr3-navigation-geometric-staging-v6-exact-seed-v1`，
+非导航图兼容接口为 `mr3-per-robot-geometric-staging-v5-exact-seed-v1`。
+`candidate_rule.seed_rule`、path-map的 `seed_point_bridge_certificate`、候选版本与snapshot digest
+共同绑定新语义；保留旧的保守 `seed_pose_clearance_lower_bound_m`，不把它改写成通过值。
+快照schema v3、张量schema v2及维度保持，默认legacy不添加这些字段。
+原生 `Supervisor`/benchmark/PPO 的 `seed_rule`、worker reset、launch `mr3_seed_rule`、adapter、
+资格计划与minimum/pilot/final必须一致；不能使用legacy资格运行exact模式。
+原生新输入审计重放同冻结纯源、全部七图与完整snapshot；二维v2符合性分别验证原六输入的
+legacy兼容和新规则独立重建，逐actor另复算三机seed证书。原v1逐字来源门不删除或改判。
+95%/300秒、质量、三机参与、接触、实际目标闭合与全部原生执行审计继续是独立必要门。
 
 adapter模式的controller和behavior速度统一经过Nav2 smoother及`/motion_safety`最终门，
 该门是三个`/tbN/cmd_vel`及`/tbN/mr3_drive/target`的唯一发布者，不选方向或目标。

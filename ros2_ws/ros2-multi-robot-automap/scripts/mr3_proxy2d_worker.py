@@ -49,7 +49,8 @@ def evaluator_environment(directory):
 
 
 class ProxyWorker:
-    def __init__(self, directory, epoch, scene, seed, *, mapper="endpoint", mapper_library=None):
+    def __init__(self, directory, epoch, scene, seed, *, mapper="endpoint", mapper_library=None,
+                 seed_rule="legacy"):
         from multi_robot_exploration.mr3_proxy2d_world import ProxyWorld
         from multi_robot_exploration.mr3_proxy2d_information import ProxyInformation
         from multi_robot_exploration.mr3_proxy2d_navigation import ProxyNavigator
@@ -67,8 +68,11 @@ class ProxyWorker:
             self.world.metadata["loaded_native_artifacts"] = [
                 {"path":p,"sha256":hashlib.sha256(Path(p).read_bytes()).hexdigest()}
                 for p in sorted(loaded)]
-        self.information = ProxyInformation(epoch)
-        self.navigator = ProxyNavigator()
+        seed_options = {} if seed_rule == "legacy" else {"seed_rule": seed_rule}
+        self.information = ProxyInformation(epoch, **seed_options)
+        self.navigator = ProxyNavigator(**seed_options)
+        if seed_rule != "legacy":
+            self.world.metadata["seed_rule"] = seed_rule
         self.events = deque()
         self.dispatcher = GoalDispatcher(epoch, self.events.append)
         self.protocol = IdealTransport(epoch)
@@ -408,6 +412,7 @@ def main():
     parser.add_argument("--seed", type=int, required=True)
     parser.add_argument("--mapper", choices=("endpoint","karto"),default="endpoint")
     parser.add_argument("--mapper-library",type=Path)
+    parser.add_argument("--seed-rule", choices=("legacy", "exact-point-bridge-v1"), default="legacy")
     args = parser.parse_args()
     peer = ipc.JsonLinePeer(sys.stdin.fileno(), sys.stdout.fileno())
     if args.role == "evaluator":
@@ -421,8 +426,10 @@ def main():
                 if operation == "reset":
                     if worker is not None:
                         raise RuntimeError("one process per proxy episode")
-                    worker = ProxyWorker(args.directory, args.epoch, args.scene, args.seed,
-                        mapper=args.mapper,mapper_library=args.mapper_library)
+                    kwargs = {"mapper": args.mapper, "mapper_library": args.mapper_library}
+                    if args.seed_rule != "legacy":
+                        kwargs["seed_rule"] = args.seed_rule
+                    worker = ProxyWorker(args.directory, args.epoch, args.scene, args.seed, **kwargs)
                     result = worker.reset()
                 elif operation == "close":
                     if worker is not None:

@@ -68,6 +68,9 @@ class Worker:
         self.scene = request["scene"]
         self.seed = request["seed"]
         self.safety_contract = request.get("safety_contract", "legacy")
+        self.seed_rule = request.get("seed_rule", "legacy")
+        if type(self.seed_rule) is not str or self.seed_rule not in ("legacy", "exact-point-bridge-v1"):
+            raise ValueError("invalid seed_rule")
         self.control_version = protocol_version(self.safety_contract)
         self.safety_intents = {}
         self.safety_intent_publishers = {}
@@ -385,6 +388,8 @@ class Worker:
             f"evaluation_episode_id:={self.epoch}", f"evaluation_output_dir:={directory}",
             f"mr3_safety_contract:={self.safety_contract}",
         ]
+        if self.seed_rule != "legacy":
+            self.command.append(f"mr3_seed_rule:={self.seed_rule}")
         if self.terminal_probe:
             self.command.append("training_terminal_probe:=true")
         if self.plant_stimulus_arm is not None:
@@ -411,6 +416,8 @@ class Worker:
                     "plant_stimulus_work_deadline_ns": self.plant_stimulus_work_deadline_ns,
                     "physical_step_ns": 1000000, "policy_step_ns": 1000000000,
                     "startup_wall_guard_sec": 420., "closure_wall_guard_sec": 90.}
+        if self.seed_rule != "legacy":
+            metadata["seed_rule"] = self.seed_rule
         if self.control_version == 2:
             metadata["safety_contract"] = self.safety_contract
             metadata["reset_handshake"] = "paused-controlled-state-peer-guard-storage-v2"

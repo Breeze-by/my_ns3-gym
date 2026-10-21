@@ -27,7 +27,8 @@ from types import ModuleType
 
 import numpy as np
 
-from .audit_proxy2d import PureBuilder, canonical, parse, require, tensor_proofs, ROOT, PURE
+from .audit_proxy2d import (PureBuilder, canonical, parse, require, tensor_proofs, ROOT, PURE,
+                            EXACT_SEED_RULE, actor_record)
 from .proxy2d_codec import encode_arrays
 
 
@@ -45,13 +46,15 @@ def sha(raw):
     return hashlib.sha256(raw).hexdigest()
 
 
-def source_bindings(freeze):
+def source_bindings(freeze, seed_rule="legacy"):
     require(type(freeze) is str and re.fullmatch(r"[0-9a-f]{40}", freeze), "exact current freeze required")
+    require(seed_rule in ("legacy", EXACT_SEED_RULE), "unknown conformity seed rule")
     names = (Path(__file__), Path(__file__).with_name("audit_proxy2d.py"),
              Path(__file__).with_name("observation.py"), Path(__file__).with_name("proxy2d_codec.py"),
              PURE / "mr3_observation.py", PURE / "mr3_episode.py", PURE / "mr3_observation_archive.py",
              PURE / "mr3_proxy2d_world.py", PURE / "mr3_reward.py", PURE / "mr3_task_contract.py",
              PURE / "mr3_contacts.py", PURE / "mr3_transport.py",
+             PURE / "mr3_reach_geometry.py", PURE / "mr3_seed_certificate.py",
              PURE.parents[1] / "multi_robot/models/turtlebot3_waffle/model.sdf",
              PURE.parents[1] / "multi_robot/config/mr3_p1a/open.json")
     proof, stable = {}, {}
@@ -65,8 +68,15 @@ def source_bindings(freeze):
                  Path(__file__).with_name("observation.py"), PURE / "mr3_observation_archive.py"):
         relative = path.relative_to(ROOT).as_posix()
         original = subprocess.check_output(["git", "show", NATIVE_FREEZE + ":" + relative], cwd=ROOT)
-        require(original == stable[path], "V21 observation/encoder source changed")
-        proof[relative]["native_git_source"] = NATIVE_FREEZE + ":" + relative
+        if seed_rule == "legacy" or path.name != "mr3_observation.py":
+            require(original == stable[path], "V21 observation/encoder source changed")
+            proof[relative]["native_git_source"] = NATIVE_FREEZE + ":" + relative
+        else:
+            # This is a new scientific source version, not V21 byte identity.
+            # Preserve the complete immutable original blob reference; current
+            # default-legacy behavior is additionally checked on all six inputs.
+            proof[relative]["legacy_reference"] = {"git_source": NATIVE_FREEZE + ":" + relative,
+                "sha256": sha(original), "bytes": len(original)}
     return proof, stable
 
 
@@ -195,6 +205,49 @@ def replay_native(inputs, builder):
     return records
 
 
+def replay_exact_native(inputs, builder, directory, stable=None):
+    """New-version calls from the same sufficient received inputs, not native runs."""
+    directory = Path(directory).resolve()
+    directory.mkdir(parents=True, exist_ok=False)
+    (directory / "inputs").mkdir()
+    records = []
+    for number in (1, 2):
+        episode = f"worker0/episode{number:03d}_open_101"
+        raw = inputs.read(Path(episode) / "transitions.jsonl")
+        for selection, (_, original) in zip(("reset", "first_step", "last_step"), selected_rows(raw)):
+            params, _ = recover_parameters(inputs, episode, original)
+            legacy_parameters_sha256 = sha(canonical(encode_arrays(params)))
+            params["seed_rule"] = EXACT_SEED_RULE
+            encoded = canonical(encode_arrays(params))
+            digest = sha(encoded)
+            input_path = directory / f"inputs/{digest}.json.gz"
+            if not input_path.exists():
+                with input_path.open("xb") as stream:
+                    stream.write(gzip.compress(encoded, mtime=0))
+            if stable is not None:
+                stable[input_path] = input_path.read_bytes()
+            snapshot = builder(**params)
+            row = {"epoch": params["epoch"], "snapshot": snapshot, "tensor_proofs": tensor_proofs(snapshot),
+                   "actor_input_ref": {"path": str(input_path.relative_to(directory)), "sha256": digest}}
+            # Same input/reference format as prospective actor traces. Do not
+            # claim the changed candidates are equal to the old native ones.
+            checked, _ = actor_record(directory, row, builder=builder)
+            record_path = directory / f"episode{number}_{selection}.json"
+            body = canonical(row)
+            with record_path.open("xb") as stream:
+                stream.write(body)
+            if stable is not None:
+                stable[record_path] = body
+            records.append({"episode": episode, "selection": selection, "seed_rule": EXACT_SEED_RULE,
+                "native_freeze": NATIVE_FREEZE, "legacy_parameters_sha256": legacy_parameters_sha256,
+                "sufficient_parameter_sha256": digest,
+                "actor_record_ref": {"path": str(record_path), "sha256": sha(body), "bytes": len(body)},
+                "actual": {"snapshot_canonical_sha256": sha(canonical(snapshot)), "tensor_proofs": row["tensor_proofs"]},
+                "exact_seed_robot_checks": checked["exact_seed_robot_checks"],
+                "scope": "current-version reconstruction of original sufficient received inputs; not native execution/equivalence"})
+    return records
+
+
 @contextmanager
 def pure_package():
     """System helper only; load pure ROS-package modules without ROS paths."""
@@ -301,7 +354,8 @@ def convergence_metrics(first, second, stopped_before, stopped_after):
                                                stopped_before["poses"][n]["y"] - stopped_after["poses"][n]["y"]) for n in ROBOTS)}
 
 
-def synthetic_cases(directory):
+def synthetic_cases(directory, seed_rule="legacy"):
+    require(seed_rule in ("legacy", EXACT_SEED_RULE), "unknown synthetic seed rule")
     directory = Path(directory); directory.mkdir(parents=True, exist_ok=False)
     with pure_package():
         world_module = importlib.import_module("multi_robot_exploration.mr3_proxy2d_world")
@@ -330,6 +384,9 @@ def synthetic_cases(directory):
         for world in pair:
             for _ in range(5): world.advance()
         parameters = [received_parameters(world) for world in pair]
+        if seed_rule != "legacy":
+            for params in parameters:
+                params["seed_rule"] = seed_rule
         snapshots = [build(**params) for params in parameters]
         hashes = [{"actor_parameters_sha256": sha(canonical(encode_arrays(params))),
                    "snapshot_sha256": sha(canonical(snapshot))} for params, snapshot in zip(parameters, snapshots)]
@@ -362,7 +419,8 @@ def synthetic_cases(directory):
         case["passed"] = (case["expected"] == case["actual"] if case["comparison"] == "equal"
                           else set(case["actual"]) == set(case["expected"]) and all(case["actual"][k] <= limit for k, limit in case["expected"].items()))
     return {"schema": "mr3-proxy2d-synthetic-conformity-v1", "cases": cases,
-            "passed": all(case["passed"] for case in cases), "native_runs": 0, "optimizer_steps": 0, "gpu_calls": 0}
+            "passed": all(case["passed"] for case in cases), "native_runs": 0, "optimizer_steps": 0, "gpu_calls": 0,
+            "seed_rule": seed_rule}
 
 
 def process_identity(pid):
@@ -378,6 +436,8 @@ def run_synthetic_helper(freeze, output, result):
     environment.update(PYTHONNOUSERSITE="1", PYTHONDONTWRITEBYTECODE="1", CUDA_VISIBLE_DEVICES="")
     argv = ["/usr/bin/python3", "-B", "-m", "mr3_learning.proxy2d_conformity", "--synthetic-cases",
             "--freeze", freeze, "--output", str(helper_output)]
+    if result.get("seed_rule", "legacy") != "legacy":
+        argv += ["--seed-rule", result["seed_rule"]]
     receipt = {"argv": argv, "cwd": str(WIRELESS), "started_monotonic_ns": time.monotonic_ns(),
                "actual_waited": False, "termination_requested": False, "kill_requested": False}
     child = None
@@ -409,28 +469,39 @@ def run_synthetic_helper(freeze, output, result):
     return synthetic["cases"]
 
 
-def run(freeze, native_root, inventory_path, output):
+def run(freeze, native_root, inventory_path, output, seed_rule="legacy"):
     output = Path(output).resolve(); require(not output.exists(), "exclusive conformity output required")
-    proof, stable = source_bindings(freeze)
+    proof, stable = source_bindings(freeze, seed_rule)
     inventory_raw = Path(inventory_path).read_bytes()
     relative_inventory = Path(inventory_path).resolve().relative_to(ROOT).as_posix()
     require(subprocess.check_output(["git", "show", freeze + ":" + relative_inventory], cwd=ROOT) == inventory_raw,
             "original native inventory is not frozen")
     inputs = NativeInputs(native_root, inventory_path)
-    result = {"schema": "mr3-proxy2d-conformity-v1", "freeze": freeze, "native_freeze": NATIVE_FREEZE,
+    result = {"schema": "mr3-proxy2d-conformity-v2" if seed_rule == EXACT_SEED_RULE else "mr3-proxy2d-conformity-v1",
+              "freeze": freeze, "native_freeze": NATIVE_FREEZE,
               "passed": False, "errors": [], "source_proof": proof, "native_records": [],
               "qualification": False, "training_eligible": False, "native_credit": False,
               "native_inventory": {"path": str(Path(inventory_path).resolve()), "sha256": sha(inventory_raw), "bytes": len(inventory_raw)}}
+    if seed_rule != "legacy":
+        result.update(seed_rule=seed_rule, exact_records=[],
+            native_reference_scope="original V21 closed inputs and snapshots; current legacy compatibility only",
+            exact_scope="new source-version received-input reconstruction; no new native execution/equivalence")
     try:
         builder = PureBuilder()
         try:
             result["native_records"] = replay_native(inputs, builder)
+            if seed_rule != "legacy":
+                result["exact_records"] = replay_exact_native(inputs, builder, output.with_suffix(".exact"), stable)
         finally:
             result["pure_builder_actual_wait"] = builder.close()
         result["synthetic_cases"] = run_synthetic_helper(freeze, output, result)
         require(len(result["native_records"]) == 6 and all(row["expected"] == row["actual"]
                 and row["candidate_mask_full_snapshot_equal"] for row in result["native_records"]), "native six-input full snapshot/tensor replay differs")
         require(all(case["passed"] for case in result["synthetic_cases"]), "synthetic isolation/convergence differs")
+        if seed_rule != "legacy":
+            require(len(result["exact_records"]) == 6
+                    and all(row["exact_seed_robot_checks"] == 3 for row in result["exact_records"]),
+                    "exact six-input seed verification is incomplete")
     except ERRORS as error:
         result["errors"].append(str(error))
     try:
@@ -450,17 +521,18 @@ def main(argv=None):
     parser.add_argument("--native-root", type=Path, default=DEFAULT_NATIVE_ROOT)
     parser.add_argument("--native-inventory", type=Path, default=NATIVE_ASSETS / "native_inventory_v1.json")
     parser.add_argument("--synthetic-cases", action="store_true")
+    parser.add_argument("--seed-rule", choices=("legacy", EXACT_SEED_RULE), default="legacy")
     parser.add_argument("--output", required=True, type=Path)
     args = parser.parse_args(argv)
     require(not args.output.exists(), "exclusive conformity output required")
     if args.synthetic_cases:
-        proof, stable = source_bindings(args.freeze)
-        result = synthetic_cases(args.output.with_suffix(".inputs"))
+        proof, stable = source_bindings(args.freeze, args.seed_rule)
+        result = synthetic_cases(args.output.with_suffix(".inputs"), args.seed_rule)
         require(all(path.read_bytes() == raw for path, raw in stable.items()), "synthetic source changed")
         result.update(source_proof=proof, freeze=args.freeze)
         with args.output.open("x") as stream: json.dump(result, stream, indent=2, allow_nan=False); stream.write("\n")
     else:
-        result = run(args.freeze, args.native_root, args.native_inventory, args.output)
+        result = run(args.freeze, args.native_root, args.native_inventory, args.output, args.seed_rule)
     print(json.dumps({"passed": result["passed"], "output": str(args.output)}))
     return 0 if result["passed"] else 1
 
