@@ -1,0 +1,46 @@
+.F...............                                                        [100%]
+=================================== FAILURES ===================================
+______ test_scan_at_50ms_uses_interpolated_estimate_not_60ms_end_odometry ______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x72195f843a90>
+
+    def test_scan_at_50ms_uses_interpolated_estimate_not_60ms_end_odometry(monkeypatch):
+        value, _ = sensor_namespace(monkeypatch)
+        value.time_ns, value.quantum_ns, value._next_scan_ns = 40_000_000, 20_000_000, 50_000_000
+        value._poses = {name: np.array([float(i * 4), 0., 0.]) for i, name in enumerate(ROBOTS)}
+        value._estimated = {name: np.array([float(i * 4 + 1), 0., 0.]) for i, name in enumerate(ROBOTS)}
+        value._commands = {name: (.2, 0.) for name in ROBOTS}
+        value._encoder_scale = {name: np.array([1.1, 1.1]) for name in ROBOTS}
+        value._velocities = {name: (0., 0.) for name in ROBOTS}
+        value._paths = {name: 0. for name in ROBOTS}
+        value._active_contacts, value._contact_events = set(), []
+        value._wall_collision = Mock(return_value=False)
+        result = world_module.ProxyWorld.advance(value)
+        assert value.time_ns == 60_000_000 and value._next_scan_ns == 100_000_000
+        for index, name in enumerate(ROBOTS):
+            args = value._mappers[name].integrate.call_args.args
+            assert args[:2] == (1, 50_000_000)
+            assert args[2][0] == pytest.approx(index * 4 + 1 + .0022, abs=1e-14)
+            assert result[name]["odom"]["x"] == pytest.approx(index * 4 + 1 + .0044, abs=1e-14)
+            assert abs(args[2][0] - result[name]["odom"]["x"]) > .002
+            assert result[name]["odom"]["source_clock_ns"] == 60_000_000
+            assert result[name]["scan"]["source_clock_ns"] == 50_000_000
+>           assert world_module.ProxyWorld.map_record(value, name)["source_clock_ns"] == 50_000_000
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_proxy2d_karto_integration.py:111: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = namespace(_mapper_mode='karto', _scan_sequence=1, _odom_sequence=1, _laser={'frame_offset': (-0.064, 0.0), 'frame_yaw'..., 'tb2': 0.004, 'tb3': 0.004}, _active_contacts=set(), _contact_events=[], _wall_collision=<Mock id='125453302482112'>)
+name = 'tb1'
+
+    def map_record(self, name):
+>       return {"grid": self.local_map(name), "resolution": self.resolution,
+                "origin": self.origin, "source_stamp": self._scans[name]["source_stamp"],
+                "source_clock_ns": self._scans[name]["source_clock_ns"],
+                "version": self._map_versions[name]}
+E       AttributeError: 'types.SimpleNamespace' object has no attribute 'resolution'
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/build/multi_robot_exploration/multi_robot_exploration/mr3_proxy2d_world.py:369: AttributeError
+=========================== short test summary info ============================
+FAILED ../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_proxy2d_karto_integration.py::test_scan_at_50ms_uses_interpolated_estimate_not_60ms_end_odometry
+1 failed, 16 passed in 0.64s

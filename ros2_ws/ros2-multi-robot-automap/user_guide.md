@@ -1,5 +1,8 @@
 # 三机器人 ROS 建图导航：当前实现指南
 
+2026-10-21 V30：Karto薄sensor adapter/显式接线已实现，当前24项人工CPU和consumer80项通过（1跳过），默认endpoint保持；不是SLAM/质量/95%或训练资格。V31将按新scope/freeze执行最多600秒8步profile，完整PASS后才最多3600秒三场长行为，另300秒forensic，总4500工程块；不重开旧活动、不PPO/扩额。当前工程45445.4237026666018/52000、余6554.5762973333982，pilot/final-only不动，P2A未完成。见[V30](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261021_mr3_p2a_v30_adapter.md)。
+
+
 2026-10-21 V29复用CPU已闭合：直接编译调用canonical Karto库，7项fixed-grid/API检查通过、真实加载路径/身份/源字节稳定；只是接口证明，不是新mapper或SLAM/质量等价。明确round/padding/state、per-beam重复累计、native min/max skip与显式max-nohit差异；下一步按声明做disabled nativeAddScan薄适配及有限CPU链，不换默认、不PPO/正式行为。工程新增0，仍45445.4237026666018/52000、余6554.5762973333982，pilot/final-only不动，P2A未完成。见[V29](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261021_mr3_p2a_v29_karto.md)。
 
 2026-10-21 V28一致性CPU已闭合：38项检查、31组/133checkpoint三模型比较完整，current-hit持久否决free与closed-cell歧义按声明实现；但格线面TP归零、持续+2mm仍false-free=.04。v3保持禁用，停止本轮归格/计数补丁搜索，不做当前候选正式试跑/PPO；下一步先具体核现有SLAM/Karto量测到图复用及其格/量程/误差假设，不抄阈值作V4。工程新增0，仍45445.4237026666018/52000、余6554.5762973333982，pilot/final-only不动；P2A未完成。见[V28](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261021_mr3_p2a_v28_mapping.md)。

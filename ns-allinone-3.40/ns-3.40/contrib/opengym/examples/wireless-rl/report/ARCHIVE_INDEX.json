@@ -2259,5 +2259,28 @@
     "training_eligible": false,
     "native_credit": false,
     "interpretation": "Header-inline + actual canonical ELF/API/counter proof only, not rebuilt SDK or full native mapping. Native AddScan and explicit RayTrace ingestion differ; proposed thin sensor adapter remains disabled/unimplemented."
+  },
+  "mr3_p2a_v30_adapter_20261021": {
+    "report": "20261021_mr3_p2a_v30_adapter.md",
+    "assets": "assets/20261021_mr3_p2a_v30_adapter",
+    "baseline": "b407f40e881657746b861f92614f14de88e9089b",
+    "status": "Explicit sensor adapter implemented; CPU passed; pending new bounded behavior",
+    "adapter_cpu_passed": 24,
+    "regression_passed": 80,
+    "regression_skipped": 1,
+    "engineering_used": "45445.4237026666018",
+    "engineering_remaining": "6554.5762973333982",
+    "new_engineering_seconds": "0",
+    "qualification": false,
+    "training_eligible": false,
+    "default_mapper": "endpoint"
+  },
+  "mr3_p2a_v31_karto_behavior_20261021": {
+    "report": "20261021_mr3_p2a_v31_karto_behavior.md",
+    "assets": "assets/20261021_mr3_p2a_v31_karto_behavior",
+    "status": "Predeclared conditional profile/behavior, not yet executed",
+    "engineering_block_max_seconds": 4500,
+    "qualification": false,
+    "training_eligible": false
   }
 }

@@ -397,8 +397,8 @@ def audit_behavior(directory, freeze, *, evaluator_factory=reward_factory, sourc
     try:
         require(isinstance(freeze, str) and re.fullmatch("[0-9a-f]{40}", freeze), "exact40-character source freeze required")
         summary = bound.json(directory / "capacity_summary.json")
-        require(summary["freeze"] == freeze and canonical(summary["activity_spec"]) == canonical(SPEC)
-                and summary["activity_kind"] == "full_behavior", "behavior summary freeze/fixed specification differs")
+        require(summary["freeze"] == freeze and canonical(summary["activity_spec"]) == canonical({**SPEC,"kind":summary["activity_kind"]})
+                and summary["activity_kind"] in ("full_behavior","karto_behavior"), "behavior summary freeze/fixed specification differs")
         require(all(type(summary[key]) is int and summary[key] == 0 for key in ("policy_calls", "gpu_calls", "optimizer_steps"))
                 and all(summary[key] is False for key in ("qualification", "training_eligible", "native_credit")), "behavior acquired learning/qualification credit")
         proof, sources, _ = source_validator(summary["source_bindings"], freeze)

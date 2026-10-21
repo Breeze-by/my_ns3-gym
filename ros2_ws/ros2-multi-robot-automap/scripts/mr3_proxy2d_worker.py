@@ -49,7 +49,7 @@ def evaluator_environment(directory):
 
 
 class ProxyWorker:
-    def __init__(self, directory, epoch, scene, seed):
+    def __init__(self, directory, epoch, scene, seed, *, mapper="endpoint", mapper_library=None):
         from multi_robot_exploration.mr3_proxy2d_world import ProxyWorld
         from multi_robot_exploration.mr3_proxy2d_information import ProxyInformation
         from multi_robot_exploration.mr3_proxy2d_navigation import ProxyNavigator
@@ -58,7 +58,15 @@ class ProxyWorker:
         from multi_robot_exploration.mr3_activity import ReceivedActivity
         self.directory, self.epoch = directory, epoch
         self.scene, self.seed = scene, seed
-        self.world = ProxyWorld(scene, seed)
+        self.world = ProxyWorld(scene, seed,mapper=mapper,mapper_library=mapper_library,epoch=epoch)
+        if mapper == "karto":
+            import hashlib
+            loaded = {str(Path(line.split()[-1]).resolve())
+                for line in Path('/proc/self/maps').read_text().splitlines()
+                if 'libkartoSlamToolbox.so' in line or 'libmr3_karto_adapter.so' in line}
+            self.world.metadata["loaded_native_artifacts"] = [
+                {"path":p,"sha256":hashlib.sha256(Path(p).read_bytes()).hexdigest()}
+                for p in sorted(loaded)]
         self.information = ProxyInformation(epoch)
         self.navigator = ProxyNavigator()
         self.events = deque()
@@ -364,6 +372,7 @@ class ProxyWorker:
                 "evaluator_returncode": returncode,
             }, indent=2) + "\n")
         finally:
+            self.world.close()
             if self.evaluator.poll() is None:
                 self.evaluator.terminate()
                 self.evaluator.wait(timeout=10.)
@@ -397,6 +406,8 @@ def main():
     parser.add_argument("--epoch", required=True)
     parser.add_argument("--scene", required=True)
     parser.add_argument("--seed", type=int, required=True)
+    parser.add_argument("--mapper", choices=("endpoint","karto"),default="endpoint")
+    parser.add_argument("--mapper-library",type=Path)
     args = parser.parse_args()
     peer = ipc.JsonLinePeer(sys.stdin.fileno(), sys.stdout.fileno())
     if args.role == "evaluator":
@@ -410,7 +421,8 @@ def main():
                 if operation == "reset":
                     if worker is not None:
                         raise RuntimeError("one process per proxy episode")
-                    worker = ProxyWorker(args.directory, args.epoch, args.scene, args.seed)
+                    worker = ProxyWorker(args.directory, args.epoch, args.scene, args.seed,
+                        mapper=args.mapper,mapper_library=args.mapper_library)
                     result = worker.reset()
                 elif operation == "close":
                     if worker is not None:

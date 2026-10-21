@@ -7965,3 +7965,50 @@ rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /home/z
 ```
 
 rc0/actual wait/source stable，1.294709399秒，核14当前源含compiler、6结果文件、7case、实际库路径/ELF、533链接、旧程序/config/证据、log追加及旧archive/backup/预算；临时binary当前仍SHA匹配。静态先核4身份gone，其wait后saved_process_absence_v1.json再fresh核outer两轮＋compiler/probe共6保存身份全gone，无Z/不可读，当前来源/console精确。只核元数据，不重跑SDK，不新增工程/任务信用；新增回执链接作常规最终检查。
+
+
+## 2026-10-21 MR3 P2A V30 薄适配器/接线CPU与V31事前范围
+
+基线b407f40e881657746b861f92614f14de88e9089b；worktree源码SHA前后绑定，非正式场景freeze。首次14项PASS后，事前追加IPC日志/6300扫描尾预算修订，v2新构建24项PASS；所有首次原件/源SHA快照保持。相关consumer80pass/1skip，均无World/scene/ENV.step，工程新增0。原任务门、pilot/final-only保持，P2A未完成。
+
+CPU adapter_cpu_v1：passed=True，actualwait=15.285807278秒，source stable。cwd=/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl，精确argv：
+
+```json
+["/usr/bin/python3", "-B", "report/assets/20261021_mr3_p2a_v30_adapter/run_cpu_v1.py", "--build-dir", "/tmp/mr3_p2a_v30_adapter_cpu_v1", "--evidence-dir", "report/assets/20261021_mr3_p2a_v30_adapter/attempts/adapter_v1"]
+```
+
+CPU adapter_cpu_v2：passed=True，actualwait=16.764834106秒，source stable。cwd=/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl，精确argv：
+
+```json
+["/usr/bin/python3", "-B", "report/assets/20261021_mr3_p2a_v30_adapter/run_cpu_v2.py", "--build-dir", "/tmp/mr3_p2a_v30_adapter_cpu_v2", "--evidence-dir", "report/assets/20261021_mr3_p2a_v30_adapter/attempts/adapter_v2"]
+```
+
+CPU consumer_cpu_v1：passed=True，actualwait=83.313714699秒，source stable。cwd=/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl，精确argv：
+
+```json
+["/home/zhuyulab/miniconda3/envs/ns3gym/bin/python", "-B", "-m", "unittest", "mr3_learning.tests.test_proxy2d", "mr3_learning.tests.test_proxy2d_capacity", "mr3_learning.tests.test_proxy2d_performance", "mr3_learning.tests.test_audit_proxy2d", "mr3_learning.tests.test_audit_proxy2d_behavior"]
+```
+
+完整结果见report/20261021_mr3_p2a_v30_adapter.md。V31 scope_acceptance_v1.json事前固定4500秒块（600profile＋3600conditional三场behavior＋300forensic），新kind/输出，不复用旧活动或扩工程额度，不训练。
+
+CPU integration_cpu_v1：passed=False，actualwait=2.440283641秒；source unchanged。cwd=/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl；准确argv：
+
+```json
+["/usr/bin/bash", "-c", "source /opt/ros/humble/setup.bash\nsource /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/setup.bash\nexec /usr/bin/python3 -B -m pytest -q /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_proxy2d_karto_integration.py"]
+```
+
+CPU integration_cpu_v2：passed=True，actualwait=2.366348342秒；source unchanged。cwd=/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl；准确argv：
+
+```json
+["/usr/bin/bash", "-c", "source /opt/ros/humble/setup.bash\nsource /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/setup.bash\nexec /usr/bin/python3 -B -m pytest -q /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_proxy2d_karto_integration.py"]
+```
+
+CPU activity_cpu_v1：passed=True，actualwait=0.722467814秒；source unchanged。cwd=/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl；准确argv：
+
+```json
+["/home/zhuyulab/miniconda3/envs/ns3gym/bin/python", "-B", "-m", "unittest", "-v", "mr3_learning.tests.test_proxy2d_karto_activity"]
+```
+
+接线v1为16pass/1fail：人工namespace缺resolution/origin，失败source_integration_failed_v1.py/raw保留；补fixture后v2为17pass，生产不变。activity10项通过。V31 metadata-only plan build（cwd wireless-rl）：`rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.proxy2d_karto_activity build --kind karto_profile`，再同命令kind=karto_behavior；rc0，生成exclusive两plan/native_manifest，未运行World/工程活动。
+
+V30 metadata-only最终静态：`rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.reach_execution --scope cpu --output report/assets/20261021_mr3_p2a_v30_adapter/checks/closed_static_cpu_v1 --source report/assets/20261021_mr3_p2a_v30_adapter/closed_check_v1.py -- /usr/bin/python3 -B report/assets/20261021_mr3_p2a_v30_adapter/closed_check_v1.py`；rc0/source stable/actualwait.271937509秒。静态核原件、原archive/log、当前ELF与冻结plan、链接及此前身份；外层退出后cpu_validation_index_v1.json重新按最终全部字节封存，并fresh核全部19保存身份gone（含本轮静态outer），不重跑World/SDK。静态运行中的console可能在其打印后才完成，最终完整字节以此独立post-wait index为准。

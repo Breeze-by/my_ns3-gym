@@ -1,5 +1,8 @@
 # 当前三机器人基线与MR3适配启动命令
 
+2026-10-21 V30：Karto薄sensor adapter/显式接线已实现，当前24项人工CPU和consumer80项通过（1跳过），默认endpoint保持；不是SLAM/质量/95%或训练资格。V31将按新scope/freeze执行最多600秒8步profile，完整PASS后才最多3600秒三场长行为，另300秒forensic，总4500工程块；不重开旧活动、不PPO/扩额。当前工程45445.4237026666018/52000、余6554.5762973333982，pilot/final-only不动，P2A未完成。见[V30](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261021_mr3_p2a_v30_adapter.md)。
+
+
 ## V29 Karto直接CPU接口（已完成，未启用mapper）
 
 已用canonical headers/本地现有库编译运行固定7case探针，未改SDK/ROS build/default。准确reach外层、g++编译与临时ELF运行命令和原件见[报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261021_mr3_p2a_v29_karto.md)及共享log。仅fixed-grid bookkeeping/API，native AddScan与显式RayTrace量程语义不同，不直接换mapper或跑行为/PPO；已有输出不覆盖/盲重跑。下一步disabled sensor adapter/有限CPU，工程0新增、P2A未完成。
@@ -934,3 +937,15 @@ env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 
 原四stage、12episode、608API/596脚本动作、34门及额外必需FIFO均保持，累计工程18000墙秒
 携带1369.6459453934804；先FAIL后续SKIP。所有native、已提交reader及watcher关闭并封存前
 source/bin/Git不变。本次工程科学门补验通过，原编排中断保持；无PPO/pilot/P2B/gateway，仍待用户验收后才进入后续训练。
+
+## V31 新Karto有界活动入口
+
+V30显式mode只用于本轮新freeze/plan，不改变默认endpoint。新activity自动依次执行符合性、独立review、收集、独立审计与profile/行为报告；不能直接collect绕过准入。两个plan和native_manifest封存后，clean commit/push，EXACT40取该完整freeze：
+
+```bash
+cd /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl
+PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.proxy2d_karto_activity preflight --kind karto_profile --freeze EXACT40
+PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.reach_execution --scope engineering --output /tmp/mr3_p2a_v31_profile_outer --source mr3_learning/proxy2d_karto_activity.py -- /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.proxy2d_karto_activity execute --kind karto_profile --freeze EXACT40
+```
+
+随后同actual-wait工程wrapper封装`proxy2d_karto_activity final --kind karto_profile --run ROS_ROOT/log/mr3_p2a_proxy2d_v31/karto_profile_v1 --outer /tmp/mr3_p2a_v31_profile_outer/actual_wait.json --output /tmp/mr3_p2a_v31_profile_final.json`。只有完整PASS，才用新kind=karto_behavior、新outer=/tmp/mr3_p2a_v31_behavior_outer，并同时提供`--profile-outer /tmp/mr3_p2a_v31_profile_outer/actual_wait.json --profile-final /tmp/mr3_p2a_v31_profile_final.json --profile-final-outer /tmp/mr3_p2a_v31_profile_final_outer/actual_wait.json`执行preflight/execute。每项一次，无重试；actualargv/freeze/失败及union费用在报告收口，不训练/PPO或迁移原生。

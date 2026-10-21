@@ -1,0 +1,57 @@
+{
+  "schema": "mr3-p2a-v31-karto-bounded-scope-v1",
+  "authorization": "User repeatedly directed continue, including 全部做完; routine P2A implementation/repair/verification remains authorized. This prospectively defines bounded zero-update verification within existing ceiling; no new training/route/budget acceptance inferred.",
+  "engineering_entry_used_seconds": "45445.4237026666018",
+  "engineering_cap_seconds": "52000",
+  "engineering_remaining_seconds": "6554.5762973333982",
+  "engineering_block_seconds": 4500,
+  "schedule": [
+    {
+      "kind": "karto_profile",
+      "max_seconds": 600,
+      "envs": 1,
+      "cells": [
+        [
+          "open",
+          101
+        ]
+      ],
+      "max_attempts": 8
+    },
+    {
+      "kind": "karto_behavior",
+      "max_seconds": 3600,
+      "envs": 3,
+      "cells": [
+        [
+          "open",
+          101
+        ],
+        [
+          "rooms",
+          101
+        ],
+        [
+          "corridors",
+          101
+        ]
+      ],
+      "max_attempts": 900,
+      "steps_per_episode": 300,
+      "requires": "Same-freeze complete profile/conformity/audits/actualwait/externalabsence PASS and charge admission"
+    }
+  ],
+  "forensic_max_seconds": 300,
+  "mode": "Explicit karto; existing endpoint default preserved. Own estimated pose at every50ms scan; nativeAddScan only; original evaluator/received-only/TTL/FIFO.",
+  "stop": "One attempt each, no retries/replacement seeds. Unsafe/infrastructure/clock/budget failure remains FAIL; all original samples and process identities preserved. No PPO/GPU/pilot/final-only/native qualification/P2B/gateway.",
+  "training_eligible": false,
+  "qualification": false,
+  "native_credit": false,
+  "pilot_remaining_decisions": 1870,
+  "pilot_remaining_seconds": "2905.9547395464029",
+  "final_only_unused": [
+    401,
+    402,
+    403
+  ]
+}

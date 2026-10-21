@@ -126,7 +126,16 @@ def laser_configuration(model_path):
 class ProxyWorld:
     """Three local sensor estimators around a private deterministic 2D plant."""
 
-    def __init__(self, scene, seed, quantum_sec=.02, *, asset_root=None):
+    def __init__(self, scene, seed, quantum_sec=.02, *, asset_root=None,
+                 mapper="endpoint", mapper_library=None, epoch=None):
+        if mapper not in ("endpoint", "karto"):
+            raise ValueError("explicit supported mapper required")
+        if mapper == "karto" and (mapper_library is None or not epoch):
+            raise ValueError("Karto requires explicit library and robot epoch")
+        if mapper == "endpoint" and mapper_library is not None:
+            raise ValueError("library is only meaningful for explicit Karto mode")
+        self._mapper_mode, self._mapper_library, self._epoch = mapper, mapper_library, epoch
+        self._mappers = {}
         if scene not in SCENES or type(seed) is not int or seed < 0:
             raise ValueError("declared scene and nonnegative integer seed required")
         if type(quantum_sec) not in (int, float) or quantum_sec not in (.02, .01):
@@ -158,9 +167,19 @@ class ProxyWorld:
             "odometry": "independent biased wheel encoder integral; no truth pose correction",
             "mapping": "estimated odometry plus local ray returns; no SLAM or loop closure",
             "native_receipts": False, "policy_calls": 0, "optimizer_steps": 0}
+        if mapper == "karto":
+            from .mr3_proxy2d_karto import MODEL
+            self.metadata.update(local_map=MODEL, mapper="karto", scan_budget=6300,
+                mapping="native fixed-grid AddScan with estimated odometry; no scan matching or loop closure")
         self.reset()
 
+    def close(self):
+        for mapper in self._mappers.values():
+            mapper.close()
+        self._mappers.clear()
+
     def reset(self):
+        self.close()
         self.time_ns = 0
         self._poses = {name: np.array((*self.starts[name], 0.), dtype=float) for name in ROBOTS}
         self._estimated = {name: value.copy() for name, value in self._poses.items()}
@@ -172,6 +191,18 @@ class ProxyWorld:
                 np.random.SeedSequence((self.seed, index, 1))).normal(0., ENCODER_SCALE_STD, 2)
             self._laser_random[name] = np.random.default_rng(np.random.SeedSequence((self.seed, index, 2)))
         self._maps = {name: np.full(self.shape, -1, dtype=np.int8) for name in ROBOTS}
+        if self._mapper_mode == "karto":
+            from .mr3_proxy2d_karto import KartoSensorMapper
+            try:
+                for name in ROBOTS:
+                    self._mappers[name] = KartoSensorMapper(self.shape,self.resolution,self.origin,
+                        library_path=self._mapper_library,epoch=f"{self._epoch}/{name}",
+                        angles=self._angles,range_min=self._laser["range_min"],
+                        range_max=self._laser["range_max"],frame_offset=self._laser["frame_offset"],
+                        frame_yaw=self._laser["frame_yaw"])
+            except Exception:
+                self.close()
+                raise
         self._map_versions = {name: 0 for name in ROBOTS}
         self._scans, self._last_ray_cells = {}, {}
         self._scan_sequence = self._odom_sequence = 0
@@ -284,6 +315,12 @@ class ProxyWorld:
 
     def _integrate_scan(self, name, estimated, ranges):
         """Vectorized observed-ray carving, using no physical pose or world map."""
+        if getattr(self,"_mapper_mode","endpoint") == "karto":
+            scan = self._scans[name]
+            mapper = self._mappers[name]
+            mapper.integrate(scan["sequence"],scan["source_clock_ns"],estimated,self._angles,ranges)
+            self._maps[name] = mapper.grid()
+            return
         sx, sy, heading = self._sensor_pose(estimated)
         directions = np.stack((np.cos(self._angles + heading), np.sin(self._angles + heading)), axis=-1)
         origin = (np.array((sx, sy)) - self.origin) / self.resolution

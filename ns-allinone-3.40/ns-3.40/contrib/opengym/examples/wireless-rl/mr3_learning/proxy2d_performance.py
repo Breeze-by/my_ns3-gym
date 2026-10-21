@@ -161,7 +161,7 @@ def execute(kind, freeze):
 
 def profile_report(run):
     summary = json.loads((run / "capacity_summary.json").read_text())
-    if summary.get("activity_spec") != activity_spec("profile"):
+    if summary.get("activity_spec") not in (activity_spec("profile"),activity_spec("karto_profile")):
         raise ValueError("profile summary must bind the single profile activity")
     episodes = [item for group in summary["groups"] for item in group["episodes"]]
     if len(episodes) != 1:

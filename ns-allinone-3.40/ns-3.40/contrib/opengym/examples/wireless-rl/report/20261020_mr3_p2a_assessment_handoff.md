@@ -1,5 +1,8 @@
 # MR3 P2A 评估与后续交接
 
+当前V30已把Karto nativeAddScan薄适配器和显式模式接线做完，24项人工接口/资源/并发检查通过，相关consumer80pass/1skip；不再把它描述为尚未实现。默认endpoint与全部任务门保持，六项人工稀疏图有上沿误占，不能称解决质量。接着执行[V31](20261021_mr3_p2a_v31_karto_behavior.md)新freeze/预算块：600秒8步profile完整PASS后最多3600秒三场长行为，另300秒forensic。actual source/ELF manifest、原输入重算与关闭均必须通过；失败保留、不重试/PPO。工程仍余6554.5762973333982，pilot/final-only不动。以下V29及更早为历史快照；本轮会继续真实执行并更新最终结果。
+
+
 截至V29的当前交接：[现有Karto库最小CPU探针](20261021_mr3_p2a_v29_karto.md)已真实编译调用canonical SDK，7项固定接口/counter检查通过；actual outer14.391197463秒（compile14.152991549/probe.016951187为内层不重复相加），13 outer来源稳定，实际加载路径与保存身份一致。它证明本地复用接口可行，**没有实现或启用新mapper，没有SLAM、偏差修复、质量或95%资格**。V28/v3继续禁用，不返回计数阈值补丁。
 
 下一步按[薄适配设计](assets/20261021_mr3_p2a_v29_karto/adapter_design_v1.json)做disabled nativeAddScan sensor adapter和有限CPU链：只own估计body pose/均匀scan、外参一次，原native min/max skip/threshold/per-beam计数不偷换；外置sourceID/epoch门、finite counter界、Validate；事前声明ROS boundaryorigin与SDK centeroffset半格适配并测signedties/padding/state，合法越界partial应只消费一次，禁止自动重试。设计仍未实现/验证，不能直接接actor或旧performance活动。工程新增0，仍45445.4237026666018/52000、余6554.5762973333982，pilot1870/2905.9547395464029、final-only401/402/403不动，P2A未完成。以下V28及更早为此前快照，常规实现/CPU验证已授权无需重复询问。

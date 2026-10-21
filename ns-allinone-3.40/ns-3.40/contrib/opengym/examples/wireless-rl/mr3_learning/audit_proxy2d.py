@@ -446,15 +446,15 @@ def _activity_contract(summary):
         return {"kind": "legacy_v22", "groups": [1, 4], "cells": cells, "steps_per_episode": 300,
                 "max_attempts": 9000, "activity_seconds": 3600, "group_wall_seconds": None}
     spec = summary["activity_spec"]
-    require(isinstance(spec, dict) and spec.get("kind") in ("profile", "short_capacity", "full_behavior"),
+    require(isinstance(spec, dict) and spec.get("kind") in ("profile", "short_capacity", "full_behavior", "karto_profile", "karto_behavior"),
             "unknown bounded proxy activity specification")
-    profile = spec["kind"] == "profile"
+    profile = spec["kind"] in ("profile", "karto_profile")
     expected = {"schema": "mr3-proxy2d-activity-spec-v1", "kind": spec["kind"],
                 "groups": [1] if profile else [1, 4], "cells": [["open", 101]] if profile else cells,
                 "steps_per_episode": 8, "max_attempts": 8 if profile else 240,
                 "activity_seconds": 600 if profile else 1800}
-    if spec["kind"] == "full_behavior":
-        expected = {"schema": "mr3-proxy2d-activity-spec-v1", "kind": "full_behavior",
+    if spec["kind"] in ("full_behavior", "karto_behavior"):
+        expected = {"schema": "mr3-proxy2d-activity-spec-v1", "kind": spec["kind"],
                     "groups": [3], "cells": [["open", 101], ["rooms", 101], ["corridors", 101]],
                     "worker_cells": [[[["open", 101]], [["rooms", 101]], [["corridors", 101]]]],
                     "steps_per_episode": 300, "max_attempts": 900, "activity_seconds": 3600}
@@ -462,7 +462,7 @@ def _activity_contract(summary):
     require(summary.get("activity_kind") == spec["kind"] and summary.get("profile_enabled") is profile
             and canonical(summary.get("scheduled_cells")) == canonical(expected["cells"]),
             "summary activity kind/profile/schedule differs from its fixed specification")
-    walls = [240] if profile else [2100] if spec["kind"] == "full_behavior" else [400, 800]
+    walls = [240] if profile else [2100] if spec["kind"] in ("full_behavior", "karto_behavior") else [400, 800]
     return {**expected, "group_wall_seconds": walls}
 
 
@@ -470,6 +470,9 @@ def verify_run_sources(bindings, freeze):
     require(isinstance(bindings, dict) and bindings, "proxy run has no source inventory")
     required = {path.relative_to(ROOT).as_posix() for path in (
         *Path(__file__).parent.glob("*proxy2d*.py"), *PURE.glob("mr3_proxy2d_*.py"),
+        PURE / "mr3_proxy2d_karto_native.cpp",
+        *(ROOT / "ros2_ws/ros2-multi-robot-automap/src/slam_toolbox/lib/karto_sdk/include/karto_sdk").glob("*.h"),
+        *(ROOT / "ros2_ws/ros2-multi-robot-automap/src/slam_toolbox/lib/karto_sdk/include/karto_sdk").glob("*.hpp"),
         PURE / "mr3_observation.py", PURE / "mr3_episode.py", PURE / "mr3_protocol.py",
         PURE / "mr3_transport.py", PURE / "mr3_activity.py", PURE / "mr3_reward.py",
         PURE / "mr3_information.py", PURE / "task_evaluator.py",
@@ -502,6 +505,32 @@ def verify_run_sources(bindings, freeze):
             inspected.append(relative)
     require(inspected, "no proxy execution/audit sources were bound")
     return proof, stable, inspected
+
+
+def verify_karto_manifest(summary, stable):
+    """Independent current ELF and frozen manifest binding for explicit Karto."""
+    require(summary.get("mapper") == "karto", "Karto activity used another mapper")
+    ref = summary["native_manifest"]
+    path = Path(ref["path"]).resolve()
+    relative = path.relative_to(ROOT).as_posix()
+    raw = path.read_bytes()
+    require(sha(raw) == ref["sha256"] == summary["source_bindings"][relative],
+            "native manifest differs from frozen source proof")
+    stable[path] = raw
+    manifest = parse(raw)
+    require(manifest["schema"] == "mr3-proxy2d-karto-native-manifest-v1", "wrong native manifest schema")
+    artifacts = manifest["artifacts"]
+    require(len(artifacts)==2 and {Path(p["path"]).name for p in artifacts} ==
+            {"libmr3_karto_adapter.so","libkartoSlamToolbox.so"}, "wrong native ELF inventory")
+    for item in artifacts:
+        file = Path(item["path"]).resolve(strict=True)
+        body = file.read_bytes()
+        require(str(file)==item["path"] and sha(body)==item["sha256"] and len(body)==item["bytes"],
+                "current native ELF differs from declared build")
+        stable[file] = body
+    adapter = next(p["path"] for p in artifacts if Path(p["path"]).name=="libmr3_karto_adapter.so")
+    require(summary["mapper_library"]==adapter, "collection uses another adapter ELF")
+    return sorted(({"path":p["path"],"sha256":p["sha256"]} for p in artifacts),key=lambda p:p["path"])
 
 
 def verify_conformity(directory, specification, freeze):
@@ -743,6 +772,8 @@ def audit_run(directory, freeze):
                     for key in ("policy_calls", "gpu_calls", "optimizer_steps")), "proxy run declared learning calls")
         bound, run_sources, inspected = verify_run_sources(summary["source_bindings"], freeze)
         stable.update(run_sources)
+        native_artifacts = (verify_karto_manifest(summary,stable)
+            if contract["kind"] in ("karto_profile","karto_behavior") else None)
         result.update(source_proof=proof, run_source_bindings=bound,
                       proxy_sources_without_learning_framework_imports=inspected)
         start, deadline, collection = (summary[key] for key in (
@@ -754,8 +785,8 @@ def audit_run(directory, freeze):
         if bounded:
             collection_started = summary["collection_started_ns"]
             require(type(collection_started) is int and start <= collection_started
-                    and collection - collection_started == (240 if contract["kind"] == "profile" else
-                        2100 if contract["kind"] == "full_behavior" else 1200) * 10**9
+                    and collection - collection_started == (240 if contract["kind"] in ("profile", "karto_profile") else
+                        2100 if contract["kind"] in ("full_behavior", "karto_behavior") else 1200) * 10**9
                     and collection <= deadline - 120 * 10**9,
                     "bounded collection reservation differs from its exact fixed clock contract")
         result["conformity"], receipt = verify_conformity(directory, summary["conformity"], freeze)
@@ -780,7 +811,7 @@ def audit_run(directory, freeze):
         group_end = start
         for group_index, group in enumerate(groups):
             workers = group["workers"]
-            allowed_workers = contract["groups"] if contract["kind"] == "full_behavior" else (1, 4)
+            allowed_workers = contract["groups"] if contract["kind"] in ("full_behavior", "karto_behavior") else (1, 4)
             require(type(workers) is int and workers in allowed_workers, "invalid environment-group identity")
             if not (type(group["started_ns"]) is int and type(group["ended_ns"]) is int
                     and group_end <= group["started_ns"] <= group["ended_ns"] <= deadline):
@@ -800,7 +831,7 @@ def audit_run(directory, freeze):
             capacity.update({key: 0 for key in VERIFIED_COUNTS})
             for env_id in range(workers):
                 expected_cells = (contract["worker_cells"][group_index][env_id]
-                                  if contract["kind"] == "full_behavior" else contract["cells"])
+                                  if contract["kind"] in ("full_behavior", "karto_behavior") else contract["cells"])
                 local_cells = {tuple(cell) for cell in expected_cells}
                 entries = sorted((item for item in group["episodes"] if item["env_id"] == env_id),
                                  key=lambda item: item["episode_index"])
@@ -837,10 +868,21 @@ def audit_run(directory, freeze):
                             metadata_raw = metadata_path.read_bytes()
                             stable[metadata_path] = metadata_raw
                             metadata = parse(metadata_raw)
+                            if native_artifacts is not None:
+                                model_path = episode / "proxy_model.json"
+                                model_raw = model_path.read_bytes()
+                                stable[model_path] = model_raw
+                                model = parse(model_raw)
+                                require(metadata.get("mapper")=="karto"
+                                    and metadata.get("mapper_library")==summary["mapper_library"]
+                                    and model.get("local_map")=="karto_native_addscan_fixed_grid_v1"
+                                    and model.get("mapper")=="karto" and model.get("scan_budget")==6300
+                                    and model.get("loaded_native_artifacts")==native_artifacts,
+                                    "episode mapper/model/actual loaded native ELFs differ")
                             require(all(type(metadata[key]) is type(expected) and metadata[key] == expected for key, expected in (
                                 ("scene", item["scene"]), ("seed", item["seed"]), ("env_id", env_id),
                                 ("episode_index", item["episode_index"]), ("epoch", report["epoch"]), ("freeze", freeze)))
-                                and metadata["profile_enabled"] is (contract["kind"] == "profile"),
+                                and metadata["profile_enabled"] is (contract["kind"] in ("profile", "karto_profile")),
                                 "bounded episode metadata differs from its actual fixed cell/identity")
                             steps = contract["steps_per_episode"]
                             actual_steps = report["step_attempts"]
@@ -851,7 +893,7 @@ def audit_run(directory, freeze):
                                     and report["verified_actor_record_count"] == actual_steps + 1,
                                     "bounded episode lacks complete verified coverage within its eight-step ceiling")
                             terminal = report["last_verified_return_terminal"]
-                            if contract["kind"] == "full_behavior":
+                            if contract["kind"] in ("full_behavior", "karto_behavior"):
                                 require(terminal and terminal["terminated"] and not terminal["truncated"]
                                         and terminal["reason"] in ("coverage_reached", "timeout")
                                         and (terminal["reason"] != "timeout" or actual_steps == steps),
@@ -880,7 +922,7 @@ def audit_run(directory, freeze):
                                 sum(item["env_id"] == env_id for item in group["episodes"]) == 6 for env_id in range(workers)),
                             complete_declared_cells_per_worker=all(
                                 sum(item["env_id"] == env_id for item in group["episodes"]) ==
-                                (len(contract["worker_cells"][group_index][env_id]) if contract["kind"] == "full_behavior"
+                                (len(contract["worker_cells"][group_index][env_id]) if contract["kind"] in ("full_behavior", "karto_behavior")
                                  else len(cells)) for env_id in range(workers)))
             result["group_capacity"].append(capacity)
         for episode in sorted(discovered - audited):

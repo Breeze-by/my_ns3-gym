@@ -34,6 +34,10 @@ def source_paths():
     paths.update((ROS_ROOT / "src/multi_robot/config/mr3_p1a").glob("*.json"))
     paths.update((ROS_ROOT / "src/multi_robot/worlds").glob("p1c_*.world"))
     paths.add(ROS_ROOT / "src/multi_robot/models/turtlebot3_waffle/model.sdf")
+    paths.add(ROS_ROOT / "src/multi_robot_exploration/multi_robot_exploration/mr3_proxy2d_karto_native.cpp")
+    sdk = ROS_ROOT / "src/slam_toolbox/lib/karto_sdk/include/karto_sdk"
+    paths.update(sdk.glob("*.h"))
+    paths.update(sdk.glob("*.hpp"))
     # Model path is deliberately checked, never replaced by a remembered laser.
     for path in paths:
         if not path.is_file():

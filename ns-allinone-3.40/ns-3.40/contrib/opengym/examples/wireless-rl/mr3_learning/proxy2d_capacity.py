@@ -20,18 +20,18 @@ CELLS = [(scene, seed) for scene in ("open", "rooms", "corridors") for seed in (
 
 
 def activity_spec(kind):
-    if kind == "full_behavior":
+    if kind in ("full_behavior", "karto_behavior"):
         return {"schema": "mr3-proxy2d-activity-spec-v1", "kind": kind,
                 "groups": [3], "cells": [["open", 101], ["rooms", 101], ["corridors", 101]],
                 "worker_cells": [[[["open", 101]], [["rooms", 101]], [["corridors", 101]]]],
                 "steps_per_episode": 300, "max_attempts": 900, "activity_seconds": 3600}
-    if kind not in ("profile", "short_capacity"):
+    if kind not in ("profile", "short_capacity", "karto_profile"):
         raise ValueError("unknown bounded proxy activity kind")
     return {"schema": "mr3-proxy2d-activity-spec-v1", "kind": kind,
-            "groups": [1] if kind == "profile" else [1, 4],
-            "cells": [["open", 101]] if kind == "profile" else [list(cell) for cell in CELLS],
-            "steps_per_episode": 8, "max_attempts": 8 if kind == "profile" else 240,
-            "activity_seconds": 600 if kind == "profile" else 1800}
+            "groups": [1] if kind in ("profile", "karto_profile") else [1, 4],
+            "cells": [["open", 101]] if kind in ("profile", "karto_profile") else [list(cell) for cell in CELLS],
+            "steps_per_episode": 8, "max_attempts": 8 if kind in ("profile", "karto_profile") else 240,
+            "activity_seconds": 600 if kind in ("profile", "karto_profile") else 1800}
 
 
 def validate_activity_spec(spec):
@@ -100,9 +100,12 @@ class Trace:
 
 
 def collect_worker(group, env_id, budget, freeze, *, cells=None, steps_per_episode=300,
-                   group_deadline_ns=None, profile=False):
+                   group_deadline_ns=None, profile=False, mapper="endpoint", mapper_library=None):
     root = group / f"worker{env_id}"
-    supervisor = ProxySupervisor(root, env_id=env_id, **({"profile": True} if profile else {}))
+    kwargs = {"profile":True} if profile else {}
+    if mapper != "endpoint":
+        kwargs.update(mapper=mapper,mapper_library=mapper_library)
+    supervisor = ProxySupervisor(root, env_id=env_id, **kwargs)
     env = MR3Env(supervisor=supervisor, max_steps=steps_per_episode)
     local_deadline = budget.deadline_ns if group_deadline_ns is None else min(budget.deadline_ns, group_deadline_ns)
     action_seed = 41 + 1_000_003 * env_id
@@ -197,7 +200,8 @@ def collect_worker(group, env_id, budget, freeze, *, cells=None, steps_per_episo
 
 
 def collect(run, freeze, source_bindings, conformity_ref, activity_started_ns, deadline_ns, *,
-            activity_spec=None, group_wall_seconds=None, profile=False, collection_deadline_ns=None):
+            activity_spec=None, group_wall_seconds=None, profile=False, collection_deadline_ns=None,
+            mapper="endpoint",mapper_library=None,native_manifest=None):
     if type(profile) is not bool:
         raise ValueError("profile flag must be boolean")
     if activity_spec is None:
@@ -208,14 +212,14 @@ def collect(run, freeze, source_bindings, conformity_ref, activity_started_ns, d
     else:
         validate_activity_spec(activity_spec)
         kind = activity_spec["kind"]
-        expected_walls = [240] if kind == "profile" else [2100] if kind == "full_behavior" else [400, 800]
-        if canonical_bytes(group_wall_seconds) != canonical_bytes(expected_walls) or profile != (kind == "profile"):
+        expected_walls = [240] if kind in ("profile", "karto_profile") else [2100] if kind in ("full_behavior", "karto_behavior") else [400, 800]
+        if canonical_bytes(group_wall_seconds) != canonical_bytes(expected_walls) or profile != (kind in ("profile", "karto_profile")):
             raise ValueError("activity group wall reservations/profile flag differ from the fixed specification")
         if (type(deadline_ns) is not int or type(activity_started_ns) is not int
                 or deadline_ns - activity_started_ns != activity_spec["activity_seconds"] * 10**9):
             raise ValueError("activity deadline differs from the exact bounded specification")
         collection_started = time.monotonic_ns()
-        collection_seconds = 240 if profile else 2100 if kind == "full_behavior" else 1200
+        collection_seconds = 240 if profile else 2100 if kind in ("full_behavior", "karto_behavior") else 1200
         collection_deadline = collection_started + collection_seconds * 10**9
         if collection_deadline > deadline_ns - 120 * 10**9:
             raise ValueError("collection reservation lacks the required remaining activity tail")
@@ -223,6 +227,10 @@ def collect(run, freeze, source_bindings, conformity_ref, activity_started_ns, d
             raise ValueError("collection deadline differs from the fixed reservation")
         groups_expected, cells = activity_spec["groups"], activity_spec["cells"]
         steps, maximum = activity_spec["steps_per_episode"], activity_spec["max_attempts"]
+    if mapper == "karto" and (activity_spec is None or activity_spec["kind"] not in ("karto_profile","karto_behavior") or not native_manifest):
+        raise ValueError("Karto requires a new exact activity and native manifest")
+    if activity_spec is not None and activity_spec["kind"].startswith("karto_") and mapper != "karto":
+        raise ValueError("Karto activity cannot use the default mapper")
     budget = StepBudget(collection_deadline, maximum=maximum)
     previous_handler = signal.signal(signal.SIGINT, lambda *_: budget.stop.set())
     groups, all_errors, identities = [], [], []
@@ -237,10 +245,12 @@ def collect(run, freeze, source_bindings, conformity_ref, activity_started_ns, d
             with ThreadPoolExecutor(max_workers=workers) as executor:
                 kwargs = {} if activity_spec is None else {"cells": cells, "steps_per_episode": steps,
                     "group_deadline_ns": local_deadline, "profile": profile}
+                if mapper == "karto":
+                    kwargs.update(mapper=mapper,mapper_library=mapper_library)
                 futures = []
                 for index in range(workers):
                     worker_kwargs = kwargs
-                    if activity_spec is not None and activity_spec["kind"] == "full_behavior":
+                    if activity_spec is not None and activity_spec["kind"] in ("full_behavior", "karto_behavior"):
                         worker_kwargs = {**kwargs, "cells": activity_spec["worker_cells"][group_index][index]}
                     futures.append(executor.submit(collect_worker, group, index, budget, freeze, **worker_kwargs))
                 for future in as_completed(futures):
@@ -271,10 +281,12 @@ def collect(run, freeze, source_bindings, conformity_ref, activity_started_ns, d
         "saved_identities": identities,
         "forbidden_framework_imports": [name for name in ("torch", "stable_baselines3", "sb3_contrib") if name in sys.modules],
         "scope": "short uniform-action proxy capacity, not qualified training throughput"}
+    if mapper == "karto":
+        summary.update(mapper=mapper,mapper_library=mapper_library,native_manifest=native_manifest)
     if activity_spec is not None:
         summary.update(activity_spec=activity_spec, activity_kind=activity_spec["kind"], profile_enabled=profile,
                        collection_started_ns=collection_started)
-        if activity_spec["kind"] == "full_behavior":
+        if activity_spec["kind"] in ("full_behavior", "karto_behavior"):
             summary["scope"] = "bounded full-duration uniform-action proxy behavior; no training or native qualification"
     (run / "capacity_summary.json").write_text(json.dumps(summary, indent=2) + "\n")
     signal.signal(signal.SIGINT, previous_handler)

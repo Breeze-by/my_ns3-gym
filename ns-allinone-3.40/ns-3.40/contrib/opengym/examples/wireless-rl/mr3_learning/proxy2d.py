@@ -17,10 +17,14 @@ class ProxySupervisor:
     training_eligible = False
     native_qualification = False
 
-    def __init__(self, directory, env_id=0, *, profile=False):
+    def __init__(self, directory, env_id=0, *, profile=False,mapper="endpoint",mapper_library=None):
         if type(profile) is not bool:
             raise ValueError("proxy profile switch must be boolean")
         self.profile = profile
+        if mapper not in ("endpoint","karto") or (mapper=="karto") != (mapper_library is not None):
+            raise ValueError("explicit supported mapper/library pair required")
+        self.mapper = mapper
+        self.mapper_library = None if mapper_library is None else str(Path(mapper_library).resolve(strict=True))
         self.root = Path(directory).resolve()
         self.root.mkdir(parents=True, exist_ok=False)
         self.env_id, self.episode_number = env_id, 0
@@ -49,8 +53,10 @@ class ProxySupervisor:
         command = ["/usr/bin/bash", "--noprofile", "--norc", "-c",
                    'source /opt/ros/humble/setup.bash && source "$1/install/setup.bash" '
                    '&& exec /usr/bin/python3 -B "$1/scripts/mr3_proxy2d_worker.py" '
-                   '--role worker --directory "$2" --epoch "$3" --scene "$4" --seed "$5"',
-                   "mr3-proxy", str(ROS_ROOT), str(self.directory), epoch, scene, str(seed)]
+                   '--role worker --directory "$2" --epoch "$3" --scene "$4" --seed "$5" '
+                   '--mapper "$6" ${7:+--mapper-library "$7"}',
+                   "mr3-proxy", str(ROS_ROOT), str(self.directory), epoch, scene, str(seed),
+                   self.mapper,self.mapper_library or ""]
         env = ros_environment(230 + self.env_id, 15901 + self.env_id)
         env.update(PYTHONDONTWRITEBYTECODE="1", CUDA_VISIBLE_DEVICES="",
                    OPENBLAS_NUM_THREADS="1", OMP_NUM_THREADS="1", MKL_NUM_THREADS="1")
@@ -72,6 +78,8 @@ class ProxySupervisor:
                         "actual_argv": command, "cwd": str(ROS_ROOT), "proxy_only": True,
                         "training_eligible": False, "profile_enabled": self.profile,
                         "reset_kind": "complete_proxy_process_rebuild"}
+            if self.mapper == "karto":
+                metadata.update(mapper=self.mapper,mapper_library=self.mapper_library)
             (self.directory / "episode.json").write_text(json.dumps(metadata, indent=2) + "\n")
             self.last_result = self._rpc("reset")
             child = json.loads((self.directory / "evaluator_identity.json").read_text())
