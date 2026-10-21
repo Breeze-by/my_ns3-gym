@@ -1,5 +1,7 @@
 # wireless-rl memory — MR3
 
+2026-10-21 V27 CPU候选已闭合：sensor-only mapper-v2未接默认；68项检查、14组人工对比完整，局部格线改善伴随free覆盖下降、corner退化，持续+2mm仍false-free=.04，free饱和首次hit仍free。保留禁用候选，不直接完整行为/PPO；先明确当前hit否决free、歧义unknown与量测假设，再设计新版本。工程新增0，仍45445.4237026666018/52000、余6554.5762973333982，pilot/final-only不动；P2A未完成。见[V27](report/20261021_mr3_p2a_v27_mapping.md)。
+
 2026-10-21 V26已闭合：三场实际几何条件上包络.390342/.484456/.513595均高于原.20门，未排除也未证明可达；ROI子界未收紧。仅计算/来源/关闭PASS，无World/episode/训练/native资格。main+final工程union4.886817531，累计45445.4237026666018/52000、余6554.5762973333982，7保存身份gone，pilot/final-only不动。下一步转sensor-only mapper-v2 CPU边界/证据累计候选，不再收紧静态界或直接PPO；P2A未完成。见[V26](report/20261021_mr3_p2a_v26_geometry.md)。
 
 2026-10-21 V25 CPU收口：协议117、人工建图7、导航缓存等价21项通过；仅按精确几何输入复用路径场，原scan/pair/源龄与pure源码保持。人工厚box的端点图IoU上限112/697低于.20，另有格线/2mm误差反例；不宣称实际三场不可达。下一步先量化代理质量可达性/逆传感器模型，不直接PPO或重跑V24。本轮无formal/工程新增，仍余6559.4631148643982秒，pilot/final-only不动；P2A未完成。见[V25](report/20261021_mr3_p2a_v25_cpu.md)。

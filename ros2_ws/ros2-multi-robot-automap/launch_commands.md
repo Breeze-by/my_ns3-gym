@@ -1,5 +1,9 @@
 # 当前三机器人基线与MR3适配启动命令
 
+## V27 人工CPU建图候选（已完成，未启用）
+
+本轮新增独立sensor-only mapper-v2与人工比较脚本，未更改World/worker/launch默认。68项检查和14组人工比较完成，但corner、持续偏差及首次hit延迟等反例使候选保持禁用，不据此启动完整行为或PPO。唯一实际CPU命令由 `report/assets/20261021_mr3_p2a_v27_mapping/run_cpu_v1.sh` 通过reach actual-wait执行；准确外层argv、源绑定和输出见[报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261021_mr3_p2a_v27_mapping.md)与共享log。已有输出仅供复核，不覆盖或盲重跑；无新工程费用或训练/native资格。
+
 ## V26 实际几何只读诊断
 
 该唯一活动已在89a1b0543c5445bb5815162ae4ef07f1f7c728c0完成并闭合，不重跑/复用输出。三场条件上界未排除原.20门，也不证明任务可达；0World/Node/episode/策略，默认launch不变。实际前检/guard/final精确argv和原回执见[V26](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261021_mr3_p2a_v26_geometry.md)与共享log。工程余6554.5762973333982秒，pilot/final-only未动；下一步sensor-only建图CPU候选，不直接PPO。

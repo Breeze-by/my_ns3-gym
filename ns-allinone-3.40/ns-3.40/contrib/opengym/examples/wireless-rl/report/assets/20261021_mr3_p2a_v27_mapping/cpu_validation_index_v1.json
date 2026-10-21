@@ -1,0 +1,31 @@
+{
+  "schema": "mr3-p2a-v27-cpu-validation-index-v1",
+  "baseline": "53d3c90090e491bf64e79f82318247a78caec907",
+  "scope": "Disabled sensor-only candidate; artificial arrays only, no World/Node/task asset/episode/ENV.step/actor/reward replay. The seven unchanged v1 checks are regression coverage, not new independent research credit.",
+  "checks": [
+    {
+      "receipt": "checks/mapper_cpu_v1/actual_wait.json",
+      "pytest_passed": 68,
+      "new_mapper_cases": 61,
+      "unchanged_v1_cases": 7,
+      "actual_child_wait_seconds": "4.640798364"
+    }
+  ],
+  "generated": [
+    {
+      "path": "mapping_comparison_v1.json",
+      "sha256": "b8b9c5b534668976403839146444830b82f96aee6ae2ef7db7cf82bb59176e23",
+      "bytes": 304343
+    }
+  ],
+  "new_engineering_seconds": "0",
+  "cumulative_engineering_seconds": "45445.4237026666018",
+  "remaining_engineering_seconds": "6554.5762973333982",
+  "pilot_decisions_remaining": 1870,
+  "pilot_seconds_remaining": "2905.9547395464029",
+  "final_only": "401/402/403 unused",
+  "production_enabled": false,
+  "qualification": false,
+  "training_eligible": false,
+  "native_credit": false
+}
