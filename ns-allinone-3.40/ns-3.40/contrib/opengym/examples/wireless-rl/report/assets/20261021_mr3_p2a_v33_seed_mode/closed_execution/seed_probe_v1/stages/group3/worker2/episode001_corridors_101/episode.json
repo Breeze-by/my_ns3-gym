@@ -1,0 +1,42 @@
+{
+  "epoch": "proxy2d_w2_e1_51bdc2bf",
+  "scene": "corridors",
+  "seed": 101,
+  "env_id": 2,
+  "episode_index": 1,
+  "worker_identity": {
+    "pid": 3086402,
+    "parent": 3086395,
+    "group": 3086402,
+    "session": 3086402,
+    "start_ticks": 433884241,
+    "state": "R"
+  },
+  "actual_argv": [
+    "/usr/bin/bash",
+    "--noprofile",
+    "--norc",
+    "-c",
+    "source /opt/ros/humble/setup.bash && source \"$1/install/setup.bash\" && exec /usr/bin/python3 -B \"$1/scripts/mr3_proxy2d_worker.py\" --role worker --directory \"$2\" --epoch \"$3\" --scene \"$4\" --seed \"$5\" --mapper \"$6\" ${7:+--mapper-library \"$7\"} --seed-rule \"$8\"",
+    "mr3-proxy",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v33/seed_probe_v1/stages/group3/worker2/episode001_corridors_101",
+    "proxy2d_w2_e1_51bdc2bf",
+    "corridors",
+    "101",
+    "karto",
+    "/tmp/mr3_p2a_v30_adapter_cpu_v2/libmr3_karto_adapter.so",
+    "exact-point-bridge-v1"
+  ],
+  "cwd": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap",
+  "proxy_only": true,
+  "training_eligible": false,
+  "profile_enabled": false,
+  "reset_kind": "complete_proxy_process_rebuild",
+  "mapper": "karto",
+  "mapper_library": "/tmp/mr3_p2a_v30_adapter_cpu_v2/libmr3_karto_adapter.so",
+  "seed_rule": "exact-point-bridge-v1",
+  "freeze": "6d16ebdc5c246b8079574996cb8298800e4f7cb9",
+  "action_seed": 2000047,
+  "action_stream": "per-group/env continuous across declared cells"
+}

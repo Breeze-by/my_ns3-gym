@@ -1,0 +1,326 @@
+{
+  "schema": "mr3-proxy2d-capacity-summary-v1",
+  "freeze": "6d16ebdc5c246b8079574996cb8298800e4f7cb9",
+  "source_bindings": {
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/__init__.py": "1ed62607abac81c63a25c885a23a52f0152d279db480f5c270abea3da55564ef",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/action_trace.py": "8a05bdf6e304b3850f9978ca4dd9f893f12645c86a920ac18a9fdc1d4151e212",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_action_trace.py": "b9b6ef807c58e810feff036aab2b8efaf41d4eecfdb9fa13251287d50a5481ad",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_activity.py": "0fa0c47262ccf29f140cc2b915431461e830f87680b65f524cbda6a6ffff4407",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_controlled_physics.py": "3080521c368c5dc9b47c74337ea200945c80c125231146ac39cb90a71080dc3e",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_evaluator_phase.py": "35095aaf99f2ee956ed02909ade7755de3974489031c1854287ed547d0628070",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_information.py": "c384b1b3cfc2817a770ea9a2ee5ea5e2f3dadb402df8f869d3eae6c76a38c020",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_motion.py": "202d233600921be6c820fb4f96ec3bd0a4c442df318df140b4d7d375b556d0fc",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_nav2_parameters.py": "848dd05ebd9558a4ec8d47866909662030d24cfce837742a409907ff6c5bfdf3",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_odometry_cadence.py": "14519650bc7bab8fbea3d1a0d8407dbd75b8fb32c9c504d8864202bac81b2a6b",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_policy_inputs.py": "2bff01e3dc4dc78ab32ae04530f799abe04b585be6abb93293e5879557276036",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_ppo.py": "b2e0737d79826b7ecb319cc91b58ff45475ea831a9cb2b4cab2298aaf6474567",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_preparation.py": "b7e07ee44188b43f09a94215430fac609d6753f7be5594ce9f4b2308ccf88cab",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_protocol.py": "8bc1ee209761be2108a3d1d0248f2d0ab40b9fc68539ecedffec11cb81fd1647",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_proxy2d.py": "fc8a4123e7eabc8cd1cbc4edfe17ce3b4180ab88b88e4d9a9f6ec3cf030bfebc",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_proxy2d_behavior.py": "92aca572f8d9dfbfe83d39b60db670af16b9dd6e7184011a4a5c4a870d75ea20",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_cadence.py": "62c68c04cea9c4ea759a638813f7752e960439144064ac54794583b33b748c46",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_controlled_physics.py": "36f105425a963e2acf6126b008c5b60c09b47b2d995c55c7306fdaf6dd355f42",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_diagnostic.py": "432721002e6617084e240e136fecc34acb1ea59760a7e29d806b354dc82ed557",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_information.py": "f17c6fd76c4a1682ba36bd084548f74c46fd3151da14a3084c6613d984c6e495",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_nav2_parameters.py": "53dcb0ce70a745956b92a916340019a94d6175074b766d101e5d8425d844b514",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_peer_control.py": "29f074ecf0d704b4f484ccc1c0c990b0bdf7223e04ffbd44e4af887b038c989f",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_ppo.py": "ea36c2b1e5dcb0e1097f16f611f44522cf0c8b8171a85fc7353a46fcecb2e57a",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_preparation.py": "447f0ecf06e6134979d2bfb29450ed32331df86aa9cf3f1204621fe2ed8d58da",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_runtime.py": "4f6505f686945927641431a7cc64ee42e1fa5219b9d5f5144c82118fb96d88fa",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_sensor_model.py": "069daad11f476eb00eeea57d2a97cac4e6d46defa59f7dbfd3c90152738d6c2a",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_scalar.py": "fa26eddef15523cbbed40e4cdb02c19f93f90e372cad8cf9bffde9cd8f9888c8",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_seed_inputs.py": "04404966984d806d81fc5d78d34c02a070f881625279c24a249fe61e486d7141",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/benchmark.py": "05d616c3e545b0d5eaf5e8169ad7c27479505cd1ccaab774eeedd27b43207e17",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/env.py": "3e2902ff9be5c1b5c0aec00e0e03f2e1b5046a2335a2e871b7ec846156e3a6ff",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/gpu_probe.py": "1505cef4cf4c148a026bac1c6ed4ba3c28ef30a874c9ac0e8e62180a83aa438e",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/ipc.py": "55c6cb4d4a985418ce43e9d753b2d84400bb48138d5588ef43080380bd33cf18",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/model.py": "589ef94730c3bb0785f2d9027e9affe666828a19aff6952dcc2098e4bc31ae41",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/native_custody.py": "4edcdb6b33105e274c1c908c9d78e8c5d24461ff6733ed0f976e41bad3f2d928",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/native_custody_reach.py": "e19cb7f1ae1f5ebe61de9c16edf0e387dd063f9f8cc8e9f42263fbdc0efb24db",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/navigation_archive.py": "b509cc0d19ca443c0776cae4d728d35f399670bda08c171d590c8738964c48bd",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/observation.py": "69f446d601fd67e2cd51622c1e443891a3915587d8d1ba6b12745f7e15ad1723",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/plant_probe.py": "0648b6f7e56326543b52607a5c22b24bec7323a62e056019bfabff2c321a6e3a",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/plant_probe_audit.py": "56a0dbc0ef8e9f07c27023969507980c6c806c8858e83be474e8933b2dce2e05",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/policy.py": "b7d87473c1debf8939209ab7b2cea14e1c28d2639cae320a436c381faccd6452",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/ppo.py": "ee287b774f2f02935650012917647116a0664a8c933037663ad25996270bf69a",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/preparation.py": "850ab8947f711033f3f2fd17ef57d32098c02d569c1bea0f5cf58aaff8acd767",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d.py": "546c187ab571eba7f9ad285ae867dcb7092998e50a718ee67a037187ba5fbe60",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d_activity.py": "b2bb5f97b3bee917da2b7493a8db6ddca11e425d6f9b972d80caf63df843b385",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d_capacity.py": "c3074e04a6d8933661294d2ce64f9410ee9a539264ed1851ddb221c627815424",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d_codec.py": "337244082676e08050d8872c6b9fcdc109840dcdb6ed188f854c5496e1d78981",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d_conformity.py": "505d237930e4024393b9dfd5eee5602e4c9f7498a0a558bb514f2fc089f4f075",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d_karto_activity.py": "cdf5034ddd8bc057c49a4fcfe4a0e6962ad7ecb3eaec9cc0ce81171315ebaa10",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d_performance.py": "9043fd105612c47d0750adbe2815f53ffe069fd8ae8048527dc2c1d1c12a3839",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d_process.py": "a975de72416cb8e49a706412957fc15c8dab678b7ac39c7912a3d576542d6331",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d_seed_activity.py": "6de0db1b5b93b299def7ee26313a2723fd74b40398ded62353960c790b9dcdee",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_audit_projection.py": "c2f1c8334c57901a3415ed2c17a38467e75e502bbe2ce60b55c205a9f1372915",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_diagnostic.py": "96f44bb52057644f5fefacadb499a3596e0a18d093b9480280b4e9d1ace7e5da",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_execution.py": "fa7da30bf18a71a7a28698f733590074bdf164c8857028640aedba5d21fd8be4",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_gates.py": "e8b1ccbadacf28deafdf12cad8011d82f12134237fa9343f9fa4577d02364bf4",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_policy_chain.py": "0d028928e82d8d31fe3ddd671d5e315d7457fbb0b12a785cf4ac3518d150e300",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_preparation.py": "8946a32977fd092e26bc519c1378702ab235e8273b3b1589e6e7eb2d8386a581",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/rollout.py": "338f6b68505c39ea79b5db208a66080ce22c25199b0fc975e61bd5a1f935c87a",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/supervisor.py": "b0351e11ef033b1b8e24e9c57525d855ab4b1b9e5b16d57b0f29a69be335bb54",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261020_mr3_p2a_v22_proxy2d/scope_acceptance_v1.json": "682db71f7dbd92140ca34977c7c377b2c5fa2530e2a4b1d10522fe095d9c6e69",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261021_mr3_p2a_v31_karto_behavior/native_manifest_v1.json": "06e49199347feaf4d2b3541c38c539143cbd9f82620f5d8b9b9e8f7365fd1802",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261021_mr3_p2a_v33_seed_mode/scope_acceptance_v1.json": "8106d638ae6c5a51e0e88160ff014eae2f36c73bdc8ce0410d545b153fa4048e",
+    "ros2_ws/ros2-multi-robot-automap/scripts/mr3_proxy2d_worker.py": "c96b50895525758a7cb28ce0799ef6ae2372697beb24fd4d26ab204b799ea54d",
+    "ros2_ws/ros2-multi-robot-automap/src/merge_map/merge_map/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "ros2_ws/ros2-multi-robot-automap/src/merge_map/merge_map/merge_map.py": "e4cf897d2c22e70f89d9293efc00f44dd4bf1eb01624713735e08afdee0cbfcc",
+    "ros2_ws/ros2-multi-robot-automap/src/merge_map/merge_map/offline_merge_map.py": "34aaf70bb3761fff64fad00d5aca95cae36bd77eb7390d7b3da026d3f47d8fc1",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/confirmation_corridors.json": "127b1cab596167db4bc370335b18fb379eae0bf2d3b5775dade2dd90174ae3b5",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/confirmation_open.json": "2056689728d8faa6c84440b8be15c5f71d783fac97712d35ead0c2cf2f6f9304",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/confirmation_rooms.json": "10dd0973e1fab3f8871c01afc720ebef6643ca58ed51d06a0de0da6ef84aaf99",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/corridors.json": "44cc8593cf69206a36b3a7bf82b2008957d5454caaa040dc4b3ac815e1b778a6",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/open.json": "e4a3c25374bb482a0104530f1765f17b807377e0a5c85bc42d6645a63bfc5487",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/protocol.json": "8c89fadc38e5b305fe36d75d924135cc5a600d8edb8468810b35991fba58e142",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/rooms.json": "c4ddca59d8b955f5410a0e639736263c750d6e819a864020c3e4e6da783a811e",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/test_corridors.json": "5ed2850334f54ffdf8d0a7a8f100a136cca98be946d3b38b6de180bb66e1dbc0",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/test_open.json": "997f412fe1f5b9fcfb20987f386d1cc7a8a4488274829ed52a8979ba01775da0",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/test_rooms.json": "69705557587774a78f9b9c2d361656e600ad58295463179b1405215c7d6a4217",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/validation_corridors.json": "ca7f3d3d98e24a92f63a85a1f92304b45b74b6bc741f45b7a11acb02244bfe5b",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/validation_open.json": "a6704f4809580b9db432cf6361d8ece272b7c8179eae19b736ec60a970c4f57c",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_p1a/validation_rooms.json": "b01698ad96611ce51a2fa795be965deafcd8e4ad7ddefc6c870ee40a73e7e7b8",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/models/turtlebot3_waffle/model.sdf": "c8131da065085475bdb0ce1e4c3abfc8c009811af6851fadf1fc33bd38b1d8a1",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/worlds/p1c_corridors.world": "7e15f3ba716fd2f6cdc55310ab3064e61c8d0d34c4f8cba79a964260a8dac051",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/worlds/p1c_open.world": "ed3fcd526d7367e8e0eb5245c365ba60631a6f4a6d725c64134221217ddc4846",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/worlds/p1c_rooms.world": "92ac7dff82bdf03b9f1ce3e9f075a3f59ca07df23c2f89fca654b3f423742768",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/control.py": "3b6fb71f2c90a055ef3bb922bd3f08332eb366d8becde577106d1ed5bd56cedd",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/motion_safety.py": "60005f800760ee7adc58e32cc2e93cea40f30241bda195e79f7f048fe1b20549",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_activity.py": "7af918d75c05b6f8fb1a65899e43aad11a315640e8b00fdb589c31f693ad696e",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_adapter.py": "1c23698daf990d988e331b542547071f39c1604fcb0c8b17edfce62f1aa6614e",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_contacts.py": "9d661498b3748d409dbb59ccd59524d5152d85ec93ee30128aebaf0a8a09fa17",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_control_phase.py": "051b4e879daf8762af6f3252ca0e9c2857c0150ed7396eef9c9f2c523b992c85",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_drive_phase.py": "0525230f4719e7279826810f0c177f6a6317a961d50711ac76d8a0338f93d987",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_episode.py": "9145d2ad23789b252e32f0afdfe18cf2eeec8e2c7e9ca7e89127a532288e411b",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_evaluator_phase.py": "9c43ace376354edbdf496fe920d04a539ed47912fd0840f6d290c459450d69fa",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_information.py": "df40a2d3dbba04d123b59bb5c72394815c87dbdd7fe3d90a5ffb87c6d6b47fc1",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py": "197ff4bfcca9f815e191dcddea7a2a6af46a033c68310e350b63ad9e48579a69",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_motion_safety.py": "06ca6ece92ca49072df9eedbdd5396148ca2e09d4f2560204448e460e3e73ae7",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py": "a7e8c79ce93154c80e851c79a898deee14b5a8cc46d21e2828f21e4b01b5183b",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation_archive.py": "03da72d5e989e6c7af99b90aaddf357120c2239fc08e99febb858554b1fefea8",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_owner.py": "6710dc8e38b55c40112cb2c0c7659cfb4c7c8fd591a0ff2dd5d4dc51992b0bc0",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_protocol.py": "5a2b90efd162b19a35964750002fe549413fec6e07f9679ea611d3fe6b1e4ada",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_proxy2d_information.py": "64858e9c6941f1b7695e382dccdabc09cb1d82ca87dde4c30a4858d730c7d794",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_proxy2d_karto.py": "cd0cf8fc85fbb0659af6748c3346d02fae239c6c9e2d48fcd26049879c8eb2a5",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_proxy2d_karto_native.cpp": "5b5474ee06c0a609a12b493d4e9b773ea97a42b7128ace086603e789c674c6e6",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_proxy2d_mapping.py": "9055e72a85b5d71b8410000642ecbf40b107107517190fb2ac8e6fd213ac191b",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_proxy2d_mapping_v3.py": "def8329db829c3659ab6a4f7aa47be8f598eaa4af3b7a1bcab3dd7dd4741c19f",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_proxy2d_navigation.py": "db3ea3d94be71b53a1e97a9a9f192f026fce641788c273b6f5695bd746490b51",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_proxy2d_profile.py": "67a502ad29977ee02d4952dd408639271fecb2265f47dd3842f56c894c0964d1",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_proxy2d_quality_geometry.py": "81dc6fa2a060e60fcc495481b50cef10784647affbc769ba243a034436d17982",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_proxy2d_reward.py": "7c78e5ff12187c9a828a9a87848dd67546faa5439cde3337e432f27cbf05f927",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_proxy2d_world.py": "ed672c42c8f1624054372fba5940132488a1372b508010e25ed283869d3295b0",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_reach_geometry.py": "cf46b49f0740f84511f3d34f9a8eb3e56720744515d9eea1dc81bd8bacb85f0a",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_reach_runtime.py": "c17d008905364616c4027aeb1b6c180e7f4d0b522e310e242659a08cf376eb9e",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_reward.py": "77485e7988489a146e4c44207343a0a4be7c12b5ffe36906dde59257cac16f88",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_safety_intent.py": "141d62a1cf4d90414bb6cf191aee146d099a7839d946d991514a05e9bfaaa6f7",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_seed_certificate.py": "5d8dba17851cfa12ab21e5cefce1450b239d57e0e20c301272e3c134531f93dc",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_task_contract.py": "a1eeec3eb4488c9900cd23b04e231053fcaa16614f92cc88b9edb318d564e526",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_transport.py": "426d9b777c2150bb690de3266c973dedfc8fe8da3fa36c7bf37cbe3c31d70eca",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_velocity_metric.py": "0a7a4c9ee3de72c1fddaab2441d9bc7a8ad6c543725e8af0f6f18a6ed783fae5",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/nav2_ready_gate.py": "0ebb8fa7bec3073f2a1c2a8d6ff0dd6e68f878bc8a58427be8d7968e41e40918",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/peer_obstacles.py": "25457537485c6eba5b199e8406fdedd73b2b23f382077b27c112f3156e54615a",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/task_evaluator.py": "3aa0655113c0c2402c6e587730fa1f457d1f837ff0ce00928e6c8ca433f3c8d6",
+    "ros2_ws/ros2-multi-robot-automap/src/slam_toolbox/lib/karto_sdk/include/karto_sdk/Karto.h": "69163118d0a6262a2746bc790c1ffb3c8aa00f1ddb3be0f3773c2b4ce2e9f1ac",
+    "ros2_ws/ros2-multi-robot-automap/src/slam_toolbox/lib/karto_sdk/include/karto_sdk/Macros.h": "a3c9276c53b633989d2f84621eabcfd6c31cceebfdbcf7dc4bc78ad963d7d9a1",
+    "ros2_ws/ros2-multi-robot-automap/src/slam_toolbox/lib/karto_sdk/include/karto_sdk/Mapper.h": "8662c911112f3ed996c268957d59ceeca22f5a8b9fc92018ec4dd64d81ea8cd9",
+    "ros2_ws/ros2-multi-robot-automap/src/slam_toolbox/lib/karto_sdk/include/karto_sdk/Math.h": "16c2fe87fe999c50b9470f0a1c39647e83cf258006f42eb016a7715e35005eea",
+    "ros2_ws/ros2-multi-robot-automap/src/slam_toolbox/lib/karto_sdk/include/karto_sdk/Types.h": "3c35323ffb4fc170218649a7f85c062ed6ab7912b4e644a8721937be143fc391",
+    "ros2_ws/ros2-multi-robot-automap/src/slam_toolbox/lib/karto_sdk/include/karto_sdk/nanoflann.hpp": "b720aef9c469da0f281f01fff65f57f3c4ac80b828dfff0947d2d2f16324249f",
+    "ros2_ws/ros2-multi-robot-automap/src/slam_toolbox/lib/karto_sdk/include/karto_sdk/nanoflann_adaptors.h": "91085bd7e3a47f9a4674a1e4f89d7b6ebcc0779d4b231266cd653f181f9c5200"
+  },
+  "conformity": {
+    "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v33/seed_probe_v1/conformity.json",
+    "sha256": "f68e350f4663aa06b530bbdcbdec3f98f377272aa608a2244dc6800e5583e16f"
+  },
+  "activity_started_ns": 4338797486327425,
+  "activity_deadline_ns": 4340597486327425,
+  "collection_deadline_ns": 4339742405063733,
+  "groups": [
+    {
+      "workers": 3,
+      "started_ns": 4338842405445395,
+      "ended_ns": 4339293671675193,
+      "episodes": [
+        {
+          "env_id": 0,
+          "episode_index": 1,
+          "scene": "open",
+          "seed": 101,
+          "action_seed": 41,
+          "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v33/seed_probe_v1/stages/group3/worker0/episode001_open_101",
+          "reason": "external_sampler_limit",
+          "terminated": false,
+          "truncated": true,
+          "started_ns": 4338842412410850,
+          "ended_ns": 4339198219762279
+        },
+        {
+          "env_id": 1,
+          "episode_index": 1,
+          "scene": "rooms",
+          "seed": 101,
+          "action_seed": 1000044,
+          "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v33/seed_probe_v1/stages/group3/worker1/episode001_rooms_101",
+          "reason": "external_sampler_limit",
+          "terminated": false,
+          "truncated": true,
+          "started_ns": 4338842410685784,
+          "ended_ns": 4339293669804057
+        },
+        {
+          "env_id": 2,
+          "episode_index": 1,
+          "scene": "corridors",
+          "seed": 101,
+          "action_seed": 2000047,
+          "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v33/seed_probe_v1/stages/group3/worker2/episode001_corridors_101",
+          "reason": "external_sampler_limit",
+          "terminated": false,
+          "truncated": true,
+          "started_ns": 4338842411595397,
+          "ended_ns": 4339072001959955
+        }
+      ],
+      "deadline_ns": 4339742405063733,
+      "wall_budget_seconds": 900
+    }
+  ],
+  "scheduled_cells": [
+    [
+      "open",
+      101
+    ],
+    [
+      "rooms",
+      101
+    ],
+    [
+      "corridors",
+      101
+    ]
+  ],
+  "step_attempts": 192,
+  "step_returns": 192,
+  "step_errors": 0,
+  "policy_calls": 0,
+  "gpu_calls": 0,
+  "optimizer_steps": 0,
+  "closed": true,
+  "qualification": false,
+  "training_eligible": false,
+  "native_credit": false,
+  "errors": [],
+  "collection_ended_ns": 4339293671710361,
+  "max_rss_children_kib": 88856,
+  "saved_identities": [
+    {
+      "pid": 3086402,
+      "parent": 3086395,
+      "group": 3086402,
+      "session": 3086402,
+      "start_ticks": 433884241,
+      "state": "R"
+    },
+    {
+      "pid": 3086469,
+      "parent": 3086402,
+      "group": 3086402,
+      "session": 3086402,
+      "start_ticks": 433884423,
+      "state": "S"
+    },
+    {
+      "pid": 3086403,
+      "parent": 3086395,
+      "group": 3086403,
+      "session": 3086403,
+      "start_ticks": 433884241,
+      "state": "R"
+    },
+    {
+      "pid": 3086467,
+      "parent": 3086403,
+      "group": 3086403,
+      "session": 3086403,
+      "start_ticks": 433884418,
+      "state": "S"
+    },
+    {
+      "pid": 3086401,
+      "parent": 3086395,
+      "group": 3086401,
+      "session": 3086401,
+      "start_ticks": 433884241,
+      "state": "S"
+    },
+    {
+      "pid": 3086468,
+      "parent": 3086401,
+      "group": 3086401,
+      "session": 3086401,
+      "start_ticks": 433884421,
+      "state": "S"
+    }
+  ],
+  "forbidden_framework_imports": [],
+  "scope": "bounded 64-step received-grid seed probe; no training or native qualification",
+  "mapper": "karto",
+  "mapper_library": "/tmp/mr3_p2a_v30_adapter_cpu_v2/libmr3_karto_adapter.so",
+  "native_manifest": {
+    "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261021_mr3_p2a_v31_karto_behavior/native_manifest_v1.json",
+    "sha256": "06e49199347feaf4d2b3541c38c539143cbd9f82620f5d8b9b9e8f7365fd1802"
+  },
+  "seed_rule": "exact-point-bridge-v1",
+  "activity_spec": {
+    "schema": "mr3-proxy2d-activity-spec-v1",
+    "kind": "seed_probe",
+    "groups": [
+      3
+    ],
+    "cells": [
+      [
+        "open",
+        101
+      ],
+      [
+        "rooms",
+        101
+      ],
+      [
+        "corridors",
+        101
+      ]
+    ],
+    "worker_cells": [
+      [
+        [
+          [
+            "open",
+            101
+          ]
+        ],
+        [
+          [
+            "rooms",
+            101
+          ]
+        ],
+        [
+          [
+            "corridors",
+            101
+          ]
+        ]
+      ]
+    ],
+    "steps_per_episode": 64,
+    "max_attempts": 192,
+    "activity_seconds": 1800
+  },
+  "activity_kind": "seed_probe",
+  "profile_enabled": false,
+  "collection_started_ns": 4338842405063733
+}

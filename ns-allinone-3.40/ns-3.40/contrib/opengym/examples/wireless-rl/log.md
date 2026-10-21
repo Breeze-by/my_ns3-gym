@@ -8207,3 +8207,22 @@ PYTHONNOUSERSITE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_le
 ```
 
 Exact seed_probe open/rooms/corridors101, 64 each/192 maximum attempts, 1800s including audit/external tails, current 52000 cap. One fresh clean pushed freeze/one attempt/no retry; no PPO/GPU/native qualification. Engineering still46691.4127443736018, pilot/final-only untouched; 75000 proposal pending, not approval.
+
+
+## 2026-10-21 V33 frozen zero-update seed probe and external closure
+
+freeze6d16ebdc5c246b8079574996cb8298800e4f7cb9, explicit exact-point-bridge-v1, Karto original declared ELFs, group3 open/rooms/corridors101, seed41+1000003*env_id uniform actions, 64 steps each. Plan scope and all128 sources sealed before execution; legacy six-input compatibility and exact independent six-input reconstruction pass.
+
+execute: rc=0, actualwait=577.674157231s, passed/source unchanged, [receipt](report/assets/20261021_mr3_p2a_v33_seed_mode/closed_execution/outer_execute_v1/actual_wait.json). cwd=/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl
+
+```bash
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.proxy2d_seed_activity execute --freeze 6d16ebdc5c246b8079574996cb8298800e4f7cb9
+```
+
+external final: rc=0, actualwait=0.717496131s, passed/source unchanged, [receipt](report/assets/20261021_mr3_p2a_v33_seed_mode/closed_execution/outer_final_v1/actual_wait.json). cwd=/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl
+
+```bash
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.proxy2d_seed_activity final --outer /tmp/mr3_p2a_v33_seed_probe_outer_v1/actual_wait.json --output /tmp/mr3_p2a_v33_seed_probe_final_v1.json
+```
+
+Engineering PASS/functional unresolved: 192/192/0, independently192 action/uniform/returns,195actor/585robot seed checks; each65 actors; all genuine 64-second external cut. Three scene task/quality/participation unachieved, no300s/native/PPO qualification. tb3 certificate pose_not_in_original_seed_cell65/65 in each; tb1 near-zero movement, tb2 corridors1.5337m.0proxycontacts. Canonical273 files/11789615bytes,20saved identities freshly gone including finalouter. Actual union578.391653362s (not phases twice); endpoint683.994099720<1800; cumulative47269.8043977356018/52000, remaining4730.1956022643982. Pilot/final-only unchanged,75000 only pending proposal. [Closed review](report/assets/20261021_mr3_p2a_v33_seed_mode/closed_metadata_v1.json).

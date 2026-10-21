@@ -1,6 +1,6 @@
 @/home/zhuyulab/.codex/RTK.md
 
-2026-10-21 V33进行中：显式exact-point-bridge-v1起点规则已接生产观测、二维及原生资格/训练参数链，legacy默认保留；几何/导航/信息桥、139项学习侧、9项原生重放及4项实际旧validator的CPU检查已收口；失败及精确旧源保留，尚无新运行信用。下一次短probe固定三场101各64步/总192尝试、1800工程秒含审计/外尾，未执行前不授结果信用。工程仍46691.4127443736018/52000；75000仅具体提案待答，pilot/final-only不动。继续推进至P2A原生学习与三final-only严格成功，不将二维/CPU当作验收；P2A未完成。见[V33](ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261021_mr3_p2a_v33_seed_mode.md)。
+2026-10-21 V33闭合：冻结6d16ebdc5的显式exact seed三场101各64步短工程链通过192/192/0、195actor/585证书和20身份gone；功能未解决，tb3每场65/65 pose_not_in_original_seed_cell，tb1几乎不动。规范273原件/11.79MB；实费578.391653362，累计47269.8043977356018/52000，余4730.1956022643982。继续定位精确cell算术与强制中心桥执行先决，新规则须新版本/冻结，不把短工程PASS当P2A；75000提案待答，pilot/final-only不动，P2A未完成。见[V33](ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261021_mr3_p2a_v33_seed_mode.md)。
 
 2026-10-21 V32 CPU：精确point/同seed-centre桥证书禁用原型14项人工通过，保留.29m、unknown/outside、原seed-cell及graph门；未接生产/真实rooms或改V21字节门。两次fixture/launcher失败原件保持，工程新增0。后续先明确新观测/科学版本及必要准入，不能据此PPO/重跑V31；工程仍余5308.5872556263982，pilot/final-only不动，P2A未完成。见[V32](ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261021_mr3_p2a_v32_seed_certificate.md)。
 
