@@ -7931,3 +7931,37 @@ rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /home/z
 ```
 
 rc0/actual wait/source stable，1.258716071秒；static_result_v1.json通过13绑定源、525相对链接、结果/consoleSHA、旧程序/config/证据保持、log追加与旧archive/backup/预算。比较2身份先gone；静态wait后saved_process_absence_v1.json再fresh核两轮4保存CPU身份全gone，consumer与保存child匹配，当前source/console仍精确。没有mapping重算或工程新增；最终新增链接做常规检查。
+
+
+## 2026-10-21 MR3-P2A V29 Karto直接CPU接口复用
+
+用户在V28中再次“继续继续”；V28已commit/push4cefd37094d0ffe9ff158500897e11ea8ccaec50。本轮工作树CPU源码SHA绑定，不称新正式freeze。预声明计划先于实际编译/执行：仅固定C++/SDK OccupancyGrid/AddScan人工counter小case，不改SDK参数，不做V4计数变体、World/Node/完整Mapper/真实场景/episode/ENV.step/actor/reward重放/GPU/训练。
+
+准确外层命令（cwd wireless-rl，既有输出不覆盖/盲重跑）：
+
+```bash
+rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.reach_execution --scope cpu --output /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261021_mr3_p2a_v29_karto/checks/library_cpu_v1 --source /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261021_mr3_p2a_v29_karto/karto_kernel_probe_v1.cpp --source /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261021_mr3_p2a_v29_karto/run_cpu_v1.py --source /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261021_mr3_p2a_v29_karto/predeclared_plan_v1.json --source /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/slam_toolbox/lib/karto_sdk/include/karto_sdk/Karto.h --source /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/slam_toolbox/lib/karto_sdk/include/karto_sdk/Macros.h --source /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/slam_toolbox/lib/karto_sdk/include/karto_sdk/Mapper.h --source /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/slam_toolbox/lib/karto_sdk/include/karto_sdk/Math.h --source /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/slam_toolbox/lib/karto_sdk/include/karto_sdk/Types.h --source /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/slam_toolbox/lib/karto_sdk/include/karto_sdk/nanoflann.hpp --source /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/slam_toolbox/lib/karto_sdk/include/karto_sdk/nanoflann_adaptors.h --source /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/slam_toolbox/lib/karto_sdk/libkartoSlamToolbox.so --source /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_execution.py --source /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/preparation.py -- /usr/bin/python3 -B /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261021_mr3_p2a_v29_karto/run_cpu_v1.py --build-dir /tmp/mr3_p2a_v29_karto_cpu_v1 --evidence-dir /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261021_mr3_p2a_v29_karto/attempts/library_v1
+```
+
+实际内部编译/运行argv（由同一CPU outer实际wait）：
+
+```bash
+/usr/bin/x86_64-linux-gnu-g++-12 -std=c++17 -O1 -I/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/slam_toolbox/lib/karto_sdk/include -I/usr/include/eigen3 /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261021_mr3_p2a_v29_karto/karto_kernel_probe_v1.cpp /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/slam_toolbox/lib/karto_sdk/libkartoSlamToolbox.so -lboost_serialization -ltbb -Wl,-rpath,/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/slam_toolbox/lib/karto_sdk -o /tmp/mr3_p2a_v29_karto_cpu_v1/karto_kernel_probe
+/tmp/mr3_p2a_v29_karto_cpu_v1/karto_kernel_probe
+```
+
+rc0/actual wait/source stable，外层14.391197463秒；compile14.152991549、probe.016951187秒，嵌套不相加。13 outer绑定、12内部源/SDK headers/现有canonical库/compiler字节稳定；无signal/captureerror/reapoverrun。程序loaded Karto实际path只为canonical本地库，identity5字段等于Popen保存；不混/opt头/库。临时ELF864512字节/SHA8825eb59e28e4b63e302aabb1cbf0b8c9d82ca7639c2f535452160b4299dcf2b及readelf动态段/准确编译命令在build_receipt保留。没有重建SDK或修改ROS build，不宣称旧ELF与完整currentSDK逐字源码对应。
+
+固定7case全true/errors[]：Round半点远0、width5步长8、0/100/255→−1/100/0；有效endpoint一次pass2hit1未知/二次4hit2occupied，free pass>2；native min/max skip区别于显式maxnohit free；threshold截短/nohit/1e−6近界；同一scan对象重复AddScan会再计数；估计pose+外参一次，三beam同格6pass3hit；wrong2/expected3由Validate先拒绝。SDK日志预期信息和raw JSON原样保留，compiler/probe stderr均空；首次成功无重试。
+
+结论仅fixed-grid bookkeeping/API复用证明，不是SLAM/位姿纠正/质量/native等价或P2A资格。下一步adapter_design_v1.json规定先做disabled nativeAddScan薄适配：own估计pose/scan、uniform/count Validate、不重采样，外置sourceID/epoch去重、原perbeam权重；事前明确SDK centeroffset与ROS boundaryorigin半格关系并测signedties，保留native range处理；越界false已可能partial consume，不自动重试；计数需明确有限上限。不据Karto名字或7PASS解锁actor/有界行为/PPO。
+
+唯一证据A29/attempts/library_v1/{kernel_result_v1.json,build_receipt_v1.json,compile_stdout.log,compile_stderr.log,probe_stderr.log}、checks/library_cpu_v1/{actual_wait.json,console.log}、predeclared_plan/cpu_validation_index/adapter_design。工程新增0，累计45445.4237026666018/52000、余6554.5762973333982；pilot1870/2905.9547395464029及final-only401/402/403不动。原三机/95%/300秒/质量/ROI/received-only/TTL/FIFO/native准入与全部旧FAIL不改，P2A未完成。
+
+V29最终静态CPU（cwd wireless-rl，既有输出不重跑）：
+
+```bash
+rtk proxy env -u PYTHONPATH PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m mr3_learning.reach_execution --scope cpu --output /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261021_mr3_p2a_v29_karto/checks/closed_static_cpu_v1 --source /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261021_mr3_p2a_v29_karto/closed_check_v1.py --source /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261021_mr3_p2a_v29_karto/cpu_validation_index_v1.json --source /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261021_mr3_p2a_v29_karto/predeclared_plan_v1.json --source /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_execution.py --source /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/preparation.py -- /usr/bin/python3 -B /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261021_mr3_p2a_v29_karto/closed_check_v1.py
+```
+
+rc0/actual wait/source stable，1.294709399秒，核14当前源含compiler、6结果文件、7case、实际库路径/ELF、533链接、旧程序/config/证据、log追加及旧archive/backup/预算；临时binary当前仍SHA匹配。静态先核4身份gone，其wait后saved_process_absence_v1.json再fresh核outer两轮＋compiler/probe共6保存身份全gone，无Z/不可读，当前来源/console精确。只核元数据，不重跑SDK，不新增工程/任务信用；新增回执链接作常规最终检查。

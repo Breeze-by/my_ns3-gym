@@ -1,0 +1,21 @@
+{
+  "schema": "mr3-p2a-v29-next-adapter-design-v1",
+  "status": "Proposed disabled CPU adapter; not implemented or enabled, no task qualification.",
+  "ingress": "Use native AddScan for the first adapter; do not silently substitute the explicit RayTrace/max-nohit branch.",
+  "input": "Only own estimated body pose and own uniform-angle sensor scan; native laser extrinsic applied once. No truth, physical pose or scan-matching credit.",
+  "identity": "Fresh map per robot/epoch; strict source scan sequence plus exact canonical payload; latest exact duplicate no-op, changed or older ID rejects before SDK mutation.",
+  "sensor": "Validate configured uniform angles, count, finite range limits and payload before AddScan; unsupported nonuniform scans reject without resampling. Preserve SDK min/max and threshold semantics.",
+  "coordinates": "Prospectively test SDK center-offset = public ROS boundary-origin + resolution/2; export the declared boundary-origin. This is an explicit phase adapter, different from existing native toNavMap offset export, not a quality-driven half-cell shift. Test signed boundary ties before accepting.",
+  "counting": "Retain native per-beam pass/hit and defaults; no V2/V3 score, saturation or scan-hit-wins patch. Bind a finite maxscans*beams budget safely below uint32 overflow.",
+  "out_of_map": "Native false may mean partial in-map update. For otherwise valid input mark scan consumed once and record partial/out-of-map status; never retry it as unconsumed. Malformed input must be rejected beforehand. Integration and safety use require separate validation.",
+  "output": "Detached original pass/hit counters and explicit -1/100/0 map, row padding removed with GetValue; source ID/clock/version trace. No actor integration yet.",
+  "next_checks": "Finite sensor-to-counter-to-grid CPU cases: duplicate and epoch isolation; min/max/threshold; offset/yaw and center/origin phase; invalid count and partial update; bounded counters and actual loaded ELF. Only then decide whether any bounded integrated behavior is justified.",
+  "not_claimed": [
+    "Bias correction or scan matching.",
+    "Native full mapping or ROS equivalence.",
+    "Resolution of V27/V28 quality failures.",
+    "95percent task success or training eligibility."
+  ],
+  "production_enabled": false,
+  "qualification": false
+}

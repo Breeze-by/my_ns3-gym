@@ -1,5 +1,9 @@
 # 当前三机器人基线与MR3适配启动命令
 
+## V29 Karto直接CPU接口（已完成，未启用mapper）
+
+已用canonical headers/本地现有库编译运行固定7case探针，未改SDK/ROS build/default。准确reach外层、g++编译与临时ELF运行命令和原件见[报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261021_mr3_p2a_v29_karto.md)及共享log。仅fixed-grid bookkeeping/API，native AddScan与显式RayTrace量程语义不同，不直接换mapper或跑行为/PPO；已有输出不覆盖/盲重跑。下一步disabled sensor adapter/有限CPU，工程0新增、P2A未完成。
+
 ## V28 一致性CPU候选（已完成，未启用）
 
 38项新检查与31组人工三模型比较完成；结构一致性通过，格线占用召回/持续偏差代价使v3仍禁用，不做当前候选正式试跑或PPO。唯一实际CPU入口为 `report/assets/20261021_mr3_p2a_v28_mapping/run_cpu_v1.sh` 经reach actual-wait执行；完整argv/绑定/结果见[报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261021_mr3_p2a_v28_mapping.md)与共享log，既有输出不覆盖或盲重跑。World/worker/launch默认不变，工程0新增，P2A未完成；下一步先核既有SLAM量测模型复用。

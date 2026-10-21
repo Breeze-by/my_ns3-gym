@@ -1,5 +1,9 @@
 # MR3 P2A 评估与后续交接
 
+截至V29的当前交接：[现有Karto库最小CPU探针](20261021_mr3_p2a_v29_karto.md)已真实编译调用canonical SDK，7项固定接口/counter检查通过；actual outer14.391197463秒（compile14.152991549/probe.016951187为内层不重复相加），13 outer来源稳定，实际加载路径与保存身份一致。它证明本地复用接口可行，**没有实现或启用新mapper，没有SLAM、偏差修复、质量或95%资格**。V28/v3继续禁用，不返回计数阈值补丁。
+
+下一步按[薄适配设计](assets/20261021_mr3_p2a_v29_karto/adapter_design_v1.json)做disabled nativeAddScan sensor adapter和有限CPU链：只own估计body pose/均匀scan、外参一次，原native min/max skip/threshold/per-beam计数不偷换；外置sourceID/epoch门、finite counter界、Validate；事前声明ROS boundaryorigin与SDK centeroffset半格适配并测signedties/padding/state，合法越界partial应只消费一次，禁止自动重试。设计仍未实现/验证，不能直接接actor或旧performance活动。工程新增0，仍45445.4237026666018/52000、余6554.5762973333982，pilot1870/2905.9547395464029、final-only401/402/403不动，P2A未完成。以下V28及更早为此前快照，常规实现/CPU验证已授权无需重复询问。
+
 截至V28的当前交接：[命中/歧义一致性取舍](20261021_mr3_p2a_v28_mapping.md)已完成38项CPU、31组/133checkpoint/399份三模型图记录及33技术flags，实际wait4.537946596秒/source stable。v3实现当前hit持久撤销free、闭cell歧义不造新positive、ID和恢复语义；但四格线面TP0/FP0/TN0，corner也以unknown消除误占，持续+2mm仍false-free=.04。**候选保持禁用，停止本轮端点归格/计数补丁搜索，不花工程额度做当前候选试跑，也不启动PPO。** 这是预期收益不足的判断，不是实际场景/RL无解或试跑必败结论。
 
 下一步先具体核已有SLAM/Karto量测到图模型的复用设计：own估计sensor pose/外参、格中心/origin、per-beam计数、min/max/range-threshold与误差/冲突假设。本地SMapper/SDK路径已在V28列出；不能抄.1阈值作V4，不能声称接成熟库自动修好质量。先固定有限CPU接口原型及反例预期，再决定新显式版本/冻结/有界完整行为。常规实现/CPU验证无需重复问批准；旧performance入口绑定旧scope/ledger/输出，不能直接再跑。工程新增0，仍45445.4237026666018/52000、余6554.5762973333982；pilot1870/2905.9547395464029与final-only401/402/403不动，P2A未完成。以下V27及更早段落为此前快照。

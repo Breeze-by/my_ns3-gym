@@ -2237,5 +2237,27 @@
     "interpretation": "Persistent hit veto works; closed-cell ambiguity sacrifices occupied recall and does not remove persistent range bias. No actual-scene impossibility or behavior-failure claim. Existing SLAM/Karto reuse design is next, not threshold V4.",
     "technical_flags_count": 33,
     "technical_invariants_all_true": true
+  },
+  "mr3_p2a_v29_karto_20261021": {
+    "date": "2026-10-21",
+    "report": "20261021_mr3_p2a_v29_karto.md",
+    "assets": "assets/20261021_mr3_p2a_v29_karto",
+    "baseline": "4cefd37094d0ffe9ff158500897e11ea8ccaec50",
+    "status": "Existing canonical Karto fixed-grid API probe completed; no enabled mapper",
+    "sdk_cases_passed": 7,
+    "actual_cpu_outer_seconds": "14.391197463",
+    "compile_inner_seconds": "14.152991549",
+    "probe_inner_seconds": "0.016951187",
+    "new_engineering_seconds": "0",
+    "engineering_used": "45445.4237026666018",
+    "engineering_remaining": "6554.5762973333982",
+    "pilot_decisions_remaining": 1870,
+    "pilot_seconds_remaining": "2905.9547395464029",
+    "final_only": "401/402/403 unused",
+    "production_enabled": false,
+    "qualification": false,
+    "training_eligible": false,
+    "native_credit": false,
+    "interpretation": "Header-inline + actual canonical ELF/API/counter proof only, not rebuilt SDK or full native mapping. Native AddScan and explicit RayTrace ingestion differ; proposed thin sensor adapter remains disabled/unimplemented."
   }
 }

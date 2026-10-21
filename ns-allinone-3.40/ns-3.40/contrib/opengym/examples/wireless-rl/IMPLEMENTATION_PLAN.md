@@ -1,5 +1,7 @@
 # MR3 研发检查点与逐步验收
 
+2026-10-21 V29复用CPU已闭合：直接编译调用canonical Karto库，7项fixed-grid/API检查通过、真实加载路径/身份/源字节稳定；只是接口证明，不是新mapper或SLAM/质量等价。明确round/padding/state、per-beam重复累计、native min/max skip与显式max-nohit差异；下一步按声明做disabled nativeAddScan薄适配及有限CPU链，不换默认、不PPO/正式行为。工程新增0，仍45445.4237026666018/52000、余6554.5762973333982，pilot/final-only不动，P2A未完成。见[V29](report/20261021_mr3_p2a_v29_karto.md)。
+
 2026-10-21 V28一致性CPU已闭合：38项检查、31组/133checkpoint三模型比较完整，current-hit持久否决free与closed-cell歧义按声明实现；但格线面TP归零、持续+2mm仍false-free=.04。v3保持禁用，停止本轮归格/计数补丁搜索，不做当前候选正式试跑/PPO；下一步先具体核现有SLAM/Karto量测到图复用及其格/量程/误差假设，不抄阈值作V4。工程新增0，仍45445.4237026666018/52000、余6554.5762973333982，pilot/final-only不动；P2A未完成。见[V28](report/20261021_mr3_p2a_v28_mapping.md)。
 
 2026-10-21 V27 CPU候选已闭合：sensor-only mapper-v2未接默认；68项检查、14组人工对比完整，局部格线改善伴随free覆盖下降、corner退化，持续+2mm仍false-free=.04，free饱和首次hit仍free。保留禁用候选，不直接完整行为/PPO；先明确当前hit否决free、歧义unknown与量测假设，再设计新版本。工程新增0，仍45445.4237026666018/52000、余6554.5762973333982，pilot/final-only不动；P2A未完成。见[V27](report/20261021_mr3_p2a_v27_mapping.md)。
@@ -41,7 +43,7 @@
 | MR3-P1B | RL 可独占的稳定目标/观测接口 | 已验收（2026-10-15） |
 | MR3-P1C | 训练环境、可靠 reset、采样吞吐 | 已验收（2026-10-16） |
 | MR3-P2A.0 | 生命周期、候选及安全执行、参与观测准备 | 已验收（2026-10-18）；原V26编排中断保留 |
-| MR3-P2A | 联合 MaskablePPO 最小训练闭环 | 未完成；V24长行为544/543/1仍FAIL，V26条件几何未证明可达/不可达；V27/V28候选均禁用，V28结构一致性通过但质量收益不足。下一步先核既有SLAM模型复用，不继续计数阈值补丁或直接PPO；工程余6554.5762973333982，pilot/final-only不动 |
+| MR3-P2A | 联合 MaskablePPO 最小训练闭环 | 未完成；V24长行为FAIL、V27/V28候选禁用；V29仅Karto固定API复用CPU通过，下一步disabled薄sensor adapter，不是新mapper/质量或原生资格。工程余6554.5762973333982，pilot/final-only不动 |
 | MR3-P2B | 同接口算法对照与方法选择 | 未开始 |
 | MR3-P2C | 理想通信完整验收、冻结模型 | 未开始 |
 | MR3-P3A | 双向 gateway、字节协议、消除旁路 | 未开始 |
