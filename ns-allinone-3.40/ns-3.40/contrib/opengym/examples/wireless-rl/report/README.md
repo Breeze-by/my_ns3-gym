@@ -1,5 +1,9 @@
 # 报告与证据适用范围
 
+2026-10-22 V46预声明：V45真实FAIL及原件完整封存保持；固定8份failedrooms小原件的一次有限诊断，主parent240＋外尾60＝300工程秒预约，10项纯内存自检PASS/0原件读取。待新freeze后执行；不加超时/降门或沿用不可负担的20100旧整链，P2A未完成，用户自主续接无需再次询问。见[V46](20261022_mr3_p2a_v46_startup_diagnosis.md)。
+
+2026-10-22 V45闭合FAIL：freeze cace46e08e53b7e89a434e23721db85ac993f6f5实际preflight/interface/terminal PASS（15/30必要角色）；reset native138返回后worker1第三回合rooms内400秒delivered-input startup guard、外420秒reset RPC超时，cleanup身份缺失/歧义FAIL，强制rc-9；worker0在途rooms10返回后合作停。9实际EP尝试，deadline/minimum/pilot/final未启、0学习。独立关闭review PASS/433保存身份gone、846源/10ELF相符，原FAIL不改。实费5669.105956969，累计55717.3500277646018/75000、余19282.6499722353982；pilot/final不动，P2A未完成。下一V46先≤300秒有界ready/stopCLI诊断，不加超时或重试旧活动；原20100整链预约已大于余额，须另按实测成本前瞻制定scope。用户自主续接授权保持。见[V45闭合](20261022_mr3_p2a_v45_preparation_classification.md)。
+
 2026-10-22 V45准备：只修CPU证明分类，显式纳全部ROS test_*.py；生产数学/执行/learner源码不变。逐源相等复用V44五组746人工CPU及双环境readiness（原schema/index/IDs保留），新6项分类回归v1/v2均PASS、按6项重验计；严格v2实际argv/wait/5准入源绑定及plan检查PASS。846source/10ELF、30角色/12EP/三policy已封存，尚未newnative/PPO，待新freeze完整链。CPU工程0，仍50048.2440707956018/75000、余24951.7559292043982，预约20900；pilot/final和V44实际FAIL保持，用户自主授权继续，P2A未完成。见[V45](20261022_mr3_p2a_v45_preparation_classification.md)。
 
 2026-10-22 V44闭合FAIL：freeze8b678c631cb5f7dfc1ba1174882e765d4672ab26仅实际preflight失败、driver rc1/0完成stage，未启动matrix/World/native/PPO。3个新增ROS测试提交后进入动态source_inventory，CPU proof分类计数增3导致整体比对拒绝，生产SHA不变；746人工CPU和原数学PASS保持，严格来源门不放松。5原件/677367B无损封存，独立关闭review PASS/3保存身份freshgone。parent实费7.010229336秒（inner6.004885052包含不叠加），累计50048.2440707956018/75000、余24951.7559292043982；pilot/final不动，P2A未完成。用户自主授权继续，下一V45只修稳定分类/人工回归，再新freeze完整资格链。见[V44闭合](20261022_mr3_p2a_v44_support_native.md)。

@@ -8526,3 +8526,26 @@ V44静态review原件补充：[final_plan_review.json](report/assets/20261022_mr
 cwd=canonical wireless-rl；实际外层命令为`rtk proxy env PYTHONNOUSERSITE=1 /usr/bin/python3 -B report/assets/20261022_mr3_p2a_v45_preparation_classification/cpu_driver_v1.py NAME`，NAME依次classification_cpu_v1、classification_cpu_v2、prepare_plan_cpu_v1、plan_check_cpu_v1。分类child实际argv为`/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m pytest -q ABS_A45/test_preparation_classification_v1.py`；v1六项PASS/5.273681813秒，严格actualargv/wait与5准入源绑定加入后v2同六项重验PASS/5.099110667秒，不能叠为12项独立检查。prepare实际PASS/2.33828766秒，846sources/10ELF/3policy；plancheck实际PASS/.360798041秒，四native stage/12EP/30必要角色/三policy。四次均rc0/source稳定，人工CPU工程0；实际argv、console、source recovery与快照保留在[A45 checks](report/assets/20261022_mr3_p2a_v45_preparation_classification/checks)。
 
 最终planSHA0964c074510e0601d23b33b5493e71e6dd95e945adb24dda621649d76f1bd8b5，bindingSHAcd71046df7d14c2cff3f8843854b611f136b51e8e395fd4c6428cafaa0bb8aab。尚无V45World/native/PPO，累计50048.2440707956018/75000、余24951.7559292043982，本活动工程预约20900；pilot1870/2905.9547395464029及final-only401/402/403额度未动。下一次新commit/push精确freeze后实际preflight→完整native资格→minimum→pilot→final逐门放行，所有95%/安全/source门保持。用户自主持续授权有效，P2A未完成。见[V45报告](report/20261022_mr3_p2a_v45_preparation_classification.md)。
+
+
+## 2026-10-22 MR3 P2A V45：真实reset失败闭合（P2A未完成）
+
+唯一实际命令cwd=canonical wireless-rl：`rtk proxy env PYTHONNOUSERSITE=1 CUDA_VISIBLE_DEVICES=0 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m report.assets.20261022_mr3_p2a_v45_preparation_classification.execute_chain_v1 --freeze cace46e08e53b7e89a434e23721db85ac993f6f5`。同freeze已push，driver实际reap rc1/passed=false/completed_stages=[]，原计划/CPU/所有失败原件保持。
+
+实际preflight PASS；interface native及11/11 audit job PASS（9注册必要角色，另FIFO叶/manifest），terminal native及9/9 audit job PASS（6注册必要角色）。reset native rc1、valid_transitions138：两worker的四个open101回合各32步正常关闭，worker1第三EP rooms（episode_index2）reset返回前失败，first_failure kind=rpc_or_worker_exception/epochNone/IPC response wall guard expired。metadata内层400秒three-robot delivered-input startup guard expired，外层420秒RPC最终超时；invalid-sample infrastructure cleanup FAIL/native stop CLI identity missing or ambiguous，19.1034675669秒，最终supervisor rc-9/forced_shutdown=true/failed_sample=true，原FAIL保持。worker0 rooms在途10verified returns后合作停；EPsummary transition_count11不能当11返回，差异尚未据原trace解释。remaining/zombies[]与最终freshgone不追认CLI清理成功。
+
+共9实际EP目录/尝试、15/30必要角色完成，不构成完整12EP/30角色matrix资格；reset审计/完整qualification未取得，deadline/minimum/pilot/final未启，0GPU calls/0optimizer更新，无新final模型或三场95%信用。独立metadata关闭review v2 PASS/review_errors=[]，846source/10ELF与Git/plan一致、433保存PID/start freshgone（Z计存在）；activity与P2A门仍false。两份实际外部absence PASS，canonical inventory/review复制由root后补，打包未完成前不填数量。
+
+实际四parent wait为preflight41.170046223、matrix5622.183752015、matrix_absence2.874983512、chain_final_absence2.877175219秒，union5669.105956969；inner/native/audit包含不二次收费，engineering外尾5.752158731已包含。累计55717.3500277646018/75000、余19282.6499722353982，pilot/validation各新增0，原1870/2905.9547395464029及final-only401/402/403保持。原20100完整链预约已超余额817.3500277646018，不能照搬下一活动scope。下一V46先≤300秒有界ready/stopCLI诊断，不直接加超时或重试V45，后继完整链据实测成本重新前瞻声明；全部95%/安全/source门保持，用户自主授权继续。见[V45闭合](report/20261022_mr3_p2a_v45_preparation_classification.md)。
+
+## 2026-10-22 MR3 P2A V46有限启动诊断准备（未读原件）
+
+V45实际FAIL、433身份gone及末账55717.3500277646018/75000保持。V46只声明固定8份failedrooms小原件、16MiB上界的一次诊断，总工程预约300秒（main240＋外尾60）；尚未执行原件消费，无World/native/PPO或95%信用。
+
+canonical wireless-rl下实际人工CPU命令：
+
+```text
+rtk proxy env PYTHONNOUSERSITE=1 /usr/bin/python3 -B -m mr3_learning.reach_execution --scope cpu --output report/assets/20261022_mr3_p2a_v46_startup_diagnosis/checks/self_check_cpu_v1 --source report/assets/20261022_mr3_p2a_v46_startup_diagnosis/closed_startup_extract_v1.py -- /usr/bin/python3 -B report/assets/20261022_mr3_p2a_v46_startup_diagnosis/closed_startup_extract_v1.py --self-check
+```
+
+10项PASS，rc0实际reap，child0.107243055秒、source_unchanged=true；原件读取0、工程新增0。actual_wait/console/source_recovery/逐字测试源码保存在V46 checks。源码AST/原regex及producer schema静态独立审查无阻断；scope需随实现及V45完整库存新commit/push后精确freeze才可执行。[V46预声明](report/20261022_mr3_p2a_v46_startup_diagnosis.md)。

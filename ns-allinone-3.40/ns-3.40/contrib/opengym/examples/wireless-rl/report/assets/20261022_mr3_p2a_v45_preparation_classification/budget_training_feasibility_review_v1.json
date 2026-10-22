@@ -1,0 +1,1036 @@
+{
+  "schema": "mr3-v45-budget-training-feasibility-review-v1",
+  "freeze": "cace46e08e53b7e89a434e23721db85ac993f6f5",
+  "scope": "Read-only closed high-level JSON/command receipts and frozen source; arithmetic extrapolation only. No source import, tests, raw telemetry/input replay, model load, World or new experiment.",
+  "overall_recommendation": "Do not restart the unchanged full chain. Repair the reset infrastructure failure, establish exact-equivalent production/reader speedups using bounded CPU evidence, then declare a fresh full-workload budget/plan that fits the remaining engineering cap and a feasible pilot data cap. No present proof that all positive PPO updates are mathematically impossible, and no evidence that a tiny update would solve the mapping task.",
+  "credit": {
+    "new_native_qualification": false,
+    "P2A_completed": false,
+    "P2B_or_gateway": false,
+    "budget_extension_authorized_by_this_review": false,
+    "old_failure_relabelled_or_old_freeze_credit_spliced": false
+  },
+  "hard_budget_facts": {
+    "engineering_ceiling_seconds": "75000",
+    "current_cumulative_seconds": "55717.3500277646018",
+    "current_remaining_seconds": "19282.6499722353982",
+    "unchanged_matrix_seconds": "18000",
+    "fresh_minimum_seconds": "1800",
+    "external_engineering_reserve_seconds": "300",
+    "unchanged_full_reservation_seconds": "20100",
+    "unchanged_full_reservation_deficit_seconds": "817.3500277646018",
+    "V45_total_reservation_including_preparation_forensic_seconds": "20900",
+    "V45_total_reservation_deficit_seconds": "1617.3500277646018",
+    "largest_matrix_allocation_if_1800_minimum_and_300_external_reserved_no_extra_preparation_seconds": "17182.6499722353982",
+    "current_validator_requires_matrix_exactly_18000": true,
+    "implication": "An equivalent speedup does not itself alter the fixed reservation/validator. A lower prospective matrix cap needs explicit versioned budget/admission tests with unchanged 12EP/30roles/workload; it is not licensed by this review. No old FAIL refund or pilot/final quota transfer."
+  },
+  "observed_command_costs": [
+    {
+      "stage": "interface",
+      "status": "PASS",
+      "actual_stage_wall_seconds": "2083.198120687",
+      "native_benchmark_wall_seconds": "1128.529747868888",
+      "native_command_wall_seconds": "1129.062391595",
+      "valid_transitions": 32,
+      "native_plus_other_stage_wall_not_double_charged": true,
+      "audit_submitted_interval_span_seconds": "942.606221706",
+      "command_receipts": [
+        {
+          "id": "native",
+          "passed": true,
+          "wall_seconds": "1129.062391595",
+          "started_wall_monotonic_ns": 4419996243942127,
+          "ended_wall_monotonic_ns": 4421125306333722,
+          "returncode": 0,
+          "output": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v45/mr3_p2a_reach_v45_interface/benchmark_summary.json"
+        },
+        {
+          "id": "watcher",
+          "passed": true,
+          "wall_seconds": "1133.943531904",
+          "started_wall_monotonic_ns": 4419991863581859,
+          "ended_wall_monotonic_ns": 4421125807113763,
+          "returncode": 0,
+          "output": "/tmp/mr3_p2a_reach_v45_matrix/interface/live_custody.json"
+        },
+        {
+          "id": "physics",
+          "passed": true,
+          "wall_seconds": "50.677401391",
+          "started_wall_monotonic_ns": 4421125842456611,
+          "ended_wall_monotonic_ns": 4421176519858002,
+          "returncode": 0,
+          "output": "/tmp/mr3_p2a_reach_v45_matrix/interface/physics_result.json"
+        },
+        {
+          "id": "angular",
+          "passed": true,
+          "wall_seconds": "52.601666215",
+          "started_wall_monotonic_ns": 4421125841612434,
+          "ended_wall_monotonic_ns": 4421178443278649,
+          "returncode": 0,
+          "output": "/tmp/mr3_p2a_reach_v45_matrix/interface/angular_result.json"
+        },
+        {
+          "id": "input_001",
+          "passed": true,
+          "wall_seconds": "226.199119037",
+          "started_wall_monotonic_ns": 4421125841021712,
+          "ended_wall_monotonic_ns": 4421352040140749,
+          "returncode": 0,
+          "output": "/tmp/mr3_p2a_reach_v45_matrix/interface/input_001_result.json"
+        },
+        {
+          "id": "runtime",
+          "passed": true,
+          "wall_seconds": "363.413646444",
+          "started_wall_monotonic_ns": 4421176521809630,
+          "ended_wall_monotonic_ns": 4421539935456074,
+          "returncode": 0,
+          "output": "/tmp/mr3_p2a_reach_v45_matrix/interface/runtime_result.json"
+        },
+        {
+          "id": "information",
+          "passed": true,
+          "wall_seconds": "472.797384919",
+          "started_wall_monotonic_ns": 4421178445884586,
+          "ended_wall_monotonic_ns": 4421651243269505,
+          "returncode": 0,
+          "output": "/tmp/mr3_p2a_reach_v45_matrix/interface/information_result.json"
+        },
+        {
+          "id": "cadence",
+          "passed": true,
+          "wall_seconds": "426.910680512",
+          "started_wall_monotonic_ns": 4421352043415327,
+          "ended_wall_monotonic_ns": 4421778954095839,
+          "returncode": 0,
+          "output": "/tmp/mr3_p2a_reach_v45_matrix/interface/cadence_result.json"
+        },
+        {
+          "id": "full",
+          "passed": true,
+          "wall_seconds": "885.706565507",
+          "started_wall_monotonic_ns": 4421125842888532,
+          "ended_wall_monotonic_ns": 4422011549454039,
+          "returncode": 0,
+          "output": "/tmp/mr3_p2a_reach_v45_matrix/interface/full_result.json"
+        },
+        {
+          "id": "fifo_001",
+          "passed": true,
+          "wall_seconds": "497.484487809",
+          "started_wall_monotonic_ns": 4421539937213104,
+          "ended_wall_monotonic_ns": 4422037421700913,
+          "returncode": 0,
+          "output": "/tmp/mr3_p2a_reach_v45_matrix/interface/fifo_001_result.json"
+        },
+        {
+          "id": "closure",
+          "passed": true,
+          "wall_seconds": "31.020379824",
+          "started_wall_monotonic_ns": 4422037426863594,
+          "ended_wall_monotonic_ns": 4422068447243418,
+          "returncode": 0,
+          "output": "/tmp/mr3_p2a_reach_v45_matrix/interface/closure_result.json"
+        }
+      ]
+    },
+    {
+      "stage": "terminal",
+      "status": "PASS",
+      "actual_stage_wall_seconds": "775.65670228",
+      "native_benchmark_wall_seconds": "464.6040261713788",
+      "native_command_wall_seconds": "465.116742747",
+      "valid_transitions": 8,
+      "native_plus_other_stage_wall_not_double_charged": true,
+      "audit_submitted_interval_span_seconds": "298.894531635",
+      "command_receipts": [
+        {
+          "id": "native",
+          "passed": true,
+          "wall_seconds": "465.116742747",
+          "started_wall_monotonic_ns": 4422079450181186,
+          "ended_wall_monotonic_ns": 4422544566923933,
+          "returncode": 0,
+          "output": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v45/mr3_p2a_reach_v45_terminal/benchmark_summary.json"
+        },
+        {
+          "id": "watcher",
+          "passed": true,
+          "wall_seconds": "470.056234934",
+          "started_wall_monotonic_ns": 4422075071514097,
+          "ended_wall_monotonic_ns": 4422545127749031,
+          "returncode": 0,
+          "output": "/tmp/mr3_p2a_reach_v45_matrix/terminal/live_custody.json"
+        },
+        {
+          "id": "information",
+          "passed": true,
+          "wall_seconds": "156.206153076",
+          "started_wall_monotonic_ns": 4422545195081106,
+          "ended_wall_monotonic_ns": 4422701401234182,
+          "returncode": 0,
+          "output": "/tmp/mr3_p2a_reach_v45_matrix/terminal/information_result.json"
+        },
+        {
+          "id": "runtime",
+          "passed": true,
+          "wall_seconds": "173.366171339",
+          "started_wall_monotonic_ns": 4422545194640464,
+          "ended_wall_monotonic_ns": 4422718560811803,
+          "returncode": 0,
+          "output": "/tmp/mr3_p2a_reach_v45_matrix/terminal/runtime_result.json"
+        },
+        {
+          "id": "cadence",
+          "passed": true,
+          "wall_seconds": "226.429735434",
+          "started_wall_monotonic_ns": 4422545195713185,
+          "ended_wall_monotonic_ns": 4422771625448619,
+          "returncode": 0,
+          "output": "/tmp/mr3_p2a_reach_v45_matrix/terminal/cadence_result.json"
+        },
+        {
+          "id": "fifo_001",
+          "passed": true,
+          "wall_seconds": "76.989033263",
+          "started_wall_monotonic_ns": 4422701403140402,
+          "ended_wall_monotonic_ns": 4422778392173665,
+          "returncode": 0,
+          "output": "/tmp/mr3_p2a_reach_v45_matrix/terminal/fifo_001_result.json"
+        },
+        {
+          "id": "fifo_002",
+          "passed": true,
+          "wall_seconds": "76.321837232",
+          "started_wall_monotonic_ns": 4422718562784267,
+          "ended_wall_monotonic_ns": 4422794884621499,
+          "returncode": 0,
+          "output": "/tmp/mr3_p2a_reach_v45_matrix/terminal/fifo_002_result.json"
+        },
+        {
+          "id": "closure",
+          "passed": true,
+          "wall_seconds": "19.243710377",
+          "started_wall_monotonic_ns": 4422794888647132,
+          "ended_wall_monotonic_ns": 4422814132357509,
+          "returncode": 0,
+          "output": "/tmp/mr3_p2a_reach_v45_matrix/terminal/closure_result.json"
+        },
+        {
+          "id": "full",
+          "passed": true,
+          "wall_seconds": "298.894531635",
+          "started_wall_monotonic_ns": 4422545194393541,
+          "ended_wall_monotonic_ns": 4422844088925176,
+          "returncode": 0,
+          "output": "/tmp/mr3_p2a_reach_v45_matrix/terminal/full_result.json"
+        }
+      ]
+    },
+    {
+      "stage": "reset",
+      "status": "FAIL",
+      "actual_stage_wall_seconds": "2748.726403295",
+      "native_benchmark_wall_seconds": "2736.3627709914",
+      "native_command_wall_seconds": "2736.919947779",
+      "valid_transitions": 138,
+      "native_plus_other_stage_wall_not_double_charged": true,
+      "audit_submitted_interval_span_seconds": null,
+      "command_receipts": [
+        {
+          "id": "native",
+          "passed": false,
+          "wall_seconds": "2736.919947779",
+          "started_wall_monotonic_ns": 4422855113555583,
+          "ended_wall_monotonic_ns": 4425592033503362,
+          "returncode": 1,
+          "output": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v45/mr3_p2a_reach_v45_reset/benchmark_summary.json"
+        },
+        {
+          "id": "watcher",
+          "passed": true,
+          "wall_seconds": "2741.915312279",
+          "started_wall_monotonic_ns": 4422850735585690,
+          "ended_wall_monotonic_ns": 4425592650897969,
+          "returncode": 0,
+          "output": "/tmp/mr3_p2a_reach_v45_matrix/reset/live_custody.json"
+        }
+      ]
+    }
+  ],
+  "observed_episode_summary_costs": [
+    {
+      "stage": "interface",
+      "worker_id": 0,
+      "epoch": "mr3_p2a_reach_v45_interface_w0_e1_c46224fc",
+      "scene": "open",
+      "seed": 101,
+      "transitions": 32,
+      "startup_wall_sec": 131.9937620582059,
+      "transition_wall_sec": 988.3401354346424,
+      "reason": "external_sampler_limit"
+    },
+    {
+      "stage": "terminal",
+      "worker_id": 0,
+      "epoch": "mr3_p2a_reach_v45_terminal_w0_e1_831992f4",
+      "scene": "open",
+      "seed": 101,
+      "transitions": 4,
+      "startup_wall_sec": 132.4751238618046,
+      "transition_wall_sec": 97.89122580830008,
+      "reason": "navigation_failure"
+    },
+    {
+      "stage": "terminal",
+      "worker_id": 0,
+      "epoch": "mr3_p2a_reach_v45_terminal_w0_e2_4b9fddcc",
+      "scene": "open",
+      "seed": 101,
+      "transitions": 4,
+      "startup_wall_sec": 132.88589987251908,
+      "transition_wall_sec": 96.26837657112628,
+      "reason": "navigation_failure"
+    },
+    {
+      "stage": "reset",
+      "worker_id": 0,
+      "epoch": "mr3_p2a_reach_v45_reset_w0_e1_bb67b764",
+      "scene": "open",
+      "seed": 101,
+      "transitions": 32,
+      "startup_wall_sec": 133.70416232012212,
+      "transition_wall_sec": 989.6440361738205,
+      "reason": "external_sampler_limit"
+    },
+    {
+      "stage": "reset",
+      "worker_id": 0,
+      "epoch": "mr3_p2a_reach_v45_reset_w0_e2_58f9d1e7",
+      "scene": "open",
+      "seed": 101,
+      "transitions": 32,
+      "startup_wall_sec": 128.75525003299117,
+      "transition_wall_sec": 994.2985947290435,
+      "reason": "external_sampler_limit"
+    },
+    {
+      "stage": "reset",
+      "worker_id": 0,
+      "epoch": "mr3_p2a_reach_v45_reset_w0_e3_7708ca62",
+      "scene": "rooms",
+      "seed": 101,
+      "transitions": 10,
+      "startup_wall_sec": 132.54667832143605,
+      "transition_wall_sec": 324.70529127679765
+    },
+    {
+      "stage": "reset",
+      "worker_id": 1,
+      "epoch": "mr3_p2a_reach_v45_reset_w1_e1_cbdd3420",
+      "scene": "open",
+      "seed": 101,
+      "transitions": 32,
+      "startup_wall_sec": 133.37939392682165,
+      "transition_wall_sec": 1002.5081888018176,
+      "reason": "external_sampler_limit"
+    },
+    {
+      "stage": "reset",
+      "worker_id": 1,
+      "epoch": "mr3_p2a_reach_v45_reset_w1_e2_093b19ab",
+      "scene": "open",
+      "seed": 101,
+      "transitions": 32,
+      "startup_wall_sec": 135.52719749230891,
+      "transition_wall_sec": 987.2403494501486,
+      "reason": "external_sampler_limit"
+    }
+  ],
+  "sampling_measurement_limitations": [
+    "Only five completed open32 scripted episodes under this freeze were used for the healthy moving-sampler rate.",
+    "Scripted preparation inputs are not an untrained PPO action distribution.",
+    "Two simultaneous environments gave two sets of samples, not a twofold reduction in each environment step latency.",
+    "Host load, map evolution, motion mode and future failure/early terminal outcomes can change costs.",
+    "Deadline probe uses action888 WAIT, unlike the moving interface fixture; terminal4 also used WAIT but had a deliberate navigation failure, so neither rate is a validated deadline/PPO forecast."
+  ],
+  "rollout_and_update_hard_rules": {
+    "source_locations": [
+      "ppo.py:181-286 collect/reset/step/close/eligibility",
+      "ppo.py:511-517 per-round workers/caps",
+      "ppo.py:557-590 actual buffer and model.train",
+      "rollout.py:243-290 exact closed buffer",
+      "ppo.py:591-606 common final save/evaluation immutability"
+    ],
+    "usual_first_round_for_current_plan": {
+      "workers": 2,
+      "episode_steps_maximum": 64,
+      "usually_up_to_closed_decisions": 128
+    },
+    "128_is_not_a_hard_update_minimum": true,
+    "actual_buffer_size": "sum of actual nonempty closed episode DecisionTransition counts, n_envs=1; not the nominal constructor n_steps64",
+    "update_gate": "Each participating episode is nonempty, settled and closed; all native closures/eligibility pass; current round total decisions>=2; actual model.train changes finite parameters. Failures preserve diagnostic prefix and cannot train.",
+    "batch_size_effect": "64 controls SB3 minibatching and its initial constructor n_steps; lowering it does not close native episodes sooner or make unclosed/ineligible/one-sample data eligible.",
+    "wall_stop": "At/after native deadline, next actor loop sets each active ENV._active_limit to current_steps+1, then waits for a real next physical step, external truncation and all closures. No synthetic terminal, cancellation, hard kill or forced future result.",
+    "wall_stop_cost_warning": "The last in-flight/reset/step plus real drain/close/optimizer/checkpoint can extend beyond nominal native wall. Strict stage parent endpoint/cap and audit gates still decide PASS.",
+    "final_zip": "Shared unconditional post-loop save in both train/evaluate successful paths; interruption before that may leave only initial/intermediate checkpoints, which cannot substitute for final.",
+    "pilot_fresh_start": "train --checkpoint is rejected; minimum cannot be silently reused as pilot initialization."
+  },
+  "policy_time_budgets": {
+    "pilot_total_seconds": "2905.9547395464029",
+    "pilot_external_reserve_seconds": "300",
+    "pilot_main_seconds": "2605.9547395464029",
+    "pilot_internal_tail_reserve_seconds": "500",
+    "pilot_effective_native_formula": "floor_ms(min(2100, 2605.9547395464029 - elapsed_stage_admission - 500))",
+    "validation_total_seconds": "9000",
+    "validation_main_seconds": "8700",
+    "validation_effective_native_formula": "floor_ms(min(8500, 8700 - elapsed_stage_admission - 500)) <=8200",
+    "parent_checks": "native main + external finalize charged once in same pilot/validation scope; full parent union and complete endpoint<=original CAP, finalize<=300; internal gaps included in endpoint, no fee moved to engineering.",
+    "pilot1870_is_ceiling_not_required_consumption": true
+  },
+  "arithmetic_extrapolations_not_experiments": {
+    "healthy_open_transition_seconds_per_step_range": [
+      "30.85126092031714375",
+      "31.3283809000568"
+    ],
+    "healthy_open_reset_plus64_or300_projections": [
+      {
+        "source_epoch": "mr3_p2a_reach_v45_interface_w0_e1_c46224fc",
+        "transition_seconds_per_step": "30.885629232332575",
+        "reset_plus_64_steps_seconds": "2108.674032927490700",
+        "reset_plus_300_steps_seconds": "9397.682531757978400",
+        "excludes": [
+          "close",
+          "model construction/inference/update/save",
+          "independent audits",
+          "custody and final absence",
+          "source/admission I/O"
+        ]
+      },
+      {
+        "source_epoch": "mr3_p2a_reach_v45_reset_w0_e1_bb67b764",
+        "transition_seconds_per_step": "30.926376130431890625",
+        "reset_plus_64_steps_seconds": "2112.992234667763120000",
+        "reset_plus_300_steps_seconds": "9411.617001449689307500",
+        "excludes": [
+          "close",
+          "model construction/inference/update/save",
+          "independent audits",
+          "custody and final absence",
+          "source/admission I/O"
+        ]
+      },
+      {
+        "source_epoch": "mr3_p2a_reach_v45_reset_w0_e2_58f9d1e7",
+        "transition_seconds_per_step": "31.071831085282609375",
+        "reset_plus_64_steps_seconds": "2117.352439491078170000",
+        "reset_plus_300_steps_seconds": "9450.304575617773982500",
+        "excludes": [
+          "close",
+          "model construction/inference/update/save",
+          "independent audits",
+          "custody and final absence",
+          "source/admission I/O"
+        ]
+      },
+      {
+        "source_epoch": "mr3_p2a_reach_v45_reset_w1_e1_cbdd3420",
+        "transition_seconds_per_step": "31.3283809000568",
+        "reset_plus_64_steps_seconds": "2138.39577153045685",
+        "reset_plus_300_steps_seconds": "9531.89366394386165",
+        "excludes": [
+          "close",
+          "model construction/inference/update/save",
+          "independent audits",
+          "custody and final absence",
+          "source/admission I/O"
+        ]
+      },
+      {
+        "source_epoch": "mr3_p2a_reach_v45_reset_w1_e2_093b19ab",
+        "transition_seconds_per_step": "30.85126092031714375",
+        "reset_plus_64_steps_seconds": "2110.00789639260611000",
+        "reset_plus_300_steps_seconds": "9390.90547358745203500",
+        "excludes": [
+          "close",
+          "model construction/inference/update/save",
+          "independent audits",
+          "custody and final absence",
+          "source/admission I/O"
+        ]
+      }
+    ],
+    "pilot_interpretation": "Even reset+64 at these observed moving-fixture rates is about2109-2138s before all omitted costs, near/above the2100 native ceiling. A deadline-truncated smaller eligible first round or an early genuine terminal could still permit updates. This is not a theorem of zero updates.",
+    "WAIT_terminal4_proxy_deadline300_projections": [
+      {
+        "source_epoch": "mr3_p2a_reach_v45_terminal_w0_e1_831992f4",
+        "terminal_probe_seconds_per_step": "24.47280645207502",
+        "reset_plus_300_steps_seconds": "7474.31705948431060"
+      },
+      {
+        "source_epoch": "mr3_p2a_reach_v45_terminal_w0_e2_4b9fddcc",
+        "terminal_probe_seconds_per_step": "24.06709414278157",
+        "reset_plus_300_steps_seconds": "7353.01414270699008"
+      }
+    ],
+    "deadline_warning": "Original deadline native base6900 and stage7900 are at risk under both measured proxies, but unused prior stage reservations can increase native allocation and all-WAIT long-run cost is unmeasured. Do not claim inevitable timeout from these extrapolations.",
+    "full_reader_interface32_actual_seconds": "885.706565507",
+    "illustrative_full_reader_linear_128_seconds": "3542.826262028",
+    "illustrative_full_reader_linear_300_seconds": "8303.499051628125",
+    "illustrative_full_reader_linear_900_seconds": "24910.497154884375",
+    "full_reader_scaling_assumption": "Unverified: same cost per total recorded transition, ignoring per-episode fixed overhead, motion-mode changes, cache/contention and the additional policy replay in audit_reach_ppo. These values are warning scenarios, not lower bounds or observed throughput.",
+    "audit_bottleneck": "Actual full role already took885.706565507s for32 interface records; actual concurrent audit command span was about943s. The policy internal tail500 is a reserve, not a proven audit runtime bound. A native run consuming nearly all2100 leaves only about506s minus admission for all main tail work.",
+    "costs_are_not_added_as_parallel_command_fees": "All engineering fee remains the actual parent scope union in the closed review. Individual command walls characterize critical path/resource demand only."
+  },
+  "feasible_scope_choices_requiring_new_declaration": [
+    {
+      "choice": "Exact-equivalent performance work first",
+      "requirements": "Preserve actor received-only flow, safety/95/ROI, source proof, all reader roles and raw-byte coverage; test full public outputs/failures vs frozen baseline on bounded artificial CPU fixtures. Optimize production and offline readers because both are current critical paths; no new long matrix just to profile.",
+      "claim": "Preparation only; cannot by itself fix reset IPC or create qualification."
+    },
+    {
+      "choice": "Keep a fresh full qualification and minimum reservation",
+      "requirements": "All four original stages,12EP/30roles, their current science gates and strict process/fee closure must be collected/audited at one new freeze. If reducing wall reservations to fit19282.6499722353982, retain workload and prepare an explicit budget-profile/version plus refusal tests before any run.",
+      "claim": "No mixing V45 interface/terminal PASS into a later freeze or restarting the old FAIL."
+    },
+    {
+      "choice": "Prospectively smaller pilot total cap within unchanged1870 ceiling",
+      "example": "For decisions16 and workers2, existing caps arithmetic gives max8steps per worker despite unchanged episode_steps64. Source stage_spec allows decisions2..1870 and still pins episode_steps64. This is a scope example, not a selected/approved new plan.",
+      "requirements": "Declare the total cap before execution, source-seal/qualify it, preserve all closure/GAE/positive-parameter-change/full-audit gates, no retries or weight selection. An 8step/worker update is not evidence for a reliable95% mapping policy.",
+      "claim": "Could reduce both sampling and audit data; no promise of task learning or final-only success."
+    },
+    {
+      "choice": "Do not spend final-only on a weak plumbing checkpoint",
+      "requirements": "Final-only schedule remains exactly open401/402/403, same pilot final checkpoint,0optimizer calls, all3 true strict95 tasks and full audit/closure within original9000. Decide prospectively using development/qualification evidence without inspecting final outcomes to retune.",
+      "claim": "No current trained new-mode policy or current final-only throughput evidence exists."
+    }
+  ],
+  "next_gate": "First repair/isolate the observed rooms reset IPC-wall failure and demonstrate sufficient exact-equivalent production/reader capacity on bounded CPU evidence. Before any new complete native run, seal a valid whole-workload engineering reservation within remaining75000 and a prospective finite pilot data cap; do not blindly rerun unchanged V45.",
+  "source_bindings": [
+    {
+      "relative_path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/ppo.py",
+      "sha256": "6e66f553816040625d3198073ff0cfe31f846344c9b205df90437f2f07dd5ec1",
+      "bytes": 36011,
+      "stat": [
+        2051,
+        73531395,
+        36011,
+        1792672272205749303,
+        1792672272205749303
+      ]
+    },
+    {
+      "relative_path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/rollout.py",
+      "sha256": "338f6b68505c39ea79b5db208a66080ce22c25199b0fc975e61bd5a1f935c87a",
+      "bytes": 15857,
+      "stat": [
+        2051,
+        73531394,
+        15857,
+        1792118916741898981,
+        1792118916741898981
+      ]
+    },
+    {
+      "relative_path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_policy_chain.py",
+      "sha256": "5394ba6b6fa7666eb632e48699e2ff1e7da73f61f9339e0181978a8e3a590c07",
+      "bytes": 45817,
+      "stat": [
+        2051,
+        73564007,
+        45817,
+        1792672272206749374,
+        1792672272206749374
+      ]
+    },
+    {
+      "relative_path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_preparation.py",
+      "sha256": "084081c6dc99df2ba0083626ed8f8113f8a028235ff71efb27cad0f7020b7593",
+      "bytes": 37212,
+      "stat": [
+        2051,
+        73563997,
+        37212,
+        1792672120269488358,
+        1792672120269488358
+      ]
+    },
+    {
+      "relative_path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/preparation.py",
+      "sha256": "850ab8947f711033f3f2fd17ef57d32098c02d569c1bea0f5cf58aaff8acd767",
+      "bytes": 48624,
+      "stat": [
+        2051,
+        73555357,
+        48624,
+        1792356507880208492,
+        1792356507880208492
+      ]
+    },
+    {
+      "relative_path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/benchmark.py",
+      "sha256": "9c6902f11d2069e684a08d58dfb13285fc61dbe9be040360558903f4fce16bfe",
+      "bytes": 60161,
+      "stat": [
+        2051,
+        73558344,
+        60161,
+        1792672272204749232,
+        1792672272204749232
+      ]
+    },
+    {
+      "relative_path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_ppo.py",
+      "sha256": "56dbf39b67731a392fb6bf9d4fcdd07d18cddcb182b8f1fafa299be327fafea2",
+      "bytes": 14090,
+      "stat": [
+        2051,
+        73563998,
+        14090,
+        1792672272206749374,
+        1792672272206749374
+      ]
+    },
+    {
+      "relative_path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_ppo.py",
+      "sha256": "b2e0737d79826b7ecb319cc91b58ff45475ea831a9cb2b4cab2298aaf6474567",
+      "bytes": 70173,
+      "stat": [
+        2051,
+        73531406,
+        70173,
+        1792356740986663168,
+        1792356740986663168
+      ]
+    },
+    {
+      "relative_path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_preparation.py",
+      "sha256": "76c72c26d229c803194eaf86283586cccda90b50d3bd767e2950ea3c630fd8de",
+      "bytes": 14916,
+      "stat": [
+        2051,
+        73563993,
+        14916,
+        1792672560514761814,
+        1792672560514761814
+      ]
+    }
+  ],
+  "input_metadata_bindings": {
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v45_preparation_classification/plan_v1.json": {
+      "sha256": "0964c074510e0601d23b33b5493e71e6dd95e945adb24dda621649d76f1bd8b5",
+      "bytes": 232809,
+      "stat": [
+        2051,
+        79173318,
+        232809,
+        1792674251374007628,
+        1792674251374007628
+      ]
+    },
+    "/tmp/mr3_p2a_v45_independent_closed_review_v2.json": {
+      "sha256": "5125b26cffd3f9e81b72d3d2c201a241ebe09f5b97080d486904c574ea5b1735",
+      "bytes": 726648,
+      "stat": [
+        2051,
+        76648561,
+        726648,
+        1792680358569756743,
+        1792680358569756743
+      ]
+    },
+    "/tmp/mr3_p2a_reach_v45_matrix/summary.json": {
+      "sha256": "3ecaa458608b826d998720a637aaef1f158a3e5ee6bcbe4a6321426a658ab0f3",
+      "bytes": 102754,
+      "stat": [
+        2051,
+        78675218,
+        102754,
+        1792680204419776942,
+        1792680204419776942
+      ]
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v45/mr3_p2a_reach_v45_interface/benchmark_summary.json": {
+      "sha256": "a121470ba57f826d2a274e5aeea9720ef5da1d67a31c0c91798cb770101746c0",
+      "bytes": 67440,
+      "stat": [
+        2051,
+        79173856,
+        67440,
+        1792675730182612068,
+        1792675730182612068
+      ]
+    },
+    "/tmp/mr3_p2a_reach_v45_matrix/interface/native.json": {
+      "sha256": "6cb47dd9ed57b70b2ddca016a88bf183b67430c141daccdcd62a90a0f1b7ed4b",
+      "bytes": 5077,
+      "stat": [
+        2051,
+        78654064,
+        5077,
+        1792675730294609642,
+        1792675730294609642
+      ]
+    },
+    "/tmp/mr3_p2a_reach_v45_matrix/interface/watcher.json": {
+      "sha256": "a55312209f5182c09440d4adec325a786df116eda3f31d92fa228f3f4e013ef2",
+      "bytes": 3739,
+      "stat": [
+        2051,
+        78654102,
+        3739,
+        1792675730825598141,
+        1792675730825598141
+      ]
+    },
+    "/tmp/mr3_p2a_reach_v45_matrix/interface/physics_command.json": {
+      "sha256": "488bf98fee8e867da6dc6fa38d4ac69c90b14c51982094421296a4d0f95aa8ee",
+      "bytes": 3112,
+      "stat": [
+        2051,
+        78654303,
+        3112,
+        1792675781507671388,
+        1792675781507671388
+      ]
+    },
+    "/tmp/mr3_p2a_reach_v45_matrix/interface/angular_command.json": {
+      "sha256": "cb1aeffd2110c4d4c8ab5e3c61c593ce1d338117c5db03b61d6c4fbea94bbc23",
+      "bytes": 3124,
+      "stat": [
+        2051,
+        78654307,
+        3124,
+        1792675783431642631,
+        1792675783431642631
+      ]
+    },
+    "/tmp/mr3_p2a_reach_v45_matrix/interface/input_001_command.json": {
+      "sha256": "c72aa10ab1a71b60a9d2a8ea8f70cbbbf83763d9296975ea1fdcc750f20aebac",
+      "bytes": 2895,
+      "stat": [
+        2051,
+        78654295,
+        2895,
+        1792675957028721809,
+        1792675957028721809
+      ]
+    },
+    "/tmp/mr3_p2a_reach_v45_matrix/interface/runtime_command.json": {
+      "sha256": "ea3951a1d4420232a5c54ee496ccde87b8b34516e4b75f7d8190afb875ca5181",
+      "bytes": 2927,
+      "stat": [
+        2051,
+        78654300,
+        2927,
+        1792676144922690807,
+        1792676144922690807
+      ]
+    },
+    "/tmp/mr3_p2a_reach_v45_matrix/interface/information_command.json": {
+      "sha256": "c1a06ad991a95b18cdf62dcb9306cabd7e3c17b077033c769272efa6143bc26c",
+      "bytes": 2963,
+      "stat": [
+        2051,
+        78654299,
+        2963,
+        1792676256230922515,
+        1792676256230922515
+      ]
+    },
+    "/tmp/mr3_p2a_reach_v45_matrix/interface/cadence_command.json": {
+      "sha256": "33a7648d43bade0f25d725ee3923bbb63ad2ec42a9ae1bfdb77cf26609d85003",
+      "bytes": 2927,
+      "stat": [
+        2051,
+        78674541,
+        2927,
+        1792676383941220258,
+        1792676383941220258
+      ]
+    },
+    "/tmp/mr3_p2a_reach_v45_matrix/interface/full_command.json": {
+      "sha256": "f4c4ee6a3895d72d2a239646902dc6502aa693e30124428a167ab9faace4a4b9",
+      "bytes": 3352,
+      "stat": [
+        2051,
+        78654309,
+        3352,
+        1792676616562724512,
+        1792676616562724512
+      ]
+    },
+    "/tmp/mr3_p2a_reach_v45_matrix/interface/fifo_001_command.json": {
+      "sha256": "f549e83ca8d8d01accc2f97f4e1514a464fa0c7b1b4bf978812b13a95db5476f",
+      "bytes": 2994,
+      "stat": [
+        2051,
+        78654311,
+        2994,
+        1792676642410650791,
+        1792676642410650791
+      ]
+    },
+    "/tmp/mr3_p2a_reach_v45_matrix/interface/closure_command.json": {
+      "sha256": "7cd006fc5561856dce68c9b9c065087829a7e13cca4038642946850cea915f72",
+      "bytes": 4068,
+      "stat": [
+        2051,
+        78674538,
+        4068,
+        1792676673437782761,
+        1792676673437782761
+      ]
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v45/mr3_p2a_reach_v45_terminal/benchmark_summary.json": {
+      "sha256": "9d163542681efdd94b7c19dc818a80e129e4b84ed7a69f8d6c2ed175c7afbac6",
+      "bytes": 28081,
+      "stat": [
+        2051,
+        79174193,
+        28081,
+        1792677149449138654,
+        1792677149449138654
+      ]
+    },
+    "/tmp/mr3_p2a_reach_v45_matrix/terminal/native.json": {
+      "sha256": "eadca20ad525384efdcfb9f0224983e7f418402e8c787e70d9e1a3d185afba47",
+      "bytes": 4744,
+      "stat": [
+        2051,
+        78674546,
+        4744,
+        1792677149554143219,
+        1792677149554143219
+      ]
+    },
+    "/tmp/mr3_p2a_reach_v45_matrix/terminal/watcher.json": {
+      "sha256": "9649d99906eb8d2f5003e7e0e68919455cf7c2112b8b7fab97e29ded6a8ef80f",
+      "bytes": 3727,
+      "stat": [
+        2051,
+        78674549,
+        3727,
+        1792677150178170356,
+        1792677150178170356
+      ]
+    },
+    "/tmp/mr3_p2a_reach_v45_matrix/terminal/information_command.json": {
+      "sha256": "f9f4f6c3b275788f5625b3daeb910fe3ec427abd0ea32d1465553df6a7658d15",
+      "bytes": 2956,
+      "stat": [
+        2051,
+        78674556,
+        2956,
+        1792677306388198549,
+        1792677306388198549
+      ]
+    },
+    "/tmp/mr3_p2a_reach_v45_matrix/terminal/runtime_command.json": {
+      "sha256": "c26d57de472ac4c3e25454592f98aa178b0a52b1e0e8e773b704b2a76d3e574d",
+      "bytes": 2920,
+      "stat": [
+        2051,
+        78675145,
+        2920,
+        1792677323548635101,
+        1792677323548635101
+      ]
+    },
+    "/tmp/mr3_p2a_reach_v45_matrix/terminal/cadence_command.json": {
+      "sha256": "6e6274c7e662a6b1aa4ab01a73febf022947b261b2ff6e92d6e355f3eb9110dc",
+      "bytes": 2920,
+      "stat": [
+        2051,
+        78675152,
+        2920,
+        1792677376613053877,
+        1792677376613053877
+      ]
+    },
+    "/tmp/mr3_p2a_reach_v45_matrix/terminal/fifo_001_command.json": {
+      "sha256": "a0c34156a998d1175fc0be90a7265bba4323a9fef2278db811a818c253890188",
+      "bytes": 2986,
+      "stat": [
+        2051,
+        78675154,
+        2986,
+        1792677383379241895,
+        1792677383379241895
+      ]
+    },
+    "/tmp/mr3_p2a_reach_v45_matrix/terminal/fifo_002_command.json": {
+      "sha256": "a2a2580ec59ef2230e3c4dcb198f4c814c83027e742d915028b7563b17915ecd",
+      "bytes": 2986,
+      "stat": [
+        2051,
+        78675156,
+        2986,
+        1792677399872706625,
+        1792677399872706625
+      ]
+    },
+    "/tmp/mr3_p2a_reach_v45_matrix/terminal/closure_command.json": {
+      "sha256": "f291956a2ef4a4be7a866fc93f6c226a4f955aec90c420448b61c39c72687acb",
+      "bytes": 3999,
+      "stat": [
+        2051,
+        78675215,
+        3999,
+        1792677419123260228,
+        1792677419123260228
+      ]
+    },
+    "/tmp/mr3_p2a_reach_v45_matrix/terminal/full_command.json": {
+      "sha256": "15e6fc3dffbb8bec047a51d4dba34e294d9aad243619ed243c40e2a6682aebdf",
+      "bytes": 3345,
+      "stat": [
+        2051,
+        78675163,
+        3345,
+        1792677449095145132,
+        1792677449095145132
+      ]
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v45/mr3_p2a_reach_v45_reset/benchmark_summary.json": {
+      "sha256": "d9ac92423a3dcc567d046d0e97f5b935c9ee87762910de502f7fef6b9cfbb311",
+      "bytes": 260126,
+      "stat": [
+        2051,
+        79176981,
+        260126,
+        1792680196893331128,
+        1792680196893331128
+      ]
+    },
+    "/tmp/mr3_p2a_reach_v45_matrix/reset/native.json": {
+      "sha256": "a003ebd4cd877acfd7f3af9f2b37b41279d914c8f4f307eca90a99c46f510a84",
+      "bytes": 4948,
+      "stat": [
+        2051,
+        78675211,
+        4948,
+        1792680197026339014,
+        1792680197026339014
+      ]
+    },
+    "/tmp/mr3_p2a_reach_v45_matrix/reset/watcher.json": {
+      "sha256": "815846cb2ce0830231e6ef6d3e0eba841bb84963760df74fabf57a010e6cba69",
+      "bytes": 3695,
+      "stat": [
+        2051,
+        78675216,
+        3695,
+        1792680197825386378,
+        1792680197825386378
+      ]
+    },
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/ppo.py": {
+      "sha256": "6e66f553816040625d3198073ff0cfe31f846344c9b205df90437f2f07dd5ec1",
+      "bytes": 36011,
+      "stat": [
+        2051,
+        73531395,
+        36011,
+        1792672272205749303,
+        1792672272205749303
+      ]
+    },
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/rollout.py": {
+      "sha256": "338f6b68505c39ea79b5db208a66080ce22c25199b0fc975e61bd5a1f935c87a",
+      "bytes": 15857,
+      "stat": [
+        2051,
+        73531394,
+        15857,
+        1792118916741898981,
+        1792118916741898981
+      ]
+    },
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_policy_chain.py": {
+      "sha256": "5394ba6b6fa7666eb632e48699e2ff1e7da73f61f9339e0181978a8e3a590c07",
+      "bytes": 45817,
+      "stat": [
+        2051,
+        73564007,
+        45817,
+        1792672272206749374,
+        1792672272206749374
+      ]
+    },
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_preparation.py": {
+      "sha256": "084081c6dc99df2ba0083626ed8f8113f8a028235ff71efb27cad0f7020b7593",
+      "bytes": 37212,
+      "stat": [
+        2051,
+        73563997,
+        37212,
+        1792672120269488358,
+        1792672120269488358
+      ]
+    },
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/preparation.py": {
+      "sha256": "850ab8947f711033f3f2fd17ef57d32098c02d569c1bea0f5cf58aaff8acd767",
+      "bytes": 48624,
+      "stat": [
+        2051,
+        73555357,
+        48624,
+        1792356507880208492,
+        1792356507880208492
+      ]
+    },
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/benchmark.py": {
+      "sha256": "9c6902f11d2069e684a08d58dfb13285fc61dbe9be040360558903f4fce16bfe",
+      "bytes": 60161,
+      "stat": [
+        2051,
+        73558344,
+        60161,
+        1792672272204749232,
+        1792672272204749232
+      ]
+    },
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_ppo.py": {
+      "sha256": "56dbf39b67731a392fb6bf9d4fcdd07d18cddcb182b8f1fafa299be327fafea2",
+      "bytes": 14090,
+      "stat": [
+        2051,
+        73563998,
+        14090,
+        1792672272206749374,
+        1792672272206749374
+      ]
+    },
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_ppo.py": {
+      "sha256": "b2e0737d79826b7ecb319cc91b58ff45475ea831a9cb2b4cab2298aaf6474567",
+      "bytes": 70173,
+      "stat": [
+        2051,
+        73531406,
+        70173,
+        1792356740986663168,
+        1792356740986663168
+      ]
+    },
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_preparation.py": {
+      "sha256": "76c72c26d229c803194eaf86283586cccda90b50d3bd767e2950ea3c630fd8de",
+      "bytes": 14916,
+      "stat": [
+        2051,
+        73563993,
+        14916,
+        1792672560514761814,
+        1792672560514761814
+      ]
+    }
+  },
+  "new_scientific_consumer_execution": false,
+  "raw_native_streams_read": false,
+  "models_loaded": false,
+  "new_simulator_or_learning_execution": false,
+  "budget_proposals_are_not_authorizations": true
+}

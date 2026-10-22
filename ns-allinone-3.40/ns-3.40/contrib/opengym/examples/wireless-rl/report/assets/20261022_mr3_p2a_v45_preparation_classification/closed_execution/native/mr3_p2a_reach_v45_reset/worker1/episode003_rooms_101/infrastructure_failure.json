@@ -1,0 +1,19 @@
+{
+  "request": {
+    "id": 69,
+    "op": "reset",
+    "epoch": "mr3_p2a_reach_v45_reset_w1_e3_df93697f",
+    "scene": "rooms",
+    "seed": 101,
+    "quantum_steps": 20,
+    "terminal_probe": false,
+    "plant_stimulus_arm": null,
+    "plant_stimulus_work_deadline_ns": null,
+    "safety_contract": "mr3-reach-v1",
+    "seed_rule": "exact-point-bridge-v2",
+    "start_graph_rule": "point-attachment-3x3-v1",
+    "reach_geometry_rule": "cone-support-v2"
+  },
+  "error": "TimeoutError('three-robot delivered-input startup guard expired')",
+  "scope": "invalid infrastructure sample, never a task success"
+}

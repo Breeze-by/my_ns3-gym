@@ -1,0 +1,399 @@
+{
+  "attempted_episodes": 2,
+  "continuous_physical_model_proved": false,
+  "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v45/mr3_p2a_reach_v45_terminal",
+  "episodes": [
+    {
+      "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v45/mr3_p2a_reach_v45_terminal/worker0/episode001_open_101",
+      "epoch": "mr3_p2a_reach_v45_terminal_w0_e1_831992f4",
+      "errors": [],
+      "freeze": "cace46e08e53b7e89a434e23721db85ac993f6f5",
+      "metadata_sha256": "697b5652ff3fd2312d6f62829fdad2b165df56af0f6609418ea6fd9729e827ff",
+      "passed": true,
+      "reach_geometry_rule": "cone-support-v2",
+      "result": {
+        "episode": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v45/mr3_p2a_reach_v45_terminal/worker0/episode001_open_101",
+        "epoch": "mr3_p2a_reach_v45_terminal_w0_e1_831992f4",
+        "errors": [],
+        "freeze": "cace46e08e53b7e89a434e23721db85ac993f6f5",
+        "historical_38_role_qualification": false,
+        "implementation": {
+          "independent_measurement_oracle": {
+            "admitted_fixed_source_references": [
+              203,
+              306,
+              315
+            ],
+            "changed_expression_after": "all(self.selections[cycle, name]['clock_ns'] == clock for name in ROBOTS\n                if (cycle, name) in self.selections)",
+            "changed_expression_before": "all(item['clock_ns'] == clock for (number, _), item in self.selections.items()\n                if number == cycle)",
+            "effective_entry": {
+              "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_information.py",
+              "sha256": "c384b1b3cfc2817a770ea9a2ee5ea5e2f3dadb402df8f869d3eae6c76a38c020"
+            },
+            "effective_expected_latest_method_sha256": "8d79fd48d2fe118ef96787b6597815a030ca0078c36ae6b3bafbea2b97f23dbd",
+            "effective_selection_method_sha256": "f9ea7d7f1f6faa5114a430f80758c2d78137b1050950d745462f715aa16bc5f5",
+            "equivalence_basis": "Original robot membership and unique(cycle,robot) checks remain before the three-key same-cycle oracle. Fixed admitted lists are append-only and item source_ns/sequence never mutate; indexed integer-nanosecond lookup maximizes (source_ns,sequence,-offset), preserving the earliest exact tie and original item object. Its independent cache does not modify raw, pending, current, admitted or selection state. Every other predicate, record, source, threshold and output field is unchanged.",
+            "implementation": "admitted_index_three_keys_v1",
+            "legacy_report_identity_fields": "consumer_sha256 and immutable_raw_replay identify unchanged original mathematical sources, not the full effective implementation. This provenance identifies the actual new entry and both exact method changes.",
+            "method_ast_inverse_exact": true,
+            "only_method_replacements": [
+              "LedgerReplay.selection",
+              "LedgerReplay.expected_latest"
+            ],
+            "original_expected_latest_method_sha256": "b97b4ade23fce0eb37bddeaaea3df207311e5db56bc89d5c7cb3c5a0789d9219",
+            "original_selection_method_sha256": "9f406ebf57065ca6a51c5ab49711dc5138d44e8344346b862c8fba287bc4bcd7",
+            "projected_original_source_sha256": "5664e001c5fbe90aad7eaa3042bd76e12f308c82ab79ca028e8a42c3666303d0",
+            "reach_delivery_transform_projection": {
+              "effective_publish_method_sha256": "f004773ad4f04a73a3cc9e5587f8b0075b76d9d51831f2408593049b1e32275f",
+              "literal_after": "            transform = state['transform']\n",
+              "literal_before": "            transform = state.pop('transform')\n",
+              "literal_count": 1,
+              "native_inputs_modified": false,
+              "original_files_modified": false,
+              "original_source": {
+                "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v9/independent/mr3_independent_information_v1.py",
+                "sha256": "ba3e89fa6feda9406f984310adccf17c2f0638644fd0d26f0c2e9040ec0e7653"
+              },
+              "projected_whole_source_sha256": "9bf1fdf04a6ef6efc95c7ffd1fd82249931726330433d3cb73bcbba57f405990",
+              "scope": "keep actual delivered transform in new-profile whole row; all original raw/send/delivery/side comparisons remain",
+              "whole_source_inverse_equal": true,
+              "whole_source_inverse_sha256": "ba3e89fa6feda9406f984310adccf17c2f0638644fd0d26f0c2e9040ec0e7653"
+            },
+            "schema": "mr3-information-implementation-v1",
+            "stdlib_names_bound_for_indexed_method": {
+              "bisect_left": {
+                "actual_function": "_bisect.bisect_left",
+                "import": "bisect.bisect_left"
+              },
+              "insort": {
+                "actual_function": "_bisect.insort_right",
+                "import": "bisect.insort"
+              }
+            },
+            "unchanged_original_sources": [
+              {
+                "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_independent_information_v2.py",
+                "sha256": "f73600551a68e833a4c0a2063b12b75038a748466c838c8583c00605a34b948b"
+              },
+              {
+                "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v9/independent/mr3_independent_information_v1.py",
+                "sha256": "ba3e89fa6feda9406f984310adccf17c2f0638644fd0d26f0c2e9040ec0e7653"
+              }
+            ],
+            "whole_original_inverse_sha256": "ba3e89fa6feda9406f984310adccf17c2f0638644fd0d26f0c2e9040ec0e7653",
+            "whole_original_source_inverse_exact": true
+          },
+          "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_information.py",
+          "sha256": "f17c6fd76c4a1682ba36bd084548f74c46fd3151da14a3084c6613d984c6e495"
+        },
+        "information_counts": {
+          "calibration_ingress": 6044,
+          "calibration_prune": 5418,
+          "configuration": 1,
+          "intent_ingress": 5349,
+          "intent_prune": 4208,
+          "odom_future_ingress": 5420,
+          "odom_ingress": 5503,
+          "selections_retaining_future_odom": 113,
+          "state_commit_acks": 152,
+          "state_drain_ack": 5,
+          "state_drain_request": 5,
+          "state_phase_ack": 153,
+          "state_phase_request": 153,
+          "state_publish": 494,
+          "state_selection": 1482,
+          "state_send": 1482,
+          "state_terminal_received": 1,
+          "takeover_acks": 1,
+          "tf_future_ingress": 868,
+          "tf_ingress": 32254,
+          "tf_promote": 1482
+        },
+        "inputs": [
+          {
+            "decoded_bytes": 3011,
+            "decoded_sha256": "697b5652ff3fd2312d6f62829fdad2b165df56af0f6609418ea6fd9729e827ff",
+            "encoded_bytes": 3011,
+            "encoded_sha256": "697b5652ff3fd2312d6f62829fdad2b165df56af0f6609418ea6fd9729e827ff",
+            "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v45/mr3_p2a_reach_v45_terminal/worker0/episode001_open_101/metadata.json"
+          },
+          {
+            "decoded_bytes": 13305,
+            "decoded_sha256": "0431e9d7f862bc7dcba611fd5ac11af746ce40dd5e7c8c183443e56c1f8f6dd9",
+            "encoded_bytes": 13305,
+            "encoded_sha256": "0431e9d7f862bc7dcba611fd5ac11af746ce40dd5e7c8c183443e56c1f8f6dd9",
+            "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v45/mr3_p2a_reach_v45_terminal/worker0/episode001_open_101/summary.json"
+          },
+          {
+            "decoded_bytes": 85555609,
+            "decoded_sha256": "c00c4af8936ea23dda4578de4132fdea242b44bcbeec4218c3baf5dc309742cb",
+            "encoded_bytes": 85555609,
+            "encoded_sha256": "c00c4af8936ea23dda4578de4132fdea242b44bcbeec4218c3baf5dc309742cb",
+            "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v45/mr3_p2a_reach_v45_terminal/worker0/episode001_open_101/information_states.jsonl"
+          },
+          {
+            "decoded_bytes": 15063978,
+            "decoded_sha256": "8ba040d80da00818c016bd10e8dba0c2168a5209b39f12036302c932bad9d1ff",
+            "encoded_bytes": 15063978,
+            "encoded_sha256": "8ba040d80da00818c016bd10e8dba0c2168a5209b39f12036302c932bad9d1ff",
+            "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v45/mr3_p2a_reach_v45_terminal/worker0/episode001_open_101/peer_phase.jsonl"
+          },
+          {
+            "decoded_bytes": 146403196,
+            "decoded_sha256": "8677163bd4a4ccff0f3a9ecd01d3e47dc9a50ab5bf393bc7a9ec6e69ba2bf5b9",
+            "encoded_bytes": 146403196,
+            "encoded_sha256": "8677163bd4a4ccff0f3a9ecd01d3e47dc9a50ab5bf393bc7a9ec6e69ba2bf5b9",
+            "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v45/mr3_p2a_reach_v45_terminal/worker0/episode001_open_101/motion_safety.jsonl"
+          }
+        ],
+        "limitations": [
+          "Recorded callbacks establish their own prefix, not absence of middleware loss.",
+          "Publisher identity is graph_at_callback, not packet GID authentication or P3 isolation.",
+          "One central ideal delivery table feeds three logical guards; these are not three network endpoints.",
+          "Map computation, actor projection, obstacle geometry, reach geometry, physical metric calibration, HOLD/D qualification, body models, native closure and task/training validity require separate roles.",
+          "Calibration coefficients are source-bound declarations, not an independent proof of physical heading or compiler rounding."
+        ],
+        "motion_counts": {
+          "actual_cmd_vel": 5346,
+          "configuration": 1,
+          "control_ack": 154,
+          "control_ack_published": 154,
+          "control_commit": 152,
+          "control_dependency": 306,
+          "control_request": 154,
+          "full_three_guard_commits": 152,
+          "output_completed": 402,
+          "own_odom": 6044,
+          "own_tf": 19946,
+          "reach_decision": 5346,
+          "reach_driver_ingress": 14661,
+          "reach_intent_publish": 5349,
+          "reach_release_ready": 1,
+          "reach_state_ingress": 494,
+          "received_states": 494,
+          "release": 1,
+          "stop_request": 1,
+          "terminal": 1
+        },
+        "native_admission": false,
+        "passed": true,
+        "peer_counts": {
+          "ack_published": 153,
+          "commits": 152,
+          "configuration": 1,
+          "controlled": 1,
+          "inputs_matched": 152,
+          "obstacles_published": 152,
+          "received_odom": 1482,
+          "received_state_bundle": 494,
+          "received_tf": 1482,
+          "request_received": 153,
+          "warmup_obstacles_published": 357
+        },
+        "role": "reach_information_delivery_necessary_evidence",
+        "safety_contract": "mr3-reach-v1",
+        "schema": "mr3-reach-information-review-v1"
+      }
+    },
+    {
+      "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v45/mr3_p2a_reach_v45_terminal/worker0/episode002_open_101",
+      "epoch": "mr3_p2a_reach_v45_terminal_w0_e2_4b9fddcc",
+      "errors": [],
+      "freeze": "cace46e08e53b7e89a434e23721db85ac993f6f5",
+      "metadata_sha256": "b47072a0ff94269d66cc0ef96289e3d1f89281d5d2eda5c5a48410d6ef173263",
+      "passed": true,
+      "reach_geometry_rule": "cone-support-v2",
+      "result": {
+        "episode": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v45/mr3_p2a_reach_v45_terminal/worker0/episode002_open_101",
+        "epoch": "mr3_p2a_reach_v45_terminal_w0_e2_4b9fddcc",
+        "errors": [],
+        "freeze": "cace46e08e53b7e89a434e23721db85ac993f6f5",
+        "historical_38_role_qualification": false,
+        "implementation": {
+          "independent_measurement_oracle": {
+            "admitted_fixed_source_references": [
+              203,
+              306,
+              315
+            ],
+            "changed_expression_after": "all(self.selections[cycle, name]['clock_ns'] == clock for name in ROBOTS\n                if (cycle, name) in self.selections)",
+            "changed_expression_before": "all(item['clock_ns'] == clock for (number, _), item in self.selections.items()\n                if number == cycle)",
+            "effective_entry": {
+              "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_information.py",
+              "sha256": "c384b1b3cfc2817a770ea9a2ee5ea5e2f3dadb402df8f869d3eae6c76a38c020"
+            },
+            "effective_expected_latest_method_sha256": "8d79fd48d2fe118ef96787b6597815a030ca0078c36ae6b3bafbea2b97f23dbd",
+            "effective_selection_method_sha256": "f9ea7d7f1f6faa5114a430f80758c2d78137b1050950d745462f715aa16bc5f5",
+            "equivalence_basis": "Original robot membership and unique(cycle,robot) checks remain before the three-key same-cycle oracle. Fixed admitted lists are append-only and item source_ns/sequence never mutate; indexed integer-nanosecond lookup maximizes (source_ns,sequence,-offset), preserving the earliest exact tie and original item object. Its independent cache does not modify raw, pending, current, admitted or selection state. Every other predicate, record, source, threshold and output field is unchanged.",
+            "implementation": "admitted_index_three_keys_v1",
+            "legacy_report_identity_fields": "consumer_sha256 and immutable_raw_replay identify unchanged original mathematical sources, not the full effective implementation. This provenance identifies the actual new entry and both exact method changes.",
+            "method_ast_inverse_exact": true,
+            "only_method_replacements": [
+              "LedgerReplay.selection",
+              "LedgerReplay.expected_latest"
+            ],
+            "original_expected_latest_method_sha256": "b97b4ade23fce0eb37bddeaaea3df207311e5db56bc89d5c7cb3c5a0789d9219",
+            "original_selection_method_sha256": "9f406ebf57065ca6a51c5ab49711dc5138d44e8344346b862c8fba287bc4bcd7",
+            "projected_original_source_sha256": "5664e001c5fbe90aad7eaa3042bd76e12f308c82ab79ca028e8a42c3666303d0",
+            "reach_delivery_transform_projection": {
+              "effective_publish_method_sha256": "f004773ad4f04a73a3cc9e5587f8b0075b76d9d51831f2408593049b1e32275f",
+              "literal_after": "            transform = state['transform']\n",
+              "literal_before": "            transform = state.pop('transform')\n",
+              "literal_count": 1,
+              "native_inputs_modified": false,
+              "original_files_modified": false,
+              "original_source": {
+                "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v9/independent/mr3_independent_information_v1.py",
+                "sha256": "ba3e89fa6feda9406f984310adccf17c2f0638644fd0d26f0c2e9040ec0e7653"
+              },
+              "projected_whole_source_sha256": "9bf1fdf04a6ef6efc95c7ffd1fd82249931726330433d3cb73bcbba57f405990",
+              "scope": "keep actual delivered transform in new-profile whole row; all original raw/send/delivery/side comparisons remain",
+              "whole_source_inverse_equal": true,
+              "whole_source_inverse_sha256": "ba3e89fa6feda9406f984310adccf17c2f0638644fd0d26f0c2e9040ec0e7653"
+            },
+            "schema": "mr3-information-implementation-v1",
+            "stdlib_names_bound_for_indexed_method": {
+              "bisect_left": {
+                "actual_function": "_bisect.bisect_left",
+                "import": "bisect.bisect_left"
+              },
+              "insort": {
+                "actual_function": "_bisect.insort_right",
+                "import": "bisect.insort"
+              }
+            },
+            "unchanged_original_sources": [
+              {
+                "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v10/independent/mr3_independent_information_v2.py",
+                "sha256": "f73600551a68e833a4c0a2063b12b75038a748466c838c8583c00605a34b948b"
+              },
+              {
+                "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v9/independent/mr3_independent_information_v1.py",
+                "sha256": "ba3e89fa6feda9406f984310adccf17c2f0638644fd0d26f0c2e9040ec0e7653"
+              }
+            ],
+            "whole_original_inverse_sha256": "ba3e89fa6feda9406f984310adccf17c2f0638644fd0d26f0c2e9040ec0e7653",
+            "whole_original_source_inverse_exact": true
+          },
+          "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_information.py",
+          "sha256": "f17c6fd76c4a1682ba36bd084548f74c46fd3151da14a3084c6613d984c6e495"
+        },
+        "information_counts": {
+          "calibration_ingress": 6043,
+          "calibration_prune": 5032,
+          "configuration": 1,
+          "intent_ingress": 5385,
+          "intent_prune": 4125,
+          "odom_future_ingress": 5029,
+          "odom_ingress": 5411,
+          "selections_retaining_future_odom": 43,
+          "state_commit_acks": 151,
+          "state_drain_ack": 4,
+          "state_drain_request": 4,
+          "state_phase_ack": 152,
+          "state_phase_request": 152,
+          "state_publish": 474,
+          "state_selection": 1422,
+          "state_send": 1422,
+          "state_terminal_received": 1,
+          "takeover_acks": 1,
+          "tf_future_ingress": 1034,
+          "tf_ingress": 31935,
+          "tf_promote": 1422
+        },
+        "inputs": [
+          {
+            "decoded_bytes": 3011,
+            "decoded_sha256": "b47072a0ff94269d66cc0ef96289e3d1f89281d5d2eda5c5a48410d6ef173263",
+            "encoded_bytes": 3011,
+            "encoded_sha256": "b47072a0ff94269d66cc0ef96289e3d1f89281d5d2eda5c5a48410d6ef173263",
+            "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v45/mr3_p2a_reach_v45_terminal/worker0/episode002_open_101/metadata.json"
+          },
+          {
+            "decoded_bytes": 13304,
+            "decoded_sha256": "15a9322e9bc7f35a189fdb4402fab1431eb76d0386a99950a6c0ce29ec8c5c7e",
+            "encoded_bytes": 13304,
+            "encoded_sha256": "15a9322e9bc7f35a189fdb4402fab1431eb76d0386a99950a6c0ce29ec8c5c7e",
+            "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v45/mr3_p2a_reach_v45_terminal/worker0/episode002_open_101/summary.json"
+          },
+          {
+            "decoded_bytes": 84413321,
+            "decoded_sha256": "550c8b28b646b198bb3dd8f7289a3a7e134fe2523fdaebf6db89b76556937436",
+            "encoded_bytes": 84413321,
+            "encoded_sha256": "550c8b28b646b198bb3dd8f7289a3a7e134fe2523fdaebf6db89b76556937436",
+            "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v45/mr3_p2a_reach_v45_terminal/worker0/episode002_open_101/information_states.jsonl"
+          },
+          {
+            "decoded_bytes": 14663371,
+            "decoded_sha256": "c94efe1fba7ebec0f975d83c5b68579fd1d4d0cb96ff1e40a50d5e7018285e04",
+            "encoded_bytes": 14663371,
+            "encoded_sha256": "c94efe1fba7ebec0f975d83c5b68579fd1d4d0cb96ff1e40a50d5e7018285e04",
+            "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v45/mr3_p2a_reach_v45_terminal/worker0/episode002_open_101/peer_phase.jsonl"
+          },
+          {
+            "decoded_bytes": 147137953,
+            "decoded_sha256": "d01307de5aa5b76643a8d1e0dbf09ea81410282ca14489ac1240c3c8ec87d5c2",
+            "encoded_bytes": 147137953,
+            "encoded_sha256": "d01307de5aa5b76643a8d1e0dbf09ea81410282ca14489ac1240c3c8ec87d5c2",
+            "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v45/mr3_p2a_reach_v45_terminal/worker0/episode002_open_101/motion_safety.jsonl"
+          }
+        ],
+        "limitations": [
+          "Recorded callbacks establish their own prefix, not absence of middleware loss.",
+          "Publisher identity is graph_at_callback, not packet GID authentication or P3 isolation.",
+          "One central ideal delivery table feeds three logical guards; these are not three network endpoints.",
+          "Map computation, actor projection, obstacle geometry, reach geometry, physical metric calibration, HOLD/D qualification, body models, native closure and task/training validity require separate roles.",
+          "Calibration coefficients are source-bound declarations, not an independent proof of physical heading or compiler rounding."
+        ],
+        "motion_counts": {
+          "actual_cmd_vel": 5382,
+          "configuration": 1,
+          "control_ack": 153,
+          "control_ack_published": 153,
+          "control_commit": 151,
+          "control_dependency": 304,
+          "control_request": 153,
+          "full_three_guard_commits": 151,
+          "output_completed": 416,
+          "own_odom": 6043,
+          "own_tf": 20019,
+          "reach_decision": 5382,
+          "reach_driver_ingress": 14766,
+          "reach_intent_publish": 5385,
+          "reach_release_ready": 1,
+          "reach_state_ingress": 474,
+          "received_states": 474,
+          "release": 1,
+          "stop_request": 1,
+          "terminal": 1
+        },
+        "native_admission": false,
+        "passed": true,
+        "peer_counts": {
+          "ack_published": 152,
+          "commits": 151,
+          "configuration": 1,
+          "controlled": 1,
+          "inputs_matched": 151,
+          "obstacles_published": 151,
+          "received_odom": 1422,
+          "received_state_bundle": 474,
+          "received_tf": 1422,
+          "request_received": 152,
+          "warmup_obstacles_published": 360
+        },
+        "role": "reach_information_delivery_necessary_evidence",
+        "safety_contract": "mr3-reach-v1",
+        "schema": "mr3-reach-information-review-v1"
+      }
+    }
+  ],
+  "errors": [],
+  "freeze": "cace46e08e53b7e89a434e23721db85ac993f6f5",
+  "historical_38_role_qualification": false,
+  "native_admission": false,
+  "passed": true,
+  "reach_geometry_rule": "cone-support-v2",
+  "safety_contract": "mr3-reach-v1",
+  "schema": "mr3-reach-information-run-review-v1"
+}

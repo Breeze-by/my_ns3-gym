@@ -1,0 +1,39 @@
+{
+  "epoch": "mr3_p2a_reach_v45_reset_w1_e2_093b19ab",
+  "scene": "open",
+  "seed": 101,
+  "worker_id": 1,
+  "worker_identity": {
+    "pid": 3701886,
+    "parent": 3691385,
+    "group": 3701886,
+    "session": 3701886,
+    "start_ticks": 442399496,
+    "state": "R"
+  },
+  "domain_id": 207,
+  "gazebo_port": 15722,
+  "command": [
+    "/usr/bin/bash",
+    "--noprofile",
+    "--norc",
+    "-c",
+    "source /opt/ros/humble/setup.bash && source \"$1/install/setup.bash\" && source /usr/share/gazebo/setup.sh && exec /usr/bin/python3 \"$1/scripts/mr3_env_worker.py\" --run-dir \"$2\"",
+    "mr3-worker",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v45/mr3_p2a_reach_v45_reset/worker1/episode002_open_101"
+  ],
+  "reset_kind": "complete_process_rebuild",
+  "terminal_probe": false,
+  "safety_contract": "mr3-reach-v1",
+  "plant_stimulus_arm": null,
+  "plant_stimulus_work_deadline_ns": null,
+  "startup_wall_guard_sec": 420.0,
+  "request_wall_guard_sec": 90.0,
+  "seed_rule": "exact-point-bridge-v2",
+  "start_graph_rule": "point-attachment-3x3-v1",
+  "reach_geometry_rule": "cone-support-v2",
+  "preparation_probe_version": "mr3-p2a-reach-outward-cancel-v1",
+  "training_eligible": false,
+  "qualification_scope": "external_fixture_collection_not_scientific_qualification"
+}

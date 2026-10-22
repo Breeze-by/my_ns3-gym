@@ -1,0 +1,177 @@
+{
+  "schema": "mr3-v46-independent-static-forensic-entry-review-v1",
+  "status": "PASS_STATIC_WITH_SCOPE_NOT_YET_BOUND",
+  "passed_static_review": true,
+  "blocking_findings": [],
+  "scope": "Source/AST and known V45 closed metadata only; no new original input read, production import, self-check execution, replay, World, model, process signal or repository edits.",
+  "reviewed_sources": [
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v46_startup_diagnosis/closed_startup_extract_v1.py",
+      "bytes": 15913,
+      "sha256": "5dd2334e926d0ce87a0e7d4d3bfe8e48c758e680db61c1e1bcf812eaacbabe02"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v46_startup_diagnosis/run_forensic_v1.py",
+      "bytes": 5786,
+      "sha256": "fae1fa53f8585b674bf7505ff72232ae91f958e594cdb1aa7d85601b74ca03e3"
+    }
+  ],
+  "syntax_ast_passed": true,
+  "original_stop_regex_whole_literal_equal": true,
+  "stop_regex": "\\[INFO\\] \\[mr3_gazebo_native_stop-(\\d+)\\]: process started with pid \\[(\\d+)\\]",
+  "native_interpretation_sources_current_equal_V45_plan": [
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_adapter.py",
+      "bytes": 46265,
+      "sha256": "0dcd5545059c44b266c4d7a0e54b96f59373e7952500e110cac8a0d9d4250cfb",
+      "equals_V45_native_plan_source": true
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/motion_safety.py",
+      "bytes": 48895,
+      "sha256": "784da123894cd227bf5a11d645ec1cb02369645cb652f36440aee54d95b4676b",
+      "equals_V45_native_plan_source": true
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/task_evaluator.py",
+      "bytes": 80622,
+      "sha256": "3aa0655113c0c2402c6e587730fa1f457d1f837ff0ce00928e6c8ca433f3c8d6",
+      "equals_V45_native_plan_source": true
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py",
+      "bytes": 96576,
+      "sha256": "e8f2f98ad3a828d32c64cbd5559de7620e7695e227bfe6307e43a52e85548bc3",
+      "equals_V45_native_plan_source": true
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/scripts/run_mr3_adapter_probe.py",
+      "bytes": 13713,
+      "sha256": "9772251073bd16c4a59fda429895adf64fb8a019046a9325bfff4a553802fe0d",
+      "equals_V45_native_plan_source": true
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py",
+      "bytes": 68485,
+      "sha256": "2b7385d26268cdc74590015f1d78f1febabf04bef65c05ea435fa754d9241748",
+      "equals_V45_native_plan_source": true
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot/src/mr3_odometry_recorder.cpp",
+      "bytes": 8762,
+      "sha256": "d70502556ca840d8e01ce0183db7befbeecefc3bf267ba239867937013cb6168",
+      "equals_V45_native_plan_source": true
+    }
+  ],
+  "producer_contracts": {
+    "adapter_event_envelope": {
+      "source": "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_adapter.py",
+      "lines": [
+        283,
+        284,
+        285,
+        286
+      ],
+      "fields": [
+        "kind",
+        "stamp",
+        "epoch",
+        "payload"
+      ]
+    },
+    "state_update_payload": {
+      "source": "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_adapter.py",
+      "lines": [
+        304,
+        311,
+        318
+      ],
+      "fields": "sequence + robot name/source_stamp/received_stamp/odom_source_stamp/tf_source_stamp/tf_validity_stamp/valid/epoch/odometry"
+    },
+    "adapter_initial_ready_gate": {
+      "source": "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_adapter.py",
+      "lines": [
+        403,
+        409,
+        426,
+        428
+      ],
+      "condition": "stepped, not released/stopping/already-ready; monitor_ready, states_fresh, all map inputs match, all navigation action servers ready; publication/event does not prove worker delivery"
+    },
+    "worker_startup_gate": {
+      "source": "ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py",
+      "lines": [
+        1215,
+        1218
+      ],
+      "condition": "monitor_ready and initial_inputs_ready is not None and motion_ready and odometry_recorder_ready; 400-second guard"
+    },
+    "original_native_stop_identity_gate": {
+      "source": "ros2_ws/ros2-multi-robot-automap/scripts/run_mr3_adapter_probe.py",
+      "lines": [
+        50,
+        61
+      ],
+      "condition": "exactly one original regex match, then original CLI and gzserver clean-exit literals; extractor reports match count/text and never calls or repairs helper"
+    }
+  },
+  "finite_input_contract": {
+    "fixed_original_count": 8,
+    "names_and_max_bytes": {
+      "launch.log": 2097152,
+      "adapter.jsonl": 8388608,
+      "metadata.json": 1048576,
+      "supervisor_metadata.json": 1048576,
+      "infrastructure_failure.json": 1048576,
+      "infrastructure_cleanup.json": 1048576,
+      "nav2_shutdown.json": 1048576,
+      "supervisor_shutdown.json": 1048576
+    },
+    "maximum_aggregate_original_bytes": 16777216,
+    "maximum_line_bytes": 1048576,
+    "maximum_output_bytes": 4194304,
+    "stable_regular_NOFOLLOW_sources": true,
+    "exclusive_output_outside_original_episode": true,
+    "before_after_full_byte_sha_and_size": true,
+    "wrapper_input_set_and_hash_equals_V45_closed_inventory_required": true
+  },
+  "unknown_and_selection_rules": [
+    "worker ready booleans at timeout remain NOT_RECORDED; adapter callback/gate history also remains NOT_RECORDED.",
+    "states_fresh is recomputed only at recorded state_update stamp, never at every maintain() or timeout instant.",
+    "initial_inputs_ready event is producer publication evidence only; no receipt/discovery or causal ready failure is reconstructed.",
+    "event_counts refer to accepted parsed epoch-matching events; nonzero parse_error_count prevents interpreting count zero as proven original absence.",
+    "selected_omitted/native_stop_name_lines_omitted/text_truncated remain explicit; selected text is not a complete causal launch history.",
+    "parse errors remain diagnostic counts/details; no scientific PASS or original cleanup FAIL override follows from extraction success."
+  ],
+  "budget_and_execution": {
+    "engineering_entry_used_seconds": "55717.3500277646018",
+    "engineering_ceiling_seconds": "75000",
+    "engineering_entry_remaining_seconds": "19282.6499722353982",
+    "prospective_main_complete_parent_seconds": "240",
+    "prospective_external_metadata_closure_seconds": "60",
+    "total_prospective_engineering_reservation_seconds": "300",
+    "fee_basis": "Complete parent wait around reach_execution from before Popen through true child wait; includes nested source-before/after accounting; inner receipt is not added again. External closure must receive its own actual wait and complete interval-union fee proof. Static prelaunch bookkeeping follows existing A42 scope.",
+    "code_starts_World_or_model": false,
+    "old_FAILURES_preserved": true,
+    "parent_ceiling_checked_after_reap_not_inferred_from_child": true,
+    "missing_or_failed_output_still_preserves_actual_parent_fee": true,
+    "all_submitted_children_drained": true,
+    "external_driver_absence_review_required": true
+  },
+  "required_scope_before_activation": [
+    "Bind every W/mr3_learning/*.py required by reach_execution -> preparation/native_custody/supervisor/ipc import chain, not only the two entry scripts.",
+    "Bind these seven ROS interpretation sources plus the extractor, wrapper, actual self-check CPU receipt, source recovery and console; check tested extractor bytes still equal current.",
+    "Bind completed V45 closed_inventory_v1.json and exact eight original paths/expected native freeze/epoch; no preliminary/incomplete packaging inventory.",
+    "Add scope itself to outer source set; all declared source SHA must match current/new Git freeze, which remains distinct from original V45 evidence freeze.",
+    "Declare main240 + external60 = total300, entry balance, exclusive new output prefix and one-only/no retry; do not silently use previous proposed360.",
+    "Independent post-reap source/identity/inventory/parent+external fee review remains necessary before closure; no output may be promoted to P2A qualification."
+  ],
+  "nonblocking_limits": [
+    "Scope and its source bindings are not yet present; review validates proposed source logic, not future frozen admission.",
+    "The 240-second parent limit is an admission/verdict ceiling checked after real wait, not a hard kill. Bounded original bytes, line/output caps and 10-second git-show timeouts reduce work size; a late true wait must still be charged and retained as FAIL."
+  ],
+  "self_check_credit": "Only reference root-reported 10 artificial checks PASS/.107243055 seconds; reviewer did not rerun.",
+  "scientific_qualification_credit": false,
+  "p2a_complete": false,
+  "new_native_or_PPO_authorized_by_review": false
+}
