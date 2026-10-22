@@ -1,5 +1,9 @@
 # MR3 研究路线：三机器人 RL 联合建图与冻结策略的 Wi-Fi 网络影响
 
+2026-10-22 V42预声明：V41闭合FAIL/61身份gone与原费保持；下一次仅对已闭合interface/open101的固定9文件作一次有界描述提取，≤1GiB输入/2200选行/4MiB输出，内部580秒、parent600＋外尾60＝660秒，预约在原800准备块余761.736133391内。15源及语法/路径静态准备通过，system reader/conda learner隔离修复正做CPU准备、尚未测试；待新commit/push精确freeze后执行，不重验原物理结论、不读map blobs/启动World或学习。工程仍50013.6985469126018/75000、余24986.3014530873982；pilot/final不动，P2A未完成，用户自主续接授权有效，无需再次审批。见[V42](report/20261022_mr3_p2a_v42_native_diagnosis.md)。
+
+2026-10-22 V41闭合FAIL：冻结47224c51c1c525c55093dce26b374d1ccb07eb06的interface原生32/32、rc0，custody/input/angular PASS；physics缺tb1/tb3合格停止证据，tb3任务最大平移速度仅.0005951022668803631m/s。conda full读者603.957455769秒后rc1/无result，报告scipy缺失；独立system input读者PASS，原失败与环境缺口分别保留。terminal/reset/deadline及minimum/pilot/final全部SKIPPED、0学习；两份外部absence各54身份PASS，最终独立review含driver共61保存身份freshgone；556原件/1053103628B无损封存为88403941B。四parent wait union1731.301983102秒，累计50013.6985469126018/75000、余24986.3014530873982；pilot/final额度不动，P2A未完成。用户自主授权有效，下一步新有界只读取证、正确隔离system reader/conda learner并修真实平移/探针激励，不直接重跑完整矩阵或降门。见[V41闭合](report/20261022_mr3_p2a_v41_packing_gate.md)。
+
 2026-10-22 V41准备：显式登记 `mr3-occupancy-int8-array-v1`，仅以完整源码逆投影恢复旧pin后在私有reader登记，原数学/任务/物理门保持。五组CPU中384+12+95+9=500项人工检查及双环境就绪通过；尚待新freeze真实preflight与完整native资格→minimum→pilot→final，不提供原生或学习信用。工程48282.3965638106018/75000、余26717.6034361893982，新预约20900（资格/最小/收口20100＋准备800）；pilot/final初始余额及旧FAIL保持，P2A未完成。用户已授权自主持续完成，不再重复审批。见[V41](report/20261022_mr3_p2a_v41_packing_gate.md)。
 
 2026-10-22 V40闭合FAIL：新冻结291b9e32e实际preflight阻止merge_map输出打包未登记的旧native pin冲突；755源/Git/current无漂移。未启动matrix/World/native/PPO，3身份gone，完整parent实费22.442744464（inner包含不叠加）。累计48282.3965638106018/75000、余26717.6034361893982；原FAIL及pilot/final余额保持。用户已授权自主直到P2A完成，不再重复审批；继续显式packing source版本修复/新freeze，P2A未完成。见[V40闭合](report/20261022_mr3_p2a_v40_native_qualification.md)。
@@ -89,7 +93,7 @@ Wi-Fi 分组网络，测量信息延迟、丢失和陈旧对同一联合建图�
 | `peer_obstacles.py` | baseline读raw；adapter读理想交付状态，完整机体包络不变 | P3A还需DDS/进程隔离与断链证明 |
 | Nav2 全局地图 | baseline读实时`/merge_map`；adapter读本机图+交付共享图副本 | P3A证明真实字节交付和无旁路 |
 | 覆盖评估器 | P1A合同schema4已验收，schema3兼容诊断 | 完整ROI、质量、全机体监测、三台参与与终态闭合门禁 |
-| 三机器人导航 RL / 训练环境 | P1C环境/reset/独立奖励及W7原生验证已于2026-10-16验收；P2A v5有3次开发图原生成功及48次pilot更新；v6工程相位/最小链PASS，pilot718决策/0更新因SLAM关闭异常停止，无final/验证，完整出口未达 | MR3-P1C 至 MR3-P2C |
+| 三机器人导航 RL / 训练环境 | P1C已验收；P2A历史v5的48次pilot更新保留原范围。最新V41 interface32/32但physics停止证据与conda full环境失败，minimum/pilot/final全部跳过，无新更新/终模型/95%验证，完整出口未达 | MR3-P1C 至 MR3-P2C |
 | ROS 与 ns-3 双向 gateway / Wi-Fi 闭环 | **尚未实现** | MR3-P3A 至 MR3-P5 |
 | `sim.cc` 与已有 DQN | 五用户、15 维观测、5 动作的 toy 调度 MDP | 历史工具链，不能充当三机器人策略或网络接入证明 |
 

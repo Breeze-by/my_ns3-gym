@@ -1,5 +1,9 @@
 # 报告与证据适用范围
 
+2026-10-22 V42预声明：V41闭合FAIL/61身份gone与原费保持；下一次仅对已闭合interface/open101的固定9文件作一次有界描述提取，≤1GiB输入/2200选行/4MiB输出，内部580秒、parent600＋外尾60＝660秒，预约在原800准备块余761.736133391内。15源及语法/路径静态准备通过，system reader/conda learner隔离修复正做CPU准备、尚未测试；待新commit/push精确freeze后执行，不重验原物理结论、不读map blobs/启动World或学习。工程仍50013.6985469126018/75000、余24986.3014530873982；pilot/final不动，P2A未完成，用户自主续接授权有效，无需再次审批。见[V42](20261022_mr3_p2a_v42_native_diagnosis.md)。
+
+2026-10-22 V41闭合FAIL：冻结47224c51c1c525c55093dce26b374d1ccb07eb06的interface原生32/32、rc0，custody/input/angular PASS；physics缺tb1/tb3合格停止证据，tb3任务最大平移速度仅.0005951022668803631m/s。conda full读者603.957455769秒后rc1/无result，报告scipy缺失；独立system input读者PASS，原失败与环境缺口分别保留。terminal/reset/deadline及minimum/pilot/final全部SKIPPED、0学习；两份外部absence各54身份PASS，最终独立review含driver共61保存身份freshgone；556原件/1053103628B无损封存为88403941B。四parent wait union1731.301983102秒，累计50013.6985469126018/75000、余24986.3014530873982；pilot/final额度不动，P2A未完成。用户自主授权有效，下一步新有界只读取证、正确隔离system reader/conda learner并修真实平移/探针激励，不直接重跑完整矩阵或降门。见[V41闭合](20261022_mr3_p2a_v41_packing_gate.md)。
+
 2026-10-22 V41准备：显式登记 `mr3-occupancy-int8-array-v1`，仅以完整源码逆投影恢复旧pin后在私有reader登记，原数学/任务/物理门保持。五组CPU中384+12+95+9=500项人工检查及双环境就绪通过；尚待新freeze真实preflight与完整native资格→minimum→pilot→final，不提供原生或学习信用。工程48282.3965638106018/75000、余26717.6034361893982，新预约20900（资格/最小/收口20100＋准备800）；pilot/final初始余额及旧FAIL保持，P2A未完成。用户已授权自主持续完成，不再重复审批。见[V41](20261022_mr3_p2a_v41_packing_gate.md)。
 
 2026-10-22 V40闭合FAIL：新冻结291b9e32e实际preflight阻止merge_map输出打包未登记的旧native pin冲突；755源/Git/current无漂移。未启动matrix/World/native/PPO，3身份gone，完整parent实费22.442744464（inner包含不叠加）。累计48282.3965638106018/75000、余26717.6034361893982；原FAIL及pilot/final余额保持。用户已授权自主直到P2A完成，不再重复审批；继续显式packing source版本修复/新freeze，P2A未完成。见[V40闭合](20261022_mr3_p2a_v40_native_qualification.md)。
@@ -50,7 +54,8 @@
 
 | 文件 | 用途 | 能提供的信用 |
 | --- | --- | --- |
-| [P2A V41 原生来源门续接](20261022_mr3_p2a_v41_packing_gate.md) | 显式map输出packing source兼容、500人工CPU及双环境就绪；准备完整新冻结链 | 仅CPU/来源准备；旧FAIL保持，尚无新native资格/学习或P2A信用 |
+| [P2A V42 闭合原件有限诊断](20261022_mr3_p2a_v42_native_diagnosis.md) | 固定V41 interface 9文件/1GiB/2200选行/4MiB，新freeze后唯一660秒块 | 预声明未执行；reader环境隔离CPU准备未测试，0新World/学习/重验，不改变原FAIL |
+| [P2A V41 原生来源门续接](20261022_mr3_p2a_v41_packing_gate.md) | packing真实preflight、interface32/32/custody/input/angular PASS；physics停止覆盖与conda full环境FAIL | 四parent实费1731.301983102秒、工程余24986.3014530873982；后继全部SKIPPED/0学习，无完整native资格或P2A信用 |
 | [P2A V36 实际点接图候选](20261022_mr3_p2a_v36_point_graph.md) | 禁用固定3×3全桥原型40人工CPU、同冻结已知两帧/6机开发计算 | PASS：38anchors，tb3原格false但2/4邻节点可接；1.824187839秒/5身份gone，无生产或资格 |
 | [P2A V35 图门与执行归因](20261022_mr3_p2a_v35_grid_liveness.md) | 缺图API113人工CPU；固定rooms两份输入的有限取证 | PASS：reset点安全/同中心桥不安全；1.818145901秒/5身份gone，转禁用point-graph CPU，不提供资格 |
 | [P2A V34 精确归格与局部执行](20261022_mr3_p2a_v34_seed_v2.md) | 显式v2、524人工CPU与同冻结三场64步唯一短probe | 192/192/0与585证书通过，运动恢复但rooms仍停滞/质量未过；466.089181502秒/20身份gone，无原生或训练资格 |
@@ -65,7 +70,7 @@
 | [P2A V22 二维实现与零更新容量](20261020_mr3_p2a_v22_proxy2d.md) | 符合性6+3与独立review PASS；284原始返回、完整活动FAIL | 未覆盖四环境；时间/verified信用已CPU修复，原FAIL保留，无训练/原生/扩额资格 |
 | [P2A V21 有限可行性诊断](20261020_mr3_p2a_v21_feasibility.md) | 两次32步原生返回；guard ACK时序的完整诊断FAIL及真实屏障CPU修复 | 旧FAIL保留；累计41480.3336378496018/52000，111保存身份gone；无修复后native资格/PPO |
 | [P2A 下一路线具体提案](20261020_mr3_p2a_next_route_proposal.md) | 真实guard屏障修复与二维符合性/零更新容量具体边界 | 用户已接受二维9000step/3600秒零更新范围；实际执行见V22，无扩额/训练/迁移授权 |
-| [P2A评估与后续交接](20261020_mr3_p2a_assessment_handoff.md) | 本次完成度、继续价值、阻塞原因、预算与下一会话操作边界 | 当前顶部更新V29真实SDK接口复用与下一薄适配，旧V28及更早结果保留原范围；原评估快照保留，二维训练/冻结规则调整及60000未批准 |
+| [P2A评估与后续交接](20261020_mr3_p2a_assessment_handoff.md) | 完成度、继续价值、阻塞原因、预算与下一会话操作边界 | 当前顶部为V41闭合FAIL及有界reader环境/平移探针修复；用户自主续接75000授权有效，旧评估及所有FAIL保留原范围 |
 | [P2A V20](20261020_mr3_p2a_v20.md) | 三reader性能修复；131 CPU与两个完整只读开发重放PASS | 原V19 FAIL不改，无新资格/PPO；工程union末账38216.5104974146018/52000，60000提案未批准。 |
 | [P2A V19](20261019_mr3_p2a_v19.md) | reach真实20Hz激光及同envelope TF；接口32/32 | 原阶段时间FAIL、Info实际-2、六项审计通过、58保存身份gone；无PPO |
 | [P2A V18](20261019_mr3_p2a_v18.md) | 同tick因果与storage接收修复；原生初始HOLD几何FAIL | 140项ROS/有限DDS准备；原生FAIL/49身份gone/178.641945323秒保留，无PPO |

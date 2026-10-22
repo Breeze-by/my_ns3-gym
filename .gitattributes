@@ -119,6 +119,8 @@ ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/2026
 
 # V41 canonical CPU/native consoles preserve original bytes.
 ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v41_packing_gate/**/*.log -text -whitespace
+# The complete post-wait byte archive preserves upstream/native whitespace.
+ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v41_packing_gate/closed_execution/** -text -whitespace
 
 # Keep exact V41 tested and source-bound tool bytes; permit their final empty line only.
 ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v41_packing_gate/preflight_v1.py -text whitespace=-blank-at-eof

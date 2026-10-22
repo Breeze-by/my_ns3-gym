@@ -1,5 +1,35 @@
 # MR3 P2A V41：登记精确map输出打包来源并继续原生链
 
+## 实际闭合：FAIL（2026-10-22）
+
+唯一活动已在新冻结 `47224c51c1c525c55093dce26b374d1ccb07eb06` 实际执行，driver完整等待后rc1；原准备记录在下方保留。packing来源门的真实preflight已通过，interface原生32条提交/32条正常返回、native rc0，live custody、独立system input及angular均PASS，但尚无完整native资格或P2A学习信用。
+
+| 必需证据 | 实际结果与限制 |
+|---|---|
+| physics | FAIL：tb1/tb3缺少合格停止证据；tb3任务最大平移速度仅 `0.0005951022668803631m/s`，不能把“几乎未动”计作完整制停验证 |
+| full | 真实等待 `603.957455769` 秒后rc1；`full_command.json`记录 `declared result missing`，没有生成full result。主编排对console末尾的核查为 `ModuleNotFoundError: scipy`：conda full调用audit_seed_inputs时导入ROS纯geometry依赖；单独system input reader已PASS。此错误与物理覆盖FAIL分别保留，不安装混合依赖或改审计结果补成功 |
+| interface余必需角色 | runtime/information/cadence、FIFO/peer_control、closure按原顺序因前置必需门失败SKIPPED；不能用外部身份absence替代其科学审计 |
+| 后续资格/学习 | terminal/reset/deadline、完整qualification及minimum/pilot/final-only validation全部未执行/SKIPPED；0学习、0新optimizer更新，无新final模型或95%验证 |
+| 外部身份闭合 | matrix_absence与chain_final_absence均PASS，各自54个保存身份缺席、源码及成员稳定；[最终独立review](assets/20261022_mr3_p2a_v41_packing_gate/independent_closed_review_v1.json)另核包括driver在内的61个保存PID/start身份全部freshgone，原失败保持 |
+
+实际唯一命令，cwd为canonical wireless-rl目录：
+
+```text
+PYTHONNOUSERSITE=1 CUDA_VISIBLE_DEVICES=0 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m report.assets.20261022_mr3_p2a_v41_packing_gate.execute_chain_v1 --freeze 47224c51c1c525c55093dce26b374d1ccb07eb06
+```
+
+四次完整parent actual-wait分别为preflight `38.263866609`、matrix `1690.452159868`、matrix_absence `1.293211652`、chain_final_absence `1.292744973` 秒，scope-wise union共 **1731.301983102秒**；full/native及inner receipt费用均已包含，不再叠加。工程累计 **50013.6985469126018/75000**，余 **24986.3014530873982**。pilot与validation新增均0；原pilot余1870决策/2905.9547395464029秒及final-only open401/402/403额度保持。20900是事前预约，不是本轮实费，也不是失败后自动应消耗的余额。
+
+原始证据已无损canonical封存：**556份原件/1053103628字节，规范归档88403941字节**；[完整库存](assets/20261022_mr3_p2a_v41_packing_gate/closed_inventory_v1.json)逐项保存原路径、原/规范bytes与SHA、codec、stat稳定及解压后原字节一致证明。JSONL/CSV另存`.rawbytes.gz`、gzip mtime=0；已有原`.gz`仍逐字节保存，未重写原件。缺失的full result如实保持缺失，不能以新环境结果追认本次PASS。
+
+关键原件：[driver summary](assets/20261022_mr3_p2a_v41_packing_gate/closed_execution/tmp/mr3_p2a_reach_v41_driver_v1/summary.json)、[matrix实际wait](assets/20261022_mr3_p2a_v41_packing_gate/closed_execution/tmp/mr3_p2a_reach_v41_matrix_wait/actual_wait.json)、[native32步summary](assets/20261022_mr3_p2a_v41_packing_gate/closed_execution/native/mr3_p2a_reach_v41_interface/benchmark_summary.json)、[physics原FAIL](assets/20261022_mr3_p2a_v41_packing_gate/closed_execution/tmp/mr3_p2a_reach_v41_matrix/interface/physics_result.json)、[full真实命令/无result失败](assets/20261022_mr3_p2a_v41_packing_gate/closed_execution/tmp/mr3_p2a_reach_v41_matrix/interface/full_command.json)、[最终独立关闭/末账review](assets/20261022_mr3_p2a_v41_packing_gate/independent_closed_review_v1.json)。review PASS只证明原FAIL的独立封存、身份和末账，不给予完整资格或训练准入。
+
+首次归档工具将生成的`adapter.jsonl.gz`与已有原同名gzip冲突，[setup failure记录](assets/20261022_mr3_p2a_v41_packing_gate/archive_setup_failure_v1.json)保留；改为`.rawbytes.gz`避免命名冲突后完成封存。原实验结果与原输出没有变化；这是纯字节包装bookkeeping失败，不是新实验/科学消费，新增工程费0。
+
+下一步继续P2A：新声明有界只读取证，正确隔离system reader与conda learner，定位真实平移/探针激励并验证修复；不直接重跑完整matrix，不降停止/物理/95%/质量/参与/接触门。当前失败也不证明RL路线不可行；它明确要求先补有效物理激励及环境接线。用户自主持续授权有效，无需再问一般批准，P2A仍未完成。
+
+## 执行前声明与准备记录（原文保留）
+
 2026-10-22，用户已授权自主持续直到P2A完成，无需重复批准。V40原preflight FAIL/22.442744464工程秒保持；当前已用48282.3965638106018/75000，余26717.6034361893982。新V41预约18000矩阵＋300工程收口＋1800minimum＋800准备/有限诊断，共20900，余5817.6034361893982未预约。原pilot/final初始余额保持，任务与所有数学/物理门不变。
 
 V23 map打包性能修订只将两处ROS OccupancyGrid.data赋值改为直接array('b')，但V40的reach版本登记漏该文件，旧immutable pin拒绝是正确行为。本版显式plan profile `mr3-occupancy-int8-array-v1`，仅承认当前/freeze/plan精确e4cf897d2c22e70f89d9293efc00f44dd4bf1eb01624713735e08afdee0cbfcc；三literal完整inverse必须恢复旧76c3d2c604f38f61116be1f39263472f9074b4f69fe7a0428b532da977530078，再在private reader登记这一pin。没有删原核验谓词、修改immutable audit_ppo或merge_map算法；未声明profile及legacy原锁保留。

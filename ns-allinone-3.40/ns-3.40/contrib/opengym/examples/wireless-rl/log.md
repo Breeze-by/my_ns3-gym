@@ -8435,3 +8435,25 @@ parent完整wait22.442744464秒，inner21.526599063包含其内不重复；源�
 已生成plan SHA85c7146999279ce6981c885544c08faa12577722f5f17b8460dc946c2d0a9742/211855字节，binding SHA5ea491d674c78f25a7a3c6f2336f3390f25912ca110e418ccb217ed486d2e93c/128956字节；完整30mandatory roles/12EP及minimum/pilot/final registry已封存准备。新freeze尚待实际commit/push写入，不能把本轮CPU当真preflight或native资格。
 
 即将使用的新唯一入口形态：`PYTHONNOUSERSITE=1 CUDA_VISIBLE_DEVICES=0 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m report.assets.20261022_mr3_p2a_v41_packing_gate.execute_chain_v1 --freeze EXACT40`；EXACT40待填真实新40位SHA，尚未声明已执行。新freeze preflight通过才完整资格→minimum→pilot→final，同一链结束前不改源/plan或中途commit。pilot/final外尾300在各原CAP内、主deadline2605.9547395464029/8700、内部500保留，外部actual union及完整端点门通过才后继；minimum/资格/全链身份外尾共用工程300。任务95%/300秒、质量、三台参与、18接触/真实物理与旧FAIL均保持，P2A未完成。见[V41报告](report/20261022_mr3_p2a_v41_packing_gate.md)。
+
+
+### 2026-10-22 MR3 P2A V41 完整链实际闭合FAIL
+
+唯一实际命令cwd=canonical wireless-rl：`PYTHONNOUSERSITE=1 CUDA_VISIBLE_DEVICES=0 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m report.assets.20261022_mr3_p2a_v41_packing_gate.execute_chain_v1 --freeze 47224c51c1c525c55093dce26b374d1ccb07eb06`。同冻结已push，链运行期间未改绑定源/plan，driver最终真实reap rc1；原CPU准备、plan及所有失败原件保持。
+
+实际preflight PASS，interface open101/1worker/32步（gentle_turn_v1、reach outward-cancel-v1、seedv2+point-graph、原新freeze packing profile）native32/32 rc0，live custody/system input/angular PASS。physics FAIL：tb1/tb3缺合格停止，tb3 max task V=0.0005951022668803631m/s。full命令为ns3gym `-m mr3_learning.audit_reach_preparation INTERFACE_RUN --freeze 47224c51c1c525c55093dce26b374d1ccb07eb06 --plan ABS_A41/plan_v1.json --output /tmp/mr3_p2a_reach_v41_matrix/interface/full_result.json`，实际603.957455769秒rc1/无result、receipt报declared result missing；主编排核到末尾ModuleNotFoundError scipy，conda内full调用audit_seed_inputs需ROS纯geometry依赖，system独立input已PASS。环境错误与停止覆盖FAIL分开保留，不改旧门或覆盖结果。
+
+interface runtime/information/cadence/FIFO/peer_control/closure因前置必需失败SKIPPED；terminal/reset/deadline、完整qualification、minimum/pilot/final全SKIPPED、0学习/0新optimizer，无新final模型或三场95%信用。matrix与chain_final两份外部absence均PASS，各54保存身份缺席、source/membership稳定；最终独立review另核含driver共61保存PID/start身份freshgone，Z态仍计存活、未扩大为未记录进程缺席声明。
+
+四parent实际wait：preflight38.263866609、matrix1690.452159868、matrix_absence1.293211652、chain_final_absence1.292744973秒，区间union1731.301983102；native/full/inner全部包含不叠加。工程累计50013.6985469126018/75000、余24986.3014530873982；pilot/validation实际新增0，原1870/2905.9547395464029及final-only401/402/403保持。输出prefix=/tmp/mr3_p2a_reach_v41，native root=ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v41；canonical原件与关闭证据见[V41报告](report/20261022_mr3_p2a_v41_packing_gate.md)。下一步新有界只读取证及system reader/conda learner隔离和真实平移探针修复，不直接重跑完整矩阵，不重复询问一般批准；95%/物理/安全与所有原FAIL保持，P2A未完成。
+
+V41 canonical封存完成：[库存](report/assets/20261022_mr3_p2a_v41_packing_gate/closed_inventory_v1.json)记录556份原件/1053103628B→规范88403941B，位置A41/closed_execution/{tmp,native}/；逐项原/规范SHA、stat稳定与解压后原字节相等。JSONL/CSV存.rawbytes.gz且mtime0，已有原.gz逐字保存。首次生成adapter.jsonl.gz与已有原gzip重名导致工具失败，[archive_setup_failure_v1.json](report/assets/20261022_mr3_p2a_v41_packing_gate/archive_setup_failure_v1.json)保留，修命名后成功；原件未改，此bookkeeping纯包装0工程费/无新实验或科学消费。[独立关闭review](report/assets/20261022_mr3_p2a_v41_packing_gate/independent_closed_review_v1.json)PASS，61身份freshgone，原执行FAIL和缺失full result均保留，不供训练资格；工程仍50013.6985469126018/75000、余24986.3014530873982。
+
+
+### 2026-10-22 MR3 P2A V42 闭合原件有限诊断预声明（尚未执行）
+
+V41 evidence freeze47224c51c1c525c55093dce26b374d1ccb07eb06原FAIL/61身份gone/末账保持。新A42 scope/closed_native_extract/run_forensic已建，15源/语法/路径静态准备PASS；system reader/conda learner隔离修复正在人工CPU准备，尚未测试/原trace重验。用户自主持续完成P2A授权有效，不再请求一般审批。
+
+固定V41 interface/open101/单EP/reset+32step，9文件仅transitions/adapter/motion_safety及三机drive/odom；一次流式总≤1GiB、≤2200选行/完整4MiB输出，不解map/blob，不重裁物理/任务。reader内部580秒/parent完整wait600＋外尾60=660预约，在原800准备块余761.736133391内；入场工程50013.6985469126018/75000、余24986.3014530873982，预约不是实费。零World/GPU优化/学习，pilot/final不动。
+
+待本轮修复人工CPU完成、同commit/push新freeze后唯一命令cwd=wireless-rl：`rtk proxy env PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 -B -m report.assets.20261022_mr3_p2a_v42_native_diagnosis.run_forensic_v1 --freeze EXACT40`，EXACT40待替本次精确40位新SHA，当前没有声称已启动。新prefix=/tmp/mr3_p2a_v42_native_diagnosis，父实际wait/原9字节与源稳定/最终保存身份/外尾费用均须闭合；不改旧V41、不直接重跑完整矩阵，不降任务/安全/物理门。后续根据事实修真实平移/探针激励，P2A未完成。见[V42预声明](report/20261022_mr3_p2a_v42_native_diagnosis.md)。
