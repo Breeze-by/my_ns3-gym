@@ -1,6 +1,6 @@
 # 报告与证据适用范围
 
-2026-10-22 V35准备：V34短探针工程通过且运动恢复，rooms tb3仍.220832m/格净空拒绝59/65，三场质量未过。v2缺图API修复及有限取证/外尾共113项人工CPU通过；新scope仅rooms101三份固定已存actor输入、60工程秒含关闭，不重跑/PPO。工程47735.8935792376018/52000、余4264.1064207623982，75000待答，pilot/final-only不动，P2A未完成。见[V35](20261022_mr3_p2a_v35_grid_liveness.md)。
+2026-10-22 V35闭合：47dd6774e新源有限rooms101取证PASS；130events固定选择去重为2输入，reset即原cell门拒绝，实际点.29安全而同中心整桥不安全，不能仅靠shortcut/centre精度修复。缺图API及取证113人工CPU通过；main+final实费1.818145901，5身份gone，累计47737.7117251386018/52000、余4262.2882748613982。下一步禁用actual-point→固定3×3原graph节点全桥证书CPU，新科学版本不假称保留原含点cell门；无生产/原生/PPO资格，75000待答、pilot/final-only不动，P2A未完成。见[V35](20261022_mr3_p2a_v35_grid_liveness.md)。
 
 2026-10-21 V33闭合：冻结6d16ebdc5的显式exact seed三场101各64步短工程链通过192/192/0、195actor/585证书和20身份gone；功能未解决，tb3每场65/65 pose_not_in_original_seed_cell，tb1几乎不动。规范273原件/11.79MB；实费578.391653362，累计47269.8043977356018/52000，余4730.1956022643982。继续定位精确cell算术与强制中心桥执行先决，新规则须新版本/冻结，不把短工程PASS当P2A；75000提案待答，pilot/final-only不动，P2A未完成。见[V33](20261021_mr3_p2a_v33_seed_mode.md)。
 
@@ -40,7 +40,7 @@
 
 | 文件 | 用途 | 能提供的信用 |
 | --- | --- | --- |
-| [P2A V35 图门与执行归因](20261022_mr3_p2a_v35_grid_liveness.md) | 缺图API修复、113人工CPU；新60秒scope取证rooms固定三输入 | 准备中，无新episode/原生或训练资格 |
+| [P2A V35 图门与执行归因](20261022_mr3_p2a_v35_grid_liveness.md) | 缺图API113人工CPU；固定rooms两份输入的有限取证 | PASS：reset点安全/同中心桥不安全；1.818145901秒/5身份gone，转禁用point-graph CPU，不提供资格 |
 | [P2A V34 精确归格与局部执行](20261022_mr3_p2a_v34_seed_v2.md) | 显式v2、524人工CPU与同冻结三场64步唯一短probe | 192/192/0与585证书通过，运动恢复但rooms仍停滞/质量未过；466.089181502秒/20身份gone，无原生或训练资格 |
 | [P2A V33 显式起点规则](20261021_mr3_p2a_v33_seed_mode.md) | 同seed精确点/桥、生产与新版本审计接线；固定三场64步短probe预声明 | 短工程192/192/0及585证书通过；功能仍阻塞，578.391653362秒/20身份gone，无原生或训练资格 |
 | [P2A V29 Karto直接CPU复用](20261021_mr3_p2a_v29_karto.md) | 7 fixed API/counter case，canonical headers/ELF/actual loaded path与wait | 接口证明；未启用mapper，无质量/SLAM/native信用；工程0新增，余6554.5762973333982 |

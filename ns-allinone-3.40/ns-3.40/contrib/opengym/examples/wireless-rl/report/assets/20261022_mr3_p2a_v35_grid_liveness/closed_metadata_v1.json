@@ -1,0 +1,86 @@
+{
+  "schema": "mr3-v35-closed-static-review-v1",
+  "source_freeze": "47dd6774e478bb714e1844e0056f2301269896a3",
+  "evidence_freeze": "7816cced7067c4505bd2874f0ad323cbb4fad85e",
+  "passed": true,
+  "actual_wait_union_seconds": "1.818145901",
+  "whole_activity_endpoint_seconds": "2.052657422",
+  "interval_union": [
+    [
+      4396042268999115,
+      4396043995117050
+    ],
+    [
+      4396044229628571,
+      4396044321656537
+    ]
+  ],
+  "engineering_used_seconds": "47737.7117251386018",
+  "engineering_remaining_seconds": "4262.2882748613982",
+  "saved_identity_count": 5,
+  "fresh_absence": [
+    {
+      "identity": {
+        "pid": 3503301,
+        "parent": 3503190,
+        "group": 3503189,
+        "session": 3503189,
+        "start_ticks": 439604206,
+        "state": "R"
+      },
+      "original_identity_gone": true
+    },
+    {
+      "identity": {
+        "pid": 3503302,
+        "parent": 3503301,
+        "group": 3503189,
+        "session": 3503189,
+        "start_ticks": 439604226,
+        "state": "R"
+      },
+      "original_identity_gone": true
+    },
+    {
+      "identity": {
+        "pid": 3503303,
+        "parent": 3503302,
+        "group": 3503302,
+        "session": 3503189,
+        "start_ticks": 439604227
+      },
+      "original_identity_gone": true
+    },
+    {
+      "identity": {
+        "pid": 3503330,
+        "parent": 3503190,
+        "group": 3503189,
+        "session": 3503189,
+        "start_ticks": 439604407,
+        "state": "R"
+      },
+      "original_identity_gone": true
+    },
+    {
+      "identity": {
+        "pid": 3503331,
+        "parent": 3503330,
+        "group": 3503189,
+        "session": 3503189,
+        "start_ticks": 439604423,
+        "state": "R"
+      },
+      "original_identity_gone": true
+    }
+  ],
+  "trace_events": 130,
+  "selected_actors": 2,
+  "decoded_actor_inputs": 2,
+  "selection_deduplicated_without_replacement": true,
+  "qualification": false,
+  "training_eligible": false,
+  "native_credit": false,
+  "pilot_unchanged": true,
+  "final_only_unchanged": true
+}

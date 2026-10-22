@@ -1,0 +1,54 @@
+{
+  "schema": "mr3-v35-forensic-findings-summary-v1",
+  "reference": {
+    "path": "closed_execution/rooms_forensic_v1.json",
+    "sha256": "963b759dc18d4bfca76238ab6b0d050fd4d8cd970bc31f5d8e89301051b01f8a"
+  },
+  "snapshot_cell_diagnostics_equal_recomputed": true,
+  "records": [
+    {
+      "roles": [
+        "reset",
+        "first_tb3_seed_cell_body_clearance"
+      ],
+      "event_sequence": 1,
+      "time": 0.1,
+      "canonical_cell": [
+        101,
+        150
+      ],
+      "raw_cell": 0,
+      "original_graph_member": false,
+      "cell_clearance_lower_bound_m": 0.2848008728123151,
+      "point_safe": true,
+      "original_gate_bridge_accepted": false,
+      "same_centre_geometry_bridge_safe": false,
+      "whole_bridge_squared_distance_exact": "843748239511909583311077902804585/10384593717069655257060992658440192",
+      "active_goal": false,
+      "accepted_goal_count": 0,
+      "finding": "estimated_point_passes_but_same_centre_segment_fails"
+    },
+    {
+      "roles": [
+        "last_actor"
+      ],
+      "event_sequence": 129,
+      "time": 64.1,
+      "canonical_cell": [
+        106,
+        152
+      ],
+      "raw_cell": 0,
+      "original_graph_member": false,
+      "cell_clearance_lower_bound_m": 0.28087242695751063,
+      "point_safe": true,
+      "original_gate_bridge_accepted": false,
+      "same_centre_geometry_bridge_safe": false,
+      "whole_bridge_squared_distance_exact": "843748239511909583311077902804585/10384593717069655257060992658440192",
+      "active_goal": false,
+      "accepted_goal_count": 1,
+      "finding": "estimated_point_passes_but_same_centre_segment_fails"
+    }
+  ],
+  "scope": "summary of already bounded geometry replay; no additional original input consumption"
+}
