@@ -15,12 +15,14 @@ import time
 from .env import MR3Env
 from .proxy2d import ProxySupervisor
 from .proxy2d_codec import canonical_bytes, tensor_proofs
+from .supervisor import SEED_RULES
 
 CELLS = [(scene, seed) for scene in ("open", "rooms", "corridors") for seed in (101, 103)]
+SEED_PROBE_RULES = {"seed_probe": "exact-point-bridge-v1", "seed_probe_v2": "exact-point-bridge-v2"}
 
 
 def activity_spec(kind):
-    if kind == "seed_probe":
+    if kind in SEED_PROBE_RULES:
         return {"schema": "mr3-proxy2d-activity-spec-v1", "kind": kind,
                 "groups": [3], "cells": [["open", 101], ["rooms", 101], ["corridors", 101]],
                 "worker_cells": [[[["open", 101]], [["rooms", 101]], [["corridors", 101]]]],
@@ -212,9 +214,11 @@ def collect(run, freeze, source_bindings, conformity_ref, activity_started_ns, d
             mapper="endpoint",mapper_library=None,native_manifest=None,seed_rule="legacy"):
     if type(profile) is not bool:
         raise ValueError("profile flag must be boolean")
-    if seed_rule not in ("legacy", "exact-point-bridge-v1"):
+    if type(seed_rule) is not str or seed_rule not in SEED_RULES:
         raise ValueError("unsupported seed rule")
-    if (seed_rule != "legacy") != (activity_spec is not None and activity_spec.get("kind") == "seed_probe"):
+    expected_rule = (SEED_PROBE_RULES.get(activity_spec.get("kind"), "legacy")
+                     if isinstance(activity_spec, dict) else "legacy")
+    if seed_rule != expected_rule:
         raise ValueError("exact seed collection requires its new bounded seed-probe specification")
     if activity_spec is None:
         if profile or group_wall_seconds is not None or collection_deadline_ns is not None:
@@ -224,7 +228,7 @@ def collect(run, freeze, source_bindings, conformity_ref, activity_started_ns, d
     else:
         validate_activity_spec(activity_spec)
         kind = activity_spec["kind"]
-        expected_walls = ([900] if kind == "seed_probe" else [240] if kind in ("profile", "karto_profile")
+        expected_walls = ([900] if kind in SEED_PROBE_RULES else [240] if kind in ("profile", "karto_profile")
                           else [2100] if kind in ("full_behavior", "karto_behavior") else [400, 800])
         if canonical_bytes(group_wall_seconds) != canonical_bytes(expected_walls) or profile != (kind in ("profile", "karto_profile")):
             raise ValueError("activity group wall reservations/profile flag differ from the fixed specification")
@@ -232,7 +236,7 @@ def collect(run, freeze, source_bindings, conformity_ref, activity_started_ns, d
                 or deadline_ns - activity_started_ns != activity_spec["activity_seconds"] * 10**9):
             raise ValueError("activity deadline differs from the exact bounded specification")
         collection_started = time.monotonic_ns()
-        collection_seconds = (900 if kind == "seed_probe" else 240 if profile
+        collection_seconds = (900 if kind in SEED_PROBE_RULES else 240 if profile
                               else 2100 if kind in ("full_behavior", "karto_behavior") else 1200)
         collection_deadline = collection_started + collection_seconds * 10**9
         if collection_deadline > deadline_ns - 120 * 10**9:
@@ -241,7 +245,7 @@ def collect(run, freeze, source_bindings, conformity_ref, activity_started_ns, d
             raise ValueError("collection deadline differs from the fixed reservation")
         groups_expected, cells = activity_spec["groups"], activity_spec["cells"]
         steps, maximum = activity_spec["steps_per_episode"], activity_spec["max_attempts"]
-    if mapper == "karto" and (activity_spec is None or activity_spec["kind"] not in ("karto_profile","karto_behavior","seed_probe") or not native_manifest):
+    if mapper == "karto" and (activity_spec is None or activity_spec["kind"] not in ("karto_profile","karto_behavior", *SEED_PROBE_RULES) or not native_manifest):
         raise ValueError("Karto requires a new exact activity and native manifest")
     if activity_spec is not None and activity_spec["kind"].startswith("karto_") and mapper != "karto":
         raise ValueError("Karto activity cannot use the default mapper")
@@ -268,7 +272,7 @@ def collect(run, freeze, source_bindings, conformity_ref, activity_started_ns, d
                 futures = []
                 for index in range(workers):
                     worker_kwargs = kwargs
-                    if activity_spec is not None and activity_spec["kind"] in ("full_behavior", "karto_behavior", "seed_probe"):
+                    if activity_spec is not None and activity_spec["kind"] in ("full_behavior", "karto_behavior", *SEED_PROBE_RULES):
                         worker_kwargs = {**kwargs, "cells": activity_spec["worker_cells"][group_index][index]}
                     futures.append(executor.submit(collect_worker, group, index, budget, freeze, **worker_kwargs))
                 for future in as_completed(futures):
@@ -308,7 +312,7 @@ def collect(run, freeze, source_bindings, conformity_ref, activity_started_ns, d
                        collection_started_ns=collection_started)
         if activity_spec["kind"] in ("full_behavior", "karto_behavior"):
             summary["scope"] = "bounded full-duration uniform-action proxy behavior; no training or native qualification"
-        elif activity_spec["kind"] == "seed_probe":
+        elif activity_spec["kind"] in SEED_PROBE_RULES:
             summary["scope"] = "bounded 64-step received-grid seed probe; no training or native qualification"
     (run / "capacity_summary.json").write_text(json.dumps(summary, indent=2) + "\n")
     signal.signal(signal.SIGINT, previous_handler)

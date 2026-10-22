@@ -1,9 +1,10 @@
 """Exact, local received-grid certificate for an unchanged seed's pose bridge.
 
-Use only after the original seed cell is free and passes its UNCHANGED cell/
-graph gate, when the old scalar pose bound alone rejected it. This module never
-selects a seed, snaps a pose, changes graph membership or changes a map. Only
-zero-valued cells are free; all other integer cells and the map exterior block.
+The seed bridge is used only after the original cell/graph gate, when the old
+scalar pose bound alone rejected it. Explicit v2 also provides rational floor
+for a single containing cell and exact segments for supplied-goal execution.
+There is no seed search, pose snap, graph mutation or map mutation. Only zero-
+valued cells are free; all other integer cells and the map exterior block.
 
 The result proves distance >= 29/100 m for the supplied estimated point and its
 whole straight segment to that SAME seed centre, under this observed-square
@@ -106,6 +107,33 @@ def _floor(value):
     return value.numerator // value.denominator
 
 
+def canonical_seed_cell(estimated_xy, resolution, origin, shape):
+    """Return the single exact half-open containing cell, or None outside.
+
+    The represented numeric inputs are authoritative: division is rational,
+    with no rounded quotient, gridline tolerance, neighbour search or pose
+    snap. Explicit v2 callers must apply the original cell/graph gates anew at
+    this returned cell. Legacy/v1 callers retain their original float floor.
+    """
+    pose, res, offset = _xy(estimated_xy), _number(resolution), _xy(origin)
+    height, width = _seed(shape)
+    if res <= 0 or height <= 0 or width <= 0:
+        raise ValueError("positive resolution and nonempty shape required")
+    row, col = (_floor((pose[1] - offset[1]) / res),
+                _floor((pose[0] - offset[0]) / res))
+    return (row, col) if 0 <= row < height and 0 <= col < width else None
+
+
+def canonical_cell_centre(cell, resolution, origin):
+    """Exact centre on the same represented received-grid geometry."""
+    row, col = _seed(cell)
+    res, offset = _number(resolution), _xy(origin)
+    if res <= 0:
+        raise ValueError("positive resolution required")
+    return (offset[0] + (Q(col) + Q(1, 2)) * res,
+            offset[1] + (Q(row) + Q(1, 2)) * res)
+
+
 def _candidate_interval(lo, hi, origin, resolution, count):
     # Closed cell [o+i*r,o+(i+1)*r] intersects closed [lo,hi] iff
     # ceil((lo-o)/r)-1 <= i <= floor((hi-o)/r). Include both gridline sides.
@@ -156,8 +184,9 @@ def certify_estimated_segment(grid, resolution, origin, start_xy, end_xy):
     """Certify one proposed estimated straight segment under the same .29 gate.
 
     This does not select a graph edge or replace any seed-cell/bridge gate. The
-    proxy navigator uses it only AFTER the original seed and same-centre bridge
-    pass, for its fixed 20ms zero-angular-velocity translation proposal.
+    v1 proxy navigator uses it after its seed bridge passes. Explicit v2 uses
+    it after the unchanged canonical-cell/graph gates for supplied-goal route
+    segments, and again for every fixed 20ms straight translation proposal.
     """
     values, res, offset = _grid(grid), _number(resolution), _xy(origin)
     if res <= 0:

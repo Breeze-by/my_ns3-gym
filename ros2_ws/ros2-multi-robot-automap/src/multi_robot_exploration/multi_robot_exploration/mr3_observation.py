@@ -22,7 +22,7 @@ from scipy.sparse.csgraph import dijkstra
 from scipy.spatial import cKDTree
 
 from multi_robot_exploration.mr3_episode import elapsed_ns, timestamp_ns
-from multi_robot_exploration.mr3_seed_certificate import certify_seed_pose_bridge
+from multi_robot_exploration.mr3_seed_certificate import canonical_seed_cell, certify_seed_pose_bridge
 
 
 SCHEMA = "mr3-observation-v3"
@@ -41,7 +41,7 @@ TARGET_CLEARANCE_M = CLEARANCE_M + GOAL_XY_TOLERANCE_M
 CANDIDATE_RULE_VERSION = "mr3-per-robot-geometric-staging-v4"
 NAVIGATION_CANDIDATE_RULE_VERSION = "mr3-navigation-geometric-staging-v5"
 NAVIGATION_COMPOSITION_VERSION = "mr3-own-known-shared-unknown-v1"
-SEED_RULES = ("legacy", "exact-point-bridge-v1")
+SEED_RULES = ("legacy", "exact-point-bridge-v1", "exact-point-bridge-v2")
 TARGET_SEPARATION_M = 2.0 * TARGET_CLEARANCE_M
 STATE_MAX_AGE_SEC = 0.5
 FRONTIER_STAGING_MAX_M = 1.0
@@ -478,8 +478,12 @@ def _seed_diagnostics(grid, traversable, clearance, robot, resolution, origin, *
     """Certify the actual observed pose; never snap it to a nearby free cell."""
     if seed_rule not in SEED_RULES:
         raise ValueError("unknown seed certificate rule")
-    seed = (_cell(robot["x"], robot["y"], resolution, origin, grid.shape)
-            if robot["fresh"] else None)
+    if seed_rule == "exact-point-bridge-v2":
+        seed = (canonical_seed_cell((robot["x"], robot["y"]), resolution, origin, grid.shape)
+                if robot["fresh"] else None)
+    else:
+        seed = (_cell(robot["x"], robot["y"], resolution, origin, grid.shape)
+                if robot["fresh"] else None)
     offset = (None if seed is None else _point_offset(
         (robot["x"], robot["y"]), seed, resolution, origin))
     cell_clearance = None if seed is None else float(clearance[seed])
@@ -860,7 +864,11 @@ def build_snapshot(raw_grid, resolution, origin, robots, now, epoch, map_version
             "frontier_projection": (
                 "same delivered fused native lattice; navigation-free sightlines"),
         })
-    if seed_rule != "legacy":
+    if seed_rule == "exact-point-bridge-v2":
+        candidate_rule.update(seed_rule=seed_rule, version=(
+            "mr3-navigation-geometric-staging-v7-exact-seed-v2" if navigation_grids is not None
+            else "mr3-per-robot-geometric-staging-v6-exact-seed-v2"))
+    elif seed_rule != "legacy":
         candidate_rule.update(seed_rule=seed_rule,version=(
             "mr3-navigation-geometric-staging-v6-exact-seed-v1" if navigation_grids is not None
             else "mr3-per-robot-geometric-staging-v5-exact-seed-v1"))

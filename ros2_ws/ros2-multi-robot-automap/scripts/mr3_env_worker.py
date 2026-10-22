@@ -69,7 +69,8 @@ class Worker:
         self.seed = request["seed"]
         self.safety_contract = request.get("safety_contract", "legacy")
         self.seed_rule = request.get("seed_rule", "legacy")
-        if type(self.seed_rule) is not str or self.seed_rule not in ("legacy", "exact-point-bridge-v1"):
+        if type(self.seed_rule) is not str or self.seed_rule not in (
+                "legacy", "exact-point-bridge-v1", "exact-point-bridge-v2"):
             raise ValueError("invalid seed_rule")
         self.control_version = protocol_version(self.safety_contract)
         self.safety_intents = {}

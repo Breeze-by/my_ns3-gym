@@ -13,6 +13,46 @@ from mr3_learning import proxy2d_seed_activity as activity
 
 
 class SeedActivityTests(unittest.TestCase):
+    def test_v2_has_separate_artifacts_and_keeps_the_same_bounded_workload(self):
+        old = activity.settings()
+        new = activity.settings("seed_probe_v2")
+        self.assertEqual(old[3], "exact-point-bridge-v1")
+        self.assertEqual(new[3], "exact-point-bridge-v2")
+        self.assertTrue(all(old[index] != new[index] for index in (0, 1, 2)))
+        first, second = activity.activity_spec("seed_probe"), activity.activity_spec("seed_probe_v2")
+        self.assertEqual({key: value for key, value in first.items() if key != "kind"},
+                         {key: value for key, value in second.items() if key != "kind"})
+        self.assertLessEqual(Decimal(new[4]) + second["activity_seconds"], Decimal(52000))
+        self.assertEqual(activity.kind_arguments("seed_probe"), [])
+        self.assertEqual(activity.kind_arguments("seed_probe_v2"), ["--kind", "seed_probe_v2"])
+        with self.assertRaises(ValueError):
+            activity.settings("invented")
+
+    def test_v2_nested_collection_and_description_keep_the_selected_kind(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary); output = root / "run"
+            plan_path = root / "plan.json"; plan_path.write_text("{}\n")
+            commands = {}
+            def phase(directory, name, command, maximum):
+                commands[name] = command
+                if name == "conformity":
+                    (directory / "conformity.json").write_text("{}\n")
+                return {"passed": True}
+            config = (root, plan_path, output, "exact-point-bridge-v2", "47269.8043977356018")
+            with patch.object(activity, "settings", return_value=config), \
+                    patch.object(activity, "check", return_value={"source_bindings": {},
+                        "activity_spec": activity.activity_spec("seed_probe_v2"), "native_manifest": {}}), \
+                    patch.object(activity, "phase", side_effect=phase), \
+                    patch.object(activity, "bindings", return_value={}):
+                result = activity.execute("a" * 40, "seed_probe_v2")
+            self.assertTrue(result["passed"])
+            for name in ("collection", "description"):
+                self.assertEqual(commands[name][-2:], ["--kind", "seed_probe_v2"])
+            self.assertIn("exact-point-bridge-v2", commands["conformity"])
+            context = json.loads((output / "collection_context.json").read_text())
+            self.assertEqual(context["seed_rule"], "exact-point-bridge-v2")
+            self.assertEqual(context["activity_spec"]["kind"], "seed_probe_v2")
+
     def test_description_cannot_apply_verified_prefix_to_changed_trace(self):
         for changed in (False, True):
             with self.subTest(changed=changed), tempfile.TemporaryDirectory() as temporary:

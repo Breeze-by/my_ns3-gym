@@ -60,9 +60,9 @@ class MR3Adapter(Node):
         self.stepped_mode = self.declare_parameter("stepped_mode", False).value
         self.seed_rule = self.declare_parameter("seed_rule", "legacy").value
         if type(self.seed_rule) is not str or self.seed_rule not in SEED_RULES:
-            raise ValueError("seed_rule must be legacy or exact-point-bridge-v1")
+            raise ValueError("seed_rule must be legacy, exact-point-bridge-v1 or exact-point-bridge-v2")
         if self.seed_rule != "legacy" and not self.stepped_mode:
-            raise ValueError("exact-point-bridge-v1 requires stepped mode")
+            raise ValueError("exact-point-bridge rules require stepped mode")
         self.snapshot_timeout_sec = self.declare_parameter("snapshot_timeout_sec", 10.).value
         if not math.isfinite(self.snapshot_timeout_sec) or self.snapshot_timeout_sec <= 0:
             raise ValueError("snapshot_timeout_sec must be finite and positive")

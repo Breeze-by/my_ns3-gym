@@ -206,7 +206,7 @@ class SeedCompatibilityTests(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     audit._activity_contract(summary)
 
-    def exact_formal_fixture(self, directory):
+    def exact_formal_fixture(self, directory, seed_rule=audit.EXACT_SEED_RULE):
         """Reuse existing v1 synthetic receipts and complete invented archive."""
         helper = actors.ProxyAuditTests(); helper.builder = self.builder
         formal, _ = helper.conformity_fixture(directory / "synthetic_fixture")
@@ -215,19 +215,19 @@ class SeedCompatibilityTests(unittest.TestCase):
         inventory_raw = inputs.inventory_path.read_bytes()
         git = self.fake_git(inventory_raw)
         with patch.object(conformity.subprocess, "check_output", side_effect=git):
-            proof, _ = conformity.source_bindings("a" * 40, audit.EXACT_SEED_RULE)
-        formal.update(schema="mr3-proxy2d-conformity-v2", seed_rule=audit.EXACT_SEED_RULE,
+            proof, _ = conformity.source_bindings("a" * 40, seed_rule)
+        formal.update(schema="mr3-proxy2d-conformity-v2", seed_rule=seed_rule,
             source_proof=proof, native_inventory={"path": str(inputs.inventory_path),
                 "sha256": audit.sha(inventory_raw), "bytes": len(inventory_raw)},
             native_records=conformity.replay_native(inputs, self.builder),
-            exact_records=conformity.replay_exact_native(inputs, self.builder, directory / "exact"))
+            exact_records=conformity.replay_exact_native(inputs, self.builder, directory / "exact", seed_rule=seed_rule))
         formal["native_input_index"] = inputs.proofs
         # Make the existing hidden-actor comparison explicit about exact mode.
         case = next(case for case in formal["synthetic_cases"]
                     if case["id"] == "hidden_obstacle_same_received_actor")
-        actor = {"parameters": {"seed_rule": audit.EXACT_SEED_RULE},
-                 "snapshot": {"candidate_rule": {"seed_rule": audit.EXACT_SEED_RULE,
-                              "version": audit.EXACT_NAVIGATION_RULE}}}
+        actor = {"parameters": {"seed_rule": seed_rule},
+                 "snapshot": {"candidate_rule": {"seed_rule": seed_rule,
+                              "version": audit.EXACT_NAVIGATION_RULES[seed_rule]}}}
         hashes = {"actor_parameters_sha256": audit.sha(audit.canonical(actor["parameters"])),
                   "snapshot_sha256": audit.sha(audit.canonical(actor["snapshot"]))}
         for spec in case["input_refs"]:
@@ -236,7 +236,7 @@ class SeedCompatibilityTests(unittest.TestCase):
                 spec.update(sha256=audit.sha(raw), bytes=len(raw))
         case.update(expected=hashes, actual=copy.deepcopy(hashes))
         synthetic = {"cases": formal["synthetic_cases"], "native_runs": 0, "gpu_calls": 0,
-                     "optimizer_steps": 0, "seed_rule": audit.EXACT_SEED_RULE}
+                     "optimizer_steps": 0, "seed_rule": seed_rule}
         raw = audit.canonical(synthetic); spec = formal["synthetic_result_ref"]
         Path(spec["path"]).write_bytes(raw); spec.update(sha256=audit.sha(raw), bytes=len(raw))
         return formal, git

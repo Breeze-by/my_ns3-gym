@@ -10,12 +10,13 @@ import subprocess
 
 from .reach_audit_projection import project_module
 from . import audit_reach_sensor_model
-from .supervisor import validate_seed_rule
+from .supervisor import EXACT_SEED_VERSIONS, validate_seed_rule
 
 PPO_READER_SHA256 = "b2e0737d79826b7ecb319cc91b58ff45475ea831a9cb2b4cab2298aaf6474567"
 PROTOCOL_READER_SHA256 = "8bc1ee209761be2108a3d1d0248f2d0ab40b9fc68539ecedffec11cb81fd1647"
 ENV_SHA256 = "e21cade7fecc17461007903e74ccd870c26e1d1e4a766731c2850dd567a73869"
 EXACT_ENV_SHA256 = "1cebd1d5c6abf2750991a40ab50065c4f9b655f11f30e3f1734ea2130612d143"
+EXACT_V2_ENV_SHA256 = "11a70fb42a58c104a55a68186795226dbf2c1f4bd4170066dfaad209e63ba8d5"
 ENV_STATUS = ("2026-10-19：用户已接受[V14科学候选](report/assets/20261019_mr3_p2a_v14/scientific_contract_candidate_v1.md)。显式新profile的执行规则以[MR3_REACH_CONTRACT.md](MR3_REACH_CONTRACT.md)为准；本文件下述原速度/累计路径与v1相位规则继续描述默认`legacy`。V15已接线并完成CPU/编译准备，尚无新冻结原生资格、训练或95%信用；旧FAIL不改判。\n\n").encode()
 ROS = "ros2_ws/ros2-multi-robot-automap/"
 REVISED_RUNTIME = {
@@ -53,6 +54,23 @@ def project_exact_environment(raw):
                       "scope": "two declared exact-seed insertions only; complete prior file restored"}
 
 
+def project_exact_v2_environment(raw):
+    """Restore the complete V33 document by removing only its unique V34 block."""
+    if hashlib.sha256(raw).hexdigest() != EXACT_V2_ENV_SHA256:
+        raise ValueError("exact seed v2 environment document SHA differs")
+    start = "2026-10-21 V34：新增显式 `seed_rule=exact-point-bridge-v2`，legacy与v1实现语义保留。\n".encode()
+    end = "2026-10-21：新增显式 `seed_rule=exact-point-bridge-v1` 观测规则，默认仍为 `legacy`。\n".encode()
+    if raw.count(start) != 1 or raw.count(end) != 1 or raw.index(start) >= raw.index(end):
+        raise ValueError("exact seed v2 environment insertion boundaries differ")
+    restored = raw[:raw.index(start)] + raw[raw.index(end):]
+    if hashlib.sha256(restored).hexdigest() != EXACT_ENV_SHA256:
+        raise ValueError("exact seed v2 inverse does not restore the whole V33 document")
+    return restored, {"sha256": EXACT_V2_ENV_SHA256,
+                      "whole_prior_document_inverse_sha256": EXACT_ENV_SHA256,
+                      "prior_document_bytes": len(restored), "new_document_bytes": len(raw),
+                      "scope": "unique V34 insertion only; complete V33 document restored"}
+
+
 def load_exact_protocol(adapter_sha256):
     """Version the adapter source identity without changing protocol predicates."""
     protocol, proof = project_module("audit_protocol.py", PROTOCOL_READER_SHA256, ())
@@ -64,12 +82,16 @@ def load_exact_protocol(adapter_sha256):
     return protocol, proof
 
 
-def extend_exact_snapshot_validator(original_validator, auditor, candidate_module):
-    """Add one exact native rule and retain the complete original validator."""
-    rule = {**candidate_module.CANDIDATE_RULE_V5,
-            "version": "mr3-navigation-geometric-staging-v6-exact-seed-v1",
-            "seed_rule": "exact-point-bridge-v1"}
-    candidate_module.CANDIDATE_RULES = {**candidate_module.CANDIDATE_RULES, rule["version"]: rule}
+def extend_exact_snapshot_validator(original_validator, auditor, candidate_module,
+                                    *, seed_rule="exact-point-bridge-v1"):
+    """Register both exact full rules, while accepting only the declared one."""
+    if type(seed_rule) is not str or seed_rule not in EXACT_SEED_VERSIONS:
+        raise ValueError("an explicit exact seed rule is required")
+    rules = {version: {**candidate_module.CANDIDATE_RULE_V5,
+                       "version": version, "seed_rule": name}
+             for name, version in EXACT_SEED_VERSIONS.items()}
+    candidate_module.CANDIDATE_RULES = {**candidate_module.CANDIDATE_RULES, **rules}
+    rule = rules[EXACT_SEED_VERSIONS[seed_rule]]
     original_validator(auditor, candidate_module)
     validate = auditor.validate_snapshot
 
@@ -113,11 +135,15 @@ def _load_versioned_native_gates(root, freeze, source_proof, source_bindings, cu
         original_validator = legacy.extend_snapshot_validator
 
         def extend_exact_validator(auditor, candidate_module):
-            extend_exact_snapshot_validator(original_validator, auditor, candidate_module)
+            extend_exact_snapshot_validator(original_validator, auditor, candidate_module, seed_rule=seed_rule)
 
         legacy.extend_snapshot_validator = extend_exact_validator
     old_env_sha = legacy.ENV_DOCUMENT_SHA256
-    environment_sha = EXACT_ENV_SHA256 if seed_rule != "legacy" else ENV_SHA256
+    environment_sha = legacy.sha(root / legacy.WIRELESS / "MR3_ENV_CONTRACT.md")
+    allowed_environments = ({ENV_SHA256} if seed_rule == "legacy" else
+                            {EXACT_V2_ENV_SHA256} if seed_rule == "exact-point-bridge-v2" else
+                            {EXACT_ENV_SHA256, EXACT_V2_ENV_SHA256})
+    legacy.require(environment_sha in allowed_environments, "environment document is not declared for this seed rule")
 
     def environment_document(root, freeze):
         relative = legacy.WIRELESS + "MR3_ENV_CONTRACT.md"
@@ -126,7 +152,10 @@ def _load_versioned_native_gates(root, freeze, source_proof, source_bindings, cu
         require(hashlib.sha256(raw).hexdigest() == legacy.sha(root / relative) == environment_sha
                 and raw.count(ENV_STATUS) == 1, "reach environment status revision differs")
         exact_projection = None
+        exact_v2_projection = None
         if seed_rule != "legacy":
+            if environment_sha == EXACT_V2_ENV_SHA256:
+                raw, exact_v2_projection = project_exact_v2_environment(raw)
             raw, exact_projection = project_exact_environment(raw)
         projected = raw.replace(ENV_STATUS, b"", 1)
         normative = subprocess.check_output(["git", "show", legacy.ENV_NORMATIVE_FREEZE + ":" + relative], cwd=root)
@@ -141,7 +170,8 @@ def _load_versioned_native_gates(root, freeze, source_proof, source_bindings, cu
                 "normative_prefix_sha256": legacy.ENV_NORMATIVE_SHA256,
                 "legacy_numeric_and_task_rules_preserved": True,
                 "reach_execution_rules": "MR3_REACH_CONTRACT.md and independent new runtime gates",
-                **({"exact_seed_environment_projection": exact_projection} if exact_projection else {})}
+                **({"exact_seed_environment_projection": exact_projection} if exact_projection else {}),
+                **({"exact_seed_v2_environment_projection": exact_v2_projection} if exact_v2_projection else {})}
 
     legacy.ENV_DOCUMENT_SHA256 = environment_sha
     legacy.verify_environment_appendix = environment_document
@@ -191,6 +221,6 @@ def _load_versioned_native_gates(root, freeze, source_proof, source_bindings, cu
         "old_profile_qualification_credit_reused": False}
     if seed_rule != "legacy":
         proof["reach_dispatch"]["seed_rule"] = seed_rule
-        proof["reach_dispatch"]["candidate_rule_version"] = "mr3-navigation-geometric-staging-v6-exact-seed-v1"
+        proof["reach_dispatch"]["candidate_rule_version"] = EXACT_SEED_VERSIONS[seed_rule]
         proof["reach_dispatch"]["protocol_reader_projection"] = protocol_projection
     return phase, base, auditor, command, scalar, proof

@@ -10,7 +10,7 @@ import uuid
 
 from .ipc import JsonLinePeer
 from .proxy2d_process import pidfd_open, pidfd_send_signal
-from .supervisor import ROS_ROOT, InfrastructureError, process_identity, ros_environment
+from .supervisor import ROS_ROOT, SEED_RULES, InfrastructureError, process_identity, ros_environment
 
 
 class ProxySupervisor:
@@ -22,7 +22,7 @@ class ProxySupervisor:
         if type(profile) is not bool:
             raise ValueError("proxy profile switch must be boolean")
         self.profile = profile
-        if seed_rule not in ("legacy", "exact-point-bridge-v1"):
+        if type(seed_rule) is not str or seed_rule not in SEED_RULES:
             raise ValueError("unsupported seed rule")
         self.seed_rule = seed_rule
         if mapper not in ("endpoint","karto") or (mapper=="karto") != (mapper_library is not None):

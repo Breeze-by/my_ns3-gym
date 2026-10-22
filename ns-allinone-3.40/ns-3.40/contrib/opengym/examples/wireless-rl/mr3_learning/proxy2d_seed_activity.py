@@ -31,87 +31,107 @@ PHASES = {"conformity": 120, "conformity_review": 120, "collection": 900,
           "audit": 270, "description": 30}
 
 
-def bindings():
+def settings(kind="seed_probe"):
+    if kind == "seed_probe":
+        return A, PLAN, OUTPUT, RULE, ENTRY
+    if kind == "seed_probe_v2":
+        assets = W / "report/assets/20261022_mr3_p2a_v34_seed_v2"
+        return (assets, assets / "seed_probe_plan_v1.json",
+                ROS_ROOT / "log/mr3_p2a_proxy2d_v34/seed_probe_v2",
+                "exact-point-bridge-v2", "47269.8043977356018")
+    raise ValueError("unknown exact seed activity")
+
+
+def kind_arguments(kind):
+    return [] if kind == "seed_probe" else ["--kind", kind]
+
+
+def bindings(kind="seed_probe"):
+    assets, _, _, _, _ = settings(kind)
     native_manifest()
-    paths = set(source_paths()) | {Path(manifest_reference()["path"]), A / "scope_acceptance_v1.json"}
+    paths = set(source_paths()) | {Path(manifest_reference()["path"]), assets / "scope_acceptance_v1.json"}
     return {source_file(path): sha(path) for path in sorted(paths)}
 
 
-def specification():
-    return {"schema": "mr3-proxy2d-exact-seed-plan-v1", "activity_spec": activity_spec("seed_probe"),
-        "output": str(OUTPUT), "phase_seconds": PHASES, "group_wall_seconds": [900],
+def specification(kind="seed_probe"):
+    _, _, output, rule, entry = settings(kind)
+    return {"schema": "mr3-proxy2d-exact-seed-plan-v1", "activity_spec": activity_spec(kind),
+        "output": str(output), "phase_seconds": PHASES, "group_wall_seconds": [900],
         "external_reserve_seconds": 120, "cleanup_reserve_seconds": 180,
-        "engineering_entry_used_seconds": ENTRY, "engineering_ceiling_seconds": "52000",
-        "mapper": "karto", "mapper_library": str(ADAPTER), "seed_rule": RULE,
-        "native_manifest": manifest_reference(), "source_bindings": bindings(),
+        "engineering_entry_used_seconds": entry, "engineering_ceiling_seconds": "52000",
+        "mapper": "karto", "mapper_library": str(ADAPTER), "seed_rule": rule,
+        "native_manifest": manifest_reference(), "source_bindings": bindings(kind),
         "qualification": False, "training_eligible": False, "native_credit": False,
         "pilot_unchanged": True, "policy_calls": 0, "gpu_calls": 0, "optimizer_steps": 0}
 
 
-def build():
-    value = specification()
-    if Decimal(ENTRY) + value["activity_spec"]["activity_seconds"] > Decimal("52000"):
+def build(kind="seed_probe"):
+    _, plan_path, _, _, entry = settings(kind)
+    value = specification(kind)
+    if Decimal(entry) + value["activity_spec"]["activity_seconds"] > Decimal("52000"):
         raise ValueError("seed probe exceeds the approved engineering balance")
-    exclusive(PLAN, value)
+    exclusive(plan_path, value)
     return value
 
 
-def check(freeze):
+def check(freeze, kind="seed_probe"):
+    _, plan_path, _, _, _ = settings(kind)
     if not isinstance(freeze, str) or not re.fullmatch("[0-9a-f]{40}", freeze):
         raise ValueError("full source freeze required")
-    plan = read(PLAN)
-    if plan != specification():
+    plan = read(plan_path)
+    if plan != specification(kind):
         raise ValueError("seed probe plan, sources or native artifact changed")
     if git("rev-parse", "HEAD").decode().strip() != freeze or git("status", "--porcelain"):
         raise ValueError("seed probe requires its clean exact freeze")
     subprocess.run(["git", "-C", str(ROOT), "merge-base", "--is-ancestor", freeze, "origin/main"], check=True)
-    for relative in [source_file(PLAN), *plan["source_bindings"]]:
+    for relative in [source_file(plan_path), *plan["source_bindings"]]:
         if git("show", freeze + ":" + relative) != (ROOT / relative).read_bytes():
             raise ValueError("seed probe source differs from freeze: " + relative)
     return plan
 
 
-def execute(freeze):
+def execute(freeze, kind="seed_probe"):
+    _, plan_path, output, rule, _ = settings(kind)
     started = time.monotonic_ns()
-    plan = check(freeze)
-    OUTPUT.mkdir(parents=True, exist_ok=False)
+    plan = check(freeze, kind)
+    output.mkdir(parents=True, exist_ok=False)
     deadline = started + 1800 * 10**9
     state = {"schema": "mr3-proxy2d-exact-seed-activity-v1", "freeze": freeze,
-        "plan_sha256": sha(PLAN), "started_ns": started, "deadline_ns": deadline,
-        "coordinator_identity": process_identity(os.getpid()), "seed_rule": RULE,
+        "plan_sha256": sha(plan_path), "started_ns": started, "deadline_ns": deadline,
+        "coordinator_identity": process_identity(os.getpid()), "seed_rule": rule,
         "phases": {}, "errors": [], "passed": False,
         "qualification": False, "training_eligible": False, "native_credit": False,
         "policy_calls": 0, "gpu_calls": 0, "optimizer_steps": 0}
-    exclusive(OUTPUT / "activity_start.json", state)
-    conformity = OUTPUT / "conformity.json"
+    exclusive(output / "activity_start.json", state)
+    conformity = output / "conformity.json"
     commands = {
-        "conformity": ["mr3_learning.proxy2d_conformity", "--freeze", freeze, "--seed-rule", RULE,
+        "conformity": ["mr3_learning.proxy2d_conformity", "--freeze", freeze, "--seed-rule", rule,
                        "--output", str(conformity)],
-        "conformity_review": ["mr3_learning.audit_proxy2d", str(OUTPUT), "--freeze", freeze,
-            "--conformity-only", str(conformity), "--output", str(OUTPUT / "conformity_independent.json")],
-        "collection": [MODULE, "collect"],
-        "audit": ["mr3_learning.audit_proxy2d", str(OUTPUT), "--freeze", freeze,
-                  "--output", str(OUTPUT / "independent_audit.json")],
-        "description": [MODULE, "describe"],
+        "conformity_review": ["mr3_learning.audit_proxy2d", str(output), "--freeze", freeze,
+            "--conformity-only", str(conformity), "--output", str(output / "conformity_independent.json")],
+        "collection": [MODULE, "collect", *kind_arguments(kind)],
+        "audit": ["mr3_learning.audit_proxy2d", str(output), "--freeze", freeze,
+                  "--output", str(output / "independent_audit.json")],
+        "description": [MODULE, "describe", *kind_arguments(kind)],
     }
     try:
         for name, maximum in PHASES.items():
             if name == "collection":
                 if not all(row["passed"] for row in state["phases"].values()):
                     raise RuntimeError("conformity admission failed; no collection")
-                exclusive(OUTPUT / "collection_context.json", {"freeze": freeze,
+                exclusive(output / "collection_context.json", {"freeze": freeze,
                     "source_bindings": plan["source_bindings"],
                     "conformity": {"path": str(conformity), "sha256": sha(conformity)},
                     "activity_started_ns": started, "deadline_ns": deadline,
                     "activity_spec": plan["activity_spec"], "group_wall_seconds": [900],
-                    "mapper": "karto", "mapper_library": str(ADAPTER), "seed_rule": RULE,
+                    "mapper": "karto", "mapper_library": str(ADAPTER), "seed_rule": rule,
                     "native_manifest": plan["native_manifest"]})
-            state["phases"][name] = phase(OUTPUT, name, [sys.executable, "-B", "-m", *commands[name]],
+            state["phases"][name] = phase(output, name, [sys.executable, "-B", "-m", *commands[name]],
                                           admitted_seconds(deadline, maximum))
     except Exception as error:
         state["errors"].append(repr(error))
     try:
-        state["source_unchanged"] = bindings() == plan["source_bindings"]
+        state["source_unchanged"] = bindings(kind) == plan["source_bindings"]
     except (OSError, ValueError, KeyError) as error:
         state["source_unchanged"] = False
         state["errors"].append(repr(error))
@@ -119,14 +139,15 @@ def execute(freeze):
     state["passed"] = (set(state["phases"]) == set(PHASES)
         and all(row["passed"] for row in state["phases"].values()) and not state["errors"]
         and state["source_unchanged"] and state["ended_ns"] <= deadline)
-    exclusive(OUTPUT / "activity_result.json", state)
+    exclusive(output / "activity_result.json", state)
     return state
 
 
-def describe():
+def describe(kind="seed_probe"):
     """Describe all admitted records, without selecting seeds or claiming task success."""
-    summary = read(OUTPUT / "capacity_summary.json")
-    audit_path = OUTPUT / "independent_audit.json"
+    _, _, output, rule, _ = settings(kind)
+    summary = read(output / "capacity_summary.json")
+    audit_path = output / "independent_audit.json"
     audited = read(audit_path)
     verified = {Path(row["directory"]).resolve(): row for row in audited["episodes"]}
     rows, errors = [], []
@@ -176,24 +197,26 @@ def describe():
                 "last_robots": last["snapshot"]["robots"] if last else None,
                 "last_reward_diagnostics": last["reward_diagnostics"] if last else None})
     value = {"schema": "mr3-exact-seed-probe-description-v1", "freeze": summary["freeze"],
-        "seed_rule": RULE, "episodes": rows, "errors": errors, "passed": audited["passed"] and not errors,
+        "seed_rule": rule, "episodes": rows, "errors": errors, "passed": audited["passed"] and not errors,
         "independent_audit_reference": record(audit_path),
         "scope": "verified prefixes only; raw counts separate; descriptive only, no task qualification"}
-    exclusive(OUTPUT / "seed_description.json", value)
+    exclusive(output / "seed_description.json", value)
     return value
 
 
-def final(outer_path, output):
-    outer, start = read(outer_path), read(OUTPUT / "activity_start.json")
+def final(outer_path, output, kind="seed_probe"):
+    _, plan_path, activity_output, _, _ = settings(kind)
+    outer, start = read(outer_path), read(activity_output / "activity_start.json")
     errors, saved = [], {}
     activity = {"passed": False}
     try:
-        _outer(outer_path, [sys.executable, "-B", "-m", MODULE, "execute", "--freeze", start["freeze"]],
+        _outer(outer_path, [sys.executable, "-B", "-m", MODULE, "execute", "--freeze", start["freeze"],
+                          *kind_arguments(kind)],
                require_pass=False)
         if (_owner(outer["child_identity"]) != _owner(start["coordinator_identity"])
-                or start["plan_sha256"] != sha(PLAN)):
+                or start["plan_sha256"] != sha(plan_path)):
             raise ValueError("outer execute identity/plan differs")
-        activity = read(OUTPUT / "activity_result.json")
+        activity = read(activity_output / "activity_result.json")
         native_manifest()
     except (OSError, ValueError, KeyError) as error:
         errors.append(repr(error))
@@ -207,7 +230,7 @@ def final(outer_path, output):
             for item in value:
                 visit(item)
     visit(outer)
-    for path in OUTPUT.rglob("*.json"):
+    for path in activity_output.rglob("*.json"):
         try:
             visit(read(path))
         except (OSError, ValueError) as error:
@@ -218,7 +241,7 @@ def final(outer_path, output):
         except ValueError as error:
             errors.append(str(error))
     try:
-        for relative, digest in read(PLAN)["source_bindings"].items():
+        for relative, digest in read(plan_path)["source_bindings"].items():
             if sha(ROOT / relative) != digest:
                 errors.append("source changed: " + relative)
     except (OSError, ValueError, KeyError) as error:
@@ -240,29 +263,31 @@ def main():
     parser.add_argument("--freeze")
     parser.add_argument("--outer", type=Path)
     parser.add_argument("--output", type=Path)
+    parser.add_argument("--kind", choices=("seed_probe", "seed_probe_v2"), default="seed_probe")
     args = parser.parse_args()
+    _, _, output, rule, _ = settings(args.kind)
     if args.operation == "build":
-        value = build()
+        value = build(args.kind)
     elif args.operation == "preflight":
-        check(args.freeze)
+        check(args.freeze, args.kind)
         value = {"passed": True}
     elif args.operation == "execute":
-        value = execute(args.freeze)
+        value = execute(args.freeze, args.kind)
     elif args.operation == "collect":
-        context = read(OUTPUT / "collection_context.json")
-        if (context["activity_spec"] != activity_spec("seed_probe") or context["seed_rule"] != RULE
+        context = read(output / "collection_context.json")
+        if (context["activity_spec"] != activity_spec(args.kind) or context["seed_rule"] != rule
                 or context["mapper_library"] != str(ADAPTER) or context["native_manifest"] != manifest_reference()):
             raise ValueError("seed probe collection context differs")
         native_manifest()
-        value = collect(OUTPUT, context["freeze"], context["source_bindings"], context["conformity"],
+        value = collect(output, context["freeze"], context["source_bindings"], context["conformity"],
             context["activity_started_ns"], context["deadline_ns"], activity_spec=context["activity_spec"],
             group_wall_seconds=[900], mapper="karto", mapper_library=str(ADAPTER),
-            native_manifest=context["native_manifest"], seed_rule=RULE)
+            native_manifest=context["native_manifest"], seed_rule=rule)
         value["passed"] = not value["errors"] and value["closed"]
     elif args.operation == "describe":
-        value = describe()
+        value = describe(args.kind)
     else:
-        value = final(args.outer, args.output)
+        value = final(args.outer, args.output, args.kind)
     print(json.dumps({"operation": args.operation, "passed": value.get("passed", True)}))
     return 0 if value.get("passed", True) else 1
 

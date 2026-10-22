@@ -1,5 +1,18 @@
 # MR3 环境与采样契约 v2（P2A.0准备修订）
 
+2026-10-21 V34：新增显式 `seed_rule=exact-point-bridge-v2`，legacy与v1实现语义保留。
+v2将机器人起点格统一定义为实际输入数值的精确有理商向下取整，采用半开cell归属；不得先用float相除。
+它修复float除法舍入可选到不包含估计点的相邻格，不做邻居搜索、nextafter宽带或位姿吸附。
+必须重新在该canonical cell上检查原free/traversable/连通图门，不能沿用旧格的通过结果。
+原点及同canonical cell中心的整桥准入、`.29m`、unknown/outside、状态/地图来源与目标到达圆盘均保持。
+候选版本为 `mr3-navigation-geometric-staging-v7-exact-seed-v2`，兼容非导航图接口为
+`mr3-per-robot-geometric-staging-v6-exact-seed-v2`；快照/张量维度不变，原生资格及全部策略阶段绑定同一v2。
+v2二维局部执行仅跟随已收到policy-goal的原Dijkstra/no-corner-cut路径：对原1至5格waypoint按远到近
+检查估计点到waypoint的完整直线段，合格则跟随；都不合格才尝试同canonical seed中心桥。
+执行仍为原地转向或零角速度直行，每个20ms实际平移提议另核`.29m`整段；原`.40m`激光、同伴及源龄否决保持。
+不评分或选择全局目标，不改goal ID、TTL、FIFO或扩大actor的bridge准入；这不是探索兜底或原生Nav2跟踪证明。
+V33原件与功能未解决的结论保持；v2须新冻结/完整必要验证，不能继承V33短工程或旧原生资格。
+
 2026-10-21：新增显式 `seed_rule=exact-point-bridge-v1` 观测规则，默认仍为 `legacy`。
 这是候选与掩码语义的新版本，须新冻结验证，不继承 V21/V31 原生或二维资格。
 本轮工程入口与状态见 [V33](report/20261021_mr3_p2a_v33_seed_mode.md)。

@@ -20,6 +20,7 @@ import tempfile
 import numpy as np
 
 from .navigation_archive import reconstruct_navigation_payload
+from .supervisor import EXACT_SEED_VERSIONS
 
 
 ROOT = Path(__file__).resolve().parents[7]
@@ -61,8 +62,10 @@ def audit_episode(directory, freeze, *, root=ROOT):
 
     native, supervisor = (load(directory / filename) for filename in
                           ("metadata.json", "supervisor_metadata.json"))
-    require(native.get("freeze") == freeze and native.get("seed_rule") == RULE
-            and supervisor.get("seed_rule") == RULE, "native/supervisor exact seed rule mismatch")
+    seed_rule = native.get("seed_rule")
+    require(type(seed_rule) is str and seed_rule in EXACT_SEED_VERSIONS and native.get("freeze") == freeze
+            and supervisor.get("seed_rule") == seed_rule, "native/supervisor exact seed rule mismatch")
+    version = EXACT_SEED_VERSIONS[seed_rule]
     require((directory / "summary.json").is_file(), "native episode has not closed")
     transitions, events = rows(directory / "transitions.jsonl"), rows(directory / "adapter.jsonl")
     require(transitions and transitions[0]["kind"] == "reset", "native reset missing")
@@ -97,8 +100,8 @@ def audit_episode(directory, freeze, *, root=ROOT):
             for transition in transitions:
                 snapshot, info = transition["snapshot"], transition["info"]
                 require(snapshot["epoch"] == native["epoch"]
-                        and snapshot["candidate_rule"].get("seed_rule") == RULE
-                        and snapshot["candidate_rule"].get("version") == VERSION,
+                        and snapshot["candidate_rule"].get("seed_rule") == seed_rule
+                        and snapshot["candidate_rule"].get("version") == version,
                         "actor snapshot did not use the declared exact seed rule")
                 require(observation.snapshot_digest(snapshot) == snapshot["digest"], "actor snapshot digest differs")
                 manifest_path = directory / "observation_inputs/snapshots" / (
@@ -163,7 +166,7 @@ def audit_episode(directory, freeze, *, root=ROOT):
                     map_sources=bundle["map_sources"], task_start=starts[0],
                     robot_maps={name: grid_record(name, bundle["map_sources"][name]) for name in ROBOTS},
                     navigation_maps={name: grid_record("navigation:" + name, bundle["navigation_sources"][name])
-                                     for name in ROBOTS}, seed_rule=RULE)
+                                     for name in ROBOTS}, seed_rule=seed_rule)
                 require(replay == snapshot, "full received-input exact seed replay mismatch")
                 unique[snapshot["digest"]] = snapshot["sequence"]
         finally:
@@ -191,7 +194,7 @@ def audit_episode(directory, freeze, *, root=ROOT):
         require(hashlib.sha256((root / relative).read_bytes()).hexdigest() == expected["sha256"],
                 "source changed before verdict")
     return {"schema": "mr3-exact-seed-native-input-replay-v1", "passed": True, "errors": [],
-            "freeze": freeze, "seed_rule": RULE, "episode": str(directory),
+            "freeze": freeze, "seed_rule": seed_rule, "episode": str(directory),
             "whole_observation_and_seven_map_replay_passed": True,
             "exact_full_snapshot_replays": len(unique), "input_bindings": bindings, "source_proof": sources,
             "robot_recovery_scope": "saved normalized sufficient fields; navigation missing/receipt_sequence inverted; not original raw kwargs",
@@ -204,13 +207,14 @@ def main(argv=None):
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args(argv)
     require(not args.output.exists(), "output already exists")
-    freeze = json.loads((args.episode / "metadata.json").read_text())["freeze"]
+    metadata = json.loads((args.episode / "metadata.json").read_text())
+    freeze = metadata["freeze"]
     try:
         result = audit_episode(args.episode, freeze)
     except (OSError, ValueError, TypeError, KeyError, IndexError, RuntimeError, OverflowError,
             subprocess.SubprocessError) as error:
         result = {"schema": "mr3-exact-seed-native-input-replay-v1", "passed": False, "errors": [repr(error)],
-                  "freeze": freeze, "seed_rule": RULE, "episode": str(args.episode)}
+                  "freeze": freeze, "seed_rule": metadata.get("seed_rule"), "episode": str(args.episode)}
     with args.output.open("x") as stream:
         json.dump(result, stream, indent=2, allow_nan=False); stream.write("\n")
     print(json.dumps({"passed": result["passed"], "output": str(args.output)}))

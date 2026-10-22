@@ -16,7 +16,8 @@ import numpy as np
 
 from mr3_learning import audit_seed_inputs as audit
 from mr3_learning.reach_gates import (
-    ENV_SHA256, extend_exact_snapshot_validator, load_exact_protocol, project_exact_environment,
+    ENV_SHA256, EXACT_ENV_SHA256, extend_exact_snapshot_validator, load_exact_protocol,
+    project_exact_environment, project_exact_v2_environment,
 )
 
 
@@ -26,11 +27,15 @@ FREEZE = "a" * 40
 class ExactSeedInputAuditTests(unittest.TestCase):
     def test_exact_environment_restores_whole_old_document_and_rejects_other_bytes(self):
         raw=(audit.ROOT/"ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_ENV_CONTRACT.md").read_bytes()
-        old,proof=project_exact_environment(raw)
+        v33,v2_proof=project_exact_v2_environment(raw)
+        self.assertEqual(hashlib.sha256(v33).hexdigest(),EXACT_ENV_SHA256)
+        self.assertEqual(v2_proof["prior_document_bytes"],len(v33))
+        old,proof=project_exact_environment(v33)
         self.assertEqual(hashlib.sha256(old).hexdigest(),ENV_SHA256)
         self.assertEqual(proof["prior_document_bytes"],len(old))
         self.assertLess(len(old),len(raw))
-        with self.assertRaises(ValueError):project_exact_environment(raw+b"\n")
+        with self.assertRaises(ValueError):project_exact_environment(v33+b"\n")
+        with self.assertRaises(ValueError):project_exact_v2_environment(raw+b"\n")
 
     def test_protocol_reader_changes_only_its_private_adapter_identity(self):
         from mr3_learning import audit_protocol as original
@@ -46,7 +51,7 @@ class ExactSeedInputAuditTests(unittest.TestCase):
             self.assertEqual(new.__code__.co_code, old.__code__.co_code)
             self.assertEqual(new.__code__.co_names, old.__code__.co_names)
 
-    def fixture(self, directory, *, navigation_missing=False, robot_overrides=None):
+    def fixture(self, directory, *, navigation_missing=False, robot_overrides=None, seed_rule=audit.RULE):
         package = ModuleType("multi_robot_exploration")
         package.__path__ = [str(audit.ROOT / audit.COMPONENT)]
         previous = {name: value for name, value in sys.modules.items()
@@ -85,7 +90,7 @@ class ExactSeedInputAuditTests(unittest.TestCase):
             snapshot = observation.build_snapshot(grid, .1, (-2.05, -2.05), robots, 10., "artificial", 1, 0,
                 map_source_stamp=10., map_received_stamp=10., map_sources={n: source for n in audit.ROBOTS},
                 task_start=10., robot_maps={n: {**record, **source} for n in audit.ROBOTS},
-                navigation_maps={n: {**record, **navigation} for n in audit.ROBOTS}, seed_rule=audit.RULE)
+                navigation_maps={n: {**record, **navigation} for n in audit.ROBOTS}, seed_rule=seed_rule)
         finally:
             for name in list(sys.modules):
                 if name == "multi_robot_exploration" or name.startswith("multi_robot_exploration."):
@@ -105,8 +110,8 @@ class ExactSeedInputAuditTests(unittest.TestCase):
                      for name in ("fused", *audit.ROBOTS, *("navigation:" + n for n in audit.ROBOTS))}}
         def write(name, value):
             (directory / name).write_text(json.dumps(value) + "\n")
-        write("metadata.json", {"freeze": FREEZE, "epoch": "artificial", "seed_rule": audit.RULE})
-        write("supervisor_metadata.json", {"seed_rule": audit.RULE})
+        write("metadata.json", {"freeze": FREEZE, "epoch": "artificial", "seed_rule": seed_rule})
+        write("supervisor_metadata.json", {"seed_rule": seed_rule})
         write("summary.json", {"artificial_fixture": True})
         write("transitions.jsonl", {"kind": "reset", "snapshot": snapshot, "info": {"watermarks": metadata}})
         events = [{"kind": "task_start", "payload": {"start_sim_time_sec": 10.}},
@@ -141,6 +146,19 @@ class ExactSeedInputAuditTests(unittest.TestCase):
             with patch.object(audit.subprocess,"check_output",side_effect=source), \
                     self.assertRaisesRegex(ValueError,"source differs from native freeze"):
                 audit.audit_episode(directory,FREEZE)
+
+    def test_v2_full_replay_and_v1_v2_metadata_cannot_be_mixed(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            directory=Path(temporary)
+            self.fixture(directory,seed_rule="exact-point-bridge-v2")
+            with patch.object(audit.subprocess,"check_output",side_effect=self.source):
+                report=audit.audit_episode(directory,FREEZE)
+                self.assertTrue(report["passed"])
+                self.assertEqual(report["seed_rule"],"exact-point-bridge-v2")
+                path=directory/"supervisor_metadata.json"
+                path.write_text(json.dumps({"seed_rule":"exact-point-bridge-v1"}))
+                with self.assertRaisesRegex(ValueError,"seed rule mismatch"):
+                    audit.audit_episode(directory,FREEZE)
 
     def test_missing_navigation_recovers_empty_input_in_full_snapshot_replay(self):
         with tempfile.TemporaryDirectory() as temporary:

@@ -563,10 +563,10 @@ def launch_setup(context, *args, **kwargs):
             adapter_mode and stepped_mode and robot_count == 3):
         raise ValueError("mr3-reach-v1 requires stepped three-robot adapter mode")
     seed_rule = LaunchConfiguration("mr3_seed_rule").perform(context)
-    if seed_rule not in ("legacy", "exact-point-bridge-v1"):
-        raise ValueError("mr3_seed_rule must be legacy or exact-point-bridge-v1")
+    if seed_rule not in ("legacy", "exact-point-bridge-v1", "exact-point-bridge-v2"):
+        raise ValueError("mr3_seed_rule must be legacy, exact-point-bridge-v1 or exact-point-bridge-v2")
     if seed_rule != "legacy" and not (adapter_mode and stepped_mode and robot_count == 3):
-        raise ValueError("exact-point-bridge-v1 requires stepped three-robot adapter mode")
+        raise ValueError("exact-point-bridge rules require stepped three-robot adapter mode")
     training_reward = IfCondition(LaunchConfiguration("training_reward_enabled")).evaluate(context)
     terminal_probe = IfCondition(LaunchConfiguration("training_terminal_probe")).evaluate(context)
     plant_stimulus_arm = LaunchConfiguration("mr3_plant_stimulus_arm").perform(context)
@@ -1310,7 +1310,7 @@ def generate_launch_description():
     ))
     ld.add_action(DeclareLaunchArgument(
         "mr3_seed_rule", default_value="legacy",
-        description="Explicit candidate seed certificate: legacy or exact-point-bridge-v1; "
+        description="Explicit candidate seed certificate: legacy, exact-point-bridge-v1 or exact-point-bridge-v2; "
                     "the exact rule requires the stepped three-robot adapter.",
     ))
     ld.add_action(DeclareLaunchArgument(

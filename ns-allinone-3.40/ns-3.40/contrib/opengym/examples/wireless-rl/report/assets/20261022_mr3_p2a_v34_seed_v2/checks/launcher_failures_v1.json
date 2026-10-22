@@ -1,0 +1,49 @@
+{
+  "schema": "mr3-p2a-v34-cpu-launch-failure-v1",
+  "scope": "cpu",
+  "engineering_charge_seconds": "0",
+  "cause": "parallel exclusive shared snapshot creation raced: an already created file was read before its writer finished; no corresponding actual-wait test child started",
+  "attempts": [
+    {
+      "actual_argv": [
+        "rtk",
+        "proxy",
+        "python3",
+        "/tmp/mr3_v34_cpu_driver.py",
+        "ros_wiring_cpu_v1"
+      ],
+      "error": "ValueError: snapshot collision for 3b6fb71f2c90a055ef3bb922bd3f08332eb366d8becde577106d1ed5bd56cedd_control.py"
+    },
+    {
+      "actual_argv": [
+        "rtk",
+        "proxy",
+        "python3",
+        "/tmp/mr3_v34_cpu_driver.py",
+        "native_reader_cpu_v1"
+      ],
+      "error": "ValueError: snapshot collision for 3ca4b8547afcaf58fe1207231287cce0da8569731885a6ee9955a246535884e3_test_exact_snapshot_validator.py"
+    },
+    {
+      "actual_argv": [
+        "rtk",
+        "proxy",
+        "python3",
+        "/tmp/mr3_v34_cpu_driver.py",
+        "ros_wiring_cpu_v1"
+      ],
+      "error": "FileExistsError: wrapper output precreated by nested source_snapshots; actual-wait child did not start"
+    },
+    {
+      "actual_argv": [
+        "rtk",
+        "proxy",
+        "python3",
+        "/tmp/mr3_v34_cpu_driver.py",
+        "native_reader_cpu_v1"
+      ],
+      "error": "FileExistsError: wrapper output precreated by nested source_snapshots; actual-wait child did not start"
+    }
+  ],
+  "canonical_source_snapshots": "source_recovery_v1.json; all identical temporary copies verified against the source files before deduplication, all source files committed in the same new activity freeze"
+}

@@ -129,12 +129,13 @@ def test_unknown_execution_mode_fails_before_constructing_a_launch_graph(monkeyp
         configured_launch(monkeypatch, execution_mode="hidden_fallback")
 
 
-def test_exact_seed_rule_is_explicit_only_on_the_stepped_three_robot_adapter(monkeypatch):
+@pytest.mark.parametrize("seed_rule",["exact-point-bridge-v1","exact-point-bridge-v2"])
+def test_exact_seed_rule_is_explicit_only_on_the_stepped_three_robot_adapter(monkeypatch,seed_rule):
     context,actions,nodes,_=configured_launch(monkeypatch,execution_mode="adapter",mr3_stepped="true",
-                                             mr3_seed_rule="exact-point-bridge-v1")
+                                             mr3_seed_rule=seed_rule)
     adapter=next(item for item in released_nodes(context,actions,nodes)
                  if item["executable"]=="mr3_adapter")
-    assert adapter["parameters"][0]["seed_rule"]=="exact-point-bridge-v1"
+    assert adapter["parameters"][0]["seed_rule"]==seed_rule
 
 
 @pytest.mark.parametrize("overrides",[

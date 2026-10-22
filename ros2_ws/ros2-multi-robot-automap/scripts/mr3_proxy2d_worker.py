@@ -51,6 +51,9 @@ def evaluator_environment(directory):
 class ProxyWorker:
     def __init__(self, directory, epoch, scene, seed, *, mapper="endpoint", mapper_library=None,
                  seed_rule="legacy"):
+        from multi_robot_exploration.mr3_observation import SEED_RULES
+        if type(seed_rule) is not str or seed_rule not in SEED_RULES:
+            raise ValueError("unsupported seed rule")
         from multi_robot_exploration.mr3_proxy2d_world import ProxyWorld
         from multi_robot_exploration.mr3_proxy2d_information import ProxyInformation
         from multi_robot_exploration.mr3_proxy2d_navigation import ProxyNavigator
@@ -404,6 +407,7 @@ def evaluator_main(args, peer):
 
 
 def main():
+    from multi_robot_exploration.mr3_observation import SEED_RULES
     parser = argparse.ArgumentParser()
     parser.add_argument("--role", choices=("worker", "evaluator"), required=True)
     parser.add_argument("--directory", type=Path, required=True)
@@ -412,7 +416,7 @@ def main():
     parser.add_argument("--seed", type=int, required=True)
     parser.add_argument("--mapper", choices=("endpoint","karto"),default="endpoint")
     parser.add_argument("--mapper-library",type=Path)
-    parser.add_argument("--seed-rule", choices=("legacy", "exact-point-bridge-v1"), default="legacy")
+    parser.add_argument("--seed-rule", choices=SEED_RULES, default="legacy")
     args = parser.parse_args()
     peer = ipc.JsonLinePeer(sys.stdin.fileno(), sys.stdout.fileno())
     if args.role == "evaluator":

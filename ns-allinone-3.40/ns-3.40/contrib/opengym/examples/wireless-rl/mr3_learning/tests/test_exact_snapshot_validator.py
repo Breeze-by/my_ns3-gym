@@ -13,6 +13,7 @@ import zlib
 from mr3_learning import audit_ppo, audit_protocol
 from mr3_learning.reach_audit_projection import project_module
 from mr3_learning.reach_gates import PPO_READER_SHA256, extend_exact_snapshot_validator
+from mr3_learning.supervisor import EXACT_SEED_VERSIONS
 
 
 ROOT = Path(audit_ppo.__file__).resolve().parents[7]
@@ -54,7 +55,13 @@ class ExactSnapshotValidatorTests(unittest.TestCase):
             return self.original(snapshot, epoch)
 
         self.auditor.validate_snapshot = original
-        extend_exact_snapshot_validator(self.reader.extend_snapshot_validator, self.auditor, self.candidate)
+        self.record_original=original
+        self.select_seed_rule("exact-point-bridge-v1")
+
+    def select_seed_rule(self,seed_rule):
+        self.auditor.validate_snapshot=self.record_original
+        extend_exact_snapshot_validator(self.reader.extend_snapshot_validator, self.auditor,
+                                        self.candidate,seed_rule=seed_rule)
 
     def seal(self, snapshot):
         keys = ("epoch", "map_version", "sequence", "candidate_rule", "candidates", "path_maps")
@@ -63,7 +70,7 @@ class ExactSnapshotValidatorTests(unittest.TestCase):
             {key: value for key, value in snapshot.items() if key != "digest"})
         return snapshot
 
-    def snapshot(self):
+    def snapshot(self,seed_rule="exact-point-bridge-v1"):
         def raster(side, name=None):
             value = {"encoding": "base64-zlib-u8-chw", "shape": [3, side, side],
                      "channels": ["occupied", "free", "unknown"],
@@ -82,12 +89,32 @@ class ExactSnapshotValidatorTests(unittest.TestCase):
                       for index in range(8)]
         return self.seal({"schema": "mr3-observation-v3", "epoch": "artificial", "sequence": 1,
             "map_version": 1, "source_stamp": 0., "robot_order": ["tb1", "tb2", "tb3"],
-            "robots": robots, "path_maps": {name: {"missing": True, "seed_rule": "exact-point-bridge-v1",
+            "robots": robots, "path_maps": {name: {"missing": True, "seed_rule": seed_rule,
                 "seed_point_bridge_certificate": None} for name in ("tb1", "tb2", "tb3")},
             "candidates": candidates, "joint_action_mask": [index == 888 for index in range(1000)],
             "map": {"missing": True}, "task_elapsed_sec": 0., "task_remaining_sec": 300., "policy_period_sec": 1.,
             "maps": {"global": raster(128), "locals": [raster(64, name) for name in ("tb1", "tb2", "tb3")]},
-            "candidate_rule": copy.deepcopy(self.candidate.CANDIDATE_RULES[VERSION])})
+            "candidate_rule": copy.deepcopy(self.candidate.CANDIDATE_RULES[EXACT_SEED_VERSIONS[seed_rule]])})
+
+    def test_both_real_exact_rules_validate_only_with_their_declared_mode(self):
+        for seed_rule,version in EXACT_SEED_VERSIONS.items():
+            with self.subTest(seed_rule=seed_rule):
+                self.select_seed_rule(seed_rule)
+                snapshot=self.snapshot(seed_rule)
+                self.assertEqual(snapshot["candidate_rule"],
+                    {**self.candidate.CANDIDATE_RULE_V5,"version":version,"seed_rule":seed_rule})
+                self.assertEqual(self.candidate.candidate_digest(snapshot),snapshot["candidate_version"])
+                before=copy.deepcopy(snapshot)
+                self.auditor.validate_snapshot(snapshot,"artificial")
+                self.assertEqual(snapshot,before)
+                other=next(name for name in EXACT_SEED_VERSIONS if name!=seed_rule)
+                with self.assertRaisesRegex(ValueError,"declared exact seed candidate rule"):
+                    self.auditor.validate_snapshot(self.snapshot(other),"artificial")
+                changed=copy.deepcopy(snapshot);changed["candidate_rule"]["path_body_clearance_m"]=.28
+                self.seal(changed)
+                with self.assertRaisesRegex(ValueError,"declared exact seed candidate rule"):
+                    self.auditor.validate_snapshot(changed,"artificial")
+        self.assertEqual(len(self.calls),2)
 
     def test_real_v6_digest_and_encoder_then_original_snapshot_validator(self):
         snapshot = self.snapshot(); before = copy.deepcopy(snapshot)

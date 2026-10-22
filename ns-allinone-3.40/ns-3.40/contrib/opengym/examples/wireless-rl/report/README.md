@@ -1,5 +1,7 @@
 # 报告与证据适用范围
 
+2026-10-22 V34准备：显式exact-point-bridge-v2以实际binary有理floor唯一归格并重核原cell/graph门，二维沿策略已选goal认证原lookahead段后才同seed中心桥；legacy/v1保持。524项人工CPU检查通过（353 ROS、10原生重放、161 learner）；尚无v2真实行为/PPO或新原生资格。新三场101各64步零更新短probe总预约1800秒，工程仍47269.8043977356018/52000、余4730.1956022643982；75000待答，pilot/final-only不动，P2A未完成。见[V34](20261022_mr3_p2a_v34_seed_v2.md)。
+
 2026-10-21 V33闭合：冻结6d16ebdc5的显式exact seed三场101各64步短工程链通过192/192/0、195actor/585证书和20身份gone；功能未解决，tb3每场65/65 pose_not_in_original_seed_cell，tb1几乎不动。规范273原件/11.79MB；实费578.391653362，累计47269.8043977356018/52000，余4730.1956022643982。继续定位精确cell算术与强制中心桥执行先决，新规则须新版本/冻结，不把短工程PASS当P2A；75000提案待答，pilot/final-only不动，P2A未完成。见[V33](20261021_mr3_p2a_v33_seed_mode.md)。
 
 2026-10-21 V32 CPU：精确point/同seed-centre桥证书禁用原型14项人工通过，保留.29m、unknown/outside、原seed-cell及graph门；未接生产/真实rooms或改V21字节门。两次fixture/launcher失败原件保持，工程新增0。后续先明确新观测/科学版本及必要准入，不能据此PPO/重跑V31；工程仍余5308.5872556263982，pilot/final-only不动，P2A未完成。见[V32](20261021_mr3_p2a_v32_seed_certificate.md)。
@@ -38,6 +40,7 @@
 
 | 文件 | 用途 | 能提供的信用 |
 | --- | --- | --- |
+| [P2A V34 精确归格与局部执行](20261022_mr3_p2a_v34_seed_v2.md) | 显式v2新科学版本、canonical cell与已选goal段认证；一次三场64步短probe预声明 | 524人工CPU通过，待新冻结唯一短probe；无原生或训练资格，旧V33保留 |
 | [P2A V33 显式起点规则](20261021_mr3_p2a_v33_seed_mode.md) | 同seed精确点/桥、生产与新版本审计接线；固定三场64步短probe预声明 | 短工程192/192/0及585证书通过；功能仍阻塞，578.391653362秒/20身份gone，无原生或训练资格 |
 | [P2A V29 Karto直接CPU复用](20261021_mr3_p2a_v29_karto.md) | 7 fixed API/counter case，canonical headers/ELF/actual loaded path与wait | 接口证明；未启用mapper，无质量/SLAM/native信用；工程0新增，余6554.5762973333982 |
 | [P2A V28 一致性与取舍](20261021_mr3_p2a_v28_mapping.md) | 38 CPU、31组133checkpoint三模型；持久hit veto/歧义规则实现及召回代价 | 保持v3禁用、停止归格/计数补丁支线；工程0新增/余6554.5762973333982，无task/训练/native资格 |

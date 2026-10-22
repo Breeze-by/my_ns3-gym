@@ -31,6 +31,13 @@ SCHEMA = "mr3-proxy2d-trace-v1"
 CONTRACT = "mr3-own-known-shared-unknown-v1"
 EXACT_SEED_RULE = "exact-point-bridge-v1"
 EXACT_NAVIGATION_RULE = "mr3-navigation-geometric-staging-v6-exact-seed-v1"
+EXACT_SEED_RULE_V2 = "exact-point-bridge-v2"
+EXACT_NAVIGATION_RULES = {
+    EXACT_SEED_RULE: EXACT_NAVIGATION_RULE,
+    EXACT_SEED_RULE_V2: "mr3-navigation-geometric-staging-v7-exact-seed-v2",
+}
+EXACT_SEED_RULES = tuple(EXACT_NAVIGATION_RULES)
+SEED_PROBE_RULES = {"seed_probe": EXACT_SEED_RULE, "seed_probe_v2": EXACT_SEED_RULE_V2}
 NATIVE_FREEZE = "c38e3e8ddc034bc0bf0b0cc4578cb6600ae51d90"
 ERRORS = (OSError, ValueError, TypeError, KeyError, IndexError, OverflowError, EOFError, RuntimeError,
           AssertionError, subprocess.SubprocessError)
@@ -128,7 +135,8 @@ def seed_checks(params):
     functions are the same frozen functions used by build_snapshot.
     """
     functions = native_builder().__globals__
-    require(params.get("seed_rule") == EXACT_SEED_RULE, "seed-only check requires explicit exact rule")
+    seed_rule = params.get("seed_rule")
+    require(seed_rule in EXACT_SEED_RULES, "seed-only check requires explicit exact rule")
     now, epoch = float(params["now"]), params["epoch"]
     require(math.isfinite(now) and isinstance(epoch, str) and bool(epoch),
             "seed-only clock/epoch is invalid")
@@ -146,7 +154,7 @@ def seed_checks(params):
             "native_origin_m": None, "unavailable_reason": reason,
             "seed_cell": None, "seed_cell_clearance_m": None, "seed_pose_cell_offset_m": None,
             "seed_pose_clearance_lower_bound_m": None, "seed_required_clearance_m": functions["CLEARANCE_M"],
-            "seed_rejection_reason": reason, "seed_rule": EXACT_SEED_RULE,
+            "seed_rejection_reason": reason, "seed_rule": seed_rule,
             "seed_point_bridge_certificate": None}
         if entry is not None and entry.get("grid") is not None:
             grid = functions["_received_grid"](entry["grid"])
@@ -172,7 +180,7 @@ def seed_checks(params):
             elif grid.size:
                 traversable, clearance = functions["native_traversable"](grid, resolution)
                 _, _, diagnostic = functions["_seed_diagnostics"](
-                    grid, traversable, clearance, states[name], resolution, origin, seed_rule=EXACT_SEED_RULE)
+                    grid, traversable, clearance, states[name], resolution, origin, seed_rule=seed_rule)
                 metadata.update(diagnostic)
                 if diagnostic["seed_rejection_reason"] is not None:
                     metadata["unavailable_reason"] = "robot_seed_not_observed_safe"
@@ -302,18 +310,18 @@ def actor_record(directory, row, *, rebuild=False, builder=None):
                "seed_rule"}
     require(set(params) <= allowed, "unknown actor construction parameter")
     seed_rule = params.get("seed_rule", "legacy")
-    require(seed_rule in ("legacy", EXACT_SEED_RULE), "unknown actor seed rule")
+    require(seed_rule in ("legacy", *EXACT_SEED_RULES), "unknown actor seed rule")
     navigation = params.get("navigation_maps")
     require(isinstance(navigation, dict) and set(navigation) == {"tb1", "tb2", "tb3"}
             and all(isinstance(value, dict) and value.get("composition_version") == CONTRACT
                     for value in navigation.values()), "explicit received navigation composition is required")
     candidate_rule = snapshot.get("candidate_rule", {})
     require(snapshot.get("schema") == "mr3-observation-v3"
-            and candidate_rule.get("version") == (EXACT_NAVIGATION_RULE if seed_rule == EXACT_SEED_RULE
+            and candidate_rule.get("version") == (EXACT_NAVIGATION_RULES[seed_rule] if seed_rule in EXACT_SEED_RULES
                                                     else "mr3-navigation-geometric-staging-v5")
             and snapshot["candidate_rule"].get("navigation_composition") == CONTRACT,
             "proxy actor silently changed snapshot/candidate/navigation contract")
-    require((candidate_rule.get("seed_rule") == EXACT_SEED_RULE if seed_rule == EXACT_SEED_RULE
+    require((candidate_rule.get("seed_rule") == seed_rule if seed_rule in EXACT_SEED_RULES
              else "seed_rule" not in candidate_rule), "actor seed rule and snapshot contract differ")
     grids = [params.get("raw_grid"), *[value.get("grid") for value in navigation.values()]]
     require(all(isinstance(grid, np.ndarray) and grid.ndim == 2
@@ -326,11 +334,11 @@ def actor_record(directory, row, *, rebuild=False, builder=None):
             and snapshot["source_stamp"] == params["now"], "actor call/snapshot identity differs")
     expected = tensor_proofs(snapshot)
     require(row["tensor_proofs"] == expected, "encoded tensor dtype/shape/bytes differ")
-    if rebuild or seed_rule == EXACT_SEED_RULE:
+    if rebuild or seed_rule in EXACT_SEED_RULES:
         owned = PureBuilder() if builder is None else None
         try:
             selected = owned if owned is not None else builder
-            if seed_rule == EXACT_SEED_RULE:
+            if seed_rule in EXACT_SEED_RULES:
                 checks = selected.seed_checks(**params)
                 require(set(snapshot.get("path_maps", {})) == set(checks), "seed path-map inventory differs")
                 for name, expected_seed in checks.items():
@@ -349,8 +357,8 @@ def actor_record(directory, row, *, rebuild=False, builder=None):
             "input_canonical_sha256": sha(decoded), "input_bytes": len(raw),
             "snapshot_digest": snapshot["digest"], "tensor_proofs": expected,
             "full_snapshot_rebuilt": rebuild, "seed_rule": seed_rule,
-            "exact_seed_certificate_source_replayed": seed_rule == EXACT_SEED_RULE,
-            "exact_seed_robot_checks": 3 if seed_rule == EXACT_SEED_RULE else 0}, (path, raw)
+            "exact_seed_certificate_source_replayed": seed_rule in EXACT_SEED_RULES,
+            "exact_seed_robot_checks": 3 if seed_rule in EXACT_SEED_RULES else 0}, (path, raw)
 
 
 def _duration(row, previous=None, resetting=False):
@@ -555,28 +563,28 @@ def _activity_contract(summary):
         return {"kind": "legacy_v22", "groups": [1, 4], "cells": cells, "steps_per_episode": 300,
                 "max_attempts": 9000, "activity_seconds": 3600, "group_wall_seconds": None}
     spec = summary["activity_spec"]
-    require(isinstance(spec, dict) and spec.get("kind") in ("profile", "short_capacity", "full_behavior", "karto_profile", "karto_behavior", "seed_probe"),
+    require(isinstance(spec, dict) and spec.get("kind") in ("profile", "short_capacity", "full_behavior", "karto_profile", "karto_behavior", *SEED_PROBE_RULES),
             "unknown bounded proxy activity specification")
     profile = spec["kind"] in ("profile", "karto_profile")
     expected = {"schema": "mr3-proxy2d-activity-spec-v1", "kind": spec["kind"],
                 "groups": [1] if profile else [1, 4], "cells": [["open", 101]] if profile else cells,
                 "steps_per_episode": 8, "max_attempts": 8 if profile else 240,
                 "activity_seconds": 600 if profile else 1800}
-    if spec["kind"] in ("full_behavior", "karto_behavior", "seed_probe"):
+    if spec["kind"] in ("full_behavior", "karto_behavior", *SEED_PROBE_RULES):
         expected = {"schema": "mr3-proxy2d-activity-spec-v1", "kind": spec["kind"],
                     "groups": [3], "cells": [["open", 101], ["rooms", 101], ["corridors", 101]],
                     "worker_cells": [[[["open", 101]], [["rooms", 101]], [["corridors", 101]]]],
-                    "steps_per_episode": 64 if spec["kind"] == "seed_probe" else 300,
-                    "max_attempts": 192 if spec["kind"] == "seed_probe" else 900,
-                    "activity_seconds": 1800 if spec["kind"] == "seed_probe" else 3600}
-    if spec["kind"] == "seed_probe":
-        require(summary.get("seed_rule") == EXACT_SEED_RULE,
+                    "steps_per_episode": 64 if spec["kind"] in SEED_PROBE_RULES else 300,
+                    "max_attempts": 192 if spec["kind"] in SEED_PROBE_RULES else 900,
+                    "activity_seconds": 1800 if spec["kind"] in SEED_PROBE_RULES else 3600}
+    if spec["kind"] in SEED_PROBE_RULES:
+        require(summary.get("seed_rule") == SEED_PROBE_RULES[spec["kind"]],
                 "seed probe must explicitly declare the exact certificate rule")
     require(canonical(spec) == canonical(expected), "bounded proxy activity differs from its exact fixed specification")
     require(summary.get("activity_kind") == spec["kind"] and summary.get("profile_enabled") is profile
             and canonical(summary.get("scheduled_cells")) == canonical(expected["cells"]),
             "summary activity kind/profile/schedule differs from its fixed specification")
-    walls = ([240] if profile else [900] if spec["kind"] == "seed_probe" else
+    walls = ([240] if profile else [900] if spec["kind"] in SEED_PROBE_RULES else
              [2100] if spec["kind"] in ("full_behavior", "karto_behavior") else [400, 800])
     return {**expected, "group_wall_seconds": walls}
 
@@ -665,8 +673,9 @@ def verify_conformity(directory, specification, freeze):
     require(formal.get("schema") in ("mr3-proxy2d-conformity-v1", "mr3-proxy2d-conformity-v2")
             and formal.get("freeze") == freeze,
             "conformity receipt source identity differs")
-    require((formal.get("seed_rule") == EXACT_SEED_RULE if versioned
+    require((formal.get("seed_rule") in EXACT_SEED_RULES if versioned
              else formal.get("seed_rule", "legacy") == "legacy"), "conformity schema/seed rule differs")
+    seed_rule = formal.get("seed_rule", "legacy")
     require(formal.get("errors") == [] and formal.get("input_bytes_unchanged") is True
             and all(formal.get(key) is False for key in ("qualification", "training_eligible", "native_credit")),
             "formal conformity has a retained error/unstable input or wrong credit scope")
@@ -772,7 +781,7 @@ def verify_conformity(directory, specification, freeze):
     synthetic = parse(reference(formal["synthetic_result_ref"]))
     require(synthetic["cases"] == formal["synthetic_cases"], "synthetic cases differ from actual helper output")
     if versioned:
-        require(synthetic.get("seed_rule") == EXACT_SEED_RULE, "synthetic helper used another seed rule")
+        require(synthetic.get("seed_rule") == seed_rule, "synthetic helper used another seed rule")
     require(all(type(synthetic.get(key)) is int and synthetic[key] == 0
                 for key in ("native_runs", "gpu_calls", "optimizer_steps")), "synthetic helper acquired native/learning calls")
     cases = formal["synthetic_cases"]
@@ -807,9 +816,9 @@ def verify_conformity(directory, specification, freeze):
         elif case["id"] == "hidden_obstacle_same_received_actor":
             actors = [documents[f"hidden_actor_{number}.json"] for number in (0, 1)]
             if versioned:
-                require(all(actor["parameters"].get("seed_rule") == EXACT_SEED_RULE
-                            and actor["snapshot"]["candidate_rule"].get("seed_rule") == EXACT_SEED_RULE
-                            and actor["snapshot"]["candidate_rule"].get("version") == EXACT_NAVIGATION_RULE
+                require(all(actor["parameters"].get("seed_rule") == seed_rule
+                            and actor["snapshot"]["candidate_rule"].get("seed_rule") == seed_rule
+                            and actor["snapshot"]["candidate_rule"].get("version") == EXACT_NAVIGATION_RULES[seed_rule]
                             for actor in actors), "hidden-obstacle comparison did not exercise exact actor rule")
             hashes = [{"actor_parameters_sha256": sha(canonical(actor["parameters"])),
                        "snapshot_sha256": sha(canonical(actor["snapshot"]))} for actor in actors]
@@ -871,7 +880,7 @@ def verify_conformity(directory, specification, freeze):
             "formal_reference": specification, "native_records": native_verified, "synthetic_cases": checked,
             "helper_actual_waits": waits, "reference_files_checked": len(stable),
             "formal_producer_pass_flags_used": False, "additional_native_snapshot_replays": len(exact_verified),
-            "seed_rule": EXACT_SEED_RULE if versioned else "legacy", "exact_records": exact_verified,
+            "seed_rule": seed_rule, "exact_records": exact_verified,
             "additional_current_version_snapshot_replays": len(exact_verified),
             "additional_native_runs": 0,
             "native_snapshot_replay_scope": "pure current-legacy compatibility calls, no native execution",
@@ -883,6 +892,8 @@ def verify_exact_conformity_records(directory, formal, expected_selections, refe
     from .proxy2d_codec import encode_arrays
     from .proxy2d_conformity import NativeInputs, recover_parameters
     records = formal["exact_records"]
+    seed_rule = formal["seed_rule"]
+    require(seed_rule in EXACT_SEED_RULES, "unknown exact conformity rule")
     require(len(records) == 6 and {(row["episode"], row["selection"]) for row in records} == expected_selections,
             "six exact-version snapshot selections were omitted/replaced")
     original = {(row["episode"], row["selection"]): row for row in formal["native_records"]}
@@ -894,7 +905,7 @@ def verify_exact_conformity_records(directory, formal, expected_selections, refe
     builder = PureBuilder()
     try:
         for row in records:
-            require(row.get("seed_rule") == EXACT_SEED_RULE and row.get("native_freeze") == NATIVE_FREEZE,
+            require(row.get("seed_rule") == seed_rule and row.get("native_freeze") == NATIVE_FREEZE,
                     "exact record version/reference source differs")
             old = original[row["episode"], row["selection"]]
             spec = old["native_snapshot_ref"]
@@ -909,7 +920,7 @@ def verify_exact_conformity_records(directory, formal, expected_selections, refe
             require(canonical(legacy) == canonical(native["snapshot"])
                     and tensor_proofs(legacy) == old["expected"]["tensor_proofs"],
                     "current legacy full snapshot/tensors differ from original native reference")
-            params["seed_rule"] = EXACT_SEED_RULE
+            params["seed_rule"] = seed_rule
             expected_input = canonical(encode_arrays(params))
             require(row["sufficient_parameter_sha256"] == sha(expected_input),
                     "exact replay changed parameters beyond the declared seed rule")
@@ -926,7 +937,7 @@ def verify_exact_conformity_records(directory, formal, expected_selections, refe
             require(row["actual"] == expected and row["exact_seed_robot_checks"] == 3,
                     "exact snapshot/tensor/seed comparison differs")
             checked.append({"episode": row["episode"], "selection": row["selection"],
-                "seed_rule": EXACT_SEED_RULE, "same_original_received_parameters_verified": True,
+                "seed_rule": seed_rule, "same_original_received_parameters_verified": True,
                 "current_legacy_snapshot_and_tensors_equal_original": True,
                 "full_current_snapshot_rebuilt": True, "verified": expected,
                 "exact_seed_robot_checks": report["exact_seed_robot_checks"], "_bound_files": [binding]})
@@ -984,7 +995,7 @@ def audit_run(directory, freeze):
         require(summary.get("schema") == "mr3-proxy2d-capacity-summary-v1" and summary.get("freeze") == freeze,
                 "capacity summary schema/freeze differs")
         seed_rule = summary.get("seed_rule", "legacy")
-        require(seed_rule in ("legacy", EXACT_SEED_RULE), "unknown capacity seed rule")
+        require(seed_rule in ("legacy", *EXACT_SEED_RULES), "unknown capacity seed rule")
         result["seed_rule"] = seed_rule
         contract = _activity_contract(summary)
         bounded = contract["kind"] != "legacy_v22"
@@ -998,7 +1009,7 @@ def audit_run(directory, freeze):
         bound, run_sources, inspected = verify_run_sources(summary["source_bindings"], freeze)
         stable.update(run_sources)
         native_artifacts = (verify_karto_manifest(summary,stable)
-            if contract["kind"] in ("karto_profile","karto_behavior", "seed_probe") else None)
+            if contract["kind"] in ("karto_profile","karto_behavior", *SEED_PROBE_RULES) else None)
         result.update(source_proof=proof, run_source_bindings=bound,
                       proxy_sources_without_learning_framework_imports=inspected)
         start, deadline, collection = (summary[key] for key in (
@@ -1011,7 +1022,7 @@ def audit_run(directory, freeze):
             collection_started = summary["collection_started_ns"]
             require(type(collection_started) is int and start <= collection_started
                     and collection - collection_started == (240 if contract["kind"] in ("profile", "karto_profile") else
-                        900 if contract["kind"] == "seed_probe" else
+                        900 if contract["kind"] in SEED_PROBE_RULES else
                         2100 if contract["kind"] in ("full_behavior", "karto_behavior") else 1200) * 10**9
                     and collection <= deadline - 120 * 10**9,
                     "bounded collection reservation differs from its exact fixed clock contract")
@@ -1039,7 +1050,7 @@ def audit_run(directory, freeze):
         group_end = start
         for group_index, group in enumerate(groups):
             workers = group["workers"]
-            allowed_workers = contract["groups"] if contract["kind"] in ("full_behavior", "karto_behavior", "seed_probe") else (1, 4)
+            allowed_workers = contract["groups"] if contract["kind"] in ("full_behavior", "karto_behavior", *SEED_PROBE_RULES) else (1, 4)
             require(type(workers) is int and workers in allowed_workers, "invalid environment-group identity")
             if not (type(group["started_ns"]) is int and type(group["ended_ns"]) is int
                     and group_end <= group["started_ns"] <= group["ended_ns"] <= deadline):
@@ -1059,7 +1070,7 @@ def audit_run(directory, freeze):
             capacity.update({key: 0 for key in VERIFIED_COUNTS})
             for env_id in range(workers):
                 expected_cells = (contract["worker_cells"][group_index][env_id]
-                                  if contract["kind"] in ("full_behavior", "karto_behavior", "seed_probe") else contract["cells"])
+                                  if contract["kind"] in ("full_behavior", "karto_behavior", *SEED_PROBE_RULES) else contract["cells"])
                 local_cells = {tuple(cell) for cell in expected_cells}
                 entries = sorted((item for item in group["episodes"] if item["env_id"] == env_id),
                                  key=lambda item: item["episode_index"])
@@ -1154,7 +1165,7 @@ def audit_run(directory, freeze):
                                 sum(item["env_id"] == env_id for item in group["episodes"]) == 6 for env_id in range(workers)),
                             complete_declared_cells_per_worker=all(
                                 sum(item["env_id"] == env_id for item in group["episodes"]) ==
-                                (len(contract["worker_cells"][group_index][env_id]) if contract["kind"] in ("full_behavior", "karto_behavior", "seed_probe")
+                                (len(contract["worker_cells"][group_index][env_id]) if contract["kind"] in ("full_behavior", "karto_behavior", *SEED_PROBE_RULES)
                                  else len(cells)) for env_id in range(workers)))
             result["group_capacity"].append(capacity)
         for episode in sorted(discovered - audited):
@@ -1203,6 +1214,8 @@ def audit_run(directory, freeze):
     result["complete_short_capacity_matrix"] = result["passed"] and result.get("activity_kind") == "short_capacity"
     result["complete_full_behavior_diagnostic"] = result["passed"] and result.get("activity_kind") == "full_behavior"
     result["complete_seed_probe"] = result["passed"] and result.get("activity_kind") == "seed_probe"
+    if result.get("activity_kind") == "seed_probe_v2":
+        result["complete_seed_probe_v2"] = result["passed"]
     return result
 
 

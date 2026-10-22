@@ -7,6 +7,7 @@ from pathlib import Path
 from .audit_ppo import load_rows, require
 from .reach_audit_projection import project_module
 from .reach_gates import load_native_gates
+from .supervisor import validate_seed_rule
 
 SOURCE_SHA256 = "b7e07ee44188b43f09a94215430fac609d6753f7be5594ce9f4b2308ccf88cab"
 
@@ -24,7 +25,7 @@ def load_impl(plan_path):
     ))
     module.load_native_gates = lambda root, freeze: load_native_gates(root, freeze, plan_path)
     plan = json.loads(Path(plan_path).read_text())
-    if plan.get("seed_rule", "legacy") == "exact-point-bridge-v1":
+    if validate_seed_rule(plan.get("seed_rule", "legacy")) != "legacy":
         from .audit_seed_inputs import audit_episode
         original_archives = module.audit_archives
 

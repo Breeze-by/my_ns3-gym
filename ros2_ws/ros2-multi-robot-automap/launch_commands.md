@@ -1,5 +1,7 @@
 # 当前三机器人基线与MR3适配启动命令
 
+2026-10-22 V34准备：显式exact-point-bridge-v2以实际binary有理floor唯一归格并重核原cell/graph门，二维沿策略已选goal认证原lookahead段后才同seed中心桥；legacy/v1保持。524项人工CPU检查通过（353 ROS、10原生重放、161 learner）；尚无v2真实行为/PPO或新原生资格。新三场101各64步零更新短probe总预约1800秒，工程仍47269.8043977356018/52000、余4730.1956022643982；75000待答，pilot/final-only不动，P2A未完成。见[V34](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261022_mr3_p2a_v34_seed_v2.md)。
+
 2026-10-21 V33闭合：冻结6d16ebdc5的显式exact seed三场101各64步短工程链通过192/192/0、195actor/585证书和20身份gone；功能未解决，tb3每场65/65 pose_not_in_original_seed_cell，tb1几乎不动。规范273原件/11.79MB；实费578.391653362，累计47269.8043977356018/52000，余4730.1956022643982。继续定位精确cell算术与强制中心桥执行先决，新规则须新版本/冻结，不把短工程PASS当P2A；75000提案待答，pilot/final-only不动，P2A未完成。见[V33](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261021_mr3_p2a_v33_seed_mode.md)。
 
 2026-10-21 V32 CPU：精确point/同seed-centre桥证书禁用原型14项人工通过，保留.29m、unknown/outside、原seed-cell及graph门；未接生产/真实rooms或改V21字节门。两次fixture/launcher失败原件保持，工程新增0。后续先明确新观测/科学版本及必要准入，不能据此PPO/重跑V31；工程仍余5308.5872556263982，pilot/final-only不动，P2A未完成。见[V32](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261021_mr3_p2a_v32_seed_certificate.md)。
@@ -139,6 +141,12 @@ UDP-only配置。两者都不等于正式多主机部署或 ns-3 网络模拟。
 从 underlay 干净重建，保留 log。重新开终端 source，不能认为增量构建已删除旧入口。
 
 ## 新安全profile（V15工程准备）
+
+V34新增 `mr3_seed_rule:=exact-point-bridge-v2` / learner `--seed-rule exact-point-bridge-v2`，
+沿同一supervisor→worker→launch→adapter链传递，二维worker同样显式选择。
+它使用精确所在格和新候选版本；局部路径执行只用于二维代理，原生仍保留Nav2。
+v1/v2的plan、metadata、snapshot、资格与PPO必须逐层匹配。默认仍为legacy。
+本轮仅允许预声明零更新 `seed_probe_v2`；本段不是新的原生资格或训练准入。
 
 V33增加独立的显式观测参数 `mr3_seed_rule:=exact-point-bridge-v1`，默认 `legacy`。
 新规则只允许三台、adapter及stepped；学习侧 `Supervisor(seed_rule=...)`、benchmark/PPO

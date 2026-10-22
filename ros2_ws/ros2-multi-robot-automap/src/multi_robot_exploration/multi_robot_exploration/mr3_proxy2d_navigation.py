@@ -12,9 +12,34 @@ from .mr3_observation import (
     CLEARANCE_M, GOAL_XY_TOLERANCE_M, SEED_RULES, _cell, _path_distances, native_traversable,
 )
 from .mr3_reach_geometry import Direction, disk, normal, pair_certificate
-from .mr3_seed_certificate import certify_estimated_segment, certify_seed_pose_bridge
+from .mr3_seed_certificate import (
+    _number, canonical_cell_centre, canonical_seed_cell,
+    certify_estimated_segment, certify_seed_pose_bridge,
+)
 
 ROBOTS = ("tb1", "tb2", "tb3")
+
+
+def _lookahead_cells(traversable, field, cell):
+    """The existing bounded supplied-goal descent, retaining every node."""
+    row, col = cell
+    result = []
+    for _ in range(5):
+        choices = []
+        for dr, dc in ((-1, 0), (1, 0), (0, -1), (0, 1), (-1, -1), (-1, 1), (1, -1), (1, 1)):
+            r, c = row + dr, col + dc
+            if not (0 <= r < traversable.shape[0] and 0 <= c < traversable.shape[1]) \
+                    or not traversable[r, c]:
+                continue
+            if dr and dc and not (traversable[row, c] and traversable[r, col]):
+                continue
+            if field[r, c] < field[row, col] - 1e-9:
+                choices.append((field[r, c], r, c))
+        if not choices:
+            break
+        _, row, col = min(choices)
+        result.append((row, col))
+    return result
 
 
 class ProxyNavigator:
@@ -61,6 +86,62 @@ class ProxyNavigator:
             return (0., 0.)
         return (linear, 0.)
 
+    def _exact_waypoint_velocity(self, name, state, navigation, waypoint):
+        """Execute an already certified v2 waypoint without borrowing an arc.
+
+        Every moving proposal is straight for the worker's fixed 20ms quantum,
+        independently certified, and no longer than the remaining waypoint
+        distance. This is estimated geometry, not a tracking guarantee.
+        """
+        pose = (state["x"], state["y"])
+        distance = math.dist(pose, waypoint)
+        if not distance:
+            return (0., 0.)
+        angle = math.atan2(waypoint[1] - pose[1], waypoint[0] - pose[0]) - state["yaw"]
+        angle = math.atan2(math.sin(angle), math.cos(angle))
+        if abs(angle) > .1:
+            return (0., max(-.6, min(.6, 2 * angle)))
+        linear = min(.12, distance / .02)
+        # Check actual represented endpoints, including addition rounding. A
+        # rounded-up short proposal may reduce speed by a few ULPs, otherwise
+        # it stops rather than overshooting or snapping. No clearance changes.
+        start_q = tuple(_number(value) for value in pose)
+        remaining2 = sum((_number(waypoint[i]) - start_q[i]) ** 2 for i in range(2))
+        for _ in range(4):
+            proposed = (pose[0] + linear * .02 * math.cos(state["yaw"]),
+                        pose[1] + linear * .02 * math.sin(state["yaw"]))
+            proposed2 = sum((_number(proposed[i]) - start_q[i]) ** 2 for i in range(2))
+            if proposed2 <= remaining2:
+                break
+            linear = math.nextafter(linear, 0.)
+        else:
+            self.blocked_quanta[name] += 1
+            return (0., 0.)
+        if not certify_estimated_segment(
+                navigation["grid"], navigation["resolution"], navigation["origin"],
+                pose, proposed)["accepted"]:
+            self.blocked_quanta[name] += 1
+            return (0., 0.)
+        return (linear, 0.)
+
+    def _exact_goal_velocity(self, name, state, navigation, cell, waypoints):
+        """v2: certify the existing goal route longest first, then same seed."""
+        grid, resolution, origin = navigation["grid"], navigation["resolution"], navigation["origin"]
+        pose = (state["x"], state["y"])
+        for waypoint_cell in reversed(waypoints):
+            waypoint = canonical_cell_centre(waypoint_cell, resolution, origin)
+            if certify_estimated_segment(grid, resolution, origin, pose, waypoint)["accepted"]:
+                return self._exact_waypoint_velocity(name, state, navigation, waypoint)
+        # No new graph node or goal is sought. This is only the same already
+        # traversable canonical seed centre, with its entire bridge certified.
+        bridge = certify_seed_pose_bridge(grid, resolution, origin, pose, cell,
+                                         seed_cell_traversable=True)
+        if bridge["accepted"]:
+            return self._exact_waypoint_velocity(name, state, navigation,
+                canonical_cell_centre(cell, resolution, origin))
+        self.blocked_quanta[name] += 1
+        return (0., 0.)
+
     def target_velocity(self, name, state, goal, navigation):
         if goal is None:
             return (0., 0.), False
@@ -89,29 +170,21 @@ class ProxyNavigator:
                 cached += (clearance,)
             self.paths[name] = cached
         _, traversable, field = cached[:3]
-        cell = _cell(state["x"], state["y"], resolution, origin, grid.shape)
+        cell = (canonical_seed_cell((state["x"], state["y"]), resolution, origin, grid.shape)
+                if self.seed_rule == "exact-point-bridge-v2" else
+                _cell(state["x"], state["y"], resolution, origin, grid.shape))
         if cell is None or not traversable[cell] or not math.isfinite(field[cell]):
             self.blocked_quanta[name] += 1
             return (0., 0.), False
+        if self.seed_rule == "exact-point-bridge-v2":
+            return self._exact_goal_velocity(name, state, navigation, cell,
+                _lookahead_cells(traversable, field, cell)), False
         if self.seed_rule != "legacy":
             bridge_output = self._seed_bridge_velocity(name, state, navigation, cell, cached[3])
             if bridge_output is not None:
                 return bridge_output, False
-        row, col = cell
-        # Follow a bounded lookahead along the same no-corner-cut metric.
-        for _ in range(5):
-            choices = []
-            for dr, dc in ((-1, 0), (1, 0), (0, -1), (0, 1), (-1, -1), (-1, 1), (1, -1), (1, 1)):
-                r, c = row + dr, col + dc
-                if not (0 <= r < grid.shape[0] and 0 <= c < grid.shape[1]) or not traversable[r, c]:
-                    continue
-                if dr and dc and not (traversable[row, c] and traversable[r, col]):
-                    continue
-                if field[r, c] < field[row, col] - 1e-9:
-                    choices.append((field[r, c], r, c))
-            if not choices:
-                break
-            _, row, col = min(choices)
+        waypoints = _lookahead_cells(traversable, field, cell)
+        row, col = waypoints[-1] if waypoints else cell
         x, y = origin[0] + (col + .5) * resolution, origin[1] + (row + .5) * resolution
         angle = math.atan2(y - state["y"], x - state["x"]) - state["yaw"]
         angle = math.atan2(math.sin(angle), math.cos(angle))

@@ -28,7 +28,7 @@ from types import ModuleType
 import numpy as np
 
 from .audit_proxy2d import (PureBuilder, canonical, parse, require, tensor_proofs, ROOT, PURE,
-                            EXACT_SEED_RULE, actor_record)
+                            EXACT_SEED_RULE, EXACT_SEED_RULES, actor_record)
 from .proxy2d_codec import encode_arrays
 
 
@@ -48,7 +48,7 @@ def sha(raw):
 
 def source_bindings(freeze, seed_rule="legacy"):
     require(type(freeze) is str and re.fullmatch(r"[0-9a-f]{40}", freeze), "exact current freeze required")
-    require(seed_rule in ("legacy", EXACT_SEED_RULE), "unknown conformity seed rule")
+    require(seed_rule in ("legacy", *EXACT_SEED_RULES), "unknown conformity seed rule")
     names = (Path(__file__), Path(__file__).with_name("audit_proxy2d.py"),
              Path(__file__).with_name("observation.py"), Path(__file__).with_name("proxy2d_codec.py"),
              PURE / "mr3_observation.py", PURE / "mr3_episode.py", PURE / "mr3_observation_archive.py",
@@ -205,8 +205,9 @@ def replay_native(inputs, builder):
     return records
 
 
-def replay_exact_native(inputs, builder, directory, stable=None):
+def replay_exact_native(inputs, builder, directory, stable=None, *, seed_rule=EXACT_SEED_RULE):
     """New-version calls from the same sufficient received inputs, not native runs."""
+    require(seed_rule in EXACT_SEED_RULES, "unknown exact native-reconstruction rule")
     directory = Path(directory).resolve()
     directory.mkdir(parents=True, exist_ok=False)
     (directory / "inputs").mkdir()
@@ -217,7 +218,7 @@ def replay_exact_native(inputs, builder, directory, stable=None):
         for selection, (_, original) in zip(("reset", "first_step", "last_step"), selected_rows(raw)):
             params, _ = recover_parameters(inputs, episode, original)
             legacy_parameters_sha256 = sha(canonical(encode_arrays(params)))
-            params["seed_rule"] = EXACT_SEED_RULE
+            params["seed_rule"] = seed_rule
             encoded = canonical(encode_arrays(params))
             digest = sha(encoded)
             input_path = directory / f"inputs/{digest}.json.gz"
@@ -238,7 +239,7 @@ def replay_exact_native(inputs, builder, directory, stable=None):
                 stream.write(body)
             if stable is not None:
                 stable[record_path] = body
-            records.append({"episode": episode, "selection": selection, "seed_rule": EXACT_SEED_RULE,
+            records.append({"episode": episode, "selection": selection, "seed_rule": seed_rule,
                 "native_freeze": NATIVE_FREEZE, "legacy_parameters_sha256": legacy_parameters_sha256,
                 "sufficient_parameter_sha256": digest,
                 "actor_record_ref": {"path": str(record_path), "sha256": sha(body), "bytes": len(body)},
@@ -355,7 +356,7 @@ def convergence_metrics(first, second, stopped_before, stopped_after):
 
 
 def synthetic_cases(directory, seed_rule="legacy"):
-    require(seed_rule in ("legacy", EXACT_SEED_RULE), "unknown synthetic seed rule")
+    require(seed_rule in ("legacy", *EXACT_SEED_RULES), "unknown synthetic seed rule")
     directory = Path(directory); directory.mkdir(parents=True, exist_ok=False)
     with pure_package():
         world_module = importlib.import_module("multi_robot_exploration.mr3_proxy2d_world")
@@ -477,7 +478,7 @@ def run(freeze, native_root, inventory_path, output, seed_rule="legacy"):
     require(subprocess.check_output(["git", "show", freeze + ":" + relative_inventory], cwd=ROOT) == inventory_raw,
             "original native inventory is not frozen")
     inputs = NativeInputs(native_root, inventory_path)
-    result = {"schema": "mr3-proxy2d-conformity-v2" if seed_rule == EXACT_SEED_RULE else "mr3-proxy2d-conformity-v1",
+    result = {"schema": "mr3-proxy2d-conformity-v2" if seed_rule in EXACT_SEED_RULES else "mr3-proxy2d-conformity-v1",
               "freeze": freeze, "native_freeze": NATIVE_FREEZE,
               "passed": False, "errors": [], "source_proof": proof, "native_records": [],
               "qualification": False, "training_eligible": False, "native_credit": False,
@@ -491,7 +492,8 @@ def run(freeze, native_root, inventory_path, output, seed_rule="legacy"):
         try:
             result["native_records"] = replay_native(inputs, builder)
             if seed_rule != "legacy":
-                result["exact_records"] = replay_exact_native(inputs, builder, output.with_suffix(".exact"), stable)
+                result["exact_records"] = replay_exact_native(inputs, builder, output.with_suffix(".exact"), stable,
+                                                               seed_rule=seed_rule)
         finally:
             result["pure_builder_actual_wait"] = builder.close()
         result["synthetic_cases"] = run_synthetic_helper(freeze, output, result)
@@ -521,7 +523,7 @@ def main(argv=None):
     parser.add_argument("--native-root", type=Path, default=DEFAULT_NATIVE_ROOT)
     parser.add_argument("--native-inventory", type=Path, default=NATIVE_ASSETS / "native_inventory_v1.json")
     parser.add_argument("--synthetic-cases", action="store_true")
-    parser.add_argument("--seed-rule", choices=("legacy", EXACT_SEED_RULE), default="legacy")
+    parser.add_argument("--seed-rule", choices=("legacy", *EXACT_SEED_RULES), default="legacy")
     parser.add_argument("--output", required=True, type=Path)
     args = parser.parse_args(argv)
     require(not args.output.exists(), "exclusive conformity output required")

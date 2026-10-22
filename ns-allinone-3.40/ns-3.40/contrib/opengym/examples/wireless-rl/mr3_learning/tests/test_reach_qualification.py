@@ -41,8 +41,8 @@ class ReachQualificationTests(unittest.TestCase):
         self.assertEqual(sum(stage["expected_episodes"] for stage in self.plan["stages"]),12)
         self.assertTrue(all("--safety-contract" in s["native"]["argv"] for s in self.plan["stages"]))
 
-    def exact_plan(self):
-        p=copy.deepcopy(self.plan);p["seed_rule"]="exact-point-bridge-v1"
+    def exact_plan(self,seed_rule="exact-point-bridge-v1"):
+        p=copy.deepcopy(self.plan);p["seed_rule"]=seed_rule
         for stage in p["stages"]:
             stage["native"]["argv"] += ["--seed-rule",p["seed_rule"]]
             for job in stage["audits"]:
@@ -75,6 +75,15 @@ class ReachQualificationTests(unittest.TestCase):
                 with self.subTest(stage=stage_name,flag=flag), \
                         self.assertRaisesRegex(ValueError,"input episode/output binding differs"):
                     prep.validate_plan(changed)
+
+    def test_v2_qualification_keeps_all_roles_and_rejects_a_v1_native_stage(self):
+        plan=self.exact_plan("exact-point-bridge-v2");prep.validate_plan(plan)
+        self.assertEqual(sum(len(prep.primitives.roles(stage)) for stage in plan["stages"]),30)
+        for number in range(len(plan["stages"])):
+            changed=copy.deepcopy(plan);argv=changed["stages"][number]["native"]["argv"]
+            argv[argv.index("--seed-rule")+1]="exact-point-bridge-v1"
+            with self.subTest(stage=number),self.assertRaisesRegex(ValueError,"seed rule differs"):
+                prep.validate_plan(changed)
 
     def test_exact_input_cannot_omit_an_episode_or_duplicate_a_cli_flag(self):
         original=self.exact_plan();prep.validate_plan(original)

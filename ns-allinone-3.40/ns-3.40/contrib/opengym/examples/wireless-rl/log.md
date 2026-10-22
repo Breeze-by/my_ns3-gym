@@ -8226,3 +8226,32 @@ external final: rc=0, actualwait=0.717496131s, passed/source unchanged, [receipt
 ```
 
 Engineering PASS/functional unresolved: 192/192/0, independently192 action/uniform/returns,195actor/585robot seed checks; each65 actors; all genuine 64-second external cut. Three scene task/quality/participation unachieved, no300s/native/PPO qualification. tb3 certificate pose_not_in_original_seed_cell65/65 in each; tb1 near-zero movement, tb2 corridors1.5337m.0proxycontacts. Canonical273 files/11789615bytes,20saved identities freshly gone including finalouter. Actual union578.391653362s (not phases twice); endpoint683.994099720<1800; cumulative47269.8043977356018/52000, remaining4730.1956022643982. Pilot/final-only unchanged,75000 only pending proposal. [Closed review](report/assets/20261021_mr3_p2a_v33_seed_mode/closed_metadata_v1.json).
+
+
+## 2026-10-22 MR3-P2A V34：显式v2人工CPU准备与短probe预声明
+
+来源：main@8343bcdb33e9f6386f1e14bb0a62d7c821311e29后的未冻结v2改动，精确源字节由各actual_wait及同一新活动冻结的Git原件保存，source_recovery_v1.json按SHA映射；人工检查期无源码版本变化。新规则与边界见[报告](report/20261022_mr3_p2a_v34_seed_v2.md)。人工输入/mocks，没有World/真实原件消费者/native/GPU/optimizer，工程新增0；旧失败保留。
+
+- geometry_cpu_v1: PASS，实际等待12.505241911秒，source unchanged；回执`report/assets/20261022_mr3_p2a_v34_seed_v2/checks/geometry_cpu_v1/actual_wait.json`。
+```json
+["/usr/bin/bash", "--noprofile", "--norc", "-e", "-c", "source /opt/ros/humble/setup.bash && source /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/setup.bash && exec /usr/bin/python3 -B -m pytest -q /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_seed_v2.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_proxy2d_navigation_seed_v2.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_observation.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_seed_certificate.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_proxy2d_navigation_cache.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_proxy2d_navigation_seed.py"]
+```
+
+- learner_cpu_v1: PASS，实际等待106.090420546秒，source unchanged；回执`report/assets/20261022_mr3_p2a_v34_seed_v2/checks/learner_cpu_v1/actual_wait.json`。
+```json
+["/home/zhuyulab/miniconda3/envs/ns3gym/bin/python", "-B", "-m", "unittest", "mr3_learning.tests.test_reach_qualification", "mr3_learning.tests.test_reach_policy_chain", "mr3_learning.tests.test_reach_training_admission", "mr3_learning.tests.test_reach_preparation_entry", "mr3_learning.tests.test_audit_reach_ppo", "mr3_learning.tests.test_exact_snapshot_validator", "mr3_learning.tests.test_audit_proxy2d", "mr3_learning.tests.test_proxy2d_conformity", "mr3_learning.tests.test_proxy2d_capacity", "mr3_learning.tests.test_proxy2d", "mr3_learning.tests.test_proxy2d_karto_activity", "mr3_learning.tests.test_proxy2d_seed_activity", "mr3_learning.tests.test_proxy2d_seed_compatibility", "mr3_learning.tests.test_proxy2d_seed_v2_compatibility", "mr3_learning.tests.test_proxy2d_seed_v2_wiring"]
+```
+
+- native_reader_cpu_v2: PASS，实际等待3.460119293秒，source unchanged；回执`report/assets/20261022_mr3_p2a_v34_seed_v2/checks/native_reader_cpu_v2/actual_wait.json`。
+```json
+["/usr/bin/bash", "--noprofile", "--norc", "-e", "-c", "source /opt/ros/humble/setup.bash && source /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/setup.bash && exec /usr/bin/python3 -B -m unittest mr3_learning.tests.test_audit_seed_inputs"]
+```
+
+- ros_wiring_cpu_v2: PASS，实际等待10.782628145秒，source unchanged；回执`report/assets/20261022_mr3_p2a_v34_seed_v2/checks/ros_wiring_cpu_v2/actual_wait.json`。
+```json
+["/usr/bin/bash", "--noprofile", "--norc", "-e", "-c", "source /opt/ros/humble/setup.bash && source /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/setup.bash && exec /usr/bin/python3 -B -m pytest -q /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_proxy2d_information.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_proxy2d_worker.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_proxy2d_karto_integration.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_adapter.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_adapter_launch.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_proxy2d_seed_v2_wiring.py"]
+```
+
+共524项通过（204+149+10+161）。启动器四次子测试启动前失败：并行快照exclusive创建后尚未写完即读造成2次假collision，修正目录处理时又提前创建wrapper独占输出导致2次FileExistsError；均无actual-wait测试child。记录及三版driver源码在V34 checks/launcher_*，源码相同副本逐字节验证后去重，source_recovery_v1.json及同一冻结的Git原件可恢复全部SHA，未删失败结论。修成完整字节原子发布，snapshot与独占wrapper目录分离后运行上述PASS；不是模拟活动重试。
+
+新零更新活动预声明：seed_probe_v2，open/rooms/corridors各101/64步，总192attempt，1800秒含外部关闭；入场47269.8043977356018/52000，pilot/final-only不动、75000仍待答，不能启动需联合预约20100秒的原生资格+minimum。本条为准备与预约，尚无v2行为/任务信用。

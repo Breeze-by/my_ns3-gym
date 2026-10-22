@@ -26,8 +26,12 @@ class ReachPreparationEntryTests(unittest.TestCase):
             with self.subTest(argv=argv),self.assertRaises(ValueError):owner.seed_rule_from_argv(argv)
 
     def test_exact_seed_rule_reaches_real_reset_rpc_and_supervisor_metadata(self):
+        for seed_rule in ("exact-point-bridge-v1","exact-point-bridge-v2"):
+            with self.subTest(seed_rule=seed_rule):self.assert_reset_seed_rule(seed_rule)
+
+    def assert_reset_seed_rule(self,seed_rule):
         with tempfile.TemporaryDirectory() as temporary:
-            supervisor=owner.Supervisor(output_root=temporary,seed_rule="exact-point-bridge-v1")
+            supervisor=owner.Supervisor(output_root=temporary,seed_rule=seed_rule)
             identity={"pid":43121,"parent":1,"group":43121,"session":43121,"start_ticks":123,"state":"S"}
             process=Mock(pid=identity["pid"])
             process.stdout.fileno.return_value=9;process.stdin.fileno.return_value=10
@@ -39,9 +43,9 @@ class ReachPreparationEntryTests(unittest.TestCase):
                     patch.object(supervisor,"_rpc",side_effect=reset) as rpc:
                 try:
                     supervisor.reset()
-                    self.assertEqual(rpc.call_args.kwargs["seed_rule"],"exact-point-bridge-v1")
+                    self.assertEqual(rpc.call_args.kwargs["seed_rule"],seed_rule)
                     metadata=json.loads((supervisor.episode.directory/"supervisor_metadata.json").read_text())
-                    self.assertEqual(metadata["seed_rule"],"exact-point-bridge-v1")
+                    self.assertEqual(metadata["seed_rule"],seed_rule)
                 finally:
                     if supervisor.episode is not None:supervisor.episode.output.close()
 

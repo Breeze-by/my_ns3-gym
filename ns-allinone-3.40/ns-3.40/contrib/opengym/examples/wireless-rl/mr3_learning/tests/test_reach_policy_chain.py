@@ -66,6 +66,19 @@ def native_fixture(stage='minimum'):
 
 
 class ReachPolicyChainTests(unittest.TestCase):
+    def test_v2_minimum_pilot_and_final_are_bound_to_the_same_qualification_mode(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            plan,path,qualification=plan_fixture(Path(temporary))
+            plan['seed_rule']='exact-point-bridge-v2'
+            for stage in chain.STAGES:
+                plan['policy_stages'][stage]['argv'] += ['--seed-rule','exact-point-bridge-v2']
+                chain.stage_spec(plan,path,qualification,stage)
+                changed=copy.deepcopy(plan)
+                argv=changed['policy_stages'][stage]['argv']
+                argv[argv.index('--seed-rule')+1]='exact-point-bridge-v1'
+                with self.subTest(stage=stage),self.assertRaisesRegex(ValueError,'seed rule differs'):
+                    chain.stage_spec(changed,path,qualification,stage)
+
     def test_all_policy_stages_use_the_qualification_seed_rule(self):
         with tempfile.TemporaryDirectory() as temporary:
             original,path,qualification=plan_fixture(Path(temporary))

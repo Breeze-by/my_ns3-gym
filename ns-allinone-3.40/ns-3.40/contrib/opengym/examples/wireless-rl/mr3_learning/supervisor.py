@@ -18,7 +18,11 @@ from .ipc import JsonLinePeer
 WORKSPACE = Path(__file__).resolve().parents[7]
 ROS_ROOT = WORKSPACE / "ros2_ws/ros2-multi-robot-automap"
 SCENES = ("open", "rooms", "corridors")
-SEED_RULES = ("legacy", "exact-point-bridge-v1")
+EXACT_SEED_VERSIONS = {
+    "exact-point-bridge-v1": "mr3-navigation-geometric-staging-v6-exact-seed-v1",
+    "exact-point-bridge-v2": "mr3-navigation-geometric-staging-v7-exact-seed-v2",
+}
+SEED_RULES = ("legacy", *EXACT_SEED_VERSIONS)
 LEGACY_PREPARATION_PROBES = tuple(f"mr3-p2a0-outward-cancel-v{version}" for version in range(2, 7))
 PREPARATION_PROBE_REACH_V1 = "mr3-p2a-reach-outward-cancel-v1"
 
@@ -36,7 +40,7 @@ def validate_preparation_profile(safety_contract, preparation_probe_version=None
 
 def validate_seed_rule(seed_rule):
     if type(seed_rule) is not str or seed_rule not in SEED_RULES:
-        raise ValueError("seed_rule must be legacy or exact-point-bridge-v1")
+        raise ValueError("seed_rule must be legacy, exact-point-bridge-v1 or exact-point-bridge-v2")
     return seed_rule
 
 
