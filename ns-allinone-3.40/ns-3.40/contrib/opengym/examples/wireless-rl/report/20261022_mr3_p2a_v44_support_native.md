@@ -2,7 +2,17 @@
 
 2026-10-22预声明。用户要求自主执行直到P2A完成，不再询问一般修改批准；原V41物理/reader失败与V42描述取证限制保留。V43的124人工检查及独立数学审查只支持条件集合分离结论，本活动必须取得全新的原生、学习和最终任务证据。P2A当前未完成。
 
-## 当前准备结果：第二轮人工CPU全部通过
+## 实际闭合：preflight FAIL，未启动native
+
+唯一活动冻结`8b678c631cb5f7dfc1ba1174882e765d4672ab26`已push；实际driver reaped rc1、completed_stages=[]。preflight回执actual_waited=true、rc1、source_unchanged=true，报`ValueError: current original CPU evidence differs from the frozen plan`；未生成preflight PASS结果，matrix/World/native及minimum/pilot/validation全部未启动，0学习/0optimizer。此次是准备证明分类一致性失败，不是support数学、物理plant或任务失败；下方7次人工准备PASS与首轮fixture失败均保留原结论。
+
+提交后3个新ROS测试进入source_inventory，current_runtime_and_test_sources_checked计数比提交前增3，导致完整proof比较不等；830项计划source及生产SHA没有漂移。保留严格source/CPU准入门，下一V45只修提交前后稳定分类及人工回归，再用新freeze重新准入，不重试或改判本V44。
+
+完整parent实际wait7.010229336秒，inner6.004885052秒包含不重复收费；工程累计50048.2440707956018/75000、余24951.7559292043982，pilot/validation各新增0，原1870决策/2905.9547395464029秒及final-only401/402/403保持。唯一实际输出为/tmp/mr3_p2a_reach_v44_driver_v1与/tmp/mr3_p2a_reach_v44_preflight_wait；[无损库存](assets/20261022_mr3_p2a_v44_support_native/closed_inventory_v1.json)和[canonical副本](assets/20261022_mr3_p2a_v44_support_native/closed_execution)保留5份原件/677367B，源stat稳定、逐项SHA相等，纯包装0工程费。[独立关闭review](assets/20261022_mr3_p2a_v44_support_native/independent_closed_review_v1.json)PASS：841个outer绑定源/ELF before-after/current完全一致，830项repo源＋plan共831项与Git冻结相等；driver/wrapper/child三组保存PID/start均freshgone（Z仍计存在），未虚构未保存父身份。只认可7.010229336秒parent费用，pilot/final为0。本轮无新native资格或P2A信用，用户自主授权继续，P2A未完成。
+
+[首次静态计划review](assets/20261022_mr3_p2a_v44_support_native/final_plan_review.json)因把所有auxiliary job都要求required而误报reset；[纠正版review](assets/20261022_mr3_p2a_v44_support_native/final_plan_review_v2.json)按历史辅助physical_per_episode与必要聚合physics角色关系核查后PASS，源码/计划未为此改变，两个原件均保留。纠正静态审查不等于实际preflight通过，不覆盖本次真实FAIL。
+
+## 准备阶段结果：第二轮人工CPU全部通过
 
 第一轮原件及失败结论如下文保留；两处人工fixture已修复，生产存储屏障、原生冻结来源门及旧cf46几何源码未放宽。第二轮独占v2输出均真实reap、rc0、source_unchanged=true，合计746项人工检查，readiness另计双环境元数据；人工CPU工程费0。
 
@@ -57,12 +67,12 @@
 
 两处fixture须修复后以新的独占v2输出重新验证；生产存储屏障及冻结来源门不放宽，失败原件不覆盖。独立source/数学接线审查无阻断，仍不能用人工CPU替新原生资格。工程及pilot/final余额未动。
 
-## 实际入口（人工CPU及计划已通过，待新freeze准入）
+## 本次唯一实际入口（已闭合FAIL）
 
-cwd=canonical wireless-rl；准确freeze必须是本活动实现/计划/必要检查完成并push后的新40位SHA。
+cwd=canonical wireless-rl；以下活动已按新freeze实际执行，preflight失败后退出。
 
 ```text
-rtk proxy env PYTHONNOUSERSITE=1 CUDA_VISIBLE_DEVICES=0 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m report.assets.20261022_mr3_p2a_v44_support_native.execute_chain_v1 --freeze EXACT40
+rtk proxy env PYTHONNOUSERSITE=1 CUDA_VISIBLE_DEVICES=0 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m report.assets.20261022_mr3_p2a_v44_support_native.execute_chain_v1 --freeze 8b678c631cb5f7dfc1ba1174882e765d4672ab26
 ```
 
-这是正式链预声明；V44已有上述人工CPU结果，尚无World/native/optimizer或任务结果。准备检查成功不提供原生信用；原生PASS不代替PPO，driver PASS也需独立最终复核。P2B/gateway未开始。
+实际preflight失败和费用如顶部闭合段所列；未启动World/native/optimizer或产生任务结果。人工准备检查成功不提供原生信用；后续须新V45活动的完整独立准入。P2B/gateway未开始。

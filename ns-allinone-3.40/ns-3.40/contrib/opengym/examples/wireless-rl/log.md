@@ -8504,3 +8504,16 @@ geometry523 PASS/47.51967478s、learner202 PASS/60.411545013s、reader12 PASS/4.
 独立geometry/接线review PASS；entry review passed_static_review=true仅是预v2路径别名/当时字节的静态审查，不宣称其全部SHA已覆盖最终树；v2实际CPU及后续plan准入分别封存。未启动V44 World/native/model/optimizer，人工CPU工程费0，累计50041.2338414596018/75000、余24958.7661585403982；本活动工程预约20900，pilot1870/2905.9547395464029及三场final-only额度未动。下一步完成plan检查、commit/push新freeze后按完整资格→minimum→pilot→final逐门推进，用户自主授权有效，P2A未完成。见[V44报告](report/20261022_mr3_p2a_v44_support_native.md)。
 
 V44计划实际收口：同一外层命令NAME=prepare_plan_cpu_v1，child2.206919836秒rc0/PASS，生成830 sources/10 ELF/3 policy；NAME=plan_check_cpu_v1，child.365967683秒rc0/PASS，四native stage/12EP/30必要角色与三policy全部显式cone-support-v2。两组source稳定，共7次准备actual wait均PASS。最终plan_v1.json为226638B/SHA2a799060f541620072a3fdf16cb530c71d6664992c8b9a9d1f280795fdc2e75f；native_custody_binding_v1.json为129741B/SHA3457393d7f9b9917cfafa1f332628414e77c41f92e3bc91385da3cd7c9153150。必要生产/测试source完整，实际custody要求的生产helper/ELF亦完整；0新增工程、尚未启动V44native/PPO。下一步新commit/push精确freeze后真实preflight及完整条件链，旧FAIL和95%/安全门保持。
+
+
+## 2026-10-22 MR3 P2A V44：实际preflight闭合FAIL
+
+唯一实际外层命令cwd=canonical wireless-rl：`rtk proxy env PYTHONNOUSERSITE=1 CUDA_VISIBLE_DEVICES=0 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m report.assets.20261022_mr3_p2a_v44_support_native.execute_chain_v1 --freeze 8b678c631cb5f7dfc1ba1174882e765d4672ab26`。同freeze已push，driver实际reap rc1/completed_stages=[]；preflight实际child为ns3gym `-m report.assets.20261022_mr3_p2a_v44_support_native.preflight_v1 --plan ABS_A44/plan_v1.json --freeze 8b678c631cb5f7dfc1ba1174882e765d4672ab26 --output /tmp/mr3_p2a_reach_v44_preflight.json`，rc1、source_unchanged=true，报`ValueError: current original CPU evidence differs from the frozen plan`，没有preflight PASS结果。
+
+3个新增ROS tests提交后进入动态source_inventory，current_runtime_and_test_sources_checked分类计数增3，使完整proof不等；生产SHA未变，原830source/10ELF、746人工CPU和独立math PASS不改判。严格CPU/source门未放松；这是准备分类失败，未启动matrix/World/native/minimum/pilot/validation，无plant/任务失败结论、0模型更新。parent实际7.010229336秒，嵌套inner6.004885052秒已包含不叠加；工程累计50048.2440707956018/75000、余24951.7559292043982，pilot/validation费用新增0，原1870/2905.9547395464029及三final-only保持。原件目录/tmp/mr3_p2a_reach_v44_driver_v1与/tmp/mr3_p2a_reach_v44_preflight_wait将逐字封存，不覆盖计划/CPU和失败原件。
+
+下一V45仅修提交前后稳定分类、人工回归/新freeze资格链，不重试V44或放宽95%/安全门，用户自主持续授权有效，无需重复一般批准，P2A未完成。见[V44闭合](report/20261022_mr3_p2a_v44_support_native.md)。
+
+V44 canonical封存：[closed_inventory_v1.json](report/assets/20261022_mr3_p2a_v44_support_native/closed_inventory_v1.json)记录5份原件/677367B，逐字副本位于A44/closed_execution/{driver,preflight_wait}/，源stat稳定、每项SHA相等，原/tmp成果和计划/CPU回执未覆盖；纯字节包装0工程费，原preflight FAIL不改。[独立关闭review](report/assets/20261022_mr3_p2a_v44_support_native/independent_closed_review_v1.json)PASS：841 outer源/ELF beforeafter/current相等，830repo源＋plan共831项与Git8b678c631冻结相等；driver/wrapper/child三保存PID/start freshgone（Z计存在），无未保存父身份推断。
+
+V44静态review原件补充：[final_plan_review.json](report/assets/20261022_mr3_p2a_v44_support_native/final_plan_review.json)最初把全部auxiliary都要求required而误报reset；[final_plan_review_v2.json](report/assets/20261022_mr3_p2a_v44_support_native/final_plan_review_v2.json)按历史辅助physical_per_episode与必要physics聚合关系纠正后PASS，未改source/plan，两个原件均保留。静态review不执行post-freeze preflight，不覆盖实际FAIL或提供native/训练信用；本轮最终仅parent7.010229336秒，3保存身份gone、0pilot/final。

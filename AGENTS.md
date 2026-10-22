@@ -1,5 +1,7 @@
 @/home/zhuyulab/.codex/RTK.md
 
+2026-10-22 V44闭合FAIL：freeze8b678c631cb5f7dfc1ba1174882e765d4672ab26仅实际preflight失败、driver rc1/0完成stage，未启动matrix/World/native/PPO。3个新增ROS测试提交后进入动态source_inventory，CPU proof分类计数增3导致整体比对拒绝，生产SHA不变；746人工CPU和原数学PASS保持，严格来源门不放松。5原件/677367B无损封存，独立关闭review PASS/3保存身份freshgone。parent实费7.010229336秒（inner6.004885052包含不叠加），累计50048.2440707956018/75000、余24951.7559292043982；pilot/final不动，P2A未完成。用户自主授权继续，下一V45只修稳定分类/人工回归，再新freeze完整资格链。见[V44闭合](ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261022_mr3_p2a_v44_support_native.md)。
+
 2026-10-22 V44准备：显式cone-support-v2生产/learner/独立reader全链接线已完成；第二轮746人工CPU（geometry523/learner202/reader12/snapshot9）及双环境readiness全部PASS、各组真实wait/source稳定，首轮fixture失败保留。独立数学接线与入口静态审查通过，830源码/10ELF及12EP/30角色/三policy封存检查PASS，待新freeze完整native资格→minimum→pilot→final；CPU不供原生/学习信用。工程新增0，仍50041.2338414596018/75000、余24958.7661585403982；本活动预约20900，pilot/final余额与95%/安全门保持。用户自主授权继续，P2A未完成。见[V44](ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261022_mr3_p2a_v44_support_native.md)。
 
 2026-10-22 V43禁用几何原型闭合：support候选＋原geometry共124人工CPU PASS，真实wait5.698039134秒、11源前后稳定；独立逐行数学review PASS/无未解阻断，旧cf46源逐字保留。新算法只提供原Reach集合下的条件充分分离，非旧门恒等替换，无native/plant/学习/95%信用，旧FAIL不改。工程新增0，仍50041.2338414596018/75000、余24958.7661585403982；用户自主授权继续，下一步V44显式cone-support-v2全链接线/独立重放/新freeze资格，默认binary-cone-v1与原intent/任务安全门保持，P2A未完成。见[V43](ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261022_mr3_p2a_v43_support_geometry.md)。
