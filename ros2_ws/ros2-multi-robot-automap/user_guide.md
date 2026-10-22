@@ -1,5 +1,7 @@
 # 三机器人 ROS 建图导航：当前实现指南
 
+2026-10-22 V40闭合FAIL：新冻结291b9e32e实际preflight阻止merge_map输出打包未登记的旧native pin冲突；755源/Git/current无漂移。未启动matrix/World/native/PPO，3身份gone，完整parent实费22.442744464（inner包含不叠加）。累计48282.3965638106018/75000、余26717.6034361893982；原FAIL及pilot/final余额保持。用户已授权自主直到P2A完成，不再重复审批；继续显式packing source版本修复/新freeze，P2A未完成。见[V40闭合](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261022_mr3_p2a_v40_native_qualification.md)。
+
 2026-10-22 V40授权续接：用户明确“你一直继续执行就好了，直到把P2A完成，不需要问我是否批准”，授权自主持续完成P2A，不再反复请求一般预算/实施批准。当前工程块75000，入场48259.9538193466018、余26740.0461806533982；完整新native资格+收口+minimum预约20100。V39恒等提速已完成，现准备新冻结完整链；pilot/final初始余额、95%/质量/安全门及旧FAIL保持，P2A仍未完成。见[V40](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261022_mr3_p2a_v40_native_qualification.md)。
 
 2026-10-22 V39闭合：精确segment证书AABB/零长度恒等提速已接生产，446人工CPU通过；冻结a44旧源码逐字段/JSON及独立全格oracle一致，固定128call人工完整证书约2.72倍提速，非World吞吐。首轮system无torch导入FAIL原件保留，环境分离后通过；无新World/学习/工程费。累计48259.9538193466018/52000、余3740.0461806533982；原生资格+minimum须预约20100，75000未批，pilot/final-only及原FAIL保持，P2A未完成。见[V39](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261022_mr3_p2a_v39_certificate_kernel.md)。

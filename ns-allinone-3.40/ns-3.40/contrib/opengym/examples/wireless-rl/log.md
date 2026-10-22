@@ -8415,3 +8415,10 @@ CPU命令cwd=wireless-rl：`rtk proxy env PYTHONNOUSERSITE=1 /usr/bin/python3 -B
 冻结plan SHA7b3cd679a88adbab02d20a34acba91e7697916ba91f9c65b728bd91098515a0b，binding09fa39c6e2f6d51cab5e0ddc4ca068dd0d6498237b93d4bca0cb8855762fc06f，两个独立静态review PASS。policy原CAP内pilot/final外尾各300、主deadline2605.9547395464029/8700、内部500保持，native ceilings不增；minimum外尾与资格/全链身份检查共用工程300。真实parent wait union含wrapper前后、nested inner不重复，坏/缺receipt也记费，完整phase端点/总费用门未过不放后继。
 
 新freeze唯一入口：`PYTHONNOUSERSITE=1 CUDA_VISIBLE_DEVICES=0 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m report.assets.20261022_mr3_p2a_v40_native_qualification.execute_chain_v1 --freeze EXACT40`。提交推送后EXACT40为该完整SHA；运行/收口期间不改已绑定源或commit，全部真实结果/费用在闭合后同会话追加。详见[事前报告](report/20261022_mr3_p2a_v40_native_qualification.md)，当前无新World/optimizer，P2A未完成。
+
+
+### 2026-10-22 V40实际preflight FAIL闭合
+
+精确执行前述唯一入口，EXACT40=`291b9e32ea3df8c107f804a339d4bd1e93405f3a`，已clean/push。实际child argv为ns3gym `-m report.assets.20261022_mr3_p2a_v40_native_qualification.preflight_v1 --plan ABS_A40/plan_v1.json --freeze 291b9e32ea3df8c107f804a339d4bd1e93405f3a --output /tmp/mr3_p2a_reach_v40_preflight.json`，全部字面argv/source/真实wait见规范原件。未启动matrix或native回合。旧immutable merge_map pin76c3...与V23已审packing e4cf...冲突，reach私有版本登记漏项，原FAIL保持、不在V40重试。
+
+parent完整wait22.442744464秒，inner21.526599063包含其内不重复；源码前后稳定，关闭审查3保存PID/start均freshgone，不扩大未记录进程声明。五份实际原件保持canonical bytecopy；工程累计48282.3965638106018/75000、余26717.6034361893982；pilot/validation0新增、GPU/optimizer0。新V41显式版本将核新source/freeze/plan精确SHA、三literal inverse完整恢复旧SHA，保留旧native数学/legacy锁；自主继续，不再请求批准，P2A仍未完成。

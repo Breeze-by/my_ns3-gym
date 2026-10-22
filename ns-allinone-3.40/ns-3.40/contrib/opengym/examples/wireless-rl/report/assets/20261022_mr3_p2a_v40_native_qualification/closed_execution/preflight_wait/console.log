@@ -1,0 +1,22 @@
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+Traceback (most recent call last):
+  File "/home/zhuyulab/miniconda3/envs/ns3gym/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/home/zhuyulab/miniconda3/envs/ns3gym/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v40_native_qualification/preflight_v1.py", line 94, in <module>
+    main()
+  File "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v40_native_qualification/preflight_v1.py", line 72, in main
+    *_, native_sources = reach_gates.load_native_gates(ROOT, args.freeze, args.plan)
+  File "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_gates.py", line 138, in load_native_gates
+    return _load_versioned_native_gates(root, freeze, source_proof,
+  File "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_gates.py", line 240, in _load_versioned_native_gates
+    phase, base, auditor, command, scalar, proof = legacy.load_native_gates(root, freeze)
+  File "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_ppo.py[explicit-reach-dispatch]", line 756, in load_native_gates
+  File "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_ppo.py[explicit-reach-dispatch]", line 683, in load_compatible_components
+  File "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_ppo.py[explicit-reach-dispatch]", line 317, in verify_frozen_pins
+  File "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_ppo.py[explicit-reach-dispatch]", line 198, in require
+ValueError: native runtime source freeze/worktree SHA mismatch: ros2_ws/ros2-multi-robot-automap/src/merge_map/merge_map/merge_map.py

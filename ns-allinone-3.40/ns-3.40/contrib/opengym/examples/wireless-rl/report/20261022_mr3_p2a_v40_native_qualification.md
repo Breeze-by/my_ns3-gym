@@ -17,3 +17,13 @@ V39已完成精确证书生产恒等提速和446项人工CPU。新的生产字�
 [完整plan](assets/20261022_mr3_p2a_v40_native_qualification/plan_v1.json) SHA `7b3cd679a88adbab02d20a34acba91e7697916ba91f9c65b728bd91098515a0b`，755source/10ELF；[binding](assets/20261022_mr3_p2a_v40_native_qualification/native_custody_binding_v1.json) SHA `09fa39c6e2f6d51cab5e0ddc4ca068dd0d6498237b93d4bca0cb8855762fc06f`。[plan独立复核](assets/20261022_mr3_p2a_v40_native_qualification/plan_independent_review_v1.json)与[入口复核](assets/20261022_mr3_p2a_v40_native_qualification/entry_independent_review_v1.json)PASS。没有必须重编译的项；新freeze实际preflight/完整科学矩阵仍须通过。
 
 唯一入口在wireless-rl：`PYTHONNOUSERSITE=1 CUDA_VISIBLE_DEVICES=0 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m report.assets.20261022_mr3_p2a_v40_native_qualification.execute_chain_v1 --freeze EXACT40`。EXACT40取本次clean/pushed完整Git SHA。所有阶段与policy registry已密封，整链闭合前不改源码、plan、文档或commit。原生矩阵/tmp/mr3_p2a_reach_v40_matrix及ROS/log/mr3_p2a_reach_v40，driver记录/tmp/mr3_p2a_reach_v40_driver_v1；policy路径/条件完整见plan。全部提交工作实际wait/闭合，错误也记费用，不同freeze不拼资格、不在本活动重试覆盖。结束后另核driver与wrapper保存身份gone，仍不以当前准备宣称P2A成功。
+
+## 实际闭合：前检FAIL，未提交原生
+
+冻结`291b9e32ea3df8c107f804a339d4bd1e93405f3a`已先clean/push。实际execute_chain仅提交preflight，21.526599063秒inner失败；完整parent wait22.442744464秒含wrapper开销，二者包含不叠加。错误为immutable audit_ppo.PREPARATION_RUNTIME_PINS仍将merge_map.py锁为`76c3d2c604f38f61116be1f39263472f9074b4f69fe7a0428b532da977530078`，V23已审两处ROS map输出打包优化当前/freeze/plan均为`e4cf897d2c22e70f89d9293efc00f44dd4bf1eb01624713735e08afdee0cbfcc`，reach私有版本登记漏该路径。755源密封并未漂移；旧源码锁正确阻止未登记版本，不能删锁或改原FAIL。
+
+没有matrix/World/native回合/PPO/GPU更新，pilot/final额度0新增。三处严格literal inverse可恢复整个旧merge_map源码SHA（array import、merged输出、navigation输出）；下一版将显式登记output-packing profile、固定新SHA+完整旧SHA逆投影，保留未声明/legacy原锁及全部数学门。其余43个有效runtime/auditor pin静态核对未发现第二个未登记冲突。现有ROS打包等价/CDR用例复用，不改map算法。
+
+[五份原件副本](assets/20261022_mr3_p2a_v40_native_qualification/closed_inventory_v1.json)及[末账](assets/20261022_mr3_p2a_v40_native_qualification/closed_metadata_v1.json)保持。独立[关闭核查](assets/20261022_mr3_p2a_v40_native_qualification/independent_closed_review_v1.json)证实source before/after稳定、766完整outer source及755repo源与冻结一致，3个保存PID/start fresh gone；未记录session父PID没有补造start或扩大absence声明。
+
+工程累计48282.3965638106018/75000、余26717.6034361893982。V40按原FAIL闭合、不重试；用户已授权自主持续完成，继续新版本修复和新冻结，**不再次询问批准**。P2A未完成。
