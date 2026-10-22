@@ -191,3 +191,8 @@ ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/2026
 # V50 artificial current-source recovery and exact CPU consoles.
 ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v50_qualification/checks/**/*.log -text -whitespace
 ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v50_qualification/checks/source_snapshots/** -text -whitespace
+
+# Preserve the exact V50 admission sources already tested and source-sealed.
+ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v50_qualification/classification_admission_v1.py -text whitespace=blank-at-eol,space-before-tab,-blank-at-eof
+ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v50_qualification/preflight_v1.py -text whitespace=blank-at-eol,space-before-tab,-blank-at-eof
+ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v50_qualification/prepare_plan_v1.py -text whitespace=blank-at-eol,space-before-tab,-blank-at-eof

@@ -151,7 +151,9 @@ def closed_episode_training_eligibility(directory, epoch):
     A real task failure and clean process exit can still contain this model
     violation. Read only the closed worker's scalar failure receipts; ordinary
     navigation/contact failures remain valid task outcomes. No evaluator truth
-    or full offline replay enters the collector or policy.
+    or full offline replay enters the collector or policy. Versioned reach
+    faults must bind this epoch; a foreign or missing epoch is a bad receipt,
+    never a reason to admit the episode.
     """
     path = Path(directory) / "summary.json"
     try:
@@ -168,6 +170,15 @@ def closed_episode_training_eligibility(directory, epoch):
             failure = json.loads(message)
         except ValueError:
             continue  # Ordinary task-failure messages need not be JSON.
+        if (isinstance(failure, dict) and failure.get("component") == "motion_safety"
+                and failure.get("schema") == "mr3-reach-runtime-fault-v1"):
+            if type(failure.get("epoch")) is not str or failure["epoch"] != epoch:
+                raise InfrastructureError("native training eligibility receipt: reach fault epoch "
+                                          "differs from the closed episode in " + str(path))
+            # The versioned first-fault payload keeps the precise native cause,
+            # so its reason is not one of the historical category literals.
+            raise InfrastructureError("native training ineligible: motion_safety reach runtime fault: "
+                                      + str(failure.get("reason")) + " in " + str(path))
         if (isinstance(failure, dict) and failure.get("component") == "motion_safety"
                 and failure.get("reason") in ("settled_turn_model_failure",
                     "normal_control_model_invalid", "reach_model_failure")):

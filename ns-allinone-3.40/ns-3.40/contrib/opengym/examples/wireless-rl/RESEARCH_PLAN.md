@@ -1,5 +1,7 @@
 # MR3 研究路线：三机器人 RL 联合建图与冻结策略的 Wi-Fi 网络影响
 
+2026-10-23 V50准备：PPO按本epoch/versioned永久Reach fault在targets/train前拒绝，旧literal与正常任务负样本保持；新47针对CPU、8分类/模块help、双环境readiness及计划生成/校验PASS，V49其余CPU仅按源相等兼容。911源/10ELF、新同freeze完整12EP/30角色→minimum16→pilot请求上限64→final三open401/402/403 strict95%已封存，尚未native/PPO。更紧工程预约18220=matrix16000+minimum1800+external300+preflight120，入场55959.6049312316018/75000、余19040.3950687683982；pilot/final原总额保持，不保证64样本或95%，旧FAIL保留。用户自主持续授权保持，P2A未完成。见[V50](report/20261023_mr3_p2a_v50_qualification.md)。
+
 2026-10-23 V49启动诊断闭合PASS：freeze14719a72b96cff65b134b7d46ec6d2ccbf84e061，两worker各rooms101/1真实step，2/2返回、2正常关闭，独立journal254/294行均完整。真实release为37.0/35.58sim秒且四项均ready；本次pause时motion已True，不冒充原生强制False回归。874源/10ELF一致，91保存身份含2原暂排祖先均freshgone；271原件497827640B无损封存38177415B/0symlink。完整parent212.565365239秒，工程累计55959.6049312316018/75000、余19040.3950687683982，pilot/final不动，P2A未完成。仅启动诊断、不填12EP/30角色；下一新V50先PPO新故障schema preupdate准入修复/相关CPU，再完整同freeze资格与学习链，用户自主授权保持。见[V49闭合](report/20261023_mr3_p2a_v49_startup_protocol.md)。
 
 2026-10-23 V49准备：Reach启动改为真实上游3就绪→暂停→全零takeover/storage→原20ms bootstrap→精确ready状态及实际四ready→release，420秒绝对截止及清理剩余时限保持；首永久fault真实传播，数学恒等提速已集成。第二轮857人工代码检查＋13检查器自检及双环境readiness PASS，首轮2fixture FAIL/暂停等待死锁及入口静态BLOCKED均保留。新更紧reservation profile只缩资源、不减12EP/30角色/科学门。874源/10ELF及唯一2worker各rooms101/1step启动诊断封存，native600含120close＋外尾120＝720预约，待新freeze执行；不供完整资格/PPO信用。工程55747.0395659926018/75000、余19252.9604340073982，pilot/final不动，P2A未完成。见[V49](report/20261023_mr3_p2a_v49_startup_protocol.md)。

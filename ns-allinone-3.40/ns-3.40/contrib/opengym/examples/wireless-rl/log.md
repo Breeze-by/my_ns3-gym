@@ -8647,3 +8647,21 @@ rtk proxy env PYTHONNOUSERSITE=1 /usr/bin/python3 -B ns-allinone-3.40/ns-3.40/co
 ```
 
 271文件497827640原字节→38177415保存字节/0symlink，所有SHA/解码/原stat/成员集稳定，原件保留，字节归档新增工程0。见[V49实际闭合](report/20261023_mr3_p2a_v49_startup_protocol.md)。
+
+## 2026-10-23 MR3-P2A V50 完整新链准备，未启动native/PPO
+
+基线d91c2630a，当前新PPO epoch/schema永久fault在targets/train前拒绝，正常任务negative/旧三literal保持。cwd均canonical wireless-rl，实际人工CPU命令：
+
+```bash
+rtk proxy env PYTHONNOUSERSITE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m report.assets.20261023_mr3_p2a_v50_qualification.run_ppo_fault_cpu_v1
+rtk proxy env PYTHONNOUSERSITE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m report.assets.20261023_mr3_p2a_v50_qualification.cpu_driver_v1 classification_cpu_v1
+rtk proxy env PYTHONNOUSERSITE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m report.assets.20261023_mr3_p2a_v50_qualification.cpu_driver_v1 readiness_cpu_v1
+rtk proxy env PYTHONNOUSERSITE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m report.assets.20261023_mr3_p2a_v50_qualification.cpu_driver_v1 prepare_plan_cpu_v1
+rtk proxy env PYTHONNOUSERSITE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m report.assets.20261023_mr3_p2a_v50_qualification.cpu_driver_v1 plan_check_cpu_v1
+```
+
+新fresh4文件47PASS/8.644370679s；classification8PASS/10.93650107s（含实际新module --help子进程，仅导入/参数，非native执行）；readiness两环境7.644773366s；prepare3.1878067s；plancheck.378538493s，全部实际rc0/reap/source前后相等。plancheck首次工具请求的cwd错误导致进程未创建，单独记录checks/plan_check_tool_launch_error_v0.json；不是被删除的CPU FAIL或虚构wait。V49其余CPU按源相等兼容，旧PPO被新fresh证明覆盖，未把旧artifact当新入口执行。
+
+计划SHAac5e6d4e6fabadb37ac9d8336cfeaa00ec7401b956fb2cab9842ae410ccb206e，bindingSHA29b0b5ddfcac0a871e8508a67679a6e8fca047b8e6a205c200ba0d14cb3c2cb4，911源/10ELF/完整12EP30roles，policyminimum16→pilot请求上限64（首轮cap32×2，可能提前terminal/后续round或wall收口，不保证恰2EP/64）→同一pilot final.zip/0更新的final3strict95门保持。工程预约18220=16000+1800+300+120，入场55959.6049312316018/75000余19040.3950687683982，CPU新增0，pilot/final未动；所有旧FAIL保留。待最后独立封存review和新freeze后唯一全链，不供native/学习信用。见[V50准备](report/20261023_mr3_p2a_v50_qualification.md)。
+
+V50封存独立review v2 PASS：983选定输入SHA结束相等、911当前源/10ELF和全部CPU恢复/compiled build链一致；30真正mandatory role全required=True。首稿review谓词错把reset原role=None/requiredFalse的physical_per_episode描述附加项当必要角色，被判BLOCKED；首稿v1/failed_v1原字节SHA b49f6a5639c000b2cd62073e046afa7e97f1400cbad312abcc0154822a66f241保留。修正只在review分类，未改source/plan/gates，v2 SHA3902118cdc160aa77f644bd9860f428de77ab655b7e0b8c829fc4b7499e10676，0原件科学消费/0工程费。[review v2](report/assets/20261023_mr3_p2a_v50_qualification/independent_sealed_plan_review_v2.json)。

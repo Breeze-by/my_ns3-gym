@@ -1,0 +1,46 @@
+{
+  "schema": "mr3-p2a-reach-engineering-budget-acceptance-v1",
+  "date": "2026-10-23",
+  "user_instruction": "你一直继续执行就好了，直到把P2A完成，不需要问我是否批准",
+  "authorization": {
+    "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v50_qualification/authorization_v1.json",
+    "sha256": "d6c38741f860185463dfe5bcaa37b5e29dd35c810c5c5bf369e571796f4eae8e"
+  },
+  "engineering_ceiling_wall_seconds": "75000",
+  "opening_used_wall_seconds": "55959.6049312316018",
+  "opening_remaining_wall_seconds": "19040.3950687683982",
+  "reservations": {
+    "matrix": "16000",
+    "minimum": "1800",
+    "external_tail": "300",
+    "preflight": "120",
+    "total": "18220"
+  },
+  "pilot_remaining_decisions": 1870,
+  "pilot_remaining_wall_seconds": "2905.9547395464029",
+  "final_only_development_validations": 3,
+  "final_only_decisions": 900,
+  "final_only_wall_seconds": "9000",
+  "final_only_schedule": [
+    "open:401",
+    "open:402",
+    "open:403"
+  ],
+  "policy_external_finalize_reserve_seconds": {
+    "minimum": "0",
+    "pilot": "300",
+    "validation": "300"
+  },
+  "policy_finalizer_fee_scope": {
+    "minimum": "engineering",
+    "pilot": "pilot",
+    "validation": "validation"
+  },
+  "map_output_packing_profile": "mr3-occupancy-int8-array-v1",
+  "p2b_or_gateway_authorized": false,
+  "routine_implementation_autonomy": true,
+  "old_failures_preserved": true,
+  "scope": "V50 new complete nativequalification/minimum/pilot64/final under same frozen code. Resource-only tighter reservation; all12EP/30role/scientific/quality/safety/source/95% gates remain. Old failures retained; V49 startup-only PASS cannot fill full qualification.",
+  "reach_geometry_rule": "cone-support-v2",
+  "pilot_requested_decisions": 64
+}
