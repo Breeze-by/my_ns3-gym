@@ -1,0 +1,43 @@
+{
+  "schema": "mr3-v39-fixed-full-certificate-microbenchmark-v1",
+  "artificial_cpu_only": true,
+  "world_capacity_claim": false,
+  "native_or_training_credit": false,
+  "engineering_increment_seconds": "0",
+  "production_source": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_seed_certificate.py",
+  "production_sha256": "7d92c34c3b6adddaeac6f3a5c609b2db31df3ff7d1a4e8c621c26857ab88704a",
+  "reference_freeze": "a44e1b844678ece45cfd377ea43e7ed65901cce3",
+  "reference_sha256": "99bd4fdda76a5974d394a2e40177e7cbd5fb12308258c2ee096c5232c568e3cb",
+  "workloads": [
+    "corner_obstacle",
+    "dense_unsafe_ring"
+  ],
+  "calls_total": 128,
+  "full_outputs_equal": true,
+  "records": [
+    {
+      "implementation": "frozen_reference",
+      "calls": 32,
+      "elapsed_ns": 463339238,
+      "full_output_sha256": "5ccf7b151b11626dcc373bf467d10bc1ef1a534f34452ddb178c21c92d92294f"
+    },
+    {
+      "implementation": "production",
+      "calls": 32,
+      "elapsed_ns": 171110671,
+      "full_output_sha256": "5ccf7b151b11626dcc373bf467d10bc1ef1a534f34452ddb178c21c92d92294f"
+    },
+    {
+      "implementation": "production",
+      "calls": 32,
+      "elapsed_ns": 170599645,
+      "full_output_sha256": "5ccf7b151b11626dcc373bf467d10bc1ef1a534f34452ddb178c21c92d92294f"
+    },
+    {
+      "implementation": "frozen_reference",
+      "calls": 32,
+      "elapsed_ns": 466320676,
+      "full_output_sha256": "5ccf7b151b11626dcc373bf467d10bc1ef1a534f34452ddb178c21c92d92294f"
+    }
+  ]
+}

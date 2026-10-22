@@ -1,0 +1,32 @@
+{
+  "schema": "mr3-v39-exact-certificate-cpu-scope-v1",
+  "status": "AUTHORIZED_ORDINARY_EQUIVALENT_OPTIMIZATION",
+  "baseline_freeze": "a44e1b844678ece45cfd377ea43e7ed65901cce3",
+  "baseline_file": "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_seed_certificate.py",
+  "baseline_sha256": "99bd4fdda76a5974d394a2e40177e7cbd5fb12308258c2ee096c5232c568e3cb",
+  "production_change": "exact closed AABB lower-bound pruning; zero-length point/segment identity; no public output, ordering, count, threshold, input, gate or mode change",
+  "cpu_only": true,
+  "artificial_input_only": true,
+  "original_input_replay": false,
+  "world_or_episode_allowed": false,
+  "optimizer_allowed": false,
+  "native_or_training_credit": false,
+  "engineering_increment_seconds": "0",
+  "engineering_used_seconds": "48259.9538193466018",
+  "engineering_ceiling_seconds": "52000",
+  "engineering_remaining_seconds": "3740.0461806533982",
+  "proposed_ceiling_75000_status": "PROPOSED_NOT_APPROVED",
+  "new_training_negative_audit_status": "PROPOSED_NOT_APPROVED",
+  "pilot_remaining_decisions": 1870,
+  "pilot_remaining_seconds": "2905.9547395464029",
+  "final_only_unchanged": true,
+  "validation": [
+    "production vs frozen old full public dict/JSON",
+    "independent full-grid quadratic oracle",
+    "existing geometry and point-graph/navigation cases",
+    "native reader and affected learner qualification compatibility"
+  ],
+  "no_new_2d_uniform_pass_prerequisite": true,
+  "future_native_reservation_seconds": "20100",
+  "future_native_reservation_currently_affordable": false
+}

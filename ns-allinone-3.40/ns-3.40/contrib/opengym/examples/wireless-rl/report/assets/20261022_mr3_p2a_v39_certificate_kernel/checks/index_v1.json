@@ -1,0 +1,83 @@
+{
+  "schema": "mr3-v39-cpu-validation-index-v1",
+  "passed": true,
+  "cpu_cases_passed_final": 446,
+  "initial_failure_preserved": true,
+  "initial_failure": "reader_cpu_v1: 12 duplicate native-reader passes plus 1 module-import error, not added to final unique case count",
+  "rows": [
+    {
+      "name": "geometry_cpu_v1",
+      "receipt": "checks/geometry_cpu_v1/actual_wait.json",
+      "passed": true,
+      "source_unchanged": true,
+      "actual_child_wait_seconds": "16.304790839",
+      "cpu_tests_passed": 354,
+      "engineering_increment_seconds": "0",
+      "note": "artificial CPU only"
+    },
+    {
+      "name": "reader_cpu_v1",
+      "receipt": "checks/reader_cpu_v1/actual_wait.json",
+      "passed": false,
+      "source_unchanged": true,
+      "actual_child_wait_seconds": "4.194489915",
+      "cpu_tests_passed": 0,
+      "engineering_increment_seconds": "0",
+      "note": "12 reader cases passed; snapshot module failed import because system Python has no torch; record preserved"
+    },
+    {
+      "name": "learner_cpu_v1",
+      "receipt": "checks/learner_cpu_v1/actual_wait.json",
+      "passed": true,
+      "source_unchanged": true,
+      "actual_child_wait_seconds": "31.578772675",
+      "cpu_tests_passed": 71,
+      "engineering_increment_seconds": "0",
+      "note": "artificial CPU only"
+    },
+    {
+      "name": "reader_cpu_v2",
+      "receipt": "checks/reader_cpu_v2/actual_wait.json",
+      "passed": true,
+      "source_unchanged": true,
+      "actual_child_wait_seconds": "4.022633406",
+      "cpu_tests_passed": 12,
+      "engineering_increment_seconds": "0",
+      "note": "artificial CPU only"
+    },
+    {
+      "name": "snapshot_cpu_v1",
+      "receipt": "checks/snapshot_cpu_v1/actual_wait.json",
+      "passed": true,
+      "source_unchanged": true,
+      "actual_child_wait_seconds": "8.612234718",
+      "cpu_tests_passed": 9,
+      "engineering_increment_seconds": "0",
+      "note": "artificial CPU only"
+    },
+    {
+      "name": "microbenchmark_cpu_v1",
+      "receipt": "checks/microbenchmark_cpu_v1/actual_wait.json",
+      "passed": true,
+      "source_unchanged": true,
+      "actual_child_wait_seconds": "2.489627258",
+      "cpu_tests_passed": 0,
+      "engineering_increment_seconds": "0",
+      "note": "128 full-public-certificate calls, excluded from test count"
+    }
+  ],
+  "source_versions_count": 126,
+  "source_paths_count": 125,
+  "variant_paths": {
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v39_certificate_kernel/cpu_driver_v1.py": [
+      "7126d14d7e7d2e6f79003507c4a58be90ceccdd7fdbb59dfd2e868178e69717b",
+      "b29444114b39ae7293f4dc3f8e002998923503a8e78c09c85d8ab656c52da87e"
+    ]
+  },
+  "source_recovery_complete": true,
+  "native_or_training_credit": false,
+  "engineering_increment_seconds": "0",
+  "engineering_used_seconds": "48259.9538193466018",
+  "engineering_remaining_seconds": "3740.0461806533982",
+  "pilot_final_only_unchanged": true
+}

@@ -1,5 +1,7 @@
 # 三机器人 ROS 建图导航：当前实现指南
 
+2026-10-22 V39闭合：精确segment证书AABB/零长度恒等提速已接生产，446人工CPU通过；冻结a44旧源码逐字段/JSON及独立全格oracle一致，固定128call人工完整证书约2.72倍提速，非World吞吐。首轮system无torch导入FAIL原件保留，环境分离后通过；无新World/学习/工程费。累计48259.9538193466018/52000、余3740.0461806533982；原生资格+minimum须预约20100，75000未批，pilot/final-only及原FAIL保持，P2A未完成。见[V39](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261022_mr3_p2a_v39_certificate_kernel.md)。
+
 2026-10-22 V38闭合：160人工CPU及禁用证书恒等优化通过；a44e1b844冻结一次协议解析935行/102选行，证实tb3新goal续租53.4生成54.1截止时才交付、accept54.5，原V37租约FAIL保留，不刷新TTL/FIFO。2D随机全PASS不是native前置，负样本审计新规则仍仅提案；先恒等提速CPU，再预算批准后原生资格/学习。实费.315303155、5身份gone，累计48259.9538193466018/52000、余3740.0461806533982；75000待答、pilot/final-only不动，P2A未完成。见[V38](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261022_mr3_p2a_v38_protocol_cpu.md)。
 
 2026-10-22 V37闭合：显式point-graph生产/626人工CPU通过；13e95f29f冻结8步profile PASS，三场64步短probe FAIL，119/119/0、122actor/366机器人观测attachment均接受；corridors54秒navigation_failure全局停止，open38/rooms27未完成。原tb3 cell FAIL保留，现先查FIFO/目标租约实际交付，不重跑或改门。267原件/9.30MB、34身份gone；实费520.102603214，累计48259.6385161916018/52000、余3740.3614838083982。75000待答，pilot/final-only不动，P2A未完成。见[V37](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261022_mr3_p2a_v37_point_graph.md)。

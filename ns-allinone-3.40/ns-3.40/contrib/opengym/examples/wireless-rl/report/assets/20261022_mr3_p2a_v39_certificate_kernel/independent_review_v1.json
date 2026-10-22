@@ -1,0 +1,248 @@
+{
+  "schema": "mr3-v39-independent-static-review-v1",
+  "passed": true,
+  "errors": [],
+  "scope": "source bytes/Git recovery, saved actual-wait/console/count/index metadata, AST and mathematical reasoning only; no project source execution, tests rerun, original runtime inputs, World or episode",
+  "baseline_freeze": "a44e1b844678ece45cfd377ea43e7ed65901cce3",
+  "baseline_sha256": "99bd4fdda76a5974d394a2e40177e7cbd5fb12308258c2ee096c5232c568e3cb",
+  "production_sha256": "7d92c34c3b6adddaeac6f3a5c609b2db31df3ff7d1a4e8c621c26857ab88704a",
+  "ast_changed_top_level_nodes": [
+    "_segment_measurements"
+  ],
+  "mathematical_review": {
+    "equivalence_accepted_for_declared_canonical_numeric_inputs": true,
+    "aabb_pruning": "Segment is a subset of its closed AABB, so distance\u00b2(AABB,cell) <= distance\u00b2(segment,cell). If the exact rational lower bound is >= the current capped minimum, the old min cannot change, including equality. No epsilon is introduced.",
+    "point_minimum": "Every originally selected nonfree cell still updates point2 with the original exact point/rectangle formula. A point improvement below the current segment minimum forces lower_bound < that minimum, so needed segment work is not skipped.",
+    "zero_length": "For start=end, old segment/rectangle distance equals point/rectangle distance. Initial exterior/cap values agree; assigning the updated cumulative point minimum therefore equals the original segment minimum at every iteration, including no visited nonfree cells.",
+    "counts_and_public_outputs": "Candidate range expressions are unchanged except cached exact endpoint minima/maxima. Every selected nonfree cell still increments the counter. Public function AST, thresholds, early gates, reason precedence, complete result fields/string values and square-root inputs are unchanged.",
+    "performance_limit": "This supports mathematical/public-output identity, not a guarantee that every workload is faster or that World throughput changes."
+  },
+  "final_unique_cpu_tests": 446,
+  "final_passing_groups": {
+    "geometry_cpu_v1": 354,
+    "learner_cpu_v1": 71,
+    "reader_cpu_v2": 12,
+    "snapshot_cpu_v1": 9
+  },
+  "selected_passing_module_sets": {
+    "geometry_cpu_v1": [
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_point_graph.py",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_point_graph_observation.py",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_proxy2d_navigation_point_graph.py",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_seed_v2.py",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_proxy2d_navigation_seed_v2.py",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_observation.py",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_seed_certificate.py",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_proxy2d_navigation_cache.py",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_proxy2d_navigation_seed.py",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_seed_v2_missing_map.py",
+      "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_seed_certificate_kernel_equivalence.py"
+    ],
+    "learner_cpu_v1": [
+      "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_proxy2d_seed_compatibility.py",
+      "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_proxy2d_seed_v2_compatibility.py",
+      "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_proxy2d_point_graph.py",
+      "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_reach_qualification.py",
+      "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_reach_training_admission.py",
+      "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_reach_policy_chain.py"
+    ],
+    "reader_cpu_v2": [
+      "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_seed_inputs.py"
+    ],
+    "snapshot_cpu_v1": [
+      "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_exact_snapshot_validator.py"
+    ]
+  },
+  "count_scope": "Disjoint selected passing modules and saved console counts; failed reader v1 duplicate12/import-error and128 benchmark calls excluded. Per-node pytest identifiers were not retained.",
+  "initial_reader_fail_preserved": true,
+  "receipts": [
+    {
+      "name": "geometry_cpu_v1",
+      "receipt": "checks/geometry_cpu_v1/actual_wait.json",
+      "receipt_sha256": "01a00001044330a1ff45e094ee44bf73fd51aa57e70d1e60f38f4890a86ae571",
+      "console_sha256": "e5947d34de3bfbcf2a5c4557921ae4479d7d5c8be2adf4d4d19e8936b415637d",
+      "passed": true,
+      "actual_returncode": 0,
+      "actual_child_wait_seconds": "16.304790839",
+      "source_versions": 125,
+      "final_unique_test_credit": 354,
+      "per_receipt_source_recovery_sha256": "47a460442cb83a6dc931e5c7c73989e0908b9e808445aff36784258740857ae1"
+    },
+    {
+      "name": "reader_cpu_v1",
+      "receipt": "checks/reader_cpu_v1/actual_wait.json",
+      "receipt_sha256": "875f8f9b77ea16d3f12f2594d3d8e43972192547098ca746d752a35205f6f723",
+      "console_sha256": "c138fd7efdd2ac26c39079eccd20811bc8b3d0ccbccdd3ee0094307cd514367c",
+      "passed": false,
+      "actual_returncode": 1,
+      "actual_child_wait_seconds": "4.194489915",
+      "source_versions": 125,
+      "final_unique_test_credit": 0,
+      "per_receipt_source_recovery_sha256": "47a460442cb83a6dc931e5c7c73989e0908b9e808445aff36784258740857ae1"
+    },
+    {
+      "name": "learner_cpu_v1",
+      "receipt": "checks/learner_cpu_v1/actual_wait.json",
+      "receipt_sha256": "a9bfd5bae7137a708a5f0e4a0cd3d3980752aef4cabca9f1bfd7b9274d8237f3",
+      "console_sha256": "481caaa75337bc0c34eb74108049b9d864e8efe4d7267d66463d3811c2e8c213",
+      "passed": true,
+      "actual_returncode": 0,
+      "actual_child_wait_seconds": "31.578772675",
+      "source_versions": 125,
+      "final_unique_test_credit": 71,
+      "per_receipt_source_recovery_sha256": "47a460442cb83a6dc931e5c7c73989e0908b9e808445aff36784258740857ae1"
+    },
+    {
+      "name": "reader_cpu_v2",
+      "receipt": "checks/reader_cpu_v2/actual_wait.json",
+      "receipt_sha256": "6da679f9d8fd8a3975c7d3d06d03ea0de56fb63bba6341689ab58a5965a1ca10",
+      "console_sha256": "d610d760d125dcfc963bf148e0d4cfe5a972069bad9478fea7cac177bfb93ca9",
+      "passed": true,
+      "actual_returncode": 0,
+      "actual_child_wait_seconds": "4.022633406",
+      "source_versions": 125,
+      "final_unique_test_credit": 12,
+      "per_receipt_source_recovery_sha256": "582126cdd78729db312366b0152e8b1aefa8fb3b94b97c95561e94a354eb214a"
+    },
+    {
+      "name": "snapshot_cpu_v1",
+      "receipt": "checks/snapshot_cpu_v1/actual_wait.json",
+      "receipt_sha256": "461d4e227c54af73756eec1da4b09ad1ef9d154c0d603dbd263ed1cd458b602b",
+      "console_sha256": "3ae95f1589ec2e5311d50adcefbca1bc6a39bda51be58cfc3f3768a244a95a76",
+      "passed": true,
+      "actual_returncode": 0,
+      "actual_child_wait_seconds": "8.612234718",
+      "source_versions": 125,
+      "final_unique_test_credit": 9,
+      "per_receipt_source_recovery_sha256": "582126cdd78729db312366b0152e8b1aefa8fb3b94b97c95561e94a354eb214a"
+    },
+    {
+      "name": "microbenchmark_cpu_v1",
+      "receipt": "checks/microbenchmark_cpu_v1/actual_wait.json",
+      "receipt_sha256": "1fe3936348c760ce40ab840176fa94e150000a200737ce428196d80e11a27cf0",
+      "console_sha256": "5dd1f617dd3ff89bba2446a57b46da6fcf45b28ba91c818f4dc7022afae08aed",
+      "passed": true,
+      "actual_returncode": 0,
+      "actual_child_wait_seconds": "2.489627258",
+      "source_versions": 125,
+      "final_unique_test_credit": 0,
+      "per_receipt_source_recovery_sha256": "582126cdd78729db312366b0152e8b1aefa8fb3b94b97c95561e94a354eb214a"
+    }
+  ],
+  "source_recovery": {
+    "index_sha256": "8a189e0ab02bb70774af75e102e61936fe39bb8fbfb098cdac1013ee92487cf1",
+    "paths": 125,
+    "versions": 126,
+    "git_blob_versions_checked": 117,
+    "snapshot_versions_checked": 9,
+    "all_exact_versions_checked": true,
+    "all_final_source_versions_match_current_bytes": true,
+    "only_variant_paths": {
+      "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v39_certificate_kernel/cpu_driver_v1.py": [
+        "7126d14d7e7d2e6f79003507c4a58be90ceccdd7fdbb59dfd2e868178e69717b",
+        "b29444114b39ae7293f4dc3f8e002998923503a8e78c09c85d8ab656c52da87e"
+      ]
+    },
+    "snapshots": [
+      {
+        "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_exact_snapshot_validator.py",
+        "sha256": "a0250c098402a15304223e4f6bbbeed88b2f32b5c84909bcf03b21afa68f2526",
+        "bytes": 17686,
+        "snapshot": "checks/source_snapshots/a0250c098402a15304223e4f6bbbeed88b2f32b5c84909bcf03b21afa68f2526_test_exact_snapshot_validator.py"
+      },
+      {
+        "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v39_certificate_kernel/certificate_cases_v1.py",
+        "sha256": "160c4b2168fce3393cf0a115ff2698310a79cefc3a5c414fc9670d5df3421843",
+        "bytes": 3166,
+        "snapshot": "checks/source_snapshots/160c4b2168fce3393cf0a115ff2698310a79cefc3a5c414fc9670d5df3421843_certificate_cases_v1.py"
+      },
+      {
+        "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v39_certificate_kernel/cpu_driver_v1.py",
+        "sha256": "7126d14d7e7d2e6f79003507c4a58be90ceccdd7fdbb59dfd2e868178e69717b",
+        "bytes": 5507,
+        "snapshot": "checks/source_snapshots/7126d14d7e7d2e6f79003507c4a58be90ceccdd7fdbb59dfd2e868178e69717b_cpu_driver_v1.py"
+      },
+      {
+        "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v39_certificate_kernel/cpu_driver_v1.py",
+        "sha256": "b29444114b39ae7293f4dc3f8e002998923503a8e78c09c85d8ab656c52da87e",
+        "bytes": 5357,
+        "snapshot": "checks/source_snapshots/b29444114b39ae7293f4dc3f8e002998923503a8e78c09c85d8ab656c52da87e_cpu_driver_v1.py"
+      },
+      {
+        "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v39_certificate_kernel/frozen_reference_v1.py",
+        "sha256": "99bd4fdda76a5974d394a2e40177e7cbd5fb12308258c2ee096c5232c568e3cb",
+        "bytes": 11508,
+        "snapshot": "checks/source_snapshots/99bd4fdda76a5974d394a2e40177e7cbd5fb12308258c2ee096c5232c568e3cb_frozen_reference_v1.py"
+      },
+      {
+        "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v39_certificate_kernel/microbenchmark_v1.py",
+        "sha256": "db0e9334faa8cde631133d92516f634d52a4d025f4df0780b3631047ce1a6d6e",
+        "bytes": 3887,
+        "snapshot": "checks/source_snapshots/db0e9334faa8cde631133d92516f634d52a4d025f4df0780b3631047ce1a6d6e_microbenchmark_v1.py"
+      },
+      {
+        "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v39_certificate_kernel/scope_v1.json",
+        "sha256": "3e8349d7153ce25e9cc060fccfc68d5dfc20b2cd9d9431cd9bbd75d4aa8c22f8",
+        "bytes": 1608,
+        "snapshot": "checks/source_snapshots/3e8349d7153ce25e9cc060fccfc68d5dfc20b2cd9d9431cd9bbd75d4aa8c22f8_scope_v1.json"
+      },
+      {
+        "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_seed_certificate.py",
+        "sha256": "7d92c34c3b6adddaeac6f3a5c609b2db31df3ff7d1a4e8c621c26857ab88704a",
+        "bytes": 12132,
+        "snapshot": "checks/source_snapshots/7d92c34c3b6adddaeac6f3a5c609b2db31df3ff7d1a4e8c621c26857ab88704a_mr3_seed_certificate.py"
+      },
+      {
+        "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_seed_certificate_kernel_equivalence.py",
+        "sha256": "07770a23e8b94dfa54dba56615be8bafc6d83f1841c0ce720e5ae9764a8c12f6",
+        "bytes": 8580,
+        "snapshot": "checks/source_snapshots/07770a23e8b94dfa54dba56615be8bafc6d83f1841c0ce720e5ae9764a8c12f6_test_mr3_seed_certificate_kernel_equivalence.py"
+      }
+    ]
+  },
+  "benchmark": {
+    "calls_total": 128,
+    "output_sha256": "5ccf7b151b11626dcc373bf467d10bc1ef1a534f34452ddb178c21c92d92294f",
+    "all_round_full_output_digests_equal": true,
+    "workloads": [
+      "corner_obstacle",
+      "dense_unsafe_ring"
+    ],
+    "recorded_rounds": [
+      {
+        "implementation": "frozen_reference",
+        "calls": 32,
+        "elapsed_ns": 463339238,
+        "full_output_sha256": "5ccf7b151b11626dcc373bf467d10bc1ef1a534f34452ddb178c21c92d92294f"
+      },
+      {
+        "implementation": "production",
+        "calls": 32,
+        "elapsed_ns": 171110671,
+        "full_output_sha256": "5ccf7b151b11626dcc373bf467d10bc1ef1a534f34452ddb178c21c92d92294f"
+      },
+      {
+        "implementation": "production",
+        "calls": 32,
+        "elapsed_ns": 170599645,
+        "full_output_sha256": "5ccf7b151b11626dcc373bf467d10bc1ef1a534f34452ddb178c21c92d92294f"
+      },
+      {
+        "implementation": "frozen_reference",
+        "calls": 32,
+        "elapsed_ns": 466320676,
+        "full_output_sha256": "5ccf7b151b11626dcc373bf467d10bc1ef1a534f34452ddb178c21c92d92294f"
+      }
+    ],
+    "scope": "Fixed artificial full-public-certificate calls only; no environment/native/training throughput claim"
+  },
+  "qualification": false,
+  "training_eligible": false,
+  "native_credit": false,
+  "task_success_claimed": false,
+  "engineering_increment_seconds": "0",
+  "engineering_used_seconds": "48259.9538193466018",
+  "engineering_remaining_seconds": "3740.0461806533982",
+  "pilot_final_only_unchanged": true,
+  "proposed_75000_ceiling_approved": false
+}

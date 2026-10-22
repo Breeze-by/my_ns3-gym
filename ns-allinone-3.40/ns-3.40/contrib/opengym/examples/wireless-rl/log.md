@@ -8393,3 +8393,14 @@ Oneattempt freezea44e1b844678ece45cfd377ea43e7ed65901cce3; fixedV37corridorsprot
 - protocol_final_outer_v1: exact argv `["/usr/bin/python3", "-B", "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v35_grid_liveness/forensic_final_v1.py", "--outer", "/tmp/mr3_p2a_v38_protocol_outer_v1/actual_wait.json", "--result", "/tmp/mr3_p2a_v38_protocol_forensic_v1.json", "--scope", "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v38_protocol_cpu/scope_acceptance_v1.json", "--freeze", "a44e1b844678ece45cfd377ea43e7ed65901cce3", "--output", "/tmp/mr3_p2a_v38_protocol_final_v1.json"]`, actualengineeringwait0.094939404sec,source stable,rc0.
 
 6canonicalcopies/214764B,5savedIDsfreshgone; main.220363751+final.094939404=union.315303155sec,endpoint.509434203<60. Cumulative48259.9538193466018/52000,remaining3740.0461806533982,pilot/final-onlyunchanged. Observednewgoal53command53.3→53.9,HB53.4→54.1 atoriginalexpiry/failureline904,accept53.9→54.5,realCANCELEDterminal55.3. Noinferenceofunsentmessagesorcompletequeuecause. See[V38](report/20261022_mr3_p2a_v38_protocol_cpu.md); 2D uniform PASS not native prerequisite, training-negativeauditrulesstillPROPOSED_NOT_APPROVED.
+
+
+### 2026-10-22 MR3 P2A V39 精确证书生产恒等提速（人工CPU）
+
+基线main为5f8b3733cfed80f9f28010048d113eb6813019e3；人工验证在本次受控修改工作树进行，源字节逐轮记录并恢复，不冒充旧Git冻结资格。旧reference逐字来自a44e1b844678ece45cfd377ea43e7ed65901cce3，SHA99bd4fdda76a5974d394a2e40177e7cbd5fb12308258c2ee096c5232c568e3cb。生产仅_segment_measurements的闭AABB精确下界剪枝和zero-length恒等；所有public证书/计数/门/版本保持。
+
+确切外层命令均在wireless-rl目录运行：`rtk proxy env PYTHONNOUSERSITE=1 /usr/bin/python3 -B report/assets/20261022_mr3_p2a_v39_certificate_kernel/cpu_driver_v1.py NAME`（首次三组使用同文件的首版，后环境路由版与首版均有SHA恢复副本）。按顺序提交NAME=geometry_cpu_v1、reader_cpu_v1、learner_cpu_v1（独立并行），前两者与learner均实际wait/reap后，NAME=reader_cpu_v2与snapshot_cpu_v1；全部结束后单独NAME=microbenchmark_cpu_v1。每组真实child argv、解释器、全部source before/after、actual-wait与console见A39/checks，无World/原件数据输入。
+
+结果：geometry354、learner71、reader_v2 12、snapshot9，最终446项PASS。reader_v1保留FAIL：12读者用例通过后，snapshot模块在system Python缺torch导入error；未改生产/测试，分离到原ns3gym后snapshot9通过。6轮源码均前后稳定，125路径/126版本可恢复，唯一variant为runner。新完整人工point快照覆盖旧seed拒绝而point接受/真实候选可达，经真实private encoder/original validator；全重封几何伪造由独立received-input重建拒绝。
+
+固定两人工格图128次public证书微基准两顺序：reference每32call .463339238/.466320676秒，production .171110671/.170599645秒，完整输出SHA相同，约2.72倍；不代表World吞吐或训练资格。工程新增0，仍累计48259.9538193466018/52000、余3740.0461806533982；pilot/final-only不动。新native+minimum仍需20100预约，75000与负回合新审计仍待明确批准；原V37 FAIL保持，P2A未完成。详见[报告](report/20261022_mr3_p2a_v39_certificate_kernel.md)与[下一入口清单](report/assets/20261022_mr3_p2a_v39_certificate_kernel/next_native_preparation_v1.md)。

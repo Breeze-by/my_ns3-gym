@@ -2,13 +2,18 @@
 
 import base64
 import copy
+import gzip
 import hashlib
 from pathlib import Path
 import subprocess
 import sys
+import tempfile
 from types import ModuleType
 import unittest
+from unittest.mock import patch
 import zlib
+
+import numpy as np
 
 from mr3_learning import audit_ppo, audit_protocol
 from mr3_learning.reach_audit_projection import project_module
@@ -96,6 +101,126 @@ class ExactSnapshotValidatorTests(unittest.TestCase):
             "maps": {"global": raster(128), "locals": [raster(64, name) for name in ("tb1", "tb2", "tb3")]},
             "candidate_rule": copy.deepcopy(self.candidate.CANDIDATE_RULES[
                 candidate_version_for_rules(seed_rule,start_graph_rule)])})
+
+    def complete_point_graph_snapshot(self):
+        from mr3_learning.audit_proxy2d import PureBuilder, sha
+        from mr3_learning.proxy2d_conformity import point_graph_parameters
+
+        params = point_graph_parameters("free_centre")
+        grid = np.zeros((80, 80), dtype=np.int16)
+        grid[[0, -1], :] = -1
+        grid[:, 0] = -1
+        grid[:, 70:] = -1
+        grid[20, 20] = 100
+        params.update(raw_grid=grid, resolution=.05, origin=[-1., -1.],
+                      start_graph_rule="point-attachment-3x3-v1")
+        # The tb3 pose is safe, while its original cell centre is not. This is
+        # the fixed artificial counterexample from the observation tests, with
+        # distant unknown boundaries supplying real reachable frontier goals.
+        for robot, (x, y) in zip(params["robots"], ((.8, .8), (1.4, .8), (.349, .149))):
+            robot.update(x=x, y=y)
+        for maps in (params["robot_maps"], params["navigation_maps"]):
+            for entry in maps.values():
+                entry.update(grid=grid.copy(), resolution=.05, origin=[-1., -1.],
+                             payload_sha256=sha(grid.tobytes(order="C")))
+        builder = PureBuilder()
+        self.addCleanup(builder.close)
+        snapshot = builder(**params)
+        entry = snapshot["path_maps"]["tb3"]
+        self.assertFalse(snapshot["diagnostics"]["robot_seed_traversable"][2])
+        self.assertEqual(entry["seed_rejection_reason"], "seed_cell_body_clearance")
+        self.assertTrue(entry["point_graph_attachment"]["accepted"])
+        self.assertFalse(entry["point_graph_attachment"]["canonical_cell_original_traversable"])
+        self.assertTrue(snapshot["diagnostics"]["robot_start_graph_attached"][2])
+        self.assertTrue(all(not metadata["missing"] for metadata in snapshot["path_maps"].values()))
+        self.assertTrue(any(candidate["valid"] and candidate["reachable"][2]
+                            for candidate in snapshot["candidates"]))
+        self.assertTrue(any(snapshot["per_robot_action_mask"][2][:8]))
+        return builder, params, snapshot
+
+    def test_complete_point_graph_reachable_snapshot_passes_real_encoder_and_original_gate(self):
+        _, params, snapshot = self.complete_point_graph_snapshot()
+        self.select_seed_rule(params["seed_rule"], params["start_graph_rule"])
+        before = copy.deepcopy(snapshot)
+        with patch.object(self.reader, "encode_snapshot", wraps=self.reader.encode_snapshot) as encode:
+            self.auditor.validate_snapshot(snapshot, params["epoch"])
+        encode.assert_called_once_with(snapshot)
+        self.assertEqual(snapshot, before)
+        self.assertEqual(len(self.calls), 1)
+        legacy = self.calls[0]
+        self.assertEqual(legacy["schema"], "mr3-observation-v2")
+        self.assertNotIn("candidate_rule", legacy)
+        self.assertEqual(legacy["path_maps"], snapshot["path_maps"])
+        self.assertEqual(legacy["candidates"], snapshot["candidates"])
+        self.assertEqual(legacy["joint_action_mask"], snapshot["joint_action_mask"])
+
+    def test_complete_point_graph_tamper_cannot_bypass_digest_or_encoder_predicates(self):
+        _, params, snapshot = self.complete_point_graph_snapshot()
+        self.select_seed_rule(params["seed_rule"], params["start_graph_rule"])
+        index = next(candidate["index"] for candidate in snapshot["candidates"]
+                     if candidate["valid"] and candidate["reachable"][2])
+        for fault in ("attachment", "candidate"):
+            changed = copy.deepcopy(snapshot)
+            if fault == "attachment":
+                changed["path_maps"]["tb3"]["point_graph_attachment"]["anchors"] = []
+            else:
+                changed["candidates"][index]["x"] += .125
+            # A newly sealed whole snapshot cannot hide a stale candidate
+            # digest, which also binds every original attachment field.
+            changed["digest"] = self.candidate.canonical_digest(
+                {key: value for key, value in changed.items() if key != "digest"})
+            with self.subTest(fault=fault), self.assertRaisesRegex(ValueError, "versioned candidate digest"):
+                self.auditor.validate_snapshot(changed, params["epoch"])
+        for fault in ("reachability", "path", "geometry"):
+            changed = copy.deepcopy(snapshot)
+            candidate = changed["candidates"][index]
+            if fault == "reachability":
+                candidate["reachable"][2] = False
+            elif fault == "path":
+                candidate["path_distances_m"][2] = None
+            else:
+                candidate["x"] = None
+            self.seal(changed)
+            with self.subTest(fault=fault), self.assertRaisesRegex(
+                    ValueError, "reachability and path metadata|valid candidate is missing its geometry"):
+                self.auditor.validate_snapshot(changed, params["epoch"])
+        self.assertEqual(self.calls, [])
+
+    def test_resealed_point_geometry_still_requires_independent_received_input_replay(self):
+        from mr3_learning import audit_proxy2d as audit
+        from mr3_learning.proxy2d_codec import encode_arrays
+
+        builder, params, snapshot = self.complete_point_graph_snapshot()
+        self.select_seed_rule(params["seed_rule"], params["start_graph_rule"])
+        index = next(candidate["index"] for candidate in snapshot["candidates"]
+                     if candidate["valid"] and candidate["reachable"][2])
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            raw = audit.canonical(encode_arrays(params))
+            digest = audit.sha(raw)
+            relative = f"inputs/{digest}.json.gz"
+            path = directory / relative
+            path.parent.mkdir()
+            path.write_bytes(gzip.compress(raw, mtime=0))
+            for fault in ("attachment", "candidate", "path"):
+                changed = copy.deepcopy(snapshot)
+                if fault == "attachment":
+                    changed["path_maps"]["tb3"]["point_graph_attachment"]["anchors"] = []
+                elif fault == "candidate":
+                    changed["candidates"][index]["x"] += .125
+                else:
+                    changed["candidates"][index]["path_distances_m"][2] += .125
+                self.seal(changed)
+                # The private validator proves hashes/encoding/structure, not
+                # received-map geometry. Its necessary independent replay gate
+                # must reject even a fully resealed, well-typed forgery.
+                self.auditor.validate_snapshot(changed, params["epoch"])
+                row = {"epoch": params["epoch"], "snapshot": changed,
+                       "actor_input_ref": {"path": relative, "sha256": digest},
+                       "tensor_proofs": audit.tensor_proofs(changed)}
+                expected = "certificate differs" if fault == "attachment" else "full snapshot replay differs"
+                with self.subTest(fault=fault), self.assertRaisesRegex(ValueError, expected):
+                    audit.actor_record(directory, row, rebuild=True, builder=builder)
 
     def test_real_point_graph_rule_cannot_borrow_the_original_v2_or_v1_rule(self):
         seed,start="exact-point-bridge-v2","point-attachment-3x3-v1"

@@ -156,12 +156,15 @@ def _segment_measurements(values, res, offset, start, end):
     point2 = min(REQUIRED_SQUARED, _outside_squared(start, bounds))
     # For each outside halfplane, minimum segment clearance is at an endpoint.
     segment2 = min(point2, _outside_squared(end, bounds))
-    c0, c1 = _candidate_interval(min(start[0], end[0]) - REQUIRED_M,
-        max(start[0], end[0]) + REQUIRED_M, offset[0], res, width)
-    r0, r1 = _candidate_interval(min(start[1], end[1]) - REQUIRED_M,
-        max(start[1], end[1]) + REQUIRED_M, offset[1], res, height)
+    min_x, max_x = min(start[0], end[0]), max(start[0], end[0])
+    min_y, max_y = min(start[1], end[1]), max(start[1], end[1])
+    c0, c1 = _candidate_interval(min_x - REQUIRED_M,
+        max_x + REQUIRED_M, offset[0], res, width)
+    r0, r1 = _candidate_interval(min_y - REQUIRED_M,
+        max_y + REQUIRED_M, offset[1], res, height)
     nonfree = 0
     nonempty = r0 <= r1 and c0 <= c1
+    zero_length = start == end
     # Every omitted closed square is disjoint from the threshold-expanded
     # segment AABB. It has a coordinate gap > REQUIRED_M from every segment
     # point, hence Euclidean distance > REQUIRED_M. Its point/segment distance
@@ -172,7 +175,17 @@ def _segment_measurements(values, res, offset, start, end):
             box = (offset[0] + c * res, offset[1] + r * res,
                    offset[0] + (c + 1) * res, offset[1] + (r + 1) * res)
             point2 = min(point2, _point_rectangle_squared(start, box))
-            segment2 = min(segment2, _segment_rectangle_squared(start, end, box))
+            if zero_length:
+                segment2 = point2
+            else:
+                # The closed segment is a subset of this closed AABB. Hence
+                # distance²(AABB, box) <= distance²(segment, box). Equality at
+                # the current minimum is enough to skip; no epsilon is used.
+                dx = max(box[0] - max_x, Q(0), min_x - box[2])
+                dy = max(box[1] - max_y, Q(0), min_y - box[3])
+                lower2 = dx * dx + dy * dy
+                if lower2 < segment2:
+                    segment2 = min(segment2, _segment_rectangle_squared(start, end, box))
             nonfree += 1
     return point2, segment2, {
         "candidate_bounds": [r0, r1, c0, c1] if nonempty else None,
