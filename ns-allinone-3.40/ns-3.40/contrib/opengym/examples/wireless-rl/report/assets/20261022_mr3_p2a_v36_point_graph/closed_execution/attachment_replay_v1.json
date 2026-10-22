@@ -1,0 +1,2767 @@
+{
+  "schema": "mr3-v36-fixed-input-attachment-development-v1",
+  "source_freeze": "49c468e993738a12fe67abde68becaf039e6d991",
+  "report_source_freeze": "47dd6774e478bb714e1844e0056f2301269896a3",
+  "evidence_freeze": "7816cced7067c4505bd2874f0ad323cbb4fad85e",
+  "profile": "mr3-point-graph-attachment-3x3-disabled-v1",
+  "passed": true,
+  "computation_passed": true,
+  "production_enabled": false,
+  "qualification": false,
+  "training_eligible": false,
+  "native_qualification": false,
+  "task_success_claimed": false,
+  "freshness_recertified": false,
+  "unbiased_validation": false,
+  "scene": "rooms",
+  "seed": 101,
+  "epoch": "proxy2d_w1_e1_9eadb32e",
+  "counts": {
+    "selected_frames": 2,
+    "decoded_inputs": 2,
+    "robot_computations": 6,
+    "robots_with_attachments": 6,
+    "robots_without_attachments": 0,
+    "total_anchors": 38
+  },
+  "records": [
+    {
+      "roles": [
+        "reset",
+        "first_tb3_seed_cell_body_clearance"
+      ],
+      "event_sequence": 1,
+      "event": "reset",
+      "epoch": "proxy2d_w1_e1_9eadb32e",
+      "now": 0.1,
+      "sequence": 1,
+      "seed_rule": "exact-point-bridge-v2",
+      "actor_input_ref": {
+        "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v34_seed_v2/closed_execution/seed_probe_v2/stages/group3/worker1/episode001_rooms_101/inputs/28bd8e9acd5e0dc4a8ab12d29772e694a3e6aea5f82d567b8cd9bf667bbfbe39.json.gz",
+        "compressed_sha256": "5cc346cf57f622372037f9984cb3f12e4bf7f9610ba8d08842586833d5224964",
+        "canonical_sha256": "28bd8e9acd5e0dc4a8ab12d29772e694a3e6aea5f82d567b8cd9bf667bbfbe39",
+        "canonical_bytes": 1090436
+      },
+      "original_snapshot_canonical_sha256": "213ad5168d4d4bc0a35a9a4e6928f1971ba009ae06b92b057c6cdb0475a5e27f",
+      "decoded_input_sha256_before": "28bd8e9acd5e0dc4a8ab12d29772e694a3e6aea5f82d567b8cd9bf667bbfbe39",
+      "decoded_input_sha256_after": "28bd8e9acd5e0dc4a8ab12d29772e694a3e6aea5f82d567b8cd9bf667bbfbe39",
+      "robots": [
+        {
+          "robot": "tb1",
+          "estimated_xy": [
+            0.0,
+            -0.45
+          ],
+          "state_metadata_descriptive_only": {
+            "epoch": "proxy2d_w1_e1_9eadb32e",
+            "sequence": 1,
+            "version": 1,
+            "source_stamp": 0.1,
+            "received_stamp": 0.1,
+            "payload_sha256": null,
+            "source_age_signed_sec": 0.0,
+            "received_age_signed_sec": 0.0
+          },
+          "navigation_map": {
+            "shape": [
+              204,
+              284
+            ],
+            "dtype": "<i2",
+            "grid_bytes_sha256_before": "341987d9c0f123e8053d7792c666e6e0014295447e4d50811c9625ecb823445f",
+            "grid_bytes_sha256_after": "341987d9c0f123e8053d7792c666e6e0014295447e4d50811c9625ecb823445f",
+            "resolution": 0.05,
+            "origin": [
+              -7.1,
+              -5.1
+            ],
+            "metadata_descriptive_only": {
+              "epoch": "proxy2d_w1_e1_9eadb32e",
+              "sequence": 1,
+              "version": 1,
+              "source_stamp": 0.1,
+              "received_stamp": 0.1,
+              "payload_sha256": "60b078e98f634463004147cd43c8905f08ac992ccb156d3223583ea11ca9743a",
+              "source_age_signed_sec": 0.0,
+              "received_age_signed_sec": 0.0
+            }
+          },
+          "attachment": {
+            "schema": "mr3-point-graph-attachment-candidate-v1",
+            "profile": "mr3-point-graph-attachment-3x3-disabled-v1",
+            "production_enabled": false,
+            "accepted": true,
+            "reason": null,
+            "required_m_exact": "29/100",
+            "estimated_point_exact": [
+              "0",
+              "-8106479329266893/18014398509481984"
+            ],
+            "resolution_exact": "3602879701896397/72057594037927936",
+            "origin_exact": [
+              "-3996944669291315/562949953421312",
+              "-2871044762448691/562949953421312"
+            ],
+            "canonical_cell": [
+              92,
+              141
+            ],
+            "canonical_value": 0,
+            "canonical_cell_original_traversable": true,
+            "canonical_cell_original_lower_bound_m": 0.35515714473600535,
+            "point_certificate": {
+              "schema": "mr3-estimated-straight-segment-certificate-v1",
+              "accepted": true,
+              "required_m_exact": "29/100",
+              "point_distance_squared_capped_exact": "841/10000",
+              "segment_distance_squared_capped_exact": "841/10000",
+              "candidate_bounds": [
+                87,
+                98,
+                136,
+                147
+              ],
+              "checked_cells": 144,
+              "checked_nonfree_cells": 3
+            },
+            "window_inclusive": [
+              91,
+              93,
+              140,
+              142
+            ],
+            "candidate_nodes": [
+              {
+                "cell": [
+                  91,
+                  140
+                ],
+                "value": 0,
+                "original_traversable": true,
+                "original_lower_bound_m": 0.425621883805317,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    85,
+                    98,
+                    134,
+                    147
+                  ],
+                  "checked_cells": 196,
+                  "checked_nonfree_cells": 3
+                }
+              },
+              {
+                "cell": [
+                  91,
+                  141
+                ],
+                "value": 0,
+                "original_traversable": true,
+                "original_lower_bound_m": 0.38890872965260115,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    85,
+                    98,
+                    135,
+                    147
+                  ],
+                  "checked_cells": 182,
+                  "checked_nonfree_cells": 3
+                }
+              },
+              {
+                "cell": [
+                  91,
+                  142
+                ],
+                "value": 0,
+                "original_traversable": true,
+                "original_lower_bound_m": 0.35515714473600535,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    85,
+                    98,
+                    136,
+                    148
+                  ],
+                  "checked_cells": 182,
+                  "checked_nonfree_cells": 5
+                }
+              },
+              {
+                "cell": [
+                  92,
+                  140
+                ],
+                "value": 0,
+                "original_traversable": true,
+                "original_lower_bound_m": 0.38890872965260115,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    86,
+                    98,
+                    134,
+                    147
+                  ],
+                  "checked_cells": 182,
+                  "checked_nonfree_cells": 3
+                }
+              },
+              {
+                "cell": [
+                  92,
+                  141
+                ],
+                "value": 0,
+                "original_traversable": true,
+                "original_lower_bound_m": 0.35515714473600535,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    86,
+                    98,
+                    135,
+                    147
+                  ],
+                  "checked_cells": 169,
+                  "checked_nonfree_cells": 3
+                }
+              },
+              {
+                "cell": [
+                  92,
+                  142
+                ],
+                "value": 0,
+                "original_traversable": true,
+                "original_lower_bound_m": 0.3181980515339464,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    86,
+                    98,
+                    136,
+                    148
+                  ],
+                  "checked_cells": 169,
+                  "checked_nonfree_cells": 5
+                }
+              },
+              {
+                "cell": [
+                  93,
+                  140
+                ],
+                "value": 0,
+                "original_traversable": true,
+                "original_lower_bound_m": 0.35515714473600535,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    87,
+                    99,
+                    134,
+                    147
+                  ],
+                  "checked_cells": 182,
+                  "checked_nonfree_cells": 5
+                }
+              },
+              {
+                "cell": [
+                  93,
+                  141
+                ],
+                "value": 0,
+                "original_traversable": true,
+                "original_lower_bound_m": 0.3181980515339464,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    87,
+                    99,
+                    135,
+                    147
+                  ],
+                  "checked_cells": 169,
+                  "checked_nonfree_cells": 5
+                }
+              },
+              {
+                "cell": [
+                  93,
+                  142
+                ],
+                "value": 0,
+                "original_traversable": false,
+                "original_lower_bound_m": 0.2848008728123151,
+                "bridge_certificate": null
+              }
+            ],
+            "anchors": [
+              {
+                "cell": [
+                  91,
+                  140
+                ],
+                "centre_exact": [
+                  "-10808639105689083/144115188075855872",
+                  "-75660473739824245/144115188075855872"
+                ],
+                "bridge_length_squared_exact": "116826679317031494501760167784545/10384593717069655257060992658440192",
+                "bridge_length_m": 0.10606601717798116,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    85,
+                    98,
+                    134,
+                    147
+                  ],
+                  "checked_cells": 196,
+                  "checked_nonfree_cells": 3
+                }
+              },
+              {
+                "cell": [
+                  91,
+                  141
+                ],
+                "centre_exact": [
+                  "-3602879701896289/144115188075855872",
+                  "-75660473739824245/144115188075855872"
+                ],
+                "bridge_length_squared_exact": "64903710731683990673863291079861/10384593717069655257060992658440192",
+                "bridge_length_m": 0.07905694150420865,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    85,
+                    98,
+                    135,
+                    147
+                  ],
+                  "checked_cells": 182,
+                  "checked_nonfree_cells": 3
+                }
+              },
+              {
+                "cell": [
+                  91,
+                  142
+                ],
+                "centre_exact": [
+                  "3602879701896505/144115188075855872",
+                  "-75660473739824245/144115188075855872"
+                ],
+                "bridge_length_squared_exact": "64903710731684768895878900701613/10384593717069655257060992658440192",
+                "bridge_length_m": 0.07905694150420914,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    85,
+                    98,
+                    136,
+                    148
+                  ],
+                  "checked_cells": 182,
+                  "checked_nonfree_cells": 5
+                }
+              },
+              {
+                "cell": [
+                  92,
+                  140
+                ],
+                "centre_exact": [
+                  "-10808639105689083/144115188075855872",
+                  "-68454714336031451/144115188075855872"
+                ],
+                "bridge_length_squared_exact": "64903710731683860970194022809569/10384593717069655257060992658440192",
+                "bridge_length_m": 0.07905694150420858,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    86,
+                    98,
+                    134,
+                    147
+                  ],
+                  "checked_cells": 182,
+                  "checked_nonfree_cells": 3
+                }
+              },
+              {
+                "cell": [
+                  92,
+                  141
+                ],
+                "centre_exact": [
+                  "-3602879701896289/144115188075855872",
+                  "-68454714336031451/144115188075855872"
+                ],
+                "bridge_length_squared_exact": "12980742146336357142297146104885/10384593717069655257060992658440192",
+                "bridge_length_m": 0.035355339059326404,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    86,
+                    98,
+                    135,
+                    147
+                  ],
+                  "checked_cells": 169,
+                  "checked_nonfree_cells": 3
+                }
+              },
+              {
+                "cell": [
+                  92,
+                  142
+                ],
+                "centre_exact": [
+                  "3602879701896505/144115188075855872",
+                  "-68454714336031451/144115188075855872"
+                ],
+                "bridge_length_squared_exact": "12980742146337135364312755726637/10384593717069655257060992658440192",
+                "bridge_length_m": 0.035355339059327466,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    86,
+                    98,
+                    136,
+                    148
+                  ],
+                  "checked_cells": 169,
+                  "checked_nonfree_cells": 5
+                }
+              },
+              {
+                "cell": [
+                  93,
+                  140
+                ],
+                "centre_exact": [
+                  "-10808639105689083/144115188075855872",
+                  "-61248954932238657/144115188075855872"
+                ],
+                "bridge_length_squared_exact": "64903710731684509488540364161029/10384593717069655257060992658440192",
+                "bridge_length_m": 0.07905694150420897,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    87,
+                    99,
+                    134,
+                    147
+                  ],
+                  "checked_cells": 182,
+                  "checked_nonfree_cells": 5
+                }
+              },
+              {
+                "cell": [
+                  93,
+                  141
+                ],
+                "centre_exact": [
+                  "-3602879701896289/144115188075855872",
+                  "-61248954932238657/144115188075855872"
+                ],
+                "bridge_length_squared_exact": "12980742146337005660643487456345/10384593717069655257060992658440192",
+                "bridge_length_m": 0.03535533905932729,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    87,
+                    99,
+                    135,
+                    147
+                  ],
+                  "checked_cells": 169,
+                  "checked_nonfree_cells": 5
+                }
+              }
+            ],
+            "graph_mutated": false,
+            "interpretation": "virtual start at unchanged estimated point; all anchors retained; no motion or goal"
+          }
+        },
+        {
+          "robot": "tb2",
+          "estimated_xy": [
+            0.0,
+            0.45
+          ],
+          "state_metadata_descriptive_only": {
+            "epoch": "proxy2d_w1_e1_9eadb32e",
+            "sequence": 1,
+            "version": 1,
+            "source_stamp": 0.1,
+            "received_stamp": 0.1,
+            "payload_sha256": null,
+            "source_age_signed_sec": 0.0,
+            "received_age_signed_sec": 0.0
+          },
+          "navigation_map": {
+            "shape": [
+              204,
+              284
+            ],
+            "dtype": "<i2",
+            "grid_bytes_sha256_before": "a2bfb687026d0ae600dbb0828bf2556f50428bdd4ca21a22f0902621ce3f479f",
+            "grid_bytes_sha256_after": "a2bfb687026d0ae600dbb0828bf2556f50428bdd4ca21a22f0902621ce3f479f",
+            "resolution": 0.05,
+            "origin": [
+              -7.1,
+              -5.1
+            ],
+            "metadata_descriptive_only": {
+              "epoch": "proxy2d_w1_e1_9eadb32e",
+              "sequence": 1,
+              "version": 1,
+              "source_stamp": 0.1,
+              "received_stamp": 0.1,
+              "payload_sha256": "c5e38801e38278568d9ceea747f6fc49f5aa4fc1c434e410ef9a6560bb960ad7",
+              "source_age_signed_sec": 0.0,
+              "received_age_signed_sec": 0.0
+            }
+          },
+          "attachment": {
+            "schema": "mr3-point-graph-attachment-candidate-v1",
+            "profile": "mr3-point-graph-attachment-3x3-disabled-v1",
+            "production_enabled": false,
+            "accepted": true,
+            "reason": null,
+            "required_m_exact": "29/100",
+            "estimated_point_exact": [
+              "0",
+              "8106479329266893/18014398509481984"
+            ],
+            "resolution_exact": "3602879701896397/72057594037927936",
+            "origin_exact": [
+              "-3996944669291315/562949953421312",
+              "-2871044762448691/562949953421312"
+            ],
+            "canonical_cell": [
+              110,
+              141
+            ],
+            "canonical_value": 0,
+            "canonical_cell_original_traversable": true,
+            "canonical_cell_original_lower_bound_m": 0.3181980515339464,
+            "point_certificate": {
+              "schema": "mr3-estimated-straight-segment-certificate-v1",
+              "accepted": true,
+              "required_m_exact": "29/100",
+              "point_distance_squared_capped_exact": "841/10000",
+              "segment_distance_squared_capped_exact": "841/10000",
+              "candidate_bounds": [
+                105,
+                116,
+                136,
+                147
+              ],
+              "checked_cells": 144,
+              "checked_nonfree_cells": 2
+            },
+            "window_inclusive": [
+              109,
+              111,
+              140,
+              142
+            ],
+            "candidate_nodes": [
+              {
+                "cell": [
+                  109,
+                  140
+                ],
+                "value": 0,
+                "original_traversable": true,
+                "original_lower_bound_m": 0.3251997884870716,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    103,
+                    116,
+                    134,
+                    147
+                  ],
+                  "checked_cells": 196,
+                  "checked_nonfree_cells": 5
+                }
+              },
+              {
+                "cell": [
+                  109,
+                  141
+                ],
+                "value": 0,
+                "original_traversable": false,
+                "original_lower_bound_m": 0.2848008728123151,
+                "bridge_certificate": null
+              },
+              {
+                "cell": [
+                  109,
+                  142
+                ],
+                "value": 0,
+                "original_traversable": false,
+                "original_lower_bound_m": 0.2474873734152917,
+                "bridge_certificate": null
+              },
+              {
+                "cell": [
+                  110,
+                  140
+                ],
+                "value": 0,
+                "original_traversable": true,
+                "original_lower_bound_m": 0.35515714473600535,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    104,
+                    116,
+                    134,
+                    147
+                  ],
+                  "checked_cells": 182,
+                  "checked_nonfree_cells": 4
+                }
+              },
+              {
+                "cell": [
+                  110,
+                  141
+                ],
+                "value": 0,
+                "original_traversable": true,
+                "original_lower_bound_m": 0.3181980515339464,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    104,
+                    116,
+                    135,
+                    147
+                  ],
+                  "checked_cells": 169,
+                  "checked_nonfree_cells": 4
+                }
+              },
+              {
+                "cell": [
+                  110,
+                  142
+                ],
+                "value": 0,
+                "original_traversable": false,
+                "original_lower_bound_m": 0.2848008728123151,
+                "bridge_certificate": null
+              },
+              {
+                "cell": [
+                  111,
+                  140
+                ],
+                "value": 0,
+                "original_traversable": true,
+                "original_lower_bound_m": 0.38890872965260115,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    105,
+                    117,
+                    134,
+                    147
+                  ],
+                  "checked_cells": 182,
+                  "checked_nonfree_cells": 2
+                }
+              },
+              {
+                "cell": [
+                  111,
+                  141
+                ],
+                "value": 0,
+                "original_traversable": true,
+                "original_lower_bound_m": 0.35515714473600535,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    105,
+                    117,
+                    135,
+                    147
+                  ],
+                  "checked_cells": 169,
+                  "checked_nonfree_cells": 2
+                }
+              },
+              {
+                "cell": [
+                  111,
+                  142
+                ],
+                "value": 0,
+                "original_traversable": true,
+                "original_lower_bound_m": 0.3251997884870716,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    105,
+                    117,
+                    136,
+                    148
+                  ],
+                  "checked_cells": 169,
+                  "checked_nonfree_cells": 3
+                }
+              }
+            ],
+            "anchors": [
+              {
+                "cell": [
+                  109,
+                  140
+                ],
+                "centre_exact": [
+                  "-10808639105689083/144115188075855872",
+                  "54043195528446047/144115188075855872"
+                ],
+                "bridge_length_squared_exact": "116826679317031451267203745028149/10384593717069655257060992658440192",
+                "bridge_length_m": 0.10606601717798114,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    103,
+                    116,
+                    134,
+                    147
+                  ],
+                  "checked_cells": 196,
+                  "checked_nonfree_cells": 5
+                }
+              },
+              {
+                "cell": [
+                  110,
+                  140
+                ],
+                "centre_exact": [
+                  "-10808639105689083/144115188075855872",
+                  "61248954932238841/144115188075855872"
+                ],
+                "bridge_length_squared_exact": "64903710731683846558675215224349/10384593717069655257060992658440192",
+                "bridge_length_m": 0.07905694150420857,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    104,
+                    116,
+                    134,
+                    147
+                  ],
+                  "checked_cells": 182,
+                  "checked_nonfree_cells": 4
+                }
+              },
+              {
+                "cell": [
+                  110,
+                  141
+                ],
+                "centre_exact": [
+                  "-3602879701896289/144115188075855872",
+                  "61248954932238841/144115188075855872"
+                ],
+                "bridge_length_squared_exact": "12980742146336342730778338519665/10384593717069655257060992658440192",
+                "bridge_length_m": 0.035355339059326384,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    104,
+                    116,
+                    135,
+                    147
+                  ],
+                  "checked_cells": 169,
+                  "checked_nonfree_cells": 4
+                }
+              },
+              {
+                "cell": [
+                  111,
+                  140
+                ],
+                "centre_exact": [
+                  "-10808639105689083/144115188075855872",
+                  "68454714336031635/144115188075855872"
+                ],
+                "bridge_length_squared_exact": "64903710731684523900059171746985/10384593717069655257060992658440192",
+                "bridge_length_m": 0.07905694150420899,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    105,
+                    117,
+                    134,
+                    147
+                  ],
+                  "checked_cells": 182,
+                  "checked_nonfree_cells": 2
+                }
+              },
+              {
+                "cell": [
+                  111,
+                  141
+                ],
+                "centre_exact": [
+                  "-3602879701896289/144115188075855872",
+                  "68454714336031635/144115188075855872"
+                ],
+                "bridge_length_squared_exact": "12980742146337020072162295042301/10384593717069655257060992658440192",
+                "bridge_length_m": 0.035355339059327306,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    105,
+                    117,
+                    135,
+                    147
+                  ],
+                  "checked_cells": 169,
+                  "checked_nonfree_cells": 2
+                }
+              },
+              {
+                "cell": [
+                  111,
+                  142
+                ],
+                "centre_exact": [
+                  "3602879701896505/144115188075855872",
+                  "68454714336031635/144115188075855872"
+                ],
+                "bridge_length_squared_exact": "12980742146337798294177904664053/10384593717069655257060992658440192",
+                "bridge_length_m": 0.03535533905932837,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    105,
+                    117,
+                    136,
+                    148
+                  ],
+                  "checked_cells": 169,
+                  "checked_nonfree_cells": 3
+                }
+              }
+            ],
+            "graph_mutated": false,
+            "interpretation": "virtual start at unchanged estimated point; all anchors retained; no motion or goal"
+          }
+        },
+        {
+          "robot": "tb3",
+          "estimated_xy": [
+            0.45,
+            0.0
+          ],
+          "state_metadata_descriptive_only": {
+            "epoch": "proxy2d_w1_e1_9eadb32e",
+            "sequence": 1,
+            "version": 1,
+            "source_stamp": 0.1,
+            "received_stamp": 0.1,
+            "payload_sha256": null,
+            "source_age_signed_sec": 0.0,
+            "received_age_signed_sec": 0.0
+          },
+          "navigation_map": {
+            "shape": [
+              204,
+              284
+            ],
+            "dtype": "<i2",
+            "grid_bytes_sha256_before": "ce9bc7d19824f0ca458fd4a352fe1367f97ead6c9aec09f0431bb40573ad3282",
+            "grid_bytes_sha256_after": "ce9bc7d19824f0ca458fd4a352fe1367f97ead6c9aec09f0431bb40573ad3282",
+            "resolution": 0.05,
+            "origin": [
+              -7.1,
+              -5.1
+            ],
+            "metadata_descriptive_only": {
+              "epoch": "proxy2d_w1_e1_9eadb32e",
+              "sequence": 1,
+              "version": 1,
+              "source_stamp": 0.1,
+              "received_stamp": 0.1,
+              "payload_sha256": "d37418287335571945a9b1bfd1e618405268ecab5d810f7b56470a1ac46eac78",
+              "source_age_signed_sec": 0.0,
+              "received_age_signed_sec": 0.0
+            }
+          },
+          "attachment": {
+            "schema": "mr3-point-graph-attachment-candidate-v1",
+            "profile": "mr3-point-graph-attachment-3x3-disabled-v1",
+            "production_enabled": false,
+            "accepted": true,
+            "reason": null,
+            "required_m_exact": "29/100",
+            "estimated_point_exact": [
+              "8106479329266893/18014398509481984",
+              "0"
+            ],
+            "resolution_exact": "3602879701896397/72057594037927936",
+            "origin_exact": [
+              "-3996944669291315/562949953421312",
+              "-2871044762448691/562949953421312"
+            ],
+            "canonical_cell": [
+              101,
+              150
+            ],
+            "canonical_value": 0,
+            "canonical_cell_original_traversable": false,
+            "canonical_cell_original_lower_bound_m": 0.2848008728123151,
+            "point_certificate": {
+              "schema": "mr3-estimated-straight-segment-certificate-v1",
+              "accepted": true,
+              "required_m_exact": "29/100",
+              "point_distance_squared_capped_exact": "841/10000",
+              "segment_distance_squared_capped_exact": "841/10000",
+              "candidate_bounds": [
+                96,
+                107,
+                145,
+                156
+              ],
+              "checked_cells": 144,
+              "checked_nonfree_cells": 6
+            },
+            "window_inclusive": [
+              100,
+              102,
+              149,
+              151
+            ],
+            "candidate_nodes": [
+              {
+                "cell": [
+                  100,
+                  149
+                ],
+                "value": 0,
+                "original_traversable": false,
+                "original_lower_bound_m": 0.21464466094067264,
+                "bridge_certificate": null
+              },
+              {
+                "cell": [
+                  100,
+                  150
+                ],
+                "value": 0,
+                "original_traversable": false,
+                "original_lower_bound_m": 0.2474873734152917,
+                "bridge_certificate": null
+              },
+              {
+                "cell": [
+                  100,
+                  151
+                ],
+                "value": 0,
+                "original_traversable": false,
+                "original_lower_bound_m": 0.2848008728123151,
+                "bridge_certificate": null
+              },
+              {
+                "cell": [
+                  101,
+                  149
+                ],
+                "value": 0,
+                "original_traversable": false,
+                "original_lower_bound_m": 0.2474873734152917,
+                "bridge_certificate": null
+              },
+              {
+                "cell": [
+                  101,
+                  150
+                ],
+                "value": 0,
+                "original_traversable": false,
+                "original_lower_bound_m": 0.2848008728123151,
+                "bridge_certificate": null
+              },
+              {
+                "cell": [
+                  101,
+                  151
+                ],
+                "value": 0,
+                "original_traversable": true,
+                "original_lower_bound_m": 0.3181980515339464,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    95,
+                    107,
+                    145,
+                    157
+                  ],
+                  "checked_cells": 169,
+                  "checked_nonfree_cells": 8
+                }
+              },
+              {
+                "cell": [
+                  102,
+                  149
+                ],
+                "value": 0,
+                "original_traversable": false,
+                "original_lower_bound_m": 0.2474873734152917,
+                "bridge_certificate": null
+              },
+              {
+                "cell": [
+                  102,
+                  150
+                ],
+                "value": 0,
+                "original_traversable": false,
+                "original_lower_bound_m": 0.2848008728123151,
+                "bridge_certificate": null
+              },
+              {
+                "cell": [
+                  102,
+                  151
+                ],
+                "value": 0,
+                "original_traversable": true,
+                "original_lower_bound_m": 0.3181980515339464,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    96,
+                    108,
+                    145,
+                    157
+                  ],
+                  "checked_cells": 169,
+                  "checked_nonfree_cells": 7
+                }
+              }
+            ],
+            "anchors": [
+              {
+                "cell": [
+                  101,
+                  151
+                ],
+                "centre_exact": [
+                  "68454714336031651/144115188075855872",
+                  "-3602879701896305/144115188075855872"
+                ],
+                "bridge_length_squared_exact": "12980742146337135364312755727037/10384593717069655257060992658440192",
+                "bridge_length_m": 0.035355339059327466,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    95,
+                    107,
+                    145,
+                    157
+                  ],
+                  "checked_cells": 169,
+                  "checked_nonfree_cells": 8
+                }
+              },
+              {
+                "cell": [
+                  102,
+                  151
+                ],
+                "centre_exact": [
+                  "68454714336031651/144115188075855872",
+                  "3602879701896489/144115188075855872"
+                ],
+                "bridge_length_squared_exact": "12980742146337798294177904664085/10384593717069655257060992658440192",
+                "bridge_length_m": 0.03535533905932837,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    96,
+                    108,
+                    145,
+                    157
+                  ],
+                  "checked_cells": 169,
+                  "checked_nonfree_cells": 7
+                }
+              }
+            ],
+            "graph_mutated": false,
+            "interpretation": "virtual start at unchanged estimated point; all anchors retained; no motion or goal"
+          }
+        }
+      ]
+    },
+    {
+      "roles": [
+        "last_actor"
+      ],
+      "event_sequence": 129,
+      "event": "step_return",
+      "epoch": "proxy2d_w1_e1_9eadb32e",
+      "now": 64.1,
+      "sequence": 65,
+      "seed_rule": "exact-point-bridge-v2",
+      "actor_input_ref": {
+        "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v34_seed_v2/closed_execution/seed_probe_v2/stages/group3/worker1/episode001_rooms_101/inputs/a32e7a37903152610d6f9293967fa9d060932a6938c5e40e8e096c007a3e4274.json.gz",
+        "compressed_sha256": "00ad33db448020b92c6ea9cafa323e6b9d6e2c911e1acff45ce160b2b2d34727",
+        "canonical_sha256": "a32e7a37903152610d6f9293967fa9d060932a6938c5e40e8e096c007a3e4274",
+        "canonical_bytes": 1094741
+      },
+      "original_snapshot_canonical_sha256": "c89f6ddd775b43429670806e5805e2ce77c085a657dbbebb912d88d8e295105e",
+      "decoded_input_sha256_before": "a32e7a37903152610d6f9293967fa9d060932a6938c5e40e8e096c007a3e4274",
+      "decoded_input_sha256_after": "a32e7a37903152610d6f9293967fa9d060932a6938c5e40e8e096c007a3e4274",
+      "robots": [
+        {
+          "robot": "tb1",
+          "estimated_xy": [
+            1.067827829860638,
+            -1.5694425488870223
+          ],
+          "state_metadata_descriptive_only": {
+            "epoch": "proxy2d_w1_e1_9eadb32e",
+            "sequence": 3201,
+            "version": 3201,
+            "source_stamp": 64.1,
+            "received_stamp": 64.1,
+            "payload_sha256": null,
+            "source_age_signed_sec": 0.0,
+            "received_age_signed_sec": 0.0
+          },
+          "navigation_map": {
+            "shape": [
+              204,
+              284
+            ],
+            "dtype": "<i2",
+            "grid_bytes_sha256_before": "c373bb28221b44807fcc0594c5dac5f78aab3604c41542d85ce8cc2d1bf08366",
+            "grid_bytes_sha256_after": "c373bb28221b44807fcc0594c5dac5f78aab3604c41542d85ce8cc2d1bf08366",
+            "resolution": 0.05,
+            "origin": [
+              -7.1,
+              -5.1
+            ],
+            "metadata_descriptive_only": {
+              "epoch": "proxy2d_w1_e1_9eadb32e",
+              "sequence": 65,
+              "version": 65,
+              "source_stamp": 64.1,
+              "received_stamp": 64.1,
+              "payload_sha256": "46dae2141d0893e75783803b170c94627889d53f3080dd2de05c1a509caa1847",
+              "source_age_signed_sec": 0.0,
+              "received_age_signed_sec": 0.0
+            }
+          },
+          "attachment": {
+            "schema": "mr3-point-graph-attachment-candidate-v1",
+            "profile": "mr3-point-graph-attachment-3x3-disabled-v1",
+            "production_enabled": false,
+            "accepted": true,
+            "reason": null,
+            "required_m_exact": "29/100",
+            "estimated_point_exact": [
+              "4809069016656215/4503599627370496",
+              "-7068140878346995/4503599627370496"
+            ],
+            "resolution_exact": "3602879701896397/72057594037927936",
+            "origin_exact": [
+              "-3996944669291315/562949953421312",
+              "-2871044762448691/562949953421312"
+            ],
+            "canonical_cell": [
+              70,
+              163
+            ],
+            "canonical_value": 0,
+            "canonical_cell_original_traversable": true,
+            "canonical_cell_original_lower_bound_m": 1.4180888463155361,
+            "point_certificate": {
+              "schema": "mr3-estimated-straight-segment-certificate-v1",
+              "accepted": true,
+              "required_m_exact": "29/100",
+              "point_distance_squared_capped_exact": "841/10000",
+              "segment_distance_squared_capped_exact": "841/10000",
+              "candidate_bounds": [
+                64,
+                76,
+                157,
+                169
+              ],
+              "checked_cells": 169,
+              "checked_nonfree_cells": 0
+            },
+            "window_inclusive": [
+              69,
+              71,
+              162,
+              164
+            ],
+            "candidate_nodes": [
+              {
+                "cell": [
+                  69,
+                  162
+                ],
+                "value": 0,
+                "original_traversable": true,
+                "original_lower_bound_m": 1.4077316299068539,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    63,
+                    76,
+                    156,
+                    169
+                  ],
+                  "checked_cells": 196,
+                  "checked_nonfree_cells": 0
+                }
+              },
+              {
+                "cell": [
+                  69,
+                  163
+                ],
+                "value": 0,
+                "original_traversable": true,
+                "original_lower_bound_m": 1.4206666387967763,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    63,
+                    76,
+                    157,
+                    169
+                  ],
+                  "checked_cells": 182,
+                  "checked_nonfree_cells": 0
+                }
+              },
+              {
+                "cell": [
+                  69,
+                  164
+                ],
+                "value": 0,
+                "original_traversable": true,
+                "original_lower_bound_m": 1.435188777925947,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    63,
+                    76,
+                    157,
+                    170
+                  ],
+                  "checked_cells": 196,
+                  "checked_nonfree_cells": 0
+                }
+              },
+              {
+                "cell": [
+                  70,
+                  162
+                ],
+                "value": 0,
+                "original_traversable": true,
+                "original_lower_bound_m": 1.3964267672683082,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    64,
+                    76,
+                    156,
+                    169
+                  ],
+                  "checked_cells": 182,
+                  "checked_nonfree_cells": 0
+                }
+              },
+              {
+                "cell": [
+                  70,
+                  163
+                ],
+                "value": 0,
+                "original_traversable": true,
+                "original_lower_bound_m": 1.4180888463155361,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    64,
+                    76,
+                    157,
+                    169
+                  ],
+                  "checked_cells": 169,
+                  "checked_nonfree_cells": 0
+                }
+              },
+              {
+                "cell": [
+                  70,
+                  164
+                ],
+                "value": 0,
+                "original_traversable": true,
+                "original_lower_bound_m": 1.4411269669640128,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    64,
+                    76,
+                    157,
+                    170
+                  ],
+                  "checked_cells": 182,
+                  "checked_nonfree_cells": 0
+                }
+              },
+              {
+                "cell": [
+                  71,
+                  162
+                ],
+                "value": 0,
+                "original_traversable": true,
+                "original_lower_bound_m": 1.3511871233268775,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    64,
+                    77,
+                    156,
+                    169
+                  ],
+                  "checked_cells": 196,
+                  "checked_nonfree_cells": 0
+                }
+              },
+              {
+                "cell": [
+                  71,
+                  163
+                ],
+                "value": 0,
+                "original_traversable": true,
+                "original_lower_bound_m": 1.37354494130121,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    64,
+                    77,
+                    157,
+                    169
+                  ],
+                  "checked_cells": 182,
+                  "checked_nonfree_cells": 0
+                }
+              },
+              {
+                "cell": [
+                  71,
+                  164
+                ],
+                "value": 0,
+                "original_traversable": true,
+                "original_lower_bound_m": 1.397299539130113,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    64,
+                    77,
+                    157,
+                    170
+                  ],
+                  "checked_cells": 196,
+                  "checked_nonfree_cells": 0
+                }
+              }
+            ],
+            "anchors": [
+              {
+                "cell": [
+                  69,
+                  162
+                ],
+                "centre_exact": [
+                  "147718067777752385/144115188075855872",
+                  "-234187180623265713/144115188075855872"
+                ],
+                "bridge_length_squared_exact": "51101063141818336076129674326577/10384593717069655257060992658440192",
+                "bridge_length_m": 0.07014879460648302,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    63,
+                    76,
+                    156,
+                    169
+                  ],
+                  "checked_cells": 196,
+                  "checked_nonfree_cells": 0
+                }
+              },
+              {
+                "cell": [
+                  69,
+                  163
+                ],
+                "centre_exact": [
+                  "154923827181545179/144115188075855872",
+                  "-234187180623265713/144115188075855872"
+                ],
+                "bridge_length_squared_exact": "32587586145842288014128542732765/10384593717069655257060992658440192",
+                "bridge_length_m": 0.05601848265241406,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    63,
+                    76,
+                    157,
+                    169
+                  ],
+                  "checked_cells": 182,
+                  "checked_nonfree_cells": 0
+                }
+              },
+              {
+                "cell": [
+                  69,
+                  164
+                ],
+                "centre_exact": [
+                  "162129586585337973/144115188075855872",
+                  "-234187180623265713/144115188075855872"
+                ],
+                "bridge_length_squared_exact": "65997077735214522002039897465389/10384593717069655257060992658440192",
+                "bridge_length_m": 0.07972005652666768,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    63,
+                    76,
+                    157,
+                    170
+                  ],
+                  "checked_cells": 196,
+                  "checked_nonfree_cells": 0
+                }
+              },
+              {
+                "cell": [
+                  70,
+                  162
+                ],
+                "centre_exact": [
+                  "147718067777752385/144115188075855872",
+                  "-226981421219472919/144115188075855872"
+                ],
+                "bridge_length_squared_exact": "19368391658069749330466062546633/10384593717069655257060992658440192",
+                "bridge_length_m": 0.04318689932658773,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    64,
+                    76,
+                    156,
+                    169
+                  ],
+                  "checked_cells": 182,
+                  "checked_nonfree_cells": 0
+                }
+              },
+              {
+                "cell": [
+                  70,
+                  163
+                ],
+                "centre_exact": [
+                  "154923827181545179/144115188075855872",
+                  "-226981421219472919/144115188075855872"
+                ],
+                "bridge_length_squared_exact": "854914662093701268464930952821/10384593717069655257060992658440192",
+                "bridge_length_m": 0.009073328351883764,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    64,
+                    76,
+                    157,
+                    169
+                  ],
+                  "checked_cells": 169,
+                  "checked_nonfree_cells": 0
+                }
+              },
+              {
+                "cell": [
+                  70,
+                  164
+                ],
+                "centre_exact": [
+                  "162129586585337973/144115188075855872",
+                  "-226981421219472919/144115188075855872"
+                ],
+                "bridge_length_squared_exact": "34264406251465935256376285685445/10384593717069655257060992658440192",
+                "bridge_length_m": 0.0574416425715471,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    64,
+                    76,
+                    157,
+                    170
+                  ],
+                  "checked_cells": 182,
+                  "checked_nonfree_cells": 0
+                }
+              },
+              {
+                "cell": [
+                  71,
+                  162
+                ],
+                "centre_exact": [
+                  "147718067777752385/144115188075855872",
+                  "-219775661815680125/144115188075855872"
+                ],
+                "bridge_length_squared_exact": "39558688759669444634714937093125/10384593717069655257060992658440192",
+                "bridge_length_m": 0.06172003857862621,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    64,
+                    77,
+                    156,
+                    169
+                  ],
+                  "checked_cells": 196,
+                  "checked_nonfree_cells": 0
+                }
+              },
+              {
+                "cell": [
+                  71,
+                  163
+                ],
+                "centre_exact": [
+                  "154923827181545179/144115188075855872",
+                  "-219775661815680125/144115188075855872"
+                ],
+                "bridge_length_squared_exact": "21045211763693396572713805499313/10384593717069655257060992658440192",
+                "bridge_length_m": 0.04501755408819299,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    64,
+                    77,
+                    157,
+                    169
+                  ],
+                  "checked_cells": 182,
+                  "checked_nonfree_cells": 0
+                }
+              },
+              {
+                "cell": [
+                  71,
+                  164
+                ],
+                "centre_exact": [
+                  "162129586585337973/144115188075855872",
+                  "-219775661815680125/144115188075855872"
+                ],
+                "bridge_length_squared_exact": "54454703353065630560625160231937/10384593717069655257060992658440192",
+                "bridge_length_m": 0.07241406762514903,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    64,
+                    77,
+                    157,
+                    170
+                  ],
+                  "checked_cells": 196,
+                  "checked_nonfree_cells": 0
+                }
+              }
+            ],
+            "graph_mutated": false,
+            "interpretation": "virtual start at unchanged estimated point; all anchors retained; no motion or goal"
+          }
+        },
+        {
+          "robot": "tb2",
+          "estimated_xy": [
+            -2.0471161562427556,
+            -0.3723507737666706
+          ],
+          "state_metadata_descriptive_only": {
+            "epoch": "proxy2d_w1_e1_9eadb32e",
+            "sequence": 3201,
+            "version": 3201,
+            "source_stamp": 64.1,
+            "received_stamp": 64.1,
+            "payload_sha256": null,
+            "source_age_signed_sec": 0.0,
+            "received_age_signed_sec": 0.0
+          },
+          "navigation_map": {
+            "shape": [
+              204,
+              284
+            ],
+            "dtype": "<i2",
+            "grid_bytes_sha256_before": "59c3e9e50eafd1ded65aec3e1820e8ddb822696c7f67f228155008db0a4ca21a",
+            "grid_bytes_sha256_after": "59c3e9e50eafd1ded65aec3e1820e8ddb822696c7f67f228155008db0a4ca21a",
+            "resolution": 0.05,
+            "origin": [
+              -7.1,
+              -5.1
+            ],
+            "metadata_descriptive_only": {
+              "epoch": "proxy2d_w1_e1_9eadb32e",
+              "sequence": 65,
+              "version": 65,
+              "source_stamp": 64.1,
+              "received_stamp": 64.1,
+              "payload_sha256": "8942c494acd133c9e159619eb8b02fadad52d0469129d332b4d910e2f4ce1372",
+              "source_age_signed_sec": 0.0,
+              "received_age_signed_sec": 0.0
+            }
+          },
+          "attachment": {
+            "schema": "mr3-point-graph-attachment-candidate-v1",
+            "profile": "mr3-point-graph-attachment-3x3-disabled-v1",
+            "production_enabled": false,
+            "accepted": true,
+            "reason": null,
+            "required_m_exact": "29/100",
+            "estimated_point_exact": [
+              "-2304847889609749/1125899906842624",
+              "-3353837611973387/9007199254740992"
+            ],
+            "resolution_exact": "3602879701896397/72057594037927936",
+            "origin_exact": [
+              "-3996944669291315/562949953421312",
+              "-2871044762448691/562949953421312"
+            ],
+            "canonical_cell": [
+              94,
+              101
+            ],
+            "canonical_value": 0,
+            "canonical_cell_original_traversable": true,
+            "canonical_cell_original_lower_bound_m": 0.9608876031992364,
+            "point_certificate": {
+              "schema": "mr3-estimated-straight-segment-certificate-v1",
+              "accepted": true,
+              "required_m_exact": "29/100",
+              "point_distance_squared_capped_exact": "841/10000",
+              "segment_distance_squared_capped_exact": "841/10000",
+              "candidate_bounds": [
+                88,
+                100,
+                95,
+                106
+              ],
+              "checked_cells": 156,
+              "checked_nonfree_cells": 0
+            },
+            "window_inclusive": [
+              93,
+              95,
+              100,
+              102
+            ],
+            "candidate_nodes": [
+              {
+                "cell": [
+                  93,
+                  100
+                ],
+                "value": 0,
+                "original_traversable": true,
+                "original_lower_bound_m": 0.930305056732071,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    87,
+                    100,
+                    94,
+                    106
+                  ],
+                  "checked_cells": 182,
+                  "checked_nonfree_cells": 0
+                }
+              },
+              {
+                "cell": [
+                  93,
+                  101
+                ],
+                "value": 0,
+                "original_traversable": true,
+                "original_lower_bound_m": 0.977067497506502,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    87,
+                    100,
+                    95,
+                    107
+                  ],
+                  "checked_cells": 182,
+                  "checked_nonfree_cells": 0
+                }
+              },
+              {
+                "cell": [
+                  93,
+                  102
+                ],
+                "value": 0,
+                "original_traversable": true,
+                "original_lower_bound_m": 1.0193958164271222,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    87,
+                    100,
+                    95,
+                    108
+                  ],
+                  "checked_cells": 196,
+                  "checked_nonfree_cells": 0
+                }
+              },
+              {
+                "cell": [
+                  94,
+                  100
+                ],
+                "value": 0,
+                "original_traversable": true,
+                "original_lower_bound_m": 0.9133279589911865,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    88,
+                    100,
+                    94,
+                    106
+                  ],
+                  "checked_cells": 169,
+                  "checked_nonfree_cells": 0
+                }
+              },
+              {
+                "cell": [
+                  94,
+                  101
+                ],
+                "value": 0,
+                "original_traversable": true,
+                "original_lower_bound_m": 0.9608876031992364,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    88,
+                    100,
+                    95,
+                    107
+                  ],
+                  "checked_cells": 169,
+                  "checked_nonfree_cells": 0
+                }
+              },
+              {
+                "cell": [
+                  94,
+                  102
+                ],
+                "value": 0,
+                "original_traversable": true,
+                "original_lower_bound_m": 1.0086753118317278,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    88,
+                    100,
+                    95,
+                    108
+                  ],
+                  "checked_cells": 182,
+                  "checked_nonfree_cells": 0
+                }
+              },
+              {
+                "cell": [
+                  95,
+                  100
+                ],
+                "value": 0,
+                "original_traversable": true,
+                "original_lower_bound_m": 0.8987217455541429,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    88,
+                    101,
+                    94,
+                    106
+                  ],
+                  "checked_cells": 182,
+                  "checked_nonfree_cells": 0
+                }
+              },
+              {
+                "cell": [
+                  95,
+                  101
+                ],
+                "value": 0,
+                "original_traversable": true,
+                "original_lower_bound_m": 0.9469887961600976,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    88,
+                    101,
+                    95,
+                    107
+                  ],
+                  "checked_cells": 182,
+                  "checked_nonfree_cells": 0
+                }
+              },
+              {
+                "cell": [
+                  95,
+                  102
+                ],
+                "value": 0,
+                "original_traversable": true,
+                "original_lower_bound_m": 0.9954210673450877,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    88,
+                    101,
+                    95,
+                    108
+                  ],
+                  "checked_cells": 196,
+                  "checked_nonfree_cells": 0
+                }
+              }
+            ],
+            "anchors": [
+              {
+                "cell": [
+                  93,
+                  100
+                ],
+                "centre_exact": [
+                  "-299039015257400843/144115188075855872",
+                  "-61248954932238657/144115188075855872"
+                ],
+                "bridge_length_squared_exact": "36859593735388271987487928131533/10384593717069655257060992658440192",
+                "bridge_length_m": 0.05957725879600892,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    87,
+                    100,
+                    94,
+                    106
+                  ],
+                  "checked_cells": 182,
+                  "checked_nonfree_cells": 0
+                }
+              },
+              {
+                "cell": [
+                  93,
+                  101
+                ],
+                "centre_exact": [
+                  "-291833255853608049/144115188075855872",
+                  "-61248954932238657/144115188075855872"
+                ],
+                "bridge_length_squared_exact": "33864839159139813845026747003777/10384593717069655257060992658440192",
+                "bridge_length_m": 0.057105738677669174,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    87,
+                    100,
+                    95,
+                    107
+                  ],
+                  "checked_cells": 182,
+                  "checked_nonfree_cells": 0
+                }
+              },
+              {
+                "cell": [
+                  93,
+                  102
+                ],
+                "centre_exact": [
+                  "-284627496449815255/144115188075855872",
+                  "-61248954932238657/144115188075855872"
+                ],
+                "bridge_length_squared_exact": "82793053168239637752478052202457/10384593717069655257060992658440192",
+                "bridge_length_m": 0.08928987072561961,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    87,
+                    100,
+                    95,
+                    108
+                  ],
+                  "checked_cells": 196,
+                  "checked_nonfree_cells": 0
+                }
+              },
+              {
+                "cell": [
+                  94,
+                  100
+                ],
+                "centre_exact": [
+                  "-299039015257400843/144115188075855872",
+                  "-54043195528445863/144115188075855872"
+                ],
+                "bridge_length_squared_exact": "8146995632941896066129832429541/10384593717069655257060992658440192",
+                "bridge_length_m": 0.02800941167382389,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    88,
+                    100,
+                    94,
+                    106
+                  ],
+                  "checked_cells": 169,
+                  "checked_nonfree_cells": 0
+                }
+              },
+              {
+                "cell": [
+                  94,
+                  101
+                ],
+                "centre_exact": [
+                  "-291833255853608049/144115188075855872",
+                  "-54043195528445863/144115188075855872"
+                ],
+                "bridge_length_squared_exact": "5152241056693437923668651301785/10384593717069655257060992658440192",
+                "bridge_length_m": 0.022274262425260264,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    88,
+                    100,
+                    95,
+                    107
+                  ],
+                  "checked_cells": 169,
+                  "checked_nonfree_cells": 0
+                }
+              },
+              {
+                "cell": [
+                  94,
+                  102
+                ],
+                "centre_exact": [
+                  "-284627496449815255/144115188075855872",
+                  "-54043195528445863/144115188075855872"
+                ],
+                "bridge_length_squared_exact": "54080455065793261831119956500465/10384593717069655257060992658440192",
+                "bridge_length_m": 0.0721648002205021,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    88,
+                    100,
+                    95,
+                    108
+                  ],
+                  "checked_cells": 182,
+                  "checked_nonfree_cells": 0
+                }
+              },
+              {
+                "cell": [
+                  95,
+                  100
+                ],
+                "centre_exact": [
+                  "-299039015257400843/144115188075855872",
+                  "-46837436124653069/144115188075855872"
+                ],
+                "bridge_length_squared_exact": "31357366115843802194684223053985/10384593717069655257060992658440192",
+                "bridge_length_m": 0.054950928281339004,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    88,
+                    101,
+                    94,
+                    106
+                  ],
+                  "checked_cells": 182,
+                  "checked_nonfree_cells": 0
+                }
+              },
+              {
+                "cell": [
+                  95,
+                  101
+                ],
+                "centre_exact": [
+                  "-291833255853608049/144115188075855872",
+                  "-46837436124653069/144115188075855872"
+                ],
+                "bridge_length_squared_exact": "28362611539595344052223041926229/10384593717069655257060992658440192",
+                "bridge_length_m": 0.05226107675178997,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    88,
+                    101,
+                    95,
+                    107
+                  ],
+                  "checked_cells": 182,
+                  "checked_nonfree_cells": 0
+                }
+              },
+              {
+                "cell": [
+                  95,
+                  102
+                ],
+                "centre_exact": [
+                  "-284627496449815255/144115188075855872",
+                  "-46837436124653069/144115188075855872"
+                ],
+                "bridge_length_squared_exact": "77290825548695167959674347124909/10384593717069655257060992658440192",
+                "bridge_length_m": 0.08627187124162836,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    88,
+                    101,
+                    95,
+                    108
+                  ],
+                  "checked_cells": 196,
+                  "checked_nonfree_cells": 0
+                }
+              }
+            ],
+            "graph_mutated": false,
+            "interpretation": "virtual start at unchanged estimated point; all anchors retained; no motion or goal"
+          }
+        },
+        {
+          "robot": "tb3",
+          "estimated_xy": [
+            0.5388200617144816,
+            0.2012590289250328
+          ],
+          "state_metadata_descriptive_only": {
+            "epoch": "proxy2d_w1_e1_9eadb32e",
+            "sequence": 3201,
+            "version": 3201,
+            "source_stamp": 64.1,
+            "received_stamp": 64.1,
+            "payload_sha256": null,
+            "source_age_signed_sec": 0.0,
+            "received_age_signed_sec": 0.0
+          },
+          "navigation_map": {
+            "shape": [
+              204,
+              284
+            ],
+            "dtype": "<i2",
+            "grid_bytes_sha256_before": "45f8d7f946e6b1d7e9efce515f08f5cb44bcdcafaf0d94c27f3d84487ebbc22c",
+            "grid_bytes_sha256_after": "45f8d7f946e6b1d7e9efce515f08f5cb44bcdcafaf0d94c27f3d84487ebbc22c",
+            "resolution": 0.05,
+            "origin": [
+              -7.1,
+              -5.1
+            ],
+            "metadata_descriptive_only": {
+              "epoch": "proxy2d_w1_e1_9eadb32e",
+              "sequence": 65,
+              "version": 65,
+              "source_stamp": 64.1,
+              "received_stamp": 64.1,
+              "payload_sha256": "3e8a0b3e8f37a14afb91c8d149f38e44991baf7e7b134734b8faf5a07989d26d",
+              "source_age_signed_sec": 0.0,
+              "received_age_signed_sec": 0.0
+            }
+          },
+          "attachment": {
+            "schema": "mr3-point-graph-attachment-candidate-v1",
+            "profile": "mr3-point-graph-attachment-3x3-disabled-v1",
+            "production_enabled": false,
+            "accepted": true,
+            "reason": null,
+            "required_m_exact": "29/100",
+            "estimated_point_exact": [
+              "2426629829157087/4503599627370496",
+              "7251120701373805/36028797018963968"
+            ],
+            "resolution_exact": "3602879701896397/72057594037927936",
+            "origin_exact": [
+              "-3996944669291315/562949953421312",
+              "-2871044762448691/562949953421312"
+            ],
+            "canonical_cell": [
+              106,
+              152
+            ],
+            "canonical_value": 0,
+            "canonical_cell_original_traversable": false,
+            "canonical_cell_original_lower_bound_m": 0.28087242695751063,
+            "point_certificate": {
+              "schema": "mr3-estimated-straight-segment-certificate-v1",
+              "accepted": true,
+              "required_m_exact": "29/100",
+              "point_distance_squared_capped_exact": "841/10000",
+              "segment_distance_squared_capped_exact": "841/10000",
+              "candidate_bounds": [
+                100,
+                111,
+                146,
+                158
+              ],
+              "checked_cells": 156,
+              "checked_nonfree_cells": 2
+            },
+            "window_inclusive": [
+              105,
+              107,
+              151,
+              153
+            ],
+            "candidate_nodes": [
+              {
+                "cell": [
+                  105,
+                  151
+                ],
+                "value": 0,
+                "original_traversable": false,
+                "original_lower_bound_m": 0.2561922556829377,
+                "bridge_certificate": null
+              },
+              {
+                "cell": [
+                  105,
+                  152
+                ],
+                "value": 0,
+                "original_traversable": true,
+                "original_lower_bound_m": 0.30005485756564115,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    99,
+                    111,
+                    146,
+                    158
+                  ],
+                  "checked_cells": 169,
+                  "checked_nonfree_cells": 2
+                }
+              },
+              {
+                "cell": [
+                  105,
+                  153
+                ],
+                "value": 0,
+                "original_traversable": true,
+                "original_lower_bound_m": 0.3454333162338681,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    99,
+                    111,
+                    146,
+                    159
+                  ],
+                  "checked_cells": 182,
+                  "checked_nonfree_cells": 2
+                }
+              },
+              {
+                "cell": [
+                  106,
+                  151
+                ],
+                "value": 0,
+                "original_traversable": false,
+                "original_lower_bound_m": 0.23390290129739782,
+                "bridge_certificate": null
+              },
+              {
+                "cell": [
+                  106,
+                  152
+                ],
+                "value": 0,
+                "original_traversable": false,
+                "original_lower_bound_m": 0.28087242695751063,
+                "bridge_certificate": null
+              },
+              {
+                "cell": [
+                  106,
+                  153
+                ],
+                "value": 0,
+                "original_traversable": true,
+                "original_lower_bound_m": 0.32865015540469855,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    100,
+                    112,
+                    146,
+                    159
+                  ],
+                  "checked_cells": 182,
+                  "checked_nonfree_cells": 2
+                }
+              },
+              {
+                "cell": [
+                  107,
+                  151
+                ],
+                "value": 0,
+                "original_traversable": false,
+                "original_lower_bound_m": 0.2195956366203119,
+                "bridge_certificate": null
+              },
+              {
+                "cell": [
+                  107,
+                  152
+                ],
+                "value": 0,
+                "original_traversable": false,
+                "original_lower_bound_m": 0.26878278745558365,
+                "bridge_certificate": null
+              },
+              {
+                "cell": [
+                  107,
+                  153
+                ],
+                "value": 0,
+                "original_traversable": true,
+                "original_lower_bound_m": 0.3181980515339464,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    100,
+                    113,
+                    146,
+                    159
+                  ],
+                  "checked_cells": 196,
+                  "checked_nonfree_cells": 2
+                }
+              }
+            ],
+            "anchors": [
+              {
+                "cell": [
+                  105,
+                  152
+                ],
+                "centre_exact": [
+                  "75660473739824445/144115188075855872",
+                  "25220157913274871/144115188075855872"
+                ],
+                "bridge_length_squared_exact": "9143953635944827162146882376361/10384593717069655257060992658440192",
+                "bridge_length_m": 0.02967373764590053,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    99,
+                    111,
+                    146,
+                    158
+                  ],
+                  "checked_cells": 169,
+                  "checked_nonfree_cells": 2
+                }
+              },
+              {
+                "cell": [
+                  105,
+                  153
+                ],
+                "centre_exact": [
+                  "82866233143617239/144115188075855872",
+                  "25220157913274871/144115188075855872"
+                ],
+                "bridge_length_squared_exact": "20753865323647722873493453394413/10384593717069655257060992658440192",
+                "bridge_length_m": 0.044704860299856125,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    99,
+                    111,
+                    146,
+                    159
+                  ],
+                  "checked_cells": 182,
+                  "checked_nonfree_cells": 2
+                }
+              },
+              {
+                "cell": [
+                  106,
+                  153
+                ],
+                "centre_exact": [
+                  "82866233143617239/144115188075855872",
+                  "32425917317067665/144115188075855872"
+                ],
+                "bridge_length_squared_exact": "19446414937197932475155110192525/10384593717069655257060992658440192",
+                "bridge_length_m": 0.0432737985613285,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    100,
+                    112,
+                    146,
+                    159
+                  ],
+                  "checked_cells": 182,
+                  "checked_nonfree_cells": 2
+                }
+              },
+              {
+                "cell": [
+                  107,
+                  153
+                ],
+                "centre_exact": [
+                  "82866233143617239/144115188075855872",
+                  "39631676720860459/144115188075855872"
+                ],
+                "bridge_length_squared_exact": "70061933136096424126729253317073/10384593717069655257060992658440192",
+                "bridge_length_m": 0.0821384121433037,
+                "bridge_certificate": {
+                  "schema": "mr3-estimated-straight-segment-certificate-v1",
+                  "accepted": true,
+                  "required_m_exact": "29/100",
+                  "point_distance_squared_capped_exact": "841/10000",
+                  "segment_distance_squared_capped_exact": "841/10000",
+                  "candidate_bounds": [
+                    100,
+                    113,
+                    146,
+                    159
+                  ],
+                  "checked_cells": 196,
+                  "checked_nonfree_cells": 2
+                }
+              }
+            ],
+            "graph_mutated": false,
+            "interpretation": "virtual start at unchanged estimated point; all anchors retained; no motion or goal"
+          }
+        }
+      ]
+    }
+  ],
+  "input_bindings_before": {
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v35_grid_liveness/closed_execution/rooms_forensic_v1.json": "963b759dc18d4bfca76238ab6b0d050fd4d8cd970bc31f5d8e89301051b01f8a",
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v34_seed_v2/closed_execution/seed_probe_v2/stages/group3/worker1/episode001_rooms_101/inputs/28bd8e9acd5e0dc4a8ab12d29772e694a3e6aea5f82d567b8cd9bf667bbfbe39.json.gz": "5cc346cf57f622372037f9984cb3f12e4bf7f9610ba8d08842586833d5224964",
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v34_seed_v2/closed_execution/seed_probe_v2/stages/group3/worker1/episode001_rooms_101/inputs/a32e7a37903152610d6f9293967fa9d060932a6938c5e40e8e096c007a3e4274.json.gz": "00ad33db448020b92c6ea9cafa323e6b9d6e2c911e1acff45ce160b2b2d34727"
+  },
+  "input_bindings_after": {
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v35_grid_liveness/closed_execution/rooms_forensic_v1.json": "963b759dc18d4bfca76238ab6b0d050fd4d8cd970bc31f5d8e89301051b01f8a",
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v34_seed_v2/closed_execution/seed_probe_v2/stages/group3/worker1/episode001_rooms_101/inputs/28bd8e9acd5e0dc4a8ab12d29772e694a3e6aea5f82d567b8cd9bf667bbfbe39.json.gz": "5cc346cf57f622372037f9984cb3f12e4bf7f9610ba8d08842586833d5224964",
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v34_seed_v2/closed_execution/seed_probe_v2/stages/group3/worker1/episode001_rooms_101/inputs/a32e7a37903152610d6f9293967fa9d060932a6938c5e40e8e096c007a3e4274.json.gz": "00ad33db448020b92c6ea9cafa323e6b9d6e2c911e1acff45ce160b2b2d34727"
+  },
+  "input_stable": true,
+  "scope": "two preselected known development frames; all three own maps/received estimated poses; no path or command",
+  "limitations": [
+    "new attachment model replaces the old containing-cell admission rule; core graph remains unchanged",
+    "timestamps and signed source ages are descriptive; no new freshness or execution gate is certified",
+    "original audited-input credit does not certify this new computation or production integration",
+    "zero anchors is a valid negative in the fixed 3x3 model, not a task or continuous-space impossibility proof",
+    "no physical pose, tracking, peer/scan safety, exploration policy, task, native or training qualification"
+  ],
+  "source_bindings": {
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v36_point_graph/attachment_replay_v1.py": "63674c4da3d4c6399eea0e53b3b2df69e6837658972c68b48e820634143d1175",
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v36_point_graph/point_graph_v1.py": "abb8dc67d32c125ee28e478ba7ea3541a8936f8d25863d50a800aaa9f0a6264b",
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d_codec.py": "337244082676e08050d8872c6b9fcdc109840dcdb6ed188f854c5496e1d78981",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py": "1f0047c50492e7cd16f631f714df11046bef2de0bfb2f5c0bb3c130567d598fd",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_seed_certificate.py": "99bd4fdda76a5974d394a2e40177e7cbd5fb12308258c2ee096c5232c568e3cb",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_episode.py": "9145d2ad23789b252e32f0afdfe18cf2eeec8e2c7e9ca7e89127a532288e411b"
+  },
+  "source_bindings_after": {
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v36_point_graph/attachment_replay_v1.py": "63674c4da3d4c6399eea0e53b3b2df69e6837658972c68b48e820634143d1175",
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v36_point_graph/point_graph_v1.py": "abb8dc67d32c125ee28e478ba7ea3541a8936f8d25863d50a800aaa9f0a6264b",
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d_codec.py": "337244082676e08050d8872c6b9fcdc109840dcdb6ed188f854c5496e1d78981",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py": "1f0047c50492e7cd16f631f714df11046bef2de0bfb2f5c0bb3c130567d598fd",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_seed_certificate.py": "99bd4fdda76a5974d394a2e40177e7cbd5fb12308258c2ee096c5232c568e3cb",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_episode.py": "9145d2ad23789b252e32f0afdfe18cf2eeec8e2c7e9ca7e89127a532288e411b"
+  },
+  "source_stable": true,
+  "identity": {
+    "pid": 3510886,
+    "parent": 3510885,
+    "group": 3510885,
+    "session": 3510823,
+    "start_ticks": 439789558
+  }
+}
