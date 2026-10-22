@@ -1,0 +1,213 @@
+{
+  "schema": "mr3-v34-verified-description-summary-v1",
+  "source_description": {
+    "path": "report/assets/20261022_mr3_p2a_v34_seed_v2/closed_execution/seed_probe_v2/seed_description.json",
+    "sha256": "7259a036d7ba4ef02e47ff9c8149e10f8af0224f62ee7fca6e514b4ee8c40216"
+  },
+  "scope": "summary of already independently verified description; no new actor replay",
+  "episodes": [
+    {
+      "scene": "open",
+      "seed": 101,
+      "path_m": [
+        4.550665115157475,
+        3.4392074800885544,
+        2.3737289993576596
+      ],
+      "accepted_goals": [
+        11,
+        10,
+        6
+      ],
+      "no_legal_goals": [
+        52,
+        52,
+        58
+      ],
+      "seed_reasons": [
+        {
+          "robot": "tb1",
+          "reason": "accepted",
+          "count": 65
+        },
+        {
+          "robot": "tb2",
+          "reason": "accepted",
+          "count": 62
+        },
+        {
+          "robot": "tb2",
+          "reason": "seed_cell_body_clearance",
+          "count": 3
+        },
+        {
+          "robot": "tb3",
+          "reason": "accepted",
+          "count": 35
+        },
+        {
+          "robot": "tb3",
+          "reason": "seed_cell_body_clearance",
+          "count": 30
+        }
+      ],
+      "certificate_results": [
+        {
+          "robot": "tb1",
+          "reason": "accepted",
+          "count": 3
+        },
+        {
+          "robot": "tb2",
+          "reason": "accepted",
+          "count": 9
+        },
+        {
+          "robot": "tb3",
+          "reason": "accepted",
+          "count": 2
+        }
+      ],
+      "coverage": 0.8704464530265681,
+      "iou": 0.1668830232222703,
+      "false_free": 0.004694835680751174,
+      "accuracy": 0.9752544055596922,
+      "quality_pass": false,
+      "participation_pass": true,
+      "closed": true,
+      "contacts": 0
+    },
+    {
+      "scene": "rooms",
+      "seed": 101,
+      "path_m": [
+        2.3307852644715363,
+        3.393605752335794,
+        0.22083177464372414
+      ],
+      "accepted_goals": [
+        11,
+        11,
+        1
+      ],
+      "no_legal_goals": [
+        50,
+        51,
+        63
+      ],
+      "seed_reasons": [
+        {
+          "robot": "tb1",
+          "reason": "accepted",
+          "count": 65
+        },
+        {
+          "robot": "tb2",
+          "reason": "accepted",
+          "count": 65
+        },
+        {
+          "robot": "tb3",
+          "reason": "accepted",
+          "count": 6
+        },
+        {
+          "robot": "tb3",
+          "reason": "seed_cell_body_clearance",
+          "count": 59
+        }
+      ],
+      "certificate_results": [
+        {
+          "robot": "tb1",
+          "reason": "accepted",
+          "count": 8
+        },
+        {
+          "robot": "tb2",
+          "reason": "accepted",
+          "count": 9
+        },
+        {
+          "robot": "tb3",
+          "reason": "accepted",
+          "count": 2
+        }
+      ],
+      "coverage": 0.7091383307573416,
+      "iou": 0.150840278726602,
+      "false_free": 0.003562176165803109,
+      "accuracy": 0.9701082773130805,
+      "quality_pass": false,
+      "participation_pass": false,
+      "closed": true,
+      "contacts": 0
+    },
+    {
+      "scene": "corridors",
+      "seed": 101,
+      "path_m": [
+        1.7979371479376067,
+        2.8968074890041207,
+        2.556087511778032
+      ],
+      "accepted_goals": [
+        10,
+        10,
+        7
+      ],
+      "no_legal_goals": [
+        53,
+        52,
+        53
+      ],
+      "seed_reasons": [
+        {
+          "robot": "tb1",
+          "reason": "accepted",
+          "count": 65
+        },
+        {
+          "robot": "tb2",
+          "reason": "accepted",
+          "count": 65
+        },
+        {
+          "robot": "tb3",
+          "reason": "accepted",
+          "count": 53
+        },
+        {
+          "robot": "tb3",
+          "reason": "seed_cell_body_clearance",
+          "count": 12
+        }
+      ],
+      "certificate_results": [
+        {
+          "robot": "tb1",
+          "reason": "accepted",
+          "count": 3
+        },
+        {
+          "robot": "tb2",
+          "reason": "accepted",
+          "count": 5
+        },
+        {
+          "robot": "tb3",
+          "reason": "accepted",
+          "count": 3
+        }
+      ],
+      "coverage": 0.34460461285008237,
+      "iou": 0.09592879512114719,
+      "false_free": 0.00018882175226586103,
+      "accuracy": 0.9573197700132685,
+      "quality_pass": false,
+      "participation_pass": true,
+      "closed": true,
+      "contacts": 0
+    }
+  ]
+}

@@ -8255,3 +8255,20 @@ Engineering PASS/functional unresolved: 192/192/0, independently192 action/unifo
 共524项通过（204+149+10+161）。启动器四次子测试启动前失败：并行快照exclusive创建后尚未写完即读造成2次假collision，修正目录处理时又提前创建wrapper独占输出导致2次FileExistsError；均无actual-wait测试child。记录及三版driver源码在V34 checks/launcher_*，源码相同副本逐字节验证后去重，source_recovery_v1.json及同一冻结的Git原件可恢复全部SHA，未删失败结论。修成完整字节原子发布，snapshot与独占wrapper目录分离后运行上述PASS；不是模拟活动重试。
 
 新零更新活动预声明：seed_probe_v2，open/rooms/corridors各101/64步，总192attempt，1800秒含外部关闭；入场47269.8043977356018/52000，pilot/final-only不动、75000仍待答，不能启动需联合预约20100秒的原生资格+minimum。本条为准备与预约，尚无v2行为/任务信用。
+
+
+## 2026-10-22 MR3-P2A V34：唯一seed_probe_v2实际闭合PASS，功能部分恢复
+
+冻结`7816cced7067c4505bd2874f0ad323cbb4fad85e`，source-clean/pushed preflight通过。三场101各64步零更新，192/192/0，195actor/585证书；128源绑定稳定、全部独立审计/外尾通过，20保存身份gone。详见[报告](report/20261022_mr3_p2a_v34_seed_v2.md)、[原件](report/assets/20261022_mr3_p2a_v34_seed_v2/closed_inventory_v1.json)。
+
+精确argv（外层环境PYTHONNOUSERSITE=1，cwd=/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl）：
+```json
+["/home/zhuyulab/miniconda3/envs/ns3gym/bin/python", "-B", "-m", "mr3_learning.reach_execution", "--output", "/tmp/mr3_p2a_v34_seed_probe_outer_v1", "--scope", "engineering", "--source", "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d_seed_activity.py", "--source", "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v34_seed_v2/seed_probe_plan_v1.json", "--source", "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_proxy2d.py", "--source", "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d_conformity.py", "--source", "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py", "--source", "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_seed_certificate.py", "--source", "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_proxy2d_navigation.py", "--", "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python", "-B", "-m", "mr3_learning.proxy2d_seed_activity", "execute", "--freeze", "7816cced7067c4505bd2874f0ad323cbb4fad85e", "--kind", "seed_probe_v2"]
+```
+
+精确argv（外层环境PYTHONNOUSERSITE=1，cwd=/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl）：
+```json
+["/home/zhuyulab/miniconda3/envs/ns3gym/bin/python", "-B", "-m", "mr3_learning.reach_execution", "--output", "/tmp/mr3_p2a_v34_seed_probe_final_outer_v1", "--scope", "engineering", "--source", "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d_seed_activity.py", "--source", "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v34_seed_v2/seed_probe_plan_v1.json", "--", "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python", "-B", "-m", "mr3_learning.proxy2d_seed_activity", "final", "--outer", "/tmp/mr3_p2a_v34_seed_probe_outer_v1/actual_wait.json", "--output", "/tmp/mr3_p2a_v34_seed_probe_final_v1.json", "--kind", "seed_probe_v2"]
+```
+
+main465.387889321 + finalouter0.701292181 = union466.089181502秒；端点520.193301181秒含gap54.104119679，全部小于1800，内嵌phase不重复计费。累计47735.8935792376018/52000，余4264.1064207623982。pilot/final-only不变，75000仍待答。tb1三场米级运动，tb3 open/corridors恢复，旧格归属拒绝归零；rooms tb3 .220832m和59/65格净空拒绝保留，三场质量false。仅64秒外截断，不是P2A/95%或新native资格；下一步新scope有限归因而非重试。
