@@ -1,5 +1,7 @@
 # 报告与证据适用范围
 
+2026-10-23 V51闭合PASS：freeze41100004固定旧V50单open回合原runtime审计1次完整PASS/无batch，parent421.403520124秒；24旧证据源/9执行源与Git一致、5保存身份freshgone，22原件362085B无损封存362008B。实际热点为JSON解析/规范化及重复声明/ACK全扫，非单纯几何；先等价索引/严格JSON构造CPU，再显式reset接线与原生阶段wall分解。累计70543.1774146986018/75000、余4456.8225853013982，pilot/final不动，无新资格/学习/95%信用，P2A未完成。 见[V51闭合](20261023_mr3_p2a_v51_runtime_profile.md)。
+
 2026-10-23 V51准备：固定V50 reset首open回合的一次独立runtime profile，14输入/24旧证据源/9执行源封存，6组真实toy生命周期CPU及guard/driver模块help PASS；尚未原件消费。预约840主＋60尾＝900工程秒可funded，先实测再恒等优化/显式reset登记与新完整资格。用户持续委托保持，后续有界工程块按实测自主规划、诚实保留旧账及pilot/final原额；P2A未完成。 见[V51](20261023_mr3_p2a_v51_runtime_profile.md)。
 
 2026-10-23 V50闭合FAIL：freeze23e909380真实reap rc1；11EP/296原生返回，30必要角色18PASS/2FAIL/10SKIP。reset input/runtime/full PASS，angular/physics旧probe入口拒绝、阶段11302.772605716>最终cap6301.463804643；可选两corridors停车证据缺口保留。deadline/minimum/pilot/final未启、0学习。911源/10ELF一致、545保存pair freshgone；5070原件10224871773B无损封存855260558B/0软链。工程parent union14162.168963343，累计70121.7738945746018/75000、余4878.2261054253982，pilot/final不动，P2A未完成。 见[V50闭合](20261023_mr3_p2a_v50_qualification.md)。

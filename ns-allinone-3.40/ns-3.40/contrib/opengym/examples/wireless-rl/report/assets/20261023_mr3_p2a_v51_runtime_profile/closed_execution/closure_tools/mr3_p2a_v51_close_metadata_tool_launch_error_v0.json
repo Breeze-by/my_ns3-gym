@@ -1,0 +1,16 @@
+{
+  "schema": "mr3-v51-metadata-tool-launch-error-v0",
+  "actual_argv": [
+    "/usr/bin/python3",
+    "-B",
+    "/tmp/mr3_p2a_v51_close_metadata_v1.py"
+  ],
+  "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+  "actual_tool_returncode": 1,
+  "actual_error_tail": "ModuleNotFoundError: No module named report",
+  "cause": "Direct /tmp script launcher set sys.path[0] to /tmp; canonical report namespace was absent. Correct with runpy from canonical cwd, without PYTHONPATH injection.",
+  "raw_telemetry_consumed": false,
+  "runtime_profile_retried": false,
+  "scientific_result_reclassified": false,
+  "engineering_added_seconds": "0"
+}
