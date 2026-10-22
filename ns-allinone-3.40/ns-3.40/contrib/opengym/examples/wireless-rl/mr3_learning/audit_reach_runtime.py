@@ -21,6 +21,8 @@ import subprocess
 
 ROBOTS = ("tb1", "tb2", "tb3")
 CONTRACT = "mr3-reach-v1"
+DEFAULT_GEOMETRY_RULE = "binary-cone-v1"
+SUPPORT_GEOMETRY_RULE = "cone-support-v2"
 R, D, H = Q(39, 5000), Q(18, 125), 780_000_000
 RAW, ACT, PUB = 20_000_000, 34_000_000, 940_000_000
 PURE = "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/"
@@ -40,6 +42,15 @@ SOURCES = tuple(PURE+name for name in (
 def require(condition, message):
     if not condition:
         raise ValueError(message)
+
+
+def geometry_rule(metadata):
+    rule = metadata.get("reach_geometry_rule", DEFAULT_GEOMETRY_RULE)
+    require(type(rule) is str and rule in (DEFAULT_GEOMETRY_RULE, SUPPORT_GEOMETRY_RULE),
+            "unknown reach geometry rule")
+    require(rule == DEFAULT_GEOMETRY_RULE or metadata.get("safety_contract") == CONTRACT,
+            "support geometry requires the explicit reach contract")
+    return rule
 
 
 def canonical(value):
@@ -305,7 +316,8 @@ def state_geometry(state, clock, epoch):
     return raw, q, role, signs, (raw_axis, mapped), clock-oldest
 
 
-def independent_pair(own, peer, clock, epoch):
+def independent_pair(own, peer, clock, epoch, *, reach_geometry_rule=DEFAULT_GEOMETRY_RULE):
+    geometry_rule({"reach_geometry_rule": reach_geometry_rule, "safety_contract": CONTRACT})
     left, right = state_geometry(own, clock, epoch), state_geometry(peer, clock, epoch)
     uncertainty = Q(3, 10)*Q(left[5]+right[5], 10**9)
     bearings = (tuple(b-a for a, b in zip(xy(left[0]), xy(right[0]))),
@@ -317,14 +329,19 @@ def independent_pair(own, peer, clock, epoch):
             if row[2] in ("HOLD", "D"):
                 continue
             phi = Q(6, 5)*(Q(row[5], 10**9)+Q(39, 50))
-            if not all(nonclosing(tuple(sign*x for x in row[4][frame]), toward, phi, uncertainty)
-                       for sign in row[3]):
+            if reach_geometry_rule == SUPPORT_GEOMETRY_RULE:
+                from .reach_support_replay import direction_support_upper
+                margin += max(direction_support_upper(toward,
+                    tuple(sign*x for x in row[4][frame]), phi, uncertainty, D) for sign in row[3])
+            elif not all(nonclosing(tuple(sign*x for x in row[4][frame]), toward, phi, uncertainty)
+                         for sign in row[3]):
                 margin += D
         results.append(sum(v*v for v in bearing) >= margin*margin)
     return all(results)
 
 
-def admitted_command(decision, own, delivered_self, peers, clock, epoch):
+def admitted_command(decision, own, delivered_self, peers, clock, epoch, *,
+                     reach_geometry_rule=DEFAULT_GEOMETRY_RULE):
     """Check exact request preservation or the narrowly authorized D filter.
 
     Component filtering consumes the complete old fixed-disk certificate. It
@@ -360,7 +377,9 @@ def admitted_command(decision, own, delivered_self, peers, clock, epoch):
             and same(evidence.get("canonical_input"), canonical_request)
             and type(evidence.get("rejected_transition_checks")) is dict
             and decision["decision"].get("reason") == "linear_brake_preserve_requested_turn"
-            and all(independent_pair(own, peer, clock, epoch) for peer in peers.values()),
+            and all(independent_pair(own, peer, clock, epoch,
+                **({"reach_geometry_rule": reach_geometry_rule}
+                   if reach_geometry_rule != DEFAULT_GEOMETRY_RULE else {})) for peer in peers.values()),
             "guard invented a command or filtered without the complete unchanged D certificate")
 
 
@@ -407,12 +426,16 @@ class Inputs:
                 "bound artifact changed before verdict")
 
 
-def source_proof(root, freeze):
+def source_proof(root, freeze, *, reach_geometry_rule=DEFAULT_GEOMETRY_RULE):
+    geometry_rule({"reach_geometry_rule": reach_geometry_rule, "safety_contract": CONTRACT})
     require(type(freeze) is str and re.fullmatch(r"[0-9a-f]{40}", freeze), "exact new source freeze required")
     proof = {}
     reader = str(Path(__file__).resolve().relative_to(root))
     extra = ("ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py",
              NATIVE+"launch/gazebo_multirobot_mapping_with_nav2.launch.py", reader)
+    if reach_geometry_rule == SUPPORT_GEOMETRY_RULE:
+        extra += (PURE+"mr3_reach_support.py", str(Path(__file__).with_name(
+            "reach_support_replay.py").resolve().relative_to(root)))
     for name in SOURCES+extra:
         payload = subprocess.check_output(["git", "show", freeze+":"+name], cwd=root)
         require(payload == (root/name).read_bytes(), "current source differs from declared freeze: "+name)
@@ -519,7 +542,8 @@ def native_index(drivers, odometry_rows, epoch):
     return result
 
 
-def ingress_index(motion, native, epoch):
+def ingress_index(motion, native, epoch, *, reach_geometry_rule=DEFAULT_GEOMETRY_RULE):
+    geometry_rule({"reach_geometry_rule": reach_geometry_rule, "safety_contract": CONTRACT})
     streams = {n: {"raw": {}, "tf": {}, "calibration": {}, "storage": {}, "applied": {},
                     "intent": {}, "requests": {}, "decisions": []} for n in ROBOTS}
     stable, received, state_ingress = {}, None, None
@@ -534,6 +558,8 @@ def ingress_index(motion, native, epoch):
             require(configuration is None and p.get("safety_contract") == CONTRACT
                     and p.get("controlled_execution") is True and p.get("robots") == list(ROBOTS),
                     "old motion contract cannot supply reach credit")
+            require(geometry_rule(p) == reach_geometry_rule,
+                    "actual motion configuration geometry rule differs from episode metadata")
             configuration = p
         elif kind in ("reach_model_failure", "settled_turn_model_failure", "invalid_received_states",
                       "normal_control_model_invalid", "invalid_reach_driver_ingress"):
@@ -857,6 +883,8 @@ def _audit_records(metadata, motion, drivers, odometry_rows, physics, drive_work
                    control_worker, information, release_ns):
     """Artifact replay core; synthetic tests supply declared data, not Git credit."""
     epoch = metadata["epoch"]
+    rule = geometry_rule(metadata)
+    geometry_kwargs = {"reach_geometry_rule": rule} if rule != DEFAULT_GEOMETRY_RULE else {}
     require(metadata.get("safety_contract") == CONTRACT and metadata.get("quantum_steps") == 20
             and metadata.get("execution_phase_protocol") == "mr3-controlled-execution-phase-v2"
             and metadata.get("reset_handshake") == "paused-controlled-state-peer-guard-storage-v2",
@@ -873,7 +901,7 @@ def _audit_records(metadata, motion, drivers, odometry_rows, physics, drive_work
                 "physical clock did not follow contiguous20ms paused quanta")
         cursor = p["end_time_ns"]
     native = native_index(drivers, odometry_rows, epoch)
-    streams = ingress_index(motion, native, epoch)
+    streams = ingress_index(motion, native, epoch, **geometry_kwargs)
     information_bundles = {digest(row["payload"]["message"]):row for row in information
                            if row.get("kind") == "state_publish"}
     groups = {}
@@ -978,7 +1006,7 @@ def _audit_records(metadata, motion, drivers, odometry_rows, physics, drive_work
                         "guard selected unreceived/noncausal own TF")
                 state_geometry(own,clock,epoch)
                 if decision["decision"]["allow"]:
-                    require(all(independent_pair(own, peer, clock, epoch) for peer in peers.values()),
+                    require(all(independent_pair(own, peer, clock, epoch, **geometry_kwargs) for peer in peers.values()),
                             "independently recomputed raw/map pair envelope denies admitted motion")
                     if not same(decision["decision"]["output"], [0., 0.]):
                         request = decision["request"]
@@ -993,7 +1021,7 @@ def _audit_records(metadata, motion, drivers, odometry_rows, physics, drive_work
                                 and endpoints[0].get("node") == "velocity_smoother"
                                 and endpoints[0].get("topic_type") == "geometry_msgs/msg/Twist",
                                 "nonzero request is not the real local Nav2 smoother graph")
-                    admitted_command(decision, own, states[robot], peers, clock, epoch)
+                    admitted_command(decision, own, states[robot], peers, clock, epoch, **geometry_kwargs)
                 else:
                     require(decision["decision"]["output"] == [0.,0.], "denied guard issued motion")
             if decision["intent"]["role"] in ("HOLD","STOP"):
@@ -1051,6 +1079,9 @@ def _audit_records(metadata, motion, drivers, odometry_rows, physics, drive_work
                     "actual joint phase dependency lineage differs")
     robots = {n:replay_robot(n,streams[n],native[n],epoch,release_ns,end) for n in ROBOTS}
     return {"passed":True,"contract":CONTRACT,"epoch":epoch,"window_ns":[release_ns,end],
+            **geometry_kwargs,
+            **({"geometry_certificate_semantics":"conditional sufficient separation; unchanged remaining runtime necessities"}
+               if geometry_kwargs else {}),
             "robots":robots,"controlled_quanta":len(advancing),
             "independent_necessary_replay":True,"continuous_physical_model_proved":False,
             "scope":"complete observed source/calibration/application/anchor/stop/pair and20ms barrier necessities; "
@@ -1063,10 +1094,16 @@ def audit_episode(directory, expected_freeze=None):
     directory = Path(directory)
     inputs = Inputs()
     metadata = inputs.read(directory,"metadata.json")
+    rule = geometry_rule(metadata)
+    geometry_kwargs = {"reach_geometry_rule": rule} if rule != DEFAULT_GEOMETRY_RULE else {}
+    if geometry_kwargs:
+        supervisor = inputs.read(directory, "supervisor_metadata.json")
+        require(supervisor.get("epoch") == metadata["epoch"] and geometry_rule(supervisor) == rule,
+                "supervisor geometry rule differs from native episode metadata")
     freeze = metadata["freeze"]
     require(expected_freeze is None or freeze == expected_freeze, "episode source freeze differs")
     root = Path(__file__).resolve().parents[7]
-    sources = source_proof(root,freeze)
+    sources = source_proof(root,freeze, **geometry_kwargs)
     transitions = inputs.read(directory,"transitions.jsonl",True)
     resets = [v for v in transitions if v.get("kind") == "reset"]
     require(len(resets)==1, "exactly one actual reset/release required")
@@ -1127,6 +1164,7 @@ def audit_episode_set(directory, expected_freeze, episode_auditor, *, schema):
             or re.fullmatch(r"[0-9a-f]{40}", expected_freeze) is None):
         result["errors"].append("exact source freeze required")
     common_freeze = expected_freeze
+    common_geometry_rule = None
     epochs, resolved = set(), set()
     metadata_inputs = {}
     summary_path = directory / "benchmark_summary.json"
@@ -1134,6 +1172,7 @@ def audit_episode_set(directory, expected_freeze, episode_auditor, *, schema):
         try:
             raw = summary_path.read_bytes(); metadata_inputs[summary_path] = raw
             summary = decode_text(raw.decode())
+            common_geometry_rule = geometry_rule(summary)
             declared = [Path(row["output_directory"]).resolve()
                         for worker in summary["workers_results"] for row in worker["episodes"]]
             require(len(declared) == len(set(declared))
@@ -1153,6 +1192,12 @@ def audit_episode_set(directory, expected_freeze, episode_auditor, *, schema):
             path = episode / "metadata.json"
             raw = path.read_bytes(); metadata_inputs[path] = raw
             metadata = decode_text(raw.decode())
+            rule = geometry_rule(metadata)
+            if common_geometry_rule is None:
+                common_geometry_rule = rule
+            require(rule == common_geometry_rule, "reach geometry rule differs across episode attempts/benchmark")
+            if rule != DEFAULT_GEOMETRY_RULE:
+                row["reach_geometry_rule"] = rule
             epoch, freeze = metadata["epoch"], metadata["freeze"]
             row.update(epoch=epoch, freeze=freeze, metadata_sha256=hashlib.sha256(raw).hexdigest())
             require(type(epoch) is str and bool(epoch) and epoch not in epochs,
@@ -1173,6 +1218,10 @@ def audit_episode_set(directory, expected_freeze, episode_auditor, *, schema):
                     "independent episode audit failed")
             require(report.get("epoch") == epoch and report.get("freeze") == freeze,
                     "episode report identity differs from original metadata")
+            if "reach_geometry_rule" in report:
+                require(geometry_rule({"safety_contract": CONTRACT,
+                    "reach_geometry_rule": report["reach_geometry_rule"]}) == rule,
+                    "episode report geometry rule differs from native metadata")
             row["passed"] = True
         except (OSError, ValueError, TypeError, KeyError, IndexError, RuntimeError, OverflowError) as error:
             row["errors"].append(str(error))
@@ -1187,6 +1236,8 @@ def audit_episode_set(directory, expected_freeze, episode_auditor, *, schema):
     result.update(freeze=common_freeze, attempted_episodes=len(attempts),
                   passed=bool(attempts) and not result["errors"]
                   and all(row["passed"] for row in result["episodes"]))
+    if common_geometry_rule is not None and common_geometry_rule != DEFAULT_GEOMETRY_RULE:
+        result["reach_geometry_rule"] = common_geometry_rule
     return result
 
 

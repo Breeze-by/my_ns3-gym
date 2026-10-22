@@ -1,5 +1,11 @@
 # 当前三机器人基线与MR3适配启动命令
 
+## 显式reach几何证书参数（V44）
+
+`mr3_reach_geometry_rule`缺省为`binary-cone-v1`，沿用原二值nonclosing/完整纵向包络判据，旧argv及metadata省略新增字段。显式`mr3_reach_geometry_rule:=cone-support-v2`选择同一Reach集合的连心线投影充分分离证书；仅可与`mr3_safety_contract:=mr3-reach-v1`、三机器人、`execution_mode:=adapter`和`mr3_stepped:=true`组合。未知、重复选择或不支持的profile组合会拒绝。
+
+新选择从reset请求进入worker、launch及motion_safety，三个ReachTracker的当前/拟议证书采用同一值，configuration明确记录实际选择；intent/driver wire、固定锚点、2R/4R、源龄、物理响应和95%门保持。生产日志中的向外区间只作摘要，精确判据使用未取整的有理数。实际资格和学习仍由同一新冻结plan及全部独立门决定，V41原FAIL保持；新增参数本身不提供原生或P2A通过信用。
+
 2026-10-22 V40闭合FAIL：新冻结291b9e32e实际preflight阻止merge_map输出打包未登记的旧native pin冲突；755源/Git/current无漂移。未启动matrix/World/native/PPO，3身份gone，完整parent实费22.442744464（inner包含不叠加）。累计48282.3965638106018/75000、余26717.6034361893982；原FAIL及pilot/final余额保持。用户已授权自主直到P2A完成，不再重复审批；继续显式packing source版本修复/新freeze，P2A未完成。见[V40闭合](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261022_mr3_p2a_v40_native_qualification.md)。
 
 2026-10-22 V40授权续接：用户明确“你一直继续执行就好了，直到把P2A完成，不需要问我是否批准”，授权自主持续完成P2A，不再反复请求一般预算/实施批准。当前工程块75000，入场48259.9538193466018、余26740.0461806533982；完整新native资格+收口+minimum预约20100。V39恒等提速已完成，现准备新冻结完整链；pilot/final初始余额、95%/质量/安全门及旧FAIL保持，P2A仍未完成。见[V40](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261022_mr3_p2a_v40_native_qualification.md)。

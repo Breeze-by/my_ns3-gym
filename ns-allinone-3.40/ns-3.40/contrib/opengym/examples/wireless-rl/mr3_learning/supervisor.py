@@ -32,6 +32,44 @@ LEGACY_PREPARATION_PROBES = tuple(f"mr3-p2a0-outward-cancel-v{version}" for vers
 PREPARATION_PROBE_REACH_V1 = "mr3-p2a-reach-outward-cancel-v1"
 
 
+BINARY_REACH_GEOMETRY_RULE = "binary-cone-v1"
+SUPPORT_REACH_GEOMETRY_RULE = "cone-support-v2"
+REACH_GEOMETRY_RULES = (BINARY_REACH_GEOMETRY_RULE, SUPPORT_REACH_GEOMETRY_RULE)
+
+
+def validate_reach_geometry_rule(rule, *, safety_contract="legacy"):
+    if type(safety_contract) is not str or safety_contract not in ("legacy", "mr3-reach-v1"):
+        raise ValueError("unknown safety contract for reach geometry")
+    if type(rule) is not str or rule not in REACH_GEOMETRY_RULES:
+        raise ValueError("unknown reach_geometry_rule")
+    if rule == SUPPORT_REACH_GEOMETRY_RULE and safety_contract != "mr3-reach-v1":
+        raise ValueError("cone-support-v2 requires mr3-reach-v1")
+    return rule
+
+
+def reach_geometry_rule_from_argv(argv):
+    """Read one canonical rule; a v2 opt-in also needs its actual reach profile."""
+    if type(argv) is not list or any(type(value) is not str for value in argv):
+        raise ValueError("sealed command must be a list of strings")
+    flag = "--reach-geometry-rule"
+    if argv.count(flag) > 1 or any(value.startswith(flag + "=") for value in argv):
+        raise ValueError("sealed reach_geometry_rule argument must be unique and explicit")
+    if flag not in argv:
+        return BINARY_REACH_GEOMETRY_RULE
+    position = argv.index(flag) + 1
+    if position >= len(argv):
+        raise ValueError("reach_geometry_rule argument has no value")
+    safety = "legacy"
+    if argv.count("--safety-contract") > 1 or any(value.startswith("--safety-contract=") for value in argv):
+        raise ValueError("sealed safety_contract argument must be unique and explicit")
+    if "--safety-contract" in argv:
+        index = argv.index("--safety-contract") + 1
+        if index >= len(argv):
+            raise ValueError("safety_contract argument has no value")
+        safety = argv[index]
+    return validate_reach_geometry_rule(argv[position], safety_contract=safety)
+
+
 def validate_preparation_profile(safety_contract, preparation_probe_version=None):
     """External fixture identity is independent of physical/task qualification."""
     if type(safety_contract) is not str or safety_contract not in ("legacy", "mr3-reach-v1"):
@@ -206,12 +244,14 @@ class Supervisor:
                  quantum_steps=20, terminal_probe=False, plant_stimulus_arm=None,
                  plant_stimulus_work_deadline_ns=None, safety_contract="legacy",
                  preparation_probe_version=None, seed_rule="legacy",
-                 start_graph_rule=ORIGINAL_START_GRAPH_RULE):
+                 start_graph_rule=ORIGINAL_START_GRAPH_RULE,
+                 reach_geometry_rule=BINARY_REACH_GEOMETRY_RULE):
         if type(safety_contract) is not str or safety_contract not in ("legacy", "mr3-reach-v1"):
             raise ValueError("safety_contract must be legacy or mr3-reach-v1")
         validate_preparation_profile(safety_contract, preparation_probe_version)
         validate_seed_rule(seed_rule)
         validate_start_graph_rule(start_graph_rule, seed_rule=seed_rule)
+        validate_reach_geometry_rule(reach_geometry_rule, safety_contract=safety_contract)
         if preparation_probe_version is not None and (terminal_probe or plant_stimulus_arm is not None):
             raise ValueError("preparation fixture cannot combine with other diagnostic probes")
         if type(terminal_probe) is not bool:
@@ -254,6 +294,7 @@ class Supervisor:
         self.safety_contract = safety_contract
         self.seed_rule = seed_rule
         self.start_graph_rule = start_graph_rule
+        self.reach_geometry_rule = reach_geometry_rule
         self.preparation_probe_version = preparation_probe_version
         self.plant_stimulus_arm = plant_stimulus_arm
         self.plant_stimulus_work_deadline_ns = (
@@ -334,6 +375,8 @@ class Supervisor:
             metadata["seed_rule"] = self.seed_rule
         if self.start_graph_rule != ORIGINAL_START_GRAPH_RULE:
             metadata["start_graph_rule"] = self.start_graph_rule
+        if self.reach_geometry_rule != BINARY_REACH_GEOMETRY_RULE:
+            metadata["reach_geometry_rule"] = self.reach_geometry_rule
         if self.preparation_probe_version is not None:
             metadata.update(preparation_probe_version=self.preparation_probe_version,
                             training_eligible=False,
@@ -349,7 +392,9 @@ class Supervisor:
                                   if self.safety_contract != "legacy" else {}),
                                **({"seed_rule": self.seed_rule} if self.seed_rule != "legacy" else {}),
                                **({"start_graph_rule": self.start_graph_rule}
-                                  if self.start_graph_rule != ORIGINAL_START_GRAPH_RULE else {}))
+                                  if self.start_graph_rule != ORIGINAL_START_GRAPH_RULE else {}),
+                               **({"reach_geometry_rule": self.reach_geometry_rule}
+                                  if self.reach_geometry_rule != BINARY_REACH_GEOMETRY_RULE else {}))
             if result["snapshot"]["epoch"] != epoch:
                 raise InfrastructureError("reset returned a previous episode snapshot")
             self.last_result = result

@@ -29,6 +29,8 @@ from .env import MR3Env
 from .observation import observation_space
 from .policy import policy_kwargs
 from .rollout import DecisionTransition, build_rollout_buffer, merge_zero_terminal
+from .supervisor import (BINARY_REACH_GEOMETRY_RULE, REACH_GEOMETRY_RULES,
+                         validate_reach_geometry_rule, reach_geometry_rule_from_argv)
 from .supervisor import (InfrastructureError, SCENES, SEED_RULES, START_GRAPH_RULES,
                          Supervisor, WORKSPACE, validate_start_graph_rule)
 
@@ -359,6 +361,7 @@ def main(argv=None):
     parser.add_argument("--safety-contract", choices=SAFETY_CONTRACTS, default="legacy")
     parser.add_argument("--seed-rule", choices=SEED_RULES, default="legacy")
     parser.add_argument("--start-graph-rule", choices=START_GRAPH_RULES, default="original-seed-cell")
+    parser.add_argument("--reach-geometry-rule", choices=REACH_GEOMETRY_RULES, default=BINARY_REACH_GEOMETRY_RULE)
     parser.add_argument("--reach-plan", type=Path)
     parser.add_argument("--reach-qualification", type=Path)
     parser.add_argument("--mode", choices=("train", "evaluate"), default="train")
@@ -377,7 +380,12 @@ def main(argv=None):
     parser.add_argument("--output-root", type=Path)
     args = parser.parse_args(argv)
     try:
+        reach_geometry_rule_from_argv(list(sys.argv[1:] if argv is None else argv))
+    except ValueError as error:
+        parser.error(str(error))
+    try:
         validate_start_graph_rule(args.start_graph_rule, seed_rule=args.seed_rule)
+        validate_reach_geometry_rule(args.reach_geometry_rule, safety_contract=args.safety_contract)
     except ValueError as error:
         parser.error(str(error))
     if args.safety_contract == "legacy":
@@ -411,6 +419,8 @@ def main(argv=None):
             parser.error("PPO seed rule differs from the exact native qualification plan")
         if load_plan(args.reach_plan).get("start_graph_rule", "original-seed-cell") != args.start_graph_rule:
             parser.error("PPO start graph rule differs from its native qualification plan")
+        if load_plan(args.reach_plan).get("reach_geometry_rule", BINARY_REACH_GEOMETRY_RULE) != args.reach_geometry_rule:
+            parser.error("PPO reach geometry rule differs from its native qualification plan")
 
     started = time.monotonic()
     deadline = started + args.wall_seconds
@@ -447,6 +457,8 @@ def main(argv=None):
                              ("torch", "gymnasium", "stable-baselines3", "sb3-contrib", "numpy")}}
     if args.start_graph_rule == "original-seed-cell":
         metadata.pop("start_graph_rule")
+    if args.reach_geometry_rule == BINARY_REACH_GEOMETRY_RULE:
+        metadata.pop("reach_geometry_rule")
     write_json(directory / "metadata.json", metadata)
     resources = []
     stop = threading.Event()
@@ -461,6 +473,8 @@ def main(argv=None):
     result = {"freeze": freeze, "safety_contract": args.safety_contract,
               "mode": args.mode, "episodes": [], "rounds": [],
               "decisions": 0, "api_records": 0, "optimizer_updates": 0, "error": None}
+    if args.reach_geometry_rule != BINARY_REACH_GEOMETRY_RULE:
+        result["reach_geometry_rule"] = args.reach_geometry_rule
     environments = []
     model = None
     learner_logger = None
@@ -513,7 +527,9 @@ def main(argv=None):
                                         safety_contract=args.safety_contract,
                                         **({"seed_rule": args.seed_rule} if args.seed_rule != "legacy" else {}),
                                         **({"start_graph_rule": args.start_graph_rule}
-                                           if args.start_graph_rule != "original-seed-cell" else {}))
+                                           if args.start_graph_rule != "original-seed-cell" else {}),
+                                        **({"reach_geometry_rule": args.reach_geometry_rule}
+                                           if args.reach_geometry_rule != BINARY_REACH_GEOMETRY_RULE else {}))
                 environments.append(MR3Env(supervisor))
                 episode_index += 1
 

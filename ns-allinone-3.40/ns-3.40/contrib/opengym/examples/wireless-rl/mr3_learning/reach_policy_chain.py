@@ -16,6 +16,8 @@ import time
 
 from . import native_custody, native_custody_reach as custody
 from . import reach_preparation as preparation
+from .supervisor import (BINARY_REACH_GEOMETRY_RULE, SUPPORT_REACH_GEOMETRY_RULE,
+                         validate_reach_geometry_rule, reach_geometry_rule_from_argv)
 from .supervisor import (seed_rule_from_argv, start_graph_rule_from_argv,
                          validate_seed_rule, validate_start_graph_rule)
 
@@ -112,6 +114,9 @@ def stage_spec(plan, plan_path, qualification_path, stage):
             and Path(argument(argv, "--reach-plan")).resolve() == Path(plan_path).resolve()
             and Path(argument(argv, "--reach-qualification")).resolve() == Path(qualification_path).resolve()
             and decimal(argument(argv, "--wall-seconds")) == NATIVE_CAPS[stage], "PPO admission/native cap differs")
+    require(reach_geometry_rule_from_argv(argv) == validate_reach_geometry_rule(
+                plan.get("reach_geometry_rule", BINARY_REACH_GEOMETRY_RULE), safety_contract=CONTRACT),
+            "policy stage reach geometry rule differs from native qualification plan")
     mode = argument(argv, "--mode")
     require(mode == ("evaluate" if stage == "validation" else "train"), "PPO phase mode differs")
     run = Path(spec["run_directory"]).resolve()
@@ -225,6 +230,10 @@ def check_native_result(stage, metadata, native, audit, episodes, spec):
             "native PPO seed rule differs from its declared stage")
     require(metadata.get("start_graph_rule", "original-seed-cell") == start_graph_rule_from_argv(spec["argv"]),
             "native PPO start graph rule differs from its declared stage")
+    geometry_rule = reach_geometry_rule_from_argv(spec["argv"])
+    require(metadata.get("reach_geometry_rule", BINARY_REACH_GEOMETRY_RULE) == geometry_rule
+            and native.get("reach_geometry_rule", BINARY_REACH_GEOMETRY_RULE) == geometry_rule,
+            "native PPO reach geometry rule differs from its declared stage")
     require(metadata.get("safety_contract") == native.get("safety_contract") == CONTRACT
             and metadata.get("mode") == native.get("mode") == ("evaluate" if stage == "validation" else "train")
             and native.get("completed") is True and native.get("error") is None
@@ -259,7 +268,8 @@ def check_native_result(stage, metadata, native, audit, episodes, spec):
                 and audit.get("task_successes") == 3 and audit.get("task_failures") == [],
                 "final-only validation requires all three original open seeds strict successes and zero updates")
     return {"eligible_decisions": decisions, "api_records": native["api_records"], "optimizer_updates": updates,
-            "native_attempts": len(episodes), "strict_task_successes": audit.get("task_successes")}
+            "native_attempts": len(episodes), "strict_task_successes": audit.get("task_successes"),
+            **({"reach_geometry_rule": geometry_rule} if geometry_rule != BINARY_REACH_GEOMETRY_RULE else {})}
 
 
 def _validate_predecessor(plan, plan_path, qualification_path, freeze, stage, workspace):
@@ -407,6 +417,8 @@ def execute_stage(plan_path, freeze, qualification_path, stage, workspace=WORKSP
         "run_directory": str(run), "output_directory": str(output), "native": native_value, "watcher": watch_value,
         "audits": audits, "jobs": jobs, "actual_episode_directories": list(map(str, episodes)),
         "skipped_audits": skipped, "errors": errors, "scientific_result": scientific,
+        **({"reach_geometry_rule": plan["reach_geometry_rule"]}
+           if plan.get("reach_geometry_rule", BINARY_REACH_GEOMETRY_RULE) != BINARY_REACH_GEOMETRY_RULE else {}),
         "started_wall_monotonic_ns": started_ns, "ended_wall_monotonic_ns": ended_ns,
         "wall_seconds": str(Decimal(ended_ns - started_ns) / 10**9), "wall_allocation_seconds": str(CAPS[stage]),
         "within_stage_wall_allocation": ended_ns <= deadline_ns, "native_budget_allocation": allocation,
@@ -607,6 +619,9 @@ def stage_evidence(plan_path, freeze, stage, outer_wait, workspace=WORKSPACE):
         absent = current is None or current["start_ticks"] != identity["start_ticks"]
         require(absent, "saved policy identity remains present, including zombie: " + str(identity["pid"]))
         gone.append({"saved": identity, "gone": True})
+    require(summary.get("reach_geometry_rule", BINARY_REACH_GEOMETRY_RULE)
+            == plan.get("reach_geometry_rule", BINARY_REACH_GEOMETRY_RULE),
+            "stage summary reach geometry rule differs from qualification plan")
     scientific, checkpoint, strict_closed = None, None, False
     strict_closed = strict_custody_fact(summary["audits"].get("closure"), bindings)
     if summary["passed"]:
@@ -640,6 +655,8 @@ def stage_evidence(plan_path, freeze, stage, outer_wait, workspace=WORKSPACE):
             "main_and_external_fee_budget_pass_claimed": False} if external else {}),
         "all_saved_identities_gone": True, "identities": gone, "strict_custody_passed": strict_closed,
         "scientific_result": scientific, "final_checkpoint": checkpoint, "bindings": bindings,
+        **({"reach_geometry_rule": plan["reach_geometry_rule"]}
+           if plan.get("reach_geometry_rule", BINARY_REACH_GEOMETRY_RULE) != BINARY_REACH_GEOMETRY_RULE else {}),
         "external_actual_fee_accounting_required": True, "old_profile_credit_reused": False,
         "passed": summary["passed"] is True and strict_closed and outer_wall <= main_cap}
 

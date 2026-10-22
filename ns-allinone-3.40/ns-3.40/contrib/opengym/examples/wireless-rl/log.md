@@ -8486,3 +8486,21 @@ system_bridge_cpu_v1 27 tests中一项新fixture消息缺prefix预期导致FAIL�
 实际child argv（cwd=wireless-rl）为`/usr/bin/bash --noprofile --norc -e -c 'source /opt/ros/humble/setup.bash && source /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/setup.bash && exec /usr/bin/python3 -B -m pytest -q /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v43_support_geometry/test_support_prototype_v1.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_reach_geometry.py'`。[实际wait](report/assets/20261022_mr3_p2a_v43_support_geometry/checks/support_geometry_cpu_v1/actual_wait.json)/console共124 passed，child5.698039134秒rc0，11source前后稳定，CPU工程0。[独立逐行mathreview](report/assets/20261022_mr3_p2a_v43_support_geometry/independent_math_review_v1.json)PASS、blocking_findings=[]，未运行consumer/测试或读原trace，核同Reach集合的条件充分分离、完整U/reserve/两frame及旧PASS蕴含。
 
 无World/plant/native/PPO/95%信用，原FAIL保持；累计50041.2338414596018/75000、余24958.7661585403982，pilot/final不动。用户自主持续授权有效，下一步V44显式cone-support-v2接线/独立重放与新freeze必要原生资格，默认binary-cone-v1/旧cf46/intent及任务安全门不改；不据此直接训练或追认V41。见[V43闭合](report/20261022_mr3_p2a_v43_support_geometry.md)。
+
+
+## 2026-10-22 MR3 P2A V44：显式support接线第一轮人工CPU
+
+基线HEAD99e4273bb5037fce47fe09a406565b81e5375622，未提交新源码/测试，5组均有source recovery/快照和真实scope=cpu wait，source前后稳定。cwd=canonical wireless-rl；实际外层命令均为`rtk proxy env PYTHONNOUSERSITE=1 /usr/bin/python3 -B report/assets/20261022_mr3_p2a_v44_support_native/cpu_driver_v1.py NAME`，NAME实际分别为geometry_cpu_v1、reader_cpu_v1、learner_cpu_v1、snapshot_cpu_v1、readiness_cpu_v1；完整实际子argv、stdout、source SHA见对应[checks](report/assets/20261022_mr3_p2a_v44_support_native/checks)回执。
+
+geometry523项中517PASS/6FAIL（49.935390431s，旧fake ReachGuard缺reach/storage）；learner202中1FAIL（58.064545459s，人工system replay的旧472冻结与新supervisor字节不符，被实际child正确拒绝）；reader12PASS4.592227215s、snapshot9PASS9.146108383s、双环境readiness PASS9.647735107s。失败不删除/改判；修人工fixture后用新输出验证，不改生产屏障或source门。0World/model/optimizer/原trace消费者；人工CPU新增工程0，仍50041.2338414596018/75000、余24958.7661585403982，pilot/final不动，P2A未完成。范围/后继新冻结链见[V44](report/20261022_mr3_p2a_v44_support_native.md)。
+
+
+## 2026-10-22 MR3 P2A V44：第二轮人工CPU全部通过
+
+cwd=canonical wireless-rl；实际外层命令均为`rtk proxy env PYTHONNOUSERSITE=1 /usr/bin/python3 -B report/assets/20261022_mr3_p2a_v44_support_native/cpu_driver_v1.py NAME`，NAME实际分别为geometry_cpu_v2、learner_cpu_v2、reader_cpu_v2、snapshot_cpu_v2、readiness_cpu_v2。各组新输出、source recovery/快照、完整子argv和真实wait逐字保留在[A44 checks](report/assets/20261022_mr3_p2a_v44_support_native/checks)，此前v1失败不覆盖/改判。
+
+geometry523 PASS/47.51967478s、learner202 PASS/60.411545013s、reader12 PASS/4.281579034s、snapshot9 PASS/9.289128831s，合计746人工检查；双环境readiness PASS/7.951573978s另计元数据。五组均实际reap rc0、source_unchanged=true。人工system replay改用当前18项必要源码的临时隔离Git真实冻结，原CLI及10项sourceproof/固定pointgraph pin保持，1snapshot/7map全重建通过，另实测修改副本supervisor源码必须rc1拒绝；非正式native信用。system NumPy1.21.5/SciPy1.8.0，conda无SciPy保持；原生产storage barrier/来源门不放宽。
+
+独立geometry/接线review PASS；entry review passed_static_review=true仅是预v2路径别名/当时字节的静态审查，不宣称其全部SHA已覆盖最终树；v2实际CPU及后续plan准入分别封存。未启动V44 World/native/model/optimizer，人工CPU工程费0，累计50041.2338414596018/75000、余24958.7661585403982；本活动工程预约20900，pilot1870/2905.9547395464029及三场final-only额度未动。下一步完成plan检查、commit/push新freeze后按完整资格→minimum→pilot→final逐门推进，用户自主授权有效，P2A未完成。见[V44报告](report/20261022_mr3_p2a_v44_support_native.md)。
+
+V44计划实际收口：同一外层命令NAME=prepare_plan_cpu_v1，child2.206919836秒rc0/PASS，生成830 sources/10 ELF/3 policy；NAME=plan_check_cpu_v1，child.365967683秒rc0/PASS，四native stage/12EP/30必要角色与三policy全部显式cone-support-v2。两组source稳定，共7次准备actual wait均PASS。最终plan_v1.json为226638B/SHA2a799060f541620072a3fdf16cb530c71d6664992c8b9a9d1f280795fdc2e75f；native_custody_binding_v1.json为129741B/SHA3457393d7f9b9917cfafa1f332628414e77c41f92e3bc91385da3cd7c9153150。必要生产/测试source完整，实际custody要求的生产helper/ELF亦完整；0新增工程、尚未启动V44native/PPO。下一步新commit/push精确freeze后真实preflight及完整条件链，旧FAIL和95%/安全门保持。

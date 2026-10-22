@@ -15,6 +15,7 @@ import types
 import subprocess
 
 from .supervisor import WORKSPACE
+from .audit_reach_runtime import geometry_rule, DEFAULT_GEOMETRY_RULE, SUPPORT_GEOMETRY_RULE
 
 CONTRACT = "mr3-reach-v1"
 PROTOCOL = "mr3-controlled-execution-phase-v2"
@@ -74,6 +75,7 @@ REQUIRED_SOURCES = tuple(PURE + value for value in (
     "ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py",
     "ros2_ws/ros2-multi-robot-automap/src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py",
     "ros2_ws/ros2-multi-robot-automap/src/multi_robot/CMakeLists.txt")
+SUPPORT_SOURCES = (PURE+"mr3_reach_support.py", str(WIRELESS/"mr3_learning/reach_support_replay.py"))
 
 
 def require(value, message):
@@ -103,12 +105,19 @@ def project_source(raw):
         "changes": [{"old":old,"new":new,"count":count} for old,new,count in SOURCE_CHANGES]}
 
 
-def profile_metadata(directory, freeze, read):
+def profile_metadata(directory, freeze, read, *, reach_geometry_rule=None):
     meta = json.loads(read(Path(directory) / "metadata.json"))
     require(meta.get("freeze") == freeze and meta.get("safety_contract") == CONTRACT
             and meta.get("quantum_steps") == 20 and meta.get("execution_phase_protocol") == PROTOCOL
             and meta.get("reset_handshake") == "paused-controlled-state-peer-guard-storage-v2",
             "legacy profile/execution metadata cannot acquire reach custody credit")
+    rule = geometry_rule(meta)
+    if reach_geometry_rule is not None:
+        require(rule == reach_geometry_rule, "custody binding and native episode geometry rules differ")
+    if rule != DEFAULT_GEOMETRY_RULE:
+        saved = json.loads(read(Path(directory)/"supervisor_metadata.json"))
+        require(saved.get("epoch") == meta["epoch"] and geometry_rule(saved) == rule,
+                "supervisor/native custody geometry rules differ")
     return meta
 
 
@@ -117,9 +126,11 @@ def binding_sources(bound, root):
     doc = bound["document"]
     require(doc.get("safety_contract") == CONTRACT and doc.get("execution_phase_protocol") == PROTOCOL,
             "binding is not the explicit reach/v2 contract")
+    rule = geometry_rule(doc)
+    required_sources = REQUIRED_SOURCES + (SUPPORT_SOURCES if rule == SUPPORT_GEOMETRY_RULE else ())
     sources = {str(Path(row["path"]) if Path(row["path"]).is_absolute()
                    else Path(root) / row["path"]): row["sha256"] for row in doc["source_bindings"]}
-    require(all(str(Path(root)/name) in sources for name in REQUIRED_SOURCES),
+    require(all(str(Path(root)/name) in sources for name in required_sources),
             "complete new runtime/custody/cadence entry source chain is unbound")
     wrappers = doc.get("qualification_wrappers")
     require(type(wrappers) is list and wrappers, "actual qualification wrappers must be explicit")
@@ -130,7 +141,8 @@ def binding_sources(bound, root):
         require(str(path) not in names and sources.get(str(path)) == row["sha256"],
                 "qualification wrapper is duplicate or not bound to this whole source freeze")
         names.add(str(path))
-    return {"required_source_count":len(REQUIRED_SOURCES), "declared_source_count":len(sources),
+    return {"required_source_count":len(required_sources), "declared_source_count":len(sources),
+            **({"reach_geometry_rule":rule} if rule != DEFAULT_GEOMETRY_RULE else {}),
             "qualification_wrappers":wrappers}
 
 
@@ -322,6 +334,7 @@ def load_implementation(root=WORKSPACE):
     def load_binding(path, freeze, *, root=root, read=None):
         bound = original_load(path, freeze, root=root, read=read)
         bound["reach_source_proof"] = binding_sources(bound, root)
+        module._reach_geometry_rule = geometry_rule(bound["document"])
         bridges = []
         for spec in bound["document"]["build_receipts"]:
             receipt_path = Path(spec["path"])
@@ -335,8 +348,18 @@ def load_implementation(root=WORKSPACE):
         return bound
 
     def configurations(directory, binding):
-        profile_metadata(directory, binding["freeze"], binding["reader"])
+        rule = geometry_rule(binding["document"])
+        meta = profile_metadata(directory, binding["freeze"], binding["reader"], reach_geometry_rule=rule)
         result = original_configs(directory, binding)
+        if rule != DEFAULT_GEOMETRY_RULE:
+            entry = module.first_line(Path(directory)/"motion_safety.jsonl")
+            row = entry["configuration"]
+            require(row.get("kind") == "configuration" and row.get("epoch") == meta["epoch"]
+                    and geometry_rule(row["payload"]) == rule
+                    and row["payload"].get("controlled_execution") is True
+                    and row["payload"].get("robots") == list(ROBOTS),
+                    "live motion configuration did not select the bound support geometry")
+            result.append(entry)
         for entry in result:
             cfg = entry["configuration"]
             if Path(entry["path"]).name.startswith("drive_"):
@@ -351,7 +374,7 @@ def load_implementation(root=WORKSPACE):
         for robot in ROBOTS:
             entry = module.first_line(Path(directory)/("odometry_"+robot+".jsonl"))
             cfg = entry["configuration"]
-            require(cfg.get("epoch") == profile_metadata(directory,binding["freeze"],binding["reader"])["epoch"]
+            require(cfg.get("epoch") == meta["epoch"]
                     and cfg.get("schema") == "mr3-world-odometry-publication-v1" and cfg.get("kind") == "configuration"
                     and cfg.get("robot") == robot and cfg.get("provider") == "WORLD"
                     and all(cfg.get(key) == spec["sha256"] for key,spec in
@@ -363,11 +386,13 @@ def load_implementation(root=WORKSPACE):
         return result
 
     def capture_episode(directory, binding, *, proc_root=Path("/proc")):
-        profile_metadata(directory,binding["freeze"],module.Reader())
+        profile_metadata(directory,binding["freeze"],module.Reader(),
+                         reach_geometry_rule=geometry_rule(binding["document"]))
         return original_capture(directory,binding,proc_root=proc_root)
 
     def strict_closed_episode(directory, freeze, read):
-        profile_metadata(directory,freeze,read)
+        profile_metadata(directory,freeze,read,
+                         reach_geometry_rule=getattr(module,"_reach_geometry_rule",None))
         return original_closed(directory,freeze,read)
 
     def exclusive(path, value):

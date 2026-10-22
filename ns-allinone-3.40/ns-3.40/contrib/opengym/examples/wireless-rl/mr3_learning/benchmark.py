@@ -15,6 +15,8 @@ import threading
 import time
 
 from .env import MR3Env
+from .supervisor import (BINARY_REACH_GEOMETRY_RULE, REACH_GEOMETRY_RULES,
+                         validate_reach_geometry_rule, reach_geometry_rule_from_argv)
 from .supervisor import (
     InfrastructureError, Supervisor, WORKSPACE, identity_alive, ros_environment,
     PREPARATION_PROBE_REACH_V1, validate_preparation_profile,
@@ -49,6 +51,8 @@ def _collection_safety_contract(args):
     validate_seed_rule(getattr(args, "seed_rule", "legacy"))
     validate_start_graph_rule(getattr(args, "start_graph_rule", "original-seed-cell"),
                               seed_rule=getattr(args, "seed_rule", "legacy"))
+    validate_reach_geometry_rule(getattr(args, "reach_geometry_rule", BINARY_REACH_GEOMETRY_RULE),
+                                 safety_contract=profile)
     if profile not in SAFETY_CONTRACTS:
         raise ValueError("unknown safety contract")
     version = getattr(args, "preparation_probe_version", None)
@@ -581,6 +585,8 @@ def run_worker(args, worker_id, preparation_abort=None):
                                    if getattr(args, "seed_rule", "legacy") != "legacy" else {}),
                                 **({"start_graph_rule": args.start_graph_rule}
                                    if getattr(args, "start_graph_rule", "original-seed-cell") != "original-seed-cell" else {}),
+                                **({"reach_geometry_rule": args.reach_geometry_rule}
+                                   if getattr(args, "reach_geometry_rule", BINARY_REACH_GEOMETRY_RULE) != BINARY_REACH_GEOMETRY_RULE else {}),
                                 **({"preparation_probe_version": getattr(args, "preparation_probe_version", None)}
                                    if getattr(args, "preparation_probe_version", None) is not None else {}))
         environment = MR3Env(supervisor=supervisor, max_steps=args.steps)
@@ -785,6 +791,7 @@ def main(argv=None):
     parser.add_argument("--seed-rule", choices=SEED_RULES, default="legacy",
                         help="explicit candidate seed certificate; native qualification is version-specific")
     parser.add_argument("--start-graph-rule", choices=START_GRAPH_RULES, default="original-seed-cell")
+    parser.add_argument("--reach-geometry-rule", choices=REACH_GEOMETRY_RULES, default=BINARY_REACH_GEOMETRY_RULE)
     parser.add_argument("--diagnostic-uniform-seed", type=int,
                         help="nonnegative seed for uniform legal engineering inputs; never PPO or training")
     parser.add_argument("--base-domain", type=int, default=120)
@@ -813,6 +820,7 @@ def main(argv=None):
             flag.split("=", 1)[0].startswith("--preparation-") for flag in command_line):
         parser.error("diagnostic uniform actions cannot be combined with preparation parameters")
     try:
+        reach_geometry_rule_from_argv(command_line)
         _collection_safety_contract(args)
     except ValueError as error:
         parser.error(str(error))
@@ -913,6 +921,8 @@ def main(argv=None):
         metadata["seed_rule"] = args.seed_rule
     if args.start_graph_rule != "original-seed-cell":
         metadata["start_graph_rule"] = args.start_graph_rule
+    if args.reach_geometry_rule != BINARY_REACH_GEOMETRY_RULE:
+        metadata["reach_geometry_rule"] = args.reach_geometry_rule
     if args.safety_contract == "mr3-reach-v1":
         metadata.update(training_eligible=False, scientific_readers_applied=False,
                         scientific_qualification="PENDING_NEW_FREEZE_INDEPENDENT_AUDITS",

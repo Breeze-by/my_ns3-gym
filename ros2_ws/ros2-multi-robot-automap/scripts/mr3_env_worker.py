@@ -32,6 +32,9 @@ from multi_robot_exploration.mr3_control_phase import (
 from multi_robot_exploration.mr3_safety_intent import (
     parse_json, payload_sha256, validate_intent, validate_intent_refs,
 )
+from multi_robot_exploration.mr3_reach_runtime import (
+    BINARY_CONE_V1, validate_reach_geometry_rule,
+)
 
 
 ROS_ROOT = Path(__file__).resolve().parents[1]
@@ -68,6 +71,9 @@ class Worker:
         self.scene = request["scene"]
         self.seed = request["seed"]
         self.safety_contract = request.get("safety_contract", "legacy")
+        self.reach_geometry_rule = validate_reach_geometry_rule(
+            request.get("reach_geometry_rule", BINARY_CONE_V1),
+            safety_contract=self.safety_contract)
         self.seed_rule = request.get("seed_rule", "legacy")
         if type(self.seed_rule) is not str or self.seed_rule not in (
                 "legacy", "exact-point-bridge-v1", "exact-point-bridge-v2"):
@@ -395,6 +401,8 @@ class Worker:
             f"evaluation_episode_id:={self.epoch}", f"evaluation_output_dir:={directory}",
             f"mr3_safety_contract:={self.safety_contract}",
         ]
+        if self.reach_geometry_rule != BINARY_CONE_V1:
+            self.command.append(f"mr3_reach_geometry_rule:={self.reach_geometry_rule}")
         if self.seed_rule != "legacy":
             self.command.append(f"mr3_seed_rule:={self.seed_rule}")
         if self.start_graph_rule != "original-seed-cell":
@@ -429,6 +437,8 @@ class Worker:
             metadata["seed_rule"] = self.seed_rule
         if self.start_graph_rule != "original-seed-cell":
             metadata["start_graph_rule"] = self.start_graph_rule
+        if self.reach_geometry_rule != BINARY_CONE_V1:
+            metadata["reach_geometry_rule"] = self.reach_geometry_rule
         if self.control_version == 2:
             metadata["safety_contract"] = self.safety_contract
             metadata["reset_handshake"] = "paused-controlled-state-peer-guard-storage-v2"

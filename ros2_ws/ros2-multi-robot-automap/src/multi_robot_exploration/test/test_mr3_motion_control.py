@@ -9,6 +9,7 @@ from std_msgs.msg import String
 
 from multi_robot_exploration.mr3_control_phase import canonical
 from multi_robot_exploration.mr3_motion_control import MotionControlPhase
+from multi_robot_exploration.mr3_reach_runtime import ReachTracker
 from multi_robot_exploration.mr3_safety_intent import payload_sha256
 
 
@@ -290,6 +291,8 @@ class ReachGuard(Guard):
         self.safety_contract = 'mr3-reach-v1'
         self.received = reach_bundle(self.epoch, self.clock)
         self.control_safety_context = None
+        self.reach = {name: ReachTracker(self.epoch, name)
+                      for name in ('tb1', 'tb2', 'tb3')}
 
     def complete_output(self, key):
         clock, kind = key
@@ -306,7 +309,24 @@ class ReachGuard(Guard):
                  'safety_table_sha256': context['safety_table_sha256'] if context else None}
         if kind == 'stop':
             value['phase_kind'] = 'stop'
+        targets = {}
+        for name, output in value['outputs'].items():
+            targets[name] = {'schema': 'mr3-drive-target-v1', 'epoch': self.epoch,
+                             'robot': name, 'clock_ns': clock,
+                             'decision_sequence': self.decision_sequences[name], **output}
+            self.reach[name].publish_target(targets[name])
         self.completed_motion[key] = value
+        # Local output receipt alone cannot close the guard's storage barrier.
+        assert self.phase.storage_ready(value) is False
+        for index, (name, target) in enumerate(targets.items()):
+            self.reach[name].receive_storage({
+                'schema': 'mr3-drive-target-consumed-v1', 'epoch': self.epoch,
+                'robot': name, 'clock_ns': clock, 'source_clock_ns': clock,
+                'decision_sequence': target['decision_sequence'],
+                'cmd_seq': target['decision_sequence'],
+                **value['outputs'][name]})
+            assert self.phase.storage_ready(value) is (index == len(targets) - 1)
+            self.phase.poll()  # The real guard storage callback also polls.
         self.phase.poll()
 
 

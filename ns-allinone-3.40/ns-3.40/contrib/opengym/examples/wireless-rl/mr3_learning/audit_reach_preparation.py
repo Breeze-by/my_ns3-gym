@@ -15,6 +15,7 @@ from .audit_ppo import load_rows, require
 from .preparation import identity
 from .reach_audit_projection import project_module
 from .reach_gates import load_native_gates
+from .supervisor import (BINARY_REACH_GEOMETRY_RULE, validate_reach_geometry_rule)
 from .supervisor import validate_seed_rule, validate_start_graph_rule
 
 SOURCE_SHA256 = "b7e07ee44188b43f09a94215430fac609d6753f7be5594ce9f4b2308ccf88cab"
@@ -23,7 +24,8 @@ SYSTEM_PYTHON = "/usr/bin/python3"
 EXACT_REPLAY_SCHEMA = "mr3-exact-seed-native-input-replay-v1"
 
 
-def audit_exact_seed_inputs_system(directory, *, seed_rule, start_graph_rule):
+def audit_exact_seed_inputs_system(directory, *, seed_rule, start_graph_rule,
+                                  reach_geometry_rule=BINARY_REACH_GEOMETRY_RULE):
     """Keep the unchanged full replayer in its system NumPy/SciPy process.
 
     Temporary child output/console contents and actual-wait facts are embedded
@@ -56,6 +58,7 @@ def audit_exact_seed_inputs_system(directory, *, seed_rule, start_graph_rule):
 
     try:
         validate_seed_rule(seed_rule)
+        validate_reach_geometry_rule(reach_geometry_rule, safety_contract="mr3-reach-v1")
         validate_start_graph_rule(start_graph_rule, seed_rule=seed_rule)
         require(seed_rule != "legacy", "system exact replay requires an explicit exact seed rule")
         metadata_raw = (directory / "metadata.json").read_bytes()
@@ -67,6 +70,13 @@ def audit_exact_seed_inputs_system(directory, *, seed_rule, start_graph_rule):
         require(metadata.get("seed_rule") == seed_rule
                 and metadata.get("start_graph_rule", "original-seed-cell") == start_graph_rule,
                 "system exact replay metadata differs from the declared seed/start rules")
+        require(metadata.get("reach_geometry_rule", BINARY_REACH_GEOMETRY_RULE) == reach_geometry_rule,
+                "system exact replay metadata differs from declared reach geometry rule")
+        if reach_geometry_rule != BINARY_REACH_GEOMETRY_RULE:
+            require(metadata.get("safety_contract") == "mr3-reach-v1",
+                    "support system replay metadata lacks the reach safety contract")
+            execution.update(reach_geometry_rule=reach_geometry_rule,
+                             native_metadata_sha256=hashlib.sha256(metadata_raw).hexdigest())
         coordinator = execution["coordinator_identity"]
         require(type(coordinator) is dict and coordinator.get("pid") == os.getpid()
                 and type(coordinator.get("start_ticks")) is int and coordinator["start_ticks"] > 0,
@@ -147,6 +157,8 @@ def audit_exact_seed_inputs_system(directory, *, seed_rule, start_graph_rule):
             "freeze": metadata.get("freeze") if type(metadata) is dict else None,
             "episode": str(directory), "seed_rule": seed_rule,
             **({"start_graph_rule": start_graph_rule} if start_graph_rule != "original-seed-cell" else {})}
+    if reach_geometry_rule != BINARY_REACH_GEOMETRY_RULE:
+        result["reach_geometry_rule"] = reach_geometry_rule
     result["system_python_execution"] = execution
     return result
 
@@ -166,13 +178,16 @@ def load_impl(plan_path):
     plan = json.loads(Path(plan_path).read_text())
     validate_start_graph_rule(plan.get("start_graph_rule", "original-seed-cell"),
                               seed_rule=plan.get("seed_rule", "legacy"))
+    geometry_rule = validate_reach_geometry_rule(
+        plan.get("reach_geometry_rule", BINARY_REACH_GEOMETRY_RULE), safety_contract="mr3-reach-v1")
     if validate_seed_rule(plan.get("seed_rule", "legacy")) != "legacy":
         original_archives = module.audit_archives
 
         def exact_archives(directory):
             result = original_archives(directory)
             replay = audit_exact_seed_inputs_system(directory, seed_rule=plan["seed_rule"],
-                start_graph_rule=plan.get("start_graph_rule", "original-seed-cell"))
+                start_graph_rule=plan.get("start_graph_rule", "original-seed-cell"),
+                **({"reach_geometry_rule": geometry_rule} if geometry_rule != BINARY_REACH_GEOMETRY_RULE else {}))
             result["exact_seed_full_replay"] = replay
             result["passed"] = result.get("passed") is True and replay["passed"] is True
             if not replay["passed"]:
@@ -189,6 +204,8 @@ def audit(directory, root, freeze, plan_path):
              else sorted(directory.glob("worker*/episode*/metadata.json")))
     require(paths, "no actual reach episodes")
     plan = json.loads(Path(plan_path).read_text())
+    geometry_rule = validate_reach_geometry_rule(
+        plan.get("reach_geometry_rule", BINARY_REACH_GEOMETRY_RULE), safety_contract="mr3-reach-v1")
     for path in paths:
         metadata = json.loads(path.read_text())
         require(metadata.get("safety_contract") == "mr3-reach-v1"
@@ -199,11 +216,20 @@ def audit(directory, root, freeze, plan_path):
                 "native preparation seed rule differs from the qualification plan")
         require(metadata.get("start_graph_rule", "original-seed-cell") == plan.get("start_graph_rule", "original-seed-cell"),
                 "native preparation start graph rule differs from the qualification plan")
+        require(metadata.get("reach_geometry_rule", BINARY_REACH_GEOMETRY_RULE) == geometry_rule,
+                "native preparation reach geometry rule differs from qualification plan")
+        supervisor_path = path.parent / "supervisor_metadata.json"
+        if geometry_rule != BINARY_REACH_GEOMETRY_RULE:
+            supervisor = json.loads(supervisor_path.read_text())
+            require(supervisor.get("reach_geometry_rule", BINARY_REACH_GEOMETRY_RULE) == geometry_rule,
+                    "native preparation supervisor reach geometry rule differs")
     module, proof = load_impl(plan_path)
     result = module.audit(directory, root, freeze)
     result.update(schema="mr3-reach-preparation-full-audit-v1", safety_contract="mr3-reach-v1",
                   immutable_reader_projection=proof,
                   scope="Native/contact/clock/protocol/scalar/evaluator/archive/activity/topology/costmap and complete v2 release. Joint qualification additionally requires every independently declared reach role.")
+    if geometry_rule != BINARY_REACH_GEOMETRY_RULE:
+        result["reach_geometry_rule"] = geometry_rule
     return result
 
 

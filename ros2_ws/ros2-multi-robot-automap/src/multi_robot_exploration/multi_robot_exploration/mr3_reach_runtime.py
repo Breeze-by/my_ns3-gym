@@ -24,12 +24,25 @@ from multi_robot_exploration.mr3_velocity_metric import physical_residual_certif
 
 
 CONTRACT = "mr3-reach-v1"
+BINARY_CONE_V1 = "binary-cone-v1"
+CONE_SUPPORT_V2 = "cone-support-v2"
+REACH_GEOMETRY_RULES = (BINARY_CONE_V1, CONE_SUPPORT_V2)
 H_NS = 780_000_000
 PUB_NS = 940_000_000
 RAW_PERIOD_NS = 20_000_000
 ACT_PERIOD_NS = 34_000_000
 R = Q(39, 5000)
 ROBOTS = frozenset(("tb1", "tb2", "tb3"))
+
+
+def validate_reach_geometry_rule(rule, *, safety_contract=CONTRACT):
+    if type(rule) is not str or rule not in REACH_GEOMETRY_RULES:
+        raise ValueError("unsupported reach_geometry_rule")
+    if type(safety_contract) is not str or safety_contract not in ("legacy", CONTRACT):
+        raise ValueError("unsupported safety_contract for reach geometry")
+    if rule == CONE_SUPPORT_V2 and safety_contract != CONTRACT:
+        raise ValueError("cone-support-v2 requires explicit mr3-reach-v1")
+    return rule
 
 
 def latched(method):
@@ -92,7 +105,8 @@ def reach_for(state, clock_ns):
     return transition(directions) if role == "X" else normal(directions)
 
 
-def pair_checks(own, peers, clock_ns):
+def pair_checks(own, peers, clock_ns, *, reach_geometry_rule=BINARY_CONE_V1):
+    validate_reach_geometry_rule(reach_geometry_rule)
     if (not isinstance(own, dict) or own.get("name") not in ROBOTS
             or not isinstance(peers, dict)
             or set(peers) != ROBOTS-{own["name"]}
@@ -100,11 +114,15 @@ def pair_checks(own, peers, clock_ns):
                    for name, peer in peers.items())):
         raise ValueError("reach requires the exact same-epoch three-robot set")
     checks = {}
+    certificate = pair_certificate
+    if reach_geometry_rule == CONE_SUPPORT_V2:
+        from multi_robot_exploration.mr3_reach_support import support_pair_certificate
+        certificate = support_pair_certificate
     left = reach_for(own, clock_ns)
     for name, peer in peers.items():
         right = reach_for(peer, clock_ns)
         ox, oy = raw_xy(own["odometry"]); px, py = raw_xy(peer["odometry"])
-        checks[name] = pair_certificate(
+        checks[name] = certificate(
             (exact(peer["x"])-exact(own["x"]), exact(peer["y"])-exact(own["y"])),
             (px-ox, py-oy),
             (clock_ns-timestamp_ns(own["source_stamp"]),
@@ -121,7 +139,8 @@ class ReachTracker:
     advance physics; a contradictory source/model latches a permanent fault.
     The worker still owns actual per-quantum publication/storage/physics proof.
     """
-    def __init__(self, epoch, robot):
+    def __init__(self, epoch, robot, *, reach_geometry_rule=BINARY_CONE_V1):
+        self._reach_geometry_rule = validate_reach_geometry_rule(reach_geometry_rule)
         self.epoch, self.robot = epoch, robot
         self.role, self.release_ns, self.stopped, self.fault = "HOLD", None, False, None
         self.anchor, self.anchor_sequence, self.transition_sequence = None, None, None
@@ -145,6 +164,10 @@ class ReachTracker:
         self.previous_stop_role = None
         self.previous_stop_sequence = None
         self.raw_ingress_sequence = None
+
+    @property
+    def reach_geometry_rule(self):
+        return self._reach_geometry_rule
 
     def fail(self, error):
         self.fault = self.fault or str(error)
@@ -432,7 +455,7 @@ class ReachTracker:
             raise ValueError(self.fault)
         if self.stopped or self.release_ns is None:
             return result
-        checks=pair_checks(own,peers,clock_ns)
+        checks=pair_checks(own,peers,clock_ns,reach_geometry_rule=self.reach_geometry_rule)
         result["reach_pair_checks"]=checks
         if self.role=="HOLD" and not all(row["geometric_necessary"] for row in checks.values()):
             self.fail("initial HOLD has no complete pair certificate")
@@ -476,7 +499,8 @@ class ReachTracker:
                 lineage={"anchor_intent_sequence":self.anchor_sequence,
                          "transition_intent_sequence":self.intent_number+1})
             proposed["safety"]["intent"]=proposed_intent
-            prospective=pair_checks(proposed,peers,clock_ns)
+            prospective=pair_checks(proposed,peers,clock_ns,
+                                    reach_geometry_rule=self.reach_geometry_rule)
             result["reach_pair_checks"]=prospective
             if not all(row["geometric_necessary"] for row in prospective.values()):
                 result["reason"]="reach_transition_envelope"
@@ -556,4 +580,6 @@ class ReachTracker:
                 "backup_zero_sequence":self.backup_zero_sequence,
                 "finite_stop_path_lower_m":str(self.backup_path_lower),
                 "pending_resume":copy.deepcopy(self.pending_resume),
-                "continuous_physical_model_proved":False}
+                "continuous_physical_model_proved":False,
+                **({"reach_geometry_rule":self.reach_geometry_rule}
+                   if self.reach_geometry_rule != BINARY_CONE_V1 else {})}

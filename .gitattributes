@@ -136,3 +136,11 @@ ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/2026
 
 # V43 artificial CPU console preserves exact tested output bytes.
 ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v43_support_geometry/**/*.log -text -whitespace
+
+# V44 source-sealed artificial CPU and later actual consoles preserve exact bytes.
+ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v44_support_native/**/*.log -text -whitespace
+
+# Preserve exactly tested V44 entry and source-snapshot bytes, including final blank lines.
+ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v44_support_native/checks/source_snapshots/* -text -whitespace
+ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v44_support_native/preflight_v1.py -text whitespace=blank-at-eol,space-before-tab,-blank-at-eof
+ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v44_support_native/prepare_plan_v1.py -text whitespace=blank-at-eol,space-before-tab,-blank-at-eof

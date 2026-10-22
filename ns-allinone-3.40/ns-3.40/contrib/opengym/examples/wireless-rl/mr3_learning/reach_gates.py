@@ -13,7 +13,9 @@ from .reach_audit_projection import project_module
 from . import audit_reach_sensor_model
 from .supervisor import (EXACT_SEED_VERSIONS, POINT_START_GRAPH_RULE, POINT_GRAPH_PROFILE,
                          POINT_GRAPH_COST, candidate_version_for_rules,
-                         validate_seed_rule, validate_start_graph_rule)
+                         validate_seed_rule, validate_start_graph_rule,
+                         validate_reach_geometry_rule, BINARY_REACH_GEOMETRY_RULE,
+                         SUPPORT_REACH_GEOMETRY_RULE)
 
 PPO_READER_SHA256 = "b2e0737d79826b7ecb319cc91b58ff45475ea831a9cb2b4cab2298aaf6474567"
 PROTOCOL_READER_SHA256 = "8bc1ee209761be2108a3d1d0248f2d0ab40b9fc68539ecedffec11cb81fd1647"
@@ -22,6 +24,7 @@ EXACT_ENV_SHA256 = "1cebd1d5c6abf2750991a40ab50065c4f9b655f11f30e3f1734ea2130612
 EXACT_V2_ENV_SHA256 = "11a70fb42a58c104a55a68186795226dbf2c1f4bd4170066dfaad209e63ba8d5"
 POINT_GRAPH_ENV_SHA256 = "baffbf1bffc7fadff80105ec5c5dce3a04c694ce7e7a8f72ca6620d8a7c13a1a"
 POINT_GRAPH_HELPER_SHA256 = "e55b776c3ec088fe51dfa76ff204b4b135138038502fabc6af01717ed75efc83"
+SUPPORT_REFERENCE_GEOMETRY_SHA256 = "cf46b49f0740f84511f3d34f9a8eb3e56720744515d9eea1dc81bd8bacb85f0a"
 ENV_STATUS = ("2026-10-19：用户已接受[V14科学候选](report/assets/20261019_mr3_p2a_v14/scientific_contract_candidate_v1.md)。显式新profile的执行规则以[MR3_REACH_CONTRACT.md](MR3_REACH_CONTRACT.md)为准；本文件下述原速度/累计路径与v1相位规则继续描述默认`legacy`。V15已接线并完成CPU/编译准备，尚无新冻结原生资格、训练或95%信用；旧FAIL不改判。\n\n").encode()
 ROS = "ros2_ws/ros2-multi-robot-automap/"
 MAP_OUTPUT_PACKING_PROFILE = "mr3-occupancy-int8-array-v1"
@@ -196,11 +199,28 @@ def extend_exact_snapshot_validator(original_validator, auditor, candidate_modul
     auditor.validate_snapshot = exact_snapshot
 
 
+def _support_geometry_pins(source_bindings):
+    prefix = ROS+"src/multi_robot_exploration/multi_robot_exploration/"
+    relative = prefix+"mr3_reach_geometry.py"
+    if source_bindings.get(relative) != SUPPORT_REFERENCE_GEOMETRY_SHA256:
+        raise ValueError("support geometry cannot replace the original declared reach sets")
+    extras = {relative: SUPPORT_REFERENCE_GEOMETRY_SHA256}
+    for name in (prefix+"mr3_reach_support.py",
+                 "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_support_replay.py"):
+        expected = source_bindings[name]
+        if type(expected) is not str or re.fullmatch(r"[0-9a-f]{64}", expected) is None:
+            raise ValueError("invalid support geometry source SHA: "+name)
+        extras[name] = expected
+    return extras
+
+
 def load_native_gates(root, freeze, plan_path):
     from .reach_preparation import load_plan, source_check
     root, plan_path = Path(root), Path(plan_path)
     plan = load_plan(plan_path, root)
     source_proof = source_check(plan, plan_path, freeze, root, require_clean=False)
+    geometry = validate_reach_geometry_rule(plan.get("reach_geometry_rule", BINARY_REACH_GEOMETRY_RULE),
+                                             safety_contract="mr3-reach-v1")
     packing = plan.get("map_output_packing_profile")
     if "map_output_packing_profile" in plan and (
             type(packing) is not str or packing != MAP_OUTPUT_PACKING_PROFILE):
@@ -210,12 +230,14 @@ def load_native_gates(root, freeze, plan_path):
         **({"seed_rule": plan["seed_rule"]} if plan.get("seed_rule", "legacy") != "legacy" else {}),
         **({"start_graph_rule": plan["start_graph_rule"]}
            if plan.get("start_graph_rule", "original-seed-cell") != "original-seed-cell" else {}),
-        **({"map_output_packing_profile": packing} if packing is not None else {}))
+        **({"map_output_packing_profile": packing} if packing is not None else {}),
+        **({"reach_geometry_rule": geometry} if geometry != BINARY_REACH_GEOMETRY_RULE else {}))
 
 
 def _load_versioned_native_gates(root, freeze, source_proof, source_bindings, custody_binding,
                                  *, seed_rule="legacy", start_graph_rule="original-seed-cell",
-                                 map_output_packing_profile=None):
+                                 map_output_packing_profile=None,
+                                 reach_geometry_rule=BINARY_REACH_GEOMETRY_RULE):
     """Reuse unchanged native predicates after an explicit caller source check.
 
     The public qualification entry above still requires its complete sealed
@@ -226,6 +248,7 @@ def _load_versioned_native_gates(root, freeze, source_proof, source_bindings, cu
     root = Path(root)
     validate_seed_rule(seed_rule)
     validate_start_graph_rule(start_graph_rule, seed_rule=seed_rule)
+    validate_reach_geometry_rule(reach_geometry_rule, safety_contract="mr3-reach-v1")
     legacy, projection = project_module("audit_ppo.py", PPO_READER_SHA256, ())
     revised_runtime = set(REVISED_RUNTIME)
     protocol_projection = None
@@ -307,6 +330,8 @@ def _load_versioned_native_gates(root, freeze, source_proof, source_bindings, cu
 
     def native_binding(root, freeze):
         result = native_custody_reach.verify_binding(root, freeze, custody_binding)
+        legacy.require(result.get("reach_source_proof", {}).get("reach_geometry_rule", BINARY_REACH_GEOMETRY_RULE)
+                       == reach_geometry_rule, "custody binding geometry rule differs from qualification dispatch")
         return {custody_binding: {"identity_proof": result,
                 "scope": "new six-source actual ELF identity; live maps/close are separate required roles"}}
 
@@ -314,6 +339,9 @@ def _load_versioned_native_gates(root, freeze, source_proof, source_bindings, cu
     legacy.verify_current_native_binding = native_binding
     legacy.verify_velocity_smoother_overlay = native_binding
     phase, base, auditor, command, scalar, proof = legacy.load_native_gates(root, freeze)
+    if reach_geometry_rule == SUPPORT_REACH_GEOMETRY_RULE:
+        extras = _support_geometry_pins(source_bindings)
+        proof.update(legacy.verify_frozen_pins(root, freeze, extras, "explicit support geometry dependencies"))
     if seed_rule != "legacy":
         extra = {ROS + "src/multi_robot_exploration/multi_robot_exploration/" + filename:
                  source_bindings[ROS + "src/multi_robot_exploration/multi_robot_exploration/" + filename]
@@ -339,6 +367,14 @@ def _load_versioned_native_gates(root, freeze, source_proof, source_bindings, cu
         "old_profile_qualification_credit_reused": False}
     if packing_projection is not None:
         proof["reach_dispatch"]["map_output_packing"] = packing_projection
+    if reach_geometry_rule != BINARY_REACH_GEOMETRY_RULE:
+        proof["reach_dispatch"].update(reach_geometry_rule=reach_geometry_rule,
+            geometry_certificate_semantics="conditional sufficient separation of unchanged declared Reach sets",
+            independent_geometry_replay="mr3_learning.reach_support_replay",
+            original_mathematical_predicates_changed=False,
+            geometry_admission_predicate_changed=True,
+            original_binary_geometry_source_sha256=SUPPORT_REFERENCE_GEOMETRY_SHA256,
+            new_geometry_admission_version=True)
     if seed_rule != "legacy":
         proof["reach_dispatch"]["seed_rule"] = seed_rule
         proof["reach_dispatch"]["candidate_rule_version"] = candidate_version_for_rules(seed_rule, start_graph_rule)

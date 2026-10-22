@@ -81,8 +81,10 @@ def load_implementation(root=WORKSPACE):
     return module,provenance
 
 
-def source_proof(freeze, root=WORKSPACE):
-    result = runtime.source_proof(Path(root),freeze)
+def source_proof(freeze, root=WORKSPACE, *, reach_geometry_rule=runtime.DEFAULT_GEOMETRY_RULE):
+    kwargs = ({"reach_geometry_rule": reach_geometry_rule}
+              if reach_geometry_rule != runtime.DEFAULT_GEOMETRY_RULE else {})
+    result = runtime.source_proof(Path(root),freeze, **kwargs)
     for relative in (HELPER,Path(__file__).resolve().relative_to(root)):
         raw=(Path(root)/relative).read_bytes()
         frozen=subprocess.check_output(["git","show",freeze+":"+str(relative)],cwd=root)
@@ -102,6 +104,8 @@ def audit_episode(directory, freeze, inputs):
     result.update(safety_contract=CONTRACT,implementation_provenance=proof,
                   runtime_drive_conjunction=report,continuous_physical_model_proved=False,
                   actual_loaded_elf_custody_required=True)
+    if report.get("reach_geometry_rule", runtime.DEFAULT_GEOMETRY_RULE) != runtime.DEFAULT_GEOMETRY_RULE:
+        result["reach_geometry_rule"] = report["reach_geometry_rule"]
     return result
 
 
@@ -110,13 +114,32 @@ def audit(directory, freeze):
     # Keep original episode discovery, exception-to-FAIL/INCOMPLETE behavior,
     # stable inputs and finite window logic. Only its per-episode conjunction is
     # strengthened; no original artifact or metadata is rewritten or stripped.
-    module.audit_episode=audit_episode
+    observed_rules = set()
+    def selected_episode(episode, expected_freeze, inputs):
+        observed_rules.add(runtime.geometry_rule(inputs.document(Path(episode)/"metadata.json")))
+        return audit_episode(episode, expected_freeze, inputs)
+    module.audit_episode=selected_episode
     result=module.audit(directory,freeze)
     result.update(safety_contract=CONTRACT,implementation_provenance=proof,
         continuous_physical_model_proved=False,actual_loaded_elf_custody_required=True,
         scope="New source-bound reach/v2 runtime+wheel/application and independent20ms WORLD/driverTF packet receipts, latest selected sources and34ms actual updates; live actual ELF/process custody remains separately mandatory, continuous plant remains conditional.")
     try:
-        result["source_proof"]=source_proof(freeze)
+        rules = observed_rules | {runtime.geometry_rule({"safety_contract": CONTRACT,
+            "reach_geometry_rule": row.get("reach_geometry_rule", runtime.DEFAULT_GEOMETRY_RULE)})
+            for row in result["episodes"]}
+        require(len(rules) <= 1, "reach cadence cannot combine different geometry rules")
+        rule = next(iter(rules), runtime.DEFAULT_GEOMETRY_RULE)
+        summary = Path(directory)/"benchmark_summary.json"
+        if summary.is_file():
+            raw = summary.read_bytes()
+            require(runtime.geometry_rule(runtime.decode_text(raw.decode())) == rule,
+                    "cadence benchmark and episode geometry rules differ")
+            require(summary.read_bytes() == raw, "cadence benchmark metadata changed")
+            if rule != runtime.DEFAULT_GEOMETRY_RULE:
+                result["geometry_metadata_binding"] = {"path":str(summary), "sha256":sha(raw)}
+        kwargs = {"reach_geometry_rule": rule} if rule != runtime.DEFAULT_GEOMETRY_RULE else {}
+        result["source_proof"]=source_proof(freeze, **kwargs)
+        result.update(**kwargs)
     except (OSError,ValueError,subprocess.SubprocessError) as error:
         result["errors"].append({"error":repr(error)})
         result["status"],result["passed"]="FAIL",False

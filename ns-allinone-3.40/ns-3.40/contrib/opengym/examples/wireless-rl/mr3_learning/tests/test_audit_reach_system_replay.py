@@ -19,7 +19,6 @@ from mr3_learning import audit_reach_ppo, reach_policy_chain
 
 
 FREEZE = "a" * 40
-FROZEN_PURE_SOURCE = "47224c51c1c525c55093dce26b374d1ccb07eb06"
 SEED = "exact-point-bridge-v2"
 START = "point-attachment-3x3-v1"
 
@@ -200,8 +199,52 @@ class SystemExactReplayTests(unittest.TestCase):
 
     def test_actual_system_child_replays_artificial_frozen_observation_and_scipy_without_poison(self):
         # Construction and replay are both system Python, not the conda parent.
-        # Existing pure source/reader bytes at this freeze are unchanged. Only
-        # this dispatch wrapper is under development; no Git identity is mocked.
+        # Freeze exact current source bytes in an isolated real Git repository.
+        # The main checkout may contain pending edits; no Git/source gate is
+        # mocked and no historical native freeze is reused for this fixture.
+        root = Path(audit.__file__).resolve().parents[7]
+        wireless_relative = audit.WIRELESS.relative_to(root)
+        learner = wireless_relative / "mr3_learning"
+        component = Path("ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration")
+        relatives = [learner / name for name in (
+            "__init__.py", "audit_seed_inputs.py", "navigation_archive.py", "reach_gates.py",
+            "reach_audit_projection.py", "audit_reach_sensor_model.py", "native_custody.py",
+            "supervisor.py", "ipc.py", "tests/__init__.py", "tests/test_audit_seed_inputs.py")]
+        relatives += [component / name for name in (
+            "__init__.py", "mr3_observation.py", "mr3_episode.py", "mr3_seed_certificate.py",
+            "mr3_reach_geometry.py", "mr3_point_graph.py")]
+        relatives.append(Path("ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py"))
+        isolated_root = Path(self.temporary.name) / "source_freeze"
+        source_bytes = {}
+        for relative in relatives:
+            raw = (root / relative).read_bytes()
+            destination = isolated_root / relative
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            destination.write_bytes(raw)
+            source_bytes[str(relative)] = raw
+        isolated_wireless = isolated_root / wireless_relative
+        env = {key: value for key, value in os.environ.items() if not key.startswith("GIT_")}
+        env.update(PYTHONNOUSERSITE="1", PYTHONDONTWRITEBYTECODE="1",
+                   GIT_CONFIG_GLOBAL="/dev/null", GIT_CONFIG_NOSYSTEM="1")
+        env.pop("PYTHONPATH", None); env.pop("PYTHONHOME", None)
+
+        def git(*args):
+            completed = subprocess.run(["git", "-c", "core.hooksPath=/dev/null",
+                "-c", "commit.gpgSign=false", "-c", "user.name=MR3 artificial fixture",
+                "-c", "user.email=mr3-artificial@example.invalid", *args],
+                cwd=isolated_root, env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=False)
+            self.assertEqual(completed.returncode, 0, completed.stderr.decode())
+            return completed.stdout
+
+        git("init", "--quiet")
+        git("add", "--", *(str(relative) for relative in relatives))
+        git("commit", "--quiet", "-m", "Freeze artificial replay source fixture")
+        freeze = git("rev-parse", "HEAD").decode().strip()
+        self.assertRegex(freeze, r"^[0-9a-f]{40}$")
+        for relative, raw in source_bytes.items():
+            self.assertEqual((root / relative).read_bytes(), raw, "source changed during fixture copy")
+            self.assertEqual(git("show", freeze + ":" + relative), raw)
+
         script = '''import json,sys
 from pathlib import Path
 import numpy,scipy
@@ -213,10 +256,8 @@ metadata["freeze"]=sys.argv[2]
 (p/"metadata.json").write_text(json.dumps(metadata))
 print(json.dumps({"python":sys.executable,"numpy_version":numpy.__version__,"numpy_path":numpy.__file__,"scipy_version":scipy.__version__,"scipy_path":scipy.__file__,"snapshot_digest":snapshot["digest"]}))
 '''
-        env = dict(os.environ, PYTHONNOUSERSITE="1", PYTHONDONTWRITEBYTECODE="1")
-        env.pop("PYTHONPATH", None); env.pop("PYTHONHOME", None)
         created = subprocess.run(["/usr/bin/python3", "-B", "-c", script,
-            str(self.directory), FROZEN_PURE_SOURCE], cwd=audit.WIRELESS, env=env,
+            str(self.directory), freeze], cwd=isolated_wireless, env=env,
             stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=False)
         self.assertEqual(created.returncode, 0, created.stderr)
         dependencies = json.loads(created.stdout)
@@ -228,19 +269,44 @@ print(json.dumps({"python":sys.executable,"numpy_version":numpy.__version__,"num
         (poison / "scipy").mkdir()
         (poison / "scipy/__init__.py").write_text(
             "from pathlib import Path\nPath(" + repr(str(marker)) + ").write_text('bad')\nraise RuntimeError('poison scipy')\n")
-        with patch.dict(os.environ, {"PYTHONPATH": str(poison), "PYTHONHOME": "/invalid-python-home"}):
+        poisoned_env = dict(env, PYTHONPATH=str(poison), PYTHONHOME="/invalid-python-home")
+        with patch.object(audit, "WIRELESS", isolated_wireless), \
+                patch.dict(os.environ, poisoned_env, clear=True):
             result = audit.audit_exact_seed_inputs_system(self.directory,
                 seed_rule=SEED, start_graph_rule=START)
         self.assertTrue(result["passed"], result)
         self.assertEqual(result["exact_full_snapshot_replays"], 1)
-        self.assertEqual(result["freeze"], FROZEN_PURE_SOURCE)
+        self.assertEqual(result["freeze"], freeze)
         self.assertEqual(len(result["source_proof"]), 10)
+        for relative, proof in result["source_proof"].items():
+            self.assertEqual(proof["sha256"], hashlib.sha256(source_bytes[relative]).hexdigest())
+            self.assertEqual(proof["git_source"], freeze + ":" + relative)
         receipt = result["system_python_execution"]
         self.assertTrue(receipt["actual_waited"])
         self.assertEqual(receipt["returncode"], 0)
         self.assertEqual(receipt["child_identity"]["parent"], os.getpid())
         self.assertFalse(marker.exists())
+        # A real worktree/freeze mismatch must still fail the unchanged reader.
+        supervisor_relative = str(learner / "supervisor.py")
+        supervisor = isolated_root / supervisor_relative
+        try:
+            supervisor.write_bytes(source_bytes[supervisor_relative] + b"\n# artificial source mismatch\n")
+            with patch.object(audit, "WIRELESS", isolated_wireless), \
+                    patch.dict(os.environ, poisoned_env, clear=True):
+                mismatched = audit.audit_exact_seed_inputs_system(self.directory,
+                    seed_rule=SEED, start_graph_rule=START)
+            self.assertFalse(mismatched["passed"], mismatched)
+            mismatch_result = json.loads(mismatched["system_python_execution"]["result_json"])
+            self.assertFalse(mismatch_result["passed"])
+            self.assertIn("reader/source differs from native freeze: " + supervisor_relative,
+                          " ".join(mismatch_result["errors"]))
+            self.assertTrue(mismatched["system_python_execution"]["actual_waited"])
+            self.assertEqual(mismatched["system_python_execution"]["returncode"], 1)
+        finally:
+            supervisor.write_bytes(source_bytes[supervisor_relative])
+        self.assertFalse(marker.exists())
         print(json.dumps({"artificial_system_replay_regression": "PASS", "dependencies": dependencies,
+            "artificial_source_freeze": freeze, "source_mismatch_rejected": True,
             "replayer_child_identity": receipt["child_identity"], "argv": receipt["argv"],
             "started_monotonic_ns": receipt["started_monotonic_ns"],
             "ended_monotonic_ns": receipt["ended_monotonic_ns"],

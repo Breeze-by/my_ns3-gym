@@ -2686,5 +2686,78 @@
     "default_reach_geometry_rule": "binary-cone-v1",
     "future_explicit_reach_geometry_rule": "cone-support-v2",
     "p2a_complete": false
+  },
+  "mr3_p2a_v44_support_native_20261022": {
+    "status": "artificial_cpu_and_sealed_plan_pass_waiting_new_freeze",
+    "report": "20261022_mr3_p2a_v44_support_native.md",
+    "assets": "assets/20261022_mr3_p2a_v44_support_native",
+    "reach_geometry_rule": "cone-support-v2",
+    "default_reach_geometry_rule": "binary-cone-v1",
+    "reference_geometry_sha256": "cf46b49f0740f84511f3d34f9a8eb3e56720744515d9eea1dc81bd8bacb85f0a",
+    "reference_geometry_unchanged": true,
+    "baseline_freeze": "99e4273bb5037fce47fe09a406565b81e5375622",
+    "first_cpu_attempt_failures_preserved": true,
+    "final_main_artificial_cpu_checks": 746,
+    "final_cpu_groups": {
+      "geometry_cpu_v2": {
+        "passed": 523,
+        "actual_child_wait_seconds": "47.51967478"
+      },
+      "learner_cpu_v2": {
+        "passed": 202,
+        "actual_child_wait_seconds": "60.411545013"
+      },
+      "reader_cpu_v2": {
+        "passed": 12,
+        "actual_child_wait_seconds": "4.281579034"
+      },
+      "snapshot_cpu_v2": {
+        "passed": 9,
+        "actual_child_wait_seconds": "9.289128831"
+      },
+      "readiness_cpu_v2": {
+        "passed": true,
+        "actual_child_wait_seconds": "7.951573978",
+        "scope": "dual_environment_metadata_only"
+      }
+    },
+    "final_five_cpu_actual_waits_passed": true,
+    "final_cpu_source_stable": true,
+    "cpu_index": "assets/20261022_mr3_p2a_v44_support_native/cpu_validation_index_v1.json",
+    "independent_geometry_integration_review": "assets/20261022_mr3_p2a_v44_support_native/independent_geometry_integration_review_v1.json",
+    "independent_geometry_integration_review_passed": true,
+    "independent_entry_review": "assets/20261022_mr3_p2a_v44_support_native/independent_entry_review_v1.json",
+    "independent_entry_review_scope": "static pre-v2 alias/source review; not final-current-SHA equivalence",
+    "engineering_added_seconds": "0",
+    "engineering_used_seconds": "50041.2338414596018",
+    "engineering_ceiling_seconds": "75000",
+    "engineering_remaining_seconds": "24958.7661585403982",
+    "reserved_engineering_seconds": "20900",
+    "qualification_minimum_external_reserved_seconds": "20100",
+    "preparation_reserved_seconds": "800",
+    "world_started": false,
+    "native_qualification_credit": false,
+    "learning_updates": 0,
+    "pilot_or_final_quota_used": false,
+    "old_failures_preserved": true,
+    "p2a_complete": false,
+    "prepare_plan_v1_passed": true,
+    "prepare_plan_v1_actual_child_wait_seconds": "2.206919836",
+    "prepare_plan_v1_sources": 830,
+    "prepare_plan_v1_elfs": 10,
+    "prepare_plan_v1_policy_stages": 3,
+    "final_plan_version": "v1",
+    "plan_sha256": "2a799060f541620072a3fdf16cb530c71d6664992c8b9a9d1f280795fdc2e75f",
+    "plan_bytes": 226638,
+    "binding_sha256": "3457393d7f9b9917cfafa1f332628414e77c41f92e3bc91385da3cd7c9153150",
+    "binding_bytes": 129741,
+    "plan_check_passed": true,
+    "plan_check_actual_child_wait_seconds": "0.365967683",
+    "actual_preparation_waits_passed": 7,
+    "mandatory_roles": 30,
+    "native_episodes_planned": 12,
+    "native_stages_planned": 4,
+    "policy_stages_planned": 3,
+    "plan_source_bindings_complete": true
   }
 }

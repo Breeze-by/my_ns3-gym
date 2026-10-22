@@ -14,6 +14,8 @@ import subprocess
 
 from . import preparation as primitives
 from .reach_audit_projection import project_module
+from .supervisor import (BINARY_REACH_GEOMETRY_RULE, SUPPORT_REACH_GEOMETRY_RULE,
+                         validate_reach_geometry_rule, reach_geometry_rule_from_argv)
 from .supervisor import (seed_rule_from_argv, start_graph_rule_from_argv,
                          validate_seed_rule, validate_start_graph_rule)
 
@@ -29,6 +31,12 @@ EXPECTED_ROLES = {name: BASE_ROLES | ({"input", "angular", "physics"}
 CAPS = ("2400", "1200", "6500", "7900")
 NATIVE_CAPS = ("1900", "850", "5500", "6900")
 require, sha, dump, argument = primitives.require, primitives.sha, primitives.dump, primitives.argument
+
+
+SUPPORT_REACH_SOURCES = {
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_reach_support.py",
+    str(WIRELESS_RELATIVE / "mr3_learning/reach_support_replay.py"),
+}
 
 
 def source_inventory(root=WORKSPACE):
@@ -49,6 +57,8 @@ def source_inventory(root=WORKSPACE):
 
 
 def validate_plan(plan, workspace=WORKSPACE):
+    geometry_rule = validate_reach_geometry_rule(
+        plan.get("reach_geometry_rule", BINARY_REACH_GEOMETRY_RULE), safety_contract=CONTRACT)
     seed_rule = validate_seed_rule(plan.get("seed_rule", "legacy"))
     start_graph_rule = validate_start_graph_rule(plan.get("start_graph_rule", "original-seed-cell"),
                                                 seed_rule=seed_rule)
@@ -74,6 +84,9 @@ def validate_plan(plan, workspace=WORKSPACE):
     if start_graph_rule != "original-seed-cell":
         require("ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_point_graph.py"
                 in plan["source_bindings"], "point graph helper runtime inventory incomplete")
+    if geometry_rule == SUPPORT_REACH_GEOMETRY_RULE:
+        require(SUPPORT_REACH_SOURCES <= plan["source_bindings"].keys(),
+                "support geometry producer/replay source inventory incomplete")
     outputs = [plan["output_directory"]]
     for i, stage in enumerate(plan["stages"]):
         name, jobs = stage["stage"], stage["audits"]
@@ -86,6 +99,8 @@ def validate_plan(plan, workspace=WORKSPACE):
                 "native stage seed rule differs from the qualification plan: " + name)
         require(start_graph_rule_from_argv(argv) == start_graph_rule,
                 "native stage start graph rule differs from the qualification plan: " + name)
+        require(reach_geometry_rule_from_argv(argv) == geometry_rule,
+                "native stage reach geometry rule differs from qualification plan: " + name)
         workers, schedule, steps, episodes = primitives.WORKLOADS[name]
         require(argv[:3] == [plan["learner_python"], "-m", "mr3_learning.benchmark"]
                 and argument(argv, "--safety-contract") == CONTRACT
@@ -235,9 +250,11 @@ def source_check(plan, plan_path, freeze, root=WORKSPACE, require_clean=True):
     return proof
 
 
-def build_plan(*, plan_path, seed_rule="legacy", start_graph_rule="original-seed-cell", **kwargs):
+def build_plan(*, plan_path, seed_rule="legacy", start_graph_rule="original-seed-cell",
+               reach_geometry_rule=BINARY_REACH_GEOMETRY_RULE, **kwargs):
     validate_seed_rule(seed_rule)
     validate_start_graph_rule(start_graph_rule, seed_rule=seed_rule)
+    validate_reach_geometry_rule(reach_geometry_rule, safety_contract=CONTRACT)
     plan = primitives.build_plan(**kwargs, information_implementation="admitted_index_three_keys_v1",
                                  nav2_parameter_profile="gentle_turn_v1")
     plan.update(schema=SCHEMA, safety_contract=CONTRACT,
@@ -251,6 +268,8 @@ def build_plan(*, plan_path, seed_rule="legacy", start_graph_rule="original-seed
         plan["seed_rule"] = seed_rule
     if start_graph_rule != "original-seed-cell":
         plan["start_graph_rule"] = start_graph_rule
+    if reach_geometry_rule != BINARY_REACH_GEOMETRY_RULE:
+        plan["reach_geometry_rule"] = reach_geometry_rule
     plan["preflight"]["schema"] = "mr3-reach-preflight-v1"
     plan["budget"].update(matrix_wall_seconds="18000", borrow_unused_prior_stage_reservations=True,
         engineering_remaining_basis="Approved 52000 cumulative engineering ceiling; all native/read-only/closure tails charged")
@@ -264,6 +283,8 @@ def build_plan(*, plan_path, seed_rule="legacy", start_graph_rule="original-seed
             argv += ["--seed-rule", seed_rule]
         if start_graph_rule != "original-seed-cell":
             argv += ["--start-graph-rule", start_graph_rule]
+        if reach_geometry_rule != BINARY_REACH_GEOMETRY_RULE:
+            argv += ["--reach-geometry-rule", reach_geometry_rule]
         if name in ("interface", "reset"):
             argv[argv.index("--preparation-probe-version") + 1] = "mr3-p2a-reach-outward-cancel-v1"
         stage["wall_seconds"] = CAPS[i]
@@ -321,7 +342,18 @@ def build_plan(*, plan_path, seed_rule="legacy", start_graph_rule="original-seed
     if start_graph_rule != "original-seed-cell":
         relative = "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_point_graph.py"
         plan["source_bindings"][relative] = sha(Path(root) / relative)
+    if reach_geometry_rule == SUPPORT_REACH_GEOMETRY_RULE:
+        for relative in SUPPORT_REACH_SOURCES:
+            plan["source_bindings"][relative] = sha(Path(root) / relative)
     binding = json.loads(Path(kwargs["custody_binding"]).read_text())
+    require(validate_reach_geometry_rule(binding.get("reach_geometry_rule", BINARY_REACH_GEOMETRY_RULE),
+                safety_contract=CONTRACT) == reach_geometry_rule, "custody binding reach geometry rule differs")
+    if reach_geometry_rule == SUPPORT_REACH_GEOMETRY_RULE:
+        bound = {str(Path(row["path"]).relative_to(root)) if Path(row["path"]).is_absolute()
+                 else row["path"]: row["sha256"] for row in binding["source_bindings"]}
+        require(SUPPORT_REACH_SOURCES <= bound.keys() and all(
+                bound[path] == plan["source_bindings"][path] for path in SUPPORT_REACH_SOURCES),
+                "custody binding lacks exact support producer/replay sources")
     for row in binding["source_bindings"]:
         path = Path(row["path"])
         relative = str(path.relative_to(root)) if path.is_absolute() else str(path)
@@ -456,11 +488,17 @@ def _qualification_evidence(plan_path, freeze, outer_wait, root=WORKSPACE):
                     "native episode seed rule differs from qualification plan")
             require(meta.get("start_graph_rule", "original-seed-cell") == plan.get("start_graph_rule", "original-seed-cell"),
                     "native episode start graph rule differs from qualification plan")
+            require(meta.get("reach_geometry_rule", BINARY_REACH_GEOMETRY_RULE)
+                    == plan.get("reach_geometry_rule", BINARY_REACH_GEOMETRY_RULE),
+                    "native episode reach geometry rule differs from qualification plan")
             supervisor_meta = read(path.parent / "supervisor_metadata.json")
             require(supervisor_meta.get("seed_rule", "legacy") == plan.get("seed_rule", "legacy"),
                     "native supervisor seed rule differs from qualification plan")
             require(supervisor_meta.get("start_graph_rule", "original-seed-cell") == plan.get("start_graph_rule", "original-seed-cell"),
                     "native supervisor start graph rule differs from qualification plan")
+            require(supervisor_meta.get("reach_geometry_rule", BINARY_REACH_GEOMETRY_RULE)
+                    == plan.get("reach_geometry_rule", BINARY_REACH_GEOMETRY_RULE),
+                    "native supervisor reach geometry rule differs from qualification plan")
             episodes.append({"directory": str(path.parent), "epoch": meta["epoch"]})
             files = sorted(p for p in path.parent.rglob("*") if p.is_file())
             episode_files[str(path.parent)] = [str(p.relative_to(path.parent)) for p in files]
@@ -479,6 +517,8 @@ def _qualification_evidence(plan_path, freeze, outer_wait, root=WORKSPACE):
     return {"freeze": freeze, "safety_contract": CONTRACT, "plan": str(plan_path.resolve()),
         "plan_sha256": sha(plan_path), "outer_wait": str(Path(outer_wait).resolve()),
         "mandatory_roles": roles, "episodes": episodes, "bindings": bindings,
+        **({"reach_geometry_rule": plan["reach_geometry_rule"]}
+           if plan.get("reach_geometry_rule", BINARY_REACH_GEOMETRY_RULE) != BINARY_REACH_GEOMETRY_RULE else {}),
         "complete_closed_episode_file_inventories": episode_files,
         "saved_process_identities_gone": gone, "old_profile_credit_reused": False,
         "passed": True, "engineering_only": True, "policy_reliability_credit": False}

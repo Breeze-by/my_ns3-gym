@@ -26,7 +26,9 @@ from multi_robot_exploration.mr3_motion_safety import (
     measured_velocity_error, valid_state,
 )
 from multi_robot_exploration.mr3_motion_control import MotionControlPhase
-from multi_robot_exploration.mr3_reach_runtime import CONTRACT, ReachTracker
+from multi_robot_exploration.mr3_reach_runtime import (
+    CONTRACT, BINARY_CONE_V1, ReachTracker, validate_reach_geometry_rule,
+)
 from multi_robot_exploration.mr3_safety_intent import (
     canonical_json, odometry_source_ns, parse_json, payload_sha256, validate_safety,
 )
@@ -52,6 +54,9 @@ class MotionSafety(Node):
                 or self.safety_contract == CONTRACT and not stepped):
             raise ValueError("reach safety requires explicit stepped mr3-reach-v1")
         self.reach_enabled = self.safety_contract == CONTRACT
+        self.reach_geometry_rule = validate_reach_geometry_rule(
+            self.declare_parameter("reach_geometry_rule", BINARY_CONE_V1).value,
+            safety_contract=self.safety_contract)
         audit_path = self.declare_parameter("audit_path", "").value
         diagnostic_enabled = self.declare_parameter("mr3_diagnostic_enabled", False).value
         if not self.epoch:
@@ -73,7 +78,10 @@ class MotionSafety(Node):
         self.issued_motion = set()
         self.completed_motion = {}
         self.settled_turn = {name: SettledTurnTracker() for name in ROBOTS}
-        self.reach = {name: ReachTracker(self.epoch, name) for name in ROBOTS} if self.reach_enabled else {}
+        self.reach = {name: ReachTracker(self.epoch, name, **(
+            {"reach_geometry_rule": self.reach_geometry_rule}
+            if self.reach_geometry_rule != BINARY_CONE_V1 else {}))
+            for name in ROBOTS} if self.reach_enabled else {}
         self.reach_pending_release = None
         self._reach_emitting = False
         self.reach_publisher_gids = {}
@@ -148,6 +156,8 @@ class MotionSafety(Node):
             "own_input_selection": "latest_causal_v1",
             "controlled_execution": stepped,
             "safety_contract": self.safety_contract,
+            **({"reach_geometry_rule": self.reach_geometry_rule}
+               if self.reach_geometry_rule != BINARY_CONE_V1 else {}),
             "diagnostic_request_receipts": diagnostic_enabled,
             "settled_turn_contract": ("mr3-reach-v1; fixed anchors; D/N=2R, X=4R; "
             "actual application plus strictly later raw; conditional plant, no continuous proof"

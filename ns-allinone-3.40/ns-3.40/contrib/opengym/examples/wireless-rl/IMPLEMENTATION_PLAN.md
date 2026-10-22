@@ -1,5 +1,7 @@
 # MR3 研发检查点与逐步验收
 
+2026-10-22 V44准备：显式cone-support-v2生产/learner/独立reader全链接线已完成；第二轮746人工CPU（geometry523/learner202/reader12/snapshot9）及双环境readiness全部PASS、各组真实wait/source稳定，首轮fixture失败保留。独立数学接线与入口静态审查通过，830源码/10ELF及12EP/30角色/三policy封存检查PASS，待新freeze完整native资格→minimum→pilot→final；CPU不供原生/学习信用。工程新增0，仍50041.2338414596018/75000、余24958.7661585403982；本活动预约20900，pilot/final余额与95%/安全门保持。用户自主授权继续，P2A未完成。见[V44](report/20261022_mr3_p2a_v44_support_native.md)。
+
 2026-10-22 V43禁用几何原型闭合：support候选＋原geometry共124人工CPU PASS，真实wait5.698039134秒、11源前后稳定；独立逐行数学review PASS/无未解阻断，旧cf46源逐字保留。新算法只提供原Reach集合下的条件充分分离，非旧门恒等替换，无native/plant/学习/95%信用，旧FAIL不改。工程新增0，仍50041.2338414596018/75000、余24958.7661585403982；用户自主授权继续，下一步V44显式cone-support-v2全链接线/独立重放/新freeze资格，默认binary-cone-v1与原intent/任务安全门保持，P2A未完成。见[V43](report/20261022_mr3_p2a_v43_support_geometry.md)。
 
 2026-10-22 V42描述提取闭合PASS：执行freeze f96b9801957a80b22bf9096df3691173961ef417，对V41闭合interface固定9文件完整读517060271B，1617选行；4项selection drop保留，不能声称完整plant窗口。全task reach日志显示tb3的1602条判据中1280次正v请求均被输出为0，reason计数379 linear_brake_preserve_requested_turn/855 reach_transition_envelope；不重裁原FAIL。scope15源、outer16含scope稳定，3保存身份freshgone；5有限原件/3205464B逐字封存。parent实费27.535294547秒，累计50041.2338414596018/75000、余24958.7661585403982。环境隔离最终27人工CPU PASS（两轮失败保留），尚无新native资格；下一步禁用cone-support数学helper CPU，不接生产/重跑矩阵；P2A未完成，pilot/final不动，自主续接无需再审批。见[V42闭合](report/20261022_mr3_p2a_v42_native_diagnosis.md)。

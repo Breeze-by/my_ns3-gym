@@ -4,7 +4,7 @@
 （SHA256 `b1443df121a5ba1af0ff8c55417294bd8fd246fc85463776e1ce022c1752a043`）并授权生产实现。
 本文件定义显式 `mr3-reach-v1` profile；默认 `legacy` 保持原 schema/规则。
 新 profile 的 CPU/编译准备不提供新冻结原生资格、连续安全、训练或95%任务信用。
-当前结果见[V15](report/20261019_mr3_p2a_v15.md)，所有旧FAIL按原合同保留。
+当前接线工作见[V44](report/20261022_mr3_p2a_v44_support_native.md)，实际原生资格尚待新冻结验证；所有旧FAIL按原合同保留。
 
 ## 条件物理模型与完整余量
 
@@ -37,6 +37,36 @@ U=.30乘两端较老几何源龄之和，q 为上述2R/4R。
 cone 半角使用全局 `1.2*(source_age+H)`，不能以旧测得零角速度忽略将来的转动。
 map 与同一已交付状态的原始 common-WORLD odom 各自形成完整证书，最后 AND；不跨帧混距离和方向。
 共同坐标/真实heading校准及其误差界仍是明确的传感器/物理假设，不能从 metadata 声称已验证。
+
+## 显式几何证书版本（V44）
+
+`reach_geometry_rule`与上述安全profile正交。缺省`binary-cone-v1`逐字保留原
+`mr3_reach_geometry.py`及上一节的整D判据；显式`cone-support-v2`只在
+`mr3-reach-v1`下有效。未知值或链中选择不一致必须拒绝。新规则沿
+plan→benchmark/PPO→Supervisor→reset worker→launch→motion_safety/ReachTracker
+传递；episode、监督器、实际motion configuration、资格和三阶段policy必须同值。
+旧缺省记录省略新增字段；新plan必须逐跳显式选择，不能用缺字段借新规则信用。
+
+v2仍使用完全相同的Reach集合、源龄U、D/H/R、heading cone、2R/4R、双frame、
+intent承诺和硬门，仅用固定报告分离线的support上界代替每端二值保留整D。
+在每个frame取δ=右中心−左中心，d=|δ|>0，n=δ/d；每个origin-containing
+sector的纵向支持上界为h，多个允许符号/heading形成union，故取max。
+若 `d²≥(.50+.02+U+q_left+q_right+h_left(n)+h_right(−n))²`，
+则在所声明Reach集合和原物理/来源前提下足以分离。raw和map独立计算后AND。
+这是充分条件，不声称所有安全情况都能放行，也不单靠公式证明真实plant满足Reach。
+
+每个axis a仅在dot(a,δ)<0且cone可严格证明acute时使用投影上界
+`H=dot*cos_lower+abs(cross)*sin_upper`；保守比值
+`clamp((H+U*|a|_upper)/(|a|_lower*d_lower),0,1)`乘该Reach的实际L。
+分子≤0先取0，旧robust nonclosing成立则保留其精确0；其他情况保留完整L。
+外层U保持完整，额外方向项也保留在比值内，不能错写成无量纲项直接加米。
+根号通过96bit dyadic的整数isqrt给出有理上下界，零/不正lower不能作分母；
+没有libm/epsilon准入。生产proof保留历史调用键`geometric_necessary`作为许可bool，
+新schema明确其含义为这个充分证书，保留逐端/逐frame结论、日志用向外有理区间及完整精确frame的canonical SHA。日志区间仅压缩记录，不参与准入；独立reader从完整交付输入和冻结源重新计算，不能把生产summary当oracle。
+
+[禁用原型及独立推导](report/20261022_mr3_p2a_v43_support_geometry.md)只提供人工
+条件数学检查；生产新源仍必须在新freeze完成完整原生角色、独立重放、物理/接触和
+训练/最终95%验收，不能替旧FAIL改判。actor、候选、种子、reward和intent wire不变。
 
 ## 来源cadence配置
 
@@ -92,4 +122,4 @@ producer 保持原 float yaw/cosf/sinf/body conversion。c²+s²并非精确1。
 
 safety 为执行 sidecar。actor维度、候选、mask、地图和reward定义不因它增加；三台本机guard仅取自己的raw，
 同伴几何和模式仅取实际交付 bundle。无手工方向/目标兜底、无真值控制输入。
-当前 PPO 入口拒绝 reach profile：新原生资格及完整版本化 reader 门尚未取得，不能借旧38角色或旧模型放行。
+PPO入口仅在同freeze、同显式规则的完整原生资格及前驱学习审计通过时放行；当前尚无新规则资格，不能借旧38角色或旧模型进入。

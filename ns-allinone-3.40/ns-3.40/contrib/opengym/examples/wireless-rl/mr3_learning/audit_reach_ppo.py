@@ -17,6 +17,7 @@ from . import audit_reach_cadence, audit_reach_information, audit_reach_runtime,
 from . import audit_reach_controlled_physics, audit_reach_preparation
 from .reach_audit_projection import project_module
 from .reach_gates import PPO_READER_SHA256, load_native_gates
+from .supervisor import (BINARY_REACH_GEOMETRY_RULE, validate_reach_geometry_rule)
 
 
 CONTRACT = "mr3-reach-v1"
@@ -70,10 +71,14 @@ def admission(metadata, freeze, plan_path=None, qualification_path=None, *, root
             "PPO seed rule differs from its native qualification")
     require(metadata.get("start_graph_rule", "original-seed-cell") == json.loads(snapshots[plan_path]).get("start_graph_rule", "original-seed-cell"),
             "PPO start graph rule differs from its native qualification")
+    require(validate_reach_geometry_rule(metadata.get("reach_geometry_rule", BINARY_REACH_GEOMETRY_RULE),
+                safety_contract=CONTRACT) == json.loads(snapshots[plan_path]).get("reach_geometry_rule", BINARY_REACH_GEOMETRY_RULE),
+            "PPO reach geometry rule differs from its native qualification")
     return plan_path, qualification_path, snapshots, proof
 
 
-def audit_episode_conjunction(directory, freeze, preparation):
+def audit_episode_conjunction(directory, freeze, preparation, *,
+                              reach_geometry_rule=BINARY_REACH_GEOMETRY_RULE):
     """Independent full episode roles, without scripted probe workload gates."""
     directory = Path(directory)
     row = {"directory": str(directory), "passed": False, "errors": []}
@@ -97,7 +102,8 @@ def audit_episode_conjunction(directory, freeze, preparation):
             if name == "runtime_drive":
                 require(report.get("contract") == CONTRACT and report.get("freeze") == freeze
                         and report.get("independent_necessary_replay") is True
-                        and report.get("continuous_physical_model_proved") is False,
+                        and report.get("continuous_physical_model_proved") is False
+                        and report.get("reach_geometry_rule", BINARY_REACH_GEOMETRY_RULE) == reach_geometry_rule,
                         "runtime role lacks independent conditional replay")
         except (OSError, ValueError, TypeError, KeyError, IndexError, RuntimeError, OverflowError, zlib.error) as error:
             row["errors"].append(name+": "+str(error))
@@ -118,6 +124,10 @@ def audit_run(directory, freeze, plan_path=None, qualification_path=None):
         metadata, freeze, plan_path, qualification_path)
     stable.update(admission_inputs)
     plan = json.loads(admission_inputs[plan_path])
+    geometry_rule = validate_reach_geometry_rule(
+        plan.get("reach_geometry_rule", BINARY_REACH_GEOMETRY_RULE), safety_contract=CONTRACT)
+    require(summary.get("reach_geometry_rule", BINARY_REACH_GEOMETRY_RULE) == geometry_rule,
+            "PPO summary reach geometry rule differs from its native qualification")
     source_inputs = {}
     for relative, expected in plan["source_bindings"].items():
         path = WORKSPACE/relative
@@ -140,12 +150,16 @@ def audit_run(directory, freeze, plan_path=None, qualification_path=None):
                 "native attempt seed rule differs from qualification plan")
         require(own.get("start_graph_rule", "original-seed-cell") == plan.get("start_graph_rule", "original-seed-cell"),
                 "native attempt start graph rule differs from qualification plan")
+        require(own.get("reach_geometry_rule", BINARY_REACH_GEOMETRY_RULE) == geometry_rule,
+                "native attempt reach geometry rule differs from qualification plan")
         supervisor_path = episode / "supervisor_metadata.json"
         supervisor_raw = supervisor_path.read_bytes(); stable[supervisor_path] = supervisor_raw
         require(json.loads(supervisor_raw).get("seed_rule", "legacy") == plan.get("seed_rule", "legacy"),
                 "native supervisor seed rule differs from qualification plan")
         require(json.loads(supervisor_raw).get("start_graph_rule", "original-seed-cell") == plan.get("start_graph_rule", "original-seed-cell"),
                 "native supervisor start graph rule differs from qualification plan")
+        require(json.loads(supervisor_raw).get("reach_geometry_rule", BINARY_REACH_GEOMETRY_RULE) == geometry_rule,
+                "native supervisor reach geometry rule differs from qualification plan")
     module, projection = load_impl(plan_path)
     preparation, preparation_proof = audit_reach_preparation.load_impl(plan_path)
     result = module.audit_run(directory, freeze)
@@ -155,8 +169,11 @@ def audit_run(directory, freeze, plan_path=None, qualification_path=None):
                   reach_plan=str(plan_path), reach_qualification=str(qualification_path),
                   qualification_binding=qualification, reach_episodes=[],
                   continuous_physical_model_proved=False, old_profile_qualification_credit_reused=False)
+    if geometry_rule != BINARY_REACH_GEOMETRY_RULE:
+        result["reach_geometry_rule"] = geometry_rule
     for episode in discovered:
-        report = audit_episode_conjunction(episode, freeze, preparation)
+        report = audit_episode_conjunction(episode, freeze, preparation,
+            **({"reach_geometry_rule": geometry_rule} if geometry_rule != BINARY_REACH_GEOMETRY_RULE else {}))
         result["reach_episodes"].append(report)
         if not report["passed"]:
             result["errors"].append(str(episode)+": independent reach conjunction: "+"; ".join(report["errors"]))

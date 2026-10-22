@@ -32,6 +32,9 @@ from launch.substitutions import LaunchConfiguration
 
 from launch_ros.actions import Node
 from nav2_common.launch import RewrittenYaml
+from multi_robot_exploration.mr3_reach_runtime import (
+    BINARY_CONE_V1, validate_reach_geometry_rule,
+)
 
 
 # Candidate helpers to insert in the existing launch file. No standalone node.
@@ -562,6 +565,12 @@ def launch_setup(context, *args, **kwargs):
     if safety_contract == "mr3-reach-v1" and not (
             adapter_mode and stepped_mode and robot_count == 3):
         raise ValueError("mr3-reach-v1 requires stepped three-robot adapter mode")
+    if sum(type(argument) is str and argument.startswith("mr3_reach_geometry_rule:=")
+           for argument in context.argv) > 1:
+        raise ValueError("duplicate mr3_reach_geometry_rule launch argument")
+    reach_geometry_rule = validate_reach_geometry_rule(
+        LaunchConfiguration("mr3_reach_geometry_rule").perform(context),
+        safety_contract=safety_contract)
     seed_rule = LaunchConfiguration("mr3_seed_rule").perform(context)
     if seed_rule not in ("legacy", "exact-point-bridge-v1", "exact-point-bridge-v2"):
         raise ValueError("mr3_seed_rule must be legacy, exact-point-bridge-v1 or exact-point-bridge-v2")
@@ -723,6 +732,8 @@ def launch_setup(context, *args, **kwargs):
             parameters=[{"use_sim_time": use_sim_time, "episode_epoch": episode_epoch,
                          "stepped_mode": stepped_mode,
                          "safety_contract": safety_contract,
+                         **({"reach_geometry_rule": reach_geometry_rule}
+                            if reach_geometry_rule != BINARY_CONE_V1 else {}),
                          "mr3_diagnostic_enabled": bool(plant_stimulus_arm),
                          "audit_path": (os.path.join(os.path.dirname(adapter_audit_path),
                                                      "motion_safety.jsonl")
@@ -1314,6 +1325,11 @@ def generate_launch_description():
         "mr3_safety_contract", default_value="legacy",
         description="Explicit motion contract: legacy or mr3-reach-v1; "
                     "mr3-reach-v1 requires the stepped three-robot adapter.",
+    ))
+    ld.add_action(DeclareLaunchArgument(
+        "mr3_reach_geometry_rule", default_value=BINARY_CONE_V1,
+        description="Explicit pair separation certificate: binary-cone-v1 (unchanged default) or "
+                    "cone-support-v2; v2 requires the stepped three-robot mr3-reach-v1 adapter.",
     ))
     ld.add_action(DeclareLaunchArgument(
         "mr3_seed_rule", default_value="legacy",
