@@ -1,0 +1,10 @@
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+...........................
+----------------------------------------------------------------------
+Ran 27 tests in 5.031s
+
+OK
+{"artificial_system_replay_regression": "PASS", "dependencies": {"python": "/usr/bin/python3", "numpy_version": "1.21.5", "numpy_path": "/usr/lib/python3/dist-packages/numpy/__init__.py", "scipy_version": "1.8.0", "scipy_path": "/usr/lib/python3/dist-packages/scipy/__init__.py", "snapshot_digest": "804f3c4737ebdef19f9e1e0d14085f64450ce4f0a6af84ec2d5babd13cf9957a"}, "replayer_child_identity": {"pid": 3626501, "parent": 3626236, "group": 3626105, "session": 3626105, "start_ticks": 441588523, "state": "R"}, "argv": ["/usr/bin/python3", "-B", "-m", "mr3_learning.audit_seed_inputs", "--episode", "/tmp/tmpzqin4ww4/artificial", "--output", "/tmp/mr3-exact-seed-system-hr5t_4pm/result.json"], "started_monotonic_ns": 4415885237034207, "ended_monotonic_ns": 4415886014515043, "actual_wait_seconds": "0.777480836", "returncode": 0, "full_snapshot_replays": 1, "world_or_native_collection": false}

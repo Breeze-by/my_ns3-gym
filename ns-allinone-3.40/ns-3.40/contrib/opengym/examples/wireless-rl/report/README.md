@@ -1,5 +1,7 @@
 # 报告与证据适用范围
 
+2026-10-22 V42描述提取闭合PASS：执行freeze f96b9801957a80b22bf9096df3691173961ef417，对V41闭合interface固定9文件完整读517060271B，1617选行；4项selection drop保留，不能声称完整plant窗口。全task reach日志显示tb3的1602条判据中1280次正v请求均被输出为0，reason计数379 linear_brake_preserve_requested_turn/855 reach_transition_envelope；不重裁原FAIL。scope15源、outer16含scope稳定，3保存身份freshgone；5有限原件/3205464B逐字封存。parent实费27.535294547秒，累计50041.2338414596018/75000、余24958.7661585403982。环境隔离最终27人工CPU PASS（两轮失败保留），尚无新native资格；下一步禁用cone-support数学helper CPU，不接生产/重跑矩阵；P2A未完成，pilot/final不动，自主续接无需再审批。见[V42闭合](20261022_mr3_p2a_v42_native_diagnosis.md)。
+
 2026-10-22 V42预声明：V41闭合FAIL/61身份gone与原费保持；下一次仅对已闭合interface/open101的固定9文件作一次有界描述提取，≤1GiB输入/2200选行/4MiB输出，内部580秒、parent600＋外尾60＝660秒，预约在原800准备块余761.736133391内。15源及语法/路径静态准备通过，system reader/conda learner隔离修复正做CPU准备、尚未测试；待新commit/push精确freeze后执行，不重验原物理结论、不读map blobs/启动World或学习。工程仍50013.6985469126018/75000、余24986.3014530873982；pilot/final不动，P2A未完成，用户自主续接授权有效，无需再次审批。见[V42](20261022_mr3_p2a_v42_native_diagnosis.md)。
 
 2026-10-22 V41闭合FAIL：冻结47224c51c1c525c55093dce26b374d1ccb07eb06的interface原生32/32、rc0，custody/input/angular PASS；physics缺tb1/tb3合格停止证据，tb3任务最大平移速度仅.0005951022668803631m/s。conda full读者603.957455769秒后rc1/无result，报告scipy缺失；独立system input读者PASS，原失败与环境缺口分别保留。terminal/reset/deadline及minimum/pilot/final全部SKIPPED、0学习；两份外部absence各54身份PASS，最终独立review含driver共61保存身份freshgone；556原件/1053103628B无损封存为88403941B。四parent wait union1731.301983102秒，累计50013.6985469126018/75000、余24986.3014530873982；pilot/final额度不动，P2A未完成。用户自主授权有效，下一步新有界只读取证、正确隔离system reader/conda learner并修真实平移/探针激励，不直接重跑完整矩阵或降门。见[V41闭合](20261022_mr3_p2a_v41_packing_gate.md)。
@@ -54,7 +56,7 @@
 
 | 文件 | 用途 | 能提供的信用 |
 | --- | --- | --- |
-| [P2A V42 闭合原件有限诊断](20261022_mr3_p2a_v42_native_diagnosis.md) | 固定V41 interface 9文件/1GiB/2200选行/4MiB，新freeze后唯一660秒块 | 预声明未执行；reader环境隔离CPU准备未测试，0新World/学习/重验，不改变原FAIL |
+| [P2A V42 闭合原件有限诊断](20261022_mr3_p2a_v42_native_diagnosis.md) | 固定9文件描述提取PASS但4项选行drop保留；system reader隔离最终27人工CPU PASS、两次失败保留 | 描述/封存/3身份闭合PASS，实费27.535294547秒、余24958.7661585403982；不改V41 FAIL或授予新native/学习资格 |
 | [P2A V41 原生来源门续接](20261022_mr3_p2a_v41_packing_gate.md) | packing真实preflight、interface32/32/custody/input/angular PASS；physics停止覆盖与conda full环境FAIL | 四parent实费1731.301983102秒、工程余24986.3014530873982；后继全部SKIPPED/0学习，无完整native资格或P2A信用 |
 | [P2A V36 实际点接图候选](20261022_mr3_p2a_v36_point_graph.md) | 禁用固定3×3全桥原型40人工CPU、同冻结已知两帧/6机开发计算 | PASS：38anchors，tb3原格false但2/4邻节点可接；1.824187839秒/5身份gone，无生产或资格 |
 | [P2A V35 图门与执行归因](20261022_mr3_p2a_v35_grid_liveness.md) | 缺图API113人工CPU；固定rooms两份输入的有限取证 | PASS：reset点安全/同中心桥不安全；1.818145901秒/5身份gone，转禁用point-graph CPU，不提供资格 |

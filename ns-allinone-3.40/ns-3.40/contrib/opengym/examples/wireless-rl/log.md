@@ -8457,3 +8457,23 @@ V41 evidence freeze47224c51c1c525c55093dce26b374d1ccb07eb06原FAIL/61身份gone/
 固定V41 interface/open101/单EP/reset+32step，9文件仅transitions/adapter/motion_safety及三机drive/odom；一次流式总≤1GiB、≤2200选行/完整4MiB输出，不解map/blob，不重裁物理/任务。reader内部580秒/parent完整wait600＋外尾60=660预约，在原800准备块余761.736133391内；入场工程50013.6985469126018/75000、余24986.3014530873982，预约不是实费。零World/GPU优化/学习，pilot/final不动。
 
 待本轮修复人工CPU完成、同commit/push新freeze后唯一命令cwd=wireless-rl：`rtk proxy env PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 -B -m report.assets.20261022_mr3_p2a_v42_native_diagnosis.run_forensic_v1 --freeze EXACT40`，EXACT40待替本次精确40位新SHA，当前没有声称已启动。新prefix=/tmp/mr3_p2a_v42_native_diagnosis，父实际wait/原9字节与源稳定/最终保存身份/外尾费用均须闭合；不改旧V41、不直接重跑完整矩阵，不降任务/安全/物理门。后续根据事实修真实平移/探针激励，P2A未完成。见[V42预声明](report/20261022_mr3_p2a_v42_native_diagnosis.md)。
+
+
+### 2026-10-22 MR3 P2A V42 有限描述提取实际闭合PASS（无科学资格）
+
+按前述唯一system launcher执行，EXACT40=f96b9801957a80b22bf9096df3691173961ef417。实际reader child argv为`/usr/bin/python3 -B ABS_A42/closed_native_extract_v1.py --episode-directory /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v41/mr3_p2a_reach_v41_interface/worker0/episode001_open_101 --output /tmp/mr3_p2a_v42_native_diagnosis/extract_v1.json`，完整字面argv/source/实际wait见[canonical receipt](report/assets/20261022_mr3_p2a_v42_native_diagnosis/closed_execution/actual_read_wait/actual_wait.json)；driver实际reap rc0。
+
+9固定文件完整流式读取517060271B，SHA与旧V41闭合库存相同，stat/source稳定；1617选行、输出3189288B，但descriptive_selection_complete=false：driver_tb2省39/tb3省218、publisher_raw_odom_tb2/tb3各省102。完整task scope的低层reach统计：tb3 1602判据记录、1280次正v请求输出全0，reason计数linear_brake_preserve_requested_turn379/reach_transition_envelope855；不是1602次PPO决策，不说明完整plant窗口无省略，不推翻原物理/停止FAIL或补造同tick跨文件时钟因果。
+
+完整parent27.535294547秒，inner27.31817194包含不叠加；工程累计50041.2338414596018/75000、余24958.7661585403982。scope15源/outer16含scope/extractor11子集均冻结与前后稳定；[独立metadata/source/proc review](report/assets/20261022_mr3_p2a_v42_native_diagnosis/independent_closed_review_v1.json)PASS，driver/wrapper/extractor共3保存身份freshgone，Z计存在。5有限原件3205464B逐字copy与SHA/stat库存见[A42 closed inventory](report/assets/20261022_mr3_p2a_v42_native_diagnosis/closed_inventory_v1.json)，该bookkeeping不读原trace/新增科学消费，工程新增0。
+
+本轮无World/GPU优化/学习、无physics或任务重判，旧V41 FAIL和pilot/final配额保持，P2A未完成。下一步helper人工CPU与禁用同reach cone-support数学候选，主跑尚未验证，不接生产或重跑完整矩阵；用户自主持续授权有效，不再重复一般审批。详见[V42闭合](report/20261022_mr3_p2a_v42_native_diagnosis.md)。
+
+
+### 2026-10-22 MR3 P2A V42 system reader隔离人工CPU收口
+
+生产修复audit_reach_preparation.py+人工test_audit_reach_system_replay.py：explicit exact replay转清环境/usr/bin/python3子进程，真实wait、严格返回证据；immutable及原replayer不改，默认legacy不变，full/PPO原archives与system replay仍合取。人工入口为A42/cpu_bridge_driver_v1.py，NAME依次system_bridge_cpu_v1/v2/v3；实际child命令（cwd=wireless-rl）`/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m unittest mr3_learning.tests.test_audit_reach_system_replay mr3_learning.tests.test_reach_controlled_dispatch mr3_learning.tests.test_audit_reach_ppo`，完整source恢复/console见各checks实际wait。
+
+system_bridge_cpu_v1 27 tests中一项新fixture消息缺prefix预期导致FAIL，真实child10.022599394秒；修expect时v2保留IndentationError、真实.11785947秒；修复后v3 27 tests全部PASS、真实10.164193406秒。三组source recovery/快照与实际wait均留原件，CPU0工程，不把重复三轮叠为81个独立检查。真实system child人工1snapshot/7map重建PASS，system NumPy1.21.5/SciPy1.8.0；conda parent保持NumPy2.2.6且无SciPy，不混装依赖或读V41原trace。
+
+本轮人工CPU不能追认V41 FAIL/新native资格，full/PPO合取及科学门不变。工程仍50041.2338414596018/75000、余24958.7661585403982，pilot/final不动。后续新source实际资格仍须新freeze；先做禁用同reach cone-support数学helper CPU，不接生产/重跑完整矩阵，不重复一般批准，P2A未完成。见[V42报告](report/20261022_mr3_p2a_v42_native_diagnosis.md)。

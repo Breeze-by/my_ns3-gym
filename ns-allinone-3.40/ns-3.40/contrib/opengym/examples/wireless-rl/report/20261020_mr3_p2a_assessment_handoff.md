@@ -1,5 +1,7 @@
 # MR3 P2A 评估与后续交接
 
+2026-10-22 V42描述提取闭合PASS：执行freeze f96b9801957a80b22bf9096df3691173961ef417，对V41闭合interface固定9文件完整读517060271B，1617选行；4项selection drop保留，不能声称完整plant窗口。全task reach日志显示tb3的1602条判据中1280次正v请求均被输出为0，reason计数379 linear_brake_preserve_requested_turn/855 reach_transition_envelope；不重裁原FAIL。scope15源、outer16含scope稳定，3保存身份freshgone；5有限原件/3205464B逐字封存。parent实费27.535294547秒，累计50041.2338414596018/75000、余24958.7661585403982。环境隔离最终27人工CPU PASS（两轮失败保留），尚无新native资格；下一步禁用cone-support数学helper CPU，不接生产/重跑矩阵；P2A未完成，pilot/final不动，自主续接无需再审批。见[V42闭合](20261022_mr3_p2a_v42_native_diagnosis.md)。
+
 2026-10-22 V42预声明：V41闭合FAIL/61身份gone与原费保持；下一次仅对已闭合interface/open101的固定9文件作一次有界描述提取，≤1GiB输入/2200选行/4MiB输出，内部580秒、parent600＋外尾60＝660秒，预约在原800准备块余761.736133391内。15源及语法/路径静态准备通过，system reader/conda learner隔离修复正做CPU准备、尚未测试；待新commit/push精确freeze后执行，不重验原物理结论、不读map blobs/启动World或学习。工程仍50013.6985469126018/75000、余24986.3014530873982；pilot/final不动，P2A未完成，用户自主续接授权有效，无需再次审批。见[V42](20261022_mr3_p2a_v42_native_diagnosis.md)。
 
 2026-10-22 V41闭合FAIL：冻结47224c51c1c525c55093dce26b374d1ccb07eb06的interface原生32/32、rc0，custody/input/angular PASS；physics缺tb1/tb3合格停止证据，tb3任务最大平移速度仅.0005951022668803631m/s。conda full读者603.957455769秒后rc1/无result，报告scipy缺失；独立system input读者PASS，原失败与环境缺口分别保留。terminal/reset/deadline及minimum/pilot/final全部SKIPPED、0学习；两份外部absence各54身份PASS，最终独立review含driver共61保存身份freshgone；556原件/1053103628B无损封存为88403941B。四parent wait union1731.301983102秒，累计50013.6985469126018/75000、余24986.3014530873982；pilot/final额度不动，P2A未完成。用户自主授权有效，下一步新有界只读取证、正确隔离system reader/conda learner并修真实平移/探针激励，不直接重跑完整矩阵或降门。见[V41闭合](20261022_mr3_p2a_v41_packing_gate.md)。
@@ -12,7 +14,7 @@
 
 2026-10-22 V39闭合：精确segment证书AABB/零长度恒等提速已接生产，446人工CPU通过；冻结a44旧源码逐字段/JSON及独立全格oracle一致，固定128call人工完整证书约2.72倍提速，非World吞吐。首轮system无torch导入FAIL原件保留，环境分离后通过；无新World/学习/工程费。累计48259.9538193466018/52000、余3740.0461806533982；原生资格+minimum须预约20100，75000未批，pilot/final-only及原FAIL保持，P2A未完成。见[V39](20261022_mr3_p2a_v39_certificate_kernel.md)。
 
-当前交接：本会话继续按[V42有界诊断预声明](20261022_mr3_p2a_v42_native_diagnosis.md)完成必要实现/验证，用户已授权自主持续完成P2A，无需再次一般审批。先完成system reader/conda learner隔离的人工CPU准备与测试，再将新源码、A42 scope/launcher及文档同commit/push冻结；随后只执行固定9闭合文件的一次660秒块及外部关闭/真实末账。V41原FAIL及61身份闭合不可改写，不能从描述提取给新物理/训练资格；根据事实再修真实平移/探针激励，不直接重跑完整矩阵，不降低95%/安全/物理/FIFO/TTL门。当前尚未提取、尚无修复CPU PASS或原trace重验，pilot/final额度和P2A未完成状态保持。
+当前交接：本会话继续完成P2A，无需再次一般审批。先读[V42实际闭合](20261022_mr3_p2a_v42_native_diagnosis.md)与派生extract：9原件完整但选行有省略，tb3全task 1280次正v请求输出均0，不能将采样窗口当完整plant因果或推翻原V41停止FAIL。system reader隔离已完成27项人工CPU PASS，前两轮失败保留，未重新消费V41原件或取得新native资格；下一项是禁用同reach cone-support数学helper人工CPU，主跑尚未验证；证明必须保留原reach/.29/unknown/outside等门和原候选默认，不直接接生产或重跑完整矩阵。当前只有描述性诊断/源/关闭/末账信用，无新物理资格、训练更新或final模型；pilot/final额度及95%/安全/物理/FIFO/TTL保持。后续以具体数学反例和人工验证决定必要新版本/冻结的有界实际验证，持续执行而不重复追问一般批准。
 
 以下V38及更早段落保留原评估时点；其中“当前”“下一步”和旧余额均是当时快照，以本页顶部V41状态为准，不重开旧活动。
 

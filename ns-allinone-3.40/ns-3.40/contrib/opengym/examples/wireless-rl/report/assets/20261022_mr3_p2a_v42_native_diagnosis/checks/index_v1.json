@@ -1,0 +1,47 @@
+{
+  "schema": "mr3-v42-system-reader-cpu-index-v1",
+  "current_group": "system_bridge_cpu_v3",
+  "current_tests": 27,
+  "current_passed": true,
+  "new_test_methods": 9,
+  "old_failures_preserved": true,
+  "worlds": 0,
+  "gpu_compute_or_updates": 0,
+  "scientific_native_qualification_credit": false,
+  "engineering_added_seconds": "0",
+  "entries": [
+    {
+      "name": "system_bridge_cpu_v1",
+      "actual_wait": "checks/system_bridge_cpu_v1/actual_wait.json",
+      "sha256": "2a14498f1ece2b74be3e5cd0abd447f7ff997ff744843d0fa410e8026872fb74",
+      "source_recovery": "checks/system_bridge_cpu_v1_source_recovery.json",
+      "passed": false,
+      "actual_returncode": 1,
+      "actual_child_wait_seconds": "10.022599394",
+      "source_unchanged": true,
+      "engineering_added_seconds": "0"
+    },
+    {
+      "name": "system_bridge_cpu_v2",
+      "actual_wait": "checks/system_bridge_cpu_v2/actual_wait.json",
+      "sha256": "41dad2e0d349688a62d12a6a14d94305e10512b3754b6d14f8d0fd3f5035a921",
+      "source_recovery": "checks/system_bridge_cpu_v2_source_recovery.json",
+      "passed": false,
+      "actual_returncode": 1,
+      "actual_child_wait_seconds": "0.11785947",
+      "source_unchanged": true,
+      "engineering_added_seconds": "0"
+    },
+    {
+      "name": "system_bridge_cpu_v3",
+      "actual_wait": "checks/system_bridge_cpu_v3/actual_wait.json",
+      "sha256": "4dda0a6fdc444dfd6be0ed260deff2e16fbfd0d3246ea20f34f22af8cbe4e5f7",
+      "source_recovery": "checks/system_bridge_cpu_v3_source_recovery.json",
+      "passed": true,
+      "actual_returncode": 0,
+      "actual_child_wait_seconds": "10.164193406",
+      "source_unchanged": true,
+      "engineering_added_seconds": "0"
+    }
+  ]
+}
