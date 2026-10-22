@@ -1,0 +1,69 @@
+{
+  "schema": "mr3-p2a-v38-fixed-protocol-scope-v1",
+  "authorization": "user continue and previously authorized bounded diagnosis and ordinary implementation within existing ceiling",
+  "source_freeze_policy": "one clean pushed new freeze; original evidence freeze13e95f29fcc094b19c42fbdeb7d9a76644dee0e9 remains unchanged",
+  "engineering_entry_used_seconds": "48259.6385161916018",
+  "engineering_ceiling_seconds": "52000",
+  "activity_seconds_including_external_closure": 60,
+  "main_timeout_seconds": 30,
+  "main_cleanup_seconds": 5,
+  "external_reserve_seconds": 15,
+  "buffer_seconds": 10,
+  "one_attempt_no_retry_or_replacement": true,
+  "fixed_protocol_sha256": "506e4e491f1a1993b9481f79ef09b1080efdb5de94a7faa5b5906ec69f4ee3e5",
+  "fixed_protocol_bytes": 23618,
+  "maximum_decoded_bytes": 8000000,
+  "maximum_decoded_rows": 10000,
+  "selection": {
+    "epoch": "proxy2d_w2_e1_f96a1433",
+    "window_inclusive_worker_clock_ns": [
+      52100000000,
+      54300000000
+    ],
+    "strict_before_worker_clock_ns": 54100000000,
+    "goals": [
+      "proxy2d_w2_e1_f96a1433:tb3:46",
+      "proxy2d_w2_e1_f96a1433:tb3:53",
+      "proxy2d_w2_e1_f96a1433:tb1:53",
+      "proxy2d_w2_e1_f96a1433:tb2:51"
+    ],
+    "first_protocol_failure": true,
+    "last_delivery_each_stream_source_before_cut": true
+  },
+  "execution_argv_template": [
+    "/usr/bin/timeout",
+    "--signal=INT",
+    "--kill-after=5s",
+    "30s",
+    "/usr/bin/python3",
+    "-B",
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v38_protocol_cpu/protocol_forensic_v1.py",
+    "--source-freeze",
+    "{freeze}",
+    "--output",
+    "/tmp/mr3_p2a_v38_protocol_forensic_v1.json"
+  ],
+  "source_bindings": {
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v38_protocol_cpu/protocol_forensic_v1.py": "aaaa43223d5a4d7ee37a335e8f6b742361bcc96108528ce4cd587b1f0e47fa71",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v35_grid_liveness/forensic_final_v1.py": "016c26ac9d231024fceeacb449a5ab55317acc84a5692af8a65c10a9c68bd599",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_execution.py": "fa7da30bf18a71a7a28698f733590074bdf164c8857028640aedba5d21fd8be4",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_protocol.py": "5a2b90efd162b19a35964750002fe549413fec6e07f9679ea611d3fe6b1e4ada",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_transport.py": "426d9b777c2150bb690de3266c973dedfc8fe8da3fa36c7bf37cbe3c31d70eca",
+    "ros2_ws/ros2-multi-robot-automap/scripts/mr3_proxy2d_worker.py": "814c311bc2c332814b2ff4c80973248ebd4c7a4034d2d65644a76dda491f5095"
+  },
+  "data_bindings": {
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v37_point_graph/closed_execution/point_graph_probe_v1/stages/group3/worker2/episode001_corridors_101/protocol.jsonl.gz": "506e4e491f1a1993b9481f79ef09b1080efdb5de94a7faa5b5906ec69f4ee3e5",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v37_point_graph/closed_inventory_v1.json": "c49c302107934e4428eee4291e94804d5dd9a92a4bc198f614aac7e914a26782"
+  },
+  "classification": "recorded protocol evidence extraction only; no queue reconstruction, actor/map/scan/truth decode, World, policy or training",
+  "qualification": false,
+  "training_eligible": false,
+  "native_credit": false,
+  "pilot_unchanged": true,
+  "final_only_unchanged": true,
+  "policy_calls": 0,
+  "gpu_calls": 0,
+  "optimizer_steps": 0,
+  "disabled_certificate_cpu_candidate": true,
+  "negative_training_audit_changes_status": "PROPOSED_NOT_APPROVED"
+}

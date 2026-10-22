@@ -1,5 +1,7 @@
 # ROS component memory — MR3
 
+2026-10-22 V38准备：160人工CPU/禁用精确证书恒等优化通过，生产与TTL/FIFO/任务门保持；将一次固定corridors协议原件法证限60工程秒，不读actor地图或重跑World。负样本collector与完整protocol/custody门口径评估已存，随机2D全PASS不是native前置，新训练审计仍仅提案。工程48259.6385161916018/52000、余3740.3614838083982，75000待答、pilot/final-only不动，P2A未完成。见[V38](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261022_mr3_p2a_v38_protocol_cpu.md)。
+
 2026-10-22 V37闭合：显式point-graph生产/626人工CPU通过；13e95f29f冻结8步profile PASS，三场64步短probe FAIL，119/119/0、122actor/366机器人观测attachment均接受；corridors54秒navigation_failure全局停止，open38/rooms27未完成。原tb3 cell FAIL保留，现先查FIFO/目标租约实际交付，不重跑或改门。267原件/9.30MB、34身份gone；实费520.102603214，累计48259.6385161916018/52000、余3740.3614838083982。75000待答，pilot/final-only不动，P2A未完成。见[V37](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261022_mr3_p2a_v37_point_graph.md)。
 
 2026-10-21 V33闭合：冻结6d16ebdc5的显式exact seed三场101各64步短工程链通过192/192/0、195actor/585证书和20身份gone；功能未解决，tb3每场65/65 pose_not_in_original_seed_cell，tb1几乎不动。规范273原件/11.79MB；实费578.391653362，累计47269.8043977356018/52000，余4730.1956022643982。继续定位精确cell算术与强制中心桥执行先决，新规则须新版本/冻结，不把短工程PASS当P2A；75000提案待答，pilot/final-only不动，P2A未完成。见[V33](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261021_mr3_p2a_v33_seed_mode.md)。

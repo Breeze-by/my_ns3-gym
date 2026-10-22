@@ -1,0 +1,81 @@
+{
+  "schema": "mr3-exact-kernel-local-microbenchmark-v1",
+  "profile": "mr3-exact-segment-aabb-disabled-v1",
+  "production_enabled": false,
+  "qualification": false,
+  "records": [
+    {
+      "implementation": "reference",
+      "calls": 32,
+      "elapsed_ns": 460245362,
+      "last_point_squared_exact": "1/64",
+      "last_segment_squared_exact": "1/1600",
+      "last_counts": {
+        "candidate_bounds": [
+          4,
+          16,
+          2,
+          16
+        ],
+        "checked_cells": 195,
+        "checked_nonfree_cells": 56
+      }
+    },
+    {
+      "implementation": "candidate",
+      "calls": 32,
+      "elapsed_ns": 168138654,
+      "last_point_squared_exact": "1/64",
+      "last_segment_squared_exact": "1/1600",
+      "last_counts": {
+        "candidate_bounds": [
+          4,
+          16,
+          2,
+          16
+        ],
+        "checked_cells": 195,
+        "checked_nonfree_cells": 56
+      }
+    },
+    {
+      "implementation": "candidate",
+      "calls": 32,
+      "elapsed_ns": 167587859,
+      "last_point_squared_exact": "1/64",
+      "last_segment_squared_exact": "1/1600",
+      "last_counts": {
+        "candidate_bounds": [
+          4,
+          16,
+          2,
+          16
+        ],
+        "checked_cells": 195,
+        "checked_nonfree_cells": 56
+      }
+    },
+    {
+      "implementation": "reference",
+      "calls": 32,
+      "elapsed_ns": 456469648,
+      "last_point_squared_exact": "1/64",
+      "last_segment_squared_exact": "1/1600",
+      "last_counts": {
+        "candidate_bounds": [
+          4,
+          16,
+          2,
+          16
+        ],
+        "checked_cells": 195,
+        "checked_nonfree_cells": 56
+      }
+    }
+  ],
+  "workloads": [
+    "corner_obstacle",
+    "dense_unsafe_ring"
+  ],
+  "scope": "fixed artificial CPU only; no episode/training capacity claim"
+}

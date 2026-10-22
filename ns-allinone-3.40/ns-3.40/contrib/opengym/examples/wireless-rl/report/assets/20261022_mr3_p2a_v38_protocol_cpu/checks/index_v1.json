@@ -1,0 +1,52 @@
+{
+  "schema": "mr3-v38-cpu-index-v1",
+  "artificial_tests_passed": 160,
+  "candidate_and_original_protocol_tests": 148,
+  "extractor_stdlib_tests": 12,
+  "fixed_microbenchmark_calls": 128,
+  "production_enabled": false,
+  "engineering_charge_seconds": "0",
+  "checks": [
+    {
+      "name": "candidate_and_protocol_cpu_v1",
+      "receipt": "report/assets/20261022_mr3_p2a_v38_protocol_cpu/checks/candidate_and_protocol_cpu_v1/actual_wait.json",
+      "sha256": "6e696cacfd72bcdafb5aeef32dfd333fdf6acb54c4a15a50d163af46e0b46a92",
+      "passed": true,
+      "source_unchanged": true,
+      "actual_wait_seconds": "2.421500429",
+      "engineering_charge_seconds": "0"
+    },
+    {
+      "name": "microbenchmark_cpu_v1",
+      "receipt": "report/assets/20261022_mr3_p2a_v38_protocol_cpu/checks/microbenchmark_cpu_v1/actual_wait.json",
+      "sha256": "854c0bda7823d50103d8bae82eb5bc6f7a4ec54fee061eeb30082b470fc5387b",
+      "passed": true,
+      "source_unchanged": true,
+      "actual_wait_seconds": "2.470423378",
+      "engineering_charge_seconds": "0"
+    },
+    {
+      "name": "protocol_extractor_cpu_v1",
+      "receipt": "report/assets/20261022_mr3_p2a_v38_protocol_cpu/checks/protocol_extractor_cpu_v1/actual_wait.json",
+      "sha256": "44a2ddb1704ee0befb57dc4bd27202fa0f2e70923e50d42cf3655cc0df0cc72b",
+      "passed": true,
+      "source_unchanged": true,
+      "actual_wait_seconds": "0.223493796",
+      "engineering_charge_seconds": "0"
+    }
+  ],
+  "all_source_versions_recoverable_from_same_preparation_freeze": {
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v38_protocol_cpu/certificate_candidate_v1.py": "3cdb3600808eb82c50aca36e72d14f2311297a526dac41be49cb1e71716397b6",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v38_protocol_cpu/test_certificate_candidate_v1.py": "bccff2061ffc638c02854e461949149a47de62cdaac78287a4519936f98aa3a5",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_seed_certificate.py": "422c14999b0bc552b0c895f4d496b2d753340bea8eaf89eb6482700f15880d27",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_protocol.py": "303d9cc94971ac5125efc40f44fde986b7177562b1dd5e9e6aa23e29b0e74f93",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_seed_certificate.py": "99bd4fdda76a5974d394a2e40177e7cbd5fb12308258c2ee096c5232c568e3cb",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_protocol.py": "5a2b90efd162b19a35964750002fe549413fec6e07f9679ea611d3fe6b1e4ada",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_transport.py": "426d9b777c2150bb690de3266c973dedfc8fe8da3fa36c7bf37cbe3c31d70eca",
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_episode.py": "9145d2ad23789b252e32f0afdfe18cf2eeec8e2c7e9ca7e89127a532288e411b",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_execution.py": "fa7da30bf18a71a7a28698f733590074bdf164c8857028640aedba5d21fd8be4",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/preparation.py": "850ab8947f711033f3f2fd17ef57d32098c02d569c1bea0f5cf58aaff8acd767",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v38_protocol_cpu/protocol_forensic_v1.py": "aaaa43223d5a4d7ee37a335e8f6b742361bcc96108528ce4cd587b1f0e47fa71",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v38_protocol_cpu/test_protocol_forensic_v1.py": "a76fd9d27af2675b23ce4003f2f865fb751809a3bdd030bce410ee8676c0d0c4"
+  }
+}
