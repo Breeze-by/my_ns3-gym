@@ -8312,3 +8312,20 @@ source freeze47dd6774e478bb714e1844e0056f2301269896a3 clean/pushed；数据冻�
 ```
 
 main1.726117935+final0.092027966=union1.818145901秒；端点2.052657422秒<60，内嵌时间不重加。5保存身份fresh gone、source_before==after，无World/newEP/policy/GPU/optimizer；累计47737.7117251386018/52000、余4262.2882748613982。pilot/final-only不动，75000仍待答。
+
+
+## 2026-10-22 MR3-P2A V36：disabled point-graph原型与有限重放准备
+
+继V35同中心桥真实FAIL，定义新disabled profile point→固定3×3原graph节点attachment；原格可false，不snap/不改graph core，不选goal/发命令。完整anchor集合独立全图piecewise oracle等27项CPU通过；.29等号与两侧另覆盖。重放入口13项通过（含实际pure helper加载）。初审发现consumer错误要求未使用的reach_geometry已导入，已在首个CPU执行前移除未使用要求并加真实helper加载检查。合计40项，source_before==after，工程新增0，无World/原件decode/学习。
+
+回执`report/assets/20261022_mr3_p2a_v36_point_graph/checks/attachment_cpu_v1/actual_wait.json`，wait 2.294315069秒，精确child argv（reach_execution --scope cpu，cwd=/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl）：
+```json
+["/usr/bin/bash", "--noprofile", "--norc", "-e", "-c", "source /opt/ros/humble/setup.bash && source /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/setup.bash && exec /usr/bin/python3 -B -m pytest -q /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v36_point_graph/test_point_graph_v1.py"]
+```
+
+回执`report/assets/20261022_mr3_p2a_v36_point_graph/checks/replay_cpu_v1/actual_wait.json`，wait 1.565565462秒，精确child argv（reach_execution --scope cpu，cwd=/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl）：
+```json
+["/usr/bin/bash", "--noprofile", "--norc", "-e", "-c", "source /opt/ros/humble/setup.bash && source /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/setup.bash && exec /usr/bin/python3 -B /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v36_point_graph/test_attachment_replay_v1.py"]
+```
+
+新scope预约60工程秒含外尾，仅V35已知rooms101 seq1/129两inputs/6个各自received-map+estimated-pose primitive，不读取trace、不构造actor/路径/World/命令。0anchor有效negative全部保存，不无偏/资格/训练。待new clean/pushed freeze唯一次执行。工程入场47737.7117251386018/52000、余4262.2882748613982；75000仍待答，pilot/final-only保持。

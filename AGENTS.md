@@ -1,6 +1,6 @@
 @/home/zhuyulab/.codex/RTK.md
 
-2026-10-22 V35闭合：47dd6774e新源有限rooms101取证PASS；130events固定选择去重为2输入，reset即原cell门拒绝，实际点.29安全而同中心整桥不安全，不能仅靠shortcut/centre精度修复。缺图API及取证113人工CPU通过；main+final实费1.818145901，5身份gone，累计47737.7117251386018/52000、余4262.2882748613982。下一步禁用actual-point→固定3×3原graph节点全桥证书CPU，新科学版本不假称保留原含点cell门；无生产/原生/PPO资格，75000待答、pilot/final-only不动，P2A未完成。见[V35](ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261022_mr3_p2a_v35_grid_liveness.md)。
+2026-10-22 V36准备：V35证明rooms reset实际点.29安全而本格中心桥不安全；新禁用point→固定3×3原graph全桥attachment原型及重放入口40人工CPU通过。它替代旧含点cell准入、不snap/选goal/命令运动；新60秒scope仅已知rooms两帧/6机局部可用性重放，不能作资格。工程47737.7117251386018/52000、余4262.2882748613982，75000待答、pilot/final-only不动，P2A未完成。见[V36](ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261022_mr3_p2a_v36_point_graph.md)。
 
 2026-10-21 V33闭合：冻结6d16ebdc5的显式exact seed三场101各64步短工程链通过192/192/0、195actor/585证书和20身份gone；功能未解决，tb3每场65/65 pose_not_in_original_seed_cell，tb1几乎不动。规范273原件/11.79MB；实费578.391653362，累计47269.8043977356018/52000，余4730.1956022643982。继续定位精确cell算术与强制中心桥执行先决，新规则须新版本/冻结，不把短工程PASS当P2A；75000提案待答，pilot/final-only不动，P2A未完成。见[V33](ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261021_mr3_p2a_v33_seed_mode.md)。
 
