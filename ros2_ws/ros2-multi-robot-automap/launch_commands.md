@@ -1,5 +1,11 @@
 # 当前三机器人基线与MR3适配启动命令
 
+## reach 环境自动启动协议（V49）
+
+当前由 Supervisor 管理的原生 `mr3-reach-v1` reset 自动使用 `received-input-pause-drain-v1`，没有新增 CLI/launch 开关。worker 先实际收到 monitor-ready、有效本 epoch 的 initial-input ACK 和被动 recorder-ready，再启动 step helper、取得真实暂停回执并对齐实际时钟。暂停后先通过原拓扑、三方全零 takeover 和三机真实 storage ACK；既有20ms全零 bootstrap 在新边界完成严格 state→peer→motion commit、ready status 和 storage 屏障后，再等待实际四项 ready 同时成立，最后才进入原 snapshot/release 和 evaluator 屏障。初始 snapshot 前的 motion 输出必须全零。单独 ROS launch 不执行 Supervisor/worker 的私有 reset 握手。
+
+父 reset 的默认420s绝对 monotonic deadline 从入口计时，包含关闭上一轮、worker 创建、导入及 RPC。worker 共用工作截止时间 `min(worker构造早期时刻+400s, 父deadline-65s)`，为原60s失败清理和5s响应留量；两个 ready 阶段不能各用400s，也不增加外部超时。启动失败清理另取 `min(当前时刻+60s, 父deadline-5s)`，各阻塞等待共用实际剩余时间。实际接收、四项变化、阶段和失败快照写入独占 `startup_readiness.jsonl`；本 epoch 的真实 exploration failure 在启动健康检查处失败。legacy 保留旧顺序并省略新增字段。协议、日志语义和边界见[启动契约](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_STARTUP_CONTRACT.md)；这是新版本启动行为，仍需新冻结资格，旧FAIL保持。
+
 ## 显式reach几何证书参数（V44）
 
 `mr3_reach_geometry_rule`缺省为`binary-cone-v1`，沿用原二值nonclosing/完整纵向包络判据，旧argv及metadata省略新增字段。显式`mr3_reach_geometry_rule:=cone-support-v2`选择同一Reach集合的连心线投影充分分离证书；仅可与`mr3_safety_contract:=mr3-reach-v1`、三机器人、`execution_mode:=adapter`和`mr3_stepped:=true`组合。未知、重复选择或不支持的profile组合会拒绝。

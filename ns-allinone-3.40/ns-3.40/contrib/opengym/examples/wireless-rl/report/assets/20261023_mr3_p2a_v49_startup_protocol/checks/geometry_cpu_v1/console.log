@@ -1,0 +1,78 @@
+........................................................................ [ 12%]
+........................................................................ [ 24%]
+........................................................................ [ 36%]
+........................................................................ [ 48%]
+........................................................................ [ 60%]
+........................................................................ [ 72%]
+........................................................................ [ 84%]
+..........F.F........................................................... [ 96%]
+.......................                                                  [100%]
+=================================== FAILURES ===================================
+_ test_all_four_then_real_control_and_storage_matchers_are_required_before_release _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x78206f4634c0>
+
+    def test_all_four_then_real_control_and_storage_matchers_are_required_before_release(monkeypatch):
+        worker, events = complete_fixture(monkeypatch)
+>       result = worker.reset()
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_worker_startup_readiness.py:216: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../../../../ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py:1400: in reset
+    self._wait(lambda: self.release_intent_refs(self.start_ns) is not None, 10.,
+../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_worker_startup_readiness.py:170: in wait
+    assert predicate(), label
+../../../../../../ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py:1400: in <lambda>
+    self._wait(lambda: self.release_intent_refs(self.start_ns) is not None, 10.,
+../../../../../../ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py:650: in release_intent_refs
+    validate_intent(value, epoch=self.epoch, robot=name, now_ns=release_ns)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = {'admitted_signs': [], 'anchor': None, 'epoch': 'current', 'intent_sequence': 2, ...}
+
+    def validate_intent(value, *, epoch, robot, now_ns=None, max_age_ns=SOURCE_MAX_NS):
+        _fields(value, ("schema", "epoch", "robot", "intent_sequence", "source_clock_ns",
+                        "role", "anchor", "admitted_signs", "lineage", "target"))
+        _identity(value, INTENT_SCHEMA, epoch, robot)
+        sequence = _integer(value["intent_sequence"], 1)
+        source = _integer(value["source_clock_ns"])
+        _causal(source, now_ns, max_age_ns)
+        role, anchor, signs, lineage, target = (value[key] for key in
+                                              ("role", "anchor", "admitted_signs", "lineage", "target"))
+        if role not in ("HOLD", "D", "X", "N", "STOP"):
+            raise ValueError("unknown safety intent role")
+        _signs(signs)
+        if anchor is not None:
+            _anchor(anchor, source)
+        if target is not None:
+            validate_target(target, epoch=epoch, robot=robot, now_ns=source)
+        if role == "HOLD":
+            _fields(lineage, ("release_clock_ns",))
+            release = lineage["release_clock_ns"]
+            if release is None:
+                if anchor is not None:
+                    raise ValueError("pre-release HOLD cannot invent an anchor")
+            else:
+                _integer(release)
+                if anchor is None or not anchor["source_clock_ns"] <= release <= source or target is None:
+>                   raise ValueError("post-release HOLD needs its fixed causal anchor and zero target")
+E                   ValueError: post-release HOLD needs its fixed causal anchor and zero target
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/build/multi_robot_exploration/multi_robot_exploration/mr3_safety_intent.py:219: ValueError
+___ test_legacy_keeps_all_four_then_topology_before_pause_and_omits_new_info ___
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x78206e4efb80>
+
+    def test_legacy_keeps_all_four_then_topology_before_pause_and_omits_new_info(monkeypatch):
+        worker, events = complete_fixture(monkeypatch, reach=False)
+        result = worker.reset()
+        assert events[:5] == ['motion_topology', 'drive_topology', 'helper', 'pause', 'aligned']
+>       assert not any(key.startswith('startup_') for key in result['info'])
+E       assert not True
+E        +  where True = any(<generator object test_legacy_keeps_all_four_then_topology_before_pause_and_omits_new_info.<locals>.<genexpr> at 0x78206ddafc30>)
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_worker_startup_readiness.py:236: AssertionError
+=========================== short test summary info ============================
+FAILED ../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_worker_startup_readiness.py::test_all_four_then_real_control_and_storage_matchers_are_required_before_release
+FAILED ../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_worker_startup_readiness.py::test_legacy_keeps_all_four_then_topology_before_pause_and_omits_new_info
+2 failed, 597 passed in 47.02s

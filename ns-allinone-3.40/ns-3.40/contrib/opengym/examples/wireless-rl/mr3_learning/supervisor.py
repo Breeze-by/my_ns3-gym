@@ -281,6 +281,8 @@ class Supervisor:
         if (not math.isfinite(startup_timeout) or not math.isfinite(request_timeout)
                 or startup_timeout <= 0 or request_timeout <= 0):
             raise ValueError("wall guards must be positive")
+        if safety_contract == "mr3-reach-v1" and startup_timeout > 420.:
+            raise ValueError("reach startup cannot exceed the original 420s wall guard")
         self.worker_id = worker_id
         self.domain_id = domain_id
         self.gazebo_port = gazebo_port
@@ -313,8 +315,17 @@ class Supervisor:
         remember_processes(self.episode)
         request = {"id": self.request_number, "op": op, "epoch": self.episode.epoch, **payload}
         try:
+            if (op == "reset" and "startup_deadline_monotonic_ns" in payload
+                    and time.monotonic_ns() >= payload["startup_deadline_monotonic_ns"]):
+                raise TimeoutError("reach reset absolute wall guard expired")
             self.episode.peer.send(request)
-            response = self.episode.peer.receive(timeout or self.request_timeout)
+            wait = timeout or self.request_timeout
+            if op == "reset" and "startup_deadline_monotonic_ns" in payload:
+                remaining = (payload["startup_deadline_monotonic_ns"] - time.monotonic_ns()) / 1e9
+                if remaining <= 0:
+                    raise TimeoutError("reach reset absolute wall guard expired")
+                wait = min(wait, remaining)
+            response = self.episode.peer.receive(wait)
             if response.get("id") != request["id"] or response.get("epoch") != request["epoch"]:
                 raise ValueError("IPC response identity mismatch")
             remember_processes(self.episode)
@@ -325,6 +336,7 @@ class Supervisor:
             raise InfrastructureError(f"{op}: {error}") from error
 
     def reset(self, scene="open", seed=101):
+        reset_started_ns = time.monotonic_ns() if self.safety_contract == "mr3-reach-v1" else None
         if scene not in SCENES or type(seed) is not int or seed < 0:
             raise ValueError("reset requires a declared development scene and nonnegative seed")
         if self.plant_stimulus_arm is not None and (scene, seed) != ("open", 101):
@@ -371,6 +383,12 @@ class Supervisor:
                     "plant_stimulus_work_deadline_ns": self.plant_stimulus_work_deadline_ns,
                     "startup_wall_guard_sec": self.startup_timeout,
                     "request_wall_guard_sec": self.request_timeout}
+        startup = {}
+        if reset_started_ns is not None:
+            startup = {"startup_readiness_protocol": "received-input-pause-drain-v1",
+                       "startup_deadline_monotonic_ns": reset_started_ns + round(self.startup_timeout * 1e9)}
+            metadata.update(**startup, reset_started_monotonic_ns=reset_started_ns,
+                            startup_cleanup_reserve_seconds=60., startup_response_reserve_seconds=5.)
         if self.seed_rule != "legacy":
             metadata["seed_rule"] = self.seed_rule
         if self.start_graph_rule != ORIGINAL_START_GRAPH_RULE:
@@ -388,6 +406,7 @@ class Supervisor:
                                terminal_probe=self.terminal_probe,
                                plant_stimulus_arm=self.plant_stimulus_arm,
                                plant_stimulus_work_deadline_ns=self.plant_stimulus_work_deadline_ns,
+                               **startup,
                                **({"safety_contract": self.safety_contract}
                                   if self.safety_contract != "legacy" else {}),
                                **({"seed_rule": self.seed_rule} if self.seed_rule != "legacy" else {}),

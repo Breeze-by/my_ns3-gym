@@ -5,7 +5,7 @@ This entry has a separate plan, role registry, source contract and qualification
 """
 
 import argparse
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 import hashlib
 import json
 from pathlib import Path
@@ -30,6 +30,7 @@ EXPECTED_ROLES = {name: BASE_ROLES | ({"input", "angular", "physics"}
                   if name in ("interface", "reset") else set()) for name in primitives.STAGES}
 CAPS = ("2400", "1200", "6500", "7900")
 NATIVE_CAPS = ("1900", "850", "5500", "6900")
+BOUNDED_RESERVATION_PROFILE = "bounded-original-workload-v1"
 require, sha, dump, argument = primitives.require, primitives.sha, primitives.dump, primitives.argument
 
 
@@ -37,6 +38,41 @@ SUPPORT_REACH_SOURCES = {
     "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_reach_support.py",
     str(WIRELESS_RELATIVE / "mr3_learning/reach_support_replay.py"),
 }
+
+
+def _positive_wall_seconds(value, label):
+    require(type(value) in (str, int, float, Decimal), label + " must be finite positive seconds")
+    try:
+        seconds = Decimal(str(value))
+    except InvalidOperation as error:
+        raise ValueError(label + " must be finite positive seconds") from error
+    require(seconds.is_finite() and seconds > 0, label + " must be finite positive seconds")
+    return seconds
+
+
+def _bounded_reservation(reservation, engineering_remaining_seconds):
+    """Only reduce wall reservations; the original workload and gates stay fixed."""
+    require(type(reservation) is dict and set(reservation) == {
+        "matrix_wall_seconds", "stage_wall_seconds", "native_wall_seconds"},
+        "bounded reservation fields differ")
+    for key in ("stage_wall_seconds", "native_wall_seconds"):
+        require(type(reservation[key]) is dict and set(reservation[key]) == set(primitives.STAGES),
+                "bounded reservation requires all four stages: " + key)
+    matrix = _positive_wall_seconds(reservation["matrix_wall_seconds"], "matrix reservation")
+    balance = _positive_wall_seconds(engineering_remaining_seconds, "engineering remaining")
+    require(matrix <= Decimal("18000") and matrix <= balance,
+            "bounded matrix exceeds original ceiling/actual engineering balance")
+    stages, native = [], []
+    for index, name in enumerate(primitives.STAGES):
+        stage = _positive_wall_seconds(reservation["stage_wall_seconds"][name], name + " stage reservation")
+        work = _positive_wall_seconds(reservation["native_wall_seconds"][name], name + " native reservation")
+        require(stage <= Decimal(CAPS[index]), "bounded stage exceeds original ceiling: " + name)
+        require(Decimal("120") < work <= Decimal(NATIVE_CAPS[index]) and work < stage,
+                "bounded native must retain closure/consumer reserves and original ceiling: " + name)
+        stages.append(str(stage))
+        native.append(str(work))
+    require(sum(map(Decimal, stages)) <= matrix, "bounded stage allocations exceed matrix reservation")
+    return str(matrix), tuple(stages), tuple(native)
 
 
 def source_inventory(root=WORKSPACE):
@@ -72,9 +108,21 @@ def validate_plan(plan, workspace=WORKSPACE):
             and plan.get("final_external_coordinator_absence_required") is True,
             "reach qualification scope differs")
     require([s["stage"] for s in plan["stages"]] == list(primitives.STAGES), "stage order differs")
-    require(Decimal(plan["budget"]["matrix_wall_seconds"]) == Decimal("18000")
-            and Decimal(plan["budget"]["engineering_remaining_seconds"]) >= 18000
-            and plan["budget"].get("borrow_unused_prior_stage_reservations") is True,
+    budget = plan["budget"]
+    bounded = "reservation_profile" in budget
+    if bounded:
+        require(type(budget["reservation_profile"]) is str
+                and budget["reservation_profile"] == BOUNDED_RESERVATION_PROFILE,
+                "unknown reservation profile")
+        _bounded_reservation({"matrix_wall_seconds": budget["matrix_wall_seconds"],
+            "stage_wall_seconds": {stage["stage"]: stage["wall_seconds"] for stage in plan["stages"]},
+            "native_wall_seconds": {stage["stage"]: argument(stage["native"]["argv"], "--work-wall-seconds")
+                                    for stage in plan["stages"]}}, budget["engineering_remaining_seconds"])
+    else:
+        require(_positive_wall_seconds(budget["matrix_wall_seconds"], "matrix reservation") == Decimal("18000")
+                and _positive_wall_seconds(budget["engineering_remaining_seconds"], "engineering remaining") >= 18000,
+                "matrix budget/forward allocation differs")
+    require(budget.get("borrow_unused_prior_stage_reservations") is True,
             "matrix budget/forward allocation differs")
     require(source_inventory(workspace) <= plan["source_bindings"].keys(), "incomplete runtime inventory")
     if seed_rule != "legacy":
@@ -90,7 +138,8 @@ def validate_plan(plan, workspace=WORKSPACE):
     outputs = [plan["output_directory"]]
     for i, stage in enumerate(plan["stages"]):
         name, jobs = stage["stage"], stage["audits"]
-        require(stage["wall_seconds"] == CAPS[i], "approved base stage allocation differs")
+        if not bounded:
+            require(stage["wall_seconds"] == CAPS[i], "approved base stage allocation differs")
         selected = primitives.roles(stage)
         require(len(selected) == len(set(selected)) and set(selected) == EXPECTED_ROLES[name],
                 "reach scientific obligation inventory differs: " + name)
@@ -121,7 +170,7 @@ def validate_plan(plan, workspace=WORKSPACE):
         if name == "interface":
             require(argument(argv, "--preparation-parameter-profile") == "gentle_turn_v1",
                     "exact actual parameter readback is required")
-        require(argument(argv, "--work-wall-seconds") == NATIVE_CAPS[i]
+        require((bounded or argument(argv, "--work-wall-seconds") == NATIVE_CAPS[i])
                 and argument(argv, "--close-reserve-seconds") == "120", "native reservation differs")
         require(Path(argument(argv, "--output-root")) / argument(argv, "--run-id")
                 == Path(stage["run_directory"]), "run directory differs")
@@ -251,10 +300,14 @@ def source_check(plan, plan_path, freeze, root=WORKSPACE, require_clean=True):
 
 
 def build_plan(*, plan_path, seed_rule="legacy", start_graph_rule="original-seed-cell",
-               reach_geometry_rule=BINARY_REACH_GEOMETRY_RULE, **kwargs):
+               reach_geometry_rule=BINARY_REACH_GEOMETRY_RULE, reservation=None, **kwargs):
     validate_seed_rule(seed_rule)
     validate_start_graph_rule(start_graph_rule, seed_rule=seed_rule)
     validate_reach_geometry_rule(reach_geometry_rule, safety_contract=CONTRACT)
+    matrix_seconds, stage_seconds, native_seconds = "18000", CAPS, NATIVE_CAPS
+    if reservation is not None:
+        matrix_seconds, stage_seconds, native_seconds = _bounded_reservation(
+            reservation, kwargs["engineering_remaining_seconds"])
     plan = primitives.build_plan(**kwargs, information_implementation="admitted_index_three_keys_v1",
                                  nav2_parameter_profile="gentle_turn_v1")
     plan.update(schema=SCHEMA, safety_contract=CONTRACT,
@@ -271,13 +324,15 @@ def build_plan(*, plan_path, seed_rule="legacy", start_graph_rule="original-seed
     if reach_geometry_rule != BINARY_REACH_GEOMETRY_RULE:
         plan["reach_geometry_rule"] = reach_geometry_rule
     plan["preflight"]["schema"] = "mr3-reach-preflight-v1"
-    plan["budget"].update(matrix_wall_seconds="18000", borrow_unused_prior_stage_reservations=True,
+    plan["budget"].update(matrix_wall_seconds=matrix_seconds, borrow_unused_prior_stage_reservations=True,
         engineering_remaining_basis="Approved 52000 cumulative engineering ceiling; all native/read-only/closure tails charged")
+    if reservation is not None:
+        plan["budget"]["reservation_profile"] = BOUNDED_RESERVATION_PROFILE
     for i, stage in enumerate(plan["stages"]):
         name, run = stage["stage"], Path(stage["run_directory"])
         local = Path(plan["output_directory"]) / name
         argv = stage["native"]["argv"]
-        argv[argv.index("--work-wall-seconds") + 1] = NATIVE_CAPS[i]
+        argv[argv.index("--work-wall-seconds") + 1] = native_seconds[i]
         argv += ["--safety-contract", CONTRACT]
         if seed_rule != "legacy":
             argv += ["--seed-rule", seed_rule]
@@ -287,7 +342,7 @@ def build_plan(*, plan_path, seed_rule="legacy", start_graph_rule="original-seed
             argv += ["--reach-geometry-rule", reach_geometry_rule]
         if name in ("interface", "reset"):
             argv[argv.index("--preparation-probe-version") + 1] = "mr3-p2a-reach-outward-cancel-v1"
-        stage["wall_seconds"] = CAPS[i]
+        stage["wall_seconds"] = stage_seconds[i]
         stage["watcher"]["argv"][2] = "mr3_learning.native_custody_reach"
         retained = [j for j in stage["audits"] if j.get("role") in ("input", "angular", "physics")
                     or j["id"].startswith("input_") or j["id"] == "physical_per_episode"]

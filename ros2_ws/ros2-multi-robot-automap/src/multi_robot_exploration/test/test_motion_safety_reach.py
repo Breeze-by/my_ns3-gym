@@ -81,7 +81,8 @@ def fixture(decider=None):
     node.intent_publishers = {name: type('Publisher', (), {'publish': staticmethod(
         lambda msg, name=name: events.append(('intent', name, json.loads(msg.data))))})()
         for name in node.outputs}
-    for method in ('emit_reach_motion', '_emit_reach_motion', 'reach_failure', 'publish_reach_intent'):
+    for method in ('emit_reach_motion', '_emit_reach_motion', 'reach_failure',
+                   '_stop_reach_failure', 'publish_reach_intent'):
         setattr(node, method, MethodType(getattr(MotionSafety, method), node))
     node.publish_completed_status = lambda value: None
     return node, clock, events

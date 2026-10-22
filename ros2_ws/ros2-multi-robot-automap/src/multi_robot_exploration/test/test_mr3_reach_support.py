@@ -40,10 +40,14 @@ def enclosed(bounds, value):
     assert Q(bounds[0]) <= Q(value) <= Q(bounds[1])
 
 
-def test_frozen_reference_identity_and_five_mathematical_helpers_exact_AST():
+def test_frozen_reference_identity_unchanged_helpers_and_pair_validation_AST():
     assert hashlib.sha256(A43.read_bytes()).hexdigest() == '6a586b69c4649955fc06d4b94379b245c6c5602f6b51a2de1b778fe56636ccc6'
     before, after = functions(A43), functions(Path(production.__file__))
-    for name in ('sqrt_bounds', '_str_bounds', 'direction_support_upper', '_reach_support', '_frame_certificate'):
+    # The V49 numerical implementation changes three helper ASTs, with full
+    # dictionary/JSON/hash equivalence checked against frozen A48 below and in
+    # test_mr3_reach_support_optimization.py. Unchanged helpers stay byte-AST
+    # checked; neither the original A43 oracle nor its assertions are removed.
+    for name in ('_str_bounds', '_reach_support'):
         assert normalized(before[name]) == normalized(after[name]), name
     # The exact pair-level validation/U/two-frame conjunction also stays the
     # A43 computation; only the final admission alias and log metadata differ.

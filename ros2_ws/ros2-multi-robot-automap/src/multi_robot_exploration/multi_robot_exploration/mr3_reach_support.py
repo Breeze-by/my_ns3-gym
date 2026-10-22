@@ -6,6 +6,7 @@ actual mode delivery, provenance or complete native qualification.
 Its mathematical helpers retain the independently reviewed A43 CPU algorithm.
 """
 from fractions import Fraction as Q
+from functools import lru_cache
 import hashlib
 import json
 import math
@@ -34,7 +35,13 @@ def sqrt_bounds(value):
     value = exact(value)
     if value < 0:
         raise ValueError('negative squared norm')
-    scale = 1 << SQRT_BITS
+    return _sqrt_bounds_cached(value, SQRT_BITS)
+
+
+@lru_cache(maxsize=256)
+def _sqrt_bounds_cached(value, bits):
+    """Validated exact keys and immutable numeric results only; no proofs."""
+    scale = 1 << bits
     k = math.isqrt(value.numerator * scale * scale // value.denominator)
     lower = Q(k, scale)
     upper = lower if lower * lower == value else Q(k + 1, scale)
@@ -80,19 +87,27 @@ def direction_support_upper(delta, axis, half_angle, uncertainty, longitudinal):
 
     if delta2 == 0:
         return finish('zero_reported_delta_full_L', Q(1))
-    if nonclosing((dx, dy), (ax, ay), phi, uncertainty):
-        # Preserve the original stronger robust-zero result exactly.
-        return finish('original_nonclosing_zero', Q(0))
     if dot >= 0:
+        # The original nonclosing function admits this exact perpendicular
+        # zero-width/U=0 special case before the nonnegative-dot fallback.
+        if dot == 0 and phi == 0 and uncertainty == 0:
+            return finish('original_nonclosing_zero', Q(0))
         return finish('nonnegative_dot_full_L', Q(1))
     sin_lo, sin_hi, cos_lo, cos_hi = sin_cos_bounds(phi)
+    h_upper = None
+    if cos_lo > 0:
+        # Same exact original nonclosing predicate, calculated once. Retain
+        # its early-return field shape before adding the projected proof.
+        h_upper = dot * cos_lo + abs(cross) * sin_hi
+        if (h_upper <= 0 and h_upper * h_upper
+                >= uncertainty * uncertainty * axis2):
+            return finish('original_nonclosing_zero', Q(0))
     record.update(sin_bounds=[str(sin_lo), str(sin_hi)],
                   cos_bounds=[str(cos_lo), str(cos_hi)])
     if cos_lo <= 0:
         return finish('nonacute_cone_full_L', Q(1))
     if axis_bounds[0] <= 0 or delta_bounds[0] <= 0:
         return finish('nonpositive_norm_lower_full_L', Q(1))
-    h_upper = dot * cos_lo + abs(cross) * sin_hi
     extra = uncertainty * axis_bounds[1]
     numerator = h_upper + extra
     denominator = axis_bounds[0] * delta_bounds[0]
@@ -131,12 +146,13 @@ def _frame_certificate(delta, left, right, uncertainty, frame):
     r = _reach_support((-dx, -dy), right, frame, uncertainty)
     base = 2 * BODY + GEOMETRY_MARGIN + uncertainty + left.buffer_m + right.buffer_m
     required = base + Q(l['support_upper_m']) + Q(r['support_upper_m'])
+    required_squared = required * required
     # No displayed float/root upper bound is used to admit a pair.
-    passed = delta2 > 0 and delta2 >= required * required
+    passed = delta2 > 0 and delta2 >= required_squared
     return {'frame': frame, 'reported_normal_defined': delta2 > 0,
             'distance_squared': str(delta2), 'distance_norm_bounds': _str_bounds(sqrt_bounds(delta2)),
             'base_reserve_m': str(base), 'required_centre_distance_upper_m': str(required),
-            'squared_slack_m2': str(delta2 - required * required),
+            'squared_slack_m2': str(delta2 - required_squared),
             'separation_sufficient_under_declared_sets': passed,
             'left': l, 'right': r}
 

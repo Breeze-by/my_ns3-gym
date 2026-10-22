@@ -1,5 +1,7 @@
 # MR3 研究路线：三机器人 RL 联合建图与冻结策略的 Wi-Fi 网络影响
 
+2026-10-23 V49准备：Reach启动改为真实上游3就绪→暂停→全零takeover/storage→原20ms bootstrap→精确ready状态及实际四ready→release，420秒绝对截止及清理剩余时限保持；首永久fault真实传播，数学恒等提速已集成。第二轮857人工代码检查＋13检查器自检及双环境readiness PASS，首轮2fixture FAIL/暂停等待死锁及入口静态BLOCKED均保留。新更紧reservation profile只缩资源、不减12EP/30角色/科学门。874源/10ELF及唯一2worker各rooms101/1step启动诊断封存，native600含120close＋外尾120＝720预约，待新freeze执行；不供完整资格/PPO信用。工程55747.0395659926018/75000、余19252.9604340073982，pilot/final不动，P2A未完成。见[V49](report/20261023_mr3_p2a_v49_startup_protocol.md)。
+
 2026-10-22 V47两流诊断闭合PASS：freeze deb2b5a8d46ab6ec9cd6a3eb897c8ff0bf75ba0c完整读384380343B；recorder35926行/ready1@2.58、无identity/GID false，motion122485行均parse0。每机ready False3050/True1191、双向各169翻转；首invalid为82.4秒tb3 calibration序列gap/regression，晚于37.92 adapter-ready，不能倒因早期阻塞。worker四ready实际接收仍unknown，V45FAIL保持。79outer源/Git一致、3身份gone；实费28.889315675，累计55747.0395659926018/75000、余19252.9604340073982，pilot/final不动、P2A未完成。下一补真实ready/健康失败传播，定位producer/transport/consumer序列与时序根因；不降门/增400秒或重试旧活动。用户自主续接授权保持。见[V47闭合](report/20261022_mr3_p2a_v47_ready_provenance.md)。
 
 2026-10-22 V47预声明：V46有限诊断已闭合，继续一次读取failedrooms现成recorder/motion两流384380343B以核ready/身份来源；10项内存自检PASS，78源scope及库存绑定已核，尚未原件消费。工程入场55718.1502503176018/75000、余19281.8497496823982，预约300（main240事后费用门＋外尾60，超额全费FAIL）。V48两套禁用数学候选9＋9人工CPU通过，仅局部收益；未接生产、不供native/95%信用。P2A未完成，自主续接不再一般审批。见[V47](report/20261022_mr3_p2a_v47_ready_provenance.md)。

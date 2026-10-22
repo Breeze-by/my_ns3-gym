@@ -98,6 +98,9 @@ class MotionSafety(Node):
         self.halted = None
         self.failure_sent = False
         self.normal_control_model_fault = None
+        self._reach_failure_message = None
+        self._reach_failure_message_epoch = None
+        self._reach_failure_stop_requested = False
         durable = QoSProfile(depth=1, durability=DurabilityPolicy.TRANSIENT_LOCAL)
         storage_qos = storage_receipt_qos(self.reach_enabled)
         self.outputs = {name: self.create_publisher(Twist, f"/{name}/cmd_vel", 20)
@@ -245,12 +248,50 @@ class MotionSafety(Node):
     def reach_failure(self, name, error):
         self.halted = "normal_control_model_invalid"
         self.reach_pending_release = None
-        if self.normal_control_model_fault is None:
+        first_fault = self.normal_control_model_fault is None
+        if first_fault:
             self.normal_control_model_fault = {"schema":"mr3-reach-runtime-fault-v1",
                 "robot":name,"reason":str(error),"clock_ns":self.get_clock().now().nanoseconds}
-        self.record("reach_model_failure", self.normal_control_model_fault)
-        if not getattr(self, "_reach_emitting", False):
+        try:
+            if first_fault:
+                self.record("reach_model_failure", self.normal_control_model_fault)
+            if (not self.failure_sent
+                    and (first_fault or not getattr(self, "_reach_emitting", False))):
+                # A failed broadcast may be retried by a later callback, but
+                # not recursively from the real zero-stop emission itself.
+                message = String(data=json.dumps({"component":"motion_safety", "epoch":self.epoch,
+                    **self.normal_control_model_fault}, sort_keys=True, allow_nan=False))
+                self._reach_failure_message = message.data
+                self._reach_failure_message_epoch = self.epoch
+                # Latch before publish: an immediate own callback cannot rebroadcast.
+                self.failure_sent = True
+                try:
+                    self.failure_pub.publish(message)
+                except BaseException:
+                    self.failure_sent = False
+                    raise
+        finally:
+            # Inside joint emission, its existing stopping branch publishes all
+            # three zero targets. Outside it, retain the real stop barrier even
+            # if logging/publication fails, without requesting it on every fault.
+            self._stop_reach_failure()
+
+    def _stop_reach_failure(self):
+        if (getattr(self, "_reach_emitting", False)
+                or getattr(self, "_reach_failure_stop_requested", False)):
+            return
+        self._reach_failure_stop_requested = True
+        try:
             self.stop_controlled()
+        except BaseException:
+            self._reach_failure_stop_requested = False
+            raise
+        else:
+            phase = getattr(self, "control_phase", None)
+            if phase is None or not getattr(phase, "controlled", False):
+                # Before takeover ensure_stop is deliberately a no-op;
+                # it cannot satisfy a later controlled stop request.
+                self._reach_failure_stop_requested = False
 
     def publish_reach_intent(self, name, intent):
         started = time.monotonic_ns()
@@ -451,6 +492,10 @@ class MotionSafety(Node):
             self.stop_controlled()
 
     def receive_failure(self, message):
+        if (self.failure_sent
+                and self.epoch == getattr(self, "_reach_failure_message_epoch", None)
+                and message.data == getattr(self, "_reach_failure_message", None)):
+            return  # The first Reach fault and its real stop are already retained.
         self.halted = self.halted or "external_safety_failure"
         self.record("failure", {"data": message.data})
         self.stop_controlled()
@@ -775,10 +820,18 @@ class MotionSafety(Node):
         if getattr(self, "_reach_emitting", False):
             return
         self._reach_emitting = True
+        failed = False
         try:
             self._emit_reach_motion(stop)
+        except BaseException:
+            failed = True
+            raise
         finally:
             self._reach_emitting = False
+            if failed and self.normal_control_model_fault is not None:
+                # Logging/publication errors must not bypass real zero output
+                # merely because they interrupted the joint stopping branch.
+                self._stop_reach_failure()
 
     def _emit_reach_motion(self, stop=False):
         clock_ns = self.get_clock().now().nanoseconds

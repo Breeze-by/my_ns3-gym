@@ -131,7 +131,9 @@ def worker_launch_tail(tmp_path, monkeypatch, rule):
         safety_contract='mr3-reach-v1', reach_geometry_rule=rule,
         seed_rule='exact-point-bridge-v2', start_graph_rule='point-attachment-3x3-v1',
         terminal_probe=False, plant_stimulus_arm=None, plant_stimulus_work_deadline_ns=None,
-        transport_environment={}, control_version=2)
+        transport_environment={}, control_version=2,
+        startup_readiness_protocol=WORKER.STARTUP_READINESS_PROTOCOL,
+        startup_deadline_ns=520_000_000_000, startup_wait_deadline_ns=455_000_000_000)
     monkeypatch.setattr(WORKER.subprocess, 'check_output', lambda *args, **kwargs: 'f'*40)
     namespace = dict(vars(WORKER), self=owner, directory=tmp_path)
     exec(compile(tail, str(path), 'exec'), namespace)

@@ -48,6 +48,9 @@ NAV2_SHUTDOWN_WALL_GUARD_SEC = 30.
 MOTION_OUTPUT_PUBLISHER = ("/", "motion_safety")
 MOTION_PHASE_COMPLETION = "publication_and_local_topic_receipt"
 PLANT_QUANTUM_NS = 20_000_000
+STARTUP_READINESS_PROTOCOL = "received-input-pause-drain-v1"
+STARTUP_CLEANUP_RESERVE_SEC = 60.
+STARTUP_RESPONSE_RESERVE_SEC = 5.
 
 
 def plant_stimulus_angular(arm, relative_ns):
@@ -85,6 +88,26 @@ class Worker:
                     and self.seed_rule != "exact-point-bridge-v2")):
             raise ValueError("invalid seed_rule/start_graph_rule pair")
         self.control_version = protocol_version(self.safety_contract)
+        self.startup_readiness_protocol = request.get("startup_readiness_protocol")
+        self.startup_deadline_ns = request.get("startup_deadline_monotonic_ns")
+        self.startup_active = self.control_version == 2
+        if self.startup_active:
+            now_ns = time.monotonic_ns()
+            if (self.startup_readiness_protocol != STARTUP_READINESS_PROTOCOL
+                    or type(self.startup_readiness_protocol) is not str
+                    or type(self.startup_deadline_ns) is not int
+                    or not now_ns < self.startup_deadline_ns <= now_ns + 420_000_000_000):
+                raise ValueError("reach reset requires its explicit startup protocol and live absolute deadline")
+            self.startup_wait_deadline_ns = min(now_ns + 400_000_000_000,
+                self.startup_deadline_ns - round((STARTUP_CLEANUP_RESERVE_SEC + STARTUP_RESPONSE_RESERVE_SEC) * 1e9))
+            if self.startup_wait_deadline_ns <= now_ns:
+                raise TimeoutError("reach startup has no work time after cleanup/response reserve")
+        elif "startup_readiness_protocol" in request or "startup_deadline_monotonic_ns" in request:
+            raise ValueError("legacy reset must omit reach startup fields")
+        self.startup_stage = "constructing"
+        self.startup_callback_fields = set()
+        self.startup_failure_receipts = []
+        self.startup_readiness_file = None
         self.safety_intents = {}
         self.safety_intent_publishers = {}
         self.bootstrap_intent_refs = None
@@ -159,6 +182,10 @@ class Worker:
         self.launch = None
         self.helper = None
         self.outputs = []
+        if self.startup_active:
+            self.startup_readiness_file = (directory / "startup_readiness.jsonl").open("x", buffering=1)
+            self.outputs.append(self.startup_readiness_file)
+            self._record_startup("initialized")
         self.execution_map_digests = set()
         self.execution_costmap_file = (directory / "costmaps.jsonl").open("x", buffering=1)
         self.outputs.append(self.execution_costmap_file)
@@ -298,13 +325,13 @@ class Worker:
             self.clock_ns = message.clock.sec * 10**9 + message.clock.nanosec
 
         def monitor(message):
-            self.monitor_ready = bool(message.data)
+            self.receive_startup_bool("monitor_ready", "/task_monitor_ready", message)
 
         def motion_ready(message):
-            self.motion_ready = bool(message.data)
+            self.receive_startup_bool("motion_ready", "/motion_safety/ready", message)
 
         def odometry_recorder_ready(message):
-            self.odometry_recorder_ready = bool(message.data)
+            self.receive_startup_bool("odometry_recorder_ready", "/mr3/odometry_recorder/ready", message)
 
         def motion_status(message):
             self.receive_motion_status(parse_json(message.data) if getattr(self, "control_version", 1) == 2 else json.loads(message.data))
@@ -313,7 +340,7 @@ class Worker:
             self.receive_stop_status(parse_json(message.data) if getattr(self, "control_version", 1) == 2 else json.loads(message.data))
 
         def failure(message):
-            self.failures.append(message.data)
+            self.receive_failure(message)
 
         self.subscriptions = [
             self.node.create_subscription(
@@ -442,6 +469,11 @@ class Worker:
         if self.control_version == 2:
             metadata["safety_contract"] = self.safety_contract
             metadata["reset_handshake"] = "paused-controlled-state-peer-guard-storage-v2"
+            metadata.update(startup_readiness_protocol=self.startup_readiness_protocol,
+                startup_deadline_monotonic_ns=self.startup_deadline_ns,
+                startup_wait_deadline_monotonic_ns=self.startup_wait_deadline_ns,
+                startup_cleanup_reserve_seconds=STARTUP_CLEANUP_RESERVE_SEC,
+                startup_response_reserve_seconds=STARTUP_RESPONSE_RESERVE_SEC)
         (directory / "metadata.json").write_text(json.dumps(metadata, indent=2) + "\n")
         output = (directory / "launch.log").open("w")
         self.outputs.append(output)
@@ -455,6 +487,12 @@ class Worker:
             if self.launch.poll() is not None and not self.finished:
                 raise RuntimeError("launch exited during infrastructure cleanup")
             return
+        if getattr(self, "startup_active", False):
+            if self.startup_failure_receipts:
+                error = RuntimeError("exploration failure during startup: " + self.startup_failure_receipts[0])
+                self._startup_failure(error)
+                raise error
+            self._startup_timeout(400.)
         if (getattr(self, "plant_stimulus_arm", None) is not None
                 and time.monotonic_ns() >= self.plant_stimulus_work_deadline_ns):
             raise TimeoutError("plant diagnostic work cutoff; 120s reserved for closure")
@@ -470,6 +508,7 @@ class Worker:
             raise RuntimeError("launch exited before episode shutdown")
 
     def _wait(self, predicate, timeout, label):
+        timeout = self._startup_timeout(timeout)
         deadline = time.monotonic() + timeout
         while True:
             self._healthy()
@@ -480,6 +519,74 @@ class Worker:
                 raise TimeoutError(label)
             with self.condition:
                 self.condition.wait(min(.02, remaining))
+
+    def _startup_timeout(self, maximum):
+        if (getattr(self, "cleanup_mode", False)
+                and getattr(self, "control_version", 1) == 2):
+            remaining = self.cleanup_deadline - time.monotonic()
+            if remaining <= 0:
+                raise TimeoutError("infrastructure cleanup total wall guard expired")
+            return min(maximum, remaining)
+        if not getattr(self, "startup_active", False) or getattr(self, "cleanup_mode", False):
+            return maximum
+        remaining = (self.startup_wait_deadline_ns - time.monotonic_ns()) / 1e9
+        if remaining <= 0:
+            error = TimeoutError("reach startup work deadline expired; cleanup/response reserve retained")
+            self._startup_failure(error)
+            raise error
+        return min(maximum, remaining)
+
+    def _record_startup(self, kind, **payload):
+        if getattr(self, "startup_readiness_file", None) is None:
+            return
+        with self.condition:
+            row = {"schema": "mr3-startup-readiness-v1", "epoch": self.epoch,
+                   "protocol": self.startup_readiness_protocol, "kind": kind,
+                   "stage": self.startup_stage, "clock_ns": self.clock_ns,
+                   "physical_ns": getattr(self, "physical_ns", None),
+                   "wall_monotonic_ns": time.monotonic_ns(),
+                   "ready": {"monitor_ready": self.monitor_ready,
+                             "initial_inputs_ready": self.initial_inputs_ready is not None,
+                             "motion_ready": self.motion_ready,
+                             "odometry_recorder_ready": self.odometry_recorder_ready},
+                   "callback_fields_received": sorted(self.startup_callback_fields), **payload}
+            self.startup_readiness_file.write(json.dumps(row, sort_keys=True, allow_nan=False) + "\n")
+
+    def _startup_phase(self, stage):
+        self.startup_stage = stage
+        self._record_startup("stage_entered")
+
+    def _startup_failure(self, error):
+        if getattr(self, "startup_active", False):
+            self._record_startup("failure", error=repr(error))
+            self.startup_stage = "failed"
+            self.startup_active = False
+
+    def receive_startup_bool(self, field, topic, message):
+        previous = getattr(self, field)
+        value = bool(message.data)
+        setattr(self, field, value)
+        if getattr(self, "startup_readiness_file", None) is not None:
+            first = field not in self.startup_callback_fields
+            self.startup_callback_fields.add(field)
+            if first or value != previous:
+                self._record_startup("ready_callback", field=field, previous=previous,
+                    first_callback=first, receipt={"topic": topic, "data": message.data})
+
+    def receive_failure(self, message):
+        self.failures.append(message.data)
+        current_epoch = False
+        if getattr(self, "startup_readiness_file", None) is not None:
+            try:
+                value = json.loads(message.data)
+                current_epoch = type(value) is dict and value.get("epoch") == self.epoch
+            except (ValueError, TypeError):
+                pass
+            if current_epoch:
+                self.startup_failure_receipts.append(message.data)
+        self._record_startup("exploration_failure_received", receipt={
+            "topic": "/exploration_failure", "data": message.data},
+            epoch_bound_to_current_startup=current_epoch)
 
     def _publish(self, publisher, payload):
         publisher.publish(self.String(data=json.dumps(payload, allow_nan=False)))
@@ -796,6 +903,7 @@ class Worker:
         return response
 
     def _physics(self, steps, wait_clock=True):
+        self._startup_timeout(15.)
         if getattr(self, "safety_contract", "legacy") == "mr3-reach-v1":
             if type(steps) is not int or steps < 0 or type(wait_clock) is not bool:
                 raise ValueError("invalid reach physical step request")
@@ -839,7 +947,7 @@ class Worker:
                                        "epoch": self.epoch})
         else:
             self.helper_peer.send({"request_id": request_id, "steps": steps, "epoch": self.epoch})
-        receipt = self.helper_peer.receive(15.)
+        receipt = self.helper_peer.receive(self._startup_timeout(15.))
         if receipt.get("ok") is not True or receipt.get("request_id") != request_id:
             raise RuntimeError("physical step rejected: " + json.dumps(receipt))
         if (receipt.get("epoch") != self.epoch or receipt.get("paused") is not True
@@ -872,6 +980,10 @@ class Worker:
         if not valid_motion_status(value, self.epoch, value.get("clock_ns"),
                 safety_contract=getattr(self, "safety_contract", "legacy")):
             raise ValueError("invalid motion gate phase status")
+        if (getattr(self, "startup_active", False) and self.snapshot is None
+                and any(output != {"linear_x": 0., "angular_z": 0.}
+                        for output in outputs.values())):
+            raise ValueError("pre-release startup motion status contains a nonzero target")
         previous = self.motion_status
         if previous is not None:
             if value["clock_ns"] < previous["clock_ns"]:
@@ -1087,7 +1199,12 @@ class Worker:
                     raise ValueError("initial delivered-input source time is invalid")
         if self.initial_inputs_ready is not None and self.initial_inputs_ready != value:
             raise ValueError("initial delivered-input acknowledgement changed within epoch")
+        first = self.initial_inputs_ready is None
         self.initial_inputs_ready = value
+        if getattr(self, "startup_readiness_file", None) is not None and first:
+            self.startup_callback_fields.add("initial_inputs_ready")
+            self._record_startup("ready_callback", field="initial_inputs_ready", previous=False,
+                first_callback=True, receipt={"topic": "/mr3/initial_inputs_ready", "message": value})
 
     def record_costmap(self, name, layer, grid):
         """Archive actual Nav2 master outputs without inventing a planner barrier.
@@ -1200,10 +1317,16 @@ class Worker:
         # Match the actual clock publisher phase before task release. These
         # are real warmup ticks, never counted as policy transition time.
         for _ in range(50):
-            deadline = time.monotonic() + .1
+            bounded = (getattr(self, "startup_active", False)
+                       or getattr(self, "cleanup_mode", False)
+                       and getattr(self, "control_version", 1) == 2)
+            if bounded:
+                self._healthy()
+            deadline = time.monotonic() + (self._startup_timeout(.1) if bounded else .1)
             while self.clock_ns < self.physical_ns and time.monotonic() < deadline:
                 with self.condition:
-                    self.condition.wait(.005)
+                    wait = min(.005, deadline - time.monotonic()) if bounded else .005
+                    self.condition.wait(self._startup_timeout(wait) if bounded else wait)
             if self.clock_ns == self.physical_ns:
                 break
             if self.clock_ns > self.physical_ns:
@@ -1212,17 +1335,41 @@ class Worker:
         else:
             raise RuntimeError("could not align the real /clock phase before release")
 
-    def reset(self):
-        self._wait(lambda: self.monitor_ready and self.initial_inputs_ready is not None
-                   and self.motion_ready and self.odometry_recorder_ready,
-                   400., "three-robot delivered-input startup guard expired")
-        self.verify_motion_output_topology()
-        self.verify_drive_topology()
+    def _pause_and_drain_startup(self):
+        def upstream():
+            return (self.monitor_ready and self.initial_inputs_ready is not None
+                    and self.odometry_recorder_ready)
+
+        self._startup_phase("await_received_upstream_inputs")
+        self._wait(upstream, 400., "three-robot delivered-input startup guard expired")
+        self._startup_phase("pause_requested")
         self._start_step_helper()
         receipt = self._physics(0, wait_clock=False)
         if receipt["end_time_ns"] / 1e9 < self.initial_inputs_ready["stamp"] - 1e-8:
             raise RuntimeError("initial input acknowledgement is ahead of physical pause")
         self._align_initial_clock()
+        self.verify_motion_output_topology()
+        self.verify_drive_topology()
+        self._startup_phase("paused_topology_verified")
+        return receipt
+
+    def reset(self):
+        reach_startup = getattr(self, "control_version", 1) == 2
+        if reach_startup:
+            receipt = self._pause_and_drain_startup()
+        else:
+            self._wait(lambda: self.monitor_ready and self.initial_inputs_ready is not None
+                       and self.motion_ready and self.odometry_recorder_ready,
+                       400., "three-robot delivered-input startup guard expired")
+            self.verify_motion_output_topology()
+            self.verify_drive_topology()
+            self._start_step_helper()
+            receipt = self._physics(0, wait_clock=False)
+            if receipt["end_time_ns"] / 1e9 < self.initial_inputs_ready["stamp"] - 1e-8:
+                raise RuntimeError("initial input acknowledgement is ahead of physical pause")
+            self._align_initial_clock()
+        if reach_startup:
+            self._startup_phase("takeover_and_storage_barriers")
         # Freeze already-issued T0 output. Re-running the timer here could
         # overwrite a clock which its real observers have already acknowledged.
         identity = f"takeover{self.physical_ns}"
@@ -1247,6 +1394,12 @@ class Worker:
         if initial_motion_status["ready"] is not True or self.stopping:
             raise RuntimeError("initial controlled motion inputs are not ready for task release")
         initial_drive_receipts = self.wait_drive_phase(initial_motion_status)
+        if reach_startup:
+            self._startup_phase("await_controlled_motion_prefix")
+            self._wait(lambda: self.monitor_ready and self.initial_inputs_ready is not None
+                       and self.odometry_recorder_ready and self.motion_ready,
+                       400., "controlled three-robot motion/input startup guard expired")
+            self._startup_phase("request_initial_snapshot_release")
         self._snapshot()
         if self.watermarks["state_sequence"] < self.initial_inputs_ready["state_sequence"]:
             raise RuntimeError("initial snapshot predates delivered-input acknowledgement")
@@ -1269,6 +1422,9 @@ class Worker:
             raise RuntimeError("reward reset did not initialize an empty episode ledger")
         if self._evaluator_phase()["status"] != "LIVE":
             raise RuntimeError("initial evaluator phase is already terminal")
+        if reach_startup:
+            self._startup_phase("reset_complete")
+            self.startup_active = False
         result = {"snapshot": self.snapshot, "reward": 0., "terminated": False,
                   "truncated": False, "info": {
                       "epoch": self.epoch, "scene": self.scene, "seed": self.seed,
@@ -1282,6 +1438,12 @@ class Worker:
                       "drive_phase_protocol": DRIVE_PROTOCOL,
                       "initial_drive_receipts": initial_drive_receipts,
                       "release_time_ns": self.start_ns}}
+        if reach_startup:
+            result["info"].update(startup_readiness_protocol=self.startup_readiness_protocol,
+                startup_deadline_monotonic_ns=self.startup_deadline_ns,
+                startup_wait_deadline_monotonic_ns=self.startup_wait_deadline_ns,
+                startup_cleanup_reserve_seconds=STARTUP_CLEANUP_RESERVE_SEC,
+                startup_response_reserve_seconds=STARTUP_RESPONSE_RESERVE_SEC)
         self.transition_file.write(json.dumps({"kind": "reset", **result}, sort_keys=True) + "\n")
         return result
 
@@ -1531,7 +1693,7 @@ class Worker:
             raise RuntimeError("episode shutdown left unknown goal ownership")
         self._shutdown_nav2()
         self.helper.stdin.close()
-        self.helper.wait(timeout=10.)
+        self.helper.wait(timeout=self._startup_timeout(10.))
         self.helper.stdout.close()
         if self.helper.returncode != 0:
             raise RuntimeError("physical step helper did not exit cleanly")
@@ -1543,8 +1705,11 @@ class Worker:
             self._publish(self.infrastructure_abort_pub, self.finalize_request)
         else:
             self._publish(self.finalize_pub, self.finalize_request)
-        wait = min(45., max(.001, self.cleanup_deadline - time.monotonic())) if (
-            getattr(self, "cleanup_mode", False)) else 45.
+        if getattr(self, "cleanup_mode", False) and getattr(self, "control_version", 1) == 2:
+            wait = self._startup_timeout(45.)
+        else:
+            wait = min(45., max(.001, self.cleanup_deadline - time.monotonic())) if (
+                getattr(self, "cleanup_mode", False)) else 45.
         self.launch.wait(timeout=wait)
         launch_text = (self.directory / "launch.log").read_text(errors="replace")
         failures = native_launch_failures(launch_text)
@@ -1577,6 +1742,13 @@ class Worker:
         """
         self.cleanup_mode = True
         self.cleanup_deadline = time.monotonic() + 60.
+        if getattr(self, "control_version", 1) == 2:
+            if self.startup_stage != "reset_complete":
+                self.cleanup_deadline = min(self.cleanup_deadline,
+                    self.startup_deadline_ns / 1e9 - STARTUP_RESPONSE_RESERVE_SEC)
+            self._record_startup("cleanup_started",
+                cleanup_deadline_monotonic_ns=round(self.cleanup_deadline * 1e9))
+            self._startup_timeout(60.)
         self.control_phase.abandon_for_stop()
         self._trace_control_phase("infrastructure_abort_started", error=repr(error))
         if self.helper is None:
@@ -1600,8 +1772,8 @@ class Worker:
     def close(self):
         if not self.finished and self.snapshot is not None:
             self.truncate("external_environment_close")
-        self.executor.shutdown(timeout_sec=2.)
-        self.spin_thread.join(timeout=2.)
+        self.executor.shutdown(timeout_sec=self._startup_timeout(2.))
+        self.spin_thread.join(timeout=self._startup_timeout(2.))
         self.node.destroy_node()
         self.rclpy.shutdown()
         for output in self.outputs:
@@ -1672,6 +1844,7 @@ def main():
                 "request": request, "error": repr(error),
                 "scope": "invalid infrastructure sample, never a task success"}, indent=2) + "\n")
             if worker is not None and not worker.finished:
+                worker._startup_failure(error)
                 cleanup = {"epoch": worker.epoch, "original_error": repr(error),
                            "scope": "best-effort ordered invalid-sample cleanup; no reward/sample",
                            "wall_guard_sec": 60., "passed": False}

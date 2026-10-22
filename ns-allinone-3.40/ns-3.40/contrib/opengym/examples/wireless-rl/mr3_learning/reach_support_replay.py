@@ -1,7 +1,7 @@
-"""Independent rational sector-support upper bounds for cone-support-v2.
+"""Disabled CPU candidate for the independent rational support reader.
 
-No production geometry, tracker or support implementation is imported. These
-bounds check the declared sets only; they establish no plant or native credit.
+No production import or runtime integration. Public directional mathematics,
+precision and existing trig-cache entry semantics remain the frozen reader's.
 """
 from fractions import Fraction as Q
 from functools import lru_cache
@@ -29,26 +29,46 @@ def sqrt_interval(value):
     value = _q(value)
     if value < 0:
         raise ValueError("negative support squared norm")
+    return _sqrt_interval_q(value)
+
+
+@lru_cache(maxsize=256)
+def _sqrt_interval_q(value):
+    # The public wrapper validates and canonicalizes before a cache lookup.
+    # Keys and returned pairs contain immutable exact Fractions only.
     scale = 1 << SQRT_BITS
     lower = Q(math.isqrt((value.numerator << (2*SQRT_BITS)) // value.denominator), scale)
     return lower, lower if lower*lower == value else lower+Q(1, scale)
 
 
+_FAC85 = math.factorial(85)
+_FAC86 = math.factorial(86)
+_COS_COEFFICIENTS = tuple((-1)**k * (_FAC85 // math.factorial(2*k)) for k in range(43))
+_SIN_COEFFICIENTS = tuple((-1)**k * (_FAC86 // math.factorial(2*k+1)) for k in range(43))
+
+
 @lru_cache(maxsize=256)
 def trig_enclosure(angle):
-    """Independent Taylor/Lagrange bounds, not production alternating tails.
+    """The original degree84/85 Taylor polynomials and Lagrange remainders.
 
-    The degree84 cosine and degree85 sine polynomials have absolute Lagrange
-    remainders at most x**85/85! and x**86/86!, since all derivatives <=1.
-    These are deliberately tighter than the original 42-term zero certificate
-    on [0,2], while using a separate remainder argument.
-    """
+For canonical p/q, homogeneous integer Horner evaluates exactly the same
+polynomials over common denominators 85!*q**85 and 86!*q**86. Only the final
+two bounds construct Fractions. The original public cache is retained.
+"""
     angle = _q(angle)
     if not 0 <= angle <= 2:
         raise ValueError("unsupported support cone")
-    cosine = sum((-1)**k*angle**(2*k)/math.factorial(2*k) for k in range(43))
-    sine = sum((-1)**k*angle**(2*k+1)/math.factorial(2*k+1) for k in range(43))
-    return cosine-angle**85/math.factorial(85), sine+angle**86/math.factorial(86)
+    p, q = angle.numerator, angle.denominator
+    p2, q2 = p*p, q*q
+    cosine, sine = _COS_COEFFICIENTS[-1], _SIN_COEFFICIENTS[-1]
+    q_power = q2
+    for k in range(41, -1, -1):
+        cosine = cosine*p2 + _COS_COEFFICIENTS[k]*q_power
+        sine = sine*p2 + _SIN_COEFFICIENTS[k]*q_power
+        q_power *= q2
+    p85, q85 = p**85, q**85
+    return (Q(cosine*q-p85, _FAC85*q85),
+            Q(sine*p*q+p85*p, _FAC86*q85*q))
 
 
 def direction_support_upper(bearing, direction, angle, uncertainty, length):
