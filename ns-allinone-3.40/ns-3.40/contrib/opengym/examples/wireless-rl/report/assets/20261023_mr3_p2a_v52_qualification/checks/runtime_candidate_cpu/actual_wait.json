@@ -1,0 +1,122 @@
+{
+  "schema": "mr3-reach-outer-actual-wait-v1",
+  "scope": "cpu",
+  "safety_contract": "mr3-reach-v1",
+  "actual_argv": [
+    "/usr/bin/python3",
+    "-B",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "/tmp/mr3_p2a_v52_runtime_cpu_candidate_v1",
+    "-p",
+    "test_runtime_candidate_v1.py",
+    "-v"
+  ],
+  "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+  "coordinator_identity": {
+    "pid": 4156412,
+    "parent": 4156410,
+    "group": 4156410,
+    "session": 4156410,
+    "start_ticks": 445184591,
+    "state": "R"
+  },
+  "child_identity": {
+    "pid": 4156415,
+    "parent": 4156412,
+    "group": 4156410,
+    "session": 4156410,
+    "start_ticks": 445184607,
+    "state": "R"
+  },
+  "actual_returncode": 0,
+  "actual_waited": true,
+  "errors": [],
+  "started_monotonic_ns": 4451846074395130,
+  "ended_monotonic_ns": 4451865346529205,
+  "actual_child_wait_seconds": "19.272134075",
+  "source_before": [
+    {
+      "path": "/tmp/mr3_p2a_v52_runtime_cpu_candidate_v1/runtime_baseline_v1.py",
+      "sha256": "810fe0a12b21826e1337b48bbe137d7b47f2700ca176f16a576bc6541356c186",
+      "bytes": 76837,
+      "stat": [
+        2051,
+        79193460,
+        76837,
+        1792706243941194591,
+        1792706243941194591
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a_v52_runtime_cpu_candidate_v1/runtime_candidate_v1.py",
+      "sha256": "62606874886060e197feb9245e6acc3fdea87b4c980454bbbe197babda6d1831",
+      "bytes": 78498,
+      "stat": [
+        2051,
+        79193461,
+        78498,
+        1792706243989196960,
+        1792706243989196960
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a_v52_runtime_cpu_candidate_v1/test_runtime_candidate_v1.py",
+      "sha256": "37cc6bc902f18c3b67866a9aaf9a49d89e193ea8919d9687f18881a735fa2496",
+      "bytes": 11992,
+      "stat": [
+        2051,
+        79193469,
+        11992,
+        1792706412902538872,
+        1792706412902538872
+      ]
+    }
+  ],
+  "source_after": [
+    {
+      "path": "/tmp/mr3_p2a_v52_runtime_cpu_candidate_v1/runtime_baseline_v1.py",
+      "sha256": "810fe0a12b21826e1337b48bbe137d7b47f2700ca176f16a576bc6541356c186",
+      "bytes": 76837,
+      "stat": [
+        2051,
+        79193460,
+        76837,
+        1792706243941194591,
+        1792706243941194591
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a_v52_runtime_cpu_candidate_v1/runtime_candidate_v1.py",
+      "sha256": "62606874886060e197feb9245e6acc3fdea87b4c980454bbbe197babda6d1831",
+      "bytes": 78498,
+      "stat": [
+        2051,
+        79193461,
+        78498,
+        1792706243989196960,
+        1792706243989196960
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a_v52_runtime_cpu_candidate_v1/test_runtime_candidate_v1.py",
+      "sha256": "37cc6bc902f18c3b67866a9aaf9a49d89e193ea8919d9687f18881a735fa2496",
+      "bytes": 11992,
+      "stat": [
+        2051,
+        79193469,
+        11992,
+        1792706412902538872,
+        1792706412902538872
+      ]
+    }
+  ],
+  "source_unchanged": true,
+  "passed": true,
+  "console": {
+    "path": "/tmp/mr3_v52_runtime_cpu_wait_v1/console.log",
+    "sha256": "1e46e597db5237e514205b0fae73d154c4ab3d05721d6321fd7e3f94031334ce"
+  }
+}

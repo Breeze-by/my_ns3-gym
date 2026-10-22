@@ -8757,3 +8757,35 @@ rtk proxy env PYTHONNOUSERSITE=1 /usr/bin/python3 -B -m report.assets.20261023_m
 因此先做直接的声明/ACK索引与严格JSON对象构造等价优化，不继续盲改几何阈值。保持重复、乱序、非字符串ID、缺字段、错误先后、完整canonical/nonfinite/depth验证；独立role不共享裁决，不做对象id可变缓存或降采样。先用旧23源和人工正反例验证完整输出/异常一致，再接生产。另已从源码确定现成五文件可描述worker所见五段wall时间；尚未消费它们，不能据静态250推导声称实测或归因DDS/CPU。
 
 接着应用新显式reset reader登记、运行26项候选检查并在新preflight真正双load及保存receipt，按实际成本前瞻封存下一有界工程块。新数额须标明代理依据用户持续委托作出的决策，承接旧累计账；pilot/final原额、12EP/30roles与95%/安全门保持。继续直到实际学习和三指定final-only strict95出口完成。
+
+### 2026-10-23 MR3 P2A V52：准备与接入初轮CPU（无新native）
+
+用户自主持续完成P2A授权保持。V51执行与费用已闭合并在3f50381ae推送；本次从其原账70543.1774146986018承接。当前source修改尚待新freeze，以下只属人工CPU/源码接线，不提供原生/学习/95%信用。
+
+已应用固定Reach reset reader显式登记及runtime三项等价优化。候选对旧23e909的人工10项比较PASS、真实wait19.272134075秒，原代码/测试/fixture与独立静态review封存；集成初轮81项PASS/58.214042114秒，system模块help PASS/.11901566秒，所有actualwait source before/after稳定。原CPU控制台/回执不改写，见[规范字节库存](report/assets/20261023_mr3_p2a_v52_qualification/preparation_archive_inventory_v1.json)。
+
+实际集成命令（cwd wireless-rl；所列8项源码与reach_execution自身均以--source绑定，完整argv保存在库存指向的actual_wait.json）：
+
+```bash
+rtk proxy env PYTHONNOUSERSITE=1 /usr/bin/python3 -B -m mr3_learning.reach_execution --output /tmp/mr3_p2a_v52_reset_runtime_integration_cpu_wait_v1 --scope cpu --source mr3_learning/reach_execution.py --source mr3_learning/reach_audit_projection.py --source mr3_learning/reach_preparation.py --source mr3_learning/audit_reach_reset_workload.py --source mr3_learning/audit_reach_runtime.py --source mr3_learning/tests/test_reach_reset_workload.py --source mr3_learning/tests/test_audit_reach_runtime.py --source mr3_learning/tests/test_reach_runtime_index_regression.py --source mr3_learning/tests/test_reach_qualification.py -- /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m pytest -q mr3_learning/tests/test_reach_reset_workload.py mr3_learning/tests/test_audit_reach_runtime.py mr3_learning/tests/test_reach_runtime_index_regression.py mr3_learning/tests/test_reach_qualification.py
+rtk proxy env PYTHONNOUSERSITE=1 /usr/bin/python3 -B -m mr3_learning.reach_execution --output /tmp/mr3_p2a_v52_reset_entry_help_cpu_wait_v1 --scope cpu --source mr3_learning/reach_execution.py --source mr3_learning/audit_reach_reset_workload.py --source mr3_learning/reach_audit_projection.py -- /usr/bin/python3 -B -m mr3_learning.audit_reach_reset_workload --help
+```
+
+下一工程块由代理依据持续委托选择：累计上限120000、实际剩余49456.8225853013982；45000矩阵+1800minimum+300外尾+120preflight共47220，预约后2236.8225853013982。**不声称用户数值批准120000**，不重写旧52000/75000或退费；pilot/final原额保持。四阶段/native映射及依据已写[资源声明](report/assets/20261023_mr3_p2a_v52_qualification/resource_v1.json)和[V52报告](report/20261023_mr3_p2a_v52_qualification.md)。新profile/四入口CPU与真正双load准备尚未完成，未启动新native/model/GPU/optimizer。所有旧FAIL保持。
+
+V52补记：resource v3实际接入后，新封存23文件套件297项PASS；真实outer actualwait118.32906101秒、282份源码前后稳定，工具90804已reap rc0。原v2/v3资源CPU两轮10/10也各有原始wait（16.914890848/16.095149881秒）保留；只算CPU，工程仍0新增。准确新套件命令（固定argv/spec及全部源码before/after见[actualwait](report/assets/20261023_mr3_p2a_v52_qualification/checks/fresh_preparation_cpu_v1/actual_wait.json)）：
+
+```bash
+rtk proxy env PYTHONNOUSERSITE=1 CUDA_VISIBLE_DEVICES= /usr/bin/python3 -B -m report.assets.20261023_mr3_p2a_v52_qualification.run_fresh_cpu_v1
+```
+
+V52入口准备首轮原FAIL保留：`run_admission_cpu_v1`真实reap rc1/17.01009387秒，4个actual模块--help PASS、6fixture在setup因人工custody binding binary/support版本不匹配失败，未触World/model。新双环境readiness真实PASS/7.385659528秒，system loader/leaf逆投影及ns3gym CUDA只查元数据。仅修人工binding的support规则/两固定源码登记，生产gate不改；新helper/spec/output用v2，不覆盖原wait/JUnit/source恢复。实际命令：
+
+```bash
+rtk proxy env PYTHONNOUSERSITE=1 CUDA_VISIBLE_DEVICES= /usr/bin/python3 -B -m report.assets.20261023_mr3_p2a_v52_qualification.run_admission_cpu_v1
+rtk proxy env PYTHONNOUSERSITE=1 CUDA_VISIBLE_DEVICES= /usr/bin/python3 -B -m report.assets.20261023_mr3_p2a_v52_qualification.run_admission_cpu_v2
+```
+
+V52准备最终闭合：第二轮10case PASS/16.922094235秒；真实prepare PASS/3.775742432秒（plan63de7b8...、binding896b940...、933source/10ELF），真实plan_check PASS/.430606694秒。9份canonical actualwait的源/console/时段与18保存PID/start freshgone均通过，原首轮6fixture FAIL保留；工程新增0，pilot/final原额不动。准备已完成，待新commit/push freeze后唯一执行，不把CPU或plan当作资格。
+
+准确prepare/plan_check子argv见各实际wait：prepare使用system Python `-B -m report.assets.20261023_mr3_p2a_v52_qualification.prepare_plan_v1 --engineering-resource-sha256 8a18fb6dad2b90d56e2670486a15f1c951ea2bdb12dd4dfde0c32aa4ae88f2fa`；plan_check使用ns3gym Python `-B -m report.assets.20261023_mr3_p2a_v52_qualification.plan_check_v1 --output .../checks/plan_check_result_v1.json`。各由`mr3_learning.reach_execution --scope cpu`真实wait并保存全部sources/argv，无World/model。

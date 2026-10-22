@@ -1,0 +1,45 @@
+{
+  "schema": "mr3-reach-reset-workload-unapplied-draft-v2",
+  "applied": false,
+  "candidate_imported_or_executed": false,
+  "tests_executed": false,
+  "native_inputs_consumed": false,
+  "baseline_freeze": "23e909380b470039bd5680cf2d07710dca71097e",
+  "patch": "/tmp/mr3_v51_reset_workload_patch_v2/reset_workload_v2.patch",
+  "patch_sha256": "d3f6a3ddc65ff897ec903e703af311925c3e957ab6fff3280fb0f2cbd68aaff2",
+  "files": [
+    {
+      "relative_repo_path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_audit_projection.py",
+      "candidate_bytes": 2324,
+      "candidate_sha256": "5fe65aed1b788ec43e05b00265e109dc9ad3c4dd0443aaa3b4b9fbcff7e20d4b",
+      "baseline_sha256": "c2f1c8334c57901a3415ed2c17a38467e75e502bbe2ce60b55c205a9f1372915",
+      "test_method_definitions": 0,
+      "AST_parsed_only": true
+    },
+    {
+      "relative_repo_path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_reset_workload.py",
+      "candidate_bytes": 11029,
+      "candidate_sha256": "1029576885397bad562172dd2e98d27835b273912609058fb65385804c7e28ea",
+      "baseline_sha256": null,
+      "test_method_definitions": 0,
+      "AST_parsed_only": true
+    },
+    {
+      "relative_repo_path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_preparation.py",
+      "candidate_bytes": 43132,
+      "candidate_sha256": "a4d1f5b121530c233df7f8dcd8b98f93ce5ace70a6f5a3f77df93f97aea67daf",
+      "baseline_sha256": "e832fa5245b9878e939a54cb19c36a43244b3f92a50e62c181aeab856ed1d6df",
+      "test_method_definitions": 0,
+      "AST_parsed_only": true
+    },
+    {
+      "relative_repo_path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_reach_reset_workload.py",
+      "candidate_bytes": 27886,
+      "candidate_sha256": "2e355258503ad774ad4cdc732082a69117c7f39ad848e5602e78ad78d401c32b",
+      "baseline_sha256": null,
+      "test_method_definitions": 26,
+      "AST_parsed_only": true
+    }
+  ],
+  "v1_preservation_checked": true
+}

@@ -1,0 +1,577 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="6" skipped="0" tests="10" time="14.674" timestamp="2026-10-23T06:22:17.918859+08:00" hostname="zhuyulab"><testcase classname="contrib.opengym.examples.wireless-rl.report.assets.20261023_mr3_p2a_v52_qualification.test_activity_resource_entry_v1.ActivityResourceEntryTests" name="test_all_four_real_entries_accept_only_to_pre_model_boundary" time="0.523"><failure message="ValueError: custody binding reach geometry rule differs">self = &lt;test_activity_resource_entry_v1.ActivityResourceEntryTests testMethod=test_all_four_real_entries_accept_only_to_pre_model_boundary&gt;
+
+    def setUp(self):
+        self.f = block_fixtures.EngineeringBlockTests()
+        self.f.setUp()
+        self.addCleanup(self.f.doCleanups)
+        self.stack = contextlib.ExitStack()
+        self.addCleanup(self.stack.close)
+        self.a = self.f.root
+        self.plan_path = self.a / 'plan_v1.json'
+        self.stack.enter_context(patch.object(preparing, 'W', reach_preparation.WORKSPACE))
+        self.driver_file = self.a / 'toy_driver.json'
+        self.review_file = self.a / 'toy_closed_review.json'
+        self.write(self.driver_file, {
+            'schema': 'mr3-single-ep-runtime-profile-driver-v1', 'passed': True,
+            'started_monotonic_ns': 1_000_000_000, 'ended_monotonic_ns': 11_000_000_000,
+            'actual_parent_wait_seconds': '10', 'engineering_added_seconds': '10',
+            'engineering_used_at_entry_seconds': '90', 'engineering_cumulative_used_seconds': '100',
+            'engineering_remaining_seconds': '900', 'engineering_ceiling_seconds': '1000',
+            'actual_returncode': 0, 'actual_wrapper_waited': True, 'errors': [],
+            'profiling_execution_freeze': FREEZE, 'native_evidence_freeze': FREEZE})
+        self.write(self.review_file, {
+            'schema': 'mr3-v51-independent-closed-metadata-review-v1', 'passed': True,
+            'actual_wrapper_waited': True, 'scope_and_sources_unchanged': True,
+            'all_saved_identities_fresh_gone': True, 'closed_guard_and_child_passed': True,
+            'engineering_cumulative_used_seconds': '100', 'engineering_remaining_seconds': '900',
+            'engineering_added_parent_wait_seconds': '10', 'execution_freeze': FREEZE,
+            'native_evidence_freeze': FREEZE, 'external_scientific_tail_actual_seconds': '0',
+            'pilot_added_seconds': '0', 'validation_added_seconds': '0'})
+        originals = {}
+        for key, path in [('driver_summary', self.driver_file), ('closed_metadata_review', self.review_file)]:
+            row = self.f.spec(path)
+            row['path'] = str(path.relative_to(preparing.W))
+            originals[key] = row
+        self.ledger = {
+            'schema': 'mr3-engineering-closure-ledger-v1', 'passed': True,
+            'engineering_previous_cumulative_seconds': '90', 'engineering_added_seconds': '10',
+            'engineering_cumulative_seconds': '100', 'engineering_remaining_seconds': '900',
+            'engineering_ceiling_seconds': '1000', 'old_failures_and_cumulative_ledger_preserved': True,
+            'scientific_qualification_credit': False, 'execution_freeze': FREEZE,
+            'native_evidence_freeze': FREEZE, 'external_scientific_tail_actual_seconds': '0',
+            'pilot_added_seconds': '0', 'validation_added_seconds': '0',
+            'actual_parent_intervals': [{'started_monotonic_ns': 1_000_000_000,
+                'ended_monotonic_ns': 11_000_000_000, 'actual_seconds': '10'}], **originals}
+        self.write(self.f.ledger, self.ledger)
+        self.f.value['previous_accounting'] = self.f.spec(self.f.ledger)
+        self.f.seal(self.f.value)
+        for module, key, value in [
+                (preparing, 'A', self.a), (preparing, 'RESOURCE', self.f.resource_path),
+                (preparing, 'NORMALIZED_PRIOR', self.f.ledger),
+                (preparing, 'PLAN', self.plan_path), (preparing, 'BINDING', self.a / 'not_created_binding.json'),
+                (preparing, 'PRIOR_ORIGINAL_SHA256', {k: v['sha256'] for k, v in originals.items()}),
+                (preflight, 'A', self.a), (checking, 'ASSETS', self.a),
+                (driver, 'PLAN', self.plan_path), (driver, 'PREFIX', self.a / 'not_created_driver')]:
+            self.stack.enter_context(patch.object(module, key, value))
+        self.scope = {
+            'schema': 'mr3-p2a-v52-native-qualification-scope-v1',
+            'engineering_resource': self.f.spec(self.f.resource_path),
+            'robots_per_environment': 3, 'mandatory_roles': 30, 'matrix_episodes': 12,
+            'minimum_decisions': 16, 'pilot_requested_decisions': 64,
+            'pilot_remaining_decisions': 1870, 'pilot_remaining_wall_seconds': '2905.9547395464029',
+            'final_only_schedule': ['open:401', 'open:402', 'open:403'], 'mapping_target': .95,
+            'acceptance_gates_unchanged': True, 'old_failures_preserved': True,
+            'no_retry_on_required_failure': True, 'p2b_gateway_authorized': False,
+            'prior_native_credit_reused': False, 'seed_rule': preparing.SEED_RULE,
+            'start_graph_rule': preparing.START_RULE, 'reach_geometry_rule': preparing.REACH_GEOMETRY_RULE,
+            'reset_workload_reader_profile': reach_preparation.reset_workload.PROFILE}
+        self.authorization = {
+            'schema': 'mr3-p2a-autonomous-continuation-authorization-v1',
+            'status': 'AUTHORIZED_BY_USER_CONTINUATION',
+            'user_exact_text': '你一直继续执行就好了，直到把P2A完成，不需要问我是否批准',
+            'numeric_user_approval_claimed': False,
+            'engineering_resource': self.f.spec(self.f.resource_path),
+            'acceptance_gates_unchanged': True, 'old_failures_preserved': True,
+            'p2b_gateway_authorized': False}
+        self.write(self.a / 'scope_v1.json', self.scope)
+        self.write(self.a / 'authorization_v1.json', self.authorization)
+&gt;       self.plan = reach_preparation.build_plan(**dict(self.f.kwargs(), plan_path=self.plan_path),
+            engineering_remaining_seconds='40000',
+            reservation_profile=reach_preparation.AUTONOMOUS_RESOURCE_PROFILE,
+            engineering_resource=self.f.spec(self.f.resource_path), seed_rule=preparing.SEED_RULE,
+            start_graph_rule=preparing.START_RULE, reach_geometry_rule=preparing.REACH_GEOMETRY_RULE)
+
+report/assets/20261023_mr3_p2a_v52_qualification/test_activity_resource_entry_v1.py:109: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+mr3_learning/reach_preparation.py:574: in build_plan
+    require(validate_reach_geometry_rule(binding.get("reach_geometry_rule", BINARY_REACH_GEOMETRY_RULE),
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+condition = False, message = 'custody binding reach geometry rule differs'
+
+    def require(condition, message):
+        if not condition:
+&gt;           raise ValueError(message)
+E           ValueError: custody binding reach geometry rule differs
+
+mr3_learning/preparation.py:44: ValueError</failure></testcase><testcase classname="contrib.opengym.examples.wireless-rl.report.assets.20261023_mr3_p2a_v52_qualification.test_activity_resource_entry_v1.ActivityResourceEntryTests" name="test_all_four_real_entries_reject_overbudget_before_effects" time="0.518"><failure message="ValueError: custody binding reach geometry rule differs">self = &lt;test_activity_resource_entry_v1.ActivityResourceEntryTests testMethod=test_all_four_real_entries_reject_overbudget_before_effects&gt;
+
+    def setUp(self):
+        self.f = block_fixtures.EngineeringBlockTests()
+        self.f.setUp()
+        self.addCleanup(self.f.doCleanups)
+        self.stack = contextlib.ExitStack()
+        self.addCleanup(self.stack.close)
+        self.a = self.f.root
+        self.plan_path = self.a / 'plan_v1.json'
+        self.stack.enter_context(patch.object(preparing, 'W', reach_preparation.WORKSPACE))
+        self.driver_file = self.a / 'toy_driver.json'
+        self.review_file = self.a / 'toy_closed_review.json'
+        self.write(self.driver_file, {
+            'schema': 'mr3-single-ep-runtime-profile-driver-v1', 'passed': True,
+            'started_monotonic_ns': 1_000_000_000, 'ended_monotonic_ns': 11_000_000_000,
+            'actual_parent_wait_seconds': '10', 'engineering_added_seconds': '10',
+            'engineering_used_at_entry_seconds': '90', 'engineering_cumulative_used_seconds': '100',
+            'engineering_remaining_seconds': '900', 'engineering_ceiling_seconds': '1000',
+            'actual_returncode': 0, 'actual_wrapper_waited': True, 'errors': [],
+            'profiling_execution_freeze': FREEZE, 'native_evidence_freeze': FREEZE})
+        self.write(self.review_file, {
+            'schema': 'mr3-v51-independent-closed-metadata-review-v1', 'passed': True,
+            'actual_wrapper_waited': True, 'scope_and_sources_unchanged': True,
+            'all_saved_identities_fresh_gone': True, 'closed_guard_and_child_passed': True,
+            'engineering_cumulative_used_seconds': '100', 'engineering_remaining_seconds': '900',
+            'engineering_added_parent_wait_seconds': '10', 'execution_freeze': FREEZE,
+            'native_evidence_freeze': FREEZE, 'external_scientific_tail_actual_seconds': '0',
+            'pilot_added_seconds': '0', 'validation_added_seconds': '0'})
+        originals = {}
+        for key, path in [('driver_summary', self.driver_file), ('closed_metadata_review', self.review_file)]:
+            row = self.f.spec(path)
+            row['path'] = str(path.relative_to(preparing.W))
+            originals[key] = row
+        self.ledger = {
+            'schema': 'mr3-engineering-closure-ledger-v1', 'passed': True,
+            'engineering_previous_cumulative_seconds': '90', 'engineering_added_seconds': '10',
+            'engineering_cumulative_seconds': '100', 'engineering_remaining_seconds': '900',
+            'engineering_ceiling_seconds': '1000', 'old_failures_and_cumulative_ledger_preserved': True,
+            'scientific_qualification_credit': False, 'execution_freeze': FREEZE,
+            'native_evidence_freeze': FREEZE, 'external_scientific_tail_actual_seconds': '0',
+            'pilot_added_seconds': '0', 'validation_added_seconds': '0',
+            'actual_parent_intervals': [{'started_monotonic_ns': 1_000_000_000,
+                'ended_monotonic_ns': 11_000_000_000, 'actual_seconds': '10'}], **originals}
+        self.write(self.f.ledger, self.ledger)
+        self.f.value['previous_accounting'] = self.f.spec(self.f.ledger)
+        self.f.seal(self.f.value)
+        for module, key, value in [
+                (preparing, 'A', self.a), (preparing, 'RESOURCE', self.f.resource_path),
+                (preparing, 'NORMALIZED_PRIOR', self.f.ledger),
+                (preparing, 'PLAN', self.plan_path), (preparing, 'BINDING', self.a / 'not_created_binding.json'),
+                (preparing, 'PRIOR_ORIGINAL_SHA256', {k: v['sha256'] for k, v in originals.items()}),
+                (preflight, 'A', self.a), (checking, 'ASSETS', self.a),
+                (driver, 'PLAN', self.plan_path), (driver, 'PREFIX', self.a / 'not_created_driver')]:
+            self.stack.enter_context(patch.object(module, key, value))
+        self.scope = {
+            'schema': 'mr3-p2a-v52-native-qualification-scope-v1',
+            'engineering_resource': self.f.spec(self.f.resource_path),
+            'robots_per_environment': 3, 'mandatory_roles': 30, 'matrix_episodes': 12,
+            'minimum_decisions': 16, 'pilot_requested_decisions': 64,
+            'pilot_remaining_decisions': 1870, 'pilot_remaining_wall_seconds': '2905.9547395464029',
+            'final_only_schedule': ['open:401', 'open:402', 'open:403'], 'mapping_target': .95,
+            'acceptance_gates_unchanged': True, 'old_failures_preserved': True,
+            'no_retry_on_required_failure': True, 'p2b_gateway_authorized': False,
+            'prior_native_credit_reused': False, 'seed_rule': preparing.SEED_RULE,
+            'start_graph_rule': preparing.START_RULE, 'reach_geometry_rule': preparing.REACH_GEOMETRY_RULE,
+            'reset_workload_reader_profile': reach_preparation.reset_workload.PROFILE}
+        self.authorization = {
+            'schema': 'mr3-p2a-autonomous-continuation-authorization-v1',
+            'status': 'AUTHORIZED_BY_USER_CONTINUATION',
+            'user_exact_text': '你一直继续执行就好了，直到把P2A完成，不需要问我是否批准',
+            'numeric_user_approval_claimed': False,
+            'engineering_resource': self.f.spec(self.f.resource_path),
+            'acceptance_gates_unchanged': True, 'old_failures_preserved': True,
+            'p2b_gateway_authorized': False}
+        self.write(self.a / 'scope_v1.json', self.scope)
+        self.write(self.a / 'authorization_v1.json', self.authorization)
+&gt;       self.plan = reach_preparation.build_plan(**dict(self.f.kwargs(), plan_path=self.plan_path),
+            engineering_remaining_seconds='40000',
+            reservation_profile=reach_preparation.AUTONOMOUS_RESOURCE_PROFILE,
+            engineering_resource=self.f.spec(self.f.resource_path), seed_rule=preparing.SEED_RULE,
+            start_graph_rule=preparing.START_RULE, reach_geometry_rule=preparing.REACH_GEOMETRY_RULE)
+
+report/assets/20261023_mr3_p2a_v52_qualification/test_activity_resource_entry_v1.py:109: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+mr3_learning/reach_preparation.py:574: in build_plan
+    require(validate_reach_geometry_rule(binding.get("reach_geometry_rule", BINARY_REACH_GEOMETRY_RULE),
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+condition = False, message = 'custody binding reach geometry rule differs'
+
+    def require(condition, message):
+        if not condition:
+&gt;           raise ValueError(message)
+E           ValueError: custody binding reach geometry rule differs
+
+mr3_learning/preparation.py:44: ValueError</failure></testcase><testcase classname="contrib.opengym.examples.wireless-rl.report.assets.20261023_mr3_p2a_v52_qualification.test_activity_resource_entry_v1.ActivityResourceEntryTests" name="test_conflicting_plan_budget_is_rejected" time="0.503"><failure message="ValueError: custody binding reach geometry rule differs">self = &lt;test_activity_resource_entry_v1.ActivityResourceEntryTests testMethod=test_conflicting_plan_budget_is_rejected&gt;
+
+    def setUp(self):
+        self.f = block_fixtures.EngineeringBlockTests()
+        self.f.setUp()
+        self.addCleanup(self.f.doCleanups)
+        self.stack = contextlib.ExitStack()
+        self.addCleanup(self.stack.close)
+        self.a = self.f.root
+        self.plan_path = self.a / 'plan_v1.json'
+        self.stack.enter_context(patch.object(preparing, 'W', reach_preparation.WORKSPACE))
+        self.driver_file = self.a / 'toy_driver.json'
+        self.review_file = self.a / 'toy_closed_review.json'
+        self.write(self.driver_file, {
+            'schema': 'mr3-single-ep-runtime-profile-driver-v1', 'passed': True,
+            'started_monotonic_ns': 1_000_000_000, 'ended_monotonic_ns': 11_000_000_000,
+            'actual_parent_wait_seconds': '10', 'engineering_added_seconds': '10',
+            'engineering_used_at_entry_seconds': '90', 'engineering_cumulative_used_seconds': '100',
+            'engineering_remaining_seconds': '900', 'engineering_ceiling_seconds': '1000',
+            'actual_returncode': 0, 'actual_wrapper_waited': True, 'errors': [],
+            'profiling_execution_freeze': FREEZE, 'native_evidence_freeze': FREEZE})
+        self.write(self.review_file, {
+            'schema': 'mr3-v51-independent-closed-metadata-review-v1', 'passed': True,
+            'actual_wrapper_waited': True, 'scope_and_sources_unchanged': True,
+            'all_saved_identities_fresh_gone': True, 'closed_guard_and_child_passed': True,
+            'engineering_cumulative_used_seconds': '100', 'engineering_remaining_seconds': '900',
+            'engineering_added_parent_wait_seconds': '10', 'execution_freeze': FREEZE,
+            'native_evidence_freeze': FREEZE, 'external_scientific_tail_actual_seconds': '0',
+            'pilot_added_seconds': '0', 'validation_added_seconds': '0'})
+        originals = {}
+        for key, path in [('driver_summary', self.driver_file), ('closed_metadata_review', self.review_file)]:
+            row = self.f.spec(path)
+            row['path'] = str(path.relative_to(preparing.W))
+            originals[key] = row
+        self.ledger = {
+            'schema': 'mr3-engineering-closure-ledger-v1', 'passed': True,
+            'engineering_previous_cumulative_seconds': '90', 'engineering_added_seconds': '10',
+            'engineering_cumulative_seconds': '100', 'engineering_remaining_seconds': '900',
+            'engineering_ceiling_seconds': '1000', 'old_failures_and_cumulative_ledger_preserved': True,
+            'scientific_qualification_credit': False, 'execution_freeze': FREEZE,
+            'native_evidence_freeze': FREEZE, 'external_scientific_tail_actual_seconds': '0',
+            'pilot_added_seconds': '0', 'validation_added_seconds': '0',
+            'actual_parent_intervals': [{'started_monotonic_ns': 1_000_000_000,
+                'ended_monotonic_ns': 11_000_000_000, 'actual_seconds': '10'}], **originals}
+        self.write(self.f.ledger, self.ledger)
+        self.f.value['previous_accounting'] = self.f.spec(self.f.ledger)
+        self.f.seal(self.f.value)
+        for module, key, value in [
+                (preparing, 'A', self.a), (preparing, 'RESOURCE', self.f.resource_path),
+                (preparing, 'NORMALIZED_PRIOR', self.f.ledger),
+                (preparing, 'PLAN', self.plan_path), (preparing, 'BINDING', self.a / 'not_created_binding.json'),
+                (preparing, 'PRIOR_ORIGINAL_SHA256', {k: v['sha256'] for k, v in originals.items()}),
+                (preflight, 'A', self.a), (checking, 'ASSETS', self.a),
+                (driver, 'PLAN', self.plan_path), (driver, 'PREFIX', self.a / 'not_created_driver')]:
+            self.stack.enter_context(patch.object(module, key, value))
+        self.scope = {
+            'schema': 'mr3-p2a-v52-native-qualification-scope-v1',
+            'engineering_resource': self.f.spec(self.f.resource_path),
+            'robots_per_environment': 3, 'mandatory_roles': 30, 'matrix_episodes': 12,
+            'minimum_decisions': 16, 'pilot_requested_decisions': 64,
+            'pilot_remaining_decisions': 1870, 'pilot_remaining_wall_seconds': '2905.9547395464029',
+            'final_only_schedule': ['open:401', 'open:402', 'open:403'], 'mapping_target': .95,
+            'acceptance_gates_unchanged': True, 'old_failures_preserved': True,
+            'no_retry_on_required_failure': True, 'p2b_gateway_authorized': False,
+            'prior_native_credit_reused': False, 'seed_rule': preparing.SEED_RULE,
+            'start_graph_rule': preparing.START_RULE, 'reach_geometry_rule': preparing.REACH_GEOMETRY_RULE,
+            'reset_workload_reader_profile': reach_preparation.reset_workload.PROFILE}
+        self.authorization = {
+            'schema': 'mr3-p2a-autonomous-continuation-authorization-v1',
+            'status': 'AUTHORIZED_BY_USER_CONTINUATION',
+            'user_exact_text': '你一直继续执行就好了，直到把P2A完成，不需要问我是否批准',
+            'numeric_user_approval_claimed': False,
+            'engineering_resource': self.f.spec(self.f.resource_path),
+            'acceptance_gates_unchanged': True, 'old_failures_preserved': True,
+            'p2b_gateway_authorized': False}
+        self.write(self.a / 'scope_v1.json', self.scope)
+        self.write(self.a / 'authorization_v1.json', self.authorization)
+&gt;       self.plan = reach_preparation.build_plan(**dict(self.f.kwargs(), plan_path=self.plan_path),
+            engineering_remaining_seconds='40000',
+            reservation_profile=reach_preparation.AUTONOMOUS_RESOURCE_PROFILE,
+            engineering_resource=self.f.spec(self.f.resource_path), seed_rule=preparing.SEED_RULE,
+            start_graph_rule=preparing.START_RULE, reach_geometry_rule=preparing.REACH_GEOMETRY_RULE)
+
+report/assets/20261023_mr3_p2a_v52_qualification/test_activity_resource_entry_v1.py:109: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+mr3_learning/reach_preparation.py:574: in build_plan
+    require(validate_reach_geometry_rule(binding.get("reach_geometry_rule", BINARY_REACH_GEOMETRY_RULE),
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+condition = False, message = 'custody binding reach geometry rule differs'
+
+    def require(condition, message):
+        if not condition:
+&gt;           raise ValueError(message)
+E           ValueError: custody binding reach geometry rule differs
+
+mr3_learning/preparation.py:44: ValueError</failure></testcase><testcase classname="contrib.opengym.examples.wireless-rl.report.assets.20261023_mr3_p2a_v52_qualification.test_activity_resource_entry_v1.ActivityResourceEntryTests" name="test_forged_prior_or_parent_fee_is_rejected" time="0.517"><failure message="ValueError: custody binding reach geometry rule differs">self = &lt;test_activity_resource_entry_v1.ActivityResourceEntryTests testMethod=test_forged_prior_or_parent_fee_is_rejected&gt;
+
+    def setUp(self):
+        self.f = block_fixtures.EngineeringBlockTests()
+        self.f.setUp()
+        self.addCleanup(self.f.doCleanups)
+        self.stack = contextlib.ExitStack()
+        self.addCleanup(self.stack.close)
+        self.a = self.f.root
+        self.plan_path = self.a / 'plan_v1.json'
+        self.stack.enter_context(patch.object(preparing, 'W', reach_preparation.WORKSPACE))
+        self.driver_file = self.a / 'toy_driver.json'
+        self.review_file = self.a / 'toy_closed_review.json'
+        self.write(self.driver_file, {
+            'schema': 'mr3-single-ep-runtime-profile-driver-v1', 'passed': True,
+            'started_monotonic_ns': 1_000_000_000, 'ended_monotonic_ns': 11_000_000_000,
+            'actual_parent_wait_seconds': '10', 'engineering_added_seconds': '10',
+            'engineering_used_at_entry_seconds': '90', 'engineering_cumulative_used_seconds': '100',
+            'engineering_remaining_seconds': '900', 'engineering_ceiling_seconds': '1000',
+            'actual_returncode': 0, 'actual_wrapper_waited': True, 'errors': [],
+            'profiling_execution_freeze': FREEZE, 'native_evidence_freeze': FREEZE})
+        self.write(self.review_file, {
+            'schema': 'mr3-v51-independent-closed-metadata-review-v1', 'passed': True,
+            'actual_wrapper_waited': True, 'scope_and_sources_unchanged': True,
+            'all_saved_identities_fresh_gone': True, 'closed_guard_and_child_passed': True,
+            'engineering_cumulative_used_seconds': '100', 'engineering_remaining_seconds': '900',
+            'engineering_added_parent_wait_seconds': '10', 'execution_freeze': FREEZE,
+            'native_evidence_freeze': FREEZE, 'external_scientific_tail_actual_seconds': '0',
+            'pilot_added_seconds': '0', 'validation_added_seconds': '0'})
+        originals = {}
+        for key, path in [('driver_summary', self.driver_file), ('closed_metadata_review', self.review_file)]:
+            row = self.f.spec(path)
+            row['path'] = str(path.relative_to(preparing.W))
+            originals[key] = row
+        self.ledger = {
+            'schema': 'mr3-engineering-closure-ledger-v1', 'passed': True,
+            'engineering_previous_cumulative_seconds': '90', 'engineering_added_seconds': '10',
+            'engineering_cumulative_seconds': '100', 'engineering_remaining_seconds': '900',
+            'engineering_ceiling_seconds': '1000', 'old_failures_and_cumulative_ledger_preserved': True,
+            'scientific_qualification_credit': False, 'execution_freeze': FREEZE,
+            'native_evidence_freeze': FREEZE, 'external_scientific_tail_actual_seconds': '0',
+            'pilot_added_seconds': '0', 'validation_added_seconds': '0',
+            'actual_parent_intervals': [{'started_monotonic_ns': 1_000_000_000,
+                'ended_monotonic_ns': 11_000_000_000, 'actual_seconds': '10'}], **originals}
+        self.write(self.f.ledger, self.ledger)
+        self.f.value['previous_accounting'] = self.f.spec(self.f.ledger)
+        self.f.seal(self.f.value)
+        for module, key, value in [
+                (preparing, 'A', self.a), (preparing, 'RESOURCE', self.f.resource_path),
+                (preparing, 'NORMALIZED_PRIOR', self.f.ledger),
+                (preparing, 'PLAN', self.plan_path), (preparing, 'BINDING', self.a / 'not_created_binding.json'),
+                (preparing, 'PRIOR_ORIGINAL_SHA256', {k: v['sha256'] for k, v in originals.items()}),
+                (preflight, 'A', self.a), (checking, 'ASSETS', self.a),
+                (driver, 'PLAN', self.plan_path), (driver, 'PREFIX', self.a / 'not_created_driver')]:
+            self.stack.enter_context(patch.object(module, key, value))
+        self.scope = {
+            'schema': 'mr3-p2a-v52-native-qualification-scope-v1',
+            'engineering_resource': self.f.spec(self.f.resource_path),
+            'robots_per_environment': 3, 'mandatory_roles': 30, 'matrix_episodes': 12,
+            'minimum_decisions': 16, 'pilot_requested_decisions': 64,
+            'pilot_remaining_decisions': 1870, 'pilot_remaining_wall_seconds': '2905.9547395464029',
+            'final_only_schedule': ['open:401', 'open:402', 'open:403'], 'mapping_target': .95,
+            'acceptance_gates_unchanged': True, 'old_failures_preserved': True,
+            'no_retry_on_required_failure': True, 'p2b_gateway_authorized': False,
+            'prior_native_credit_reused': False, 'seed_rule': preparing.SEED_RULE,
+            'start_graph_rule': preparing.START_RULE, 'reach_geometry_rule': preparing.REACH_GEOMETRY_RULE,
+            'reset_workload_reader_profile': reach_preparation.reset_workload.PROFILE}
+        self.authorization = {
+            'schema': 'mr3-p2a-autonomous-continuation-authorization-v1',
+            'status': 'AUTHORIZED_BY_USER_CONTINUATION',
+            'user_exact_text': '你一直继续执行就好了，直到把P2A完成，不需要问我是否批准',
+            'numeric_user_approval_claimed': False,
+            'engineering_resource': self.f.spec(self.f.resource_path),
+            'acceptance_gates_unchanged': True, 'old_failures_preserved': True,
+            'p2b_gateway_authorized': False}
+        self.write(self.a / 'scope_v1.json', self.scope)
+        self.write(self.a / 'authorization_v1.json', self.authorization)
+&gt;       self.plan = reach_preparation.build_plan(**dict(self.f.kwargs(), plan_path=self.plan_path),
+            engineering_remaining_seconds='40000',
+            reservation_profile=reach_preparation.AUTONOMOUS_RESOURCE_PROFILE,
+            engineering_resource=self.f.spec(self.f.resource_path), seed_rule=preparing.SEED_RULE,
+            start_graph_rule=preparing.START_RULE, reach_geometry_rule=preparing.REACH_GEOMETRY_RULE)
+
+report/assets/20261023_mr3_p2a_v52_qualification/test_activity_resource_entry_v1.py:109: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+mr3_learning/reach_preparation.py:574: in build_plan
+    require(validate_reach_geometry_rule(binding.get("reach_geometry_rule", BINARY_REACH_GEOMETRY_RULE),
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+condition = False, message = 'custody binding reach geometry rule differs'
+
+    def require(condition, message):
+        if not condition:
+&gt;           raise ValueError(message)
+E           ValueError: custody binding reach geometry rule differs
+
+mr3_learning/preparation.py:44: ValueError</failure></testcase><testcase classname="contrib.opengym.examples.wireless-rl.report.assets.20261023_mr3_p2a_v52_qualification.test_activity_resource_entry_v1.ActivityResourceEntryTests" name="test_preflight_really_calls_both_reset_reader_readiness_and_keeps_receipt" time="0.511"><failure message="ValueError: custody binding reach geometry rule differs">self = &lt;test_activity_resource_entry_v1.ActivityResourceEntryTests testMethod=test_preflight_really_calls_both_reset_reader_readiness_and_keeps_receipt&gt;
+
+    def setUp(self):
+        self.f = block_fixtures.EngineeringBlockTests()
+        self.f.setUp()
+        self.addCleanup(self.f.doCleanups)
+        self.stack = contextlib.ExitStack()
+        self.addCleanup(self.stack.close)
+        self.a = self.f.root
+        self.plan_path = self.a / 'plan_v1.json'
+        self.stack.enter_context(patch.object(preparing, 'W', reach_preparation.WORKSPACE))
+        self.driver_file = self.a / 'toy_driver.json'
+        self.review_file = self.a / 'toy_closed_review.json'
+        self.write(self.driver_file, {
+            'schema': 'mr3-single-ep-runtime-profile-driver-v1', 'passed': True,
+            'started_monotonic_ns': 1_000_000_000, 'ended_monotonic_ns': 11_000_000_000,
+            'actual_parent_wait_seconds': '10', 'engineering_added_seconds': '10',
+            'engineering_used_at_entry_seconds': '90', 'engineering_cumulative_used_seconds': '100',
+            'engineering_remaining_seconds': '900', 'engineering_ceiling_seconds': '1000',
+            'actual_returncode': 0, 'actual_wrapper_waited': True, 'errors': [],
+            'profiling_execution_freeze': FREEZE, 'native_evidence_freeze': FREEZE})
+        self.write(self.review_file, {
+            'schema': 'mr3-v51-independent-closed-metadata-review-v1', 'passed': True,
+            'actual_wrapper_waited': True, 'scope_and_sources_unchanged': True,
+            'all_saved_identities_fresh_gone': True, 'closed_guard_and_child_passed': True,
+            'engineering_cumulative_used_seconds': '100', 'engineering_remaining_seconds': '900',
+            'engineering_added_parent_wait_seconds': '10', 'execution_freeze': FREEZE,
+            'native_evidence_freeze': FREEZE, 'external_scientific_tail_actual_seconds': '0',
+            'pilot_added_seconds': '0', 'validation_added_seconds': '0'})
+        originals = {}
+        for key, path in [('driver_summary', self.driver_file), ('closed_metadata_review', self.review_file)]:
+            row = self.f.spec(path)
+            row['path'] = str(path.relative_to(preparing.W))
+            originals[key] = row
+        self.ledger = {
+            'schema': 'mr3-engineering-closure-ledger-v1', 'passed': True,
+            'engineering_previous_cumulative_seconds': '90', 'engineering_added_seconds': '10',
+            'engineering_cumulative_seconds': '100', 'engineering_remaining_seconds': '900',
+            'engineering_ceiling_seconds': '1000', 'old_failures_and_cumulative_ledger_preserved': True,
+            'scientific_qualification_credit': False, 'execution_freeze': FREEZE,
+            'native_evidence_freeze': FREEZE, 'external_scientific_tail_actual_seconds': '0',
+            'pilot_added_seconds': '0', 'validation_added_seconds': '0',
+            'actual_parent_intervals': [{'started_monotonic_ns': 1_000_000_000,
+                'ended_monotonic_ns': 11_000_000_000, 'actual_seconds': '10'}], **originals}
+        self.write(self.f.ledger, self.ledger)
+        self.f.value['previous_accounting'] = self.f.spec(self.f.ledger)
+        self.f.seal(self.f.value)
+        for module, key, value in [
+                (preparing, 'A', self.a), (preparing, 'RESOURCE', self.f.resource_path),
+                (preparing, 'NORMALIZED_PRIOR', self.f.ledger),
+                (preparing, 'PLAN', self.plan_path), (preparing, 'BINDING', self.a / 'not_created_binding.json'),
+                (preparing, 'PRIOR_ORIGINAL_SHA256', {k: v['sha256'] for k, v in originals.items()}),
+                (preflight, 'A', self.a), (checking, 'ASSETS', self.a),
+                (driver, 'PLAN', self.plan_path), (driver, 'PREFIX', self.a / 'not_created_driver')]:
+            self.stack.enter_context(patch.object(module, key, value))
+        self.scope = {
+            'schema': 'mr3-p2a-v52-native-qualification-scope-v1',
+            'engineering_resource': self.f.spec(self.f.resource_path),
+            'robots_per_environment': 3, 'mandatory_roles': 30, 'matrix_episodes': 12,
+            'minimum_decisions': 16, 'pilot_requested_decisions': 64,
+            'pilot_remaining_decisions': 1870, 'pilot_remaining_wall_seconds': '2905.9547395464029',
+            'final_only_schedule': ['open:401', 'open:402', 'open:403'], 'mapping_target': .95,
+            'acceptance_gates_unchanged': True, 'old_failures_preserved': True,
+            'no_retry_on_required_failure': True, 'p2b_gateway_authorized': False,
+            'prior_native_credit_reused': False, 'seed_rule': preparing.SEED_RULE,
+            'start_graph_rule': preparing.START_RULE, 'reach_geometry_rule': preparing.REACH_GEOMETRY_RULE,
+            'reset_workload_reader_profile': reach_preparation.reset_workload.PROFILE}
+        self.authorization = {
+            'schema': 'mr3-p2a-autonomous-continuation-authorization-v1',
+            'status': 'AUTHORIZED_BY_USER_CONTINUATION',
+            'user_exact_text': '你一直继续执行就好了，直到把P2A完成，不需要问我是否批准',
+            'numeric_user_approval_claimed': False,
+            'engineering_resource': self.f.spec(self.f.resource_path),
+            'acceptance_gates_unchanged': True, 'old_failures_preserved': True,
+            'p2b_gateway_authorized': False}
+        self.write(self.a / 'scope_v1.json', self.scope)
+        self.write(self.a / 'authorization_v1.json', self.authorization)
+&gt;       self.plan = reach_preparation.build_plan(**dict(self.f.kwargs(), plan_path=self.plan_path),
+            engineering_remaining_seconds='40000',
+            reservation_profile=reach_preparation.AUTONOMOUS_RESOURCE_PROFILE,
+            engineering_resource=self.f.spec(self.f.resource_path), seed_rule=preparing.SEED_RULE,
+            start_graph_rule=preparing.START_RULE, reach_geometry_rule=preparing.REACH_GEOMETRY_RULE)
+
+report/assets/20261023_mr3_p2a_v52_qualification/test_activity_resource_entry_v1.py:109: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+mr3_learning/reach_preparation.py:574: in build_plan
+    require(validate_reach_geometry_rule(binding.get("reach_geometry_rule", BINARY_REACH_GEOMETRY_RULE),
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+condition = False, message = 'custody binding reach geometry rule differs'
+
+    def require(condition, message):
+        if not condition:
+&gt;           raise ValueError(message)
+E           ValueError: custody binding reach geometry rule differs
+
+mr3_learning/preparation.py:44: ValueError</failure></testcase><testcase classname="contrib.opengym.examples.wireless-rl.report.assets.20261023_mr3_p2a_v52_qualification.test_activity_resource_entry_v1.ActivityResourceEntryTests" name="test_prior_carry_and_one_resource_are_accepted" time="0.660"><failure message="ValueError: custody binding reach geometry rule differs">self = &lt;test_activity_resource_entry_v1.ActivityResourceEntryTests testMethod=test_prior_carry_and_one_resource_are_accepted&gt;
+
+    def setUp(self):
+        self.f = block_fixtures.EngineeringBlockTests()
+        self.f.setUp()
+        self.addCleanup(self.f.doCleanups)
+        self.stack = contextlib.ExitStack()
+        self.addCleanup(self.stack.close)
+        self.a = self.f.root
+        self.plan_path = self.a / 'plan_v1.json'
+        self.stack.enter_context(patch.object(preparing, 'W', reach_preparation.WORKSPACE))
+        self.driver_file = self.a / 'toy_driver.json'
+        self.review_file = self.a / 'toy_closed_review.json'
+        self.write(self.driver_file, {
+            'schema': 'mr3-single-ep-runtime-profile-driver-v1', 'passed': True,
+            'started_monotonic_ns': 1_000_000_000, 'ended_monotonic_ns': 11_000_000_000,
+            'actual_parent_wait_seconds': '10', 'engineering_added_seconds': '10',
+            'engineering_used_at_entry_seconds': '90', 'engineering_cumulative_used_seconds': '100',
+            'engineering_remaining_seconds': '900', 'engineering_ceiling_seconds': '1000',
+            'actual_returncode': 0, 'actual_wrapper_waited': True, 'errors': [],
+            'profiling_execution_freeze': FREEZE, 'native_evidence_freeze': FREEZE})
+        self.write(self.review_file, {
+            'schema': 'mr3-v51-independent-closed-metadata-review-v1', 'passed': True,
+            'actual_wrapper_waited': True, 'scope_and_sources_unchanged': True,
+            'all_saved_identities_fresh_gone': True, 'closed_guard_and_child_passed': True,
+            'engineering_cumulative_used_seconds': '100', 'engineering_remaining_seconds': '900',
+            'engineering_added_parent_wait_seconds': '10', 'execution_freeze': FREEZE,
+            'native_evidence_freeze': FREEZE, 'external_scientific_tail_actual_seconds': '0',
+            'pilot_added_seconds': '0', 'validation_added_seconds': '0'})
+        originals = {}
+        for key, path in [('driver_summary', self.driver_file), ('closed_metadata_review', self.review_file)]:
+            row = self.f.spec(path)
+            row['path'] = str(path.relative_to(preparing.W))
+            originals[key] = row
+        self.ledger = {
+            'schema': 'mr3-engineering-closure-ledger-v1', 'passed': True,
+            'engineering_previous_cumulative_seconds': '90', 'engineering_added_seconds': '10',
+            'engineering_cumulative_seconds': '100', 'engineering_remaining_seconds': '900',
+            'engineering_ceiling_seconds': '1000', 'old_failures_and_cumulative_ledger_preserved': True,
+            'scientific_qualification_credit': False, 'execution_freeze': FREEZE,
+            'native_evidence_freeze': FREEZE, 'external_scientific_tail_actual_seconds': '0',
+            'pilot_added_seconds': '0', 'validation_added_seconds': '0',
+            'actual_parent_intervals': [{'started_monotonic_ns': 1_000_000_000,
+                'ended_monotonic_ns': 11_000_000_000, 'actual_seconds': '10'}], **originals}
+        self.write(self.f.ledger, self.ledger)
+        self.f.value['previous_accounting'] = self.f.spec(self.f.ledger)
+        self.f.seal(self.f.value)
+        for module, key, value in [
+                (preparing, 'A', self.a), (preparing, 'RESOURCE', self.f.resource_path),
+                (preparing, 'NORMALIZED_PRIOR', self.f.ledger),
+                (preparing, 'PLAN', self.plan_path), (preparing, 'BINDING', self.a / 'not_created_binding.json'),
+                (preparing, 'PRIOR_ORIGINAL_SHA256', {k: v['sha256'] for k, v in originals.items()}),
+                (preflight, 'A', self.a), (checking, 'ASSETS', self.a),
+                (driver, 'PLAN', self.plan_path), (driver, 'PREFIX', self.a / 'not_created_driver')]:
+            self.stack.enter_context(patch.object(module, key, value))
+        self.scope = {
+            'schema': 'mr3-p2a-v52-native-qualification-scope-v1',
+            'engineering_resource': self.f.spec(self.f.resource_path),
+            'robots_per_environment': 3, 'mandatory_roles': 30, 'matrix_episodes': 12,
+            'minimum_decisions': 16, 'pilot_requested_decisions': 64,
+            'pilot_remaining_decisions': 1870, 'pilot_remaining_wall_seconds': '2905.9547395464029',
+            'final_only_schedule': ['open:401', 'open:402', 'open:403'], 'mapping_target': .95,
+            'acceptance_gates_unchanged': True, 'old_failures_preserved': True,
+            'no_retry_on_required_failure': True, 'p2b_gateway_authorized': False,
+            'prior_native_credit_reused': False, 'seed_rule': preparing.SEED_RULE,
+            'start_graph_rule': preparing.START_RULE, 'reach_geometry_rule': preparing.REACH_GEOMETRY_RULE,
+            'reset_workload_reader_profile': reach_preparation.reset_workload.PROFILE}
+        self.authorization = {
+            'schema': 'mr3-p2a-autonomous-continuation-authorization-v1',
+            'status': 'AUTHORIZED_BY_USER_CONTINUATION',
+            'user_exact_text': '你一直继续执行就好了，直到把P2A完成，不需要问我是否批准',
+            'numeric_user_approval_claimed': False,
+            'engineering_resource': self.f.spec(self.f.resource_path),
+            'acceptance_gates_unchanged': True, 'old_failures_preserved': True,
+            'p2b_gateway_authorized': False}
+        self.write(self.a / 'scope_v1.json', self.scope)
+        self.write(self.a / 'authorization_v1.json', self.authorization)
+&gt;       self.plan = reach_preparation.build_plan(**dict(self.f.kwargs(), plan_path=self.plan_path),
+            engineering_remaining_seconds='40000',
+            reservation_profile=reach_preparation.AUTONOMOUS_RESOURCE_PROFILE,
+            engineering_resource=self.f.spec(self.f.resource_path), seed_rule=preparing.SEED_RULE,
+            start_graph_rule=preparing.START_RULE, reach_geometry_rule=preparing.REACH_GEOMETRY_RULE)
+
+report/assets/20261023_mr3_p2a_v52_qualification/test_activity_resource_entry_v1.py:109: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+mr3_learning/reach_preparation.py:574: in build_plan
+    require(validate_reach_geometry_rule(binding.get("reach_geometry_rule", BINARY_REACH_GEOMETRY_RULE),
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+condition = False, message = 'custody binding reach geometry rule differs'
+
+    def require(condition, message):
+        if not condition:
+&gt;           raise ValueError(message)
+E           ValueError: custody binding reach geometry rule differs
+
+mr3_learning/preparation.py:44: ValueError</failure></testcase><testcase classname="contrib.opengym.examples.wireless-rl.report.assets.20261023_mr3_p2a_v52_qualification.test_activity_resource_entry_v1" name="test_all_four_real_module_help[prepare_plan_v1]" time="0.304" /><testcase classname="contrib.opengym.examples.wireless-rl.report.assets.20261023_mr3_p2a_v52_qualification.test_activity_resource_entry_v1" name="test_all_four_real_module_help[preflight_v1]" time="4.920" /><testcase classname="contrib.opengym.examples.wireless-rl.report.assets.20261023_mr3_p2a_v52_qualification.test_activity_resource_entry_v1" name="test_all_four_real_module_help[plan_check_v1]" time="0.304" /><testcase classname="contrib.opengym.examples.wireless-rl.report.assets.20261023_mr3_p2a_v52_qualification.test_activity_resource_entry_v1" name="test_all_four_real_module_help[execute_chain_v1]" time="0.310" /></testsuite></testsuites>

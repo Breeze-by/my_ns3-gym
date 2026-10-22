@@ -1,0 +1,30 @@
+{
+  "schema": "mr3-p2a-v52-native-qualification-scope-v1",
+  "engineering_resource": {
+    "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v52_qualification/resource_v1.json",
+    "sha256": "8a18fb6dad2b90d56e2670486a15f1c951ea2bdb12dd4dfde0c32aa4ae88f2fa",
+    "bytes": 1083
+  },
+  "robots_per_environment": 3,
+  "mandatory_roles": 30,
+  "matrix_episodes": 12,
+  "minimum_decisions": 16,
+  "pilot_requested_decisions": 64,
+  "pilot_remaining_decisions": 1870,
+  "pilot_remaining_wall_seconds": "2905.9547395464029",
+  "final_only_schedule": [
+    "open:401",
+    "open:402",
+    "open:403"
+  ],
+  "mapping_target": 0.95,
+  "acceptance_gates_unchanged": true,
+  "old_failures_preserved": true,
+  "no_retry_on_required_failure": true,
+  "p2b_gateway_authorized": false,
+  "prior_native_credit_reused": false,
+  "seed_rule": "exact-point-bridge-v2",
+  "start_graph_rule": "point-attachment-3x3-v1",
+  "reach_geometry_rule": "cone-support-v2",
+  "reset_workload_reader_profile": "mr3-reach-reset-outward-cancel-v1"
+}

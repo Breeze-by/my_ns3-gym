@@ -14,6 +14,7 @@ import subprocess
 
 from . import preparation as primitives
 from .reach_audit_projection import project_module
+from . import audit_reach_reset_workload as reset_workload
 from .supervisor import (BINARY_REACH_GEOMETRY_RULE, SUPPORT_REACH_GEOMETRY_RULE,
                          validate_reach_geometry_rule, reach_geometry_rule_from_argv)
 from .supervisor import (seed_rule_from_argv, start_graph_rule_from_argv,
@@ -31,6 +32,8 @@ EXPECTED_ROLES = {name: BASE_ROLES | ({"input", "angular", "physics"}
 CAPS = ("2400", "1200", "6500", "7900")
 NATIVE_CAPS = ("1900", "850", "5500", "6900")
 BOUNDED_RESERVATION_PROFILE = "bounded-original-workload-v1"
+AUTONOMOUS_RESOURCE_PROFILE = "autonomous-engineering-block-v1"
+AUTONOMOUS_RESOURCE_SCHEMA = "mr3-reach-autonomous-engineering-block-v1"
 require, sha, dump, argument = primitives.require, primitives.sha, primitives.dump, primitives.argument
 
 
@@ -75,6 +78,100 @@ def _bounded_reservation(reservation, engineering_remaining_seconds):
     return str(matrix), tuple(stages), tuple(native)
 
 
+
+def _resource_json(spec, workspace):
+    """Read a sealed, repository-relative resource/previous-accounting input."""
+    require(type(spec) is dict and set(spec) == {"path", "sha256", "bytes"},
+            "resource input requires exact path/sha256/bytes")
+    require(type(spec["path"]) is str and spec["path"]
+            and type(spec["sha256"]) is str and re.fullmatch(r"[0-9a-f]{64}", spec["sha256"])
+            and type(spec["bytes"]) is int and spec["bytes"] >= 0, "invalid resource input identity")
+    relative, root = Path(spec["path"]), Path(workspace).resolve()
+    require(not relative.is_absolute() and ".." not in relative.parts
+            and relative.as_posix() == spec["path"], "resource input must be canonical repository-relative")
+    path = (root / relative).resolve()
+    path.relative_to(root)
+    raw = path.read_bytes()
+    require(len(raw) == spec["bytes"] and hashlib.sha256(raw).hexdigest() == spec["sha256"],
+            "sealed resource input SHA/bytes differs: " + spec["path"])
+
+    def pairs(items):
+        result = {}
+        for key, value in items:
+            require(key not in result, "duplicate resource JSON key: " + key)
+            result[key] = value
+        return result
+
+    value = json.loads(raw, object_pairs_hook=pairs,
+        parse_constant=lambda value: (_ for _ in ()).throw(ValueError("nonfinite resource JSON: " + value)))
+    require(type(value) is dict, "resource input must be a JSON object")
+    return value, {relative.as_posix(): spec["sha256"]}
+
+
+def engineering_resource_budget(spec, workspace=WORKSPACE):
+    """New-profile resource arithmetic only; no native/scientific qualification."""
+    value, sources = _resource_json(spec, workspace)
+    require(set(value) == {"schema", "decision_maker", "authority_basis", "numeric_user_approval_claimed",
+        "previous_accounting", "engineering_used_seconds", "engineering_ceiling_seconds",
+        "engineering_remaining_seconds", "matrix_wall_seconds", "stage_wall_seconds",
+        "native_wall_seconds", "close_reserve_seconds", "preflight_wall_seconds",
+        "minimum_wall_seconds", "external_wall_seconds", "total_reservation_seconds"},
+        "autonomous resource fields differ")
+    require(value["schema"] == AUTONOMOUS_RESOURCE_SCHEMA and value["decision_maker"] == "agent"
+            and value["authority_basis"] == "user-autonomous-continuation"
+            and value["numeric_user_approval_claimed"] is False,
+            "autonomous resource decision attribution differs")
+    used_value = value["engineering_used_seconds"]
+    require(type(used_value) in (str, int, float, Decimal), "engineering used must be finite nonnegative seconds")
+    try:
+        used = Decimal(str(used_value))
+    except InvalidOperation as error:
+        raise ValueError("engineering used must be finite nonnegative seconds") from error
+    require(used.is_finite() and used >= 0, "engineering used must be finite nonnegative seconds")
+    ceiling = _positive_wall_seconds(value["engineering_ceiling_seconds"], "engineering ceiling")
+    remaining = _positive_wall_seconds(value["engineering_remaining_seconds"], "engineering remaining")
+    require(used + remaining == ceiling, "autonomous cumulative engineering arithmetic differs")
+    prior, prior_sources = _resource_json(value["previous_accounting"], workspace)
+    require(prior.get("passed") is True
+            and type(prior.get("engineering_cumulative_seconds")) in (str, int, float, Decimal),
+            "previous closed accounting lacks its actual cumulative engineering total")
+    try:
+        prior_used = Decimal(str(prior["engineering_cumulative_seconds"]))
+    except InvalidOperation as error:
+        raise ValueError("previous cumulative engineering total is invalid") from error
+    require(prior_used.is_finite() and prior_used == used, "engineering used differs from previous closed accounting")
+    for path, expected in prior_sources.items():
+        require(path not in sources, "resource and previous accounting must be distinct files")
+        sources[path] = expected
+    matrix = _positive_wall_seconds(value["matrix_wall_seconds"], "matrix reservation")
+    preflight = _positive_wall_seconds(value["preflight_wall_seconds"], "preflight reservation")
+    minimum = _positive_wall_seconds(value["minimum_wall_seconds"], "minimum reservation")
+    external = _positive_wall_seconds(value["external_wall_seconds"], "external reservation")
+    close = _positive_wall_seconds(value["close_reserve_seconds"], "close reservation")
+    total = _positive_wall_seconds(value["total_reservation_seconds"], "total reservation")
+    require(minimum == 1800 and close == 120, "autonomous profile preserves minimum1800/close120")
+    require(total == matrix + preflight + minimum + external and total <= remaining,
+            "complete engineering reservation exceeds sealed actual balance")
+    stage_values, native_values = {}, {}
+    for key in ("stage_wall_seconds", "native_wall_seconds"):
+        require(type(value[key]) is dict and set(value[key]) == set(primitives.STAGES),
+                "autonomous reservation requires exactly all four stages: " + key)
+    for name in primitives.STAGES:
+        stage = _positive_wall_seconds(value["stage_wall_seconds"][name], name + " stage reservation")
+        native = _positive_wall_seconds(value["native_wall_seconds"][name], name + " native reservation")
+        require(close < native < stage, "autonomous native reservation must retain close/consumer budget: " + name)
+        stage_values[name], native_values[name] = str(stage), str(native)
+    require(sum(map(Decimal, stage_values.values())) <= matrix, "autonomous stage allocations exceed matrix")
+    return {"budget": {"reservation_profile": AUTONOMOUS_RESOURCE_PROFILE,
+        "matrix_wall_seconds": str(matrix), "engineering_used_at_plan_entry_seconds": str(used),
+        "engineering_cumulative_ceiling_seconds": str(ceiling), "engineering_remaining_seconds": str(remaining),
+        "preflight_wall_reservation_seconds": str(preflight), "minimum_wall_reservation_seconds": str(minimum),
+        "external_final_and_accounting_reservation_seconds": str(external),
+        "total_engineering_reservation_at_entry_seconds": str(total),
+        "engineering_remaining_basis": "Agent-selected prospective bounded block under user autonomous continuation; previous cumulative fees preserved; no numeric user approval claimed"},
+        "stage_wall_seconds": stage_values, "native_wall_seconds": native_values, "source_bindings": sources}
+
+
 def source_inventory(root=WORKSPACE):
     """All tracked component execution sources plus all learner modules.
 
@@ -101,6 +198,14 @@ def validate_plan(plan, workspace=WORKSPACE):
     require(plan.get("schema") == SCHEMA and plan.get("safety_contract") == CONTRACT
             and plan.get("readiness") == {"ready": True, "pending_bindings": []},
             "reach plan is not explicitly sealed")
+    require(type(plan.get("reset_workload_reader_profile")) is str
+            and plan["reset_workload_reader_profile"] == reset_workload.PROFILE,
+            "Reach reset workload reader profile is missing or unknown")
+    require(reset_workload.SOURCE_PATHS <= plan["source_bindings"].keys(),
+            "Reach reset workload reader source inventory incomplete")
+    require(all(plan["source_bindings"][str(path)] == expected
+                for path, expected in reset_workload.SOURCES.values()),
+            "immutable reset workload reader source pin differs")
     require(plan.get("robots_per_environment") == 3 and plan.get("optimizer_steps") == 0
             and plan.get("gpu_calls") == 0 and plan.get("pilot_budget_changed") is False
             and plan.get("normal_spawn") is True and plan.get("plant_stimulus_enabled") is False
@@ -110,7 +215,24 @@ def validate_plan(plan, workspace=WORKSPACE):
     require([s["stage"] for s in plan["stages"]] == list(primitives.STAGES), "stage order differs")
     budget = plan["budget"]
     bounded = "reservation_profile" in budget
-    if bounded:
+    autonomous = type(budget.get("reservation_profile")) is str and budget["reservation_profile"] == AUTONOMOUS_RESOURCE_PROFILE
+    resource = None
+    if autonomous:
+        resource = engineering_resource_budget(plan.get("engineering_resource"), workspace)
+        keys = set(resource["budget"]) | {"borrow_unused_prior_stage_reservations"}
+        admitted_keys = keys | {"full_minimum_reservation_available_at_plan_entry"}
+        require(set(budget) in (keys, admitted_keys)
+                and ("full_minimum_reservation_available_at_plan_entry" not in budget
+                     or budget["full_minimum_reservation_available_at_plan_entry"] is True),
+                "autonomous plan budget has unknown or conflicting approval fields")
+        require(all(budget.get(key) == value for key, value in resource["budget"].items()),
+                "plan budget differs from sealed autonomous resource")
+        require(all(plan["source_bindings"].get(path) == expected
+                    for path, expected in resource["source_bindings"].items()),
+                "resource/previous accounting input is not source-bound")
+    elif bounded:
+        require("engineering_resource" not in plan,
+                "sealed resource input requires its explicit autonomous profile")
         require(type(budget["reservation_profile"]) is str
                 and budget["reservation_profile"] == BOUNDED_RESERVATION_PROFILE,
                 "unknown reservation profile")
@@ -119,6 +241,8 @@ def validate_plan(plan, workspace=WORKSPACE):
             "native_wall_seconds": {stage["stage"]: argument(stage["native"]["argv"], "--work-wall-seconds")
                                     for stage in plan["stages"]}}, budget["engineering_remaining_seconds"])
     else:
+        require("engineering_resource" not in plan,
+                "sealed resource input requires its explicit autonomous profile")
         require(_positive_wall_seconds(budget["matrix_wall_seconds"], "matrix reservation") == Decimal("18000")
                 and _positive_wall_seconds(budget["engineering_remaining_seconds"], "engineering remaining") >= 18000,
                 "matrix budget/forward allocation differs")
@@ -138,7 +262,11 @@ def validate_plan(plan, workspace=WORKSPACE):
     outputs = [plan["output_directory"]]
     for i, stage in enumerate(plan["stages"]):
         name, jobs = stage["stage"], stage["audits"]
-        if not bounded:
+        if autonomous:
+            require(stage["wall_seconds"] == resource["stage_wall_seconds"][name]
+                    and argument(stage["native"]["argv"], "--work-wall-seconds") == resource["native_wall_seconds"][name],
+                    "stage/native allocation differs from sealed autonomous resource: " + name)
+        elif not bounded:
             require(stage["wall_seconds"] == CAPS[i], "approved base stage allocation differs")
         selected = primitives.roles(stage)
         require(len(selected) == len(set(selected)) and set(selected) == EXPECTED_ROLES[name],
@@ -238,6 +366,21 @@ def validate_plan(plan, workspace=WORKSPACE):
                     expected_inputs = [f"input_{number:03d}" for number in range(1, episodes + 1)]
                     require(job["id"] == "input" and job["members"] == job["depends_on"] == expected_inputs,
                             "input aggregate omitted an episode")
+                elif name == "reset" and job["id"] == "physical_per_episode":
+                    original = Path(workspace) / WIRELESS_RELATIVE / "report/assets/20261017_mr3_p2a0_v3/independent/mr3_independent_physics_review.py"
+                    require(job.get("role") is None and job.get("required") is False
+                            and job.get("depends_on") == []
+                            and job["argv"] == ["/usr/bin/python3", str(original), str(run),
+                                                "--output", job["output"]],
+                            "reset per-episode physical report binding differs")
+                elif name == "reset" and job.get("role") in ("angular", "physics"):
+                    role = job["role"]
+                    report = by_id["physical_per_episode"]["output"] if role == "physics" else None
+                    require(job["id"] == role and job.get("required") is True
+                            and job.get("depends_on") == (["physical_per_episode"] if role == "physics" else [])
+                            and job["argv"] == reset_workload.command_argv(
+                                role, run, "{freeze}", job["output"], report),
+                            "Reach reset workload reader argv/dependency differs")
                 else:
                     role = "input" if job["id"].startswith("input_") else job.get("role")
                     relative = {"input": "20261017_mr3_p2a0_v4/independent/mr3_p2a0_v4_independent_input_episode_review_v1.py",
@@ -300,17 +443,33 @@ def source_check(plan, plan_path, freeze, root=WORKSPACE, require_clean=True):
 
 
 def build_plan(*, plan_path, seed_rule="legacy", start_graph_rule="original-seed-cell",
-               reach_geometry_rule=BINARY_REACH_GEOMETRY_RULE, reservation=None, **kwargs):
+               reach_geometry_rule=BINARY_REACH_GEOMETRY_RULE, reservation=None,
+               reservation_profile=None, engineering_resource=None, **kwargs):
     validate_seed_rule(seed_rule)
     validate_start_graph_rule(start_graph_rule, seed_rule=seed_rule)
     validate_reach_geometry_rule(reach_geometry_rule, safety_contract=CONTRACT)
     matrix_seconds, stage_seconds, native_seconds = "18000", CAPS, NATIVE_CAPS
-    if reservation is not None:
-        matrix_seconds, stage_seconds, native_seconds = _bounded_reservation(
-            reservation, kwargs["engineering_remaining_seconds"])
+    resource = None
+    if reservation_profile is not None:
+        require(type(reservation_profile) is str and reservation_profile == AUTONOMOUS_RESOURCE_PROFILE,
+                "unknown explicit resource profile")
+        require(reservation is None, "autonomous profile has one sealed resource input, not legacy reservation")
+        resource = engineering_resource_budget(engineering_resource, kwargs.get("workspace", WORKSPACE))
+        require(_positive_wall_seconds(kwargs["engineering_remaining_seconds"], "engineering remaining")
+                == Decimal(resource["budget"]["engineering_remaining_seconds"]),
+                "builder balance differs from sealed autonomous resource")
+        matrix_seconds = resource["budget"]["matrix_wall_seconds"]
+        stage_seconds = tuple(resource["stage_wall_seconds"][name] for name in primitives.STAGES)
+        native_seconds = tuple(resource["native_wall_seconds"][name] for name in primitives.STAGES)
+    else:
+        require(engineering_resource is None, "sealed resource input requires its explicit profile")
+        if reservation is not None:
+            matrix_seconds, stage_seconds, native_seconds = _bounded_reservation(
+                reservation, kwargs["engineering_remaining_seconds"])
     plan = primitives.build_plan(**kwargs, information_implementation="admitted_index_three_keys_v1",
                                  nav2_parameter_profile="gentle_turn_v1")
     plan.update(schema=SCHEMA, safety_contract=CONTRACT,
+                reset_workload_reader_profile=reset_workload.PROFILE,
                 custody_binding=str(Path(kwargs["custody_binding"]).resolve()),
                 readiness={"ready": True, "pending_bindings": []},
                 role_registry={"mandatory_roles": sum(map(len, EXPECTED_ROLES.values())),
@@ -326,7 +485,11 @@ def build_plan(*, plan_path, seed_rule="legacy", start_graph_rule="original-seed
     plan["preflight"]["schema"] = "mr3-reach-preflight-v1"
     plan["budget"].update(matrix_wall_seconds=matrix_seconds, borrow_unused_prior_stage_reservations=True,
         engineering_remaining_basis="Approved 52000 cumulative engineering ceiling; all native/read-only/closure tails charged")
-    if reservation is not None:
+    if resource is not None:
+        plan["engineering_resource"] = dict(engineering_resource)
+        plan["budget"].update(resource["budget"])
+        plan["source_bindings"].update(resource["source_bindings"])
+    elif reservation is not None:
         plan["budget"]["reservation_profile"] = BOUNDED_RESERVATION_PROFILE
     for i, stage in enumerate(plan["stages"]):
         name, run = stage["stage"], Path(stage["run_directory"])
@@ -350,6 +513,13 @@ def build_plan(*, plan_path, seed_rule="legacy", start_graph_rule="original-seed
             for job in retained:
                 if job.get("kind") != "aggregate" and (job.get("role") == "input" or job["id"].startswith("input_")):
                     job["argv"] = ["/usr/bin/python3", "-m", "mr3_learning.audit_seed_inputs", *job["argv"][2:]]
+        if name == "reset":
+            per_episode = next(job["output"] for job in retained if job["id"] == "physical_per_episode")
+            for job in retained:
+                if job.get("role") in ("angular", "physics"):
+                    report = per_episode if job["role"] == "physics" else None
+                    job["argv"] = reset_workload.command_argv(
+                        job["role"], run, "{freeze}", job["output"], report)
         stage["audits"] = retained
 
         def add(job_id, module=None, *, role=None, depends=(), extra=(), **fields):
@@ -388,7 +558,7 @@ def build_plan(*, plan_path, seed_rule="legacy", start_graph_rule="original-seed
             closure.append("--require-parameters")
         add("closure", "native_custody_reach", role="closure", depends=("fifo_manifest",), extra=closure)
     root = kwargs.get("workspace", WORKSPACE)
-    for path in source_inventory(root):
+    for path in source_inventory(root) | reset_workload.SOURCE_PATHS:
         plan["source_bindings"][path] = sha(Path(root) / path)
     if seed_rule != "legacy":
         for name in ("mr3_observation.py", "mr3_seed_certificate.py", "mr3_reach_geometry.py", "mr3_adapter.py"):

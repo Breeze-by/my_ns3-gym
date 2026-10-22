@@ -1,0 +1,87 @@
+{
+  "schema": "mr3-v52-closed-cpu-preparation-review-v1",
+  "passed": true,
+  "scope": "metadata arithmetic/source-stability/console and saved PID identity closure only; no scientific replay",
+  "waits": [
+    {
+      "canonical_wait": "checks/admission_cpu_v1/actual_wait.json",
+      "sha256": "626b27014354de385c26a1b9e0c2191cd1f0753ac8d0debd9f6aaf862bc8898f",
+      "passed": false,
+      "actual_returncode": 1,
+      "actual_seconds": "17.01009387",
+      "sources": 291
+    },
+    {
+      "canonical_wait": "checks/admission_cpu_v2/actual_wait.json",
+      "sha256": "0e5183952a9ccbcccce9f5af3c35a8046f60eb40f2e77b30951f4012a7a05ca5",
+      "passed": true,
+      "actual_returncode": 0,
+      "actual_seconds": "16.922094235",
+      "sources": 292
+    },
+    {
+      "canonical_wait": "checks/current_readiness_cpu_v1/actual_wait.json",
+      "sha256": "b846fdef4b824d327079bed8b0ec96d04609bdd73cca4b84b8bb297f3de4550f",
+      "passed": true,
+      "actual_returncode": 0,
+      "actual_seconds": "7.385659528",
+      "sources": 107
+    },
+    {
+      "canonical_wait": "checks/fresh_preparation_cpu_v1/actual_wait.json",
+      "sha256": "4e014f07e16c1fdfa729bc97b08caf671b4bb0960721f70a0d23d343fedfd801",
+      "passed": true,
+      "actual_returncode": 0,
+      "actual_seconds": "118.32906101",
+      "sources": 282
+    },
+    {
+      "canonical_wait": "checks/integration_initial_cpu/actual_wait.json",
+      "sha256": "279d172839e662ed3489451e42467bf75c3d23b7fc4f82f07461f32715239caf",
+      "passed": true,
+      "actual_returncode": 0,
+      "actual_seconds": "58.214042114",
+      "sources": 9
+    },
+    {
+      "canonical_wait": "checks/plan_check_cpu_v1/actual_wait.json",
+      "sha256": "b41d5365a88c2ed2a438548dbbf7894b99c60ac09105a245cedd305b7f9e2e4a",
+      "passed": true,
+      "actual_returncode": 0,
+      "actual_seconds": "0.430606694",
+      "sources": 934
+    },
+    {
+      "canonical_wait": "checks/prepare_plan_cpu_v1/actual_wait.json",
+      "sha256": "469cd20109f96d7a73ede55f3d75a33b8a54adbce64c2d3f23fee2b0c4ade973",
+      "passed": true,
+      "actual_returncode": 0,
+      "actual_seconds": "3.775742432",
+      "sources": 85
+    },
+    {
+      "canonical_wait": "checks/reset_entry_help_cpu/actual_wait.json",
+      "sha256": "50371582e63b68248e9603b4c936145b2fab8239aa0e1b11999d2aac4ba26b59",
+      "passed": true,
+      "actual_returncode": 0,
+      "actual_seconds": "0.11901566",
+      "sources": 3
+    },
+    {
+      "canonical_wait": "checks/runtime_candidate_cpu/actual_wait.json",
+      "sha256": "d617688093a38e0e845cdd6cbfe645a546dd73686607d39bb0dc41dfb0731fd5",
+      "passed": true,
+      "actual_returncode": 0,
+      "actual_seconds": "19.272134075",
+      "sources": 3
+    }
+  ],
+  "preserved_failed_waits": [
+    "checks/admission_cpu_v1/actual_wait.json"
+  ],
+  "all_saved_pairs_fresh_gone": true,
+  "saved_pair_count": 18,
+  "zombie_counts_as_present": true,
+  "engineering_increment_seconds": "0",
+  "world_model_or_qualification_credit": false
+}

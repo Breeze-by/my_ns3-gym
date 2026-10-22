@@ -401,10 +401,10 @@ class Inputs:
         require(before == self.stat(path), "artifact changed during read")
         decoded = gzip.decompress(raw) if path.suffix == ".gz" else raw
         def unique(items):
-            result = {}
-            for key, value in items:
-                require(key not in result, "duplicate JSON member")
-                result[key] = value
+            # JSON object keys are already builtin strings and all values have
+            # been decoded before this hook. Keep the original generic error.
+            result = dict(items)
+            require(len(result) == len(items), "duplicate JSON member")
             return result
         def parse(raw):
             value = json.loads(raw, object_pairs_hook=unique,
@@ -769,6 +769,12 @@ def replay_robot(robot, stream, native, epoch, begin, end):
                 require(receipt[1]["target"]["linear_x"] != 0, "first N cites a zero application")
         prior_intent = intent
 
+    # The complete declaration loop above has already validated every target.
+    # Original event lookup selected related[-1] over this complete list, even
+    # when several declarations cite the same sequence. Preserve that order.
+    last_intent_for_target = {intent["target"]["decision_sequence"]: intent
+                              for _, intent in declarations}
+
     for sequence,pairs in native["actuations"].items():
         p=pairs[0]
         if begin <= p["sim_time_ns"] <= end and p["cmd_seq"]:
@@ -792,8 +798,7 @@ def replay_robot(robot, stream, native, epoch, begin, end):
             target = pubs.get(row["target_decision_sequence"])
             require(target is not None and target["clock_ns"] == row["target_clock_ns"],
                     "native stored target lacks real owner publication")
-            related = [v for _, v in declarations if v["target"]["decision_sequence"] == target["decision_sequence"]]
-            intent = related[-1]
+            intent = last_intent_for_target[target["decision_sequence"]]
             if intent["role"] == "D" and canonical(intent["anchor"]) != last_anchor_id:
                 anchor = intent["anchor"]; last_anchor_id = canonical(anchor)
                 signs, actual_motion, first_motion, debt = (), False, None, None
@@ -877,6 +882,33 @@ def replay_robot(robot, stream, native, epoch, begin, end):
     return {"anchors": len(anchor_history), "cumulative_path_diagnostic_m": cumulative,
             "raw_sources": len(native["odometry"]), "actual_updates": len(native["actuations"]),
             "open_terminal_promise": debt is not None}
+
+
+def _phase_consumptions(consumed, component, request_id, indices):
+    """Per-call index only after the original component is actually requested.
+
+    Preserve all duplicates and their original order. Non-string IDs keep the
+    original equality scan, including list/dict IDs and bool/int equality. A
+    malformed ACK in an unused component is never inspected ahead of its gate.
+    """
+    if type(request_id) is not str:
+        return [row for row in consumed if row.get("component") == component
+                and row["ack"]["request_id"] == request_id]
+    if component not in indices:
+        groups, string_only = {}, True
+        for row in consumed:
+            if row.get("component") == component:
+                value = row["ack"]["request_id"]
+                if type(value) is str:
+                    groups.setdefault(value, []).append(row)
+                else:
+                    string_only = False
+        indices[component] = groups if string_only else None
+    groups = indices[component]
+    if groups is None:
+        return [row for row in consumed if row.get("component") == component
+                and row["ack"]["request_id"] == request_id]
+    return groups.get(request_id, [])
 
 
 def _audit_records(metadata, motion, drivers, odometry_rows, physics, drive_worker,
@@ -1029,6 +1061,7 @@ def _audit_records(metadata, motion, drivers, odometry_rows, physics, drive_work
 
     advances = {p["request_id"]:p for p in drive_worker if p.get("kind") == "advance_permitted"}
     consumed = [p for p in control_worker if p.get("kind") == "ack_consumed"]
+    phase_indices = {}  # Private to this immutable replay, never shared across roles/calls.
     for physical in advancing:
         require(physical["request_id"] in advances, "physical advance lacked its actual worker storage barrier")
         permitted = advances[physical["request_id"]]
@@ -1061,8 +1094,8 @@ def _audit_records(metadata, motion, drivers, odometry_rows, physics, drive_work
                     "worker substituted an unreceived storage ACK")
         request_id = permitted["control_request_id"]
         required_components = ("motion",) if expected.get("phase_kind") == "stop" else ("state","peer","motion")
-        phases = {component:[v for v in consumed if v.get("component") == component
-                            and v["ack"]["request_id"] == request_id] for component in required_components}
+        phases = {component:_phase_consumptions(consumed, component, request_id, phase_indices)
+                  for component in required_components}
         require(all(len(v)==1 for v in phases.values()), "actual state/peer/motion phase consumption missing")
         for component in required_components:
             ack=phases[component][0]["ack"]

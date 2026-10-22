@@ -11,7 +11,13 @@ import uuid
 
 
 def project_module(filename, expected_sha256, replacements):
-    path = Path(__file__).with_name(filename)
+    return project_file(Path(__file__).with_name(filename), expected_sha256, replacements)
+
+
+def project_file(path, expected_sha256, replacements):
+    """Internal fixed-source entry; callers must bind the entire source SHA."""
+    path = Path(path)
+    filename = path.name
     original = path.read_bytes()
     digest = lambda raw: hashlib.sha256(raw).hexdigest()
     if digest(original) != expected_sha256:

@@ -1,0 +1,44 @@
+{
+  "schema": "mr3-resource-profile-candidate-cpu-review-v2",
+  "passed": true,
+  "cpu_fixture_tests": 10,
+  "actual_child_wait_seconds": "16.095149881",
+  "engineering_added_seconds": "0",
+  "source_unchanged": true,
+  "bound_source_count": 150,
+  "actual_wait": "/tmp/mr3_v51_resource_profile_patch_v1/checks/resource_cpu_v2/actual_wait.json",
+  "console_sha256": "79ba71b98b78e23ad301db6ee4c0510b67a51bafeb6941b8cceec746422dcdb7",
+  "saved_identities_fresh_gone": [
+    {
+      "identity": {
+        "pid": 4164598,
+        "parent": 4164597,
+        "group": 4164596,
+        "session": 4164596,
+        "start_ticks": 445258071,
+        "state": "R"
+      },
+      "same_identity_present": false,
+      "observed_state": null
+    },
+    {
+      "identity": {
+        "pid": 4164601,
+        "parent": 4164598,
+        "group": 4164596,
+        "session": 4164596,
+        "start_ticks": 445258096,
+        "state": "R"
+      },
+      "same_identity_present": false,
+      "observed_state": null
+    }
+  ],
+  "prior_v1_result_preserved": true,
+  "fixture_amounts_only": true,
+  "test_scope_does_not_choose_or_activate_real_ceiling": true,
+  "latest_candidate": "candidate",
+  "latest_incremental_patch": "/tmp/mr3_v51_resource_profile_patch_v1/resource_profile_increment_v3.patch",
+  "v3_additions": "Strict autonomous budget keys and explicit profile required for engineering_resource; positive premodel gate/qualification/PPO entry and old behavior checks remain.",
+  "scientific_qualification_credit": false
+}

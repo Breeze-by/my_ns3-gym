@@ -1,5 +1,9 @@
 # 当前三机器人基线与MR3适配启动命令
 
+## V52 独立 reset reader 登记与完整资格准备
+
+Reach 的 launch/worker/机体配置保持。新的 `mr3-reach-reset-outward-cancel-v1` 是资格审计工作负载登记，固定原 V17 读者及未改的 V3/V4 物理数学；不是运动/SLAM 模式开关。新完整同冻结资格及学习链使用独占 V52 plan，旧活动命令与原件不可重试或覆盖。准确 CPU/新资格入口、预算和当前尚未执行状态见[V52报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261023_mr3_p2a_v52_qualification.md)。P2A仍未完成，默认baseline保持。
+
 ## reach 环境自动启动协议（V49）
 
 当前由 Supervisor 管理的原生 `mr3-reach-v1` reset 自动使用 `received-input-pause-drain-v1`，没有新增 CLI/launch 开关。worker 先实际收到 monitor-ready、有效本 epoch 的 initial-input ACK 和被动 recorder-ready，再启动 step helper、取得真实暂停回执并对齐实际时钟。暂停后先通过原拓扑、三方全零 takeover 和三机真实 storage ACK；既有20ms全零 bootstrap 在新边界完成严格 state→peer→motion commit、ready status 和 storage 屏障后，再等待实际四项 ready 同时成立，最后才进入原 snapshot/release 和 evaluator 屏障。初始 snapshot 前的 motion 输出必须全零。单独 ROS launch 不执行 Supervisor/worker 的私有 reset 握手。

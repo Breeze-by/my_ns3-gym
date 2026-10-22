@@ -1,0 +1,467 @@
+diff --git a/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_preparation.py b/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_preparation.py
+--- a/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_preparation.py
++++ b/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_preparation.py
+@@ -32,6 +32,8 @@
+ CAPS = ("2400", "1200", "6500", "7900")
+ NATIVE_CAPS = ("1900", "850", "5500", "6900")
+ BOUNDED_RESERVATION_PROFILE = "bounded-original-workload-v1"
++AUTONOMOUS_RESOURCE_PROFILE = "autonomous-engineering-block-v1"
++AUTONOMOUS_RESOURCE_SCHEMA = "mr3-reach-autonomous-engineering-block-v1"
+ require, sha, dump, argument = primitives.require, primitives.sha, primitives.dump, primitives.argument
+ 
+ 
+@@ -74,6 +76,100 @@
+         native.append(str(work))
+     require(sum(map(Decimal, stages)) <= matrix, "bounded stage allocations exceed matrix reservation")
+     return str(matrix), tuple(stages), tuple(native)
++
++
++
++def _resource_json(spec, workspace):
++    """Read a sealed, repository-relative resource/previous-accounting input."""
++    require(type(spec) is dict and set(spec) == {"path", "sha256", "bytes"},
++            "resource input requires exact path/sha256/bytes")
++    require(type(spec["path"]) is str and spec["path"]
++            and type(spec["sha256"]) is str and re.fullmatch(r"[0-9a-f]{64}", spec["sha256"])
++            and type(spec["bytes"]) is int and spec["bytes"] >= 0, "invalid resource input identity")
++    relative, root = Path(spec["path"]), Path(workspace).resolve()
++    require(not relative.is_absolute() and ".." not in relative.parts
++            and relative.as_posix() == spec["path"], "resource input must be canonical repository-relative")
++    path = (root / relative).resolve()
++    path.relative_to(root)
++    raw = path.read_bytes()
++    require(len(raw) == spec["bytes"] and hashlib.sha256(raw).hexdigest() == spec["sha256"],
++            "sealed resource input SHA/bytes differs: " + spec["path"])
++
++    def pairs(items):
++        result = {}
++        for key, value in items:
++            require(key not in result, "duplicate resource JSON key: " + key)
++            result[key] = value
++        return result
++
++    value = json.loads(raw, object_pairs_hook=pairs,
++        parse_constant=lambda value: (_ for _ in ()).throw(ValueError("nonfinite resource JSON: " + value)))
++    require(type(value) is dict, "resource input must be a JSON object")
++    return value, {relative.as_posix(): spec["sha256"]}
++
++
++def engineering_resource_budget(spec, workspace=WORKSPACE):
++    """New-profile resource arithmetic only; no native/scientific qualification."""
++    value, sources = _resource_json(spec, workspace)
++    require(set(value) == {"schema", "decision_maker", "authority_basis", "numeric_user_approval_claimed",
++        "previous_accounting", "engineering_used_seconds", "engineering_ceiling_seconds",
++        "engineering_remaining_seconds", "matrix_wall_seconds", "stage_wall_seconds",
++        "native_wall_seconds", "close_reserve_seconds", "preflight_wall_seconds",
++        "minimum_wall_seconds", "external_wall_seconds", "total_reservation_seconds"},
++        "autonomous resource fields differ")
++    require(value["schema"] == AUTONOMOUS_RESOURCE_SCHEMA and value["decision_maker"] == "agent"
++            and value["authority_basis"] == "user-autonomous-continuation"
++            and value["numeric_user_approval_claimed"] is False,
++            "autonomous resource decision attribution differs")
++    used_value = value["engineering_used_seconds"]
++    require(type(used_value) in (str, int, float, Decimal), "engineering used must be finite nonnegative seconds")
++    try:
++        used = Decimal(str(used_value))
++    except InvalidOperation as error:
++        raise ValueError("engineering used must be finite nonnegative seconds") from error
++    require(used.is_finite() and used >= 0, "engineering used must be finite nonnegative seconds")
++    ceiling = _positive_wall_seconds(value["engineering_ceiling_seconds"], "engineering ceiling")
++    remaining = _positive_wall_seconds(value["engineering_remaining_seconds"], "engineering remaining")
++    require(used + remaining == ceiling, "autonomous cumulative engineering arithmetic differs")
++    prior, prior_sources = _resource_json(value["previous_accounting"], workspace)
++    require(prior.get("passed") is True
++            and type(prior.get("engineering_cumulative_seconds")) in (str, int, float, Decimal),
++            "previous closed accounting lacks its actual cumulative engineering total")
++    try:
++        prior_used = Decimal(str(prior["engineering_cumulative_seconds"]))
++    except InvalidOperation as error:
++        raise ValueError("previous cumulative engineering total is invalid") from error
++    require(prior_used.is_finite() and prior_used == used, "engineering used differs from previous closed accounting")
++    for path, expected in prior_sources.items():
++        require(path not in sources, "resource and previous accounting must be distinct files")
++        sources[path] = expected
++    matrix = _positive_wall_seconds(value["matrix_wall_seconds"], "matrix reservation")
++    preflight = _positive_wall_seconds(value["preflight_wall_seconds"], "preflight reservation")
++    minimum = _positive_wall_seconds(value["minimum_wall_seconds"], "minimum reservation")
++    external = _positive_wall_seconds(value["external_wall_seconds"], "external reservation")
++    close = _positive_wall_seconds(value["close_reserve_seconds"], "close reservation")
++    total = _positive_wall_seconds(value["total_reservation_seconds"], "total reservation")
++    require(minimum == 1800 and close == 120, "autonomous profile preserves minimum1800/close120")
++    require(total == matrix + preflight + minimum + external and total <= remaining,
++            "complete engineering reservation exceeds sealed actual balance")
++    stage_values, native_values = {}, {}
++    for key in ("stage_wall_seconds", "native_wall_seconds"):
++        require(type(value[key]) is dict and set(value[key]) == set(primitives.STAGES),
++                "autonomous reservation requires exactly all four stages: " + key)
++    for name in primitives.STAGES:
++        stage = _positive_wall_seconds(value["stage_wall_seconds"][name], name + " stage reservation")
++        native = _positive_wall_seconds(value["native_wall_seconds"][name], name + " native reservation")
++        require(close < native < stage, "autonomous native reservation must retain close/consumer budget: " + name)
++        stage_values[name], native_values[name] = str(stage), str(native)
++    require(sum(map(Decimal, stage_values.values())) <= matrix, "autonomous stage allocations exceed matrix")
++    return {"budget": {"reservation_profile": AUTONOMOUS_RESOURCE_PROFILE,
++        "matrix_wall_seconds": str(matrix), "engineering_used_at_plan_entry_seconds": str(used),
++        "engineering_cumulative_ceiling_seconds": str(ceiling), "engineering_remaining_seconds": str(remaining),
++        "preflight_wall_reservation_seconds": str(preflight), "minimum_wall_reservation_seconds": str(minimum),
++        "external_final_and_accounting_reservation_seconds": str(external),
++        "total_engineering_reservation_at_entry_seconds": str(total),
++        "engineering_remaining_basis": "Agent-selected prospective bounded block under user autonomous continuation; previous cumulative fees preserved; no numeric user approval claimed"},
++        "stage_wall_seconds": stage_values, "native_wall_seconds": native_values, "source_bindings": sources}
+ 
+ 
+ def source_inventory(root=WORKSPACE):
+@@ -119,7 +215,16 @@
+     require([s["stage"] for s in plan["stages"]] == list(primitives.STAGES), "stage order differs")
+     budget = plan["budget"]
+     bounded = "reservation_profile" in budget
+-    if bounded:
++    autonomous = type(budget.get("reservation_profile")) is str and budget["reservation_profile"] == AUTONOMOUS_RESOURCE_PROFILE
++    resource = None
++    if autonomous:
++        resource = engineering_resource_budget(plan.get("engineering_resource"), workspace)
++        require(all(budget.get(key) == value for key, value in resource["budget"].items()),
++                "plan budget differs from sealed autonomous resource")
++        require(all(plan["source_bindings"].get(path) == expected
++                    for path, expected in resource["source_bindings"].items()),
++                "resource/previous accounting input is not source-bound")
++    elif bounded:
+         require(type(budget["reservation_profile"]) is str
+                 and budget["reservation_profile"] == BOUNDED_RESERVATION_PROFILE,
+                 "unknown reservation profile")
+@@ -147,7 +252,11 @@
+     outputs = [plan["output_directory"]]
+     for i, stage in enumerate(plan["stages"]):
+         name, jobs = stage["stage"], stage["audits"]
+-        if not bounded:
++        if autonomous:
++            require(stage["wall_seconds"] == resource["stage_wall_seconds"][name]
++                    and argument(stage["native"]["argv"], "--work-wall-seconds") == resource["native_wall_seconds"][name],
++                    "stage/native allocation differs from sealed autonomous resource: " + name)
++        elif not bounded:
+             require(stage["wall_seconds"] == CAPS[i], "approved base stage allocation differs")
+         selected = primitives.roles(stage)
+         require(len(selected) == len(set(selected)) and set(selected) == EXPECTED_ROLES[name],
+@@ -324,14 +433,29 @@
+ 
+ 
+ def build_plan(*, plan_path, seed_rule="legacy", start_graph_rule="original-seed-cell",
+-               reach_geometry_rule=BINARY_REACH_GEOMETRY_RULE, reservation=None, **kwargs):
++               reach_geometry_rule=BINARY_REACH_GEOMETRY_RULE, reservation=None,
++               reservation_profile=None, engineering_resource=None, **kwargs):
+     validate_seed_rule(seed_rule)
+     validate_start_graph_rule(start_graph_rule, seed_rule=seed_rule)
+     validate_reach_geometry_rule(reach_geometry_rule, safety_contract=CONTRACT)
+     matrix_seconds, stage_seconds, native_seconds = "18000", CAPS, NATIVE_CAPS
+-    if reservation is not None:
+-        matrix_seconds, stage_seconds, native_seconds = _bounded_reservation(
+-            reservation, kwargs["engineering_remaining_seconds"])
++    resource = None
++    if reservation_profile is not None:
++        require(type(reservation_profile) is str and reservation_profile == AUTONOMOUS_RESOURCE_PROFILE,
++                "unknown explicit resource profile")
++        require(reservation is None, "autonomous profile has one sealed resource input, not legacy reservation")
++        resource = engineering_resource_budget(engineering_resource, kwargs.get("workspace", WORKSPACE))
++        require(_positive_wall_seconds(kwargs["engineering_remaining_seconds"], "engineering remaining")
++                == Decimal(resource["budget"]["engineering_remaining_seconds"]),
++                "builder balance differs from sealed autonomous resource")
++        matrix_seconds = resource["budget"]["matrix_wall_seconds"]
++        stage_seconds = tuple(resource["stage_wall_seconds"][name] for name in primitives.STAGES)
++        native_seconds = tuple(resource["native_wall_seconds"][name] for name in primitives.STAGES)
++    else:
++        require(engineering_resource is None, "sealed resource input requires its explicit profile")
++        if reservation is not None:
++            matrix_seconds, stage_seconds, native_seconds = _bounded_reservation(
++                reservation, kwargs["engineering_remaining_seconds"])
+     plan = primitives.build_plan(**kwargs, information_implementation="admitted_index_three_keys_v1",
+                                  nav2_parameter_profile="gentle_turn_v1")
+     plan.update(schema=SCHEMA, safety_contract=CONTRACT,
+@@ -351,7 +475,11 @@
+     plan["preflight"]["schema"] = "mr3-reach-preflight-v1"
+     plan["budget"].update(matrix_wall_seconds=matrix_seconds, borrow_unused_prior_stage_reservations=True,
+         engineering_remaining_basis="Approved 52000 cumulative engineering ceiling; all native/read-only/closure tails charged")
+-    if reservation is not None:
++    if resource is not None:
++        plan["engineering_resource"] = dict(engineering_resource)
++        plan["budget"].update(resource["budget"])
++        plan["source_bindings"].update(resource["source_bindings"])
++    elif reservation is not None:
+         plan["budget"]["reservation_profile"] = BOUNDED_RESERVATION_PROFILE
+     for i, stage in enumerate(plan["stages"]):
+         name, run = stage["stage"], Path(stage["run_directory"])
+diff --git a/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_reach_engineering_block.py b/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_reach_engineering_block.py
+new file mode 100644
+--- /dev/null
++++ b/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_reach_engineering_block.py
+@@ -0,0 +1,271 @@
++"""Unexecuted artificial resource/qualification fixtures; never native credit.
++
++Apply reset-v2 plus this incremental candidate before root's source-sealed CPU
++run. All amounts below are deliberately synthetic, not a proposed real block.
++Qualification source/Git and liveness are stubbed exactly as the existing
++bookkeeping fixture. PPO stops before directory/model/GPU/native side effects.
++"""
++import contextlib
++import copy
++import hashlib
++import json
++from pathlib import Path
++import unittest
++from unittest.mock import patch
++
++from mr3_learning import ppo, reach_preparation as prep
++from mr3_learning.tests import test_reach_qualification as bookkeeping
++from mr3_learning.tests import test_reach_training_admission as training
++
++FREEZE = "a" * 40
++
++
++class AdmissionBoundaryReached(Exception):
++    pass
++
++
++class EngineeringBlockTests(unittest.TestCase):
++    def setUp(self):
++        self.fixture = bookkeeping.ReachQualificationTests(
++            methodName="test_new_plan_keeps_thirty_scientific_roles_and_twelve_episodes")
++        self.fixture.setUp()
++        self.addCleanup(self.fixture.doCleanups)
++        self.root, self.plan_path = self.fixture.root, self.fixture.plan_path
++        self.ledger = self.root / "toy_previous_accounting.json"
++        self.ledger.write_text(json.dumps({"passed": True, "engineering_cumulative_seconds": "100",
++                                           "fixture_only": True}) + "\n")
++        self.resource_path = self.root / "toy_resource.json"
++        self.value = {"schema": prep.AUTONOMOUS_RESOURCE_SCHEMA, "decision_maker": "agent",
++            "authority_basis": "user-autonomous-continuation", "numeric_user_approval_claimed": False,
++            "previous_accounting": self.spec(self.ledger), "engineering_used_seconds": "100",
++            "engineering_ceiling_seconds": "40100", "engineering_remaining_seconds": "40000",
++            "matrix_wall_seconds": "30000", "stage_wall_seconds": dict(zip(prep.primitives.STAGES,
++                ("3000", "1500", "10000", "15500"))),
++            "native_wall_seconds": dict(zip(prep.primitives.STAGES, ("2500", "1000", "8500", "14000"))),
++            "close_reserve_seconds": "120", "preflight_wall_seconds": "120",
++            "minimum_wall_seconds": "1800", "external_wall_seconds": "300",
++            "total_reservation_seconds": "32220"}
++        self.seal(self.value)
++
++    def spec(self, path):
++        raw = path.read_bytes()
++        return {"path": str(path.relative_to(prep.WORKSPACE)),
++                "sha256": hashlib.sha256(raw).hexdigest(), "bytes": len(raw)}
++
++    def seal(self, value):
++        self.resource_path.write_text(json.dumps(value) + "\n")
++        return self.spec(self.resource_path)
++
++    def kwargs(self):
++        return dict(plan_path=self.plan_path, output_directory=self.root / "execution",
++            run_root=self.root / "native", custody_binding=self.root / "binding.json",
++            binary_proof=self.root / "binary.json", preflight=self.root / "preflight.json")
++
++    def build(self):
++        return prep.build_plan(**self.kwargs(), engineering_remaining_seconds="40000",
++            reservation_profile=prep.AUTONOMOUS_RESOURCE_PROFILE,
++            engineering_resource=self.spec(self.resource_path))
++
++    def test_default_and_old_bounded_plan_fields_remain_unchanged(self):
++        original = prep.build_plan(**self.kwargs(), engineering_remaining_seconds="20000")
++        self.assertEqual(original, self.fixture.plan)
++        reservation = {"matrix_wall_seconds": "16000",
++            "stage_wall_seconds": dict(zip(prep.primitives.STAGES, ("2300", "1000", "5800", "6900"))),
++            "native_wall_seconds": dict(zip(prep.primitives.STAGES, ("1800", "750", "4800", "5900")))}
++        bounded = prep.build_plan(**self.kwargs(), engineering_remaining_seconds="16500", reservation=reservation)
++        expected = copy.deepcopy(original)
++        expected["budget"].update(matrix_wall_seconds="16000", engineering_remaining_seconds="16500",
++                                  reservation_profile=prep.BOUNDED_RESERVATION_PROFILE)
++        for stage in expected["stages"]:
++            stage["wall_seconds"] = reservation["stage_wall_seconds"][stage["stage"]]
++            argv = stage["native"]["argv"]
++            argv[argv.index("--work-wall-seconds") + 1] = reservation["native_wall_seconds"][stage["stage"]]
++        self.assertEqual(bounded, expected)
++        self.assertEqual(prep.PREPARATION_SHA256,
++                         "850ab8947f711033f3f2fd17ef57d32098c02d569c1bea0f5cf58aaff8acd767")
++        with self.assertRaises(ValueError):
++            prep.build_plan(**self.kwargs(), engineering_remaining_seconds="40000", reservation={
++                key: self.value[key] for key in reservation})
++
++    def test_explicit_new_profile_changes_only_resource_fields_and_binds_both_inputs(self):
++        plan = self.build()
++        self.assertIs(prep.validate_plan(plan), plan)
++        result = prep.engineering_resource_budget(self.spec(self.resource_path))
++        self.assertEqual(sum(s["expected_episodes"] for s in plan["stages"]), 12)
++        self.assertEqual(sum(len(prep.primitives.roles(s)) for s in plan["stages"]), 30)
++        self.assertEqual(plan["engineering_resource"], self.spec(self.resource_path))
++        for key, value in result["budget"].items():
++            self.assertEqual(plan["budget"][key], value)
++        for path, expected in result["source_bindings"].items():
++            self.assertEqual(plan["source_bindings"][path], expected)
++        for stage in plan["stages"]:
++            self.assertEqual(prep.argument(stage["native"]["argv"], "--close-reserve-seconds"), "120")
++
++    def test_builder_does_not_infer_profile_or_accept_unknown_profile_or_wrong_balance(self):
++        for profile in (True, "", "unknown"):
++            with self.subTest(profile=profile), self.assertRaises(ValueError):
++                prep.build_plan(**self.kwargs(), engineering_remaining_seconds="40000",
++                    reservation_profile=profile, engineering_resource=self.spec(self.resource_path))
++        with self.assertRaises(ValueError):
++            prep.build_plan(**self.kwargs(), engineering_remaining_seconds="40000",
++                            engineering_resource=self.spec(self.resource_path))
++        with self.assertRaises(ValueError):
++            prep.build_plan(**self.kwargs(), engineering_remaining_seconds="40001",
++                reservation_profile=prep.AUTONOMOUS_RESOURCE_PROFILE,
++                engineering_resource=self.spec(self.resource_path))
++        for profile in (None, True, "", "unknown", prep.BOUNDED_RESERVATION_PROFILE):
++            plan = self.build()
++            plan["budget"]["reservation_profile"] = profile
++            with self.subTest(plan_profile=profile), self.assertRaises(ValueError):
++                prep.validate_plan(plan)
++
++    def test_all_resource_amounts_reject_boolean_nonfinite_or_invalid_values(self):
++        keys = ("engineering_used_seconds", "engineering_ceiling_seconds", "engineering_remaining_seconds",
++                "matrix_wall_seconds", "preflight_wall_seconds", "minimum_wall_seconds",
++                "external_wall_seconds", "total_reservation_seconds", "close_reserve_seconds")
++        for key in keys:
++            for bad in (True, None, "NaN", "Infinity", "-1", "not-seconds"):
++                value = copy.deepcopy(self.value)
++                value[key] = bad
++                with self.subTest(key=key, bad=bad), self.assertRaises(ValueError):
++                    prep.engineering_resource_budget(self.seal(value))
++        for key in ("stage_wall_seconds", "native_wall_seconds"):
++            for bad in (True, None, "NaN", "Infinity", "0"):
++                value = copy.deepcopy(self.value)
++                value[key]["reset"] = bad
++                with self.subTest(key=key, bad=bad), self.assertRaises(ValueError):
++                    prep.engineering_resource_budget(self.seal(value))
++
++    def test_decision_previous_accounting_and_reservation_constraints_fail_closed(self):
++        variants = []
++        for key, bad in (("numeric_user_approval_claimed", True), ("decision_maker", "user"),
++                         ("authority_basis", "undeclared"), ("schema", "unknown"),
++                         ("engineering_used_seconds", "101"), ("engineering_remaining_seconds", "39999"),
++                         ("total_reservation_seconds", "32219"), ("minimum_wall_seconds", "1801"),
++                         ("close_reserve_seconds", "119"), ("matrix_wall_seconds", "29999")):
++            value = copy.deepcopy(self.value)
++            value[key] = bad
++            variants.append(value)
++        for key in ("stage_wall_seconds", "native_wall_seconds"):
++            value = copy.deepcopy(self.value)
++            value[key].pop("deadline")
++            variants.append(value)
++        for native in ("120", "10000"):
++            value = copy.deepcopy(self.value)
++            value["native_wall_seconds"]["reset"] = native
++            variants.append(value)
++        value = copy.deepcopy(self.value)
++        value.update(engineering_ceiling_seconds="30100", engineering_remaining_seconds="30000")
++        variants.append(value)
++        for index, value in enumerate(variants):
++            with self.subTest(variant=index), self.assertRaises(ValueError):
++                prep.engineering_resource_budget(self.seal(value))
++
++    def test_sha_size_path_duplicate_json_and_changed_previous_total_are_rejected(self):
++        valid = self.spec(self.resource_path)
++        for key, bad in (("sha256", "0" * 64), ("bytes", valid["bytes"] + 1),
++                         ("path", "../outside.json"), ("bytes", True)):
++            with self.subTest(key=key), self.assertRaises(ValueError):
++                prep.engineering_resource_budget(dict(valid, **{key: bad}))
++        self.resource_path.write_text('{"schema":"first","schema":"second"}\n')
++        with self.assertRaisesRegex(ValueError, "duplicate"):
++            prep.engineering_resource_budget(self.spec(self.resource_path))
++        self.ledger.write_text('{"passed":true,"engineering_cumulative_seconds":"101"}\n')
++        value = copy.deepcopy(self.value)
++        value["previous_accounting"] = self.spec(self.ledger)
++        with self.assertRaisesRegex(ValueError, "previous closed accounting"):
++            prep.engineering_resource_budget(self.seal(value))
++
++    def test_plan_budget_stage_and_both_source_bindings_must_match_sealed_resource(self):
++        plan = self.build()
++        for key in prep.engineering_resource_budget(plan["engineering_resource"])["budget"]:
++            changed = copy.deepcopy(plan)
++            changed["budget"][key] = "wrong"
++            with self.subTest(key=key), self.assertRaises(ValueError):
++                prep.validate_plan(changed)
++        for path in (self.resource_path, self.ledger):
++            changed = copy.deepcopy(plan)
++            changed["source_bindings"].pop(str(path.relative_to(prep.WORKSPACE)))
++            with self.subTest(source=path), self.assertRaises(ValueError):
++                prep.validate_plan(changed)
++        for target in ("stage", "native"):
++            changed = copy.deepcopy(plan)
++            stage = changed["stages"][2]
++            if target == "stage":
++                stage["wall_seconds"] = "10001"
++            else:
++                argv = stage["native"]["argv"]
++                argv[argv.index("--work-wall-seconds") + 1] = "8501"
++            with self.subTest(target=target), self.assertRaises(ValueError):
++                prep.validate_plan(changed)
++
++    def test_new_resource_profile_cannot_reduce_roles_episodes_steps_or_change_close(self):
++        for fault in ("role", "episodes", "steps", "close", "schedule"):
++            plan = self.build()
++            stage = plan["stages"][2]
++            if fault == "role":
++                stage["audits"] = [j for j in stage["audits"] if j.get("role") != "runtime"]
++            elif fault == "episodes":
++                stage["expected_episodes"] -= 1
++            else:
++                flag, bad = {"steps": ("--steps", "31"), "close": ("--close-reserve-seconds", "121"),
++                             "schedule": ("--schedule", "open:101")}[fault]
++                stage["native"]["argv"][stage["native"]["argv"].index(flag) + 1] = bad
++            with self.subTest(fault=fault), self.assertRaises(ValueError):
++                prep.validate_plan(plan)
++
++    def qualification_fixture(self):
++        self.fixture.plan = self.build()
++        bookkeeping.write(self.plan_path, self.fixture.plan)
++        self.fixture.evidence()
++        output = self.root / "toy_qualification.json"
++        with patch.object(prep, "source_check", return_value={}), \
++                patch.object(prep.primitives, "identity", return_value=None):
++            result = prep.qualify(self.plan_path, FREEZE, self.fixture.outer, output)
++            self.assertEqual(prep.validate_qualification(output, self.plan_path, FREEZE), result)
++        self.assertEqual(result["mandatory_roles"], 30)
++        self.assertEqual(len(result["episodes"]), 12)
++        self.assertFalse(result["policy_reliability_credit"])
++        return output
++
++    def ppo_arguments(self, qualification):
++        return ["--run-id", "toy-admission", "--safety-contract", "mr3-reach-v1",
++                "--decisions", "2", "--episode-steps", "2", "--wall-seconds", "60",
++                "--reach-plan", str(self.plan_path), "--reach-qualification", str(qualification),
++                "--output-root", str(self.root / "not-created")]
++
++    def ppo_guards(self, stack):
++        owner = training.ReachTrainingAdmissionTests(
++            methodName="test_missing_either_or_both_new_qualification_parameters_rejects_train_and_eval")
++        guards = [stack.enter_context(item) for item in owner.guards()]
++        stack.enter_context(patch.object(ppo.subprocess, "check_output", return_value=FREEZE))
++        stack.enter_context(patch.object(prep, "source_check", return_value={}))
++        stack.enter_context(patch.object(prep.primitives, "identity", return_value=None))
++        return guards
++
++    def test_stubbed_new_profile_roundtrip_reaches_only_the_first_ppo_side_effect_boundary(self):
++        qualification = self.qualification_fixture()
++        with contextlib.ExitStack() as stack:
++            guards = self.ppo_guards(stack)
++            guards[0].side_effect = AdmissionBoundaryReached
++            with self.assertRaises(AdmissionBoundaryReached):
++                ppo.main(self.ppo_arguments(qualification))
++            guards[0].assert_called_once()
++            for guard in guards[1:]:
++                guard.assert_not_called()
++
++    def test_changed_resource_is_rejected_before_mkdir_model_native_or_gpu(self):
++        qualification = self.qualification_fixture()
++        changed = copy.deepcopy(self.fixture.plan)
++        changed["budget"]["engineering_remaining_seconds"] = "40001"
++        bookkeeping.write(self.plan_path, changed)
++        with contextlib.ExitStack() as stack:
++            guards = self.ppo_guards(stack)
++            with self.assertRaisesRegex(ValueError, "plan budget differs"):
++                ppo.main(self.ppo_arguments(qualification))
++            for guard in guards:
++                guard.assert_not_called()
++
++
++if __name__ == "__main__":
++    unittest.main()
