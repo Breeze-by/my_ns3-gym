@@ -8404,3 +8404,14 @@ Oneattempt freezea44e1b844678ece45cfd377ea43e7ed65901cce3; fixedV37corridorsprot
 结果：geometry354、learner71、reader_v2 12、snapshot9，最终446项PASS。reader_v1保留FAIL：12读者用例通过后，snapshot模块在system Python缺torch导入error；未改生产/测试，分离到原ns3gym后snapshot9通过。6轮源码均前后稳定，125路径/126版本可恢复，唯一variant为runner。新完整人工point快照覆盖旧seed拒绝而point接受/真实候选可达，经真实private encoder/original validator；全重封几何伪造由独立received-input重建拒绝。
 
 固定两人工格图128次public证书微基准两顺序：reference每32call .463339238/.466320676秒，production .171110671/.170599645秒，完整输出SHA相同，约2.72倍；不代表World吞吐或训练资格。工程新增0，仍累计48259.9538193466018/52000、余3740.0461806533982；pilot/final-only不动。新native+minimum仍需20100预约，75000与负回合新审计仍待明确批准；原V37 FAIL保持，P2A未完成。详见[报告](report/20261022_mr3_p2a_v39_certificate_kernel.md)与[下一入口清单](report/assets/20261022_mr3_p2a_v39_certificate_kernel/next_native_preparation_v1.md)。
+
+
+### 2026-10-22 MR3 P2A V40 自主授权、CPU与完整链预声明
+
+用户直接答复75000问题：“你一直继续执行就好了，直到把P2A完成，不需要问我是否批准”。当前工程块75000，入场已用48259.9538193466018、余26740.0461806533982；完整矩阵18000+external300+minimum1800=20100，另准备/有限诊断800。自主推进不反复请求一般批准，原95%/质量/参与/physical安全及历史FAIL保持，P2B/gateway不开始；pilot/final初始余额保持。
+
+CPU命令cwd=wireless-rl：`rtk proxy env PYTHONNOUSERSITE=1 /usr/bin/python3 -B report/assets/20261022_mr3_p2a_v40_native_qualification/cpu_driver_v1.py NAME`。readiness_cpu_v1 FAIL（ROS完成后learner路径缺失）、readiness_v2 PASS；新policy尾预算实现后geometry_v1 354PASS、learner_v1 77PASS；reader_v1/snapshot_v1/readiness_v3在snapshot setup并发exclusive open竞争失败，未提交reach_execution，三失败记录保留。修atomic link后reader_v2 12PASS、snapshot_v2 9PASS、readiness_v4 PASS，主452。随后prepare_plan_cpu_v1 PASS，755source/10ELF；plan_check_cpu_v1完成55人工回归后因conda无pytest失败。ns3gym `python -m pip install pytest==8.4.2`后，将v1原actual_argv与source_before完整传reach_execution、新输出checks/plan_check_cpu_v2，无代码改动，55+20PASS；55与77部分重复。全部10 actualwait/source beforeafter与原失败保留，CPU工程新增0。
+
+冻结plan SHA7b3cd679a88adbab02d20a34acba91e7697916ba91f9c65b728bd91098515a0b，binding09fa39c6e2f6d51cab5e0ddc4ca068dd0d6498237b93d4bca0cb8855762fc06f，两个独立静态review PASS。policy原CAP内pilot/final外尾各300、主deadline2605.9547395464029/8700、内部500保持，native ceilings不增；minimum外尾与资格/全链身份检查共用工程300。真实parent wait union含wrapper前后、nested inner不重复，坏/缺receipt也记费，完整phase端点/总费用门未过不放后继。
+
+新freeze唯一入口：`PYTHONNOUSERSITE=1 CUDA_VISIBLE_DEVICES=0 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m report.assets.20261022_mr3_p2a_v40_native_qualification.execute_chain_v1 --freeze EXACT40`。提交推送后EXACT40为该完整SHA；运行/收口期间不改已绑定源或commit，全部真实结果/费用在闭合后同会话追加。详见[事前报告](report/20261022_mr3_p2a_v40_native_qualification.md)，当前无新World/optimizer，P2A未完成。

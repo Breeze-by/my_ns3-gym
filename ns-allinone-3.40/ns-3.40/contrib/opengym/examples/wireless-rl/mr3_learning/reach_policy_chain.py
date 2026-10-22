@@ -38,6 +38,14 @@ def decimal(value):
     return result
 
 
+def external_finalize_reserve(spec, stage):
+    """Reserve only declared external work; historical plans keep zero."""
+    reserve = decimal(spec.get("external_finalize_reserve_seconds", 0))
+    require(0 <= reserve < CAPS[stage] - Decimal("500"),
+            "external finalize reserve leaves no native budget after the internal tail")
+    return reserve
+
+
 def _same_identity(left, right):
     return (type(left) is dict and type(right) is dict and type(left.get("pid")) is int
             and type(left.get("start_ticks")) is int and left["pid"] > 0 and left["start_ticks"] > 0
@@ -91,6 +99,7 @@ def stage_spec(plan, plan_path, qualification_path, stage):
     spec = plan["policy_stages"][stage]
     require(type(spec) is dict and decimal(spec["wall_seconds"]) == CAPS[stage]
             and decimal(spec["tail_reserve_seconds"]) == 500, "policy stage/tail allocation differs")
+    external_finalize_reserve(spec, stage)
     argv = spec["argv"]
     require(seed_rule_from_argv(argv) == validate_seed_rule(plan.get("seed_rule", "legacy")),
             "policy stage seed rule differs from the native qualification plan")
@@ -134,10 +143,12 @@ def stage_spec(plan, plan_path, qualification_path, stage):
 
 
 def native_budget(spec, stage, started_ns, now_ns):
-    """Only lower the declared native wall cap, leaving a real 500s tail."""
+    """Lower the native cap after separate external and internal reserves."""
     elapsed = Decimal(now_ns - started_ns) / 10**9
     require(elapsed >= 0, "stage monotonic clock regressed")
-    remaining = CAPS[stage] - elapsed
+    external = external_finalize_reserve(spec, stage)
+    main_cap = CAPS[stage] - external
+    remaining = main_cap - elapsed
     effective = min(NATIVE_CAPS[stage], remaining - Decimal("500"))
     effective = effective.quantize(Decimal(".001"), rounding=ROUND_FLOOR)
     require(effective > 0, "stage deadline leaves no native budget after the reserved tail")
@@ -146,6 +157,8 @@ def native_budget(spec, stage, started_ns, now_ns):
     return argv, {"stage_started_wall_monotonic_ns": started_ns, "derived_wall_monotonic_ns": now_ns,
         "elapsed_stage_seconds": str(elapsed), "remaining_stage_seconds": str(remaining),
         "declared_native_ceiling_seconds": str(NATIVE_CAPS[stage]), "tail_reserve_seconds": "500",
+        **({"main_wall_allocation_seconds": str(main_cap),
+            "external_finalize_reserve_seconds": str(external)} if external else {}),
         "effective_native_seconds": str(effective), "original_argv": spec["argv"]}
 
 
@@ -285,7 +298,9 @@ def execute_stage(plan_path, freeze, qualification_path, stage, workspace=WORKSP
     _read(plan_path, bindings); _read(qualification_path, bindings)
     coordinator = preparation.primitives.identity(os.getpid())
     require(coordinator is not None and coordinator["state"] != "Z", "actual stage coordinator identity unavailable")
-    deadline_ns = started_ns + int(CAPS[stage] * 10**9)
+    external = external_finalize_reserve(spec, stage)
+    main_cap = CAPS[stage] - external
+    deadline_ns = started_ns + int(main_cap * 10**9)
     ledger = output / "ledger.jsonl"
     ledger_stream = ledger.open("x")
     ledger_lock = threading.Lock()
@@ -395,6 +410,11 @@ def execute_stage(plan_path, freeze, qualification_path, stage, workspace=WORKSP
         "started_wall_monotonic_ns": started_ns, "ended_wall_monotonic_ns": ended_ns,
         "wall_seconds": str(Decimal(ended_ns - started_ns) / 10**9), "wall_allocation_seconds": str(CAPS[stage]),
         "within_stage_wall_allocation": ended_ns <= deadline_ns, "native_budget_allocation": allocation,
+        **({"main_wall_allocation_seconds": str(main_cap),
+            "external_finalize_reserve_seconds": str(external),
+            "external_finalize_actual_wait_required": True,
+            "external_finalize_fee_included_in_this_verdict": False,
+            "main_and_external_fee_budget_pass_claimed": False} if external else {}),
         "all_submitted_children_waited": ((not watch_submitted or (watch is not None
             and (watch["process"] is None or watch["process"].poll() is not None)))
             and (not native_submitted or native_value is not None)
@@ -478,6 +498,16 @@ def stage_evidence(plan_path, freeze, stage, outer_wait, workspace=WORKSPACE):
     summary = _read(Path(spec["output_directory"]) / "summary.json", bindings)
     qualification_path = Path(summary["qualification"])
     stage_spec(plan, plan_path, qualification_path, stage)
+    external = external_finalize_reserve(spec, stage)
+    main_cap = CAPS[stage] - external
+    if external:
+        require(summary.get("wall_allocation_seconds") == str(CAPS[stage])
+                and summary.get("main_wall_allocation_seconds") == str(main_cap)
+                and summary.get("external_finalize_reserve_seconds") == str(external)
+                and summary.get("external_finalize_actual_wait_required") is True
+                and summary.get("external_finalize_fee_included_in_this_verdict") is False
+                and summary.get("main_and_external_fee_budget_pass_claimed") is False,
+                "policy summary omitted or changed its external fee reservation/scope")
     preparation.source_check(plan, plan_path, freeze, workspace, require_clean=False)
     preparation.validate_qualification(qualification_path, plan_path, freeze, root=workspace)
     _read(plan_path, bindings); _read(qualification_path, bindings)
@@ -602,11 +632,16 @@ def stage_evidence(plan_path, freeze, stage, outer_wait, workspace=WORKSPACE):
         "plan_sha256": sha(plan_path), "summary": str(Path(spec["output_directory"]) / "summary.json"),
         "summary_sha256": sha(Path(spec["output_directory"]) / "summary.json"),
         "outer_wait": str(Path(outer_wait).resolve()), "outer_wait_sha256": sha(outer_wait),
-        "actual_outer_wall_seconds": str(outer_wall), "within_stage_wall_allocation": outer_wall <= CAPS[stage],
+        "actual_outer_wall_seconds": str(outer_wall), "within_stage_wall_allocation": outer_wall <= main_cap,
+        **({"main_wall_allocation_seconds": str(main_cap),
+            "external_finalize_reserve_seconds": str(external),
+            "external_finalize_actual_wait_required": True,
+            "external_finalize_fee_included_in_this_verdict": False,
+            "main_and_external_fee_budget_pass_claimed": False} if external else {}),
         "all_saved_identities_gone": True, "identities": gone, "strict_custody_passed": strict_closed,
         "scientific_result": scientific, "final_checkpoint": checkpoint, "bindings": bindings,
         "external_actual_fee_accounting_required": True, "old_profile_credit_reused": False,
-        "passed": summary["passed"] is True and strict_closed and outer_wall <= CAPS[stage]}
+        "passed": summary["passed"] is True and strict_closed and outer_wall <= main_cap}
 
 
 def finalize_stage(plan_path, freeze, stage, outer_wait, output, workspace=WORKSPACE):

@@ -1,0 +1,28 @@
+{
+  "schema": "mr3-p2a-reach-engineering-budget-acceptance-v1",
+  "date": "2026-10-22",
+  "user_instruction": "你一直继续执行就好了，直到把P2A完成，不需要问我是否批准",
+  "authorization": {
+    "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v40_native_qualification/authorization_v1.json",
+    "sha256": "6f45aee4673792a66eceb5e3fa003be019a774490a3488b3a83c6685ca556490"
+  },
+  "engineering_ceiling_wall_seconds": "75000",
+  "opening_used_wall_seconds": "48259.9538193466018",
+  "opening_remaining_wall_seconds": "26740.0461806533982",
+  "reservations": {
+    "matrix_including_native_all_required_readers_and_closure": "18000",
+    "fresh_seed41_minimum_16_decisions_including_positive_optimizer_and_all_audits": "1800",
+    "external_final_absence_and_accounting_tail": "300",
+    "total": "20100",
+    "preparation_and_bounded_forensic_separate_ceiling": "800",
+    "unallocated_after_20100_reservation": "6640.0461806533982",
+    "unallocated_after_20100_and_800_reservations": "5840.0461806533982"
+  },
+  "pilot_remaining_decisions": 1870,
+  "pilot_remaining_wall_seconds": "2905.9547395464029",
+  "final_only_development_validations": 3,
+  "final_only_schedule": ["open:401", "open:402", "open:403"],
+  "p2b_or_gateway_authorized": false,
+  "routine_implementation_autonomy": true,
+  "scope": "Prospective current engineering block under the user's autonomous P2A continuation instruction. Charge actual engineering work including all readers and closure tails; do not refund old fees, restore pilot/final quotas, reuse old failures as passes, relax predicates or infer P2A completion. The preparation/forensic ceiling is separate from the unchanged 20100 qualification-plus-minimum reservation."
+}

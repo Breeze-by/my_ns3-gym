@@ -9,7 +9,9 @@ import subprocess
 import sys
 import tempfile
 import time
+from types import SimpleNamespace
 import unittest
+from unittest.mock import Mock, patch
 
 from mr3_learning import reach_policy_chain as chain
 
@@ -162,6 +164,127 @@ class ReachPolicyChainTests(unittest.TestCase):
             with self.assertRaises(ValueError): chain.native_budget(plan['policy_stages']['minimum'], 'minimum', 2, 1)
         for value in (True, 'NaN', 'Infinity'):
             with self.subTest(value=value), self.assertRaises(ValueError): chain.decimal(value)
+
+    def test_external_reserve_default_and_explicit_zero_preserve_the_original_budget_proof(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            plan, path, qualification = plan_fixture(Path(temporary))
+            for stage in chain.STAGES:
+                spec = plan['policy_stages'][stage]
+                original = chain.native_budget(spec, stage, 1, 1_234_567_891)
+                spec['external_finalize_reserve_seconds'] = '0'
+                self.assertIs(chain.stage_spec(plan, path, qualification, stage), spec)
+                self.assertEqual(chain.native_budget(spec, stage, 1, 1_234_567_891), original)
+                self.assertNotIn('external_finalize_reserve_seconds', original[1])
+                self.assertNotIn('main_wall_allocation_seconds', original[1])
+
+    def test_external_reserve_and_admission_time_leave_the_original_internal_tail(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            plan, path, qualification = plan_fixture(Path(temporary))
+            for stage, elapsed, main, native in (
+                    ('pilot', 30_123_456_789, '2605.9547395464029', '2075.831'),
+                    ('validation', 1_234_567_890, '8700', '8198.765')):
+                spec = plan['policy_stages'][stage]
+                before = copy.deepcopy(spec['argv'])
+                spec['external_finalize_reserve_seconds'] = '300'
+                chain.stage_spec(plan, path, qualification, stage)
+                argv, proof = chain.native_budget(spec, stage, 1, 1 + elapsed)
+                self.assertEqual(chain.argument(argv, '--wall-seconds'), native)
+                self.assertEqual(proof['main_wall_allocation_seconds'], main)
+                self.assertEqual(proof['external_finalize_reserve_seconds'], '300')
+                self.assertEqual(proof['tail_reserve_seconds'], '500')
+                self.assertEqual(proof['declared_native_ceiling_seconds'], str(chain.NATIVE_CAPS[stage]))
+                self.assertEqual(spec['argv'], before)
+                self.assertLessEqual(Decimal(native), chain.NATIVE_CAPS[stage])
+                self.assertLessEqual(Decimal(native) + Decimal(elapsed) / 10**9 + 500, Decimal(main))
+            self.assertEqual(chain.NATIVE_CAPS, {'minimum': Decimal('1150'),
+                'pilot': Decimal('2100'), 'validation': Decimal('8500')})
+
+    def test_external_reserve_rejects_nonfinite_negative_or_unfunded_declarations(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            plan, path, qualification = plan_fixture(Path(temporary))
+            for stage in chain.STAGES:
+                spec = plan['policy_stages'][stage]
+                for value in (True, None, 'NaN', 'Infinity', '-1', str(chain.CAPS[stage] - 500),
+                              str(chain.CAPS[stage])):
+                    spec['external_finalize_reserve_seconds'] = value
+                    with self.subTest(stage=stage, value=value):
+                        with self.assertRaises(ValueError):
+                            chain.stage_spec(plan, path, qualification, stage)
+                        with self.assertRaises(ValueError):
+                            chain.native_budget(spec, stage, 1, 1)
+
+    def test_external_reserved_time_cannot_be_borrowed_for_more_native_sampling(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            plan, _, _ = plan_fixture(Path(temporary))
+            for stage, elapsed in (('pilot', 2106), ('validation', 8200)):
+                spec = plan['policy_stages'][stage]
+                # The same elapsed time still permits a positive original
+                # allocation, but not after the external reserve is declared.
+                chain.native_budget(spec, stage, 1, 1 + elapsed * 10**9)
+                spec['external_finalize_reserve_seconds'] = '300'
+                with self.subTest(stage=stage), self.assertRaisesRegex(ValueError, 'leaves no native budget'):
+                    chain.native_budget(spec, stage, 1, 1 + elapsed * 10**9)
+
+    def test_main_deadline_cannot_submit_a_watcher_during_external_reserved_time(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            plan, path, qualification = plan_fixture(root)
+            spec = plan['policy_stages']['validation']
+            spec['external_finalize_reserve_seconds'] = '300'
+            path.write_text(json.dumps(plan) + '\n')
+            qualification.write_text('{}\n')
+            runner = Mock()
+            executor = SimpleNamespace(Runner=Mock(return_value=runner))
+            # Only the initial admission/source bookkeeping is synthetic. No
+            # watcher/native consumer is permitted to start in this fixture.
+            clocks = iter((1,))
+            late = 8700 * 10**9 + 2
+            with patch.object(chain.time, 'monotonic_ns', side_effect=lambda: next(clocks, late)), \
+                    patch.object(chain.preparation, 'load_plan', return_value=plan), \
+                    patch.object(chain.preparation, 'source_check'), \
+                    patch.object(chain.preparation, 'validate_qualification', return_value={'schema': 'fixture'}), \
+                    patch.object(chain, '_validate_predecessor', return_value=None), \
+                    patch.object(chain.preparation, 'load_executor', return_value=(executor, {})), \
+                    patch.object(chain.preparation.primitives, 'identity', return_value={
+                        'pid': 123, 'start_ticks': 456, 'state': 'S'}):
+                result = chain.execute_stage(path, FREEZE, qualification, 'validation')
+            runner.spawn.assert_not_called()
+            runner.command.assert_not_called()
+            self.assertFalse(result['passed'])
+            self.assertFalse(result['within_stage_wall_allocation'])
+            self.assertIn('stage deadline exhausted before watcher submission', result['errors'][0])
+            self.assertEqual(result['wall_allocation_seconds'], '9000')
+            self.assertEqual(result['main_wall_allocation_seconds'], '8700')
+            self.assertEqual(result['external_finalize_reserve_seconds'], '300')
+            self.assertTrue(result['external_finalize_actual_wait_required'])
+            self.assertFalse(result['external_finalize_fee_included_in_this_verdict'])
+            self.assertFalse(result['main_and_external_fee_budget_pass_claimed'])
+
+    def test_external_evidence_refuses_changed_reserve_or_self_certified_future_fee(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            plan, path, qualification = plan_fixture(Path(temporary))
+            spec = plan['policy_stages']['pilot']
+            spec['external_finalize_reserve_seconds'] = '300'
+            output = Path(spec['output_directory']); output.mkdir()
+            summary = {'qualification': str(qualification), 'wall_allocation_seconds': str(chain.CAPS['pilot']),
+                'main_wall_allocation_seconds': '2605.9547395464029', 'external_finalize_reserve_seconds': '300',
+                'external_finalize_actual_wait_required': True, 'external_finalize_fee_included_in_this_verdict': False,
+                'main_and_external_fee_budget_pass_claimed': False}
+            summary_path = output / 'summary.json'
+            def save(value):
+                summary_path.write_text(json.dumps(value) + '\n')
+            with patch.object(chain.preparation, 'load_plan', return_value=plan), \
+                    patch.object(chain.preparation, 'source_check', side_effect=RuntimeError('after reservation scope')):
+                save(summary)
+                with self.assertRaisesRegex(RuntimeError, 'after reservation scope'):
+                    chain.stage_evidence(path, FREEZE, 'pilot', '/unused/outer.json')
+                for key, value in (('main_wall_allocation_seconds', str(chain.CAPS['pilot'])),
+                        ('external_finalize_reserve_seconds', '0'), ('external_finalize_actual_wait_required', False),
+                        ('external_finalize_fee_included_in_this_verdict', True),
+                        ('main_and_external_fee_budget_pass_claimed', True)):
+                    changed = dict(summary); changed[key] = value; save(changed)
+                    with self.subTest(key=key), self.assertRaisesRegex(ValueError, 'external fee reservation/scope'):
+                        chain.stage_evidence(path, FREEZE, 'pilot', '/unused/outer.json')
 
     def test_minimum_requires_real_positive_updates_and_exact_eligible_native_sixteen(self):
         values = native_fixture()

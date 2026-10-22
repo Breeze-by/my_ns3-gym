@@ -1,0 +1,285 @@
+{
+  "schema": "mr3-v40-static-entry-independent-review-v1",
+  "passed": true,
+  "errors": [],
+  "review_method": "Read-only JSON/source/AST inspection and file-byte SHA/stat checks; no project module imported or executed, no tests/World/native/actor/scientific consumers/replay/Git mutation.",
+  "review_scope": "Generated plan and stable execute_chain entry interfaces before execution freeze; not execution preflight or scientific qualification.",
+  "source_freeze": null,
+  "execution_freeze_and_clean_pushed_preflight_still_required": true,
+  "reviewed_input_bindings": [
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v40_native_qualification/plan_v1.json",
+      "sha256": "7b3cd679a88adbab02d20a34acba91e7697916ba91f9c65b728bd91098515a0b",
+      "bytes": 212744
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v40_native_qualification/native_custody_binding_v1.json",
+      "sha256": "09fa39c6e2f6d51cab5e0ddc4ca068dd0d6498237b93d4bca0cb8855762fc06f",
+      "bytes": 129108
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v40_native_qualification/execute_chain_v1.py",
+      "sha256": "5842f8bf22cbdfa33edda91c2cfff7ad2d2cddcdd9eca83e0459f40f43db7947",
+      "bytes": 14436
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v40_native_qualification/preflight_v1.py",
+      "sha256": "3ce058f0d7df9f14827689c4303d3e9be6991bbab013bc98f6df70645e9186ea",
+      "bytes": 6138
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v40_native_qualification/prepare_plan_v1.py",
+      "sha256": "8e932d3702ec7f379cacf22edfd568f2547f437e0996e8e4202989d704840792",
+      "bytes": 22019
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v40_native_qualification/external_absence_v1.py",
+      "sha256": "af49903d02b762f47710278d5490e0acebd8ccef529c8394aab1c26e53f97f2e",
+      "bytes": 8849
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v40_native_qualification/scope_v1.json",
+      "sha256": "f276d426434f26411d0a5ba764b290f39565d38df9ee543b37712ea4a604b740",
+      "bytes": 2670
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v40_native_qualification/budget_acceptance_v1.json",
+      "sha256": "aa7e90545b81ab0c9c6529f7acb78a8c6b3fb1be515ca951245cf3e91d2904cf",
+      "bytes": 1786
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v40_native_qualification/authorization_v1.json",
+      "sha256": "6f45aee4673792a66eceb5e3fa003be019a774490a3488b3a83c6685ca556490",
+      "bytes": 1423
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_preparation.py",
+      "sha256": "2638459c45407bd80587f4af0325721aae354078e225a89c6b8117f957fcf260",
+      "bytes": 34352
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_policy_chain.py",
+      "sha256": "e055a35eb0a962087f2edf29f7f1522aa5e3880488b583d9c53d7d8a61b5bf5f",
+      "bytes": 44347
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_execution.py",
+      "sha256": "fa7da30bf18a71a7a28698f733590074bdf164c8857028640aedba5d21fd8be4",
+      "bytes": 3222
+    }
+  ],
+  "reviewed_inputs_unchanged": true,
+  "declared_sources": {
+    "count": 755,
+    "all_relative_to_canonical_workspace": true,
+    "all_current_bytes_sha_match": true,
+    "mismatches": []
+  },
+  "library_bindings": {
+    "count": 10,
+    "all_paths_absolute": true,
+    "all_current_sha_match": true,
+    "artifacts": [
+      {
+        "path": "/usr/bin/gzserver",
+        "sha256": "689e61236ef90aeb17099bd9cab70280bc457d18fd3bf37a32b9bae77b1bf9d8",
+        "bytes": 159232,
+        "resolved_path": "/usr/bin/gzserver-11.10.2",
+        "declared_sha256": "689e61236ef90aeb17099bd9cab70280bc457d18fd3bf37a32b9bae77b1bf9d8",
+        "sha256_matches": true
+      },
+      {
+        "path": "ros2_ws/ros2-multi-robot-automap/install/multi_robot/lib/libmr3_gazebo_diff_drive.so",
+        "sha256": "1cbd0cde998553f840bec7e6f8581d75ea512dfcf5884277b28ea44fea3aa61d",
+        "bytes": 2074832,
+        "resolved_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_gazebo_diff_drive.so",
+        "declared_sha256": "1cbd0cde998553f840bec7e6f8581d75ea512dfcf5884277b28ea44fea3aa61d",
+        "sha256_matches": true
+      },
+      {
+        "path": "ros2_ws/ros2-multi-robot-automap/install/multi_robot/lib/libmr3_stop_response_observer.so",
+        "sha256": "008d68be02b367760049671680e9a63a69d8952705d4b6c1593b56e95c2a6d84",
+        "bytes": 502320,
+        "resolved_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_stop_response_observer.so",
+        "declared_sha256": "008d68be02b367760049671680e9a63a69d8952705d4b6c1593b56e95c2a6d84",
+        "sha256_matches": true
+      },
+      {
+        "path": "ros2_ws/ros2-multi-robot-automap/install/multi_robot/lib/libmr3_ray_box_corrector.so",
+        "sha256": "782d388fea8df3646524e54f41d71de5f53480b9d04cc0ea1c453c70e2c1f7d8",
+        "bytes": 398080,
+        "resolved_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_ray_box_corrector.so",
+        "declared_sha256": "782d388fea8df3646524e54f41d71de5f53480b9d04cc0ea1c453c70e2c1f7d8",
+        "sha256_matches": true
+      },
+      {
+        "path": "/lib/x86_64-linux-gnu/libgazebo_ode.so.11",
+        "sha256": "a94a424df0b3af9d8a04c58ef1562734cc81728253bcedd25c7705330289c258",
+        "bytes": 719240,
+        "resolved_path": "/usr/lib/x86_64-linux-gnu/libgazebo_ode.so.11.10.2",
+        "declared_sha256": "a94a424df0b3af9d8a04c58ef1562734cc81728253bcedd25c7705330289c258",
+        "sha256_matches": true
+      },
+      {
+        "path": "ros2_ws/ros2-multi-robot-automap/install/nav2_velocity_smoother/lib/libvelocity_smoother_core.so",
+        "sha256": "fc2a590d2c75b92f7fe12f2adf380dcd8210444f8b601f8b16313c47aae2226f",
+        "bytes": 11826504,
+        "resolved_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/nav2_velocity_smoother/libvelocity_smoother_core.so",
+        "declared_sha256": "fc2a590d2c75b92f7fe12f2adf380dcd8210444f8b601f8b16313c47aae2226f",
+        "sha256_matches": true
+      },
+      {
+        "path": "ros2_ws/ros2-multi-robot-automap/install/nav2_velocity_smoother/lib/nav2_velocity_smoother/velocity_smoother",
+        "sha256": "2da81a591908de6ad74618c47119c280134246b584e4509751179f15fcfd0dae",
+        "bytes": 708656,
+        "resolved_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/nav2_velocity_smoother/velocity_smoother",
+        "declared_sha256": "2da81a591908de6ad74618c47119c280134246b584e4509751179f15fcfd0dae",
+        "sha256_matches": true
+      },
+      {
+        "path": "ros2_ws/ros2-multi-robot-automap/install/multi_robot/lib/multi_robot/mr3_odometry_recorder",
+        "sha256": "2b22e115aaf48c1898f51b0bb281d098d74406989f186e885daa554b18c53e0c",
+        "bytes": 1058696,
+        "resolved_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/mr3_odometry_recorder",
+        "declared_sha256": "2b22e115aaf48c1898f51b0bb281d098d74406989f186e885daa554b18c53e0c",
+        "sha256_matches": true
+      },
+      {
+        "path": "/opt/ros/humble/lib/nav2_controller/controller_server",
+        "sha256": "d8f732a95f19684c9aeb0658a3bb982292729490eced2f17d0fa0e8a619cc55c",
+        "bytes": 18760,
+        "resolved_path": "/opt/ros/humble/lib/nav2_controller/controller_server",
+        "declared_sha256": "d8f732a95f19684c9aeb0658a3bb982292729490eced2f17d0fa0e8a619cc55c",
+        "sha256_matches": true
+      },
+      {
+        "path": "/opt/ros/humble/lib/libnav2_rotation_shim_controller.so",
+        "sha256": "ec301e3ef10e7e71dfdfc77d0164dfecfba2408ea0523bb05ebf1983da13fc15",
+        "bytes": 292664,
+        "resolved_path": "/opt/ros/humble/lib/libnav2_rotation_shim_controller.so",
+        "declared_sha256": "ec301e3ef10e7e71dfdfc77d0164dfecfba2408ea0523bb05ebf1983da13fc15",
+        "sha256_matches": true
+      }
+    ],
+    "dynamic_or_live_load_checked": false
+  },
+  "entry_interfaces": {
+    "plan": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v40_native_qualification/plan_v1.json",
+    "preflight_object": {
+      "path": "/tmp/mr3_p2a_reach_v40_preflight.json",
+      "schema": "mr3-reach-preflight-v1"
+    },
+    "preflight_driver_uses_path_key": true,
+    "preflight_module": "report.assets.20261022_mr3_p2a_v40_native_qualification.preflight_v1",
+    "preflight_runs_in_declared_conda_python": true,
+    "matrix_output_directory": "/tmp/mr3_p2a_reach_v40_matrix",
+    "matrix_outer_directory": "/tmp/mr3_p2a_reach_v40_matrix_wait",
+    "qualification_output": "/tmp/mr3_p2a_reach_v40_qualification.json",
+    "full_audit_plan_paths_match": true,
+    "native_output_root_run_id_match": true,
+    "source_and_library_relative_absolute_path_join_correct": true,
+    "external_absence_flags": [
+      "--plan",
+      "--matrix-outer",
+      "--output",
+      "--extra (repeatable)"
+    ],
+    "external_absence_original_required_boundary_preserved": true
+  },
+  "schedule_and_modes": {
+    "stages": [
+      "interface",
+      "terminal",
+      "reset",
+      "deadline"
+    ],
+    "expected_episodes": 12,
+    "mandatory_roles": 30,
+    "seed_rule": "exact-point-bridge-v2",
+    "start_graph_rule": "point-attachment-3x3-v1",
+    "all_four_native_and_three_policy_argv_same_explicit_pair": true,
+    "two_dimensional_success_prerequisite": false
+  },
+  "policy_interfaces": {
+    "minimum": {
+      "output_directory": "/tmp/mr3_p2a_reach_v40_minimum",
+      "run_directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo_reach_v40/mr3_p2a_reach_v40_minimum",
+      "condition": {
+        "requires": "matrix_qualification"
+      },
+      "external_finalize_reserve_seconds": "0",
+      "driver_main_outer": "/tmp/mr3_p2a_reach_v40_minimum_wait",
+      "driver_finalize_outer": "/tmp/mr3_p2a_reach_v40_minimum_final_wait",
+      "driver_final_output": "/tmp/mr3_p2a_reach_v40_minimum_final.json"
+    },
+    "pilot": {
+      "output_directory": "/tmp/mr3_p2a_reach_v40_pilot",
+      "run_directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo_reach_v40/mr3_p2a_reach_v40_pilot",
+      "condition": {
+        "requires": "minimum_complete",
+        "previous_stage_summary": "/tmp/mr3_p2a_reach_v40_minimum/summary.json",
+        "previous_stage_outer_wait": "/tmp/mr3_p2a_reach_v40_minimum_wait/actual_wait.json",
+        "previous_stage_final_absence": "/tmp/mr3_p2a_reach_v40_minimum_final.json"
+      },
+      "external_finalize_reserve_seconds": "300",
+      "driver_main_outer": "/tmp/mr3_p2a_reach_v40_pilot_wait",
+      "driver_finalize_outer": "/tmp/mr3_p2a_reach_v40_pilot_final_wait",
+      "driver_final_output": "/tmp/mr3_p2a_reach_v40_pilot_final.json"
+    },
+    "validation": {
+      "output_directory": "/tmp/mr3_p2a_reach_v40_validation",
+      "run_directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo_reach_v40/mr3_p2a_reach_v40_validation",
+      "condition": {
+        "requires": "pilot_complete",
+        "previous_stage_summary": "/tmp/mr3_p2a_reach_v40_pilot/summary.json",
+        "previous_stage_outer_wait": "/tmp/mr3_p2a_reach_v40_pilot_wait/actual_wait.json",
+        "previous_stage_final_absence": "/tmp/mr3_p2a_reach_v40_pilot_final.json"
+      },
+      "external_finalize_reserve_seconds": "300",
+      "driver_main_outer": "/tmp/mr3_p2a_reach_v40_validation_wait",
+      "driver_finalize_outer": "/tmp/mr3_p2a_reach_v40_validation_final_wait",
+      "driver_final_output": "/tmp/mr3_p2a_reach_v40_validation_final.json"
+    }
+  },
+  "condition_outer_and_final_paths_match_driver": true,
+  "validation_uses_declared_pilot_final_zip_only": true,
+  "exclusive_output_static_check": {
+    "paths_checked": 209,
+    "already_present": [],
+    "method": "exists/stat only; no runtime contents read",
+    "must_recheck_at_execution": true
+  },
+  "driver_accounting_review": {
+    "complete_parent_wait_intervals": true,
+    "nested_child_receipts_not_double_counted": true,
+    "bad_or_missing_receipt_fee_retained_before_raise": true,
+    "submitted_children_drained_on_interruption": true,
+    "matrix_parent_cap_seconds": "18000",
+    "minimum_parent_cap_seconds": "1800",
+    "pilot_cap_seconds": "2905.9547395464029",
+    "validation_cap_seconds": "9000",
+    "pilot_validation_main_and_finalize_same_scope": true,
+    "pilot_validation_union_and_endpoint_checked_before_successor": true,
+    "pilot_validation_finalize_at_most_seconds": "300",
+    "finally_attempts_chain_saved_identity_absence": true,
+    "complete_engineering_external_actual_fees_at_most_seconds": "300",
+    "engineering_cumulative_cap_seconds": "75000",
+    "bookkeeping_gaps_not_charged_as_work_but_retained_in_phase_endpoint": true,
+    "driver_own_identity_and_final_outer_require_later_external_review": true
+  },
+  "entry_budget": {
+    "used_seconds": "48259.9538193466018",
+    "remaining_seconds": "26740.0461806533982",
+    "qualification_external_minimum_reservation_seconds": "20100"
+  },
+  "scientific_native_credit": false,
+  "qualification_pass_claimed": false,
+  "training_admission_granted": false,
+  "p2a_complete": false,
+  "limitations": [
+    "Source freeze was not assigned by this static review; exact clean/pushed current==Gitfreeze source and plan remain the real preflight obligation.",
+    "No ROS import, CUDA availability, dynamic library loading, port listener availability, scientific reader or execution was rerun for this review.",
+    "Absence of pre-existing output paths is an observation at review time, not a lock or later exclusive-creation guarantee.",
+    "chain_final_absence does not establish absence of its still-running driver or final outer coordinator; later external closure remains required."
+  ]
+}

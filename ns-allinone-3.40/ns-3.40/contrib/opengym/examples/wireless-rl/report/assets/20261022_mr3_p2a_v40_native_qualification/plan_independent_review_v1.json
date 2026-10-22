@@ -1,0 +1,228 @@
+{
+  "schema": "mr3-v40-plan-independent-static-review-v1",
+  "passed": true,
+  "blockers": [],
+  "plan": {
+    "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v40_native_qualification/plan_v1.json",
+    "sha256": "7b3cd679a88adbab02d20a34acba91e7697916ba91f9c65b728bd91098515a0b",
+    "bytes": 212744
+  },
+  "driver": {
+    "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v40_native_qualification/execute_chain_v1.py",
+    "sha256": "5842f8bf22cbdfa33edda91c2cfff7ad2d2cddcdd9eca83e0459f40f43db7947",
+    "bytes": 14436
+  },
+  "custody_binding": {
+    "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v40_native_qualification/native_custody_binding_v1.json",
+    "sha256": "09fa39c6e2f6d51cab5e0ddc4ca068dd0d6498237b93d4bca0cb8855762fc06f",
+    "bytes": 129108
+  },
+  "checks": {
+    "plan_sha256_matches_announced": true,
+    "explicit_rule_pair": true,
+    "interface_roles": true,
+    "interface_workload": true,
+    "interface_rules": true,
+    "interface_native_prefix": true,
+    "interface_run_path": true,
+    "terminal_roles": true,
+    "terminal_workload": true,
+    "terminal_rules": true,
+    "terminal_native_prefix": true,
+    "terminal_run_path": true,
+    "reset_roles": true,
+    "reset_workload": true,
+    "reset_rules": true,
+    "reset_native_prefix": true,
+    "reset_run_path": true,
+    "deadline_roles": true,
+    "deadline_workload": true,
+    "deadline_rules": true,
+    "deadline_native_prefix": true,
+    "deadline_run_path": true,
+    "mandatory_roles30_episodes12": true,
+    "minimum_policy_rules": true,
+    "minimum_plan_and_qualification": true,
+    "minimum_native_prefix": true,
+    "minimum_run_path": true,
+    "minimum_tail_and_finalize": true,
+    "minimum_driver_predecessor_paths": true,
+    "pilot_policy_rules": true,
+    "pilot_plan_and_qualification": true,
+    "pilot_native_prefix": true,
+    "pilot_run_path": true,
+    "pilot_tail_and_finalize": true,
+    "pilot_driver_predecessor_paths": true,
+    "validation_policy_rules": true,
+    "validation_plan_and_qualification": true,
+    "validation_native_prefix": true,
+    "validation_run_path": true,
+    "validation_tail_and_finalize": true,
+    "validation_driver_predecessor_paths": true,
+    "policy_registry_complete": true,
+    "validation_actual_final_checkpoint": true,
+    "domain_ranges_disjoint": true,
+    "port_ranges_disjoint": true,
+    "all_declared_write_paths_unique_absolute": true,
+    "fresh_outputs_absent": true,
+    "all755_source_hashes_match": true,
+    "all_new_a40_scripts_bound": true,
+    "full20100_admission_and75000_basis": true
+  },
+  "native": [
+    {
+      "stage": "interface",
+      "workers": 1,
+      "episodes": 1,
+      "roles": 9,
+      "domains": [
+        202
+      ],
+      "ports": [
+        15701
+      ],
+      "run_directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v40/mr3_p2a_reach_v40_interface"
+    },
+    {
+      "stage": "terminal",
+      "workers": 1,
+      "episodes": 2,
+      "roles": 6,
+      "domains": [
+        204
+      ],
+      "ports": [
+        15711
+      ],
+      "run_directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v40/mr3_p2a_reach_v40_terminal"
+    },
+    {
+      "stage": "reset",
+      "workers": 2,
+      "episodes": 8,
+      "roles": 9,
+      "domains": [
+        206,
+        207
+      ],
+      "ports": [
+        15721,
+        15722
+      ],
+      "run_directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v40/mr3_p2a_reach_v40_reset"
+    },
+    {
+      "stage": "deadline",
+      "workers": 1,
+      "episodes": 1,
+      "roles": 6,
+      "domains": [
+        210
+      ],
+      "ports": [
+        15731
+      ],
+      "run_directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v40/mr3_p2a_reach_v40_deadline"
+    }
+  ],
+  "policy": [
+    {
+      "stage": "minimum",
+      "domains": [
+        212
+      ],
+      "ports": [
+        15801
+      ],
+      "run_directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo_reach_v40/mr3_p2a_reach_v40_minimum",
+      "output_directory": "/tmp/mr3_p2a_reach_v40_minimum",
+      "wall_seconds": "1800",
+      "external_finalize_reserve_seconds": "0"
+    },
+    {
+      "stage": "pilot",
+      "domains": [
+        214,
+        215
+      ],
+      "ports": [
+        15811,
+        15812
+      ],
+      "run_directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo_reach_v40/mr3_p2a_reach_v40_pilot",
+      "output_directory": "/tmp/mr3_p2a_reach_v40_pilot",
+      "wall_seconds": "2905.9547395464029",
+      "external_finalize_reserve_seconds": "300"
+    },
+    {
+      "stage": "validation",
+      "domains": [
+        218,
+        219,
+        220,
+        221
+      ],
+      "ports": [
+        15821,
+        15822,
+        15823,
+        15824
+      ],
+      "run_directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_ppo_reach_v40/mr3_p2a_reach_v40_validation",
+      "output_directory": "/tmp/mr3_p2a_reach_v40_validation",
+      "wall_seconds": "9000",
+      "external_finalize_reserve_seconds": "300"
+    }
+  ],
+  "a40_scripts": [
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v40_native_qualification/cpu_driver_v1.py",
+      "sha256": "fb8c8777aab82cd99f57f7fd39b2ea71b25adbaea41ed741cbd3cbd733d8f42d",
+      "bytes": 6074
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v40_native_qualification/execute_chain_v1.py",
+      "sha256": "5842f8bf22cbdfa33edda91c2cfff7ad2d2cddcdd9eca83e0459f40f43db7947",
+      "bytes": 14436
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v40_native_qualification/external_absence_v1.py",
+      "sha256": "af49903d02b762f47710278d5490e0acebd8ccef529c8394aab1c26e53f97f2e",
+      "bytes": 8849
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v40_native_qualification/plan_check_v1.py",
+      "sha256": "cfbf3bc4060f353bc41e2d7d7f842738b724f743f239def83254c7edc79759e5",
+      "bytes": 2630
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v40_native_qualification/preflight_v1.py",
+      "sha256": "3ce058f0d7df9f14827689c4303d3e9be6991bbab013bc98f6df70645e9186ea",
+      "bytes": 6138
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v40_native_qualification/prepare_plan_v1.py",
+      "sha256": "8e932d3702ec7f379cacf22edfd568f2547f437e0996e8e4202989d704840792",
+      "bytes": 22019
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v40_native_qualification/readiness_v1.py",
+      "sha256": "8e48392e6ee79cde922f3fe3cb1de09ae7885ff6cc158d26a2503df4b20ad993",
+      "bytes": 5077
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v40_native_qualification/test_prepare_plan_v1.py",
+      "sha256": "6456c8ddeb6a8cba34cf82cc5284c5929c31e39d02755f5bcb953f55a92e215a",
+      "bytes": 4157
+    }
+  ],
+  "write_path_count": 190,
+  "write_path_collisions": [],
+  "source_mismatches": [],
+  "driver_read_only_review": "PREFIX=/tmp/mr3_p2a_reach_v40; qualification, policy main outer waits and final absence filenames match every declared predecessor. Inner commands retain python,-m,module. PLAN and runtime policychain are in outer source_flags. Pilot/validation finalizers use their original phase scope and phase union+endpoint gates; no fee moved to engineering.",
+  "scientific_native_credit": false,
+  "policy_credit": false,
+  "world_started": false,
+  "historical_trace_replay_performed": false,
+  "scope": "Independent static JSON/source-byte/path review only; no imports or execution of production/preparation/audit modules, tests, native or policy."
+}

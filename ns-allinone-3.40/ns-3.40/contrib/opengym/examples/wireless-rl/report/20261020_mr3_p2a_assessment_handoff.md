@@ -1,5 +1,7 @@
 # MR3 P2A 评估与后续交接
 
+2026-10-22 V40授权续接：用户明确“你一直继续执行就好了，直到把P2A完成，不需要问我是否批准”，授权自主持续完成P2A，不再反复请求一般预算/实施批准。当前工程块75000，入场48259.9538193466018、余26740.0461806533982；完整新native资格+收口+minimum预约20100。V39恒等提速已完成，现准备新冻结完整链；pilot/final初始余额、95%/质量/安全门及旧FAIL保持，P2A仍未完成。见[V40](20261022_mr3_p2a_v40_native_qualification.md)。
+
 2026-10-22 V39闭合：精确segment证书AABB/零长度恒等提速已接生产，446人工CPU通过；冻结a44旧源码逐字段/JSON及独立全格oracle一致，固定128call人工完整证书约2.72倍提速，非World吞吐。首轮system无torch导入FAIL原件保留，环境分离后通过；无新World/学习/工程费。累计48259.9538193466018/52000、余3740.0461806533982；原生资格+minimum须预约20100，75000未批，pilot/final-only及原FAIL保持，P2A未完成。见[V39](20261022_mr3_p2a_v39_certificate_kernel.md)。
 
 当前建议：保留三机器人联合RL方向；起点接图与精确证书实现已备齐，不再要求二维随机短活动全PASS。下一AI从[原生资格/策略阶段准备清单](assets/20261022_mr3_p2a_v39_certificate_kernel/next_native_preparation_v1.md)继续：先确认75000数值额度答复，再新建同冻结完整plan/source inventory与minimum/pilot/final registry，按现有严格门执行。训练负回合新审计仍未批准，不借预算批准激活；不把CPU或已闭合失败前缀当P2A。
