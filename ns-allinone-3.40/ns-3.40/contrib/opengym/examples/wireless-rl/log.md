@@ -8629,3 +8629,21 @@ rtk proxy env PYTHONNOUSERSITE=1 CUDA_VISIBLE_DEVICES= /home/zhuyulab/miniconda3
 首轮geometry597PASS/2FAIL（HOLD fixture缺anchor/target；legacy误排既有startup_wall_sec），其余learner219/reader12/snapshot9/readiness PASS；独立检查同时发现暂停后timer不能重算的真实死锁，首轮完整原件保留。第二轮修复后geometry608、learner228、reader12、snapshot9共857代码检查，checker13自检和双环境readiness全部PASS，各组rc0/reap/source前后稳定。每项真实等待与来源见[CPU索引](report/assets/20261023_mr3_p2a_v49_startup_protocol/cpu_validation_index_v1.json)，不累加首轮重验数作独立检查。V48契约64年龄/角域人工12计时块公共数值hash全等；cold/warm生产pair约1.733/1.104倍，reader cold trig/direction约15.351/8.109倍，warm trig变慢；并行短块非ENV吞吐，原v1小角域和cold-sqrt回归保留。
 
 入口静态v1 BLOCKED（直接脚本导入未安装包）保留，已换canonical W cwd模块入口，`rtk proxy env PYTHONNOUSERSITE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m report.assets.20261023_mr3_p2a_v49_startup_protocol.run_startup_v1 --help`实际导入通过；独立v2静态PASS。prepare actual CPU .981559887s PASS，封存874源/准备输入及10ELF。下一唯一新冻结2worker各rooms101/1step启动诊断native600含close120+外尾120=720事后全费门，待freeze，尚未执行。新更紧预算profile不减12EP/30角色/科学门，不供完整资格；PPO/pilot/final均未启动。工程55747.0395659926018/75000、余19252.9604340073982。详见[V49预声明](report/20261023_mr3_p2a_v49_startup_protocol.md)。
+
+## 2026-10-23 MR3-P2A V49 原生启动诊断闭合PASS
+
+实际freeze `14719a72b96cff65b134b7d46ec6d2ccbf84e061`，cwd wireless-rl：
+
+```bash
+rtk proxy env PYTHONNOUSERSITE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m report.assets.20261023_mr3_p2a_v49_startup_protocol.execute_startup_v1 --freeze 14719a72b96cff65b134b7d46ec6d2ccbf84e061
+```
+
+[scope](report/assets/20261023_mr3_p2a_v49_startup_protocol/startup_scope_v1.json)完整固定2workers、rooms101各1step、uniformlegal seed490101、三个机器人每env、native600含close120+外尾120/720事后费用门。2/2真实返回/两个实际外部截断/两正常关闭，native190.595533179秒；唯一父actual-wait rc0/source相等/完整212.565365239秒，内部212.319052807不叠加。journal254/294行真实release37.0/35.58sim秒、4ready、clock/physical相等；pause时motion本已True，不授原生false-ready回归信用。bookkeeping独立review874源/10ELF相符，91保存身份含2旧暂排祖先freshgone，0错误。工程累计55959.6049312316018/75000、余19040.3950687683982。无模型/优化器/GPU/pilot/final-only活动；仅启动工程，不填12EP/30角色或95%。旧FAIL保持。
+
+关闭后在repo根运行不解析科学原件的逐字归档：
+
+```bash
+rtk proxy env PYTHONNOUSERSITE=1 /usr/bin/python3 -B ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v49_startup_protocol/collect_closed_v1.py
+```
+
+271文件497827640原字节→38177415保存字节/0symlink，所有SHA/解码/原stat/成员集稳定，原件保留，字节归档新增工程0。见[V49实际闭合](report/20261023_mr3_p2a_v49_startup_protocol.md)。

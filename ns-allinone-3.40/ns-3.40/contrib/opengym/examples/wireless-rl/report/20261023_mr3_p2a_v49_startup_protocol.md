@@ -1,5 +1,13 @@
 # MR3 P2A V49：真实启动顺序与故障传播
 
+2026-10-23实际闭合 **PASS**，freeze `14719a72b96cff65b134b7d46ec6d2ccbf84e061`。唯一活动两套环境各rooms101/一步：2/2真实返回、两回合真实外部截断及正常退出；native190.595533179秒，完整父等待**212.565365239秒**（内部212.319052807包含其中，不叠加）。[外部最终review](assets/20261023_mr3_p2a_v49_startup_protocol/independent_closed_review_v1.json) PASS：874源/10ELF、完整wait/source与Git一致；91保存PID/start含原两暂排祖先均freshgone，Z若仍存在将判FAIL。工程累计**55959.6049312316018/75000**、余**19040.3950687683982**，pilot/final-only不动。
+
+独立只读startup日志两机254/294行（159002/183599B），全部解码，pause→全零接管/storage→20ms bootstrap→release顺序完整，release37.0/35.58sim秒时四项均True、真实clock等于physical。两机pause时motion也已True，故本次不提供原生“暂停时False后变True”故障注入信用；该边界只有人工phase回归。startup138.15/135.33墙秒、首step49.79/47.09墙秒，仅两首步，不能推广long-step吞吐。0模型/0优化器/0GPU，本诊断不填充完整科学资格的任何角色或提供95%信用，旧V45FAIL保持。
+
+[完整库存](assets/20261023_mr3_p2a_v49_startup_protocol/closed_inventory_v1.json)已无损归档**271文件/497827640原字节→38177415保存字节，0symlink**，每份原SHA/解码SHA及前后stat/成员集相符，原件保留。完整父等待和console位于[closed execution](assets/20261023_mr3_p2a_v49_startup_protocol/closed_execution/actual_wait/actual_wait.json)。后续启动新V50，而非重开本活动：新fault消息需在PPO build/train前按epoch/schema拒绝，之后新freeze全12EP/30角色→minimum→pilot→final-only，P2A仍未完成。
+
+下文保留执行前的具体实现、首轮失败、CPU与费用声明。
+
 本活动准备完成，尚无 V49 World/native/学习结果。V45 的 startup/cleanup FAIL 保留，V46/V47 的有限描述不能确定 worker 当时实际缺少哪项 ready，也不能把 82.4 秒的故障倒推为 37.92 秒之前的根因。用户已授权自主持续完成 P2A，无需再次一般审批；P2B/gateway 不启动。
 
 新 [启动契约](../MR3_STARTUP_CONTRACT.md) 为显式 Reach 模式固定选择 `received-input-pause-drain-v1`。初始输入、monitor 与 recorder 的真实接收先允许暂停；随后真实全零 takeover/storage 及原有 20ms bootstrap 收齐控制前缀，必须通过精确 motion status、三机 storage 和四项实际 ready 才能请求 snapshot/release。默认 legacy 保持。源龄、原发布序列、图/几何、安全和 95% 任务门均不变。

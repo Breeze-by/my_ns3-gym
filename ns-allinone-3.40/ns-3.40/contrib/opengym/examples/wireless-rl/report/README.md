@@ -1,5 +1,7 @@
 # 报告与证据适用范围
 
+2026-10-23 V49启动诊断闭合PASS：freeze14719a72b96cff65b134b7d46ec6d2ccbf84e061，两worker各rooms101/1真实step，2/2返回、2正常关闭，独立journal254/294行均完整。真实release为37.0/35.58sim秒且四项均ready；本次pause时motion已True，不冒充原生强制False回归。874源/10ELF一致，91保存身份含2原暂排祖先均freshgone；271原件497827640B无损封存38177415B/0symlink。完整parent212.565365239秒，工程累计55959.6049312316018/75000、余19040.3950687683982，pilot/final不动，P2A未完成。仅启动诊断、不填12EP/30角色；下一新V50先PPO新故障schema preupdate准入修复/相关CPU，再完整同freeze资格与学习链，用户自主授权保持。见[V49闭合](20261023_mr3_p2a_v49_startup_protocol.md)。
+
 2026-10-23 V49准备：Reach启动改为真实上游3就绪→暂停→全零takeover/storage→原20ms bootstrap→精确ready状态及实际四ready→release，420秒绝对截止及清理剩余时限保持；首永久fault真实传播，数学恒等提速已集成。第二轮857人工代码检查＋13检查器自检及双环境readiness PASS，首轮2fixture FAIL/暂停等待死锁及入口静态BLOCKED均保留。新更紧reservation profile只缩资源、不减12EP/30角色/科学门。874源/10ELF及唯一2worker各rooms101/1step启动诊断封存，native600含120close＋外尾120＝720预约，待新freeze执行；不供完整资格/PPO信用。工程55747.0395659926018/75000、余19252.9604340073982，pilot/final不动，P2A未完成。见[V49](20261023_mr3_p2a_v49_startup_protocol.md)。
 
 2026-10-22 V47两流诊断闭合PASS：freeze deb2b5a8d46ab6ec9cd6a3eb897c8ff0bf75ba0c完整读384380343B；recorder35926行/ready1@2.58、无identity/GID false，motion122485行均parse0。每机ready False3050/True1191、双向各169翻转；首invalid为82.4秒tb3 calibration序列gap/regression，晚于37.92 adapter-ready，不能倒因早期阻塞。worker四ready实际接收仍unknown，V45FAIL保持。79outer源/Git一致、3身份gone；实费28.889315675，累计55747.0395659926018/75000、余19252.9604340073982，pilot/final不动、P2A未完成。下一补真实ready/健康失败传播，定位producer/transport/consumer序列与时序根因；不降门/增400秒或重试旧活动。用户自主续接授权保持。见[V47闭合](20261022_mr3_p2a_v47_ready_provenance.md)。
