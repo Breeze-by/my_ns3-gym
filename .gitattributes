@@ -177,3 +177,11 @@ ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/2026
 ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v48_support_cpu/checks/**/*.log -text -whitespace
 # Preserve the original pstats print_stats text, including its trailing empty line.
 ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v48_support_cpu/production_profiles_v1/*.txt -text -whitespace
+
+# V47 complete forensic outputs preserve exact archived bytes.
+ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v47_ready_provenance/closed_execution/** -text -whitespace
+# V49 tested source recovery and CPU consoles preserve exact bytes.
+ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v49_startup_protocol/checks/**/*.log -text -whitespace
+ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v49_startup_protocol/checks/source_snapshots/** -text -whitespace
+# V48 contract-angle cProfile raw text retains its native blank final line.
+ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v48_support_cpu/contract_angle_profiles_v2/*.txt -text -whitespace

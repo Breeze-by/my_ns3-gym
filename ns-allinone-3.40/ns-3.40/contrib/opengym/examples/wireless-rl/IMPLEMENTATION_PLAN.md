@@ -1,5 +1,7 @@
 # MR3 研发检查点与逐步验收
 
+2026-10-22 V47两流诊断闭合PASS：freeze deb2b5a8d46ab6ec9cd6a3eb897c8ff0bf75ba0c完整读384380343B；recorder35926行/ready1@2.58、无identity/GID false，motion122485行均parse0。每机ready False3050/True1191、双向各169翻转；首invalid为82.4秒tb3 calibration序列gap/regression，晚于37.92 adapter-ready，不能倒因早期阻塞。worker四ready实际接收仍unknown，V45FAIL保持。79outer源/Git一致、3身份gone；实费28.889315675，累计55747.0395659926018/75000、余19252.9604340073982，pilot/final不动、P2A未完成。下一补真实ready/健康失败传播，定位producer/transport/consumer序列与时序根因；不降门/增400秒或重试旧活动。用户自主续接授权保持。见[V47闭合](report/20261022_mr3_p2a_v47_ready_provenance.md)。
+
 2026-10-22 V47预声明：V46有限诊断已闭合，继续一次读取failedrooms现成recorder/motion两流384380343B以核ready/身份来源；10项内存自检PASS，78源scope及库存绑定已核，尚未原件消费。工程入场55718.1502503176018/75000、余19281.8497496823982，预约300（main240事后费用门＋外尾60，超额全费FAIL）。V48两套禁用数学候选9＋9人工CPU通过，仅局部收益；未接生产、不供native/95%信用。P2A未完成，自主续接不再一般审批。见[V47](report/20261022_mr3_p2a_v47_ready_provenance.md)。
 
 2026-10-22 V46有限诊断闭合PASS：freeze8daa902d5fead2def8356cf781d488573d951769一次读取8文件3101211B；adapter720state/1initial-ready(37.92)/0task-start/0解析错误，末3记录时刻fresh；stopCLI原正则0匹配missing，launch尾为motion_safety-5 SIGINT，未记录后继exit/CLI。worker实际ready收到情况仍unknown，不据此猜根因或改判V45FAIL。76outer源/current/Git一致、3身份gone，5派生原件262691B封存；parent实费.800222553，累计55718.1502503176018/75000、余19281.8497496823982，pilot/final不动、P2A未完成。下一仅两份现成driver/motion流的有界诊断，不改400秒/数学/任务门；用户自主续接授权保持。见[V46闭合](report/20261022_mr3_p2a_v46_startup_diagnosis.md)。
@@ -88,7 +90,7 @@
 | MR3-P1B | RL 可独占的稳定目标/观测接口 | 已验收（2026-10-15） |
 | MR3-P1C | 训练环境、可靠 reset、采样吞吐 | 已验收（2026-10-16） |
 | MR3-P2A.0 | 生命周期、候选及安全执行、参与观测准备 | 已验收（2026-10-18）；原V26编排中断保留 |
-| MR3-P2A | 联合 MaskablePPO 最小训练闭环 | 未完成；V45原生15/30角色后rooms reset FAIL，0学习；V46固定8文件诊断PASS但worker ready仍unknown，余19281.8497496823982/75000秒。先有界两流诊断，不能沿用20100旧整链预约或降95%/安全门 |
+| MR3-P2A | 联合 MaskablePPO 最小训练闭环 | 未完成；V45原生15/30角色后rooms reset FAIL、0学习；V46/V47有限诊断闭合，worker实际ready仍unknown且82.4秒后序列故障已记录。余19252.9604340073982/75000秒，先真实ready/健康失败传播及source序列时序根治；不得沿用20100旧预约/降门 |
 | MR3-P2B | 同接口算法对照与方法选择 | 未开始 |
 | MR3-P2C | 理想通信完整验收、冻结模型 | 未开始 |
 | MR3-P3A | 双向 gateway、字节协议、消除旁路 | 未开始 |

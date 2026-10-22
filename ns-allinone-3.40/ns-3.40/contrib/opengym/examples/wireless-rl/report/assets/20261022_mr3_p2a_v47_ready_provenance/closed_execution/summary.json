@@ -1,0 +1,38 @@
+{
+  "schema": "mr3-v47-ready-provenance-actual-wait-v1",
+  "passed": true,
+  "freeze": "deb2b5a8d46ab6ec9cd6a3eb897c8ff0bf75ba0c",
+  "evidence_freeze": "cace46e08e53b7e89a434e23721db85ac993f6f5",
+  "driver_identity": {
+    "pid": 3839337,
+    "start_ticks": 442887299,
+    "state": "R",
+    "parent": 3839330,
+    "group": 3839330,
+    "session": 3839330
+  },
+  "wrapper_identity": {
+    "pid": 3839448,
+    "start_ticks": 442887378,
+    "state": "R",
+    "parent": 3839337,
+    "group": 3839330,
+    "session": 3839330
+  },
+  "actual_returncode": 0,
+  "started_monotonic_ns": 4428873783343943,
+  "ended_monotonic_ns": 4428902672659618,
+  "actual_parent_wait_seconds": "28.889315675",
+  "engineering_added_seconds": "28.889315675",
+  "engineering_cumulative_used_seconds": "55747.0395659926018",
+  "engineering_remaining_seconds": "19252.9604340073982",
+  "accounting": "Complete parent actual wait; nested wait not double charged.",
+  "errors": [],
+  "outer": "/tmp/mr3_p2a_v47_ready_provenance/actual_read_wait",
+  "result": "/tmp/mr3_p2a_v47_ready_provenance/extract_v1.json",
+  "worlds": 0,
+  "optimizer_updates": 0,
+  "scientific_qualification_credit": false,
+  "old_failures_preserved": true,
+  "external_driver_absence_review_required": true
+}

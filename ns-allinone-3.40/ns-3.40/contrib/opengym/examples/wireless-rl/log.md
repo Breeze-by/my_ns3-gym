@@ -8594,3 +8594,14 @@ rtk proxy env PYTHONNOUSERSITE=1 /usr/bin/python3 -B -m mr3_learning.reach_execu
 ```
 
 10项PASS，rc0/reap，child0.118299942秒、两源稳定及逐字恢复；0原件/World/工程费，无科学资格。待新freeze提交push后唯一两流入口见[V47](report/20261022_mr3_p2a_v47_ready_provenance.md)。
+
+
+## 2026-10-22 MR3 P2A V47：两流ready/序列来源描述诊断闭合PASS
+
+唯一命令cwd=canonical wireless-rl：`rtk proxy env PYTHONNOUSERSITE=1 /usr/bin/python3 -B -m report.assets.20261022_mr3_p2a_v47_ready_provenance.run_forensic_v1 --freeze deb2b5a8d46ab6ec9cd6a3eb897c8ff0bf75ba0c`。同一V45证据freeze cace46e08e53b7e89a434e23721db85ac993f6f5/failedrooms，两流384380343B完整SHA/bytes/stat与V45库存一致；实际rc0/reap，0新World/native/model/optimizer或数学重放。
+
+recorder35926行/parse0、ready一次第350行clock2.58秒，无driver_identity_match/GID_stable false。motion122485行/parse0、reach_decision12723；每机readyFalse3050/True1191且started/allow均False，每方向ready翻转169。首invalid为第79596行sim82.4 tb3 calibration publication stream gap/regression；此类1363、raw source cadence gap/regression2723，共4086 invalid ingress；reach_model_failure9252条可能重复锁定故障，不是9252独立首错。14357选择候选仅200入选/14157省略，完整计数和有界首末/tail保留，message不输出/raw_json仅SHA。worker四ready实际接收与合取仍unknown，82.4晚fault不能倒因为V46的37.92 initial-ready之前原因，原V45FAIL不改。
+
+独立metadata/source/Git/fee/PID review PASS/review_errors=[]：78scope＋scope=79 outer全before/after/current/Git相等、6解释来源相符，三保存PID/start freshgone（Z计存在），未重读raw或运行新consumer。parent真实28.889315675秒、inner28.566096096包含不加；累计55747.0395659926018/75000、余19252.9604340073982，pilot/final各0新增。[canonical库存](report/assets/20261022_mr3_p2a_v47_ready_provenance/closed_inventory_v1.json)封存5份派生成果/314747B，位置A47/closed_execution，逐字SHA/bytes/stat一致，纯包装0新工程费；原source/scope/回执不覆盖。见[V47闭合](report/20261022_mr3_p2a_v47_ready_provenance.md)。
+
+下一先真实ready接收/合取有限日志和startup健康失败传播，再根治producer/transport/consumer的source序列与时序；不降门/加400秒/跳过失败或重试V45。V48禁用人工提速候选不供native信用，旧20100整链预约不可沿用；95%/安全/source门与用户自主续接授权保持，P2A未完成。
