@@ -1,5 +1,9 @@
 # ROS component memory — MR3
 
+2026-10-23 V51准备：固定V50 reset首open回合的一次独立runtime profile，14输入/24旧证据源/9执行源封存，6组真实toy生命周期CPU及guard/driver模块help PASS；尚未原件消费。预约840主＋60尾＝900工程秒可funded，先实测再恒等优化/显式reset登记与新完整资格。用户持续委托保持，后续有界工程块按实测自主规划、诚实保留旧账及pilot/final原额；P2A未完成。 见[V51](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261023_mr3_p2a_v51_runtime_profile.md)。
+
+2026-10-23 V50闭合FAIL：freeze23e909380真实reap rc1；11EP/296原生返回，30必要角色18PASS/2FAIL/10SKIP。reset input/runtime/full PASS，angular/physics旧probe入口拒绝、阶段11302.772605716>最终cap6301.463804643；可选两corridors停车证据缺口保留。deadline/minimum/pilot/final未启、0学习。911源/10ELF一致、545保存pair freshgone；5070原件10224871773B无损封存855260558B/0软链。工程parent union14162.168963343，累计70121.7738945746018/75000、余4878.2261054253982，pilot/final不动，P2A未完成。 见[V50闭合](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261023_mr3_p2a_v50_qualification.md)。
+
 2026-10-22 V40闭合FAIL：新冻结291b9e32e实际preflight阻止merge_map输出打包未登记的旧native pin冲突；755源/Git/current无漂移。未启动matrix/World/native/PPO，3身份gone，完整parent实费22.442744464（inner包含不叠加）。累计48282.3965638106018/75000、余26717.6034361893982；原FAIL及pilot/final余额保持。用户已授权自主直到P2A完成，不再重复审批；继续显式packing source版本修复/新freeze，P2A未完成。见[V40闭合](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261022_mr3_p2a_v40_native_qualification.md)。
 
 2026-10-22 V40授权续接：用户明确“你一直继续执行就好了，直到把P2A完成，不需要问我是否批准”，授权自主持续完成P2A，不再反复请求一般预算/实施批准。当前工程块75000，入场48259.9538193466018、余26740.0461806533982；完整新native资格+收口+minimum预约20100。V39恒等提速已完成，现准备新冻结完整链；pilot/final初始余额、95%/质量/安全门及旧FAIL保持，P2A仍未完成。见[V40](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261022_mr3_p2a_v40_native_qualification.md)。

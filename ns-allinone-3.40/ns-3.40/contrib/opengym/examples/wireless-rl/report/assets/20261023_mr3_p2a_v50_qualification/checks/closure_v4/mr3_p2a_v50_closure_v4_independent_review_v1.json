@@ -1,0 +1,64 @@
+{
+  "schema": "mr3-v50-closure-v4-independent-static-review-v1",
+  "status": "PASS_FOR_ARTIFICIAL_SELFCHECK_THEN_CONDITIONAL_POST_REAP_REVIEW",
+  "passed": true,
+  "sources": [
+    {
+      "path": "/tmp/mr3_p2a_v50_review_closed_draft_v4.py",
+      "bytes": 42299,
+      "sha256": "320eb795fa7dbc0beb1aedba6f9ba54d193f38f0df31155bb670261c3e5747e9",
+      "syntax_AST_parsed": true
+    },
+    {
+      "path": "/tmp/mr3_p2a_v50_collect_closed_draft_v4.py",
+      "bytes": 16368,
+      "sha256": "83477102f5b6575824b3c9a954fa2cc8ba34331d33f35f6a306b927ab27e2ad3",
+      "syntax_AST_parsed": true
+    },
+    {
+      "path": "/tmp/mr3_p2a_v50_closure_selfcheck_v4.py",
+      "bytes": 6981,
+      "sha256": "d0d0bea633e2d45ec1ab19089ad013f501633ed74c125a72c38a254a51f96a76",
+      "syntax_AST_parsed": true
+    }
+  ],
+  "blockers": [],
+  "static_findings": [
+    "Canonical A16 PID occurrences are retained independently of the missing-start classification. Matching requires exact original path+JSON pointer and pid_field=pid. A prefix or another object cannot assign a start to the canonical occurrence; conflicting starts retain original errors.",
+    "All valid saved pairs remain individual PID/start identities. PID-only occurrences stay unknown with separately saved global A16 inventory coverage reported separately; no start is constructed from another object or current /proc.",
+    "parent_wait_proof_valid starts provisionally true but each actual receipt/ledger/rc/arithmetic/identity/parent-child/interval/source check can permanently clear it. Runtime enumeration is refused while saved driver/wrapper/child identities are present, including Z.",
+    "Both collector modes require parent_wait_proof_valid and matching actual-parent-gone/stable-metadata predicates before any archive. Preservation may retain scientific FAIL, unknown identities or inconsistent metadata, but cannot assert final quiescence or scientific acceptance.",
+    "Frozen activity Python source membership now uses the fixed execution FREEZE Git tree, matching the producer start-time ASSETS *.py snapshot without adding later closure-tool copies to old actual-wait source receipts.",
+    "Collector continues to use the unchanged SHA-pinned V45 byte copier; exclusive output and failure inventory, nofollow symlink metadata, special-file rejection, complete directory/file membership/stat checks, deterministic text gzip with decoded SHA and opaque already-compressed/model bytes are preserved.",
+    "Collector review/source bindings are rehashed before and after archive; original source metadata and report bytes must remain unchanged. Real scientific PASS/FAIL/SKIPPED remain reported facts, with no new P2A theorem."
+  ],
+  "selfcheck_static_inventory": {
+    "method_count": 10,
+    "method_names": [
+      "test_canonical_pair_is_not_missing_start",
+      "test_missing_start_retains_exact_original_location",
+      "test_different_object_same_pid_cannot_repair_occurrence",
+      "test_prefix_pair_does_not_assign_start_to_canonical_pid",
+      "test_prefix_pair_without_canonical_pid_has_no_raw_pid_occurrence",
+      "test_conflicting_same_object_starts_remain_error",
+      "test_global_unbound_pid_is_still_distinct",
+      "test_real_a16_embedded_raw_json_preserves_nested_locations",
+      "test_false_parent_proof_cannot_grant_any_archive_or_reaped_claim",
+      "test_valid_receipt_with_scientific_failure_can_only_preserve"
+    ],
+    "executed": false,
+    "claim": "Ten method definitions, not ten passing tests. They load only fixed candidate definitions and the pinned A16 helper; no run(), actual metadata tree, /proc observation or scientific reader invocation is called by the listed fixtures."
+  },
+  "remaining_scope_limits": [
+    "Actual argv is retained and structurally checked, not independently reconstructed per frozen phase; no qualification-argument credit follows.",
+    "A16 completeness covers the declared JSON/launch.log/ledger.jsonl/identity-bearing raw_json domain. Other original external-absence console input bindings are retained as reported facts; this review does not freshly reconsume that whole original domain.",
+    "Only after root confirms the entire V50 driver has truly exited/reaped may the metadata/proc reviewer run. Its successful real output then controls the explicit collector mode; no actual evidence or fresh process observation was performed for this static verdict.",
+    "A separate full original scientific conjunction remains necessary for P2A: complete same-freeze qualification/minimum positive update/pilot checkpoint/final-only strict tasks, original resource and closure gates. Archival success cannot supply it."
+  ],
+  "candidate_or_reader_imported_or_executed": false,
+  "tests_run": false,
+  "runtime_originals_read": false,
+  "proc_read": false,
+  "repository_modified": false,
+  "native_or_scientific_credit": false
+}

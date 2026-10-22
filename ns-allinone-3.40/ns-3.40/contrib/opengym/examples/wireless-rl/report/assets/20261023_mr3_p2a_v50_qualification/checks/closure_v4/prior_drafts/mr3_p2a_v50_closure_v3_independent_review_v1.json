@@ -1,0 +1,60 @@
+{
+  "schema": "mr3-v50-closure-v3-independent-static-review-v1",
+  "status": "SMALL_REPORTING_FIX_REQUIRED",
+  "candidate_bindings": [
+    {
+      "path": "/tmp/mr3_p2a_v50_review_closed_draft_v3.py",
+      "bytes": 39050,
+      "sha256": "af14823acf883c3f3ed4ce0d338d436710e73c291ba8b0afa21dafcfb09f9f66",
+      "AST_syntax_only": true
+    },
+    {
+      "path": "/tmp/mr3_p2a_v50_collect_closed_draft_v3.py",
+      "bytes": 16368,
+      "sha256": "295a79c2dc2e74ed68815ebfc53e763f72d4433b091d59a5e98f9e3e42e50505",
+      "AST_syntax_only": true
+    }
+  ],
+  "candidate_executed": false,
+  "tests_executed": false,
+  "runtime_roots_enumerated": false,
+  "runtime_originals_or_proc_read": false,
+  "repository_modified": false,
+  "v2_originals_and_preserved_copies_equal": true,
+  "v2_preservation_receipt": "/tmp/mr3_p2a_v50_closure_v2_independent_preservation.json",
+  "A16_reference": {
+    "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v16/external_absence_v1.py",
+    "sha256": "cedae11c4b9bbf6f4887ae5afe2fa10fff04e5a28595f5c9e748669c8d18493f"
+  },
+  "confirmed_improvements": [
+    "Pinned full A16 source definitions are used for original launch/ledger consumption and identity-bearing raw_json parse/visit; original same-object pairs/launch PIDs and parser errors are merged.",
+    "parent_wait_proof_valid is a conservative latch rather than hardcoded True. Both collector modes require it plus stable bindings and freshly absent required parent identities.",
+    "Parent proof checks typed actual waited/returncodes, wrapper/coordinator same PID-start, inner child-parent relation, temporal enclosure, source_before==after and full expected source membership, ledger equality and actual wrapper exit consistency.",
+    "A genuine scientific child rc1 with a valid unchanged-source wait receipt is still retained as scientific FAIL, not converted to a receipt-integrity failure merely for rc1.",
+    "Separate preserve-evidence mode keeps original FAIL/unknown and claims only a stable opaque byte snapshot; lossless copier and source/membership end checks remain unchanged."
+  ],
+  "findings": [
+    {
+      "id": "A16_PID_OCCURRENCE_MISLABEL",
+      "severity": "fix_before_accurate_unknown_reporting",
+      "location": "Review.merge_a16 loop over evidence.pid_only",
+      "evidence": "The fixed A16 Evidence.visit unconditionally records value[pid] in pid_only even when this same object already supplied an explicit valid PID/start pair. v3 marks all those occurrences missing_same_object_start.",
+      "impact": "Paired launch/ledger/raw_json objects are falsely counted/labelled as PID-only unknown. This does not mint a pair or relax archive admission, but the unknown report is factually inaccurate.",
+      "minimal_fix": "Use the A16 identities occurrences at the exact same source+JSON pointer with pid_field=pid to distinguish genuinely unpaired occurrences, or retain this set as generic PID occurrences and label only genuinely unpaired ones unknown. Never borrow a start from a different object."
+    },
+    {
+      "id": "POST_CLOSE_DYNAMIC_ASSET_GLOB",
+      "severity": "conditional_operation_blocker",
+      "location": "run expected_wait_sources.update((plan_path, *A.glob('*.py')))",
+      "evidence": "The actual frozen execute_chain captured its ASSETS Python set at driver startup. The v3 reviewer reconstructs this from the current directory later.",
+      "impact": "If a post-wait collector/reviewer .py is first copied into A50, the required source receipt membership falsely grows, parent_wait_proof_valid becomes False, and even preservation mode rejects. No activity artifact was inspected to assert such a change actually occurred.",
+      "minimal_fix": "Reconstruct that set from the frozen Git asset tree/recorded immutable driver declaration, or keep A50 top-level *.py membership unchanged until the review and collector finish."
+    }
+  ],
+  "remaining_scope_limits": [
+    "Actual argv is checked for typed nonempty list/cwd and stored receipt consistency, but not reconstructed per frozen phase; this draft does not replace the separate full scientific/qualification argument review.",
+    "JSON+launch/ledger and embedded raw_json are freshly parsed. Original external-absence input_bindings for other omitted console streams are retained via the stored report but not all freshly rehashed here. Do not claim a new complete reconsumption of the original absence entire input domain; the copier later hashes every original byte."
+  ],
+  "not_a_scientific_or_close_result": true,
+  "old_scientific_FAIL_unchanged": true
+}

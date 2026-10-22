@@ -3128,5 +3128,126 @@
     "canonical_closed_bytes": 314747,
     "canonical_byte_copies_exact": true,
     "archive_engineering_added_seconds": "0"
+  },
+  "mr3_p2a_v50_closed_20261023": {
+    "status": "ACTUAL_FAIL_REAPED_METADATA_CLOSED_BYTES_VERIFIED",
+    "recorded_date": "2026-10-23",
+    "review_base_commit": "23e909380b470039bd5680cf2d07710dca71097e",
+    "report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261023_mr3_p2a_v50_qualification.md",
+    "scope": "Unique V50 whole chain reaped rc1. 11 actual EP/296 native returns; 30 mandatory roles:18PASS/2FAIL/10SKIPPED. Reset input/runtime/full pass; angular/physics old probe workload admission FAIL and reset final-stage wall overrun retained. Optional physical6PASS/2corridors stop-evidence FAIL separate. Deadline/minimum/pilot/final not submitted; no learning/checkpoint/final95 credit. Independent metadata/PID/source PASS does not alter scientific FAIL. P2A incomplete.",
+    "mandatory_roles": {
+      "registered": 30,
+      "passed": 18,
+      "failed": 2,
+      "skipped": 10
+    },
+    "actual_episodes": 11,
+    "native_returned_transitions": 296,
+    "full_final_result": {
+      "passed": true,
+      "wall_seconds": "6342.154525786"
+    },
+    "complete_driver_result": {
+      "passed": false,
+      "returncode": 1
+    },
+    "reset_stage": {
+      "passed": false,
+      "actual_wall_seconds": "11302.772605716",
+      "final_effective_cap_seconds": "6301.463804643",
+      "within_stage_wall_allocation": false
+    },
+    "engineering_entry_seconds": "55959.6049312316018",
+    "engineering_parent_union_seconds": "14162.168963343",
+    "engineering_cumulative_seconds": "70121.7738945746018",
+    "engineering_remaining_seconds": "4878.2261054253982",
+    "pilot_added_seconds": "0",
+    "validation_added_seconds": "0",
+    "new_optimizer_updates": 0,
+    "final_model_created": false,
+    "source_closed_review": "report/assets/20261023_mr3_p2a_v50_qualification/closed_execution/closure_tools/mr3_p2a_v50_independent_closed_review_v4.json",
+    "source_closed_review_passed": true,
+    "source_count": 911,
+    "library_count": 10,
+    "saved_identity_pair_count": 545,
+    "saved_identity_pairs_fresh_gone": true,
+    "PID_only_distinct_PID_count": 475,
+    "pids_without_separately_saved_start": [],
+    "missing_same_object_start_occurrences_retained": true,
+    "cross_object_pair_reconstruction_performed": false,
+    "closure_artificial_selfcheck": {
+      "path": "report/assets/20261023_mr3_p2a_v50_qualification/checks/closure_v4/mr3_p2a_v50_closure_selfcheck_execution_v4.json",
+      "passed": true,
+      "tests": 10,
+      "engineering_fee": "0"
+    },
+    "actual_phase_argv": {
+      "preflight": [
+        "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+        "-m",
+        "report.assets.20261023_mr3_p2a_v50_qualification.preflight_v1",
+        "--plan",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v50_qualification/plan_v1.json",
+        "--freeze",
+        "23e909380b470039bd5680cf2d07710dca71097e",
+        "--output",
+        "/tmp/mr3_p2a_reach_v50_preflight.json"
+      ],
+      "matrix": [
+        "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+        "-m",
+        "mr3_learning.reach_preparation",
+        "--plan",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v50_qualification/plan_v1.json",
+        "--freeze",
+        "23e909380b470039bd5680cf2d07710dca71097e"
+      ],
+      "matrix_absence": [
+        "/usr/bin/python3",
+        "-B",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v50_qualification/external_absence_v1.py",
+        "--plan",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v50_qualification/plan_v1.json",
+        "--matrix-outer",
+        "/tmp/mr3_p2a_reach_v50_matrix_wait",
+        "--output",
+        "/tmp/mr3_p2a_reach_v50_matrix_absence.json"
+      ],
+      "chain_final_absence": [
+        "/usr/bin/python3",
+        "-B",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v50_qualification/external_absence_v1.py",
+        "--plan",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v50_qualification/plan_v1.json",
+        "--matrix-outer",
+        "/tmp/mr3_p2a_reach_v50_matrix_wait",
+        "--output",
+        "/tmp/mr3_p2a_reach_v50_chain_final_absence.json"
+      ]
+    },
+    "outermost_shell_argv": null,
+    "outermost_shell_argv_note": "Not persisted in entry/summary; cannot independently recover full original shell/env from the current materials. No synthesized claim. Actual child phase argv/waits are canonical.",
+    "archive_status": "COMPLETE_CLOSED_BYTES_VERIFIED",
+    "canonical_inventory": "report/assets/20261023_mr3_p2a_v50_qualification/closed_inventory_v1.json",
+    "archive_original_files": 5070,
+    "archive_original_bytes": 10224871773,
+    "archive_canonical_bytes": 855260558,
+    "archive_symlinks": 0,
+    "inventory_sha256": "4459f8f76c4ba59dc89d819a3647ddaa6cfa56170aa0d5e999e6c5fcba25afb7",
+    "next": "Complete opaque archive and FAIL closure commit; bounded single-EP runtime profile before changing shared projection; then explicit versioned reset reader admission/actual-entry CPU and prospective costed route within actual balance. No old retry, gate relaxation, cross-freeze qualification, or automatic P2B.",
+    "canonical_final_archive_review": "report/assets/20261023_mr3_p2a_v50_qualification/closed_archive_review_v1.json"
+  },
+  "mr3_p2a_v51_runtime_profile_preparation_20261023": {
+    "report": "report/20261023_mr3_p2a_v51_runtime_profile.md",
+    "scope": "report/assets/20261023_mr3_p2a_v51_runtime_profile/scope_v1.json",
+    "status": "PREPARED_NOT_EXECUTED",
+    "reservation_seconds": 900,
+    "engineering_used": "70121.7738945746018",
+    "engineering_remaining": "4878.2261054253982",
+    "inputs": 14,
+    "evidence_sources": 24,
+    "execution_sources": 9,
+    "lifecycle_cpu_groups": 6,
+    "scientific_qualification_credit": false
   }
 }

@@ -1,0 +1,39 @@
+{
+  "schema": "mr3-single-ep-runtime-profile-v3-driver-independent-static-review-v1",
+  "status": "PASS_STATIC_NO_NEW_BLOCKER",
+  "passed": true,
+  "sources": [
+    {
+      "path": "/tmp/mr3_p2a_single_ep_runtime_profile_candidate_v3/run_profile_v1.py",
+      "bytes": 15951,
+      "sha256": "15cae43215c3250a20514e5e16357f87db6476346656f4a6f3677bf78ee5291c"
+    },
+    {
+      "path": "/tmp/mr3_p2a_single_ep_runtime_profile_candidate_v3/profile_guard_v3.py",
+      "bytes": 15033,
+      "sha256": "ac8f7bcacdb5ef0e9eb560d19538d1bbc14885f0a88d67c8c85b955b41abdff1"
+    }
+  ],
+  "blockers": [],
+  "findings": [
+    "Guard v3 preserves the real-wait lifecycle fix and rechecks the mutable received_signals list when computing the actual final exit code after restoring handlers. The driver also independently requires guard received_parent_signals==[] and both nested and wrapper real rc0.",
+    "Driver actual parent interval starts before wrapper Popen and ends only after an integer real child.wait return. Submit/identity/write exceptions after a successful Popen still enter the true-wait loop; exceptions cannot fabricate completion. Parent fee is calculated before receipt/guard validation, so failed or missing receipts do not erase submitted activity cost.",
+    "Main fee is the complete wrapper submission-to-actual-wait interval, not the sum of nested intervals. Guard and child times must lie inside wrapper and complete parent interval. Main840 is checked using complete parent duration; external60 is a reservation to be charged from its later real interval, not invented consumption.",
+    "Fixed module/EP/argv/cwd and same-object owner/wrapper/guard/child identity comparisons align with current reach_execution receipt keys. The wrapper actual source rows are checked by exact path/bytes/SHA against source admission, while its own before/after stat lists must agree.",
+    "Source admission includes driver/common/guard/child plus the real reach_execution -> preparation -> native_custody -> supervisor -> ipc import chain, full sealed scope and old 24 evidence-source/interpreter checks. It does not import scientific/application code merely for validation.",
+    "Scope and real balance admission are read before submission. Failure summary retains errors, actual rc, complete charged parent interval, original entry budget and remaining amount. External final closure remains explicitly pending rather than fabricated PASS.",
+    "No World/model/GPU/update, retry, warmup, original audit change or new qualification credit is introduced by these wrappers."
+  ],
+  "remaining_real_execution_requirements": [
+    "Root must seal the installed canonical source versions and complete actual scope with the true closed inventory/review/budget/input bindings; this /tmp review grants no execution freeze or balance facts.",
+    "Final external observation must verify saved driver/wrapper/guard/child PID/start absence (Z present), original input/source/output stability, and actual external tail<=60 plus main+tail union/endpoint<=900 and ceiling balance. Nested intervals must not be charged again.",
+    "Signals, incomplete pstats, actual timeout, missing receipt, false original runtime verdict, stale source/input bindings or real overrun remain FAIL with full actual fee.",
+    "Lifecycle CPU 6 groups /4 toy processes is root-reported actual PASS, not rerun or independently reconsumed by this static review. No real single-EP profile has been run by this reviewer."
+  ],
+  "candidate_or_reader_imported_or_executed": false,
+  "tests_run": false,
+  "runtime_originals_read": false,
+  "proc_read": false,
+  "repository_modified": false,
+  "native_or_scientific_credit": false
+}

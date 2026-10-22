@@ -8665,3 +8665,60 @@ rtk proxy env PYTHONNOUSERSITE=1 /home/zhuyulab/miniconda3/envs/ns3gym/bin/pytho
 计划SHAac5e6d4e6fabadb37ac9d8336cfeaa00ec7401b956fb2cab9842ae410ccb206e，bindingSHA29b0b5ddfcac0a871e8508a67679a6e8fca047b8e6a205c200ba0d14cb3c2cb4，911源/10ELF/完整12EP30roles，policyminimum16→pilot请求上限64（首轮cap32×2，可能提前terminal/后续round或wall收口，不保证恰2EP/64）→同一pilot final.zip/0更新的final3strict95门保持。工程预约18220=16000+1800+300+120，入场55959.6049312316018/75000余19040.3950687683982，CPU新增0，pilot/final未动；所有旧FAIL保留。待最后独立封存review和新freeze后唯一全链，不供native/学习信用。见[V50准备](report/20261023_mr3_p2a_v50_qualification.md)。
 
 V50封存独立review v2 PASS：983选定输入SHA结束相等、911当前源/10ELF和全部CPU恢复/compiled build链一致；30真正mandatory role全required=True。首稿review谓词错把reset原role=None/requiredFalse的physical_per_episode描述附加项当必要角色，被判BLOCKED；首稿v1/failed_v1原字节SHA b49f6a5639c000b2cd62073e046afa7e97f1400cbad312abcc0154822a66f241保留。修正只在review分类，未改source/plan/gates，v2 SHA3902118cdc160aa77f644bd9860f428de77ab655b7e0b8c829fc4b7499e10676，0原件科学消费/0工程费。[review v2](report/assets/20261023_mr3_p2a_v50_qualification/independent_sealed_plan_review_v2.json)。
+
+## 2026-10-23 MR3-P2A V50 actual FAIL closure / V51 profile preparation
+
+### 闭合结果：FAIL，未取得完整资格
+
+唯一冻结 `23e909380b470039bd5680cf2d07710dca71097e` 的整链已真实退出 rc1，所有已提交子进程均实际等待。共 **11实际EP/296原生返回；30必要角色18PASS、2FAIL、10SKIPPED**。deadline、minimum、pilot、final均未提交；本轮0 GPU/optimizer更新、无新模型或95%验证信用。P2A未完成，P2B/gateway不启动。
+
+| 阶段 | 实际结果 |
+|---|---|
+| interface | 1EP/32返回，9必要角色PASS，阶段2032.384042887秒 |
+| terminal | 2EP/8返回，6必要角色PASS，阶段758.807755841秒 |
+| reset native | 8EP/256返回、rc0，native4557.609774705秒 |
+| reset input/runtime/full | input八叶均PASS；runtime2624.727991544秒PASS；full6342.154525786秒PASS |
+| reset angular/physics | 两必要角色FAIL，旧reset workload/probe入口不匹配 |
+| reset information/cadence/peer_control/closure | 四必要角色SKIPPED |
+| deadline | 六必要角色SKIPPED |
+
+angular原错误为 `benchmark: ValueError('not the exact declared reset workload')`；八份sampled bounds均通过仍不能升格整体PASS。旧入口要求 `mr3-p2a0-outward-cancel-v6`，冻结实际probe为 `mr3-p2a-reach-outward-cancel-v1`。physics原错误为 `ValueError('aggregate requires only the predeclared same-freeze two-worker reset matrix')`，在aggregate数学前拒绝。修复后的reader不能追认本轮FAIL。
+
+可选 `physical_per_episode` 另有6PASS/2FAIL：两份corridors tb3缺合格hard-zero/cancel停止证据。它不是30必要role之一；errors空及closure=True不构成完整physics PASS，该缺口独立保留。
+
+reset完整阶段 **11302.772605716 > 最终effective cap6301.463804643秒**，资源门也FAIL。较早native准入时的6289.815418144不是最终stage cap。matrix内部总墙秒14108.562100044仍在16000以内，不能冲销阶段超额或倒借未执行deadline额度。已提交长reader真实排空，未通过截断隐藏费用。
+
+### 末账、来源和原件
+
+| 完整parent区间 | 工程秒 |
+|---|---:|
+| preflight |44.276388611|
+| matrix |14109.941355542|
+| matrix_absence |3.958494258|
+| chain_final_absence |3.992724932|
+| 同scope区间union |**14162.168963343**|
+
+工程累计 **70121.7738945746018/75000**，余 **4878.2261054253982**。nested native/full/runtime不重复相加；工程外尾7.951219190已含于union。pilot/final各+0，原余1870决策/2905.9547395464029秒与三open401/402/403、900决策/9000秒保持。
+
+[driver原summary](report/assets/20261023_mr3_p2a_v50_qualification/closed_execution/tmp/mr3_p2a_reach_v50_driver_v1/summary.json)、[matrix原summary](report/assets/20261023_mr3_p2a_v50_qualification/closed_execution/tmp/mr3_p2a_reach_v50_matrix/summary.json) 和各实际wait/ledger完整封存。最外工具shell argv/env未写入entry/summary，当前材料不能独立恢复其完整原文，明确留此记录，不补造；各实际子阶段完整argv及冻结driver入口均在原回执。matrix实际argv为：
+
+```text
+/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -m mr3_learning.reach_preparation --plan /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v50_qualification/plan_v1.json --freeze 23e909380b470039bd5680cf2d07710dca71097e
+```
+
+两份外部absence原报告各538身份/514 input bindings PASS；随后[独立闭合review v4](report/assets/20261023_mr3_p2a_v50_qualification/closed_execution/closure_tools/mr3_p2a_v50_independent_closed_review_v4.json)实际PASS：**911源/10ELF一致、545保存PID/start pair freshgone，Z仍计present**。475个distinct PID涉及原canonical PID-only occurrence；原缺same-object-start位置仍保留，global unbound=[]仅表示另有原保存pair提供全局inventory coverage，不能跨对象补start或为原缺失行伪造gone。review不重算科学资格，不重消费原absence所有其他console。
+
+[10项人工closure自检](report/assets/20261023_mr3_p2a_v50_qualification/checks/closure_v4/mr3_p2a_v50_closure_selfcheck_execution_v4.json)实际PASS、源前后相等。未执行的v1/v2/v3草稿及其已识别静态缺口均保留；工具元数据PASS不改科学FAIL。只读bookkeeping中的文件写入竞争、容器/路径假设错误与idle-agent派发失误均不改原结果、未创建新World或虚报实验费。
+
+[规范库存](report/assets/20261023_mr3_p2a_v50_qualification/closed_inventory_v1.json)完整：**5070文件、10224871773原字节 → 855260558封存字节、0软链**，inventory SHA `4459f8f76c4ba59dc89d819a3647ddaa6cfa56170aa0d5e999e6c5fcba25afb7`。每个新增gzip反解SHA/size等于原字节，已有压缩原件逐字保存，源stat/成员集保持；原件未删。[封存后字节复核](report/assets/20261023_mr3_p2a_v50_qualification/closed_archive_review_v1.json)独立重哈希全部encoded文件和完整成员集。无损包装不授科学信用。
+
+### 后继执行
+
+先按[新V51范围](report/20261023_mr3_p2a_v51_runtime_profile.md)对固定已闭合单EP做一次有界runtime profile，保留24份实际旧source proof字节，定位长reader成本。选择先测后改以隔离测量；`reach_audit_projection.py`本身不在这24源集合内，不能把该helper的所有修改一概说成必破旧runtime proof。
+
+随后显式登记Reach reset angular/physics入口，核immutable旧源/whole-source inverse及真实双reader入口，先人工正反例CPU，再恒等性能优化与新freeze完整资格。原停车证据缺口、版本接线和阶段成本分别处理。不得跨freeze拼18个PASS补齐资格，不降低95%/安全/源龄/FIFO/TTL或沿用不可负担旧预约。
+
+用户已委托持续完成P2A、不再一般审批；后续必要工程块应依据实测作前瞻有界决策，明确是代理在该委托下的规划，不能伪称用户逐数值批准，也不清零旧累计账或自动扩大pilot/final额度。最终仍须实际eligible正更新、同一pilot final.zip、三指定final-only回合全部strict95及完整独立冻结/关闭证据。地图覆盖95%不是95%成功概率。
+
+
+V51准备（0工程费）：6组真实toy lifecycle、guard与driver实际模块help全部PASS，精确argv/source/PID/wait见V51 checks对应actual_wait.json；未消费旧reader输入、未启动World/模型。固定14输入、24旧源、9执行源和900秒预约见V51 scope；新freeze后仅一次profile，所有结果/partial/真实parent费另追加。

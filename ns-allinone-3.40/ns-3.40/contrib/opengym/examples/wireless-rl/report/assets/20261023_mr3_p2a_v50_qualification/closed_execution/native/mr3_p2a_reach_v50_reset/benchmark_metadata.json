@@ -1,0 +1,93 @@
+{
+  "kind": "scripted_p1c_sampling_not_rl",
+  "workers": 2,
+  "safety_contract": "mr3-reach-v1",
+  "robots_per_worker": 3,
+  "schedule": [
+    [
+      "open",
+      101
+    ],
+    [
+      "open",
+      101
+    ],
+    [
+      "rooms",
+      101
+    ],
+    [
+      "corridors",
+      101
+    ]
+  ],
+  "steps_per_episode": 32,
+  "command": [
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/benchmark.py",
+    "--workers",
+    "2",
+    "--schedule",
+    "open:101,open:101,rooms:101,corridors:101",
+    "--steps",
+    "32",
+    "--preparation-motion-probe",
+    "--preparation-probe-version",
+    "mr3-p2a-reach-outward-cancel-v1",
+    "--base-domain",
+    "206",
+    "--base-port",
+    "15721",
+    "--output-root",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v50",
+    "--run-id",
+    "mr3_p2a_reach_v50_reset",
+    "--work-wall-seconds",
+    "5289.815",
+    "--close-reserve-seconds",
+    "120",
+    "--safety-contract",
+    "mr3-reach-v1",
+    "--seed-rule",
+    "exact-point-bridge-v2",
+    "--start-graph-rule",
+    "point-attachment-3x3-v1",
+    "--reach-geometry-rule",
+    "cone-support-v2"
+  ],
+  "python": "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+  "freeze": "23e909380b470039bd5680cf2d07710dca71097e",
+  "base_domain": 206,
+  "base_port": 15721,
+  "fault_probe": false,
+  "deadline_probe": false,
+  "terminal_probe": false,
+  "preparation_motion_probe": true,
+  "preparation_probe_version": "mr3-p2a-reach-outward-cancel-v1",
+  "preparation_parameter_review": false,
+  "preparation_parameter_profile": "original",
+  "preparation_parameter_review_source": null,
+  "resource_scope": "host counters include unrelated activity; GPU driver reports",
+  "num_logical_cpus": 80,
+  "cpu_affinity_count": 80,
+  "seed_rule": "exact-point-bridge-v2",
+  "start_graph_rule": "point-attachment-3x3-v1",
+  "reach_geometry_rule": "cone-support-v2",
+  "training_eligible": false,
+  "scientific_readers_applied": false,
+  "scientific_qualification": "PENDING_NEW_FREEZE_INDEPENDENT_AUDITS",
+  "qualification_scope": "engineering_collection_only_no_legacy_qualification_credit",
+  "preparation_fixture_implementation": "unchanged_v6_external_actions",
+  "preparation_fixture_schema": "mr3-reach-preparation-fixture-v1",
+  "work_wall_budget": {
+    "total_allocation_seconds": 5289.815,
+    "close_reserve_seconds": 120.0,
+    "started_wall_monotonic_ns": 4436303625434703,
+    "allocation_deadline_monotonic_ns": 4441593440434703,
+    "work_deadline_monotonic_ns": 4441473440434703,
+    "scope": "cooperative admission; complete in-flight RPC then normal close; no hard kill",
+    "rpc_admission_upper_bounds_seconds": {
+      "reset": 420.0,
+      "step": 90.0
+    }
+  }
+}

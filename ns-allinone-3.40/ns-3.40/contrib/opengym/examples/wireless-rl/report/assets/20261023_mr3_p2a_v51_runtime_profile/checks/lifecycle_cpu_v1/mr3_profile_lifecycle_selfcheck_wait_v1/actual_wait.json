@@ -1,0 +1,141 @@
+{
+  "schema": "mr3-reach-outer-actual-wait-v1",
+  "scope": "cpu",
+  "safety_contract": "mr3-reach-v1",
+  "actual_argv": [
+    "/usr/bin/python3",
+    "-B",
+    "/tmp/mr3_p2a_single_ep_runtime_profile_candidate_v3/lifecycle_selfcheck_v1.py",
+    "--output",
+    "/tmp/mr3_profile_lifecycle_selfcheck_v1"
+  ],
+  "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+  "coordinator_identity": {
+    "pid": 4123389,
+    "parent": 4123367,
+    "group": 4123367,
+    "session": 4123367,
+    "start_ticks": 444865393,
+    "state": "R"
+  },
+  "child_identity": {
+    "pid": 4123393,
+    "parent": 4123389,
+    "group": 4123367,
+    "session": 4123367,
+    "start_ticks": 444865409,
+    "state": "R"
+  },
+  "actual_returncode": 0,
+  "actual_waited": true,
+  "errors": [],
+  "started_monotonic_ns": 4448654096125882,
+  "ended_monotonic_ns": 4448664516754184,
+  "actual_child_wait_seconds": "10.420628302",
+  "source_before": [
+    {
+      "path": "/tmp/mr3_p2a_single_ep_runtime_profile_candidate_v3/profile_common_v1.py",
+      "sha256": "a237670641db99c5fefeeb2cf511619fd981819abaff072c5f82dcdffc205c78",
+      "bytes": 8760,
+      "stat": [
+        2051,
+        79187546,
+        8760,
+        1792702993775731866,
+        1792702993775731866
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a_single_ep_runtime_profile_candidate_v3/runtime_child_v1.py",
+      "sha256": "b59b330d0fed09ebcf2b9bbe821bb7da4d1a6b7ce5e8333a378addcbc9dd8739",
+      "bytes": 8735,
+      "stat": [
+        2051,
+        79187547,
+        8735,
+        1792702993775731866,
+        1792702993775731866
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a_single_ep_runtime_profile_candidate_v3/profile_guard_v3.py",
+      "sha256": "ac8f7bcacdb5ef0e9eb560d19538d1bbc14885f0a88d67c8c85b955b41abdff1",
+      "bytes": 15033,
+      "stat": [
+        2051,
+        79187551,
+        15033,
+        1792702993776731915,
+        1792702993776731915
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a_single_ep_runtime_profile_candidate_v3/lifecycle_selfcheck_v1.py",
+      "sha256": "06f6ea4aa7ed05eed21934bb2b874e9b0f3e52bde4cc2df443350443f029bcff",
+      "bytes": 16194,
+      "stat": [
+        2051,
+        79188304,
+        16194,
+        1792703211662440520,
+        1792703211662440520
+      ]
+    }
+  ],
+  "source_after": [
+    {
+      "path": "/tmp/mr3_p2a_single_ep_runtime_profile_candidate_v3/profile_common_v1.py",
+      "sha256": "a237670641db99c5fefeeb2cf511619fd981819abaff072c5f82dcdffc205c78",
+      "bytes": 8760,
+      "stat": [
+        2051,
+        79187546,
+        8760,
+        1792702993775731866,
+        1792702993775731866
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a_single_ep_runtime_profile_candidate_v3/runtime_child_v1.py",
+      "sha256": "b59b330d0fed09ebcf2b9bbe821bb7da4d1a6b7ce5e8333a378addcbc9dd8739",
+      "bytes": 8735,
+      "stat": [
+        2051,
+        79187547,
+        8735,
+        1792702993775731866,
+        1792702993775731866
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a_single_ep_runtime_profile_candidate_v3/profile_guard_v3.py",
+      "sha256": "ac8f7bcacdb5ef0e9eb560d19538d1bbc14885f0a88d67c8c85b955b41abdff1",
+      "bytes": 15033,
+      "stat": [
+        2051,
+        79187551,
+        15033,
+        1792702993776731915,
+        1792702993776731915
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a_single_ep_runtime_profile_candidate_v3/lifecycle_selfcheck_v1.py",
+      "sha256": "06f6ea4aa7ed05eed21934bb2b874e9b0f3e52bde4cc2df443350443f029bcff",
+      "bytes": 16194,
+      "stat": [
+        2051,
+        79188304,
+        16194,
+        1792703211662440520,
+        1792703211662440520
+      ]
+    }
+  ],
+  "source_unchanged": true,
+  "passed": true,
+  "console": {
+    "path": "/tmp/mr3_profile_lifecycle_selfcheck_wait_v1/console.log",
+    "sha256": "2e97d2b726146c9376055859ffe030f881a70269a6834654f06351d0cfd3af67"
+  }
+}

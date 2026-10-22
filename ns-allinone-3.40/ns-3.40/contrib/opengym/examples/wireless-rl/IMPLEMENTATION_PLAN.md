@@ -1,5 +1,9 @@
 # MR3 研发检查点与逐步验收
 
+2026-10-23 V51准备：固定V50 reset首open回合的一次独立runtime profile，14输入/24旧证据源/9执行源封存，6组真实toy生命周期CPU及guard/driver模块help PASS；尚未原件消费。预约840主＋60尾＝900工程秒可funded，先实测再恒等优化/显式reset登记与新完整资格。用户持续委托保持，后续有界工程块按实测自主规划、诚实保留旧账及pilot/final原额；P2A未完成。 见[V51](report/20261023_mr3_p2a_v51_runtime_profile.md)。
+
+2026-10-23 V50闭合FAIL：freeze23e909380真实reap rc1；11EP/296原生返回，30必要角色18PASS/2FAIL/10SKIP。reset input/runtime/full PASS，angular/physics旧probe入口拒绝、阶段11302.772605716>最终cap6301.463804643；可选两corridors停车证据缺口保留。deadline/minimum/pilot/final未启、0学习。911源/10ELF一致、545保存pair freshgone；5070原件10224871773B无损封存855260558B/0软链。工程parent union14162.168963343，累计70121.7738945746018/75000、余4878.2261054253982，pilot/final不动，P2A未完成。 见[V50闭合](report/20261023_mr3_p2a_v50_qualification.md)。
+
 2026-10-23 V50准备：PPO按本epoch/versioned永久Reach fault在targets/train前拒绝，旧literal与正常任务负样本保持；新47针对CPU、8分类/模块help、双环境readiness及计划生成/校验PASS，V49其余CPU仅按源相等兼容。911源/10ELF、新同freeze完整12EP/30角色→minimum16→pilot请求上限64→final三open401/402/403 strict95%已封存，尚未native/PPO。更紧工程预约18220=matrix16000+minimum1800+external300+preflight120，入场55959.6049312316018/75000、余19040.3950687683982；pilot/final原总额保持，不保证64样本或95%，旧FAIL保留。用户自主持续授权保持，P2A未完成。见[V50](report/20261023_mr3_p2a_v50_qualification.md)。
 
 2026-10-23 V49启动诊断闭合PASS：freeze14719a72b96cff65b134b7d46ec6d2ccbf84e061，两worker各rooms101/1真实step，2/2返回、2正常关闭，独立journal254/294行均完整。真实release为37.0/35.58sim秒且四项均ready；本次pause时motion已True，不冒充原生强制False回归。874源/10ELF一致，91保存身份含2原暂排祖先均freshgone；271原件497827640B无损封存38177415B/0symlink。完整parent212.565365239秒，工程累计55959.6049312316018/75000、余19040.3950687683982，pilot/final不动，P2A未完成。仅启动诊断、不填12EP/30角色；下一新V50先PPO新故障schema preupdate准入修复/相关CPU，再完整同freeze资格与学习链，用户自主授权保持。见[V49闭合](report/20261023_mr3_p2a_v49_startup_protocol.md)。

@@ -1,5 +1,9 @@
 # ns-allinone component memory
 
+2026-10-23 V51准备：固定V50 reset首open回合的一次独立runtime profile，14输入/24旧证据源/9执行源封存，6组真实toy生命周期CPU及guard/driver模块help PASS；尚未原件消费。预约840主＋60尾＝900工程秒可funded，先实测再恒等优化/显式reset登记与新完整资格。用户持续委托保持，后续有界工程块按实测自主规划、诚实保留旧账及pilot/final原额；P2A未完成。 见[V51](ns-3.40/contrib/opengym/examples/wireless-rl/report/20261023_mr3_p2a_v51_runtime_profile.md)。
+
+2026-10-23 V50闭合FAIL：freeze23e909380真实reap rc1；11EP/296原生返回，30必要角色18PASS/2FAIL/10SKIP。reset input/runtime/full PASS，angular/physics旧probe入口拒绝、阶段11302.772605716>最终cap6301.463804643；可选两corridors停车证据缺口保留。deadline/minimum/pilot/final未启、0学习。911源/10ELF一致、545保存pair freshgone；5070原件10224871773B无损封存855260558B/0软链。工程parent union14162.168963343，累计70121.7738945746018/75000、余4878.2261054253982，pilot/final不动，P2A未完成。 见[V50闭合](ns-3.40/contrib/opengym/examples/wireless-rl/report/20261023_mr3_p2a_v50_qualification.md)。
+
 2026-10-20交接入口：[P2A评估与后续交接](ns-3.40/contrib/opengym/examples/wireless-rl/report/20261020_mr3_p2a_assessment_handoff.md)。以下2026-10-18状态保留原时点含义，当前P2A.0已验收、P2A未完成，以根/无线组件活动计划及V20末账为准。用户本次仅要求保存评估；二维路线、验收规则调整和60000扩额尚未批准，先形成有界可行性/容量方案，不直接启动新训练。
 
 2026-10-18: P2A.0工程科学门已补验通过，待用户验收；原V26父编排中断保留，P2A未完成，未启动PPO。 源码冻结`92f8bdf5bba1ba245dc53ca0964eef81a7fff938`；同冻结四阶段/12回合、34必需科学角色全部通过，最后一个information只读消费者在原父进程组消失后单独补完；原ledger/未知返回码/缺失最终回执不补造。 原生468/468正常退出，枚举元数据中543个保存PID/start均gone。 reset非必需逐回合停车覆盖FAIL及所有旧FAIL保留，原合并覆盖门通过。 工程累计11420.856789876707/18000墙秒，pilot余额1870决策/2905.954739546403墙秒未用。 详见共享V26报告与20261018_mr3_p2a0_reflection.md；验收前不进入训练或后续步骤。

@@ -1,0 +1,189 @@
+--- /tmp/mr3_p2a_single_ep_runtime_profile_candidate/profile_guard_v1.py
++++ /tmp/mr3_p2a_single_ep_runtime_profile_candidate_v2/profile_guard_v2.py
+@@ -18,31 +18,54 @@
+ 
+ 
+ def stop_and_wait(child, errors, signals):
+-    """A26 owned-session TERM10/KILL5/actual-wait pattern; no fabricated rc."""
++    """TERM10/KILL5, then keep waiting until a real wait returns an actual rc.
++
++    Parent TERM/INT handlers only record. Other wait interruptions are retained
++    as failures and retried, never converted into a guessed return code/reap.
++    """
+     def send(number):
+         try:
+             os.killpg(child.pid, number)
+             signals.append(dict(signal=signal.Signals(number).name, monotonic_ns=time.monotonic_ns()))
+         except ProcessLookupError:
+             pass
+-        except OSError as error:
++        except BaseException as error:
+             errors.append('group signal: ' + repr(error))
+             try:
+                 child.send_signal(number)
+             except ProcessLookupError:
+                 pass
+-            except OSError as direct_error:
++            except BaseException as direct_error:
+                 errors.append('direct signal: ' + repr(direct_error))
++
++    def until(deadline_ns=None):
++        while True:
++            if deadline_ns is not None:
++                left = (deadline_ns - time.monotonic_ns()) / 1e9
++                if left <= 0:
++                    return None
++            try:
++                rc = child.wait() if deadline_ns is None else child.wait(timeout=left)
++                if type(rc) is int:
++                    return rc
++                errors.append('child.wait returned a non-integer; actual return code remains unknown')
++            except subprocess.TimeoutExpired:
++                if deadline_ns is not None:
++                    return None
++                errors.append('unexpected unbounded wait timeout; continue actual wait')
++            except BaseException as error:
++                errors.append('actual owned-child wait interrupted; continuing: ' + repr(error))
++
+     send(signal.SIGTERM)
+-    try:
+-        return child.wait(timeout=10.)
+-    except subprocess.TimeoutExpired:
+-        send(signal.SIGKILL)
+-    try:
+-        return child.wait(timeout=5.)
+-    except subprocess.TimeoutExpired:
+-        errors.append('owned child exceeded KILL reap allowance; full overrun charged FAIL')
+-        return child.wait()  # Never abandon an unreaped child to fit the ceiling.
++    rc = until(time.monotonic_ns() + 10_000_000_000)
++    if rc is not None:
++        return rc
++    send(signal.SIGKILL)
++    rc = until(time.monotonic_ns() + 5_000_000_000)
++    if rc is not None:
++        return rc
++    errors.append('owned child exceeded KILL reap allowance; full overrun charged FAIL')
++    return until()  # May overrun indefinitely; never abandon or invent a reap.
+ 
+ 
+ def group_members(group):
+@@ -85,7 +108,7 @@
+     return refs
+ 
+ 
+-def run(scope_path, execution_freeze, output):
++def run(scope_path, execution_freeze, output, received_signals=None):
+     started = time.monotonic_ns()
+     work_deadline, main_deadline = started + 810_000_000_000, started + 840_000_000_000
+     common.require(output.is_absolute() and output.parent == Path('/tmp')
+@@ -94,12 +117,18 @@
+     output.mkdir(exist_ok=False)
+     child, saved, rc, waited, timed_out = None, None, None, False, False
+     errors, signals = [], []
++    received_signals = [] if received_signals is None else received_signals
++
++    def check_interruption():
++        if received_signals:
++            raise RuntimeError('profiler guard interruption requested; stop child and retain FAIL')
+     before, after, inputs_before, inputs_after, refs_before, refs_after = [], [], [], [], {}, {}
+     scope, scope_binding, command = None, None, None
+     child_started, child_ended, members, child_summary = None, None, None, None
+     owner = common.identity(os.getpid())
+     common.write(output / 'guard_identity.json', owner)
+     try:
++        check_interruption()
+         common.require(Path.cwd() == common.W and Path(sys.executable).resolve() == Path('/usr/bin/python3').resolve(),
+                        'canonical W/system Python required')
+         common.require(__package__ and __package__.startswith('report.assets.'),
+@@ -120,8 +149,11 @@
+         common.require(expected_new <= {row['path'] for row in scope['execution_sources']},
+                        'three actual profiling source modules are not execution-bound')
+         before = common.source_rows(scope, execution_freeze, work_deadline)
++        check_interruption()
+         refs_before = parent_admission(scope, work_deadline)
++        check_interruption()
+         inputs_before = common.input_rows(scope, work_deadline)
++        check_interruption()
+         common.require(not any(path.is_dir() for path in common.EPISODE.glob('worker*'))
+             and common.EPISODE.name == 'episode001_open_101', 'RUN/worker input is forbidden')
+         command = ['/usr/bin/python3', '-B', '-m', __package__ + '.runtime_child_v1',
+@@ -135,21 +167,27 @@
+             common.require(saved['group'] == saved['session'] == child.pid and saved['parent'] == owner['pid'],
+                            'new child ownership/session identity differs')
+             common.write(output / 'child_identity.json', saved)
+-            try:
+-                rc = child.wait(timeout=common.remaining(work_deadline))
+-            except subprocess.TimeoutExpired:
+-                timed_out = True
+-                rc = stop_and_wait(child, errors, signals)
+-            waited, child_ended = True, time.monotonic_ns()
++            while not waited:
++                check_interruption()
++                left = (work_deadline - time.monotonic_ns()) / 1e9
++                if left <= 0:
++                    timed_out = True
++                    break
++                try:
++                    rc = child.wait(timeout=min(left, .1))
++                    common.require(type(rc) is int, 'child.wait returned no actual integer return code')
++                    waited, child_ended = True, time.monotonic_ns()
++                except subprocess.TimeoutExpired:
++                    continue
+     except BaseException as error:
+         errors.append(repr(error))
+     finally:
+-        if child is not None and not waited:
++        while child is not None and not waited:
+             try:
+                 rc = stop_and_wait(child, errors, signals)
+                 waited, child_ended = True, time.monotonic_ns()
+             except BaseException as error:
+-                errors.append('actual owned-child wait failed: ' + repr(error))
++                errors.append('cleanup interrupted; continuing until actual wait: ' + repr(error))
+     if saved is not None:
+         try:
+             members = group_members(saved['group'])
+@@ -179,11 +217,12 @@
+         except (OSError, ValueError) as error:
+             errors.append('child summary: ' + repr(error))
+     ended = time.monotonic_ns()
+-    result = dict(schema='mr3-single-ep-runtime-profile-guard-v1',
++    result = dict(schema='mr3-single-ep-runtime-profile-guard-v2',
+         native_evidence_freeze=common.EVIDENCE_FREEZE, profiling_execution_freeze=execution_freeze,
+         fixed_episode=str(common.EPISODE), scope=scope_binding, guard_identity=owner, child_identity=saved,
+         actual_argv=command, cwd=str(common.W), environment_policy='clean system stdlib only; no ROS/conda path injection',
+         actual_waited=waited, actual_returncode=rc, timed_out=timed_out, signals=signals,
++        received_parent_signals=received_signals, cleanup_signal_policy='record/defer; never raise from TERM/INT handler',
+         started_monotonic_ns=started, ended_monotonic_ns=ended,
+         actual_guard_seconds=str(Decimal(ended - started) / 10**9),
+         child_started_monotonic_ns=child_started, child_ended_monotonic_ns=child_ended,
+@@ -198,7 +237,7 @@
+         sampling_or_record_truncation=False, retries=0, warmup_calls=0,
+         no_cold_disk_timing_claimed=True,
+         accounting='Root must charge the complete outer parent actual-wait interval and real external tail union, not this nested child interval. Any overrun remains fully charged FAIL; OS-blocked I/O or reap can exceed nominal bounds.')
+-    result['passed'] = (waited and rc == 0 and not timed_out and not errors and ended <= main_deadline
++    result['passed'] = (waited and rc == 0 and not timed_out and not errors and not received_signals and ended <= main_deadline
+         and bool(before) and before == after and bool(inputs_before) and inputs_before == inputs_after
+         and bool(refs_before) and refs_before == refs_after and members == []
+         and type(child_summary) is dict and child_summary.get('passed') is True
+@@ -213,11 +252,16 @@
+     parser.add_argument('--execution-freeze', required=True)
+     parser.add_argument('--output', type=Path, required=True)
+     args = parser.parse_args()
++    received_signals = []
+     def interrupted(number, _frame):
+-        raise RuntimeError('profiler guard received ' + signal.Signals(number).name)
+-    signal.signal(signal.SIGTERM, interrupted)
+-    signal.signal(signal.SIGINT, interrupted)
+-    result = run(args.scope, args.execution_freeze, args.output)
++        received_signals.append(dict(signal=signal.Signals(number).name, monotonic_ns=time.monotonic_ns()))
++    previous = {number: signal.signal(number, interrupted) for number in (signal.SIGTERM, signal.SIGINT)}
++    try:
++        result = run(args.scope, args.execution_freeze, args.output, received_signals)
++    finally:
++        # run cannot leave an owned child without a real child.wait return.
++        for number, handler in previous.items():
++            signal.signal(number, handler)
+     print(json.dumps({key: result[key] for key in ('passed', 'actual_returncode', 'actual_guard_seconds')}), flush=True)
+     return 0 if result['passed'] else 1
+ 
