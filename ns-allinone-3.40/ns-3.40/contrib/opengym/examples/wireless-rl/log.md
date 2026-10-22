@@ -8383,3 +8383,13 @@ Canonical267files/9,295,067B,34saved IDs freshgone;4actualwaitunion520.102603214
 - protocol_extractor_cpu_v1: exact argv `["/usr/bin/python3", "-B", "report/assets/20261022_mr3_p2a_v38_protocol_cpu/test_protocol_forensic_v1.py"]`, CPUactualwait0.223493796sec,sourceunchanged,fee0. [protocol_extractor_cpu_v1](report/assets/20261022_mr3_p2a_v38_protocol_cpu/checks/protocol_extractor_cpu_v1/actual_wait.json).
 
 Nextone fixed23618B corridorsprotocolparse,60engineeringseconds includingexternalclosure, noqueue replay/actor/map/scans/truth/World/learning. See [V38](report/20261022_mr3_p2a_v38_protocol_cpu.md).
+
+
+### 2026-10-22 P2A V38 fixed protocol forensic closed
+
+Oneattempt freezea44e1b844678ece45cfd377ea43e7ed65901cce3; fixedV37corridorsprotocolSHA506e4e491f1a1993b9481f79ef09b1080efdb5de94a7faa5b5906ec69f4ee3e5/23618B.935rows/336574decodedbytes onepass,102fixedselectedrows, noqueue reconstruction/actor/map/scan/truth/World/model/GPU/optimizer. Main/external/byteidentity/staticreviewPASS, originalV37FAILnotchanged.
+
+- protocol_outer_v1: exact argv `["/usr/bin/timeout", "--signal=INT", "--kill-after=5s", "30s", "/usr/bin/python3", "-B", "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v38_protocol_cpu/protocol_forensic_v1.py", "--source-freeze", "a44e1b844678ece45cfd377ea43e7ed65901cce3", "--output", "/tmp/mr3_p2a_v38_protocol_forensic_v1.json"]`, actualengineeringwait0.220363751sec,source stable,rc0.
+- protocol_final_outer_v1: exact argv `["/usr/bin/python3", "-B", "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v35_grid_liveness/forensic_final_v1.py", "--outer", "/tmp/mr3_p2a_v38_protocol_outer_v1/actual_wait.json", "--result", "/tmp/mr3_p2a_v38_protocol_forensic_v1.json", "--scope", "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v38_protocol_cpu/scope_acceptance_v1.json", "--freeze", "a44e1b844678ece45cfd377ea43e7ed65901cce3", "--output", "/tmp/mr3_p2a_v38_protocol_final_v1.json"]`, actualengineeringwait0.094939404sec,source stable,rc0.
+
+6canonicalcopies/214764B,5savedIDsfreshgone; main.220363751+final.094939404=union.315303155sec,endpoint.509434203<60. Cumulative48259.9538193466018/52000,remaining3740.0461806533982,pilot/final-onlyunchanged. Observednewgoal53command53.3→53.9,HB53.4→54.1 atoriginalexpiry/failureline904,accept53.9→54.5,realCANCELEDterminal55.3. Noinferenceofunsentmessagesorcompletequeuecause. See[V38](report/20261022_mr3_p2a_v38_protocol_cpu.md); 2D uniform PASS not native prerequisite, training-negativeauditrulesstillPROPOSED_NOT_APPROVED.

@@ -1,6 +1,6 @@
 # MR3 P2A 评估与后续交接
 
-2026-10-22 V38准备：160人工CPU/禁用精确证书恒等优化通过，生产与TTL/FIFO/任务门保持；将一次固定corridors协议原件法证限60工程秒，不读actor地图或重跑World。负样本collector与完整protocol/custody门口径评估已存，随机2D全PASS不是native前置，新训练审计仍仅提案。工程48259.6385161916018/52000、余3740.3614838083982，75000待答、pilot/final-only不动，P2A未完成。见[V38](20261022_mr3_p2a_v38_protocol_cpu.md)。
+2026-10-22 V38闭合：160人工CPU及禁用证书恒等优化通过；a44e1b844冻结一次协议解析935行/102选行，证实tb3新goal续租53.4生成54.1截止时才交付、accept54.5，原V37租约FAIL保留，不刷新TTL/FIFO。2D随机全PASS不是native前置，负样本审计新规则仍仅提案；先恒等提速CPU，再预算批准后原生资格/学习。实费.315303155、5身份gone，累计48259.9538193466018/52000、余3740.0461806533982；75000待答、pilot/final-only不动，P2A未完成。见[V38](20261022_mr3_p2a_v38_protocol_cpu.md)。
 
 2026-10-22 V37闭合：显式point-graph生产/626人工CPU通过；13e95f29f冻结8步profile PASS，三场64步短probe FAIL，119/119/0、122actor/366机器人观测attachment均接受；corridors54秒navigation_failure全局停止，open38/rooms27未完成。原tb3 cell FAIL保留，现先查FIFO/目标租约实际交付，不重跑或改门。267原件/9.30MB、34身份gone；实费520.102603214，累计48259.6385161916018/52000、余3740.3614838083982。75000待答，pilot/final-only不动，P2A未完成。见[V37](20261022_mr3_p2a_v37_point_graph.md)。
 
@@ -125,3 +125,12 @@ V23当时建议：继续保留二维采样与原生验收路线，但先把完�
 只有需要新增预算、采用二维路线、改变冻结/验收规则或改变研究问题时，才把已经具体化的对应选择交给用户决定；用户后续明确接受的部分更新到活动计划，并记录授权范围，再执行依赖它的工作。不能把本次“保存评估”解释为这些选择已获批准。
 
 本次评估与交接没有新 native、GPU、optimizer、pilot 或验证调用，不新增工程或训练消耗；文档静态检查也不提供实验资格。新修改仍按仓库要求检查、提交和推送，实际实验继续逐次追加共享 log，保留失败及原件。
+
+
+## 2026-10-22 V38 后的继续价值与路线修正
+
+P2A仍未完成，但V37已把actual-point→原图全anchor的显式起点模型接入生产：已保存122actor的366次机器人观测准入均接受，旧cell FAIL原样保留。不要再重复V31–V37的同场短活动来追求uniform随机策略全部成功。V38协议法证确认54.1租约失败属于收到信息驱动下的真实交付/截止次序；它不是本次起点算法未生效，也没有step基础设施错误或代理contact。
+
+关键修正：[负回合审计评估](assets/20261022_mr3_p2a_v38_protocol_cpu/policy_negative_audit_review_v1.md)区分collector与完整审计。普通navigation_failure在collector可作为负样本，但dispatcher failure在当前native protocol/custody仍被拒。2D uniform全PASS不是native资格硬前置；禁止自行新增此门，再为通过它反复改变执行模型。新训练专用负样本审计若采用，须先明确合同与批准，所有身份/停止/physical/最终95%门保持；当前未启用。
+
+近期直接工作：将已通过全字典等价/oracle的exact AABB证书提速接生产，仅做相关CPU，无新World。之后按新冻结原生完整资格→minimum→pilot→final，不能借V37/38诊断信用。当前工程48259.9538193466018/52000、余3740.0461806533982；完整native+minimum预约20100秒，75000提案尚未获本轮明确回复。pilot与final-only不动。[V38结果及下一步](20261022_mr3_p2a_v38_protocol_cpu.md)为最新入口。

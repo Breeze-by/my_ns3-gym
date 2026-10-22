@@ -1,6 +1,6 @@
 # wireless-rl memory — MR3
 
-2026-10-22 V38准备：160人工CPU/禁用精确证书恒等优化通过，生产与TTL/FIFO/任务门保持；将一次固定corridors协议原件法证限60工程秒，不读actor地图或重跑World。负样本collector与完整protocol/custody门口径评估已存，随机2D全PASS不是native前置，新训练审计仍仅提案。工程48259.6385161916018/52000、余3740.3614838083982，75000待答、pilot/final-only不动，P2A未完成。见[V38](report/20261022_mr3_p2a_v38_protocol_cpu.md)。
+2026-10-22 V38闭合：160人工CPU及禁用证书恒等优化通过；a44e1b844冻结一次协议解析935行/102选行，证实tb3新goal续租53.4生成54.1截止时才交付、accept54.5，原V37租约FAIL保留，不刷新TTL/FIFO。2D随机全PASS不是native前置，负样本审计新规则仍仅提案；先恒等提速CPU，再预算批准后原生资格/学习。实费.315303155、5身份gone，累计48259.9538193466018/52000、余3740.0461806533982；75000待答、pilot/final-only不动，P2A未完成。见[V38](report/20261022_mr3_p2a_v38_protocol_cpu.md)。
 
 2026-10-22 V37闭合：显式point-graph生产/626人工CPU通过；13e95f29f冻结8步profile PASS，三场64步短probe FAIL，119/119/0、122actor/366机器人观测attachment均接受；corridors54秒navigation_failure全局停止，open38/rooms27未完成。原tb3 cell FAIL保留，现先查FIFO/目标租约实际交付，不重跑或改门。267原件/9.30MB、34身份gone；实费520.102603214，累计48259.6385161916018/52000、余3740.3614838083982。75000待答，pilot/final-only不动，P2A未完成。见[V37](report/20261022_mr3_p2a_v37_point_graph.md)。
 

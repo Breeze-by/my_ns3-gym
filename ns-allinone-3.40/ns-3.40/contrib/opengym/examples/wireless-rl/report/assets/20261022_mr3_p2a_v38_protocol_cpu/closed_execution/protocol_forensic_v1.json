@@ -1,0 +1,4542 @@
+{
+  "schema": "mr3-v38-fixed-protocol-forensic-v1",
+  "source_freeze": "a44e1b844678ece45cfd377ea43e7ed65901cce3",
+  "evidence_freeze": "13e95f29fcc094b19c42fbdeb7d9a76644dee0e9",
+  "epoch": "proxy2d_w2_e1_f96a1433",
+  "passed": true,
+  "computation_passed": true,
+  "source_bindings": {
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v38_protocol_cpu/protocol_forensic_v1.py": {
+      "sha256": "aaaa43223d5a4d7ee37a335e8f6b742361bcc96108528ce4cd587b1f0e47fa71",
+      "bytes": 14044,
+      "git_source": "a44e1b844678ece45cfd377ea43e7ed65901cce3:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v38_protocol_cpu/protocol_forensic_v1.py"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/mr3_proxy2d_worker.py": {
+      "sha256": "814c311bc2c332814b2ff4c80973248ebd4c7a4034d2d65644a76dda491f5095",
+      "bytes": 24893,
+      "git_source": "a44e1b844678ece45cfd377ea43e7ed65901cce3:ros2_ws/ros2-multi-robot-automap/scripts/mr3_proxy2d_worker.py"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_protocol.py": {
+      "sha256": "5a2b90efd162b19a35964750002fe549413fec6e07f9679ea611d3fe6b1e4ada",
+      "bytes": 18491,
+      "git_source": "a44e1b844678ece45cfd377ea43e7ed65901cce3:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_protocol.py"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_transport.py": {
+      "sha256": "426d9b777c2150bb690de3266c973dedfc8fe8da3fa36c7bf37cbe3c31d70eca",
+      "bytes": 8466,
+      "git_source": "a44e1b844678ece45cfd377ea43e7ed65901cce3:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_transport.py"
+    },
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v37_point_graph/closed_inventory_v1.json": {
+      "sha256": "c49c302107934e4428eee4291e94804d5dd9a92a4bc198f614aac7e914a26782",
+      "bytes": 143470,
+      "git_source": "a44e1b844678ece45cfd377ea43e7ed65901cce3:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v37_point_graph/closed_inventory_v1.json"
+    }
+  },
+  "source_bindings_after": {
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v38_protocol_cpu/protocol_forensic_v1.py": {
+      "sha256": "aaaa43223d5a4d7ee37a335e8f6b742361bcc96108528ce4cd587b1f0e47fa71",
+      "bytes": 14044,
+      "git_source": "a44e1b844678ece45cfd377ea43e7ed65901cce3:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v38_protocol_cpu/protocol_forensic_v1.py"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/mr3_proxy2d_worker.py": {
+      "sha256": "814c311bc2c332814b2ff4c80973248ebd4c7a4034d2d65644a76dda491f5095",
+      "bytes": 24893,
+      "git_source": "a44e1b844678ece45cfd377ea43e7ed65901cce3:ros2_ws/ros2-multi-robot-automap/scripts/mr3_proxy2d_worker.py"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_protocol.py": {
+      "sha256": "5a2b90efd162b19a35964750002fe549413fec6e07f9679ea611d3fe6b1e4ada",
+      "bytes": 18491,
+      "git_source": "a44e1b844678ece45cfd377ea43e7ed65901cce3:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_protocol.py"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_transport.py": {
+      "sha256": "426d9b777c2150bb690de3266c973dedfc8fe8da3fa36c7bf37cbe3c31d70eca",
+      "bytes": 8466,
+      "git_source": "a44e1b844678ece45cfd377ea43e7ed65901cce3:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_transport.py"
+    },
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v37_point_graph/closed_inventory_v1.json": {
+      "sha256": "c49c302107934e4428eee4291e94804d5dd9a92a4bc198f614aac7e914a26782",
+      "bytes": 143470,
+      "git_source": "a44e1b844678ece45cfd377ea43e7ed65901cce3:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v37_point_graph/closed_inventory_v1.json"
+    }
+  },
+  "source_stable": true,
+  "input_bindings_before": {
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v37_point_graph/closed_inventory_v1.json": {
+      "sha256": "c49c302107934e4428eee4291e94804d5dd9a92a4bc198f614aac7e914a26782",
+      "bytes": 143470
+    },
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v37_point_graph/closed_execution/point_graph_probe_v1/stages/group3/worker2/episode001_corridors_101/protocol.jsonl.gz": {
+      "sha256": "506e4e491f1a1993b9481f79ef09b1080efdb5de94a7faa5b5906ec69f4ee3e5",
+      "bytes": 23618
+    }
+  },
+  "input_bindings_after": {
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v37_point_graph/closed_inventory_v1.json": {
+      "sha256": "c49c302107934e4428eee4291e94804d5dd9a92a4bc198f614aac7e914a26782",
+      "bytes": 143470
+    },
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v37_point_graph/closed_execution/point_graph_probe_v1/stages/group3/worker2/episode001_corridors_101/protocol.jsonl.gz": {
+      "sha256": "506e4e491f1a1993b9481f79ef09b1080efdb5de94a7faa5b5906ec69f4ee3e5",
+      "bytes": 23618
+    }
+  },
+  "input_stable": true,
+  "inventoried_protocol": {
+    "original": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_proxy2d_v37/point_graph_probe_v1/stages/group3/worker2/episode001_corridors_101/protocol.jsonl.gz",
+    "canonical": "report/assets/20261022_mr3_p2a_v37_point_graph/closed_execution/point_graph_probe_v1/stages/group3/worker2/episode001_corridors_101/protocol.jsonl.gz",
+    "bytes": 23618,
+    "sha256": "506e4e491f1a1993b9481f79ef09b1080efdb5de94a7faa5b5906ec69f4ee3e5"
+  },
+  "parsed_rows": 935,
+  "decoded_bytes": 336574,
+  "decompression_passes": 1,
+  "selection_clock": "recorded worker clock_ns; envelope timestamps are separately preserved",
+  "window_inclusive_ns": [
+    52100000000,
+    54300000000
+  ],
+  "strict_before_ns": 54100000000,
+  "selection_index": {
+    "reliable_deliveries_in_window": [
+      873,
+      874,
+      875,
+      876,
+      877,
+      878,
+      879,
+      880,
+      881,
+      882,
+      883,
+      884,
+      885,
+      886,
+      888,
+      889,
+      893,
+      894,
+      897,
+      898,
+      899,
+      900,
+      901,
+      902,
+      903,
+      906,
+      907,
+      908,
+      909,
+      910,
+      911,
+      912
+    ],
+    "fixed_goal_history": {
+      "proxy2d_w2_e1_f96a1433:tb3:46": [
+        789,
+        793,
+        796,
+        799,
+        801,
+        805,
+        808,
+        811,
+        814,
+        816,
+        821,
+        824,
+        826,
+        828,
+        830,
+        832,
+        834,
+        836,
+        838,
+        840,
+        843,
+        845,
+        847,
+        851,
+        854,
+        858,
+        861,
+        864,
+        867,
+        870,
+        872,
+        875,
+        878,
+        881,
+        883,
+        889,
+        892,
+        893,
+        895
+      ],
+      "proxy2d_w2_e1_f96a1433:tb3:53": [
+        896,
+        902,
+        904,
+        907,
+        910,
+        915,
+        916,
+        918,
+        920,
+        923,
+        931,
+        933,
+        934,
+        935
+      ],
+      "proxy2d_w2_e1_f96a1433:tb1:53": [
+        891,
+        899,
+        900,
+        903,
+        908,
+        911,
+        912,
+        913,
+        917,
+        922,
+        927,
+        929,
+        930,
+        932
+      ],
+      "proxy2d_w2_e1_f96a1433:tb2:51": [
+        841,
+        848,
+        850,
+        853,
+        855,
+        857,
+        860,
+        863,
+        866,
+        869,
+        874,
+        877,
+        880,
+        884,
+        885,
+        894,
+        897,
+        898,
+        901,
+        905,
+        906,
+        909,
+        914,
+        919,
+        921,
+        924,
+        925,
+        926,
+        928
+      ]
+    },
+    "first_protocol_failure": 904,
+    "last_delivery_strictly_before": [
+      {
+        "stream": "command",
+        "source": "tb1",
+        "line_1based": 899
+      },
+      {
+        "stream": "command",
+        "source": "tb2",
+        "line_1based": 848
+      },
+      {
+        "stream": "command",
+        "source": "tb3",
+        "line_1based": 902
+      },
+      {
+        "stream": "heartbeat",
+        "source": "tb1",
+        "line_1based": 903
+      },
+      {
+        "stream": "heartbeat",
+        "source": "tb2",
+        "line_1based": 901
+      },
+      {
+        "stream": "heartbeat",
+        "source": "tb3",
+        "line_1based": 881
+      },
+      {
+        "stream": "receipt",
+        "source": "tb1",
+        "line_1based": 888
+      },
+      {
+        "stream": "receipt",
+        "source": "tb2",
+        "line_1based": 855
+      },
+      {
+        "stream": "receipt",
+        "source": "tb3",
+        "line_1based": 893
+      }
+    ]
+  },
+  "selected_rows": [
+    {
+      "line_1based": 789,
+      "raw_line_sha256": "3ca697efbe6fc4998721337d4a159d50f47a2ad804c5aa0197b61604f6410a07",
+      "raw_line": "{\"clock_ns\": 46100000000, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"event\": {\"command_id\": 46, \"created_at\": 45.1, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"expires_at\": 47.1, \"goal\": {\"x\": -1.7249999999999996, \"y\": 3.2750000000000004}, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb3:46\", \"lease_until\": 47.1, \"observation_version\": 46, \"robot\": \"tb3\", \"stamp\": 46.1, \"type\": \"send_goal\", \"x\": -1.7249999999999996, \"y\": 3.2750000000000004}, \"kind\": \"dispatcher_event\"}\n",
+      "record": {
+        "clock_ns": 46100000000,
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "event": {
+          "command_id": 46,
+          "created_at": 45.1,
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "expires_at": 47.1,
+          "goal": {
+            "x": -1.7249999999999996,
+            "y": 3.2750000000000004
+          },
+          "goal_id": "proxy2d_w2_e1_f96a1433:tb3:46",
+          "lease_until": 47.1,
+          "observation_version": 46,
+          "robot": "tb3",
+          "stamp": 46.1,
+          "type": "send_goal",
+          "x": -1.7249999999999996,
+          "y": 3.2750000000000004
+        },
+        "kind": "dispatcher_event"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb3:46"
+      ],
+      "dispatcher_timing": {
+        "event_stamp": 46.1,
+        "worker_clock_minus_event_stamp_seconds": "0.0"
+      }
+    },
+    {
+      "line_1based": 793,
+      "raw_line_sha256": "6148789aeec581a9d6141a63f0948ae98fde601119cd3311800d28a65c4f9054",
+      "raw_line": "{\"clock_ns\": 46500000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 46.1, \"payload\": {\"command_id\": 46, \"created_at\": 45.1, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"expires_at\": 47.1, \"goal\": {\"x\": -1.7249999999999996, \"y\": 3.2750000000000004}, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb3:46\", \"lease_until\": 47.1, \"observation_version\": 46, \"robot\": \"tb3\", \"stamp\": 46.1, \"type\": \"send_goal\", \"x\": -1.7249999999999996, \"y\": 3.2750000000000004}, \"received_stamp\": 46.5, \"sequence\": 15, \"source\": \"tb3\", \"source_stamp\": 46.1, \"stream\": \"command\", \"version\": 15}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 46500000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 46.1,
+          "payload": {
+            "command_id": 46,
+            "created_at": 45.1,
+            "epoch": "proxy2d_w2_e1_f96a1433",
+            "expires_at": 47.1,
+            "goal": {
+              "x": -1.7249999999999996,
+              "y": 3.2750000000000004
+            },
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb3:46",
+            "lease_until": 47.1,
+            "observation_version": 46,
+            "robot": "tb3",
+            "stamp": 46.1,
+            "type": "send_goal",
+            "x": -1.7249999999999996,
+            "y": 3.2750000000000004
+          },
+          "received_stamp": 46.5,
+          "sequence": 15,
+          "source": "tb3",
+          "source_stamp": 46.1,
+          "stream": "command",
+          "version": 15
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb3:46"
+      ],
+      "delivery_timing": {
+        "source_stamp": 46.1,
+        "generated_stamp": 46.1,
+        "received_stamp": 46.5,
+        "received_minus_generated_seconds": "0.4",
+        "received_minus_source_seconds": "0.4",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 780,
+        "generated_gap_from_previous_actual_delivery_seconds": "1.0",
+        "received_gap_from_previous_actual_delivery_seconds": "1.0",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag"
+        ]
+      }
+    },
+    {
+      "line_1based": 796,
+      "raw_line_sha256": "b6b95a68dfd034c5ebf366ac31cf4cc288ee50414dc1526ef2644fc8a553c27b",
+      "raw_line": "{\"clock_ns\": 46700000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 46.2, \"payload\": {\"expires_at\": 48.2, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb3:46\"}, \"received_stamp\": 46.7, \"sequence\": 206, \"source\": \"tb3\", \"source_stamp\": 46.2, \"stream\": \"heartbeat\", \"version\": 206}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 46700000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 46.2,
+          "payload": {
+            "expires_at": 48.2,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb3:46"
+          },
+          "received_stamp": 46.7,
+          "sequence": 206,
+          "source": "tb3",
+          "source_stamp": 46.2,
+          "stream": "heartbeat",
+          "version": 206
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb3:46"
+      ],
+      "delivery_timing": {
+        "source_stamp": 46.2,
+        "generated_stamp": 46.2,
+        "received_stamp": 46.7,
+        "received_minus_generated_seconds": "0.5",
+        "received_minus_source_seconds": "0.5",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 779,
+        "generated_gap_from_previous_actual_delivery_seconds": "1.2",
+        "received_gap_from_previous_actual_delivery_seconds": "1.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 799,
+      "raw_line_sha256": "4a4b5e6dacf57f5372c8ab9ace72cebb53b4c3545eaa93d9e9ec1efc765949a4",
+      "raw_line": "{\"clock_ns\": 46900000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 46.4, \"payload\": {\"expires_at\": 48.4, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb3:46\"}, \"received_stamp\": 46.9, \"sequence\": 207, \"source\": \"tb3\", \"source_stamp\": 46.4, \"stream\": \"heartbeat\", \"version\": 207}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 46900000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 46.4,
+          "payload": {
+            "expires_at": 48.4,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb3:46"
+          },
+          "received_stamp": 46.9,
+          "sequence": 207,
+          "source": "tb3",
+          "source_stamp": 46.4,
+          "stream": "heartbeat",
+          "version": 207
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb3:46"
+      ],
+      "delivery_timing": {
+        "source_stamp": 46.4,
+        "generated_stamp": 46.4,
+        "received_stamp": 46.9,
+        "received_minus_generated_seconds": "0.5",
+        "received_minus_source_seconds": "0.5",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 796,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.2",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 801,
+      "raw_line_sha256": "99bbc2d5ae360dff04799fef5fd1cc391da76d7101e54f10adb1b6393254c6c0",
+      "raw_line": "{\"clock_ns\": 46900000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 46.5, \"payload\": {\"goal_id\": \"proxy2d_w2_e1_f96a1433:tb3:46\", \"type\": \"accept\", \"value\": true}, \"received_stamp\": 46.9, \"sequence\": 22, \"source\": \"tb3\", \"source_stamp\": 46.5, \"stream\": \"receipt\", \"version\": 22}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 46900000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 46.5,
+          "payload": {
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb3:46",
+            "type": "accept",
+            "value": true
+          },
+          "received_stamp": 46.9,
+          "sequence": 22,
+          "source": "tb3",
+          "source_stamp": 46.5,
+          "stream": "receipt",
+          "version": 22
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb3:46"
+      ],
+      "delivery_timing": {
+        "source_stamp": 46.5,
+        "generated_stamp": 46.5,
+        "received_stamp": 46.9,
+        "received_minus_generated_seconds": "0.4",
+        "received_minus_source_seconds": "0.4",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 786,
+        "generated_gap_from_previous_actual_delivery_seconds": "1.0",
+        "received_gap_from_previous_actual_delivery_seconds": "0.8",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag"
+        ]
+      }
+    },
+    {
+      "line_1based": 805,
+      "raw_line_sha256": "3ccf168df61671e8e1300d35a97e3d47fbc710770a2718c431bfe9cf2a4573d9",
+      "raw_line": "{\"clock_ns\": 47100000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 46.6, \"payload\": {\"expires_at\": 48.6, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb3:46\"}, \"received_stamp\": 47.1, \"sequence\": 208, \"source\": \"tb3\", \"source_stamp\": 46.6, \"stream\": \"heartbeat\", \"version\": 208}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 47100000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 46.6,
+          "payload": {
+            "expires_at": 48.6,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb3:46"
+          },
+          "received_stamp": 47.1,
+          "sequence": 208,
+          "source": "tb3",
+          "source_stamp": 46.6,
+          "stream": "heartbeat",
+          "version": 208
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb3:46"
+      ],
+      "delivery_timing": {
+        "source_stamp": 46.6,
+        "generated_stamp": 46.6,
+        "received_stamp": 47.1,
+        "received_minus_generated_seconds": "0.5",
+        "received_minus_source_seconds": "0.5",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 799,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.2",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 808,
+      "raw_line_sha256": "8e0ab9a872603c83214ff2acbdc85b81e332bb84d1dea18b35b8457561b366fa",
+      "raw_line": "{\"clock_ns\": 47300000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 46.8, \"payload\": {\"expires_at\": 48.8, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb3:46\"}, \"received_stamp\": 47.3, \"sequence\": 209, \"source\": \"tb3\", \"source_stamp\": 46.8, \"stream\": \"heartbeat\", \"version\": 209}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 47300000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 46.8,
+          "payload": {
+            "expires_at": 48.8,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb3:46"
+          },
+          "received_stamp": 47.3,
+          "sequence": 209,
+          "source": "tb3",
+          "source_stamp": 46.8,
+          "stream": "heartbeat",
+          "version": 209
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb3:46"
+      ],
+      "delivery_timing": {
+        "source_stamp": 46.8,
+        "generated_stamp": 46.8,
+        "received_stamp": 47.3,
+        "received_minus_generated_seconds": "0.5",
+        "received_minus_source_seconds": "0.5",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 805,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.2",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 811,
+      "raw_line_sha256": "484e98013dac56e593d1d8df111d94800469e09d9f5fe232edda139e467224e3",
+      "raw_line": "{\"clock_ns\": 47500000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 47.0, \"payload\": {\"expires_at\": 49.0, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb3:46\"}, \"received_stamp\": 47.5, \"sequence\": 210, \"source\": \"tb3\", \"source_stamp\": 47.0, \"stream\": \"heartbeat\", \"version\": 210}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 47500000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 47.0,
+          "payload": {
+            "expires_at": 49.0,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb3:46"
+          },
+          "received_stamp": 47.5,
+          "sequence": 210,
+          "source": "tb3",
+          "source_stamp": 47.0,
+          "stream": "heartbeat",
+          "version": 210
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb3:46"
+      ],
+      "delivery_timing": {
+        "source_stamp": 47.0,
+        "generated_stamp": 47.0,
+        "received_stamp": 47.5,
+        "received_minus_generated_seconds": "0.5",
+        "received_minus_source_seconds": "0.5",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 808,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.2",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 814,
+      "raw_line_sha256": "8b53646274de575e3baeb541a2a74047e7ccc14ca99b2403c343c0e3ace7275c",
+      "raw_line": "{\"clock_ns\": 47700000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 47.2, \"payload\": {\"expires_at\": 49.2, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb3:46\"}, \"received_stamp\": 47.7, \"sequence\": 211, \"source\": \"tb3\", \"source_stamp\": 47.2, \"stream\": \"heartbeat\", \"version\": 211}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 47700000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 47.2,
+          "payload": {
+            "expires_at": 49.2,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb3:46"
+          },
+          "received_stamp": 47.7,
+          "sequence": 211,
+          "source": "tb3",
+          "source_stamp": 47.2,
+          "stream": "heartbeat",
+          "version": 211
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb3:46"
+      ],
+      "delivery_timing": {
+        "source_stamp": 47.2,
+        "generated_stamp": 47.2,
+        "received_stamp": 47.7,
+        "received_minus_generated_seconds": "0.5",
+        "received_minus_source_seconds": "0.5",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 811,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.2",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 816,
+      "raw_line_sha256": "2608aab5ab8a22e4a3d19fbd94501f3ec57638c863d0bbaffde77bdd987700eb",
+      "raw_line": "{\"clock_ns\": 47900000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 47.4, \"payload\": {\"expires_at\": 49.4, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb3:46\"}, \"received_stamp\": 47.9, \"sequence\": 212, \"source\": \"tb3\", \"source_stamp\": 47.4, \"stream\": \"heartbeat\", \"version\": 212}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 47900000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 47.4,
+          "payload": {
+            "expires_at": 49.4,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb3:46"
+          },
+          "received_stamp": 47.9,
+          "sequence": 212,
+          "source": "tb3",
+          "source_stamp": 47.4,
+          "stream": "heartbeat",
+          "version": 212
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb3:46"
+      ],
+      "delivery_timing": {
+        "source_stamp": 47.4,
+        "generated_stamp": 47.4,
+        "received_stamp": 47.9,
+        "received_minus_generated_seconds": "0.5",
+        "received_minus_source_seconds": "0.5",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 814,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.2",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 821,
+      "raw_line_sha256": "0ba17ff9f4f087f2507dcc2736ab26a7d10f3b89fa9424786ef2180fdfda09db",
+      "raw_line": "{\"clock_ns\": 48100000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 47.6, \"payload\": {\"expires_at\": 49.6, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb3:46\"}, \"received_stamp\": 48.1, \"sequence\": 213, \"source\": \"tb3\", \"source_stamp\": 47.6, \"stream\": \"heartbeat\", \"version\": 213}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 48100000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 47.6,
+          "payload": {
+            "expires_at": 49.6,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb3:46"
+          },
+          "received_stamp": 48.1,
+          "sequence": 213,
+          "source": "tb3",
+          "source_stamp": 47.6,
+          "stream": "heartbeat",
+          "version": 213
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb3:46"
+      ],
+      "delivery_timing": {
+        "source_stamp": 47.6,
+        "generated_stamp": 47.6,
+        "received_stamp": 48.1,
+        "received_minus_generated_seconds": "0.5",
+        "received_minus_source_seconds": "0.5",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 816,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.2",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 824,
+      "raw_line_sha256": "5dd2ec7d205cb6e5437fa8f64023621b1fca77f82b6ab0f5126a84ad2a1f7839",
+      "raw_line": "{\"clock_ns\": 48300000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 47.8, \"payload\": {\"expires_at\": 49.8, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb3:46\"}, \"received_stamp\": 48.3, \"sequence\": 214, \"source\": \"tb3\", \"source_stamp\": 47.8, \"stream\": \"heartbeat\", \"version\": 214}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 48300000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 47.8,
+          "payload": {
+            "expires_at": 49.8,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb3:46"
+          },
+          "received_stamp": 48.3,
+          "sequence": 214,
+          "source": "tb3",
+          "source_stamp": 47.8,
+          "stream": "heartbeat",
+          "version": 214
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb3:46"
+      ],
+      "delivery_timing": {
+        "source_stamp": 47.8,
+        "generated_stamp": 47.8,
+        "received_stamp": 48.3,
+        "received_minus_generated_seconds": "0.5",
+        "received_minus_source_seconds": "0.5",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 821,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.2",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 826,
+      "raw_line_sha256": "17dc6ec83b290879e15cc77fb9c177e1ba91455ea0b83fbe2d91a18914145c38",
+      "raw_line": "{\"clock_ns\": 48500000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 48.0, \"payload\": {\"expires_at\": 50.0, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb3:46\"}, \"received_stamp\": 48.5, \"sequence\": 215, \"source\": \"tb3\", \"source_stamp\": 48.0, \"stream\": \"heartbeat\", \"version\": 215}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 48500000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 48.0,
+          "payload": {
+            "expires_at": 50.0,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb3:46"
+          },
+          "received_stamp": 48.5,
+          "sequence": 215,
+          "source": "tb3",
+          "source_stamp": 48.0,
+          "stream": "heartbeat",
+          "version": 215
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb3:46"
+      ],
+      "delivery_timing": {
+        "source_stamp": 48.0,
+        "generated_stamp": 48.0,
+        "received_stamp": 48.5,
+        "received_minus_generated_seconds": "0.5",
+        "received_minus_source_seconds": "0.5",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 824,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.2",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 828,
+      "raw_line_sha256": "15be7d20d5f4da65d571263647d679a996581374b476f27817808f50517bc120",
+      "raw_line": "{\"clock_ns\": 48700000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 48.2, \"payload\": {\"expires_at\": 50.2, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb3:46\"}, \"received_stamp\": 48.7, \"sequence\": 216, \"source\": \"tb3\", \"source_stamp\": 48.2, \"stream\": \"heartbeat\", \"version\": 216}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 48700000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 48.2,
+          "payload": {
+            "expires_at": 50.2,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb3:46"
+          },
+          "received_stamp": 48.7,
+          "sequence": 216,
+          "source": "tb3",
+          "source_stamp": 48.2,
+          "stream": "heartbeat",
+          "version": 216
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb3:46"
+      ],
+      "delivery_timing": {
+        "source_stamp": 48.2,
+        "generated_stamp": 48.2,
+        "received_stamp": 48.7,
+        "received_minus_generated_seconds": "0.5",
+        "received_minus_source_seconds": "0.5",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 826,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.2",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 830,
+      "raw_line_sha256": "5f36d31412298f2dca609e9da3a0d64ae2526b1f50ccb992d719e44a65316eac",
+      "raw_line": "{\"clock_ns\": 48900000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 48.4, \"payload\": {\"expires_at\": 50.4, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb3:46\"}, \"received_stamp\": 48.9, \"sequence\": 217, \"source\": \"tb3\", \"source_stamp\": 48.4, \"stream\": \"heartbeat\", \"version\": 217}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 48900000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 48.4,
+          "payload": {
+            "expires_at": 50.4,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb3:46"
+          },
+          "received_stamp": 48.9,
+          "sequence": 217,
+          "source": "tb3",
+          "source_stamp": 48.4,
+          "stream": "heartbeat",
+          "version": 217
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb3:46"
+      ],
+      "delivery_timing": {
+        "source_stamp": 48.4,
+        "generated_stamp": 48.4,
+        "received_stamp": 48.9,
+        "received_minus_generated_seconds": "0.5",
+        "received_minus_source_seconds": "0.5",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 828,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.2",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 832,
+      "raw_line_sha256": "b743596f319d3d748dfd0fa58502b0be38441e83cb9464effe418821f17a2a69",
+      "raw_line": "{\"clock_ns\": 49100000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 48.6, \"payload\": {\"expires_at\": 50.6, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb3:46\"}, \"received_stamp\": 49.1, \"sequence\": 218, \"source\": \"tb3\", \"source_stamp\": 48.6, \"stream\": \"heartbeat\", \"version\": 218}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 49100000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 48.6,
+          "payload": {
+            "expires_at": 50.6,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb3:46"
+          },
+          "received_stamp": 49.1,
+          "sequence": 218,
+          "source": "tb3",
+          "source_stamp": 48.6,
+          "stream": "heartbeat",
+          "version": 218
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb3:46"
+      ],
+      "delivery_timing": {
+        "source_stamp": 48.6,
+        "generated_stamp": 48.6,
+        "received_stamp": 49.1,
+        "received_minus_generated_seconds": "0.5",
+        "received_minus_source_seconds": "0.5",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 830,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.2",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 834,
+      "raw_line_sha256": "0c294897ff2220464d0b46e0db70fc3357876236a01582a127b8cc4de7213193",
+      "raw_line": "{\"clock_ns\": 49300000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 48.8, \"payload\": {\"expires_at\": 50.8, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb3:46\"}, \"received_stamp\": 49.3, \"sequence\": 219, \"source\": \"tb3\", \"source_stamp\": 48.8, \"stream\": \"heartbeat\", \"version\": 219}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 49300000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 48.8,
+          "payload": {
+            "expires_at": 50.8,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb3:46"
+          },
+          "received_stamp": 49.3,
+          "sequence": 219,
+          "source": "tb3",
+          "source_stamp": 48.8,
+          "stream": "heartbeat",
+          "version": 219
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb3:46"
+      ],
+      "delivery_timing": {
+        "source_stamp": 48.8,
+        "generated_stamp": 48.8,
+        "received_stamp": 49.3,
+        "received_minus_generated_seconds": "0.5",
+        "received_minus_source_seconds": "0.5",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 832,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.2",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 836,
+      "raw_line_sha256": "ce9b5dc177b3e6d3bdf33a6c080361769f6c5d16434a8740be4d4981b5b1e102",
+      "raw_line": "{\"clock_ns\": 49500000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 49.0, \"payload\": {\"expires_at\": 51.0, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb3:46\"}, \"received_stamp\": 49.5, \"sequence\": 220, \"source\": \"tb3\", \"source_stamp\": 49.0, \"stream\": \"heartbeat\", \"version\": 220}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 49500000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 49.0,
+          "payload": {
+            "expires_at": 51.0,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb3:46"
+          },
+          "received_stamp": 49.5,
+          "sequence": 220,
+          "source": "tb3",
+          "source_stamp": 49.0,
+          "stream": "heartbeat",
+          "version": 220
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb3:46"
+      ],
+      "delivery_timing": {
+        "source_stamp": 49.0,
+        "generated_stamp": 49.0,
+        "received_stamp": 49.5,
+        "received_minus_generated_seconds": "0.5",
+        "received_minus_source_seconds": "0.5",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 834,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.2",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 838,
+      "raw_line_sha256": "75d366fca0e4443b6eddbdf7b9988c661ae0f3ee0fa1e815515a5841f30cfd18",
+      "raw_line": "{\"clock_ns\": 49700000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 49.2, \"payload\": {\"expires_at\": 51.2, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb3:46\"}, \"received_stamp\": 49.7, \"sequence\": 221, \"source\": \"tb3\", \"source_stamp\": 49.2, \"stream\": \"heartbeat\", \"version\": 221}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 49700000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 49.2,
+          "payload": {
+            "expires_at": 51.2,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb3:46"
+          },
+          "received_stamp": 49.7,
+          "sequence": 221,
+          "source": "tb3",
+          "source_stamp": 49.2,
+          "stream": "heartbeat",
+          "version": 221
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb3:46"
+      ],
+      "delivery_timing": {
+        "source_stamp": 49.2,
+        "generated_stamp": 49.2,
+        "received_stamp": 49.7,
+        "received_minus_generated_seconds": "0.5",
+        "received_minus_source_seconds": "0.5",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 836,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.2",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 840,
+      "raw_line_sha256": "ea28ec45736b1f5ee9d9b96105734436261b384fab34c0eb32af51101c2850e1",
+      "raw_line": "{\"clock_ns\": 49900000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 49.4, \"payload\": {\"expires_at\": 51.4, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb3:46\"}, \"received_stamp\": 49.9, \"sequence\": 222, \"source\": \"tb3\", \"source_stamp\": 49.4, \"stream\": \"heartbeat\", \"version\": 222}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 49900000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 49.4,
+          "payload": {
+            "expires_at": 51.4,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb3:46"
+          },
+          "received_stamp": 49.9,
+          "sequence": 222,
+          "source": "tb3",
+          "source_stamp": 49.4,
+          "stream": "heartbeat",
+          "version": 222
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb3:46"
+      ],
+      "delivery_timing": {
+        "source_stamp": 49.4,
+        "generated_stamp": 49.4,
+        "received_stamp": 49.9,
+        "received_minus_generated_seconds": "0.5",
+        "received_minus_source_seconds": "0.5",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 838,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.2",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 841,
+      "raw_line_sha256": "1e87ceef3b2b13480f5beb724a99a77aefd8a7cef0e1111328bd56f9ed15e11b",
+      "raw_line": "{\"clock_ns\": 50100000000, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"event\": {\"command_id\": 51, \"created_at\": 50.1, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"expires_at\": 52.1, \"goal\": {\"x\": -3.0749999999999993, \"y\": 4.425000000000001}, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb2:51\", \"lease_until\": 52.1, \"observation_version\": 51, \"robot\": \"tb2\", \"stamp\": 50.1, \"type\": \"send_goal\", \"x\": -3.0749999999999993, \"y\": 4.425000000000001}, \"kind\": \"dispatcher_event\"}\n",
+      "record": {
+        "clock_ns": 50100000000,
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "event": {
+          "command_id": 51,
+          "created_at": 50.1,
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "expires_at": 52.1,
+          "goal": {
+            "x": -3.0749999999999993,
+            "y": 4.425000000000001
+          },
+          "goal_id": "proxy2d_w2_e1_f96a1433:tb2:51",
+          "lease_until": 52.1,
+          "observation_version": 51,
+          "robot": "tb2",
+          "stamp": 50.1,
+          "type": "send_goal",
+          "x": -3.0749999999999993,
+          "y": 4.425000000000001
+        },
+        "kind": "dispatcher_event"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb2:51"
+      ],
+      "dispatcher_timing": {
+        "event_stamp": 50.1,
+        "worker_clock_minus_event_stamp_seconds": "0.0"
+      }
+    },
+    {
+      "line_1based": 843,
+      "raw_line_sha256": "d4725ebbba378f16f79a89bf79c079ef5a8945d71d49baba9937bb4c943af46f",
+      "raw_line": "{\"clock_ns\": 50100000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 49.6, \"payload\": {\"expires_at\": 51.6, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb3:46\"}, \"received_stamp\": 50.1, \"sequence\": 223, \"source\": \"tb3\", \"source_stamp\": 49.6, \"stream\": \"heartbeat\", \"version\": 223}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 50100000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 49.6,
+          "payload": {
+            "expires_at": 51.6,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb3:46"
+          },
+          "received_stamp": 50.1,
+          "sequence": 223,
+          "source": "tb3",
+          "source_stamp": 49.6,
+          "stream": "heartbeat",
+          "version": 223
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb3:46"
+      ],
+      "delivery_timing": {
+        "source_stamp": 49.6,
+        "generated_stamp": 49.6,
+        "received_stamp": 50.1,
+        "received_minus_generated_seconds": "0.5",
+        "received_minus_source_seconds": "0.5",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 840,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.2",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 845,
+      "raw_line_sha256": "15a04e3faf2437a277c3ebcf5b3b4d7b620ff7aaad490c045ff5df24cf28a232",
+      "raw_line": "{\"clock_ns\": 50300000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 49.8, \"payload\": {\"expires_at\": 51.8, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb3:46\"}, \"received_stamp\": 50.3, \"sequence\": 224, \"source\": \"tb3\", \"source_stamp\": 49.8, \"stream\": \"heartbeat\", \"version\": 224}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 50300000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 49.8,
+          "payload": {
+            "expires_at": 51.8,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb3:46"
+          },
+          "received_stamp": 50.3,
+          "sequence": 224,
+          "source": "tb3",
+          "source_stamp": 49.8,
+          "stream": "heartbeat",
+          "version": 224
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb3:46"
+      ],
+      "delivery_timing": {
+        "source_stamp": 49.8,
+        "generated_stamp": 49.8,
+        "received_stamp": 50.3,
+        "received_minus_generated_seconds": "0.5",
+        "received_minus_source_seconds": "0.5",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 843,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.2",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 847,
+      "raw_line_sha256": "24a36048e54eb98aa754dbad59ccba583ee0caa3e171c54b41b3499632a07188",
+      "raw_line": "{\"clock_ns\": 50500000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 50.0, \"payload\": {\"expires_at\": 52.0, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb3:46\"}, \"received_stamp\": 50.5, \"sequence\": 225, \"source\": \"tb3\", \"source_stamp\": 50.0, \"stream\": \"heartbeat\", \"version\": 225}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 50500000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 50.0,
+          "payload": {
+            "expires_at": 52.0,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb3:46"
+          },
+          "received_stamp": 50.5,
+          "sequence": 225,
+          "source": "tb3",
+          "source_stamp": 50.0,
+          "stream": "heartbeat",
+          "version": 225
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb3:46"
+      ],
+      "delivery_timing": {
+        "source_stamp": 50.0,
+        "generated_stamp": 50.0,
+        "received_stamp": 50.5,
+        "received_minus_generated_seconds": "0.5",
+        "received_minus_source_seconds": "0.5",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 845,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.2",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 848,
+      "raw_line_sha256": "efeca6a50a1ff174e8dc5dd541a0a5a157965b9459db46f791c50691e84e9348",
+      "raw_line": "{\"clock_ns\": 50500000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 50.1, \"payload\": {\"command_id\": 51, \"created_at\": 50.1, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"expires_at\": 52.1, \"goal\": {\"x\": -3.0749999999999993, \"y\": 4.425000000000001}, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb2:51\", \"lease_until\": 52.1, \"observation_version\": 51, \"robot\": \"tb2\", \"stamp\": 50.1, \"type\": \"send_goal\", \"x\": -3.0749999999999993, \"y\": 4.425000000000001}, \"received_stamp\": 50.5, \"sequence\": 15, \"source\": \"tb2\", \"source_stamp\": 50.1, \"stream\": \"command\", \"version\": 15}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 50500000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 50.1,
+          "payload": {
+            "command_id": 51,
+            "created_at": 50.1,
+            "epoch": "proxy2d_w2_e1_f96a1433",
+            "expires_at": 52.1,
+            "goal": {
+              "x": -3.0749999999999993,
+              "y": 4.425000000000001
+            },
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb2:51",
+            "lease_until": 52.1,
+            "observation_version": 51,
+            "robot": "tb2",
+            "stamp": 50.1,
+            "type": "send_goal",
+            "x": -3.0749999999999993,
+            "y": 4.425000000000001
+          },
+          "received_stamp": 50.5,
+          "sequence": 15,
+          "source": "tb2",
+          "source_stamp": 50.1,
+          "stream": "command",
+          "version": 15
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb2:51",
+        "last_recorded_delivery_strictly_before_worker_clock_54_1:command:tb2"
+      ],
+      "delivery_timing": {
+        "source_stamp": 50.1,
+        "generated_stamp": 50.1,
+        "received_stamp": 50.5,
+        "received_minus_generated_seconds": "0.4",
+        "received_minus_source_seconds": "0.4",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 812,
+        "generated_gap_from_previous_actual_delivery_seconds": "3.0",
+        "received_gap_from_previous_actual_delivery_seconds": "3.0",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag"
+        ]
+      }
+    },
+    {
+      "line_1based": 850,
+      "raw_line_sha256": "70d5009cb1ba2d5b7b9fa5223d16a407447e0fc70f31372f13f2df2e6ce42d07",
+      "raw_line": "{\"clock_ns\": 50700000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 50.2, \"payload\": {\"expires_at\": 52.2, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb2:51\"}, \"received_stamp\": 50.7, \"sequence\": 211, \"source\": \"tb2\", \"source_stamp\": 50.2, \"stream\": \"heartbeat\", \"version\": 211}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 50700000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 50.2,
+          "payload": {
+            "expires_at": 52.2,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb2:51"
+          },
+          "received_stamp": 50.7,
+          "sequence": 211,
+          "source": "tb2",
+          "source_stamp": 50.2,
+          "stream": "heartbeat",
+          "version": 211
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb2:51"
+      ],
+      "delivery_timing": {
+        "source_stamp": 50.2,
+        "generated_stamp": 50.2,
+        "received_stamp": 50.7,
+        "received_minus_generated_seconds": "0.5",
+        "received_minus_source_seconds": "0.5",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 810,
+        "generated_gap_from_previous_actual_delivery_seconds": "3.2",
+        "received_gap_from_previous_actual_delivery_seconds": "3.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 851,
+      "raw_line_sha256": "82dc82cfd8fbc17c3e076ab02af8d358092aad7bb53b4ab9898984334c08783c",
+      "raw_line": "{\"clock_ns\": 50700000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 50.2, \"payload\": {\"expires_at\": 52.2, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb3:46\"}, \"received_stamp\": 50.7, \"sequence\": 226, \"source\": \"tb3\", \"source_stamp\": 50.2, \"stream\": \"heartbeat\", \"version\": 226}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 50700000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 50.2,
+          "payload": {
+            "expires_at": 52.2,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb3:46"
+          },
+          "received_stamp": 50.7,
+          "sequence": 226,
+          "source": "tb3",
+          "source_stamp": 50.2,
+          "stream": "heartbeat",
+          "version": 226
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb3:46"
+      ],
+      "delivery_timing": {
+        "source_stamp": 50.2,
+        "generated_stamp": 50.2,
+        "received_stamp": 50.7,
+        "received_minus_generated_seconds": "0.5",
+        "received_minus_source_seconds": "0.5",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 847,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.2",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 853,
+      "raw_line_sha256": "c479bd43bbe0138bdf943a0d90d99e4f5800f92ab3a4c1f3a100e4a5528cb241",
+      "raw_line": "{\"clock_ns\": 50900000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 50.4, \"payload\": {\"expires_at\": 52.4, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb2:51\"}, \"received_stamp\": 50.9, \"sequence\": 212, \"source\": \"tb2\", \"source_stamp\": 50.4, \"stream\": \"heartbeat\", \"version\": 212}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 50900000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 50.4,
+          "payload": {
+            "expires_at": 52.4,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb2:51"
+          },
+          "received_stamp": 50.9,
+          "sequence": 212,
+          "source": "tb2",
+          "source_stamp": 50.4,
+          "stream": "heartbeat",
+          "version": 212
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb2:51"
+      ],
+      "delivery_timing": {
+        "source_stamp": 50.4,
+        "generated_stamp": 50.4,
+        "received_stamp": 50.9,
+        "received_minus_generated_seconds": "0.5",
+        "received_minus_source_seconds": "0.5",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 850,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.2",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 854,
+      "raw_line_sha256": "279246594da09460a6cd2b1e86edab8f997fbabb9810872b568a5163c9b47b6c",
+      "raw_line": "{\"clock_ns\": 50900000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 50.4, \"payload\": {\"expires_at\": 52.4, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb3:46\"}, \"received_stamp\": 50.9, \"sequence\": 227, \"source\": \"tb3\", \"source_stamp\": 50.4, \"stream\": \"heartbeat\", \"version\": 227}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 50900000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 50.4,
+          "payload": {
+            "expires_at": 52.4,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb3:46"
+          },
+          "received_stamp": 50.9,
+          "sequence": 227,
+          "source": "tb3",
+          "source_stamp": 50.4,
+          "stream": "heartbeat",
+          "version": 227
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb3:46"
+      ],
+      "delivery_timing": {
+        "source_stamp": 50.4,
+        "generated_stamp": 50.4,
+        "received_stamp": 50.9,
+        "received_minus_generated_seconds": "0.5",
+        "received_minus_source_seconds": "0.5",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 851,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.2",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 855,
+      "raw_line_sha256": "4654b250350377a837cf539ba40b746b2cee603ee30c199c0a1d60579c9a46ae",
+      "raw_line": "{\"clock_ns\": 50900000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 50.5, \"payload\": {\"goal_id\": \"proxy2d_w2_e1_f96a1433:tb2:51\", \"type\": \"accept\", \"value\": true}, \"received_stamp\": 50.9, \"sequence\": 22, \"source\": \"tb2\", \"source_stamp\": 50.5, \"stream\": \"receipt\", \"version\": 22}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 50900000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 50.5,
+          "payload": {
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb2:51",
+            "type": "accept",
+            "value": true
+          },
+          "received_stamp": 50.9,
+          "sequence": 22,
+          "source": "tb2",
+          "source_stamp": 50.5,
+          "stream": "receipt",
+          "version": 22
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb2:51",
+        "last_recorded_delivery_strictly_before_worker_clock_54_1:receipt:tb2"
+      ],
+      "delivery_timing": {
+        "source_stamp": 50.5,
+        "generated_stamp": 50.5,
+        "received_stamp": 50.9,
+        "received_minus_generated_seconds": "0.4",
+        "received_minus_source_seconds": "0.4",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 819,
+        "generated_gap_from_previous_actual_delivery_seconds": "3.0",
+        "received_gap_from_previous_actual_delivery_seconds": "2.8",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag"
+        ]
+      }
+    },
+    {
+      "line_1based": 857,
+      "raw_line_sha256": "dd53771b21c4b8d3682e34e6772dae2db9b80bb3ec50ff99ebab66bdc022422a",
+      "raw_line": "{\"clock_ns\": 51100000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 50.6, \"payload\": {\"expires_at\": 52.6, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb2:51\"}, \"received_stamp\": 51.1, \"sequence\": 213, \"source\": \"tb2\", \"source_stamp\": 50.6, \"stream\": \"heartbeat\", \"version\": 213}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 51100000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 50.6,
+          "payload": {
+            "expires_at": 52.6,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb2:51"
+          },
+          "received_stamp": 51.1,
+          "sequence": 213,
+          "source": "tb2",
+          "source_stamp": 50.6,
+          "stream": "heartbeat",
+          "version": 213
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb2:51"
+      ],
+      "delivery_timing": {
+        "source_stamp": 50.6,
+        "generated_stamp": 50.6,
+        "received_stamp": 51.1,
+        "received_minus_generated_seconds": "0.5",
+        "received_minus_source_seconds": "0.5",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 853,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.2",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 858,
+      "raw_line_sha256": "291f72705203509c45b227ea229c83641c44212c1a0e8d1f3977d41208f770b5",
+      "raw_line": "{\"clock_ns\": 51100000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 50.6, \"payload\": {\"expires_at\": 52.6, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb3:46\"}, \"received_stamp\": 51.1, \"sequence\": 228, \"source\": \"tb3\", \"source_stamp\": 50.6, \"stream\": \"heartbeat\", \"version\": 228}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 51100000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 50.6,
+          "payload": {
+            "expires_at": 52.6,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb3:46"
+          },
+          "received_stamp": 51.1,
+          "sequence": 228,
+          "source": "tb3",
+          "source_stamp": 50.6,
+          "stream": "heartbeat",
+          "version": 228
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb3:46"
+      ],
+      "delivery_timing": {
+        "source_stamp": 50.6,
+        "generated_stamp": 50.6,
+        "received_stamp": 51.1,
+        "received_minus_generated_seconds": "0.5",
+        "received_minus_source_seconds": "0.5",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 854,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.2",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 860,
+      "raw_line_sha256": "717079a19c8eeb244d1de8f6d269af100184e13a7ef12d6fac73827b78abf9d0",
+      "raw_line": "{\"clock_ns\": 51300000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 50.8, \"payload\": {\"expires_at\": 52.8, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb2:51\"}, \"received_stamp\": 51.3, \"sequence\": 214, \"source\": \"tb2\", \"source_stamp\": 50.8, \"stream\": \"heartbeat\", \"version\": 214}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 51300000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 50.8,
+          "payload": {
+            "expires_at": 52.8,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb2:51"
+          },
+          "received_stamp": 51.3,
+          "sequence": 214,
+          "source": "tb2",
+          "source_stamp": 50.8,
+          "stream": "heartbeat",
+          "version": 214
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb2:51"
+      ],
+      "delivery_timing": {
+        "source_stamp": 50.8,
+        "generated_stamp": 50.8,
+        "received_stamp": 51.3,
+        "received_minus_generated_seconds": "0.5",
+        "received_minus_source_seconds": "0.5",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 857,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.2",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 861,
+      "raw_line_sha256": "53cc7727d123119218f4a619f494e573d3f37eb679c665c0c0f33949163c1bd6",
+      "raw_line": "{\"clock_ns\": 51300000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 50.8, \"payload\": {\"expires_at\": 52.8, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb3:46\"}, \"received_stamp\": 51.3, \"sequence\": 229, \"source\": \"tb3\", \"source_stamp\": 50.8, \"stream\": \"heartbeat\", \"version\": 229}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 51300000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 50.8,
+          "payload": {
+            "expires_at": 52.8,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb3:46"
+          },
+          "received_stamp": 51.3,
+          "sequence": 229,
+          "source": "tb3",
+          "source_stamp": 50.8,
+          "stream": "heartbeat",
+          "version": 229
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb3:46"
+      ],
+      "delivery_timing": {
+        "source_stamp": 50.8,
+        "generated_stamp": 50.8,
+        "received_stamp": 51.3,
+        "received_minus_generated_seconds": "0.5",
+        "received_minus_source_seconds": "0.5",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 858,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.2",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 863,
+      "raw_line_sha256": "a1dcc6aee56cfb9d79a116627605348ab6b5211ec506caf55c1760dc8307e7a4",
+      "raw_line": "{\"clock_ns\": 51500000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 51.0, \"payload\": {\"expires_at\": 53.0, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb2:51\"}, \"received_stamp\": 51.5, \"sequence\": 215, \"source\": \"tb2\", \"source_stamp\": 51.0, \"stream\": \"heartbeat\", \"version\": 215}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 51500000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 51.0,
+          "payload": {
+            "expires_at": 53.0,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb2:51"
+          },
+          "received_stamp": 51.5,
+          "sequence": 215,
+          "source": "tb2",
+          "source_stamp": 51.0,
+          "stream": "heartbeat",
+          "version": 215
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb2:51"
+      ],
+      "delivery_timing": {
+        "source_stamp": 51.0,
+        "generated_stamp": 51.0,
+        "received_stamp": 51.5,
+        "received_minus_generated_seconds": "0.5",
+        "received_minus_source_seconds": "0.5",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 860,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.2",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 864,
+      "raw_line_sha256": "3870ba1613532e0f0491dc965f4e688cc42fe54d183ba1de0272d61aec4b4cf8",
+      "raw_line": "{\"clock_ns\": 51500000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 51.0, \"payload\": {\"expires_at\": 53.0, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb3:46\"}, \"received_stamp\": 51.5, \"sequence\": 230, \"source\": \"tb3\", \"source_stamp\": 51.0, \"stream\": \"heartbeat\", \"version\": 230}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 51500000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 51.0,
+          "payload": {
+            "expires_at": 53.0,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb3:46"
+          },
+          "received_stamp": 51.5,
+          "sequence": 230,
+          "source": "tb3",
+          "source_stamp": 51.0,
+          "stream": "heartbeat",
+          "version": 230
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb3:46"
+      ],
+      "delivery_timing": {
+        "source_stamp": 51.0,
+        "generated_stamp": 51.0,
+        "received_stamp": 51.5,
+        "received_minus_generated_seconds": "0.5",
+        "received_minus_source_seconds": "0.5",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 861,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.2",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 866,
+      "raw_line_sha256": "368f2f3a37371c77c7f7cf84b23bfc198c29f8cb2ab6b0cb34f6bf01ba86c8dd",
+      "raw_line": "{\"clock_ns\": 51700000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 51.2, \"payload\": {\"expires_at\": 53.2, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb2:51\"}, \"received_stamp\": 51.7, \"sequence\": 216, \"source\": \"tb2\", \"source_stamp\": 51.2, \"stream\": \"heartbeat\", \"version\": 216}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 51700000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 51.2,
+          "payload": {
+            "expires_at": 53.2,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb2:51"
+          },
+          "received_stamp": 51.7,
+          "sequence": 216,
+          "source": "tb2",
+          "source_stamp": 51.2,
+          "stream": "heartbeat",
+          "version": 216
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb2:51"
+      ],
+      "delivery_timing": {
+        "source_stamp": 51.2,
+        "generated_stamp": 51.2,
+        "received_stamp": 51.7,
+        "received_minus_generated_seconds": "0.5",
+        "received_minus_source_seconds": "0.5",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 863,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.2",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 867,
+      "raw_line_sha256": "8b852951bcc506801d4e4e735a1c2be6f60ab8068d89d30ef00dd66045cace42",
+      "raw_line": "{\"clock_ns\": 51700000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 51.2, \"payload\": {\"expires_at\": 53.2, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb3:46\"}, \"received_stamp\": 51.7, \"sequence\": 231, \"source\": \"tb3\", \"source_stamp\": 51.2, \"stream\": \"heartbeat\", \"version\": 231}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 51700000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 51.2,
+          "payload": {
+            "expires_at": 53.2,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb3:46"
+          },
+          "received_stamp": 51.7,
+          "sequence": 231,
+          "source": "tb3",
+          "source_stamp": 51.2,
+          "stream": "heartbeat",
+          "version": 231
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb3:46"
+      ],
+      "delivery_timing": {
+        "source_stamp": 51.2,
+        "generated_stamp": 51.2,
+        "received_stamp": 51.7,
+        "received_minus_generated_seconds": "0.5",
+        "received_minus_source_seconds": "0.5",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 864,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.2",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 869,
+      "raw_line_sha256": "93f6259539ecf8ab275b35cd41e7ed1564c7031cd7e9ddcbfb9dcb200428d59e",
+      "raw_line": "{\"clock_ns\": 51900000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 51.4, \"payload\": {\"expires_at\": 53.4, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb2:51\"}, \"received_stamp\": 51.9, \"sequence\": 217, \"source\": \"tb2\", \"source_stamp\": 51.4, \"stream\": \"heartbeat\", \"version\": 217}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 51900000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 51.4,
+          "payload": {
+            "expires_at": 53.4,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb2:51"
+          },
+          "received_stamp": 51.9,
+          "sequence": 217,
+          "source": "tb2",
+          "source_stamp": 51.4,
+          "stream": "heartbeat",
+          "version": 217
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb2:51"
+      ],
+      "delivery_timing": {
+        "source_stamp": 51.4,
+        "generated_stamp": 51.4,
+        "received_stamp": 51.9,
+        "received_minus_generated_seconds": "0.5",
+        "received_minus_source_seconds": "0.5",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 866,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.2",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 870,
+      "raw_line_sha256": "345f888c506fc79b443b3d8480227520c8dad3d1a6f79e8aab0fb6f42af8da1b",
+      "raw_line": "{\"clock_ns\": 51900000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 51.4, \"payload\": {\"expires_at\": 53.4, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb3:46\"}, \"received_stamp\": 51.9, \"sequence\": 232, \"source\": \"tb3\", \"source_stamp\": 51.4, \"stream\": \"heartbeat\", \"version\": 232}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 51900000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 51.4,
+          "payload": {
+            "expires_at": 53.4,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb3:46"
+          },
+          "received_stamp": 51.9,
+          "sequence": 232,
+          "source": "tb3",
+          "source_stamp": 51.4,
+          "stream": "heartbeat",
+          "version": 232
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb3:46"
+      ],
+      "delivery_timing": {
+        "source_stamp": 51.4,
+        "generated_stamp": 51.4,
+        "received_stamp": 51.9,
+        "received_minus_generated_seconds": "0.5",
+        "received_minus_source_seconds": "0.5",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 867,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.2",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 872,
+      "raw_line_sha256": "10db4734f8d1ec737af7ae0d1cd9b957314509611be746930a0428187ef16e39",
+      "raw_line": "{\"clock_ns\": 52100000000, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"event\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb3:46\", \"reason\": \"switch\", \"robot\": \"tb3\", \"stamp\": 52.1, \"type\": \"cancel_goal\"}, \"kind\": \"dispatcher_event\"}\n",
+      "record": {
+        "clock_ns": 52100000000,
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "event": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "goal_id": "proxy2d_w2_e1_f96a1433:tb3:46",
+          "reason": "switch",
+          "robot": "tb3",
+          "stamp": 52.1,
+          "type": "cancel_goal"
+        },
+        "kind": "dispatcher_event"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb3:46"
+      ],
+      "dispatcher_timing": {
+        "event_stamp": 52.1,
+        "worker_clock_minus_event_stamp_seconds": "0.0"
+      }
+    },
+    {
+      "line_1based": 873,
+      "raw_line_sha256": "808ce26487e50fa439607e1fd8de92d648da02fa176244cf3a5085ba0f36918e",
+      "raw_line": "{\"clock_ns\": 52100000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 51.6, \"payload\": {\"expires_at\": 53.6, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb1:47\"}, \"received_stamp\": 52.1, \"sequence\": 224, \"source\": \"tb1\", \"source_stamp\": 51.6, \"stream\": \"heartbeat\", \"version\": 224}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 52100000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 51.6,
+          "payload": {
+            "expires_at": 53.6,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb1:47"
+          },
+          "received_stamp": 52.1,
+          "sequence": 224,
+          "source": "tb1",
+          "source_stamp": 51.6,
+          "stream": "heartbeat",
+          "version": 224
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "reliable_delivery_in_closed_worker_clock_window"
+      ],
+      "delivery_timing": {
+        "source_stamp": 51.6,
+        "generated_stamp": 51.6,
+        "received_stamp": 52.1,
+        "received_minus_generated_seconds": "0.5",
+        "received_minus_source_seconds": "0.5",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 868,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.2",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 874,
+      "raw_line_sha256": "b13bba0fc1a8d739cf6dd82840e48b0a9d69691d277235e29902094607d09656",
+      "raw_line": "{\"clock_ns\": 52100000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 51.6, \"payload\": {\"expires_at\": 53.6, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb2:51\"}, \"received_stamp\": 52.1, \"sequence\": 218, \"source\": \"tb2\", \"source_stamp\": 51.6, \"stream\": \"heartbeat\", \"version\": 218}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 52100000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 51.6,
+          "payload": {
+            "expires_at": 53.6,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb2:51"
+          },
+          "received_stamp": 52.1,
+          "sequence": 218,
+          "source": "tb2",
+          "source_stamp": 51.6,
+          "stream": "heartbeat",
+          "version": 218
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "reliable_delivery_in_closed_worker_clock_window",
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb2:51"
+      ],
+      "delivery_timing": {
+        "source_stamp": 51.6,
+        "generated_stamp": 51.6,
+        "received_stamp": 52.1,
+        "received_minus_generated_seconds": "0.5",
+        "received_minus_source_seconds": "0.5",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 869,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.2",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 875,
+      "raw_line_sha256": "dad3bf0ba068238dc92e26a2faffc01ba1a74f940d677ddc6efa85b340a0cbe2",
+      "raw_line": "{\"clock_ns\": 52100000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 51.6, \"payload\": {\"expires_at\": 53.6, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb3:46\"}, \"received_stamp\": 52.1, \"sequence\": 233, \"source\": \"tb3\", \"source_stamp\": 51.6, \"stream\": \"heartbeat\", \"version\": 233}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 52100000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 51.6,
+          "payload": {
+            "expires_at": 53.6,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb3:46"
+          },
+          "received_stamp": 52.1,
+          "sequence": 233,
+          "source": "tb3",
+          "source_stamp": 51.6,
+          "stream": "heartbeat",
+          "version": 233
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "reliable_delivery_in_closed_worker_clock_window",
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb3:46"
+      ],
+      "delivery_timing": {
+        "source_stamp": 51.6,
+        "generated_stamp": 51.6,
+        "received_stamp": 52.1,
+        "received_minus_generated_seconds": "0.5",
+        "received_minus_source_seconds": "0.5",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 870,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.2",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 876,
+      "raw_line_sha256": "8427c5eb5ca5430eb04d6eb39caa383fb86afe2e41faa6dc78fba37b37146e6b",
+      "raw_line": "{\"clock_ns\": 52300000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 51.8, \"payload\": {\"expires_at\": 53.8, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb1:47\"}, \"received_stamp\": 52.3, \"sequence\": 225, \"source\": \"tb1\", \"source_stamp\": 51.8, \"stream\": \"heartbeat\", \"version\": 225}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 52300000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 51.8,
+          "payload": {
+            "expires_at": 53.8,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb1:47"
+          },
+          "received_stamp": 52.3,
+          "sequence": 225,
+          "source": "tb1",
+          "source_stamp": 51.8,
+          "stream": "heartbeat",
+          "version": 225
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "reliable_delivery_in_closed_worker_clock_window"
+      ],
+      "delivery_timing": {
+        "source_stamp": 51.8,
+        "generated_stamp": 51.8,
+        "received_stamp": 52.3,
+        "received_minus_generated_seconds": "0.5",
+        "received_minus_source_seconds": "0.5",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 873,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.2",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 877,
+      "raw_line_sha256": "e64317138b19581a7ef96cd56aeb0a5ae0c09fac7219e222bc3d1682b4096f3a",
+      "raw_line": "{\"clock_ns\": 52300000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 51.8, \"payload\": {\"expires_at\": 53.8, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb2:51\"}, \"received_stamp\": 52.3, \"sequence\": 219, \"source\": \"tb2\", \"source_stamp\": 51.8, \"stream\": \"heartbeat\", \"version\": 219}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 52300000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 51.8,
+          "payload": {
+            "expires_at": 53.8,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb2:51"
+          },
+          "received_stamp": 52.3,
+          "sequence": 219,
+          "source": "tb2",
+          "source_stamp": 51.8,
+          "stream": "heartbeat",
+          "version": 219
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "reliable_delivery_in_closed_worker_clock_window",
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb2:51"
+      ],
+      "delivery_timing": {
+        "source_stamp": 51.8,
+        "generated_stamp": 51.8,
+        "received_stamp": 52.3,
+        "received_minus_generated_seconds": "0.5",
+        "received_minus_source_seconds": "0.5",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 874,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.2",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 878,
+      "raw_line_sha256": "809c7f9cacf0ba3eba1cb0de1eb07294a3ee5614ced55dc73fccb95985647e16",
+      "raw_line": "{\"clock_ns\": 52300000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 51.8, \"payload\": {\"expires_at\": 53.8, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb3:46\"}, \"received_stamp\": 52.3, \"sequence\": 234, \"source\": \"tb3\", \"source_stamp\": 51.8, \"stream\": \"heartbeat\", \"version\": 234}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 52300000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 51.8,
+          "payload": {
+            "expires_at": 53.8,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb3:46"
+          },
+          "received_stamp": 52.3,
+          "sequence": 234,
+          "source": "tb3",
+          "source_stamp": 51.8,
+          "stream": "heartbeat",
+          "version": 234
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "reliable_delivery_in_closed_worker_clock_window",
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb3:46"
+      ],
+      "delivery_timing": {
+        "source_stamp": 51.8,
+        "generated_stamp": 51.8,
+        "received_stamp": 52.3,
+        "received_minus_generated_seconds": "0.5",
+        "received_minus_source_seconds": "0.5",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 875,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.2",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 879,
+      "raw_line_sha256": "f4d90689dbea77a0814fc93d4ba0aa4f787f61b3e9aa50e9687619f45b0d97f3",
+      "raw_line": "{\"clock_ns\": 52500000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 52.0, \"payload\": {\"expires_at\": 54.0, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb1:47\"}, \"received_stamp\": 52.5, \"sequence\": 226, \"source\": \"tb1\", \"source_stamp\": 52.0, \"stream\": \"heartbeat\", \"version\": 226}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 52500000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 52.0,
+          "payload": {
+            "expires_at": 54.0,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb1:47"
+          },
+          "received_stamp": 52.5,
+          "sequence": 226,
+          "source": "tb1",
+          "source_stamp": 52.0,
+          "stream": "heartbeat",
+          "version": 226
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "reliable_delivery_in_closed_worker_clock_window"
+      ],
+      "delivery_timing": {
+        "source_stamp": 52.0,
+        "generated_stamp": 52.0,
+        "received_stamp": 52.5,
+        "received_minus_generated_seconds": "0.5",
+        "received_minus_source_seconds": "0.5",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 876,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.2",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 880,
+      "raw_line_sha256": "6edc21a228060be2e01a286a4d3b7a4679ccf533cb66cc79be8c34bd0217661f",
+      "raw_line": "{\"clock_ns\": 52500000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 52.0, \"payload\": {\"expires_at\": 54.0, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb2:51\"}, \"received_stamp\": 52.5, \"sequence\": 220, \"source\": \"tb2\", \"source_stamp\": 52.0, \"stream\": \"heartbeat\", \"version\": 220}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 52500000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 52.0,
+          "payload": {
+            "expires_at": 54.0,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb2:51"
+          },
+          "received_stamp": 52.5,
+          "sequence": 220,
+          "source": "tb2",
+          "source_stamp": 52.0,
+          "stream": "heartbeat",
+          "version": 220
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "reliable_delivery_in_closed_worker_clock_window",
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb2:51"
+      ],
+      "delivery_timing": {
+        "source_stamp": 52.0,
+        "generated_stamp": 52.0,
+        "received_stamp": 52.5,
+        "received_minus_generated_seconds": "0.5",
+        "received_minus_source_seconds": "0.5",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 877,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.2",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 881,
+      "raw_line_sha256": "6c8919edbfda232edd716c45da1571d46fc79e10e2d3c31d501decc0a1c33f19",
+      "raw_line": "{\"clock_ns\": 52500000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 52.0, \"payload\": {\"expires_at\": 54.0, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb3:46\"}, \"received_stamp\": 52.5, \"sequence\": 235, \"source\": \"tb3\", \"source_stamp\": 52.0, \"stream\": \"heartbeat\", \"version\": 235}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 52500000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 52.0,
+          "payload": {
+            "expires_at": 54.0,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb3:46"
+          },
+          "received_stamp": 52.5,
+          "sequence": 235,
+          "source": "tb3",
+          "source_stamp": 52.0,
+          "stream": "heartbeat",
+          "version": 235
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "reliable_delivery_in_closed_worker_clock_window",
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb3:46",
+        "last_recorded_delivery_strictly_before_worker_clock_54_1:heartbeat:tb3"
+      ],
+      "delivery_timing": {
+        "source_stamp": 52.0,
+        "generated_stamp": 52.0,
+        "received_stamp": 52.5,
+        "received_minus_generated_seconds": "0.5",
+        "received_minus_source_seconds": "0.5",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 878,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.2",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 882,
+      "raw_line_sha256": "3408bfce604f29c1b0df41c952397070214df7d21d83c3864c4a7ce8474f7e3c",
+      "raw_line": "{\"clock_ns\": 52500000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 52.1, \"payload\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb1:47\", \"reason\": \"switch\", \"robot\": \"tb1\", \"stamp\": 52.1, \"type\": \"cancel_goal\"}, \"received_stamp\": 52.5, \"sequence\": 16, \"source\": \"tb1\", \"source_stamp\": 52.1, \"stream\": \"command\", \"version\": 16}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 52500000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 52.1,
+          "payload": {
+            "epoch": "proxy2d_w2_e1_f96a1433",
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb1:47",
+            "reason": "switch",
+            "robot": "tb1",
+            "stamp": 52.1,
+            "type": "cancel_goal"
+          },
+          "received_stamp": 52.5,
+          "sequence": 16,
+          "source": "tb1",
+          "source_stamp": 52.1,
+          "stream": "command",
+          "version": 16
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "reliable_delivery_in_closed_worker_clock_window"
+      ],
+      "delivery_timing": {
+        "source_stamp": 52.1,
+        "generated_stamp": 52.1,
+        "received_stamp": 52.5,
+        "received_minus_generated_seconds": "0.4",
+        "received_minus_source_seconds": "0.4",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 792,
+        "generated_gap_from_previous_actual_delivery_seconds": "6.0",
+        "received_gap_from_previous_actual_delivery_seconds": "6.0",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag"
+        ]
+      }
+    },
+    {
+      "line_1based": 883,
+      "raw_line_sha256": "7e4ed74320be21eaa1ac3c65fbbbb3a95746bede104276003390aa296aaa3ef2",
+      "raw_line": "{\"clock_ns\": 52500000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 52.1, \"payload\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb3:46\", \"reason\": \"switch\", \"robot\": \"tb3\", \"stamp\": 52.1, \"type\": \"cancel_goal\"}, \"received_stamp\": 52.5, \"sequence\": 16, \"source\": \"tb3\", \"source_stamp\": 52.1, \"stream\": \"command\", \"version\": 16}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 52500000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 52.1,
+          "payload": {
+            "epoch": "proxy2d_w2_e1_f96a1433",
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb3:46",
+            "reason": "switch",
+            "robot": "tb3",
+            "stamp": 52.1,
+            "type": "cancel_goal"
+          },
+          "received_stamp": 52.5,
+          "sequence": 16,
+          "source": "tb3",
+          "source_stamp": 52.1,
+          "stream": "command",
+          "version": 16
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "reliable_delivery_in_closed_worker_clock_window",
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb3:46"
+      ],
+      "delivery_timing": {
+        "source_stamp": 52.1,
+        "generated_stamp": 52.1,
+        "received_stamp": 52.5,
+        "received_minus_generated_seconds": "0.4",
+        "received_minus_source_seconds": "0.4",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 793,
+        "generated_gap_from_previous_actual_delivery_seconds": "6.0",
+        "received_gap_from_previous_actual_delivery_seconds": "6.0",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag"
+        ]
+      }
+    },
+    {
+      "line_1based": 884,
+      "raw_line_sha256": "4bd2f34f63b449e76d55520904335994030c6df699c4c6ae696bf15a2afd5457",
+      "raw_line": "{\"clock_ns\": 52700000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 52.2, \"payload\": {\"expires_at\": 54.2, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb2:51\"}, \"received_stamp\": 52.7, \"sequence\": 221, \"source\": \"tb2\", \"source_stamp\": 52.2, \"stream\": \"heartbeat\", \"version\": 221}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 52700000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 52.2,
+          "payload": {
+            "expires_at": 54.2,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb2:51"
+          },
+          "received_stamp": 52.7,
+          "sequence": 221,
+          "source": "tb2",
+          "source_stamp": 52.2,
+          "stream": "heartbeat",
+          "version": 221
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "reliable_delivery_in_closed_worker_clock_window",
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb2:51"
+      ],
+      "delivery_timing": {
+        "source_stamp": 52.2,
+        "generated_stamp": 52.2,
+        "received_stamp": 52.7,
+        "received_minus_generated_seconds": "0.5",
+        "received_minus_source_seconds": "0.5",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 880,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.2",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 885,
+      "raw_line_sha256": "4b47494237807c97acfc596dd5b019da8bb942c1b68be2327a6506fa1c54120a",
+      "raw_line": "{\"clock_ns\": 52900000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 52.4, \"payload\": {\"expires_at\": 54.4, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb2:51\"}, \"received_stamp\": 52.9, \"sequence\": 222, \"source\": \"tb2\", \"source_stamp\": 52.4, \"stream\": \"heartbeat\", \"version\": 222}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 52900000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 52.4,
+          "payload": {
+            "expires_at": 54.4,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb2:51"
+          },
+          "received_stamp": 52.9,
+          "sequence": 222,
+          "source": "tb2",
+          "source_stamp": 52.4,
+          "stream": "heartbeat",
+          "version": 222
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "reliable_delivery_in_closed_worker_clock_window",
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb2:51"
+      ],
+      "delivery_timing": {
+        "source_stamp": 52.4,
+        "generated_stamp": 52.4,
+        "received_stamp": 52.9,
+        "received_minus_generated_seconds": "0.5",
+        "received_minus_source_seconds": "0.5",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 884,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.2",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 886,
+      "raw_line_sha256": "b46ae7dda6cdf476baa1ba29e67f9f5283fc6b7c0051881e0cea8ef7538770d5",
+      "raw_line": "{\"clock_ns\": 52900000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 52.5, \"payload\": {\"goal_id\": \"proxy2d_w2_e1_f96a1433:tb1:47\", \"type\": \"cancel\", \"value\": true}, \"received_stamp\": 52.9, \"sequence\": 23, \"source\": \"tb1\", \"source_stamp\": 52.5, \"stream\": \"receipt\", \"version\": 23}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 52900000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 52.5,
+          "payload": {
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb1:47",
+            "type": "cancel",
+            "value": true
+          },
+          "received_stamp": 52.9,
+          "sequence": 23,
+          "source": "tb1",
+          "source_stamp": 52.5,
+          "stream": "receipt",
+          "version": 23
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "reliable_delivery_in_closed_worker_clock_window"
+      ],
+      "delivery_timing": {
+        "source_stamp": 52.5,
+        "generated_stamp": 52.5,
+        "received_stamp": 52.9,
+        "received_minus_generated_seconds": "0.4",
+        "received_minus_source_seconds": "0.4",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 800,
+        "generated_gap_from_previous_actual_delivery_seconds": "6.0",
+        "received_gap_from_previous_actual_delivery_seconds": "6.0",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag"
+        ]
+      }
+    },
+    {
+      "line_1based": 888,
+      "raw_line_sha256": "5a6b9adadd84189013855af5a24433605dc9c47d5f436f2c73996e4ff9a6d6a3",
+      "raw_line": "{\"clock_ns\": 53100000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 52.5, \"payload\": {\"goal_id\": \"proxy2d_w2_e1_f96a1433:tb1:47\", \"type\": \"result\", \"value\": \"CANCELED\"}, \"received_stamp\": 53.1, \"sequence\": 24, \"source\": \"tb1\", \"source_stamp\": 52.5, \"stream\": \"receipt\", \"version\": 24}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 53100000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 52.5,
+          "payload": {
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb1:47",
+            "type": "result",
+            "value": "CANCELED"
+          },
+          "received_stamp": 53.1,
+          "sequence": 24,
+          "source": "tb1",
+          "source_stamp": 52.5,
+          "stream": "receipt",
+          "version": 24
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "reliable_delivery_in_closed_worker_clock_window",
+        "last_recorded_delivery_strictly_before_worker_clock_54_1:receipt:tb1"
+      ],
+      "delivery_timing": {
+        "source_stamp": 52.5,
+        "generated_stamp": 52.5,
+        "received_stamp": 53.1,
+        "received_minus_generated_seconds": "0.6",
+        "received_minus_source_seconds": "0.6",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 886,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.0",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag"
+        ]
+      }
+    },
+    {
+      "line_1based": 889,
+      "raw_line_sha256": "556d08ecb3512f24495ec4ba91eeb60faa0abc9c71fc6f7914c60b2d4cf247ec",
+      "raw_line": "{\"clock_ns\": 53100000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 52.5, \"payload\": {\"goal_id\": \"proxy2d_w2_e1_f96a1433:tb3:46\", \"type\": \"cancel\", \"value\": true}, \"received_stamp\": 53.1, \"sequence\": 23, \"source\": \"tb3\", \"source_stamp\": 52.5, \"stream\": \"receipt\", \"version\": 23}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 53100000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 52.5,
+          "payload": {
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb3:46",
+            "type": "cancel",
+            "value": true
+          },
+          "received_stamp": 53.1,
+          "sequence": 23,
+          "source": "tb3",
+          "source_stamp": 52.5,
+          "stream": "receipt",
+          "version": 23
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "reliable_delivery_in_closed_worker_clock_window",
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb3:46"
+      ],
+      "delivery_timing": {
+        "source_stamp": 52.5,
+        "generated_stamp": 52.5,
+        "received_stamp": 53.1,
+        "received_minus_generated_seconds": "0.6",
+        "received_minus_source_seconds": "0.6",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 801,
+        "generated_gap_from_previous_actual_delivery_seconds": "6.0",
+        "received_gap_from_previous_actual_delivery_seconds": "6.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag"
+        ]
+      }
+    },
+    {
+      "line_1based": 891,
+      "raw_line_sha256": "93a39b65570b5ca59d792f459e16fd2e0b696c6673018c508632ee913147784f",
+      "raw_line": "{\"clock_ns\": 53100000000, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"event\": {\"command_id\": 53, \"created_at\": 52.1, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"expires_at\": 54.1, \"goal\": {\"x\": -2.374999999999999, \"y\": 3.825000000000001}, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb1:53\", \"lease_until\": 54.1, \"observation_version\": 53, \"robot\": \"tb1\", \"stamp\": 53.1, \"type\": \"send_goal\", \"x\": -2.374999999999999, \"y\": 3.825000000000001}, \"kind\": \"dispatcher_event\"}\n",
+      "record": {
+        "clock_ns": 53100000000,
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "event": {
+          "command_id": 53,
+          "created_at": 52.1,
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "expires_at": 54.1,
+          "goal": {
+            "x": -2.374999999999999,
+            "y": 3.825000000000001
+          },
+          "goal_id": "proxy2d_w2_e1_f96a1433:tb1:53",
+          "lease_until": 54.1,
+          "observation_version": 53,
+          "robot": "tb1",
+          "stamp": 53.1,
+          "type": "send_goal",
+          "x": -2.374999999999999,
+          "y": 3.825000000000001
+        },
+        "kind": "dispatcher_event"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb1:53"
+      ],
+      "dispatcher_timing": {
+        "event_stamp": 53.1,
+        "worker_clock_minus_event_stamp_seconds": "0.0"
+      }
+    },
+    {
+      "line_1based": 892,
+      "raw_line_sha256": "dee1d865bfbf2b4b438c01dcf69a0305e03a5d49f2c19cd3f08aa83334d823f5",
+      "raw_line": "{\"clock_ns\": 53100000000, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"event\": {\"accepted\": true, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb3:46\", \"robot\": \"tb3\", \"stamp\": 53.1, \"type\": \"cancel_response\"}, \"kind\": \"dispatcher_event\"}\n",
+      "record": {
+        "clock_ns": 53100000000,
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "event": {
+          "accepted": true,
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "goal_id": "proxy2d_w2_e1_f96a1433:tb3:46",
+          "robot": "tb3",
+          "stamp": 53.1,
+          "type": "cancel_response"
+        },
+        "kind": "dispatcher_event"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb3:46"
+      ],
+      "dispatcher_timing": {
+        "event_stamp": 53.1,
+        "worker_clock_minus_event_stamp_seconds": "0.0"
+      }
+    },
+    {
+      "line_1based": 893,
+      "raw_line_sha256": "5924d997db8a10954288a03367cd5eac5d9fc78ae5ecd570becc3b3c48580a03",
+      "raw_line": "{\"clock_ns\": 53300000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 52.5, \"payload\": {\"goal_id\": \"proxy2d_w2_e1_f96a1433:tb3:46\", \"type\": \"result\", \"value\": \"CANCELED\"}, \"received_stamp\": 53.3, \"sequence\": 24, \"source\": \"tb3\", \"source_stamp\": 52.5, \"stream\": \"receipt\", \"version\": 24}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 53300000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 52.5,
+          "payload": {
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb3:46",
+            "type": "result",
+            "value": "CANCELED"
+          },
+          "received_stamp": 53.3,
+          "sequence": 24,
+          "source": "tb3",
+          "source_stamp": 52.5,
+          "stream": "receipt",
+          "version": 24
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "reliable_delivery_in_closed_worker_clock_window",
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb3:46",
+        "last_recorded_delivery_strictly_before_worker_clock_54_1:receipt:tb3"
+      ],
+      "delivery_timing": {
+        "source_stamp": 52.5,
+        "generated_stamp": 52.5,
+        "received_stamp": 53.3,
+        "received_minus_generated_seconds": "0.8",
+        "received_minus_source_seconds": "0.8",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 889,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.0",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag"
+        ]
+      }
+    },
+    {
+      "line_1based": 894,
+      "raw_line_sha256": "580f121f3a31206a645e196633dd2e9817c6c0336b5cb68d67f1a3fb6a963b00",
+      "raw_line": "{\"clock_ns\": 53300000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 52.6, \"payload\": {\"expires_at\": 54.6, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb2:51\"}, \"received_stamp\": 53.3, \"sequence\": 223, \"source\": \"tb2\", \"source_stamp\": 52.6, \"stream\": \"heartbeat\", \"version\": 223}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 53300000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 52.6,
+          "payload": {
+            "expires_at": 54.6,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb2:51"
+          },
+          "received_stamp": 53.3,
+          "sequence": 223,
+          "source": "tb2",
+          "source_stamp": 52.6,
+          "stream": "heartbeat",
+          "version": 223
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "reliable_delivery_in_closed_worker_clock_window",
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb2:51"
+      ],
+      "delivery_timing": {
+        "source_stamp": 52.6,
+        "generated_stamp": 52.6,
+        "received_stamp": 53.3,
+        "received_minus_generated_seconds": "0.7",
+        "received_minus_source_seconds": "0.7",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 885,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.2",
+        "received_gap_from_previous_actual_delivery_seconds": "0.4",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 895,
+      "raw_line_sha256": "e2488d9d2f2fb8f8744844618f37d155e6f34d79b4c7871f08a330d6760ef380",
+      "raw_line": "{\"clock_ns\": 53300000000, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"event\": {\"command_id\": 46, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb3:46\", \"robot\": \"tb3\", \"stamp\": 53.3, \"status\": \"CANCELED\", \"type\": \"protocol_terminal\"}, \"kind\": \"dispatcher_event\"}\n",
+      "record": {
+        "clock_ns": 53300000000,
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "event": {
+          "command_id": 46,
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "goal_id": "proxy2d_w2_e1_f96a1433:tb3:46",
+          "robot": "tb3",
+          "stamp": 53.3,
+          "status": "CANCELED",
+          "type": "protocol_terminal"
+        },
+        "kind": "dispatcher_event"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb3:46"
+      ],
+      "dispatcher_timing": {
+        "event_stamp": 53.3,
+        "worker_clock_minus_event_stamp_seconds": "0.0"
+      }
+    },
+    {
+      "line_1based": 896,
+      "raw_line_sha256": "428651c1bd21ca2a23e11bcfad2426ef5e33de58bd2ad61a7792a5bb47318a78",
+      "raw_line": "{\"clock_ns\": 53300000000, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"event\": {\"command_id\": 53, \"created_at\": 52.1, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"expires_at\": 54.1, \"goal\": {\"x\": 1.625, \"y\": -3.2249999999999996}, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb3:53\", \"lease_until\": 54.1, \"observation_version\": 53, \"robot\": \"tb3\", \"stamp\": 53.3, \"type\": \"send_goal\", \"x\": 1.625, \"y\": -3.2249999999999996}, \"kind\": \"dispatcher_event\"}\n",
+      "record": {
+        "clock_ns": 53300000000,
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "event": {
+          "command_id": 53,
+          "created_at": 52.1,
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "expires_at": 54.1,
+          "goal": {
+            "x": 1.625,
+            "y": -3.2249999999999996
+          },
+          "goal_id": "proxy2d_w2_e1_f96a1433:tb3:53",
+          "lease_until": 54.1,
+          "observation_version": 53,
+          "robot": "tb3",
+          "stamp": 53.3,
+          "type": "send_goal",
+          "x": 1.625,
+          "y": -3.2249999999999996
+        },
+        "kind": "dispatcher_event"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb3:53"
+      ],
+      "dispatcher_timing": {
+        "event_stamp": 53.3,
+        "worker_clock_minus_event_stamp_seconds": "0.0"
+      }
+    },
+    {
+      "line_1based": 897,
+      "raw_line_sha256": "296d000da7f0a66e764cc409558b71410db56572f9564c89b027cad5e816e76d",
+      "raw_line": "{\"clock_ns\": 53500000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 52.8, \"payload\": {\"expires_at\": 54.8, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb2:51\"}, \"received_stamp\": 53.5, \"sequence\": 224, \"source\": \"tb2\", \"source_stamp\": 52.8, \"stream\": \"heartbeat\", \"version\": 224}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 53500000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 52.8,
+          "payload": {
+            "expires_at": 54.8,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb2:51"
+          },
+          "received_stamp": 53.5,
+          "sequence": 224,
+          "source": "tb2",
+          "source_stamp": 52.8,
+          "stream": "heartbeat",
+          "version": 224
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "reliable_delivery_in_closed_worker_clock_window",
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb2:51"
+      ],
+      "delivery_timing": {
+        "source_stamp": 52.8,
+        "generated_stamp": 52.8,
+        "received_stamp": 53.5,
+        "received_minus_generated_seconds": "0.7",
+        "received_minus_source_seconds": "0.7",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 894,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.2",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 898,
+      "raw_line_sha256": "a1ffc2f282fddf8a106084d95fcd7fcbbdef256e17ea47404edfbefd86e67bd6",
+      "raw_line": "{\"clock_ns\": 53700000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 53.0, \"payload\": {\"expires_at\": 55.0, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb2:51\"}, \"received_stamp\": 53.7, \"sequence\": 225, \"source\": \"tb2\", \"source_stamp\": 53.0, \"stream\": \"heartbeat\", \"version\": 225}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 53700000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 53.0,
+          "payload": {
+            "expires_at": 55.0,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb2:51"
+          },
+          "received_stamp": 53.7,
+          "sequence": 225,
+          "source": "tb2",
+          "source_stamp": 53.0,
+          "stream": "heartbeat",
+          "version": 225
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "reliable_delivery_in_closed_worker_clock_window",
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb2:51"
+      ],
+      "delivery_timing": {
+        "source_stamp": 53.0,
+        "generated_stamp": 53.0,
+        "received_stamp": 53.7,
+        "received_minus_generated_seconds": "0.7",
+        "received_minus_source_seconds": "0.7",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 897,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.2",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 899,
+      "raw_line_sha256": "daa0885d8b6c55cdf7c904a29f8130d273b10d854854f0f697c463eb07864f6c",
+      "raw_line": "{\"clock_ns\": 53700000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 53.1, \"payload\": {\"command_id\": 53, \"created_at\": 52.1, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"expires_at\": 54.1, \"goal\": {\"x\": -2.374999999999999, \"y\": 3.825000000000001}, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb1:53\", \"lease_until\": 54.1, \"observation_version\": 53, \"robot\": \"tb1\", \"stamp\": 53.1, \"type\": \"send_goal\", \"x\": -2.374999999999999, \"y\": 3.825000000000001}, \"received_stamp\": 53.7, \"sequence\": 17, \"source\": \"tb1\", \"source_stamp\": 53.1, \"stream\": \"command\", \"version\": 17}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 53700000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 53.1,
+          "payload": {
+            "command_id": 53,
+            "created_at": 52.1,
+            "epoch": "proxy2d_w2_e1_f96a1433",
+            "expires_at": 54.1,
+            "goal": {
+              "x": -2.374999999999999,
+              "y": 3.825000000000001
+            },
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb1:53",
+            "lease_until": 54.1,
+            "observation_version": 53,
+            "robot": "tb1",
+            "stamp": 53.1,
+            "type": "send_goal",
+            "x": -2.374999999999999,
+            "y": 3.825000000000001
+          },
+          "received_stamp": 53.7,
+          "sequence": 17,
+          "source": "tb1",
+          "source_stamp": 53.1,
+          "stream": "command",
+          "version": 17
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "reliable_delivery_in_closed_worker_clock_window",
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb1:53",
+        "last_recorded_delivery_strictly_before_worker_clock_54_1:command:tb1"
+      ],
+      "delivery_timing": {
+        "source_stamp": 53.1,
+        "generated_stamp": 53.1,
+        "received_stamp": 53.7,
+        "received_minus_generated_seconds": "0.6",
+        "received_minus_source_seconds": "0.6",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 882,
+        "generated_gap_from_previous_actual_delivery_seconds": "1.0",
+        "received_gap_from_previous_actual_delivery_seconds": "1.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag"
+        ]
+      }
+    },
+    {
+      "line_1based": 900,
+      "raw_line_sha256": "c00be85bbb03c90bc3b30b381504bebf061458a713e8ede5339c89c820bb0764",
+      "raw_line": "{\"clock_ns\": 53700000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 53.2, \"payload\": {\"expires_at\": 55.2, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb1:53\"}, \"received_stamp\": 53.7, \"sequence\": 227, \"source\": \"tb1\", \"source_stamp\": 53.2, \"stream\": \"heartbeat\", \"version\": 227}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 53700000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 53.2,
+          "payload": {
+            "expires_at": 55.2,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb1:53"
+          },
+          "received_stamp": 53.7,
+          "sequence": 227,
+          "source": "tb1",
+          "source_stamp": 53.2,
+          "stream": "heartbeat",
+          "version": 227
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "reliable_delivery_in_closed_worker_clock_window",
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb1:53"
+      ],
+      "delivery_timing": {
+        "source_stamp": 53.2,
+        "generated_stamp": 53.2,
+        "received_stamp": 53.7,
+        "received_minus_generated_seconds": "0.5",
+        "received_minus_source_seconds": "0.5",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 879,
+        "generated_gap_from_previous_actual_delivery_seconds": "1.2",
+        "received_gap_from_previous_actual_delivery_seconds": "1.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 901,
+      "raw_line_sha256": "cca4d60e6c910ada94e2772d9d3369f3eaa06d0bbd41e1f3e5ca206eac1bb43f",
+      "raw_line": "{\"clock_ns\": 53900000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 53.2, \"payload\": {\"expires_at\": 55.2, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb2:51\"}, \"received_stamp\": 53.9, \"sequence\": 226, \"source\": \"tb2\", \"source_stamp\": 53.2, \"stream\": \"heartbeat\", \"version\": 226}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 53900000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 53.2,
+          "payload": {
+            "expires_at": 55.2,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb2:51"
+          },
+          "received_stamp": 53.9,
+          "sequence": 226,
+          "source": "tb2",
+          "source_stamp": 53.2,
+          "stream": "heartbeat",
+          "version": 226
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "reliable_delivery_in_closed_worker_clock_window",
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb2:51",
+        "last_recorded_delivery_strictly_before_worker_clock_54_1:heartbeat:tb2"
+      ],
+      "delivery_timing": {
+        "source_stamp": 53.2,
+        "generated_stamp": 53.2,
+        "received_stamp": 53.9,
+        "received_minus_generated_seconds": "0.7",
+        "received_minus_source_seconds": "0.7",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 898,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.2",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 902,
+      "raw_line_sha256": "18557a91c1ebb89ea956d79229d7532c510293f417e1e39720c7f0bbe959df44",
+      "raw_line": "{\"clock_ns\": 53900000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 53.3, \"payload\": {\"command_id\": 53, \"created_at\": 52.1, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"expires_at\": 54.1, \"goal\": {\"x\": 1.625, \"y\": -3.2249999999999996}, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb3:53\", \"lease_until\": 54.1, \"observation_version\": 53, \"robot\": \"tb3\", \"stamp\": 53.3, \"type\": \"send_goal\", \"x\": 1.625, \"y\": -3.2249999999999996}, \"received_stamp\": 53.9, \"sequence\": 17, \"source\": \"tb3\", \"source_stamp\": 53.3, \"stream\": \"command\", \"version\": 17}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 53900000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 53.3,
+          "payload": {
+            "command_id": 53,
+            "created_at": 52.1,
+            "epoch": "proxy2d_w2_e1_f96a1433",
+            "expires_at": 54.1,
+            "goal": {
+              "x": 1.625,
+              "y": -3.2249999999999996
+            },
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb3:53",
+            "lease_until": 54.1,
+            "observation_version": 53,
+            "robot": "tb3",
+            "stamp": 53.3,
+            "type": "send_goal",
+            "x": 1.625,
+            "y": -3.2249999999999996
+          },
+          "received_stamp": 53.9,
+          "sequence": 17,
+          "source": "tb3",
+          "source_stamp": 53.3,
+          "stream": "command",
+          "version": 17
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "reliable_delivery_in_closed_worker_clock_window",
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb3:53",
+        "last_recorded_delivery_strictly_before_worker_clock_54_1:command:tb3"
+      ],
+      "delivery_timing": {
+        "source_stamp": 53.3,
+        "generated_stamp": 53.3,
+        "received_stamp": 53.9,
+        "received_minus_generated_seconds": "0.6",
+        "received_minus_source_seconds": "0.6",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 883,
+        "generated_gap_from_previous_actual_delivery_seconds": "1.2",
+        "received_gap_from_previous_actual_delivery_seconds": "1.4",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag"
+        ]
+      }
+    },
+    {
+      "line_1based": 903,
+      "raw_line_sha256": "491bccf34df86318cc6160daf5f37abea43e9b4d087a85b57f173b84e1f768b7",
+      "raw_line": "{\"clock_ns\": 53900000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 53.4, \"payload\": {\"expires_at\": 55.4, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb1:53\"}, \"received_stamp\": 53.9, \"sequence\": 228, \"source\": \"tb1\", \"source_stamp\": 53.4, \"stream\": \"heartbeat\", \"version\": 228}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 53900000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 53.4,
+          "payload": {
+            "expires_at": 55.4,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb1:53"
+          },
+          "received_stamp": 53.9,
+          "sequence": 228,
+          "source": "tb1",
+          "source_stamp": 53.4,
+          "stream": "heartbeat",
+          "version": 228
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "reliable_delivery_in_closed_worker_clock_window",
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb1:53",
+        "last_recorded_delivery_strictly_before_worker_clock_54_1:heartbeat:tb1"
+      ],
+      "delivery_timing": {
+        "source_stamp": 53.4,
+        "generated_stamp": 53.4,
+        "received_stamp": 53.9,
+        "received_minus_generated_seconds": "0.5",
+        "received_minus_source_seconds": "0.5",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 900,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.2",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 904,
+      "raw_line_sha256": "19f4e206b05d70878185c75a42dac6abb318f6b0e65050824881f634c479c7a3",
+      "raw_line": "{\"clock_ns\": 54100000000, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"event\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb3:53\", \"reason\": \"goal_lease_expired\", \"robot\": \"tb3\", \"stamp\": 54.1, \"type\": \"protocol_failure\"}, \"kind\": \"dispatcher_event\"}\n",
+      "record": {
+        "clock_ns": 54100000000,
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "event": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "goal_id": "proxy2d_w2_e1_f96a1433:tb3:53",
+          "reason": "goal_lease_expired",
+          "robot": "tb3",
+          "stamp": 54.1,
+          "type": "protocol_failure"
+        },
+        "kind": "dispatcher_event"
+      },
+      "selection_labels": [
+        "first_recorded_protocol_failure_in_full_epoch_prefix",
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb3:53"
+      ],
+      "dispatcher_timing": {
+        "event_stamp": 54.1,
+        "worker_clock_minus_event_stamp_seconds": "0.0"
+      }
+    },
+    {
+      "line_1based": 905,
+      "raw_line_sha256": "14e5d1804fe5e59d8ac1cf564ee41fa5c1b2d78fc6a6f51969e5e3735b30b001",
+      "raw_line": "{\"clock_ns\": 54100000000, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"event\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb2:51\", \"reason\": \"goal_lease_expired\", \"robot\": \"tb2\", \"stamp\": 54.1, \"type\": \"cancel_goal\"}, \"kind\": \"dispatcher_event\"}\n",
+      "record": {
+        "clock_ns": 54100000000,
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "event": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "goal_id": "proxy2d_w2_e1_f96a1433:tb2:51",
+          "reason": "goal_lease_expired",
+          "robot": "tb2",
+          "stamp": 54.1,
+          "type": "cancel_goal"
+        },
+        "kind": "dispatcher_event"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb2:51"
+      ],
+      "dispatcher_timing": {
+        "event_stamp": 54.1,
+        "worker_clock_minus_event_stamp_seconds": "0.0"
+      }
+    },
+    {
+      "line_1based": 906,
+      "raw_line_sha256": "add7f6c252b3655661fd73e760fefab6e4c3674f95dba5cc299d06823583dc2b",
+      "raw_line": "{\"clock_ns\": 54100000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 53.4, \"payload\": {\"expires_at\": 55.4, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb2:51\"}, \"received_stamp\": 54.1, \"sequence\": 227, \"source\": \"tb2\", \"source_stamp\": 53.4, \"stream\": \"heartbeat\", \"version\": 227}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 54100000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 53.4,
+          "payload": {
+            "expires_at": 55.4,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb2:51"
+          },
+          "received_stamp": 54.1,
+          "sequence": 227,
+          "source": "tb2",
+          "source_stamp": 53.4,
+          "stream": "heartbeat",
+          "version": 227
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "reliable_delivery_in_closed_worker_clock_window",
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb2:51"
+      ],
+      "delivery_timing": {
+        "source_stamp": 53.4,
+        "generated_stamp": 53.4,
+        "received_stamp": 54.1,
+        "received_minus_generated_seconds": "0.7",
+        "received_minus_source_seconds": "0.7",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 901,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.2",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 907,
+      "raw_line_sha256": "6229f1006f9816d0a2ef1c1a5f2ba0312fd84ed6862b0c2e8251a553ba2e3cff",
+      "raw_line": "{\"clock_ns\": 54100000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 53.4, \"payload\": {\"expires_at\": 55.4, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb3:53\"}, \"received_stamp\": 54.1, \"sequence\": 236, \"source\": \"tb3\", \"source_stamp\": 53.4, \"stream\": \"heartbeat\", \"version\": 236}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 54100000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 53.4,
+          "payload": {
+            "expires_at": 55.4,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb3:53"
+          },
+          "received_stamp": 54.1,
+          "sequence": 236,
+          "source": "tb3",
+          "source_stamp": 53.4,
+          "stream": "heartbeat",
+          "version": 236
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "reliable_delivery_in_closed_worker_clock_window",
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb3:53"
+      ],
+      "delivery_timing": {
+        "source_stamp": 53.4,
+        "generated_stamp": 53.4,
+        "received_stamp": 54.1,
+        "received_minus_generated_seconds": "0.7",
+        "received_minus_source_seconds": "0.7",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 881,
+        "generated_gap_from_previous_actual_delivery_seconds": "1.4",
+        "received_gap_from_previous_actual_delivery_seconds": "1.6",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 908,
+      "raw_line_sha256": "1e547bda6543b0e66aedfb4c64af0c57c7de1f5cca253dfd8a8ef1696b470a1b",
+      "raw_line": "{\"clock_ns\": 54100000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 53.6, \"payload\": {\"expires_at\": 55.6, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb1:53\"}, \"received_stamp\": 54.1, \"sequence\": 229, \"source\": \"tb1\", \"source_stamp\": 53.6, \"stream\": \"heartbeat\", \"version\": 229}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 54100000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 53.6,
+          "payload": {
+            "expires_at": 55.6,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb1:53"
+          },
+          "received_stamp": 54.1,
+          "sequence": 229,
+          "source": "tb1",
+          "source_stamp": 53.6,
+          "stream": "heartbeat",
+          "version": 229
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "reliable_delivery_in_closed_worker_clock_window",
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb1:53"
+      ],
+      "delivery_timing": {
+        "source_stamp": 53.6,
+        "generated_stamp": 53.6,
+        "received_stamp": 54.1,
+        "received_minus_generated_seconds": "0.5",
+        "received_minus_source_seconds": "0.5",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 903,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.2",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 909,
+      "raw_line_sha256": "bbdcbb8913dfc87738ee9677b53e8b448048b68fd0e4157a33b8f0111af248ee",
+      "raw_line": "{\"clock_ns\": 54300000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 53.6, \"payload\": {\"expires_at\": 55.6, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb2:51\"}, \"received_stamp\": 54.3, \"sequence\": 228, \"source\": \"tb2\", \"source_stamp\": 53.6, \"stream\": \"heartbeat\", \"version\": 228}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 54300000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 53.6,
+          "payload": {
+            "expires_at": 55.6,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb2:51"
+          },
+          "received_stamp": 54.3,
+          "sequence": 228,
+          "source": "tb2",
+          "source_stamp": 53.6,
+          "stream": "heartbeat",
+          "version": 228
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "reliable_delivery_in_closed_worker_clock_window",
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb2:51"
+      ],
+      "delivery_timing": {
+        "source_stamp": 53.6,
+        "generated_stamp": 53.6,
+        "received_stamp": 54.3,
+        "received_minus_generated_seconds": "0.7",
+        "received_minus_source_seconds": "0.7",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 906,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.2",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 910,
+      "raw_line_sha256": "84cfecfe2e3447a9240cd212e5313517c212c5e4e3a19141a331efae6387b804",
+      "raw_line": "{\"clock_ns\": 54300000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 53.6, \"payload\": {\"expires_at\": 55.6, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb3:53\"}, \"received_stamp\": 54.3, \"sequence\": 237, \"source\": \"tb3\", \"source_stamp\": 53.6, \"stream\": \"heartbeat\", \"version\": 237}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 54300000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 53.6,
+          "payload": {
+            "expires_at": 55.6,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb3:53"
+          },
+          "received_stamp": 54.3,
+          "sequence": 237,
+          "source": "tb3",
+          "source_stamp": 53.6,
+          "stream": "heartbeat",
+          "version": 237
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "reliable_delivery_in_closed_worker_clock_window",
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb3:53"
+      ],
+      "delivery_timing": {
+        "source_stamp": 53.6,
+        "generated_stamp": 53.6,
+        "received_stamp": 54.3,
+        "received_minus_generated_seconds": "0.7",
+        "received_minus_source_seconds": "0.7",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 907,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.2",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 911,
+      "raw_line_sha256": "69c7e68556024433e42ed55f438dbde95ba2d92640bb7cb2fdd1225b2757517c",
+      "raw_line": "{\"clock_ns\": 54300000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 53.7, \"payload\": {\"goal_id\": \"proxy2d_w2_e1_f96a1433:tb1:53\", \"type\": \"accept\", \"value\": true}, \"received_stamp\": 54.3, \"sequence\": 25, \"source\": \"tb1\", \"source_stamp\": 53.7, \"stream\": \"receipt\", \"version\": 25}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 54300000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 53.7,
+          "payload": {
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb1:53",
+            "type": "accept",
+            "value": true
+          },
+          "received_stamp": 54.3,
+          "sequence": 25,
+          "source": "tb1",
+          "source_stamp": 53.7,
+          "stream": "receipt",
+          "version": 25
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "reliable_delivery_in_closed_worker_clock_window",
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb1:53"
+      ],
+      "delivery_timing": {
+        "source_stamp": 53.7,
+        "generated_stamp": 53.7,
+        "received_stamp": 54.3,
+        "received_minus_generated_seconds": "0.6",
+        "received_minus_source_seconds": "0.6",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 888,
+        "generated_gap_from_previous_actual_delivery_seconds": "1.2",
+        "received_gap_from_previous_actual_delivery_seconds": "1.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag"
+        ]
+      }
+    },
+    {
+      "line_1based": 912,
+      "raw_line_sha256": "52012c77a02493b943b975c2d3bb9f457beea180c669fd37ebddfc1c3a954f17",
+      "raw_line": "{\"clock_ns\": 54300000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 53.8, \"payload\": {\"expires_at\": 55.8, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb1:53\"}, \"received_stamp\": 54.3, \"sequence\": 230, \"source\": \"tb1\", \"source_stamp\": 53.8, \"stream\": \"heartbeat\", \"version\": 230}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 54300000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 53.8,
+          "payload": {
+            "expires_at": 55.8,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb1:53"
+          },
+          "received_stamp": 54.3,
+          "sequence": 230,
+          "source": "tb1",
+          "source_stamp": 53.8,
+          "stream": "heartbeat",
+          "version": 230
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "reliable_delivery_in_closed_worker_clock_window",
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb1:53"
+      ],
+      "delivery_timing": {
+        "source_stamp": 53.8,
+        "generated_stamp": 53.8,
+        "received_stamp": 54.3,
+        "received_minus_generated_seconds": "0.5",
+        "received_minus_source_seconds": "0.5",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 908,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.2",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 913,
+      "raw_line_sha256": "f1abad96ebc60954535653493b41206f8bda8262ff488ec90b056ec396da2197",
+      "raw_line": "{\"clock_ns\": 54300000000, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"event\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb1:53\", \"reason\": \"navigation_failure\", \"robot\": \"tb1\", \"stamp\": 54.3, \"type\": \"cancel_goal\"}, \"kind\": \"dispatcher_event\"}\n",
+      "record": {
+        "clock_ns": 54300000000,
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "event": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "goal_id": "proxy2d_w2_e1_f96a1433:tb1:53",
+          "reason": "navigation_failure",
+          "robot": "tb1",
+          "stamp": 54.3,
+          "type": "cancel_goal"
+        },
+        "kind": "dispatcher_event"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb1:53"
+      ],
+      "dispatcher_timing": {
+        "event_stamp": 54.3,
+        "worker_clock_minus_event_stamp_seconds": "0.0"
+      }
+    },
+    {
+      "line_1based": 914,
+      "raw_line_sha256": "0591586d22a102c0fb5adf9433e965512a9e52456b10e0e93e92d5eca0dac63c",
+      "raw_line": "{\"clock_ns\": 54500000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 53.8, \"payload\": {\"expires_at\": 55.8, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb2:51\"}, \"received_stamp\": 54.5, \"sequence\": 229, \"source\": \"tb2\", \"source_stamp\": 53.8, \"stream\": \"heartbeat\", \"version\": 229}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 54500000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 53.8,
+          "payload": {
+            "expires_at": 55.8,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb2:51"
+          },
+          "received_stamp": 54.5,
+          "sequence": 229,
+          "source": "tb2",
+          "source_stamp": 53.8,
+          "stream": "heartbeat",
+          "version": 229
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb2:51"
+      ],
+      "delivery_timing": {
+        "source_stamp": 53.8,
+        "generated_stamp": 53.8,
+        "received_stamp": 54.5,
+        "received_minus_generated_seconds": "0.7",
+        "received_minus_source_seconds": "0.7",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 909,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.2",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 915,
+      "raw_line_sha256": "cb97ea9b30ba3e19514522b7e990b19d204182fb6fec356c1e9b5304878e67e3",
+      "raw_line": "{\"clock_ns\": 54500000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 53.8, \"payload\": {\"expires_at\": 55.8, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb3:53\"}, \"received_stamp\": 54.5, \"sequence\": 238, \"source\": \"tb3\", \"source_stamp\": 53.8, \"stream\": \"heartbeat\", \"version\": 238}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 54500000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 53.8,
+          "payload": {
+            "expires_at": 55.8,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb3:53"
+          },
+          "received_stamp": 54.5,
+          "sequence": 238,
+          "source": "tb3",
+          "source_stamp": 53.8,
+          "stream": "heartbeat",
+          "version": 238
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb3:53"
+      ],
+      "delivery_timing": {
+        "source_stamp": 53.8,
+        "generated_stamp": 53.8,
+        "received_stamp": 54.5,
+        "received_minus_generated_seconds": "0.7",
+        "received_minus_source_seconds": "0.7",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 910,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.2",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 916,
+      "raw_line_sha256": "3d4517d31c8b58f2bedf48069e632e2d8c7221e4594a35063818f41f1877f60a",
+      "raw_line": "{\"clock_ns\": 54500000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 53.9, \"payload\": {\"goal_id\": \"proxy2d_w2_e1_f96a1433:tb3:53\", \"type\": \"accept\", \"value\": true}, \"received_stamp\": 54.5, \"sequence\": 25, \"source\": \"tb3\", \"source_stamp\": 53.9, \"stream\": \"receipt\", \"version\": 25}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 54500000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 53.9,
+          "payload": {
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb3:53",
+            "type": "accept",
+            "value": true
+          },
+          "received_stamp": 54.5,
+          "sequence": 25,
+          "source": "tb3",
+          "source_stamp": 53.9,
+          "stream": "receipt",
+          "version": 25
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb3:53"
+      ],
+      "delivery_timing": {
+        "source_stamp": 53.9,
+        "generated_stamp": 53.9,
+        "received_stamp": 54.5,
+        "received_minus_generated_seconds": "0.6",
+        "received_minus_source_seconds": "0.6",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 893,
+        "generated_gap_from_previous_actual_delivery_seconds": "1.4",
+        "received_gap_from_previous_actual_delivery_seconds": "1.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag"
+        ]
+      }
+    },
+    {
+      "line_1based": 917,
+      "raw_line_sha256": "f7eabf0e1b5ba4718cca4d00c2325607c9ab631841cf4fd8bf47a1aeceb8ce31",
+      "raw_line": "{\"clock_ns\": 54500000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 54.0, \"payload\": {\"expires_at\": 56.0, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb1:53\"}, \"received_stamp\": 54.5, \"sequence\": 231, \"source\": \"tb1\", \"source_stamp\": 54.0, \"stream\": \"heartbeat\", \"version\": 231}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 54500000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 54.0,
+          "payload": {
+            "expires_at": 56.0,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb1:53"
+          },
+          "received_stamp": 54.5,
+          "sequence": 231,
+          "source": "tb1",
+          "source_stamp": 54.0,
+          "stream": "heartbeat",
+          "version": 231
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb1:53"
+      ],
+      "delivery_timing": {
+        "source_stamp": 54.0,
+        "generated_stamp": 54.0,
+        "received_stamp": 54.5,
+        "received_minus_generated_seconds": "0.5",
+        "received_minus_source_seconds": "0.5",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 912,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.2",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 918,
+      "raw_line_sha256": "df76548e6e890664b34ba72a6e2312322120f33b3720deb2c845b4ad686db74f",
+      "raw_line": "{\"clock_ns\": 54500000000, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"event\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb3:53\", \"reason\": \"navigation_failure\", \"robot\": \"tb3\", \"stamp\": 54.5, \"type\": \"cancel_goal\"}, \"kind\": \"dispatcher_event\"}\n",
+      "record": {
+        "clock_ns": 54500000000,
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "event": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "goal_id": "proxy2d_w2_e1_f96a1433:tb3:53",
+          "reason": "navigation_failure",
+          "robot": "tb3",
+          "stamp": 54.5,
+          "type": "cancel_goal"
+        },
+        "kind": "dispatcher_event"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb3:53"
+      ],
+      "dispatcher_timing": {
+        "event_stamp": 54.5,
+        "worker_clock_minus_event_stamp_seconds": "0.0"
+      }
+    },
+    {
+      "line_1based": 919,
+      "raw_line_sha256": "03e44bfdee20313b77a13cb1f8d84f15f98d6a230c81cba240c2f8e91ae08441",
+      "raw_line": "{\"clock_ns\": 54700000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 54.0, \"payload\": {\"expires_at\": 56.0, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb2:51\"}, \"received_stamp\": 54.7, \"sequence\": 230, \"source\": \"tb2\", \"source_stamp\": 54.0, \"stream\": \"heartbeat\", \"version\": 230}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 54700000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 54.0,
+          "payload": {
+            "expires_at": 56.0,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb2:51"
+          },
+          "received_stamp": 54.7,
+          "sequence": 230,
+          "source": "tb2",
+          "source_stamp": 54.0,
+          "stream": "heartbeat",
+          "version": 230
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb2:51"
+      ],
+      "delivery_timing": {
+        "source_stamp": 54.0,
+        "generated_stamp": 54.0,
+        "received_stamp": 54.7,
+        "received_minus_generated_seconds": "0.7",
+        "received_minus_source_seconds": "0.7",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 914,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.2",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 920,
+      "raw_line_sha256": "65a73bd5d3676e68cd755d5f33d676e45515c3c517ef09f1920dee8af459c9d3",
+      "raw_line": "{\"clock_ns\": 54700000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 54.0, \"payload\": {\"expires_at\": 56.0, \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb3:53\"}, \"received_stamp\": 54.7, \"sequence\": 239, \"source\": \"tb3\", \"source_stamp\": 54.0, \"stream\": \"heartbeat\", \"version\": 239}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 54700000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 54.0,
+          "payload": {
+            "expires_at": 56.0,
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb3:53"
+          },
+          "received_stamp": 54.7,
+          "sequence": 239,
+          "source": "tb3",
+          "source_stamp": 54.0,
+          "stream": "heartbeat",
+          "version": 239
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb3:53"
+      ],
+      "delivery_timing": {
+        "source_stamp": 54.0,
+        "generated_stamp": 54.0,
+        "received_stamp": 54.7,
+        "received_minus_generated_seconds": "0.7",
+        "received_minus_source_seconds": "0.7",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 915,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.2",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag",
+          "heartbeat_generated_before_its_recorded_receipt"
+        ]
+      }
+    },
+    {
+      "line_1based": 921,
+      "raw_line_sha256": "f165411ddb1c1b2bf7afbfb45b5a77678e3293ed07999e8bec0aa20f1dbd68cf",
+      "raw_line": "{\"clock_ns\": 54700000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 54.1, \"payload\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb2:51\", \"reason\": \"goal_lease_expired\", \"robot\": \"tb2\", \"stamp\": 54.1, \"type\": \"cancel_goal\"}, \"received_stamp\": 54.7, \"sequence\": 16, \"source\": \"tb2\", \"source_stamp\": 54.1, \"stream\": \"command\", \"version\": 16}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 54700000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 54.1,
+          "payload": {
+            "epoch": "proxy2d_w2_e1_f96a1433",
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb2:51",
+            "reason": "goal_lease_expired",
+            "robot": "tb2",
+            "stamp": 54.1,
+            "type": "cancel_goal"
+          },
+          "received_stamp": 54.7,
+          "sequence": 16,
+          "source": "tb2",
+          "source_stamp": 54.1,
+          "stream": "command",
+          "version": 16
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb2:51"
+      ],
+      "delivery_timing": {
+        "source_stamp": 54.1,
+        "generated_stamp": 54.1,
+        "received_stamp": 54.7,
+        "received_minus_generated_seconds": "0.6",
+        "received_minus_source_seconds": "0.6",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 848,
+        "generated_gap_from_previous_actual_delivery_seconds": "4.0",
+        "received_gap_from_previous_actual_delivery_seconds": "4.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag"
+        ]
+      }
+    },
+    {
+      "line_1based": 922,
+      "raw_line_sha256": "f3866a0e71b7143ea841c51a32374e9bcc2d213059b3f22ec89d56e61447614b",
+      "raw_line": "{\"clock_ns\": 54700000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 54.3, \"payload\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb1:53\", \"reason\": \"navigation_failure\", \"robot\": \"tb1\", \"stamp\": 54.3, \"type\": \"cancel_goal\"}, \"received_stamp\": 54.7, \"sequence\": 18, \"source\": \"tb1\", \"source_stamp\": 54.3, \"stream\": \"command\", \"version\": 18}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 54700000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 54.3,
+          "payload": {
+            "epoch": "proxy2d_w2_e1_f96a1433",
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb1:53",
+            "reason": "navigation_failure",
+            "robot": "tb1",
+            "stamp": 54.3,
+            "type": "cancel_goal"
+          },
+          "received_stamp": 54.7,
+          "sequence": 18,
+          "source": "tb1",
+          "source_stamp": 54.3,
+          "stream": "command",
+          "version": 18
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb1:53"
+      ],
+      "delivery_timing": {
+        "source_stamp": 54.3,
+        "generated_stamp": 54.3,
+        "received_stamp": 54.7,
+        "received_minus_generated_seconds": "0.4",
+        "received_minus_source_seconds": "0.4",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 899,
+        "generated_gap_from_previous_actual_delivery_seconds": "1.2",
+        "received_gap_from_previous_actual_delivery_seconds": "1.0",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag"
+        ]
+      }
+    },
+    {
+      "line_1based": 923,
+      "raw_line_sha256": "ebd19270160247daed3dcb46cd531cec75b620bef76c69c6c4a000613e05631d",
+      "raw_line": "{\"clock_ns\": 54700000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 54.5, \"payload\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb3:53\", \"reason\": \"navigation_failure\", \"robot\": \"tb3\", \"stamp\": 54.5, \"type\": \"cancel_goal\"}, \"received_stamp\": 54.7, \"sequence\": 18, \"source\": \"tb3\", \"source_stamp\": 54.5, \"stream\": \"command\", \"version\": 18}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 54700000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 54.5,
+          "payload": {
+            "epoch": "proxy2d_w2_e1_f96a1433",
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb3:53",
+            "reason": "navigation_failure",
+            "robot": "tb3",
+            "stamp": 54.5,
+            "type": "cancel_goal"
+          },
+          "received_stamp": 54.7,
+          "sequence": 18,
+          "source": "tb3",
+          "source_stamp": 54.5,
+          "stream": "command",
+          "version": 18
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb3:53"
+      ],
+      "delivery_timing": {
+        "source_stamp": 54.5,
+        "generated_stamp": 54.5,
+        "received_stamp": 54.7,
+        "received_minus_generated_seconds": "0.2",
+        "received_minus_source_seconds": "0.2",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 902,
+        "generated_gap_from_previous_actual_delivery_seconds": "1.2",
+        "received_gap_from_previous_actual_delivery_seconds": "0.8",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag"
+        ]
+      }
+    },
+    {
+      "line_1based": 924,
+      "raw_line_sha256": "3a32c3ba585bb98adf09b6e3d1308821c7354b1347a9148bcbec24742d598b5c",
+      "raw_line": "{\"clock_ns\": 54700000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 54.7, \"payload\": {\"goal_id\": \"proxy2d_w2_e1_f96a1433:tb2:51\", \"type\": \"cancel\", \"value\": true}, \"received_stamp\": 54.7, \"sequence\": 23, \"source\": \"tb2\", \"source_stamp\": 54.7, \"stream\": \"receipt\", \"version\": 23}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 54700000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 54.7,
+          "payload": {
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb2:51",
+            "type": "cancel",
+            "value": true
+          },
+          "received_stamp": 54.7,
+          "sequence": 23,
+          "source": "tb2",
+          "source_stamp": 54.7,
+          "stream": "receipt",
+          "version": 23
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb2:51"
+      ],
+      "delivery_timing": {
+        "source_stamp": 54.7,
+        "generated_stamp": 54.7,
+        "received_stamp": 54.7,
+        "received_minus_generated_seconds": "0.0",
+        "received_minus_source_seconds": "0.0",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 855,
+        "generated_gap_from_previous_actual_delivery_seconds": "4.2",
+        "received_gap_from_previous_actual_delivery_seconds": "3.8",
+        "labels": [
+          "recorded_delivery_only"
+        ]
+      }
+    },
+    {
+      "line_1based": 925,
+      "raw_line_sha256": "681b32981f0a59101f284a6c9662cace7dad74a25c5dfb0e24a5fd47dba3e54e",
+      "raw_line": "{\"clock_ns\": 54700000000, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"event\": {\"accepted\": true, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb2:51\", \"robot\": \"tb2\", \"stamp\": 54.7, \"type\": \"cancel_response\"}, \"kind\": \"dispatcher_event\"}\n",
+      "record": {
+        "clock_ns": 54700000000,
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "event": {
+          "accepted": true,
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "goal_id": "proxy2d_w2_e1_f96a1433:tb2:51",
+          "robot": "tb2",
+          "stamp": 54.7,
+          "type": "cancel_response"
+        },
+        "kind": "dispatcher_event"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb2:51"
+      ],
+      "dispatcher_timing": {
+        "event_stamp": 54.7,
+        "worker_clock_minus_event_stamp_seconds": "0.0"
+      }
+    },
+    {
+      "line_1based": 926,
+      "raw_line_sha256": "4b9540b18203c42374295b16d4c4ec147b38f750742ad77ebfb6c392fd665619",
+      "raw_line": "{\"clock_ns\": 54900000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 54.7, \"payload\": {\"goal_id\": \"proxy2d_w2_e1_f96a1433:tb2:51\", \"type\": \"result\", \"value\": \"CANCELED\"}, \"received_stamp\": 54.9, \"sequence\": 24, \"source\": \"tb2\", \"source_stamp\": 54.7, \"stream\": \"receipt\", \"version\": 24}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 54900000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 54.7,
+          "payload": {
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb2:51",
+            "type": "result",
+            "value": "CANCELED"
+          },
+          "received_stamp": 54.9,
+          "sequence": 24,
+          "source": "tb2",
+          "source_stamp": 54.7,
+          "stream": "receipt",
+          "version": 24
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb2:51"
+      ],
+      "delivery_timing": {
+        "source_stamp": 54.7,
+        "generated_stamp": 54.7,
+        "received_stamp": 54.9,
+        "received_minus_generated_seconds": "0.2",
+        "received_minus_source_seconds": "0.2",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 924,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.0",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag"
+        ]
+      }
+    },
+    {
+      "line_1based": 927,
+      "raw_line_sha256": "042bffaa3d7e442cc55c6af1fa0476a9dc6ddffe289f661073bde1b247f7d0d4",
+      "raw_line": "{\"clock_ns\": 54900000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 54.7, \"payload\": {\"goal_id\": \"proxy2d_w2_e1_f96a1433:tb1:53\", \"type\": \"cancel\", \"value\": true}, \"received_stamp\": 54.9, \"sequence\": 26, \"source\": \"tb1\", \"source_stamp\": 54.7, \"stream\": \"receipt\", \"version\": 26}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 54900000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 54.7,
+          "payload": {
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb1:53",
+            "type": "cancel",
+            "value": true
+          },
+          "received_stamp": 54.9,
+          "sequence": 26,
+          "source": "tb1",
+          "source_stamp": 54.7,
+          "stream": "receipt",
+          "version": 26
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb1:53"
+      ],
+      "delivery_timing": {
+        "source_stamp": 54.7,
+        "generated_stamp": 54.7,
+        "received_stamp": 54.9,
+        "received_minus_generated_seconds": "0.2",
+        "received_minus_source_seconds": "0.2",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 911,
+        "generated_gap_from_previous_actual_delivery_seconds": "1.0",
+        "received_gap_from_previous_actual_delivery_seconds": "0.6",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag"
+        ]
+      }
+    },
+    {
+      "line_1based": 928,
+      "raw_line_sha256": "5083aae1ff79c2d2a210e46e727730a84155c602d0d7207741b61c573c8b01d1",
+      "raw_line": "{\"clock_ns\": 54900000000, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"event\": {\"command_id\": 51, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb2:51\", \"robot\": \"tb2\", \"stamp\": 54.9, \"status\": \"CANCELED\", \"type\": \"protocol_terminal\"}, \"kind\": \"dispatcher_event\"}\n",
+      "record": {
+        "clock_ns": 54900000000,
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "event": {
+          "command_id": 51,
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "goal_id": "proxy2d_w2_e1_f96a1433:tb2:51",
+          "robot": "tb2",
+          "stamp": 54.9,
+          "status": "CANCELED",
+          "type": "protocol_terminal"
+        },
+        "kind": "dispatcher_event"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb2:51"
+      ],
+      "dispatcher_timing": {
+        "event_stamp": 54.9,
+        "worker_clock_minus_event_stamp_seconds": "0.0"
+      }
+    },
+    {
+      "line_1based": 929,
+      "raw_line_sha256": "26daaf70866116b52c53a2c8228243323bdbefd57bfdc30807cd8c9b6aae3f7d",
+      "raw_line": "{\"clock_ns\": 54900000000, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"event\": {\"accepted\": true, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb1:53\", \"robot\": \"tb1\", \"stamp\": 54.9, \"type\": \"cancel_response\"}, \"kind\": \"dispatcher_event\"}\n",
+      "record": {
+        "clock_ns": 54900000000,
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "event": {
+          "accepted": true,
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "goal_id": "proxy2d_w2_e1_f96a1433:tb1:53",
+          "robot": "tb1",
+          "stamp": 54.9,
+          "type": "cancel_response"
+        },
+        "kind": "dispatcher_event"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb1:53"
+      ],
+      "dispatcher_timing": {
+        "event_stamp": 54.9,
+        "worker_clock_minus_event_stamp_seconds": "0.0"
+      }
+    },
+    {
+      "line_1based": 930,
+      "raw_line_sha256": "755832ebf7aa5fa0c3c4705c8d2ebda4ec63a89b5c6b92142cdfd2ddfc480a5d",
+      "raw_line": "{\"clock_ns\": 55100000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 54.7, \"payload\": {\"goal_id\": \"proxy2d_w2_e1_f96a1433:tb1:53\", \"type\": \"result\", \"value\": \"CANCELED\"}, \"received_stamp\": 55.1, \"sequence\": 27, \"source\": \"tb1\", \"source_stamp\": 54.7, \"stream\": \"receipt\", \"version\": 27}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 55100000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 54.7,
+          "payload": {
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb1:53",
+            "type": "result",
+            "value": "CANCELED"
+          },
+          "received_stamp": 55.1,
+          "sequence": 27,
+          "source": "tb1",
+          "source_stamp": 54.7,
+          "stream": "receipt",
+          "version": 27
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb1:53"
+      ],
+      "delivery_timing": {
+        "source_stamp": 54.7,
+        "generated_stamp": 54.7,
+        "received_stamp": 55.1,
+        "received_minus_generated_seconds": "0.4",
+        "received_minus_source_seconds": "0.4",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 927,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.0",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag"
+        ]
+      }
+    },
+    {
+      "line_1based": 931,
+      "raw_line_sha256": "b458a868b883be35dfdfddc83b09124950a5838ef3c8f215632aff0aecb9f41b",
+      "raw_line": "{\"clock_ns\": 55100000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 54.7, \"payload\": {\"goal_id\": \"proxy2d_w2_e1_f96a1433:tb3:53\", \"type\": \"cancel\", \"value\": true}, \"received_stamp\": 55.1, \"sequence\": 26, \"source\": \"tb3\", \"source_stamp\": 54.7, \"stream\": \"receipt\", \"version\": 26}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 55100000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 54.7,
+          "payload": {
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb3:53",
+            "type": "cancel",
+            "value": true
+          },
+          "received_stamp": 55.1,
+          "sequence": 26,
+          "source": "tb3",
+          "source_stamp": 54.7,
+          "stream": "receipt",
+          "version": 26
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb3:53"
+      ],
+      "delivery_timing": {
+        "source_stamp": 54.7,
+        "generated_stamp": 54.7,
+        "received_stamp": 55.1,
+        "received_minus_generated_seconds": "0.4",
+        "received_minus_source_seconds": "0.4",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 916,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.8",
+        "received_gap_from_previous_actual_delivery_seconds": "0.6",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag"
+        ]
+      }
+    },
+    {
+      "line_1based": 932,
+      "raw_line_sha256": "73ec6e3718de24764fd6ad0fe559abe8f482fa15137aff93562353355f87438e",
+      "raw_line": "{\"clock_ns\": 55100000000, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"event\": {\"command_id\": 53, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb1:53\", \"robot\": \"tb1\", \"stamp\": 55.1, \"status\": \"CANCELED\", \"type\": \"protocol_terminal\"}, \"kind\": \"dispatcher_event\"}\n",
+      "record": {
+        "clock_ns": 55100000000,
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "event": {
+          "command_id": 53,
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "goal_id": "proxy2d_w2_e1_f96a1433:tb1:53",
+          "robot": "tb1",
+          "stamp": 55.1,
+          "status": "CANCELED",
+          "type": "protocol_terminal"
+        },
+        "kind": "dispatcher_event"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb1:53"
+      ],
+      "dispatcher_timing": {
+        "event_stamp": 55.1,
+        "worker_clock_minus_event_stamp_seconds": "0.0"
+      }
+    },
+    {
+      "line_1based": 933,
+      "raw_line_sha256": "2eec8f13983a1453684167d6239b434dad7a68d52f80db210574ab44d3e8906e",
+      "raw_line": "{\"clock_ns\": 55100000000, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"event\": {\"accepted\": true, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb3:53\", \"robot\": \"tb3\", \"stamp\": 55.1, \"type\": \"cancel_response\"}, \"kind\": \"dispatcher_event\"}\n",
+      "record": {
+        "clock_ns": 55100000000,
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "event": {
+          "accepted": true,
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "goal_id": "proxy2d_w2_e1_f96a1433:tb3:53",
+          "robot": "tb3",
+          "stamp": 55.1,
+          "type": "cancel_response"
+        },
+        "kind": "dispatcher_event"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb3:53"
+      ],
+      "dispatcher_timing": {
+        "event_stamp": 55.1,
+        "worker_clock_minus_event_stamp_seconds": "0.0"
+      }
+    },
+    {
+      "line_1based": 934,
+      "raw_line_sha256": "c02a9b8f893dac8b3c4eadb7b1b784ce631abcb87e0a86e368ea06602ac59513",
+      "raw_line": "{\"clock_ns\": 55300000000, \"envelope\": {\"epoch\": \"proxy2d_w2_e1_f96a1433\", \"generated_stamp\": 54.7, \"payload\": {\"goal_id\": \"proxy2d_w2_e1_f96a1433:tb3:53\", \"type\": \"result\", \"value\": \"CANCELED\"}, \"received_stamp\": 55.3, \"sequence\": 27, \"source\": \"tb3\", \"source_stamp\": 54.7, \"stream\": \"receipt\", \"version\": 27}, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"kind\": \"proxy_delivery\"}\n",
+      "record": {
+        "clock_ns": 55300000000,
+        "envelope": {
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "generated_stamp": 54.7,
+          "payload": {
+            "goal_id": "proxy2d_w2_e1_f96a1433:tb3:53",
+            "type": "result",
+            "value": "CANCELED"
+          },
+          "received_stamp": 55.3,
+          "sequence": 27,
+          "source": "tb3",
+          "source_stamp": 54.7,
+          "stream": "receipt",
+          "version": 27
+        },
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "kind": "proxy_delivery"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb3:53"
+      ],
+      "delivery_timing": {
+        "source_stamp": 54.7,
+        "generated_stamp": 54.7,
+        "received_stamp": 55.3,
+        "received_minus_generated_seconds": "0.6",
+        "received_minus_source_seconds": "0.6",
+        "worker_clock_minus_received_seconds": "0.0",
+        "previous_actual_delivery_line_1based": 931,
+        "generated_gap_from_previous_actual_delivery_seconds": "0.0",
+        "received_gap_from_previous_actual_delivery_seconds": "0.2",
+        "labels": [
+          "recorded_delivery_only",
+          "positive_recorded_generation_to_receipt_lag"
+        ]
+      }
+    },
+    {
+      "line_1based": 935,
+      "raw_line_sha256": "012cc11695e7f49c5fcef56e21cfe6413900e0ea8ca03d56d9a00a83c5f41112",
+      "raw_line": "{\"clock_ns\": 55300000000, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"event\": {\"command_id\": 53, \"epoch\": \"proxy2d_w2_e1_f96a1433\", \"goal_id\": \"proxy2d_w2_e1_f96a1433:tb3:53\", \"robot\": \"tb3\", \"stamp\": 55.3, \"status\": \"CANCELED\", \"type\": \"protocol_terminal\"}, \"kind\": \"dispatcher_event\"}\n",
+      "record": {
+        "clock_ns": 55300000000,
+        "epoch": "proxy2d_w2_e1_f96a1433",
+        "event": {
+          "command_id": 53,
+          "epoch": "proxy2d_w2_e1_f96a1433",
+          "goal_id": "proxy2d_w2_e1_f96a1433:tb3:53",
+          "robot": "tb3",
+          "stamp": 55.3,
+          "status": "CANCELED",
+          "type": "protocol_terminal"
+        },
+        "kind": "dispatcher_event"
+      },
+      "selection_labels": [
+        "full_prefix_fixed_goal:proxy2d_w2_e1_f96a1433:tb3:53"
+      ],
+      "dispatcher_timing": {
+        "event_stamp": 55.3,
+        "worker_clock_minus_event_stamp_seconds": "0.0"
+      }
+    }
+  ],
+  "limits": {
+    "rows": 10000,
+    "decoded_bytes": 8000000
+  },
+  "limitations": [
+    "absence of a journal record does not prove a message was not generated, queued or sent",
+    "generation gaps and receipt gaps refer only to consecutive actually recorded deliveries of the same stream/source",
+    "positive recorded delivery lag does not reconstruct a queue or establish the cause of a protocol failure",
+    "no queue reconstruction, protocol state replay, actor/World/truth consumption, task or native qualification"
+  ],
+  "qualification": false,
+  "training_eligible": false,
+  "native_credit": false,
+  "task_success_claimed": false,
+  "queue_reconstructed": false,
+  "policy_calls": 0,
+  "gpu_calls": 0,
+  "optimizer_steps": 0,
+  "identity": {
+    "pid": 3536502,
+    "parent": 3536501,
+    "group": 3536501,
+    "session": 3536463,
+    "start_ticks": 440221264
+  }
+}
