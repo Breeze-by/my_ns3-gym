@@ -18,7 +18,7 @@ from .env import MR3Env
 from .supervisor import (
     InfrastructureError, Supervisor, WORKSPACE, identity_alive, ros_environment,
     PREPARATION_PROBE_REACH_V1, validate_preparation_profile,
-    SEED_RULES, validate_seed_rule,
+    SEED_RULES, START_GRAPH_RULES, validate_seed_rule, validate_start_graph_rule,
 )
 
 
@@ -47,6 +47,8 @@ def _collection_safety_contract(args):
     """Engineering selection cannot reuse legacy preparation qualification."""
     profile = getattr(args, "safety_contract", "legacy")
     validate_seed_rule(getattr(args, "seed_rule", "legacy"))
+    validate_start_graph_rule(getattr(args, "start_graph_rule", "original-seed-cell"),
+                              seed_rule=getattr(args, "seed_rule", "legacy"))
     if profile not in SAFETY_CONTRACTS:
         raise ValueError("unknown safety contract")
     version = getattr(args, "preparation_probe_version", None)
@@ -577,6 +579,8 @@ def run_worker(args, worker_id, preparation_abort=None):
                                 safety_contract=safety_contract,
                                 **({"seed_rule": args.seed_rule}
                                    if getattr(args, "seed_rule", "legacy") != "legacy" else {}),
+                                **({"start_graph_rule": args.start_graph_rule}
+                                   if getattr(args, "start_graph_rule", "original-seed-cell") != "original-seed-cell" else {}),
                                 **({"preparation_probe_version": getattr(args, "preparation_probe_version", None)}
                                    if getattr(args, "preparation_probe_version", None) is not None else {}))
         environment = MR3Env(supervisor=supervisor, max_steps=args.steps)
@@ -780,6 +784,7 @@ def main(argv=None):
                         help="mr3-reach-v1 collects engineering evidence only; new qualification required")
     parser.add_argument("--seed-rule", choices=SEED_RULES, default="legacy",
                         help="explicit candidate seed certificate; native qualification is version-specific")
+    parser.add_argument("--start-graph-rule", choices=START_GRAPH_RULES, default="original-seed-cell")
     parser.add_argument("--diagnostic-uniform-seed", type=int,
                         help="nonnegative seed for uniform legal engineering inputs; never PPO or training")
     parser.add_argument("--base-domain", type=int, default=120)
@@ -906,6 +911,8 @@ def main(argv=None):
                 "cpu_affinity_count": len(os.sched_getaffinity(0))}
     if args.seed_rule != "legacy":
         metadata["seed_rule"] = args.seed_rule
+    if args.start_graph_rule != "original-seed-cell":
+        metadata["start_graph_rule"] = args.start_graph_rule
     if args.safety_contract == "mr3-reach-v1":
         metadata.update(training_eligible=False, scientific_readers_applied=False,
                         scientific_qualification="PENDING_NEW_FREEZE_INDEPENDENT_AUDITS",

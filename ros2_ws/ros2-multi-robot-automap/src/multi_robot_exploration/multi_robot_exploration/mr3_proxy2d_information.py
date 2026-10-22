@@ -18,7 +18,7 @@ import numpy as np
 from multi_robot_exploration.mr3_information import (
     IdealInformation, map_payload, state_payload,
 )
-from multi_robot_exploration.mr3_observation import SEED_RULES, build_snapshot
+from multi_robot_exploration.mr3_observation import SEED_RULES, build_snapshot, validate_start_graph_rule
 from multi_robot_exploration.mr3_transport import IdealTransport, ReceivedStore
 
 
@@ -62,10 +62,12 @@ class ProxyInformation:
     finish_maps = IdealInformation.finish_maps
     publish_navigation_map = IdealInformation.publish_navigation_map
 
-    def __init__(self, epoch, *, seed_rule="legacy"):
+    def __init__(self, epoch, *, seed_rule="legacy", start_graph_rule="original-seed-cell"):
         if seed_rule not in SEED_RULES:
             raise ValueError("unsupported seed rule")
         self.seed_rule = seed_rule
+        validate_start_graph_rule(start_graph_rule, seed_rule=seed_rule)
+        self.start_graph_rule = start_graph_rule
         # Epoch validation is delegated to the actual transport/store classes.
         self.names, self.epoch = ROBOTS, epoch
         self.transport, self.received = IdealTransport(epoch), ReceivedStore(epoch)
@@ -173,6 +175,8 @@ class ProxyInformation:
         }
         if self.seed_rule != "legacy":
             inputs["seed_rule"] = self.seed_rule
+        if self.start_graph_rule != "original-seed-cell":
+            inputs["start_graph_rule"] = self.start_graph_rule
         return inputs
 
     def snapshot_payloads(self):

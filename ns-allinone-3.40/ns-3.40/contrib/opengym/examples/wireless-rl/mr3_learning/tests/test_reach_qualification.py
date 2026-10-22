@@ -85,6 +85,23 @@ class ReachQualificationTests(unittest.TestCase):
             with self.subTest(stage=number),self.assertRaisesRegex(ValueError,"seed rule differs"):
                 prep.validate_plan(changed)
 
+    def test_point_graph_qualification_rejects_any_original_v2_stage_or_missing_helper(self):
+        plan=self.exact_plan("exact-point-bridge-v2")
+        plan["start_graph_rule"]="point-attachment-3x3-v1"
+        relative="ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_point_graph.py"
+        plan["source_bindings"][relative]=prep.sha(prep.WORKSPACE/relative)
+        for stage in plan["stages"]:stage["native"]["argv"] += ["--start-graph-rule",plan["start_graph_rule"]]
+        prep.validate_plan(plan)
+        self.assertEqual(sum(len(prep.primitives.roles(stage)) for stage in plan["stages"]),30)
+        self.assertEqual(plan["budget"]["matrix_wall_seconds"],"18000")
+        for number in range(len(plan["stages"])):
+            changed=copy.deepcopy(plan);argv=changed["stages"][number]["native"]["argv"]
+            del argv[argv.index("--start-graph-rule"):]
+            with self.subTest(stage=number),self.assertRaisesRegex(ValueError,"start graph rule differs"):
+                prep.validate_plan(changed)
+        changed=copy.deepcopy(plan);changed["source_bindings"].pop(relative)
+        with self.assertRaises(ValueError):prep.validate_plan(changed)
+
     def test_exact_input_cannot_omit_an_episode_or_duplicate_a_cli_flag(self):
         original=self.exact_plan();prep.validate_plan(original)
         for fault in ("missing","duplicate"):

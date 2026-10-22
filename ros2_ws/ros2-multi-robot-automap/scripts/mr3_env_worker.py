@@ -72,6 +72,12 @@ class Worker:
         if type(self.seed_rule) is not str or self.seed_rule not in (
                 "legacy", "exact-point-bridge-v1", "exact-point-bridge-v2"):
             raise ValueError("invalid seed_rule")
+        self.start_graph_rule = request.get("start_graph_rule", "original-seed-cell")
+        if (type(self.start_graph_rule) is not str or self.start_graph_rule not in
+                ("original-seed-cell", "point-attachment-3x3-v1")
+                or (self.start_graph_rule == "point-attachment-3x3-v1"
+                    and self.seed_rule != "exact-point-bridge-v2")):
+            raise ValueError("invalid seed_rule/start_graph_rule pair")
         self.control_version = protocol_version(self.safety_contract)
         self.safety_intents = {}
         self.safety_intent_publishers = {}
@@ -391,6 +397,8 @@ class Worker:
         ]
         if self.seed_rule != "legacy":
             self.command.append(f"mr3_seed_rule:={self.seed_rule}")
+        if self.start_graph_rule != "original-seed-cell":
+            self.command.append(f"mr3_start_graph_rule:={self.start_graph_rule}")
         if self.terminal_probe:
             self.command.append("training_terminal_probe:=true")
         if self.plant_stimulus_arm is not None:
@@ -419,6 +427,8 @@ class Worker:
                     "startup_wall_guard_sec": 420., "closure_wall_guard_sec": 90.}
         if self.seed_rule != "legacy":
             metadata["seed_rule"] = self.seed_rule
+        if self.start_graph_rule != "original-seed-cell":
+            metadata["start_graph_rule"] = self.start_graph_rule
         if self.control_version == 2:
             metadata["safety_contract"] = self.safety_contract
             metadata["reset_handshake"] = "paused-controlled-state-peer-guard-storage-v2"

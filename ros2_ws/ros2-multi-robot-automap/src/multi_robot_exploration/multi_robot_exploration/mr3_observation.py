@@ -42,6 +42,9 @@ CANDIDATE_RULE_VERSION = "mr3-per-robot-geometric-staging-v4"
 NAVIGATION_CANDIDATE_RULE_VERSION = "mr3-navigation-geometric-staging-v5"
 NAVIGATION_COMPOSITION_VERSION = "mr3-own-known-shared-unknown-v1"
 SEED_RULES = ("legacy", "exact-point-bridge-v1", "exact-point-bridge-v2")
+START_GRAPH_RULES = ("original-seed-cell", "point-attachment-3x3-v1")
+POINT_GRAPH_PROFILE = "mr3-point-graph-attachment-3x3-v1"
+POINT_GRAPH_COST = "min_anchor(bridge_length+original_graph_distance)"
 TARGET_SEPARATION_M = 2.0 * TARGET_CLEARANCE_M
 STATE_MAX_AGE_SEC = 0.5
 FRONTIER_STAGING_MAX_M = 1.0
@@ -49,6 +52,30 @@ GLOBAL_EXTENT_M = (-16.0, -16.0, 16.0, 16.0)
 LOCAL_SIDE_M = 12.8
 TASK_DURATION_SEC = 300.0
 _PHASES = {"idle", "accepting", "active", "canceling", "unknown", "failed"}
+
+
+def validate_start_graph_rule(start_graph_rule, *, seed_rule="legacy"):
+    if type(seed_rule) is not str or seed_rule not in SEED_RULES:
+        raise ValueError("unknown seed certificate rule")
+    if type(start_graph_rule) is not str or start_graph_rule not in START_GRAPH_RULES:
+        raise ValueError("unknown start graph rule")
+    if start_graph_rule != "original-seed-cell" and seed_rule != "exact-point-bridge-v2":
+        raise ValueError("point attachment requires exact-point-bridge-v2")
+    return start_graph_rule
+
+
+def candidate_version_for_rules(seed_rule, start_graph_rule="original-seed-cell", *, navigation=True):
+    validate_start_graph_rule(start_graph_rule, seed_rule=seed_rule)
+    if start_graph_rule == "point-attachment-3x3-v1":
+        return ("mr3-navigation-geometric-staging-v8-point-graph-v1" if navigation
+                else "mr3-per-robot-geometric-staging-v7-point-graph-v1")
+    if seed_rule == "exact-point-bridge-v2":
+        return ("mr3-navigation-geometric-staging-v7-exact-seed-v2" if navigation
+                else "mr3-per-robot-geometric-staging-v6-exact-seed-v2")
+    if seed_rule == "exact-point-bridge-v1":
+        return ("mr3-navigation-geometric-staging-v6-exact-seed-v1" if navigation
+                else "mr3-per-robot-geometric-staging-v5-exact-seed-v1")
+    return NAVIGATION_CANDIDATE_RULE_VERSION if navigation else CANDIDATE_RULE_VERSION
 
 
 def encode_joint_action(choices):
@@ -520,9 +547,43 @@ def _seed_diagnostics(grid, traversable, clearance, robot, resolution, origin, *
     return seed, offset, diagnostic
 
 
+def _point_start_diagnostics(grid, robot, resolution, origin):
+    """Separate new admission from the truthful, unchanged seed-cell result."""
+    attachment = None
+    reason = "state_missing_or_stale"
+    if robot["fresh"]:
+        # Lazy loading keeps the original graph/seed profiles independent of
+        # this explicitly selected virtual-start implementation.
+        from multi_robot_exploration.mr3_point_graph import point_graph_attachments
+        attachment = point_graph_attachments(grid, resolution, origin, (robot["x"], robot["y"]))
+        reason = attachment["reason"]
+    return {"start_graph_rule": "point-attachment-3x3-v1",
+            "point_graph_attachment": attachment, "start_graph_rejection_reason": reason}
+
+
+def _point_graph_distances(traversable, attachments, resolution):
+    """Each virtual start has its own weighted edges to ALL original anchors."""
+    groups = [entry["anchors"] if entry is not None and entry["accepted"] else []
+              for entry in attachments]
+    anchors = [anchor for group in groups for anchor in group]
+    paths, ids = _path_distances(traversable, [tuple(anchor["cell"]) for anchor in anchors], resolution)
+    result = np.full((len(groups), paths.shape[1]), np.inf)
+    cursor = 0
+    for index, group in enumerate(groups):
+        if group:
+            rows = paths[cursor:cursor + len(group)]
+            bridge = np.array([anchor["bridge_length_m"] for anchor in group], dtype=float)
+            result[index] = np.min(rows + bridge[:, None], axis=0)
+        cursor += len(group)
+    return result, ids
+
+
 def _own_map_paths(robot_maps, states, now, epoch, fused_resolution, fused_origin, target_cells,
-                   *, source="delivered_own_map",seed_rule="legacy"):
+                   *, source="delivered_own_map",seed_rule="legacy",
+                   start_graph_rule="original-seed-cell"):
     """Build each graph from that robot's unchanged, explicitly delivered map."""
+    validate_start_graph_rule(start_graph_rule, seed_rule=seed_rule)
+    point_graph = start_graph_rule == "point-attachment-3x3-v1"
     if not isinstance(robot_maps, dict) or set(robot_maps) - set(ROBOT_NAMES):
         raise ValueError("robot_maps must map only tb1/tb2/tb3 to delivered maps")
     provenance, seeds_valid = {}, []
@@ -550,6 +611,9 @@ def _own_map_paths(robot_maps, states, now, epoch, fused_resolution, fused_origi
         }
         if seed_rule != "legacy":
             metadata.update(seed_rule=seed_rule, seed_point_bridge_certificate=None)
+        if point_graph:
+            metadata.update(start_graph_rule=start_graph_rule, point_graph_attachment=None,
+                            start_graph_rejection_reason=missing_reason)
         seed_valid = False
         if entry is not None and entry.get("grid") is not None:
             grid = _received_grid(entry["grid"])
@@ -584,14 +648,24 @@ def _own_map_paths(robot_maps, states, now, epoch, fused_resolution, fused_origi
                 metadata["missing"] = True
                 metadata["unavailable_reason"] = "cross_epoch" if invalid_epoch else "future_map"
                 metadata["seed_rejection_reason"] = metadata["unavailable_reason"]
+                if point_graph:
+                    metadata["start_graph_rejection_reason"] = metadata["unavailable_reason"]
             elif grid.size:
                 traversable, clearance = native_traversable(grid, resolution)
                 seed, seed_offset, seed_diagnostics = _seed_diagnostics(
                     grid, traversable, clearance, robot, resolution, origin,seed_rule=seed_rule)
                 metadata.update(seed_diagnostics)
                 seed_valid = seed_diagnostics["seed_rejection_reason"] is None
-                if seed_valid:
-                    paths, ids = _path_distances(traversable, [seed], resolution)
+                admitted = seed_valid
+                if point_graph:
+                    metadata.update(_point_start_diagnostics(grid, robot, resolution, origin))
+                    admitted = metadata["start_graph_rejection_reason"] is None
+                if admitted:
+                    if point_graph:
+                        paths, ids = _point_graph_distances(
+                            traversable, [metadata["point_graph_attachment"]], resolution)
+                    else:
+                        paths, ids = _path_distances(traversable, [seed], resolution)
                     # Project all fused target centres once, using each own
                     # map's actual origin/resolution. Vectorization keeps the
                     # per-robot staging search independent of map dimensions.
@@ -607,12 +681,15 @@ def _own_map_paths(robot_maps, states, now, epoch, fused_resolution, fused_origi
                             & (clearance[rr, cc] - offsets >= TARGET_CLEARANCE_M))
                     selected, rr, cc, offsets = selected[safe], rr[safe], cc[safe], offsets[safe]
                     target_paths[selected, robot_index] = (
-                        paths[0, ids[rr, cc]] + seed_offset + offsets)
+                        paths[0, ids[rr, cc]] + (0.0 if point_graph else seed_offset) + offsets)
                 else:
-                    metadata["unavailable_reason"] = "robot_seed_not_observed_safe"
+                    metadata["unavailable_reason"] = (
+                        "robot_start_graph_not_attached" if point_graph else "robot_seed_not_observed_safe")
             else:
                 metadata["unavailable_reason"] = "empty_received_own_map"
                 metadata["seed_rejection_reason"] = "empty_received_own_map"
+                if point_graph:
+                    metadata["start_graph_rejection_reason"] = "empty_received_own_map"
         robot["path_map_available"] = not metadata["missing"]
         if source == "delivered_navigation_map":
             robot["path_map_source"] = source
@@ -733,7 +810,7 @@ def _action_masks(robots, candidates, now):
 def build_snapshot(raw_grid, resolution, origin, robots, now, epoch, map_version,
                    sequence, *, map_source_stamp=None, map_received_stamp=None,
                    map_sources=None, task_start=None, robot_maps=None, navigation_maps=None,
-                   seed_rule="legacy"):
+                   seed_rule="legacy", start_graph_rule="original-seed-cell"):
     """Build one self-contained JSON snapshot; consumers save it with the action.
 
     Robots must be exactly tb1/tb2/tb3 with names, estimated x/y/yaw, measured
@@ -748,8 +825,8 @@ def build_snapshot(raw_grid, resolution, origin, robots, now, epoch, map_version
     retains the older received-own-map interface; omitting both retains the
     fused-map legacy API. These legacy modes do not substitute for runtime data.
     """
-    if seed_rule not in SEED_RULES:
-        raise ValueError("unknown seed certificate rule")
+    validate_start_graph_rule(start_graph_rule, seed_rule=seed_rule)
+    point_graph = start_graph_rule == "point-attachment-3x3-v1"
     now, resolution = float(now), float(resolution)
     if not math.isfinite(now) or not math.isfinite(resolution) or resolution <= 0:
         raise ValueError("finite now and positive native resolution are required")
@@ -773,7 +850,7 @@ def build_snapshot(raw_grid, resolution, origin, robots, now, epoch, map_version
         target_cells = np.argwhere(np.ones(grid.shape, dtype=bool))
         target_paths, path_maps, seeds_valid = _own_map_paths(
             navigation_maps, states, now, epoch, resolution, origin, target_cells,
-            source="delivered_navigation_map",seed_rule=seed_rule)
+            source="delivered_navigation_map",seed_rule=seed_rule,start_graph_rule=start_graph_rule)
         navigation_grids = []
         navigation_clearances = []
         for name in ROBOT_NAMES:
@@ -795,7 +872,12 @@ def build_snapshot(raw_grid, resolution, origin, robots, now, epoch, map_version
                      for robot in states]
         seeds_valid = [entry[2]["seed_rejection_reason"] is None for entry in seed_data]
         seeds = [entry[0] if valid else None for entry, valid in zip(seed_data, seeds_valid)]
-        paths, ids = _path_distances(traversable, seeds, resolution)
+        if point_graph:
+            starts = [_point_start_diagnostics(grid, robot, resolution, origin) for robot in states]
+            paths, ids = _point_graph_distances(
+                traversable, [entry["point_graph_attachment"] for entry in starts], resolution)
+        else:
+            paths, ids = _path_distances(traversable, seeds, resolution)
         path_maps = {name: {
             "source": "fused_map_legacy_api", "missing": missing_map or not bool(grid.size),
             "epoch": epoch, "version": int(map_version),
@@ -803,14 +885,17 @@ def build_snapshot(raw_grid, resolution, origin, robots, now, epoch, map_version
             "received_stamp": _finite(map_received_stamp),
             **entry[2],
         } for name, entry in zip(ROBOT_NAMES, seed_data)}
+        if point_graph:
+            for name, start in zip(ROBOT_NAMES, starts):
+                path_maps[name].update(start)
         target_paths = paths[:, ids[tuple(target_cells.T)]].T.copy()
         for index, (entry, valid) in enumerate(zip(seed_data, seeds_valid)):
-            if valid:
+            if valid and not point_graph:
                 target_paths[:, index] += entry[1]
     else:
         target_paths, path_maps, seeds_valid = _own_map_paths(
             robot_maps, states, now, epoch, resolution, origin, target_cells,
-            seed_rule=seed_rule,
+            seed_rule=seed_rule, start_graph_rule=start_graph_rule,
         )
     if navigation_grids is None:
         frontier, frontier_sources = _candidate_frontiers(
@@ -872,6 +957,12 @@ def build_snapshot(raw_grid, resolution, origin, robots, now, epoch, map_version
         candidate_rule.update(seed_rule=seed_rule,version=(
             "mr3-navigation-geometric-staging-v6-exact-seed-v1" if navigation_grids is not None
             else "mr3-per-robot-geometric-staging-v5-exact-seed-v1"))
+    if point_graph:
+        candidate_rule.update(
+            version=candidate_version_for_rules(seed_rule, start_graph_rule,
+                                                navigation=navigation_grids is not None),
+            start_graph_rule=start_graph_rule, start_graph_profile=POINT_GRAPH_PROFILE,
+            start_graph_cost=POINT_GRAPH_COST)
     candidate_version = hashlib.sha256(json.dumps({
         "epoch": epoch, "map_version": int(map_version), "sequence": int(sequence),
         "candidate_rule": candidate_rule, "candidates": candidates, "path_maps": path_maps,
@@ -941,5 +1032,8 @@ def build_snapshot(raw_grid, resolution, origin, robots, now, epoch, map_version
                    if key not in ("grid", "resolution", "origin")}
             for name, entry in navigation_maps.items()
         }
+    if point_graph:
+        snapshot["diagnostics"]["robot_start_graph_attached"] = [
+            path_maps[name]["start_graph_rejection_reason"] is None for name in ROBOT_NAMES]
     snapshot["digest"] = snapshot_digest(snapshot)
     return snapshot

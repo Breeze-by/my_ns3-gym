@@ -1,0 +1,43 @@
+import hashlib, json, os, shlex, subprocess, sys
+from pathlib import Path
+root=Path('/home/zhuyulab/ns3-workspace'); w=root/'ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl'; ros=root/'ros2_ws/ros2-multi-robot-automap'; pure=ros/'src/multi_robot_exploration'; a=w/'report/assets/20261022_mr3_p2a_v37_point_graph'; py='/home/zhuyulab/miniconda3/envs/ns3gym/bin/python'
+name=sys.argv[1]
+geometry=['test_mr3_point_graph.py','test_mr3_point_graph_observation.py','test_mr3_proxy2d_navigation_point_graph.py','test_mr3_seed_v2.py','test_mr3_proxy2d_navigation_seed_v2.py','test_mr3_observation.py','test_mr3_seed_certificate.py','test_mr3_proxy2d_navigation_cache.py','test_mr3_proxy2d_navigation_seed.py','test_mr3_seed_v2_missing_map.py']
+ros_tests=['test_mr3_proxy2d_information.py','test_mr3_proxy2d_worker.py','test_mr3_proxy2d_karto_integration.py','test_mr3_adapter.py','test_mr3_adapter_launch.py','test_mr3_proxy2d_seed_v2_wiring.py']
+# Include only the new explicit CPU fixture modules, never discover World suites.
+ros_tests += [p.name for p in sorted((pure/'test').glob('*point_graph*wiring*.py'))]
+learner_tests=['test_reach_qualification','test_reach_policy_chain','test_reach_training_admission','test_reach_preparation_entry','test_audit_reach_ppo','test_exact_snapshot_validator','test_audit_proxy2d','test_proxy2d_conformity','test_proxy2d_capacity','test_proxy2d','test_proxy2d_karto_activity','test_proxy2d_seed_activity','test_proxy2d_seed_compatibility','test_proxy2d_seed_v2_compatibility','test_proxy2d_seed_v2_wiring']
+learner_tests += [p.stem for p in sorted((w/'mr3_learning/tests').glob('*point_graph*.py'))]
+setup='source /opt/ros/humble/setup.bash && source '+shlex.quote(str(ros/'install/setup.bash'))+' && exec '
+if name.startswith('geometry_cpu_'):
+ command=['/usr/bin/bash','--noprofile','--norc','-e','-c',setup+'/usr/bin/python3 -B -m pytest -q '+' '.join(shlex.quote(str(pure/'test'/t)) for t in geometry)]
+elif name.startswith('ros_wiring_cpu_'):
+ command=['/usr/bin/bash','--noprofile','--norc','-e','-c',setup+'/usr/bin/python3 -B -m pytest -q '+' '.join(shlex.quote(str(pure/'test'/t)) for t in ros_tests)]
+elif name.startswith('native_reader_cpu_'):
+ command=['/usr/bin/bash','--noprofile','--norc','-e','-c',setup+'/usr/bin/python3 -B -m unittest mr3_learning.tests.test_audit_seed_inputs']
+elif name.startswith('learner_cpu_'):
+ command=[py,'-B','-m','unittest',*['mr3_learning.tests.'+t for t in learner_tests]]
+else: raise ValueError(name)
+sources=set((w/'mr3_learning').glob('*.py'))|set((pure/'multi_robot_exploration').glob('*.py'))|{w/'MR3_ENV_CONTRACT.md',ros/'scripts/mr3_proxy2d_worker.py',ros/'scripts/mr3_env_worker.py',ros/'src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py',a/'scope_acceptance_v1.json',Path(__file__)}
+sources.update(w/'mr3_learning/tests'/ (t+'.py') for t in learner_tests)
+sources.add(w/'mr3_learning/tests/test_audit_seed_inputs.py')
+sources.update(pure/'test'/t for t in ros_tests+geometry)
+if name.startswith('geometry_cpu_'):
+ sources={pure/'multi_robot_exploration'/n for n in ('mr3_observation.py','mr3_episode.py','mr3_seed_certificate.py','mr3_point_graph.py','mr3_proxy2d_navigation.py','mr3_reach_geometry.py')}
+ sources.update(pure/'test'/n for n in geometry)
+ sources.update([w/'mr3_learning/reach_execution.py', w/'mr3_learning/preparation.py',w/'mr3_learning/__init__.py',w/'MR3_ENV_CONTRACT.md',a/'scope_acceptance_v1.json',Path(__file__)])
+snapshots=a/'checks/source_snapshots'; snapshots.mkdir(parents=True,exist_ok=True)
+for src in sorted(sources):
+ raw=src.read_bytes(); digest=hashlib.sha256(raw).hexdigest(); target=snapshots/(digest+'_'+src.name)
+ temporary=target.with_name(target.name+'.'+str(os.getpid())+'.tmp')
+ temporary.write_bytes(raw)
+ try:
+  try: os.link(temporary,target)
+  except FileExistsError:
+   if target.read_bytes()!=raw: raise ValueError('snapshot collision')
+ finally: temporary.unlink()
+argv=[py,'-B','-m','mr3_learning.reach_execution','--output',str(a/'checks'/name),'--scope','cpu']
+for src in sorted(sources): argv+=['--source',str(src)]
+argv+=['--',*command]
+os.environ['PYTHONNOUSERSITE']='1'
+raise SystemExit(subprocess.call(argv,cwd=w))

@@ -43,10 +43,13 @@ def _lookahead_cells(traversable, field, cell):
 
 
 class ProxyNavigator:
-    def __init__(self, *, seed_rule="legacy"):
+    def __init__(self, *, seed_rule="legacy", start_graph_rule="original-seed-cell"):
         if seed_rule not in SEED_RULES:
             raise ValueError("unsupported seed rule")
+        from .mr3_observation import validate_start_graph_rule
+        validate_start_graph_rule(start_graph_rule, seed_rule=seed_rule)
         self.seed_rule = seed_rule
+        self.start_graph_rule = start_graph_rule
         self.paths = {}
         self.blocked_quanta = {name: 0 for name in ROBOTS}
 
@@ -142,6 +145,66 @@ class ProxyNavigator:
         self.blocked_quanta[name] += 1
         return (0., 0.)
 
+    @staticmethod
+    def _point_graph_continuation(navigation, proposed, anchor, route, traversable, field):
+        """A retained or handed-off original anchor certifies the next point.
+
+        This is a nominal fixed-map/goal invariant, not a tracking guarantee.
+        The handoff set contains only this supplied-goal route's original
+        nodes; it never searches for an exploration target or widens 3x3.
+        """
+        grid, resolution, origin = navigation["grid"], navigation["resolution"], navigation["origin"]
+        cell = canonical_seed_cell(proposed, resolution, origin, grid.shape)
+        if cell is None or grid[cell] != 0:
+            return None
+        for node in dict.fromkeys((anchor, *route)):
+            if (not (0 <= node[0] < grid.shape[0] and 0 <= node[1] < grid.shape[1])
+                    or max(abs(node[0] - cell[0]), abs(node[1] - cell[1])) > 1
+                    or not traversable[node] or not math.isfinite(field[node])):
+                continue
+            centre = canonical_cell_centre(node, resolution, origin)
+            if certify_estimated_segment(grid, resolution, origin, proposed, centre)["accepted"]:
+                return node
+        return None
+
+    def _point_graph_velocity(self, name, state, navigation, traversable, field):
+        """Connect a virtual start to the unchanged supplied-goal graph."""
+        from .mr3_point_graph import point_graph_attachments
+        grid, resolution, origin = navigation["grid"], navigation["resolution"], navigation["origin"]
+        pose = (state["x"], state["y"])
+        attachments = point_graph_attachments(grid, resolution, origin, pose)
+        choices = []
+        for entry in attachments["anchors"]:
+            node = tuple(entry["cell"])
+            if traversable[node] and math.isfinite(field[node]):
+                cost = entry["bridge_length_m"] + float(field[node])
+                if math.isfinite(cost):
+                    choices.append((cost, *node))
+        if not choices:
+            self.blocked_quanta[name] += 1
+            return (0., 0.)
+        _, row, col = min(choices)
+        anchor = (row, col)
+        route = _lookahead_cells(traversable, field, anchor)
+        # The connection anchor is not an exact-centre arrival requirement.
+        # Try the original descending route directly, then its certified entry
+        # bridge. This avoids a zero-length-centre deadpoint far from the goal.
+        for node in (*reversed(route), anchor):
+            waypoint = canonical_cell_centre(node, resolution, origin)
+            if not certify_estimated_segment(grid, resolution, origin, pose, waypoint)["accepted"]:
+                continue
+            output = self._exact_waypoint_velocity(name, state, navigation, waypoint)
+            if output[1]:
+                return output  # In-place rotation retains the nominal point.
+            if not output[0]:
+                continue
+            proposed = (pose[0] + output[0] * .02 * math.cos(state["yaw"]),
+                        pose[1] + output[0] * .02 * math.sin(state["yaw"]))
+            if self._point_graph_continuation(navigation, proposed, anchor, route, traversable, field) is not None:
+                return output
+        self.blocked_quanta[name] += 1
+        return (0., 0.)
+
     def target_velocity(self, name, state, goal, navigation):
         if goal is None:
             return (0., 0.), False
@@ -170,6 +233,8 @@ class ProxyNavigator:
                 cached += (clearance,)
             self.paths[name] = cached
         _, traversable, field = cached[:3]
+        if self.start_graph_rule == "point-attachment-3x3-v1":
+            return self._point_graph_velocity(name, state, navigation, traversable, field), False
         cell = (canonical_seed_cell((state["x"], state["y"]), resolution, origin, grid.shape)
                 if self.seed_rule == "exact-point-bridge-v2" else
                 _cell(state["x"], state["y"], resolution, origin, grid.shape))

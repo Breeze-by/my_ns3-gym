@@ -7,7 +7,7 @@ from pathlib import Path
 from .audit_ppo import load_rows, require
 from .reach_audit_projection import project_module
 from .reach_gates import load_native_gates
-from .supervisor import validate_seed_rule
+from .supervisor import validate_seed_rule, validate_start_graph_rule
 
 SOURCE_SHA256 = "b7e07ee44188b43f09a94215430fac609d6753f7be5594ce9f4b2308ccf88cab"
 
@@ -25,6 +25,8 @@ def load_impl(plan_path):
     ))
     module.load_native_gates = lambda root, freeze: load_native_gates(root, freeze, plan_path)
     plan = json.loads(Path(plan_path).read_text())
+    validate_start_graph_rule(plan.get("start_graph_rule", "original-seed-cell"),
+                              seed_rule=plan.get("seed_rule", "legacy"))
     if validate_seed_rule(plan.get("seed_rule", "legacy")) != "legacy":
         from .audit_seed_inputs import audit_episode
         original_archives = module.audit_archives
@@ -53,6 +55,8 @@ def audit(directory, root, freeze, plan_path):
                 and metadata.get("freeze") == freeze, "missing/mixed new-profile declaration")
         require(metadata.get("seed_rule", "legacy") == plan.get("seed_rule", "legacy"),
                 "native preparation seed rule differs from the qualification plan")
+        require(metadata.get("start_graph_rule", "original-seed-cell") == plan.get("start_graph_rule", "original-seed-cell"),
+                "native preparation start graph rule differs from the qualification plan")
     module, proof = load_impl(plan_path)
     result = module.audit(directory, root, freeze)
     result.update(schema="mr3-reach-preparation-full-audit-v1", safety_contract="mr3-reach-v1",

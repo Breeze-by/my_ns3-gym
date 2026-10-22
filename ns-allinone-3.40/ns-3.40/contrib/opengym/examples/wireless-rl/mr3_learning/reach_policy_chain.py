@@ -16,7 +16,8 @@ import time
 
 from . import native_custody, native_custody_reach as custody
 from . import reach_preparation as preparation
-from .supervisor import seed_rule_from_argv, validate_seed_rule
+from .supervisor import (seed_rule_from_argv, start_graph_rule_from_argv,
+                         validate_seed_rule, validate_start_graph_rule)
 
 WORKSPACE = preparation.WORKSPACE
 WIRELESS = preparation.WIRELESS_RELATIVE
@@ -93,6 +94,9 @@ def stage_spec(plan, plan_path, qualification_path, stage):
     argv = spec["argv"]
     require(seed_rule_from_argv(argv) == validate_seed_rule(plan.get("seed_rule", "legacy")),
             "policy stage seed rule differs from the native qualification plan")
+    require(start_graph_rule_from_argv(argv) == validate_start_graph_rule(
+                plan.get("start_graph_rule", "original-seed-cell"), seed_rule=plan.get("seed_rule", "legacy")),
+            "policy stage start graph rule differs from the native qualification plan")
     require(type(argv) is list and argv[:3] == [plan["learner_python"], "-m", "mr3_learning.ppo"]
             and all(type(v) is str for v in argv), "policy command is not the exact declared PPO entry")
     require(argument(argv, "--safety-contract") == CONTRACT
@@ -206,6 +210,8 @@ def check_native_result(stage, metadata, native, audit, episodes, spec):
     """No ``completed`` boolean substitutes for eligible samples or real audits."""
     require(metadata.get("seed_rule", "legacy") == seed_rule_from_argv(spec["argv"]),
             "native PPO seed rule differs from its declared stage")
+    require(metadata.get("start_graph_rule", "original-seed-cell") == start_graph_rule_from_argv(spec["argv"]),
+            "native PPO start graph rule differs from its declared stage")
     require(metadata.get("safety_contract") == native.get("safety_contract") == CONTRACT
             and metadata.get("mode") == native.get("mode") == ("evaluate" if stage == "validation" else "train")
             and native.get("completed") is True and native.get("error") is None

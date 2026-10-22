@@ -20,7 +20,9 @@ import tempfile
 import numpy as np
 
 from .navigation_archive import reconstruct_navigation_payload
-from .supervisor import EXACT_SEED_VERSIONS
+from .reach_gates import POINT_GRAPH_HELPER_SHA256
+from .supervisor import (EXACT_SEED_VERSIONS, candidate_version_for_rules,
+                         validate_start_graph_rule)
 
 
 ROOT = Path(__file__).resolve().parents[7]
@@ -65,7 +67,11 @@ def audit_episode(directory, freeze, *, root=ROOT):
     seed_rule = native.get("seed_rule")
     require(type(seed_rule) is str and seed_rule in EXACT_SEED_VERSIONS and native.get("freeze") == freeze
             and supervisor.get("seed_rule") == seed_rule, "native/supervisor exact seed rule mismatch")
-    version = EXACT_SEED_VERSIONS[seed_rule]
+    start_graph_rule = validate_start_graph_rule(native.get("start_graph_rule", "original-seed-cell"),
+                                                seed_rule=seed_rule)
+    require(supervisor.get("start_graph_rule", "original-seed-cell") == start_graph_rule,
+            "native/supervisor start graph rule mismatch")
+    version = candidate_version_for_rules(seed_rule, start_graph_rule)
     require((directory / "summary.json").is_file(), "native episode has not closed")
     transitions, events = rows(directory / "transitions.jsonl"), rows(directory / "adapter.jsonl")
     require(transitions and transitions[0]["kind"] == "reset", "native reset missing")
@@ -74,6 +80,8 @@ def audit_episode(directory, freeze, *, root=ROOT):
     unique, referenced, maps = {}, set(), {}
     names = ("__init__.py", "mr3_observation.py", "mr3_episode.py",
              "mr3_seed_certificate.py", "mr3_reach_geometry.py")
+    if start_graph_rule != "original-seed-cell":
+        names += ("mr3_point_graph.py",)
     learner = "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/"
     for relative in (str(Path(__file__).resolve().relative_to(root)),
                      learner + "navigation_archive.py", learner + "supervisor.py",
@@ -88,6 +96,9 @@ def audit_episode(directory, freeze, *, root=ROOT):
             relative = str(COMPONENT / name)
             raw = subprocess.check_output(["git", "show", freeze + ":" + relative], cwd=root)
             require((root / relative).read_bytes() == raw, "current source differs from native freeze: " + relative)
+            if name == "mr3_point_graph.py":
+                require(hashlib.sha256(raw).hexdigest() == POINT_GRAPH_HELPER_SHA256,
+                        "point graph helper differs from declared V37 source")
             sources[relative] = {"sha256": hashlib.sha256(raw).hexdigest(), "git_source": freeze + ":" + relative}
             (package / name).write_bytes(raw)
         prior = {name: value for name, value in sys.modules.items()
@@ -101,6 +112,7 @@ def audit_episode(directory, freeze, *, root=ROOT):
                 snapshot, info = transition["snapshot"], transition["info"]
                 require(snapshot["epoch"] == native["epoch"]
                         and snapshot["candidate_rule"].get("seed_rule") == seed_rule
+                        and snapshot["candidate_rule"].get("start_graph_rule", "original-seed-cell") == start_graph_rule
                         and snapshot["candidate_rule"].get("version") == version,
                         "actor snapshot did not use the declared exact seed rule")
                 require(observation.snapshot_digest(snapshot) == snapshot["digest"], "actor snapshot digest differs")
@@ -166,7 +178,8 @@ def audit_episode(directory, freeze, *, root=ROOT):
                     map_sources=bundle["map_sources"], task_start=starts[0],
                     robot_maps={name: grid_record(name, bundle["map_sources"][name]) for name in ROBOTS},
                     navigation_maps={name: grid_record("navigation:" + name, bundle["navigation_sources"][name])
-                                     for name in ROBOTS}, seed_rule=seed_rule)
+                                     for name in ROBOTS}, seed_rule=seed_rule,
+                    **({"start_graph_rule": start_graph_rule} if start_graph_rule != "original-seed-cell" else {}))
                 require(replay == snapshot, "full received-input exact seed replay mismatch")
                 unique[snapshot["digest"]] = snapshot["sequence"]
         finally:
@@ -195,6 +208,7 @@ def audit_episode(directory, freeze, *, root=ROOT):
                 "source changed before verdict")
     return {"schema": "mr3-exact-seed-native-input-replay-v1", "passed": True, "errors": [],
             "freeze": freeze, "seed_rule": seed_rule, "episode": str(directory),
+            **({"start_graph_rule": start_graph_rule} if start_graph_rule != "original-seed-cell" else {}),
             "whole_observation_and_seven_map_replay_passed": True,
             "exact_full_snapshot_replays": len(unique), "input_bindings": bindings, "source_proof": sources,
             "robot_recovery_scope": "saved normalized sufficient fields; navigation missing/receipt_sequence inverted; not original raw kwargs",
@@ -214,7 +228,8 @@ def main(argv=None):
     except (OSError, ValueError, TypeError, KeyError, IndexError, RuntimeError, OverflowError,
             subprocess.SubprocessError) as error:
         result = {"schema": "mr3-exact-seed-native-input-replay-v1", "passed": False, "errors": [repr(error)],
-                  "freeze": freeze, "seed_rule": metadata.get("seed_rule"), "episode": str(args.episode)}
+                  "freeze": freeze, "seed_rule": metadata.get("seed_rule"), "episode": str(args.episode),
+                  **({"start_graph_rule": metadata["start_graph_rule"]} if "start_graph_rule" in metadata else {})}
     with args.output.open("x") as stream:
         json.dump(result, stream, indent=2, allow_nan=False); stream.write("\n")
     print(json.dumps({"passed": result["passed"], "output": str(args.output)}))

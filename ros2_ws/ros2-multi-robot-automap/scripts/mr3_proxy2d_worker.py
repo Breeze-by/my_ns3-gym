@@ -50,10 +50,11 @@ def evaluator_environment(directory):
 
 class ProxyWorker:
     def __init__(self, directory, epoch, scene, seed, *, mapper="endpoint", mapper_library=None,
-                 seed_rule="legacy"):
-        from multi_robot_exploration.mr3_observation import SEED_RULES
+                 seed_rule="legacy", start_graph_rule="original-seed-cell"):
+        from multi_robot_exploration.mr3_observation import SEED_RULES, validate_start_graph_rule
         if type(seed_rule) is not str or seed_rule not in SEED_RULES:
             raise ValueError("unsupported seed rule")
+        validate_start_graph_rule(start_graph_rule, seed_rule=seed_rule)
         from multi_robot_exploration.mr3_proxy2d_world import ProxyWorld
         from multi_robot_exploration.mr3_proxy2d_information import ProxyInformation
         from multi_robot_exploration.mr3_proxy2d_navigation import ProxyNavigator
@@ -72,10 +73,14 @@ class ProxyWorker:
                 {"path":p,"sha256":hashlib.sha256(Path(p).read_bytes()).hexdigest()}
                 for p in sorted(loaded)]
         seed_options = {} if seed_rule == "legacy" else {"seed_rule": seed_rule}
+        if start_graph_rule != "original-seed-cell":
+            seed_options["start_graph_rule"] = start_graph_rule
         self.information = ProxyInformation(epoch, **seed_options)
         self.navigator = ProxyNavigator(**seed_options)
         if seed_rule != "legacy":
             self.world.metadata["seed_rule"] = seed_rule
+        if start_graph_rule != "original-seed-cell":
+            self.world.metadata["start_graph_rule"] = start_graph_rule
         self.events = deque()
         self.dispatcher = GoalDispatcher(epoch, self.events.append)
         self.protocol = IdealTransport(epoch)
@@ -407,7 +412,7 @@ def evaluator_main(args, peer):
 
 
 def main():
-    from multi_robot_exploration.mr3_observation import SEED_RULES
+    from multi_robot_exploration.mr3_observation import SEED_RULES, validate_start_graph_rule
     parser = argparse.ArgumentParser()
     parser.add_argument("--role", choices=("worker", "evaluator"), required=True)
     parser.add_argument("--directory", type=Path, required=True)
@@ -417,7 +422,10 @@ def main():
     parser.add_argument("--mapper", choices=("endpoint","karto"),default="endpoint")
     parser.add_argument("--mapper-library",type=Path)
     parser.add_argument("--seed-rule", choices=SEED_RULES, default="legacy")
+    parser.add_argument("--start-graph-rule", choices=("original-seed-cell", "point-attachment-3x3-v1"),
+                        default="original-seed-cell")
     args = parser.parse_args()
+    validate_start_graph_rule(args.start_graph_rule, seed_rule=args.seed_rule)
     peer = ipc.JsonLinePeer(sys.stdin.fileno(), sys.stdout.fileno())
     if args.role == "evaluator":
         return evaluator_main(args, peer)
@@ -433,6 +441,8 @@ def main():
                     kwargs = {"mapper": args.mapper, "mapper_library": args.mapper_library}
                     if args.seed_rule != "legacy":
                         kwargs["seed_rule"] = args.seed_rule
+                    if args.start_graph_rule != "original-seed-cell":
+                        kwargs["start_graph_rule"] = args.start_graph_rule
                     worker = ProxyWorker(args.directory, args.epoch, args.scene, args.seed, **kwargs)
                     result = worker.reset()
                 elif operation == "close":

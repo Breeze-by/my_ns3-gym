@@ -26,7 +26,7 @@ from rclpy.qos import DurabilityPolicy, QoSProfile
 from std_msgs.msg import Bool, Header, String
 
 from multi_robot_exploration.mr3_observation import (
-    build_snapshot, NAVIGATION_COMPOSITION_VERSION, SEED_RULES,
+    build_snapshot, NAVIGATION_COMPOSITION_VERSION, SEED_RULES, validate_start_graph_rule,
 )
 from multi_robot_exploration.mr3_observation_archive import archive_snapshot_inputs
 from multi_robot_exploration.mr3_information import map_digest, map_payload
@@ -61,6 +61,8 @@ class MR3Adapter(Node):
         self.seed_rule = self.declare_parameter("seed_rule", "legacy").value
         if type(self.seed_rule) is not str or self.seed_rule not in SEED_RULES:
             raise ValueError("seed_rule must be legacy, exact-point-bridge-v1 or exact-point-bridge-v2")
+        self.start_graph_rule = self.declare_parameter("start_graph_rule", "original-seed-cell").value
+        validate_start_graph_rule(self.start_graph_rule, seed_rule=self.seed_rule)
         if self.seed_rule != "legacy" and not self.stepped_mode:
             raise ValueError("exact-point-bridge rules require stepped mode")
         self.snapshot_timeout_sec = self.declare_parameter("snapshot_timeout_sec", 10.).value
@@ -564,6 +566,8 @@ class MR3Adapter(Node):
             map_sources=map_sources, task_start=self.started_at,
             robot_maps=path_maps, navigation_maps=navigation_maps, archive=archive,
             **({"seed_rule": self.seed_rule} if self.seed_rule != "legacy" else {}),
+            **({"start_graph_rule": self.start_graph_rule}
+               if self.start_graph_rule != "original-seed-cell" else {}),
         )
 
     def finish_observation(self):

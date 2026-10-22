@@ -15,10 +15,12 @@ import time
 from .env import MR3Env
 from .proxy2d import ProxySupervisor
 from .proxy2d_codec import canonical_bytes, tensor_proofs
-from .supervisor import SEED_RULES
+from .supervisor import SEED_RULES, validate_start_graph_rule
 
 CELLS = [(scene, seed) for scene in ("open", "rooms", "corridors") for seed in (101, 103)]
-SEED_PROBE_RULES = {"seed_probe": "exact-point-bridge-v1", "seed_probe_v2": "exact-point-bridge-v2"}
+PROFILE_KINDS = ("profile", "karto_profile", "point_graph_profile_v1")
+SEED_PROBE_RULES = {"seed_probe": "exact-point-bridge-v1", "seed_probe_v2": "exact-point-bridge-v2",
+                    "point_graph_probe_v1": "exact-point-bridge-v2"}
 
 
 def activity_spec(kind):
@@ -32,13 +34,13 @@ def activity_spec(kind):
                 "groups": [3], "cells": [["open", 101], ["rooms", 101], ["corridors", 101]],
                 "worker_cells": [[[["open", 101]], [["rooms", 101]], [["corridors", 101]]]],
                 "steps_per_episode": 300, "max_attempts": 900, "activity_seconds": 3600}
-    if kind not in ("profile", "short_capacity", "karto_profile"):
+    if kind not in (*PROFILE_KINDS, "short_capacity"):
         raise ValueError("unknown bounded proxy activity kind")
     return {"schema": "mr3-proxy2d-activity-spec-v1", "kind": kind,
-            "groups": [1] if kind in ("profile", "karto_profile") else [1, 4],
-            "cells": [["open", 101]] if kind in ("profile", "karto_profile") else [list(cell) for cell in CELLS],
-            "steps_per_episode": 8, "max_attempts": 8 if kind in ("profile", "karto_profile") else 240,
-            "activity_seconds": 600 if kind in ("profile", "karto_profile") else 1800}
+            "groups": [1] if kind in PROFILE_KINDS else [1, 4],
+            "cells": [["open", 101]] if kind in PROFILE_KINDS else [list(cell) for cell in CELLS],
+            "steps_per_episode": 8, "max_attempts": 8 if kind in PROFILE_KINDS else 240,
+            "activity_seconds": 600 if kind in PROFILE_KINDS else 1800}
 
 
 def validate_activity_spec(spec):
@@ -108,13 +110,15 @@ class Trace:
 
 def collect_worker(group, env_id, budget, freeze, *, cells=None, steps_per_episode=300,
                    group_deadline_ns=None, profile=False, mapper="endpoint", mapper_library=None,
-                   seed_rule="legacy"):
+                   seed_rule="legacy", start_graph_rule="original-seed-cell"):
     root = group / f"worker{env_id}"
     kwargs = {"profile":True} if profile else {}
     if mapper != "endpoint":
         kwargs.update(mapper=mapper,mapper_library=mapper_library)
     if seed_rule != "legacy":
         kwargs["seed_rule"] = seed_rule
+    if start_graph_rule != "original-seed-cell":
+        kwargs["start_graph_rule"] = start_graph_rule
     supervisor = ProxySupervisor(root, env_id=env_id, **kwargs)
     env = MR3Env(supervisor=supervisor, max_steps=steps_per_episode)
     local_deadline = budget.deadline_ns if group_deadline_ns is None else min(budget.deadline_ns, group_deadline_ns)
@@ -211,15 +215,22 @@ def collect_worker(group, env_id, budget, freeze, *, cells=None, steps_per_episo
 
 def collect(run, freeze, source_bindings, conformity_ref, activity_started_ns, deadline_ns, *,
             activity_spec=None, group_wall_seconds=None, profile=False, collection_deadline_ns=None,
-            mapper="endpoint",mapper_library=None,native_manifest=None,seed_rule="legacy"):
+            mapper="endpoint",mapper_library=None,native_manifest=None,seed_rule="legacy",
+            start_graph_rule="original-seed-cell"):
     if type(profile) is not bool:
         raise ValueError("profile flag must be boolean")
     if type(seed_rule) is not str or seed_rule not in SEED_RULES:
         raise ValueError("unsupported seed rule")
-    expected_rule = (SEED_PROBE_RULES.get(activity_spec.get("kind"), "legacy")
+    expected_rule = (("exact-point-bridge-v2" if activity_spec.get("kind") == "point_graph_profile_v1"
+                      else SEED_PROBE_RULES.get(activity_spec.get("kind"), "legacy"))
                      if isinstance(activity_spec, dict) else "legacy")
     if seed_rule != expected_rule:
         raise ValueError("exact seed collection requires its new bounded seed-probe specification")
+    validate_start_graph_rule(start_graph_rule, seed_rule=seed_rule)
+    expected_start = ("point-attachment-3x3-v1" if isinstance(activity_spec, dict)
+                      and activity_spec.get("kind") in ("point_graph_probe_v1", "point_graph_profile_v1") else "original-seed-cell")
+    if start_graph_rule != expected_start:
+        raise ValueError("start graph rule differs from its exact bounded probe specification")
     if activity_spec is None:
         if profile or group_wall_seconds is not None or collection_deadline_ns is not None:
             raise ValueError("explicit performance flags require a bounded activity specification")
@@ -228,9 +239,9 @@ def collect(run, freeze, source_bindings, conformity_ref, activity_started_ns, d
     else:
         validate_activity_spec(activity_spec)
         kind = activity_spec["kind"]
-        expected_walls = ([900] if kind in SEED_PROBE_RULES else [240] if kind in ("profile", "karto_profile")
+        expected_walls = ([900] if kind in SEED_PROBE_RULES else [240] if kind in PROFILE_KINDS
                           else [2100] if kind in ("full_behavior", "karto_behavior") else [400, 800])
-        if canonical_bytes(group_wall_seconds) != canonical_bytes(expected_walls) or profile != (kind in ("profile", "karto_profile")):
+        if canonical_bytes(group_wall_seconds) != canonical_bytes(expected_walls) or profile != (kind in PROFILE_KINDS):
             raise ValueError("activity group wall reservations/profile flag differ from the fixed specification")
         if (type(deadline_ns) is not int or type(activity_started_ns) is not int
                 or deadline_ns - activity_started_ns != activity_spec["activity_seconds"] * 10**9):
@@ -245,7 +256,7 @@ def collect(run, freeze, source_bindings, conformity_ref, activity_started_ns, d
             raise ValueError("collection deadline differs from the fixed reservation")
         groups_expected, cells = activity_spec["groups"], activity_spec["cells"]
         steps, maximum = activity_spec["steps_per_episode"], activity_spec["max_attempts"]
-    if mapper == "karto" and (activity_spec is None or activity_spec["kind"] not in ("karto_profile","karto_behavior", *SEED_PROBE_RULES) or not native_manifest):
+    if mapper == "karto" and (activity_spec is None or activity_spec["kind"] not in ("karto_profile","karto_behavior", "point_graph_profile_v1", *SEED_PROBE_RULES) or not native_manifest):
         raise ValueError("Karto requires a new exact activity and native manifest")
     if activity_spec is not None and activity_spec["kind"].startswith("karto_") and mapper != "karto":
         raise ValueError("Karto activity cannot use the default mapper")
@@ -269,6 +280,8 @@ def collect(run, freeze, source_bindings, conformity_ref, activity_started_ns, d
                     kwargs.update(mapper=mapper,mapper_library=mapper_library)
                 if seed_rule != "legacy":
                     kwargs["seed_rule"] = seed_rule
+                if start_graph_rule != "original-seed-cell":
+                    kwargs["start_graph_rule"] = start_graph_rule
                 futures = []
                 for index in range(workers):
                     worker_kwargs = kwargs
@@ -307,6 +320,8 @@ def collect(run, freeze, source_bindings, conformity_ref, activity_started_ns, d
         summary.update(mapper=mapper,mapper_library=mapper_library,native_manifest=native_manifest)
     if seed_rule != "legacy":
         summary["seed_rule"] = seed_rule
+    if start_graph_rule != "original-seed-cell":
+        summary["start_graph_rule"] = start_graph_rule
     if activity_spec is not None:
         summary.update(activity_spec=activity_spec, activity_kind=activity_spec["kind"], profile_enabled=profile,
                        collection_started_ns=collection_started)

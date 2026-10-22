@@ -153,6 +153,22 @@ def test_default_adapter_launch_keeps_the_legacy_parameter_payload(monkeypatch):
     adapter=next(item for item in released_nodes(context,actions,nodes)
                  if item["executable"]=="mr3_adapter")
     assert "seed_rule" not in adapter["parameters"][0]
+    assert "start_graph_rule" not in adapter["parameters"][0]
+
+
+def test_point_attachment_launch_binds_both_rules_and_keeps_anchor_out_of_navigation_goals(monkeypatch):
+    context,actions,nodes,_=configured_launch(monkeypatch,execution_mode="adapter",mr3_stepped="true",
+        mr3_seed_rule="exact-point-bridge-v2",mr3_start_graph_rule="point-attachment-3x3-v1")
+    adapter=next(item for item in released_nodes(context,actions,nodes) if item["executable"]=="mr3_adapter")
+    assert adapter["parameters"][0]["seed_rule"]=="exact-point-bridge-v2"
+    assert adapter["parameters"][0]["start_graph_rule"]=="point-attachment-3x3-v1"
+
+
+@pytest.mark.parametrize("seed",["legacy","exact-point-bridge-v1"])
+def test_point_attachment_rejects_cross_seed_pair_before_launch(monkeypatch,seed):
+    with pytest.raises(ValueError,match="start_graph_rule"):
+        configured_launch(monkeypatch,execution_mode="adapter",mr3_stepped="true",
+            mr3_seed_rule=seed,mr3_start_graph_rule="point-attachment-3x3-v1")
 
 
 @pytest.mark.parametrize("mode", ["baseline", "adapter"])

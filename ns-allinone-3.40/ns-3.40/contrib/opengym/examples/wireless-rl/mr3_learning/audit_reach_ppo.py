@@ -68,6 +68,8 @@ def admission(metadata, freeze, plan_path=None, qualification_path=None, *, root
     proof = validate_qualification(qualification_path, plan_path, freeze, root=Path(root))
     require(metadata.get("seed_rule", "legacy") == json.loads(snapshots[plan_path]).get("seed_rule", "legacy"),
             "PPO seed rule differs from its native qualification")
+    require(metadata.get("start_graph_rule", "original-seed-cell") == json.loads(snapshots[plan_path]).get("start_graph_rule", "original-seed-cell"),
+            "PPO start graph rule differs from its native qualification")
     return plan_path, qualification_path, snapshots, proof
 
 
@@ -136,10 +138,14 @@ def audit_run(directory, freeze, plan_path=None, qualification_path=None):
                 "native attempt has mixed/legacy profile identity: "+str(episode))
         require(own.get("seed_rule", "legacy") == plan.get("seed_rule", "legacy"),
                 "native attempt seed rule differs from qualification plan")
+        require(own.get("start_graph_rule", "original-seed-cell") == plan.get("start_graph_rule", "original-seed-cell"),
+                "native attempt start graph rule differs from qualification plan")
         supervisor_path = episode / "supervisor_metadata.json"
         supervisor_raw = supervisor_path.read_bytes(); stable[supervisor_path] = supervisor_raw
         require(json.loads(supervisor_raw).get("seed_rule", "legacy") == plan.get("seed_rule", "legacy"),
                 "native supervisor seed rule differs from qualification plan")
+        require(json.loads(supervisor_raw).get("start_graph_rule", "original-seed-cell") == plan.get("start_graph_rule", "original-seed-cell"),
+                "native supervisor start graph rule differs from qualification plan")
     module, projection = load_impl(plan_path)
     preparation, preparation_proof = audit_reach_preparation.load_impl(plan_path)
     result = module.audit_run(directory, freeze)

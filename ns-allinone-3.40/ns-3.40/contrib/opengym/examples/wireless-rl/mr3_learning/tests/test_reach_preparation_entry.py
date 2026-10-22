@@ -26,12 +26,36 @@ class ReachPreparationEntryTests(unittest.TestCase):
             with self.subTest(argv=argv),self.assertRaises(ValueError):owner.seed_rule_from_argv(argv)
 
     def test_exact_seed_rule_reaches_real_reset_rpc_and_supervisor_metadata(self):
-        for seed_rule in ("exact-point-bridge-v1","exact-point-bridge-v2"):
+        for seed_rule in ("legacy","exact-point-bridge-v1","exact-point-bridge-v2"):
             with self.subTest(seed_rule=seed_rule):self.assert_reset_seed_rule(seed_rule)
 
-    def assert_reset_seed_rule(self,seed_rule):
+    def test_point_graph_composite_reaches_reset_without_changing_historical_seed_versions(self):
+        self.assert_reset_seed_rule("exact-point-bridge-v2","point-attachment-3x3-v1")
+        self.assertEqual(owner.EXACT_SEED_VERSIONS["exact-point-bridge-v2"],
+                         "mr3-navigation-geometric-staging-v7-exact-seed-v2")
+        self.assertEqual(owner.candidate_version_for_rules("exact-point-bridge-v2","point-attachment-3x3-v1"),
+                         "mr3-navigation-geometric-staging-v8-point-graph-v1")
+        self.assertEqual(owner.candidate_version_for_rules("exact-point-bridge-v2","point-attachment-3x3-v1",navigation=False),
+                         "mr3-per-robot-geometric-staging-v7-point-graph-v1")
+
+    def test_invalid_start_graph_pairs_and_sealed_argv_fail_before_native_side_effects(self):
+        for seed,start in (("legacy","point-attachment-3x3-v1"),("exact-point-bridge-v1","point-attachment-3x3-v1"),
+                           ("exact-point-bridge-v2",None),("exact-point-bridge-v2",True),
+                           ("exact-point-bridge-v2","unknown")):
+            with self.subTest(seed=seed,start=start),patch.object(owner.Path,"mkdir") as mkdir:
+                with self.assertRaises(ValueError):owner.Supervisor(seed_rule=seed,start_graph_rule=start)
+                mkdir.assert_not_called()
+        prefix=["--seed-rule","exact-point-bridge-v2"]
+        self.assertEqual(owner.start_graph_rule_from_argv(prefix),"original-seed-cell")
+        self.assertEqual(owner.start_graph_rule_from_argv(prefix+["--start-graph-rule","point-attachment-3x3-v1"]),
+                         "point-attachment-3x3-v1")
+        for suffix in (["--start-graph-rule"],["--start-graph-rule=point-attachment-3x3-v1"],
+                       ["--start-graph-rule","original-seed-cell","--start-graph-rule","point-attachment-3x3-v1"]):
+            with self.subTest(suffix=suffix),self.assertRaises(ValueError):owner.start_graph_rule_from_argv(prefix+suffix)
+
+    def assert_reset_seed_rule(self,seed_rule,start_graph_rule="original-seed-cell"):
         with tempfile.TemporaryDirectory() as temporary:
-            supervisor=owner.Supervisor(output_root=temporary,seed_rule=seed_rule)
+            supervisor=owner.Supervisor(output_root=temporary,seed_rule=seed_rule,start_graph_rule=start_graph_rule)
             identity={"pid":43121,"parent":1,"group":43121,"session":43121,"start_ticks":123,"state":"S"}
             process=Mock(pid=identity["pid"])
             process.stdout.fileno.return_value=9;process.stdin.fileno.return_value=10
@@ -43,9 +67,18 @@ class ReachPreparationEntryTests(unittest.TestCase):
                     patch.object(supervisor,"_rpc",side_effect=reset) as rpc:
                 try:
                     supervisor.reset()
-                    self.assertEqual(rpc.call_args.kwargs["seed_rule"],seed_rule)
                     metadata=json.loads((supervisor.episode.directory/"supervisor_metadata.json").read_text())
-                    self.assertEqual(metadata["seed_rule"],seed_rule)
+                    if seed_rule=="legacy":
+                        self.assertNotIn("seed_rule",rpc.call_args.kwargs);self.assertNotIn("seed_rule",metadata)
+                    else:
+                        self.assertEqual(rpc.call_args.kwargs["seed_rule"],seed_rule)
+                        self.assertEqual(metadata["seed_rule"],seed_rule)
+                    if start_graph_rule=="original-seed-cell":
+                        self.assertNotIn("start_graph_rule",rpc.call_args.kwargs)
+                        self.assertNotIn("start_graph_rule",metadata)
+                    else:
+                        self.assertEqual(rpc.call_args.kwargs["start_graph_rule"],start_graph_rule)
+                        self.assertEqual(metadata["start_graph_rule"],start_graph_rule)
                 finally:
                     if supervisor.episode is not None:supervisor.episode.output.close()
 

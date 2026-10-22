@@ -10,7 +10,8 @@ import uuid
 
 from .ipc import JsonLinePeer
 from .proxy2d_process import pidfd_open, pidfd_send_signal
-from .supervisor import ROS_ROOT, SEED_RULES, InfrastructureError, process_identity, ros_environment
+from .supervisor import (ROS_ROOT, SEED_RULES, InfrastructureError, process_identity, ros_environment,
+                         validate_start_graph_rule)
 
 
 class ProxySupervisor:
@@ -18,13 +19,14 @@ class ProxySupervisor:
     native_qualification = False
 
     def __init__(self, directory, env_id=0, *, profile=False,mapper="endpoint",mapper_library=None,
-                 seed_rule="legacy"):
+                 seed_rule="legacy", start_graph_rule="original-seed-cell"):
         if type(profile) is not bool:
             raise ValueError("proxy profile switch must be boolean")
         self.profile = profile
         if type(seed_rule) is not str or seed_rule not in SEED_RULES:
             raise ValueError("unsupported seed rule")
         self.seed_rule = seed_rule
+        self.start_graph_rule = validate_start_graph_rule(start_graph_rule, seed_rule=seed_rule)
         if mapper not in ("endpoint","karto") or (mapper=="karto") != (mapper_library is not None):
             raise ValueError("explicit supported mapper/library pair required")
         self.mapper = mapper
@@ -59,11 +61,14 @@ class ProxySupervisor:
                    '&& exec /usr/bin/python3 -B "$1/scripts/mr3_proxy2d_worker.py" '
                    '--role worker --directory "$2" --epoch "$3" --scene "$4" --seed "$5" '
                    '--mapper "$6" ${7:+--mapper-library "$7"}'
-                   + (' --seed-rule "$8"' if self.seed_rule != "legacy" else ''),
+                   + (' --seed-rule "$8"' if self.seed_rule != "legacy" else '')
+                   + (' --start-graph-rule "$9"' if self.start_graph_rule != "original-seed-cell" else ''),
                    "mr3-proxy", str(ROS_ROOT), str(self.directory), epoch, scene, str(seed),
                    self.mapper,self.mapper_library or ""]
         if self.seed_rule != "legacy":
             command.append(self.seed_rule)
+        if self.start_graph_rule != "original-seed-cell":
+            command.append(self.start_graph_rule)
         env = ros_environment(230 + self.env_id, 15901 + self.env_id)
         env.update(PYTHONDONTWRITEBYTECODE="1", CUDA_VISIBLE_DEVICES="",
                    OPENBLAS_NUM_THREADS="1", OMP_NUM_THREADS="1", MKL_NUM_THREADS="1")
@@ -89,6 +94,8 @@ class ProxySupervisor:
                 metadata.update(mapper=self.mapper,mapper_library=self.mapper_library)
             if self.seed_rule != "legacy":
                 metadata["seed_rule"] = self.seed_rule
+            if self.start_graph_rule != "original-seed-cell":
+                metadata["start_graph_rule"] = self.start_graph_rule
             (self.directory / "episode.json").write_text(json.dumps(metadata, indent=2) + "\n")
             self.last_result = self._rpc("reset")
             child = json.loads((self.directory / "evaluator_identity.json").read_text())

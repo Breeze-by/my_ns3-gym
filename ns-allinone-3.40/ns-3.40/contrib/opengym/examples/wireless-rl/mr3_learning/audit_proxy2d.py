@@ -7,6 +7,7 @@ This bounded interface audit supplies no native or training qualification.
 
 import argparse
 import ast
+from contextlib import contextmanager
 from functools import lru_cache
 import gzip
 import hashlib
@@ -38,6 +39,13 @@ EXACT_NAVIGATION_RULES = {
 }
 EXACT_SEED_RULES = tuple(EXACT_NAVIGATION_RULES)
 SEED_PROBE_RULES = {"seed_probe": EXACT_SEED_RULE, "seed_probe_v2": EXACT_SEED_RULE_V2}
+ORIGINAL_START_GRAPH = "original-seed-cell"
+POINT_START_GRAPH = "point-attachment-3x3-v1"
+POINT_GRAPH_KIND = "point_graph_probe_v1"
+POINT_GRAPH_PROFILE = "point_graph_profile_v1"
+PROFILE_KINDS = ("profile", "karto_profile", POINT_GRAPH_PROFILE)
+SEED_PROBE_RULES[POINT_GRAPH_KIND] = EXACT_SEED_RULE_V2
+POINT_NAVIGATION_RULE = "mr3-navigation-geometric-staging-v8-point-graph-v1"
 NATIVE_FREEZE = "c38e3e8ddc034bc0bf0b0cc4578cb6600ae51d90"
 ERRORS = (OSError, ValueError, TypeError, KeyError, IndexError, OverflowError, EOFError, RuntimeError,
           AssertionError, subprocess.SubprocessError)
@@ -48,6 +56,13 @@ VERIFIED_COUNTS = ("verified_action_count", "verified_uniform_action_count", "ve
 def require(condition, reason):
     if not condition:
         raise ValueError(reason)
+
+
+def check_start_graph_rule(seed_rule, start_graph_rule):
+    require(type(start_graph_rule) is str and start_graph_rule in (ORIGINAL_START_GRAPH, POINT_START_GRAPH)
+            and (start_graph_rule == ORIGINAL_START_GRAPH or seed_rule == EXACT_SEED_RULE_V2),
+            "unsupported seed/start graph rule pair")
+    return start_graph_rule
 
 
 def sha(raw):
@@ -82,7 +97,8 @@ def native_builder():
     names = ("multi_robot_exploration", "multi_robot_exploration.mr3_episode",
              "multi_robot_exploration.mr3_reach_geometry",
              "multi_robot_exploration.mr3_seed_certificate",
-             "multi_robot_exploration.mr3_observation")
+             "multi_robot_exploration.mr3_observation",
+             "multi_robot_exploration.mr3_point_graph")
     previous = {name: sys.modules.get(name) for name in names}
     try:
         package = ModuleType(names[0])
@@ -94,7 +110,25 @@ def native_builder():
             module = importlib.util.module_from_spec(spec)
             sys.modules[name] = module
             spec.loader.exec_module(module)
-        return sys.modules[names[-1]].build_snapshot
+        build = sys.modules["multi_robot_exploration.mr3_observation"].build_snapshot
+        build.pure_modules = {name: sys.modules[name] for name in names}
+        return build
+    finally:
+        for name, value in previous.items():
+            if value is None:
+                sys.modules.pop(name, None)
+            else:
+                sys.modules[name] = value
+
+
+@contextmanager
+def pure_namespace(build=None):
+    """Restore only the owned pure closure while its lazy imports execute."""
+    modules = (native_builder() if build is None else build).pure_modules
+    previous = {name: sys.modules.get(name) for name in modules}
+    try:
+        sys.modules.update(modules)
+        yield
     finally:
         for name, value in previous.items():
             if value is None:
@@ -107,7 +141,7 @@ def source_proof(freeze):
     require(isinstance(freeze, str) and re.fullmatch("[0-9a-f]{40}", freeze), "exact source freeze required")
     paths = [Path(__file__), Path(__file__).with_name("observation.py"),
              Path(__file__).with_name("proxy2d_codec.py"), PURE / "mr3_episode.py", PURE / "mr3_observation.py",
-             PURE / "mr3_reach_geometry.py", PURE / "mr3_seed_certificate.py"]
+             PURE / "mr3_reach_geometry.py", PURE / "mr3_seed_certificate.py", PURE / "mr3_point_graph.py"]
     stable, proof = {}, {}
     for path in paths:
         raw = path.read_bytes()
@@ -134,9 +168,15 @@ def seed_checks(params):
     source's state normalization, native clearance graph and seed diagnostic
     functions are the same frozen functions used by build_snapshot.
     """
+    with pure_namespace():
+        return _seed_checks_loaded(params)
+
+
+def _seed_checks_loaded(params):
     functions = native_builder().__globals__
     seed_rule = params.get("seed_rule")
     require(seed_rule in EXACT_SEED_RULES, "seed-only check requires explicit exact rule")
+    start_graph_rule = check_start_graph_rule(seed_rule, params.get("start_graph_rule", ORIGINAL_START_GRAPH))
     now, epoch = float(params["now"]), params["epoch"]
     require(math.isfinite(now) and isinstance(epoch, str) and bool(epoch),
             "seed-only clock/epoch is invalid")
@@ -156,6 +196,9 @@ def seed_checks(params):
             "seed_pose_clearance_lower_bound_m": None, "seed_required_clearance_m": functions["CLEARANCE_M"],
             "seed_rejection_reason": reason, "seed_rule": seed_rule,
             "seed_point_bridge_certificate": None}
+        if start_graph_rule == POINT_START_GRAPH:
+            metadata.update(start_graph_rule=start_graph_rule, point_graph_attachment=None,
+                            start_graph_rejection_reason=reason, geometry_sha256=None)
         if entry is not None and entry.get("grid") is not None:
             grid = functions["_received_grid"](entry["grid"])
             resolution = functions["_finite"](entry.get("resolution"))
@@ -172,21 +215,34 @@ def seed_checks(params):
                 source_metadata_missing=source is None or received is None, payload_sha256=entry.get("payload_sha256"),
                 native_shape=list(grid.shape), native_resolution_m=resolution, native_origin_m=list(origin),
                 unavailable_reason=None)
+            if start_graph_rule == POINT_START_GRAPH:
+                geometry_hash = hashlib.sha256(canonical({"resolution": resolution,
+                                                         "origin": origin, "shape": list(grid.shape)}))
+                geometry_hash.update(np.asarray(grid, dtype="<i2").tobytes())
+                metadata["geometry_sha256"] = geometry_hash.hexdigest()
             invalid_epoch = metadata["epoch"] is not None and metadata["epoch"] != epoch
             future = any(stamp is not None and stamp > now + 1e-6 for stamp in (source, received))
             if invalid_epoch or future:
                 reason = "cross_epoch" if invalid_epoch else "future_map"
                 metadata.update(missing=True, unavailable_reason=reason, seed_rejection_reason=reason)
+                if start_graph_rule == POINT_START_GRAPH:
+                    metadata["start_graph_rejection_reason"] = reason
             elif grid.size:
                 traversable, clearance = functions["native_traversable"](grid, resolution)
                 _, _, diagnostic = functions["_seed_diagnostics"](
                     grid, traversable, clearance, states[name], resolution, origin, seed_rule=seed_rule)
                 metadata.update(diagnostic)
-                if diagnostic["seed_rejection_reason"] is not None:
+                if start_graph_rule == POINT_START_GRAPH:
+                    metadata.update(functions["_point_start_diagnostics"](grid, states[name], resolution, origin))
+                    if metadata["start_graph_rejection_reason"] is not None:
+                        metadata["unavailable_reason"] = "robot_start_graph_not_attached"
+                elif diagnostic["seed_rejection_reason"] is not None:
                     metadata["unavailable_reason"] = "robot_seed_not_observed_safe"
             else:
                 metadata.update(unavailable_reason="empty_received_own_map",
                                 seed_rejection_reason="empty_received_own_map")
+                if start_graph_rule == POINT_START_GRAPH:
+                    metadata["start_graph_rejection_reason"] = "empty_received_own_map"
         checked[name] = metadata
     return checked
 
@@ -267,9 +323,10 @@ def pure_builder_server():
             params = decode_arrays(request["params"])
             inspect.signature(build).bind(**params)
             operation = request["operation"]
-            response = {"sequence": request["sequence"], "ok": True,
-                        "snapshot" if operation == "build" else "seed_checks":
-                            build(**params) if operation == "build" else seed_checks(params)}
+            with pure_namespace(build):
+                response = {"sequence": request["sequence"], "ok": True,
+                            "snapshot" if operation == "build" else "seed_checks":
+                                build(**params) if operation == "build" else seed_checks(params)}
         except ERRORS as error:
             response = {"sequence": request.get("sequence"), "ok": False, "error": str(error)}
         sys.stdout.buffer.write(canonical(response) + b"\n")
@@ -307,22 +364,31 @@ def actor_record(directory, row, *, rebuild=False, builder=None):
     params = decode_arrays(encoded)
     allowed = {"raw_grid", "resolution", "origin", "robots", "now", "epoch", "map_version", "sequence",
                "map_source_stamp", "map_received_stamp", "map_sources", "task_start", "robot_maps", "navigation_maps",
-               "seed_rule"}
+               "seed_rule", "start_graph_rule"}
     require(set(params) <= allowed, "unknown actor construction parameter")
     seed_rule = params.get("seed_rule", "legacy")
     require(seed_rule in ("legacy", *EXACT_SEED_RULES), "unknown actor seed rule")
+    start_graph_rule = check_start_graph_rule(seed_rule, params.get("start_graph_rule", ORIGINAL_START_GRAPH))
+    require("start_graph_rule" not in params or start_graph_rule == POINT_START_GRAPH,
+            "default start graph field must remain omitted")
     navigation = params.get("navigation_maps")
     require(isinstance(navigation, dict) and set(navigation) == {"tb1", "tb2", "tb3"}
             and all(isinstance(value, dict) and value.get("composition_version") == CONTRACT
                     for value in navigation.values()), "explicit received navigation composition is required")
     candidate_rule = snapshot.get("candidate_rule", {})
     require(snapshot.get("schema") == "mr3-observation-v3"
-            and candidate_rule.get("version") == (EXACT_NAVIGATION_RULES[seed_rule] if seed_rule in EXACT_SEED_RULES
+            and candidate_rule.get("version") == (POINT_NAVIGATION_RULE if start_graph_rule == POINT_START_GRAPH else
+                                                    EXACT_NAVIGATION_RULES[seed_rule] if seed_rule in EXACT_SEED_RULES
                                                     else "mr3-navigation-geometric-staging-v5")
             and snapshot["candidate_rule"].get("navigation_composition") == CONTRACT,
             "proxy actor silently changed snapshot/candidate/navigation contract")
     require((candidate_rule.get("seed_rule") == seed_rule if seed_rule in EXACT_SEED_RULES
              else "seed_rule" not in candidate_rule), "actor seed rule and snapshot contract differ")
+    graph_fields = {key: candidate_rule[key] for key in candidate_rule if key.startswith("start_graph_")}
+    require(graph_fields == ({"start_graph_rule": POINT_START_GRAPH,
+        "start_graph_profile": "mr3-point-graph-attachment-3x3-v1",
+        "start_graph_cost": "min_anchor(bridge_length+original_graph_distance)"}
+        if start_graph_rule == POINT_START_GRAPH else {}), "actor start graph and snapshot contract differ")
     grids = [params.get("raw_grid"), *[value.get("grid") for value in navigation.values()]]
     require(all(isinstance(grid, np.ndarray) and grid.ndim == 2
                 and grid.dtype in (np.dtype("int8"), np.dtype("int16"))
@@ -344,21 +410,30 @@ def actor_record(directory, row, *, rebuild=False, builder=None):
                 for name, expected_seed in checks.items():
                     actual = snapshot["path_maps"][name]
                     actual_seed = {key: value for key, value in actual.items()
-                                   if key.startswith("seed_") or key in expected_seed}
+                                   if key.startswith(("seed_", "start_graph_", "point_graph_")) or key in expected_seed}
                     require(canonical(actual_seed) == canonical(expected_seed),
                             "received seed provenance/point/bridge certificate differs: " + name)
+                if start_graph_rule == POINT_START_GRAPH:
+                    attached = [bool(checks[name].get("point_graph_attachment")
+                                     and checks[name]["point_graph_attachment"]["accepted"])
+                                for name in ("tb1", "tb2", "tb3")]
+                    require(snapshot.get("diagnostics", {}).get("robot_start_graph_attached") == attached,
+                            "received point graph diagnostic admission differs")
             if rebuild:
                 replay = selected(**params)
                 require(canonical(replay) == canonical(snapshot), "candidate/mask/full snapshot replay differs")
         finally:
             if owned is not None:
                 owned.close()
-    return {"input_path": str(path), "input_encoded_sha256": sha(raw),
+    report = {"input_path": str(path), "input_encoded_sha256": sha(raw),
             "input_canonical_sha256": sha(decoded), "input_bytes": len(raw),
             "snapshot_digest": snapshot["digest"], "tensor_proofs": expected,
             "full_snapshot_rebuilt": rebuild, "seed_rule": seed_rule,
             "exact_seed_certificate_source_replayed": seed_rule in EXACT_SEED_RULES,
-            "exact_seed_robot_checks": 3 if seed_rule in EXACT_SEED_RULES else 0}, (path, raw)
+            "exact_seed_robot_checks": 3 if seed_rule in EXACT_SEED_RULES else 0}
+    if start_graph_rule == POINT_START_GRAPH:
+        report.update(start_graph_rule=start_graph_rule, point_graph_robot_checks=3)
+    return report, (path, raw)
 
 
 def _duration(row, previous=None, resetting=False):
@@ -455,6 +530,8 @@ def audit_episode(directory, freeze, *, builder=None, verify_sources=True, rng=N
                 _duration(row, resetting=True)
                 report, binding = actor_record(directory, row, rebuild=True, builder=builder)
                 result["seed_rule"] = report["seed_rule"]
+                if "start_graph_rule" in report:
+                    result["start_graph_rule"] = report["start_graph_rule"]
                 stable[binding[0]] = binding[1]
                 result["actor_records"].append(report)
                 result["full_rebuild_event_sequences"].append(number)
@@ -486,6 +563,9 @@ def audit_episode(directory, freeze, *, builder=None, verify_sources=True, rng=N
                 _duration(row, previous)
                 report, binding = actor_record(directory, row, rebuild=processed_returns == 0, builder=builder)
                 require(report["seed_rule"] == result["seed_rule"], "episode changed actor seed rule")
+                require(report.get("start_graph_rule", ORIGINAL_START_GRAPH)
+                        == result.get("start_graph_rule", ORIGINAL_START_GRAPH),
+                        "episode changed actor start graph rule")
                 stable[binding[0]] = binding[1]
                 result["actor_records"].append(report)
                 if report["full_snapshot_rebuilt"]:
@@ -563,9 +643,9 @@ def _activity_contract(summary):
         return {"kind": "legacy_v22", "groups": [1, 4], "cells": cells, "steps_per_episode": 300,
                 "max_attempts": 9000, "activity_seconds": 3600, "group_wall_seconds": None}
     spec = summary["activity_spec"]
-    require(isinstance(spec, dict) and spec.get("kind") in ("profile", "short_capacity", "full_behavior", "karto_profile", "karto_behavior", *SEED_PROBE_RULES),
+    require(isinstance(spec, dict) and spec.get("kind") in (*PROFILE_KINDS, "short_capacity", "full_behavior", "karto_behavior", *SEED_PROBE_RULES),
             "unknown bounded proxy activity specification")
-    profile = spec["kind"] in ("profile", "karto_profile")
+    profile = spec["kind"] in PROFILE_KINDS
     expected = {"schema": "mr3-proxy2d-activity-spec-v1", "kind": spec["kind"],
                 "groups": [1] if profile else [1, 4], "cells": [["open", 101]] if profile else cells,
                 "steps_per_episode": 8, "max_attempts": 8 if profile else 240,
@@ -580,6 +660,13 @@ def _activity_contract(summary):
     if spec["kind"] in SEED_PROBE_RULES:
         require(summary.get("seed_rule") == SEED_PROBE_RULES[spec["kind"]],
                 "seed probe must explicitly declare the exact certificate rule")
+    if spec["kind"] == POINT_GRAPH_PROFILE:
+        require(summary.get("seed_rule") == EXACT_SEED_RULE_V2,
+                "point graph profile must explicitly declare exact seed v2")
+    expected_start = POINT_START_GRAPH if spec["kind"] in (POINT_GRAPH_KIND, POINT_GRAPH_PROFILE) else ORIGINAL_START_GRAPH
+    require(summary.get("start_graph_rule", ORIGINAL_START_GRAPH) == expected_start
+            and (expected_start != ORIGINAL_START_GRAPH or "start_graph_rule" not in summary),
+            "activity start graph rule differs from its exact fixed specification")
     require(canonical(spec) == canonical(expected), "bounded proxy activity differs from its exact fixed specification")
     require(summary.get("activity_kind") == spec["kind"] and summary.get("profile_enabled") is profile
             and canonical(summary.get("scheduled_cells")) == canonical(expected["cells"]),
@@ -597,7 +684,7 @@ def verify_run_sources(bindings, freeze):
         *(ROOT / "ros2_ws/ros2-multi-robot-automap/src/slam_toolbox/lib/karto_sdk/include/karto_sdk").glob("*.h"),
         *(ROOT / "ros2_ws/ros2-multi-robot-automap/src/slam_toolbox/lib/karto_sdk/include/karto_sdk").glob("*.hpp"),
         PURE / "mr3_observation.py", PURE / "mr3_episode.py", PURE / "mr3_protocol.py",
-        PURE / "mr3_reach_geometry.py", PURE / "mr3_seed_certificate.py",
+        PURE / "mr3_reach_geometry.py", PURE / "mr3_seed_certificate.py", PURE / "mr3_point_graph.py",
         PURE / "mr3_transport.py", PURE / "mr3_activity.py", PURE / "mr3_reward.py",
         PURE / "mr3_information.py", PURE / "task_evaluator.py",
         ROOT / "ros2_ws/ros2-multi-robot-automap/scripts/mr3_proxy2d_worker.py",
@@ -669,6 +756,8 @@ def verify_conformity(directory, specification, freeze):
     raw = path.read_bytes()
     require(sha(raw) == specification["sha256"], "conformity receipt bytes changed")
     formal = parse(raw)
+    if formal.get("schema") == "mr3-proxy2d-point-graph-conformity-v1":
+        return verify_point_graph_conformity(directory, formal, freeze, path, raw)
     versioned = formal.get("schema") == "mr3-proxy2d-conformity-v2"
     require(formal.get("schema") in ("mr3-proxy2d-conformity-v1", "mr3-proxy2d-conformity-v2")
             and formal.get("freeze") == freeze,
@@ -887,6 +976,121 @@ def verify_conformity(directory, specification, freeze):
             "legacy_reference_scope": "six original snapshots/tensors; not new native execution"}, stable
 
 
+def verify_point_graph_conformity(directory, formal, freeze, path, raw):
+    """Independently rebuild twelve artificial-only snapshots, never native data."""
+    from .proxy2d_codec import decode_arrays, encode_arrays
+    from .proxy2d_conformity import POINT_GRAPH_CASES, point_graph_parameters
+    require(formal.get("freeze") == freeze and formal.get("seed_rule") == EXACT_SEED_RULE_V2
+            and formal.get("start_graph_rule") == POINT_START_GRAPH,
+            "point graph conformity source/rule identity differs")
+    require(formal.get("errors") == [] and formal.get("input_bytes_unchanged") is True
+            and formal.get("native_records") == [] and formal.get("native_reference_checked") is False
+            and formal.get("world_created") is False
+            and all(formal.get(key) is False for key in ("qualification", "training_eligible", "native_credit"))
+            and all(type(formal.get(key)) is int and formal[key] == 0
+                    for key in ("policy_calls", "gpu_calls", "optimizer_steps")),
+            "artificial conformity retained an error or acquired broader credit")
+    stable = {path: raw}
+    required_sources = {selected.relative_to(ROOT).as_posix() for selected in (
+        Path(__file__), Path(__file__).with_name("proxy2d_conformity.py"),
+        Path(__file__).with_name("observation.py"), Path(__file__).with_name("proxy2d_codec.py"),
+        *(PURE / name for name in ("mr3_observation.py", "mr3_episode.py", "mr3_reach_geometry.py",
+                                  "mr3_seed_certificate.py", "mr3_point_graph.py")))}
+    require(required_sources <= formal.get("source_proof", {}).keys(),
+            "artificial conformity omitted a required pure dependency")
+    for relative, proof in formal["source_proof"].items():
+        source = ROOT / relative
+        require(not Path(relative).is_absolute() and source.resolve().is_relative_to(ROOT),
+                "artificial conformity source escaped workspace")
+        content = source.read_bytes()
+        require(proof.get("git_source") == freeze + ":" + relative
+                and len(content) == proof.get("bytes") and sha(content) == proof.get("sha256")
+                and content == subprocess.check_output(["git", "show", freeze + ":" + relative],
+                                                       cwd=ROOT, stderr=subprocess.PIPE),
+                "artificial conformity source differs from exact freeze")
+        stable[source] = content
+
+    def reference(spec, expected_path):
+        selected = Path(spec["path"])
+        require(selected == expected_path and selected.resolve() == expected_path,
+                "artificial pair reference differs from its fixed role")
+        content = selected.read_bytes()
+        require(len(content) == spec.get("bytes") and sha(content) == spec.get("sha256"),
+                "artificial pair reference bytes differ")
+        require(stable.setdefault(selected, content) == content, "artificial pair bytes changed")
+        return content
+
+    producer_wait = formal.get("pure_builder_actual_wait", {})
+    require(producer_wait.get("actual_waited") is True and producer_wait.get("returncode") == 0
+            and producer_wait.get("pure_build_calls") == producer_wait.get("pure_requests") == 12
+            and producer_wait.get("pure_seed_check_calls") == 0
+            and type(producer_wait.get("started_monotonic_ns")) is int
+            and type(producer_wait.get("ended_monotonic_ns")) is int
+            and 0 < producer_wait["started_monotonic_ns"] <= producer_wait["ended_monotonic_ns"]
+            and all(type(producer_wait.get("child_identity", {}).get(key)) is int for key in (
+                "pid", "parent", "group", "session", "start_ticks")),
+            "artificial producer lacks its true twelve-build successful wait")
+    pairs = formal.get("pair_records")
+    require(isinstance(pairs, list) and [record.get("id") for record in pairs] == list(POINT_GRAPH_CASES),
+            "six fixed artificial pair selections were omitted/replaced")
+    verified, builder, receipt = [], PureBuilder(), None
+    try:
+        for pair in pairs:
+            modes = pair.get("modes")
+            require(isinstance(modes, list) and [mode.get("start_graph_rule") for mode in modes]
+                    == [ORIGINAL_START_GRAPH, POINT_START_GRAPH], "artificial original/new pair inventory differs")
+            base = point_graph_parameters(pair["id"])
+            snapshots, reports = [], []
+            for mode in modes:
+                rule = mode["start_graph_rule"]
+                expected_params = dict(base)
+                if rule == POINT_START_GRAPH:
+                    expected_params["start_graph_rule"] = rule
+                expected_encoded = canonical(encode_arrays(expected_params))
+                case_directory = path.resolve().with_suffix(".pairs") / pair["id"] / rule
+                actor = parse(reference(mode["actor_record_ref"], case_directory / "actor.json"))
+                input_path = case_directory / "inputs" / (sha(expected_encoded) + ".json.gz")
+                input_raw = reference(mode["input_ref"], input_path)
+                require(gzip.decompress(input_raw) == expected_encoded,
+                        "artificial received parameters differ from the fixed case/rule")
+                params = decode_arrays(parse(expected_encoded))
+                require(actor.get("actor_input_ref") == {
+                    "path": "inputs/" + sha(expected_encoded) + ".json.gz", "sha256": sha(expected_encoded)}
+                    and actor.get("epoch") == params["epoch"], "artificial actor input identity differs")
+                report, binding = actor_record(case_directory, actor, rebuild=True, builder=builder)
+                require(binding == (input_path, input_raw), "artificial actor consumed another reference")
+                snapshot = actor["snapshot"]
+                require(mode.get("snapshot_canonical_sha256") == sha(canonical(snapshot))
+                        and mode.get("tensor_proofs") == report["tensor_proofs"],
+                        "artificial snapshot/tensor result differs")
+                snapshots.append(snapshot)
+                reports.append(report)
+            for name in ("tb1", "tb2", "tb3"):
+                seed_values = [{key: value for key, value in snapshot["path_maps"][name].items()
+                                if key.startswith("seed_")} for snapshot in snapshots]
+                require(canonical(seed_values[0]) == canonical(seed_values[1]),
+                        "new attachment silently changed the original seed-cell result")
+            require(snapshots[0]["diagnostics"]["robot_seed_traversable"]
+                    == snapshots[1]["diagnostics"]["robot_seed_traversable"],
+                    "new attachment relabelled old graph admission")
+            verified.append({"id": pair["id"], "full_snapshots_rebuilt": 2,
+                "original_seed_diagnostics_unchanged": True, "modes": reports})
+    finally:
+        failure = sys.exc_info()[1]
+        receipt = builder.close()
+        if failure is not None:
+            failure.pure_builder_failure_wait = receipt
+    require(all(selected.read_bytes() == content for selected, content in stable.items()),
+            "artificial conformity/source/reference bytes changed during review")
+    return {"schema": "mr3-proxy2d-independent-point-graph-conformity-review-v1", "freeze": freeze,
+        "passed": True, "errors": [], "seed_rule": EXACT_SEED_RULE_V2, "start_graph_rule": POINT_START_GRAPH,
+        "pair_records": verified, "full_snapshots_rebuilt": 12, "exact_seed_robot_checks": 36,
+        "point_graph_robot_checks": 18, "native_records": [], "native_reference_checked": False,
+        "qualification": False, "training_eligible": False, "native_credit": False,
+        "bound_bytes_unchanged": True, "independent_point_graph_builder_actual_wait": receipt,
+        "scope": "six fixed artificial received-input original/new pairs; no native replay or World; no task credit"}, stable
+
+
 def verify_exact_conformity_records(directory, formal, expected_selections, reference, inventory):
     """Independently bind original sufficient inputs and replay only exact six."""
     from .proxy2d_codec import encode_arrays
@@ -997,6 +1201,9 @@ def audit_run(directory, freeze):
         seed_rule = summary.get("seed_rule", "legacy")
         require(seed_rule in ("legacy", *EXACT_SEED_RULES), "unknown capacity seed rule")
         result["seed_rule"] = seed_rule
+        start_graph_rule = check_start_graph_rule(seed_rule, summary.get("start_graph_rule", ORIGINAL_START_GRAPH))
+        if start_graph_rule == POINT_START_GRAPH:
+            result["start_graph_rule"] = start_graph_rule
         contract = _activity_contract(summary)
         bounded = contract["kind"] != "legacy_v22"
         result.update(activity_kind=contract["kind"], activity_spec=summary.get("activity_spec"),
@@ -1009,7 +1216,7 @@ def audit_run(directory, freeze):
         bound, run_sources, inspected = verify_run_sources(summary["source_bindings"], freeze)
         stable.update(run_sources)
         native_artifacts = (verify_karto_manifest(summary,stable)
-            if contract["kind"] in ("karto_profile","karto_behavior", *SEED_PROBE_RULES) else None)
+            if contract["kind"] in ("karto_profile","karto_behavior", POINT_GRAPH_PROFILE, *SEED_PROBE_RULES) else None)
         result.update(source_proof=proof, run_source_bindings=bound,
                       proxy_sources_without_learning_framework_imports=inspected)
         start, deadline, collection = (summary[key] for key in (
@@ -1021,7 +1228,7 @@ def audit_run(directory, freeze):
         if bounded:
             collection_started = summary["collection_started_ns"]
             require(type(collection_started) is int and start <= collection_started
-                    and collection - collection_started == (240 if contract["kind"] in ("profile", "karto_profile") else
+                    and collection - collection_started == (240 if contract["kind"] in PROFILE_KINDS else
                         900 if contract["kind"] in SEED_PROBE_RULES else
                         2100 if contract["kind"] in ("full_behavior", "karto_behavior") else 1200) * 10**9
                     and collection <= deadline - 120 * 10**9,
@@ -1029,6 +1236,8 @@ def audit_run(directory, freeze):
         result["conformity"], receipt = verify_conformity(directory, summary["conformity"], freeze)
         require(result["conformity"].get("seed_rule", "legacy") == seed_rule,
                 "capacity and conformity seed rules differ")
+        require(result["conformity"].get("start_graph_rule", ORIGINAL_START_GRAPH) == start_graph_rule,
+                "capacity and conformity start graph rules differ")
         stable.update(receipt)
         if summary.get("closed") is not True or summary.get("errors") != []:
             result["errors"].append("proxy collection retained errors or is not actually closed: " + str(summary.get("errors")))
@@ -1100,6 +1309,8 @@ def audit_run(directory, freeze):
                     try:
                         require(report.get("seed_rule", "legacy") == seed_rule,
                                 "episode actor and capacity seed rules differ")
+                        require(report.get("start_graph_rule", ORIGINAL_START_GRAPH) == start_graph_rule,
+                                "episode actor and capacity start graph rules differ")
                         require(item["action_seed"] == 41 + 1000003 * env_id,
                                 "independent random-stream seed differs")
                         require(report["env_id"] == env_id and report["episode_index"] == item["episode_index"]
@@ -1111,6 +1322,9 @@ def audit_run(directory, freeze):
                             metadata = parse(metadata_raw)
                             require(metadata.get("seed_rule", "legacy") == seed_rule,
                                     "episode metadata and capacity seed rules differ")
+                            require(metadata.get("start_graph_rule", ORIGINAL_START_GRAPH) == start_graph_rule
+                                    and (start_graph_rule != ORIGINAL_START_GRAPH or "start_graph_rule" not in metadata),
+                                    "episode metadata and capacity start graph rules differ")
                             if native_artifacts is not None:
                                 model_path = episode / "proxy_model.json"
                                 model_raw = model_path.read_bytes()
@@ -1122,10 +1336,13 @@ def audit_run(directory, freeze):
                                     and model.get("mapper")=="karto" and model.get("scan_budget")==6300
                                     and model.get("loaded_native_artifacts")==native_artifacts,
                                     "episode mapper/model/actual loaded native ELFs differ")
+                                require(model.get("start_graph_rule", ORIGINAL_START_GRAPH) == start_graph_rule
+                                        and (start_graph_rule != ORIGINAL_START_GRAPH or "start_graph_rule" not in model),
+                                        "episode model and capacity start graph rules differ")
                             require(all(type(metadata[key]) is type(expected) and metadata[key] == expected for key, expected in (
                                 ("scene", item["scene"]), ("seed", item["seed"]), ("env_id", env_id),
                                 ("episode_index", item["episode_index"]), ("epoch", report["epoch"]), ("freeze", freeze)))
-                                and metadata["profile_enabled"] is (contract["kind"] in ("profile", "karto_profile")),
+                                and metadata["profile_enabled"] is (contract["kind"] in PROFILE_KINDS),
                                 "bounded episode metadata differs from its actual fixed cell/identity")
                             steps = contract["steps_per_episode"]
                             actual_steps = report["step_attempts"]
@@ -1216,6 +1433,12 @@ def audit_run(directory, freeze):
     result["complete_seed_probe"] = result["passed"] and result.get("activity_kind") == "seed_probe"
     if result.get("activity_kind") == "seed_probe_v2":
         result["complete_seed_probe_v2"] = result["passed"]
+    if result.get("start_graph_rule") == POINT_START_GRAPH:
+        result["verified_point_graph_robot_checks"] = sum(
+            actor.get("point_graph_robot_checks", 0) for item in result["episodes"]
+            for actor in item["actor_records"])
+        result["complete_point_graph_probe_v1"] = result["passed"] and result.get("activity_kind") == POINT_GRAPH_KIND
+        result["complete_point_graph_profile_v1"] = result["passed"] and result.get("activity_kind") == POINT_GRAPH_PROFILE
     return result
 
 

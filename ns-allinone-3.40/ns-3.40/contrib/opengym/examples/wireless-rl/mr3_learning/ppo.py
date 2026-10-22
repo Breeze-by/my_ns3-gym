@@ -29,7 +29,8 @@ from .env import MR3Env
 from .observation import observation_space
 from .policy import policy_kwargs
 from .rollout import DecisionTransition, build_rollout_buffer, merge_zero_terminal
-from .supervisor import InfrastructureError, SCENES, SEED_RULES, Supervisor, WORKSPACE
+from .supervisor import (InfrastructureError, SCENES, SEED_RULES, START_GRAPH_RULES,
+                         Supervisor, WORKSPACE, validate_start_graph_rule)
 
 
 # This is a finite, time-limited episodic task. Preserve the accepted total
@@ -357,6 +358,7 @@ def main(argv=None):
     parser.add_argument("--run-id", required=True)
     parser.add_argument("--safety-contract", choices=SAFETY_CONTRACTS, default="legacy")
     parser.add_argument("--seed-rule", choices=SEED_RULES, default="legacy")
+    parser.add_argument("--start-graph-rule", choices=START_GRAPH_RULES, default="original-seed-cell")
     parser.add_argument("--reach-plan", type=Path)
     parser.add_argument("--reach-qualification", type=Path)
     parser.add_argument("--mode", choices=("train", "evaluate"), default="train")
@@ -374,6 +376,10 @@ def main(argv=None):
     parser.add_argument("--epochs", type=int, default=4)
     parser.add_argument("--output-root", type=Path)
     args = parser.parse_args(argv)
+    try:
+        validate_start_graph_rule(args.start_graph_rule, seed_rule=args.seed_rule)
+    except ValueError as error:
+        parser.error(str(error))
     if args.safety_contract == "legacy":
         if args.seed_rule != "legacy":
             parser.error("the exact seed rule requires its same-freeze reach qualification")
@@ -403,6 +409,8 @@ def main(argv=None):
         validate_qualification(args.reach_qualification, args.reach_plan, admission_freeze)
         if load_plan(args.reach_plan).get("seed_rule", "legacy") != args.seed_rule:
             parser.error("PPO seed rule differs from the exact native qualification plan")
+        if load_plan(args.reach_plan).get("start_graph_rule", "original-seed-cell") != args.start_graph_rule:
+            parser.error("PPO start graph rule differs from its native qualification plan")
 
     started = time.monotonic()
     deadline = started + args.wall_seconds
@@ -437,6 +445,8 @@ def main(argv=None):
                 "learning_rate": .0003, "entropy_coefficient": .01,
                 "versions": {name: importlib.metadata.version(name) for name in
                              ("torch", "gymnasium", "stable-baselines3", "sb3-contrib", "numpy")}}
+    if args.start_graph_rule == "original-seed-cell":
+        metadata.pop("start_graph_rule")
     write_json(directory / "metadata.json", metadata)
     resources = []
     stop = threading.Event()
@@ -501,7 +511,9 @@ def main(argv=None):
                                         gazebo_port=args.base_port + i,
                                         output_root=directory / "native",
                                         safety_contract=args.safety_contract,
-                                        **({"seed_rule": args.seed_rule} if args.seed_rule != "legacy" else {}))
+                                        **({"seed_rule": args.seed_rule} if args.seed_rule != "legacy" else {}),
+                                        **({"start_graph_rule": args.start_graph_rule}
+                                           if args.start_graph_rule != "original-seed-cell" else {}))
                 environments.append(MR3Env(supervisor))
                 episode_index += 1
 

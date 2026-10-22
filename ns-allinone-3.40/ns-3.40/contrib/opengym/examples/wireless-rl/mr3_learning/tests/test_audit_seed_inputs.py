@@ -17,7 +17,8 @@ import numpy as np
 from mr3_learning import audit_seed_inputs as audit
 from mr3_learning.reach_gates import (
     ENV_SHA256, EXACT_ENV_SHA256, extend_exact_snapshot_validator, load_exact_protocol,
-    project_exact_environment, project_exact_v2_environment,
+    EXACT_V2_ENV_SHA256, project_exact_environment, project_exact_v2_environment,
+    project_point_graph_environment,
 )
 
 
@@ -27,7 +28,10 @@ FREEZE = "a" * 40
 class ExactSeedInputAuditTests(unittest.TestCase):
     def test_exact_environment_restores_whole_old_document_and_rejects_other_bytes(self):
         raw=(audit.ROOT/"ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_ENV_CONTRACT.md").read_bytes()
-        v33,v2_proof=project_exact_v2_environment(raw)
+        v34,point_proof=project_point_graph_environment(raw)
+        self.assertEqual(hashlib.sha256(v34).hexdigest(),EXACT_V2_ENV_SHA256)
+        self.assertEqual(point_proof["prior_document_bytes"],len(v34))
+        v33,v2_proof=project_exact_v2_environment(v34)
         self.assertEqual(hashlib.sha256(v33).hexdigest(),EXACT_ENV_SHA256)
         self.assertEqual(v2_proof["prior_document_bytes"],len(v33))
         old,proof=project_exact_environment(v33)
@@ -35,7 +39,8 @@ class ExactSeedInputAuditTests(unittest.TestCase):
         self.assertEqual(proof["prior_document_bytes"],len(old))
         self.assertLess(len(old),len(raw))
         with self.assertRaises(ValueError):project_exact_environment(v33+b"\n")
-        with self.assertRaises(ValueError):project_exact_v2_environment(raw+b"\n")
+        with self.assertRaises(ValueError):project_exact_v2_environment(v34+b"\n")
+        with self.assertRaises(ValueError):project_point_graph_environment(raw+b"\n")
 
     def test_protocol_reader_changes_only_its_private_adapter_identity(self):
         from mr3_learning import audit_protocol as original
@@ -51,7 +56,8 @@ class ExactSeedInputAuditTests(unittest.TestCase):
             self.assertEqual(new.__code__.co_code, old.__code__.co_code)
             self.assertEqual(new.__code__.co_names, old.__code__.co_names)
 
-    def fixture(self, directory, *, navigation_missing=False, robot_overrides=None, seed_rule=audit.RULE):
+    def fixture(self, directory, *, navigation_missing=False, robot_overrides=None, seed_rule=audit.RULE,
+                start_graph_rule="original-seed-cell"):
         package = ModuleType("multi_robot_exploration")
         package.__path__ = [str(audit.ROOT / audit.COMPONENT)]
         previous = {name: value for name, value in sys.modules.items()
@@ -90,7 +96,8 @@ class ExactSeedInputAuditTests(unittest.TestCase):
             snapshot = observation.build_snapshot(grid, .1, (-2.05, -2.05), robots, 10., "artificial", 1, 0,
                 map_source_stamp=10., map_received_stamp=10., map_sources={n: source for n in audit.ROBOTS},
                 task_start=10., robot_maps={n: {**record, **source} for n in audit.ROBOTS},
-                navigation_maps={n: {**record, **navigation} for n in audit.ROBOTS}, seed_rule=seed_rule)
+                navigation_maps={n: {**record, **navigation} for n in audit.ROBOTS}, seed_rule=seed_rule,
+                **({"start_graph_rule":start_graph_rule} if start_graph_rule!="original-seed-cell" else {}))
         finally:
             for name in list(sys.modules):
                 if name == "multi_robot_exploration" or name.startswith("multi_robot_exploration."):
@@ -110,8 +117,9 @@ class ExactSeedInputAuditTests(unittest.TestCase):
                      for name in ("fused", *audit.ROBOTS, *("navigation:" + n for n in audit.ROBOTS))}}
         def write(name, value):
             (directory / name).write_text(json.dumps(value) + "\n")
-        write("metadata.json", {"freeze": FREEZE, "epoch": "artificial", "seed_rule": seed_rule})
-        write("supervisor_metadata.json", {"seed_rule": seed_rule})
+        options={} if start_graph_rule=="original-seed-cell" else {"start_graph_rule":start_graph_rule}
+        write("metadata.json", {"freeze": FREEZE, "epoch": "artificial", "seed_rule": seed_rule, **options})
+        write("supervisor_metadata.json", {"seed_rule": seed_rule, **options})
         write("summary.json", {"artificial_fixture": True})
         write("transitions.jsonl", {"kind": "reset", "snapshot": snapshot, "info": {"watermarks": metadata}})
         events = [{"kind": "task_start", "payload": {"start_sim_time_sec": 10.}},
@@ -159,6 +167,35 @@ class ExactSeedInputAuditTests(unittest.TestCase):
                 path.write_text(json.dumps({"seed_rule":"exact-point-bridge-v1"}))
                 with self.assertRaisesRegex(ValueError,"seed rule mismatch"):
                     audit.audit_episode(directory,FREEZE)
+
+    def test_point_graph_whole_replay_binds_helper_and_the_composite_metadata(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            directory=Path(temporary)
+            snapshot=self.fixture(directory,seed_rule="exact-point-bridge-v2",
+                                  start_graph_rule="point-attachment-3x3-v1")
+            self.assertEqual(snapshot["candidate_rule"]["start_graph_rule"],"point-attachment-3x3-v1")
+            self.assertIn("robot_start_graph_attached",snapshot["diagnostics"])
+            with patch.object(audit.subprocess,"check_output",side_effect=self.source):
+                report=audit.audit_episode(directory,FREEZE)
+                self.assertTrue(report["passed"])
+                self.assertEqual(report["start_graph_rule"],"point-attachment-3x3-v1")
+                self.assertEqual(len(report["source_proof"]),10)
+                self.assertTrue(any(path.endswith("mr3_point_graph.py") for path in report["source_proof"]))
+                path=directory/"supervisor_metadata.json"
+                value=json.loads(path.read_text());value.pop("start_graph_rule");path.write_text(json.dumps(value))
+                with self.assertRaisesRegex(ValueError,"start graph rule mismatch"):
+                    audit.audit_episode(directory,FREEZE)
+
+    def test_point_graph_reader_rejects_nonfrozen_attachment_helper(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            directory=Path(temporary)
+            self.fixture(directory,seed_rule="exact-point-bridge-v2",start_graph_rule="point-attachment-3x3-v1")
+            def source(argv,**kwargs):
+                raw=self.source(argv,**kwargs)
+                return raw+b"\n" if argv[-1].endswith("mr3_point_graph.py") else raw
+            with patch.object(audit.subprocess,"check_output",side_effect=source), \
+                    self.assertRaisesRegex(ValueError,"source differs from native freeze"):
+                audit.audit_episode(directory,FREEZE)
 
     def test_missing_navigation_recovers_empty_input_in_full_snapshot_replay(self):
         with tempfile.TemporaryDirectory() as temporary:

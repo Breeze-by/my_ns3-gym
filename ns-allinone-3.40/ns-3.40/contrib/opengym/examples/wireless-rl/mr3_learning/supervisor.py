@@ -23,6 +23,11 @@ EXACT_SEED_VERSIONS = {
     "exact-point-bridge-v2": "mr3-navigation-geometric-staging-v7-exact-seed-v2",
 }
 SEED_RULES = ("legacy", *EXACT_SEED_VERSIONS)
+ORIGINAL_START_GRAPH_RULE = "original-seed-cell"
+POINT_START_GRAPH_RULE = "point-attachment-3x3-v1"
+START_GRAPH_RULES = (ORIGINAL_START_GRAPH_RULE, POINT_START_GRAPH_RULE)
+POINT_GRAPH_PROFILE = "mr3-point-graph-attachment-3x3-v1"
+POINT_GRAPH_COST = "min_anchor(bridge_length+original_graph_distance)"
 LEGACY_PREPARATION_PROBES = tuple(f"mr3-p2a0-outward-cancel-v{version}" for version in range(2, 7))
 PREPARATION_PROBE_REACH_V1 = "mr3-p2a-reach-outward-cancel-v1"
 
@@ -44,6 +49,29 @@ def validate_seed_rule(seed_rule):
     return seed_rule
 
 
+def validate_start_graph_rule(start_graph_rule, *, seed_rule="legacy"):
+    validate_seed_rule(seed_rule)
+    if type(start_graph_rule) is not str or start_graph_rule not in START_GRAPH_RULES:
+        raise ValueError("unknown start_graph_rule")
+    if start_graph_rule == POINT_START_GRAPH_RULE and seed_rule != "exact-point-bridge-v2":
+        raise ValueError("point attachment requires exact-point-bridge-v2")
+    return start_graph_rule
+
+
+def candidate_version_for_rules(seed_rule, start_graph_rule=ORIGINAL_START_GRAPH_RULE, *, navigation=True):
+    validate_start_graph_rule(start_graph_rule, seed_rule=seed_rule)
+    if type(navigation) is not bool:
+        raise ValueError("navigation must be a boolean")
+    if start_graph_rule == POINT_START_GRAPH_RULE:
+        return ("mr3-navigation-geometric-staging-v8-point-graph-v1" if navigation else
+                "mr3-per-robot-geometric-staging-v7-point-graph-v1")
+    if navigation:
+        return EXACT_SEED_VERSIONS.get(seed_rule, "mr3-navigation-geometric-staging-v5")
+    return {"legacy": "mr3-per-robot-geometric-staging-v4",
+            "exact-point-bridge-v1": "mr3-per-robot-geometric-staging-v5-exact-seed-v1",
+            "exact-point-bridge-v2": "mr3-per-robot-geometric-staging-v6-exact-seed-v2"}[seed_rule]
+
+
 def seed_rule_from_argv(argv):
     """Read the sealed command's single canonical opt-in, defaulting to legacy."""
     if type(argv) is not list or any(type(value) is not str for value in argv):
@@ -56,6 +84,19 @@ def seed_rule_from_argv(argv):
     if position >= len(argv):
         raise ValueError("seed_rule argument has no value")
     return validate_seed_rule(argv[position])
+
+
+def start_graph_rule_from_argv(argv):
+    """Read the sealed composite mode, rejecting duplicate/equals arguments."""
+    seed_rule = seed_rule_from_argv(argv)
+    if argv.count("--start-graph-rule") > 1 or any(v.startswith("--start-graph-rule=") for v in argv):
+        raise ValueError("sealed start_graph_rule argument must be unique and explicit")
+    if "--start-graph-rule" not in argv:
+        return ORIGINAL_START_GRAPH_RULE
+    position = argv.index("--start-graph-rule") + 1
+    if position >= len(argv):
+        raise ValueError("start_graph_rule argument has no value")
+    return validate_start_graph_rule(argv[position], seed_rule=seed_rule)
 
 
 class InfrastructureError(RuntimeError):
@@ -164,11 +205,13 @@ class Supervisor:
                  output_root=None, startup_timeout=420., request_timeout=90.,
                  quantum_steps=20, terminal_probe=False, plant_stimulus_arm=None,
                  plant_stimulus_work_deadline_ns=None, safety_contract="legacy",
-                 preparation_probe_version=None, seed_rule="legacy"):
+                 preparation_probe_version=None, seed_rule="legacy",
+                 start_graph_rule=ORIGINAL_START_GRAPH_RULE):
         if type(safety_contract) is not str or safety_contract not in ("legacy", "mr3-reach-v1"):
             raise ValueError("safety_contract must be legacy or mr3-reach-v1")
         validate_preparation_profile(safety_contract, preparation_probe_version)
         validate_seed_rule(seed_rule)
+        validate_start_graph_rule(start_graph_rule, seed_rule=seed_rule)
         if preparation_probe_version is not None and (terminal_probe or plant_stimulus_arm is not None):
             raise ValueError("preparation fixture cannot combine with other diagnostic probes")
         if type(terminal_probe) is not bool:
@@ -210,6 +253,7 @@ class Supervisor:
         self.terminal_probe = terminal_probe
         self.safety_contract = safety_contract
         self.seed_rule = seed_rule
+        self.start_graph_rule = start_graph_rule
         self.preparation_probe_version = preparation_probe_version
         self.plant_stimulus_arm = plant_stimulus_arm
         self.plant_stimulus_work_deadline_ns = (
@@ -288,6 +332,8 @@ class Supervisor:
                     "request_wall_guard_sec": self.request_timeout}
         if self.seed_rule != "legacy":
             metadata["seed_rule"] = self.seed_rule
+        if self.start_graph_rule != ORIGINAL_START_GRAPH_RULE:
+            metadata["start_graph_rule"] = self.start_graph_rule
         if self.preparation_probe_version is not None:
             metadata.update(preparation_probe_version=self.preparation_probe_version,
                             training_eligible=False,
@@ -301,7 +347,9 @@ class Supervisor:
                                plant_stimulus_work_deadline_ns=self.plant_stimulus_work_deadline_ns,
                                **({"safety_contract": self.safety_contract}
                                   if self.safety_contract != "legacy" else {}),
-                               **({"seed_rule": self.seed_rule} if self.seed_rule != "legacy" else {}))
+                               **({"seed_rule": self.seed_rule} if self.seed_rule != "legacy" else {}),
+                               **({"start_graph_rule": self.start_graph_rule}
+                                  if self.start_graph_rule != ORIGINAL_START_GRAPH_RULE else {}))
             if result["snapshot"]["epoch"] != epoch:
                 raise InfrastructureError("reset returned a previous episode snapshot")
             self.last_result = result

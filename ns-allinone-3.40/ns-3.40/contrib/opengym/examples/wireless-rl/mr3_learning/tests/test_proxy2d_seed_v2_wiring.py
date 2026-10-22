@@ -64,7 +64,8 @@ class SeedV2WiringTests(unittest.TestCase):
                 summary = capacity.collect(Path(temporary), "a" * 40, {}, {}, 10**12,
                     10**12 + 1800 * 10**9, activity_spec=capacity.activity_spec(kind),
                     group_wall_seconds=[900], mapper="karto", mapper_library="mock-never-loaded.so",
-                    native_manifest={"path": "mock-manifest.json", "sha256": "b" * 64}, seed_rule=rule)
+                    native_manifest={"path": "mock-manifest.json", "sha256": "b" * 64}, seed_rule=rule,
+                    **({"start_graph_rule": "point-attachment-3x3-v1"} if kind == "point_graph_probe_v1" else {}))
             self.assertEqual((summary["step_attempts"], summary["step_returns"], summary["step_errors"]), (192, 192, 0))
             self.assertEqual(sorted(tickets), list(range(1, 193)))
             self.assertEqual(summary["seed_rule"], rule)
@@ -77,6 +78,10 @@ class SeedV2WiringTests(unittest.TestCase):
                 self.assertEqual(kwargs["seed_rule"], rule)
                 self.assertEqual(kwargs["mapper"], "karto")
                 self.assertFalse(kwargs["profile"])
+                if kind == "point_graph_probe_v1":
+                    self.assertEqual(kwargs["start_graph_rule"], "point-attachment-3x3-v1")
+                else:
+                    self.assertNotIn("start_graph_rule", kwargs)
 
     def test_probe_versions_cannot_mix_rule_mapper_clock_or_fixed_spec(self):
         with tempfile.TemporaryDirectory() as temporary, patch.object(capacity, "collect_worker") as worker:
@@ -87,7 +92,8 @@ class SeedV2WiringTests(unittest.TestCase):
                     with self.subTest(kind=kind, rule=rule), self.assertRaises(ValueError):
                         capacity.collect(Path(temporary), "a" * 40, {}, {}, 10**12, 10**12 + 1800 * 10**9,
                             activity_spec=capacity.activity_spec(kind), group_wall_seconds=[900],
-                            mapper="karto", mapper_library="mock.so", native_manifest={"fixture": True}, seed_rule=rule)
+                            mapper="karto", mapper_library="mock.so", native_manifest={"fixture": True}, seed_rule=rule,
+                            **({"start_graph_rule": "point-attachment-3x3-v1"} if kind == "point_graph_probe_v1" else {}))
                 for changed in ("mapper", "wall", "spec"):
                     spec = copy.deepcopy(capacity.activity_spec(kind))
                     if changed == "spec":
@@ -96,7 +102,8 @@ class SeedV2WiringTests(unittest.TestCase):
                         capacity.collect(Path(temporary), "a" * 40, {}, {}, 10**12, 10**12 + 1800 * 10**9,
                             activity_spec=spec, group_wall_seconds=[901] if changed == "wall" else [900],
                             mapper="endpoint" if changed == "mapper" else "karto", mapper_library="mock.so",
-                            native_manifest={"fixture": True}, seed_rule=selected)
+                            native_manifest={"fixture": True}, seed_rule=selected,
+                            **({"start_graph_rule": "point-attachment-3x3-v1"} if kind == "point_graph_probe_v1" else {}))
             worker.assert_not_called()
 
 

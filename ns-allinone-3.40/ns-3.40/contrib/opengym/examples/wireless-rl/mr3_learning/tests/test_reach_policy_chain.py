@@ -66,6 +66,26 @@ def native_fixture(stage='minimum'):
 
 
 class ReachPolicyChainTests(unittest.TestCase):
+    def test_point_attachment_minimum_pilot_and_final_cannot_borrow_original_v2(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            plan,path,qualification=plan_fixture(Path(temporary))
+            plan.update(seed_rule='exact-point-bridge-v2',start_graph_rule='point-attachment-3x3-v1')
+            for stage in chain.STAGES:
+                plan['policy_stages'][stage]['argv'] += ['--seed-rule',plan['seed_rule'],
+                    '--start-graph-rule',plan['start_graph_rule']]
+                chain.stage_spec(plan,path,qualification,stage)
+                changed=copy.deepcopy(plan);argv=changed['policy_stages'][stage]['argv']
+                argv[argv.index('--start-graph-rule')+1]='original-seed-cell'
+                with self.subTest(stage=stage),self.assertRaisesRegex(ValueError,'start graph rule differs'):
+                    chain.stage_spec(changed,path,qualification,stage)
+        metadata,native,audit,episodes,spec=native_fixture()
+        metadata['seed_rule']='exact-point-bridge-v2'
+        spec['argv'] += ['--seed-rule','exact-point-bridge-v2','--start-graph-rule','point-attachment-3x3-v1']
+        with self.assertRaisesRegex(ValueError,'start graph rule differs'):
+            chain.check_native_result('minimum',metadata,native,audit,episodes,spec)
+        metadata['start_graph_rule']='point-attachment-3x3-v1'
+        self.assertEqual(chain.check_native_result('minimum',metadata,native,audit,episodes,spec)['eligible_decisions'],16)
+
     def test_v2_minimum_pilot_and_final_are_bound_to_the_same_qualification_mode(self):
         with tempfile.TemporaryDirectory() as temporary:
             plan,path,qualification=plan_fixture(Path(temporary))

@@ -14,7 +14,8 @@ import subprocess
 
 from . import preparation as primitives
 from .reach_audit_projection import project_module
-from .supervisor import seed_rule_from_argv, validate_seed_rule
+from .supervisor import (seed_rule_from_argv, start_graph_rule_from_argv,
+                         validate_seed_rule, validate_start_graph_rule)
 
 WORKSPACE, WIRELESS_RELATIVE = primitives.WORKSPACE, primitives.WIRELESS_RELATIVE
 SCHEMA = "mr3-reach-preparation-plan-v1"
@@ -49,6 +50,8 @@ def source_inventory(root=WORKSPACE):
 
 def validate_plan(plan, workspace=WORKSPACE):
     seed_rule = validate_seed_rule(plan.get("seed_rule", "legacy"))
+    start_graph_rule = validate_start_graph_rule(plan.get("start_graph_rule", "original-seed-cell"),
+                                                seed_rule=seed_rule)
     require(plan.get("schema") == SCHEMA and plan.get("safety_contract") == CONTRACT
             and plan.get("readiness") == {"ready": True, "pending_bindings": []},
             "reach plan is not explicitly sealed")
@@ -68,6 +71,9 @@ def validate_plan(plan, workspace=WORKSPACE):
         require({"ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/" + name
                  for name in ("mr3_observation.py", "mr3_seed_certificate.py", "mr3_reach_geometry.py", "mr3_adapter.py")}
                 <= plan["source_bindings"].keys(), "exact seed rule runtime inventory incomplete")
+    if start_graph_rule != "original-seed-cell":
+        require("ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_point_graph.py"
+                in plan["source_bindings"], "point graph helper runtime inventory incomplete")
     outputs = [plan["output_directory"]]
     for i, stage in enumerate(plan["stages"]):
         name, jobs = stage["stage"], stage["audits"]
@@ -78,6 +84,8 @@ def validate_plan(plan, workspace=WORKSPACE):
         argv = stage["native"]["argv"]
         require(seed_rule_from_argv(argv) == seed_rule,
                 "native stage seed rule differs from the qualification plan: " + name)
+        require(start_graph_rule_from_argv(argv) == start_graph_rule,
+                "native stage start graph rule differs from the qualification plan: " + name)
         workers, schedule, steps, episodes = primitives.WORKLOADS[name]
         require(argv[:3] == [plan["learner_python"], "-m", "mr3_learning.benchmark"]
                 and argument(argv, "--safety-contract") == CONTRACT
@@ -227,8 +235,9 @@ def source_check(plan, plan_path, freeze, root=WORKSPACE, require_clean=True):
     return proof
 
 
-def build_plan(*, plan_path, seed_rule="legacy", **kwargs):
+def build_plan(*, plan_path, seed_rule="legacy", start_graph_rule="original-seed-cell", **kwargs):
     validate_seed_rule(seed_rule)
+    validate_start_graph_rule(start_graph_rule, seed_rule=seed_rule)
     plan = primitives.build_plan(**kwargs, information_implementation="admitted_index_three_keys_v1",
                                  nav2_parameter_profile="gentle_turn_v1")
     plan.update(schema=SCHEMA, safety_contract=CONTRACT,
@@ -240,6 +249,8 @@ def build_plan(*, plan_path, seed_rule="legacy", **kwargs):
                     "old_profile_credit_reused": False})
     if seed_rule != "legacy":
         plan["seed_rule"] = seed_rule
+    if start_graph_rule != "original-seed-cell":
+        plan["start_graph_rule"] = start_graph_rule
     plan["preflight"]["schema"] = "mr3-reach-preflight-v1"
     plan["budget"].update(matrix_wall_seconds="18000", borrow_unused_prior_stage_reservations=True,
         engineering_remaining_basis="Approved 52000 cumulative engineering ceiling; all native/read-only/closure tails charged")
@@ -251,6 +262,8 @@ def build_plan(*, plan_path, seed_rule="legacy", **kwargs):
         argv += ["--safety-contract", CONTRACT]
         if seed_rule != "legacy":
             argv += ["--seed-rule", seed_rule]
+        if start_graph_rule != "original-seed-cell":
+            argv += ["--start-graph-rule", start_graph_rule]
         if name in ("interface", "reset"):
             argv[argv.index("--preparation-probe-version") + 1] = "mr3-p2a-reach-outward-cancel-v1"
         stage["wall_seconds"] = CAPS[i]
@@ -305,6 +318,9 @@ def build_plan(*, plan_path, seed_rule="legacy", **kwargs):
         for name in ("mr3_observation.py", "mr3_seed_certificate.py", "mr3_reach_geometry.py", "mr3_adapter.py"):
             relative = "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/" + name
             plan["source_bindings"][relative] = sha(Path(root) / relative)
+    if start_graph_rule != "original-seed-cell":
+        relative = "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_point_graph.py"
+        plan["source_bindings"][relative] = sha(Path(root) / relative)
     binding = json.loads(Path(kwargs["custody_binding"]).read_text())
     for row in binding["source_bindings"]:
         path = Path(row["path"])
@@ -438,9 +454,13 @@ def _qualification_evidence(plan_path, freeze, outer_wait, root=WORKSPACE):
                     "episode source/contract differs")
             require(meta.get("seed_rule", "legacy") == plan.get("seed_rule", "legacy"),
                     "native episode seed rule differs from qualification plan")
+            require(meta.get("start_graph_rule", "original-seed-cell") == plan.get("start_graph_rule", "original-seed-cell"),
+                    "native episode start graph rule differs from qualification plan")
             supervisor_meta = read(path.parent / "supervisor_metadata.json")
             require(supervisor_meta.get("seed_rule", "legacy") == plan.get("seed_rule", "legacy"),
                     "native supervisor seed rule differs from qualification plan")
+            require(supervisor_meta.get("start_graph_rule", "original-seed-cell") == plan.get("start_graph_rule", "original-seed-cell"),
+                    "native supervisor start graph rule differs from qualification plan")
             episodes.append({"directory": str(path.parent), "epoch": meta["epoch"]})
             files = sorted(p for p in path.parent.rglob("*") if p.is_file())
             episode_files[str(path.parent)] = [str(p.relative_to(path.parent)) for p in files]

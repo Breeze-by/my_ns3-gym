@@ -1,5 +1,25 @@
 # MR3 环境与采样契约 v2（P2A.0准备修订）
 
+2026-10-22 V37：新增正交显式 `start_graph_rule=point-attachment-3x3-v1`，仅与
+`seed_rule=exact-point-bridge-v2` 配对；默认 `original-seed-cell` 保持旧准入及字节字段。
+此新起点模型不要求含点格的原 centre 节点可通行，但保留其真实 seed FAIL 诊断。
+收到的地图、源身份、epoch、future/state freshness、唯一 canonical raw-free 含点格门保持；
+实际估计点不移动、不snap，须通过完整 `.29m` 闭方格净空证书。固定 canonical 格周围
+截边3×3窗口中，仅原 native_traversable 图节点可作 anchor，全部 point→exact-centre
+整桥须独立通过同一 `.29m` 认证，保留全部合格连接，不修改原八邻无corner-cut图。
+每机器人路径代价为 `min_anchor(bridge_length+original_graph_distance)`，桥长只计一次，
+不能借用其他机器人的虚拟起点。原目标投影与 `.39m` arrival disk、K8/frontier/reservation/
+间距/掩码保持。新导航候选版本为 `mr3-navigation-geometric-staging-v8-point-graph-v1`，
+非导航为 `mr3-per-robot-geometric-staging-v7-point-graph-v1`；规则、全部证书及路径来源入digest。
+代理仅为策略已选goal选择最小 bridge+goal-field 的局部路径入口，确定性row/col平局；
+原路径lookahead或attachment整段及每个20ms平移proposal都须 `.29m` 认证，w=0。
+名义下一点须保留一个原图可达且仍在其3×3窗口内的全桥认证anchor；否则停止。
+这只适用于固定收到地图及名义几何，不证明定位漂移、物理跟踪或动态peer安全。
+原scan/pair/时钟/源龄门保持。原生仍将策略原候选goal交给dispatcher/Nav2，anchor不是额外GOAL。
+此模式替代起点准入，旧FAIL不改判、旧资格不继承；完整新冻结原生资格与学习链仍必要。
+95%/300s/质量/三台参与/18路contact、奖励、PPO与pilot/final-only预算保持。
+本节独立删除后必须逐字恢复V34完整环境合同；只允许显式新模式，不切换默认。
+
 2026-10-21 V34：新增显式 `seed_rule=exact-point-bridge-v2`，legacy与v1实现语义保留。
 v2将机器人起点格统一定义为实际输入数值的精确有理商向下取整，采用半开cell归属；不得先用float相除。
 它修复float除法舍入可选到不包含估计点的相邻格，不做邻居搜索、nextafter宽带或位姿吸附。

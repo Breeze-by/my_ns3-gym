@@ -10,13 +10,17 @@ import subprocess
 
 from .reach_audit_projection import project_module
 from . import audit_reach_sensor_model
-from .supervisor import EXACT_SEED_VERSIONS, validate_seed_rule
+from .supervisor import (EXACT_SEED_VERSIONS, POINT_START_GRAPH_RULE, POINT_GRAPH_PROFILE,
+                         POINT_GRAPH_COST, candidate_version_for_rules,
+                         validate_seed_rule, validate_start_graph_rule)
 
 PPO_READER_SHA256 = "b2e0737d79826b7ecb319cc91b58ff45475ea831a9cb2b4cab2298aaf6474567"
 PROTOCOL_READER_SHA256 = "8bc1ee209761be2108a3d1d0248f2d0ab40b9fc68539ecedffec11cb81fd1647"
 ENV_SHA256 = "e21cade7fecc17461007903e74ccd870c26e1d1e4a766731c2850dd567a73869"
 EXACT_ENV_SHA256 = "1cebd1d5c6abf2750991a40ab50065c4f9b655f11f30e3f1734ea2130612d143"
 EXACT_V2_ENV_SHA256 = "11a70fb42a58c104a55a68186795226dbf2c1f4bd4170066dfaad209e63ba8d5"
+POINT_GRAPH_ENV_SHA256 = "baffbf1bffc7fadff80105ec5c5dce3a04c694ce7e7a8f72ca6620d8a7c13a1a"
+POINT_GRAPH_HELPER_SHA256 = "e55b776c3ec088fe51dfa76ff204b4b135138038502fabc6af01717ed75efc83"
 ENV_STATUS = ("2026-10-19：用户已接受[V14科学候选](report/assets/20261019_mr3_p2a_v14/scientific_contract_candidate_v1.md)。显式新profile的执行规则以[MR3_REACH_CONTRACT.md](MR3_REACH_CONTRACT.md)为准；本文件下述原速度/累计路径与v1相位规则继续描述默认`legacy`。V15已接线并完成CPU/编译准备，尚无新冻结原生资格、训练或95%信用；旧FAIL不改判。\n\n").encode()
 ROS = "ros2_ws/ros2-multi-robot-automap/"
 REVISED_RUNTIME = {
@@ -82,16 +86,39 @@ def load_exact_protocol(adapter_sha256):
     return protocol, proof
 
 
+def project_point_graph_environment(raw):
+    """Remove only V37's unique insertion, restoring the whole V34 document."""
+    if hashlib.sha256(raw).hexdigest() != POINT_GRAPH_ENV_SHA256:
+        raise ValueError("point graph environment document SHA differs")
+    start = "2026-10-22 V37：新增正交显式".encode()
+    end = "本节独立删除后必须逐字恢复V34完整环境合同；只允许显式新模式，不切换默认。\n\n".encode()
+    if raw.count(start) != 1 or raw.count(end) != 1 or raw.index(start) >= raw.index(end):
+        raise ValueError("point graph environment insertion boundaries differ")
+    restored = raw[:raw.index(start)] + raw[raw.index(end) + len(end):]
+    if hashlib.sha256(restored).hexdigest() != EXACT_V2_ENV_SHA256:
+        raise ValueError("point graph inverse does not restore the whole V34 document")
+    return restored, {"sha256": POINT_GRAPH_ENV_SHA256,
+                      "whole_prior_document_inverse_sha256": EXACT_V2_ENV_SHA256,
+                      "prior_document_bytes": len(restored), "new_document_bytes": len(raw),
+                      "scope": "unique V37 insertion only; complete V34 document restored"}
+
+
 def extend_exact_snapshot_validator(original_validator, auditor, candidate_module,
-                                    *, seed_rule="exact-point-bridge-v1"):
+                                    *, seed_rule="exact-point-bridge-v1", start_graph_rule="original-seed-cell"):
     """Register both exact full rules, while accepting only the declared one."""
     if type(seed_rule) is not str or seed_rule not in EXACT_SEED_VERSIONS:
         raise ValueError("an explicit exact seed rule is required")
+    validate_start_graph_rule(start_graph_rule, seed_rule=seed_rule)
     rules = {version: {**candidate_module.CANDIDATE_RULE_V5,
                        "version": version, "seed_rule": name}
              for name, version in EXACT_SEED_VERSIONS.items()}
+    point_version = candidate_version_for_rules("exact-point-bridge-v2", POINT_START_GRAPH_RULE)
+    rules[point_version] = {**candidate_module.CANDIDATE_RULE_V5,
+        "version": point_version, "seed_rule": "exact-point-bridge-v2",
+        "start_graph_rule": POINT_START_GRAPH_RULE, "start_graph_profile": POINT_GRAPH_PROFILE,
+        "start_graph_cost": POINT_GRAPH_COST}
     candidate_module.CANDIDATE_RULES = {**candidate_module.CANDIDATE_RULES, **rules}
-    rule = rules[EXACT_SEED_VERSIONS[seed_rule]]
+    rule = rules[candidate_version_for_rules(seed_rule, start_graph_rule)]
     original_validator(auditor, candidate_module)
     validate = auditor.validate_snapshot
 
@@ -110,11 +137,13 @@ def load_native_gates(root, freeze, plan_path):
     source_proof = source_check(plan, plan_path, freeze, root, require_clean=False)
     return _load_versioned_native_gates(root, freeze, source_proof,
         plan["source_bindings"], plan["custody_binding"],
-        **({"seed_rule": plan["seed_rule"]} if plan.get("seed_rule", "legacy") != "legacy" else {}))
+        **({"seed_rule": plan["seed_rule"]} if plan.get("seed_rule", "legacy") != "legacy" else {}),
+        **({"start_graph_rule": plan["start_graph_rule"]}
+           if plan.get("start_graph_rule", "original-seed-cell") != "original-seed-cell" else {}))
 
 
 def _load_versioned_native_gates(root, freeze, source_proof, source_bindings, custody_binding,
-                                 *, seed_rule="legacy"):
+                                 *, seed_rule="legacy", start_graph_rule="original-seed-cell"):
     """Reuse unchanged native predicates after an explicit caller source check.
 
     The public qualification entry above still requires its complete sealed
@@ -124,6 +153,7 @@ def _load_versioned_native_gates(root, freeze, source_proof, source_bindings, cu
     from . import native_custody_reach
     root = Path(root)
     validate_seed_rule(seed_rule)
+    validate_start_graph_rule(start_graph_rule, seed_rule=seed_rule)
     legacy, projection = project_module("audit_ppo.py", PPO_READER_SHA256, ())
     revised_runtime = set(REVISED_RUNTIME)
     protocol_projection = None
@@ -135,14 +165,16 @@ def _load_versioned_native_gates(root, freeze, source_proof, source_bindings, cu
         original_validator = legacy.extend_snapshot_validator
 
         def extend_exact_validator(auditor, candidate_module):
-            extend_exact_snapshot_validator(original_validator, auditor, candidate_module, seed_rule=seed_rule)
+            extend_exact_snapshot_validator(original_validator, auditor, candidate_module,
+                                            seed_rule=seed_rule, start_graph_rule=start_graph_rule)
 
         legacy.extend_snapshot_validator = extend_exact_validator
     old_env_sha = legacy.ENV_DOCUMENT_SHA256
     environment_sha = legacy.sha(root / legacy.WIRELESS / "MR3_ENV_CONTRACT.md")
-    allowed_environments = ({ENV_SHA256} if seed_rule == "legacy" else
-                            {EXACT_V2_ENV_SHA256} if seed_rule == "exact-point-bridge-v2" else
-                            {EXACT_ENV_SHA256, EXACT_V2_ENV_SHA256})
+    allowed_environments = ({POINT_GRAPH_ENV_SHA256} if start_graph_rule == POINT_START_GRAPH_RULE else
+                            {ENV_SHA256} if seed_rule == "legacy" else
+                            {EXACT_V2_ENV_SHA256, POINT_GRAPH_ENV_SHA256} if seed_rule == "exact-point-bridge-v2" else
+                            {EXACT_ENV_SHA256, EXACT_V2_ENV_SHA256, POINT_GRAPH_ENV_SHA256})
     legacy.require(environment_sha in allowed_environments, "environment document is not declared for this seed rule")
 
     def environment_document(root, freeze):
@@ -153,8 +185,11 @@ def _load_versioned_native_gates(root, freeze, source_proof, source_bindings, cu
                 and raw.count(ENV_STATUS) == 1, "reach environment status revision differs")
         exact_projection = None
         exact_v2_projection = None
+        point_projection = None
         if seed_rule != "legacy":
-            if environment_sha == EXACT_V2_ENV_SHA256:
+            if environment_sha == POINT_GRAPH_ENV_SHA256:
+                raw, point_projection = project_point_graph_environment(raw)
+            if hashlib.sha256(raw).hexdigest() == EXACT_V2_ENV_SHA256:
                 raw, exact_v2_projection = project_exact_v2_environment(raw)
             raw, exact_projection = project_exact_environment(raw)
         projected = raw.replace(ENV_STATUS, b"", 1)
@@ -171,7 +206,8 @@ def _load_versioned_native_gates(root, freeze, source_proof, source_bindings, cu
                 "legacy_numeric_and_task_rules_preserved": True,
                 "reach_execution_rules": "MR3_REACH_CONTRACT.md and independent new runtime gates",
                 **({"exact_seed_environment_projection": exact_projection} if exact_projection else {}),
-                **({"exact_seed_v2_environment_projection": exact_v2_projection} if exact_v2_projection else {})}
+                **({"exact_seed_v2_environment_projection": exact_v2_projection} if exact_v2_projection else {}),
+                **({"point_graph_environment_projection": point_projection} if point_projection else {})}
 
     legacy.ENV_DOCUMENT_SHA256 = environment_sha
     legacy.verify_environment_appendix = environment_document
@@ -207,6 +243,12 @@ def _load_versioned_native_gates(root, freeze, source_proof, source_bindings, cu
                  source_bindings[ROS + "src/multi_robot_exploration/multi_robot_exploration/" + filename]
                  for filename in ("mr3_seed_certificate.py", "mr3_reach_geometry.py")}
         proof.update(legacy.verify_frozen_pins(root, freeze, extra, "exact seed certificate dependencies"))
+    if start_graph_rule == POINT_START_GRAPH_RULE:
+        relative = ROS + "src/multi_robot_exploration/multi_robot_exploration/mr3_point_graph.py"
+        legacy.require(source_bindings[relative] == POINT_GRAPH_HELPER_SHA256,
+                       "point graph helper differs from the declared V37 implementation")
+        proof.update(legacy.verify_frozen_pins(root, freeze, {relative: POINT_GRAPH_HELPER_SHA256},
+                                             "point graph attachment dependency"))
     _,sensor_projection = audit_reach_sensor_model.load_spawn_impl()
     audit_reach_sensor_model.attach_native_gate(phase,root,freeze)
     proof.update(source_proof)
@@ -221,6 +263,9 @@ def _load_versioned_native_gates(root, freeze, source_proof, source_bindings, cu
         "old_profile_qualification_credit_reused": False}
     if seed_rule != "legacy":
         proof["reach_dispatch"]["seed_rule"] = seed_rule
-        proof["reach_dispatch"]["candidate_rule_version"] = EXACT_SEED_VERSIONS[seed_rule]
+        proof["reach_dispatch"]["candidate_rule_version"] = candidate_version_for_rules(seed_rule, start_graph_rule)
         proof["reach_dispatch"]["protocol_reader_projection"] = protocol_projection
+    if start_graph_rule != "original-seed-cell":
+        proof["reach_dispatch"]["start_graph_rule"] = start_graph_rule
+        proof["reach_dispatch"]["original_seed_cell_admission_replaced"] = True
     return phase, base, auditor, command, scalar, proof

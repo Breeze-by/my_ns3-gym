@@ -101,6 +101,8 @@ class SeedV2CompatibilityTests(unittest.TestCase):
                 summary = self.helper().seed_probe_summary()
                 summary["activity_kind"] = summary["activity_spec"]["kind"] = kind
                 summary["seed_rule"] = rule
+                if kind == audit.POINT_GRAPH_KIND:
+                    summary["start_graph_rule"] = audit.POINT_START_GRAPH
                 selected = audit._activity_contract(summary)
                 self.assertEqual(selected["group_wall_seconds"], [900])
                 self.assertEqual((selected["steps_per_episode"], selected["max_attempts"], selected["activity_seconds"]),

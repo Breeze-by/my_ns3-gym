@@ -28,7 +28,8 @@ from types import ModuleType
 import numpy as np
 
 from .audit_proxy2d import (PureBuilder, canonical, parse, require, tensor_proofs, ROOT, PURE,
-                            EXACT_SEED_RULE, EXACT_SEED_RULES, actor_record)
+                            EXACT_SEED_RULE, EXACT_SEED_RULES, EXACT_SEED_RULE_V2, actor_record,
+                            ORIGINAL_START_GRAPH, POINT_START_GRAPH, check_start_graph_rule)
 from .proxy2d_codec import encode_arrays
 
 
@@ -40,10 +41,131 @@ ROBOTS = ("tb1", "tb2", "tb3")
 COMPOSITION = "mr3-own-known-shared-unknown-v1"
 ERRORS = (OSError, ValueError, TypeError, KeyError, IndexError, RuntimeError,
           AssertionError, OverflowError, subprocess.SubprocessError, EOFError)
+POINT_GRAPH_CASES = ("free_centre", "occupied_containing_cell", "unknown_containing_cell",
+                     "binary_boundary", "near_exterior", "blocked_local_window")
 
 
 def sha(raw):
     return hashlib.sha256(raw).hexdigest()
+
+
+def point_graph_parameters(case_id):
+    """Six fixed artificial received-input cases; no scene, sensor or truth."""
+    require(case_id in POINT_GRAPH_CASES, "unknown point graph conformity case")
+    epoch, now = "synthetic-point-graph-" + case_id, 1.0
+    grid = np.zeros((24, 24), dtype=np.int16)
+    grid[[0, -1], :] = -1
+    grid[:, [0, -1]] = -1
+    robots, maps = [], {}
+    for index, name in enumerate(ROBOTS):
+        x, y = (-.6, 0., .6)[index], .05
+        received = grid.copy()
+        if case_id in ("occupied_containing_cell", "unknown_containing_cell"):
+            # A fixed block surrounds every possible binary-floor variant.
+            col = (5, 11, 17)[index]
+            received[11:14, col:col + 3] = 100 if case_id == "occupied_containing_cell" else -1
+        elif case_id == "binary_boundary":
+            x = (-.3, .3, .7)[index]
+        elif case_id == "near_exterior":
+            x, y = -1.15, (-.6, 0., .6)[index]
+        elif case_id == "blocked_local_window":
+            received.fill(100)
+            received[10:15, 10:15] = 0
+            x, y = .05, .05
+        robots.append({"name": name, "x": x, "y": y, "yaw": 0., "v": 0., "w": 0.,
+            "valid": True, "epoch": epoch, "sequence": 1,
+            "source_stamp": now, "received_stamp": now, "history": [],
+            "navigation": {"phase": "idle", "sequence": 1, "source_stamp": now,
+                           "received_stamp": now}})
+        maps[name] = {"grid": received, "resolution": .1, "origin": [-1.2, -1.2],
+            "epoch": epoch, "sequence": 1, "version": case_id + ":" + name,
+            "source_stamp": now, "received_stamp": now,
+            "payload_sha256": sha(received.tobytes(order="C")), "composition_version": COMPOSITION}
+    return {"raw_grid": grid, "resolution": .1, "origin": [-1.2, -1.2], "robots": robots,
+        "now": now, "epoch": epoch, "map_version": 1 + POINT_GRAPH_CASES.index(case_id), "sequence": 1,
+        "map_source_stamp": now, "map_received_stamp": now, "map_sources": {}, "task_start": 0.,
+        "robot_maps": copy.deepcopy(maps), "navigation_maps": maps, "seed_rule": EXACT_SEED_RULE_V2}
+
+
+def point_graph_source_bindings(freeze):
+    require(type(freeze) is str and re.fullmatch(r"[0-9a-f]{40}", freeze), "exact current freeze required")
+    paths = (Path(__file__), Path(__file__).with_name("audit_proxy2d.py"),
+             Path(__file__).with_name("observation.py"), Path(__file__).with_name("proxy2d_codec.py"),
+             *(PURE / name for name in ("mr3_observation.py", "mr3_episode.py", "mr3_reach_geometry.py",
+                                       "mr3_seed_certificate.py", "mr3_point_graph.py")))
+    proof, stable = {}, {}
+    for path in paths:
+        raw = path.read_bytes()
+        relative = path.relative_to(ROOT).as_posix()
+        require(raw == subprocess.check_output(["git", "show", freeze + ":" + relative], cwd=ROOT),
+                "point graph conformity source differs from freeze: " + relative)
+        proof[relative] = {"sha256": sha(raw), "bytes": len(raw), "git_source": freeze + ":" + relative}
+        stable[path] = raw
+    return proof, stable
+
+
+def run_point_graph(freeze, output):
+    """New artificial-only interface evidence; never read historical inputs."""
+    output = Path(output).resolve()
+    require(not output.exists(), "exclusive conformity output required")
+    proof, stable = point_graph_source_bindings(freeze)
+    result = {"schema": "mr3-proxy2d-point-graph-conformity-v1", "freeze": freeze,
+        "seed_rule": EXACT_SEED_RULE_V2, "start_graph_rule": POINT_START_GRAPH,
+        "passed": False, "errors": [], "source_proof": proof, "pair_records": [],
+        "native_records": [], "native_reference_checked": False, "world_created": False,
+        "qualification": False, "training_eligible": False, "native_credit": False,
+        "policy_calls": 0, "gpu_calls": 0, "optimizer_steps": 0,
+        "scope": "six fixed artificial received-input pairs; complete original/new snapshot and tensor interface only"}
+    builder = None
+    try:
+        directory = output.with_suffix(".pairs")
+        directory.mkdir(parents=True, exist_ok=False)
+        builder = PureBuilder()
+        for case_id in POINT_GRAPH_CASES:
+            params = point_graph_parameters(case_id)
+            modes = []
+            for start_rule in (ORIGINAL_START_GRAPH, POINT_START_GRAPH):
+                current = copy.deepcopy(params)
+                if start_rule == POINT_START_GRAPH:
+                    current["start_graph_rule"] = start_rule
+                case_directory = directory / case_id / start_rule
+                (case_directory / "inputs").mkdir(parents=True, exist_ok=False)
+                encoded = canonical(encode_arrays(current))
+                relative = "inputs/" + sha(encoded) + ".json.gz"
+                input_path = case_directory / relative
+                input_raw = gzip.compress(encoded, compresslevel=1, mtime=0)
+                input_path.write_bytes(input_raw)
+                stable[input_path] = input_raw
+                snapshot = builder(**current)
+                row = {"epoch": current["epoch"], "snapshot": snapshot,
+                       "tensor_proofs": tensor_proofs(snapshot),
+                       "actor_input_ref": {"path": relative, "sha256": sha(encoded)}}
+                body = canonical(row)
+                record_path = case_directory / "actor.json"
+                record_path.write_bytes(body)
+                stable[record_path] = body
+                modes.append({"start_graph_rule": start_rule,
+                    "actor_record_ref": {"path": str(record_path), "sha256": sha(body), "bytes": len(body)},
+                    "input_ref": {"path": str(input_path), "sha256": sha(input_raw), "bytes": len(input_raw)},
+                    "snapshot_canonical_sha256": sha(canonical(snapshot)), "tensor_proofs": row["tensor_proofs"]})
+            result["pair_records"].append({"id": case_id, "modes": modes})
+        require(len(result["pair_records"]) == 6, "artificial pair coverage incomplete")
+    except ERRORS as error:
+        result["errors"].append(str(error))
+    finally:
+        if builder is not None:
+            try:
+                result["pure_builder_actual_wait"] = builder.close()
+            except ERRORS as error:
+                result["errors"].append("pure builder close: " + str(error))
+    result["input_bytes_unchanged"] = all(path.read_bytes() == raw for path, raw in stable.items())
+    if not result["input_bytes_unchanged"]:
+        result["errors"].append("artificial inputs or source changed")
+    result["passed"] = not result["errors"]
+    with output.open("x") as stream:
+        json.dump(result, stream, indent=2, allow_nan=False)
+        stream.write("\n")
+    return result
 
 
 def source_bindings(freeze, seed_rule="legacy"):
@@ -524,10 +646,16 @@ def main(argv=None):
     parser.add_argument("--native-inventory", type=Path, default=NATIVE_ASSETS / "native_inventory_v1.json")
     parser.add_argument("--synthetic-cases", action="store_true")
     parser.add_argument("--seed-rule", choices=("legacy", *EXACT_SEED_RULES), default="legacy")
+    parser.add_argument("--start-graph-rule", choices=(ORIGINAL_START_GRAPH, POINT_START_GRAPH),
+                        default=ORIGINAL_START_GRAPH)
     parser.add_argument("--output", required=True, type=Path)
     args = parser.parse_args(argv)
     require(not args.output.exists(), "exclusive conformity output required")
-    if args.synthetic_cases:
+    check_start_graph_rule(args.seed_rule, args.start_graph_rule)
+    if args.start_graph_rule == POINT_START_GRAPH:
+        require(not args.synthetic_cases, "point graph pairs use their own artificial-only entry")
+        result = run_point_graph(args.freeze, args.output)
+    elif args.synthetic_cases:
         proof, stable = source_bindings(args.freeze, args.seed_rule)
         result = synthetic_cases(args.output.with_suffix(".inputs"), args.seed_rule)
         require(all(path.read_bytes() == raw for path, raw in stable.items()), "synthetic source changed")

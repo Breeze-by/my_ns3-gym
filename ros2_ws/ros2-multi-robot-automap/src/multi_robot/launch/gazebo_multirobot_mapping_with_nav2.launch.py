@@ -567,6 +567,11 @@ def launch_setup(context, *args, **kwargs):
         raise ValueError("mr3_seed_rule must be legacy, exact-point-bridge-v1 or exact-point-bridge-v2")
     if seed_rule != "legacy" and not (adapter_mode and stepped_mode and robot_count == 3):
         raise ValueError("exact-point-bridge rules require stepped three-robot adapter mode")
+    start_graph_rule = LaunchConfiguration("mr3_start_graph_rule").perform(context)
+    if (type(start_graph_rule) is not str or start_graph_rule not in
+            ("original-seed-cell", "point-attachment-3x3-v1")
+            or (start_graph_rule == "point-attachment-3x3-v1" and seed_rule != "exact-point-bridge-v2")):
+        raise ValueError("invalid mr3_seed_rule/mr3_start_graph_rule pair")
     training_reward = IfCondition(LaunchConfiguration("training_reward_enabled")).evaluate(context)
     terminal_probe = IfCondition(LaunchConfiguration("training_terminal_probe")).evaluate(context)
     plant_stimulus_arm = LaunchConfiguration("mr3_plant_stimulus_arm").perform(context)
@@ -755,6 +760,8 @@ def launch_setup(context, *args, **kwargs):
                 **({"episode_epoch": episode_epoch, "stepped_mode": stepped_mode,
                     "audit_path": LaunchConfiguration("mr3_audit_path")} if adapter_mode else {}),
                 **({"seed_rule": seed_rule} if adapter_mode and seed_rule != "legacy" else {}),
+                **({"start_graph_rule": start_graph_rule}
+                   if adapter_mode and start_graph_rule != "original-seed-cell" else {}),
             }
         ],
         output="screen",
@@ -1312,6 +1319,11 @@ def generate_launch_description():
         "mr3_seed_rule", default_value="legacy",
         description="Explicit candidate seed certificate: legacy, exact-point-bridge-v1 or exact-point-bridge-v2; "
                     "the exact rule requires the stepped three-robot adapter.",
+    ))
+    ld.add_action(DeclareLaunchArgument(
+        "mr3_start_graph_rule", default_value="original-seed-cell",
+        description="Explicit point-attachment-3x3-v1 start graph requires exact-point-bridge-v2; "
+                    "the original seed-cell admission remains the default.",
     ))
     ld.add_action(DeclareLaunchArgument(
         "training_reward_enabled", default_value="false",

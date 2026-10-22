@@ -24,6 +24,19 @@ FREEZE = "a"*40
 
 
 class ReachTrainingAdmissionTests(unittest.TestCase):
+    def test_point_graph_ppo_cannot_borrow_an_original_v2_qualification(self):
+        a,b,c,d,e,f,g=self.guards()
+        with a as mkdir,b as native,c as model,d as resources,e as threads,f as deterministic,g as gpu, \
+                patch.object(ppo.subprocess,'check_output',return_value=FREEZE), \
+                patch.object(qualification,'validate_qualification',return_value={'passed':True}), \
+                patch.object(qualification,'load_plan',return_value={'seed_rule':'exact-point-bridge-v2'}), \
+                contextlib.redirect_stderr(io.StringIO()),self.assertRaises(SystemExit) as error:
+            ppo.main([*self.arguments('/unused'),'--reach-plan','/unused/plan',
+                      '--reach-qualification','/unused/qualification','--seed-rule','exact-point-bridge-v2',
+                      '--start-graph-rule','point-attachment-3x3-v1'])
+        self.assertEqual(error.exception.code,2)
+        for operation in (mkdir,native,model,resources,threads,deterministic,gpu):operation.assert_not_called()
+
     def test_exact_seed_rule_cannot_bypass_native_qualification_through_legacy(self):
         a,b,c,d,e,f,g=self.guards()
         with a as mkdir,b as native,c as model,d as resources,e as threads,f as deterministic,g as gpu, \
