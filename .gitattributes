@@ -147,3 +147,13 @@ ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/2026
 
 # V44 failed preflight canonical console preserves original bytes.
 ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v44_support_native/closed_execution/preflight_wait/console.log -text -whitespace
+
+# V45 tested CPU consoles and source recovery snapshots preserve exact bytes.
+ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v45_preparation_classification/checks/classification_cpu_v1/console.log -text -whitespace
+ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v45_preparation_classification/checks/classification_cpu_v2/console.log -text -whitespace
+ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v45_preparation_classification/checks/prepare_plan_cpu_v1/console.log -text -whitespace
+ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v45_preparation_classification/checks/plan_check_cpu_v1/console.log -text -whitespace
+ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v45_preparation_classification/checks/source_snapshots/** -text -whitespace
+ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v45_preparation_classification/preflight_v1.py -text whitespace=blank-at-eol,space-before-tab,-blank-at-eof
+ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v45_preparation_classification/prepare_plan_v1.py -text whitespace=blank-at-eol,space-before-tab,-blank-at-eof
+ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v45_preparation_classification/classification_admission_v1.py -text whitespace=blank-at-eol,space-before-tab,-blank-at-eof

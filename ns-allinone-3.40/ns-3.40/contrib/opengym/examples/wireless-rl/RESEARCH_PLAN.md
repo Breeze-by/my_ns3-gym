@@ -1,5 +1,7 @@
 # MR3 研究路线：三机器人 RL 联合建图与冻结策略的 Wi-Fi 网络影响
 
+2026-10-22 V45准备：只修CPU证明分类，显式纳全部ROS test_*.py；生产数学/执行/learner源码不变。逐源相等复用V44五组746人工CPU及双环境readiness（原schema/index/IDs保留），新6项分类回归v1/v2均PASS、按6项重验计；严格v2实际argv/wait/5准入源绑定及plan检查PASS。846source/10ELF、30角色/12EP/三policy已封存，尚未newnative/PPO，待新freeze完整链。CPU工程0，仍50048.2440707956018/75000、余24951.7559292043982，预约20900；pilot/final和V44实际FAIL保持，用户自主授权继续，P2A未完成。见[V45](report/20261022_mr3_p2a_v45_preparation_classification.md)。
+
 2026-10-22 V44闭合FAIL：freeze8b678c631cb5f7dfc1ba1174882e765d4672ab26仅实际preflight失败、driver rc1/0完成stage，未启动matrix/World/native/PPO。3个新增ROS测试提交后进入动态source_inventory，CPU proof分类计数增3导致整体比对拒绝，生产SHA不变；746人工CPU和原数学PASS保持，严格来源门不放松。5原件/677367B无损封存，独立关闭review PASS/3保存身份freshgone。parent实费7.010229336秒（inner6.004885052包含不叠加），累计50048.2440707956018/75000、余24951.7559292043982；pilot/final不动，P2A未完成。用户自主授权继续，下一V45只修稳定分类/人工回归，再新freeze完整资格链。见[V44闭合](report/20261022_mr3_p2a_v44_support_native.md)。
 
 2026-10-22 V44准备：显式cone-support-v2生产/learner/独立reader全链接线已完成；第二轮746人工CPU（geometry523/learner202/reader12/snapshot9）及双环境readiness全部PASS、各组真实wait/source稳定，首轮fixture失败保留。独立数学接线与入口静态审查通过，830源码/10ELF及12EP/30角色/三policy封存检查PASS，待新freeze完整native资格→minimum→pilot→final；CPU不供原生/学习信用。工程新增0，仍50041.2338414596018/75000、余24958.7661585403982；本活动预约20900，pilot/final余额与95%/安全门保持。用户自主授权继续，P2A未完成。见[V44](report/20261022_mr3_p2a_v44_support_native.md)。

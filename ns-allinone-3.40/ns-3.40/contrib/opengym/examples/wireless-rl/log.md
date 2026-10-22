@@ -8517,3 +8517,12 @@ V44计划实际收口：同一外层命令NAME=prepare_plan_cpu_v1，child2.2069
 V44 canonical封存：[closed_inventory_v1.json](report/assets/20261022_mr3_p2a_v44_support_native/closed_inventory_v1.json)记录5份原件/677367B，逐字副本位于A44/closed_execution/{driver,preflight_wait}/，源stat稳定、每项SHA相等，原/tmp成果和计划/CPU回执未覆盖；纯字节包装0工程费，原preflight FAIL不改。[独立关闭review](report/assets/20261022_mr3_p2a_v44_support_native/independent_closed_review_v1.json)PASS：841 outer源/ELF beforeafter/current相等，830repo源＋plan共831项与Git8b678c631冻结相等；driver/wrapper/child三保存PID/start freshgone（Z计存在），无未保存父身份推断。
 
 V44静态review原件补充：[final_plan_review.json](report/assets/20261022_mr3_p2a_v44_support_native/final_plan_review.json)最初把全部auxiliary都要求required而误报reset；[final_plan_review_v2.json](report/assets/20261022_mr3_p2a_v44_support_native/final_plan_review_v2.json)按历史辅助physical_per_episode与必要physics聚合关系纠正后PASS，未改source/plan，两个原件均保留。静态review不执行post-freeze preflight，不覆盖实际FAIL或提供native/训练信用；本轮最终仅parent7.010229336秒，3保存身份gone、0pilot/final。
+
+
+## 2026-10-22 MR3 P2A V45：准备证明稳定分类人工回归及计划
+
+基线为V44闭合提交ff75bc75b；仅新A45准备层显式纳全部ROS test_*.py及严格分类回归准入，生产数学/执行/learner源码不变，V44前检FAIL不重判。复用V44 exact-current-source五组746人工CPU及双环境readiness，原v44 schema/index/IDs保持；本轮未重跑这746项，无新增native信用。
+
+cwd=canonical wireless-rl；实际外层命令为`rtk proxy env PYTHONNOUSERSITE=1 /usr/bin/python3 -B report/assets/20261022_mr3_p2a_v45_preparation_classification/cpu_driver_v1.py NAME`，NAME依次classification_cpu_v1、classification_cpu_v2、prepare_plan_cpu_v1、plan_check_cpu_v1。分类child实际argv为`/home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m pytest -q ABS_A45/test_preparation_classification_v1.py`；v1六项PASS/5.273681813秒，严格actualargv/wait与5准入源绑定加入后v2同六项重验PASS/5.099110667秒，不能叠为12项独立检查。prepare实际PASS/2.33828766秒，846sources/10ELF/3policy；plancheck实际PASS/.360798041秒，四native stage/12EP/30必要角色/三policy。四次均rc0/source稳定，人工CPU工程0；实际argv、console、source recovery与快照保留在[A45 checks](report/assets/20261022_mr3_p2a_v45_preparation_classification/checks)。
+
+最终planSHA0964c074510e0601d23b33b5493e71e6dd95e945adb24dda621649d76f1bd8b5，bindingSHAcd71046df7d14c2cff3f8843854b611f136b51e8e395fd4c6428cafaa0bb8aab。尚无V45World/native/PPO，累计50048.2440707956018/75000、余24951.7559292043982，本活动工程预约20900；pilot1870/2905.9547395464029及final-only401/402/403额度未动。下一次新commit/push精确freeze后实际preflight→完整native资格→minimum→pilot→final逐门放行，所有95%/安全/source门保持。用户自主持续授权有效，P2A未完成。见[V45报告](report/20261022_mr3_p2a_v45_preparation_classification.md)。
