@@ -1,5 +1,7 @@
 # 报告与证据适用范围
 
+2026-10-22 V43禁用几何原型闭合：support候选＋原geometry共124人工CPU PASS，真实wait5.698039134秒、11源前后稳定；独立逐行数学review PASS/无未解阻断，旧cf46源逐字保留。新算法只提供原Reach集合下的条件充分分离，非旧门恒等替换，无native/plant/学习/95%信用，旧FAIL不改。工程新增0，仍50041.2338414596018/75000、余24958.7661585403982；用户自主授权继续，下一步V44显式cone-support-v2全链接线/独立重放/新freeze资格，默认binary-cone-v1与原intent/任务安全门保持，P2A未完成。见[V43](20261022_mr3_p2a_v43_support_geometry.md)。
+
 2026-10-22 V42描述提取闭合PASS：执行freeze f96b9801957a80b22bf9096df3691173961ef417，对V41闭合interface固定9文件完整读517060271B，1617选行；4项selection drop保留，不能声称完整plant窗口。全task reach日志显示tb3的1602条判据中1280次正v请求均被输出为0，reason计数379 linear_brake_preserve_requested_turn/855 reach_transition_envelope；不重裁原FAIL。scope15源、outer16含scope稳定，3保存身份freshgone；5有限原件/3205464B逐字封存。parent实费27.535294547秒，累计50041.2338414596018/75000、余24958.7661585403982。环境隔离最终27人工CPU PASS（两轮失败保留），尚无新native资格；下一步禁用cone-support数学helper CPU，不接生产/重跑矩阵；P2A未完成，pilot/final不动，自主续接无需再审批。见[V42闭合](20261022_mr3_p2a_v42_native_diagnosis.md)。
 
 2026-10-22 V42预声明：V41闭合FAIL/61身份gone与原费保持；下一次仅对已闭合interface/open101的固定9文件作一次有界描述提取，≤1GiB输入/2200选行/4MiB输出，内部580秒、parent600＋外尾60＝660秒，预约在原800准备块余761.736133391内。15源及语法/路径静态准备通过，system reader/conda learner隔离修复正做CPU准备、尚未测试；待新commit/push精确freeze后执行，不重验原物理结论、不读map blobs/启动World或学习。工程仍50013.6985469126018/75000、余24986.3014530873982；pilot/final不动，P2A未完成，用户自主续接授权有效，无需再次审批。见[V42](20261022_mr3_p2a_v42_native_diagnosis.md)。
@@ -56,6 +58,7 @@
 
 | 文件 | 用途 | 能提供的信用 |
 | --- | --- | --- |
+| [P2A V43 禁用support几何原型](20261022_mr3_p2a_v43_support_geometry.md) | 124人工CPU/11源稳定与独立条件分离数学review PASS，cf46原源不改 | 工程0、余24958.7661585403982；无native/plant/PPO信用，下一步V44显式规则接线及新freeze资格 |
 | [P2A V42 闭合原件有限诊断](20261022_mr3_p2a_v42_native_diagnosis.md) | 固定9文件描述提取PASS但4项选行drop保留；system reader隔离最终27人工CPU PASS、两次失败保留 | 描述/封存/3身份闭合PASS，实费27.535294547秒、余24958.7661585403982；不改V41 FAIL或授予新native/学习资格 |
 | [P2A V41 原生来源门续接](20261022_mr3_p2a_v41_packing_gate.md) | packing真实preflight、interface32/32/custody/input/angular PASS；physics停止覆盖与conda full环境FAIL | 四parent实费1731.301983102秒、工程余24986.3014530873982；后继全部SKIPPED/0学习，无完整native资格或P2A信用 |
 | [P2A V36 实际点接图候选](20261022_mr3_p2a_v36_point_graph.md) | 禁用固定3×3全桥原型40人工CPU、同冻结已知两帧/6机开发计算 | PASS：38anchors，tb3原格false但2/4邻节点可接；1.824187839秒/5身份gone，无生产或资格 |

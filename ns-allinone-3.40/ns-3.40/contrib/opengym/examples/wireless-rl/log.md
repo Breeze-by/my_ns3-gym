@@ -8477,3 +8477,12 @@ V41 evidence freeze47224c51c1c525c55093dce26b374d1ccb07eb06原FAIL/61身份gone/
 system_bridge_cpu_v1 27 tests中一项新fixture消息缺prefix预期导致FAIL，真实child10.022599394秒；修expect时v2保留IndentationError、真实.11785947秒；修复后v3 27 tests全部PASS、真实10.164193406秒。三组source recovery/快照与实际wait均留原件，CPU0工程，不把重复三轮叠为81个独立检查。真实system child人工1snapshot/7map重建PASS，system NumPy1.21.5/SciPy1.8.0；conda parent保持NumPy2.2.6且无SciPy，不混装依赖或读V41原trace。
 
 本轮人工CPU不能追认V41 FAIL/新native资格，full/PPO合取及科学门不变。工程仍50041.2338414596018/75000、余24958.7661585403982，pilot/final不动。后续新source实际资格仍须新freeze；先做禁用同reach cone-support数学helper CPU，不接生产/重跑完整矩阵，不重复一般批准，P2A未完成。见[V42报告](report/20261022_mr3_p2a_v42_native_diagnosis.md)。
+
+
+### 2026-10-22 MR3 P2A V43 禁用support几何人工CPU/数学闭合
+
+源码基线02ceec45efff1cb4de85779e07abe4d41d530243；新candidate/test/derivation/runner以source recovery快照锁定，不冒称旧Git原生资格。原cf46b49f0740f84511f3d34f9a8eb3e56720744515d9eea1dc81bd8bacb85f0a geometry逐字保留，prototype profile=mr3-reach-reported-line-support-disabled-cpu-v1，production_enabled=false。
+
+实际child argv（cwd=wireless-rl）为`/usr/bin/bash --noprofile --norc -e -c 'source /opt/ros/humble/setup.bash && source /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/setup.bash && exec /usr/bin/python3 -B -m pytest -q /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v43_support_geometry/test_support_prototype_v1.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_reach_geometry.py'`。[实际wait](report/assets/20261022_mr3_p2a_v43_support_geometry/checks/support_geometry_cpu_v1/actual_wait.json)/console共124 passed，child5.698039134秒rc0，11source前后稳定，CPU工程0。[独立逐行mathreview](report/assets/20261022_mr3_p2a_v43_support_geometry/independent_math_review_v1.json)PASS、blocking_findings=[]，未运行consumer/测试或读原trace，核同Reach集合的条件充分分离、完整U/reserve/两frame及旧PASS蕴含。
+
+无World/plant/native/PPO/95%信用，原FAIL保持；累计50041.2338414596018/75000、余24958.7661585403982，pilot/final不动。用户自主持续授权有效，下一步V44显式cone-support-v2接线/独立重放与新freeze必要原生资格，默认binary-cone-v1/旧cf46/intent及任务安全门不改；不据此直接训练或追认V41。见[V43闭合](report/20261022_mr3_p2a_v43_support_geometry.md)。

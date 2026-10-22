@@ -1,0 +1,310 @@
+{
+  "schema": "mr3-reach-outer-actual-wait-v1",
+  "scope": "cpu",
+  "safety_contract": "mr3-reach-v1",
+  "actual_argv": [
+    "/usr/bin/bash",
+    "--noprofile",
+    "--norc",
+    "-e",
+    "-c",
+    "source /opt/ros/humble/setup.bash && source /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/setup.bash && exec /usr/bin/python3 -B -m pytest -q /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v43_support_geometry/test_support_prototype_v1.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_reach_geometry.py"
+  ],
+  "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+  "coordinator_identity": {
+    "pid": 3629516,
+    "parent": 3629501,
+    "group": 3629499,
+    "session": 3629499,
+    "start_ticks": 441645671,
+    "state": "R"
+  },
+  "child_identity": {
+    "pid": 3629518,
+    "parent": 3629516,
+    "group": 3629499,
+    "session": 3629499,
+    "start_ticks": 441645686,
+    "state": "R"
+  },
+  "actual_returncode": 0,
+  "actual_waited": true,
+  "errors": [],
+  "started_monotonic_ns": 4416456868702946,
+  "ended_monotonic_ns": 4416462566742080,
+  "actual_child_wait_seconds": "5.698039134",
+  "source_before": [
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/__init__.py",
+      "sha256": "1ed62607abac81c63a25c885a23a52f0152d279db480f5c270abea3da55564ef",
+      "bytes": 82,
+      "stat": [
+        2051,
+        73560413,
+        82,
+        1792050860998054894,
+        1792050860998054894
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/native_custody.py",
+      "sha256": "4edcdb6b33105e274c1c908c9d78e8c5d24461ff6733ed0f976e41bad3f2d928",
+      "bytes": 56281,
+      "stat": [
+        2051,
+        73556846,
+        56281,
+        1792349435094441642,
+        1792349435094441642
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/preparation.py",
+      "sha256": "850ab8947f711033f3f2fd17ef57d32098c02d569c1bea0f5cf58aaff8acd767",
+      "bytes": 48624,
+      "stat": [
+        2051,
+        73555357,
+        48624,
+        1792356507880208492,
+        1792356507880208492
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_execution.py",
+      "sha256": "fa7da30bf18a71a7a28698f733590074bdf164c8857028640aedba5d21fd8be4",
+      "bytes": 3222,
+      "stat": [
+        2051,
+        73564000,
+        3222,
+        1792417215752109946,
+        1792417215752109946
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v43_support_geometry/cpu_driver_v1.py",
+      "sha256": "d6ea5693bf63f2e4f2daa094efec7001b8f2dbd8562544a2086f3f6b7b31a129",
+      "bytes": 3409,
+      "stat": [
+        2051,
+        79173144,
+        3409,
+        1792671060691286267,
+        1792671060691286267
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v43_support_geometry/derivation_v1.md",
+      "sha256": "68e9ccedc5c30c1054662ee0d532fc7c7ee4204f3d831f21e53c7928965b7542",
+      "bytes": 7010,
+      "stat": [
+        2051,
+        79173142,
+        7010,
+        1792670987026812313,
+        1792670987026812313
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v43_support_geometry/support_prototype_v1.py",
+      "sha256": "6a586b69c4649955fc06d4b94379b245c6c5602f6b51a2de1b778fe56636ccc6",
+      "bytes": 10252,
+      "stat": [
+        2051,
+        79173140,
+        10252,
+        1792670987017812133,
+        1792670987017812133
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v43_support_geometry/test_support_prototype_v1.py",
+      "sha256": "28719f34e7348a8de4c04cf1642c400ca679d17aba22cd322dbc0b3083b476ae",
+      "bytes": 13228,
+      "stat": [
+        2051,
+        79173141,
+        13228,
+        1792670987025812293,
+        1792670987025812293
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "stat": [
+        2051,
+        70259822,
+        0,
+        1788341181225816490,
+        1788341181225816490
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_reach_geometry.py",
+      "sha256": "cf46b49f0740f84511f3d34f9a8eb3e56720744515d9eea1dc81bd8bacb85f0a",
+      "bytes": 9878,
+      "stat": [
+        2051,
+        70311967,
+        9878,
+        1792411707315048438,
+        1792411707315048438
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_reach_geometry.py",
+      "sha256": "795cb3367bced8151e2781c1e26311756808b344a019f7bddcfb0437db12159f",
+      "bytes": 5984,
+      "stat": [
+        2051,
+        70312974,
+        5984,
+        1792410244535029884,
+        1792410244535029884
+      ]
+    }
+  ],
+  "source_after": [
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/__init__.py",
+      "sha256": "1ed62607abac81c63a25c885a23a52f0152d279db480f5c270abea3da55564ef",
+      "bytes": 82,
+      "stat": [
+        2051,
+        73560413,
+        82,
+        1792050860998054894,
+        1792050860998054894
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/native_custody.py",
+      "sha256": "4edcdb6b33105e274c1c908c9d78e8c5d24461ff6733ed0f976e41bad3f2d928",
+      "bytes": 56281,
+      "stat": [
+        2051,
+        73556846,
+        56281,
+        1792349435094441642,
+        1792349435094441642
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/preparation.py",
+      "sha256": "850ab8947f711033f3f2fd17ef57d32098c02d569c1bea0f5cf58aaff8acd767",
+      "bytes": 48624,
+      "stat": [
+        2051,
+        73555357,
+        48624,
+        1792356507880208492,
+        1792356507880208492
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_execution.py",
+      "sha256": "fa7da30bf18a71a7a28698f733590074bdf164c8857028640aedba5d21fd8be4",
+      "bytes": 3222,
+      "stat": [
+        2051,
+        73564000,
+        3222,
+        1792417215752109946,
+        1792417215752109946
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v43_support_geometry/cpu_driver_v1.py",
+      "sha256": "d6ea5693bf63f2e4f2daa094efec7001b8f2dbd8562544a2086f3f6b7b31a129",
+      "bytes": 3409,
+      "stat": [
+        2051,
+        79173144,
+        3409,
+        1792671060691286267,
+        1792671060691286267
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v43_support_geometry/derivation_v1.md",
+      "sha256": "68e9ccedc5c30c1054662ee0d532fc7c7ee4204f3d831f21e53c7928965b7542",
+      "bytes": 7010,
+      "stat": [
+        2051,
+        79173142,
+        7010,
+        1792670987026812313,
+        1792670987026812313
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v43_support_geometry/support_prototype_v1.py",
+      "sha256": "6a586b69c4649955fc06d4b94379b245c6c5602f6b51a2de1b778fe56636ccc6",
+      "bytes": 10252,
+      "stat": [
+        2051,
+        79173140,
+        10252,
+        1792670987017812133,
+        1792670987017812133
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v43_support_geometry/test_support_prototype_v1.py",
+      "sha256": "28719f34e7348a8de4c04cf1642c400ca679d17aba22cd322dbc0b3083b476ae",
+      "bytes": 13228,
+      "stat": [
+        2051,
+        79173141,
+        13228,
+        1792670987025812293,
+        1792670987025812293
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "stat": [
+        2051,
+        70259822,
+        0,
+        1788341181225816490,
+        1788341181225816490
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_reach_geometry.py",
+      "sha256": "cf46b49f0740f84511f3d34f9a8eb3e56720744515d9eea1dc81bd8bacb85f0a",
+      "bytes": 9878,
+      "stat": [
+        2051,
+        70311967,
+        9878,
+        1792411707315048438,
+        1792411707315048438
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_reach_geometry.py",
+      "sha256": "795cb3367bced8151e2781c1e26311756808b344a019f7bddcfb0437db12159f",
+      "bytes": 5984,
+      "stat": [
+        2051,
+        70312974,
+        5984,
+        1792410244535029884,
+        1792410244535029884
+      ]
+    }
+  ],
+  "source_unchanged": true,
+  "passed": true,
+  "console": {
+    "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v43_support_geometry/checks/support_geometry_cpu_v1/console.log",
+    "sha256": "19c11959f34248da3498c308ab3d3d14155a354ce62b292c03c1e661a48a0b72"
+  }
+}

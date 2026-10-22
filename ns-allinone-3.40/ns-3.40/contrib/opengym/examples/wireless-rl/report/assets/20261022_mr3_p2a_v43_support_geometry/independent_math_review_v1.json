@@ -1,0 +1,226 @@
+{
+  "schema": "mr3-p2a-v43-independent-math-review-v1",
+  "created_utc": "2026-10-22T12:19:41.979975+00:00",
+  "status": "PASS",
+  "passed": true,
+  "blocking_findings": [],
+  "review_scope": "Read-only line-by-line mathematics/code/test/derivation review of a disabled artificial CPU prototype; file/hash/Git-blob recovery metadata checks only.",
+  "source_baseline": "02ceec45efff1cb4de85779e07abe4d41d530243",
+  "reviewed_artifacts": [
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v43_support_geometry/support_prototype_v1.py",
+      "sha256": "6a586b69c4649955fc06d4b94379b245c6c5602f6b51a2de1b778fe56636ccc6",
+      "bytes": 10252
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v43_support_geometry/test_support_prototype_v1.py",
+      "sha256": "28719f34e7348a8de4c04cf1642c400ca679d17aba22cd322dbc0b3083b476ae",
+      "bytes": 13228
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v43_support_geometry/derivation_v1.md",
+      "sha256": "68e9ccedc5c30c1054662ee0d532fc7c7ee4204f3d831f21e53c7928965b7542",
+      "bytes": 7010
+    }
+  ],
+  "unchanged_reference_geometry": {
+    "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_reach_geometry.py",
+    "sha256": "cf46b49f0740f84511f3d34f9a8eb3e56720744515d9eea1dc81bd8bacb85f0a",
+    "bytes": 9878
+  },
+  "prototype_profile": "mr3-reach-reported-line-support-disabled-cpu-v1",
+  "production_enabled": false,
+  "native_qualification_credit": false,
+  "training_eligible": false,
+  "proof_checks": [
+    {
+      "id": "sqrt_enclosure",
+      "source_lines": [
+        22,
+        36
+      ],
+      "passed": true,
+      "reason": "For s=2^96 and k=isqrt(floor(x*s^2)), k^2<=x*s^2<(k+1)^2. Exact grid roots use equal bounds; otherwise the upper bound is strictly above the root. Positive roots with lower zero cannot enter the division branch."
+    },
+    {
+      "id": "cone_bound_and_zero_branch",
+      "source_lines": [
+        43,
+        100
+      ],
+      "passed": true,
+      "reason": "For dot(a,delta)<0 and certified acute cone, dot*cos_lower+abs(cross)*sin_upper bounds every permitted unnormalized projection. Original nonclosing=True independently proves a robust nonpositive whole-sector support, including its tangent zero special case, so preserving exact zero is safe."
+    },
+    {
+      "id": "norm_and_uncertainty_units",
+      "source_lines": [
+        88,
+        100
+      ],
+      "passed": true,
+      "reason": "The numerator H+U*axis_norm_upper is an upper bound. With a positive numerator, dividing by positive axis/delta norm lower bounds preserves an upper bound. The ratio is dimensionless; the final length is L times that ratio. The additional contribution is approximately L*U/d, while the original full additive U stays outside. Nonpositive numerator is zero before division; cap at one is independently justified by the length-L sector."
+    },
+    {
+      "id": "origin_union_and_unknown_directions",
+      "source_lines": [
+        68,
+        119
+      ],
+      "passed": true,
+      "reason": "Each sector includes radius zero, hence nonnegative support. Multiple possible signs/headings form a union, so their maximum is used. Absent directions preserve the complete L disk; validated Reach buffer/length fields are used unchanged."
+    },
+    {
+      "id": "relative_sign_and_separation",
+      "source_lines": [
+        122,
+        136
+      ],
+      "passed": true,
+      "reason": "For delta=p_right-p_left, left support uses delta and right support uses -delta. Projecting delta+x_right-x_left+position_error on n=delta/|delta| gives the lower bound d-h_left(n)-h_right(-n)-buffers-U. The exact squared comparison against a nonnegative required distance certifies this sufficient declared-set separation condition, including equality; zero delta rejects."
+    },
+    {
+      "id": "hard_gates_and_frames",
+      "source_lines": [
+        139,
+        173
+      ],
+      "passed": true,
+      "reason": "Source ages remain builtin integers in [0,500000000] ns; boolean hard gates/calibration are explicit. Original U=SPEED*sum(ages) is preserved. Map and raw complete frame certificates are separately formed and ANDed without borrowing distance or axes across frames."
+    },
+    {
+      "id": "legacy_pass_implication",
+      "source_lines": [
+        76,
+        119
+      ],
+      "passed": true,
+      "reason": "Every original accepted nonclosing component retains zero. Every remaining component is bounded in [0,L], and union max is at most original retained L. Buffers/U/hard gates and frame conjunction are identical; thus every original PASS remains a new conditional geometric PASS. This does not assert gate equivalence or native permission."
+    },
+    {
+      "id": "fixture_scope_and_constructor",
+      "source_lines": [
+        176,
+        196
+      ],
+      "passed": true,
+      "reason": "The artificial helper preserves phi=(6/5)*(age+39/50), original disk/normal/transition constructors and sign validation. Tests cover units with rational norms, right-normal sign, frames, union, old PASS implication, thresholds, fallbacks and numerical cone checks; the approximate numeric oracle and fixed random search are explicitly implementation bug detectors, not proofs."
+    }
+  ],
+  "source_recovery": {
+    "files": 11,
+    "all_current_receipt_recovered_bytes_equal": true,
+    "checks": [
+      {
+        "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/__init__.py",
+        "sha256": "1ed62607abac81c63a25c885a23a52f0152d279db480f5c270abea3da55564ef",
+        "bytes": 82,
+        "recovery_kind": "git_blob",
+        "current_and_recovered_bytes_equal": true
+      },
+      {
+        "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/native_custody.py",
+        "sha256": "4edcdb6b33105e274c1c908c9d78e8c5d24461ff6733ed0f976e41bad3f2d928",
+        "bytes": 56281,
+        "recovery_kind": "git_blob",
+        "current_and_recovered_bytes_equal": true
+      },
+      {
+        "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/preparation.py",
+        "sha256": "850ab8947f711033f3f2fd17ef57d32098c02d569c1bea0f5cf58aaff8acd767",
+        "bytes": 48624,
+        "recovery_kind": "git_blob",
+        "current_and_recovered_bytes_equal": true
+      },
+      {
+        "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_execution.py",
+        "sha256": "fa7da30bf18a71a7a28698f733590074bdf164c8857028640aedba5d21fd8be4",
+        "bytes": 3222,
+        "recovery_kind": "git_blob",
+        "current_and_recovered_bytes_equal": true
+      },
+      {
+        "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v43_support_geometry/cpu_driver_v1.py",
+        "sha256": "d6ea5693bf63f2e4f2daa094efec7001b8f2dbd8562544a2086f3f6b7b31a129",
+        "bytes": 3409,
+        "recovery_kind": "snapshot",
+        "current_and_recovered_bytes_equal": true
+      },
+      {
+        "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v43_support_geometry/derivation_v1.md",
+        "sha256": "68e9ccedc5c30c1054662ee0d532fc7c7ee4204f3d831f21e53c7928965b7542",
+        "bytes": 7010,
+        "recovery_kind": "snapshot",
+        "current_and_recovered_bytes_equal": true
+      },
+      {
+        "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v43_support_geometry/support_prototype_v1.py",
+        "sha256": "6a586b69c4649955fc06d4b94379b245c6c5602f6b51a2de1b778fe56636ccc6",
+        "bytes": 10252,
+        "recovery_kind": "snapshot",
+        "current_and_recovered_bytes_equal": true
+      },
+      {
+        "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v43_support_geometry/test_support_prototype_v1.py",
+        "sha256": "28719f34e7348a8de4c04cf1642c400ca679d17aba22cd322dbc0b3083b476ae",
+        "bytes": 13228,
+        "recovery_kind": "snapshot",
+        "current_and_recovered_bytes_equal": true
+      },
+      {
+        "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/__init__.py",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0,
+        "recovery_kind": "git_blob",
+        "current_and_recovered_bytes_equal": true
+      },
+      {
+        "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_reach_geometry.py",
+        "sha256": "cf46b49f0740f84511f3d34f9a8eb3e56720744515d9eea1dc81bd8bacb85f0a",
+        "bytes": 9878,
+        "recovery_kind": "git_blob",
+        "current_and_recovered_bytes_equal": true
+      },
+      {
+        "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_reach_geometry.py",
+        "sha256": "795cb3367bced8151e2781c1e26311756808b344a019f7bddcfb0437db12159f",
+        "bytes": 5984,
+        "recovery_kind": "git_blob",
+        "current_and_recovered_bytes_equal": true
+      }
+    ],
+    "index": {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v43_support_geometry/checks/support_geometry_cpu_v1_source_recovery.json",
+      "sha256": "9132908dd33a8114116a806c31056896a59390568a16c2a05ca71e8169245bc1",
+      "bytes": 3997
+    }
+  },
+  "cpu_evidence": {
+    "basis": "Only the root-executed sealed actual-wait receipt and console; independent reviewer did not import or execute the prototype or tests.",
+    "receipt": {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v43_support_geometry/checks/support_geometry_cpu_v1/actual_wait.json",
+      "sha256": "357931a4375a532b9148c43c5fb29a18be44b36a78c8cbc31e8574912e00f9a8",
+      "bytes": 10505
+    },
+    "console": {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v43_support_geometry/checks/support_geometry_cpu_v1/console.log",
+      "sha256": "19c11959f34248da3498c308ab3d3d14155a354ce62b292c03c1e661a48a0b72",
+      "bytes": 180
+    },
+    "recorded_passed_tests": 124,
+    "recorded_actual_wait_seconds": "5.698039134",
+    "source_before_after_equal": true,
+    "recorded_scope": "cpu",
+    "engineering_added_seconds": "0"
+  },
+  "limitations": [
+    "The support comparison is sufficient for separation conditional on the declared Reach sets; it is not an exact distance solver and does not establish a continuous physical model, calibration, delivery, source freshness in a real run or actual mode commitment.",
+    "The prototype is a new scientific admission candidate, not a semantics-preserving replacement of the old binary rule. No old FAIL is changed and no native/95-percent/task/PPO credit is granted.",
+    "The extra directional uncertainty is deliberate additional conservatism. No additive outer U or original 2R/4R buffer is removed.",
+    "No original runtime trace, compressed actor input, real-scene geometry or scientific replay was read or executed for this review.",
+    "Future production use requires an explicit new rule/schema, mutually consistent producer/readers/source registries, new freeze and complete native qualification under unchanged remaining obligations."
+  ],
+  "reviewer_executed_tests": false,
+  "reviewer_executed_consumer": false,
+  "reviewer_started_world_or_node": false,
+  "other_files_modified": false
+}

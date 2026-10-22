@@ -1,5 +1,7 @@
 # MR3 研发检查点与逐步验收
 
+2026-10-22 V43禁用几何原型闭合：support候选＋原geometry共124人工CPU PASS，真实wait5.698039134秒、11源前后稳定；独立逐行数学review PASS/无未解阻断，旧cf46源逐字保留。新算法只提供原Reach集合下的条件充分分离，非旧门恒等替换，无native/plant/学习/95%信用，旧FAIL不改。工程新增0，仍50041.2338414596018/75000、余24958.7661585403982；用户自主授权继续，下一步V44显式cone-support-v2全链接线/独立重放/新freeze资格，默认binary-cone-v1与原intent/任务安全门保持，P2A未完成。见[V43](report/20261022_mr3_p2a_v43_support_geometry.md)。
+
 2026-10-22 V42描述提取闭合PASS：执行freeze f96b9801957a80b22bf9096df3691173961ef417，对V41闭合interface固定9文件完整读517060271B，1617选行；4项selection drop保留，不能声称完整plant窗口。全task reach日志显示tb3的1602条判据中1280次正v请求均被输出为0，reason计数379 linear_brake_preserve_requested_turn/855 reach_transition_envelope；不重裁原FAIL。scope15源、outer16含scope稳定，3保存身份freshgone；5有限原件/3205464B逐字封存。parent实费27.535294547秒，累计50041.2338414596018/75000、余24958.7661585403982。环境隔离最终27人工CPU PASS（两轮失败保留），尚无新native资格；下一步禁用cone-support数学helper CPU，不接生产/重跑矩阵；P2A未完成，pilot/final不动，自主续接无需再审批。见[V42闭合](report/20261022_mr3_p2a_v42_native_diagnosis.md)。
 
 2026-10-22 V42预声明：V41闭合FAIL/61身份gone与原费保持；下一次仅对已闭合interface/open101的固定9文件作一次有界描述提取，≤1GiB输入/2200选行/4MiB输出，内部580秒、parent600＋外尾60＝660秒，预约在原800准备块余761.736133391内。15源及语法/路径静态准备通过，system reader/conda learner隔离修复正做CPU准备、尚未测试；待新commit/push精确freeze后执行，不重验原物理结论、不读map blobs/启动World或学习。工程仍50013.6985469126018/75000、余24986.3014530873982；pilot/final不动，P2A未完成，用户自主续接授权有效，无需再次审批。见[V42](report/20261022_mr3_p2a_v42_native_diagnosis.md)。
@@ -72,7 +74,7 @@
 | MR3-P1B | RL 可独占的稳定目标/观测接口 | 已验收（2026-10-15） |
 | MR3-P1C | 训练环境、可靠 reset、采样吞吐 | 已验收（2026-10-16） |
 | MR3-P2A.0 | 生命周期、候选及安全执行、参与观测准备 | 已验收（2026-10-18）；原V26编排中断保留 |
-| MR3-P2A | 联合 MaskablePPO 最小训练闭环 | 未完成；V41原FAIL保持，V42固定9文件描述提取闭合PASS但选行有省略，无科学资格/学习；工程75000块余24958.7661585403982秒，下一步禁用cone-support候选/helper CPU，不接生产或重跑矩阵 |
+| MR3-P2A | 联合 MaskablePPO 最小训练闭环 | 未完成；V43禁用support数学124人工CPU/独立review PASS，无新native/学习信用；工程75000块余24958.7661585403982秒，推进V44显式cone-support-v2接线/新freeze资格，默认v1、原FAIL和科学门保持 |
 | MR3-P2B | 同接口算法对照与方法选择 | 未开始 |
 | MR3-P2C | 理想通信完整验收、冻结模型 | 未开始 |
 | MR3-P3A | 双向 gateway、字节协议、消除旁路 | 未开始 |
