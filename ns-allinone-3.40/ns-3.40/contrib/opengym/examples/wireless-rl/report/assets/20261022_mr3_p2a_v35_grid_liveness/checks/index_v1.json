@@ -1,0 +1,28 @@
+{
+  "schema": "mr3-v35-cpu-index-v1",
+  "engineering_charge_seconds": "0",
+  "tests_passed": 113,
+  "checks": [
+    {
+      "receipt": "checks/final_cpu_v1/actual_wait.json",
+      "passed": true,
+      "source_unchanged": true,
+      "actual_wait_seconds": "0.664172478",
+      "sha256": "688ee17d60cafce6c48ed0031b032f59060e1ece92744f9a6a10f564db6be64f"
+    },
+    {
+      "receipt": "checks/forensic_cpu_v1/actual_wait.json",
+      "passed": true,
+      "source_unchanged": true,
+      "actual_wait_seconds": "0.8585855",
+      "sha256": "44912a8a4fc492ccec3fb8a3e192a881ee30d59850b5891b50ac701342548e21"
+    },
+    {
+      "receipt": "checks/missing_map_cpu_v1/actual_wait.json",
+      "passed": true,
+      "source_unchanged": true,
+      "actual_wait_seconds": "11.165412676",
+      "sha256": "98faa6369289cfe997935d1b3c8f16b42044a1a472b392e4ff01b1391b031d04"
+    }
+  ]
+}

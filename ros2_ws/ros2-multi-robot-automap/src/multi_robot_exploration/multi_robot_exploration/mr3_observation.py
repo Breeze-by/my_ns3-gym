@@ -480,7 +480,7 @@ def _seed_diagnostics(grid, traversable, clearance, robot, resolution, origin, *
         raise ValueError("unknown seed certificate rule")
     if seed_rule == "exact-point-bridge-v2":
         seed = (canonical_seed_cell((robot["x"], robot["y"]), resolution, origin, grid.shape)
-                if robot["fresh"] else None)
+                if robot["fresh"] and grid.size else None)
     else:
         seed = (_cell(robot["x"], robot["y"], resolution, origin, grid.shape)
                 if robot["fresh"] else None)

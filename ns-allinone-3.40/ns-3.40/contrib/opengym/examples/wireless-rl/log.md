@@ -8272,3 +8272,26 @@ Engineering PASS/functional unresolved: 192/192/0, independently192 action/unifo
 ```
 
 main465.387889321 + finalouter0.701292181 = union466.089181502秒；端点520.193301181秒含gap54.104119679，全部小于1800，内嵌phase不重复计费。累计47735.8935792376018/52000，余4264.1064207623982。pilot/final-only不变，75000仍待答。tb1三场米级运动，tb3 open/corridors恢复，旧格归属拒绝归零；rooms tb3 .220832m和59/65格净空拒绝保留，三场质量false。仅64秒外截断，不是P2A/95%或新native资格；下一步新scope有限归因而非重试。
+
+
+## 2026-10-22 MR3-P2A V35准备：缺图API边界修复
+
+V34已闭合后，只改v2缺图/空图路径，不向strict canonical helper传入零shape；legacy/v1保持，缺图保持KEEP及原pose_outside_received_map诊断。新的None/empty两个fresh-state反例及原观测/v2相关99项CPU通过，无World/原件重放/学习，工程新增0。source-before/after相等，实际wait11.165412676秒；回执[missing_map_cpu_v1](report/assets/20261022_mr3_p2a_v35_grid_liveness/checks/missing_map_cpu_v1/actual_wait.json)。
+
+精确child argv（cwd=/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl，由reach_execution --scope cpu包装）：
+```json
+["/usr/bin/bash", "--noprofile", "--norc", "-e", "-c", "source /opt/ros/humble/setup.bash && source /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/setup.bash && exec /usr/bin/python3 -B -m pytest -q /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_seed_v2_missing_map.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_seed_v2.py /home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_observation.py"]
+```
+
+修复后尚无新行为或资格；不借V34旧冻结作修复后证据。后续仅计划新scope有限rooms诊断，不能原样重跑V34或启动PPO。
+
+
+V35有限取证/外尾人工检查：12+2项通过，工程0，来源见[113项CPU索引](report/assets/20261022_mr3_p2a_v35_grid_liveness/checks/index_v1.json)。
+```json
+["/usr/bin/python3", "-B", "-m", "pytest", "-q", "report/assets/20261022_mr3_p2a_v35_grid_liveness/test_forensic_final_v1.py"]
+```
+```json
+["/usr/bin/python3", "-B", "-m", "pytest", "-q", "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v35_grid_liveness/test_rooms_forensic_v1.py"]
+```
+
+新scope事前预约：rooms101已封存V34固定三actor（reset/首次cell gate拒绝/last），最多130events/3次input decode，main30+cleanup5+external15+buffer10=60秒。源与65输入SHA全绑定但其余不解码，无World/private/学习。待新clean/pushed freeze唯一执行，不借V34资格、不重跑episode。
