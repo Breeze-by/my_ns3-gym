@@ -1,5 +1,7 @@
 # 报告与证据适用范围
 
+2026-10-22 V41准备：显式登记 `mr3-occupancy-int8-array-v1`，仅以完整源码逆投影恢复旧pin后在私有reader登记，原数学/任务/物理门保持。五组CPU中384+12+95+9=500项人工检查及双环境就绪通过；尚待新freeze真实preflight与完整native资格→minimum→pilot→final，不提供原生或学习信用。工程48282.3965638106018/75000、余26717.6034361893982，新预约20900（资格/最小/收口20100＋准备800）；pilot/final初始余额及旧FAIL保持，P2A未完成。用户已授权自主持续完成，不再重复审批。见[V41](20261022_mr3_p2a_v41_packing_gate.md)。
+
 2026-10-22 V40闭合FAIL：新冻结291b9e32e实际preflight阻止merge_map输出打包未登记的旧native pin冲突；755源/Git/current无漂移。未启动matrix/World/native/PPO，3身份gone，完整parent实费22.442744464（inner包含不叠加）。累计48282.3965638106018/75000、余26717.6034361893982；原FAIL及pilot/final余额保持。用户已授权自主直到P2A完成，不再重复审批；继续显式packing source版本修复/新freeze，P2A未完成。见[V40闭合](20261022_mr3_p2a_v40_native_qualification.md)。
 
 2026-10-22 V40授权续接：用户明确“你一直继续执行就好了，直到把P2A完成，不需要问我是否批准”，授权自主持续完成P2A，不再反复请求一般预算/实施批准。当前工程块75000，入场48259.9538193466018、余26740.0461806533982；完整新native资格+收口+minimum预约20100。V39恒等提速已完成，现准备新冻结完整链；pilot/final初始余额、95%/质量/安全门及旧FAIL保持，P2A仍未完成。见[V40](20261022_mr3_p2a_v40_native_qualification.md)。
@@ -48,6 +50,7 @@
 
 | 文件 | 用途 | 能提供的信用 |
 | --- | --- | --- |
+| [P2A V41 原生来源门续接](20261022_mr3_p2a_v41_packing_gate.md) | 显式map输出packing source兼容、500人工CPU及双环境就绪；准备完整新冻结链 | 仅CPU/来源准备；旧FAIL保持，尚无新native资格/学习或P2A信用 |
 | [P2A V36 实际点接图候选](20261022_mr3_p2a_v36_point_graph.md) | 禁用固定3×3全桥原型40人工CPU、同冻结已知两帧/6机开发计算 | PASS：38anchors，tb3原格false但2/4邻节点可接；1.824187839秒/5身份gone，无生产或资格 |
 | [P2A V35 图门与执行归因](20261022_mr3_p2a_v35_grid_liveness.md) | 缺图API113人工CPU；固定rooms两份输入的有限取证 | PASS：reset点安全/同中心桥不安全；1.818145901秒/5身份gone，转禁用point-graph CPU，不提供资格 |
 | [P2A V34 精确归格与局部执行](20261022_mr3_p2a_v34_seed_v2.md) | 显式v2、524人工CPU与同冻结三场64步唯一短probe | 192/192/0与585证书通过，运动恢复但rooms仍停滞/质量未过；466.089181502秒/20身份gone，无原生或训练资格 |

@@ -8422,3 +8422,16 @@ CPU命令cwd=wireless-rl：`rtk proxy env PYTHONNOUSERSITE=1 /usr/bin/python3 -B
 精确执行前述唯一入口，EXACT40=`291b9e32ea3df8c107f804a339d4bd1e93405f3a`，已clean/push。实际child argv为ns3gym `-m report.assets.20261022_mr3_p2a_v40_native_qualification.preflight_v1 --plan ABS_A40/plan_v1.json --freeze 291b9e32ea3df8c107f804a339d4bd1e93405f3a --output /tmp/mr3_p2a_reach_v40_preflight.json`，全部字面argv/source/真实wait见规范原件。未启动matrix或native回合。旧immutable merge_map pin76c3...与V23已审packing e4cf...冲突，reach私有版本登记漏项，原FAIL保持、不在V40重试。
 
 parent完整wait22.442744464秒，inner21.526599063包含其内不重复；源码前后稳定，关闭审查3保存PID/start均freshgone，不扩大未记录进程声明。五份实际原件保持canonical bytecopy；工程累计48282.3965638106018/75000、余26717.6034361893982；pilot/validation0新增、GPU/optimizer0。新V41显式版本将核新source/freeze/plan精确SHA、三literal inverse完整恢复旧SHA，保留旧native数学/legacy锁；自主继续，不再请求批准，P2A仍未完成。
+
+
+### 2026-10-22 MR3 P2A V41 显式packing来源兼容与完整链准备
+
+用户自主持续完成P2A授权有效，不重复一般审批；V40原preflight FAIL/22.442744464秒费用保持。V41入场工程48282.3965638106018/75000、余26717.6034361893982，预约矩阵18000＋工程收口300＋minimum1800＋准备/有限诊断800=20900；余5817.6034361893982未预约，pilot/final初始余额不重置。
+
+本轮仅显式 `map_output_packing_profile=mr3-occupancy-int8-array-v1` 登记V23既有打包源；current/freeze/plan须匹配e4cf897d2c22e70f89d9293efc00f44dd4bf1eb01624713735e08afdee0cbfcc，三literal整文件inverse必须精确恢复76c3d2c604f38f61116be1f39263472f9074b4f69fe7a0428b532da977530078后才在private reader替这一pin。immutable reader、merge算法、未知/默认profile原拒绝、其他source/物理/任务/接触门均保持，不给旧V40追认。
+
+实际CPU入口cwd=wireless-rl：`rtk proxy env PYTHONNOUSERSITE=1 /usr/bin/python3 -B report/assets/20261022_mr3_p2a_v41_packing_gate/cpu_driver_v1.py NAME`。依次组名为geometry_cpu_v1、reader_cpu_v1、learner_cpu_v1、snapshot_cpu_v1、readiness_cpu_v1、prepare_plan_cpu_v1、plan_check_cpu_v1（前四可独立并行；生成/检查依赖前组完成）。七份actual-wait全部PASS且source before/after稳定，完整child argv、env、字节与console见A41/checks。geometry384（含merge_map30）＋reader12＋learner95（新来源门18）＋snapshot9=500人工检查；readiness为system ROS/ns3gym CUDA元数据PASS，无模型/forward/backward。plan_check55项重复回归＋26新fixture通过，不重复叠成独立500以外的总信用。CPU费用0，无World/native episode/PPO或新资格。
+
+已生成plan SHA85c7146999279ce6981c885544c08faa12577722f5f17b8460dc946c2d0a9742/211855字节，binding SHA5ea491d674c78f25a7a3c6f2336f3390f25912ca110e418ccb217ed486d2e93c/128956字节；完整30mandatory roles/12EP及minimum/pilot/final registry已封存准备。新freeze尚待实际commit/push写入，不能把本轮CPU当真preflight或native资格。
+
+即将使用的新唯一入口形态：`PYTHONNOUSERSITE=1 CUDA_VISIBLE_DEVICES=0 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m report.assets.20261022_mr3_p2a_v41_packing_gate.execute_chain_v1 --freeze EXACT40`；EXACT40待填真实新40位SHA，尚未声明已执行。新freeze preflight通过才完整资格→minimum→pilot→final，同一链结束前不改源/plan或中途commit。pilot/final外尾300在各原CAP内、主deadline2605.9547395464029/8700、内部500保留，外部actual union及完整端点门通过才后继；minimum/资格/全链身份外尾共用工程300。任务95%/300秒、质量、三台参与、18接触/真实物理与旧FAIL均保持，P2A未完成。见[V41报告](report/20261022_mr3_p2a_v41_packing_gate.md)。

@@ -1,0 +1,182 @@
+{
+  "schema": "mr3-v41-independent-preflight-static-review-v1",
+  "passed": true,
+  "errors": [],
+  "method": "Static source/AST/JSON interface and SHA/bytes review only; no project source imported/executed, no preflight/scientific consumer, tests, World/native/Node/actor, original input replay, or Git mutation.",
+  "scope": "Preparation/entry compatibility before the new freeze. This is not the actual frozen execution preflight or native qualification.",
+  "plan_sha256": "85c7146999279ce6981c885544c08faa12577722f5f17b8460dc946c2d0a9742",
+  "expected_plan_sha256": "85c7146999279ce6981c885544c08faa12577722f5f17b8460dc946c2d0a9742",
+  "source_freeze_not_assigned_here": true,
+  "input_bindings": [
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v41_packing_gate/plan_v1.json",
+      "sha256": "85c7146999279ce6981c885544c08faa12577722f5f17b8460dc946c2d0a9742",
+      "bytes": 211855
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v41_packing_gate/native_custody_binding_v1.json",
+      "sha256": "5ea491d674c78f25a7a3c6f2336f3390f25912ca110e418ccb217ed486d2e93c",
+      "bytes": 128956
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v41_packing_gate/prepare_plan_v1.py",
+      "sha256": "aeb211f85fea82a7e094eb24410a14adff2bc1f8b4b8285d6b8a199284a476a4",
+      "bytes": 22614
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v41_packing_gate/preflight_v1.py",
+      "sha256": "b1ccdb1e50190b0580d5c259abdf6c73deb6c9287f88bcd0f302b1a16c1ccce9",
+      "bytes": 6384
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v41_packing_gate/execute_chain_v1.py",
+      "sha256": "7b67d8f7a57c89433be712c8961e0accaeb4b288421fc83061f003491875e968",
+      "bytes": 14428
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v41_packing_gate/external_absence_v1.py",
+      "sha256": "27bfd7a5dd7ad57543518ceb735f4fde9d9c8ad2c6451209aa78adb0853782d2",
+      "bytes": 8849
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v41_packing_gate/scope_v1.json",
+      "sha256": "b8713a8c6ccff3b0e75cccf79ce29b38fe429a86d082bdd6517bd15d29f33445",
+      "bytes": 2818
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v41_packing_gate/authorization_v1.json",
+      "sha256": "7b96ec72f0ce7d45459c6d88b5524901ee8800c4eeb167396a744c3d1eb18134",
+      "bytes": 1904
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v41_packing_gate/budget_acceptance_v1.json",
+      "sha256": "37d9e5e1653ae9b9eedb655240ade46760c5ca05b0604efdffcf6729f74f4191",
+      "bytes": 2500
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_gates.py",
+      "sha256": "bc2eb03de4a643c4675b557b057773cdddcb957173c601b99a1b98f91aee1100",
+      "bytes": 22283
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_ppo.py",
+      "sha256": "b2e0737d79826b7ecb319cc91b58ff45475ea831a9cb2b4cab2298aaf6474567",
+      "bytes": 70173
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_policy_chain.py",
+      "sha256": "e055a35eb0a962087f2edf29f7f1522aa5e3880488b583d9c53d7d8a61b5bf5f",
+      "bytes": 44347
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_map_packing_gate.py",
+      "sha256": "2c805ad3acdff5ab98b704ebd51128f742d97e41187523544fe4c7c111481d3a",
+      "bytes": 11757
+    }
+  ],
+  "reviewed_inputs_unchanged": true,
+  "bindings": {
+    "plan_source_count": 753,
+    "all_plan_source_paths_relative": true,
+    "all_current_plan_source_sha_match": true,
+    "custody_source_count": 505,
+    "all_current_custody_source_sha_match": true,
+    "library_count": 10,
+    "all_library_paths_absolute": true,
+    "all_actual_library_sha_match": true,
+    "custody_binary_library_sets_equal": true,
+    "custody_binding_in_plan_source_bindings": true
+  },
+  "packing": {
+    "explicit_plan_profile": "mr3-occupancy-int8-array-v1",
+    "exact_declared_source_sha256": "e4cf897d2c22e70f89d9293efc00f44dd4bf1eb01624713735e08afdee0cbfcc",
+    "required_exact_current_and_frozen_and_declared_sha256": "e4cf897d2c22e70f89d9293efc00f44dd4bf1eb01624713735e08afdee0cbfcc",
+    "literal_inverse_count": 3,
+    "whole_inverse_sha256": "76c3d2c604f38f61116be1f39263472f9074b4f69fe7a0428b532da977530078",
+    "independently_restored_bytes_equal_3631_original_git_source": true,
+    "only_private_copied_preparation_runtime_pin_changes": true,
+    "no_profile_preserves_original_refusal": true,
+    "public_null_unknown_profile_refuses": true,
+    "merge_not_added_to_automatic_runtime_override_set": true,
+    "immutable_audit_ppo_sha256": "b2e0737d79826b7ecb319cc91b58ff45475ea831a9cb2b4cab2298aaf6474567",
+    "effective_native_runtime_and_current_auditor_pin_count": 43,
+    "only_prior_map_pin_mismatch": true,
+    "other42_current_effective_pins_match": true,
+    "additional_ros_smoke_original_source_chain_matches": true,
+    "semantic_reason": "Original validation restricts all resampled values to[-1,100];signed-int8 C-order array packing preserves the former ravel list sequence. Fusion/navigation formulas and all source/clock/task/mathematical predicates remain restored/unchanged.",
+    "actual_new_freeze_three_way_check_still_required": true
+  },
+  "entry_interfaces": {
+    "plan_path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v41_packing_gate/plan_v1.json",
+    "preflight_object": {
+      "path": "/tmp/mr3_p2a_reach_v41_preflight.json",
+      "schema": "mr3-reach-preflight-v1"
+    },
+    "driver_uses_preflight_path_key": true,
+    "preflight_namespace_module_matches_current_A41": true,
+    "new_matrix_output": "/tmp/mr3_p2a_reach_v41_matrix",
+    "new_matrix_outer": "/tmp/mr3_p2a_reach_v41_matrix_wait",
+    "qualification": "/tmp/mr3_p2a_reach_v41_qualification.json",
+    "all_native_output_root_run_id_and_full_plan_paths_match": true,
+    "all_policy_plan_qualification_and_output_paths_match": true,
+    "all_predecessor_summary_outer_final_paths_match_driver": true,
+    "validation_selects_pilot_final_zip_only": true,
+    "external_absence_flags_match": [
+      "--plan",
+      "--matrix-outer",
+      "--output",
+      "--extra"
+    ],
+    "source_library_relative_absolute_join_correct": true,
+    "exclusive_output_paths_stat_checked": 209,
+    "existing_exclusive_outputs": [],
+    "runtime_port_listener_availability_not_probed": true
+  },
+  "workload": {
+    "stage_order": [
+      "interface",
+      "terminal",
+      "reset",
+      "deadline"
+    ],
+    "mandatory_roles": 30,
+    "episodes": 12,
+    "seed_rule": "exact-point-bridge-v2",
+    "start_graph_rule": "point-attachment-3x3-v1",
+    "all_four_native_and_three_policy_commands_same_explicit_pair": true,
+    "no_two_dimensional_success_prerequisite": true,
+    "old_failures_preserved": true
+  },
+  "budget_and_closure": {
+    "engineering_ceiling_seconds": "75000",
+    "engineering_entry_used_seconds": "48282.3965638106018",
+    "engineering_remaining_seconds": "26717.6034361893982",
+    "matrix_minimum_external_reservation_seconds": "20100",
+    "separate_preparation_finite_forensic_reservation_seconds": "800",
+    "total_initial_reservation_seconds": "20900",
+    "unreserved_after_initial_seconds": "5817.6034361893982",
+    "formal_engineering_external_limit_seconds": "300",
+    "matrix_parent_limit_seconds": "18000",
+    "minimum_parent_limit_seconds": "1800",
+    "parent_wait_intervals_charge_nested_child_once": true,
+    "failure_receipts_still_charge_parent_wait_before_raise": true,
+    "pilot_validation_main_finalize_same_original_scope": true,
+    "pilot_validation_union_and_complete_endpoint_preserve_original_caps": true,
+    "pilot_validation_finalizer_each_at_most_seconds": "300",
+    "finally_attempts_saved_identity_absence": true,
+    "final_engineering_and_phase_caps_rechecked": true,
+    "final_driver_and_outer_saved_identity_absence_requires_later_external_review": true
+  },
+  "no_first_start_interface_blocker_found": true,
+  "scientific_native_credit": false,
+  "actual_execution_preflight_pass_claimed": false,
+  "qualification_pass_claimed": false,
+  "training_admission_granted": false,
+  "p2a_complete": false,
+  "limitations": [
+    "Future clean pushed exactfreeze and actual preflight must establish current==Gitfreeze==declared source bytes including the explicit map packing profile.",
+    "CPU counts were supplied by the coordinator; this review checks entry/source compatibility and does not rerun or independently recount the five CPU suites.",
+    "Output absence is a stat observation at review time; exclusive creation and source checks still govern actual execution.",
+    "The800 preparation/finite-forensic amount is recorded as a separate reservation; this review does not claim a new hard timeout was added to the generic reach_execution wrapper."
+  ]
+}

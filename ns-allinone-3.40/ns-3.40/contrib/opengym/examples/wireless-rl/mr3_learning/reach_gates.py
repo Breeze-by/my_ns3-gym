@@ -6,6 +6,7 @@ reward, task, SLAM and independent mathematics keep their original exact pins.
 
 from pathlib import Path
 import hashlib
+import re
 import subprocess
 
 from .reach_audit_projection import project_module
@@ -23,6 +24,18 @@ POINT_GRAPH_ENV_SHA256 = "baffbf1bffc7fadff80105ec5c5dce3a04c694ce7e7a8f72ca6620
 POINT_GRAPH_HELPER_SHA256 = "e55b776c3ec088fe51dfa76ff204b4b135138038502fabc6af01717ed75efc83"
 ENV_STATUS = ("2026-10-19：用户已接受[V14科学候选](report/assets/20261019_mr3_p2a_v14/scientific_contract_candidate_v1.md)。显式新profile的执行规则以[MR3_REACH_CONTRACT.md](MR3_REACH_CONTRACT.md)为准；本文件下述原速度/累计路径与v1相位规则继续描述默认`legacy`。V15已接线并完成CPU/编译准备，尚无新冻结原生资格、训练或95%信用；旧FAIL不改判。\n\n").encode()
 ROS = "ros2_ws/ros2-multi-robot-automap/"
+MAP_OUTPUT_PACKING_PROFILE = "mr3-occupancy-int8-array-v1"
+MERGE_MAP_SOURCE = ROS + "src/merge_map/merge_map/merge_map.py"
+MERGE_MAP_LEGACY_SHA256 = "76c3d2c604f38f61116be1f39263472f9074b4f69fe7a0428b532da977530078"
+MERGE_MAP_PACKED_SHA256 = "e4cf897d2c22e70f89d9293efc00f44dd4bf1eb01624713735e08afdee0cbfcc"
+MAP_OUTPUT_PACKING_INVERSE = (
+    (b"from array import array\n", b""),
+    (b"    merged_map.data = array('b', merged.astype(np.int8).tobytes())\n",
+     b"    merged_map.data = merged.ravel().tolist()\n"),
+    (b"    composed = np.where(observed_own >= 0, observed_own, conservative)\n"
+     b"    navigation.data = array('b', composed.astype(np.int8).tobytes())\n",
+     b"    navigation.data = np.where(observed_own >= 0, observed_own, conservative).ravel().tolist()\n"),
+)
 REVISED_RUNTIME = {
     ROS + "scripts/mr3_env_worker.py",
     *(ROS + "src/multi_robot_exploration/multi_robot_exploration/" + name + ".py"
@@ -32,6 +45,59 @@ REVISED_RUNTIME = {
 REVISED_CONFIG = {ROS + "src/multi_robot/CMakeLists.txt",
                   ROS + "src/multi_robot/src/mr3_gazebo_diff_drive.cpp",
                   ROS + "src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py"}
+
+
+def project_map_output_packing(raw):
+    """Invert only the reviewed V23 output packing; preserve the whole old file."""
+    if type(raw) is not bytes or hashlib.sha256(raw).hexdigest() != MERGE_MAP_PACKED_SHA256:
+        raise ValueError("declared map output packing source SHA differs")
+    restored = raw
+    for current, original in MAP_OUTPUT_PACKING_INVERSE:
+        if restored.count(current) != 1:
+            raise ValueError("map output packing inverse occurrence differs")
+        restored = restored.replace(current, original, 1)
+    inverse_sha = hashlib.sha256(restored).hexdigest()
+    if inverse_sha != MERGE_MAP_LEGACY_SHA256:
+        raise ValueError("map output packing inverse does not restore the complete old source")
+    return restored, {"profile": MAP_OUTPUT_PACKING_PROFILE,
+        "sha256": MERGE_MAP_PACKED_SHA256, "whole_source_inverse_sha256": inverse_sha,
+        "new_source_bytes": len(raw), "old_source_bytes": len(restored),
+        "literal_inverse_replacements": len(MAP_OUTPUT_PACKING_INVERSE),
+        "scope": "Three exact output-packing substitutions only; entire legacy fusion/navigation source restored."}
+
+
+def version_map_output_packing(legacy, root, freeze, source_bindings, profile=None):
+    """Change one private reader pin only after explicit three-way source proof.
+
+    Omission retains the immutable old pin and its original refusal of new
+    bytes. This is orthogonal to seed/graph selection and grants no qualification.
+    """
+    if profile is None:
+        return None
+    if type(profile) is not str or profile != MAP_OUTPUT_PACKING_PROFILE:
+        raise ValueError("unknown map output packing profile")
+    if type(freeze) is not str or re.fullmatch(r"[0-9a-f]{40}", freeze) is None:
+        raise ValueError("map output packing requires an exact source freeze")
+    if source_bindings.get(MERGE_MAP_SOURCE) != MERGE_MAP_PACKED_SHA256:
+        raise ValueError("map output packing is not bound to the exact declared source")
+    pins = dict(legacy.PREPARATION_RUNTIME_PINS)
+    if pins.get(MERGE_MAP_SOURCE) != MERGE_MAP_LEGACY_SHA256:
+        raise ValueError("immutable legacy map output source pin differs")
+    root = Path(root)
+    frozen = subprocess.check_output(["git", "show", freeze + ":" + MERGE_MAP_SOURCE], cwd=root)
+    current = (root / MERGE_MAP_SOURCE).read_bytes()
+    if (hashlib.sha256(frozen).hexdigest() != MERGE_MAP_PACKED_SHA256
+            or hashlib.sha256(current).hexdigest() != MERGE_MAP_PACKED_SHA256 or frozen != current):
+        raise ValueError("map output packing plan/frozen/worktree source differs")
+    _, proof = project_map_output_packing(current)
+    # Copy rather than mutate: even a caller sharing the old table keeps it.
+    pins[MERGE_MAP_SOURCE] = MERGE_MAP_PACKED_SHA256
+    legacy.PREPARATION_RUNTIME_PINS = pins
+    proof.update(path=MERGE_MAP_SOURCE, source=freeze + ":" + MERGE_MAP_SOURCE,
+        previous_scope_sha256=MERGE_MAP_LEGACY_SHA256, new_source_sha256=MERGE_MAP_PACKED_SHA256,
+        plan_frozen_worktree_source_equal=True, original_mathematical_predicates_changed=False,
+        scientific_native_credit=False)
+    return proof
 
 
 def project_exact_environment(raw):
@@ -135,15 +201,21 @@ def load_native_gates(root, freeze, plan_path):
     root, plan_path = Path(root), Path(plan_path)
     plan = load_plan(plan_path, root)
     source_proof = source_check(plan, plan_path, freeze, root, require_clean=False)
+    packing = plan.get("map_output_packing_profile")
+    if "map_output_packing_profile" in plan and (
+            type(packing) is not str or packing != MAP_OUTPUT_PACKING_PROFILE):
+        raise ValueError("unknown declared map output packing profile")
     return _load_versioned_native_gates(root, freeze, source_proof,
         plan["source_bindings"], plan["custody_binding"],
         **({"seed_rule": plan["seed_rule"]} if plan.get("seed_rule", "legacy") != "legacy" else {}),
         **({"start_graph_rule": plan["start_graph_rule"]}
-           if plan.get("start_graph_rule", "original-seed-cell") != "original-seed-cell" else {}))
+           if plan.get("start_graph_rule", "original-seed-cell") != "original-seed-cell" else {}),
+        **({"map_output_packing_profile": packing} if packing is not None else {}))
 
 
 def _load_versioned_native_gates(root, freeze, source_proof, source_bindings, custody_binding,
-                                 *, seed_rule="legacy", start_graph_rule="original-seed-cell"):
+                                 *, seed_rule="legacy", start_graph_rule="original-seed-cell",
+                                 map_output_packing_profile=None):
     """Reuse unchanged native predicates after an explicit caller source check.
 
     The public qualification entry above still requires its complete sealed
@@ -221,6 +293,10 @@ def _load_versioned_native_gates(root, freeze, source_proof, source_bindings, cu
                                   "new_source_sha256": source_bindings[path]}
             pins[path] = source_bindings[path]
         setattr(legacy, name, pins)
+    packing_projection = version_map_output_packing(legacy, root, freeze, source_bindings,
+                                                   map_output_packing_profile)
+    if packing_projection is not None:
+        revised_proof[MERGE_MAP_SOURCE] = packing_projection
 
     def execution_configs(root, freeze):
         retained = {p: d for p, d in legacy.EXECUTION_CONFIG_PINS.items()
@@ -261,6 +337,8 @@ def _load_versioned_native_gates(root, freeze, source_proof, source_bindings, cu
         "sensor_model_gate":"actual spawn and unique20Hz ray; whole-byte inverse restores original5Hz model",
         "original_mathematical_predicates_changed": False,
         "old_profile_qualification_credit_reused": False}
+    if packing_projection is not None:
+        proof["reach_dispatch"]["map_output_packing"] = packing_projection
     if seed_rule != "legacy":
         proof["reach_dispatch"]["seed_rule"] = seed_rule
         proof["reach_dispatch"]["candidate_rule_version"] = candidate_version_for_rules(seed_rule, start_graph_rule)
