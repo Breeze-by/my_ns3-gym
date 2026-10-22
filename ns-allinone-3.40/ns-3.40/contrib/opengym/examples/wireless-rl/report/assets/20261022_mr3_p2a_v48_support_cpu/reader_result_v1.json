@@ -1,0 +1,193 @@
+{
+  "schema": "mr3-v47-independent-reader-artificial-cpu-v1",
+  "candidate_disabled": true,
+  "baseline_sha256": "555327657319000a313acba44fc35d548743ab04f0689d9ea1aa3b8c2e3864ed",
+  "source_before": {
+    "harness_cli.py": "be14632605c05e26de8200ca80d33c12ae02b57d6ba4b5964095d108ae95c75d",
+    "reader_baseline_v1.py": "555327657319000a313acba44fc35d548743ab04f0689d9ea1aa3b8c2e3864ed",
+    "reader_candidate_v1.py": "47ea22da40bde3a794565d5d11bb06fd6fc591e3000e0daa40ec3f377bee10b2",
+    "test_reader_candidate_v1.py": "7a7dffa17b912bd496743fdf2ed26aafeb40ac0b12cfa2e5490360bd20f80f46"
+  },
+  "source_after": {
+    "harness_cli.py": "be14632605c05e26de8200ca80d33c12ae02b57d6ba4b5964095d108ae95c75d",
+    "reader_baseline_v1.py": "555327657319000a313acba44fc35d548743ab04f0689d9ea1aa3b8c2e3864ed",
+    "reader_candidate_v1.py": "47ea22da40bde3a794565d5d11bb06fd6fc591e3000e0daa40ec3f377bee10b2",
+    "test_reader_candidate_v1.py": "7a7dffa17b912bd496743fdf2ed26aafeb40ac0b12cfa2e5490360bd20f80f46"
+  },
+  "sources_stable": true,
+  "tests": {
+    "run": 9,
+    "errors": 0,
+    "failures": 0,
+    "console": "test_actual_frozen_source_and_unchanged_direction_validator_AST (_v47_reader_tests.ReaderCandidateTests) ... ok\ntest_artificial_both_frames_union_roles_age_and_threshold_full_dict_equal (_v47_reader_tests.ReaderCandidateTests) ... ok\ntest_both_bounded_caches_evict_without_changing_exact_values (_v47_reader_tests.ReaderCandidateTests) ... ok\ntest_cached_values_are_only_immutable_Fractions_and_not_mutable_proofs (_v47_reader_tests.ReaderCandidateTests) ... ok\ntest_cold_bad_inputs_same_exception_type_and_message (_v47_reader_tests.ReaderCandidateTests) ... ok\ntest_exact_sqrt_perfect_nonperfect_tiny_and_large (_v47_reader_tests.ReaderCandidateTests) ... ok\ntest_existing_public_trig_cache_alias_semantics_are_preserved_not_fixed (_v47_reader_tests.ReaderCandidateTests) ... ok\ntest_public_direction_all_return_values_and_JSON_equal (_v47_reader_tests.ReaderCandidateTests) ... ok\ntest_trig_all_original_Fractions_match_at_fixed_boundaries_and_binary_inputs (_v47_reader_tests.ReaderCandidateTests) ... ok\n\n----------------------------------------------------------------------\nRan 9 tests in 2.527s\n\nOK\n"
+  },
+  "passed": true,
+  "benchmarks": [
+    {
+      "model": "baseline",
+      "scenario": "cold_trig",
+      "calls": 64,
+      "unprofiled_wall_ns": 175790622,
+      "numeric_canonical_sha256": "9916b79c253cb5a2131e07230c89f92929ab513473d17145564a06db4dbb768e",
+      "cache_after_timing": {
+        "trig": {
+          "hits": 0,
+          "misses": 64,
+          "maxsize": 256,
+          "currsize": 64
+        }
+      },
+      "profile": "report/assets/20261022_mr3_p2a_v48_support_cpu/reader_profiles_v1/baseline_cold_trig.cprof",
+      "profile_sha256": "abe0d5cc4f38db70b070516e9c914d92183bb8618b54ef398523eb8bca54e1a3"
+    },
+    {
+      "model": "baseline",
+      "scenario": "cold_sqrt",
+      "calls": 64,
+      "unprofiled_wall_ns": 1692154,
+      "numeric_canonical_sha256": "b7e090cf2f5995f2900dd68a3a5ca0b76101d36d0849ddbd20c6eb2efaf56c9a",
+      "cache_after_timing": {
+        "trig": {
+          "hits": 0,
+          "misses": 0,
+          "maxsize": 256,
+          "currsize": 0
+        }
+      },
+      "profile": "report/assets/20261022_mr3_p2a_v48_support_cpu/reader_profiles_v1/baseline_cold_sqrt.cprof",
+      "profile_sha256": "ba818e72afe7af2c514bb96a5ee6854369a6e30eb668f9160932911e745adf2c"
+    },
+    {
+      "model": "baseline",
+      "scenario": "warm_sqrt",
+      "calls": 256,
+      "unprofiled_wall_ns": 6484449,
+      "numeric_canonical_sha256": "26317671b27bd1f0ffdab50966f91654d36c2f0a3d324d6386ddd2538e6ba524",
+      "cache_after_timing": {
+        "trig": {
+          "hits": 0,
+          "misses": 0,
+          "maxsize": 256,
+          "currsize": 0
+        }
+      },
+      "profile": "report/assets/20261022_mr3_p2a_v48_support_cpu/reader_profiles_v1/baseline_warm_sqrt.cprof",
+      "profile_sha256": "7eb5b58b7045d07720c4b3d76ae21fb4dc7b0a5c551c099353718b31adfd4cc2"
+    },
+    {
+      "model": "baseline",
+      "scenario": "warm_direction",
+      "calls": 152,
+      "unprofiled_wall_ns": 19463169,
+      "numeric_canonical_sha256": "94810370c25e23d657c129b06671b0e1a80eebe90e8d22d272783e73d47edb42",
+      "cache_after_timing": {
+        "trig": {
+          "hits": 92,
+          "misses": 34,
+          "maxsize": 256,
+          "currsize": 34
+        }
+      },
+      "profile": "report/assets/20261022_mr3_p2a_v48_support_cpu/reader_profiles_v1/baseline_warm_direction.cprof",
+      "profile_sha256": "84a0f09d84a437f741066fb31c5342d79491848ed3537287f9a5402c35bd608b"
+    },
+    {
+      "model": "candidate",
+      "scenario": "cold_trig",
+      "calls": 64,
+      "unprofiled_wall_ns": 8263132,
+      "numeric_canonical_sha256": "9916b79c253cb5a2131e07230c89f92929ab513473d17145564a06db4dbb768e",
+      "cache_after_timing": {
+        "trig": {
+          "hits": 0,
+          "misses": 64,
+          "maxsize": 256,
+          "currsize": 64
+        },
+        "sqrt": {
+          "hits": 0,
+          "misses": 0,
+          "maxsize": 256,
+          "currsize": 0
+        }
+      },
+      "profile": "report/assets/20261022_mr3_p2a_v48_support_cpu/reader_profiles_v1/candidate_cold_trig.cprof",
+      "profile_sha256": "44380e9028c3a609591f6d946865116e06a5903a8324588470715f67e0df774e"
+    },
+    {
+      "model": "candidate",
+      "scenario": "cold_sqrt",
+      "calls": 64,
+      "unprofiled_wall_ns": 1941494,
+      "numeric_canonical_sha256": "b7e090cf2f5995f2900dd68a3a5ca0b76101d36d0849ddbd20c6eb2efaf56c9a",
+      "cache_after_timing": {
+        "trig": {
+          "hits": 0,
+          "misses": 0,
+          "maxsize": 256,
+          "currsize": 0
+        },
+        "sqrt": {
+          "hits": 0,
+          "misses": 64,
+          "maxsize": 256,
+          "currsize": 64
+        }
+      },
+      "profile": "report/assets/20261022_mr3_p2a_v48_support_cpu/reader_profiles_v1/candidate_cold_sqrt.cprof",
+      "profile_sha256": "8e44b84ad15574d9e27210a46d48f296df1afaaca2300c0b4b353ecf8fd440c3"
+    },
+    {
+      "model": "candidate",
+      "scenario": "warm_sqrt",
+      "calls": 256,
+      "unprofiled_wall_ns": 2245888,
+      "numeric_canonical_sha256": "26317671b27bd1f0ffdab50966f91654d36c2f0a3d324d6386ddd2538e6ba524",
+      "cache_after_timing": {
+        "trig": {
+          "hits": 0,
+          "misses": 0,
+          "maxsize": 256,
+          "currsize": 0
+        },
+        "sqrt": {
+          "hits": 256,
+          "misses": 64,
+          "maxsize": 256,
+          "currsize": 64
+        }
+      },
+      "profile": "report/assets/20261022_mr3_p2a_v48_support_cpu/reader_profiles_v1/candidate_warm_sqrt.cprof",
+      "profile_sha256": "d9f09ed1b65f047df1bb2c338aa9ea2aa31d0a60fd6c12389f0050164f9b6108"
+    },
+    {
+      "model": "candidate",
+      "scenario": "warm_direction",
+      "calls": 152,
+      "unprofiled_wall_ns": 16917704,
+      "numeric_canonical_sha256": "94810370c25e23d657c129b06671b0e1a80eebe90e8d22d272783e73d47edb42",
+      "cache_after_timing": {
+        "trig": {
+          "hits": 92,
+          "misses": 34,
+          "maxsize": 256,
+          "currsize": 34
+        },
+        "sqrt": {
+          "hits": 79,
+          "misses": 29,
+          "maxsize": 256,
+          "currsize": 29
+        }
+      },
+      "profile": "report/assets/20261022_mr3_p2a_v48_support_cpu/reader_profiles_v1/candidate_warm_direction.cprof",
+      "profile_sha256": "f3e6f0f9d1d8f101d4b6f3848cd939816ebf1ac70818497074c1a96cdba39b8e"
+    }
+  ],
+  "scope": "Fixed local math-only CPU calls; timings are not World/native/PPO throughput.",
+  "pair_checks": "Unchanged caller gates; artificial declared-set composition only, no source-admission claim.",
+  "known_legacy_behavior": "Public trig cache input-alias behavior is preserved. Any repair requires separate version/declaration/validation.",
+  "scientific_credit": false,
+  "native_qualification": false,
+  "fees_recomputed": false
+}

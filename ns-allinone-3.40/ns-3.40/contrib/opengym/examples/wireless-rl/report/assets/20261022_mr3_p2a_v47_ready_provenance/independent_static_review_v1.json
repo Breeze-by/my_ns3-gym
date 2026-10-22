@@ -1,0 +1,102 @@
+{
+  "schema": "mr3-v47-ready-provenance-independent-static-review-v1",
+  "review_role": "/root/diagnostic_entry_review",
+  "disposition": "NO_SOURCE_BLOCKER_WITH_DECLARED_POSTHOC_WAIT_LIMIT",
+  "review_method": "Read source text and source hashes only; no extractor/helper imports, self-check execution, raw-original reads, scientific replay or repository edits.",
+  "reviewed_sources": [
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v47_ready_provenance/closed_ready_extract_v1.py",
+      "sha256": "8560d9d6dd7beab925e653fe7aa68437e019db4d84f5af75e1260bb5db9179e8"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v47_ready_provenance/run_forensic_v1.py",
+      "sha256": "df97debe1bc475b25d2bff3dbf9d7a322f6e7cc7fbde9afdd4b892e51f58f694"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v46_startup_diagnosis/closed_startup_extract_v1.py",
+      "sha256": "5dd2334e926d0ce87a0e7d4d3bfe8e48c758e680db61c1e1bcf812eaacbabe02"
+    }
+  ],
+  "blocking_findings": [],
+  "resolved_or_bounded_findings": [
+    {
+      "id": "missing_outer_runtime_interpretation_binding",
+      "initial_scope_sha256": "08d72a859d0dc9f5bebacfdb59cfe273c78b91696e6b73cd33b9df20395ead6f",
+      "initial_scope_source_count": 77,
+      "finding": "The extractor's strict six-source interpretation set included mr3_reach_runtime.py, but the first outer scope omitted that source.",
+      "resolution": "Root added the canonical runtime source with SHA256 3f1fac149adaadfe27197b538e73bbd149b04d28374c38106b26b762dc4e79dc. The resulting 78-entry scope includes it in outer actual-wait source_before/source_after. Extractor, runner and tested helper bodies did not change.",
+      "resolved_scope_sha256": "1a6e2e9e4d1e9564cf6ecf8a3b104de7c8c467bbe06368b9546402cdf2d86ab8",
+      "blocking_now": false
+    },
+    {
+      "id": "wait_limit_semantics",
+      "initial_question": "The driver has no timer/kill implementation and waits for submitted work until it is actually reaped.",
+      "resolution": "Root explicitly declares 240 seconds as a posthoc actual-parent-wait PASS fee gate, with a total 300-second reservation. This is not a hard timeout. The existing fee assertion raises into errors and makes passed false if the completed wait exceeds the declared main cap; the full actual fee remains recorded.",
+      "limitation": "Finite byte/line/metadata bounds and git-show subprocess timeouts are not a real-time completion guarantee. No additional hard-kill mechanism is assumed by this review."
+    },
+    {
+      "id": "descriptive_counts_not_exclusive_partition",
+      "observation": "valid_epoch_schema_rows and event_counts are incremented after envelope/summary validation, before all event-specific payload validation. A later robot/boolean error may therefore overlap those counters and parse_or_schema_error_count.",
+      "interpretation": "Do not sum valid_epoch_schema_rows and error_count as an exclusive row partition. all_rows_valid and absence_inference_from_event_counts_allowed are false when an error occurs. The full line count and full-file SHA still cover every consumed line. No result is interpreted here."
+    }
+  ],
+  "static_checks": {
+    "fixed_helper_sha_required_before_exec": true,
+    "two_fixed_originals": true,
+    "declared_original_bytes": 384380343,
+    "aggregate_input_bound_bytes": 536870912,
+    "line_bound_bytes": 4194304,
+    "output_bound_bytes": 2097152,
+    "selected_row_bound": 200,
+    "distinct_counter_and_example_key_bound": 256,
+    "retained_error_bound": 20,
+    "retained_tail_bound_each_stream": 20,
+    "original_regular_file_and_no_follow_open": true,
+    "full_original_sha_matches_fixed_inventory_after_read": true,
+    "before_after_and_final_original_stat_checks": true,
+    "interpretation_sources_git_and_current_equal_before_after": true,
+    "exclusive_output": true,
+    "schema_epoch_and_typed_sequence_checks": true,
+    "driver_flags_match_native_recorder_fields": true,
+    "motion_fields_match_reach_decision_and_tracker_status": true,
+    "raw_message_map_physical_or_certificate_payloads_not_emitted_or_replayed": true,
+    "worker_ready_callback_states_remain_not_recorded": true,
+    "ready_publication_is_not_mislabelled_as_worker_delivery": true,
+    "selection_and_error_omissions_explicit_or_bound_failure": true,
+    "over_cap_actual_wait_can_pass_under_declared_driver_checks": false
+  },
+  "source_scope_metadata_check": {
+    "scope_v1_json_available_at_final_review": true,
+    "scope_sha256": "1a6e2e9e4d1e9564cf6ecf8a3b104de7c8c467bbe06368b9546402cdf2d86ab8",
+    "declared_source_count": 78,
+    "declared_source_current_sha256_mismatches": [],
+    "verification_method": "One standard-library bookkeeping command parsed only scope/CPU receipt/recovery metadata and hashed declared source/retained-source bytes; no production import, raw-original stream read or extractor execution.",
+    "coverage": "All declared W top-level module/import-chain bindings; fixed V46 helper and its original seven interpretation sources; added recorder/runtime interpretation sources; V45 inventory; both new scripts; original CPU wait/console/recovery and both retained source copies.",
+    "engineering_used_at_entry_seconds": "55718.1502503176018",
+    "engineering_remaining_at_entry_seconds": "19281.8497496823982",
+    "engineering_ceiling_seconds": "75000",
+    "balance_decimal_equality_checked": true,
+    "declared_two_input_bytes_sum_checked": 384380343,
+    "actual_self_check_wait": {
+      "scope": "cpu",
+      "actual_returncode": 0,
+      "actual_waited": true,
+      "actual_child_wait_seconds": "0.118299942",
+      "nanosecond_interval_duration_exact": true,
+      "source_before_equals_after_equals_recovery_sources": true,
+      "actual_argv_equals_recovery_argv": true,
+      "current_source_hashes_and_sizes_match_receipt": true,
+      "both_retained_source_snapshot_hashes_match_receipt": true,
+      "self_check_not_rerun_by_this_review": true
+    },
+    "future_freeze_limit": "The final Git commit/push has not been performed by this reviewer. The runner and extractor will enforce the new exact Git/current bytes before actual consumption."
+  },
+  "credit": {
+    "raw_originals_consumed_by_this_review": 0,
+    "tests_executed_by_this_review": 0,
+    "native_world_or_model_runs": 0,
+    "scientific_or_native_qualification_claimed": false,
+    "fees_recomputed": false,
+    "old_failures_preserved": true
+  }
+}

@@ -8549,3 +8549,48 @@ rtk proxy env PYTHONNOUSERSITE=1 /usr/bin/python3 -B -m mr3_learning.reach_execu
 ```
 
 10项PASS，rc0实际reap，child0.107243055秒、source_unchanged=true；原件读取0、工程新增0。actual_wait/console/source_recovery/逐字测试源码保存在V46 checks。源码AST/原regex及producer schema静态独立审查无阻断；scope需随实现及V45完整库存新commit/push后精确freeze才可执行。[V46预声明](report/20261022_mr3_p2a_v46_startup_diagnosis.md)。
+
+
+## 2026-10-22 MR3 P2A V46：有限failed-startup提取实际闭合PASS
+
+唯一命令cwd=canonical wireless-rl：`rtk proxy env PYTHONNOUSERSITE=1 /usr/bin/python3 -B -m report.assets.20261022_mr3_p2a_v46_startup_diagnosis.run_forensic_v1 --freeze 8daa902d5fead2def8356cf781d488573d951769`；证据仍为V45freeze cace46e08e53b7e89a434e23721db85ac993f6f5/worker1第三rooms。实际reap rc0，8固定输入3101211B，SHA/bytes全等V45库存、stat稳定，0World/model/optimizer或科学重放。
+
+adapter完整723行、720state_update/1initial_inputs_ready(stamp37.92、第2行)/1safety_stop/1task_stopped、task_start0/parseerrors0，末3记录时刻freshtrue；只证明adapter发布和记录时刻源龄，不证明worker实际收到四ready或timeout门值。launch418行原native-stop正则0匹配missing（非ambiguous），末417/418为ordered shutdown向motion_safety-5发SIGINT及sending signal，随后无记录exit/CLI；23匹配行未入200选择/tail20，不称完整因果窗口。原V45 startup/cleanup/reset FAIL不改。
+
+parent真实.800222553秒，inner.460828695包含不加；累计55718.1502503176018/75000、余19281.8497496823982，pilot/final新增0。独立闭合review PASS/review_errors=[]，75scope源＋scope共76outer前后/current/Git一致、7ROS解释源一致，3保存PID/start freshgone（Z计存在）；review未重读raw/运行消费者。5派生原件262691B无损canonical封存，见[V46报告](report/20261022_mr3_p2a_v46_startup_diagnosis.md)及其中库存/review链接，纯包装0新工程费。
+
+下一仅有限读取现成driver_odometry_receipts和motion_safety两流以区分recorded ready/身份失效和motion故障，先人工边界、scope和新freeze；不猜因/加超时/重试旧V45，不把临时CPU优化候选名称算正式活动信用。旧20100整链仍不可沿用，95%/安全/source门保持，用户自主续接授权有效，P2A未完成。
+
+## 2026-10-22 MR3 P2A V48禁用数学CPU候选（非原生）
+
+HEAD基线8daa902d5fead2def8356cf781d488573d951769；候选在执行前保留完整源码与source_manifest，尚未接生产，实际before/after/current一致。两个独立人工activity均9组PASS（不同实现，各自对冻结旧字节），0原件/World/模型/更新/工程费。
+
+production实际命令（cwd canonical wireless-rl）：
+
+```text
+rtk proxy env PYTHONNOUSERSITE=1 /usr/bin/python3 -B -m mr3_learning.reach_execution --scope cpu --output report/assets/20261022_mr3_p2a_v48_support_cpu/checks/production_cpu_v1 --source mr3_learning/reach_execution.py --source mr3_learning/preparation.py --source mr3_learning/native_custody.py --source mr3_learning/supervisor.py --source report/assets/20261022_mr3_p2a_v48_support_cpu/source_manifest_v1.json --source report/assets/20261022_mr3_p2a_v48_support_cpu/production/geometry_reference_v1.py --source report/assets/20261022_mr3_p2a_v48_support_cpu/production/support_baseline_v1.py --source report/assets/20261022_mr3_p2a_v48_support_cpu/production/support_candidate_v1.py --source report/assets/20261022_mr3_p2a_v48_support_cpu/production/harness_v1.py -- /usr/bin/python3 -B report/assets/20261022_mr3_p2a_v48_support_cpu/production/harness_v1.py --output report/assets/20261022_mr3_p2a_v48_support_cpu/production_result_v1.json --profile-directory report/assets/20261022_mr3_p2a_v48_support_cpu/production_profiles_v1 --compare-performance
+```
+
+rc0、source_unchanged=true、实际child等待1.612845708秒。
+
+reader实际命令（cwd canonical wireless-rl）：
+
+```text
+rtk proxy env PYTHONNOUSERSITE=1 /usr/bin/python3 -B -m mr3_learning.reach_execution --scope cpu --output report/assets/20261022_mr3_p2a_v48_support_cpu/checks/reader_cpu_v1 --source mr3_learning/reach_execution.py --source mr3_learning/preparation.py --source mr3_learning/native_custody.py --source mr3_learning/supervisor.py --source report/assets/20261022_mr3_p2a_v48_support_cpu/source_manifest_v1.json --source report/assets/20261022_mr3_p2a_v48_support_cpu/reader/reader_baseline_v1.py --source report/assets/20261022_mr3_p2a_v48_support_cpu/reader/reader_candidate_v1.py --source report/assets/20261022_mr3_p2a_v48_support_cpu/reader/test_reader_candidate_v1.py --source report/assets/20261022_mr3_p2a_v48_support_cpu/reader/harness_cli.py -- /usr/bin/python3 -B report/assets/20261022_mr3_p2a_v48_support_cpu/reader/harness_cli.py --output report/assets/20261022_mr3_p2a_v48_support_cpu/reader_result_v1.json --profile-dir report/assets/20261022_mr3_p2a_v48_support_cpu/reader_profiles_v1
+```
+
+rc0、source_unchanged=true、实际child等待3.576926018秒。
+
+生产固定warm/cold完整public pair profile仅约1.238/1.061倍，reader冷trig约21.27倍但完整warm direction约1.15倍且cold sqrt轻微退化；不外推ENV吞吐或P2A资格。完整输入、测试与profile见[V48](report/20261022_mr3_p2a_v48_support_cpu.md)。
+
+## 2026-10-22 MR3 P2A V47两流诊断准备（未读原件）
+
+固定V45已闭合failedrooms两流384380343B，预约300工程秒（main240事后费用门＋外尾60），保留全部超额实际wait/reap费用并FAIL，不承诺未实现hard kill。新78源scope、库存及静态review无阻断；首次发现漏绑runtime已在freeze前补齐，不改测试源/重跑CPU。
+
+实际CPU命令（cwd canonical wireless-rl）：
+
+```text
+rtk proxy env PYTHONNOUSERSITE=1 /usr/bin/python3 -B -m mr3_learning.reach_execution --scope cpu --output report/assets/20261022_mr3_p2a_v47_ready_provenance/checks/self_check_cpu_v1 --source report/assets/20261022_mr3_p2a_v47_ready_provenance/closed_ready_extract_v1.py --source report/assets/20261022_mr3_p2a_v46_startup_diagnosis/closed_startup_extract_v1.py -- /usr/bin/python3 -B report/assets/20261022_mr3_p2a_v47_ready_provenance/closed_ready_extract_v1.py --self-check
+```
+
+10项PASS，rc0/reap，child0.118299942秒、两源稳定及逐字恢复；0原件/World/工程费，无科学资格。待新freeze提交push后唯一两流入口见[V47](report/20261022_mr3_p2a_v47_ready_provenance.md)。

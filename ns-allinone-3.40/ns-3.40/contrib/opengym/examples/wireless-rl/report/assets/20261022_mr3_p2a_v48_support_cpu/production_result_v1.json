@@ -1,0 +1,665 @@
+{
+  "schema": "mr3-v47-disabled-support-cpu-v1",
+  "passed": true,
+  "tests_run": 9,
+  "failures": [],
+  "errors": [],
+  "skipped": [],
+  "console": "test_all_direction_fields_and_canonical_bytes (__main__.suite.<locals>.Checks) ... ok\ntest_all_pair_fields_intervals_and_exact_frame_hashes (__main__.suite.<locals>.Checks) ... ok\ntest_direction_invalid_inputs_and_precedence_match (__main__.suite.<locals>.Checks) ... ok\ntest_frame_full_dict_before_compaction (__main__.suite.<locals>.Checks) ... ok\ntest_large_exact_values_and_repeat_history_preserve_results (__main__.suite.<locals>.Checks) ... ok\ntest_mutable_proofs_are_fresh_and_inputs_unmodified (__main__.suite.<locals>.Checks) ... ok\ntest_pair_invalid_hard_gates_ages_and_reach_match (__main__.suite.<locals>.Checks) ... ok\ntest_sqrt_eviction_and_validation_before_cache_hits (__main__.suite.<locals>.Checks) ... ok\ntest_sqrt_exact_bounds_cold_warm_and_bit_key (__main__.suite.<locals>.Checks) ... ok\n\n----------------------------------------------------------------------\nRan 9 tests in 0.121s\n\nOK\n",
+  "source_before": [
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v48_support_cpu/production/geometry_reference_v1.py",
+      "bytes": 9878,
+      "sha256": "cf46b49f0740f84511f3d34f9a8eb3e56720744515d9eea1dc81bd8bacb85f0a",
+      "stat": [
+        2051,
+        79181450,
+        9878,
+        1792681970593315340,
+        1792682416762261388
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v48_support_cpu/production/harness_v1.py",
+      "bytes": 19629,
+      "sha256": "17b28a8be12f6b791051d11b6bf376ff6ebcdca0f144d12e74ad9b741f449610",
+      "stat": [
+        2051,
+        79181452,
+        19629,
+        1792682130215811966,
+        1792682416762261388
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v48_support_cpu/production/support_baseline_v1.py",
+      "bytes": 11544,
+      "sha256": "2b45311d33fb2c5f4c05fa39d3acde7bcfc0c17ee3c2e62e0d2bdfbd4c961f34",
+      "stat": [
+        2051,
+        79181454,
+        11544,
+        1792681970593315340,
+        1792682416762261388
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v48_support_cpu/production/support_candidate_v1.py",
+      "bytes": 12236,
+      "sha256": "dc32cb48831dc333a9a4674ee83cce940e35a655a1b1fb9c5e6ba9b10be13966",
+      "stat": [
+        2051,
+        79181455,
+        12236,
+        1792681970823324402,
+        1792682416762261388
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v48_support_cpu/production/frozen_reference_manifest_v1.json",
+      "bytes": 1115,
+      "sha256": "9321c97fc8add78ab3da9de35c021bcbfd636e962d8492ef7253d1892af1e07a",
+      "stat": [
+        2051,
+        79181451,
+        1115,
+        1792682218117540350,
+        1792682416762261388
+      ]
+    }
+  ],
+  "source_after": [
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v48_support_cpu/production/geometry_reference_v1.py",
+      "bytes": 9878,
+      "sha256": "cf46b49f0740f84511f3d34f9a8eb3e56720744515d9eea1dc81bd8bacb85f0a",
+      "stat": [
+        2051,
+        79181450,
+        9878,
+        1792681970593315340,
+        1792682416762261388
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v48_support_cpu/production/harness_v1.py",
+      "bytes": 19629,
+      "sha256": "17b28a8be12f6b791051d11b6bf376ff6ebcdca0f144d12e74ad9b741f449610",
+      "stat": [
+        2051,
+        79181452,
+        19629,
+        1792682130215811966,
+        1792682416762261388
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v48_support_cpu/production/support_baseline_v1.py",
+      "bytes": 11544,
+      "sha256": "2b45311d33fb2c5f4c05fa39d3acde7bcfc0c17ee3c2e62e0d2bdfbd4c961f34",
+      "stat": [
+        2051,
+        79181454,
+        11544,
+        1792681970593315340,
+        1792682416762261388
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v48_support_cpu/production/support_candidate_v1.py",
+      "bytes": 12236,
+      "sha256": "dc32cb48831dc333a9a4674ee83cce940e35a655a1b1fb9c5e6ba9b10be13966",
+      "stat": [
+        2051,
+        79181455,
+        12236,
+        1792681970823324402,
+        1792682416762261388
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v48_support_cpu/production/frozen_reference_manifest_v1.json",
+      "bytes": 1115,
+      "sha256": "9321c97fc8add78ab3da9de35c021bcbfd636e962d8492ef7253d1892af1e07a",
+      "stat": [
+        2051,
+        79181451,
+        1115,
+        1792682218117540350,
+        1792682416762261388
+      ]
+    }
+  ],
+  "source_stable": true,
+  "private_namespace_projection": [
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v48_support_cpu/production/geometry_reference_v1.py",
+      "raw_sha256": "cf46b49f0740f84511f3d34f9a8eb3e56720744515d9eea1dc81bd8bacb85f0a",
+      "private_import_literal_replacements": 0,
+      "projected_source_sha256": "cf46b49f0740f84511f3d34f9a8eb3e56720744515d9eea1dc81bd8bacb85f0a"
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v48_support_cpu/production/support_baseline_v1.py",
+      "raw_sha256": "2b45311d33fb2c5f4c05fa39d3acde7bcfc0c17ee3c2e62e0d2bdfbd4c961f34",
+      "private_import_literal_replacements": 1,
+      "projected_source_sha256": "e89f3ce8b73760b29ff50c36199d7b4c25cca85f56f63c78a6ab1af64bbae08f"
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v48_support_cpu/production/support_candidate_v1.py",
+      "raw_sha256": "dc32cb48831dc333a9a4674ee83cce940e35a655a1b1fb9c5e6ba9b10be13966",
+      "private_import_literal_replacements": 1,
+      "projected_source_sha256": "cb31874372879feabfcdcf5636f02b95078376716daa1aeb1a5725ff48539e69"
+    }
+  ],
+  "direction_fixture_count": 14,
+  "pair_fixture_count": 12,
+  "profiles": [
+    {
+      "implementation": "baseline",
+      "mode": "warm_repeated",
+      "round": 0,
+      "actual_public_pair_calls": 12,
+      "actual_profiled_wall_ns": 67760504,
+      "public_result_sha256": "7eeda8686c257eb2ae8b1309ceb89c3db7462e6d4b8454d329c5ea422f548c04",
+      "pstats": {
+        "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v48_support_cpu/production_profiles_v1/baseline_warm_repeated_round0.pstats",
+        "bytes": 11737,
+        "sha256": "1dbe9954b3aaea832f88799e7ced96e666983c7ec16809fb36650960def0de25",
+        "stat": [
+          2051,
+          79181471,
+          11737,
+          1792682446879612662,
+          1792682446879612662
+        ]
+      },
+      "top25_cumulative": {
+        "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v48_support_cpu/production_profiles_v1/baseline_warm_repeated_round0.txt",
+        "bytes": 2248,
+        "sha256": "76c2b7b7140bc58e55179448d6721d8734b7db431d126a453019b9f966465525",
+        "stat": [
+          2051,
+          79181472,
+          2248,
+          1792682446881612752,
+          1792682446881612752
+        ]
+      },
+      "trig_cache": {
+        "hits": 89,
+        "misses": 1,
+        "maxsize": 128,
+        "currsize": 1
+      },
+      "sqrt_cache": null
+    },
+    {
+      "implementation": "baseline",
+      "mode": "warm_repeated",
+      "round": 1,
+      "actual_public_pair_calls": 12,
+      "actual_profiled_wall_ns": 67796907,
+      "public_result_sha256": "7eeda8686c257eb2ae8b1309ceb89c3db7462e6d4b8454d329c5ea422f548c04",
+      "pstats": {
+        "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v48_support_cpu/production_profiles_v1/baseline_warm_repeated_round1.pstats",
+        "bytes": 11737,
+        "sha256": "a82f2a9f00014dab506f766236bbf23593ec1ae2d6004471f6f76a778a399894",
+        "stat": [
+          2051,
+          79181473,
+          11737,
+          1792682446963616440,
+          1792682446963616440
+        ]
+      },
+      "top25_cumulative": {
+        "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v48_support_cpu/production_profiles_v1/baseline_warm_repeated_round1.txt",
+        "bytes": 2248,
+        "sha256": "cba88d6989b5bb5bc3ed87ebce8790e0fe3c7d34558d11bf999762a1cea77737",
+        "stat": [
+          2051,
+          79181474,
+          2248,
+          1792682446965616530,
+          1792682446965616530
+        ]
+      },
+      "trig_cache": {
+        "hits": 89,
+        "misses": 1,
+        "maxsize": 128,
+        "currsize": 1
+      },
+      "sqrt_cache": null
+    },
+    {
+      "implementation": "baseline",
+      "mode": "warm_repeated",
+      "round": 2,
+      "actual_public_pair_calls": 12,
+      "actual_profiled_wall_ns": 67564991,
+      "public_result_sha256": "7eeda8686c257eb2ae8b1309ceb89c3db7462e6d4b8454d329c5ea422f548c04",
+      "pstats": {
+        "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v48_support_cpu/production_profiles_v1/baseline_warm_repeated_round2.pstats",
+        "bytes": 11737,
+        "sha256": "9c31e47507f3cc5767949b7972ac106f064b83b53ed62b033f80c04bc0225747",
+        "stat": [
+          2051,
+          79181475,
+          11737,
+          1792682447047620218,
+          1792682447047620218
+        ]
+      },
+      "top25_cumulative": {
+        "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v48_support_cpu/production_profiles_v1/baseline_warm_repeated_round2.txt",
+        "bytes": 2248,
+        "sha256": "0ed115d959f1a4e714249e45e5957f6a8a7eb052e7eadccbbeba28a5af5879e6",
+        "stat": [
+          2051,
+          79181476,
+          2248,
+          1792682447050620353,
+          1792682447050620353
+        ]
+      },
+      "trig_cache": {
+        "hits": 89,
+        "misses": 1,
+        "maxsize": 128,
+        "currsize": 1
+      },
+      "sqrt_cache": null
+    },
+    {
+      "implementation": "baseline",
+      "mode": "cold_distinct_angles",
+      "round": 0,
+      "actual_public_pair_calls": 12,
+      "actual_profiled_wall_ns": 141815801,
+      "public_result_sha256": "e27d307b7bd6179eb4076202b214353fb465e7e6e6b5949969748fc979b3527b",
+      "pstats": {
+        "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v48_support_cpu/production_profiles_v1/baseline_cold_distinct_angles_round0.pstats",
+        "bytes": 11950,
+        "sha256": "5774985f9f2d5342ea7d68814afafd62d811b630c8f5cc63ba4c6a629dfb7ba9",
+        "stat": [
+          2051,
+          79181477,
+          11950,
+          1792682447196626921,
+          1792682447196626921
+        ]
+      },
+      "top25_cumulative": {
+        "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v48_support_cpu/production_profiles_v1/baseline_cold_distinct_angles_round0.txt",
+        "bytes": 2246,
+        "sha256": "2c886bf5ba9ec55d73d9e5d232937f58bf1a7a2b00e9b7d7eece727a6e82001f",
+        "stat": [
+          2051,
+          79181478,
+          2246,
+          1792682447199627056,
+          1792682447199627056
+        ]
+      },
+      "trig_cache": {
+        "hits": 12,
+        "misses": 12,
+        "maxsize": 128,
+        "currsize": 12
+      },
+      "sqrt_cache": null
+    },
+    {
+      "implementation": "baseline",
+      "mode": "cold_distinct_angles",
+      "round": 1,
+      "actual_public_pair_calls": 12,
+      "actual_profiled_wall_ns": 140707331,
+      "public_result_sha256": "e27d307b7bd6179eb4076202b214353fb465e7e6e6b5949969748fc979b3527b",
+      "pstats": {
+        "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v48_support_cpu/production_profiles_v1/baseline_cold_distinct_angles_round1.pstats",
+        "bytes": 11950,
+        "sha256": "0fe1d65dd2ef893fb7bbe33edbe1d166df160eb154ebb29896a1fcaca2779a58",
+        "stat": [
+          2051,
+          79181479,
+          11950,
+          1792682447341633443,
+          1792682447341633443
+        ]
+      },
+      "top25_cumulative": {
+        "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v48_support_cpu/production_profiles_v1/baseline_cold_distinct_angles_round1.txt",
+        "bytes": 2246,
+        "sha256": "d1e7c834a09ea211a49259056f7176615944d5ca23b07b13e29ecda4704a5b48",
+        "stat": [
+          2051,
+          79181480,
+          2246,
+          1792682447344633578,
+          1792682447344633578
+        ]
+      },
+      "trig_cache": {
+        "hits": 12,
+        "misses": 12,
+        "maxsize": 128,
+        "currsize": 12
+      },
+      "sqrt_cache": null
+    },
+    {
+      "implementation": "baseline",
+      "mode": "cold_distinct_angles",
+      "round": 2,
+      "actual_public_pair_calls": 12,
+      "actual_profiled_wall_ns": 139848123,
+      "public_result_sha256": "e27d307b7bd6179eb4076202b214353fb465e7e6e6b5949969748fc979b3527b",
+      "pstats": {
+        "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v48_support_cpu/production_profiles_v1/baseline_cold_distinct_angles_round2.pstats",
+        "bytes": 11950,
+        "sha256": "139c9202e789e33a0ca360f7636b4b717c4ef28820e11ec6ad2bc7f24e30db0c",
+        "stat": [
+          2051,
+          79181481,
+          11950,
+          1792682447485639920,
+          1792682447485639920
+        ]
+      },
+      "top25_cumulative": {
+        "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v48_support_cpu/production_profiles_v1/baseline_cold_distinct_angles_round2.txt",
+        "bytes": 2246,
+        "sha256": "e15a4659ab0ef996d29f625a469bfbe10818cb75a03c4a50830e771dd3d37966",
+        "stat": [
+          2051,
+          79181482,
+          2246,
+          1792682447487640010,
+          1792682447487640010
+        ]
+      },
+      "trig_cache": {
+        "hits": 12,
+        "misses": 12,
+        "maxsize": 128,
+        "currsize": 12
+      },
+      "sqrt_cache": null
+    },
+    {
+      "implementation": "candidate",
+      "mode": "warm_repeated",
+      "round": 0,
+      "actual_public_pair_calls": 12,
+      "actual_profiled_wall_ns": 54917372,
+      "public_result_sha256": "7eeda8686c257eb2ae8b1309ceb89c3db7462e6d4b8454d329c5ea422f548c04",
+      "pstats": {
+        "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v48_support_cpu/production_profiles_v1/candidate_warm_repeated_round0.pstats",
+        "bytes": 11141,
+        "sha256": "c244a4a7f3fd23c16a630dff4dbb3786526855d5b89c1e459de36be875234e1d",
+        "stat": [
+          2051,
+          79181483,
+          11141,
+          1792682447555643069,
+          1792682447555643069
+        ]
+      },
+      "top25_cumulative": {
+        "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v48_support_cpu/production_profiles_v1/candidate_warm_repeated_round0.txt",
+        "bytes": 2244,
+        "sha256": "1daf75c9e8ffeb2e8ea5a0903f508da13631efe31dfe5f875b42b5ae65bbd385",
+        "stat": [
+          2051,
+          79181484,
+          2244,
+          1792682447558643204,
+          1792682447558643204
+        ]
+      },
+      "trig_cache": {
+        "hits": 44,
+        "misses": 1,
+        "maxsize": 128,
+        "currsize": 1
+      },
+      "sqrt_cache": {
+        "hits": 148,
+        "misses": 2,
+        "maxsize": 256,
+        "currsize": 2
+      }
+    },
+    {
+      "implementation": "candidate",
+      "mode": "warm_repeated",
+      "round": 1,
+      "actual_public_pair_calls": 12,
+      "actual_profiled_wall_ns": 54419583,
+      "public_result_sha256": "7eeda8686c257eb2ae8b1309ceb89c3db7462e6d4b8454d329c5ea422f548c04",
+      "pstats": {
+        "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v48_support_cpu/production_profiles_v1/candidate_warm_repeated_round1.pstats",
+        "bytes": 11141,
+        "sha256": "882fd9aba698420d7bea51aa20726011c78425ca46e2ae05eea85bebba0e9871",
+        "stat": [
+          2051,
+          79181485,
+          11141,
+          1792682447625646218,
+          1792682447625646218
+        ]
+      },
+      "top25_cumulative": {
+        "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v48_support_cpu/production_profiles_v1/candidate_warm_repeated_round1.txt",
+        "bytes": 2244,
+        "sha256": "f3727bc73e32537ee474ac96c94dd1834d25ad65832a84d52416aca05f97da2b",
+        "stat": [
+          2051,
+          79181486,
+          2244,
+          1792682447627646308,
+          1792682447627646308
+        ]
+      },
+      "trig_cache": {
+        "hits": 44,
+        "misses": 1,
+        "maxsize": 128,
+        "currsize": 1
+      },
+      "sqrt_cache": {
+        "hits": 148,
+        "misses": 2,
+        "maxsize": 256,
+        "currsize": 2
+      }
+    },
+    {
+      "implementation": "candidate",
+      "mode": "warm_repeated",
+      "round": 2,
+      "actual_public_pair_calls": 12,
+      "actual_profiled_wall_ns": 54705887,
+      "public_result_sha256": "7eeda8686c257eb2ae8b1309ceb89c3db7462e6d4b8454d329c5ea422f548c04",
+      "pstats": {
+        "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v48_support_cpu/production_profiles_v1/candidate_warm_repeated_round2.pstats",
+        "bytes": 11141,
+        "sha256": "ccdb2a3efd40d26a91a06f0e7613df0fe9f16c12e6588ee8e15d8d08daf53d00",
+        "stat": [
+          2051,
+          79181487,
+          11141,
+          1792682447694649322,
+          1792682447694649322
+        ]
+      },
+      "top25_cumulative": {
+        "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v48_support_cpu/production_profiles_v1/candidate_warm_repeated_round2.txt",
+        "bytes": 2244,
+        "sha256": "1d231863b4547402e2e3845db1e7a437e5682505f39a6388380f86ba8f5f28f4",
+        "stat": [
+          2051,
+          79181488,
+          2244,
+          1792682447696649412,
+          1792682447696649412
+        ]
+      },
+      "trig_cache": {
+        "hits": 44,
+        "misses": 1,
+        "maxsize": 128,
+        "currsize": 1
+      },
+      "sqrt_cache": {
+        "hits": 148,
+        "misses": 2,
+        "maxsize": 256,
+        "currsize": 2
+      }
+    },
+    {
+      "implementation": "candidate",
+      "mode": "cold_distinct_angles",
+      "round": 0,
+      "actual_public_pair_calls": 12,
+      "actual_profiled_wall_ns": 133635814,
+      "public_result_sha256": "e27d307b7bd6179eb4076202b214353fb465e7e6e6b5949969748fc979b3527b",
+      "pstats": {
+        "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v48_support_cpu/production_profiles_v1/candidate_cold_distinct_angles_round0.pstats",
+        "bytes": 11715,
+        "sha256": "84bd73296bb852e8330448ced511fac4dc150048387b83999a665c47cec86dc9",
+        "stat": [
+          2051,
+          79181489,
+          11715,
+          1792682447834655619,
+          1792682447834655619
+        ]
+      },
+      "top25_cumulative": {
+        "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v48_support_cpu/production_profiles_v1/candidate_cold_distinct_angles_round0.txt",
+        "bytes": 2244,
+        "sha256": "46ea3e1c1b165c3042ddbb3770c6d8028f3132b784411e1ed184a4d74f0b77c5",
+        "stat": [
+          2051,
+          79181490,
+          2244,
+          1792682447836655709,
+          1792682447836655709
+        ]
+      },
+      "trig_cache": {
+        "hits": 0,
+        "misses": 12,
+        "maxsize": 128,
+        "currsize": 12
+      },
+      "sqrt_cache": {
+        "hits": 70,
+        "misses": 2,
+        "maxsize": 256,
+        "currsize": 2
+      }
+    },
+    {
+      "implementation": "candidate",
+      "mode": "cold_distinct_angles",
+      "round": 1,
+      "actual_public_pair_calls": 12,
+      "actual_profiled_wall_ns": 133160318,
+      "public_result_sha256": "e27d307b7bd6179eb4076202b214353fb465e7e6e6b5949969748fc979b3527b",
+      "pstats": {
+        "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v48_support_cpu/production_profiles_v1/candidate_cold_distinct_angles_round1.pstats",
+        "bytes": 11715,
+        "sha256": "b68d30472514aaea4e0aa7990c3aaee287d554cbd8952ed1dbeb4ca577872b50",
+        "stat": [
+          2051,
+          79181491,
+          11715,
+          1792682447971661782,
+          1792682447971661782
+        ]
+      },
+      "top25_cumulative": {
+        "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v48_support_cpu/production_profiles_v1/candidate_cold_distinct_angles_round1.txt",
+        "bytes": 2244,
+        "sha256": "29c1594fcdb10616fca3aab1e28f776130b755063491bebcc52cda34ccdf383a",
+        "stat": [
+          2051,
+          79181492,
+          2244,
+          1792682447973661872,
+          1792682447973661872
+        ]
+      },
+      "trig_cache": {
+        "hits": 0,
+        "misses": 12,
+        "maxsize": 128,
+        "currsize": 12
+      },
+      "sqrt_cache": {
+        "hits": 70,
+        "misses": 2,
+        "maxsize": 256,
+        "currsize": 2
+      }
+    },
+    {
+      "implementation": "candidate",
+      "mode": "cold_distinct_angles",
+      "round": 2,
+      "actual_public_pair_calls": 12,
+      "actual_profiled_wall_ns": 131409426,
+      "public_result_sha256": "e27d307b7bd6179eb4076202b214353fb465e7e6e6b5949969748fc979b3527b",
+      "pstats": {
+        "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v48_support_cpu/production_profiles_v1/candidate_cold_distinct_angles_round2.pstats",
+        "bytes": 11715,
+        "sha256": "72621078a15cf5ea01f1e6f4b2adf54a0460a690c87b8f4378476e770177c85c",
+        "stat": [
+          2051,
+          79181493,
+          11715,
+          1792682448106667855,
+          1792682448106667855
+        ]
+      },
+      "top25_cumulative": {
+        "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v48_support_cpu/production_profiles_v1/candidate_cold_distinct_angles_round2.txt",
+        "bytes": 2244,
+        "sha256": "d1beadd5bb89d88039aa053ed7a22c24487f7acbc0a5a29f52a3d16476990b20",
+        "stat": [
+          2051,
+          79181494,
+          2244,
+          1792682448109667990,
+          1792682448109667990
+        ]
+      },
+      "trig_cache": {
+        "hits": 0,
+        "misses": 12,
+        "maxsize": 128,
+        "currsize": 12
+      },
+      "sqrt_cache": {
+        "hits": 70,
+        "misses": 2,
+        "maxsize": 256,
+        "currsize": 2
+      }
+    }
+  ],
+  "profiled_timing_is_ENV_throughput": false,
+  "qualification": false,
+  "native_or_World_run": false,
+  "learning_updates": 0,
+  "production_enabled": false,
+  "raw_originals_read": false,
+  "independent_reader_imported": false,
+  "candidate_timing_requested": true,
+  "notes": "Artificial fixed inputs only. Full public dict/canonical bytes/frame hashes/exceptions checked; bounded exact numeric cache. No task, physical model or native qualification credit."
+}

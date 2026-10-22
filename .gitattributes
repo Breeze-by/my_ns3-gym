@@ -164,3 +164,16 @@ ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/2026
 ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v46_startup_diagnosis/checks/**/*.log -text -whitespace
 ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v46_startup_diagnosis/checks/source_snapshots/** -text -whitespace
 ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v46_startup_diagnosis/closed_startup_extract_v1.py -text whitespace=blank-at-eol,space-before-tab,-blank-at-eof
+
+# V46 complete descriptive outputs and actual console preserve exact bytes.
+ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v46_startup_diagnosis/closed_execution/** -text -whitespace
+
+# V47 exact artificial console and retained tested source bytes.
+ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v47_ready_provenance/checks/**/*.log -text -whitespace
+ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v47_ready_provenance/checks/source_snapshots/** -text -whitespace
+# V48 canonical disabled source inputs and actual consoles retain exact bytes.
+ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v48_support_cpu/production/* -text -whitespace
+ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v48_support_cpu/reader/* -text -whitespace
+ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v48_support_cpu/checks/**/*.log -text -whitespace
+# Preserve the original pstats print_stats text, including its trailing empty line.
+ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v48_support_cpu/production_profiles_v1/*.txt -text -whitespace

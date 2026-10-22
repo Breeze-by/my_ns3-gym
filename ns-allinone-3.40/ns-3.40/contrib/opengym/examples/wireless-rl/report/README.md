@@ -1,5 +1,9 @@
 # 报告与证据适用范围
 
+2026-10-22 V47预声明：V46有限诊断已闭合，继续一次读取failedrooms现成recorder/motion两流384380343B以核ready/身份来源；10项内存自检PASS，78源scope及库存绑定已核，尚未原件消费。工程入场55718.1502503176018/75000、余19281.8497496823982，预约300（main240事后费用门＋外尾60，超额全费FAIL）。V48两套禁用数学候选9＋9人工CPU通过，仅局部收益；未接生产、不供native/95%信用。P2A未完成，自主续接不再一般审批。见[V47](20261022_mr3_p2a_v47_ready_provenance.md)。
+
+2026-10-22 V46有限诊断闭合PASS：freeze8daa902d5fead2def8356cf781d488573d951769一次读取8文件3101211B；adapter720state/1initial-ready(37.92)/0task-start/0解析错误，末3记录时刻fresh；stopCLI原正则0匹配missing，launch尾为motion_safety-5 SIGINT，未记录后继exit/CLI。worker实际ready收到情况仍unknown，不据此猜根因或改判V45FAIL。76outer源/current/Git一致、3身份gone，5派生原件262691B封存；parent实费.800222553，累计55718.1502503176018/75000、余19281.8497496823982，pilot/final不动、P2A未完成。下一仅两份现成driver/motion流的有界诊断，不改400秒/数学/任务门；用户自主续接授权保持。见[V46闭合](20261022_mr3_p2a_v46_startup_diagnosis.md)。
+
 2026-10-22 V46预声明：V45真实FAIL及原件完整封存保持；固定8份failedrooms小原件的一次有限诊断，主parent240＋外尾60＝300工程秒预约，10项纯内存自检PASS/0原件读取。待新freeze后执行；不加超时/降门或沿用不可负担的20100旧整链，P2A未完成，用户自主续接无需再次询问。见[V46](20261022_mr3_p2a_v46_startup_diagnosis.md)。
 
 2026-10-22 V45闭合FAIL：freeze cace46e08e53b7e89a434e23721db85ac993f6f5实际preflight/interface/terminal PASS（15/30必要角色）；reset native138返回后worker1第三回合rooms内400秒delivered-input startup guard、外420秒reset RPC超时，cleanup身份缺失/歧义FAIL，强制rc-9；worker0在途rooms10返回后合作停。9实际EP尝试，deadline/minimum/pilot/final未启、0学习。独立关闭review PASS/433保存身份gone、846源/10ELF相符，原FAIL不改。实费5669.105956969，累计55717.3500277646018/75000、余19282.6499722353982；pilot/final不动，P2A未完成。下一V46先≤300秒有界ready/stopCLI诊断，不加超时或重试旧活动；原20100整链预约已大于余额，须另按实测成本前瞻制定scope。用户自主续接授权保持。见[V45闭合](20261022_mr3_p2a_v45_preparation_classification.md)。
