@@ -8819,3 +8819,5 @@ v1人工14项PASS/.227115563秒原件保留；独立review指出输出fallback h
 ```
 
 正式唯一命令为本次commit/push后 `rtk proxy env PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 CUDA_VISIBLE_DEVICES= /usr/bin/python3 -B report/assets/20261023_mr3_p2a_v53_firstfault/run_firstfault_v1.py --freeze NEW_EXACT40`。新40位值由实际启动登记，当前没有raw结果。先取具体robot/reason再做CPU修复及新前瞻原生验证；不能直接PPO或混冻结补齐矩阵。P2A未完成，用户持续执行授权保持。
+
+V52 Git投递补记：第一次本地闭合commit `a5a7a3a` 后、推送前，发现上层 contrib/opengym/.gitignore 的通用 `parts/` 规则使六个packed块被普通add忽略。已对manifest指定六路径执行 `git add -n -f -- <exact-six-paths>` 后显式add；两个本地大gzip仍未强制纳入。7776 payload路径全部在index，六块index blob的完整SHA/bytes与manifest一致；[覆盖证明](report/assets/20261023_mr3_p2a_v52_qualification/git_delivery_v1.json)与更正提交一起推送。无原件删除、重压、科学重跑或费用变更。

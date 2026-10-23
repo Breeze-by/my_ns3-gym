@@ -70,3 +70,5 @@ deadline native 完成 **203 次完整 step 返回**，随后一次请求在244.
 实际 overlay rc0、20.440347567 CPU scope实际wait墙秒，仅将两个超过64MiB的既有 packed gzip 按字节拆为六份，每份≤67108864B；逐份与完整连接 SHA均校验，不解压/重压/重放。原 packed 保留本地，只有其两条精确路径被 ignore；分片与不可变 V1 inventory 一起纳入 Git。[最终 manifest](assets/20261023_mr3_p2a_v52_qualification/packed_overlay_v1/manifest.json) SHA `0b5d73736e9560982ca6234cb49e59d589de21e83d40ddeff3ead1abcb6104ad` 保存 offset/index、每份 SHA、完整 gzip SHA及原 raw SHA 的映射。[恢复说明及工具](assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/README.md)给出 exclusive 输出与完整 SHA校验命令；本节所述 canonical字节指标是V1逻辑表示，不是本地同时保留原 gzip/分片后的磁盘用量。
 
 下一步先对固定已闭合原件作一次另行封存范围的有限**首控制故障取证**，识别真实 producer first-fault 与接收链，再按原因修复、CPU验证和新freeze。不能只据通用错误名选根因、放宽95%/质量/安全/12EP30角色，或在修复前启动PPO/机械重跑完整矩阵。剩余30126.4942632073982秒已不足原47220整链预约，后继资源须按实际问题另作有界安排，不借用pilot/final额度。归档和metadata关闭PASS不代表技术P2A完成。
+
+Git 投递补记：上层既有 `parts/` ignore 使首个本地闭合提交漏纳六块；在推送/正式取证前已逐项强制纳入这六个 manifest 指定分块，未强制纳入两个本地大 gzip。全7772逻辑原件对应的7776份 Git payload（7770直接文件＋6块）路径覆盖及六块 index-blob SHA 验证通过，见 [Git投递覆盖](assets/20261023_mr3_p2a_v52_qualification/git_delivery_v1.json)。这是存储提交补齐，原库存、overlay 与科学 FAIL 不变。
