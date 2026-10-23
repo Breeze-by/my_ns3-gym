@@ -1,0 +1,33 @@
+{
+  "schema": "mr3-v55-passive-pair-scope-v1",
+  "admitted": false,
+  "status": "PREPARED_NOT_ADMITTED_ROOT_REAL_BUILD_AND_CPU_REQUIRED",
+  "evidence_freeze": "1fa55bc56d5bb9e230d4b397f962d83b1604b278",
+  "arms": [
+    "quick50",
+    "direct-world"
+  ],
+  "no_retry": true,
+  "gazebo_master_uri": "http://127.0.0.1:11555",
+  "per_case_outer_stop_seconds": 720,
+  "interrupt_to_TERM_seconds": 10,
+  "TERM_to_KILL_seconds": 10,
+  "budget": {
+    "engineering_used_seconds": "90357.3610697996018",
+    "engineering_ceiling_seconds": "120000",
+    "engineering_remaining_seconds": "29642.6389302003982",
+    "reservation_seconds": "1800",
+    "pilot_added_seconds": "0",
+    "validation_added_seconds": "0"
+  },
+  "prepared_spec": null,
+  "elf": null,
+  "build_manifest": null,
+  "build_actual_wait": null,
+  "actual_compile_argv": null,
+  "source_bindings": {},
+  "old_source_bindings": {},
+  "numeric_user_approval_claimed": false,
+  "scientific_qualification_credit": false,
+  "note": "Template only. Root make_scope_v1.py reads actual final prepared_worlds_v3/spec and build_manifest_v2; nulls/empty bindings cannot be admitted or run."
+}

@@ -8851,3 +8851,21 @@ rtk proxy env PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 CUDA_VISIBLE_DEVICES=
 原live观察辅助actual_tool_program_argument误将sys.argv索引2取为`--freeze`；原live字节不改。[更正说明](report/assets/20261023_mr3_p2a_v54_firstfault/closed_execution/closure_tools/mr3_p2a_v54_live_argv_field_correction_v1.json)绑定live/launch/summary原SHA，明确真实工具调用使用上列绝对runner。entry/summary argv与launch除去Python `-B`后逐项相等；辅助错位字段不作程序/身份来源证明，未补PID/start。
 
 [V54实际报告](report/20261023_mr3_p2a_v54_firstfault.md)、[闭合库存](report/assets/20261023_mr3_p2a_v54_firstfault/closed_inventory_v1.json)及[规范末账](report/assets/20261023_mr3_p2a_v54_firstfault/closure_ledger_v1.json)保存全部实际结果。V52资格FAIL/V53partial FAIL及其费用不改，描述PASS不提供原生资格/学习信用。下一仅转向固定KEEP故障的零驱动物理诊断，尚未承诺新scope或solver成功；12EP30角色/95%质量/安全门保持，P2A未完成。
+
+
+### 2026-10-23 MR3 P2A V55：零驱动两case诊断准备，尚未World
+
+[V55报告](report/20261023_mr3_p2a_v55_passive_plant.md)由root维护。本轮安装native CPP/generator与有限driver，只准备quick50/direct-world两独立臂各一次的物理诊断；不是旧EP exact replay、完整18stream安全审计或原生资格。3机、45仿真秒settle后固定一次anchor、310秒hold、355000×1ms固定步、34ms电机更新；保持原12EP30角色/95%/质量/安全门与旧FAIL。
+
+三轮真实CPU编译均PASS，实际wall依次51.086935907、50.734880339、47.164755331秒，各组两保存身份freshgone。只有末轮CPP/ELF可供后续执行；前轮完整源码、ELF gzip、wait/console与prepared_worlds_v1/v2/v3均保留。代码先补首末UpdateEnd时钟与310001 post-anchor观测，再补loadWorld后、runWorld前的physics->SetSeed(101)；ignition Rand种子回读不冒充ODE readback，新physics API仅记录set调用是否完成。最终prepared_worlds_v3的spec含末轮CPP源SHA，未回写旧spec。
+
+最终ELF `/tmp/mr3_p2a_v55_build_v3/passive_plant_v1` 为471256B，SHA `b2e154c4b08105c7d37193c8e18df19bb9275542da41924ca06f066b361e7a63`；[真实buildmanifest_v2](report/assets/20261023_mr3_p2a_v55_passive_plant/checks/build_manifest_v2.json)绑定末轮直接g++ argv/actualwait、CPP/header、ELF及[规范gzip](report/assets/20261023_mr3_p2a_v55_passive_plant/native/passive_plant_v1.elf.gz)，342个链接依赖按真实SHA保留，/lib与/usr/lib别名按resolved同对象比较。ELF是编译产物，不伪称/tmp路径属于Git。
+
+manifest元数据首轮whole-stat比较断言失败rc1，[原失败记录](report/assets/20261023_mr3_p2a_v55_passive_plant/checks/build_manifest_metadata_attempt_v1.json)保留。只将稳定检查限定为dev/ino/size/mode/mtime/ctime后完成封存；没有证据确定原来哪一具体stat字段变化，也未因此重编译。
+
+driver两轮各6人工CPU真实PASS，完整wall .32403286/.292878378秒；后轮只修Popen后先捕身份、规范W入口及learner_models_loaded标签。fake child partial/rc/no-retry、连续pair含gap与超额全费、scope/Git与R超标不冒充消费者失败均有小fixture。clean-env `ld-linux --list` 实际CPU PASS/.068962845墙秒，无World；不把动态链接可用当物理成功。[最新driver CPU](report/assets/20261023_mr3_p2a_v55_passive_plant/checks/driver_cpu_v2/actual_wait.json)和[loader CPU](report/assets/20261023_mr3_p2a_v55_passive_plant/checks/loader_cpu_v1/actual_wait.json)保存完整argv/wait，最新保存身份的关闭以root实际postreap证明为准，不提前补造gone。
+
+正式尚未World。预算承接90357.3610697996018/120000、余29642.6389302003982，预约连续pair parent1800墙秒（最坏预约后余27842.6389302003982）；从第一wrapper Popen到末真实wait，包括两臂间所有gaps/metadata，nested不叠加。每case合作式work600，外层720后只按自身CPP的PID/start/pidfd收尾，INT后10秒TERM、再10秒KILL并实际wait；缺余额则skip且FAIL，不补样/重试或假填退出码，超额完整收费FAIL。固定GAZEBO_MASTER_URI为11555专属端口，初始/两case间确认未占用，不干扰或kill他人。仅比较quick50/world设置，baseline超R是预定测量结果，不等同消费者执行失败。原pilot/final余额不动，120000仍为代理依持续委托选择而非数值用户批准。新exact40freeze后才实际执行，P2A未完成。
+
+
+V55正式入场前续补（仍无World/工程新增0）：最初clean-loader rc0的对象核对实际失败，system urdfdom model/world两库不同于build ldd的ROS对象，见`checks/loader_binding_attempt_v1.json`。driver显式LD_LIBRARY_PATH=/opt/ros/humble/lib:/opt/ros/humble/lib/x86_64-linux-gnu后，同6人工CPU第三轮真实PASS/.293310886墙秒；clean loader第二轮真实PASS/.061848255墙秒，342个resolved库对象及SHA逐项一致。两组真实reap后各两保存身份freshgone，未混PYTHONPATH/启动ROSNode/World。原scope准入草稿保留，当前scope重新绑定最终driver。前段规范gzip链接指向第二轮准备ELF；正式选择为[第三轮ELF gzip](report/assets/20261023_mr3_p2a_v55_passive_plant/native/passive_plant_v3.elf.gz)，其raw471256B/SHA b2e154c4b08105c7d37193c8e18df19bb9275542da41924ca06f066b361e7a63与build_manifest_v2一致。此前原件/失败/账不改。

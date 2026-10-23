@@ -1,0 +1,221 @@
+{
+  "schema": "mr3-v55-passive-pair-scope-v1",
+  "admitted": true,
+  "status": "ROOT_SEALED_AFTER_REAL_CPU_BUILD",
+  "evidence_freeze": "1fa55bc56d5bb9e230d4b397f962d83b1604b278",
+  "arms": [
+    "quick50",
+    "direct-world"
+  ],
+  "no_retry": true,
+  "gazebo_master_uri": "http://127.0.0.1:11555",
+  "per_case_outer_stop_seconds": 720,
+  "interrupt_to_TERM_seconds": 10,
+  "TERM_to_KILL_seconds": 10,
+  "budget": {
+    "engineering_used_seconds": "90357.3610697996018",
+    "engineering_ceiling_seconds": "120000",
+    "engineering_remaining_seconds": "29642.6389302003982",
+    "reservation_seconds": "1800",
+    "pilot_added_seconds": "0",
+    "validation_added_seconds": "0"
+  },
+  "prepared_spec": {
+    "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v55_passive_plant/prepared_worlds_v3/spec_v1.json",
+    "bytes": 4664,
+    "sha256": "82328a5080274a33c9a1c9a00a3bb817758be6b889d0e4b3f97d4579f6f01530"
+  },
+  "elf": {
+    "path": "/tmp/mr3_p2a_v55_build_v3/passive_plant_v1",
+    "bytes": 471256,
+    "sha256": "b2e154c4b08105c7d37193c8e18df19bb9275542da41924ca06f066b361e7a63"
+  },
+  "build_manifest": {
+    "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v55_passive_plant/checks/build_manifest_v2.json",
+    "bytes": 62514,
+    "sha256": "b4ba68b17ac2ee4e9e3c91272016d5556be32a44c14c299f675b77bb9517e2da"
+  },
+  "build_actual_wait": {
+    "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v55_passive_plant/checks/compile_cpu_v3/actual_wait.json",
+    "bytes": 10277,
+    "sha256": "0d8600840af0c57a65b3c9d85ee00a530a11ed0deb450c80996b6046166bdcda"
+  },
+  "actual_compile_argv": [
+    "/usr/bin/g++",
+    "-std=c++17",
+    "-O2",
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v55_passive_plant/passive_plant_v1.cpp",
+    "-I/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/include",
+    "-std=c++11",
+    "-std=c++17",
+    "-pthread",
+    "-std=c++17",
+    "-I/usr/lib/x86_64-linux-gnu/pkgconfig/../../..//include/gazebo-11",
+    "-I/usr/include/sdformat-9.7",
+    "-I/usr/lib/x86_64-linux-gnu/pkgconfig/../../..//include/ignition/fuel_tools4",
+    "-I/usr/include/x86_64-linux-gnu",
+    "-I/usr/lib/x86_64-linux-gnu/pkgconfig/../../..//include/ignition/common3",
+    "-I/usr/lib/x86_64-linux-gnu/pkgconfig/../../..//include/ignition/transport8",
+    "-isystem",
+    "/usr/include/mit-krb5",
+    "-I/usr/include/pgm-5.3",
+    "-I/usr/include/libxml2",
+    "-I/usr/include/uuid",
+    "-I/usr/lib/x86_64-linux-gnu/pkgconfig/../../..//include/ignition/msgs5",
+    "-I/usr/lib/x86_64-linux-gnu/pkgconfig/../../..//include/ignition/math6",
+    "-I/usr/lib/x86_64-linux-gnu/pkgconfig/../../..//include/ignition/cmake2",
+    "-L/usr/lib/x86_64-linux-gnu/pkgconfig/../../..//lib/x86_64-linux-gnu",
+    "-L/usr/lib/x86_64-linux-gnu/pkgconfig/../../..//lib/x86_64-linux-gnu/gazebo-11/plugins",
+    "-L/usr/lib/x86_64-linux-gnu/pkgconfig/../../..//lib/x86_64-linux-gnu",
+    "-Wl,-rpath,/usr/lib/x86_64-linux-gnu/pkgconfig/../../..//lib/x86_64-linux-gnu/gazebo-11/plugins",
+    "-lgazebo_transport",
+    "-lgazebo_physics",
+    "-lgazebo_sensors",
+    "-lgazebo_rendering",
+    "-lgazebo_gui",
+    "-lgazebo_client",
+    "-lgazebo_msgs",
+    "-lgazebo_common",
+    "-lgazebo",
+    "-lboost_thread",
+    "-lboost_system",
+    "-lboost_filesystem",
+    "-lboost_program_options",
+    "-lboost_regex",
+    "-lboost_iostreams",
+    "-lboost_date_time",
+    "-lsdformat9",
+    "-ltbb",
+    "-lignition-fuel_tools4",
+    "-lignition-transport8",
+    "-luuid",
+    "-lignition-msgs5",
+    "-lprotobuf",
+    "-lignition-math6",
+    "-o",
+    "/tmp/mr3_p2a_v55_build_v3/passive_plant_v1"
+  ],
+  "source_bindings": {
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/__init__.py": {
+      "bytes": 82,
+      "sha256": "1ed62607abac81c63a25c885a23a52f0152d279db480f5c270abea3da55564ef"
+    },
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/benchmark.py": {
+      "bytes": 60161,
+      "sha256": "9c6902f11d2069e684a08d58dfb13285fc61dbe9be040360558903f4fce16bfe"
+    },
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/ipc.py": {
+      "bytes": 1983,
+      "sha256": "55c6cb4d4a985418ce43e9d753b2d84400bb48138d5588ef43080380bd33cf18"
+    },
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/native_custody.py": {
+      "bytes": 56281,
+      "sha256": "4edcdb6b33105e274c1c908c9d78e8c5d24461ff6733ed0f976e41bad3f2d928"
+    },
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/preparation.py": {
+      "bytes": 48624,
+      "sha256": "850ab8947f711033f3f2fd17ef57d32098c02d569c1bea0f5cf58aaff8acd767"
+    },
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d_process.py": {
+      "bytes": 1384,
+      "sha256": "a975de72416cb8e49a706412957fc15c8dab678b7ac39c7912a3d576542d6331"
+    },
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_execution.py": {
+      "bytes": 3222,
+      "sha256": "fa7da30bf18a71a7a28698f733590074bdf164c8857028640aedba5d21fd8be4"
+    },
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/supervisor.py": {
+      "bytes": 28204,
+      "sha256": "a9364451639806220c82416a1af386e223fde3613b87e5ad76e6c57e3f54baf5"
+    },
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v55_passive_plant/passive_plant_v1.cpp": {
+      "bytes": 18778,
+      "sha256": "4a67ce06e988c372bc880ca7937bbfcabe33a405c504b0b443684a27ba67ce80"
+    },
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v55_passive_plant/prepare_passive_plant_v1.py": {
+      "bytes": 7862,
+      "sha256": "e7a6be5ee44d1bca52e4e73c6b6d9b3893aedf99b2cd0bcf7c1ad3351ef2cd73"
+    },
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v55_passive_plant/run_passive_pair_v1.py": {
+      "bytes": 29996,
+      "sha256": "6a2ffd6117aa91dbb3343406857fc096b0db9d1f95de6824a10d0d8b90e028b4"
+    },
+    "ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py": {
+      "bytes": 106723,
+      "sha256": "b873d8ce00cc07583b340889fd49539f0a78cd8f6c0fa9e14a2dec6f92340e92"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/paired_wheel_slew.hpp": {
+      "bytes": 3592,
+      "sha256": "dca3dbaf01251cf7ffe167f1dabb23a45b4fc95d6ad317dcc3290ff50ecf9a1b"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py": {
+      "bytes": 68485,
+      "sha256": "2b7385d26268cdc74590015f1d78f1febabf04bef65c05ea435fa754d9241748"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/models/turtlebot3_waffle/model.sdf": {
+      "bytes": 18371,
+      "sha256": "c8131da065085475bdb0ce1e4c3abfc8c009811af6851fadf1fc33bd38b1d8a1"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/src/mr3_gazebo_diff_drive.cpp": {
+      "bytes": 41255,
+      "sha256": "df307bd4d24abb588ded81752c4b2750cfbc3bb01986295b2e850561811e058a"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/motion_safety.py": {
+      "bytes": 51604,
+      "sha256": "f01ae5213740cfb134423fd0e4ddc2d880e2114db66bc63c16164ad027d05735"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py": {
+      "bytes": 18129,
+      "sha256": "197ff4bfcca9f815e191dcddea7a2a6af46a033c68310e350b63ad9e48579a69"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_reach_runtime.py": {
+      "bytes": 31245,
+      "sha256": "3f1fac149adaadfe27197b538e73bbd149b04d28374c38106b26b762dc4e79dc"
+    }
+  },
+  "old_source_bindings": {
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/benchmark.py": {
+      "bytes": 60161,
+      "sha256": "9c6902f11d2069e684a08d58dfb13285fc61dbe9be040360558903f4fce16bfe"
+    },
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/supervisor.py": {
+      "bytes": 28204,
+      "sha256": "a9364451639806220c82416a1af386e223fde3613b87e5ad76e6c57e3f54baf5"
+    },
+    "ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py": {
+      "bytes": 106723,
+      "sha256": "b873d8ce00cc07583b340889fd49539f0a78cd8f6c0fa9e14a2dec6f92340e92"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/paired_wheel_slew.hpp": {
+      "bytes": 3592,
+      "sha256": "dca3dbaf01251cf7ffe167f1dabb23a45b4fc95d6ad317dcc3290ff50ecf9a1b"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py": {
+      "bytes": 68485,
+      "sha256": "2b7385d26268cdc74590015f1d78f1febabf04bef65c05ea435fa754d9241748"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/models/turtlebot3_waffle/model.sdf": {
+      "bytes": 18371,
+      "sha256": "c8131da065085475bdb0ce1e4c3abfc8c009811af6851fadf1fc33bd38b1d8a1"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/src/mr3_gazebo_diff_drive.cpp": {
+      "bytes": 41255,
+      "sha256": "df307bd4d24abb588ded81752c4b2750cfbc3bb01986295b2e850561811e058a"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/motion_safety.py": {
+      "bytes": 51604,
+      "sha256": "f01ae5213740cfb134423fd0e4ddc2d880e2114db66bc63c16164ad027d05735"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py": {
+      "bytes": 18129,
+      "sha256": "197ff4bfcca9f815e191dcddea7a2a6af46a033c68310e350b63ad9e48579a69"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_reach_runtime.py": {
+      "bytes": 31245,
+      "sha256": "3f1fac149adaadfe27197b538e73bbd149b04d28374c38106b26b762dc4e79dc"
+    }
+  },
+  "entry_ledger": "report/assets/20261023_mr3_p2a_v54_firstfault/closure_ledger_v1.json",
+  "numeric_user_approval_claimed": false,
+  "scientific_qualification_credit": false
+}
