@@ -1,0 +1,25 @@
+{
+  "schema": "mr3-v54-original-live-argv-field-correction-v1",
+  "observed_monotonic_ns": 4478331319501628,
+  "original_live_observation": {
+    "path": "/tmp/mr3_p2a_v54_live_ancestor_observation_v1.json",
+    "bytes": 865,
+    "sha256": "6c0be285e7633b2837efe6bfd8a43f3698ba27febe9e0ed46b292bb92ea9f529"
+  },
+  "original_launch": {
+    "path": "/tmp/mr3_p2a_v54_root_launch_v1.json",
+    "bytes": 1913,
+    "sha256": "51a2aeb7ac7d1bab297d08a1e2be407f4a30f3fd38069b2c84492c5e62209bd9"
+  },
+  "original_driver_summary": {
+    "path": "/tmp/mr3_p2a_v54_driver_v1/summary.json",
+    "bytes": 15527,
+    "sha256": "b2ec8f9b0452c4b9b1c1f15dc0ed65f4dd8678459487c07976f3bb3623d748a8"
+  },
+  "original_field_value_preserved": "--freeze",
+  "actual_tool_program_argument": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v54_firstfault/run_firstfault_v1.py",
+  "reason": "root observer indexed sys.argv representation at2 rather than1; driver actual argv omits Python interpreter flag -B",
+  "actual_tool_call_used_launch_absolute_program": true,
+  "actual_launch_equals_driver_argv_after_interpreter_flags": true,
+  "identity_observations_changed_or_reconstructed": false
+}

@@ -8834,3 +8834,20 @@ V52 Git投递补记：第一次本地闭合commit `a5a7a3a` 后、推送前，�
 不是在V53原目录补读。新[V54](report/20261023_mr3_p2a_v54_firstfault.md)保持同两原件、epoch、244.48–244.62s窗口、原序firstfault/首尾选择规则及七解释源，显式改每文件200万行/work480墙秒/完整parent600墙秒。工程承接90102.9195132536018/120000、余29897.0804867463982；预约后余29297.0804867463982，120000仍为代理依自主委托前瞻决定、非数值用户批准；pilot/final原额保持。
 
 候选首轮support-source路径setup失败（没有测试Popen/actualwait）原件保留，命令修正后21项人工CPU真实PASS/.170796105墙秒。规范安装同21项再次PASS/.375278637墙秒、18源前后稳定、两身份freshgone。均小人工流，无真实两输入消费、工程新增0；14源/七旧Git/spec绑定预检查已封存。正式待新commit/push exact40freeze后唯一命令，独占新V54输出；600秒为完整parent费用门，超额全费FAIL，不自动重试/扩大输入，不声称全读或首故障已证实。[规范CPU回执](report/assets/20261023_mr3_p2a_v54_firstfault/checks/canonical_cpu_v1/actual_wait.json)与[资源差异](report/assets/20261023_mr3_p2a_v54_firstfault/resource_only_manifest_v1.json)留证。P2A未完成。
+
+
+### 2026-10-23 MR3 P2A V54：实际完整描述PASS与闭合末账
+
+已真实执行一次，执行freeze`1d35dda0d9f1ae8c0fc7a692132fccec29b00282`、原证据freeze`1fa55bc56d5bb9e230d4b397f962d83b1604b278`；root tool36067实际reap rc0。实际绝对CLI（cwd wireless-rl）：
+
+```bash
+rtk proxy env PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 CUDA_VISIBLE_DEVICES= /usr/bin/python3 -B /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v54_firstfault/run_firstfault_v1.py --freeze 1d35dda0d9f1ae8c0fc7a692132fccec29b00282
+```
+
+该命令属于已关闭历史活动，不能再运行或覆盖输出。motion完整1086363行/2458997272B、startup完整460行/286052B，整SHA/stat/parse0全部PASS；实际选择40条/dropped0。motion第1084442行首次登记normal_control_model_invalid：tb1，reason=fixed disk radius exceeded，commit_clock_ns244580000000。D是固定anchor圆盘，并非仍在HOLD的状态判据；该literal不等于真实机体越物理界的证明。startup实际首回调仍为worker自身generic infrastructure_failure，不能当作motion首fault广播到达证据。
+
+完整parent实费254.441556546墙秒，nested包含、不叠加；累计90357.3610697996018/120000、余29642.6389302003982，pilot/final新增0、原额保持。14执行源及三配置/库存与执行Git一致、旧七解释源与原1fa一致，4主保存身份freshgone；metadata关闭实际wall17.468819143秒/rc0/工程0，15绑定源前后稳定，其两身份另freshgone。13小原件167712B/0symlink无损封存，没有重复读取/复制两raw或重跑consumer。
+
+原live观察辅助actual_tool_program_argument误将sys.argv索引2取为`--freeze`；原live字节不改。[更正说明](report/assets/20261023_mr3_p2a_v54_firstfault/closed_execution/closure_tools/mr3_p2a_v54_live_argv_field_correction_v1.json)绑定live/launch/summary原SHA，明确真实工具调用使用上列绝对runner。entry/summary argv与launch除去Python `-B`后逐项相等；辅助错位字段不作程序/身份来源证明，未补PID/start。
+
+[V54实际报告](report/20261023_mr3_p2a_v54_firstfault.md)、[闭合库存](report/assets/20261023_mr3_p2a_v54_firstfault/closed_inventory_v1.json)及[规范末账](report/assets/20261023_mr3_p2a_v54_firstfault/closure_ledger_v1.json)保存全部实际结果。V52资格FAIL/V53partial FAIL及其费用不改，描述PASS不提供原生资格/学习信用。下一仅转向固定KEEP故障的零驱动物理诊断，尚未承诺新scope或solver成功；12EP30角色/95%质量/安全门保持，P2A未完成。

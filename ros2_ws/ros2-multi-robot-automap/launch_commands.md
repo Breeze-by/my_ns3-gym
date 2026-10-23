@@ -1,5 +1,7 @@
 # 当前三机器人基线与MR3适配启动命令
 
+2026-10-23 V54真实闭合描述PASS：freeze1d35dda0的tool36067已reap rc0，motion1086363行/2458997272B与startup460行/286052B均全读、整SHA/stat/parse0通过，40选择/0drop。首登记故障为tb1在244.58秒normal_control_model_invalid / fixed disk radius exceeded；D是固定anchor圆盘，不是仍处于HOLD的状态判据，literal本身也不证明真实机体违反物理界。完整parent254.441556546墙秒（nested不加），累计90357.3610697996018/120000、余29642.6389302003982；4主身份freshgone，metadata关闭17.468819143实际wall/工程0，其2身份另gone。原live观察误取argv索引2为--freeze，原字节和三SHA更正说明保留，不改身份。V52/V53旧FAIL与实费、12EP30角色/95%安全门及pilot/final原额保持；120000仍为代理依持续委托选择而非数值用户批准。下一仅转向固定KEEP故障的零驱动物理诊断，尚无新scope或solver成功承诺，不改变科学门，P2A未完成。 见[V54闭合](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261023_mr3_p2a_v54_firstfault.md)及[规范末账](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v54_firstfault/closure_ledger_v1.json)。下文既有准备/待执行段均保留为当时历史快照。
+
 ## V53部分取证已关闭，V54新资源版本待冻结
 
 [V53](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261023_mr3_p2a_v53_firstfault.md)实际rc1/partial FAIL：motion固定100万行门停止，首生产故障UNKNOWN；startup仅证实worker自身通用失败回调。完整parent229.413776461墙秒已收费，工程累计90102.9195132536018/120000、余29897.0804867463982，所有旧FAIL和政策余额保持。
