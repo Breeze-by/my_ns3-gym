@@ -1,0 +1,81 @@
+{
+  "schema": "mr3-engineering-closure-ledger-v1",
+  "recorded_utc": "2026-10-23T19:09:58.930392+00:00",
+  "execution_freeze": "d229bd5cafe0d3a13157a4aeb5d518058080e1fb",
+  "passed": true,
+  "activity_passed": false,
+  "actual_root_tool_session_id": 95459,
+  "actual_root_tool_returncode": 1,
+  "previous_actual_ledger": {
+    "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v62_process_profile/closure_ledger_v1.json",
+    "bytes": 7618,
+    "sha256": "576b944fa34a4ad3d9d09a2af879de071f9f77fc5dc8ae5afc978d4038cfdf3c"
+  },
+  "engineering_entry_seconds": "109067.3998164526018",
+  "engineering_added_parent_union_seconds": "1.880097619",
+  "engineering_cumulative_seconds": "109069.2799140716018",
+  "engineering_ceiling_seconds": "150000",
+  "engineering_remaining_seconds": "40930.7200859283982",
+  "accounting_basis": "independent successor closure of actual fee against old ledger verified from d229 frozen scope/current/Git; never modifies the original unverified summary",
+  "original_entry_verified_flag": false,
+  "original_cumulative_and_remaining_still_unknown": true,
+  "original_source_before_after_empty_not_reconstructed": true,
+  "original_summary_not_modified": true,
+  "successor_independent_entry_verification": true,
+  "complete_parent_started_monotonic_ns": 4527364099345857,
+  "ended_monotonic_ns": 4527365979443476,
+  "numeric_user_approval_claimed": false,
+  "continuous_user_delegation_preserved": true,
+  "nested_receipts_double_added": false,
+  "root_tool_interval_invented": false,
+  "pilot_added_parent_union_seconds": "0",
+  "validation_added_parent_union_seconds": "0",
+  "pilot_remaining_decisions": 1870,
+  "pilot_remaining_seconds": "2905.9547395464029",
+  "validation_original_decisions": 900,
+  "validation_original_seconds": "9000",
+  "validation_original_final_only_cases": [
+    "open401",
+    "open402",
+    "open403"
+  ],
+  "original_pilot_final_totals_preserved": true,
+  "consumer_started": false,
+  "original_profiles_read": false,
+  "native_runs": 0,
+  "optimizer_updates": 0,
+  "saved_main_identity_count": 1,
+  "all_saved_main_identities_fresh_gone": true,
+  "nonowned_ancestor_absence_claimed": false,
+  "closed_inventory": {
+    "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v63_profile_description/closed_inventory_v1.json",
+    "bytes": 9238,
+    "sha256": "92d1b8c723c97c6f777dcf5f724767f11dd6b93795de355c8a7f724fbe74c2f6"
+  },
+  "driver_summary": {
+    "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v63_profile_description/closed_execution_v1/tmp/mr3_p2a_v63_parent_v1/summary.json.rawbytes.gz",
+    "bytes": 666,
+    "sha256": "c725cc885eff2f22d5cfce21798e87ac9aac1eb24f70ed410a57e68afada2b9b"
+  },
+  "actual_root_tool_wait": {
+    "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v63_profile_description/closed_execution_v1/tmp/mr3_p2a_v63_root_tool_v1/actual_tool_wait_v1.json.rawbytes.gz",
+    "bytes": 184,
+    "sha256": "25e0cc2fcce490e0292ee99cc998e6ada51122b376ca1d2a69b00015c77f743f"
+  },
+  "path_correction_receipt": {
+    "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v63_profile_description/closed_execution_v1/tmp/mr3_p2a_v63_root_tool_v1/admission_failure_cause_and_path_correction_v1.json.rawbytes.gz",
+    "bytes": 410,
+    "sha256": "9cfc65376ad0c962a128f551aec6be865c3265220c36257ffb80512959e016cd"
+  },
+  "corrected_md_original_bytes_preserved": {
+    "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v62_process_profile/checks/prospective_authority_v1/additional_integration_review_v1.md",
+    "bytes": 1736,
+    "sha256": "146ea64fd5c828f02a03e7cc725d4c04f376bd10047b088a61ab4ce8ac2e4b77"
+  },
+  "capacity_qualified": false,
+  "scientific_qualification_credit": false,
+  "old_FAIL_rejudged": false,
+  "automatic_pilot_final_entry_allowed": false,
+  "next_action": "V63 v1在冻结d229bd5ca下实际准入FAIL（tool95459 reap1），consumer未启动、原pstats未读。原summary source-before/after为空、entry_verified=False/累计None保持；后继独立核冻结scope所pin的A62前账，实际parent1.880097619已收，累计109069.2799140716018/C150000、余40930.7200859283982。误路径md原字节已rename到正确A62/checks位置，clean-freeze正确拒绝；只1保存main freshgone/nonowned不claimgone。下一forward-v2须新STATE/scope/parent、新freeze和120预约，才是同v1consumer首次真正读取两pstats，不能重试旧活动或补造旧源码回执。pilot/final原额与原FAIL保持，capacity=False、P2A未完成。",
+  "P2A_complete": false
+}

@@ -1,5 +1,17 @@
 # MR3 P2A V63：两份启动阶段 profile 的有限描述
 
+## 首次准入 FAIL 与前瞻 forward-v2
+
+冻结 `d229bd5cafe0d3a13157a4aeb5d518058080e1fb` 的工具95459已真实reap rc1。root将一份补充Markdown误写入缺少`ns-3.40`路径分量的目录，留下未追踪文件，干净工作区准入正确拒绝。consumer未启动，原pstats未读取；原summary保留entry_verified=False、累计/余额None、before/after空数组，不补造原活动的来源准入。
+
+原完整parent实费1.880097619秒。后继仅对失败parent/RootTool两个小目录作无损封存，并独立核冻结scope所pin的真实V62前账，生成[后继末账](assets/20261024_mr3_p2a_v63_profile_description/closure_ledger_v1.json)：累计109069.2799140716018/C150000，余额40930.7200859283982。旧summary原字节不变，独立核账不把其entry_verified改为True。一个保存main身份fresh-gone，nonowned祖先不查gone；错误路径已按原字节rename到正确位置，未删资料。
+
+小关闭工具1493真实reap0、CPU实际1.750761369秒，来源before/after/current稳定、两个保存CPU身份另fresh-gone、工程新增0。原FAIL保持。forward-v2将使用新的parent目录、scope、前账和新精确冻结，完成同一固定consumer的第一次实际两profile消费；资源仍120/60，不扩大guard、不启动仿真、不重开旧attempt。
+
+forward-v2 的 canonical 4 项 CPU 已真实通过（tool80381、rc0、0.818453886秒），85 来源 before/after/current 一致，三个保存身份 fresh-gone，工程新增0。新 scope 绑定上述 V63 后继末账与独立 parent_v2；三份新入口文件已安装。正式执行前须提交、push 并显式核整个仓库 clean 及 HEAD=origin/main。见 [forward-v2 CPU](assets/20261024_mr3_p2a_v63_profile_description/checks/forward_v2_cpu_v1/final_manifest_v1.json)。
+
+## 首次准备记录（历史快照）
+
 V63 已完成代码与绑定准备，尚未读取原 pstats。它只解释 V62 失败后留下的两份主线程文件，不启动新仿真、不重判 V62，不授予八步性能、容量或科学资格。
 
 [V62 实际闭合](20261024_mr3_p2a_v62_process_profile.md)保留 startup motion 相位 10 秒墙钟 guard 失败、0 个 task transition、worker forced -15。现存 motion main 和 adapter main 共 894940B；adapter encoder 未观测，worker 无 finished，五 lane 不完整。两份文件仍来自失败的、被 profiling 扰动的启动阶段，不能推算完整任务成本。

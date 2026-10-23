@@ -9022,3 +9022,10 @@ Canonical CPU工具1554真实reap0、scope制作工具29523真实reap0，均scop
 2026-10-24 V63两profile描述准备：V62原FAIL已真实闭合，parent180.893159791秒，累计109067.3998164526018/C150000、余40932.6001835473982。新限定只读两main.pstats共894940B；各1MiB/总2MiB、metadata8MiB、work60/完整parent120，原pstats未读取，不新World/模型/更新。consumer仅AST复用G81e63f506原require+pstats_description、整源pin，新scope/spec已绑定实际V62库存/ledger；canonical4人工CPU真实PASS/.720401189秒、75源恢复稳定/2CPUgone，私有历史完整封存。待新exact40 freeze/真实push后单次描述，不重试旧native、不加10秒guard、不选未证热点。authority core8人工CPU PASS但ROS/独立reader仍未安装；包与额外回调边界已保存。capacity=False、P2A未完成、pilot/final原额保持，持续自主授权不重复一般审批。
 
 规范目录CPU实际工具85309 reaped0、4PASS，完整argv与75来源见[证明](report/assets/20261024_mr3_p2a_v63_profile_description/checks/canonical_cpu_v1/proof_v1.json)。计划在W用`/usr/bin/python3 -B -m report.assets.20261024_mr3_p2a_v63_profile_description.bootstrap_v1 --freeze <新exact40>`单次消费；尚未执行，原pstats未读，不预填description或费用。无model/checkpoint、无新种子消费；新CPU source字节未提交，基于HEAD81e63f50699073286c9773dcb92106de63fdf4ca。
+
+
+## 2026-10-24 MR3 P2A V63 admission-only失败闭合
+
+2026-10-24 V63首次准入FAIL：d229bd5ca/tool95459真reap1，root补充md路径误少ns-3.40导致untracked，clean-freeze拒绝；consumer未启动/原pstats未读，summary原entryFalse/累计None/来源空保持。实际parent1.880097619秒，后继独立核前账后累计109069.2799140716018/C150000、余40930.7200859283982；小关闭1493真0/1.750761369秒、2CPUgone/工程0，main1freshgone。原字节rename纠正；forward-v2须新STATE/scope/ledger/freeze，首次解码同两profile，120/60不变，不retry旧attempt或加guard；P2A未完成/capacityFalse。
+
+无consumer/模型/World/验证种子消费；原回执与错误路径纠正记录均入[库存](report/assets/20261024_mr3_p2a_v63_profile_description/closed_inventory_v1.json)。后继核账不改变旧summary中未知的累计字段。
