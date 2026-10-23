@@ -144,7 +144,7 @@ def verify_release_safety(metadata, reset, phases, state_rows, peer_rows, motion
             "scope": "complete v2 release conjunction; independent information/control/runtime roles also required"}
 
 
-def load_impl():
+def load_impl(*, plan_path=None):
     from .audit_reach_peer_control import audit_episode
     module, proof = project_module("audit_controlled_physics.py", SOURCE_SHA256, (
         ("mr3-controlled-execution-phase-v1", CONTROL_PROTOCOL, 1),
@@ -156,6 +156,8 @@ def load_impl():
     # The complete v2 replay includes strict safety-table/intent checks. The
     # original bootstrap/readiness mathematics use its unchanged replay fields.
     module.audit_motion = audit_episode
+    if plan_path is not None:
+        module.audit_motion = lambda directory: audit_episode(directory, plan_path=plan_path)
     original_readiness = module.controlled_readiness
 
     def readiness(directory, metadata, transitions, adapter_rows, epoch, motion):
@@ -190,9 +192,9 @@ def verify_motion_artifacts(*args, **kwargs):
     return load_impl()[0].verify_motion_artifacts(*args, **kwargs)
 
 
-def dispatch_controlled_physics(*args, **kwargs):
-    return load_impl()[0].dispatch_controlled_physics(*args, **kwargs)
+def dispatch_controlled_physics(*args, plan_path=None, **kwargs):
+    return load_impl(plan_path=plan_path)[0].dispatch_controlled_physics(*args, **kwargs)
 
 
-def dispatch_controlled_readiness(*args, **kwargs):
-    return load_impl()[0].dispatch_controlled_readiness(*args, **kwargs)
+def dispatch_controlled_readiness(*args, plan_path=None, **kwargs):
+    return load_impl(plan_path=plan_path)[0].dispatch_controlled_readiness(*args, **kwargs)

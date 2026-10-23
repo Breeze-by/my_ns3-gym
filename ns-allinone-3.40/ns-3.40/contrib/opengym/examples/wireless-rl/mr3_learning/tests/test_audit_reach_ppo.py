@@ -57,7 +57,8 @@ class ReachPPOAuditTests(unittest.TestCase):
 
     def test_private_reader_preserves_whole_source_math_and_original_global_dispatch(self):
         old_gate, old_cadence = original.load_native_gates, original.audit_odometry_cadence
-        module, proof = entry.load_impl(Path("/unused/plan"))
+        plan_path = Path("/unused/plan")
+        module, proof = entry.load_impl(plan_path)
         self.assertTrue(proof["whole_source_inverse_equal"])
         self.assertEqual(proof["source_sha256"], entry.PPO_READER_SHA256)
         self.assertEqual(proof["projected_sha256"], proof["source_sha256"])
@@ -69,7 +70,13 @@ class ReachPPOAuditTests(unittest.TestCase):
             self.assertIsNot(current.__globals__, old.__globals__)
         self.assertIs(original.load_native_gates, old_gate)
         self.assertIs(original.audit_odometry_cadence, old_cadence)
-        self.assertIs(module.dispatch_controlled_physics, entry.audit_reach_controlled_physics.dispatch_controlled_physics)
+        for name in ("dispatch_controlled_physics", "dispatch_controlled_readiness"):
+            args = object(), [Path("/synthetic/native")], {}
+            returned = object()
+            with self.subTest(dispatch=name), patch.object(
+                    entry.audit_reach_controlled_physics, name, return_value=returned) as called:
+                self.assertIs(getattr(module, name)(*args), returned)
+                called.assert_called_once_with(*args, plan_path=plan_path)
         self.assertIs(module.audit_odometry_cadence.audit, entry.audit_reach_cadence.audit)
 
     def test_qualification_uses_shared_validator_and_exact_original_metadata_bytes(self):

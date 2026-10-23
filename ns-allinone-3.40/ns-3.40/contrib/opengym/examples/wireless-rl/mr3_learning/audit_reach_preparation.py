@@ -175,6 +175,12 @@ def load_impl(plan_path):
         ("mr3-p2a0-outward-cancel-v6", "mr3-p2a-reach-outward-cancel-v1", 1),
     ))
     module.load_native_gates = lambda root, freeze: load_native_gates(root, freeze, plan_path)
+    from . import audit_reach_peer_control, audit_reach_controlled_physics
+    module.audit_motion = lambda directory: audit_reach_peer_control.audit_episode(directory, plan_path=plan_path)
+    module.dispatch_controlled_physics = lambda *args, **kwargs: audit_reach_controlled_physics.dispatch_controlled_physics(
+        *args, plan_path=plan_path, **kwargs)
+    module.dispatch_controlled_readiness = lambda *args, **kwargs: audit_reach_controlled_physics.dispatch_controlled_readiness(
+        *args, plan_path=plan_path, **kwargs)
     plan = json.loads(Path(plan_path).read_text())
     validate_start_graph_rule(plan.get("start_graph_rule", "original-seed-cell"),
                               seed_rule=plan.get("seed_rule", "legacy"))

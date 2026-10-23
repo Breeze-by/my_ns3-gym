@@ -416,6 +416,10 @@ def validate_plan(plan, workspace=WORKSPACE):
                         "FIFO/peer/control requires complete new replay")
                 require(job["argv"][3] == str(expected_episodes[fifo_ids.index(job["id"])])
                         and argument(job["argv"], "--freeze") == "{freeze}", "FIFO episode/freeze differs")
+                if actuation is not None:
+                    require(Path(argument(job["argv"], "--plan")).resolve() ==
+                            Path(argument(next(j for j in stage["audits"] if j.get("role") == "full")["argv"], "--plan")).resolve(),
+                            "new encoder FIFO source plan differs from the full role")
             outputs.append(job["output"])
         outputs.extend([stage["native"]["output"], stage["watcher"]["output"],
                         stage["watcher"]["ready"], stage["watcher"]["stop"]])
@@ -560,7 +564,8 @@ def build_plan(*, plan_path, seed_rule="legacy", start_graph_rule="original-seed
         ids = []
         for number, episode in enumerate(episodes, 1):
             job_id = f"fifo_{number:03d}"
-            add(job_id, "audit_reach_peer_control", extra=(episode, "--freeze", "{freeze}"))
+            add(job_id, "audit_reach_peer_control", extra=(episode, "--freeze", "{freeze}",
+                *(("--plan", Path(plan_path).resolve()) if actuation_profile is not None else ())))
             ids.append(job_id)
         add("peer_control", role="peer_control", kind="aggregate", members=ids, depends=ids)
         manifest = add("fifo_manifest", kind="fifo_manifest", members=ids, depends=ids,

@@ -1,0 +1,60 @@
+{
+  "schema": "mr3-v60-canonical-reader-cpu-postreap-v1",
+  "observed_unix_ns": 1792752016561467791,
+  "actual_tool_session_id": 37620,
+  "actual_tool_returncode": 1,
+  "actual_tool_reaped": true,
+  "actual_child_returncode": 1,
+  "actual_child_wait_seconds": "57.238931319",
+  "actual_wait_sha256": "c72eb203f7d2e7e5f7ecb0a7b9dd760c0325ec8b41f0a4131e4f81a83440b787",
+  "actual_spec_argv_equal": true,
+  "actual_source_before_after_equal": true,
+  "actual_source_count": 587,
+  "all_current_source_hashes_equal": true,
+  "source_recovery_all_exact_bytes_verified": true,
+  "junit_case_count": 159,
+  "junit_failures": [
+    {
+      "classname": "contrib.opengym.examples.wireless-rl.mr3_learning.tests.test_reach_controlled_dispatch.ReachControlledDispatchTests",
+      "name": "test_whole_source_inverse_loads_and_keeps_full_safety_input"
+    },
+    {
+      "classname": "contrib.opengym.examples.wireless-rl.mr3_learning.tests.test_audit_reach_ppo.ReachPPOAuditTests",
+      "name": "test_private_reader_preserves_whole_source_math_and_original_global_dispatch"
+    }
+  ],
+  "saved_identity_observations": [
+    {
+      "role": "coordinator_identity",
+      "saved_identity": {
+        "pid": 1120189,
+        "parent": 1120158,
+        "group": 1120155,
+        "session": 1120155,
+        "start_ticks": 449729336,
+        "state": "R"
+      },
+      "observation": "pid_absent",
+      "saved_identity_gone": true
+    },
+    {
+      "role": "child_identity",
+      "saved_identity": {
+        "pid": 1120204,
+        "parent": 1120189,
+        "group": 1120155,
+        "session": 1120155,
+        "start_ticks": 449729375,
+        "state": "R"
+      },
+      "observation": "pid_absent",
+      "saved_identity_gone": true
+    }
+  ],
+  "all_saved_identities_gone": true,
+  "world_or_native_started": false,
+  "old_V59_raw_logs_consumed": false,
+  "engineering_fee_increment": "0",
+  "passed": false,
+  "failure_preserved_without_source_edits": true
+}

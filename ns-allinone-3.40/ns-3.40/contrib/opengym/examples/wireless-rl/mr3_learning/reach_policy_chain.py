@@ -183,7 +183,8 @@ def jobs_for_stage(plan, plan_path, qualification_path, spec, episodes):
     leaves = []
     for index, episode in enumerate(episodes, 1):
         name = f"fifo_{index:03d}"
-        jobs.append(command(name, "mr3_learning.audit_reach_peer_control", (episode, "--freeze", "{freeze}")))
+        jobs.append(command(name, "mr3_learning.audit_reach_peer_control", (episode, "--freeze", "{freeze}",
+            *(("--plan", Path(plan_path).resolve()) if custody.initial_encoder_profile(plan) is not None else ()))))
         leaves.append({"id": name, "episode_directory": str(episode)})
     ids = [v["id"] for v in leaves]
     manifest = {"id": "fifo_manifest", "kind": "fifo_manifest", "required": True,

@@ -369,8 +369,10 @@ def _load_versioned_native_gates(root, freeze, source_proof, source_bindings, cu
                        "point graph helper differs from the declared V37 implementation")
         proof.update(legacy.verify_frozen_pins(root, freeze, {relative: POINT_GRAPH_HELPER_SHA256},
                                              "point graph attachment dependency"))
-    _,sensor_projection = audit_reach_sensor_model.load_spawn_impl()
-    audit_reach_sensor_model.attach_native_gate(phase,root,freeze)
+    _,sensor_projection = audit_reach_sensor_model.load_spawn_impl(
+        **({"actuation_profile":actuation_profile} if actuation_profile is not None else {}))
+    audit_reach_sensor_model.attach_native_gate(phase,root,freeze,
+        **({"actuation_profile":actuation_profile} if actuation_profile is not None else {}))
     proof.update(source_proof)
     proof["reach_dispatch"] = {"schema": "mr3-reach-native-gate-dispatch-v1",
         "safety_contract": "mr3-reach-v1", "immutable_reader": projection,

@@ -39,8 +39,10 @@ def sha(raw):
 def load_impl(plan_path):
     module, proof = project_module("audit_ppo.py", PPO_READER_SHA256, ())
     module.load_native_gates = lambda root, freeze: load_native_gates(root, freeze, plan_path)
-    module.dispatch_controlled_physics = audit_reach_controlled_physics.dispatch_controlled_physics
-    module.dispatch_controlled_readiness = audit_reach_controlled_physics.dispatch_controlled_readiness
+    module.dispatch_controlled_physics = lambda *args, **kwargs: audit_reach_controlled_physics.dispatch_controlled_physics(
+        *args, plan_path=plan_path, **kwargs)
+    module.dispatch_controlled_readiness = lambda *args, **kwargs: audit_reach_controlled_physics.dispatch_controlled_readiness(
+        *args, plan_path=plan_path, **kwargs)
     module.audit_odometry_cadence = SimpleNamespace(audit=audit_reach_cadence.audit)
     proof.update(global_dispatch_changes=["load_native_gates", "dispatch_controlled_physics",
                  "dispatch_controlled_readiness", "audit_odometry_cadence"],
@@ -77,7 +79,7 @@ def admission(metadata, freeze, plan_path=None, qualification_path=None, *, root
     return plan_path, qualification_path, snapshots, proof
 
 
-def audit_episode_conjunction(directory, freeze, preparation, *,
+def audit_episode_conjunction(directory, freeze, preparation, *, plan_path=None,
                               reach_geometry_rule=BINARY_REACH_GEOMETRY_RULE):
     """Independent full episode roles, without scripted probe workload gates."""
     directory = Path(directory)
@@ -85,7 +87,7 @@ def audit_episode_conjunction(directory, freeze, preparation, *,
     operations = (
         ("information", lambda: audit_reach_information.audit_episode(directory, freeze)),
         ("runtime_drive", lambda: audit_reach_runtime.audit_episode(directory, freeze)),
-        ("peer_control_fifo", lambda: audit_reach_peer_control.audit_episode(directory, freeze)),
+        ("peer_control_fifo", lambda: audit_reach_peer_control.audit_episode(directory, freeze, plan_path=plan_path)),
         ("observation_archives", lambda: preparation.audit_archives(directory)),
         ("activity", lambda: preparation.audit_activity(directory)),
         ("execution_inputs", lambda: preparation.audit_execution_inputs(directory, row.get("peer_control_fifo"))),
@@ -172,7 +174,7 @@ def audit_run(directory, freeze, plan_path=None, qualification_path=None):
     if geometry_rule != BINARY_REACH_GEOMETRY_RULE:
         result["reach_geometry_rule"] = geometry_rule
     for episode in discovered:
-        report = audit_episode_conjunction(episode, freeze, preparation,
+        report = audit_episode_conjunction(episode, freeze, preparation, plan_path=plan_path,
             **({"reach_geometry_rule": geometry_rule} if geometry_rule != BINARY_REACH_GEOMETRY_RULE else {}))
         result["reach_episodes"].append(report)
         if not report["passed"]:

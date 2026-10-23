@@ -1,0 +1,40 @@
+{
+  "schema": "mr3-v60-sensor-inverse-candidate-v1",
+  "repository_edited": false,
+  "native_or_old_raw_replay_executed": false,
+  "files": [
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_sensor_model.py",
+      "before_sha256": "069daad11f476eb00eeea57d2a97cac4e6d46defa59f7dbfd3c90152738d6c2a",
+      "candidate": "/tmp/mr3_p2a_v60_sensor_candidate_v1/audit_reach_sensor_model.py",
+      "candidate_sha256": "985887f2ecb8c9eca00cb884431d8a031cecbfe156ae5cb042209962025e320d"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_gates.py",
+      "before_sha256": "4b9214c5bb25a65072659edc05d092dc008fe1ac3ac65baa308101c5dd5156b7",
+      "candidate": "/tmp/mr3_p2a_v60_sensor_candidate_v1/reach_gates.py",
+      "candidate_sha256": "4fea17b1cbd29ab97179d541eb000be6303b0aa9fbc69de763354e10b91731e7"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_initial_encoder_sensor_inverse.py",
+      "before_sha256": null,
+      "candidate": "/tmp/mr3_p2a_v60_sensor_candidate_v1/test_initial_encoder_sensor_inverse_v1.py",
+      "candidate_sha256": "4e7774e7289b670922b811d09deb26b0fdb2b39dec0cc69788882ed168967a0b"
+    }
+  ],
+  "artificial_cpu": {
+    "result": "/tmp/mr3_p2a_v60_sensor_candidate_v1/artificial_cpu_result_v2.json",
+    "tests": 15,
+    "actual_tool_session": 42575,
+    "actual_tool_reaped_exit_code": 0,
+    "wall_seconds": "4.010301136",
+    "source_unchanged": true,
+    "qualification_credit": false,
+    "saved_process_start_identity": false,
+    "final_fresh_source_cpu_required": true
+  },
+  "review": {
+    "peer_sensor_review": "/root/encoder_helper reported no blocker",
+    "our_peer_review": "no blocker in candidate peer/preparation interface, no source overlap"
+  }
+}

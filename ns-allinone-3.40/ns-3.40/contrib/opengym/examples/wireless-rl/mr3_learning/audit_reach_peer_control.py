@@ -19,6 +19,9 @@ import re
 from types import ModuleType
 
 from . import audit_reach_information as information
+from . import initial_encoder_replay as encoder_replay
+from . import audit_reach_runtime as runtime
+from . import native_custody_reach as custody
 from .audit_reach_information import load_implementation
 
 ROOT = Path(__file__).resolve().parents[7]
@@ -505,7 +508,109 @@ def control_replay_class(core):
     return ReachControl
 
 
-def fifo_facts(motion_phase, drive_rows, drive_worker, physical, motion, control, epoch, release, final):
+LEGACY_NATIVE_KINDS = frozenset((
+    'configuration', 'reset', 'command_received', 'actuation', 'status_publish', 'target_rejected'))
+ENCODER_NATIVE_KINDS = frozenset(('initial_encoder_configuration', 'initial_encoder_receive'))
+
+
+def native_profile_context(directory, metadata, plan_path):
+    """Reuse the strict frozen binding/new-build and actual configuration gates.
+
+    This is read-only source/build evidence. Loaded-process lifetime remains the
+    separate mandatory custody/closure role; no normalization is performed.
+    """
+    profile = custody.initial_encoder_profile(metadata)
+    if profile is None:
+        return None
+    from . import reach_preparation
+    require(plan_path is not None, 'new encoder peer replay requires its exact source plan')
+    plan_path = Path(plan_path).resolve()
+    plan = reach_preparation.load_plan(plan_path, ROOT)
+    require(custody.initial_encoder_profile(plan) == profile,
+            'peer source plan and episode actuation profiles differ')
+    freeze = metadata['freeze']
+    source = reach_preparation.source_check(plan, plan_path, freeze, ROOT, require_clean=False)
+    module, implementation = custody.load_implementation(ROOT)
+    bound = module.load_binding(plan['custody_binding'], freeze, root=ROOT)
+    require(custody.initial_encoder_profile(bound['document']) == profile,
+            'peer native binding and episode actuation profiles differ')
+    # This inherited reader checks the actual SDF/loaded library and both
+    # native/supervisor profile metadata, including the compiled helper SHA.
+    configurations = module.configurations(Path(directory), bound)
+    bound['reader'].finish()
+    selected = {}
+    for robot in ROBOTS:
+        rows = [item['configuration'] for item in configurations
+                if Path(item['path']).name == 'drive_' + robot + '.jsonl']
+        require(len(rows) == 2 and {r['kind'] for r in rows} ==
+                {'configuration', 'initial_encoder_configuration'},
+                'peer lacks actual original and encoder native configurations')
+        selected[robot] = {row['kind']: row for row in rows}
+    return {'actuation_profile': profile, 'epoch': metadata['epoch'], 'freeze': freeze,
+        'binding': {'path': bound['path'], 'sha256': bound['sha256']},
+        'helper_sha256': bound['document']['initial_encoder_compiled_source']['sha256'],
+        'reach_build_bridge_proof': bound['reach_build_bridge_proof'],
+        'source_proof': source, 'implementation_provenance': implementation,
+        'configurations': selected, 'bindings': bound['reader'].bindings}
+
+
+def compound_native_prefix(metadata, drivers, motion_rows, context):
+    """Check complete original driver rows with the existing independent law.
+
+    Only the two explicitly declared new event kinds gain admission. Native
+    storage commands, complete record ordering, every actual motor write and
+    every retained current-epoch APPLIED callback keep their original values.
+    This reuses the three drive traces already read by this role; it does not
+    run the complete runtime/geometry replay again.
+    """
+    profile = custody.initial_encoder_profile(metadata)
+    if profile is None:
+        require(context is None, 'old native prefix cannot borrow an encoder proof')
+        return None
+    require(type(context) is dict and context.get('actuation_profile') == profile
+            and context.get('epoch') == metadata['epoch'] and context.get('freeze') == metadata['freeze'],
+            'peer encoder proof has another profile/epoch/freeze')
+    build = context['reach_build_bridge_proof']
+    require(build.get('new_build_executed') is True and build.get('actuation_profile') == profile
+            and build.get('initial_encoder_compiled_source', {}).get('sha256') == context['helper_sha256'],
+            'peer encoder prefix lacks the strict actual new-build/helper proof')
+    motors = {}
+    for robot in ROBOTS:
+        rows = drivers[robot]
+        require(rows and all(row.get('kind') in LEGACY_NATIVE_KINDS | ENCODER_NATIVE_KINDS for row in rows),
+                'unknown native kind cannot acquire encoder prefix credit')
+        actual = context['configurations'][robot]
+        equal(rows[0], actual['configuration'], 'peer driver configuration differs from actual bound configuration')
+        encoders = [row for row in rows if row['kind'] == 'initial_encoder_configuration']
+        require(len(encoders) == 1, 'missing or repeated encoder configuration')
+        equal(encoders[0], actual['initial_encoder_configuration'],
+              'peer encoder configuration differs from actual bound configuration')
+        motors[robot] = encoder_replay.replay_native_drive(rows, profile=profile,
+            epoch=metadata['epoch'], robot=robot, helper_sha256=context['helper_sha256'])
+    applied, stable = dict.fromkeys(ROBOTS, 0), {}
+    for row in motion_rows:
+        if row['kind'] != 'reach_driver_ingress' or row['payload'].get('kind') != 'applied':
+            continue
+        payload = row['payload']; message = payload['message']
+        equal(runtime.decode_text(payload['raw_json']), message, 'APPLIED actual raw JSON changed')
+        if message.get('epoch') != metadata['epoch']:
+            continue  # Retained old callbacks supply no current credit.
+        robot = payload['robot']
+        require(robot in ROBOTS and message.get('robot') == robot, 'APPLIED subscribed/native robot differs')
+        runtime.graph_identity(payload['publisher_identity'], robot, 'applied', stable)
+        encoder_replay.check_applied_receipt(message, motors[robot])
+        applied[robot] += 1
+    return {'actuation_profile': profile, 'passed': True,
+        'actual_new_build_required_and_verified': True, 'complete_native_rows_retained': True,
+        'native_inputs_normalized': False, 'accepted_additional_event_kinds': sorted(ENCODER_NATIVE_KINDS),
+        'motor_replay': {robot: {key: value for key, value in replay.items() if key != 'actuations'}
+                         for robot, replay in motors.items()},
+        'retained_current_epoch_applied_callbacks_joined': applied,
+        'scope': 'Complete three native compound laws plus exact retained APPLIED joins; '
+                 'delivery completeness, geometry, physics and loaded-process closure remain separate mandatory roles.'}
+
+
+def fifo_facts(motion_phase, drive_rows, drive_worker, physical, motion, control, epoch, release, final, *, encoder_prefix=False):
     """Retain the original independent FIFO/source-age facts under v2 status."""
     received = {}; consumed = []
     last_clock, last_sequences = -1, dict.fromkeys(ROBOTS, -1)
@@ -545,7 +650,7 @@ def fifo_facts(motion_phase, drive_rows, drive_worker, physical, motion, control
         for index, row in enumerate(drive_rows[name], 1):
             require(row['epoch'] == epoch and row['robot'] == name and type(row['record_sequence']) is int
                     and row['record_sequence'] == index and row['kind'] in
-                    ('configuration', 'reset', 'command_received', 'actuation', 'status_publish', 'target_rejected'),
+                    (LEGACY_NATIVE_KINDS | ENCODER_NATIVE_KINDS if encoder_prefix else LEGACY_NATIVE_KINDS),
                     'native driver complete identity/record prefix')
             source = row['sim_time_ns']
             if row['kind'] == 'target_rejected' and release <= source <= final:
@@ -585,7 +690,7 @@ def core_status_key(status):
     return status['clock_ns'], status.get('phase_kind', 'normal')
 
 
-def replay_records(data, core, host):
+def replay_records(data, core, host, *, native_context=None):
     """Pure decoded-artifact replay, exposed for synthetic CPU tests only."""
     metadata = data['metadata.json']; epoch = metadata['epoch']; base = host.BASE
     require(metadata.get('safety_contract') == CONTRACT
@@ -622,10 +727,11 @@ def replay_records(data, core, host):
     end = max(integer(r['end_time_ns'], 'physical end') for r in physical)
     require(release <= end, 'release beyond final actual physics')
     drivers = {n: data['drive_' + n + '.jsonl'] for n in ROBOTS}
+    compound = compound_native_prefix(metadata, drivers, data['motion_safety.jsonl'], native_context)
     native = {n: core.native_receipts(drivers[n], epoch, n) for n in ROBOTS}
     advances = core.audit_advances(data['drive_phase_worker.jsonl'], physical, epoch, control, native, release)
     fifo = fifo_facts(data['motion_phase_worker.jsonl'], drivers, data['drive_phase_worker.jsonl'],
-                      physical, motion, control, epoch, release, end)
+                      physical, motion, control, epoch, release, end, encoder_prefix=compound is not None)
     statuses = [(ack['status'], wall) for (component, _), (ack, wall) in control.consumed.items() if component == 'motion']
     replay = {'records': len(data['control_phase_worker.jsonl']), 'consumed_motion_phases': len(statuses),
         'stop_clocks': sorted({s['clock_ns'] for s, _ in statuses if s.get('phase_kind') == 'stop'}),
@@ -636,10 +742,13 @@ def replay_records(data, core, host):
     return {'passed': True, 'epoch': epoch, 'task_release_ns': release, 'physics_end_ns': end,
             'peer': peer_counts, 'motion_fifo': motion_counts, 'worker_control': control_counts,
             'advance_replay': advances, 'fifo': fifo, 'controlled_execution_replay': replay,
-            'execution_replay': copy.deepcopy(replay)}
+            'execution_replay': copy.deepcopy(replay),
+            **({'actuation_profile': compound['actuation_profile'],
+                'initial_encoder_compound_replay_passed': True,
+                'initial_encoder_native_prefix': compound} if compound is not None else {})}
 
 
-def audit_episode(directory, expected_freeze=None):
+def audit_episode(directory, expected_freeze=None, *, plan_path=None):
     directory = Path(directory)
     core, implementation = load_impl()
     host, measurement = load_implementation()
@@ -666,7 +775,10 @@ def audit_episode(directory, expected_freeze=None):
                      'control_phase_worker.jsonl', 'drive_phase_worker.jsonl', 'motion_phase_worker.jsonl',
                      'physics.jsonl', *(f'drive_{n}.jsonl' for n in ROBOTS)):
             data[name] = inputs.rows(directory, name)
-        result.update(replay_records(data, core, host))
+        context = native_profile_context(directory, metadata, plan_path)
+        result.update(replay_records(data, core, host, native_context=context))
+        if context is not None:
+            result['initial_encoder_source_build_context'] = context
     except (OSError, ValueError, KeyError, TypeError, OverflowError, IndexError, AssertionError) as error:
         result['passed'] = False; result['errors'].append(str(error))
     try:
@@ -689,10 +801,11 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('directory', type=Path)
     parser.add_argument('--freeze', required=True)
+    parser.add_argument('--plan', type=Path)
     parser.add_argument('--output', required=True, type=Path)
     args = parser.parse_args(argv)
     require(not args.output.exists(), 'exclusive new output required')
-    result = audit_episode(args.directory, args.freeze)
+    result = audit_episode(args.directory, args.freeze, plan_path=args.plan)
     with args.output.open('x') as stream:
         json.dump(result, stream, indent=2, sort_keys=True, allow_nan=False)
         stream.write('\n')

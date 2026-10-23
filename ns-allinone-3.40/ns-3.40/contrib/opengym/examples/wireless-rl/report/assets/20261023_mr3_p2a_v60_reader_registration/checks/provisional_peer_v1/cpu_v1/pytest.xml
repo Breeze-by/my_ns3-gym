@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="15" time="5.718" timestamp="2026-10-23T18:24:24.207834+08:00" hostname="zhuyulab"><testcase classname="test_peer_prefix_candidate_v1.NewPrefixTests" name="test_actual_applied_pair_and_raw_json_and_graph_join_are_not_ignored" time="0.516" /><testcase classname="test_peer_prefix_candidate_v1.NewPrefixTests" name="test_complete_new_prefix_replays_all_three_without_dropping_rows" time="0.186" /><testcase classname="test_peer_prefix_candidate_v1.NewPrefixTests" name="test_context_reuses_real_source_and_native_binding_configuration_apis" time="0.213" /><testcase classname="test_peer_prefix_candidate_v1.NewPrefixTests" name="test_full_ppo_episode_conjunction_forwards_plan" time="0.038" /><testcase classname="test_peer_prefix_candidate_v1.NewPrefixTests" name="test_full_preparation_projection_and_controlled_fallback_forward_plan" time="0.083"><failure message="AssertionError: Expected 'audit_episode' to be called once. Called 0 times.">self = &lt;test_peer_prefix_candidate_v1.NewPrefixTests testMethod=test_full_preparation_projection_and_controlled_fallback_forward_plan&gt;
+
+    def test_full_preparation_projection_and_controlled_fallback_forward_plan(self):
+        with tempfile.TemporaryDirectory() as temp:
+            plan_path = Path(temp) / 'plan.json'; plan_path.write_text('{}')
+            loaded, _ = preparation.load_impl(plan_path)
+            with patch.object(audit, 'audit_episode', return_value={'passed': True}) as called:
+                loaded.audit_motion(Path(temp) / 'episode')
+            called.assert_called_once_with(Path(temp) / 'episode', plan_path=plan_path)
+            module, _ = controlled.load_impl(plan_path=plan_path)
+            with patch.object(audit, 'audit_episode', return_value={'passed': True}) as called:
+                module.audit_motion(Path(temp) / 'episode')
+&gt;           called.assert_called_once_with(Path(temp) / 'episode', plan_path=plan_path)
+
+/tmp/mr3_p2a_v60_peer_native_prefix_draft_v1/test_peer_prefix_candidate_v1.py:260: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;MagicMock name='audit_episode' id='134315386376096'&gt;
+args = (PosixPath('/tmp/tmpb4mzuism/episode'),)
+kwargs = {'plan_path': PosixPath('/tmp/tmpb4mzuism/plan.json')}
+msg = "Expected 'audit_episode' to be called once. Called 0 times."
+
+    def assert_called_once_with(self, /, *args, **kwargs):
+        """assert that the mock was called exactly once and that that call was
+        with the specified arguments."""
+        if not self.call_count == 1:
+            msg = ("Expected '%s' to be called once. Called %s times.%s"
+                   % (self._mock_name or 'mock',
+                      self.call_count,
+                      self._calls_repr()))
+&gt;           raise AssertionError(msg)
+E           AssertionError: Expected 'audit_episode' to be called once. Called 0 times.
+
+/home/zhuyulab/miniconda3/envs/ns3gym/lib/python3.10/unittest/mock.py:940: AssertionError</failure></testcase><testcase classname="test_peer_prefix_candidate_v1.NewPrefixTests" name="test_new_events_without_explicit_profile_still_fail" time="0.258" /><testcase classname="test_peer_prefix_candidate_v1.NewPrefixTests" name="test_new_profile_without_context_fails_before_accepting_new_events" time="0.168" /><testcase classname="test_peer_prefix_candidate_v1.NewPrefixTests" name="test_old_branch_and_immutable_whole_inverse_remain_exact" time="0.180" /><testcase classname="test_peer_prefix_candidate_v1.NewPrefixTests" name="test_original_received_target_and_real_motor_readback_remain_checked" time="0.506" /><testcase classname="test_peer_prefix_candidate_v1.NewPrefixTests" name="test_policy_public_fifo_jobs_include_plan_only_for_selected_new_profile" time="0.035" /><testcase classname="test_peer_prefix_candidate_v1.NewPrefixTests" name="test_public_cli_forwards_exact_audit_plan" time="0.109" /><testcase classname="test_peer_prefix_candidate_v1.NewPrefixTests" name="test_public_episode_route_requires_context_and_reaches_real_fifo" time="0.278" /><testcase classname="test_peer_prefix_candidate_v1.NewPrefixTests" name="test_true_nonzero_feedback_keeps_body_desired_zero" time="0.038" /><testcase classname="test_peer_prefix_candidate_v1.NewPrefixTests" name="test_unknown_event_and_record_gap_and_missing_receive_rejected" time="0.516" /><testcase classname="test_peer_prefix_candidate_v1.NewPrefixTests" name="test_wrong_profile_or_old_build_or_helper_is_rejected" time="0.509" /></testsuite></testsuites>

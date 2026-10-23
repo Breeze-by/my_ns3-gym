@@ -1,5 +1,8 @@
 # 报告与证据适用范围
 
+2026-10-23 V60生产准备：sensor唯一显式profile tag全字节逆恢复与peer两新事件/同plan三drive compound/APPLIED精确join已接公共full/PPO/controlled/4matrix/3policy；不删行或伪zero，C++/物理/actor/20build输入不变。canonical targeted159、fresh ROS202/learner437、编排13实际PASS/source稳定，原fixture/兼容失败保留，尚无V60World/资格/PPO。承接V59真FAIL账94316.6592918916018/C150000、余55683.3407081083982，拟47220完整工程预约；pilot/final与R/12EP30/95%保持，150000非数值用户批准。下一sourcefreeze→新plan→最终freeze严格准入及完整链，不借旧6PASS。P2A未完成。 见[V60](<20261023_mr3_p2a_v60_reader_registration.md>)；下方为历史快照。
+
+
 2026-10-23 V59实际闭合FAIL：freeze783aec553、tool53492真实reap1；原生1EP32/32rc0，必要角色6PASS/1FAIL/23SKIP，full与无role fifo子命令失败，后继资格/学习0。静态定位新SDF profile tag逆投影及peer两类新事件白名单登记遗漏；V60补显式登记/公共入口CPU，旧FAIL不改。parent scope union2099.471611454，累计94316.6592918916018/150000、余55683.3407081083982；pilot/final原额保持，150000为代理持续委托选择非数值用户批准。1015源/10ELF一致、67完整保存运行身份freshgone，2transport祖先nonowned及PID-only原未知保留；关闭CPU4身份另gone。578原件1.11GB无损封存97.84MB/0link。P2A未完成；下一新freeze完整12EP30→真实更新→三strict95，不重开旧活动。 见[V59实际闭合](20261023_mr3_p2a_v59_encoder_profile.md)；下方准备为历史快照。
 
 
