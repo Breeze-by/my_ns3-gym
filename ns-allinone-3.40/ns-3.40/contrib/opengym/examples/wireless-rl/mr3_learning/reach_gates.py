@@ -225,19 +225,28 @@ def load_native_gates(root, freeze, plan_path):
     if "map_output_packing_profile" in plan and (
             type(packing) is not str or packing != MAP_OUTPUT_PACKING_PROFILE):
         raise ValueError("unknown declared map output packing profile")
+    from .native_custody_reach import initial_encoder_profile
+    actuation = initial_encoder_profile(plan)
+    if actuation is not None:
+        policies = plan.get("policy_stages")
+        if type(policies) is not dict or set(policies) != {"minimum", "pilot", "validation"} or not all(
+                initial_encoder_profile(row) == actuation for row in policies.values()):
+            raise ValueError("new encoder qualification needs the three mandatory same-profile policy stages")
     return _load_versioned_native_gates(root, freeze, source_proof,
         plan["source_bindings"], plan["custody_binding"],
         **({"seed_rule": plan["seed_rule"]} if plan.get("seed_rule", "legacy") != "legacy" else {}),
         **({"start_graph_rule": plan["start_graph_rule"]}
            if plan.get("start_graph_rule", "original-seed-cell") != "original-seed-cell" else {}),
         **({"map_output_packing_profile": packing} if packing is not None else {}),
-        **({"reach_geometry_rule": geometry} if geometry != BINARY_REACH_GEOMETRY_RULE else {}))
+        **({"reach_geometry_rule": geometry} if geometry != BINARY_REACH_GEOMETRY_RULE else {}),
+        **({"actuation_profile": actuation} if actuation is not None else {}))
 
 
 def _load_versioned_native_gates(root, freeze, source_proof, source_bindings, custody_binding,
                                  *, seed_rule="legacy", start_graph_rule="original-seed-cell",
                                  map_output_packing_profile=None,
-                                 reach_geometry_rule=BINARY_REACH_GEOMETRY_RULE):
+                                 reach_geometry_rule=BINARY_REACH_GEOMETRY_RULE,
+                                 actuation_profile=None):
     """Reuse unchanged native predicates after an explicit caller source check.
 
     The public qualification entry above still requires its complete sealed
@@ -246,6 +255,8 @@ def _load_versioned_native_gates(root, freeze, source_proof, source_bindings, cu
     """
     from . import native_custody_reach
     root = Path(root)
+    if actuation_profile is not None:
+        native_custody_reach.initial_encoder_profile({"actuation_profile":actuation_profile})
     validate_seed_rule(seed_rule)
     validate_start_graph_rule(start_graph_rule, seed_rule=seed_rule)
     validate_reach_geometry_rule(reach_geometry_rule, safety_contract="mr3-reach-v1")
@@ -332,8 +343,13 @@ def _load_versioned_native_gates(root, freeze, source_proof, source_bindings, cu
         result = native_custody_reach.verify_binding(root, freeze, custody_binding)
         legacy.require(result.get("reach_source_proof", {}).get("reach_geometry_rule", BINARY_REACH_GEOMETRY_RULE)
                        == reach_geometry_rule, "custody binding geometry rule differs from qualification dispatch")
+        legacy.require(result.get("actuation_profile") == actuation_profile,
+                       "actual native build/custody profile differs from the qualification plan")
+        if actuation_profile is not None:
+            legacy.require(result.get("reach_build_bridge_proof", {}).get("new_build_executed") is True,
+                           "new encoder plan has no actual new driver build")
         return {custody_binding: {"identity_proof": result,
-                "scope": "new six-source actual ELF identity; live maps/close are separate required roles"}}
+                "scope": "actual source-bound ELF identity and explicit actuator build; live maps/close are separate roles"}}
 
     legacy.verify_execution_configs = execution_configs
     legacy.verify_current_native_binding = native_binding
@@ -365,6 +381,10 @@ def _load_versioned_native_gates(root, freeze, source_proof, source_bindings, cu
         "sensor_model_gate":"actual spawn and unique20Hz ray; whole-byte inverse restores original5Hz model",
         "original_mathematical_predicates_changed": False,
         "old_profile_qualification_credit_reused": False}
+    if actuation_profile is not None:
+        proof["reach_dispatch"]["actuation_profile"] = actuation_profile
+        proof["reach_dispatch"]["new_actual_driver_build_required"] = True
+        proof["reach_dispatch"]["independent_compound_law_replay_required"] = True
     if packing_projection is not None:
         proof["reach_dispatch"]["map_output_packing"] = packing_projection
     if reach_geometry_rule != BINARY_REACH_GEOMETRY_RULE:

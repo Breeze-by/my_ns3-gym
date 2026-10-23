@@ -87,6 +87,7 @@
 #include <string>
 #include <vector>
 #include "multi_robot/paired_wheel_slew.hpp"
+#include "multi_robot/mr3_initial_zero_encoder_servo.hpp"
 #include "multi_robot/mr3_drive_target.hpp"
 #include "multi_robot/mr3_odometry_json.hpp"
 #include "multi_robot/mr3_drive_feed.hpp"
@@ -172,6 +173,11 @@ public:
   rclcpp::Publisher<std_msgs::msg::String>::SharedPtr applied_pub_;
   rclcpp::Publisher<std_msgs::msg::String>::SharedPtr calibration_pub_;
   bool tagged_commands_{false};
+  bool initial_encoder_hold_{false};
+  multi_robot::initial_encoder_hold_v1::InitialZeroEncoderServo initial_encoder_servo_;
+  uint64_t first_nonzero_received_command_sequence_{0};
+  int64_t first_nonzero_received_clock_ns_{0};
+  nlohmann::json first_nonzero_received_target_;
 
   /// Odometry publisher
   rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr odometry_pub_;
@@ -313,10 +319,22 @@ void MR3GazeboDiffDrive::Load(gazebo::physics::ModelPtr _model, sdf::ElementPtr 
   }
   impl_->epoch_ = _sdf->Get<std::string>("mr3_epoch", "").first;
   impl_->tagged_commands_ = _sdf->Get<bool>("mr3_tagged_commands", false).first;
+  const auto actuation_profile = _sdf->Get<std::string>("mr3_actuation_profile", "").first;
+  if (!actuation_profile.empty() && actuation_profile != "initial-zero-encoder-hold-v1") {
+    throw std::invalid_argument("unknown explicit MR3 actuator profile");
+  }
+  impl_->initial_encoder_hold_ = !actuation_profile.empty();
+  if (impl_->initial_encoder_hold_ && (!impl_->tagged_commands_ ||
+      (impl_->robot_ != "tb1" && impl_->robot_ != "tb2" && impl_->robot_ != "tb3"))) {
+    throw std::invalid_argument("initial encoder hold requires a tagged MR3 robot epoch");
+  }
   if (impl_->tagged_commands_ && (impl_->epoch_.empty() || impl_->robot_.empty())) {
     throw std::invalid_argument("tagged drive commands require epoch and robot namespace");
   }
   const auto audit_path = _sdf->Get<std::string>("mr3_audit_path", "").first;
+  if (impl_->initial_encoder_hold_ && audit_path.empty()) {
+    throw std::invalid_argument("initial encoder hold requires its complete native audit stream");
+  }
   if (!audit_path.empty()) {
     if (impl_->epoch_.empty()) {
       throw std::invalid_argument("mr3_audit_path requires mr3_epoch");
@@ -440,6 +458,11 @@ void MR3GazeboDiffDrive::Load(gazebo::physics::ModelPtr _model, sdf::ElementPtr 
   } else {
     impl_->update_period_ = 0.0;
   }
+  if (impl_->initial_encoder_hold_ && (impl_->num_wheel_pairs_ != 1 ||
+      impl_->wheel_diameter_.at(0) != 0.066 || impl_->wheel_separation_.at(0) != 0.287 ||
+      impl_->max_wheel_torque_ != 20.0 || impl_->max_wheel_accel_ != 1.0 || update_rate != 30.0)) {
+    throw std::invalid_argument("initial encoder hold requires the fixed native waffle actuator parameters");
+  }
   impl_->last_update_time_ = _model->GetWorld()->SimTime();
 
 
@@ -552,7 +575,23 @@ void MR3GazeboDiffDrive::Load(gazebo::physics::ModelPtr _model, sdf::ElementPtr 
     {"mr3_odometry_period_ns", impl_->odometry_period_ns_},
     {"odometry_source", static_cast<int>(impl_->odom_source_)},
     {"num_wheel_pairs", impl_->num_wheel_pairs_},
-      {"actuation_algorithm", "measured_joint_rim_paired_common_fraction_v1"}});
+      {"actuation_algorithm", impl_->initial_encoder_hold_ ?
+        "initial_zero_encoder_hold_then_paired_common_fraction_v1" :
+        "measured_joint_rim_paired_common_fraction_v1"}});
+    if (impl_->initial_encoder_hold_) {
+      impl_->Audit("initial_encoder_configuration", SimNanoseconds(_model->GetWorld()->SimTime()), {
+        {"actuation_profile", "initial-zero-encoder-hold-v1"},
+        {"compiled_encoder_servo_sha256", MR3_DRIVE_ENCODER_SERVO_SHA256},
+        {"position_gain_per_second", 1.0}, {"feedback_rim_limit_mps", 0.005},
+        {"capture_rim_limit_mps", 0.01}, {"capture_consecutive_samples", 3},
+        {"update_period_ns", 34000000}, {"reference_capture_count_limit", 1},
+        {"reference_lifetime", "one fresh plugin object/epoch; Reset does not rearm"},
+        {"received_nonzero_latch", "first successfully validated stored target; not consumption"},
+        {"activation_waits_for_genuine_target", true},
+        {"paired_alpha_target", "encoder servo_desired_rim_mps while armed; body desired after disarm"},
+        {"applied_desired_rim_semantics", "unchanged original body request transform"},
+        {"encoder_source", "local wheel Position/GetVelocity; no unwrap, snap or body-pose feedback"}});
+    }
     impl_->AuditOdometry("configuration", SimNanoseconds(impl_->last_update_time_), {
       {"period_ns", impl_->odometry_period_ns_}, {"actuation_update_rate_hz", update_rate},
       {"provider", "WORLD"}, {"phase", "world_update_begin_before_actuation"},
@@ -758,8 +797,56 @@ void MR3GazeboDiffDrivePrivate::OnUpdate(const gazebo::common::UpdateInfo & _inf
     // Start from measured joint rim speed each update. One fraction for both
     // wheels preserves the body-twist line segment and cannot accumulate a
     // hidden command past its target when the physical joint lags.
-    const auto limited = multi_robot::limit_paired_wheel_speeds(
+    auto limited = multi_robot::limit_paired_wheel_speeds(
       current, desired, max_wheel_accel_, seconds_since_last_update);
+    nlohmann::json encoder_source;
+    if (initial_encoder_hold_) {
+      const std::array<double, 2> encoder_q{
+        joints_[2 * i + RIGHT]->Position(0), joints_[2 * i + LEFT]->Position(0)};
+      const std::array<double, 2> encoder_qd{
+        joints_[2 * i + RIGHT]->GetVelocity(0), joints_[2 * i + LEFT]->GetVelocity(0)};
+      for (unsigned int wheel = 0; wheel < 2; ++wheel) {
+        if (!std::isfinite(encoder_q[wheel]) || !std::isfinite(encoder_qd[wheel]) ||
+            encoder_qd[wheel] * (wheel_diameter_[i] / 2.0) != current[wheel]) {
+          throw std::runtime_error("initial encoder source does not match actual wheel feedback");
+        }
+      }
+      const auto before = initial_encoder_servo_.state();
+      std::array<double, 2> effective_desired = desired;
+      bool feedback_active = false, captured_this_update = false;
+      const bool genuine_target_available = !consumed_target_message_.is_null();
+      const bool servo_update_performed = before.armed && genuine_target_available;
+      if (servo_update_performed) {
+        if (consumed_x_ != 0.0 || consumed_rot_ != 0.0) {
+          throw std::runtime_error("a received nonzero target escaped the initial hold latch");
+        }
+        const auto servo = initial_encoder_servo_.update(
+          encoder_q, encoder_qd, consumed_x_, consumed_rot_, dt_ns);
+        effective_desired = servo.servo_desired_rim;
+        limited = servo.limited;
+        feedback_active = servo.feedback_active;
+        captured_this_update = servo.captured_this_update;
+      }
+      const auto after = initial_encoder_servo_.state();
+      encoder_source = {
+        {"actuation_profile", "initial-zero-encoder-hold-v1"},
+        {"q_rad", encoder_q}, {"qd_radps", encoder_qd},
+        {"body_desired_rim_mps", desired}, {"servo_desired_rim_mps", effective_desired},
+        {"current_rim_mps", current}, {"update_performed", servo_update_performed},
+        {"genuine_target_available", genuine_target_available},
+        {"genuine_target_cmd_seq", genuine_target_available ? consumed_command_sequence_ : 0},
+        {"genuine_consumed_target", consumed_target_message_},
+        {"waiting_for_genuine_target", before.armed && !genuine_target_available},
+        {"armed_before", before.armed}, {"armed", after.armed},
+        {"reference_valid_before", before.reference_valid}, {"reference_valid", after.reference_valid},
+        {"reference_before_rad", before.reference}, {"reference_rad", after.reference},
+        {"capture_count_before", before.capture_count}, {"capture_count", after.capture_count},
+        {"rest_samples_before", before.rest_samples}, {"rest_samples", after.rest_samples},
+        {"feedback_active", feedback_active}, {"captured_this_update", captured_this_update},
+        {"first_nonzero_received_cmd_seq", first_nonzero_received_command_sequence_},
+        {"first_nonzero_received_clock_ns", first_nonzero_received_clock_ns_},
+        {"first_nonzero_received_target", first_nonzero_received_target_}};
+    }
     wheel_speed_instr_[2 * i + RIGHT] = limited.applied[RIGHT];
     wheel_speed_instr_[2 * i + LEFT] = limited.applied[LEFT];
     const bool left_written = joints_[2 * i + LEFT]->SetParam(
@@ -767,7 +854,7 @@ void MR3GazeboDiffDrivePrivate::OnUpdate(const gazebo::common::UpdateInfo & _inf
     const bool right_written = joints_[2 * i + RIGHT]->SetParam(
       "vel", 0, limited.applied[RIGHT] / (wheel_diameter_[i] / 2.0));
     wheel_writes_succeeded = wheel_writes_succeeded && left_written && right_written;
-    Audit("actuation", SimNanoseconds(_info.simTime), {
+    nlohmann::json actuation_fields{
       {"actuation_seq", actuation_sequence_}, {"pair_index", i},
       {"cmd_seq", consumed_command_sequence_},
       {"target_decision_sequence", consumed_target_decision_sequence_},
@@ -776,7 +863,24 @@ void MR3GazeboDiffDrivePrivate::OnUpdate(const gazebo::common::UpdateInfo & _inf
       {"dt_ns", dt_ns}, {"dt_sec", seconds_since_last_update},
       {"current_rim_mps", current}, {"desired_rim_mps", desired},
       {"applied_rim_mps", limited.applied}, {"alpha", limited.alpha},
-      {"max_acceleration_mps2", max_wheel_accel_}});
+      {"max_acceleration_mps2", max_wheel_accel_}};
+    if (initial_encoder_hold_) {
+      const std::array<double, 2> written_radps{
+        limited.applied[RIGHT] / (wheel_diameter_[i] / 2.0),
+        limited.applied[LEFT] / (wheel_diameter_[i] / 2.0)};
+      const std::array<double, 2> readback_radps{
+        joints_[2 * i + RIGHT]->GetParam("vel", 0), joints_[2 * i + LEFT]->GetParam("vel", 0)};
+      encoder_source.update({{"written_motor_target_radps", written_radps},
+        {"readback_motor_target_radps", readback_radps},
+        {"left_SetParam_returned", left_written}, {"right_SetParam_returned", right_written}});
+      actuation_fields["initial_encoder_hold"] = encoder_source;
+      Audit("actuation", SimNanoseconds(_info.simTime), actuation_fields);
+      if (!left_written || !right_written || readback_radps != written_radps) {
+        throw std::runtime_error("initial encoder motor write/readback is incomplete");
+      }
+    } else {
+      Audit("actuation", SimNanoseconds(_info.simTime), actuation_fields);
+    }
     if (tagged_commands_ && !consumed_target_message_.is_null()) {
       applied_pairs.push_back({i, current, desired, limited.applied,
         limited.alpha, max_wheel_accel_});
@@ -853,6 +957,27 @@ void MR3GazeboDiffDrivePrivate::OnTarget(const std_msgs::msg::String::SharedPtr 
   target_clock_ns_ = target.clock_ns;
   target_message_ = std::move(original_target);
   ++command_sequence_;
+  if (initial_encoder_hold_) {
+    if ((target_x_ != 0.0 || target_rot_ != 0.0) && first_nonzero_received_command_sequence_ == 0) {
+      first_nonzero_received_command_sequence_ = command_sequence_;
+      first_nonzero_received_clock_ns_ = clock_ns;
+      first_nonzero_received_target_ = target_message_;
+    }
+    // Receive latch is committed under lock_ before another target can overwrite
+    // this target and before the next actuation snapshot. No update is invented.
+    initial_encoder_servo_.ObserveReceivedTarget(target_x_, target_rot_);
+    const auto state = initial_encoder_servo_.state();
+    Audit("initial_encoder_receive", clock_ns, {
+      {"actuation_profile", "initial-zero-encoder-hold-v1"},
+      {"cmd_seq", command_sequence_}, {"stored_target", target_message_},
+      {"armed", state.armed}, {"reference_valid", state.reference_valid},
+      {"reference_rad", state.reference}, {"capture_count", state.capture_count},
+      {"rest_samples", state.rest_samples},
+      {"first_nonzero_received_cmd_seq", first_nonzero_received_command_sequence_},
+      {"first_nonzero_received_clock_ns", first_nonzero_received_clock_ns_},
+      {"first_nonzero_received_target", first_nonzero_received_target_},
+      {"scope", "validated_target_storage_and_receive_latch; no consumption_or_wheel_write_claim"}});
+  }
   Audit("command_received", clock_ns, {
     {"cmd_seq", command_sequence_}, {"desired_v", target_x_}, {"desired_w", target_rot_},
     {"target_decision_sequence", target_decision_sequence_},

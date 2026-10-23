@@ -60,17 +60,19 @@ def test_motion_parameter_unknown_or_incompatible_profile_rejected(monkeypatch, 
         fake_motion_constructor(monkeypatch, rule=rule, contract=contract)
 
 
-def test_real_launch_passes_v2_to_motion_guard_not_merely_adapter(monkeypatch):
+def test_real_launch_passes_v2_to_motion_guard_not_merely_adapter(monkeypatch, tmp_path):
     _, _, nodes, _ = configured_launch(monkeypatch, **REACH_LAUNCH,
-                                      mr3_reach_geometry_rule='cone-support-v2')
+                                      mr3_reach_geometry_rule='cone-support-v2',
+                                      mr3_audit_path=str(tmp_path / 'adapter.jsonl'))
     motion = [kwargs for _, kwargs in nodes if kwargs['executable'] == 'motion_safety']
     assert len(motion) == 1
     assert motion[0]['parameters'][0]['reach_geometry_rule'] == 'cone-support-v2'
     assert motion[0]['parameters'][0]['safety_contract'] == 'mr3-reach-v1'
 
 
-def test_default_real_launch_motion_parameter_dictionary_omits_new_rule(monkeypatch):
-    _, _, nodes, _ = configured_launch(monkeypatch, **REACH_LAUNCH)
+def test_default_real_launch_motion_parameter_dictionary_omits_new_rule(monkeypatch, tmp_path):
+    _, _, nodes, _ = configured_launch(monkeypatch, **REACH_LAUNCH,
+                                      mr3_audit_path=str(tmp_path / 'adapter.jsonl'))
     motion = next(kwargs for _, kwargs in nodes if kwargs['executable'] == 'motion_safety')
     assert 'reach_geometry_rule' not in motion['parameters'][0]
 

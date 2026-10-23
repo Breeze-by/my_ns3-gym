@@ -18,6 +18,8 @@ import re
 import struct
 import subprocess
 
+from . import initial_encoder_replay as encoder_replay
+
 
 ROBOTS = ("tb1", "tb2", "tb3")
 CONTRACT = "mr3-reach-v1"
@@ -27,6 +29,8 @@ R, D, H = Q(39, 5000), Q(18, 125), 780_000_000
 RAW, ACT, PUB = 20_000_000, 34_000_000, 940_000_000
 PURE = "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/"
 NATIVE = "ros2_ws/ros2-multi-robot-automap/src/multi_robot/"
+ENCODER_HEADER_SOURCE = NATIVE+"include/multi_robot/mr3_initial_zero_encoder_servo.hpp"
+ENCODER_REPLAY_SOURCE = "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/initial_encoder_replay.py"
 SOURCES = tuple(PURE+name for name in (
     "motion_safety.py", "mr3_reach_runtime.py", "mr3_reach_geometry.py",
     "mr3_velocity_metric.py", "mr3_safety_intent.py", "mr3_information.py",
@@ -36,7 +40,8 @@ SOURCES = tuple(PURE+name for name in (
         NATIVE+"include/multi_robot/mr3_drive_feed.hpp",
         NATIVE+"include/multi_robot/paired_wheel_slew.hpp",
         NATIVE+"include/multi_robot/mr3_drive_target.hpp",
-        NATIVE+"include/multi_robot/mr3_odometry_json.hpp")
+        NATIVE+"include/multi_robot/mr3_odometry_json.hpp",
+        ENCODER_HEADER_SOURCE, ENCODER_REPLAY_SOURCE)
 
 
 def require(condition, message):
@@ -51,6 +56,16 @@ def geometry_rule(metadata):
     require(rule == DEFAULT_GEOMETRY_RULE or metadata.get("safety_contract") == CONTRACT,
             "support geometry requires the explicit reach contract")
     return rule
+
+
+def selected_actuation_profile(metadata, *, required=False):
+    profile = metadata.get("actuation_profile")
+    if profile is None and not required:
+        return None  # Historical/raw synthetic branch keeps its original law.
+    require(type(profile) is str and profile == encoder_replay.PROFILE
+            and metadata.get("safety_contract") == CONTRACT,
+            "missing or unknown selected Reach actuation profile")
+    return profile
 
 
 def canonical(value):
@@ -467,8 +482,11 @@ def graph_identity(value, robot, kind, stable):
     stable[key] = endpoint
 
 
-def native_index(drivers, odometry_rows, epoch):
+def native_index(drivers, odometry_rows, epoch, *, actuation_profile=None, encoder_helper_sha256=None):
     """Index actual producer calls and the unchanged v2 wheel audit."""
+    require(actuation_profile is None or actuation_profile == encoder_replay.PROFILE,
+            "unknown actual actuator profile")
+    algorithm = (encoder_replay.OLD_ALGORITHM if actuation_profile is None else encoder_replay.ALGORITHM)
     result = {}
     for robot in ROBOTS:
         drive, odoms = drivers[robot], odometry_rows[robot]
@@ -476,7 +494,7 @@ def native_index(drivers, odometry_rows, epoch):
         cfg, ocfg = drive[0], odoms[0]
         require(cfg.get("schema") == "mr3-drive-actuation-v2" and cfg.get("kind") == "configuration"
                 and cfg.get("command_mode") == "tagged" and cfg.get("update_rate_hz") == 30
-                and cfg.get("actuation_algorithm") == "measured_joint_rim_paired_common_fraction_v1"
+                and cfg.get("actuation_algorithm") == algorithm
                 and number(cfg.get("max_acceleration_mps2")) == 1
                 and type(cfg.get("num_wheel_pairs")) is int and cfg["num_wheel_pairs"] > 0,
                 "unreviewed native actuator configuration")
@@ -539,6 +557,10 @@ def native_index(drivers, odometry_rows, epoch):
         result[robot] = {"configuration": cfg, "odometry_configuration": ocfg,
                          "commands": commands, "actuations": acts, "odometry": raw,
                          "records": drive}
+        if actuation_profile is not None:
+            result[robot]["initial_encoder_motor_replay"] = encoder_replay.replay_native_drive(
+                drive, profile=actuation_profile, epoch=epoch, robot=robot,
+                helper_sha256=encoder_helper_sha256)
     return result
 
 
@@ -658,6 +680,8 @@ def ingress_index(motion, native, epoch, *, reach_geometry_rule=DEFAULT_GEOMETRY
                         and t["clock_ns"] == command["target_clock_ns"]
                         and same([t["linear_x"], t["angular_z"]], [command["desired_v"], command["desired_w"]]),
                         "applied target differs from actual selected command")
+                if "initial_encoder_motor_replay" in native[robot]:
+                    encoder_replay.check_applied_receipt(message, native[robot]["initial_encoder_motor_replay"])
                 key = message["actuation_sequence"]
             old = stream[feed].get(key)
             require(old is None or same(old[1], message), "native receipt identity changed")
@@ -912,7 +936,7 @@ def _phase_consumptions(consumed, component, request_id, indices):
 
 
 def _audit_records(metadata, motion, drivers, odometry_rows, physics, drive_worker,
-                   control_worker, information, release_ns):
+                   control_worker, information, release_ns, *, initial_encoder_helper_sha256=None):
     """Artifact replay core; synthetic tests supply declared data, not Git credit."""
     epoch = metadata["epoch"]
     rule = geometry_rule(metadata)
@@ -932,7 +956,10 @@ def _audit_records(metadata, motion, drivers, odometry_rows, physics, drive_work
                 and p["start_time_ns"] == cursor and p["end_time_ns"] == cursor+RAW,
                 "physical clock did not follow contiguous20ms paused quanta")
         cursor = p["end_time_ns"]
-    native = native_index(drivers, odometry_rows, epoch)
+    actuation = selected_actuation_profile(metadata)
+    motor_kwargs = ({"actuation_profile": actuation, "encoder_helper_sha256": initial_encoder_helper_sha256}
+                    if actuation is not None else {})
+    native = native_index(drivers, odometry_rows, epoch, **motor_kwargs)
     streams = ingress_index(motion, native, epoch, **geometry_kwargs)
     information_bundles = {digest(row["payload"]["message"]):row for row in information
                            if row.get("kind") == "state_publish"}
@@ -1115,6 +1142,12 @@ def _audit_records(metadata, motion, drivers, odometry_rows, physics, drive_work
             **geometry_kwargs,
             **({"geometry_certificate_semantics":"conditional sufficient separation; unchanged remaining runtime necessities"}
                if geometry_kwargs else {}),
+            **({"actuation_profile": actuation,
+                "initial_encoder_compound_replay_passed": all(
+                    native[name]["initial_encoder_motor_replay"]["passed"] is True for name in ROBOTS),
+                "initial_encoder_motor_replay": {name: {key: value for key, value in
+                    native[name]["initial_encoder_motor_replay"].items() if key != "actuations"}
+                    for name in ROBOTS}} if actuation is not None else {}),
             "robots":robots,"controlled_quanta":len(advancing),
             "independent_necessary_replay":True,"continuous_physical_model_proved":False,
             "scope":"complete observed source/calibration/application/anchor/stop/pair and20ms barrier necessities; "
@@ -1127,6 +1160,11 @@ def audit_episode(directory, expected_freeze=None):
     directory = Path(directory)
     inputs = Inputs()
     metadata = inputs.read(directory,"metadata.json")
+    actuation = selected_actuation_profile(metadata, required=True)
+    supervisor = inputs.read(directory, "supervisor_metadata.json")
+    require(supervisor.get("epoch") == metadata.get("epoch")
+            and selected_actuation_profile(supervisor, required=True) == actuation,
+            "supervisor and native selected actuation profiles differ")
     rule = geometry_rule(metadata)
     geometry_kwargs = {"reach_geometry_rule": rule} if rule != DEFAULT_GEOMETRY_RULE else {}
     if geometry_kwargs:
@@ -1158,7 +1196,8 @@ def audit_episode(directory, expected_freeze=None):
     result = _audit_records(metadata,inputs.read(directory,"motion_safety.jsonl",True),drivers,odometry,
         inputs.read(directory,"physics.jsonl",True),inputs.read(directory,"drive_phase_worker.jsonl",True),
         inputs.read(directory,"control_phase_worker.jsonl",True),inputs.read(directory,"information_states.jsonl",True),
-        resets[0]["info"]["release_time_ns"])
+        resets[0]["info"]["release_time_ns"],
+        initial_encoder_helper_sha256=sources[ENCODER_HEADER_SOURCE]["sha256"])
     inputs.close()
     result.update(source_proof=sources,artifact_proof=inputs.proof,freeze=freeze)
     return result
@@ -1271,6 +1310,10 @@ def audit_episode_set(directory, expected_freeze, episode_auditor, *, schema):
                   and all(row["passed"] for row in result["episodes"]))
     if common_geometry_rule is not None and common_geometry_rule != DEFAULT_GEOMETRY_RULE:
         result["reach_geometry_rule"] = common_geometry_rule
+    if result["passed"] and all(row.get("result", {}).get("actuation_profile") == encoder_replay.PROFILE
+            and row["result"].get("initial_encoder_compound_replay_passed") is True
+            for row in result["episodes"]):
+        result.update(actuation_profile=encoder_replay.PROFILE, initial_encoder_compound_replay_passed=True)
     return result
 
 

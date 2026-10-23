@@ -99,6 +99,8 @@ def stage_spec(plan, plan_path, qualification_path, stage):
     require(stage in STAGES and type(plan.get("policy_stages")) is dict
             and set(plan["policy_stages"]) == set(STAGES), "complete explicit policy stage registry required")
     spec = plan["policy_stages"][stage]
+    require(custody.initial_encoder_profile(spec) == custody.initial_encoder_profile(plan),
+            "policy stage actuation profile differs from the native qualification plan")
     require(type(spec) is dict and decimal(spec["wall_seconds"]) == CAPS[stage]
             and decimal(spec["tail_reserve_seconds"]) == 500, "policy stage/tail allocation differs")
     external_finalize_reserve(spec, stage)
@@ -230,6 +232,17 @@ def check_native_result(stage, metadata, native, audit, episodes, spec):
             "native PPO seed rule differs from its declared stage")
     require(metadata.get("start_graph_rule", "original-seed-cell") == start_graph_rule_from_argv(spec["argv"]),
             "native PPO start graph rule differs from its declared stage")
+    actuation = custody.initial_encoder_profile(spec)
+    require(custody.initial_encoder_profile(metadata) == custody.initial_encoder_profile(native) == actuation,
+            "PPO metadata/native actuation profile differs from its declared stage")
+    if actuation is not None:
+        reports = audit.get("reach_episodes")
+        require(type(reports) is list and len(reports) == len(episodes) and all(
+                    row.get("runtime_drive", {}).get("passed") is True and
+                    row["runtime_drive"].get("actuation_profile") == actuation and
+                    row["runtime_drive"].get("initial_encoder_compound_replay_passed") is True
+                    for row in reports),
+                "PPO full audit lacks each native episode's independent new compound-law replay")
     geometry_rule = reach_geometry_rule_from_argv(spec["argv"])
     require(metadata.get("reach_geometry_rule", BINARY_REACH_GEOMETRY_RULE) == geometry_rule
             and native.get("reach_geometry_rule", BINARY_REACH_GEOMETRY_RULE) == geometry_rule,
@@ -269,6 +282,7 @@ def check_native_result(stage, metadata, native, audit, episodes, spec):
                 "final-only validation requires all three original open seeds strict successes and zero updates")
     return {"eligible_decisions": decisions, "api_records": native["api_records"], "optimizer_updates": updates,
             "native_attempts": len(episodes), "strict_task_successes": audit.get("task_successes"),
+            **({"actuation_profile":actuation} if actuation is not None else {}),
             **({"reach_geometry_rule": geometry_rule} if geometry_rule != BINARY_REACH_GEOMETRY_RULE else {})}
 
 
@@ -301,6 +315,8 @@ def execute_stage(plan_path, freeze, qualification_path, stage, workspace=WORKSP
     require(not output.exists() and not run.exists(), "policy output/run already exists; no retry/overwrite")
     preparation.source_check(plan, plan_path, freeze, workspace, require_clean=True)
     qualification = preparation.validate_qualification(qualification_path, plan_path, freeze, root=workspace)
+    require(custody.initial_encoder_profile(qualification) == custody.initial_encoder_profile(plan),
+            "policy admission qualification actuation profile differs")
     predecessor = _validate_predecessor(plan, plan_path, qualification_path, freeze, stage, workspace)
     executor, executor_proof = preparation.load_executor()
     output.mkdir(parents=True, exist_ok=False)
@@ -412,6 +428,7 @@ def execute_stage(plan_path, freeze, qualification_path, stage, workspace=WORKSP
         and ended_ns <= deadline_ns)
     result = {"schema": SCHEMA, "safety_contract": CONTRACT, "freeze": freeze, "stage": stage,
         "plan": str(plan_path), "plan_sha256": sha(plan_path), "qualification": str(qualification_path),
+        **({"actuation_profile":plan["actuation_profile"]} if custody.initial_encoder_profile(plan) is not None else {}),
         "qualification_sha256": sha(qualification_path), "coordinator_identity": coordinator,
         "coordinator_actual_argv": [p.decode(errors="replace") for p in Path("/proc/self/cmdline").read_bytes().split(b"\0") if p],
         "run_directory": str(run), "output_directory": str(output), "native": native_value, "watcher": watch_value,
@@ -619,6 +636,8 @@ def stage_evidence(plan_path, freeze, stage, outer_wait, workspace=WORKSPACE):
         absent = current is None or current["start_ticks"] != identity["start_ticks"]
         require(absent, "saved policy identity remains present, including zombie: " + str(identity["pid"]))
         gone.append({"saved": identity, "gone": True})
+    require(custody.initial_encoder_profile(summary) == custody.initial_encoder_profile(plan),
+            "policy stage summary actuation profile differs from its plan")
     require(summary.get("reach_geometry_rule", BINARY_REACH_GEOMETRY_RULE)
             == plan.get("reach_geometry_rule", BINARY_REACH_GEOMETRY_RULE),
             "stage summary reach geometry rule differs from qualification plan")
@@ -645,6 +664,7 @@ def stage_evidence(plan_path, freeze, stage, outer_wait, workspace=WORKSPACE):
     _verify_bindings(bindings)
     return {"schema": FINAL_SCHEMA, "safety_contract": CONTRACT, "freeze": freeze, "stage": stage,
         "plan_sha256": sha(plan_path), "summary": str(Path(spec["output_directory"]) / "summary.json"),
+        **({"actuation_profile":plan["actuation_profile"]} if custody.initial_encoder_profile(plan) is not None else {}),
         "summary_sha256": sha(Path(spec["output_directory"]) / "summary.json"),
         "outer_wait": str(Path(outer_wait).resolve()), "outer_wait_sha256": sha(outer_wait),
         "actual_outer_wall_seconds": str(outer_wall), "within_stage_wall_allocation": outer_wall <= main_cap,

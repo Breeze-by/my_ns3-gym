@@ -1,0 +1,66 @@
+{
+  "schema": "mr3-v59-provisional-admission-freshgone-v1",
+  "actual_tools_reaped": {
+    "2952": 1,
+    "28423": 1
+  },
+  "passed": true,
+  "observed_unix_ns": 1792743569863077641,
+  "rows": [
+    {
+      "scope": "admission_provisional_cpu_v1",
+      "kind": "coordinator_identity",
+      "saved": {
+        "pid": 783222,
+        "parent": 783207,
+        "group": 783205,
+        "session": 783205,
+        "start_ticks": 448858483,
+        "state": "R"
+      },
+      "status": "absent"
+    },
+    {
+      "scope": "admission_provisional_cpu_v1",
+      "kind": "child_identity",
+      "saved": {
+        "pid": 783229,
+        "parent": 783222,
+        "group": 783205,
+        "session": 783205,
+        "start_ticks": 448858509,
+        "state": "R"
+      },
+      "status": "absent"
+    },
+    {
+      "scope": "admission_provisional_cpu_v2",
+      "kind": "coordinator_identity",
+      "saved": {
+        "pid": 788541,
+        "parent": 788523,
+        "group": 788521,
+        "session": 788521,
+        "start_ticks": 448872093,
+        "state": "R"
+      },
+      "status": "absent"
+    },
+    {
+      "scope": "admission_provisional_cpu_v2",
+      "kind": "child_identity",
+      "saved": {
+        "pid": 788550,
+        "parent": 788541,
+        "group": 788521,
+        "session": 788521,
+        "start_ticks": 448872118,
+        "state": "R"
+      },
+      "status": "absent"
+    }
+  ],
+  "provisional_v2_pytest_actual_returncode": 0,
+  "provisional_v2_outer_passed": false,
+  "final_source_admission_claimed": false
+}

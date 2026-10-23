@@ -1,0 +1,56 @@
+# MR3 P2A V59：初始编码器保持的生产接入与新完整资格链
+
+当前：生产接入、真实CPU构建、最终fresh v3与编排准入已完成，正在提交来源冻结和生成完整资格计划，尚未启动V59 World、qualification、minimum、pilot或final。P2A未完成。用户已持续委托自主完成，不再请求常规修改或有界工程资源批准。
+
+## 已有依据
+
+[V58完整单场诊断](20261023_mr3_p2a_v58_encoder_hold.md)完成355模拟秒，三机相对45秒时一次固定机身锚点的最大位移约7.56446微米，低于原R=.0078米；实际非零电机纠偏完整记录。它是quick150、原三机物理模型与单一初始zero候选的有限离散观测，不是连续证明、真实rooms/corridors或训练资格。V57 direct-world候选保持失败并排除，未更换生产求解器。
+
+## 本版执行语义
+
+新freeze的`mr3-reach-v1`自动固定`initial-zero-encoder-hold-v1`，由原safety-contract派生；不新增可自由组合的PPO/benchmark profile CLI。launch只向Reach运行时生成SDF的唯一驱动plugin插入明确profile tag；源模型物理字节保持，legacy渲染保持原分支。Supervisor、worker、benchmark、PPO及PLAN/QUAL/所有阶段必须与三机实际配置同profile。
+
+控制只读本地轮q/qdot。首次有真实已消费tagged zero目标后，连续3个34ms轮rim≤.01的样本才一次捕获q_ref；反馈P=1/s、rim截断±.005m/s，再走原配对slew/accel1/torque20。首次成功接收到任意非零目标（包括纯转、尚未消费即被zero覆盖的消息）立即永久退出，到全进程新epoch对象才重新开始。Reset不重置参考或重新arm。无genuine target时不捕获、不纠偏。
+
+APPLIED-v1和存储ACK形状保持；desired仍表示真实body request，applied/written/readback记录实际电机输出。新raw事件完整记录接收锁存、q/qdot/q_ref、计数、servo desired及genuine target join，不把非零输出写成zero。机身姿态仍只用于独立物理观测，不反馈控制；不刷新安全锚点，不扩到运动后的STOP/再次静止，不改R、任务95%、碰撞、时钟、源龄或既有STOP债务。
+
+## 新构建与独立门
+
+实际新驱动构建rc0/116.13177789墙秒，installed ELF2122904B、SHA`df5d9703f23fd206b967eb9408a4504ed3735b9f71a3c31194b60443464139c7`。4个接收锁存gtest通过；首CTest未source ROS setup的失败保留，修入口后同binary执行通过。原六编译源字段加独立第七helper身份、实际编译flags/命令、ELF gzip和loader已封存，见[build manifest](assets/20261023_mr3_p2a_v59_encoder_profile/checks/native_build_v1/build_manifest_v1.json)。其他九个原native ELF与V19原件相同。
+
+新build bridge必须执行实际new-build/current-Git/精确freeze检查，不借旧V15 no-new-build。CPP/CMake及helper的完整来源恢复证明已注册；source和ELF还须在真实新freeze调用strict verifier，当前CPU/构建完成不冒充冻结资格。
+
+独立motor重放已加入receive→consume→34ms actuation完整链，检查一次参考、P/clamp、原common-alpha和精确加速度预算、实际写入/readback/APPLIED join。原drive-v4代数残差界保留，精确segment/预算门没有新增epsilon。62项针对CPU通过；source/build/profile/cadence针对CPU83项通过，原immutable20/34ms数学保留，旧源拒绝与环境入口失败均存档。
+
+统一fresh CPU按完整filesystem Python union（含未tracked模块/tests）封303源、20项改新增源。ROS12模块实际202项通过，40.854571193墙秒、source stable；ns3gym28模块及最终编排准入尚待真实闭合。旧CPU只在当前源码逐字相同处供软件检查信用，改/新增源必须新实际CPU，不使用旧八文件白名单。各组重叠检查不相加为独立样本数。
+
+## 预算与固定出口
+
+承接[V58规范末账](assets/20261023_mr3_p2a_v58_encoder_hold/closure_ledger_v1.json)：累计92217.1876804376018，原C120000/余27782.8123195623982、实费899.40726088全部保留。代理依据持续委托前瞻选择有限工程C150000，入场余57782.8123195623982；这不是用户逐数值批准，也不重置历史账本。见[resource](assets/20261023_mr3_p2a_v59_encoder_profile/resource_v1.json)、[scope](assets/20261023_mr3_p2a_v59_encoder_profile/scope_v1.json)和[authority](assets/20261023_mr3_p2a_v59_encoder_profile/authorization_v1.json)。
+
+完整工程拟预约47220=matrix45000＋minimum1800＋preflight120＋外尾300。原pilot剩1870决策/2905.9547395464029墙秒，三场final-only open401/402/403共900决策/9000墙秒，均无新消耗。新actuation方程是显式版本；`acceptance_gates_unchanged`仅指原任务/质量/安全阈值、时钟及12EP30角色合取，不声称新内环是旧方程恒等。
+
+最终仍须同一freeze完整12EP/30必要角色→fresh minimum16个eligible决策与真实正优化更新→pilot实际eligible、正更新及固定final.zip/normalization→同checkpoint三场strict95全部通过、validation0更新，以及所有来源/审计/关闭条件。旧FAIL不改判、不拼接旧24/30 PASS，不重开旧活动。任何必要失败保留原件和真实全费并停止后继。
+
+## 下一AI或续接的具体顺序
+
+1. 等所有writer停止后完成两组fresh CPU及最终11项编排准入，逐组核实际wait/JUnit/source/recovery/保存身份关闭。
+2. 封新source/build证据，commit/push；以准确新freeze真实调用build bridge、native custody、所有projected loaders/readiness。源码/plan生成阶段若失败，保留CPU原件，修复后新封源；不能给未跑的native信用。
+3. 通过`prepare_plan_v1`生成独占V59 binding/plan，复核完整source inventory、三policy profile和47220预约；plan/code再冻结提交推送后才一次执行`execute_chain_v1 --freeze EXACT40`。准确CLI由最终plan与执行声明封存，不在本准备文档填假freeze。
+4. 按真实parent区间union入engineering/pilot/final各账，所有writer实际wait后再归档/freshgone；不把CPU或短工程PASS写成P2A完成。
+
+初始zero-only不解决所有运动后长时间静止漂移；本版是否足够完成P2A需实际资格和学习验证。尚无已验证探索策略，也无P2B/gateway工作。
+
+## 统一CPU第二版实际结果
+
+fresh v2两个环境均已实际wait/reap：ROS202项/38.504274032墙秒、ns3gym411项/126.860394636墙秒，0失败/0跳过，303源前后相同。见[ROS回执](assets/20261023_mr3_p2a_v59_encoder_profile/checks/fresh_ros_cpu_v2/actual_wait.json)、[learner回执](assets/20261023_mr3_p2a_v59_encoder_profile/checks/fresh_learner_cpu_v2/actual_wait.json)、[JUnit及保存身份关闭](assets/20261023_mr3_p2a_v59_encoder_profile/checks/fresh_cpu_postreap_v2.json)。当前相对baseline有21个改/新增Python源，只有当前字节的v2供最终准备信用。
+
+初轮ROS202通过、learner409通过/1失败；唯一失败为人工positive计划未注册新profile，生产门正确拒绝。只补全该fixture及副作用前拒错反例，最短模块11项通过，未改生产规则。旧spec、旧源码、失败JUnit/actual wait均保留。第二版首次group入口在seal进程尚未结束时被拒，pytest/World均未启动；实际等seal rc0后再提交新独占group，顺序记录保留，未改门。两版共8份实际保存CPU身份均freshgone。
+
+最终编排11项准入仍待单独真实封存；此前并行写入导致source-drift的两轮开发结果不供最终资格。所有准备结果均没有新World/训练/P2A信用。后续精确sourcefreeze/newbuild实际loader仍须通过。
+
+最终编排准入已实际11项PASS/18.775484301墙秒，295源before/after相同，spec/实际argv/JUnit/wait/recovery已再次严格验证，2保存身份gone。见[最终准入](assets/20261023_mr3_p2a_v59_encoder_profile/checks/admission_verified_v1.json)和[关闭](assets/20261023_mr3_p2a_v59_encoder_profile/checks/admission_postreap_v1.json)。此前两轮开发入口与source-drift拒绝保留。当前全部代码writer已停止；下一步commit/push source/build证据，再用真实精确freeze验证新桥/loader，生成plan后再次封存执行。正式V59 World、资格或学习仍为0。
+
+## EOF清理后的当前来源检查
+
+提交检查发现prepare/preflight两文件各多一个EOF空行，仅去掉这两个LF。它们实际包含在303份封存源码中，因此v2保留原历史PASS，不给新字节信用。旧spec、两旧源码、旧准入证据均无损保存在checks下的独占attempt目录。fresh v3以同一b6af48基线重封：ROS202项/40.593820366墙秒、learner411项/133.691170848墙秒，actual wait均rc0、来源前后相同。编排准入新一轮11项/20.202614774墙秒、295源稳定；该实际源集合不含fresh spec JSON，重封后逐项当前字节仍一致，严格分类验证通过。后续生产源码若变化，仍须更新对应证据；这些结果没有World、资格或学习信用。

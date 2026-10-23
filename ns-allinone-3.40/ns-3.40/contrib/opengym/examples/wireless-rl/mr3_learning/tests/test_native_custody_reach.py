@@ -359,7 +359,7 @@ class BuildBridgeTests(unittest.TestCase):
 
 
 class RealV15BuildArchiveTests(unittest.TestCase):
-    def test_real_v15_manifest_omits_cmake_and_real_original_bridge_still_verifies(self):
+    def test_real_v15_archive_keeps_original_scope_and_cannot_admit_a_changed_driver(self):
         """Read actual originals; only the temporary new bridge container is mocked.
 
         No historical artifact is rewritten and no library is executed. This is
@@ -406,6 +406,16 @@ class RealV15BuildArchiveTests(unittest.TestCase):
                     return raw
                 return original_frozen(specification,source_freeze,source_root,read)
             with patch.object(gate,"frozen_artifact",side_effect=frozen):
+                original_sources={row["path"]:row for row in build["source_before"]}
+                changed=(gate.sha(Path(cmake).read_bytes()) != original_sources[cmake]["sha256"] or
+                         gate.sha(field_paths["compiled_source_sha256"].read_bytes()) != manifest["compiled_source_sha256"] or
+                         gate.sha(Path(library["path"]).read_bytes()) != library["sha256"])
+                if changed:
+                    # The immutable original remains useful as evidence, but its
+                    # no-new-build assertion cannot cover a changed current plant.
+                    with self.assertRaises(ValueError):
+                        gate.verify_build_bridge(bridge_path,freeze,bound,root=root)
+                    return
                 result=gate.verify_build_bridge(bridge_path,freeze,bound,root=root)
         self.assertTrue(result["passed"])
         self.assertFalse(result["source_scope"]["cmake_present_in_original_manifest"])

@@ -15,7 +15,7 @@ import threading
 import time
 
 from .env import MR3Env
-from .supervisor import (BINARY_REACH_GEOMETRY_RULE, REACH_GEOMETRY_RULES,
+from .supervisor import (actuation_profile_for_safety_contract, BINARY_REACH_GEOMETRY_RULE, REACH_GEOMETRY_RULES,
                          validate_reach_geometry_rule, reach_geometry_rule_from_argv)
 from .supervisor import (
     InfrastructureError, Supervisor, WORKSPACE, identity_alive, ros_environment,
@@ -917,6 +917,9 @@ def main(argv=None):
                 "resource_scope": "host counters include unrelated activity; GPU driver reports",
                 "num_logical_cpus": os.cpu_count(),
                 "cpu_affinity_count": len(os.sched_getaffinity(0))}
+    profile = actuation_profile_for_safety_contract(args.safety_contract)
+    if profile is not None:
+        metadata["actuation_profile"] = profile
     if args.seed_rule != "legacy":
         metadata["seed_rule"] = args.seed_rule
     if args.start_graph_rule != "original-seed-cell":

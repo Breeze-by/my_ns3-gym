@@ -8931,3 +8931,43 @@ quick150 CPP/wrapper1，合作式600秒上限partial235.631sim秒（190.631秒po
 ### 2026-10-23 V58 CPU与封存准备（尚未World）
 
 新initial-zero encoder helper12组rc0/1.96319775秒，入口导入FAIL/.228416829原件保留；单quick150生成.137421507、实际编译52.375035399秒rc0，ELF494528B/SHA0f911c2a0d163e66bb32656944732a74a760511aff49b606bf947b6517e118e6，342库稳定、4编译/生成保存身份gone。driver末轮6组rc0/.391277212秒、2身份gone，旧轮原件保留。CPU均无World/学习/工程新增，准确argv/来源回执见[V58报告](report/20261023_mr3_p2a_v58_encoder_hold.md)链接。U91317.7804195576018/C120000、R28682.2195804423982，新预约2100；single quick150/355sim秒/work1500/outer1800/新actuation/raw非零motor披露保持，待新freeze唯一CLI一次执行。P2A未完成，pilot/final新增0。
+
+
+### 2026-10-23 MR3 P2A V58：初始编码器保持单臂实际闭合
+
+freeze`b6af48cfe88b73a633d0e7552b88c3489900391a`，root tool23554真实reap rc0；原准确CLI已关闭，不再运行：
+
+```bash
+rtk proxy env PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 CUDA_VISIBLE_DEVICES= /usr/bin/python3 -B /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v58_encoder_hold/run_passive_pair_v1.py --freeze b6af48cfe88b73a633d0e7552b88c3489900391a
+```
+
+CPP/wrapper/root均rc0，355000步/355sim秒、310001 postanchor观测，三机最大body位移约7.56446e-6m、最大平移速度6.58461348e-5m/s，q_ref一次捕获、10441 motor更新；实际非零纠偏及body/motor CSV完整保留。它只是隔离候选binary64/1ms描述PASS，不是生产/连续证明/12EP30角色或学习资格。native提交发生在观察push RPC回收之前，本地exact Git已commit，push后来实际rc0；原收据透明存档、不改顺序或重跑。
+
+连续parent899.40726088墙秒，nested893.582203956不加；累计92217.1876804376018/120000、余27782.8123195623982，pilot/final新增0。372源原before/after稳定，关闭新核20代码/28repo current-Git/old10/30非库，342库不重读。4份实际保存main身份gone；20 regular原件35601348B→9623421B无损封存、0link。关闭CPU实际tool68165 rc0/25.947314682墙秒、16源稳定、2身份另gone，工程新增0。报告/原件/库存/末账见[V58实际闭合](report/20261023_mr3_p2a_v58_encoder_hold.md)。
+
+后继S59由代理持续委托选择有限累计150000、从真实92217.1876804376018承接余57782.8123195623982，拟47220工程预约，非数值用户批准或旧账重置；生产profile/真实newbuild/compound-law接线及CPU后再封scope。原pilot/final、任务/质量/安全门与所有旧FAIL保持，P2A未完成。
+
+
+### 2026-10-23 V59 新actuation生产与统一CPU准备（未World）
+
+承接V58U92217.1876804376018，代理依据持续委托选择有限C150000/余57782.8123195623982，拟47220完整工程预约，非数字用户批准，原pilot/final不动。新initial-zero-encoder-hold-v1只在genuine初始零目标时一次捕获本地q参考，首成功非零receive永久退出；原APPLIED形状、R/STOP/95保持，新方程严格独立重放与真实newbuild/source/profile门。
+
+实际colcon CPU编译rc0/116.13177789秒，新driver2122904B/SHAdf5d9703f23fd206b967eb9408a4504ed3735b9f71a3c31194b60443464139c7；4 gtest最终PASS（首ROS入口失败保留）。独立motor针对62项、build/profile/cadence针对83项通过。统一fresh v2按303源/21改新增封存：ROS202项/38.504274032、ns3gym411项/126.860394636墙秒，source stable、两版共8保存身份gone。v1唯一人工profile fixture缺失FAIL、原spec/源码/JUnit保留，修fixture未改生产门；v2首未等seal的入口拒绝不含pytest/World，真实seal完成后才运行最终group。所有准确argv、build/current来源与回执见[V59准备报告](report/20261023_mr3_p2a_v59_encoder_profile.md)对应链接；CPU工程新增0，仍无新native/PPO/qualification，待最终11项准入与精确冻结后完整同freeze链。P2A未完成。
+
+最终编排admission实际11项PASS/18.775484301墙秒、295源稳定、2保存身份gone；spec/argv/JUnit/wait/recovery严核完成，原provisional失败保留。精确来源桥和native qualification仍未执行，待新sourcefreeze。
+
+
+### 2026-10-23 V59 EOF清理后准入重测（无World）
+
+仅prepare_plan_v1.py与preflight_v1.py各移除一个EOF空行，保留恰好一个末尾换行；旧源码、准入spec/实际wait/JUnit/console/recovery/verified/postreap原字节已存[独占归档](report/assets/20261023_mr3_p2a_v59_encoder_profile/checks/admission_attempt_before_eof_cleanup_v1/archive_inventory_v1.json)，逐项SHA/字节数复核通过，旧11项18.775484301秒结果不改判。更正：这两脚本属于统一303-source集合，先前fresh v2仅覆盖清理前字节，不能充作当前源资格；native agent已另封v3并实际重测，最终结论另记。
+
+新admission tool36670实际reap rc0，11/11 PASS、20.202614774墙秒，295源before/after及封v3 spec后当前逐项SHA相等。新spec SHA2fbad4c108083c92aa47297fcde37eaf0a1cf5ed09d94cd4a6f04249df1cddca；实际source仅绑定admission spec这一JSON，不含fresh_cpu_spec，后者独立重封不改变本次准入来源。真实classification.verify与Inputs.finish严核spec/argv/JUnit/wait/recovery通过，2保存身份按PID/start_ticks新查均gone，见[严核](report/assets/20261023_mr3_p2a_v59_encoder_profile/checks/admission_verified_v1.json)及[回收](report/assets/20261023_mr3_p2a_v59_encoder_profile/checks/admission_postreap_v1.json)。CPU工程新增0，无World/native/PPO或学习信用；U92217.1876804376018/C150000、pilot/final与历史FAIL保持，P2A未完成。
+
+
+### 2026-10-23 V59 EOF字节清理后的fresh CPU v3
+
+原fresh v2两份实际PASS与回执保持；因A59 prepare_plan/preflight的EOF字节清理已与旧测试303源不等，原spec原字节SHA `b1a7ae668c11c8f002dcfdf6ced51ada9f5bc5f85f2ee5ccd75c0d5d709bb47a` 保存在 `report/assets/20261023_mr3_p2a_v59_encoder_profile/checks/fresh_cpu_attempt_before_eof_cleanup_v1/`。新v3仍承接baseline `b6af48cfe88b73a633d0e7552b88c3489900391a`，未匹配baseline的当前工作树源码由source_recovery精确快照提供，不冒充已有qualification freeze。
+
+唯一新入口均在wireless-rl cwd，system Python外层保持PYTHONNOUSERSITE=1/PYTHONDONTWRITEBYTECODE=1/CUDA_VISIBLE_DEVICES空：`/usr/bin/python3 -B -m report.assets.20261023_mr3_p2a_v59_encoder_profile.run_fresh_cpu_v1 --seal`（tool92284真实reap0，303py+后续spec共304输入、21个changed/new）；随后 `--group ros-system`（tool78993真实reap0，202项，40.593820366墙秒）和 `--group ns3gym`（tool88206真实reap0，411项，133.691170848墙秒）。真实内层pytest/bash argv、完整tested source before/after/recovery和JUnit分别见 `checks/fresh_ros_cpu_v3/actual_wait.json`、`checks/fresh_learner_cpu_v3/actual_wait.json`及同名recovery。两组均source稳定且当前304项逐一SHA相等；learner全部tested bytes已从原Git/snapshot恢复核对。每组2份保存身份分别freshgone，见 `checks/fresh_*_cpu_v3_postreap_v1.json` 与 `checks/fresh_v3_complete_v1.json`。
+
+以上仅人工CPU准备，工程新增0、无World/新native/资格或P2A学习信用；旧账、pilot/final原额与全部科学门保持，仍需新精确freeze的完整资格与学习链。

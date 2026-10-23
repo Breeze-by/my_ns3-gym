@@ -1,0 +1,775 @@
+FFFFFFF....                                                              [100%]
+=================================== FAILURES ===================================
+_ ActivityResourceEntryTests.test_all_four_real_entries_accept_only_to_pre_model_boundary _
+
+self = <test_activity_resource_entry_v1.ActivityResourceEntryTests testMethod=test_all_four_real_entries_accept_only_to_pre_model_boundary>
+
+    def setUp(self):
+        self.f = block_fixtures.EngineeringBlockTests()
+        self.f.setUp()
+        self.addCleanup(self.f.doCleanups)
+        self.stack = contextlib.ExitStack()
+        self.addCleanup(self.stack.close)
+        self.a = self.f.root
+        self.plan_path = self.a / 'plan_v1.json'
+        self.stack.enter_context(patch.object(preparing, 'W', reach_preparation.WORKSPACE))
+        self.driver_file = self.a / 'toy_driver.json'
+        self.review_file = self.a / 'toy_closed_review.json'
+        self.root_wait_file = self.a / 'toy_root_wait.json'
+        self.inventory_file = self.a / 'toy_inventory.json'
+        self.write(self.driver_file, {
+            'schema':'mr3-v58-passive-pair-result-v1','passed':True,'execution_freeze':FREEZE,
+            'pair_started_monotonic_ns':1_000_000_000,'pair_ended_monotonic_ns':11_000_000_000,
+            'engineering_added_parent_wall_seconds':'10','engineering_cumulative_seconds':'100',
+            'errors':[],'received_parent_signals':[],
+            'arms':[{'actual_wrapper_waited':True,'actual_wrapper_returncode':0}]})
+        self.write(self.root_wait_file, {'actual_waited':True,'actual_returncode_observed':0})
+        original_specs = {key:self.f.spec(path) for key,path in
+            (('driver_summary',self.driver_file),('root_actual_wait',self.root_wait_file))}
+        self.write(self.review_file, {
+            'schema':'mr3-v58-closed-metadata-review-v1','passed':True,
+            'all_saved_identities_fresh_gone':True,'engineering_added_parent_wall_seconds':'10',
+            'engineering_cumulative_seconds':'100','optimizer_updates':0,'learner_models_loaded':False,
+            'native_qualification_credit':False,**original_specs})
+        self.write(self.inventory_file, {'passed':True,'execution_freeze':FREEZE,'entries':[
+            {'original':spec['path'],'codec':'original-bytes','original_sha256':spec['sha256'],
+             'canonical_sha256':spec['sha256'],'original_bytes':spec['bytes'],
+             'canonical_bytes':spec['bytes'],'canonical':path.name}
+            for key,path in (('driver_summary',self.driver_file),('root_actual_wait',self.root_wait_file))
+            for spec in (original_specs[key],)]})
+        originals = {'driver_summary':self.f.spec(self.driver_file),
+                     'closed_metadata_review':self.f.spec(self.review_file)}
+        self.ledger = {
+            'schema':'mr3-engineering-closure-ledger-v1','passed':True,
+            'engineering_entry_seconds':'90','engineering_added_seconds':'10',
+            'engineering_cumulative_seconds':'100','engineering_remaining_seconds':'900',
+            'engineering_ceiling_seconds':'1000','old_FAIL_and_pending_fields_preserved':True,
+            'all_saved_main_identities_fresh_gone':True,'native_qualification_credit':False,'P2A_complete':False,
+            'execution_freeze':FREEZE,'pilot_added_seconds':'0','validation_added_seconds':'0',
+            'fee_interval':{'started_monotonic_ns':1_000_000_000,'ended_monotonic_ns':11_000_000_000},
+            'closed_metadata_review':self.f.spec(self.review_file),'closed_inventory':self.f.spec(self.inventory_file)}
+        self.write(self.f.ledger,self.ledger)
+        self.f.value['previous_accounting'] = self.f.spec(self.f.ledger)
+        self.f.seal(self.f.value)
+        for module, key, value in [
+                (preparing, 'A', self.a), (preparing, 'RESOURCE', self.f.resource_path),
+                (preparing, 'NORMALIZED_PRIOR', self.f.ledger),
+                (preparing, 'PLAN', self.plan_path), (preparing, 'BINDING', self.a / 'not_created_binding.json'),
+                (preparing, 'PRIOR_ORIGINAL_SHA256', {k: v['sha256'] for k, v in originals.items()}),
+                (preflight, 'A', self.a), (checking, 'ASSETS', self.a),
+                (driver, 'PLAN', self.plan_path), (driver, 'PREFIX', self.a / 'not_created_driver')]:
+            self.stack.enter_context(patch.object(module, key, value))
+        self.scope = {
+            'schema': 'mr3-p2a-v59-native-qualification-scope-v1',
+            'engineering_resource': self.f.spec(self.f.resource_path),
+            'robots_per_environment': 3, 'mandatory_roles': 30, 'matrix_episodes': 12,
+            'minimum_decisions': 16, 'pilot_requested_decisions': 64,
+            'pilot_remaining_decisions': 1870, 'pilot_remaining_wall_seconds': '2905.9547395464029',
+            'final_only_schedule': ['open:401', 'open:402', 'open:403'], 'mapping_target': .95,
+            'acceptance_gates_unchanged': True, 'old_failures_preserved': True,
+            'no_retry_on_required_failure': True, 'p2b_gateway_authorized': False,
+            'prior_native_credit_reused': False, 'seed_rule': preparing.SEED_RULE,
+            'start_graph_rule': preparing.START_RULE, 'reach_geometry_rule': preparing.REACH_GEOMETRY_RULE,
+            'reset_workload_reader_profile': reach_preparation.reset_workload.PROFILE,
+            'actuation_profile': preparing.ACTUATION_PROFILE}
+        self.authorization = {
+            'schema': 'mr3-p2a-autonomous-continuation-authorization-v1',
+            'status': 'AUTHORIZED_BY_USER_CONTINUATION',
+            'user_exact_text': '你一直继续执行就好了，直到把P2A完成，不需要问我是否批准',
+            'numeric_user_approval_claimed': False,
+            'engineering_resource': self.f.spec(self.f.resource_path),
+            'acceptance_gates_unchanged': True, 'old_failures_preserved': True,
+            'p2b_gateway_authorized': False}
+        self.write(self.a / 'scope_v1.json', self.scope)
+        self.write(self.a / 'authorization_v1.json', self.authorization)
+        binding_path = self.f.kwargs()['custody_binding']
+        self.write(binding_path, {
+            'reach_geometry_rule': preparing.REACH_GEOMETRY_RULE,
+            'actuation_profile': preparing.ACTUATION_PROFILE, 'binaries': {},
+            'source_bindings': [self.f.spec(reach_preparation.WORKSPACE / relative)
+                for relative in sorted(reach_preparation.SUPPORT_REACH_SOURCES)]})
+>       self.plan = reach_preparation.build_plan(**dict(self.f.kwargs(), plan_path=self.plan_path),
+            engineering_remaining_seconds='40000',
+            reservation_profile=reach_preparation.AUTONOMOUS_RESOURCE_PROFILE,
+            engineering_resource=self.f.spec(self.f.resource_path), seed_rule=preparing.SEED_RULE,
+            start_graph_rule=preparing.START_RULE, reach_geometry_rule=preparing.REACH_GEOMETRY_RULE)
+
+report/assets/20261023_mr3_p2a_v59_encoder_profile/test_activity_resource_entry_v1.py:118: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+mr3_learning/reach_preparation.py:589: in build_plan
+    require(initial_encoder_profile(binding) == actuation_profile,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+condition = False
+message = 'builder custody binding and explicit actuation profile differ'
+
+    def require(condition, message):
+        if not condition:
+>           raise ValueError(message)
+E           ValueError: builder custody binding and explicit actuation profile differ
+
+mr3_learning/preparation.py:44: ValueError
+_ ActivityResourceEntryTests.test_all_four_real_entries_reject_overbudget_before_effects _
+
+self = <test_activity_resource_entry_v1.ActivityResourceEntryTests testMethod=test_all_four_real_entries_reject_overbudget_before_effects>
+
+    def setUp(self):
+        self.f = block_fixtures.EngineeringBlockTests()
+        self.f.setUp()
+        self.addCleanup(self.f.doCleanups)
+        self.stack = contextlib.ExitStack()
+        self.addCleanup(self.stack.close)
+        self.a = self.f.root
+        self.plan_path = self.a / 'plan_v1.json'
+        self.stack.enter_context(patch.object(preparing, 'W', reach_preparation.WORKSPACE))
+        self.driver_file = self.a / 'toy_driver.json'
+        self.review_file = self.a / 'toy_closed_review.json'
+        self.root_wait_file = self.a / 'toy_root_wait.json'
+        self.inventory_file = self.a / 'toy_inventory.json'
+        self.write(self.driver_file, {
+            'schema':'mr3-v58-passive-pair-result-v1','passed':True,'execution_freeze':FREEZE,
+            'pair_started_monotonic_ns':1_000_000_000,'pair_ended_monotonic_ns':11_000_000_000,
+            'engineering_added_parent_wall_seconds':'10','engineering_cumulative_seconds':'100',
+            'errors':[],'received_parent_signals':[],
+            'arms':[{'actual_wrapper_waited':True,'actual_wrapper_returncode':0}]})
+        self.write(self.root_wait_file, {'actual_waited':True,'actual_returncode_observed':0})
+        original_specs = {key:self.f.spec(path) for key,path in
+            (('driver_summary',self.driver_file),('root_actual_wait',self.root_wait_file))}
+        self.write(self.review_file, {
+            'schema':'mr3-v58-closed-metadata-review-v1','passed':True,
+            'all_saved_identities_fresh_gone':True,'engineering_added_parent_wall_seconds':'10',
+            'engineering_cumulative_seconds':'100','optimizer_updates':0,'learner_models_loaded':False,
+            'native_qualification_credit':False,**original_specs})
+        self.write(self.inventory_file, {'passed':True,'execution_freeze':FREEZE,'entries':[
+            {'original':spec['path'],'codec':'original-bytes','original_sha256':spec['sha256'],
+             'canonical_sha256':spec['sha256'],'original_bytes':spec['bytes'],
+             'canonical_bytes':spec['bytes'],'canonical':path.name}
+            for key,path in (('driver_summary',self.driver_file),('root_actual_wait',self.root_wait_file))
+            for spec in (original_specs[key],)]})
+        originals = {'driver_summary':self.f.spec(self.driver_file),
+                     'closed_metadata_review':self.f.spec(self.review_file)}
+        self.ledger = {
+            'schema':'mr3-engineering-closure-ledger-v1','passed':True,
+            'engineering_entry_seconds':'90','engineering_added_seconds':'10',
+            'engineering_cumulative_seconds':'100','engineering_remaining_seconds':'900',
+            'engineering_ceiling_seconds':'1000','old_FAIL_and_pending_fields_preserved':True,
+            'all_saved_main_identities_fresh_gone':True,'native_qualification_credit':False,'P2A_complete':False,
+            'execution_freeze':FREEZE,'pilot_added_seconds':'0','validation_added_seconds':'0',
+            'fee_interval':{'started_monotonic_ns':1_000_000_000,'ended_monotonic_ns':11_000_000_000},
+            'closed_metadata_review':self.f.spec(self.review_file),'closed_inventory':self.f.spec(self.inventory_file)}
+        self.write(self.f.ledger,self.ledger)
+        self.f.value['previous_accounting'] = self.f.spec(self.f.ledger)
+        self.f.seal(self.f.value)
+        for module, key, value in [
+                (preparing, 'A', self.a), (preparing, 'RESOURCE', self.f.resource_path),
+                (preparing, 'NORMALIZED_PRIOR', self.f.ledger),
+                (preparing, 'PLAN', self.plan_path), (preparing, 'BINDING', self.a / 'not_created_binding.json'),
+                (preparing, 'PRIOR_ORIGINAL_SHA256', {k: v['sha256'] for k, v in originals.items()}),
+                (preflight, 'A', self.a), (checking, 'ASSETS', self.a),
+                (driver, 'PLAN', self.plan_path), (driver, 'PREFIX', self.a / 'not_created_driver')]:
+            self.stack.enter_context(patch.object(module, key, value))
+        self.scope = {
+            'schema': 'mr3-p2a-v59-native-qualification-scope-v1',
+            'engineering_resource': self.f.spec(self.f.resource_path),
+            'robots_per_environment': 3, 'mandatory_roles': 30, 'matrix_episodes': 12,
+            'minimum_decisions': 16, 'pilot_requested_decisions': 64,
+            'pilot_remaining_decisions': 1870, 'pilot_remaining_wall_seconds': '2905.9547395464029',
+            'final_only_schedule': ['open:401', 'open:402', 'open:403'], 'mapping_target': .95,
+            'acceptance_gates_unchanged': True, 'old_failures_preserved': True,
+            'no_retry_on_required_failure': True, 'p2b_gateway_authorized': False,
+            'prior_native_credit_reused': False, 'seed_rule': preparing.SEED_RULE,
+            'start_graph_rule': preparing.START_RULE, 'reach_geometry_rule': preparing.REACH_GEOMETRY_RULE,
+            'reset_workload_reader_profile': reach_preparation.reset_workload.PROFILE,
+            'actuation_profile': preparing.ACTUATION_PROFILE}
+        self.authorization = {
+            'schema': 'mr3-p2a-autonomous-continuation-authorization-v1',
+            'status': 'AUTHORIZED_BY_USER_CONTINUATION',
+            'user_exact_text': '你一直继续执行就好了，直到把P2A完成，不需要问我是否批准',
+            'numeric_user_approval_claimed': False,
+            'engineering_resource': self.f.spec(self.f.resource_path),
+            'acceptance_gates_unchanged': True, 'old_failures_preserved': True,
+            'p2b_gateway_authorized': False}
+        self.write(self.a / 'scope_v1.json', self.scope)
+        self.write(self.a / 'authorization_v1.json', self.authorization)
+        binding_path = self.f.kwargs()['custody_binding']
+        self.write(binding_path, {
+            'reach_geometry_rule': preparing.REACH_GEOMETRY_RULE,
+            'actuation_profile': preparing.ACTUATION_PROFILE, 'binaries': {},
+            'source_bindings': [self.f.spec(reach_preparation.WORKSPACE / relative)
+                for relative in sorted(reach_preparation.SUPPORT_REACH_SOURCES)]})
+>       self.plan = reach_preparation.build_plan(**dict(self.f.kwargs(), plan_path=self.plan_path),
+            engineering_remaining_seconds='40000',
+            reservation_profile=reach_preparation.AUTONOMOUS_RESOURCE_PROFILE,
+            engineering_resource=self.f.spec(self.f.resource_path), seed_rule=preparing.SEED_RULE,
+            start_graph_rule=preparing.START_RULE, reach_geometry_rule=preparing.REACH_GEOMETRY_RULE)
+
+report/assets/20261023_mr3_p2a_v59_encoder_profile/test_activity_resource_entry_v1.py:118: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+mr3_learning/reach_preparation.py:589: in build_plan
+    require(initial_encoder_profile(binding) == actuation_profile,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+condition = False
+message = 'builder custody binding and explicit actuation profile differ'
+
+    def require(condition, message):
+        if not condition:
+>           raise ValueError(message)
+E           ValueError: builder custody binding and explicit actuation profile differ
+
+mr3_learning/preparation.py:44: ValueError
+_____ ActivityResourceEntryTests.test_conflicting_plan_budget_is_rejected ______
+
+self = <test_activity_resource_entry_v1.ActivityResourceEntryTests testMethod=test_conflicting_plan_budget_is_rejected>
+
+    def setUp(self):
+        self.f = block_fixtures.EngineeringBlockTests()
+        self.f.setUp()
+        self.addCleanup(self.f.doCleanups)
+        self.stack = contextlib.ExitStack()
+        self.addCleanup(self.stack.close)
+        self.a = self.f.root
+        self.plan_path = self.a / 'plan_v1.json'
+        self.stack.enter_context(patch.object(preparing, 'W', reach_preparation.WORKSPACE))
+        self.driver_file = self.a / 'toy_driver.json'
+        self.review_file = self.a / 'toy_closed_review.json'
+        self.root_wait_file = self.a / 'toy_root_wait.json'
+        self.inventory_file = self.a / 'toy_inventory.json'
+        self.write(self.driver_file, {
+            'schema':'mr3-v58-passive-pair-result-v1','passed':True,'execution_freeze':FREEZE,
+            'pair_started_monotonic_ns':1_000_000_000,'pair_ended_monotonic_ns':11_000_000_000,
+            'engineering_added_parent_wall_seconds':'10','engineering_cumulative_seconds':'100',
+            'errors':[],'received_parent_signals':[],
+            'arms':[{'actual_wrapper_waited':True,'actual_wrapper_returncode':0}]})
+        self.write(self.root_wait_file, {'actual_waited':True,'actual_returncode_observed':0})
+        original_specs = {key:self.f.spec(path) for key,path in
+            (('driver_summary',self.driver_file),('root_actual_wait',self.root_wait_file))}
+        self.write(self.review_file, {
+            'schema':'mr3-v58-closed-metadata-review-v1','passed':True,
+            'all_saved_identities_fresh_gone':True,'engineering_added_parent_wall_seconds':'10',
+            'engineering_cumulative_seconds':'100','optimizer_updates':0,'learner_models_loaded':False,
+            'native_qualification_credit':False,**original_specs})
+        self.write(self.inventory_file, {'passed':True,'execution_freeze':FREEZE,'entries':[
+            {'original':spec['path'],'codec':'original-bytes','original_sha256':spec['sha256'],
+             'canonical_sha256':spec['sha256'],'original_bytes':spec['bytes'],
+             'canonical_bytes':spec['bytes'],'canonical':path.name}
+            for key,path in (('driver_summary',self.driver_file),('root_actual_wait',self.root_wait_file))
+            for spec in (original_specs[key],)]})
+        originals = {'driver_summary':self.f.spec(self.driver_file),
+                     'closed_metadata_review':self.f.spec(self.review_file)}
+        self.ledger = {
+            'schema':'mr3-engineering-closure-ledger-v1','passed':True,
+            'engineering_entry_seconds':'90','engineering_added_seconds':'10',
+            'engineering_cumulative_seconds':'100','engineering_remaining_seconds':'900',
+            'engineering_ceiling_seconds':'1000','old_FAIL_and_pending_fields_preserved':True,
+            'all_saved_main_identities_fresh_gone':True,'native_qualification_credit':False,'P2A_complete':False,
+            'execution_freeze':FREEZE,'pilot_added_seconds':'0','validation_added_seconds':'0',
+            'fee_interval':{'started_monotonic_ns':1_000_000_000,'ended_monotonic_ns':11_000_000_000},
+            'closed_metadata_review':self.f.spec(self.review_file),'closed_inventory':self.f.spec(self.inventory_file)}
+        self.write(self.f.ledger,self.ledger)
+        self.f.value['previous_accounting'] = self.f.spec(self.f.ledger)
+        self.f.seal(self.f.value)
+        for module, key, value in [
+                (preparing, 'A', self.a), (preparing, 'RESOURCE', self.f.resource_path),
+                (preparing, 'NORMALIZED_PRIOR', self.f.ledger),
+                (preparing, 'PLAN', self.plan_path), (preparing, 'BINDING', self.a / 'not_created_binding.json'),
+                (preparing, 'PRIOR_ORIGINAL_SHA256', {k: v['sha256'] for k, v in originals.items()}),
+                (preflight, 'A', self.a), (checking, 'ASSETS', self.a),
+                (driver, 'PLAN', self.plan_path), (driver, 'PREFIX', self.a / 'not_created_driver')]:
+            self.stack.enter_context(patch.object(module, key, value))
+        self.scope = {
+            'schema': 'mr3-p2a-v59-native-qualification-scope-v1',
+            'engineering_resource': self.f.spec(self.f.resource_path),
+            'robots_per_environment': 3, 'mandatory_roles': 30, 'matrix_episodes': 12,
+            'minimum_decisions': 16, 'pilot_requested_decisions': 64,
+            'pilot_remaining_decisions': 1870, 'pilot_remaining_wall_seconds': '2905.9547395464029',
+            'final_only_schedule': ['open:401', 'open:402', 'open:403'], 'mapping_target': .95,
+            'acceptance_gates_unchanged': True, 'old_failures_preserved': True,
+            'no_retry_on_required_failure': True, 'p2b_gateway_authorized': False,
+            'prior_native_credit_reused': False, 'seed_rule': preparing.SEED_RULE,
+            'start_graph_rule': preparing.START_RULE, 'reach_geometry_rule': preparing.REACH_GEOMETRY_RULE,
+            'reset_workload_reader_profile': reach_preparation.reset_workload.PROFILE,
+            'actuation_profile': preparing.ACTUATION_PROFILE}
+        self.authorization = {
+            'schema': 'mr3-p2a-autonomous-continuation-authorization-v1',
+            'status': 'AUTHORIZED_BY_USER_CONTINUATION',
+            'user_exact_text': '你一直继续执行就好了，直到把P2A完成，不需要问我是否批准',
+            'numeric_user_approval_claimed': False,
+            'engineering_resource': self.f.spec(self.f.resource_path),
+            'acceptance_gates_unchanged': True, 'old_failures_preserved': True,
+            'p2b_gateway_authorized': False}
+        self.write(self.a / 'scope_v1.json', self.scope)
+        self.write(self.a / 'authorization_v1.json', self.authorization)
+        binding_path = self.f.kwargs()['custody_binding']
+        self.write(binding_path, {
+            'reach_geometry_rule': preparing.REACH_GEOMETRY_RULE,
+            'actuation_profile': preparing.ACTUATION_PROFILE, 'binaries': {},
+            'source_bindings': [self.f.spec(reach_preparation.WORKSPACE / relative)
+                for relative in sorted(reach_preparation.SUPPORT_REACH_SOURCES)]})
+>       self.plan = reach_preparation.build_plan(**dict(self.f.kwargs(), plan_path=self.plan_path),
+            engineering_remaining_seconds='40000',
+            reservation_profile=reach_preparation.AUTONOMOUS_RESOURCE_PROFILE,
+            engineering_resource=self.f.spec(self.f.resource_path), seed_rule=preparing.SEED_RULE,
+            start_graph_rule=preparing.START_RULE, reach_geometry_rule=preparing.REACH_GEOMETRY_RULE)
+
+report/assets/20261023_mr3_p2a_v59_encoder_profile/test_activity_resource_entry_v1.py:118: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+mr3_learning/reach_preparation.py:589: in build_plan
+    require(initial_encoder_profile(binding) == actuation_profile,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+condition = False
+message = 'builder custody binding and explicit actuation profile differ'
+
+    def require(condition, message):
+        if not condition:
+>           raise ValueError(message)
+E           ValueError: builder custody binding and explicit actuation profile differ
+
+mr3_learning/preparation.py:44: ValueError
+_ ActivityResourceEntryTests.test_current_python_classification_includes_untracked _
+
+self = <test_activity_resource_entry_v1.ActivityResourceEntryTests testMethod=test_current_python_classification_includes_untracked>
+
+    def setUp(self):
+        self.f = block_fixtures.EngineeringBlockTests()
+        self.f.setUp()
+        self.addCleanup(self.f.doCleanups)
+        self.stack = contextlib.ExitStack()
+        self.addCleanup(self.stack.close)
+        self.a = self.f.root
+        self.plan_path = self.a / 'plan_v1.json'
+        self.stack.enter_context(patch.object(preparing, 'W', reach_preparation.WORKSPACE))
+        self.driver_file = self.a / 'toy_driver.json'
+        self.review_file = self.a / 'toy_closed_review.json'
+        self.root_wait_file = self.a / 'toy_root_wait.json'
+        self.inventory_file = self.a / 'toy_inventory.json'
+        self.write(self.driver_file, {
+            'schema':'mr3-v58-passive-pair-result-v1','passed':True,'execution_freeze':FREEZE,
+            'pair_started_monotonic_ns':1_000_000_000,'pair_ended_monotonic_ns':11_000_000_000,
+            'engineering_added_parent_wall_seconds':'10','engineering_cumulative_seconds':'100',
+            'errors':[],'received_parent_signals':[],
+            'arms':[{'actual_wrapper_waited':True,'actual_wrapper_returncode':0}]})
+        self.write(self.root_wait_file, {'actual_waited':True,'actual_returncode_observed':0})
+        original_specs = {key:self.f.spec(path) for key,path in
+            (('driver_summary',self.driver_file),('root_actual_wait',self.root_wait_file))}
+        self.write(self.review_file, {
+            'schema':'mr3-v58-closed-metadata-review-v1','passed':True,
+            'all_saved_identities_fresh_gone':True,'engineering_added_parent_wall_seconds':'10',
+            'engineering_cumulative_seconds':'100','optimizer_updates':0,'learner_models_loaded':False,
+            'native_qualification_credit':False,**original_specs})
+        self.write(self.inventory_file, {'passed':True,'execution_freeze':FREEZE,'entries':[
+            {'original':spec['path'],'codec':'original-bytes','original_sha256':spec['sha256'],
+             'canonical_sha256':spec['sha256'],'original_bytes':spec['bytes'],
+             'canonical_bytes':spec['bytes'],'canonical':path.name}
+            for key,path in (('driver_summary',self.driver_file),('root_actual_wait',self.root_wait_file))
+            for spec in (original_specs[key],)]})
+        originals = {'driver_summary':self.f.spec(self.driver_file),
+                     'closed_metadata_review':self.f.spec(self.review_file)}
+        self.ledger = {
+            'schema':'mr3-engineering-closure-ledger-v1','passed':True,
+            'engineering_entry_seconds':'90','engineering_added_seconds':'10',
+            'engineering_cumulative_seconds':'100','engineering_remaining_seconds':'900',
+            'engineering_ceiling_seconds':'1000','old_FAIL_and_pending_fields_preserved':True,
+            'all_saved_main_identities_fresh_gone':True,'native_qualification_credit':False,'P2A_complete':False,
+            'execution_freeze':FREEZE,'pilot_added_seconds':'0','validation_added_seconds':'0',
+            'fee_interval':{'started_monotonic_ns':1_000_000_000,'ended_monotonic_ns':11_000_000_000},
+            'closed_metadata_review':self.f.spec(self.review_file),'closed_inventory':self.f.spec(self.inventory_file)}
+        self.write(self.f.ledger,self.ledger)
+        self.f.value['previous_accounting'] = self.f.spec(self.f.ledger)
+        self.f.seal(self.f.value)
+        for module, key, value in [
+                (preparing, 'A', self.a), (preparing, 'RESOURCE', self.f.resource_path),
+                (preparing, 'NORMALIZED_PRIOR', self.f.ledger),
+                (preparing, 'PLAN', self.plan_path), (preparing, 'BINDING', self.a / 'not_created_binding.json'),
+                (preparing, 'PRIOR_ORIGINAL_SHA256', {k: v['sha256'] for k, v in originals.items()}),
+                (preflight, 'A', self.a), (checking, 'ASSETS', self.a),
+                (driver, 'PLAN', self.plan_path), (driver, 'PREFIX', self.a / 'not_created_driver')]:
+            self.stack.enter_context(patch.object(module, key, value))
+        self.scope = {
+            'schema': 'mr3-p2a-v59-native-qualification-scope-v1',
+            'engineering_resource': self.f.spec(self.f.resource_path),
+            'robots_per_environment': 3, 'mandatory_roles': 30, 'matrix_episodes': 12,
+            'minimum_decisions': 16, 'pilot_requested_decisions': 64,
+            'pilot_remaining_decisions': 1870, 'pilot_remaining_wall_seconds': '2905.9547395464029',
+            'final_only_schedule': ['open:401', 'open:402', 'open:403'], 'mapping_target': .95,
+            'acceptance_gates_unchanged': True, 'old_failures_preserved': True,
+            'no_retry_on_required_failure': True, 'p2b_gateway_authorized': False,
+            'prior_native_credit_reused': False, 'seed_rule': preparing.SEED_RULE,
+            'start_graph_rule': preparing.START_RULE, 'reach_geometry_rule': preparing.REACH_GEOMETRY_RULE,
+            'reset_workload_reader_profile': reach_preparation.reset_workload.PROFILE,
+            'actuation_profile': preparing.ACTUATION_PROFILE}
+        self.authorization = {
+            'schema': 'mr3-p2a-autonomous-continuation-authorization-v1',
+            'status': 'AUTHORIZED_BY_USER_CONTINUATION',
+            'user_exact_text': '你一直继续执行就好了，直到把P2A完成，不需要问我是否批准',
+            'numeric_user_approval_claimed': False,
+            'engineering_resource': self.f.spec(self.f.resource_path),
+            'acceptance_gates_unchanged': True, 'old_failures_preserved': True,
+            'p2b_gateway_authorized': False}
+        self.write(self.a / 'scope_v1.json', self.scope)
+        self.write(self.a / 'authorization_v1.json', self.authorization)
+        binding_path = self.f.kwargs()['custody_binding']
+        self.write(binding_path, {
+            'reach_geometry_rule': preparing.REACH_GEOMETRY_RULE,
+            'actuation_profile': preparing.ACTUATION_PROFILE, 'binaries': {},
+            'source_bindings': [self.f.spec(reach_preparation.WORKSPACE / relative)
+                for relative in sorted(reach_preparation.SUPPORT_REACH_SOURCES)]})
+>       self.plan = reach_preparation.build_plan(**dict(self.f.kwargs(), plan_path=self.plan_path),
+            engineering_remaining_seconds='40000',
+            reservation_profile=reach_preparation.AUTONOMOUS_RESOURCE_PROFILE,
+            engineering_resource=self.f.spec(self.f.resource_path), seed_rule=preparing.SEED_RULE,
+            start_graph_rule=preparing.START_RULE, reach_geometry_rule=preparing.REACH_GEOMETRY_RULE)
+
+report/assets/20261023_mr3_p2a_v59_encoder_profile/test_activity_resource_entry_v1.py:118: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+mr3_learning/reach_preparation.py:589: in build_plan
+    require(initial_encoder_profile(binding) == actuation_profile,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+condition = False
+message = 'builder custody binding and explicit actuation profile differ'
+
+    def require(condition, message):
+        if not condition:
+>           raise ValueError(message)
+E           ValueError: builder custody binding and explicit actuation profile differ
+
+mr3_learning/preparation.py:44: ValueError
+____ ActivityResourceEntryTests.test_forged_prior_or_parent_fee_is_rejected ____
+
+self = <test_activity_resource_entry_v1.ActivityResourceEntryTests testMethod=test_forged_prior_or_parent_fee_is_rejected>
+
+    def setUp(self):
+        self.f = block_fixtures.EngineeringBlockTests()
+        self.f.setUp()
+        self.addCleanup(self.f.doCleanups)
+        self.stack = contextlib.ExitStack()
+        self.addCleanup(self.stack.close)
+        self.a = self.f.root
+        self.plan_path = self.a / 'plan_v1.json'
+        self.stack.enter_context(patch.object(preparing, 'W', reach_preparation.WORKSPACE))
+        self.driver_file = self.a / 'toy_driver.json'
+        self.review_file = self.a / 'toy_closed_review.json'
+        self.root_wait_file = self.a / 'toy_root_wait.json'
+        self.inventory_file = self.a / 'toy_inventory.json'
+        self.write(self.driver_file, {
+            'schema':'mr3-v58-passive-pair-result-v1','passed':True,'execution_freeze':FREEZE,
+            'pair_started_monotonic_ns':1_000_000_000,'pair_ended_monotonic_ns':11_000_000_000,
+            'engineering_added_parent_wall_seconds':'10','engineering_cumulative_seconds':'100',
+            'errors':[],'received_parent_signals':[],
+            'arms':[{'actual_wrapper_waited':True,'actual_wrapper_returncode':0}]})
+        self.write(self.root_wait_file, {'actual_waited':True,'actual_returncode_observed':0})
+        original_specs = {key:self.f.spec(path) for key,path in
+            (('driver_summary',self.driver_file),('root_actual_wait',self.root_wait_file))}
+        self.write(self.review_file, {
+            'schema':'mr3-v58-closed-metadata-review-v1','passed':True,
+            'all_saved_identities_fresh_gone':True,'engineering_added_parent_wall_seconds':'10',
+            'engineering_cumulative_seconds':'100','optimizer_updates':0,'learner_models_loaded':False,
+            'native_qualification_credit':False,**original_specs})
+        self.write(self.inventory_file, {'passed':True,'execution_freeze':FREEZE,'entries':[
+            {'original':spec['path'],'codec':'original-bytes','original_sha256':spec['sha256'],
+             'canonical_sha256':spec['sha256'],'original_bytes':spec['bytes'],
+             'canonical_bytes':spec['bytes'],'canonical':path.name}
+            for key,path in (('driver_summary',self.driver_file),('root_actual_wait',self.root_wait_file))
+            for spec in (original_specs[key],)]})
+        originals = {'driver_summary':self.f.spec(self.driver_file),
+                     'closed_metadata_review':self.f.spec(self.review_file)}
+        self.ledger = {
+            'schema':'mr3-engineering-closure-ledger-v1','passed':True,
+            'engineering_entry_seconds':'90','engineering_added_seconds':'10',
+            'engineering_cumulative_seconds':'100','engineering_remaining_seconds':'900',
+            'engineering_ceiling_seconds':'1000','old_FAIL_and_pending_fields_preserved':True,
+            'all_saved_main_identities_fresh_gone':True,'native_qualification_credit':False,'P2A_complete':False,
+            'execution_freeze':FREEZE,'pilot_added_seconds':'0','validation_added_seconds':'0',
+            'fee_interval':{'started_monotonic_ns':1_000_000_000,'ended_monotonic_ns':11_000_000_000},
+            'closed_metadata_review':self.f.spec(self.review_file),'closed_inventory':self.f.spec(self.inventory_file)}
+        self.write(self.f.ledger,self.ledger)
+        self.f.value['previous_accounting'] = self.f.spec(self.f.ledger)
+        self.f.seal(self.f.value)
+        for module, key, value in [
+                (preparing, 'A', self.a), (preparing, 'RESOURCE', self.f.resource_path),
+                (preparing, 'NORMALIZED_PRIOR', self.f.ledger),
+                (preparing, 'PLAN', self.plan_path), (preparing, 'BINDING', self.a / 'not_created_binding.json'),
+                (preparing, 'PRIOR_ORIGINAL_SHA256', {k: v['sha256'] for k, v in originals.items()}),
+                (preflight, 'A', self.a), (checking, 'ASSETS', self.a),
+                (driver, 'PLAN', self.plan_path), (driver, 'PREFIX', self.a / 'not_created_driver')]:
+            self.stack.enter_context(patch.object(module, key, value))
+        self.scope = {
+            'schema': 'mr3-p2a-v59-native-qualification-scope-v1',
+            'engineering_resource': self.f.spec(self.f.resource_path),
+            'robots_per_environment': 3, 'mandatory_roles': 30, 'matrix_episodes': 12,
+            'minimum_decisions': 16, 'pilot_requested_decisions': 64,
+            'pilot_remaining_decisions': 1870, 'pilot_remaining_wall_seconds': '2905.9547395464029',
+            'final_only_schedule': ['open:401', 'open:402', 'open:403'], 'mapping_target': .95,
+            'acceptance_gates_unchanged': True, 'old_failures_preserved': True,
+            'no_retry_on_required_failure': True, 'p2b_gateway_authorized': False,
+            'prior_native_credit_reused': False, 'seed_rule': preparing.SEED_RULE,
+            'start_graph_rule': preparing.START_RULE, 'reach_geometry_rule': preparing.REACH_GEOMETRY_RULE,
+            'reset_workload_reader_profile': reach_preparation.reset_workload.PROFILE,
+            'actuation_profile': preparing.ACTUATION_PROFILE}
+        self.authorization = {
+            'schema': 'mr3-p2a-autonomous-continuation-authorization-v1',
+            'status': 'AUTHORIZED_BY_USER_CONTINUATION',
+            'user_exact_text': '你一直继续执行就好了，直到把P2A完成，不需要问我是否批准',
+            'numeric_user_approval_claimed': False,
+            'engineering_resource': self.f.spec(self.f.resource_path),
+            'acceptance_gates_unchanged': True, 'old_failures_preserved': True,
+            'p2b_gateway_authorized': False}
+        self.write(self.a / 'scope_v1.json', self.scope)
+        self.write(self.a / 'authorization_v1.json', self.authorization)
+        binding_path = self.f.kwargs()['custody_binding']
+        self.write(binding_path, {
+            'reach_geometry_rule': preparing.REACH_GEOMETRY_RULE,
+            'actuation_profile': preparing.ACTUATION_PROFILE, 'binaries': {},
+            'source_bindings': [self.f.spec(reach_preparation.WORKSPACE / relative)
+                for relative in sorted(reach_preparation.SUPPORT_REACH_SOURCES)]})
+>       self.plan = reach_preparation.build_plan(**dict(self.f.kwargs(), plan_path=self.plan_path),
+            engineering_remaining_seconds='40000',
+            reservation_profile=reach_preparation.AUTONOMOUS_RESOURCE_PROFILE,
+            engineering_resource=self.f.spec(self.f.resource_path), seed_rule=preparing.SEED_RULE,
+            start_graph_rule=preparing.START_RULE, reach_geometry_rule=preparing.REACH_GEOMETRY_RULE)
+
+report/assets/20261023_mr3_p2a_v59_encoder_profile/test_activity_resource_entry_v1.py:118: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+mr3_learning/reach_preparation.py:589: in build_plan
+    require(initial_encoder_profile(binding) == actuation_profile,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+condition = False
+message = 'builder custody binding and explicit actuation profile differ'
+
+    def require(condition, message):
+        if not condition:
+>           raise ValueError(message)
+E           ValueError: builder custody binding and explicit actuation profile differ
+
+mr3_learning/preparation.py:44: ValueError
+_ ActivityResourceEntryTests.test_preflight_really_calls_both_reset_reader_readiness_and_keeps_receipt _
+
+self = <test_activity_resource_entry_v1.ActivityResourceEntryTests testMethod=test_preflight_really_calls_both_reset_reader_readiness_and_keeps_receipt>
+
+    def setUp(self):
+        self.f = block_fixtures.EngineeringBlockTests()
+        self.f.setUp()
+        self.addCleanup(self.f.doCleanups)
+        self.stack = contextlib.ExitStack()
+        self.addCleanup(self.stack.close)
+        self.a = self.f.root
+        self.plan_path = self.a / 'plan_v1.json'
+        self.stack.enter_context(patch.object(preparing, 'W', reach_preparation.WORKSPACE))
+        self.driver_file = self.a / 'toy_driver.json'
+        self.review_file = self.a / 'toy_closed_review.json'
+        self.root_wait_file = self.a / 'toy_root_wait.json'
+        self.inventory_file = self.a / 'toy_inventory.json'
+        self.write(self.driver_file, {
+            'schema':'mr3-v58-passive-pair-result-v1','passed':True,'execution_freeze':FREEZE,
+            'pair_started_monotonic_ns':1_000_000_000,'pair_ended_monotonic_ns':11_000_000_000,
+            'engineering_added_parent_wall_seconds':'10','engineering_cumulative_seconds':'100',
+            'errors':[],'received_parent_signals':[],
+            'arms':[{'actual_wrapper_waited':True,'actual_wrapper_returncode':0}]})
+        self.write(self.root_wait_file, {'actual_waited':True,'actual_returncode_observed':0})
+        original_specs = {key:self.f.spec(path) for key,path in
+            (('driver_summary',self.driver_file),('root_actual_wait',self.root_wait_file))}
+        self.write(self.review_file, {
+            'schema':'mr3-v58-closed-metadata-review-v1','passed':True,
+            'all_saved_identities_fresh_gone':True,'engineering_added_parent_wall_seconds':'10',
+            'engineering_cumulative_seconds':'100','optimizer_updates':0,'learner_models_loaded':False,
+            'native_qualification_credit':False,**original_specs})
+        self.write(self.inventory_file, {'passed':True,'execution_freeze':FREEZE,'entries':[
+            {'original':spec['path'],'codec':'original-bytes','original_sha256':spec['sha256'],
+             'canonical_sha256':spec['sha256'],'original_bytes':spec['bytes'],
+             'canonical_bytes':spec['bytes'],'canonical':path.name}
+            for key,path in (('driver_summary',self.driver_file),('root_actual_wait',self.root_wait_file))
+            for spec in (original_specs[key],)]})
+        originals = {'driver_summary':self.f.spec(self.driver_file),
+                     'closed_metadata_review':self.f.spec(self.review_file)}
+        self.ledger = {
+            'schema':'mr3-engineering-closure-ledger-v1','passed':True,
+            'engineering_entry_seconds':'90','engineering_added_seconds':'10',
+            'engineering_cumulative_seconds':'100','engineering_remaining_seconds':'900',
+            'engineering_ceiling_seconds':'1000','old_FAIL_and_pending_fields_preserved':True,
+            'all_saved_main_identities_fresh_gone':True,'native_qualification_credit':False,'P2A_complete':False,
+            'execution_freeze':FREEZE,'pilot_added_seconds':'0','validation_added_seconds':'0',
+            'fee_interval':{'started_monotonic_ns':1_000_000_000,'ended_monotonic_ns':11_000_000_000},
+            'closed_metadata_review':self.f.spec(self.review_file),'closed_inventory':self.f.spec(self.inventory_file)}
+        self.write(self.f.ledger,self.ledger)
+        self.f.value['previous_accounting'] = self.f.spec(self.f.ledger)
+        self.f.seal(self.f.value)
+        for module, key, value in [
+                (preparing, 'A', self.a), (preparing, 'RESOURCE', self.f.resource_path),
+                (preparing, 'NORMALIZED_PRIOR', self.f.ledger),
+                (preparing, 'PLAN', self.plan_path), (preparing, 'BINDING', self.a / 'not_created_binding.json'),
+                (preparing, 'PRIOR_ORIGINAL_SHA256', {k: v['sha256'] for k, v in originals.items()}),
+                (preflight, 'A', self.a), (checking, 'ASSETS', self.a),
+                (driver, 'PLAN', self.plan_path), (driver, 'PREFIX', self.a / 'not_created_driver')]:
+            self.stack.enter_context(patch.object(module, key, value))
+        self.scope = {
+            'schema': 'mr3-p2a-v59-native-qualification-scope-v1',
+            'engineering_resource': self.f.spec(self.f.resource_path),
+            'robots_per_environment': 3, 'mandatory_roles': 30, 'matrix_episodes': 12,
+            'minimum_decisions': 16, 'pilot_requested_decisions': 64,
+            'pilot_remaining_decisions': 1870, 'pilot_remaining_wall_seconds': '2905.9547395464029',
+            'final_only_schedule': ['open:401', 'open:402', 'open:403'], 'mapping_target': .95,
+            'acceptance_gates_unchanged': True, 'old_failures_preserved': True,
+            'no_retry_on_required_failure': True, 'p2b_gateway_authorized': False,
+            'prior_native_credit_reused': False, 'seed_rule': preparing.SEED_RULE,
+            'start_graph_rule': preparing.START_RULE, 'reach_geometry_rule': preparing.REACH_GEOMETRY_RULE,
+            'reset_workload_reader_profile': reach_preparation.reset_workload.PROFILE,
+            'actuation_profile': preparing.ACTUATION_PROFILE}
+        self.authorization = {
+            'schema': 'mr3-p2a-autonomous-continuation-authorization-v1',
+            'status': 'AUTHORIZED_BY_USER_CONTINUATION',
+            'user_exact_text': '你一直继续执行就好了，直到把P2A完成，不需要问我是否批准',
+            'numeric_user_approval_claimed': False,
+            'engineering_resource': self.f.spec(self.f.resource_path),
+            'acceptance_gates_unchanged': True, 'old_failures_preserved': True,
+            'p2b_gateway_authorized': False}
+        self.write(self.a / 'scope_v1.json', self.scope)
+        self.write(self.a / 'authorization_v1.json', self.authorization)
+        binding_path = self.f.kwargs()['custody_binding']
+        self.write(binding_path, {
+            'reach_geometry_rule': preparing.REACH_GEOMETRY_RULE,
+            'actuation_profile': preparing.ACTUATION_PROFILE, 'binaries': {},
+            'source_bindings': [self.f.spec(reach_preparation.WORKSPACE / relative)
+                for relative in sorted(reach_preparation.SUPPORT_REACH_SOURCES)]})
+>       self.plan = reach_preparation.build_plan(**dict(self.f.kwargs(), plan_path=self.plan_path),
+            engineering_remaining_seconds='40000',
+            reservation_profile=reach_preparation.AUTONOMOUS_RESOURCE_PROFILE,
+            engineering_resource=self.f.spec(self.f.resource_path), seed_rule=preparing.SEED_RULE,
+            start_graph_rule=preparing.START_RULE, reach_geometry_rule=preparing.REACH_GEOMETRY_RULE)
+
+report/assets/20261023_mr3_p2a_v59_encoder_profile/test_activity_resource_entry_v1.py:118: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+mr3_learning/reach_preparation.py:589: in build_plan
+    require(initial_encoder_profile(binding) == actuation_profile,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+condition = False
+message = 'builder custody binding and explicit actuation profile differ'
+
+    def require(condition, message):
+        if not condition:
+>           raise ValueError(message)
+E           ValueError: builder custody binding and explicit actuation profile differ
+
+mr3_learning/preparation.py:44: ValueError
+__ ActivityResourceEntryTests.test_prior_carry_and_one_resource_are_accepted ___
+
+self = <test_activity_resource_entry_v1.ActivityResourceEntryTests testMethod=test_prior_carry_and_one_resource_are_accepted>
+
+    def setUp(self):
+        self.f = block_fixtures.EngineeringBlockTests()
+        self.f.setUp()
+        self.addCleanup(self.f.doCleanups)
+        self.stack = contextlib.ExitStack()
+        self.addCleanup(self.stack.close)
+        self.a = self.f.root
+        self.plan_path = self.a / 'plan_v1.json'
+        self.stack.enter_context(patch.object(preparing, 'W', reach_preparation.WORKSPACE))
+        self.driver_file = self.a / 'toy_driver.json'
+        self.review_file = self.a / 'toy_closed_review.json'
+        self.root_wait_file = self.a / 'toy_root_wait.json'
+        self.inventory_file = self.a / 'toy_inventory.json'
+        self.write(self.driver_file, {
+            'schema':'mr3-v58-passive-pair-result-v1','passed':True,'execution_freeze':FREEZE,
+            'pair_started_monotonic_ns':1_000_000_000,'pair_ended_monotonic_ns':11_000_000_000,
+            'engineering_added_parent_wall_seconds':'10','engineering_cumulative_seconds':'100',
+            'errors':[],'received_parent_signals':[],
+            'arms':[{'actual_wrapper_waited':True,'actual_wrapper_returncode':0}]})
+        self.write(self.root_wait_file, {'actual_waited':True,'actual_returncode_observed':0})
+        original_specs = {key:self.f.spec(path) for key,path in
+            (('driver_summary',self.driver_file),('root_actual_wait',self.root_wait_file))}
+        self.write(self.review_file, {
+            'schema':'mr3-v58-closed-metadata-review-v1','passed':True,
+            'all_saved_identities_fresh_gone':True,'engineering_added_parent_wall_seconds':'10',
+            'engineering_cumulative_seconds':'100','optimizer_updates':0,'learner_models_loaded':False,
+            'native_qualification_credit':False,**original_specs})
+        self.write(self.inventory_file, {'passed':True,'execution_freeze':FREEZE,'entries':[
+            {'original':spec['path'],'codec':'original-bytes','original_sha256':spec['sha256'],
+             'canonical_sha256':spec['sha256'],'original_bytes':spec['bytes'],
+             'canonical_bytes':spec['bytes'],'canonical':path.name}
+            for key,path in (('driver_summary',self.driver_file),('root_actual_wait',self.root_wait_file))
+            for spec in (original_specs[key],)]})
+        originals = {'driver_summary':self.f.spec(self.driver_file),
+                     'closed_metadata_review':self.f.spec(self.review_file)}
+        self.ledger = {
+            'schema':'mr3-engineering-closure-ledger-v1','passed':True,
+            'engineering_entry_seconds':'90','engineering_added_seconds':'10',
+            'engineering_cumulative_seconds':'100','engineering_remaining_seconds':'900',
+            'engineering_ceiling_seconds':'1000','old_FAIL_and_pending_fields_preserved':True,
+            'all_saved_main_identities_fresh_gone':True,'native_qualification_credit':False,'P2A_complete':False,
+            'execution_freeze':FREEZE,'pilot_added_seconds':'0','validation_added_seconds':'0',
+            'fee_interval':{'started_monotonic_ns':1_000_000_000,'ended_monotonic_ns':11_000_000_000},
+            'closed_metadata_review':self.f.spec(self.review_file),'closed_inventory':self.f.spec(self.inventory_file)}
+        self.write(self.f.ledger,self.ledger)
+        self.f.value['previous_accounting'] = self.f.spec(self.f.ledger)
+        self.f.seal(self.f.value)
+        for module, key, value in [
+                (preparing, 'A', self.a), (preparing, 'RESOURCE', self.f.resource_path),
+                (preparing, 'NORMALIZED_PRIOR', self.f.ledger),
+                (preparing, 'PLAN', self.plan_path), (preparing, 'BINDING', self.a / 'not_created_binding.json'),
+                (preparing, 'PRIOR_ORIGINAL_SHA256', {k: v['sha256'] for k, v in originals.items()}),
+                (preflight, 'A', self.a), (checking, 'ASSETS', self.a),
+                (driver, 'PLAN', self.plan_path), (driver, 'PREFIX', self.a / 'not_created_driver')]:
+            self.stack.enter_context(patch.object(module, key, value))
+        self.scope = {
+            'schema': 'mr3-p2a-v59-native-qualification-scope-v1',
+            'engineering_resource': self.f.spec(self.f.resource_path),
+            'robots_per_environment': 3, 'mandatory_roles': 30, 'matrix_episodes': 12,
+            'minimum_decisions': 16, 'pilot_requested_decisions': 64,
+            'pilot_remaining_decisions': 1870, 'pilot_remaining_wall_seconds': '2905.9547395464029',
+            'final_only_schedule': ['open:401', 'open:402', 'open:403'], 'mapping_target': .95,
+            'acceptance_gates_unchanged': True, 'old_failures_preserved': True,
+            'no_retry_on_required_failure': True, 'p2b_gateway_authorized': False,
+            'prior_native_credit_reused': False, 'seed_rule': preparing.SEED_RULE,
+            'start_graph_rule': preparing.START_RULE, 'reach_geometry_rule': preparing.REACH_GEOMETRY_RULE,
+            'reset_workload_reader_profile': reach_preparation.reset_workload.PROFILE,
+            'actuation_profile': preparing.ACTUATION_PROFILE}
+        self.authorization = {
+            'schema': 'mr3-p2a-autonomous-continuation-authorization-v1',
+            'status': 'AUTHORIZED_BY_USER_CONTINUATION',
+            'user_exact_text': '你一直继续执行就好了，直到把P2A完成，不需要问我是否批准',
+            'numeric_user_approval_claimed': False,
+            'engineering_resource': self.f.spec(self.f.resource_path),
+            'acceptance_gates_unchanged': True, 'old_failures_preserved': True,
+            'p2b_gateway_authorized': False}
+        self.write(self.a / 'scope_v1.json', self.scope)
+        self.write(self.a / 'authorization_v1.json', self.authorization)
+        binding_path = self.f.kwargs()['custody_binding']
+        self.write(binding_path, {
+            'reach_geometry_rule': preparing.REACH_GEOMETRY_RULE,
+            'actuation_profile': preparing.ACTUATION_PROFILE, 'binaries': {},
+            'source_bindings': [self.f.spec(reach_preparation.WORKSPACE / relative)
+                for relative in sorted(reach_preparation.SUPPORT_REACH_SOURCES)]})
+>       self.plan = reach_preparation.build_plan(**dict(self.f.kwargs(), plan_path=self.plan_path),
+            engineering_remaining_seconds='40000',
+            reservation_profile=reach_preparation.AUTONOMOUS_RESOURCE_PROFILE,
+            engineering_resource=self.f.spec(self.f.resource_path), seed_rule=preparing.SEED_RULE,
+            start_graph_rule=preparing.START_RULE, reach_geometry_rule=preparing.REACH_GEOMETRY_RULE)
+
+report/assets/20261023_mr3_p2a_v59_encoder_profile/test_activity_resource_entry_v1.py:118: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+mr3_learning/reach_preparation.py:589: in build_plan
+    require(initial_encoder_profile(binding) == actuation_profile,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+condition = False
+message = 'builder custody binding and explicit actuation profile differ'
+
+    def require(condition, message):
+        if not condition:
+>           raise ValueError(message)
+E           ValueError: builder custody binding and explicit actuation profile differ
+
+mr3_learning/preparation.py:44: ValueError
+- generated xml file: /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v59_encoder_profile/checks/admission_provisional_cpu_v1/pytest.xml -
+=========================== short test summary info ============================
+FAILED report/assets/20261023_mr3_p2a_v59_encoder_profile/test_activity_resource_entry_v1.py::ActivityResourceEntryTests::test_all_four_real_entries_accept_only_to_pre_model_boundary
+FAILED report/assets/20261023_mr3_p2a_v59_encoder_profile/test_activity_resource_entry_v1.py::ActivityResourceEntryTests::test_all_four_real_entries_reject_overbudget_before_effects
+FAILED report/assets/20261023_mr3_p2a_v59_encoder_profile/test_activity_resource_entry_v1.py::ActivityResourceEntryTests::test_conflicting_plan_budget_is_rejected
+FAILED report/assets/20261023_mr3_p2a_v59_encoder_profile/test_activity_resource_entry_v1.py::ActivityResourceEntryTests::test_current_python_classification_includes_untracked
+FAILED report/assets/20261023_mr3_p2a_v59_encoder_profile/test_activity_resource_entry_v1.py::ActivityResourceEntryTests::test_forged_prior_or_parent_fee_is_rejected
+FAILED report/assets/20261023_mr3_p2a_v59_encoder_profile/test_activity_resource_entry_v1.py::ActivityResourceEntryTests::test_preflight_really_calls_both_reset_reader_readiness_and_keeps_receipt
+FAILED report/assets/20261023_mr3_p2a_v59_encoder_profile/test_activity_resource_entry_v1.py::ActivityResourceEntryTests::test_prior_carry_and_one_resource_are_accepted
+7 failed, 4 passed in 17.27s

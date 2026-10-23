@@ -120,7 +120,7 @@ def test_empty_audit_baseline_uses_owned_temp_files_and_shutdown_cleanup(monkeyp
     assert not any(path.exists() for path in models.values())
 
 
-def test_reach_effective_models_change_only_the_unique_real_lidar_rate(monkeypatch, tmp_path):
+def test_reach_effective_models_change_only_lidar_rate_and_declared_actuator_tag(monkeypatch, tmp_path):
     source = MODEL.read_bytes()
     _, _, nodes, _ = configured_launch(monkeypatch, execution_mode="adapter",
         mr3_stepped="true", mr3_safety_contract="mr3-reach-v1",
@@ -137,8 +137,11 @@ def test_reach_effective_models_change_only_the_unique_real_lidar_rate(monkeypat
         block = rendered[start:end]
         assert block.count("<update_rate>20</update_rate>") == 1
         restored = rendered[:start]+block.replace("<update_rate>20</update_rate>","<update_rate>5</update_rate>",1)+rendered[end:]
-        assert original_physical_bytes(restored) == original_model()
+        profile_line = "      <mr3_actuation_profile>initial-zero-encoder-hold-v1</mr3_actuation_profile>\n"
+        assert restored.count(profile_line) == 1
+        assert original_physical_bytes(restored.replace(profile_line, "", 1)) == original_model()
         plugin = ET.fromstring(rendered).find(".//plugin[@name='turtlebot3_diff_drive']")
+        assert plugin.findtext("mr3_actuation_profile") == "initial-zero-encoder-hold-v1"
         assert plugin.findtext("mr3_epoch") == "reach-sensor-epoch"
         assert plugin.findtext("mr3_audit_path") == str(tmp_path/f"drive_{name}.jsonl")
     assert MODEL.read_bytes() == source
@@ -169,3 +172,26 @@ def test_drive_model_rejects_unknown_or_untagged_reach_profile(tmp_path,contract
         module.drive_spawn_model(MODEL,"tb1",str(tmp_path/"adapter.jsonl"),"epoch",tagged,
                                  safety_contract=contract)
     assert not (tmp_path/"drive_model_tb1.sdf").exists()
+
+
+@pytest.mark.parametrize("value", ["initial-zero-encoder-hold-v1", "other-profile"])
+def test_reach_does_not_silently_replace_preexisting_actuator_tag(tmp_path, value):
+    spec = importlib.util.spec_from_file_location("invalid_actuator_drive_launch",
+        ROOT / "src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py")
+    module = importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
+    model = tmp_path / "source.sdf"
+    model.write_text(MODEL.read_text().replace("<mr3_tagged_commands/>",
+        "<mr3_actuation_profile>" + value + "</mr3_actuation_profile><mr3_tagged_commands/>", 1))
+    with pytest.raises(ValueError, match="one original drive tag"):
+        module.drive_spawn_model(model, "tb1", str(tmp_path / "adapter.jsonl"), "epoch", True,
+                                 safety_contract="mr3-reach-v1")
+    assert not (tmp_path / "drive_model_tb1.sdf").exists()
+
+
+def test_reach_requires_encoder_audit_before_creating_model(tmp_path):
+    spec = importlib.util.spec_from_file_location("missing_encoder_audit_drive_launch",
+        ROOT / "src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py")
+    module = importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
+    with pytest.raises(ValueError, match="owned audit output"):
+        module.drive_spawn_model(MODEL, "tb1", "", "epoch", True, safety_contract="mr3-reach-v1")
+    assert not (tmp_path / "drive_model_tb1.sdf").exists()

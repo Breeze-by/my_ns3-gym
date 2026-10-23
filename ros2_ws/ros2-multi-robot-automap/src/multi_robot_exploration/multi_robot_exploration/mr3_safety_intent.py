@@ -13,6 +13,15 @@ import math
 import struct
 
 
+INITIAL_ENCODER_ACTUATION_PROFILE = "initial-zero-encoder-hold-v1"
+
+
+def actuation_profile_for_safety_contract(safety_contract):
+    if type(safety_contract) is not str or safety_contract not in ("legacy", "mr3-reach-v1"):
+        raise ValueError("unknown safety contract for the actuator")
+    return INITIAL_ENCODER_ACTUATION_PROFILE if safety_contract == "mr3-reach-v1" else None
+
+
 ROBOTS = ("tb1", "tb2", "tb3")
 SOURCE_MAX_NS = 500_000_000
 INTENT_SCHEMA = "mr3-safety-intent-v1"

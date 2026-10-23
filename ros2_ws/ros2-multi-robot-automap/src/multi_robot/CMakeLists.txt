@@ -25,6 +25,7 @@ set(mr3_drive_sources
   ${CMAKE_CURRENT_SOURCE_DIR}/src/mr3_gazebo_diff_drive.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/include/multi_robot/mr3_gazebo_diff_drive.hpp
   ${CMAKE_CURRENT_SOURCE_DIR}/include/multi_robot/paired_wheel_slew.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/multi_robot/mr3_initial_zero_encoder_servo.hpp
   ${CMAKE_CURRENT_SOURCE_DIR}/include/multi_robot/mr3_drive_target.hpp
   ${CMAKE_CURRENT_SOURCE_DIR}/include/multi_robot/mr3_odometry_json.hpp
   ${CMAKE_CURRENT_SOURCE_DIR}/include/multi_robot/mr3_drive_feed.hpp)
@@ -32,6 +33,7 @@ set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${mr3_drive_sourc
 file(SHA256 ${CMAKE_CURRENT_SOURCE_DIR}/src/mr3_gazebo_diff_drive.cpp mr3_drive_source_sha)
 file(SHA256 ${CMAKE_CURRENT_SOURCE_DIR}/include/multi_robot/mr3_gazebo_diff_drive.hpp mr3_drive_header_sha)
 file(SHA256 ${CMAKE_CURRENT_SOURCE_DIR}/include/multi_robot/paired_wheel_slew.hpp mr3_drive_helper_sha)
+file(SHA256 ${CMAKE_CURRENT_SOURCE_DIR}/include/multi_robot/mr3_initial_zero_encoder_servo.hpp mr3_drive_encoder_servo_sha)
 file(SHA256 ${CMAKE_CURRENT_SOURCE_DIR}/include/multi_robot/mr3_drive_target.hpp mr3_drive_target_sha)
 file(SHA256 ${CMAKE_CURRENT_SOURCE_DIR}/include/multi_robot/mr3_odometry_json.hpp mr3_odometry_json_sha)
 file(SHA256 ${CMAKE_CURRENT_SOURCE_DIR}/include/multi_robot/mr3_drive_feed.hpp mr3_drive_feed_sha)
@@ -49,6 +51,7 @@ target_compile_definitions(mr3_gazebo_diff_drive PRIVATE
   MR3_DRIVE_SOURCE_SHA256="${mr3_drive_source_sha}"
   MR3_DRIVE_HEADER_SHA256="${mr3_drive_header_sha}"
   MR3_DRIVE_HELPER_SHA256="${mr3_drive_helper_sha}"
+  MR3_DRIVE_ENCODER_SERVO_SHA256="${mr3_drive_encoder_servo_sha}"
   MR3_DRIVE_TARGET_SHA256="${mr3_drive_target_sha}"
   MR3_ODOMETRY_JSON_HEADER_SHA256="${mr3_odometry_json_sha}"
   MR3_DRIVE_FEED_HEADER_SHA256="${mr3_drive_feed_sha}")
@@ -110,6 +113,10 @@ if(BUILD_TESTING)
   ament_add_gtest(test_paired_wheel_slew test/test_paired_wheel_slew.cpp)
   target_include_directories(test_paired_wheel_slew PRIVATE include)
   target_compile_features(test_paired_wheel_slew PUBLIC cxx_std_17)
+  ament_add_gtest(test_initial_zero_encoder_servo test/test_initial_zero_encoder_servo.cpp)
+  target_include_directories(test_initial_zero_encoder_servo PRIVATE include)
+  target_compile_features(test_initial_zero_encoder_servo PUBLIC cxx_std_17)
+  target_compile_options(test_initial_zero_encoder_servo PRIVATE -fno-fast-math -ffp-contract=off)
   ament_add_gtest(test_drive_target test/test_drive_target.cpp)
   target_include_directories(test_drive_target PRIVATE include)
   target_compile_features(test_drive_target PUBLIC cxx_std_17)

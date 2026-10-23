@@ -31,6 +31,23 @@ class ReachCadenceTests(unittest.TestCase):
         module,_=gate.load_implementation()
         return module.audit(directory,old_tests.FREEZE)
 
+    def new_case(self):
+        directory=self.case()
+        path=directory/"metadata.json";meta=json.loads(path.read_bytes())
+        meta["actuation_profile"]=gate.encoder_replay.PROFILE;old_tests.write(path,meta)
+        for robot in gate.ROBOTS:
+            old_tests.mutate(directory/("drive_"+robot+".jsonl"),lambda rows:
+                rows[0].update(actuation_algorithm=gate.encoder_replay.ALGORITHM))
+        return directory
+
+    def compound_report(self):
+        return {"passed":True,"independent_necessary_replay":True,"continuous_physical_model_proved":False,
+            "actuation_profile":gate.encoder_replay.PROFILE,"initial_encoder_compound_replay_passed":True,
+            "source_proof":{gate.runtime.ENCODER_HEADER_SOURCE:{"sha256":"7"*64}},
+            "initial_encoder_motor_replay":{robot:{"passed":True,"profile":gate.encoder_replay.PROFILE,
+                                                   "helper_sha256":"7"*64}
+                                            for robot in gate.ROBOTS}}
+
     def test_complete_projection_preserves_original_helper_and_is_private(self):
         raw=(gate.WORKSPACE/gate.HELPER).read_bytes()
         _,proof=gate.project_source(raw)
@@ -100,7 +117,7 @@ class ReachCadenceTests(unittest.TestCase):
             with self.subTest(fault=fault):self.assertFalse(self.necessary_math(directory)["passed"])
 
     def test_public_role_requires_complete_runtime_v2_and_never_uses_cadence_alone(self):
-        directory=self.case()
+        directory=self.new_case()
         with patch.object(gate,"source_proof",return_value={}), \
                 patch.object(gate.runtime,"audit_episode",side_effect=ValueError("actual v1 status has no reach credit")) as full:
             result=gate.audit(directory,old_tests.FREEZE)
@@ -109,8 +126,8 @@ class ReachCadenceTests(unittest.TestCase):
         self.assertIn("actual v1 status",result["errors"][0]["error"])
 
     def test_public_role_conjoins_current_source_bound_runtime_and_preserves_scope(self):
-        directory=self.case()
-        report={"passed":True,"independent_necessary_replay":True,"continuous_physical_model_proved":False}
+        directory=self.new_case()
+        report=self.compound_report()
         with patch.object(gate,"source_proof",return_value={"fixture":"not scientific credit"}), \
                 patch.object(gate.runtime,"audit_episode",return_value=report) as full:
             result=gate.audit(directory,old_tests.FREEZE)
@@ -118,6 +135,37 @@ class ReachCadenceTests(unittest.TestCase):
         self.assertTrue(result["actual_loaded_elf_custody_required"])
         self.assertFalse(result["continuous_physical_model_proved"])
         full.assert_called_once_with(directory,old_tests.FREEZE)
+
+    def test_new_projection_keeps_complete_source_inverse_and_period_math(self):
+        raw=(gate.WORKSPACE/gate.HELPER).read_bytes()
+        projected,proof=gate.project_source(raw,actuation_profile=gate.encoder_replay.PROFILE)
+        self.assertEqual(proof["inverse_sha256"],gate.HELPER_SHA256)
+        self.assertEqual(proof["actuation_profile"],gate.encoder_replay.PROFILE)
+        self.assertIn(gate.encoder_replay.ALGORITHM.encode(),projected)
+        module,_=gate.load_implementation(actuation_profile=gate.encoder_replay.PROFILE)
+        self.assertEqual((module.PERIOD,module.ACTUATION),(20_000_000,34_000_000))
+        self.assertTrue(module.audit(self.new_case(),old_tests.FREEZE)["passed"])
+        self.assertFalse(module.audit(self.case(),old_tests.FREEZE)["passed"])
+        with self.assertRaises(ValueError):gate.project_source(raw,actuation_profile="unknown")
+
+    def test_literal_admission_without_three_compound_replays_is_rejected(self):
+        for fault in ("summary","robot","profile","helper"):
+            report=self.compound_report()
+            if fault=="summary":report["initial_encoder_compound_replay_passed"]=False
+            elif fault=="robot":report["initial_encoder_motor_replay"].pop("tb3")
+            elif fault=="profile":report["initial_encoder_motor_replay"]["tb2"]["profile"]="other"
+            else:report["initial_encoder_motor_replay"]["tb1"]["helper_sha256"]="8"*64
+            directory=self.new_case()
+            with self.subTest(fault=fault), patch.object(gate,"source_proof",return_value={}), \
+                    patch.object(gate.runtime,"audit_episode",return_value=report):
+                self.assertFalse(gate.audit(directory,old_tests.FREEZE)["passed"])
+
+    def test_public_new_role_rejects_missing_profile(self):
+        directory=self.case()
+        with patch.object(gate,"source_proof",return_value={}), \
+                patch.object(gate.runtime,"audit_episode",return_value=self.compound_report()) as full:
+            self.assertFalse(gate.audit(directory,old_tests.FREEZE)["passed"])
+        full.assert_not_called()
 
 
 if __name__ == "__main__":

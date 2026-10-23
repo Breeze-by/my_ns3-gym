@@ -1,5 +1,7 @@
 # MR3 P2A V58：初始静止阶段的本地轮编码器保持候选
 
+**当前已实际闭合，执行/取样描述PASS：** freeze`b6af48cfe88b73a633d0e7552b88c3489900391a`、root tool23554真实reap rc0，355000步/355模拟秒完整；三机固定body anchor最大位移约7.56446e-6m，低于原R=.0078。只对本次隔离候选取样有效，没有生产资格、连续证明、训练或95%任务信用。完整parent899.40726088墙秒已收，累计92217.1876804376018/120000、余27782.8123195623982。实际关闭节为当前状态，下方预声明/尚未World/待freeze文字保留为准备快照。
+
 2026-10-23预声明与CPU准备已完成。helper12组、driver最终6组及真实native编译通过，source/spec/实际回执已封存于末节；待新exact40freeze提交推送后一次正式诊断。本版尚未World或生产应用，CPU不提供物理或P2A信用。用户持续自主委托保持，P2A未完成。
 
 ## 依据与边界
@@ -44,3 +46,21 @@ native generator实际rc0/.137421507墙秒、compiler rc0/52.375035399墙秒；4
 driver6组人工回归三轮实际rc0（.319194718/.329905909/.391277212墙秒），仅末轮绑定最终driver；前轮源码快照、实际回执和各自关闭证据保留，不累计成18项独立检查。末轮覆盖真实非零servo记录可被接纳、重复capture被拒、partial实际rc和无重试/完整费用；见[最终实际wait](assets/20261023_mr3_p2a_v58_encoder_hold/checks/driver_cpu_v3/actual_wait.json)及[freshgone](assets/20261023_mr3_p2a_v58_encoder_hold/checks/driver_cpu_postreap_v3.json)。静态接线核对通过，body pose不进入servo，固定body anchor仍只捕获一次。
 
 [scope](assets/20261023_mr3_p2a_v58_encoder_hold/scope_v1.json)已准备，准确freeze由commit/push后的唯一正式CLI绑定。运行环境保留独占HOME，并显式`ALSOFT_DRIVERS=null`选无输出音频后端以避免无关音频自动启动；这不改变物理配置。依据[OpenAL Soft环境文档](https://github.com/kcat/openal-soft/blob/master/docs/env-vars.txt)及[1.19.1 null后端源码](https://github.com/kcat/openal-soft/blob/openal-soft-1.19.1/Alc/backends/null.c)，本机1.19.1 ELF同时具有对应环境键和No Output后端标记。完整实际环境写入submission，不以此宣称所有外部daemon不存在。
+
+## 实际执行与关闭
+
+原准确CLI（活动已关闭，不再运行）：
+
+```bash
+rtk proxy env PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 CUDA_VISIBLE_DEVICES= /usr/bin/python3 -B /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v58_encoder_hold/run_passive_pair_v1.py --freeze b6af48cfe88b73a633d0e7552b88c3489900391a
+```
+
+CPP/engineering wrapper/root均实际rc0；355000个1ms步完成355模拟秒，45秒一次机身anchor之后310001次观测覆盖完整310秒hold。tb1/tb2/tb3最大固定anchor位移为7.564460922440505e-6 / 7.564460921095306e-6 / 7.564460923987289e-6米；最大平移速度约6.58461348e-5m/s。每机10441次真实motor更新、q_ref捕获一次；最大实际写入电机目标约.00126813934rad/s，是已披露的非零纠偏，不能称zero-wheel。机身anchor未刷新，helper只读本机编码器。上述量是binary64/1ms取样描述，不是精确Q连续证明、任务/18流安全通过或生产资格。
+
+启动次序存在一项透明记录：本地exact Git已提交，但native提交先于观察到push RPC真实reap；push随后实际rc0。未声称push回收先于启动，原[push观察收据](assets/20261023_mr3_p2a_v58_encoder_hold/closed_execution/closure_tools/mr3_p2a_v58_push_tool_actual_wait_v1.json)完整保留，活动不重跑或补写顺序。
+
+连续parent实费**899.40726088**墙秒（native内部893.582203956包含其中，不另加），累计**92217.1876804376018/120000**、余**27782.8123195623982**；numeric_user_approval_claimed=false，pilot/final新增0。372原源before/after稳定，关闭时核20新代码/28 repo current-Git、old10及30非库字节；342库只匹配原完整receipt/manifest，不重读。仅4份实际保存main身份freshgone，不补身份或宣称所有外部daemon不存在。
+
+20 regular原件35601348B无损封存为9623421B、0链接，含body/motor CSV原始字节；没有重算CSV语义。关闭metadata CPU实际tool68165 reap rc0，25.947314682墙秒、16源before/after相等、工程新增0；自身2份保存身份另freshgone。见[库存](assets/20261023_mr3_p2a_v58_encoder_hold/closed_inventory_v1.json)、[metadata关闭](assets/20261023_mr3_p2a_v58_encoder_hold/checks/closed_metadata_review_v1.json)、[CPU实际wait](assets/20261023_mr3_p2a_v58_encoder_hold/checks/closed_metadata_cpu_v1/actual_wait.json)、[CPU freshgone](assets/20261023_mr3_p2a_v58_encoder_hold/checks/closure_cpu_postreap_v1.json)及[规范末账](assets/20261023_mr3_p2a_v58_encoder_hold/closure_ledger_v1.json)。原driver pending字段和全部历史FAIL保持。
+
+下一S59才实施生产新profile、接收首非零立即锁存、真实newbuild/第7helper宏与ELF来源，以及独立compound-law/cadence严格门；本次候选不借旧V15 no-new-build或旧paired-slew恒等信用。代理依据持续委托选择后继有限工程累计块150000，从本次真实账92217.1876804376018承接、余57782.8123195623982，拟完整链预约47220，具体scope在实现/CPU后封存；150000不是逐数值用户批准，未重置旧账或pilot/final。只有新同freeze完整12EP30角色、实际minimum/pilot学习和三场冻结策略strict95全通过才完成P2A。

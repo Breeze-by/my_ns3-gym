@@ -17,6 +17,7 @@ import threading
 import time
 
 from ros_smoke_test import configure_mr3_transport_environment, native_launch_failures
+from multi_robot_exploration.mr3_safety_intent import actuation_profile_for_safety_contract
 from multi_robot_exploration.mr3_evaluator_phase import (
     PHASE_PROTOCOL, PHASE_WALL_GUARD_SEC, PhaseClient,
 )
@@ -460,6 +461,9 @@ class Worker:
                     "plant_stimulus_work_deadline_ns": self.plant_stimulus_work_deadline_ns,
                     "physical_step_ns": 1000000, "policy_step_ns": 1000000000,
                     "startup_wall_guard_sec": 420., "closure_wall_guard_sec": 90.}
+        profile = actuation_profile_for_safety_contract(self.safety_contract)
+        if profile is not None:
+            metadata["actuation_profile"] = profile
         if self.seed_rule != "legacy":
             metadata["seed_rule"] = self.seed_rule
         if self.start_graph_rule != "original-seed-cell":

@@ -1,0 +1,52 @@
+from types import SimpleNamespace
+
+from multi_robot_exploration.nav2_ready_gate import (
+    lifecycle_service_names,
+    navigation_action_names,
+    unavailable_actions,
+    wait_for_nav2,
+)
+
+
+class FakeActionClient:
+    def __init__(self, ready):
+        self.ready = ready
+
+    def server_is_ready(self):
+        return self.ready
+
+
+def test_navigation_action_names_follow_robot_count():
+    assert navigation_action_names(3) == [
+        "/tb1/navigate_to_pose",
+        "/tb2/navigate_to_pose",
+        "/tb3/navigate_to_pose",
+    ]
+
+
+def test_unavailable_actions_reports_only_missing_servers():
+    clients = {
+        "/tb1/navigate_to_pose": FakeActionClient(True),
+        "/tb2/navigate_to_pose": FakeActionClient(False),
+    }
+    assert unavailable_actions(clients) == ["/tb2/navigate_to_pose"]
+
+
+def test_lifecycle_service_names_cover_critical_nav2_nodes():
+    assert lifecycle_service_names(1) == [
+        "/tb1/controller_server/get_state",
+        "/tb1/planner_server/get_state",
+        "/tb1/behavior_server/get_state",
+        "/tb1/bt_navigator/get_state",
+        "/tb1/waypoint_follower/get_state",
+        "/tb1/velocity_smoother/get_state",
+    ]
+
+
+def test_shutdown_before_readiness_cannot_return_success(monkeypatch):
+    monkeypatch.setattr("rclpy.ok", lambda: False)
+    monkeypatch.setattr("multi_robot_exploration.nav2_ready_gate.ActionClient", lambda *args: (
+        SimpleNamespace(destroy=lambda: None)
+    ))
+    node = SimpleNamespace(create_client=lambda *args: None, destroy_client=lambda *args: None)
+    assert wait_for_nav2(node, 1, 1.) == 1

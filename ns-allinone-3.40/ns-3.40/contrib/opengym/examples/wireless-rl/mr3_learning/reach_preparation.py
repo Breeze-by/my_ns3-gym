@@ -15,6 +15,7 @@ import subprocess
 from . import preparation as primitives
 from .reach_audit_projection import project_module
 from . import audit_reach_reset_workload as reset_workload
+from .native_custody_reach import initial_encoder_profile
 from .supervisor import (BINARY_REACH_GEOMETRY_RULE, SUPPORT_REACH_GEOMETRY_RULE,
                          validate_reach_geometry_rule, reach_geometry_rule_from_argv)
 from .supervisor import (seed_rule_from_argv, start_graph_rule_from_argv,
@@ -190,6 +191,14 @@ def source_inventory(root=WORKSPACE):
 
 
 def validate_plan(plan, workspace=WORKSPACE):
+    actuation = initial_encoder_profile(plan)
+    if actuation is not None:
+        require(all(initial_encoder_profile(row) == actuation for row in plan["stages"]),
+                "native matrix stage actuation profile differs from its plan")
+        if "policy_stages" in plan:
+            require(type(plan["policy_stages"]) is dict and set(plan["policy_stages"]) == {"minimum","pilot","validation"} and
+                    all(initial_encoder_profile(row) == actuation for row in plan["policy_stages"].values()),
+                    "new encoder policy stage registry lacks the mandatory profile")
     geometry_rule = validate_reach_geometry_rule(
         plan.get("reach_geometry_rule", BINARY_REACH_GEOMETRY_RULE), safety_contract=CONTRACT)
     seed_rule = validate_seed_rule(plan.get("seed_rule", "legacy"))
@@ -444,7 +453,9 @@ def source_check(plan, plan_path, freeze, root=WORKSPACE, require_clean=True):
 
 def build_plan(*, plan_path, seed_rule="legacy", start_graph_rule="original-seed-cell",
                reach_geometry_rule=BINARY_REACH_GEOMETRY_RULE, reservation=None,
-               reservation_profile=None, engineering_resource=None, **kwargs):
+               reservation_profile=None, engineering_resource=None, actuation_profile=None, **kwargs):
+    if actuation_profile is not None:
+        initial_encoder_profile({"actuation_profile":actuation_profile})
     validate_seed_rule(seed_rule)
     validate_start_graph_rule(start_graph_rule, seed_rule=seed_rule)
     validate_reach_geometry_rule(reach_geometry_rule, safety_contract=CONTRACT)
@@ -476,6 +487,10 @@ def build_plan(*, plan_path, seed_rule="legacy", start_graph_rule="original-seed
                     "combined_runtime": "six-source drive, paired actuation, calibration and independent reach geometry",
                     "combined_peer_control": "complete peer cloud/scan, v2 causal phase and final command FIFO",
                     "old_profile_credit_reused": False})
+    if actuation_profile is not None:
+        plan["actuation_profile"] = actuation_profile
+        for stage in plan["stages"]:
+            stage["actuation_profile"] = actuation_profile
     if seed_rule != "legacy":
         plan["seed_rule"] = seed_rule
     if start_graph_rule != "original-seed-cell":
@@ -571,6 +586,8 @@ def build_plan(*, plan_path, seed_rule="legacy", start_graph_rule="original-seed
         for relative in SUPPORT_REACH_SOURCES:
             plan["source_bindings"][relative] = sha(Path(root) / relative)
     binding = json.loads(Path(kwargs["custody_binding"]).read_text())
+    require(initial_encoder_profile(binding) == actuation_profile,
+            "builder custody binding and explicit actuation profile differ")
     require(validate_reach_geometry_rule(binding.get("reach_geometry_rule", BINARY_REACH_GEOMETRY_RULE),
                 safety_contract=CONTRACT) == reach_geometry_rule, "custody binding reach geometry rule differs")
     if reach_geometry_rule == SUPPORT_REACH_GEOMETRY_RULE:
@@ -716,7 +733,11 @@ def _qualification_evidence(plan_path, freeze, outer_wait, root=WORKSPACE):
             require(meta.get("reach_geometry_rule", BINARY_REACH_GEOMETRY_RULE)
                     == plan.get("reach_geometry_rule", BINARY_REACH_GEOMETRY_RULE),
                     "native episode reach geometry rule differs from qualification plan")
+            require(initial_encoder_profile(meta) == initial_encoder_profile(plan),
+                    "native episode actuation profile differs from qualification plan")
             supervisor_meta = read(path.parent / "supervisor_metadata.json")
+            require(initial_encoder_profile(supervisor_meta) == initial_encoder_profile(plan),
+                    "native supervisor actuation profile differs from qualification plan")
             require(supervisor_meta.get("seed_rule", "legacy") == plan.get("seed_rule", "legacy"),
                     "native supervisor seed rule differs from qualification plan")
             require(supervisor_meta.get("start_graph_rule", "original-seed-cell") == plan.get("start_graph_rule", "original-seed-cell"),
@@ -742,6 +763,7 @@ def _qualification_evidence(plan_path, freeze, outer_wait, root=WORKSPACE):
     return {"freeze": freeze, "safety_contract": CONTRACT, "plan": str(plan_path.resolve()),
         "plan_sha256": sha(plan_path), "outer_wait": str(Path(outer_wait).resolve()),
         "mandatory_roles": roles, "episodes": episodes, "bindings": bindings,
+        **({"actuation_profile":plan["actuation_profile"]} if initial_encoder_profile(plan) is not None else {}),
         **({"reach_geometry_rule": plan["reach_geometry_rule"]}
            if plan.get("reach_geometry_rule", BINARY_REACH_GEOMETRY_RULE) != BINARY_REACH_GEOMETRY_RULE else {}),
         "complete_closed_episode_file_inventories": episode_files,

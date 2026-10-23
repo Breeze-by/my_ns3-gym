@@ -1,0 +1,187 @@
+{
+  "schema": "mr3-v59-fresh-cpu-postreap-v1",
+  "observed_unix_ns": 1792746048871297543,
+  "all_saved_identities_gone": true,
+  "groups": [
+    {
+      "group": "fresh_ros_cpu_v1",
+      "actual_tool_reaped": true,
+      "actual_returncode": 0,
+      "passed": true,
+      "source_unchanged": true,
+      "actual_wait_seconds": "40.854571193",
+      "receipt_sha256": "5e070a15efe86110d46825e04a740e61d6695c6c61e7a9b37119fbb86a24b928",
+      "JUnit": [
+        {
+          "name": "pytest",
+          "errors": "0",
+          "failures": "0",
+          "skipped": "0",
+          "tests": "202",
+          "time": "38.880",
+          "timestamp": "2026-10-23T16:39:18.705013",
+          "hostname": "zhuyulab"
+        }
+      ],
+      "saved_identities": [
+        {
+          "saved": {
+            "pid": 839074,
+            "parent": 838254,
+            "group": 838252,
+            "session": 838252,
+            "start_ticks": 449015190,
+            "state": "R"
+          },
+          "status": "absent"
+        },
+        {
+          "saved": {
+            "pid": 839081,
+            "parent": 839074,
+            "group": 838252,
+            "session": 838252,
+            "start_ticks": 449015213,
+            "state": "R"
+          },
+          "status": "absent"
+        }
+      ]
+    },
+    {
+      "group": "fresh_learner_cpu_v1",
+      "actual_tool_reaped": true,
+      "actual_returncode": 1,
+      "passed": false,
+      "source_unchanged": true,
+      "actual_wait_seconds": "125.525354461",
+      "receipt_sha256": "e18b8089aff64285c3c44e798e8aba2cfb8260a9888f51f9150afe87ca7b57f5",
+      "JUnit": [
+        {
+          "name": "pytest",
+          "errors": "0",
+          "failures": "1",
+          "skipped": "0",
+          "tests": "410",
+          "time": "121.680",
+          "timestamp": "2026-10-23T16:40:34.053061+08:00",
+          "hostname": "zhuyulab"
+        }
+      ],
+      "saved_identities": [
+        {
+          "saved": {
+            "pid": 842465,
+            "parent": 841699,
+            "group": 841697,
+            "session": 841697,
+            "start_ticks": 449022849,
+            "state": "R"
+          },
+          "status": "absent"
+        },
+        {
+          "saved": {
+            "pid": 842473,
+            "parent": 842465,
+            "group": 841697,
+            "session": 841697,
+            "start_ticks": 449022874,
+            "state": "R"
+          },
+          "status": "absent"
+        }
+      ]
+    },
+    {
+      "group": "fresh_ros_cpu_v2",
+      "actual_tool_reaped": true,
+      "actual_returncode": 0,
+      "passed": true,
+      "source_unchanged": true,
+      "actual_wait_seconds": "38.504274032",
+      "receipt_sha256": "e06019a5cf2b97e8b032259f9b722c5e6e2b86d55705e81da5758b59d940d69e",
+      "JUnit": [
+        {
+          "name": "pytest",
+          "errors": "0",
+          "failures": "0",
+          "skipped": "0",
+          "tests": "202",
+          "time": "36.646",
+          "timestamp": "2026-10-23T16:52:22.545076",
+          "hostname": "zhuyulab"
+        }
+      ],
+      "saved_identities": [
+        {
+          "saved": {
+            "pid": 870470,
+            "parent": 869704,
+            "group": 869702,
+            "session": 869702,
+            "start_ticks": 449093584,
+            "state": "R"
+          },
+          "status": "absent"
+        },
+        {
+          "saved": {
+            "pid": 870498,
+            "parent": 870470,
+            "group": 869702,
+            "session": 869702,
+            "start_ticks": 449093609,
+            "state": "R"
+          },
+          "status": "absent"
+        }
+      ]
+    },
+    {
+      "group": "fresh_learner_cpu_v2",
+      "actual_tool_reaped": true,
+      "actual_returncode": 0,
+      "passed": true,
+      "source_unchanged": true,
+      "actual_wait_seconds": "126.860394636",
+      "receipt_sha256": "d5853419802ed1c1c1f9841f3e63288cb7b6eb782fcf3a31b1d19f6dad6c68b6",
+      "JUnit": [
+        {
+          "name": "pytest",
+          "errors": "0",
+          "failures": "0",
+          "skipped": "0",
+          "tests": "411",
+          "time": "122.813",
+          "timestamp": "2026-10-23T16:56:42.991176+08:00",
+          "hostname": "zhuyulab"
+        }
+      ],
+      "saved_identities": [
+        {
+          "saved": {
+            "pid": 880086,
+            "parent": 879270,
+            "group": 879268,
+            "session": 879268,
+            "start_ticks": 449119744,
+            "state": "R"
+          },
+          "status": "absent"
+        },
+        {
+          "saved": {
+            "pid": 880093,
+            "parent": 880086,
+            "group": 879268,
+            "session": 879268,
+            "start_ticks": 449119769,
+            "state": "R"
+          },
+          "status": "absent"
+        }
+      ]
+    }
+  ]
+}

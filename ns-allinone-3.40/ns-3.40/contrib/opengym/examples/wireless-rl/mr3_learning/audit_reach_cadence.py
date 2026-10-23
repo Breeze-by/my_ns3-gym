@@ -14,6 +14,7 @@ import subprocess
 import types
 
 from . import audit_reach_runtime as runtime
+from . import initial_encoder_replay as encoder_replay
 
 WORKSPACE = Path(__file__).resolve().parents[7]
 WIRELESS = Path("ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl")
@@ -48,26 +49,33 @@ def sha(raw):
     return hashlib.sha256(raw).hexdigest()
 
 
-def project_source(raw):
+def project_source(raw, *, actuation_profile=None):
     require(sha(raw) == HELPER_SHA256, "immutable odometry cadence helper differs")
+    require(actuation_profile is None or (type(actuation_profile) is str and
+            actuation_profile == encoder_replay.PROFILE), "unknown cadence actuation profile")
+    changes = SOURCE_CHANGES
+    if actuation_profile is not None:
+        changes += (('"measured_joint_rim_paired_common_fraction_v1"',
+                     '"initial_zero_encoder_hold_then_paired_common_fraction_v1"', 1),)
     projected = raw
-    for old, new, count in SOURCE_CHANGES:
+    for old, new, count in changes:
         require(projected.count(old.encode()) == count, "cadence projection occurrence differs: " + old)
         require(new.encode() not in projected, "projected cadence block already exists")
         projected = projected.replace(old.encode(),new.encode())
     inverse = projected
-    for old,new,count in reversed(SOURCE_CHANGES):
+    for old,new,count in reversed(changes):
         require(inverse.count(new.encode()) == count, "cadence inverse occurrence differs")
         inverse = inverse.replace(new.encode(),old.encode())
     require(inverse == raw and sha(inverse) == HELPER_SHA256, "cadence complete source inverse differs")
     return projected,{"helper_sha256":HELPER_SHA256,"projected_sha256":sha(projected),
         "inverse_sha256":sha(inverse),"exact_whole_source_inverse":True,
-        "changes":[{"old":old,"new":new,"count":count} for old,new,count in SOURCE_CHANGES]}
+        "changes":[{"old":old,"new":new,"count":count} for old,new,count in changes],
+        **({"actuation_profile":actuation_profile} if actuation_profile is not None else {})}
 
 
-def load_implementation(root=WORKSPACE):
+def load_implementation(root=WORKSPACE, *, actuation_profile=None):
     root = Path(root).resolve()
-    projected, proof = project_source((root/HELPER).read_bytes())
+    projected, proof = project_source((root/HELPER).read_bytes(), actuation_profile=actuation_profile)
     module = types.ModuleType("mr3_learning._reach_private_cadence")
     module.__package__ = "mr3_learning"
     module.__file__ = __file__
@@ -77,7 +85,8 @@ def load_implementation(root=WORKSPACE):
     provenance={"schema":"mr3-reach-cadence-implementation-v1",
         "effective_entry":{"path":str(Path(__file__).resolve()),"sha256":sha(Path(__file__).read_bytes())},
         "helper":{"path":str(HELPER),"sha256":HELPER_SHA256},"projection":proof,
-        "scope":"Original publication/packet GID/20ms source/34ms update/selected-causal-source mathematics execute on new artifacts; only explicit profile, schema and six-source identities change."}
+        "scope":"Original publication/packet GID/20ms source/34ms update/selected-causal-source mathematics execute on new artifacts. New algorithm identity requires the independent initial-encoder compound-law conjunction.",
+        **({"actuation_profile":actuation_profile} if actuation_profile is not None else {})}
     return module,provenance
 
 
@@ -95,13 +104,26 @@ def source_proof(freeze, root=WORKSPACE, *, reach_geometry_rule=runtime.DEFAULT_
 
 def audit_episode(directory, freeze, inputs):
     """Public episode role is a conjunction, never the old cadence result alone."""
-    module,proof=load_implementation()
+    metadata = inputs.document(Path(directory)/"metadata.json")
+    profile = runtime.selected_actuation_profile(metadata, required=True)
+    module,proof=load_implementation(actuation_profile=profile)
     result=module.audit_episode(Path(directory),freeze,inputs)
     report=runtime.audit_episode(Path(directory),freeze)
     require(report.get("passed") is True and report.get("independent_necessary_replay") is True
             and report.get("continuous_physical_model_proved") is False,
             "reach cadence requires the complete new runtime/drive necessary replay")
-    result.update(safety_contract=CONTRACT,implementation_provenance=proof,
+    motors = report.get("initial_encoder_motor_replay")
+    helper = report.get("source_proof", {}).get(runtime.ENCODER_HEADER_SOURCE, {}).get("sha256")
+    require(report.get("actuation_profile") == profile and
+            report.get("initial_encoder_compound_replay_passed") is True and
+            type(helper) is str and len(helper) == 64 and
+            type(motors) is dict and set(motors) == set(ROBOTS) and
+            all(type(row) is dict and row.get("passed") is True and row.get("profile") == profile
+                and row.get("helper_sha256") == helper
+                for row in motors.values()),
+            "new cadence identity lacks independent three-robot compound-law replay")
+    result.update(actuation_profile=profile, initial_encoder_compound_replay_passed=True,
+                  safety_contract=CONTRACT,implementation_provenance=proof,
                   runtime_drive_conjunction=report,continuous_physical_model_proved=False,
                   actual_loaded_elf_custody_required=True)
     if report.get("reach_geometry_rule", runtime.DEFAULT_GEOMETRY_RULE) != runtime.DEFAULT_GEOMETRY_RULE:
@@ -110,7 +132,7 @@ def audit_episode(directory, freeze, inputs):
 
 
 def audit(directory, freeze):
-    module,proof=load_implementation()
+    module,proof=load_implementation(actuation_profile=encoder_replay.PROFILE)
     # Keep original episode discovery, exception-to-FAIL/INCOMPLETE behavior,
     # stable inputs and finite window logic. Only its per-episode conjunction is
     # strengthened; no original artifact or metadata is rewritten or stripped.
@@ -121,6 +143,10 @@ def audit(directory, freeze):
     module.audit_episode=selected_episode
     result=module.audit(directory,freeze)
     result.update(safety_contract=CONTRACT,implementation_provenance=proof,
+        actuation_profile=encoder_replay.PROFILE,
+        initial_encoder_compound_replay_passed=result["passed"] and all(
+            row.get("initial_encoder_compound_replay_passed") is True
+            for row in result.get("episodes", [])),
         continuous_physical_model_proved=False,actual_loaded_elf_custody_required=True,
         scope="New source-bound reach/v2 runtime+wheel/application and independent20ms WORLD/driverTF packet receipts, latest selected sources and34ms actual updates; live actual ELF/process custody remains separately mandatory, continuous plant remains conditional.")
     try:

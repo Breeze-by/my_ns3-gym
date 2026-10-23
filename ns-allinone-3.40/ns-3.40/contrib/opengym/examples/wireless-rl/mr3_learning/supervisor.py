@@ -236,6 +236,15 @@ def remember_processes(episode):
         stats["max_scan_wall_sec"] = max(stats["max_scan_wall_sec"], time.monotonic() - started)
 
 
+INITIAL_ENCODER_ACTUATION_PROFILE = "initial-zero-encoder-hold-v1"
+
+
+def actuation_profile_for_safety_contract(safety_contract):
+    if type(safety_contract) is not str or safety_contract not in ("legacy", "mr3-reach-v1"):
+        raise ValueError("unknown safety contract for the actuator")
+    return INITIAL_ENCODER_ACTUATION_PROFILE if safety_contract == "mr3-reach-v1" else None
+
+
 class Supervisor:
     """One isolated three-robot environment; reset always replaces all processes."""
 
@@ -297,6 +306,7 @@ class Supervisor:
         self.seed_rule = seed_rule
         self.start_graph_rule = start_graph_rule
         self.reach_geometry_rule = reach_geometry_rule
+        self.actuation_profile = actuation_profile_for_safety_contract(safety_contract)
         self.preparation_probe_version = preparation_probe_version
         self.plant_stimulus_arm = plant_stimulus_arm
         self.plant_stimulus_work_deadline_ns = (
@@ -395,6 +405,8 @@ class Supervisor:
             metadata["start_graph_rule"] = self.start_graph_rule
         if self.reach_geometry_rule != BINARY_REACH_GEOMETRY_RULE:
             metadata["reach_geometry_rule"] = self.reach_geometry_rule
+        if self.actuation_profile is not None:
+            metadata["actuation_profile"] = self.actuation_profile
         if self.preparation_probe_version is not None:
             metadata.update(preparation_probe_version=self.preparation_probe_version,
                             training_eligible=False,

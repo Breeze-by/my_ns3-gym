@@ -1,0 +1,34 @@
+{
+  "schema": "mr3-v59-admission-cpu-spec-v1",
+  "actual_argv": [
+    "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+    "-B",
+    "-m",
+    "pytest",
+    "-q",
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v59_encoder_profile/test_activity_resource_entry_v1.py",
+    "--junitxml",
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v59_encoder_profile/checks/admission_cpu_v1/pytest.xml"
+  ],
+  "required_test_names": [
+    "test_prior_carry_and_one_resource_are_accepted",
+    "test_forged_prior_or_parent_fee_is_rejected",
+    "test_all_four_real_entries_accept_only_to_pre_model_boundary",
+    "test_all_four_real_entries_reject_overbudget_before_effects",
+    "test_conflicting_plan_budget_is_rejected",
+    "test_preflight_really_calls_both_reset_reader_readiness_and_keeps_receipt",
+    "test_current_python_classification_includes_untracked",
+    "test_all_four_real_module_help"
+  ],
+  "expected_source_hashes": {
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v59_encoder_profile/prepare_plan_v1.py": "39aefe8b00fb0e842618c95880fa86e45485e8b3b0303a5b51fd85aefcccbb6e",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v59_encoder_profile/preflight_v1.py": "f485c658327725c1fa53bb65ee11b1d1c11c24638e6810a35dbe9ea0db9d514b",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v59_encoder_profile/plan_check_v1.py": "c304fad9613e6a0f84756b4fdf827bef059ff2c76ecaacaa27125dcbf4c9ec90",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v59_encoder_profile/execute_chain_v1.py": "0b56328072271222d31bb2dfcf211d9a94149764f4c779ac3417394e5e293584",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v59_encoder_profile/readiness_v1.py": "1d44c4afe144608cf4f356b057f0a40c91431edaa22991f88cb5edc727e7e1db",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v59_encoder_profile/classification_admission_v1.py": "20717f124ac485c9aedc6771d8e684363ca4ff1134b05de91e79bca2d0af7eb6",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v50_qualification/external_absence_v1.py": "61dffad560007e88f2c8818bed9f1adf4630568bcb859732446d107b1a7e2e2f",
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v59_encoder_profile/test_activity_resource_entry_v1.py": "c416485cbc9de418fe1dad849f2e20a5f55cc18683a303010da6629d63edec45"
+  },
+  "pytest_junit": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v59_encoder_profile/checks/admission_cpu_v1/pytest.xml"
+}

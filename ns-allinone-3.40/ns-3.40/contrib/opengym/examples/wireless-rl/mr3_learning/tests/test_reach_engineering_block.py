@@ -9,11 +9,13 @@ import contextlib
 import copy
 import hashlib
 import json
+import io
 from pathlib import Path
 import unittest
 from unittest.mock import patch
 
 from mr3_learning import ppo, reach_gates, reach_preparation as prep
+from mr3_learning.initial_encoder_replay import PROFILE as ACTUATION_PROFILE
 from mr3_learning.tests import test_reach_qualification as bookkeeping
 from mr3_learning.tests import test_reach_training_admission as training
 
@@ -61,10 +63,10 @@ class EngineeringBlockTests(unittest.TestCase):
             run_root=self.root / "native", custody_binding=self.root / "binding.json",
             binary_proof=self.root / "binary.json", preflight=self.root / "preflight.json")
 
-    def build(self):
+    def build(self, *, actuation_profile=None):
         return prep.build_plan(**self.kwargs(), engineering_remaining_seconds="40000",
             reservation_profile=prep.AUTONOMOUS_RESOURCE_PROFILE,
-            engineering_resource=self.spec(self.resource_path))
+            engineering_resource=self.spec(self.resource_path), actuation_profile=actuation_profile)
 
     def test_default_and_old_bounded_plan_fields_remain_unchanged(self):
         original = prep.build_plan(**self.kwargs(), engineering_remaining_seconds="20000")
@@ -227,10 +229,29 @@ class EngineeringBlockTests(unittest.TestCase):
             with self.subTest(fault=fault), self.assertRaises(ValueError):
                 prep.validate_plan(plan)
 
-    def qualification_fixture(self):
-        self.fixture.plan = self.build()
+    def qualification_fixture(self, *, actuation_profile=None):
+        if actuation_profile is not None:
+            binding_path = self.kwargs()["custody_binding"]
+            binding = json.loads(binding_path.read_text())
+            binding["actuation_profile"] = actuation_profile
+            bookkeeping.write(binding_path, binding)
+        self.fixture.plan = self.build(actuation_profile=actuation_profile)
+        if actuation_profile is not None:
+            self.fixture.plan["policy_stages"] = {
+                name: {"actuation_profile": actuation_profile, "fixture_only": True}
+                for name in ("minimum", "pilot", "validation")}
         bookkeeping.write(self.plan_path, self.fixture.plan)
         self.fixture.evidence()
+        if actuation_profile is not None:
+            # Synthetic producer/supervisor metadata must declare the same
+            # profile as the binding, native stages and policy registry.
+            for stage in self.fixture.plan["stages"]:
+                for path in Path(stage["run_directory"]).glob("worker*/episode*/metadata.json"):
+                    for filename in ("metadata.json", "supervisor_metadata.json"):
+                        current = path.parent / filename
+                        metadata = json.loads(current.read_text())
+                        metadata["actuation_profile"] = actuation_profile
+                        bookkeeping.write(current, metadata)
         output = self.root / "toy_qualification.json"
         with patch.object(prep, "source_check", return_value={}), \
                 patch.object(prep.primitives, "identity", return_value=None):
@@ -257,7 +278,12 @@ class EngineeringBlockTests(unittest.TestCase):
         return guards
 
     def test_stubbed_new_profile_roundtrip_reaches_only_the_first_ppo_side_effect_boundary(self):
-        qualification = self.qualification_fixture()
+        qualification = self.qualification_fixture(actuation_profile=ACTUATION_PROFILE)
+        self.assertEqual(self.fixture.plan["actuation_profile"], ACTUATION_PROFILE)
+        self.assertTrue(all(row["actuation_profile"] == ACTUATION_PROFILE
+                            for row in self.fixture.plan["stages"]))
+        self.assertTrue(all(row["actuation_profile"] == ACTUATION_PROFILE
+                            for row in self.fixture.plan["policy_stages"].values()))
         marker = object()
         with patch.object(prep, "source_check", return_value={}), \
                 patch.object(reach_gates, "_load_versioned_native_gates", return_value=marker) as leaf:
@@ -271,6 +297,23 @@ class EngineeringBlockTests(unittest.TestCase):
             guards[0].assert_called_once()
             for guard in guards[1:]:
                 guard.assert_not_called()
+
+    def test_missing_or_wrong_actuation_profile_rejects_before_ppo_side_effects(self):
+        for profile in (None, "unknown", "measured_joint_rim_paired_common_fraction_v1"):
+            plan = {"seed_rule": "legacy", "start_graph_rule": "original-seed-cell"}
+            if profile is not None:
+                plan["actuation_profile"] = profile
+            with self.subTest(profile=profile), contextlib.ExitStack() as stack:
+                guards = self.ppo_guards(stack)
+                guards[0].side_effect = AdmissionBoundaryReached
+                stack.enter_context(patch.object(prep, "validate_qualification", return_value={"passed": True}))
+                stack.enter_context(patch.object(prep, "load_plan", return_value=plan))
+                stack.enter_context(contextlib.redirect_stderr(io.StringIO()))
+                with self.assertRaises(SystemExit) as error:
+                    ppo.main(self.ppo_arguments(self.root / "unread-profile-qualification.json"))
+                self.assertEqual(error.exception.code, 2)
+                for guard in guards:
+                    guard.assert_not_called()
 
     def test_changed_resource_is_rejected_before_mkdir_model_native_or_gpu(self):
         qualification = self.qualification_fixture()

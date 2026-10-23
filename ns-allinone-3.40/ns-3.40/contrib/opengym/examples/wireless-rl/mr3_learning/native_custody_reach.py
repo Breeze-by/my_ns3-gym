@@ -8,13 +8,15 @@ reach profile/source/producer checks are explicit additional conjunctions.
 import argparse
 from decimal import Decimal
 import hashlib
+import gzip
+import io
 import json
 from pathlib import Path
 import shlex
 import types
 import subprocess
 
-from .supervisor import WORKSPACE
+from .supervisor import WORKSPACE, INITIAL_ENCODER_ACTUATION_PROFILE
 from .audit_reach_runtime import geometry_rule, DEFAULT_GEOMETRY_RULE, SUPPORT_GEOMETRY_RULE
 
 CONTRACT = "mr3-reach-v1"
@@ -31,6 +33,27 @@ SCHEMA_CLOSURE = "mr3-reach-native-custody-closure-review-v1"
 SCHEMA_VERIFIED = "mr3-reach-native-custody-verified-binding-v1"
 SCHEMA_FIFO = "mr3-reach-peer-control-fifo-review-v1"
 SCHEMA_BUILD_BRIDGE = "mr3-reach-native-build-evidence-bridge-v1"
+INITIAL_ENCODER_BUILD_SCOPE = "initial-zero-encoder-hold-v1; actual-new-build"
+INITIAL_ENCODER_MANIFEST_SCHEMA = "mr3-initial-encoder-driver-build-manifest-v1"
+INITIAL_ENCODER_BUILD_SCRIPT = WIRELESS / "report/assets/20261023_mr3_p2a_v59_encoder_profile/checks/native_build_v1/build_native_ros_v1.sh"
+INITIAL_ENCODER_BUILD_SCRIPT_SHA256 = "06964d045b1e16ca9e6a51abe0ae6cce097d57dbe732b757744c8306025158b9"
+INITIAL_ENCODER_HEADER = "ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/mr3_initial_zero_encoder_servo.hpp"
+INITIAL_ENCODER_SOURCE_PROFILE = WIRELESS / "report/assets/20261023_mr3_p2a_v59_encoder_profile/initial_encoder_source_profile_v1.json"
+# Pending is deliberately ineligible; seal only after the concrete source inverse and CPU build.
+INITIAL_ENCODER_SOURCE_PROFILE_SHA256 = 'efc6261cb38ee631ea57fe965a810b035f2bc5dc818308ed8e3448cf105271f3'
+INITIAL_ENCODER_BASELINES = {
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/src/mr3_gazebo_diff_drive.cpp": (
+        "1fa55bc56d5bb9e230d4b397f962d83b1604b278",
+        "ros2_ws/ros2-multi-robot-automap/src/multi_robot/src/mr3_gazebo_diff_drive.cpp",
+        "df307bd4d24abb588ded81752c4b2750cfbc3bb01986295b2e850561811e058a"),
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/CMakeLists.txt": (
+        "1fa55bc56d5bb9e230d4b397f962d83b1604b278",
+        "ros2_ws/ros2-multi-robot-automap/src/multi_robot/CMakeLists.txt",
+        "e7618063e54963e91c8df1661c2fd22b413a6d09adf850b13e92c15ceac6abbf"),
+    INITIAL_ENCODER_HEADER: (
+        "b6af48cfe88b73a633d0e7552b88c3489900391a",
+        str(WIRELESS / "report/assets/20261023_mr3_p2a_v58_encoder_hold/initial_zero_encoder_servo_v1.hpp"),
+        "d7b627dd55b764c5246ad33eddb12954b50409c5bf430584a1b1126673971a97")}
 V15_WAIT_SCHEMA = "mr3-v15-finite-preparation-actual-child-wait-v1"
 V15_BUILD_ARGV = ["/bin/bash", "-c", "source /opt/ros/humble/setup.bash; exec /usr/bin/python3 /usr/bin/colcon build --symlink-install --packages-select multi_robot --event-handlers console_direct+ --cmake-args -DBUILD_TESTING=ON"]
 V15_VERIFY_SCRIPT = WIRELESS / "report/assets/20261019_mr3_p2a_v15/verify_preparation_v1.py"
@@ -105,12 +128,18 @@ def project_source(raw):
         "changes": [{"old":old,"new":new,"count":count} for old,new,count in SOURCE_CHANGES]}
 
 
-def profile_metadata(directory, freeze, read, *, reach_geometry_rule=None):
+def profile_metadata(directory, freeze, read, *, reach_geometry_rule=None, actuation_profile=None):
     meta = json.loads(read(Path(directory) / "metadata.json"))
     require(meta.get("freeze") == freeze and meta.get("safety_contract") == CONTRACT
             and meta.get("quantum_steps") == 20 and meta.get("execution_phase_protocol") == PROTOCOL
             and meta.get("reset_handshake") == "paused-controlled-state-peer-guard-storage-v2",
             "legacy profile/execution metadata cannot acquire reach custody credit")
+    require(initial_encoder_profile(meta) == actuation_profile,
+            "custody binding and episode actuation profiles differ")
+    if actuation_profile is not None:
+        saved = json.loads(read(Path(directory)/"supervisor_metadata.json"))
+        require(saved.get("epoch") == meta["epoch"] and initial_encoder_profile(saved) == actuation_profile,
+                "supervisor/native actuation profiles differ")
     rule = geometry_rule(meta)
     if reach_geometry_rule is not None:
         require(rule == reach_geometry_rule, "custody binding and native episode geometry rules differ")
@@ -126,12 +155,18 @@ def binding_sources(bound, root):
     doc = bound["document"]
     require(doc.get("safety_contract") == CONTRACT and doc.get("execution_phase_protocol") == PROTOCOL,
             "binding is not the explicit reach/v2 contract")
+    profile = initial_encoder_profile(doc)
     rule = geometry_rule(doc)
     required_sources = REQUIRED_SOURCES + (SUPPORT_SOURCES if rule == SUPPORT_GEOMETRY_RULE else ())
     sources = {str(Path(row["path"]) if Path(row["path"]).is_absolute()
                    else Path(root) / row["path"]): row["sha256"] for row in doc["source_bindings"]}
     require(all(str(Path(root)/name) in sources for name in required_sources),
             "complete new runtime/custody/cadence entry source chain is unbound")
+    if profile is not None:
+        extra = doc.get("initial_encoder_compiled_source")
+        require(type(extra) is dict and extra.get("path") == INITIAL_ENCODER_HEADER and
+                sources.get(str(Path(root)/INITIAL_ENCODER_HEADER)) == extra.get("sha256"),
+                "new encoder helper is absent from the complete custody source chain")
     wrappers = doc.get("qualification_wrappers")
     require(type(wrappers) is list and wrappers, "actual qualification wrappers must be explicit")
     names = set()
@@ -143,7 +178,8 @@ def binding_sources(bound, root):
         names.add(str(path))
     return {"required_source_count":len(required_sources), "declared_source_count":len(sources),
             **({"reach_geometry_rule":rule} if rule != DEFAULT_GEOMETRY_RULE else {}),
-            "qualification_wrappers":wrappers}
+            "qualification_wrappers":wrappers,
+            **({"actuation_profile":profile} if profile is not None else {})}
 
 
 def frozen_artifact(spec, freeze, root, read):
@@ -181,6 +217,188 @@ def actual_wait_math(value):
     return str(Decimal(duration)/10**9)
 
 
+def initial_encoder_profile(document):
+    if "actuation_profile" not in document:
+        require("initial_encoder_compiled_source" not in document,
+                "new encoder source lacks its mandatory actuation profile")
+        return None
+    value = document["actuation_profile"]
+    require(type(value) is str and value == INITIAL_ENCODER_ACTUATION_PROFILE,
+            "unknown or empty initial encoder actuation profile")
+    return value
+
+
+def verify_initial_encoder_source_profile(freeze, root, read):
+    expected = INITIAL_ENCODER_SOURCE_PROFILE_SHA256
+    require(type(expected) is str and len(expected) == 64,
+            "initial encoder source derivation has not been sealed")
+    path = Path(root) / INITIAL_ENCODER_SOURCE_PROFILE
+    raw = frozen_artifact({"path":str(path), "sha256":expected}, freeze, root, read)
+    document = json.loads(raw)
+    require(document.get("schema") == "mr3-initial-encoder-source-derivation-v1" and
+            document.get("actuation_profile") == INITIAL_ENCODER_ACTUATION_PROFILE and
+            type(document.get("files")) is list and
+            {row["path"] for row in document["files"]} == set(INITIAL_ENCODER_BASELINES) and
+            len(document["files"]) == len(INITIAL_ENCODER_BASELINES),
+            "initial encoder whole-source derivation inventory differs")
+    proofs = {}
+    for row in document["files"]:
+        previous_freeze, previous_path, previous_sha = INITIAL_ENCODER_BASELINES[row["path"]]
+        require((row.get("previous_freeze"), row.get("previous_path"), row.get("previous_sha256")) ==
+                (previous_freeze, previous_path, previous_sha), "encoder source baseline differs")
+        current = frozen_artifact({"path":str(Path(root)/row["path"]),
+                                   "sha256":row["candidate_sha256"]}, freeze, root, read)
+        edits = row["inverse_edits"]
+        require(type(edits) is list and edits, "encoder source inverse is absent")
+        previous_end = -1
+        for edit in edits:
+            start, end = edit["candidate_start"], edit["candidate_end"]
+            require(type(start) is int and type(end) is int and
+                    0 <= start <= end <= len(current) and start >= previous_end,
+                    "encoder inverse edits overlap or exceed the exact source")
+            require(current[start:end] == bytes.fromhex(edit["candidate_hex"]),
+                    "encoder inverse slice differs from sealed source")
+            previous_end = end
+        restored = current
+        for edit in reversed(edits):
+            restored = (restored[:edit["candidate_start"]] + bytes.fromhex(edit["previous_hex"]) +
+                        restored[edit["candidate_end"]:])
+        baseline = subprocess.check_output(["git", "show", previous_freeze+":"+previous_path], cwd=root)
+        require(restored == baseline and sha(restored) == previous_sha,
+                "encoder inverse does not recover the complete previous source")
+        proofs[row["path"]] = {"sha256":sha(current), "bytes":len(current),
+            "previous_freeze":previous_freeze, "previous_sha256":previous_sha,
+            "whole_source_inverse":True, "inverse_edits":len(edits)}
+    return {"profile_path":str(path), "sha256":sha(raw), "bytes":len(raw), "sources":proofs,
+            "unchanged_behavior_outside_declared_source_edits":True,
+            "new_actuation_requires_independent_replay":True}
+
+
+def verify_initial_encoder_new_build(bridge, raw, freeze, bound, root, read, module):
+    require(initial_encoder_profile(bound["document"]) == INITIAL_ENCODER_ACTUATION_PROFILE and
+            bridge.get("schema") == SCHEMA_BUILD_BRIDGE and bridge.get("safety_contract") == CONTRACT and
+            bridge.get("scope") == INITIAL_ENCODER_BUILD_SCOPE and bridge.get("passed") is True and
+            bridge.get("actuation_profile") == INITIAL_ENCODER_ACTUATION_PROFILE and "freeze" not in bridge,
+            "new driver build lacks the mandatory explicit encoder profile")
+    source_proof = verify_initial_encoder_source_profile(freeze, root, read)
+    require(bridge.get("source_derivation") == {"path":source_proof["profile_path"],
+                "sha256":source_proof["sha256"], "bytes":source_proof["bytes"]},
+            "new build bridge source derivation reference differs")
+    extra = bound["document"].get("initial_encoder_compiled_source")
+    require(type(extra) is dict and extra.get("path") == INITIAL_ENCODER_HEADER,
+            "new driver requires its separate seventh compiled helper source")
+    helper = frozen_artifact(extra, freeze, root, read)
+    require(sha(helper) == source_proof["sources"][INITIAL_ENCODER_HEADER]["sha256"],
+            "new driver helper is not the sealed candidate source")
+    build_raw = frozen_artifact(bridge["actual_wait"], freeze, root, read)
+    build = module.parse(build_raw)
+    require(build.get("schema") == "mr3-reach-outer-actual-wait-v1" and build.get("scope") == "cpu" and
+            build.get("actual_waited") is True and type(build.get("actual_returncode")) is int and
+            build["actual_returncode"] == 0 and build.get("passed") is True and build.get("errors") == [] and
+            build.get("source_unchanged") is True and build.get("source_before") == build.get("source_after") and
+            type(build.get("source_before")) is list and build["source_before"],
+            "new driver build has no actual successful unchanged-source CPU wait")
+    start, end = build["started_monotonic_ns"], build["ended_monotonic_ns"]
+    require(type(start) is int and type(end) is int and 0 < start < end and
+            Decimal(build["actual_child_wait_seconds"]) == Decimal(end-start)/10**9,
+            "new driver build actual clock arithmetic differs")
+    for name in ("coordinator_identity", "child_identity"):
+        identity = build[name]
+        require(all(type(identity.get(k)) is int and identity[k] > 0 for k in ("pid", "start_ticks")),
+                "new driver actual build lacks typed saved PID/start")
+    script = Path(root)/INITIAL_ENCODER_BUILD_SCRIPT
+    frozen_artifact({"path":str(script),"sha256":INITIAL_ENCODER_BUILD_SCRIPT_SHA256},freeze,root,read)
+    require(build["child_identity"].get("parent") == build["coordinator_identity"]["pid"] and
+            Path(build["cwd"]) == Path(root)/WIRELESS and
+            build["actual_argv"] == ["/bin/bash","--noprofile","--norc",str(script)],
+            "new driver receipt is not the declared actual multi_robot build")
+    require(bridge.get("commands") == [{"argv":build["actual_argv"], "returncode":0, "observed_returncode":0}],
+            "new build command facts differ from the actual wait")
+    console = frozen_artifact(build["console"], freeze, root, read)
+    require(sha(console) == build["console"]["sha256"], "new build console differs")
+    inputs = {}
+    for source in build["source_before"]:
+        require(source["path"] not in inputs, "duplicate new-build source")
+        content = read(Path(source["path"]))
+        require(sha(content) == source["sha256"] and len(content) == source["bytes"],
+                "new-build current source differs from actual before/after")
+        path = Path(source["path"])
+        if path.is_relative_to(root):
+            require(subprocess.check_output(["git", "show",freeze+":"+str(path.relative_to(root))],cwd=root) == content,
+                    "new-build source differs from the new exact freeze")
+        inputs[source["path"]] = source
+    manifest_raw = frozen_artifact(bridge["manifest"], freeze, root, read)
+    manifest = module.parse(manifest_raw)
+    require(manifest.get("schema") == INITIAL_ENCODER_MANIFEST_SCHEMA and manifest.get("passed") is True and
+            manifest.get("source_unchanged") is True and manifest.get("actual_wait") == bridge["actual_wait"],
+            "new-build manifest does not bind its actual successful wait")
+    driver = bound["binaries"]["driver"]
+    actual = module.file_proof(driver["path"])
+    require(all(actual[k] == driver[k] for k in ("resolved_path", "sha256", "bytes")) and
+            ("stat" not in driver or actual["stat"] == driver["stat"]), "new actual driver ELF identity differs")
+    library = manifest["library"]
+    require(library["path"] == driver["path"] and library["real_path"] == driver["resolved_path"] and
+            library["sha256"] == driver["sha256"] and library["bytes"] == driver["bytes"],
+            "new-build manifest library differs from this actual driver binding")
+    elf = read(driver["path"])
+    require(extra["sha256"].encode() in elf, "actual new ELF lacks the seventh helper SHA")
+    sources = {row["path"]:row for row in manifest["sources"]}
+    require(len(sources) == len(manifest["sources"]), "duplicate manifest compiled source")
+    fields = bound["document"]["compiled_sources"]["driver"]
+    require(set(manifest.get("compiled_sources", {}).get("driver", {})) == set(fields),
+            "new manifest compiled source fields differ from the six-source binding")
+    for key,spec in fields.items():
+        recorded = manifest["compiled_sources"]["driver"][key]
+        path = Path(spec["path"]); path = path if path.is_absolute() else Path(root)/path
+        require(recorded["path"] == str(path) and recorded["sha256"] == spec["sha256"],
+                "new manifest compiled source mapping differs from the binding")
+    for spec in [*fields.values(), extra]:
+        path = Path(spec["path"]); path = path if path.is_absolute() else Path(root)/path
+        expected = {"path":str(path), "sha256":spec["sha256"], "bytes":len(read(path))}
+        require(all(name in inputs and name in sources and
+                    all(inputs[name][k] == sources[name][k] == value for k,value in expected.items())
+                    for name in [str(path)]), "compiled source is missing from real build and ELF manifest")
+    cmake = str(Path(root)/"ros2_ws/ros2-multi-robot-automap/src/multi_robot/CMakeLists.txt")
+    require(cmake in inputs and sha(read(cmake)) == inputs[cmake]["sha256"], "CMake lacks actual new-build source proof")
+    archive = manifest["archived_library_gzip"]
+    packed = frozen_artifact(archive, freeze, root, read)
+    with gzip.GzipFile(fileobj=io.BytesIO(packed)) as stream:
+        unpacked = stream.read(driver["bytes"]+1)
+    require(len(unpacked) == archive["raw_bytes"] == driver["bytes"] and
+            sha(unpacked) == archive["raw_sha256"] == driver["sha256"] and unpacked == elf,
+            "new driver archive does not restore the exact current ELF")
+    archived_flags = frozen_artifact(bridge["compiler_flags_archive"], freeze, root, read)
+    require(bridge["compiler_flags_archive"] == manifest["compiler_flags_archive"],
+            "new flags archive differs from its actual build manifest")
+    flags = manifest["compiler_flags"]; flags_path = Path(root)/DRIVER_FLAGS
+    require(flags["path"] == str(flags_path) and flags["real_path"] == str(flags_path.resolve(strict=True)) and
+            flags["sha256"] == sha(archived_flags) and flags["bytes"] == len(archived_flags) and
+            read(flags_path) == archived_flags, "new driver actual and archived compiler flags differ")
+    assignments = {}
+    for label in ("CXX_DEFINES", "CXX_FLAGS"):
+        lines = [line.split(" = ",1)[1] for line in archived_flags.decode().splitlines() if line.startswith(label+" = ")]
+        require(len(lines) == 1, "new compiler flags assignment missing or duplicated")
+        assignments[label] = shlex.split(lines[0])
+    tokens = assignments["CXX_DEFINES"]+assignments["CXX_FLAGS"]
+    expected_macros = {macro:fields[field]["sha256"] for macro,field in DRIVER_DEFINITIONS.items()}
+    expected_macros["MR3_DRIVE_ENCODER_SERVO_SHA256"] = extra["sha256"]
+    for macro,digest in expected_macros.items():
+        definitions = [token for token in tokens if token.split("=",1)[0] == "-D"+macro]
+        require(definitions == ['-D'+macro+'="'+digest+'"'] and "-U"+macro not in tokens,
+                "new actual compiler flags lack exactly one current source SHA: "+macro)
+    options = assignments["CXX_FLAGS"]
+    require(options.count("-fno-fast-math") == 1 and options.count("-ffp-contract=off") == 1 and
+            not any(token in ("-ffast-math", "-Ofast") or
+                    (token.startswith("-ffp-contract=") and token != "-ffp-contract=off") for token in tokens),
+            "new driver numeric compile options differ")
+    return {"schema":SCHEMA_BUILD_BRIDGE, "passed":True, "bridge_sha256":sha(raw),
+        "scope":INITIAL_ENCODER_BUILD_SCOPE, "actuation_profile":INITIAL_ENCODER_ACTUATION_PROFILE,
+        "driver_sha256":driver["sha256"], "initial_encoder_compiled_source":extra,
+        "actual_wait_seconds":build["actual_child_wait_seconds"], "source_derivation":source_proof,
+        "compiled_source_fields":sorted([*fields, "compiled_encoder_servo_sha256"]),
+        "new_build_executed":True, "native_admission":False}
+
+
 def verify_build_bridge(bridge_path, freeze, bound, *, root=WORKSPACE, read=None):
     """Revalidate preserved V15 execution against the current actual driver ELF.
 
@@ -197,6 +415,14 @@ def verify_build_bridge(bridge_path, freeze, bound, *, root=WORKSPACE, read=None
     path = Path(bridge_path)
     raw = read(path)
     bridge = module.parse(raw)
+    if bridge.get("scope") == INITIAL_ENCODER_BUILD_SCOPE:
+        frozen_artifact({"path":str(path),"sha256":sha(raw)},freeze,root,read)
+        result = verify_initial_encoder_new_build(bridge, raw, freeze, bound, root, read, module)
+        if own_reader:
+            read.finish()
+        return result
+    require(initial_encoder_profile(bound["document"]) is None,
+            "new initial encoder driver cannot borrow the historical no-new-build bridge")
     require(bridge.get("schema") == SCHEMA_BUILD_BRIDGE and bridge.get("safety_contract") == CONTRACT
             and bridge.get("passed") is True and "freeze" not in bridge
             and bridge.get("scope") == "existing-v15-build-revalidated; no-new-build",
@@ -310,6 +536,33 @@ def verify_build_bridge(bridge_path, freeze, bound, *, root=WORKSPACE, read=None
             "new_build_executed":False,"native_admission":False}
 
 
+def initial_encoder_configuration(path, *, epoch, robot, helper_sha256, parse=json.loads):
+    """Bind the real early producer prefix; later growing rows are not read here."""
+    prefix = bytearray()
+    with Path(path).open("rb") as stream:
+        for _ in range(64):
+            raw = stream.readline(65537)
+            require(len(raw) <= 65536, "initial encoder producer prefix line exceeds its bound")
+            if not raw.endswith(b"\n"):
+                raise FileNotFoundError("initial encoder producer configuration is not yet complete")
+            prefix.extend(raw)
+            row = parse(raw)
+            if row.get("kind") != "initial_encoder_configuration":
+                continue
+            require(row.get("epoch") == epoch and row.get("robot") == robot and
+                    row.get("actuation_profile") == INITIAL_ENCODER_ACTUATION_PROFILE and
+                    row.get("compiled_encoder_servo_sha256") == helper_sha256 and
+                    row.get("position_gain_per_second") == 1.0 and row.get("feedback_rim_limit_mps") == .005 and
+                    row.get("capture_rim_limit_mps") == .01 and row.get("capture_consecutive_samples") == 3 and
+                    row.get("update_period_ns") == 34000000 and row.get("reference_capture_count_limit") == 1 and
+                    row.get("received_nonzero_latch") == "first successfully validated stored target; not consumption" and
+                    row.get("reference_lifetime") == "one fresh plugin object/epoch; Reset does not rearm",
+                    "actual encoder producer profile/helper/parameters differ")
+            return {"path":str(path), "prefix_sha256":sha(prefix), "prefix_bytes":len(prefix),
+                    "initial_encoder_configuration_sha256":sha(raw), "configuration":row}
+    raise ValueError("initial encoder producer configuration missing from bounded startup prefix")
+
+
 def load_implementation(root=WORKSPACE):
     """Each invocation owns a fresh module; legacy module globals are untouched."""
     root = Path(root).resolve()
@@ -335,21 +588,30 @@ def load_implementation(root=WORKSPACE):
         bound = original_load(path, freeze, root=root, read=read)
         bound["reach_source_proof"] = binding_sources(bound, root)
         module._reach_geometry_rule = geometry_rule(bound["document"])
+        profile = initial_encoder_profile(bound["document"])
+        module._reach_actuation_profile = profile
         bridges = []
         for spec in bound["document"]["build_receipts"]:
             receipt_path = Path(spec["path"])
             receipt_path = receipt_path if receipt_path.is_absolute() else Path(root)/receipt_path
             if module.parse(bound["reader"](receipt_path)).get("schema") == SCHEMA_BUILD_BRIDGE:
                 bridges.append(verify_build_bridge(receipt_path,freeze,bound,root=root,read=bound["reader"]))
-        require(len(bridges) == 1, "exactly one strict current-driver historical build bridge is required")
+        require(len(bridges) == 1, "exactly one strict current-driver build bridge is required")
+        if profile is not None:
+            require(bridges[0].get("new_build_executed") is True and
+                    bridges[0].get("actuation_profile") == profile,
+                    "new encoder profile did not pass its actual new-build bridge")
         bound["reach_build_bridge_proof"] = bridges[0]
         module._reach_verified_binding = {"reach_source_proof":bound["reach_source_proof"],
-                                         "reach_build_bridge_proof":bridges[0]}
+                                         "reach_build_bridge_proof":bridges[0],
+                                         **({"actuation_profile":profile} if profile is not None else {})}
         return bound
 
     def configurations(directory, binding):
         rule = geometry_rule(binding["document"])
-        meta = profile_metadata(directory, binding["freeze"], binding["reader"], reach_geometry_rule=rule)
+        profile = initial_encoder_profile(binding["document"])
+        meta = profile_metadata(directory, binding["freeze"], binding["reader"], reach_geometry_rule=rule,
+                                actuation_profile=profile)
         result = original_configs(directory, binding)
         if rule != DEFAULT_GEOMETRY_RULE:
             entry = module.first_line(Path(directory)/"motion_safety.jsonl")
@@ -371,6 +633,16 @@ def load_implementation(root=WORKSPACE):
                         and cfg.get("odometry_producer_frame") == "world-common-model-origin-v1"
                         and cfg.get("native_feed_qos") == {"depth":256,"reliability":"reliable","durability":"volatile"},
                         "actual loaded driver lacks the new typed feed contract")
+        if profile is not None:
+            extra = binding["document"]["initial_encoder_compiled_source"]
+            for robot in ROBOTS:
+                main = next(row["configuration"] for row in result
+                            if Path(row["path"]).name == "drive_"+robot+".jsonl")
+                require(main.get("actuation_algorithm") ==
+                        "initial_zero_encoder_hold_then_paired_common_fraction_v1",
+                        "actual driver did not select the compound encoder law")
+                result.append(initial_encoder_configuration(Path(directory)/("drive_"+robot+".jsonl"),
+                    epoch=meta["epoch"], robot=robot, helper_sha256=extra["sha256"], parse=module.parse))
         for robot in ROBOTS:
             entry = module.first_line(Path(directory)/("odometry_"+robot+".jsonl"))
             cfg = entry["configuration"]
@@ -387,12 +659,14 @@ def load_implementation(root=WORKSPACE):
 
     def capture_episode(directory, binding, *, proc_root=Path("/proc")):
         profile_metadata(directory,binding["freeze"],module.Reader(),
-                         reach_geometry_rule=geometry_rule(binding["document"]))
+                         reach_geometry_rule=geometry_rule(binding["document"]),
+                         actuation_profile=initial_encoder_profile(binding["document"]))
         return original_capture(directory,binding,proc_root=proc_root)
 
     def strict_closed_episode(directory, freeze, read):
         profile_metadata(directory,freeze,read,
-                         reach_geometry_rule=getattr(module,"_reach_geometry_rule",None))
+                         reach_geometry_rule=getattr(module,"_reach_geometry_rule",None),
+                         actuation_profile=getattr(module,"_reach_actuation_profile",None))
         return original_closed(directory,freeze,read)
 
     def exclusive(path, value):

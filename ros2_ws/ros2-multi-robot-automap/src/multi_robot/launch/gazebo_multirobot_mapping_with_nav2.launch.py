@@ -32,6 +32,7 @@ from launch.substitutions import LaunchConfiguration
 
 from launch_ros.actions import Node
 from nav2_common.launch import RewrittenYaml
+from multi_robot_exploration.mr3_safety_intent import actuation_profile_for_safety_contract
 from multi_robot_exploration.mr3_reach_runtime import (
     BINARY_CONE_V1, validate_reach_geometry_rule,
 )
@@ -285,10 +286,18 @@ def drive_spawn_model(model_path, robot_name, audit_path, epoch, tagged_commands
         raise ValueError("unknown drive-model safety contract")
     if safety_contract == "mr3-reach-v1" and not tagged_commands:
         raise ValueError("reach LiDAR requires the tagged adapter model")
+    if safety_contract == "mr3-reach-v1" and not audit_path:
+        raise ValueError("initial encoder profile requires its owned audit output")
     with open(model_path, encoding="utf-8") as stream:
         model = stream.read()
     if safety_contract == "mr3-reach-v1":
         model = reach_lidar_model(model)
+        profile = actuation_profile_for_safety_contract(safety_contract)
+        marker = "<mr3_tagged_commands/>"
+        if model.count(marker) != 1 or "<mr3_actuation_profile" in model:
+            raise ValueError("initial encoder profile requires one original drive tag")
+        model = model.replace(marker,
+            "<mr3_actuation_profile>" + profile + "</mr3_actuation_profile>\n      " + marker, 1)
     tags = {
         "mr3_audit_path": (os.path.join(os.path.dirname(audit_path), f"drive_{robot_name}.jsonl")
                            if audit_path else ""),
