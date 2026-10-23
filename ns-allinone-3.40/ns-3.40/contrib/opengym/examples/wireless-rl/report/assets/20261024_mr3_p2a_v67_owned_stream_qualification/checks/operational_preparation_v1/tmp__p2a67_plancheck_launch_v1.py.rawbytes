@@ -1,0 +1,21 @@
+"""Operational wrapper: hash the complete sealed A67 plan scope around check."""
+from pathlib import Path
+import json
+import os
+import subprocess
+
+ROOT=Path('/home/zhuyulab/ns3-workspace')
+W=ROOT/'ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl'
+A=W/'report/assets/20261024_mr3_p2a_v67_owned_stream_qualification'
+PLAN=A/'plan_v1.json'
+assert Path.cwd()==W
+plan=json.loads(PLAN.read_text())
+sources={ROOT/path for path in plan['source_bindings']}
+sources.update(Path(path) if Path(path).is_absolute() else ROOT/path for path in plan['library_bindings'])
+sources.update((PLAN,Path(__file__)))
+argv=['/usr/bin/python3','-B','-m','mr3_learning.reach_execution','--scope','cpu','--output',str(A/'checks/plan_check_cpu_v1')]
+for path in sorted(sources):argv+=['--source',str(path)]
+argv+=['--','/usr/bin/python3','-B','-m','report.assets.20261024_mr3_p2a_v67_owned_stream_qualification.plan_check_v1','--output',str(A/'checks/plan_check_v1.json')]
+env=dict(os.environ,PYTHONNOUSERSITE='1',PYTHONDONTWRITEBYTECODE='1',CUDA_VISIBLE_DEVICES='')
+env.pop('PYTHONPATH',None);env.pop('PYTHONHOME',None)
+raise SystemExit(subprocess.call(argv,cwd=W,env=env))

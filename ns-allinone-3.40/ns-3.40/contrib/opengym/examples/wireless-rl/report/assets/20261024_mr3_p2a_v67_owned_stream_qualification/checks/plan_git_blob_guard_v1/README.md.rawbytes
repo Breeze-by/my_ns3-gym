@@ -1,0 +1,50 @@
+# Plan 绑定原件的 Git blob 提交前检查
+
+仅 operational/read-only 检查器，位于 `/tmp`，不安装生产代码，不改变现有 source gate，不运行 World、native、科学 reader 或测试。它不修改 canonical 或 Git INDEX，不 stage、不 commit、不 push。
+
+入口 `check_plan_git_blobs_v1.py --plan <canonical-plan> --revision INDEX|<当前HEAD的40位SHA> [--output <新JSON>]`。普通 Python3/Git 即可；没有新增依赖或测试框架。`--output` 必须不存在，保留每次原件。只有全部通过时 rc0，任何路径缺失/内容不同则 rc1；结构或并发异常也失败。
+
+逐项范围：`plan.source_bindings` 全部路径及原 expected SHA256，加 PLAN 当前整字节SHA，加该 activity 目录顶层全部 `*.py` 当前整SHA；同一路径合并角色，任何 conflicting expected SHA 拒绝。已在 bindings 中的 configs、JSON、CPU/build日志等照样检查，不能因为它是 `.log` 或 ignored 就排除。`library_bindings` 的10个安装ELF不纳入Git检查，仍由原formal current/library gate实核；如果某非regular/外部对象被错误塞进 source_bindings，检查器会拒绝，不能借它排除 source。
+
+先检查 canonical repository 内的普通文件（自身及父路径不允许 symlink），核 current raw SHA256；然后 INDEX 用 `git ls-files --stage -z`（必须唯一stage0/regular mode），exact HEAD 用 `git ls-tree -r -z --full-tree`（必须regular blob）。对实际 Git object 用一个 `git cat-file --batch` 进程完整流式核 SHA256，不以 tracked 标记或 Git SHA1代替 raw SHA256。末尾重核所有 current raw bytes、所选Git entries及HEAD，防止检查期间漂移。exact revision必须等于当时真正的HEAD，不接受分支名、`HEAD`别名或任意旧commit。
+
+## 已实际复现的 V66 负例
+
+V66 plan591116B/SHA `064f2a2ed9b256decdc4a0394494faa5340f49e16430be1bffc751f0c0ded4b0`：1111 binding加PLAN，共1112个唯一路径；顶层activity Python已在bindings中。两次真实检查都rc1：
+
+| 检查 | 完成的tool wall秒 | current有效 | 实际regular Git blobs一致 | 唯一失败 |
+|---|---:|---:|---:|---|
+| INDEX | 3.666035194 | 1112/1112 | 1110/1112 | 两份路径缺失 |
+| exact HEAD `8a7e1b42d387027062383f49c819655ef9bf8fe5` | 3.629804898 | 1112/1112 | 1110/1112 | 同两份路径缺失 |
+
+缺失的 exact repo-relative 原路径：
+
+```
+ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v66_owned_stream_qualification/checks/admission_cpu_v1/console.log
+ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v66_owned_stream_qualification/checks/native_build_v1/build_actual_wait/console.log
+```
+
+完整逐路径结果分别为 `v66_actual_index_negative_v1.json`、`v66_actual_head_negative_v1.json`。没有 current SHA错误、Git blob内容差异、非regular或merge冲突；不能声称 checker已在修正后的INDEX/HEAD通过。V66 before-preflight FAIL/无World和全费保持，未来把日志入Git也不改判V66。
+
+## Root 下一次实际操作顺序
+
+1. 在旧活动真实关闭后完成新活动所有原件和plan。照常加入新普通文件，并对 checker 明确指出的 ignored proof **使用逐名的 `git add -f -- <exact-file>`**。保留原日志字节/路径和原source pins；不能 normalize日志、复制为另一文件替代原pin、删binding或只换后缀。不要用无范围 `git add -f .` 掺入无关raw。
+2. 检查新 plan 的 INDEX，再 commit。未通过就查看输出JSON的 `errors` 和每路径 current/Git raw SHA，不能忽略返回码：
+
+```bash
+rtk proxy python3 -B /tmp/mr3_p2a_plan_git_blob_check_v1/check_plan_git_blobs_v1.py \
+  --plan /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v67_owned_stream_qualification/plan_v1.json \
+  --revision INDEX --output /tmp/p2a_v67_index_blob_check_v1.json
+```
+
+3. commit/push必须真实完成。将真实当前 `git rev-parse HEAD` 的40位值逐字传入 `--revision`（不要传占位文字）：
+
+```bash
+rtk proxy python3 -B /tmp/mr3_p2a_plan_git_blob_check_v1/check_plan_git_blobs_v1.py \
+  --plan /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v67_owned_stream_qualification/plan_v1.json \
+  --revision <ACTUAL_CURRENT_40HEX_HEAD> --output /tmp/p2a_v67_head_blob_check_v1.json
+```
+
+4. Root仍须原exact freeze==HEAD==origin/main、clean/source/ELF gate、actualwait与各科学/资源准入。此检查器不联网络核push，不证明ELF loaded、完整实际关闭或科学资格，不放宽任何门。新scope尚无正式执行信用。
+
+以上只是命令模板；本次仅执行两次 V66 只读负例，没有运行V67检查、stage或修改任何Git对象。

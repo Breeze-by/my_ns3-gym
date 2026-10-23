@@ -1,0 +1,43 @@
+{
+  "schema": "mr3-plan-git-blob-check-operational-manifest-v1",
+  "files": [
+    {
+      "path": "/tmp/mr3_p2a_plan_git_blob_check_v1/check_plan_git_blobs_v1.py",
+      "bytes": 9008,
+      "sha256": "2369963aa403d6d065ad552ae90114fd360c900cae9b54ccc5b40827c7b8a212"
+    },
+    {
+      "path": "/tmp/mr3_p2a_plan_git_blob_check_v1/README.md",
+      "bytes": 4882,
+      "sha256": "02b12ea84a0bec0f4b5d99d986c121b21b0cf0a8dd8c54b4c27e58442d2eaeac"
+    },
+    {
+      "path": "/tmp/mr3_p2a_plan_git_blob_check_v1/v66_actual_index_negative_v1.json",
+      "bytes": 743528,
+      "sha256": "ca426089fc36e90165c80d923637369643ad65fa79b9651585433374d4f16a16"
+    },
+    {
+      "path": "/tmp/mr3_p2a_plan_git_blob_check_v1/v66_actual_head_negative_v1.json",
+      "bytes": 743633,
+      "sha256": "9a75575b99af4f08a11c9b38fb4922b39a9a69137b20cd16944a070801d07920"
+    }
+  ],
+  "scope": "source/actual read-only negative checks; not canonical CPU/scientific admission",
+  "actual_negative_checks": [
+    {
+      "revision": "INDEX",
+      "actual_exit_code": 1,
+      "tool_wall_seconds": "3.666035194"
+    },
+    {
+      "revision": "8a7e1b42d387027062383f49c819655ef9bf8fe5",
+      "actual_exit_code": 1,
+      "tool_wall_seconds": "3.629804898"
+    }
+  ],
+  "canonical_mutations": 0,
+  "index_mutations": 0,
+  "formal_source_gate_changes": 0,
+  "world_or_native_or_scientific_reader_runs": 0,
+  "positive_pass_claimed": false
+}
