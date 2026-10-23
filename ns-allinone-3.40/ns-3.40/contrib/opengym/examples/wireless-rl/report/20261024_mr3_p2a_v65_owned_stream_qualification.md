@@ -1,4 +1,12 @@
-# MR3 P2A V65：取消权限链路与完整资格准备
+# MR3 P2A V65：资格矩阵入口的实际preflight失败闭合
+
+2026-10-24 V65实际闭合FAIL：freeze6acdb141c、tool25222真实reap1，preflight原wrapper/child均rc1，报new-build current source differs from actual before/after；未提交matrix、World或PPO，12EP/30角色均未派发。1096原绑定before/after相等；关闭仅核1086非库current/Git与10选定ELF，不重读旧342库；3保存主PID/start freshgone，nonowned不声称absence。完整bootstrap至post-source连续parent57.081760798秒已收，累计109131.3266391666018/C180000、余70868.6733608333982；180000为代理依持续委托选定，非数值用户批准，nested/root墙时不叠加，pilot/final原额保持。原准备PASS与全部旧FAIL保持；capacity=False，禁auto pilot/final，P2A未完成。
+
+本次仅元数据关闭和指定三个小目录的无损原字节归档：13 regular / 6258004 B → 781963 B；0链接，原件未删除。失败发生于真实新build/current-source桥，Cpp未执行；具体漂移输入由后继独立静态诊断定位，不在此猜测。下一步修正真实build输入与后继Python来源的严格接线、保留旧回执与原FAIL，再另定新scope/freeze；不换pin跳过来源门、不重试旧活动。
+
+[规范末账](assets/20261024_mr3_p2a_v65_owned_stream_qualification/closure_ledger_v1.json) · [原件库存](assets/20261024_mr3_p2a_v65_owned_stream_qualification/closed_inventory_v1.json)
+
+## 原准备记录（历史快照）
 
 ## 实际准备闭合 PASS，原生尚待新冻结执行
 

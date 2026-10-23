@@ -9047,3 +9047,7 @@ Canonical CPU工具1554真实reap0、scope制作工具29523真实reap0，均scop
 2026-10-24 V65实际准备PASS待原生冻结：final source-spec3的ROS212/Conda476/admission33全PASS，readiness、真实prepare/plancheck均rc0与source稳定/保存身份gone；旧27FAIL/2collectionError/19FAIL全保。12EP(1+2+8+1)/30roles(9+6+9+6)、1085源10ELF已封plan8bae3c2b/bindinged50d371；source closure补真实11源helper，原B/R/STOP/95%及原CPP实际build不改。scope.admittedTrue仅软件准备，capacity/autoPolicyFalse；唯一bootstrap仅矩阵→qualify→关闭，无新World/学习/P2A。完整47220预约由代理前瞻选C180000承接U109074.2448783686018，非数值用户批准，pilot/final原额不动。待新commit/push/reap+显式clean后正式一次执行。
 
 见[报告](report/20261024_mr3_p2a_v65_owned_stream_qualification.md)。
+
+## 2026-10-24 V65 preflight实际FAIL闭合
+
+2026-10-24 V65实际闭合FAIL：freeze6acdb141c、tool25222真实reap1，preflight原wrapper/child均rc1，报new-build current source differs from actual before/after；未提交matrix、World或PPO，12EP/30角色均未派发。1096原绑定before/after相等；关闭仅核1086非库current/Git与10选定ELF，不重读旧342库；3保存主PID/start freshgone，nonowned不声称absence。完整bootstrap至post-source连续parent57.081760798秒已收，累计109131.3266391666018/C180000、余70868.6733608333982；180000为代理依持续委托选定，非数值用户批准，nested/root墙时不叠加，pilot/final原额保持。原准备PASS与全部旧FAIL保持；capacity=False，禁auto pilot/final，P2A未完成。
