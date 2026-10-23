@@ -1,4 +1,27 @@
-# MR3 P2A V62：单环境八步实际进程性能分解
+# MR3 P2A V62：单环境进程性能诊断的实际闭合
+
+## 实际闭合：FAIL，未取得八步性能或容量资格
+
+唯一正式活动冻结为 `81e63f50699073286c9773dcb92106de63fdf4ca`，root工具80831真实reap rc1。launcher真实rc1；原motion controlled execution phase wall guard在startup阶段触发（闭合观察39.92sim-s），benchmark有效task transition为0，未得到八步任务成本。worker由ownedclose SIGTERM(-15)结束，supervisor原forced_shutdown=True、failed_sample=True；remaining_owned_processes与remaining_owned_zombies均空。数组空不等于正常退出，原FAIL保持，不扩大原10秒guard，也不重开此活动。
+
+原profile reviewer真实rc1，只在launcher正常完成的header gate拒绝，pstats_bytes_read=0；没有解码任何pstats。motion main文件已写且其进程profile_complete=True，但仅覆盖失败startup；adapter main文件存在、encoder未观测使该角色partial；worker无finished，五profile不完整。现存两个main文件共894940B：
+
+- `/tmp/mr3_p2a_v62_open101_8step_profile_v1/native/worker0/episode001_open_101/profiles/adapter/main.pstats`：492030B，SHA256 `5f8451996b4aefdef30fb414a4d2f1e3ec11e4a3f9a494bd3da098306d89e81e`；[opaque原字节封装](assets/20261024_mr3_p2a_v62_process_profile/closed_execution/tmp/mr3_p2a_v62_open101_8step_profile_v1/native/worker0/episode001_open_101/profiles/adapter/main.pstats.rawbytes.gz)。
+- `/tmp/mr3_p2a_v62_open101_8step_profile_v1/native/worker0/episode001_open_101/profiles/motion_safety/main.pstats`：402910B，SHA256 `69f76cf0131e2bec91fa4cb969286a4c671eed091ea3e3077dc4d0178f451d93`；[opaque原字节封装](assets/20261024_mr3_p2a_v62_process_profile/closed_execution/tmp/mr3_p2a_v62_open101_8step_profile_v1/native/worker0/episode001_open_101/profiles/motion_safety/main.pstats.rawbytes.gz)。
+
+这些封装是gzip保存的原文件字节，主库存另存真实原路径/bytes/SHA/stat；下一V63消费固定原pstats，不能拿canonical wrapper冒充原件。此处不解pstats、不选热点，也不将profiling开销或本次guard错误解释为已证根因。根因仍UNKNOWN，未取得原生资格、取消修复、连续安全、学习或strict95信用。
+
+1051源码的before/after/current-Git一致，另12个ELF的before/after字节一致，共1063项；关闭仅核metadata/实际wait/完整parent账与保存身份。49个同对象PID/start freshgone，包括driver/launcher/reviewer三main及46个保存runtime对象；bootstrap真实预exec保存self与6个nonowned祖先、0祖先观察错误，后者不查gone、不作全树退出声明。
+
+完整parent180.893159791s含入场核验、真实launcher/reader等待与source-after；nested和root工具墙时不重复计。承接V61的108886.5066566616018/C150000，累计109067.3998164526018，余额40932.6001835473982；pilot/final本次0、原额保持。150000是代理在持续委托下选择，非数值用户批准。
+
+metadata工具86352真实reap0、21.133850693s，archive工具68997真实reap0、21.266745912s；四个保存CPU身份另freshgone，工程新增0。不可变主库存148regular、213343452B→15944926B、0link/无oversized，全字节恢复SHA通过，不删原件、不重封旧500MB/342库/已提交CPU准备。后继CPU/tool回执置于after-copy supplemental，不回填主库存。
+
+下一V63仅对两个已闭合main.pstats（894940B）做一次有限description，parent120/work60，先看真实热点；不重跑V62 native、不扩大原10秒controlled-phase wall guard。authority core/wiring/独立auditor继续只在/tmp，尚未安装；之后才诊断修复、probe-v2、实测优化/容量、新同freeze12EP30与真实学习/三strict95。 capacity=False，P2A未完成，用户持续授权保持。
+
+[规范末账](assets/20261024_mr3_p2a_v62_process_profile/closure_ledger_v1.json) · [不可变主库存](assets/20261024_mr3_p2a_v62_process_profile/closed_inventory_v1.json) · [限定范围元数据](assets/20261024_mr3_p2a_v62_process_profile/checks/closed_cpu_v1/files/tmp/p2a62_closed_metadata_review_v1.json) · [关闭CPU后继原件](assets/20261024_mr3_p2a_v62_process_profile/checks/closed_cpu_v1/inventory_v1.json)。
+
+## 执行前准备记录（历史快照）
 
 V62 源码、canonical CPU 与 scope 已准备，尚未启动 World，待新的精确提交冻结及真实 push。先测量现有生产行为的成本，再安装取消授权修复；取消候选只在临时目录并行开发。当前 capacity=False、P2A 未完成，自动 pilot/final 入口保持关闭。
 

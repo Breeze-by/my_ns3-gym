@@ -4027,5 +4027,77 @@
     "capacity_qualified": false,
     "automatic_pilot_final_entry_allowed": false,
     "P2A_complete": false
+  },
+  "mr3_p2a_v62_process_profile_actual_closure_20261024": {
+    "execution_freeze": "81e63f50699073286c9773dcb92106de63fdf4ca",
+    "activity_passed": false,
+    "metadata_closure_passed": true,
+    "report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261024_mr3_p2a_v62_process_profile.md",
+    "ledger": {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v62_process_profile/closure_ledger_v1.json",
+      "bytes": 7618,
+      "sha256": "576b944fa34a4ad3d9d09a2af879de071f9f77fc5dc8ae5afc978d4038cfdf3c"
+    },
+    "inventory": {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v62_process_profile/closed_inventory_v1.json",
+      "bytes": 216484,
+      "sha256": "932696bd20ffa8beedfb7afbe1aca36a47c55d6075c2b75024a02d1249c7cdc4"
+    },
+    "closed_cpu_snapshot_inventory": {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v62_process_profile/checks/closed_cpu_v1/inventory_v1.json",
+      "bytes": 21997,
+      "sha256": "2e19d4c56edd1daeded54eb1e9c89555c4aef2dde61322151106a51a46a72bc2"
+    },
+    "engineering_added_parent_union_seconds": "180.893159791",
+    "engineering_cumulative_seconds": "109067.3998164526018",
+    "engineering_ceiling_seconds": "150000",
+    "engineering_remaining_seconds": "40932.6001835473982",
+    "native_task_transitions_returned": 0,
+    "worker_returncode": -15,
+    "forced_shutdown": true,
+    "saved_identities_fresh_gone": 49,
+    "nonowned_ancestors_absence_not_claimed": 6,
+    "available_main_pstats_count": 2,
+    "available_main_pstats_total_bytes": 894940,
+    "pstats_decoded_in_closure": false,
+    "root_cause_proved": false,
+    "capacity_qualified": false,
+    "automatic_pilot_final_entry_allowed": false,
+    "P2A_complete": false,
+    "next_action": "下一V63仅对两个已闭合main.pstats（894940B）做一次有限description，parent120/work60，先看真实热点；不重跑V62 native、不扩大原10秒controlled-phase wall guard。authority core/wiring/独立auditor继续只在/tmp，尚未安装；之后才诊断修复、probe-v2、实测优化/容量、新同freeze12EP30与真实学习/三strict95。"
+  },
+  "mr3_p2a_v63_profile_description_preparation_20261024": {
+    "report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261024_mr3_p2a_v63_profile_description.md",
+    "scope": {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v63_profile_description/scope_v1.json",
+      "bytes": 6436,
+      "sha256": "59f238e92988cfcba743985071fc6effea361bc30e053960a267e52b319049b8"
+    },
+    "spec": {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v63_profile_description/spec_v1.json",
+      "bytes": 3253,
+      "sha256": "75031f80295104895ec557ef8e8d3212a33565e213ecdb13cfea7a6ef8cde86e"
+    },
+    "canonical_cpu": {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v63_profile_description/checks/canonical_cpu_v1/proof_v1.json",
+      "bytes": 43266,
+      "sha256": "6a4d01e36c16cd671f8b943a1195b65d58481b3fcb99892afa48330bab8f0b19"
+    },
+    "preparation_history": {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v63_profile_description/checks/preparation_history_v1/final_manifest_v1.json",
+      "bytes": 4728,
+      "sha256": "631d5af80c846d8da48c5823b0a6fbc9f684aa22e2bc23d0710b8183f98252a9"
+    },
+    "new_execution_freeze_pending": true,
+    "original_profiles_read": false,
+    "root_cause": "UNKNOWN",
+    "activity_scope": "two fixed main profiles from V62 startup FAIL only",
+    "reservation_seconds": "120",
+    "engineering_entry_seconds": "109067.3998164526018",
+    "engineering_ceiling_seconds": "150000",
+    "original_pilot_final_totals_preserved": true,
+    "scientific_qualification": false,
+    "capacity_qualified": false,
+    "P2A_complete": false
   }
 }

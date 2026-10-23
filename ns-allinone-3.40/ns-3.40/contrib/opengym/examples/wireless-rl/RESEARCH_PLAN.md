@@ -1,10 +1,12 @@
 # MR3 研究路线：三机器人 RL 联合建图与冻结策略的 Wi-Fi 网络影响
 
+2026-10-24 V62实际闭合FAIL：freeze81e63f506、tool80831真实reap rc1，startup触发原motion controlled execution phase wall guard expired，0个task transition；worker被ownedclose SIGTERM(-15)，forced/failed_sample=True，原remaining process/zombie数组均空，不能称正常close。原profile reader只在launcher header gate失败、pstats读取0；仅motion main文件及adapter main partial可用、worker无finished，五profile未全，根因UNKNOWN。1051source+12ELF before/after/current-Git一致，49保存PID/start freshgone，6 pre-exec祖先nonowned不claimgone。完整parent实费180.893159791，累计109067.3998164526018/C150000、余40932.6001835473982；nested/root墙时不叠加，pilot/final原额保持。148 regular原件213343452B→15944926B无损归档、0link/无oversized；metadata21.133850693s/archive21.266745912s真实CPU关闭，4 CPU身份另gone/工程0。capacity=False、P2A未完成、禁auto pilot/final。下一V63仅对两个已闭合main.pstats（894940B）做一次有限description，parent120/work60，先看真实热点；不重跑V62 native、不扩大原10秒controlled-phase wall guard。authority core/wiring/独立auditor继续只在/tmp，尚未安装；之后才诊断修复、probe-v2、实测优化/容量、新同freeze12EP30与真实学习/三strict95。 用户持续自主授权保持，不重复一般审批。 见[V62](report/20261024_mr3_p2a_v62_process_profile.md)与[末账](report/assets/20261024_mr3_p2a_v62_process_profile/closure_ledger_v1.json)；下方日期旧状态保留历史范围。
+
 2026-10-24 V61实际闭合描述性PASS：执行freeze282e5fa61、旧证据E935b466bd，tool59189真实reap rc0；五原件单pass523777922B、parse0、3898选行/0drop/缺依赖0，不证明根因、物理修复或资格。25 runtime源/16旧E解释源及30含配置引用稳定，3已保存main PID/start freshgone；late ancestry observer未保存rtk/shell原start，外transport库存不完整，绝不claim全树gone。完整parent实费38.102415614，累计108886.5066566616018/C150000、余41113.4933433383982，nested/root工具墙时不叠加；pilot/final原额保持。44 regular原件73370260B无损封存8725840B、0link；metadata13.011257211s/archive17.368586778s真实CPU关闭，4 CPU身份另gone、工程新增0。capacity=False、P2A未完成、禁auto pilot/final。先执行独立 A62 八步性能 baseline，cancel authority 仅在 /tmp 并行设计，避免修复混淆 baseline 成本；随后取消修复与 probe-v2、实测等价优化、capacity gate、新同 freeze 完整 12 EP / 30 角色、真实学习及三场 strict95。 用户持续自主授权保持，不重复一般审批。 见[V61实际闭合](report/20261024_mr3_p2a_v61_cancel_forensics.md)与[规范末账](report/assets/20261024_mr3_p2a_v61_cancel_forensics/closure_ledger_v1.json)。下方日期准备与旧结果保留历史范围。
 
 2026-10-23 V60实际闭合FAIL：执行冻结`935b466bd076002afdfe161b55a508938de2a8b0`，tool30588真实reap rc1；原生11EP/296返回，30必要角色为19PASS/1FAIL/10SKIP，minimum/pilot/final未启动、0学习。reset worker1/episode002 open101的tb2存在真实B停车超限：native cancel42.86→rest45.891，3.031秒/约.25933m；两worker的episode004 corridors101中tb3均缺有意义的native cancel停止证据。覆盖缺口与真实超限分别保留，不能用改probe覆盖宣称取消链已修复。1029源/10ELF一致，548份已保存runtime owned身份freshgone；metadata tool25900真实rc0/8.790793906秒，其2身份另gone。archive tool77857真实rc0/542.506088964秒，5071 regular原件10,444,431,903B无损封存为877,999,890B，0link、无>64MiB单文件、无overlay。完整工程parent union实费14531.744949156秒，累计108848.4042410476018/C150000、余41151.5957589523982；nested不重复加，pilot/final本次0且原余额不变，150000为代理依持续委托前瞻选择、非逐数值用户批准。见[V60实际闭合](report/20261023_mr3_p2a_v60_reader_registration.md)与[规范末账](report/assets/20261023_mr3_p2a_v60_reader_registration/closure_ledger_v1.json)。
 
-当前capacity gate=False，禁止自动进入pilot/final。V61固定窗描述已闭合，原V60停止超限和两corridors缺取消覆盖未获修复信用。先执行独立 A62 八步性能 baseline，cancel authority 仅在 /tmp 并行设计，避免修复混淆 baseline 成本；随后取消修复与 probe-v2、实测等价优化、capacity gate、新同 freeze 完整 12 EP / 30 角色、真实学习及三场 strict95。 每次新活动须独立scope/资源/CPU/新冻结；A62八步baseline不提供停止覆盖、整回合容量或资格信用。R/5秒承诺/32step/12EP30/95%门和历史FAIL保持。
+当前capacity gate=False，禁止自动进入pilot/final。V62八步profile活动在startup失败、0 task返回，仅两main文件可供新V63有限描述；原V60停止超限/覆盖缺口保持。下一V63仅对两个已闭合main.pstats（894940B）做一次有限description，parent120/work60，先看真实热点；不重跑V62 native、不扩大原10秒controlled-phase wall guard。authority core/wiring/独立auditor继续只在/tmp，尚未安装；之后才诊断修复、probe-v2、实测优化/容量、新同freeze12EP30与真实学习/三strict95。
 
 2026-10-23 V60生产准备：sensor唯一显式profile tag全字节逆恢复与peer两新事件/同plan三drive compound/APPLIED精确join已接公共full/PPO/controlled/4matrix/3policy；不删行或伪zero，C++/物理/actor/20build输入不变。canonical targeted159、fresh ROS202/learner437、编排13实际PASS/source稳定，原fixture/兼容失败保留，尚无V60World/资格/PPO。承接V59真FAIL账94316.6592918916018/C150000、余55683.3407081083982，拟47220完整工程预约；pilot/final与R/12EP30/95%保持，150000非数值用户批准。source a03b9c530已真推送，新plan1029源/10ELF及12EP30/readiness实际通过；下一最终执行freeze与严格准入/完整链，不借旧6PASS。P2A未完成。 见[V60](<report/20261023_mr3_p2a_v60_reader_registration.md>)；下方为历史快照。
 
@@ -153,13 +155,13 @@ Wi-Fi 分组网络，测量信息延迟、丢失和陈旧对同一联合建图�
 
 | 项目 | 当前事实 | 新路线中的处理 |
 | --- | --- | --- |
-| ROS 2 / Gazebo / SLAM / Nav2 | 已实现，P1A冻结`5e47802`已验收；最新原生仍为V60旧E的FAIL；V61新G仅固定窗描述性PASS | 复用已验收接口，新增执行契约须新同freeze资格 |
+| ROS 2 / Gazebo / SLAM / Nav2 | 已实现，P1A冻结`5e47802`已验收；V60资格FAIL与V61描述性PASS保持；最新V62新G startup性能诊断FAIL/0 task返回 | 复用接口，修复或新执行契约须新同freeze资格 |
 | `merge_map` | 公共坐标系的保守栅格融合；不是未知相对位姿的地图配准算法 | 保留融合规则，改变通信输入来源 |
 | `control.py` | 默认baseline手工探索；adapter模式独占目标接口，无手工兜底 | 两模式互斥，P1B已于2026-10-15验收 |
 | `peer_obstacles.py` | baseline读raw；adapter读理想交付状态，完整机体包络不变 | P3A还需DDS/进程隔离与断链证明 |
 | Nav2 全局地图 | baseline读实时`/merge_map`；adapter读本机图+交付共享图副本 | P3A证明真实字节交付和无旁路 |
 | 覆盖评估器 | P1A合同schema4已验收，schema3兼容诊断 | 完整ROI、质量、全机体监测、三台参与与终态闭合门禁 |
-| 三机器人导航 RL / 训练环境 | P1C已验收；历史v5的48次更新保留原范围。V60原生11EP/296返回、19PASS/1FAIL/10SKIP及真实停止超限/覆盖缺口保持；V61描述完整但0新学习，capacity=False | 先独立A62八步性能baseline；authority仅/tmp并行设计，再修复/probe、实测优化/容量、新同freeze12EP30及真实学习；P2A未完成 |
+| 三机器人导航 RL / 训练环境 | P1C已验收，历史v5的48更新仅原范围；V60停止超限/覆盖缺口保持。V62 startup FAIL、forced-15、0 task返回/0新学习，只有两main partial性能文件，capacity=False | 先V63两原profile有限描述；authority仍/tmp，之后修复/probe、实测优化/容量、新12EP30及真实学习，P2A未完成 |
 | ROS 与 ns-3 双向 gateway / Wi-Fi 闭环 | **尚未实现** | MR3-P3A 至 MR3-P5 |
 | `sim.cc` 与已有 DQN | 五用户、15 维观测、5 动作的 toy 调度 MDP | 历史工具链，不能充当三机器人策略或网络接入证明 |
 
