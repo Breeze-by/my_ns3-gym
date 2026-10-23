@@ -20,6 +20,8 @@ PROFILE = "mr3-reach-reset-outward-cancel-v1"
 PROBE_VERSION = "mr3-p2a-reach-outward-cancel-v1"
 PROFILE_V2 = "mr3-reach-reset-outward-cancel-v2"
 PROBE_VERSION_V2 = "mr3-p2a-reach-outward-cancel-v2"
+PROFILE_V3 = "mr3-reach-reset-outward-cancel-v3"
+PROBE_VERSION_V3 = "mr3-p2a-reach-outward-cancel-v3"
 CONTRACT = "mr3-reach-v1"
 SCHEMA = "mr3-reach-reset-workload-audit-v1"
 ENTRY = WIRELESS / "mr3_learning/audit_reach_reset_workload.py"
@@ -54,16 +56,16 @@ def require(value, message):
 
 
 def profile_spec(workload_profile=PROFILE):
-    require(type(workload_profile) is str and workload_profile in (PROFILE,PROFILE_V2),
+    require(type(workload_profile) is str and workload_profile in (PROFILE,PROFILE_V2,PROFILE_V3),
             "unknown fixed Reach reset workload profile")
-    probe = PROBE_VERSION if workload_profile == PROFILE else PROBE_VERSION_V2
+    probe = {PROFILE:PROBE_VERSION,PROFILE_V2:PROBE_VERSION_V2,PROFILE_V3:PROBE_VERSION_V3}[workload_profile]
     change = (CHANGE[0], 'PROBE_VERSION = "' + probe + '"\n', 1)
     return workload_profile,probe,change
 
 
 def profile_from_plan(plan):
     selected = profile_spec(plan.get("reset_workload_reader_profile"))
-    if selected[0] == PROFILE_V2:
+    if selected[0] in (PROFILE_V2,PROFILE_V3):
         require(plan.get("preparation_probe_version") == selected[1],
                 "v2 reset plan lacks its exact producer/reader pair")
     return selected
@@ -72,7 +74,7 @@ def profile_from_plan(plan):
 def episode_probe_profiles(directory, freeze, *, workload_profile):
     """v2 actual worker and supervisor declarations; no telemetry or physics credit."""
     _,probe,_ = profile_spec(workload_profile)
-    require(workload_profile == PROFILE_V2, "episode v2 check requires its explicit profile")
+    require(workload_profile in (PROFILE_V2,PROFILE_V3), "episode check requires an explicit v2/v3 profile")
     directory=Path(directory)
     paths=([directory/"metadata.json"] if (directory/"metadata.json").is_file()
            else sorted(directory.glob("worker*/episode*/metadata.json")))
@@ -92,6 +94,14 @@ def episode_probe_profiles(directory, freeze, *, workload_profile):
             epoch = value["epoch"]
             result[str(actual)]={"sha256":hashlib.sha256(raw).hexdigest(),"bytes":len(raw)}
     return result
+
+
+def source_paths(workload_profile=PROFILE):
+    profile_spec(workload_profile)
+    if workload_profile == PROFILE_V3:
+        from . import reach_probe_v3_replay
+        return SOURCE_PATHS | reach_probe_v3_replay.SOURCE_PATHS
+    return set(SOURCE_PATHS)
 
 
 def load_reader(kind, *, workload_profile=PROFILE):
@@ -115,10 +125,11 @@ def verify_reader_readiness(plan, freeze):
             "exact preflight execution freeze required")
     profile,probe,change = profile_from_plan(plan)
     bindings = plan["source_bindings"]
-    require(SOURCE_PATHS <= bindings.keys(), "reset reader preflight source inventory incomplete")
+    selected_sources = source_paths(profile)
+    require(selected_sources <= bindings.keys(), "reset reader preflight source inventory incomplete")
     pins = {str(path): expected for path, expected in (*SOURCES.values(), *LEAVES.values())}
     sources = []
-    for relative in sorted(SOURCE_PATHS):
+    for relative in sorted(selected_sources):
         path = WORKSPACE / relative
         raw = path.read_bytes()
         digest = hashlib.sha256(raw).hexdigest()
@@ -148,10 +159,19 @@ def verify_reader_readiness(plan, freeze):
         require(callable(module.audit) and callable(leaf.audit_episode), "fixed reader/leaf audit definitions missing")
         readers.append({"kind": kind, "probe_version": module.PROBE_VERSION,
                         "immutable_reader_projection": proof, "unchanged_leaf_source": leaf_proof})
-    return {"schema": "mr3-reach-reset-reader-entry-readiness-v1", "passed": True,
+    result = {"schema": "mr3-reach-reset-reader-entry-readiness-v1", "passed": True,
             "execution_freeze": freeze, "workload_profile": profile, "sources": sources,
             "readers": readers, "audit_calls": 0, "native_inputs_read": False,
             "scientific_qualification_credit": False}
+    if profile == PROFILE_V3:
+        from . import reach_probe_v3_replay as independent
+        require(independent.PROFILE == profile and independent.PROBE == probe
+                and callable(independent.replay_episode) and callable(independent.replay_stage),
+                "independent v3 definitions/profile absent")
+        result["probe_v3_replay_definition"] = dict(path=str(independent.SOURCE),
+            sha256=hashlib.sha256(Path(independent.__file__).read_bytes()).hexdigest(),
+            replay_episode_callable=True,replay_stage_callable=True,audit_calls=0)
+    return result
 
 
 def command_argv(kind, directory, freeze, output, per_episode_report=None, *, workload_profile=PROFILE):
@@ -197,8 +217,11 @@ def audit(directory, freeze, *, kind, workload_profile, per_episode_report=None)
             require(type(value) is dict and value.get("safety_contract") == CONTRACT
                     and value.get("preparation_probe_version") == probe,
                     "reset input lacks the explicit Reach workload declaration")
-        if profile == PROFILE_V2:
+        if profile in (PROFILE_V2,PROFILE_V3):
             result["episode_probe_profiles"] = episode_probe_profiles(directory,freeze,workload_profile=profile)
+        if profile == PROFILE_V3:
+            from . import reach_probe_v3_replay as independent
+            result["probe_v3_stimulus_replay"] = independent.replay_stage(directory,freeze)
         original = (module.audit(directory, freeze) if kind == "angular" else
                     module.audit(directory, Path(per_episode_report), freeze))
         result["original_reader_result"] = original
@@ -222,6 +245,10 @@ def audit(directory, freeze, *, kind, workload_profile, per_episode_report=None)
                     "v2 episode profile metadata changed during audit")
         except (OSError,ValueError) as error:
             result["errors"].append(repr(error))
+    if "probe_v3_stimulus_replay" in result:
+        try:
+            independent.verify_stage_inputs(result["probe_v3_stimulus_replay"])
+        except (OSError,ValueError) as error:result["errors"].append(repr(error))
     result["passed"] = not result["errors"]
     return result
 
@@ -230,7 +257,7 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("directory", type=Path)
     parser.add_argument("--kind", choices=tuple(SOURCES), required=True)
-    parser.add_argument("--workload-profile", choices=(PROFILE,PROFILE_V2), required=True)
+    parser.add_argument("--workload-profile", choices=(PROFILE,PROFILE_V2,PROFILE_V3), required=True)
     parser.add_argument("--freeze", required=True)
     parser.add_argument("--per-episode-report", type=Path)
     parser.add_argument("--output", required=True, type=Path)

@@ -1,5 +1,8 @@
 # 当前三机器人基线与MR3适配启动命令
 
+2026-10-24 P2A V69：当前准备使用显式刺激 `mr3-p2a-reach-outward-cancel-v3` 与独立读者 `mr3-reach-reset-outward-cancel-v3`。完整12EP/30角色通过绑定计划生成，正式入口为无线侧 `report/assets/20261024_mr3_p2a_v69_probe_v3_qualification/bootstrap_v1.py --freeze <新exact40>`，须完成实际准备检查、提交推送及清洁冻结后执行一次。刺激仍为32步/两轮六GOAL，实际接受后一次锁定累计路径基线，移动WAIT遵守原5秒承诺及速度/路径条件。当前新构建已闭合，完整软件检查正在进行，尚无V69原生资格或学习信用；后续执行状态见[V69接续文档](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261024_mr3_p2a_v69_probe_v3_qualification.md)。下方命令保留原版本及历史结果。
+
+
 2026-10-23 V60生产准备：sensor唯一显式profile tag全字节逆恢复与peer两新事件/同plan三drive compound/APPLIED精确join已接公共full/PPO/controlled/4matrix/3policy；不删行或伪zero，C++/物理/actor/20build输入不变。canonical targeted159、fresh ROS202/learner437、编排13实际PASS/source稳定，原fixture/兼容失败保留，尚无V60World/资格/PPO。承接V59真FAIL账94316.6592918916018/C150000、余55683.3407081083982，拟47220完整工程预约；pilot/final与R/12EP30/95%保持，150000非数值用户批准。source a03b9c530已真推送，新plan1029源/10ELF及12EP30/readiness实际通过；下一最终执行freeze与严格准入/完整链，不借旧6PASS。P2A未完成。 见[V60](<../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261023_mr3_p2a_v60_reader_registration.md>)；下方为历史快照。
 
 

@@ -31,3 +31,10 @@ parent同PID bootstrap/exec，STATE固定`/tmp/mr3_p2a_v68_parent_v1`，consumer
 尚未触发的qualification argv兼容缺陷独立留待后继活动：旧gate要求matrix child `python -m ...`，V67实际child前置`-B`；本次只有描述，不改原gate、不重判V67失败，也不自动回到完整matrix或policy。描述之后再按实际阻断确定最小刺激修复/CPU与有限probe、容量gate、新同freeze12EP30、真实学习/strict95。
 
 [V67实际闭合](20261024_mr3_p2a_v67_owned_stream_qualification.md) · [V67规范末账](assets/20261024_mr3_p2a_v67_owned_stream_qualification/closure_ledger_v1.json) · [V67库存](assets/20261024_mr3_p2a_v67_owned_stream_qualification/closed_inventory_v1.json) · [固定description spec](assets/20261024_mr3_p2a_v68_probe_stimulus_description/description_spec_v1.json)
+
+
+## 后继路线已选：显式 Probe V3 B（尚未完成实现或新资格）
+
+采用[具体方案](assets/20261024_mr3_p2a_v69_probe_v3_qualification/planning_v1/PROPOSAL.md)与[独立复核](assets/20261024_mr3_p2a_v69_probe_v3_qualification/planning_v1/independent_review_v1.md)的 B：去除1.45米硬筛选，保持当前V2排名及原joint/nonapproach；合法Goal0不要求累计路径已初始化，真实same-goal接受且active owned后首次fresh/完整路径一次捕获保守运动基线，不填0、不刷新。实际moving WAIT仍需forward v>=.08、新增path>=.05与原合法mask；原5秒承诺期、32步、六GOAL/两轮、接受窗口、三fresh rest+三秒交接和B/R/安全/95%门均保持。
+
+实现仅在独立临时候选中推进；新增V3 producer/独立reader/profile全链与人工CPU后，需规范安装、为已变化的真实current21来源重新实际incremental build、再fresh全源码CPU/readiness/新freeze完整12EP30资格。先修下一活动matrix child多余-B，保原qualification谓词及outer-B/环境。A/B均不保证短目标能存活到首合法WAIT；必要覆盖未达即真实FAIL，不能把描述PASS当物理或学习通过。

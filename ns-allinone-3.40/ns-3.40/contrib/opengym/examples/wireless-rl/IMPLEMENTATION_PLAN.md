@@ -255,13 +255,13 @@ V26原生12回合和34科学门已由原回执及唯一缺失information消费�
 掩码保存在 rollout 中；评估使用 mask-aware 接口；训练日志包括熵、KL、价值误差、
 覆盖、时间、失败、目标切换、安全介入，而不只画 reward。
 
-当前完整资格仍为V60旧E的FAIL；V61固定窗仅描述性PASS；V62在新G `81e63f50699073286c9773dcb92106de63fdf4ca` 的八步性能诊断于startup失败、0 task transition，不能作为容量或取消修复证据。下一顺序：
+当前资格仍未通过：V67在新冻结完成interface的32步返回，但Probe V2覆盖不足，科学审计未派发；旧FAIL保持。V68仅对固定两输入作一次received谓词描述，证实名义1.45米screen阻止当时合法目标，不提供物理或资格信用。V69已实现显式Probe V3 B，并完成新current21真实增量构建、fresh ROS212/learner506及入口33、双环境readiness、真实prepare/plancheck；尚未运行V69原生矩阵。详见[V69接续文档](report/20261024_mr3_p2a_v69_probe_v3_qualification.md)。后续顺序：
 
-1. V63只描述两个已闭合main.pstats，894940B，parent120/work60；固定输入精确库存绑定、新source/spec/freeze后一次decode，不重跑旧native或扩大10秒guard。
-2. authority core/wiring/独立auditor仅/tmp并行，尚未安装；依据描述和独立设计诊断修复，再新版本probe-v2。原5秒承诺/32step/停止资格保持，覆盖修复不代替真实停止修复。
-3. 有界native/audit下实测等价优化与真实成本；profiling开销、startup partial及人工CPU不能代表长任务/reader/finalizer容量。
-4. capacity gate取得完整端到端证据前保持False，driver禁auto pilot/final；完整parent费用，nested不重复加。
-5. 新同freeze完整12EP/30必要角色资格，再真实minimum/pilot更新与三场strict95。原FAIL、pilot/final额和全部科学/安全门保持。
+1. V3 B移除固定刺激的名义1.45米screen，合法GOAL不再要求累计路径已初始化；仅在同目标真实接受后一次捕获fresh、完整且source≥accept的累计路径基线。真实0有效，缺失值不填0，不刷新基线。原mask/nonapproach/rank、.08正v/.05新增path、5秒commit、32步/两轮六GOAL与原停止/任务门保持。
+2. 新exact freeze执行完整12EP/30角色，interface1+reset8共9个probe EP必须经独立received重放并合取原科学审计；terminal/deadline保留原完整检查，不拼接旧冻结结果。
+3. 按本轮真实native推进、coldstart/reset、独立reader及finalizer的完整端点判断容量；短32步和CPU加速不供长任务或PPO容量信用。
+4. capacity=False时禁止自动进入policy；资格通过后仍须按原阶段总额和完整费用准入。连续parent包含gap，nested不重复加。
+5. 满足容量与新同freeze资格后，执行真实minimum正更新、原余额内pilot及open401/402/403三场strict95%验证。pilot1870决策/2905.9547395464029秒及final-only900决策/9000秒保持；P2A仍未完成，P2B/gateway未启动。
 
 下列v6/v7及文件上方V41/V45等段落为历史快照，不代表当前待执行冻结或余额。
 

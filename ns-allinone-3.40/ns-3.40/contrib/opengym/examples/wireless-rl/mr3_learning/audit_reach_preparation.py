@@ -1,4 +1,4 @@
-"""Complete v2 native scientific audit; no old-profile qualification credit."""
+"""Complete Reach native scientific audit; no old-profile qualification credit."""
 
 import argparse
 from decimal import Decimal
@@ -271,9 +271,16 @@ def audit(directory, root, freeze, plan_path):
     workload_profile,_,_ = reset_workload.profile_from_plan(plan)
     motion_probe = json.loads((directory/"benchmark_metadata.json").read_text()).get("preparation_motion_probe") is True
     episode_profiles = (reset_workload.episode_probe_profiles(directory,freeze,workload_profile=workload_profile)
-        if workload_profile == reset_workload.PROFILE_V2 and motion_probe else None)
+        if workload_profile in (reset_workload.PROFILE_V2,reset_workload.PROFILE_V3) and motion_probe else None)
+    probe_replay = None
+    if workload_profile == reset_workload.PROFILE_V3 and motion_probe:
+        from . import reach_probe_v3_replay
+        probe_replay = reach_probe_v3_replay.replay_stage(directory,freeze)
     module, proof = load_impl(plan_path)
     result = module.audit(directory, root, freeze)
+    if probe_replay is not None:
+        reach_probe_v3_replay.verify_stage_inputs(probe_replay)
+        result["probe_v3_stimulus_replay"] = probe_replay
     if authority is not None:
         reports=module._independent_authority_reports
         require(set(reports)=={str(path.parent.resolve()) for path in paths},
@@ -283,7 +290,7 @@ def audit(directory, root, freeze, plan_path):
             motion_authority_episode_replays={name:row['motion_authority_replay'] for name,row in reports.items()})
     result.update(schema="mr3-reach-preparation-full-audit-v1", safety_contract="mr3-reach-v1",
                   immutable_reader_projection=proof,
-                  scope="Native/contact/clock/protocol/scalar/evaluator/archive/activity/topology/costmap and complete v2 release. Joint qualification additionally requires every independently declared reach role.")
+                  scope="Native/contact/clock/protocol/scalar/evaluator/archive/activity/topology/costmap and complete controlled release. Joint qualification additionally requires every independently declared reach role.")
     if episode_profiles is not None:
         result["episode_probe_profiles"] = episode_profiles
         for name,spec in episode_profiles.items():

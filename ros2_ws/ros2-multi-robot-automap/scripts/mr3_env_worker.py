@@ -136,7 +136,8 @@ class Worker:
         self.preparation_probe_version = request.get("preparation_probe_version")
         if "preparation_probe_version" in request and (
                 type(self.preparation_probe_version) is not str
-                or self.preparation_probe_version != "mr3-p2a-reach-outward-cancel-v2"
+                or self.preparation_probe_version not in ("mr3-p2a-reach-outward-cancel-v2",
+                                                          "mr3-p2a-reach-outward-cancel-v3")
                 or self.safety_contract != "mr3-reach-v1"):
             raise ValueError("unknown/mixed explicit Reach preparation probe")
         self.terminal_probe = request.get("terminal_probe", False)

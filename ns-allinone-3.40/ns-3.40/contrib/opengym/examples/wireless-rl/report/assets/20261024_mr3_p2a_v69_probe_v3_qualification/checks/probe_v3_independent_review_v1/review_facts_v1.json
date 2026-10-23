@@ -1,0 +1,87 @@
+{
+  "schema": "mr3-probe-v3-independent-static-reader-review-v1",
+  "reviewer": "/root/encoder_native",
+  "conclusion": "no_substantive_blocker_found_with_scope_limits",
+  "reviewed_manifest": {
+    "path": "/tmp/mr3_p2a_probe_v3_reader_candidate_v1/copy_ready_manifest_v1.json",
+    "bytes": 3800,
+    "sha256": "bd80aeceb018033f8912c68de486e202316cbf89f92be2e2f2d62669d3ede13b"
+  },
+  "reviewed_sources": [
+    {
+      "candidate_path": "/tmp/mr3_p2a_probe_v3_reader_candidate_v1/shadow/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_probe_v3_replay.py",
+      "canonical_path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_probe_v3_replay.py",
+      "bytes": 25230,
+      "sha256": "2c1e5c72c535ea3d0015e87e1c3d0a4f2bc80f50e403dd6c3d131f7aa197e006",
+      "canonical_current_equal": true
+    },
+    {
+      "candidate_path": "/tmp/mr3_p2a_probe_v3_reader_candidate_v1/shadow/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_reset_workload.py",
+      "canonical_path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_reset_workload.py",
+      "bytes": 15407,
+      "sha256": "148cc6f1272312c64199f5e79c6c4bd4ffb7a6021b681243c523a56419ff75c6",
+      "canonical_current_equal": true
+    },
+    {
+      "candidate_path": "/tmp/mr3_p2a_probe_v3_reader_candidate_v1/shadow/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_preparation.py",
+      "canonical_path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_preparation.py",
+      "bytes": 19525,
+      "sha256": "3a4ed4932ef360c88104a510fccced13c67ebf6e904f5f061c8f8a624ec205ed",
+      "canonical_current_equal": true
+    },
+    {
+      "candidate_path": "/tmp/mr3_p2a_probe_v3_reader_candidate_v1/shadow/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_preparation.py",
+      "canonical_path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_preparation.py",
+      "bytes": 61295,
+      "sha256": "e2f00f532805c33b85ac59e8d89dc56a4ecf2f05c1a36a969a1bc0effa7147d4",
+      "canonical_current_equal": true
+    },
+    {
+      "candidate_path": "/tmp/mr3_p2a_probe_v3_reader_candidate_v1/shadow/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_reach_probe_v3_replay.py",
+      "canonical_path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_reach_probe_v3_replay.py",
+      "bytes": 16394,
+      "sha256": "45621ccd2aff1f7731977009449f7037b22bd64b8c6c59ef715da9b0d77a13f4",
+      "canonical_current_equal": true
+    },
+    {
+      "candidate_path": "/tmp/mr3_p2a_probe_v3_reader_candidate_v1/shadow/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/probe_v3_synthetic_trace.py",
+      "canonical_path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/probe_v3_synthetic_trace.py",
+      "bytes": 18628,
+      "sha256": "96b642bc1fe692163a11584ed043f728da7ee0301f1e28c67549c8a7f3aad855",
+      "canonical_current_equal": true
+    }
+  ],
+  "checks": [
+    "GOAL0 uses original per-robot mask, joint mask and nonapproach subset; cumulative activity initialization is not required",
+    "same accepted active owned goal captures exactly one finite nonnegative baseline, including actual zero; missing/None/bool are not converted to zero",
+    "capture binds epoch, accepted/source ordering, snapshot sequence/digest and activity state sequence; later moving activity keeps same epoch and nonregressing source",
+    "scientific WAIT retains forward v>=0.08, added path>=0.05, original five-second commitment and original WAIT/joint mask; cleanup WAIT and natural terminal do not qualify",
+    "32 actual step commands associate previous snapshot to returned command, followed by current snapshot; two-round timing/rest/handoff preserved",
+    "full route runs replay only for selected actual probe stages; angular/physics retain original mathematical readers and exact unique token inverse",
+    "qualification requires exactly nine interface/reset episodes and substantive helper-source-bound replay facts, in addition to all original roles"
+  ],
+  "limitations": [
+    "This helper replays use/selection of received original masks; independent geometry/mask correctness remains the original input/full audit obligation",
+    "High-level received accepted/canceled state is not native cancel delivery, motor/rest, physical B/R or task-quality proof",
+    "Static review plus existing private artificial CPU receipt does not establish native coverage, canonical CPU, qualification, capacity or PPO credit"
+  ],
+  "reported_private_cpu": {
+    "actual_tool_session_id": 49953,
+    "actual_tool_reaped_returncode": 0,
+    "tests": 16,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "actual_child_wait_seconds": "6.977476861",
+    "not_rerun_by_reviewer": true
+  },
+  "review_actions": {
+    "canonical_files_modified": 0,
+    "original_inputs_opened": 0,
+    "readers_executed": 0,
+    "tests_executed": 0,
+    "World_started": 0
+  },
+  "canonical_sources_matched_at_review": true,
+  "source_edits_required": false
+}

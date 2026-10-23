@@ -20,7 +20,7 @@ from .supervisor import (actuation_profile_for_safety_contract, BINARY_REACH_GEO
                          validate_reach_geometry_rule, reach_geometry_rule_from_argv)
 from .supervisor import (
     InfrastructureError, Supervisor, WORKSPACE, identity_alive, ros_environment,
-    PREPARATION_PROBE_REACH_V1, PREPARATION_PROBE_REACH_V2, validate_preparation_profile,
+    PREPARATION_PROBE_REACH_V1, PREPARATION_PROBE_REACH_V2, PREPARATION_PROBE_REACH_V3, validate_preparation_profile,
     SEED_RULES, START_GRAPH_RULES, validate_seed_rule, validate_start_graph_rule,
 )
 
@@ -74,9 +74,9 @@ def _collection_safety_contract(args):
         preparation = getattr(args, "preparation_motion_probe", False)
         review = getattr(args, "preparation_parameter_review", False)
         selection = getattr(args, "preparation_parameter_profile", "original")
-        if preparation and version not in (PREPARATION_PROBE_REACH_V1, PREPARATION_PROBE_REACH_V2):
+        if preparation and version not in (PREPARATION_PROBE_REACH_V1, PREPARATION_PROBE_REACH_V2, PREPARATION_PROBE_REACH_V3):
             raise ValueError("reach preparation requires its explicit new fixture version")
-        if review and (not preparation or version not in (PREPARATION_PROBE_REACH_V1, PREPARATION_PROBE_REACH_V2)
+        if review and (not preparation or version not in (PREPARATION_PROBE_REACH_V1, PREPARATION_PROBE_REACH_V2, PREPARATION_PROBE_REACH_V3)
                        or selection != "gentle_turn_v1"):
             raise ValueError("reach parameter review requires the reach fixture and gentle_turn_v1")
         if selection != "original" and not review:
@@ -620,6 +620,257 @@ def finish_probe_reach_v2(snapshot, diagnostics):
         raise ValueError("bounded v2 stimulus coverage unavailable; no retries or gate reduction")
 
 
+
+def probe_action_reach_v3(snapshot, diagnostics):
+    """Fixed received-only two-round stimulus; no cancellation or physics credit."""
+    elapsed, now = snapshot["task_elapsed_sec"], snapshot["source_stamp"]
+    if not all(_probe_v2_number(value) and value >= 0 for value in (elapsed, now)):
+        raise ValueError("v3 stimulus requires finite received clocks")
+    task_ns, now_ns = round(elapsed*1e9), round(now*1e9)
+    state = diagnostics.setdefault("reach_v3_stimulus", {"epoch":snapshot["epoch"],
+        "rounds":{}, "decisions":[], "coverage_failures":[], "last_clock_ns":-1})
+    if state["epoch"] != snapshot["epoch"] or now_ns < state["last_clock_ns"]:
+        raise ValueError("v3 stimulus epoch/clock changed")
+    if state.get("pending_submission") is not None:
+        raise ValueError("previous v3 stimulus submission is unresolved")
+    state["last_clock_ns"] = now_ns
+    robots = snapshot["robots"]
+    if [robot["name"] for robot in robots] != ["tb1","tb2","tb3"]:
+        raise ValueError("v3 stimulus requires the original robot order")
+    for key in ("initial", "second"):
+        state["rounds"].setdefault(key, {robot["name"]:{} for robot in robots})
+
+    def failed(round_id, name, reason):
+        row = {"round":round_id,"robot":name,"reason":reason}
+        if row not in state["coverage_failures"]:
+            state["coverage_failures"].append(row)
+
+    for round_id, members in state["rounds"].items():
+        for robot in robots:
+            name, nav = robot["name"], robot["navigation"]
+            saved = members[name]
+            if "goal_id" not in saved:
+                continue
+            same = nav.get("goal_id") == saved["goal_id"]
+            accepted = nav.get("accepted_at")
+            if (same and nav.get("owned") is True and nav.get("phase") in ("active","canceling")
+                    and _probe_v2_number(accepted) and accepted <= now
+                    and type(nav.get("accepted_goal_count")) is int and nav["accepted_goal_count"] > 0):
+                accepted_ns = round(accepted*1e9)
+                if accepted_ns < saved["goal_created_ns"]:
+                    failed(round_id,name,"acceptance_predates_goal")
+                if "accepted_at_ns" in saved and saved["accepted_at_ns"] != accepted_ns:
+                    failed(round_id,name,"accepted_goal_time_changed")
+                saved.setdefault("accepted_at_ns",accepted_ns)
+                saved.setdefault("accepted_observed_ns",now_ns)
+                accepted_task_ns = accepted_ns-(now_ns-task_ns)
+                if accepted_task_ns > (2 if round_id == "initial" else 20)*10**9:
+                    failed(round_id,name,"acceptance_outside_bounded_opportunity")
+            activity = robot["activity"]
+            path, path_source = activity.get("estimated_path_m"), activity.get("last_odom_source_stamp")
+            if (saved.get("baseline_capture_count") == 0 and same and nav.get("owned") is True
+                    and nav.get("phase") == "active" and "accepted_at_ns" in saved
+                    and saved["accepted_at_ns"] >= saved["goal_created_ns"]
+                    and robot.get("fresh") is True and robot.get("valid") is True
+                    and activity.get("epoch") == snapshot["epoch"]
+                    and type(activity.get("state_sequence")) is int and activity["state_sequence"] >= 0
+                    and activity.get("path_observation_complete") is True
+                    and _probe_v2_number(path) and path >= 0 and _probe_v2_number(path_source)
+                    and 0 <= path_source <= now
+                    and saved["accepted_at_ns"] <= round(path_source*1e9)):
+                saved.update(baseline_path_m=path, baseline_capture_count=1,
+                    baseline_epoch=snapshot["epoch"], baseline_observed_ns=now_ns,
+                    baseline_path_source_ns=round(path_source*1e9),
+                    baseline_snapshot_sequence=snapshot["sequence"], baseline_snapshot_digest=snapshot["digest"],
+                    baseline_activity_state_sequence=activity["state_sequence"])
+            if same and nav.get("cancel_requested") is True and nav.get("stop_reason") == "wait":
+                if "wait_command_id" in saved:
+                    saved.setdefault("cancel_request_observed_ns",now_ns)
+            terminal = nav.get("last_terminal")
+            if (nav.get("last_goal_id") == saved["goal_id"] and terminal is not None
+                    and "cancel_terminal_observed_ns" not in saved):
+                if (terminal != "CANCELED" or "wait_command_id" not in saved
+                        or "accepted_at_ns" not in saved or nav.get("stop_reason") != "wait"):
+                    failed(round_id,name,"goal_terminal_without_confirmed_stimulus_cancel")
+                elif nav.get("phase") == "idle" and nav.get("owned") is False:
+                    saved.setdefault("cancel_terminal_observed_ns",now_ns)
+            if "cancel_terminal_observed_ns" in saved and "handoff_observed_ns" not in saved:
+                rest = saved.setdefault("rest_source_ns",[])
+                stamp, speed = robot.get("odom_source_stamp"), robot.get("v")
+                fresh_rest = (robot.get("fresh") is True and robot.get("valid") is True
+                    and _probe_v2_number(stamp) and 0 <= stamp <= now
+                    and _probe_v2_number(speed) and abs(speed) <= .01
+                    and nav.get("phase") == "idle" and nav.get("owned") is False
+                    and nav.get("last_goal_id") == saved["goal_id"])
+                if not fresh_rest:
+                    rest.clear()
+                elif not rest or round(stamp*1e9) > rest[-1]:
+                    rest.append(round(stamp*1e9)); del rest[:-3]
+                if len(rest) == 3 and now_ns-saved["cancel_terminal_observed_ns"] >= 3_000_000_000:
+                    saved["handoff_observed_ns"] = now_ns
+
+    samples = diagnostics.setdefault("reference_turn_samples",{})
+    if task_ns < 10_000_000_000:
+        for robot in robots:
+            value = robot.get("w")
+            if robot.get("fresh") is True and _probe_v2_number(value) and abs(value) >= .1:
+                samples.setdefault(robot["name"], {"sign":math.copysign(1.,value),"w":value,
+                    "snapshot_sequence":snapshot["sequence"],"source_stamp":robot.get("source_stamp"),
+                    "odom_source_stamp":robot.get("odom_source_stamp")})
+    round_id = "initial" if task_ns < 13_000_000_000 else "second"
+    current = state["rounds"][round_id]
+    goal_window = task_ns < 1_500_000_000 or 13_000_000_000 <= task_ns < 20_000_000_000
+    cleanup = 10_000_000_000 <= task_ns < 13_000_000_000 or task_ns >= 28_000_000_000
+    desired, reasons, admitted = [], {}, {}
+    for index, robot in enumerate(robots):
+        name, nav, saved = robot["name"],robot["navigation"],current[robot["name"]]
+        speed, path = robot.get("v"),robot["activity"].get("estimated_path_m")
+        moving = (robot.get("fresh") is True and robot.get("valid") is True
+            and nav.get("phase") == "active" and nav.get("owned") is True
+            and nav.get("goal_id") == saved.get("goal_id") and "accepted_at_ns" in saved
+            and _probe_v2_number(speed) and speed >= .08
+            and robot["activity"].get("path_observation_complete") is True
+            and saved.get("baseline_capture_count") == 1
+            and robot["activity"].get("epoch") == saved.get("baseline_epoch") == snapshot["epoch"]
+            and _probe_v2_number(robot["activity"].get("last_odom_source_stamp"))
+            and 0 <= robot["activity"]["last_odom_source_stamp"] <= now
+            and round(robot["activity"]["last_odom_source_stamp"]*1e9) >= saved["baseline_path_source_ns"]
+            and _probe_v2_number(saved.get("baseline_path_m"))
+            and _probe_v2_number(path) and path-saved["baseline_path_m"] >= .05)
+        if moving and "wait_command_id" not in saved and snapshot["per_robot_action_mask"][index][9]:
+            desired.append((9,)); reasons[name]="moving_owned_first_legal_wait"
+            continue
+        if cleanup and snapshot["per_robot_action_mask"][index][9]:
+            desired.append((9,)); reasons[name]="bounded_cleanup_wait_no_credit"
+            continue
+        eligible = []
+        first = state["rounds"]["initial"][name]
+        if (goal_window and "goal_command_id" not in saved and nav.get("phase") == "idle"
+                and nav.get("owned") is False and robot.get("fresh") is True
+                and robot.get("valid") is True
+                and (round_id == "initial" or "handoff_observed_ns" in first)):
+            for choice, candidate in enumerate(snapshot["candidates"]):
+                distance = candidate["path_distances_m"][index]
+                if (snapshot["per_robot_action_mask"][index][choice]
+                        and all(_probe_v2_number(value) for value in
+                            (candidate["x"],candidate["y"],robot["x"],robot["y"],distance))
+                        and distance > 0):
+                    eligible.append(choice)
+        desired.append(tuple(eligible)+(8,))
+        admitted[name]=eligible
+    legal = [action for action,valid in enumerate(snapshot["joint_action_mask"])
+        if valid is True and all(choice in desired[index] for index,choice in
+            enumerate((action//100,action//10%10,action%10)))
+        and _probe_nonapproaching_goal_action(snapshot,action)]
+    if not legal:
+        raise ValueError("v3 stimulus has no original legal joint action; never override a mask")
+
+    def reverse_robots(action):
+        result=[]
+        for index,choice in enumerate((action//100,action//10%10,action%10)):
+            own=robots[index];reference=samples.get(own["name"])
+            if choice >= 8 or reference is None:
+                continue
+            goal=snapshot["candidates"][choice]
+            bearing=math.atan2(goal["y"]-own["y"],goal["x"]-own["x"])-own["yaw"]
+            if math.atan2(math.sin(bearing),math.cos(bearing))*reference["sign"] <= -.25:
+                result.append(own["name"])
+        return result
+
+    def order(action):
+        base=_probe_goal_order(snapshot,action,True)
+        return (base[0],-len(reverse_robots(action)) if round_id == "second" else 0,
+                base[1],base[2],-base[3],action)
+    action=min(legal,key=order)
+    choices=(action//100,action//10%10,action%10)
+    request={"epoch":snapshot["epoch"],"observation_sequence":snapshot["sequence"],
+        "observation_digest":snapshot["digest"],"round":round_id,"task_elapsed_sec":elapsed,
+        "clock_ns":now_ns,"action":action,"reasons":reasons,
+        "submitted_activity":{robot["name"]:dict(robot["activity"]) for robot in robots},
+        "goal_robots":[robots[i]["name"] for i,choice in enumerate(choices) if choice < 8],
+        "wait_robots":[robots[i]["name"] for i,choice in enumerate(choices) if choice == 9],
+        "eligible_goal_candidates":admitted,
+        "scope":"planned input only; no native cancel or physical credit"}
+    state["pending_submission"]=request
+    state["decisions"].append(dict(request))
+    if request["goal_robots"]:
+        diagnostics.setdefault("goal_decisions",[]).append({"task_elapsed_sec":elapsed,
+            "snapshot_sequence":snapshot["sequence"],"stage":round_id+"_goal","action":action,
+            "selected_reverse_robots":reverse_robots(action),
+            "scope":"original legal nonapproach stimulus subset; not actor availability or physical proof"})
+    return action
+
+
+def record_probe_reach_v3_submission(diagnostics, info):
+    """Keep a real returned command separate from later actual goal/cancel confirmation."""
+    state=diagnostics["reach_v3_stimulus"];request=state.get("pending_submission")
+    if request is None:
+        raise ValueError("no planned v3 stimulus action")
+    if "action_submitted" in info and type(info["action_submitted"]) is not bool:
+        raise ValueError("explicit action_submitted must be bool")
+    if info.get("action_submitted",True) is False:
+        state.setdefault("not_submitted",[]).append(dict(request));state["pending_submission"]=None
+        return
+    command=info.get("command")
+    if (type(command) is not dict or type(command.get("command_id")) is not int or command["command_id"] <= 0
+            or any(type(command.get(key)) is not str for key in ("epoch","observation_digest"))
+            or any(type(command.get(key)) is not int for key in ("observation_sequence","action"))
+            or any(command.get(key) != request[key] for key in
+                   ("epoch","observation_sequence","observation_digest","action"))):
+        raise ValueError("returned step does not bind the planned v3 submission")
+    members=state["rounds"][request["round"]]
+    for name in request["goal_robots"]:
+        saved=members[name]
+        if "goal_command_id" in saved:
+            raise ValueError("v3 round cannot silently retry a goal")
+        saved.update(goal_command_id=command["command_id"],
+            goal_id=request["epoch"]+":"+name+":"+str(command["command_id"]),
+            goal_created_ns=request["clock_ns"], submitted_activity=dict(request["submitted_activity"][name]),
+            baseline_capture_count=0)
+    for name in request["wait_robots"]:
+        if request["reasons"].get(name) == "moving_owned_first_legal_wait":
+            saved=members[name]
+            if "wait_command_id" in saved:
+                raise ValueError("v3 round cannot silently retry a scientific WAIT")
+            saved.update(wait_command_id=command["command_id"],wait_submitted_ns=request["clock_ns"])
+            if request["task_elapsed_sec"] > (10 if request["round"] == "initial" else 28):
+                state["coverage_failures"].append({"round":request["round"],"robot":name,
+                    "reason":"moving_WAIT_outside_bounded_opportunity"})
+    state["pending_submission"]=None
+
+
+def finish_probe_reach_v3(snapshot, diagnostics):
+    """End exactly32 steps with explicit coverage failure; never native/physics credit."""
+    if round(snapshot["task_elapsed_sec"]*1e9) != 32_000_000_000:
+        raise ValueError("v3 stimulus requires all32 complete policy seconds")
+    state=diagnostics.get("reach_v3_stimulus")
+    if not state or state.get("pending_submission") is not None:
+        raise ValueError("v3 stimulus has unresolved collection state")
+    # Process the final returned navigation/rest observation without submitting
+    # another action or silently extending the32-step fixture.
+    probe_action_reach_v3(snapshot,diagnostics)
+    state["pending_submission"]=None
+    state["decisions"].pop()
+    failures=state["coverage_failures"]
+    for round_id,members in state["rounds"].items():
+        for name,saved in members.items():
+            missing=[key for key in ("goal_command_id","accepted_at_ns","wait_command_id",
+                "cancel_terminal_observed_ns") if key not in saved]
+            if saved.get("baseline_capture_count") != 1:
+                missing.append("accepted_path_baseline_once")
+            if len(saved.get("rest_source_ns",[])) < 3:
+                missing.append("three_fresh_rest_observations")
+            if round_id == "initial" and "handoff_observed_ns" not in saved:
+                missing.append("terminal_and_rest_handoff")
+            if missing:
+                row={"round":round_id,"robot":name,"reason":"coverage_unavailable:"+",".join(missing)}
+                if row not in failures:failures.append(row)
+    state.update(coverage_passed=not failures,
+        coverage_scope="received accepted/cancelled lifecycle only; independent native and physical gates required")
+    if failures:
+        raise ValueError("bounded v3 stimulus coverage unavailable; no retries or gate reduction")
+
+
 def _new_preparation_abort():
     return {"event": threading.Event(), "lock": threading.Lock(), "first_failure": None}
 
@@ -854,7 +1105,7 @@ def run_worker(args, worker_id, preparation_abort=None):
                            for robot in initial["robots"]], "transitions": 0,
                        "transition_wall_sec": 0., "reward_sum": 0., "dt_values": []}
             if (preparation and getattr(args, "preparation_probe_version", None)
-                    in (PREPARATION_PROBE_V3, PREPARATION_PROBE_V4, PREPARATION_PROBE_V5, PREPARATION_PROBE_V6, PREPARATION_PROBE_REACH_V1, PREPARATION_PROBE_REACH_V2)):
+                    in (PREPARATION_PROBE_V3, PREPARATION_PROBE_V4, PREPARATION_PROBE_V5, PREPARATION_PROBE_V6, PREPARATION_PROBE_REACH_V1, PREPARATION_PROBE_REACH_V2, PREPARATION_PROBE_REACH_V3)):
                 episode["preparation_probe_diagnostics"] = {
                     "reference_turn_samples": {}, "goal_decisions": []}
             result["episodes"].append(episode)
@@ -908,9 +1159,10 @@ def run_worker(args, worker_id, preparation_abort=None):
                         "step_returned": False,
                     })
                 elif "preparation_probe_diagnostics" in episode:
-                    probe = (probe_action_reach_v2 if args.preparation_probe_version == PREPARATION_PROBE_REACH_V2
+                    probe = (probe_action_reach_v3 if args.preparation_probe_version == PREPARATION_PROBE_REACH_V3
+                             else probe_action_reach_v2 if args.preparation_probe_version == PREPARATION_PROBE_REACH_V2
                              else probe_action_v6 if args.preparation_probe_version
-                             in (PREPARATION_PROBE_V6, PREPARATION_PROBE_REACH_V1, PREPARATION_PROBE_REACH_V2) else probe_action_v5
+                             in (PREPARATION_PROBE_V6, PREPARATION_PROBE_REACH_V1, PREPARATION_PROBE_REACH_V2, PREPARATION_PROBE_REACH_V3) else probe_action_v5
                              if args.preparation_probe_version
                              == PREPARATION_PROBE_V5 else probe_action_v4
                              if args.preparation_probe_version == PREPARATION_PROBE_V4
@@ -937,8 +1189,9 @@ def run_worker(args, worker_id, preparation_abort=None):
                 episode["reward_sum"] += reward
                 episode["dt_values"].append(info["dt"])
                 if getattr(args, "preparation_probe_version", None) in (
-                        PREPARATION_PROBE_V4, PREPARATION_PROBE_V5, PREPARATION_PROBE_V6, PREPARATION_PROBE_REACH_V1, PREPARATION_PROBE_REACH_V2):
-                    recorder = (record_probe_reach_v2_submission if args.preparation_probe_version == PREPARATION_PROBE_REACH_V2
+                        PREPARATION_PROBE_V4, PREPARATION_PROBE_V5, PREPARATION_PROBE_V6, PREPARATION_PROBE_REACH_V1, PREPARATION_PROBE_REACH_V2, PREPARATION_PROBE_REACH_V3):
+                    recorder = (record_probe_reach_v3_submission if args.preparation_probe_version == PREPARATION_PROBE_REACH_V3
+                                else record_probe_reach_v2_submission if args.preparation_probe_version == PREPARATION_PROBE_REACH_V2
                                 else record_probe_v4_submission)
                     recorder(episode["preparation_probe_diagnostics"], info)
                 if terminated or truncated:
@@ -982,8 +1235,10 @@ def run_worker(args, worker_id, preparation_abort=None):
                     break
             if _abort_requested(abort):
                 break
-            if getattr(args,"preparation_probe_version",None) == PREPARATION_PROBE_REACH_V2:
-                finish_probe_reach_v2(supervisor.last_result["snapshot"], episode["preparation_probe_diagnostics"])
+            if getattr(args,"preparation_probe_version",None) in (PREPARATION_PROBE_REACH_V2, PREPARATION_PROBE_REACH_V3):
+                finisher = (finish_probe_reach_v3 if args.preparation_probe_version == PREPARATION_PROBE_REACH_V3
+                            else finish_probe_reach_v2)
+                finisher(supervisor.last_result["snapshot"], episode["preparation_probe_diagnostics"])
             if not environment._episode_done:
                 raise RuntimeError("sampler step limit did not produce explicit truncation")
             episode["wall_sec_including_startup_and_closure"] = time.monotonic() - episode_started
@@ -1044,7 +1299,7 @@ def main(argv=None):
                         help="external engineering inputs: prefer outward legal goals; no policy")
     parser.add_argument("--preparation-probe-version",
                         choices=(PREPARATION_PROBE_V2, PREPARATION_PROBE_V3,
-                                 PREPARATION_PROBE_V4, PREPARATION_PROBE_V5, PREPARATION_PROBE_V6, PREPARATION_PROBE_REACH_V1, PREPARATION_PROBE_REACH_V2),
+                                 PREPARATION_PROBE_V4, PREPARATION_PROBE_V5, PREPARATION_PROBE_V6, PREPARATION_PROBE_REACH_V1, PREPARATION_PROBE_REACH_V2, PREPARATION_PROBE_REACH_V3),
                         help="explicit external fixture version; v2=20 steps, v3=32 steps")
     parser.add_argument("--preparation-parameter-review", action="store_true",
                         help="paused one-worker open101: frozen readonly ROS parameter audit")
@@ -1096,7 +1351,7 @@ def main(argv=None):
     if args.preparation_motion_probe:
         args.preparation_probe_version = args.preparation_probe_version or PREPARATION_PROBE_V2
         expected_steps = (32 if args.preparation_probe_version in
-                          (PREPARATION_PROBE_V3, PREPARATION_PROBE_V4, PREPARATION_PROBE_V5, PREPARATION_PROBE_V6, PREPARATION_PROBE_REACH_V1, PREPARATION_PROBE_REACH_V2) else 20)
+                          (PREPARATION_PROBE_V3, PREPARATION_PROBE_V4, PREPARATION_PROBE_V5, PREPARATION_PROBE_V6, PREPARATION_PROBE_REACH_V1, PREPARATION_PROBE_REACH_V2, PREPARATION_PROBE_REACH_V3) else 20)
         if args.steps != expected_steps:
             parser.error("preparation motion probe requires the explicit "
                          f"{expected_steps}-step fixture")

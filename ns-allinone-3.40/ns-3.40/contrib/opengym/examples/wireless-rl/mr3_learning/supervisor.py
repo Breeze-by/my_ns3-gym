@@ -32,6 +32,7 @@ POINT_GRAPH_COST = "min_anchor(bridge_length+original_graph_distance)"
 LEGACY_PREPARATION_PROBES = tuple(f"mr3-p2a0-outward-cancel-v{version}" for version in range(2, 7))
 PREPARATION_PROBE_REACH_V1 = "mr3-p2a-reach-outward-cancel-v1"
 PREPARATION_PROBE_REACH_V2 = "mr3-p2a-reach-outward-cancel-v2"
+PREPARATION_PROBE_REACH_V3 = "mr3-p2a-reach-outward-cancel-v3"
 
 
 BINARY_REACH_GEOMETRY_RULE = "binary-cone-v1"
@@ -78,7 +79,7 @@ def validate_preparation_profile(safety_contract, preparation_probe_version=None
         raise ValueError("unknown safety contract")
     if preparation_probe_version is not None:
         allowed = (LEGACY_PREPARATION_PROBES if safety_contract == "legacy"
-                   else (PREPARATION_PROBE_REACH_V1, PREPARATION_PROBE_REACH_V2))
+                   else (PREPARATION_PROBE_REACH_V1, PREPARATION_PROBE_REACH_V2, PREPARATION_PROBE_REACH_V3))
         if type(preparation_probe_version) is not str or preparation_probe_version not in allowed:
             raise ValueError("preparation fixture does not match safety contract")
 
@@ -424,7 +425,7 @@ class Supervisor:
                                plant_stimulus_arm=self.plant_stimulus_arm,
                                plant_stimulus_work_deadline_ns=self.plant_stimulus_work_deadline_ns,
                                **({"preparation_probe_version":self.preparation_probe_version}
-                                  if self.preparation_probe_version == PREPARATION_PROBE_REACH_V2 else {}),
+                                  if self.preparation_probe_version in (PREPARATION_PROBE_REACH_V2, PREPARATION_PROBE_REACH_V3) else {}),
                                **startup,
                                 **({"motion_authority_profile": self.motion_authority_profile}
                                    if self.motion_authority_profile is not None else {}),

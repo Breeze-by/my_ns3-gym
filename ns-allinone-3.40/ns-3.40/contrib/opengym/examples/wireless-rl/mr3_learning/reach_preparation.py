@@ -219,7 +219,7 @@ def validate_plan(plan, workspace=WORKSPACE):
             and plan.get("readiness") == {"ready": True, "pending_bindings": []},
             "reach plan is not explicitly sealed")
     workload_profile,probe_version,_ = reset_workload.profile_from_plan(plan)
-    require(reset_workload.SOURCE_PATHS <= plan["source_bindings"].keys(),
+    require(reset_workload.source_paths(workload_profile) <= plan["source_bindings"].keys(),
             "Reach reset workload reader source inventory incomplete")
     require(all(plan["source_bindings"][str(path)] == expected
                 for path, expected in reset_workload.SOURCES.values()),
@@ -506,7 +506,7 @@ def build_plan(*, plan_path, seed_rule="legacy", start_graph_rule="original-seed
                     "combined_runtime": "six-source drive, paired actuation, calibration and independent reach geometry",
                     "combined_peer_control": "complete peer cloud/scan, v2 causal phase and final command FIFO",
                     "old_profile_credit_reused": False})
-    if workload_profile == reset_workload.PROFILE_V2:
+    if workload_profile in (reset_workload.PROFILE_V2,reset_workload.PROFILE_V3):
         plan["preparation_probe_version"] = probe_version
     if motion_authority_profile is not None:
         plan["motion_authority_profile"] = motion_authority_profile
@@ -600,7 +600,7 @@ def build_plan(*, plan_path, seed_rule="legacy", start_graph_rule="original-seed
             closure.append("--require-parameters")
         add("closure", "native_custody_reach", role="closure", depends=("fifo_manifest",), extra=closure)
     root = kwargs.get("workspace", WORKSPACE)
-    for path in source_inventory(root) | reset_workload.SOURCE_PATHS:
+    for path in source_inventory(root) | reset_workload.source_paths(workload_profile):
         plan["source_bindings"][path] = sha(Path(root) / path)
     if seed_rule != "legacy":
         for name in ("mr3_observation.py", "mr3_seed_certificate.py", "mr3_reach_geometry.py", "mr3_adapter.py"):
@@ -664,6 +664,8 @@ def _qualification_evidence(plan_path, freeze, outer_wait, root=WORKSPACE):
     bindings, gone = {}, []
     authority = selected_motion_authority_profile(plan)
     authority_episodes = []
+    workload_profile,probe_version,_ = reset_workload.profile_from_plan(plan)
+    probe_v3_episodes,probe_v3_expected = [],set()
 
     def read(path):
         path = Path(path)
@@ -725,6 +727,16 @@ def _qualification_evidence(plan_path, freeze, outer_wait, root=WORKSPACE):
                     "submitted required child failed")
             result = read(child["output"])
             require(sha(child["output"]) == child.get("output_sha256"), "scientific output changed")
+            if (workload_profile == reset_workload.PROFILE_V3 and child.get("role") == "full"
+                    and declared["stage"] in ("interface","reset")):
+                from . import reach_probe_v3_replay as probe_v3
+                proof = result.get("probe_v3_stimulus_replay")
+                ids = probe_v3.require_stage_proof(proof,freeze=freeze,episodes=declared["expected_episodes"],
+                    helper_sha256=plan["source_bindings"][probe_v3.SOURCE])
+                require(all(Path(directory).is_relative_to(Path(declared["run_directory"])) for directory,_ in ids),
+                        "independent v3 replay belongs to another stage")
+                probe_v3_episodes.extend(dict(row,full_result_sha256=child["output_sha256"])
+                                         for row in proof["episodes"])
             if authority is not None and child.get("role") == "runtime":
                 require(result.get("passed") is True and type(result.get("episodes")) is list,
                         "authority qualification has no complete independent runtime episode set")
@@ -799,6 +811,11 @@ def _qualification_evidence(plan_path, freeze, outer_wait, root=WORKSPACE):
             require(supervisor_meta.get("reach_geometry_rule", BINARY_REACH_GEOMETRY_RULE)
                     == plan.get("reach_geometry_rule", BINARY_REACH_GEOMETRY_RULE),
                     "native supervisor reach geometry rule differs from qualification plan")
+            if workload_profile == reset_workload.PROFILE_V3 and declared["stage"] in ("interface","reset"):
+                require(meta.get("preparation_probe_version") == probe_version
+                        and supervisor_meta.get("preparation_probe_version") == probe_version,
+                        "qualified worker/supervisor v3 pair differs")
+                probe_v3_expected.add((str(path.parent.resolve()),meta["epoch"]))
             episodes.append({"directory": str(path.parent), "epoch": meta["epoch"]})
             files = sorted(p for p in path.parent.rglob("*") if p.is_file())
             episode_files[str(path.parent)] = [str(p.relative_to(path.parent)) for p in files]
@@ -823,6 +840,14 @@ def _qualification_evidence(plan_path, freeze, outer_wait, root=WORKSPACE):
         "complete_closed_episode_file_inventories": episode_files,
         "saved_process_identities_gone": gone, "old_profile_credit_reused": False,
         "passed": True, "engineering_only": True, "policy_reliability_credit": False}
+    if workload_profile == reset_workload.PROFILE_V3:
+        require(len(probe_v3_episodes)==9 and len(probe_v3_expected)==9
+                and {(row["directory"],row["epoch"]) for row in probe_v3_episodes} == probe_v3_expected,
+                "qualification lacks all actual interface/reset v3 probe replays")
+        result.update(reset_workload_reader_profile=workload_profile,preparation_probe_version=probe_version,
+            probe_v3_stimulus_replay=dict(schema="mr3-independent-probe-v3-qualification-v1",
+                profile=workload_profile,probe_version=probe_version,passed=True,freeze=freeze,
+                episodes=probe_v3_episodes,producer_imported_as_oracle=False))
     if authority is not None:
         result.update(motion_authority_profile=authority,motion_authority_replay=dict(
             schema="mr3-independent-motion-authority-qualification-v1",profile=authority,freeze=freeze,

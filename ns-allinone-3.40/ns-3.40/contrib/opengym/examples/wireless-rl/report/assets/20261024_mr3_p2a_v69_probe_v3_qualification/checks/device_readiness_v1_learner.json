@@ -1,0 +1,104 @@
+{
+  "schema": "mr3-v69-learner-device-readiness-v1",
+  "passed": true,
+  "python": "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+  "torch_version": "2.11.0+cu128",
+  "torch_cuda_version": "12.8",
+  "sb3_version": "2.9.0",
+  "sb3_contrib_version": "2.9.0",
+  "cuda_available": true,
+  "visible_cuda_devices": 1,
+  "device": "cuda:0",
+  "device_name": "NVIDIA GeForce RTX 4090",
+  "modules": [
+    {
+      "module": "mr3_learning.ppo",
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/ppo.py",
+      "bytes": 38264,
+      "sha256": "8fd9e977183b3dfdf4389aa0205b9beba476677e766e60183fe80f3e376706c2"
+    },
+    {
+      "module": "mr3_learning.reach_preparation",
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_preparation.py",
+      "bytes": 61295,
+      "sha256": "e2f00f532805c33b85ac59e8d89dc56a4ecf2f05c1a36a969a1bc0effa7147d4"
+    },
+    {
+      "module": "mr3_learning.reach_policy_chain",
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_policy_chain.py",
+      "bytes": 49146,
+      "sha256": "0a43dc46df0cfac5fa0a497862fbf3a1643f7304495f1d8e9980b4c16e40a683"
+    },
+    {
+      "module": "mr3_learning.supervisor",
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/supervisor.py",
+      "bytes": 29711,
+      "sha256": "dc632fd50321974317ee8c361f8101e3ecb9bd6189b76b35b5501cfbb34a22f2"
+    },
+    {
+      "module": "mr3_learning.audit_reach_runtime",
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_runtime.py",
+      "bytes": 84372,
+      "sha256": "4be82ec4c0a0b2b4a4edaa076ccaef87730673d92eb00fb17ab29cd831b7fe13"
+    },
+    {
+      "module": "mr3_learning.reach_support_replay",
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_support_replay.py",
+      "bytes": 3936,
+      "sha256": "47ea22da40bde3a794565d5d11bb06fd6fc591e3000e0daa40ec3f377bee10b2"
+    },
+    {
+      "module": "mr3_learning.audit_reach_reset_workload",
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_reset_workload.py",
+      "bytes": 15407,
+      "sha256": "148cc6f1272312c64199f5e79c6c4bd4ffb7a6021b681243c523a56419ff75c6"
+    },
+    {
+      "module": "mr3_learning.audit_reach_preparation",
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_preparation.py",
+      "bytes": 19525,
+      "sha256": "3a4ed4932ef360c88104a510fccced13c67ebf6e904f5f061c8f8a624ec205ed"
+    },
+    {
+      "module": "mr3_learning.audit_reach_ppo",
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_ppo.py",
+      "bytes": 15491,
+      "sha256": "a1843940b8bdb0ac3348dcfea24b0d1361db78f5c35bb1b55575ca1d0f38dc8f"
+    },
+    {
+      "module": "mr3_learning.initial_encoder_replay",
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/initial_encoder_replay.py",
+      "bytes": 18543,
+      "sha256": "304faf85f5a09166f1c08297a01de85c1a67bc3248d911a878748d08fd22c693"
+    },
+    {
+      "module": "mr3_learning.native_custody_reach",
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/native_custody_reach.py",
+      "bytes": 52121,
+      "sha256": "aebf6d8bbcf9b598ca787999565a0b0e30aa397f085ce6d672efae5ab89058fa"
+    },
+    {
+      "module": "mr3_learning.motion_authority_profile",
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/motion_authority_profile.py",
+      "bytes": 3062,
+      "sha256": "a5a213e641c208dbc056f39c63d13042b01ae2a8025cfe481ff1dce67ca93b6b"
+    },
+    {
+      "module": "mr3_learning.motion_authority_audit",
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/motion_authority_audit.py",
+      "bytes": 53504,
+      "sha256": "183c013e4877362a9583ab7448a69fbe892c22d886ec5c583d54575183202ceb"
+    },
+    {
+      "module": "mr3_learning.reach_probe_v3_replay",
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_probe_v3_replay.py",
+      "bytes": 25230,
+      "sha256": "2c1e5c72c535ea3d0015e87e1c3d0a4f2bc80f50e403dd6c3d131f7aa197e006"
+    }
+  ],
+  "world_started": false,
+  "model_constructed": false,
+  "forward_calls": 0,
+  "backward_calls": 0,
+  "optimizer_steps": 0
+}

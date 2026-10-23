@@ -381,7 +381,7 @@ ROS 节点用系统 ROS 2 Humble Python；学习端用 conda `ns3gym` 的 CUDA P
 强行把 ROS 与 conda 混在同一解释器。IPC 不模拟网络；以后只有网络交付端可写后端信息存储。
 新训练环境使用独立 MR3 schema，不修改 toy MDP 来冒充机器人环境。
 
-V60实际失败后，原生任务和必要审计的端到端容量仍未取得资格。先用独立有界短活动分解native推进、reset/startup、IPC、各reader与finalizer的真实wall，再对保持原判据的优化做等价验证和实际吞吐测量。即使实现同活动exact-seed辅助结果的一次materialization，也须保留原archive及30角色完整合取、原件整SHA/源码/参数/真实wait与freshgone；不得拿不同reader互代或拼旧freeze结果。capacity gate=False时driver必须拒绝自动pilot/final；通过原有容量门并取得新同freeze完整12EP30资格后，才进入真实学习/strict95%链。
+V67覆盖不足的原生FAIL及V68固定received描述闭合后，原生任务和必要审计的端到端容量仍未取得资格。当前V69显式Probe V3 B已完成软件准备，下一新冻结完整12EP/30角色；实际状态与证据见[V69接续文档](report/20261024_mr3_p2a_v69_probe_v3_qualification.md)。先用独立有界短活动分解native推进、reset/startup、IPC、各reader与finalizer的真实wall，再对保持原判据的优化做等价验证和实际吞吐测量。即使实现同活动exact-seed辅助结果的一次materialization，也须保留原archive及30角色完整合取、原件整SHA/源码/参数/真实wait与freshgone；不得拿不同reader互代或拼旧freeze结果。capacity gate=False时driver必须拒绝自动pilot/final；通过原有容量门并取得新同freeze完整12EP30资格后，才进入真实学习/strict95%链。
 
 训练之前先量测 Gazebo real-time factor、reset/startup、每秒有效策略 transition、CPU/RAM
 及 GPU 利用率；比较 1/2/4 个**并行三机器人环境**的吞吐。这不是机器人数量扩展。
