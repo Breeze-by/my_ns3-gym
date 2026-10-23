@@ -1,0 +1,17 @@
+{
+  "schema": "mr3-v66-root-collection-setup-failure-v1",
+  "actual_tool_session_id": 84917,
+  "actual_waited": true,
+  "actual_returncode_observed": 1,
+  "observed_monotonic_ns": 4536438334054818,
+  "phase": "pytest --collect-only before actual tests/spec seal",
+  "error_excerpt": "ModuleNotFoundError: No module named yaml",
+  "trace_observation": "pytest entrypoint imported /opt/ros/humble launch_testing/launch via inherited environment",
+  "raw_console_file_created": false,
+  "full_tool_output_retained_in_conversation": true,
+  "raw_log_reconstruction_claimed": false,
+  "actual_tests_executed": false,
+  "World_started": false,
+  "engineering_added_seconds": "0",
+  "correction": "Remove PYTHONPATH/PYTHONHOME, use PYTHONNOUSERSITE and PYTHONDONTWRITEBYTECODE before new collection; no dependency or production changes"
+}

@@ -1,0 +1,18 @@
+# A66 current-source build preparation — not executed
+
+This is a `/tmp`-only prospective tool/spec. It changes no canonical source or A59/V65 evidence and has not run preparation, build, tests, loader or World. The default proposed namespace is `report/assets/20261024_mr3_p2a_v66_owned_stream_qualification`; Root can settle that one literal before installing/pinning the tool.
+
+The build child argv is **exactly** the original A59 command: `/bin/bash --noprofile --norc <A59>/checks/native_build_v1/build_native_ros_v1.sh`, with unchanged script SHA `06964d045b1e16ca9e6a51abe0ae6cce097d57dbe732b757744c8306025158b9`. Its colcon invocation has no A59 receipt/archive output argument; it updates only ordinary mutable ROS build/install/log locations. Current actual-wait, manifest, flags/compile-command archives, ELF gzip and bridge outputs are exclusive new A66 paths. A59 originals are never written.
+
+The 21 current activity inputs are the old twenty in original order plus `mr3_learning/motion_authority_profile.py`. They have distinct roles in `current_source_spec_v1.json`; only the original CPP and six headers are claimed as compiled source. The source law/CMake/seven digests and numeric flags remain unchanged. A build invocation may be incremental and leave the ELF byte-identical. The future manifest explicitly records whether ELF bytes equal A59 and does **not** infer a compiler or linker job from successful colcon execution or pretend Python entered the ELF.
+
+After V65 closure is finished and Root installs this reviewed tool in the new namespace:
+
+1. Run `/usr/bin/python3 -B <installed-current_source_build_v1.py> prepare`. It seals current21/recovery, entry and `checks/native_build_v1/launch_actual_build_v1.sh`; this action itself performs no build. All new outputs are exclusive, so a failed attempt cannot be silently overwritten.
+2. Execute that generated launcher through the actual tool. It invokes existing reach_execution CPU scope with new A66 `build_actual_wait`, all21 sources, and the unchanged original A59 child argv. Preserve the real tool session/reap and every partial/failure. Do not call seal after a failed build.
+3. After a genuine tool reap0, Root saves `checks/native_build_v1/build_parent_wait_v1.json` with the **observed** fields `actual_tool_reaped: true`, `actual_tool_session_id: <real integer>`, `actual_returncode: 0`. This is an observation receipt, never a template success to fill in prospectively.
+4. Run the installed tool with `seal`. It requires actual successful unchanged21-source wait/current/recovery, the actual parent receipt, saved identities gone, exact seven embedded source digests, correct one-only macros and original `-fno-fast-math`/`-ffp-contract=off`, and archive restore. It writes the compatible `mr3-initial-encoder-driver-build-manifest-v1` and new bridge. It runs no receiver tests, ldd, shared library or World and claims no such credit. Root then refreshes the actual binary binding/stat and new qualification references before a new exact freeze/admission.
+
+The bridge preserves existing verifier requirements: original fixed build script/argv and source derivation, real CPU wait, current source bytes/freeze, separate seventh header, actual ELF/flags/archive and six compiled-source fields. No gate/inverse exception is introduced. Historical receiver/loader evidence is not relabelled as a new execution. Full native/scientific qualification remains separate.
+
+The supplied budget values are context for Root's later activity only: U109131.3266391666018/C180000/R70868.6733608333982 and parent reservation47220. This preparation creates no formal plan, spends zero engineering seconds under the current CPU policy and provides no new native/P2A credit.

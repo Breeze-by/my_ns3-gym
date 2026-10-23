@@ -1,0 +1,86 @@
+{
+  "schema": "mr3-v65-build-pin-diagnosis-and-v66-current-build-facts-v1",
+  "diagnosis_only": true,
+  "repository_modified_by_this_diagnosis": false,
+  "V65_result": "FAIL_preserved_preflight_only_0World_0matrix",
+  "original_20_inputs": {
+    "equal_current": 19,
+    "changed_count": 1,
+    "changed_zero_based_index": 14,
+    "changed_one_based_index": 15,
+    "changed_path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/supervisor.py",
+    "A59_bytes": 28792,
+    "A59_sha256": "b82379db761e1bebf7e3966fbf61d992f5cd98deaa13d4cf61453195fdfbfd92",
+    "current_bytes": 29590,
+    "current_sha256": "7cf7f5fc792cfab0cefe6171f272168e20253a178528ff6eac8b600b1b8afde0",
+    "role": "Python build-execution provenance, not C++ translation-unit/header"
+  },
+  "new_input_21": {
+    "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/motion_authority_profile.py",
+    "sha256": "a5a213e641c208dbc056f39c63d13042b01ae2a8025cfe481ff1dce67ca93b6b",
+    "role": "new transitive Python wrapper import, not compiled"
+  },
+  "compiled_CPP_six_headers_CMake_unchanged": true,
+  "original_actual_CPP_compile_entry_unchanged": true,
+  "actual_ELF": {
+    "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/lib/libmr3_gazebo_diff_drive.so",
+    "bytes": 2122904,
+    "sha256": "df5d9703f23fd206b967eb9408a4504ed3735b9f71a3c31194b60443464139c7",
+    "real_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_gazebo_diff_drive.so"
+  },
+  "same_ELF_bytes_as_A59": true,
+  "flags_sha256": "d889c9d41fe50bbc16c52910398a449e4d2f8bde3ef6108ea3795cd21e805df4",
+  "flags_bytes": 3875,
+  "seven_compiled_SHA_macros_unchanged_and_embedded": true,
+  "numeric_compile_options": [
+    "-fno-fast-math",
+    "-ffp-contract=off"
+  ],
+  "all10_actual_postbuild_file_proof_comparison": {
+    "method": "current mr3_learning.native_custody.file_proof on each A65 binding path after Root24786 reap/seal",
+    "roles": [
+      "gzserver_executable",
+      "driver",
+      "observer",
+      "ray_box",
+      "ode",
+      "smoother_core",
+      "smoother_executable",
+      "odometry_recorder_executable",
+      "controller_executable",
+      "rotation_shim"
+    ],
+    "resolved_path_SHA_bytes_equal": 10,
+    "stat_dev_ino_size_mtime_ctime_equal": 10,
+    "stale_objectstat_count": 0,
+    "library_execution": false
+  },
+  "new_current_source_build": {
+    "owner": "Root",
+    "actual_tool_session_id": 24786,
+    "actual_tool_exit_code": 0,
+    "actual_child_wait_seconds": "2.547287208",
+    "scope": "cpu",
+    "source_count": 21,
+    "source_before_after_equal": true,
+    "saved_identities_gone": 2,
+    "manifest": {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v66_owned_stream_qualification/checks/native_build_v1/build_manifest_v1.json",
+      "bytes": 22206,
+      "sha256": "4b7ba3610ad549a9dc25e591fcb0ad00f334b7a55a276570ad9937fe4eaf8eeb"
+    },
+    "bridge": {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v66_owned_stream_qualification/native_build_bridge_v1.json",
+      "bytes": 2169,
+      "sha256": "3b2559d01274b9b5cc6226e9fbea6493f08be96857f2e96092e3e57490cadacf"
+    },
+    "actual_colcon_activity_executed": true,
+    "compiler_link_jobs_claimed": false,
+    "incremental_same_ELF_not_claimed_new_compilation": true,
+    "Python_claimed_in_ELF": false,
+    "new_World_or_scientific_qualification_credit": false
+  },
+  "gate_weakened_or_compatibility_exception_added": false,
+  "A59_evidence_overwritten": false,
+  "V65_FAIL_relabelled": false
+}

@@ -1,0 +1,38 @@
+{
+  "schema": "mr3-p2a-v66-native-qualification-scope-v1",
+  "engineering_resource": {
+    "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v66_owned_stream_qualification/resource_v1.json",
+    "bytes": 1095,
+    "sha256": "bf15de0b0fd4dfbda842cab0a3f4f84d7a964ba38029ca345f9145c1eb9c50f6"
+  },
+  "robots_per_environment": 3,
+  "mandatory_roles": 30,
+  "matrix_episodes": 12,
+  "minimum_decisions": 16,
+  "pilot_requested_decisions": 64,
+  "pilot_remaining_decisions": 1870,
+  "pilot_remaining_wall_seconds": "2905.9547395464029",
+  "final_only_schedule": [
+    "open:401",
+    "open:402",
+    "open:403"
+  ],
+  "mapping_target": 0.95,
+  "acceptance_gates_unchanged": true,
+  "old_failures_preserved": true,
+  "no_retry_on_required_failure": true,
+  "p2b_gateway_authorized": false,
+  "prior_native_credit_reused": false,
+  "seed_rule": "exact-point-bridge-v2",
+  "start_graph_rule": "point-attachment-3x3-v1",
+  "reach_geometry_rule": "cone-support-v2",
+  "reset_workload_reader_profile": "mr3-reach-reset-outward-cancel-v2",
+  "actuation_profile": "initial-zero-encoder-hold-v1",
+  "admitted": true,
+  "capacity_qualified": false,
+  "automatic_policy_entry_allowed": false,
+  "motion_authority_profile": "mr3-owned-stream-authority-v1",
+  "preparation_probe_version": "mr3-p2a-reach-outward-cancel-v2",
+  "execution_scope": "new_same_freeze_full12EP30_matrix_and_qualification_only",
+  "admission_basis": "Root prospective authorization of matrix-only attempt under continuing user delegation; actual CPU, preparation, pushed clean freeze and formal preflight prerequisites remain required; no scientific qualification claim"
+}
