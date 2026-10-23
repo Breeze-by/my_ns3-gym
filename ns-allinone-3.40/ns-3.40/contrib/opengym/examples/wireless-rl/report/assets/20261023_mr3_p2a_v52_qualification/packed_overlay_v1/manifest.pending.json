@@ -1,0 +1,113 @@
+{
+  "schema": "mr3-v52-packed-byte-overlay-v1",
+  "passed": false,
+  "status": "PARTS_VERIFIED_PENDING_FINAL_IGNORE_CHECKS",
+  "freeze": "1fa55bc56d5bb9e230d4b397f962d83b1604b278",
+  "base_inventory": {
+    "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v52_qualification/closed_inventory_v1.json",
+    "sha256": "63efb61cc7b2abaf723b3824399d203a1a0b288465a367110eabcb5ec565ccf7",
+    "bytes": 13016028
+  },
+  "collector_actual_wait": {
+    "path": "/tmp/mr3_p2a_v52_closed_archive_actual_wait_v2/actual_wait.json",
+    "sha256": "4c960c6024d960f38b17af1f60b082fd0325b7c6cd2cdd369a0b8c8f5a80f280",
+    "bytes": 8670
+  },
+  "max_packed_blob_bytes": 67108864,
+  "original_file_count": 7772,
+  "replacement_file_count": 2,
+  "representations": [
+    {
+      "canonical": "closed_execution/native/mr3_p2a_reach_v52_deadline/worker0/episode001_open_101/information_states.jsonl.rawbytes.gz",
+      "original": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_deadline/worker0/episode001_open_101/information_states.jsonl",
+      "original_bytes": 1416724558,
+      "original_sha256": "ba973fa418136e937b7ac9382b058bbf26cc989abb0a8d41babd5e887e341147",
+      "codec": "gzip-mtime0-lossless",
+      "packed_bytes": 92314505,
+      "packed_sha256": "a9181f78d15ae5c28a05d29d424b6654995c2ddec23d3708852825b2dd81d38c",
+      "parts": [
+        {
+          "index": 0,
+          "offset": 0,
+          "path": "packed_overlay_v1/parts/0000/closed.tar.gz.part0000",
+          "bytes": 67108864,
+          "sha256": "ee23e38747c8ae9186dd47eea421c9a01700a8f42e11ac0bc558dee9bb55f1f0"
+        },
+        {
+          "index": 1,
+          "offset": 67108864,
+          "path": "packed_overlay_v1/parts/0000/closed.tar.gz.part0001",
+          "bytes": 25205641,
+          "sha256": "8a77c50a6b0ebd11986d2776172a1910d731d0e57135b3f4eb0d08eec2af25de"
+        }
+      ],
+      "ordered_concatenation_verified_by_original_splitter": true,
+      "raw_decoded_byte_proof_from_immutable_v1_only": true
+    },
+    {
+      "canonical": "closed_execution/native/mr3_p2a_reach_v52_deadline/worker0/episode001_open_101/motion_safety.jsonl.rawbytes.gz",
+      "original": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_deadline/worker0/episode001_open_101/motion_safety.jsonl",
+      "original_bytes": 2458997272,
+      "original_sha256": "d3e0df10ba2f5bafbe46c074d2cdf34653dadc097eee6b7da4582371e2970fc6",
+      "codec": "gzip-mtime0-lossless",
+      "packed_bytes": 214063938,
+      "packed_sha256": "74c8ea58dad810ef5e2b00917f42bb8de32b36008c050127dfcc92baeea00bf9",
+      "parts": [
+        {
+          "index": 0,
+          "offset": 0,
+          "path": "packed_overlay_v1/parts/0001/closed.tar.gz.part0000",
+          "bytes": 67108864,
+          "sha256": "4b92be3d6ecdeb082a27b228c1ee65387500e0f83ba8501237b05d58fe76c20d"
+        },
+        {
+          "index": 1,
+          "offset": 67108864,
+          "path": "packed_overlay_v1/parts/0001/closed.tar.gz.part0001",
+          "bytes": 67108864,
+          "sha256": "be2b5f0db3101830923d43eca0593c46a11c945d9ef24646f7e29afc0d7fe633"
+        },
+        {
+          "index": 2,
+          "offset": 134217728,
+          "path": "packed_overlay_v1/parts/0001/closed.tar.gz.part0002",
+          "bytes": 67108864,
+          "sha256": "29d316ec0ca01cda85a75976fa69fece3e796464eea0b2a4c272bcb1026f489e"
+        },
+        {
+          "index": 3,
+          "offset": 201326592,
+          "path": "packed_overlay_v1/parts/0001/closed.tar.gz.part0003",
+          "bytes": 12737346,
+          "sha256": "e0e02740ccd98082aeffcc7d5061e1299ebdf72587ceb33483868e32819dfa54"
+        }
+      ],
+      "ordered_concatenation_verified_by_original_splitter": true,
+      "raw_decoded_byte_proof_from_immutable_v1_only": true
+    }
+  ],
+  "unchanged_entries_remain_in_v1_inventory": true,
+  "local_packed_originals_retained": true,
+  "raw_originals_not_read_or_modified": true,
+  "decoded_original_proof_not_reexecuted": true,
+  "no_decompression_or_recompression": true,
+  "scientific_results_recomputed": false,
+  "engineering_added_seconds": "0",
+  "splitter": {
+    "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v13/closed_continuation/checks/pack_cpu.py",
+    "sha256": "4cb98f6e0b4ab06bd5f0faa45bc343ccd644c5f2feeb109ded60595f383150a5",
+    "called_function": "split_archive only",
+    "configured_part_bytes": 67108864
+  },
+  "gitignore": {
+    "path": "closed_execution/.gitignore",
+    "sha256": "417a332077c670aacb112becba863bb3b871a301308bd143b5ad74f696887e85",
+    "bytes": 195,
+    "exact_original_paths_only": [
+      "closed_execution/native/mr3_p2a_reach_v52_deadline/worker0/episode001_open_101/information_states.jsonl.rawbytes.gz",
+      "closed_execution/native/mr3_p2a_reach_v52_deadline/worker0/episode001_open_101/motion_safety.jsonl.rawbytes.gz"
+    ]
+  },
+  "restore": "Concatenate listed parts in index/offset order without decoding; check every part SHA/size, then full packed SHA/size. Original raw SHA and decoded proof remain in the immutable V1 inventory.",
+  "admission": "Require this actual overlay process rc0/source-unchanged receipt before staging. Partial output/manifest after failure is not an admitted representation."
+}

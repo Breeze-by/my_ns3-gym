@@ -1,0 +1,61 @@
+{
+  "schema": "mr3-v52-closed-cpu-seal-postreap-v1",
+  "passed": true,
+  "scope": "cpu",
+  "engineering_added_seconds": "0",
+  "actual_tool_returncode_observed": 0,
+  "actual_wait": {
+    "path": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/seal_cpu_actual_wait_v1/actual_wait.json",
+    "sha256": "2dc0153768be6031ed4721271dd1f426b8fc074e16a89e9048acb204a2de79f3",
+    "bytes": 6447
+  },
+  "console": {
+    "path": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/seal_cpu_actual_wait_v1/console.log",
+    "sha256": "4b75a2325e1a1b03622e203414fbc94483b7c0bc0c7e4d9ad36298bfc2341bb6",
+    "bytes": 62
+  },
+  "actual_child_wait_seconds": "0.638006453",
+  "source_unchanged": true,
+  "bound_source_count": 6,
+  "sealed_result": {
+    "path": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/closed_cpu_evidence_v1.json",
+    "sha256": "7603e196d55139b8a7631b749482f996e0669191d6d976f3cc918fd07c02d704",
+    "bytes": 10462
+  },
+  "saved_checker_identity_observations": [
+    {
+      "saved_identity": {
+        "pid": 313336,
+        "parent": 313334,
+        "group": 313334,
+        "session": 313334,
+        "start_ticks": 447532971,
+        "state": "R"
+      },
+      "observed_monotonic_ns": 4475402138172457,
+      "same_identity_present": false,
+      "observed_state": null,
+      "reason": "proc_stat_absent"
+    },
+    {
+      "saved_identity": {
+        "pid": 313350,
+        "parent": 313336,
+        "group": 313334,
+        "session": 313334,
+        "start_ticks": 447532997,
+        "state": "R"
+      },
+      "observed_monotonic_ns": 4475402138267604,
+      "same_identity_present": false,
+      "observed_state": null,
+      "reason": "proc_stat_absent"
+    }
+  ],
+  "all_saved_checker_identities_fresh_gone": true,
+  "saved_checker_identity_count": 2,
+  "main_activity_saved_identity_count": 611,
+  "main_identities_not_inferred_from_CPU_helpers": true,
+  "real_review_archive_overlay_reexecuted": false,
+  "scientific_raw_or_packed_bytes_read": false
+}

@@ -1,0 +1,1497 @@
+{
+  "worker_id": 0,
+  "episodes": [
+    {
+      "epoch": "mr3_p2a_reach_v52_interface_w0_e1_39619467",
+      "scene": "open",
+      "seed": 101,
+      "initial_observation_digest": "c7269d5060c4820ddb4fe3697727107761bcfac1404ff58e5997b4ea87634756",
+      "output_directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_interface/worker0/episode001_open_101",
+      "startup_wall_sec": 132.72833849303424,
+      "initial_estimated_poses": [
+        {
+          "name": "tb1",
+          "x": 0.0017139793004142937,
+          "y": -0.44999915984626915,
+          "yaw": 0.0009377435204565058
+        },
+        {
+          "name": "tb2",
+          "x": 0.0016360933655688952,
+          "y": 0.4500008460315209,
+          "yaw": 0.0008933681228042715
+        },
+        {
+          "name": "tb3",
+          "x": 0.4515958883625209,
+          "y": 5.068659171669976e-07,
+          "yaw": 0.0008707335931262685
+        }
+      ],
+      "transitions": 32,
+      "transition_wall_sec": 968.4119529956952,
+      "reward_sum": 6.872014973066746,
+      "dt_values": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "preparation_probe_diagnostics": {
+        "reference_turn_samples": {
+          "tb1": {
+            "sign": -1.0,
+            "w": -0.2986713023948232,
+            "snapshot_sequence": 3,
+            "source_stamp": 44.888,
+            "odom_source_stamp": 44.937
+          },
+          "tb2": {
+            "sign": 1.0,
+            "w": 0.298581289465289,
+            "snapshot_sequence": 3,
+            "source_stamp": 44.894,
+            "odom_source_stamp": 44.923
+          },
+          "tb3": {
+            "sign": 1.0,
+            "w": 0.18507443742725554,
+            "snapshot_sequence": 3,
+            "source_stamp": 44.894999999999996,
+            "odom_source_stamp": 44.934
+          }
+        },
+        "goal_decisions": [
+          {
+            "snapshot_sequence": 1,
+            "task_elapsed_sec": 0.0,
+            "stage": "initial_goal",
+            "action": 621,
+            "max_legal_goal_components": 3,
+            "max_reverse_robot_opportunities": 0,
+            "selected_reverse_robots": [],
+            "scope": "max_legal_goal_components refers only to the external V5 stimulus subset after lifecycle/nonapproach filtering; not actor interface availability; actual turn/stop coverage audited separately",
+            "new_goal_filter": "received_straight_nonapproach_v1",
+            "original_joint_allowed_actions": 74,
+            "filtered_stimulus_allowed_actions": 8
+          },
+          {
+            "snapshot_sequence": 2,
+            "task_elapsed_sec": 1.0,
+            "stage": "initial_goal",
+            "action": 888,
+            "max_legal_goal_components": 0,
+            "max_reverse_robot_opportunities": 0,
+            "selected_reverse_robots": [],
+            "scope": "max_legal_goal_components refers only to the external V5 stimulus subset after lifecycle/nonapproach filtering; not actor interface availability; actual turn/stop coverage audited separately",
+            "new_goal_filter": "received_straight_nonapproach_v1",
+            "original_joint_allowed_actions": 1,
+            "filtered_stimulus_allowed_actions": 1
+          },
+          {
+            "snapshot_sequence": 14,
+            "task_elapsed_sec": 13.0,
+            "stage": "second_goal",
+            "action": 321,
+            "max_legal_goal_components": 3,
+            "max_reverse_robot_opportunities": 0,
+            "selected_reverse_robots": [],
+            "scope": "max_legal_goal_components refers only to the external V5 stimulus subset after lifecycle/nonapproach filtering; not actor interface availability; actual turn/stop coverage audited separately",
+            "new_goal_filter": "received_straight_nonapproach_v1",
+            "original_joint_allowed_actions": 628,
+            "filtered_stimulus_allowed_actions": 18
+          },
+          {
+            "snapshot_sequence": 15,
+            "task_elapsed_sec": 14.0,
+            "stage": "second_goal",
+            "action": 888,
+            "max_legal_goal_components": 0,
+            "max_reverse_robot_opportunities": 0,
+            "selected_reverse_robots": [],
+            "scope": "max_legal_goal_components refers only to the external V5 stimulus subset after lifecycle/nonapproach filtering; not actor interface availability; actual turn/stop coverage audited separately",
+            "new_goal_filter": "received_straight_nonapproach_v1",
+            "original_joint_allowed_actions": 1,
+            "filtered_stimulus_allowed_actions": 1
+          }
+        ],
+        "v4_stimulus": {
+          "rounds": {
+            "initial": {
+              "waits": {
+                "tb2": {
+                  "task_elapsed_sec": 6.0,
+                  "command_id": 7,
+                  "reason": "received_motion",
+                  "scope": "actual step command submitted; native cancel/stop credit audited separately"
+                },
+                "tb1": {
+                  "task_elapsed_sec": 7.0,
+                  "command_id": 8,
+                  "reason": "received_motion",
+                  "scope": "actual step command submitted; native cancel/stop credit audited separately"
+                },
+                "tb3": {
+                  "task_elapsed_sec": 10.0,
+                  "command_id": 11,
+                  "reason": "bounded_deadline",
+                  "scope": "actual step command submitted; native cancel/stop credit audited separately"
+                }
+              },
+              "baseline_path_m": {
+                "tb1": 0.0,
+                "tb2": 0.0,
+                "tb3": 0.0
+              }
+            },
+            "second": {
+              "waits": {
+                "tb1": {
+                  "task_elapsed_sec": 18.0,
+                  "command_id": 19,
+                  "reason": "received_motion",
+                  "scope": "actual step command submitted; native cancel/stop credit audited separately"
+                },
+                "tb2": {
+                  "task_elapsed_sec": 18.0,
+                  "command_id": 19,
+                  "reason": "received_motion",
+                  "scope": "actual step command submitted; native cancel/stop credit audited separately"
+                },
+                "tb3": {
+                  "task_elapsed_sec": 18.0,
+                  "command_id": 19,
+                  "reason": "received_motion",
+                  "scope": "actual step command submitted; native cancel/stop credit audited separately"
+                }
+              },
+              "baseline_path_m": {
+                "tb1": 0.11902981505892155,
+                "tb2": 0.14758949905306273,
+                "tb3": 0.4084740009455478
+              }
+            }
+          },
+          "decisions": [
+            {
+              "epoch": "mr3_p2a_reach_v52_interface_w0_e1_39619467",
+              "observation_sequence": 1,
+              "observation_digest": "c7269d5060c4820ddb4fe3697727107761bcfac1404ff58e5997b4ea87634756",
+              "round": "initial",
+              "task_elapsed_sec": 0.0,
+              "action": 621,
+              "reasons": {},
+              "wait_robots": [],
+              "received_motion_robots": [],
+              "scope": "planned legal input only, not submitted/cancelled/stopped credit",
+              "new_goal_filter": "received_straight_nonapproach_v1"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v52_interface_w0_e1_39619467",
+              "observation_sequence": 2,
+              "observation_digest": "7b98e417682b0766121afba224beae7eb547c05af86192920560226365b14ce6",
+              "round": "initial",
+              "task_elapsed_sec": 1.0,
+              "action": 888,
+              "reasons": {},
+              "wait_robots": [],
+              "received_motion_robots": [],
+              "scope": "planned legal input only, not submitted/cancelled/stopped credit",
+              "new_goal_filter": "received_straight_nonapproach_v1"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v52_interface_w0_e1_39619467",
+              "observation_sequence": 3,
+              "observation_digest": "a1a894931f915d57e3a7bfabd49c662c38b9a9d70f85d77e08a66fba441eed45",
+              "round": "initial",
+              "task_elapsed_sec": 2.0,
+              "action": 888,
+              "reasons": {
+                "tb3": "received_motion_wait_masked"
+              },
+              "wait_robots": [],
+              "received_motion_robots": [],
+              "scope": "planned legal input only, not submitted/cancelled/stopped credit",
+              "new_goal_filter": "received_straight_nonapproach_v1"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v52_interface_w0_e1_39619467",
+              "observation_sequence": 4,
+              "observation_digest": "75f0ad7b89e4ab0267f41f358770a90deaea3517864989f299fdd295f64e3b84",
+              "round": "initial",
+              "task_elapsed_sec": 3.0,
+              "action": 888,
+              "reasons": {
+                "tb3": "received_motion_wait_masked"
+              },
+              "wait_robots": [],
+              "received_motion_robots": [],
+              "scope": "planned legal input only, not submitted/cancelled/stopped credit",
+              "new_goal_filter": "received_straight_nonapproach_v1"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v52_interface_w0_e1_39619467",
+              "observation_sequence": 5,
+              "observation_digest": "201d9101f046bec9d30be9c50c05f37d4ae4013bdd4a357a436492e2843a7a46",
+              "round": "initial",
+              "task_elapsed_sec": 4.0,
+              "action": 888,
+              "reasons": {},
+              "wait_robots": [],
+              "received_motion_robots": [],
+              "scope": "planned legal input only, not submitted/cancelled/stopped credit",
+              "new_goal_filter": "received_straight_nonapproach_v1"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v52_interface_w0_e1_39619467",
+              "observation_sequence": 6,
+              "observation_digest": "8193a08160e75ad415438bedc076f120a7a8e3fa1f581f318326fcb1808214c8",
+              "round": "initial",
+              "task_elapsed_sec": 5.0,
+              "action": 888,
+              "reasons": {},
+              "wait_robots": [],
+              "received_motion_robots": [],
+              "scope": "planned legal input only, not submitted/cancelled/stopped credit",
+              "new_goal_filter": "received_straight_nonapproach_v1"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v52_interface_w0_e1_39619467",
+              "observation_sequence": 7,
+              "observation_digest": "6bf0e659902f3b048a11b36333e44b610207728cc8f0a8471850e42e646fe288",
+              "round": "initial",
+              "task_elapsed_sec": 6.0,
+              "action": 898,
+              "reasons": {
+                "tb2": "received_motion"
+              },
+              "wait_robots": [
+                "tb2"
+              ],
+              "received_motion_robots": [
+                "tb2"
+              ],
+              "scope": "planned legal input only, not submitted/cancelled/stopped credit",
+              "new_goal_filter": "received_straight_nonapproach_v1"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v52_interface_w0_e1_39619467",
+              "observation_sequence": 8,
+              "observation_digest": "100ee26c10b843146927736d0514c9f94c7d3c59bd77280e21b7cbdb64537c1d",
+              "round": "initial",
+              "task_elapsed_sec": 7.0,
+              "action": 998,
+              "reasons": {
+                "tb1": "received_motion",
+                "tb2": "held_after_submitted_wait"
+              },
+              "wait_robots": [
+                "tb1",
+                "tb2"
+              ],
+              "received_motion_robots": [
+                "tb1"
+              ],
+              "scope": "planned legal input only, not submitted/cancelled/stopped credit",
+              "new_goal_filter": "received_straight_nonapproach_v1"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v52_interface_w0_e1_39619467",
+              "observation_sequence": 9,
+              "observation_digest": "90d6fb04122a405913e1ce2e3e7d6daac413b7fb363ba0a6005e7e2f91289161",
+              "round": "initial",
+              "task_elapsed_sec": 8.0,
+              "action": 998,
+              "reasons": {
+                "tb1": "held_after_submitted_wait",
+                "tb2": "held_after_submitted_wait"
+              },
+              "wait_robots": [
+                "tb1",
+                "tb2"
+              ],
+              "received_motion_robots": [],
+              "scope": "planned legal input only, not submitted/cancelled/stopped credit",
+              "new_goal_filter": "received_straight_nonapproach_v1"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v52_interface_w0_e1_39619467",
+              "observation_sequence": 10,
+              "observation_digest": "67f651bc362025800ad0e542df3e6dfff2df585a3a644c18aad749fe1d91e87b",
+              "round": "initial",
+              "task_elapsed_sec": 9.0,
+              "action": 998,
+              "reasons": {
+                "tb1": "held_after_submitted_wait",
+                "tb2": "held_after_submitted_wait"
+              },
+              "wait_robots": [
+                "tb1",
+                "tb2"
+              ],
+              "received_motion_robots": [],
+              "scope": "planned legal input only, not submitted/cancelled/stopped credit",
+              "new_goal_filter": "received_straight_nonapproach_v1"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v52_interface_w0_e1_39619467",
+              "observation_sequence": 11,
+              "observation_digest": "507b46cfbbed1322c14e58a46594841d0318b0726adbf996ceb0c01203a34c59",
+              "round": "initial",
+              "task_elapsed_sec": 10.0,
+              "action": 999,
+              "reasons": {
+                "tb1": "held_after_submitted_wait",
+                "tb2": "held_after_submitted_wait",
+                "tb3": "bounded_deadline"
+              },
+              "wait_robots": [
+                "tb1",
+                "tb2",
+                "tb3"
+              ],
+              "received_motion_robots": [],
+              "scope": "planned legal input only, not submitted/cancelled/stopped credit",
+              "new_goal_filter": "received_straight_nonapproach_v1"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v52_interface_w0_e1_39619467",
+              "observation_sequence": 12,
+              "observation_digest": "c037558c55577807fe0f93b40c0d1b25abe60d4b1634da3765e8ae5d1ae12924",
+              "round": "initial",
+              "task_elapsed_sec": 11.0,
+              "action": 999,
+              "reasons": {
+                "tb1": "held_after_submitted_wait",
+                "tb2": "held_after_submitted_wait",
+                "tb3": "held_after_submitted_wait"
+              },
+              "wait_robots": [
+                "tb1",
+                "tb2",
+                "tb3"
+              ],
+              "received_motion_robots": [],
+              "scope": "planned legal input only, not submitted/cancelled/stopped credit",
+              "new_goal_filter": "received_straight_nonapproach_v1"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v52_interface_w0_e1_39619467",
+              "observation_sequence": 13,
+              "observation_digest": "e8ffdb7e245e5b8071114c15b8c9172591152ddeb006deda64fece323bfc19ed",
+              "round": "initial",
+              "task_elapsed_sec": 12.0,
+              "action": 999,
+              "reasons": {
+                "tb1": "held_after_submitted_wait",
+                "tb2": "held_after_submitted_wait",
+                "tb3": "held_after_submitted_wait"
+              },
+              "wait_robots": [
+                "tb1",
+                "tb2",
+                "tb3"
+              ],
+              "received_motion_robots": [],
+              "scope": "planned legal input only, not submitted/cancelled/stopped credit",
+              "new_goal_filter": "received_straight_nonapproach_v1"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v52_interface_w0_e1_39619467",
+              "observation_sequence": 14,
+              "observation_digest": "a83fcb75be160f2688f03d666231501cc8a965fec43d1651bcc6debd09f80bc3",
+              "round": "second",
+              "task_elapsed_sec": 13.0,
+              "action": 321,
+              "reasons": {},
+              "wait_robots": [],
+              "received_motion_robots": [],
+              "scope": "planned legal input only, not submitted/cancelled/stopped credit",
+              "new_goal_filter": "received_straight_nonapproach_v1"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v52_interface_w0_e1_39619467",
+              "observation_sequence": 15,
+              "observation_digest": "e39495d3adffcfffe29e0729f11e262046b98be8a4065702c8bd7e5545ab49ad",
+              "round": "second",
+              "task_elapsed_sec": 14.0,
+              "action": 888,
+              "reasons": {
+                "tb1": "received_motion_wait_masked",
+                "tb2": "received_motion_wait_masked",
+                "tb3": "received_motion_wait_masked"
+              },
+              "wait_robots": [],
+              "received_motion_robots": [],
+              "scope": "planned legal input only, not submitted/cancelled/stopped credit",
+              "new_goal_filter": "received_straight_nonapproach_v1"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v52_interface_w0_e1_39619467",
+              "observation_sequence": 16,
+              "observation_digest": "2e6ceb2ddda0a09ee2f70e13c9dba239375870a74222fbb2bcbfeceb84b567c5",
+              "round": "second",
+              "task_elapsed_sec": 15.0,
+              "action": 888,
+              "reasons": {
+                "tb1": "received_motion_wait_masked",
+                "tb2": "received_motion_wait_masked",
+                "tb3": "received_motion_wait_masked"
+              },
+              "wait_robots": [],
+              "received_motion_robots": [],
+              "scope": "planned legal input only, not submitted/cancelled/stopped credit",
+              "new_goal_filter": "received_straight_nonapproach_v1"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v52_interface_w0_e1_39619467",
+              "observation_sequence": 17,
+              "observation_digest": "2cc827590511b03fe390132e473734567ac738b8a14cce3c724c9894b17b4ded",
+              "round": "second",
+              "task_elapsed_sec": 16.0,
+              "action": 888,
+              "reasons": {
+                "tb1": "received_motion_wait_masked",
+                "tb2": "received_motion_wait_masked",
+                "tb3": "received_motion_wait_masked"
+              },
+              "wait_robots": [],
+              "received_motion_robots": [],
+              "scope": "planned legal input only, not submitted/cancelled/stopped credit",
+              "new_goal_filter": "received_straight_nonapproach_v1"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v52_interface_w0_e1_39619467",
+              "observation_sequence": 18,
+              "observation_digest": "0d99bbd57d2190d7cde9e13c3356c35e7521c2572e60e2e8688ee1d4681d760b",
+              "round": "second",
+              "task_elapsed_sec": 17.0,
+              "action": 888,
+              "reasons": {
+                "tb1": "received_motion_wait_masked",
+                "tb2": "received_motion_wait_masked",
+                "tb3": "received_motion_wait_masked"
+              },
+              "wait_robots": [],
+              "received_motion_robots": [],
+              "scope": "planned legal input only, not submitted/cancelled/stopped credit",
+              "new_goal_filter": "received_straight_nonapproach_v1"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v52_interface_w0_e1_39619467",
+              "observation_sequence": 19,
+              "observation_digest": "6c29e8a2f7a69068ece7b37691b901913322011cd817e4a3ed6dba09ef57c97c",
+              "round": "second",
+              "task_elapsed_sec": 18.0,
+              "action": 999,
+              "reasons": {
+                "tb1": "received_motion",
+                "tb2": "received_motion",
+                "tb3": "received_motion"
+              },
+              "wait_robots": [
+                "tb1",
+                "tb2",
+                "tb3"
+              ],
+              "received_motion_robots": [
+                "tb1",
+                "tb2",
+                "tb3"
+              ],
+              "scope": "planned legal input only, not submitted/cancelled/stopped credit",
+              "new_goal_filter": "received_straight_nonapproach_v1"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v52_interface_w0_e1_39619467",
+              "observation_sequence": 20,
+              "observation_digest": "a72ce8fa1a487b36ddf72d568308dc47c08254e81f34dc294192d81a821d4f0f",
+              "round": "second",
+              "task_elapsed_sec": 19.0,
+              "action": 999,
+              "reasons": {
+                "tb1": "held_after_submitted_wait",
+                "tb2": "held_after_submitted_wait",
+                "tb3": "held_after_submitted_wait"
+              },
+              "wait_robots": [
+                "tb1",
+                "tb2",
+                "tb3"
+              ],
+              "received_motion_robots": [],
+              "scope": "planned legal input only, not submitted/cancelled/stopped credit",
+              "new_goal_filter": "received_straight_nonapproach_v1"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v52_interface_w0_e1_39619467",
+              "observation_sequence": 21,
+              "observation_digest": "f0cf1277c8f352e8af01d504ac7546d8da4d86f211d8e121dafc09442fb62fb3",
+              "round": "second",
+              "task_elapsed_sec": 20.0,
+              "action": 999,
+              "reasons": {
+                "tb1": "held_after_submitted_wait",
+                "tb2": "held_after_submitted_wait",
+                "tb3": "held_after_submitted_wait"
+              },
+              "wait_robots": [
+                "tb1",
+                "tb2",
+                "tb3"
+              ],
+              "received_motion_robots": [],
+              "scope": "planned legal input only, not submitted/cancelled/stopped credit",
+              "new_goal_filter": "received_straight_nonapproach_v1"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v52_interface_w0_e1_39619467",
+              "observation_sequence": 22,
+              "observation_digest": "fc2d7728b18d6a349a292babdd8cff1d2970ec714cbc4b8f7006bf68bd6db40f",
+              "round": "second",
+              "task_elapsed_sec": 21.0,
+              "action": 999,
+              "reasons": {
+                "tb1": "held_after_submitted_wait",
+                "tb2": "held_after_submitted_wait",
+                "tb3": "held_after_submitted_wait"
+              },
+              "wait_robots": [
+                "tb1",
+                "tb2",
+                "tb3"
+              ],
+              "received_motion_robots": [],
+              "scope": "planned legal input only, not submitted/cancelled/stopped credit",
+              "new_goal_filter": "received_straight_nonapproach_v1"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v52_interface_w0_e1_39619467",
+              "observation_sequence": 23,
+              "observation_digest": "fd1c48cb3d7d3af5613c1da193316f94364b185fc97cd9fb9a853f47b6776964",
+              "round": "second",
+              "task_elapsed_sec": 22.0,
+              "action": 999,
+              "reasons": {
+                "tb1": "held_after_submitted_wait",
+                "tb2": "held_after_submitted_wait",
+                "tb3": "held_after_submitted_wait"
+              },
+              "wait_robots": [
+                "tb1",
+                "tb2",
+                "tb3"
+              ],
+              "received_motion_robots": [],
+              "scope": "planned legal input only, not submitted/cancelled/stopped credit",
+              "new_goal_filter": "received_straight_nonapproach_v1"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v52_interface_w0_e1_39619467",
+              "observation_sequence": 24,
+              "observation_digest": "524b382ccfdc169e92c315562577d0f557fe5eb11d215bf79d3b9c7e4960f20e",
+              "round": "second",
+              "task_elapsed_sec": 23.0,
+              "action": 999,
+              "reasons": {
+                "tb1": "held_after_submitted_wait",
+                "tb2": "held_after_submitted_wait",
+                "tb3": "held_after_submitted_wait"
+              },
+              "wait_robots": [
+                "tb1",
+                "tb2",
+                "tb3"
+              ],
+              "received_motion_robots": [],
+              "scope": "planned legal input only, not submitted/cancelled/stopped credit",
+              "new_goal_filter": "received_straight_nonapproach_v1"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v52_interface_w0_e1_39619467",
+              "observation_sequence": 25,
+              "observation_digest": "3c6ca01fcd5ad7170632a7ad97d9ce2bfedcb550ca323d25832f57eec0939ada",
+              "round": "second",
+              "task_elapsed_sec": 24.0,
+              "action": 999,
+              "reasons": {
+                "tb1": "held_after_submitted_wait",
+                "tb2": "held_after_submitted_wait",
+                "tb3": "held_after_submitted_wait"
+              },
+              "wait_robots": [
+                "tb1",
+                "tb2",
+                "tb3"
+              ],
+              "received_motion_robots": [],
+              "scope": "planned legal input only, not submitted/cancelled/stopped credit",
+              "new_goal_filter": "received_straight_nonapproach_v1"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v52_interface_w0_e1_39619467",
+              "observation_sequence": 26,
+              "observation_digest": "735ced193ac6d1b6d4e5403ff32d02249e25b57c2c3f54d78868ecf2e04759e8",
+              "round": "second",
+              "task_elapsed_sec": 25.0,
+              "action": 999,
+              "reasons": {
+                "tb1": "held_after_submitted_wait",
+                "tb2": "held_after_submitted_wait",
+                "tb3": "held_after_submitted_wait"
+              },
+              "wait_robots": [
+                "tb1",
+                "tb2",
+                "tb3"
+              ],
+              "received_motion_robots": [],
+              "scope": "planned legal input only, not submitted/cancelled/stopped credit",
+              "new_goal_filter": "received_straight_nonapproach_v1"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v52_interface_w0_e1_39619467",
+              "observation_sequence": 27,
+              "observation_digest": "9288af6db28f5b679bca64306fa709d2e4b02d105a5518e923a7c33f0d419478",
+              "round": "second",
+              "task_elapsed_sec": 26.0,
+              "action": 999,
+              "reasons": {
+                "tb1": "held_after_submitted_wait",
+                "tb2": "held_after_submitted_wait",
+                "tb3": "held_after_submitted_wait"
+              },
+              "wait_robots": [
+                "tb1",
+                "tb2",
+                "tb3"
+              ],
+              "received_motion_robots": [],
+              "scope": "planned legal input only, not submitted/cancelled/stopped credit",
+              "new_goal_filter": "received_straight_nonapproach_v1"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v52_interface_w0_e1_39619467",
+              "observation_sequence": 28,
+              "observation_digest": "13680c8dacd4100accef620b35638646d9cb084c3379b7dddbbb3b22912e35cb",
+              "round": "second",
+              "task_elapsed_sec": 27.0,
+              "action": 999,
+              "reasons": {
+                "tb1": "held_after_submitted_wait",
+                "tb2": "held_after_submitted_wait",
+                "tb3": "held_after_submitted_wait"
+              },
+              "wait_robots": [
+                "tb1",
+                "tb2",
+                "tb3"
+              ],
+              "received_motion_robots": [],
+              "scope": "planned legal input only, not submitted/cancelled/stopped credit",
+              "new_goal_filter": "received_straight_nonapproach_v1"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v52_interface_w0_e1_39619467",
+              "observation_sequence": 29,
+              "observation_digest": "4687f5dc2add001ebd8be8817ceb69d059cc97eef47a9c79a1d2005d1472b32a",
+              "round": "second",
+              "task_elapsed_sec": 28.0,
+              "action": 999,
+              "reasons": {
+                "tb1": "held_after_submitted_wait",
+                "tb2": "held_after_submitted_wait",
+                "tb3": "held_after_submitted_wait"
+              },
+              "wait_robots": [
+                "tb1",
+                "tb2",
+                "tb3"
+              ],
+              "received_motion_robots": [],
+              "scope": "planned legal input only, not submitted/cancelled/stopped credit",
+              "new_goal_filter": "received_straight_nonapproach_v1"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v52_interface_w0_e1_39619467",
+              "observation_sequence": 30,
+              "observation_digest": "315c7f7128a3aba1f398a1457ce21e6fb2aa18dc5d533a7eea2c72b9c8a7d701",
+              "round": "second",
+              "task_elapsed_sec": 29.0,
+              "action": 999,
+              "reasons": {
+                "tb1": "held_after_submitted_wait",
+                "tb2": "held_after_submitted_wait",
+                "tb3": "held_after_submitted_wait"
+              },
+              "wait_robots": [
+                "tb1",
+                "tb2",
+                "tb3"
+              ],
+              "received_motion_robots": [],
+              "scope": "planned legal input only, not submitted/cancelled/stopped credit",
+              "new_goal_filter": "received_straight_nonapproach_v1"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v52_interface_w0_e1_39619467",
+              "observation_sequence": 31,
+              "observation_digest": "92a2ca4f7714eec3331a32986b1622f709120c8b6a71e46c7a88a5069a0d8353",
+              "round": "second",
+              "task_elapsed_sec": 30.0,
+              "action": 999,
+              "reasons": {
+                "tb1": "held_after_submitted_wait",
+                "tb2": "held_after_submitted_wait",
+                "tb3": "held_after_submitted_wait"
+              },
+              "wait_robots": [
+                "tb1",
+                "tb2",
+                "tb3"
+              ],
+              "received_motion_robots": [],
+              "scope": "planned legal input only, not submitted/cancelled/stopped credit",
+              "new_goal_filter": "received_straight_nonapproach_v1"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v52_interface_w0_e1_39619467",
+              "observation_sequence": 32,
+              "observation_digest": "440903d63afc5bcebaf14e087e0e7f8e7500e06f508276233a9b6c24eba14b1f",
+              "round": "second",
+              "task_elapsed_sec": 31.0,
+              "action": 999,
+              "reasons": {
+                "tb1": "held_after_submitted_wait",
+                "tb2": "held_after_submitted_wait",
+                "tb3": "held_after_submitted_wait"
+              },
+              "wait_robots": [
+                "tb1",
+                "tb2",
+                "tb3"
+              ],
+              "received_motion_robots": [],
+              "scope": "planned legal input only, not submitted/cancelled/stopped credit",
+              "new_goal_filter": "received_straight_nonapproach_v1"
+            }
+          ],
+          "pending_submission": null
+        },
+        "late_goal_decisions": [
+          {
+            "snapshot_sequence": 16,
+            "task_elapsed_sec": 15.0,
+            "action": 888,
+            "late_goal_window_sec": [
+              15.0,
+              26.0
+            ],
+            "late_goal_window_ns": [
+              15000000000,
+              26000000000
+            ],
+            "max_legal_goal_components": 0,
+            "original_joint_allowed_actions": 1,
+            "filtered_stimulus_allowed_actions": 1,
+            "new_goal_filter": "received_straight_nonapproach_v1",
+            "scope": "external late-window outward ranking on original received time; counts refer to fixture subset, not actor interface availability; no reverse preference or actual motion/stop credit"
+          },
+          {
+            "snapshot_sequence": 17,
+            "task_elapsed_sec": 16.0,
+            "action": 888,
+            "late_goal_window_sec": [
+              15.0,
+              26.0
+            ],
+            "late_goal_window_ns": [
+              15000000000,
+              26000000000
+            ],
+            "max_legal_goal_components": 0,
+            "original_joint_allowed_actions": 1,
+            "filtered_stimulus_allowed_actions": 1,
+            "new_goal_filter": "received_straight_nonapproach_v1",
+            "scope": "external late-window outward ranking on original received time; counts refer to fixture subset, not actor interface availability; no reverse preference or actual motion/stop credit"
+          },
+          {
+            "snapshot_sequence": 18,
+            "task_elapsed_sec": 17.0,
+            "action": 888,
+            "late_goal_window_sec": [
+              15.0,
+              26.0
+            ],
+            "late_goal_window_ns": [
+              15000000000,
+              26000000000
+            ],
+            "max_legal_goal_components": 0,
+            "original_joint_allowed_actions": 1,
+            "filtered_stimulus_allowed_actions": 1,
+            "new_goal_filter": "received_straight_nonapproach_v1",
+            "scope": "external late-window outward ranking on original received time; counts refer to fixture subset, not actor interface availability; no reverse preference or actual motion/stop credit"
+          },
+          {
+            "snapshot_sequence": 19,
+            "task_elapsed_sec": 18.0,
+            "action": 999,
+            "late_goal_window_sec": [
+              15.0,
+              26.0
+            ],
+            "late_goal_window_ns": [
+              15000000000,
+              26000000000
+            ],
+            "max_legal_goal_components": 0,
+            "original_joint_allowed_actions": 628,
+            "filtered_stimulus_allowed_actions": 1,
+            "new_goal_filter": "received_straight_nonapproach_v1",
+            "scope": "external late-window outward ranking on original received time; counts refer to fixture subset, not actor interface availability; no reverse preference or actual motion/stop credit"
+          },
+          {
+            "snapshot_sequence": 20,
+            "task_elapsed_sec": 19.0,
+            "action": 999,
+            "late_goal_window_sec": [
+              15.0,
+              26.0
+            ],
+            "late_goal_window_ns": [
+              15000000000,
+              26000000000
+            ],
+            "max_legal_goal_components": 0,
+            "original_joint_allowed_actions": 496,
+            "filtered_stimulus_allowed_actions": 1,
+            "new_goal_filter": "received_straight_nonapproach_v1",
+            "scope": "external late-window outward ranking on original received time; counts refer to fixture subset, not actor interface availability; no reverse preference or actual motion/stop credit"
+          },
+          {
+            "snapshot_sequence": 21,
+            "task_elapsed_sec": 20.0,
+            "action": 999,
+            "late_goal_window_sec": [
+              15.0,
+              26.0
+            ],
+            "late_goal_window_ns": [
+              15000000000,
+              26000000000
+            ],
+            "max_legal_goal_components": 0,
+            "original_joint_allowed_actions": 380,
+            "filtered_stimulus_allowed_actions": 1,
+            "new_goal_filter": "received_straight_nonapproach_v1",
+            "scope": "external late-window outward ranking on original received time; counts refer to fixture subset, not actor interface availability; no reverse preference or actual motion/stop credit"
+          },
+          {
+            "snapshot_sequence": 22,
+            "task_elapsed_sec": 21.0,
+            "action": 999,
+            "late_goal_window_sec": [
+              15.0,
+              26.0
+            ],
+            "late_goal_window_ns": [
+              15000000000,
+              26000000000
+            ],
+            "max_legal_goal_components": 0,
+            "original_joint_allowed_actions": 380,
+            "filtered_stimulus_allowed_actions": 1,
+            "new_goal_filter": "received_straight_nonapproach_v1",
+            "scope": "external late-window outward ranking on original received time; counts refer to fixture subset, not actor interface availability; no reverse preference or actual motion/stop credit"
+          },
+          {
+            "snapshot_sequence": 23,
+            "task_elapsed_sec": 22.0,
+            "action": 999,
+            "late_goal_window_sec": [
+              15.0,
+              26.0
+            ],
+            "late_goal_window_ns": [
+              15000000000,
+              26000000000
+            ],
+            "max_legal_goal_components": 0,
+            "original_joint_allowed_actions": 380,
+            "filtered_stimulus_allowed_actions": 1,
+            "new_goal_filter": "received_straight_nonapproach_v1",
+            "scope": "external late-window outward ranking on original received time; counts refer to fixture subset, not actor interface availability; no reverse preference or actual motion/stop credit"
+          },
+          {
+            "snapshot_sequence": 24,
+            "task_elapsed_sec": 23.0,
+            "action": 999,
+            "late_goal_window_sec": [
+              15.0,
+              26.0
+            ],
+            "late_goal_window_ns": [
+              15000000000,
+              26000000000
+            ],
+            "max_legal_goal_components": 0,
+            "original_joint_allowed_actions": 380,
+            "filtered_stimulus_allowed_actions": 1,
+            "new_goal_filter": "received_straight_nonapproach_v1",
+            "scope": "external late-window outward ranking on original received time; counts refer to fixture subset, not actor interface availability; no reverse preference or actual motion/stop credit"
+          },
+          {
+            "snapshot_sequence": 25,
+            "task_elapsed_sec": 24.0,
+            "action": 999,
+            "late_goal_window_sec": [
+              15.0,
+              26.0
+            ],
+            "late_goal_window_ns": [
+              15000000000,
+              26000000000
+            ],
+            "max_legal_goal_components": 0,
+            "original_joint_allowed_actions": 380,
+            "filtered_stimulus_allowed_actions": 1,
+            "new_goal_filter": "received_straight_nonapproach_v1",
+            "scope": "external late-window outward ranking on original received time; counts refer to fixture subset, not actor interface availability; no reverse preference or actual motion/stop credit"
+          },
+          {
+            "snapshot_sequence": 26,
+            "task_elapsed_sec": 25.0,
+            "action": 999,
+            "late_goal_window_sec": [
+              15.0,
+              26.0
+            ],
+            "late_goal_window_ns": [
+              15000000000,
+              26000000000
+            ],
+            "max_legal_goal_components": 0,
+            "original_joint_allowed_actions": 380,
+            "filtered_stimulus_allowed_actions": 1,
+            "new_goal_filter": "received_straight_nonapproach_v1",
+            "scope": "external late-window outward ranking on original received time; counts refer to fixture subset, not actor interface availability; no reverse preference or actual motion/stop credit"
+          }
+        ]
+      },
+      "preparation_parameter_review": {
+        "source": {
+          "relative_path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_nav2_parameters.py",
+          "freeze": "1fa55bc56d5bb9e230d4b397f962d83b1604b278",
+          "sha256": "53dcb0ce70a745956b92a916340019a94d6175074b766d101e5d8425d844b514",
+          "profile_selection": "gentle_turn_v1",
+          "profile_definition_sha256": "af5bf20bf17ed160dd3476653c21eef94d0ba6f30d119c1bbbe66190e78c68a5",
+          "immutable_reader": {
+            "relative_path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_actual_nav2_parameters_v13.py",
+            "freeze": "1fa55bc56d5bb9e230d4b397f962d83b1604b278",
+            "sha256": "9eb963457a8dc8297e4686004ea08c7a06e1e0e9ede7cd795ba9505da9d8f701"
+          },
+          "deployment_yaml_sources": [
+            {
+              "relative_path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot/params/nav2_params_tb1_0.yaml",
+              "freeze": "1fa55bc56d5bb9e230d4b397f962d83b1604b278",
+              "sha256": "d2d01844885fd76ab6e8cd996c37b8994c6cf801010988db12e6dc6e67e38d53"
+            },
+            {
+              "relative_path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot/params/nav2_params_tb2_0.yaml",
+              "freeze": "1fa55bc56d5bb9e230d4b397f962d83b1604b278",
+              "sha256": "5f2ab024dd590a2cc6656072311a11cddbbaf646423a3fe502569b466e92dc33"
+            },
+            {
+              "relative_path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot/params/nav2_params_tb3_0.yaml",
+              "freeze": "1fa55bc56d5bb9e230d4b397f962d83b1604b278",
+              "sha256": "b3d47508e69d2e5b6d93805435dbe42b3a5ec262b06015466d5a92f214106192"
+            }
+          ],
+          "safety_contract": "mr3-reach-v1",
+          "deployment_entry": {
+            "relative_path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_nav2_parameters.py",
+            "freeze": "1fa55bc56d5bb9e230d4b397f962d83b1604b278",
+            "sha256": "848dd05ebd9558a4ec8d47866909662030d24cfce837742a409907ff6c5bfdf3"
+          },
+          "shared_wire_source": {
+            "relative_path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_safety_intent.py",
+            "freeze": "1fa55bc56d5bb9e230d4b397f962d83b1604b278",
+            "sha256": "141d62a1cf4d90414bb6cf191aee146d099a7839d946d991514a05e9bfaaa6f7"
+          }
+        },
+        "command_argv": [
+          "bash",
+          "-c",
+          "source /opt/ros/humble/setup.bash && source \"$1\" && shift && exec /usr/bin/python3 \"$@\"",
+          "mr3_parameter_review",
+          "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/setup.bash",
+          "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_nav2_parameters.py",
+          "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_interface/worker0/episode001_open_101",
+          "--freeze",
+          "1fa55bc56d5bb9e230d4b397f962d83b1604b278",
+          "--output",
+          "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_interface/worker0/episode001_open_101/actual_nav2_parameters.json",
+          "--wall-timeout-sec",
+          "30"
+        ],
+        "wall_timeout_sec": 45,
+        "scope": "after returned reset, paused before first step; readonly GetParameters",
+        "transport": {
+          "native_transport_environment": {
+            "RMW_IMPLEMENTATION": "rmw_fastrtps_cpp",
+            "ROS_LOCALHOST_ONLY": "0",
+            "FASTRTPS_DEFAULT_PROFILES_FILE": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_fastdds_loopback_udp.xml",
+            "SKIP_DEFAULT_XML": "1",
+            "FASTDDS_DEFAULT_PROFILES_FILE": null,
+            "RMW_FASTRTPS_USE_QOS_FROM_XML": null,
+            "RMW_FASTRTPS_PUBLICATION_MODE": null,
+            "profile_sha256": "0b909216206301a5bee45cb1fd755f67a92481d98cec39d818b2dc8764844e37"
+          },
+          "selected_transport_environment": {
+            "RMW_IMPLEMENTATION": "rmw_fastrtps_cpp",
+            "ROS_LOCALHOST_ONLY": "0",
+            "FASTRTPS_DEFAULT_PROFILES_FILE": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_fastdds_loopback_udp.xml",
+            "SKIP_DEFAULT_XML": "1",
+            "FASTDDS_DEFAULT_PROFILES_FILE": null,
+            "RMW_FASTRTPS_USE_QOS_FROM_XML": null,
+            "RMW_FASTRTPS_PUBLICATION_MODE": null
+          },
+          "metadata_sha256": "ef475a57f3f34628fe2223bf52de95b344f199779bdf90a57f1f695ee881500b",
+          "profile_source": {
+            "relative_path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_fastdds_loopback_udp.xml",
+            "freeze": "1fa55bc56d5bb9e230d4b397f962d83b1604b278",
+            "sha256": "0b909216206301a5bee45cb1fd755f67a92481d98cec39d818b2dc8764844e37"
+          }
+        },
+        "returncode": 0,
+        "stdout": "{\"passed\": true, \"nodes\": 9, \"errors\": [], \"output\": \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_interface/worker0/episode001_open_101/actual_nav2_parameters.json\"}\n",
+        "stderr": ""
+      },
+      "terminated": false,
+      "truncated": true,
+      "reason": "external_sampler_limit",
+      "wall_sec_including_startup_and_closure": 1110.519937891513
+    }
+  ],
+  "error": null,
+  "reset_attempts": [
+    {
+      "episode_index": 0,
+      "scene": "open",
+      "seed": 101,
+      "reset_returned": true
+    }
+  ],
+  "preparation_abort": {
+    "requested": false,
+    "first_failure": null,
+    "scope": "cooperative stop after real RPC return; no synthetic transition"
+  },
+  "wall_sec": 1110.5199713325128,
+  "shutdown_receipts": [
+    {
+      "epoch": "mr3_p2a_reach_v52_interface_w0_e1_39619467",
+      "worker_returncode": 0,
+      "forced_shutdown": false,
+      "failed_sample": false,
+      "owned_processes_seen": [
+        {
+          "pid": 4184513,
+          "parent": 4184438,
+          "group": 4184513,
+          "session": 4184513,
+          "start_ticks": 445370217,
+          "state": "Z"
+        },
+        {
+          "pid": 4184527,
+          "parent": 4184513,
+          "group": 4184513,
+          "session": 4184513,
+          "start_ticks": 445370259,
+          "state": "R"
+        },
+        {
+          "pid": 4184552,
+          "parent": 4184513,
+          "group": 4184513,
+          "session": 4184513,
+          "start_ticks": 445370409,
+          "state": "R"
+        },
+        {
+          "pid": 4184562,
+          "parent": 4184552,
+          "group": 4184513,
+          "session": 4184513,
+          "start_ticks": 445370593,
+          "state": "S"
+        },
+        {
+          "pid": 4184564,
+          "parent": 4184552,
+          "group": 4184513,
+          "session": 4184513,
+          "start_ticks": 445370593,
+          "state": "S"
+        },
+        {
+          "pid": 4184566,
+          "parent": 4184552,
+          "group": 4184513,
+          "session": 4184513,
+          "start_ticks": 445370593,
+          "state": "S"
+        },
+        {
+          "pid": 4184568,
+          "parent": 4184552,
+          "group": 4184513,
+          "session": 4184513,
+          "start_ticks": 445370593,
+          "state": "S"
+        },
+        {
+          "pid": 4184570,
+          "parent": 4184552,
+          "group": 4184513,
+          "session": 4184513,
+          "start_ticks": 445370593,
+          "state": "S"
+        },
+        {
+          "pid": 4184572,
+          "parent": 4184552,
+          "group": 4184513,
+          "session": 4184513,
+          "start_ticks": 445370593,
+          "state": "Z"
+        },
+        {
+          "pid": 4184574,
+          "parent": 4184552,
+          "group": 4184513,
+          "session": 4184513,
+          "start_ticks": 445370594,
+          "state": "R"
+        },
+        {
+          "pid": 4184576,
+          "parent": 4184552,
+          "group": 4184513,
+          "session": 4184513,
+          "start_ticks": 445370594,
+          "state": "R"
+        },
+        {
+          "pid": 4184578,
+          "parent": 4184552,
+          "group": 4184513,
+          "session": 4184513,
+          "start_ticks": 445370594,
+          "state": "S"
+        },
+        {
+          "pid": 4185101,
+          "parent": 4184552,
+          "group": 4184513,
+          "session": 4184513,
+          "start_ticks": 445371003,
+          "state": "S"
+        },
+        {
+          "pid": 4185103,
+          "parent": 4184552,
+          "group": 4184513,
+          "session": 4184513,
+          "start_ticks": 445371004,
+          "state": "S"
+        },
+        {
+          "pid": 4185105,
+          "parent": 4184552,
+          "group": 4184513,
+          "session": 4184513,
+          "start_ticks": 445371004,
+          "state": "S"
+        },
+        {
+          "pid": 4185175,
+          "parent": 4184552,
+          "group": 4184513,
+          "session": 4184513,
+          "start_ticks": 445371327,
+          "state": "R"
+        },
+        {
+          "pid": 4185177,
+          "parent": 4184552,
+          "group": 4184513,
+          "session": 4184513,
+          "start_ticks": 445371327,
+          "state": "S"
+        },
+        {
+          "pid": 4185179,
+          "parent": 4184552,
+          "group": 4184513,
+          "session": 4184513,
+          "start_ticks": 445371327,
+          "state": "S"
+        },
+        {
+          "pid": 4185250,
+          "parent": 4184552,
+          "group": 4184513,
+          "session": 4184513,
+          "start_ticks": 445371657,
+          "state": "S"
+        },
+        {
+          "pid": 4185352,
+          "parent": 4184552,
+          "group": 4184513,
+          "session": 4184513,
+          "start_ticks": 445372814,
+          "state": "S"
+        },
+        {
+          "pid": 4185354,
+          "parent": 4184552,
+          "group": 4184513,
+          "session": 4184513,
+          "start_ticks": 445372814,
+          "state": "R"
+        },
+        {
+          "pid": 4185356,
+          "parent": 4184552,
+          "group": 4184513,
+          "session": 4184513,
+          "start_ticks": 445372814,
+          "state": "S"
+        },
+        {
+          "pid": 4185358,
+          "parent": 4184552,
+          "group": 4184513,
+          "session": 4184513,
+          "start_ticks": 445372814,
+          "state": "R"
+        },
+        {
+          "pid": 4185360,
+          "parent": 4184552,
+          "group": 4184513,
+          "session": 4184513,
+          "start_ticks": 445372816,
+          "state": "S"
+        },
+        {
+          "pid": 4185362,
+          "parent": 4184552,
+          "group": 4184513,
+          "session": 4184513,
+          "start_ticks": 445372816,
+          "state": "S"
+        },
+        {
+          "pid": 4185364,
+          "parent": 4184552,
+          "group": 4184513,
+          "session": 4184513,
+          "start_ticks": 445372816,
+          "state": "S"
+        },
+        {
+          "pid": 4185693,
+          "parent": 4184552,
+          "group": 4184513,
+          "session": 4184513,
+          "start_ticks": 445377321,
+          "state": "S"
+        },
+        {
+          "pid": 4185695,
+          "parent": 4184552,
+          "group": 4184513,
+          "session": 4184513,
+          "start_ticks": 445377321,
+          "state": "S"
+        },
+        {
+          "pid": 4185697,
+          "parent": 4184552,
+          "group": 4184513,
+          "session": 4184513,
+          "start_ticks": 445377321,
+          "state": "S"
+        },
+        {
+          "pid": 4185699,
+          "parent": 4184552,
+          "group": 4184513,
+          "session": 4184513,
+          "start_ticks": 445377321,
+          "state": "R"
+        },
+        {
+          "pid": 4185701,
+          "parent": 4184552,
+          "group": 4184513,
+          "session": 4184513,
+          "start_ticks": 445377321,
+          "state": "S"
+        },
+        {
+          "pid": 4185703,
+          "parent": 4184552,
+          "group": 4184513,
+          "session": 4184513,
+          "start_ticks": 445377322,
+          "state": "S"
+        },
+        {
+          "pid": 4185705,
+          "parent": 4184552,
+          "group": 4184513,
+          "session": 4184513,
+          "start_ticks": 445377322,
+          "state": "S"
+        },
+        {
+          "pid": 4186038,
+          "parent": 4184552,
+          "group": 4184513,
+          "session": 4184513,
+          "start_ticks": 445381744,
+          "state": "S"
+        },
+        {
+          "pid": 4186040,
+          "parent": 4184552,
+          "group": 4184513,
+          "session": 4184513,
+          "start_ticks": 445381744,
+          "state": "R"
+        },
+        {
+          "pid": 4186042,
+          "parent": 4184552,
+          "group": 4184513,
+          "session": 4184513,
+          "start_ticks": 445381745,
+          "state": "S"
+        },
+        {
+          "pid": 4186044,
+          "parent": 4184552,
+          "group": 4184513,
+          "session": 4184513,
+          "start_ticks": 445381745,
+          "state": "S"
+        },
+        {
+          "pid": 4186046,
+          "parent": 4184552,
+          "group": 4184513,
+          "session": 4184513,
+          "start_ticks": 445381745,
+          "state": "R"
+        },
+        {
+          "pid": 4186048,
+          "parent": 4184552,
+          "group": 4184513,
+          "session": 4184513,
+          "start_ticks": 445381745,
+          "state": "S"
+        },
+        {
+          "pid": 4186050,
+          "parent": 4184552,
+          "group": 4184513,
+          "session": 4184513,
+          "start_ticks": 445381745,
+          "state": "S"
+        },
+        {
+          "pid": 4186176,
+          "parent": 4184552,
+          "group": 4184513,
+          "session": 4184513,
+          "start_ticks": 445382603,
+          "state": "R"
+        },
+        {
+          "pid": 4186178,
+          "parent": 4184552,
+          "group": 4184513,
+          "session": 4184513,
+          "start_ticks": 445382603,
+          "state": "S"
+        },
+        {
+          "pid": 4186216,
+          "parent": 4184513,
+          "group": 4184513,
+          "session": 4184513,
+          "start_ticks": 445383099,
+          "state": "R"
+        },
+        {
+          "pid": 4186221,
+          "parent": 4186216,
+          "group": 4184513,
+          "session": 4184513,
+          "start_ticks": 445383144,
+          "state": "S"
+        },
+        {
+          "pid": 4191977,
+          "parent": 4184552,
+          "group": 4184513,
+          "session": 4184513,
+          "start_ticks": 445480862,
+          "state": "S"
+        }
+      ],
+      "remaining_owned_processes": [],
+      "remaining_owned_zombies": [],
+      "process_scan_statistics": {
+        "count": 8170,
+        "max_scan_wall_sec": 0.3304684031754732,
+        "max_observed_interval_sec": 0.3783423490822315
+      }
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "schema": "mr3-v53-firstfault-artificial-cpu-freshgone-v1",
+  "passed": true,
+  "actual_wait": {
+    "path": "/tmp/mr3_p2a_v53_firstfault_cpu_v1/actual_wait.json",
+    "sha256": "41af5cb9c8827bac4bc94f7f34d544273983ae5c83e555ca60a83e2d22785e77"
+  },
+  "checked_monotonic_ns": 4474141074435661,
+  "saved_pairs": [
+    {
+      "role": "coordinator_identity",
+      "saved": {
+        "pid": 249997,
+        "parent": 249989,
+        "group": 249989,
+        "session": 249989,
+        "start_ticks": 447411682,
+        "state": "R"
+      },
+      "observed": null,
+      "gone": true,
+      "method": "proc PID absent"
+    },
+    {
+      "role": "child_identity",
+      "saved": {
+        "pid": 250026,
+        "parent": 249997,
+        "group": 249989,
+        "session": 249989,
+        "start_ticks": 447411699,
+        "state": "R"
+      },
+      "observed": null,
+      "gone": true,
+      "method": "proc PID absent"
+    }
+  ],
+  "scope": "only the two saved CPU wrapper/test identities; no native identities inspected",
+  "actual_raw_inputs_read": false
+}

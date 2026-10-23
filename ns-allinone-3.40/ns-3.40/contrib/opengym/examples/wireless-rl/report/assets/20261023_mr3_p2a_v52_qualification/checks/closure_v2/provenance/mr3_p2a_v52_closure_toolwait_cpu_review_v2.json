@@ -1,0 +1,58 @@
+{
+  "schema": "mr3-v52-closure-toolwait-artificial-cpu-v2",
+  "passed": true,
+  "tests": 8,
+  "actual_child_wait_seconds": "0.891500478",
+  "source_unchanged": true,
+  "bound_source_count": 7,
+  "actual_wait": "/tmp/mr3_p2a_v52_closure_toolwait_cpu_v2/actual_wait.json",
+  "saved_cpu_identities": [
+    {
+      "identity": {
+        "pid": 4189713,
+        "parent": 4189711,
+        "group": 4189711,
+        "session": 4189711,
+        "start_ticks": 445434900,
+        "state": "R"
+      },
+      "same_identity_present": false,
+      "state": null
+    },
+    {
+      "identity": {
+        "pid": 4189717,
+        "parent": 4189713,
+        "group": 4189711,
+        "session": 4189711,
+        "start_ticks": 445434920,
+        "state": "R"
+      },
+      "same_identity_present": false,
+      "state": null
+    }
+  ],
+  "engineering_added_seconds": "0",
+  "actual_activity_root_tool_wait_claimed": false,
+  "real_closure_or_archive_executed": false,
+  "live_activity_metadata_or_raw_consumed": false,
+  "checkout_changed": false,
+  "sources": [
+    {
+      "path": "/tmp/mr3_p2a_v52_review_closed_draft_v2.py",
+      "bytes": 48415,
+      "sha256": "8dc1cb698548f2108979ee91f12f0f15238894948e46f1821ecbecaae8878499"
+    },
+    {
+      "path": "/tmp/mr3_p2a_v52_collect_closed_draft_v2.py",
+      "bytes": 16427,
+      "sha256": "b0081c67f8c5913ce02c0daa94397b93aa3a9c1cebbb71b27d80ac161ead35d6"
+    },
+    {
+      "path": "/tmp/mr3_p2a_v52_closure_toolwait_test_v2.py",
+      "bytes": 7568,
+      "sha256": "7d2347e8223322398ca0505fe9a2c094b5b278a89c167def2515db0325fd2d24"
+    }
+  ],
+  "v1_preserved": true
+}

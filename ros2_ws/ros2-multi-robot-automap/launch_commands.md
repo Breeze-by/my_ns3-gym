@@ -1,5 +1,9 @@
 # 当前三机器人基线与MR3适配启动命令
 
+## V52关闭与V53离线取证
+
+V52原命令已执行FAIL并关闭，禁止重试或覆盖：deadline第204步控制模型负ACK；24/30角色保持原工程结果。当前只执行[V53固定两原件描述](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261023_mr3_p2a_v53_firstfault.md)，无ROS launch/worker/机体/模式变更。新40位执行freeze须先commit/push；具体命令、300秒工程预约和独占输出见该预声明。default baseline与原pilot/final原额保持，P2A未完成。下文V52准备段为执行前快照，不是可重开的活动。
+
 ## V52 独立 reset reader 登记与完整资格准备
 
 Reach 的 launch/worker/机体配置保持。新的 `mr3-reach-reset-outward-cancel-v1` 是资格审计工作负载登记，固定原 V17 读者及未改的 V3/V4 物理数学；不是运动/SLAM 模式开关。新完整同冻结资格及学习链使用独占 V52 plan，旧活动命令与原件不可重试或覆盖。准确 CPU/新资格入口、预算和当前尚未执行状态见[V52报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261023_mr3_p2a_v52_qualification.md)。P2A仍未完成，默认baseline保持。

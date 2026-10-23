@@ -8789,3 +8789,33 @@ rtk proxy env PYTHONNOUSERSITE=1 CUDA_VISIBLE_DEVICES= /usr/bin/python3 -B -m re
 V52准备最终闭合：第二轮10case PASS/16.922094235秒；真实prepare PASS/3.775742432秒（plan63de7b8...、binding896b940...、933source/10ELF），真实plan_check PASS/.430606694秒。9份canonical actualwait的源/console/时段与18保存PID/start freshgone均通过，原首轮6fixture FAIL保留；工程新增0，pilot/final原额不动。准备已完成，待新commit/push freeze后唯一执行，不把CPU或plan当作资格。
 
 准确prepare/plan_check子argv见各实际wait：prepare使用system Python `-B -m report.assets.20261023_mr3_p2a_v52_qualification.prepare_plan_v1 --engineering-resource-sha256 8a18fb6dad2b90d56e2670486a15f1c951ea2bdb12dd4dfde0c32aa4ae88f2fa`；plan_check使用ns3gym Python `-B -m report.assets.20261023_mr3_p2a_v52_qualification.plan_check_v1 --output .../checks/plan_check_result_v1.json`。各由`mr3_learning.reach_execution --scope cpu`真实wait并保存全部sources/argv，无World/model。
+
+### 2026-10-23 MR3 P2A V52：真实资格闭合 FAIL
+
+冻结 `1fa55bc56d5bb9e230d4b397f962d83b1604b278`、计划 SHA `63de7b8d0eacea5d2733d3552fc3abc8b7f408db8717f725c36ff2a4d33f35cc`。原实际启动（cwd wireless-rl；工具70032已真正 reaped RC1）：
+
+```bash
+rtk proxy env PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 CUDA_VISIBLE_DEVICES=0 /home/zhuyulab/miniconda3/envs/ns3gym/bin/python -B -m report.assets.20261023_mr3_p2a_v52_qualification.execute_chain_v1 --freeze 1fa55bc56d5bb9e230d4b397f962d83b1604b278
+```
+
+preflight PASS；interface 32步/9类角色、terminal 2×4步/6类、reset 8×32步/9类完整 PASS，同冻结合计24/30必要角色。reset 原生4476.897462437、full6436.187077688、阶段11294.261598921秒；新显式 angular/physics 真正通过。可选逐回合 physics 的两 corridors/tb3 缺合格停车原 FAIL 保留；B类覆盖不能声称 A 类 hard-zero 证明。
+
+deadline open101完整返回203步；第204步 request205/action888，在244.58s commit收到 `normal_control_model_invalid` 负ACK，worker/ROS callback报 infrastructure_failure。native RC1/5215.342431454秒，并非墙时到限。六类deadline审计未派发；minimum/pilot/final全未启动。不能以此前24角色补齐完整资格。精确12EP计划、各实际 argv/种子/参数、失败启动/关闭和原始结果都在[唯一规范库存](report/assets/20261023_mr3_p2a_v52_qualification/closed_inventory_v1.json)指向的原件中。
+
+工程按四份完整父区间计费：preflight46.856060022 + matrix19273.355286664 + matrix_absence5.030591601 + chain_final_absence5.086383807 = **19330.328322094**秒；nested不叠加。累计 **89873.5057367926018/120000**、余 **30126.4942632073982**。120000是代理依用户自主持续委托作出的前瞻选择，不声称用户批准数值；旧账/FAIL不清零，pilot/final费用与决策新增均0。
+
+独立关闭元数据核查PASS：933源/10ELF current/Git/plan稳定、611保存PID/start fresh gone、全局无缺start身份；PID-only原位置未知仍保留。规范7772原件15628170281B无损保存为1293834289 packed B、0 symlink，库存SHA63efb61cc7b2abaf723b3824399d203a1a0b288465a367110eabcb5ec565ccf7。原文档及活动FAIL原样保留。两个大gzip按[overlay](report/assets/20261023_mr3_p2a_v52_qualification/packed_overlay_v1/manifest.json)精确表示为6个≤64MiB块，拼接SHA一致，原gzip/raw仍本地保留。
+
+关闭/归档均为无数学重放CPU：metadata review9.116843688秒、原字节collector1721.014750639秒、packed overlay20.440347567秒，actualwait/source前后稳定，各后继CPU身份独立核销，不混入主611。overlay人工首轮Git参数错误原FAIL保留；修正后9项PASS/8.187965435秒。完整命令、代码、原控制台、source及真实wait见[V52闭合报告](report/20261023_mr3_p2a_v52_qualification.md)和其closure检查集。
+
+### 2026-10-23 MR3 P2A V53：固定两原件 FIRSTFAULT 预声明及 CPU
+
+不重开V52。先做[V53有限描述](report/20261023_mr3_p2a_v53_firstfault.md)，只读已关闭的motion_safety/startup_readiness两原件，固定244.48–244.62s和既有epoch；七解释源仍归原1fa，新consumer/runner归新的执行freeze。完整parent工程预约300秒、consumer合作式240秒；全文件SHA/stat/严格JSON、原行序firstfault、最多256记录/2MiB输出，0World/model/optimizer，政策账户不动。spec/scope已封存库存SHA，正式尚未执行，工程新增0。
+
+v1人工14项PASS/.227115563秒原件保留；独立review指出输出fallback hardcap缺口，v2仅修kind长度/数量及固定小FAIL/最终输出上限。错误legacy-schema疑点已按实际Reach早return撤回，schema不放宽。v2 16项加runner5项人工CPU PASS/.360723161秒；规范安装后同21项PASS/.367003823秒、12源稳定、两保存身份gone。准确规范CPU子命令（完整source清单及实际argv在[actualwait](report/assets/20261023_mr3_p2a_v53_firstfault/checks/canonical_cpu_v1/actual_wait.json)）：
+
+```bash
+/usr/bin/python3 -B -m unittest discover -s report/assets/20261023_mr3_p2a_v53_firstfault -p 'test_*.py' -v
+```
+
+正式唯一命令为本次commit/push后 `rtk proxy env PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 CUDA_VISIBLE_DEVICES= /usr/bin/python3 -B report/assets/20261023_mr3_p2a_v53_firstfault/run_firstfault_v1.py --freeze NEW_EXACT40`。新40位值由实际启动登记，当前没有raw结果。先取具体robot/reason再做CPU修复及新前瞻原生验证；不能直接PPO或混冻结补齐矩阵。P2A未完成，用户持续执行授权保持。

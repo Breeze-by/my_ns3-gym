@@ -1,6 +1,8 @@
 # MR3 P2A V52：reset 显式接线、等价审计提速与新完整资格链
 
-## 当前状态
+**最新闭合：FAIL。** 24/30 必要角色通过；deadline 第204次动作执行收到控制模型负 ACK，整链已关闭，未启动学习。实费与原始失败见文末“实际闭合”，下一步为 [V53 固定两原件取证](20261023_mr3_p2a_v53_firstfault.md)。
+
+## 准备时历史快照
 
 准备完成，待新commit/push freeze执行；尚未新原生执行或学习。P2A 未完成。用户持续授权自主完成，不再逐次询问常规修复或工程安排；P2B/gateway 未启动。
 
@@ -34,3 +36,37 @@ runtime 的 source_proof 按传入的新 freeze 对固定源码集合逐字校�
 V50 原18PASS/2FAIL/10SKIP、阶段超额以及两 corridors 每回合停车样本不足全部保持。原聚合 physics 判据按完整八回合覆盖，不以可选每回合缺样本制造新PASS，也不把旧parser修复冒充通过；新结果由完整原件及全部独立必要审计裁决。禁用的五流 timing 草稿发现有限值/schema校验缺口，仅9人工CPU通过，未准入/未消费原件，不为此新增诊断活动。
 
 [准备闭合元数据](assets/20261023_mr3_p2a_v52_qualification/checks/closed_cpu_preparation_review_v1.json)核9份真实wait、18个保存PID/start均freshgone（Z仍算present），唯一首轮FAIL明确保留、源before/after及控制台SHA稳定，工程0。下一 AI 接手时先读本报告最新状态及规范 plan/driver 原件；当前无新 native/模型，禁止将准备或 CPU PASS 当作 P2A 完成。后续实跑逐项追加本报告、log.md、末账与身份关闭证据，再 commit/push。
+
+## 实际闭合：完整链 FAIL，来源、费用与无损归档关闭 PASS
+
+**本节为最新状态；上文“待执行/无新native”仅保留为准备时历史快照。** freeze `1fa55bc56d5bb9e230d4b397f962d83b1604b278` 已真实执行并由根工具 session70032 实际 reap，返回码 **1**。P2A 仍未完成，没有模型、minimum、pilot、final 或 optimizer 更新，P2B/gateway 未启动。[真实 driver summary](assets/20261023_mr3_p2a_v52_qualification/closed_execution/tmp/mr3_p2a_reach_v52_driver_v1/summary.json)和[实际 root-tool wait](assets/20261023_mr3_p2a_v52_qualification/closed_execution/closure_tools/mr3_p2a_v52_actual_tool_wait_v1.json)保留原 FAIL。
+
+preflight PASS，完整 parent46.856060022秒（nested45.743779836包含其中）；实际 reset 双 load 六源、runtime23/cadence25 的 current/plan/Git source proof 均通过。interface9、terminal6、reset9 必要角色通过，共 **24/30**；reset 全 stage11294.261598921秒，九项必要审计全部 PASS。原可选 physical_per_episode 的两个 corridors/tb3 有意义停车样本不足 FAIL 原样保留；聚合必要 physics 的 B 取消链覆盖不能被解释为 A 硬零停止证明或连续时间定理。
+
+deadline native 完成 **203 次完整 step 返回**，随后一次请求在244.58仿真秒收到真实 `normal_control_model_invalid` 负 ACK/RPC 错误，第204次返回没有产生，不能补造 transition/reward。任务 release41.3秒，故该控制错误发生于203.28任务秒；不是300秒任务截止或本轮 wall allocation 先到期。现有闭合小元数据尚不能确定底层首故障的 robot/reason。deadline 的六项必要科学审计**未派发**，不能计为六项科学重放 FAIL，也不能计 PASS。matrix 随后停止，minimum/pilot/final 未启动；局部 cleanup PASS 不改原 episode infrastructure_failure/forced shutdown。见[原小元数据说明](assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/provenance/mr3_p2a_v52_deadline_failure_metadata_note_v1.md)。
+
+### 实际末账与身份
+
+四个完整工程 parent 区间互不重叠，sum=union；native、watcher、reader nested 时间不另叠加，driver bookkeeping gap 不伪算为 child wait。
+
+| 完整 parent | 实际秒 |
+|---|---:|
+| preflight |46.856060022|
+| matrix |19273.355286664|
+| matrix_absence |5.030591601|
+| chain_final_absence |5.086383807|
+| 合计 union |**19330.328322094**|
+
+承接 V51 累计70543.1774146986018，现为 **89873.5057367926018 /120000**，余额 **30126.4942632073982**。120000仍是代理依据用户持续授权作出的前瞻工程块，`numeric_user_approval_claimed=false`，不是用户逐数值批准；旧账与旧 FAIL 不清零。pilot/final 新增费用均0，原1870 decisions/2905.9547395464029秒和三场 open401/402/403 final-only900 decisions/9000秒保持。见[规范 closure ledger](assets/20261023_mr3_p2a_v52_qualification/closure_ledger_v1.json)。
+
+[实际独立闭合 review](assets/20261023_mr3_p2a_v52_qualification/closed_execution/closure_tools/mr3_p2a_v52_independent_closed_review_v2.json)的 metadata/source/process 结论 PASS、scientific activity 结论仍 FAIL：933源/10ELF 与原 plan/Git 相符，611个保存 PID/start 全部 freshgone；按原 A16 同对象身份/全局覆盖规则，global unbound 与 identity parse errors 均为空。原 PID-only occurrence 保留，不跨对象拼 start，不声称未记录进程不存在。
+
+后继 review、collector、overlay 及相应人工 CPU 的六份完整 wait/console/源码绑定另封存：[CPU 证据](assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/closed_cpu_evidence_v1.json)。独立 fresh 核12个后继CPU身份，未并入主611。新 static-only seal rc0、0.638006453秒、六源稳定，其两个身份在实际工具 reap 后[单独 freshgone](assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/seal_cpu_postreap_v1.json)。这些有限 metadata/archive CPU 工程费0，不重跑科学 reader。reviewer 首稿 critical-ref latch 缺口及 overlay 人工v1的3 FAIL/2 ERROR 原件保留；后继8项 tool-wait、9项 overlay 人工检查通过，不修改原失败。
+
+### 无损封存与 Git 分片表示
+
+实际 collector rc0、1721.014750639 CPU scope实际wait墙秒，保存 **7772 文件 /15628170281 原字节 /1293834289 packed canonical字节 /0 symlink**；policy root 原本未创建。不可变 [V1 inventory](assets/20261023_mr3_p2a_v52_qualification/closed_inventory_v1.json) SHA `63efb61cc7b2abaf723b3824399d203a1a0b288465a367110eabcb5ec565ccf7` 保留原 gzip/解码字节证明与全部原 PASS/FAIL。
+
+实际 overlay rc0、20.440347567 CPU scope实际wait墙秒，仅将两个超过64MiB的既有 packed gzip 按字节拆为六份，每份≤67108864B；逐份与完整连接 SHA均校验，不解压/重压/重放。原 packed 保留本地，只有其两条精确路径被 ignore；分片与不可变 V1 inventory 一起纳入 Git。[最终 manifest](assets/20261023_mr3_p2a_v52_qualification/packed_overlay_v1/manifest.json) SHA `0b5d73736e9560982ca6234cb49e59d589de21e83d40ddeff3ead1abcb6104ad` 保存 offset/index、每份 SHA、完整 gzip SHA及原 raw SHA 的映射。[恢复说明及工具](assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/README.md)给出 exclusive 输出与完整 SHA校验命令；本节所述 canonical字节指标是V1逻辑表示，不是本地同时保留原 gzip/分片后的磁盘用量。
+
+下一步先对固定已闭合原件作一次另行封存范围的有限**首控制故障取证**，识别真实 producer first-fault 与接收链，再按原因修复、CPU验证和新freeze。不能只据通用错误名选根因、放宽95%/质量/安全/12EP30角色，或在修复前启动PPO/机械重跑完整矩阵。剩余30126.4942632073982秒已不足原47220整链预约，后继资源须按实际问题另作有界安排，不借用pilot/final额度。归档和metadata关闭PASS不代表技术P2A完成。

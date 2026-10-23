@@ -1,0 +1,73 @@
+FEF.FE..
+======================================================================
+ERROR: test_binary_roundtrip_size_boundary_exact_ignore_and_originals_retained (__main__.PackedOverlayTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/mr3_p2a_v52_packed_overlay_test_v1.py", line 76, in test_binary_roundtrip_size_boundary_exact_ignore_and_originals_retained
+    manifest = self.build()
+  File "/tmp/mr3_p2a_v52_packed_overlay_test_v1.py", line 73, in build
+    return module.build_overlay(self.asset, self.repo, sha or self.inventory_sha, self.wait_path)
+  File "/tmp/mr3_p2a_v52_packed_overlay_v1.py", line 176, in build_overlay
+    original_ignored = ignored(repo, originals)
+  File "/tmp/mr3_p2a_v52_packed_overlay_v1.py", line 138, in ignored
+    require(result.returncode in (0, 1), 'git check-ignore failed')
+  File "/tmp/mr3_p2a_v52_packed_overlay_v1.py", line 28, in require
+    raise ValueError(message)
+ValueError: git check-ignore failed
+
+======================================================================
+ERROR: test_restore_rejects_tampered_part_and_does_not_overwrite (__main__.PackedOverlayTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/mr3_p2a_v52_packed_overlay_test_v1.py", line 160, in test_restore_rejects_tampered_part_and_does_not_overwrite
+    manifest = self.build()
+  File "/tmp/mr3_p2a_v52_packed_overlay_test_v1.py", line 73, in build
+    return module.build_overlay(self.asset, self.repo, sha or self.inventory_sha, self.wait_path)
+  File "/tmp/mr3_p2a_v52_packed_overlay_v1.py", line 176, in build_overlay
+    original_ignored = ignored(repo, originals)
+  File "/tmp/mr3_p2a_v52_packed_overlay_v1.py", line 138, in ignored
+    require(result.returncode in (0, 1), 'git check-ignore failed')
+  File "/tmp/mr3_p2a_v52_packed_overlay_v1.py", line 28, in require
+    raise ValueError(message)
+ValueError: git check-ignore failed
+
+======================================================================
+FAIL: test_already_tracked_large_blob_is_rejected (__main__.PackedOverlayTests)
+----------------------------------------------------------------------
+ValueError: git check-ignore failed
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/tmp/mr3_p2a_v52_packed_overlay_test_v1.py", line 131, in test_already_tracked_large_blob_is_rejected
+    with self.assertRaisesRegex(ValueError, 'already tracked'):
+AssertionError: "already tracked" does not match "git check-ignore failed"
+
+======================================================================
+FAIL: test_corrupt_new_part_fails_before_exclusion_and_keeps_partial (__main__.PackedOverlayTests)
+----------------------------------------------------------------------
+ValueError: git check-ignore failed
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/tmp/mr3_p2a_v52_packed_overlay_test_v1.py", line 142, in test_corrupt_new_part_fails_before_exclusion_and_keeps_partial
+    with self.assertRaisesRegex(ValueError, 'part is corrupt'):
+AssertionError: "part is corrupt" does not match "git check-ignore failed"
+
+======================================================================
+FAIL: test_original_packed_change_is_detected_before_exclusion (__main__.PackedOverlayTests)
+----------------------------------------------------------------------
+ValueError: git check-ignore failed
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/tmp/mr3_p2a_v52_packed_overlay_test_v1.py", line 155, in test_original_packed_change_is_detected_before_exclusion
+    with self.assertRaisesRegex(ValueError, 'archive/inventory changed'):
+AssertionError: "archive/inventory changed" does not match "git check-ignore failed"
+
+----------------------------------------------------------------------
+Ran 8 tests in 1.138s
+
+FAILED (failures=3, errors=2)

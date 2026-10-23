@@ -1,0 +1,1129 @@
+{
+  "schema": "mr3-exact-seed-native-input-replay-v1",
+  "passed": true,
+  "errors": [],
+  "freeze": "1fa55bc56d5bb9e230d4b397f962d83b1604b278",
+  "seed_rule": "exact-point-bridge-v2",
+  "episode": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101",
+  "start_graph_rule": "point-attachment-3x3-v1",
+  "whole_observation_and_seven_map_replay_passed": true,
+  "exact_full_snapshot_replays": 33,
+  "input_bindings": {
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/metadata.json": {
+      "bytes": 3222,
+      "sha256": "e22079710565dd7505ed9deeec98ce025dbdc51e8d34db9354a7aa5391fa4823"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/supervisor_metadata.json": {
+      "bytes": 1628,
+      "sha256": "179b8d2d4ba4d89be8a7e89a60e29cf7ee5ae748c868246ea59aea615a482cc1"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/transitions.jsonl": {
+      "bytes": 2333233,
+      "sha256": "561d7b661f3210f70ec79111f329324643a5e6e112519fe110361ef53f630323"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/adapter.jsonl": {
+      "bytes": 11387050,
+      "sha256": "74b857acf07d8666261811e892dc7ec414989e24887c21886ca13c73c11030ed"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/snapshots/00000001_259340327e7c40c1b9653bd52764b04262c94a0f2177bde1fb99b29574097396.json": {
+      "bytes": 4245,
+      "sha256": "9e78ae137b44ed6b714039cc963d820bcd0bad252d0c7dff9a59d09102a5c3b9"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/2de23a48adacf1b8fcee4fa1740423bccf2ff3634fca682c5e58e5ebefc68060.json.gz": {
+      "bytes": 792,
+      "sha256": "8eba3a4b706c6b259ed472f5b4637de4057bd1517f148ed0571abc63ad54ce2a"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/d9f29fa029d0e81f92a5e702f0f0c69367139549c66bf5c3139b08ab9655e481.json.gz": {
+      "bytes": 775,
+      "sha256": "09a359c3d7066736eb54f78cc8d34b495327dad4128776fd0b2e2e334146e97e"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/b200665b3e2cc9a1c9e3ea9c0c4b3556836fa3c70c1f4b06bcc514166a7cd86e.json.gz": {
+      "bytes": 786,
+      "sha256": "eab6c28e66470634597e0cc375c510871077816be17ba16f8d8e11c8eaa856c8"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/1f599809fe9da37dda21be0b156834ca6541af52baba4d1ec756c5191f8b7a9c.json.gz": {
+      "bytes": 790,
+      "sha256": "ed92d79d7d139b1420bf634cb9487c535c21a68d46c23277ff5279e2bf457c66"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/b437cd216eeec8d2e6b0a19376b95ad72f53e9e8ac5f00700678f9e8612e1439.json.gz": {
+      "bytes": 879,
+      "sha256": "44a4b305df44690b18a6f85653c7694895c02c26cbe36051ff4c0c7fc2879592"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/888036c47f335f3ae5127494c09166f2bbdc7625c4f8a2740abebe686725f029.json.gz": {
+      "bytes": 921,
+      "sha256": "11423626f684808f4cfbce60b7b988ed8165e951a65f656879886f73fde97843"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/faeff52239c42d020f79961d21473284800a6f24cde3476895635e067dbad50e.json.gz": {
+      "bytes": 954,
+      "sha256": "48a68165c51484e977cf47d5a5b4ceb55e81cda934cfc6588c3d24f1fd92a636"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/snapshots/00000002_51f59970f7b6cca13a04f3d98f626c5c7152feca18da38fece89544fe8b6770f.json": {
+      "bytes": 4249,
+      "sha256": "111a7bdd05aa25ed193f85676c47a9c7fda389a37afb4554e495dd36821696cb"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/289426b182c79cefa9ffae7d89d93181df667fd12e3882a47889735809e8958a.json.gz": {
+      "bytes": 792,
+      "sha256": "b8d42cf8b3260ae1c2f5b26b378729bd94f49eb13d61d754111dc937925443d0"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/3d17382dda61edd82b3dc47ca8a741b4771d73871aad2623a786f12dc404e265.json.gz": {
+      "bytes": 775,
+      "sha256": "d0dee04a6397064eb21b5bcd2ce5e7c9ced2283185e62e7644147798a3561046"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/1462a01d4df0d32c1cc803d1f1989aa1446c199b8fa0892d96bfcf74a33517b6.json.gz": {
+      "bytes": 786,
+      "sha256": "c98ead8c707ebd084114167e8a2739c7c9592828355f5090f521cd444aa3a26c"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/b44a8896447e385a55710d245c76fc08f86be067192b180b3e8bb79ffbd6b8a6.json.gz": {
+      "bytes": 790,
+      "sha256": "2f2d4ad13e1a8ac9145eecbc026e6277e66c00421fbadf5367cfb6716ee5af9c"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/6688bcd150fed82399544815299d31f412dd0792741bf31a3cbd96779f44287e.json.gz": {
+      "bytes": 880,
+      "sha256": "61fcecdee285d62abe9b46fcf76ef23754f28144ca64d8b13c5d585c508cc069"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/3e8810c97432dc21de854a947c45fb2bf9d6c023cea21cf4b6e2bdd7f6b2e5d2.json.gz": {
+      "bytes": 921,
+      "sha256": "d7df0bff69a0b3d7056f75005c251de1856f02a987ecae27b73e3dcb97e3e24c"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/4d0717f87b23d46221d9a82c8ddf0041494429cc667e7b66c6d9bb2898ca78bb.json.gz": {
+      "bytes": 954,
+      "sha256": "4fe046963bab9d659d17920c333d8ed9d54846b3264130a54fdf22f4992402cc"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/snapshots/00000003_f8fd9f62b403e5e84ea9691714dc3eb6fd70f368d6576e2d6cfdfa7c4783baa7.json": {
+      "bytes": 4249,
+      "sha256": "7befa2b772fe7993dfc51eb3d391cf775d22b013b537e2d5757c5a8e4784ff09"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/dabbfb00f1dfdf4d332f028700145393ec5b5a4f1a57cfaac6b880eda9ee64e0.json.gz": {
+      "bytes": 793,
+      "sha256": "c6cf7975b7c09159a802e7906afe404d40140819dcd82e85a6b64451557f51fc"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/c7ae760925ff5dddc6dc49724fbce2a57631e86f468f690cf3530d0711585d00.json.gz": {
+      "bytes": 776,
+      "sha256": "eb3a64b3c82277e1e18da628bdc756790654f6cf5e53aa3495b93ab8ec197840"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/1bdea6b907c967cfc1fd459b6dc6d2ff7b70cdeb96360ba2654719ca435f12a5.json.gz": {
+      "bytes": 787,
+      "sha256": "695876e8033c645708d8b77a7abc9924df36a6010ee0ed0c5f0fc3f6f030edca"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/16317407297863333bbabcba49313a2d027de6cfa5179840f9f0adf15e7e19ed.json.gz": {
+      "bytes": 791,
+      "sha256": "b29a6b3b7884e6fefd0c8d4882918ae67e7440abe67d073447d9ed67b0e1e0d1"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/ba91353339904a2906dc24a059dfc8d0a7de69ca50ecc68a3657da0939068ef5.json.gz": {
+      "bytes": 880,
+      "sha256": "e2bd3941d2de0a9fb36d82e339667e80d798776d0939082756daecfb20a20d52"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/15f5e621f99fee6e2c548214c9bb2afadfed30940926540c75359b448f849c38.json.gz": {
+      "bytes": 919,
+      "sha256": "36278aa10e2ce6f8723b8cc620dc5db4943bcf024022189a087b1618c45bba62"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/7a13e59e86d4273bb220e687fe3db4820ab3896e2dcf88fc2ed56e650d583a6a.json.gz": {
+      "bytes": 954,
+      "sha256": "a4625585fb411d3d3968b32989fde390d9c99da6413d6cbff9b91db512185617"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/snapshots/00000004_18c4b3b6075c30b587c39784862bc96de19bda799590a828b43a66abd7ea8908.json": {
+      "bytes": 4249,
+      "sha256": "c8c8a5dea6673974ccea03f2945e9dde140bd6f9670082e88fa99554e9e356b6"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/e28f56038c3c6884504635b54d44621acb39ff432133041c4700ba386549c3b7.json.gz": {
+      "bytes": 3010,
+      "sha256": "54b6b3174825390c7c74dacca99a9939bde18fa6549adac87e3fcb095c018e25"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/b9977ab9954b80835347d55d642fe89c4943d8d30ccf103bb872aa01e0e3f023.json.gz": {
+      "bytes": 2996,
+      "sha256": "4dd5e64e7352b36c796fe539bd407729dbb42cb3cc81aad21bac706d1c919fa2"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/5ab70f16e3fe8d86de50ab051c733bb96883f19b124c118d0594c4a66fdf589a.json.gz": {
+      "bytes": 3004,
+      "sha256": "1149b012ceddde0efa544a5c278f5d9971bcdf1ecd00219b13277c240b26580c"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/a1bb2123c53e763f02e6f17bb0581a6855d6697e9c1e3109b691b95ff4e2ddef.json.gz": {
+      "bytes": 2998,
+      "sha256": "dbcb813b0e7a0c0067f6daf9208c7b84cb89b0d7c0dbe97611163bc182634cb9"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/f384dc17b25bda90bdd8eb5ffb8cdc220e9d0d852fb738a3db4b55b6f5d51d72.json.gz": {
+      "bytes": 2936,
+      "sha256": "35a5179d3f8240f26056ad072fbddca19c711c346850132ecf52c2c396ebbedc"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/0e84d70f9391b9b7d609e3e5ac914a74901000f269df34b12bb9d6a1e3ce2d73.json.gz": {
+      "bytes": 2908,
+      "sha256": "b874ae2fe7365467b65442de510d7c148c51946727512b01e47f859ad1368e79"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/9e299fb3a58a6fb25f1e87cafeaf6b862d0efa9579a1e3584eff3fdb405ffba2.json.gz": {
+      "bytes": 2816,
+      "sha256": "ee7ee30d37fc4b1c411398c87034f586e45c5b094ce1eb46735f8cdde5bec3a2"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/snapshots/00000005_00ce83a51342ebc1343603aca29199475e6489ea2673e7cbf974da90cdf0c2ac.json": {
+      "bytes": 4251,
+      "sha256": "5bb47609ae4a73e90b78319046c9fbd6fb5685cee8863bb504d7cab592d294d4"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/bfd26f68b430f57f333539d714ac03a1c020ca6cd6a5c67d7a5a3f04250b2ea3.json.gz": {
+      "bytes": 4820,
+      "sha256": "1147aef8647c14a0a0a64a1af1c156bb4147d0974770966a839871018107afe9"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/0e1f1e8844f39762e59fdfd403ba88a6f86425a5cf1bbdf717df3e780ea03220.json.gz": {
+      "bytes": 4885,
+      "sha256": "f033caef390b40784e03e240a090ef733e6909887855d1ca308ec841e2c5dfdb"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/56e78e3f778d83478061848c8ce4408cba6a4b0b96374f2d6630e0664a67d128.json.gz": {
+      "bytes": 4818,
+      "sha256": "b193c825bd64d2528624ae9e6eb794b4566d9035c13b65a0c243cd941712cdd6"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/a6fa677ad5ae691345223570961d25e2a66181ef619c9e4071bb3a3535e174b4.json.gz": {
+      "bytes": 4811,
+      "sha256": "5aa7ef59d6c6d6049ff707a4053fd1d4440664fc19da68156058210813d44d85"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/2de94ae6e4614efcfeac6dc346906c6e172241d26806f4ec4374202d4672d552.json.gz": {
+      "bytes": 5086,
+      "sha256": "cf135e5625a2f43688abb1ce28c41346c62ed1b618563ecd9d3dc1451e2adc6d"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/179b5997c1bc6de3189ea80cce82b7f5bdd1d0e6a7fb453e511ffc4a446df029.json.gz": {
+      "bytes": 4974,
+      "sha256": "fae9d1aeda15e57d5683bb9105985c903d813a4d71c1a0fdf00f9c2fd274254e"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/94f5da67d053625f4e797799adb70a4aa8f81f733d209e17a73c6ac1601be7fe.json.gz": {
+      "bytes": 4886,
+      "sha256": "5e57418e6a88abacc2c03fc2906f00c51a79b536eab0c7576b19d52e5e215a49"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/snapshots/00000006_2032f722beb32d8f1d31e7bca0bcda4a47704a77db434c5360b7a26f59143227.json": {
+      "bytes": 4249,
+      "sha256": "292bf405b6c3cdb7e0345830a1218412990a81df3b0804e8e4580f8935ca52a1"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/3546db5b5b8dd9358c20f7e12cdd0004c4cdad30b26fb7bb4db94c0334035e39.json.gz": {
+      "bytes": 4224,
+      "sha256": "08fc9bab75ce0a87624eaf10eded8a1fff9bf5bc7cd022a26d7220d8eca3ebc0"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/4ce2eb4094700d1bf43e7331a294c54486f683436911fddbf9b84f9e130df136.json.gz": {
+      "bytes": 4263,
+      "sha256": "d25819370e54619d45b3b776d3678283335c9a5e3dab56d502890b338fb87684"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/dd4d73075c0a68b7cc64d5a7902ab0834bf6f029b41c5397ac9d208e6bd9b439.json.gz": {
+      "bytes": 4212,
+      "sha256": "c2e4d96ec87cd1f10796b5fe79636f100d47455fdcf0c617aa5f9f30257bfeff"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/620af659af9d9209c711af1d382dd70fb93ab1f111c4dd2db3b9e56b99d12b11.json.gz": {
+      "bytes": 4218,
+      "sha256": "5070003c14fc2e0069da71e48e87f8948f207f44246abc7dbd5e29790a45eb6e"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/054bf043392095e92bbaa0e6b3d5bd1ba82233729ddc9b9e789427caa1840d6d.json.gz": {
+      "bytes": 4470,
+      "sha256": "126212c7b4212adf46320de9e3610d946feaf6833537e7dc1fb1a97df3a9aaf6"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/211156e1528475f28e59bd661f140c747370fd72409312f0ef245207c3dc0ab2.json.gz": {
+      "bytes": 4674,
+      "sha256": "38d317c57d8454269fa023c77d65eeb315a8d2708bd33ef051d6003876fa5a5b"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/26c6dc5be31e2e3d48b85a367163d3a725c60c4036fec82d82cfb4ac823f90ce.json.gz": {
+      "bytes": 4886,
+      "sha256": "964f8db0ebf53087033c66d54b6dc7bb0e238eacf1dc12966ce9f1cd1edd1aba"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/snapshots/00000007_d2bde0f07bdefd3fac9e466ae78a78c0aba2d0bd549910b0c472b7701691a174.json": {
+      "bytes": 4249,
+      "sha256": "6f87a643f9ccd2e8ceba8dc125390c64fa4dcfcfcd12624067788125512116e4"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/88067412a33b19bf891d6b29b8959955d7ba1376c26d0c54fba3198e30641994.json.gz": {
+      "bytes": 4442,
+      "sha256": "a694c2322caeb67e7c116af7a98440cba7b6d1287911f0e6735f76a612cd547b"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/181a1876db4a796c928da7b08300c5f2515bc4adfc922771fac3352f97b81034.json.gz": {
+      "bytes": 4450,
+      "sha256": "96ca634762ce1a21f6227dd946c40856adf13b646eda183ef7815c578cc9ee58"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/1f73e6f3cdf0fed57331cdefdd56bc8f7a454630828f7f6e498910f9997944b2.json.gz": {
+      "bytes": 4460,
+      "sha256": "3237218f95a84ee067f364674d29bf548950cadfe1a68c592d7a5a33628d741b"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/d0755469bc91d7fa12a037116737b617f3a81c9020b498dbb8c1b288c9bdf815.json.gz": {
+      "bytes": 4431,
+      "sha256": "317878ea07650914bf98dfc862a1e53a4e968848845866e431cf5bdca3209de1"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/d5cec7c2bf76d04439d90db1d79159a5e6c4933d5a8ce4cb4cbfd8ccc3854984.json.gz": {
+      "bytes": 4313,
+      "sha256": "d7996f0ef2ff308b0973e058e86ed487efea70859ef3468a2a51a1b3ca8b00bd"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/7ffa55afba58b57b5d61652432cc5a0dd612388c2faedc5a45023ca789261424.json.gz": {
+      "bytes": 4566,
+      "sha256": "429e166fa385a3828d42bc08e94d8bd63c0dd610e54225590440aa5000224b16"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/9a44df2bd524b0a899eb2408fc8487e5ba2b059f00928f20de8c410b582e6928.json.gz": {
+      "bytes": 4886,
+      "sha256": "6a229abc4b36f1e00c830c5b76b188311bd0fc3bc1d8a6b461f2cf0885643e83"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/snapshots/00000008_2ecf505f25b7313f2616e111290ce68e5cac57204cf36843f5c312fda5fbb4c6.json": {
+      "bytes": 4249,
+      "sha256": "e948365ea8b111db90b7c9dda60e6d7757979fbdd9564aeef92407c853c069db"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/61955b9b5774a0aff9b67fb995567d5c88c74d4f1c3f4be8eaf5285e8383ab7c.json.gz": {
+      "bytes": 3606,
+      "sha256": "c986a347b16cc247109e996cc677635ee82a39a6f92ebf3e97559862075545f3"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/22ce2f5919735e9ce480010b273863d80fbcadb6888330afdc719c3482a52643.json.gz": {
+      "bytes": 3618,
+      "sha256": "28ee3bc412bf74542e3e819da27b8ac5617609e9b2d88ccb0b287d97916fbdd8"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/c57ae4b33c9c7ae1745dcda2da30294c958f8b5253bc3430152a45ac0210ccc0.json.gz": {
+      "bytes": 3625,
+      "sha256": "7c2aae50127fed17c4b611dba9e5aa8251e0b4f474f41c6f6b4532866491d8fa"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/4a1b796fb3c362ae3b505ecc6dbed8d2c36bda99e8b50e4110b0315ceac98437.json.gz": {
+      "bytes": 3600,
+      "sha256": "513b9a37b10bc9cf15164fe81cba18fdbb20c855c9be6bd3629fa7eecbab396f"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/6c3160b2fdde54e307bdaa25a9d0d159801b0febfb266699d0e511ea20cc7ea1.json.gz": {
+      "bytes": 3757,
+      "sha256": "7e64a60deac828011fcfe27c548b1720be7f3239e831bd8bcfca5fd6dddc5537"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/00d865e66e7ce4fd85143afb1736236ab95e113f72340f6df2ae7716ecc40a6a.json.gz": {
+      "bytes": 4219,
+      "sha256": "2e6da5043f7718975adbe2b3512c15ad4a109c9b514c80c1a0f8c86d89ac89f0"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/3c430b7337a401722c1c62f6998f53f66b3ab9f46402cbbf9d4b511ef0265696.json.gz": {
+      "bytes": 4886,
+      "sha256": "1f0c9fc12c022cbc36b8ef918af69c567b4174b60ca06f12ca0d696cf4312eee"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/snapshots/00000009_b9bd45444268a3713c86f7bbbd2de9148b4b16a4d0e74acc20b49977ef2b9d7e.json": {
+      "bytes": 4249,
+      "sha256": "fdcd3b29b3624a4759817dd5d0275545396010fbaa13ed46a6956e1c7916c510"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/2ddb85a5f6eb5bf6d3f669bba44923641b84a6cf5ce279e432eb4e5ac73671c8.json.gz": {
+      "bytes": 3177,
+      "sha256": "12c0177db7741b419e7fb0c007a4bcd6fd7b793409a25147456b66eac931c67a"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/421022aa1e2a49a382efb532f0c9ee29bd91390011462b18fa3cb27c255730a3.json.gz": {
+      "bytes": 3161,
+      "sha256": "4e3a2263a352cd5fc699bf381425366d4d86619aee2f1a0b5866201861283e54"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/d48d4ef6661e49ea6c5e584f71ce0eed279d244daf044064ffb6419375dd9067.json.gz": {
+      "bytes": 3203,
+      "sha256": "90570d040a07562763e0cae7aa7a934bda165186bc6f706f7b597e43dd6bfb9d"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/326d7cb3ca4774e526441e88e016cb95210b8d5812144bd7580bbc40d66c733e.json.gz": {
+      "bytes": 3166,
+      "sha256": "40b624bd4842e5ebcd416dc3e78d7680e7e7b23d077df5be3eeed9f24514517e"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/5fa3d1b95e2b05abc0fed837bd0c7a61b24876958a6da2cb8a7f13a49229219e.json.gz": {
+      "bytes": 3383,
+      "sha256": "59e0376b72e7391497d50536528a771dcd66c1dc1e3cf070bcf2bf5dfe03183f"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/f0e330f01b644a8840990ff36f8fa037dbd3dd93a19d95af85b5bc01f5cfbcdf.json.gz": {
+      "bytes": 3938,
+      "sha256": "72aad4e7f323d8bed206c68eec08d092185d9e82e8a62d635cd014597da00d21"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/38ffe2f507020a8c0ef1ba79b594d85f904bd038213dfc1ae0a8919cf78c657a.json.gz": {
+      "bytes": 4886,
+      "sha256": "e86c31b728300bc9024897c3e5d3829aa6a045674663ebb1484811dfc325fc40"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/snapshots/00000010_13ac04136252bdb1557b9e0390449ca4f6ed402376945636732ef1ecf72e229a.json": {
+      "bytes": 4250,
+      "sha256": "61fcdbdc21f328b90aa533db4bb2917afa07046f2147f6e642ac7e89ebcc425e"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/196de74f0437fc1b0b36e4fe6d4284d38a240253ba1bea45dacd1c996e543951.json.gz": {
+      "bytes": 2944,
+      "sha256": "39bee31e300984655f8df62d94851bfaffa79d3b8e1e45f77f5e123dece2316f"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/b46f0214c6bc1c56753b9738fa1e43aaa7f05ae544c580affa608aee11ac71dc.json.gz": {
+      "bytes": 2907,
+      "sha256": "7c2d4827010ddd0085136b9582fb92ce13d42bf11284acb6f6661aff990799bd"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/7bb921cb6787de29ff962c3762de11fb55f73cc9e1fae99a91971be000abf67f.json.gz": {
+      "bytes": 2940,
+      "sha256": "bc117df2d4210b27505a13c6acb77966178df5f5bf730036b36fdd23edb5f4d6"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/69d32861403702691f7b8efcd7db2c3bc9f9073ec07f81f0dff8885fa63f6562.json.gz": {
+      "bytes": 2935,
+      "sha256": "e5e9f70fceb9150035f133875fd56ddf83c040341150d694d0db440945f1305d"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/f7e51ae6064efd0ec14969f4acef133469d3e1013b3799e7f30a2325e5b5129c.json.gz": {
+      "bytes": 3077,
+      "sha256": "17ff1741d81e039387827420ba0b09062519aaf48b22a533bb9b255baaea515b"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/88cb562c0a1c8c1231891ccda50b379fed4bfa8545a244a5c6c5ba96edc701f2.json.gz": {
+      "bytes": 3937,
+      "sha256": "1d30d520de682e7b0a6d5a2157b74fb1e1f9797f647487dd674ee107804c0ca3"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/62d39cc41bd28f3a7b4822d8dc9545b9c89ab05e4915d8dc3483f453e6f76875.json.gz": {
+      "bytes": 4885,
+      "sha256": "37140b4c02fd7cbd07153440e9ac660a90da89f0dabb22e75f71ad3e98eda0e3"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/snapshots/00000011_15ed514e3c8c5c6b5322bb3ef3e3f796f3c2da29bde540021128b51722791405.json": {
+      "bytes": 4250,
+      "sha256": "606e8779ad963e33aec5198b1f4be938a09f3a43fb320991e1728628444c851a"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/1df3b889f3defe4f37a8ec7e4b71139a26c386bb4364e8deffbbe9a6162ebbe4.json.gz": {
+      "bytes": 2942,
+      "sha256": "8cbb654f4b2083e40861aa34ed51e244acd98a60845c90eacbca0a557fbe2a4f"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/b0737aacf2778061c96439759108b5b2d9b89a8bcf1e5a2281375c82b575ddcb.json.gz": {
+      "bytes": 2907,
+      "sha256": "1a3e9e48f91902dce7875545070eb46389664fa7933660e32be68eecb069bc6b"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/a3b33072d87583a8cf37f859e5b4ecc869b01afdb6efa71b6a8356308b379bd9.json.gz": {
+      "bytes": 2939,
+      "sha256": "d4100667aa88ecd91cf6817fbfcb187dabc50a525de2c8e21908ac2f225c4799"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/2cd3116a86624601eff1ae82d57f6c26a9da51b10311b5c9909ead9e2e42309d.json.gz": {
+      "bytes": 2934,
+      "sha256": "d7a2980b6e2509b76f7cfcc4f37ced7a3c80e945ba7b26e1a4f9d6177bbda723"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/53d081f74dc39d1068c739c0981e33effc1a7c4465b2a8c5310870f739767ee0.json.gz": {
+      "bytes": 3078,
+      "sha256": "8006f183b3d1338e6b4cfbf1fd2e07e5cf2343c50dfbb7a53a8baf4e84ee2aa7"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/19656f47f9615c8d31263ff1197a8af08fdcf2fb09f5382e2b0005ca61803248.json.gz": {
+      "bytes": 3938,
+      "sha256": "1f5797ade5418dba198f3758ff5eaba65f4d4b015aa8429e3d3e4f91b0d2079e"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/e5d67038f417a46d04dd7f86032a058132e138bb173f1f262541ad8224cfa1f8.json.gz": {
+      "bytes": 4886,
+      "sha256": "de5a85c8654ffecf412b0a51e0baee4c117460ab3ac7a62b36ed278b403d348c"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/snapshots/00000012_56b4635b31e5ac436a5b643f96b7ddc0e31a23654ddd31be2f7c8b18b78e13b6.json": {
+      "bytes": 4250,
+      "sha256": "56342bc84b659ee9570671732521cd2e722e6a4695e53abe111af36335ec1e45"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/fad42d883c44312f2544c9fcbacef4a162838304e58e616352809fcc0ef3a60f.json.gz": {
+      "bytes": 2944,
+      "sha256": "a81798392de6677d56dbba86908f5d86e252ecefcc8a1696f4444e7ba4dc9cea"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/411df1a97c0ca0c7afbe3b9535ea6f5c990b35b5f63b2c9bf948e88e4e0fc915.json.gz": {
+      "bytes": 2907,
+      "sha256": "2e6cf1233356ad9b9615bde41da7d576757899a7661b9caf647a94a78356b0aa"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/d8bcbfb05be80ccbfc3228a4776563b39bb04f2ccf336e7ac1a46c21f6b6c6d9.json.gz": {
+      "bytes": 2939,
+      "sha256": "4951e262cf03d72b0f500d2f6861ddff9f05236860bba72c4da6e4d7f497b58d"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/b580ec6798747431feb055b8c14e9a46a639fa49ad01cb3b4d26dcef13b9e66b.json.gz": {
+      "bytes": 2936,
+      "sha256": "75e600baad83c72da66a7c4dc0036076ce9e6dc47c2816d41b98d499cc39b414"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/942dfdbc1dc097f670365d7643dd2bd7d56271d520d2a0053c2a5af871df5313.json.gz": {
+      "bytes": 3079,
+      "sha256": "f74d6ca41338d6605f7a136799eaab3986e4d7986707adda7874bd96f9d8b950"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/26c4f1387be2a908b1922d8fa46cce828f8cd454c13c1c3e00d5dfa9b5339465.json.gz": {
+      "bytes": 3938,
+      "sha256": "d53ca266258ef0a469e2b86a3d89ecf6951626fe01fc8fe9e0aa36db585c0721"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/d454974fbd3b813ff0f82b304c898b540e566591dd5a02887204ca5a885351ad.json.gz": {
+      "bytes": 4886,
+      "sha256": "d7524c5a93433133dfa23c251f3817d771967516521925c31d7b7a98519c8fc9"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/snapshots/00000013_9dace04fcd17a8a589ec7bd61edf1727c531fd3208c27d7f806953b52bc4cafa.json": {
+      "bytes": 4250,
+      "sha256": "e5e83b8796fcdbf15dd05bba16f92de4bf63afc092d4bb2a09360c03a40e76ec"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/89bf449003e24011f7f80a385f620f096d174a6063e21441b3ee9a003f174d31.json.gz": {
+      "bytes": 2767,
+      "sha256": "44a096a0bb3c2e8f1af6e1be3425570fa0c3d1b13c08b8b41fe155849d8e9c8c"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/249cc6cec284709cd61ad78af1d3d888d88dd85d44be681fc30ed909723ab204.json.gz": {
+      "bytes": 2718,
+      "sha256": "155091d7b819ba05f1756de66b534746067a5208c9fa3c46d11e1de67c003bb8"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/3e6819008e275c8992ab97e8ae03c5ffb7206632cc75300585aeae5198519ec6.json.gz": {
+      "bytes": 2779,
+      "sha256": "9ca22f31b23b083c055a0fa2800176aec4e8571ef1b59783bb122b75d76f119c"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/970c12de26e2d84731a27e8a3fcecb09ab80781ed915b1ccb95f6ffe3ae7637d.json.gz": {
+      "bytes": 2757,
+      "sha256": "7d44af218d21fbe1906131095f020f89ff23dad7b6763e0e970c81785a1a642d"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/14ac2b54283994c4b898694bd2bc91484e387856d14aeb92e421a24020f016fe.json.gz": {
+      "bytes": 2846,
+      "sha256": "f359673020948f942c3b1c1a88162a8c70da8062d1b347d23e66286c9641654b"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/938284861cd4aafeac79f739991e6ebf1b57ad0dfe209c282d09d20ac7b8b452.json.gz": {
+      "bytes": 3937,
+      "sha256": "0efaa32ad4511b2458f20ef066305ac3a5c4e5574cb237436b16b67d485e9927"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/b919335278592071c285df577240027062b272b14e743e0c36b22501a9f37ee9.json.gz": {
+      "bytes": 4885,
+      "sha256": "06f62ebd637d37da48ef90bbb6ee3cd46010690d42443e4faa3d0d1d9700fdb6"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/snapshots/00000014_dc9bdd85a9c895c5f57eaee5343087bea053e0746ca201d87e8fd8a40004d628.json": {
+      "bytes": 4244,
+      "sha256": "04bab7208e53ab54ce18c215d9531101b639fd34c1215741f53c1ddff3c3de5d"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/c2f5c66e00b7da6b03975ffd7dbd7abda6db9fd9a20bdf3a8c6b64bc3a2e08ff.json.gz": {
+      "bytes": 2767,
+      "sha256": "29b6a644fb4a4b2128f86abd10bb64be0ca5880f99aca0b243687cf7ca01ccc9"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/4cc97b59e904df0df419ad3da086eb9b113b7f32a62d95012414fe98e4a4b782.json.gz": {
+      "bytes": 2718,
+      "sha256": "e200b1942b0df5951d9cec5c36093cd63dea5a552c942c1790228b721dd5c286"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/2919e7eade310679de83d0cfcce96b7ca76b11f47e7adfb472a4f64508d08c2a.json.gz": {
+      "bytes": 2779,
+      "sha256": "353751a4f952716f1b09ce3653cc5cdb27817debca6d560a261f97153395ccd3"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/c376aaa1d74681a7a60a369b260a334313a75290d6d8ced26eb37530d953cb55.json.gz": {
+      "bytes": 2757,
+      "sha256": "f504fbade285e536301b2d01853ac65b5a4ad94ef379b342c30a45d9c79b3a15"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/e72a31510043a7b5bfd7d1a11ce00e8925135c9580462bb89db2c675ec1e2625.json.gz": {
+      "bytes": 2847,
+      "sha256": "547a935a71defdb49137ac6458dd0866bb95d670e9e07ba33cb24965d432d3c4"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/4bd123032acdb7bd3ca4a665b31779052f0a693ec1b5e63c9bbee0e6e554f73f.json.gz": {
+      "bytes": 3937,
+      "sha256": "246d866e1cbb4c96fbfa2ad47d828a256a3e7d3acede4a4d6ebfbe4afcca165e"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/a8b6940c45924d983b824fb977d0c62045800d615e9d65b4d269f1c74ab57199.json.gz": {
+      "bytes": 4886,
+      "sha256": "636619526ee655b48a6aa654adc35e83548efb15be32b9b813054526d783cf1f"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/snapshots/00000015_c98818d0bc5db1d9a1203c0ad85ddedb77f126e4697da70cea45ebaa591aadb3.json": {
+      "bytes": 4248,
+      "sha256": "e70fdd868e199375d9ad2e56f07f4288fdb6a48c75783c55bc72bac9d12f2819"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/f6e832261e076b129c26575dfa2f17b23aeee06339512de5d9b40e1ab8d743ae.json.gz": {
+      "bytes": 2748,
+      "sha256": "9f8e6ef9f2b2652b57d583910a00ef32db6f19025fd81205d38235961015046b"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/bfde3f009a834e023888fdbbe5c66e34b4049c4e246a71c843f5072563f83d35.json.gz": {
+      "bytes": 2707,
+      "sha256": "2eeb3cf54cc3c16883e683d2eae2dcc5d0e3d11a4c8ad7abef37b344ff7a572a"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/c03c27d2196e947e565c987d9f9ad64f12821a4e4923ea4abb13d5f521127ac4.json.gz": {
+      "bytes": 2770,
+      "sha256": "639daf711577565108cef5780de8a9ab1efc355b2d1ab2bd5e383a0bef323bf2"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/8a66e818d7dea9fc0bc10352a9d376f04ec1fb44dbc49741e4184e2662bf3871.json.gz": {
+      "bytes": 2744,
+      "sha256": "1b2add0fbf950e9fedb7a13c28ebee2d7d7932a80f59527e369e49de55ea23b8"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/2b63dea8f3a11431c89d7c740d51d1e960a6fc44b426858afcf183bb67621ceb.json.gz": {
+      "bytes": 2847,
+      "sha256": "21371eb7b6c7bed1d941e0f8dd88eac1889e6740504b48a447e4476369813321"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/123bb959332db4868c7c20f50bc92d168af5d51a1c3467b3440e4f9dcbd3d148.json.gz": {
+      "bytes": 3938,
+      "sha256": "b6d658c52c4789eef23527601e2ca564aa174176747f056a9a30ea925150068d"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/028369a724855a8b70b11fa4a442074f5cf94db4168b249ffe2106906acb3a55.json.gz": {
+      "bytes": 4968,
+      "sha256": "835ab3b3b90c6e4572664ede8f0fbacf3f6e25aba2e715cf5ad3dc8f551a3443"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/snapshots/00000016_a7f32b41b004cdceb3f8c6a04c853a35b9f57fc1c19d928089ebd678d4cd2ca2.json": {
+      "bytes": 4251,
+      "sha256": "ed4f77a2e4a714d33b23f419fc33e2746136b92adb343032cf9fe26838c63626"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/972ec312c817ce49523fa9c60a4bffe008737dcc01b4680ead25ea42dc0f74c3.json.gz": {
+      "bytes": 2473,
+      "sha256": "52f5cece3e3e21bc4c3c11e4c7a1de5f75207c0e234d7915010353a47648c675"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/96dfcf8e2d5c921c027db8dcc93b41c4b5b1c48979fc6121001f1b7362e28ab3.json.gz": {
+      "bytes": 2423,
+      "sha256": "33a6ec8f9270330defdda0cdb9d3b2c0aaef575c83bcf72385962e9d59d1f3b5"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/37564f4e9eceac6c641c5171a16632a430fdfbb8fdae9fd902b2344f24f22611.json.gz": {
+      "bytes": 2485,
+      "sha256": "71ec4edb5e0ac0fbd3e6f93bb7706133b9117b0f376da5447f73c9516ad6c3d0"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/0eea4d675f26675db8cd8ec730d71873494780c41cb0f3dd4eb9ac47beb3291e.json.gz": {
+      "bytes": 2489,
+      "sha256": "15e564eef738d8311331f517bfce0193a9b558da10d48e904ce46fbb65ae2d22"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/73a91ebb1a565a0c7a301086d1f73c36efc2c0803cab48d7f40a64684c6e219e.json.gz": {
+      "bytes": 2847,
+      "sha256": "430aa0a3d92c877f08874c985bf5e8179e4161b97b7a14193a144a0dc4cab306"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/29f09398477cbd9f20e40ec5d49a602594a2d8c5612bc9c79877042f1688e577.json.gz": {
+      "bytes": 3276,
+      "sha256": "df63373335acf1509f184fb772d281a2e9243a4935d89528e6efed7d94d3931b"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/9ac37326b69966f492bed49f45d538b3497cfbf7f99f756f4e707cf90b581f32.json.gz": {
+      "bytes": 4028,
+      "sha256": "b7da4bc2b04cf3f7ad0a3ef6cecc9bac1faaf1de6abfe4f237b63c4b03365954"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/snapshots/00000017_6a19878483fffa7a3d563beb9ec0cf6eb1f1503787ad8520bfb01802e7107262.json": {
+      "bytes": 4253,
+      "sha256": "050588d2fd539a467dfc1fadf1df8aa20bfc7a6fd7904ee1b28754d9138471a7"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/a8e44c7a6f7bfa0c183732b238278c837b61d105f8665194077f51eedeb11863.json.gz": {
+      "bytes": 1983,
+      "sha256": "a3b2fc4e07eae658ecf72cb5191cae54602b7fdd1cf6346e1e6dd7836e7b25ef"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/05c931bebe7139bec2dcc11c4e231c7c959c85775d2fdae28d8121be3223adac.json.gz": {
+      "bytes": 1933,
+      "sha256": "c8e24a58e0ad810357012418e952db80a0662d58316b5319592b1bdfd53dbc1a"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/648b92786afccd501cd300f5d2140a997f22a256ef8e008fb7afd91411824226.json.gz": {
+      "bytes": 2016,
+      "sha256": "104fe885b5c0c5148a45ea7df7b540bc6be0810be16fca1facfb49c30c1d35aa"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/d6887aefd217623a8c2ff65a47564ee4c8843fbd9947bc342eac15b430590b16.json.gz": {
+      "bytes": 1974,
+      "sha256": "216a7058a587e392d334a83dc6daf855f599cc14d670a42a899ac3db7dea7176"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/fa3dc803c875e6577e934bc0c472a912b8808a2b6ac5f636c617ad1301bb8e2c.json.gz": {
+      "bytes": 2492,
+      "sha256": "e3b5dc701457ed1347c7ecf9a65e82bb8806237252bebe1d2f80b6bb37b0368f"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/3aa805219272980e7a1f184ca890095dda1455ce0912a2161a1b33bbd4999dcd.json.gz": {
+      "bytes": 2674,
+      "sha256": "d2a24bcbedbc99d293832dc21b4f8782d7ea67412f93a970a266e556bae5d70b"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/6fddca6bcaeaf5f8f29e96e12c43b0612a75875e8d6265ca630ffc7649543890.json.gz": {
+      "bytes": 3544,
+      "sha256": "65edee23c92e169ba8208f062536e51379d7bc1549db16d876e545b9baf02e02"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/snapshots/00000018_4e3def1e1130cc72b157995dca36b7ffaef9461b068960654c34d0127ba4154e.json": {
+      "bytes": 4251,
+      "sha256": "407cf39b8a770d03e3d2c864587f27b4de2d014f4cf6252f803f00908a2fc034"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/22c93bf2fd49901563271db0b2d0ced3d83e15c828cfa22a9de6570080139f3f.json.gz": {
+      "bytes": 1837,
+      "sha256": "8cc8883d56e096653913ad09582e26c7ee5ef037d735cd231c75c8e0054e6edf"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/68815db169c419420b39f3b9b2783b921ae0f73f8c9d5cb41d7aae31975b236b.json.gz": {
+      "bytes": 1780,
+      "sha256": "2210154886f35ac41c34d810863c0a203feaf3dcfa41061cfcf0562bd78d5173"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/2e4c830041dda6c49e3f969b2a8c4342a4301b610ccf8fe54cb16719b4059d6c.json.gz": {
+      "bytes": 1830,
+      "sha256": "cd2dc421195ac70056735eed43fbc8e78cb2e03402f959c85e1a1d24b9b5e3ba"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/50e591e47a1d78c39e772da298c60389da5b8208d0b2ca7132e920c52c7e384d.json.gz": {
+      "bytes": 1790,
+      "sha256": "18bb03b6190952d6bcb92c63f91151ce26f81e8e34723bd9e9e23e1bf5408f6f"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/115d139b71ac7443810d39724e9788549007002517ac1a6651a636796b4960bc.json.gz": {
+      "bytes": 2558,
+      "sha256": "83cd9fe3d9d42b0ed7b0eeff9486cf8b3f488b931153266ba21d49fa11d63b33"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/47366c34ccecaa530e5242169b472c31150218692b257d70abe56208519df59b.json.gz": {
+      "bytes": 2171,
+      "sha256": "1d52da2196b0c95c7de9df3e90ab0f6c295ee7daae07b6aa2c6290977ae4bacf"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/f7ab485cdca8b58bb61663ba194a47002860c6129756b1ca4a0b636f6f9a81fb.json.gz": {
+      "bytes": 2718,
+      "sha256": "4d93b29fa3add5e11e80a3c3d7224c19a46e76c36546c76d40e57e35113b8a7e"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/snapshots/00000019_545379e825eb77b6297d14d9161c61a81a250fca7be77b5dab31fc8e05b8f8c5.json": {
+      "bytes": 4247,
+      "sha256": "ae13a2ef37da125748580f9b01a12dbcfa194b5e0703d9757cb3fd042434860d"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/3e6f2c4c033667d655ff16396b0623fcc60f3220f10450a8f90d7264f32f4f75.json.gz": {
+      "bytes": 1799,
+      "sha256": "bd0844e27264489c7112033e039dceeac145a07a0b87a8df32f74bbf66abc83f"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/a09587ce7fc1aca750f5d87c1d00ae1eabb270b8f87feb6b3ca1dcccde10587d.json.gz": {
+      "bytes": 1768,
+      "sha256": "9563be13c216e07f013923632d6accaf2c1a4a9755f162c81dd09eebe27f21fa"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/56467faa3687a344ba38dd091617de893cf0ba1aeeb99cd310eb53de13891388.json.gz": {
+      "bytes": 1801,
+      "sha256": "90d5ddf0ef6d8bbbb57b9969526eb780dc34651f0c509e191f281c91c4802ab2"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/9bc3a9bd2589b19da560b582ae4051dea903f4793162e7c082e9af708d53de6c.json.gz": {
+      "bytes": 1747,
+      "sha256": "e12a9e62a4003fe6f1a55708f0d4f9d50e9e74f6f0b223161395f2dad43051bc"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/54f853cc73cdd930819a4c8c4ec79d4b2688062922ba300b5676b4c90bb5a5d7.json.gz": {
+      "bytes": 2394,
+      "sha256": "78373d45bb673fefb006ef983baab5528b3f648cbf9ffbed1ad6fc7b7c187207"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/76c3f573022d7fb7f3808bc546d799427231b1ef6f2ff73359d0985681763460.json.gz": {
+      "bytes": 2088,
+      "sha256": "354565bb34468612e163d943a9f505e208172914cf17ab33333e838f996d1590"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/d35555068cdca6f325ee27065be577f9e717b2e44fa28942626af8ec2c3bf41f.json.gz": {
+      "bytes": 2430,
+      "sha256": "839df50a82e9b5a5d873493a1bd31734dbf3f02bb9bb662dc66bb1aa67a5deef"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/snapshots/00000020_5aad096664f3329777d7b6e7f3df03b6128c791d9acb087191e8c340126e39f0.json": {
+      "bytes": 4247,
+      "sha256": "94e4689fd2e44d90c51ab667d839bc4de48058579486dff84dc19a14322b91f9"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/4e6de57f1f7a0c376a6478da01de26fee643eddb21c827be53b30237e698e001.json.gz": {
+      "bytes": 1782,
+      "sha256": "38ec6c06711eb24265e05e698e46f991234b9c3d3b13e06d2807f07850228c1d"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/4f85be9eccd36757e64d83c26ac394f01e863093f5eae49a156ccc996370370e.json.gz": {
+      "bytes": 1742,
+      "sha256": "4168fef6aad3d3f3d077a058c4b80eb609ae198d807f6ed2a72b49cb8e7b411a"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/38b16ee680d33e319da82eef5904113e0875db6f505bbcbf52b75e90b0ce5858.json.gz": {
+      "bytes": 1796,
+      "sha256": "45731af5c95d9cc4bc41a5f490835feef0ad0e933b24d99f00f4799878c620f7"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/b975fdb5ba5b168fcc71088aa21d80b336f555ca277f7d9f62d98d176bdb059a.json.gz": {
+      "bytes": 1718,
+      "sha256": "ba8200dd04acdcf90f4dca69411395acb0b1d0d42d1427eb959ddc0ac0a973e5"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/4e675981867e8467b528c122d2f3a4cae9a73f5b60d4b9544eec8d0da274d88c.json.gz": {
+      "bytes": 2251,
+      "sha256": "36d9b47cf3086400b52fba91fa7fd8da5dc51e67d0ad08693b7df914e3ff5ad0"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/0492329553adb489aa500a6f65b3eb776b3c25cc37b2cce6db489476336a61bd.json.gz": {
+      "bytes": 1974,
+      "sha256": "a9193dffbb5d777ad1b8db5170bbce2193f8fed2b2e3b0d2c308d68e8941bb61"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/281fb0efdfb69164cdfb8d5f622bc2ab8905a4648d7d3833c802e5c090b4ce68.json.gz": {
+      "bytes": 2311,
+      "sha256": "3686c4a5dbc4589ab94e6de7da5bffeb3e3a4ca8eb8427427645ab9f6460516b"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/snapshots/00000021_9a5949c8c96ffc6e30c50b123609c4f50a95ddfa236ab7f4731087f0be154d15.json": {
+      "bytes": 4247,
+      "sha256": "db98839e12ae8d35f4bc2579ce01d72f426f1a2e805e42dffb1bed57e66e7e8d"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/a82cf3756c2873eb8618a4567e1dfc3829cb45fca443b02d7a6c5f6cf86b7423.json.gz": {
+      "bytes": 1784,
+      "sha256": "92f3e0dbcb5087b3f9e69570ebef0d22b222ab9a7f92341d3050c0041ba9bc4f"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/e379ff2c3354707bda0b6052de915d9f7129c52f9ad90d01d9e7b680afbc8aca.json.gz": {
+      "bytes": 1744,
+      "sha256": "78613b15f013009e0d4d845ef8189bf2b03ca58447fc0bca7afbbd5cf487d123"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/ca2a182ffedef39b0f2591c75096f19fdea33df9012eb7b1688504594b5680ff.json.gz": {
+      "bytes": 1798,
+      "sha256": "b476d4fee5ba4870b9bb5b5c42236184651f3ee7ee92111ded898171fbcfd4b4"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/8eb344790f40f0efa5bd4e092ec0f89e6db1db0e1e8910a8ec5e322cb17f2f75.json.gz": {
+      "bytes": 1720,
+      "sha256": "94eaf3c48ebe0c10e8a2fb9b79cf06c863b03bfc2db86630184f44f92617bc7f"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/faf38800b56e001f4d7ac988d1ea1bdd785f530cf0497506dc14a83517b8db6a.json.gz": {
+      "bytes": 2250,
+      "sha256": "d1c84cc5d1c7fe4d574eb5c00105ef04e3699044ddb17a7fa2bd37e6dd3b2058"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/0b19a54c6db6f099bd6f37c12151af0663f27adbdb921db538aa8788feda6f43.json.gz": {
+      "bytes": 1973,
+      "sha256": "1288bdd6778401e4ddaeb9a26b921b23a9fbf84fae02fd8763ace45596353510"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/39ec8c389d8e5279505e19db6730ac5d2ecc58ea414469629494d2ab2f2bcfcc.json.gz": {
+      "bytes": 2311,
+      "sha256": "8f3c7a59ddc28b26da33d8b0a479dbcd5c0aaa33fc73f01a17d170d6060216e8"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/snapshots/00000022_f2f3d8b6f52b7cc1ddba96bde26ed79a4f8acec25efd8c013921971601b7afed.json": {
+      "bytes": 4255,
+      "sha256": "4cbf67e1705a4c562ae4d1b9c23628f8ef6a93930fa93055585559732816ad80"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/8a00547eabdf8c1fa1a0b94ab75e409c14b20a225b6f58bdf6066b769b2d18a5.json.gz": {
+      "bytes": 1783,
+      "sha256": "0fe4dd63692a9f2c337bf9710a92ec269c7ce79a05eef7576c045b4e08ae67b8"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/30cd071ae68e4a82132bf5fd502eac9f13b511c43fa5d4acb96f62a3bc213093.json.gz": {
+      "bytes": 1743,
+      "sha256": "564d9ef7c2c5ec5cd31acaf3e303589c367aef4d0ae1822457ec9403c443fc15"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/47ddc6e3d56c379e70b4f9c925fc79e577904ee72d14daff47077c8664a976ef.json.gz": {
+      "bytes": 1798,
+      "sha256": "047bd5b7e01a3c541310b445fbaa55bfa2e4467534fdb6cc1e8e79784e2d82ba"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/35c191da2f210351731a2b16ca194036d58afcf5d1b88edbbdc803863648f4eb.json.gz": {
+      "bytes": 1719,
+      "sha256": "bb4baf840de12ae1974109e9316c28d861c0c759416bdcc6d2025ef33a56783b"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/9c597ff15bf4dc763f8e4b035ff2ac9a8c954ce2f6bf141edc16d542ac848fe5.json.gz": {
+      "bytes": 2251,
+      "sha256": "495aad47a44ea98bf350ef9e730275afd18e9d81ee149aeb4a4529ea97c558bf"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/83847aab5af01d125d674b3d7550b2bd08ab982dfde29a5c35c7984457603cb7.json.gz": {
+      "bytes": 1977,
+      "sha256": "214f3ee294ebaedaa20c1a12ed506fdf2e3c3b1ab6dafdb55504d38fc8d1473b"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/067335cd465f54fe7162b6deef8c95f5d96fd672b2a9d29fcd9ac5cf96a277ef.json.gz": {
+      "bytes": 2314,
+      "sha256": "7d408b3fbfe3a08c47131d77811667a769d2d927a324928f78b6b104868659cb"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/snapshots/00000023_7ba70df08d95e98797b5921ae2a1098da7a152df1433af2354664e1a8bbe2fe2.json": {
+      "bytes": 4247,
+      "sha256": "4a2d59e58f9653c48125e1c158b92dc107b6a768eb9d9e4fbee1572e9a630a62"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/db55e583a9997a58b876b385e6f1f17d54aaf5763d42ed83d7e11f5611d9b76c.json.gz": {
+      "bytes": 1784,
+      "sha256": "09b9e28d45e9ba233437782c7f762bfb919fdcb30f16cae9d08b28262ab280b4"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/8e1a27dc2a2a70f4283cb1d64cb19a8f0fd91e82930ba1a4873411725795a07f.json.gz": {
+      "bytes": 1743,
+      "sha256": "238eaa4922085a0c9c80aba5182e63cf3fba5e20c65eb7b1b08b8dca8e22825f"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/479a105b05481a1b1a04915fecbc842d38e679951305e7cfe435c2988bc72924.json.gz": {
+      "bytes": 1798,
+      "sha256": "2ad31c947e0ed4025ce119656a80ec7607d7f248ebe8f7d3295379e40d1967a6"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/ceb7a51f269fd1935f45e1d730723313380bf7ba007de2482a3f809c2c1f80fb.json.gz": {
+      "bytes": 1720,
+      "sha256": "3b6f8c8524263ce8058170b2459d9116ea602bd5ac85c9c3c99e3802b45e1100"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/e2c1333463386f93d7733040534d5a8272a55538e0012202b045bfb08982e534.json.gz": {
+      "bytes": 2251,
+      "sha256": "17c2d07b4bd9229f4b91e3ac9f5e5fa3e2b19b04a957fb5df4526da64f8353cd"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/6b706690dad42630f224acc6f7aedb136cdfd29d8f2bae1f3d910e09aa457a09.json.gz": {
+      "bytes": 1974,
+      "sha256": "b84c11bd8993d297c024a134d88c9f7d95c9943bb2fd202da99dbcb4225d42b2"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/c3013239e3d6f639d0e22a582dedac518eefdf9b9afad2e06616aa4bdd1e774e.json.gz": {
+      "bytes": 2311,
+      "sha256": "90a594bf0dce0efdd020633fa9f1f4c145c6257ae0d2e44cf9d9cfa7aa1cb070"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/snapshots/00000024_5bae7ebf5bfb18d216a33449a2a938c23e4e520d8cea78c1a8f3f3da4e46c65a.json": {
+      "bytes": 4247,
+      "sha256": "903a730dbb946e4e6f9d2a6cebf5f0835dbae133034d2eab2167fbc83069af3e"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/260e71716dddac0cf9115690c1ebf4924346b2ff1d5cfd07ef3e350b0d668be7.json.gz": {
+      "bytes": 1782,
+      "sha256": "ff97e00a48fa902f33534a8187cff4163c3df51cca284828e3585f3b56e3a442"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/6922755824e708ab3622c04804bdfe9f20de73adeadab287703479ed28455199.json.gz": {
+      "bytes": 1742,
+      "sha256": "75670256ae355b860fecfcfc10351c348708be70219e60ae098fcd5a2b7800b6"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/745b22da94ec750a430a6f7b1439884712863ee543679600885d8b47dc9b8ccc.json.gz": {
+      "bytes": 1796,
+      "sha256": "9346ca6fa72d28798191e88ae9dedb37d536be8e480e3db20f5461e2f02b73b5"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/cbbe5af704f8f8de3cb708fe63745a6d9c98d092b1d880c49b2dff949d035b14.json.gz": {
+      "bytes": 1718,
+      "sha256": "e0813a6faf508851921ceddb12c7cce0c590e9ac1bfd7adaabd0860376761f2d"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/4dbc6b57662bfacabb9f0155477cad2f56e94e5f0d59daeb17ba49d32d57f541.json.gz": {
+      "bytes": 2250,
+      "sha256": "3c748cded31160cdb04a195e3c3422779dd613591dea20a94f0949dc9a0e3002"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/6e90e1622b43349dc376f39cba1e83eb340e584374da59533fefbd6bd1df52aa.json.gz": {
+      "bytes": 1974,
+      "sha256": "de36c0ed9856a80ebc1427898f79a11e1858fe56688c85be2c9dcf74f0e5afa8"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/69ecb85b93405af3b7bf9773c870b189afd6373a2c203fca68096ab9e1f29f75.json.gz": {
+      "bytes": 2311,
+      "sha256": "4311f1fc7fcec72a5526c5548c45c451025baec9652a1cdf14358e3d1d4e0820"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/snapshots/00000025_2d6ccbe77556bb630971ed0fd6391989602135110103625bbc3b0703e133aaec.json": {
+      "bytes": 4249,
+      "sha256": "e6dcee44bb04dfc28c2571657f92f14c46ed1e2bd5603e56cd5c2d7b3ec67f7e"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/de50acdab3774db7e8548277b0ecfce75670b88b97a26a3efeb4a8dc6aa057fb.json.gz": {
+      "bytes": 1783,
+      "sha256": "124d1025b8e6d74e2f63315663ade90d4260e5e995888bdc43eb2e71f9ce88bf"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/f5cbc9521d8beada9c778c3be6745ef83f22b20fb5d5ab8389da6a66baa7c30b.json.gz": {
+      "bytes": 1744,
+      "sha256": "dfa2e75eb0395c42cb53d76689e0b60f816e6fe44786890503f2bbdbd6aa1d6e"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/8f968bfa393b70a1d28ac29cd227d851f30aa3f2cdcfccae3595339d03c20cdb.json.gz": {
+      "bytes": 1798,
+      "sha256": "e4228dfa60401043274442b3c37d016c44c182be621a59d80826154c6045bd92"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/9f9c5f3b86fe3ae47f1379f461a21350e290f013255d2a02aaec3fcd1608773c.json.gz": {
+      "bytes": 1720,
+      "sha256": "d71e4dcf0e7eff420d5779af1c1c7c3e2eaba157c95ca0a0dffcd796ad8d5a8d"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/690ac6017e5a5a17f001dbf4ac3fce14018725e92ca82dd1f3f974486fe2775a.json.gz": {
+      "bytes": 2251,
+      "sha256": "28d9e9c13756a6bcdf2c9e06df1b6779db54e21ea983d7af573e4c0605c6f7ae"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/74237ce46923171248a785b8fca3853a208c680b6180f79968fe57e3a0ec3710.json.gz": {
+      "bytes": 1974,
+      "sha256": "ff78158b7be44382f0385150ea7e9f73a3032cfdf9d97285f565db25532872a9"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/9df211073517962dd6f5574840806e218728c7024a62f0ccf6686607fc2b1a71.json.gz": {
+      "bytes": 2314,
+      "sha256": "add9dc6d093eb1ef5086fcabef993ca5a792d4efca2785eeb7a03d81f5bb4e16"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/snapshots/00000026_96a8df179b483e77c4a86e28ce54f8fad09754f36344b62d58df5e521121ff55.json": {
+      "bytes": 4255,
+      "sha256": "12e1379448302476eeead7bc232d1d3b6b9db3de7afdc75dfb99aa1fbe6ba824"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/3c614d49be71646110f6fe11d49fd1f9d1b8d6a774b2b57286f2679840470aeb.json.gz": {
+      "bytes": 1784,
+      "sha256": "65927b02956bca6653af9e16142c22bd88d2b415725a89de35940579eb4951b1"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/acfb4068cd4bfee9b84b03e9965fec143feb7ac057e23289ed0cba3b7ec5ff60.json.gz": {
+      "bytes": 1744,
+      "sha256": "cd34dff97e4e3019e898825d3092f7431684c62a8d9ab84a79abbbce1ada6b96"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/060b017778bb7d92f9ecaddc70514ba14c3200e16581c4959ad9dc60c925273e.json.gz": {
+      "bytes": 1798,
+      "sha256": "d19612355b6bb1821b743181c763741f2865fa601cc2d81ccf6b3ca9bbf8c517"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/fa1b42cc030c0f75f26e2c1e396533b7cd98fdeb42380524142448f892386053.json.gz": {
+      "bytes": 1720,
+      "sha256": "13dffe3d10e1ace1e393f2af80d542a19fc254d1cddee672a6bb4e8461bc60ac"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/1d79ad67d6a01b978772f5a05fdad456553d3bcc8587abc55854417194370349.json.gz": {
+      "bytes": 2251,
+      "sha256": "2f0a82bc73fda85966d675c190f40078d31afbe0a0ecc3bce22ba03250887cc8"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/440011e3b133b34de1f2a1e6bd14c97f663b93dc2ac4335cf89c076a8b26472c.json.gz": {
+      "bytes": 1977,
+      "sha256": "be02dbe7164052bc3a3d1254dcc7526c400ef10b1c7f31be14ff6cfb3975c8bb"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/99c8f5f5e204c088df447bca5164726bd088f0a59bcae73ccce0492071d27a21.json.gz": {
+      "bytes": 2313,
+      "sha256": "67ce1257c54e882f1b8459310909246592513d65bcefffcd867377097d0356ed"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/snapshots/00000027_e9540a51aea1827937d941704f4b0a58687eaa41c96e40f9b79290b0711487a2.json": {
+      "bytes": 4251,
+      "sha256": "10593bd50bfaecf078d9b166a34d2d230784a9e289eabbf1835a71c2a0db7863"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/b9704cc7630d97c044c72126bd3ed100b30c9bae93531f0a7a96fe9995b437bb.json.gz": {
+      "bytes": 1782,
+      "sha256": "db462f257749ccf5dba45a5dc79a335603f0ef67afe086c28ee9f72976db973f"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/782066887d9a97cac03b3ede12be7fe2e470d71f65d29a1f8ae4c2c0165fbeb5.json.gz": {
+      "bytes": 1742,
+      "sha256": "a0223b228e04c246c3b86bae73afcada8e208550799ccc6a89d8e68baa67d32e"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/ed8a05ebe784db7c903f6dae5c7c8b477900961b0cfcd6dd63c689c239099472.json.gz": {
+      "bytes": 1796,
+      "sha256": "739c591ca4ceac06587c6107e8804172a19466edfecfc69997a6a6f55fafc0ef"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/67b91eeab7c5a0182c4b062ab395fb035860d3ed506cffdf1fcf9f2037b9ce6a.json.gz": {
+      "bytes": 1718,
+      "sha256": "bfd77f012aa9164c0e943453e619c15ea7fb2d65a82f43e005b69d68d2de1a37"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/21e29574adce39b1fc00ed8d7369d518b4be32a89262d4ae7b26a4c14879ac21.json.gz": {
+      "bytes": 2250,
+      "sha256": "ac263125ed3a02c6233d50ca9554f09e39705c37e166f929fdf674e338210a0b"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/4eb60ad7ba05c0792a2973149880245758816bcc99c6158dc32305e2df5078f5.json.gz": {
+      "bytes": 1974,
+      "sha256": "e82cc115b8125d7986172ea2eb382d492c6477eba7884cc6d047b0f8bf0c9637"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/16ad06f1d0befb48e9aed8c9b48484e05616f2d0023329819538cceecae7430b.json.gz": {
+      "bytes": 2311,
+      "sha256": "b6365dca3358926f94e30d912daf11769b1e8513daed0a9f8ead3b74fab380ca"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/snapshots/00000028_45d5551f27215cb0a9c2bfc59b6db8b2aea2c5aaef0b65a1ca50510fe34258dd.json": {
+      "bytes": 4247,
+      "sha256": "69502129bdbc1db2517ad60420a1855b6f77f46896d57e7b8a96f12f53e82a82"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/890fa60fb6f85782114d4f9ab87fe99fd1e46071c56aa54aad25943717abbeb1.json.gz": {
+      "bytes": 1783,
+      "sha256": "79331cce732b8b3465ca02b11fb980580a894f0baf1e1fbf4c340fd5e656a187"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/f932fdf980f476e4784427381eadba1792c1b40694cac7759160a81e4909a8b6.json.gz": {
+      "bytes": 1742,
+      "sha256": "315152a1eb44f5226cebf4ba50a7c7cd46a28e1b17c26af5d8e0d7c915a546c1"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/fc4e32d726318efd2218799ee1f969f73253d5b61cc193c1a5286e96657e4793.json.gz": {
+      "bytes": 1797,
+      "sha256": "51b0c067ca66890bcd203e9bb408770751700eb76ca13a428bbffc06e07151b0"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/b6d1a5348bf071e19b6e4c446056b0ad9fa05cd9c0a2cb7f8e50fb6982adefdc.json.gz": {
+      "bytes": 1719,
+      "sha256": "701dc9a6e158568f8b10fe6db2b22f6808a6ec5c8d13f0eab4c0ad5712a0648d"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/86e713830a176e629ece730673c745a62e297657325cd74bf9fb95d35c9271d8.json.gz": {
+      "bytes": 2250,
+      "sha256": "cb14a4e9c6e9d1347790e95f4c55d41539f4689ae3dc090da2968852768e1d17"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/2405704b53f63fab3b3bd8bc220630d2f4d37bd53f4a798bff1ccc817ada6eba.json.gz": {
+      "bytes": 1974,
+      "sha256": "c5111cc51dc2b37be5c4ab5ea3fbd5afb2df7f03fcb3408910b08768d6e81a83"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/dc63df012d80dba915d18173414a8ae33126aacf6b5e4342bc00bca8946b3ecf.json.gz": {
+      "bytes": 2311,
+      "sha256": "898541c639a1dd412fcd88438e6ece8c11a77add37cb923f27b51e30f2b0f3bf"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/snapshots/00000029_eecd69f092b4f0b125d442cfaff30b6e68f50ac79974872149d60218766de799.json": {
+      "bytes": 4247,
+      "sha256": "ac716467f502f9851b0cbca96c5888c88a72b661e9a0206bdfb380a3931dbb47"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/2ceebf813c5a535c9c4ae5ffdbc619c83989ca6c1c6e13d06826632459865a9f.json.gz": {
+      "bytes": 1783,
+      "sha256": "f71341df0cf4441789f10e4b7481d54f2361b6e0bc568fd2014899b9719066b6"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/b7589635345392b8af9efade3731936d541827f33e36f4e9b71bfeb6aa5f94a4.json.gz": {
+      "bytes": 1742,
+      "sha256": "7224053194593966bb29c9bb6bd849318428da8ed93fc0a48dc3f5e7ff3dc02f"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/f6479ba6342185d3e2ae8b057959e0768765bf7d61eea7869a6e58fecf7691f2.json.gz": {
+      "bytes": 1797,
+      "sha256": "6f61e5d589704e423f7419267bcd31d5d4f7acdeb78afba3ce7003e345f1ccb5"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/e2e9bc5b80d6e1da15e7cebc3f097b5205b2b0cce64170f28a38dfb00c4b2538.json.gz": {
+      "bytes": 1719,
+      "sha256": "9aedbc8366fc42ac4c4edcd015e238fa6f7942c648aba6906ed5344699f4e6fe"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/117a1697ba57861420652cef93e56ad429be1b1466911c9bb9419be092b11410.json.gz": {
+      "bytes": 2250,
+      "sha256": "cc504f866f1b02e72203938f608b9b5b6f3408ba5f79adcd6c8e05fc93751f3d"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/6ba8fa69ff5678002d019611bfabe977af5f93bd269639bec881997330798b18.json.gz": {
+      "bytes": 1974,
+      "sha256": "0fb640a7da0c778675a6cf3da6a816aa0eada1ddd701699979191114e9bcc02d"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/5206b9381ae648afb0ee06ec1c3e2259fb2959bee7d77745d4b2266b1e4d3d5a.json.gz": {
+      "bytes": 2311,
+      "sha256": "d98014e60bba1f8d68aaf48b882f40195c78d41e11190c05ab10e812b0236725"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/snapshots/00000030_55cf0e11a91b0f09a5c4d0276c426e2469268437d98815dc73ee1ac5e3aaede1.json": {
+      "bytes": 4255,
+      "sha256": "dc12ab8a4d7de0d4a9835fa09a4a4a8143f6139d099ad3756cca693fbccd6f02"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/02255f710255446e3007af44503d05c46637ec1665beef432c5a0b27f891b520.json.gz": {
+      "bytes": 1784,
+      "sha256": "2d75630750aba2ee6eb7ab4d44305f8400b6369ebf91384537292afcda66df17"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/e820e4340e56773b5ea603d530bd47a4424c2c5a6c93318907ae8239e2cf81ae.json.gz": {
+      "bytes": 1743,
+      "sha256": "3d5fcbcb593d6a04f8fb0583911913e2590a01a85a8db5d38cf693dcc80f5cd1"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/f1de44708ad54a7da137f68241313e5393ccd7dee465c7bce2a69115d5741b0b.json.gz": {
+      "bytes": 1798,
+      "sha256": "e33493bd7b638bd3540889fc373b1b5c9f649425e60a18c0a0962bfa3218f28c"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/f20b3d620c25926af4b82957543809cbb0c79c49f56a207f0a2779766f1811a8.json.gz": {
+      "bytes": 1720,
+      "sha256": "fc7404d51f8dc2dc8c342c84f3c63396b8ea6984f352f0ac0a2d5284d99722ba"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/4b2aa7913a0bc62d7e17305a8c61652cbe5ed18d149f8520d06662bb4cb39501.json.gz": {
+      "bytes": 2251,
+      "sha256": "fcffe063b52fa541b69e58695214ed19ee742466a61f3db045b1bcfd8d680e38"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/580a77b21cdd0cfb586293eb61e0631b157f2d8947edd5031a0529acf0f7d890.json.gz": {
+      "bytes": 1977,
+      "sha256": "b3cf4bc728ffbd16cbbbd4acb4874fee95c23a280bc31f2b370e1b932d1d543b"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/dad723faa5223aaa048bde746498303a01cf5088f97b4dd10b67826798da7e80.json.gz": {
+      "bytes": 2313,
+      "sha256": "7b14ffee858cf251dc0875511f7859dd72e53ea85b9602958a00c9b43c4827a0"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/snapshots/00000031_4aad9c95ecb8d986f0983e145b874c7e3495b8d309233264a3a52ad930dbf119.json": {
+      "bytes": 4247,
+      "sha256": "5933584783a3f0793caee446ff4dcfe244fddb3e29f26d92755534ffe1083e1f"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/a1563cac70775be514981b301861e8a9f5370faac05ef734791945da1e2c2218.json.gz": {
+      "bytes": 1792,
+      "sha256": "f073da01fbd9302c93140f83e820213bb33a1d02c2a111f7fa6cc1e40a241314"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/1fbc631fbcd285f401da381d50c476afc05713b18e1b379922feb8fab36c16e1.json.gz": {
+      "bytes": 1753,
+      "sha256": "d46dc00a82ca43876b3c817e7cedbc777d90b4d7838ae70105472ac042fc2e04"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/e8501ee67918432f0e02b67c07ae9ec52c3d8741be6bb52bde195c69a8eb5007.json.gz": {
+      "bytes": 1796,
+      "sha256": "c09411dd6b7f5a54b736d9f210e84c7a821884983798c40a1436b8bd5855c6ad"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/5a52d18018df8ead211c763544563202dc086eedc5b268772362accd7d1b4fe8.json.gz": {
+      "bytes": 1726,
+      "sha256": "1d5fde4f7a6655449deafcd7861b7d2b8c73ec5629c2fff140481876ae908790"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/2d195a3caba6672975dd6195d27e61633f012a24f7d7e568c4b13d40ec1944e5.json.gz": {
+      "bytes": 2251,
+      "sha256": "9b73316e9e10d2397962bfa553f33f1fa786029b275eed0f9c57d8058afcd080"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/d4a68f581969481062cee8ea3b033fc8a9d44e85516c585ca2562236f0ee2d4f.json.gz": {
+      "bytes": 1913,
+      "sha256": "4920e5c65d274e0b8b870c47d0c6b1176ef43e2cce025fa2fe92fe8a6e451a6e"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/ac06fc7886db5f86fbf1bd4d66fc649b02752366edd3a22ab7b0cef2a0625188.json.gz": {
+      "bytes": 2311,
+      "sha256": "f829b800d6bcd5e7cc286546f355efed11e7edf8e140550c44899d615afa2177"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/snapshots/00000032_516102fb1dfc0a56bf0d40b5ddef303af195c2d0508258284ad5e608ec993a66.json": {
+      "bytes": 4253,
+      "sha256": "86830be76cf09ce7de88518ed7119c94f502a2365781cf097662ca7fc281a5c9"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/4c447992557c43c1fbcdb8e38c99f05172e25d8190ea724b446c738a58711538.json.gz": {
+      "bytes": 1791,
+      "sha256": "6d8f3aea8293debef309491b580e7107322f460fe4482047ca6de2dd65921bb7"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/382b3fe5cb68f02f144ff40738c052d804b96fcaf9a3fb60f91b25355a660ba9.json.gz": {
+      "bytes": 1752,
+      "sha256": "3297afafbc4fdb2a2be3e9f998074de40fdc62e58890ee28bf3a6756206f2515"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/bd31b1052908206657b423ed580cae4586dbed6e488015a9a58625e8e5211be9.json.gz": {
+      "bytes": 1792,
+      "sha256": "1fe0f999c566f7cb10836bb1e73f4eff0a80a8f505c5170d81245310b97708bc"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/fb5e8781aea077f2d5205a9b6ac3d6c69d255ff2817764f1cd488ec5114f6030.json.gz": {
+      "bytes": 1723,
+      "sha256": "22ce00ca491a7cd4b72da1cfe3567445a809232dc30aee4c20440008c4d9cb92"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/3c8501a5d4c94aa71cfd58505e7bf7fc8460e634b7a3f91319b516404f61b3c2.json.gz": {
+      "bytes": 2251,
+      "sha256": "6b424161a5b6f309e7abe8c5a2df496e69633d2285d706ac475db2aeb20e5ee7"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/3f4ddf5e533389dfa7fa7df9839b5cb1274fe3b4a20e8ded9cccb95ca9d1ea1a.json.gz": {
+      "bytes": 1916,
+      "sha256": "029ab635f68a2c74f7561e11daa6ecd8e3756419bfc952547c5a4b51e776994f"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/940f16660bde4aeea12ef69263147a77f69c02d71dcc4a64b23b9426f5b58544.json.gz": {
+      "bytes": 2311,
+      "sha256": "b2cdb7f299dac6fc606ea1720f6947101d1ae38746264740e3dc42988ffef17b"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/snapshots/00000033_3581085d9e08488cf8be9681caaa2b49708246369fff36acab3f11d224c08005.json": {
+      "bytes": 4247,
+      "sha256": "aa4ca845cc6751169353e34ca16a8d7e54ffd73371dfb107ca37cd04a61332be"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/c837c630bd4825a3cd80d0acf2e393e0f8753bbc5d2e6eb2f9d3bca3f4d5dfe1.json.gz": {
+      "bytes": 1792,
+      "sha256": "0bbd6f8522e95f6330e93b3064b2c0c972e103052444228437deddb44fb0b374"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/b3f7140c819d8384a0adb136281391f94d3762f99975d86e3ac03f8c91eef2a9.json.gz": {
+      "bytes": 1753,
+      "sha256": "8828572358a6af8f401fde3b80605df28624fa7277b4908ba7967a0d962a2e9e"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/a6897c72e68f8382f9ec8799465bc719d978b689837c303e929dd46381edf795.json.gz": {
+      "bytes": 1795,
+      "sha256": "836b2f33c2c3e89ad75d717a3363656c7c2c4be72ffabc1d167bb62b8c240dd7"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/4ff52482dc0960697ac6404842ea1c2c12ade0e71a23968f410ecad21e50b422.json.gz": {
+      "bytes": 1725,
+      "sha256": "c5dcea47c9a192cc99ecabfc59a3ad5b42f51392a23c7d47daa660ce6917318e"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/49fd793269795caa5c826e2b0431bbdd7916a2500228700b06110cf777eb5301.json.gz": {
+      "bytes": 2251,
+      "sha256": "7eb1fd86e7ce846b07e097ce6317a4dcfda65b6dbdc37d505003392c8dfb6585"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/f893488e4c7939826a54f0587daa67cb7a8c2a60913944e6e16909fde7f11348.json.gz": {
+      "bytes": 1913,
+      "sha256": "db3b67e3c78acdeb66db6b1868712c919c7ab4f252fddac7d819561c57450099"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_reset/worker1/episode002_open_101/observation_inputs/maps/2b6429b4268543d108dd8d6c6ef24fe1582d576fb7d439531e501c5edb1ccc1f.json.gz": {
+      "bytes": 2310,
+      "sha256": "ce1e820888cc10f59f26fdbd0d8cdef545717ad943a02f6fa27226c3b6c7832f"
+    }
+  },
+  "source_proof": {
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_seed_inputs.py": {
+      "sha256": "c50701e16ff3cab6d5c4fcb10e7902211450a6b89cfcec7af5db9cc822840f07",
+      "git_source": "1fa55bc56d5bb9e230d4b397f962d83b1604b278:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_seed_inputs.py"
+    },
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/navigation_archive.py": {
+      "sha256": "b509cc0d19ca443c0776cae4d728d35f399670bda08c171d590c8738964c48bd",
+      "git_source": "1fa55bc56d5bb9e230d4b397f962d83b1604b278:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/navigation_archive.py"
+    },
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/supervisor.py": {
+      "sha256": "a9364451639806220c82416a1af386e223fde3613b87e5ad76e6c57e3f54baf5",
+      "git_source": "1fa55bc56d5bb9e230d4b397f962d83b1604b278:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/supervisor.py"
+    },
+    "ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py": {
+      "sha256": "b873d8ce00cc07583b340889fd49539f0a78cd8f6c0fa9e14a2dec6f92340e92",
+      "git_source": "1fa55bc56d5bb9e230d4b397f962d83b1604b278:ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/__init__.py": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "git_source": "1fa55bc56d5bb9e230d4b397f962d83b1604b278:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/__init__.py"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py": {
+      "sha256": "5709af2e31f45691d05034375b43ef4ca873c427ba3579e0944b3f0556fa83f1",
+      "git_source": "1fa55bc56d5bb9e230d4b397f962d83b1604b278:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_observation.py"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_episode.py": {
+      "sha256": "9145d2ad23789b252e32f0afdfe18cf2eeec8e2c7e9ca7e89127a532288e411b",
+      "git_source": "1fa55bc56d5bb9e230d4b397f962d83b1604b278:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_episode.py"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_seed_certificate.py": {
+      "sha256": "7d92c34c3b6adddaeac6f3a5c609b2db31df3ff7d1a4e8c621c26857ab88704a",
+      "git_source": "1fa55bc56d5bb9e230d4b397f962d83b1604b278:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_seed_certificate.py"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_reach_geometry.py": {
+      "sha256": "cf46b49f0740f84511f3d34f9a8eb3e56720744515d9eea1dc81bd8bacb85f0a",
+      "git_source": "1fa55bc56d5bb9e230d4b397f962d83b1604b278:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_reach_geometry.py"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_point_graph.py": {
+      "sha256": "e55b776c3ec088fe51dfa76ff204b4b135138038502fabc6af01717ed75efc83",
+      "git_source": "1fa55bc56d5bb9e230d4b397f962d83b1604b278:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_point_graph.py"
+    }
+  },
+  "robot_recovery_scope": "saved normalized sufficient fields; navigation missing/receipt_sequence inverted; not original raw kwargs",
+  "scope": "frozen-source seven-map and full snapshot self-consistency; Information/activity/physical/task/closure gates remain independently necessary"
+}

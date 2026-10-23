@@ -1,0 +1,411 @@
+{
+  "schema": "mr3-v52-closure-cpu-source-recovery-v1",
+  "scope": "cpu",
+  "engineering_added_seconds": "0",
+  "checks": [
+    {
+      "name": "toolwait_artificial_v2",
+      "receipt": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/receipts/toolwait_artificial_v2/actual_wait.json",
+      "expected_original_passed": true,
+      "expected_actual_returncode": 0,
+      "artificial_tests": 8
+    },
+    {
+      "name": "overlay_artificial_failed_v1",
+      "receipt": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/receipts/overlay_artificial_failed_v1/actual_wait.json",
+      "expected_original_passed": false,
+      "expected_actual_returncode": 1,
+      "artificial_tests": 8
+    },
+    {
+      "name": "overlay_artificial_v2",
+      "receipt": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/receipts/overlay_artificial_v2/actual_wait.json",
+      "expected_original_passed": true,
+      "expected_actual_returncode": 0,
+      "artificial_tests": 9
+    },
+    {
+      "name": "closed_review_actual_v2",
+      "receipt": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/receipts/closed_review_actual_v2/actual_wait.json",
+      "expected_original_passed": true,
+      "expected_actual_returncode": 0,
+      "artificial_tests": null
+    },
+    {
+      "name": "closed_archive_actual_v2",
+      "receipt": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/receipts/closed_archive_actual_v2/actual_wait.json",
+      "expected_original_passed": true,
+      "expected_actual_returncode": 0,
+      "artificial_tests": null
+    },
+    {
+      "name": "packed_overlay_actual_v2",
+      "receipt": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/receipts/packed_overlay_actual_v2/actual_wait.json",
+      "expected_original_passed": true,
+      "expected_actual_returncode": 0,
+      "artificial_tests": null
+    }
+  ],
+  "sources": [
+    {
+      "original_path": "/tmp/mr3_p2a_v52_review_closed_draft_v1.py",
+      "path": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/tools/mr3_p2a_v52_review_closed_draft_v1.py",
+      "bytes": 47907,
+      "sha256": "7a44bcd3825fb0b7cdf2ab1e625fccbccf839329d2af3242132531b9f3c351aa"
+    },
+    {
+      "original_path": "/tmp/mr3_p2a_v52_review_closed_draft_v2.py",
+      "path": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/tools/mr3_p2a_v52_review_closed_draft_v2.py",
+      "bytes": 48415,
+      "sha256": "8dc1cb698548f2108979ee91f12f0f15238894948e46f1821ecbecaae8878499"
+    },
+    {
+      "original_path": "/tmp/mr3_p2a_v52_collect_closed_draft_v1.py",
+      "path": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/tools/mr3_p2a_v52_collect_closed_draft_v1.py",
+      "bytes": 16427,
+      "sha256": "1c63c8a2deb9f05e01d4c71dfe7c844b1fdbfab63e71c317299f0586d1306cc2"
+    },
+    {
+      "original_path": "/tmp/mr3_p2a_v52_collect_closed_draft_v2.py",
+      "path": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/tools/mr3_p2a_v52_collect_closed_draft_v2.py",
+      "bytes": 16427,
+      "sha256": "b0081c67f8c5913ce02c0daa94397b93aa3a9c1cebbb71b27d80ac161ead35d6"
+    },
+    {
+      "original_path": "/tmp/mr3_p2a_v52_closure_toolwait_test_v2.py",
+      "path": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/tools/mr3_p2a_v52_closure_toolwait_test_v2.py",
+      "bytes": 7568,
+      "sha256": "7d2347e8223322398ca0505fe9a2c094b5b278a89c167def2515db0325fd2d24"
+    },
+    {
+      "original_path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_execution.py",
+      "path": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/source_snapshots/fa7da30bf18a71a7a28698f733590074bdf164c8857028640aedba5d21fd8be4/reach_execution.py",
+      "sha256": "fa7da30bf18a71a7a28698f733590074bdf164c8857028640aedba5d21fd8be4",
+      "bytes": 3222
+    },
+    {
+      "original_path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/preparation.py",
+      "path": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/source_snapshots/850ab8947f711033f3f2fd17ef57d32098c02d569c1bea0f5cf58aaff8acd767/preparation.py",
+      "sha256": "850ab8947f711033f3f2fd17ef57d32098c02d569c1bea0f5cf58aaff8acd767",
+      "bytes": 48624
+    },
+    {
+      "original_path": "/tmp/mr3_p2a_v52_packed_overlay_v1.py",
+      "path": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/tools/mr3_p2a_v52_packed_overlay_v1.py",
+      "bytes": 15888,
+      "sha256": "fbdd358f4573486d63620705fe54cd834b8c8113fab43408d4824ceea7a972d0"
+    },
+    {
+      "original_path": "/tmp/mr3_p2a_v52_packed_overlay_test_v1.py",
+      "path": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/tools/mr3_p2a_v52_packed_overlay_test_v1.py",
+      "bytes": 9747,
+      "sha256": "7108c24191a80cc1558d8a39a572f3e604b3cc9ddb36f2238acd8b4ddd3a8ef7"
+    },
+    {
+      "original_path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v13/closed_continuation/checks/pack_cpu.py",
+      "path": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/source_snapshots/4cb98f6e0b4ab06bd5f0faa45bc343ccd644c5f2feeb109ded60595f383150a5/pack_cpu.py",
+      "sha256": "4cb98f6e0b4ab06bd5f0faa45bc343ccd644c5f2feeb109ded60595f383150a5",
+      "bytes": 13825
+    },
+    {
+      "original_path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v45_preparation_classification/collect_closed_v1.py",
+      "path": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/source_snapshots/63d52ce389b7d61fa67f5080fa556b1f32e47b79e389800f9de55e97c40abf06/collect_closed_v1.py",
+      "sha256": "63d52ce389b7d61fa67f5080fa556b1f32e47b79e389800f9de55e97c40abf06",
+      "bytes": 15853
+    },
+    {
+      "original_path": "/tmp/mr3_p2a_v52_packed_overlay_v2.py",
+      "path": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/tools/mr3_p2a_v52_packed_overlay_v2.py",
+      "bytes": 16256,
+      "sha256": "b655d8c76573e8dc717d1e01b7627372e215fe568de05b7b76dfa50188caca5b"
+    },
+    {
+      "original_path": "/tmp/mr3_p2a_v52_packed_overlay_test_v2.py",
+      "path": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/tools/mr3_p2a_v52_packed_overlay_test_v2.py",
+      "bytes": 10386,
+      "sha256": "754923f924602a498ac7d301d2a7c93c30b089dcbf485822bcd01478085581f2"
+    },
+    {
+      "original_path": "/tmp/mr3_p2a_v52_actual_tool_wait_v1.json",
+      "path": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/source_snapshots/c66579ba14eee74491cd88c29b7f6df4bdd5214c6f8f3401b8d21e08dcb925ec/mr3_p2a_v52_actual_tool_wait_v1.json",
+      "sha256": "c66579ba14eee74491cd88c29b7f6df4bdd5214c6f8f3401b8d21e08dcb925ec",
+      "bytes": 495
+    },
+    {
+      "original_path": "/tmp/mr3_p2a_reach_v52_launch_v1.json",
+      "path": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/source_snapshots/90b67575acf6a1852e3ba85b9ec834883d035558f4de7adee23a8b71e7af731f/mr3_p2a_reach_v52_launch_v1.json",
+      "sha256": "90b67575acf6a1852e3ba85b9ec834883d035558f4de7adee23a8b71e7af731f",
+      "bytes": 1709
+    },
+    {
+      "original_path": "/tmp/mr3_p2a_reach_v52_live_ancestor_observation_v1.json",
+      "path": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/source_snapshots/5913214125bf53a4ab16c7e260808eb359479268e216377c1ae5459a6e51401d/mr3_p2a_reach_v52_live_ancestor_observation_v1.json",
+      "sha256": "5913214125bf53a4ab16c7e260808eb359479268e216377c1ae5459a6e51401d",
+      "bytes": 1491
+    },
+    {
+      "original_path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v52_qualification/plan_v1.json",
+      "path": "report/assets/20261023_mr3_p2a_v52_qualification/plan_v1.json",
+      "sha256": "63de7b8d0eacea5d2733d3552fc3abc8b7f408db8717f725c36ff2a4d33f35cc",
+      "bytes": 264567
+    },
+    {
+      "original_path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v52_qualification/resource_v1.json",
+      "path": "report/assets/20261023_mr3_p2a_v52_qualification/resource_v1.json",
+      "sha256": "8a18fb6dad2b90d56e2670486a15f1c951ea2bdb12dd4dfde0c32aa4ae88f2fa",
+      "bytes": 1083
+    },
+    {
+      "original_path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v52_qualification/native_custody_binding_v1.json",
+      "path": "report/assets/20261023_mr3_p2a_v52_qualification/native_custody_binding_v1.json",
+      "sha256": "896b9402f258645f4c23363fc74e3e50a5905b96abc4640bc7cc87401167ddf4",
+      "bytes": 133264
+    },
+    {
+      "original_path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v16/external_absence_v1.py",
+      "path": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/source_snapshots/cedae11c4b9bbf6f4887ae5afe2fa10fff04e5a28595f5c9e748669c8d18493f/external_absence_v1.py",
+      "sha256": "cedae11c4b9bbf6f4887ae5afe2fa10fff04e5a28595f5c9e748669c8d18493f",
+      "bytes": 15052
+    },
+    {
+      "original_path": "/tmp/mr3_p2a_v52_independent_closed_review_v2.json",
+      "path": "report/assets/20261023_mr3_p2a_v52_qualification/closed_execution/closure_tools/mr3_p2a_v52_independent_closed_review_v2.json",
+      "sha256": "2200c641a69e49cc2635c06f95db6169b7fbee9813f5b3b1bee6002fa73a5f8d",
+      "bytes": 6124001
+    },
+    {
+      "original_path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v52_qualification/closed_inventory_v1.json",
+      "path": "report/assets/20261023_mr3_p2a_v52_qualification/closed_inventory_v1.json",
+      "sha256": "63efb61cc7b2abaf723b3824399d203a1a0b288465a367110eabcb5ec565ccf7",
+      "bytes": 13016028
+    },
+    {
+      "original_path": "/tmp/mr3_p2a_v52_closed_archive_actual_wait_v2/actual_wait.json",
+      "path": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/receipts/closed_archive_actual_v2/actual_wait.json",
+      "bytes": 8670,
+      "sha256": "4c960c6024d960f38b17af1f60b082fd0325b7c6cd2cdd369a0b8c8f5a80f280"
+    }
+  ],
+  "copied_artifacts": [
+    {
+      "original_path": "/tmp/mr3_p2a_v52_closure_toolwait_cpu_v2/actual_wait.json",
+      "path": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/receipts/toolwait_artificial_v2/actual_wait.json",
+      "bytes": 5721,
+      "sha256": "315e9aefbc69793b5ce1abebbda4f338ad62c3ee26cbf73d09322d14be84f389"
+    },
+    {
+      "original_path": "/tmp/mr3_p2a_v52_closure_toolwait_cpu_v2/console.log",
+      "path": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/receipts/toolwait_artificial_v2/console.log",
+      "bytes": 106,
+      "sha256": "60c6bb5c8ac971d56c16f191a0ddf3067de66f57634027e936be419133734a6c"
+    },
+    {
+      "original_path": "/tmp/mr3_p2a_v52_packed_overlay_cpu_v1/actual_wait.json",
+      "path": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/receipts/overlay_artificial_failed_v1/actual_wait.json",
+      "bytes": 5583,
+      "sha256": "81e77100c1a6e6aefc9255b5d578dd2e924edeafae9950297c982ae43db7fa71"
+    },
+    {
+      "original_path": "/tmp/mr3_p2a_v52_packed_overlay_cpu_v1/console.log",
+      "path": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/receipts/overlay_artificial_failed_v1/console.log",
+      "bytes": 4059,
+      "sha256": "935e2036a17c4e396d068eb4d66d480c5546abfb27d794c791cb04fc8cb3706a"
+    },
+    {
+      "original_path": "/tmp/mr3_p2a_v52_packed_overlay_cpu_v2/actual_wait.json",
+      "path": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/receipts/overlay_artificial_v2/actual_wait.json",
+      "bytes": 5587,
+      "sha256": "a20fe66c8eac7b30e7a4a6165b579e970f6643e61c127d3c3101da21ba6ba52d"
+    },
+    {
+      "original_path": "/tmp/mr3_p2a_v52_packed_overlay_cpu_v2/console.log",
+      "path": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/receipts/overlay_artificial_v2/console.log",
+      "bytes": 107,
+      "sha256": "92f81b95e3bcad3448fe055212d0a393e4ef0152e051fc81be1b424157957981"
+    },
+    {
+      "original_path": "/tmp/mr3_p2a_v52_closed_review_actual_wait_v2/actual_wait.json",
+      "path": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/receipts/closed_review_actual_v2/actual_wait.json",
+      "bytes": 10179,
+      "sha256": "c6da5c4b2683c99d3b9bd732b7ad5406812dcbe5198c5af7cedcfc00b1b24c03"
+    },
+    {
+      "original_path": "/tmp/mr3_p2a_v52_closed_review_actual_wait_v2/console.log",
+      "path": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/receipts/closed_review_actual_v2/console.log",
+      "bytes": 320,
+      "sha256": "2650eb246a34284907bf8520da2eb15db7b9dd868886703d5150bc06060ed6fe"
+    },
+    {
+      "original_path": "/tmp/mr3_p2a_v52_closed_archive_actual_wait_v2/actual_wait.json",
+      "path": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/receipts/closed_archive_actual_v2/actual_wait.json",
+      "bytes": 8670,
+      "sha256": "4c960c6024d960f38b17af1f60b082fd0325b7c6cd2cdd369a0b8c8f5a80f280"
+    },
+    {
+      "original_path": "/tmp/mr3_p2a_v52_closed_archive_actual_wait_v2/console.log",
+      "path": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/receipts/closed_archive_actual_v2/console.log",
+      "bytes": 126,
+      "sha256": "ab54bf85ddc54f32818cf0a0d1924192cadc5719043f780d442a95841bc24565"
+    },
+    {
+      "original_path": "/tmp/mr3_p2a_v52_packed_overlay_actual_wait_v2/actual_wait.json",
+      "path": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/receipts/packed_overlay_actual_v2/actual_wait.json",
+      "bytes": 7328,
+      "sha256": "5333fc89eb4d7a1fd5e722cb30c1ce5714455a587b7ffd8d0ee3450ff8c3c838"
+    },
+    {
+      "original_path": "/tmp/mr3_p2a_v52_packed_overlay_actual_wait_v2/console.log",
+      "path": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/receipts/packed_overlay_actual_v2/console.log",
+      "bytes": 46,
+      "sha256": "f2198a44894a13e2aa95b712e5fbe48053029016d13dc33d1c03216cc26d7f90"
+    },
+    {
+      "original_path": "/tmp/mr3_p2a_v52_review_closed_draft_v1.py",
+      "path": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/tools/mr3_p2a_v52_review_closed_draft_v1.py",
+      "bytes": 47907,
+      "sha256": "7a44bcd3825fb0b7cdf2ab1e625fccbccf839329d2af3242132531b9f3c351aa"
+    },
+    {
+      "original_path": "/tmp/mr3_p2a_v52_review_closed_draft_v2.py",
+      "path": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/tools/mr3_p2a_v52_review_closed_draft_v2.py",
+      "bytes": 48415,
+      "sha256": "8dc1cb698548f2108979ee91f12f0f15238894948e46f1821ecbecaae8878499"
+    },
+    {
+      "original_path": "/tmp/mr3_p2a_v52_collect_closed_draft_v1.py",
+      "path": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/tools/mr3_p2a_v52_collect_closed_draft_v1.py",
+      "bytes": 16427,
+      "sha256": "1c63c8a2deb9f05e01d4c71dfe7c844b1fdbfab63e71c317299f0586d1306cc2"
+    },
+    {
+      "original_path": "/tmp/mr3_p2a_v52_collect_closed_draft_v2.py",
+      "path": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/tools/mr3_p2a_v52_collect_closed_draft_v2.py",
+      "bytes": 16427,
+      "sha256": "b0081c67f8c5913ce02c0daa94397b93aa3a9c1cebbb71b27d80ac161ead35d6"
+    },
+    {
+      "original_path": "/tmp/mr3_p2a_v52_closure_toolwait_test_v2.py",
+      "path": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/tools/mr3_p2a_v52_closure_toolwait_test_v2.py",
+      "bytes": 7568,
+      "sha256": "7d2347e8223322398ca0505fe9a2c094b5b278a89c167def2515db0325fd2d24"
+    },
+    {
+      "original_path": "/tmp/mr3_p2a_v52_packed_overlay_v1.py",
+      "path": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/tools/mr3_p2a_v52_packed_overlay_v1.py",
+      "bytes": 15888,
+      "sha256": "fbdd358f4573486d63620705fe54cd834b8c8113fab43408d4824ceea7a972d0"
+    },
+    {
+      "original_path": "/tmp/mr3_p2a_v52_packed_overlay_v2.py",
+      "path": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/tools/mr3_p2a_v52_packed_overlay_v2.py",
+      "bytes": 16256,
+      "sha256": "b655d8c76573e8dc717d1e01b7627372e215fe568de05b7b76dfa50188caca5b"
+    },
+    {
+      "original_path": "/tmp/mr3_p2a_v52_packed_overlay_test_v1.py",
+      "path": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/tools/mr3_p2a_v52_packed_overlay_test_v1.py",
+      "bytes": 9747,
+      "sha256": "7108c24191a80cc1558d8a39a572f3e604b3cc9ddb36f2238acd8b4ddd3a8ef7"
+    },
+    {
+      "original_path": "/tmp/mr3_p2a_v52_packed_overlay_test_v2.py",
+      "path": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/tools/mr3_p2a_v52_packed_overlay_test_v2.py",
+      "bytes": 10386,
+      "sha256": "754923f924602a498ac7d301d2a7c93c30b089dcbf485822bcd01478085581f2"
+    },
+    {
+      "original_path": "/tmp/mr3_p2a_v52_closure_independent_static_review_v1.json",
+      "path": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/provenance/mr3_p2a_v52_closure_independent_static_review_v1.json",
+      "bytes": 5008,
+      "sha256": "bec71eeb4947ca62589609499d8bed7452cf27e6d7d2257242e6efc8e5472fdd"
+    },
+    {
+      "original_path": "/tmp/mr3_p2a_v52_overlay_and_v53_firstfault_independent_review_v1.json",
+      "path": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/provenance/mr3_p2a_v52_overlay_and_v53_firstfault_independent_review_v1.json",
+      "bytes": 6514,
+      "sha256": "42e0b7ceead82162c5949a7bb476e3ed357b1a17c97c2e53bcfb1bf8d709836c"
+    },
+    {
+      "original_path": "/tmp/mr3_p2a_v52_closure_toolwait_cpu_review_v2.json",
+      "path": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/provenance/mr3_p2a_v52_closure_toolwait_cpu_review_v2.json",
+      "bytes": 1615,
+      "sha256": "41a238258bf1caeb2a656478132277cef1e5d649eca5b2080fbec1657f7c75bd"
+    },
+    {
+      "original_path": "/tmp/mr3_p2a_v52_packed_overlay_cpu_review_v2.json",
+      "path": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/provenance/mr3_p2a_v52_packed_overlay_cpu_review_v2.json",
+      "bytes": 1804,
+      "sha256": "5d4749eaf7230cda94bd3422ee079973ddfb20887010d7287d47353b727db78c"
+    },
+    {
+      "original_path": "/tmp/mr3_p2a_v52_packed_overlay_first_failed_cpu_absence_v1.json",
+      "path": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/provenance/mr3_p2a_v52_packed_overlay_first_failed_cpu_absence_v1.json",
+      "bytes": 824,
+      "sha256": "9d0b317595c5e60e2e5a0d7552c847359a7c653b8e6a7233565ec5a9b104ac05"
+    },
+    {
+      "original_path": "/tmp/mr3_p2a_v52_deadline_failure_metadata_note_v1.md",
+      "path": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/provenance/mr3_p2a_v52_deadline_failure_metadata_note_v1.md",
+      "bytes": 10437,
+      "sha256": "1faf8805638c9a706a926a91987ee86c3be4d024e841a0117a7a85622a05ccf8"
+    },
+    {
+      "original_path": "/tmp/mr3_p2a_v52_packed_overlay_spec_v1.md",
+      "path": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/provenance/mr3_p2a_v52_packed_overlay_spec_v1.md",
+      "bytes": 6526,
+      "sha256": "db4c32f78c73f70d45331dc91b29ecc789f4c2df2033ef14a6c56be0d5e591f3"
+    },
+    {
+      "original_path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_execution.py",
+      "path": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/source_snapshots/fa7da30bf18a71a7a28698f733590074bdf164c8857028640aedba5d21fd8be4/reach_execution.py",
+      "bytes": 3222,
+      "sha256": "fa7da30bf18a71a7a28698f733590074bdf164c8857028640aedba5d21fd8be4"
+    },
+    {
+      "original_path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/preparation.py",
+      "path": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/source_snapshots/850ab8947f711033f3f2fd17ef57d32098c02d569c1bea0f5cf58aaff8acd767/preparation.py",
+      "bytes": 48624,
+      "sha256": "850ab8947f711033f3f2fd17ef57d32098c02d569c1bea0f5cf58aaff8acd767"
+    },
+    {
+      "original_path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v13/closed_continuation/checks/pack_cpu.py",
+      "path": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/source_snapshots/4cb98f6e0b4ab06bd5f0faa45bc343ccd644c5f2feeb109ded60595f383150a5/pack_cpu.py",
+      "bytes": 13825,
+      "sha256": "4cb98f6e0b4ab06bd5f0faa45bc343ccd644c5f2feeb109ded60595f383150a5"
+    },
+    {
+      "original_path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v45_preparation_classification/collect_closed_v1.py",
+      "path": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/source_snapshots/63d52ce389b7d61fa67f5080fa556b1f32e47b79e389800f9de55e97c40abf06/collect_closed_v1.py",
+      "bytes": 15853,
+      "sha256": "63d52ce389b7d61fa67f5080fa556b1f32e47b79e389800f9de55e97c40abf06"
+    },
+    {
+      "original_path": "/tmp/mr3_p2a_v52_actual_tool_wait_v1.json",
+      "path": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/source_snapshots/c66579ba14eee74491cd88c29b7f6df4bdd5214c6f8f3401b8d21e08dcb925ec/mr3_p2a_v52_actual_tool_wait_v1.json",
+      "bytes": 495,
+      "sha256": "c66579ba14eee74491cd88c29b7f6df4bdd5214c6f8f3401b8d21e08dcb925ec"
+    },
+    {
+      "original_path": "/tmp/mr3_p2a_reach_v52_launch_v1.json",
+      "path": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/source_snapshots/90b67575acf6a1852e3ba85b9ec834883d035558f4de7adee23a8b71e7af731f/mr3_p2a_reach_v52_launch_v1.json",
+      "bytes": 1709,
+      "sha256": "90b67575acf6a1852e3ba85b9ec834883d035558f4de7adee23a8b71e7af731f"
+    },
+    {
+      "original_path": "/tmp/mr3_p2a_reach_v52_live_ancestor_observation_v1.json",
+      "path": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/source_snapshots/5913214125bf53a4ab16c7e260808eb359479268e216377c1ae5459a6e51401d/mr3_p2a_reach_v52_live_ancestor_observation_v1.json",
+      "bytes": 1491,
+      "sha256": "5913214125bf53a4ab16c7e260808eb359479268e216377c1ae5459a6e51401d"
+    },
+    {
+      "original_path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261019_mr3_p2a_v16/external_absence_v1.py",
+      "path": "report/assets/20261023_mr3_p2a_v52_qualification/checks/closure_v2/source_snapshots/cedae11c4b9bbf6f4887ae5afe2fa10fff04e5a28595f5c9e748669c8d18493f/external_absence_v1.py",
+      "bytes": 15052,
+      "sha256": "cedae11c4b9bbf6f4887ae5afe2fa10fff04e5a28595f5c9e748669c8d18493f"
+    }
+  ],
+  "failed_original_receipt_preserved": true,
+  "scientific_results_recomputed": false,
+  "raw_or_packed_archive_bytes_read": false,
+  "note": "Exact byte copies of completed receipts and bound sources; original argv/tmp paths are retained. A filename containing draft is an immutable historical producer name, not a pending execution."
+}

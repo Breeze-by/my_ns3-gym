@@ -1,0 +1,39 @@
+{
+  "schema": "mr3-v53-artificial-cpu-freshgone-v2",
+  "passed": true,
+  "actual_wait": {
+    "path": "/tmp/mr3_p2a_v53_firstfault_cpu_v2/actual_wait.json",
+    "sha256": "a51f6b38ea7496a1d9e5789dbc58bbbb26e7130d1162f3edc9e6298c406625a5"
+  },
+  "checked_monotonic_ns": 4474859533963569,
+  "saved_pairs": [
+    {
+      "role": "coordinator_identity",
+      "saved": {
+        "pid": 295097,
+        "parent": 295095,
+        "group": 295095,
+        "session": 295095,
+        "start_ticks": 447484625,
+        "state": "R"
+      },
+      "observed": null,
+      "gone": true
+    },
+    {
+      "role": "child_identity",
+      "saved": {
+        "pid": 295105,
+        "parent": 295097,
+        "group": 295095,
+        "session": 295095,
+        "start_ticks": 447484642,
+        "state": "R"
+      },
+      "observed": null,
+      "gone": true
+    }
+  ],
+  "scope": "only the two saved synthetic CPU identities; native/prod input identities not inspected",
+  "actual_raw_inputs_read": false
+}

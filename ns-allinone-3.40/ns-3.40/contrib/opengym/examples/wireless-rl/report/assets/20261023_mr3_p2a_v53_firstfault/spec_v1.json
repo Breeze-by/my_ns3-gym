@@ -1,0 +1,82 @@
+{
+  "schema": "mr3-v53-firstfault-spec-v1",
+  "admitted": true,
+  "status": "REGISTERED_AWAITING_EXACT_EXECUTION_FREEZE_NO_RAW_READ_YET",
+  "epoch": "mr3_p2a_reach_v52_deadline_w0_e1_426a2555",
+  "evidence_freeze": "1fa55bc56d5bb9e230d4b397f962d83b1604b278",
+  "execution_freeze_binding": "required-exact-cli",
+  "failure_clock_ns": 244580000000,
+  "sim_window": [
+    "244.48",
+    "244.62"
+  ],
+  "limits": {
+    "total_input_bytes": 3221225472,
+    "line_bytes": 8388608,
+    "lines_per_file": 1000000,
+    "selected_records": 256,
+    "output_bytes": 2097152,
+    "work_seconds": 240
+  },
+  "inputs": {
+    "motion": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_deadline/worker0/episode001_open_101/motion_safety.jsonl",
+      "bytes": 2458997272,
+      "sha256": "d3e0df10ba2f5bafbe46c074d2cdf34653dadc097eee6b7da4582371e2970fc6",
+      "inventory_ref": {
+        "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v52_qualification/closed_inventory_v1.json",
+        "sha256": "63efb61cc7b2abaf723b3824399d203a1a0b288465a367110eabcb5ec565ccf7",
+        "bytes": 13016028
+      }
+    },
+    "startup": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v52/mr3_p2a_reach_v52_deadline/worker0/episode001_open_101/startup_readiness.jsonl",
+      "bytes": 286052,
+      "sha256": "c9147ae25628d999b6bdc0e66b6abbc6ebbcf166e2ff3770ba70e4603dc3d4d3",
+      "inventory_ref": {
+        "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v52_qualification/closed_inventory_v1.json",
+        "sha256": "63efb61cc7b2abaf723b3824399d203a1a0b288465a367110eabcb5ec565ccf7",
+        "bytes": 13016028
+      }
+    }
+  },
+  "interpretation_sources": {
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/motion_safety.py": {
+      "sha256": "f01ae5213740cfb134423fd0e4ddc2d880e2114db66bc63c16164ad027d05735",
+      "bytes": 51604
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py": {
+      "sha256": "197ff4bfcca9f815e191dcddea7a2a6af46a033c68310e350b63ad9e48579a69",
+      "bytes": 18129
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_reach_runtime.py": {
+      "sha256": "3f1fac149adaadfe27197b538e73bbd149b04d28374c38106b26b762dc4e79dc",
+      "bytes": 31245
+    },
+    "ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py": {
+      "sha256": "b873d8ce00cc07583b340889fd49539f0a78cd8f6c0fa9e14a2dec6f92340e92",
+      "bytes": 106723
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py": {
+      "sha256": "2b7385d26268cdc74590015f1d78f1febabf04bef65c05ea435fa754d9241748",
+      "bytes": 68485
+    },
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/benchmark.py": {
+      "sha256": "9c6902f11d2069e684a08d58dfb13285fc61dbe9be040360558903f4fce16bfe",
+      "bytes": 60161
+    },
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/supervisor.py": {
+      "sha256": "a9364451639806220c82416a1af386e223fde3613b87e5ad76e6c57e3f54baf5",
+      "bytes": 28204
+    }
+  },
+  "consumer": {
+    "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v53_firstfault/firstfault_extract_v2.py",
+    "bytes": 24603,
+    "sha256": "6276df757a1bdedeb1ad41f439b05f23efc7f5b410107c434b44a13cddebb442"
+  },
+  "activity_scope": "future engineering, full parent actual-wait <=300s; 240s cooperative consumer work cutoff; owned guard/tail declared by root; overrun/partial full fee FAIL",
+  "selection": "whole-input single pass; full strict JSON; first per fault kind plus 244.48..244.62 first+last by kind/robot/feed; no sorting of firstfault by wall",
+  "credit": "descriptive only; no mathematical replay/native qualification/model/World",
+  "no_result_dependent_input_expansion": true
+}

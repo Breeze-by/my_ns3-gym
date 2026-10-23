@@ -1,0 +1,69 @@
+{
+  "schema": "mr3-reach-native-custody-ready-v1",
+  "freeze": "1fa55bc56d5bb9e230d4b397f962d83b1604b278",
+  "binding_sha256": "896b9402f258645f4c23363fc74e3e50a5905b96abc4640bc7cc87401167ddf4",
+  "watcher_identity": {
+    "pid": 5561,
+    "parent": 4181900,
+    "group": 4176956,
+    "session": 4176956,
+    "start_ticks": 445567600,
+    "state": "R"
+  },
+  "safety_contract": "mr3-reach-v1",
+  "implementation_provenance": {
+    "schema": "mr3-reach-native-custody-implementation-v1",
+    "effective_entry": {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/native_custody_reach.py",
+      "sha256": "76026f575212a6f8af6f749cafbb4de30dfbb9a72173b1c03a40b91707e42d2c"
+    },
+    "helper": {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/native_custody.py",
+      "sha256": "4edcdb6b33105e274c1c908c9d78e8c5d24461ff6733ed0f976e41bad3f2d928"
+    },
+    "projection": {
+      "helper_sha256": "4edcdb6b33105e274c1c908c9d78e8c5d24461ff6733ed0f976e41bad3f2d928",
+      "projected_sha256": "41b70f0289ca2122724d7fcbf5b0709769859d1dcf39e793c8ddf5046056b95e",
+      "inverse_sha256": "4edcdb6b33105e274c1c908c9d78e8c5d24461ff6733ed0f976e41bad3f2d928",
+      "exact_whole_source_inverse": true,
+      "changes": [
+        {
+          "old": "native-custody-ready-v1",
+          "new": "mr3-reach-native-custody-ready-v1",
+          "count": 2
+        },
+        {
+          "old": "mr3-native-custody-stop-v1",
+          "new": "mr3-reach-native-custody-stop-v1",
+          "count": 1
+        },
+        {
+          "old": "mr3-native-custody-binding-v1",
+          "new": "mr3-reach-native-custody-binding-v1",
+          "count": 1
+        },
+        {
+          "old": "mr3-native-custody-verified-binding-v1",
+          "new": "mr3-reach-native-custody-verified-binding-v1",
+          "count": 1
+        },
+        {
+          "old": "mr3-native-custody-live-v1",
+          "new": "mr3-reach-native-custody-live-v1",
+          "count": 2
+        },
+        {
+          "old": "mr3-native-custody-closure-review-v1",
+          "new": "mr3-reach-native-custody-closure-review-v1",
+          "count": 1
+        },
+        {
+          "old": "\"compiled_target_contract_sha256\", \"compiled_odometry_json_sha256\"",
+          "new": "\"compiled_target_contract_sha256\", \"compiled_odometry_json_sha256\", \"compiled_drive_feed_sha256\"",
+          "count": 1
+        }
+      ]
+    },
+    "scope": "Original process/file/closure predicates execute on current artifacts; new schemas, six-source driver and explicit reach/v2 checks. No old result or continuous plant credit."
+  }
+}
