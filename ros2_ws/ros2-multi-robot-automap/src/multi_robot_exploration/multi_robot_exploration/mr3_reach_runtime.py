@@ -193,7 +193,7 @@ class ReachTracker:
             if canonical_json(old) != canonical_json(raw):
                 self.fail("conflicting same-source raw")
             return
-        if self.raw_seen and source-max(self.raw_seen) != RAW_PERIOD_NS:
+        if self.raw_seen and source-next(reversed(self.raw_seen)) != RAW_PERIOD_NS:
             self.fail("raw source cadence gap/regression")
         self.raw_seen[source] = raw
         self.events.append((source, 0, (source, sequence, raw)))
@@ -207,7 +207,7 @@ class ReachTracker:
         if old is not None and canonical_json(old) != canonical_json(value):
             self.fail("conflicting calibration identity")
         if old is None and self.calibrations:
-            prior = self.calibrations[max(self.calibrations)]
+            prior = self.calibrations[next(reversed(self.calibrations))]
             if (source-prior["source_clock_ns"] != RAW_PERIOD_NS
                     or value["publication_sequence"] != prior["publication_sequence"]+1):
                 self.fail("calibration publication stream gap/regression")
@@ -243,7 +243,7 @@ class ReachTracker:
                 self.fail("conflicting applied identity")
             return
         if self.applied_seen:
-            prior = self.applied_seen[max(self.applied_seen)]
+            prior = self.applied_seen[next(reversed(self.applied_seen))]
             if (seq != prior["actuation_sequence"]+1
                     or value["source_clock_ns"]-prior["source_clock_ns"] != ACT_PERIOD_NS
                     or value["dt_ns"] != ACT_PERIOD_NS):
@@ -309,10 +309,14 @@ class ReachTracker:
         # A same-clock callback can store a newer target after this wheel write.
         # Nine-field ACKs and cross-topic arrival order do not establish that
         # native order; the independent audit checks native record_sequence.
-        if any(p["cmd_seq"] > value["cmd_seq"]
-               and p["clock_ns"] < value["source_clock_ns"]
-               for p in self.storage.pending[self.robot].values()):
-            self.fail("actual application is not the latest stored target")
+        # receive() admits strictly increasing cmd_seq and nondecreasing
+        # storage clocks. Preserve every receipt; only avoid rechecking older
+        # commands that cannot satisfy the original newer-command predicate.
+        for receipt in reversed(self.storage.pending[self.robot].values()):
+            if receipt["cmd_seq"] <= value["cmd_seq"]:
+                break
+            if receipt["clock_ns"] < value["source_clock_ns"]:
+                self.fail("actual application is not the latest stored target")
         if target["linear_x"] != 0 or target["angular_z"] != 0:
             if value["source_clock_ns"]-target["clock_ns"] > RAW_PERIOD_NS:
                 self.fail("nonzero target missed the 20ms renewal boundary")
@@ -530,7 +534,7 @@ class ReachTracker:
     def publish_target(self,target):
         target=validate_target(target,epoch=self.epoch,robot=self.robot)
         self._retain("publication",target)
-        if self.published and target["decision_sequence"]<=max(self.published):
+        if self.published and target["decision_sequence"]<=next(reversed(self.published)):
             self.fail("publication sequence regressed")
         if self.stopped and (target["linear_x"]!=0 or target["angular_z"]!=0):
             self.fail("permanent STOP cannot publish motion")

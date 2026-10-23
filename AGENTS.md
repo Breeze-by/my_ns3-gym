@@ -1,3 +1,5 @@
+2026-10-24 V64热点等价优化已接源码：runtime单调字典末键/存储逆序短路与record严格编码快路径，全部原历史保留；58差分、21record及canonical112真实CPU PASS（canonical tool6051/23.187448483秒、137源稳定、2保存身份gone）。两次fixture/import collection FAIL原件保留。人工kernel局部约98倍/2.7–3倍不外推native容量；无新World/资格/学习，工程新增0，仍U109074.2448783686018/C150000、余40925.7551216313982。authority及独立reader接线继续，仅新profile与新freeze后验证；旧FAIL、pilot/final原额及科学门保持，P2A未完成。 见[V64](ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261024_mr3_p2a_v64_equivalent_hotspots.md)。
+
 @/home/zhuyulab/.codex/RTK.md
 
 2026-10-24 V63 forward-v2实际描述PASS：freeze712a70976、tool92104真实reap0，同一v1 consumer首次真正读取两份startup main.pstats共894940B/descriptionComplete；只描述失败且受profiling扰动的旧样本，不是八步吞吐/根因/科学资格。source16 before/after相等、入账已验证，完整parent4.964964297已收，累计109074.2448783686018/C150000、余40925.7551216313982；nested/root墙时不叠加，pilot/final保持。driver+consumer两保存PID/start freshgone，nonowned不claimgone；v1准入FAIL原summary False/None/空源与实费独立账保持。V62 startup FAIL/guard与worker forced-15不改，capacity=False，P2A未完成，禁auto pilot/final。 见[V63实际闭合](ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261024_mr3_p2a_v63_profile_description.md)；下方为历史快照。

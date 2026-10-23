@@ -187,11 +187,20 @@ class MotionSafety(Node):
             return None if isinstance(value, float) and not math.isfinite(value) else value
 
         self.record_sequence += 1
-        self.audit.write(json.dumps({
+        entry = {
             "schema": "mr3-motion-safety-v1", "epoch": self.epoch,
             "record_sequence": self.record_sequence, "kind": kind,
             "sim_time_sec": self.now(), "wall_monotonic_ns": time.monotonic_ns(),
-            "payload": finite_json(payload)}, allow_nan=False, separators=(",", ":")) + "\n")
+            "payload": payload}
+        try:
+            encoded = json.dumps(entry, allow_nan=False, separators=(",", ":"))
+        except ValueError:
+            # Most records already contain finite JSON. Retain the original
+            # sanitization for exceptional nonfinite payloads, without a full
+            # tree copy before every successful strict encoding.
+            entry["payload"] = finite_json(payload)
+            encoded = json.dumps(entry, allow_nan=False, separators=(",", ":"))
+        self.audit.write(encoded + "\n")
 
     @staticmethod
     def twist(message):
