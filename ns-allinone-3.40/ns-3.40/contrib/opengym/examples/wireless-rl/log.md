@@ -8906,3 +8906,28 @@ rtk proxy env PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 CUDA_VISIBLE_DEVICES=
 完整parent12.268341836墙秒含post-source与owned cleanup，nested debugger4.523455087不另加；累计90382.5535899546018/120000、余29617.4464100453982，代理自主资源块口径及numeric_user_approval_claimed=false保持。376原源before/after稳定，关闭仅新核34非库源/30current-Git及old1fa10子集；342库不重读。6主保存身份freshgone；12小原件586647B→516957B/0link无损封存，原pending保留。关闭CPU v1 metadata别名比较拒绝rc1/.511946006墙秒原件保留，v2同对象resolved比较后真实PASS/26.171658586墙秒，16源稳定、两轮自身4身份另freshgone，工程新增0。
 
 见[V56实际报告](report/20261023_mr3_p2a_v56_startup_gdb.md)、[库存](report/assets/20261023_mr3_p2a_v56_startup_gdb/closed_inventory_v1.json)、[末账](report/assets/20261023_mr3_p2a_v56_startup_gdb/closure_ledger_v1.json)。旧V55 FAIL与费用保持；下一按[V57新声明](report/20261023_mr3_p2a_v57_passive_plant.md)独占HOME后quick150/direct-world有界比较，非旧活动重试。原12EP30角色/95%/安全及pilot/final不动，无学习，P2A未完成。
+
+
+### 2026-10-23 MR3 P2A V57：实际两臂闭合FAIL，不支持direct solver生产路线
+
+实际freeze`71cb6b18090d8e140048b0ab69fe7c81d9a365ea`，root tool92392真实reap rc1。原准确CLI（已关闭历史，不再运行）：
+
+```bash
+rtk proxy env PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 CUDA_VISIBLE_DEVICES= /usr/bin/python3 -B /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v57_passive_plant/run_passive_pair_v1.py --freeze 71cb6b18090d8e140048b0ab69fe7c81d9a365ea
+```
+
+quick150 CPP/wrapper1，合作式600秒上限partial235.631sim秒（190.631秒post-anchor）；三机已观测最大位移约.0073513646204m，仅部分窗口未超R，不能补足310秒hold。direct-world CPP/wrapper0、COMPLETE355sim秒，但tb1/tb2/tb3固定anchor最大位移4.092486164689881/4.4155389088244865/5.779568440772417m、最大平移速度3.607078686419674/3.7882919503566215/3.6041915890845906m/s，物理候选严重失败，不支持接生产；execution完整不等物理可用。目标0不等feedback slew实际命令始终0，CSV原字节全部保留；R=.0078与一次固定anchor不变。
+
+连续pair parent935.226829603墙秒=605.740176299+.025355993gap+329.461297311，nested和CPU不加；累计91317.7804195576018/120000、余28682.2195804423982，agent-selected120000及numeric_user_approval_claimed=false保持，pilot/final新增0。372原源前后稳定，关闭新核30非库/28current-Git及old10，不重读342库；仅6份实际保存main身份gone，不补身份或宣称外部daemon全部退出。28 regular原件32763601B→12859498B无损封存，另1个Pulse链接只存lstat/readlink literal、不跟随外部target。
+
+关闭CPU首轮因目录链接在归档前拒绝rc1/18.815633349墙秒，原件保留；后轮仅记录literal链接后真实PASS/28.583849962墙秒，16源稳定、两轮自身4身份另gone，工程新增0，无新World/科学重放。见[V57实际报告](report/20261023_mr3_p2a_v57_passive_plant.md)、[库存](report/assets/20261023_mr3_p2a_v57_passive_plant/closed_inventory_v1.json)与[末账](report/assets/20261023_mr3_p2a_v57_passive_plant/closure_ledger_v1.json)。下一仅本地轮编码器zero-hold有限servo静态评估，尚无新科学版本/生产/native，不改R、刷新anchor、隐藏非零命令或重开旧活动。所有历史FAIL和12EP30角色/95%安全门保持，P2A未完成。
+
+
+### 2026-10-23 MR3 P2A V58：禁用初始编码器保持候选预声明（尚未World）
+
+新[预声明](report/20261023_mr3_p2a_v58_encoder_hold.md)承接V57规范末账91317.7804195576018/120000、余28682.2195804423982；单quick150新版本拟预约2100完整parent墙秒，native work1500/outer1800，依据V57实际慢速前瞻调整，非旧活动补样。初始zero-only本机q/qdot P1/s、rim clamp±.005、三个34ms实测rest样本后一次q_ref捕获，首次任意非零request永久退出；非零motor纠偏须完整披露，不读WorldPose作反馈、不刷新机身anchor。原45＋310sim秒、.001步、34ms/torque20/accel1/R.0078/seed101保持。CPU/helper/build/source/spec/exactfreeze与实际CLI尚待root封存，不预填PASS或费用，不提供原actuation恒等、native资格或学习信用；后继实际结果另行追加。pilot/final新增0，历史FAIL与12EP30角色/95%门保持，P2A未完成。
+
+
+### 2026-10-23 V58 CPU与封存准备（尚未World）
+
+新initial-zero encoder helper12组rc0/1.96319775秒，入口导入FAIL/.228416829原件保留；单quick150生成.137421507、实际编译52.375035399秒rc0，ELF494528B/SHA0f911c2a0d163e66bb32656944732a74a760511aff49b606bf947b6517e118e6，342库稳定、4编译/生成保存身份gone。driver末轮6组rc0/.391277212秒、2身份gone，旧轮原件保留。CPU均无World/学习/工程新增，准确argv/来源回执见[V58报告](report/20261023_mr3_p2a_v58_encoder_hold.md)链接。U91317.7804195576018/C120000、R28682.2195804423982，新预约2100；single quick150/355sim秒/work1500/outer1800/新actuation/raw非零motor披露保持，待新freeze唯一CLI一次执行。P2A未完成，pilot/final新增0。

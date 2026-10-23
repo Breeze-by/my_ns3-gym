@@ -1,0 +1,164 @@
+{
+  "actuation_profile": "initial-zero-encoder-hold-v1",
+  "arm_difference": "single unchanged quick150 physics world; explicit initial encoder-hold actuator intervention",
+  "build_command_template": [
+    "c++",
+    "-std=c++17",
+    "-O2",
+    "CPP",
+    "-I/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/include",
+    "PKG_CONFIG_GAZEBO_CFLAGS_AND_LIBS",
+    "-o",
+    "NEW_ELF"
+  ],
+  "complete_pair_parent_reservation_seconds": 2100,
+  "csv_sample_period_ns": 20000000,
+  "desired_body_target": [
+    0,
+    0
+  ],
+  "diagnostic_only": true,
+  "encoder_capture_rest_samples": 3,
+  "encoder_capture_rim_limit_mps": 0.01,
+  "encoder_feedback_inputs": [
+    "local wheel Position",
+    "local wheel GetVelocity",
+    "body desired v/w"
+  ],
+  "encoder_gain_per_second": 1.0,
+  "encoder_reference_policy": "once before first nonzero request; permanent disarm after nonzero",
+  "encoder_rim_clamp_mps": 0.005,
+  "execution_sources": [
+    {
+      "bytes": 8487,
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v58_encoder_hold/prepare_passive_plant_v1.py",
+      "sha256": "e00321ddd3bfed2e41fa68ab64777d25fd2d58fce80be884736dd722b10bbe07"
+    },
+    {
+      "bytes": 23160,
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v58_encoder_hold/passive_plant_v1.cpp",
+      "sha256": "a95ccf2cf5f5d73b026c70795ef60592f19841ccddd26ebc292bff5838630a15"
+    },
+    {
+      "bytes": 4492,
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v58_encoder_hold/initial_zero_encoder_servo_v1.hpp",
+      "sha256": "d7b627dd55b764c5246ad33eddb12954b50409c5bf430584a1b1126673971a97"
+    }
+  ],
+  "external_build_required": true,
+  "forbidden": [
+    "SetWorldPose",
+    "SetLinearVel",
+    "SetAngularVel",
+    "SetPosition",
+    "fixed/weld joints",
+    "anchor refresh",
+    "undisclosed controller",
+    "automatic retry"
+  ],
+  "gazebo_master_uri": "http://127.0.0.1:11555",
+  "ground_scope": "explicit installed source, not proof of historical V52 resolution",
+  "hold_seconds": 310,
+  "identity": {
+    "parent": 659926,
+    "pid": 659934
+  },
+  "input_sources": [
+    {
+      "bytes": 18371,
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/models/turtlebot3_waffle/model.sdf",
+      "sha256": "c8131da065085475bdb0ce1e4c3abfc8c009811af6851fadf1fc33bd38b1d8a1"
+    },
+    {
+      "bytes": 1035,
+      "path": "/usr/share/gazebo-11/models/ground_plane/model.sdf",
+      "sha256": "a43cdd937e2446e2a56f2f09a831041784e1dbabe5c3fae8383d6d86b526a7df"
+    },
+    {
+      "bytes": 3592,
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/paired_wheel_slew.hpp",
+      "sha256": "dca3dbaf01251cf7ffe167f1dabb23a45b4fc95d6ad317dcc3290ff50ecf9a1b"
+    },
+    {
+      "bytes": 41255,
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/src/mr3_gazebo_diff_drive.cpp",
+      "sha256": "df307bd4d24abb588ded81752c4b2750cfbc3bb01986295b2e850561811e058a"
+    }
+  ],
+  "motor_update_period_ns": 34000000,
+  "native_qualification": false,
+  "native_seed": 101,
+  "native_seed_api": "ignition::math::Rand::Seed",
+  "native_steps_per_arm": 355000,
+  "observations_every_physics_step": true,
+  "omitted_nonphysical_elements": [
+    "plugin",
+    "sensor",
+    "visual"
+  ],
+  "physical_model_tree_preserved": true,
+  "physics_seed_api": "gazebo::physics::PhysicsEngine::SetSeed",
+  "physics_seed_readback_claimed": false,
+  "qualification_warning": "passive plant observations do not replace twelveEP/thirtyroles or continuous proof",
+  "quick150_scope": "production configuration baseline; this standalone diagnostic is not a production episode",
+  "radius_m": 0.0078,
+  "real_motor_targets_disclosed": true,
+  "robots": [
+    {
+      "name": "tb1",
+      "spawn_xyz_rpy": [
+        0,
+        -0.45,
+        0.01,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "tb2",
+      "spawn_xyz_rpy": [
+        0,
+        0.45,
+        0.01,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "tb3",
+      "spawn_xyz_rpy": [
+        0.45,
+        0,
+        0.01,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  "schema": "mr3-v58-passive-plant-spec-v1",
+  "settle_seconds": 45,
+  "status": "PREPARED_NOT_EXECUTED",
+  "step_ns": 1000000,
+  "work_wall_seconds_per_arm": 1500,
+  "world_runs": 0,
+  "worlds": [
+    {
+      "arm": "quick150",
+      "bytes": 24285,
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v58_encoder_hold/prepared_worlds_v1/quick150.world",
+      "sha256": "5cac66c22e0281de6c424aa517147cb33fffd818e4df7240a60c8a3cc2527298"
+    }
+  ],
+  "zero_control": {
+    "left_joint": "wheel_left_joint",
+    "max_wheel_acceleration": "1.0",
+    "max_wheel_torque": "20",
+    "right_joint": "wheel_right_joint",
+    "update_rate": "30",
+    "wheel_diameter": "0.066",
+    "wheel_separation": "0.287"
+  }
+}

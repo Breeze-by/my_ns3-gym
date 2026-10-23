@@ -3662,5 +3662,108 @@
     "pilot_added_seconds": "0",
     "validation_added_seconds": "0",
     "P2A_complete": false
+  },
+  "mr3_p2a_v57_passive_plant_closed_20261023": {
+    "status": "ACTUAL_CLOSED_FAIL_QUICK150_PARTIAL_DIRECT_WORLD_PHYSICAL_CANDIDATE_REJECTED",
+    "report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261023_mr3_p2a_v57_passive_plant.md",
+    "execution_freeze": "71cb6b18090d8e140048b0ab69fe7c81d9a365ea",
+    "actual_root_tool_session_id": 92392,
+    "actual_root_returncode": 1,
+    "arms": [
+      "quick150",
+      "direct-world"
+    ],
+    "actual_CPP_returncodes": [
+      1,
+      0
+    ],
+    "actual_wrapper_returncodes": [
+      1,
+      0
+    ],
+    "completion_status": [
+      "PARTIAL_OR_FAIL",
+      "COMPLETE"
+    ],
+    "completed_sim_ns": [
+      235631000000,
+      355000000000
+    ],
+    "quick150_max_anchor_displacement_m": [
+      0.007351364620405658,
+      0.007351364620410015,
+      0.007351364620411096
+    ],
+    "direct_world_max_anchor_displacement_m": [
+      4.092486164689881,
+      4.4155389088244865,
+      5.779568440772417
+    ],
+    "direct_world_max_planar_speed_mps": [
+      3.607078686419674,
+      3.7882919503566215,
+      3.6041915890845906
+    ],
+    "direct_solver_production_route_supported": false,
+    "fixed_R_m": 0.0078,
+    "anchor_refreshed": false,
+    "zero_desired_target_does_not_claim_zero_all_output_commands": true,
+    "engineering_added_continuous_parent_wall_seconds": "935.226829603",
+    "inter_case_gap_seconds_included": "0.025355993",
+    "engineering_cumulative_seconds": "91317.7804195576018",
+    "engineering_remaining_seconds": "28682.2195804423982",
+    "agent_selected_cumulative_ceiling_seconds": "120000",
+    "numeric_user_approval_claimed": false,
+    "source_count": 372,
+    "fresh_non_library_source_count": 30,
+    "fresh_current_Git_repo_sources": 28,
+    "old_evidence_source_subset": 10,
+    "library_objects_reread": false,
+    "saved_main_identities_fresh_gone": 6,
+    "external_daemon_absence_claimed": false,
+    "closure_CPU_actual_wall_seconds": [
+      "18.815633349",
+      "28.583849962"
+    ],
+    "closure_CPU_returncodes": [
+      1,
+      0
+    ],
+    "closure_CPU_saved_identities_fresh_gone": 4,
+    "closure_CPU_engineering_added_seconds": "0",
+    "archive_regular_files": 28,
+    "archive_original_bytes": 32763601,
+    "archive_canonical_bytes": 12859498,
+    "literal_symlink_records": 1,
+    "symlink_targets_followed": false,
+    "inventory": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v57_passive_plant/closed_inventory_v1.json",
+    "inventory_sha256": "0e1a8b7b1e2be591a3bedcbf5a4f90942db3ec2ced7a095ad9a1b105eab8afc0",
+    "ledger": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v57_passive_plant/closure_ledger_v1.json",
+    "ledger_sha256": "0c1bd69b647a477bc1813576bb5ab4662040df31ce035c47b0c01a8d2bb877b8",
+    "pilot_added_seconds": "0",
+    "validation_added_seconds": "0",
+    "next_route": "source-only local wheel encoder zero-hold finite-servo assessment; no new scientific version, production or native yet",
+    "P2A_complete": false
+  },
+  "mr3_p2a_v58_encoder_hold_preparation_20261023": {
+    "status": "DISABLED_INITIAL_ZERO_ENCODER_SERVO_PREPARING_NO_WORLD_OR_PRODUCTION",
+    "report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261023_mr3_p2a_v58_encoder_hold.md",
+    "engineering_entry_seconds": "91317.7804195576018",
+    "engineering_remaining_seconds": "28682.2195804423982",
+    "agent_selected_cumulative_ceiling_seconds": "120000",
+    "numeric_user_approval_claimed": false,
+    "proposed_complete_parent_reservation_seconds": "2100",
+    "proposed_native_work_seconds": 1500,
+    "proposed_owned_outer_stop_seconds": 1800,
+    "candidate_profile": "initial-zero-encoder-hold-v1",
+    "P_gain_per_second": 1,
+    "rim_feedback_clamp_mps": 0.005,
+    "reference_capture": "once after three continuous zero/rest 34ms updates; never refreshed",
+    "first_nonzero_request": "permanent disarm until new epoch object",
+    "new_actuation_equation_not_old_identity": true,
+    "native_qualification_credit": false,
+    "pilot_added_seconds": "0",
+    "validation_added_seconds": "0",
+    "P2A_complete": false
   }
 }

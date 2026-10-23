@@ -1,0 +1,198 @@
+--- V57/passive_plant_v1.cpp
++++ V58/passive_plant_v1.cpp
+@@ -9,6 +9,7 @@
+ #include <gazebo/physics/ode/ODEPhysics.hh>
+ #include <ignition/math/Rand.hh>
+ #include <multi_robot/paired_wheel_slew.hpp>
++#include "initial_zero_encoder_servo_v1.hpp"
+ #include <nlohmann/json.hpp>
+ #include <algorithm>
+ #include <array>
+@@ -92,19 +93,27 @@
+   double max_wheel_speed = 0, max_wheel_angle_delta = 0;
+   std::array<double, 2> anchor_angles{}, commanded{};
+   uint64_t motor_updates = 0, observed_steps = 0;
++  multi_robot::mr3_v58::InitialZeroEncoderServo servo;
++  multi_robot::mr3_v58::ServoResult last_servo;
++  double max_encoder_error = 0, max_servo_rim = 0, max_motor_target = 0;
+ };
+ 
+ int main(int argc, char ** argv) {
+   const auto entered = Clock::now();
+-  Json result = {{"schema", "mr3-v57-passive-plant-result-v1"},
++  Json result = {{"schema", "mr3-v58-passive-plant-result-v1"},
+     {"execution_passed", false}, {"qualification", false}, {"errors", Json::array()},
+     {"desired_body_target", {0.0, 0.0}}, {"desired_wheel_rim_target", {0.0, 0.0}},
+     {"fixed_anchor_radius_m", 0.0078}, {"settle_seconds", 45}, {"hold_seconds", 310},
+     {"physics_step_ns", 1000000}, {"motor_update_period_ns", 34000000},
+-    {"motor_policy", "production paired feedback slew: desired0,accel1,torque20,radius.033"}};
++    {"motor_policy", "initial-zero-only encoder P hold then original paired common slew"},
++    {"actuation_profile", "initial-zero-encoder-hold-v1"},
++    {"encoder_gain_per_second", 1.0}, {"encoder_rim_clamp_mps", 0.005},
++    {"encoder_capture_rest_samples", 3}, {"encoder_capture_rim_limit_mps", 0.01},
++    {"encoder_reference_policy", "one capture before first nonzero request; permanent disarm after nonzero"},
++    {"encoder_sensor_scope", "local wheel Position/GetVelocity; no unwrap, snap or body-pose feedback"}};
+   gazebo::physics::WorldPtr world;
+   gazebo::event::ConnectionPtr begin, end;
+-  fs::path output; std::ofstream samples;
++  fs::path output; std::ofstream samples, motors;
+   bool server = false, server_attempted = false, anchor_set = false, owns_output = false;
+   std::vector<Robot> robots; uint64_t end_calls = 0, contact_observations = 0;
+   std::map<std::string, uint64_t> contact_pairs;
+@@ -112,14 +121,14 @@
+   gazebo::common::Time last_update_time;
+   std::string callback_error;
+   try {
+-    require(argc == 9, "expected --arm ARM --world WORLD --output NEWDIR --work-seconds 600");
++    require(argc == 9, "expected --arm ARM --world WORLD --output NEWDIR --work-seconds 1500");
+     std::map<std::string, std::string> options;
+     for (int i = 1; i < argc; i += 2) require(options.emplace(argv[i], argv[i+1]).second, "duplicate option");
+     require(options.size() == 4 && options.count("--arm") && options.count("--world") &&
+       options.count("--output") && options.count("--work-seconds"), "unexpected option");
+     const std::string arm = options.at("--arm");
+-    require(arm == "quick150" || arm == "direct-world", "unregistered arm");
+-    require(options.at("--work-seconds") == "600", "work cap must be exactly600");
++    require(arm == "quick150", "only declared quick150 arm is permitted");
++    require(options.at("--work-seconds") == "1500", "work cap must be exactly1500");
+     output = options.at("--output"); require(output.is_absolute(), "absolute exclusive output required");
+     require(fs::is_regular_file(options.at("--world")), "world regular file required");
+     require(fs::create_directory(output), "output already exists");
+@@ -153,9 +162,8 @@
+       {"contact_surface_layer", ode->GetContactSurfaceLayer()}, {"friction_model", ode->GetFrictionModel()},
+       {"world_step_solver", ode->GetWorldStepSolverType()}});
+     result["actual_physics_parameters"] = parameters;
+-    result["parameter_readback_scope"] = "native ODEPhysics/PhysicsEngine getters; not convergence proof; world ignores quick iterations";
+-    require(physics->GetType() == "ode" && solver == (arm == "quick150" ? "quick" : "world") &&
+-      (arm != "quick150" || iterations == 150) && physics->GetMaxStepSize() == .001 &&
++    result["parameter_readback_scope"] = "native ODEPhysics/PhysicsEngine getters; quick150 configuration, not a convergence proof";
++    require(physics->GetType() == "ode" && solver == "quick" && iterations == 150 && physics->GetMaxStepSize() == .001 &&
+       physics->GetRealTimeUpdateRate() == 0, "actual solver/step/update parameters differ");
+     const auto gravity = world->Gravity();
+     require(gravity.X() == 0 && gravity.Y() == 0 && gravity.Z() == -9.8, "gravity differs");
+@@ -178,6 +186,9 @@
+     samples.open(output / "samples.csv"); require(bool(samples), "samples open failed");
+     samples << "sim_ns,robot,x,y,z,qw,qx,qy,qz,vx,vy,vz,wx,wy,wz,right_position,left_position,right_velocity,left_velocity,right_command,left_command,anchor_displacement_m\n";
+     samples << std::setprecision(17);
++    motors.open(output / "motor_samples.csv"); require(bool(motors), "motor sample open failed");
++    motors << "sim_ns,robot,update_index,desired_v,desired_w,q_right,q_left,qd_right,qd_left,reference_right,reference_left,current_rim_right,current_rim_left,body_desired_rim_right,body_desired_rim_left,servo_desired_rim_right,servo_desired_rim_left,limited_rim_right,limited_rim_left,written_radps_right,written_radps_left,readback_radps_right,readback_radps_left,set_ok_right,set_ok_left,armed,reference_valid,captured_this_update,feedback_active,capture_count,rest_samples,common_fraction\n";
++    motors << std::setprecision(17);
+     begin = gazebo::event::Events::ConnectWorldUpdateBegin([&](const gazebo::common::UpdateInfo & info) {
+       if (!callback_error.empty()) return;
+       try {
+@@ -186,12 +197,38 @@
+         if (dt < 1.0/30.0) return;
+         require(now - last_actuation == 34000000, "actuation was not actual34ms");
+         for (auto & item : robots) {
+-          const std::array<double, 2> current{item.joints[0]->GetVelocity(0)*.033, item.joints[1]->GetVelocity(0)*.033};
+-          const auto limited = multi_robot::limit_paired_wheel_speeds(current, {0.0, 0.0}, 1.0, dt);
++          // Only local wheel encoder values feed the candidate actuator.
++          const std::array<double, 2> q{item.joints[0]->Position(0), item.joints[1]->Position(0)};
++          const std::array<double, 2> qd{item.joints[0]->GetVelocity(0), item.joints[1]->GetVelocity(0)};
++          item.last_servo = item.servo.update(q, qd, 0.0, 0.0, now - last_actuation);
++          const auto & servo = item.last_servo;
++          std::array<double, 2> readback{}; std::array<bool, 2> set_ok{};
+           for (unsigned i = 0; i < 2; ++i) {
+-            item.commanded[i] = limited.applied[i] / .033;
+-            require(item.joints[i]->SetParam("vel", 0, item.commanded[i]), "wheel velocity motor write failed");
++            item.commanded[i] = servo.limited.applied[i] / .033;
++            set_ok[i] = item.joints[i]->SetParam("vel", 0, item.commanded[i]);
++            readback[i] = item.joints[i]->GetParam("vel", 0);
++            finite({item.commanded[i], readback[i]});
++            item.max_motor_target = std::max(item.max_motor_target, std::abs(item.commanded[i]));
++            item.max_servo_rim = std::max(item.max_servo_rim, std::abs(servo.servo_desired_rim[i]));
++            if (servo.reference_valid)
++              item.max_encoder_error = std::max(item.max_encoder_error, std::abs(q[i] - servo.reference[i]));
+           }
++          motors << now << ',' << item.name << ',' << item.motor_updates + 1
++            << ',' << servo.desired_v << ',' << servo.desired_w
++            << ',' << q[0] << ',' << q[1] << ',' << qd[0] << ',' << qd[1]
++            << ',' << servo.reference[0] << ',' << servo.reference[1]
++            << ',' << servo.current_rim[0] << ',' << servo.current_rim[1]
++            << ',' << servo.body_desired_rim[0] << ',' << servo.body_desired_rim[1]
++            << ',' << servo.servo_desired_rim[0] << ',' << servo.servo_desired_rim[1]
++            << ',' << servo.limited.applied[0] << ',' << servo.limited.applied[1]
++            << ',' << item.commanded[0] << ',' << item.commanded[1]
++            << ',' << readback[0] << ',' << readback[1] << ',' << set_ok[0] << ',' << set_ok[1]
++            << ',' << servo.armed << ',' << servo.reference_valid << ',' << servo.captured_this_update
++            << ',' << servo.feedback_active << ',' << servo.capture_count << ',' << servo.rest_samples
++            << ',' << servo.limited.alpha << '\n';
++          require(bool(motors), "motor sample write failed");
++          require(set_ok[0] && set_ok[1] && readback == item.commanded,
++                  "actual wheel motor write/readback differs");
+           ++item.motor_updates;
+         }
+         last_actuation = now;
+@@ -206,7 +243,7 @@
+         require(end_calls != 1 || now == 1000000, "first UpdateEnd clock was not1ms");
+         require(previous_end < 0 || now - previous_end == 1000000, "noncontinuous1ms observations");
+         previous_end = now;
+-        if (interrupted || seconds(entered) > 600) { world->Stop(); return; }
++        if (interrupted || seconds(entered) > 1500) { world->Stop(); return; }
+         if (!anchor_set && now >= 45000000000LL) {
+           require(now == 45000000000LL, "settle anchor missed");
+           for (auto & item : robots) {
+@@ -258,11 +295,16 @@
+     result["completed_sim_ns"] = ns(world->SimTime()); result["update_end_calls"] = end_calls;
+     result["actual_step_count"] = world->Iterations();
+     require(callback_error.empty(), "callback failed: " + callback_error);
+-    require(!interrupted && seconds(entered) <= 600, "interrupted or exceeded cooperative600s cap");
++    require(!interrupted && seconds(entered) <= 1500, "interrupted or exceeded cooperative1500s cap");
+     require(anchor_set && first_end == 1000000 && previous_end == 355000000000LL &&
+       ns(world->SimTime()) == 355000000000LL && end_calls == 355000 && world->Iterations() == 355000,
+       "incomplete355s native execution");
+-    for (const auto & item : robots) require(item.observed_steps == 310001, "incomplete post-anchor observations");
++    for (const auto & item : robots) {
++      require(item.observed_steps == 310001, "incomplete post-anchor observations");
++      require(item.motor_updates == 10441 && item.last_servo.armed && item.last_servo.reference_valid &&
++        item.last_servo.capture_count == 1 && item.last_servo.feedback_active,
++        "initial-zero servo capture/update trace incomplete");
++    }
+     result["execution_passed"] = true;
+   } catch (const std::exception & error) { result["errors"].push_back(error.what()); }
+   begin.reset(); end.reset();
+@@ -274,7 +316,16 @@
+     {"sampled_planar_chord_sum_m", item.chord_sum}, {"maximum_planar_speed_mps", item.max_planar},
+     {"maximum_angular_norm_radps", item.max_angular}, {"maximum_abs_wheel_speed_radps", item.max_wheel_speed},
+     {"maximum_abs_wheel_angle_change_rad", item.max_wheel_angle_delta}, {"post_anchor_observations", item.observed_steps},
+-    {"motor_updates", item.motor_updates}});
++    {"motor_updates", item.motor_updates},
++    {"encoder_servo_armed", item.last_servo.armed},
++    {"encoder_reference_valid", item.last_servo.reference_valid},
++    {"encoder_reference_capture_count", item.last_servo.capture_count},
++    {"encoder_reference_rad", item.last_servo.reference},
++    {"encoder_rest_samples", item.last_servo.rest_samples},
++    {"encoder_feedback_active", item.last_servo.feedback_active},
++    {"max_abs_encoder_reference_error_rad_over_motor_updates", item.max_encoder_error},
++    {"max_abs_servo_desired_rim_mps_over_motor_updates", item.max_servo_rim},
++    {"max_abs_written_motor_target_radps_over_motor_updates", item.max_motor_target}});
+   result["update_end_calls"] = end_calls;
+   result["first_update_end_clock_ns"] = first_end < 0 ? Json(nullptr) : Json(first_end);
+   result["last_update_end_clock_ns"] = previous_end < 0 ? Json(nullptr) : Json(previous_end);
+@@ -282,6 +333,8 @@
+   result["contact_count_scope"] = "per-step contact observations; not eighteen-stream unsafe event rate";
+   if (world) { result["completed_sim_ns"] = ns(world->SimTime()); result["actual_step_count"] = world->Iterations(); world->Stop(); }
+   if (samples.is_open()) { samples.flush(); result["samples_write_ok"] = bool(samples); samples.close(); }
++  if (motors.is_open()) { motors.flush(); result["motor_samples_write_ok"] = bool(motors); motors.close(); }
++  result["motor_sample_scope"] = "every actual34ms wheel write with encoder inputs, fixed reference, computed target and native vel readback";
+   try { result["gazebo_shutdown_returned"] = server_attempted && gazebo::shutdown(); }
+   catch (const std::exception & error) {
+     result["gazebo_shutdown_returned"] = false; result["errors"].push_back(std::string("shutdown: ") + error.what());
+@@ -289,8 +342,8 @@
+   result["received_signal"] = int(interrupted); result["contact_pair_counts"] = contact_pairs;
+   result["contact_observations"] = contact_observations; result["wall_seconds_to_shutdown"] = seconds(entered);
+   result["execution_passed"] = result["execution_passed"].get<bool>() && !interrupted &&
+-    result.value("samples_write_ok", false) && result.value("gazebo_shutdown_returned", false) && seconds(entered) <= 600;
+-  result["diagnostic_only"] = "sampled passive fixed-zero plant; no task, actor, continuous proof or qualification";
++    result.value("samples_write_ok", false) && result.value("motor_samples_write_ok", false) && result.value("gazebo_shutdown_returned", false) && seconds(entered) <= 1500;
++  result["diagnostic_only"] = "sampled initial-encoder-servo plant; real motor feedback disclosed; no task, actor, continuous proof or qualification";
+   result["completion_status"] = result["execution_passed"].get<bool>() ? "COMPLETE" : "PARTIAL_OR_FAIL";
+   if (owns_output) {
+     std::ofstream receipt(output / "summary.json"); receipt << result.dump(2) << '\n'; receipt.flush();
+@@ -298,5 +351,5 @@
+   }
+   std::cout << Json({{"execution_passed", result["execution_passed"]}, {"output", output.string()},
+     {"errors", result["errors"]}}).dump() << '\n';
+-  return result["execution_passed"].get<bool>() && !interrupted && seconds(entered) <= 600 ? 0 : 1;
+-}
++  return result["execution_passed"].get<bool>() && !interrupted && seconds(entered) <= 1500 ? 0 : 1;
++}

@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/tmp/mr3_p2a_v57_close_metadata_v2.py", line 307, in <module>
+    main()
+  File "/tmp/mr3_p2a_v57_close_metadata_v2.py", line 218, in main
+    require(not (parent / name).is_symlink(), 'unexpected source directory symlink')
+  File "/tmp/mr3_p2a_v57_close_metadata_v2.py", line 25, in require
+    raise ValueError(message)
+ValueError: unexpected source directory symlink
