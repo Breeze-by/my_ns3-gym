@@ -3955,5 +3955,46 @@
     "engineering_ceiling_seconds": "150000",
     "capacity_qualified": false,
     "P2A_complete": false
+  },
+  "mr3_p2a_v61_cancel_forensics_actual_closure_20261024": {
+    "execution_freeze": "282e5fa61fed801151db413bd70b375631023a39",
+    "evidence_freeze": "935b466bd076002afdfe161b55a508938de2a8b0",
+    "activity_passed": true,
+    "activity_passed_scope": "fixed cancel-window description only; no root-cause/physical/scientific qualification credit",
+    "report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261024_mr3_p2a_v61_cancel_forensics.md",
+    "ledger": {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v61_cancel_forensics/closure_ledger_v1.json",
+      "bytes": 6554,
+      "sha256": "6e9e808a36533cd08ce1986a98c9a3065bbf769fe78ddf340f08539c898f8d53"
+    },
+    "inventory": {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v61_cancel_forensics/closed_inventory_v1.json",
+      "bytes": 58942,
+      "sha256": "1fa8f5aa7690fb3c03c931e405b57a79563941f344b8627f117dd92538379c63"
+    },
+    "closed_cpu_snapshot_inventory": {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v61_cancel_forensics/checks/closed_cpu_v1/inventory_v1.json",
+      "bytes": 14072,
+      "sha256": "043792cdf5c8f42ce1ec881e9da59463b6529d5d55acd84897c23432973cc820"
+    },
+    "engineering_added_parent_union_seconds": "38.102415614",
+    "engineering_cumulative_seconds": "108886.5066566616018",
+    "engineering_ceiling_seconds": "150000",
+    "engineering_remaining_seconds": "41113.4933433383982",
+    "numeric_user_approval_claimed": false,
+    "original_input_bytes": 523777922,
+    "selected_records": 3898,
+    "selection_drops": 0,
+    "unrestored_dependency_count": 0,
+    "saved_main_identities_fresh_gone": 3,
+    "closure_CPU_saved_identities_fresh_gone": 4,
+    "external_transport_identity_inventory_complete": false,
+    "whole_launch_tree_absence_claimed": false,
+    "root_cause_proved": false,
+    "old_FAIL_rejudged": false,
+    "capacity_qualified": false,
+    "automatic_pilot_final_entry_allowed": false,
+    "P2A_complete": false,
+    "next_action": "先执行独立 A62 八步性能 baseline，cancel authority 仅在 /tmp 并行设计，避免修复混淆 baseline 成本；随后取消修复与 probe-v2、实测等价优化、capacity gate、新同 freeze 完整 12 EP / 30 角色、真实学习及三场 strict95。"
   }
 }

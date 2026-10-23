@@ -1,4 +1,26 @@
-# MR3 P2A V61：固定取消窗口的有限原件取证预声明
+# MR3 P2A V61：固定取消窗口取证的实际闭合
+
+## V61 实际闭合：描述性 PASS，P2A 未完成
+
+新执行冻结为 `282e5fa61fed801151db413bd70b375631023a39`，旧证据冻结为 `935b466bd076002afdfe161b55a508938de2a8b0`。工具59189已真实reap rc0；五份原始plain流各单次消费，共523777922B，完整SHA/bytes/stat与解析检查闭合，parse0、3898选行、0drop、缺依赖0。派生description为19264481B，SHA256 `ec0048c56946f1200c92dc6dae1d41552ea816b0ebc01e9d8ffd1dcd9ca8bf86`。这是固定窗口的描述性完整性，不是根因、物理修复、连续安全或原生资格证明；V60实际FAIL与原停止界保持。
+
+25个runtime source bindings、16个旧E解释源及含配置/末账引用的30项实际source before/after/current-Git一致。关闭review只核元数据与description顶层headers，selected_records/raw_utf8不解码，不重开五原件或重跑科学reader。两个后继derived-only分析目录也已按原字节归档；它们不改变primary结论或取得新资格。
+
+后继分析仅使用获准派生description，得到以下有限实质发现：首cancel在42.86sim-s，同一adapter时钟的accepted也为42.86、terminal为43.06；raw seq120…178在42.88–45.78持续59个正v请求，232条所选decision均为reach_clear且output=request，storage/APPLIED中真实非零值保留。45.82才出现v=0，w仍非零；45.891仅是平移rest，不能冒称全电机为零。两次取消事务各为0.2sim-s，下一goal49.86晚于首次rest；136条所选motor行中的初始encoder servo已disarmed，不是该servo重新介入。这些是原行、各自源时钟和精确join范围的描述，不建立跨进程wall总序，也不将根因或修复标为已证。
+
+最小待修方向是独立的typed receiving-authority候选：noowner/revoked时将effective body request置为[0,0]再进入原Reach，同时保留raw request和实际输出披露。GRANT之后raw goal-generation身份仍UNKNOWN，此候选不能宣称已阻断所有迟到消息；尚未安装或获得native资格。可读取已归档的[adapter/API链说明](assets/20261024_mr3_p2a_v61_cancel_forensics/closed_execution/tmp/mr3_p2a_v61_adapter_cancel_findings_v1/README.md.rawbytes.gz)与[motion/drive链说明](assets/20261024_mr3_p2a_v61_cancel_forensics/closed_execution/tmp/mr3_p2a_v61_motion_chain_analysis_v1/README.md.rawbytes.gz)：它们是原README字节的gzip封装，可用`rtk proxy gzip -cd <下载或本地canonical路径>`恢复阅读，不执行其中代码、不重开五原件。
+
+身份关闭限定为driver、wrapper和consumer三个已保存完整PID/start对象，均fresh-gone。root首轮祖先观察发生在driver退出之后，assert失败，未写live_ancestry；launch_declaration的rtk/shell是期望角色，未保存其原start。driver.parent=1788823仅PID，group/session=1788821仅关系字段，不能拼造外部对象身份。external transport身份库存不完整、absence未声称，不能将本次限定范围的metadata PASS描述为全树退出证明。
+
+完整parent实费38.102415614s，包含入场来源/末账、实际子等待、post-source和owned清理/work_close；nested32.720484293s不加，未虚构root工具起止费用。累计108886.5066566616018/C150000，余额41113.4933433383982；150000为代理持续委托下选择，非数值用户批准。pilot/final新增0，原额度保持。
+
+metadata工具62144真实reap0、13.011257211s；archive工具26275真实reap0、17.368586778s，四个保存CPU身份另fresh-gone，两项CPU工程新增0。主库存44regular、73370260B→8725840B、0link，逐文件原字节恢复SHA通过，均≤64MiB；未重封V60五原件或342库，未执行overlay。主库存不可变，归档CPU自己的真实回执与后继fresh-gone置于独立after-copy supplemental范围。
+
+先执行独立 A62 八步性能 baseline，cancel authority 仅在 /tmp 并行设计，避免修复混淆 baseline 成本；随后取消修复与 probe-v2、实测等价优化、capacity gate、新同 freeze 完整 12 EP / 30 角色、真实学习及三场 strict95。 当前capacity=False，禁auto pilot/final，P2A未完成；用户持续自主授权保持。
+
+[规范末账](assets/20261024_mr3_p2a_v61_cancel_forensics/closure_ledger_v1.json) · [不可变主库存](assets/20261024_mr3_p2a_v61_cancel_forensics/closed_inventory_v1.json) · [关闭CPU后继原件库存](assets/20261024_mr3_p2a_v61_cancel_forensics/checks/closed_cpu_v1/inventory_v1.json) · [三main限定范围元数据](assets/20261024_mr3_p2a_v61_cancel_forensics/checks/closed_cpu_v1/files/tmp/p2a61_closed_metadata_review_v1.json)。
+
+## 执行前准备记录（历史快照）
 
 V61 尚未读取原件流，也未取得取证、根因、原生资格或学习结果。canonical consumer 已封为 v4，最终 10 项人工 CPU 实际通过；本次执行冻结仍待 commit/push，当前工作区不能据 admitted=True 直接执行。P2A 未完成，当前 capacity=False，禁止自动进入 pilot/final。
 

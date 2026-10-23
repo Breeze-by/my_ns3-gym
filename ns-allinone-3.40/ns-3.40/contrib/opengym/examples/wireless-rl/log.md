@@ -8996,3 +8996,9 @@ CPP/wrapper/root均rc0，355000步/355sim秒、310001 postanchor观测，三机�
 2026-10-24 — V61固定取消窗准备
 
 2026-10-24 V61准备：五份原始plain固定取消窗523777922B已封metadata pin、尚未消费；v4 drive-first精确command/guard/APPLIED引用选取保留原scanner/checker/windows，最终10人工CPU真实PASS/.788136087秒、34源稳定可恢复及2CPU身份gone，旧两轮8case原件保持。完整parent660/work480预约由V60末账108848.4042410476018/C150000/余41151.5957589523982承接；准备工程新增0，pilot/final不动。尚待新exact40源码冻结/真实push完成后单次有限取证，不提供新native/学习/资格；capacity=False，P2A未完成，持续授权不重复一般审批。 证据：report/20261024_mr3_p2a_v61_cancel_forensics.md；最终CPU：report/assets/20261024_mr3_p2a_v61_cancel_forensics/checks/artificial_cpu_v3/proof_v1.json。
+
+## 2026-10-24 MR3 P2A V61 固定取消窗实际闭合：描述性PASS
+
+2026-10-24 V61实际闭合描述性PASS：执行freeze282e5fa61、旧证据E935b466bd，tool59189真实reap rc0；五原件单pass523777922B、parse0、3898选行/0drop/缺依赖0，不证明根因、物理修复或资格。25 runtime源/16旧E解释源及30含配置引用稳定，3已保存main PID/start freshgone；late ancestry observer未保存rtk/shell原start，外transport库存不完整，绝不claim全树gone。完整parent实费38.102415614，累计108886.5066566616018/C150000、余41113.4933433383982，nested/root工具墙时不叠加；pilot/final原额保持。44 regular原件73370260B无损封存8725840B、0link；metadata13.011257211s/archive17.368586778s真实CPU关闭，4 CPU身份另gone、工程新增0。capacity=False、P2A未完成、禁auto pilot/final。先执行独立 A62 八步性能 baseline，cancel authority 仅在 /tmp 并行设计，避免修复混淆 baseline 成本；随后取消修复与 probe-v2、实测等价优化、capacity gate、新同 freeze 完整 12 EP / 30 角色、真实学习及三场 strict95。 用户持续自主授权保持，不重复一般审批。
+
+原件消费命令：在W目录使用`/usr/bin/python3 -B -m report.assets.20261024_mr3_p2a_v61_cancel_forensics.run_cancel_forensics_v1 --freeze 282e5fa61fed801151db413bd70b375631023a39`；实际root工具59189。无model/checkpoint/World/optimizer更新，episode/epoch与两窗口沿用旧E固定取证声明。详见[V61](report/20261024_mr3_p2a_v61_cancel_forensics.md)及[末账](report/assets/20261024_mr3_p2a_v61_cancel_forensics/closure_ledger_v1.json)。
