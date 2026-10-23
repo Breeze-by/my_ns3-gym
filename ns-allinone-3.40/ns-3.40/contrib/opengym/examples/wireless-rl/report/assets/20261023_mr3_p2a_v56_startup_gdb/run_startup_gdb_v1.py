@@ -114,24 +114,42 @@ def main():
         if child is not None and rc is None:
             # Popen remains owned even when receipt/observation handling failed.
             while rc is None:
-                for row in descendants(child.pid):
-                    observed.setdefault((row['pid'], row['start_ticks']), row)
+                try:
+                    for row in descendants(child.pid):
+                        observed.setdefault((row['pid'], row['start_ticks']), row)
+                except BaseException as error:
+                    message = 'final observation failed: ' + repr(error)
+                    if message not in errors:
+                        errors.append(message)
                 for row in reversed(list(observed.values())):
                     if row['pid'] != child.pid:
-                        d.owned_signal(row, signal.SIGKILL)
+                        try:
+                            d.owned_signal(row, signal.SIGKILL)
+                        except BaseException as error:
+                            message = 'owned cleanup signal failed: ' + repr(error)
+                            if message not in errors:
+                                errors.append(message)
                 try:
                     rc = child.wait(timeout=.1)
                 except subprocess.TimeoutExpired:
                     if d.fee(started, time.monotonic_ns()) >= 180 and wrapper is not None:
-                        d.owned_signal(wrapper, signal.SIGKILL)
+                        try:
+                            d.owned_signal(wrapper, signal.SIGKILL)
+                        except BaseException as error:
+                            message = 'wrapper cleanup signal failed: ' + repr(error)
+                            if message not in errors:
+                                errors.append(message)
                 except BaseException as error:
                     errors.append('final wait interrupted: ' + repr(error))
             ended = time.monotonic_ns()
     wait_returned = ended
     for row in reversed(list(observed.values())):
-        if d.current(row) is not None:
-            d.owned_signal(row, signal.SIGKILL)
-            errors.append('saved owned identity still present after debugger wait: ' + str(row['pid']))
+        try:
+            if d.current(row) is not None:
+                d.owned_signal(row, signal.SIGKILL)
+                errors.append('saved owned identity still present after debugger wait: ' + str(row['pid']))
+        except BaseException as error:
+            errors.append('post-wait owned cleanup failed: ' + repr(error))
     if started is not None:
         ended = time.monotonic_ns()  # Includes post-source proof and any owned cleanup.
     fee = Decimal(0) if started is None else d.fee(started, ended)
