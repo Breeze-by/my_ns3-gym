@@ -1,0 +1,122 @@
+{
+  "schema": "mr3-engineering-closure-ledger-v1",
+  "passed": true,
+  "ledger_scope": "closed-source/custody/opaque-preservation and actual phase-union accounting; original activity scientific FAIL unchanged",
+  "execution_freeze": "783aec55353ecb93385ffe305300ab760f9c24fe",
+  "source_freeze": "ec63e5946b35adce394b7b2b425ebd03169daa96",
+  "activity_passed": false,
+  "root_actual_returncode": 1,
+  "engineering_entry_seconds": "92217.1876804376018",
+  "engineering_added_seconds": "2099.471611454",
+  "engineering_cumulative_seconds": "94316.6592918916018",
+  "engineering_ceiling_seconds": "150000",
+  "engineering_remaining_seconds": "55683.3407081083982",
+  "engineering_fee_intervals": [
+    {
+      "name": "preflight",
+      "scope": "engineering",
+      "started_monotonic_ns": 4493502426597956,
+      "ended_monotonic_ns": 4493564979195106,
+      "actual_seconds": "62.55259715",
+      "passed": true,
+      "actual_returncode": 0
+    },
+    {
+      "name": "matrix",
+      "scope": "engineering",
+      "started_monotonic_ns": 4493565001224930,
+      "ended_monotonic_ns": 4495598385923931,
+      "actual_seconds": "2033.384699001",
+      "passed": false,
+      "actual_returncode": 1
+    },
+    {
+      "name": "matrix_absence",
+      "scope": "engineering",
+      "started_monotonic_ns": 4495598404049432,
+      "ended_monotonic_ns": 4495600169412899,
+      "actual_seconds": "1.765363467",
+      "passed": true,
+      "actual_returncode": 0
+    },
+    {
+      "name": "chain_final_absence",
+      "scope": "engineering",
+      "started_monotonic_ns": 4495600189203771,
+      "ended_monotonic_ns": 4495601958155607,
+      "actual_seconds": "1.768951836",
+      "passed": true,
+      "actual_returncode": 0
+    }
+  ],
+  "fee_basis": "scope-wise complete phase-parent interval union; nested child and whole root wall not added; gaps excluded as prospectively declared",
+  "pilot_added_seconds": "0",
+  "validation_added_seconds": "0",
+  "pilot_remaining_decisions": 1870,
+  "pilot_remaining_seconds": "2905.9547395464029",
+  "final_only_schedule": [
+    "open:401",
+    "open:402",
+    "open:403"
+  ],
+  "final_remaining_decisions": 900,
+  "final_remaining_seconds": "9000",
+  "closed_metadata_review": {
+    "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v59_encoder_profile/closed_execution/closure_tools/mr3_p2a_v59_closed_metadata_review_v1.json",
+    "bytes": 1334250,
+    "sha256": "1adb7379024dbd8cbf6dff24d436c81891bfffcd7945eb5b2d352592456cff77"
+  },
+  "closed_inventory": {
+    "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v59_encoder_profile/closed_inventory_v1.json",
+    "bytes": 992699,
+    "sha256": "87f86150097e313de42a952c85dba7a5f9476d720420e5106b8da04fe473059b"
+  },
+  "driver_summary": {
+    "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v59_encoder_profile/closed_execution/tmp/mr3_p2a_reach_v59_driver_v1/summary.json",
+    "bytes": 4441,
+    "sha256": "5444cca8a2889bc6d52d08c8087f63fd29e4a78ae477c901f41efe24e12f3c63"
+  },
+  "root_actual_tool_wait": {
+    "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v59_encoder_profile/closed_execution/root_tool/actual_tool_wait_v1.json",
+    "bytes": 344,
+    "sha256": "7da18176961bdc84a63d8e1a01a60a0c5844afd26d3b92ac78a18dc7d213ffe1"
+  },
+  "closed_cpu_evidence_inventory": {
+    "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v59_encoder_profile/checks/closed_cpu_v1/inventory_v1.json",
+    "bytes": 14123,
+    "sha256": "70b003ed9dc91d7d361e6467c70860e67af91ba776ca954a5a334cd8079a4d17"
+  },
+  "all_saved_main_identities_fresh_gone": true,
+  "complete_saved_identity_pairs_checked": 67,
+  "identity_scope": "only explicitly saved runtime/root owned PID+start pairs; PID-only occurrences retain original unknown starts; two predeclared persistent Codex ancestors are nonowned",
+  "PID_only_occurrences_preserved_without_reconstruction": true,
+  "unrecorded_writer_absence_claimed": false,
+  "closed_cpu_actual_wall_seconds": [
+    "4.178548118",
+    "131.630549137"
+  ],
+  "closed_cpu_saved_identities_separately_fresh_gone": 4,
+  "closed_cpu_engineering_added_seconds": "0",
+  "mandatory_role_counts": {
+    "PASS": 6,
+    "FAIL": 1,
+    "SKIPPED": 23
+  },
+  "role_count_note": "full role FAIL; peer_control and closure role SKIPPED after fifo_001 required child rc1 (role=None). Native rc0 is collection, not an extra role.",
+  "actual_native_episodes": 1,
+  "actual_native_returned_transitions": 32,
+  "same_freeze_required_episodes": 12,
+  "same_freeze_required_roles": 30,
+  "source_current_git_checked": 1015,
+  "native_ELF_checked": 10,
+  "archive_regular_files": 578,
+  "archive_original_bytes": 1111648531,
+  "archive_canonical_bytes": 97838145,
+  "archive_links": 0,
+  "old_FAIL_and_pending_fields_preserved": true,
+  "native_qualification_credit": false,
+  "optimizer_updates": 0,
+  "numeric_user_approval_claimed": false,
+  "P2A_complete": false,
+  "p2b_gateway_started": false
+}

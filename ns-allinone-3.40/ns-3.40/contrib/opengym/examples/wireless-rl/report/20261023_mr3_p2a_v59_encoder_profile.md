@@ -1,5 +1,8 @@
 # MR3 P2A V59：初始编码器保持的生产接入与新完整资格链
 
+当前实际闭合：V59 **FAIL**，执行freeze `783aec55353ecb93385ffe305300ab760f9c24fe`、原tool53492真实reap rc1。1EP原生32/32返回；必要角色6PASS/1FAIL/23SKIP，未启动minimum/pilot/final，P2A未完成。旧准备文字保留为历史快照。下一V60只补两处显式profile审计接线，需人工CPU与新freeze完整12EP30角色重新验证。
+
+
 当前：生产接入、真实CPU构建、最终fresh v3与编排准入已完成，来源冻结已推送且完整资格计划已生成，正在封存执行冻结，尚未启动V59 World、qualification、minimum、pilot或final。P2A未完成。用户已持续委托自主完成，不再请求常规修改或有界工程资源批准。
 
 ## 已有依据
@@ -60,3 +63,17 @@ fresh v2两个环境均已实际wait/reap：ROS202项/38.504274032墙秒、ns3gy
 源码/真实build证据已提交并推送`ec63e5946b35adce394b7b2b425ebd03169daa96`，真实tool73425回收rc0后才执行依赖步骤。prepare实际tool97772回收rc0，生成[plan](assets/20261023_mr3_p2a_v59_encoder_profile/plan_v1.json)（SHA c69aa1c222cfa8963202468df7bd114e8d23368c85436ad35d0ac83457b9679e）及[binding](assets/20261023_mr3_p2a_v59_encoder_profile/native_custody_binding_v1.json)（SHA 501de8e6caadaa8c362e351149d23e436a1a845a285484041f55d7a2c1ff63d7），1015来源/10ELF。实际plan_check通过12EP/30必要角色、三policy接线和47220预约；ROS/learner CUDA实际就绪检查均通过。见[工具观测](assets/20261023_mr3_p2a_v59_encoder_profile/checks/preparation_tool_observations_v1.json)。
 
 下一步将这些生成物提交推送为最终执行freeze B，要求HEAD=origin/main=B且工作区干净；对B实际调用严格native binding verifier，成功后才一次运行execute_chain_v1 --freeze B。完整链自己的preflight输出尚未占用，World/PPO仍未启动。CLI与root活身份在启动时保存到独占/tmp记录，所有writer结束后再入库，防止运行中污染严格来源工作区。工程、pilot及final实际账均未因准备CPU改变。
+
+## V59实际闭合 FAIL
+
+正式preflight PASS/62.55259715墙秒。interface原生1EP32/32有效返回，native实际wait1160.371180768墙秒/rc0；angular、physics、input、runtime（含三机新compound motor）、information、cadence六必要角色PASS。full role FAIL；fifo_001为required、role=None的子命令rc1，使peer_control/fifo_manifest未派发，closure role亦SKIPPED。完整30必要角色为6PASS/1FAIL/23SKIP；terminal/reset/deadline及minimum/pilot/final均未启动，0优化更新，不拼接旧24/30或给本回合资格信用。
+
+full原始错误为新Reach SDF whole-byte inverse与原5Hz模型不相等，以及controlled inputs缺完整motion replay。静态源码核对定位：真实launch新增的唯一`mr3_actuation_profile`标签未进入sensor逆投影登记；peer reader旧kind白名单缺`initial_encoder_configuration`与`initial_encoder_receive`，其原始错误为native driver complete identity/record prefix。controlled-motion错误依赖peer失败而生；这些来源定位不改判V59，也不宣称未来组合必定通过。准备检查遗漏了公共入口新profile接线，V60将补公共入口正负回归，保留完整原字节及旧分支，不删新事件、不伪装zero、不改控制/物理阈值。
+
+原root tool53492真实reap1之后，67份明确保存运行/root PID+start身份freshgone；两预存Codex transport祖先按启动前声明为nonowned，不纳入gone。PID-only原始未知start状态仍保留，不从另一对象构造原始身份，不声称未记录writer全部不存在。metadata CPU真实4.178548118秒、collector CPU真实131.630549137秒均rc0，各2保存身份另gone；1015源current/Git与10ELF一致。
+
+578 regular原件1111648531B无损封存为97838145B，0链接、无超64MiB原件wrapper、不需分块。见[规范库存](assets/20261023_mr3_p2a_v59_encoder_profile/closed_inventory_v1.json)、[metadata review](assets/20261023_mr3_p2a_v59_encoder_profile/closed_execution/closure_tools/mr3_p2a_v59_closed_metadata_review_v1.json)、[关闭CPU原件库存](assets/20261023_mr3_p2a_v59_encoder_profile/checks/closed_cpu_v1/inventory_v1.json)。全保留partial/失败/实际非零motor输出；未重跑旧科学读者或原活动。
+
+实际工程按四个完整phase-parent区间union收费：preflight62.55259715＋matrix2033.384699001＋matrix_absence1.765363467＋chain_final_absence1.768951836＝2099.471611454秒；nested与整个root wall不重加，记账gaps按预声明不计费。累计94316.6592918916018/150000、余55683.3407081083982；C150000仍为代理依持续委托选定，非用户逐数值批准。pilot1870决策/2905.9547395464029秒、final-only900决策/9000秒和三open401/402/403保持原余额。规范[末账](assets/20261023_mr3_p2a_v59_encoder_profile/closure_ledger_v1.json)。
+
+下一步：保存本轮C提交后，V60安装已在/tmp人工验证的sensor与peer显式profile登记候选，统一公共入口CPU、当前源恢复及新精确freeze，再完整同freeze12EP/30角色→fresh minimum16真实正更新→pilot实际正更新及固定checkpoint→三场strict95/零验证更新；本次缺失资格不由旧数据补做。R=.0078、一次body anchor、实际非零命令披露、原95%/质量/接触/时钟/源龄门保持，P2B/gateway未启动。
