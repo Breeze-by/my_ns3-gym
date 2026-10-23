@@ -1,0 +1,289 @@
+"""Only newly generated tiny inputs; no V60 evidence path is opened."""
+import ast
+import copy
+import re
+import gzip
+import hashlib
+import importlib.util
+import json
+import os
+from pathlib import Path
+import tempfile
+import time
+import unittest
+from unittest import mock
+
+
+HERE = Path(__file__).resolve().parent
+spec = importlib.util.spec_from_file_location('cancel_window_candidate', HERE / 'cancel_window_extract_v4.py')
+m = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(m)
+
+
+class ArtificialExtractorTests(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory(prefix='mr3-cancel-artificial-')
+        self.root = Path(self.tmp.name)
+        self.limits = dict(total_encoded_bytes=100000, total_decoded_bytes=100000,
+                           line_bytes=4096, lines_per_file=100, selected_records=100,
+                           selected_raw_bytes=50000, output_bytes=100000, work_seconds=10)
+    def tearDown(self):
+        self.tmp.cleanup()
+    def row(self, seq, seconds, robot='tb2', **extra):
+        return dict(epoch=m.EPOCH, record_sequence=seq, kind='raw_request',
+                    robot=robot, sim_time_sec=seconds, payload=extra)
+    def lines(self, rows):
+        return b''.join(json.dumps(row, allow_nan=False).encode() + b'\n' for row in rows)
+    def run_scan(self, raw, label='motion', codec='identity', expected_decoded=False, **overrides):
+        encoded = gzip.compress(raw, mtime=0) if codec == 'gzip' else raw
+        path = self.root / ('artificial-' + str(len(list(self.root.iterdir()))) + '.bin')
+        path.write_bytes(encoded)
+        item = dict(codec=codec, encoded_bytes=len(encoded), encoded_sha256=m.sha(encoded),
+                    decoded_bytes=len(raw) if expected_decoded else None,
+                    decoded_sha256=m.sha(raw) if expected_decoded else None,
+                    decoded_byte_limit=100000)
+        item.update(overrides)
+        selection = m.Selection([m.PRIMARY, m.SECONDARY], self.limits)
+        report = m.scan(path, label, item, selection, time.monotonic() + 10, self.limits)
+        return report, selection.finish(), selection
+
+    def test_unadmitted_and_wrong_type_reject_before_any_input_open(self):
+        pending = json.loads((HERE / 'extraction_spec_v1.json').read_text())
+        for value in (False, None, 'true', 1):
+            candidate = copy.deepcopy(pending)
+            candidate['admitted'] = value
+            with self.subTest(value=value), mock.patch.object(Path, 'lstat', side_effect=AssertionError('raw stat')):
+                with self.assertRaisesRegex(ValueError, 'unadmitted'):
+                    m.validate_spec(candidate)
+        candidate = copy.deepcopy(pending)
+        candidate['admitted'] = True
+        candidate['limits']['work_seconds'] = None
+        with self.assertRaisesRegex(ValueError, 'resource caps'):
+            m.validate_spec(candidate)
+
+    def test_actor_class_boundary_and_original_zero_false_null_bytes(self):
+        rows = [self.row(1, 42.5, actual=0, supported=False, missing=None),
+                self.row(2, 42.59, 'tb3'), self.row(3, 42.9), self.row(4, 46.2)]
+        raw = self.lines(rows)
+        report, selected, _ = self.run_scan(raw)
+        self.assertTrue(report['whole_binding_and_parse_complete'])
+        self.assertEqual([row['line_1based'] for row in selected], [1, 3, 4])
+        first = selected[0]
+        self.assertEqual(first['original_line_sha256'], m.sha(raw.splitlines(keepends=True)[0]))
+        self.assertEqual(first['decoded_byte_offset'], 0)
+        self.assertEqual(json.loads(first['raw_utf8'])['payload'], dict(actual=0, supported=False, missing=None))
+        self.assertEqual(selected[1]['decoded_byte_offset'], sum(map(len, raw.splitlines(keepends=True)[:2])))
+        self.assertEqual(selected[1]['source_record_sequence'], 3)
+        self.assertIn('first_cancel_failed:boundary_before:raw_request', first['selection_reasons'])
+
+    def test_gzip_one_encoded_pass_with_optional_or_known_decoded_pin(self):
+        raw = self.lines([self.row(1, 42.86)])
+        for known in (False, True):
+            with self.subTest(known=known):
+                report, selected, _ = self.run_scan(raw, codec='gzip', expected_decoded=known)
+                self.assertTrue(report['whole_binding_and_parse_complete'])
+                self.assertEqual(report['encoded_input_open_count'], 1)
+                self.assertEqual(report['encoded_validation_additional_read_bytes'], 0)
+                self.assertEqual(report['decoded_scan_pass_count'], 1)
+                self.assertEqual(report['decoded_parse_bytes'], len(raw))
+                self.assertEqual(report['decoded_sha256_of_read_bytes'], m.sha(raw))
+                self.assertEqual(report['expected_decoded_pin_available'], known)
+                self.assertEqual(selected[0]['original_line_sha256'], m.sha(raw))
+
+    def test_bad_json_keeps_full_suffix_hash_and_parse_incomplete(self):
+        raw = self.lines([self.row(1, 42.7)]) + b'{bad}\n' + self.lines([self.row(3, 43.1)])
+        report, _, _ = self.run_scan(raw)
+        self.assertTrue(report['whole_input_read'])
+        self.assertFalse(report['whole_binding_and_parse_complete'])
+        self.assertEqual(report['encoded_parse_read_bytes'], len(raw))
+        self.assertEqual(report['decoded_sha256_of_read_bytes'], m.sha(raw))
+        self.assertEqual(report['lines_read'], 3)
+        self.assertGreater(report['error_count'], 0)
+        for row in (dict(self.row(1, 42.7), payload=None),
+                    {key: value for key, value in self.row(1, 42.7).items() if key != 'robot'}):
+            report, _, _ = self.run_scan(self.lines([row]))
+            self.assertTrue(report['whole_input_read'])
+            self.assertFalse(report['whole_binding_and_parse_complete'])
+
+    def test_resource_limits_preserve_partial_and_selection_drops(self):
+        raw = self.lines([self.row(1, 42.7), self.row(2, 42.8)])
+        self.limits['line_bytes'] = 20
+        report, _, _ = self.run_scan(raw)
+        self.assertFalse(report['whole_input_read'])
+        self.assertFalse(report['whole_binding_and_parse_complete'])
+        self.assertLess(report['decoded_parse_bytes'], len(raw))
+        self.limits['line_bytes'] = 4096
+        self.limits['selected_records'] = 1
+        report, _, selected = self.run_scan(raw)
+        self.assertTrue(report['whole_binding_and_parse_complete'])
+        self.assertGreater(selected.drops, 0)
+        with mock.patch.object(Path, 'lstat', side_effect=AssertionError('must not open expired input')):
+            with self.assertRaisesRegex(ValueError, 'expired'):
+                m.scan(self.root / 'unused', 'motion', {}, selected, time.monotonic() - 1, self.limits)
+
+    def test_launch_literals_keep_original_context_and_unknown_clock(self):
+        raw = b'before0\nbefore1\nFailed to cancel action server for tb2\nafter1\nafter2\nafter3\n'
+        report, selected, _ = self.run_scan(raw, label='launch')
+        self.assertTrue(report['whole_binding_and_parse_complete'])
+        self.assertEqual([row['line_1based'] for row in selected], [1, 2, 3, 4, 5])
+        self.assertEqual(selected[2]['source_clock_refs'], [])
+        self.assertEqual(selected[2]['source_record_sequence'], None)
+        self.assertEqual(selected[2]['clock_domain'], 'UNKNOWN_UNMAPPED_NATIVE_LOG')
+        self.assertEqual(selected[2]['decoded_byte_offset'], len(b'before0\nbefore1\n'))
+        self.assertEqual(selected[2]['original_line_sha256'], m.sha(raw.splitlines(keepends=True)[2]))
+
+    def test_exact_encoded_binding_epoch_native_kind_and_clock_guards(self):
+        raw = self.lines([self.row(1, 42.7)])
+        report, _, _ = self.run_scan(raw, encoded_sha256='0' * 64)
+        self.assertTrue(report['whole_input_read'])
+        self.assertFalse(report['whole_binding_and_parse_complete'])
+        for changes, label in ((dict(epoch='other'), 'motion'), (dict(kind='unknown'), 'drive')):
+            row = self.row(1, 42.7)
+            row.update(changes)
+            report, _, _ = self.run_scan(self.lines([row]), label=label)
+            self.assertFalse(report['whole_binding_and_parse_complete'])
+            self.assertTrue(report['whole_input_read'])
+        with self.assertRaises(ValueError):
+            m.seconds_ref(True, 'clock')
+        clock = m.seconds_ref(42.86, 'clock')
+        self.assertEqual(clock['original_value'], 42.86)
+        self.assertEqual(clock['selection_ns'], 42860000000)
+        direct = self.root / 'canonical'
+        direct.mkdir()
+        (direct / 'raw').write_bytes(raw)
+        (self.root / 'alias').symlink_to(direct, target_is_directory=True)
+        with self.assertRaisesRegex(ValueError, 'symlink component'):
+            m.scan(self.root / 'alias' / 'raw', 'motion', {}, m.Selection([], self.limits),
+                   time.monotonic() + 10, self.limits)
+        self.assertEqual(m.unrestored_dependencies([]), ['selected_native_actuation_absent'])
+        target = dict(epoch=m.EPOCH, robot='tb2', schema='mr3-drive-target-v1',
+                      clock_ns=42600000000, decision_sequence=8, linear_x=0.1, angular_z=0)
+        act = dict(kind='actuation', cmd_seq=9, actuation_seq=12, pair_index=0,
+                   target_decision_sequence=8, target_clock_ns=42600000000,
+                   sim_time_ns=42700000000, dt_ns=34000000,
+                   current_rim_mps=[0.1, 0.1], desired_rim_mps=[0.1, 0.1],
+                   applied_rim_mps=[0.1, 0.1], alpha=1, max_acceleration_mps2=1,
+                   initial_encoder_hold=dict(genuine_consumed_target=target,
+                       first_nonzero_received_cmd_seq=9, first_nonzero_received_clock_ns=42610000000,
+                       first_nonzero_received_target=target))
+        def selected(label, row):
+            return dict(input=label, raw_utf8=json.dumps(row))
+        only = [selected('drive', act)]
+        self.assertEqual(len(m.unrestored_dependencies(only)), 4)
+        command = dict(kind='command_received', cmd_seq=9, target_decision_sequence=8,
+                       target_clock_ns=42600000000)
+        receive = dict(kind='initial_encoder_receive', cmd_seq=9, first_nonzero_received_cmd_seq=9,
+                       sim_time_ns=42610000000, stored_target=target)
+        decision = dict(kind='reach_decision', payload=dict(decision_sequence=8, clock_ns=42600000000))
+        pair = {key: act[key] for key in ('pair_index', 'current_rim_mps', 'desired_rim_mps',
+                'applied_rim_mps', 'alpha', 'max_acceleration_mps2')}
+        feed = dict(kind='reach_driver_ingress', payload=dict(kind='applied', message=dict(cmd_seq=9,
+                    actuation_sequence=12, source_clock_ns=42700000000, dt_ns=34000000,
+                    target=target, pairs=[pair])))
+        complete = only + [selected('drive', row) for row in (command, receive)] \
+                   + [selected('motion', row) for row in (decision, feed)]
+        self.assertEqual(m.unrestored_dependencies(complete), [])
+        feed['payload']['message']['target']['angular_z'] = 0.5
+        # Distinct encoded rows preserve the original target rather than sharing Python state.
+        self.assertTrue(any('APPLIED' in item for item in m.unrestored_dependencies(
+            complete[:-1] + [selected('motion', feed)])))
+        current = m.identity(os.getpid())
+        self.assertEqual(current['pid'], os.getpid())
+        self.assertEqual(current['parent'], os.getppid())
+        self.assertEqual(current['group'], os.getpgrp())
+        self.assertEqual(current['session'], os.getsid(0))
+        self.assertGreater(current['start_ticks'], 0)
+
+
+
+    def test_v3_exact_original_path_and_parent_new_freeze_route(self):
+        # Entire provenance below is an ARTIFICIAL metadata model. No actual
+        # V60 raw path is opened, and parent/consumer main are never invoked.
+        parent_path = HERE / 'run_cancel_forensics_v1.py'
+        parent_tree = ast.parse(parent_path.read_text())
+        consumer_assignment = next(node for node in parent_tree.body if isinstance(node, ast.Assign)
+            and any(isinstance(target, ast.Name) and target.id == 'CONSUMER' for target in node.targets))
+        self.assertIsInstance(consumer_assignment.value, ast.BinOp)
+        self.assertEqual(consumer_assignment.value.right.value, 'cancel_window_extract_v4.py')
+        selected_functions = [node for node in parent_tree.body if isinstance(node, ast.FunctionDef)
+                              and node.name in ('require', 'clean_freeze')]
+        self.assertEqual(len(selected_functions), 2)
+        new_freeze = '1' * 40
+        git_mock = mock.Mock()
+        def parent_git(argv, **kwargs):
+            command = argv[1:]
+            if command in (['rev-parse', 'HEAD'], ['rev-parse', 'origin/main']):
+                return (new_freeze + '\n').encode()
+            if command == ['status', '--porcelain']:
+                return b''
+            raise AssertionError('unexpected artificial parent Git command: ' + repr(command))
+        git_mock.check_output.side_effect = parent_git
+        namespace = dict(re=re, subprocess=git_mock, ROOT=self.root, EVIDENCE_FREEZE=m.EVIDENCE_FREEZE)
+        exec(compile(ast.Module(body=selected_functions, type_ignores=[]), str(parent_path), 'exec'), namespace)
+        with self.assertRaisesRegex(ValueError, 'new exact forensic'):
+            namespace['clean_freeze'](m.EVIDENCE_FREEZE)
+        namespace['clean_freeze'](new_freeze)
+        with mock.patch.object(git_mock, 'check_output', side_effect=lambda argv, **kwargs:
+                b' M ARTIFICIAL_dirty\n' if argv[1:] == ['status', '--porcelain'] else parent_git(argv, **kwargs)):
+            with self.assertRaisesRegex(ValueError, 'clean'):
+                namespace['clean_freeze'](new_freeze)
+
+        fake_consumer = self.root / 'cancel_window_extract_v4.py'
+        fake_consumer.write_bytes((HERE / 'cancel_window_extract_v4.py').read_bytes())
+        old_source = self.root / 'ARTIFICIAL_interpretation.py'
+        old_source.write_bytes(b'# ARTIFICIAL explanation only\n')
+        candidate = json.loads((HERE / 'extraction_spec_v1.json').read_text())
+        candidate['admitted'] = True
+        candidate['consumer'] = dict(path=str(fake_consumer), bytes=fake_consumer.stat().st_size,
+                                    sha256=m.sha(fake_consumer.read_bytes()))
+        candidate['interpretation_sources'] = {old_source.name:
+            dict(bytes=old_source.stat().st_size, sha256=m.sha(old_source.read_bytes()))}
+        inventory_rows = []
+        for label, item in candidate['inputs'].items():
+            artificial_raw_path = str(self.root / ('ARTIFICIAL_NOT_OPENED_' + label))
+            item.update(path=artificial_raw_path, inventory_original_path=artificial_raw_path,
+                        codec='identity', encoded_bytes=3, encoded_sha256='a' * 64,
+                        decoded_bytes=3, decoded_sha256='a' * 64, decoded_byte_limit=3)
+            inventory_rows.append(dict(original=artificial_raw_path, original_bytes=3,
+                                       original_sha256='a' * 64, source_stat_stable=True))
+        review = dict(ARTIFICIAL=True, freeze=m.EVIDENCE_FREEZE, passed=True, activity_passed=False,
+                      parent_wait_proof_valid=True, all_saved_owned_PID_start_identities_fresh_gone=True,
+                      identity_inventory_complete_under_A16_rules=True, root_tool_session_id=30588,
+                      root_tool_actual_returncode_observed=1)
+        inventory = dict(ARTIFICIAL=True, freeze=m.EVIDENCE_FREEZE, entries=inventory_rows)
+        for key, value, filename in (('closed_quiescence_review', review, 'ARTIFICIAL_review.json'),
+                                     ('closed_inventory', inventory, 'ARTIFICIAL_inventory.json')):
+            target = self.root / filename
+            raw = m.canonical(value) + b'\n'; target.write_bytes(raw)
+            candidate[key] = dict(path=str(target), bytes=len(raw), sha256=m.sha(raw))
+            if key == 'closed_inventory':
+                candidate[key]['freeze_field'] = 'freeze'
+        execution_spec = self.root / 'ARTIFICIAL_spec.json'
+        def write_spec():
+            raw = m.canonical(candidate) + b'\n'; execution_spec.write_bytes(raw); return raw
+        def fake_git(argv, **kwargs):
+            command = argv[1:]
+            if command in (['rev-parse', 'HEAD'], ['rev-parse', 'origin/main']):
+                return (new_freeze + '\n').encode()
+            if command == ['status', '--porcelain']:
+                return b''
+            if command == ['show', new_freeze + ':' + execution_spec.name]:
+                return execution_spec.read_bytes()
+            if command == ['show', new_freeze + ':' + fake_consumer.name]:
+                return fake_consumer.read_bytes()
+            if command == ['show', m.EVIDENCE_FREEZE + ':' + old_source.name]:
+                return old_source.read_bytes()
+            raise AssertionError('unexpected artificial provenance Git command: ' + repr(command))
+        with mock.patch.object(m, 'ROOT', self.root), mock.patch.object(m, '__file__', str(fake_consumer)), \
+                mock.patch.object(m.subprocess, 'check_output', side_effect=fake_git):
+            raw = write_spec(); m.validate_spec(candidate)
+            proof = m.provenance(candidate, new_freeze, execution_spec, raw)
+            self.assertIs(proof['old_activity_scientific_passed'], False)
+            candidate['inputs']['motion']['path'] += '_same_bytes_elsewhere'
+            raw = write_spec()
+            with self.assertRaisesRegex(ValueError, 'exact inventory original encoded object'):
+                m.provenance(candidate, new_freeze, execution_spec, raw)
+
+
+if __name__ == '__main__':
+    unittest.main()

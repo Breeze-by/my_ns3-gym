@@ -1,0 +1,60 @@
+{
+  "schema": "mr3-v61-dependency-capture-static-cross-review-v1",
+  "reviewer": "/root/encoder_native",
+  "verdict": "NO_BLOCKER_IN_STATIC_SCOPE",
+  "source_files": [
+    {
+      "path": "/tmp/p2a61_source_staging_v2/files/cancel_window_extract_v3.py",
+      "bytes": 38260,
+      "sha256": "860b69ca4bf755da4af411f6f7a8ccb870329ee6f8f96c9d5254c26da072ee1e"
+    },
+    {
+      "path": "/tmp/mr3_p2a_v61_dependency_capture_v4_candidate_v1/cancel_window_extract_v4.py",
+      "bytes": 43207,
+      "sha256": "293fd84735171ba977d826d920b6f22bf80a50e6f15671e2aa0f64e0aeb7dac0"
+    },
+    {
+      "path": "/tmp/mr3_p2a_v61_dependency_capture_v4_candidate_v1/baseline_cancel_window_extract_v3.py",
+      "bytes": 38260,
+      "sha256": "860b69ca4bf755da4af411f6f7a8ccb870329ee6f8f96c9d5254c26da072ee1e"
+    },
+    {
+      "path": "/tmp/mr3_p2a_v61_dependency_capture_v4_candidate_v1/test_exact_dependency_capture_v4.py",
+      "bytes": 9227,
+      "sha256": "37acb2ffd446e3420836850682b5cf0a1912c7ffb6049408856b095c575b02ba"
+    }
+  ],
+  "main_or_CPU_executed_by_this_review": false,
+  "real_raw_opened": false,
+  "source_files_modified": false,
+  "unchanged_critical_function_source_bytes": {
+    "validate_spec": true,
+    "bound_document": true,
+    "provenance": true,
+    "scan": true,
+    "unrestored_dependencies": true,
+    "clock_refs": true,
+    "actor_and_class": true,
+    "relevant": true,
+    "goal_dependency": true
+  },
+  "changed_top_level_definitions_only": [
+    "Selection",
+    "main"
+  ],
+  "findings": [
+    "v3 already retains original_first_nonzero_receive_latch_dependency; fixture explicitly verifies that baseline fact. No old missing-latch failure is asserted.",
+    "Drive is fully scanned first; seal_drive_dependencies materializes and pops all drive boundary context before deriving selected act references. Later finish cannot add drive boundary acts, and accepting later drive records rejects.",
+    "Command/receive index shares reserve with selected records under existing selected_records and selected_raw_bytes caps. Unselected cache entries are released only after matching dependencies are retained. Any index/selection overflow increments original drops; original description_complete requires drops==0, so overflow remains INCOMPLETE.",
+    "Motion guard joins exact decision_sequence/clock under scan-fixed EPOCH/tb2 actor. APPLIED joins cmd_seq/actuation_sequence/source_clock_ns/dt_ns plus exact target and pair index; unchanged checker validates uniqueness and all original pair fields. No cross-process total order is inferred.",
+    "The two added fixtures serialize newly synthetic drive/motion streams and invoke scan -> seal -> motion scan -> finish -> unrestored_dependencies. They do not hand-build selected lists. Case1 exposes overwritten older command/guard while baseline latch exists; Case2 exposes middle APPLIED 1356 at top 46.14 across the original two windows, with real 34ms consecutive act timestamps.",
+    "Integrated record-cap overflow and altered APPLIED target remain missing/incomplete within the same two cases. Whole input read/hash/parse and one-open/one-pass properties are asserted by the pipeline.",
+    "Existing direct non-drive Selection default remains usable with empty refs when no seal is invoked; no general cache, new window, source guard, or scientific predicate is introduced."
+  ],
+  "remaining_admission_requirements": [
+    "Recompute canonical v4 consumer bytes/SHA/path, parent CONSUMER, spec.consumer, scope source key and test filename expectations together; preserve baseline v3 bytes as fixture source.",
+    "Existing 8 relevant cases plus these 2 must be run with final canonical sources and actual wait/source stability/recovery/freshgone; helper-only 2case provisional PASS does not cover the old8 or new formal admission.",
+    "New clean pushed execution freeze, complete whole-byte input/hash/provenance checks and unchanged work480/parent660 still required. V60 FAIL/causality/capacity gates remain unchanged."
+  ],
+  "scientific_or_capacity_qualification_credit": false
+}

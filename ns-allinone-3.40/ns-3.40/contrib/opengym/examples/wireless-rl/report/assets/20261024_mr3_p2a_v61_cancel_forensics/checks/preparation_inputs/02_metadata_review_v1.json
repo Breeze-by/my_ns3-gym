@@ -1,0 +1,824 @@
+{
+  "schema": "mr3-v61-input-metadata-only-readiness-review-v1",
+  "review_only_not_spec_or_admission": true,
+  "evidence_freeze": "935b466bd076002afdfe161b55a508938de2a8b0",
+  "raw_inputs_opened_or_hashed": false,
+  "reader_native_or_extractor_run": false,
+  "repository_or_existing_drafts_modified": false,
+  "closed_inventory": {
+    "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v60_reader_registration/closed_inventory_v1.json",
+    "bytes": 8858807,
+    "sha256": "5d15eebd23e184195a129b660951076841e2b3f3e33bac76ec0b1115a3d63bb6",
+    "freeze_field": "freeze",
+    "schema": "mr3-v60-closed-byte-archive-draft-v2"
+  },
+  "entry_ledger": {
+    "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v60_reader_registration/closure_ledger_v1.json",
+    "bytes": 9551,
+    "sha256": "837f6cac322343581c9caebdc3635b71bf6fcaa0e62ecfcd24f453bed5488a8b",
+    "schema": "mr3-engineering-closure-ledger-v1",
+    "execution_freeze": "935b466bd076002afdfe161b55a508938de2a8b0",
+    "passed": true,
+    "activity_passed": false,
+    "actual_root_tool_returncode": 1,
+    "engineering_cumulative_seconds": "108848.4042410476018",
+    "engineering_ceiling_seconds": "150000",
+    "engineering_remaining_seconds": "41151.5957589523982",
+    "all_saved_main_identities_fresh_gone": true,
+    "old_FAIL_and_pending_fields_preserved": true,
+    "P2A_complete": false
+  },
+  "closed_quiescence_review": {
+    "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v60_reader_registration/checks/closed_cpu_v1/files/tmp/mr3_p2a_v60_closed_metadata_review_v1.json",
+    "bytes": 5156177,
+    "sha256": "dbb726d7ba33e4d2ecfd5fe55ce43f5593a48115f74613680fa502e28e08d07d",
+    "schema": "mr3-v60-independent-closed-metadata-review-draft-v2",
+    "required_boolean_fields_match": true,
+    "root_tool_session_id": 30588,
+    "root_tool_actual_returncode_observed": 1
+  },
+  "selected_originals": [
+    {
+      "input_label": "adapter",
+      "exact_original_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v60/mr3_p2a_reach_v60_reset/worker1/episode002_open_101/adapter.jsonl",
+      "logical_name": "adapter.jsonl",
+      "format": "jsonl",
+      "extractor_codec": "identity",
+      "encoded_bytes": 11429267,
+      "encoded_sha256_from_closed_inventory": "049eaf8777c5ba79d47ccb74e30cd169c7b0e61ad8eee76f3e4e4ae939e345db",
+      "decoded_bytes_from_identity": 11429267,
+      "decoded_sha256_from_identity": "049eaf8777c5ba79d47ccb74e30cd169c7b0e61ad8eee76f3e4e4ae939e345db",
+      "proposed_per_file_decoded_byte_limit": 11429267,
+      "current_raw_contents_not_read_or_hashed": true,
+      "lstat_regular": true,
+      "canonical_literal_path": true,
+      "lstat": {
+        "dev": 2051,
+        "ino": 79310932,
+        "mode": 33204,
+        "size": 11429267,
+        "mtime_ns": 1792758659524169231,
+        "ctime_ns": 1792758659524169231
+      },
+      "all_parent_components_lstat": [
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v60/mr3_p2a_reach_v60_reset/worker1/episode002_open_101",
+          "symlink": false
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v60/mr3_p2a_reach_v60_reset/worker1",
+          "symlink": false
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v60/mr3_p2a_reach_v60_reset",
+          "symlink": false
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v60",
+          "symlink": false
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log",
+          "symlink": false
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap",
+          "symlink": false
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws",
+          "symlink": false
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace",
+          "symlink": false
+        },
+        {
+          "path": "/home/zhuyulab",
+          "symlink": false
+        },
+        {
+          "path": "/home",
+          "symlink": false
+        },
+        {
+          "path": "/",
+          "symlink": false
+        }
+      ],
+      "matches_inventory_source_stat_after": true,
+      "inventory_canonical_wrapper_not_an_input": "closed_execution/native/mr3_p2a_reach_v60_reset/worker1/episode002_open_101/adapter.jsonl.rawbytes.gz",
+      "inventory_archive_codec_not_extractor_codec": "gzip-mtime0-lossless"
+    },
+    {
+      "input_label": "motion",
+      "exact_original_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v60/mr3_p2a_reach_v60_reset/worker1/episode002_open_101/motion_safety.jsonl",
+      "logical_name": "motion_safety.jsonl",
+      "format": "jsonl",
+      "extractor_codec": "identity",
+      "encoded_bytes": 497781379,
+      "encoded_sha256_from_closed_inventory": "f77d80b7c240272ea326e67d64ab04032d98dd5b94274aac351198e737439b5b",
+      "decoded_bytes_from_identity": 497781379,
+      "decoded_sha256_from_identity": "f77d80b7c240272ea326e67d64ab04032d98dd5b94274aac351198e737439b5b",
+      "proposed_per_file_decoded_byte_limit": 497781379,
+      "current_raw_contents_not_read_or_hashed": true,
+      "lstat_regular": true,
+      "canonical_literal_path": true,
+      "lstat": {
+        "dev": 2051,
+        "ino": 79310784,
+        "mode": 33204,
+        "size": 497781379,
+        "mtime_ns": 1792758675410075690,
+        "ctime_ns": 1792758675410075690
+      },
+      "all_parent_components_lstat": [
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v60/mr3_p2a_reach_v60_reset/worker1/episode002_open_101",
+          "symlink": false
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v60/mr3_p2a_reach_v60_reset/worker1",
+          "symlink": false
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v60/mr3_p2a_reach_v60_reset",
+          "symlink": false
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v60",
+          "symlink": false
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log",
+          "symlink": false
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap",
+          "symlink": false
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws",
+          "symlink": false
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace",
+          "symlink": false
+        },
+        {
+          "path": "/home/zhuyulab",
+          "symlink": false
+        },
+        {
+          "path": "/home",
+          "symlink": false
+        },
+        {
+          "path": "/",
+          "symlink": false
+        }
+      ],
+      "matches_inventory_source_stat_after": true,
+      "inventory_canonical_wrapper_not_an_input": "closed_execution/native/mr3_p2a_reach_v60_reset/worker1/episode002_open_101/motion_safety.jsonl.rawbytes.gz",
+      "inventory_archive_codec_not_extractor_codec": "gzip-mtime0-lossless"
+    },
+    {
+      "input_label": "drive",
+      "exact_original_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v60/mr3_p2a_reach_v60_reset/worker1/episode002_open_101/drive_tb2.jsonl",
+      "logical_name": "drive_tb2.jsonl",
+      "format": "jsonl",
+      "extractor_codec": "identity",
+      "encoded_bytes": 9096480,
+      "encoded_sha256_from_closed_inventory": "c7925e07c8c124ae22117134d4316b0c16edc5d2b7b9ba6d07e817583bf420ad",
+      "decoded_bytes_from_identity": 9096480,
+      "decoded_sha256_from_identity": "c7925e07c8c124ae22117134d4316b0c16edc5d2b7b9ba6d07e817583bf420ad",
+      "proposed_per_file_decoded_byte_limit": 9096480,
+      "current_raw_contents_not_read_or_hashed": true,
+      "lstat_regular": true,
+      "canonical_literal_path": true,
+      "lstat": {
+        "dev": 2051,
+        "ino": 79310794,
+        "mode": 33204,
+        "size": 9096480,
+        "mtime_ns": 1792758659717180250,
+        "ctime_ns": 1792758659717180250
+      },
+      "all_parent_components_lstat": [
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v60/mr3_p2a_reach_v60_reset/worker1/episode002_open_101",
+          "symlink": false
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v60/mr3_p2a_reach_v60_reset/worker1",
+          "symlink": false
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v60/mr3_p2a_reach_v60_reset",
+          "symlink": false
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v60",
+          "symlink": false
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log",
+          "symlink": false
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap",
+          "symlink": false
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws",
+          "symlink": false
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace",
+          "symlink": false
+        },
+        {
+          "path": "/home/zhuyulab",
+          "symlink": false
+        },
+        {
+          "path": "/home",
+          "symlink": false
+        },
+        {
+          "path": "/",
+          "symlink": false
+        }
+      ],
+      "matches_inventory_source_stat_after": true,
+      "inventory_canonical_wrapper_not_an_input": "closed_execution/native/mr3_p2a_reach_v60_reset/worker1/episode002_open_101/drive_tb2.jsonl.rawbytes.gz",
+      "inventory_archive_codec_not_extractor_codec": "gzip-mtime0-lossless"
+    },
+    {
+      "input_label": "odom",
+      "exact_original_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v60/mr3_p2a_reach_v60_reset/worker1/episode002_open_101/odometry_tb2.jsonl",
+      "logical_name": "odometry_tb2.jsonl",
+      "format": "jsonl",
+      "extractor_codec": "identity",
+      "encoded_bytes": 5240220,
+      "encoded_sha256_from_closed_inventory": "8815f9ef64d504dc0607aacb69e8ecc359aa45ee617d7788030baa9db41df125",
+      "decoded_bytes_from_identity": 5240220,
+      "decoded_sha256_from_identity": "8815f9ef64d504dc0607aacb69e8ecc359aa45ee617d7788030baa9db41df125",
+      "proposed_per_file_decoded_byte_limit": 5240220,
+      "current_raw_contents_not_read_or_hashed": true,
+      "lstat_regular": true,
+      "canonical_literal_path": true,
+      "lstat": {
+        "dev": 2051,
+        "ino": 79310795,
+        "mode": 33204,
+        "size": 5240220,
+        "mtime_ns": 1792758659548170602,
+        "ctime_ns": 1792758659548170602
+      },
+      "all_parent_components_lstat": [
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v60/mr3_p2a_reach_v60_reset/worker1/episode002_open_101",
+          "symlink": false
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v60/mr3_p2a_reach_v60_reset/worker1",
+          "symlink": false
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v60/mr3_p2a_reach_v60_reset",
+          "symlink": false
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v60",
+          "symlink": false
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log",
+          "symlink": false
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap",
+          "symlink": false
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws",
+          "symlink": false
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace",
+          "symlink": false
+        },
+        {
+          "path": "/home/zhuyulab",
+          "symlink": false
+        },
+        {
+          "path": "/home",
+          "symlink": false
+        },
+        {
+          "path": "/",
+          "symlink": false
+        }
+      ],
+      "matches_inventory_source_stat_after": true,
+      "inventory_canonical_wrapper_not_an_input": "closed_execution/native/mr3_p2a_reach_v60_reset/worker1/episode002_open_101/odometry_tb2.jsonl.rawbytes.gz",
+      "inventory_archive_codec_not_extractor_codec": "gzip-mtime0-lossless"
+    },
+    {
+      "input_label": "launch",
+      "exact_original_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v60/mr3_p2a_reach_v60_reset/worker1/episode002_open_101/launch.log",
+      "logical_name": "launch.log",
+      "format": "text",
+      "extractor_codec": "identity",
+      "encoded_bytes": 230576,
+      "encoded_sha256_from_closed_inventory": "33bf50a6b89d90554940a0479ada881f6f0ba88b452207390a4dcc5c37a278bb",
+      "decoded_bytes_from_identity": 230576,
+      "decoded_sha256_from_identity": "33bf50a6b89d90554940a0479ada881f6f0ba88b452207390a4dcc5c37a278bb",
+      "proposed_per_file_decoded_byte_limit": 230576,
+      "current_raw_contents_not_read_or_hashed": true,
+      "lstat_regular": true,
+      "canonical_literal_path": true,
+      "lstat": {
+        "dev": 2051,
+        "ino": 79310771,
+        "mode": 33204,
+        "size": 230576,
+        "mtime_ns": 1792758681544425500,
+        "ctime_ns": 1792758681544425500
+      },
+      "all_parent_components_lstat": [
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v60/mr3_p2a_reach_v60_reset/worker1/episode002_open_101",
+          "symlink": false
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v60/mr3_p2a_reach_v60_reset/worker1",
+          "symlink": false
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v60/mr3_p2a_reach_v60_reset",
+          "symlink": false
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v60",
+          "symlink": false
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log",
+          "symlink": false
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap",
+          "symlink": false
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ros2_ws",
+          "symlink": false
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace",
+          "symlink": false
+        },
+        {
+          "path": "/home/zhuyulab",
+          "symlink": false
+        },
+        {
+          "path": "/home",
+          "symlink": false
+        },
+        {
+          "path": "/",
+          "symlink": false
+        }
+      ],
+      "matches_inventory_source_stat_after": true,
+      "inventory_canonical_wrapper_not_an_input": "closed_execution/native/mr3_p2a_reach_v60_reset/worker1/episode002_open_101/launch.log.rawbytes.gz",
+      "inventory_archive_codec_not_extractor_codec": "gzip-mtime0-lossless"
+    }
+  ],
+  "total_encoded_bytes_known": 523777922,
+  "total_decoded_bytes_known_from_identity": 523777922,
+  "line_counts_observed": null,
+  "maximum_line_bytes_observed": null,
+  "proposed_limits_not_installed": {
+    "total_encoded_bytes": 523777922,
+    "total_decoded_bytes": 523777922,
+    "line_bytes": 8388608,
+    "lines_per_file": 2000000,
+    "selected_records": 12000,
+    "selected_raw_bytes": 8388608,
+    "output_bytes": 33554432,
+    "work_seconds": 480
+  },
+  "limits_caveat": "line count/line length/selection/output bounds are prospective resource choices, not observations or completion guarantees. Exceeding any bound remains INCOMPLETE/FAIL and full actual cost; no automatic suffix continuation/retry. Identity byte totals are mathematically known from encoded inventory.",
+  "parent_reservation_seconds": "660",
+  "parent_nested_double_add": false,
+  "parent_owned_stop_seconds": "600",
+  "parent_metadata_max_bytes": 67108864,
+  "parent_output_bound_compatible": true,
+  "clock_and_layout_static_compatibility": [
+    {
+      "input": "adapter",
+      "producer": "mr3_adapter.py:283-287 record",
+      "selection_clock": "row.stamp seconds; exact original number retained, Decimal-derived ns only for window selection",
+      "actor": "payload.robot; delivery payload.source",
+      "scope": "same-source event order; not a global interprocess clock"
+    },
+    {
+      "input": "motion",
+      "producer": "motion_safety.py:189-209 record/own_odom and 226-234 reach_driver_ingress",
+      "selection_clock": "row.sim_time_sec; own_odom payload.message.header.stamp; ingress payload.message.source_clock_ns or clock_ns",
+      "actor": "payload.robot; joint allowed only explicit joint kinds",
+      "scope": "record_sequence must be complete 1..N; raw/request/decision/feed inputs distinct"
+    },
+    {
+      "input": "drive",
+      "producer": "mr3_gazebo_diff_drive.cpp:1000-1016 Audit; launch.py:302 drive_{robot}.jsonl",
+      "selection_clock": "row.sim_time_ns int",
+      "actor": "row.robot must tb2",
+      "scope": "complete record_sequence; new initial_encoder events explicitly admitted"
+    },
+    {
+      "input": "odom",
+      "producer": "mr3_gazebo_diff_drive.cpp:529-533 path; 745-751 publication; 1018-1033 AuditOdometry",
+      "selection_clock": "row.sim_time_ns; publication row.source_clock_ns",
+      "actor": "row.robot must tb2",
+      "scope": "configuration/publication only; complete record_sequence"
+    },
+    {
+      "input": "launch",
+      "producer": "mr3_env_worker.py:482 Popen stdout/stderr capture",
+      "selection_clock": "UNKNOWN_UNMAPPED_NATIVE_LOG, no synthetic simulation timestamp",
+      "actor": "tb2 literal only where present; otherwise UNKNOWN",
+      "scope": "whole closed log literal matching with two preceding/following lines; not window-time ordering"
+    }
+  ],
+  "consumer_source": {
+    "path": "/tmp/mr3_p2a_v61_original_path_v3_review/cancel_window_extract_draft_v3.py",
+    "bytes": 38260,
+    "sha256": "860b69ca4bf755da4af411f6f7a8ccb870329ee6f8f96c9d5254c26da072ee1e"
+  },
+  "driver_source": {
+    "path": "/tmp/mr3_p2a_v61_run_cancel_forensics_draft_v1.py",
+    "bytes": 25877,
+    "sha256": "1952b5b49a58b2076f48068e7c8b452cc83088ea39e1febf74cdb7e4c4b4e224"
+  },
+  "pending_spec_source": {
+    "path": "/tmp/mr3_p2a_v60_cancel_causality_static_v1/pending_extraction_spec_v4.json",
+    "bytes": 8294,
+    "sha256": "f73e86dfbdf3ec5ab2de880ed1c40161120d50d2b1f7894d3ae963d323d1df95"
+  },
+  "pending_scope_source": {
+    "path": "/tmp/mr3_p2a_v61_cancel_scope_pending_v1.json",
+    "bytes": 5117,
+    "sha256": "58bdbabb39ab2f58be466cb8c0c201cb8c5c4f5be891c40a0e1ee47768532d32"
+  },
+  "static_AST_only": {
+    "/tmp/mr3_p2a_v61_original_path_v3_review/cancel_window_extract_draft_v3.py": {
+      "parsed": true,
+      "definitions": [
+        {
+          "name": "require",
+          "line": 53,
+          "end": 55
+        },
+        {
+          "name": "canonical",
+          "line": 58,
+          "end": 59
+        },
+        {
+          "name": "decode",
+          "line": 62,
+          "end": 70
+        },
+        {
+          "name": "sha",
+          "line": 73,
+          "end": 74
+        },
+        {
+          "name": "digest",
+          "line": 77,
+          "end": 78
+        },
+        {
+          "name": "integer",
+          "line": 81,
+          "end": 82
+        },
+        {
+          "name": "object_value",
+          "line": 85,
+          "end": 87
+        },
+        {
+          "name": "fingerprint",
+          "line": 90,
+          "end": 92
+        },
+        {
+          "name": "identity",
+          "line": 95,
+          "end": 102
+        },
+        {
+          "name": "validate_spec",
+          "line": 105,
+          "end": 153
+        },
+        {
+          "name": "bound_document",
+          "line": 156,
+          "end": 163
+        },
+        {
+          "name": "provenance",
+          "line": 166,
+          "end": 220
+        },
+        {
+          "name": "EncodedHash",
+          "line": 223,
+          "end": 234
+        },
+        {
+          "name": "seconds_ref",
+          "line": 237,
+          "end": 244
+        },
+        {
+          "name": "clock_refs",
+          "line": 247,
+          "end": 275
+        },
+        {
+          "name": "actor_and_class",
+          "line": 278,
+          "end": 292
+        },
+        {
+          "name": "relevant",
+          "line": 295,
+          "end": 301
+        },
+        {
+          "name": "goal_dependency",
+          "line": 304,
+          "end": 314
+        },
+        {
+          "name": "Selection",
+          "line": 317,
+          "end": 377
+        },
+        {
+          "name": "unrestored_dependencies",
+          "line": 380,
+          "end": 422
+        },
+        {
+          "name": "scan",
+          "line": 425,
+          "end": 518
+        },
+        {
+          "name": "main",
+          "line": 521,
+          "end": 600
+        }
+      ]
+    },
+    "/tmp/mr3_p2a_v61_run_cancel_forensics_draft_v1.py": {
+      "parsed": true,
+      "definitions": [
+        {
+          "name": "require",
+          "line": 46,
+          "end": 48
+        },
+        {
+          "name": "fingerprint",
+          "line": 51,
+          "end": 53
+        },
+        {
+          "name": "sha",
+          "line": 56,
+          "end": 57
+        },
+        {
+          "name": "proof",
+          "line": 60,
+          "end": 73
+        },
+        {
+          "name": "read",
+          "line": 76,
+          "end": 85
+        },
+        {
+          "name": "write",
+          "line": 88,
+          "end": 94
+        },
+        {
+          "name": "elapsed",
+          "line": 97,
+          "end": 99
+        },
+        {
+          "name": "identity",
+          "line": 102,
+          "end": 105
+        },
+        {
+          "name": "same",
+          "line": 108,
+          "end": 111
+        },
+        {
+          "name": "current",
+          "line": 114,
+          "end": 121
+        },
+        {
+          "name": "owned_signal",
+          "line": 124,
+          "end": 136
+        },
+        {
+          "name": "git_bytes",
+          "line": 139,
+          "end": 143
+        },
+        {
+          "name": "frozen",
+          "line": 146,
+          "end": 152
+        },
+        {
+          "name": "bound",
+          "line": 155,
+          "end": 162
+        },
+        {
+          "name": "clean_freeze",
+          "line": 165,
+          "end": 172
+        },
+        {
+          "name": "check_sources",
+          "line": 175,
+          "end": 243
+        },
+        {
+          "name": "capture_consumer",
+          "line": 246,
+          "end": 267
+        },
+        {
+          "name": "wait_owned",
+          "line": 270,
+          "end": 303
+        },
+        {
+          "name": "check_receipts",
+          "line": 306,
+          "end": 341
+        },
+        {
+          "name": "main",
+          "line": 344,
+          "end": 464
+        }
+      ]
+    }
+  },
+  "sixteen_interpretation_sources": [
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_adapter.py",
+      "bytes": 46265,
+      "sha256": "0dcd5545059c44b266c4d7a0e54b96f59373e7952500e110cac8a0d9d4250cfb",
+      "current_equals_E": true,
+      "current_matches_pending_pin": true
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_protocol.py",
+      "bytes": 18491,
+      "sha256": "5a2b90efd162b19a35964750002fe549413fec6e07f9679ea611d3fe6b1e4ada",
+      "current_equals_E": true,
+      "current_matches_pending_pin": true
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_transport.py",
+      "bytes": 8466,
+      "sha256": "426d9b777c2150bb690de3266c973dedfc8fe8da3fa36c7bf37cbe3c31d70eca",
+      "current_equals_E": true,
+      "current_matches_pending_pin": true
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/motion_safety.py",
+      "bytes": 51604,
+      "sha256": "f01ae5213740cfb134423fd0e4ddc2d880e2114db66bc63c16164ad027d05735",
+      "current_equals_E": true,
+      "current_matches_pending_pin": true
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py",
+      "bytes": 18129,
+      "sha256": "197ff4bfcca9f815e191dcddea7a2a6af46a033c68310e350b63ad9e48579a69",
+      "current_equals_E": true,
+      "current_matches_pending_pin": true
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_motion_safety.py",
+      "bytes": 25472,
+      "sha256": "06ca6ece92ca49072df9eedbdd5396148ca2e09d4f2560204448e460e3e73ae7",
+      "current_equals_E": true,
+      "current_matches_pending_pin": true
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_reach_runtime.py",
+      "bytes": 31245,
+      "sha256": "3f1fac149adaadfe27197b538e73bbd149b04d28374c38106b26b762dc4e79dc",
+      "current_equals_E": true,
+      "current_matches_pending_pin": true
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_drive_phase.py",
+      "bytes": 4429,
+      "sha256": "0525230f4719e7279826810f0c177f6a6317a961d50711ac76d8a0338f93d987",
+      "current_equals_E": true,
+      "current_matches_pending_pin": true
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot/src/mr3_gazebo_diff_drive.cpp",
+      "bytes": 49164,
+      "sha256": "89161707d2e11bb2c6748c410dbb9d485d90ae5ed4f01dafaa32043ffadb8f7e",
+      "current_equals_E": true,
+      "current_matches_pending_pin": true
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/mr3_drive_target.hpp",
+      "bytes": 2844,
+      "sha256": "4be4d77de247a5bcd427eb6948165e85098eb361030cf89d278d6df92e959d41",
+      "current_equals_E": true,
+      "current_matches_pending_pin": true
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/mr3_drive_feed.hpp",
+      "bytes": 5813,
+      "sha256": "693381dd6a7b4675e56b4a7da6d3ecf640bf85e9bef5775ff19785df3db5befa",
+      "current_equals_E": true,
+      "current_matches_pending_pin": true
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py",
+      "bytes": 69135,
+      "sha256": "5d60d178dd6d68a3bee3d2e2d3dc6bb732023c204ee26587c8356746de495a37",
+      "current_equals_E": true,
+      "current_matches_pending_pin": true
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot/params/nav2_params_tb2_0.yaml",
+      "bytes": 31293,
+      "sha256": "5f2ab024dd590a2cc6656072311a11cddbbaf646423a3fe502569b466e92dc33",
+      "current_equals_E": true,
+      "current_matches_pending_pin": true
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/src/nav2_bringup/launch/navigation_launch.py",
+      "bytes": 35469,
+      "sha256": "8d13b8a27e96e17f4df73ebf922bb237d83c7d1adc71832b9e49f944fdd19d83",
+      "current_equals_E": true,
+      "current_matches_pending_pin": true
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/src/nav2_velocity_smoother/src/velocity_smoother.cpp",
+      "bytes": 22457,
+      "sha256": "f8bb2400ee10588d803a7cbac619de16d42ad284c3e1ea91515e74ff9b6ec83c",
+      "current_equals_E": true,
+      "current_matches_pending_pin": true
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py",
+      "bytes": 106977,
+      "sha256": "229ffdfdfd9b623c97b8ebe1937daa6058c20376e73d227dc7d097869f3c8879",
+      "current_equals_E": true,
+      "current_matches_pending_pin": true
+    }
+  ],
+  "all_sixteen_current_equal_E_and_spec": true,
+  "future_install_adjustments": [
+    "Canonical install recommended consumer cancel_window_extract_v3.py: update DRIVER.CONSUMER, scope.source_bindings key, spec.consumer path/bytes/SHA together; old pending v4 still points draft_v2 SHA and is not applicable to v3.",
+    "Bind inventory freeze_field=freeze; copy exact inventory/closed-review/ledger current metadata pins after root closure commit/push; do not rename archive codec gzip-mtime0-lossless into input gzip. All selected originals are identity.",
+    "Fill source_bindings CHAIN7+interpretation16+driver+consumer (25 unique current sources), input_spec pin and entry_ledger pin only during authorized canonical preparation; existing admitted=false drafts untouched by this review.",
+    "Consumer/driver/spec/scope and exact referenced metadata must be in a new clean pushed execution freeze distinct from E. Preserve old16 E source bytes and fixed two windows/goals/epoch.",
+    "Canonical new-source CPU must bind v3 path fix; old7 artificial CPU only binds old v2 and cannot qualify this v3."
+  ],
+  "capacity_or_scientific_qualification_credit": false
+}
