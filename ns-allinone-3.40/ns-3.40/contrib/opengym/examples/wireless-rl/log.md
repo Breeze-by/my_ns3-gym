@@ -9029,3 +9029,7 @@ Canonical CPU工具1554真实reap0、scope制作工具29523真实reap0，均scop
 2026-10-24 V63首次准入FAIL：d229bd5ca/tool95459真reap1，root补充md路径误少ns-3.40导致untracked，clean-freeze拒绝；consumer未启动/原pstats未读，summary原entryFalse/累计None/来源空保持。实际parent1.880097619秒，后继独立核前账后累计109069.2799140716018/C150000、余40930.7200859283982；小关闭1493真0/1.750761369秒、2CPUgone/工程0，main1freshgone。原字节rename纠正；forward-v2须新STATE/scope/ledger/freeze，首次解码同两profile，120/60不变，不retry旧attempt或加guard；P2A未完成/capacityFalse。
 
 无consumer/模型/World/验证种子消费；原回执与错误路径纠正记录均入[库存](report/assets/20261024_mr3_p2a_v63_profile_description/closed_inventory_v1.json)。后继核账不改变旧summary中未知的累计字段。
+
+## 2026-10-24 V63 forward-v2 two-profile description
+
+2026-10-24 V63 forward-v2实际描述PASS：freeze712a70976、tool92104真实reap0，同一v1 consumer首次真正读取两份startup main.pstats共894940B/descriptionComplete；只描述失败且受profiling扰动的旧样本，不是八步吞吐/根因/科学资格。source16 before/after相等、入账已验证，完整parent4.964964297已收，累计109074.2448783686018/C150000、余40925.7551216313982；nested/root墙时不叠加，pilot/final保持。driver+consumer两保存PID/start freshgone，nonowned不claimgone；v1准入FAIL原summary False/None/空源与实费独立账保持。V62 startup FAIL/guard与worker forced-15不改，capacity=False，P2A未完成，禁auto pilot/final。

@@ -1,4 +1,14 @@
-# MR3 P2A V63：两份启动阶段 profile 的有限描述
+# MR3 P2A V63：两份启动profile描述的实际闭合
+
+## forward-v2：描述性PASS
+
+2026-10-24 V63 forward-v2实际描述PASS：freeze712a70976、tool92104真实reap0，同一v1 consumer首次真正读取两份startup main.pstats共894940B/descriptionComplete；只描述失败且受profiling扰动的旧样本，不是八步吞吐/根因/科学资格。source16 before/after相等、入账已验证，完整parent4.964964297已收，累计109074.2448783686018/C150000、余40925.7551216313982；nested/root墙时不叠加，pilot/final保持。driver+consumer两保存PID/start freshgone，nonowned不claimgone；v1准入FAIL原summary False/None/空源与实费独立账保持。V62 startup FAIL/guard与worker forced-15不改，capacity=False，P2A未完成，禁auto pilot/final。
+
+闭合只读取派生JSON及源/wait/账目headers，没有再次读取或解码原pstats。旧attempt1在不同STATE中准入失败，consumer从未启动；forward-v2是新冻结的第一次实际消费，不重试旧活动。后续热点解释仅在startup partial/profile开销适用范围，不外推原生长任务、取消修复或完整容量。
+
+[v2后继末账](assets/20261024_mr3_p2a_v63_profile_description/closure_ledger_v2.json) · [v2原件库存](assets/20261024_mr3_p2a_v63_profile_description/closed_inventory_v2.json)。
+
+## 前序失败与准备（历史快照）
 
 ## 首次准入 FAIL 与前瞻 forward-v2
 
