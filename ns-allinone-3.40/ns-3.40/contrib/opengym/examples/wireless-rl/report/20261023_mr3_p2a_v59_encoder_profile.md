@@ -1,6 +1,6 @@
 # MR3 P2A V59：初始编码器保持的生产接入与新完整资格链
 
-当前：生产接入、真实CPU构建、最终fresh v3与编排准入已完成，正在提交来源冻结和生成完整资格计划，尚未启动V59 World、qualification、minimum、pilot或final。P2A未完成。用户已持续委托自主完成，不再请求常规修改或有界工程资源批准。
+当前：生产接入、真实CPU构建、最终fresh v3与编排准入已完成，来源冻结已推送且完整资格计划已生成，正在封存执行冻结，尚未启动V59 World、qualification、minimum、pilot或final。P2A未完成。用户已持续委托自主完成，不再请求常规修改或有界工程资源批准。
 
 ## 已有依据
 
@@ -54,3 +54,9 @@ fresh v2两个环境均已实际wait/reap：ROS202项/38.504274032墙秒、ns3gy
 ## EOF清理后的当前来源检查
 
 提交检查发现prepare/preflight两文件各多一个EOF空行，仅去掉这两个LF。它们实际包含在303份封存源码中，因此v2保留原历史PASS，不给新字节信用。旧spec、两旧源码、旧准入证据均无损保存在checks下的独占attempt目录。fresh v3以同一b6af48基线重封：ROS202项/40.593820366墙秒、learner411项/133.691170848墙秒，actual wait均rc0、来源前后相同。编排准入新一轮11项/20.202614774墙秒、295源稳定；该实际源集合不含fresh spec JSON，重封后逐项当前字节仍一致，严格分类验证通过。后续生产源码若变化，仍须更新对应证据；这些结果没有World、资格或学习信用。
+
+## 实际计划准备
+
+源码/真实build证据已提交并推送`ec63e5946b35adce394b7b2b425ebd03169daa96`，真实tool73425回收rc0后才执行依赖步骤。prepare实际tool97772回收rc0，生成[plan](assets/20261023_mr3_p2a_v59_encoder_profile/plan_v1.json)（SHA c69aa1c222cfa8963202468df7bd114e8d23368c85436ad35d0ac83457b9679e）及[binding](assets/20261023_mr3_p2a_v59_encoder_profile/native_custody_binding_v1.json)（SHA 501de8e6caadaa8c362e351149d23e436a1a845a285484041f55d7a2c1ff63d7），1015来源/10ELF。实际plan_check通过12EP/30必要角色、三policy接线和47220预约；ROS/learner CUDA实际就绪检查均通过。见[工具观测](assets/20261023_mr3_p2a_v59_encoder_profile/checks/preparation_tool_observations_v1.json)。
+
+下一步将这些生成物提交推送为最终执行freeze B，要求HEAD=origin/main=B且工作区干净；对B实际调用严格native binding verifier，成功后才一次运行execute_chain_v1 --freeze B。完整链自己的preflight输出尚未占用，World/PPO仍未启动。CLI与root活身份在启动时保存到独占/tmp记录，所有writer结束后再入库，防止运行中污染严格来源工作区。工程、pilot及final实际账均未因准备CPU改变。
