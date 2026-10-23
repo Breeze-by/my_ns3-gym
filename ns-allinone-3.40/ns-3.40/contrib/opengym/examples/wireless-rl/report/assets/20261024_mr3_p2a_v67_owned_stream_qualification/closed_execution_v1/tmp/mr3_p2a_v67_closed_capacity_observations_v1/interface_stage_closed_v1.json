@@ -1,0 +1,135 @@
+{
+  "schema": "mr3-v67-closed-capacity-observation-v1",
+  "stage": "interface",
+  "scope": "closed stage small metadata only; full parent may remain active",
+  "freeze": "50c740a64754aaa2dc3f2707cf5b0159eb929a28",
+  "plan_sha256": "feb5330fbacfa6925a7b57674204ab7e356e1e3fbb2a614086dd6236ccf041d0",
+  "inputs": [
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v67_owned_stream_qualification/plan_v1.json",
+      "bytes": 590890,
+      "sha256": "feb5330fbacfa6925a7b57674204ab7e356e1e3fbb2a614086dd6236ccf041d0"
+    },
+    {
+      "path": "/tmp/mr3_p2a_reach_v67_matrix/interface/stage.json",
+      "bytes": 10643,
+      "sha256": "264baeb71dc20efb0d2b2d9af2a06ce13291403de501133d18a3a5d967e0e0a9"
+    }
+  ],
+  "capacity_qualified": false,
+  "observer_source_sha256": "2653f422c05fd70e2af9879c82aaaf8e9c472c38363acf92c4182a1ba35c7664",
+  "automatic_policy_entry_allowed": false,
+  "root_tool_reaped_by_this_observer": false,
+  "scientific_raw_or_result_streams_read": false,
+  "independent_scientific_gate_rerun": false,
+  "canonical_writes": false,
+  "nested_seconds_are_not_additional_parent_fees": true,
+  "stage_result": {
+    "status": "FAIL",
+    "passed": false,
+    "wall_seconds": "927.515981244",
+    "within_stage_wall_allocation": true,
+    "effective_stage_wall_cap_seconds": "2590.498246606",
+    "budget_allocation": {
+      "schema": "mr3-preparation-borrowed-stage-budget-v1",
+      "stage": "interface",
+      "elapsed_matrix_wall_ns": 24903158534,
+      "base_stage_wall_ns": 2600000000000,
+      "base_native_allocation_ns": 1900000000000,
+      "base_consumer_reserve_ns": 700000000000,
+      "prior_base_reservations_ns": 0,
+      "future_base_reservations_ns": 42400000000000,
+      "unused_prior_reservations_ns": 0,
+      "stage_remaining_ns": 2575096841466,
+      "stage_cumulative_deadline_from_matrix_entry_ns": 2600000000000,
+      "native_allocation_ns": 1875096000000,
+      "native_allocation_seconds": "1875.096",
+      "close_reserve_ns": 120000000000,
+      "native_admission_possible": true,
+      "scope": "Forward allocation inside original matrix/engineering ceilings; source/ready overhead is charged, later base caps and original consumer reserve are reserved at derivation. All later dispatch/close/consumer wall remains charged. No physical/math/PPO change."
+    },
+    "skipped_audits": [],
+    "error": null
+  },
+  "audits": [],
+  "required_role_statuses": [
+    {
+      "id": "input_001",
+      "role": "input",
+      "passed": null
+    },
+    {
+      "id": "angular",
+      "role": "angular",
+      "passed": null
+    },
+    {
+      "id": "physics",
+      "role": "physics",
+      "passed": null
+    },
+    {
+      "id": "full",
+      "role": "full",
+      "passed": null
+    },
+    {
+      "id": "runtime",
+      "role": "runtime",
+      "passed": null
+    },
+    {
+      "id": "information",
+      "role": "information",
+      "passed": null
+    },
+    {
+      "id": "cadence",
+      "role": "cadence",
+      "passed": null
+    },
+    {
+      "id": "peer_control",
+      "role": "peer_control",
+      "passed": null
+    },
+    {
+      "id": "closure",
+      "role": "closure",
+      "passed": null
+    }
+  ],
+  "native": {
+    "id": "native",
+    "role": null,
+    "required": true,
+    "passed": false,
+    "returncode": 1,
+    "execution_kind": "subprocess_waited",
+    "wall_seconds": "911.312135158",
+    "started_wall_monotonic_ns": 4538149515218951,
+    "ended_wall_monotonic_ns": 4539060827354109,
+    "output": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v67/mr3_p2a_reach_v67_interface/benchmark_summary.json",
+    "output_sha256": "ae2ea4599ac0a93d4874dc282aee89052e5885a714fe2949098fa7d93442035b",
+    "receipt": "/tmp/mr3_p2a_reach_v67_matrix/interface/native.json",
+    "errors": []
+  },
+  "watcher": {
+    "id": "watcher",
+    "role": null,
+    "required": true,
+    "passed": true,
+    "returncode": 0,
+    "execution_kind": "subprocess_waited",
+    "wall_seconds": "918.132831604",
+    "started_wall_monotonic_ns": 4538143462653689,
+    "ended_wall_monotonic_ns": 4539061595485293,
+    "output": "/tmp/mr3_p2a_reach_v67_matrix/interface/live_custody.json",
+    "output_sha256": "54297e6fb5731dfd0e81204926c15c432a7603120879c29df64739be8e6a4e2b",
+    "receipt": "/tmp/mr3_p2a_reach_v67_matrix/interface/watcher.json",
+    "errors": []
+  },
+  "native_end_to_last_audit_wait_end_seconds": null,
+  "audit_first_spawn_to_last_wait_end_seconds": null,
+  "full_audit_command_wall_seconds": null
+}

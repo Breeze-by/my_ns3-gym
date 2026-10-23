@@ -1,0 +1,84 @@
+{
+  "schema": "mr3-v67-closed-capacity-observation-v1",
+  "stage": "interface",
+  "scope": "native actually waited; whole stage may still be active",
+  "freeze": "50c740a64754aaa2dc3f2707cf5b0159eb929a28",
+  "plan_sha256": "feb5330fbacfa6925a7b57674204ab7e356e1e3fbb2a614086dd6236ccf041d0",
+  "inputs": [
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v67_owned_stream_qualification/plan_v1.json",
+      "bytes": 590890,
+      "sha256": "feb5330fbacfa6925a7b57674204ab7e356e1e3fbb2a614086dd6236ccf041d0"
+    },
+    {
+      "path": "/tmp/mr3_p2a_reach_v67_matrix/interface/native.json",
+      "bytes": 5087,
+      "sha256": "36d8fa692489f05726ceacbbd361a373c7658d1e7f7f0c740a273c7f4df0b359"
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v67/mr3_p2a_reach_v67_interface/benchmark_summary.json",
+      "bytes": 62358,
+      "sha256": "ae2ea4599ac0a93d4874dc282aee89052e5885a714fe2949098fa7d93442035b"
+    }
+  ],
+  "capacity_qualified": false,
+  "observer_source_sha256": "2653f422c05fd70e2af9879c82aaaf8e9c472c38363acf92c4182a1ba35c7664",
+  "automatic_policy_entry_allowed": false,
+  "root_tool_reaped_by_this_observer": false,
+  "scientific_raw_or_result_streams_read": false,
+  "independent_scientific_gate_rerun": false,
+  "canonical_writes": false,
+  "nested_seconds_are_not_additional_parent_fees": true,
+  "native_command": {
+    "id": "native",
+    "role": null,
+    "required": true,
+    "passed": false,
+    "returncode": 1,
+    "execution_kind": "subprocess_waited",
+    "wall_seconds": "911.312135158",
+    "started_wall_monotonic_ns": 4538149515218951,
+    "ended_wall_monotonic_ns": 4539060827354109,
+    "output": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v67/mr3_p2a_reach_v67_interface/benchmark_summary.json",
+    "output_sha256": "ae2ea4599ac0a93d4874dc282aee89052e5885a714fe2949098fa7d93442035b",
+    "receipt": "/tmp/mr3_p2a_reach_v67_matrix/interface/native.json",
+    "errors": []
+  },
+  "benchmark": {
+    "passed": false,
+    "workers": 1,
+    "valid_transitions": 32,
+    "wall_sec_including_all_attempts": 910.7767170043662,
+    "effective_transition_per_wall_sec": 0.03513484633780619
+  },
+  "episodes": [
+    {
+      "epoch": "mr3_p2a_reach_v67_interface_w0_e1_b97b4084",
+      "scene": "open",
+      "seed": 101,
+      "transitions": 32,
+      "startup_wall_sec": 128.67949695512652,
+      "transition_wall_sec": 773.4199208840728,
+      "wall_sec_including_startup_and_closure": 910.6216051066294,
+      "terminated": false,
+      "truncated": true,
+      "reason": "external_sampler_limit",
+      "output_directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v67/mr3_p2a_reach_v67_interface/worker0/episode001_open_101",
+      "worker_id": 0,
+      "task_sim_seconds_from_actual_dt_values": "32.0",
+      "dt_record_count": 32,
+      "zero_dt_count": 0,
+      "transition_wall_per_task_sim_second": "24.169372527627275",
+      "nonstartup_nontransition_residual_seconds": "8.52218726743008",
+      "pure_closure_wall_seconds": null,
+      "closure_timing_note": "No separate closure timer in this summary; residual includes closure AND other uninstrumented episode work.",
+      "shutdown": {
+        "worker_returncode": 0,
+        "forced_shutdown": false,
+        "failed_sample": false,
+        "remaining_owned_processes": [],
+        "remaining_owned_zombies": []
+      }
+    }
+  ]
+}

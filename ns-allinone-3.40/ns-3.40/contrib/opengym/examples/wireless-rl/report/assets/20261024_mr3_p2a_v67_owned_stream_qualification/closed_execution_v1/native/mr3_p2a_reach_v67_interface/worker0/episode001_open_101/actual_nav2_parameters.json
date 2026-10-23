@@ -1,0 +1,1820 @@
+{
+  "schema": "mr3-reach-nav2-parameter-readback-v1",
+  "safety_contract": "mr3-reach-v1",
+  "profile": "mr3-nav2-shim-dwb-030-a1-v1",
+  "passed": true,
+  "freeze": "50c740a64754aaa2dc3f2707cf5b0159eb929a28",
+  "episode_directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v67/mr3_p2a_reach_v67_interface/worker0/episode001_open_101",
+  "script_sha256": "53dcb0ce70a745956b92a916340019a94d6175074b766d101e5d8425d844b514",
+  "nodes": [
+    {
+      "node": "/tb1/controller_server",
+      "service": "/tb1/controller_server/get_parameters",
+      "request_wall_monotonic_ns": 4538283735878250,
+      "response_wall_monotonic_ns": 4538283746702898,
+      "epoch": "mr3_p2a_reach_v67_interface_w0_e1_b97b4084",
+      "source_clock_ns": 41220000000,
+      "typed_parameters": [
+        {
+          "name": "FollowPath.max_vel_theta",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.3
+        },
+        {
+          "name": "FollowPath.max_vel_x",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.2
+        },
+        {
+          "name": "FollowPath.max_speed_xy",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.2
+        },
+        {
+          "name": "FollowPath.min_vel_x",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.0
+        },
+        {
+          "name": "FollowPath.max_vel_y",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.0
+        },
+        {
+          "name": "use_sim_time",
+          "type": 1,
+          "type_field": "bool_value",
+          "value": true
+        },
+        {
+          "name": "controller_frequency",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 10.0
+        },
+        {
+          "name": "controller_plugins",
+          "type": 9,
+          "type_field": "string_array_value",
+          "value": [
+            "FollowPath"
+          ]
+        },
+        {
+          "name": "FollowPath.plugin",
+          "type": 4,
+          "type_field": "string_value",
+          "value": "nav2_rotation_shim_controller::RotationShimController"
+        },
+        {
+          "name": "FollowPath.primary_controller",
+          "type": 4,
+          "type_field": "string_value",
+          "value": "dwb_core::DWBLocalPlanner"
+        },
+        {
+          "name": "FollowPath.angular_dist_threshold",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.5
+        },
+        {
+          "name": "FollowPath.angular_disengage_threshold",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.5
+        },
+        {
+          "name": "FollowPath.forward_sampling_distance",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.3
+        },
+        {
+          "name": "FollowPath.rotate_to_heading_angular_vel",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.3
+        },
+        {
+          "name": "FollowPath.max_angular_accel",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 1.0
+        },
+        {
+          "name": "FollowPath.simulate_ahead_time",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 1.0
+        },
+        {
+          "name": "FollowPath.rotate_to_goal_heading",
+          "type": 1,
+          "type_field": "bool_value",
+          "value": false
+        },
+        {
+          "name": "FollowPath.closed_loop",
+          "type": 1,
+          "type_field": "bool_value",
+          "value": true
+        },
+        {
+          "name": "FollowPath.acc_lim_x",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.5
+        },
+        {
+          "name": "FollowPath.decel_lim_x",
+          "type": 3,
+          "type_field": "double_value",
+          "value": -0.5
+        },
+        {
+          "name": "FollowPath.acc_lim_theta",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 1.0
+        },
+        {
+          "name": "FollowPath.decel_lim_theta",
+          "type": 3,
+          "type_field": "double_value",
+          "value": -3.2
+        },
+        {
+          "name": "FollowPath.min_speed_xy",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.0
+        },
+        {
+          "name": "FollowPath.min_speed_theta",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.0
+        },
+        {
+          "name": "FollowPath.critics",
+          "type": 9,
+          "type_field": "string_array_value",
+          "value": [
+            "RotateToGoal",
+            "Oscillation",
+            "BaseObstacle",
+            "GoalAlign",
+            "PathAlign",
+            "PathDist",
+            "GoalDist"
+          ]
+        },
+        {
+          "name": "FollowPath.BaseObstacle.scale",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.02
+        },
+        {
+          "name": "FollowPath.PathAlign.scale",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 32.0
+        },
+        {
+          "name": "FollowPath.PathAlign.forward_point_distance",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.1
+        },
+        {
+          "name": "FollowPath.GoalAlign.scale",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 24.0
+        },
+        {
+          "name": "FollowPath.GoalAlign.forward_point_distance",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.1
+        },
+        {
+          "name": "FollowPath.PathDist.scale",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 32.0
+        },
+        {
+          "name": "FollowPath.GoalDist.scale",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 24.0
+        },
+        {
+          "name": "FollowPath.RotateToGoal.scale",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 32.0
+        },
+        {
+          "name": "FollowPath.RotateToGoal.slowing_factor",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 5.0
+        },
+        {
+          "name": "FollowPath.RotateToGoal.lookahead_time",
+          "type": 3,
+          "type_field": "double_value",
+          "value": -1.0
+        },
+        {
+          "name": "goal_checker.xy_goal_tolerance",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.1
+        },
+        {
+          "name": "goal_checker.yaw_goal_tolerance",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 3.14
+        },
+        {
+          "name": "progress_checker.required_movement_radius",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.15
+        },
+        {
+          "name": "progress_checker.movement_time_allowance",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 15.0
+        }
+      ]
+    },
+    {
+      "node": "/tb1/behavior_server",
+      "service": "/tb1/behavior_server/get_parameters",
+      "request_wall_monotonic_ns": 4538283754809375,
+      "response_wall_monotonic_ns": 4538283758034283,
+      "epoch": "mr3_p2a_reach_v67_interface_w0_e1_b97b4084",
+      "source_clock_ns": 41220000000,
+      "typed_parameters": [
+        {
+          "name": "max_rotational_vel",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.3
+        },
+        {
+          "name": "min_rotational_vel",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.15
+        },
+        {
+          "name": "rotational_acc_lim",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 1.0
+        },
+        {
+          "name": "use_sim_time",
+          "type": 1,
+          "type_field": "bool_value",
+          "value": true
+        }
+      ]
+    },
+    {
+      "node": "/tb1/velocity_smoother",
+      "service": "/tb1/velocity_smoother/get_parameters",
+      "request_wall_monotonic_ns": 4538283764105655,
+      "response_wall_monotonic_ns": 4538283765943931,
+      "epoch": "mr3_p2a_reach_v67_interface_w0_e1_b97b4084",
+      "source_clock_ns": 41220000000,
+      "typed_parameters": [
+        {
+          "name": "max_velocity",
+          "type": 8,
+          "type_field": "double_array_value",
+          "value": [
+            0.2,
+            0.0,
+            0.3
+          ]
+        },
+        {
+          "name": "min_velocity",
+          "type": 8,
+          "type_field": "double_array_value",
+          "value": [
+            -0.2,
+            0.0,
+            -0.3
+          ]
+        },
+        {
+          "name": "feedback",
+          "type": 4,
+          "type_field": "string_value",
+          "value": "OPEN_LOOP"
+        },
+        {
+          "name": "smoothing_frequency",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 20.0
+        },
+        {
+          "name": "use_sim_time",
+          "type": 1,
+          "type_field": "bool_value",
+          "value": true
+        },
+        {
+          "name": "max_accel",
+          "type": 8,
+          "type_field": "double_array_value",
+          "value": [
+            0.5,
+            0.0,
+            1.0
+          ]
+        },
+        {
+          "name": "max_decel",
+          "type": 8,
+          "type_field": "double_array_value",
+          "value": [
+            -0.5,
+            0.0,
+            -3.2
+          ]
+        }
+      ]
+    },
+    {
+      "node": "/tb2/controller_server",
+      "service": "/tb2/controller_server/get_parameters",
+      "request_wall_monotonic_ns": 4538283771221769,
+      "response_wall_monotonic_ns": 4538283775667902,
+      "epoch": "mr3_p2a_reach_v67_interface_w0_e1_b97b4084",
+      "source_clock_ns": 41220000000,
+      "typed_parameters": [
+        {
+          "name": "FollowPath.max_vel_theta",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.3
+        },
+        {
+          "name": "FollowPath.max_vel_x",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.2
+        },
+        {
+          "name": "FollowPath.max_speed_xy",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.2
+        },
+        {
+          "name": "FollowPath.min_vel_x",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.0
+        },
+        {
+          "name": "FollowPath.max_vel_y",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.0
+        },
+        {
+          "name": "use_sim_time",
+          "type": 1,
+          "type_field": "bool_value",
+          "value": true
+        },
+        {
+          "name": "controller_frequency",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 10.0
+        },
+        {
+          "name": "controller_plugins",
+          "type": 9,
+          "type_field": "string_array_value",
+          "value": [
+            "FollowPath"
+          ]
+        },
+        {
+          "name": "FollowPath.plugin",
+          "type": 4,
+          "type_field": "string_value",
+          "value": "nav2_rotation_shim_controller::RotationShimController"
+        },
+        {
+          "name": "FollowPath.primary_controller",
+          "type": 4,
+          "type_field": "string_value",
+          "value": "dwb_core::DWBLocalPlanner"
+        },
+        {
+          "name": "FollowPath.angular_dist_threshold",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.5
+        },
+        {
+          "name": "FollowPath.angular_disengage_threshold",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.5
+        },
+        {
+          "name": "FollowPath.forward_sampling_distance",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.3
+        },
+        {
+          "name": "FollowPath.rotate_to_heading_angular_vel",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.3
+        },
+        {
+          "name": "FollowPath.max_angular_accel",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 1.0
+        },
+        {
+          "name": "FollowPath.simulate_ahead_time",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 1.0
+        },
+        {
+          "name": "FollowPath.rotate_to_goal_heading",
+          "type": 1,
+          "type_field": "bool_value",
+          "value": false
+        },
+        {
+          "name": "FollowPath.closed_loop",
+          "type": 1,
+          "type_field": "bool_value",
+          "value": true
+        },
+        {
+          "name": "FollowPath.acc_lim_x",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.5
+        },
+        {
+          "name": "FollowPath.decel_lim_x",
+          "type": 3,
+          "type_field": "double_value",
+          "value": -0.5
+        },
+        {
+          "name": "FollowPath.acc_lim_theta",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 1.0
+        },
+        {
+          "name": "FollowPath.decel_lim_theta",
+          "type": 3,
+          "type_field": "double_value",
+          "value": -3.2
+        },
+        {
+          "name": "FollowPath.min_speed_xy",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.0
+        },
+        {
+          "name": "FollowPath.min_speed_theta",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.0
+        },
+        {
+          "name": "FollowPath.critics",
+          "type": 9,
+          "type_field": "string_array_value",
+          "value": [
+            "RotateToGoal",
+            "Oscillation",
+            "BaseObstacle",
+            "GoalAlign",
+            "PathAlign",
+            "PathDist",
+            "GoalDist"
+          ]
+        },
+        {
+          "name": "FollowPath.BaseObstacle.scale",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.02
+        },
+        {
+          "name": "FollowPath.PathAlign.scale",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 32.0
+        },
+        {
+          "name": "FollowPath.PathAlign.forward_point_distance",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.1
+        },
+        {
+          "name": "FollowPath.GoalAlign.scale",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 24.0
+        },
+        {
+          "name": "FollowPath.GoalAlign.forward_point_distance",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.1
+        },
+        {
+          "name": "FollowPath.PathDist.scale",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 32.0
+        },
+        {
+          "name": "FollowPath.GoalDist.scale",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 24.0
+        },
+        {
+          "name": "FollowPath.RotateToGoal.scale",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 32.0
+        },
+        {
+          "name": "FollowPath.RotateToGoal.slowing_factor",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 5.0
+        },
+        {
+          "name": "FollowPath.RotateToGoal.lookahead_time",
+          "type": 3,
+          "type_field": "double_value",
+          "value": -1.0
+        },
+        {
+          "name": "goal_checker.xy_goal_tolerance",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.1
+        },
+        {
+          "name": "goal_checker.yaw_goal_tolerance",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 3.14
+        },
+        {
+          "name": "progress_checker.required_movement_radius",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.15
+        },
+        {
+          "name": "progress_checker.movement_time_allowance",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 15.0
+        }
+      ]
+    },
+    {
+      "node": "/tb2/behavior_server",
+      "service": "/tb2/behavior_server/get_parameters",
+      "request_wall_monotonic_ns": 4538283781360183,
+      "response_wall_monotonic_ns": 4538283783338441,
+      "epoch": "mr3_p2a_reach_v67_interface_w0_e1_b97b4084",
+      "source_clock_ns": 41220000000,
+      "typed_parameters": [
+        {
+          "name": "max_rotational_vel",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.3
+        },
+        {
+          "name": "min_rotational_vel",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.15
+        },
+        {
+          "name": "rotational_acc_lim",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 1.0
+        },
+        {
+          "name": "use_sim_time",
+          "type": 1,
+          "type_field": "bool_value",
+          "value": true
+        }
+      ]
+    },
+    {
+      "node": "/tb2/velocity_smoother",
+      "service": "/tb2/velocity_smoother/get_parameters",
+      "request_wall_monotonic_ns": 4538283792126679,
+      "response_wall_monotonic_ns": 4538283793870811,
+      "epoch": "mr3_p2a_reach_v67_interface_w0_e1_b97b4084",
+      "source_clock_ns": 41220000000,
+      "typed_parameters": [
+        {
+          "name": "max_velocity",
+          "type": 8,
+          "type_field": "double_array_value",
+          "value": [
+            0.2,
+            0.0,
+            0.3
+          ]
+        },
+        {
+          "name": "min_velocity",
+          "type": 8,
+          "type_field": "double_array_value",
+          "value": [
+            -0.2,
+            0.0,
+            -0.3
+          ]
+        },
+        {
+          "name": "feedback",
+          "type": 4,
+          "type_field": "string_value",
+          "value": "OPEN_LOOP"
+        },
+        {
+          "name": "smoothing_frequency",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 20.0
+        },
+        {
+          "name": "use_sim_time",
+          "type": 1,
+          "type_field": "bool_value",
+          "value": true
+        },
+        {
+          "name": "max_accel",
+          "type": 8,
+          "type_field": "double_array_value",
+          "value": [
+            0.5,
+            0.0,
+            1.0
+          ]
+        },
+        {
+          "name": "max_decel",
+          "type": 8,
+          "type_field": "double_array_value",
+          "value": [
+            -0.5,
+            0.0,
+            -3.2
+          ]
+        }
+      ]
+    },
+    {
+      "node": "/tb3/controller_server",
+      "service": "/tb3/controller_server/get_parameters",
+      "request_wall_monotonic_ns": 4538283799811573,
+      "response_wall_monotonic_ns": 4538283803880688,
+      "epoch": "mr3_p2a_reach_v67_interface_w0_e1_b97b4084",
+      "source_clock_ns": 41220000000,
+      "typed_parameters": [
+        {
+          "name": "FollowPath.max_vel_theta",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.3
+        },
+        {
+          "name": "FollowPath.max_vel_x",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.2
+        },
+        {
+          "name": "FollowPath.max_speed_xy",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.2
+        },
+        {
+          "name": "FollowPath.min_vel_x",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.0
+        },
+        {
+          "name": "FollowPath.max_vel_y",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.0
+        },
+        {
+          "name": "use_sim_time",
+          "type": 1,
+          "type_field": "bool_value",
+          "value": true
+        },
+        {
+          "name": "controller_frequency",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 10.0
+        },
+        {
+          "name": "controller_plugins",
+          "type": 9,
+          "type_field": "string_array_value",
+          "value": [
+            "FollowPath"
+          ]
+        },
+        {
+          "name": "FollowPath.plugin",
+          "type": 4,
+          "type_field": "string_value",
+          "value": "nav2_rotation_shim_controller::RotationShimController"
+        },
+        {
+          "name": "FollowPath.primary_controller",
+          "type": 4,
+          "type_field": "string_value",
+          "value": "dwb_core::DWBLocalPlanner"
+        },
+        {
+          "name": "FollowPath.angular_dist_threshold",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.5
+        },
+        {
+          "name": "FollowPath.angular_disengage_threshold",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.5
+        },
+        {
+          "name": "FollowPath.forward_sampling_distance",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.3
+        },
+        {
+          "name": "FollowPath.rotate_to_heading_angular_vel",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.3
+        },
+        {
+          "name": "FollowPath.max_angular_accel",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 1.0
+        },
+        {
+          "name": "FollowPath.simulate_ahead_time",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 1.0
+        },
+        {
+          "name": "FollowPath.rotate_to_goal_heading",
+          "type": 1,
+          "type_field": "bool_value",
+          "value": false
+        },
+        {
+          "name": "FollowPath.closed_loop",
+          "type": 1,
+          "type_field": "bool_value",
+          "value": true
+        },
+        {
+          "name": "FollowPath.acc_lim_x",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.5
+        },
+        {
+          "name": "FollowPath.decel_lim_x",
+          "type": 3,
+          "type_field": "double_value",
+          "value": -0.5
+        },
+        {
+          "name": "FollowPath.acc_lim_theta",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 1.0
+        },
+        {
+          "name": "FollowPath.decel_lim_theta",
+          "type": 3,
+          "type_field": "double_value",
+          "value": -3.2
+        },
+        {
+          "name": "FollowPath.min_speed_xy",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.0
+        },
+        {
+          "name": "FollowPath.min_speed_theta",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.0
+        },
+        {
+          "name": "FollowPath.critics",
+          "type": 9,
+          "type_field": "string_array_value",
+          "value": [
+            "RotateToGoal",
+            "Oscillation",
+            "BaseObstacle",
+            "GoalAlign",
+            "PathAlign",
+            "PathDist",
+            "GoalDist"
+          ]
+        },
+        {
+          "name": "FollowPath.BaseObstacle.scale",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.02
+        },
+        {
+          "name": "FollowPath.PathAlign.scale",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 32.0
+        },
+        {
+          "name": "FollowPath.PathAlign.forward_point_distance",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.1
+        },
+        {
+          "name": "FollowPath.GoalAlign.scale",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 24.0
+        },
+        {
+          "name": "FollowPath.GoalAlign.forward_point_distance",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.1
+        },
+        {
+          "name": "FollowPath.PathDist.scale",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 32.0
+        },
+        {
+          "name": "FollowPath.GoalDist.scale",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 24.0
+        },
+        {
+          "name": "FollowPath.RotateToGoal.scale",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 32.0
+        },
+        {
+          "name": "FollowPath.RotateToGoal.slowing_factor",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 5.0
+        },
+        {
+          "name": "FollowPath.RotateToGoal.lookahead_time",
+          "type": 3,
+          "type_field": "double_value",
+          "value": -1.0
+        },
+        {
+          "name": "goal_checker.xy_goal_tolerance",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.1
+        },
+        {
+          "name": "goal_checker.yaw_goal_tolerance",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 3.14
+        },
+        {
+          "name": "progress_checker.required_movement_radius",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.15
+        },
+        {
+          "name": "progress_checker.movement_time_allowance",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 15.0
+        }
+      ]
+    },
+    {
+      "node": "/tb3/behavior_server",
+      "service": "/tb3/behavior_server/get_parameters",
+      "request_wall_monotonic_ns": 4538283811912598,
+      "response_wall_monotonic_ns": 4538283813812132,
+      "epoch": "mr3_p2a_reach_v67_interface_w0_e1_b97b4084",
+      "source_clock_ns": 41220000000,
+      "typed_parameters": [
+        {
+          "name": "max_rotational_vel",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.3
+        },
+        {
+          "name": "min_rotational_vel",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 0.15
+        },
+        {
+          "name": "rotational_acc_lim",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 1.0
+        },
+        {
+          "name": "use_sim_time",
+          "type": 1,
+          "type_field": "bool_value",
+          "value": true
+        }
+      ]
+    },
+    {
+      "node": "/tb3/velocity_smoother",
+      "service": "/tb3/velocity_smoother/get_parameters",
+      "request_wall_monotonic_ns": 4538283819496822,
+      "response_wall_monotonic_ns": 4538283821440055,
+      "epoch": "mr3_p2a_reach_v67_interface_w0_e1_b97b4084",
+      "source_clock_ns": 41220000000,
+      "typed_parameters": [
+        {
+          "name": "max_velocity",
+          "type": 8,
+          "type_field": "double_array_value",
+          "value": [
+            0.2,
+            0.0,
+            0.3
+          ]
+        },
+        {
+          "name": "min_velocity",
+          "type": 8,
+          "type_field": "double_array_value",
+          "value": [
+            -0.2,
+            0.0,
+            -0.3
+          ]
+        },
+        {
+          "name": "feedback",
+          "type": 4,
+          "type_field": "string_value",
+          "value": "OPEN_LOOP"
+        },
+        {
+          "name": "smoothing_frequency",
+          "type": 3,
+          "type_field": "double_value",
+          "value": 20.0
+        },
+        {
+          "name": "use_sim_time",
+          "type": 1,
+          "type_field": "bool_value",
+          "value": true
+        },
+        {
+          "name": "max_accel",
+          "type": 8,
+          "type_field": "double_array_value",
+          "value": [
+            0.5,
+            0.0,
+            1.0
+          ]
+        },
+        {
+          "name": "max_decel",
+          "type": 8,
+          "type_field": "double_array_value",
+          "value": [
+            -0.5,
+            0.0,
+            -3.2
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "training_eligible": false,
+  "scope": "Read-only gentle-turn readback with the reach reset/status-v2 identity.\n\nThe immutable nine-service collector and exact deployment parameter predicates\nare reused. Only the release/status adapter and its provenance are new. A\nparameter PASS is one independent leaf, never training or physical permission.\n",
+  "epoch": "mr3_p2a_reach_v67_interface_w0_e1_b97b4084",
+  "source_clock_ns": 41220000000,
+  "metadata_sha256": "749a7d792c48dfb6b62118a22666a093169fd43f840f6d978e13d56e0fb75f30",
+  "release_binding": {
+    "reset_transition_sha256": "0e076f485b5d003636e5d2ed660b2967683b83514f3cbfe6c3c3d12b0a836dff",
+    "control_phase_worker_sha256": "6d056c38de998e7959757c880a27814c73a731fc254125fadbec378cb344d876",
+    "post_release_intent_refs": {
+      "tb1": {
+        "intent_sequence": 1924,
+        "payload_sha256": "d0711cad2c7475480cdfe160e36b957fc9a26db16eaae36f99b308d57652850a"
+      },
+      "tb2": {
+        "intent_sequence": 1924,
+        "payload_sha256": "7ba1da8f4a315466a1092bd5711ec20e7518488a0d5d8ab054341004528acbba"
+      },
+      "tb3": {
+        "intent_sequence": 1924,
+        "payload_sha256": "17cac4b747a8d9d2f27690de0546c32becf8542b27c801672821e2a1e8dd9254"
+      }
+    },
+    "initial_motion_status_sha256": "af9d63f7549a26c167c7a209c1e7e159537f7f36f2273fcbc224c2648c2cb425",
+    "identity_scope": "worker actual subscriptions with graph_at_callback, not per-packet publisher proof"
+  },
+  "implementation_provenance": {
+    "schema": "mr3-reach-nav2-parameter-implementation-v1",
+    "immutable_reader": {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_actual_nav2_parameters_v13.py",
+      "sha256": "9eb963457a8dc8297e4686004ea08c7a06e1e0e9ede7cd795ba9505da9d8f701"
+    },
+    "profile_definition": {
+      "schema": "mr3-nav2-exact-deployment-profile-v1",
+      "selection": "gentle_turn_v1",
+      "profile": "mr3-nav2-shim-dwb-030-a1-v1",
+      "immutable_reader_sha256": "9eb963457a8dc8297e4686004ea08c7a06e1e0e9ede7cd795ba9505da9d8f701",
+      "changed_typed_facts": [
+        {
+          "node_kind": "controller_server",
+          "name": "FollowPath.rotate_to_heading_angular_vel",
+          "type": 3,
+          "old": 0.8,
+          "new": 0.3
+        },
+        {
+          "node_kind": "controller_server",
+          "name": "FollowPath.max_angular_accel",
+          "type": 3,
+          "old": 3.2,
+          "new": 1.0
+        },
+        {
+          "node_kind": "controller_server",
+          "name": "FollowPath.max_vel_theta",
+          "type": 3,
+          "old": 0.8,
+          "new": 0.3
+        },
+        {
+          "node_kind": "controller_server",
+          "name": "FollowPath.acc_lim_theta",
+          "type": 3,
+          "old": 3.2,
+          "new": 1.0
+        },
+        {
+          "node_kind": "velocity_smoother",
+          "name": "max_velocity",
+          "type": 8,
+          "old": [
+            0.2,
+            0.0,
+            0.8
+          ],
+          "new": [
+            0.2,
+            0.0,
+            0.3
+          ]
+        },
+        {
+          "node_kind": "velocity_smoother",
+          "name": "min_velocity",
+          "type": 8,
+          "old": [
+            -0.2,
+            0.0,
+            -0.8
+          ],
+          "new": [
+            -0.2,
+            0.0,
+            -0.3
+          ]
+        },
+        {
+          "node_kind": "velocity_smoother",
+          "name": "max_accel",
+          "type": 8,
+          "old": [
+            0.5,
+            0.0,
+            3.2
+          ],
+          "new": [
+            0.5,
+            0.0,
+            1.0
+          ]
+        },
+        {
+          "node_kind": "behavior_server",
+          "name": "max_rotational_vel",
+          "type": 3,
+          "old": 0.8,
+          "new": 0.3
+        },
+        {
+          "node_kind": "behavior_server",
+          "name": "min_rotational_vel",
+          "type": 3,
+          "old": 0.4,
+          "new": 0.15
+        },
+        {
+          "node_kind": "behavior_server",
+          "name": "rotational_acc_lim",
+          "type": 3,
+          "old": 3.2,
+          "new": 1.0
+        }
+      ],
+      "expected_typed_parameters": {
+        "controller_server": {
+          "FollowPath.max_vel_theta": [
+            3,
+            0.3
+          ],
+          "FollowPath.max_vel_x": [
+            3,
+            0.2
+          ],
+          "FollowPath.max_speed_xy": [
+            3,
+            0.2
+          ],
+          "FollowPath.min_vel_x": [
+            3,
+            0.0
+          ],
+          "FollowPath.max_vel_y": [
+            3,
+            0.0
+          ],
+          "use_sim_time": [
+            1,
+            true
+          ],
+          "controller_frequency": [
+            3,
+            10.0
+          ],
+          "controller_plugins": [
+            9,
+            [
+              "FollowPath"
+            ]
+          ],
+          "FollowPath.plugin": [
+            4,
+            "nav2_rotation_shim_controller::RotationShimController"
+          ],
+          "FollowPath.primary_controller": [
+            4,
+            "dwb_core::DWBLocalPlanner"
+          ],
+          "FollowPath.angular_dist_threshold": [
+            3,
+            0.5
+          ],
+          "FollowPath.angular_disengage_threshold": [
+            3,
+            0.5
+          ],
+          "FollowPath.forward_sampling_distance": [
+            3,
+            0.3
+          ],
+          "FollowPath.rotate_to_heading_angular_vel": [
+            3,
+            0.3
+          ],
+          "FollowPath.max_angular_accel": [
+            3,
+            1.0
+          ],
+          "FollowPath.simulate_ahead_time": [
+            3,
+            1.0
+          ],
+          "FollowPath.rotate_to_goal_heading": [
+            1,
+            false
+          ],
+          "FollowPath.closed_loop": [
+            1,
+            true
+          ],
+          "FollowPath.acc_lim_x": [
+            3,
+            0.5
+          ],
+          "FollowPath.decel_lim_x": [
+            3,
+            -0.5
+          ],
+          "FollowPath.acc_lim_theta": [
+            3,
+            1.0
+          ],
+          "FollowPath.decel_lim_theta": [
+            3,
+            -3.2
+          ],
+          "FollowPath.min_speed_xy": [
+            3,
+            0.0
+          ],
+          "FollowPath.min_speed_theta": [
+            3,
+            0.0
+          ],
+          "FollowPath.critics": [
+            9,
+            [
+              "RotateToGoal",
+              "Oscillation",
+              "BaseObstacle",
+              "GoalAlign",
+              "PathAlign",
+              "PathDist",
+              "GoalDist"
+            ]
+          ],
+          "FollowPath.BaseObstacle.scale": [
+            3,
+            0.02
+          ],
+          "FollowPath.PathAlign.scale": [
+            3,
+            32.0
+          ],
+          "FollowPath.PathAlign.forward_point_distance": [
+            3,
+            0.1
+          ],
+          "FollowPath.GoalAlign.scale": [
+            3,
+            24.0
+          ],
+          "FollowPath.GoalAlign.forward_point_distance": [
+            3,
+            0.1
+          ],
+          "FollowPath.PathDist.scale": [
+            3,
+            32.0
+          ],
+          "FollowPath.GoalDist.scale": [
+            3,
+            24.0
+          ],
+          "FollowPath.RotateToGoal.scale": [
+            3,
+            32.0
+          ],
+          "FollowPath.RotateToGoal.slowing_factor": [
+            3,
+            5.0
+          ],
+          "FollowPath.RotateToGoal.lookahead_time": [
+            3,
+            -1.0
+          ],
+          "goal_checker.xy_goal_tolerance": [
+            3,
+            0.1
+          ],
+          "goal_checker.yaw_goal_tolerance": [
+            3,
+            3.14
+          ],
+          "progress_checker.required_movement_radius": [
+            3,
+            0.15
+          ],
+          "progress_checker.movement_time_allowance": [
+            3,
+            15.0
+          ]
+        },
+        "behavior_server": {
+          "max_rotational_vel": [
+            3,
+            0.3
+          ],
+          "min_rotational_vel": [
+            3,
+            0.15
+          ],
+          "rotational_acc_lim": [
+            3,
+            1.0
+          ],
+          "use_sim_time": [
+            1,
+            true
+          ]
+        },
+        "velocity_smoother": {
+          "max_velocity": [
+            8,
+            [
+              0.2,
+              0.0,
+              0.3
+            ]
+          ],
+          "min_velocity": [
+            8,
+            [
+              -0.2,
+              0.0,
+              -0.3
+            ]
+          ],
+          "feedback": [
+            4,
+            "OPEN_LOOP"
+          ],
+          "smoothing_frequency": [
+            3,
+            20.0
+          ],
+          "use_sim_time": [
+            1,
+            true
+          ],
+          "max_accel": [
+            8,
+            [
+              0.5,
+              0.0,
+              1.0
+            ]
+          ],
+          "max_decel": [
+            8,
+            [
+              -0.5,
+              0.0,
+              -3.2
+            ]
+          ]
+        }
+      }
+    },
+    "profile_sha256": "af5bf20bf17ed160dd3476653c21eef94d0ba6f30d119c1bbbe66190e78c68a5",
+    "yaml_sources": [
+      {
+        "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot/params/nav2_params_tb1_0.yaml",
+        "sha256": "d2d01844885fd76ab6e8cd996c37b8994c6cf801010988db12e6dc6e67e38d53",
+        "bytes": 31292,
+        "inverse_original_sha256": "8854aac6fe3083aa1156072830358e9331f0e0a45144ab3df499f743a37c1b8a",
+        "exact_inverse": true,
+        "changed_lines": 13
+      },
+      {
+        "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot/params/nav2_params_tb2_0.yaml",
+        "sha256": "5f2ab024dd590a2cc6656072311a11cddbbaf646423a3fe502569b466e92dc33",
+        "bytes": 31293,
+        "inverse_original_sha256": "9c7a0f9c197c5b3eedc3567c0b70d4920a5ca8cc6057b5059f5c5844ab275386",
+        "exact_inverse": true,
+        "changed_lines": 13
+      },
+      {
+        "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot/params/nav2_params_tb3_0.yaml",
+        "sha256": "b3d47508e69d2e5b6d93805435dbe42b3a5ec262b06015466d5a92f214106192",
+        "bytes": 31293,
+        "inverse_original_sha256": "8794b037c1ef31f57c8d99ab05c57a646afe6653717c2f21100e00b6a5435fae",
+        "exact_inverse": true,
+        "changed_lines": 13
+      }
+    ],
+    "unchanged_function_sha256": {
+      "decode_parameters": "3c7786ad5c5ff803fb5e81dd748ff4b13c81265fd5bc1c31303a12566a41d05b",
+      "validate_parameters": "dbd6d73cf3b5901c561406747875a154ce569ae181506677f7e96645dff3a2da",
+      "collect": "0fffee9308fb51dff163b546b8f90dfc6c54dfda592fd8ff93f1b7bd28a0f25e"
+    },
+    "scope": "Exact deployment profile only; original nine services, typed equality, release-status source, finite readback and cleanup logic unchanged. recoveries_server three source facts are static configuration, not a new live readback. Old reader bytes remain unchanged and do not identify this effective entry. No physical/safety/task bound changed or plant repair guaranteed. Reach entry uses a separately identified status-v2 adapter and strict JSON parsing. decode_parameters, validate_parameters and nine-service collect function bytes are unchanged. Actual returned reset status is bound in full; independently received post-release HOLD references are not substituted for its prior consumed table. This leaf grants no native/training qualification.",
+    "deployment_entry": {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_nav2_parameters.py",
+      "sha256": "848dd05ebd9558a4ec8d47866909662030d24cfce837742a409907ff6c5bfdf3"
+    },
+    "effective_entry": {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_nav2_parameters.py",
+      "sha256": "53dcb0ce70a745956b92a916340019a94d6175074b766d101e5d8425d844b514"
+    },
+    "shared_wire_source": {
+      "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_safety_intent.py",
+      "sha256": "4d148ef0ad18c8474eaa0a6d898bf4e94177f4cd454ce5a2495d26c9b7ab75f1"
+    },
+    "original_status_function_sha256": "bdfb7a33a896ef9e40f0ff0a119e996f71d6a5fbecfa1f26754854c7014fb0f0",
+    "safety_contract": "mr3-reach-v1",
+    "status_schema": "mr3-motion-safety-status-v2",
+    "status_adapter_sha256": "9cbeacbdb325db0fa8b0aaf530c176eceb474c20781e4adec1f53a418b1bd3b2",
+    "collection_adapters": [
+      "validate_status",
+      "json.loads=strict_shared_parse_json"
+    ],
+    "training_eligible": false
+  },
+  "expected_typed_parameters": {
+    "controller_server": {
+      "FollowPath.max_vel_theta": [
+        3,
+        0.3
+      ],
+      "FollowPath.max_vel_x": [
+        3,
+        0.2
+      ],
+      "FollowPath.max_speed_xy": [
+        3,
+        0.2
+      ],
+      "FollowPath.min_vel_x": [
+        3,
+        0.0
+      ],
+      "FollowPath.max_vel_y": [
+        3,
+        0.0
+      ],
+      "use_sim_time": [
+        1,
+        true
+      ],
+      "controller_frequency": [
+        3,
+        10.0
+      ],
+      "controller_plugins": [
+        9,
+        [
+          "FollowPath"
+        ]
+      ],
+      "FollowPath.plugin": [
+        4,
+        "nav2_rotation_shim_controller::RotationShimController"
+      ],
+      "FollowPath.primary_controller": [
+        4,
+        "dwb_core::DWBLocalPlanner"
+      ],
+      "FollowPath.angular_dist_threshold": [
+        3,
+        0.5
+      ],
+      "FollowPath.angular_disengage_threshold": [
+        3,
+        0.5
+      ],
+      "FollowPath.forward_sampling_distance": [
+        3,
+        0.3
+      ],
+      "FollowPath.rotate_to_heading_angular_vel": [
+        3,
+        0.3
+      ],
+      "FollowPath.max_angular_accel": [
+        3,
+        1.0
+      ],
+      "FollowPath.simulate_ahead_time": [
+        3,
+        1.0
+      ],
+      "FollowPath.rotate_to_goal_heading": [
+        1,
+        false
+      ],
+      "FollowPath.closed_loop": [
+        1,
+        true
+      ],
+      "FollowPath.acc_lim_x": [
+        3,
+        0.5
+      ],
+      "FollowPath.decel_lim_x": [
+        3,
+        -0.5
+      ],
+      "FollowPath.acc_lim_theta": [
+        3,
+        1.0
+      ],
+      "FollowPath.decel_lim_theta": [
+        3,
+        -3.2
+      ],
+      "FollowPath.min_speed_xy": [
+        3,
+        0.0
+      ],
+      "FollowPath.min_speed_theta": [
+        3,
+        0.0
+      ],
+      "FollowPath.critics": [
+        9,
+        [
+          "RotateToGoal",
+          "Oscillation",
+          "BaseObstacle",
+          "GoalAlign",
+          "PathAlign",
+          "PathDist",
+          "GoalDist"
+        ]
+      ],
+      "FollowPath.BaseObstacle.scale": [
+        3,
+        0.02
+      ],
+      "FollowPath.PathAlign.scale": [
+        3,
+        32.0
+      ],
+      "FollowPath.PathAlign.forward_point_distance": [
+        3,
+        0.1
+      ],
+      "FollowPath.GoalAlign.scale": [
+        3,
+        24.0
+      ],
+      "FollowPath.GoalAlign.forward_point_distance": [
+        3,
+        0.1
+      ],
+      "FollowPath.PathDist.scale": [
+        3,
+        32.0
+      ],
+      "FollowPath.GoalDist.scale": [
+        3,
+        24.0
+      ],
+      "FollowPath.RotateToGoal.scale": [
+        3,
+        32.0
+      ],
+      "FollowPath.RotateToGoal.slowing_factor": [
+        3,
+        5.0
+      ],
+      "FollowPath.RotateToGoal.lookahead_time": [
+        3,
+        -1.0
+      ],
+      "goal_checker.xy_goal_tolerance": [
+        3,
+        0.1
+      ],
+      "goal_checker.yaw_goal_tolerance": [
+        3,
+        3.14
+      ],
+      "progress_checker.required_movement_radius": [
+        3,
+        0.15
+      ],
+      "progress_checker.movement_time_allowance": [
+        3,
+        15.0
+      ]
+    },
+    "behavior_server": {
+      "max_rotational_vel": [
+        3,
+        0.3
+      ],
+      "min_rotational_vel": [
+        3,
+        0.15
+      ],
+      "rotational_acc_lim": [
+        3,
+        1.0
+      ],
+      "use_sim_time": [
+        1,
+        true
+      ]
+    },
+    "velocity_smoother": {
+      "max_velocity": [
+        8,
+        [
+          0.2,
+          0.0,
+          0.3
+        ]
+      ],
+      "min_velocity": [
+        8,
+        [
+          -0.2,
+          0.0,
+          -0.3
+        ]
+      ],
+      "feedback": [
+        4,
+        "OPEN_LOOP"
+      ],
+      "smoothing_frequency": [
+        3,
+        20.0
+      ],
+      "use_sim_time": [
+        1,
+        true
+      ],
+      "max_accel": [
+        8,
+        [
+          0.5,
+          0.0,
+          1.0
+        ]
+      ],
+      "max_decel": [
+        8,
+        [
+          -0.5,
+          0.0,
+          -3.2
+        ]
+      ]
+    }
+  },
+  "source_bindings": [
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_nav2_parameters.py",
+      "sha256": "53dcb0ce70a745956b92a916340019a94d6175074b766d101e5d8425d844b514"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_nav2_parameters.py",
+      "sha256": "848dd05ebd9558a4ec8d47866909662030d24cfce837742a409907ff6c5bfdf3"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_actual_nav2_parameters_v13.py",
+      "sha256": "9eb963457a8dc8297e4686004ea08c7a06e1e0e9ede7cd795ba9505da9d8f701"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_safety_intent.py",
+      "sha256": "4d148ef0ad18c8474eaa0a6d898bf4e94177f4cd454ce5a2495d26c9b7ab75f1"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot/params/nav2_params_tb1_0.yaml",
+      "sha256": "d2d01844885fd76ab6e8cd996c37b8994c6cf801010988db12e6dc6e67e38d53"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot/params/nav2_params_tb2_0.yaml",
+      "sha256": "5f2ab024dd590a2cc6656072311a11cddbbaf646423a3fe502569b466e92dc33"
+    },
+    {
+      "path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot/params/nav2_params_tb3_0.yaml",
+      "sha256": "b3d47508e69d2e5b6d93805435dbe42b3a5ec262b06015466d5a92f214106192"
+    }
+  ],
+  "motion_status_receipts": [
+    {
+      "receipt_wall_monotonic_ns": 4538283729294454,
+      "status": {
+        "schema": "mr3-motion-safety-status-v2",
+        "epoch": "mr3_p2a_reach_v67_interface_w0_e1_b97b4084",
+        "clock_ns": 41220000000,
+        "ready": true,
+        "completion_scope": "publication_and_local_topic_receipt",
+        "decision_sequences": {
+          "tb1": 1923,
+          "tb2": 1923,
+          "tb3": 1923
+        },
+        "outputs": {
+          "tb1": {
+            "linear_x": 0.0,
+            "angular_z": 0.0
+          },
+          "tb2": {
+            "linear_x": 0.0,
+            "angular_z": 0.0
+          },
+          "tb3": {
+            "linear_x": 0.0,
+            "angular_z": 0.0
+          }
+        },
+        "safety_contract": "mr3-reach-v1",
+        "intent_refs": {
+          "tb1": {
+            "intent_sequence": 1923,
+            "payload_sha256": "29d75a0d1ab97df267cb0f4b80a6cfa1fd3fa5b1abf7416a45df0a47a7cd6afe"
+          },
+          "tb2": {
+            "intent_sequence": 1923,
+            "payload_sha256": "0b6481abfcd8a1ffbef5283e00cd6a094da9d039f7d047d31d3e464df7ba3862"
+          },
+          "tb3": {
+            "intent_sequence": 1923,
+            "payload_sha256": "abebf6fb0fbdb08ca108d3f655f49656a28759174bbfbbb4c1a1ecf8b94c3694"
+          }
+        },
+        "safety_table_sha256": "60c7dc6c6382aa5209db61912c14dda416070661fa7ee3d3d0e8e3bbcd5b3294"
+      }
+    }
+  ],
+  "cleanup": {
+    "executor_shutdown": true,
+    "node_destroyed": true,
+    "context_shutdown": true
+  },
+  "cleanup_errors": [],
+  "wall_duration_sec": 3.88830532040447
+}

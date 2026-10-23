@@ -1,0 +1,93 @@
+{
+  "schema": "mr3-v67-closed-capacity-observation-v1",
+  "stage": "matrix",
+  "scope": "actual matrix child waited; Root complete parent remains externally owned",
+  "freeze": "50c740a64754aaa2dc3f2707cf5b0159eb929a28",
+  "plan_sha256": "feb5330fbacfa6925a7b57674204ab7e356e1e3fbb2a614086dd6236ccf041d0",
+  "inputs": [
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v67_owned_stream_qualification/plan_v1.json",
+      "bytes": 590890,
+      "sha256": "feb5330fbacfa6925a7b57674204ab7e356e1e3fbb2a614086dd6236ccf041d0"
+    },
+    {
+      "path": "/tmp/mr3_p2a_reach_v67_matrix_wait/actual_wait.json",
+      "bytes": 936013,
+      "sha256": "42065911b7ad8aeeed48234156cd673475774a214ac5df1014eb59317a20d5d5"
+    },
+    {
+      "path": "/tmp/mr3_p2a_reach_v67_matrix/summary.json",
+      "bytes": 16366,
+      "sha256": "80f4b85d269fd898b0d92819b6d427fa9426a3f0691fe2783e9e701902886b0b"
+    }
+  ],
+  "capacity_qualified": false,
+  "observer_source_sha256": "2653f422c05fd70e2af9879c82aaaf8e9c472c38363acf92c4182a1ba35c7664",
+  "automatic_policy_entry_allowed": false,
+  "root_tool_reaped_by_this_observer": false,
+  "scientific_raw_or_result_streams_read": false,
+  "independent_scientific_gate_rerun": false,
+  "canonical_writes": false,
+  "nested_seconds_are_not_additional_parent_fees": true,
+  "outer_wait": {
+    "actual_waited": true,
+    "actual_returncode": 1,
+    "actual_child_wait_seconds": "946.733745287",
+    "started_monotonic_ns": 4538124352218746,
+    "ended_monotonic_ns": 4539071085964033,
+    "source_unchanged": true,
+    "passed": false,
+    "errors": [],
+    "actual_argv": [
+      "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+      "-B",
+      "-m",
+      "mr3_learning.reach_preparation",
+      "--plan",
+      "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v67_owned_stream_qualification/plan_v1.json",
+      "--freeze",
+      "50c740a64754aaa2dc3f2707cf5b0159eb929a28"
+    ]
+  },
+  "matrix_summary": {
+    "passed": false,
+    "charged_wall_seconds": "946.426180947",
+    "within_matrix_wall_allocation": true,
+    "all_submitted_children_waited": true,
+    "source_end_error": null
+  },
+  "stage_statuses": [
+    {
+      "stage": "interface",
+      "status": "FAIL",
+      "passed": false,
+      "wall_seconds": "927.515981244",
+      "reason": null,
+      "error": null
+    },
+    {
+      "stage": "terminal",
+      "status": "SKIPPED",
+      "passed": null,
+      "wall_seconds": null,
+      "reason": "prior_failure_or_insufficient_balance",
+      "error": null
+    },
+    {
+      "stage": "reset",
+      "status": "SKIPPED",
+      "passed": null,
+      "wall_seconds": null,
+      "reason": "prior_failure_or_insufficient_balance",
+      "error": null
+    },
+    {
+      "stage": "deadline",
+      "status": "SKIPPED",
+      "passed": null,
+      "wall_seconds": null,
+      "reason": "prior_failure_or_insufficient_balance",
+      "error": null
+    }
+  ]
+}
