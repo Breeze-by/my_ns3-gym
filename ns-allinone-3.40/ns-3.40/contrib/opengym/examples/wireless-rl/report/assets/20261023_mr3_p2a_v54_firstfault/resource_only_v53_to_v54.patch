@@ -1,0 +1,208 @@
+--- V53/firstfault_extract_v2.py
++++ V54/firstfault_extract_v3.py
+@@ -24,8 +24,8 @@
+ INVENTORY = ROOT / W / 'report/assets/20261023_mr3_p2a_v52_qualification/closed_inventory_v1.json'
+ EPOCH = 'mr3_p2a_reach_v52_deadline_w0_e1_426a2555'
+ OLD_FREEZE = '1fa55bc56d5bb9e230d4b397f962d83b1604b278'
+-SCHEMA = 'mr3-v53-firstfault-spec-v1'
+-RESULT_SCHEMA = 'mr3-v53-firstfault-description-v1'
++SCHEMA = 'mr3-v54-firstfault-spec-v1'
++RESULT_SCHEMA = 'mr3-v54-firstfault-description-v1'
+ PROTOCOL = 'received-input-pause-drain-v1'
+ FILES = {'motion': ('motion_safety.jsonl', 2458997272),
+          'startup': ('startup_readiness.jsonl', 286052)}
+@@ -36,8 +36,8 @@
+                 'gazebo_multirobot_mapping_with_nav2.launch.py',
+                 W + '/mr3_learning/benchmark.py', W + '/mr3_learning/supervisor.py')
+ LIMITS = {'total_input_bytes': 3 * 1024**3, 'line_bytes': 8 * 1024**2,
+-          'lines_per_file': 1000000, 'selected_records': 256,
+-          'output_bytes': 2 * 1024**2, 'work_seconds': 240}
++          'lines_per_file': 2000000, 'selected_records': 256,
++          'output_bytes': 2 * 1024**2, 'work_seconds': 480}
+ ROBOTS = ('tb1', 'tb2', 'tb3')
+ FAULTS = ('reach_model_failure', 'normal_control_model_invalid',
+           'invalid_reach_driver_ingress', 'invalid_received_states',
+--- V53/run_firstfault_v1.py
++++ V54/run_firstfault_v1.py
+@@ -1,4 +1,4 @@
+-"""Disabled A53 driver: one finite forensic child, complete parent actual fee."""
++"""Disabled A54 driver: one finite forensic child, complete parent actual fee."""
+ import argparse
+ from decimal import Decimal
+ import hashlib
+@@ -14,16 +14,16 @@
+ ROOT = Path('/home/zhuyulab/ns3-workspace')
+ W_REL = 'ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl'
+ W = ROOT / W_REL
+-A = W / 'report/assets/20261023_mr3_p2a_v53_firstfault'
++A = W / 'report/assets/20261023_mr3_p2a_v54_firstfault'
+ OLD = '1fa55bc56d5bb9e230d4b397f962d83b1604b278'
+-PREFIX = Path('/tmp/mr3_p2a_v53_driver_v1')
++PREFIX = Path('/tmp/mr3_p2a_v54_driver_v1')
+ OUTER = PREFIX / 'forensic_actual_wait'
+-RESULT = Path('/tmp/mr3_p2a_v53_firstfault_v1.json')
++RESULT = Path('/tmp/mr3_p2a_v54_firstfault_v1.json')
+ SPEC = A / 'spec_v1.json'
+ SCOPE = A / 'scope_v1.json'
+-ENTRY = Decimal('89873.5057367926018')
++ENTRY = Decimal('90102.9195132536018')
+ CEILING = Decimal('120000')
+-CAP = Decimal('300')
++CAP = Decimal('600')
+ CHAIN = {W_REL + '/mr3_learning/' + name for name in (
+     '__init__.py', 'reach_execution.py', 'preparation.py', 'native_custody.py', 'supervisor.py', 'ipc.py')}
+ P = 'ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration'
+@@ -32,7 +32,7 @@
+     'ros2_ws/ros2-multi-robot-automap/src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py',
+     W_REL + '/mr3_learning/benchmark.py', W_REL + '/mr3_learning/supervisor.py'}
+ REQUIRED_SOURCES = CHAIN | INTERPRETATION | {
+-    str((A / name).relative_to(ROOT)) for name in ('run_firstfault_v1.py', 'firstfault_extract_v2.py')}
++    str((A / name).relative_to(ROOT)) for name in ('run_firstfault_v1.py', 'firstfault_extract_v3.py')}
+ ENV_POLICY = 'system Python; fixed PATH; no ROS/conda/PYTHONPATH/PYTHONHOME; CUDA hidden; no environment dump'
+ 
+ 
+@@ -95,13 +95,13 @@
+ 
+ 
+ def check_sources(scope, execution_freeze):
+-    require(scope.get('schema') == 'mr3-v53-firstfault-scope-v1' and scope.get('admitted') is True,
++    require(scope.get('schema') == 'mr3-v54-firstfault-scope-v1' and scope.get('admitted') is True,
+             'scope not admitted')
+     require(scope.get('evidence_freeze') == OLD, 'wrong native evidence freeze')
+     budget = scope.get('budget')
+     require(type(budget) is dict and budget == {
+         'engineering_used_seconds': str(ENTRY), 'engineering_ceiling_seconds': str(CEILING),
+-        'engineering_remaining_seconds': str(CEILING - ENTRY), 'reservation_seconds': '300',
++        'engineering_remaining_seconds': str(CEILING - ENTRY), 'reservation_seconds': '600',
+         'pilot_added_seconds': '0', 'validation_added_seconds': '0'}, 'exact entry resource differs')
+     require(CEILING - ENTRY >= CAP, 'complete finite diagnostic not funded')
+     bindings = scope.get('source_bindings')
+@@ -112,7 +112,7 @@
+     require(scope.get('input_spec') == proof(SPEC) and spec.get('admitted') is True,
+             'sealed input spec differs/not admitted')
+     require(spec.get('evidence_freeze') == OLD and spec.get('execution_freeze_binding') == 'required-exact-cli'
+-            and 0 < spec['limits']['work_seconds'] <= 290, 'consumer evidence/work limit differs')
++            and 0 < spec['limits']['work_seconds'] <= 590, 'consumer evidence/work limit differs')
+     require(set(spec['interpretation_sources']) == INTERPRETATION, 'old source set differs')
+     ref = spec['inputs']['motion']['inventory_ref']
+     require(ref == spec['inputs']['startup']['inventory_ref'], 'inventory refs differ')
+@@ -137,7 +137,7 @@
+         require(hashlib.sha256(frozen).hexdigest() == config['sha256'] and len(frozen) == config['bytes'],
+                 'scope/spec/inventory differs from new execution Git')
+     consumer = spec['consumer']
+-    require(consumer == proof(A / 'firstfault_extract_v2.py'), 'consumer path/bytes/SHA differs')
++    require(consumer == proof(A / 'firstfault_extract_v3.py'), 'consumer path/bytes/SHA differs')
+     return sorted(sources + configs, key=lambda row: row['path']), spec
+ 
+ 
+@@ -159,7 +159,7 @@
+             and len(wait['source_before']) == len(expected)
+             and {row['path']: (row['bytes'], row['sha256']) for row in wait['source_before']} == expected,
+             'complete outer source set changed/differs')
+-    require(result.get('schema') == 'mr3-v53-firstfault-description-v1' and result.get('passed') is True
++    require(result.get('schema') == 'mr3-v54-firstfault-description-v1' and result.get('passed') is True
+             and result.get('within_work_limit') is True and result.get('errors') == []
+             and result.get('source_before') == result.get('source_after')
+             and result.get('selection_complete_for_declared_rule') is True
+@@ -206,18 +206,18 @@
+     child, wrapper, rc, start, end, wait, result = None, None, None, None, None, None, None
+     sources, after, command, wrapper_argv = [], [], None, None
+     fee = Decimal(0)
+-    write(PREFIX / 'entry.json', {'schema': 'mr3-v53-firstfault-driver-entry-v1',
++    write(PREFIX / 'entry.json', {'schema': 'mr3-v54-firstfault-driver-entry-v1',
+         'actual_driver_argv': [sys.executable, *sys.argv], 'cwd': str(Path.cwd()),
+         'clean_environment_policy': ENV_POLICY, 'driver_identity': owner,
+         'evidence_freeze': OLD, 'execution_freeze': args.freeze, 'scope': str(SCOPE),
+         'engineering_used_at_entry_seconds': str(ENTRY), 'engineering_ceiling_seconds': str(CEILING),
+-        'parent_fee_cap_seconds': '300', 'driver_started_monotonic_ns': driver_started, 'no_retry': True})
++        'parent_fee_cap_seconds': '600', 'driver_started_monotonic_ns': driver_started, 'no_retry': True})
+     try:
+         require(not RESULT.exists() and not RESULT.is_symlink(), 'fixed result exists; no overwrite/retry')
+         scope = read(SCOPE)
+         sources, spec = check_sources(scope, args.freeze)
+         require(not received_signals, 'driver interrupted before submission')
+-        command = ['/usr/bin/python3', '-B', str(A / 'firstfault_extract_v2.py'),
++        command = ['/usr/bin/python3', '-B', str(A / 'firstfault_extract_v3.py'),
+                    '--spec', str(SPEC), '--freeze', args.freeze, '--output', str(RESULT)]
+         wrapper_argv = ['/usr/bin/python3', '-B', '-m', 'mr3_learning.reach_execution',
+                         '--scope', 'engineering', '--output', str(OUTER)]
+@@ -244,7 +244,7 @@
+         check_closed(wait, result, command, sources, spec, wrapper, owner, start, end, rc)
+         after, _ = check_sources(scope, args.freeze)
+         require(sources == after, 'source/scope/spec/inventory changed after actual wait')
+-        require(fee <= CAP, 'complete parent wait exceeds300; full overrun fee retained FAIL')
++        require(fee <= CAP, 'complete parent wait exceeds600; full overrun fee retained FAIL')
+     except BaseException as error:
+         errors.append(repr(error))
+     finally:
+@@ -256,7 +256,7 @@
+     passed = (not errors and not received_signals and rc == 0 and fee <= CAP
+               and bool(sources) and sources == after and used <= CEILING)
+     metadata_end = time.monotonic_ns()
+-    summary = {'schema': 'mr3-v53-firstfault-driver-v1', 'passed': passed,
++    summary = {'schema': 'mr3-v54-firstfault-driver-v1', 'passed': passed,
+         'evidence_freeze': OLD, 'execution_freeze': args.freeze,
+         'actual_driver_argv': [sys.executable, *sys.argv], 'cwd': str(Path.cwd()),
+         'clean_environment_policy': ENV_POLICY, 'driver_identity': owner, 'wrapper_identity': wrapper,
+@@ -267,7 +267,7 @@
+         'actual_parent_wait_seconds': str(fee), 'engineering_added_seconds': str(fee),
+         'engineering_used_at_entry_seconds': str(ENTRY), 'engineering_ceiling_seconds': str(CEILING),
+         'engineering_cumulative_used_seconds': str(used), 'engineering_remaining_seconds': str(CEILING - used),
+-        'pilot_added_seconds': '0', 'validation_added_seconds': '0', 'parent_fee_cap_seconds': '300',
++        'pilot_added_seconds': '0', 'validation_added_seconds': '0', 'parent_fee_cap_seconds': '600',
+         'source_before': sources, 'source_after': after, 'errors': errors,
+         'received_parent_signals': received_signals,
+         'outer_actual_wait': str(OUTER / 'actual_wait.json'), 'description_result': str(RESULT),
+--- V53/test_firstfault_extract_v2.py
++++ V54/test_firstfault_extract_v3.py
+@@ -10,7 +10,7 @@
+ from unittest import mock
+ 
+ HERE = Path(__file__).resolve().parent
+-loader = importlib.util.spec_from_file_location('disabled_firstfault', HERE / 'firstfault_extract_v2.py')
++loader = importlib.util.spec_from_file_location('disabled_firstfault', HERE / 'firstfault_extract_v3.py')
+ m = importlib.util.module_from_spec(loader)
+ loader.loader.exec_module(m)
+ 
+@@ -56,7 +56,7 @@
+             'inputs': {label: {'path': str(m.EP / name), 'bytes': size, 'sha256': '1' * 64,
+                 'inventory_ref': {'path': str(m.INVENTORY), 'sha256': '2' * 64, 'bytes': 100}}
+                 for label, (name, size) in m.FILES.items()},
+-            'consumer': {'path': str(HERE / 'firstfault_extract_v2.py'), 'sha256': '3' * 64, 'bytes': 100},
++            'consumer': {'path': str(HERE / 'firstfault_extract_v3.py'), 'sha256': '3' * 64, 'bytes': 100},
+             'interpretation_sources': {name: {'sha256': '4' * 64, 'bytes': 100} for name in m.SOURCE_PATHS}}
+ 
+ 
+--- V53/test_run_firstfault_v1.py
++++ V54/test_run_firstfault_v1.py
+@@ -25,7 +25,7 @@
+                 'parse_and_binding_complete': True, 'whole_input_read': True,
+                 'stat_before': [1, 2, 3], 'stat_after': [1, 2, 3], 'error_count': 0, 'errors': []}
+                for k, v in spec['inputs'].items()]
+-    result = dict(schema='mr3-v53-firstfault-description-v1', passed=True, within_work_limit=True,
++    result = dict(schema='mr3-v54-firstfault-description-v1', passed=True, within_work_limit=True,
+         errors=[], source_before={'evidence_freeze': m.OLD, 'execution_freeze': 'a' * 40},
+         source_after={'evidence_freeze': m.OLD, 'execution_freeze': 'a' * 40},
+         selection_complete_for_declared_rule=True, input_reports=reports, identity=consumer,
+@@ -67,9 +67,9 @@
+         self.assertEqual(len(errors), 2)
+ 
+     def test_complete_parent_interval_not_nested_receipt_is_fee(self):
+-        self.assertEqual(m.parent_fee(0, 301000000000), Decimal('301'))
+-        self.assertGreater(m.parent_fee(0, 301000000000), m.CAP)
+-        self.assertEqual(m.ENTRY + m.parent_fee(0, 301000000000), Decimal('90174.5057367926018'))
++        self.assertEqual(m.parent_fee(0, 601000000000), Decimal('601'))
++        self.assertGreater(m.parent_fee(0, 601000000000), m.CAP)
++        self.assertEqual(m.ENTRY + m.parent_fee(0, 601000000000), Decimal('90703.9195132536018'))
+         for start, end in ((True, 1), (2, 1), (-1, 2)):
+             with self.assertRaises(ValueError):
+                 m.parent_fee(start, end)
+@@ -78,7 +78,7 @@
+         with (mock.patch.object(m.subprocess, 'check_output', side_effect=AssertionError('no Git needed')),
+               mock.patch.object(m.subprocess, 'Popen', side_effect=AssertionError('no child permitted'))):
+             with self.assertRaises(ValueError):
+-                m.check_sources({'schema': 'mr3-v53-firstfault-scope-v1', 'admitted': False}, 'a' * 40)
++                m.check_sources({'schema': 'mr3-v54-firstfault-scope-v1', 'admitted': False}, 'a' * 40)
+ 
+ 
+ if __name__ == '__main__':

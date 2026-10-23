@@ -1,0 +1,145 @@
+{
+  "schema": "mr3-v54-resource-only-candidate-manifest-v1",
+  "status": "prepared; no actual raw invocation",
+  "old_v53_fail_preserved": true,
+  "changes": [
+    {
+      "source": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v53_firstfault/firstfault_extract_v2.py",
+      "source_sha256": "6276df757a1bdedeb1ad41f439b05f23efc7f5b410107c434b44a13cddebb442",
+      "candidate": "/tmp/mr3_p2a_v54_firstfault_candidate_v1/firstfault_extract_v3.py",
+      "candidate_sha256": "1ea8f8bf37f6bbd147ac18652e6825ab34cf384c624c5d84635de6dd3a4fbc0c",
+      "inverse_restores_complete_original_bytes": true,
+      "literal_changes": [
+        {
+          "before": "mr3-v53-",
+          "after": "mr3-v54-",
+          "count": 2
+        },
+        {
+          "before": "'lines_per_file': 1000000",
+          "after": "'lines_per_file': 2000000",
+          "count": 1
+        },
+        {
+          "before": "'work_seconds': 240",
+          "after": "'work_seconds': 480",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "source": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v53_firstfault/run_firstfault_v1.py",
+      "source_sha256": "88dbd453882ca9895f0a5591bf046edc3d1a743aae528502ae3c86fc624f5a9e",
+      "candidate": "/tmp/mr3_p2a_v54_firstfault_candidate_v1/run_firstfault_v1.py",
+      "candidate_sha256": "240d04ed93fc75c2dd1603e9f2078a061ee80bba96edb578acf1094851decf0a",
+      "inverse_restores_complete_original_bytes": true,
+      "literal_changes": [
+        {
+          "before": "mr3-v53-",
+          "after": "mr3-v54-",
+          "count": 4
+        },
+        {
+          "before": "20261023_mr3_p2a_v53_firstfault",
+          "after": "20261023_mr3_p2a_v54_firstfault",
+          "count": 1
+        },
+        {
+          "before": "/tmp/mr3_p2a_v53_",
+          "after": "/tmp/mr3_p2a_v54_",
+          "count": 2
+        },
+        {
+          "before": "firstfault_extract_v2.py",
+          "after": "firstfault_extract_v3.py",
+          "count": 3
+        },
+        {
+          "before": "Disabled A53 driver",
+          "after": "Disabled A54 driver",
+          "count": 1
+        },
+        {
+          "before": "ENTRY = Decimal('89873.5057367926018')",
+          "after": "ENTRY = Decimal('90102.9195132536018')",
+          "count": 1
+        },
+        {
+          "before": "CAP = Decimal('300')",
+          "after": "CAP = Decimal('600')",
+          "count": 1
+        },
+        {
+          "before": "'reservation_seconds': '300'",
+          "after": "'reservation_seconds': '600'",
+          "count": 1
+        },
+        {
+          "before": "<= 290",
+          "after": "<= 590",
+          "count": 1
+        },
+        {
+          "before": "'parent_fee_cap_seconds': '300'",
+          "after": "'parent_fee_cap_seconds': '600'",
+          "count": 2
+        },
+        {
+          "before": "parent wait exceeds300",
+          "after": "parent wait exceeds600",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "source": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v53_firstfault/test_firstfault_extract_v2.py",
+      "source_sha256": "900220d31e2d1cdfdddd5be96ec8113ca6886973bbee945cd67f3f93d7b5008e",
+      "candidate": "/tmp/mr3_p2a_v54_firstfault_candidate_v1/test_firstfault_extract_v3.py",
+      "candidate_sha256": "5a4890c0fe5582d5c7da6e65bade9e25ef0cfd0b9d86e5c6e2045fb7fcc97185",
+      "inverse_restores_complete_original_bytes": true,
+      "literal_changes": [
+        {
+          "before": "firstfault_extract_v2.py",
+          "after": "firstfault_extract_v3.py",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "source": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v53_firstfault/test_run_firstfault_v1.py",
+      "source_sha256": "58c2c31e47c07c8b6a644ebac993558f3c02628a873c9c8c62b6947b1edd1a4a",
+      "candidate": "/tmp/mr3_p2a_v54_firstfault_candidate_v1/test_run_firstfault_v1.py",
+      "candidate_sha256": "00b78f4db11d5fe860914c29779c887d42997305caed3536da73750cb3b020d6",
+      "inverse_restores_complete_original_bytes": true,
+      "literal_changes": [
+        {
+          "before": "mr3-v53-",
+          "after": "mr3-v54-",
+          "count": 2
+        },
+        {
+          "before": "301000000000",
+          "after": "601000000000",
+          "count": 3
+        },
+        {
+          "before": "Decimal('301')",
+          "after": "Decimal('601')",
+          "count": 1
+        },
+        {
+          "before": "Decimal('90174.5057367926018')",
+          "after": "Decimal('90703.9195132536018')",
+          "count": 1
+        }
+      ]
+    }
+  ],
+  "inputs_unchanged_from_v53": true,
+  "source_old_seven_pins_unchanged": true,
+  "raw_inputs_opened_or_hashed": false,
+  "new_admission_basis": "prospective resource-only new version: 2M lines/480s work/600s complete parent; no changed selection, schemas apart from activity versions, math or parser gates",
+  "v53_actual_partial_parent_seconds": "229.413776461",
+  "full_read_wall_estimate_status": "approximately249s inferred from V53 partial throughput, not observed complete wall; no guarantee",
+  "test_methods": 21
+}

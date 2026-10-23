@@ -1,5 +1,7 @@
 # 报告与证据适用范围
 
+2026-10-23 V53闭合partial FAIL / V54准备完成：V53执行freeze7f122cfd3实际rc1，motion在1,000,001行触及固定行数门，仅读2267972220/2458997272B，首生产故障仍UNKNOWN_PARTIAL_PARSE；startup全460行/SHA通过，仅记录worker自身infrastructure_failure回调，不能冒充producer首fault。完整parent实费229.413776461墙秒（nested不加），累计90102.9195132536018/120000、余29897.0804867463982；4主身份及2后继CPU身份分别freshgone。V54只前瞻改资源/版本：同两原件、epoch/窗口/选择规则与旧七解释源，每文件200万行、work480/完整parent600墙秒；候选21项/.170796105、规范21项/.375278637实际wall通过，18绑定源稳定、规范CPU两身份gone，首轮setup失败保留。尚待新commit/push后的exact40freeze正式一次取证；V53不补读/改判，原12EP30角色/95%安全门及pilot/final余额不动，120000为代理依持续委托选择而非数值用户批准，P2A未完成。 见[V53闭合](20261023_mr3_p2a_v53_firstfault.md)与[V54预声明](20261023_mr3_p2a_v54_firstfault.md)。
+
 2026-10-23 V52闭合FAIL / V53取证准备：冻结1fa55bc56的interface9、terminal6、reset9必要角色PASS；deadline 203完整步后第204步normal_control_model_invalid基础设施失败，6类审计未派发，无minimum/pilot/final。4父区间实费19330.328322094，累计89873.5057367926018/120000，余30126.4942632073982（120000为代理依持续委托选择，非数值用户批准）；933源/10ELF稳定、611保存身份gone。7772原件15.63GB无损归档，两个大gzip按64MiB精确分块、原库存/字节保持。V53仅预约300工程秒，固定两日志/244.48–244.62s首次故障描述，21人工CPU及规范安装通过；尚待新冻结实际一次取证。原FAIL、政策余额和科学门保持，P2A未完成。 见[V52闭合](20261023_mr3_p2a_v52_qualification.md)与[V53预声明](20261023_mr3_p2a_v53_firstfault.md)。
 
 2026-10-23 V52准备：显式reset reader登记与runtime声明/ACK索引、严格JSON构造等价优化已接入；候选10项、初轮81项、新resource v3集成297项人工CPU通过，原数学/物理/95%及12EP/30角色保持，尚无新native/学习。代理按用户自主持续委托前瞻选择工程累计120000（非声称数值user批准），从原账70543.1774146986018承接、余49456.8225853013982，预约47220；pilot/final原额不动。四入口10case与真实prepare/plan_check已通过，933源/10ELF待新冻结执行，旧FAIL保持，P2A未完成。 见[V52](20261023_mr3_p2a_v52_qualification.md)。

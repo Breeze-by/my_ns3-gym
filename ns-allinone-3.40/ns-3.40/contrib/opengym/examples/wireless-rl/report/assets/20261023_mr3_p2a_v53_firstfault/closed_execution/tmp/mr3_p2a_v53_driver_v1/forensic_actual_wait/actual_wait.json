@@ -1,0 +1,457 @@
+{
+  "schema": "mr3-reach-outer-actual-wait-v1",
+  "scope": "engineering",
+  "safety_contract": "mr3-reach-v1",
+  "actual_argv": [
+    "/usr/bin/python3",
+    "-B",
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v53_firstfault/firstfault_extract_v2.py",
+    "--spec",
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v53_firstfault/spec_v1.json",
+    "--freeze",
+    "7f122cfd3c9bbb6f28b57ffaf648be9229c9b1a5",
+    "--output",
+    "/tmp/mr3_p2a_v53_firstfault_v1.json"
+  ],
+  "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+  "coordinator_identity": {
+    "pid": 360698,
+    "parent": 360652,
+    "group": 360645,
+    "session": 360645,
+    "start_ticks": 447671092,
+    "state": "R"
+  },
+  "child_identity": {
+    "pid": 360707,
+    "parent": 360698,
+    "group": 360645,
+    "session": 360645,
+    "start_ticks": 447671105,
+    "state": "R"
+  },
+  "actual_returncode": 1,
+  "actual_waited": true,
+  "errors": [],
+  "started_monotonic_ns": 4476711053636037,
+  "ended_monotonic_ns": 4476940197683204,
+  "actual_child_wait_seconds": "229.144047167",
+  "source_before": [
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/__init__.py",
+      "sha256": "1ed62607abac81c63a25c885a23a52f0152d279db480f5c270abea3da55564ef",
+      "bytes": 82,
+      "stat": [
+        2051,
+        73560413,
+        82,
+        1792050860998054894,
+        1792050860998054894
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/benchmark.py",
+      "sha256": "9c6902f11d2069e684a08d58dfb13285fc61dbe9be040360558903f4fce16bfe",
+      "bytes": 60161,
+      "stat": [
+        2051,
+        73558344,
+        60161,
+        1792672272204749232,
+        1792672272204749232
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/ipc.py",
+      "sha256": "55c6cb4d4a985418ce43e9d753b2d84400bb48138d5588ef43080380bd33cf18",
+      "bytes": 1983,
+      "stat": [
+        2051,
+        73560486,
+        1983,
+        1792050968240798634,
+        1792050968240798634
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/native_custody.py",
+      "sha256": "4edcdb6b33105e274c1c908c9d78e8c5d24461ff6733ed0f976e41bad3f2d928",
+      "bytes": 56281,
+      "stat": [
+        2051,
+        73556846,
+        56281,
+        1792349435094441642,
+        1792349435094441642
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/preparation.py",
+      "sha256": "850ab8947f711033f3f2fd17ef57d32098c02d569c1bea0f5cf58aaff8acd767",
+      "bytes": 48624,
+      "stat": [
+        2051,
+        73555357,
+        48624,
+        1792356507880208492,
+        1792356507880208492
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_execution.py",
+      "sha256": "fa7da30bf18a71a7a28698f733590074bdf164c8857028640aedba5d21fd8be4",
+      "bytes": 3222,
+      "stat": [
+        2051,
+        73564000,
+        3222,
+        1792417215752109946,
+        1792417215752109946
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/supervisor.py",
+      "sha256": "a9364451639806220c82416a1af386e223fde3613b87e5ad76e6c57e3f54baf5",
+      "bytes": 28204,
+      "stat": [
+        2051,
+        73560487,
+        28204,
+        1792684620584075212,
+        1792684620584075212
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v52_qualification/closed_inventory_v1.json",
+      "sha256": "63efb61cc7b2abaf723b3824399d203a1a0b288465a367110eabcb5ec565ccf7",
+      "bytes": 13016028,
+      "stat": [
+        2051,
+        79202879,
+        13016028,
+        1792729492431862893,
+        1792729492431862893
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v53_firstfault/firstfault_extract_v2.py",
+      "sha256": "6276df757a1bdedeb1ad41f439b05f23efc7f5b410107c434b44a13cddebb442",
+      "bytes": 24603,
+      "stat": [
+        2051,
+        79305459,
+        24603,
+        1792729670162338764,
+        1792729670162338764
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v53_firstfault/run_firstfault_v1.py",
+      "sha256": "88dbd453882ca9895f0a5591bf046edc3d1a743aae528502ae3c86fc624f5a9e",
+      "bytes": 17194,
+      "stat": [
+        2051,
+        79305460,
+        17194,
+        1792729670162338764,
+        1792729670162338764
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v53_firstfault/scope_v1.json",
+      "sha256": "106281f355fc405c7c3b2f1eca014118d45ae7cad02631ace5fe49ca74840643",
+      "bytes": 4283,
+      "stat": [
+        2051,
+        79305464,
+        4283,
+        1792729670473355456,
+        1792729670473355456
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v53_firstfault/spec_v1.json",
+      "sha256": "11d3771a56447c44b27b4ca789956c0a4aa57015cb4669166b685839c7e716f1",
+      "bytes": 4206,
+      "stat": [
+        2051,
+        79305463,
+        4206,
+        1792729670469355241,
+        1792729670469355241
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py",
+      "sha256": "b873d8ce00cc07583b340889fd49539f0a78cd8f6c0fa9e14a2dec6f92340e92",
+      "bytes": 106723,
+      "stat": [
+        2051,
+        70300037,
+        106723,
+        1792685285203315869,
+        1792685285203315869
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py",
+      "sha256": "2b7385d26268cdc74590015f1d78f1febabf04bef65c05ea435fa754d9241748",
+      "bytes": 68485,
+      "stat": [
+        2051,
+        70259629,
+        68485,
+        1792671744746290979,
+        1792671744746290979
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/motion_safety.py",
+      "sha256": "f01ae5213740cfb134423fd0e4ddc2d880e2114db66bc63c16164ad027d05735",
+      "bytes": 51604,
+      "stat": [
+        2051,
+        70311322,
+        51604,
+        1792684723646538249,
+        1792684723646538249
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py",
+      "sha256": "197ff4bfcca9f815e191dcddea7a2a6af46a033c68310e350b63ad9e48579a69",
+      "bytes": 18129,
+      "stat": [
+        2051,
+        70311684,
+        18129,
+        1792486856497811197,
+        1792486856497811197
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_reach_runtime.py",
+      "sha256": "3f1fac149adaadfe27197b538e73bbd149b04d28374c38106b26b762dc4e79dc",
+      "bytes": 31245,
+      "stat": [
+        2051,
+        70313007,
+        31245,
+        1792671698672907333,
+        1792671698672907333
+      ]
+    }
+  ],
+  "source_after": [
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/__init__.py",
+      "sha256": "1ed62607abac81c63a25c885a23a52f0152d279db480f5c270abea3da55564ef",
+      "bytes": 82,
+      "stat": [
+        2051,
+        73560413,
+        82,
+        1792050860998054894,
+        1792050860998054894
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/benchmark.py",
+      "sha256": "9c6902f11d2069e684a08d58dfb13285fc61dbe9be040360558903f4fce16bfe",
+      "bytes": 60161,
+      "stat": [
+        2051,
+        73558344,
+        60161,
+        1792672272204749232,
+        1792672272204749232
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/ipc.py",
+      "sha256": "55c6cb4d4a985418ce43e9d753b2d84400bb48138d5588ef43080380bd33cf18",
+      "bytes": 1983,
+      "stat": [
+        2051,
+        73560486,
+        1983,
+        1792050968240798634,
+        1792050968240798634
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/native_custody.py",
+      "sha256": "4edcdb6b33105e274c1c908c9d78e8c5d24461ff6733ed0f976e41bad3f2d928",
+      "bytes": 56281,
+      "stat": [
+        2051,
+        73556846,
+        56281,
+        1792349435094441642,
+        1792349435094441642
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/preparation.py",
+      "sha256": "850ab8947f711033f3f2fd17ef57d32098c02d569c1bea0f5cf58aaff8acd767",
+      "bytes": 48624,
+      "stat": [
+        2051,
+        73555357,
+        48624,
+        1792356507880208492,
+        1792356507880208492
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_execution.py",
+      "sha256": "fa7da30bf18a71a7a28698f733590074bdf164c8857028640aedba5d21fd8be4",
+      "bytes": 3222,
+      "stat": [
+        2051,
+        73564000,
+        3222,
+        1792417215752109946,
+        1792417215752109946
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/supervisor.py",
+      "sha256": "a9364451639806220c82416a1af386e223fde3613b87e5ad76e6c57e3f54baf5",
+      "bytes": 28204,
+      "stat": [
+        2051,
+        73560487,
+        28204,
+        1792684620584075212,
+        1792684620584075212
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v52_qualification/closed_inventory_v1.json",
+      "sha256": "63efb61cc7b2abaf723b3824399d203a1a0b288465a367110eabcb5ec565ccf7",
+      "bytes": 13016028,
+      "stat": [
+        2051,
+        79202879,
+        13016028,
+        1792729492431862893,
+        1792729492431862893
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v53_firstfault/firstfault_extract_v2.py",
+      "sha256": "6276df757a1bdedeb1ad41f439b05f23efc7f5b410107c434b44a13cddebb442",
+      "bytes": 24603,
+      "stat": [
+        2051,
+        79305459,
+        24603,
+        1792729670162338764,
+        1792729670162338764
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v53_firstfault/run_firstfault_v1.py",
+      "sha256": "88dbd453882ca9895f0a5591bf046edc3d1a743aae528502ae3c86fc624f5a9e",
+      "bytes": 17194,
+      "stat": [
+        2051,
+        79305460,
+        17194,
+        1792729670162338764,
+        1792729670162338764
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v53_firstfault/scope_v1.json",
+      "sha256": "106281f355fc405c7c3b2f1eca014118d45ae7cad02631ace5fe49ca74840643",
+      "bytes": 4283,
+      "stat": [
+        2051,
+        79305464,
+        4283,
+        1792729670473355456,
+        1792729670473355456
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v53_firstfault/spec_v1.json",
+      "sha256": "11d3771a56447c44b27b4ca789956c0a4aa57015cb4669166b685839c7e716f1",
+      "bytes": 4206,
+      "stat": [
+        2051,
+        79305463,
+        4206,
+        1792729670469355241,
+        1792729670469355241
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py",
+      "sha256": "b873d8ce00cc07583b340889fd49539f0a78cd8f6c0fa9e14a2dec6f92340e92",
+      "bytes": 106723,
+      "stat": [
+        2051,
+        70300037,
+        106723,
+        1792685285203315869,
+        1792685285203315869
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py",
+      "sha256": "2b7385d26268cdc74590015f1d78f1febabf04bef65c05ea435fa754d9241748",
+      "bytes": 68485,
+      "stat": [
+        2051,
+        70259629,
+        68485,
+        1792671744746290979,
+        1792671744746290979
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/motion_safety.py",
+      "sha256": "f01ae5213740cfb134423fd0e4ddc2d880e2114db66bc63c16164ad027d05735",
+      "bytes": 51604,
+      "stat": [
+        2051,
+        70311322,
+        51604,
+        1792684723646538249,
+        1792684723646538249
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py",
+      "sha256": "197ff4bfcca9f815e191dcddea7a2a6af46a033c68310e350b63ad9e48579a69",
+      "bytes": 18129,
+      "stat": [
+        2051,
+        70311684,
+        18129,
+        1792486856497811197,
+        1792486856497811197
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_reach_runtime.py",
+      "sha256": "3f1fac149adaadfe27197b538e73bbd149b04d28374c38106b26b762dc4e79dc",
+      "bytes": 31245,
+      "stat": [
+        2051,
+        70313007,
+        31245,
+        1792671698672907333,
+        1792671698672907333
+      ]
+    }
+  ],
+  "source_unchanged": true,
+  "passed": false,
+  "console": {
+    "path": "/tmp/mr3_p2a_v53_driver_v1/forensic_actual_wait/console.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

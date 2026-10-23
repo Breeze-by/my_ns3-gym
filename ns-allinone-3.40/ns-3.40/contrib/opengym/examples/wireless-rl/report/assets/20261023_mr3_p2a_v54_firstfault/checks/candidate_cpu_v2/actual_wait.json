@@ -1,0 +1,355 @@
+{
+  "schema": "mr3-reach-outer-actual-wait-v1",
+  "scope": "cpu",
+  "safety_contract": "mr3-reach-v1",
+  "actual_argv": [
+    "/usr/bin/python3",
+    "-B",
+    "/tmp/mr3_p2a_v54_firstfault_candidate_v1/run_artificial_cpu_v1.py"
+  ],
+  "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+  "coordinator_identity": {
+    "pid": 381699,
+    "parent": 381697,
+    "group": 381697,
+    "session": 381697,
+    "start_ticks": 447732142,
+    "state": "R"
+  },
+  "child_identity": {
+    "pid": 381708,
+    "parent": 381699,
+    "group": 381697,
+    "session": 381697,
+    "start_ticks": 447732151,
+    "state": "R"
+  },
+  "actual_returncode": 0,
+  "actual_waited": true,
+  "errors": [],
+  "started_monotonic_ns": 4477321512990535,
+  "ended_monotonic_ns": 4477321683786640,
+  "actual_child_wait_seconds": "0.170796105",
+  "source_before": [
+    {
+      "path": "/tmp/mr3_p2a_v54_firstfault_candidate_v1/firstfault_extract_v3.py",
+      "sha256": "1ea8f8bf37f6bbd147ac18652e6825ab34cf384c624c5d84635de6dd3a4fbc0c",
+      "bytes": 24603,
+      "stat": [
+        2051,
+        79192087,
+        24603,
+        1792731803966854504,
+        1792731803966854504
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a_v54_firstfault_candidate_v1/test_firstfault_extract_v3.py",
+      "sha256": "5a4890c0fe5582d5c7da6e65bade9e25ef0cfd0b9d86e5c6e2045fb7fcc97185",
+      "bytes": 12481,
+      "stat": [
+        2051,
+        79192089,
+        12481,
+        1792731803997856022,
+        1792731803997856022
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a_v54_firstfault_candidate_v1/run_firstfault_v1.py",
+      "sha256": "240d04ed93fc75c2dd1603e9f2078a061ee80bba96edb578acf1094851decf0a",
+      "bytes": 17194,
+      "stat": [
+        2051,
+        79192088,
+        17194,
+        1792731803987855533,
+        1792731803987855533
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a_v54_firstfault_candidate_v1/test_run_firstfault_v1.py",
+      "sha256": "00b78f4db11d5fe860914c29779c887d42997305caed3536da73750cb3b020d6",
+      "bytes": 4726,
+      "stat": [
+        2051,
+        79192090,
+        4726,
+        1792731804004856365,
+        1792731804004856365
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a_v54_firstfault_candidate_v1/spec_v1.json",
+      "sha256": "1d0c66aec4aafe9f9e921f76030058b377cfd7473879a588d5103aa0c105bd34",
+      "bytes": 4230,
+      "stat": [
+        2051,
+        79192091,
+        4230,
+        1792731804008856561,
+        1792731804008856561
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a_v54_firstfault_candidate_v1/scope_v1.json",
+      "sha256": "558b33519e6999fad81eafc5f01c0311dbbd7310878529b0acbe3872bc3cfc18",
+      "bytes": 4289,
+      "stat": [
+        2051,
+        79192092,
+        4289,
+        1792731804009856610,
+        1792731804009856610
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a_v54_firstfault_candidate_v1/resource_only_manifest_v1.json",
+      "sha256": "d78e003411b0f6fb4bc4357faa0b6d738fd477f91fceb72faa18b5ec4d910d23",
+      "bytes": 5379,
+      "stat": [
+        2051,
+        79192094,
+        5379,
+        1792731804025857394,
+        1792731804025857394
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a_v54_firstfault_candidate_v1/resource_only_v53_to_v54.patch",
+      "sha256": "96fc9fc6e4971a369c981201dad6f328b3255093c4228a3a5b41ce39158b09c9",
+      "bytes": 12775,
+      "stat": [
+        2051,
+        79192093,
+        12775,
+        1792731804009856610,
+        1792731804009856610
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a_v54_firstfault_candidate_v1/run_artificial_cpu_v1.py",
+      "sha256": "efed86dbf34260494a9c4a41b9d350ea44ac05adedb2ffa00f4f4c88c60be441",
+      "bytes": 650,
+      "stat": [
+        2051,
+        79192095,
+        650,
+        1792731842232731269,
+        1792731842232731269
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a_v54_firstfault_candidate_v1/cpu_source_index_v1.json",
+      "sha256": "33b923600b57b3b67dce76a5aecfc1a854de59ab69c3d6ac1b624457e45d81c3",
+      "bytes": 1815,
+      "stat": [
+        2051,
+        79192096,
+        1815,
+        1792731842234731367,
+        1792731842234731367
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_execution.py",
+      "sha256": "fa7da30bf18a71a7a28698f733590074bdf164c8857028640aedba5d21fd8be4",
+      "bytes": 3222,
+      "stat": [
+        2051,
+        73564000,
+        3222,
+        1792417215752109946,
+        1792417215752109946
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/preparation.py",
+      "sha256": "850ab8947f711033f3f2fd17ef57d32098c02d569c1bea0f5cf58aaff8acd767",
+      "bytes": 48624,
+      "stat": [
+        2051,
+        73555357,
+        48624,
+        1792356507880208492,
+        1792356507880208492
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/native_custody.py",
+      "sha256": "4edcdb6b33105e274c1c908c9d78e8c5d24461ff6733ed0f976e41bad3f2d928",
+      "bytes": 56281,
+      "stat": [
+        2051,
+        73556846,
+        56281,
+        1792349435094441642,
+        1792349435094441642
+      ]
+    }
+  ],
+  "source_after": [
+    {
+      "path": "/tmp/mr3_p2a_v54_firstfault_candidate_v1/firstfault_extract_v3.py",
+      "sha256": "1ea8f8bf37f6bbd147ac18652e6825ab34cf384c624c5d84635de6dd3a4fbc0c",
+      "bytes": 24603,
+      "stat": [
+        2051,
+        79192087,
+        24603,
+        1792731803966854504,
+        1792731803966854504
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a_v54_firstfault_candidate_v1/test_firstfault_extract_v3.py",
+      "sha256": "5a4890c0fe5582d5c7da6e65bade9e25ef0cfd0b9d86e5c6e2045fb7fcc97185",
+      "bytes": 12481,
+      "stat": [
+        2051,
+        79192089,
+        12481,
+        1792731803997856022,
+        1792731803997856022
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a_v54_firstfault_candidate_v1/run_firstfault_v1.py",
+      "sha256": "240d04ed93fc75c2dd1603e9f2078a061ee80bba96edb578acf1094851decf0a",
+      "bytes": 17194,
+      "stat": [
+        2051,
+        79192088,
+        17194,
+        1792731803987855533,
+        1792731803987855533
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a_v54_firstfault_candidate_v1/test_run_firstfault_v1.py",
+      "sha256": "00b78f4db11d5fe860914c29779c887d42997305caed3536da73750cb3b020d6",
+      "bytes": 4726,
+      "stat": [
+        2051,
+        79192090,
+        4726,
+        1792731804004856365,
+        1792731804004856365
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a_v54_firstfault_candidate_v1/spec_v1.json",
+      "sha256": "1d0c66aec4aafe9f9e921f76030058b377cfd7473879a588d5103aa0c105bd34",
+      "bytes": 4230,
+      "stat": [
+        2051,
+        79192091,
+        4230,
+        1792731804008856561,
+        1792731804008856561
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a_v54_firstfault_candidate_v1/scope_v1.json",
+      "sha256": "558b33519e6999fad81eafc5f01c0311dbbd7310878529b0acbe3872bc3cfc18",
+      "bytes": 4289,
+      "stat": [
+        2051,
+        79192092,
+        4289,
+        1792731804009856610,
+        1792731804009856610
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a_v54_firstfault_candidate_v1/resource_only_manifest_v1.json",
+      "sha256": "d78e003411b0f6fb4bc4357faa0b6d738fd477f91fceb72faa18b5ec4d910d23",
+      "bytes": 5379,
+      "stat": [
+        2051,
+        79192094,
+        5379,
+        1792731804025857394,
+        1792731804025857394
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a_v54_firstfault_candidate_v1/resource_only_v53_to_v54.patch",
+      "sha256": "96fc9fc6e4971a369c981201dad6f328b3255093c4228a3a5b41ce39158b09c9",
+      "bytes": 12775,
+      "stat": [
+        2051,
+        79192093,
+        12775,
+        1792731804009856610,
+        1792731804009856610
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a_v54_firstfault_candidate_v1/run_artificial_cpu_v1.py",
+      "sha256": "efed86dbf34260494a9c4a41b9d350ea44ac05adedb2ffa00f4f4c88c60be441",
+      "bytes": 650,
+      "stat": [
+        2051,
+        79192095,
+        650,
+        1792731842232731269,
+        1792731842232731269
+      ]
+    },
+    {
+      "path": "/tmp/mr3_p2a_v54_firstfault_candidate_v1/cpu_source_index_v1.json",
+      "sha256": "33b923600b57b3b67dce76a5aecfc1a854de59ab69c3d6ac1b624457e45d81c3",
+      "bytes": 1815,
+      "stat": [
+        2051,
+        79192096,
+        1815,
+        1792731842234731367,
+        1792731842234731367
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_execution.py",
+      "sha256": "fa7da30bf18a71a7a28698f733590074bdf164c8857028640aedba5d21fd8be4",
+      "bytes": 3222,
+      "stat": [
+        2051,
+        73564000,
+        3222,
+        1792417215752109946,
+        1792417215752109946
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/preparation.py",
+      "sha256": "850ab8947f711033f3f2fd17ef57d32098c02d569c1bea0f5cf58aaff8acd767",
+      "bytes": 48624,
+      "stat": [
+        2051,
+        73555357,
+        48624,
+        1792356507880208492,
+        1792356507880208492
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/native_custody.py",
+      "sha256": "4edcdb6b33105e274c1c908c9d78e8c5d24461ff6733ed0f976e41bad3f2d928",
+      "bytes": 56281,
+      "stat": [
+        2051,
+        73556846,
+        56281,
+        1792349435094441642,
+        1792349435094441642
+      ]
+    }
+  ],
+  "source_unchanged": true,
+  "passed": true,
+  "console": {
+    "path": "/tmp/mr3_p2a_v54_firstfault_cpu_v2/console.log",
+    "sha256": "2ab9ed54f4a350854d43f9ef7007d7b81b1ce0d7dc93e7d04ae47bb5b5ddaf2d"
+  }
+}

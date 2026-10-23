@@ -1,5 +1,11 @@
 # 当前三机器人基线与MR3适配启动命令
 
+## V53部分取证已关闭，V54新资源版本待冻结
+
+[V53](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261023_mr3_p2a_v53_firstfault.md)实际rc1/partial FAIL：motion固定100万行门停止，首生产故障UNKNOWN；startup仅证实worker自身通用失败回调。完整parent229.413776461墙秒已收费，工程累计90102.9195132536018/120000、余29897.0804867463982，所有旧FAIL和政策余额保持。
+
+当前准备执行[V54资源限定后继版本](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261023_mr3_p2a_v54_firstfault.md)：同两原件/选择规则/旧七解释源，200万行、480秒合作式work、600秒完整parent费用门。21项规范人工CPU实际PASS/.375278637墙秒、18源稳定、两身份gone；候选首轮setup失败保留。只在新commit/push后以exact40freeze执行一次独占输出命令，当前尚未新读raw；没有ROS launch/worker/机体/安全模式变更，也不启动native/PPO。下列V53/V52命令均是已闭合活动的历史准备快照，不得重开。
+
 ## V52关闭与V53离线取证
 
 V52原命令已执行FAIL并关闭，禁止重试或覆盖：deadline第204步控制模型负ACK；24/30角色保持原工程结果。当前只执行[V53固定两原件描述](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261023_mr3_p2a_v53_firstfault.md)，无ROS launch/worker/机体/模式变更。新40位执行freeze须先commit/push；具体命令、300秒工程预约和独占输出见该预声明。default baseline与原pilot/final原额保持，P2A未完成。下文V52准备段为执行前快照，不是可重开的活动。

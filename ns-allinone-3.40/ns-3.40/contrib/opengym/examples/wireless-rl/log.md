@@ -8821,3 +8821,16 @@ v1人工14项PASS/.227115563秒原件保留；独立review指出输出fallback h
 正式唯一命令为本次commit/push后 `rtk proxy env PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 CUDA_VISIBLE_DEVICES= /usr/bin/python3 -B report/assets/20261023_mr3_p2a_v53_firstfault/run_firstfault_v1.py --freeze NEW_EXACT40`。新40位值由实际启动登记，当前没有raw结果。先取具体robot/reason再做CPU修复及新前瞻原生验证；不能直接PPO或混冻结补齐矩阵。P2A未完成，用户持续执行授权保持。
 
 V52 Git投递补记：第一次本地闭合commit `a5a7a3a` 后、推送前，发现上层 contrib/opengym/.gitignore 的通用 `parts/` 规则使六个packed块被普通add忽略。已对manifest指定六路径执行 `git add -n -f -- <exact-six-paths>` 后显式add；两个本地大gzip仍未强制纳入。7776 payload路径全部在index，六块index blob的完整SHA/bytes与manifest一致；[覆盖证明](report/assets/20261023_mr3_p2a_v52_qualification/git_delivery_v1.json)与更正提交一起推送。无原件删除、重压、科学重跑或费用变更。
+
+
+### 2026-10-23 MR3 P2A V53：实际partial FAIL与闭合末账
+
+执行freeze7f122cfd3，根工具74918真实reap rc1。motion固定每文件100万行门于第1000001行停止，只读2267972220/2458997272B，完整motion SHA未知、`UNKNOWN_PARTIAL_PARSE`保持；startup全460行/286052B与原SHA一致，只记录worker自身infrastructure_failure广播回调，不证明producer首fault。没有即时改上限/补读或新科学审计。
+
+完整parent工程wall229.413776461秒（nested229.144047167包含、不叠加），累计90102.9195132536018/120000、余29897.0804867463982；policy新增0。14执行源及三配置/库存current==执行Git、七解释源==原1fa，4主保存身份freshgone；原driver空source_after与pending字段由外部证明补足，不改原件。独立metadata-only CPU范围的关闭核对实际wall25.119514753秒/rc0、工程0，其两身份另freshgone。12小文件63011B逐字封存/0软链，没有重读或复制两raw。[V53实际报告](report/20261023_mr3_p2a_v53_firstfault.md)、[库存](report/assets/20261023_mr3_p2a_v53_firstfault/closed_inventory_v1.json)与[规范末账](report/assets/20261023_mr3_p2a_v53_firstfault/closure_ledger_v1.json)保存原partial FAIL，P2A未完成。
+
+### 2026-10-23 MR3 P2A V54：仅资源/版本变化的新取证预声明
+
+不是在V53原目录补读。新[V54](report/20261023_mr3_p2a_v54_firstfault.md)保持同两原件、epoch、244.48–244.62s窗口、原序firstfault/首尾选择规则及七解释源，显式改每文件200万行/work480墙秒/完整parent600墙秒。工程承接90102.9195132536018/120000、余29897.0804867463982；预约后余29297.0804867463982，120000仍为代理依自主委托前瞻决定、非数值用户批准；pilot/final原额保持。
+
+候选首轮support-source路径setup失败（没有测试Popen/actualwait）原件保留，命令修正后21项人工CPU真实PASS/.170796105墙秒。规范安装同21项再次PASS/.375278637墙秒、18源前后稳定、两身份freshgone。均小人工流，无真实两输入消费、工程新增0；14源/七旧Git/spec绑定预检查已封存。正式待新commit/push exact40freeze后唯一命令，独占新V54输出；600秒为完整parent费用门，超额全费FAIL，不自动重试/扩大输入，不声称全读或首故障已证实。[规范CPU回执](report/assets/20261023_mr3_p2a_v54_firstfault/checks/canonical_cpu_v1/actual_wait.json)与[资源差异](report/assets/20261023_mr3_p2a_v54_firstfault/resource_only_manifest_v1.json)留证。P2A未完成。
