@@ -1,5 +1,9 @@
 # MR3 研究路线：三机器人 RL 联合建图与冻结策略的 Wi-Fi 网络影响
 
+2026-10-23 V60实际闭合FAIL：执行冻结`935b466bd076002afdfe161b55a508938de2a8b0`，tool30588真实reap rc1；原生11EP/296返回，30必要角色为19PASS/1FAIL/10SKIP，minimum/pilot/final未启动、0学习。reset worker1/episode002 open101的tb2存在真实B停车超限：native cancel42.86→rest45.891，3.031秒/约.25933m；两worker的episode004 corridors101中tb3均缺有意义的native cancel停止证据。覆盖缺口与真实超限分别保留，不能用改probe覆盖宣称取消链已修复。1029源/10ELF一致，548份已保存runtime owned身份freshgone；metadata tool25900真实rc0/8.790793906秒，其2身份另gone。archive tool77857真实rc0/542.506088964秒，5071 regular原件10,444,431,903B无损封存为877,999,890B，0link、无>64MiB单文件、无overlay。完整工程parent union实费14531.744949156秒，累计108848.4042410476018/C150000、余41151.5957589523982；nested不重复加，pilot/final本次0且原余额不变，150000为代理依持续委托前瞻选择、非逐数值用户批准。见[V60实际闭合](report/20261023_mr3_p2a_v60_reader_registration.md)与[规范末账](report/assets/20261023_mr3_p2a_v60_reader_registration/closure_ledger_v1.json)。
+
+当前capacity gate=False，禁止自动进入pilot/final。下一路线固定为：V61有限读取库存绑定的5份仍保留regular encoded原件（原路径/SHA/bytes）→依据实际因果证据修真实cancel链并接显式probe v2→短native及audit性能分解、等价提速的真实实测→实际capacity gate→新同freeze完整12EP/30角色资格→真实学习及三场strict95%验证。每次新活动须有自己的scope/预算/CPU/精确冻结；不重开旧V60、不以旧PASS拼新资格，不降R/5秒承诺/32step/12EP30/95%门。尚未应用的`/tmp`候选、人工CPU或kernel提速不证明真实停止、覆盖或最终容量。P2A未完成；下方V60准备及V59、V45、V41等旧状态均为当时历史快照。
+
 2026-10-23 V60生产准备：sensor唯一显式profile tag全字节逆恢复与peer两新事件/同plan三drive compound/APPLIED精确join已接公共full/PPO/controlled/4matrix/3policy；不删行或伪zero，C++/物理/actor/20build输入不变。canonical targeted159、fresh ROS202/learner437、编排13实际PASS/source稳定，原fixture/兼容失败保留，尚无V60World/资格/PPO。承接V59真FAIL账94316.6592918916018/C150000、余55683.3407081083982，拟47220完整工程预约；pilot/final与R/12EP30/95%保持，150000非数值用户批准。source a03b9c530已真推送，新plan1029源/10ELF及12EP30/readiness实际通过；下一最终执行freeze与严格准入/完整链，不借旧6PASS。P2A未完成。 见[V60](<report/20261023_mr3_p2a_v60_reader_registration.md>)；下方为历史快照。
 
 
@@ -147,13 +151,13 @@ Wi-Fi 分组网络，测量信息延迟、丢失和陈旧对同一联合建图�
 
 | 项目 | 当前事实 | 新路线中的处理 |
 | --- | --- | --- |
-| ROS 2 / Gazebo / SLAM / Nav2 | 已实现；P1A已于2026-10-15验收，`5e47802`为当前验证冻结 | 复用，三机器人契约在 MR3-P1A 验收 |
+| ROS 2 / Gazebo / SLAM / Nav2 | 已实现；P1A已于2026-10-15验收，`5e47802`为P1A验收冻结；P2A最新实际执行冻结为V60 `935b466bd076002afdfe161b55a508938de2a8b0`，其结果FAIL | 复用已验收接口；新增执行契约须独立取得同freeze资格 |
 | `merge_map` | 公共坐标系的保守栅格融合；不是未知相对位姿的地图配准算法 | 保留融合规则，改变通信输入来源 |
 | `control.py` | 默认baseline手工探索；adapter模式独占目标接口，无手工兜底 | 两模式互斥，P1B已于2026-10-15验收 |
 | `peer_obstacles.py` | baseline读raw；adapter读理想交付状态，完整机体包络不变 | P3A还需DDS/进程隔离与断链证明 |
 | Nav2 全局地图 | baseline读实时`/merge_map`；adapter读本机图+交付共享图副本 | P3A证明真实字节交付和无旁路 |
 | 覆盖评估器 | P1A合同schema4已验收，schema3兼容诊断 | 完整ROI、质量、全机体监测、三台参与与终态闭合门禁 |
-| 三机器人导航 RL / 训练环境 | P1C已验收；P2A历史v5的48次pilot更新保留原范围。最新V41 interface32/32但physics停止证据与conda full环境失败，minimum/pilot/final全部跳过，无新更新/终模型/95%验证，完整出口未达 | MR3-P1C 至 MR3-P2C |
+| 三机器人导航 RL / 训练环境 | P1C已验收；历史v5的48次pilot更新仅保留原范围。最新V60原生11EP/296返回、必要角色19PASS/1FAIL/10SKIP，真实3.031秒停车超限及两corridors取消覆盖缺口保留；0新学习、无终模型/strict95%资格，capacity gate=False | 先V61有限因果取证、真实cancel/probe v2及性能/容量闭合，再新同freeze12EP30与真实学习；P2A未完成 |
 | ROS 与 ns-3 双向 gateway / Wi-Fi 闭环 | **尚未实现** | MR3-P3A 至 MR3-P5 |
 | `sim.cc` 与已有 DQN | 五用户、15 维观测、5 动作的 toy 调度 MDP | 历史工具链，不能充当三机器人策略或网络接入证明 |
 
@@ -372,6 +376,8 @@ ROS 节点用系统 ROS 2 Humble Python；学习端用 conda `ns3gym` 的 CUDA P
 保持 `PYTHONNOUSERSITE=1`。采用显式本机 IPC/进程边界，避免通过拼接 PYTHONPATH
 强行把 ROS 与 conda 混在同一解释器。IPC 不模拟网络；以后只有网络交付端可写后端信息存储。
 新训练环境使用独立 MR3 schema，不修改 toy MDP 来冒充机器人环境。
+
+V60实际失败后，原生任务和必要审计的端到端容量仍未取得资格。先用独立有界短活动分解native推进、reset/startup、IPC、各reader与finalizer的真实wall，再对保持原判据的优化做等价验证和实际吞吐测量。即使实现同活动exact-seed辅助结果的一次materialization，也须保留原archive及30角色完整合取、原件整SHA/源码/参数/真实wait与freshgone；不得拿不同reader互代或拼旧freeze结果。capacity gate=False时driver必须拒绝自动pilot/final；通过原有容量门并取得新同freeze完整12EP30资格后，才进入真实学习/strict95%链。
 
 训练之前先量测 Gazebo real-time factor、reset/startup、每秒有效策略 transition、CPU/RAM
 及 GPU 利用率；比较 1/2/4 个**并行三机器人环境**的吞吐。这不是机器人数量扩展。

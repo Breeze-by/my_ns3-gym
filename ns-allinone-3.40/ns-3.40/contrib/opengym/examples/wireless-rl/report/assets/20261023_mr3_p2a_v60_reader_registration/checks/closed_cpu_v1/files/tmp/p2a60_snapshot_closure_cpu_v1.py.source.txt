@@ -1,0 +1,118 @@
+"""Preserve completed V60 closing CPU receipts and exact inactive source bytes."""
+import hashlib
+import json
+import os
+from pathlib import Path
+import stat
+import time
+
+ROOT = Path('/home/zhuyulab/ns3-workspace')
+A = ROOT / 'ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v60_reader_registration'
+DEST = A / 'checks/closed_cpu_v1'
+PRIMARY = A / 'closed_inventory_v1.json'
+RUNS = [Path('/tmp') / name for name in (
+    'mr3_p2a_v60_metadata_cpu_actual_wait_v1',
+    'mr3_p2a_v60_closed_archive_actual_wait_v3',
+    'mr3_p2a_v60_parallel_archive_artificial_cpu_v3')]
+EXTRA = [Path('/tmp') / name for name in (
+    'mr3_p2a_v60_closed_metadata_review_v1.json',
+    'mr3_p2a_v60_metadata_cpu_postreap_v1.json',
+    'mr3_p2a_v60_archive_cpu_postreap_v3.json',
+    'mr3_p2a_v60_parallel_archive_artificial_postreap_v3.json',
+    'mr3_p2a_v60_parallel_collector_draft_manifest_v3.json',
+    'mr3_p2a_v60_collect_closed_draft_v2.py',
+    'mr3_p2a_v60_archive_cpu_v2.sh',
+    'mr3_p2a_v60_closure_workflow_draft_v2.md',
+    'mr3_p2a_v60_postreap_commands_v2.txt')]
+EXTRA += [Path('/tmp/mr3_p2a_reach_v60_driver_v1/summary.json'),
+          Path('/tmp/mr3_p2a_reach_v60_matrix/summary.json'), Path(__file__).resolve()]
+
+
+def fingerprint(st):
+    return [st.st_dev, st.st_ino, st.st_mode, st.st_size, st.st_mtime_ns, st.st_ctime_ns]
+
+
+def digest(raw):
+    return hashlib.sha256(raw).hexdigest()
+
+
+def discover():
+    files = set(EXTRA)
+    pins = {}
+    for directory in [*RUNS, Path('/tmp/mr3_p2a_v60_root_tool_v1')]:
+        for path in directory.rglob('*'):
+            st = path.lstat()
+            if stat.S_ISREG(st.st_mode):
+                files.add(path)
+            elif not stat.S_ISDIR(st.st_mode):
+                raise ValueError('unexpected nonregular completed CPU artifact: ' + str(path))
+    for directory in RUNS:
+        wait = json.loads((directory / 'actual_wait.json').read_bytes())
+        assert wait['actual_waited'] is True and wait['actual_returncode'] == 0
+        assert wait['source_unchanged'] is True and wait['source_before'] == wait['source_after']
+        for row in wait['source_before']:
+            path = Path(row['path'])
+            pin = (row['bytes'], row['sha256'])
+            assert pins.setdefault(path, pin) == pin
+            files.add(path)
+    primary = json.loads(PRIMARY.read_bytes())
+    assert primary['byte_archive_complete'] is True
+    for row in primary['entries']:
+        path = Path(row['original'])
+        if path in files:
+            pin = (row['original_bytes'], row['original_sha256'])
+            assert pins.setdefault(path, pin) == pin
+    return {path: fingerprint(path.lstat()) for path in sorted(files)}, pins
+
+
+def main():
+    before, pins = discover()
+    DEST.mkdir(exist_ok=False)
+    rows = []
+    for path, expected in before.items():
+        assert stat.S_ISREG(expected[2]) and path.resolve() == path
+        raw = path.read_bytes()
+        assert fingerprint(path.lstat()) == expected
+        if path in pins:
+            assert (len(raw), digest(raw)) == pins[path]
+        if path.is_relative_to(ROOT):
+            relative = Path('workspace') / path.relative_to(ROOT)
+        else:
+            assert path.is_relative_to(Path('/tmp'))
+            relative = Path('tmp') / path.relative_to('/tmp')
+        if relative.suffix in ('.py', '.sh'):
+            relative = relative.with_name(relative.name + '.source.txt')
+        target = DEST / 'files' / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        with target.open('xb') as out:
+            out.write(raw)
+            out.flush()
+            os.fsync(out.fileno())
+        restored = target.read_bytes()
+        assert restored == raw and len(raw) == expected[3]
+        rows.append({'original': str(path), 'canonical': str(target.relative_to(A)),
+                     'bytes': len(raw), 'sha256': digest(raw),
+                     'source_stat_before': expected, 'source_stat_after': fingerprint(path.lstat()),
+                     'byte_copy_verified': True,
+                     'bound_to_completed_cpu_or_primary_archive': path in pins,
+                     'inactive_source_snapshot': path.suffix in ('.py', '.sh')})
+    assert discover() == (before, pins)
+    value = {'schema': 'mr3-v60-closed-cpu-byte-snapshot-v1',
+             'execution_freeze': '935b466bd076002afdfe161b55a508938de2a8b0',
+             'snapshot_complete': True, 'originals_deleted': False,
+             'source_or_scientific_results_recomputed': False,
+             'code_snapshots_installed_as_runtime': False,
+             'boundary': 'Only listed completed CPU/root receipts and their exact sources; '
+                         'this inventory excludes itself and later materialization receipts.',
+             'files': len(rows), 'bytes': sum(row['bytes'] for row in rows), 'entries': rows,
+             'created_monotonic_ns': time.monotonic_ns()}
+    with (DEST / 'inventory.json').open('x') as out:
+        json.dump(value, out, indent=2)
+        out.write('\n')
+        out.flush()
+        os.fsync(out.fileno())
+    print(json.dumps({'snapshot_complete': True, 'files': len(rows), 'bytes': value['bytes']}))
+
+
+if __name__ == '__main__':
+    main()

@@ -1,5 +1,7 @@
 # wireless-rl memory — MR3
 
+2026-10-23 V60实际闭合FAIL：freeze935b466bd076002afdfe161b55a508938de2a8b0，root tool30588真实reap rc1；11EP/296原生返回，30必要角色19PASS/1FAIL/10SKIP，minimum/pilot/final未启、0学习。reset worker1/open第2回合tb2真实cancel后3.031s/.259330769m超过原.78s/.144m停止界；两corridors仍缺实际取消证据，不能改停止起点或借后继goal重判。1029源/10ELF一致、548保存运行owned身份freshgone；metadata25900与archive77857真reap0、4份CPU身份另gone，5071 regular原件无损封存/0link。parent实费14531.744949156，累计108848.4042410476018/C150000、余41151.5957589523982，pilot/final新增0。capacity_qualified=false，后继driver禁止自动pilot/final；下一V61原始5流有界取证→取消链修复与有效probe/进程性能分解/真实容量证明→新同freeze完整12EP30资格、真实学习与三指定final-only strict95。用户自主持续授权保持，不再一般审批；numeric_user_approval_claimed=false，原pilot/final余额和科学门保持，P2A未完成。见[V60实际闭合](report/20261023_mr3_p2a_v60_reader_registration.md)及[规范末账](report/assets/20261023_mr3_p2a_v60_reader_registration/closure_ledger_v1.json)。下方准备文字保留为历史快照。
+
 2026-10-23 V60生产准备：sensor唯一显式profile tag全字节逆恢复与peer两新事件/同plan三drive compound/APPLIED精确join已接公共full/PPO/controlled/4matrix/3policy；不删行或伪zero，C++/物理/actor/20build输入不变。canonical targeted159、fresh ROS202/learner437、编排13实际PASS/source稳定，原fixture/兼容失败保留，尚无V60World/资格/PPO。承接V59真FAIL账94316.6592918916018/C150000、余55683.3407081083982，拟47220完整工程预约；pilot/final与R/12EP30/95%保持，150000非数值用户批准。source a03b9c530已真推送，新plan1029源/10ELF及12EP30/readiness实际通过；下一最终执行freeze与严格准入/完整链，不借旧6PASS。P2A未完成。 见[V60](<report/20261023_mr3_p2a_v60_reader_registration.md>)；下方为历史快照。
 
 

@@ -1,5 +1,7 @@
 # 报告与证据适用范围
 
+2026-10-23 V60实际闭合FAIL：freeze935b466bd、tool30588真实reap rc1，30必要角色19PASS/1FAIL/10SKIP；full PASS、physics FAIL。reset的tb2有一次真实停止界违反，另两例缺合格取消刺激/证据，二者分开保留，不推定共同根因；后继minimum/pilot/final未执行、本轮0学习。1029源/10ELF相符，548保存owned身份freshgone，历史身份及nonowned祖先另列；5071 regular原件10444431903B无损归档877999890B，0link、无大于64MiB文件，metadata及归档CPU真实关闭通过。工程phase-parent union14531.744949156，累计108848.4042410476018/C150000、余41151.5957589523982；pilot/final原额保持，150000仍为代理持续委托选择，非数值用户批准。当前capacity=False；下一V61只对五份已闭合原件作固定取消因果窗取证，再修真实取消并验证有效probe，随后短native/审计成本分解与等价提速实测、容量gate、新同freeze完整12EP30，最后才真实学习/三strict95。原停止界、R/95%及历史FAIL保持，P2A未完成。见[V60实际闭合](20261023_mr3_p2a_v60_reader_registration.md)、[库存](assets/20261023_mr3_p2a_v60_reader_registration/closed_inventory_v1.json)与[末账](assets/20261023_mr3_p2a_v60_reader_registration/closure_ledger_v1.json)。以下准备及“下一步”均为当时历史快照。
+
 2026-10-23 V60生产准备：sensor唯一显式profile tag全字节逆恢复与peer两新事件/同plan三drive compound/APPLIED精确join已接公共full/PPO/controlled/4matrix/3policy；不删行或伪zero，C++/物理/actor/20build输入不变。canonical targeted159、fresh ROS202/learner437、编排13实际PASS/source稳定，原fixture/兼容失败保留，尚无V60World/资格/PPO。承接V59真FAIL账94316.6592918916018/C150000、余55683.3407081083982，拟47220完整工程预约；pilot/final与R/12EP30/95%保持，150000非数值用户批准。source a03b9c530已真推送，新plan1029源/10ELF及12EP30/readiness实际通过；下一最终执行freeze与严格准入/完整链，不借旧6PASS。P2A未完成。 见[V60](<20261023_mr3_p2a_v60_reader_registration.md>)；下方为历史快照。
 
 

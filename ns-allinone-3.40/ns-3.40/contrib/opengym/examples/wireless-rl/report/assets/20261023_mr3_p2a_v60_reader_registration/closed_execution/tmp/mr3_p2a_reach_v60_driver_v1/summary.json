@@ -1,0 +1,125 @@
+{
+  "schema": "mr3-v60-actual-chain-driver-result-v1",
+  "passed": false,
+  "freeze": "935b466bd076002afdfe161b55a508938de2a8b0",
+  "plan": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v60_reader_registration/plan_v1.json",
+  "completed_stages": [],
+  "engineering_resource": {
+    "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v60_reader_registration/resource_v1.json",
+    "sha256": "e93933e9fc2f3d361d9f619966fa5d681d7fd473888ca5dec54fe0e3eb75ca16",
+    "bytes": 1083
+  },
+  "numeric_user_approval_claimed": false,
+  "actuation_profile": "initial-zero-encoder-hold-v1",
+  "errors": [
+    "ValueError('matrix or complete saved-identity absence failed')"
+  ],
+  "actual_waits": [
+    {
+      "name": "preflight",
+      "scope": "engineering",
+      "outer": "/tmp/mr3_p2a_reach_v60_preflight_wait",
+      "returncode": 0,
+      "actual_returncode": 0,
+      "passed": true,
+      "wrapper_identity": {
+        "pid": 1185551,
+        "parent": 1185532,
+        "group": 1185526,
+        "session": 1185526,
+        "start_ticks": 449882508,
+        "state": "R"
+      },
+      "receipt_errors": [],
+      "started_monotonic_ns": 4498825079936099,
+      "ended_monotonic_ns": 4498884657306299,
+      "actual_seconds": "59.5773702",
+      "accounting_basis": "parent actual wait for complete wrapper; nested child receipt is not double charged",
+      "inner_actual_seconds": "58.332265438"
+    },
+    {
+      "name": "matrix",
+      "scope": "engineering",
+      "outer": "/tmp/mr3_p2a_reach_v60_matrix_wait",
+      "returncode": 1,
+      "actual_returncode": 1,
+      "passed": false,
+      "wrapper_identity": {
+        "pid": 1194095,
+        "parent": 1185532,
+        "group": 1185526,
+        "session": 1185526,
+        "start_ticks": 449888467,
+        "state": "R"
+      },
+      "receipt_errors": [],
+      "started_monotonic_ns": 4498884674951113,
+      "ended_monotonic_ns": 4513347595460683,
+      "actual_seconds": "14462.92050957",
+      "accounting_basis": "parent actual wait for complete wrapper; nested child receipt is not double charged",
+      "inner_actual_seconds": "14461.723874637"
+    },
+    {
+      "name": "matrix_absence",
+      "scope": "engineering",
+      "outer": "/tmp/mr3_p2a_reach_v60_matrix_absence_wait",
+      "returncode": 0,
+      "actual_returncode": 0,
+      "passed": true,
+      "wrapper_identity": {
+        "pid": 1609053,
+        "parent": 1185532,
+        "group": 1185526,
+        "session": 1185526,
+        "start_ticks": 451334760,
+        "state": "R"
+      },
+      "receipt_errors": [],
+      "started_monotonic_ns": 4513347603768525,
+      "ended_monotonic_ns": 4513352211618633,
+      "actual_seconds": "4.607850108",
+      "accounting_basis": "parent actual wait for complete wrapper; nested child receipt is not double charged",
+      "inner_actual_seconds": "3.432575677"
+    },
+    {
+      "name": "chain_final_absence",
+      "scope": "engineering",
+      "outer": "/tmp/mr3_p2a_reach_v60_chain_final_absence_wait",
+      "returncode": 0,
+      "actual_returncode": 0,
+      "passed": true,
+      "wrapper_identity": {
+        "pid": 1609192,
+        "parent": 1185532,
+        "group": 1185526,
+        "session": 1185526,
+        "start_ticks": 451335222,
+        "state": "R"
+      },
+      "receipt_errors": [],
+      "started_monotonic_ns": 4513352225288100,
+      "ended_monotonic_ns": 4513356864507378,
+      "actual_seconds": "4.639219278",
+      "accounting_basis": "parent actual wait for complete wrapper; nested child receipt is not double charged",
+      "inner_actual_seconds": "3.366769709"
+    }
+  ],
+  "engineering_added_union_seconds": "14531.744949156",
+  "engineering_cumulative_used_seconds": "108848.4042410476018",
+  "pilot_added_union_seconds": "0",
+  "validation_added_union_seconds": "0",
+  "engineering_external_actual_seconds": "9.247069386",
+  "accounting_basis": "scope-wise parent actual-wait interval union; nested receipts not added again; bookkeeping gaps excluded from fees and retained in phase deadlines",
+  "old_failures_preserved": true,
+  "p2b_gateway_started": false,
+  "p2a_claim_requires_independent_final_review": true,
+  "driver_identity": {
+    "pid": 1185532,
+    "parent": 1185531,
+    "group": 1185526,
+    "session": 1185526,
+    "start_ticks": 449882452,
+    "state": "R"
+  },
+  "ended_monotonic_ns": 4513356881594219
+}

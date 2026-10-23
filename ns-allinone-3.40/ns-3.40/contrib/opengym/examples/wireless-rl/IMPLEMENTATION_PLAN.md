@@ -1,5 +1,9 @@
 # MR3 研发检查点与逐步验收
 
+2026-10-23 V60实际闭合FAIL：执行冻结`935b466bd076002afdfe161b55a508938de2a8b0`，tool30588真实reap rc1；原生11EP/296返回，30必要角色为19PASS/1FAIL/10SKIP，minimum/pilot/final未启动、0学习。reset worker1/episode002 open101的tb2存在真实B停车超限：native cancel42.86→rest45.891，3.031秒/约.25933m；两worker的episode004 corridors101中tb3均缺有意义的native cancel停止证据。覆盖缺口与真实超限分别保留，不能用改probe覆盖宣称取消链已修复。1029源/10ELF一致，548份已保存runtime owned身份freshgone；metadata tool25900真实rc0/8.790793906秒，其2身份另gone。archive tool77857真实rc0/542.506088964秒，5071 regular原件10,444,431,903B无损封存为877,999,890B，0link、无>64MiB单文件、无overlay。完整工程parent union实费14531.744949156秒，累计108848.4042410476018/C150000、余41151.5957589523982；nested不重复加，pilot/final本次0且原余额不变，150000为代理依持续委托前瞻选择、非逐数值用户批准。见[V60实际闭合](report/20261023_mr3_p2a_v60_reader_registration.md)与[规范末账](report/assets/20261023_mr3_p2a_v60_reader_registration/closure_ledger_v1.json)。
+
+当前capacity gate=False，禁止自动进入pilot/final。下一路线固定为：V61有限读取库存绑定的5份仍保留regular encoded原件（原路径/SHA/bytes）→依据实际因果证据修真实cancel链并接显式probe v2→短native及audit性能分解、等价提速的真实实测→实际capacity gate→新同freeze完整12EP/30角色资格→真实学习及三场strict95%验证。每次新活动须有自己的scope/预算/CPU/精确冻结；不重开旧V60、不以旧PASS拼新资格，不降R/5秒承诺/32step/12EP30/95%门。尚未应用的`/tmp`候选、人工CPU或kernel提速不证明真实停止、覆盖或最终容量。P2A未完成；下方V60准备及V59、V45、V41等旧状态均为当时历史快照。
+
 2026-10-23 V60生产准备：sensor唯一显式profile tag全字节逆恢复与peer两新事件/同plan三drive compound/APPLIED精确join已接公共full/PPO/controlled/4matrix/3policy；不删行或伪zero，C++/物理/actor/20build输入不变。canonical targeted159、fresh ROS202/learner437、编排13实际PASS/source稳定，原fixture/兼容失败保留，尚无V60World/资格/PPO。承接V59真FAIL账94316.6592918916018/C150000、余55683.3407081083982，拟47220完整工程预约；pilot/final与R/12EP30/95%保持，150000非数值用户批准。source a03b9c530已真推送，新plan1029源/10ELF及12EP30/readiness实际通过；下一最终执行freeze与严格准入/完整链，不借旧6PASS。P2A未完成。 见[V60](<report/20261023_mr3_p2a_v60_reader_registration.md>)；下方为历史快照。
 
 
@@ -130,7 +134,7 @@
 | MR3-P1B | RL 可独占的稳定目标/观测接口 | 已验收（2026-10-15） |
 | MR3-P1C | 训练环境、可靠 reset、采样吞吐 | 已验收（2026-10-16） |
 | MR3-P2A.0 | 生命周期、候选及安全执行、参与观测准备 | 已验收（2026-10-18）；原V26编排中断保留 |
-| MR3-P2A | 联合 MaskablePPO 最小训练闭环 | 未完成；V45原生15/30角色后rooms reset FAIL、0学习；V46/V47有限诊断闭合，worker实际ready仍unknown且82.4秒后序列故障已记录。余19252.9604340073982/75000秒，先真实ready/健康失败传播及source序列时序根治；不得沿用20100旧预约/降门 |
+| MR3-P2A | 联合 MaskablePPO 最小训练闭环 | 未完成；最新V60冻结`935b466bd076002afdfe161b55a508938de2a8b0`实际FAIL，11EP/296返回、19PASS/1FAIL/10SKIP、0学习。真实取消停车超限与两corridors缺取消覆盖均未解决；capacity gate=False，禁止自动pilot/final。工程余41151.5957589523982/C150000，按下述V61→因果修复/probe v2→性能/容量→新完整资格路线推进 |
 | MR3-P2B | 同接口算法对照与方法选择 | 未开始 |
 | MR3-P2C | 理想通信完整验收、冻结模型 | 未开始 |
 | MR3-P3A | 双向 gateway、字节协议、消除旁路 | 未开始 |
@@ -247,6 +251,16 @@ V26原生12回合和34科学门已由原回执及唯一缺失information消费�
 掩码保存在 rollout 中；评估使用 mask-aware 接口；训练日志包括熵、KL、价值误差、
 覆盖、时间、失败、目标切换、安全介入，而不只画 reward。
 
+当前实际冻结为V60 `935b466bd076002afdfe161b55a508938de2a8b0`，已真实闭合FAIL；本轮没有minimum/pilot/final或模型更新。下一执行顺序不得省略：
+
+1. V61只对库存精确绑定且仍保留的5份regular encoded原件开展有界取消因果取证，使用真实原路径/SHA/bytes，不以archive重压文件冒充原件，不重裁旧V60。
+2. 依据取证修真实cancel因果链；显式probe v2仅在原合法候选/掩码内选择、等待真实取消确认并有界检查覆盖。保留5秒承诺及32step，32步不保证取得两轮三机证据，缺覆盖须明确FAIL；不能把覆盖修复当作3.031秒真实停车超限已修复。
+3. 新有界短native/audit活动分解真实wall，对等价优化做源码/CPU与实际吞吐验证。人工fixture、旧kernel倍速或单次metadata不能提供最终容量资格；同活动exact-seed辅助materialization若采用须显式新profile，保留原archive/所有reader判据及完整来源验证。
+4. capacity gate取得真实端到端容量证据前保持False，driver禁止自动pilot/final；容量证明包含必要reader与finalizer，费用使用完整parent union，不能删科学判据或只算native步。
+5. 在合并后的新精确freeze下完整执行原12EP/30必要角色资格，再依计划进行真实minimum更新、pilot和三场strict95%验证。历史FAIL、pilot/final原额及所有安全/任务门保持。
+
+下列v6/v7及文件上方V41/V45等段落为历史快照，不代表当前待执行冻结或余额。
+
 P2A v6沿用v3候选/导航、v4日志/审计和v5未折扣目标，已补评价器逐量子消费相位；
 每台运动/目标仍由策略选择，不增加手工兜底，不放宽95%/300秒、参与或机体安全门禁。
 [各版原件、失败与诊断](report/20261016_mr3_p2a.md)和旧计划保留；v5/v6自动基础设施停止与原完整审计FAIL保留；v6工程链PASS不覆盖pilot infra或提供P2A完成信用。
@@ -358,7 +372,7 @@ RealtimeSimulatorImpl 仅对齐机器墙钟，若使用它必须独立证明时�
 
 ## 4. 实施前必须闭合的具体问题
 
-P1A/P1B/P1C已验收，P2A已授权但未完成，v6停止；工程证据与后续门禁分层如下：
+P1A/P1B/P1C已验收，P2A已授权但未完成，最新V60已实际FAIL闭合；v6等旧活动保持原停止结果。工程证据与后续门禁分层如下：
 
 | 前置问题 | 闭合步骤与当前状态 | 未闭合的影响 |
 | --- | --- | --- |
@@ -367,6 +381,8 @@ P1A/P1B/P1C已验收，P2A已授权但未完成，v6停止；工程证据与后�
 | K8/5秒承诺、无前沿行为与单一 goal owner；实际固定周期 | P1B已验收；P1C stepped固定dt已于2026-10-16验收 | 目标抖动、隐式手工控制或学习时间尺度无效 |
 | 理想模式的共享图副本与队友安全边界 | P1B已验收；P3A仍须字节/隔离证明 | 冻结后接网会改变执行架构 |
 | reset/固定 dt/终止/reward 隔离与吞吐 | P1C W7已于2026-10-16验收；GPU保留原probe范围，P2A工程最小链已验证rollout/折扣/GAE，完整策略出口未达 | 不产生完整训练/验证信用 |
+| 原生cancel真实停止与有意义的取消覆盖 | V60 tb2有3.031秒真实超限，两corridors tb3缺取消证据；先V61固定5原件取证，再因果修复与显式probe v2 | 缺覆盖与真实超限均阻止新资格，不能以目标0/改刺激替代真实停止证据 |
+| 含完整reader/finalizer的端到端容量 | capacity gate=False；须短native/audit分解、等价优化实测及实际容量证明 | driver禁止自动pilot/final；旧工程PASS或人工CPU不提供容量信用 |
 | payload/缓存/断链/重试、无 raw 信息泄漏 | P3A/P3B | 无法把任务差异归因于网络 |
 | 实际 Wi-Fi/墙损耗/流量、统一时钟与最终理想等价 | P4A/P4B | 只能演示，或把调度影响混成网络效应 |
 

@@ -1,0 +1,471 @@
+{
+  "schema": "mr3-reach-reset-workload-audit-v1",
+  "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v60/mr3_p2a_reach_v60_reset",
+  "freeze": "935b466bd076002afdfe161b55a508938de2a8b0",
+  "kind": "physics",
+  "workload_profile": "mr3-reach-reset-outward-cancel-v1",
+  "safety_contract": "mr3-reach-v1",
+  "preparation_probe_version": "mr3-p2a-reach-outward-cancel-v1",
+  "passed": false,
+  "errors": [
+    "ValueError('original reset reader failed; complete result retained')"
+  ],
+  "original_reader_result": {
+    "schema": "mr3-independent-reset-physics-matrix-v2",
+    "freeze": "935b466bd076002afdfe161b55a508938de2a8b0",
+    "passed": false,
+    "errors": [
+      "worker1/episode002_open_101: tb2: B_native_cancel_end_to_end eligible response violated stop bound"
+    ],
+    "episodes": [
+      {
+        "episode": "worker0/episode001_open_101",
+        "raw_and_closure_passed": true,
+        "errors": [],
+        "missing_meaningful_stop_robots": [],
+        "original_per_episode_passed": true,
+        "original_per_episode_physical_evidence_complete": true,
+        "original_robot_physical_evidence_complete": {
+          "tb1": true,
+          "tb2": true,
+          "tb3": true
+        }
+      },
+      {
+        "episode": "worker0/episode002_open_101",
+        "raw_and_closure_passed": true,
+        "errors": [],
+        "missing_meaningful_stop_robots": [],
+        "original_per_episode_passed": true,
+        "original_per_episode_physical_evidence_complete": true,
+        "original_robot_physical_evidence_complete": {
+          "tb1": true,
+          "tb2": true,
+          "tb3": true
+        }
+      },
+      {
+        "episode": "worker0/episode003_rooms_101",
+        "raw_and_closure_passed": true,
+        "errors": [],
+        "missing_meaningful_stop_robots": [],
+        "original_per_episode_passed": true,
+        "original_per_episode_physical_evidence_complete": true,
+        "original_robot_physical_evidence_complete": {
+          "tb1": true,
+          "tb2": true,
+          "tb3": true
+        }
+      },
+      {
+        "episode": "worker0/episode004_corridors_101",
+        "raw_and_closure_passed": true,
+        "errors": [],
+        "missing_meaningful_stop_robots": [
+          "tb3"
+        ],
+        "original_per_episode_passed": false,
+        "original_per_episode_physical_evidence_complete": false,
+        "original_robot_physical_evidence_complete": {
+          "tb1": true,
+          "tb2": true,
+          "tb3": false
+        }
+      },
+      {
+        "episode": "worker1/episode001_open_101",
+        "raw_and_closure_passed": true,
+        "errors": [],
+        "missing_meaningful_stop_robots": [],
+        "original_per_episode_passed": true,
+        "original_per_episode_physical_evidence_complete": true,
+        "original_robot_physical_evidence_complete": {
+          "tb1": true,
+          "tb2": true,
+          "tb3": true
+        }
+      },
+      {
+        "episode": "worker1/episode002_open_101",
+        "raw_and_closure_passed": false,
+        "errors": [
+          "tb2: B_native_cancel_end_to_end eligible response violated stop bound"
+        ],
+        "missing_meaningful_stop_robots": [],
+        "original_per_episode_passed": false,
+        "original_per_episode_physical_evidence_complete": false,
+        "original_robot_physical_evidence_complete": {
+          "tb1": true,
+          "tb2": false,
+          "tb3": true
+        }
+      },
+      {
+        "episode": "worker1/episode003_rooms_101",
+        "raw_and_closure_passed": true,
+        "errors": [],
+        "missing_meaningful_stop_robots": [],
+        "original_per_episode_passed": true,
+        "original_per_episode_physical_evidence_complete": true,
+        "original_robot_physical_evidence_complete": {
+          "tb1": true,
+          "tb2": true,
+          "tb3": true
+        }
+      },
+      {
+        "episode": "worker1/episode004_corridors_101",
+        "raw_and_closure_passed": true,
+        "errors": [],
+        "missing_meaningful_stop_robots": [
+          "tb3"
+        ],
+        "original_per_episode_passed": false,
+        "original_per_episode_physical_evidence_complete": false,
+        "original_robot_physical_evidence_complete": {
+          "tb1": true,
+          "tb2": true,
+          "tb3": false
+        }
+      }
+    ],
+    "probe_version": "mr3-p2a-reach-outward-cancel-v1",
+    "steps_per_episode": 32,
+    "robot_stop_coverage": {
+      "tb1": {
+        "A": 0,
+        "B": 16,
+        "credited_events": [
+          {
+            "episode": "worker0/episode001_open_101",
+            "family": "B",
+            "event_clock_ns": 46620000000,
+            "initial_observed_planar_speed": 0.1586303435386532
+          },
+          {
+            "episode": "worker0/episode001_open_101",
+            "family": "B",
+            "event_clock_ns": 56620000000,
+            "initial_observed_planar_speed": 0.19342163885629776
+          },
+          {
+            "episode": "worker0/episode002_open_101",
+            "family": "B",
+            "event_clock_ns": 42120000000,
+            "initial_observed_planar_speed": 0.17549581963836908
+          },
+          {
+            "episode": "worker0/episode002_open_101",
+            "family": "B",
+            "event_clock_ns": 53120000000,
+            "initial_observed_planar_speed": 0.19339706900698123
+          },
+          {
+            "episode": "worker0/episode003_rooms_101",
+            "family": "B",
+            "event_clock_ns": 44140000000,
+            "initial_observed_planar_speed": 0.18795706504539858
+          },
+          {
+            "episode": "worker0/episode003_rooms_101",
+            "family": "B",
+            "event_clock_ns": 54140000000,
+            "initial_observed_planar_speed": 0.18931593332008695
+          },
+          {
+            "episode": "worker0/episode004_corridors_101",
+            "family": "B",
+            "event_clock_ns": 43160000000,
+            "initial_observed_planar_speed": 0.1480690824749719
+          },
+          {
+            "episode": "worker0/episode004_corridors_101",
+            "family": "B",
+            "event_clock_ns": 55160000000,
+            "initial_observed_planar_speed": 0.1998132808115389
+          },
+          {
+            "episode": "worker1/episode001_open_101",
+            "family": "B",
+            "event_clock_ns": 45100000000,
+            "initial_observed_planar_speed": 0.17902076063348374
+          },
+          {
+            "episode": "worker1/episode001_open_101",
+            "family": "B",
+            "event_clock_ns": 57100000000,
+            "initial_observed_planar_speed": 0.20019444095875863
+          },
+          {
+            "episode": "worker1/episode002_open_101",
+            "family": "B",
+            "event_clock_ns": 41860000000,
+            "initial_observed_planar_speed": 0.1269273430047229
+          },
+          {
+            "episode": "worker1/episode002_open_101",
+            "family": "B",
+            "event_clock_ns": 54860000000,
+            "initial_observed_planar_speed": 0.17907983662884308
+          },
+          {
+            "episode": "worker1/episode003_rooms_101",
+            "family": "B",
+            "event_clock_ns": 45040000000,
+            "initial_observed_planar_speed": 0.14037131396603264
+          },
+          {
+            "episode": "worker1/episode003_rooms_101",
+            "family": "B",
+            "event_clock_ns": 56040000000,
+            "initial_observed_planar_speed": 0.20017814391841923
+          },
+          {
+            "episode": "worker1/episode004_corridors_101",
+            "family": "B",
+            "event_clock_ns": 41400000000,
+            "initial_observed_planar_speed": 0.16921709661066411
+          },
+          {
+            "episode": "worker1/episode004_corridors_101",
+            "family": "B",
+            "event_clock_ns": 53400000000,
+            "initial_observed_planar_speed": 0.17888445717947832
+          }
+        ],
+        "maximum_credited_initial_planar_speed": 0.20019444095875863
+      },
+      "tb2": {
+        "A": 0,
+        "B": 15,
+        "credited_events": [
+          {
+            "episode": "worker0/episode001_open_101",
+            "family": "B",
+            "event_clock_ns": 44620000000,
+            "initial_observed_planar_speed": 0.1137743229665566
+          },
+          {
+            "episode": "worker0/episode001_open_101",
+            "family": "B",
+            "event_clock_ns": 56620000000,
+            "initial_observed_planar_speed": 0.1997931534005924
+          },
+          {
+            "episode": "worker0/episode002_open_101",
+            "family": "B",
+            "event_clock_ns": 41120000000,
+            "initial_observed_planar_speed": 0.12559536872282798
+          },
+          {
+            "episode": "worker0/episode002_open_101",
+            "family": "B",
+            "event_clock_ns": 53120000000,
+            "initial_observed_planar_speed": 0.17889732480348186
+          },
+          {
+            "episode": "worker0/episode003_rooms_101",
+            "family": "B",
+            "event_clock_ns": 42140000000,
+            "initial_observed_planar_speed": 0.1784878368827818
+          },
+          {
+            "episode": "worker0/episode003_rooms_101",
+            "family": "B",
+            "event_clock_ns": 54140000000,
+            "initial_observed_planar_speed": 0.19992815106837344
+          },
+          {
+            "episode": "worker0/episode004_corridors_101",
+            "family": "B",
+            "event_clock_ns": 43160000000,
+            "initial_observed_planar_speed": 0.19275623684478302
+          },
+          {
+            "episode": "worker0/episode004_corridors_101",
+            "family": "B",
+            "event_clock_ns": 55160000000,
+            "initial_observed_planar_speed": 0.19997210270288504
+          },
+          {
+            "episode": "worker1/episode001_open_101",
+            "family": "B",
+            "event_clock_ns": 45100000000,
+            "initial_observed_planar_speed": 0.19893916474422013
+          },
+          {
+            "episode": "worker1/episode001_open_101",
+            "family": "B",
+            "event_clock_ns": 57100000000,
+            "initial_observed_planar_speed": 0.1933914484424901
+          },
+          {
+            "episode": "worker1/episode002_open_101",
+            "family": "B",
+            "event_clock_ns": 54860000000,
+            "initial_observed_planar_speed": 0.18941609608698412
+          },
+          {
+            "episode": "worker1/episode003_rooms_101",
+            "family": "B",
+            "event_clock_ns": 44040000000,
+            "initial_observed_planar_speed": 0.17857953560157028
+          },
+          {
+            "episode": "worker1/episode003_rooms_101",
+            "family": "B",
+            "event_clock_ns": 56040000000,
+            "initial_observed_planar_speed": 0.2002737125584757
+          },
+          {
+            "episode": "worker1/episode004_corridors_101",
+            "family": "B",
+            "event_clock_ns": 42400000000,
+            "initial_observed_planar_speed": 0.13612261221459032
+          },
+          {
+            "episode": "worker1/episode004_corridors_101",
+            "family": "B",
+            "event_clock_ns": 53400000000,
+            "initial_observed_planar_speed": 0.1894575791208286
+          }
+        ],
+        "maximum_credited_initial_planar_speed": 0.2002737125584757
+      },
+      "tb3": {
+        "A": 0,
+        "B": 6,
+        "credited_events": [
+          {
+            "episode": "worker0/episode001_open_101",
+            "family": "B",
+            "event_clock_ns": 56620000000,
+            "initial_observed_planar_speed": 0.1996868900564642
+          },
+          {
+            "episode": "worker0/episode002_open_101",
+            "family": "B",
+            "event_clock_ns": 53120000000,
+            "initial_observed_planar_speed": 0.18985018469830842
+          },
+          {
+            "episode": "worker0/episode003_rooms_101",
+            "family": "B",
+            "event_clock_ns": 54140000000,
+            "initial_observed_planar_speed": 0.18925890137680423
+          },
+          {
+            "episode": "worker1/episode001_open_101",
+            "family": "B",
+            "event_clock_ns": 57100000000,
+            "initial_observed_planar_speed": 0.1893397672879222
+          },
+          {
+            "episode": "worker1/episode002_open_101",
+            "family": "B",
+            "event_clock_ns": 54860000000,
+            "initial_observed_planar_speed": 0.16843156003966775
+          },
+          {
+            "episode": "worker1/episode003_rooms_101",
+            "family": "B",
+            "event_clock_ns": 56040000000,
+            "initial_observed_planar_speed": 0.20014334023341324
+          }
+        ],
+        "maximum_credited_initial_planar_speed": 0.20014334023341324
+      }
+    },
+    "source_report_passed": false,
+    "artifact_proof": {
+      "benchmark_metadata.json": "252194a899a312f8f517d9b775de8a705e86d5e68c05b0082a17475cae049637",
+      "benchmark_summary.json": "03c43639f6f4f7530b1cf14d7c028dee5da1ce9c1c71974b4241c118ae4d17fe",
+      "per_episode_report": {
+        "path": "/tmp/mr3_p2a_reach_v60_matrix/reset/physical_per_episode_result.json",
+        "sha256": "c2f3e761e16eb403359ff35d355375e1fff60958d35c196647b83d94d027c924"
+      },
+      "worker0/episode001_open_101/metadata.json": "bd2af4bf9217aad2b5df0f9c0f3b12410c3eae1a1d27e97a449094f719ba484e",
+      "worker0/episode001_open_101/transitions": {
+        "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v60/mr3_p2a_reach_v60_reset/worker0/episode001_open_101/transitions.jsonl",
+        "bytes": 2348875,
+        "sha256": "4d610474cdb0f41445b3c0d3f6b525fefdd60f1065b9465c7f1c9da876256912"
+      },
+      "worker0/episode002_open_101/metadata.json": "8ba18aea722ea18441ceb1628cc8e7e9d3ee2a464eb84061bbf7fa3c9691d5ec",
+      "worker0/episode002_open_101/transitions": {
+        "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v60/mr3_p2a_reach_v60_reset/worker0/episode002_open_101/transitions.jsonl",
+        "bytes": 2343821,
+        "sha256": "767d9ab03c372fe36f738f839adee551dc3d0fa56ad7bcd5400a7b845fbc96cf"
+      },
+      "worker0/episode003_rooms_101/metadata.json": "ec70ce4571e93b197fec73697fc47372e67ae8c928f08a3145a61286601985fe",
+      "worker0/episode003_rooms_101/transitions": {
+        "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v60/mr3_p2a_reach_v60_reset/worker0/episode003_rooms_101/transitions.jsonl",
+        "bytes": 2332594,
+        "sha256": "8d13f7f06df901eba1b583c3e1335769d891fb7c55340dc9c4ff1a2a3a09a82c"
+      },
+      "worker0/episode004_corridors_101/metadata.json": "73eda5652e87112364e8274d3e66181462d8330c8e54ffd87144f1d3f6cc2381",
+      "worker0/episode004_corridors_101/transitions": {
+        "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v60/mr3_p2a_reach_v60_reset/worker0/episode004_corridors_101/transitions.jsonl",
+        "bytes": 2286475,
+        "sha256": "5a989bb66ef42d33644e733586c84d9d570f0add1af014ec78010823f26bb4d0"
+      },
+      "worker1/episode001_open_101/metadata.json": "5b6407d26cb0b4130575be854018352ae22128f81bd20c34eb2353939d12513e",
+      "worker1/episode001_open_101/transitions": {
+        "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v60/mr3_p2a_reach_v60_reset/worker1/episode001_open_101/transitions.jsonl",
+        "bytes": 2340919,
+        "sha256": "30d01f7867d181399f8cc599754dbf9f839d86aec8cdf6ee9479f9ce5bbd9052"
+      },
+      "worker1/episode002_open_101/metadata.json": "ca39e4a191710af0e975f87aa49acdd4b4a0c28948451fd7cb5288c403e371a0",
+      "worker1/episode002_open_101/transitions": {
+        "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v60/mr3_p2a_reach_v60_reset/worker1/episode002_open_101/transitions.jsonl",
+        "bytes": 2349228,
+        "sha256": "cff0565e45098017b0d1a96fe3402c0bc574d487d902a5f98dd0e7613151b223"
+      },
+      "worker1/episode003_rooms_101/metadata.json": "d9e07acb8894291679ba13865593a3f2f3d7adabb56142a947d115164150c447",
+      "worker1/episode003_rooms_101/transitions": {
+        "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v60/mr3_p2a_reach_v60_reset/worker1/episode003_rooms_101/transitions.jsonl",
+        "bytes": 2339707,
+        "sha256": "466617508dba19137fde08047dd28aea9845955a1e727a158bdc69b470e0659a"
+      },
+      "worker1/episode004_corridors_101/metadata.json": "ba678e355d47b22c4f872d0b7f50b50d02baa897ec356bccb6d22c2cac09b560",
+      "worker1/episode004_corridors_101/transitions": {
+        "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v60/mr3_p2a_reach_v60_reset/worker1/episode004_corridors_101/transitions.jsonl",
+        "bytes": 2289876,
+        "sha256": "0daae42f5b42f7c1a7d2b250f036acaec8b6755e8249dd452ad1ba474c78c6d0"
+      }
+    },
+    "scope": "predeclared v6 probe reset-only eight-episode/32-step aggregate: all raw speed/chord/angular and strict closures, no eligible observed stop violation, one meaningful A/B sampled stop per robot across this matrix; original per-episode missing is retained; terminal/deadline excluded, activity gate separate, no continuous dynamics proof"
+  },
+  "benchmark_inputs": {
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v60/mr3_p2a_reach_v60_reset/benchmark_metadata.json": {
+      "bytes": 2830,
+      "sha256": "252194a899a312f8f517d9b775de8a705e86d5e68c05b0082a17475cae049637"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v60/mr3_p2a_reach_v60_reset/benchmark_summary.json": {
+      "bytes": 444984,
+      "sha256": "03c43639f6f4f7530b1cf14d7c028dee5da1ce9c1c71974b4241c118ae4d17fe"
+    }
+  },
+  "entry": {
+    "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_reset_workload.py",
+    "sha256": "1029576885397bad562172dd2e98d27835b273912609058fb65385804c7e28ea"
+  },
+  "scope": "Explicit Reach reset workload registration; unchanged original angular/physical predicates. No retrospective native qualification or task-success credit.",
+  "native_inputs_modified": false,
+  "immutable_sources_modified": false,
+  "immutable_reader_projection": {
+    "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v17/independent/mr3_independent_physics_matrix_v17.py",
+    "source_sha256": "50651f8b8ed5bee161f4c44a18e1ce68f7d8a27cda88fc466756b91f0f35cee8",
+    "projected_sha256": "7e779c75d989dccae8f733ec193e3d7b64e376f401ac034d8a05d0020d628d79",
+    "inverse_sha256": "50651f8b8ed5bee161f4c44a18e1ce68f7d8a27cda88fc466756b91f0f35cee8",
+    "whole_source_inverse_equal": true,
+    "literal_changes": [
+      {
+        "before": "PROBE_VERSION = \"mr3-p2a0-outward-cancel-v6\"\n",
+        "after": "PROBE_VERSION = \"mr3-p2a-reach-outward-cancel-v1\"\n",
+        "count": 1
+      }
+    ],
+    "native_inputs_modified": false,
+    "original_module_modified": false
+  }
+}
