@@ -1,0 +1,103 @@
+{
+  "schema": "mr3-v68-derived-received-predicate-facts-v1",
+  "derived_source": {
+    "path": "/tmp/mr3_p2a_v68_probe_stimulus_description_v1.json",
+    "bytes": 692872,
+    "sha256": "5124587818aed33a3a74f225341809f8f889422dd2772e2fd474f5498edd2951"
+  },
+  "rows": [
+    {
+      "decision": 0,
+      "robot": "tb1",
+      "common_blocked": [
+        "path_finite",
+        "path_observation_complete"
+      ],
+      "original_masked_finite_positive_candidates": 8,
+      "max_endpoint_m": 1.4041181931306719,
+      "endpoint_over1_45_count": 0
+    },
+    {
+      "decision": 0,
+      "robot": "tb2",
+      "common_blocked": [
+        "path_finite",
+        "path_observation_complete"
+      ],
+      "original_masked_finite_positive_candidates": 5,
+      "max_endpoint_m": 1.0090571405119728,
+      "endpoint_over1_45_count": 0
+    },
+    {
+      "decision": 0,
+      "robot": "tb3",
+      "common_blocked": [
+        "path_finite",
+        "path_observation_complete"
+      ],
+      "original_masked_finite_positive_candidates": 4,
+      "max_endpoint_m": 1.0746668975883091,
+      "endpoint_over1_45_count": 0
+    },
+    {
+      "decision": 1,
+      "robot": "tb1",
+      "common_blocked": [],
+      "original_masked_finite_positive_candidates": 8,
+      "max_endpoint_m": 1.4041181773311087,
+      "endpoint_over1_45_count": 0
+    },
+    {
+      "decision": 1,
+      "robot": "tb2",
+      "common_blocked": [],
+      "original_masked_finite_positive_candidates": 5,
+      "max_endpoint_m": 1.0090572569875296,
+      "endpoint_over1_45_count": 0
+    },
+    {
+      "decision": 1,
+      "robot": "tb3",
+      "common_blocked": [],
+      "original_masked_finite_positive_candidates": 4,
+      "max_endpoint_m": 1.0746667924294737,
+      "endpoint_over1_45_count": 0
+    },
+    {
+      "decision": 13,
+      "robot": "tb1",
+      "common_blocked": [
+        "initial_handoff"
+      ],
+      "original_masked_finite_positive_candidates": 8,
+      "max_endpoint_m": 1.4041183136482176,
+      "endpoint_over1_45_count": 0
+    },
+    {
+      "decision": 13,
+      "robot": "tb2",
+      "common_blocked": [
+        "initial_handoff"
+      ],
+      "original_masked_finite_positive_candidates": 5,
+      "max_endpoint_m": 1.0090573387206712,
+      "endpoint_over1_45_count": 0
+    },
+    {
+      "decision": 13,
+      "robot": "tb3",
+      "common_blocked": [
+        "initial_handoff"
+      ],
+      "original_masked_finite_positive_candidates": 4,
+      "max_endpoint_m": 1.074667114150836,
+      "endpoint_over1_45_count": 0
+    }
+  ],
+  "summary_eligible_fields_equal": true,
+  "persisted_round_fields_equal": true,
+  "case_local_sufficient_blocker": "At decision1 GOAL common prerequisites all hold but zero original-masked finite positive-path candidates pass endpoint>1.45 for any robot; initial receives no goal. This is not a counterfactual guarantee that deleting the screen would yield complete native coverage.",
+  "original_inputs_reopened": false,
+  "physical_rootcause_proved": false,
+  "original_FAIL_rejudged": false
+}

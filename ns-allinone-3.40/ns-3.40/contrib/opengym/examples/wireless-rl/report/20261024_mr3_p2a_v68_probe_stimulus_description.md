@@ -1,4 +1,16 @@
-# MR3 P2A V68：固定刺激缺口的两输入描述准备
+# MR3 P2A V68：固定刺激缺口描述的实际闭合
+
+2026-10-24 V68固定描述实际PASS：freeze0a3df7993、Root82362真实reap0，单次完整读取V67两原件2392142B，consumer work1.249640879秒；完整连续parent5.496288660秒含source/等候/gaps，累计110193.1630225646018/C180000、余69806.8369774353982。nested/root墙时不叠加，上限为代理持续委托选择、非数值用户批准，pilot/final原额保持。13源before/after/current-Git及13恢复快照一致，driver+consumer两保存PID/start freshgone，nonowned不声称gone；关闭CPU身份另存，工程0。received窗口decision0 path=null/complete=False；decision1 common门全True且legalGoal8/5/4，但各机max masked endpoint1.4041181773311087/1.0090572569875296/1.0746667924294737米均低于原1.45 screen，second13–19秒缺initial_handoff；两项summary/round交叉相等均True。这些只界定已记录received谓词，根因不扩成Nav2/plant结论。V67原FAIL保持，无physics/资格/学习信用，capacity/autoPolicy=False，P2A未完成。
+
+本次26个新普通原件1969765B无损封存222232B；symlink 0，没有跟随链接目标。原13个source_meta与source_recovery逐字保存，关闭未重开两原输入、旧342库或科学reader。description输出692872B完整保留。
+
+decision0是初始未ready的已记录状态；decision1的合法候选数与端点screen分别描述，不能把path_distance与1.45米直线screen混为一门。second窗口缺initial_handoff是上游未完成后的已记录缺项；本次不能据1秒接收快照推断原生callback、真实连续路径、取消物理rest或根因。summary_eligible_fields_equal=True与persisted_round_fields_equal=True表示输出与原持久字段交叉相等，不是独立物理资格。
+
+下一仅基于既有派生结果与原源码设计ProbeV3；所有新刺激/算法须新source与必要CPU、新freeze/有限probe，并通过完整同freeze12EP30与容量门后才可真实学习/strict95。原32步/六GOAL/两轮、原5秒commit及物理B/R/STOP/95%门和所有旧FAIL保持，不自动重跑旧活动或进入policy。
+
+[规范末账](assets/20261024_mr3_p2a_v68_probe_stimulus_description/closure_ledger_v1.json) · [新原件库存](assets/20261024_mr3_p2a_v68_probe_stimulus_description/closed_inventory_v1.json) · [原13source metadata](assets/20261024_mr3_p2a_v68_probe_stimulus_description/checks/closed_metadata_v1.json)
+
+## 准备记录（历史快照）
 
 2026-10-24 V68固定刺激缺口描述准备：V67 freeze50c740a64/tool57699真实rc1及完整1042.818916589秒保持；原native32/32返回但v2覆盖不足，科学audits={}、driver completed_stages=[]，不能据此取得资格。新活动仅在新exact freeze下完整一次读取两份已闭合plain原件：transitions2329784B与benchmark62358B，共2392142B；两份输入均尚未实际消费，GOAL缺失的首阻断/根因仍UNKNOWN。7个解释源与consumer/schema已显式固定，不改32步/六GOAL/两轮、1.45端点screen、原5秒commit或物理/安全/95%门。consumer work60秒、完整连续parent120秒含准入/等候/gaps/post-source；承接规范末账U110187.6667339046018/C180000，余69812.3332660953982，预约120是代理依持续委托前瞻选择，非数值用户批准；pilot/final原额保持。私有v1/v2各10项人工CPU通过（.446450724/.497621586秒、各17源/2身份gone），只授对应字节软件信用，不合称20项新测试。三根65原件1225097B已无损历史保存；归档CPU .623794270秒/3源/2身份gone、工程0，不是reader/native信用。parent源码已完成AST和独立源码审查，未运行parent或原件consumer；consumer最终源码10项人工CPU已通过。尚待全部selected regular force-stage、INDEX正检查、真实commit/push/clean、exact HEAD正检查后唯一读取；capacity/autoPolicy=False，P2A未完成。
 
