@@ -8869,3 +8869,20 @@ driver两轮各6人工CPU真实PASS，完整wall .32403286/.292878378秒；后�
 
 
 V55正式入场前续补（仍无World/工程新增0）：最初clean-loader rc0的对象核对实际失败，system urdfdom model/world两库不同于build ldd的ROS对象，见`checks/loader_binding_attempt_v1.json`。driver显式LD_LIBRARY_PATH=/opt/ros/humble/lib:/opt/ros/humble/lib/x86_64-linux-gnu后，同6人工CPU第三轮真实PASS/.293310886墙秒；clean loader第二轮真实PASS/.061848255墙秒，342个resolved库对象及SHA逐项一致。两组真实reap后各两保存身份freshgone，未混PYTHONPATH/启动ROSNode/World。原scope准入草稿保留，当前scope重新绑定最终driver。前段规范gzip链接指向第二轮准备ELF；正式选择为[第三轮ELF gzip](report/assets/20261023_mr3_p2a_v55_passive_plant/native/passive_plant_v3.elf.gz)，其raw471256B/SHA b2e154c4b08105c7d37193c8e18df19bb9275542da41924ca06f066b361e7a63与build_manifest_v2一致。此前原件/失败/账不改。
+
+
+### 2026-10-23 MR3 P2A V55：实际双SIGSEGV闭合FAIL
+
+实际执行freeze`63f5cc107161202a6d610f5fe39f3434b0d7eed9`，root tool23231真实reap rc1。两臂CPP均rc-11/wrapper1，early identity均保存，CPP summary缺失，无有效物理结果；原pair FAIL、顶层errors[]与各臂FileNotFoundError同时保存，不重试/不补样。原实际绝对CLI（已关闭，禁止重开）：
+
+```bash
+rtk proxy /usr/bin/python3 -B /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v55_passive_plant/run_passive_pair_v1.py --freeze 63f5cc107161202a6d610f5fe39f3434b0d7eed9
+```
+
+连续parent12.924178319墙秒包含.018860994秒臂间gap，nested不叠加；累计90370.2852481186018/120000、余29629.7147518813982。371条before/after字节稳定，19repo源current==新Git、旧10子集==old1fa、342链接对象封存；6主保存身份及关闭CPU自身2身份分别freshgone。metadata/opaque archive CPU真实wall9.076326329秒/rc0/17源稳定、工程0。22原件1262790B→1262742B/0link，无CSV解释/342系统库复制/V52 raw重读；[V55报告](report/20261023_mr3_p2a_v55_passive_plant.md)、[库存](report/assets/20261023_mr3_p2a_v55_passive_plant/closed_inventory_v1.json)和[规范末账](report/assets/20261023_mr3_p2a_v55_passive_plant/closure_ledger_v1.json)保存实际FAIL，原driverpending不回写。
+
+配置解释更正：实际生产p1c_open/rooms/corridors.world为ODE quick/iters150（quick150），A55 quick50是诊断生成设置，不能称为生产原配置/旧EP exact replay。旧准备快照不改，最新说明纠正该适用范围。loadWorld已有Init；HOME/ALSA/OpenAL警告不构成根因证据，尚未据此选生产修复。
+
+### 2026-10-23 MR3 P2A V56：同ELF/quick50的一次GDB启动栈预声明
+
+新[V56](report/20261023_mr3_p2a_v56_startup_gdb.md)只对未改A55 ELF和原quick50 World取一次SIGSEGV栈；GDB12.1 batch/noinit，auto-load/debuginfod off，timeout120，driver150/180仅owned pidfd收尾及真实wait，完整parent新预约300墙秒，不承诺硬实时。承接U90370.2852481186018/C120000/R29629.7147518813982，预约后R29329.7147518813982；政策账户不动。旧A55函数仅核371字节链，不调用旧run_case或重开旧预算。spec/CLI/tool/source CPU由root最后封存，正式尚未新freeze/执行，不预填栈或PASS。只在实际栈证据后准备原因对应的新版本，非生产solver比较或旧V55改判，科学门保持，P2A未完成。

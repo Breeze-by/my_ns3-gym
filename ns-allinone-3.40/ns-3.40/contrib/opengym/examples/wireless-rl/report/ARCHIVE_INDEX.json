@@ -3528,5 +3528,83 @@
     "old_episode_exact_replay_claimed": false,
     "eighteen_stream_safety_or_qualification_credit": false,
     "P2A_complete": false
+  },
+  "mr3_p2a_v55_passive_plant_closed_20261023": {
+    "status": "ACTUAL_BOTH_CPP_SIGSEGV_FAIL_NO_VALID_PHYSICAL_RESULT",
+    "report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261023_mr3_p2a_v55_passive_plant.md",
+    "execution_freeze": "63f5cc107161202a6d610f5fe39f3434b0d7eed9",
+    "actual_root_tool_session_id": 23231,
+    "actual_root_tool_returncode": 1,
+    "arms": [
+      "quick50",
+      "direct-world"
+    ],
+    "actual_CPP_returncodes": [
+      -11,
+      -11
+    ],
+    "actual_wrapper_returncodes": [
+      1,
+      1
+    ],
+    "CPP_summaries_present": [
+      false,
+      false
+    ],
+    "early_CPP_identities_saved": true,
+    "valid_physical_results": 0,
+    "root_cause_proved": false,
+    "engineering_added_continuous_parent_wall_seconds": "12.924178319",
+    "inter_case_gap_seconds_included": "0.018860994",
+    "engineering_cumulative_seconds": "90370.2852481186018",
+    "engineering_remaining_seconds": "29629.7147518813982",
+    "agent_selected_cumulative_ceiling_seconds": "120000",
+    "numeric_user_approval_claimed": false,
+    "source_count": 371,
+    "current_Git_repo_sources": 19,
+    "old_evidence_source_subset": 10,
+    "linked_library_objects": 342,
+    "main_saved_identities_fresh_gone": 6,
+    "separate_metadata_CPU_identities_fresh_gone": 2,
+    "metadata_CPU_actual_wall_seconds": "9.076326329",
+    "metadata_CPU_engineering_added_seconds": "0",
+    "archive_files": 22,
+    "archive_original_bytes": 1262790,
+    "archive_canonical_bytes": 1262742,
+    "archive_links": 0,
+    "inventory": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v55_passive_plant/closed_inventory_v1.json",
+    "inventory_sha256": "89230ba239c87912aa7c6c1e2631778251f04747c5de4f1ad26c1467a4b6b92f",
+    "ledger": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v55_passive_plant/closure_ledger_v1.json",
+    "ledger_sha256": "312c7db0ec200c169b45390ad454f1f0cc33e63d90844e305dae7406cb2a2594",
+    "production_p1c_world_solver": "quick150",
+    "V55_quick50_is_diagnostic_not_original_production": true,
+    "pilot_added_seconds": "0",
+    "validation_added_seconds": "0",
+    "P2A_complete": false
+  },
+  "mr3_p2a_v56_startup_gdb_preparation_20261023": {
+    "status": "SINGLE_STARTUP_BACKTRACE_PREPARATION_SPEC_AND_SOURCE_CPU_PENDING_NO_FORMAL_EXECUTION",
+    "report": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261023_mr3_p2a_v56_startup_gdb.md",
+    "runner": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v56_startup_gdb/run_startup_gdb_v1.py",
+    "inferior": "unchanged V55 final ELF and prepared_worlds_v3/quick50.world only",
+    "GDB_version": "12.1",
+    "batch_noinit": true,
+    "auto_load_and_debuginfod_off": true,
+    "timeout_wall_seconds": 120,
+    "owned_driver_cleanup_wall_seconds": [
+      150,
+      180
+    ],
+    "complete_parent_reservation_wall_seconds": 300,
+    "engineering_entry_seconds": "90370.2852481186018",
+    "engineering_remaining_seconds": "29629.7147518813982",
+    "after_reservation_remaining_seconds": "29329.7147518813982",
+    "old_A55_byte_admission_only": true,
+    "old_A55_run_case_invoked": false,
+    "V55_FAIL_rejudged": false,
+    "production_solver_comparison": false,
+    "new_formal_execution_completed": false,
+    "pilot_and_final_budgets_unchanged": true,
+    "P2A_complete": false
   }
 }

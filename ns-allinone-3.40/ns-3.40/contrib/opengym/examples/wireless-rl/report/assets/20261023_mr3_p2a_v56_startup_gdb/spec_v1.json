@@ -1,0 +1,111 @@
+{
+  "schema": "mr3-v56-startup-gdb-spec-v1",
+  "status": "PREPARED_NOT_EXECUTED",
+  "no_retry": true,
+  "purpose": "one startup SIGSEGV backtrace; no physical comparison or old-failure rejudgment",
+  "inferior_source_freeze": "63f5cc107161202a6d610f5fe39f3434b0d7eed9",
+  "execution_freeze_binding": "required-new-exact-cli",
+  "engineering_entry_seconds": "90370.2852481186018",
+  "engineering_ceiling_seconds": "120000",
+  "parent_cap_seconds": "300",
+  "engineering_remaining_seconds": "29629.7147518813982",
+  "entry_ledger": {
+    "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v55_passive_plant/closure_ledger_v1.json",
+    "bytes": 5921,
+    "sha256": "312c7db0ec200c169b45390ad454f1f0cc33e63d90844e305dae7406cb2a2594"
+  },
+  "inferior_elf": {
+    "path": "/tmp/mr3_p2a_v55_build_v3/passive_plant_v1",
+    "bytes": 471256,
+    "sha256": "b2e154c4b08105c7d37193c8e18df19bb9275542da41924ca06f066b361e7a63"
+  },
+  "inferior_world": {
+    "bytes": 24284,
+    "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v55_passive_plant/prepared_worlds_v3/quick50.world",
+    "sha256": "e0bc64abd94c11820538a273bdc82d789fa4377d9f161984ce34189080f2b280"
+  },
+  "tool_bindings": [
+    {
+      "path": "/usr/bin/gdb",
+      "bytes": 10280680,
+      "sha256": "a6222ff0f450ca040e3479c04fdb7d0f1e0cabb099688270e720b7115d933c3d"
+    },
+    {
+      "path": "/usr/bin/timeout",
+      "bytes": 39880,
+      "sha256": "2e3f2616d64647f6c30250f258ae350e2d21e4e413bd2c1e4f7c2d9f9c17f984"
+    }
+  ],
+  "gdb_version": "GNU gdb (Ubuntu 12.1-0ubuntu1~22.04.2) 12.1",
+  "command": [
+    "/usr/bin/timeout",
+    "--signal=KILL",
+    "--kill-after=10s",
+    "120s",
+    "/usr/bin/gdb",
+    "--batch",
+    "--nx",
+    "--nh",
+    "--quiet",
+    "-iex",
+    "set auto-load off",
+    "-ex",
+    "set debuginfod enabled off",
+    "-ex",
+    "set startup-with-shell off",
+    "-ex",
+    "set pagination off",
+    "-ex",
+    "set confirm off",
+    "-ex",
+    "set print frame-arguments none",
+    "-ex",
+    "run",
+    "-ex",
+    "thread apply all bt 8",
+    "-ex",
+    "info sharedlibrary",
+    "-ex",
+    "quit",
+    "--args",
+    "/tmp/mr3_p2a_v55_build_v3/passive_plant_v1",
+    "--arm",
+    "quick50",
+    "--world",
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v55_passive_plant/prepared_worlds_v3/quick50.world",
+    "--output",
+    "/tmp/mr3_p2a_v56_startup_gdb_v1/native",
+    "--work-seconds",
+    "600"
+  ],
+  "environment": {
+    "PATH": "/usr/bin:/bin",
+    "LANG": "C.UTF-8",
+    "LC_ALL": "C.UTF-8",
+    "PYTHONNOUSERSITE": "1",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "CUDA_VISIBLE_DEVICES": "",
+    "DISPLAY": "",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "GAZEBO_MASTER_URI": "http://127.0.0.1:11555",
+    "GAZEBO_MODEL_DATABASE_URI": "",
+    "GAZEBO_MODEL_PATH": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/models:/usr/share/gazebo-11/models",
+    "GAZEBO_PLUGIN_PATH": "",
+    "LD_LIBRARY_PATH": "/opt/ros/humble/lib:/opt/ros/humble/lib/x86_64-linux-gnu",
+    "DEBUGINFOD_URLS": ""
+  },
+  "debugger_timeout_seconds": 120,
+  "driver_owned_cleanup_seconds": [
+    150,
+    180
+  ],
+  "console_read_limit_bytes": 16777216,
+  "HOME_preserved_absent_for_reproduction": true,
+  "native_seed": 101,
+  "native_natural_exit_not_claimed_from_gdb_rc": true,
+  "scientific_credit": false,
+  "pilot_added_seconds": "0",
+  "validation_added_seconds": "0",
+  "accounting": "one actual Popen submission through real wrapper wait plus post-source and owned cleanup; nested waits not added; overrun full fee FAIL; no hard realtime guarantee"
+}

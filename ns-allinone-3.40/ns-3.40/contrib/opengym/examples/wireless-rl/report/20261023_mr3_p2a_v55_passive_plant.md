@@ -1,5 +1,7 @@
 # MR3 P2A V55：零轮目标的被动物理配对诊断
 
+> 当前：**CLOSED — 实际FAIL，无有效物理结果**。freeze63f5cc107、tool23231真实reap rc1；两CPP均rc-11、wrapper1，缺CPP summary，早期身份已保存。连续parent12.924178319墙秒已收，累计90370.2852481186018/120000、余29629.7147518813982；6主身份与metadata CPU自身2身份分别freshgone，关闭CPU真实wall9.076326329秒/工程0。实际生产`p1c_*.world`为quick150，A55 quick50是诊断设置，不能称生产原配置；下方原准备段和假设均保留为当时快照，实际结果见末尾闭合节。[V56](20261023_mr3_p2a_v56_startup_gdb.md)只对同未改ELF/原quick50 World做一次新范围启动栈诊断，不重跑V55或改判，HOME/ALSA/OpenAL不归因，P2A未完成。
+
 2026-10-23准备快照：尚未执行本活动的World。用户持续委托自主完成P2A；本次只定位真实零目标执行下的机体微漂，不提供完整原生资格、训练或95%任务信用。P2A未完成。
 
 ## 已知故障与下一项判别
@@ -50,3 +52,32 @@ rtk proxy env PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 CUDA_VISIBLE_DEVICES=
 
 
 最终运行环境补充：最初loader虽rc0，但清洁环境选中了两份system urdfdom库，和构建时实际解析的两份ROS同SONAME库不同；[对象比对失败](assets/20261023_mr3_p2a_v55_passive_plant/checks/loader_binding_attempt_v1.json)原样保留。driver现明确指定现有ROS native库目录LD_LIBRARY_PATH，未设置PYTHONPATH或启动ROS节点。[最终loader](assets/20261023_mr3_p2a_v55_passive_plant/checks/loader_cpu_v2/actual_wait.json)真实PASS/.061848255墙秒，[342个对象与SHA完全相等](assets/20261023_mr3_p2a_v55_passive_plant/checks/loader_object_binding_v2.json)。仅环境一行变更后的同6项driver CPU再次真实PASS/.293310886墙秒，最新两组保存身份均实际freshgone；此前准入scope草稿移入准备原件，最终规范scope重建绑定当前driver，末轮构建manifest与ELF保持。正式ELF gzip为`native/passive_plant_v3.elf.gz`，另一个v1 gzip仅为第二轮构建的保留原件。
+
+## 实际闭合：两臂CPP均rc-11，物理诊断FAIL
+
+**本节为最新状态；上方准备/尚未World文字保留为执行前快照。** 执行freeze `63f5cc107161202a6d610f5fe39f3434b0d7eed9`、原生产证据freeze `1fa55bc56d5bb9e230d4b397f962d83b1604b278`。root tool23231已真实reap、rc1；[实际root wait](assets/20261023_mr3_p2a_v55_passive_plant/closed_execution/closure_tools/mr3_p2a_v55_actual_tool_wait_v1.json)与[driver原summary](assets/20261023_mr3_p2a_v55_passive_plant/closed_execution/tmp/mr3_p2a_v55_driver_v1/summary.json)保持FAIL。
+
+| 实际arm | CPP真实rc | wrapper真实rc | 原CPP summary | 有效物理结果 |
+|---|---:|---:|---|---|
+| quick50 |-11|1|缺失，早期identity已保存|无|
+| direct-world |-11|1|缺失，早期identity已保存|无|
+
+两臂均已实际提交和真实wait，未重试；rc-11对应SIGSEGV。每臂保留原`closed case receipt: FileNotFoundError`、`actual_CPP_summary=null`，不能补造355000步、anchor、R比较、seed调用完成、solver成功或实际World加载完成。driver顶层`errors=[]`仅是原结构，整体`passed=false`与两臂错误均保留，不能将空顶层errors误读为执行成功。没有获得样本CSV或任何有效物理测量。
+
+两份原console只有`No HOME defined. Will not log`以及ALSA/OpenAL默认音频设备失败等提示。这些是关闭时保存的输出事实，**不能据此判定SIGSEGV根因**；本次未做gdb或额外日志取证，也不以初始化崩溃为物理模型、quick/world优劣或安全界的结论。
+
+### 连续parent实际费用与关闭
+
+完整连续pair区间`[4480864950596286,4480877874774605]`收取 **12.924178319墙秒**。两case parent分别6.450256977和6.455060348秒；其和12.905317325只是nested参考，连续pair额外包含0.018860994秒臂间gap，不用nested sum替代收费。所有CPP/nested wrapper时间不另加；1800秒费用门未超。
+
+承接90357.3610697996018，现累计 **90370.2852481186018 /120000**、余 **29629.7147518813982**墙秒。120000仍是代理依据持续委托选择的工程块，`numeric_user_approval_claimed=false`；pilot/final新增均0，原1870决策/2905.9547395464029墙秒及open401/402/403三场final-only900决策/9000墙秒保持。无learner模型或optimizer更新，原12EP30角色/95%/质量/安全门和旧FAIL保持。见[规范末账](assets/20261023_mr3_p2a_v55_passive_plant/closure_ledger_v1.json)。
+
+[独立小元数据/来源关闭](assets/20261023_mr3_p2a_v55_passive_plant/checks/closed_metadata_review_v1.json)PASS：371完整source-before/after稳定，19份repo源current==本次Git，旧10份production/model/header/drive是其中子集且同原1fa，342封存链接对象字节一致；不把旧子集重复加总，也不把预期链接对象数当成崩溃CPP已记录的实际加载集合。配置、生成world、spec、buildmanifest/实际compile receipt与ELF/gzip关联保持原封存。没有复制342系统库。
+
+root wait精确绑定launch/live SHA，实际entry/summary完整argv与launch除去Python `-B`后相等，live观察程序参数正确。主保存身份为 **6**：driver、运行时实观祖先、两wrapper与两CPP；早期identity/实际wait/监测记录逐同对象PID/start一致，6个均freshgone，Z算present、不可读不算gone，不跨对象补start。原driver `PENDING_EXTERNAL_ROOT_TOOL_REAP_AND_FRESH_GONE`字段不回写，由外部关闭证明补足。
+
+本次source/metadata/不透明归档是CPU范围，真实wall **9.076326329秒**、rc0、17绑定输入前后稳定、工程费0；其两个保存身份在实际工具reap后[单独freshgone](assets/20261023_mr3_p2a_v55_passive_plant/checks/closed_metadata_cpu_postreap_v1.json)，不混入主6身份。[实际wait与完整console](assets/20261023_mr3_p2a_v55_passive_plant/checks/closed_metadata_cpu_v1/actual_wait.json)保留，wall不是CPU处理器用时。
+
+[闭合库存](assets/20261023_mr3_p2a_v55_passive_plant/closed_inventory_v1.json)以原V45不透明archive函数逐字封存 **22文件/1262790原字节/1262742规范字节/0 symlink**；JSON/代码原样，console按mtime0 gzip并解码SHA验证。没有解释CSV、重读V52 raw、再运行CPP/World、读取其他实验原件或重做完整性/物理审计。原件保持本地，缺失CPP summary不补造。
+
+下一仅定位本次native初始化SIGSEGV，再按实际原因准备新版本修复和有界验证；V55原活动不重跑/覆盖。当前没有有效物理结果，未证实quick50或world方案可用，也未提供原生资格或学习信用。P2A未完成。

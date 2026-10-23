@@ -1,0 +1,131 @@
+{
+  "schema": "mr3-engineering-closure-ledger-v1",
+  "passed": true,
+  "status": "CLOSED",
+  "closure_verdict_scope": "Source/process/accounting and opaque archival closure only; actual two-case passive-plant execution FAIL retained. No valid physical result.",
+  "activity": "V55 passive fixed-zero quick50/direct-world two-case diagnostic",
+  "activity_passed": false,
+  "execution_freeze": "63f5cc107161202a6d610f5fe39f3434b0d7eed9",
+  "evidence_freeze": "1fa55bc56d5bb9e230d4b397f962d83b1604b278",
+  "previous_closure_ledger": {
+    "path": "report/assets/20261023_mr3_p2a_v54_firstfault/closure_ledger_v1.json",
+    "bytes": 6859,
+    "sha256": "18c925dfe2866ec53843936e783d0980d24b163c3900b77857996ad10b748d97"
+  },
+  "engineering_previous_cumulative_seconds": "90357.3610697996018",
+  "engineering_added_seconds": "12.924178319",
+  "engineering_cumulative_seconds": "90370.2852481186018",
+  "engineering_ceiling_seconds": "120000",
+  "engineering_remaining_seconds": "29629.7147518813982",
+  "engineering_resource_profile": "autonomous-engineering-block-v1",
+  "engineering_resource_decision_maker": "agent",
+  "numeric_user_approval_claimed": false,
+  "actual_parent_intervals": [
+    {
+      "name": "complete_continuous_passive_pair",
+      "scope": "engineering",
+      "started_monotonic_ns": 4480864950596286,
+      "ended_monotonic_ns": 4480877874774605,
+      "actual_seconds": "12.924178319"
+    }
+  ],
+  "nested_case_parent_sum_seconds_not_added": "12.905317325",
+  "inter_case_gap_seconds_included": "0.018860994",
+  "parent_fee_cap_seconds": "1800",
+  "within_parent_fee_cap": true,
+  "actual_root_tool_session_id": 23231,
+  "actual_root_returncode_observed": 1,
+  "actual_root_waited": true,
+  "driver_summary": {
+    "path": "report/assets/20261023_mr3_p2a_v55_passive_plant/closed_execution/tmp/mr3_p2a_v55_driver_v1/summary.json",
+    "bytes": 364451,
+    "sha256": "b6f0d1c8952783404dbc46615935076c49c7a9ca440a2d003afe7a42d94761b1"
+  },
+  "actual_root_tool_wait": {
+    "path": "report/assets/20261023_mr3_p2a_v55_passive_plant/closed_execution/closure_tools/mr3_p2a_v55_actual_tool_wait_v1.json",
+    "bytes": 547,
+    "sha256": "49d9b31fead19dade38fad6feddbae4e4d38df3425fb9e19cf931977f4fd63e7"
+  },
+  "closed_metadata_review": {
+    "path": "report/assets/20261023_mr3_p2a_v55_passive_plant/checks/closed_metadata_review_v1.json",
+    "bytes": 146957,
+    "sha256": "013f07215a33d05a0a66755f604c21d644c30c8dbdad3157cd5ee65dcccfa643"
+  },
+  "closed_inventory": {
+    "path": "report/assets/20261023_mr3_p2a_v55_passive_plant/closed_inventory_v1.json",
+    "bytes": 26613,
+    "sha256": "89230ba239c87912aa7c6c1e2631778251f04747c5de4f1ad26c1467a4b6b92f"
+  },
+  "closed_metadata_CPU_actual_wait": {
+    "path": "report/assets/20261023_mr3_p2a_v55_passive_plant/checks/closed_metadata_cpu_v1/actual_wait.json",
+    "bytes": 13279,
+    "sha256": "246ed6d8fe138e28e4b42a760b6cdd193152acc086bcb90bc455d520da979044"
+  },
+  "closed_metadata_CPU_postreap": {
+    "path": "report/assets/20261023_mr3_p2a_v55_passive_plant/checks/closed_metadata_cpu_postreap_v1.json",
+    "bytes": 1939,
+    "sha256": "97155f54fbf55223ca3cfd87e3f987021fcf967030dea872eb5c54fe4fe9a553"
+  },
+  "source_count": 371,
+  "execution_Git_code_source_count": 19,
+  "old_evidence_Git_source_subset_count": 10,
+  "linked_library_objects": 342,
+  "old_subset_not_double_counted": true,
+  "source_before_after_stable": true,
+  "main_saved_identity_count": 6,
+  "all_main_saved_identities_fresh_gone": true,
+  "separate_closure_CPU_identity_count": 2,
+  "all_separate_closure_CPU_identities_fresh_gone": true,
+  "arms": [
+    {
+      "arm": "quick50",
+      "execution_passed": false,
+      "actual_CPP_returncode": -11,
+      "actual_wrapper_returncode": 1,
+      "actual_CPP_summary_present": false,
+      "early_CPP_identity_saved": true,
+      "actual_case_parent_wall_seconds": "6.450256977",
+      "driver_arm_errors": [
+        "closed case receipt: FileNotFoundError(2, 'No such file or directory')"
+      ]
+    },
+    {
+      "arm": "direct-world",
+      "execution_passed": false,
+      "actual_CPP_returncode": -11,
+      "actual_wrapper_returncode": 1,
+      "actual_CPP_summary_present": false,
+      "early_CPP_identity_saved": true,
+      "actual_case_parent_wall_seconds": "6.455060348",
+      "driver_arm_errors": [
+        "closed case receipt: FileNotFoundError(2, 'No such file or directory')"
+      ]
+    }
+  ],
+  "valid_physical_results": 0,
+  "radius_comparison_or_solver_success_inferred": false,
+  "initialization_root_cause_proved": false,
+  "original_driver_top_errors_empty_preserved": true,
+  "original_driver_arm_missing_summary_failures_preserved": true,
+  "original_driver_pending_external_status_preserved": true,
+  "external_metadata_closure_now_complete": true,
+  "archive_files": 22,
+  "archive_original_bytes": 1262790,
+  "archive_canonical_bytes": 1262742,
+  "archive_links": 0,
+  "system_shared_libraries_copied": false,
+  "V52_raw_read_or_copied": false,
+  "CSV_semantics_read_or_recomputed": false,
+  "CPP_or_World_rerun_for_closure": false,
+  "pilot_added_seconds": "0",
+  "validation_added_seconds": "0",
+  "learner_models_loaded": false,
+  "optimizer_updates": 0,
+  "gazebo_worlds_submitted": 2,
+  "successful_world_load_completion_proved": false,
+  "native_qualification_credit": false,
+  "old_failures_and_cumulative_ledger_preserved": true,
+  "p2a_complete": false,
+  "accounting_basis": "One continuous first wrapper Popen to last real wait includes every inter-case gap and metadata. Nested case/CPP waits not added. Finite source/metadata/opaque archival CPU wall is separately receipted at engineering0. No fees moved to policy accounts.",
+  "next_route": "Root investigates native initialization SIGSEGV and prepares a new source/version/freeze. Do not rerun or overwrite V55, infer physical or solver results, or identify HOME/ALSA/OpenAL messages as root cause without evidence."
+}
