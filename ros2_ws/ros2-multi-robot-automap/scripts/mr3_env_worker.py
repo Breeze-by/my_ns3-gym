@@ -18,6 +18,7 @@ import time
 
 from ros_smoke_test import configure_mr3_transport_environment, native_launch_failures
 from multi_robot_exploration.mr3_safety_intent import actuation_profile_for_safety_contract
+from multi_robot_exploration.mr3_motion_authority import PROFILE as MOTION_AUTHORITY_PROFILE
 from multi_robot_exploration.mr3_evaluator_phase import (
     PHASE_PROTOCOL, PHASE_WALL_GUARD_SEC, PhaseClient,
 )
@@ -66,6 +67,21 @@ ipc = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(ipc)
 
 
+def motion_authority_profile_from_request(request):
+    """Receiving permission is fixed by the new Reach contract, not a CLI knob."""
+    if type(request) is not dict:
+        raise ValueError("worker reset request is not an object")
+    contract = request.get("safety_contract", "legacy")
+    if type(contract) is not str or contract not in ("legacy", "mr3-reach-v1"):
+        raise ValueError("unknown safety contract for receiving authority")
+    expected = MOTION_AUTHORITY_PROFILE if contract == "mr3-reach-v1" else None
+    selected = request.get("motion_authority_profile")
+    if ((expected is None and selected is not None) or
+            (expected is not None and (type(selected) is not str or selected != expected))):
+        raise ValueError("worker receiving-authority profile differs from fixed reset contract")
+    return expected
+
+
 class Worker:
     """Coordinate real physical steps, delivered observations and isolated reward."""
 
@@ -75,6 +91,7 @@ class Worker:
         self.scene = request["scene"]
         self.seed = request["seed"]
         self.safety_contract = request.get("safety_contract", "legacy")
+        self.motion_authority_profile = motion_authority_profile_from_request(request)
         self.reach_geometry_rule = validate_reach_geometry_rule(
             request.get("reach_geometry_rule", BINARY_CONE_V1),
             safety_contract=self.safety_contract)
@@ -116,6 +133,12 @@ class Worker:
             raise ValueError("invalid scene or seed")
         if request.get("quantum_steps") != 20:
             raise ValueError("scheduler requires 20 physical ticks per quantum")
+        self.preparation_probe_version = request.get("preparation_probe_version")
+        if "preparation_probe_version" in request and (
+                type(self.preparation_probe_version) is not str
+                or self.preparation_probe_version != "mr3-p2a-reach-outward-cancel-v2"
+                or self.safety_contract != "mr3-reach-v1"):
+            raise ValueError("unknown/mixed explicit Reach preparation probe")
         self.terminal_probe = request.get("terminal_probe", False)
         if type(self.terminal_probe) is not bool:
             raise ValueError("terminal_probe must be a boolean")
@@ -133,6 +156,8 @@ class Worker:
             raise ValueError("plant stimulus requires its bounded work deadline")
         if self.plant_stimulus_arm is None and self.plant_stimulus_work_deadline_ns is not None:
             raise ValueError("plant work deadline requires the explicit diagnostic arm")
+        if self.preparation_probe_version is not None and (self.terminal_probe or self.plant_stimulus_arm is not None):
+            raise ValueError("v2 preparation probe cannot combine with terminal/plant diagnostics")
         self.plant_stimulus_sequence = 0
         self.plant_stimulus_origin_ns = None
         self.plant_stimulus_pending = None
@@ -461,9 +486,13 @@ class Worker:
                     "plant_stimulus_work_deadline_ns": self.plant_stimulus_work_deadline_ns,
                     "physical_step_ns": 1000000, "policy_step_ns": 1000000000,
                     "startup_wall_guard_sec": 420., "closure_wall_guard_sec": 90.}
+        if getattr(self,"preparation_probe_version",None) is not None:
+            metadata["preparation_probe_version"] = self.preparation_probe_version
         profile = actuation_profile_for_safety_contract(self.safety_contract)
         if profile is not None:
             metadata["actuation_profile"] = profile
+        if self.motion_authority_profile is not None:
+            metadata["motion_authority_profile"] = self.motion_authority_profile
         if self.seed_rule != "legacy":
             metadata["seed_rule"] = self.seed_rule
         if self.start_graph_rule != "original-seed-cell":

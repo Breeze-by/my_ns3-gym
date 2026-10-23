@@ -164,6 +164,16 @@ def audit_exact_seed_inputs_system(directory, *, seed_rule, start_graph_rule,
 
 
 def load_impl(plan_path):
+    from . import audit_reach_reset_workload as reset_workload
+    plan = json.loads(Path(plan_path).read_text())
+    if "reset_workload_reader_profile" in plan:
+        workload_profile,probe_version,_ = reset_workload.profile_from_plan(plan)
+    else:
+        # Preserve the old source-definition-only helper API. The actual gate
+        # loader/public audit still validates the full explicit qualification plan.
+        if "preparation_probe_version" in plan:
+            raise ValueError("probe version lacks its explicit workload profile")
+        workload_profile,probe_version,_ = reset_workload.profile_spec()
     module, proof = project_module("audit_preparation.py", SOURCE_SHA256, (
         ("from .audit_ppo import load_native_gates, load_rows, require",
          "from .audit_ppo import load_rows, require\n# explicit new gate injected below", 1),
@@ -172,11 +182,28 @@ def load_impl(plan_path):
         ("from .audit_controlled_physics import (",
          "from .audit_reach_controlled_physics import (", 1),
         ("mr3-motion-safety-status-v1", "mr3-motion-safety-status-v2", 1),
-        ("mr3-p2a0-outward-cancel-v6", "mr3-p2a-reach-outward-cancel-v1", 1),
+        ("mr3-p2a0-outward-cancel-v6", probe_version, 1),
     ))
     module.load_native_gates = lambda root, freeze: load_native_gates(root, freeze, plan_path)
     from . import audit_reach_peer_control, audit_reach_controlled_physics
     module.audit_motion = lambda directory: audit_reach_peer_control.audit_episode(directory, plan_path=plan_path)
+    from .motion_authority_profile import selected_motion_authority_profile
+    authority = selected_motion_authority_profile(plan)
+    module._independent_authority_reports = {}
+    if authority is not None:
+        from .motion_authority_audit import require_episode_proof
+        original_motion = module.audit_motion
+        original_execution_inputs = module.audit_execution_inputs
+        def authority_motion(directory):
+            report = original_motion(directory)
+            require_episode_proof(report,authority)
+            module._independent_authority_reports[str(Path(directory).resolve())] = report
+            return report
+        def authority_execution_inputs(directory,motion_review=None):
+            require_episode_proof(motion_review,authority)
+            return original_execution_inputs(directory,motion_review)
+        module.audit_motion = authority_motion
+        module.audit_execution_inputs = authority_execution_inputs
     module.dispatch_controlled_physics = lambda *args, **kwargs: audit_reach_controlled_physics.dispatch_controlled_physics(
         *args, plan_path=plan_path, **kwargs)
     module.dispatch_controlled_readiness = lambda *args, **kwargs: audit_reach_controlled_physics.dispatch_controlled_readiness(
@@ -194,6 +221,9 @@ def load_impl(plan_path):
             replay = audit_exact_seed_inputs_system(directory, seed_rule=plan["seed_rule"],
                 start_graph_rule=plan.get("start_graph_rule", "original-seed-cell"),
                 **({"reach_geometry_rule": geometry_rule} if geometry_rule != BINARY_REACH_GEOMETRY_RULE else {}))
+            if authority is not None:
+                require(replay.get('motion_authority_profile') == authority,
+                        'full archive replay lacks same receiving authority profile metadata')
             result["exact_seed_full_replay"] = replay
             result["passed"] = result.get("passed") is True and replay["passed"] is True
             if not replay["passed"]:
@@ -210,10 +240,18 @@ def audit(directory, root, freeze, plan_path):
              else sorted(directory.glob("worker*/episode*/metadata.json")))
     require(paths, "no actual reach episodes")
     plan = json.loads(Path(plan_path).read_text())
+    from .motion_authority_profile import selected_motion_authority_profile
+    authority = selected_motion_authority_profile(plan)
     geometry_rule = validate_reach_geometry_rule(
         plan.get("reach_geometry_rule", BINARY_REACH_GEOMETRY_RULE), safety_contract="mr3-reach-v1")
     for path in paths:
         metadata = json.loads(path.read_text())
+        require(selected_motion_authority_profile(metadata) == authority,
+                "native preparation receiving authority differs from qualification plan")
+        if authority is not None:
+            saved = json.loads((path.parent/'supervisor_metadata.json').read_text())
+            require(selected_motion_authority_profile(saved,required=True) == authority,
+                    "supervisor preparation receiving authority differs from plan")
         require(metadata.get("safety_contract") == "mr3-reach-v1"
                 and metadata.get("execution_phase_protocol") == "mr3-controlled-execution-phase-v2"
                 and metadata.get("reset_handshake") == "paused-controlled-state-peer-guard-storage-v2"
@@ -229,11 +267,28 @@ def audit(directory, root, freeze, plan_path):
             supervisor = json.loads(supervisor_path.read_text())
             require(supervisor.get("reach_geometry_rule", BINARY_REACH_GEOMETRY_RULE) == geometry_rule,
                     "native preparation supervisor reach geometry rule differs")
+    from . import audit_reach_reset_workload as reset_workload
+    workload_profile,_,_ = reset_workload.profile_from_plan(plan)
+    motion_probe = json.loads((directory/"benchmark_metadata.json").read_text()).get("preparation_motion_probe") is True
+    episode_profiles = (reset_workload.episode_probe_profiles(directory,freeze,workload_profile=workload_profile)
+        if workload_profile == reset_workload.PROFILE_V2 and motion_probe else None)
     module, proof = load_impl(plan_path)
     result = module.audit(directory, root, freeze)
+    if authority is not None:
+        reports=module._independent_authority_reports
+        require(set(reports)=={str(path.parent.resolve()) for path in paths},
+                "full audit omitted genuine independent authority replay for an actual episode")
+        result.update(motion_authority_profile=authority,
+            independent_motion_authority_replay_passed=all(row['passed'] is True for row in reports.values()),
+            motion_authority_episode_replays={name:row['motion_authority_replay'] for name,row in reports.items()})
     result.update(schema="mr3-reach-preparation-full-audit-v1", safety_contract="mr3-reach-v1",
                   immutable_reader_projection=proof,
                   scope="Native/contact/clock/protocol/scalar/evaluator/archive/activity/topology/costmap and complete v2 release. Joint qualification additionally requires every independently declared reach role.")
+    if episode_profiles is not None:
+        result["episode_probe_profiles"] = episode_profiles
+        for name,spec in episode_profiles.items():
+            require(hashlib.sha256(Path(name).read_bytes()).hexdigest() == spec["sha256"],
+                    "v2 episode profile metadata changed during full audit")
     if geometry_rule != BINARY_REACH_GEOMETRY_RULE:
         result["reach_geometry_rule"] = geometry_rule
     return result

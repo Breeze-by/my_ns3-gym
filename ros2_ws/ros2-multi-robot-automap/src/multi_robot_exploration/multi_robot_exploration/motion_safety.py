@@ -21,6 +21,9 @@ from multi_robot_exploration.mr3_information import (
     odom_payload, publisher_graph_identity, state_payload, transform_payload,
 )
 from multi_robot_exploration.mr3_episode import elapsed_ns, timestamp_ns
+from multi_robot_exploration.mr3_motion_authority import (
+    PROFILE as AUTHORITY_PROFILE, MotionAuthority, canonical as authority_canonical,
+)
 from multi_robot_exploration.mr3_motion_safety import (
     COMMAND_TIMEOUT_SEC, PERIOD_SEC, ROBOTS, SettledTurnTracker, guard_motion,
     measured_velocity_error, valid_state,
@@ -54,6 +57,9 @@ class MotionSafety(Node):
                 or self.safety_contract == CONTRACT and not stepped):
             raise ValueError("reach safety requires explicit stepped mr3-reach-v1")
         self.reach_enabled = self.safety_contract == CONTRACT
+        self.motion_authority_profile = self.declare_parameter("motion_authority_profile", "").value
+        if self.motion_authority_profile != (AUTHORITY_PROFILE if self.reach_enabled else ""):
+            raise ValueError("fixed receiving-authority profile differs from safety contract")
         self.reach_geometry_rule = validate_reach_geometry_rule(
             self.declare_parameter("reach_geometry_rule", BINARY_CONE_V1).value,
             safety_contract=self.safety_contract)
@@ -85,6 +91,9 @@ class MotionSafety(Node):
         self.reach_pending_release = None
         self._reach_emitting = False
         self.reach_publisher_gids = {}
+        self.motion_authorities = dict.fromkeys(ROBOTS)
+        self.authority_ack_sequences = dict.fromkeys(ROBOTS, 0)
+        self.authority_ready_sent = dict.fromkeys(ROBOTS)
         self.control_safety_context = None
         self.input_sequences = {name: {"odom": 0, "tf": 0, "request": 0} for name in ROBOTS}
         self.decision_sequences = dict.fromkeys(ROBOTS, 0)
@@ -139,6 +148,15 @@ class MotionSafety(Node):
                         String, f"/{name}/mr3_drive/{suffix}",
                         lambda msg, name=name, kind=kind: self.receive_reach_feed(msg, name, kind),
                         storage_qos if kind == "storage" else 256))
+        self.authority_ack_publishers = {}
+        if self.motion_authority_profile:
+            authority_qos = QoSProfile(depth=64, durability=DurabilityPolicy.TRANSIENT_LOCAL)
+            self.authority_ack_publishers = {name: self.create_publisher(
+                String, f"/{name}/mr3/motion_authority_ack", authority_qos) for name in ROBOTS}
+            self.inputs.extend(self.create_subscription(
+                String, f"/{name}/mr3/motion_authority",
+                lambda message, name=name: self.receive_motion_authority(message, name), authority_qos)
+                for name in ROBOTS)
         self.inputs.extend([
             self.create_subscription(String, "/mr3/received/states", self.receive_states, 10),
             self.create_subscription(Header, "/exploration_start", self.receive_start, durable),
@@ -159,6 +177,10 @@ class MotionSafety(Node):
             "own_input_selection": "latest_causal_v1",
             "controlled_execution": stepped,
             "safety_contract": self.safety_contract,
+            **({"motion_authority_profile": self.motion_authority_profile,
+                "worker_quantum_ack_barrier": False, "raw_goal_generation": None,
+                "raw_goal_association": "UNKNOWN_UNSTAMPED_TWIST"}
+               if self.motion_authority_profile else {}),
             **({"reach_geometry_rule": self.reach_geometry_rule}
                if self.reach_geometry_rule != BINARY_CONE_V1 else {}),
             "diagnostic_request_receipts": diagnostic_enabled,
@@ -230,6 +252,72 @@ class MotionSafety(Node):
             self.record("settled_turn_model_failure", {"robot": name, "reason": str(error)})
             self.stop_controlled()
 
+    def authority_identity(self, name):
+        gate = self.motion_authorities[name]
+        return publisher_graph_identity(self, f"/{name}/mr3/motion_authority", "mr3_adapter", "/",
+            None if gate is None else gate.publisher_gid)
+
+    def bind_motion_authority(self, name, identity):
+        gate = self.motion_authorities[name]
+        if gate is None and identity["valid"]:
+            gate = MotionAuthority(self.epoch, name, identity["endpoints"][0]["endpoint_gid"])
+            self.motion_authorities[name] = gate
+            self.record("authority_configuration", {"robot": name,
+                "motion_authority_profile": AUTHORITY_PROFILE, "publisher_identity": identity,
+                "scope": "unique graph endpoint binding only; not packet authentication"})
+        return gate
+
+    def publish_authority_ack(self, name, ack, clock_ns):
+        gate = self.motion_authorities[name]
+        self.authority_ack_sequences[name] += 1
+        packet = {"schema": "mr3-motion-authority-ack-wire-v1", "profile": AUTHORITY_PROFILE,
+            "epoch": self.epoch, "robot": name, "ack_sequence": self.authority_ack_sequences[name],
+            "clock_ns": clock_ns, "authority_packet_sha256": None if gate.packet is None else
+                hashlib.sha256(authority_canonical(gate.packet).encode()).hexdigest(), "ack": ack}
+        encoded = authority_canonical(packet)
+        self.authority_ack_publishers[name].publish(String(data=encoded))
+        self.record("authority_ack_publication", {"robot": name, "message": packet,
+            "raw_json": encoded, "scope": "publication_call_returned; not delivery"})
+
+    def receive_motion_authority(self, message, name):
+        identity = self.authority_identity(name)
+        clock_ns = self.get_clock().now().nanoseconds
+        try:
+            value = parse_json(message.data)
+            gate = self.bind_motion_authority(name, identity)
+            if not identity["valid"] or gate is None:
+                raise ValueError("motion authority publisher graph unavailable")
+            ack = gate.receive(value, publisher_gid=identity["endpoints"][0]["endpoint_gid"],
+                clock_ns=clock_ns, latest_raw_sequence=self.input_sequences[name]["request"])
+            self.record("authority_callback", {"robot": name, "message": value,
+                "raw_json": message.data, "packet_sha256": hashlib.sha256(message.data.encode()).hexdigest(),
+                "publisher_identity": identity, "clock_ns": clock_ns, "result": ack})
+            if gate.fault is not None:
+                raise ValueError(gate.fault)
+            if ack.get("schema") == "mr3-motion-authority-ack-v1":
+                self.publish_authority_ack(name, ack, clock_ns)
+        except (ValueError, KeyError, TypeError, OverflowError) as error:
+            self.record("invalid_motion_authority", {"robot": name, "raw_json": message.data,
+                "publisher_identity": identity, "clock_ns": clock_ns, "reason": str(error)})
+            self.reach_failure(name, error)
+
+    def receiving_permission(self, name, tracker, request, clock_ns):
+        gate = self.motion_authorities[name]
+        if gate is None:
+            gate = self.bind_motion_authority(name, self.authority_identity(name))
+        if gate is None:
+            return {"effective_request": [0., 0.], "permission": "zero_only",
+                "state": "UNBOUND", "authority_sequence": 0, "owner": None,
+                "raw_goal_generation": None, "raw_goal_association": "UNKNOWN_UNSTAMPED_TWIST"}
+        gate.note_real_application(tracker)
+        # Refresh local proof every original normal phase, but emit the large
+        # witness only once per authority sequence. GRANT checks fresh local proof.
+        ack = gate.observe_stop(tracker, clock_ns)
+        if ack is not None and self.authority_ready_sent[name] != gate.sequence:
+            self.publish_authority_ack(name, ack, clock_ns)
+            self.authority_ready_sent[name] = gate.sequence
+        return gate.input(request, clock_ns=clock_ns)
+
     def receive_reach_feed(self, message, name, kind):
         suffix = {"calibration":"odometry_calibration", "applied":"applied", "storage":"status"}[kind]
         topic = f"/{name}/mr3_drive/{suffix}"
@@ -246,6 +334,10 @@ class MotionSafety(Node):
                 raise ValueError("native reach feed publisher unavailable")
             self.reach_publisher_gids[key] = identity["endpoints"][0]["endpoint_gid"]
             getattr(self.reach[name], "receive_"+kind)(value)
+            if self.motion_authority_profile and kind == "applied":
+                gate = self.motion_authorities[name]
+                if gate is not None:
+                    gate.note_validated_application(self.reach[name], value)
             self.try_reach_release()
             if self.control_phase is not None:
                 self.control_phase.poll()
@@ -866,6 +958,7 @@ class MotionSafety(Node):
             healthy = False
         self.issued_motion.add((clock_ns,"stop" if stop else "normal"))
         decisions = {}
+        receiving_permissions = {}
         # Complete every robot's admission before publishing any output. A
         # late tb3 contradiction must also suppress tb1/tb2 in this phase.
         for name, tracker in self.reach.items():
@@ -875,10 +968,22 @@ class MotionSafety(Node):
                 and request["publisher_identity"]["valid"]
                 and 0 <= elapsed_ns(request["received_stamp"], clock_ns/1e9)
                 <= timestamp_ns(COMMAND_TIMEOUT_SEC))
+            permission = None
+            if self.motion_authority_profile:
+                try:
+                    permission = self.receiving_permission(name, tracker, request if allowed_request else None, clock_ns)
+                except (ValueError, KeyError, TypeError, OverflowError) as error:
+                    self.reach_failure(name, error)
+                    permission = {"effective_request": [0., 0.], "permission": "zero_only",
+                        "state": "FAULT", "fault": str(error), "raw_goal_generation": None,
+                        "raw_goal_association": "UNKNOWN_UNSTAMPED_TWIST"}
+                receiving_permissions[name] = permission
+            effective_request = (permission["effective_request"] if permission is not None else
+                                 [request["v"], request["w"]] if allowed_request else [0., 0.])
             decision={"allow":False,"reason":"reach_zero","output":[0.,0.],"minimum_margin_m":None}
             if healthy and self.started and self.halted is None and self.stop_time is None:
                 try:
-                    decision=tracker.decide([request["v"],request["w"]] if allowed_request else [0.,0.],own[name],
+                    decision=tracker.decide(effective_request,own[name],
                         {peer:states[peer] for peer in ROBOTS if peer!=name},clock_ns,
                         states[name]["safety"]["intent"])
                     if not allowed_request:
@@ -923,6 +1028,10 @@ class MotionSafety(Node):
                     "wall_monotonic_ns":time.monotonic_ns(),"target_json":encoded},sort_keys=True)+"\n")
             self.record("reach_decision", {"robot":name,"clock_ns":clock_ns,
                 "decision_sequence":self.decision_sequences[name],"request":request,
+                **({"motion_authority_profile": AUTHORITY_PROFILE,
+                    "effective_request": receiving_permissions[name]["effective_request"],
+                    "motion_authority": receiving_permissions[name]}
+                   if self.motion_authority_profile else {}),
                 "own_state":own[name],"received_peers":{p:states.get(p) for p in ROBOTS if p!=name},
                 "decision":decision,"intent":intent,"tracker":tracker.status(),
                 "safety_table_sha256":table_sha,"started":self.started,"ready":healthy,

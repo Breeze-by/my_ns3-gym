@@ -1,0 +1,70 @@
+{
+  "schema": "mr3-v65-fresh-cpu-spec-v1",
+  "source_policy": "explicit-filesystem-python-runtime-and-test-union-v1",
+  "scientific_qualification_credit": false,
+  "baseline_freeze": "f466bcf8a205a348ec7c7e7dbfa0125bd4304c56",
+  "status": "PREPARED_UNSEALED",
+  "groups": [
+    {
+      "id": "fresh_ros_cpu_v1",
+      "environment": "ros-system",
+      "test_files": [
+        "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_motion_safety_reach.py",
+        "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_adapter_launch.py",
+        "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_drive_launch.py",
+        "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_reach_delivery_order.py",
+        "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_reach_runtime_independent.py",
+        "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_reach_support_wiring.py",
+        "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_reach_terminal_tail.py",
+        "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_safety_contract_entry.py",
+        "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_safety_intent.py",
+        "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_worker_bootstrap.py",
+        "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_worker_shutdown.py",
+        "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_worker_startup_readiness.py"
+      ],
+      "actual_argv": [],
+      "covered_paths": []
+    },
+    {
+      "id": "fresh_learner_cpu_v1",
+      "environment": "ns3gym",
+      "test_files": [
+        "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_reach_cadence.py",
+        "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_reach_ppo.py",
+        "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_reach_runtime.py",
+        "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_audit_reach_system_replay.py",
+        "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_benchmark.py",
+        "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_env.py",
+        "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_initial_encoder_build_profile.py",
+        "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_initial_encoder_peer_prefix.py",
+        "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_initial_encoder_replay.py",
+        "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_initial_encoder_sensor_inverse.py",
+        "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_map_packing_gate.py",
+        "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_native_custody_reach.py",
+        "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_ppo.py",
+        "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_proxy2d_point_graph.py",
+        "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_proxy2d_seed_compatibility.py",
+        "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_proxy2d_seed_v2_compatibility.py",
+        "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_reach_controlled_dispatch.py",
+        "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_reach_engineering_block.py",
+        "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_reach_policy_chain.py",
+        "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_reach_preparation_entry.py",
+        "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_reach_qualification.py",
+        "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_reach_reservation.py",
+        "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_reach_reset_workload.py",
+        "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_reach_runtime_fault_admission.py",
+        "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_reach_runtime_index_regression.py",
+        "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_reach_support_integration.py",
+        "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_reach_support_optimization.py",
+        "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_reach_support_replay.py",
+        "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_reach_training_admission.py",
+        "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_supervisor.py",
+        "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_supervisor_startup_readiness.py"
+      ],
+      "actual_argv": [],
+      "covered_paths": []
+    }
+  ],
+  "replacement_paths": [],
+  "source_bindings": {}
+}

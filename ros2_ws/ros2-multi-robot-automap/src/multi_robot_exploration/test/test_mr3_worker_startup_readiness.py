@@ -40,6 +40,7 @@ def fixture(monkeypatch, *, reach=True):
     worker = WORKER.Worker.__new__(WORKER.Worker)
     worker.epoch, worker.scene, worker.seed = 'current', 'rooms', 101
     worker.safety_contract = 'mr3-reach-v1' if reach else 'legacy'
+    worker.motion_authority_profile = WORKER.MOTION_AUTHORITY_PROFILE if reach else None
     worker.control_version = 2 if reach else 1
     worker.startup_readiness_protocol = WORKER.STARTUP_READINESS_PROTOCOL if reach else None
     worker.startup_deadline_ns = clock.ns + 420_000_000_000 if reach else None
@@ -492,6 +493,7 @@ def test_constructor_subtracts_time_already_spent_before_worker_initialization(t
         WORKER.Worker.__init__(owner, tmp_path, {
             'epoch': 'current', 'scene': 'artificial-stop-before-IO', 'seed': 101,
             'safety_contract': 'mr3-reach-v1',
+            'motion_authority_profile': WORKER.MOTION_AUTHORITY_PROFILE,
             'startup_readiness_protocol': WORKER.STARTUP_READINESS_PROTOCOL,
             'startup_deadline_monotonic_ns': 520_000_000_000})
     assert owner.startup_wait_deadline_ns == 455_000_000_000
@@ -553,7 +555,8 @@ def test_current_epoch_received_failure_is_immediate_and_journaled_only_during_s
 def test_invalid_reach_startup_request_rejects_before_any_IO(tmp_path, monkeypatch, field, value):
     monkeypatch.setattr(WORKER.time, 'monotonic_ns', lambda: 100_000_000_000)
     request = {'epoch': 'current', 'scene': 'rooms', 'seed': 101, 'quantum_steps': 20,
-        'safety_contract': 'mr3-reach-v1', 'startup_readiness_protocol': WORKER.STARTUP_READINESS_PROTOCOL,
+        'safety_contract': 'mr3-reach-v1', 'motion_authority_profile': WORKER.MOTION_AUTHORITY_PROFILE,
+        'startup_readiness_protocol': WORKER.STARTUP_READINESS_PROTOCOL,
         'startup_deadline_monotonic_ns': 520_000_000_000, field: value}
     with pytest.raises(ValueError, match='startup protocol'):
         WORKER.Worker(tmp_path, request)
@@ -563,11 +566,13 @@ def test_invalid_reach_startup_request_rejects_before_any_IO(tmp_path, monkeypat
 def test_no_work_after_reserve_and_legacy_startup_fields_reject_before_IO(tmp_path, monkeypatch):
     monkeypatch.setattr(WORKER.time, 'monotonic_ns', lambda: 100_000_000_000)
     request = {'epoch': 'current', 'scene': 'rooms', 'seed': 101, 'quantum_steps': 20,
-        'safety_contract': 'mr3-reach-v1', 'startup_readiness_protocol': WORKER.STARTUP_READINESS_PROTOCOL,
+        'safety_contract': 'mr3-reach-v1', 'motion_authority_profile': WORKER.MOTION_AUTHORITY_PROFILE,
+        'startup_readiness_protocol': WORKER.STARTUP_READINESS_PROTOCOL,
         'startup_deadline_monotonic_ns': 160_000_000_000}
     with pytest.raises(TimeoutError, match='cleanup/response reserve'):
         WORKER.Worker(tmp_path, request)
     request['safety_contract'] = 'legacy'
+    request.pop('motion_authority_profile')
     with pytest.raises(ValueError, match='legacy reset must omit'):
         WORKER.Worker(tmp_path, request)
     assert list(tmp_path.iterdir()) == []

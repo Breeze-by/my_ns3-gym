@@ -1,0 +1,43 @@
+import hashlib
+import json
+import os
+from pathlib import Path
+import subprocess
+import sys
+
+ROOT=Path('/home/zhuyulab/ns3-workspace')
+W=ROOT/'ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl'
+OUT=W/'report/assets/20261024_mr3_p2a_v65_owned_stream_qualification/checks/reader_history_v1'
+SCRIPT=Path('/tmp/mr3_p2a_reader_history_archive_v1.py')
+
+
+def identity():
+    fields=Path('/proc/self/stat').read_text().rsplit(')',1)[1].split()
+    return dict(pid=os.getpid(),parent=int(fields[1]),group=int(fields[2]),session=int(fields[3]),
+                start_ticks=int(fields[19]))
+
+
+def main():
+    OUT.mkdir(parents=True,exist_ok=False);snapshots=OUT/'source_snapshots';snapshots.mkdir()
+    sources=[Path(__file__),SCRIPT,
+        *[W/'mr3_learning'/name for name in ('__init__.py','reach_execution.py','preparation.py','proxy2d_process.py')],
+        *[Path('/tmp')/f'mr3_p2a_authority_independent_reader_candidate_v{v}'/f'source_manifest_v{v}.json'
+          for v in (1,2,3,4)],Path('/usr/bin/python3').resolve()]
+    rows=[]
+    for i,path in enumerate(sources):
+        raw=path.read_bytes();value=hashlib.sha256(raw).hexdigest();snapshot=snapshots/(f'{i:02d}_{value}.bin')
+        snapshot.open('xb').write(raw)
+        rows.append(dict(path=str(path),bytes=len(raw),sha256=value,snapshot=str(snapshot)))
+    (OUT/'source_recovery_v1.json').open('x').write(json.dumps(dict(sources=rows,
+        source_snapshot_format='exact bytes with .bin suffix to avoid adding canonical source files',
+        source_binding_scope='actual archive/launcher and imported recorder primitives plus fixed four root manifests',
+        base_HEAD=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()),indent=2)+'\n')
+    (OUT/'launcher_identity_v1.json').open('x').write(json.dumps(dict(identity=identity(),actual_argv=sys.argv),indent=2)+'\n')
+    command=['/usr/bin/python3','-B','-m','mr3_learning.reach_execution','--scope','cpu','--output',str(OUT/'actual')]
+    for source in sources:command.extend(['--source',str(source)])
+    command.extend(['--','/usr/bin/python3','-B',str(SCRIPT)])
+    env=dict(os.environ,PYTHONNOUSERSITE='1',PYTHONDONTWRITEBYTECODE='1');env.pop('PYTHONPATH',None);env.pop('PYTHONHOME',None)
+    return subprocess.call(command,cwd=W,env=env)
+
+
+if __name__=='__main__':raise SystemExit(main())

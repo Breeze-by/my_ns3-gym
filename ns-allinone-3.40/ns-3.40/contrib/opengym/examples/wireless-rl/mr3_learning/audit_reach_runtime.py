@@ -19,6 +19,7 @@ import struct
 import subprocess
 
 from . import initial_encoder_replay as encoder_replay
+from .motion_authority_profile import selected_motion_authority_profile
 
 
 ROBOTS = ("tb1", "tb2", "tb3")
@@ -441,13 +442,19 @@ class Inputs:
                 "bound artifact changed before verdict")
 
 
-def source_proof(root, freeze, *, reach_geometry_rule=DEFAULT_GEOMETRY_RULE):
+def source_proof(root, freeze, *, reach_geometry_rule=DEFAULT_GEOMETRY_RULE, motion_authority_profile=None):
     geometry_rule({"reach_geometry_rule": reach_geometry_rule, "safety_contract": CONTRACT})
     require(type(freeze) is str and re.fullmatch(r"[0-9a-f]{40}", freeze), "exact new source freeze required")
     proof = {}
     reader = str(Path(__file__).resolve().relative_to(root))
     extra = ("ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py",
              NATIVE+"launch/gazebo_multirobot_mapping_with_nav2.launch.py", reader)
+    if motion_authority_profile is not None:
+        selected_motion_authority_profile(dict(safety_contract=CONTRACT,
+            motion_authority_profile=motion_authority_profile), required=True)
+        extra += (PURE+"mr3_adapter.py", PURE+"mr3_protocol.py", PURE+"mr3_motion_authority.py",
+            str(Path(__file__).resolve().relative_to(root).parent/"motion_authority_audit.py"),
+            str(Path(__file__).resolve().relative_to(root).parent/"motion_authority_profile.py"))
     if reach_geometry_rule == SUPPORT_GEOMETRY_RULE:
         extra += (PURE+"mr3_reach_support.py", str(Path(__file__).with_name(
             "reach_support_replay.py").resolve().relative_to(root)))
@@ -936,7 +943,8 @@ def _phase_consumptions(consumed, component, request_id, indices):
 
 
 def _audit_records(metadata, motion, drivers, odometry_rows, physics, drive_worker,
-                   control_worker, information, release_ns, *, initial_encoder_helper_sha256=None):
+                   control_worker, information, release_ns, *, initial_encoder_helper_sha256=None,
+                   authority_adapter_rows=None, authority_transitions=None, original_protocol_class=None):
     """Artifact replay core; synthetic tests supply declared data, not Git credit."""
     epoch = metadata["epoch"]
     rule = geometry_rule(metadata)
@@ -961,6 +969,13 @@ def _audit_records(metadata, motion, drivers, odometry_rows, physics, drive_work
                     if actuation is not None else {})
     native = native_index(drivers, odometry_rows, epoch, **motor_kwargs)
     streams = ingress_index(motion, native, epoch, **geometry_kwargs)
+    authority_profile = selected_motion_authority_profile(metadata)
+    authority_summary = authority_context = None
+    if authority_profile is not None:
+        from . import motion_authority_audit
+        require(authority_adapter_rows is not None and authority_transitions is not None
+                and original_protocol_class is not None, "new authority profile lacks complete independent callback/owner replay inputs")
+        authority_summary, authority_context = motion_authority_audit.replay_motion(motion,native,epoch,release_ns)
     information_bundles = {digest(row["payload"]["message"]):row for row in information
                            if row.get("kind") == "state_publish"}
     groups = {}
@@ -1080,6 +1095,11 @@ def _audit_records(metadata, motion, drivers, odometry_rows, physics, drive_work
                                 and endpoints[0].get("node") == "velocity_smoother"
                                 and endpoints[0].get("topic_type") == "geometry_msgs/msg/Twist",
                                 "nonzero request is not the real local Nav2 smoother graph")
+                    if authority_profile is not None:
+                        permission = authority_context["gates"][robot].decision_permissions.get(decision["decision_sequence"])
+                        require(permission is not None and permission["permission"] == "normal_reach"
+                                or same(decision["decision"]["output"],[0.,0.]),
+                                "guard motion bypassed independently reconstructed receiving authority")
                     admitted_command(decision, own, states[robot], peers, clock, epoch, **geometry_kwargs)
                 else:
                     require(decision["decision"]["output"] == [0.,0.], "denied guard issued motion")
@@ -1138,7 +1158,16 @@ def _audit_records(metadata, motion, drivers, odometry_rows, physics, drive_work
             require(same(phases["peer"][0]["ack"]["state_commit"],phases["state"][0]["ack"]),
                     "actual joint phase dependency lineage differs")
     robots = {n:replay_robot(n,streams[n],native[n],epoch,release_ns,end) for n in ROBOTS}
+    if authority_profile is not None:
+        adapter_proof = motion_authority_audit.replay_adapter(authority_adapter_rows,authority_transitions,
+            epoch,authority_context,original_protocol_class)
+        authority_summary.update(schema="mr3-independent-motion-authority-episode-v1",passed=True,
+            epoch=epoch,adapter=adapter_proof,original_reach_mathematics_passed=True,
+            original_global_stop_debts_and_fixed_radius_passed=True)
     return {"passed":True,"contract":CONTRACT,"epoch":epoch,"window_ns":[release_ns,end],
+            **({"motion_authority_profile": authority_profile,
+                "independent_motion_authority_replay_passed": True,
+                "motion_authority_replay": authority_summary} if authority_profile is not None else {}),
             **geometry_kwargs,
             **({"geometry_certificate_semantics":"conditional sufficient separation; unchanged remaining runtime necessities"}
                if geometry_kwargs else {}),
@@ -1161,9 +1190,11 @@ def audit_episode(directory, expected_freeze=None):
     inputs = Inputs()
     metadata = inputs.read(directory,"metadata.json")
     actuation = selected_actuation_profile(metadata, required=True)
+    authority = selected_motion_authority_profile(metadata, required=True)
     supervisor = inputs.read(directory, "supervisor_metadata.json")
     require(supervisor.get("epoch") == metadata.get("epoch")
-            and selected_actuation_profile(supervisor, required=True) == actuation,
+            and selected_actuation_profile(supervisor, required=True) == actuation
+            and selected_motion_authority_profile(supervisor, required=True) == authority,
             "supervisor and native selected actuation profiles differ")
     rule = geometry_rule(metadata)
     geometry_kwargs = {"reach_geometry_rule": rule} if rule != DEFAULT_GEOMETRY_RULE else {}
@@ -1174,7 +1205,7 @@ def audit_episode(directory, expected_freeze=None):
     freeze = metadata["freeze"]
     require(expected_freeze is None or freeze == expected_freeze, "episode source freeze differs")
     root = Path(__file__).resolve().parents[7]
-    sources = source_proof(root,freeze, **geometry_kwargs)
+    sources = source_proof(root,freeze, motion_authority_profile=authority, **geometry_kwargs)
     transitions = inputs.read(directory,"transitions.jsonl",True)
     resets = [v for v in transitions if v.get("kind") == "reset"]
     require(len(resets)==1, "exactly one actual reset/release required")
@@ -1197,7 +1228,10 @@ def audit_episode(directory, expected_freeze=None):
         inputs.read(directory,"physics.jsonl",True),inputs.read(directory,"drive_phase_worker.jsonl",True),
         inputs.read(directory,"control_phase_worker.jsonl",True),inputs.read(directory,"information_states.jsonl",True),
         resets[0]["info"]["release_time_ns"],
-        initial_encoder_helper_sha256=sources[ENCODER_HEADER_SOURCE]["sha256"])
+        initial_encoder_helper_sha256=sources[ENCODER_HEADER_SOURCE]["sha256"],
+        authority_adapter_rows=inputs.read(directory,"adapter.jsonl",True),
+        authority_transitions=transitions,
+        original_protocol_class=__import__(__package__+".motion_authority_audit",fromlist=["original_protocol_class"]).original_protocol_class(root))
     inputs.close()
     result.update(source_proof=sources,artifact_proof=inputs.proof,freeze=freeze)
     return result

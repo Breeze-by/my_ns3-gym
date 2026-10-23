@@ -18,6 +18,8 @@ from mr3_learning import audit_reach_preparation as preparation
 from mr3_learning import audit_reach_ppo as policy_audit
 from mr3_learning import reach_preparation as plan_builder
 from mr3_learning import reach_policy_chain as policy
+from mr3_learning import audit_reach_reset_workload as workload
+from mr3_learning.tests.test_audit_reach_ppo import artificial_authority_report, PROFILE as AUTHORITY_PROFILE
 fixture = importlib.import_module('mr3_learning.tests.test_audit_reach_peer_control')
 motor_fixture = importlib.import_module('mr3_learning.tests.test_initial_encoder_replay')
 encoder = audit.encoder_replay
@@ -64,8 +66,64 @@ def new_fixture():
     return data
 
 
+def authority_fixture():
+    """Complete declared all-zero authority stream, not a bypassed oracle."""
+    data=new_fixture();data['metadata.json']['motion_authority_profile']=AUTHORITY_PROFILE
+    motion=data['motion_safety.jsonl'];motion[0]['payload'].update(
+        robots=list(audit.ROBOTS),motion_authority_profile=AUTHORITY_PROFILE)
+    def add(kind,payload,wall,clock):
+        motion.append(dict(schema='mr3-motion-safety-v1',epoch=EPOCH,record_sequence=0,kind=kind,
+            wall_monotonic_ns=wall,sim_time_sec=clock/1e9,payload=payload))
+    def feed(robot,kind,message,wall,clock):
+        identity=graph(robot)
+        identity['topic']=f'/{robot}/mr3_drive/'+dict(applied='applied',storage='status',calibration='odometry_calibration')[kind]
+        add('reach_driver_ingress',dict(robot=robot,kind=kind,message=message,
+            raw_json=encoder.canonical(message),publisher_identity=identity),wall,clock)
+    for j,robot in enumerate(audit.ROBOTS):
+        identity=graph(robot);identity['topic']=f'/{robot}/mr3/motion_authority'
+        identity['endpoints'][0].update(node_name='mr3_adapter',node_namespace='/')
+        add('authority_configuration',dict(robot=robot,motion_authority_profile=AUTHORITY_PROFILE,
+            publisher_identity=identity,scope='unique graph endpoint binding only; not packet authentication'),6+j,fixture.T0)
+        odoms=[dict(schema='mr3-world-odometry-publication-v1',epoch=EPOCH,robot=robot,kind='configuration',
+            record_sequence=1,provider='WORLD',period_ns=20_000_000,phase='world_update_begin_before_actuation')]
+        for n,source in enumerate((fixture.sample.SOURCE,fixture.sample.SOURCE+20_000_000,fixture.sample.SOURCE+40_000_000),1):
+            raw=fixture.odom(robot);raw['header']['stamp']=fixture.sample.stamp(source)
+            odoms.append(dict(schema='mr3-world-odometry-publication-v1',epoch=EPOCH,robot=robot,kind='publication',
+                record_sequence=n+1,publication_sequence=n,source_clock_ns=source,sim_time_ns=source,odometry=raw,
+                odom_published=True,odom_tf_published=True,publication_scope='actual_publisher_calls_returned_not_delivery'))
+            wall=(13,235,580)[n-1];clock=(fixture.T0,fixture.RELEASE,fixture.FINAL)[n-1]
+            if n>1:add('own_odom',dict(robot=robot,input_sequence=n,message=copy.deepcopy(raw)),wall,clock)
+            calibration=fixture.sample.calibration(robot)
+            calibration.update(source_clock_ns=source,publication_sequence=n,odometry=copy.deepcopy(raw))
+            feed(robot,'calibration',calibration,wall+1,clock)
+        data['odometry_'+robot+'.jsonl']=odoms
+        for row in data['drive_'+robot+'.jsonl']:
+            if row['kind']!='command_received':continue
+            seq=row['cmd_seq'];clock=row['sim_time_ns']
+            feed(robot,'storage',dict(schema='mr3-drive-target-consumed-v1',epoch=EPOCH,robot=robot,
+                clock_ns=clock,source_clock_ns=row['target_clock_ns'],decision_sequence=row['target_decision_sequence'],
+                cmd_seq=seq,linear_x=0.,angular_z=0.),{1:39,2:343,3:639}[seq],clock)
+    for row in motion:
+        if row['kind']!='reach_decision':continue
+        value=row['payload'];value.update(motion_authority_profile=AUTHORITY_PROFILE,effective_request=[0.,0.],
+            motion_authority=dict(effective_request=[0.,0.],permission='zero_only',authority_sequence=0,owner=None,
+                state='NONE',fault=None,callback_floor=0,raw_input_sequence=None,raw_goal_generation=None,
+                raw_goal_association='UNKNOWN_UNSTAMPED_TWIST',
+                claim='receiving permission only; callback floor is not generation time'))
+    motion.sort(key=lambda row:row['wall_monotonic_ns'])
+    for n,row in enumerate(motion,1):row['record_sequence']=n
+    data['adapter.jsonl']=[dict(epoch=EPOCH,stamp=fixture.T0/1e9,kind='authority_configuration',payload=dict(
+        motion_authority_profile=AUTHORITY_PROFILE,six_navigation_phases_unchanged=True,
+        worker_quantum_ack_barrier=False,raw_goal_generation=None,raw_goal_association='UNKNOWN_UNSTAMPED_TWIST'))]
+    data['supervisor_metadata.json']=dict(data['metadata.json'])
+    data['benchmark_metadata.json']=dict(preparation_motion_probe=False)
+    return data
+
+
 def context(data):
     return {'actuation_profile': PROFILE, 'epoch': EPOCH, 'freeze': FREEZE,
+            **({'motion_authority_profile':data['metadata.json']['motion_authority_profile']}
+               if 'motion_authority_profile' in data['metadata.json'] else {}),
             'helper_sha256': SHA,
             'reach_build_bridge_proof': {'actuation_profile': PROFILE,
                 'new_build_executed': True,
@@ -179,7 +237,7 @@ class NewPrefixTests(unittest.TestCase):
         self.assertTrue(encoder.check_applied_receipt(value.messages[-1], proof))
 
     def test_public_episode_route_requires_context_and_reaches_real_fifo(self):
-        data = new_fixture()
+        data = authority_fixture()
         with tempfile.TemporaryDirectory() as temp:
             directory = Path(temp); write_fixture(directory, data)
             with patch.object(audit, 'native_profile_context', return_value=context(data)) as selected:
@@ -199,16 +257,18 @@ class NewPrefixTests(unittest.TestCase):
             called.assert_called_once_with(Path(temp), FREEZE, plan_path=Path('/synthetic/plan.json'))
 
     def test_context_reuses_real_source_and_native_binding_configuration_apis(self):
-        data = new_fixture(); proof = context(data)
+        data = authority_fixture(); proof = context(data)
         configs = [{'path': '/synthetic/drive_' + robot + '.jsonl', 'configuration': row}
                    for robot, rows in proof['configurations'].items() for row in rows.values()]
         read = Mock(); read.bindings = {'synthetic': {'sha256': '0' * 64}}
         bound = {'document': {'actuation_profile': PROFILE,
+                   'safety_contract':'mr3-reach-v1','motion_authority_profile':AUTHORITY_PROFILE,
                    'initial_encoder_compiled_source': {'sha256': SHA}},
                  'reader': read, 'path': '/synthetic/binding.json', 'sha256': '2' * 64,
                  'reach_build_bridge_proof': proof['reach_build_bridge_proof']}
         native = SimpleNamespace(load_binding=Mock(return_value=bound), configurations=Mock(return_value=configs))
-        plan = {'actuation_profile': PROFILE, 'custody_binding': '/synthetic/binding.json'}
+        plan = {'actuation_profile': PROFILE,'safety_contract':'mr3-reach-v1',
+                'motion_authority_profile':AUTHORITY_PROFILE,'custody_binding': '/synthetic/binding.json'}
         with patch.object(plan_builder, 'load_plan', return_value=plan) as loaded, \
              patch.object(plan_builder, 'source_check', return_value={'synthetic': 'source'}) as source, \
              patch.object(audit.custody, 'load_implementation', return_value=(native, {})):
@@ -235,11 +295,13 @@ class NewPrefixTests(unittest.TestCase):
             called.assert_called_once_with(Path(temp) / 'episode', plan_path=plan_path)
 
     def test_public_full_audit_route_reaches_real_new_profile_peer_prefix(self):
-        data = new_fixture()
+        data = authority_fixture()
         with tempfile.TemporaryDirectory() as temp:
             directory = Path(temp) / 'episode'; directory.mkdir()
             write_fixture(directory, data)
-            plan_path = Path(temp) / 'plan.json'; plan_path.write_text('{}')
+            plan_path = Path(temp) / 'plan.json'; plan_path.write_text(json.dumps(dict(
+                safety_contract='mr3-reach-v1',motion_authority_profile=AUTHORITY_PROFILE,
+                reset_workload_reader_profile=workload.PROFILE)))
             loaded, proof = preparation.load_impl(plan_path)
             # The full task/native evaluator is outside this artificial route
             # test. Its callback invokes the actual projected motion hook and
@@ -253,18 +315,20 @@ class NewPrefixTests(unittest.TestCase):
             selected.assert_called_once_with(directory, data['metadata.json'], plan_path)
 
     def test_full_ppo_episode_conjunction_forwards_plan(self):
-        shared = {'passed': True, 'safety_contract': 'mr3-reach-v1', 'freeze': FREEZE}
-        native_runtime = {'passed': True, 'contract': 'mr3-reach-v1', 'freeze': FREEZE,
-                          'independent_necessary_replay': True, 'continuous_physical_model_proved': False}
+        shared = artificial_authority_report(safety_contract='mr3-reach-v1',freeze=FREEZE)
+        native_runtime = artificial_authority_report(contract='mr3-reach-v1',freeze=FREEZE,
+                          independent_necessary_replay=True,continuous_physical_model_proved=False)
         archive = SimpleNamespace(audit_archives=Mock(return_value=shared), audit_activity=Mock(return_value=shared),
                                   audit_execution_inputs=Mock(return_value=shared))
-        with patch.object(policy_audit.audit_reach_information, 'audit_episode', return_value=shared), \
+        with tempfile.TemporaryDirectory() as temp, patch.object(policy_audit.audit_reach_information, 'audit_episode', return_value=shared), \
              patch.object(policy_audit.audit_reach_runtime, 'audit_episode', return_value=native_runtime), \
              patch.object(audit, 'audit_episode', return_value=shared) as called:
-            result = policy_audit.audit_episode_conjunction('/synthetic/episode', FREEZE, archive,
+            directory=Path(temp)
+            (directory/'metadata.json').write_text(json.dumps(dict(safety_contract='mr3-reach-v1',motion_authority_profile=AUTHORITY_PROFILE)))
+            result = policy_audit.audit_episode_conjunction(directory, FREEZE, archive,
                                                            plan_path=Path('/synthetic/plan.json'))
         self.assertTrue(result['passed'], result['errors'])
-        called.assert_called_once_with(Path('/synthetic/episode'), FREEZE, plan_path=Path('/synthetic/plan.json'))
+        called.assert_called_once_with(directory, FREEZE, plan_path=Path('/synthetic/plan.json'))
 
     def test_policy_public_fifo_jobs_include_plan_only_for_selected_new_profile(self):
         plan = {'learner_python': '/synthetic/python', 'custody_binding': '/synthetic/binding.json',

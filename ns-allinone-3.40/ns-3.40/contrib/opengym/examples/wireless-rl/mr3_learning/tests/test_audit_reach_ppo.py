@@ -10,12 +10,23 @@ from unittest.mock import patch
 
 from mr3_learning import audit_ppo as original
 from mr3_learning import audit_reach_ppo as entry
+from mr3_learning.tests.test_motion_authority_metadata import artificial_qualification, PROFILE
 
 
 FREEZE = "a"*40
 
 
 def digest(raw): return hashlib.sha256(raw).hexdigest()
+
+
+def artificial_authority_report(**extra):
+    """Declared mocked role output only; never actual scientific credit."""
+    return dict(passed=True,motion_authority_profile=PROFILE,
+        independent_motion_authority_replay_passed=True,motion_authority_replay=dict(
+            schema='mr3-independent-motion-authority-episode-v1',passed=True,profile=PROFILE,
+            raw_generation_known=False,original_global_stop_debts_and_fixed_radius_passed=True,
+            adapter=dict(original_six_phase_protocol_replayed=True),
+            robots={name:dict(passed=True) for name in ('tb1','tb2','tb3')}),**extra)
 
 
 class ReachPPOAuditTests(unittest.TestCase):
@@ -25,18 +36,23 @@ class ReachPPOAuditTests(unittest.TestCase):
         qualification, plan = root/"qualification.json", root/"plan.json"
         qualification.write_text('{"fixture":"validator is independently mocked"}')
         relative = Path(entry.__file__).resolve().relative_to(entry.WORKSPACE)
-        plan.write_text(json.dumps({"source_bindings": {str(relative): digest(Path(entry.__file__).read_bytes())}}))
+        plan.write_text(json.dumps({"safety_contract":entry.CONTRACT,"motion_authority_profile":PROFILE,
+            "source_bindings": {str(relative): digest(Path(entry.__file__).read_bytes())}}))
         metadata = {"freeze": FREEZE, "safety_contract": entry.CONTRACT,
+                    "motion_authority_profile":PROFILE,
                     "reach_plan": str(plan), "reach_qualification": str(qualification),
                     "reach_plan_sha256": digest(plan.read_bytes()),
                     "reach_qualification_sha256": digest(qualification.read_bytes())}
         (root/"metadata.json").write_text(json.dumps(metadata))
-        (root/"summary.json").write_text(json.dumps({"freeze": FREEZE, "safety_contract": entry.CONTRACT}))
+        (root/"summary.json").write_text(json.dumps({"freeze": FREEZE, "safety_contract": entry.CONTRACT,
+            "motion_authority_profile":PROFILE}))
         native = root/"native/round0001/worker0/episode001_open_101"; native.mkdir(parents=True)
         (native/"metadata.json").write_text(json.dumps({"freeze": FREEZE, "safety_contract": entry.CONTRACT,
+            "motion_authority_profile":PROFILE,
             "execution_phase_protocol": "mr3-controlled-execution-phase-v2",
             "reset_handshake": "paused-controlled-state-peer-guard-storage-v2"}))
-        (native/"supervisor_metadata.json").write_text('{}\n')
+        (native/"supervisor_metadata.json").write_text(json.dumps(dict(safety_contract=entry.CONTRACT,
+            motion_authority_profile=PROFILE)))
         result = {"passed": True, "errors": [], "native_attempts": 1, "task_successes": 1,
                   "episodes": [{"directory": str(native), "epoch": "fixture", "errors": [], "task": {"success": True}}]}
         return root, native, metadata, result
@@ -46,13 +62,13 @@ class ReachPPOAuditTests(unittest.TestCase):
         preparation = SimpleNamespace(audit_archives=passed, audit_activity=passed, audit_execution_inputs=passed)
         info = information or (lambda *args: {"passed": True, "safety_contract": entry.CONTRACT, "freeze": FREEZE})
         return (
-            patch("mr3_learning.reach_preparation.validate_qualification", return_value={"fixture_only": True}),
+            patch("mr3_learning.reach_preparation.validate_qualification", return_value=artificial_qualification()),
             patch.object(entry, "load_impl", return_value=(SimpleNamespace(audit_run=lambda *args: copy.deepcopy(result)), {})),
             patch.object(entry.audit_reach_preparation, "load_impl", return_value=(preparation, {})),
             patch.object(entry.audit_reach_information, "audit_episode", side_effect=info),
-            patch.object(entry.audit_reach_peer_control, "audit_episode", return_value={"passed": True, "safety_contract": entry.CONTRACT, "freeze": FREEZE}),
-            patch.object(entry.audit_reach_runtime, "audit_episode", return_value={"passed": True, "contract": entry.CONTRACT, "freeze": FREEZE,
-                "independent_necessary_replay": True, "continuous_physical_model_proved": False}),
+            patch.object(entry.audit_reach_peer_control, "audit_episode", return_value=artificial_authority_report(safety_contract=entry.CONTRACT,freeze=FREEZE)),
+            patch.object(entry.audit_reach_runtime, "audit_episode", return_value=artificial_authority_report(contract=entry.CONTRACT,freeze=FREEZE,
+                independent_necessary_replay=True,continuous_physical_model_proved=False)),
         )
 
     def test_private_reader_preserves_whole_source_math_and_original_global_dispatch(self):
@@ -81,10 +97,11 @@ class ReachPPOAuditTests(unittest.TestCase):
 
     def test_qualification_uses_shared_validator_and_exact_original_metadata_bytes(self):
         root, _, metadata, _ = self.fixture()
-        with patch("mr3_learning.reach_preparation.validate_qualification", return_value={"verified": "fixture"}) as validate:
+        expected=dict(artificial_qualification(),verified='fixture')
+        with patch("mr3_learning.reach_preparation.validate_qualification", return_value=expected) as validate:
             plan, qualification, saved, proof = entry.admission(metadata, FREEZE)
             validate.assert_called_once_with(qualification, plan, FREEZE, root=entry.WORKSPACE)
-            self.assertEqual(proof, {"verified": "fixture"})
+            self.assertEqual(proof, expected)
             self.assertEqual(set(saved), {plan, qualification})
             for field in ("reach_plan_sha256", "reach_qualification_sha256"):
                 bad = dict(metadata); bad[field] = "0"*64
@@ -114,12 +131,12 @@ class ReachPPOAuditTests(unittest.TestCase):
         self.assertIn("original rollout GAE mismatch", report["errors"])
         self.assertTrue(report["reach_episodes"][0]["passed"])
         self.assertEqual(set(report["reach_episodes"][0])-{ "directory", "passed", "errors"},
-                         {"information", "runtime_drive", "peer_control_fifo", "observation_archives", "activity", "execution_inputs"})
+                         {"information", "runtime_drive", "peer_control_fifo", "observation_archives", "activity", "execution_inputs", "motion_authority_profile"})
 
     def test_old_profile_and_mixed_native_attempt_reject_before_policy_replay(self):
         root, native, metadata, result = self.fixture()
         with patch.object(entry, "load_impl") as policy, \
-                patch("mr3_learning.reach_preparation.validate_qualification", return_value={}):
+                patch("mr3_learning.reach_preparation.validate_qualification", return_value=artificial_qualification()):
             mixed = json.loads((native/"metadata.json").read_text()); mixed["safety_contract"] = "legacy"
             (native/"metadata.json").write_text(json.dumps(mixed))
             with self.assertRaisesRegex(ValueError, "mixed/legacy"):

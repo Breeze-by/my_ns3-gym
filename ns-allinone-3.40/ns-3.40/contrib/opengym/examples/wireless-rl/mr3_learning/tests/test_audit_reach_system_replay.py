@@ -16,6 +16,7 @@ from unittest.mock import Mock, patch
 
 from mr3_learning import audit_reach_preparation as audit
 from mr3_learning import audit_reach_ppo, reach_policy_chain
+from mr3_learning.tests.test_audit_reach_ppo import artificial_authority_report, PROFILE
 
 
 FREEZE = "a" * 40
@@ -30,7 +31,8 @@ class SystemExactReplayTests(unittest.TestCase):
         self.directory = Path(self.temporary.name) / "artificial"
         self.directory.mkdir()
         self.metadata = {"freeze": FREEZE, "epoch": "artificial", "seed_rule": SEED,
-                         "start_graph_rule": START}
+                         "start_graph_rule": START,"safety_contract":"mr3-reach-v1",
+                         "motion_authority_profile":PROFILE}
         self.write_metadata()
 
     def write_metadata(self):
@@ -185,9 +187,9 @@ class SystemExactReplayTests(unittest.TestCase):
             archives = loaded.audit_archives(self.directory)
             self.assertFalse(archives["passed"])
             self.assertEqual(archives["exact_seed_full_replay"], failed)
-            shared = {"passed": True, "errors": [], "safety_contract": "mr3-reach-v1", "freeze": FREEZE}
-            runtime = {"passed": True, "errors": [], "contract": "mr3-reach-v1", "freeze": FREEZE,
-                       "independent_necessary_replay": True, "continuous_physical_model_proved": False}
+            shared = artificial_authority_report(errors=[],safety_contract='mr3-reach-v1',freeze=FREEZE)
+            runtime = artificial_authority_report(errors=[],contract='mr3-reach-v1',freeze=FREEZE,
+                       independent_necessary_replay=True,continuous_physical_model_proved=False)
             with patch.object(audit_reach_ppo.audit_reach_information, "audit_episode", return_value=shared), \
                     patch.object(audit_reach_ppo.audit_reach_peer_control, "audit_episode", return_value=shared), \
                     patch.object(audit_reach_ppo.audit_reach_runtime, "audit_episode", return_value=runtime):
@@ -209,7 +211,7 @@ class SystemExactReplayTests(unittest.TestCase):
         relatives = [learner / name for name in (
             "__init__.py", "audit_seed_inputs.py", "navigation_archive.py", "reach_gates.py",
             "reach_audit_projection.py", "audit_reach_sensor_model.py", "native_custody.py",
-            "supervisor.py", "ipc.py", "tests/__init__.py", "tests/test_audit_seed_inputs.py")]
+            "supervisor.py", "motion_authority_profile.py", "ipc.py", "tests/__init__.py", "tests/test_audit_seed_inputs.py")]
         relatives += [component / name for name in (
             "__init__.py", "mr3_observation.py", "mr3_episode.py", "mr3_seed_certificate.py",
             "mr3_reach_geometry.py", "mr3_point_graph.py")]
@@ -277,7 +279,7 @@ print(json.dumps({"python":sys.executable,"numpy_version":numpy.__version__,"num
         self.assertTrue(result["passed"], result)
         self.assertEqual(result["exact_full_snapshot_replays"], 1)
         self.assertEqual(result["freeze"], freeze)
-        self.assertEqual(len(result["source_proof"]), 10)
+        self.assertEqual(len(result["source_proof"]), 11)
         for relative, proof in result["source_proof"].items():
             self.assertEqual(proof["sha256"], hashlib.sha256(source_bytes[relative]).hexdigest())
             self.assertEqual(proof["git_source"], freeze + ":" + relative)
@@ -287,23 +289,24 @@ print(json.dumps({"python":sys.executable,"numpy_version":numpy.__version__,"num
         self.assertEqual(receipt["child_identity"]["parent"], os.getpid())
         self.assertFalse(marker.exists())
         # A real worktree/freeze mismatch must still fail the unchanged reader.
-        supervisor_relative = str(learner / "supervisor.py")
-        supervisor = isolated_root / supervisor_relative
-        try:
-            supervisor.write_bytes(source_bytes[supervisor_relative] + b"\n# artificial source mismatch\n")
-            with patch.object(audit, "WIRELESS", isolated_wireless), \
-                    patch.dict(os.environ, poisoned_env, clear=True):
-                mismatched = audit.audit_exact_seed_inputs_system(self.directory,
-                    seed_rule=SEED, start_graph_rule=START)
-            self.assertFalse(mismatched["passed"], mismatched)
-            mismatch_result = json.loads(mismatched["system_python_execution"]["result_json"])
-            self.assertFalse(mismatch_result["passed"])
-            self.assertIn("reader/source differs from native freeze: " + supervisor_relative,
-                          " ".join(mismatch_result["errors"]))
-            self.assertTrue(mismatched["system_python_execution"]["actual_waited"])
-            self.assertEqual(mismatched["system_python_execution"]["returncode"], 1)
-        finally:
-            supervisor.write_bytes(source_bytes[supervisor_relative])
+        for dependency in ("supervisor.py", "motion_authority_profile.py"):
+            supervisor_relative = str(learner / dependency)
+            supervisor = isolated_root / supervisor_relative
+            try:
+                supervisor.write_bytes(source_bytes[supervisor_relative] + b"\n# artificial source mismatch\n")
+                with patch.object(audit, "WIRELESS", isolated_wireless), \
+                        patch.dict(os.environ, poisoned_env, clear=True):
+                    mismatched = audit.audit_exact_seed_inputs_system(self.directory,
+                        seed_rule=SEED, start_graph_rule=START)
+                self.assertFalse(mismatched["passed"], mismatched)
+                mismatch_result = json.loads(mismatched["system_python_execution"]["result_json"])
+                self.assertFalse(mismatch_result["passed"])
+                self.assertIn("reader/source differs from native freeze: " + supervisor_relative,
+                              " ".join(mismatch_result["errors"]))
+                self.assertTrue(mismatched["system_python_execution"]["actual_waited"])
+                self.assertEqual(mismatched["system_python_execution"]["returncode"], 1)
+            finally:
+                supervisor.write_bytes(source_bytes[supervisor_relative])
         self.assertFalse(marker.exists())
         print(json.dumps({"artificial_system_replay_regression": "PASS", "dependencies": dependencies,
             "artificial_source_freeze": freeze, "source_mismatch_rejected": True,

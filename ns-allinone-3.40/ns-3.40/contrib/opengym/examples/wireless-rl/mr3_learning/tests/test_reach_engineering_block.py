@@ -18,6 +18,7 @@ from mr3_learning import ppo, reach_gates, reach_preparation as prep
 from mr3_learning.initial_encoder_replay import PROFILE as ACTUATION_PROFILE
 from mr3_learning.tests import test_reach_qualification as bookkeeping
 from mr3_learning.tests import test_reach_training_admission as training
+from mr3_learning.tests.test_motion_authority_metadata import artificial_qualification, PROFILE as AUTHORITY_PROFILE
 
 FREEZE = "a" * 40
 
@@ -63,10 +64,11 @@ class EngineeringBlockTests(unittest.TestCase):
             run_root=self.root / "native", custody_binding=self.root / "binding.json",
             binary_proof=self.root / "binary.json", preflight=self.root / "preflight.json")
 
-    def build(self, *, actuation_profile=None):
+    def build(self, *, actuation_profile=None, motion_authority_profile=None):
         return prep.build_plan(**self.kwargs(), engineering_remaining_seconds="40000",
             reservation_profile=prep.AUTONOMOUS_RESOURCE_PROFILE,
-            engineering_resource=self.spec(self.resource_path), actuation_profile=actuation_profile)
+            engineering_resource=self.spec(self.resource_path), actuation_profile=actuation_profile,
+            motion_authority_profile=motion_authority_profile)
 
     def test_default_and_old_bounded_plan_fields_remain_unchanged(self):
         original = prep.build_plan(**self.kwargs(), engineering_remaining_seconds="20000")
@@ -234,11 +236,13 @@ class EngineeringBlockTests(unittest.TestCase):
             binding_path = self.kwargs()["custody_binding"]
             binding = json.loads(binding_path.read_text())
             binding["actuation_profile"] = actuation_profile
+            binding.update(safety_contract=prep.CONTRACT,motion_authority_profile=AUTHORITY_PROFILE)
             bookkeeping.write(binding_path, binding)
-        self.fixture.plan = self.build(actuation_profile=actuation_profile)
+        self.fixture.plan = self.build(actuation_profile=actuation_profile,
+            motion_authority_profile=AUTHORITY_PROFILE if actuation_profile is not None else None)
         if actuation_profile is not None:
             self.fixture.plan["policy_stages"] = {
-                name: {"actuation_profile": actuation_profile, "fixture_only": True}
+                name: {"actuation_profile": actuation_profile,"motion_authority_profile":AUTHORITY_PROFILE,"fixture_only": True}
                 for name in ("minimum", "pilot", "validation")}
         bookkeeping.write(self.plan_path, self.fixture.plan)
         self.fixture.evidence()
@@ -300,13 +304,14 @@ class EngineeringBlockTests(unittest.TestCase):
 
     def test_missing_or_wrong_actuation_profile_rejects_before_ppo_side_effects(self):
         for profile in (None, "unknown", "measured_joint_rim_paired_common_fraction_v1"):
-            plan = {"seed_rule": "legacy", "start_graph_rule": "original-seed-cell"}
+            plan = {"seed_rule": "legacy", "start_graph_rule": "original-seed-cell",
+                    "safety_contract":prep.CONTRACT,"motion_authority_profile":AUTHORITY_PROFILE}
             if profile is not None:
                 plan["actuation_profile"] = profile
             with self.subTest(profile=profile), contextlib.ExitStack() as stack:
                 guards = self.ppo_guards(stack)
                 guards[0].side_effect = AdmissionBoundaryReached
-                stack.enter_context(patch.object(prep, "validate_qualification", return_value={"passed": True}))
+                stack.enter_context(patch.object(prep, "validate_qualification", return_value=artificial_qualification()))
                 stack.enter_context(patch.object(prep, "load_plan", return_value=plan))
                 stack.enter_context(contextlib.redirect_stderr(io.StringIO()))
                 with self.assertRaises(SystemExit) as error:

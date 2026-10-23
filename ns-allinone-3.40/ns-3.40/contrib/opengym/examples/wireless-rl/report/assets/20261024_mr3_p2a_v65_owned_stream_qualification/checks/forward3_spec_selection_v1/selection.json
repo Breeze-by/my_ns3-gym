@@ -1,0 +1,19 @@
+{
+  "reason": "New source and fixture forward3; preserve unused sealed v1 and failed executed source-v2 unchanged. Groups v2 are independent directories. Binding includes the already validated fresh filesystem Python union, avoiding a new-file Git-add timing gap in custody.",
+  "old_source_spec": "fresh_cpu_spec_v2.json",
+  "new_source_spec": "fresh_cpu_spec_v3.json",
+  "source_files": [
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v65_owned_stream_qualification/run_fresh_cpu_v1.py",
+      "before_sha256": "ebb754cc3b45b76190cc77bec41eb1a3a5985d8dc19d05f3ebc724d591d7be11",
+      "after_sha256": "d70d65174a3d6d9838c8ebd46c0bebba499a04ed6b31441a858b95a269a3506f"
+    },
+    {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v65_owned_stream_qualification/prepare_plan_v1.py",
+      "before_sha256": "89060c28e48597c5ef00d03a8ddeac0309241e6a3ef5cbc966ef0734d2e21e01",
+      "after_sha256": "a017df9b1b6210d0b8c1ec6f29f0d6bac5072b366929599f9ab84e13a672e5e0"
+    }
+  ],
+  "old_CPU_originals_overwritten": false,
+  "native_runs": 0
+}

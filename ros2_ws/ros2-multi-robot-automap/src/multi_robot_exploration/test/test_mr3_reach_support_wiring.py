@@ -9,6 +9,7 @@ import pytest
 from launch import LaunchContext
 from rclpy.node import Node
 from multi_robot_exploration import motion_safety as guard
+from multi_robot_exploration.mr3_motion_authority import PROFILE as MOTION_AUTHORITY_PROFILE
 from test_mr3_adapter_launch import configured_launch
 from test_mr3_worker_bootstrap import WORKER
 
@@ -20,7 +21,8 @@ REACH_LAUNCH = {'execution_mode': 'adapter', 'mr3_stepped': 'true',
 def fake_motion_constructor(monkeypatch, *, rule=None, supplied=True, contract='mr3-reach-v1'):
     records, created = [], []
     values = {'episode_epoch': 'cpu-epoch', 'stepped_mode': contract == 'mr3-reach-v1',
-              'safety_contract': contract}
+              'safety_contract': contract,
+              'motion_authority_profile': MOTION_AUTHORITY_PROFILE if contract == 'mr3-reach-v1' else ''}
     if supplied:
         values['reach_geometry_rule'] = rule
     monkeypatch.setattr(Node, '__init__', lambda self, name: None)
@@ -107,7 +109,8 @@ def test_worker_rejects_invalid_reset_rule_before_any_node_or_process(tmp_path, 
     monkeypatch.setattr(WORKER, 'protocol_version', lambda value:
                         (_ for _ in ()).throw(AssertionError('passed early rule validation')))
     request = {'epoch': 'cpu-epoch', 'scene': 'open', 'seed': 101,
-               'safety_contract': 'mr3-reach-v1', 'reach_geometry_rule': value}
+               'safety_contract': 'mr3-reach-v1', 'motion_authority_profile': MOTION_AUTHORITY_PROFILE,
+               'reach_geometry_rule': value}
     with pytest.raises(ValueError, match='reach_geometry_rule'):
         WORKER.Worker(tmp_path, request)
     assert list(tmp_path.iterdir()) == []
@@ -130,7 +133,8 @@ def worker_launch_tail(tmp_path, monkeypatch, rule):
     tail = ast.Module(body=copy.deepcopy(init.body[start:end]), type_ignores=[])
     ast.fix_missing_locations(tail)
     owner = SimpleNamespace(epoch='cpu-epoch', scene='open', seed=101,
-        safety_contract='mr3-reach-v1', reach_geometry_rule=rule,
+        safety_contract='mr3-reach-v1', motion_authority_profile=MOTION_AUTHORITY_PROFILE,
+        reach_geometry_rule=rule,
         seed_rule='exact-point-bridge-v2', start_graph_rule='point-attachment-3x3-v1',
         terminal_probe=False, plant_stimulus_arm=None, plant_stimulus_work_deadline_ns=None,
         transport_environment={}, control_version=2,
@@ -165,7 +169,8 @@ def test_worker_validates_and_keeps_exact_reset_selection_before_io(tmp_path, mo
     owner = WORKER.Worker.__new__(WORKER.Worker)
     with pytest.raises(BeforeIO):
         WORKER.Worker.__init__(owner, tmp_path, {'epoch':'cpu-epoch','scene':'open','seed':101,
-            'safety_contract':'mr3-reach-v1','reach_geometry_rule':rule})
+            'safety_contract':'mr3-reach-v1','motion_authority_profile':MOTION_AUTHORITY_PROFILE,
+            'reach_geometry_rule':rule})
     assert owner.reach_geometry_rule == rule
     assert list(tmp_path.iterdir()) == []
 
@@ -178,5 +183,6 @@ def test_old_reset_without_rule_keeps_binary_default_before_io(tmp_path, monkeyp
     owner = WORKER.Worker.__new__(WORKER.Worker)
     with pytest.raises(BeforeIO):
         WORKER.Worker.__init__(owner, tmp_path, {'epoch':'cpu-epoch','scene':'open','seed':101,
-                                               'safety_contract':'mr3-reach-v1'})
+                                               'safety_contract':'mr3-reach-v1',
+                                                'motion_authority_profile':MOTION_AUTHORITY_PROFILE})
     assert owner.reach_geometry_rule == 'binary-cone-v1'

@@ -99,6 +99,10 @@ def stage_spec(plan, plan_path, qualification_path, stage):
     require(stage in STAGES and type(plan.get("policy_stages")) is dict
             and set(plan["policy_stages"]) == set(STAGES), "complete explicit policy stage registry required")
     spec = plan["policy_stages"][stage]
+    from .motion_authority_profile import selected_motion_authority_profile
+    authority = selected_motion_authority_profile(plan)
+    require(spec.get('motion_authority_profile') == authority,
+            'policy stage receiving authority differs from native qualification plan')
     require(custody.initial_encoder_profile(spec) == custody.initial_encoder_profile(plan),
             "policy stage actuation profile differs from the native qualification plan")
     require(type(spec) is dict and decimal(spec["wall_seconds"]) == CAPS[stage]
@@ -234,6 +238,18 @@ def check_native_result(stage, metadata, native, audit, episodes, spec):
     require(metadata.get("start_graph_rule", "original-seed-cell") == start_graph_rule_from_argv(spec["argv"]),
             "native PPO start graph rule differs from its declared stage")
     actuation = custody.initial_encoder_profile(spec)
+    from .motion_authority_profile import selected_motion_authority_profile
+    from .motion_authority_audit import require_episode_proof
+    authority = spec.get('motion_authority_profile')
+    require(selected_motion_authority_profile(metadata) == selected_motion_authority_profile(native) == authority,
+            'policy native metadata/summary receiving authority differs from stage')
+    if authority is not None:
+        reports = audit.get('reach_episodes')
+        require(type(reports) is list and len(reports) == len(episodes),
+                'policy full audit omitted independent authority episodes')
+        for report in reports:
+            require_episode_proof(report.get('runtime_drive'),authority)
+            require_episode_proof(report.get('peer_control_fifo'),authority)
     require(custody.initial_encoder_profile(metadata) == custody.initial_encoder_profile(native) == actuation,
             "PPO metadata/native actuation profile differs from its declared stage")
     if actuation is not None:
@@ -282,6 +298,7 @@ def check_native_result(stage, metadata, native, audit, episodes, spec):
                 and audit.get("task_successes") == 3 and audit.get("task_failures") == [],
                 "final-only validation requires all three original open seeds strict successes and zero updates")
     return {"eligible_decisions": decisions, "api_records": native["api_records"], "optimizer_updates": updates,
+            **({'motion_authority_profile':authority} if authority is not None else {}),
             "native_attempts": len(episodes), "strict_task_successes": audit.get("task_successes"),
             **({"actuation_profile":actuation} if actuation is not None else {}),
             **({"reach_geometry_rule": geometry_rule} if geometry_rule != BINARY_REACH_GEOMETRY_RULE else {})}
@@ -316,6 +333,11 @@ def execute_stage(plan_path, freeze, qualification_path, stage, workspace=WORKSP
     require(not output.exists() and not run.exists(), "policy output/run already exists; no retry/overwrite")
     preparation.source_check(plan, plan_path, freeze, workspace, require_clean=True)
     qualification = preparation.validate_qualification(qualification_path, plan_path, freeze, root=workspace)
+    from .motion_authority_profile import selected_motion_authority_profile, require_qualified_motion_authority
+    authority = selected_motion_authority_profile(plan)
+    require(selected_motion_authority_profile(qualification) == authority,
+            'policy admission qualification receiving authority differs')
+    if authority is not None:require_qualified_motion_authority(qualification)
     require(custody.initial_encoder_profile(qualification) == custody.initial_encoder_profile(plan),
             "policy admission qualification actuation profile differs")
     predecessor = _validate_predecessor(plan, plan_path, qualification_path, freeze, stage, workspace)

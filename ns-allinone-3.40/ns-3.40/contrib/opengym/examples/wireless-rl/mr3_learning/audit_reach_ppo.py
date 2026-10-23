@@ -69,6 +69,12 @@ def admission(metadata, freeze, plan_path=None, qualification_path=None, *, root
         require(metadata.get(name+"_sha256") == sha(snapshots[path]),
                 name+" bytes differ from original PPO admission metadata")
     proof = validate_qualification(qualification_path, plan_path, freeze, root=Path(root))
+    from .motion_authority_profile import selected_motion_authority_profile, require_qualified_motion_authority
+    authority = selected_motion_authority_profile(metadata,required=True)
+    require(selected_motion_authority_profile(json.loads(snapshots[plan_path]),required=True) == authority
+            and selected_motion_authority_profile(proof,required=True) == authority,
+            'PPO metadata/plan/qualification receiving authority differs')
+    require_qualified_motion_authority(proof)
     require(metadata.get("seed_rule", "legacy") == json.loads(snapshots[plan_path]).get("seed_rule", "legacy"),
             "PPO seed rule differs from its native qualification")
     require(metadata.get("start_graph_rule", "original-seed-cell") == json.loads(snapshots[plan_path]).get("start_graph_rule", "original-seed-cell"),
@@ -83,6 +89,9 @@ def audit_episode_conjunction(directory, freeze, preparation, *, plan_path=None,
                               reach_geometry_rule=BINARY_REACH_GEOMETRY_RULE):
     """Independent full episode roles, without scripted probe workload gates."""
     directory = Path(directory)
+    from .motion_authority_profile import selected_motion_authority_profile
+    from .motion_authority_audit import require_episode_proof
+    authority=selected_motion_authority_profile(json.loads((directory/'metadata.json').read_text()),required=True)
     row = {"directory": str(directory), "passed": False, "errors": []}
     operations = (
         ("information", lambda: audit_reach_information.audit_episode(directory, freeze)),
@@ -107,8 +116,11 @@ def audit_episode_conjunction(directory, freeze, preparation, *, plan_path=None,
                         and report.get("continuous_physical_model_proved") is False
                         and report.get("reach_geometry_rule", BINARY_REACH_GEOMETRY_RULE) == reach_geometry_rule,
                         "runtime role lacks independent conditional replay")
+            if name in ('runtime_drive','peer_control_fifo'):
+                require_episode_proof(report,authority)
         except (OSError, ValueError, TypeError, KeyError, IndexError, RuntimeError, OverflowError, zlib.error) as error:
             row["errors"].append(name+": "+str(error))
+    row["motion_authority_profile"] = authority
     row["passed"] = not row["errors"]
     return row
 
@@ -120,6 +132,10 @@ def audit_run(directory, freeze, plan_path=None, qualification_path=None):
     stable = {path: path.read_bytes() for path in (metadata_path, summary_path)}
     metadata = json.loads(stable[metadata_path])
     summary = json.loads(stable[summary_path])
+    from .motion_authority_profile import selected_motion_authority_profile
+    require(selected_motion_authority_profile(summary,required=True)
+            == selected_motion_authority_profile(metadata,required=True),
+            'PPO metadata/summary receiving authority differs')
     require(summary.get("safety_contract") == CONTRACT and summary.get("freeze") == freeze,
             "PPO summary mixes source freeze or safety contract")
     plan_path, qualification_path, admission_inputs, qualification = admission(

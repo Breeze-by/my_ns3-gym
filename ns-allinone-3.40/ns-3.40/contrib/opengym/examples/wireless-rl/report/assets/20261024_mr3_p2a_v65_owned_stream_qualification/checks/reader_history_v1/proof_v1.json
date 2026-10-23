@@ -1,0 +1,80 @@
+{
+  "schema": "mr3-reader-history-preservation-proof-v1",
+  "passed": true,
+  "scope": "cpu",
+  "engineering_seconds": "0",
+  "actual_tool_wait": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v65_owned_stream_qualification/checks/reader_history_v1/actual_tool_wait_v1.json",
+  "actual_wait": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v65_owned_stream_qualification/checks/reader_history_v1/actual/actual_wait.json",
+  "actual_returncode": 0,
+  "actual_child_wait_seconds": "36.434660679",
+  "source_before_after_current_snapshots_equal": true,
+  "bound_sources": 11,
+  "all_saved_owned_identities_fresh_gone": true,
+  "freshgone": [
+    {
+      "saved": {
+        "pid": 1863085,
+        "parent": 1863084,
+        "group": 1863084,
+        "session": 1863084,
+        "start_ticks": 453232187
+      },
+      "observed": null,
+      "same_saved_identity_present": false
+    },
+    {
+      "saved": {
+        "pid": 1863102,
+        "parent": 1863085,
+        "group": 1863084,
+        "session": 1863084,
+        "start_ticks": 453232215,
+        "state": "R"
+      },
+      "observed": null,
+      "same_saved_identity_present": false
+    },
+    {
+      "saved": {
+        "pid": 1863109,
+        "parent": 1863102,
+        "group": 1863084,
+        "session": 1863084,
+        "start_ticks": 453232235,
+        "state": "R"
+      },
+      "observed": null,
+      "same_saved_identity_present": false
+    }
+  ],
+  "archive": {
+    "bytes": 46321141,
+    "deterministic": "PAX sorted original roots/members; uid/gid/mtime0; gzip filename empty/mtime0/level9",
+    "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v65_owned_stream_qualification/checks/reader_history_v1/reader_history_v1.tar.gz",
+    "sha256": "2ad8afadcb4adcab93a615f4c8ac70c57d4b0acab7df690975ac5ff4fa024caf"
+  },
+  "inventory": {
+    "bytes": 808168,
+    "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v65_owned_stream_qualification/checks/reader_history_v1/inventory_v1.json",
+    "sha256": "9130cc6e4392e03c489369d07b9084415ad04af40f2029e296bbffbc497d0c33"
+  },
+  "restore": {
+    "full_restore_verified": true,
+    "links": 0,
+    "member_count": 879,
+    "regular_bytes": 119151710,
+    "regular_files": 810,
+    "temporary_restore_removed": true
+  },
+  "preserved_actual_cpu_waits": [
+    "mr3_p2a_authority_independent_reader_candidate_v1/checks/helper_cpu_v1/actual/actual_wait.json",
+    "mr3_p2a_authority_independent_reader_candidate_v1/checks/helper_cpu_v2/actual/actual_wait.json",
+    "mr3_p2a_authority_independent_reader_candidate_v1/checks/public_cpu_v1/actual/actual_wait.json",
+    "mr3_p2a_authority_independent_reader_candidate_v1/checks/public_cpu_v2/actual/actual_wait.json",
+    "mr3_p2a_authority_independent_reader_candidate_v2/checks/public_cpu_v2/actual/actual_wait.json",
+    "mr3_p2a_authority_independent_reader_candidate_v3/checks/public_cpu_v2/actual/actual_wait.json",
+    "mr3_p2a_authority_independent_reader_candidate_v4/checks/public_cpu_v2/actual/actual_wait.json"
+  ],
+  "original_roots_preserved": true,
+  "scientific_credit": false
+}

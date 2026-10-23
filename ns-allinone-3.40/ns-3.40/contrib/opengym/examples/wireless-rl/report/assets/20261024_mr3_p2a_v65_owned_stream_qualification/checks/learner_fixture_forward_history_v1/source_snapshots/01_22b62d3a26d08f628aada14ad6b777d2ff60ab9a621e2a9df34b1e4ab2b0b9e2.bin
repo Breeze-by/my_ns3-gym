@@ -1,0 +1,180 @@
+"""Opaque deterministic reader-candidate history preservation; CPU only."""
+import gzip
+import hashlib
+import io
+import json
+import os
+from pathlib import Path
+import stat
+import sys
+import tarfile
+import tempfile
+import time
+
+ROOT=Path('/home/zhuyulab/ns3-workspace')
+W=ROOT/'ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl'
+OUT=W/'report/assets/20261024_mr3_p2a_v65_owned_stream_qualification/checks/learner_fixture_forward_history_v1'
+INPUTS=(Path('/tmp/mr3_p2a_v65_learner_fixture_delta_v1'),)
+LIMIT=64*1024*1024
+
+
+def require(value,reason):
+    if not value:raise ValueError(reason)
+
+
+def dump(path,value):
+    path.open('x').write(json.dumps(value,indent=2,sort_keys=True)+'\n')
+
+
+def stable(value):
+    return {key:getattr(value,'st_'+key) for key in ('dev','ino','mode','size','mtime_ns','ctime_ns')}
+
+
+def identity():
+    fields=Path('/proc/self/stat').read_text().rsplit(')',1)[1].split()
+    return dict(pid=os.getpid(),parent=int(fields[1]),group=int(fields[2]),session=int(fields[3]),
+                start_ticks=int(fields[19]))
+
+
+def sha(path):
+    value=hashlib.sha256()
+    with path.open('rb') as stream:
+        while block:=stream.read(1024*1024):value.update(block)
+    return value.hexdigest()
+
+
+def inventory():
+    rows=[]
+    def visit(path,relative):
+        observed=path.lstat();mode=observed.st_mode
+        item=dict(original=str(path),member=relative.as_posix(),source_stat=stable(observed))
+        if stat.S_ISLNK(mode):
+            item.update(kind='symlink',literal_target=os.readlink(path));rows.append(item)
+        elif stat.S_ISDIR(mode):
+            item.update(kind='directory');rows.append(item)
+            for child in sorted(path.iterdir(),key=lambda p:p.name):visit(child,relative/child.name)
+        elif stat.S_ISREG(mode):
+            item.update(kind='regular',bytes=observed.st_size);rows.append(item)
+        else:raise ValueError('unsupported nonregular source: '+str(path))
+    for root in INPUTS:
+        require(root.is_absolute() and root.resolve(strict=True)==root,'root must be canonical absolute')
+        require(stat.S_ISDIR(root.lstat().st_mode),'source root is not an actual directory')
+        visit(root,Path(root.name))
+    return rows
+
+
+def member_info(row):
+    value=tarfile.TarInfo(row['member'])
+    value.uid=value.gid=value.mtime=0;value.uname=value.gname=''
+    if row['kind']=='regular':value.type=tarfile.REGTYPE;value.mode=0o644;value.size=row['bytes']
+    elif row['kind']=='directory':value.type=tarfile.DIRTYPE;value.mode=0o755
+    else:value.type=tarfile.SYMTYPE;value.mode=0o777;value.linkname=row['literal_target']
+    return value
+
+
+class HashedReader:
+    def __init__(self,stream):self.stream=stream;self.sha=hashlib.sha256();self.bytes=0
+    def read(self,size=-1):
+        raw=self.stream.read(size);self.sha.update(raw);self.bytes+=len(raw);return raw
+
+
+def validate_path(path):
+    require(path.is_absolute() and '..' not in path.parts and path.resolve(strict=True)==path,
+            'regular input path traverses a symlink: '+str(path))
+
+
+def preserve(rows,path):
+    with path.open('xb') as target,gzip.GzipFile(fileobj=target,mode='wb',filename='',mtime=0,compresslevel=9) as compressed:
+        with tarfile.open(fileobj=compressed,mode='w',format=tarfile.PAX_FORMAT) as archive:
+            for row in rows:
+                source=Path(row['original']);before=source.lstat()
+                require(stable(before)==row['source_stat'],'source metadata changed before opaque copy')
+                info=member_info(row)
+                if row['kind']=='regular':
+                    validate_path(source)
+                    fd=os.open(source,os.O_RDONLY|os.O_NOFOLLOW)
+                    with os.fdopen(fd,'rb') as stream:
+                        require(stable(os.fstat(stream.fileno()))==row['source_stat'],'opened another source inode')
+                        reader=HashedReader(stream);archive.addfile(info,reader)
+                        require(reader.bytes==row['bytes'] and not stream.read(1),'regular input size changed')
+                        row['sha256']=reader.sha.hexdigest()
+                elif row['kind']=='symlink':
+                    require(os.readlink(source)==row['literal_target'],'literal source link changed')
+                    archive.addfile(info)
+                else:archive.addfile(info)
+                after=stable(source.lstat());require(after==row['source_stat'],'source changed during opaque copy')
+                row['source_stat_after']=after
+
+
+def restore(archive_path,rows):
+    wanted={row['member']:row for row in rows};observed=set();regular=total=links=0
+    with tempfile.TemporaryDirectory(prefix='mr3-learner-fixture-history-restore-') as name:
+        base=Path(name)
+        with tarfile.open(archive_path,'r:gz') as archive:
+            for member in archive:
+                relative=Path(member.name)
+                require(not relative.is_absolute() and '..' not in relative.parts
+                        and relative.as_posix()==member.name and member.name in wanted
+                        and member.name not in observed,'unsafe/unlisted/duplicate archive member')
+                observed.add(member.name);row=wanted[member.name];path=base/relative
+                # No source or restored link is ever traversed.
+                for parent in path.parents:
+                    if parent==base:break
+                    require(not parent.exists() or not stat.S_ISLNK(parent.lstat().st_mode),
+                            'restoration would traverse a link')
+                if row['kind']=='directory':
+                    require(member.isdir(),'restored directory kind differs');path.mkdir(exist_ok=False)
+                elif row['kind']=='symlink':
+                    require(member.issym() and member.linkname==row['literal_target'],'restored literal link differs')
+                    os.symlink(member.linkname,path);require(os.readlink(path)==row['literal_target'],'literal restore differs');links+=1
+                else:
+                    require(member.isfile() and member.size==row['bytes'],'restored regular member shape differs')
+                    stream=archive.extractfile(member);require(stream is not None,'restored payload missing')
+                    value=hashlib.sha256();count=0
+                    with path.open('xb') as output:
+                        while block:=stream.read(1024*1024):output.write(block);value.update(block);count+=len(block)
+                    require(count==row['bytes'] and value.hexdigest()==row['sha256'],'restored original bytes differ')
+                    regular+=1;total+=count
+        require(observed==set(wanted),'restored archive membership differs')
+        # Verify the actual restored files again rather than trusting writes.
+        for row in rows:
+            path=base/row['member']
+            if row['kind']=='regular':require(path.lstat().st_size==row['bytes'] and sha(path)==row['sha256'],'restored file rehash differs')
+            elif row['kind']=='symlink':require(stat.S_ISLNK(path.lstat().st_mode) and os.readlink(path)==row['literal_target'],'restored link metadata differs')
+    return dict(full_restore_verified=True,regular_files=regular,regular_bytes=total,links=links,
+                member_count=len(observed),temporary_restore_removed=True)
+
+
+def main():
+    started=time.monotonic_ns();OUT.mkdir(parents=True,exist_ok=True)
+    dump(OUT/'archive_consumer_identity_v1.json',dict(schema='mr3-learner-fixture-history-consumer-identity-v1',
+        identity=identity(),actual_argv=sys.argv,started_monotonic_ns=started))
+    rows=inventory();archive=OUT/'learner_fixture_forward_history_v1.tar.gz'
+    preserve(rows,archive)
+    require(archive.stat().st_size<=LIMIT,'archive exceeds canonical64MiB file limit')
+    restored=restore(archive,rows)
+    # Post-copy full source hash and exact membership prove the input roots
+    # remain preserved/stable; no current-source qualification is inferred.
+    current=inventory()
+    require([(r['member'],r['kind'],r['source_stat']) for r in current]
+            ==[(r['member'],r['kind'],r['source_stat']) for r in rows],'source membership/stat changed')
+    for row in rows:
+        if row['kind']=='regular':require(sha(Path(row['original']))==row['sha256'],'source original hash changed after restore')
+    inv=OUT/'inventory_v1.json'
+    dump(inv,dict(schema='mr3-learner-fixture-private-history-opaque-inventory-v1',inputs=[str(p) for p in INPUTS],
+        regular_files=restored['regular_files'],original_regular_bytes=restored['regular_bytes'],
+        links=restored['links'],entries=rows,source_roots_preserved=True,
+        metadata_scope='opaque saved source/fixture/CPU history; no old raw or pstats interpretation'))
+    result=dict(schema='mr3-learner-fixture-private-history-archive-result-v1',passed=True,scope='cpu',engineering_seconds='0',
+        actual_consumer_identity=identity(),actual_argv=sys.argv,
+        started_monotonic_ns=started,ended_monotonic_ns=time.monotonic_ns(),
+        source_roots_preserved=True,source_full_hash_after_equal=True,source_membership_after_equal=True,
+        archive=dict(path=str(archive),bytes=archive.stat().st_size,sha256=sha(archive),
+                     deterministic='PAX sorted original roots/members; uid/gid/mtime0; gzip filename empty/mtime0/level9'),
+        inventory=dict(path=str(inv),bytes=inv.stat().st_size,sha256=sha(inv)),restore=restored,
+        original_profiles_or_raw_streams_read=False,library_set342_read=False,scientific_credit=False,
+        source_credit='opaque preservation only; all canonical installed source requires separate fresh CPU')
+    dump(OUT/'archive_result_v1.json',result);print(json.dumps(result,sort_keys=True))
+
+
+if __name__=='__main__':main()

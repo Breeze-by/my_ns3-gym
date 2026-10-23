@@ -1,0 +1,42 @@
+{
+  "schema": "mr3-reach-native-build-evidence-bridge-v1",
+  "safety_contract": "mr3-reach-v1",
+  "passed": true,
+  "scope": "initial-zero-encoder-hold-v1; actual-new-build",
+  "actuation_profile": "initial-zero-encoder-hold-v1",
+  "actual_wait": {
+    "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v59_encoder_profile/checks/native_build_v1/build_actual_wait/actual_wait.json",
+    "bytes": 15991,
+    "sha256": "c4da8779c20142125a5543d7f5e273598217e9b8ac245ea534eca48391d8926c"
+  },
+  "manifest": {
+    "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v59_encoder_profile/checks/native_build_v1/build_manifest_v1.json",
+    "bytes": 22385,
+    "sha256": "fc6d475efa4d66fa3645a11b160b06583c9eff2b7ab0ed292c821b4cae3c26f7"
+  },
+  "compiler_flags_archive": {
+    "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v59_encoder_profile/checks/native_build_v1/driver_flags_v1.make.rawbytes",
+    "bytes": 3875,
+    "sha256": "d889c9d41fe50bbc16c52910398a449e4d2f8bde3ef6108ea3795cd21e805df4"
+  },
+  "source_derivation": {
+    "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v59_encoder_profile/initial_encoder_source_profile_v1.json",
+    "bytes": 25242,
+    "sha256": "efc6261cb38ee631ea57fe965a810b035f2bc5dc818308ed8e3448cf105271f3"
+  },
+  "commands": [
+    {
+      "argv": [
+        "/bin/bash",
+        "--noprofile",
+        "--norc",
+        "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v59_encoder_profile/checks/native_build_v1/build_native_ros_v1.sh"
+      ],
+      "returncode": 0,
+      "observed_returncode": 0
+    }
+  ],
+  "passed_scope": "actual build/current-byte facts; exact source freeze is rechecked on admission",
+  "native_admission": false,
+  "historical_driver_build_credit_reused": false
+}

@@ -18,6 +18,8 @@ from mr3_learning import ppo, reach_preparation as qualification
 from mr3_learning.supervisor import InfrastructureError
 from mr3_learning.tests import test_ppo as collection
 from mr3_learning.tests import test_reach_qualification as bookkeeping
+from mr3_learning.tests.test_motion_authority_metadata import artificial_qualification, PROFILE
+from mr3_learning.initial_encoder_replay import PROFILE as ACTUATION_PROFILE
 
 
 FREEZE = "a"*40
@@ -28,8 +30,9 @@ class ReachTrainingAdmissionTests(unittest.TestCase):
         a,b,c,d,e,f,g=self.guards()
         with a as mkdir,b as native,c as model,d as resources,e as threads,f as deterministic,g as gpu, \
                 patch.object(ppo.subprocess,'check_output',return_value=FREEZE), \
-                patch.object(qualification,'validate_qualification',return_value={'passed':True}), \
-                patch.object(qualification,'load_plan',return_value={'seed_rule':'exact-point-bridge-v2'}), \
+                patch.object(qualification,'validate_qualification',return_value=artificial_qualification()), \
+                patch.object(qualification,'load_plan',return_value={'seed_rule':'exact-point-bridge-v2',
+                    'safety_contract':'mr3-reach-v1','motion_authority_profile':PROFILE,'actuation_profile':ACTUATION_PROFILE}), \
                 contextlib.redirect_stderr(io.StringIO()),self.assertRaises(SystemExit) as error:
             ppo.main([*self.arguments('/unused'),'--reach-plan','/unused/plan',
                       '--reach-qualification','/unused/qualification','--seed-rule','exact-point-bridge-v2',
@@ -50,8 +53,9 @@ class ReachTrainingAdmissionTests(unittest.TestCase):
         a,b,c,d,e,f,g=self.guards()
         with a as mkdir,b as native,c as model,d as resources,e as threads,f as deterministic,g as gpu, \
                 patch.object(ppo.subprocess,'check_output',return_value=FREEZE), \
-                patch.object(qualification,'validate_qualification',return_value={'passed':True}), \
-                patch.object(qualification,'load_plan',return_value={'seed_rule':'exact-point-bridge-v1'}), \
+                patch.object(qualification,'validate_qualification',return_value=artificial_qualification()), \
+                patch.object(qualification,'load_plan',return_value={'seed_rule':'exact-point-bridge-v1',
+                    'safety_contract':'mr3-reach-v1','motion_authority_profile':PROFILE,'actuation_profile':ACTUATION_PROFILE}), \
                 contextlib.redirect_stderr(io.StringIO()),self.assertRaises(SystemExit) as error:
             ppo.main([*self.arguments('/unused'),'--reach-plan','/unused/plan',
                       '--reach-qualification','/unused/qualification'])

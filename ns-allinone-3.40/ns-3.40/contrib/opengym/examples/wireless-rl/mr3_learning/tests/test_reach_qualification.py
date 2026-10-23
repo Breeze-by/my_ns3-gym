@@ -141,6 +141,7 @@ class ReachQualificationTests(unittest.TestCase):
         self.assertEqual(prep.primitives.Runner.spawn.__globals__["__name__"],"mr3_learning.preparation")
 
     def evidence(self):
+        authority=prep.selected_motion_authority_profile(self.plan)
         coordinator={"pid":9001,"start_ticks":91001}
         summary={"schema":prep.EXECUTION_SCHEMA,"freeze":FREEZE,"plan_sha256":prep.sha(self.plan_path),
             "passed":True,"all_submitted_children_waited":True,"within_matrix_wall_allocation":True,
@@ -181,12 +182,27 @@ class ReachQualificationTests(unittest.TestCase):
                 for number,item in enumerate(schedule,1):
                     path=Path(declared["run_directory"])/f"worker{worker}"/(f"episode{number:03d}_"+item.replace(":","_"))/"metadata.json"
                     write(path,{"freeze":FREEZE,"safety_contract":custody.CONTRACT,
+                        **({'motion_authority_profile':authority} if authority is not None else {}),
                         "quantum_steps":20,"execution_phase_protocol":"mr3-controlled-execution-phase-v2",
                         "reset_handshake":"paused-controlled-state-peer-guard-storage-v2",
                         "epoch":f"{i}:{worker}:{number}",
                         **({"seed_rule":self.plan["seed_rule"]} if "seed_rule" in self.plan else {})})
                     write(path.parent/"supervisor_metadata.json",
-                        {"seed_rule":self.plan.get("seed_rule","legacy")})
+                        {"seed_rule":self.plan.get("seed_rule","legacy"),
+                         **({'safety_contract':custody.CONTRACT,'motion_authority_profile':authority,
+                             'epoch':f'{i}:{worker}:{number}'} if authority is not None else {})})
+        if authority is not None:
+            from mr3_learning.tests.test_audit_reach_ppo import artificial_authority_report
+            for declared,completed in zip(self.plan['stages'],summary['stages']):
+                child=completed['audits']['runtime']
+                episodes=[]
+                for path in sorted(Path(declared['run_directory']).glob('worker*/episode*/metadata.json')):
+                    own=json.loads(path.read_text())
+                    episodes.append(dict(directory=str(path.parent),epoch=own['epoch'],passed=True,
+                        result=artificial_authority_report(epoch=own['epoch'])))
+                write(child['output'],dict(passed=True,freeze=FREEZE,episodes=episodes))
+                child['output_sha256']=prep.sha(child['output'])
+                write(child['receipt'],child)
         self.summary=Path(self.plan["output_directory"])/"summary.json";write(self.summary,summary)
         self.outer=self.root/"outer.json"
         write(self.outer,{"schema":"mr3-reach-outer-actual-wait-v1","scope":"engineering",

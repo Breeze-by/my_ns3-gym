@@ -64,6 +64,10 @@ def audit_episode(directory, freeze, *, root=ROOT):
 
     native, supervisor = (load(directory / filename) for filename in
                           ("metadata.json", "supervisor_metadata.json"))
+    from .motion_authority_profile import selected_motion_authority_profile
+    authority = selected_motion_authority_profile(native)
+    require(selected_motion_authority_profile(supervisor) == authority,
+            "input archive native/supervisor receiving authority profile mismatch")
     seed_rule = native.get("seed_rule")
     require(type(seed_rule) is str and seed_rule in EXACT_SEED_VERSIONS and native.get("freeze") == freeze
             and supervisor.get("seed_rule") == seed_rule, "native/supervisor exact seed rule mismatch")
@@ -84,7 +88,7 @@ def audit_episode(directory, freeze, *, root=ROOT):
         names += ("mr3_point_graph.py",)
     learner = "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/"
     for relative in (str(Path(__file__).resolve().relative_to(root)),
-                     learner + "navigation_archive.py", learner + "supervisor.py",
+                     learner + "navigation_archive.py", learner + "supervisor.py", learner + "motion_authority_profile.py",
                      "ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py"):
         raw = subprocess.check_output(["git", "show", freeze + ":" + relative], cwd=root)
         require((root / relative).read_bytes() == raw, "reader/source differs from native freeze: " + relative)
@@ -207,6 +211,8 @@ def audit_episode(directory, freeze, *, root=ROOT):
         require(hashlib.sha256((root / relative).read_bytes()).hexdigest() == expected["sha256"],
                 "source changed before verdict")
     return {"schema": "mr3-exact-seed-native-input-replay-v1", "passed": True, "errors": [],
+            **({"motion_authority_profile":authority,"authority_behavior_proved":False}
+               if authority is not None else {}),
             "freeze": freeze, "seed_rule": seed_rule, "episode": str(directory),
             **({"start_graph_rule": start_graph_rule} if start_graph_rule != "original-seed-cell" else {}),
             "whole_observation_and_seven_map_replay_passed": True,

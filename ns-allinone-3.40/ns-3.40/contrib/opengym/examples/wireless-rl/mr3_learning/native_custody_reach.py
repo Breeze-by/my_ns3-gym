@@ -18,6 +18,7 @@ import subprocess
 
 from .supervisor import WORKSPACE, INITIAL_ENCODER_ACTUATION_PROFILE
 from .audit_reach_runtime import geometry_rule, DEFAULT_GEOMETRY_RULE, SUPPORT_GEOMETRY_RULE
+from .motion_authority_profile import selected_motion_authority_profile
 
 CONTRACT = "mr3-reach-v1"
 PROTOCOL = "mr3-controlled-execution-phase-v2"
@@ -128,7 +129,8 @@ def project_source(raw):
         "changes": [{"old":old,"new":new,"count":count} for old,new,count in SOURCE_CHANGES]}
 
 
-def profile_metadata(directory, freeze, read, *, reach_geometry_rule=None, actuation_profile=None):
+def profile_metadata(directory, freeze, read, *, reach_geometry_rule=None, actuation_profile=None,
+                     motion_authority_profile=None):
     meta = json.loads(read(Path(directory) / "metadata.json"))
     require(meta.get("freeze") == freeze and meta.get("safety_contract") == CONTRACT
             and meta.get("quantum_steps") == 20 and meta.get("execution_phase_protocol") == PROTOCOL
@@ -136,6 +138,13 @@ def profile_metadata(directory, freeze, read, *, reach_geometry_rule=None, actua
             "legacy profile/execution metadata cannot acquire reach custody credit")
     require(initial_encoder_profile(meta) == actuation_profile,
             "custody binding and episode actuation profiles differ")
+    require(selected_motion_authority_profile(meta) == motion_authority_profile,
+            "custody binding and episode receiving authority profiles differ")
+    if motion_authority_profile is not None:
+        saved = json.loads(read(Path(directory)/"supervisor_metadata.json"))
+        require(saved.get("epoch") == meta["epoch"]
+                and selected_motion_authority_profile(saved, required=True) == motion_authority_profile,
+                "supervisor/native receiving authority profiles differ")
     if actuation_profile is not None:
         saved = json.loads(read(Path(directory)/"supervisor_metadata.json"))
         require(saved.get("epoch") == meta["epoch"] and initial_encoder_profile(saved) == actuation_profile,
@@ -156,8 +165,13 @@ def binding_sources(bound, root):
     require(doc.get("safety_contract") == CONTRACT and doc.get("execution_phase_protocol") == PROTOCOL,
             "binding is not the explicit reach/v2 contract")
     profile = initial_encoder_profile(doc)
+    authority = selected_motion_authority_profile(doc)
     rule = geometry_rule(doc)
     required_sources = REQUIRED_SOURCES + (SUPPORT_SOURCES if rule == SUPPORT_GEOMETRY_RULE else ())
+    if authority is not None:
+        required_sources += tuple(str(path) for path in (
+            Path("ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_motion_authority.py"),
+            WIRELESS/"mr3_learning/motion_authority_profile.py", WIRELESS/"mr3_learning/motion_authority_audit.py"))
     sources = {str(Path(row["path"]) if Path(row["path"]).is_absolute()
                    else Path(root) / row["path"]): row["sha256"] for row in doc["source_bindings"]}
     require(all(str(Path(root)/name) in sources for name in required_sources),
@@ -177,6 +191,8 @@ def binding_sources(bound, root):
                 "qualification wrapper is duplicate or not bound to this whole source freeze")
         names.add(str(path))
     return {"required_source_count":len(required_sources), "declared_source_count":len(sources),
+            **({"motion_authority_profile":authority,"authority_proof_scope":"Python receiving permission/source only; no C++ build credit"}
+               if authority is not None else {}),
             **({"reach_geometry_rule":rule} if rule != DEFAULT_GEOMETRY_RULE else {}),
             "qualification_wrappers":wrappers,
             **({"actuation_profile":profile} if profile is not None else {})}
@@ -590,6 +606,8 @@ def load_implementation(root=WORKSPACE):
         module._reach_geometry_rule = geometry_rule(bound["document"])
         profile = initial_encoder_profile(bound["document"])
         module._reach_actuation_profile = profile
+        authority = selected_motion_authority_profile(bound["document"])
+        module._reach_motion_authority_profile = authority
         bridges = []
         for spec in bound["document"]["build_receipts"]:
             receipt_path = Path(spec["path"])
@@ -604,6 +622,7 @@ def load_implementation(root=WORKSPACE):
         bound["reach_build_bridge_proof"] = bridges[0]
         module._reach_verified_binding = {"reach_source_proof":bound["reach_source_proof"],
                                          "reach_build_bridge_proof":bridges[0],
+                                         **({"motion_authority_profile":authority} if authority is not None else {}),
                                          **({"actuation_profile":profile} if profile is not None else {})}
         return bound
 
@@ -611,8 +630,18 @@ def load_implementation(root=WORKSPACE):
         rule = geometry_rule(binding["document"])
         profile = initial_encoder_profile(binding["document"])
         meta = profile_metadata(directory, binding["freeze"], binding["reader"], reach_geometry_rule=rule,
-                                actuation_profile=profile)
+                                actuation_profile=profile,
+                                motion_authority_profile=selected_motion_authority_profile(binding["document"]))
         result = original_configs(directory, binding)
+        authority = selected_motion_authority_profile(binding["document"])
+        if authority is not None:
+            entry = module.first_line(Path(directory)/"motion_safety.jsonl")
+            row = entry["configuration"]
+            require(row.get("kind") == "configuration" and row.get("epoch") == meta["epoch"]
+                    and selected_motion_authority_profile(row["payload"], required=True) == authority,
+                    "actual motion configuration did not select bound receiving authority")
+            if rule == DEFAULT_GEOMETRY_RULE:
+                result.append(entry)
         if rule != DEFAULT_GEOMETRY_RULE:
             entry = module.first_line(Path(directory)/"motion_safety.jsonl")
             row = entry["configuration"]
@@ -660,13 +689,15 @@ def load_implementation(root=WORKSPACE):
     def capture_episode(directory, binding, *, proc_root=Path("/proc")):
         profile_metadata(directory,binding["freeze"],module.Reader(),
                          reach_geometry_rule=geometry_rule(binding["document"]),
-                         actuation_profile=initial_encoder_profile(binding["document"]))
+                         actuation_profile=initial_encoder_profile(binding["document"]),
+                         motion_authority_profile=selected_motion_authority_profile(binding["document"]))
         return original_capture(directory,binding,proc_root=proc_root)
 
     def strict_closed_episode(directory, freeze, read):
         profile_metadata(directory,freeze,read,
                          reach_geometry_rule=getattr(module,"_reach_geometry_rule",None),
-                         actuation_profile=getattr(module,"_reach_actuation_profile",None))
+                         actuation_profile=getattr(module,"_reach_actuation_profile",None),
+                         motion_authority_profile=getattr(module,"_reach_motion_authority_profile",None))
         return original_closed(directory,freeze,read)
 
     def exclusive(path, value):

@@ -33,6 +33,7 @@ from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 from nav2_common.launch import RewrittenYaml
 from multi_robot_exploration.mr3_safety_intent import actuation_profile_for_safety_contract
+from multi_robot_exploration.mr3_motion_authority import PROFILE as AUTHORITY_PROFILE
 from multi_robot_exploration.mr3_reach_runtime import (
     BINARY_CONE_V1, validate_reach_geometry_rule,
 )
@@ -741,6 +742,7 @@ def launch_setup(context, *args, **kwargs):
             parameters=[{"use_sim_time": use_sim_time, "episode_epoch": episode_epoch,
                          "stepped_mode": stepped_mode,
                          "safety_contract": safety_contract,
+                         "motion_authority_profile": AUTHORITY_PROFILE if safety_contract == "mr3-reach-v1" else "",
                          **({"reach_geometry_rule": reach_geometry_rule}
                             if reach_geometry_rule != BINARY_CONE_V1 else {}),
                          "mr3_diagnostic_enabled": bool(plant_stimulus_arm),
@@ -778,6 +780,8 @@ def launch_setup(context, *args, **kwargs):
                 "navigation_cancel_timeout_sec": cancel_timeout,
                 "require_task_monitor_ready": bool(evaluation_contract.perform(context)),
                 **({"episode_epoch": episode_epoch, "stepped_mode": stepped_mode,
+                    "safety_contract": safety_contract,
+                    "motion_authority_profile": AUTHORITY_PROFILE if safety_contract == "mr3-reach-v1" else "",
                     "audit_path": LaunchConfiguration("mr3_audit_path")} if adapter_mode else {}),
                 **({"seed_rule": seed_rule} if adapter_mode and seed_rule != "legacy" else {}),
                 **({"start_graph_rule": start_graph_rule}

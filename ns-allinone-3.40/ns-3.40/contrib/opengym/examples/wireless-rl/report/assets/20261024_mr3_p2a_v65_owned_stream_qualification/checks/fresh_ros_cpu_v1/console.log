@@ -1,0 +1,2515 @@
+...............FFFFFFF.................................................. [ 33%]
+...............................FF............FFFFFFFFF.................. [ 67%]
+........................................................F...FFFFFFFF     [100%]
+=================================== FAILURES ===================================
+__ test_late_third_robot_fault_suppresses_all_three_before_first_publication ___
+
+    def test_late_third_robot_fault_suppresses_all_three_before_first_publication():
+        def decide(name, request, peers):
+            if name == 'tb3':
+                raise ValueError('independent third-robot contradiction')
+            return {'allow': True, 'reason': 'fixture_clear', 'output': [.2, 0.]}
+        node, _, events = fixture(decide)
+        node.stop_controlled = lambda: pytest.fail('recursive publication from inside joint admission')
+>       node.emit_reach_motion()
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_motion_safety_reach.py:163: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../../../../ros2_ws/ros2-multi-robot-automap/build/multi_robot_exploration/multi_robot_exploration/motion_safety.py:926: in emit_reach_motion
+    self._emit_reach_motion(stop)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = namespace(epoch='episode', received={'robots': [{'name': 'tb1', 'epoch': 'episode', 'valid': True, 'x': 0.0, 'y': 0.0,...ch_failure of namespace(...)>, publish_reach_intent=<bound method MotionSafety.publish_reach_intent of namespace(...)>)
+stop = False
+
+    def _emit_reach_motion(self, stop=False):
+        clock_ns = self.get_clock().now().nanoseconds
+        observers_ready = self.local_observers_ready()
+        if not observers_ready and not self.observers_started and not stop:
+            self.ready_pub.publish(Bool(data=False))
+            return
+        self.observers_started = True
+        frozen = copy.deepcopy(self.received)
+        states = {row["name"]:row for row in frozen["robots"]} if frozen else {}
+        healthy = not stop and self.control_inputs_ready(clock_ns)
+        own = {name:self.local_state(name) for name in ROBOTS}
+        context = self.control_safety_context
+        if self.started and context is None:
+            healthy = False
+        table_sha = None if context is None else context["safety_table_sha256"]
+        if context is not None and (set(states) != set(ROBOTS)
+                or frozen.get("safety_contract") != CONTRACT
+                or frozen.get("safety_table_sha256") != table_sha
+                or payload_sha256({name:states[name]["safety"] for name in ROBOTS}) != table_sha
+                or frozen.get("intent_refs") != context["intent_refs"]):
+            self.reach_failure("joint", ValueError("frozen safety table differs from actual phase"))
+            healthy = False
+        self.issued_motion.add((clock_ns,"stop" if stop else "normal"))
+        decisions = {}
+        receiving_permissions = {}
+        # Complete every robot's admission before publishing any output. A
+        # late tb3 contradiction must also suppress tb1/tb2 in this phase.
+        for name, tracker in self.reach.items():
+            request = self.requests.get(name)
+            allowed_request = (healthy and self.started and self.halted is None
+                and self.stop_time is None and request is not None and request["supported"]
+                and request["publisher_identity"]["valid"]
+                and 0 <= elapsed_ns(request["received_stamp"], clock_ns/1e9)
+                <= timestamp_ns(COMMAND_TIMEOUT_SEC))
+            permission = None
+>           if self.motion_authority_profile:
+E           AttributeError: 'types.SimpleNamespace' object has no attribute 'motion_authority_profile'
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/build/multi_robot_exploration/multi_robot_exploration/motion_safety.py:972: AttributeError
+___ test_table_content_is_rehashed_instead_of_trusting_copied_digest_labels ____
+
+    def test_table_content_is_rehashed_instead_of_trusting_copied_digest_labels():
+        node, _, events = fixture()
+        node.received['robots'][0]['safety']['calibration']['tag'] = 'tampered'
+>       node.emit_reach_motion()
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_motion_safety_reach.py:174: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../../../../ros2_ws/ros2-multi-robot-automap/build/multi_robot_exploration/multi_robot_exploration/motion_safety.py:926: in emit_reach_motion
+    self._emit_reach_motion(stop)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = namespace(epoch='episode', received={'robots': [{'name': 'tb1', 'epoch': 'episode', 'valid': True, 'x': 0.0, 'y': 0.0,... "schema": "mr3-reach-runtime-fault-v1"}', _reach_failure_message_epoch='episode', _reach_failure_stop_requested=False)
+stop = False
+
+    def _emit_reach_motion(self, stop=False):
+        clock_ns = self.get_clock().now().nanoseconds
+        observers_ready = self.local_observers_ready()
+        if not observers_ready and not self.observers_started and not stop:
+            self.ready_pub.publish(Bool(data=False))
+            return
+        self.observers_started = True
+        frozen = copy.deepcopy(self.received)
+        states = {row["name"]:row for row in frozen["robots"]} if frozen else {}
+        healthy = not stop and self.control_inputs_ready(clock_ns)
+        own = {name:self.local_state(name) for name in ROBOTS}
+        context = self.control_safety_context
+        if self.started and context is None:
+            healthy = False
+        table_sha = None if context is None else context["safety_table_sha256"]
+        if context is not None and (set(states) != set(ROBOTS)
+                or frozen.get("safety_contract") != CONTRACT
+                or frozen.get("safety_table_sha256") != table_sha
+                or payload_sha256({name:states[name]["safety"] for name in ROBOTS}) != table_sha
+                or frozen.get("intent_refs") != context["intent_refs"]):
+            self.reach_failure("joint", ValueError("frozen safety table differs from actual phase"))
+            healthy = False
+        self.issued_motion.add((clock_ns,"stop" if stop else "normal"))
+        decisions = {}
+        receiving_permissions = {}
+        # Complete every robot's admission before publishing any output. A
+        # late tb3 contradiction must also suppress tb1/tb2 in this phase.
+        for name, tracker in self.reach.items():
+            request = self.requests.get(name)
+            allowed_request = (healthy and self.started and self.halted is None
+                and self.stop_time is None and request is not None and request["supported"]
+                and request["publisher_identity"]["valid"]
+                and 0 <= elapsed_ns(request["received_stamp"], clock_ns/1e9)
+                <= timestamp_ns(COMMAND_TIMEOUT_SEC))
+            permission = None
+>           if self.motion_authority_profile:
+E           AttributeError: 'types.SimpleNamespace' object has no attribute 'motion_authority_profile'
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/build/multi_robot_exploration/multi_robot_exploration/motion_safety.py:972: AttributeError
+___________ test_every_decider_uses_one_frozen_received_peer_bundle ____________
+
+    def test_every_decider_uses_one_frozen_received_peer_bundle():
+        observed = []
+        def decide(name, request, peers):
+            observed.append(copy.deepcopy(peers))
+            node.received['robots'][1]['safety']['calibration']['tag'] = 'changed_after_freeze'
+            return {'allow': True, 'reason': 'fixture_clear', 'output': list(request)}
+        node, _, events = fixture(decide)
+>       node.emit_reach_motion()
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_motion_safety_reach.py:186: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../../../../ros2_ws/ros2-multi-robot-automap/build/multi_robot_exploration/multi_robot_exploration/motion_safety.py:926: in emit_reach_motion
+    self._emit_reach_motion(stop)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = namespace(epoch='episode', received={'robots': [{'name': 'tb1', 'epoch': 'episode', 'valid': True, 'x': 0.0, 'y': 0.0,...ch_failure of namespace(...)>, publish_reach_intent=<bound method MotionSafety.publish_reach_intent of namespace(...)>)
+stop = False
+
+    def _emit_reach_motion(self, stop=False):
+        clock_ns = self.get_clock().now().nanoseconds
+        observers_ready = self.local_observers_ready()
+        if not observers_ready and not self.observers_started and not stop:
+            self.ready_pub.publish(Bool(data=False))
+            return
+        self.observers_started = True
+        frozen = copy.deepcopy(self.received)
+        states = {row["name"]:row for row in frozen["robots"]} if frozen else {}
+        healthy = not stop and self.control_inputs_ready(clock_ns)
+        own = {name:self.local_state(name) for name in ROBOTS}
+        context = self.control_safety_context
+        if self.started and context is None:
+            healthy = False
+        table_sha = None if context is None else context["safety_table_sha256"]
+        if context is not None and (set(states) != set(ROBOTS)
+                or frozen.get("safety_contract") != CONTRACT
+                or frozen.get("safety_table_sha256") != table_sha
+                or payload_sha256({name:states[name]["safety"] for name in ROBOTS}) != table_sha
+                or frozen.get("intent_refs") != context["intent_refs"]):
+            self.reach_failure("joint", ValueError("frozen safety table differs from actual phase"))
+            healthy = False
+        self.issued_motion.add((clock_ns,"stop" if stop else "normal"))
+        decisions = {}
+        receiving_permissions = {}
+        # Complete every robot's admission before publishing any output. A
+        # late tb3 contradiction must also suppress tb1/tb2 in this phase.
+        for name, tracker in self.reach.items():
+            request = self.requests.get(name)
+            allowed_request = (healthy and self.started and self.halted is None
+                and self.stop_time is None and request is not None and request["supported"]
+                and request["publisher_identity"]["valid"]
+                and 0 <= elapsed_ns(request["received_stamp"], clock_ns/1e9)
+                <= timestamp_ns(COMMAND_TIMEOUT_SEC))
+            permission = None
+>           if self.motion_authority_profile:
+E           AttributeError: 'types.SimpleNamespace' object has no attribute 'motion_authority_profile'
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/build/multi_robot_exploration/multi_robot_exploration/motion_safety.py:972: AttributeError
+____ test_new_output_intent_refs_are_distinct_from_the_consumed_table_hash _____
+
+    def test_new_output_intent_refs_are_distinct_from_the_consumed_table_hash():
+        node, clock, _ = fixture()
+        consumed = node.control_safety_context['safety_table_sha256']
+>       node.emit_reach_motion()
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_motion_safety_reach.py:196: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../../../../ros2_ws/ros2-multi-robot-automap/build/multi_robot_exploration/multi_robot_exploration/motion_safety.py:926: in emit_reach_motion
+    self._emit_reach_motion(stop)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = namespace(epoch='episode', received={'robots': [{'name': 'tb1', 'epoch': 'episode', 'valid': True, 'x': 0.0, 'y': 0.0,...ch_failure of namespace(...)>, publish_reach_intent=<bound method MotionSafety.publish_reach_intent of namespace(...)>)
+stop = False
+
+    def _emit_reach_motion(self, stop=False):
+        clock_ns = self.get_clock().now().nanoseconds
+        observers_ready = self.local_observers_ready()
+        if not observers_ready and not self.observers_started and not stop:
+            self.ready_pub.publish(Bool(data=False))
+            return
+        self.observers_started = True
+        frozen = copy.deepcopy(self.received)
+        states = {row["name"]:row for row in frozen["robots"]} if frozen else {}
+        healthy = not stop and self.control_inputs_ready(clock_ns)
+        own = {name:self.local_state(name) for name in ROBOTS}
+        context = self.control_safety_context
+        if self.started and context is None:
+            healthy = False
+        table_sha = None if context is None else context["safety_table_sha256"]
+        if context is not None and (set(states) != set(ROBOTS)
+                or frozen.get("safety_contract") != CONTRACT
+                or frozen.get("safety_table_sha256") != table_sha
+                or payload_sha256({name:states[name]["safety"] for name in ROBOTS}) != table_sha
+                or frozen.get("intent_refs") != context["intent_refs"]):
+            self.reach_failure("joint", ValueError("frozen safety table differs from actual phase"))
+            healthy = False
+        self.issued_motion.add((clock_ns,"stop" if stop else "normal"))
+        decisions = {}
+        receiving_permissions = {}
+        # Complete every robot's admission before publishing any output. A
+        # late tb3 contradiction must also suppress tb1/tb2 in this phase.
+        for name, tracker in self.reach.items():
+            request = self.requests.get(name)
+            allowed_request = (healthy and self.started and self.halted is None
+                and self.stop_time is None and request is not None and request["supported"]
+                and request["publisher_identity"]["valid"]
+                and 0 <= elapsed_ns(request["received_stamp"], clock_ns/1e9)
+                <= timestamp_ns(COMMAND_TIMEOUT_SEC))
+            permission = None
+>           if self.motion_authority_profile:
+E           AttributeError: 'types.SimpleNamespace' object has no attribute 'motion_authority_profile'
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/build/multi_robot_exploration/multi_robot_exploration/motion_safety.py:972: AttributeError
+__________ test_intent_publish_receipt_brackets_actual_publisher_call __________
+
+    def test_intent_publish_receipt_brackets_actual_publisher_call():
+        node, _, events = fixture()
+>       node.emit_reach_motion()
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_motion_safety_reach.py:205: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../../../../ros2_ws/ros2-multi-robot-automap/build/multi_robot_exploration/multi_robot_exploration/motion_safety.py:926: in emit_reach_motion
+    self._emit_reach_motion(stop)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = namespace(epoch='episode', received={'robots': [{'name': 'tb1', 'epoch': 'episode', 'valid': True, 'x': 0.0, 'y': 0.0,...ch_failure of namespace(...)>, publish_reach_intent=<bound method MotionSafety.publish_reach_intent of namespace(...)>)
+stop = False
+
+    def _emit_reach_motion(self, stop=False):
+        clock_ns = self.get_clock().now().nanoseconds
+        observers_ready = self.local_observers_ready()
+        if not observers_ready and not self.observers_started and not stop:
+            self.ready_pub.publish(Bool(data=False))
+            return
+        self.observers_started = True
+        frozen = copy.deepcopy(self.received)
+        states = {row["name"]:row for row in frozen["robots"]} if frozen else {}
+        healthy = not stop and self.control_inputs_ready(clock_ns)
+        own = {name:self.local_state(name) for name in ROBOTS}
+        context = self.control_safety_context
+        if self.started and context is None:
+            healthy = False
+        table_sha = None if context is None else context["safety_table_sha256"]
+        if context is not None and (set(states) != set(ROBOTS)
+                or frozen.get("safety_contract") != CONTRACT
+                or frozen.get("safety_table_sha256") != table_sha
+                or payload_sha256({name:states[name]["safety"] for name in ROBOTS}) != table_sha
+                or frozen.get("intent_refs") != context["intent_refs"]):
+            self.reach_failure("joint", ValueError("frozen safety table differs from actual phase"))
+            healthy = False
+        self.issued_motion.add((clock_ns,"stop" if stop else "normal"))
+        decisions = {}
+        receiving_permissions = {}
+        # Complete every robot's admission before publishing any output. A
+        # late tb3 contradiction must also suppress tb1/tb2 in this phase.
+        for name, tracker in self.reach.items():
+            request = self.requests.get(name)
+            allowed_request = (healthy and self.started and self.halted is None
+                and self.stop_time is None and request is not None and request["supported"]
+                and request["publisher_identity"]["valid"]
+                and 0 <= elapsed_ns(request["received_stamp"], clock_ns/1e9)
+                <= timestamp_ns(COMMAND_TIMEOUT_SEC))
+            permission = None
+>           if self.motion_authority_profile:
+E           AttributeError: 'types.SimpleNamespace' object has no attribute 'motion_authority_profile'
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/build/multi_robot_exploration/multi_robot_exploration/motion_safety.py:972: AttributeError
+______ test_missing_request_still_checks_initial_hold_and_publishes_zero _______
+
+    def test_missing_request_still_checks_initial_hold_and_publishes_zero():
+        called = []
+        def decide(name, request, peers):
+            called.append((name, request))
+            return {'allow': False, 'reason': 'hold', 'output': [0., 0.]}
+        node, _, events = fixture(decide)
+        node.requests = {}
+>       node.emit_reach_motion()
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_motion_safety_reach.py:219: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../../../../ros2_ws/ros2-multi-robot-automap/build/multi_robot_exploration/multi_robot_exploration/motion_safety.py:926: in emit_reach_motion
+    self._emit_reach_motion(stop)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = namespace(epoch='episode', received={'robots': [{'name': 'tb1', 'epoch': 'episode', 'valid': True, 'x': 0.0, 'y': 0.0,...ch_failure of namespace(...)>, publish_reach_intent=<bound method MotionSafety.publish_reach_intent of namespace(...)>)
+stop = False
+
+    def _emit_reach_motion(self, stop=False):
+        clock_ns = self.get_clock().now().nanoseconds
+        observers_ready = self.local_observers_ready()
+        if not observers_ready and not self.observers_started and not stop:
+            self.ready_pub.publish(Bool(data=False))
+            return
+        self.observers_started = True
+        frozen = copy.deepcopy(self.received)
+        states = {row["name"]:row for row in frozen["robots"]} if frozen else {}
+        healthy = not stop and self.control_inputs_ready(clock_ns)
+        own = {name:self.local_state(name) for name in ROBOTS}
+        context = self.control_safety_context
+        if self.started and context is None:
+            healthy = False
+        table_sha = None if context is None else context["safety_table_sha256"]
+        if context is not None and (set(states) != set(ROBOTS)
+                or frozen.get("safety_contract") != CONTRACT
+                or frozen.get("safety_table_sha256") != table_sha
+                or payload_sha256({name:states[name]["safety"] for name in ROBOTS}) != table_sha
+                or frozen.get("intent_refs") != context["intent_refs"]):
+            self.reach_failure("joint", ValueError("frozen safety table differs from actual phase"))
+            healthy = False
+        self.issued_motion.add((clock_ns,"stop" if stop else "normal"))
+        decisions = {}
+        receiving_permissions = {}
+        # Complete every robot's admission before publishing any output. A
+        # late tb3 contradiction must also suppress tb1/tb2 in this phase.
+        for name, tracker in self.reach.items():
+            request = self.requests.get(name)
+            allowed_request = (healthy and self.started and self.halted is None
+                and self.stop_time is None and request is not None and request["supported"]
+                and request["publisher_identity"]["valid"]
+                and 0 <= elapsed_ns(request["received_stamp"], clock_ns/1e9)
+                <= timestamp_ns(COMMAND_TIMEOUT_SEC))
+            permission = None
+>           if self.motion_authority_profile:
+E           AttributeError: 'types.SimpleNamespace' object has no attribute 'motion_authority_profile'
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/build/multi_robot_exploration/multi_robot_exploration/motion_safety.py:972: AttributeError
+_________ test_native_graph_endpoint_change_is_a_permanent_joint_fault _________
+
+    def test_native_graph_endpoint_change_is_a_permanent_joint_fault():
+        from types import SimpleNamespace
+        from std_msgs.msg import String
+        node, _, events = fixture()
+        node.reach_publisher_gids = {}
+        node.try_reach_release = lambda: None
+        node.control_phase = None
+        stopped, admitted = [], []
+        node.stop_controlled = lambda: stopped.append(True)
+        node.reach['tb1'].receive_calibration = lambda value: admitted.append(value)
+        gid = [bytes([1])*24]
+        node.get_publishers_info_by_topic = lambda topic: [SimpleNamespace(
+            node_namespace='/tb1', node_name='turtlebot3_diff_drive',
+            topic_type='std_msgs/msg/String', endpoint_gid=gid[0])]
+        # This fixture isolates graph custody; the schema parser has independent
+        # real-payload tests. It cannot claim a physical calibration application.
+        message = String(data=json.dumps({'epoch': node.epoch}))
+>       MotionSafety.receive_reach_feed(node, message, 'tb1', 'calibration')
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_motion_safety_reach.py:241: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = namespace(epoch='episode', received={'robots': [{'name': 'tb1', 'epoch': 'episode', 'valid': True, 'x': 0.0, 'y': 0.0,...o_by_topic=<function test_native_graph_endpoint_change_is_a_permanent_joint_fault.<locals>.<lambda> at 0x7ec831d01870>)
+message = std_msgs.msg.String(data='{"epoch": "episode"}'), name = 'tb1'
+kind = 'calibration'
+
+    def receive_reach_feed(self, message, name, kind):
+        suffix = {"calibration":"odometry_calibration", "applied":"applied", "storage":"status"}[kind]
+        topic = f"/{name}/mr3_drive/{suffix}"
+        try:
+            value = parse_json(message.data)
+            key = (name, kind)
+            identity = publisher_graph_identity(self, topic, "turtlebot3_diff_drive", f"/{name}",
+                                                self.reach_publisher_gids.get(key))
+            self.record("reach_driver_ingress", {"robot":name,"kind":kind,
+                "message":value,"raw_json":message.data,"publisher_identity":identity})
+            if value.get("epoch") != self.epoch:
+                return
+            if not identity["valid"]:
+                raise ValueError("native reach feed publisher unavailable")
+            self.reach_publisher_gids[key] = identity["endpoints"][0]["endpoint_gid"]
+            getattr(self.reach[name], "receive_"+kind)(value)
+>           if self.motion_authority_profile and kind == "applied":
+E           AttributeError: 'types.SimpleNamespace' object has no attribute 'motion_authority_profile'
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/build/multi_robot_exploration/multi_robot_exploration/motion_safety.py:337: AttributeError
+__ test_effective_v2_motion_configuration_constructs_all_three_real_trackers ___
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7ec831e249d0>
+
+    def test_effective_v2_motion_configuration_constructs_all_three_real_trackers(monkeypatch):
+>       node, config, _ = fake_motion_constructor(monkeypatch, rule='cone-support-v2')
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_reach_support_wiring.py:40: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_reach_support_wiring.py:35: in fake_motion_constructor
+    node = guard.MotionSafety()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <multi_robot_exploration.motion_safety.MotionSafety object at 0x7ec831e24100>
+
+    def __init__(self):
+        super().__init__("motion_safety")
+        self.epoch = self.declare_parameter("episode_epoch", "").value
+        stepped = self.declare_parameter("stepped_mode", False).value
+        self.safety_contract = self.declare_parameter("safety_contract", "legacy").value
+        if (self.safety_contract not in ("legacy", CONTRACT)
+                or self.safety_contract == CONTRACT and not stepped):
+            raise ValueError("reach safety requires explicit stepped mr3-reach-v1")
+        self.reach_enabled = self.safety_contract == CONTRACT
+        self.motion_authority_profile = self.declare_parameter("motion_authority_profile", "").value
+        if self.motion_authority_profile != (AUTHORITY_PROFILE if self.reach_enabled else ""):
+>           raise ValueError("fixed receiving-authority profile differs from safety contract")
+E           ValueError: fixed receiving-authority profile differs from safety contract
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/build/multi_robot_exploration/multi_robot_exploration/motion_safety.py:62: ValueError
+_____ test_default_motion_configuration_omits_field_and_equals_explicit_v1 _____
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7ec831d0f340>
+
+    def test_default_motion_configuration_omits_field_and_equals_explicit_v1(monkeypatch):
+>       _, default, _ = fake_motion_constructor(monkeypatch, supplied=False)
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_reach_support_wiring.py:48: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_reach_support_wiring.py:35: in fake_motion_constructor
+    node = guard.MotionSafety()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <multi_robot_exploration.motion_safety.MotionSafety object at 0x7ec831d0e9b0>
+
+    def __init__(self):
+        super().__init__("motion_safety")
+        self.epoch = self.declare_parameter("episode_epoch", "").value
+        stepped = self.declare_parameter("stepped_mode", False).value
+        self.safety_contract = self.declare_parameter("safety_contract", "legacy").value
+        if (self.safety_contract not in ("legacy", CONTRACT)
+                or self.safety_contract == CONTRACT and not stepped):
+            raise ValueError("reach safety requires explicit stepped mr3-reach-v1")
+        self.reach_enabled = self.safety_contract == CONTRACT
+        self.motion_authority_profile = self.declare_parameter("motion_authority_profile", "").value
+        if self.motion_authority_profile != (AUTHORITY_PROFILE if self.reach_enabled else ""):
+>           raise ValueError("fixed receiving-authority profile differs from safety contract")
+E           ValueError: fixed receiving-authority profile differs from safety contract
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/build/multi_robot_exploration/multi_robot_exploration/motion_safety.py:62: ValueError
+___ test_worker_rejects_invalid_reset_rule_before_any_node_or_process[None] ____
+
+tmp_path = PosixPath('/tmp/pytest-of-zhuyulab/pytest-921/test_worker_rejects_invalid_re0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7ec8321a68c0>
+value = None
+
+    @pytest.mark.parametrize('value', [None, True, 1, 'unknown'])
+    def test_worker_rejects_invalid_reset_rule_before_any_node_or_process(tmp_path, monkeypatch, value):
+        monkeypatch.setattr(WORKER, 'protocol_version', lambda value:
+                            (_ for _ in ()).throw(AssertionError('passed early rule validation')))
+        request = {'epoch': 'cpu-epoch', 'scene': 'open', 'seed': 101,
+                   'safety_contract': 'mr3-reach-v1', 'reach_geometry_rule': value}
+        with pytest.raises(ValueError, match='reach_geometry_rule'):
+>           WORKER.Worker(tmp_path, request)
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_reach_support_wiring.py:112: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <mr3_env_worker.Worker object at 0x7ec8321a6b60>
+directory = PosixPath('/tmp/pytest-of-zhuyulab/pytest-921/test_worker_rejects_invalid_re0')
+request = {'epoch': 'cpu-epoch', 'reach_geometry_rule': None, 'safety_contract': 'mr3-reach-v1', 'scene': 'open', ...}
+
+    def __init__(self, directory, request):
+        self.directory = directory
+        self.epoch = request["epoch"]
+        self.scene = request["scene"]
+        self.seed = request["seed"]
+        self.safety_contract = request.get("safety_contract", "legacy")
+>       self.motion_authority_profile = motion_authority_profile_from_request(request)
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py:94: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+request = {'epoch': 'cpu-epoch', 'reach_geometry_rule': None, 'safety_contract': 'mr3-reach-v1', 'scene': 'open', ...}
+
+    def motion_authority_profile_from_request(request):
+        """Receiving permission is fixed by the new Reach contract, not a CLI knob."""
+        if type(request) is not dict:
+            raise ValueError("worker reset request is not an object")
+        contract = request.get("safety_contract", "legacy")
+        if type(contract) is not str or contract not in ("legacy", "mr3-reach-v1"):
+            raise ValueError("unknown safety contract for receiving authority")
+        expected = MOTION_AUTHORITY_PROFILE if contract == "mr3-reach-v1" else None
+        selected = request.get("motion_authority_profile")
+        if ((expected is None and selected is not None) or
+                (expected is not None and (type(selected) is not str or selected != expected))):
+>           raise ValueError("worker receiving-authority profile differs from fixed reset contract")
+E           ValueError: worker receiving-authority profile differs from fixed reset contract
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py:81: ValueError
+
+During handling of the above exception, another exception occurred:
+
+tmp_path = PosixPath('/tmp/pytest-of-zhuyulab/pytest-921/test_worker_rejects_invalid_re0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7ec8321a68c0>
+value = None
+
+    @pytest.mark.parametrize('value', [None, True, 1, 'unknown'])
+    def test_worker_rejects_invalid_reset_rule_before_any_node_or_process(tmp_path, monkeypatch, value):
+        monkeypatch.setattr(WORKER, 'protocol_version', lambda value:
+                            (_ for _ in ()).throw(AssertionError('passed early rule validation')))
+        request = {'epoch': 'cpu-epoch', 'scene': 'open', 'seed': 101,
+                   'safety_contract': 'mr3-reach-v1', 'reach_geometry_rule': value}
+>       with pytest.raises(ValueError, match='reach_geometry_rule'):
+E       AssertionError: Regex pattern 'reach_geometry_rule' does not match 'worker receiving-authority profile differs from fixed reset contract'.
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_reach_support_wiring.py:111: AssertionError
+___ test_worker_rejects_invalid_reset_rule_before_any_node_or_process[True] ____
+
+tmp_path = PosixPath('/tmp/pytest-of-zhuyulab/pytest-921/test_worker_rejects_invalid_re1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7ec831e5b2b0>
+value = True
+
+    @pytest.mark.parametrize('value', [None, True, 1, 'unknown'])
+    def test_worker_rejects_invalid_reset_rule_before_any_node_or_process(tmp_path, monkeypatch, value):
+        monkeypatch.setattr(WORKER, 'protocol_version', lambda value:
+                            (_ for _ in ()).throw(AssertionError('passed early rule validation')))
+        request = {'epoch': 'cpu-epoch', 'scene': 'open', 'seed': 101,
+                   'safety_contract': 'mr3-reach-v1', 'reach_geometry_rule': value}
+        with pytest.raises(ValueError, match='reach_geometry_rule'):
+>           WORKER.Worker(tmp_path, request)
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_reach_support_wiring.py:112: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <mr3_env_worker.Worker object at 0x7ec831e59150>
+directory = PosixPath('/tmp/pytest-of-zhuyulab/pytest-921/test_worker_rejects_invalid_re1')
+request = {'epoch': 'cpu-epoch', 'reach_geometry_rule': True, 'safety_contract': 'mr3-reach-v1', 'scene': 'open', ...}
+
+    def __init__(self, directory, request):
+        self.directory = directory
+        self.epoch = request["epoch"]
+        self.scene = request["scene"]
+        self.seed = request["seed"]
+        self.safety_contract = request.get("safety_contract", "legacy")
+>       self.motion_authority_profile = motion_authority_profile_from_request(request)
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py:94: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+request = {'epoch': 'cpu-epoch', 'reach_geometry_rule': True, 'safety_contract': 'mr3-reach-v1', 'scene': 'open', ...}
+
+    def motion_authority_profile_from_request(request):
+        """Receiving permission is fixed by the new Reach contract, not a CLI knob."""
+        if type(request) is not dict:
+            raise ValueError("worker reset request is not an object")
+        contract = request.get("safety_contract", "legacy")
+        if type(contract) is not str or contract not in ("legacy", "mr3-reach-v1"):
+            raise ValueError("unknown safety contract for receiving authority")
+        expected = MOTION_AUTHORITY_PROFILE if contract == "mr3-reach-v1" else None
+        selected = request.get("motion_authority_profile")
+        if ((expected is None and selected is not None) or
+                (expected is not None and (type(selected) is not str or selected != expected))):
+>           raise ValueError("worker receiving-authority profile differs from fixed reset contract")
+E           ValueError: worker receiving-authority profile differs from fixed reset contract
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py:81: ValueError
+
+During handling of the above exception, another exception occurred:
+
+tmp_path = PosixPath('/tmp/pytest-of-zhuyulab/pytest-921/test_worker_rejects_invalid_re1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7ec831e5b2b0>
+value = True
+
+    @pytest.mark.parametrize('value', [None, True, 1, 'unknown'])
+    def test_worker_rejects_invalid_reset_rule_before_any_node_or_process(tmp_path, monkeypatch, value):
+        monkeypatch.setattr(WORKER, 'protocol_version', lambda value:
+                            (_ for _ in ()).throw(AssertionError('passed early rule validation')))
+        request = {'epoch': 'cpu-epoch', 'scene': 'open', 'seed': 101,
+                   'safety_contract': 'mr3-reach-v1', 'reach_geometry_rule': value}
+>       with pytest.raises(ValueError, match='reach_geometry_rule'):
+E       AssertionError: Regex pattern 'reach_geometry_rule' does not match 'worker receiving-authority profile differs from fixed reset contract'.
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_reach_support_wiring.py:111: AssertionError
+_____ test_worker_rejects_invalid_reset_rule_before_any_node_or_process[1] _____
+
+tmp_path = PosixPath('/tmp/pytest-of-zhuyulab/pytest-921/test_worker_rejects_invalid_re2')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7ec8318ecc40>
+value = 1
+
+    @pytest.mark.parametrize('value', [None, True, 1, 'unknown'])
+    def test_worker_rejects_invalid_reset_rule_before_any_node_or_process(tmp_path, monkeypatch, value):
+        monkeypatch.setattr(WORKER, 'protocol_version', lambda value:
+                            (_ for _ in ()).throw(AssertionError('passed early rule validation')))
+        request = {'epoch': 'cpu-epoch', 'scene': 'open', 'seed': 101,
+                   'safety_contract': 'mr3-reach-v1', 'reach_geometry_rule': value}
+        with pytest.raises(ValueError, match='reach_geometry_rule'):
+>           WORKER.Worker(tmp_path, request)
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_reach_support_wiring.py:112: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <mr3_env_worker.Worker object at 0x7ec8318ece20>
+directory = PosixPath('/tmp/pytest-of-zhuyulab/pytest-921/test_worker_rejects_invalid_re2')
+request = {'epoch': 'cpu-epoch', 'reach_geometry_rule': 1, 'safety_contract': 'mr3-reach-v1', 'scene': 'open', ...}
+
+    def __init__(self, directory, request):
+        self.directory = directory
+        self.epoch = request["epoch"]
+        self.scene = request["scene"]
+        self.seed = request["seed"]
+        self.safety_contract = request.get("safety_contract", "legacy")
+>       self.motion_authority_profile = motion_authority_profile_from_request(request)
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py:94: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+request = {'epoch': 'cpu-epoch', 'reach_geometry_rule': 1, 'safety_contract': 'mr3-reach-v1', 'scene': 'open', ...}
+
+    def motion_authority_profile_from_request(request):
+        """Receiving permission is fixed by the new Reach contract, not a CLI knob."""
+        if type(request) is not dict:
+            raise ValueError("worker reset request is not an object")
+        contract = request.get("safety_contract", "legacy")
+        if type(contract) is not str or contract not in ("legacy", "mr3-reach-v1"):
+            raise ValueError("unknown safety contract for receiving authority")
+        expected = MOTION_AUTHORITY_PROFILE if contract == "mr3-reach-v1" else None
+        selected = request.get("motion_authority_profile")
+        if ((expected is None and selected is not None) or
+                (expected is not None and (type(selected) is not str or selected != expected))):
+>           raise ValueError("worker receiving-authority profile differs from fixed reset contract")
+E           ValueError: worker receiving-authority profile differs from fixed reset contract
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py:81: ValueError
+
+During handling of the above exception, another exception occurred:
+
+tmp_path = PosixPath('/tmp/pytest-of-zhuyulab/pytest-921/test_worker_rejects_invalid_re2')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7ec8318ecc40>
+value = 1
+
+    @pytest.mark.parametrize('value', [None, True, 1, 'unknown'])
+    def test_worker_rejects_invalid_reset_rule_before_any_node_or_process(tmp_path, monkeypatch, value):
+        monkeypatch.setattr(WORKER, 'protocol_version', lambda value:
+                            (_ for _ in ()).throw(AssertionError('passed early rule validation')))
+        request = {'epoch': 'cpu-epoch', 'scene': 'open', 'seed': 101,
+                   'safety_contract': 'mr3-reach-v1', 'reach_geometry_rule': value}
+>       with pytest.raises(ValueError, match='reach_geometry_rule'):
+E       AssertionError: Regex pattern 'reach_geometry_rule' does not match 'worker receiving-authority profile differs from fixed reset contract'.
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_reach_support_wiring.py:111: AssertionError
+__ test_worker_rejects_invalid_reset_rule_before_any_node_or_process[unknown] __
+
+tmp_path = PosixPath('/tmp/pytest-of-zhuyulab/pytest-921/test_worker_rejects_invalid_re3')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7ec832231d80>
+value = 'unknown'
+
+    @pytest.mark.parametrize('value', [None, True, 1, 'unknown'])
+    def test_worker_rejects_invalid_reset_rule_before_any_node_or_process(tmp_path, monkeypatch, value):
+        monkeypatch.setattr(WORKER, 'protocol_version', lambda value:
+                            (_ for _ in ()).throw(AssertionError('passed early rule validation')))
+        request = {'epoch': 'cpu-epoch', 'scene': 'open', 'seed': 101,
+                   'safety_contract': 'mr3-reach-v1', 'reach_geometry_rule': value}
+        with pytest.raises(ValueError, match='reach_geometry_rule'):
+>           WORKER.Worker(tmp_path, request)
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_reach_support_wiring.py:112: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <mr3_env_worker.Worker object at 0x7ec8322337c0>
+directory = PosixPath('/tmp/pytest-of-zhuyulab/pytest-921/test_worker_rejects_invalid_re3')
+request = {'epoch': 'cpu-epoch', 'reach_geometry_rule': 'unknown', 'safety_contract': 'mr3-reach-v1', 'scene': 'open', ...}
+
+    def __init__(self, directory, request):
+        self.directory = directory
+        self.epoch = request["epoch"]
+        self.scene = request["scene"]
+        self.seed = request["seed"]
+        self.safety_contract = request.get("safety_contract", "legacy")
+>       self.motion_authority_profile = motion_authority_profile_from_request(request)
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py:94: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+request = {'epoch': 'cpu-epoch', 'reach_geometry_rule': 'unknown', 'safety_contract': 'mr3-reach-v1', 'scene': 'open', ...}
+
+    def motion_authority_profile_from_request(request):
+        """Receiving permission is fixed by the new Reach contract, not a CLI knob."""
+        if type(request) is not dict:
+            raise ValueError("worker reset request is not an object")
+        contract = request.get("safety_contract", "legacy")
+        if type(contract) is not str or contract not in ("legacy", "mr3-reach-v1"):
+            raise ValueError("unknown safety contract for receiving authority")
+        expected = MOTION_AUTHORITY_PROFILE if contract == "mr3-reach-v1" else None
+        selected = request.get("motion_authority_profile")
+        if ((expected is None and selected is not None) or
+                (expected is not None and (type(selected) is not str or selected != expected))):
+>           raise ValueError("worker receiving-authority profile differs from fixed reset contract")
+E           ValueError: worker receiving-authority profile differs from fixed reset contract
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py:81: ValueError
+
+During handling of the above exception, another exception occurred:
+
+tmp_path = PosixPath('/tmp/pytest-of-zhuyulab/pytest-921/test_worker_rejects_invalid_re3')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7ec832231d80>
+value = 'unknown'
+
+    @pytest.mark.parametrize('value', [None, True, 1, 'unknown'])
+    def test_worker_rejects_invalid_reset_rule_before_any_node_or_process(tmp_path, monkeypatch, value):
+        monkeypatch.setattr(WORKER, 'protocol_version', lambda value:
+                            (_ for _ in ()).throw(AssertionError('passed early rule validation')))
+        request = {'epoch': 'cpu-epoch', 'scene': 'open', 'seed': 101,
+                   'safety_contract': 'mr3-reach-v1', 'reach_geometry_rule': value}
+>       with pytest.raises(ValueError, match='reach_geometry_rule'):
+E       AssertionError: Regex pattern 'reach_geometry_rule' does not match 'worker receiving-authority profile differs from fixed reset contract'.
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_reach_support_wiring.py:111: AssertionError
+__________ test_actual_worker_command_and_metadata_both_bind_v2_once ___________
+
+tmp_path = PosixPath('/tmp/pytest-of-zhuyulab/pytest-921/test_actual_worker_command_and0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7ec831a06f50>
+
+    def test_actual_worker_command_and_metadata_both_bind_v2_once(tmp_path, monkeypatch):
+>       owner, metadata = worker_launch_tail(tmp_path, monkeypatch, 'cone-support-v2')
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_reach_support_wiring.py:146: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_reach_support_wiring.py:141: in worker_launch_tail
+    exec(compile(tail, str(path), 'exec'), namespace)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    #!/usr/bin/env python3
+    """System-Python ROS worker behind private learner pipes; never a policy."""
+    
+    import argparse
+    import copy
+    import ctypes
+    import gzip
+    import hashlib
+    import importlib.util
+    import json
+    import math
+    import os
+    from pathlib import Path
+    import subprocess
+    import sys
+    import threading
+    import time
+    
+    from ros_smoke_test import configure_mr3_transport_environment, native_launch_failures
+    from multi_robot_exploration.mr3_safety_intent import actuation_profile_for_safety_contract
+    from multi_robot_exploration.mr3_motion_authority import PROFILE as MOTION_AUTHORITY_PROFILE
+    from multi_robot_exploration.mr3_evaluator_phase import (
+        PHASE_PROTOCOL, PHASE_WALL_GUARD_SEC, PhaseClient,
+    )
+    from multi_robot_exploration.mr3_drive_phase import (
+        DrivePhaseClient, PROTOCOL as DRIVE_PROTOCOL, WALL_GUARD_SEC as DRIVE_WALL_GUARD_SEC,
+        valid_output,
+    )
+    from multi_robot_exploration.mr3_control_phase import (
+        ControlPhaseClient, PROTOCOL as CONTROL_PROTOCOL,
+        WALL_GUARD_SEC as CONTROL_WALL_GUARD_SEC, canonical, valid_motion_status,
+        protocol_version,
+    )
+    from multi_robot_exploration.mr3_safety_intent import (
+        parse_json, payload_sha256, validate_intent, validate_intent_refs,
+    )
+    from multi_robot_exploration.mr3_reach_runtime import (
+        BINARY_CONE_V1, validate_reach_geometry_rule,
+    )
+    
+    
+    ROS_ROOT = Path(__file__).resolve().parents[1]
+    WORKSPACE = ROS_ROOT.parents[1]
+    LEARNER = (WORKSPACE / "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/"
+               "wireless-rl/mr3_learning")
+    SHUTDOWN_PROTOCOL = "nav2-finalized_then_serial-ros_then_gazebo-v1"
+    NAV2_NODES = ("controller_server", "planner_server", "behavior_server",
+                  "bt_navigator", "waypoint_follower", "velocity_smoother")
+    NAV2_SHUTDOWN_WALL_GUARD_SEC = 30.
+    MOTION_OUTPUT_PUBLISHER = ("/", "motion_safety")
+    MOTION_PHASE_COMPLETION = "publication_and_local_topic_receipt"
+    PLANT_QUANTUM_NS = 20_000_000
+    STARTUP_READINESS_PROTOCOL = "received-input-pause-drain-v1"
+    STARTUP_CLEANUP_RESERVE_SEC = 60.
+    STARTUP_RESPONSE_RESERVE_SEC = 5.
+    
+    
+    def plant_stimulus_angular(arm, relative_ns):
+        """Fixed from-rest engineering waveform; no state/truth-dependent trigger."""
+        if arm not in ("continuous", "pulse") or type(relative_ns) is not int or relative_ns < 0:
+            raise ValueError("invalid fixed plant stimulus coordinate")
+        turning = 1_200_000_000 <= relative_ns < 2_740_000_000
+        pulse = arm == "pulse" and 2_200_000_000 <= relative_ns < 2_240_000_000
+        return 800 if turning and not pulse else 0
+    spec = importlib.util.spec_from_file_location("mr3_pipe_protocol", LEARNER / "ipc.py")
+    ipc = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(ipc)
+    
+    
+    def motion_authority_profile_from_request(request):
+        """Receiving permission is fixed by the new Reach contract, not a CLI knob."""
+        if type(request) is not dict:
+            raise ValueError("worker reset request is not an object")
+        contract = request.get("safety_contract", "legacy")
+        if type(contract) is not str or contract not in ("legacy", "mr3-reach-v1"):
+            raise ValueError("unknown safety contract for receiving authority")
+        expected = MOTION_AUTHORITY_PROFILE if contract == "mr3-reach-v1" else None
+        selected = request.get("motion_authority_profile")
+        if ((expected is None and selected is not None) or
+                (expected is not None and (type(selected) is not str or selected != expected))):
+            raise ValueError("worker receiving-authority profile differs from fixed reset contract")
+        return expected
+    
+    
+    class Worker:
+        """Coordinate real physical steps, delivered observations and isolated reward."""
+    
+        def __init__(self, directory, request):
+            self.directory = directory
+            self.epoch = request["epoch"]
+            self.scene = request["scene"]
+            self.seed = request["seed"]
+            self.safety_contract = request.get("safety_contract", "legacy")
+            self.motion_authority_profile = motion_authority_profile_from_request(request)
+            self.reach_geometry_rule = validate_reach_geometry_rule(
+                request.get("reach_geometry_rule", BINARY_CONE_V1),
+                safety_contract=self.safety_contract)
+            self.seed_rule = request.get("seed_rule", "legacy")
+            if type(self.seed_rule) is not str or self.seed_rule not in (
+                    "legacy", "exact-point-bridge-v1", "exact-point-bridge-v2"):
+                raise ValueError("invalid seed_rule")
+            self.start_graph_rule = request.get("start_graph_rule", "original-seed-cell")
+            if (type(self.start_graph_rule) is not str or self.start_graph_rule not in
+                    ("original-seed-cell", "point-attachment-3x3-v1")
+                    or (self.start_graph_rule == "point-attachment-3x3-v1"
+                        and self.seed_rule != "exact-point-bridge-v2")):
+                raise ValueError("invalid seed_rule/start_graph_rule pair")
+            self.control_version = protocol_version(self.safety_contract)
+            self.startup_readiness_protocol = request.get("startup_readiness_protocol")
+            self.startup_deadline_ns = request.get("startup_deadline_monotonic_ns")
+            self.startup_active = self.control_version == 2
+            if self.startup_active:
+                now_ns = time.monotonic_ns()
+                if (self.startup_readiness_protocol != STARTUP_READINESS_PROTOCOL
+                        or type(self.startup_readiness_protocol) is not str
+                        or type(self.startup_deadline_ns) is not int
+                        or not now_ns < self.startup_deadline_ns <= now_ns + 420_000_000_000):
+                    raise ValueError("reach reset requires its explicit startup protocol and live absolute deadline")
+                self.startup_wait_deadline_ns = min(now_ns + 400_000_000_000,
+                    self.startup_deadline_ns - round((STARTUP_CLEANUP_RESERVE_SEC + STARTUP_RESPONSE_RESERVE_SEC) * 1e9))
+                if self.startup_wait_deadline_ns <= now_ns:
+                    raise TimeoutError("reach startup has no work time after cleanup/response reserve")
+            elif "startup_readiness_protocol" in request or "startup_deadline_monotonic_ns" in request:
+                raise ValueError("legacy reset must omit reach startup fields")
+            self.startup_stage = "constructing"
+            self.startup_callback_fields = set()
+            self.startup_failure_receipts = []
+            self.startup_readiness_file = None
+            self.safety_intents = {}
+            self.safety_intent_publishers = {}
+            self.bootstrap_intent_refs = None
+            if self.scene not in ("open", "rooms", "corridors") or type(self.seed) is not int:
+                raise ValueError("invalid scene or seed")
+            if request.get("quantum_steps") != 20:
+                raise ValueError("scheduler requires 20 physical ticks per quantum")
+            self.preparation_probe_version = request.get("preparation_probe_version")
+            if "preparation_probe_version" in request and (
+                    type(self.preparation_probe_version) is not str
+                    or self.preparation_probe_version != "mr3-p2a-reach-outward-cancel-v2"
+                    or self.safety_contract != "mr3-reach-v1"):
+                raise ValueError("unknown/mixed explicit Reach preparation probe")
+            self.terminal_probe = request.get("terminal_probe", False)
+            if type(self.terminal_probe) is not bool:
+                raise ValueError("terminal_probe must be a boolean")
+            self.plant_stimulus_arm = request.get("plant_stimulus_arm")
+            if self.plant_stimulus_arm not in (None, "continuous", "pulse"):
+                raise ValueError("invalid plant stimulus arm")
+            if self.plant_stimulus_arm is not None and (
+                    self.terminal_probe or (self.scene, self.seed) != ("open", 101)):
+                raise ValueError("plant stimulus requires its exclusive open seed101 fixture")
+            self.plant_stimulus_work_deadline_ns = request.get("plant_stimulus_work_deadline_ns")
+            if self.plant_stimulus_arm is not None and (
+                    type(self.plant_stimulus_work_deadline_ns) is not int
+                    or not time.monotonic_ns() < self.plant_stimulus_work_deadline_ns
+                    <= time.monotonic_ns() + 1_680_000_000_000):
+                raise ValueError("plant stimulus requires its bounded work deadline")
+            if self.plant_stimulus_arm is None and self.plant_stimulus_work_deadline_ns is not None:
+                raise ValueError("plant work deadline requires the explicit diagnostic arm")
+            if self.preparation_probe_version is not None and (self.terminal_probe or self.plant_stimulus_arm is not None):
+                raise ValueError("v2 preparation probe cannot combine with terminal/plant diagnostics")
+            self.plant_stimulus_sequence = 0
+            self.plant_stimulus_origin_ns = None
+            self.plant_stimulus_pending = None
+            self.plant_stimulus_receipt = None
+            self.plant_stimulus_input_sequence = None
+            self.plant_stimulus_publisher_gid = None
+            self.plant_stimulus_receipt_publisher_gid = None
+            self.probe_armed = False
+            self.probe_number = 0
+            self.task_terminal = None
+            self.evaluator_phase = PhaseClient(self.epoch)
+            self.condition = threading.Condition()
+            self.clock_ns = 0
+            self.monitor_ready = False
+            self.motion_ready = False
+            self.odometry_recorder_ready = False
+            self.motion_status = None
+            self.stop_status = None
+            self.controlled = False
+            self.stopping = False
+            self.cleanup_mode = False
+            self.cleanup_deadline = None
+            self.control_phase = ControlPhaseClient(self.epoch, safety_contract=self.safety_contract)
+            self.state_commit = None
+            self.peer_commit = None
+            self.drive_phase = DrivePhaseClient(self.epoch)
+            self.consumed_drive_phase = None
+            self.initial_inputs_ready = None
+            self.snapshots = {}
+            self.drains = {}
+            self.rewards = {}
+            self.finalize_ack = None
+            self.events = []
+            self.failures = []
+            self.closed = None
+            self.closed_received_clock_ns = None
+            self.closed_received_wall_monotonic_ns = None
+            self.nav2_shutdown_clients = []
+            self.reward_ready = None
+            self.callback_error = None
+            self.snapshot_number = 0
+            self.reward_number = 0
+            self.command_number = 0
+            self.physics_number = 0
+            self.snapshot = None
+            self.watermarks = {}
+            self.finished = False
+            self.launch = None
+            self.helper = None
+            self.outputs = []
+            if self.startup_active:
+                self.startup_readiness_file = (directory / "startup_readiness.jsonl").open("x", buffering=1)
+                self.outputs.append(self.startup_readiness_file)
+                self._record_startup("initialized")
+            self.execution_map_digests = set()
+            self.execution_costmap_file = (directory / "costmaps.jsonl").open("x", buffering=1)
+            self.outputs.append(self.execution_costmap_file)
+            self.last_native_check = 0.
+            self.started_wall = time.monotonic()
+            self.plant_stimulus_file = None
+            if self.plant_stimulus_arm is not None:
+                self.plant_stimulus_file = (directory / "plant_stimulus_worker.jsonl").open(
+                    "x", buffering=1)
+                self.outputs.append(self.plant_stimulus_file)
+            self.transition_file = (directory / "transitions.jsonl").open("x", buffering=1)
+            self.physics_file = (directory / "physics.jsonl").open("x", buffering=1)
+            self.evaluator_phase_file = (directory / "evaluator_phase_worker.jsonl").open(
+                "x", buffering=1)
+            self.motion_phase_file = (directory / "motion_phase_worker.jsonl").open("x", buffering=1)
+            self.drive_phase_file = (directory / "drive_phase_worker.jsonl").open("x", buffering=1)
+            self.outputs.append(self.drive_phase_file)
+            self.control_phase_file = (directory / "control_phase_worker.jsonl").open("x", buffering=1)
+            self.outputs.append(self.control_phase_file)
+            self.transport_environment = configure_mr3_transport_environment()
+    
+            import rclpy
+            from rclpy.parameter import Parameter
+            from rclpy.executors import SingleThreadedExecutor
+            from rclpy.qos import DurabilityPolicy, QoSProfile, ReliabilityPolicy
+            from rosgraph_msgs.msg import Clock
+            from std_msgs.msg import Bool, Header, String
+            from lifecycle_msgs.srv import GetState
+            from nav2_msgs.srv import ManageLifecycleNodes
+            from nav_msgs.msg import OccupancyGrid
+            from rcl_interfaces.srv import SetParametersAtomically
+            from multi_robot_exploration.mr3_information import map_payload
+    
+            rclpy.init()
+            self.rclpy = rclpy
+            self.String = String
+            self.Header = Header
+            self.GetState = GetState
+            self.ManageLifecycleNodes = ManageLifecycleNodes
+            self.Parameter = Parameter
+            self.SetParametersAtomically = SetParametersAtomically
+            self.map_payload = map_payload
+            self.node = rclpy.create_node("mr3_environment_worker", parameter_overrides=[
+                Parameter("use_sim_time", Parameter.Type.BOOL, True)])
+            qos = QoSProfile(depth=1, durability=DurabilityPolicy.TRANSIENT_LOCAL)
+            self.snapshot_pub = self.node.create_publisher(String, "/mr3/snapshot_request", 10)
+            self.drain_pub = self.node.create_publisher(String, "/mr3/information_drain_request", 10)
+            self.action_pub = self.node.create_publisher(String, "/mr3/action", 10)
+            self.reward_pub = self.node.create_publisher(String, "/mr3/reward_request", 10)
+            self.finalize_pub = self.node.create_publisher(String, "/mr3/training_finalize", 10)
+            self.evaluator_phase_pub = self.node.create_publisher(
+                String, "/mr3/evaluator_phase_request", 10)
+            self.control_publishers = {
+                name: self.node.create_publisher(String, topic, 10) for name, topic in (
+                    ("state", "/mr3/state_phase_request"),
+                    ("peer", "/mr3/peer_phase_request"),
+                    ("motion", "/motion_safety/control_request"))}
+            self.infrastructure_abort_pub = self.node.create_publisher(
+                String, "/mr3/infrastructure_abort", 10)
+            self.probe_pub = (self.node.create_publisher(String, "/mr3/diagnostic_failure", 10)
+                              if self.terminal_probe else None)
+            self.stop_pub = self.node.create_publisher(Header, "/exploration_stop_request", qos)
+            self.plant_stimulus_client = (
+                self.node.create_client(SetParametersAtomically,
+                                        "/tb3/velocity_smoother/mr3_diagnostic_apply")
+                if self.plant_stimulus_arm is not None else None)
+    
+            def callback(function):
+                def wrapped(message):
+                    with self.condition:
+                        try:
+                            function(message)
+                        except Exception as error:
+                            self.callback_error = repr(error)
+                        finally:
+                            self.condition.notify_all()
+                return wrapped
+    
+            def message_json(message):
+                value = json.loads(message.data)
+                if value.get("epoch") != self.epoch:
+                    return None
+                return value
+    
+            def snapshot_response(message):
+                value = message_json(message)
+                if value:
+                    self.snapshots[value["request_id"]] = value
+    
+            def drain_response(message):
+                value = message_json(message)
+                if value:
+                    self.drains[value["request_id"]] = value
+    
+            def reward_response(message):
+                value = message_json(message)
+                if value:
+                    if "sequence" in value:
+                        self.rewards[value["sequence"]] = value
+                    else:
+                        self.finalize_ack = value
+    
+            def event(message):
+                value = message_json(message)
+                if value:
+                    self.events.append(value)
+    
+            def stopped(message):
+                value = json.loads(message.data)
+                if (value.get("epoch") == self.epoch
+                        and value.get("robot_names") == ["tb1", "tb2", "tb3"]):
+                    self.closed = value
+                    self.closed_received_clock_ns = self.clock_ns
+                    self.closed_received_wall_monotonic_ns = time.monotonic_ns()
+    
+            def ready(message):
+                value = message_json(message)
+                if value:
+                    self.reward_ready = value
+    
+            def initial_inputs(message):
+                value = message_json(message)
+                if value:
+                    self.receive_initial_inputs(value)
+    
+            def task_terminal(message):
+                value = message_json(message)
+                if value:
+                    self.receive_terminal(value)
+    
+            def evaluator_phase(message):
+                value = json.loads(message.data)
+                self._trace_evaluator_phase("ack_received", ack=value)
+                self.evaluator_phase.receive(value, self.physical_ns, self.clock_ns)
+    
+            def clock(message):
+                self.clock_ns = message.clock.sec * 10**9 + message.clock.nanosec
+    
+            def monitor(message):
+                self.receive_startup_bool("monitor_ready", "/task_monitor_ready", message)
+    
+            def motion_ready(message):
+                self.receive_startup_bool("motion_ready", "/motion_safety/ready", message)
+    
+            def odometry_recorder_ready(message):
+                self.receive_startup_bool("odometry_recorder_ready", "/mr3/odometry_recorder/ready", message)
+    
+            def motion_status(message):
+                self.receive_motion_status(parse_json(message.data) if getattr(self, "control_version", 1) == 2 else json.loads(message.data))
+    
+            def stop_status(message):
+                self.receive_stop_status(parse_json(message.data) if getattr(self, "control_version", 1) == 2 else json.loads(message.data))
+    
+            def failure(message):
+                self.receive_failure(message)
+    
+            self.subscriptions = [
+                self.node.create_subscription(
+                    Clock, "/clock", callback(clock),
+                    QoSProfile(depth=20, reliability=ReliabilityPolicy.BEST_EFFORT)),
+                self.node.create_subscription(Bool, "/task_monitor_ready", callback(monitor), qos),
+                self.node.create_subscription(Bool, "/motion_safety/ready",
+                                              callback(motion_ready), qos),
+                self.node.create_subscription(Bool, "/mr3/odometry_recorder/ready",
+                                              callback(odometry_recorder_ready), qos),
+                self.node.create_subscription(String, "/motion_safety/status",
+                                              callback(motion_status), qos),
+                self.node.create_subscription(String, "/motion_safety/stop_status",
+                                              callback(stop_status), qos),
+                self.node.create_subscription(String, "/mr3/snapshot_response",
+                                              callback(snapshot_response), 10),
+                self.node.create_subscription(String, "/mr3/information_drained",
+                                              callback(drain_response), 10),
+                self.node.create_subscription(String, "/mr3/reward_response",
+                                              callback(reward_response), 10),
+                self.node.create_subscription(String, "/mr3/reward_ready", callback(ready), qos),
+                self.node.create_subscription(String, "/mr3/initial_inputs_ready",
+                                              callback(initial_inputs), qos),
+                self.node.create_subscription(String, "/mr3/task_terminal",
+                                              callback(task_terminal), qos),
+                self.node.create_subscription(String, "/mr3/evaluator_phase_ack",
+                                              callback(evaluator_phase), 10),
+                self.node.create_subscription(String, "/mr3/events", callback(event), 100),
+                self.node.create_subscription(String, "/exploration_stopped", callback(stopped), qos),
+                self.node.create_subscription(String, "/exploration_failure", callback(failure), qos),
+            ]
+            for name, topic in (("state", "/mr3/state_phase_ack"),
+                                ("peer", "/mr3/peer_phase_ack"),
+                                ("motion", "/motion_safety/control_ack")):
+                self.subscriptions.append(self.node.create_subscription(
+                    String, topic, callback(lambda message, name=name: self.receive_control_phase(
+                        name, parse_json(message.data) if getattr(self, "control_version", 1) == 2 else json.loads(message.data))),
+                    qos))
+            if self.plant_stimulus_arm is not None:
+                self.subscriptions.append(self.node.create_subscription(
+                    String, "/motion_safety/diagnostic_request_receipt",
+                    callback(lambda message: self.receive_plant_stimulus_receipt(
+                        json.loads(message.data))), 20))
+            for name in ("tb1", "tb2", "tb3"):
+                if self.safety_contract == "mr3-reach-v1":
+                    self.subscriptions.append(self.node.create_subscription(
+                        String, f"/{name}/mr3/safety_intent",
+                        callback(lambda message, name=name: self.receive_safety_intent(name, message)),
+                        QoSProfile(depth=256, durability=DurabilityPolicy.VOLATILE,
+                                   reliability=ReliabilityPolicy.RELIABLE)))
+                self.subscriptions.append(self.node.create_subscription(
+                    String, f"/{name}/mr3_drive/status",
+                    callback(lambda message, name=name: self.receive_drive_status(
+                        name, json.loads(message.data))), qos))
+                for layer in ("global", "local"):
+                    self.subscriptions.append(self.node.create_subscription(
+                        OccupancyGrid, f"/{name}/{layer}_costmap/costmap",
+                        callback(lambda grid, name=name, layer=layer:
+                                 self.record_costmap(name, layer, grid)),
+                        QoSProfile(depth=1, durability=DurabilityPolicy.TRANSIENT_LOCAL,
+                                   reliability=ReliabilityPolicy.RELIABLE)))
+            self.executor = SingleThreadedExecutor()
+            self.executor.add_node(self.node)
+    
+            def spin():
+                try:
+                    self.executor.spin()
+                except Exception as error:
+                    with self.condition:
+                        self.callback_error = repr(error)
+                        self.condition.notify_all()
+    
+            self.spin_thread = threading.Thread(target=spin, name="mr3_worker_ros", daemon=True)
+            self.spin_thread.start()
+            self.command = [
+                "ros2", "launch", "multi_robot", "gazebo_multirobot_mapping_with_nav2.launch.py",
+                "execution_mode:=adapter", "mr3_stepped:=true", "training_reward_enabled:=true",
+                "robot_count:=3", f"mr3_episode_epoch:={self.epoch}",
+                f"mr3_audit_path:={directory / 'adapter.jsonl'}",
+                f"world:=p1c_{self.scene}.world", f"gazebo_seed:={self.seed}",
+                "enable_gzclient:=false", "enable_rviz:=false", "enable_merge_rviz:=false",
+                "auto_save_map:=false", "enable_task_evaluator:=true",
+                "evaluation_contract_path:=" + str(
+                    ROS_ROOT / f"src/multi_robot/config/mr3_p1a/{self.scene}.json"),
+                f"evaluation_episode_id:={self.epoch}", f"evaluation_output_dir:={directory}",
+                f"mr3_safety_contract:={self.safety_contract}",
+            ]
+            if self.reach_geometry_rule != BINARY_CONE_V1:
+                self.command.append(f"mr3_reach_geometry_rule:={self.reach_geometry_rule}")
+            if self.seed_rule != "legacy":
+                self.command.append(f"mr3_seed_rule:={self.seed_rule}")
+            if self.start_graph_rule != "original-seed-cell":
+                self.command.append(f"mr3_start_graph_rule:={self.start_graph_rule}")
+            if self.terminal_probe:
+                self.command.append("training_terminal_probe:=true")
+            if self.plant_stimulus_arm is not None:
+                self.command.append(f"mr3_plant_stimulus_arm:={self.plant_stimulus_arm}")
+            metadata = {"schema": "mr3-p1c-worker-v1", "epoch": self.epoch,
+                        "scene": self.scene, "seed": self.seed, "command": self.command,
+                        "freeze": subprocess.check_output(
+                            ["git", "rev-parse", "HEAD"], cwd=WORKSPACE, text=True).strip(),
+                        "transport_environment": self.transport_environment,
+                        "environment": {key: os.environ.get(key) for key in (
+                            "ROS_DOMAIN_ID", "GAZEBO_MASTER_URI", "PYTHONNOUSERSITE")},
+                        "python": sys.executable, "quantum_steps": 20,
+                        "reset_handshake": "paused-controlled-state-peer-guard-storage-v1",
+                        "execution_phase_protocol": (CONTROL_PROTOCOL if self.control_version == 1 else
+                                                     "mr3-controlled-execution-phase-v2"),
+                        "execution_phase_wall_guard_sec": CONTROL_WALL_GUARD_SEC,
+                        "terminal_protocol": "mr3-task-terminal-v1",
+                        "evaluator_phase_protocol": PHASE_PROTOCOL,
+                        "evaluator_phase_wall_guard_sec": PHASE_WALL_GUARD_SEC,
+                        "shutdown_protocol": SHUTDOWN_PROTOCOL,
+                        "nav2_shutdown_wall_guard_sec": NAV2_SHUTDOWN_WALL_GUARD_SEC,
+                        "terminal_probe": self.terminal_probe,
+                        "plant_stimulus_arm": self.plant_stimulus_arm,
+                        "plant_stimulus_work_deadline_ns": self.plant_stimulus_work_deadline_ns,
+                        "physical_step_ns": 1000000, "policy_step_ns": 1000000000,
+                        "startup_wall_guard_sec": 420., "closure_wall_guard_sec": 90.}
+            if getattr(self,"preparation_probe_version",None) is not None:
+                metadata["preparation_probe_version"] = self.preparation_probe_version
+            profile = actuation_profile_for_safety_contract(self.safety_contract)
+            if profile is not None:
+                metadata["actuation_profile"] = profile
+>           if self.motion_authority_profile is not None:
+E           AttributeError: 'types.SimpleNamespace' object has no attribute 'motion_authority_profile'
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py:494: AttributeError
+________ test_actual_worker_default_command_and_metadata_omit_new_field ________
+
+tmp_path = PosixPath('/tmp/pytest-of-zhuyulab/pytest-921/test_actual_worker_default_com0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7ec833513b20>
+
+    def test_actual_worker_default_command_and_metadata_omit_new_field(tmp_path, monkeypatch):
+>       owner, metadata = worker_launch_tail(tmp_path, monkeypatch, 'binary-cone-v1')
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_reach_support_wiring.py:154: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_reach_support_wiring.py:141: in worker_launch_tail
+    exec(compile(tail, str(path), 'exec'), namespace)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    #!/usr/bin/env python3
+    """System-Python ROS worker behind private learner pipes; never a policy."""
+    
+    import argparse
+    import copy
+    import ctypes
+    import gzip
+    import hashlib
+    import importlib.util
+    import json
+    import math
+    import os
+    from pathlib import Path
+    import subprocess
+    import sys
+    import threading
+    import time
+    
+    from ros_smoke_test import configure_mr3_transport_environment, native_launch_failures
+    from multi_robot_exploration.mr3_safety_intent import actuation_profile_for_safety_contract
+    from multi_robot_exploration.mr3_motion_authority import PROFILE as MOTION_AUTHORITY_PROFILE
+    from multi_robot_exploration.mr3_evaluator_phase import (
+        PHASE_PROTOCOL, PHASE_WALL_GUARD_SEC, PhaseClient,
+    )
+    from multi_robot_exploration.mr3_drive_phase import (
+        DrivePhaseClient, PROTOCOL as DRIVE_PROTOCOL, WALL_GUARD_SEC as DRIVE_WALL_GUARD_SEC,
+        valid_output,
+    )
+    from multi_robot_exploration.mr3_control_phase import (
+        ControlPhaseClient, PROTOCOL as CONTROL_PROTOCOL,
+        WALL_GUARD_SEC as CONTROL_WALL_GUARD_SEC, canonical, valid_motion_status,
+        protocol_version,
+    )
+    from multi_robot_exploration.mr3_safety_intent import (
+        parse_json, payload_sha256, validate_intent, validate_intent_refs,
+    )
+    from multi_robot_exploration.mr3_reach_runtime import (
+        BINARY_CONE_V1, validate_reach_geometry_rule,
+    )
+    
+    
+    ROS_ROOT = Path(__file__).resolve().parents[1]
+    WORKSPACE = ROS_ROOT.parents[1]
+    LEARNER = (WORKSPACE / "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/"
+               "wireless-rl/mr3_learning")
+    SHUTDOWN_PROTOCOL = "nav2-finalized_then_serial-ros_then_gazebo-v1"
+    NAV2_NODES = ("controller_server", "planner_server", "behavior_server",
+                  "bt_navigator", "waypoint_follower", "velocity_smoother")
+    NAV2_SHUTDOWN_WALL_GUARD_SEC = 30.
+    MOTION_OUTPUT_PUBLISHER = ("/", "motion_safety")
+    MOTION_PHASE_COMPLETION = "publication_and_local_topic_receipt"
+    PLANT_QUANTUM_NS = 20_000_000
+    STARTUP_READINESS_PROTOCOL = "received-input-pause-drain-v1"
+    STARTUP_CLEANUP_RESERVE_SEC = 60.
+    STARTUP_RESPONSE_RESERVE_SEC = 5.
+    
+    
+    def plant_stimulus_angular(arm, relative_ns):
+        """Fixed from-rest engineering waveform; no state/truth-dependent trigger."""
+        if arm not in ("continuous", "pulse") or type(relative_ns) is not int or relative_ns < 0:
+            raise ValueError("invalid fixed plant stimulus coordinate")
+        turning = 1_200_000_000 <= relative_ns < 2_740_000_000
+        pulse = arm == "pulse" and 2_200_000_000 <= relative_ns < 2_240_000_000
+        return 800 if turning and not pulse else 0
+    spec = importlib.util.spec_from_file_location("mr3_pipe_protocol", LEARNER / "ipc.py")
+    ipc = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(ipc)
+    
+    
+    def motion_authority_profile_from_request(request):
+        """Receiving permission is fixed by the new Reach contract, not a CLI knob."""
+        if type(request) is not dict:
+            raise ValueError("worker reset request is not an object")
+        contract = request.get("safety_contract", "legacy")
+        if type(contract) is not str or contract not in ("legacy", "mr3-reach-v1"):
+            raise ValueError("unknown safety contract for receiving authority")
+        expected = MOTION_AUTHORITY_PROFILE if contract == "mr3-reach-v1" else None
+        selected = request.get("motion_authority_profile")
+        if ((expected is None and selected is not None) or
+                (expected is not None and (type(selected) is not str or selected != expected))):
+            raise ValueError("worker receiving-authority profile differs from fixed reset contract")
+        return expected
+    
+    
+    class Worker:
+        """Coordinate real physical steps, delivered observations and isolated reward."""
+    
+        def __init__(self, directory, request):
+            self.directory = directory
+            self.epoch = request["epoch"]
+            self.scene = request["scene"]
+            self.seed = request["seed"]
+            self.safety_contract = request.get("safety_contract", "legacy")
+            self.motion_authority_profile = motion_authority_profile_from_request(request)
+            self.reach_geometry_rule = validate_reach_geometry_rule(
+                request.get("reach_geometry_rule", BINARY_CONE_V1),
+                safety_contract=self.safety_contract)
+            self.seed_rule = request.get("seed_rule", "legacy")
+            if type(self.seed_rule) is not str or self.seed_rule not in (
+                    "legacy", "exact-point-bridge-v1", "exact-point-bridge-v2"):
+                raise ValueError("invalid seed_rule")
+            self.start_graph_rule = request.get("start_graph_rule", "original-seed-cell")
+            if (type(self.start_graph_rule) is not str or self.start_graph_rule not in
+                    ("original-seed-cell", "point-attachment-3x3-v1")
+                    or (self.start_graph_rule == "point-attachment-3x3-v1"
+                        and self.seed_rule != "exact-point-bridge-v2")):
+                raise ValueError("invalid seed_rule/start_graph_rule pair")
+            self.control_version = protocol_version(self.safety_contract)
+            self.startup_readiness_protocol = request.get("startup_readiness_protocol")
+            self.startup_deadline_ns = request.get("startup_deadline_monotonic_ns")
+            self.startup_active = self.control_version == 2
+            if self.startup_active:
+                now_ns = time.monotonic_ns()
+                if (self.startup_readiness_protocol != STARTUP_READINESS_PROTOCOL
+                        or type(self.startup_readiness_protocol) is not str
+                        or type(self.startup_deadline_ns) is not int
+                        or not now_ns < self.startup_deadline_ns <= now_ns + 420_000_000_000):
+                    raise ValueError("reach reset requires its explicit startup protocol and live absolute deadline")
+                self.startup_wait_deadline_ns = min(now_ns + 400_000_000_000,
+                    self.startup_deadline_ns - round((STARTUP_CLEANUP_RESERVE_SEC + STARTUP_RESPONSE_RESERVE_SEC) * 1e9))
+                if self.startup_wait_deadline_ns <= now_ns:
+                    raise TimeoutError("reach startup has no work time after cleanup/response reserve")
+            elif "startup_readiness_protocol" in request or "startup_deadline_monotonic_ns" in request:
+                raise ValueError("legacy reset must omit reach startup fields")
+            self.startup_stage = "constructing"
+            self.startup_callback_fields = set()
+            self.startup_failure_receipts = []
+            self.startup_readiness_file = None
+            self.safety_intents = {}
+            self.safety_intent_publishers = {}
+            self.bootstrap_intent_refs = None
+            if self.scene not in ("open", "rooms", "corridors") or type(self.seed) is not int:
+                raise ValueError("invalid scene or seed")
+            if request.get("quantum_steps") != 20:
+                raise ValueError("scheduler requires 20 physical ticks per quantum")
+            self.preparation_probe_version = request.get("preparation_probe_version")
+            if "preparation_probe_version" in request and (
+                    type(self.preparation_probe_version) is not str
+                    or self.preparation_probe_version != "mr3-p2a-reach-outward-cancel-v2"
+                    or self.safety_contract != "mr3-reach-v1"):
+                raise ValueError("unknown/mixed explicit Reach preparation probe")
+            self.terminal_probe = request.get("terminal_probe", False)
+            if type(self.terminal_probe) is not bool:
+                raise ValueError("terminal_probe must be a boolean")
+            self.plant_stimulus_arm = request.get("plant_stimulus_arm")
+            if self.plant_stimulus_arm not in (None, "continuous", "pulse"):
+                raise ValueError("invalid plant stimulus arm")
+            if self.plant_stimulus_arm is not None and (
+                    self.terminal_probe or (self.scene, self.seed) != ("open", 101)):
+                raise ValueError("plant stimulus requires its exclusive open seed101 fixture")
+            self.plant_stimulus_work_deadline_ns = request.get("plant_stimulus_work_deadline_ns")
+            if self.plant_stimulus_arm is not None and (
+                    type(self.plant_stimulus_work_deadline_ns) is not int
+                    or not time.monotonic_ns() < self.plant_stimulus_work_deadline_ns
+                    <= time.monotonic_ns() + 1_680_000_000_000):
+                raise ValueError("plant stimulus requires its bounded work deadline")
+            if self.plant_stimulus_arm is None and self.plant_stimulus_work_deadline_ns is not None:
+                raise ValueError("plant work deadline requires the explicit diagnostic arm")
+            if self.preparation_probe_version is not None and (self.terminal_probe or self.plant_stimulus_arm is not None):
+                raise ValueError("v2 preparation probe cannot combine with terminal/plant diagnostics")
+            self.plant_stimulus_sequence = 0
+            self.plant_stimulus_origin_ns = None
+            self.plant_stimulus_pending = None
+            self.plant_stimulus_receipt = None
+            self.plant_stimulus_input_sequence = None
+            self.plant_stimulus_publisher_gid = None
+            self.plant_stimulus_receipt_publisher_gid = None
+            self.probe_armed = False
+            self.probe_number = 0
+            self.task_terminal = None
+            self.evaluator_phase = PhaseClient(self.epoch)
+            self.condition = threading.Condition()
+            self.clock_ns = 0
+            self.monitor_ready = False
+            self.motion_ready = False
+            self.odometry_recorder_ready = False
+            self.motion_status = None
+            self.stop_status = None
+            self.controlled = False
+            self.stopping = False
+            self.cleanup_mode = False
+            self.cleanup_deadline = None
+            self.control_phase = ControlPhaseClient(self.epoch, safety_contract=self.safety_contract)
+            self.state_commit = None
+            self.peer_commit = None
+            self.drive_phase = DrivePhaseClient(self.epoch)
+            self.consumed_drive_phase = None
+            self.initial_inputs_ready = None
+            self.snapshots = {}
+            self.drains = {}
+            self.rewards = {}
+            self.finalize_ack = None
+            self.events = []
+            self.failures = []
+            self.closed = None
+            self.closed_received_clock_ns = None
+            self.closed_received_wall_monotonic_ns = None
+            self.nav2_shutdown_clients = []
+            self.reward_ready = None
+            self.callback_error = None
+            self.snapshot_number = 0
+            self.reward_number = 0
+            self.command_number = 0
+            self.physics_number = 0
+            self.snapshot = None
+            self.watermarks = {}
+            self.finished = False
+            self.launch = None
+            self.helper = None
+            self.outputs = []
+            if self.startup_active:
+                self.startup_readiness_file = (directory / "startup_readiness.jsonl").open("x", buffering=1)
+                self.outputs.append(self.startup_readiness_file)
+                self._record_startup("initialized")
+            self.execution_map_digests = set()
+            self.execution_costmap_file = (directory / "costmaps.jsonl").open("x", buffering=1)
+            self.outputs.append(self.execution_costmap_file)
+            self.last_native_check = 0.
+            self.started_wall = time.monotonic()
+            self.plant_stimulus_file = None
+            if self.plant_stimulus_arm is not None:
+                self.plant_stimulus_file = (directory / "plant_stimulus_worker.jsonl").open(
+                    "x", buffering=1)
+                self.outputs.append(self.plant_stimulus_file)
+            self.transition_file = (directory / "transitions.jsonl").open("x", buffering=1)
+            self.physics_file = (directory / "physics.jsonl").open("x", buffering=1)
+            self.evaluator_phase_file = (directory / "evaluator_phase_worker.jsonl").open(
+                "x", buffering=1)
+            self.motion_phase_file = (directory / "motion_phase_worker.jsonl").open("x", buffering=1)
+            self.drive_phase_file = (directory / "drive_phase_worker.jsonl").open("x", buffering=1)
+            self.outputs.append(self.drive_phase_file)
+            self.control_phase_file = (directory / "control_phase_worker.jsonl").open("x", buffering=1)
+            self.outputs.append(self.control_phase_file)
+            self.transport_environment = configure_mr3_transport_environment()
+    
+            import rclpy
+            from rclpy.parameter import Parameter
+            from rclpy.executors import SingleThreadedExecutor
+            from rclpy.qos import DurabilityPolicy, QoSProfile, ReliabilityPolicy
+            from rosgraph_msgs.msg import Clock
+            from std_msgs.msg import Bool, Header, String
+            from lifecycle_msgs.srv import GetState
+            from nav2_msgs.srv import ManageLifecycleNodes
+            from nav_msgs.msg import OccupancyGrid
+            from rcl_interfaces.srv import SetParametersAtomically
+            from multi_robot_exploration.mr3_information import map_payload
+    
+            rclpy.init()
+            self.rclpy = rclpy
+            self.String = String
+            self.Header = Header
+            self.GetState = GetState
+            self.ManageLifecycleNodes = ManageLifecycleNodes
+            self.Parameter = Parameter
+            self.SetParametersAtomically = SetParametersAtomically
+            self.map_payload = map_payload
+            self.node = rclpy.create_node("mr3_environment_worker", parameter_overrides=[
+                Parameter("use_sim_time", Parameter.Type.BOOL, True)])
+            qos = QoSProfile(depth=1, durability=DurabilityPolicy.TRANSIENT_LOCAL)
+            self.snapshot_pub = self.node.create_publisher(String, "/mr3/snapshot_request", 10)
+            self.drain_pub = self.node.create_publisher(String, "/mr3/information_drain_request", 10)
+            self.action_pub = self.node.create_publisher(String, "/mr3/action", 10)
+            self.reward_pub = self.node.create_publisher(String, "/mr3/reward_request", 10)
+            self.finalize_pub = self.node.create_publisher(String, "/mr3/training_finalize", 10)
+            self.evaluator_phase_pub = self.node.create_publisher(
+                String, "/mr3/evaluator_phase_request", 10)
+            self.control_publishers = {
+                name: self.node.create_publisher(String, topic, 10) for name, topic in (
+                    ("state", "/mr3/state_phase_request"),
+                    ("peer", "/mr3/peer_phase_request"),
+                    ("motion", "/motion_safety/control_request"))}
+            self.infrastructure_abort_pub = self.node.create_publisher(
+                String, "/mr3/infrastructure_abort", 10)
+            self.probe_pub = (self.node.create_publisher(String, "/mr3/diagnostic_failure", 10)
+                              if self.terminal_probe else None)
+            self.stop_pub = self.node.create_publisher(Header, "/exploration_stop_request", qos)
+            self.plant_stimulus_client = (
+                self.node.create_client(SetParametersAtomically,
+                                        "/tb3/velocity_smoother/mr3_diagnostic_apply")
+                if self.plant_stimulus_arm is not None else None)
+    
+            def callback(function):
+                def wrapped(message):
+                    with self.condition:
+                        try:
+                            function(message)
+                        except Exception as error:
+                            self.callback_error = repr(error)
+                        finally:
+                            self.condition.notify_all()
+                return wrapped
+    
+            def message_json(message):
+                value = json.loads(message.data)
+                if value.get("epoch") != self.epoch:
+                    return None
+                return value
+    
+            def snapshot_response(message):
+                value = message_json(message)
+                if value:
+                    self.snapshots[value["request_id"]] = value
+    
+            def drain_response(message):
+                value = message_json(message)
+                if value:
+                    self.drains[value["request_id"]] = value
+    
+            def reward_response(message):
+                value = message_json(message)
+                if value:
+                    if "sequence" in value:
+                        self.rewards[value["sequence"]] = value
+                    else:
+                        self.finalize_ack = value
+    
+            def event(message):
+                value = message_json(message)
+                if value:
+                    self.events.append(value)
+    
+            def stopped(message):
+                value = json.loads(message.data)
+                if (value.get("epoch") == self.epoch
+                        and value.get("robot_names") == ["tb1", "tb2", "tb3"]):
+                    self.closed = value
+                    self.closed_received_clock_ns = self.clock_ns
+                    self.closed_received_wall_monotonic_ns = time.monotonic_ns()
+    
+            def ready(message):
+                value = message_json(message)
+                if value:
+                    self.reward_ready = value
+    
+            def initial_inputs(message):
+                value = message_json(message)
+                if value:
+                    self.receive_initial_inputs(value)
+    
+            def task_terminal(message):
+                value = message_json(message)
+                if value:
+                    self.receive_terminal(value)
+    
+            def evaluator_phase(message):
+                value = json.loads(message.data)
+                self._trace_evaluator_phase("ack_received", ack=value)
+                self.evaluator_phase.receive(value, self.physical_ns, self.clock_ns)
+    
+            def clock(message):
+                self.clock_ns = message.clock.sec * 10**9 + message.clock.nanosec
+    
+            def monitor(message):
+                self.receive_startup_bool("monitor_ready", "/task_monitor_ready", message)
+    
+            def motion_ready(message):
+                self.receive_startup_bool("motion_ready", "/motion_safety/ready", message)
+    
+            def odometry_recorder_ready(message):
+                self.receive_startup_bool("odometry_recorder_ready", "/mr3/odometry_recorder/ready", message)
+    
+            def motion_status(message):
+                self.receive_motion_status(parse_json(message.data) if getattr(self, "control_version", 1) == 2 else json.loads(message.data))
+    
+            def stop_status(message):
+                self.receive_stop_status(parse_json(message.data) if getattr(self, "control_version", 1) == 2 else json.loads(message.data))
+    
+            def failure(message):
+                self.receive_failure(message)
+    
+            self.subscriptions = [
+                self.node.create_subscription(
+                    Clock, "/clock", callback(clock),
+                    QoSProfile(depth=20, reliability=ReliabilityPolicy.BEST_EFFORT)),
+                self.node.create_subscription(Bool, "/task_monitor_ready", callback(monitor), qos),
+                self.node.create_subscription(Bool, "/motion_safety/ready",
+                                              callback(motion_ready), qos),
+                self.node.create_subscription(Bool, "/mr3/odometry_recorder/ready",
+                                              callback(odometry_recorder_ready), qos),
+                self.node.create_subscription(String, "/motion_safety/status",
+                                              callback(motion_status), qos),
+                self.node.create_subscription(String, "/motion_safety/stop_status",
+                                              callback(stop_status), qos),
+                self.node.create_subscription(String, "/mr3/snapshot_response",
+                                              callback(snapshot_response), 10),
+                self.node.create_subscription(String, "/mr3/information_drained",
+                                              callback(drain_response), 10),
+                self.node.create_subscription(String, "/mr3/reward_response",
+                                              callback(reward_response), 10),
+                self.node.create_subscription(String, "/mr3/reward_ready", callback(ready), qos),
+                self.node.create_subscription(String, "/mr3/initial_inputs_ready",
+                                              callback(initial_inputs), qos),
+                self.node.create_subscription(String, "/mr3/task_terminal",
+                                              callback(task_terminal), qos),
+                self.node.create_subscription(String, "/mr3/evaluator_phase_ack",
+                                              callback(evaluator_phase), 10),
+                self.node.create_subscription(String, "/mr3/events", callback(event), 100),
+                self.node.create_subscription(String, "/exploration_stopped", callback(stopped), qos),
+                self.node.create_subscription(String, "/exploration_failure", callback(failure), qos),
+            ]
+            for name, topic in (("state", "/mr3/state_phase_ack"),
+                                ("peer", "/mr3/peer_phase_ack"),
+                                ("motion", "/motion_safety/control_ack")):
+                self.subscriptions.append(self.node.create_subscription(
+                    String, topic, callback(lambda message, name=name: self.receive_control_phase(
+                        name, parse_json(message.data) if getattr(self, "control_version", 1) == 2 else json.loads(message.data))),
+                    qos))
+            if self.plant_stimulus_arm is not None:
+                self.subscriptions.append(self.node.create_subscription(
+                    String, "/motion_safety/diagnostic_request_receipt",
+                    callback(lambda message: self.receive_plant_stimulus_receipt(
+                        json.loads(message.data))), 20))
+            for name in ("tb1", "tb2", "tb3"):
+                if self.safety_contract == "mr3-reach-v1":
+                    self.subscriptions.append(self.node.create_subscription(
+                        String, f"/{name}/mr3/safety_intent",
+                        callback(lambda message, name=name: self.receive_safety_intent(name, message)),
+                        QoSProfile(depth=256, durability=DurabilityPolicy.VOLATILE,
+                                   reliability=ReliabilityPolicy.RELIABLE)))
+                self.subscriptions.append(self.node.create_subscription(
+                    String, f"/{name}/mr3_drive/status",
+                    callback(lambda message, name=name: self.receive_drive_status(
+                        name, json.loads(message.data))), qos))
+                for layer in ("global", "local"):
+                    self.subscriptions.append(self.node.create_subscription(
+                        OccupancyGrid, f"/{name}/{layer}_costmap/costmap",
+                        callback(lambda grid, name=name, layer=layer:
+                                 self.record_costmap(name, layer, grid)),
+                        QoSProfile(depth=1, durability=DurabilityPolicy.TRANSIENT_LOCAL,
+                                   reliability=ReliabilityPolicy.RELIABLE)))
+            self.executor = SingleThreadedExecutor()
+            self.executor.add_node(self.node)
+    
+            def spin():
+                try:
+                    self.executor.spin()
+                except Exception as error:
+                    with self.condition:
+                        self.callback_error = repr(error)
+                        self.condition.notify_all()
+    
+            self.spin_thread = threading.Thread(target=spin, name="mr3_worker_ros", daemon=True)
+            self.spin_thread.start()
+            self.command = [
+                "ros2", "launch", "multi_robot", "gazebo_multirobot_mapping_with_nav2.launch.py",
+                "execution_mode:=adapter", "mr3_stepped:=true", "training_reward_enabled:=true",
+                "robot_count:=3", f"mr3_episode_epoch:={self.epoch}",
+                f"mr3_audit_path:={directory / 'adapter.jsonl'}",
+                f"world:=p1c_{self.scene}.world", f"gazebo_seed:={self.seed}",
+                "enable_gzclient:=false", "enable_rviz:=false", "enable_merge_rviz:=false",
+                "auto_save_map:=false", "enable_task_evaluator:=true",
+                "evaluation_contract_path:=" + str(
+                    ROS_ROOT / f"src/multi_robot/config/mr3_p1a/{self.scene}.json"),
+                f"evaluation_episode_id:={self.epoch}", f"evaluation_output_dir:={directory}",
+                f"mr3_safety_contract:={self.safety_contract}",
+            ]
+            if self.reach_geometry_rule != BINARY_CONE_V1:
+                self.command.append(f"mr3_reach_geometry_rule:={self.reach_geometry_rule}")
+            if self.seed_rule != "legacy":
+                self.command.append(f"mr3_seed_rule:={self.seed_rule}")
+            if self.start_graph_rule != "original-seed-cell":
+                self.command.append(f"mr3_start_graph_rule:={self.start_graph_rule}")
+            if self.terminal_probe:
+                self.command.append("training_terminal_probe:=true")
+            if self.plant_stimulus_arm is not None:
+                self.command.append(f"mr3_plant_stimulus_arm:={self.plant_stimulus_arm}")
+            metadata = {"schema": "mr3-p1c-worker-v1", "epoch": self.epoch,
+                        "scene": self.scene, "seed": self.seed, "command": self.command,
+                        "freeze": subprocess.check_output(
+                            ["git", "rev-parse", "HEAD"], cwd=WORKSPACE, text=True).strip(),
+                        "transport_environment": self.transport_environment,
+                        "environment": {key: os.environ.get(key) for key in (
+                            "ROS_DOMAIN_ID", "GAZEBO_MASTER_URI", "PYTHONNOUSERSITE")},
+                        "python": sys.executable, "quantum_steps": 20,
+                        "reset_handshake": "paused-controlled-state-peer-guard-storage-v1",
+                        "execution_phase_protocol": (CONTROL_PROTOCOL if self.control_version == 1 else
+                                                     "mr3-controlled-execution-phase-v2"),
+                        "execution_phase_wall_guard_sec": CONTROL_WALL_GUARD_SEC,
+                        "terminal_protocol": "mr3-task-terminal-v1",
+                        "evaluator_phase_protocol": PHASE_PROTOCOL,
+                        "evaluator_phase_wall_guard_sec": PHASE_WALL_GUARD_SEC,
+                        "shutdown_protocol": SHUTDOWN_PROTOCOL,
+                        "nav2_shutdown_wall_guard_sec": NAV2_SHUTDOWN_WALL_GUARD_SEC,
+                        "terminal_probe": self.terminal_probe,
+                        "plant_stimulus_arm": self.plant_stimulus_arm,
+                        "plant_stimulus_work_deadline_ns": self.plant_stimulus_work_deadline_ns,
+                        "physical_step_ns": 1000000, "policy_step_ns": 1000000000,
+                        "startup_wall_guard_sec": 420., "closure_wall_guard_sec": 90.}
+            if getattr(self,"preparation_probe_version",None) is not None:
+                metadata["preparation_probe_version"] = self.preparation_probe_version
+            profile = actuation_profile_for_safety_contract(self.safety_contract)
+            if profile is not None:
+                metadata["actuation_profile"] = profile
+>           if self.motion_authority_profile is not None:
+E           AttributeError: 'types.SimpleNamespace' object has no attribute 'motion_authority_profile'
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py:494: AttributeError
+_ test_worker_validates_and_keeps_exact_reset_selection_before_io[binary-cone-v1] _
+
+tmp_path = PosixPath('/tmp/pytest-of-zhuyulab/pytest-921/test_worker_validates_and_keep0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7ec830719840>
+rule = 'binary-cone-v1'
+
+    @pytest.mark.parametrize('rule', ['binary-cone-v1', 'cone-support-v2'])
+    def test_worker_validates_and_keeps_exact_reset_selection_before_io(tmp_path, monkeypatch, rule):
+        class BeforeIO(Exception):
+            pass
+        monkeypatch.setattr(WORKER, 'protocol_version', lambda value:
+                            (_ for _ in ()).throw(BeforeIO()))
+        owner = WORKER.Worker.__new__(WORKER.Worker)
+        with pytest.raises(BeforeIO):
+>           WORKER.Worker.__init__(owner, tmp_path, {'epoch':'cpu-epoch','scene':'open','seed':101,
+                'safety_contract':'mr3-reach-v1','reach_geometry_rule':rule})
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_reach_support_wiring.py:167: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../../../../ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py:94: in __init__
+    self.motion_authority_profile = motion_authority_profile_from_request(request)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+request = {'epoch': 'cpu-epoch', 'reach_geometry_rule': 'binary-cone-v1', 'safety_contract': 'mr3-reach-v1', 'scene': 'open', ...}
+
+    def motion_authority_profile_from_request(request):
+        """Receiving permission is fixed by the new Reach contract, not a CLI knob."""
+        if type(request) is not dict:
+            raise ValueError("worker reset request is not an object")
+        contract = request.get("safety_contract", "legacy")
+        if type(contract) is not str or contract not in ("legacy", "mr3-reach-v1"):
+            raise ValueError("unknown safety contract for receiving authority")
+        expected = MOTION_AUTHORITY_PROFILE if contract == "mr3-reach-v1" else None
+        selected = request.get("motion_authority_profile")
+        if ((expected is None and selected is not None) or
+                (expected is not None and (type(selected) is not str or selected != expected))):
+>           raise ValueError("worker receiving-authority profile differs from fixed reset contract")
+E           ValueError: worker receiving-authority profile differs from fixed reset contract
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py:81: ValueError
+_ test_worker_validates_and_keeps_exact_reset_selection_before_io[cone-support-v2] _
+
+tmp_path = PosixPath('/tmp/pytest-of-zhuyulab/pytest-921/test_worker_validates_and_keep1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7ec830672b00>
+rule = 'cone-support-v2'
+
+    @pytest.mark.parametrize('rule', ['binary-cone-v1', 'cone-support-v2'])
+    def test_worker_validates_and_keeps_exact_reset_selection_before_io(tmp_path, monkeypatch, rule):
+        class BeforeIO(Exception):
+            pass
+        monkeypatch.setattr(WORKER, 'protocol_version', lambda value:
+                            (_ for _ in ()).throw(BeforeIO()))
+        owner = WORKER.Worker.__new__(WORKER.Worker)
+        with pytest.raises(BeforeIO):
+>           WORKER.Worker.__init__(owner, tmp_path, {'epoch':'cpu-epoch','scene':'open','seed':101,
+                'safety_contract':'mr3-reach-v1','reach_geometry_rule':rule})
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_reach_support_wiring.py:167: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../../../../ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py:94: in __init__
+    self.motion_authority_profile = motion_authority_profile_from_request(request)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+request = {'epoch': 'cpu-epoch', 'reach_geometry_rule': 'cone-support-v2', 'safety_contract': 'mr3-reach-v1', 'scene': 'open', ...}
+
+    def motion_authority_profile_from_request(request):
+        """Receiving permission is fixed by the new Reach contract, not a CLI knob."""
+        if type(request) is not dict:
+            raise ValueError("worker reset request is not an object")
+        contract = request.get("safety_contract", "legacy")
+        if type(contract) is not str or contract not in ("legacy", "mr3-reach-v1"):
+            raise ValueError("unknown safety contract for receiving authority")
+        expected = MOTION_AUTHORITY_PROFILE if contract == "mr3-reach-v1" else None
+        selected = request.get("motion_authority_profile")
+        if ((expected is None and selected is not None) or
+                (expected is not None and (type(selected) is not str or selected != expected))):
+>           raise ValueError("worker receiving-authority profile differs from fixed reset contract")
+E           ValueError: worker receiving-authority profile differs from fixed reset contract
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py:81: ValueError
+__________ test_old_reset_without_rule_keeps_binary_default_before_io __________
+
+tmp_path = PosixPath('/tmp/pytest-of-zhuyulab/pytest-921/test_old_reset_without_rule_ke0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7ec8316fc580>
+
+    def test_old_reset_without_rule_keeps_binary_default_before_io(tmp_path, monkeypatch):
+        class BeforeIO(Exception):
+            pass
+        monkeypatch.setattr(WORKER, 'protocol_version', lambda value:
+                            (_ for _ in ()).throw(BeforeIO()))
+        owner = WORKER.Worker.__new__(WORKER.Worker)
+        with pytest.raises(BeforeIO):
+>           WORKER.Worker.__init__(owner, tmp_path, {'epoch':'cpu-epoch','scene':'open','seed':101,
+                                                   'safety_contract':'mr3-reach-v1'})
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_reach_support_wiring.py:180: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../../../../ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py:94: in __init__
+    self.motion_authority_profile = motion_authority_profile_from_request(request)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+request = {'epoch': 'cpu-epoch', 'safety_contract': 'mr3-reach-v1', 'scene': 'open', 'seed': 101}
+
+    def motion_authority_profile_from_request(request):
+        """Receiving permission is fixed by the new Reach contract, not a CLI knob."""
+        if type(request) is not dict:
+            raise ValueError("worker reset request is not an object")
+        contract = request.get("safety_contract", "legacy")
+        if type(contract) is not str or contract not in ("legacy", "mr3-reach-v1"):
+            raise ValueError("unknown safety contract for receiving authority")
+        expected = MOTION_AUTHORITY_PROFILE if contract == "mr3-reach-v1" else None
+        selected = request.get("motion_authority_profile")
+        if ((expected is None and selected is not None) or
+                (expected is not None and (type(selected) is not str or selected != expected))):
+>           raise ValueError("worker receiving-authority profile differs from fixed reset contract")
+E           ValueError: worker receiving-authority profile differs from fixed reset contract
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py:81: ValueError
+__ test_constructor_subtracts_time_already_spent_before_worker_initialization __
+
+tmp_path = PosixPath('/tmp/pytest-of-zhuyulab/pytest-921/test_constructor_subtracts_tim0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7ec8315ec0d0>
+
+    def test_constructor_subtracts_time_already_spent_before_worker_initialization(tmp_path, monkeypatch):
+        monkeypatch.setattr(WORKER.time, 'monotonic_ns', lambda: 150_000_000_000)
+        owner = WORKER.Worker.__new__(WORKER.Worker)
+        with pytest.raises(ValueError, match='invalid scene'):
+>           WORKER.Worker.__init__(owner, tmp_path, {
+                'epoch': 'current', 'scene': 'artificial-stop-before-IO', 'seed': 101,
+                'safety_contract': 'mr3-reach-v1',
+                'startup_readiness_protocol': WORKER.STARTUP_READINESS_PROTOCOL,
+                'startup_deadline_monotonic_ns': 520_000_000_000})
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_worker_startup_readiness.py:492: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <mr3_env_worker.Worker object at 0x7ec8315ef550>
+directory = PosixPath('/tmp/pytest-of-zhuyulab/pytest-921/test_constructor_subtracts_tim0')
+request = {'epoch': 'current', 'safety_contract': 'mr3-reach-v1', 'scene': 'artificial-stop-before-IO', 'seed': 101, ...}
+
+    def __init__(self, directory, request):
+        self.directory = directory
+        self.epoch = request["epoch"]
+        self.scene = request["scene"]
+        self.seed = request["seed"]
+        self.safety_contract = request.get("safety_contract", "legacy")
+>       self.motion_authority_profile = motion_authority_profile_from_request(request)
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py:94: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+request = {'epoch': 'current', 'safety_contract': 'mr3-reach-v1', 'scene': 'artificial-stop-before-IO', 'seed': 101, ...}
+
+    def motion_authority_profile_from_request(request):
+        """Receiving permission is fixed by the new Reach contract, not a CLI knob."""
+        if type(request) is not dict:
+            raise ValueError("worker reset request is not an object")
+        contract = request.get("safety_contract", "legacy")
+        if type(contract) is not str or contract not in ("legacy", "mr3-reach-v1"):
+            raise ValueError("unknown safety contract for receiving authority")
+        expected = MOTION_AUTHORITY_PROFILE if contract == "mr3-reach-v1" else None
+        selected = request.get("motion_authority_profile")
+        if ((expected is None and selected is not None) or
+                (expected is not None and (type(selected) is not str or selected != expected))):
+>           raise ValueError("worker receiving-authority profile differs from fixed reset contract")
+E           ValueError: worker receiving-authority profile differs from fixed reset contract
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py:81: ValueError
+
+During handling of the above exception, another exception occurred:
+
+tmp_path = PosixPath('/tmp/pytest-of-zhuyulab/pytest-921/test_constructor_subtracts_tim0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7ec8315ec0d0>
+
+    def test_constructor_subtracts_time_already_spent_before_worker_initialization(tmp_path, monkeypatch):
+        monkeypatch.setattr(WORKER.time, 'monotonic_ns', lambda: 150_000_000_000)
+        owner = WORKER.Worker.__new__(WORKER.Worker)
+>       with pytest.raises(ValueError, match='invalid scene'):
+E       AssertionError: Regex pattern 'invalid scene' does not match 'worker receiving-authority profile differs from fixed reset contract'.
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_worker_startup_readiness.py:491: AssertionError
+_ test_invalid_reach_startup_request_rejects_before_any_IO[startup_readiness_protocol-None] _
+
+tmp_path = PosixPath('/tmp/pytest-of-zhuyulab/pytest-921/test_invalid_reach_startup_req0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7ec831fb7a90>
+field = 'startup_readiness_protocol', value = None
+
+    @pytest.mark.parametrize('field,value', [('startup_readiness_protocol', None),
+        ('startup_readiness_protocol', True), ('startup_readiness_protocol', 'unknown'),
+        ('startup_deadline_monotonic_ns', True), ('startup_deadline_monotonic_ns', None),
+        ('startup_deadline_monotonic_ns', 99_000_000_000),
+        ('startup_deadline_monotonic_ns', 521_000_000_000)])
+    def test_invalid_reach_startup_request_rejects_before_any_IO(tmp_path, monkeypatch, field, value):
+        monkeypatch.setattr(WORKER.time, 'monotonic_ns', lambda: 100_000_000_000)
+        request = {'epoch': 'current', 'scene': 'rooms', 'seed': 101, 'quantum_steps': 20,
+            'safety_contract': 'mr3-reach-v1', 'startup_readiness_protocol': WORKER.STARTUP_READINESS_PROTOCOL,
+            'startup_deadline_monotonic_ns': 520_000_000_000, field: value}
+        with pytest.raises(ValueError, match='startup protocol'):
+>           WORKER.Worker(tmp_path, request)
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_worker_startup_readiness.py:559: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <mr3_env_worker.Worker object at 0x7ec831fb7a30>
+directory = PosixPath('/tmp/pytest-of-zhuyulab/pytest-921/test_invalid_reach_startup_req0')
+request = {'epoch': 'current', 'quantum_steps': 20, 'safety_contract': 'mr3-reach-v1', 'scene': 'rooms', ...}
+
+    def __init__(self, directory, request):
+        self.directory = directory
+        self.epoch = request["epoch"]
+        self.scene = request["scene"]
+        self.seed = request["seed"]
+        self.safety_contract = request.get("safety_contract", "legacy")
+>       self.motion_authority_profile = motion_authority_profile_from_request(request)
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py:94: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+request = {'epoch': 'current', 'quantum_steps': 20, 'safety_contract': 'mr3-reach-v1', 'scene': 'rooms', ...}
+
+    def motion_authority_profile_from_request(request):
+        """Receiving permission is fixed by the new Reach contract, not a CLI knob."""
+        if type(request) is not dict:
+            raise ValueError("worker reset request is not an object")
+        contract = request.get("safety_contract", "legacy")
+        if type(contract) is not str or contract not in ("legacy", "mr3-reach-v1"):
+            raise ValueError("unknown safety contract for receiving authority")
+        expected = MOTION_AUTHORITY_PROFILE if contract == "mr3-reach-v1" else None
+        selected = request.get("motion_authority_profile")
+        if ((expected is None and selected is not None) or
+                (expected is not None and (type(selected) is not str or selected != expected))):
+>           raise ValueError("worker receiving-authority profile differs from fixed reset contract")
+E           ValueError: worker receiving-authority profile differs from fixed reset contract
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py:81: ValueError
+
+During handling of the above exception, another exception occurred:
+
+tmp_path = PosixPath('/tmp/pytest-of-zhuyulab/pytest-921/test_invalid_reach_startup_req0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7ec831fb7a90>
+field = 'startup_readiness_protocol', value = None
+
+    @pytest.mark.parametrize('field,value', [('startup_readiness_protocol', None),
+        ('startup_readiness_protocol', True), ('startup_readiness_protocol', 'unknown'),
+        ('startup_deadline_monotonic_ns', True), ('startup_deadline_monotonic_ns', None),
+        ('startup_deadline_monotonic_ns', 99_000_000_000),
+        ('startup_deadline_monotonic_ns', 521_000_000_000)])
+    def test_invalid_reach_startup_request_rejects_before_any_IO(tmp_path, monkeypatch, field, value):
+        monkeypatch.setattr(WORKER.time, 'monotonic_ns', lambda: 100_000_000_000)
+        request = {'epoch': 'current', 'scene': 'rooms', 'seed': 101, 'quantum_steps': 20,
+            'safety_contract': 'mr3-reach-v1', 'startup_readiness_protocol': WORKER.STARTUP_READINESS_PROTOCOL,
+            'startup_deadline_monotonic_ns': 520_000_000_000, field: value}
+>       with pytest.raises(ValueError, match='startup protocol'):
+E       AssertionError: Regex pattern 'startup protocol' does not match 'worker receiving-authority profile differs from fixed reset contract'.
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_worker_startup_readiness.py:558: AssertionError
+_ test_invalid_reach_startup_request_rejects_before_any_IO[startup_readiness_protocol-True] _
+
+tmp_path = PosixPath('/tmp/pytest-of-zhuyulab/pytest-921/test_invalid_reach_startup_req1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7ec831710250>
+field = 'startup_readiness_protocol', value = True
+
+    @pytest.mark.parametrize('field,value', [('startup_readiness_protocol', None),
+        ('startup_readiness_protocol', True), ('startup_readiness_protocol', 'unknown'),
+        ('startup_deadline_monotonic_ns', True), ('startup_deadline_monotonic_ns', None),
+        ('startup_deadline_monotonic_ns', 99_000_000_000),
+        ('startup_deadline_monotonic_ns', 521_000_000_000)])
+    def test_invalid_reach_startup_request_rejects_before_any_IO(tmp_path, monkeypatch, field, value):
+        monkeypatch.setattr(WORKER.time, 'monotonic_ns', lambda: 100_000_000_000)
+        request = {'epoch': 'current', 'scene': 'rooms', 'seed': 101, 'quantum_steps': 20,
+            'safety_contract': 'mr3-reach-v1', 'startup_readiness_protocol': WORKER.STARTUP_READINESS_PROTOCOL,
+            'startup_deadline_monotonic_ns': 520_000_000_000, field: value}
+        with pytest.raises(ValueError, match='startup protocol'):
+>           WORKER.Worker(tmp_path, request)
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_worker_startup_readiness.py:559: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <mr3_env_worker.Worker object at 0x7ec831712f50>
+directory = PosixPath('/tmp/pytest-of-zhuyulab/pytest-921/test_invalid_reach_startup_req1')
+request = {'epoch': 'current', 'quantum_steps': 20, 'safety_contract': 'mr3-reach-v1', 'scene': 'rooms', ...}
+
+    def __init__(self, directory, request):
+        self.directory = directory
+        self.epoch = request["epoch"]
+        self.scene = request["scene"]
+        self.seed = request["seed"]
+        self.safety_contract = request.get("safety_contract", "legacy")
+>       self.motion_authority_profile = motion_authority_profile_from_request(request)
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py:94: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+request = {'epoch': 'current', 'quantum_steps': 20, 'safety_contract': 'mr3-reach-v1', 'scene': 'rooms', ...}
+
+    def motion_authority_profile_from_request(request):
+        """Receiving permission is fixed by the new Reach contract, not a CLI knob."""
+        if type(request) is not dict:
+            raise ValueError("worker reset request is not an object")
+        contract = request.get("safety_contract", "legacy")
+        if type(contract) is not str or contract not in ("legacy", "mr3-reach-v1"):
+            raise ValueError("unknown safety contract for receiving authority")
+        expected = MOTION_AUTHORITY_PROFILE if contract == "mr3-reach-v1" else None
+        selected = request.get("motion_authority_profile")
+        if ((expected is None and selected is not None) or
+                (expected is not None and (type(selected) is not str or selected != expected))):
+>           raise ValueError("worker receiving-authority profile differs from fixed reset contract")
+E           ValueError: worker receiving-authority profile differs from fixed reset contract
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py:81: ValueError
+
+During handling of the above exception, another exception occurred:
+
+tmp_path = PosixPath('/tmp/pytest-of-zhuyulab/pytest-921/test_invalid_reach_startup_req1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7ec831710250>
+field = 'startup_readiness_protocol', value = True
+
+    @pytest.mark.parametrize('field,value', [('startup_readiness_protocol', None),
+        ('startup_readiness_protocol', True), ('startup_readiness_protocol', 'unknown'),
+        ('startup_deadline_monotonic_ns', True), ('startup_deadline_monotonic_ns', None),
+        ('startup_deadline_monotonic_ns', 99_000_000_000),
+        ('startup_deadline_monotonic_ns', 521_000_000_000)])
+    def test_invalid_reach_startup_request_rejects_before_any_IO(tmp_path, monkeypatch, field, value):
+        monkeypatch.setattr(WORKER.time, 'monotonic_ns', lambda: 100_000_000_000)
+        request = {'epoch': 'current', 'scene': 'rooms', 'seed': 101, 'quantum_steps': 20,
+            'safety_contract': 'mr3-reach-v1', 'startup_readiness_protocol': WORKER.STARTUP_READINESS_PROTOCOL,
+            'startup_deadline_monotonic_ns': 520_000_000_000, field: value}
+>       with pytest.raises(ValueError, match='startup protocol'):
+E       AssertionError: Regex pattern 'startup protocol' does not match 'worker receiving-authority profile differs from fixed reset contract'.
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_worker_startup_readiness.py:558: AssertionError
+_ test_invalid_reach_startup_request_rejects_before_any_IO[startup_readiness_protocol-unknown] _
+
+tmp_path = PosixPath('/tmp/pytest-of-zhuyulab/pytest-921/test_invalid_reach_startup_req2')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7ec8306e7370>
+field = 'startup_readiness_protocol', value = 'unknown'
+
+    @pytest.mark.parametrize('field,value', [('startup_readiness_protocol', None),
+        ('startup_readiness_protocol', True), ('startup_readiness_protocol', 'unknown'),
+        ('startup_deadline_monotonic_ns', True), ('startup_deadline_monotonic_ns', None),
+        ('startup_deadline_monotonic_ns', 99_000_000_000),
+        ('startup_deadline_monotonic_ns', 521_000_000_000)])
+    def test_invalid_reach_startup_request_rejects_before_any_IO(tmp_path, monkeypatch, field, value):
+        monkeypatch.setattr(WORKER.time, 'monotonic_ns', lambda: 100_000_000_000)
+        request = {'epoch': 'current', 'scene': 'rooms', 'seed': 101, 'quantum_steps': 20,
+            'safety_contract': 'mr3-reach-v1', 'startup_readiness_protocol': WORKER.STARTUP_READINESS_PROTOCOL,
+            'startup_deadline_monotonic_ns': 520_000_000_000, field: value}
+        with pytest.raises(ValueError, match='startup protocol'):
+>           WORKER.Worker(tmp_path, request)
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_worker_startup_readiness.py:559: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <mr3_env_worker.Worker object at 0x7ec8306e5b70>
+directory = PosixPath('/tmp/pytest-of-zhuyulab/pytest-921/test_invalid_reach_startup_req2')
+request = {'epoch': 'current', 'quantum_steps': 20, 'safety_contract': 'mr3-reach-v1', 'scene': 'rooms', ...}
+
+    def __init__(self, directory, request):
+        self.directory = directory
+        self.epoch = request["epoch"]
+        self.scene = request["scene"]
+        self.seed = request["seed"]
+        self.safety_contract = request.get("safety_contract", "legacy")
+>       self.motion_authority_profile = motion_authority_profile_from_request(request)
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py:94: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+request = {'epoch': 'current', 'quantum_steps': 20, 'safety_contract': 'mr3-reach-v1', 'scene': 'rooms', ...}
+
+    def motion_authority_profile_from_request(request):
+        """Receiving permission is fixed by the new Reach contract, not a CLI knob."""
+        if type(request) is not dict:
+            raise ValueError("worker reset request is not an object")
+        contract = request.get("safety_contract", "legacy")
+        if type(contract) is not str or contract not in ("legacy", "mr3-reach-v1"):
+            raise ValueError("unknown safety contract for receiving authority")
+        expected = MOTION_AUTHORITY_PROFILE if contract == "mr3-reach-v1" else None
+        selected = request.get("motion_authority_profile")
+        if ((expected is None and selected is not None) or
+                (expected is not None and (type(selected) is not str or selected != expected))):
+>           raise ValueError("worker receiving-authority profile differs from fixed reset contract")
+E           ValueError: worker receiving-authority profile differs from fixed reset contract
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py:81: ValueError
+
+During handling of the above exception, another exception occurred:
+
+tmp_path = PosixPath('/tmp/pytest-of-zhuyulab/pytest-921/test_invalid_reach_startup_req2')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7ec8306e7370>
+field = 'startup_readiness_protocol', value = 'unknown'
+
+    @pytest.mark.parametrize('field,value', [('startup_readiness_protocol', None),
+        ('startup_readiness_protocol', True), ('startup_readiness_protocol', 'unknown'),
+        ('startup_deadline_monotonic_ns', True), ('startup_deadline_monotonic_ns', None),
+        ('startup_deadline_monotonic_ns', 99_000_000_000),
+        ('startup_deadline_monotonic_ns', 521_000_000_000)])
+    def test_invalid_reach_startup_request_rejects_before_any_IO(tmp_path, monkeypatch, field, value):
+        monkeypatch.setattr(WORKER.time, 'monotonic_ns', lambda: 100_000_000_000)
+        request = {'epoch': 'current', 'scene': 'rooms', 'seed': 101, 'quantum_steps': 20,
+            'safety_contract': 'mr3-reach-v1', 'startup_readiness_protocol': WORKER.STARTUP_READINESS_PROTOCOL,
+            'startup_deadline_monotonic_ns': 520_000_000_000, field: value}
+>       with pytest.raises(ValueError, match='startup protocol'):
+E       AssertionError: Regex pattern 'startup protocol' does not match 'worker receiving-authority profile differs from fixed reset contract'.
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_worker_startup_readiness.py:558: AssertionError
+_ test_invalid_reach_startup_request_rejects_before_any_IO[startup_deadline_monotonic_ns-True] _
+
+tmp_path = PosixPath('/tmp/pytest-of-zhuyulab/pytest-921/test_invalid_reach_startup_req3')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7ec83170d120>
+field = 'startup_deadline_monotonic_ns', value = True
+
+    @pytest.mark.parametrize('field,value', [('startup_readiness_protocol', None),
+        ('startup_readiness_protocol', True), ('startup_readiness_protocol', 'unknown'),
+        ('startup_deadline_monotonic_ns', True), ('startup_deadline_monotonic_ns', None),
+        ('startup_deadline_monotonic_ns', 99_000_000_000),
+        ('startup_deadline_monotonic_ns', 521_000_000_000)])
+    def test_invalid_reach_startup_request_rejects_before_any_IO(tmp_path, monkeypatch, field, value):
+        monkeypatch.setattr(WORKER.time, 'monotonic_ns', lambda: 100_000_000_000)
+        request = {'epoch': 'current', 'scene': 'rooms', 'seed': 101, 'quantum_steps': 20,
+            'safety_contract': 'mr3-reach-v1', 'startup_readiness_protocol': WORKER.STARTUP_READINESS_PROTOCOL,
+            'startup_deadline_monotonic_ns': 520_000_000_000, field: value}
+        with pytest.raises(ValueError, match='startup protocol'):
+>           WORKER.Worker(tmp_path, request)
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_worker_startup_readiness.py:559: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <mr3_env_worker.Worker object at 0x7ec83170e020>
+directory = PosixPath('/tmp/pytest-of-zhuyulab/pytest-921/test_invalid_reach_startup_req3')
+request = {'epoch': 'current', 'quantum_steps': 20, 'safety_contract': 'mr3-reach-v1', 'scene': 'rooms', ...}
+
+    def __init__(self, directory, request):
+        self.directory = directory
+        self.epoch = request["epoch"]
+        self.scene = request["scene"]
+        self.seed = request["seed"]
+        self.safety_contract = request.get("safety_contract", "legacy")
+>       self.motion_authority_profile = motion_authority_profile_from_request(request)
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py:94: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+request = {'epoch': 'current', 'quantum_steps': 20, 'safety_contract': 'mr3-reach-v1', 'scene': 'rooms', ...}
+
+    def motion_authority_profile_from_request(request):
+        """Receiving permission is fixed by the new Reach contract, not a CLI knob."""
+        if type(request) is not dict:
+            raise ValueError("worker reset request is not an object")
+        contract = request.get("safety_contract", "legacy")
+        if type(contract) is not str or contract not in ("legacy", "mr3-reach-v1"):
+            raise ValueError("unknown safety contract for receiving authority")
+        expected = MOTION_AUTHORITY_PROFILE if contract == "mr3-reach-v1" else None
+        selected = request.get("motion_authority_profile")
+        if ((expected is None and selected is not None) or
+                (expected is not None and (type(selected) is not str or selected != expected))):
+>           raise ValueError("worker receiving-authority profile differs from fixed reset contract")
+E           ValueError: worker receiving-authority profile differs from fixed reset contract
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py:81: ValueError
+
+During handling of the above exception, another exception occurred:
+
+tmp_path = PosixPath('/tmp/pytest-of-zhuyulab/pytest-921/test_invalid_reach_startup_req3')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7ec83170d120>
+field = 'startup_deadline_monotonic_ns', value = True
+
+    @pytest.mark.parametrize('field,value', [('startup_readiness_protocol', None),
+        ('startup_readiness_protocol', True), ('startup_readiness_protocol', 'unknown'),
+        ('startup_deadline_monotonic_ns', True), ('startup_deadline_monotonic_ns', None),
+        ('startup_deadline_monotonic_ns', 99_000_000_000),
+        ('startup_deadline_monotonic_ns', 521_000_000_000)])
+    def test_invalid_reach_startup_request_rejects_before_any_IO(tmp_path, monkeypatch, field, value):
+        monkeypatch.setattr(WORKER.time, 'monotonic_ns', lambda: 100_000_000_000)
+        request = {'epoch': 'current', 'scene': 'rooms', 'seed': 101, 'quantum_steps': 20,
+            'safety_contract': 'mr3-reach-v1', 'startup_readiness_protocol': WORKER.STARTUP_READINESS_PROTOCOL,
+            'startup_deadline_monotonic_ns': 520_000_000_000, field: value}
+>       with pytest.raises(ValueError, match='startup protocol'):
+E       AssertionError: Regex pattern 'startup protocol' does not match 'worker receiving-authority profile differs from fixed reset contract'.
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_worker_startup_readiness.py:558: AssertionError
+_ test_invalid_reach_startup_request_rejects_before_any_IO[startup_deadline_monotonic_ns-None] _
+
+tmp_path = PosixPath('/tmp/pytest-of-zhuyulab/pytest-921/test_invalid_reach_startup_req4')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7ec83186a170>
+field = 'startup_deadline_monotonic_ns', value = None
+
+    @pytest.mark.parametrize('field,value', [('startup_readiness_protocol', None),
+        ('startup_readiness_protocol', True), ('startup_readiness_protocol', 'unknown'),
+        ('startup_deadline_monotonic_ns', True), ('startup_deadline_monotonic_ns', None),
+        ('startup_deadline_monotonic_ns', 99_000_000_000),
+        ('startup_deadline_monotonic_ns', 521_000_000_000)])
+    def test_invalid_reach_startup_request_rejects_before_any_IO(tmp_path, monkeypatch, field, value):
+        monkeypatch.setattr(WORKER.time, 'monotonic_ns', lambda: 100_000_000_000)
+        request = {'epoch': 'current', 'scene': 'rooms', 'seed': 101, 'quantum_steps': 20,
+            'safety_contract': 'mr3-reach-v1', 'startup_readiness_protocol': WORKER.STARTUP_READINESS_PROTOCOL,
+            'startup_deadline_monotonic_ns': 520_000_000_000, field: value}
+        with pytest.raises(ValueError, match='startup protocol'):
+>           WORKER.Worker(tmp_path, request)
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_worker_startup_readiness.py:559: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <mr3_env_worker.Worker object at 0x7ec83186aa70>
+directory = PosixPath('/tmp/pytest-of-zhuyulab/pytest-921/test_invalid_reach_startup_req4')
+request = {'epoch': 'current', 'quantum_steps': 20, 'safety_contract': 'mr3-reach-v1', 'scene': 'rooms', ...}
+
+    def __init__(self, directory, request):
+        self.directory = directory
+        self.epoch = request["epoch"]
+        self.scene = request["scene"]
+        self.seed = request["seed"]
+        self.safety_contract = request.get("safety_contract", "legacy")
+>       self.motion_authority_profile = motion_authority_profile_from_request(request)
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py:94: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+request = {'epoch': 'current', 'quantum_steps': 20, 'safety_contract': 'mr3-reach-v1', 'scene': 'rooms', ...}
+
+    def motion_authority_profile_from_request(request):
+        """Receiving permission is fixed by the new Reach contract, not a CLI knob."""
+        if type(request) is not dict:
+            raise ValueError("worker reset request is not an object")
+        contract = request.get("safety_contract", "legacy")
+        if type(contract) is not str or contract not in ("legacy", "mr3-reach-v1"):
+            raise ValueError("unknown safety contract for receiving authority")
+        expected = MOTION_AUTHORITY_PROFILE if contract == "mr3-reach-v1" else None
+        selected = request.get("motion_authority_profile")
+        if ((expected is None and selected is not None) or
+                (expected is not None and (type(selected) is not str or selected != expected))):
+>           raise ValueError("worker receiving-authority profile differs from fixed reset contract")
+E           ValueError: worker receiving-authority profile differs from fixed reset contract
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py:81: ValueError
+
+During handling of the above exception, another exception occurred:
+
+tmp_path = PosixPath('/tmp/pytest-of-zhuyulab/pytest-921/test_invalid_reach_startup_req4')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7ec83186a170>
+field = 'startup_deadline_monotonic_ns', value = None
+
+    @pytest.mark.parametrize('field,value', [('startup_readiness_protocol', None),
+        ('startup_readiness_protocol', True), ('startup_readiness_protocol', 'unknown'),
+        ('startup_deadline_monotonic_ns', True), ('startup_deadline_monotonic_ns', None),
+        ('startup_deadline_monotonic_ns', 99_000_000_000),
+        ('startup_deadline_monotonic_ns', 521_000_000_000)])
+    def test_invalid_reach_startup_request_rejects_before_any_IO(tmp_path, monkeypatch, field, value):
+        monkeypatch.setattr(WORKER.time, 'monotonic_ns', lambda: 100_000_000_000)
+        request = {'epoch': 'current', 'scene': 'rooms', 'seed': 101, 'quantum_steps': 20,
+            'safety_contract': 'mr3-reach-v1', 'startup_readiness_protocol': WORKER.STARTUP_READINESS_PROTOCOL,
+            'startup_deadline_monotonic_ns': 520_000_000_000, field: value}
+>       with pytest.raises(ValueError, match='startup protocol'):
+E       AssertionError: Regex pattern 'startup protocol' does not match 'worker receiving-authority profile differs from fixed reset contract'.
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_worker_startup_readiness.py:558: AssertionError
+_ test_invalid_reach_startup_request_rejects_before_any_IO[startup_deadline_monotonic_ns-99000000000] _
+
+tmp_path = PosixPath('/tmp/pytest-of-zhuyulab/pytest-921/test_invalid_reach_startup_req5')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7ec831ddb640>
+field = 'startup_deadline_monotonic_ns', value = 99000000000
+
+    @pytest.mark.parametrize('field,value', [('startup_readiness_protocol', None),
+        ('startup_readiness_protocol', True), ('startup_readiness_protocol', 'unknown'),
+        ('startup_deadline_monotonic_ns', True), ('startup_deadline_monotonic_ns', None),
+        ('startup_deadline_monotonic_ns', 99_000_000_000),
+        ('startup_deadline_monotonic_ns', 521_000_000_000)])
+    def test_invalid_reach_startup_request_rejects_before_any_IO(tmp_path, monkeypatch, field, value):
+        monkeypatch.setattr(WORKER.time, 'monotonic_ns', lambda: 100_000_000_000)
+        request = {'epoch': 'current', 'scene': 'rooms', 'seed': 101, 'quantum_steps': 20,
+            'safety_contract': 'mr3-reach-v1', 'startup_readiness_protocol': WORKER.STARTUP_READINESS_PROTOCOL,
+            'startup_deadline_monotonic_ns': 520_000_000_000, field: value}
+        with pytest.raises(ValueError, match='startup protocol'):
+>           WORKER.Worker(tmp_path, request)
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_worker_startup_readiness.py:559: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <mr3_env_worker.Worker object at 0x7ec831dd9ae0>
+directory = PosixPath('/tmp/pytest-of-zhuyulab/pytest-921/test_invalid_reach_startup_req5')
+request = {'epoch': 'current', 'quantum_steps': 20, 'safety_contract': 'mr3-reach-v1', 'scene': 'rooms', ...}
+
+    def __init__(self, directory, request):
+        self.directory = directory
+        self.epoch = request["epoch"]
+        self.scene = request["scene"]
+        self.seed = request["seed"]
+        self.safety_contract = request.get("safety_contract", "legacy")
+>       self.motion_authority_profile = motion_authority_profile_from_request(request)
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py:94: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+request = {'epoch': 'current', 'quantum_steps': 20, 'safety_contract': 'mr3-reach-v1', 'scene': 'rooms', ...}
+
+    def motion_authority_profile_from_request(request):
+        """Receiving permission is fixed by the new Reach contract, not a CLI knob."""
+        if type(request) is not dict:
+            raise ValueError("worker reset request is not an object")
+        contract = request.get("safety_contract", "legacy")
+        if type(contract) is not str or contract not in ("legacy", "mr3-reach-v1"):
+            raise ValueError("unknown safety contract for receiving authority")
+        expected = MOTION_AUTHORITY_PROFILE if contract == "mr3-reach-v1" else None
+        selected = request.get("motion_authority_profile")
+        if ((expected is None and selected is not None) or
+                (expected is not None and (type(selected) is not str or selected != expected))):
+>           raise ValueError("worker receiving-authority profile differs from fixed reset contract")
+E           ValueError: worker receiving-authority profile differs from fixed reset contract
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py:81: ValueError
+
+During handling of the above exception, another exception occurred:
+
+tmp_path = PosixPath('/tmp/pytest-of-zhuyulab/pytest-921/test_invalid_reach_startup_req5')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7ec831ddb640>
+field = 'startup_deadline_monotonic_ns', value = 99000000000
+
+    @pytest.mark.parametrize('field,value', [('startup_readiness_protocol', None),
+        ('startup_readiness_protocol', True), ('startup_readiness_protocol', 'unknown'),
+        ('startup_deadline_monotonic_ns', True), ('startup_deadline_monotonic_ns', None),
+        ('startup_deadline_monotonic_ns', 99_000_000_000),
+        ('startup_deadline_monotonic_ns', 521_000_000_000)])
+    def test_invalid_reach_startup_request_rejects_before_any_IO(tmp_path, monkeypatch, field, value):
+        monkeypatch.setattr(WORKER.time, 'monotonic_ns', lambda: 100_000_000_000)
+        request = {'epoch': 'current', 'scene': 'rooms', 'seed': 101, 'quantum_steps': 20,
+            'safety_contract': 'mr3-reach-v1', 'startup_readiness_protocol': WORKER.STARTUP_READINESS_PROTOCOL,
+            'startup_deadline_monotonic_ns': 520_000_000_000, field: value}
+>       with pytest.raises(ValueError, match='startup protocol'):
+E       AssertionError: Regex pattern 'startup protocol' does not match 'worker receiving-authority profile differs from fixed reset contract'.
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_worker_startup_readiness.py:558: AssertionError
+_ test_invalid_reach_startup_request_rejects_before_any_IO[startup_deadline_monotonic_ns-521000000000] _
+
+tmp_path = PosixPath('/tmp/pytest-of-zhuyulab/pytest-921/test_invalid_reach_startup_req6')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7ec831e59750>
+field = 'startup_deadline_monotonic_ns', value = 521000000000
+
+    @pytest.mark.parametrize('field,value', [('startup_readiness_protocol', None),
+        ('startup_readiness_protocol', True), ('startup_readiness_protocol', 'unknown'),
+        ('startup_deadline_monotonic_ns', True), ('startup_deadline_monotonic_ns', None),
+        ('startup_deadline_monotonic_ns', 99_000_000_000),
+        ('startup_deadline_monotonic_ns', 521_000_000_000)])
+    def test_invalid_reach_startup_request_rejects_before_any_IO(tmp_path, monkeypatch, field, value):
+        monkeypatch.setattr(WORKER.time, 'monotonic_ns', lambda: 100_000_000_000)
+        request = {'epoch': 'current', 'scene': 'rooms', 'seed': 101, 'quantum_steps': 20,
+            'safety_contract': 'mr3-reach-v1', 'startup_readiness_protocol': WORKER.STARTUP_READINESS_PROTOCOL,
+            'startup_deadline_monotonic_ns': 520_000_000_000, field: value}
+        with pytest.raises(ValueError, match='startup protocol'):
+>           WORKER.Worker(tmp_path, request)
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_worker_startup_readiness.py:559: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <mr3_env_worker.Worker object at 0x7ec831e59f60>
+directory = PosixPath('/tmp/pytest-of-zhuyulab/pytest-921/test_invalid_reach_startup_req6')
+request = {'epoch': 'current', 'quantum_steps': 20, 'safety_contract': 'mr3-reach-v1', 'scene': 'rooms', ...}
+
+    def __init__(self, directory, request):
+        self.directory = directory
+        self.epoch = request["epoch"]
+        self.scene = request["scene"]
+        self.seed = request["seed"]
+        self.safety_contract = request.get("safety_contract", "legacy")
+>       self.motion_authority_profile = motion_authority_profile_from_request(request)
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py:94: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+request = {'epoch': 'current', 'quantum_steps': 20, 'safety_contract': 'mr3-reach-v1', 'scene': 'rooms', ...}
+
+    def motion_authority_profile_from_request(request):
+        """Receiving permission is fixed by the new Reach contract, not a CLI knob."""
+        if type(request) is not dict:
+            raise ValueError("worker reset request is not an object")
+        contract = request.get("safety_contract", "legacy")
+        if type(contract) is not str or contract not in ("legacy", "mr3-reach-v1"):
+            raise ValueError("unknown safety contract for receiving authority")
+        expected = MOTION_AUTHORITY_PROFILE if contract == "mr3-reach-v1" else None
+        selected = request.get("motion_authority_profile")
+        if ((expected is None and selected is not None) or
+                (expected is not None and (type(selected) is not str or selected != expected))):
+>           raise ValueError("worker receiving-authority profile differs from fixed reset contract")
+E           ValueError: worker receiving-authority profile differs from fixed reset contract
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py:81: ValueError
+
+During handling of the above exception, another exception occurred:
+
+tmp_path = PosixPath('/tmp/pytest-of-zhuyulab/pytest-921/test_invalid_reach_startup_req6')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7ec831e59750>
+field = 'startup_deadline_monotonic_ns', value = 521000000000
+
+    @pytest.mark.parametrize('field,value', [('startup_readiness_protocol', None),
+        ('startup_readiness_protocol', True), ('startup_readiness_protocol', 'unknown'),
+        ('startup_deadline_monotonic_ns', True), ('startup_deadline_monotonic_ns', None),
+        ('startup_deadline_monotonic_ns', 99_000_000_000),
+        ('startup_deadline_monotonic_ns', 521_000_000_000)])
+    def test_invalid_reach_startup_request_rejects_before_any_IO(tmp_path, monkeypatch, field, value):
+        monkeypatch.setattr(WORKER.time, 'monotonic_ns', lambda: 100_000_000_000)
+        request = {'epoch': 'current', 'scene': 'rooms', 'seed': 101, 'quantum_steps': 20,
+            'safety_contract': 'mr3-reach-v1', 'startup_readiness_protocol': WORKER.STARTUP_READINESS_PROTOCOL,
+            'startup_deadline_monotonic_ns': 520_000_000_000, field: value}
+>       with pytest.raises(ValueError, match='startup protocol'):
+E       AssertionError: Regex pattern 'startup protocol' does not match 'worker receiving-authority profile differs from fixed reset contract'.
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_worker_startup_readiness.py:558: AssertionError
+____ test_no_work_after_reserve_and_legacy_startup_fields_reject_before_IO _____
+
+tmp_path = PosixPath('/tmp/pytest-of-zhuyulab/pytest-921/test_no_work_after_reserve_and0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7ec831753550>
+
+    def test_no_work_after_reserve_and_legacy_startup_fields_reject_before_IO(tmp_path, monkeypatch):
+        monkeypatch.setattr(WORKER.time, 'monotonic_ns', lambda: 100_000_000_000)
+        request = {'epoch': 'current', 'scene': 'rooms', 'seed': 101, 'quantum_steps': 20,
+            'safety_contract': 'mr3-reach-v1', 'startup_readiness_protocol': WORKER.STARTUP_READINESS_PROTOCOL,
+            'startup_deadline_monotonic_ns': 160_000_000_000}
+        with pytest.raises(TimeoutError, match='cleanup/response reserve'):
+>           WORKER.Worker(tmp_path, request)
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_worker_startup_readiness.py:569: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../../../../ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py:94: in __init__
+    self.motion_authority_profile = motion_authority_profile_from_request(request)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+request = {'epoch': 'current', 'quantum_steps': 20, 'safety_contract': 'mr3-reach-v1', 'scene': 'rooms', ...}
+
+    def motion_authority_profile_from_request(request):
+        """Receiving permission is fixed by the new Reach contract, not a CLI knob."""
+        if type(request) is not dict:
+            raise ValueError("worker reset request is not an object")
+        contract = request.get("safety_contract", "legacy")
+        if type(contract) is not str or contract not in ("legacy", "mr3-reach-v1"):
+            raise ValueError("unknown safety contract for receiving authority")
+        expected = MOTION_AUTHORITY_PROFILE if contract == "mr3-reach-v1" else None
+        selected = request.get("motion_authority_profile")
+        if ((expected is None and selected is not None) or
+                (expected is not None and (type(selected) is not str or selected != expected))):
+>           raise ValueError("worker receiving-authority profile differs from fixed reset contract")
+E           ValueError: worker receiving-authority profile differs from fixed reset contract
+
+../../../../../../ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py:81: ValueError
+- generated xml file: /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v65_owned_stream_qualification/checks/fresh_ros_cpu_v1/junit.xml -
+=========================== short test summary info ============================
+FAILED ../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_motion_safety_reach.py::test_late_third_robot_fault_suppresses_all_three_before_first_publication
+FAILED ../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_motion_safety_reach.py::test_table_content_is_rehashed_instead_of_trusting_copied_digest_labels
+FAILED ../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_motion_safety_reach.py::test_every_decider_uses_one_frozen_received_peer_bundle
+FAILED ../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_motion_safety_reach.py::test_new_output_intent_refs_are_distinct_from_the_consumed_table_hash
+FAILED ../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_motion_safety_reach.py::test_intent_publish_receipt_brackets_actual_publisher_call
+FAILED ../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_motion_safety_reach.py::test_missing_request_still_checks_initial_hold_and_publishes_zero
+FAILED ../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_motion_safety_reach.py::test_native_graph_endpoint_change_is_a_permanent_joint_fault
+FAILED ../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_reach_support_wiring.py::test_effective_v2_motion_configuration_constructs_all_three_real_trackers
+FAILED ../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_reach_support_wiring.py::test_default_motion_configuration_omits_field_and_equals_explicit_v1
+FAILED ../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_reach_support_wiring.py::test_worker_rejects_invalid_reset_rule_before_any_node_or_process[None]
+FAILED ../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_reach_support_wiring.py::test_worker_rejects_invalid_reset_rule_before_any_node_or_process[True]
+FAILED ../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_reach_support_wiring.py::test_worker_rejects_invalid_reset_rule_before_any_node_or_process[1]
+FAILED ../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_reach_support_wiring.py::test_worker_rejects_invalid_reset_rule_before_any_node_or_process[unknown]
+FAILED ../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_reach_support_wiring.py::test_actual_worker_command_and_metadata_both_bind_v2_once
+FAILED ../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_reach_support_wiring.py::test_actual_worker_default_command_and_metadata_omit_new_field
+FAILED ../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_reach_support_wiring.py::test_worker_validates_and_keeps_exact_reset_selection_before_io[binary-cone-v1]
+FAILED ../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_reach_support_wiring.py::test_worker_validates_and_keeps_exact_reset_selection_before_io[cone-support-v2]
+FAILED ../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_reach_support_wiring.py::test_old_reset_without_rule_keeps_binary_default_before_io
+FAILED ../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_worker_startup_readiness.py::test_constructor_subtracts_time_already_spent_before_worker_initialization
+FAILED ../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_worker_startup_readiness.py::test_invalid_reach_startup_request_rejects_before_any_IO[startup_readiness_protocol-None]
+FAILED ../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_worker_startup_readiness.py::test_invalid_reach_startup_request_rejects_before_any_IO[startup_readiness_protocol-True]
+FAILED ../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_worker_startup_readiness.py::test_invalid_reach_startup_request_rejects_before_any_IO[startup_readiness_protocol-unknown]
+FAILED ../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_worker_startup_readiness.py::test_invalid_reach_startup_request_rejects_before_any_IO[startup_deadline_monotonic_ns-True]
+FAILED ../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_worker_startup_readiness.py::test_invalid_reach_startup_request_rejects_before_any_IO[startup_deadline_monotonic_ns-None]
+FAILED ../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_worker_startup_readiness.py::test_invalid_reach_startup_request_rejects_before_any_IO[startup_deadline_monotonic_ns-99000000000]
+FAILED ../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_worker_startup_readiness.py::test_invalid_reach_startup_request_rejects_before_any_IO[startup_deadline_monotonic_ns-521000000000]
+FAILED ../../../../../../ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/test/test_mr3_worker_startup_readiness.py::test_no_work_after_reserve_and_legacy_startup_fields_reject_before_IO
+27 failed, 185 passed in 57.14s

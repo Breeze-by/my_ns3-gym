@@ -200,7 +200,7 @@ def request_shape(value, component, epoch):
         information.validate_refs(value['expected_intents'])
 
 
-def motion_replay_class(core):
+def motion_replay_class(core, authority_context=None):
     class ReachMotion(core.MotionReplay):
         def __init__(self, epoch, state_acks, peer_acks, info, base):
             super().__init__(epoch, state_acks, peer_acks)
@@ -276,6 +276,9 @@ def motion_replay_class(core):
                 equal(value, self.requests[value['request_id']][0], 'abandoned request identity changed')
             elif kind == 'reach_decision':
                 self.check_decision(value, clock)
+            elif kind in ('authority_configuration', 'authority_callback', 'authority_ack_publication'):
+                require(authority_context is not None,
+                        'new authority event lacks complete independent receiving/stop/owner/protocol proof')
             elif kind == 'actual_cmd_vel':
                 name, identity = value['robot'], value['publisher_identity']
                 endpoints = identity['endpoints']
@@ -340,6 +343,14 @@ def motion_replay_class(core):
             if not decision['allow'] or not value['ready'] or not value['started'] or value.get('phase_kind') == 'stop':
                 equal(output, [0., 0.], 'denied/unready/pre-release/STOP output is not strict zero')
             request = value['request']
+            if authority_context is not None:
+                permission = authority_context['gates'][name].decision_permissions.get(value['decision_sequence'])
+                require(permission is not None and value.get('motion_authority_profile') == authority_context['profile'],
+                        'peer decision missing independently reconstructed authority permission')
+                equal(value['motion_authority'], permission, 'peer authority permission changed after replay')
+                equal(value['effective_request'], permission['effective_request'], 'peer effective request bypassed authority')
+                if permission['permission'] == 'zero_only':
+                    equal(output, [0.,0.], 'unowned/revoked/expired raw stream escaped zero-only authority')
             available = (request is not None and request['supported'] is True
                 and request['publisher_identity']['valid'] is True
                 and 0 <= clock-round(information.number(request['received_stamp'])*1e9) <= 200_000_000)
@@ -526,6 +537,10 @@ def native_profile_context(directory, metadata, plan_path):
     require(plan_path is not None, 'new encoder peer replay requires its exact source plan')
     plan_path = Path(plan_path).resolve()
     plan = reach_preparation.load_plan(plan_path, ROOT)
+    from .motion_authority_profile import selected_motion_authority_profile
+    authority = selected_motion_authority_profile(metadata, required=True)
+    require(selected_motion_authority_profile(plan, required=True) == authority,
+            'peer plan and episode receiving authority profiles differ')
     require(custody.initial_encoder_profile(plan) == profile,
             'peer source plan and episode actuation profiles differ')
     freeze = metadata['freeze']
@@ -546,7 +561,8 @@ def native_profile_context(directory, metadata, plan_path):
                 {'configuration', 'initial_encoder_configuration'},
                 'peer lacks actual original and encoder native configurations')
         selected[robot] = {row['kind']: row for row in rows}
-    return {'actuation_profile': profile, 'epoch': metadata['epoch'], 'freeze': freeze,
+    return {'actuation_profile': profile, 'motion_authority_profile': authority,
+        'epoch': metadata['epoch'], 'freeze': freeze,
         'binding': {'path': bound['path'], 'sha256': bound['sha256']},
         'helper_sha256': bound['document']['initial_encoder_compiled_source']['sha256'],
         'reach_build_bridge_proof': bound['reach_build_bridge_proof'],
@@ -697,6 +713,32 @@ def replay_records(data, core, host, *, native_context=None):
             and metadata.get('execution_phase_protocol') == PROTOCOL
             and metadata.get('reset_handshake') == 'paused-controlled-state-peer-guard-storage-v2',
             'old profile/phase metadata cannot acquire new role credit')
+    from .motion_authority_profile import selected_motion_authority_profile
+    authority = selected_motion_authority_profile(metadata)
+    authority_report = authority_context = None
+    if authority is not None:
+        from . import motion_authority_audit
+        require(native_context is not None and native_context.get('motion_authority_profile') == authority,
+                'peer authority role lacks strict plan/source/native profile context')
+        release = data['transitions.jsonl'][0]['info']['release_time_ns']
+        end = max(r['end_time_ns'] for r in data['physics.jsonl'])
+        drive = {n:data['drive_'+n+'.jsonl'] for n in ROBOTS}
+        odom = {n:data['odometry_'+n+'.jsonl'] for n in ROBOTS}
+        actual = runtime.native_index(drive,odom,epoch,actuation_profile=metadata['actuation_profile'],
+            encoder_helper_sha256=native_context['helper_sha256'])
+        streams = runtime.ingress_index(data['motion_safety.jsonl'],actual,epoch,
+            reach_geometry_rule=runtime.geometry_rule(metadata))
+        authority_report, authority_context = motion_authority_audit.replay_motion(
+            data['motion_safety.jsonl'],actual,epoch,release)
+        # The same original independent physical/STOP-debt replay is mandatory;
+        # do not infer it from a ready flag, helper import or zero body request.
+        stop = {n:runtime.replay_robot(n,streams[n],actual[n],epoch,release,end) for n in ROBOTS}
+        adapter = motion_authority_audit.replay_adapter(data['adapter.jsonl'],data['transitions.jsonl'],
+            epoch,authority_context,motion_authority_audit.original_protocol_class(ROOT))
+        authority_report.update(schema='mr3-independent-motion-authority-episode-v1',passed=True,
+            epoch=epoch,adapter=adapter,original_global_stop_debts_and_fixed_radius_passed=True,
+            original_stop_replay=stop)
+        authority_context['profile'] = authority
     info = information.information_replay_class(host)(epoch)
     for row, _, _ in information.prefix(data['information_states.jsonl'], 'mr3-information-state-audit-v2', epoch):
         info.record(row)
@@ -710,7 +752,7 @@ def replay_records(data, core, host, *, native_context=None):
     for row, clock, wall in information.prefix(data['peer_phase.jsonl'], 'mr3-peer-phase-audit-v2', epoch):
         peer.record(row, clock, wall)
     peer_counts = peer.finish()
-    motion = motion_replay_class(core)(epoch, state_acks, peer.control_acks, info, base)
+    motion = motion_replay_class(core,authority_context)(epoch, state_acks, peer.control_acks, info, base)
     for row, _, _ in information.prefix(data['motion_safety.jsonl'], 'mr3-motion-safety-v1', epoch, motion=True):
         motion.record(row)
     motion_counts = motion.finish()
@@ -740,6 +782,8 @@ def replay_records(data, core, host, *, native_context=None):
         'bootstrap_zero_quanta': advances['bootstrap_zero_advances'],
         'scope': 'Complete actual v2 state/peer/guard/FIFO/storage/physics causal necessities; not body response or closure.'}
     return {'passed': True, 'epoch': epoch, 'task_release_ns': release, 'physics_end_ns': end,
+            **({'motion_authority_profile':authority,'independent_motion_authority_replay_passed':True,
+                'motion_authority_replay':authority_report} if authority is not None else {}),
             'peer': peer_counts, 'motion_fifo': motion_counts, 'worker_control': control_counts,
             'advance_replay': advances, 'fifo': fifo, 'controlled_execution_replay': replay,
             'execution_replay': copy.deepcopy(replay),
@@ -775,6 +819,11 @@ def audit_episode(directory, expected_freeze=None, *, plan_path=None):
                      'control_phase_worker.jsonl', 'drive_phase_worker.jsonl', 'motion_phase_worker.jsonl',
                      'physics.jsonl', *(f'drive_{n}.jsonl' for n in ROBOTS)):
             data[name] = inputs.rows(directory, name)
+        from .motion_authority_profile import selected_motion_authority_profile
+        authority = selected_motion_authority_profile(metadata, required=True)
+        data['adapter.jsonl'] = inputs.rows(directory, 'adapter.jsonl')
+        for name in ROBOTS:
+            data['odometry_'+name+'.jsonl'] = inputs.rows(directory,'odometry_'+name+'.jsonl')
         context = native_profile_context(directory, metadata, plan_path)
         result.update(replay_records(data, core, host, native_context=context))
         if context is not None:

@@ -227,6 +227,13 @@ def load_native_gates(root, freeze, plan_path):
         raise ValueError("unknown declared map output packing profile")
     from .native_custody_reach import initial_encoder_profile
     actuation = initial_encoder_profile(plan)
+    from .motion_authority_profile import selected_motion_authority_profile
+    authority = selected_motion_authority_profile(plan)
+    if authority is not None:
+        policies = plan.get("policy_stages")
+        if type(policies) is not dict or set(policies) != {"minimum","pilot","validation"} or not all(
+                row.get("motion_authority_profile") == authority for row in policies.values()):
+            raise ValueError("authority qualification requires three same-profile policy stages")
     if actuation is not None:
         policies = plan.get("policy_stages")
         if type(policies) is not dict or set(policies) != {"minimum", "pilot", "validation"} or not all(
@@ -239,14 +246,15 @@ def load_native_gates(root, freeze, plan_path):
            if plan.get("start_graph_rule", "original-seed-cell") != "original-seed-cell" else {}),
         **({"map_output_packing_profile": packing} if packing is not None else {}),
         **({"reach_geometry_rule": geometry} if geometry != BINARY_REACH_GEOMETRY_RULE else {}),
-        **({"actuation_profile": actuation} if actuation is not None else {}))
+        **({"actuation_profile": actuation} if actuation is not None else {}),
+        **({"motion_authority_profile": authority} if authority is not None else {}))
 
 
 def _load_versioned_native_gates(root, freeze, source_proof, source_bindings, custody_binding,
                                  *, seed_rule="legacy", start_graph_rule="original-seed-cell",
                                  map_output_packing_profile=None,
                                  reach_geometry_rule=BINARY_REACH_GEOMETRY_RULE,
-                                 actuation_profile=None):
+                                 actuation_profile=None, motion_authority_profile=None):
     """Reuse unchanged native predicates after an explicit caller source check.
 
     The public qualification entry above still requires its complete sealed
@@ -255,6 +263,10 @@ def _load_versioned_native_gates(root, freeze, source_proof, source_bindings, cu
     """
     from . import native_custody_reach
     root = Path(root)
+    if motion_authority_profile is not None:
+        from .motion_authority_profile import selected_motion_authority_profile
+        selected_motion_authority_profile(dict(safety_contract="mr3-reach-v1",
+            motion_authority_profile=motion_authority_profile), required=True)
     if actuation_profile is not None:
         native_custody_reach.initial_encoder_profile({"actuation_profile":actuation_profile})
     validate_seed_rule(seed_rule)
@@ -345,6 +357,8 @@ def _load_versioned_native_gates(root, freeze, source_proof, source_bindings, cu
                        == reach_geometry_rule, "custody binding geometry rule differs from qualification dispatch")
         legacy.require(result.get("actuation_profile") == actuation_profile,
                        "actual native build/custody profile differs from the qualification plan")
+        legacy.require(result.get("motion_authority_profile") == motion_authority_profile,
+                       "actual Python authority custody/profile differs from qualification dispatch")
         if actuation_profile is not None:
             legacy.require(result.get("reach_build_bridge_proof", {}).get("new_build_executed") is True,
                            "new encoder plan has no actual new driver build")
@@ -387,6 +401,10 @@ def _load_versioned_native_gates(root, freeze, source_proof, source_bindings, cu
         proof["reach_dispatch"]["actuation_profile"] = actuation_profile
         proof["reach_dispatch"]["new_actual_driver_build_required"] = True
         proof["reach_dispatch"]["independent_compound_law_replay_required"] = True
+    if motion_authority_profile is not None:
+        proof["reach_dispatch"].update(motion_authority_profile=motion_authority_profile,
+            independent_receiving_authority_and_deferred_protocol_replay_required=True,
+            authority_cpp_build_credit=False)
     if packing_projection is not None:
         proof["reach_dispatch"]["map_output_packing"] = packing_projection
     if reach_geometry_rule != BINARY_REACH_GEOMETRY_RULE:

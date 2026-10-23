@@ -6,6 +6,7 @@ from unittest.mock import patch
 
 from mr3_learning import audit_reach_cadence as gate
 from mr3_learning.tests import test_audit_odometry_cadence as old_tests
+from mr3_learning.tests.test_audit_reach_ppo import artificial_authority_report, PROFILE
 
 
 class ReachCadenceTests(unittest.TestCase):
@@ -34,14 +35,15 @@ class ReachCadenceTests(unittest.TestCase):
     def new_case(self):
         directory=self.case()
         path=directory/"metadata.json";meta=json.loads(path.read_bytes())
-        meta["actuation_profile"]=gate.encoder_replay.PROFILE;old_tests.write(path,meta)
+        meta["actuation_profile"]=gate.encoder_replay.PROFILE
+        meta['motion_authority_profile']=PROFILE;old_tests.write(path,meta)
         for robot in gate.ROBOTS:
             old_tests.mutate(directory/("drive_"+robot+".jsonl"),lambda rows:
                 rows[0].update(actuation_algorithm=gate.encoder_replay.ALGORITHM))
         return directory
 
     def compound_report(self):
-        return {"passed":True,"independent_necessary_replay":True,"continuous_physical_model_proved":False,
+        return {**artificial_authority_report(),"independent_necessary_replay":True,"continuous_physical_model_proved":False,
             "actuation_profile":gate.encoder_replay.PROFILE,"initial_encoder_compound_replay_passed":True,
             "source_proof":{gate.runtime.ENCODER_HEADER_SOURCE:{"sha256":"7"*64}},
             "initial_encoder_motor_replay":{robot:{"passed":True,"profile":gate.encoder_replay.PROFILE,

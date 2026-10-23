@@ -109,6 +109,10 @@ def audit_episode(directory, freeze, inputs):
     module,proof=load_implementation(actuation_profile=profile)
     result=module.audit_episode(Path(directory),freeze,inputs)
     report=runtime.audit_episode(Path(directory),freeze)
+    from .motion_authority_profile import selected_motion_authority_profile
+    from .motion_authority_audit import require_episode_proof
+    authority=selected_motion_authority_profile(metadata,required=True)
+    require_episode_proof(report,authority)
     require(report.get("passed") is True and report.get("independent_necessary_replay") is True
             and report.get("continuous_physical_model_proved") is False,
             "reach cadence requires the complete new runtime/drive necessary replay")
@@ -123,6 +127,8 @@ def audit_episode(directory, freeze, inputs):
                 for row in motors.values()),
             "new cadence identity lacks independent three-robot compound-law replay")
     result.update(actuation_profile=profile, initial_encoder_compound_replay_passed=True,
+                  motion_authority_profile=authority, independent_motion_authority_replay_passed=True,
+                  motion_authority_replay=report['motion_authority_replay'],
                   safety_contract=CONTRACT,implementation_provenance=proof,
                   runtime_drive_conjunction=report,continuous_physical_model_proved=False,
                   actual_loaded_elf_custody_required=True)

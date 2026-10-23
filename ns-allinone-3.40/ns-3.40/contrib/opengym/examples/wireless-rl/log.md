@@ -9040,3 +9040,10 @@ Canonical CPU工具1554真实reap0、scope制作工具29523真实reap0，均scop
 2026-10-24 V64热点等价优化已接源码：runtime单调字典末键/存储逆序短路与record严格编码快路径，全部原历史保留；58差分、21record及canonical112真实CPU PASS（canonical tool6051/23.187448483秒、137源稳定、2保存身份gone）。两次fixture/import collection FAIL原件保留。人工kernel局部约98倍/2.7–3倍不外推native容量；无新World/资格/学习，工程新增0，仍U109074.2448783686018/C150000、余40925.7551216313982。authority及独立reader接线继续，仅新profile与新freeze后验证；旧FAIL、pilot/final原额及科学门保持，P2A未完成。
 
 见 [报告](report/20261024_mr3_p2a_v64_equivalent_hotspots.md)。
+
+
+## 2026-10-24 V65准备闭合
+
+2026-10-24 V65实际准备PASS待原生冻结：final source-spec3的ROS212/Conda476/admission33全PASS，readiness、真实prepare/plancheck均rc0与source稳定/保存身份gone；旧27FAIL/2collectionError/19FAIL全保。12EP(1+2+8+1)/30roles(9+6+9+6)、1085源10ELF已封plan8bae3c2b/bindinged50d371；source closure补真实11源helper，原B/R/STOP/95%及原CPP实际build不改。scope.admittedTrue仅软件准备，capacity/autoPolicyFalse；唯一bootstrap仅矩阵→qualify→关闭，无新World/学习/P2A。完整47220预约由代理前瞻选C180000承接U109074.2448783686018，非数值用户批准，pilot/final原额不动。待新commit/push/reap+显式clean后正式一次执行。
+
+见[报告](report/20261024_mr3_p2a_v65_owned_stream_qualification.md)。

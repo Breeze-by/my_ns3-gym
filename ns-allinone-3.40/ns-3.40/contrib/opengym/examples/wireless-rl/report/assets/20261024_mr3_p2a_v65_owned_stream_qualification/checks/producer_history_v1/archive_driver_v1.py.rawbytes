@@ -1,0 +1,134 @@
+"""Fixed six sealed /tmp roots, byte-only opaque archival; never restore in place."""
+import gzip
+import hashlib
+import io
+import json
+import os
+from pathlib import Path
+import stat
+import tarfile
+
+DEST = Path('/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v65_owned_stream_qualification/checks/producer_history_v1')
+ROOTS = tuple(Path(x) for x in json.loads((DEST/'explicit_roots_v1.json').read_text())['roots'])
+MAX = 64*1024*1024
+
+
+def encoded(value):
+    return (json.dumps(value, sort_keys=True, indent=2, ensure_ascii=False)+'\n').encode()
+
+
+def stable_stat(path):
+    s=path.lstat()
+    return {k:getattr(s,k) for k in ('st_dev','st_ino','st_mode','st_nlink','st_uid','st_gid',
+                                   'st_size','st_mtime_ns','st_ctime_ns')}
+
+
+def scan():
+    rows=[]
+    for root in ROOTS:
+        assert root.resolve(strict=True)==root and stat.S_ISDIR(root.lstat().st_mode)
+        rows.append({'root':str(root),'relative_path':'','original_path':str(root),
+                     'lstat':stable_stat(root),'kind':'directory'})
+        for directory,dirs,files in os.walk(root,followlinks=False):
+            for name in sorted(dirs+files):
+                p=Path(directory)/name
+                meta=stable_stat(p)
+                relative=p.relative_to(root)
+                row={'root':str(root),'relative_path':relative.as_posix(),
+                     'original_path':str(p),'lstat':meta}
+                mode=meta['st_mode']
+                if stat.S_ISDIR(mode):
+                    row['kind']='directory'
+                elif stat.S_ISLNK(mode):
+                    row.update(kind='symlink_metadata_only',literal_target=os.readlink(p))
+                elif stat.S_ISREG(mode):
+                    row.update(kind='regular',archive_member=root.name+'/'+relative.as_posix())
+                else:
+                    raise ValueError('unsupported special source: '+str(p))
+                rows.append(row)
+    return sorted(rows,key=lambda row:row['original_path'])
+
+
+def add_bytes(archive,name,data):
+    info=tarfile.TarInfo(name)
+    info.size=len(data);info.mode=0o600;info.mtime=0
+    archive.addfile(info,io.BytesIO(data))
+
+
+def main():
+    before=scan()
+    archive_path=DEST/'producer_candidates_and_cpu_history_v1.tar.gz'
+    total=0
+    with archive_path.open('xb') as raw:
+        with gzip.GzipFile(fileobj=raw,mode='wb',filename='',mtime=0,compresslevel=6) as gz:
+            with tarfile.open(fileobj=gz,mode='w|',format=tarfile.PAX_FORMAT) as out:
+                for row in before:
+                    if row['kind']!='regular':continue
+                    p=Path(row['original_path'])
+                    assert stable_stat(p)==row['lstat']
+                    flags=os.O_RDONLY|os.O_NOFOLLOW
+                    fd=os.open(p,flags)
+                    try:
+                        with os.fdopen(fd,'rb') as f:data=f.read(MAX+1)
+                    except BaseException:
+                        raise
+                    assert len(data)==row['lstat']['st_size'] and len(data)<=MAX
+                    assert stable_stat(p)==row['lstat']
+                    row.update(bytes=len(data),sha256=hashlib.sha256(data).hexdigest())
+                    total+=len(data)
+                    add_bytes(out,row['archive_member'],data)
+                inventory={'schema':'mr3-a65-producer-history-byte-inventory-v1',
+                    'roots':[str(x) for x in ROOTS],'entries':before,
+                    'regular_count':sum(x['kind']=='regular' for x in before),
+                    'symlink_metadata_count':sum(x['kind']=='symlink_metadata_only' for x in before),
+                    'regular_raw_bytes':total,'links_followed':False,
+                    'semantic_status':{'all_original_private_attempts_preserved':True,
+                        'Python_wiring_only':True,'new_CPP_build':False,
+                        'private_CPU_not_canonical_fresh_credit':True,
+                        'new_native_science_capacity_or_P2A_credit':False}}
+                inventory_bytes=encoded(inventory)
+                add_bytes(out,'archive_inventory_v1.json',inventory_bytes)
+    assert archive_path.stat().st_size<=MAX
+    # A fresh decode reconstructs every regular member and proves exact original
+    # bytes. No member is executed or installed, and no symlink is materialized.
+    expected={x['archive_member']:x for x in before if x['kind']=='regular'}
+    seen=set();recovered=0
+    with tarfile.open(archive_path,'r:gz') as inp:
+        for member in inp:
+            assert member.isfile() and not member.issym() and not member.islnk()
+            assert not member.name.startswith('/') and '..' not in Path(member.name).parts
+            data=inp.extractfile(member).read(MAX+1)
+            assert len(data)==member.size<=MAX and member.name not in seen
+            seen.add(member.name)
+            if member.name=='archive_inventory_v1.json':
+                assert data==inventory_bytes
+                continue
+            row=expected[member.name]
+            assert len(data)==row['bytes'] and hashlib.sha256(data).hexdigest()==row['sha256']
+            recovered+=len(data)
+    assert seen==set(expected)|{'archive_inventory_v1.json'} and recovered==total
+    after=scan()
+    for row in before:
+        actual=next(x for x in after if x['original_path']==row['original_path'])
+        assert actual['lstat']==row['lstat'] and actual.get('literal_target')==row.get('literal_target')
+        if row['kind']=='regular':
+            assert hashlib.sha256(Path(row['original_path']).read_bytes()).hexdigest()==row['sha256']
+    assert len(after)==len(before)
+    (DEST/'archive_inventory_v1.json').write_bytes(inventory_bytes)
+    archive_bytes=archive_path.read_bytes()
+    result={'schema':'mr3-a65-producer-history-byte-archive-result-v1','passed':True,
+            'archive':{'path':str(archive_path),'bytes':len(archive_bytes),
+                       'sha256':hashlib.sha256(archive_bytes).hexdigest()},
+            'inventory_sha256':hashlib.sha256(inventory_bytes).hexdigest(),
+            'roots':len(ROOTS),'regular_count':len(expected),'regular_raw_bytes':total,
+            'recovered_regular_count':len(expected),'recovered_regular_bytes':recovered,
+            'fresh_decode_all_SHA_match':True,'source_after_current_stable':True,
+            'symlink_metadata_count':inventory['symlink_metadata_count'],
+            'links_followed':False,'all_files_below_64MiB':True,
+            'engineering_added_seconds':'0','science_or_capacity_credit':False}
+    (DEST/'archive_result_v1.json').write_bytes(encoded(result))
+    print(json.dumps(result,sort_keys=True))
+
+
+if __name__=='__main__':
+    main()

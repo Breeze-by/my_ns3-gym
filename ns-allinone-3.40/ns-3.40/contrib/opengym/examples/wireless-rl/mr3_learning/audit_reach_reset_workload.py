@@ -18,6 +18,8 @@ WORKSPACE = Path(__file__).resolve().parents[7]
 WIRELESS = Path("ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl")
 PROFILE = "mr3-reach-reset-outward-cancel-v1"
 PROBE_VERSION = "mr3-p2a-reach-outward-cancel-v1"
+PROFILE_V2 = "mr3-reach-reset-outward-cancel-v2"
+PROBE_VERSION_V2 = "mr3-p2a-reach-outward-cancel-v2"
 CONTRACT = "mr3-reach-v1"
 SCHEMA = "mr3-reach-reset-workload-audit-v1"
 ENTRY = WIRELESS / "mr3_learning/audit_reach_reset_workload.py"
@@ -51,12 +53,54 @@ def require(value, message):
         raise ValueError(message)
 
 
-def load_reader(kind):
+def profile_spec(workload_profile=PROFILE):
+    require(type(workload_profile) is str and workload_profile in (PROFILE,PROFILE_V2),
+            "unknown fixed Reach reset workload profile")
+    probe = PROBE_VERSION if workload_profile == PROFILE else PROBE_VERSION_V2
+    change = (CHANGE[0], 'PROBE_VERSION = "' + probe + '"\n', 1)
+    return workload_profile,probe,change
+
+
+def profile_from_plan(plan):
+    selected = profile_spec(plan.get("reset_workload_reader_profile"))
+    if selected[0] == PROFILE_V2:
+        require(plan.get("preparation_probe_version") == selected[1],
+                "v2 reset plan lacks its exact producer/reader pair")
+    return selected
+
+
+def episode_probe_profiles(directory, freeze, *, workload_profile):
+    """v2 actual worker and supervisor declarations; no telemetry or physics credit."""
+    _,probe,_ = profile_spec(workload_profile)
+    require(workload_profile == PROFILE_V2, "episode v2 check requires its explicit profile")
+    directory=Path(directory)
+    paths=([directory/"metadata.json"] if (directory/"metadata.json").is_file()
+           else sorted(directory.glob("worker*/episode*/metadata.json")))
+    require(paths, "v2 probe has no actual episode metadata")
+    result={}
+    for path in paths:
+        epoch = None
+        for actual in (path,path.parent/"supervisor_metadata.json"):
+            raw=actual.read_bytes(); value=json.loads(raw)
+            require((actual.name == "supervisor_metadata.json" or value.get("freeze") == freeze)
+                    and value.get("freeze",freeze) == freeze and value.get("safety_contract") == CONTRACT
+                    and value.get("preparation_probe_version") == probe,
+                    "actual worker/supervisor probe profile differs from its plan")
+            require(type(value.get("epoch")) is str and bool(value["epoch"])
+                    and (epoch is None or value["epoch"] == epoch),
+                    "v2 worker/supervisor epoch differs")
+            epoch = value["epoch"]
+            result[str(actual)]={"sha256":hashlib.sha256(raw).hexdigest(),"bytes":len(raw)}
+    return result
+
+
+def load_reader(kind, *, workload_profile=PROFILE):
     """Fixed source selection; no caller/CLI-supplied mathematical source path."""
     require(type(kind) is str and kind in SOURCES, "unknown reset workload reader kind")
     relative, expected = SOURCES[kind]
-    module, proof = project_file(WORKSPACE / relative, expected, (CHANGE,))
-    require(module.PROBE_VERSION == PROBE_VERSION, "projected reset probe version differs")
+    _,probe,change = profile_spec(workload_profile)
+    module, proof = project_file(WORKSPACE / relative, expected, (change,))
+    require(module.PROBE_VERSION == probe, "projected reset probe version differs")
     return module, proof
 
 
@@ -69,8 +113,7 @@ def verify_reader_readiness(plan, freeze):
     """
     require(type(freeze) is str and re.fullmatch(r"[0-9a-f]{40}", freeze),
             "exact preflight execution freeze required")
-    require(plan.get("reset_workload_reader_profile") == PROFILE,
-            "Reach reset workload reader profile missing or unknown")
+    profile,probe,change = profile_from_plan(plan)
     bindings = plan["source_bindings"]
     require(SOURCE_PATHS <= bindings.keys(), "reset reader preflight source inventory incomplete")
     pins = {str(path): expected for path, expected in (*SOURCES.values(), *LEAVES.values())}
@@ -87,12 +130,12 @@ def verify_reader_readiness(plan, freeze):
         sources.append({"path": relative, "bytes": len(raw), "sha256": digest})
     readers = []
     for kind in ("angular", "physics"):
-        module, proof = load_reader(kind)
+        module, proof = load_reader(kind, **({"workload_profile":profile} if profile != PROFILE else {}))
         relative, expected = SOURCES[kind]
-        require(module.PROBE_VERSION == PROBE_VERSION and module.__file__ == str(WORKSPACE / relative)
+        require(module.PROBE_VERSION == probe and module.__file__ == str(WORKSPACE / relative)
                 and proof["source_sha256"] == proof["inverse_sha256"] == expected
                 and proof["whole_source_inverse_equal"] is True
-                and proof["literal_changes"] == [{"before": CHANGE[0], "after": CHANGE[1], "count": 1}],
+                and proof["literal_changes"] == [{"before": change[0], "after": change[1], "count": 1}],
                 "reset reader preflight actual load/inverse differs: " + kind)
         leaf_relative, leaf_expected = LEAVES[kind]
         require(module.CONSUMER_SHA256 == leaf_expected, "reset reader leaf declaration differs")
@@ -106,17 +149,18 @@ def verify_reader_readiness(plan, freeze):
         readers.append({"kind": kind, "probe_version": module.PROBE_VERSION,
                         "immutable_reader_projection": proof, "unchanged_leaf_source": leaf_proof})
     return {"schema": "mr3-reach-reset-reader-entry-readiness-v1", "passed": True,
-            "execution_freeze": freeze, "workload_profile": PROFILE, "sources": sources,
+            "execution_freeze": freeze, "workload_profile": profile, "sources": sources,
             "readers": readers, "audit_calls": 0, "native_inputs_read": False,
             "scientific_qualification_credit": False}
 
 
-def command_argv(kind, directory, freeze, output, per_episode_report=None):
+def command_argv(kind, directory, freeze, output, per_episode_report=None, *, workload_profile=PROFILE):
     require(type(kind) is str and kind in SOURCES, "unknown reset workload reader kind")
     require((per_episode_report is not None) is (kind == "physics"),
             "only physics requires the original per-episode report")
+    profile_spec(workload_profile)
     argv = ["/usr/bin/python3", "-m", "mr3_learning.audit_reach_reset_workload", str(directory),
-            "--kind", kind, "--workload-profile", PROFILE, "--freeze", str(freeze)]
+            "--kind", kind, "--workload-profile", workload_profile, "--freeze", str(freeze)]
     if kind == "physics":
         argv += ["--per-episode-report", str(per_episode_report)]
     return [*argv, "--output", str(output)]
@@ -134,14 +178,15 @@ def audit(directory, freeze, *, kind, workload_profile, per_episode_report=None)
               "native_inputs_modified": False, "immutable_sources_modified": False}
     stable = {}
     try:
-        require(type(workload_profile) is str and workload_profile == PROFILE,
-                "unknown or missing reset workload reader profile")
+        profile,probe,change = profile_spec(workload_profile)
+        result["preparation_probe_version"] = probe
         require(type(freeze) is str and re.fullmatch(r"[0-9a-f]{40}", freeze),
                 "exact 40-hex source freeze required")
         require(type(kind) is str and kind in SOURCES, "unknown reset workload reader kind")
         require((per_episode_report is not None) is (kind == "physics"),
                 "only physics requires the original per-episode report")
-        module, result["immutable_reader_projection"] = load_reader(kind)
+        module, result["immutable_reader_projection"] = load_reader(kind,
+            **({"workload_profile":profile} if profile != PROFILE else {}))
         for name in ("benchmark_metadata.json", "benchmark_summary.json"):
             path = directory / name
             raw = path.read_bytes()
@@ -150,8 +195,10 @@ def audit(directory, freeze, *, kind, workload_profile, per_episode_report=None)
                 "bytes": len(raw), "sha256": hashlib.sha256(raw).hexdigest()}
             value = json.loads(raw)
             require(type(value) is dict and value.get("safety_contract") == CONTRACT
-                    and value.get("preparation_probe_version") == PROBE_VERSION,
+                    and value.get("preparation_probe_version") == probe,
                     "reset input lacks the explicit Reach workload declaration")
+        if profile == PROFILE_V2:
+            result["episode_probe_profiles"] = episode_probe_profiles(directory,freeze,workload_profile=profile)
         original = (module.audit(directory, freeze) if kind == "angular" else
                     module.audit(directory, Path(per_episode_report), freeze))
         result["original_reader_result"] = original
@@ -169,6 +216,12 @@ def audit(directory, freeze, *, kind, workload_profile, per_episode_report=None)
                 require(path.read_bytes() == raw, "benchmark input changed during reset audit: " + str(path))
             except (OSError, ValueError) as error:
                 result["errors"].append(repr(error))
+    for name,spec in result.get("episode_probe_profiles",{}).items():
+        try:
+            require(hashlib.sha256(Path(name).read_bytes()).hexdigest() == spec["sha256"],
+                    "v2 episode profile metadata changed during audit")
+        except (OSError,ValueError) as error:
+            result["errors"].append(repr(error))
     result["passed"] = not result["errors"]
     return result
 
@@ -177,7 +230,7 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("directory", type=Path)
     parser.add_argument("--kind", choices=tuple(SOURCES), required=True)
-    parser.add_argument("--workload-profile", choices=(PROFILE,), required=True)
+    parser.add_argument("--workload-profile", choices=(PROFILE,PROFILE_V2), required=True)
     parser.add_argument("--freeze", required=True)
     parser.add_argument("--per-episode-report", type=Path)
     parser.add_argument("--output", required=True, type=Path)

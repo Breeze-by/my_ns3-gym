@@ -26,6 +26,10 @@ from stable_baselines3.common.logger import configure
 
 from .benchmark import SAFETY_CONTRACTS, resource_sample
 from .env import MR3Env
+from .motion_authority_profile import (
+    motion_authority_profile_for_safety_contract, selected_motion_authority_profile,
+    require_qualified_motion_authority,
+)
 from .observation import observation_space
 from .policy import policy_kwargs
 from .rollout import DecisionTransition, build_rollout_buffer, merge_zero_terminal
@@ -425,7 +429,12 @@ def main(argv=None):
         from .reach_preparation import load_plan, validate_qualification
         admission_freeze = subprocess.check_output(["git", "rev-parse", "HEAD"],
             cwd=WORKSPACE, text=True).strip()
-        validate_qualification(args.reach_qualification, args.reach_plan, admission_freeze)
+        qualification = validate_qualification(args.reach_qualification, args.reach_plan, admission_freeze)
+        require_qualified_motion_authority(qualification)
+        authority_plan = load_plan(args.reach_plan)
+        if (selected_motion_authority_profile(authority_plan, required=True)
+                != motion_authority_profile_for_safety_contract(args.safety_contract)):
+            parser.error("PPO receiving-authority profile differs from its qualification plan")
         if load_plan(args.reach_plan).get("actuation_profile") != actuation_profile_for_safety_contract(args.safety_contract):
             parser.error("PPO actuator profile differs from its native qualification plan")
         if load_plan(args.reach_plan).get("seed_rule", "legacy") != args.seed_rule:
@@ -475,6 +484,9 @@ def main(argv=None):
     profile = actuation_profile_for_safety_contract(args.safety_contract)
     if profile is not None:
         metadata["actuation_profile"] = profile
+    authority_profile = motion_authority_profile_for_safety_contract(args.safety_contract)
+    if authority_profile is not None:
+        metadata["motion_authority_profile"] = authority_profile
     write_json(directory / "metadata.json", metadata)
     resources = []
     stop = threading.Event()
@@ -493,6 +505,8 @@ def main(argv=None):
         result["reach_geometry_rule"] = args.reach_geometry_rule
     if profile is not None:
         result["actuation_profile"] = profile
+    if authority_profile is not None:
+        result["motion_authority_profile"] = authority_profile
     environments = []
     model = None
     learner_logger = None

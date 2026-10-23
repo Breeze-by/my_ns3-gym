@@ -162,6 +162,11 @@ def load_impl(*, plan_path=None):
 
     def readiness(directory, metadata, transitions, adapter_rows, epoch, motion):
         directory = Path(directory)
+        from .motion_authority_profile import selected_motion_authority_profile
+        from .motion_authority_audit import require_episode_proof
+        authority = selected_motion_authority_profile(metadata)
+        if authority is not None:
+            require_episode_proof(motion,authority)
         result = original_readiness(directory, metadata, transitions, adapter_rows, epoch, motion)
         require(motion.get("schema") == "mr3-reach-peer-control-fifo-review-v1"
                 and motion.get("safety_contract") == information.CONTRACT,
@@ -177,6 +182,10 @@ def load_impl(*, plan_path=None):
         motion_rows = module._prefix(directory, "motion_safety.jsonl", end_wall, result["artifact_proof"])
         host, _ = information.load_implementation()
         result["reach_release"] = verify_release_safety(metadata, reset, phases, state_rows, peer_rows, motion_rows, host.BASE)
+        if authority is not None:
+            result.update(motion_authority_profile=authority,
+                independent_motion_authority_replay_passed=True,
+                motion_authority_replay=motion['motion_authority_replay'])
         module.verify_motion_artifacts({"artifact_proof": result["artifact_proof"]})
         return result
 

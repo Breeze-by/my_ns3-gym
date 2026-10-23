@@ -7,6 +7,7 @@ import pytest
 
 from multi_robot_exploration.motion_safety import MotionSafety, storage_receipt_qos
 from multi_robot_exploration.mr3_safety_intent import payload_sha256
+from multi_robot_exploration.mr3_motion_authority import PROFILE as MOTION_AUTHORITY_PROFILE
 from test_motion_safety import node_fixture
 
 
@@ -64,6 +65,16 @@ def fixture(decider=None):
         decider = lambda name, request, peers: {'allow': True, 'reason': 'fixture_clear',
                                                'output': list(request), 'minimum_margin_m': None}
     node.reach_enabled = True
+    node.motion_authority_profile = MOTION_AUTHORITY_PROFILE
+    # This fixture already substitutes Owner.decide to isolate joint publication
+    # ordering. Supply the corresponding explicitly artificial receiver result;
+    # real owner/stop/receipt handshakes are covered by the callback suite.
+    node.receiving_permission = lambda name, tracker, request, clock_ns: {
+        "effective_request": [request["v"], request["w"]] if request is not None else [0., 0.],
+        "permission": "normal_reach" if request is not None else "zero_only",
+        "state": "ACTIVE", "raw_goal_generation": None,
+        "raw_goal_association": "UNKNOWN_UNSTAMPED_TWIST",
+        "scope": "ARTIFICIAL_RECEIVER_RESULT_FOR_JOINT_PUBLICATION_ONLY"}
     node._reach_emitting = False
     node.started = True
     node.normal_control_model_fault = None

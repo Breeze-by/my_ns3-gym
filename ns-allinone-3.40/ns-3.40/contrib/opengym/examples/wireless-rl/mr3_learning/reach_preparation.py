@@ -16,6 +16,8 @@ from . import preparation as primitives
 from .reach_audit_projection import project_module
 from . import audit_reach_reset_workload as reset_workload
 from .native_custody_reach import initial_encoder_profile
+from .motion_authority_profile import (MOTION_AUTHORITY_PROFILE,
+    selected_motion_authority_profile, require_qualified_motion_authority)
 from .supervisor import (BINARY_REACH_GEOMETRY_RULE, SUPPORT_REACH_GEOMETRY_RULE,
                          validate_reach_geometry_rule, reach_geometry_rule_from_argv)
 from .supervisor import (seed_rule_from_argv, start_graph_rule_from_argv,
@@ -191,6 +193,15 @@ def source_inventory(root=WORKSPACE):
 
 
 def validate_plan(plan, workspace=WORKSPACE):
+    authority = selected_motion_authority_profile(plan)
+    if authority is not None:
+        require(all(type(row.get("motion_authority_profile")) is str
+                    and row["motion_authority_profile"] == authority for row in plan["stages"]),
+                "native matrix stage authority profile differs from plan")
+        if "policy_stages" in plan:
+            require(type(plan["policy_stages"]) is dict and set(plan["policy_stages"]) == {"minimum","pilot","validation"}
+                    and all(row.get("motion_authority_profile") == authority for row in plan["policy_stages"].values()),
+                    "new authority policy stage registry lacks mandatory profile")
     actuation = initial_encoder_profile(plan)
     if actuation is not None:
         require(all(initial_encoder_profile(row) == actuation for row in plan["stages"]),
@@ -207,9 +218,7 @@ def validate_plan(plan, workspace=WORKSPACE):
     require(plan.get("schema") == SCHEMA and plan.get("safety_contract") == CONTRACT
             and plan.get("readiness") == {"ready": True, "pending_bindings": []},
             "reach plan is not explicitly sealed")
-    require(type(plan.get("reset_workload_reader_profile")) is str
-            and plan["reset_workload_reader_profile"] == reset_workload.PROFILE,
-            "Reach reset workload reader profile is missing or unknown")
+    workload_profile,probe_version,_ = reset_workload.profile_from_plan(plan)
     require(reset_workload.SOURCE_PATHS <= plan["source_bindings"].keys(),
             "Reach reset workload reader source inventory incomplete")
     require(all(plan["source_bindings"][str(path)] == expected
@@ -302,7 +311,7 @@ def validate_plan(plan, workspace=WORKSPACE):
                 and not any("plant-stimulus" in a or "physics-diagnostic" in a for a in argv),
                 "fixture scope differs")
         if name in ("interface", "reset"):
-            require(argument(argv, "--preparation-probe-version") == "mr3-p2a-reach-outward-cancel-v1",
+            require(argument(argv, "--preparation-probe-version") == probe_version,
                     "reach fixture version differs")
         if name == "interface":
             require(argument(argv, "--preparation-parameter-profile") == "gentle_turn_v1",
@@ -388,7 +397,8 @@ def validate_plan(plan, workspace=WORKSPACE):
                     require(job["id"] == role and job.get("required") is True
                             and job.get("depends_on") == (["physical_per_episode"] if role == "physics" else [])
                             and job["argv"] == reset_workload.command_argv(
-                                role, run, "{freeze}", job["output"], report),
+                                role, run, "{freeze}", job["output"], report,
+                                **({"workload_profile":workload_profile} if workload_profile != reset_workload.PROFILE else {})),
                             "Reach reset workload reader argv/dependency differs")
                 else:
                     role = "input" if job["id"].startswith("input_") else job.get("role")
@@ -457,12 +467,17 @@ def source_check(plan, plan_path, freeze, root=WORKSPACE, require_clean=True):
 
 def build_plan(*, plan_path, seed_rule="legacy", start_graph_rule="original-seed-cell",
                reach_geometry_rule=BINARY_REACH_GEOMETRY_RULE, reservation=None,
-               reservation_profile=None, engineering_resource=None, actuation_profile=None, **kwargs):
+               reservation_profile=None, engineering_resource=None, actuation_profile=None,
+               reset_workload_reader_profile=reset_workload.PROFILE, motion_authority_profile=None, **kwargs):
+    if motion_authority_profile is not None:
+        selected_motion_authority_profile(dict(safety_contract=CONTRACT,
+            motion_authority_profile=motion_authority_profile), required=True)
     if actuation_profile is not None:
         initial_encoder_profile({"actuation_profile":actuation_profile})
     validate_seed_rule(seed_rule)
     validate_start_graph_rule(start_graph_rule, seed_rule=seed_rule)
     validate_reach_geometry_rule(reach_geometry_rule, safety_contract=CONTRACT)
+    workload_profile,probe_version,_ = reset_workload.profile_spec(reset_workload_reader_profile)
     matrix_seconds, stage_seconds, native_seconds = "18000", CAPS, NATIVE_CAPS
     resource = None
     if reservation_profile is not None:
@@ -484,13 +499,19 @@ def build_plan(*, plan_path, seed_rule="legacy", start_graph_rule="original-seed
     plan = primitives.build_plan(**kwargs, information_implementation="admitted_index_three_keys_v1",
                                  nav2_parameter_profile="gentle_turn_v1")
     plan.update(schema=SCHEMA, safety_contract=CONTRACT,
-                reset_workload_reader_profile=reset_workload.PROFILE,
+                reset_workload_reader_profile=workload_profile,
                 custody_binding=str(Path(kwargs["custody_binding"]).resolve()),
                 readiness={"ready": True, "pending_bindings": []},
                 role_registry={"mandatory_roles": sum(map(len, EXPECTED_ROLES.values())),
                     "combined_runtime": "six-source drive, paired actuation, calibration and independent reach geometry",
                     "combined_peer_control": "complete peer cloud/scan, v2 causal phase and final command FIFO",
                     "old_profile_credit_reused": False})
+    if workload_profile == reset_workload.PROFILE_V2:
+        plan["preparation_probe_version"] = probe_version
+    if motion_authority_profile is not None:
+        plan["motion_authority_profile"] = motion_authority_profile
+        for stage in plan["stages"]:
+            stage["motion_authority_profile"] = motion_authority_profile
     if actuation_profile is not None:
         plan["actuation_profile"] = actuation_profile
         for stage in plan["stages"]:
@@ -523,7 +544,7 @@ def build_plan(*, plan_path, seed_rule="legacy", start_graph_rule="original-seed
         if reach_geometry_rule != BINARY_REACH_GEOMETRY_RULE:
             argv += ["--reach-geometry-rule", reach_geometry_rule]
         if name in ("interface", "reset"):
-            argv[argv.index("--preparation-probe-version") + 1] = "mr3-p2a-reach-outward-cancel-v1"
+            argv[argv.index("--preparation-probe-version") + 1] = probe_version
         stage["wall_seconds"] = stage_seconds[i]
         stage["watcher"]["argv"][2] = "mr3_learning.native_custody_reach"
         retained = [j for j in stage["audits"] if j.get("role") in ("input", "angular", "physics")
@@ -538,7 +559,8 @@ def build_plan(*, plan_path, seed_rule="legacy", start_graph_rule="original-seed
                 if job.get("role") in ("angular", "physics"):
                     report = per_episode if job["role"] == "physics" else None
                     job["argv"] = reset_workload.command_argv(
-                        job["role"], run, "{freeze}", job["output"], report)
+                        job["role"], run, "{freeze}", job["output"], report,
+                        **({"workload_profile":workload_profile} if workload_profile != reset_workload.PROFILE else {}))
         stage["audits"] = retained
 
         def add(job_id, module=None, *, role=None, depends=(), extra=(), **fields):
@@ -591,6 +613,8 @@ def build_plan(*, plan_path, seed_rule="legacy", start_graph_rule="original-seed
         for relative in SUPPORT_REACH_SOURCES:
             plan["source_bindings"][relative] = sha(Path(root) / relative)
     binding = json.loads(Path(kwargs["custody_binding"]).read_text())
+    require(selected_motion_authority_profile(binding) == motion_authority_profile,
+            "builder custody binding and explicit receiving authority profile differ")
     require(initial_encoder_profile(binding) == actuation_profile,
             "builder custody binding and explicit actuation profile differ")
     require(validate_reach_geometry_rule(binding.get("reach_geometry_rule", BINARY_REACH_GEOMETRY_RULE),
@@ -638,6 +662,8 @@ def _qualification_evidence(plan_path, freeze, outer_wait, root=WORKSPACE):
     plan = load_plan(plan_path, root)
     source_check(plan, plan_path, freeze, root, require_clean=False)
     bindings, gone = {}, []
+    authority = selected_motion_authority_profile(plan)
+    authority_episodes = []
 
     def read(path):
         path = Path(path)
@@ -699,6 +725,25 @@ def _qualification_evidence(plan_path, freeze, outer_wait, root=WORKSPACE):
                     "submitted required child failed")
             result = read(child["output"])
             require(sha(child["output"]) == child.get("output_sha256"), "scientific output changed")
+            if authority is not None and child.get("role") == "runtime":
+                require(result.get("passed") is True and type(result.get("episodes")) is list,
+                        "authority qualification has no complete independent runtime episode set")
+                for episode in result["episodes"]:
+                    proof = episode.get("result", {})
+                    replay = proof.get("motion_authority_replay", {})
+                    require(episode.get("passed") is True and proof.get("passed") is True
+                            and proof.get("motion_authority_profile") == authority
+                            and proof.get("independent_motion_authority_replay_passed") is True
+                            and replay.get("passed") is True and replay.get("profile") == authority
+                            and replay.get("raw_generation_known") is False
+                            and replay.get("original_global_stop_debts_and_fixed_radius_passed") is True
+                            and replay.get("adapter", {}).get("original_six_phase_protocol_replayed") is True
+                            and set(replay.get("robots", {})) == {"tb1","tb2","tb3"}
+                            and all(v.get("passed") is True for v in replay["robots"].values()),
+                            "missing substantive independent receiving-authority episode replay")
+                    authority_episodes.append(dict(directory=episode["directory"],epoch=episode["epoch"],
+                        profile=authority,passed=True,robots=["tb1","tb2","tb3"],
+                        runtime_result_sha256=child["output_sha256"]))
             if child.get("execution_kind") == "subprocess_waited":
                 receipt = read(child["receipt"])
                 spec = specs[child["id"]]
@@ -728,6 +773,8 @@ def _qualification_evidence(plan_path, freeze, outer_wait, root=WORKSPACE):
         require(len(native_episodes) == declared["expected_episodes"], "native episode inventory differs")
         for path in native_episodes:
             meta = read(path)
+            require(selected_motion_authority_profile(meta) == authority,
+                    "native episode receiving authority differs from plan")
             require(meta.get("freeze") == freeze and meta.get("safety_contract") == CONTRACT
                     and meta.get("execution_phase_protocol") == "mr3-controlled-execution-phase-v2",
                     "episode source/contract differs")
@@ -741,6 +788,8 @@ def _qualification_evidence(plan_path, freeze, outer_wait, root=WORKSPACE):
             require(initial_encoder_profile(meta) == initial_encoder_profile(plan),
                     "native episode actuation profile differs from qualification plan")
             supervisor_meta = read(path.parent / "supervisor_metadata.json")
+            require(selected_motion_authority_profile(supervisor_meta) == authority,
+                    "supervisor receiving authority differs from plan")
             require(initial_encoder_profile(supervisor_meta) == initial_encoder_profile(plan),
                     "native supervisor actuation profile differs from qualification plan")
             require(supervisor_meta.get("seed_rule", "legacy") == plan.get("seed_rule", "legacy"),
@@ -765,7 +814,7 @@ def _qualification_evidence(plan_path, freeze, outer_wait, root=WORKSPACE):
     for directory, names in episode_files.items():
         require(sorted(str(p.relative_to(directory)) for p in Path(directory).rglob("*") if p.is_file()) == names,
                 "closed episode archive inventory changed before verdict")
-    return {"freeze": freeze, "safety_contract": CONTRACT, "plan": str(plan_path.resolve()),
+    result = {"freeze": freeze, "safety_contract": CONTRACT, "plan": str(plan_path.resolve()),
         "plan_sha256": sha(plan_path), "outer_wait": str(Path(outer_wait).resolve()),
         "mandatory_roles": roles, "episodes": episodes, "bindings": bindings,
         **({"actuation_profile":plan["actuation_profile"]} if initial_encoder_profile(plan) is not None else {}),
@@ -774,6 +823,12 @@ def _qualification_evidence(plan_path, freeze, outer_wait, root=WORKSPACE):
         "complete_closed_episode_file_inventories": episode_files,
         "saved_process_identities_gone": gone, "old_profile_credit_reused": False,
         "passed": True, "engineering_only": True, "policy_reliability_credit": False}
+    if authority is not None:
+        result.update(motion_authority_profile=authority,motion_authority_replay=dict(
+            schema="mr3-independent-motion-authority-qualification-v1",profile=authority,freeze=freeze,
+            passed=True,raw_generation_known=False,episodes=authority_episodes))
+        require_qualified_motion_authority(result)
+    return result
 
 
 def qualify(plan_path, freeze, outer_wait, output, root=WORKSPACE):
