@@ -1,0 +1,24 @@
+{
+  "synthetic_import_only": true,
+  "actual_argv": [
+    "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+    "-B",
+    "-c",
+    "import sys\nfrom pathlib import Path\nsys.path.insert(0,'/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v62_process_profile')\nimport fixed_profile_launcher_v1 as launcher\nassert Path(sys.executable).resolve() == launcher.LEARNER_PYTHON.resolve()\noriginal_file = launcher.__file__\nfor fixture_path in (original_file, str(launcher.ROOT / \"synthetic_canonical_path_only.py\")):\n    launcher.__file__ = fixture_path\n    try:\n        launcher.main([\"--freeze\", \"a\"*40])\n    except ValueError as error:\n        assert any(value in str(error) for value in (\"only a new canonical frozen diagnostic launcher\", \"exact clean pushed diagnostic source freeze required\")), str(error)\n    else:\n        raise AssertionError(\"fixture reached execution\")\nlauncher.__file__ = original_file\nsys.path.insert(0,'/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl')\nfrom mr3_learning import benchmark\nassert callable(benchmark.main)\nprint(\"FIXED_BENCHMARK_IMPORT_ONLY_PASS\")\n"
+  ],
+  "saved_identity": {
+    "pid": 1801946,
+    "parent": 1801921,
+    "group": 1801754,
+    "session": 1801754,
+    "start_ticks": 452315518
+  },
+  "actual_waited": true,
+  "actual_returncode": 0,
+  "started_monotonic_ns": 4523155179981679,
+  "ended_monotonic_ns": 4523155721722245,
+  "current_identity": null,
+  "saved_identity_fresh_gone": true,
+  "stdout": "FIXED_BENCHMARK_IMPORT_ONLY_PASS\n",
+  "stderr": ""
+}

@@ -1,0 +1,30 @@
+{
+  "actual_argv": [
+    "/usr/bin/python3",
+    "-B",
+    "-c",
+    "import signal,time; signal.signal(signal.SIGINT,lambda *_:exit(0)); time.sleep(60)"
+  ],
+  "identity": {
+    "pid": 1802140,
+    "parent": 1801921,
+    "group": 1802140,
+    "session": 1802140,
+    "start_ticks": 452315892
+  },
+  "actual_waited": true,
+  "actual_returncode": 0,
+  "started_monotonic_ns": 4523158928801468,
+  "ended_monotonic_ns": 4523159447426648,
+  "wait_errors": [
+    "Reader deadline triggered; a later rc0 cannot erase this failure"
+  ],
+  "signals": [
+    {
+      "signal": 2,
+      "sent": true,
+      "monotonic_ns": 4523159431935173
+    }
+  ],
+  "deadline_triggered": true
+}

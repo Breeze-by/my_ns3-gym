@@ -1,0 +1,49 @@
+{
+  "schema": "mr3-v62-parent-bootstrap-source-review-v1",
+  "review_method": "read-only source review; no execution, native, World, raw streams or new CPU tests",
+  "sources": [
+    {
+      "path": "/tmp/p2a62_run_profile_draft_v1.py",
+      "bytes": 11695,
+      "sha256": "fb5e2952b96454ea744391f9397a8a1e667b8bf4453fa7d8e8298f2cefe6fc34"
+    },
+    {
+      "path": "/tmp/p2a62_bootstrap_draft_v1.py",
+      "bytes": 3658,
+      "sha256": "8bba5c1cbbf82dd839af13dc7314a014c6c23a911087710438b34d2fc8ba92ea"
+    }
+  ],
+  "remaining_necessary_source_blockers": [],
+  "closed_issues": [
+    {
+      "issue": "Early helper/bootstrap/scope failures and exceptional source-after paths could skip measured failure settlement.",
+      "resolution": "Whole driver flow settles in finally, independently pins the actual previous ledger and attempts source-after. Invalid/untrusted bootstrap starts remain driver lower bounds, never invented complete costs/cumulative totals. Bootstrap records real failure interval after its exclusive entry."
+    },
+    {
+      "issue": "A reader deadline could be erased by a later real rc0.",
+      "resolution": "Deadline appends an error and cannot pass even with rc0; saved direct-reader pidfd escalation is separate from native cleanup. All observation/escalation/nested-wait exceptions return to the actual wait loop."
+    },
+    {
+      "issue": "An invalid candidate start was assigned before validation and could break failure fee settlement.",
+      "resolution": "candidate_start is type/range checked before assigning the trusted parent start; invalid values keep entered/lower-bound semantics."
+    }
+  ],
+  "confirmed_source_scope": {
+    "same_PID_start_exec_binding": true,
+    "ancestry_observed_before_exec": true,
+    "ancestors_explicitly_nonowned": true,
+    "all_submitted_direct_children_really_waited": true,
+    "native_benchmark_interpreter": "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+    "ROS_profile_roles_and_metadata_reader_interpreter": "/usr/bin/python3",
+    "benchmark_original_guards": "reset420/step90, close120 within cooperative native1500; observed allocation excess fails",
+    "complete_parent_gate": "1800 actual full fee, not hard realtime; child times are not added again",
+    "reader_budget": "at most min(240, remaining-60), leaving shared room for escalation and source-after; all overrun is charged and fails the complete gate",
+    "capacity_qualified": false,
+    "scientific_qualification": false,
+    "automatic_policy_entry": false
+  },
+  "scope_producer_boundary": "Scope/binding generation and final canonical CPU/source reconciliation are separate preparation work. This review does not assert an ungenerated scope, native execution or capacity PASS.",
+  "historical_build_boundary": "Current runtime scope may bind16 ROOT build inputs and10 unchanged actual native ELFs plus2 resolved Python ELFs; the4 nonROOT historical build tools are not run or reread as runtime admission, and no342 maps are required.",
+  "new_experiments_or_tests_run_by_reviewer": 0,
+  "P2A_complete": false
+}
