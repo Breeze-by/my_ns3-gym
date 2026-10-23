@@ -8886,3 +8886,23 @@ rtk proxy /usr/bin/python3 -B /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3
 ### 2026-10-23 MR3 P2A V56：同ELF/quick50的一次GDB启动栈预声明
 
 新[V56](report/20261023_mr3_p2a_v56_startup_gdb.md)只对未改A55 ELF和原quick50 World取一次SIGSEGV栈；GDB12.1 batch/noinit，auto-load/debuginfod off，timeout120，driver150/180仅owned pidfd收尾及真实wait，完整parent新预约300墙秒，不承诺硬实时。承接U90370.2852481186018/C120000/R29629.7147518813982，预约后R29329.7147518813982；政策账户不动。旧A55函数仅核371字节链，不调用旧run_case或重开旧预算。spec/CLI/tool/source CPU由root最后封存，正式尚未新freeze/执行，不预填栈或PASS。只在实际栈证据后准备原因对应的新版本，非生产solver比较或旧V55改判，科学门保持，P2A未完成。
+
+
+### 2026-10-23 V57 有界物理比较准备（未运行World）
+
+承接V56实际末账U90382.5535899546018/C120000、R29617.4464100453982，新预约1800连续parent墙秒。缺HOME空指针已用V56真实栈和本机ELF定位，新driver创建独占HOME。native CPP仅版本/quick150基线和150迭代readback变化；原控制/固定anchor/R与科学门保持。真实CPU编译50.28348627秒rc0、driver6项0.299141532秒rc0，source稳定，CPU工程收费0；具体argv及freeze前字节见[报告](report/20261023_mr3_p2a_v57_passive_plant.md)所链actual_wait。正式唯一入口为报告中绝对driver加新exact40；尚未执行，pilot/final新增0，P2A未完成。
+
+
+### 2026-10-23 MR3 P2A V56：实际取得启动SIGSEGV栈并闭合
+
+真实执行freeze`9d22290108d3edc8861216eb0505220356de6d32`，root tool8209实际reap rc0；准确绝对CLI（已关闭历史，不再运行）：
+
+```bash
+rtk proxy env PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 CUDA_VISIBLE_DEVICES= /usr/bin/python3 -B /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v56_startup_gdb/run_startup_gdb_v1.py --freeze 9d22290108d3edc8861216eb0505220356de6d32
+```
+
+诊断PASS仅指取得SIGSEGV backtrace，inferior自然退出=false，没有有效物理或solver结果。主线程strlen→DiagnosticManager ctor→World::Init→loadWorld；本机ELF反汇编与实际frame1返回地址共同定位缺HOME后无空检查strlen路径，独立静态proof实际CPU wall.113990578秒/0工程，2保存身份freshgone。loadWorld本已有Init；ALSA/OpenAL提示不作为此次崩溃原因。
+
+完整parent12.268341836墙秒含post-source与owned cleanup，nested debugger4.523455087不另加；累计90382.5535899546018/120000、余29617.4464100453982，代理自主资源块口径及numeric_user_approval_claimed=false保持。376原源before/after稳定，关闭仅新核34非库源/30current-Git及old1fa10子集；342库不重读。6主保存身份freshgone；12小原件586647B→516957B/0link无损封存，原pending保留。关闭CPU v1 metadata别名比较拒绝rc1/.511946006墙秒原件保留，v2同对象resolved比较后真实PASS/26.171658586墙秒，16源稳定、两轮自身4身份另freshgone，工程新增0。
+
+见[V56实际报告](report/20261023_mr3_p2a_v56_startup_gdb.md)、[库存](report/assets/20261023_mr3_p2a_v56_startup_gdb/closed_inventory_v1.json)、[末账](report/assets/20261023_mr3_p2a_v56_startup_gdb/closure_ledger_v1.json)。旧V55 FAIL与费用保持；下一按[V57新声明](report/20261023_mr3_p2a_v57_passive_plant.md)独占HOME后quick150/direct-world有界比较，非旧活动重试。原12EP30角色/95%/安全及pilot/final不动，无学习，P2A未完成。

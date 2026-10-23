@@ -1,0 +1,106 @@
+{
+  "schema": "mr3-v56-closure-cpu-postreap-v1",
+  "passed": true,
+  "scope": "cpu",
+  "engineering_added_seconds": "0",
+  "attempts": [
+    {
+      "attempt": 1,
+      "actual_tool_reaped_observed": true,
+      "actual_returncode": 1,
+      "actual_wall_seconds": "0.511946006",
+      "actual_wait": {
+        "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v56_startup_gdb/checks/closed_metadata_cpu_v1/actual_wait.json",
+        "bytes": 12792,
+        "sha256": "c2f0f32fce72f74ab8c3e7039ea63b9dd6a33654ccfa4b835ae882b7425040b4"
+      },
+      "saved_identity_observations": [
+        {
+          "saved_identity": {
+            "pid": 573429,
+            "parent": 573426,
+            "group": 573424,
+            "session": 573424,
+            "start_ticks": 448272508,
+            "state": "R"
+          },
+          "observed_monotonic_ns": 4482843174437364,
+          "same_identity_present": false,
+          "observed_state": null
+        },
+        {
+          "saved_identity": {
+            "pid": 573436,
+            "parent": 573429,
+            "group": 573424,
+            "session": 573424,
+            "start_ticks": 448272524,
+            "state": "R"
+          },
+          "observed_monotonic_ns": 4482843174496368,
+          "same_identity_present": false,
+          "observed_state": null
+        }
+      ]
+    },
+    {
+      "attempt": 2,
+      "actual_tool_reaped_observed": true,
+      "actual_returncode": 0,
+      "actual_wall_seconds": "26.171658586",
+      "actual_wait": {
+        "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v56_startup_gdb/checks/closed_metadata_cpu_v2/actual_wait.json",
+        "bytes": 12792,
+        "sha256": "634f94a13ab66cd3f6ca659c6ca7b7fdb0b5012a6c3ae9ceca627bbd7e013b68"
+      },
+      "saved_identity_observations": [
+        {
+          "saved_identity": {
+            "pid": 575064,
+            "parent": 575061,
+            "group": 575059,
+            "session": 575059,
+            "start_ticks": 448277100,
+            "state": "R"
+          },
+          "observed_monotonic_ns": 4482843177523285,
+          "same_identity_present": false,
+          "observed_state": null
+        },
+        {
+          "saved_identity": {
+            "pid": 575071,
+            "parent": 575064,
+            "group": 575059,
+            "session": 575059,
+            "start_ticks": 448277117,
+            "state": "R"
+          },
+          "observed_monotonic_ns": 4482843177584524,
+          "same_identity_present": false,
+          "observed_state": null
+        }
+      ]
+    }
+  ],
+  "saved_cpu_identity_count": 4,
+  "all_saved_cpu_identities_fresh_gone": true,
+  "failed_v1_retained": true,
+  "failure_reason": "v1 compared ldd alias spelling to resolved actual source paths; v2 resolves metadata paths to the same object without rereading library bytes.",
+  "successful_closure_review": {
+    "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v56_startup_gdb/checks/closed_metadata_review_v1.json",
+    "bytes": 6347,
+    "sha256": "020335324618a67b213d308402eee2b3f9f3cb1c1cc9dfe6add85d0a830d11e2"
+  },
+  "closed_inventory": {
+    "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v56_startup_gdb/closed_inventory_v1.json",
+    "bytes": 14723,
+    "sha256": "ccb339ee97c5fdbe60149977cb9df2f8a24ce102b7a33d0699ecca6938c84336"
+  },
+  "closure_ledger": {
+    "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v56_startup_gdb/closure_ledger_v1.json",
+    "bytes": 3536,
+    "sha256": "c2c633acb370b1d18578b452f7fb64497c4519255d8993c41f9258d83aae8012"
+  },
+  "observed_after_real_tool_reap_unix_ns": 1792737448165066069
+}

@@ -1,0 +1,92 @@
+{
+  "schema": "mr3-v56-home-constructor-static-proof-v1",
+  "status": "CONFIRMED_NULL_HOME_DEREFERENCE_PATH",
+  "native_runs": 0,
+  "source_mutations": false,
+  "inputs": [
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/libgazebo_util.so.11.10.2",
+      "resolved": "/usr/lib/x86_64-linux-gnu/libgazebo_util.so.11.10.2",
+      "bytes": 654680,
+      "sha256": "08ab9e6f790198e042ab9001ef3ebaa5f9f1621d07881c31322310a954251e29",
+      "stable": true
+    },
+    {
+      "path": "/tmp/mr3_p2a_v56_startup_gdb_v1/actual_wait/console.log",
+      "resolved": "/tmp/mr3_p2a_v56_startup_gdb_v1/actual_wait/console.log",
+      "bytes": 79439,
+      "sha256": "c7687743f1f2f4523dcf318ff903c82806a261d25ec6b8a1cf3b1aa3f1ffc7b8",
+      "stable": true
+    }
+  ],
+  "facts": {
+    "constructor_symbol": "_ZN6gazebo4util17DiagnosticManagerC1Ev",
+    "constructor_vma": "0x361d0",
+    "environment_key_vma": "0x7b1d2",
+    "environment_key_hex": "48 4f 4d 45 00",
+    "environment_key": "HOME",
+    "call_getEnv": "0x362ab",
+    "move_return_to_strlen_arg": "0x362b4: mov %rax,%rdi",
+    "call_strlen_without_null_guard": "0x362ba",
+    "return_address": "0x362bf",
+    "actual_gdb_frame1": "0x00007ffff74ad2bf",
+    "gdb_frame0": "__strlen_evex",
+    "gdb_loadworld_path": "DiagnosticManager ctor -> World::Init -> init_world -> gazebo::loadWorld -> main",
+    "closed_console_warning": "No HOME defined in the environment. Will not log."
+  },
+  "official_source": {
+    "url": "https://raw.githubusercontent.com/gazebosim/gazebo-classic/gazebo11/gazebo/util/Diagnostics.cc",
+    "getenv_line": 33,
+    "path_assign_before_null_test_line": 34,
+    "null_check_line": 36,
+    "scope": "Upstream source matches verified local machine-code path; no claim that a source download alone identifies installed ELF."
+  },
+  "interpretation": "Missing HOME reaches local ctor getEnv(HOME) -> unguarded strlen before fallback. Native crashed during World initialization, before runWorld and custom control/anchor callbacks. This is diagnostic launch environment failure, not evidence about solver or drift.",
+  "minimal_future_fix": "New declared attempt: driver cleanenv includes a real absolute owned HOME directory, mkdir exclusive before submit, record HOME policy, keep rest plant/control constants; optional executable preflight rejects absent/empty HOME rather than relying on buggy library fallback. No change to installed Gazebo or original V55/V56 evidence.",
+  "limitations": [
+    "This static proof does not run a fixed native attempt.",
+    "No physical diagnostic/qualification credit is added.",
+    "Future actual startup and full measurement must be independently recorded under new scope/freeze."
+  ],
+  "actual_argv": [
+    "/usr/bin/python3",
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v56_startup_gdb/checks/home_null_rootcause_v1/inspect_binary_v1.py"
+  ],
+  "identity": {
+    "pid": 572252,
+    "parent": 572237,
+    "group": 572235,
+    "session": 572235,
+    "start_ticks": 448269776
+  },
+  "passed": true,
+  "static_subprocess_receipts": [
+    {
+      "actual_argv": [
+        "/usr/bin/objdump",
+        "-d",
+        "-C",
+        "--start-address=0x361d0",
+        "--stop-address=0x36350",
+        "/usr/lib/x86_64-linux-gnu/libgazebo_util.so.11.10.2"
+      ],
+      "pid": 572260,
+      "actual_waited": true,
+      "returncode": 0,
+      "stderr": ""
+    },
+    {
+      "actual_argv": [
+        "/usr/bin/objdump",
+        "-s",
+        "--start-address=0x7b1c0",
+        "--stop-address=0x7b210",
+        "/usr/lib/x86_64-linux-gnu/libgazebo_util.so.11.10.2"
+      ],
+      "pid": 572261,
+      "actual_waited": true,
+      "returncode": 0,
+      "stderr": ""
+    }
+  ]
+}

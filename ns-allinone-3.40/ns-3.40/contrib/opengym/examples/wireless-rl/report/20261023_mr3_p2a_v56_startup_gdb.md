@@ -1,5 +1,7 @@
 # MR3 P2A V56：一次有界GDB启动SIGSEGV栈诊断
 
+**当前已CLOSED，诊断描述PASS：** 新freeze `9d22290108d3edc8861216eb0505220356de6d32`、tool8209真实reap rc0。成功仅指获得SIGSEGV栈；inferior未自然退出、没有有效物理比较或原生资格。工程实费12.268341836墙秒，累计90382.5535899546018/120000、余29617.4464100453982。末尾实际关闭节及规范末账为当前状态；下方原预声明/待执行/pending字段保留为准备快照，不能用来覆盖已关闭事实。
+
 2026-10-23预声明：root正在封存spec、准确CLI、工具/源码字节和必要CPU证据；尚未新sourcefreeze或正式执行。本次只确定已失败native启动的实际栈，不更换solver、修物理模型或重跑V55双case。P2A未完成，用户持续自主委托保持。
 
 ## 入场与配置解释更正
@@ -34,3 +36,20 @@ rtk proxy /usr/bin/python3 -B report/assets/20261023_mr3_p2a_v56_startup_gdb/run
 ## 封存前CPU证据
 
 GDB flags-only CPU实际rc0，墙秒0.187747703，未包含`run`、inferior或World；来源前后相同，2保存身份freshgone。见[实际wait](assets/20261023_mr3_p2a_v56_startup_gdb/checks/gdb_flags_cpu_v1/actual_wait.json)和[freshgone](assets/20261023_mr3_p2a_v56_startup_gdb/checks/gdb_flags_cpu_v1/freshgone_v1.json)。当时driver快照随receipt保留；后续仅强化实际wait成功、来源对应和命令rc检查，最终AST与help另作静态核对，不复用CPU运行成native资格。准确CLI由spec和新freeze绑定。
+
+
+## 实际执行与关闭（2026-10-23）
+
+新exact freeze为`9d22290108d3edc8861216eb0505220356de6d32`，root tool8209已真实reap rc0；driver/wrapper/debugger命令均实际返回0，原`inferior_SIGSEGV_observed=true`、`backtrace_observed=true`与`inferior_natural_exit_claimed=false`一并保留。取得栈是本次唯一诊断PASS，不是inferior正常结束、World初始化成功或有效被动物理结果；不重裁V55两臂FAIL，也不提供native/训练信用。
+
+主线程实际路径为`__strlen_evex → gazebo::util::DiagnosticManager构造 → World::Init → init_world → gazebo::loadWorld → main`。[本机字节与真实栈定位证明](assets/20261023_mr3_p2a_v56_startup_gdb/checks/home_null_rootcause_v1/evidence/proof_v1.json)显示HOME字符串、getEnv返回值直接送入无空检查的strlen，返回地址与本次GDB frame1相符；这是缺HOME的启动环境故障，发生于runWorld/本次控制anchor回调之前，不能解释solver/drift性能。该独立静态CPU实际wall0.113990578秒、工程0，其2身份另freshgone；没有运行修复后World。
+
+实际从wrapper Popen至真实wait并完成post-source核对/owned cleanup的完整parent为 **12.268341836墙秒**，原nested debugger wait4.523455087秒包含在内不相加。承接90370.2852481186018，累计 **90382.5535899546018 /120000**，余 **29617.4464100453982**。原300预约未超，不把未用预约计为消费。120000仍为代理在持续授权下选定的有界工程块，`numeric_user_approval_claimed=false`；pilot1870决策/2905.9547395464029墙秒与final-only open401/402/403共900决策/9000墙秒不变，本次新增全部0。
+
+[关闭metadata核对](assets/20261023_mr3_p2a_v56_startup_gdb/checks/closed_metadata_review_v1.json)保留root actual-tool wait、launch、活体祖先与entry/summary/actual wait同对象绑定，6个主保存PID/start均freshgone（同start的Z算present、不可读拒绝）。timeout在Popen初次身份保存后改变自身group：保留两次实际group观测，只对原PID/start/parent/session绑定相同对象，不伪造不变group。376条原source before/after相等，关闭新核34个非库源、30个repo current-Git与旧1fa的10源子集；342库只对原实际wait/封存manifest metadata及resolved别名，不重新读取342对象或复制系统库。
+
+[不透明原件库存](assets/20261023_mr3_p2a_v56_startup_gdb/closed_inventory_v1.json)有 **12文件、原586647B、规范516957B、0link**，JSON逐字保留、文本仅无损gzip，含原prefix8文件及rootwait/launch/live/helper4文件。无V52 raw重读、无CSV/轨迹语义重放、无新native/GDB执行；原driver pending字段不回写。原件位于[closed_execution](assets/20261023_mr3_p2a_v56_startup_gdb/closed_execution)，每个gzip的decoded SHA/bytes在库存中等于原字节，可据此无损恢复。
+
+关闭CPU v1实际rc1/0.511946006墙秒：ldd别名拼写与实际resolved source路径比较拒绝，未开始归档，原失败脚本/回执保留；v2仅按同对象resolved路径比较metadata后真实rc0/**26.171658586墙秒**，16绑定源前后稳定、工程新增0。[两轮CPU postreap记录](assets/20261023_mr3_p2a_v56_startup_gdb/checks/closure_cpu_postreap_v1.json)分别核4个自身保存身份freshgone，无需再运行旧consumer。[规范末账](assets/20261023_mr3_p2a_v56_startup_gdb/closure_ledger_v1.json)可由下一活动直接承接。
+
+下一步为[root准备的V57](20261023_mr3_p2a_v57_passive_plant.md)：独占有效HOME、实际生产配置基线quick150与direct-world的新有界两臂；不是旧V55重试/改判。此处不预填V57结果、solver优劣或安全/95%资格；12EP30角色、完整科学门及旧FAIL保持，P2A未完成。

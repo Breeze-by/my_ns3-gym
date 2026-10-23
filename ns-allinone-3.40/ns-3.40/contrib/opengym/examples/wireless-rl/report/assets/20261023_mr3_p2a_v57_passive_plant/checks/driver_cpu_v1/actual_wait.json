@@ -1,0 +1,194 @@
+{
+  "schema": "mr3-reach-outer-actual-wait-v1",
+  "scope": "cpu",
+  "safety_contract": "mr3-reach-v1",
+  "actual_argv": [
+    "/usr/bin/python3",
+    "-B",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "report/assets/20261023_mr3_p2a_v57_passive_plant",
+    "-p",
+    "test_run_passive_pair_v1.py",
+    "-v"
+  ],
+  "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+  "coordinator_identity": {
+    "pid": 567739,
+    "parent": 567737,
+    "group": 567737,
+    "session": 567737,
+    "start_ticks": 448258290,
+    "state": "R"
+  },
+  "child_identity": {
+    "pid": 567747,
+    "parent": 567739,
+    "group": 567737,
+    "session": 567737,
+    "start_ticks": 448258306,
+    "state": "R"
+  },
+  "actual_returncode": 0,
+  "actual_waited": true,
+  "errors": [],
+  "started_monotonic_ns": 4482583064772330,
+  "ended_monotonic_ns": 4482583363913862,
+  "actual_child_wait_seconds": "0.299141532",
+  "source_before": [
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v57_passive_plant/run_passive_pair_v1.py",
+      "sha256": "07162f2225ed910ef553d76a0eedbffebcf52e71e2f47e17d7550a9af12b6a50",
+      "bytes": 30405,
+      "stat": [
+        2051,
+        79305781,
+        30405,
+        1792737106177578985,
+        1792737106177578985
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v57_passive_plant/make_scope_v1.py",
+      "sha256": "a21edb4e5c4cdd81e1628a806ba3b4df79d2843654a1cd0c2491db05a329dafe",
+      "bytes": 2617,
+      "stat": [
+        2051,
+        79305786,
+        2617,
+        1792737187510514456,
+        1792737187510514456
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v57_passive_plant/test_run_passive_pair_v1.py",
+      "sha256": "72ae18d7f90bed69f59f9a6d73f845ee2fa9d73ba20154113070c05175fb2adf",
+      "bytes": 9000,
+      "stat": [
+        2051,
+        79305787,
+        9000,
+        1792737187510514456,
+        1792737187510514456
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_execution.py",
+      "sha256": "fa7da30bf18a71a7a28698f733590074bdf164c8857028640aedba5d21fd8be4",
+      "bytes": 3222,
+      "stat": [
+        2051,
+        73564000,
+        3222,
+        1792417215752109946,
+        1792417215752109946
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/preparation.py",
+      "sha256": "850ab8947f711033f3f2fd17ef57d32098c02d569c1bea0f5cf58aaff8acd767",
+      "bytes": 48624,
+      "stat": [
+        2051,
+        73555357,
+        48624,
+        1792356507880208492,
+        1792356507880208492
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d_process.py",
+      "sha256": "a975de72416cb8e49a706412957fc15c8dab678b7ac39c7912a3d576542d6331",
+      "bytes": 1384,
+      "stat": [
+        2051,
+        73564073,
+        1384,
+        1792495122458734929,
+        1792495122458734929
+      ]
+    }
+  ],
+  "source_after": [
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v57_passive_plant/run_passive_pair_v1.py",
+      "sha256": "07162f2225ed910ef553d76a0eedbffebcf52e71e2f47e17d7550a9af12b6a50",
+      "bytes": 30405,
+      "stat": [
+        2051,
+        79305781,
+        30405,
+        1792737106177578985,
+        1792737106177578985
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v57_passive_plant/make_scope_v1.py",
+      "sha256": "a21edb4e5c4cdd81e1628a806ba3b4df79d2843654a1cd0c2491db05a329dafe",
+      "bytes": 2617,
+      "stat": [
+        2051,
+        79305786,
+        2617,
+        1792737187510514456,
+        1792737187510514456
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v57_passive_plant/test_run_passive_pair_v1.py",
+      "sha256": "72ae18d7f90bed69f59f9a6d73f845ee2fa9d73ba20154113070c05175fb2adf",
+      "bytes": 9000,
+      "stat": [
+        2051,
+        79305787,
+        9000,
+        1792737187510514456,
+        1792737187510514456
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_execution.py",
+      "sha256": "fa7da30bf18a71a7a28698f733590074bdf164c8857028640aedba5d21fd8be4",
+      "bytes": 3222,
+      "stat": [
+        2051,
+        73564000,
+        3222,
+        1792417215752109946,
+        1792417215752109946
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/preparation.py",
+      "sha256": "850ab8947f711033f3f2fd17ef57d32098c02d569c1bea0f5cf58aaff8acd767",
+      "bytes": 48624,
+      "stat": [
+        2051,
+        73555357,
+        48624,
+        1792356507880208492,
+        1792356507880208492
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/proxy2d_process.py",
+      "sha256": "a975de72416cb8e49a706412957fc15c8dab678b7ac39c7912a3d576542d6331",
+      "bytes": 1384,
+      "stat": [
+        2051,
+        73564073,
+        1384,
+        1792495122458734929,
+        1792495122458734929
+      ]
+    }
+  ],
+  "source_unchanged": true,
+  "passed": true,
+  "console": {
+    "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v57_passive_plant/checks/driver_cpu_v1/console.log",
+    "sha256": "7c5407e3e41752f0d26e2f908a644b164fede148fe93ee5f0d050cfaed9c06b0"
+  }
+}
