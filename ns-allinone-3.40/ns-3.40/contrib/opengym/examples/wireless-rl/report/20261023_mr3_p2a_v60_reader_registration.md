@@ -1,6 +1,6 @@
 # MR3 P2A V60：显式驱动 profile 的公共审计登记
 
-当前生产Python审计接线与最终CPU已全部完成，正在提交source冻结和完整资格计划；尚无V60 World、完整资格或PPO。下方准备过程文字保留为当时快照。用户持续授权自主推进到真正P2A完成。V59原FAIL与完整原件保持，P2A未完成。
+当前生产Python审计接线与最终CPU已全部完成，source冻结与完整计划已准备，正在封存最终执行freeze；尚无V60 World、完整资格或PPO。下方准备过程文字保留为当时快照。用户持续授权自主推进到真正P2A完成。V59原FAIL与完整原件保持，P2A未完成。
 
 [V59](20261023_mr3_p2a_v59_encoder_profile.md)在实际freeze783aec553下1EP原生32/32返回，input/angular/physics/runtime/information/cadence六角色通过；full的SDF全字节逆投影拒绝新增profile tag，fifo_001旧kind白名单拒绝两类新增encoder事件，full controlled-input完整motion错误由该peer拒绝传递。必要角色为6PASS/1FAIL/23SKIP，未学习；关闭提交f466bcf8a205a348ec7c7e7dbfa0125bd4304c56已真实推送。
 
@@ -29,3 +29,9 @@ canonical targeted第一轮实际159项/157PASS/2FAIL，57.238931319秒，587源
 ROS fresh202项/47.84476339墙秒、learner fresh437项/135.27959867墙秒，两个原工具54898/39252真实reap0，0失败/错误/跳过。每组305源码＋spec=306输入before/after/current相同，284Git blob＋22 snapshot逐项恢复核过，6份实际保存runner/coordinator/child身份全部freshgone。见[统一CPU证明](assets/20261023_mr3_p2a_v60_reader_registration/checks/fresh_complete_v1.json)。历史V59软件信用仅限原covered_paths与当前字节相同的交集，不把封源当执行信用。
 
 当前canonical targeted159、统一202/437与编排13均已闭合，source全停写；各组重叠不相加为研究样本。实际A59 build20输入仍逐字相同，driver ELF仍df5d9703f23fd206b967eb9408a4504ed3735b9f71a3c31194b60443464139c7；无V60新编译/World/PPO研究信用。下一source commit/push后真实prepare/plan_check，再最终freeze/binding/source/preflight，完整新资格尚未发生。
+
+## 实际计划准备通过
+
+source冻结a03b9c53060d491e90f08c40ca58c5bb67256d3d已commit/push，tool84847真实reap0后才依赖执行。prepare实际tool24146真实reap0，生成[plan](assets/20261023_mr3_p2a_v60_reader_registration/plan_v1.json) SHA3d4640313b2afd726b2236fb1b139c3bec7ac4b231b5263b097d5297571ad2b7及[binding](assets/20261023_mr3_p2a_v60_reader_registration/native_custody_binding_v1.json) SHA4ebf5075f5b3a88d9a3c1a5eafd3c3d77a66eda302d5ca41930d5b50fb4b4bf1，1029来源/10ELF。实际plan_check PASS完整12EP/30roles，ROS/learner CUDA就绪通过；独立只读核12个FIFO leaf同plan、三policy/固定checkpoint以及真实A59 build引用一致。
+
+下一最终执行freeze E提交推送后，HEAD=origin/main=E且source树干净，严格binding/source实际检查通过才一次执行execute_chain_v1 --freeze E。链自有preflight输出尚未占用，运行CLI/白名单env/实际root活PID+start/ancestry先存/tmp，运行中不写repo。准备无新研究费用，P2A仍未完成。
