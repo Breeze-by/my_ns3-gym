@@ -249,7 +249,7 @@ def reconstruct(transitions,epoch):
 def replay_episode(transitions,diagnostics,*,epoch):
     expected,refs,goals=reconstruct(transitions,epoch)
     require(type(diagnostics) is dict and 'reach_v3_stimulus' in diagnostics
-        and not any(k in diagnostics for k in ('reach_v2_stimulus','v4_stimulus')),'explicit v3 diagnostics required')
+        and not any(k in diagnostics for k in ('reach_v2_stimulus','v4_stimulus','reach_masked_cancel_v1_stimulus')),'explicit v3 diagnostics required')
     for rid in ROUNDS:
         for name,saved in expected['rounds'][rid].items():
             required={'goal_command_id','accepted_at_ns','wait_command_id','cancel_terminal_observed_ns'}

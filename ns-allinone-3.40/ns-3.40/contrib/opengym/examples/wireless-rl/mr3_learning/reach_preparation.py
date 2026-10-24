@@ -506,7 +506,7 @@ def build_plan(*, plan_path, seed_rule="legacy", start_graph_rule="original-seed
                     "combined_runtime": "six-source drive, paired actuation, calibration and independent reach geometry",
                     "combined_peer_control": "complete peer cloud/scan, v2 causal phase and final command FIFO",
                     "old_profile_credit_reused": False})
-    if workload_profile in (reset_workload.PROFILE_V2,reset_workload.PROFILE_V3):
+    if workload_profile in (reset_workload.PROFILE_V2,reset_workload.PROFILE_V3,reset_workload.PROFILE_MASKED):
         plan["preparation_probe_version"] = probe_version
     if motion_authority_profile is not None:
         plan["motion_authority_profile"] = motion_authority_profile
@@ -657,6 +657,20 @@ def execute_plan(plan_path, freeze, workspace=WORKSPACE):
     return module.execute_plan(plan_path, freeze, workspace)
 
 
+def _probe_qualification_receipt(profile,probe,freeze,episodes,expected):
+    """Final conjunction after actual full child replay and all12/30-role checks."""
+    stimulus=reset_workload.independent_replayer(profile)
+    require(stimulus is not None and reset_workload.profile_spec(profile)[1]==probe,
+            "qualification probe profile differs")
+    require(len(episodes)==9 and len(expected)==9
+            and {(row["directory"],row["epoch"]) for row in episodes}==expected,
+            "qualification lacks all actual interface/reset probe replays")
+    return dict(schema=("mr3-independent-probe-v3-qualification-v1" if profile==reset_workload.PROFILE_V3
+                       else stimulus.QUALIFICATION_SCHEMA),
+        profile=profile,probe_version=probe,passed=True,freeze=freeze,
+        episodes=episodes,producer_imported_as_oracle=False)
+
+
 def _qualification_evidence(plan_path, freeze, outer_wait, root=WORKSPACE):
     plan_path, root = Path(plan_path), Path(root)
     plan = load_plan(plan_path, root)
@@ -666,6 +680,7 @@ def _qualification_evidence(plan_path, freeze, outer_wait, root=WORKSPACE):
     authority_episodes = []
     workload_profile,probe_version,_ = reset_workload.profile_from_plan(plan)
     probe_v3_episodes,probe_v3_expected = [],set()
+    stimulus=reset_workload.independent_replayer(workload_profile)
 
     def read(path):
         path = Path(path)
@@ -727,12 +742,11 @@ def _qualification_evidence(plan_path, freeze, outer_wait, root=WORKSPACE):
                     "submitted required child failed")
             result = read(child["output"])
             require(sha(child["output"]) == child.get("output_sha256"), "scientific output changed")
-            if (workload_profile == reset_workload.PROFILE_V3 and child.get("role") == "full"
+            if (stimulus is not None and child.get("role") == "full"
                     and declared["stage"] in ("interface","reset")):
-                from . import reach_probe_v3_replay as probe_v3
-                proof = result.get("probe_v3_stimulus_replay")
-                ids = probe_v3.require_stage_proof(proof,freeze=freeze,episodes=declared["expected_episodes"],
-                    helper_sha256=plan["source_bindings"][probe_v3.SOURCE])
+                proof = result.get(reset_workload.stimulus_replay_key(workload_profile))
+                ids = stimulus.require_stage_proof(proof,freeze=freeze,episodes=declared["expected_episodes"],
+                    helper_sha256=plan["source_bindings"][stimulus.SOURCE])
                 require(all(Path(directory).is_relative_to(Path(declared["run_directory"])) for directory,_ in ids),
                         "independent v3 replay belongs to another stage")
                 probe_v3_episodes.extend(dict(row,full_result_sha256=child["output_sha256"])
@@ -811,7 +825,7 @@ def _qualification_evidence(plan_path, freeze, outer_wait, root=WORKSPACE):
             require(supervisor_meta.get("reach_geometry_rule", BINARY_REACH_GEOMETRY_RULE)
                     == plan.get("reach_geometry_rule", BINARY_REACH_GEOMETRY_RULE),
                     "native supervisor reach geometry rule differs from qualification plan")
-            if workload_profile == reset_workload.PROFILE_V3 and declared["stage"] in ("interface","reset"):
+            if stimulus is not None and declared["stage"] in ("interface","reset"):
                 require(meta.get("preparation_probe_version") == probe_version
                         and supervisor_meta.get("preparation_probe_version") == probe_version,
                         "qualified worker/supervisor v3 pair differs")
@@ -840,14 +854,10 @@ def _qualification_evidence(plan_path, freeze, outer_wait, root=WORKSPACE):
         "complete_closed_episode_file_inventories": episode_files,
         "saved_process_identities_gone": gone, "old_profile_credit_reused": False,
         "passed": True, "engineering_only": True, "policy_reliability_credit": False}
-    if workload_profile == reset_workload.PROFILE_V3:
-        require(len(probe_v3_episodes)==9 and len(probe_v3_expected)==9
-                and {(row["directory"],row["epoch"]) for row in probe_v3_episodes} == probe_v3_expected,
-                "qualification lacks all actual interface/reset v3 probe replays")
-        result.update(reset_workload_reader_profile=workload_profile,preparation_probe_version=probe_version,
-            probe_v3_stimulus_replay=dict(schema="mr3-independent-probe-v3-qualification-v1",
-                profile=workload_profile,probe_version=probe_version,passed=True,freeze=freeze,
-                episodes=probe_v3_episodes,producer_imported_as_oracle=False))
+    if stimulus is not None:
+        result.update(reset_workload_reader_profile=workload_profile,preparation_probe_version=probe_version)
+        result[reset_workload.stimulus_replay_key(workload_profile)] = _probe_qualification_receipt(
+            workload_profile,probe_version,freeze,probe_v3_episodes,probe_v3_expected)
     if authority is not None:
         result.update(motion_authority_profile=authority,motion_authority_replay=dict(
             schema="mr3-independent-motion-authority-qualification-v1",profile=authority,freeze=freeze,

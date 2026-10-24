@@ -271,16 +271,16 @@ def audit(directory, root, freeze, plan_path):
     workload_profile,_,_ = reset_workload.profile_from_plan(plan)
     motion_probe = json.loads((directory/"benchmark_metadata.json").read_text()).get("preparation_motion_probe") is True
     episode_profiles = (reset_workload.episode_probe_profiles(directory,freeze,workload_profile=workload_profile)
-        if workload_profile in (reset_workload.PROFILE_V2,reset_workload.PROFILE_V3) and motion_probe else None)
+        if workload_profile in (reset_workload.PROFILE_V2,reset_workload.PROFILE_V3,reset_workload.PROFILE_MASKED) and motion_probe else None)
     probe_replay = None
-    if workload_profile == reset_workload.PROFILE_V3 and motion_probe:
-        from . import reach_probe_v3_replay
-        probe_replay = reach_probe_v3_replay.replay_stage(directory,freeze)
+    independent=reset_workload.independent_replayer(workload_profile)
+    if independent is not None and motion_probe:
+        probe_replay = independent.replay_stage(directory,freeze)
     module, proof = load_impl(plan_path)
     result = module.audit(directory, root, freeze)
     if probe_replay is not None:
-        reach_probe_v3_replay.verify_stage_inputs(probe_replay)
-        result["probe_v3_stimulus_replay"] = probe_replay
+        independent.verify_stage_inputs(probe_replay)
+        result[reset_workload.stimulus_replay_key(workload_profile)] = probe_replay
     if authority is not None:
         reports=module._independent_authority_reports
         require(set(reports)=={str(path.parent.resolve()) for path in paths},

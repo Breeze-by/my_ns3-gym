@@ -137,7 +137,8 @@ class Worker:
         if "preparation_probe_version" in request and (
                 type(self.preparation_probe_version) is not str
                 or self.preparation_probe_version not in ("mr3-p2a-reach-outward-cancel-v2",
-                                                          "mr3-p2a-reach-outward-cancel-v3")
+                                                          "mr3-p2a-reach-outward-cancel-v3",
+                                                          "mr3-p2a-reach-masked-cancel-v1")
                 or self.safety_contract != "mr3-reach-v1"):
             raise ValueError("unknown/mixed explicit Reach preparation probe")
         self.terminal_probe = request.get("terminal_probe", False)
@@ -489,6 +490,9 @@ class Worker:
                     "startup_wall_guard_sec": 420., "closure_wall_guard_sec": 90.}
         if getattr(self,"preparation_probe_version",None) is not None:
             metadata["preparation_probe_version"] = self.preparation_probe_version
+        if getattr(self,"preparation_probe_version",None) == "mr3-p2a-reach-masked-cancel-v1":
+            metadata.update(goal_filter="original_per_robot_and_joint_masks_only_v1",
+                            goal_rank="goal_count_min_path_second_reverse_sum_path_action_v1")
         profile = actuation_profile_for_safety_contract(self.safety_contract)
         if profile is not None:
             metadata["actuation_profile"] = profile

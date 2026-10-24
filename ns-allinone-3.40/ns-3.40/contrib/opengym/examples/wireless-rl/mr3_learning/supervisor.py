@@ -33,6 +33,14 @@ LEGACY_PREPARATION_PROBES = tuple(f"mr3-p2a0-outward-cancel-v{version}" for vers
 PREPARATION_PROBE_REACH_V1 = "mr3-p2a-reach-outward-cancel-v1"
 PREPARATION_PROBE_REACH_V2 = "mr3-p2a-reach-outward-cancel-v2"
 PREPARATION_PROBE_REACH_V3 = "mr3-p2a-reach-outward-cancel-v3"
+PREPARATION_PROBE_REACH_MASKED_CANCEL_V1 = "mr3-p2a-reach-masked-cancel-v1"
+MASKED_CANCEL_GOAL_FILTER = "original_per_robot_and_joint_masks_only_v1"
+MASKED_CANCEL_GOAL_RANK = "goal_count_min_path_second_reverse_sum_path_action_v1"
+
+
+def _preparation_goal_metadata(version):
+    return ({"goal_filter":MASKED_CANCEL_GOAL_FILTER,"goal_rank":MASKED_CANCEL_GOAL_RANK}
+            if version == PREPARATION_PROBE_REACH_MASKED_CANCEL_V1 else {})
 
 
 BINARY_REACH_GEOMETRY_RULE = "binary-cone-v1"
@@ -79,7 +87,7 @@ def validate_preparation_profile(safety_contract, preparation_probe_version=None
         raise ValueError("unknown safety contract")
     if preparation_probe_version is not None:
         allowed = (LEGACY_PREPARATION_PROBES if safety_contract == "legacy"
-                   else (PREPARATION_PROBE_REACH_V1, PREPARATION_PROBE_REACH_V2, PREPARATION_PROBE_REACH_V3))
+                   else (PREPARATION_PROBE_REACH_V1, PREPARATION_PROBE_REACH_V2, PREPARATION_PROBE_REACH_V3, PREPARATION_PROBE_REACH_MASKED_CANCEL_V1))
         if type(preparation_probe_version) is not str or preparation_probe_version not in allowed:
             raise ValueError("preparation fixture does not match safety contract")
 
@@ -417,6 +425,7 @@ class Supervisor:
             metadata.update(preparation_probe_version=self.preparation_probe_version,
                             training_eligible=False,
                             qualification_scope="external_fixture_collection_not_scientific_qualification")
+        metadata.update(_preparation_goal_metadata(self.preparation_probe_version))
         (directory / "supervisor_metadata.json").write_text(json.dumps(metadata, indent=2) + "\n")
         try:
             result = self._rpc("reset", timeout=self.startup_timeout, scene=scene, seed=seed,
@@ -425,7 +434,7 @@ class Supervisor:
                                plant_stimulus_arm=self.plant_stimulus_arm,
                                plant_stimulus_work_deadline_ns=self.plant_stimulus_work_deadline_ns,
                                **({"preparation_probe_version":self.preparation_probe_version}
-                                  if self.preparation_probe_version in (PREPARATION_PROBE_REACH_V2, PREPARATION_PROBE_REACH_V3) else {}),
+                                  if self.preparation_probe_version in (PREPARATION_PROBE_REACH_V2, PREPARATION_PROBE_REACH_V3, PREPARATION_PROBE_REACH_MASKED_CANCEL_V1) else {}),
                                **startup,
                                 **({"motion_authority_profile": self.motion_authority_profile}
                                    if self.motion_authority_profile is not None else {}),

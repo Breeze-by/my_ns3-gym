@@ -20,7 +20,8 @@ from .supervisor import (actuation_profile_for_safety_contract, BINARY_REACH_GEO
                          validate_reach_geometry_rule, reach_geometry_rule_from_argv)
 from .supervisor import (
     InfrastructureError, Supervisor, WORKSPACE, identity_alive, ros_environment,
-    PREPARATION_PROBE_REACH_V1, PREPARATION_PROBE_REACH_V2, PREPARATION_PROBE_REACH_V3, validate_preparation_profile,
+    PREPARATION_PROBE_REACH_V1, PREPARATION_PROBE_REACH_V2, PREPARATION_PROBE_REACH_V3, PREPARATION_PROBE_REACH_MASKED_CANCEL_V1, validate_preparation_profile,
+    MASKED_CANCEL_GOAL_FILTER, MASKED_CANCEL_GOAL_RANK, _preparation_goal_metadata,
     SEED_RULES, START_GRAPH_RULES, validate_seed_rule, validate_start_graph_rule,
 )
 
@@ -74,9 +75,9 @@ def _collection_safety_contract(args):
         preparation = getattr(args, "preparation_motion_probe", False)
         review = getattr(args, "preparation_parameter_review", False)
         selection = getattr(args, "preparation_parameter_profile", "original")
-        if preparation and version not in (PREPARATION_PROBE_REACH_V1, PREPARATION_PROBE_REACH_V2, PREPARATION_PROBE_REACH_V3):
+        if preparation and version not in (PREPARATION_PROBE_REACH_V1, PREPARATION_PROBE_REACH_V2, PREPARATION_PROBE_REACH_V3, PREPARATION_PROBE_REACH_MASKED_CANCEL_V1):
             raise ValueError("reach preparation requires its explicit new fixture version")
-        if review and (not preparation or version not in (PREPARATION_PROBE_REACH_V1, PREPARATION_PROBE_REACH_V2, PREPARATION_PROBE_REACH_V3)
+        if review and (not preparation or version not in (PREPARATION_PROBE_REACH_V1, PREPARATION_PROBE_REACH_V2, PREPARATION_PROBE_REACH_V3, PREPARATION_PROBE_REACH_MASKED_CANCEL_V1)
                        or selection != "gentle_turn_v1"):
             raise ValueError("reach parameter review requires the reach fixture and gentle_turn_v1")
         if selection != "original" and not review:
@@ -621,22 +622,27 @@ def finish_probe_reach_v2(snapshot, diagnostics):
 
 
 
-def probe_action_reach_v3(snapshot, diagnostics):
+def _probe_action_reach_received(snapshot, diagnostics, family):
     """Fixed received-only two-round stimulus; no cancellation or physics credit."""
+    state_key, version_label, masked = _probe_reach_family(family)
     elapsed, now = snapshot["task_elapsed_sec"], snapshot["source_stamp"]
     if not all(_probe_v2_number(value) and value >= 0 for value in (elapsed, now)):
-        raise ValueError("v3 stimulus requires finite received clocks")
+        raise ValueError(f'{version_label} stimulus requires finite received clocks')
     task_ns, now_ns = round(elapsed*1e9), round(now*1e9)
-    state = diagnostics.setdefault("reach_v3_stimulus", {"epoch":snapshot["epoch"],
+    if masked:
+        _validate_masked_probe_inputs(snapshot)
+    state = diagnostics.setdefault(state_key, {"epoch":snapshot["epoch"],
         "rounds":{}, "decisions":[], "coverage_failures":[], "last_clock_ns":-1})
     if state["epoch"] != snapshot["epoch"] or now_ns < state["last_clock_ns"]:
-        raise ValueError("v3 stimulus epoch/clock changed")
+        raise ValueError(f'{version_label} stimulus epoch/clock changed')
     if state.get("pending_submission") is not None:
-        raise ValueError("previous v3 stimulus submission is unresolved")
+        raise ValueError(f'previous {version_label} stimulus submission is unresolved')
     state["last_clock_ns"] = now_ns
+    if masked:
+        state.update(goal_filter=MASKED_CANCEL_GOAL_FILTER, goal_rank=MASKED_CANCEL_GOAL_RANK)
     robots = snapshot["robots"]
     if [robot["name"] for robot in robots] != ["tb1","tb2","tb3"]:
-        raise ValueError("v3 stimulus requires the original robot order")
+        raise ValueError(f'{version_label} stimulus requires the original robot order')
     for key in ("initial", "second"):
         state["rounds"].setdefault(key, {robot["name"]:{} for robot in robots})
 
@@ -751,7 +757,10 @@ def probe_action_reach_v3(snapshot, diagnostics):
                 and (round_id == "initial" or "handoff_observed_ns" in first)):
             for choice, candidate in enumerate(snapshot["candidates"]):
                 distance = candidate["path_distances_m"][index]
-                if (snapshot["per_robot_action_mask"][index][choice]
+                if masked:
+                    if snapshot["per_robot_action_mask"][index][choice] is True:
+                        eligible.append(choice)
+                elif (snapshot["per_robot_action_mask"][index][choice]
                         and all(_probe_v2_number(value) for value in
                             (candidate["x"],candidate["y"],robot["x"],robot["y"],distance))
                         and distance > 0):
@@ -761,9 +770,11 @@ def probe_action_reach_v3(snapshot, diagnostics):
     legal = [action for action,valid in enumerate(snapshot["joint_action_mask"])
         if valid is True and all(choice in desired[index] for index,choice in
             enumerate((action//100,action//10%10,action%10)))
-        and _probe_nonapproaching_goal_action(snapshot,action)]
+        and (not masked or all(snapshot["per_robot_action_mask"][i][choice] is True
+            for i,choice in enumerate((action//100,action//10%10,action%10))))
+        and (masked or _probe_nonapproaching_goal_action(snapshot,action))]
     if not legal:
-        raise ValueError("v3 stimulus has no original legal joint action; never override a mask")
+        raise ValueError(f'{version_label} stimulus has no original legal joint action; never override a mask')
 
     def reverse_robots(action):
         result=[]
@@ -778,6 +789,12 @@ def probe_action_reach_v3(snapshot, diagnostics):
         return result
 
     def order(action):
+        if masked:
+            paths = [snapshot["candidates"][choice]["path_distances_m"][i]
+                for i,choice in enumerate((action//100,action//10%10,action%10)) if choice < 8]
+            return (-len(paths), -min(paths,default=0.),
+                    -len(reverse_robots(action)) if round_id == "second" else 0,
+                    -sum(paths), action)
         base=_probe_goal_order(snapshot,action,True)
         return (base[0],-len(reverse_robots(action)) if round_id == "second" else 0,
                 base[1],base[2],-base[3],action)
@@ -791,21 +808,26 @@ def probe_action_reach_v3(snapshot, diagnostics):
         "wait_robots":[robots[i]["name"] for i,choice in enumerate(choices) if choice == 9],
         "eligible_goal_candidates":admitted,
         "scope":"planned input only; no native cancel or physical credit"}
+    if masked:
+        request.update(goal_filter=MASKED_CANCEL_GOAL_FILTER, goal_rank=MASKED_CANCEL_GOAL_RANK)
     state["pending_submission"]=request
     state["decisions"].append(dict(request))
     if request["goal_robots"]:
         diagnostics.setdefault("goal_decisions",[]).append({"task_elapsed_sec":elapsed,
             "snapshot_sequence":snapshot["sequence"],"stage":round_id+"_goal","action":action,
             "selected_reverse_robots":reverse_robots(action),
-            "scope":"original legal nonapproach stimulus subset; not actor availability or physical proof"})
+            "scope":("original mask lifecycle stimulus subset; not actor availability or physical proof" if masked else
+                     "original legal nonapproach stimulus subset; not actor availability or physical proof")})
+    if masked and request["goal_robots"]:
+        diagnostics["goal_decisions"][-1].update(goal_filter=MASKED_CANCEL_GOAL_FILTER, goal_rank=MASKED_CANCEL_GOAL_RANK)
     return action
 
-
-def record_probe_reach_v3_submission(diagnostics, info):
+def _record_probe_reach_received_submission(diagnostics, info, family):
     """Keep a real returned command separate from later actual goal/cancel confirmation."""
-    state=diagnostics["reach_v3_stimulus"];request=state.get("pending_submission")
+    state_key, version_label, masked = _probe_reach_family(family)
+    state=diagnostics[state_key];request=state.get("pending_submission")
     if request is None:
-        raise ValueError("no planned v3 stimulus action")
+        raise ValueError(f'no planned {version_label} stimulus action')
     if "action_submitted" in info and type(info["action_submitted"]) is not bool:
         raise ValueError("explicit action_submitted must be bool")
     if info.get("action_submitted",True) is False:
@@ -817,12 +839,12 @@ def record_probe_reach_v3_submission(diagnostics, info):
             or any(type(command.get(key)) is not int for key in ("observation_sequence","action"))
             or any(command.get(key) != request[key] for key in
                    ("epoch","observation_sequence","observation_digest","action"))):
-        raise ValueError("returned step does not bind the planned v3 submission")
+        raise ValueError(f'returned step does not bind the planned {version_label} submission')
     members=state["rounds"][request["round"]]
     for name in request["goal_robots"]:
         saved=members[name]
         if "goal_command_id" in saved:
-            raise ValueError("v3 round cannot silently retry a goal")
+            raise ValueError(f'{version_label} round cannot silently retry a goal')
         saved.update(goal_command_id=command["command_id"],
             goal_id=request["epoch"]+":"+name+":"+str(command["command_id"]),
             goal_created_ns=request["clock_ns"], submitted_activity=dict(request["submitted_activity"][name]),
@@ -831,24 +853,24 @@ def record_probe_reach_v3_submission(diagnostics, info):
         if request["reasons"].get(name) == "moving_owned_first_legal_wait":
             saved=members[name]
             if "wait_command_id" in saved:
-                raise ValueError("v3 round cannot silently retry a scientific WAIT")
+                raise ValueError(f'{version_label} round cannot silently retry a scientific WAIT')
             saved.update(wait_command_id=command["command_id"],wait_submitted_ns=request["clock_ns"])
             if request["task_elapsed_sec"] > (10 if request["round"] == "initial" else 28):
                 state["coverage_failures"].append({"round":request["round"],"robot":name,
                     "reason":"moving_WAIT_outside_bounded_opportunity"})
     state["pending_submission"]=None
 
-
-def finish_probe_reach_v3(snapshot, diagnostics):
+def _finish_probe_reach_received(snapshot, diagnostics, family):
     """End exactly32 steps with explicit coverage failure; never native/physics credit."""
+    state_key, version_label, masked = _probe_reach_family(family)
     if round(snapshot["task_elapsed_sec"]*1e9) != 32_000_000_000:
-        raise ValueError("v3 stimulus requires all32 complete policy seconds")
-    state=diagnostics.get("reach_v3_stimulus")
+        raise ValueError(f'{version_label} stimulus requires all32 complete policy seconds')
+    state=diagnostics.get(state_key)
     if not state or state.get("pending_submission") is not None:
-        raise ValueError("v3 stimulus has unresolved collection state")
+        raise ValueError(f'{version_label} stimulus has unresolved collection state')
     # Process the final returned navigation/rest observation without submitting
     # another action or silently extending the32-step fixture.
-    probe_action_reach_v3(snapshot,diagnostics)
+    _probe_action_reach_received(snapshot,diagnostics,family)
     state["pending_submission"]=None
     state["decisions"].pop()
     failures=state["coverage_failures"]
@@ -868,7 +890,61 @@ def finish_probe_reach_v3(snapshot, diagnostics):
     state.update(coverage_passed=not failures,
         coverage_scope="received accepted/cancelled lifecycle only; independent native and physical gates required")
     if failures:
-        raise ValueError("bounded v3 stimulus coverage unavailable; no retries or gate reduction")
+        raise ValueError(f'bounded {version_label} stimulus coverage unavailable; no retries or gate reduction')
+
+
+def _probe_reach_family(family):
+    if type(family) is not str or family not in ("outward-cancel-v3", "masked-cancel-v1"):
+        raise ValueError("unknown fixed received Reach probe family")
+    return (("reach_v3_stimulus", "v3", False) if family == "outward-cancel-v3" else
+            ("reach_masked_cancel_v1_stimulus", "masked-cancel-v1", True))
+
+
+def _validate_masked_probe_inputs(snapshot):
+    per, joint = snapshot["per_robot_action_mask"], snapshot["joint_action_mask"]
+    if (type(per) is not list or len(per) != 3 or any(type(row) is not list or len(row) != 10
+            or any(type(bit) is not bool for bit in row) for row in per)
+            or type(joint) is not list or len(joint) != 1000 or any(type(bit) is not bool for bit in joint)
+            or len(snapshot["robots"]) != 3 or len(snapshot["candidates"]) != 8):
+        raise ValueError("masked-cancel-v1 requires the original typed masks and dimensions")
+    for i,robot in enumerate(snapshot["robots"]):
+        for choice in range(8):
+            if per[i][choice] is not True:
+                continue
+            candidate = snapshot["candidates"][choice]
+            try:
+                path = candidate["path_distances_m"][i]
+                values = (candidate["x"], candidate["y"], robot["x"], robot["y"], robot["yaw"], path)
+            except (KeyError, IndexError, TypeError) as error:
+                raise ValueError("masked-cancel-v1 legal GOAL has invalid coordinates or declared path") from error
+            if (not all(_probe_v2_number(value) for value in values) or path < 0):
+                raise ValueError("masked-cancel-v1 legal GOAL has invalid coordinates or declared path")
+
+
+def probe_action_reach_v3(snapshot, diagnostics):
+    return _probe_action_reach_received(snapshot, diagnostics, "outward-cancel-v3")
+
+
+def record_probe_reach_v3_submission(diagnostics, info):
+    return _record_probe_reach_received_submission(diagnostics, info, "outward-cancel-v3")
+
+
+def finish_probe_reach_v3(snapshot, diagnostics):
+    return _finish_probe_reach_received(snapshot, diagnostics, "outward-cancel-v3")
+
+
+def probe_action_reach_masked_cancel_v1(snapshot, diagnostics):
+    return _probe_action_reach_received(snapshot, diagnostics, "masked-cancel-v1")
+
+
+def record_probe_reach_masked_cancel_v1_submission(diagnostics, info):
+    return _record_probe_reach_received_submission(diagnostics, info, "masked-cancel-v1")
+
+
+def finish_probe_reach_masked_cancel_v1(snapshot, diagnostics):
+    return _finish_probe_reach_received(snapshot, diagnostics, "masked-cancel-v1")
+
+
 
 
 def _new_preparation_abort():
@@ -1105,7 +1181,7 @@ def run_worker(args, worker_id, preparation_abort=None):
                            for robot in initial["robots"]], "transitions": 0,
                        "transition_wall_sec": 0., "reward_sum": 0., "dt_values": []}
             if (preparation and getattr(args, "preparation_probe_version", None)
-                    in (PREPARATION_PROBE_V3, PREPARATION_PROBE_V4, PREPARATION_PROBE_V5, PREPARATION_PROBE_V6, PREPARATION_PROBE_REACH_V1, PREPARATION_PROBE_REACH_V2, PREPARATION_PROBE_REACH_V3)):
+                    in (PREPARATION_PROBE_V3, PREPARATION_PROBE_V4, PREPARATION_PROBE_V5, PREPARATION_PROBE_V6, PREPARATION_PROBE_REACH_V1, PREPARATION_PROBE_REACH_V2, PREPARATION_PROBE_REACH_V3, PREPARATION_PROBE_REACH_MASKED_CANCEL_V1)):
                 episode["preparation_probe_diagnostics"] = {
                     "reference_turn_samples": {}, "goal_decisions": []}
             result["episodes"].append(episode)
@@ -1159,10 +1235,11 @@ def run_worker(args, worker_id, preparation_abort=None):
                         "step_returned": False,
                     })
                 elif "preparation_probe_diagnostics" in episode:
-                    probe = (probe_action_reach_v3 if args.preparation_probe_version == PREPARATION_PROBE_REACH_V3
+                    probe = (probe_action_reach_masked_cancel_v1 if args.preparation_probe_version == PREPARATION_PROBE_REACH_MASKED_CANCEL_V1
+                             else probe_action_reach_v3 if args.preparation_probe_version == PREPARATION_PROBE_REACH_V3
                              else probe_action_reach_v2 if args.preparation_probe_version == PREPARATION_PROBE_REACH_V2
                              else probe_action_v6 if args.preparation_probe_version
-                             in (PREPARATION_PROBE_V6, PREPARATION_PROBE_REACH_V1, PREPARATION_PROBE_REACH_V2, PREPARATION_PROBE_REACH_V3) else probe_action_v5
+                             in (PREPARATION_PROBE_V6, PREPARATION_PROBE_REACH_V1, PREPARATION_PROBE_REACH_V2, PREPARATION_PROBE_REACH_V3, PREPARATION_PROBE_REACH_MASKED_CANCEL_V1) else probe_action_v5
                              if args.preparation_probe_version
                              == PREPARATION_PROBE_V5 else probe_action_v4
                              if args.preparation_probe_version == PREPARATION_PROBE_V4
@@ -1189,8 +1266,9 @@ def run_worker(args, worker_id, preparation_abort=None):
                 episode["reward_sum"] += reward
                 episode["dt_values"].append(info["dt"])
                 if getattr(args, "preparation_probe_version", None) in (
-                        PREPARATION_PROBE_V4, PREPARATION_PROBE_V5, PREPARATION_PROBE_V6, PREPARATION_PROBE_REACH_V1, PREPARATION_PROBE_REACH_V2, PREPARATION_PROBE_REACH_V3):
-                    recorder = (record_probe_reach_v3_submission if args.preparation_probe_version == PREPARATION_PROBE_REACH_V3
+                        PREPARATION_PROBE_V4, PREPARATION_PROBE_V5, PREPARATION_PROBE_V6, PREPARATION_PROBE_REACH_V1, PREPARATION_PROBE_REACH_V2, PREPARATION_PROBE_REACH_V3, PREPARATION_PROBE_REACH_MASKED_CANCEL_V1):
+                    recorder = (record_probe_reach_masked_cancel_v1_submission if args.preparation_probe_version == PREPARATION_PROBE_REACH_MASKED_CANCEL_V1
+                                else record_probe_reach_v3_submission if args.preparation_probe_version == PREPARATION_PROBE_REACH_V3
                                 else record_probe_reach_v2_submission if args.preparation_probe_version == PREPARATION_PROBE_REACH_V2
                                 else record_probe_v4_submission)
                     recorder(episode["preparation_probe_diagnostics"], info)
@@ -1235,8 +1313,9 @@ def run_worker(args, worker_id, preparation_abort=None):
                     break
             if _abort_requested(abort):
                 break
-            if getattr(args,"preparation_probe_version",None) in (PREPARATION_PROBE_REACH_V2, PREPARATION_PROBE_REACH_V3):
-                finisher = (finish_probe_reach_v3 if args.preparation_probe_version == PREPARATION_PROBE_REACH_V3
+            if getattr(args,"preparation_probe_version",None) in (PREPARATION_PROBE_REACH_V2, PREPARATION_PROBE_REACH_V3, PREPARATION_PROBE_REACH_MASKED_CANCEL_V1):
+                finisher = (finish_probe_reach_masked_cancel_v1 if args.preparation_probe_version == PREPARATION_PROBE_REACH_MASKED_CANCEL_V1
+                            else finish_probe_reach_v3 if args.preparation_probe_version == PREPARATION_PROBE_REACH_V3
                             else finish_probe_reach_v2)
                 finisher(supervisor.last_result["snapshot"], episode["preparation_probe_diagnostics"])
             if not environment._episode_done:
@@ -1296,10 +1375,10 @@ def main(argv=None):
     parser.add_argument("--deadline-probe", action="store_true")
     parser.add_argument("--terminal-probe", action="store_true")
     parser.add_argument("--preparation-motion-probe", action="store_true",
-                        help="external engineering inputs: prefer outward legal goals; no policy")
+                        help="versioned external engineering fixture inputs; no policy")
     parser.add_argument("--preparation-probe-version",
                         choices=(PREPARATION_PROBE_V2, PREPARATION_PROBE_V3,
-                                 PREPARATION_PROBE_V4, PREPARATION_PROBE_V5, PREPARATION_PROBE_V6, PREPARATION_PROBE_REACH_V1, PREPARATION_PROBE_REACH_V2, PREPARATION_PROBE_REACH_V3),
+                                 PREPARATION_PROBE_V4, PREPARATION_PROBE_V5, PREPARATION_PROBE_V6, PREPARATION_PROBE_REACH_V1, PREPARATION_PROBE_REACH_V2, PREPARATION_PROBE_REACH_V3, PREPARATION_PROBE_REACH_MASKED_CANCEL_V1),
                         help="explicit external fixture version; v2=20 steps, v3=32 steps")
     parser.add_argument("--preparation-parameter-review", action="store_true",
                         help="paused one-worker open101: frozen readonly ROS parameter audit")
@@ -1351,7 +1430,7 @@ def main(argv=None):
     if args.preparation_motion_probe:
         args.preparation_probe_version = args.preparation_probe_version or PREPARATION_PROBE_V2
         expected_steps = (32 if args.preparation_probe_version in
-                          (PREPARATION_PROBE_V3, PREPARATION_PROBE_V4, PREPARATION_PROBE_V5, PREPARATION_PROBE_V6, PREPARATION_PROBE_REACH_V1, PREPARATION_PROBE_REACH_V2, PREPARATION_PROBE_REACH_V3) else 20)
+                          (PREPARATION_PROBE_V3, PREPARATION_PROBE_V4, PREPARATION_PROBE_V5, PREPARATION_PROBE_V6, PREPARATION_PROBE_REACH_V1, PREPARATION_PROBE_REACH_V2, PREPARATION_PROBE_REACH_V3, PREPARATION_PROBE_REACH_MASKED_CANCEL_V1) else 20)
         if args.steps != expected_steps:
             parser.error("preparation motion probe requires the explicit "
                          f"{expected_steps}-step fixture")
@@ -1425,8 +1504,13 @@ def main(argv=None):
                         scientific_qualification="PENDING_NEW_FREEZE_INDEPENDENT_AUDITS",
                         qualification_scope="engineering_collection_only_no_legacy_qualification_credit")
         if args.preparation_motion_probe:
-            metadata.update(preparation_fixture_implementation="unchanged_v6_external_actions",
-                            preparation_fixture_schema="mr3-reach-preparation-fixture-v1")
+            if args.preparation_probe_version == PREPARATION_PROBE_REACH_MASKED_CANCEL_V1:
+                metadata.update(preparation_fixture_implementation="masked_cancel_v1_original_masks_external_actions",
+                                preparation_fixture_schema="mr3-reach-masked-cancel-fixture-v1",
+                                **_preparation_goal_metadata(args.preparation_probe_version))
+            else:
+                metadata.update(preparation_fixture_implementation="unchanged_v6_external_actions",
+                                preparation_fixture_schema="mr3-reach-preparation-fixture-v1")
     if args.diagnostic_uniform_seed is not None:
         metadata.update(kind="uniform_legal_engineering_diagnostic_not_rl",
                         diagnostic_uniform_seed=args.diagnostic_uniform_seed,

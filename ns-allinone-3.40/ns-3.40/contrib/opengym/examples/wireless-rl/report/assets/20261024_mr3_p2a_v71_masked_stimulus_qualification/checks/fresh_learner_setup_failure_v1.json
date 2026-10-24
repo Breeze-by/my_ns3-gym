@@ -1,0 +1,22 @@
+{
+  "schema": "mr3-a71-fresh-learner-prelaunch-setup-failure-v1",
+  "actual_tool_reaped": true,
+  "actual_tool_session_id": 10951,
+  "initial_tool_return": {
+    "chunk_id": "521547",
+    "wall_time_seconds": 1.001184121,
+    "session_id": 10951,
+    "original_token_count": 0,
+    "output": ""
+  },
+  "final_tool_return": {
+    "chunk_id": "36227e",
+    "wall_time_seconds": 2.2252e-05,
+    "exit_code": 1,
+    "original_token_count": 353,
+    "output": "Traceback (most recent call last):\n  File \"/usr/lib/python3.10/runpy.py\", line 196, in _run_module_as_main\n    return _run_code(code, main_globals, None,\n  File \"/usr/lib/python3.10/runpy.py\", line 86, in _run_code\n    exec(code, run_globals)\n  File \"/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v71_masked_stimulus_qualification/run_fresh_cpu_v1.py\", line 198, in <module>\n    raise SystemExit(main())\n  File \"/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v71_masked_stimulus_qualification/run_fresh_cpu_v1.py\", line 194, in main\n    return run(args.group)\n  File \"/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v71_masked_stimulus_qualification/run_fresh_cpu_v1.py\", line 171, in run\n    with target.open('xb') as stream:stream.write(raw)\n  File \"/usr/lib/python3.10/pathlib.py\", line 1119, in open\n    return self._accessor.open(self, mode, buffering, encoding, errors,\nFileExistsError: [Errno 17] File exists: '/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v71_masked_stimulus_qualification/checks/source_snapshots/11fb951c479787f195f39f757b8be9ac4d70eb0fa58aed4d0b3c8c48b438ae3c_audit_reach_cadence.py'\n"
+  },
+  "reason": "Concurrent root starts raced on shared exclusive source snapshot creation; learner test process not launched. Keep original failure; wait ROS then run learner group serially with unchanged sealed source.",
+  "group_body_launched": false,
+  "engineering_added_seconds": "0"
+}
