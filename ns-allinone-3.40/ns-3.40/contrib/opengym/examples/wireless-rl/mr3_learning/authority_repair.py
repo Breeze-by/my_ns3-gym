@@ -11,11 +11,12 @@ from . import decisive_tests as d
 from .motion_authority_profile import MOTION_AUTHORITY_PROFILE
 from .preparation import identity
 
-A=d.W/'report/assets/20261024_mr3_p2a_authority_activation'
-OUT=Path('/tmp/mr3_p2a_authority_activation_v1')
-NATIVE=d.ROOT/'ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_authority_activation_v1'
+A=d.W/'report/assets/20261024_mr3_p2a_authority_activation_forward'
+BUILD_A=d.W/'report/assets/20261024_mr3_p2a_authority_activation'
+OUT=Path('/tmp/mr3_p2a_authority_activation_forward_v1')
+NATIVE=d.ROOT/'ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_authority_activation_forward_v1'
 CONTRACT='mr3-p2a-authority-activation-v3'
-PRIOR=Decimal('116147.2793258256018')
+PRIOR=Decimal('116147.7953337696018')
 CAP=Decimal('180000')
 
 
@@ -25,11 +26,13 @@ def prepare():
     script=d.OLD/'make_native_binding_v1.py'
     spec=importlib.util.spec_from_file_location('authority_repair_build_binding',script)
     helper=importlib.util.module_from_spec(spec);spec.loader.exec_module(helper)
-    binding=helper.update_driver_binding(base,A/'checks/native_build_v1/build_manifest_v1.json',
-                                         A/'native_build_bridge_v1.json')
+    binding=helper.update_driver_binding(base,BUILD_A/'checks/native_build_v1/build_manifest_v1.json',
+                                         BUILD_A/'native_build_bridge_v1.json')
     binding['motion_authority_profile']=MOTION_AUTHORITY_PROFILE
     paths=set(old['source_bindings']) | d.prep.source_inventory(d.ROOT)
     paths.update(str(p.relative_to(d.ROOT)) for p in A.rglob('*') if p.is_file()
+                 and 'source_snapshots' not in p.parts and p.suffix in ('.py','.sh','.json','.md','.xml','.log','.rawbytes'))
+    paths.update(str(p.relative_to(d.ROOT)) for p in BUILD_A.rglob('*') if p.is_file()
                  and 'source_snapshots' not in p.parts and p.suffix in ('.py','.sh','.json','.md','.xml','.log','.rawbytes'))
     paths-={str((A/n).relative_to(d.ROOT)) for n in ('binding.json','feasibility.json','capacity.json')}
     sources={p:d.sha(d.ROOT/p) for p in sorted(paths)}

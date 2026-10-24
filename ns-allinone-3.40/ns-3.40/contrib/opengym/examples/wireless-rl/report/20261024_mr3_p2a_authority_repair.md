@@ -56,3 +56,9 @@ current21 增量 colcon rc0/2.463039182秒、21来源稳定与恢复通过，选
 完整ROS218P/59.128570779秒、learner612P/167.511980496秒；随后只增加两个测试文件，生产实现未变，完整相关文件ROS15P/22.437206149秒、独立44P/6.239707632秒。新增验证覆盖真实激活回执到adapter、伪owner/伪witness/非法floor/错误ACTIVE接收态拒绝，以及独立原始停止证据重建、过期租约和缺证据拒绝。新增人工夹具首轮跳号1F/43P保留，修正为完整实际回调序列后44P；不是重跑所有830项。readiness首轮参数all不合法rc2保留，后继both双环境rc0/8.547587696秒。current21实际build rc0/2.383893262秒，21来源前后及恢复稳定、ELF同A59，不声称编译job。各CPU来源、原件和保存身份fresh absence见[准备核验](assets/20261024_mr3_p2a_authority_activation/checks/preparation_verification.json)。
 
 scope现为前瞻原生准入，仍必须运行时新freeze/clean/来源/ELF门；尚未运行v3 World。工程新增0，U116147.2793258256018与pilot/final原额保持。
+
+## v3首次准入失败与forward
+
+冻结3af8a615f在World前被来源范围门拒绝：prepare时新测试文件尚未tracked，提交后source_inventory新增此文件。原arms=[]、完整来源验证未完成；只有外父5源前后稳定，不能称完整范围通过。真实外父rc1/0.516007944秒，累计116147.7953337696018，余63852.2046662303982；四原件与已保存身份absence见[准入闭合](assets/20261024_mr3_p2a_authority_activation/admission_failure_v1/closure.json)。
+
+forward只更改入口输出/清单/末账，复用逐源相等的v3核心、实际current21 build及CPU证明。新包 `20261024_mr3_p2a_authority_activation_forward`，新exclusive `/tmp/mr3_p2a_authority_activation_forward_v1` 与外父 `/tmp/mr3_authority_activation_forward_root_v1`；26000预约、两臂及全部科学门不变。旧清单与失败原样保留；新清单须在INDEX与新HEAD对当前必需inventory做包含检查后继续。
