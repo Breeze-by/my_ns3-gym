@@ -866,14 +866,25 @@ class MR3Adapter(Node):
         # No wait blocks ROS or physical stepping. The unchanged cancel timeout applies.
         for name, saved in list(self.authority_buffered_terminal.items()):
             ready = self.authority_ready[name]
-            if ready is None:
+            cleanup = self.stop_requested and self.dispatcher.stopped
+            if not cleanup and (ready is None or not 0 <= timestamp_ns(now)-ready["clock_ns"] <= 100_000_000):
                 continue
             event = saved["payload"]
             if self.dispatcher.states[name].goal_id != event["goal_id"]:
                 raise ValueError("buffered terminal no longer owns dispatcher")
-            self.record("authority_terminal_dispatched", {"robot": name, "goal_id": event["goal_id"],
-                "original_delivery": saved, "matching_ready_ack": ready,
-                "dispatch_clock_ns": timestamp_ns(now), "receipt_times_rewritten": False})
+            if cleanup:
+                # Irreversible task stop closes real Nav2 ownership even if a
+                # model fault makes normal regrant proof impossible. This is
+                # native terminal delivery, with no rest/stop or success credit.
+                self.record("authority_terminal_cleanup_dispatched", {
+                    "robot": name, "goal_id": event["goal_id"], "original_delivery": saved,
+                    "dispatch_clock_ns": timestamp_ns(now), "receipt_times_rewritten": False,
+                    "dispatcher_stopped": True, "motion_regrant_allowed": False,
+                    "normal_stop_evidence_claimed": False})
+            else:
+                self.record("authority_terminal_dispatched", {"robot": name, "goal_id": event["goal_id"],
+                    "original_delivery": saved, "matching_ready_ack": ready,
+                    "dispatch_clock_ns": timestamp_ns(now), "receipt_times_rewritten": False})
             self.dispatcher.on_result(name, event["goal_id"], event["value"], now)
             self.release_authority_native_identity(name, event["goal_id"])
             del self.authority_buffered_terminal[name]
@@ -888,7 +899,9 @@ class MR3Adapter(Node):
                     "clock_ns": timestamp_ns(now), "permission": "zero_only"})
                 del self.authority_pending_accept[name]
                 continue
-            if self.authority_ready[name] is not None and not self.stop_requested:
+            ready = self.authority_ready[name]
+            if (ready is not None and not self.stop_requested and not self.dispatcher.stopped
+                    and 0 <= timestamp_ns(now)-ready["clock_ns"] <= 100_000_000):
                 packet = from_accepted_owner(self.dispatcher, name, self.handles,
                     self.authority_sequence[name]+1, timestamp_ns(now), accepted_goal_id=goal_id)
                 self.publish_authority(packet)

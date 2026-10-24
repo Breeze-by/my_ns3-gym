@@ -274,7 +274,7 @@ class ReceivingReplay:
         self.seq=0;self.packet=None;self.owner=None;self.state='NONE'
         self.retired=set();self.floor=0;self.received=None;self.stop=None
         self.ready=None;self.last_clock=None;self.raw=None;self.raw_seq=0
-        self.ack_seq=0;self.expected_acks=deque();self.sent_ready=set()
+        self.ack_seq=0;self.expected_acks=deque();self.sent_ready={}
         self.decision_permissions={};self.callbacks=[];self.ack_publications=[]
 
     def raw_callback(self,request):
@@ -383,11 +383,12 @@ class ReceivingReplay:
             require(now==wanted_now,'received ACK clock changed')
             equal(ack,wanted,'received ACK differs from actual callback transition')
         else:
-            require(self.seq not in self.sent_ready,'stop-ready republished for same authority sequence')
+            require(self.seq not in self.sent_ready or now-self.sent_ready[self.seq]>=80_000_000,
+                    'stop-ready refresh exceeded declared publication cadence')
             wanted=self.observe(now,index)
             require(wanted is not None,'stopReady lacks actual original debts/storage/APPLIED/rest')
             equal(ack,wanted,'stopReady differs from actual source prefix')
-            self.sent_ready.add(self.seq)
+            self.sent_ready[self.seq]=now
         self.ack_seq+=1;self.ack_publications.append((index,copy.deepcopy(p)))
         return wire
 
@@ -499,12 +500,26 @@ class DeferredTerminals:
         ack=ready['ack']
         require(ack['authority_sequence']==current['authority_sequence']
                 and ready['authority_packet_sha256']==digest(current)
-                and now>=self.ready_clock[robot] and now>=clock(saved['received_stamp']),
+                and now>=self.ready_clock[robot] and now>=clock(saved['received_stamp'])
+                and 0<=now-ready['clock_ns']<=100_000_000,
                 'terminal dispatch readiness belongs to another owner/sequence/time')
         equal(ack['owner'],current,'terminal readiness owner changed')
         expected=dict(robot=robot,goal_id=saved['payload']['goal_id'],original_delivery=saved,
                       matching_ready_ack=ready,dispatch_clock_ns=now,receipt_times_rewritten=False)
         equal(p,expected,'terminal dispatch rewrote original native source/delivery envelope')
+        del self.buffered[robot];self.dispatched.append(copy.deepcopy(p))
+        return saved['payload']
+
+    def cleanup_dispatch(self,p,now,current,stopped):
+        robot=p['robot'];saved=self.buffered.get(robot)
+        require(stopped is True and saved is not None and current is not None
+                and current['operation']=='revoke' and current['goal_id']==saved['payload']['goal_id']
+                and now>=clock(saved['received_stamp']),
+                'cleanup terminal lacks irreversible stop and actual revoked native result')
+        equal(p,dict(robot=robot,goal_id=saved['payload']['goal_id'],original_delivery=saved,
+                     dispatch_clock_ns=now,receipt_times_rewritten=False,dispatcher_stopped=True,
+                     motion_regrant_allowed=False,normal_stop_evidence_claimed=False),
+              'cleanup terminal claimed normal stop or changed actual receipt')
         del self.buffered[robot];self.dispatched.append(copy.deepcopy(p))
         return saved['payload']
 
@@ -652,10 +667,12 @@ def replay_adapter(rows,transitions,epoch,motion_context,protocol_class):
                     'authority publisher substituted native UUID')
             op=packet['operation']
             if op=='grant':
-                require(state.phase=='active' and not state.cancel_requested
+                require(not oracle.stopped and state.phase=='active' and not state.cancel_requested
                         and pending_accept.get(robot)==packet['goal_id']
                         and packet['goal_id'] not in native_terminal and scheduler.ready.get(robot) is not None,
                         'grant lacks actual accept/pending owner/received stopReady or is already terminal')
+                require(0<=now-scheduler.ready[robot]['clock_ns']<=100_000_000,
+                        'grant used stale received stopReady')
                 require(packet['owner_grant_sequence']==packet['authority_sequence']
                         and packet['lease_until_ns']==clock(state.lease_until),'grant changed original owner lease')
                 grants[robot]=copy.deepcopy(packet);pending_accept.pop(robot,None)
@@ -713,6 +730,9 @@ def replay_adapter(rows,transitions,epoch,motion_context,protocol_class):
         elif kind=='authority_terminal_buffered':scheduler.buffer(p,now,current[robot])
         elif kind=='authority_terminal_dispatched':
             event=scheduler.dispatch(p,now,current[robot]);oracle.on_result(robot,event['goal_id'],event['value'],now/1e9)
+        elif kind=='authority_terminal_cleanup_dispatched':
+            event=scheduler.cleanup_dispatch(p,now,current[robot],oracle.stopped)
+            oracle.on_result(robot,event['goal_id'],event['value'],now/1e9)
         elif kind=='authority_never_granted_terminal':
             require(robot in ROBOTS and goal in native_terminal and goal not in {g['goal_id'] for g in grants.values() if g},
                     'never-granted terminal actually had authority')

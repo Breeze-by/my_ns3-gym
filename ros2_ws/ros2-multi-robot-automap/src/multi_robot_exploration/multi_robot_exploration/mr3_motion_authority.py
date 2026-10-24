@@ -11,7 +11,7 @@ import re
 from .mr3_episode import timestamp_ns
 from .mr3_reach_runtime import H_NS, PUB_NS, model_check
 
-PROFILE = "mr3-owned-stream-authority-v1"
+PROFILE = "mr3-owned-stream-authority-v2"
 PROTOCOL = "mr3-motion-authority-v1"
 ACK = "mr3-motion-authority-ack-v1"
 ROBOTS = ("tb1", "tb2", "tb3")
@@ -284,8 +284,15 @@ class MotionAuthority:
                     "accepted": True, "state": self.state, "received_clock_ns": clock_ns,
                     "source_clock_ns": message["source_clock_ns"], "callback_floor": self.callback_floor,
                     "scope": "actual authority callback only, not target storage, motor or rest"}
-        except (ValueError, TypeError, KeyError, AttributeError):
-            return self._invalid("invalid_authority")
+        except (ValueError, TypeError, KeyError, AttributeError) as error:
+            # Preserve the rejected predicate and pre-fault local proof. The
+            # original fail-closed latch and zero permission remain unchanged.
+            context = {"state": self.state, "authority_sequence": self.sequence,
+                       "owner": copy.deepcopy(self.owner), "ready": copy.deepcopy(self.ready),
+                       "callback_clock_ns": clock_ns, "stop_not_before_ns": self.stop_not_before_ns}
+            result = self._invalid("invalid_authority")
+            result.update(rejected_condition=str(error), rejection_context=context)
+            return result
 
     def input(self, raw_request, *, clock_ns):
         """Return an effective [v,w], retaining original raw as separate data."""

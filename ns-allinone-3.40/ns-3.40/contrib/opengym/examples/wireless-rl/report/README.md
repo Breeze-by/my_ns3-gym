@@ -1,3 +1,5 @@
+2026-10-24：[authority交接与关闭修复执行](20261024_mr3_p2a_authority_repair.md)，新v2软件准备已验证，有限原生待新freeze；不授资格或capacity。
+
 - [2026-10-24 两项决定性测试实际结果与路线建议](20261024_mr3_p2a_decisive_tests.md)：运动WAIT联合条件出现，但两个输入方式均触发invalid_authority；容量64/128返回后FAIL，34.57分钟为失败前缀费用。
 
 - [2026-10-24 P2A两项决定性测试（准备，待实际结果）](20261024_mr3_p2a_decisive_tests.md)

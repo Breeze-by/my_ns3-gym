@@ -186,6 +186,54 @@ class WrapperContracts(unittest.TestCase):
         connect_initial(a,g,feed,goal)
         return feed,a,g,goal,handle
 
+    def test_stale_ready_cannot_grant_then_genuine_refresh_can(self):
+        feed=f.Feed().disk();a=adapter_shell(feed.now);g=guard_shell(feed)
+        g.receiving_permission('tb1',feed.r,None,feed.now)
+        first=g.authority_ack_publishers['tb1'].messages[-1]
+        a.receive_authority_ack(first,'tb1')
+        goal,h,accepted=submitted(a);a.accepted(accepted,'tb1',goal)
+        deliver(a,feed.now+200_000_000)
+        self.assertEqual(a.authority_sequence['tb1'],0)
+        self.assertEqual(a.authority_pending_accept['tb1'],goal)
+        for _ in range(10):feed.tick()
+        g.clock_ns=feed.now;g.receiving_permission('tb1',feed.r,None,feed.now)
+        fresh=g.authority_ack_publishers['tb1'].messages[-1]
+        self.assertNotEqual(first.data,fresh.data)
+        self.assertEqual(json.loads(fresh.data)['ack']['witness']['clock_ns'],feed.now)
+        a.receive_authority_ack(fresh,'tb1');a.poll_authority_handoff(a.now())
+        g.receive_motion_authority(a.authority_publishers['tb1'].messages[-1],'tb1')
+        self.assertEqual(g.motion_authorities['tb1'].state,'ACTIVE')
+        self.assertEqual(g.failures,[])
+
+    def test_missing_current_proof_preserves_exact_failure_and_zero_permission(self):
+        feed=f.Feed().disk();a=adapter_shell(feed.now);g=guard_shell(feed)
+        goal,h,accepted=submitted(a);a.accepted(accepted,'tb1',goal)
+        deliver(a,feed.now+200_000_000)
+        packet=authority.from_accepted_owner(a.dispatcher,'tb1',a.handles,1,a.clock_ns,accepted_goal_id=goal)
+        g.clock_ns=a.clock_ns;g.receive_motion_authority(String(data=authority.canonical(packet)),'tb1')
+        result=[v['payload']['result'] for v in g.rows if v['kind']=='authority_callback'][-1]
+        self.assertEqual(result['rejected_condition'],'grant_without_current_real_stop_evidence')
+        self.assertIsNone(result['rejection_context']['ready'])
+        self.assertEqual(g.motion_authorities['tb1'].input({'sequence':1,'v':.2,'w':0.},clock_ns=g.clock_ns)['effective_request'],[0.,0.])
+
+    def test_irreversible_task_stop_closes_native_result_without_normal_ready(self):
+        feed,a,g,goal,h=self.initial()
+        a.stop_requested=True;a.dispatcher.safety_stop(a.now(),'task_terminal:navigation_failure')
+        a.events.clear();a.cancel_native_goal('tb1',goal)
+        h.cancel.set_result(NS(goals_canceling=[GoalInfo(goal_id=h.goal_id)]))
+        h.result.set_result(NS(status=5))
+        deliver(a,a.clock_ns+200_000_000)
+        deliver(a,a.clock_ns+200_000_000)
+        self.assertTrue(a.dispatcher.closed)
+        self.assertFalse(a.authority_buffered_terminal)
+        self.assertIsNone(a.authority_ready['tb1'])
+        row=[v['payload'] for v in a.rows if v['kind']=='authority_terminal_cleanup_dispatched'][-1]
+        self.assertFalse(row['normal_stop_evidence_claimed'])
+        self.assertFalse(row['motion_regrant_allowed'])
+        self.assertEqual(row['original_delivery']['payload']['value'],5)
+        count=a.authority_sequence['tb1'];a.poll_authority_handoff(a.now())
+        self.assertEqual(a.authority_sequence['tb1'],count)
+
     def test_quick_native_terminal_before_logical_accept_preserves_receipts_no_grant(self):
         for status in (4,6):
             a=adapter_shell(2_000_000_000);goal,h,accepted=submitted(a)

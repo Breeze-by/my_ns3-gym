@@ -599,6 +599,20 @@ def load_implementation(root=WORKSPACE):
     original_exclusive, original_boundary = module.exclusive, module.read_wait_boundary
     original_fifo = module.read_fifo_receipts
     original_review = module.review
+    original_parent_module = module.native_parent_module
+
+    def native_parent_module(argv):
+        # Explicit non-learning diagnostic entry. Its complete argv, plan,
+        # source freeze, process ancestry and ELF custody remain independently
+        # checked by the existing capture/review paths.
+        if len(argv) == 6 and argv[1:5] == ["-B", "-m", "mr3_learning.decisive_probe", "--plan"]:
+            require(Path(argv[0]) == Path("/home/zhuyulab/miniconda3/envs/ns3gym/bin/python")
+                    and Path(argv[5]).is_absolute() and Path(argv[5]).suffix == ".json",
+                    "diagnostic parent requires the canonical interpreter and explicit plan")
+            return "mr3_learning.decisive_probe"
+        return original_parent_module(argv)
+
+    module.native_parent_module = native_parent_module
 
     def load_binding(path, freeze, *, root=root, read=None):
         bound = original_load(path, freeze, root=root, read=read)

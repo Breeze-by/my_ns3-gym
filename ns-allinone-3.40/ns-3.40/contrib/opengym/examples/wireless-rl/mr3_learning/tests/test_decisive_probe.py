@@ -29,6 +29,14 @@ class DecisiveProbeTests(unittest.TestCase):
                 with self.assertRaisesRegex(RuntimeError,'source checkpoint reached'):
                     decisive_tests.check(path,'0'*40)
 
+    def test_explicit_diagnostic_parent_has_exact_custody_entry(self):
+        native,_=decisive_tests.custody.load_implementation()
+        argv=[decisive_tests.PYTHON,'-B','-m','mr3_learning.decisive_probe','--plan','/tmp/plan.json']
+        self.assertEqual(native.native_parent_module(argv),'mr3_learning.decisive_probe')
+        for changed in ([*argv,'--unbound'],['/usr/bin/python3',*argv[1:]],
+                        [*argv[:-1],'relative.json'],[*argv[:3],'mr3_learning.other',*argv[4:]]):
+            with self.assertRaises(ValueError):native.native_parent_module(changed)
+
     def test_independent_replay_accepts_events_and_rejects_tampering(self):
         f,p=Fixture(),Probe();rows=[];decisions=[];prior=None
         for t in range(33):

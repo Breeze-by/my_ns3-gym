@@ -310,12 +310,15 @@ class MotionSafety(Node):
                 "state": "UNBOUND", "authority_sequence": 0, "owner": None,
                 "raw_goal_generation": None, "raw_goal_association": "UNKNOWN_UNSTAMPED_TWIST"}
         gate.note_real_application(tracker)
-        # Refresh local proof every original normal phase, but emit the large
-        # witness only once per authority sequence. GRANT checks fresh local proof.
+        # Reconstruct genuine proof each normal phase. A prior ready notice is
+        # not permanent permission; refresh at most every 80 ms, inside the
+        # unchanged 100 ms grant bound. Never refresh a cached witness timestamp.
         ack = gate.observe_stop(tracker, clock_ns)
-        if ack is not None and self.authority_ready_sent[name] != gate.sequence:
+        sent = self.authority_ready_sent[name]
+        if ack is not None and (sent is None or sent[0] != gate.sequence
+                                or clock_ns-sent[1] >= 80_000_000):
             self.publish_authority_ack(name, ack, clock_ns)
-            self.authority_ready_sent[name] = gate.sequence
+            self.authority_ready_sent[name] = (gate.sequence, clock_ns)
         return gate.input(request, clock_ns=clock_ns)
 
     def receive_reach_feed(self, message, name, kind):

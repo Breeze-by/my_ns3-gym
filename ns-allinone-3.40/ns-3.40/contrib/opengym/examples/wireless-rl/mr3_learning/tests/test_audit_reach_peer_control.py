@@ -413,7 +413,7 @@ class ReachPeerControlTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'three receipts consumed'):
             self.replay(data)
 
-    def test_episode_api_binds_raw_files_and_exclusive_output(self):
+    def test_episode_api_rejects_legacy_fixture_and_preserves_exclusive_output(self):
         data = make_fixture()
         with tempfile.TemporaryDirectory() as temp:
             directory = Path(temp)
@@ -421,10 +421,10 @@ class ReachPeerControlTests(unittest.TestCase):
                 content = ''.join(json.dumps(r, allow_nan=False)+'\n' for r in value) if name.endswith('.jsonl') else json.dumps(value)
                 (directory/name).write_text(content)
             result = audit.audit_episode(directory, FREEZE)
-            self.assertTrue(result['passed'], result['errors'])
-            self.assertFalse(result['historical_38_role_qualification'])
-            self.assertIn(str(directory/'motion_safety.jsonl'), result['bindings'])
-            self.assertIn('control_phase_worker.jsonl', result['artifact_proof'])
+            # This historical fixture deliberately has no owned-stream profile
+            # or complete native authority proof. Current admission must reject it.
+            self.assertFalse(result['passed'])
+            self.assertIn('mandatory receiving-authority profile missing', str(result['errors']))
             output = directory/'keep.json'; output.write_text('keep')
             with self.assertRaisesRegex(ValueError, 'exclusive'):
                 audit.main([str(directory), '--freeze', FREEZE, '--output', str(output)])

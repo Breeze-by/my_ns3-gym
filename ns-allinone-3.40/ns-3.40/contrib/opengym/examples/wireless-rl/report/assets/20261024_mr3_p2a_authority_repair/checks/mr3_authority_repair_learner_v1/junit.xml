@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="4" skipped="0" tests="34" time="5.449" timestamp="2026-10-24T16:33:29.837656+08:00" hostname="zhuyulab"><testcase classname="contrib.opengym.examples.wireless-rl.mr3_learning.tests.test_motion_authority_audit.IndependentAuthorityTests" name="test_actual_zero_evidence_then_grant_floor_and_generation_unknown" time="0.014" /><testcase classname="contrib.opengym.examples.wireless-rl.mr3_learning.tests.test_motion_authority_audit.IndependentAuthorityTests" name="test_duplicate_and_stale_do_not_refresh_lease_or_floor" time="0.011" /><testcase classname="contrib.opengym.examples.wireless-rl.mr3_learning.tests.test_motion_authority_audit.IndependentAuthorityTests" name="test_grant_without_local_stop_or_forged_callback_result_rejected" time="0.016" /><testcase classname="contrib.opengym.examples.wireless-rl.mr3_learning.tests.test_motion_authority_audit.IndependentAuthorityTests" name="test_raw_bytes_duplicate_keys_and_graph_scope_not_packet_authentication" time="0.029" /><testcase classname="contrib.opengym.examples.wireless-rl.mr3_learning.tests.test_motion_authority_audit.IndependentAuthorityTests" name="test_renew_owner_and_original_two_second_lease_enforced" time="0.012" /><testcase classname="contrib.opengym.examples.wireless-rl.mr3_learning.tests.test_motion_authority_audit.IndependentAuthorityTests" name="test_revoke_stops_nonzero_raw_and_retired_owner_never_regranted" time="0.011" /><testcase classname="contrib.opengym.examples.wireless-rl.mr3_learning.tests.test_motion_authority_audit.IndependentAuthorityTests" name="test_stop_anchor_rest_storage_and_original_debts_not_asserted_flags" time="0.026" /><testcase classname="contrib.opengym.examples.wireless-rl.mr3_learning.tests.test_motion_authority_audit.IndependentAuthorityTests" name="test_stop_requires_actual_applied_motor_zero_after_every_nonzero_callback" time="0.014" /><testcase classname="contrib.opengym.examples.wireless-rl.mr3_learning.tests.test_motion_authority_audit.DeferredTests" name="test_cancel_result_without_buffer_and_unclosed_tail_rejected" time="0.002" /><testcase classname="contrib.opengym.examples.wireless-rl.mr3_learning.tests.test_motion_authority_audit.DeferredTests" name="test_cleanup_requires_irreversible_stop_and_claims_no_normal_rest" time="0.001" /><testcase classname="contrib.opengym.examples.wireless-rl.mr3_learning.tests.test_motion_authority_audit.DeferredTests" name="test_no_ready_wrong_owner_rewritten_receipt_and_early_dispatch_rejected" time="0.002" /><testcase classname="contrib.opengym.examples.wireless-rl.mr3_learning.tests.test_motion_authority_audit.DeferredTests" name="test_normal_dispatch_rejects_old_ready_even_if_received_recently" time="0.001" /><testcase classname="contrib.opengym.examples.wireless-rl.mr3_learning.tests.test_motion_authority_audit.DeferredTests" name="test_true_delivery_preserved_until_matching_received_stop_ready_dispatch" time="0.001" /><testcase classname="contrib.opengym.examples.wireless-rl.mr3_learning.tests.test_motion_authority_audit.ProfileTests" name="test_exact_types_fixed_profile_and_missing_qualification_rejected" time="0.001" /><testcase classname="contrib.opengym.examples.wireless-rl.mr3_learning.tests.test_motion_authority_audit.WholeAdapterTests" name="test_actual_external_task_stop_frontier_required_without_inferred_protocol_trigger" time="0.008"><failure message="ValueError: grant used stale received stopReady">self = &lt;mr3_learning.tests.test_motion_authority_audit.WholeAdapterTests testMethod=test_actual_external_task_stop_frontier_required_without_inferred_protocol_trigger&gt;
+
+    def test_actual_external_task_stop_frontier_required_without_inferred_protocol_trigger(self):
+        rows,steps,context,cls=adapter_fixture(external=True)
+&gt;       self.assertEqual(a.replay_adapter(rows,steps,EPOCH,context,cls)['deferred_terminal_dispatches'],1)
+
+mr3_learning/tests/test_motion_authority_audit.py:366: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+mr3_learning/motion_authority_audit.py:674: in replay_adapter
+    require(0&lt;=now-scheduler.ready[robot]['clock_ns']&lt;=100_000_000,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = False, reason = 'grant used stale received stopReady'
+
+    def require(value,reason):
+&gt;       if not value:raise ValueError(reason)
+E       ValueError: grant used stale received stopReady
+
+mr3_learning/motion_authority_audit.py:35: ValueError</failure></testcase><testcase classname="contrib.opengym.examples.wireless-rl.mr3_learning.tests.test_motion_authority_audit.WholeAdapterTests" name="test_natural_and_quick_terminal_keep_original_immediate_order" time="0.003"><failure message="ValueError: grant used stale received stopReady">self = &lt;mr3_learning.tests.test_motion_authority_audit.WholeAdapterTests testMethod=test_natural_and_quick_terminal_keep_original_immediate_order&gt;
+
+    def test_natural_and_quick_terminal_keep_original_immediate_order(self):
+        for kwargs in (dict(natural=True),dict(quick=True)):
+            rows,steps,context,cls=adapter_fixture(**kwargs)
+&gt;           result=a.replay_adapter(rows,steps,EPOCH,context,cls)
+
+mr3_learning/tests/test_motion_authority_audit.py:385: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+mr3_learning/motion_authority_audit.py:674: in replay_adapter
+    require(0&lt;=now-scheduler.ready[robot]['clock_ns']&lt;=100_000_000,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = False, reason = 'grant used stale received stopReady'
+
+    def require(value,reason):
+&gt;       if not value:raise ValueError(reason)
+E       ValueError: grant used stale received stopReady
+
+mr3_learning/motion_authority_audit.py:35: ValueError</failure></testcase><testcase classname="contrib.opengym.examples.wireless-rl.mr3_learning.tests.test_motion_authority_audit.WholeAdapterTests" name="test_original_float_stop_gate_rejects_same_ns_ulp_edge_but_allows_later_dispatch" time="0.004"><failure message="AssertionError: &quot;original float dispatch gate&quot; does not match &quot;grant used stale received stopReady&quot;">ValueError: grant used stale received stopReady
+
+During handling of the above exception, another exception occurred:
+
+self = &lt;mr3_learning.tests.test_motion_authority_audit.WholeAdapterTests testMethod=test_original_float_stop_gate_rejects_same_ns_ulp_edge_but_allows_later_dispatch&gt;
+
+    def test_original_float_stop_gate_rejects_same_ns_ulp_edge_but_allows_later_dispatch(self):
+        rows,steps,context,cls=adapter_fixture(natural=True)
+        payload=dict(message=dict(stamp=dict(sec=2,nanosec=780_000_000),frame_id='map'),
+            clock_ns=2_780_000_000,started_at=1.)
+        rows.append(dict(epoch=EPOCH,kind='authority_task_stop_callback',stamp=2.78,payload=payload))
+        self.assertGreater(2+780_000_000/1e9,2_780_000_000/1e9)
+&gt;       with self.assertRaisesRegex(ValueError,'original float dispatch gate'):
+E       AssertionError: "original float dispatch gate" does not match "grant used stale received stopReady"
+
+mr3_learning/tests/test_motion_authority_audit.py:344: AssertionError</failure></testcase><testcase classname="contrib.opengym.examples.wireless-rl.mr3_learning.tests.test_motion_authority_audit.WholeAdapterTests" name="test_original_goal_dispatcher_replayed_at_true_deferred_frontier" time="0.005"><failure message="ValueError: grant used stale received stopReady">self = &lt;mr3_learning.tests.test_motion_authority_audit.WholeAdapterTests testMethod=test_original_goal_dispatcher_replayed_at_true_deferred_frontier&gt;
+
+    def test_original_goal_dispatcher_replayed_at_true_deferred_frontier(self):
+        rows,steps,context,cls=adapter_fixture()
+&gt;       result=a.replay_adapter(rows,steps,EPOCH,context,cls)
+
+mr3_learning/tests/test_motion_authority_audit.py:378: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+mr3_learning/motion_authority_audit.py:674: in replay_adapter
+    require(0&lt;=now-scheduler.ready[robot]['clock_ns']&lt;=100_000_000,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = False, reason = 'grant used stale received stopReady'
+
+    def require(value,reason):
+&gt;       if not value:raise ValueError(reason)
+E       ValueError: grant used stale received stopReady
+
+mr3_learning/motion_authority_audit.py:35: ValueError</failure></testcase><testcase classname="contrib.opengym.examples.wireless-rl.mr3_learning.tests.test_motion_authority_audit.WholeAdapterTests" name="test_protocol_early_terminal_missing_ready_and_owner_tamper_rejected" time="0.012" /><testcase classname="contrib.opengym.examples.wireless-rl.mr3_learning.tests.test_motion_authority_audit.WholeAdapterTests" name="test_unknown_authority_namespaces_and_unjustified_stale_ack_rejected_in_both_routes" time="0.011" /><testcase classname="contrib.opengym.examples.wireless-rl.mr3_learning.tests.test_motion_authority_metadata.MetadataEntryContracts" name="test_public_PPO_missing_or_mixed_authority_refuses_before_targets_or_model" time="0.024" /><testcase classname="contrib.opengym.examples.wireless-rl.mr3_learning.tests.test_motion_authority_metadata.MetadataEntryContracts" name="test_public_PPO_positive_complete_twelve_role_gate_reaches_only_pre_model_boundary" time="0.007" /><testcase classname="contrib.opengym.examples.wireless-rl.mr3_learning.tests.test_motion_authority_metadata.MetadataEntryContracts" name="test_public_benchmark_records_fixed_profile_without_native_worker" time="0.024" /><testcase classname="contrib.opengym.examples.wireless-rl.mr3_learning.tests.test_motion_authority_metadata.MetadataEntryContracts" name="test_supervisor_actual_reset_rpc_metadata_and_legacy_shape" time="0.013" /><testcase classname="contrib.opengym.examples.wireless-rl.mr3_learning.tests.test_authority_public_reader_wiring.ProbeReaderTests" name="test_full_nonprobe_does_not_borrow_probe_metadata_obligation" time="0.004" /><testcase classname="contrib.opengym.examples.wireless-rl.mr3_learning.tests.test_authority_public_reader_wiring.ProbeReaderTests" name="test_full_old_definition_defaults_to_original_profile" time="0.013" /><testcase classname="contrib.opengym.examples.wireless-rl.mr3_learning.tests.test_authority_public_reader_wiring.ProbeReaderTests" name="test_full_probe_role_missing_or_mixed_metadata_rejected_before_dispatch" time="0.004" /><testcase classname="contrib.opengym.examples.wireless-rl.mr3_learning.tests.test_authority_public_reader_wiring.ProbeReaderTests" name="test_full_selected_v2_unique_inverse" time="0.011" /><testcase classname="contrib.opengym.examples.wireless-rl.mr3_learning.tests.test_authority_public_reader_wiring.ProbeReaderTests" name="test_reset_missing_wrong_pair_rejected_old_default_preserved" time="0.001" /><testcase classname="contrib.opengym.examples.wireless-rl.mr3_learning.tests.test_authority_public_reader_wiring.ProbeReaderTests" name="test_reset_reader_both_profiles_execute_unique_original_inverse" time="0.021" /><testcase classname="contrib.opengym.examples.wireless-rl.mr3_learning.tests.test_authority_public_reader_wiring.PublicAuthorityTests" name="test_controlled_both_public_dispatches_forward_exact_plan_context" time="0.002" /><testcase classname="contrib.opengym.examples.wireless-rl.mr3_learning.tests.test_authority_public_reader_wiring.PublicAuthorityTests" name="test_full_public_motion_and_execution_input_routes_require_substantive_proof" time="0.012" /><testcase classname="contrib.opengym.examples.wireless-rl.mr3_learning.tests.test_authority_public_reader_wiring.PublicAuthorityTests" name="test_public_role_requires_all_robots_stop_debts_protocol_and_unknown_generation" time="0.001" /><testcase classname="contrib.opengym.examples.wireless-rl.mr3_learning.tests.test_authority_public_reader_wiring.PublicAuthorityTests" name="test_public_runtime_missing_authority_profile_rejected_before_source_or_raw" time="0.003" /></testsuite></testsuites>

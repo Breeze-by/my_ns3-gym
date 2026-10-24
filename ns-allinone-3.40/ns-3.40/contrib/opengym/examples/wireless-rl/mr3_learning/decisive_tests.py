@@ -75,7 +75,8 @@ def prepare():
 def check(plan_path, freeze, clean=False):
     path = Path(plan_path)
     declared = json.loads(path.read_bytes())
-    require(declared.get('diagnostic_contract') == 'mr3-p2a-decisive-tests-v1', 'wrong decisive scope')
+    require(declared.get('diagnostic_contract') in ('mr3-p2a-decisive-tests-v1',
+        'mr3-p2a-authority-repair-v2'), 'wrong decisive scope')
     # The live observer's actual entry allow-list must pass before any World.
     # A new producer module needs explicit custody integration first.
     native, _ = custody.load_implementation()

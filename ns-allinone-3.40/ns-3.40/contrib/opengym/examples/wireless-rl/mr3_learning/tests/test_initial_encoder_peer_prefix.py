@@ -269,12 +269,14 @@ class NewPrefixTests(unittest.TestCase):
         native = SimpleNamespace(load_binding=Mock(return_value=bound), configurations=Mock(return_value=configs))
         plan = {'actuation_profile': PROFILE,'safety_contract':'mr3-reach-v1',
                 'motion_authority_profile':AUTHORITY_PROFILE,'custody_binding': '/synthetic/binding.json'}
-        with patch.object(plan_builder, 'load_plan', return_value=plan) as loaded, \
+        with tempfile.TemporaryDirectory() as directory, \
+             patch.object(plan_builder, 'load_plan', return_value=plan) as loaded, \
              patch.object(plan_builder, 'source_check', return_value={'synthetic': 'source'}) as source, \
              patch.object(audit.custody, 'load_implementation', return_value=(native, {})):
-            actual = audit.native_profile_context('/synthetic/episode', data['metadata.json'], '/synthetic/plan.json')
-        loaded.assert_called_once_with(Path('/synthetic/plan.json'), ROOT)
-        source.assert_called_once_with(plan, Path('/synthetic/plan.json'), FREEZE, ROOT, require_clean=False)
+            plan_path=Path(directory)/'plan.json';plan_path.write_text(json.dumps(plan))
+            actual = audit.native_profile_context('/synthetic/episode', data['metadata.json'], plan_path)
+        loaded.assert_called_once_with(plan_path, ROOT)
+        source.assert_called_once_with(plan, plan_path, FREEZE, ROOT, require_clean=False)
         native.load_binding.assert_called_once_with('/synthetic/binding.json', FREEZE, root=ROOT)
         native.configurations.assert_called_once_with(Path('/synthetic/episode'), bound)
         read.finish.assert_called_once_with()

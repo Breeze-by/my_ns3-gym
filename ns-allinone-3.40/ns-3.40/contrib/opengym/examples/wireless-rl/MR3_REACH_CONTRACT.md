@@ -123,3 +123,8 @@ producer 保持原 float yaw/cosf/sinf/body conversion。c²+s²并非精确1。
 safety 为执行 sidecar。actor维度、候选、mask、地图和reward定义不因它增加；三台本机guard仅取自己的raw，
 同伴几何和模式仅取实际交付 bundle。无手工方向/目标兜底、无真值控制输入。
 PPO入口仅在同freeze、同显式规则的完整原生资格及前驱学习审计通过时放行；当前尚无新规则资格，不能借旧38角色或旧模型进入。
+
+
+## 2026-10-24 receiving authority v2 修复契约
+
+本次用户授权执行修复路线。现行 `mr3-owned-stream-authority-v2` 保持全部原停止谓词和 100 ms 接收证据门；真实 witness 最多每80 ms重新发布，发送 grant/运行中取消终态使用≤100 ms证据。任务已不可逆停止时，仅释放真实 native terminal 的 ownership，不要求能再次授予运动的 witness；独立事件明确不供 normal-stop/物理资格。故障仍 fail-closed，日志保存具体拒绝谓词与前态。完整原生资格必须新冻结重新验证，详见[修复报告](report/20261024_mr3_p2a_authority_repair.md)。

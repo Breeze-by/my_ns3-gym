@@ -193,6 +193,22 @@ class DeferredTests(unittest.TestCase):
             with self.subTest(attack=attack),self.assertRaises(ValueError):
                 scheduler.dispatch(dispatch,dispatch['dispatch_clock_ns'],current)
 
+    def test_cleanup_requires_irreversible_stop_and_claims_no_normal_rest(self):
+        scheduler,current,delivery,dispatch=self.setup_chain();scheduler.ready.clear()
+        cleanup=dict(robot=ROBOT,goal_id=current['goal_id'],original_delivery=delivery,
+            dispatch_clock_ns=7_040_000_000,receipt_times_rewritten=False,dispatcher_stopped=True,
+            motion_regrant_allowed=False,normal_stop_evidence_claimed=False)
+        with self.assertRaises(ValueError):scheduler.cleanup_dispatch(cleanup,7_040_000_000,current,False)
+        changed=dict(cleanup,normal_stop_evidence_claimed=True)
+        with self.assertRaises(ValueError):scheduler.cleanup_dispatch(changed,7_040_000_000,current,True)
+        self.assertEqual(scheduler.cleanup_dispatch(cleanup,7_040_000_000,current,True),delivery['payload'])
+        scheduler.finish()
+
+    def test_normal_dispatch_rejects_old_ready_even_if_received_recently(self):
+        scheduler,current,delivery,dispatch=self.setup_chain()
+        dispatch['dispatch_clock_ns']=7_100_000_001
+        with self.assertRaises(ValueError):scheduler.dispatch(dispatch,7_100_000_001,current)
+
     def test_cancel_result_without_buffer_and_unclosed_tail_rejected(self):
         scheduler,current,delivery,dispatch=self.setup_chain()
         with self.assertRaisesRegex(ValueError,'unclosed'):scheduler.finish()
@@ -282,7 +298,7 @@ def adapter_fixture(*,natural=False,quick=False,external=False):
             accept_delivery=accept,permission='zero_only'),1.1)
         result=envelope('result',4,1.08,1.2);record('delivery',result,1.2);oracle.on_result(ROBOT,goal,4,1.2);flush(1.2)
         return rows,transitions,dict(ack_publications=ack_publications,callbacks=callbacks),GoalDispatcher
-    ready(0,None,1.,1.12);publish('grant',1.12,1,3.)
+    ready(0,None,1.1,1.12);publish('grant',1.12,1,3.)
     if natural:
         terminal=dict(robot=ROBOT,goal_id=goal,status=4,native_identity=accepted,terminal_callback_clock_ns=a.clock(1.3))
         record('authority_native_terminal_callback',terminal,1.3)
@@ -311,6 +327,12 @@ def adapter_fixture(*,natural=False,quick=False,external=False):
     result=envelope('result',5,6.4,6.5);record('delivery',result,6.5)
     record('authority_terminal_buffered',dict(robot=ROBOT,goal_id=goal,delivery=result,
         authority_sequence=7,buffered_clock_ns=a.clock(6.5),receipt_times_rewritten=False),6.5)
+    if external:
+        record('authority_terminal_cleanup_dispatched',dict(robot=ROBOT,goal_id=goal,
+            original_delivery=result,dispatch_clock_ns=a.clock(6.5),receipt_times_rewritten=False,
+            dispatcher_stopped=True,motion_regrant_allowed=False,normal_stop_evidence_claimed=False),6.5)
+        oracle.on_result(ROBOT,goal,5,6.5);flush(6.5)
+        return rows,transitions,dict(ack_publications=ack_publications,callbacks=callbacks),GoalDispatcher
     wire=ready(7,current,7.2,7.22)
     record('authority_terminal_dispatched',dict(robot=ROBOT,goal_id=goal,original_delivery=result,
         matching_ready_ack=wire,dispatch_clock_ns=a.clock(7.24),receipt_times_rewritten=False),7.24)

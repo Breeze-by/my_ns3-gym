@@ -1048,3 +1048,8 @@ PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /home/zhuyulab/miniconda3/envs/ns3g
 不是原生资格或训练推荐；只按V37冻结计划执行有界代理profile/短探针。
 
 2026-10-24 decisive continuation: first behavior arm failed and is not rerun. After clean pushed freeze and fixed-input/identity precheck, run the source-bound `report/assets/20261024_mr3_p2a_decisive_tests/capacity_continuation.py --freeze <exact40>` through reach_execution; only original benchmark capacity plan runs. See decisive test report for scope and first failure.
+
+
+### 2026-10-24 authority v2 有限修复验证
+
+现行 Reach 自动选择 `mr3-owned-stream-authority-v2`，旧 v1 资格不可复用。原三机、场景、控制/停车界和物理 profile 不变。新诊断在 wireless-rl 中经 `python -B -m mr3_learning.authority_repair prepare` 准备，提交推送干净 exact freeze 后 `python -B -m mr3_learning.authority_repair check --freeze <40位HEAD>`，再由 `reach_execution --scope engineering` 包住 `python -B -m mr3_learning.authority_repair run --freeze <40位HEAD>`。必须使用 ns3gym 解释器、`PYTHONNOUSERSITE=1` 并移除外来 `PYTHONPATH`。exclusive 输出 `/tmp/mr3_p2a_authority_repair_v1`，不覆盖/重复旧试验；首臂失败不自动执行容量或训练。详细范围及预算见共享修复报告。

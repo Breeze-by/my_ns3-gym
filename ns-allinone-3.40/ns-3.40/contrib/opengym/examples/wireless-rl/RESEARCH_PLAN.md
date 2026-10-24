@@ -1,3 +1,5 @@
+2026-10-24 用户已授权执行决定性测试的建议路线。当前进行 authority v2 新鲜证据交接与不可逆 task-stop 的 native terminal 关闭修复；原安全数学/100ms/5秒/95%保持。软件测试与新freeze准备中，无新native/资格/学习；拟26000有限工程预约承接U115431.2861004196018/C180000，pilot/final不动，P2A未完成。见[修复执行记录](report/20261024_mr3_p2a_authority_repair.md)。下方旧日期记录保留原适用范围。
+
 2026-10-24 决定性实测已闭合：原规则下 tb3 满5秒/v0.168452/newpath0.733715且原mask True的实际WAIT请求已出现；完整取消资格未获。行为臂tb1、独立原benchmark容量臂tb2均invalid_authority→navigation_failure/IPC超时，强制关闭；后者64/128返回、cadence/closure FAIL，不能将失败前缀的预算比较True当capacity。两完整父671.931212850+2074.049093921=2745.980306771秒，U115431.2861004196018/C180000/R64568.7138995803982；pilot/final不动、P2A未完成。150保存身份gone，1448原件与1120源无损封存；先authority/正常关闭，再有限行为与成功容量，未改安全公式或启动学习。 见[测试结果与路线建议](report/20261024_mr3_p2a_decisive_tests.md)。下方准备/接续段为历史状态。
 
 2026-10-24 用户要求两项决定性实测，现准备独立有限诊断：96步异步运动取消与双worker各64步完整成本；不替代V75完整资格、不启动学习，原科学门/旧FAIL/pilot-final保持。见[测试声明](report/20261024_mr3_p2a_decisive_tests.md)。

@@ -201,8 +201,12 @@ class ProbeV3ReplayTests(unittest.TestCase):
             if Path(path)==ROOT/replay.SOURCE and not Path(path).exists():
                 return original_sha(replay.__file__)
             return original_sha(path)
-        with tempfile.TemporaryDirectory(prefix='probe-v3-plan-') as tmp:
+        with tempfile.TemporaryDirectory(prefix='probe-v3-plan-',dir=ROOT) as tmp:
             root=Path(tmp);plan_path=root/'plan.json'
+            # Explicit current-profile artificial binding; never relabel the historical native proof.
+            from mr3_learning.motion_authority_profile import MOTION_AUTHORITY_PROFILE
+            value['motion_authority_profile']=MOTION_AUTHORITY_PROFILE
+            binding=root/'fixture_binding.json';binding.write_text(json.dumps(value))
             with patch.object(preparation,'sha',side_effect=source_sha):
                 plan=preparation.build_plan(plan_path=plan_path,output_directory=root/'output',run_root=root/'native',
                     custody_binding=binding,binary_proof=root/'binary.json',preflight=root/'preflight.json',
