@@ -1,6 +1,6 @@
 # P2A authority 交接与关闭修复
 
-**第一轮原生结果：交接修复尚未通过；失败后的正常返回与关闭在本次真实故障中通过。精确竞态已定位，下一版改为接收端控制阶段激活。**
+**v3 已完成96步、三机各两轮运动取消与交接，并正常退出；独立刺激、information、cadence/runtime通过。整体诊断仍因FIFO读者遗漏UNBOUND权限记录而FAIL，容量尚未执行。**
 
 用户已授权按[决定性测试建议](20261024_mr3_p2a_decisive_tests.md)执行。本轮先修具体协议链，再做有限行为试验，通过后才执行容量臂。旧失败原件与结论保留。
 
@@ -62,3 +62,30 @@ scope现为前瞻原生准入，仍必须运行时新freeze/clean/来源/ELF门�
 冻结3af8a615f在World前被来源范围门拒绝：prepare时新测试文件尚未tracked，提交后source_inventory新增此文件。原arms=[]、完整来源验证未完成；只有外父5源前后稳定，不能称完整范围通过。真实外父rc1/0.516007944秒，累计116147.7953337696018，余63852.2046662303982；四原件与已保存身份absence见[准入闭合](assets/20261024_mr3_p2a_authority_activation/admission_failure_v1/closure.json)。
 
 forward只更改入口输出/清单/末账，复用逐源相等的v3核心、实际current21 build及CPU证明。新包 `20261024_mr3_p2a_authority_activation_forward`，新exclusive `/tmp/mr3_p2a_authority_activation_forward_v1` 与外父 `/tmp/mr3_authority_activation_forward_root_v1`；26000预约、两臂及全部科学门不变。旧清单与失败原样保留；新清单须在INDEX与新HEAD对当前必需inventory做包含检查后继续。
+
+## v3实际原生与独立审计结果
+
+执行冻结 `5d070c33d1c5d0aa785d444797b3ede80cbc1535`，真实外父rc1。原生96/96返回、collector rc0，三机自然暖身SUCCEEDED后各完成两轮运动WAIT取消、CANCELED回执、三次新鲜静止与三秒交接。独立stimulus读者通过，不以producer输出当oracle。六次取消前接收速度0.168291879–0.199835656 m/s、新路径0.724688927–0.760927329 m；原v≥.08、newpath≥.05、5秒及其余安全门未放宽。[独立刺激原结果](assets/20261024_mr3_p2a_authority_activation_forward/results/stimulus_result.json)。
+
+正常退出已实证：worker/launch均rc0、forced_shutdown=false、failed_sample=false、remaining owned/zombie为空；本次为external_truncation的完整固定96步结束，不是P2A完成。[原生结果](assets/20261024_mr3_p2a_authority_activation_forward/results/native.json)、[关闭原件](assets/20261024_mr3_p2a_authority_activation_forward/results/shutdown.json)。
+
+| 本轮检查 | 真实结果 | 范围 |
+|---|---|---|
+| native / live custody | PASS / PASS | 真实执行与现场来源 |
+| 独立stimulus | PASS | 六次运动取消、真实接收生命周期 |
+| information | PASS | 信息边界及完整原始记录 |
+| cadence/runtime | PASS | 原控制节拍与运行时重放，不扩成连续物理或完整资格 |
+| FIFO | FAIL | peer decision missing independently reconstructed authority permission |
+| full diagnostic | SKIPPED | 缺通过的FIFO前置叶 |
+| closure角色 | FAIL | FIFO/phase leaf failed；不重判为进程异常 |
+| capacity | 未派发 | 原两臂条件未满足 |
+
+FIFO失败已通过源码和人工回归定位：replay_motion在UNBOUND分支验证了严格零权限，却未把该决策存入供后续全流查询的decision_permissions；后续FIFO检查找不到它。私有候选只保留这些已独立验证的权限条目，并严格校验序号；同一两项人工测试原版2F/候选2P，错误ACTIVE/owner/非零输出仍拒绝。候选尚未安装，不把本轮FIFO原FAIL改成PASS。
+
+原生完整2948.696478093秒，96步调用合计约2806.545028791秒，中位28.9288370135秒/步（末步包含终态边界）；FIFO2394.675349601秒、information2185.000587447秒、cadence1116.573110112秒，后两项并行，不能相加计费。完整连续外父实际7614.152750209秒，累计123761.9480839786018/C180000，余56238.0519160213982；pilot/final原额保持。[末账](assets/20261024_mr3_p2a_authority_activation_forward/closure_ledger.json)。
+
+1178绑定来源current/Git及原字节恢复通过，54保存运行身份fresh absent；1358普通原件共2889913160B无损封存274899718B，原件仍保留。关闭归档CPU实际rc0/265.401453636秒，两个CPU身份另gone、工程新增0。[完整库存](assets/20261024_mr3_p2a_authority_activation_forward/closed_inventory.json)。
+
+## 据此调整下一项诊断
+
+协议链已有本次真实行为、独立刺激及运行时正证据，暂未发现必须改变原安全数学的依据；但完整科学资格仍未取得。当前应安装已复现的FIFO读者修复，经新的CPU/来源检查后，以新冻结单独测双worker×64步完整采样成本。这个新活动是回答容量问题的独立工程试验，不把本轮总体FAIL当作入场资格，不合并不同freeze为同freeze资格，不进入PPO。保持全部原物理、安全、动作mask和95%要求；如果新试验失败，按真实失败与成本继续判断。

@@ -1,0 +1,92 @@
+{
+  "schema": "mr3-reach-native-wait-v1",
+  "freeze": "5d070c33d1c5d0aa785d444797b3ede80cbc1535",
+  "safety_contract": "mr3-reach-v1",
+  "plan_sha256": "a1e59f539b1fdb289debb0a3cfdf60a5bb1f549b720dcb0d7d7b264ddf5a8871",
+  "id": "fifo_000",
+  "role": null,
+  "argv": [
+    "/usr/bin/python3",
+    "-B",
+    "-m",
+    "mr3_learning.audit_reach_peer_control",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_authority_activation_forward_v1/feasibility/worker0/episode001_open_101",
+    "--freeze",
+    "5d070c33d1c5d0aa785d444797b3ede80cbc1535",
+    "--plan",
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_authority_activation_forward/feasibility.json",
+    "--output",
+    "/tmp/mr3_p2a_authority_activation_forward_v1/feasibility/fifo_000_result.json"
+  ],
+  "command_argv": [
+    "/usr/bin/python3",
+    "-B",
+    "-m",
+    "mr3_learning.audit_reach_peer_control",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_authority_activation_forward_v1/feasibility/worker0/episode001_open_101",
+    "--freeze",
+    "5d070c33d1c5d0aa785d444797b3ede80cbc1535",
+    "--plan",
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_authority_activation_forward/feasibility.json",
+    "--output",
+    "/tmp/mr3_p2a_authority_activation_forward_v1/feasibility/fifo_000_result.json"
+  ],
+  "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+  "output": "/tmp/mr3_p2a_authority_activation_forward_v1/feasibility/fifo_000_result.json",
+  "receipt": "/tmp/mr3_p2a_authority_activation_forward_v1/feasibility/fifo_000_command.json",
+  "console": "/tmp/mr3_p2a_authority_activation_forward_v1/feasibility/fifo_000.log",
+  "required": true,
+  "started_wall_monotonic_ns": 4582288055759464,
+  "launcher_identity": {
+    "pid": 2873285,
+    "parent": 2873282,
+    "group": 2873280,
+    "session": 2873280,
+    "start_ticks": 457927611,
+    "state": "S"
+  },
+  "errors": [],
+  "returncode": 1,
+  "passed": false,
+  "result_pass_key": "passed",
+  "result_scope": "declared command result only; independent scientific and final closure gates remain necessary",
+  "coordinator_identity": {
+    "pid": 2873285,
+    "parent": 2873282,
+    "group": 2873280,
+    "session": 2873280,
+    "start_ticks": 457927611,
+    "state": "S"
+  },
+  "coordinator_actual_argv": [
+    "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+    "-B",
+    "-m",
+    "mr3_learning.authority_repair",
+    "run",
+    "--freeze",
+    "5d070c33d1c5d0aa785d444797b3ede80cbc1535"
+  ],
+  "launcher_identity_scope": "persistent_coordinator_not_native_owned",
+  "benchmark_parent": {
+    "pid": 2972741,
+    "parent": 2873285,
+    "group": 2873280,
+    "session": 2873280,
+    "start_ticks": 458228805,
+    "state": "R"
+  },
+  "process_identity": {
+    "pid": 2972741,
+    "parent": 2873285,
+    "group": 2873280,
+    "session": 2873280,
+    "start_ticks": 458228805,
+    "state": "R"
+  },
+  "pid": 2972741,
+  "ended_wall_monotonic_ns": 4584682731109065,
+  "wall_seconds": "2394.675349601",
+  "execution_kind": "subprocess_waited",
+  "output_sha256": "f89591f974fb6748b438c5ee90b255ae20da82a6416c968e409bcb1ed6178e4d"
+}
