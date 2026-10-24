@@ -9137,3 +9137,21 @@ Canonical CPU工具1554真实reap0、scope制作工具29523真实reap0，均scop
 canonical Root17796实际reap0，17P(13+4)、4.140205043秒、97源前后/current/全恢复与2gone；独立source/metadata复核direct32441e实际0/.216206044秒、206绑定稳/own2gone，runtime26 exact。私有consumer12→13、parent0→4分轮保留；7根289regular5136148B→1286661B/0link全恢复，archiveCPU15200真0/1.224805289秒/2源恢复/own2gone，工程0，不相加成新科学判据。原motion/旧两input/342库/World未被这些准备工作语义读取或执行。
 
 入口为canonical A73 run_description_v1.py --freeze <新的已push exact40G>，解释20源+consumer再加五项配置/metadata共26源，完整argv/环境及测试路径见[A73实际canonical回执](report/assets/20261024_mr3_p2a_v73_command_chain_description/checks/canonical_CPU_postreap_proof_v1.json)。Root尚须force-stage、INDEX检查、commit/push、clean/exactHEAD后唯一消费。U112586.9296634976018/C180000/R67413.0703365023982不变；pilot/final原额、V71FAIL和95%/物理门保持，capacityFalse，P2A未完成。详见[V73预声明](report/20261024_mr3_p2a_v73_command_chain_description.md)。
+
+
+## 2026-10-24 V73 单motion命令链描述的实际闭合
+
+代码G45396954ed2612980859cff4629af1e6a662114c，Root5969初27397c/终dc2dc7真实reap0。原证据G b3707dcf2、前账G74c8f7101保持不同范围。固定输入507221955B整SHA/232887行/parse0/semantic0/gap0通过；派生2554234B/SHAe467364d394108cd7acb0953663922d4f040cd38ffdb0785bdc66b62fe205c81。没有模型、训练、评估或新World；实际argv见封存的parent/execution与RootTool原件。
+
+描述PASS不是原native/physics/资格PASS。precleanup postcommit[44.72,49.72)每机250exact raw ACTIVE控制tick，tb1/2收到v0且Reach clear；tb3正raw/effective(237≥.08)→output0，223 brake+27 envelope、均D。每机353APPLIED exactReach/storage且bodytarget v0，不能说双轮命令0或wheel-readback/plant证明；具体peer与完整根因UNKNOWN，原V71FAIL不改。下一仅V74有界提取tb3拒绝checks与own/peer/intent引用，新spec/预算/freeze未声明，不改rank/plant/原R/.5/B_stop/D/math/5s，不重跑或直接World。
+
+费用52.742855767连续parent秒（bootstrap→post-source ended、summary序列化前记录边界），nestedconsumer48.374098953及Root不叠加。U112639.6725192646018/C180000/R67360.3274807353982；原pilot/final不动。26source before/after/currentGit+全恢复/main2gone；关闭CPU10913真0/7.123449494秒/4source恢复/own2gone/工程0。42新regular4185292B→458027B/0link全恢复，关闭不再读原motion/旧两inputs/342库。规范ledger6066B/SHA4211c4b4ed13d26db405b93797fc1ea3a937b705f420f49db8cce2762f34d271，root_cause原封UNKNOWN_PENDING_SEPARATE_DERIVED_ROUTE_REVIEW；capacityFalse、P2A未完成。见[V73实际闭合](report/20261024_mr3_p2a_v73_command_chain_description.md)。
+
+
+## 2026-10-24 V74 固定tb3 Reach拒绝字段描述的软件准备
+
+2026-10-24 V74固定tb3 Reach拒绝字段描述软件准备完成：同V71 motion507221955B，仅[44.72,49.72)≤12完整原行/4MiB，300parent240work；canonical Root52429真0/17P(13+4)/.890931161秒、98source前后current/全恢复/own2gone。两个独立source-only短审与安装对应核验完成，不另冒独立CPU。21解释+consumer及配置/metadata共27runtime源；spec在canonical CPU前前瞻admittedTrue，真实提取/新G尚未产生，不预claim描述PASS。不数学replay、不将literalD/X或APPLIED当wheel-readback/plant。U112639.6725192646018/C180000/R67360.3274807353982不变，原pilot/final/V71FAIL/科学门保持；capacity/autoPolicyFalse、P2A未完成。
+
+代码：尚未封新执行G，证据G b3707dcf258c832f35ef60f47a5dc8dc52296629与前账G45396954ed2612980859cff4629af1e6a662114c分开。准备不消费原件/模型/World；后继入口为canonical run_description_v1 --freeze <new exact pushedG>，完整argv与环境/17测试路径见[实际回执](report/assets/20261024_mr3_p2a_v74_reach_rejection_description/checks/canonical_CPU_postreap_proof_v1.json)。
+
+私有13/13/4分别保留，不充新的30独立判据；3候选根+边界v3+父短审264regular4961844B→1256139B/0link/fullrestore，archiveCPU43991真0/1.296306911秒/2source恢复/own2gone/工程0。Root下一force-stage/INDEX/commit/push/clean/exactHEAD才唯一提取，输入整SHA/固定窗/完整行/unknown/partial门保持；实际sourceguard/新G/消费结果不预填。见[V74预声明](report/20261024_mr3_p2a_v74_reach_rejection_description.md)。

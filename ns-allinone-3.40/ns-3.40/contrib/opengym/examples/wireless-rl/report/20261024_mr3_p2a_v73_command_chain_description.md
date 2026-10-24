@@ -1,3 +1,21 @@
+# MR3 P2A V73：单 motion 请求到应用链描述的实际闭合
+
+V73固定单流描述实际PASS：执行G `45396954ed2612980859cff4629af1e6a662114c`，Root5969初27397c/终dc2dc7真实reap0。完整输入507221955B/SHA f27397fa…，232887行，parse/semantic/sequence-gap均0；consumer work48.085001603秒，派生输出2554234B/SHA `e467364d394108cd7acb0953663922d4f040cd38ffdb0785bdc66b62fe205c81`。仅描述PASS，V71原生FAIL、original_activity_passed={present:true,value:false}及科学门保持；无新World、轮反馈/plant证明、学习、容量或P2A完成信用。
+
+规范[末账](assets/20261024_mr3_p2a_v73_command_chain_description/closure_ledger_v1.json)6066B/SHA `4211c4b4ed13d26db405b93797fc1ea3a937b705f420f49db8cce2762f34d271`：连续parent52.742855767秒，U112639.6725192646018/C180000/R67360.3274807353982。费用从same-PID bootstrap起点到post-source ended、summary序列化前记录边界，含gaps；consumer wait48.374098953秒与Root工具区间不另加。原300parent/240work软门满足，pilot1870/2905.9547395464029秒、final-only900/9000秒原额保持，工程上限仍为代理依持续委托选择，不声称逐数值用户批准。
+
+26源实际before/after/current-Git与全恢复快照一致；driver2244319/start456045326和consumer2244399/start456045559两保存身份freshgone，nonowned不声称gone。关闭CPU10913初fbfc52/终94ceff真实rc0/7.123449494秒，4执行源before/after/current与恢复一致、own2gone，工程0。主[库存](assets/20261024_mr3_p2a_v73_command_chain_description/closed_inventory_v1.json)42regular4185292B→458027B/0link，全字节恢复、原件不删；仅封存本次parent、RootTool、派生输出及已停写criteria，没有重开507MB原motion、旧两输入、drive CSV、pstats或342库。关闭CPU后继证据另存于[closing_CPU库存](assets/20261024_mr3_p2a_v73_command_chain_description/checks/closing_CPU_v1/inventory_v1.json)，不混入主活动费。原[criteria](assets/20261024_mr3_p2a_v73_command_chain_description/closed_execution_v1/tmp/mr3_p2a_v73_interpretation_criteria_v1/CRITERIA.md.rawbytes.gz)与[派生全文](assets/20261024_mr3_p2a_v73_command_chain_description/closed_execution_v1/tmp/mr3_p2a_v73_command_chain_description_v1.json.rawbytes.gz)按库存条目SHA恢复；此前已有opaque字节读取，不宣称原件从未读取。
+
+派生结果显示两类不同的阻断证据。在precleanup postcommit [44.72,49.72)每机250条控制tick中，raw均可exact join且receiving state为ACTIVE：tb1/2的raw=effective=output linear v均0、w=-.3，reason为reach_clear；tb3的250条raw/effective v均>0，其中237条≥.08，却全部output v=0，223条linear_brake_preserve_requested_turn、27条reach_transition_envelope，记录区域均D。D沿用既有固定anchor圆盘定义，不由标签推断真实物理违界。以上区分收到raw已为0与正effective被Reach拒绝，不确定具体peer，也不把guard定位冒充单一完整根因。规范ledger的root_cause仍为UNKNOWN_PENDING_SEPARATE_DERIVED_ROUTE_REVIEW，原字节不变。
+
+上述有限判读另见[独立derived-only复核](assets/20261024_mr3_p2a_v73_command_chain_description/checks/derived_functional_judgment_v1/REVIEW.md)及其原字段/引用；该复核只读本次派生结果，不重开原科学输入、不改原FAIL，也不代替下一V74准入。
+
+每机353条APPLIED均exact join到Reach/storage且body target.linear_x=0。body target为0不等于双轮命令0，实际转向/过渡仍保留；三机APPLIED rim均值均无≥.08。tb1/2各有一次极小正rim均值，位于cleanup后49.748/49.758秒，约3.54e-5/3.39e-5且bodytarget仍0，不是正向平移plant试验。APPLIED只属原日志接收/应用标签，不充wheel SetParam/readback或机体响应；当前没有正native body target依据，不为此追加读drive。raw goal生成、发布和交付时刻以及上游/具体peer的完整因果仍UNKNOWN。
+
+下一V74只前瞻设计对同固定已闭合motion原件的有界描述，提取tb3 rejected transition checks及own/peer/intent引用；R、.5、B_stop、D、原数学及5秒门保持，不改rank/plant，不重开V71/V73，不直接World。新spec/source闭包/预算/freeze/准入尚待独立声明，不预填已admitted或成功；暂停2+1/1+2与自然成功假设。capacity/autoPolicy=False，P2A未完成。
+
+历史准备快照：下文保留当时原文；其中“尚未执行/新G待封”只代表此前准备时点。
+
 # MR3 P2A V73：单 motion 请求到应用链的有界描述预声明
 
 V73 软件准备已完成，原 motion 描述尚未执行，也没有描述 PASS。Root 在所有 canonical CPU 之前，将固定一输入 spec 前瞻 admitted=True；该准入只授权本次有限描述，不能代替新 freeze、来源核验或实际读取。唯一输入为 V71 库存固定的 motion_safety.jsonl，507221955B/SHA `f27397fad35ca23d6957c6c41121fc548f3f4718ecbbfc90d906ddb064f7cd08`；完整 parent300/work240秒软费门、输出最多4MiB。工程仍 U112586.9296634976018/C180000/R67413.0703365023982，预约300，未新增活动实费；capacity/autoPolicy=False，P2A未完成。

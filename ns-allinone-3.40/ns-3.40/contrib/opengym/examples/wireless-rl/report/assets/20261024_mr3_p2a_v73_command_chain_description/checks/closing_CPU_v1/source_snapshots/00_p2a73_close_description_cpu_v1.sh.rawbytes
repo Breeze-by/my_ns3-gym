@@ -1,0 +1,4 @@
+#!/bin/bash
+set -eu
+cd /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl
+exec env -u PYTHONPATH -u PYTHONHOME PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 -B -m mr3_learning.reach_execution --scope cpu --output /tmp/p2a73_close_actual_wait_v1 --source /tmp/p2a73_close_description_cpu_v1.sh --source /tmp/p2a73_close_description_v1.py --source /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261022_mr3_p2a_v45_preparation_classification/collect_closed_v1.py --source /tmp/p2a73_description_closure_facts_v1.json -- /usr/bin/python3 -B /tmp/p2a73_close_description_v1.py

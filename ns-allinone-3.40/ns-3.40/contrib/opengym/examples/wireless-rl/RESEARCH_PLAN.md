@@ -1,6 +1,6 @@
 # MR3 研究路线：三机器人 RL 联合建图与冻结策略的 Wi-Fi 网络影响
 
-现行状态以[V73单motion预声明](report/20261024_mr3_p2a_v73_command_chain_description.md)及当前表格为准：canonical17项/97源恢复与独立runtime26复核已完成，仅软件准备；固定507221955B单流300/240描述尚未执行、新G待封。V72仅received描述PASS、V71原生FAIL保持，不自动native/policy；下方旧日期叙述保留历史范围。
+现行状态以[V74拒绝条件预声明](report/20261024_mr3_p2a_v74_reach_rejection_description.md)及当前表格为准：canonical17P/98source恢复与runtime27软件准备已完成，固定tb3拒绝字段/own-peer-intent引用描述尚未执行、新G待封。V73描述PASS与V71原生FAIL范围分开，不数学replay或自动native/policy；下方旧日期保留历史范围。
 
 2026-10-24 V62实际闭合FAIL：freeze81e63f506、tool80831真实reap rc1，startup触发原motion controlled execution phase wall guard expired，0个task transition；worker被ownedclose SIGTERM(-15)，forced/failed_sample=True，原remaining process/zombie数组均空，不能称正常close。原profile reader只在launcher header gate失败、pstats读取0；仅motion main文件及adapter main partial可用、worker无finished，五profile未全，根因UNKNOWN。1051source+12ELF before/after/current-Git一致，49保存PID/start freshgone，6 pre-exec祖先nonowned不claimgone。完整parent实费180.893159791，累计109067.3998164526018/C150000、余40932.6001835473982；nested/root墙时不叠加，pilot/final原额保持。148 regular原件213343452B→15944926B无损归档、0link/无oversized；metadata21.133850693s/archive21.266745912s真实CPU关闭，4 CPU身份另gone/工程0。capacity=False、P2A未完成、禁auto pilot/final。下一V63仅对两个已闭合main.pstats（894940B）做一次有限description，parent120/work60，先看真实热点；不重跑V62 native、不扩大原10秒controlled-phase wall guard。authority core/wiring/独立auditor继续只在/tmp，尚未安装；之后才诊断修复、probe-v2、实测优化/容量、新同freeze12EP30与真实学习/三strict95。 用户持续自主授权保持，不重复一般审批。 见[V62](report/20261024_mr3_p2a_v62_process_profile.md)与[末账](report/assets/20261024_mr3_p2a_v62_process_profile/closure_ledger_v1.json)；下方日期旧状态保留历史范围。
 
@@ -157,7 +157,7 @@ Wi-Fi 分组网络，测量信息延迟、丢失和陈旧对同一联合建图�
 
 | 项目 | 当前事实 | 新路线中的处理 |
 | --- | --- | --- |
-| ROS 2 / Gazebo / SLAM / Nav2 | 原验收/V71覆盖FAIL保持；V72仅received描述PASS，V73 canonical17项/97源恢复与runtime26软件复核通过，单motion原件尚未描述 | 新G后一次507221955B/300parent240work描述raw→authority effective→Reach→storage/APPLIED；不充wheel-write/readback/plant，暂停旧路由与直接World |
+| ROS 2 / Gazebo / SLAM / Nav2 | V71原生FAIL保持；V73只提供命令链描述，具体peer/完整根因未知；V74 canonical17P/98source恢复与runtime27准备已完成 | 新G后同motion固定tb3[44.72,49.72)≤12整行描述checks/own-peer-intent引用；300/240秒，不数学replay/改rank/plant/World |
 | `merge_map` | 公共坐标系的保守栅格融合；不是未知相对位姿的地图配准算法 | 保留融合规则，改变通信输入来源 |
 | `control.py` | 默认baseline手工探索；adapter模式独占目标接口，无手工兜底 | 两模式互斥，P1B已于2026-10-15验收 |
 | `peer_obstacles.py` | baseline读raw；adapter读理想交付状态，完整机体包络不变 | P3A还需DDS/进程隔离与断链证明 |

@@ -1,0 +1,93 @@
+{
+  "schema": "mr3-reach-outer-actual-wait-v1",
+  "scope": "cpu",
+  "safety_contract": "mr3-reach-v1",
+  "actual_argv": [
+    "/usr/bin/python3",
+    "-B",
+    "/tmp/p2a74_archive_candidate_history_v1.py",
+    "--kind",
+    "candidate"
+  ],
+  "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+  "coordinator_identity": {
+    "pid": 2249593,
+    "parent": 2249592,
+    "group": 2249592,
+    "session": 2249592,
+    "start_ticks": 456160534,
+    "state": "R"
+  },
+  "child_identity": {
+    "pid": 2249596,
+    "parent": 2249593,
+    "group": 2249592,
+    "session": 2249592,
+    "start_ticks": 456160548,
+    "state": "R"
+  },
+  "actual_returncode": 0,
+  "actual_waited": true,
+  "errors": [],
+  "started_monotonic_ns": 4561605488356579,
+  "ended_monotonic_ns": 4561606784663490,
+  "actual_child_wait_seconds": "1.296306911",
+  "source_before": [
+    {
+      "path": "/tmp/p2a74_candidate_history_cpu_v1.sh",
+      "sha256": "1327aa3b0d7462739313b533404557f1e03bc7e49e543cda0ff6707887a632c7",
+      "bytes": 496,
+      "stat": [
+        2051,
+        76651158,
+        496,
+        1792816207505243911,
+        1792816207505243911
+      ]
+    },
+    {
+      "path": "/tmp/p2a74_archive_candidate_history_v1.py",
+      "sha256": "226ca7f9f2313558b651cb2dd7b46f160c2f57fcfe377641d4b5ad6712a8332e",
+      "bytes": 10385,
+      "stat": [
+        2051,
+        76651157,
+        10385,
+        1792816207504243862,
+        1792816207504243862
+      ]
+    }
+  ],
+  "source_after": [
+    {
+      "path": "/tmp/p2a74_candidate_history_cpu_v1.sh",
+      "sha256": "1327aa3b0d7462739313b533404557f1e03bc7e49e543cda0ff6707887a632c7",
+      "bytes": 496,
+      "stat": [
+        2051,
+        76651158,
+        496,
+        1792816207505243911,
+        1792816207505243911
+      ]
+    },
+    {
+      "path": "/tmp/p2a74_archive_candidate_history_v1.py",
+      "sha256": "226ca7f9f2313558b651cb2dd7b46f160c2f57fcfe377641d4b5ad6712a8332e",
+      "bytes": 10385,
+      "stat": [
+        2051,
+        76651157,
+        10385,
+        1792816207504243862,
+        1792816207504243862
+      ]
+    }
+  ],
+  "source_unchanged": true,
+  "passed": true,
+  "console": {
+    "path": "/tmp/p2a74_candidate_history_actual_wait_v1/console.log",
+    "sha256": "225b524ba6dad96e600eeba15e2e5ca8ee9d7f27cce2eedc4f5af1d967af25fd"
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "schema": "mr3-v74-canonical-CPU-postreap-proof-v1",
+  "passed": true,
+  "actual_Root_tool_session": 52429,
+  "actual_tool_objects": {
+    "initial": {
+      "chunk_id": "5a3787",
+      "wall_time_seconds": 1.000928658,
+      "session_id": 52429,
+      "original_token_count": 0,
+      "output": ""
+    },
+    "final": {
+      "chunk_id": "c2fce9",
+      "wall_time_seconds": 1.9665e-05,
+      "exit_code": 0,
+      "original_token_count": 22,
+      "output": "{\"passed\": true, \"actual_returncode\": 0, \"actual_child_wait_seconds\": \"0.890931161\"}\n"
+    }
+  },
+  "actual_tests": 17,
+  "consumer_tests": 13,
+  "parent_tests": 4,
+  "actual_child_wait_seconds": "0.890931161",
+  "bound_source_count": 98,
+  "source_before_after_current_all_recovery_equal": true,
+  "saved_CPU_identities": [
+    {
+      "role": "coordinator_identity",
+      "saved": {
+        "pid": 2249442,
+        "parent": 2249439,
+        "group": 2249437,
+        "session": 2249437,
+        "start_ticks": 456158640,
+        "state": "R"
+      },
+      "freshgone": true
+    },
+    {
+      "role": "child_identity",
+      "saved": {
+        "pid": 2249443,
+        "parent": 2249442,
+        "group": 2249437,
+        "session": 2249437,
+        "start_ticks": 456158658,
+        "state": "R"
+      },
+      "freshgone": true
+    }
+  ],
+  "runtime_source_count": 27,
+  "original_motion_semantic_read_by_V74": false,
+  "engineering_added_seconds": "0",
+  "observed_monotonic_ns": 4561604772870334
+}

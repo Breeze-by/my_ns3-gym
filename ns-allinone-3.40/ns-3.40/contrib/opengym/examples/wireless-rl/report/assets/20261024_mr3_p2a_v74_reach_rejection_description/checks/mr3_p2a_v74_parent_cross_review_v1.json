@@ -1,0 +1,62 @@
+{
+  "schema": "mr3-v74-parent-source-only-cross-review-v1",
+  "review_passed": true,
+  "review_scope": "source-only fixed forward delta and consumer/spec contract; no CPU/main/original input",
+  "parent": {
+    "path": "/tmp/mr3_p2a_v74_description_parent_candidate_v1/run_description_v1.py",
+    "bytes": 21107,
+    "sha256": "88195c84604349bce9b6c67bb8a8d28710bac838773f3036ebceccf894715e34"
+  },
+  "forward_patch_matches_exact_canonical_A73_base": true,
+  "consumer": {
+    "path": "/tmp/mr3_p2a_v74_reach_rejection_candidate_v2/describe_reach_rejection_v1.py",
+    "bytes": 29725,
+    "sha256": "fed7f6eaa4b5b1f9cd2b6ac23a1f06bd427e4563f951fe531bd7e3f6787f528d"
+  },
+  "runtime_sources_expected": 27,
+  "source_bindings": 22,
+  "original_raw_excluded_from_source_hashes": true,
+  "source_paths": [
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v74_reach_rejection_description/describe_reach_rejection_v1.py",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/motion_safety.py",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_information.py",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_motion_authority.py",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_reach_runtime.py",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_safety_intent.py",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_episode.py",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_control_phase.py",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_drive_phase.py",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_reach_geometry.py",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_velocity_metric.py",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_motion_safety.py",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_transport.py",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/src/mr3_gazebo_diff_drive.cpp",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/mr3_gazebo_diff_drive.hpp",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/mr3_drive_target.hpp",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/mr3_drive_feed.hpp",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/mr3_odometry_json.hpp",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/paired_wheel_slew.hpp",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/mr3_initial_zero_encoder_servo.hpp",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_reach_support.py",
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v74_reach_rejection_description/run_description_v1.py",
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v74_reach_rejection_description/description_spec_v1.json",
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v71_masked_stimulus_qualification/closed_inventory_v1.json",
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v73_command_chain_description/closure_ledger_v1.json",
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v72_masked_stimulus_description/checks/v73_fixed_inputs_v1.json"
+  ],
+  "checks": [
+    "evidence native b370 versus previous successful V73 description453969 remain separate",
+    "6066B/4211 exact ledger Root5969rc0 and Decimal entry112639.6725192646018 verified",
+    "metadata split inventoryA71/ledgerA73/referenceA72 exact",
+    "source before/after/current Git clean newCLI with goldenconsumer/source snapshot recovery retained",
+    "consumer fixed schema/output4MiB, typed actualPID/start join, originalFAIL presenceFalse, previous_description_passedTrue and executionfreeze453969 match emitted consumer contract",
+    "300 complete parent soft fee from samePID bootstrap through postsource, consumer240, all submitted processes wait on actual handle; no hard realtime claim",
+    "no native/World/policy/automatic entry or scientific credit"
+  ],
+  "blockers": [],
+  "actual_CPU_credit_claimed": false,
+  "actual_original_inputs_opened": 0,
+  "canonical_files_modified": false,
+  "all_writers_stopped": true
+}
