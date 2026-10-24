@@ -1,0 +1,62 @@
+{
+  "schema": "mr3-v73-fixed-input-references-from-actual-v71-archive-v1",
+  "evidence_freeze": "b3707dcf258c832f35ef60f47a5dc8dc52296629",
+  "inventory": {
+    "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v71_masked_stimulus_qualification/closed_inventory_v1.json",
+    "bytes": 799822,
+    "sha256": "2cdf667a9362544880502d85cbc99d1e478dd4a8d737c701065be3f5bc7694ab"
+  },
+  "inputs": [
+    {
+      "original_path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v71/mr3_p2a_reach_v71_interface/worker0/episode001_open_101/motion_safety.jsonl",
+      "original_bytes": 507221955,
+      "original_sha256": "f27397fad35ca23d6957c6c41121fc548f3f4718ecbbfc90d906ddb064f7cd08",
+      "original_source_stat_before": {
+        "dev": 2051,
+        "ino": 79435444,
+        "mode": 33204,
+        "size": 507221955,
+        "mtime_ns": 1792808306471208258,
+        "ctime_ns": 1792808306471208258
+      },
+      "original_source_stat_after": {
+        "dev": 2051,
+        "ino": 79435444,
+        "mode": 33204,
+        "size": 507221955,
+        "mtime_ns": 1792808306471208258,
+        "ctime_ns": 1792808306471208258
+      },
+      "restore_reference": {
+        "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v71_masked_stimulus_qualification/closed_execution_v1/native/mr3_p2a_reach_v71_interface/worker0/episode001_open_101/motion_safety.jsonl.rawbytes.gz",
+        "bytes": 43033348,
+        "sha256": "db60176a47f634207641fb209a7e5cd90e2c1f8a247f800154bb6fd3dae54dda",
+        "codec": "gzip-mtime0-lossless",
+        "decoded_bytes": 507221955,
+        "decoded_sha256": "f27397fad35ca23d6957c6c41121fc548f3f4718ecbbfc90d906ddb064f7cd08",
+        "losslessly_verified_by_original_archive": true
+      },
+      "restoration_executed_by_this_reference_step": false,
+      "original_wrapper_substituted_for_input": false
+    }
+  ],
+  "total_original_bytes": 507221955,
+  "epoch": "mr3_p2a_reach_v71_interface_w0_e1_53a7eddb",
+  "received_context": {
+    "derived_V72_output_sha256": "56fb198f793c2450fd63b4bbc325181964a7b7ca9c3e2ebf0be2b1c94c7cdcd9",
+    "initial_GOAL_observation_source_clock": 39.72,
+    "cleanup_WAIT_observation_source_clock": 49.72,
+    "first_received_CANCELED_observation_source_clock": 51.72,
+    "actual_terminal_generation_and_delivery_time": "UNKNOWN",
+    "candidate_observation_window_only_not_physical_event_proof": true
+  },
+  "admitted": false,
+  "new_execution_freeze": null,
+  "originals_deleted": false,
+  "prior_consumption_disclosure": {
+    "motion_safety": "Read only opaquely for original closed archive/hash/restore; no semantic command-chain consumer has read it under the new prospective scope.",
+    "V71_summary_and_transitions": "Already fully semantically described by V72; excluded from this new prospective payload set."
+  },
+  "original_payload_reopened_or_parsed_by_this_reference_step": false,
+  "scientific_or_physics_or_qualification_credit": false
+}

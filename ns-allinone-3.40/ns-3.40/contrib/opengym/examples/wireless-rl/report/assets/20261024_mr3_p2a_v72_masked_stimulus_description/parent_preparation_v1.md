@@ -1,3 +1,9 @@
+# V72 parent：实际执行与关闭完成
+
+Root64500真实reap0，G74c8f710114bac3c2c91a5a1df8ebc6c63ec7637，完整parent5.727286974秒；13源与恢复/2保存main均闭合。规范ledger6593B/SHAcd620cc88978991f6de366f281e8ce458f07379552abad59ba3886f3319078ab。下方原CLI/预算/待执行说明只为历史快照，不重复本次consumer；下一诊断具体范围尚未声明。无科学/学习信用，capacityFalse。
+
+## 历史parent准备快照
+
 # V72 fixed two-input received-description parent — pending
 
 Canonical namespace is locked to `report/assets/20261024_mr3_p2a_v72_masked_stimulus_description`. This private parent forwards the actual A70 `run_description_v1.py` architecture. It does not run the old parent or consumer, and adds no generic command or scheduling interface.

@@ -1,0 +1,49 @@
+{
+  "schema": "mr3-v72-closure-CPU-true-reap-and-current-source-v1",
+  "actual_tool_session_id": 93430,
+  "actual_tool_reaped": true,
+  "actual_returncode": 0,
+  "actual_wait": {
+    "path": "/tmp/p2a72_close_actual_wait_v1/actual_wait.json",
+    "bytes": 3795,
+    "sha256": "82c99bea37c89a19bb438c72db635aec3e1f6d7ddaaa44ae86f05833fe66e5d0"
+  },
+  "actual_child_wait_seconds": "4.028527737",
+  "source_count": 4,
+  "source_before_after_current_equal": true,
+  "saved_CPU_observations": [
+    {
+      "role": "coordinator_identity",
+      "saved": {
+        "pid": 2231860,
+        "parent": 639355,
+        "group": 2231860,
+        "session": 2231860,
+        "start_ticks": 455756447,
+        "state": "R"
+      },
+      "freshgone": true,
+      "observed_monotonic_ns": 4557672841609795
+    },
+    {
+      "role": "child_identity",
+      "saved": {
+        "pid": 2231861,
+        "parent": 2231860,
+        "group": 2231860,
+        "session": 2231860,
+        "start_ticks": 455756464,
+        "state": "R"
+      },
+      "freshgone": true,
+      "observed_monotonic_ns": 4557672841651288
+    }
+  ],
+  "both_saved_CPU_identities_freshgone": true,
+  "engineering_added_seconds": "0",
+  "actual_tool_objects": {
+    "path": "/tmp/p2a72_close_actual_tool_responses_v1.json",
+    "bytes": 461,
+    "sha256": "eca2858cba9d1be002932c4a0721d3dda977fd50c6ec1fd7fcbe8a120763c3d0"
+  }
+}

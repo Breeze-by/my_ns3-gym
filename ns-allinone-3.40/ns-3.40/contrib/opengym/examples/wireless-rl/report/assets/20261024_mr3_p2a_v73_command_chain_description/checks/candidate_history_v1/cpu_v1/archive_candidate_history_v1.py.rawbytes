@@ -1,0 +1,167 @@
+"""Fixed V73 command-chain candidate/parent and derived-route preparation histories, opaque deterministic tar.gz.
+
+No tests, native work, model or scientific parser is run. Symlinks are literal
+metadata only. All regular bytes are copied/hashed, rehashed at original paths,
+and recovered from the archive as streams without extracting/executing them.
+"""
+import argparse
+import gzip
+import hashlib
+import io
+import json
+import os
+from pathlib import Path, PurePosixPath
+import stat
+import tarfile
+import time
+
+ROOT=Path('/home/zhuyulab/ns3-workspace')
+W=ROOT/'ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl'
+A=Path('/tmp/p2a73_candidate_history_copy_ready_v1')
+GROUPS={
+ 'candidate':([Path('/tmp/mr3_p2a_v73_command_chain_candidate_v1'),Path('/tmp/mr3_p2a_v73_command_chain_candidate_v2'),Path('/tmp/mr3_p2a_v73_description_parent_candidate_v1'),Path('/tmp/mr3_p2a_v73_description_parent_candidate_v2'),Path('/tmp/mr3_p2a_v72_received_blocker_analysis_v1'),Path('/tmp/mr3_p2a_v72_received_route_judgment_v1'),Path('/tmp/mr3_p2a_probe_scheduling_boundary_review_v1')],289,5136148,'candidate_history_v1'),
+}
+FIELDS=('st_dev','st_ino','st_mode','st_size','st_mtime_ns','st_ctime_ns')
+BLOCK=1024*1024
+
+
+def need(ok,message):
+    if not ok:raise ValueError(message)
+
+
+def state(s):return {key:getattr(s,key) for key in FIELDS}
+
+
+def snapshot(roots):
+    rows={}
+    for root in roots:
+        pending=[root]
+        while pending:
+            p=pending.pop();need(p.parent==p.parent.resolve(strict=True),'symlink source parent')
+            s=p.lstat();row={'original':str(p),'lstat':state(s)}
+            if stat.S_ISLNK(s.st_mode):
+                literal=os.readlink(p);row.update(kind='symlink',literal_target=literal,
+                    literal_target_sha256=hashlib.sha256(os.fsencode(literal)).hexdigest(),target_followed=False)
+            elif stat.S_ISDIR(s.st_mode):
+                row['kind']='directory'
+                with os.scandir(p) as entries:pending.extend(Path(e.path) for e in entries)
+            else:
+                need(stat.S_ISREG(s.st_mode),'special source input')
+                row.update(kind='regular',original_bytes=s.st_size)
+            need(str(p) not in rows,'overlapping source roots');rows[str(p)]=row
+    return dict(sorted(rows.items()))
+
+
+def opened(path,before):
+    fd=os.open(path,os.O_RDONLY|os.O_NOFOLLOW)
+    try:
+        need(state(os.fstat(fd))==before,'opened source identity differs')
+        return os.fdopen(fd,'rb')
+    except BaseException:
+        os.close(fd);raise
+
+
+class Reader:
+    def __init__(self,f):self.f=f;self.h=hashlib.sha256();self.count=0
+    def read(self,n=-1):
+        data=self.f.read(n);self.h.update(data);self.count+=len(data);return data
+
+
+def digest(stream):
+    h=hashlib.sha256();count=0
+    for block in iter(lambda:stream.read(BLOCK),b''):h.update(block);count+=len(block)
+    return count,h.hexdigest()
+
+
+def safe(name):
+    p=PurePosixPath(name)
+    need(name and not p.is_absolute() and str(p)==name and '..' not in p.parts and '\x00' not in name,'unsafe logical tar member')
+    return name
+
+
+def info(name,size,mode,directory=False):
+    value=tarfile.TarInfo(safe(name));value.size=size;value.mode=stat.S_IMODE(mode)
+    value.mtime=0;value.uid=value.gid=0;value.uname=value.gname=''
+    if directory:value.type=tarfile.DIRTYPE
+    return value
+
+
+def write(path,value):
+    with path.open('x') as f:
+        json.dump(value,f,indent=2,sort_keys=True,allow_nan=False);f.write('\n');f.flush();os.fsync(f.fileno())
+
+
+def main():
+    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--kind',choices=sorted(GROUPS),required=True)
+    args=parser.parse_args();roots,count,size,dirname=GROUPS[args.kind]
+    start=time.monotonic_ns();before=snapshot(roots)
+    regular=[r for r in before.values() if r['kind']=='regular']
+    need(len(regular)==count and sum(r['original_bytes'] for r in regular)==size,'stopped history membership/size changed since preparation')
+    dest=A/'checks'/dirname;dest.mkdir(parents=True,exist_ok=False)
+    archive=dest/(dirname+'.tar.gz')
+    value={'schema':'mr3-v73-opaque-private-candidate-history-inventory-v1','kind':args.kind,'passed':False,
+        'source_roots':[str(p) for p in roots],'entries':[],'links':[],'originals_deleted':False,
+        'symlink_targets_followed':False,'scientific_or_native_credit':False,
+        'engineering_added_seconds':'0','historical_evidence_scope':{'descriptor_candidate_versions': 'v1 original12 artificial cases and v2 original13 artificial cases retained separately; not25 distinct checks. No original motion input or consumer main executed by this archive.', 'parent_candidate_versions': 'v1 pending/static and zero CPU; v2 original4 artificial lifecycle checks retained. Private13+4 do not stand for the later canonical17 source-bound CPU.', 'derived_route_reviews': 'Three stopped derived-output/source-only analysis and route review roots preserved byte-for-byte; no new interpretation, science, diagnosis or route approval.', 'historical_test_counts_not_added_together': True, 'old_source_current_claims_apply_only_at_original_CPU_observation': True, 'new_canonical_source_equality_claimed': False, 'historical_tests_or_consumer_reexecuted': False, 'original_scientific_inputs_opened': False, 'old_342_libraries_or_pstats_opened': False, 'canonical_files_modified': False},'archive_format':'gzip level6/mtime0; PAX logical paths relative/traversal-free; no symlink/hardlink headers',
+        'read_scope':'one full original copy/hash plus one post-original rehash; archive stream restore/full gzip CRC; no extraction/execution'}
+    try:
+        with archive.open('xb') as raw:
+            with gzip.GzipFile(filename='',mode='wb',fileobj=raw,compresslevel=6,mtime=0) as gz:
+                with tarfile.open(fileobj=gz,mode='w|',format=tarfile.PAX_FORMAT) as tar:
+                    for pstr,row in before.items():
+                        p=Path(pstr);name=safe('payload/'+str(p.relative_to('/tmp')))
+                        if row['kind']=='symlink':value['links'].append(row);continue
+                        if row['kind']=='directory':
+                            tar.addfile(info(name,0,row['lstat']['st_mode'],True))
+                            value['entries'].append({**row,'archive_member':name});continue
+                        with opened(p,row['lstat']) as f:
+                            reader=Reader(f);tar.addfile(info(name,row['original_bytes'],row['lstat']['st_mode']),reader)
+                            need(not reader.read(1) and reader.count==row['original_bytes'],'source length changed')
+                            need(state(os.fstat(f.fileno()))==row['lstat'] and state(p.lstat())==row['lstat'],'source stat drift while copying')
+                        value['entries'].append({**row,'archive_member':name,'original_sha256':reader.h.hexdigest()})
+                    literal=(json.dumps(value['links'],sort_keys=True,indent=2)+'\n').encode()
+                    tar.addfile(info('metadata/literal_links_v1.json',len(literal),0o100644),io.BytesIO(literal))
+            raw.flush();os.fsync(raw.fileno())
+        need(snapshot(roots)==before,'source membership/stat/link literal changed')
+        expected={r['archive_member']:r for r in value['entries']}
+        expected['metadata/literal_links_v1.json']={'kind':'regular','original_bytes':len(literal),'original_sha256':hashlib.sha256(literal).hexdigest()}
+        for row in value['entries']:
+            if row['kind']!='regular':continue
+            p=Path(row['original'])
+            with opened(p,row['lstat']) as f:
+                n,h=digest(f);need(state(os.fstat(f.fileno()))==row['lstat'],'post-original hash stat drift')
+            need((n,h)==(row['original_bytes'],row['original_sha256']) and state(p.lstat())==row['lstat'],'post-original byte/stat mismatch')
+        need(snapshot(roots)==before,'source tree drift during final original-byte verification')
+        seen=set();verified=verified_bytes=0
+        with gzip.open(archive,'rb') as gz:
+            with tarfile.open(fileobj=gz,mode='r|') as tar:
+                for member in tar:
+                    name=safe(member.name.rstrip('/') if member.isdir() else member.name)
+                    need(name in expected and name not in seen,'unexpected or duplicate logical archive member')
+                    seen.add(name);row=expected[name]
+                    if row['kind']=='directory':need(member.isdir() and member.size==0,'directory mismatch');continue
+                    need(member.isreg() and member.size==row['original_bytes'],'nonregular or wrong-size archive member')
+                    stream=tar.extractfile(member);need(stream is not None,'missing regular archive stream')
+                    with stream:n,h=digest(stream)
+                    need((n,h)==(row['original_bytes'],row['original_sha256']),'restored archive bytes differ')
+                    verified+=1;verified_bytes+=n
+            while gz.read(BLOCK):pass
+        need(seen==set(expected),'archive missing original members')
+        with archive.open('rb') as f:packed_bytes,packed_sha=digest(f)
+        need(packed_bytes<=64*1024**2,'archive exceeds64MiB; kept intact; no automatic split')
+        need(snapshot(roots)==before,'original membership/stat/link drift after complete archive restore')
+        value.update(passed=True,source_before_after_membership_and_bytes_stable=True,
+            original_regular_count=count,original_regular_bytes=size,symlink_count=len(value['links']),
+            archive={'path':str(archive),'bytes':packed_bytes,'sha256':packed_sha},
+            restored_regular_members_including_literal_metadata=verified,
+            restored_bytes_including_literal_metadata=verified_bytes,all_original_regular_bytes_restored=True,
+            archive_generation_completed_monotonic_ns=time.monotonic_ns(),actual_archive_seconds=str((time.monotonic_ns()-start)/1e9))
+        write(dest/'inventory_v1.json',value)
+        print(json.dumps({'passed':True,'kind':args.kind,'regular_files':count,'original_bytes':size,'archive_bytes':packed_bytes,'archive_sha256':packed_sha}))
+        return 0
+    except BaseException as error:
+        value.update(error=repr(error),completed_entries_and_partial_archive_retained=True)
+        write(dest/'failed_inventory_v1.json',value);raise
+
+
+if __name__=='__main__':raise SystemExit(main())

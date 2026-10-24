@@ -1,0 +1,4 @@
+#!/bin/bash
+set -eu
+cd /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl
+exec env -u PYTHONPATH -u PYTHONHOME PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 -B -m mr3_learning.reach_execution --scope cpu --output /tmp/p2a73_candidate_history_actual_wait_v1 --source /tmp/p2a73_candidate_history_cpu_v1.sh --source /tmp/p2a73_archive_candidate_history_v1.py -- /usr/bin/python3 -B /tmp/p2a73_archive_candidate_history_v1.py --kind candidate

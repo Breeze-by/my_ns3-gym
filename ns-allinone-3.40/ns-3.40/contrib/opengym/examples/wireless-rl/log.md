@@ -9122,3 +9122,18 @@ Canonical CPU工具1554真实reap0、scope制作工具29523真实reap0，均scop
 2026-10-24 V72固定masked刺激描述准备：承接V71真实FAIL及完整费1215.240541991，新活动仅在新exact freeze下对库存固定两原件2471310B作一次received描述；summary已有closing metadata读取，transitions只有opaque字节保存、未语义消费，不宣称原件从未读取。完整parent120/work60秒软门、输出4MiB，13个runtime/metadata源封存，预期17个Git路径待实际blob检查。canonical最终Root75079真reap0/17人工CPU(15descriptor+2parent)/4.973803003秒，212绑定before/after/current及快照恢复一致、2保存身份gone；原system Python loaderERROR和181源范围结果均保留。actualspec True在所有canonical CPU前仅作Root持续授权下固定两输入准入；实际parent/consumer尚未执行或PASS，新G尚未产生。工程仍U112581.2023765236018/C180000、余67418.7976234763982，120预约为前瞻有限工程块、非数值用户批准；pilot/final原额及全部旧FAIL/科学门保持，capacity/autoPolicy=False、P2A未完成。
 
 原system loaderERROR、181范围结果与扩212范围的最终17PASS分别保存；私有consumer15/parent2/disabledpolicy11不合数，无实际data/native/PPO。后续新Git/blob/freeze/一次消费见[V72预声明](report/20261024_mr3_p2a_v72_masked_stimulus_description.md)。
+
+## 2026-10-24 V72固定masked接收描述实际PASS闭合
+
+2026-10-24 V72固定描述实际PASS：freeze74c8f7101、Root64500真实reap0，完整读取已声明两输入2471310B/parse0/33rows，四comparison全True；仅received描述，不改V71原FAIL或授科学信用。完整连续parent5.727286974秒，累计112586.9296634976018/C180000、余67413.0703365023982，nested/root不叠加、pilot/final原额保持。13源before/after/current-Git及恢复快照一致，driver/consumer两个保存PID/start freshgone，nonowned不声称gone；27新ordinary原件2149539B→265847B/0link全恢复，关闭CPU93430真rc0/4.028527737秒、4源稳定/恢复、own2gone/工程0。接收样本t5–10 active/owned等及WAITmask为True，v>=.08/newpath>=.05为False，接收v范围约-0.000400至+0.000905、t10 path增量约.006454/.006497/.002977米；t10记录cleanup999、t12首次收到CANCELED_without_scientificWAIT，不是SUCCEEDED，实际生成/交付时间UNKNOWN。旧2+1路由暂无证据，下一先另行声明有界request→Reach→applied诊断，具体范围/预算/冻结未定；capacity/autoPolicy=False、无新学习，P2A未完成。
+
+四comparison相等只属描述；终态是首次收到CANCELED而非SUCCEEDED，真实生成/交付时间未知。原输入关闭阶段不重开，费用/来源/身份与未来范围边界见[V72报告](report/20261024_mr3_p2a_v72_masked_stimulus_description.md)。
+
+
+## 2026-10-24 V73 单 motion 请求到应用链描述的软件准备
+
+工作树：新V73准备尚待独立执行G；证据G b3707dcf258c832f35ef60f47a5dc8dc52296629与前账G74c8f710114bac3c2c91a5a1df8ebc6c63ec7637不同。目的仅固定507221955B motion的有界描述，窗口39.72→49.72并观察至51.72，300parent/240work/4MiB；无模型、训练或评估，新原件描述未执行。
+
+canonical Root17796实际reap0，17P(13+4)、4.140205043秒、97源前后/current/全恢复与2gone；独立source/metadata复核direct32441e实际0/.216206044秒、206绑定稳/own2gone，runtime26 exact。私有consumer12→13、parent0→4分轮保留；7根289regular5136148B→1286661B/0link全恢复，archiveCPU15200真0/1.224805289秒/2源恢复/own2gone，工程0，不相加成新科学判据。原motion/旧两input/342库/World未被这些准备工作语义读取或执行。
+
+入口为canonical A73 run_description_v1.py --freeze <新的已push exact40G>，解释20源+consumer再加五项配置/metadata共26源，完整argv/环境及测试路径见[A73实际canonical回执](report/assets/20261024_mr3_p2a_v73_command_chain_description/checks/canonical_CPU_postreap_proof_v1.json)。Root尚须force-stage、INDEX检查、commit/push、clean/exactHEAD后唯一消费。U112586.9296634976018/C180000/R67413.0703365023982不变；pilot/final原额、V71FAIL和95%/物理门保持，capacityFalse，P2A未完成。详见[V73预声明](report/20261024_mr3_p2a_v73_command_chain_description.md)。
