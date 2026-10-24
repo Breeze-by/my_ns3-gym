@@ -9177,3 +9177,10 @@ canonical Root17796实际reap0，17P(13+4)、4.140205043秒、97源前后/curren
 基线 HEAD 11ae14fbef5270b517875812b0c5ea022c0f4952；具体修改/有限试验声明见 report/20261024_mr3_p2a_authority_repair.md。接收 witness 真实刷新与发送≤100ms检查、不可逆 task-stop 下 native terminal cleanup、精确拒绝日志及 decisive_probe 显式 custody 接线；原物理/数学/五秒/95%保持。CPU 原件全部保留，未运行本轮 World。targeted ROS22P/16.195105720s，learner30P4F/7.799685410s（旧夹具过期 ready）；更新夹具后 full ROS215P/55.757127074s，learner586P3F/163.968511654s（一个实际plan文件缺失、两个旧v1绑定）。current21增量colcon真实rc0/2.463039182s，ELF与原A59相同，不声称compiler jobs；双环境实际 readiness rc0/8.436040216s。后继 learner v2正在执行。CPU工程新增0，U115431.2861004196018/C180000，pilot/final不动。
 
 后继 learner v2 实际587P2F/152.606804492秒，保留临时fixture不在仓库内的失败；只修两测试文件位置后，这两完整文件40P/11.058767160秒，生产源未变。CPU保存身份已逐一确认退出；所有旧失败/快照保留，不称一次新跑589全绿。新finite scope已前瞻准入，仍待exact freeze/clean/native gates。
+
+
+## 2026-10-24 authority v2有限原生闭合FAIL
+
+2026-10-24 authority v2首轮实际FAIL且根因已精确定位：freeze1f6d2fb7c，tb3新grant时sender ready80ms但receiver ready=null，谓词grant_without_current_real_stop_evidence。新鲜通知不消除竞态；任务失败本轮却正常返回/worker0/无forced，关闭修复获该路径证据。9返回/collector1、科学审计仍FAIL，容量未派发。完整父715.993225406→U116147.2793258256018/C180000/R63852.7206741743982；54保存身份gone、253原件及1161源全恢复，pilot/final保持。v3接收端PENDING→真实phase激活仅私有候选，下一新scope/测试/冻结；P2A未完成。
+
+命令为reach_execution包住 `python -B -m mr3_learning.authority_repair run --freeze 1f6d2fb7c0330e59de87e676018744a9f6be8fcf`；root session82458真实reap1，详细原命令/时钟/身份见该报告results/actual_wait.json。live custody PASS；FIFO/runtime为真实model failure，information旧事件登记缺口、cadence summary geometry缺口、stimulus incomplete均保留。正常worker退出不冒充collector/角色PASS。

@@ -1,0 +1,163 @@
+{
+  "source": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_authority_repair_v1/feasibility/worker0/episode001_open_101/motion_safety.jsonl",
+  "bytes": 217894962,
+  "sha256": "043d137904159beafe9c487d43167f86833a33a7d94c8f3a75caa0eae90bfabe",
+  "lines": 101138,
+  "rows": [
+    {
+      "line": 96687,
+      "record": {
+        "schema": "mr3-motion-safety-v1",
+        "epoch": "feasibility_w0_e1_83e48571",
+        "record_sequence": 96687,
+        "kind": "authority_callback",
+        "sim_time_sec": 45.14,
+        "wall_monotonic_ns": 4577551773738540,
+        "payload": {
+          "robot": "tb3",
+          "message": {
+            "authority_sequence": 22,
+            "epoch": "feasibility_w0_e1_83e48571",
+            "goal_id": "feasibility_w0_e1_83e48571:tb3:9",
+            "lease_until_ns": 47140000000,
+            "native_goal_uuid": "fb08a9d6376f46a69349cd6ab1e3359a",
+            "operation": "grant",
+            "owner_accept_received_clock_ns": 45140000000,
+            "owner_command_id": 9,
+            "owner_grant_sequence": 22,
+            "robot": "tb3",
+            "schema": "mr3-motion-authority-v1",
+            "source_clock_ns": 45140000000
+          },
+          "raw_json": "{\"authority_sequence\":22,\"epoch\":\"feasibility_w0_e1_83e48571\",\"goal_id\":\"feasibility_w0_e1_83e48571:tb3:9\",\"lease_until_ns\":47140000000,\"native_goal_uuid\":\"fb08a9d6376f46a69349cd6ab1e3359a\",\"operation\":\"grant\",\"owner_accept_received_clock_ns\":45140000000,\"owner_command_id\":9,\"owner_grant_sequence\":22,\"robot\":\"tb3\",\"schema\":\"mr3-motion-authority-v1\",\"source_clock_ns\":45140000000}",
+          "packet_sha256": "3d0aeb86ca323d2588014b19b246b9bc0722d38b79679a24c81896c6705ac7d4",
+          "publisher_identity": {
+            "scope": "graph_at_callback",
+            "packet_publisher_gid_available": false,
+            "topic": "/tb3/mr3/motion_authority",
+            "valid": true,
+            "endpoints": [
+              {
+                "node_name": "mr3_adapter",
+                "node_namespace": "/",
+                "topic_type": "std_msgs/msg/String",
+                "endpoint_gid": "010f3cc069a4cf2100000000000042030000000000000000"
+              }
+            ],
+            "error": null
+          },
+          "clock_ns": 45140000000,
+          "result": {
+            "accepted": false,
+            "reason": "invalid_authority",
+            "effective_permission": "zero_only",
+            "rejected_condition": "grant_without_current_real_stop_evidence",
+            "rejection_context": {
+              "state": "REVOKED",
+              "authority_sequence": 21,
+              "owner": {
+                "authority_sequence": 21,
+                "epoch": "feasibility_w0_e1_83e48571",
+                "goal_id": "feasibility_w0_e1_83e48571:tb3:1",
+                "lease_until_ns": 42020000000,
+                "native_goal_uuid": "7074db54d0b04ec8a4f0c0c2dda969bd",
+                "operation": "revoke",
+                "owner_accept_received_clock_ns": 37140000000,
+                "owner_command_id": 1,
+                "owner_grant_sequence": 1,
+                "robot": "tb3",
+                "schema": "mr3-motion-authority-v1",
+                "source_clock_ns": 42020000000
+              },
+              "ready": null,
+              "callback_clock_ns": 45140000000,
+              "stop_not_before_ns": 42020000000
+            }
+          }
+        }
+      }
+    },
+    {
+      "line": 96688,
+      "record": {
+        "schema": "mr3-motion-safety-v1",
+        "epoch": "feasibility_w0_e1_83e48571",
+        "record_sequence": 96688,
+        "kind": "invalid_motion_authority",
+        "sim_time_sec": 45.14,
+        "wall_monotonic_ns": 4577551773929150,
+        "payload": {
+          "robot": "tb3",
+          "raw_json": "{\"authority_sequence\":22,\"epoch\":\"feasibility_w0_e1_83e48571\",\"goal_id\":\"feasibility_w0_e1_83e48571:tb3:9\",\"lease_until_ns\":47140000000,\"native_goal_uuid\":\"fb08a9d6376f46a69349cd6ab1e3359a\",\"operation\":\"grant\",\"owner_accept_received_clock_ns\":45140000000,\"owner_command_id\":9,\"owner_grant_sequence\":22,\"robot\":\"tb3\",\"schema\":\"mr3-motion-authority-v1\",\"source_clock_ns\":45140000000}",
+          "publisher_identity": {
+            "scope": "graph_at_callback",
+            "packet_publisher_gid_available": false,
+            "topic": "/tb3/mr3/motion_authority",
+            "valid": true,
+            "endpoints": [
+              {
+                "node_name": "mr3_adapter",
+                "node_namespace": "/",
+                "topic_type": "std_msgs/msg/String",
+                "endpoint_gid": "010f3cc069a4cf2100000000000042030000000000000000"
+              }
+            ],
+            "error": null
+          },
+          "clock_ns": 45140000000,
+          "reason": "invalid_authority"
+        }
+      }
+    },
+    {
+      "line": 96689,
+      "record": {
+        "schema": "mr3-motion-safety-v1",
+        "epoch": "feasibility_w0_e1_83e48571",
+        "record_sequence": 96689,
+        "kind": "reach_model_failure",
+        "sim_time_sec": 45.14,
+        "wall_monotonic_ns": 4577551774019519,
+        "payload": {
+          "schema": "mr3-reach-runtime-fault-v1",
+          "robot": "tb3",
+          "reason": "invalid_authority",
+          "clock_ns": 45140000000
+        }
+      }
+    },
+    {
+      "line": 96710,
+      "record": {
+        "schema": "mr3-motion-safety-v1",
+        "epoch": "feasibility_w0_e1_83e48571",
+        "record_sequence": 96710,
+        "kind": "invalid_motion_authority",
+        "sim_time_sec": 45.16,
+        "wall_monotonic_ns": 4577551817881639,
+        "payload": {
+          "robot": "tb3",
+          "raw_json": "{\"authority_sequence\":23,\"epoch\":\"feasibility_w0_e1_83e48571\",\"goal_id\":\"feasibility_w0_e1_83e48571:tb3:9\",\"lease_until_ns\":45140000000,\"native_goal_uuid\":\"fb08a9d6376f46a69349cd6ab1e3359a\",\"operation\":\"revoke\",\"owner_accept_received_clock_ns\":45140000000,\"owner_command_id\":9,\"owner_grant_sequence\":22,\"robot\":\"tb3\",\"schema\":\"mr3-motion-authority-v1\",\"source_clock_ns\":45140000000}",
+          "publisher_identity": {
+            "scope": "graph_at_callback",
+            "packet_publisher_gid_available": false,
+            "topic": "/tb3/mr3/motion_authority",
+            "valid": true,
+            "endpoints": [
+              {
+                "node_name": "mr3_adapter",
+                "node_namespace": "/",
+                "topic_type": "std_msgs/msg/String",
+                "endpoint_gid": "010f3cc069a4cf2100000000000042030000000000000000"
+              }
+            ],
+            "error": null
+          },
+          "clock_ns": 45160000000,
+          "reason": "invalid_authority"
+        }
+      }
+    }
+  ],
+  "wall_seconds": 1.964171802
+}

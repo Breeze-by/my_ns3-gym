@@ -1,0 +1,184 @@
+{
+  "schema": "mr3-decisive-engineering-ledger-v1",
+  "entry": "115431.2861004196018",
+  "engineering_added_seconds": "715.993225406",
+  "engineering_cumulative_seconds": "116147.2793258256018",
+  "engineering_ceiling_seconds": "180000",
+  "engineering_remaining_seconds": "63852.7206741743982",
+  "actual_complete_parent_waits": [
+    {
+      "schema": "mr3-reach-outer-actual-wait-v1",
+      "scope": "engineering",
+      "safety_contract": "mr3-reach-v1",
+      "actual_argv": [
+        "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+        "-B",
+        "-m",
+        "mr3_learning.authority_repair",
+        "run",
+        "--freeze",
+        "1f6d2fb7c0330e59de87e676018744a9f6be8fcf"
+      ],
+      "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+      "coordinator_identity": {
+        "pid": 2781934,
+        "parent": 2781928,
+        "group": 2781928,
+        "session": 2781928,
+        "start_ticks": 457711815,
+        "state": "R"
+      },
+      "child_identity": {
+        "pid": 2781940,
+        "parent": 2781934,
+        "group": 2781928,
+        "session": 2781928,
+        "start_ticks": 457711829,
+        "state": "R"
+      },
+      "actual_returncode": 1,
+      "actual_waited": true,
+      "errors": [],
+      "started_monotonic_ns": 4577118290097682,
+      "ended_monotonic_ns": 4577834283323088,
+      "actual_child_wait_seconds": "715.993225406",
+      "source_before": [
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/authority_repair.py",
+          "sha256": "004c2e5f7299e317a94feb96e362d51931e0539be10e84673f9bf846984693cf",
+          "bytes": 5243,
+          "stat": [
+            2051,
+            73564258,
+            5243,
+            1792831028679505459,
+            1792831028679505459
+          ]
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/decisive_tests.py",
+          "sha256": "a1fa8c1d5d62ba2d7a74f18e10031e8c0889d335e5e0730962f5ed33b2d5b2e7",
+          "bytes": 15683,
+          "stat": [
+            2051,
+            73564189,
+            15683,
+            1792830963752385145,
+            1792830963752385145
+          ]
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_authority_repair/feasibility.json",
+          "sha256": "fd07e64ac5e8dc35ecfada96f4ee3cea72ba09ebb4b9021d84b4907629eec3b3",
+          "bytes": 238057,
+          "stat": [
+            2051,
+            79566481,
+            238057,
+            1792831503203433813,
+            1792831503203433813
+          ]
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_authority_repair/capacity.json",
+          "sha256": "5b49912a146e94bf9961132f985e4ac7478ff67b32bb2967d4d87a171757740c",
+          "bytes": 238495,
+          "stat": [
+            2051,
+            79566482,
+            238495,
+            1792831503211434453,
+            1792831503211434453
+          ]
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_authority_repair/binding.json",
+          "sha256": "ee974344c39b2f32a4f4cea9da8cdae956caf4befe81e90acb5c904c15835e3a",
+          "bytes": 325539,
+          "stat": [
+            2051,
+            79566480,
+            325539,
+            1792831503193433013,
+            1792831503193433013
+          ]
+        }
+      ],
+      "source_after": [
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/authority_repair.py",
+          "sha256": "004c2e5f7299e317a94feb96e362d51931e0539be10e84673f9bf846984693cf",
+          "bytes": 5243,
+          "stat": [
+            2051,
+            73564258,
+            5243,
+            1792831028679505459,
+            1792831028679505459
+          ]
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/decisive_tests.py",
+          "sha256": "a1fa8c1d5d62ba2d7a74f18e10031e8c0889d335e5e0730962f5ed33b2d5b2e7",
+          "bytes": 15683,
+          "stat": [
+            2051,
+            73564189,
+            15683,
+            1792830963752385145,
+            1792830963752385145
+          ]
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_authority_repair/feasibility.json",
+          "sha256": "fd07e64ac5e8dc35ecfada96f4ee3cea72ba09ebb4b9021d84b4907629eec3b3",
+          "bytes": 238057,
+          "stat": [
+            2051,
+            79566481,
+            238057,
+            1792831503203433813,
+            1792831503203433813
+          ]
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_authority_repair/capacity.json",
+          "sha256": "5b49912a146e94bf9961132f985e4ac7478ff67b32bb2967d4d87a171757740c",
+          "bytes": 238495,
+          "stat": [
+            2051,
+            79566482,
+            238495,
+            1792831503211434453,
+            1792831503211434453
+          ]
+        },
+        {
+          "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_authority_repair/binding.json",
+          "sha256": "ee974344c39b2f32a4f4cea9da8cdae956caf4befe81e90acb5c904c15835e3a",
+          "bytes": 325539,
+          "stat": [
+            2051,
+            79566480,
+            325539,
+            1792831503193433013,
+            1792831503193433013
+          ]
+        }
+      ],
+      "source_unchanged": true,
+      "passed": false,
+      "console": {
+        "path": "/tmp/mr3_authority_repair_root_v1/console.log",
+        "sha256": "3a4c526d7789fbb880bf0a70cfb73cba3f717073a8a480a4cc1dd7dfd67c89d3"
+      }
+    }
+  ],
+  "nested_not_added": true,
+  "pilot_changed": false,
+  "final_changed": false,
+  "P2A_complete": false,
+  "capacity_qualified": false,
+  "automatic_policy_entry_allowed": false,
+  "closure_archival_cpu_engineering_added_seconds": "0"
+}

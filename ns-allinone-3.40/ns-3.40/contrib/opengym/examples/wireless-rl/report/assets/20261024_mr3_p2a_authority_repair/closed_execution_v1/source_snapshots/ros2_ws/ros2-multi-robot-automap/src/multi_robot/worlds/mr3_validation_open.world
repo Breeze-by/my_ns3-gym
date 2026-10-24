@@ -1,0 +1,55 @@
+<sdf version='1.7'>
+  <world name='mr3_validation_open'>
+    <!-- mr3_box_layouts_v1; layout_seed=703; eval-only. -->
+    <plugin name='gazebo_ros_state' filename='libgazebo_ros_state.so'>
+      <ros><namespace>/gazebo</namespace></ros><update_rate>10.0</update_rate>
+    </plugin>
+    <include><uri>model://sun</uri></include>
+    <include><uri>model://ground_plane</uri></include>
+    <gravity>0 0 -9.8</gravity><physics type='ode'>
+      <max_step_size>0.001</max_step_size><real_time_factor>1</real_time_factor>
+      <real_time_update_rate>1000</real_time_update_rate></physics>
+    <model name='task_geometry'><static>true</static><link name='boxes'>
+      <collision name='north'><pose>0.000000 5.000000 1 0 0 0.000000</pose>
+        <geometry><box><size>14.200000 0.200000 2</size></box></geometry></collision>
+      <visual name='north_visual'><pose>0.000000 5.000000 1 0 0 0.000000</pose>
+        <geometry><box><size>14.200000 0.200000 2</size></box></geometry></visual>
+      <collision name='south'><pose>0.000000 -5.000000 1 0 0 0.000000</pose>
+        <geometry><box><size>14.200000 0.200000 2</size></box></geometry></collision>
+      <visual name='south_visual'><pose>0.000000 -5.000000 1 0 0 0.000000</pose>
+        <geometry><box><size>14.200000 0.200000 2</size></box></geometry></visual>
+      <collision name='east'><pose>7.000000 0.000000 1 0 0 0.000000</pose>
+        <geometry><box><size>0.200000 10.200000 2</size></box></geometry></collision>
+      <visual name='east_visual'><pose>7.000000 0.000000 1 0 0 0.000000</pose>
+        <geometry><box><size>0.200000 10.200000 2</size></box></geometry></visual>
+      <collision name='west'><pose>-7.000000 0.000000 1 0 0 0.000000</pose>
+        <geometry><box><size>0.200000 10.200000 2</size></box></geometry></collision>
+      <visual name='west_visual'><pose>-7.000000 0.000000 1 0 0 0.000000</pose>
+        <geometry><box><size>0.200000 10.200000 2</size></box></geometry></visual>
+      <collision name='island_0'><pose>-3.100000 -2.600000 1 0 0 0.000000</pose>
+        <geometry><box><size>0.800000 1.000000 2</size></box></geometry></collision>
+      <visual name='island_0_visual'><pose>-3.100000 -2.600000 1 0 0 0.000000</pose>
+        <geometry><box><size>0.800000 1.000000 2</size></box></geometry></visual>
+      <collision name='island_1'><pose>-3.300000 2.800000 1 0 0 0.000000</pose>
+        <geometry><box><size>0.700000 0.900000 2</size></box></geometry></collision>
+      <visual name='island_1_visual'><pose>-3.300000 2.800000 1 0 0 0.000000</pose>
+        <geometry><box><size>0.700000 0.900000 2</size></box></geometry></visual>
+      <collision name='island_2'><pose>3.100000 -2.200000 1 0 0 0.000000</pose>
+        <geometry><box><size>1.100000 1.000000 2</size></box></geometry></collision>
+      <visual name='island_2_visual'><pose>3.100000 -2.200000 1 0 0 0.000000</pose>
+        <geometry><box><size>1.100000 1.000000 2</size></box></geometry></visual>
+      <collision name='island_3'><pose>3.300000 3.000000 1 0 0 0.000000</pose>
+        <geometry><box><size>0.900000 1.000000 2</size></box></geometry></collision>
+      <visual name='island_3_visual'><pose>3.300000 3.000000 1 0 0 0.000000</pose>
+        <geometry><box><size>0.900000 1.000000 2</size></box></geometry></visual>
+      <collision name='north_bar'><pose>-0.300000 3.500000 1 0 0 0.000000</pose>
+        <geometry><box><size>2.400000 0.400000 2</size></box></geometry></collision>
+      <visual name='north_bar_visual'><pose>-0.300000 3.500000 1 0 0 0.000000</pose>
+        <geometry><box><size>2.400000 0.400000 2</size></box></geometry></visual>
+      <collision name='south_bar'><pose>0.000000 -3.500000 1 0 0 -0.150000</pose>
+        <geometry><box><size>2.400000 0.400000 2</size></box></geometry></collision>
+      <visual name='south_bar_visual'><pose>0.000000 -3.500000 1 0 0 -0.150000</pose>
+        <geometry><box><size>2.400000 0.400000 2</size></box></geometry></visual>
+    </link></model>
+  </world>
+</sdf>
