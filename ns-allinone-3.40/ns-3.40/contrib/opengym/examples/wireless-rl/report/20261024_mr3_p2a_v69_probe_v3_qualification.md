@@ -1,4 +1,16 @@
-# MR3 P2A V69：ProbeV3 B完整矩阵资格准备
+# MR3 P2A V69：ProbeV3覆盖失败的实际闭合
+
+2026-10-24 V69实际闭合FAIL：freeze720cd4e19、Root29341真实reap1；preflight rc0，interface原生32返回但rc1、覆盖门FAIL，audits未派发，科学角色结果为空；terminal/reset/deadline原状态SKIPPED，driver completed_stages=[]原样保留，无资格/学习信用。1115源/库before=after，关闭核1105非库current/Git+10选定ELF及8组literal/realpath同对象；57 typed保存身份（含9main）gone，5个nonowned祖先不声称gone。完整连续parent1166.992345970秒含gaps已收，累计111360.1553685346018/C180000、余68639.8446314653982；nested/root不叠加，上限为代理持续委托选择、非数值用户批准，pilot/final原额保持。556普通原件1114152927B无损封存105830034B，0link/无>64MiB；metadata/归档CPU实际13.682177692/62.226100422秒，仅关闭/字节PASS、工程0，四个CPU身份独立保存。tb3刺激取消终态的类型/时刻仍UNKNOWN；旧FAIL保持，capacity/autoPolicy=False，P2A未完成。
+
+四个实际phase wait：preflight65.727266601秒/rc0，matrix1071.855007804秒/rc1，matrix_absence.481199689秒/rc0，chain_final_absence.549622304秒/rc0。interface native1036.994759473秒与stage1053.053665040秒均已在完整parent内，不相加。没有科学audit调用结果，不能合成30个PASS/SKIP或称“物理审计失败”；实际是固定刺激覆盖未通过，后继资格未执行。
+
+闭合小metadata中tb1/tb2四项取消生命周期仅producer自报received状态，不能授予独立native/物理信用。tb3 initial未确认刺激取消终态、second没有GOAL；终态类型/时刻及原生因果尚UNKNOWN，未判为SUCCEEDED。下一V70固定namespace为20261024_mr3_p2a_v70_probe_v3_stimulus_description，仅以新scope/freeze对最终库存固定的两输入2456974B作一次有界描述：transitions2343105B、benchmark_summary113869B。summary先前已按metadata读过；transitions在关闭中只作opaque字节hash/copy/restore，尚未semantic消费。本物化步骤没有重开两原件或解压其包装。
+
+[规范末账](assets/20261024_mr3_p2a_v69_probe_v3_qualification/closure_ledger_v1.json) · [完整原件库存](assets/20261024_mr3_p2a_v69_probe_v3_qualification/closed_inventory_v1.json) · [元数据关闭](assets/20261024_mr3_p2a_v69_probe_v3_qualification/checks/closed_metadata_v1.json) · [V70固定输入与恢复引用](assets/20261024_mr3_p2a_v69_probe_v3_qualification/checks/v70_fixed_inputs_v1.json)
+
+restore引用保留原path/bytes/SHA/stat与canonical codec/编码SHA/decoded原SHA；原件未删除，不把包装暗换成consumer输入。后续只有新固定描述/源码证据足够后才决定最小修复、新CPU/有限probe及新的完整12EP30/容量/真实学习路线；不重开旧活动或降原科学门。
+
+## 原准备记录（历史快照）
 
 2026-10-24 V69软件准备实际PASS、待新原生冻结：显式Probe V3 B及独立reader已统一安装，旧V2三核心函数逐字保留；新current21增量build工具87644真reap0/2.305118715秒，实际ELF同A59、不声称compiler jobs。新fresh ROS212/learner506、入口33及双环境readiness全PASS，各源稳定；独立复核6组1139输入/恢复、12保存PID/start freshgone。真实prepare17849/14.450172389秒和plancheck53157/.448347627秒PASS，新plan1104源/10ELF、12EP/30角色及9个probe EP独立重放要求已封存。工程新增0，仍U110193.1630225646018/C180000、余69806.8369774353982，47220预约为代理持续委托前瞻决定，非数值用户批准；pilot/final原额及全部旧FAIL保持。scope True仅软件准入，capacity/autoPolicy=False，无V69 native/学习，P2A未完成。下一全regular force-stage/INDEX正检查、commit/push/clean及exact HEAD检查后唯一bootstrap。
 

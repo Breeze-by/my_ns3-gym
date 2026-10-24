@@ -1,0 +1,137 @@
+{
+  "schema": "mr3-v69-docs-after-real-metadata-and-archive-CPU-reaps-v1",
+  "passed": true,
+  "activity_passed": false,
+  "actual_closing_CPU_proofs": [
+    {
+      "name": "metadata",
+      "actual_wait": {
+        "path": "/tmp/p2a69_metadata_actual_wait_v1/actual_wait.json",
+        "bytes": 5879,
+        "sha256": "fae4ffe2aa86376b25a78414925e4c32d9ba23e6d243165f73f900b555b4e401",
+        "stat": {
+          "dev": 2051,
+          "ino": 79431021,
+          "mode": 33204,
+          "size": 5879,
+          "mtime_ns": 1792801071602064427,
+          "ctime_ns": 1792801071602064427
+        }
+      },
+      "actual_root_tool_reap": {
+        "path": "/tmp/p2a69_metadata_root_close_proof_v1.json",
+        "bytes": 896,
+        "sha256": "9a8c341ec0d73c3bfd650a1e8f45d2097eff08745a9d42284a83e8aeef4b0bb0",
+        "stat": {
+          "dev": 2051,
+          "ino": 76650980,
+          "mode": 33204,
+          "size": 896,
+          "mtime_ns": 1792801110753012571,
+          "ctime_ns": 1792801110753012571
+        }
+      },
+      "actual_child_wait_seconds": "13.682177692",
+      "source_before_after_count": 7,
+      "engineering_added_seconds": "0"
+    },
+    {
+      "name": "archive",
+      "actual_wait": {
+        "path": "/tmp/p2a69_archive_actual_wait_v1/actual_wait.json",
+        "bytes": 7129,
+        "sha256": "9e66c0d3dc2c6207c0adc12ce24cd37f351363905ca1d7badf686cf43cdd7bc7",
+        "stat": {
+          "dev": 2051,
+          "ino": 79431600,
+          "mode": 33204,
+          "size": 7129,
+          "mtime_ns": 1792801202960568503,
+          "ctime_ns": 1792801202960568503
+        }
+      },
+      "actual_root_tool_reap": {
+        "path": "/tmp/p2a69_archive_root_close_proof_v1.json",
+        "bytes": 896,
+        "sha256": "8811253bdaaf8dc94ae7350c9e3fada67ee783a75fedb408ed812c8116c31573",
+        "stat": {
+          "dev": 2051,
+          "ino": 76650981,
+          "mode": 33204,
+          "size": 896,
+          "mtime_ns": 1792801252517000407,
+          "ctime_ns": 1792801252517000407
+        }
+      },
+      "actual_child_wait_seconds": "62.226100422",
+      "source_before_after_count": 9,
+      "engineering_added_seconds": "0"
+    }
+  ],
+  "closing_CPU_observations": [
+    {
+      "cpu": "metadata",
+      "role": "coordinator_identity",
+      "saved": {
+        "pid": 2149895,
+        "parent": 2149894,
+        "group": 2149894,
+        "session": 2149894,
+        "start_ticks": 454645279,
+        "state": "R"
+      },
+      "freshgone": true,
+      "observed_monotonic_ns": 4547027494547851
+    },
+    {
+      "cpu": "metadata",
+      "role": "child_identity",
+      "saved": {
+        "pid": 2149898,
+        "parent": 2149895,
+        "group": 2149894,
+        "session": 2149894,
+        "start_ticks": 454645293,
+        "state": "R"
+      },
+      "freshgone": true,
+      "observed_monotonic_ns": 4547027494601528
+    },
+    {
+      "cpu": "archive",
+      "role": "coordinator_identity",
+      "saved": {
+        "pid": 2151326,
+        "parent": 2151325,
+        "group": 2151325,
+        "session": 2151325,
+        "start_ticks": 454653559,
+        "state": "R"
+      },
+      "freshgone": true,
+      "observed_monotonic_ns": 4547027495590601
+    },
+    {
+      "cpu": "archive",
+      "role": "child_identity",
+      "saved": {
+        "pid": 2151329,
+        "parent": 2151326,
+        "group": 2151325,
+        "session": 2151325,
+        "start_ticks": 454653574,
+        "state": "R"
+      },
+      "freshgone": true,
+      "observed_monotonic_ns": 4547027495635233
+    }
+  ],
+  "runtime_saved_identity_count": 57,
+  "successor_CPU_saved_identity_count": 4,
+  "engineering_added_seconds": "0",
+  "production_source_or_old_G_scientific_reader_rerun": false,
+  "original_transitions_semantically_read": false,
+  "benchmark_summary_previously_read_as_metadata": true,
+  "own_materializer_later_tool_reap_not_invented": true,
+  "updated_docs": 5
+}

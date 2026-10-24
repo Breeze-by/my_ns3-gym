@@ -1,0 +1,2490 @@
+{
+  "worker_id": 0,
+  "episodes": [
+    {
+      "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+      "scene": "open",
+      "seed": 101,
+      "initial_observation_digest": "4932460c779e529f7d499ee59c537a81a08d8b92876a817df85b2311b1b2eb68",
+      "output_directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v69/mr3_p2a_reach_v69_interface/worker0/episode001_open_101",
+      "startup_wall_sec": 130.93706033192575,
+      "initial_estimated_poses": [
+        {
+          "name": "tb1",
+          "x": 0.00010920321935332864,
+          "y": -0.4499995121490673,
+          "yaw": 2.3311281137306588e-05
+        },
+        {
+          "name": "tb2",
+          "x": 0.00010922066511342957,
+          "y": 0.45000026963270173,
+          "yaw": 2.3377050066431524e-05
+        },
+        {
+          "name": "tb3",
+          "x": 0.4501091752676303,
+          "y": 2.822526973742105e-07,
+          "yaw": 2.33488373656896e-05
+        }
+      ],
+      "transitions": 32,
+      "transition_wall_sec": 897.0979786273092,
+      "reward_sum": 6.751728293618191,
+      "dt_values": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "preparation_probe_diagnostics": {
+        "reference_turn_samples": {
+          "tb1": {
+            "sign": -1.0,
+            "w": -0.2984964430117757,
+            "snapshot_sequence": 3,
+            "source_stamp": 39.54,
+            "odom_source_stamp": 39.597
+          },
+          "tb2": {
+            "sign": 1.0,
+            "w": 0.29856885963320773,
+            "snapshot_sequence": 3,
+            "source_stamp": 39.532,
+            "odom_source_stamp": 39.592
+          },
+          "tb3": {
+            "sign": 1.0,
+            "w": 0.20386221686591086,
+            "snapshot_sequence": 3,
+            "source_stamp": 39.543,
+            "odom_source_stamp": 39.592
+          }
+        },
+        "goal_decisions": [
+          {
+            "task_elapsed_sec": 0.0,
+            "snapshot_sequence": 1,
+            "stage": "initial_goal",
+            "action": 621,
+            "selected_reverse_robots": [],
+            "scope": "original legal nonapproach stimulus subset; not actor availability or physical proof"
+          },
+          {
+            "task_elapsed_sec": 13.0,
+            "snapshot_sequence": 14,
+            "stage": "second_goal",
+            "action": 428,
+            "selected_reverse_robots": [
+              "tb1"
+            ],
+            "scope": "original legal nonapproach stimulus subset; not actor availability or physical proof"
+          }
+        ],
+        "reach_v3_stimulus": {
+          "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+          "rounds": {
+            "initial": {
+              "tb1": {
+                "goal_command_id": 1,
+                "goal_id": "mr3_p2a_reach_v69_interface_w0_e1_48541a42:tb1:1",
+                "goal_created_ns": 37600000000,
+                "submitted_activity": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 310,
+                  "estimated_path_m": null,
+                  "path_observation_complete": false,
+                  "sample_count": 0,
+                  "last_odom_source_stamp": null
+                },
+                "baseline_capture_count": 1,
+                "accepted_at_ns": 37600000000,
+                "accepted_observed_ns": 38600000000,
+                "baseline_path_m": 3.933097030873818e-06,
+                "baseline_epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                "baseline_observed_ns": 38600000000,
+                "baseline_path_source_ns": 38597000000,
+                "baseline_snapshot_sequence": 2,
+                "baseline_snapshot_digest": "5f721ae90beb4c658c90a9aa4a0c03d49c42e724ef63382246011be91ebdd4a4",
+                "baseline_activity_state_sequence": 360,
+                "wait_command_id": 8,
+                "wait_submitted_ns": 44600000000,
+                "cancel_request_observed_ns": 45600000000,
+                "cancel_terminal_observed_ns": 46600000000,
+                "rest_source_ns": [
+                  47597000000,
+                  48597000000,
+                  49597000000
+                ],
+                "handoff_observed_ns": 49600000000
+              },
+              "tb2": {
+                "goal_command_id": 1,
+                "goal_id": "mr3_p2a_reach_v69_interface_w0_e1_48541a42:tb2:1",
+                "goal_created_ns": 37600000000,
+                "submitted_activity": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 310,
+                  "estimated_path_m": null,
+                  "path_observation_complete": false,
+                  "sample_count": 0,
+                  "last_odom_source_stamp": null
+                },
+                "baseline_capture_count": 1,
+                "accepted_at_ns": 37600000000,
+                "accepted_observed_ns": 38600000000,
+                "baseline_path_m": 2.388378131969094e-06,
+                "baseline_epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                "baseline_observed_ns": 38600000000,
+                "baseline_path_source_ns": 38592000000,
+                "baseline_snapshot_sequence": 2,
+                "baseline_snapshot_digest": "5f721ae90beb4c658c90a9aa4a0c03d49c42e724ef63382246011be91ebdd4a4",
+                "baseline_activity_state_sequence": 360,
+                "wait_command_id": 8,
+                "wait_submitted_ns": 44600000000,
+                "cancel_request_observed_ns": 45600000000,
+                "cancel_terminal_observed_ns": 46600000000,
+                "rest_source_ns": [
+                  47592000000,
+                  48592000000,
+                  49592000000
+                ],
+                "handoff_observed_ns": 49600000000
+              },
+              "tb3": {
+                "goal_command_id": 1,
+                "goal_id": "mr3_p2a_reach_v69_interface_w0_e1_48541a42:tb3:1",
+                "goal_created_ns": 37600000000,
+                "submitted_activity": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 310,
+                  "estimated_path_m": null,
+                  "path_observation_complete": false,
+                  "sample_count": 0,
+                  "last_odom_source_stamp": null
+                },
+                "baseline_capture_count": 1,
+                "accepted_at_ns": 37600000000,
+                "accepted_observed_ns": 38600000000,
+                "baseline_path_m": 3.0165363760016687e-06,
+                "baseline_epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                "baseline_observed_ns": 38600000000,
+                "baseline_path_source_ns": 38592000000,
+                "baseline_snapshot_sequence": 2,
+                "baseline_snapshot_digest": "5f721ae90beb4c658c90a9aa4a0c03d49c42e724ef63382246011be91ebdd4a4",
+                "baseline_activity_state_sequence": 360
+              }
+            },
+            "second": {
+              "tb1": {
+                "goal_command_id": 14,
+                "goal_id": "mr3_p2a_reach_v69_interface_w0_e1_48541a42:tb1:14",
+                "goal_created_ns": 50600000000,
+                "submitted_activity": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 960,
+                  "estimated_path_m": 0.1248760407481339,
+                  "path_observation_complete": true,
+                  "sample_count": 646,
+                  "last_odom_source_stamp": 50.597
+                },
+                "baseline_capture_count": 1,
+                "accepted_at_ns": 50600000000,
+                "accepted_observed_ns": 51600000000,
+                "baseline_path_m": 0.12536155720277656,
+                "baseline_epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                "baseline_observed_ns": 51600000000,
+                "baseline_path_source_ns": 51597000000,
+                "baseline_snapshot_sequence": 15,
+                "baseline_snapshot_digest": "b24997f16639e01569d517e031ec3165c8bfd4ab0da8e48e09e7a416285e31a5",
+                "baseline_activity_state_sequence": 1010,
+                "wait_command_id": 19,
+                "wait_submitted_ns": 55600000000,
+                "cancel_request_observed_ns": 56600000000,
+                "cancel_terminal_observed_ns": 57600000000,
+                "rest_source_ns": [
+                  58597000000,
+                  59597000000,
+                  60597000000
+                ],
+                "handoff_observed_ns": 60600000000
+              },
+              "tb2": {
+                "goal_command_id": 14,
+                "goal_id": "mr3_p2a_reach_v69_interface_w0_e1_48541a42:tb2:14",
+                "goal_created_ns": 50600000000,
+                "submitted_activity": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 960,
+                  "estimated_path_m": 0.1440524469069615,
+                  "path_observation_complete": true,
+                  "sample_count": 649,
+                  "last_odom_source_stamp": 50.592
+                },
+                "baseline_capture_count": 1,
+                "accepted_at_ns": 50600000000,
+                "accepted_observed_ns": 51600000000,
+                "baseline_path_m": 0.27909385878023923,
+                "baseline_epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                "baseline_observed_ns": 51600000000,
+                "baseline_path_source_ns": 51592000000,
+                "baseline_snapshot_sequence": 15,
+                "baseline_snapshot_digest": "b24997f16639e01569d517e031ec3165c8bfd4ab0da8e48e09e7a416285e31a5",
+                "baseline_activity_state_sequence": 1010,
+                "wait_command_id": 19,
+                "wait_submitted_ns": 55600000000,
+                "cancel_request_observed_ns": 56600000000,
+                "cancel_terminal_observed_ns": 57600000000,
+                "rest_source_ns": [
+                  58592000000,
+                  59592000000,
+                  60592000000
+                ],
+                "handoff_observed_ns": 60600000000
+              },
+              "tb3": {}
+            }
+          },
+          "decisions": [
+            {
+              "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+              "observation_sequence": 1,
+              "observation_digest": "4932460c779e529f7d499ee59c537a81a08d8b92876a817df85b2311b1b2eb68",
+              "round": "initial",
+              "task_elapsed_sec": 0.0,
+              "clock_ns": 37600000000,
+              "action": 621,
+              "reasons": {},
+              "submitted_activity": {
+                "tb1": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 310,
+                  "estimated_path_m": null,
+                  "path_observation_complete": false,
+                  "sample_count": 0,
+                  "last_odom_source_stamp": null
+                },
+                "tb2": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 310,
+                  "estimated_path_m": null,
+                  "path_observation_complete": false,
+                  "sample_count": 0,
+                  "last_odom_source_stamp": null
+                },
+                "tb3": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 310,
+                  "estimated_path_m": null,
+                  "path_observation_complete": false,
+                  "sample_count": 0,
+                  "last_odom_source_stamp": null
+                }
+              },
+              "goal_robots": [
+                "tb1",
+                "tb2",
+                "tb3"
+              ],
+              "wait_robots": [],
+              "eligible_goal_candidates": {
+                "tb1": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7
+                ],
+                "tb2": [
+                  0,
+                  1,
+                  2,
+                  4,
+                  5,
+                  7
+                ],
+                "tb3": [
+                  0,
+                  1,
+                  7
+                ]
+              },
+              "scope": "planned input only; no native cancel or physical credit"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+              "observation_sequence": 2,
+              "observation_digest": "5f721ae90beb4c658c90a9aa4a0c03d49c42e724ef63382246011be91ebdd4a4",
+              "round": "initial",
+              "task_elapsed_sec": 1.0,
+              "clock_ns": 38600000000,
+              "action": 888,
+              "reasons": {},
+              "submitted_activity": {
+                "tb1": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 360,
+                  "estimated_path_m": 3.933097030873818e-06,
+                  "path_observation_complete": true,
+                  "sample_count": 50,
+                  "last_odom_source_stamp": 38.597
+                },
+                "tb2": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 360,
+                  "estimated_path_m": 2.388378131969094e-06,
+                  "path_observation_complete": true,
+                  "sample_count": 50,
+                  "last_odom_source_stamp": 38.592
+                },
+                "tb3": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 360,
+                  "estimated_path_m": 3.0165363760016687e-06,
+                  "path_observation_complete": true,
+                  "sample_count": 50,
+                  "last_odom_source_stamp": 38.592
+                }
+              },
+              "goal_robots": [],
+              "wait_robots": [],
+              "eligible_goal_candidates": {
+                "tb1": [],
+                "tb2": [],
+                "tb3": []
+              },
+              "scope": "planned input only; no native cancel or physical credit"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+              "observation_sequence": 3,
+              "observation_digest": "bfeaa4e7154c5a13b024735e5dd487b2f12cdf0318b17f5437213928f98a3d03",
+              "round": "initial",
+              "task_elapsed_sec": 2.0,
+              "clock_ns": 39600000000,
+              "action": 888,
+              "reasons": {},
+              "submitted_activity": {
+                "tb1": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 410,
+                  "estimated_path_m": 0.0007071505815117206,
+                  "path_observation_complete": true,
+                  "sample_count": 100,
+                  "last_odom_source_stamp": 39.597
+                },
+                "tb2": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 410,
+                  "estimated_path_m": 0.000640350388176961,
+                  "path_observation_complete": true,
+                  "sample_count": 100,
+                  "last_odom_source_stamp": 39.592
+                },
+                "tb3": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 410,
+                  "estimated_path_m": 0.14998490993926025,
+                  "path_observation_complete": true,
+                  "sample_count": 100,
+                  "last_odom_source_stamp": 39.592
+                }
+              },
+              "goal_robots": [],
+              "wait_robots": [],
+              "eligible_goal_candidates": {
+                "tb1": [],
+                "tb2": [],
+                "tb3": []
+              },
+              "scope": "planned input only; no native cancel or physical credit"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+              "observation_sequence": 4,
+              "observation_digest": "d2d36202ff1334c4811b21a6c2ade85628966be6e977176eb94a58909eff201f",
+              "round": "initial",
+              "task_elapsed_sec": 3.0,
+              "clock_ns": 40600000000,
+              "action": 888,
+              "reasons": {},
+              "submitted_activity": {
+                "tb1": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 460,
+                  "estimated_path_m": 0.0014760208496742405,
+                  "path_observation_complete": true,
+                  "sample_count": 150,
+                  "last_odom_source_stamp": 40.597
+                },
+                "tb2": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 460,
+                  "estimated_path_m": 0.0013273449957017238,
+                  "path_observation_complete": true,
+                  "sample_count": 150,
+                  "last_odom_source_stamp": 40.592
+                },
+                "tb3": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 460,
+                  "estimated_path_m": 0.3083188353378315,
+                  "path_observation_complete": true,
+                  "sample_count": 150,
+                  "last_odom_source_stamp": 40.592
+                }
+              },
+              "goal_robots": [],
+              "wait_robots": [],
+              "eligible_goal_candidates": {
+                "tb1": [],
+                "tb2": [],
+                "tb3": []
+              },
+              "scope": "planned input only; no native cancel or physical credit"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+              "observation_sequence": 5,
+              "observation_digest": "cc2f84f77716e1c593e050f12f2f1b85b160d886c02fe81f6296c243af7da3d3",
+              "round": "initial",
+              "task_elapsed_sec": 4.0,
+              "clock_ns": 41600000000,
+              "action": 888,
+              "reasons": {},
+              "submitted_activity": {
+                "tb1": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 510,
+                  "estimated_path_m": 0.004047758112780219,
+                  "path_observation_complete": true,
+                  "sample_count": 199,
+                  "last_odom_source_stamp": 41.597
+                },
+                "tb2": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 510,
+                  "estimated_path_m": 0.00188179981486978,
+                  "path_observation_complete": true,
+                  "sample_count": 200,
+                  "last_odom_source_stamp": 41.592
+                },
+                "tb3": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 510,
+                  "estimated_path_m": 0.3558469089265701,
+                  "path_observation_complete": true,
+                  "sample_count": 200,
+                  "last_odom_source_stamp": 41.592
+                }
+              },
+              "goal_robots": [],
+              "wait_robots": [],
+              "eligible_goal_candidates": {
+                "tb1": [],
+                "tb2": [],
+                "tb3": []
+              },
+              "scope": "planned input only; no native cancel or physical credit"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+              "observation_sequence": 6,
+              "observation_digest": "d459335784ce2a87c6f265e5496f0580c53ccf27f3806d50ad3e6699fcac6daf",
+              "round": "initial",
+              "task_elapsed_sec": 5.0,
+              "clock_ns": 42600000000,
+              "action": 888,
+              "reasons": {},
+              "submitted_activity": {
+                "tb1": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 560,
+                  "estimated_path_m": 0.022481358043154626,
+                  "path_observation_complete": true,
+                  "sample_count": 249,
+                  "last_odom_source_stamp": 42.597
+                },
+                "tb2": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 560,
+                  "estimated_path_m": 0.002423905396397666,
+                  "path_observation_complete": true,
+                  "sample_count": 250,
+                  "last_odom_source_stamp": 42.592
+                },
+                "tb3": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 560,
+                  "estimated_path_m": 0.37836648305827353,
+                  "path_observation_complete": true,
+                  "sample_count": 250,
+                  "last_odom_source_stamp": 42.592
+                }
+              },
+              "goal_robots": [],
+              "wait_robots": [],
+              "eligible_goal_candidates": {
+                "tb1": [],
+                "tb2": [],
+                "tb3": []
+              },
+              "scope": "planned input only; no native cancel or physical credit"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+              "observation_sequence": 7,
+              "observation_digest": "b08867cac63a1ac4cd55c49b5d113dcee1cd8f6f06dabac493475d49bfc0416e",
+              "round": "initial",
+              "task_elapsed_sec": 6.0,
+              "clock_ns": 43600000000,
+              "action": 888,
+              "reasons": {},
+              "submitted_activity": {
+                "tb1": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 610,
+                  "estimated_path_m": 0.06708377617713425,
+                  "path_observation_complete": true,
+                  "sample_count": 299,
+                  "last_odom_source_stamp": 43.597
+                },
+                "tb2": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 610,
+                  "estimated_path_m": 0.03520962547706756,
+                  "path_observation_complete": true,
+                  "sample_count": 300,
+                  "last_odom_source_stamp": 43.592
+                },
+                "tb3": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 610,
+                  "estimated_path_m": 0.37839148358790564,
+                  "path_observation_complete": true,
+                  "sample_count": 300,
+                  "last_odom_source_stamp": 43.592
+                }
+              },
+              "goal_robots": [],
+              "wait_robots": [],
+              "eligible_goal_candidates": {
+                "tb1": [],
+                "tb2": [],
+                "tb3": []
+              },
+              "scope": "planned input only; no native cancel or physical credit"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+              "observation_sequence": 8,
+              "observation_digest": "60905dafc845a8b1080f2e2192eeba5897880951a83439f1a6026170c0305214",
+              "round": "initial",
+              "task_elapsed_sec": 7.0,
+              "clock_ns": 44600000000,
+              "action": 998,
+              "reasons": {
+                "tb1": "moving_owned_first_legal_wait",
+                "tb2": "moving_owned_first_legal_wait"
+              },
+              "submitted_activity": {
+                "tb1": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 660,
+                  "estimated_path_m": 0.1104918086465388,
+                  "path_observation_complete": true,
+                  "sample_count": 349,
+                  "last_odom_source_stamp": 44.597
+                },
+                "tb2": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 660,
+                  "estimated_path_m": 0.13181077693308016,
+                  "path_observation_complete": true,
+                  "sample_count": 350,
+                  "last_odom_source_stamp": 44.592
+                },
+                "tb3": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 660,
+                  "estimated_path_m": 0.37841732947492496,
+                  "path_observation_complete": true,
+                  "sample_count": 350,
+                  "last_odom_source_stamp": 44.592
+                }
+              },
+              "goal_robots": [],
+              "wait_robots": [
+                "tb1",
+                "tb2"
+              ],
+              "eligible_goal_candidates": {
+                "tb3": []
+              },
+              "scope": "planned input only; no native cancel or physical credit"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+              "observation_sequence": 9,
+              "observation_digest": "0a7f7b6844e2774f2c0d6e35fae39900e57f1fe24e11cb31822ae470c17cc345",
+              "round": "initial",
+              "task_elapsed_sec": 8.0,
+              "clock_ns": 45600000000,
+              "action": 888,
+              "reasons": {},
+              "submitted_activity": {
+                "tb1": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 710,
+                  "estimated_path_m": 0.12435683972394582,
+                  "path_observation_complete": true,
+                  "sample_count": 398,
+                  "last_odom_source_stamp": 45.597
+                },
+                "tb2": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 710,
+                  "estimated_path_m": 0.1440257478088405,
+                  "path_observation_complete": true,
+                  "sample_count": 400,
+                  "last_odom_source_stamp": 45.592
+                },
+                "tb3": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 710,
+                  "estimated_path_m": 0.37844386553312265,
+                  "path_observation_complete": true,
+                  "sample_count": 400,
+                  "last_odom_source_stamp": 45.592
+                }
+              },
+              "goal_robots": [],
+              "wait_robots": [],
+              "eligible_goal_candidates": {
+                "tb1": [],
+                "tb2": [],
+                "tb3": []
+              },
+              "scope": "planned input only; no native cancel or physical credit"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+              "observation_sequence": 10,
+              "observation_digest": "7f6e1d8a45e5741d1d66058a98d284e869e902ab6bce6a2ffc167b25c829f8d9",
+              "round": "initial",
+              "task_elapsed_sec": 9.0,
+              "clock_ns": 46600000000,
+              "action": 888,
+              "reasons": {},
+              "submitted_activity": {
+                "tb1": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 760,
+                  "estimated_path_m": 0.12445275201279801,
+                  "path_observation_complete": true,
+                  "sample_count": 448,
+                  "last_odom_source_stamp": 46.597
+                },
+                "tb2": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 760,
+                  "estimated_path_m": 0.14403015827013502,
+                  "path_observation_complete": true,
+                  "sample_count": 450,
+                  "last_odom_source_stamp": 46.592
+                },
+                "tb3": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 760,
+                  "estimated_path_m": 0.378470845137666,
+                  "path_observation_complete": true,
+                  "sample_count": 450,
+                  "last_odom_source_stamp": 46.592
+                }
+              },
+              "goal_robots": [],
+              "wait_robots": [],
+              "eligible_goal_candidates": {
+                "tb1": [],
+                "tb2": [],
+                "tb3": []
+              },
+              "scope": "planned input only; no native cancel or physical credit"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+              "observation_sequence": 11,
+              "observation_digest": "a33cea55b85ee7344e64ca8a0aa62ec361ff6a114c13ef651aa8f45e5fd74056",
+              "round": "initial",
+              "task_elapsed_sec": 10.0,
+              "clock_ns": 47600000000,
+              "action": 999,
+              "reasons": {
+                "tb1": "bounded_cleanup_wait_no_credit",
+                "tb2": "bounded_cleanup_wait_no_credit",
+                "tb3": "bounded_cleanup_wait_no_credit"
+              },
+              "submitted_activity": {
+                "tb1": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 810,
+                  "estimated_path_m": 0.1245532127230054,
+                  "path_observation_complete": true,
+                  "sample_count": 498,
+                  "last_odom_source_stamp": 47.597
+                },
+                "tb2": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 810,
+                  "estimated_path_m": 0.1440343628496906,
+                  "path_observation_complete": true,
+                  "sample_count": 500,
+                  "last_odom_source_stamp": 47.592
+                },
+                "tb3": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 810,
+                  "estimated_path_m": 0.378498413609372,
+                  "path_observation_complete": true,
+                  "sample_count": 500,
+                  "last_odom_source_stamp": 47.592
+                }
+              },
+              "goal_robots": [],
+              "wait_robots": [
+                "tb1",
+                "tb2",
+                "tb3"
+              ],
+              "eligible_goal_candidates": {},
+              "scope": "planned input only; no native cancel or physical credit"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+              "observation_sequence": 12,
+              "observation_digest": "bc7960d3c21c5a17d729ddd2257f3e9a5baddc9d3a9d945f0f2e6e6ec96e79a0",
+              "round": "initial",
+              "task_elapsed_sec": 11.0,
+              "clock_ns": 48600000000,
+              "action": 999,
+              "reasons": {
+                "tb1": "bounded_cleanup_wait_no_credit",
+                "tb2": "bounded_cleanup_wait_no_credit",
+                "tb3": "bounded_cleanup_wait_no_credit"
+              },
+              "submitted_activity": {
+                "tb1": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 860,
+                  "estimated_path_m": 0.12465763512672565,
+                  "path_observation_complete": true,
+                  "sample_count": 547,
+                  "last_odom_source_stamp": 48.597
+                },
+                "tb2": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 860,
+                  "estimated_path_m": 0.14404005997373395,
+                  "path_observation_complete": true,
+                  "sample_count": 549,
+                  "last_odom_source_stamp": 48.592
+                },
+                "tb3": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 860,
+                  "estimated_path_m": 0.37852642577865875,
+                  "path_observation_complete": true,
+                  "sample_count": 549,
+                  "last_odom_source_stamp": 48.592
+                }
+              },
+              "goal_robots": [],
+              "wait_robots": [
+                "tb1",
+                "tb2",
+                "tb3"
+              ],
+              "eligible_goal_candidates": {},
+              "scope": "planned input only; no native cancel or physical credit"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+              "observation_sequence": 13,
+              "observation_digest": "98b72ce314d23c44bb4a9fcafc55920399c474eaf2562f6fdfa16ec1cdc97b20",
+              "round": "initial",
+              "task_elapsed_sec": 12.0,
+              "clock_ns": 49600000000,
+              "action": 999,
+              "reasons": {
+                "tb1": "bounded_cleanup_wait_no_credit",
+                "tb2": "bounded_cleanup_wait_no_credit",
+                "tb3": "bounded_cleanup_wait_no_credit"
+              },
+              "submitted_activity": {
+                "tb1": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 910,
+                  "estimated_path_m": 0.12476553798866977,
+                  "path_observation_complete": true,
+                  "sample_count": 596,
+                  "last_odom_source_stamp": 49.597
+                },
+                "tb2": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 910,
+                  "estimated_path_m": 0.14404547647470103,
+                  "path_observation_complete": true,
+                  "sample_count": 599,
+                  "last_odom_source_stamp": 49.592
+                },
+                "tb3": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 910,
+                  "estimated_path_m": 0.3785548986928672,
+                  "path_observation_complete": true,
+                  "sample_count": 599,
+                  "last_odom_source_stamp": 49.592
+                }
+              },
+              "goal_robots": [],
+              "wait_robots": [
+                "tb1",
+                "tb2",
+                "tb3"
+              ],
+              "eligible_goal_candidates": {},
+              "scope": "planned input only; no native cancel or physical credit"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+              "observation_sequence": 14,
+              "observation_digest": "462b42dd3d8c5116b50a461c7eebe9ef57a6b3aba2caab7d20e89eff59de6c6a",
+              "round": "second",
+              "task_elapsed_sec": 13.0,
+              "clock_ns": 50600000000,
+              "action": 428,
+              "reasons": {},
+              "submitted_activity": {
+                "tb1": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 960,
+                  "estimated_path_m": 0.1248760407481339,
+                  "path_observation_complete": true,
+                  "sample_count": 646,
+                  "last_odom_source_stamp": 50.597
+                },
+                "tb2": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 960,
+                  "estimated_path_m": 0.1440524469069615,
+                  "path_observation_complete": true,
+                  "sample_count": 649,
+                  "last_odom_source_stamp": 50.592
+                },
+                "tb3": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 960,
+                  "estimated_path_m": 0.37858384841633913,
+                  "path_observation_complete": true,
+                  "sample_count": 649,
+                  "last_odom_source_stamp": 50.592
+                }
+              },
+              "goal_robots": [
+                "tb1",
+                "tb2"
+              ],
+              "wait_robots": [],
+              "eligible_goal_candidates": {
+                "tb1": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  6,
+                  7
+                ],
+                "tb2": [
+                  0,
+                  2,
+                  3,
+                  4,
+                  5
+                ],
+                "tb3": []
+              },
+              "scope": "planned input only; no native cancel or physical credit"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+              "observation_sequence": 15,
+              "observation_digest": "b24997f16639e01569d517e031ec3165c8bfd4ab0da8e48e09e7a416285e31a5",
+              "round": "second",
+              "task_elapsed_sec": 14.0,
+              "clock_ns": 51600000000,
+              "action": 888,
+              "reasons": {},
+              "submitted_activity": {
+                "tb1": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 1010,
+                  "estimated_path_m": 0.12536155720277656,
+                  "path_observation_complete": true,
+                  "sample_count": 696,
+                  "last_odom_source_stamp": 51.597
+                },
+                "tb2": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 1010,
+                  "estimated_path_m": 0.27909385878023923,
+                  "path_observation_complete": true,
+                  "sample_count": 699,
+                  "last_odom_source_stamp": 51.592
+                },
+                "tb3": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 1010,
+                  "estimated_path_m": 0.3786132648764743,
+                  "path_observation_complete": true,
+                  "sample_count": 699,
+                  "last_odom_source_stamp": 51.592
+                }
+              },
+              "goal_robots": [],
+              "wait_robots": [],
+              "eligible_goal_candidates": {
+                "tb1": [],
+                "tb2": [],
+                "tb3": []
+              },
+              "scope": "planned input only; no native cancel or physical credit"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+              "observation_sequence": 16,
+              "observation_digest": "1858afb23bb877340ecbd3dbf7f7f512562006571afa4668c067b372dd1f4c5b",
+              "round": "second",
+              "task_elapsed_sec": 15.0,
+              "clock_ns": 52600000000,
+              "action": 888,
+              "reasons": {},
+              "submitted_activity": {
+                "tb1": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 1060,
+                  "estimated_path_m": 0.12619184065510008,
+                  "path_observation_complete": true,
+                  "sample_count": 746,
+                  "last_odom_source_stamp": 52.597
+                },
+                "tb2": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 1060,
+                  "estimated_path_m": 0.4637210158801567,
+                  "path_observation_complete": true,
+                  "sample_count": 749,
+                  "last_odom_source_stamp": 52.592
+                },
+                "tb3": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 1060,
+                  "estimated_path_m": 0.3786432623237584,
+                  "path_observation_complete": true,
+                  "sample_count": 749,
+                  "last_odom_source_stamp": 52.592
+                }
+              },
+              "goal_robots": [],
+              "wait_robots": [],
+              "eligible_goal_candidates": {
+                "tb1": [],
+                "tb2": [],
+                "tb3": []
+              },
+              "scope": "planned input only; no native cancel or physical credit"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+              "observation_sequence": 17,
+              "observation_digest": "0ab498d1435d6d8e34945ef1ee79206149561156e46708e1e21a7f2efd716b41",
+              "round": "second",
+              "task_elapsed_sec": 16.0,
+              "clock_ns": 53600000000,
+              "action": 888,
+              "reasons": {},
+              "submitted_activity": {
+                "tb1": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 1110,
+                  "estimated_path_m": 0.20513345876193043,
+                  "path_observation_complete": true,
+                  "sample_count": 796,
+                  "last_odom_source_stamp": 53.597
+                },
+                "tb2": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 1110,
+                  "estimated_path_m": 0.646195254237387,
+                  "path_observation_complete": true,
+                  "sample_count": 799,
+                  "last_odom_source_stamp": 53.592
+                },
+                "tb3": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 1110,
+                  "estimated_path_m": 0.37867357297267495,
+                  "path_observation_complete": true,
+                  "sample_count": 799,
+                  "last_odom_source_stamp": 53.592
+                }
+              },
+              "goal_robots": [],
+              "wait_robots": [],
+              "eligible_goal_candidates": {
+                "tb1": [],
+                "tb2": [],
+                "tb3": []
+              },
+              "scope": "planned input only; no native cancel or physical credit"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+              "observation_sequence": 18,
+              "observation_digest": "cc995f1f72e0978c205e5f62e09c5f01086e9aca4e337afa1433c151ffa856a3",
+              "round": "second",
+              "task_elapsed_sec": 17.0,
+              "clock_ns": 54600000000,
+              "action": 888,
+              "reasons": {},
+              "submitted_activity": {
+                "tb1": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 1160,
+                  "estimated_path_m": 0.3978371635807163,
+                  "path_observation_complete": true,
+                  "sample_count": 846,
+                  "last_odom_source_stamp": 54.597
+                },
+                "tb2": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 1160,
+                  "estimated_path_m": 0.8302298220593972,
+                  "path_observation_complete": true,
+                  "sample_count": 849,
+                  "last_odom_source_stamp": 54.592
+                },
+                "tb3": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 1160,
+                  "estimated_path_m": 0.3787041287377909,
+                  "path_observation_complete": true,
+                  "sample_count": 849,
+                  "last_odom_source_stamp": 54.592
+                }
+              },
+              "goal_robots": [],
+              "wait_robots": [],
+              "eligible_goal_candidates": {
+                "tb1": [],
+                "tb2": [],
+                "tb3": []
+              },
+              "scope": "planned input only; no native cancel or physical credit"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+              "observation_sequence": 19,
+              "observation_digest": "db4b33e878538e5e0238f9851c55ad108cf622d05f1a559da116d4aa331ae31d",
+              "round": "second",
+              "task_elapsed_sec": 18.0,
+              "clock_ns": 55600000000,
+              "action": 998,
+              "reasons": {
+                "tb1": "moving_owned_first_legal_wait",
+                "tb2": "moving_owned_first_legal_wait"
+              },
+              "submitted_activity": {
+                "tb1": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 1210,
+                  "estimated_path_m": 0.58714669803361,
+                  "path_observation_complete": true,
+                  "sample_count": 895,
+                  "last_odom_source_stamp": 55.597
+                },
+                "tb2": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 1210,
+                  "estimated_path_m": 1.014121382292279,
+                  "path_observation_complete": true,
+                  "sample_count": 899,
+                  "last_odom_source_stamp": 55.592
+                },
+                "tb3": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 1210,
+                  "estimated_path_m": 0.3787351282624934,
+                  "path_observation_complete": true,
+                  "sample_count": 899,
+                  "last_odom_source_stamp": 55.592
+                }
+              },
+              "goal_robots": [],
+              "wait_robots": [
+                "tb1",
+                "tb2"
+              ],
+              "eligible_goal_candidates": {
+                "tb3": []
+              },
+              "scope": "planned input only; no native cancel or physical credit"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+              "observation_sequence": 20,
+              "observation_digest": "d3dbd420f9a683da4c747962d000a49a3d98d9a05700613ace1be61c59fecd95",
+              "round": "second",
+              "task_elapsed_sec": 19.0,
+              "clock_ns": 56600000000,
+              "action": 888,
+              "reasons": {},
+              "submitted_activity": {
+                "tb1": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 1260,
+                  "estimated_path_m": 0.6106776092662122,
+                  "path_observation_complete": true,
+                  "sample_count": 944,
+                  "last_odom_source_stamp": 56.597
+                },
+                "tb2": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 1260,
+                  "estimated_path_m": 1.0373993201668796,
+                  "path_observation_complete": true,
+                  "sample_count": 949,
+                  "last_odom_source_stamp": 56.592
+                },
+                "tb3": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 1260,
+                  "estimated_path_m": 0.3787664288973745,
+                  "path_observation_complete": true,
+                  "sample_count": 949,
+                  "last_odom_source_stamp": 56.592
+                }
+              },
+              "goal_robots": [],
+              "wait_robots": [],
+              "eligible_goal_candidates": {
+                "tb1": [],
+                "tb2": [],
+                "tb3": []
+              },
+              "scope": "planned input only; no native cancel or physical credit"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+              "observation_sequence": 21,
+              "observation_digest": "79b9e017aa9d859d19ac459b4ebed84b29ee6fcd96809d15f918f619d4ebde8f",
+              "round": "second",
+              "task_elapsed_sec": 20.0,
+              "clock_ns": 57600000000,
+              "action": 888,
+              "reasons": {},
+              "submitted_activity": {
+                "tb1": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 1310,
+                  "estimated_path_m": 0.610686962119416,
+                  "path_observation_complete": true,
+                  "sample_count": 994,
+                  "last_odom_source_stamp": 57.597
+                },
+                "tb2": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 1310,
+                  "estimated_path_m": 1.0374367543165501,
+                  "path_observation_complete": true,
+                  "sample_count": 999,
+                  "last_odom_source_stamp": 57.592
+                },
+                "tb3": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 1310,
+                  "estimated_path_m": 0.3787982223430498,
+                  "path_observation_complete": true,
+                  "sample_count": 999,
+                  "last_odom_source_stamp": 57.592
+                }
+              },
+              "goal_robots": [],
+              "wait_robots": [],
+              "eligible_goal_candidates": {
+                "tb1": [],
+                "tb2": [],
+                "tb3": []
+              },
+              "scope": "planned input only; no native cancel or physical credit"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+              "observation_sequence": 22,
+              "observation_digest": "092a6f3a6b67368e97858a863d581d41ac52bb2c2a30dcb248827cb486162aa2",
+              "round": "second",
+              "task_elapsed_sec": 21.0,
+              "clock_ns": 58600000000,
+              "action": 888,
+              "reasons": {},
+              "submitted_activity": {
+                "tb1": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 1360,
+                  "estimated_path_m": 0.6106916810244049,
+                  "path_observation_complete": true,
+                  "sample_count": 1044,
+                  "last_odom_source_stamp": 58.597
+                },
+                "tb2": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 1360,
+                  "estimated_path_m": 1.0374746653623532,
+                  "path_observation_complete": true,
+                  "sample_count": 1049,
+                  "last_odom_source_stamp": 58.592
+                },
+                "tb3": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 1360,
+                  "estimated_path_m": 0.37883044091192447,
+                  "path_observation_complete": true,
+                  "sample_count": 1049,
+                  "last_odom_source_stamp": 58.592
+                }
+              },
+              "goal_robots": [],
+              "wait_robots": [],
+              "eligible_goal_candidates": {
+                "tb1": [],
+                "tb2": [],
+                "tb3": []
+              },
+              "scope": "planned input only; no native cancel or physical credit"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+              "observation_sequence": 23,
+              "observation_digest": "0d2c4d782740c9710fde0f56ea933dfc77f75ff2d866adba1d9a178c7ea0f046",
+              "round": "second",
+              "task_elapsed_sec": 22.0,
+              "clock_ns": 59600000000,
+              "action": 888,
+              "reasons": {},
+              "submitted_activity": {
+                "tb1": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 1410,
+                  "estimated_path_m": 0.6107000612035243,
+                  "path_observation_complete": true,
+                  "sample_count": 1094,
+                  "last_odom_source_stamp": 59.597
+                },
+                "tb2": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 1410,
+                  "estimated_path_m": 1.0375127510096624,
+                  "path_observation_complete": true,
+                  "sample_count": 1099,
+                  "last_odom_source_stamp": 59.592
+                },
+                "tb3": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 1410,
+                  "estimated_path_m": 0.37886282226785795,
+                  "path_observation_complete": true,
+                  "sample_count": 1099,
+                  "last_odom_source_stamp": 59.592
+                }
+              },
+              "goal_robots": [],
+              "wait_robots": [],
+              "eligible_goal_candidates": {
+                "tb1": [],
+                "tb2": [],
+                "tb3": []
+              },
+              "scope": "planned input only; no native cancel or physical credit"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+              "observation_sequence": 24,
+              "observation_digest": "e85cfc28c1b5d3454260a58c2f145f76f13d70172679307a89a67a50e0011ac7",
+              "round": "second",
+              "task_elapsed_sec": 23.0,
+              "clock_ns": 60600000000,
+              "action": 888,
+              "reasons": {},
+              "submitted_activity": {
+                "tb1": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 1460,
+                  "estimated_path_m": 0.6107136142261184,
+                  "path_observation_complete": true,
+                  "sample_count": 1144,
+                  "last_odom_source_stamp": 60.597
+                },
+                "tb2": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 1460,
+                  "estimated_path_m": 1.0375511335194956,
+                  "path_observation_complete": true,
+                  "sample_count": 1149,
+                  "last_odom_source_stamp": 60.592
+                },
+                "tb3": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 1460,
+                  "estimated_path_m": 0.37889551405297034,
+                  "path_observation_complete": true,
+                  "sample_count": 1149,
+                  "last_odom_source_stamp": 60.592
+                }
+              },
+              "goal_robots": [],
+              "wait_robots": [],
+              "eligible_goal_candidates": {
+                "tb1": [],
+                "tb2": [],
+                "tb3": []
+              },
+              "scope": "planned input only; no native cancel or physical credit"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+              "observation_sequence": 25,
+              "observation_digest": "003d16fcfed6e11460b11a8744d186087787a33b045a3aa8dddea33ae9dac2c0",
+              "round": "second",
+              "task_elapsed_sec": 24.0,
+              "clock_ns": 61600000000,
+              "action": 888,
+              "reasons": {},
+              "submitted_activity": {
+                "tb1": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 1510,
+                  "estimated_path_m": 0.6107317178901652,
+                  "path_observation_complete": true,
+                  "sample_count": 1194,
+                  "last_odom_source_stamp": 61.597
+                },
+                "tb2": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 1510,
+                  "estimated_path_m": 1.037589903321516,
+                  "path_observation_complete": true,
+                  "sample_count": 1199,
+                  "last_odom_source_stamp": 61.592
+                },
+                "tb3": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 1510,
+                  "estimated_path_m": 0.37892846103112526,
+                  "path_observation_complete": true,
+                  "sample_count": 1199,
+                  "last_odom_source_stamp": 61.592
+                }
+              },
+              "goal_robots": [],
+              "wait_robots": [],
+              "eligible_goal_candidates": {
+                "tb1": [],
+                "tb2": [],
+                "tb3": []
+              },
+              "scope": "planned input only; no native cancel or physical credit"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+              "observation_sequence": 26,
+              "observation_digest": "209a8fd30568b39ded47478362b2b5b1d44fce5916872f2327679a7b0ed5e91b",
+              "round": "second",
+              "task_elapsed_sec": 25.0,
+              "clock_ns": 62600000000,
+              "action": 888,
+              "reasons": {},
+              "submitted_activity": {
+                "tb1": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 1560,
+                  "estimated_path_m": 0.6107535053482664,
+                  "path_observation_complete": true,
+                  "sample_count": 1244,
+                  "last_odom_source_stamp": 62.597
+                },
+                "tb2": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 1560,
+                  "estimated_path_m": 1.0376288158650049,
+                  "path_observation_complete": true,
+                  "sample_count": 1249,
+                  "last_odom_source_stamp": 62.592
+                },
+                "tb3": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 1560,
+                  "estimated_path_m": 0.37896186051587266,
+                  "path_observation_complete": true,
+                  "sample_count": 1249,
+                  "last_odom_source_stamp": 62.592
+                }
+              },
+              "goal_robots": [],
+              "wait_robots": [],
+              "eligible_goal_candidates": {
+                "tb1": [],
+                "tb2": [],
+                "tb3": []
+              },
+              "scope": "planned input only; no native cancel or physical credit"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+              "observation_sequence": 27,
+              "observation_digest": "eff8674ea0148aa6db3fec183a1e90e3ff8ee600557aa082fbc2c8e0e2d7a8ab",
+              "round": "second",
+              "task_elapsed_sec": 26.0,
+              "clock_ns": 63600000000,
+              "action": 888,
+              "reasons": {},
+              "submitted_activity": {
+                "tb1": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 1610,
+                  "estimated_path_m": 0.6107784085028047,
+                  "path_observation_complete": true,
+                  "sample_count": 1294,
+                  "last_odom_source_stamp": 63.597
+                },
+                "tb2": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 1610,
+                  "estimated_path_m": 1.0376681534468382,
+                  "path_observation_complete": true,
+                  "sample_count": 1299,
+                  "last_odom_source_stamp": 63.592
+                },
+                "tb3": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 1610,
+                  "estimated_path_m": 0.3789953610177759,
+                  "path_observation_complete": true,
+                  "sample_count": 1299,
+                  "last_odom_source_stamp": 63.592
+                }
+              },
+              "goal_robots": [],
+              "wait_robots": [],
+              "eligible_goal_candidates": {
+                "tb1": [],
+                "tb2": [],
+                "tb3": []
+              },
+              "scope": "planned input only; no native cancel or physical credit"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+              "observation_sequence": 28,
+              "observation_digest": "dbbc0141d375f667cf559ea2c7ce645eddba859960c2990e8439454049180ea0",
+              "round": "second",
+              "task_elapsed_sec": 26.999999999999993,
+              "clock_ns": 64600000000,
+              "action": 888,
+              "reasons": {},
+              "submitted_activity": {
+                "tb1": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 1660,
+                  "estimated_path_m": 0.6108059754115203,
+                  "path_observation_complete": true,
+                  "sample_count": 1344,
+                  "last_odom_source_stamp": 64.597
+                },
+                "tb2": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 1660,
+                  "estimated_path_m": 1.0377074484496613,
+                  "path_observation_complete": true,
+                  "sample_count": 1349,
+                  "last_odom_source_stamp": 64.592
+                },
+                "tb3": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 1660,
+                  "estimated_path_m": 0.37902934637170177,
+                  "path_observation_complete": true,
+                  "sample_count": 1349,
+                  "last_odom_source_stamp": 64.592
+                }
+              },
+              "goal_robots": [],
+              "wait_robots": [],
+              "eligible_goal_candidates": {
+                "tb1": [],
+                "tb2": [],
+                "tb3": []
+              },
+              "scope": "planned input only; no native cancel or physical credit"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+              "observation_sequence": 29,
+              "observation_digest": "b5bf2ad42e789542991b730513d6d951db6b70316fdcf80cd73f7ae1289a11e3",
+              "round": "second",
+              "task_elapsed_sec": 27.999999999999993,
+              "clock_ns": 65600000000,
+              "action": 999,
+              "reasons": {
+                "tb1": "bounded_cleanup_wait_no_credit",
+                "tb2": "bounded_cleanup_wait_no_credit",
+                "tb3": "bounded_cleanup_wait_no_credit"
+              },
+              "submitted_activity": {
+                "tb1": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 1710,
+                  "estimated_path_m": 0.6108356449154594,
+                  "path_observation_complete": true,
+                  "sample_count": 1394,
+                  "last_odom_source_stamp": 65.597
+                },
+                "tb2": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 1710,
+                  "estimated_path_m": 1.0377471048296536,
+                  "path_observation_complete": true,
+                  "sample_count": 1399,
+                  "last_odom_source_stamp": 65.592
+                },
+                "tb3": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 1710,
+                  "estimated_path_m": 0.3790633656065375,
+                  "path_observation_complete": true,
+                  "sample_count": 1399,
+                  "last_odom_source_stamp": 65.592
+                }
+              },
+              "goal_robots": [],
+              "wait_robots": [
+                "tb1",
+                "tb2",
+                "tb3"
+              ],
+              "eligible_goal_candidates": {},
+              "scope": "planned input only; no native cancel or physical credit"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+              "observation_sequence": 30,
+              "observation_digest": "992c45216166b32b1467d2b34a3eaa03a27f1d80f577be7f3cf129e700f30105",
+              "round": "second",
+              "task_elapsed_sec": 28.999999999999993,
+              "clock_ns": 66600000000,
+              "action": 999,
+              "reasons": {
+                "tb1": "bounded_cleanup_wait_no_credit",
+                "tb2": "bounded_cleanup_wait_no_credit",
+                "tb3": "bounded_cleanup_wait_no_credit"
+              },
+              "submitted_activity": {
+                "tb1": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 1760,
+                  "estimated_path_m": 0.610867338524077,
+                  "path_observation_complete": true,
+                  "sample_count": 1444,
+                  "last_odom_source_stamp": 66.597
+                },
+                "tb2": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 1760,
+                  "estimated_path_m": 1.0377868518554603,
+                  "path_observation_complete": true,
+                  "sample_count": 1449,
+                  "last_odom_source_stamp": 66.592
+                },
+                "tb3": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 1760,
+                  "estimated_path_m": 0.37909777378737153,
+                  "path_observation_complete": true,
+                  "sample_count": 1449,
+                  "last_odom_source_stamp": 66.592
+                }
+              },
+              "goal_robots": [],
+              "wait_robots": [
+                "tb1",
+                "tb2",
+                "tb3"
+              ],
+              "eligible_goal_candidates": {},
+              "scope": "planned input only; no native cancel or physical credit"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+              "observation_sequence": 31,
+              "observation_digest": "b789cd968b1c5344b3e029a49fd1808116e6d76572c5d70badc72e471a40681c",
+              "round": "second",
+              "task_elapsed_sec": 29.999999999999993,
+              "clock_ns": 67600000000,
+              "action": 999,
+              "reasons": {
+                "tb1": "bounded_cleanup_wait_no_credit",
+                "tb2": "bounded_cleanup_wait_no_credit",
+                "tb3": "bounded_cleanup_wait_no_credit"
+              },
+              "submitted_activity": {
+                "tb1": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 1810,
+                  "estimated_path_m": 0.6109002720962121,
+                  "path_observation_complete": true,
+                  "sample_count": 1494,
+                  "last_odom_source_stamp": 67.597
+                },
+                "tb2": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 1810,
+                  "estimated_path_m": 1.0378265791401347,
+                  "path_observation_complete": true,
+                  "sample_count": 1499,
+                  "last_odom_source_stamp": 67.592
+                },
+                "tb3": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 1810,
+                  "estimated_path_m": 0.3791324019184962,
+                  "path_observation_complete": true,
+                  "sample_count": 1499,
+                  "last_odom_source_stamp": 67.592
+                }
+              },
+              "goal_robots": [],
+              "wait_robots": [
+                "tb1",
+                "tb2",
+                "tb3"
+              ],
+              "eligible_goal_candidates": {},
+              "scope": "planned input only; no native cancel or physical credit"
+            },
+            {
+              "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+              "observation_sequence": 32,
+              "observation_digest": "dbca03888cc31f312c5d85bab07cb7125a238f33b16936f963dc3127f500c579",
+              "round": "second",
+              "task_elapsed_sec": 30.999999999999993,
+              "clock_ns": 68600000000,
+              "action": 999,
+              "reasons": {
+                "tb1": "bounded_cleanup_wait_no_credit",
+                "tb2": "bounded_cleanup_wait_no_credit",
+                "tb3": "bounded_cleanup_wait_no_credit"
+              },
+              "submitted_activity": {
+                "tb1": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 1860,
+                  "estimated_path_m": 0.6109344182965776,
+                  "path_observation_complete": true,
+                  "sample_count": 1544,
+                  "last_odom_source_stamp": 68.597
+                },
+                "tb2": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 1860,
+                  "estimated_path_m": 1.0378656860913034,
+                  "path_observation_complete": true,
+                  "sample_count": 1549,
+                  "last_odom_source_stamp": 68.592
+                },
+                "tb3": {
+                  "schema": "mr3-received-activity-v1",
+                  "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+                  "started_at": 37.6,
+                  "state_sequence": 1860,
+                  "estimated_path_m": 0.37916725610957713,
+                  "path_observation_complete": true,
+                  "sample_count": 1549,
+                  "last_odom_source_stamp": 68.592
+                }
+              },
+              "goal_robots": [],
+              "wait_robots": [
+                "tb1",
+                "tb2",
+                "tb3"
+              ],
+              "eligible_goal_candidates": {},
+              "scope": "planned input only; no native cancel or physical credit"
+            }
+          ],
+          "coverage_failures": [
+            {
+              "round": "initial",
+              "robot": "tb3",
+              "reason": "goal_terminal_without_confirmed_stimulus_cancel"
+            },
+            {
+              "round": "initial",
+              "robot": "tb3",
+              "reason": "coverage_unavailable:wait_command_id,cancel_terminal_observed_ns,three_fresh_rest_observations,terminal_and_rest_handoff"
+            },
+            {
+              "round": "second",
+              "robot": "tb3",
+              "reason": "coverage_unavailable:goal_command_id,accepted_at_ns,wait_command_id,cancel_terminal_observed_ns,accepted_path_baseline_once,three_fresh_rest_observations"
+            }
+          ],
+          "last_clock_ns": 69600000000,
+          "pending_submission": null,
+          "coverage_passed": false,
+          "coverage_scope": "received accepted/cancelled lifecycle only; independent native and physical gates required"
+        }
+      },
+      "preparation_parameter_review": {
+        "source": {
+          "relative_path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_nav2_parameters.py",
+          "freeze": "720cd4e194eeb2e9f14a86ed9204f6110d72173b",
+          "sha256": "53dcb0ce70a745956b92a916340019a94d6175074b766d101e5d8425d844b514",
+          "profile_selection": "gentle_turn_v1",
+          "profile_definition_sha256": "af5bf20bf17ed160dd3476653c21eef94d0ba6f30d119c1bbbe66190e78c68a5",
+          "immutable_reader": {
+            "relative_path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261017_mr3_p2a0_v13/independent/mr3_actual_nav2_parameters_v13.py",
+            "freeze": "720cd4e194eeb2e9f14a86ed9204f6110d72173b",
+            "sha256": "9eb963457a8dc8297e4686004ea08c7a06e1e0e9ede7cd795ba9505da9d8f701"
+          },
+          "deployment_yaml_sources": [
+            {
+              "relative_path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot/params/nav2_params_tb1_0.yaml",
+              "freeze": "720cd4e194eeb2e9f14a86ed9204f6110d72173b",
+              "sha256": "d2d01844885fd76ab6e8cd996c37b8994c6cf801010988db12e6dc6e67e38d53"
+            },
+            {
+              "relative_path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot/params/nav2_params_tb2_0.yaml",
+              "freeze": "720cd4e194eeb2e9f14a86ed9204f6110d72173b",
+              "sha256": "5f2ab024dd590a2cc6656072311a11cddbbaf646423a3fe502569b466e92dc33"
+            },
+            {
+              "relative_path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot/params/nav2_params_tb3_0.yaml",
+              "freeze": "720cd4e194eeb2e9f14a86ed9204f6110d72173b",
+              "sha256": "b3d47508e69d2e5b6d93805435dbe42b3a5ec262b06015466d5a92f214106192"
+            }
+          ],
+          "safety_contract": "mr3-reach-v1",
+          "deployment_entry": {
+            "relative_path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_nav2_parameters.py",
+            "freeze": "720cd4e194eeb2e9f14a86ed9204f6110d72173b",
+            "sha256": "848dd05ebd9558a4ec8d47866909662030d24cfce837742a409907ff6c5bfdf3"
+          },
+          "shared_wire_source": {
+            "relative_path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_safety_intent.py",
+            "freeze": "720cd4e194eeb2e9f14a86ed9204f6110d72173b",
+            "sha256": "4d148ef0ad18c8474eaa0a6d898bf4e94177f4cd454ce5a2495d26c9b7ab75f1"
+          }
+        },
+        "command_argv": [
+          "bash",
+          "-c",
+          "source /opt/ros/humble/setup.bash && source \"$1\" && shift && exec /usr/bin/python3 \"$@\"",
+          "mr3_parameter_review",
+          "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/setup.bash",
+          "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_nav2_parameters.py",
+          "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v69/mr3_p2a_reach_v69_interface/worker0/episode001_open_101",
+          "--freeze",
+          "720cd4e194eeb2e9f14a86ed9204f6110d72173b",
+          "--output",
+          "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v69/mr3_p2a_reach_v69_interface/worker0/episode001_open_101/actual_nav2_parameters.json",
+          "--wall-timeout-sec",
+          "30"
+        ],
+        "wall_timeout_sec": 45,
+        "scope": "after returned reset, paused before first step; readonly GetParameters",
+        "transport": {
+          "native_transport_environment": {
+            "RMW_IMPLEMENTATION": "rmw_fastrtps_cpp",
+            "ROS_LOCALHOST_ONLY": "0",
+            "FASTRTPS_DEFAULT_PROFILES_FILE": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_fastdds_loopback_udp.xml",
+            "SKIP_DEFAULT_XML": "1",
+            "FASTDDS_DEFAULT_PROFILES_FILE": null,
+            "RMW_FASTRTPS_USE_QOS_FROM_XML": null,
+            "RMW_FASTRTPS_PUBLICATION_MODE": null,
+            "profile_sha256": "0b909216206301a5bee45cb1fd755f67a92481d98cec39d818b2dc8764844e37"
+          },
+          "selected_transport_environment": {
+            "RMW_IMPLEMENTATION": "rmw_fastrtps_cpp",
+            "ROS_LOCALHOST_ONLY": "0",
+            "FASTRTPS_DEFAULT_PROFILES_FILE": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_fastdds_loopback_udp.xml",
+            "SKIP_DEFAULT_XML": "1",
+            "FASTDDS_DEFAULT_PROFILES_FILE": null,
+            "RMW_FASTRTPS_USE_QOS_FROM_XML": null,
+            "RMW_FASTRTPS_PUBLICATION_MODE": null
+          },
+          "metadata_sha256": "6daaa9608d0e7c3f587d346cd73f543c3abced2d2cc898a99797266ec5083e02",
+          "profile_source": {
+            "relative_path": "ros2_ws/ros2-multi-robot-automap/src/multi_robot/config/mr3_fastdds_loopback_udp.xml",
+            "freeze": "720cd4e194eeb2e9f14a86ed9204f6110d72173b",
+            "sha256": "0b909216206301a5bee45cb1fd755f67a92481d98cec39d818b2dc8764844e37"
+          }
+        },
+        "returncode": 0,
+        "stdout": "{\"passed\": true, \"nodes\": 9, \"errors\": [], \"output\": \"/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_reach_v69/mr3_p2a_reach_v69_interface/worker0/episode001_open_101/actual_nav2_parameters.json\"}\n",
+        "stderr": ""
+      },
+      "terminated": false,
+      "truncated": true,
+      "reason": "external_sampler_limit",
+      "wall_sec_including_startup_and_closure": 1036.2785810437053
+    }
+  ],
+  "error": "ValueError('bounded v3 stimulus coverage unavailable; no retries or gate reduction')",
+  "reset_attempts": [
+    {
+      "episode_index": 0,
+      "scene": "open",
+      "seed": 101,
+      "reset_returned": true
+    }
+  ],
+  "preparation_abort": {
+    "requested": true,
+    "first_failure": {
+      "worker_id": 0,
+      "kind": "rpc_or_worker_exception",
+      "reason": "ValueError('bounded v3 stimulus coverage unavailable; no retries or gate reduction')",
+      "episode_index": 0,
+      "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+      "observed_wall_monotonic_ns": 4546131814237634
+    },
+    "scope": "cooperative stop after real RPC return; no synthetic transition"
+  },
+  "wall_sec": 1036.2786106867716,
+  "shutdown_receipts": [
+    {
+      "epoch": "mr3_p2a_reach_v69_interface_w0_e1_48541a42",
+      "worker_returncode": 0,
+      "forced_shutdown": false,
+      "failed_sample": false,
+      "owned_processes_seen": [
+        {
+          "pid": 2139538,
+          "parent": 2139461,
+          "group": 2139538,
+          "session": 2139538,
+          "start_ticks": 454509753,
+          "state": "S"
+        },
+        {
+          "pid": 2139550,
+          "parent": 2139538,
+          "group": 2139538,
+          "session": 2139538,
+          "start_ticks": 454509793,
+          "state": "R"
+        },
+        {
+          "pid": 2139558,
+          "parent": 2139538,
+          "group": 2139538,
+          "session": 2139538,
+          "start_ticks": 454509832,
+          "state": "R"
+        },
+        {
+          "pid": 2139580,
+          "parent": 2139538,
+          "group": 2139538,
+          "session": 2139538,
+          "start_ticks": 454509934,
+          "state": "R"
+        },
+        {
+          "pid": 2139585,
+          "parent": 2139580,
+          "group": 2139538,
+          "session": 2139538,
+          "start_ticks": 454510100,
+          "state": "S"
+        },
+        {
+          "pid": 2139587,
+          "parent": 2139580,
+          "group": 2139538,
+          "session": 2139538,
+          "start_ticks": 454510100,
+          "state": "S"
+        },
+        {
+          "pid": 2139589,
+          "parent": 2139580,
+          "group": 2139538,
+          "session": 2139538,
+          "start_ticks": 454510101,
+          "state": "R"
+        },
+        {
+          "pid": 2139591,
+          "parent": 2139580,
+          "group": 2139538,
+          "session": 2139538,
+          "start_ticks": 454510101,
+          "state": "S"
+        },
+        {
+          "pid": 2139593,
+          "parent": 2139580,
+          "group": 2139538,
+          "session": 2139538,
+          "start_ticks": 454510101,
+          "state": "S"
+        },
+        {
+          "pid": 2139595,
+          "parent": 2139580,
+          "group": 2139538,
+          "session": 2139538,
+          "start_ticks": 454510101,
+          "state": "Z"
+        },
+        {
+          "pid": 2139597,
+          "parent": 2139580,
+          "group": 2139538,
+          "session": 2139538,
+          "start_ticks": 454510101,
+          "state": "R"
+        },
+        {
+          "pid": 2139599,
+          "parent": 2139580,
+          "group": 2139538,
+          "session": 2139538,
+          "start_ticks": 454510101,
+          "state": "S"
+        },
+        {
+          "pid": 2139601,
+          "parent": 2139580,
+          "group": 2139538,
+          "session": 2139538,
+          "start_ticks": 454510102,
+          "state": "S"
+        },
+        {
+          "pid": 2140051,
+          "parent": 2139580,
+          "group": 2139538,
+          "session": 2139538,
+          "start_ticks": 454510454,
+          "state": "S"
+        },
+        {
+          "pid": 2140053,
+          "parent": 2139580,
+          "group": 2139538,
+          "session": 2139538,
+          "start_ticks": 454510454,
+          "state": "R"
+        },
+        {
+          "pid": 2140055,
+          "parent": 2139580,
+          "group": 2139538,
+          "session": 2139538,
+          "start_ticks": 454510455,
+          "state": "S"
+        },
+        {
+          "pid": 2140121,
+          "parent": 2139580,
+          "group": 2139538,
+          "session": 2139538,
+          "start_ticks": 454510767,
+          "state": "S"
+        },
+        {
+          "pid": 2140123,
+          "parent": 2139580,
+          "group": 2139538,
+          "session": 2139538,
+          "start_ticks": 454510768,
+          "state": "S"
+        },
+        {
+          "pid": 2140125,
+          "parent": 2139580,
+          "group": 2139538,
+          "session": 2139538,
+          "start_ticks": 454510768,
+          "state": "S"
+        },
+        {
+          "pid": 2140188,
+          "parent": 2139580,
+          "group": 2139538,
+          "session": 2139538,
+          "start_ticks": 454511082,
+          "state": "S"
+        },
+        {
+          "pid": 2140242,
+          "parent": 2139580,
+          "group": 2139538,
+          "session": 2139538,
+          "start_ticks": 454512230,
+          "state": "S"
+        },
+        {
+          "pid": 2140244,
+          "parent": 2139580,
+          "group": 2139538,
+          "session": 2139538,
+          "start_ticks": 454512230,
+          "state": "S"
+        },
+        {
+          "pid": 2140246,
+          "parent": 2139580,
+          "group": 2139538,
+          "session": 2139538,
+          "start_ticks": 454512231,
+          "state": "S"
+        },
+        {
+          "pid": 2140248,
+          "parent": 2139580,
+          "group": 2139538,
+          "session": 2139538,
+          "start_ticks": 454512231,
+          "state": "R"
+        },
+        {
+          "pid": 2140250,
+          "parent": 2139580,
+          "group": 2139538,
+          "session": 2139538,
+          "start_ticks": 454512233,
+          "state": "S"
+        },
+        {
+          "pid": 2140252,
+          "parent": 2139580,
+          "group": 2139538,
+          "session": 2139538,
+          "start_ticks": 454512233,
+          "state": "S"
+        },
+        {
+          "pid": 2140254,
+          "parent": 2139580,
+          "group": 2139538,
+          "session": 2139538,
+          "start_ticks": 454512233,
+          "state": "S"
+        },
+        {
+          "pid": 2140597,
+          "parent": 2139580,
+          "group": 2139538,
+          "session": 2139538,
+          "start_ticks": 454516738,
+          "state": "R"
+        },
+        {
+          "pid": 2140599,
+          "parent": 2139580,
+          "group": 2139538,
+          "session": 2139538,
+          "start_ticks": 454516739,
+          "state": "S"
+        },
+        {
+          "pid": 2140601,
+          "parent": 2139580,
+          "group": 2139538,
+          "session": 2139538,
+          "start_ticks": 454516739,
+          "state": "R"
+        },
+        {
+          "pid": 2140603,
+          "parent": 2139580,
+          "group": 2139538,
+          "session": 2139538,
+          "start_ticks": 454516739,
+          "state": "S"
+        },
+        {
+          "pid": 2140605,
+          "parent": 2139580,
+          "group": 2139538,
+          "session": 2139538,
+          "start_ticks": 454516739,
+          "state": "S"
+        },
+        {
+          "pid": 2140607,
+          "parent": 2139580,
+          "group": 2139538,
+          "session": 2139538,
+          "start_ticks": 454516739,
+          "state": "S"
+        },
+        {
+          "pid": 2140609,
+          "parent": 2139580,
+          "group": 2139538,
+          "session": 2139538,
+          "start_ticks": 454516739,
+          "state": "R"
+        },
+        {
+          "pid": 2140894,
+          "parent": 2139580,
+          "group": 2139538,
+          "session": 2139538,
+          "start_ticks": 454521233,
+          "state": "S"
+        },
+        {
+          "pid": 2140896,
+          "parent": 2139580,
+          "group": 2139538,
+          "session": 2139538,
+          "start_ticks": 454521233,
+          "state": "R"
+        },
+        {
+          "pid": 2140898,
+          "parent": 2139580,
+          "group": 2139538,
+          "session": 2139538,
+          "start_ticks": 454521234,
+          "state": "S"
+        },
+        {
+          "pid": 2140900,
+          "parent": 2139580,
+          "group": 2139538,
+          "session": 2139538,
+          "start_ticks": 454521234,
+          "state": "S"
+        },
+        {
+          "pid": 2140902,
+          "parent": 2139580,
+          "group": 2139538,
+          "session": 2139538,
+          "start_ticks": 454521234,
+          "state": "S"
+        },
+        {
+          "pid": 2140904,
+          "parent": 2139580,
+          "group": 2139538,
+          "session": 2139538,
+          "start_ticks": 454521234,
+          "state": "S"
+        },
+        {
+          "pid": 2140906,
+          "parent": 2139580,
+          "group": 2139538,
+          "session": 2139538,
+          "start_ticks": 454521234,
+          "state": "R"
+        },
+        {
+          "pid": 2141017,
+          "parent": 2139580,
+          "group": 2139538,
+          "session": 2139538,
+          "start_ticks": 454521903,
+          "state": "S"
+        },
+        {
+          "pid": 2141019,
+          "parent": 2139580,
+          "group": 2139538,
+          "session": 2139538,
+          "start_ticks": 454521903,
+          "state": "S"
+        },
+        {
+          "pid": 2141056,
+          "parent": 2139538,
+          "group": 2139538,
+          "session": 2139538,
+          "start_ticks": 454522219,
+          "state": "Z"
+        },
+        {
+          "pid": 2141059,
+          "parent": 2141056,
+          "group": 2139538,
+          "session": 2139538,
+          "start_ticks": 454522258,
+          "state": "S"
+        },
+        {
+          "pid": 2146609,
+          "parent": 2139580,
+          "group": 2139538,
+          "session": 2139538,
+          "start_ticks": 454612939,
+          "state": "S"
+        }
+      ],
+      "remaining_owned_processes": [],
+      "remaining_owned_zombies": [],
+      "process_scan_statistics": {
+        "count": 7690,
+        "max_scan_wall_sec": 0.3917760821059346,
+        "max_observed_interval_sec": 0.400073635391891
+      }
+    }
+  ]
+}

@@ -1,5 +1,8 @@
 # 当前三机器人基线与MR3适配启动命令
 
+2026-10-24 V69入口已实际闭合FAIL：freeze720cd4e194eeb2e9f14a86ed9204f6110d72173b，Root29341真实rc1，32步返回但Probe V3覆盖不足，科学audits未派发；旧入口保留作历史，不重开。完整来源/身份/原件已闭合，下一仅准备V70固定两输入独立取证；无新World或学习信用。当前接续与原件在[V69报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261024_mr3_p2a_v69_probe_v3_qualification.md)。
+
+
 2026-10-24 P2A V69：当前准备使用显式刺激 `mr3-p2a-reach-outward-cancel-v3` 与独立读者 `mr3-reach-reset-outward-cancel-v3`。完整12EP/30角色通过绑定计划生成，正式入口为无线侧 `report/assets/20261024_mr3_p2a_v69_probe_v3_qualification/bootstrap_v1.py --freeze <新exact40>`，须完成实际准备检查、提交推送及清洁冻结后执行一次。刺激仍为32步/两轮六GOAL，实际接受后一次锁定累计路径基线，移动WAIT遵守原5秒承诺及速度/路径条件。当前新构建已闭合，完整软件检查正在进行，尚无V69原生资格或学习信用；后续执行状态见[V69接续文档](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261024_mr3_p2a_v69_probe_v3_qualification.md)。下方命令保留原版本及历史结果。
 
 

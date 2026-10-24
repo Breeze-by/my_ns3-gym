@@ -255,12 +255,12 @@ V26原生12回合和34科学门已由原回执及唯一缺失information消费�
 掩码保存在 rollout 中；评估使用 mask-aware 接口；训练日志包括熵、KL、价值误差、
 覆盖、时间、失败、目标切换、安全介入，而不只画 reward。
 
-当前资格仍未通过：V67在新冻结完成interface的32步返回，但Probe V2覆盖不足，科学审计未派发；旧FAIL保持。V68仅对固定两输入作一次received谓词描述，证实名义1.45米screen阻止当时合法目标，不提供物理或资格信用。V69已实现显式Probe V3 B，并完成新current21真实增量构建、fresh ROS212/learner506及入口33、双环境readiness、真实prepare/plancheck；尚未运行V69原生矩阵。详见[V69接续文档](report/20261024_mr3_p2a_v69_probe_v3_qualification.md)。后续顺序：
+当前资格仍未通过：V69在冻结`720cd4e194eeb2e9f14a86ed9204f6110d72173b`完成32步原生返回，但显式Probe V3刺激覆盖不足，matrix失败，科学audits未派发；父进程真实rc1、完整parent1166.99234597秒。producer记录tb1/tb2两轮接受/WAIT/取消，tb3第一轮缺少由科学WAIT确认的取消，第二轮未准入；tb3终态的具体类型与时序尚待独立取证，不能凭该自报判物理停止合格。元数据/来源/57保存身份关闭与556原件无损归档已通过，这些不改原FAIL。实际工程U111360.1553685346018/C180000、余68639.8446314653982，上限由代理持续委托选择，非数值用户批准。详见[V69接续文档](report/20261024_mr3_p2a_v69_probe_v3_qualification.md)。后续顺序：
 
-1. V3 B移除固定刺激的名义1.45米screen，合法GOAL不再要求累计路径已初始化；仅在同目标真实接受后一次捕获fresh、完整且source≥accept的累计路径基线。真实0有效，缺失值不填0，不刷新基线。原mask/nonapproach/rank、.08正v/.05新增path、5秒commit、32步/两轮六GOAL与原停止/任务门保持。
-2. 新exact freeze执行完整12EP/30角色，interface1+reset8共9个probe EP必须经独立received重放并合取原科学审计；terminal/deadline保留原完整检查，不拼接旧冻结结果。
-3. 按本轮真实native推进、coldstart/reset、独立reader及finalizer的完整端点判断容量；短32步和CPU加速不供长任务或PPO容量信用。
-4. capacity=False时禁止自动进入policy；资格通过后仍须按原阶段总额和完整费用准入。连续parent包含gap，nested不重复加。
+1. V70只在新冻结下对固定transitions与benchmark_summary共2456974B作一次独立描述，完整还原tb3同目标接受、移动、原WAIT掩码/5秒commit与终态，以及原候选/合法joint rank。summary曾作为关闭metadata读取，transitions仅opaque读字节、未被语义解析；不声称原件从未读取。
+2. 依据独立记录决定刺激排序或其他前瞻路线，显式新版本；保留旧V2/V3字节和FAIL。原mask/nonapproach、.08正v/.05新增path、5秒commit、32步/两轮六GOAL与原停止/任务门保持；缺失路径不填0，真实0有效，accepted后一次基线不刷新。
+3. 新exact freeze执行完整12EP/30角色，interface1+reset8共9个probe EP必须经独立received重放并合取原科学审计；terminal/deadline保留原完整检查，不拼接旧冻结结果。
+4. 按真实native推进、coldstart/reset、reader及finalizer完整端点判断容量；短32步和CPU加速不供长任务或PPO容量信用。capacity=False时禁自动policy，连续parent包含gap、nested不重复加。
 5. 满足容量与新同freeze资格后，执行真实minimum正更新、原余额内pilot及open401/402/403三场strict95%验证。pilot1870决策/2905.9547395464029秒及final-only900决策/9000秒保持；P2A仍未完成，P2B/gateway未启动。
 
 下列v6/v7及文件上方V41/V45等段落为历史快照，不代表当前待执行冻结或余额。
