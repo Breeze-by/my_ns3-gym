@@ -19,61 +19,12 @@ from ros_smoke_test import native_launch_failures, validate_contact_reducer_summ
 ROBOTS = ("tb1", "tb2", "tb3")
 TERMINALS = (4, 5, 6, "SUCCEEDED", "CANCELED", "ABORTED")
 REQUIRED_REJECTIONS = {"wrong_epoch", "expired_or_invalid_command_time", "masked_action"}
-CANDIDATE_RULE_V3 = {
-    "version": "mr3-per-robot-geometric-staging-v3",
-    "path_body_clearance_m": .25 + .04,
-    "goal_xy_tolerance_m": .10,
-    "target_clearance_m": .25 + .04 + .10,
-    "new_goal_pair_separation_m": 2. * (.25 + .04 + .10),
-    "new_goal_idle_separation_m": (.25 + .04 + .10) + (.25 + .04),
-    "frontier_staging_max_m": 1.,
-}
-CANDIDATE_RULE_V4 = {
-    **CANDIDATE_RULE_V3,
-    "version": "mr3-per-robot-geometric-staging-v4",
-    "frontier_sources": ["fused_received", "received_own:tb1", "received_own:tb2",
-                         "received_own:tb3"],
-    "frontier_projection": (
-        "world cell centre to containing fused native cell; free endpoints only"),
-}
-CANDIDATE_RULE_V5 = {
-    **CANDIDATE_RULE_V4,
-    "version": "mr3-navigation-geometric-staging-v5",
-    "path_map_source": "delivered_navigation_map",
-    "navigation_composition": "mr3-own-known-shared-unknown-v1",
-    "frontier_sources": ["received_navigation:" + name for name in ROBOTS],
-    "frontier_projection": "same delivered fused native lattice; navigation-free sightlines",
-}
-CANDIDATE_RULES = {item["version"]: item for item in (
-    CANDIDATE_RULE_V3, CANDIDATE_RULE_V4, CANDIDATE_RULE_V5)}
 
 
 def canonical_digest(payload):
     return hashlib.sha256(json.dumps(
         payload, sort_keys=True, separators=(",", ":"), allow_nan=False,
     ).encode()).hexdigest()
-
-
-def candidate_digest(snapshot):
-    """Dispatch declared legacy formats or exact reviewed versioned rules."""
-    schema = snapshot.get("schema")
-    if schema not in ("mr3-observation-v1", "mr3-observation-v2", "mr3-observation-v3"):
-        raise ValueError("unexpected observation schema")
-    keys = ["epoch", "map_version", "sequence", "candidates"]
-    if schema in ("mr3-observation-v2", "mr3-observation-v3"):
-        keys.append("path_maps")
-    if "candidate_rule" in snapshot:
-        rule = snapshot["candidate_rule"]
-        version = rule.get("version") if isinstance(rule, dict) else None
-        expected = CANDIDATE_RULES.get(version) if isinstance(version, str) else None
-        if (schema not in ("mr3-observation-v2", "mr3-observation-v3")
-                or not isinstance(rule, dict)
-                or expected is None or canonical_digest(rule) != canonical_digest(expected)):
-            raise ValueError("unknown or mismatched candidate rule")
-        if version == CANDIDATE_RULE_V5["version"] and schema != "mr3-observation-v3":
-            raise ValueError("navigation candidate rule requires observation v3")
-        keys.append("candidate_rule")
-    return canonical_digest({key: snapshot[key] for key in keys})
 
 
 def _number(value):
@@ -206,7 +157,11 @@ def audit_run(run_dir, require_contact_monitoring=False):
                 actual = canonical_digest({k: v for k, v in payload.items() if k != "digest"})
                 if actual != payload.get("digest"):
                     raise ValueError("saved observation digest mismatch")
-                if payload.get("candidate_version") != candidate_digest(payload):
+                candidate_keys = ["epoch", "map_version", "sequence", "candidates"]
+                if payload.get("schema") == "mr3-observation-v2":
+                    candidate_keys.append("path_maps")
+                candidate_digest = canonical_digest({key: payload[key] for key in candidate_keys})
+                if payload.get("candidate_version") != candidate_digest:
                     raise ValueError("candidate version does not match saved candidates")
                 snapshots[sequence] = payload
                 for robot in payload.get("robots", []):
@@ -360,8 +315,7 @@ def audit_run(run_dir, require_contact_monitoring=False):
     if epoch is None or any(row.get("epoch") != epoch for row in rows):
         fail("audit records do not share one episode epoch")
     expected_epoch = next((arg.split(":=", 1)[1] for arg in summary.get("command", [])
-                           if isinstance(arg, str)
-                           and arg.startswith("mr3_episode_epoch:=")), None)
+                           if isinstance(arg, str) and arg.startswith("mr3_episode_epoch:=")), None)
     if expected_epoch is not None and expected_epoch != epoch:
         fail("runner launch epoch differs from saved observation epoch")
     accepted_robots = {sent[goal_id]["robot"] for goal_id in accepted}

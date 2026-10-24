@@ -1,9 +1,0 @@
-{
-  "schema": "mr3-v41-byte-archive-setup-failure-v1",
-  "operation": "post-wait lossless byte packaging only; no experiment or scientific consumer",
-  "error": "generated adapter.jsonl.gz destination collided with an original already-present adapter.jsonl.gz",
-  "partial_owned_copy_files": 40,
-  "original_outputs_changed": false,
-  "engineering_added_seconds": "0",
-  "resolution": "Discard only newly-created partial copies; use distinct .rawbytes.gz for encoded original JSONL/CSV bytes; preserve original .gz files byte-for-byte."
-}

@@ -1,9 +1,0 @@
-# V74 private implementation and source-only route-boundary history
-
-Five fixed stopped roots are retained in one deterministic gzip/PAX artifact: two consumer candidate directories, one parent candidate directory, the final workload-boundary v3 review directory, and one independent parent cross-review JSON. All264 original regular files/4,961,844B were copied, post-hashed at original paths and fully restored as archive streams. Membership/stable lstat fields stayed equal. No links were present; link targets would be literal metadata only, never followed. Originals remain intact.
-
-Consumer v1 and v2 each had13 artificial cases, kept as separate attempts rather than26 independent checks. v2 only fixed the test's canonical spec basename; its separate pre-CPU snapshot setup path failure had zero test bodies. Parent v1 had4 real toy lifecycle checks. Neither private result is a new canonical17-case proof. The workload-boundary review and parent cross-review are source/docs-only, not tests or original-input diagnoses. Warmup is neither implemented nor admitted by those reviews. Historical source-current claims stay scoped to their original observations, not later canonical changes.
-
-Actual archive CPU43991 returned0 after a genuine wait; its two saved PID/start identities were freshly absent. The two archive sources remained before/after/current equal and were saved with full byte recovery. This adds0 engineering seconds and no science, native, physics, capacity or policy credit. It did not execute old prototypes/tests/consumer main or read actual motion/drive/pstats/old342 libraries.
-
-Use inventory_v1.json to map an original absolute path to archive_member and original_bytes/original_sha256. Stream that regular member from candidate_history_v1.tar.gz and check bytes/SHA without executing it. The inventory pins the whole compressed object and all restored originals.

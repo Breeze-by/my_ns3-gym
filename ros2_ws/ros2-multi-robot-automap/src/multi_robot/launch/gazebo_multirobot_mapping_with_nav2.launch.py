@@ -1,13 +1,8 @@
 #!/usr/bin/env python3
-import hashlib
 import json
-from pathlib import Path
 import os
 import signal
-import tempfile
 import time
-from xml.sax.saxutils import escape
-import xml.etree.ElementTree as ET
 
 from ament_index_python.packages import get_package_prefix, get_package_share_directory
 
@@ -24,7 +19,7 @@ from launch.actions import (
     TimerAction,
 )
 from launch.conditions import IfCondition
-from launch.event_handlers import OnProcessExit, OnProcessStart, OnShutdown
+from launch.event_handlers import OnProcessExit, OnProcessStart
 from launch.events import Shutdown, matches_action
 from launch.events.process import SignalProcess
 from launch.launch_description_sources import PythonLaunchDescriptionSource
@@ -32,304 +27,6 @@ from launch.substitutions import LaunchConfiguration
 
 from launch_ros.actions import Node
 from nav2_common.launch import RewrittenYaml
-from multi_robot_exploration.mr3_safety_intent import actuation_profile_for_safety_contract
-from multi_robot_exploration.mr3_motion_authority import PROFILE as AUTHORITY_PROFILE
-from multi_robot_exploration.mr3_reach_runtime import (
-    BINARY_CONE_V1, validate_reach_geometry_rule,
-)
-
-
-# Candidate helpers to insert in the existing launch file. No standalone node.
-PHYSICS_DIAGNOSTIC_ENV = "MR3_PHYSICS_DIAGNOSTIC_CONFIG_FILE"
-
-
-def diagnostic_read(path):
-    path = Path(path)
-    with path.open("rb") as stream:
-        before = os.fstat(stream.fileno())
-        raw = stream.read()
-        after = os.fstat(stream.fileno())
-    linked = path.stat()
-
-    def identity(value):
-        return (value.st_dev, value.st_ino, value.st_size, value.st_mtime_ns)
-    if identity(before) != identity(after) or identity(after) != identity(linked):
-        raise ValueError("diagnostic input changed while read")
-    return raw, hashlib.sha256(raw).hexdigest()
-
-
-def diagnostic_json(raw):
-    def unique(items):
-        value = {}
-        for key, item in items:
-            if key in value:
-                raise ValueError("duplicate diagnostic JSON key")
-            value[key] = item
-        return value
-    return json.loads(raw, object_pairs_hook=unique,
-                      parse_constant=lambda value: (_ for _ in ()).throw(
-                          ValueError("nonfinite diagnostic JSON")))
-
-
-def prepare_physics_diagnostic(config_path, *, adapter_mode, stepped_mode,
-                               robot_count, epoch, audit_path, world, seed,
-                               package_prefix):
-    if not config_path:
-        return None
-    if not (adapter_mode and stepped_mode and robot_count == 3 and epoch and audit_path):
-        raise ValueError("physics diagnostic requires stepped three-robot adapter epoch/audit")
-    config_file = Path(config_path)
-    audit = Path(audit_path)
-    if not config_file.is_absolute() or not audit.is_absolute():
-        raise ValueError("physics diagnostic requires absolute config/audit paths")
-    episode = audit.parent.resolve(strict=True)
-    raw, input_sha = diagnostic_read(config_file)
-    config = diagnostic_json(raw)
-    observer_only = (type(config) is dict and
-                     config.get("schema") == "mr3-physics-diagnostic-config-v2" and
-                     config.get("mode") == "observer_only")
-    expected = {"schema", "run_directory", "episode_relative_directory", "scene", "seed",
-                "mode", "capture_start_ns", "capture_end_ns", "observer_library"}
-    if not observer_only:
-        expected.add("profile_library")
-    if (type(config) is not dict or set(config) not in (expected, expected | {"ray_provenance"}) or
-            (not observer_only and config["schema"] != "mr3-physics-diagnostic-config-v1")):
-        raise ValueError("unknown physics diagnostic config schema/fields")
-    if not observer_only and config["mode"] not in ("baseline", "iters150"):
-        raise ValueError("unknown physics diagnostic mode")
-    if type(config["seed"]) is not int or config["seed"] < 0 or str(config["seed"]) != str(seed):
-        raise ValueError("physics diagnostic seed mismatch")
-    if (type(config["scene"]) is not str or config["scene"] not in ("open", "rooms", "corridors")
-            or Path(world).name != f"p1c_{config['scene']}.world"):
-        raise ValueError("physics diagnostic scene mismatch")
-    for key in ("capture_start_ns", "capture_end_ns"):
-        if type(config[key]) is not int or not 0 <= config[key] <= 9223372036854775807:
-            raise ValueError("physics diagnostic window must use finite nonnegative int64 ns")
-    if config["capture_end_ns"] <= config["capture_start_ns"]:
-        raise ValueError("physics diagnostic capture window must increase")
-    if (type(config["run_directory"]) is not str or
-            type(config["episode_relative_directory"]) is not str):
-        raise ValueError("physics diagnostic run/episode path must be strings")
-    run = Path(config["run_directory"])
-    relative = Path(config["episode_relative_directory"])
-    required_relative = Path("worker0") / f"episode001_{config['scene']}_{config['seed']}"
-    if (not run.is_absolute() or relative != required_relative or
-            str(run.resolve(strict=True)) != str(run) or
-            (run / relative).resolve(strict=True) != episode):
-        raise ValueError("physics diagnostic exact run/first-episode mismatch")
-
-    libraries = {}
-    for key, filename in (("observer_library", "libmr3_stop_response_observer.so"),
-                          ("profile_library", "libmr3_physics_diagnostic_profile.so")):
-        if observer_only and key == "profile_library":
-            continue
-        spec = config[key]
-        if type(spec) is not dict or set(spec) != {"path", "sha256", "source_sha256"}:
-            raise ValueError("physics diagnostic library fields mismatch")
-        selected = Path(package_prefix) / "lib" / filename
-        if type(spec["path"]) is not str or spec["path"] != str(selected):
-            raise ValueError("physics diagnostic library must use reviewed canonical target")
-        for field in ("sha256", "source_sha256"):
-            digest = spec[field]
-            if (type(digest) is not str or len(digest) != 64 or
-                    any(ch not in "0123456789abcdef" for ch in digest)):
-                raise ValueError("physics diagnostic digest must be lowercase SHA256")
-        resolved = selected.resolve(strict=True)
-        _, digest = diagnostic_read(resolved)
-        if digest != spec["sha256"]:
-            raise ValueError("physics diagnostic library SHA mismatch")
-        libraries[key] = {**spec, "resolved_path": str(resolved)}
-
-    ray = None
-    if "ray_provenance" in config:
-        spec = config["ray_provenance"]
-        required = {"enabled", "library", "library_sha256", "source_sha256",
-                    "start_ns", "end_ns", "sensor_link", "sensor_name"}
-        if (type(spec) is not dict or set(spec) != required or
-                spec["enabled"] is not True or spec["sensor_link"] != "base_scan" or
-                spec["sensor_name"] != "hls_lfcd_lds"):
-            raise ValueError("ray provenance fields/sensor/enabled mismatch")
-        if (type(spec["start_ns"]) is not int or spec["start_ns"] != 0 or
-                type(spec["end_ns"]) is not int or spec["end_ns"] != 300000000000):
-            raise ValueError("ray provenance requires fixed diagnostic window")
-        selected = Path(package_prefix) / "lib" / "libmr3_ray_provenance_observer.so"
-        if type(spec["library"]) is not str or spec["library"] != str(selected):
-            raise ValueError("ray provenance requires fixed canonical library")
-        for field in ("library_sha256", "source_sha256"):
-            digest = spec[field]
-            if (type(digest) is not str or len(digest) != 64 or
-                    any(ch not in "0123456789abcdef" for ch in digest)):
-                raise ValueError("ray provenance digest must be lowercase SHA256")
-        resolved = selected.resolve(strict=True)
-        _, digest = diagnostic_read(resolved)
-        if digest != spec["library_sha256"]:
-            raise ValueError("ray provenance library SHA mismatch")
-        ray = {**spec, "resolved_path": str(resolved),
-               "outputs": {name: str(episode / f"ray_{name}.jsonl")
-                           for name in ("tb1", "tb2", "tb3")}}
-
-    world_path = Path(world).resolve(strict=True)
-    _, world_sha = diagnostic_read(world_path)
-    binding = {
-        "schema": ("mr3-physics-diagnostic-binding-v2" if observer_only else
-                   "mr3-physics-diagnostic-binding-v1"), "epoch": epoch,
-        "episode_directory": str(episode), "config_source": str(config_file.resolve(strict=True)),
-        "config_sha256": input_sha, "mode": config["mode"],
-        "world_name": f"p1c_{config['scene']}", "world_path": str(world_path),
-        "world_sha256": world_sha, "seed": config["seed"],
-        "capture_start_ns": config["capture_start_ns"],
-        "capture_end_ns": config["capture_end_ns"], **libraries,
-        "observer_outputs": {name: str(episode / f"physics_{name}.jsonl")
-                             for name in ("tb1", "tb2", "tb3")}}
-    if observer_only:
-        binding["physics_intervention"] = "none_observer_only"
-        binding["observer_paused_only"] = True
-    else:
-        binding["profile_output_path"] = str(episode / "physics_profile.jsonl")
-    if ray is not None:
-        binding["ray_provenance"] = ray
-    binding_path = episode / "physics_diagnostic_binding.json"
-    binding_raw = (json.dumps(binding, sort_keys=True, allow_nan=False) + "\n").encode()
-    with binding_path.open("xb") as stream:
-        stream.write(binding_raw)
-    return {"binding": binding, "binding_path": str(binding_path),
-            "binding_sha256": hashlib.sha256(binding_raw).hexdigest()}
-
-
-def append_physics_observer(model, robot_name, diagnostic):
-    binding = diagnostic["binding"]
-    if robot_name not in ("tb1", "tb2", "tb3") or model.count("</model>") != 1:
-        raise ValueError("diagnostic requires one model and an active canonical robot")
-    name = f"mr3_stop_response_observer_{robot_name}"
-    if name in model:
-        raise ValueError("diagnostic observer already present")
-    fields = {
-        "epoch": binding["epoch"], "robot": robot_name,
-        "output_path": binding["observer_outputs"][robot_name], "base_link": "base_link",
-        "right_joint": "wheel_right_joint", "left_joint": "wheel_left_joint",
-        "start_ns": str(binding["capture_start_ns"]), "end_ns": str(binding["capture_end_ns"])}
-    if binding.get("observer_paused_only") is True:
-        fields["paused_only"] = "true"
-    filename = escape(binding["observer_library"]["path"], {'"': "&quot;"})
-    block = (f'  <plugin name="{name}" filename="{filename}">\n' +
-             "".join(f"    <{key}>{escape(value)}</{key}>\n" for key, value in fields.items()) +
-             "  </plugin>\n")
-    rendered = model.replace("</model>", block + "</model>", 1)
-    if rendered.replace(block, "", 1) != model:
-        raise ValueError("diagnostic changed original model bytes")
-    return rendered
-
-
-def append_ray_provenance(model, robot_name, diagnostic):
-    binding = diagnostic["binding"]
-    if "ray_provenance" not in binding:
-        return model
-    if robot_name not in ("tb1", "tb2", "tb3") or model.count("</model>") != 1:
-        raise ValueError("ray provenance requires one model and active robot")
-    ray = binding["ray_provenance"]
-    name = f"mr3_ray_provenance_observer_{robot_name}"
-    if name in model:
-        raise ValueError("ray provenance observer already present")
-    fields = {"output_path": ray["outputs"][robot_name], "epoch": binding["epoch"],
-              "robot": robot_name, "sensor_link": ray["sensor_link"],
-              "sensor_name": ray["sensor_name"], "start_ns": str(ray["start_ns"]),
-              "end_ns": str(ray["end_ns"])}
-    filename = escape(ray["library"], {"\"": "&quot;"})
-    tree = ET.fromstring(model).find("model")
-    links = tree.findall("link[@name='base_scan']")
-    sensors = links[0].findall("sensor[@name='hls_lfcd_lds']") if len(links) == 1 else []
-    if len(sensors) != 1 or sensors[0].attrib != {"name": "hls_lfcd_lds", "type": "ray"}:
-        raise ValueError("ray provenance requires unique canonical ray sensor")
-    block = (f'        <plugin name="{name}" filename="{filename}">\n' +
-             "".join(f"          <{key}>{escape(value)}</{key}>\n" for key, value in fields.items()) +
-             "        </plugin>\n")
-    link_start = model.index('<link name="base_scan">')
-    link_end = model.index("</link>", link_start)
-    sensor_start = model.index('<sensor name="hls_lfcd_lds" type="ray">', link_start, link_end)
-    sensor_end = model.index("      </sensor>", sensor_start, link_end)
-    rendered = model[:sensor_end] + block + model[sensor_end:]
-    if rendered.replace(block, "", 1) != model:
-        raise ValueError("ray provenance changed original model bytes")
-    return rendered
-
-
-def reach_lidar_model(model):
-    """The reach profile samples the real existing ray sensor at 20 Hz."""
-    tree = ET.fromstring(model)
-    models = tree.findall("model")
-    links = models[0].findall("link[@name='base_scan']") if len(models) == 1 else []
-    sensors = links[0].findall("sensor[@name='hls_lfcd_lds']") if len(links) == 1 else []
-    rates = sensors[0].findall("update_rate") if len(sensors) == 1 else []
-    if (len(sensors) != 1 or sensors[0].attrib != {"name":"hls_lfcd_lds", "type":"ray"}
-            or len(rates) != 1 or rates[0].text != "5"):
-        raise ValueError("reach LiDAR requires the unique canonical 5 Hz ray sensor")
-    link_start = model.index('<link name="base_scan">')
-    link_end = model.index("</link>", link_start)
-    start = model.index('<sensor name="hls_lfcd_lds" type="ray">', link_start, link_end)
-    end = model.index("</sensor>", start, link_end)
-    selected = model[start:end]
-    before, after = "<update_rate>5</update_rate>", "<update_rate>20</update_rate>"
-    if selected.count(before) != 1 or after in selected:
-        raise ValueError("reach LiDAR source rate bytes are ambiguous")
-    replacement = selected.replace(before, after, 1)
-    rendered = model[:start] + replacement + model[end:]
-    if replacement.replace(after, before, 1) != selected:
-        raise ValueError("reach LiDAR inverse changed original sensor bytes")
-    return rendered
-
-
-def drive_spawn_model(model_path, robot_name, audit_path, epoch, tagged_commands=False,
-                      *, physics_diagnostic=None, safety_contract="legacy"):
-    """Fill drive tags and select the explicit reach-only sensor cadence."""
-    if type(tagged_commands) is not bool or (tagged_commands and not epoch):
-        raise ValueError("tagged drive requires an explicit adapter epoch")
-    if safety_contract not in ("legacy", "mr3-reach-v1"):
-        raise ValueError("unknown drive-model safety contract")
-    if safety_contract == "mr3-reach-v1" and not tagged_commands:
-        raise ValueError("reach LiDAR requires the tagged adapter model")
-    if safety_contract == "mr3-reach-v1" and not audit_path:
-        raise ValueError("initial encoder profile requires its owned audit output")
-    with open(model_path, encoding="utf-8") as stream:
-        model = stream.read()
-    if safety_contract == "mr3-reach-v1":
-        model = reach_lidar_model(model)
-        profile = actuation_profile_for_safety_contract(safety_contract)
-        marker = "<mr3_tagged_commands/>"
-        if model.count(marker) != 1 or "<mr3_actuation_profile" in model:
-            raise ValueError("initial encoder profile requires one original drive tag")
-        model = model.replace(marker,
-            "<mr3_actuation_profile>" + profile + "</mr3_actuation_profile>\n      " + marker, 1)
-    tags = {
-        "mr3_audit_path": (os.path.join(os.path.dirname(audit_path), f"drive_{robot_name}.jsonl")
-                           if audit_path else ""),
-        "mr3_epoch": epoch,
-        "mr3_tagged_commands": "true" if tagged_commands else "false",
-    }
-    for tag, value in tags.items():
-        placeholder = f"<{tag}/>"
-        if model.count(placeholder) != 1:
-            raise ValueError(f"drive model requires exactly one {tag} placeholder")
-        model = model.replace(placeholder, f"<{tag}>{escape(value)}</{tag}>")
-    if physics_diagnostic is not None:
-        model = append_physics_observer(model, robot_name, physics_diagnostic)
-        model = append_ray_provenance(model, robot_name, physics_diagnostic)
-    if audit_path:
-        destination = os.path.join(os.path.dirname(audit_path), f"drive_model_{robot_name}.sdf")
-        with open(destination, "x", encoding="utf-8") as stream:
-            stream.write(model)
-        return destination
-    with tempfile.NamedTemporaryFile(
-            mode="w", encoding="utf-8", suffix=f"_{robot_name}.sdf", delete=False) as stream:
-        stream.write(model)
-        return stream.name
-
-
-def remove_drive_spawn_model(event, context, *, path):
-    try:
-        os.unlink(path)
-    except FileNotFoundError:
-        pass
-    return []
 
 
 class OrderedRosShutdown:
@@ -569,49 +266,13 @@ def launch_setup(context, *args, **kwargs):
     adapter_mode = execution_mode == "adapter"
     probe_mode = IfCondition(LaunchConfiguration("adapter_probe")).evaluate(context)
     stepped_mode = IfCondition(LaunchConfiguration("mr3_stepped")).evaluate(context)
-    safety_contract = LaunchConfiguration("mr3_safety_contract").perform(context)
-    if safety_contract not in ("legacy", "mr3-reach-v1"):
-        raise ValueError("mr3_safety_contract must be legacy or mr3-reach-v1")
-    if safety_contract == "mr3-reach-v1" and not (
-            adapter_mode and stepped_mode and robot_count == 3):
-        raise ValueError("mr3-reach-v1 requires stepped three-robot adapter mode")
-    if sum(type(argument) is str and argument.startswith("mr3_reach_geometry_rule:=")
-           for argument in context.argv) > 1:
-        raise ValueError("duplicate mr3_reach_geometry_rule launch argument")
-    reach_geometry_rule = validate_reach_geometry_rule(
-        LaunchConfiguration("mr3_reach_geometry_rule").perform(context),
-        safety_contract=safety_contract)
-    seed_rule = LaunchConfiguration("mr3_seed_rule").perform(context)
-    if seed_rule not in ("legacy", "exact-point-bridge-v1", "exact-point-bridge-v2"):
-        raise ValueError("mr3_seed_rule must be legacy, exact-point-bridge-v1 or exact-point-bridge-v2")
-    if seed_rule != "legacy" and not (adapter_mode and stepped_mode and robot_count == 3):
-        raise ValueError("exact-point-bridge rules require stepped three-robot adapter mode")
-    start_graph_rule = LaunchConfiguration("mr3_start_graph_rule").perform(context)
-    if (type(start_graph_rule) is not str or start_graph_rule not in
-            ("original-seed-cell", "point-attachment-3x3-v1")
-            or (start_graph_rule == "point-attachment-3x3-v1" and seed_rule != "exact-point-bridge-v2")):
-        raise ValueError("invalid mr3_seed_rule/mr3_start_graph_rule pair")
     training_reward = IfCondition(LaunchConfiguration("training_reward_enabled")).evaluate(context)
     terminal_probe = IfCondition(LaunchConfiguration("training_terminal_probe")).evaluate(context)
-    plant_stimulus_arm = LaunchConfiguration("mr3_plant_stimulus_arm").perform(context)
-    if plant_stimulus_arm not in ("", "continuous", "pulse"):
-        raise ValueError("unknown mr3_plant_stimulus_arm")
-    if plant_stimulus_arm and not (adapter_mode and stepped_mode and training_reward
-                                  and robot_count == 3):
-        raise ValueError("plant stimulus requires stepped three-robot training adapter")
-    if plant_stimulus_arm:
-        if world_name.perform(context) != "p1c_open.world":
-            raise ValueError("plant stimulus requires the fixed open diagnostic world")
-        # Explicit engineering fixture, identical in both arms. Keep the normal
-        # research spawn untouched and retain the original peer safety bounds.
-        for robot, x in zip(robots, ("-1.6", "0.0", "1.6")):
-            robot.update(x_pose=x, y_pose="0.0")
     if stepped_mode and not adapter_mode:
         raise ValueError("mr3_stepped requires adapter mode")
     if training_reward and (not adapter_mode or not evaluation_contract.perform(context)
                             or not IfCondition(enable_task_evaluator).evaluate(context)):
-        raise ValueError(
-            "training_reward_enabled requires adapter mode and MR3 contract evaluator")
+        raise ValueError("training_reward_enabled requires adapter mode and MR3 contract evaluator")
     if terminal_probe and (not training_reward or not stepped_mode):
         raise ValueError("training_terminal_probe requires isolated rewards and stepped mode")
     if adapter_mode and robot_count != 3:
@@ -667,38 +328,13 @@ def launch_setup(context, *args, **kwargs):
         ],
         output="screen",
     )
-    adapter_audit_path = LaunchConfiguration("mr3_audit_path").perform(context)
-    if plant_stimulus_arm and not (adapter_audit_path and episode_epoch.perform(context)):
-        raise ValueError("plant stimulus requires explicit audit path and episode epoch")
-    physics_diagnostic = prepare_physics_diagnostic(
-        context.environment.get(PHYSICS_DIAGNOSTIC_ENV, ""),
-        adapter_mode=adapter_mode, stepped_mode=stepped_mode, robot_count=robot_count,
-        epoch=episode_epoch.perform(context), audit_path=adapter_audit_path, world=world,
-        seed=gazebo_seed.perform(context), package_prefix=get_package_prefix("multi_robot"))
-    if physics_diagnostic is not None:
-        actions.append(LogInfo(msg="MR3_PHYSICS_DIAGNOSTIC_SELECTED " +
-                               json.dumps(physics_diagnostic, sort_keys=True)))
     if adapter_mode:
-        if adapter_audit_path:
-            actions.append(Node(
-                package="multi_robot", executable="mr3_odometry_recorder",
-                name="mr3_odometry_recorder", output="screen",
-                parameters=[{"use_sim_time": use_sim_time,
-                             "episode_epoch": episode_epoch,
-                             "output_path": os.path.join(os.path.dirname(adapter_audit_path),
-                                                         "driver_odometry_receipts.jsonl")}],
-            ))
         actions.append(Node(
             package="multi_robot_exploration", executable="mr3_information",
             name="mr3_information", output="screen",
             parameters=[{"use_sim_time": use_sim_time, "robot_count": 3,
                          "episode_epoch": episode_epoch, "tf_validity_lead_sec": .2,
-                         "stepped_mode": stepped_mode,
-                         "safety_contract": safety_contract,
-                         "state_audit_path": (
-                             os.path.join(os.path.dirname(adapter_audit_path),
-                                          "information_states.jsonl")
-                             if adapter_audit_path else "")}],
+                         "stepped_mode": stepped_mode}],
         ))
     else:
         actions.append(merge_map_node)
@@ -723,33 +359,12 @@ def launch_setup(context, *args, **kwargs):
         name="peer_obstacles", output="screen",
         parameters=[{"robot_count": robot_count, "use_sim_time": use_sim_time,
                      "task_release_start": adapter_mode,
-                     "episode_epoch": episode_epoch,
-                     "stepped_mode": stepped_mode,
-                     "safety_contract": safety_contract,
-                     "phase_audit_path": (
-                         os.path.join(os.path.dirname(adapter_audit_path), "peer_phase.jsonl")
-                         if adapter_audit_path and stepped_mode else ""),
                      "tf_source_lead_sec": .2 if adapter_mode else 0.}],
         remappings=([
             (f"/{robot['name']}/{topic}", f"/mr3/received/{robot['name']}/{topic}")
             for robot in robots for topic in ("odom", "tf")
         ] if adapter_mode else []),
     ))
-    if adapter_mode:
-        actions.append(Node(
-            package="multi_robot_exploration", executable="motion_safety",
-            name="motion_safety", output="screen",
-            parameters=[{"use_sim_time": use_sim_time, "episode_epoch": episode_epoch,
-                         "stepped_mode": stepped_mode,
-                         "safety_contract": safety_contract,
-                         "motion_authority_profile": AUTHORITY_PROFILE if safety_contract == "mr3-reach-v1" else "",
-                         **({"reach_geometry_rule": reach_geometry_rule}
-                            if reach_geometry_rule != BINARY_CONE_V1 else {}),
-                         "mr3_diagnostic_enabled": bool(plant_stimulus_arm),
-                         "audit_path": (os.path.join(os.path.dirname(adapter_audit_path),
-                                                     "motion_safety.jsonl")
-                                        if adapter_audit_path else "")}],
-        ))
 
     merge_rviz = Node(
         package="rviz2",
@@ -780,12 +395,7 @@ def launch_setup(context, *args, **kwargs):
                 "navigation_cancel_timeout_sec": cancel_timeout,
                 "require_task_monitor_ready": bool(evaluation_contract.perform(context)),
                 **({"episode_epoch": episode_epoch, "stepped_mode": stepped_mode,
-                    "safety_contract": safety_contract,
-                    "motion_authority_profile": AUTHORITY_PROFILE if safety_contract == "mr3-reach-v1" else "",
                     "audit_path": LaunchConfiguration("mr3_audit_path")} if adapter_mode else {}),
-                **({"seed_rule": seed_rule} if adapter_mode and seed_rule != "legacy" else {}),
-                **({"start_graph_rule": start_graph_rule}
-                   if adapter_mode and start_graph_rule != "original-seed-cell" else {}),
             }
         ],
         output="screen",
@@ -835,17 +445,6 @@ def launch_setup(context, *args, **kwargs):
                         if stepped_mode else None)
     if stepped_mode and not os.path.isfile(step_plugin):
         raise ValueError(f"installed MR3 stepping plugin does not exist: {step_plugin}")
-    ray_box_plugin = None
-    ray_box_audit_path = None
-    if stepped_mode:
-        ray_box_plugin = os.path.join(get_package_prefix("multi_robot"),
-                                     "lib", "libmr3_ray_box_corrector.so")
-        if not os.path.isfile(ray_box_plugin):
-            raise ValueError(f"installed MR3 ray-box corrector does not exist: {ray_box_plugin}")
-        ray_box_directory = (Path(adapter_audit_path).parent.resolve(strict=True)
-                             if adapter_audit_path else
-                             Path(tempfile.mkdtemp(prefix="mr3_ray_box_corrector_")))
-        ray_box_audit_path = str(ray_box_directory / "ray_box_corrector.jsonl")
     server_state = {
         "started": None, "environment": None, "exited": False, "stopping": False,
         "server_returncode": None, "stop_cli_returncode": None,
@@ -868,8 +467,6 @@ def launch_setup(context, *args, **kwargs):
             LogInfo(msg="MR3_GAZEBO_SERVER_START " + json.dumps({
                 "pid": event.pid, "process_name": event.process_name, "argv": list(event.cmd),
                 "stepped_mode": stepped_mode, "selected_step_plugin": step_plugin,
-                "selected_ray_box_plugin": ray_box_plugin,
-                "ray_box_audit_path": ray_box_audit_path,
                 "selected_clock_parameters": clock_parameters,
                 "gazebo_plugin_path": server_state["environment"].get("GAZEBO_PLUGIN_PATH"),
             }, sort_keys=True)),
@@ -1000,22 +597,13 @@ def launch_setup(context, *args, **kwargs):
                                   ("GAZEBO_PLUGIN_PATH", plugin_export),
                                   ("GAZEBO_RESOURCE_PATH", media_export))
         }
-        gazebo_environment["MR3_RAY_BOX_CORRECTOR_AUDIT_PATH"] = ray_box_audit_path
-        gazebo_environment["MR3_RAY_BOX_CORRECTOR_EPOCH"] = episode_epoch.perform(context)
-        diagnostic_system_args = []
-        if physics_diagnostic is not None and "profile_library" in physics_diagnostic["binding"]:
-            diagnostic_system_args = [
-                "-s", physics_diagnostic["binding"]["profile_library"]["path"]]
-            gazebo_environment[PHYSICS_DIAGNOSTIC_ENV] = physics_diagnostic["binding_path"]
         # Humble's included gzserver launch appends extra_gazebo_args after the ROS '--'.
         # Gazebo treats that tail as positional pass-through, so load the system plugin
         # explicitly before the ROS argument section, with separate argv tokens.
         gzserver_cmd = ExecuteProcess(
-            cmd=["/usr/bin/gzserver", world, ["--seed=", gazebo_seed],
+            cmd=["gzserver", world, ["--seed=", gazebo_seed],
                  "-s", "libgazebo_ros_init.so", "-s", "libgazebo_ros_factory.so",
-                 "-s", "libgazebo_ros_force_system.so",
-                 "-s", ray_box_plugin, "-s", step_plugin,
-                 *diagnostic_system_args,
+                 "-s", "libgazebo_ros_force_system.so", "-s", step_plugin,
                  "--ros-args", "--params-file", clock_parameters, "--"],
             output="both", additional_env=gazebo_environment,
         )
@@ -1065,20 +653,6 @@ def launch_setup(context, *args, **kwargs):
     for robot in robots:
         robot_name = robot["name"]
         namespace = "/" + robot_name
-        spawn_model = drive_spawn_model(
-            model, robot_name, adapter_audit_path, episode_epoch.perform(context), adapter_mode,
-            physics_diagnostic=physics_diagnostic, safety_contract=safety_contract)
-        if safety_contract == "mr3-reach-v1":
-            actions.append(LogInfo(msg="MR3_REACH_SENSOR_PROFILE " + json.dumps({
-                "schema":"mr3-reach-lidar-20hz-v1", "robot":robot_name,
-                "sensor_link":"base_scan", "sensor_name":"hls_lfcd_lds",
-                "source_update_rate_hz":5, "effective_update_rate_hz":20,
-                "effective_sdf":spawn_model,
-                "scope":"genuine sensor cadence; scan geometry/noise and body unchanged"}, sort_keys=True)))
-        if not adapter_audit_path:
-            actions.append(RegisterEventHandler(OnShutdown(
-                on_shutdown=lambda event, event_context, path=spawn_model:
-                remove_drive_spawn_model(event, event_context, path=path))))
 
         params_file = os.path.join(
             multi_robot_share,
@@ -1088,22 +662,14 @@ def launch_setup(context, *args, **kwargs):
         if adapter_mode:
             # Keep local sensing and every Nav2 parameter unchanged; only the
             # two global static-map inputs use the declared robot-side copy.
-            param_rewrites = {
-                "global_costmap.global_costmap.ros__parameters.map_topic":
-                    f"/{robot_name}/navigation_map",
-                "global_costmap.global_costmap.ros__parameters.static_layer.map_topic":
-                    f"/{robot_name}/navigation_map",
-            }
-            if plant_stimulus_arm and robot_name == "tb3":
-                param_rewrites.update({
-                    "velocity_smoother.ros__parameters.mr3_diagnostic_enabled": "true",
-                    "velocity_smoother.ros__parameters.mr3_diagnostic_epoch":
-                        episode_epoch.perform(context),
-                    "velocity_smoother.ros__parameters.mr3_diagnostic_arm": plant_stimulus_arm,
-                })
             params_file = RewrittenYaml(
                 source_file=params_file, convert_types=True,
-                param_rewrites=param_rewrites,
+                param_rewrites={
+                    "global_costmap.global_costmap.ros__parameters.map_topic":
+                        f"/{robot_name}/navigation_map",
+                    "global_costmap.global_costmap.ros__parameters.static_layer.map_topic":
+                        f"/{robot_name}/navigation_map",
+                },
             )
 
         print(f"Namespace: {namespace}, PARAM Config: {params_file}\n")
@@ -1128,7 +694,7 @@ def launch_setup(context, *args, **kwargs):
             executable="spawn_entity.py",
             arguments=[
                 "-file",
-                spawn_model,
+                model,
                 "-entity",
                 robot_name,
                 "-robot_namespace",
@@ -1161,8 +727,6 @@ def launch_setup(context, *args, **kwargs):
                 # competing map->odom transform while the map is being built.
                 "slam": "True",
                 "namespace": namespace,
-                "cmd_vel_output": "cmd_vel_unguarded" if adapter_mode else "cmd_vel",
-                "behavior_cmd_vel": "cmd_vel_nav" if adapter_mode else "cmd_vel",
                 "use_namespace": "True",
                 "map": map_file_path,
                 "map_server": "False",
@@ -1213,23 +777,6 @@ def launch_setup(context, *args, **kwargs):
         nav_bringups.append(bringup_cmd)
 
         last_spawn_action = spawn_robot
-
-    if plant_stimulus_arm:
-        _, launch_sha = diagnostic_read(Path(__file__))
-        _, selected_world_sha = diagnostic_read(world)
-        fixture = {
-            "schema": "mr3-fixed-sparse-plant-fixture-v1",
-            "epoch": episode_epoch.perform(context), "arm": plant_stimulus_arm,
-            "world_path": world, "world_sha256": selected_world_sha,
-            "launch_source_sha256": launch_sha,
-            "spawn_argument_values": {robot["name"]: {
-                key: robot[key] for key in ("x_pose", "y_pose", "z_pose", "roll", "pitch", "yaw")}
-                for robot in robots},
-            "scope": "pre-execution spawn configuration; actual pose requires passive native observations",
-        }
-        target = Path(adapter_audit_path).parent / "plant_fixture_binding.json"
-        with target.open("x") as stream:
-            stream.write(json.dumps(fixture, sort_keys=True, allow_nan=False) + "\n")
 
     # ========= RViz and optional drive nodes =========
     # Start RViz only after the last robot has been spawned.
@@ -1335,36 +882,12 @@ def generate_launch_description():
         description="P1C paused physics stepping and explicit snapshot requests.",
     ))
     ld.add_action(DeclareLaunchArgument(
-        "mr3_safety_contract", default_value="legacy",
-        description="Explicit motion contract: legacy or mr3-reach-v1; "
-                    "mr3-reach-v1 requires the stepped three-robot adapter.",
-    ))
-    ld.add_action(DeclareLaunchArgument(
-        "mr3_reach_geometry_rule", default_value=BINARY_CONE_V1,
-        description="Explicit pair separation certificate: binary-cone-v1 (unchanged default) or "
-                    "cone-support-v2; v2 requires the stepped three-robot mr3-reach-v1 adapter.",
-    ))
-    ld.add_action(DeclareLaunchArgument(
-        "mr3_seed_rule", default_value="legacy",
-        description="Explicit candidate seed certificate: legacy, exact-point-bridge-v1 or exact-point-bridge-v2; "
-                    "the exact rule requires the stepped three-robot adapter.",
-    ))
-    ld.add_action(DeclareLaunchArgument(
-        "mr3_start_graph_rule", default_value="original-seed-cell",
-        description="Explicit point-attachment-3x3-v1 start graph requires exact-point-bridge-v2; "
-                    "the original seed-cell admission remains the default.",
-    ))
-    ld.add_action(DeclareLaunchArgument(
         "training_reward_enabled", default_value="false",
         description="Enable isolated MR3 training reward with the explicit task contract.",
     ))
     ld.add_action(DeclareLaunchArgument(
         "training_terminal_probe", default_value="false",
         description="Explicit P1C diagnostic-failure IPC probe; no task performance credit.",
-    ))
-    ld.add_action(DeclareLaunchArgument(
-        "mr3_plant_stimulus_arm", default_value="",
-        description="Engineering-only genuine smoother stimulus: continuous or pulse; disabled by default.",
     ))
     ld.add_action(DeclareLaunchArgument(
         "mr3_episode_epoch", default_value="mr3-p1b",

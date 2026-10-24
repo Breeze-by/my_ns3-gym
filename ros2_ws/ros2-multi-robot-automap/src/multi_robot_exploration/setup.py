@@ -25,7 +25,6 @@ setup(
             'mr3_information = multi_robot_exploration.mr3_information:main',
             'nav2_ready_gate = multi_robot_exploration.nav2_ready_gate:main',
             'peer_obstacles = multi_robot_exploration.peer_obstacles:main',
-            'motion_safety = multi_robot_exploration.motion_safety:main',
             'task_evaluator = multi_robot_exploration.task_evaluator:main',
         ],
     },

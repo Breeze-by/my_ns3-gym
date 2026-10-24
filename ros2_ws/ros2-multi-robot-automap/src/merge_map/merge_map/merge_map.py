@@ -1,4 +1,3 @@
-from array import array
 import math
 
 import numpy as np
@@ -8,40 +7,6 @@ from nav_msgs.msg import OccupancyGrid
 from rclpy.executors import ExternalShutdownException
 from rclpy.node import Node
 from rclpy.qos import DurabilityPolicy, QoSProfile, ReliabilityPolicy
-
-
-NAVIGATION_COMPOSITION_VERSION = "mr3-own-known-shared-unknown-v1"
-
-
-def _resample_grid(grid, rows, columns, min_x, min_y, resolution):
-    """Conservative positive-area projection onto a declared output lattice."""
-    incoming = np.asarray(grid.data, dtype=np.int16)
-    expected_size = grid.info.width * grid.info.height
-    if incoming.size != expected_size:
-        raise ValueError("Occupancy grid data size does not match its dimensions")
-    incoming = incoming.reshape(grid.info.height, grid.info.width)
-    if np.any((incoming < -1) | (incoming > 100)):
-        raise ValueError("Occupancy values must be -1 or between 0 and 100")
-    offset_x = (min_x - grid.info.origin.position.x) / resolution
-    offset_y = (min_y - grid.info.origin.position.y) / resolution
-    first_column = np.floor(columns + offset_x + 1e-9).astype(int)
-    last_column = np.ceil(columns + offset_x + 1.0 - 1e-9).astype(int) - 1
-    first_row = np.floor(rows + offset_y + 1e-9).astype(int)
-    last_row = np.ceil(rows + offset_y + 1.0 - 1e-9).astype(int) - 1
-    fully_free = np.ones(rows.shape, dtype=bool)
-    resampled = np.full(rows.shape, -1, dtype=np.int16)
-    for sample_row, sample_column in (
-        (first_row, first_column), (first_row, last_column),
-        (last_row, first_column), (last_row, last_column),
-    ):
-        inside = ((sample_row >= 0) & (sample_row < grid.info.height)
-                  & (sample_column >= 0) & (sample_column < grid.info.width))
-        sample = np.full(rows.shape, -1, dtype=np.int16)
-        sample[inside] = incoming[sample_row[inside], sample_column[inside]]
-        fully_free &= inside & (sample >= 0) & (sample < 50)
-        resampled = np.maximum(resampled, sample)
-    resampled[(resampled < 50) & ~fully_free] = -1
-    return resampled
 
 
 def merge_maps(maps, frame_id="map"):
@@ -88,10 +53,39 @@ def merge_maps(maps, frame_id="map"):
 
     rows, columns = np.indices((height, width))
     for grid in maps:
+        incoming = np.asarray(grid.data, dtype=np.int16)
+        expected_size = grid.info.width * grid.info.height
+        if incoming.size != expected_size:
+            raise ValueError(
+                "Occupancy grid data size does not match its dimensions"
+            )
+        incoming = incoming.reshape(grid.info.height, grid.info.width)
+        if np.any((incoming < -1) | (incoming > 100)):
+            raise ValueError("Occupancy values must be -1 or between 0 and 100")
         # Each output cell intersects at most two input rows and columns.
         # Occupancy is conservative over every positive-area intersection;
         # free evidence requires the entire output cell to be covered.
-        resampled = _resample_grid(grid, rows, columns, min_x, min_y, resolution)
+        offset_x = (min_x - grid.info.origin.position.x) / resolution
+        offset_y = (min_y - grid.info.origin.position.y) / resolution
+        first_column = np.floor(columns + offset_x + 1e-9).astype(int)
+        last_column = np.ceil(columns + offset_x + 1.0 - 1e-9).astype(int) - 1
+        first_row = np.floor(rows + offset_y + 1e-9).astype(int)
+        last_row = np.ceil(rows + offset_y + 1.0 - 1e-9).astype(int) - 1
+        fully_free = np.ones(merged.shape, dtype=bool)
+        resampled = np.full(merged.shape, -1, dtype=np.int16)
+        for sample_row, sample_column in (
+            (first_row, first_column), (first_row, last_column),
+            (last_row, first_column), (last_row, last_column),
+        ):
+            inside = (
+                (sample_row >= 0) & (sample_row < grid.info.height)
+                & (sample_column >= 0) & (sample_column < grid.info.width)
+            )
+            sample = np.full(merged.shape, -1, dtype=np.int16)
+            sample[inside] = incoming[sample_row[inside], sample_column[inside]]
+            fully_free &= inside & (sample >= 0) & (sample < 50)
+            resampled = np.maximum(resampled, sample)
+        resampled[(resampled < 50) & ~fully_free] = -1
         merged = np.maximum(merged, resampled)
 
     merged_map = OccupancyGrid()
@@ -112,27 +106,8 @@ def merge_maps(maps, frame_id="map"):
     merged_map.info.origin.orientation.w = source_origin.orientation.w
     if merged_map.info.origin.orientation.w == 0.0:
         merged_map.info.origin.orientation.w = 1.0
-    merged_map.data = array('b', merged.astype(np.int8).tobytes())
+    merged_map.data = merged.ravel().tolist()
     return merged_map
-
-
-def merge_navigation_map(own, delivered_shared, frame_id="map"):
-    """Preserve observed own cells; use delivered sharing only for own unknown.
-
-    This is an explicitly different navigation composition from the global
-    occupied-wins evaluation map. It neither edits either input nor clears a
-    cell by robot pose/history. Every own occupied overlap remains occupied;
-    own free authority requires a fully observed output cell.
-    """
-    navigation = merge_maps([own, delivered_shared], frame_id)
-    rows, columns = np.indices((navigation.info.height, navigation.info.width))
-    observed_own = _resample_grid(
-        own, rows, columns, navigation.info.origin.position.x,
-        navigation.info.origin.position.y, navigation.info.resolution)
-    conservative = np.asarray(navigation.data, dtype=np.int16).reshape(rows.shape)
-    composed = np.where(observed_own >= 0, observed_own, conservative)
-    navigation.data = array('b', composed.astype(np.int8).tobytes())
-    return navigation
 
 
 class MergeMapNode(Node):

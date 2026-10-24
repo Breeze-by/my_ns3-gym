@@ -1,7 +1,0 @@
-# V72 canonical CPU and runtime-source independent closure
-
-Final Root75079 canonical17PASS/4.973803003s:212 source before/after/current bytes and stable object stat checked; every declared snapshot restored equal; two exact saved role identities independently gone. Earlier90756 original system run remains rc1/181source with2 parent bodies plus1 descriptor import loaderERROR(gymnasium);31990 remains17PASS/181source/5.11100842s. Their raw receipts, console summaries, recovery and4 saved tuples were separately verified, never relabelled or summed as34/51 cases.
-
-13 runtime current-source bindings exactly equal the independently reconstructed set from reviewed parent.sources(): consumer+7 original interpretation sources, real admitted spec, parent, V71 inventory, ledger and fixed refs. Both original input paths are excluded. source_blob_manifest exact2820B/e8718e45... matches all current hashes. All three fixed metadata pins and input references agree. Real spec differs from privatev4 only admitted/status. This review makes no new Git/INDEX freeze claim; Root's formal blob guard remains necessary.
-
-One own source-bound read-only audit tool68878 genuinely reaped0/.685943081s,620 source/metadata/recovery-file bindings before/after/current unchanged, own2 saved identities gone. No test suite or consumer main was executed, no real summary/transitions, old342 libraries, World or scientific reader was opened. Own engineering0; no new scientific/qualification/capacity credit. All writes remain in this/tmp directory.

@@ -41,8 +41,7 @@ protected:
     std::shared_ptr<slam_toolbox::srv::SaveMap::Response> response);
 
 private:
-  // Borrow the owning SlamToolbox node; retaining it would prevent teardown.
-  rclcpp::Node * node_;
+  rclcpp::Node::SharedPtr node_;
   rclcpp::Service<slam_toolbox::srv::SaveMap>::SharedPtr server_;
   rclcpp::Subscription<nav_msgs::msg::OccupancyGrid>::SharedPtr sub_;
   std::string service_name_, map_name_;

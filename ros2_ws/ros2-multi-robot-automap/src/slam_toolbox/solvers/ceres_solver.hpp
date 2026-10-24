@@ -75,8 +75,7 @@ private:
   boost::mutex nodes_mutex_;
 
   // ros
-  // The owning SlamToolbox destroys its solver before the node base class.
-  rclcpp::Node * node_;
+  rclcpp::Node::SharedPtr node_;
 };
 
 }  // namespace solver_plugins

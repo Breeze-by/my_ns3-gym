@@ -214,7 +214,7 @@ def reward_evaluator():
     )
     for name in ("_publish_reward_response", "_reward_request_callback", "_reward_event_callback",
                  "_reward_map_watermark", "_reward_expected_record", "_queue_reward_request",
-                 "_drain_reward_requests", "_drain_evaluator_phase",
+                 "_drain_reward_requests",
                  "_training_finalize_callback", "training_exit_ready"):
         setattr(node, name, MethodType(getattr(TaskEvaluator, name), node))
 

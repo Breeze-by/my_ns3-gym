@@ -28,7 +28,7 @@ class MapAndLocalizationSlamToolbox : public LocalizationSlamToolbox
 {
 public:
   explicit MapAndLocalizationSlamToolbox(rclcpp::NodeOptions options);
-  virtual ~MapAndLocalizationSlamToolbox() {stopScanCallbacks();}
+  virtual ~MapAndLocalizationSlamToolbox() {}
   void loadPoseGraphByParams() override;
   void configure() override;
 

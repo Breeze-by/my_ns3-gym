@@ -72,7 +72,7 @@ void LaserMetadata::invertScan(sensor_msgs::msg::LaserScan & scan) const
 LaserAssistant::LaserAssistant(
   rclcpp::Node::SharedPtr node,
   tf2_ros::Buffer * tf, const std::string & base_frame)
-: node_(node.get()), tf_(tf), base_frame_(base_frame)
+: node_(node), tf_(tf), base_frame_(base_frame)
 {
 }
 

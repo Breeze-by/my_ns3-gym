@@ -1,4 +1,0 @@
-import json,os
-from pathlib import Path
-v=json.loads((Path(__file__).parent/'cpu_v2/spec_v2.json').read_bytes())
-os.chdir(v['cwd']);os.execv(v['actual_argv'][0],v['actual_argv'])

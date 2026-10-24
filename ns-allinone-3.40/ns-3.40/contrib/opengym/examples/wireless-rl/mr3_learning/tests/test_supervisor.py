@@ -18,17 +18,6 @@ from mr3_learning.supervisor import (
 
 
 class SupervisorTests(unittest.TestCase):
-    def test_existing_safety_contract_selects_fixed_actuator_profile(self):
-        from mr3_learning.supervisor import actuation_profile_for_safety_contract
-        for contract, expected in (("legacy", None),
-                                   ("mr3-reach-v1", "initial-zero-encoder-hold-v1")):
-            with tempfile.TemporaryDirectory() as directory:
-                supervisor = Supervisor(safety_contract=contract, output_root=directory)
-                self.assertEqual(supervisor.actuation_profile, expected)
-        for unknown in (True, None, "reach", "mr3-reach-v1 "):
-            with self.assertRaises(ValueError):
-                actuation_profile_for_safety_contract(unknown)
-
     @staticmethod
     def episode_fixture():
         identity = {"pid": 100, "parent": 1, "group": 100, "session": 100,

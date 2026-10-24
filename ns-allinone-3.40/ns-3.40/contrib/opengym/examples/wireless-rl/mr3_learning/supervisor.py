@@ -13,139 +13,11 @@ import time
 import uuid
 
 from .ipc import JsonLinePeer
-from .motion_authority_profile import motion_authority_profile_for_safety_contract
 
 
 WORKSPACE = Path(__file__).resolve().parents[7]
 ROS_ROOT = WORKSPACE / "ros2_ws/ros2-multi-robot-automap"
 SCENES = ("open", "rooms", "corridors")
-EXACT_SEED_VERSIONS = {
-    "exact-point-bridge-v1": "mr3-navigation-geometric-staging-v6-exact-seed-v1",
-    "exact-point-bridge-v2": "mr3-navigation-geometric-staging-v7-exact-seed-v2",
-}
-SEED_RULES = ("legacy", *EXACT_SEED_VERSIONS)
-ORIGINAL_START_GRAPH_RULE = "original-seed-cell"
-POINT_START_GRAPH_RULE = "point-attachment-3x3-v1"
-START_GRAPH_RULES = (ORIGINAL_START_GRAPH_RULE, POINT_START_GRAPH_RULE)
-POINT_GRAPH_PROFILE = "mr3-point-graph-attachment-3x3-v1"
-POINT_GRAPH_COST = "min_anchor(bridge_length+original_graph_distance)"
-LEGACY_PREPARATION_PROBES = tuple(f"mr3-p2a0-outward-cancel-v{version}" for version in range(2, 7))
-PREPARATION_PROBE_REACH_V1 = "mr3-p2a-reach-outward-cancel-v1"
-PREPARATION_PROBE_REACH_V2 = "mr3-p2a-reach-outward-cancel-v2"
-PREPARATION_PROBE_REACH_V3 = "mr3-p2a-reach-outward-cancel-v3"
-PREPARATION_PROBE_REACH_MASKED_CANCEL_V1 = "mr3-p2a-reach-masked-cancel-v1"
-MASKED_CANCEL_GOAL_FILTER = "original_per_robot_and_joint_masks_only_v1"
-MASKED_CANCEL_GOAL_RANK = "goal_count_min_path_second_reverse_sum_path_action_v1"
-
-
-def _preparation_goal_metadata(version):
-    return ({"goal_filter":MASKED_CANCEL_GOAL_FILTER,"goal_rank":MASKED_CANCEL_GOAL_RANK}
-            if version == PREPARATION_PROBE_REACH_MASKED_CANCEL_V1 else {})
-
-
-BINARY_REACH_GEOMETRY_RULE = "binary-cone-v1"
-SUPPORT_REACH_GEOMETRY_RULE = "cone-support-v2"
-REACH_GEOMETRY_RULES = (BINARY_REACH_GEOMETRY_RULE, SUPPORT_REACH_GEOMETRY_RULE)
-
-
-def validate_reach_geometry_rule(rule, *, safety_contract="legacy"):
-    if type(safety_contract) is not str or safety_contract not in ("legacy", "mr3-reach-v1"):
-        raise ValueError("unknown safety contract for reach geometry")
-    if type(rule) is not str or rule not in REACH_GEOMETRY_RULES:
-        raise ValueError("unknown reach_geometry_rule")
-    if rule == SUPPORT_REACH_GEOMETRY_RULE and safety_contract != "mr3-reach-v1":
-        raise ValueError("cone-support-v2 requires mr3-reach-v1")
-    return rule
-
-
-def reach_geometry_rule_from_argv(argv):
-    """Read one canonical rule; a v2 opt-in also needs its actual reach profile."""
-    if type(argv) is not list or any(type(value) is not str for value in argv):
-        raise ValueError("sealed command must be a list of strings")
-    flag = "--reach-geometry-rule"
-    if argv.count(flag) > 1 or any(value.startswith(flag + "=") for value in argv):
-        raise ValueError("sealed reach_geometry_rule argument must be unique and explicit")
-    if flag not in argv:
-        return BINARY_REACH_GEOMETRY_RULE
-    position = argv.index(flag) + 1
-    if position >= len(argv):
-        raise ValueError("reach_geometry_rule argument has no value")
-    safety = "legacy"
-    if argv.count("--safety-contract") > 1 or any(value.startswith("--safety-contract=") for value in argv):
-        raise ValueError("sealed safety_contract argument must be unique and explicit")
-    if "--safety-contract" in argv:
-        index = argv.index("--safety-contract") + 1
-        if index >= len(argv):
-            raise ValueError("safety_contract argument has no value")
-        safety = argv[index]
-    return validate_reach_geometry_rule(argv[position], safety_contract=safety)
-
-
-def validate_preparation_profile(safety_contract, preparation_probe_version=None):
-    """External fixture identity is independent of physical/task qualification."""
-    if type(safety_contract) is not str or safety_contract not in ("legacy", "mr3-reach-v1"):
-        raise ValueError("unknown safety contract")
-    if preparation_probe_version is not None:
-        allowed = (LEGACY_PREPARATION_PROBES if safety_contract == "legacy"
-                   else (PREPARATION_PROBE_REACH_V1, PREPARATION_PROBE_REACH_V2, PREPARATION_PROBE_REACH_V3, PREPARATION_PROBE_REACH_MASKED_CANCEL_V1))
-        if type(preparation_probe_version) is not str or preparation_probe_version not in allowed:
-            raise ValueError("preparation fixture does not match safety contract")
-
-
-def validate_seed_rule(seed_rule):
-    if type(seed_rule) is not str or seed_rule not in SEED_RULES:
-        raise ValueError("seed_rule must be legacy, exact-point-bridge-v1 or exact-point-bridge-v2")
-    return seed_rule
-
-
-def validate_start_graph_rule(start_graph_rule, *, seed_rule="legacy"):
-    validate_seed_rule(seed_rule)
-    if type(start_graph_rule) is not str or start_graph_rule not in START_GRAPH_RULES:
-        raise ValueError("unknown start_graph_rule")
-    if start_graph_rule == POINT_START_GRAPH_RULE and seed_rule != "exact-point-bridge-v2":
-        raise ValueError("point attachment requires exact-point-bridge-v2")
-    return start_graph_rule
-
-
-def candidate_version_for_rules(seed_rule, start_graph_rule=ORIGINAL_START_GRAPH_RULE, *, navigation=True):
-    validate_start_graph_rule(start_graph_rule, seed_rule=seed_rule)
-    if type(navigation) is not bool:
-        raise ValueError("navigation must be a boolean")
-    if start_graph_rule == POINT_START_GRAPH_RULE:
-        return ("mr3-navigation-geometric-staging-v8-point-graph-v1" if navigation else
-                "mr3-per-robot-geometric-staging-v7-point-graph-v1")
-    if navigation:
-        return EXACT_SEED_VERSIONS.get(seed_rule, "mr3-navigation-geometric-staging-v5")
-    return {"legacy": "mr3-per-robot-geometric-staging-v4",
-            "exact-point-bridge-v1": "mr3-per-robot-geometric-staging-v5-exact-seed-v1",
-            "exact-point-bridge-v2": "mr3-per-robot-geometric-staging-v6-exact-seed-v2"}[seed_rule]
-
-
-def seed_rule_from_argv(argv):
-    """Read the sealed command's single canonical opt-in, defaulting to legacy."""
-    if type(argv) is not list or any(type(value) is not str for value in argv):
-        raise ValueError("sealed command must be a list of strings")
-    if argv.count("--seed-rule") > 1 or any(v.startswith("--seed-rule=") for v in argv):
-        raise ValueError("sealed seed_rule argument must be unique and explicit")
-    if "--seed-rule" not in argv:
-        return "legacy"
-    position = argv.index("--seed-rule") + 1
-    if position >= len(argv):
-        raise ValueError("seed_rule argument has no value")
-    return validate_seed_rule(argv[position])
-
-
-def start_graph_rule_from_argv(argv):
-    """Read the sealed composite mode, rejecting duplicate/equals arguments."""
-    seed_rule = seed_rule_from_argv(argv)
-    if argv.count("--start-graph-rule") > 1 or any(v.startswith("--start-graph-rule=") for v in argv):
-        raise ValueError("sealed start_graph_rule argument must be unique and explicit")
-    if "--start-graph-rule" not in argv:
-        return ORIGINAL_START_GRAPH_RULE
-    position = argv.index("--start-graph-rule") + 1
-    if position >= len(argv):
-        raise ValueError("start_graph_rule argument has no value")
-    return validate_start_graph_rule(argv[position], seed_rule=seed_rule)
 
 
 class InfrastructureError(RuntimeError):
@@ -247,44 +119,14 @@ def remember_processes(episode):
         stats["max_scan_wall_sec"] = max(stats["max_scan_wall_sec"], time.monotonic() - started)
 
 
-INITIAL_ENCODER_ACTUATION_PROFILE = "initial-zero-encoder-hold-v1"
-
-
-def actuation_profile_for_safety_contract(safety_contract):
-    if type(safety_contract) is not str or safety_contract not in ("legacy", "mr3-reach-v1"):
-        raise ValueError("unknown safety contract for the actuator")
-    return INITIAL_ENCODER_ACTUATION_PROFILE if safety_contract == "mr3-reach-v1" else None
-
-
 class Supervisor:
     """One isolated three-robot environment; reset always replaces all processes."""
 
     def __init__(self, *, run_id=None, worker_id=0, domain_id=120, gazebo_port=12001,
                  output_root=None, startup_timeout=420., request_timeout=90.,
-                 quantum_steps=20, terminal_probe=False, plant_stimulus_arm=None,
-                 plant_stimulus_work_deadline_ns=None, safety_contract="legacy",
-                 preparation_probe_version=None, seed_rule="legacy",
-                 start_graph_rule=ORIGINAL_START_GRAPH_RULE,
-                 reach_geometry_rule=BINARY_REACH_GEOMETRY_RULE):
-        if type(safety_contract) is not str or safety_contract not in ("legacy", "mr3-reach-v1"):
-            raise ValueError("safety_contract must be legacy or mr3-reach-v1")
-        validate_preparation_profile(safety_contract, preparation_probe_version)
-        validate_seed_rule(seed_rule)
-        validate_start_graph_rule(start_graph_rule, seed_rule=seed_rule)
-        validate_reach_geometry_rule(reach_geometry_rule, safety_contract=safety_contract)
-        if preparation_probe_version is not None and (terminal_probe or plant_stimulus_arm is not None):
-            raise ValueError("preparation fixture cannot combine with other diagnostic probes")
+                 quantum_steps=20, terminal_probe=False):
         if type(terminal_probe) is not bool:
             raise ValueError("terminal_probe must be a boolean")
-        if plant_stimulus_arm not in (None, "continuous", "pulse"):
-            raise ValueError("plant stimulus arm must be disabled, continuous or pulse")
-        if terminal_probe and plant_stimulus_arm is not None:
-            raise ValueError("plant stimulus and terminal probes are mutually exclusive")
-        if plant_stimulus_work_deadline_ns is not None and (
-                plant_stimulus_arm is None or type(plant_stimulus_work_deadline_ns) is not int
-                or not time.monotonic_ns() < plant_stimulus_work_deadline_ns
-                <= time.monotonic_ns() + 1_680_000_000_000):
-            raise ValueError("plant stimulus work deadline must fit its 1680s work allocation")
         self.run_id = run_id or (datetime.now(timezone.utc).strftime("mr3_%Y%m%d_%H%M%S_")
                                  + uuid.uuid4().hex[:8])
         allowed = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-"
@@ -301,8 +143,6 @@ class Supervisor:
         if (not math.isfinite(startup_timeout) or not math.isfinite(request_timeout)
                 or startup_timeout <= 0 or request_timeout <= 0):
             raise ValueError("wall guards must be positive")
-        if safety_contract == "mr3-reach-v1" and startup_timeout > 420.:
-            raise ValueError("reach startup cannot exceed the original 420s wall guard")
         self.worker_id = worker_id
         self.domain_id = domain_id
         self.gazebo_port = gazebo_port
@@ -313,17 +153,6 @@ class Supervisor:
         self.request_timeout = float(request_timeout)
         self.quantum_steps = quantum_steps
         self.terminal_probe = terminal_probe
-        self.safety_contract = safety_contract
-        self.seed_rule = seed_rule
-        self.start_graph_rule = start_graph_rule
-        self.reach_geometry_rule = reach_geometry_rule
-        self.actuation_profile = actuation_profile_for_safety_contract(safety_contract)
-        self.motion_authority_profile = motion_authority_profile_for_safety_contract(safety_contract)
-        self.preparation_probe_version = preparation_probe_version
-        self.plant_stimulus_arm = plant_stimulus_arm
-        self.plant_stimulus_work_deadline_ns = (
-            plant_stimulus_work_deadline_ns or time.monotonic_ns() + 1_680_000_000_000
-            if plant_stimulus_arm is not None else None)
         self.episode_number = 0
         self.request_number = 0
         self.episode = None
@@ -337,17 +166,8 @@ class Supervisor:
         remember_processes(self.episode)
         request = {"id": self.request_number, "op": op, "epoch": self.episode.epoch, **payload}
         try:
-            if (op == "reset" and "startup_deadline_monotonic_ns" in payload
-                    and time.monotonic_ns() >= payload["startup_deadline_monotonic_ns"]):
-                raise TimeoutError("reach reset absolute wall guard expired")
             self.episode.peer.send(request)
-            wait = timeout or self.request_timeout
-            if op == "reset" and "startup_deadline_monotonic_ns" in payload:
-                remaining = (payload["startup_deadline_monotonic_ns"] - time.monotonic_ns()) / 1e9
-                if remaining <= 0:
-                    raise TimeoutError("reach reset absolute wall guard expired")
-                wait = min(wait, remaining)
-            response = self.episode.peer.receive(wait)
+            response = self.episode.peer.receive(timeout or self.request_timeout)
             if response.get("id") != request["id"] or response.get("epoch") != request["epoch"]:
                 raise ValueError("IPC response identity mismatch")
             remember_processes(self.episode)
@@ -358,11 +178,8 @@ class Supervisor:
             raise InfrastructureError(f"{op}: {error}") from error
 
     def reset(self, scene="open", seed=101):
-        reset_started_ns = time.monotonic_ns() if self.safety_contract == "mr3-reach-v1" else None
         if scene not in SCENES or type(seed) is not int or seed < 0:
             raise ValueError("reset requires a declared development scene and nonnegative seed")
-        if self.plant_stimulus_arm is not None and (scene, seed) != ("open", 101):
-            raise ValueError("the declared plant stimulus fixture is only open seed101")
         self.close()
         self.episode_number += 1
         epoch = f"{self.run_id}_w{self.worker_id}_e{self.episode_number}_{uuid.uuid4().hex[:8]}"
@@ -400,51 +217,13 @@ class Supervisor:
                     "domain_id": self.domain_id, "gazebo_port": self.gazebo_port,
                     "command": command, "reset_kind": "complete_process_rebuild",
                     "terminal_probe": self.terminal_probe,
-                    "safety_contract": self.safety_contract,
-                    "plant_stimulus_arm": self.plant_stimulus_arm,
-                    "plant_stimulus_work_deadline_ns": self.plant_stimulus_work_deadline_ns,
                     "startup_wall_guard_sec": self.startup_timeout,
                     "request_wall_guard_sec": self.request_timeout}
-        startup = {}
-        if reset_started_ns is not None:
-            startup = {"startup_readiness_protocol": "received-input-pause-drain-v1",
-                       "startup_deadline_monotonic_ns": reset_started_ns + round(self.startup_timeout * 1e9)}
-            metadata.update(**startup, reset_started_monotonic_ns=reset_started_ns,
-                            startup_cleanup_reserve_seconds=60., startup_response_reserve_seconds=5.)
-        if self.seed_rule != "legacy":
-            metadata["seed_rule"] = self.seed_rule
-        if self.start_graph_rule != ORIGINAL_START_GRAPH_RULE:
-            metadata["start_graph_rule"] = self.start_graph_rule
-        if self.reach_geometry_rule != BINARY_REACH_GEOMETRY_RULE:
-            metadata["reach_geometry_rule"] = self.reach_geometry_rule
-        if self.actuation_profile is not None:
-            metadata["actuation_profile"] = self.actuation_profile
-        if self.motion_authority_profile is not None:
-            metadata["motion_authority_profile"] = self.motion_authority_profile
-        if self.preparation_probe_version is not None:
-            metadata.update(preparation_probe_version=self.preparation_probe_version,
-                            training_eligible=False,
-                            qualification_scope="external_fixture_collection_not_scientific_qualification")
-        metadata.update(_preparation_goal_metadata(self.preparation_probe_version))
         (directory / "supervisor_metadata.json").write_text(json.dumps(metadata, indent=2) + "\n")
         try:
             result = self._rpc("reset", timeout=self.startup_timeout, scene=scene, seed=seed,
                                quantum_steps=self.quantum_steps,
-                               terminal_probe=self.terminal_probe,
-                               plant_stimulus_arm=self.plant_stimulus_arm,
-                               plant_stimulus_work_deadline_ns=self.plant_stimulus_work_deadline_ns,
-                               **({"preparation_probe_version":self.preparation_probe_version}
-                                  if self.preparation_probe_version in (PREPARATION_PROBE_REACH_V2, PREPARATION_PROBE_REACH_V3, PREPARATION_PROBE_REACH_MASKED_CANCEL_V1) else {}),
-                               **startup,
-                                **({"motion_authority_profile": self.motion_authority_profile}
-                                   if self.motion_authority_profile is not None else {}),
-                               **({"safety_contract": self.safety_contract}
-                                  if self.safety_contract != "legacy" else {}),
-                               **({"seed_rule": self.seed_rule} if self.seed_rule != "legacy" else {}),
-                               **({"start_graph_rule": self.start_graph_rule}
-                                  if self.start_graph_rule != ORIGINAL_START_GRAPH_RULE else {}),
-                               **({"reach_geometry_rule": self.reach_geometry_rule}
-                                  if self.reach_geometry_rule != BINARY_REACH_GEOMETRY_RULE else {}))
+                               terminal_probe=self.terminal_probe)
             if result["snapshot"]["epoch"] != epoch:
                 raise InfrastructureError("reset returned a previous episode snapshot")
             self.last_result = result

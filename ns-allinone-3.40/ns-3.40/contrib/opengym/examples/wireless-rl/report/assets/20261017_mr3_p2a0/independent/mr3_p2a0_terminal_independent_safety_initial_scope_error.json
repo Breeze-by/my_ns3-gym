@@ -1,9 +1,0 @@
-{
-  "schema": "mr3-independent-review-scope-error-v1",
-  "script": "/tmp/review_mr3_p2a0_terminal_safety_v1_scope_failed.py",
-  "script_sha256": "aa21dd482de09518fd965fbfa8e9ea3001ce3265e0cd0d59d6a609c9351833d2",
-  "error": "TypeError at final acks[-1]['terminal']['end_sim_time_sec']: zero-tail LIVE ACK has terminal=None",
-  "incorrect_assumption": "zero-duration terminal requires a new terminal phase ACK",
-  "correct_scope": "episode2 injects task failure at the saved paused LIVE phase boundary; no further physics or phase quantum occurs. Match diagnostic_failure and adapter task terminal with the same final saved clock.",
-  "native_rerun": false
-}

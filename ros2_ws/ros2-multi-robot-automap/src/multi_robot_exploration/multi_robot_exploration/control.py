@@ -25,7 +25,6 @@ from std_msgs.msg import Bool, Header, String
 from tf2_msgs.msg import TFMessage
 
 from multi_robot_exploration.mr3_owner import acquire_navigation_owner
-from multi_robot_exploration.mr3_motion_safety import BODY_RADIUS_M as PEER_BODY_RADIUS_M
 
 
 OCCUPIED_THRESHOLD = 50
@@ -45,9 +44,10 @@ PATH_COST_EXPONENT = 1.5
 GOAL_REPLAN_SEC = 3.0
 MIN_REMAINING_GAIN = 200
 MIN_REMAINING_GAIN_FRACTION = 0.2
+PEER_BODY_RADIUS_M = 0.25  # Waffle collision geometry fits within 0.238 m.
+PEER_SPEED_BOUND_MPS = 0.26
 PEER_REACTION_SEC = 0.55  # 10 Hz publication/control plus 3 Hz costmap update.
 PEER_GRID_MARGIN_M = 0.04  # Covers a 0.05 m costmap cell's half diagonal.
-PEER_SPEED_BOUND_MPS = 0.26  # Frozen navigation prediction, independent of command caps.
 
 
 def peer_safety_radius(source_age):

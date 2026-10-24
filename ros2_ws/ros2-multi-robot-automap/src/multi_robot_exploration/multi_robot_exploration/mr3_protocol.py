@@ -39,7 +39,6 @@ class _Robot:
     stop_reason: str = None
     last_terminal: str = None
     last_goal_id: str = None
-    accepted_goal_count: int = 0
 
 
 class GoalDispatcher:
@@ -304,7 +303,6 @@ class GoalDispatcher:
             self._fail(robot, now, "navigation_rejected")
             return "rejected"
         state.accepted = True
-        state.accepted_goal_count += 1
         state.accepted_at = now
         state.commitment_until = (
             timestamp_ns(now) + timestamp_ns(self.commitment_sec)
@@ -418,7 +416,6 @@ class GoalDispatcher:
                 cancel_requested=state.cancel_requested, failure=state.failure,
                 stop_reason=state.stop_reason, owned=state.goal_id is not None,
                 last_terminal=state.last_terminal, last_goal_id=state.last_goal_id,
-                accepted_goal_count=state.accepted_goal_count,
             )
         return result
 

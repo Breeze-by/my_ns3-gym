@@ -1,86 +1,21 @@
 # 三机器人 ROS 建图导航：当前实现指南
 
-2026-10-23 V60生产准备：sensor唯一显式profile tag全字节逆恢复与peer两新事件/同plan三drive compound/APPLIED精确join已接公共full/PPO/controlled/4matrix/3policy；不删行或伪zero，C++/物理/actor/20build输入不变。canonical targeted159、fresh ROS202/learner437、编排13实际PASS/source稳定，原fixture/兼容失败保留，尚无V60World/资格/PPO。承接V59真FAIL账94316.6592918916018/C150000、余55683.3407081083982，拟47220完整工程预约；pilot/final与R/12EP30/95%保持，150000非数值用户批准。source a03b9c530已真推送，新plan1029源/10ELF及12EP30/readiness实际通过；下一最终执行freeze与严格准入/完整链，不借旧6PASS。P2A未完成。 见[V60](<../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261023_mr3_p2a_v60_reader_registration.md>)；下方为历史快照。
-
-
-2026-10-23 V59实际闭合FAIL：freeze783aec553、tool53492真实reap1；原生1EP32/32rc0，必要角色6PASS/1FAIL/23SKIP，full与无role fifo子命令失败，后继资格/学习0。静态定位新SDF profile tag逆投影及peer两类新事件白名单登记遗漏；V60补显式登记/公共入口CPU，旧FAIL不改。parent scope union2099.471611454，累计94316.6592918916018/150000、余55683.3407081083982；pilot/final原额保持，150000为代理持续委托选择非数值用户批准。1015源/10ELF一致、67完整保存运行身份freshgone，2transport祖先nonowned及PID-only原未知保留；关闭CPU4身份另gone。578原件1.11GB无损封存97.84MB/0link。P2A未完成；下一新freeze完整12EP30→真实更新→三strict95，不重开旧活动。 见[V59实际闭合](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261023_mr3_p2a_v59_encoder_profile.md)；下方准备为历史快照。
-
-
-2026-10-23 V59生产准备：新Reach自动固定initial-zero-encoder-hold-v1，genuine初始zero后一次q_ref，首成功非零receive永久退出，APPLIED/实际纠偏真实披露；新驱动实际build及4接收回归通过。独立motor62、build/profile/cadence83针对CPU通过，最终fresh ROS202/learner411及编排11项实际PASS/source稳定，旧fixture/入口/source-drift失败保留。source/build冻结ec63e5946已真实推送，1015源/10ELF完整计划、12EP30roles与双环境readiness实际通过；尚无V59 World/资格/PPO，下一封执行冻结B、严格newbuild/binding后完整同freeze链；旧V15资格不借、R/12EP30/95及原pilot/final保持。V58旧账92217.1876804376018承接，代理持续委托下前瞻选C150000（非数值用户批准）、余57782.8123195623982，拟47220工程预约。P2A未完成。见[V59](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261023_mr3_p2a_v59_encoder_profile.md)；下方为历史快照。
-
-2026-10-23 V58实际闭合描述PASS：freezeb6af48cfe、tool23554真实reap0，355000步/355sim秒、三机固定anchor最大位移约7.56446e-6m，R=.0078/一次body anchor保持；真实非零motor纠偏完整保留，仅隔离候选取样，不供生产/连续证明/学习或95%信用。parent899.40726088已收，累计92217.1876804376018/120000、余27782.8123195623982；4已保存main及2关闭CPU身份gone，20原件无损封存，push回收观察晚于native提交的次序透明保留。下一S59生产新profile/newbuild/独立compound-law及新同freeze完整链，代理前瞻选择150000有限工程块（非数值用户批准），余57782.8123195623982、拟预约47220，scope待实现CPU封存；pilot/final及历史FAIL保持，P2A未完成。见[V58实际闭合](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261023_mr3_p2a_v58_encoder_hold.md)；下方准备状态为历史快照。
-
-2026-10-23 V58禁用候选准备：只对首次非零请求前的初始静止阶段设计本地轮编码器P保持，参考捕获一次、首次非零永久退出，实际非零电机纠偏完整披露；未接生产、未运行World。helper12组、driver末轮6组CPU与真实native编译通过，source/spec已准备，待新exact40freeze及一次正式诊断，不借旧actuation恒等或V15 no-new-build信用。承接V57累计91317.7804195576018/120000、余28682.2195804423982，新单quick150诊断拟预约2100（work1500/outer1800），原R=.0078/一次anchor、12EP30角色/95%及pilot/final保持。见[V58预声明](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261023_mr3_p2a_v58_encoder_hold.md)；下方V57“仅静态评估”为当时闭合快照，P2A未完成。
-
-2026-10-23 V57实际闭合FAIL：freeze71cb6b180、tool92392真实reap rc1。独占HOME后两臂均进入实际物理运行；quick150 rc1/partial235.631sim秒，600秒合作式上限，三机固定anchor最大位移约.007351365m仅覆盖已观测部分，不证明完整310秒hold。direct-world rc0/COMPLETE355sim秒，但三机位移4.092486/4.415539/5.779568m、最大平移速度约3.60–3.79m/s，物理候选严重失败，不支持direct solver接生产；执行完成与物理可用分开。目标0不等于每次反馈slew输出命令0，实际命令/CSV完整保留；R=.0078及一次固定anchor不变。连续pair parent935.226829603墙秒含gap、nested不加，累计91317.7804195576018/120000、余28682.2195804423982；120000仍为代理依持续委托选定，非逐数值用户批准。372原源前后稳定，关闭新核30非库/28repo current-Git及old10，342库不重读；仅6份实际保存main身份gone，关闭CPU两轮4身份另gone。28 regular原件32763601B→12859498B无损封存，另1个Pulse链接只存lstat/字面目标、不跟随外部目录。关闭CPU首轮拒绝该链接原件保留，后轮PASS/28.583849962墙秒、工程0。下一仅本地轮编码器zero-hold有限servo的静态评估，尚无新科学版本/生产应用/native；不改R、刷新anchor、隐藏非零命令或重开旧活动。pilot/final及12EP30角色/95%安全门和历史FAIL保持，P2A未完成。 见[V57实际闭合](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261023_mr3_p2a_v57_passive_plant.md)、[库存](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v57_passive_plant/closed_inventory_v1.json)及[末账](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v57_passive_plant/closure_ledger_v1.json)。下方准备/待执行文字保留为历史快照。
-
-2026-10-23 V56实际闭合诊断PASS：freeze9d2229010、tool8209真实reap rc0，已取得inferior SIGSEGV栈；GDB rc0不表示inferior自然退出或有效物理结果。主栈strlen→DiagnosticManager构造→World::Init→loadWorld；本机ELF反汇编与实际返回地址共同定位缺HOME的无空检查strlen路径，原V55 FAIL不改。实际parent12.268341836墙秒（含post-source/owned cleanup，nested不加），累计90382.5535899546018/120000、余29617.4464100453982；120000仍为代理受持续委托选择，非用户逐数值批准。376条原源before/after稳定；关闭仅新核34非库源/30 repo current-Git及旧10子集，不重读342库；6主身份freshgone。12小原件586647B→516957B/0link无损封存；关闭CPU v1别名metadata拒绝原件保留，v2真实PASS/26.171658586墙秒、工程0，两轮各2身份另gone。生产p1c基线是quick150，quick50仅旧诊断；无资格/学习信用，pilot/final和科学门保持，P2A未完成。 见[V56实际闭合](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261023_mr3_p2a_v56_startup_gdb.md)和[规范末账](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v56_startup_gdb/closure_ledger_v1.json)；下一步仅按[V57新声明](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261023_mr3_p2a_v57_passive_plant.md)修启动环境后作有界quick150/direct-world比较，不重试/改判旧V55，不承诺solver或安全结论。下方准备及待执行文字保留为历史快照。
-
-2026-10-23 V55实际闭合FAIL / V56单次启动栈诊断准备：freeze63f5cc107的tool23231真实reap rc1，两臂CPP均-11、wrapper1，早期身份保存但summary缺失，无有效物理结果；HOME/ALSA/OpenAL提示不归因。连续parent12.924178319墙秒已收，累计90370.2852481186018/120000、余29629.7147518813982；6主保存身份及metadata CPU自身2身份分别gone，关闭CPU真实wall9.076326329秒/工程0。配置解释更正：实际生产p1c_*.world是quick150，A55 quick50是诊断设置，不能称生产原配置；loadWorld已有Init，不据无栈假设补Init。V56仅同未改A55 ELF+quick50 World取一次SIGSEGV栈，GDB12.1 batch/noinit、关闭auto-load/debuginfod、timeout120，driver150/180仅owned pidfd退出兜底，完整parent新预约300，不宣称硬实时；旧A55字节准入仅核371链，不调用旧run_case或沿用旧预算。spec/CLI/source CPU由root最后封存、尚未执行；V55不重跑/改判，pilot/final及科学门保持，P2A未完成。 见[V55闭合](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261023_mr3_p2a_v55_passive_plant.md)及[V56预声明](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261023_mr3_p2a_v56_startup_gdb.md)。下方准备状态保留为历史快照。
-
-2026-10-23 V55零驱动物理诊断准备：native CPP/generator已规范安装，三轮真实CPU编译PASS（51.086935907/50.734880339/47.164755331墙秒），仅末轮代码/ELF适用，旧轮原件与prepared_worlds_v1/v2/v3保持。末版补首末UpdateEnd时钟/观测数及显式physics->SetSeed(101)，不伪称ODE种子readback。driver三轮各6人工CPU实际PASS（末轮.293310886墙秒）；清洁运行环境显式绑定现有ROS native依赖目录，最终loader PASS/.061848255墙秒且342对象/SHA均与build一致，旧loader两库选择差异与全部回执保留，均无World；manifest首轮whole-stat断言FAIL保留，改稳定字段集合后封存，不断言已知哪个字段变化。正式尚未World：1800连续pair parent预约含两臂间gaps，case coop600、720仅自身退出及10/10升级；3机45s settle+310s hold、1ms物理步/34ms电机更新，限定quick50/world因果隔离，不是旧EP exact replay、18stream安全或资格证明。累计90357.3610697996018/120000、余29642.6389302003982不变，pilot/final原额及科学门保持。执行须新exact40freeze，保留partial/真实rc/全费FAIL、不重试；P2A未完成。 见[V55准备](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261023_mr3_p2a_v55_passive_plant.md)。下方先前状态保留为历史快照。
-
-2026-10-23 V54真实闭合描述PASS：freeze1d35dda0的tool36067已reap rc0，motion1086363行/2458997272B与startup460行/286052B均全读、整SHA/stat/parse0通过，40选择/0drop。首登记故障为tb1在244.58秒normal_control_model_invalid / fixed disk radius exceeded；D是固定anchor圆盘，不是仍处于HOLD的状态判据，literal本身也不证明真实机体违反物理界。完整parent254.441556546墙秒（nested不加），累计90357.3610697996018/120000、余29642.6389302003982；4主身份freshgone，metadata关闭17.468819143实际wall/工程0，其2身份另gone。原live观察误取argv索引2为--freeze，原字节和三SHA更正说明保留，不改身份。V52/V53旧FAIL与实费、12EP30角色/95%安全门及pilot/final原额保持；120000仍为代理依持续委托选择而非数值用户批准。下一仅转向固定KEEP故障的零驱动物理诊断，尚无新scope或solver成功承诺，不改变科学门，P2A未完成。 见[V54闭合](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261023_mr3_p2a_v54_firstfault.md)及[规范末账](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261023_mr3_p2a_v54_firstfault/closure_ledger_v1.json)。下文既有准备/待执行段均保留为当时历史快照。
-
-2026-10-23 V53闭合partial FAIL / V54准备完成：V53执行freeze7f122cfd3实际rc1，motion在1,000,001行触及固定行数门，仅读2267972220/2458997272B，首生产故障仍UNKNOWN_PARTIAL_PARSE；startup全460行/SHA通过，仅记录worker自身infrastructure_failure回调，不能冒充producer首fault。完整parent实费229.413776461墙秒（nested不加），累计90102.9195132536018/120000、余29897.0804867463982；4主身份及2后继CPU身份分别freshgone。V54只前瞻改资源/版本：同两原件、epoch/窗口/选择规则与旧七解释源，每文件200万行、work480/完整parent600墙秒；候选21项/.170796105、规范21项/.375278637实际wall通过，18绑定源稳定、规范CPU两身份gone，首轮setup失败保留。尚待新commit/push后的exact40freeze正式一次取证；V53不补读/改判，原12EP30角色/95%安全门及pilot/final余额不动，120000为代理依持续委托选择而非数值用户批准，P2A未完成。 见[V53闭合](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261023_mr3_p2a_v53_firstfault.md)与[V54预声明](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261023_mr3_p2a_v54_firstfault.md)。
-
-2026-10-23 V52闭合FAIL / V53取证准备：冻结1fa55bc56的interface9、terminal6、reset9必要角色PASS；deadline 203完整步后第204步normal_control_model_invalid基础设施失败，6类审计未派发，无minimum/pilot/final。4父区间实费19330.328322094，累计89873.5057367926018/120000，余30126.4942632073982（120000为代理依持续委托选择，非数值用户批准）；933源/10ELF稳定、611保存身份gone。7772原件15.63GB无损归档，两个大gzip按64MiB精确分块、原库存/字节保持。V53仅预约300工程秒，固定两日志/244.48–244.62s首次故障描述，21人工CPU及规范安装通过；尚待新冻结实际一次取证。原FAIL、政策余额和科学门保持，P2A未完成。 见[V52闭合](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261023_mr3_p2a_v52_qualification.md)与[V53预声明](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261023_mr3_p2a_v53_firstfault.md)。
-
-2026-10-22 V40闭合FAIL：新冻结291b9e32e实际preflight阻止merge_map输出打包未登记的旧native pin冲突；755源/Git/current无漂移。未启动matrix/World/native/PPO，3身份gone，完整parent实费22.442744464（inner包含不叠加）。累计48282.3965638106018/75000、余26717.6034361893982；原FAIL及pilot/final余额保持。用户已授权自主直到P2A完成，不再重复审批；继续显式packing source版本修复/新freeze，P2A未完成。见[V40闭合](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261022_mr3_p2a_v40_native_qualification.md)。
-
-2026-10-22 V40授权续接：用户明确“你一直继续执行就好了，直到把P2A完成，不需要问我是否批准”，授权自主持续完成P2A，不再反复请求一般预算/实施批准。当前工程块75000，入场48259.9538193466018、余26740.0461806533982；完整新native资格+收口+minimum预约20100。V39恒等提速已完成，现准备新冻结完整链；pilot/final初始余额、95%/质量/安全门及旧FAIL保持，P2A仍未完成。见[V40](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261022_mr3_p2a_v40_native_qualification.md)。
-
-2026-10-22 V39闭合：精确segment证书AABB/零长度恒等提速已接生产，446人工CPU通过；冻结a44旧源码逐字段/JSON及独立全格oracle一致，固定128call人工完整证书约2.72倍提速，非World吞吐。首轮system无torch导入FAIL原件保留，环境分离后通过；无新World/学习/工程费。累计48259.9538193466018/52000、余3740.0461806533982；原生资格+minimum须预约20100，75000未批，pilot/final-only及原FAIL保持，P2A未完成。见[V39](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261022_mr3_p2a_v39_certificate_kernel.md)。
-
-2026-10-22 V38闭合：160人工CPU及禁用证书恒等优化通过；a44e1b844冻结一次协议解析935行/102选行，证实tb3新goal续租53.4生成54.1截止时才交付、accept54.5，原V37租约FAIL保留，不刷新TTL/FIFO。2D随机全PASS不是native前置，负样本审计新规则仍仅提案；先恒等提速CPU，再预算批准后原生资格/学习。实费.315303155、5身份gone，累计48259.9538193466018/52000、余3740.0461806533982；75000待答、pilot/final-only不动，P2A未完成。见[V38](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261022_mr3_p2a_v38_protocol_cpu.md)。
-
-2026-10-22 V37闭合：显式point-graph生产/626人工CPU通过；13e95f29f冻结8步profile PASS，三场64步短probe FAIL，119/119/0、122actor/366机器人观测attachment均接受；corridors54秒navigation_failure全局停止，open38/rooms27未完成。原tb3 cell FAIL保留，现先查FIFO/目标租约实际交付，不重跑或改门。267原件/9.30MB、34身份gone；实费520.102603214，累计48259.6385161916018/52000、余3740.3614838083982。75000待答，pilot/final-only不动，P2A未完成。见[V37](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261022_mr3_p2a_v37_point_graph.md)。
-
-2026-10-21 V33闭合：冻结6d16ebdc5的显式exact seed三场101各64步短工程链通过192/192/0、195actor/585证书和20身份gone；功能未解决，tb3每场65/65 pose_not_in_original_seed_cell，tb1几乎不动。规范273原件/11.79MB；实费578.391653362，累计47269.8043977356018/52000，余4730.1956022643982。继续定位精确cell算术与强制中心桥执行先决，新规则须新版本/冻结，不把短工程PASS当P2A；75000提案待答，pilot/final-only不动，P2A未完成。见[V33](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261021_mr3_p2a_v33_seed_mode.md)。
-
-2026-10-21 V32 CPU：精确point/同seed-centre桥证书禁用原型14项人工通过，保留.29m、unknown/outside、原seed-cell及graph门；未接生产/真实rooms或改V21字节门。两次fixture/launcher失败原件保持，工程新增0。后续先明确新观测/科学版本及必要准入，不能据此PPO/重跑V31；工程仍余5308.5872556263982，pilot/final-only不动，P2A未完成。见[V32](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261021_mr3_p2a_v32_seed_certificate.md)。
-
-
-2026-10-21 V31闭合：e7dc690冻结Karto显式模式profile8步与三场各300步完整工程/独立行为PASS；behavior900/900/0、903actor，三场真timeout、任务0/3、0代理unsafe/contact。open质量/参与PASS，rooms/corridors未过；有限原件诊断定位own/navigation起点净空下界.282843<.29导致持续无GOAL，先做精确点/同seed桥证书CPU，不降门/PPO/重跑。1030原件/36保存身份gone，含失败启动及2秒discovery上计共1245.989041707秒；累计46691.4127443736018/52000、余5308.5872556263982。pilot/final-only不动，P2A未完成。见[V31](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261021_mr3_p2a_v31_karto_behavior.md)。
-
-
-2026-10-21 V30：Karto薄sensor adapter/显式接线已实现，当前24项人工CPU和consumer80项通过（1跳过），默认endpoint保持；不是SLAM/质量/95%或训练资格。V31将按新scope/freeze执行最多600秒8步profile，完整PASS后才最多3600秒三场长行为，另300秒forensic，总4500工程块；不重开旧活动、不PPO/扩额。当前工程45445.4237026666018/52000、余6554.5762973333982，pilot/final-only不动，P2A未完成。见[V30](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261021_mr3_p2a_v30_adapter.md)。
-
-
-2026-10-21 V29复用CPU已闭合：直接编译调用canonical Karto库，7项fixed-grid/API检查通过、真实加载路径/身份/源字节稳定；只是接口证明，不是新mapper或SLAM/质量等价。明确round/padding/state、per-beam重复累计、native min/max skip与显式max-nohit差异；下一步按声明做disabled nativeAddScan薄适配及有限CPU链，不换默认、不PPO/正式行为。工程新增0，仍45445.4237026666018/52000、余6554.5762973333982，pilot/final-only不动，P2A未完成。见[V29](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261021_mr3_p2a_v29_karto.md)。
-
-2026-10-21 V28一致性CPU已闭合：38项检查、31组/133checkpoint三模型比较完整，current-hit持久否决free与closed-cell歧义按声明实现；但格线面TP归零、持续+2mm仍false-free=.04。v3保持禁用，停止本轮归格/计数补丁搜索，不做当前候选正式试跑/PPO；下一步先具体核现有SLAM/Karto量测到图复用及其格/量程/误差假设，不抄阈值作V4。工程新增0，仍45445.4237026666018/52000、余6554.5762973333982，pilot/final-only不动；P2A未完成。见[V28](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261021_mr3_p2a_v28_mapping.md)。
-
-2026-10-21 V27 CPU候选已闭合：sensor-only mapper-v2未接默认；68项检查、14组人工对比完整，局部格线改善伴随free覆盖下降、corner退化，持续+2mm仍false-free=.04，free饱和首次hit仍free。保留禁用候选，不直接完整行为/PPO；先明确当前hit否决free、歧义unknown与量测假设，再设计新版本。工程新增0，仍45445.4237026666018/52000、余6554.5762973333982，pilot/final-only不动；P2A未完成。见[V27](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261021_mr3_p2a_v27_mapping.md)。
-
-2026-10-21 V26已闭合：三场实际几何条件上包络.390342/.484456/.513595均高于原.20门，未排除也未证明可达；ROI子界未收紧。仅计算/来源/关闭PASS，无World/episode/训练/native资格。main+final工程union4.886817531，累计45445.4237026666018/52000、余6554.5762973333982，7保存身份gone，pilot/final-only不动。下一步转sensor-only mapper-v2 CPU边界/证据累计候选，不再收紧静态界或直接PPO；P2A未完成。见[V26](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261021_mr3_p2a_v26_geometry.md)。
-
-2026-10-21 V25 CPU收口：协议117、人工建图7、导航缓存等价21项通过；仅按精确几何输入复用路径场，原scan/pair/源龄与pure源码保持。人工厚box的端点图IoU上限112/697低于.20，另有格线/2mm误差反例；不宣称实际三场不可达。下一步先量化代理质量可达性/逆传感器模型，不直接PPO或重跑V24。本轮无formal/工程新增，仍余6559.4631148643982秒，pilot/final-only不动；P2A未完成。见[V25](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261021_mr3_p2a_v25_cpu.md)。
-
-2026-10-21 V24闭合FAIL：冻结9b33cf9b6ab491fd5e3b15269adb30d43be1354c实跑三场，544attempt/543verified return/1rooms错误，205/173/165sim秒均未完成任务。协议确认173.1s goal_lease_expired而上次返回仍非终态、次submit才stopped；原FAIL不改/不重跑，post-advance tick分类修复已通过27项CPU，未正式重验，租约/频率/门限保持。含有限故障提取实费1371.868831523秒，累计45440.5368851356018/52000、余6559.4631148643982；20保存身份gone、无训练/原生/pilot/final-only。下一步先接口/代理质量与长步成本，不直接PPO。见[V24](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261021_mr3_p2a_v24_behavior.md)。
-
-2026-10-20 V22闭合：冻结`1dc2a1f601693f542479f9b6b7c54c69519b5460`二维符合性6原件+3合成及独立review通过；唯一零更新容量活动284尝试/返回、0step错误，但首场open101未完成、无实际4env，严格时间差与审计verified计数缺陷使完整活动FAIL。旧FAIL不改/不重跑；17保存身份gone，新增1781.490347088秒，累计43261.8239849376018/52000，余8738.1760150623982。pilot/final-only不动，P2A未完成；常规整数时钟/审计信用CPU修复不供新资格，训练/迁移/gateway未启动。见[V22闭合与下一步](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261020_mr3_p2a_v22_proxy2d.md)。
-
-2026-10-20 V22授权：用户答复“继续，同意”，已接受二维代理实现、接口符合性和一次零更新容量活动；9000次ENV.step尝试/3600墙秒/最多30回合，1及4env共用上限，0模型/GPU/optimizer，无重试或补样。入场工程余10519.6663621503982/52000，pilot/final-only不动；训练、原生重试/迁移、60000、冻结规则变更和gateway均未授权。见[V22](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261020_mr3_p2a_v22_proxy2d.md)。这是二维代理准备，不替代原生SLAM/Nav2正式环境。
-
-2026-10-20 V21当时闭合快照（实时余额/状态见V22）：P2A未完成。V21两次32步合法随机原生返回/关闭完成，但第一回合guard真实storage ACK回调晚于worker推进1.076029ms，Cadence内嵌Runtime失败；保留FAIL且不重试。真实guard屏障修复已有132项CPU通过，未取得修复后原生资格或训练。工程末账41480.3336378496018/52000，余10519.6663621503982；pilot和三final-only不动，60000仍未批准；顶部V22有限二维实现/符合性/零更新容量已获后续授权，训练/迁移未批准。显式reach为20Hz激光，legacy/base为5Hz。见[V21闭合](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261020_mr3_p2a_v21_feasibility.md)及[具体后续提案](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261020_mr3_p2a_next_route_proposal.md)。
-
-2026-10-19：P2A.0已验收，P2A未完成。用户已批准V14科学候选并授权生产实现；V15实现显式`mr3-reach-v1`安全模式、真实应用/同源校准回执、完整模式交付及版本化必要审计器，当前完成CPU/编译准备，待新冻结完整原生资格。默认`legacy`保留，旧FAIL不改判；本轮无新native/GPU/pilot/验证，P2B/gateway未启动。见[V15实现与验证](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v15.md)和[新契约](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_REACH_CONTRACT.md)。
-
-2026-10-19用户已批准工程累计上限52000墙秒，并授权后续实现/修复直接推进；工程已用32673.5464309836018/52000墙秒，余19326.4535690163982；pilot1870决策/2905.9547395464029墙秒及三场final-only额度未动。旧V13同冻结独立38/38仅有原工程信用，原矩阵/optional/minimum FAIL保留；minimum整轮ineligible、0 eligible/0更新。详见[V13原始结果](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261019_mr3_p2a_v13.md)。
-
-WORLD odom/TF独立50Hz与真实DDS接收记录器已实现，轮执行器仍为30Hz；V13独立工程资格38/38通过，后续minimum仍出现真实模型FAIL。
-V7真实转向模型FAIL、V8未复现的诊断及V9—V11失败均保留，不能提供修复或95%策略信用；详细事实见日期报告。
-普通训练默认关闭工程刺激，P2B/gateway未启动。
-
-默认仍为传统前沿baseline；互斥adapter独占稳定目标、使用本机已知权威/已交付共享导航副本、v5候选和received-only累计参与观测。受控20ms推进先完成实际state→peer→guard→三台native storage→evaluator，再推进物理；存储回执不能代替机体响应。
-
-当前stepped研究配置含paired joint-feedback驱动、RayBox修正、quickstep150和使用节点时钟的Nav2 smoother；活动三机Nav2转向上限.3/起转加速1.0、角减速-3.2；线命令.20/加减速±.5保持。数学命令上界.8、实测及原停车门保持；通用兼容YAML仍属旧配置。完整新配置通过不证明150独立修复停车。P0/P1A/P1B/P1C/P2A.0已验收，P2A进行中；V7原定pilot/三场final-only开发验证已因前门FAIL跳过，P2B/gateway未开始。复制命令见[launch_commands.md](launch_commands.md)，任务/环境定义见共享研究、实施计划与MR3_ENV_CONTRACT；详细旧历史见日期报告。
-
-显式`mr3-reach-v1`另以同一state envelope交付模式承诺和同源calibration，加入真实轮应用回执。
-map与raw WORLD完整pair证书取AND，D/N用2R、过渡X用4R；固定anchor和有限H/D责任不能由未消费命令重置。
-原请求平移不能取得X余量时，只有完整D证书通过才保留该请求原角速度并将线速度归零；不生成方向或目标。
-新增profile的实际启动条件及工程入口见[launch_commands.md](launch_commands.md)。它尚未取得新冻结完整原生资格。
+本轮P1C验证2026-10-15启动，实际完成时刻见P1C报告；MR3-P1A/P1B用户已验收，P1C实现与验证完成，待用户验收；`c9344e1`是历史工程冻结。
+新研究契约在 [RESEARCH_PLAN.md](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/RESEARCH_PLAN.md)，步骤在
+[IMPLEMENTATION_PLAN.md](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/IMPLEMENTATION_PLAN.md)。MR3-P0/P1A/P1B已验收，P2A及后续未开始。
+默认仍为**传统前沿控制器**；互斥adapter已验收。P1C已实现Gymnasium/IPC、独立奖励和完整reset，并在W7完成原生采样工程验证；
+762项ROS/40项CPU检查通过。GPU保留b328原固定接口3F/3B/0更新范围，没有训练策略或通信gateway。
+复制运行统一使用 [launch_commands.md](launch_commands.md)，其中全部显式传三台。
+冻结`f9928fe`的open/rooms/corridors各seed101脚本适配审计均通过；功能、原失败及证据见
+[P1B报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261015_mr3_p1b.md)。
+P1C实现与验证完成，待用户验收；时钟、张量、奖励与reset规则见
+[MR3_ENV_CONTRACT.md](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/MR3_ENV_CONTRACT.md)。
+P1C在W7保留18个精确Nav2状态响应writer的1墙秒匹配窗口，客户端2秒超时不变；
+原有18个状态切换响应writer仍为5秒。此配置与有序关闭已在完整W7工程矩阵中核验，
+历史P1A/P1B证据保持其原profile范围，细节见启动命令和P1C报告。
+v6长KEEP截止发现的两次合法TTL浮点误拒、原始审计和扣分保留。W7 `cdb1f5947302a0b3a071b78a9077e61b8e6b6a7a`
+以整数纳秒端点统一命令、心跳租约、承诺mask和导航期限，完成全新八阶段及独立命令时间门禁，
+不使用v6结果填补v7信用；本步仍待用户验收，不宣称SDK竞态根治或多日稳定。
 
 ## 1. 路径与环境
 
@@ -103,7 +38,7 @@ map与raw WORLD完整pair证书取AND，D/N用2R、过渡X用4R；固定anchor�
 | `mr3_adapter.py` / `mr3_observation.py` / `mr3_protocol.py` | 显式联合动作、几何候选/掩码、稳定目标所有权 |
 | `mr3_information.py` / `mr3_transport.py` | 理想交付、后端图和机器人导航图副本；非DDS隔离 |
 | `scripts/ros_smoke_test.py` / `run_ideal_baseline.py` / `run_mr3_adapter_probe.py` | 传统检查/矩阵和P1B脚本适配探针 |
-| `scripts/mr3_env_worker.py` / `mr3_gazebo_step` | P1C系统ROS子进程与真实物理tick步进，W7工程已于2026-10-16验收 |
+| `scripts/mr3_env_worker.py` / `mr3_gazebo_step` | P1C系统ROS子进程与真实物理tick步进，W7工程验证完成、待用户验收 |
 | `wireless-rl/mr3_learning/` | 独立conda Gym Dict/私有IPC、完整进程reset、采样与GPU接口探针 |
 
 主 launch 默认3台，校验保留1–4历史兼容；MR3合同只允许三台，不开展其他数量实验。
@@ -115,8 +50,7 @@ MR3合同和新schema4的原生证据在P1A报告，不能沿用旧90%成绩。
 
 每台本机 Gazebo 发布 `/tbN/scan`、`odom`、`imu`、`joint_states`、`collision`；
 本机 robot_state_publisher/SLAM 发布 namespaced TF 与 `/tbN/map`。
-baseline中Nav2发布`/tbN/cmd_vel`；adapter中controller/behavior经smoother后由唯一`motion_safety`
-发布该最终topic，差速插件消费速度。安全门只保留请求或输出零。`cmd_vel`不是机器人测得的真实速度。
+Nav2 发布 `/tbN/cmd_vel`，差速插件消费速度。`cmd_vel` 不是机器人测得的真实速度。
 baseline将三台SLAM地图融合为`/merge_map`；adapter后端融合图为`/mr3/received/map`，公共frame均为`map`。
 
 baseline手工控制器用融合图及每台观测位姿计算前沿、可达路径/信息增益、历史效用，分配

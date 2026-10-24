@@ -82,39 +82,10 @@ def test_ready_gate_releases_exactly_one_goal_owner_and_matching_information_pat
             assert parameters["episode_epoch"].perform(context) == "mr3-p1b"
 
 
-@pytest.mark.parametrize("audit_enabled", [False, True])
-def test_information_input_ledger_uses_the_owned_episode_directory(
-        monkeypatch, tmp_path, audit_enabled):
-    audit_path = str(tmp_path / "adapter.jsonl") if audit_enabled else ""
-    context, actions, nodes, _ = configured_launch(
-        monkeypatch, execution_mode="adapter", mr3_audit_path=audit_path)
-    active = released_nodes(context, actions, nodes)
-    information = next(item for item in active if item["executable"] == "mr3_information")
-    expected = str(tmp_path / "information_states.jsonl") if audit_enabled else ""
-    assert information["parameters"][0]["state_audit_path"] == expected
-
-
 @pytest.mark.parametrize("count", ["1", "2", "4"])
 def test_adapter_rejects_every_compatible_non_three_robot_configuration(monkeypatch, count):
     with pytest.raises(ValueError, match="robot_count=3"):
         configured_launch(monkeypatch, execution_mode="adapter", robot_count=count)
-
-
-@pytest.mark.parametrize("stepped", [False, True])
-def test_state_peer_and_guard_takeover_share_the_explicit_stepped_contract(
-        monkeypatch, tmp_path, stepped):
-    context, actions, nodes, _ = configured_launch(
-        monkeypatch, execution_mode="adapter", mr3_stepped=str(stepped).lower(),
-        mr3_audit_path=str(tmp_path / "adapter.jsonl"))
-    active = released_nodes(context, actions, nodes)
-    for executable in ("mr3_information", "peer_obstacles", "motion_safety"):
-        parameters = next(item["parameters"][0] for item in active
-                          if item["executable"] == executable)
-        assert parameters["stepped_mode"] is stepped
-        assert parameters["episode_epoch"].perform(context) == "mr3-p1b"
-        if executable == "peer_obstacles":
-            assert parameters["phase_audit_path"] == (
-                str(tmp_path / "peer_phase.jsonl") if stepped else "")
 
 
 @pytest.mark.parametrize("enabled", ["true", "True", "1"])
@@ -127,48 +98,6 @@ def test_adapter_rejects_every_true_launch_condition_for_another_velocity_owner(
 def test_unknown_execution_mode_fails_before_constructing_a_launch_graph(monkeypatch):
     with pytest.raises(ValueError, match="execution_mode"):
         configured_launch(monkeypatch, execution_mode="hidden_fallback")
-
-
-@pytest.mark.parametrize("seed_rule",["exact-point-bridge-v1","exact-point-bridge-v2"])
-def test_exact_seed_rule_is_explicit_only_on_the_stepped_three_robot_adapter(monkeypatch,seed_rule):
-    context,actions,nodes,_=configured_launch(monkeypatch,execution_mode="adapter",mr3_stepped="true",
-                                             mr3_seed_rule=seed_rule)
-    adapter=next(item for item in released_nodes(context,actions,nodes)
-                 if item["executable"]=="mr3_adapter")
-    assert adapter["parameters"][0]["seed_rule"]==seed_rule
-
-
-@pytest.mark.parametrize("overrides",[
-    {"mr3_seed_rule":"unknown"},
-    {"mr3_seed_rule":"exact-point-bridge-v1"},
-    {"execution_mode":"adapter","mr3_seed_rule":"exact-point-bridge-v1"},
-])
-def test_invalid_or_nonstepped_seed_rule_rejects_before_launch(monkeypatch,overrides):
-    with pytest.raises(ValueError,match="seed_rule|exact-point-bridge"):
-        configured_launch(monkeypatch,**overrides)
-
-
-def test_default_adapter_launch_keeps_the_legacy_parameter_payload(monkeypatch):
-    context,actions,nodes,_=configured_launch(monkeypatch,execution_mode="adapter")
-    adapter=next(item for item in released_nodes(context,actions,nodes)
-                 if item["executable"]=="mr3_adapter")
-    assert "seed_rule" not in adapter["parameters"][0]
-    assert "start_graph_rule" not in adapter["parameters"][0]
-
-
-def test_point_attachment_launch_binds_both_rules_and_keeps_anchor_out_of_navigation_goals(monkeypatch):
-    context,actions,nodes,_=configured_launch(monkeypatch,execution_mode="adapter",mr3_stepped="true",
-        mr3_seed_rule="exact-point-bridge-v2",mr3_start_graph_rule="point-attachment-3x3-v1")
-    adapter=next(item for item in released_nodes(context,actions,nodes) if item["executable"]=="mr3_adapter")
-    assert adapter["parameters"][0]["seed_rule"]=="exact-point-bridge-v2"
-    assert adapter["parameters"][0]["start_graph_rule"]=="point-attachment-3x3-v1"
-
-
-@pytest.mark.parametrize("seed",["legacy","exact-point-bridge-v1"])
-def test_point_attachment_rejects_cross_seed_pair_before_launch(monkeypatch,seed):
-    with pytest.raises(ValueError,match="start_graph_rule"):
-        configured_launch(monkeypatch,execution_mode="adapter",mr3_stepped="true",
-            mr3_seed_rule=seed,mr3_start_graph_rule="point-attachment-3x3-v1")
 
 
 @pytest.mark.parametrize("mode", ["baseline", "adapter"])

@@ -30,7 +30,7 @@ class LocalizationSlamToolbox : public SlamToolbox
 {
 public:
   explicit LocalizationSlamToolbox(rclcpp::NodeOptions options);
-  virtual ~LocalizationSlamToolbox() {stopScanCallbacks();}
+  virtual ~LocalizationSlamToolbox() {}
   virtual void loadPoseGraphByParams();
 
 protected:

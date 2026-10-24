@@ -1,6 +1,0 @@
-{
-  "failure": "Initial inline seal compared entire stat_result, so read-induced atime change caused AssertionError before manifest/handoff writes.",
-  "scope": "Reviewer seal helper only; author/source/probe untouched.",
-  "correction": "Use explicit device/inode/size/mtime/ctime fields, matching original research custody pattern.",
-  "exact_standalone_inline_script_not_saved": true
-}

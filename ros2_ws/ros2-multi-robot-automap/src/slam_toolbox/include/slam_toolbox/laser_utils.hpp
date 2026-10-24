@@ -87,8 +87,7 @@ private:
   bool isInverted(double & mountingYaw);
   geometry_msgs::msg::TransformStamped readLaserPose();
 
-  // Borrow the owning SlamToolbox node; retaining it would prevent teardown.
-  rclcpp::Node * node_;
+  rclcpp::Node::SharedPtr node_;
   tf2_ros::Buffer * tf_;
   sensor_msgs::msg::LaserScan scan_;
   std::string frame_, base_frame_;

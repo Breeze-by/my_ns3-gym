@@ -1,4 +1,4 @@
-"""Fixed learner tensor schema for received-only ``mr3-observation-v3``.
+"""Fixed learner tensor schema for received-only ``mr3-observation-v2``.
 
 No ROS/scipy imports, truth map, native cell indices, reward state, or policy
 choice enter these tensors. Images retain overlapping binary occupancy/free/
@@ -22,8 +22,8 @@ from gymnasium import spaces
 import numpy as np
 
 
-TENSOR_SCHEMA = "mr3-learning-tensors-v2"
-SNAPSHOT_SCHEMA = "mr3-observation-v3"
+TENSOR_SCHEMA = "mr3-learning-tensors-v1"
+SNAPSHOT_SCHEMA = "mr3-observation-v2"
 ROBOTS = ("tb1", "tb2", "tb3")
 PHASES = ("idle", "accepting", "active", "canceling", "unknown", "failed")
 ROBOT_SCALARS = (
@@ -36,7 +36,6 @@ ROBOT_SCALARS = (
     ("acceptance_age_sec", 300.0), ("lease_remaining_sec", 2.0),
     ("nav_source_age_sec", 300.0), ("nav_received_age_sec", 300.0),
     ("progress_m", 32.0),
-    ("received_estimated_path_m", 32.0), ("received_accepted_goal_count", 64.0),
 )
 ROBOT_FIELDS = tuple(column for name, _ in ROBOT_SCALARS
                      for column in (name, name + "_valid")) + tuple(
@@ -47,7 +46,6 @@ ROBOT_FIELDS = tuple(column for name, _ in ROBOT_SCALARS
     "path_map_available", "last_failure_present", "goal_present",
     "position_out_of_bounds", "motion_out_of_bounds", "age_out_of_bounds",
     "goal_out_of_bounds", "path_map_missing",
-    "received_path_complete", "estimated_activity_ready", "activity_out_of_bounds",
 )
 CANDIDATE_VALUES = ("x", "y", "clearance_m", "frontier_count",
                     "path_tb1_m", "path_tb2_m", "path_tb3_m")
@@ -161,29 +159,6 @@ def _robot(robot, now, path_map):
     yaw = _number(robot.get("yaw"), "robot.yaw")
     lease_until = _number(nav.get("lease_until"), "navigation.lease_until")
     values = {name: robot.get(name) for name, _ in ROBOT_SCALARS}
-    activity = robot.get("activity")
-    if activity is not None:
-        if (not isinstance(activity, dict) or activity.get("schema") != "mr3-received-activity-v1"
-                or activity.get("epoch") != robot.get("epoch")):
-            raise ValueError("cross-epoch or unknown received activity")
-        if (type(activity.get("state_sequence")) is not int or activity["state_sequence"] < 0
-                or type(activity.get("sample_count")) is not int or activity["sample_count"] < 0):
-            raise ValueError("received activity source sequence/sample count is invalid")
-        started = _number(activity.get("started_at"), "activity.started_at")
-        source = _number(activity.get("last_odom_source_stamp"), "activity.odom_source_stamp")
-        if started is None or started > now or source is not None and not started <= source <= now:
-            raise ValueError("activity source is outside the released task interval")
-    path = _number(None if activity is None else activity.get("estimated_path_m"), "activity.path")
-    count = _number(nav.get("accepted_goal_count"), "navigation.accepted_goal_count")
-    if (path is not None and path < 0
-            or count is not None and (count < 0 or not count.is_integer())):
-        raise ValueError("received activity counters must be nonnegative")
-    complete = (False if activity is None else bool(_bit(
-        activity.get("path_observation_complete"), "activity.path_observation_complete")))
-    if complete and path is None:
-        raise ValueError("complete activity requires an observed path")
-    values["received_estimated_path_m"] = path
-    values["received_accepted_goal_count"] = count
     values.update({
         "sin_yaw": None if yaw is None else math.sin(yaw),
         "cos_yaw": None if yaw is None else math.cos(yaw),
@@ -217,9 +192,6 @@ def _robot(robot, now, path_map):
         tuple(name for name in scaled if "age" in name), ("goal_x", "goal_y"),
     ))
     output.append(float(path_missing))
-    output.extend((float(complete), float(complete and path is not None and path >= 1.
-                                          and count is not None and count >= 1.),
-                   float(path is not None and path > 32. or count is not None and count > 64.)))
     return output
 
 

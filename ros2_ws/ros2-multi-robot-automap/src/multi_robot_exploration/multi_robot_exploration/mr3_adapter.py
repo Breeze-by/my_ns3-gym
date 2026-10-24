@@ -7,8 +7,6 @@ will split these endpoints and serialize bytes; this node claims no DDS isolatio
 
 from collections import deque
 from concurrent.futures import ThreadPoolExecutor
-import copy
-import hashlib
 import json
 import math
 from pathlib import Path
@@ -26,18 +24,9 @@ from rclpy.node import Node
 from rclpy.qos import DurabilityPolicy, QoSProfile
 from std_msgs.msg import Bool, Header, String
 
-from multi_robot_exploration.mr3_observation import (
-    build_snapshot, NAVIGATION_COMPOSITION_VERSION, SEED_RULES, validate_start_graph_rule,
-)
-from multi_robot_exploration.mr3_observation_archive import archive_snapshot_inputs
-from multi_robot_exploration.mr3_information import map_digest, map_payload, publisher_graph_identity
-from multi_robot_exploration.mr3_motion_authority import (
-    PROFILE as AUTHORITY_PROFILE, ACK as AUTHORITY_ACK, canonical,
-    from_accepted_owner, from_canceling_owner, from_terminal_owner, renewal_from_owner,
-)
-from multi_robot_exploration.mr3_safety_intent import parse_json
+from multi_robot_exploration.mr3_observation import build_snapshot
+from multi_robot_exploration.mr3_information import map_digest
 from multi_robot_exploration.mr3_owner import acquire_navigation_owner
-from multi_robot_exploration.mr3_activity import ReceivedActivity
 from multi_robot_exploration.mr3_protocol import GoalDispatcher
 from multi_robot_exploration.mr3_episode import (
     TASK_DURATION_NS, TASK_FAILURE_REASONS, elapsed_ns, timestamp_ns,
@@ -48,14 +37,6 @@ from multi_robot_exploration.mr3_transport import IdealTransport, ReceivedStore
 ROBOTS = ("tb1", "tb2", "tb3")
 
 
-def encode_snapshot(*args, archive=None, **kwargs):
-    """Encode and archive the same frozen inputs without accessing live ROS state."""
-    snapshot = build_snapshot(*args, **kwargs)
-    if archive is not None:
-        archive_snapshot_inputs(snapshot=snapshot, **archive)
-    return snapshot
-
-
 class MR3Adapter(Node):
     def __init__(self):
         super().__init__("mr3_adapter")
@@ -64,20 +45,6 @@ class MR3Adapter(Node):
             raise ValueError("MR3 adapter requires exactly three robots")
         self.epoch = str(self.declare_parameter("episode_epoch", "mr3-p1b").value)
         self.stepped_mode = self.declare_parameter("stepped_mode", False).value
-        safety_contract = self.declare_parameter("safety_contract", "legacy").value
-        self.motion_authority_profile = self.declare_parameter("motion_authority_profile", "").value
-        expected_authority = AUTHORITY_PROFILE if safety_contract == "mr3-reach-v1" else ""
-        if (safety_contract not in ("legacy", "mr3-reach-v1")
-                or self.motion_authority_profile != expected_authority
-                or expected_authority and not self.stepped_mode):
-            raise ValueError("fixed receiving-authority profile differs from safety contract")
-        self.seed_rule = self.declare_parameter("seed_rule", "legacy").value
-        if type(self.seed_rule) is not str or self.seed_rule not in SEED_RULES:
-            raise ValueError("seed_rule must be legacy, exact-point-bridge-v1 or exact-point-bridge-v2")
-        self.start_graph_rule = self.declare_parameter("start_graph_rule", "original-seed-cell").value
-        validate_start_graph_rule(self.start_graph_rule, seed_rule=self.seed_rule)
-        if self.seed_rule != "legacy" and not self.stepped_mode:
-            raise ValueError("exact-point-bridge rules require stepped mode")
         self.snapshot_timeout_sec = self.declare_parameter("snapshot_timeout_sec", 10.).value
         if not math.isfinite(self.snapshot_timeout_sec) or self.snapshot_timeout_sec <= 0:
             raise ValueError("snapshot_timeout_sec must be finite and positive")
@@ -111,23 +78,10 @@ class MR3Adapter(Node):
             for name in ROBOTS
         }
         self.handles = {}
-        self.authority_sequence = dict.fromkeys(ROBOTS, 0)
-        self.authority_packet = dict.fromkeys(ROBOTS)
-        self.authority_grant = dict.fromkeys(ROBOTS)
-        self.authority_ready = dict.fromkeys(ROBOTS)
-        self.authority_ack_sequence = dict.fromkeys(ROBOTS, 0)
-        self.authority_last_ack = dict.fromkeys(ROBOTS)
-        self.authority_ack_gids = {}
-        self.authority_pending_accept = {}
-        self.authority_buffered_terminal = {}
-        self.authority_native_identities = {}
-        self.authority_native_terminals = {}
         self.map = None
         self.map_digest = None
         self.local_maps = {}
         self.local_map_digests = {}
-        self.navigation_maps = {}
-        self.navigation_map_digests = {}
         self.state = None
         self.snapshot = None
         self.sequence = 0
@@ -141,7 +95,6 @@ class MR3Adapter(Node):
         self.last_heartbeat = -math.inf
         self.receipt_metadata = {name: {} for name in ROBOTS}
         self.history = {name: deque(maxlen=16) for name in ROBOTS}
-        self.activity = ReceivedActivity(self.epoch)
         self.encoder = ThreadPoolExecutor(max_workers=1, thread_name_prefix="mr3_observation")
         self.encoding = None
         task_qos = QoSProfile(depth=1, durability=DurabilityPolicy.TRANSIENT_LOCAL)
@@ -174,23 +127,6 @@ class MR3Adapter(Node):
             OccupancyGrid, f"/mr3/received/{name}/map",
             lambda message, name=name: self.receive_local_map(name, message), task_qos,
         ) for name in ROBOTS)
-        self.subscriptions_.extend(self.create_subscription(
-            OccupancyGrid, f"/{name}/navigation_map",
-            lambda message, name=name: self.receive_navigation_map(name, message), task_qos,
-        ) for name in ROBOTS)
-        self.authority_publishers = {}
-        if self.motion_authority_profile:
-            authority_qos = QoSProfile(depth=64, durability=DurabilityPolicy.TRANSIENT_LOCAL)
-            self.authority_publishers = {name: self.create_publisher(
-                String, f"/{name}/mr3/motion_authority", authority_qos) for name in ROBOTS}
-            self.subscriptions_.extend(self.create_subscription(
-                String, f"/{name}/mr3/motion_authority_ack",
-                lambda message, name=name: self.receive_authority_ack(message, name), authority_qos)
-                for name in ROBOTS)
-            self.record("authority_configuration", {
-                "motion_authority_profile": self.motion_authority_profile,
-                "six_navigation_phases_unchanged": True, "worker_quantum_ack_barrier": False,
-                "raw_goal_generation": None, "raw_goal_association": "UNKNOWN_UNSTAMPED_TWIST"})
         timer_clock = Clock(clock_type=ClockType.STEADY_TIME) if self.stepped_mode else None
         self.timer = self.create_timer(
             .02 if self.stepped_mode else .05, self.maintain, clock=timer_clock)
@@ -303,8 +239,6 @@ class MR3Adapter(Node):
                             ("name", "source_stamp", "received_stamp")}
                            for robot in snapshot["robots"]],
             }
-            if "navigation_sources" in snapshot:
-                response["watermarks"]["navigation_sources"] = snapshot["navigation_sources"]
         self.snapshot_responses[request["request_id"]] = response
         while len(self.snapshot_responses) > 16:
             del self.snapshot_responses[next(iter(self.snapshot_responses))]
@@ -334,10 +268,6 @@ class MR3Adapter(Node):
         self.local_maps[name] = message
         self.local_map_digests[name] = map_digest(message)
 
-    def receive_navigation_map(self, name, message):
-        self.navigation_maps[name] = message
-        self.navigation_map_digests[name] = map_digest(message)
-
     def receive_states(self, message):
         try:
             state = json.loads(message.data)
@@ -350,12 +280,9 @@ class MR3Adapter(Node):
                     "information_diagnostics": state.get("information_diagnostics"),
                     "robots": [{key: robot.get(key) for key in (
                         "name", "source_stamp", "received_stamp", "odom_source_stamp",
-                        "tf_source_stamp", "tf_validity_stamp", "valid", "epoch", "odometry")}
+                        "tf_source_stamp", "tf_validity_stamp", "valid")}
                         for robot in state["robots"]],
                 })
-                activity = self.activity.update(state, self.now())
-                if activity is not None:
-                    self.record("activity_update", activity)
                 for robot in state["robots"]:
                     history = self.history[robot["name"]]
                     if robot["valid"] and (not history or
@@ -413,16 +340,7 @@ class MR3Adapter(Node):
         if self.started_at is not None and self.started_at <= stamp <= self.now() \
                 and message.frame_id == "map":
             self.stop_requested = True
-            try:
-                if getattr(self, "motion_authority_profile", ""):
-                    self.record("authority_task_stop_callback", {
-                        "message": {"stamp": {"sec": message.stamp.sec,
-                                              "nanosec": message.stamp.nanosec},
-                                    "frame_id": message.frame_id},
-                        "clock_ns": self.get_clock().now().nanoseconds,
-                        "started_at": self.started_at})
-            finally:
-                self.dispatcher.safety_stop(self.now(), "task_stop")
+            self.dispatcher.safety_stop(self.now(), "task_stop")
 
     def receive_failure(self, message):
         self.record("safety_stop", {"reason": message.data})
@@ -430,21 +348,14 @@ class MR3Adapter(Node):
         self.dispatcher.safety_stop(self.now(), "external_safety_failure")
 
     def map_inputs_match(self, metadata):
-        """Require actually delivered fused/own/navigation maps in one bundle."""
+        """Require the actually delivered fused/own maps to share one bundle."""
         if (self.map is None or metadata is None
                 or self.map_digest != metadata.get("map_payload_sha256")):
             return False
         sources = metadata.get("map_sources", {})
-        navigation = metadata.get("navigation_sources", {})
-        return (metadata.get("navigation_composition", {}).get("version")
-                == NAVIGATION_COMPOSITION_VERSION and all(
-                    name in self.local_maps and self.local_map_digests.get(name) is not None
-                    and self.local_map_digests[name] == sources.get(name, {}).get("payload_sha256")
-                    and name in self.navigation_maps
-                    and self.navigation_map_digests.get(name) == navigation.get(
-                        name, {}).get("payload_sha256")
-                    and navigation.get(name, {}).get("composition_version")
-                    == NAVIGATION_COMPOSITION_VERSION for name in ROBOTS))
+        return all(name in self.local_maps and self.local_map_digests.get(name) is not None
+                   and self.local_map_digests[name] == sources.get(name, {}).get("payload_sha256")
+                   for name in ROBOTS)
 
     def publish_initial_inputs_ready(self, now):
         """Acknowledge real input receipt before the worker pauses physics."""
@@ -462,8 +373,6 @@ class MR3Adapter(Node):
             "map_source_stamp": metadata["map_source_stamp"],
             "map_received_stamp": metadata["map_received_stamp"],
             "map_sources": metadata["map_sources"],
-            "navigation_composition": metadata["navigation_composition"],
-            "navigation_sources": metadata["navigation_sources"],
             "robots": [{key: robot[key] for key in (
                 "name", "source_stamp", "received_stamp", "odom_source_stamp",
                 "tf_source_stamp", "tf_validity_stamp", "tf_validity_lead_sec",
@@ -478,7 +387,6 @@ class MR3Adapter(Node):
         now_ns = self.get_clock().now().nanoseconds
         metadata = self.map_metadata if self.stepped_mode else self.state
         sources = metadata.get("map_sources", {}) if metadata is not None else {}
-        navigation = metadata.get("navigation_sources", {}) if metadata is not None else {}
         expected = request.get("expected_map_sha256")
         metadata_digest = metadata.get("map_payload_sha256") if metadata is not None else None
         return {
@@ -499,15 +407,6 @@ class MR3Adapter(Node):
                 "expected_payload_sha256": sources.get(name, {}).get("payload_sha256"),
                 "matches": name in self.local_maps and self.local_map_digests.get(name) is not None
                 and self.local_map_digests[name] == sources.get(name, {}).get("payload_sha256"),
-            } for name in ROBOTS},
-            "navigation_maps": {name: {
-                "received": name in self.navigation_maps,
-                "payload_sha256": self.navigation_map_digests.get(name),
-                "expected_payload_sha256": navigation.get(name, {}).get("payload_sha256"),
-                "matches": name in self.navigation_maps
-                and self.navigation_map_digests.get(name) is not None
-                and self.navigation_map_digests[name] == navigation.get(
-                    name, {}).get("payload_sha256"),
             } for name in ROBOTS},
             "monitor_ready": self.monitor_ready, "started_at": self.started_at,
             "stop_requested": self.stop_requested,
@@ -539,10 +438,6 @@ class MR3Adapter(Node):
             ]:
                 raise RuntimeError("Handcrafted controller present in adapter mode")
             self.started_at = now
-            self.activity.start(now)
-            activity = self.activity.update(self.state, now)
-            if activity is not None:
-                self.record("activity_update", activity)
             start = Header()
             start.stamp = self.get_clock().now().to_msg()
             start.frame_id = "map"
@@ -552,31 +447,11 @@ class MR3Adapter(Node):
         robots = [{**robot, "navigation": {
             **navigation[robot["name"]], **self.receipt_metadata[robot["name"]],
             "last_failure": navigation[robot["name"]].get("failure"),
-        }, "history": list(self.history[robot["name"]]),
-            "activity": self.activity.snapshot(robot["name"])} for robot in robots]
+        }, "history": list(self.history[robot["name"]])} for robot in robots]
         self.sequence += 1
         path_maps = {}
-        navigation_maps = {}
-        audit_file = getattr(self, "audit_file", None)
-        archive = None
-        if audit_file is not None:
-            archive = {
-                "root": Path(audit_file.name).parent / "observation_inputs",
-                "payloads": {"fused": map_payload(self.map)},
-                "metadata": copy.deepcopy({
-                    "epoch": self.epoch, "map_version": metadata["map_version"],
-                    "map_payload_sha256": metadata["map_payload_sha256"],
-                    "map_source_stamp": metadata["map_source_stamp"],
-                    "map_received_stamp": metadata["map_received_stamp"],
-                    "map_sources": map_sources,
-                    "navigation_composition": metadata["navigation_composition"],
-                    "navigation_sources": metadata["navigation_sources"],
-                }),
-            }
         for name in ROBOTS:
             message = self.local_maps[name]
-            if archive is not None:
-                archive["payloads"][name] = map_payload(message)
             path_maps[name] = {
                 "grid": np.asarray(message.data, dtype=np.int16).reshape(
                     message.info.height, message.info.width),
@@ -584,24 +459,10 @@ class MR3Adapter(Node):
                 "origin": (message.info.origin.position.x, message.info.origin.position.y),
                 "epoch": self.epoch, **map_sources[name],
             }
-            navigation_message = self.navigation_maps[name]
-            if archive is not None:
-                archive["payloads"]["navigation:" + name] = map_payload(navigation_message)
-            navigation_maps[name] = {
-                "grid": np.asarray(navigation_message.data, dtype=np.int16).reshape(
-                    navigation_message.info.height, navigation_message.info.width),
-                "resolution": navigation_message.info.resolution,
-                "origin": (navigation_message.info.origin.position.x,
-                           navigation_message.info.origin.position.y),
-                "epoch": self.epoch, **metadata["navigation_sources"][name],
-            }
         # CPU map/path encoding must not block source deliveries, lease renewals
         # or action callbacks. The worker receives a detached frozen snapshot.
-        self.record("activity_snapshot_bound", {
-            "observation_sequence": self.sequence, "state_sequence": self.activity.last_sequence,
-        })
         self.encoding = self.encoder.submit(
-            encode_snapshot,
+            build_snapshot,
             np.asarray(self.map.data, dtype=np.int16).reshape(
                 self.map.info.height, self.map.info.width),
             self.map.info.resolution,
@@ -610,10 +471,7 @@ class MR3Adapter(Node):
             map_source_stamp=metadata["map_source_stamp"],
             map_received_stamp=metadata["map_received_stamp"],
             map_sources=map_sources, task_start=self.started_at,
-            robot_maps=path_maps, navigation_maps=navigation_maps, archive=archive,
-            **({"seed_rule": self.seed_rule} if self.seed_rule != "legacy" else {}),
-            **({"start_graph_rule": self.start_graph_rule}
-               if self.start_graph_rule != "original-seed-cell" else {}),
+            robot_maps=path_maps,
         )
 
     def finish_observation(self):
@@ -724,206 +582,6 @@ class MR3Adapter(Node):
                 identity[key] = value if type(value) is int and value >= 0 else None
             self.record("action_rejected", {"reason": str(error), **identity})
 
-    def publish_authority(self, packet):
-        name = packet["robot"]
-        encoded = canonical(packet)
-        # This event names a successful publication call, never a delivery.
-        self.authority_publishers[name].publish(String(data=encoded))
-        self.authority_sequence[name] = packet["authority_sequence"]
-        self.authority_packet[name] = copy.deepcopy(packet)
-        self.authority_ready[name] = None
-        self.record("authority_publication", {"robot": name, "packet": packet,
-            "raw_json": encoded, "packet_sha256": hashlib.sha256(encoded.encode()).hexdigest(),
-            "clock_ns": self.get_clock().now().nanoseconds, "scope": "publication_call_returned"})
-
-    def receive_authority_ack(self, message, name):
-        try:
-            packet = parse_json(message.data)
-            identity = publisher_graph_identity(self, f"/{name}/mr3/motion_authority_ack",
-                "motion_safety", "/", self.authority_ack_gids.get(name))
-            now_ns = self.get_clock().now().nanoseconds
-            self.record("authority_ack_callback", {"robot": name, "message": packet,
-                "raw_json": message.data, "publisher_identity": identity, "clock_ns": now_ns})
-            keys = {"schema", "profile", "epoch", "robot", "ack_sequence", "clock_ns",
-                    "authority_packet_sha256", "ack"}
-            if (type(packet) is not dict or set(packet) != keys
-                    or packet["schema"] != "mr3-motion-authority-ack-wire-v1"
-                    or packet["profile"] != AUTHORITY_PROFILE or packet["epoch"] != self.epoch
-                    or packet["robot"] != name or not identity["valid"]
-                    or type(packet["ack_sequence"]) is not int or packet["ack_sequence"] <= 0
-                    or type(packet["clock_ns"]) is not int or not 0 <= packet["clock_ns"] <= now_ns):
-                raise ValueError("invalid receiving-authority ACK")
-            self.authority_ack_gids[name] = identity["endpoints"][0]["endpoint_gid"]
-            if packet["ack_sequence"] == self.authority_ack_sequence[name]:
-                if packet != self.authority_last_ack[name]:
-                    raise ValueError("conflicting duplicate receiving-authority ACK")
-                return
-            if packet["ack_sequence"] < self.authority_ack_sequence[name]:
-                return
-            self.authority_ack_sequence[name] = packet["ack_sequence"]
-            self.authority_last_ack[name] = copy.deepcopy(packet)
-            ack = packet["ack"]
-            if (type(ack) is not dict or ack.get("schema") != AUTHORITY_ACK
-                    or ack.get("epoch") != self.epoch or ack.get("robot") != name
-                    or type(ack.get("authority_sequence")) is not int or ack["authority_sequence"] < 0):
-                raise ValueError("authority ACK context differs")
-            current = self.authority_packet[name]
-            expected_hash = None if current is None else hashlib.sha256(canonical(current).encode()).hexdigest()
-            if (ack.get("authority_sequence") != self.authority_sequence[name]
-                    or packet["authority_packet_sha256"] != expected_hash):
-                self.record("authority_ack_stale", {"robot": name, "ack_sequence": packet["ack_sequence"]})
-                return
-            if ack.get("stage") == "stop_obligation_ready":
-                witness = ack.get("witness")
-                if (set(ack) != {"schema", "epoch", "robot", "stage", "authority_sequence",
-                                 "owner", "received_clock_ns", "witness"}
-                        or type(witness) is not dict
-                        or witness.get("schema") != "mr3-normal-zero-authority-witness-v1"
-                        or witness.get("epoch") != self.epoch
-                        or witness.get("robot") != name or witness.get("clock_ns") != packet["clock_ns"]
-                        or current is not None and current["operation"] != "revoke"
-                        or (ack["received_clock_ns"] is not None and
-                            (type(ack["received_clock_ns"]) is not int or
-                             not 0 <= ack["received_clock_ns"] <= packet["clock_ns"]))
-                        or ack.get("owner") != current):
-                    raise ValueError("stop readiness does not match current receiving owner")
-                self.authority_ready[name] = copy.deepcopy(packet)
-            elif ack.get("stage") == "authority_activated":
-                witness = ack.get("witness")
-                if (set(ack) != {"schema", "epoch", "robot", "stage", "state", "authority_sequence",
-                                "owner", "received_clock_ns", "activation_clock_ns", "callback_floor", "witness"}
-                        or current is None or current["operation"] not in ("grant", "renew")
-                        or ack["owner"] != current or ack["state"] != "ACTIVE"
-                        or type(ack["received_clock_ns"]) is not int
-                        or not current["source_clock_ns"] <= ack["received_clock_ns"] <= packet["clock_ns"]
-                        or ack["activation_clock_ns"] != packet["clock_ns"]
-                        or type(ack["callback_floor"]) is not int or ack["callback_floor"] < 0
-                        or type(witness) is not dict
-                        or witness.get("schema") != "mr3-normal-zero-authority-witness-v1"
-                        or witness.get("epoch") != self.epoch or witness.get("robot") != name
-                        or witness.get("clock_ns") != packet["clock_ns"]):
-                    raise ValueError("activation ACK lacks actual current owner and stop witness")
-            else:
-                if (set(ack) != {"schema", "epoch", "robot", "stage", "authority_sequence",
-                        "accepted", "state", "received_clock_ns", "source_clock_ns", "callback_floor", "scope"}
-                        or ack.get("stage") != "authority_received" or ack.get("accepted") is not True
-                        or current is None or ack.get("source_clock_ns") != current["source_clock_ns"]
-                        or type(ack.get("received_clock_ns")) is not int
-                        or not current["source_clock_ns"] <= ack["received_clock_ns"] <= packet["clock_ns"]
-                        or type(ack.get("callback_floor")) is not int or ack["callback_floor"] < 0
-                        or ack.get("state") not in ({"revoke": ("REVOKED",), "grant": ("PENDING",),
-                                                    "renew": ("PENDING", "ACTIVE")}[current["operation"]])):
-                    raise ValueError("authority callback rejected")
-        except (ValueError, KeyError, TypeError, AttributeError) as error:
-            self.record("invalid_authority_ack", {"robot": name, "raw_json": message.data, "reason": str(error)})
-            self.stop_requested = True
-            self.dispatcher.safety_stop(self.now(), "invalid_motion_authority_ack")
-
-    def authority_after_receipt(self, envelope, now):
-        event, name = envelope.payload, envelope.source
-        goal_id, kind = event["goal_id"], event["type"]
-        if kind == "accept":
-            outcome = self.dispatcher.on_accept(name, goal_id, event["value"], now)
-            if outcome == "active":
-                if goal_id in self.authority_native_terminals:
-                    self.record("authority_never_granted_terminal", {"robot": name, "goal_id": goal_id,
-                        "native_terminal": self.authority_native_terminals[goal_id],
-                        "accept_delivery": envelope.to_dict(), "permission": "zero_only"})
-                else:
-                    self.authority_pending_accept[name] = goal_id
-            return
-        grant = self.authority_grant[name]
-        if (kind == "result" and grant is not None and goal_id == grant["goal_id"]
-                and self.dispatcher.states[name].goal_id == goal_id and event["value"] in (4, 5, 6)):
-            current = self.authority_packet[name]
-            if current["operation"] != "revoke":
-                packet = from_terminal_owner(self.dispatcher, grant, self.authority_sequence[name]+1,
-                    timestamp_ns(now), terminal_goal_id=goal_id, status=event["value"])
-                self.publish_authority(packet)
-            if self.dispatcher.states[name].phase == "canceling":
-                saved = envelope.to_dict()
-                old = self.authority_buffered_terminal.get(name)
-                if old is not None and old != saved:
-                    raise ValueError("conflicting buffered native terminal")
-                self.authority_buffered_terminal[name] = copy.deepcopy(saved)
-                self.record("authority_terminal_buffered", {"robot": name, "goal_id": goal_id,
-                    "delivery": saved, "authority_sequence": self.authority_sequence[name],
-                    "buffered_clock_ns": timestamp_ns(now), "receipt_times_rewritten": False})
-                return
-        {"result": self.dispatcher.on_result, "cancel": self.dispatcher.on_cancel_response}[kind](
-            name, goal_id, event["value"], now)
-        if kind == "result":
-            self.release_authority_native_identity(name, goal_id)
-
-    def release_authority_native_identity(self, name, goal_id):
-        if self.dispatcher.states[name].goal_id != goal_id:
-            self.handles.pop(goal_id, None)
-            self.authority_native_identities.pop(goal_id, None)
-            self.authority_native_terminals.pop(goal_id, None)
-
-    def cancel_native_goal(self, name, goal_id):
-        handle = self.handles[goal_id]
-        # The actual native closure owns response subscription even if an
-        # earlier REVOKE publication/constructor raises and propagates.
-        try:
-            grant = self.authority_grant[name] if self.motion_authority_profile else None
-            current = self.authority_packet[name] if grant is not None else None
-            if grant is not None and grant["goal_id"] == goal_id and current["operation"] != "revoke":
-                self.publish_authority(from_canceling_owner(self.dispatcher, grant,
-                    self.authority_sequence[name]+1, self.get_clock().now().nanoseconds))
-        finally:
-            future = handle.cancel_goal_async()
-            future.add_done_callback(lambda result, name=name, goal_id=goal_id, handle=handle:
-                self.canceled(result, name, goal_id, accepted_handle=handle
-                              if self.motion_authority_profile else None))
-        return future
-
-    def poll_authority_handoff(self, now):
-        # No wait blocks ROS or physical stepping. The unchanged cancel timeout applies.
-        for name, saved in list(self.authority_buffered_terminal.items()):
-            ready = self.authority_ready[name]
-            cleanup = self.stop_requested and self.dispatcher.stopped
-            if not cleanup and (ready is None or not 0 <= timestamp_ns(now)-ready["clock_ns"] <= 100_000_000):
-                continue
-            event = saved["payload"]
-            if self.dispatcher.states[name].goal_id != event["goal_id"]:
-                raise ValueError("buffered terminal no longer owns dispatcher")
-            if cleanup:
-                # Irreversible task stop closes real Nav2 ownership even if a
-                # model fault makes normal regrant proof impossible. This is
-                # native terminal delivery, with no rest/stop or success credit.
-                self.record("authority_terminal_cleanup_dispatched", {
-                    "robot": name, "goal_id": event["goal_id"], "original_delivery": saved,
-                    "dispatch_clock_ns": timestamp_ns(now), "receipt_times_rewritten": False,
-                    "dispatcher_stopped": True, "motion_regrant_allowed": False,
-                    "normal_stop_evidence_claimed": False})
-            else:
-                self.record("authority_terminal_dispatched", {"robot": name, "goal_id": event["goal_id"],
-                    "original_delivery": saved, "matching_ready_ack": ready,
-                    "dispatch_clock_ns": timestamp_ns(now), "receipt_times_rewritten": False})
-            self.dispatcher.on_result(name, event["goal_id"], event["value"], now)
-            self.release_authority_native_identity(name, event["goal_id"])
-            del self.authority_buffered_terminal[name]
-        for name, goal_id in list(self.authority_pending_accept.items()):
-            state = self.dispatcher.states[name]
-            if state.goal_id != goal_id or state.cancel_requested or state.phase != "active":
-                del self.authority_pending_accept[name]
-                continue
-            if goal_id in self.authority_native_terminals:
-                self.record("authority_never_granted_terminal", {"robot": name, "goal_id": goal_id,
-                    "native_terminal": self.authority_native_terminals[goal_id],
-                    "clock_ns": timestamp_ns(now), "permission": "zero_only"})
-                del self.authority_pending_accept[name]
-                continue
-            ready = self.authority_ready[name]
-            if (ready is not None and not self.stop_requested and not self.dispatcher.stopped
-                    and 0 <= timestamp_ns(now)-ready["clock_ns"] <= 100_000_000):
-                packet = from_accepted_owner(self.dispatcher, name, self.handles,
-                    self.authority_sequence[name]+1, timestamp_ns(now), accepted_goal_id=goal_id)
-                self.publish_authority(packet)
-                self.authority_grant[name] = copy.deepcopy(packet)
-                del self.authority_pending_accept[name]
-
     def receipt(self, kind, robot, goal_id, value):
         # Ideal receipt delivery: preserves source time and identity. P3A moves
         # this endpoint to the robot edge; no Future is exposed to the policy.
@@ -937,12 +595,6 @@ class MR3Adapter(Node):
             handle = future.result()
             if handle.accepted:
                 self.handles[goal_id] = handle
-                if self.motion_authority_profile:
-                    identity = {"robot": robot, "goal_id": goal_id,
-                        "native_goal_uuid": bytes(handle.goal_id.uuid).hex(),
-                        "accepted_callback_clock_ns": self.get_clock().now().nanoseconds}
-                    self.authority_native_identities[goal_id] = identity
-                    self.record("authority_native_accept_callback", identity)
                 result = handle.get_result_async()
                 result.add_done_callback(lambda f: self.completed(f, robot, goal_id))
             self.receipt("accept", robot, goal_id, bool(handle.accepted))
@@ -953,25 +605,17 @@ class MR3Adapter(Node):
 
     def completed(self, future, robot, goal_id):
         try:
-            status = int(future.result().status)
-            if self.motion_authority_profile:
-                terminal = {"robot": robot, "goal_id": goal_id, "status": status,
-                    "native_identity": copy.deepcopy(self.authority_native_identities.get(goal_id)),
-                    "terminal_callback_clock_ns": self.get_clock().now().nanoseconds}
-                self.authority_native_terminals[goal_id] = terminal
-                self.record("authority_native_terminal_callback", terminal)
-            self.receipt("result", robot, goal_id, status)
-            if not self.motion_authority_profile:
-                self.handles.pop(goal_id, None)
+            self.receipt("result", robot, goal_id, int(future.result().status))
+            self.handles.pop(goal_id, None)
         except Exception as error:
             self.record("rpc_error", {"reason": repr(error), "goal_id": goal_id})
             self.stop_requested = True
             self.dispatcher.fail(robot, self.now(), "result_rpc_error")
 
-    def canceled(self, future, robot, goal_id, accepted_handle=None):
+    def canceled(self, future, robot, goal_id):
         try:
             response = future.result()
-            handle = accepted_handle if accepted_handle is not None else self.handles.get(goal_id)
+            handle = self.handles.get(goal_id)
             accepted = handle is not None and any(
                 bytes(entry.goal_id.uuid) == bytes(handle.goal_id.uuid)
                 for entry in response.goals_canceling)
@@ -1001,10 +645,9 @@ class MR3Adapter(Node):
         self.publish_initial_inputs_ready(now)
         self.finish_observation()
         self.poll_snapshot()
-        if self.started_at is None and not self.stop_requested:
+        if self.started_at is None:
             return
-        if (self.started_at is not None and elapsed_ns(self.started_at, now) >= TASK_DURATION_NS
-                and not self.stop_requested):
+        if elapsed_ns(self.started_at, now) >= TASK_DURATION_NS and not self.stop_requested:
             self.stop_requested = True
             self.dispatcher.safety_stop(now, "task_deadline")
         if self.pending_stop is not None:
@@ -1046,28 +689,17 @@ class MR3Adapter(Node):
             goal_id = event.get("goal_id")
             if envelope.stream == "heartbeat":
                 self.dispatcher.renew(name, goal_id, self.epoch, now, event["expires_at"])
-                grant = self.authority_grant[name] if self.motion_authority_profile else None
-                current = self.authority_packet[name] if grant is not None else None
-                state = self.dispatcher.states[name]
-                if (current is not None and current["operation"] != "revoke"
-                        and state.goal_id == grant["goal_id"] and state.phase == "active"
-                        and not state.cancel_requested and timestamp_ns(state.lease_until) > current["lease_until_ns"]):
-                    self.publish_authority(renewal_from_owner(self.dispatcher, grant,
-                        self.authority_sequence[name]+1, timestamp_ns(now)))
             elif envelope.stream == "receipt":
                 self.receipt_metadata[name] = {
                     "source_stamp": envelope.source_stamp,
                     "received_stamp": envelope.received_stamp,
                     "sequence": envelope.sequence,
                 }
-                if self.motion_authority_profile:
-                    self.authority_after_receipt(envelope, now)
-                else:
-                    callback = {
-                        "accept": self.dispatcher.on_accept, "result": self.dispatcher.on_result,
-                        "cancel": self.dispatcher.on_cancel_response,
-                    }[event["type"]]
-                    callback(name, goal_id, event["value"], now)
+                callback = {
+                    "accept": self.dispatcher.on_accept, "result": self.dispatcher.on_result,
+                    "cancel": self.dispatcher.on_cancel_response,
+                }[event["type"]]
+                callback(name, goal_id, event["value"], now)
             elif event["type"] == "send_goal":
                 navigation = self.dispatcher.navigation(now)[name]
                 if self.dispatcher.stopped or navigation["cancel_requested"]:
@@ -1104,15 +736,9 @@ class MR3Adapter(Node):
                     lambda future, name=name, goal_id=goal_id: self.accepted(
                         future, name, goal_id))
             elif event["type"] == "cancel_goal" and goal_id in self.handles:
-                payload = {"robot": name, "goal_id": goal_id, "stamp": now,
-                           "scope": "native_cancel_call_attempt"}
-                if "command_id" in event:
-                    payload["command_id"] = event["command_id"]
-                self.record("native_cancel", payload)
-                # Preserve original B-start; this method always subscribes the native response.
-                self.cancel_native_goal(name, goal_id)
-        if self.motion_authority_profile:
-            self.poll_authority_handoff(now)
+                self.handles[goal_id].cancel_goal_async().add_done_callback(
+                    lambda future, name=name, goal_id=goal_id: self.canceled(
+                        future, name, goal_id))
         self.flush_protocol_events(now)
         if self.stop_requested and self.dispatcher.closed and not self.stop_acknowledged:
             self.stop_acknowledged = True

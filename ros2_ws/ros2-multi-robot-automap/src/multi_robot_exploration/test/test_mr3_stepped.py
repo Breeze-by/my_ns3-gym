@@ -7,7 +7,7 @@ from types import MethodType, SimpleNamespace
 from nav_msgs.msg import OccupancyGrid
 import pytest
 
-from test_mr3_adapter import bind_navigation_maps, make_adapter, message, state
+from test_mr3_adapter import make_adapter, message, state
 from test_mr3_information import bridge, ControlledExecutor, grid
 from multi_robot_exploration.mr3_information import IdealInformation
 
@@ -28,7 +28,6 @@ def ready_adapter():
     node.receive_map(observed_map)
     for robot in node.dispatcher.robots:
         node.receive_local_map(robot, observed_map)
-    bind_navigation_maps(node, observed_map)
     metadata = {
         "epoch": node.epoch, "map_version": 2, "map_payload_sha256": node.map_digest,
         "map_source_stamp": 1., "map_received_stamp": 1.5,
@@ -36,8 +35,6 @@ def ready_adapter():
             "sequence": 1, "version": 1, "source_stamp": 1., "received_stamp": 1.5,
             "payload_sha256": node.local_map_digests[robot],
         } for robot in node.dispatcher.robots},
-        "navigation_composition": node.state["navigation_composition"],
-        "navigation_sources": node.state["navigation_sources"],
     }
     node.receive_map_metadata(message(metadata))
     # State's previous map bundle has deliberately not caught up via a new
@@ -49,7 +46,6 @@ def ready_adapter():
 @pytest.mark.parametrize("blocked", (
     "state_missing", "state_stale", "state_future", "state_invalid", "map_missing",
     "metadata_missing", "fused_hash_mismatch", "local_missing", "local_hash_mismatch",
-    "navigation_missing", "navigation_hash_mismatch", "navigation_composition_missing",
     "monitor_not_ready", "nav_server_not_ready", "not_stepped", "stopped", "already_started",
 ))
 def test_initial_input_ack_requires_every_actually_delivered_startup_gate(blocked):
@@ -74,12 +70,6 @@ def test_initial_input_ack_requires_every_actually_delivered_startup_gate(blocke
         del node.local_maps["tb1"]
     elif blocked == "local_hash_mismatch":
         node.map_metadata["map_sources"]["tb1"]["payload_sha256"] = "another-own-map"
-    elif blocked == "navigation_missing":
-        del node.navigation_maps["tb2"]
-    elif blocked == "navigation_hash_mismatch":
-        node.map_metadata["navigation_sources"]["tb1"]["payload_sha256"] = "another-nav-map"
-    elif blocked == "navigation_composition_missing":
-        del node.map_metadata["navigation_composition"]
     elif blocked == "monitor_not_ready":
         node.monitor_ready = False
     elif blocked == "nav_server_not_ready":
@@ -224,25 +214,6 @@ def test_snapshot_waits_for_exact_drain_map_hash_instead_of_old_complete_pair():
     node.poll_snapshot()
     node.finish_observation()
     assert json.loads(responses[-1].data)["watermarks"]["map_payload_sha256"] == node.map_digest
-
-
-def test_missing_navigation_map_times_out_without_substituting_own_or_fused():
-    node, clock, responses = ready_adapter()
-    del node.navigation_maps["tb2"]
-    request(node, expected_map_sha256=node.map_digest)
-    node.poll_snapshot()
-    assert not node.encoding and not responses and node.sequence == 0
-    node.pending_snapshot["requested_wall"] -= 11.
-    node.poll_snapshot()
-    response = json.loads(responses[-1].data)
-    assert response["error"] == "snapshot_watermark_timeout"
-    diagnostics = response["diagnostics"]
-    assert diagnostics["expected_map_matches"] and not diagnostics["map_inputs_match"]
-    assert diagnostics["actual_clock_ns"] == int(clock[0] * 1e9)
-    assert all(entry["matches"] for entry in diagnostics["local_maps"].values())
-    assert not diagnostics["navigation_maps"]["tb2"]["received"]
-    assert not diagnostics["navigation_maps"]["tb2"]["matches"]
-    assert node.sequence == 0 and node.encoding is None
 
 
 def test_action_rejection_keeps_safe_identity_and_malformed_json_has_none():

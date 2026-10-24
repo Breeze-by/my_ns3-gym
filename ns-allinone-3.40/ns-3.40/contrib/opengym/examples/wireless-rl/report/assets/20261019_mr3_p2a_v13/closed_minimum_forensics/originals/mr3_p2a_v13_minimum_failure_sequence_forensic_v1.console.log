@@ -1,6 +1,0 @@
-Traceback (most recent call last):
-  File "/tmp/mr3_p2a_v13_minimum_failure_sequence_forensic_v1.py", line 60, in <module>
-    native=next(x for x in rows(EP/'odometry_tb3.jsonl') if x['record'].get('kind')=='publication' and ns(x['record']['odom'])==source_ns)
-  File "/tmp/mr3_p2a_v13_minimum_failure_sequence_forensic_v1.py", line 60, in <genexpr>
-    native=next(x for x in rows(EP/'odometry_tb3.jsonl') if x['record'].get('kind')=='publication' and ns(x['record']['odom'])==source_ns)
-KeyError: 'odom'

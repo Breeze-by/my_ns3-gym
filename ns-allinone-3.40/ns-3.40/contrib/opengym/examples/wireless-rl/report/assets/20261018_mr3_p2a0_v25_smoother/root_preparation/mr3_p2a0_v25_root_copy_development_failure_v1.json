@@ -1,8 +1,0 @@
-{
-  "action": "copy closed static review evidence",
-  "script": "/tmp/mr3_p2a0_v25_log_and_review_evidence_v1.py",
-  "error": "KeyError: name",
-  "cause": "Root assumed same row schema in the two distinct handoffs. API review uses source basename and has no archive key.",
-  "side_effect": "Created empty canonical api_independent_review directory; no source/binary/experiment changes.",
-  "correction": "V2 reads actual handoff fields and manifest-declared API originals. No experiment replay."
-}

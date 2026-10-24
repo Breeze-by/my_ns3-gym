@@ -2,9 +2,6 @@
 
 from collections import deque
 from concurrent.futures import Future as EncodingFuture
-import copy
-import gzip
-import hashlib
 import json
 import math
 from types import MethodType, SimpleNamespace
@@ -16,8 +13,6 @@ from rclpy.task import Future
 from std_msgs.msg import Header, String
 
 from multi_robot_exploration.mr3_adapter import MR3Adapter, ROBOTS
-from multi_robot_exploration.mr3_observation import NAVIGATION_COMPOSITION_VERSION
-from multi_robot_exploration.mr3_activity import ReceivedActivity
 from multi_robot_exploration.mr3_owner import acquire_navigation_owner
 from multi_robot_exploration.mr3_protocol import GoalDispatcher
 from multi_robot_exploration.mr3_transport import IdealTransport, ReceivedStore
@@ -99,10 +94,8 @@ def make_adapter(started=True):
         record=lambda kind, payload: records.append((kind, payload)),
         started_at=1.0 if started else None, stop_requested=False, stop_acknowledged=False,
         pending_stop=None, map_digest=None, local_maps={}, local_map_digests={},
-        navigation_maps={}, navigation_map_digests={},
         encoder=SimpleNamespace(submit=encode), encoding=None,
-        stepped_mode=False, seed_rule="legacy", start_graph_rule="original-seed-cell",
-        pending_snapshot=None, encoding_request=None, map_metadata=None,
+        stepped_mode=False, pending_snapshot=None, encoding_request=None, map_metadata=None,
         initial_inputs_ready=False,
         task_terminal_notice=None, pending_task_terminal_notice=None,
         initial_inputs_ready_pub=SimpleNamespace(publish=lambda msg: None),
@@ -112,7 +105,6 @@ def make_adapter(started=True):
         command_receipt=None, sequence=0, last_heartbeat=-math.inf,
         receipt_metadata={name: {} for name in ROBOTS},
         history={name: deque(maxlen=16) for name in ROBOTS},
-        activity=ReceivedActivity("episode-a"),
         state=state(), snapshot=None, map=None, monitor_ready=True,
         stop_pub=SimpleNamespace(publish=stopped.append),
         failure_pub=SimpleNamespace(publish=failures.append),
@@ -124,8 +116,6 @@ def make_adapter(started=True):
         if callable(method) and name not in ("__init__", "now", "record", "destroy_node"):
             setattr(node, name, MethodType(method, node))
     node.test_records = records
-    if started:
-        node.activity.start(1.)
     node.test_stopped = stopped
     node.test_failures = failures
     node.test_starts = starts
@@ -351,43 +341,6 @@ def test_task_stop_requires_real_terminal_and_never_acknowledges_cancel_response
     assert len(node.test_stopped) == 1
 
 
-@pytest.mark.parametrize("command_id", (None, 17))
-def test_native_cancel_trace_precedes_real_call_and_preserves_callback_closure(command_id):
-    node, clock = make_adapter()
-    goal_id, handle = accepted_goal(node, clock)
-    node.receive_stop(Header(stamp=stamp(1.1), frame_id="map"))
-    if command_id is not None:
-        event = next(event for event in node.events if event["type"] == "cancel_goal")
-        event["command_id"] = command_id
-    expected = {"robot": "tb1", "goal_id": goal_id, "stamp": 1.15,
-                "scope": "native_cancel_call_attempt"}
-    if command_id is not None:
-        expected["command_id"] = command_id
-    original = handle.cancel_goal_async
-
-    def cancel():
-        assert node.test_records[-1] == ("native_cancel", expected)
-        assert handle.cancel_calls == 0 and not node.test_stopped
-        return original()
-
-    handle.cancel_goal_async = cancel
-    advance(node, clock, 1.15)
-    assert handle.cancel_calls == 1 and not node.dispatcher.closed
-    handle.cancel.set_result(SimpleNamespace(
-        goals_canceling=[SimpleNamespace(goal_id=handle.goal_id)]))
-    advance(node, clock, 1.4)
-    assert not node.test_stopped and not node.dispatcher.closed
-    receipts = [payload["payload"] for kind, payload in node.test_records
-                if kind == "delivery" and payload["stream"] == "receipt"]
-    assert any(receipt["type"] == "cancel" and receipt["value"] is True
-               and receipt["goal_id"] == goal_id for receipt in receipts)
-    handle.result.set_result(SimpleNamespace(status=5))
-    advance(node, clock, 1.65)
-    assert node.dispatcher.closed and len(node.test_stopped) == 1
-    cancels = [payload for kind, payload in node.test_records if kind == "native_cancel"]
-    assert cancels == [expected]
-
-
 def test_queued_goal_stopped_before_delivery_never_executes():
     node, clock = make_adapter()
     node.receive_action(command(node))
@@ -399,7 +352,6 @@ def test_queued_goal_stopped_before_delivery_never_executes():
     assert node.dispatcher.closed
     assert not node.dispatcher.failed
     assert len(node.test_stopped) == 1
-    assert not any(kind == "native_cancel" for kind, _ in node.test_records)
 
 
 def test_queued_goal_expired_before_delivery_never_executes_and_failure_is_retained():
@@ -459,156 +411,10 @@ def test_map_bytes_and_metadata_must_match_before_task_start():
             "payload_sha256": node.local_map_digests[name], "source_stamp": 1.,
             "received_stamp": 1., "version": 1, "sequence": 1,
         }
-    bind_navigation_maps(node, grid)
     node.publish_observation()
     node.finish_observation()
     assert node.started_at == 1.0 and len(node.test_observations) == 1
     assert json.loads(node.test_observations[0].data)["map_version"] == 1
-
-
-def bind_navigation_maps(node, grid):
-    node.state["navigation_composition"] = {"version": NAVIGATION_COMPOSITION_VERSION}
-    node.state["navigation_sources"] = {}
-    for name in ROBOTS:
-        node.receive_navigation_map(name, grid)
-        node.state["navigation_sources"][name] = {
-            "epoch": node.epoch, "payload_sha256": node.navigation_map_digests[name],
-            "composition_version": NAVIGATION_COMPOSITION_VERSION,
-            "source_stamp": 1., "received_stamp": 1., "version": 1, "sequence": 1,
-            "input_own_map_payload_sha256": node.local_map_digests[name],
-            "input_shared_map_payload_sha256": node.map_digest, "shared_map_version": 1,
-            "input_own_source_stamp": 1.,
-            "received_stamp_scope": "shared_map_delivery_used_by_navigation",
-        }
-
-
-def archive_ready_adapter():
-    node, _ = make_adapter()
-    grid = OccupancyGrid()
-    grid.header.frame_id = "map"
-    grid.info.resolution = .1
-    grid.info.width = grid.info.height = 40
-    grid.info.origin.position.x = grid.info.origin.position.y = -2.
-    grid.info.origin.orientation.w = 1.
-    grid.data = [0] * 1600
-    node.receive_map(grid)
-    node.state["map_payload_sha256"] = node.map_digest
-    for name in ROBOTS:
-        node.receive_local_map(name, grid)
-        node.state["map_sources"][name] = {
-            "payload_sha256": node.local_map_digests[name], "source_stamp": 1.,
-            "received_stamp": 1., "version": 1, "sequence": 1,
-        }
-    bind_navigation_maps(node, grid)
-    return node, grid
-
-
-def test_received_activity_is_in_frozen_snapshot_and_never_counts_map_frame_corrections():
-    node, _ = archive_ready_adapter()
-    delivery = copy.deepcopy(node.state)
-    for robot in delivery["robots"]:
-        robot["odom_source_stamp"] = 1.
-        robot["odometry"] = {
-            "header": {"stamp": {"sec": 1, "nanosec": 0}, "frame_id": "odom"},
-            "child_frame_id": "base_footprint",
-            "pose": {"pose": {"position": {"x": 0., "y": 0.}}},
-        }
-    delivery["sequence"] = 2
-    node.receive_states(message(delivery))
-    delivery["sequence"] = 3
-    for robot in delivery["robots"]:
-        robot.update(odom_source_stamp=1.1, source_stamp=1.1, received_stamp=1.1)
-        robot["odometry"]["header"]["stamp"]["nanosec"] = 100000000
-        robot["odometry"]["pose"]["pose"]["position"]["x"] = .25
-        robot["x"] += .5  # Map/TF shift differs from local odometry displacement.
-    node.now = lambda: 1.1
-    node.receive_states(message(delivery))
-    node.dispatcher.submit("tb1", "GOAL", 1.1, 1, 1, 3.1,
-                           goal={"x": 1., "y": 1.})
-    goal = node.dispatcher.navigation()["tb1"]["goal_id"]
-    node.dispatcher.on_accept("tb1", goal, True, 1.1)
-    node.dispatcher.on_accept("tb1", goal, True, 1.1)
-    job, future = {}, EncodingFuture()
-
-    def defer(function, *args, **kwargs):
-        job.update(function=function, args=args, kwargs=kwargs)
-        return future
-
-    node.encoder = SimpleNamespace(submit=defer)
-    node.publish_observation()
-    delivery["sequence"] = 4
-    for robot in delivery["robots"]:
-        robot.update(odom_source_stamp=1.2, source_stamp=1.2, received_stamp=1.2)
-        robot["odometry"]["header"]["stamp"]["nanosec"] = 200000000
-        robot["odometry"]["pose"]["pose"]["position"]["x"] = .75
-    node.now = lambda: 1.2
-    node.receive_states(message(delivery))
-    future.set_result(job["function"](*job["args"], **job["kwargs"]))
-    node.finish_observation()
-    snapshot = json.loads(node.test_observations[-1].data)
-    assert snapshot["schema"] == "mr3-observation-v3"
-    assert snapshot["robots"][0]["activity"]["estimated_path_m"] == .25
-    assert snapshot["robots"][0]["navigation"]["accepted_goal_count"] == 1
-    assert node.activity.snapshot("tb1")["estimated_path_m"] == .75
-    assert any(kind == "activity_update" for kind, _ in node.test_records)
-
-
-def test_async_input_archive_uses_frozen_bundle_when_later_maps_arrive(tmp_path):
-    node, first_grid = archive_ready_adapter()
-    node.audit_file = SimpleNamespace(name=str(tmp_path / "adapter.jsonl"))
-    job = {}
-    future = EncodingFuture()
-
-    def defer(function, *args, **kwargs):
-        job.update(function=function, args=args, kwargs=kwargs)
-        return future
-
-    node.encoder = SimpleNamespace(submit=defer)
-    first_digest = node.map_digest
-    node.publish_observation()
-    assert node.encoding is future
-    assert not (tmp_path / "observation_inputs").exists()  # Encoder has not run.
-    later = OccupancyGrid()
-    later.header.frame_id = "map"
-    later.info.resolution = .1
-    later.info.width = later.info.height = 40
-    later.info.origin.position.x = later.info.origin.position.y = -2.
-    later.info.origin.orientation.w = 1.
-    later.data = [100] * 1600
-    node.receive_map(later)
-    for name in ROBOTS:
-        node.receive_local_map(name, later)
-        node.receive_navigation_map(name, later)
-    # Even mutating the old ROS message cannot replace already-detached data.
-    first_grid.data[0] = 100
-    future.set_result(job["function"](*job["args"], **job["kwargs"]))
-    node.finish_observation()
-    result = json.loads(node.test_observations[-1].data)
-    expected = job["function"](*job["args"], **{**job["kwargs"], "archive": None})
-    assert result == expected  # Optional archive changes no snapshot bytes.
-    root = tmp_path / "observation_inputs"
-    manifest = json.loads(next((root / "snapshots").iterdir()).read_bytes())
-    assert manifest["snapshot_digest"] == result["digest"]
-    assert manifest["metadata"]["map_payload_sha256"] == first_digest
-    assert first_digest != node.map_digest
-    assert len(list((root / "maps").iterdir())) == 1
-    for entry in manifest["maps"].values():
-        raw = gzip.decompress((root / entry["artifact"]).read_bytes())
-        assert hashlib.sha256(raw).hexdigest() == first_digest
-        assert json.loads(raw)["data"] == [0] * 1600
-
-
-def test_no_audit_path_does_not_freeze_or_archive_map_payloads(tmp_path, monkeypatch):
-    node, _ = archive_ready_adapter()
-
-    def unexpected(*args, **kwargs):
-        raise AssertionError("disabled archive tried to freeze map payloads")
-
-    monkeypatch.setattr("multi_robot_exploration.mr3_adapter.map_payload", unexpected)
-    node.publish_observation()
-    node.finish_observation()
-    assert len(node.test_observations) == 1
-    assert not list(tmp_path.iterdir())
 
 
 def test_stale_received_state_cancels_owned_navigation_and_stops_renewing_lease():
@@ -756,28 +562,3 @@ def test_task_deadline_precedes_new_native_dispatch():
     assert not any(client.goals for client in node.navigation_clients.values())
     assert any(kind == "action_rejected" and data["reason"] == "task_deadline"
                for kind, data in node.test_records)
-
-
-def test_real_pre_release_failure_closes_actual_idle_dispatcher_without_start_or_observation():
-    node, clock = make_adapter(started=False)
-    clock[0] = 72.62
-    node.receive_failure(message({"component": "mr3_environment_worker",
-                                  "reason": "infrastructure_failure", "invalid_sample": True}))
-    assert node.stop_requested and node.dispatcher.closed
-    node.maintain()
-    assert len(node.test_stopped) == 1
-    payload = json.loads(node.test_stopped[0].data)
-    assert payload["epoch"] == node.epoch and payload["start_sim_time_sec"] is None
-    assert payload["pending_goal_count"] == 0 and payload["robot_names"] == list(ROBOTS)
-    assert payload["stop_sim_time_sec"] == clock[0]
-    assert node.started_at is None and not node.test_starts and not node.test_observations
-    assert not any(client.goals for client in node.navigation_clients.values())
-    node.maintain()
-    assert len(node.test_stopped) == 1  # A real closure is acknowledged once.
-
-
-def test_pre_release_without_failure_does_not_publish_a_stop_or_start():
-    node, _ = make_adapter(started=False)
-    node.maintain()
-    assert node.started_at is None and not node.stop_requested
-    assert not node.test_stopped and not node.test_starts and not node.test_observations

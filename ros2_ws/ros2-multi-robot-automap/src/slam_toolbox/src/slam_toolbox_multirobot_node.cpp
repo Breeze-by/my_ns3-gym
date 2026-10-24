@@ -46,7 +46,5 @@ int main(int argc, char ** argv)
   async_node->loadPoseGraphByParams();
   rclcpp::spin(async_node->get_node_base_interface());
   rclcpp::shutdown();
-  // Join SLAM threads and release Karto data before process-static teardown.
-  async_node.reset();
   return 0;
 }

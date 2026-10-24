@@ -31,7 +31,7 @@ class SynchronousSlamToolbox : public SlamToolbox
 {
 public:
   explicit SynchronousSlamToolbox(rclcpp::NodeOptions options);
-  ~SynchronousSlamToolbox() {stopScanCallbacks(); joinThreads();}
+  ~SynchronousSlamToolbox() {}
   void run();
 
 protected:
