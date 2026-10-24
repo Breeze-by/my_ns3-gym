@@ -1,0 +1,7 @@
+# V70 private descriptor/parent preparation history
+
+Four exact stopped /tmp roots, all457 original regular files9017624B, are retained byte-for-byte in one deterministic tar.gz. Membership, stable lstat fields and literal links were compared before/after; a separate post-original rehash and complete tar-member stream restore/full gzip CRC verified each regular SHA/bytes. No extraction or execution occurred and originals remain. No symlink target was followed.
+
+The original consumer-v1 fixture inverse-clock FAIL (tool79985rc1), final consumer-v2 tenPASS (18292rc0,211source recovery/two saved CPU identities gone), parent pending-v1 and final static-reviewed-v2 remain separate original evidence. Their original source-current claims belong to those observation times and tested candidates, not a new assertion that all old211 bound sources equal a later installed canonical tree. This archive does not sum old tests into fresh credit or execute any source, parent, consumer, test, reader, World or model.
+
+The archive CPU itself truly reaped tool76544rc0, inner1.798286614s, three tool-source bytes before=after=current and two own saved CPU identities freshgone. Its initial session/final actual response, CPU receipt, source tool/wrapper rawbytes and fresh observations are retained in actual_archive_CPU_v1. Engineering added0. Neither actual V69 input, pstats nor old342 library set was consumed.
