@@ -1,3 +1,5 @@
+- [2026-10-24 两项决定性测试实际结果与路线建议](20261024_mr3_p2a_decisive_tests.md)：运动WAIT联合条件出现，但两个输入方式均触发invalid_authority；容量64/128返回后FAIL，34.57分钟为失败前缀费用。
+
 - [2026-10-24 P2A两项决定性测试（准备，待实际结果）](20261024_mr3_p2a_decisive_tests.md)
 
 2026-10-24 V74拒绝字段描述实际PASS：Gfea46716e、Root35799真实reap0，完整motion507221955B/232887行/parse-semantic-gap0；250候选按原规则选4完整原行，consumer work41.065690642秒。连续parent45.633274384→U112685.3057936486018/C180000/R67314.6942063513982，nested/root不叠加、pilot/final不动。27源current-Git/前后/恢复与2main闭合；关闭CPU16252真0/10.926041864秒/4源恢复/own2gone/工程0，40regular2365525B→358503B/0link全恢复，未重开原motion。derived解释定位250拟X证书拒绝peer为tb2；223当前D与27返回X不同字段不混，条件充分性失败不充碰撞/unsafe/数学错误证明。ledger root_cause仍UNKNOWN_PENDING_SEPARATE_DERIVED_ROUTE_REVIEW原字节，旧V71FAIL/科学门保持；V75显式新输入workload仅disabled私有准备，详细契约/准入待独立声明，不提前World或改原数学/plant，capacity/autoPolicyFalse、P2A未完成。 见[V74实际闭合](20261024_mr3_p2a_v74_reach_rejection_description.md)与规范末账；下方旧日期/准备段保留历史范围。

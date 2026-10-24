@@ -1,0 +1,66 @@
+{
+  "scope": "one fixed closed task-result received-description only; no restored audit credit",
+  "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_decisive_tests_v1/feasibility/worker0/episode001_open_101/feasibility_w0_e1_7ae55b35.json",
+  "sha256": "25d5c928e244c757f0f78e96e89ee8c871d3ab7b180694ab149bbfbb39de7084",
+  "bytes": 20473,
+  "started_monotonic_ns": 4570365706051609,
+  "fields": {
+    "termination_reason": "navigation_failure",
+    "control_failure": "{\"clock_ns\": 50520000000, \"component\": \"motion_safety\", \"epoch\": \"feasibility_w0_e1_7ae55b35\", \"reason\": \"invalid_authority\", \"robot\": \"tb1\", \"schema\": \"mr3-reach-runtime-fault-v1\"}",
+    "control_failure_truth_diagnostic": {
+      "failure_received_sim_time_sec": 50.52,
+      "latest_model_states": {
+        "poses": {
+          "tb1": {
+            "orientation": {
+              "w": 0.4141553034675258,
+              "x": 0.003029084095490859,
+              "y": 0.0013560263322604674,
+              "z": -0.9102001815270366
+            },
+            "position": {
+              "x": -0.04555784339595588,
+              "y": -0.705377580598348,
+              "z": 0.007841714465951014
+            }
+          },
+          "tb2": {
+            "orientation": {
+              "w": 0.6710809547831752,
+              "x": -0.002482938963970471,
+              "y": 0.002245323336917336,
+              "z": 0.741376520847886
+            },
+            "position": {
+              "x": 0.05354219849136277,
+              "y": 0.9179110076026433,
+              "z": 0.007831954160702476
+            }
+          },
+          "tb3": {
+            "orientation": {
+              "w": 0.999992627950593,
+              "x": 1.3097456708122453e-06,
+              "y": 0.0033888021965243122,
+              "z": -0.0018055642953716843
+            },
+            "position": {
+              "x": 1.6685538508122264,
+              "y": 0.0014501736469131185,
+              "z": 0.0078091780690502394
+            }
+          }
+        },
+        "received_sequence": 126,
+        "received_sim_time_sec": 50.5,
+        "source_stamp_missing": true
+      },
+      "scope": "evaluator-only latest ModelStates receipt before failure callback; not an exact source-time match to received safety inputs"
+    },
+    "task_success": null,
+    "elapsed_sim_time": null,
+    "end_sim_time_sec": 50.52
+  },
+  "input_unchanged": true,
+  "ended_monotonic_ns": 4570365707315832
+}

@@ -21,7 +21,9 @@ def replay(rows, decisions, expected_steps=96):
     epoch = rows[0]['snapshot']['epoch']
     for index, row in enumerate(rows):
         s = row['snapshot']; now = s['source_stamp']
-        require(s['epoch'] == epoch and s['task_elapsed_sec'] == index, 'epoch/cadence mismatch')
+        elapsed = s['task_elapsed_sec']
+        require(s['epoch'] == epoch and number(elapsed)
+                and round(elapsed * 10**9) == index * 10**9, 'epoch/cadence mismatch')
         for robot in s['robots']:
             name = robot['name']; history = slots[name]
             if not history:

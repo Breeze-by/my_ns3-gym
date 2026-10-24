@@ -1,0 +1,1601 @@
+{
+  "kind": "uniform_legal_engineering_diagnostic_not_rl",
+  "workers": 2,
+  "safety_contract": "mr3-reach-v1",
+  "robots_per_worker": 3,
+  "schedule": [
+    [
+      "open",
+      101
+    ]
+  ],
+  "steps_per_episode": 64,
+  "command": [
+    "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/benchmark.py",
+    "--workers",
+    "2",
+    "--schedule",
+    "open:101",
+    "--steps",
+    "64",
+    "--run-id",
+    "capacity",
+    "--output-root",
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_decisive_tests_v1",
+    "--base-domain",
+    "212",
+    "--base-port",
+    "15911",
+    "--safety-contract",
+    "mr3-reach-v1",
+    "--seed-rule",
+    "exact-point-bridge-v2",
+    "--start-graph-rule",
+    "point-attachment-3x3-v1",
+    "--reach-geometry-rule",
+    "cone-support-v2",
+    "--diagnostic-uniform-seed",
+    "41",
+    "--work-wall-seconds",
+    "6000",
+    "--close-reserve-seconds",
+    "180"
+  ],
+  "python": "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+  "freeze": "0649f057c38410a14761c5c98a13bd3f496bc1d2",
+  "base_domain": 212,
+  "base_port": 15911,
+  "fault_probe": false,
+  "deadline_probe": false,
+  "terminal_probe": false,
+  "preparation_motion_probe": false,
+  "preparation_probe_version": null,
+  "preparation_parameter_review": false,
+  "preparation_parameter_profile": "original",
+  "preparation_parameter_review_source": null,
+  "resource_scope": "host counters include unrelated activity; GPU driver reports",
+  "num_logical_cpus": 80,
+  "cpu_affinity_count": 80,
+  "actuation_profile": "initial-zero-encoder-hold-v1",
+  "motion_authority_profile": "mr3-owned-stream-authority-v1",
+  "seed_rule": "exact-point-bridge-v2",
+  "start_graph_rule": "point-attachment-3x3-v1",
+  "reach_geometry_rule": "cone-support-v2",
+  "training_eligible": false,
+  "scientific_readers_applied": false,
+  "scientific_qualification": "PENDING_NEW_FREEZE_INDEPENDENT_AUDITS",
+  "qualification_scope": "engineering_collection_only_no_legacy_qualification_credit",
+  "diagnostic_uniform_seed": 41,
+  "diagnostic_uniform_worker_seed_rule": "seed + 1000003 * worker_id",
+  "diagnostic_action_source": "random.Random.choice on the actual legal joint mask",
+  "policy_calls": 0,
+  "optimizer_steps": 0,
+  "gpu_calls": 0,
+  "policy_reliability_credit": false,
+  "work_wall_budget": {
+    "total_allocation_seconds": 6000.0,
+    "close_reserve_seconds": 180.0,
+    "started_wall_monotonic_ns": 4570286147563983,
+    "allocation_deadline_monotonic_ns": 4576286147563983,
+    "work_deadline_monotonic_ns": 4576106147563983,
+    "scope": "cooperative admission; complete in-flight RPC then normal close; no hard kill",
+    "rpc_admission_upper_bounds_seconds": {
+      "reset": 420.0,
+      "step": 90.0
+    }
+  },
+  "passed": false,
+  "wall_sec_including_all_attempts": 1297.005962798372,
+  "valid_transitions": 64,
+  "effective_transition_per_wall_sec": 0.04934441462544704,
+  "workers_results": [
+    {
+      "worker_id": 0,
+      "episodes": [
+        {
+          "epoch": "capacity_w0_e1_c6387a24",
+          "scene": "open",
+          "seed": 101,
+          "initial_observation_digest": "11bb69e7b74c3e5ca88fbac4c871f4114c79f3fc113e87e0f670aa24aa5dffa2",
+          "output_directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_decisive_tests_v1/capacity/worker0/episode001_open_101",
+          "startup_wall_sec": 137.75645836256444,
+          "initial_estimated_poses": [
+            {
+              "name": "tb1",
+              "x": 0.00010917412898336417,
+              "y": -0.4499999086555422,
+              "yaw": 2.3515292159471736e-05
+            },
+            {
+              "name": "tb2",
+              "x": 0.00010925887935856045,
+              "y": 0.45000038670879566,
+              "yaw": 2.3314062029388706e-05
+            },
+            {
+              "name": "tb3",
+              "x": 0.45010912445625395,
+              "y": 3.304704665313511e-07,
+              "yaw": 2.3341348577337868e-05
+            }
+          ],
+          "transitions": 29,
+          "transition_wall_sec": 928.7389888651669,
+          "reward_sum": 6.7301597735780145,
+          "dt_values": [
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "diagnostic_uniform_actions": [
+            {
+              "decision": 0,
+              "action": 380,
+              "observation_sequence": 1,
+              "observation_digest": "11bb69e7b74c3e5ca88fbac4c871f4114c79f3fc113e87e0f670aa24aa5dffa2",
+              "legal_joint_actions": 115,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 1,
+              "action": 848,
+              "observation_sequence": 2,
+              "observation_digest": "f2abe65f6a176f8e4535c6fd294297441e37d74631b3e25dc15a7424745ff233",
+              "legal_joint_actions": 6,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 2,
+              "action": 888,
+              "observation_sequence": 3,
+              "observation_digest": "4cd5794ab21c2714688e036ff238fa48297bbd265d6d66473de39255d1805403",
+              "legal_joint_actions": 1,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 3,
+              "action": 888,
+              "observation_sequence": 4,
+              "observation_digest": "f3d3b770448160af18231d9aee84b885349956615c8de9bbcea053330314d7a4",
+              "legal_joint_actions": 1,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 4,
+              "action": 888,
+              "observation_sequence": 5,
+              "observation_digest": "b30c23c22969aaba915e281d9c8710e32c8e787afb5c5239572bedefef193a9b",
+              "legal_joint_actions": 1,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 5,
+              "action": 989,
+              "observation_sequence": 6,
+              "observation_digest": "082fd4f9dad424b02f56813e14cbaedb3963b05a4030884ce9faa4616234f183",
+              "legal_joint_actions": 74,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 6,
+              "action": 848,
+              "observation_sequence": 7,
+              "observation_digest": "0ea8cf7b8358e85daf851d92427239118313083d4237728b15d827c81cbfc8ee",
+              "legal_joint_actions": 10,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 7,
+              "action": 788,
+              "observation_sequence": 8,
+              "observation_digest": "45fa32529a9a6ea447f4d7f3dd134b663d23085fe8798e4f5aa6ff2f06b69f8b",
+              "legal_joint_actions": 92,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 8,
+              "action": 885,
+              "observation_sequence": 9,
+              "observation_digest": "9bfe28640f41d303183809ae799ab9a84e33d0ce21d20ce83d2214931b81e96b",
+              "legal_joint_actions": 8,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 9,
+              "action": 888,
+              "observation_sequence": 10,
+              "observation_digest": "f1e36b682a77206e65c1949d788da2233477acc8264f4ca4cf0e84cac330e0a3",
+              "legal_joint_actions": 1,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 10,
+              "action": 888,
+              "observation_sequence": 11,
+              "observation_digest": "5c6b606c70578c0c79987645eaf81b874a946d02f0762e7ebae9a48cde15e391",
+              "legal_joint_actions": 1,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 11,
+              "action": 888,
+              "observation_sequence": 12,
+              "observation_digest": "c78f53018c335f66207fc233f4b15203cae2bd7106789ec73f714ae5833305a8",
+              "legal_joint_actions": 1,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 12,
+              "action": 88,
+              "observation_sequence": 13,
+              "observation_digest": "62dcb5373b5afab0fc08adeefaa00d879f205c959790523b03605662759d4cfd",
+              "legal_joint_actions": 8,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 13,
+              "action": 865,
+              "observation_sequence": 14,
+              "observation_digest": "8bb2b7ec25ae6602af54764b29bf593a4ac64d8fc294ec34788b53e9d1688e41",
+              "legal_joint_actions": 48,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 14,
+              "action": 888,
+              "observation_sequence": 15,
+              "observation_digest": "6f2c74460c0bc331f86687cfd54f6cc1065863be16d14de8cd5206d25cf9b68d",
+              "legal_joint_actions": 1,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 15,
+              "action": 888,
+              "observation_sequence": 16,
+              "observation_digest": "6e8a094a4bf1561d97fe66f26809ce9c8f015621b7c5e054fb74c0290ec24162",
+              "legal_joint_actions": 1,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 16,
+              "action": 888,
+              "observation_sequence": 17,
+              "observation_digest": "ff3ec7b83ae816e80353c7d51e0e4d533ed7b1f0f0a6d660793a80d8b7ac5ae3",
+              "legal_joint_actions": 1,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 17,
+              "action": 888,
+              "observation_sequence": 18,
+              "observation_digest": "dfbd7315ddc07f450b5089de0503dde52dbc9e3c017ceaf920fb1f4a9872020a",
+              "legal_joint_actions": 1,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 18,
+              "action": 388,
+              "observation_sequence": 19,
+              "observation_digest": "b3f6d506cd99c280bc5b63151b7479e41fc46605e4b0ebdb0e73461caf7f97b1",
+              "legal_joint_actions": 6,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 19,
+              "action": 888,
+              "observation_sequence": 20,
+              "observation_digest": "55299943083de17f7da5b578aadf06e781c116c5544d98f9ecccf66b0c053ae0",
+              "legal_joint_actions": 1,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 20,
+              "action": 815,
+              "observation_sequence": 21,
+              "observation_digest": "cea2c4fa60a265fdbb99c32f3f9ae738112b9db0cfe235e04aed4ad3e864d0c4",
+              "legal_joint_actions": 45,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 21,
+              "action": 888,
+              "observation_sequence": 22,
+              "observation_digest": "dc06281b21030cc588d45f3c081162bfd946b343f346811816d89fe7248b9b76",
+              "legal_joint_actions": 1,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 22,
+              "action": 888,
+              "observation_sequence": 23,
+              "observation_digest": "de38254289c07fbe26ad7b86148829797b94ae5c71933c8709be2982d1ee05a2",
+              "legal_joint_actions": 1,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 23,
+              "action": 888,
+              "observation_sequence": 24,
+              "observation_digest": "908a4c9a1d464a958883e6d6da1978d591c06a4e7a9313e89040d9f7ae41a328",
+              "legal_joint_actions": 1,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 24,
+              "action": 888,
+              "observation_sequence": 25,
+              "observation_digest": "df83376d7042097ca830013d26c28fb99260afb4112e68f080072a8cd2be1c1b",
+              "legal_joint_actions": 1,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 25,
+              "action": 88,
+              "observation_sequence": 26,
+              "observation_digest": "7de05ef5f7ff2b951ab3663e457c631043cf047460d0dbcab35c26e28b831296",
+              "legal_joint_actions": 6,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 26,
+              "action": 888,
+              "observation_sequence": 27,
+              "observation_digest": "6a93b1f7620af931538f7a0bd49dfd42a0cd20444e78f4f7d09b34bc70ce6688",
+              "legal_joint_actions": 1,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 27,
+              "action": 894,
+              "observation_sequence": 28,
+              "observation_digest": "c5cdf64812707f25242eea1d5f2edbbe56e21dc03bf05f2f1dc9be3909ab325b",
+              "legal_joint_actions": 50,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 28,
+              "action": 888,
+              "observation_sequence": 29,
+              "observation_digest": "3e0a1f1aaf4a786f40efb710807b9d358609f0b4d8c122368998bded0b0fbcfe",
+              "legal_joint_actions": 1,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 29,
+              "action": 858,
+              "observation_sequence": 30,
+              "observation_digest": "ac38a8ec40bf844f6b6b7bf1508a932f51a762bc97f836f0adbc429a0a8fe735",
+              "legal_joint_actions": 6,
+              "step_returned": false
+            }
+          ],
+          "wall_sec_including_startup_and_closure": 1169.4132544966415
+        }
+      ],
+      "error": "InfrastructureError('step: IPC response wall guard expired')",
+      "diagnostic_uniform_worker_seed": 41,
+      "diagnostic_abort": {
+        "requested": true,
+        "first_failure": {
+          "worker_id": 0,
+          "kind": "rpc_or_worker_exception",
+          "reason": "InfrastructureError('step: IPC response wall guard expired')",
+          "episode_index": 0,
+          "epoch": "capacity_w0_e1_c6387a24",
+          "observed_wall_monotonic_ns": 4571455572708507
+        },
+        "scope": "cooperative stop after real RPC return; no synthetic transition"
+      },
+      "wall_sec": 1169.4132695700973,
+      "shutdown_receipts": [
+        {
+          "epoch": "capacity_w0_e1_c6387a24",
+          "worker_returncode": -9,
+          "forced_shutdown": true,
+          "failed_sample": true,
+          "owned_processes_seen": [
+            {
+              "pid": 2529562,
+              "parent": 2529478,
+              "group": 2529562,
+              "session": 2529562,
+              "start_ticks": 457028616,
+              "state": "S"
+            },
+            {
+              "pid": 2529689,
+              "parent": 2529562,
+              "group": 2529562,
+              "session": 2529562,
+              "start_ticks": 457028800,
+              "state": "Z"
+            },
+            {
+              "pid": 2529741,
+              "parent": 2529562,
+              "group": 2529562,
+              "session": 2529562,
+              "start_ticks": 457028970,
+              "state": "Z"
+            },
+            {
+              "pid": 2529745,
+              "parent": 2529562,
+              "group": 2529562,
+              "session": 2529562,
+              "start_ticks": 457028970,
+              "state": "Z"
+            },
+            {
+              "pid": 2529749,
+              "parent": 2529562,
+              "group": 2529562,
+              "session": 2529562,
+              "start_ticks": 457028970,
+              "state": "Z"
+            },
+            {
+              "pid": 2529753,
+              "parent": 2529562,
+              "group": 2529562,
+              "session": 2529562,
+              "start_ticks": 457028970,
+              "state": "Z"
+            },
+            {
+              "pid": 2529757,
+              "parent": 2529562,
+              "group": 2529562,
+              "session": 2529562,
+              "start_ticks": 457028970,
+              "state": "Z"
+            },
+            {
+              "pid": 2529761,
+              "parent": 2529562,
+              "group": 2529562,
+              "session": 2529562,
+              "start_ticks": 457028971,
+              "state": "S"
+            },
+            {
+              "pid": 2529765,
+              "parent": 2529562,
+              "group": 2529562,
+              "session": 2529562,
+              "start_ticks": 457028971,
+              "state": "Z"
+            },
+            {
+              "pid": 2529769,
+              "parent": 2529689,
+              "group": 2529562,
+              "session": 2529562,
+              "start_ticks": 457028971,
+              "state": "R"
+            },
+            {
+              "pid": 2529773,
+              "parent": 2529562,
+              "group": 2529562,
+              "session": 2529562,
+              "start_ticks": 457028971,
+              "state": "Z"
+            },
+            {
+              "pid": 2530780,
+              "parent": 2529562,
+              "group": 2529562,
+              "session": 2529562,
+              "start_ticks": 457029388,
+              "state": "Z"
+            },
+            {
+              "pid": 2530782,
+              "parent": 2529689,
+              "group": 2529562,
+              "session": 2529562,
+              "start_ticks": 457029388,
+              "state": "S"
+            },
+            {
+              "pid": 2530784,
+              "parent": 2529562,
+              "group": 2529562,
+              "session": 2529562,
+              "start_ticks": 457029388,
+              "state": "Z"
+            },
+            {
+              "pid": 2531017,
+              "parent": 2529562,
+              "group": 2529562,
+              "session": 2529562,
+              "start_ticks": 457029762,
+              "state": "Z"
+            },
+            {
+              "pid": 2531019,
+              "parent": 2529689,
+              "group": 2529562,
+              "session": 2529562,
+              "start_ticks": 457029762,
+              "state": "S"
+            },
+            {
+              "pid": 2531021,
+              "parent": 2529562,
+              "group": 2529562,
+              "session": 2529562,
+              "start_ticks": 457029763,
+              "state": "Z"
+            },
+            {
+              "pid": 2531241,
+              "parent": 2529689,
+              "group": 2529562,
+              "session": 2529562,
+              "start_ticks": 457030139,
+              "state": "S"
+            },
+            {
+              "pid": 2531726,
+              "parent": 2529562,
+              "group": 2529562,
+              "session": 2529562,
+              "start_ticks": 457031293,
+              "state": "Z"
+            },
+            {
+              "pid": 2531728,
+              "parent": 2529562,
+              "group": 2529562,
+              "session": 2529562,
+              "start_ticks": 457031293,
+              "state": "Z"
+            },
+            {
+              "pid": 2531730,
+              "parent": 2529562,
+              "group": 2529562,
+              "session": 2529562,
+              "start_ticks": 457031293,
+              "state": "Z"
+            },
+            {
+              "pid": 2531732,
+              "parent": 2529562,
+              "group": 2529562,
+              "session": 2529562,
+              "start_ticks": 457031293,
+              "state": "Z"
+            },
+            {
+              "pid": 2531735,
+              "parent": 2529562,
+              "group": 2529562,
+              "session": 2529562,
+              "start_ticks": 457031295,
+              "state": "Z"
+            },
+            {
+              "pid": 2531737,
+              "parent": 2529562,
+              "group": 2529562,
+              "session": 2529562,
+              "start_ticks": 457031295,
+              "state": "Z"
+            },
+            {
+              "pid": 2531739,
+              "parent": 2529562,
+              "group": 2529562,
+              "session": 2529562,
+              "start_ticks": 457031295,
+              "state": "Z"
+            },
+            {
+              "pid": 2533278,
+              "parent": 2529562,
+              "group": 2529562,
+              "session": 2529562,
+              "start_ticks": 457035803,
+              "state": "Z"
+            },
+            {
+              "pid": 2533280,
+              "parent": 2529562,
+              "group": 2529562,
+              "session": 2529562,
+              "start_ticks": 457035803,
+              "state": "Z"
+            },
+            {
+              "pid": 2533282,
+              "parent": 2529562,
+              "group": 2529562,
+              "session": 2529562,
+              "start_ticks": 457035803,
+              "state": "Z"
+            },
+            {
+              "pid": 2533284,
+              "parent": 2529562,
+              "group": 2529562,
+              "session": 2529562,
+              "start_ticks": 457035804,
+              "state": "Z"
+            },
+            {
+              "pid": 2533286,
+              "parent": 2529562,
+              "group": 2529562,
+              "session": 2529562,
+              "start_ticks": 457035804,
+              "state": "Z"
+            },
+            {
+              "pid": 2533288,
+              "parent": 2529562,
+              "group": 2529562,
+              "session": 2529562,
+              "start_ticks": 457035804,
+              "state": "Z"
+            },
+            {
+              "pid": 2533290,
+              "parent": 2529562,
+              "group": 2529562,
+              "session": 2529562,
+              "start_ticks": 457035805,
+              "state": "Z"
+            },
+            {
+              "pid": 2534831,
+              "parent": 2529562,
+              "group": 2529562,
+              "session": 2529562,
+              "start_ticks": 457040314,
+              "state": "Z"
+            },
+            {
+              "pid": 2534833,
+              "parent": 2529562,
+              "group": 2529562,
+              "session": 2529562,
+              "start_ticks": 457040315,
+              "state": "Z"
+            },
+            {
+              "pid": 2534835,
+              "parent": 2529562,
+              "group": 2529562,
+              "session": 2529562,
+              "start_ticks": 457040315,
+              "state": "Z"
+            },
+            {
+              "pid": 2534837,
+              "parent": 2529562,
+              "group": 2529562,
+              "session": 2529562,
+              "start_ticks": 457040316,
+              "state": "Z"
+            },
+            {
+              "pid": 2534839,
+              "parent": 2529562,
+              "group": 2529562,
+              "session": 2529562,
+              "start_ticks": 457040316,
+              "state": "Z"
+            },
+            {
+              "pid": 2534841,
+              "parent": 2529562,
+              "group": 2529562,
+              "session": 2529562,
+              "start_ticks": 457040317,
+              "state": "Z"
+            },
+            {
+              "pid": 2534843,
+              "parent": 2529562,
+              "group": 2529562,
+              "session": 2529562,
+              "start_ticks": 457040318,
+              "state": "Z"
+            },
+            {
+              "pid": 2535178,
+              "parent": 2529562,
+              "group": 2529562,
+              "session": 2529562,
+              "start_ticks": 457041136,
+              "state": "Z"
+            },
+            {
+              "pid": 2535180,
+              "parent": 2529562,
+              "group": 2529562,
+              "session": 2529562,
+              "start_ticks": 457041136,
+              "state": "Z"
+            },
+            {
+              "pid": 2535413,
+              "parent": 2529562,
+              "group": 2529562,
+              "session": 2529562,
+              "start_ticks": 457041678,
+              "state": "Z"
+            },
+            {
+              "pid": 2535471,
+              "parent": 2529562,
+              "group": 2529562,
+              "session": 2529562,
+              "start_ticks": 457041729,
+              "state": "Z"
+            }
+          ],
+          "remaining_owned_processes": [],
+          "remaining_owned_zombies": [],
+          "process_scan_statistics": {
+            "count": 5573,
+            "max_scan_wall_sec": 0.6615834003314376,
+            "max_observed_interval_sec": 0.7115447893738747
+          }
+        }
+      ]
+    },
+    {
+      "worker_id": 1,
+      "episodes": [
+        {
+          "epoch": "capacity_w1_e1_49c6c1e0",
+          "scene": "open",
+          "seed": 101,
+          "initial_observation_digest": "26adbda93a22f56964b620e0ec1ac48eaaca6b1f766cd03db375123576d4dd24",
+          "output_directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_decisive_tests_v1/capacity/worker1/episode001_open_101",
+          "startup_wall_sec": 135.47810509987175,
+          "initial_estimated_poses": [
+            {
+              "name": "tb1",
+              "x": 0.00010920240840410401,
+              "y": -0.4499998875934533,
+              "yaw": 2.3516693103905134e-05
+            },
+            {
+              "name": "tb2",
+              "x": 0.00010919882478515294,
+              "y": 0.45000033415909013,
+              "yaw": 2.3339671540571203e-05
+            },
+            {
+              "name": "tb3",
+              "x": 0.450109083900931,
+              "y": 4.6343828062956066e-07,
+              "yaw": 2.324973615675083e-05
+            }
+          ],
+          "transitions": 35,
+          "transition_wall_sec": 1059.1478878241032,
+          "reward_sum": 6.928721811375877,
+          "dt_values": [
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "diagnostic_uniform_actions": [
+            {
+              "decision": 0,
+              "action": 301,
+              "observation_sequence": 1,
+              "observation_digest": "26adbda93a22f56964b620e0ec1ac48eaaca6b1f766cd03db375123576d4dd24",
+              "legal_joint_actions": 126,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 1,
+              "action": 888,
+              "observation_sequence": 2,
+              "observation_digest": "25d87c0bf98ccdb39ec756040b5f0e24a5451abcafbd21b4a50352e36ff32b23",
+              "legal_joint_actions": 1,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 2,
+              "action": 888,
+              "observation_sequence": 3,
+              "observation_digest": "9e9ab1b4257a624894494cc0bd11801ffcf3b460340c0b3b9447de9dd330f0b9",
+              "legal_joint_actions": 1,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 3,
+              "action": 888,
+              "observation_sequence": 4,
+              "observation_digest": "78dfdf13d9a3bd127f4e522c383d9107ff6953169585bd1e730977ed819f5e8c",
+              "legal_joint_actions": 1,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 4,
+              "action": 888,
+              "observation_sequence": 5,
+              "observation_digest": "066b50aba2e9e25470785edeaf17c99e62b17e8993f2532425f7731cbdfa2430",
+              "legal_joint_actions": 1,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 5,
+              "action": 581,
+              "observation_sequence": 6,
+              "observation_digest": "4f37d1bd72dbd3ed5e26ff7919ba56d4967f7e4fcdf284716a06476bc23ae159",
+              "legal_joint_actions": 776,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 6,
+              "action": 888,
+              "observation_sequence": 7,
+              "observation_digest": "5c944c04f071c15264a72f091dba943546338f6190b3501fd4f12e6aa0d766f3",
+              "legal_joint_actions": 10,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 7,
+              "action": 878,
+              "observation_sequence": 8,
+              "observation_digest": "5040ff4b744c2cef389fba6e66c96ddafdde4d420d8c7420ea7208237f91f95e",
+              "legal_joint_actions": 9,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 8,
+              "action": 888,
+              "observation_sequence": 9,
+              "observation_digest": "5438705e1f94ed5400555514e271ba2ebf02f70c60cea59ceb8859f875090f72",
+              "legal_joint_actions": 1,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 9,
+              "action": 888,
+              "observation_sequence": 10,
+              "observation_digest": "61c68d29c3816a42eeaf169a0338323ce89e8df2392d5308619d203b03b29143",
+              "legal_joint_actions": 1,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 10,
+              "action": 888,
+              "observation_sequence": 11,
+              "observation_digest": "ce2e843a1fd7b946c32d94ce2469ae9266548c85569076acdf7a1595449a8b3f",
+              "legal_joint_actions": 1,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 11,
+              "action": 888,
+              "observation_sequence": 12,
+              "observation_digest": "019365d85e34806a0288025674e77fa2943c2c60cdc322f73e7bcee2367bf48d",
+              "legal_joint_actions": 1,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 12,
+              "action": 580,
+              "observation_sequence": 13,
+              "observation_digest": "45b5aafda353cb3402107f9f2e9dcfe4410ab6a96002ccaf6ce0240a302c1d67",
+              "legal_joint_actions": 44,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 13,
+              "action": 888,
+              "observation_sequence": 14,
+              "observation_digest": "4b2a6fc0c0223d934d9c8fe0694a5c5cc96455685a3f188e3a0d3b95c10f1f67",
+              "legal_joint_actions": 1,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 14,
+              "action": 888,
+              "observation_sequence": 15,
+              "observation_digest": "a460f7a1bc7b1ae239b973767ee70009aa65822807becb3a87f880462ae71e43",
+              "legal_joint_actions": 8,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 15,
+              "action": 858,
+              "observation_sequence": 16,
+              "observation_digest": "ec2f94ca706cfcc39f603d765833439071f7425d68c2db4d84802c105b4be941",
+              "legal_joint_actions": 9,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 16,
+              "action": 888,
+              "observation_sequence": 17,
+              "observation_digest": "0cebecff7981397407f3673d5b2d549cabf658c51d9d0239ce8ae0ca2e2df63c",
+              "legal_joint_actions": 1,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 17,
+              "action": 888,
+              "observation_sequence": 18,
+              "observation_digest": "e22f6385c5628a91fdcdfd7e2edc67ffcaa5bf5fb77bdaf3b3cc169c669773b6",
+              "legal_joint_actions": 1,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 18,
+              "action": 888,
+              "observation_sequence": 19,
+              "observation_digest": "f113fef132f1c2900e0ad828c1f7612a2da0c32e0ef54c6a7f64bfafc7f01bcb",
+              "legal_joint_actions": 1,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 19,
+              "action": 185,
+              "observation_sequence": 20,
+              "observation_digest": "a40fe543727d5211b874929e3b87938fef28a35ca03632514c8926ba05156e63",
+              "legal_joint_actions": 42,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 20,
+              "action": 888,
+              "observation_sequence": 21,
+              "observation_digest": "2e35ddc5eee5637d959f8367975a5463c77e3f9a90663a74b3557585df4772fc",
+              "legal_joint_actions": 1,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 21,
+              "action": 888,
+              "observation_sequence": 22,
+              "observation_digest": "b981cb464c9a9a8e940b8b39dd30f39895a39144a3b1f515ca952c4063a2b8b3",
+              "legal_joint_actions": 1,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 22,
+              "action": 848,
+              "observation_sequence": 23,
+              "observation_digest": "f15e07bff2e4b131a7e733e573e49b6b073ddc26c0b92d022b683bb8f3500e34",
+              "legal_joint_actions": 7,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 23,
+              "action": 888,
+              "observation_sequence": 24,
+              "observation_digest": "a60675bb17b1a6796853249fac67dbb322d65d814dd3324eec4b6a4110ba950b",
+              "legal_joint_actions": 1,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 24,
+              "action": 888,
+              "observation_sequence": 25,
+              "observation_digest": "ad303aff0ee5cc00823914c422d90090e71a58cf18713b8a3b867c2a6b382c6c",
+              "legal_joint_actions": 1,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 25,
+              "action": 888,
+              "observation_sequence": 26,
+              "observation_digest": "7893a38c7bc7c5035ca3c44b49e1e782a7136276366792b4ace422db33dfc2d5",
+              "legal_joint_actions": 1,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 26,
+              "action": 883,
+              "observation_sequence": 27,
+              "observation_digest": "dca03ab1751450ee1ab8cccc8c96e53c45cea91bd1d9790f091ebe51febc6038",
+              "legal_joint_actions": 37,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 27,
+              "action": 688,
+              "observation_sequence": 28,
+              "observation_digest": "972bfdfd7d8214143253f1ddde80e79da3979ba7f1e1db4b39cab9486def6223",
+              "legal_joint_actions": 7,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 28,
+              "action": 888,
+              "observation_sequence": 29,
+              "observation_digest": "a9522df045445aa38f349b5fd277d86a199f46349a42deda3fbff9cdb487a20f",
+              "legal_joint_actions": 1,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 29,
+              "action": 878,
+              "observation_sequence": 30,
+              "observation_digest": "7ae8a218dec16eed1d9b669c50f5f97313f78a5ce41519554dc6b65e0862acf4",
+              "legal_joint_actions": 9,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 30,
+              "action": 888,
+              "observation_sequence": 31,
+              "observation_digest": "f2ecac58d24bb65690142df1496df2dcd196f4dd7f7448e03367c10a1e2fb2c3",
+              "legal_joint_actions": 1,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 31,
+              "action": 888,
+              "observation_sequence": 32,
+              "observation_digest": "fbc6399cb457cd3ac3dc5e62fff64671f48179e8e0a79c54f8f488f9ebbc0af3",
+              "legal_joint_actions": 1,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 32,
+              "action": 889,
+              "observation_sequence": 33,
+              "observation_digest": "8403fd41c1534fcf874b150f9d92d80ef0e1488681f20d1fcef2dc25b8555901",
+              "legal_joint_actions": 7,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 33,
+              "action": 883,
+              "observation_sequence": 34,
+              "observation_digest": "cab212d4441bd5fd8de40f6e31f4f8819aeb7f18bf71667283245856346ec352",
+              "legal_joint_actions": 45,
+              "step_returned": true,
+              "action_submitted": true
+            },
+            {
+              "decision": 34,
+              "action": 988,
+              "observation_sequence": 35,
+              "observation_digest": "6c13a590061eca850bb9af5233d6d855d575a30bb2bfafb0541b8a3c81ed8802",
+              "legal_joint_actions": 7,
+              "step_returned": true,
+              "action_submitted": true
+            }
+          ],
+          "intentional_abort_prefix": {
+            "after_rpc": "step",
+            "first_failure": {
+              "worker_id": 0,
+              "kind": "rpc_or_worker_exception",
+              "reason": "InfrastructureError('step: IPC response wall guard expired')",
+              "episode_index": 0,
+              "epoch": "capacity_w0_e1_c6387a24",
+              "observed_wall_monotonic_ns": 4571455572708507
+            }
+          },
+          "wall_sec_including_startup_and_closure": 1296.9116790546104
+        }
+      ],
+      "error": null,
+      "diagnostic_uniform_worker_seed": 1000044,
+      "cleanup_error": "InfrastructureError('close: IPC response wall guard expired')",
+      "diagnostic_abort": {
+        "requested": true,
+        "first_failure": {
+          "worker_id": 0,
+          "kind": "rpc_or_worker_exception",
+          "reason": "InfrastructureError('step: IPC response wall guard expired')",
+          "episode_index": 0,
+          "epoch": "capacity_w0_e1_c6387a24",
+          "observed_wall_monotonic_ns": 4571455572708507
+        },
+        "scope": "cooperative stop after real RPC return; no synthetic transition"
+      },
+      "wall_sec": 1296.911702144891,
+      "shutdown_receipts": [
+        {
+          "epoch": "capacity_w1_e1_49c6c1e0",
+          "worker_returncode": -9,
+          "forced_shutdown": true,
+          "failed_sample": true,
+          "owned_processes_seen": [
+            {
+              "pid": 2529561,
+              "parent": 2529478,
+              "group": 2529561,
+              "session": 2529561,
+              "start_ticks": 457028616,
+              "state": "S"
+            },
+            {
+              "pid": 2529688,
+              "parent": 2529561,
+              "group": 2529561,
+              "session": 2529561,
+              "start_ticks": 457028800,
+              "state": "Z"
+            },
+            {
+              "pid": 2529740,
+              "parent": 2529561,
+              "group": 2529561,
+              "session": 2529561,
+              "start_ticks": 457028970,
+              "state": "Z"
+            },
+            {
+              "pid": 2529744,
+              "parent": 2529561,
+              "group": 2529561,
+              "session": 2529561,
+              "start_ticks": 457028970,
+              "state": "Z"
+            },
+            {
+              "pid": 2529748,
+              "parent": 2529561,
+              "group": 2529561,
+              "session": 2529561,
+              "start_ticks": 457028970,
+              "state": "Z"
+            },
+            {
+              "pid": 2529752,
+              "parent": 2529561,
+              "group": 2529561,
+              "session": 2529561,
+              "start_ticks": 457028970,
+              "state": "Z"
+            },
+            {
+              "pid": 2529756,
+              "parent": 2529561,
+              "group": 2529561,
+              "session": 2529561,
+              "start_ticks": 457028970,
+              "state": "Z"
+            },
+            {
+              "pid": 2529760,
+              "parent": 2529561,
+              "group": 2529561,
+              "session": 2529561,
+              "start_ticks": 457028971,
+              "state": "S"
+            },
+            {
+              "pid": 2529764,
+              "parent": 2529561,
+              "group": 2529561,
+              "session": 2529561,
+              "start_ticks": 457028971,
+              "state": "Z"
+            },
+            {
+              "pid": 2529768,
+              "parent": 2529688,
+              "group": 2529561,
+              "session": 2529561,
+              "start_ticks": 457028971,
+              "state": "S"
+            },
+            {
+              "pid": 2529772,
+              "parent": 2529561,
+              "group": 2529561,
+              "session": 2529561,
+              "start_ticks": 457028971,
+              "state": "Z"
+            },
+            {
+              "pid": 2530786,
+              "parent": 2529561,
+              "group": 2529561,
+              "session": 2529561,
+              "start_ticks": 457029389,
+              "state": "Z"
+            },
+            {
+              "pid": 2530788,
+              "parent": 2529688,
+              "group": 2529561,
+              "session": 2529561,
+              "start_ticks": 457029389,
+              "state": "R"
+            },
+            {
+              "pid": 2530790,
+              "parent": 2529561,
+              "group": 2529561,
+              "session": 2529561,
+              "start_ticks": 457029389,
+              "state": "Z"
+            },
+            {
+              "pid": 2530995,
+              "parent": 2529561,
+              "group": 2529561,
+              "session": 2529561,
+              "start_ticks": 457029746,
+              "state": "Z"
+            },
+            {
+              "pid": 2530997,
+              "parent": 2529688,
+              "group": 2529561,
+              "session": 2529561,
+              "start_ticks": 457029746,
+              "state": "S"
+            },
+            {
+              "pid": 2530999,
+              "parent": 2529561,
+              "group": 2529561,
+              "session": 2529561,
+              "start_ticks": 457029747,
+              "state": "Z"
+            },
+            {
+              "pid": 2531230,
+              "parent": 2529688,
+              "group": 2529561,
+              "session": 2529561,
+              "start_ticks": 457030111,
+              "state": "S"
+            },
+            {
+              "pid": 2531626,
+              "parent": 2529561,
+              "group": 2529561,
+              "session": 2529561,
+              "start_ticks": 457031264,
+              "state": "Z"
+            },
+            {
+              "pid": 2531628,
+              "parent": 2529561,
+              "group": 2529561,
+              "session": 2529561,
+              "start_ticks": 457031265,
+              "state": "Z"
+            },
+            {
+              "pid": 2531630,
+              "parent": 2529561,
+              "group": 2529561,
+              "session": 2529561,
+              "start_ticks": 457031265,
+              "state": "Z"
+            },
+            {
+              "pid": 2531632,
+              "parent": 2529561,
+              "group": 2529561,
+              "session": 2529561,
+              "start_ticks": 457031265,
+              "state": "Z"
+            },
+            {
+              "pid": 2531639,
+              "parent": 2529561,
+              "group": 2529561,
+              "session": 2529561,
+              "start_ticks": 457031267,
+              "state": "Z"
+            },
+            {
+              "pid": 2531641,
+              "parent": 2529561,
+              "group": 2529561,
+              "session": 2529561,
+              "start_ticks": 457031268,
+              "state": "Z"
+            },
+            {
+              "pid": 2531643,
+              "parent": 2529561,
+              "group": 2529561,
+              "session": 2529561,
+              "start_ticks": 457031268,
+              "state": "Z"
+            },
+            {
+              "pid": 2533179,
+              "parent": 2529561,
+              "group": 2529561,
+              "session": 2529561,
+              "start_ticks": 457035769,
+              "state": "Z"
+            },
+            {
+              "pid": 2533181,
+              "parent": 2529561,
+              "group": 2529561,
+              "session": 2529561,
+              "start_ticks": 457035769,
+              "state": "Z"
+            },
+            {
+              "pid": 2533183,
+              "parent": 2529561,
+              "group": 2529561,
+              "session": 2529561,
+              "start_ticks": 457035769,
+              "state": "Z"
+            },
+            {
+              "pid": 2533185,
+              "parent": 2529561,
+              "group": 2529561,
+              "session": 2529561,
+              "start_ticks": 457035770,
+              "state": "Z"
+            },
+            {
+              "pid": 2533187,
+              "parent": 2529561,
+              "group": 2529561,
+              "session": 2529561,
+              "start_ticks": 457035770,
+              "state": "Z"
+            },
+            {
+              "pid": 2533189,
+              "parent": 2529561,
+              "group": 2529561,
+              "session": 2529561,
+              "start_ticks": 457035770,
+              "state": "Z"
+            },
+            {
+              "pid": 2533191,
+              "parent": 2529561,
+              "group": 2529561,
+              "session": 2529561,
+              "start_ticks": 457035770,
+              "state": "Z"
+            },
+            {
+              "pid": 2534733,
+              "parent": 2529561,
+              "group": 2529561,
+              "session": 2529561,
+              "start_ticks": 457040270,
+              "state": "Z"
+            },
+            {
+              "pid": 2534735,
+              "parent": 2529561,
+              "group": 2529561,
+              "session": 2529561,
+              "start_ticks": 457040271,
+              "state": "Z"
+            },
+            {
+              "pid": 2534737,
+              "parent": 2529561,
+              "group": 2529561,
+              "session": 2529561,
+              "start_ticks": 457040271,
+              "state": "Z"
+            },
+            {
+              "pid": 2534739,
+              "parent": 2529561,
+              "group": 2529561,
+              "session": 2529561,
+              "start_ticks": 457040271,
+              "state": "Z"
+            },
+            {
+              "pid": 2534741,
+              "parent": 2529561,
+              "group": 2529561,
+              "session": 2529561,
+              "start_ticks": 457040271,
+              "state": "Z"
+            },
+            {
+              "pid": 2534743,
+              "parent": 2529561,
+              "group": 2529561,
+              "session": 2529561,
+              "start_ticks": 457040271,
+              "state": "Z"
+            },
+            {
+              "pid": 2534745,
+              "parent": 2529561,
+              "group": 2529561,
+              "session": 2529561,
+              "start_ticks": 457040272,
+              "state": "Z"
+            },
+            {
+              "pid": 2535162,
+              "parent": 2529561,
+              "group": 2529561,
+              "session": 2529561,
+              "start_ticks": 457041079,
+              "state": "Z"
+            },
+            {
+              "pid": 2535164,
+              "parent": 2529561,
+              "group": 2529561,
+              "session": 2529561,
+              "start_ticks": 457041079,
+              "state": "Z"
+            },
+            {
+              "pid": 2535341,
+              "parent": 2529561,
+              "group": 2529561,
+              "session": 2529561,
+              "start_ticks": 457041574,
+              "state": "Z"
+            },
+            {
+              "pid": 2535356,
+              "parent": 2529561,
+              "group": 2529561,
+              "session": 2529561,
+              "start_ticks": 457041624,
+              "state": "Z"
+            }
+          ],
+          "remaining_owned_processes": [],
+          "remaining_owned_zombies": [],
+          "process_scan_statistics": {
+            "count": 6512,
+            "max_scan_wall_sec": 0.6461286637932062,
+            "max_observed_interval_sec": 0.6961292726919055
+          }
+        }
+      ]
+    }
+  ],
+  "diagnostic_abort": {
+    "requested": true,
+    "first_failure": {
+      "worker_id": 0,
+      "kind": "rpc_or_worker_exception",
+      "reason": "InfrastructureError('step: IPC response wall guard expired')",
+      "episode_index": 0,
+      "epoch": "capacity_w0_e1_c6387a24",
+      "observed_wall_monotonic_ns": 4571455572708507
+    },
+    "scope": "first observed failing RPC/worker; other in-flight RPCs finish then close"
+  },
+  "outcome": "INCOMPLETE",
+  "wall_limit_exceeded": false
+}

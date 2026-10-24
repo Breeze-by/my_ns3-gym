@@ -1,3 +1,5 @@
+2026-10-24 decisive diagnostic runs are CLOSED/FAIL. Historical v1 plans/output paths are exclusive and must not be rerun. The unregistered decisive_probe entry is now rejected before World by the actual native custody allow-list; capacity used the original benchmark. See [test results and next-route recommendation](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261024_mr3_p2a_decisive_tests.md). No production launch default, safety law or policy entry changed.
+
 2026-10-24 P2A独立有限诊断入口：无线目录下使用已冻结的 `python -B -m mr3_learning.decisive_tests run --freeze <exact40>`，必须先通过新计划/source/build检查并clean push；仅执行预声明行为与成本诊断，非资格或PPO入口。见[测试声明](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261024_mr3_p2a_decisive_tests.md)。尚未执行时不得称PASS。
 
 # 当前三机器人基线与MR3适配启动命令

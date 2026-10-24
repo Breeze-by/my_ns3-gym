@@ -1,13 +1,34 @@
 """Artificial original-dispatcher checks, without native/physical credit."""
 import copy
+import json
+from pathlib import Path
+import tempfile
 import unittest
+from unittest.mock import patch
 from mr3_learning.decisive_probe import Probe
 from mr3_learning.audit_decisive_stimulus import replay
+from mr3_learning import decisive_tests
 from .test_reach_outward_cancel_v3_producer import Fixture
 from .test_reach_masked_cancel_producer import accept, finish_cancels
 
 
 class DecisiveProbeTests(unittest.TestCase):
+    def test_native_entry_allowlist_is_checked_before_source_or_world(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path=Path(directory)/'plan.json'
+            plan=dict(diagnostic_contract='mr3-p2a-decisive-tests-v1',run_directory='/tmp/not-started',
+                      native_argv=[decisive_tests.PYTHON,'-B','-m','mr3_learning.decisive_probe'])
+            path.write_text(json.dumps(plan))
+            with patch.object(decisive_tests,'bound_sources') as downstream:
+                with self.assertRaisesRegex(ValueError,'actual parent module'):
+                    decisive_tests.check(path,'0'*40)
+                downstream.assert_not_called()
+            plan['native_argv'][3]='mr3_learning.benchmark'
+            path.write_text(json.dumps(plan))
+            with patch.object(decisive_tests,'bound_sources',side_effect=RuntimeError('source checkpoint reached')):
+                with self.assertRaisesRegex(RuntimeError,'source checkpoint reached'):
+                    decisive_tests.check(path,'0'*40)
+
     def test_independent_replay_accepts_events_and_rejects_tampering(self):
         f,p=Fixture(),Probe();rows=[];decisions=[];prior=None
         for t in range(33):
@@ -21,6 +42,10 @@ class DecisiveProbeTests(unittest.TestCase):
             accept(f,t+.1)
             if 9 in (action//100,action//10%10,action%10):finish_cancels(f,t)
         self.assertEqual(len(replay(rows,decisions,32)),3)
+        rounded=copy.deepcopy(rows);rounded[28]['snapshot']['task_elapsed_sec']=27.999999999999993
+        self.assertEqual(len(replay(rounded,decisions,32)),3)
+        rounded[28]['snapshot']['task_elapsed_sec']=27.999
+        with self.assertRaisesRegex(ValueError,'cadence'):replay(rounded,decisions,32)
         wrong=copy.deepcopy(rows);wrong[12]['snapshot']['robots'][0]['v']=.079
         with self.assertRaisesRegex(ValueError,'moving'):replay(wrong,decisions,32)
         wrong=copy.deepcopy(decisions);wrong[0]['planned']['purposes']['tb1']='qualified1'

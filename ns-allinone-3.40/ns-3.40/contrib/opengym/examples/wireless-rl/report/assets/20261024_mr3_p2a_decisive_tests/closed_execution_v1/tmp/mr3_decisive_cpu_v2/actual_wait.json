@@ -1,0 +1,198 @@
+{
+  "schema": "mr3-reach-outer-actual-wait-v1",
+  "scope": "cpu",
+  "safety_contract": "mr3-reach-v1",
+  "actual_argv": [
+    "/home/zhuyulab/miniconda3/envs/ns3gym/bin/python",
+    "-B",
+    "-m",
+    "pytest",
+    "-q",
+    "mr3_learning/tests/test_decisive_probe.py",
+    "mr3_learning/tests/test_audit_reach_diagnostic.py",
+    "mr3_learning/tests/test_reach_diagnostic.py",
+    "mr3_learning/tests/test_audit_reach_peer_control.py",
+    "mr3_learning/tests/test_authority_public_reader_wiring.py",
+    "mr3_learning/tests/test_reach_controlled_dispatch.py",
+    "-k",
+    "not test_episode_api_binds_raw_files_and_exclusive_output",
+    "--junitxml=/tmp/mr3_decisive_cpu_v2/junit.xml"
+  ],
+  "cwd": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl",
+  "coordinator_identity": {
+    "pid": 2463375,
+    "parent": 2463373,
+    "group": 2463373,
+    "session": 2463373,
+    "start_ticks": 456891180,
+    "state": "R"
+  },
+  "child_identity": {
+    "pid": 2463384,
+    "parent": 2463375,
+    "group": 2463373,
+    "session": 2463373,
+    "start_ticks": 456891194,
+    "state": "R"
+  },
+  "actual_returncode": 0,
+  "actual_waited": true,
+  "errors": [],
+  "started_monotonic_ns": 4568911945260014,
+  "ended_monotonic_ns": 4568927960574430,
+  "actual_child_wait_seconds": "16.015314416",
+  "source_before": [
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/decisive_probe.py",
+      "sha256": "be71f07a73b55576ff25374eaa3f14e130fd84fe1c1df4f71aa7ff2615671486",
+      "bytes": 13875,
+      "stat": [
+        2051,
+        73564188,
+        13875,
+        1792822831354559295,
+        1792822831354559295
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/decisive_tests.py",
+      "sha256": "495ca48062fb1ec3bda565e0a59057cd1f3723d956f9eaf11236d9e0d06e36f9",
+      "bytes": 15391,
+      "stat": [
+        2051,
+        73564189,
+        15391,
+        1792823482540293793,
+        1792823482540293793
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_decisive_stimulus.py",
+      "sha256": "117781fa696eff99ccf29a3fc66c17fa214241b2a32652b8d71dd3e65e259b03",
+      "bytes": 7404,
+      "stat": [
+        2051,
+        73564191,
+        7404,
+        1792823482539293746,
+        1792823482539293746
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_diagnostic.py",
+      "sha256": "6f39f1a67ae1863c026a35a0d2cbab5734e6766c4c9a4b34f0ba0c1c3916a09c",
+      "bytes": 12361,
+      "stat": [
+        2051,
+        73564053,
+        12361,
+        1792823094266112558,
+        1792823094266112558
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_peer_control.py",
+      "sha256": "2ab172070499868dd7facdc750df2e492afddac42eca4b1a6f70f9c899ce8bfb",
+      "bytes": 57704,
+      "stat": [
+        2051,
+        73563986,
+        57704,
+        1792822757546350441,
+        1792822757546350441
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_decisive_probe.py",
+      "sha256": "6d7089fc2b9dfcaa69e3e3007698398f79f2b7f9f283b7cd8df4fb447c57acd6",
+      "bytes": 5586,
+      "stat": [
+        2051,
+        73564190,
+        5586,
+        1792823497672010650,
+        1792823497672010650
+      ]
+    }
+  ],
+  "source_after": [
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/decisive_probe.py",
+      "sha256": "be71f07a73b55576ff25374eaa3f14e130fd84fe1c1df4f71aa7ff2615671486",
+      "bytes": 13875,
+      "stat": [
+        2051,
+        73564188,
+        13875,
+        1792822831354559295,
+        1792822831354559295
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/decisive_tests.py",
+      "sha256": "495ca48062fb1ec3bda565e0a59057cd1f3723d956f9eaf11236d9e0d06e36f9",
+      "bytes": 15391,
+      "stat": [
+        2051,
+        73564189,
+        15391,
+        1792823482540293793,
+        1792823482540293793
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_decisive_stimulus.py",
+      "sha256": "117781fa696eff99ccf29a3fc66c17fa214241b2a32652b8d71dd3e65e259b03",
+      "bytes": 7404,
+      "stat": [
+        2051,
+        73564191,
+        7404,
+        1792823482539293746,
+        1792823482539293746
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_diagnostic.py",
+      "sha256": "6f39f1a67ae1863c026a35a0d2cbab5734e6766c4c9a4b34f0ba0c1c3916a09c",
+      "bytes": 12361,
+      "stat": [
+        2051,
+        73564053,
+        12361,
+        1792823094266112558,
+        1792823094266112558
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_peer_control.py",
+      "sha256": "2ab172070499868dd7facdc750df2e492afddac42eca4b1a6f70f9c899ce8bfb",
+      "bytes": 57704,
+      "stat": [
+        2051,
+        73563986,
+        57704,
+        1792822757546350441,
+        1792822757546350441
+      ]
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_decisive_probe.py",
+      "sha256": "6d7089fc2b9dfcaa69e3e3007698398f79f2b7f9f283b7cd8df4fb447c57acd6",
+      "bytes": 5586,
+      "stat": [
+        2051,
+        73564190,
+        5586,
+        1792823497672010650,
+        1792823497672010650
+      ]
+    }
+  ],
+  "source_unchanged": true,
+  "passed": true,
+  "console": {
+    "path": "/tmp/mr3_decisive_cpu_v2/console.log",
+    "sha256": "e63a3ade9c1e90d9ec8d639a6ade44f8cb44eb18136472ce13aade7953e29240"
+  }
+}

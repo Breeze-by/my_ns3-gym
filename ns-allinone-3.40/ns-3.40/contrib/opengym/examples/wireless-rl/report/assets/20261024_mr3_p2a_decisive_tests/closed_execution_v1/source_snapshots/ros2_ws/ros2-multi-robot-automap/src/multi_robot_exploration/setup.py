@@ -1,0 +1,32 @@
+from setuptools import setup
+
+package_name = 'multi_robot_exploration'
+
+setup(
+    name=package_name,
+    version='0.0.0',
+    packages=[package_name],
+    data_files=[
+        ('share/ament_index/resource_index/packages',
+            ['resource/' + package_name]),
+        ('share/' + package_name, ['package.xml']),
+    ],
+    install_requires=['setuptools'],
+    zip_safe=True,
+    maintainer='thagasheriff',
+    maintainer_email='thagasheriff@e-consystems.com',
+    description='Implements frontier-based autonomous exploration for multiple robots.',
+    license='MIT',
+    tests_require=['pytest'],
+    entry_points={
+        'console_scripts': [
+            'control = multi_robot_exploration.control:main',
+            'mr3_adapter = multi_robot_exploration.mr3_adapter:main',
+            'mr3_information = multi_robot_exploration.mr3_information:main',
+            'nav2_ready_gate = multi_robot_exploration.nav2_ready_gate:main',
+            'peer_obstacles = multi_robot_exploration.peer_obstacles:main',
+            'motion_safety = multi_robot_exploration.motion_safety:main',
+            'task_evaluator = multi_robot_exploration.task_evaluator:main',
+        ],
+    },
+)
