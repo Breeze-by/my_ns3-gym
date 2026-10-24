@@ -138,3 +138,7 @@ v2 实测证明发送 ready 年龄80ms仍可能在接收时失去当前停止证
 receiving authority仍为v3，ROS、plant、STOP/B/R/lease/5s/95%均不变。独立读者须把实际UNBOUND决策逐项验证为原严格零权限，并保存带严格正整数且不重复decision_sequence的结果，供完整FIFO关联；建立authority_configuration后保留这些历史结果，不把它们变成ACTIVE权限。该修复不回填旧FIFO FAIL。
 
 96步原生及独立stimulus、information、cadence通过仅为本次范围的正证据，整体FIFO/closure仍FAIL，无同freeze完整资格。后续capacity-after-activation是新冻结的独立工程容量试验，不依赖将旧FAIL重判；本身须跑完自己的来源、native、FIFO、information、cadence、full、closure审查。任何结果均不自动取得P2A或PPO许可。
+
+
+2026-10-24 独立容量实际闭合FAIL：freeze99fe81a83，双worker64+64=128返回、native rc0/2008.205876118秒，两个worker/launch正常关闭、forced=False。FIFO worker0 PASS、worker1 unclosed stop/terminal tail FAIL；information两PASS，cadence/runtime同worker1尾部FAIL，closure保留FIFO叶FAIL、full跳过。修复后authority与原物理重放已在worker0通过，不能合称本轮完整资格或旧96步同freeze资格。完整连续父5002.91801198秒（约83.38分钟）大于pilot原2905.9547395464029秒，模型计算未含；capacity/autoPolicyFalse、P2A未完成。U128764.8660959586018/C180000、余51235.1339040413982，nested不叠加、pilot/final原额保持。1193来源current/Git/恢复、10ELF、98保存身份freshgone；1869普通原件3878618594B无损封存362866667B，全恢复、原件未删。关闭CPU真0/258.902636096秒、own2gone/工程0。下一先固定失败尾部有界定位，再做保留原门的结束协议与实测审计优化；具体机器人/债务起点/唯一根因仍UNKNOWN，未新World或学习。
+此次仅诊断闭合，不改变原科学门；capacity_qualified/automatic_policy_entry_allowed/P2A_complete保持False。

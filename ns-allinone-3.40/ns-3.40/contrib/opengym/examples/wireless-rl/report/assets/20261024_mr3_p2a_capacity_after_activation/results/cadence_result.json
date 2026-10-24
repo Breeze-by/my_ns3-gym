@@ -1,0 +1,784 @@
+{
+  "schema": "mr3-reach-independent-world-odometry-cadence-v1",
+  "freeze": "99fe81a8350d33f15759b75829a530044fc5d37b",
+  "episodes": [
+    {
+      "directory": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_capacity_after_activation_v1/capacity/worker0/episode001_open_101",
+      "epoch": "capacity_w0_e1_9b5dc6be",
+      "window_ns": [
+        38280000000,
+        102280000000
+      ],
+      "robots": {
+        "tb1": {
+          "publications": 3200,
+          "period_ns": 20000000,
+          "actuations": 1883,
+          "actuation_period_ns": 34000000,
+          "actual_publisher_gids": {
+            "odom": "010f3cc01d6967f9000000000000d8030000000000000000",
+            "tf": "010f3cc01d6967f9000000000000da030000000000000000"
+          }
+        },
+        "tb2": {
+          "publications": 3200,
+          "period_ns": 20000000,
+          "actuations": 1882,
+          "actuation_period_ns": 34000000,
+          "actual_publisher_gids": {
+            "odom": "010f3cc01d6967f900000000000187030000000000000000",
+            "tf": "010f3cc01d6967f900000000000188030000000000000000"
+          }
+        },
+        "tb3": {
+          "publications": 3200,
+          "period_ns": 20000000,
+          "actuations": 1882,
+          "actuation_period_ns": 34000000,
+          "actual_publisher_gids": {
+            "odom": "010f3cc01d6967f900000000000236030000000000000000",
+            "tf": "010f3cc01d6967f900000000000237030000000000000000"
+          }
+        }
+      },
+      "selected_received": {
+        "guard": {
+          "tb1": 3200,
+          "tb2": 3200,
+          "tb3": 3200
+        },
+        "information": {
+          "tb1": 3201,
+          "tb2": 3201,
+          "tb3": 3201
+        }
+      },
+      "passive_recorder": {
+        "ready_reference_clock_ns": 3480000000,
+        "unqualified_pre_ready_startup_packets": 0
+      },
+      "passed": true,
+      "actuation_profile": "initial-zero-encoder-hold-v1",
+      "initial_encoder_compound_replay_passed": true,
+      "motion_authority_profile": "mr3-owned-stream-authority-v3",
+      "independent_motion_authority_replay_passed": true,
+      "motion_authority_replay": {
+        "profile": "mr3-owned-stream-authority-v3",
+        "raw_generation_known": false,
+        "robots": {
+          "tb1": {
+            "passed": true,
+            "authority_callbacks": 274,
+            "ack_publications": 317,
+            "decisions": 5023,
+            "after_real_nonzero_application": true
+          },
+          "tb2": {
+            "passed": true,
+            "authority_callbacks": 271,
+            "ack_publications": 325,
+            "decisions": 5023,
+            "after_real_nonzero_application": true
+          },
+          "tb3": {
+            "passed": true,
+            "authority_callbacks": 289,
+            "ack_publications": 319,
+            "decisions": 5023,
+            "after_real_nonzero_application": true
+          }
+        },
+        "schema": "mr3-independent-motion-authority-episode-v1",
+        "passed": true,
+        "epoch": "capacity_w0_e1_9b5dc6be",
+        "adapter": {
+          "passed": true,
+          "profile": "mr3-owned-stream-authority-v3",
+          "raw_generation_known": false,
+          "actual_publications": 834,
+          "actual_ack_callbacks": 961,
+          "deferred_terminal_dispatches": 27,
+          "never_granted_terminals": 0,
+          "original_six_phase_protocol_replayed": true
+        },
+        "original_reach_mathematics_passed": true,
+        "original_global_stop_debts_and_fixed_radius_passed": true
+      },
+      "safety_contract": "mr3-reach-v1",
+      "implementation_provenance": {
+        "schema": "mr3-reach-cadence-implementation-v1",
+        "effective_entry": {
+          "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_cadence.py",
+          "sha256": "11fb951c479787f195f39f757b8be9ac4d70eb0fa58aed4d0b3c8c48b438ae3c"
+        },
+        "helper": {
+          "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_odometry_cadence.py",
+          "sha256": "14519650bc7bab8fbea3d1a0d8407dbd75b8fb32c9c504d8864202bac81b2a6b"
+        },
+        "projection": {
+          "helper_sha256": "14519650bc7bab8fbea3d1a0d8407dbd75b8fb32c9c504d8864202bac81b2a6b",
+          "projected_sha256": "ee5f34cf2128f309f40a9ee072145af109fe08e437ffb020d75afe6873b6a2f3",
+          "inverse_sha256": "14519650bc7bab8fbea3d1a0d8407dbd75b8fb32c9c504d8864202bac81b2a6b",
+          "exact_whole_source_inverse": true,
+          "changes": [
+            {
+              "old": "\"compiled_target_contract_sha256\", \"compiled_odometry_json_sha256\")",
+              "new": "\"compiled_target_contract_sha256\", \"compiled_odometry_json_sha256\", \"compiled_drive_feed_sha256\")",
+              "count": 1
+            },
+            {
+              "old": "row[\"kind\"] == \"decision\"",
+              "new": "row[\"kind\"] == \"reach_decision\"",
+              "count": 1
+            },
+            {
+              "old": "mr3-independent-world-odometry-cadence-v1",
+              "new": "mr3-reach-independent-world-odometry-cadence-v1",
+              "count": 1
+            },
+            {
+              "old": "    epoch = meta[\"epoch\"]\n",
+              "new": "    epoch = meta[\"epoch\"]\n    require(meta.get(\"safety_contract\") == \"mr3-reach-v1\" and meta.get(\"quantum_steps\") == 20\n            and meta.get(\"execution_phase_protocol\") == \"mr3-controlled-execution-phase-v2\"\n            and meta.get(\"reset_handshake\") == \"paused-controlled-state-peer-guard-storage-v2\",\n            \"legacy profile cannot acquire reach cadence credit\")\n",
+              "count": 1
+            },
+            {
+              "old": "\"measured_joint_rim_paired_common_fraction_v1\"",
+              "new": "\"initial_zero_encoder_hold_then_paired_common_fraction_v1\"",
+              "count": 1
+            }
+          ],
+          "actuation_profile": "initial-zero-encoder-hold-v1"
+        },
+        "scope": "Original publication/packet GID/20ms source/34ms update/selected-causal-source mathematics execute on new artifacts. New algorithm identity requires the independent initial-encoder compound-law conjunction.",
+        "actuation_profile": "initial-zero-encoder-hold-v1"
+      },
+      "runtime_drive_conjunction": {
+        "passed": true,
+        "contract": "mr3-reach-v1",
+        "epoch": "capacity_w0_e1_9b5dc6be",
+        "window_ns": [
+          38280000000,
+          102480000000
+        ],
+        "motion_authority_profile": "mr3-owned-stream-authority-v3",
+        "independent_motion_authority_replay_passed": true,
+        "motion_authority_replay": {
+          "profile": "mr3-owned-stream-authority-v3",
+          "raw_generation_known": false,
+          "robots": {
+            "tb1": {
+              "passed": true,
+              "authority_callbacks": 274,
+              "ack_publications": 317,
+              "decisions": 5023,
+              "after_real_nonzero_application": true
+            },
+            "tb2": {
+              "passed": true,
+              "authority_callbacks": 271,
+              "ack_publications": 325,
+              "decisions": 5023,
+              "after_real_nonzero_application": true
+            },
+            "tb3": {
+              "passed": true,
+              "authority_callbacks": 289,
+              "ack_publications": 319,
+              "decisions": 5023,
+              "after_real_nonzero_application": true
+            }
+          },
+          "schema": "mr3-independent-motion-authority-episode-v1",
+          "passed": true,
+          "epoch": "capacity_w0_e1_9b5dc6be",
+          "adapter": {
+            "passed": true,
+            "profile": "mr3-owned-stream-authority-v3",
+            "raw_generation_known": false,
+            "actual_publications": 834,
+            "actual_ack_callbacks": 961,
+            "deferred_terminal_dispatches": 27,
+            "never_granted_terminals": 0,
+            "original_six_phase_protocol_replayed": true
+          },
+          "original_reach_mathematics_passed": true,
+          "original_global_stop_debts_and_fixed_radius_passed": true
+        },
+        "reach_geometry_rule": "cone-support-v2",
+        "geometry_certificate_semantics": "conditional sufficient separation; unchanged remaining runtime necessities",
+        "actuation_profile": "initial-zero-encoder-hold-v1",
+        "initial_encoder_compound_replay_passed": true,
+        "initial_encoder_motor_replay": {
+          "tb1": {
+            "schema": "mr3-independent-initial-encoder-motor-replay-v1",
+            "profile": "initial-zero-encoder-hold-v1",
+            "epoch": "capacity_w0_e1_9b5dc6be",
+            "robot": "tb1",
+            "helper_sha256": "5db6b8d0885e667d158589aa02500617f3eede7391155cddaa1a5f366e1a4d52",
+            "passed": true,
+            "command_count": 5013,
+            "actuation_count": 3008,
+            "reference_capture_count": 1,
+            "first_nonzero_received_cmd_seq": 1858,
+            "fixed_R_or_continuous_physics_proved": false
+          },
+          "tb2": {
+            "schema": "mr3-independent-initial-encoder-motor-replay-v1",
+            "profile": "initial-zero-encoder-hold-v1",
+            "epoch": "capacity_w0_e1_9b5dc6be",
+            "robot": "tb2",
+            "helper_sha256": "5db6b8d0885e667d158589aa02500617f3eede7391155cddaa1a5f366e1a4d52",
+            "passed": true,
+            "command_count": 4909,
+            "actuation_count": 2946,
+            "reference_capture_count": 1,
+            "first_nonzero_received_cmd_seq": 1801,
+            "fixed_R_or_continuous_physics_proved": false
+          },
+          "tb3": {
+            "schema": "mr3-independent-initial-encoder-motor-replay-v1",
+            "profile": "initial-zero-encoder-hold-v1",
+            "epoch": "capacity_w0_e1_9b5dc6be",
+            "robot": "tb3",
+            "helper_sha256": "5db6b8d0885e667d158589aa02500617f3eede7391155cddaa1a5f366e1a4d52",
+            "passed": true,
+            "command_count": 4849,
+            "actuation_count": 2912,
+            "reference_capture_count": 1,
+            "first_nonzero_received_cmd_seq": 1695,
+            "fixed_R_or_continuous_physics_proved": false
+          }
+        },
+        "robots": {
+          "tb1": {
+            "anchors": 5,
+            "cumulative_path_diagnostic_m": 1.8208026604675398,
+            "raw_sources": 5113,
+            "actual_updates": 3008,
+            "open_terminal_promise": true
+          },
+          "tb2": {
+            "anchors": 6,
+            "cumulative_path_diagnostic_m": 1.4441457132616677,
+            "raw_sources": 5009,
+            "actual_updates": 2946,
+            "open_terminal_promise": false
+          },
+          "tb3": {
+            "anchors": 8,
+            "cumulative_path_diagnostic_m": 2.9319928038659877,
+            "raw_sources": 4950,
+            "actual_updates": 2912,
+            "open_terminal_promise": false
+          }
+        },
+        "controlled_quanta": 3210,
+        "independent_necessary_replay": true,
+        "continuous_physical_model_proved": false,
+        "scope": "complete observed source/calibration/application/anchor/stop/pair and20ms barrier necessities; callback graph identity only, not packet provenance; continuous plant, WORLD/heading calibration, global stop envelopes and future terminal confinement remain conditional; separate loaded-ELF/build custody audits remain required",
+        "source_proof": {
+          "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/motion_safety.py": {
+            "git_source": "99fe81a8350d33f15759b75829a530044fc5d37b:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/motion_safety.py",
+            "sha256": "ad7126e96734b7dd74e45ec6651b219f7a8388e24437c2b0f0197781f7f90511"
+          },
+          "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_reach_runtime.py": {
+            "git_source": "99fe81a8350d33f15759b75829a530044fc5d37b:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_reach_runtime.py",
+            "sha256": "576c235901a51223f1d2723757f60c490045ba897d445d5c6fb3c739512a466b"
+          },
+          "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_reach_geometry.py": {
+            "git_source": "99fe81a8350d33f15759b75829a530044fc5d37b:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_reach_geometry.py",
+            "sha256": "cf46b49f0740f84511f3d34f9a8eb3e56720744515d9eea1dc81bd8bacb85f0a"
+          },
+          "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_velocity_metric.py": {
+            "git_source": "99fe81a8350d33f15759b75829a530044fc5d37b:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_velocity_metric.py",
+            "sha256": "0a7a4c9ee3de72c1fddaab2441d9bc7a8ad6c543725e8af0f6f18a6ed783fae5"
+          },
+          "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_safety_intent.py": {
+            "git_source": "99fe81a8350d33f15759b75829a530044fc5d37b:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_safety_intent.py",
+            "sha256": "4d148ef0ad18c8474eaa0a6d898bf4e94177f4cd454ce5a2495d26c9b7ab75f1"
+          },
+          "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_information.py": {
+            "git_source": "99fe81a8350d33f15759b75829a530044fc5d37b:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_information.py",
+            "sha256": "df40a2d3dbba04d123b59bb5c72394815c87dbdd7fe3d90a5ffb87c6d6b47fc1"
+          },
+          "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/peer_obstacles.py": {
+            "git_source": "99fe81a8350d33f15759b75829a530044fc5d37b:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/peer_obstacles.py",
+            "sha256": "25457537485c6eba5b199e8406fdedd73b2b23f382077b27c112f3156e54615a"
+          },
+          "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_control_phase.py": {
+            "git_source": "99fe81a8350d33f15759b75829a530044fc5d37b:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_control_phase.py",
+            "sha256": "051b4e879daf8762af6f3252ca0e9c2857c0150ed7396eef9c9f2c523b992c85"
+          },
+          "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py": {
+            "git_source": "99fe81a8350d33f15759b75829a530044fc5d37b:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py",
+            "sha256": "197ff4bfcca9f815e191dcddea7a2a6af46a033c68310e350b63ad9e48579a69"
+          },
+          "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_drive_phase.py": {
+            "git_source": "99fe81a8350d33f15759b75829a530044fc5d37b:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_drive_phase.py",
+            "sha256": "0525230f4719e7279826810f0c177f6a6317a961d50711ac76d8a0338f93d987"
+          },
+          "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_episode.py": {
+            "git_source": "99fe81a8350d33f15759b75829a530044fc5d37b:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_episode.py",
+            "sha256": "9145d2ad23789b252e32f0afdfe18cf2eeec8e2c7e9ca7e89127a532288e411b"
+          },
+          "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_motion_safety.py": {
+            "git_source": "99fe81a8350d33f15759b75829a530044fc5d37b:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_motion_safety.py",
+            "sha256": "06ca6ece92ca49072df9eedbdd5396148ca2e09d4f2560204448e460e3e73ae7"
+          },
+          "ros2_ws/ros2-multi-robot-automap/src/multi_robot/src/mr3_gazebo_diff_drive.cpp": {
+            "git_source": "99fe81a8350d33f15759b75829a530044fc5d37b:ros2_ws/ros2-multi-robot-automap/src/multi_robot/src/mr3_gazebo_diff_drive.cpp",
+            "sha256": "89161707d2e11bb2c6748c410dbb9d485d90ae5ed4f01dafaa32043ffadb8f7e"
+          },
+          "ros2_ws/ros2-multi-robot-automap/src/multi_robot/CMakeLists.txt": {
+            "git_source": "99fe81a8350d33f15759b75829a530044fc5d37b:ros2_ws/ros2-multi-robot-automap/src/multi_robot/CMakeLists.txt",
+            "sha256": "b1781f6d22897aad9e40bbaec5d038bc2e4bc2ca15bba59c44038d7e85ce970a"
+          },
+          "ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/mr3_drive_feed.hpp": {
+            "git_source": "99fe81a8350d33f15759b75829a530044fc5d37b:ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/mr3_drive_feed.hpp",
+            "sha256": "693381dd6a7b4675e56b4a7da6d3ecf640bf85e9bef5775ff19785df3db5befa"
+          },
+          "ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/paired_wheel_slew.hpp": {
+            "git_source": "99fe81a8350d33f15759b75829a530044fc5d37b:ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/paired_wheel_slew.hpp",
+            "sha256": "dca3dbaf01251cf7ffe167f1dabb23a45b4fc95d6ad317dcc3290ff50ecf9a1b"
+          },
+          "ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/mr3_drive_target.hpp": {
+            "git_source": "99fe81a8350d33f15759b75829a530044fc5d37b:ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/mr3_drive_target.hpp",
+            "sha256": "4be4d77de247a5bcd427eb6948165e85098eb361030cf89d278d6df92e959d41"
+          },
+          "ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/mr3_odometry_json.hpp": {
+            "git_source": "99fe81a8350d33f15759b75829a530044fc5d37b:ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/mr3_odometry_json.hpp",
+            "sha256": "4b251bff9336a6005a4fff9b6a981286687e99cbff86bf8b3410163e32392c74"
+          },
+          "ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/mr3_initial_zero_encoder_servo.hpp": {
+            "git_source": "99fe81a8350d33f15759b75829a530044fc5d37b:ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/mr3_initial_zero_encoder_servo.hpp",
+            "sha256": "5db6b8d0885e667d158589aa02500617f3eede7391155cddaa1a5f366e1a4d52"
+          },
+          "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/initial_encoder_replay.py": {
+            "git_source": "99fe81a8350d33f15759b75829a530044fc5d37b:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/initial_encoder_replay.py",
+            "sha256": "304faf85f5a09166f1c08297a01de85c1a67bc3248d911a878748d08fd22c693"
+          },
+          "ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py": {
+            "git_source": "99fe81a8350d33f15759b75829a530044fc5d37b:ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py",
+            "sha256": "ebc95ad86950c107542b332e3aeb27c06543a3ead9f28718655bcb90cc45760f"
+          },
+          "ros2_ws/ros2-multi-robot-automap/src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py": {
+            "git_source": "99fe81a8350d33f15759b75829a530044fc5d37b:ros2_ws/ros2-multi-robot-automap/src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py",
+            "sha256": "eb72d85bfad66ecb0579bf8457139c42e9d3f7f447a2b97584fdd92e9e6dd7b2"
+          },
+          "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_runtime.py": {
+            "git_source": "99fe81a8350d33f15759b75829a530044fc5d37b:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_runtime.py",
+            "sha256": "4be82ec4c0a0b2b4a4edaa076ccaef87730673d92eb00fb17ab29cd831b7fe13"
+          },
+          "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_adapter.py": {
+            "git_source": "99fe81a8350d33f15759b75829a530044fc5d37b:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_adapter.py",
+            "sha256": "47cbd06a02eb84dc33d7b1823cf124aa5eaa9c2732e71873bc753a28eb110bb1"
+          },
+          "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_protocol.py": {
+            "git_source": "99fe81a8350d33f15759b75829a530044fc5d37b:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_protocol.py",
+            "sha256": "5a2b90efd162b19a35964750002fe549413fec6e07f9679ea611d3fe6b1e4ada"
+          },
+          "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_motion_authority.py": {
+            "git_source": "99fe81a8350d33f15759b75829a530044fc5d37b:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_motion_authority.py",
+            "sha256": "2566b1621c5e74c81a0d6a63f428589d69946f90675e5bada1b2c4ce4aa68e77"
+          },
+          "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/motion_authority_audit.py": {
+            "git_source": "99fe81a8350d33f15759b75829a530044fc5d37b:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/motion_authority_audit.py",
+            "sha256": "410d277832d0ffb009ad5f868d306dddab14ab6b0db41b35897b9d4891148793"
+          },
+          "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/motion_authority_profile.py": {
+            "git_source": "99fe81a8350d33f15759b75829a530044fc5d37b:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/motion_authority_profile.py",
+            "sha256": "790f28274d8695fc8f0e173e77539d7794c230787828dd19470858dfaf0eda9f"
+          },
+          "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_reach_support.py": {
+            "git_source": "99fe81a8350d33f15759b75829a530044fc5d37b:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_reach_support.py",
+            "sha256": "dc32cb48831dc333a9a4674ee83cce940e35a655a1b1fb9c5e6ba9b10be13966"
+          },
+          "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_support_replay.py": {
+            "git_source": "99fe81a8350d33f15759b75829a530044fc5d37b:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_support_replay.py",
+            "sha256": "47ea22da40bde3a794565d5d11bb06fd6fc591e3000e0daa40ec3f377bee10b2"
+          }
+        },
+        "artifact_proof": {
+          "metadata.json": {
+            "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_capacity_after_activation_v1/capacity/worker0/episode001_open_101/metadata.json",
+            "sha256": "e6dc48a6329c861a027072f417d9ae1c9518aec90aa52f17d2f0444922cc925c",
+            "decoded_sha256": "e6dc48a6329c861a027072f417d9ae1c9518aec90aa52f17d2f0444922cc925c"
+          },
+          "supervisor_metadata.json": {
+            "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_capacity_after_activation_v1/capacity/worker0/episode001_open_101/supervisor_metadata.json",
+            "sha256": "6afebe69d7eb3d2797c4f4c88907e1c1976443cdc5b66e3c0465ec9e576f1a22",
+            "decoded_sha256": "6afebe69d7eb3d2797c4f4c88907e1c1976443cdc5b66e3c0465ec9e576f1a22"
+          },
+          "transitions.jsonl": {
+            "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_capacity_after_activation_v1/capacity/worker0/episode001_open_101/transitions.jsonl",
+            "sha256": "31c59df048b8a1dae02dbc32d80c4a9c21f190fca728449827a9fc899ce49204",
+            "decoded_sha256": "31c59df048b8a1dae02dbc32d80c4a9c21f190fca728449827a9fc899ce49204"
+          },
+          "drive_tb1.jsonl": {
+            "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_capacity_after_activation_v1/capacity/worker0/episode001_open_101/drive_tb1.jsonl",
+            "sha256": "308c35f24fb634ecebb3f542ea0d814a8826e39dcdb8efeeb7ad2e93a58168db",
+            "decoded_sha256": "308c35f24fb634ecebb3f542ea0d814a8826e39dcdb8efeeb7ad2e93a58168db"
+          },
+          "drive_tb2.jsonl": {
+            "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_capacity_after_activation_v1/capacity/worker0/episode001_open_101/drive_tb2.jsonl",
+            "sha256": "496543b5f064de929ae12b8d2493db1105bacec2be4c8124e07aa0220a7c7925",
+            "decoded_sha256": "496543b5f064de929ae12b8d2493db1105bacec2be4c8124e07aa0220a7c7925"
+          },
+          "drive_tb3.jsonl": {
+            "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_capacity_after_activation_v1/capacity/worker0/episode001_open_101/drive_tb3.jsonl",
+            "sha256": "916829827a53a965ed602b1329243c6d27504b7574bce7298328bed543cfe640",
+            "decoded_sha256": "916829827a53a965ed602b1329243c6d27504b7574bce7298328bed543cfe640"
+          },
+          "odometry_tb1.jsonl": {
+            "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_capacity_after_activation_v1/capacity/worker0/episode001_open_101/odometry_tb1.jsonl",
+            "sha256": "f75aad19426f38c1de109344cc9fa2b9fe38c828ab49b43080af5c70f3adac38",
+            "decoded_sha256": "f75aad19426f38c1de109344cc9fa2b9fe38c828ab49b43080af5c70f3adac38"
+          },
+          "odometry_tb2.jsonl": {
+            "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_capacity_after_activation_v1/capacity/worker0/episode001_open_101/odometry_tb2.jsonl",
+            "sha256": "4907974cba195a5017e49f70b56b3daf9f7802941f1bdaa831e21f388ff62826",
+            "decoded_sha256": "4907974cba195a5017e49f70b56b3daf9f7802941f1bdaa831e21f388ff62826"
+          },
+          "odometry_tb3.jsonl": {
+            "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_capacity_after_activation_v1/capacity/worker0/episode001_open_101/odometry_tb3.jsonl",
+            "sha256": "ee9b47ad1b346db9ed18271ff02dc8f11da6e46088294600bf54764e27b636b3",
+            "decoded_sha256": "ee9b47ad1b346db9ed18271ff02dc8f11da6e46088294600bf54764e27b636b3"
+          },
+          "motion_safety.jsonl": {
+            "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_capacity_after_activation_v1/capacity/worker0/episode001_open_101/motion_safety.jsonl",
+            "sha256": "69aea6b7fa075bf0ecb45e9cbe2199520b1f4c91f51621a9dfa5dfb897f39cf3",
+            "decoded_sha256": "69aea6b7fa075bf0ecb45e9cbe2199520b1f4c91f51621a9dfa5dfb897f39cf3"
+          },
+          "physics.jsonl": {
+            "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_capacity_after_activation_v1/capacity/worker0/episode001_open_101/physics.jsonl",
+            "sha256": "a5c7e74634e7dc0c3f873a23aff66fc61bd1aa42c1f7fb11c7012b0b3ef10a3c",
+            "decoded_sha256": "a5c7e74634e7dc0c3f873a23aff66fc61bd1aa42c1f7fb11c7012b0b3ef10a3c"
+          },
+          "drive_phase_worker.jsonl": {
+            "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_capacity_after_activation_v1/capacity/worker0/episode001_open_101/drive_phase_worker.jsonl",
+            "sha256": "0da87d012c96bbba265f8d27bc09fbd1d6949cc5e2bad52c0d7fc76e99d7dd57",
+            "decoded_sha256": "0da87d012c96bbba265f8d27bc09fbd1d6949cc5e2bad52c0d7fc76e99d7dd57"
+          },
+          "control_phase_worker.jsonl": {
+            "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_capacity_after_activation_v1/capacity/worker0/episode001_open_101/control_phase_worker.jsonl",
+            "sha256": "741118acc1735439dd3451af9dc30efc0b3b5c66f5fa4dd0f980c2da5da6e84a",
+            "decoded_sha256": "741118acc1735439dd3451af9dc30efc0b3b5c66f5fa4dd0f980c2da5da6e84a"
+          },
+          "information_states.jsonl": {
+            "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_capacity_after_activation_v1/capacity/worker0/episode001_open_101/information_states.jsonl",
+            "sha256": "66d04c4b31309ccce806e41e3baddab0b5335f275282d488dee08f47e5b2dacc",
+            "decoded_sha256": "66d04c4b31309ccce806e41e3baddab0b5335f275282d488dee08f47e5b2dacc"
+          },
+          "adapter.jsonl": {
+            "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_capacity_after_activation_v1/capacity/worker0/episode001_open_101/adapter.jsonl",
+            "sha256": "7078e62401ec1b7d679954b5e79075b2351782d272cd598eeff628431f140bda",
+            "decoded_sha256": "7078e62401ec1b7d679954b5e79075b2351782d272cd598eeff628431f140bda"
+          }
+        },
+        "freeze": "99fe81a8350d33f15759b75829a530044fc5d37b"
+      },
+      "continuous_physical_model_proved": false,
+      "actual_loaded_elf_custody_required": true,
+      "reach_geometry_rule": "cone-support-v2"
+    }
+  ],
+  "errors": [
+    {
+      "episode": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_capacity_after_activation_v1/capacity/worker1/episode001_open_101",
+      "error": "ValueError('unclosed stop/terminal tail')"
+    }
+  ],
+  "missing": [],
+  "scope": "New source-bound reach/v2 runtime+wheel/application and independent20ms WORLD/driverTF packet receipts, latest selected sources and34ms actual updates; live actual ELF/process custody remains separately mandatory, continuous plant remains conditional.",
+  "status": "FAIL",
+  "passed": false,
+  "inputs": {
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_capacity_after_activation_v1/capacity/worker0/episode001_open_101/metadata.json": {
+      "bytes": 3303,
+      "sha256": "e6dc48a6329c861a027072f417d9ae1c9518aec90aa52f17d2f0444922cc925c"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_capacity_after_activation_v1/capacity/worker0/episode001_open_101/transitions.jsonl": {
+      "bytes": 4588460,
+      "sha256": "31c59df048b8a1dae02dbc32d80c4a9c21f190fca728449827a9fc899ce49204"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_capacity_after_activation_v1/capacity/worker0/episode001_open_101/physics.jsonl": {
+      "bytes": 742052,
+      "sha256": "a5c7e74634e7dc0c3f873a23aff66fc61bd1aa42c1f7fb11c7012b0b3ef10a3c"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_capacity_after_activation_v1/capacity/worker0/episode001_open_101/odometry_tb1.jsonl": {
+      "bytes": 7957559,
+      "sha256": "f75aad19426f38c1de109344cc9fa2b9fe38c828ab49b43080af5c70f3adac38"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_capacity_after_activation_v1/capacity/worker0/episode001_open_101/drive_tb1.jsonl": {
+      "bytes": 14188035,
+      "sha256": "308c35f24fb634ecebb3f542ea0d814a8826e39dcdb8efeeb7ad2e93a58168db"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_capacity_after_activation_v1/capacity/worker0/episode001_open_101/drive_model_tb1.sdf": {
+      "bytes": 18684,
+      "sha256": "b366213b022f5828f1e95be8d835256596c2c9869bf0109eb2ab7af428c3fc34"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_capacity_after_activation_v1/capacity/worker0/episode001_open_101/odometry_tb2.jsonl": {
+      "bytes": 7774168,
+      "sha256": "4907974cba195a5017e49f70b56b3daf9f7802941f1bdaa831e21f388ff62826"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_capacity_after_activation_v1/capacity/worker0/episode001_open_101/drive_tb2.jsonl": {
+      "bytes": 13927373,
+      "sha256": "496543b5f064de929ae12b8d2493db1105bacec2be4c8124e07aa0220a7c7925"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_capacity_after_activation_v1/capacity/worker0/episode001_open_101/drive_model_tb2.sdf": {
+      "bytes": 18684,
+      "sha256": "1b5db7fb1f89987ad85d411bd8306729a861ab9aaf1c505f0f9c9b6ce97b6fb7"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_capacity_after_activation_v1/capacity/worker0/episode001_open_101/odometry_tb3.jsonl": {
+      "bytes": 7671393,
+      "sha256": "ee9b47ad1b346db9ed18271ff02dc8f11da6e46088294600bf54764e27b636b3"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_capacity_after_activation_v1/capacity/worker0/episode001_open_101/drive_tb3.jsonl": {
+      "bytes": 13919590,
+      "sha256": "916829827a53a965ed602b1329243c6d27504b7574bce7298328bed543cfe640"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_capacity_after_activation_v1/capacity/worker0/episode001_open_101/drive_model_tb3.sdf": {
+      "bytes": 18684,
+      "sha256": "b205947bc138526b9451c55f4b9537def526e7819fd37cee6f3f3ba2bea76be7"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_capacity_after_activation_v1/capacity/worker0/episode001_open_101/driver_odometry_receipts.jsonl": {
+      "bytes": 59554999,
+      "sha256": "d5423f16ba02e58d8828d24c8067f565f208a79ef000d54685b9a93c6a644e25"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_capacity_after_activation_v1/capacity/worker0/episode001_open_101/motion_safety.jsonl": {
+      "bytes": 903430650,
+      "sha256": "69aea6b7fa075bf0ecb45e9cbe2199520b1f4c91f51621a9dfa5dfb897f39cf3"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_capacity_after_activation_v1/capacity/worker0/episode001_open_101/information_states.jsonl": {
+      "bytes": 504832676,
+      "sha256": "66d04c4b31309ccce806e41e3baddab0b5335f275282d488dee08f47e5b2dacc"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_capacity_after_activation_v1/capacity/worker1/episode001_open_101/metadata.json": {
+      "bytes": 3303,
+      "sha256": "765d7b3866cc41b5874bc2101158155c81284df317d341a3acbe8da9f6068661"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_capacity_after_activation_v1/capacity/worker1/episode001_open_101/transitions.jsonl": {
+      "bytes": 4586983,
+      "sha256": "12c3e5b6fa9f9525bbb13a02ebb3c593802d4b708810c1c5033d0b4b11cb1764"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_capacity_after_activation_v1/capacity/worker1/episode001_open_101/physics.jsonl": {
+      "bytes": 744000,
+      "sha256": "4b1dc0c0ed94ba41b7d0130dc7014f4505463fbafb0e9b0b2f652f1be924c0d7"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_capacity_after_activation_v1/capacity/worker1/episode001_open_101/odometry_tb1.jsonl": {
+      "bytes": 8165854,
+      "sha256": "2a38e2b11cdd68a0ca2e85f7e0f37611f6d0b7c7d1856a771a9bf3b5e6cfcbdd"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_capacity_after_activation_v1/capacity/worker1/episode001_open_101/drive_tb1.jsonl": {
+      "bytes": 14324083,
+      "sha256": "3ad5aa21c188b80f9867d24a82b0c5d45d148619f328e58210539bdd36405314"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_capacity_after_activation_v1/capacity/worker1/episode001_open_101/drive_model_tb1.sdf": {
+      "bytes": 18684,
+      "sha256": "560ef503f21e60e8bfa5c1cadb619ef7545a51f6a72102b1aea741e8d49490bf"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_capacity_after_activation_v1/capacity/worker1/episode001_open_101/odometry_tb2.jsonl": {
+      "bytes": 7985355,
+      "sha256": "f9df60e20b9d91ef330854ab0e256ae7ef9502e089bef156e3eaf511fbc0102f"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_capacity_after_activation_v1/capacity/worker1/episode001_open_101/drive_tb2.jsonl": {
+      "bytes": 14116423,
+      "sha256": "aa72b4a8e1464906ee08d2da549dcdc003e3194704842527101f57328ee46da5"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_capacity_after_activation_v1/capacity/worker1/episode001_open_101/drive_model_tb2.sdf": {
+      "bytes": 18684,
+      "sha256": "4620f8a9e09e593b8be8da93bfe72d1358ce1a09fef776577ee65e04fb10498a"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_capacity_after_activation_v1/capacity/worker1/episode001_open_101/odometry_tb3.jsonl": {
+      "bytes": 7905466,
+      "sha256": "d807e936be028506eb63d8b028e347a43f1d5559dc8a46a60ce3dd6e3c3c4d4f"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_capacity_after_activation_v1/capacity/worker1/episode001_open_101/drive_tb3.jsonl": {
+      "bytes": 13941082,
+      "sha256": "493c2536c34045c16047f1dfad3556226cde98247c37c26e385e4b2dd1bcc478"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_capacity_after_activation_v1/capacity/worker1/episode001_open_101/drive_model_tb3.sdf": {
+      "bytes": 18684,
+      "sha256": "513f9317df2647d5816175693f57336e6bf4201e70d940c48fdf5b2d3fb4d264"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_capacity_after_activation_v1/capacity/worker1/episode001_open_101/driver_odometry_receipts.jsonl": {
+      "bytes": 61179814,
+      "sha256": "57679a23dfa35ad3c5911d9e4bf1842953463ff7a6b3136441ba545d507438ba"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_capacity_after_activation_v1/capacity/worker1/episode001_open_101/motion_safety.jsonl": {
+      "bytes": 897878883,
+      "sha256": "995c36049c9feaa411135b6590cf445981641cecea7aa423729448d406eda068"
+    },
+    "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_capacity_after_activation_v1/capacity/worker1/episode001_open_101/information_states.jsonl": {
+      "bytes": 505751807,
+      "sha256": "c669fa05ed5b50fc863907fa98a51f7ec8e75afd6e4694bb8fa6c28ad675397c"
+    }
+  },
+  "safety_contract": "mr3-reach-v1",
+  "implementation_provenance": {
+    "schema": "mr3-reach-cadence-implementation-v1",
+    "effective_entry": {
+      "path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_cadence.py",
+      "sha256": "11fb951c479787f195f39f757b8be9ac4d70eb0fa58aed4d0b3c8c48b438ae3c"
+    },
+    "helper": {
+      "path": "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_odometry_cadence.py",
+      "sha256": "14519650bc7bab8fbea3d1a0d8407dbd75b8fb32c9c504d8864202bac81b2a6b"
+    },
+    "projection": {
+      "helper_sha256": "14519650bc7bab8fbea3d1a0d8407dbd75b8fb32c9c504d8864202bac81b2a6b",
+      "projected_sha256": "ee5f34cf2128f309f40a9ee072145af109fe08e437ffb020d75afe6873b6a2f3",
+      "inverse_sha256": "14519650bc7bab8fbea3d1a0d8407dbd75b8fb32c9c504d8864202bac81b2a6b",
+      "exact_whole_source_inverse": true,
+      "changes": [
+        {
+          "old": "\"compiled_target_contract_sha256\", \"compiled_odometry_json_sha256\")",
+          "new": "\"compiled_target_contract_sha256\", \"compiled_odometry_json_sha256\", \"compiled_drive_feed_sha256\")",
+          "count": 1
+        },
+        {
+          "old": "row[\"kind\"] == \"decision\"",
+          "new": "row[\"kind\"] == \"reach_decision\"",
+          "count": 1
+        },
+        {
+          "old": "mr3-independent-world-odometry-cadence-v1",
+          "new": "mr3-reach-independent-world-odometry-cadence-v1",
+          "count": 1
+        },
+        {
+          "old": "    epoch = meta[\"epoch\"]\n",
+          "new": "    epoch = meta[\"epoch\"]\n    require(meta.get(\"safety_contract\") == \"mr3-reach-v1\" and meta.get(\"quantum_steps\") == 20\n            and meta.get(\"execution_phase_protocol\") == \"mr3-controlled-execution-phase-v2\"\n            and meta.get(\"reset_handshake\") == \"paused-controlled-state-peer-guard-storage-v2\",\n            \"legacy profile cannot acquire reach cadence credit\")\n",
+          "count": 1
+        },
+        {
+          "old": "\"measured_joint_rim_paired_common_fraction_v1\"",
+          "new": "\"initial_zero_encoder_hold_then_paired_common_fraction_v1\"",
+          "count": 1
+        }
+      ],
+      "actuation_profile": "initial-zero-encoder-hold-v1"
+    },
+    "scope": "Original publication/packet GID/20ms source/34ms update/selected-causal-source mathematics execute on new artifacts. New algorithm identity requires the independent initial-encoder compound-law conjunction.",
+    "actuation_profile": "initial-zero-encoder-hold-v1"
+  },
+  "actuation_profile": "initial-zero-encoder-hold-v1",
+  "initial_encoder_compound_replay_passed": false,
+  "continuous_physical_model_proved": false,
+  "actual_loaded_elf_custody_required": true,
+  "geometry_metadata_binding": {
+    "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_capacity_after_activation_v1/capacity/benchmark_summary.json",
+    "sha256": "517ff529741d2a4267ad188b366b4f78b2589cbf5d71dbebb14f874d63dedc7c"
+  },
+  "source_proof": {
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/motion_safety.py": {
+      "git_source": "99fe81a8350d33f15759b75829a530044fc5d37b:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/motion_safety.py",
+      "sha256": "ad7126e96734b7dd74e45ec6651b219f7a8388e24437c2b0f0197781f7f90511"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_reach_runtime.py": {
+      "git_source": "99fe81a8350d33f15759b75829a530044fc5d37b:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_reach_runtime.py",
+      "sha256": "576c235901a51223f1d2723757f60c490045ba897d445d5c6fb3c739512a466b"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_reach_geometry.py": {
+      "git_source": "99fe81a8350d33f15759b75829a530044fc5d37b:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_reach_geometry.py",
+      "sha256": "cf46b49f0740f84511f3d34f9a8eb3e56720744515d9eea1dc81bd8bacb85f0a"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_velocity_metric.py": {
+      "git_source": "99fe81a8350d33f15759b75829a530044fc5d37b:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_velocity_metric.py",
+      "sha256": "0a7a4c9ee3de72c1fddaab2441d9bc7a8ad6c543725e8af0f6f18a6ed783fae5"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_safety_intent.py": {
+      "git_source": "99fe81a8350d33f15759b75829a530044fc5d37b:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_safety_intent.py",
+      "sha256": "4d148ef0ad18c8474eaa0a6d898bf4e94177f4cd454ce5a2495d26c9b7ab75f1"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_information.py": {
+      "git_source": "99fe81a8350d33f15759b75829a530044fc5d37b:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_information.py",
+      "sha256": "df40a2d3dbba04d123b59bb5c72394815c87dbdd7fe3d90a5ffb87c6d6b47fc1"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/peer_obstacles.py": {
+      "git_source": "99fe81a8350d33f15759b75829a530044fc5d37b:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/peer_obstacles.py",
+      "sha256": "25457537485c6eba5b199e8406fdedd73b2b23f382077b27c112f3156e54615a"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_control_phase.py": {
+      "git_source": "99fe81a8350d33f15759b75829a530044fc5d37b:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_control_phase.py",
+      "sha256": "051b4e879daf8762af6f3252ca0e9c2857c0150ed7396eef9c9f2c523b992c85"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py": {
+      "git_source": "99fe81a8350d33f15759b75829a530044fc5d37b:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_motion_control.py",
+      "sha256": "197ff4bfcca9f815e191dcddea7a2a6af46a033c68310e350b63ad9e48579a69"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_drive_phase.py": {
+      "git_source": "99fe81a8350d33f15759b75829a530044fc5d37b:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_drive_phase.py",
+      "sha256": "0525230f4719e7279826810f0c177f6a6317a961d50711ac76d8a0338f93d987"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_episode.py": {
+      "git_source": "99fe81a8350d33f15759b75829a530044fc5d37b:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_episode.py",
+      "sha256": "9145d2ad23789b252e32f0afdfe18cf2eeec8e2c7e9ca7e89127a532288e411b"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_motion_safety.py": {
+      "git_source": "99fe81a8350d33f15759b75829a530044fc5d37b:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_motion_safety.py",
+      "sha256": "06ca6ece92ca49072df9eedbdd5396148ca2e09d4f2560204448e460e3e73ae7"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/src/mr3_gazebo_diff_drive.cpp": {
+      "git_source": "99fe81a8350d33f15759b75829a530044fc5d37b:ros2_ws/ros2-multi-robot-automap/src/multi_robot/src/mr3_gazebo_diff_drive.cpp",
+      "sha256": "89161707d2e11bb2c6748c410dbb9d485d90ae5ed4f01dafaa32043ffadb8f7e"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/CMakeLists.txt": {
+      "git_source": "99fe81a8350d33f15759b75829a530044fc5d37b:ros2_ws/ros2-multi-robot-automap/src/multi_robot/CMakeLists.txt",
+      "sha256": "b1781f6d22897aad9e40bbaec5d038bc2e4bc2ca15bba59c44038d7e85ce970a"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/mr3_drive_feed.hpp": {
+      "git_source": "99fe81a8350d33f15759b75829a530044fc5d37b:ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/mr3_drive_feed.hpp",
+      "sha256": "693381dd6a7b4675e56b4a7da6d3ecf640bf85e9bef5775ff19785df3db5befa"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/paired_wheel_slew.hpp": {
+      "git_source": "99fe81a8350d33f15759b75829a530044fc5d37b:ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/paired_wheel_slew.hpp",
+      "sha256": "dca3dbaf01251cf7ffe167f1dabb23a45b4fc95d6ad317dcc3290ff50ecf9a1b"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/mr3_drive_target.hpp": {
+      "git_source": "99fe81a8350d33f15759b75829a530044fc5d37b:ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/mr3_drive_target.hpp",
+      "sha256": "4be4d77de247a5bcd427eb6948165e85098eb361030cf89d278d6df92e959d41"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/mr3_odometry_json.hpp": {
+      "git_source": "99fe81a8350d33f15759b75829a530044fc5d37b:ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/mr3_odometry_json.hpp",
+      "sha256": "4b251bff9336a6005a4fff9b6a981286687e99cbff86bf8b3410163e32392c74"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/mr3_initial_zero_encoder_servo.hpp": {
+      "git_source": "99fe81a8350d33f15759b75829a530044fc5d37b:ros2_ws/ros2-multi-robot-automap/src/multi_robot/include/multi_robot/mr3_initial_zero_encoder_servo.hpp",
+      "sha256": "5db6b8d0885e667d158589aa02500617f3eede7391155cddaa1a5f366e1a4d52"
+    },
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/initial_encoder_replay.py": {
+      "git_source": "99fe81a8350d33f15759b75829a530044fc5d37b:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/initial_encoder_replay.py",
+      "sha256": "304faf85f5a09166f1c08297a01de85c1a67bc3248d911a878748d08fd22c693"
+    },
+    "ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py": {
+      "git_source": "99fe81a8350d33f15759b75829a530044fc5d37b:ros2_ws/ros2-multi-robot-automap/scripts/mr3_env_worker.py",
+      "sha256": "ebc95ad86950c107542b332e3aeb27c06543a3ead9f28718655bcb90cc45760f"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py": {
+      "git_source": "99fe81a8350d33f15759b75829a530044fc5d37b:ros2_ws/ros2-multi-robot-automap/src/multi_robot/launch/gazebo_multirobot_mapping_with_nav2.launch.py",
+      "sha256": "eb72d85bfad66ecb0579bf8457139c42e9d3f7f447a2b97584fdd92e9e6dd7b2"
+    },
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_runtime.py": {
+      "git_source": "99fe81a8350d33f15759b75829a530044fc5d37b:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_runtime.py",
+      "sha256": "4be82ec4c0a0b2b4a4edaa076ccaef87730673d92eb00fb17ab29cd831b7fe13"
+    },
+    "ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_reach_support.py": {
+      "git_source": "99fe81a8350d33f15759b75829a530044fc5d37b:ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_reach_support.py",
+      "sha256": "dc32cb48831dc333a9a4674ee83cce940e35a655a1b1fb9c5e6ba9b10be13966"
+    },
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_support_replay.py": {
+      "git_source": "99fe81a8350d33f15759b75829a530044fc5d37b:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_support_replay.py",
+      "sha256": "47ea22da40bde3a794565d5d11bb06fd6fc591e3000e0daa40ec3f377bee10b2"
+    },
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_odometry_cadence.py": {
+      "git_source": "99fe81a8350d33f15759b75829a530044fc5d37b:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_odometry_cadence.py",
+      "sha256": "14519650bc7bab8fbea3d1a0d8407dbd75b8fb32c9c504d8864202bac81b2a6b"
+    },
+    "ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_cadence.py": {
+      "git_source": "99fe81a8350d33f15759b75829a530044fc5d37b:ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/audit_reach_cadence.py",
+      "sha256": "11fb951c479787f195f39f757b8be9ac4d70eb0fa58aed4d0b3c8c48b438ae3c"
+    }
+  },
+  "reach_geometry_rule": "cone-support-v2"
+}

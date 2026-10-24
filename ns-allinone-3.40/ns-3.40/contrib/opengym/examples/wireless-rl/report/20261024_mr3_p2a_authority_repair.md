@@ -1,8 +1,8 @@
 # P2A authority 交接与关闭修复
 
-**v3 已完成96步、三机各两轮运动取消与交接，并正常退出；独立刺激、information、cadence/runtime通过。整体诊断仍因FIFO读者遗漏UNBOUND权限记录而FAIL，容量尚未执行。**
+**已修复并实测打通 authority 交接和正常关闭：三机各两轮运动取消完成，双环境128/128次采样成功。完整资格仍有一个环境的物理停车尾部缺口；本轮完整费用约83.4分钟，超过原pilot约48.4分钟额度。下一优先解决结束边界与审计成本，P2A尚未完成。**
 
-用户已授权按[决定性测试建议](20261024_mr3_p2a_decisive_tests.md)执行。本轮先修具体协议链，再做有限行为试验，通过后才执行容量臂。旧失败原件与结论保留。
+用户已授权按[决定性测试建议](20261024_mr3_p2a_decisive_tests.md)执行。本轮先修具体协议链并做有限行为试验，再依据实际行为证据，以新冻结执行独立工程容量测试。各轮原失败及其资格边界保留，具体范围变化见下文。
 
 ## 修复范围和验证假设
 
@@ -95,3 +95,37 @@ FIFO失败已通过源码和人工回归定位：replay_motion在UNBOUND分支�
 读者修复已安装，仅新增保存已验证UNBOUND权限及严格序号检查，控制/物理源码未改。新完整learner615P/177.886293034秒、双环境readiness rc0/10.285743741秒；来源前后/current相等、快照恢复及保存CPU身份fresh absent。21原实际构建输入逐字节相等，显式复用A3真实构建，不声称新build/compiler jobs。
 
 新 `mr3-p2a-capacity-after-activation-v4` scope只运行双worker各64步、open101、uniform legal seed41容量臂。每臂native/audit各6000秒准入软门、完整连续父26000秒预约，实际超额仍完整记录；由代理依持续授权前瞻选择，非数值用户批准。入场U123761.9480839786018/C180000，余56238.0519160213982，pilot/final原额保持。旧96步诊断总体FAIL保持；本次是新的独立工程问题，不借旧PASS组成同freeze资格。仍须新commit/push/clean和完整来源/ELF门，当前尚无本次容量World结果。
+
+
+## 独立容量试验实际结果与路线判断
+
+执行冻结 `99fe81a8350d33f15759b75829a530044fc5d37b`。这次完成了双worker各64步：**128/128实际返回，native PASS，两个worker均rc0、forced_shutdown=false、failed_sample=false，保存的owned进程及zombie列表为空**。两个环境均按预定external_sampler_limit结束；这不是覆盖率95%成功。启动分别137.644559/138.243999秒；原生采样连同正常关闭2008.205876118秒，约33.47分钟、3.82次返回/分钟。[原生结果](assets/20261024_mr3_p2a_capacity_after_activation/results/native.json)、[元数据分解](assets/20261024_mr3_p2a_capacity_after_activation/results/native_metadata_description.json)。
+
+| 检查 | 结果 | 实际墙时（秒） |
+| --- | --- | ---: |
+| native / live custody | PASS / PASS | 2008.692 / 2020.474，互相重叠 |
+| FIFO worker0 | PASS，含独立authority及原STOP义务重放 | 1512.924 |
+| FIFO worker1 | FAIL：unclosed stop/terminal tail | 418.266 |
+| information worker0 / worker1 | PASS / PASS | 1191.859 / 1161.115，并行 |
+| cadence/runtime | worker0 PASS；worker1同物理尾部FAIL | 1371.455 |
+| full diagnostic | SKIPPED：缺全PASS FIFO叶 | 未执行 |
+| closure角色 | FAIL：FIFO/phase leaf failed | 33.704 |
+| 完整连续外父 | FAIL，所有派发子进程已真实等待 | 5002.91801198 |
+
+[各角色原结果与父回执](assets/20261024_mr3_p2a_capacity_after_activation/results/parent.json)、[FIFO通过](assets/20261024_mr3_p2a_capacity_after_activation/results/fifo_000_result.json)、[FIFO失败](assets/20261024_mr3_p2a_capacity_after_activation/results/fifo_001_result.json)、[cadence/runtime](assets/20261024_mr3_p2a_capacity_after_activation/results/cadence_result.json)。FIFO与cadence/runtime共用原停车义务重放函数，因此同一报错不是两种完全独立数学算法的交叉证明。两次information分别返回0；旧96步诊断的FIFO FAIL保持，不以新freeze结果补判。
+
+失败谓词为 `debt is None or debt["terminal"] is not None`：至少一个机器人在原生物理记录结束时仍有未获terminal证据的STOP义务。它既不等于进程退出失败，也不自动证明实际碰撞或数学不可行。源码中的shutdown_episode以navigation ownership关闭为循环退出条件，与物理尾部义务之间的边界差异是候选解释；**具体机器人、债务起点、最后实际执行/原始观测和唯一根因仍UNKNOWN**，尚未做该尾部的专门取证。[精确报错与源码解释范围](assets/20261024_mr3_p2a_capacity_after_activation/results/physical_tail_source_interpretation.json)。
+
+容量问题已有明确的否定范围：**当前版本、这次双环境128次返回的完整流程用了83.38分钟，超过现有pilot墙时2905.9547395464029秒（48.43分钟）**，而且尚未包含策略推理或优化器计算；full因缺前置还未执行。该批次未合格，不能把128个返回计为合格训练样本。此结果足以否定直接按当前实现和当前批量安排pilot，但不能证明其他批量、等价优化或重新规划资源后仍然无解，也不能线性外推学习效果或三场strict95成本。
+
+建议保留原研究目标和安全数学，按以下次序继续：
+
+1. **先定位并修复有限结束边界。** 固定失败worker1的原件及最后一个原H窗口，补全实际零执行、后续原始观测与STOP义务的对应关系，再针对证实的缺口修复；正常进程退出不能替代停车证据，原H/D/R门保持。
+2. **再做有实测依据的性能工作。** 分别测量日志编码、完整读取、来源核对和各重放阶段；优先验证等价索引、解析及重复读取优化，保留独立判定与全部证据。当前阶段耗时只能定位成本所在，尚未证明某个具体kernel是唯一瓶颈。
+3. **在新的同一冻结下重测完整合格批次及模型计算后，再安排资格矩阵和学习。** 现有pilot/final额度保持；这次没有启动PPO，没有取得完整资格或P2A验收。
+
+这轮的实际进展是把“协议交接后提前失败、无法正常关闭”推进到“真实运动取消完成、双环境完整采样正常退出、一个环境通过FIFO及runtime”。因此目前更支持继续解决具体生命周期和性能问题，而不是宣布项目无解或直接改变安全公式。
+
+完整父只计一次，工程累计 **128764.8660959586018/180000**，余 **51235.1339040413982**；上限承接此前代理依持续委托的前瞻选择，并非声称数值用户批准。pilot1870决策/2905.9547395464029秒、final900决策/9000秒均未动用。[规范末账](assets/20261024_mr3_p2a_capacity_after_activation/closure_ledger.json)。
+
+关闭核对1193来源current/Git及原字节恢复、10选定ELF、98保存运行身份fresh absent；非owned祖先不作消失声明。1869普通原件共3878618594B，加源码快照无损封存362866667B，恢复逐字节核验，原件未删除。关闭归档CPU实际rc0/258.902636096秒，两个CPU身份另gone、工程新增0。[完整库存](assets/20261024_mr3_p2a_capacity_after_activation/closed_inventory.json)、[关闭核验](assets/20261024_mr3_p2a_capacity_after_activation/checks/closure/summary.json)。

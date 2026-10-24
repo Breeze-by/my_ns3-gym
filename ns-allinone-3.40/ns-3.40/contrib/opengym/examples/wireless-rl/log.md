@@ -1,3 +1,5 @@
+2026-10-24 独立容量实际闭合FAIL：freeze99fe81a83，双worker64+64=128返回、native rc0/2008.205876118秒，两个worker/launch正常关闭、forced=False。FIFO worker0 PASS、worker1 unclosed stop/terminal tail FAIL；information两PASS，cadence/runtime同worker1尾部FAIL，closure保留FIFO叶FAIL、full跳过。修复后authority与原物理重放已在worker0通过，不能合称本轮完整资格或旧96步同freeze资格。完整连续父5002.91801198秒（约83.38分钟）大于pilot原2905.9547395464029秒，模型计算未含；capacity/autoPolicyFalse、P2A未完成。U128764.8660959586018/C180000、余51235.1339040413982，nested不叠加、pilot/final原额保持。1193来源current/Git/恢复、10ELF、98保存身份freshgone；1869普通原件3878618594B无损封存362866667B，全恢复、原件未删。关闭CPU真0/258.902636096秒、own2gone/工程0。下一先固定失败尾部有界定位，再做保留原门的结束协议与实测审计优化；具体机器人/债务起点/唯一根因仍UNKNOWN，未新World或学习。
+
 2026-10-24 P2A决定性测试预声明：用户明确要求实测行为可行性与采样成本。当前仅软件准备；scope26000工程秒，前账112685.3057936486018/180000；无native/PPO。本次实际结果将在[测试报告](report/20261024_mr3_p2a_decisive_tests.md)和本日志追加，原V74及全部旧FAIL保持。
 
 # Shared Experiment and Development Log

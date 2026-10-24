@@ -1,0 +1,182 @@
+{
+  "schema": "mr3-v21-canonical-ray-build-v1",
+  "scope": "Canonical colcon package build and actual installed SO binding. No ROS init, participant, Gazebo, task, native or training.",
+  "source_before": {
+    "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/src/mr3_ray_provenance_observer.cpp",
+    "resolved": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/src/mr3_ray_provenance_observer.cpp",
+    "bytes": 16593,
+    "sha256": "65b1c1db64861366811266580daf8cf43bcf565fc856a405f473b02bdefd082c"
+  },
+  "cmake_before": {
+    "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/CMakeLists.txt",
+    "resolved": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/CMakeLists.txt",
+    "bytes": 7602,
+    "sha256": "170eb49947c4daa61d30f45ab8fde637aa12766182dddfda15c9ca6453d0cc0d"
+  },
+  "old_libraries_before": {
+    "libmr3_gazebo_diff_drive.so": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/lib/libmr3_gazebo_diff_drive.so",
+      "resolved": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_gazebo_diff_drive.so",
+      "bytes": 1999200,
+      "sha256": "a014f2c618e38fc8a306d76c100083d952606333045a2e35bffce6f8b25b10c8"
+    },
+    "libmr3_stop_response_observer.so": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/lib/libmr3_stop_response_observer.so",
+      "resolved": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_stop_response_observer.so",
+      "bytes": 497648,
+      "sha256": "9a1d76b0d9a6585bb2d40fb348bc5636bdd256838291e8ea605d1d05b18806bf"
+    },
+    "libmr3_physics_diagnostic_profile.so": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/lib/libmr3_physics_diagnostic_profile.so",
+      "resolved": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_physics_diagnostic_profile.so",
+      "bytes": 496360,
+      "sha256": "09321ea65a2c893d2e65316f43d5ee54d5dda7014a5d40e2186b6b720055fcc1"
+    }
+  },
+  "environment_selected": {
+    "PATH": "/opt/ros/humble/bin:/usr/bin:/bin",
+    "PYTHONPATH": "/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages",
+    "LD_LIBRARY_PATH": "/usr/lib/x86_64-linux-gnu/gazebo-11/plugins:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib",
+    "AMENT_PREFIX_PATH": "/opt/ros/humble",
+    "ROS_DISTRO": "humble",
+    "PYTHONNOUSERSITE": "1",
+    "PYTHONDONTWRITEBYTECODE": "1"
+  },
+  "commands": [
+    {
+      "label": "colcon",
+      "argv": [
+        "/usr/bin/python3",
+        "/usr/bin/colcon",
+        "build",
+        "--symlink-install",
+        "--packages-select",
+        "multi_robot",
+        "--allow-overriding",
+        "nav2_bringup",
+        "--parallel-workers",
+        "2",
+        "--event-handlers",
+        "console_direct+"
+      ],
+      "cwd": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap",
+      "exit_code": 0,
+      "wall_seconds": 49.459731459617615,
+      "child_user_seconds": 44.65632,
+      "child_system_seconds": 4.036695999999999,
+      "stdout": {
+        "path": "/tmp/mr3_p2a0_v21_canonical_build_v1/colcon.stdout.log",
+        "resolved": "/tmp/mr3_p2a0_v21_canonical_build_v1/colcon.stdout.log",
+        "bytes": 42517,
+        "sha256": "ce6cb256a14b5d3c484b9d6123987091c80c56167f9a52ec90dfb9bb1fdb3600"
+      },
+      "stderr": {
+        "path": "/tmp/mr3_p2a0_v21_canonical_build_v1/colcon.stderr.log",
+        "resolved": "/tmp/mr3_p2a0_v21_canonical_build_v1/colcon.stderr.log",
+        "bytes": 3522,
+        "sha256": "9672b298b610c75fe72a1c791778e2986fe1d05cef5d30813899605d75cf1173"
+      }
+    },
+    {
+      "label": "factory",
+      "argv": [
+        "/tmp/mr3_p2a0_v21_ray_observer_proposal_v2/build/mr3_ray_provenance_factory_cpu",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/lib/libmr3_ray_provenance_observer.so"
+      ],
+      "cwd": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap",
+      "exit_code": 0,
+      "wall_seconds": 0.7854878408834338,
+      "child_user_seconds": 0.6965620000000001,
+      "child_system_seconds": 0.08682100000000048,
+      "stdout": {
+        "path": "/tmp/mr3_p2a0_v21_canonical_build_v1/factory.stdout.log",
+        "resolved": "/tmp/mr3_p2a0_v21_canonical_build_v1/factory.stdout.log",
+        "bytes": 89,
+        "sha256": "461c5f6b2b72c428e4056d10a8bafae51b12e109695c4e91f2314dad3867a0f8"
+      },
+      "stderr": {
+        "path": "/tmp/mr3_p2a0_v21_canonical_build_v1/factory.stderr.log",
+        "resolved": "/tmp/mr3_p2a0_v21_canonical_build_v1/factory.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "ldd",
+      "argv": [
+        "/usr/bin/ldd",
+        "-r",
+        "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/lib/libmr3_ray_provenance_observer.so"
+      ],
+      "cwd": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap",
+      "exit_code": 0,
+      "wall_seconds": 0.3115724981762469,
+      "child_user_seconds": 0.23217000000000354,
+      "child_system_seconds": 0.07888399999999951,
+      "stdout": {
+        "path": "/tmp/mr3_p2a0_v21_canonical_build_v1/ldd.stdout.log",
+        "resolved": "/tmp/mr3_p2a0_v21_canonical_build_v1/ldd.stdout.log",
+        "bytes": 27301,
+        "sha256": "99d1096a02659339aaa3cec8f7cb1d8b2ea40a85908ced10ce496fbcabdfd1ea"
+      },
+      "stderr": {
+        "path": "/tmp/mr3_p2a0_v21_canonical_build_v1/ldd.stderr.log",
+        "resolved": "/tmp/mr3_p2a0_v21_canonical_build_v1/ldd.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "installed_new_library": {
+    "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/lib/libmr3_ray_provenance_observer.so",
+    "resolved": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_ray_provenance_observer.so",
+    "bytes": 463272,
+    "sha256": "b76138132ae7dbb35936c2e0971e909f688189d240de3910516157b3553d57b8"
+  },
+  "old_libraries_after": {
+    "libmr3_gazebo_diff_drive.so": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/lib/libmr3_gazebo_diff_drive.so",
+      "resolved": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_gazebo_diff_drive.so",
+      "bytes": 1999200,
+      "sha256": "a014f2c618e38fc8a306d76c100083d952606333045a2e35bffce6f8b25b10c8"
+    },
+    "libmr3_stop_response_observer.so": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/lib/libmr3_stop_response_observer.so",
+      "resolved": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_stop_response_observer.so",
+      "bytes": 497648,
+      "sha256": "9a1d76b0d9a6585bb2d40fb348bc5636bdd256838291e8ea605d1d05b18806bf"
+    },
+    "libmr3_physics_diagnostic_profile.so": {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/install/multi_robot/lib/libmr3_physics_diagnostic_profile.so",
+      "resolved": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/libmr3_physics_diagnostic_profile.so",
+      "bytes": 496360,
+      "sha256": "09321ea65a2c893d2e65316f43d5ee54d5dda7014a5d40e2186b6b720055fcc1"
+    }
+  },
+  "new_target_flags": {
+    "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/CMakeFiles/mr3_ray_provenance_observer.dir/flags.make",
+    "resolved": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/CMakeFiles/mr3_ray_provenance_observer.dir/flags.make",
+    "bytes": 1229,
+    "sha256": "7439cfac44c71f132209712fcb43a27691f1696214c37f3b6808f13147aa0379"
+  },
+  "new_target_link": {
+    "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/CMakeFiles/mr3_ray_provenance_observer.dir/link.txt",
+    "resolved": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/build/multi_robot/CMakeFiles/mr3_ray_provenance_observer.dir/link.txt",
+    "bytes": 2667,
+    "sha256": "596b01ecad91a180ea821f2188229908dd7a9b9c14f31d6c30fa31cd6f8503b4"
+  },
+  "source_after": {
+    "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/src/mr3_ray_provenance_observer.cpp",
+    "resolved": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/src/mr3_ray_provenance_observer.cpp",
+    "bytes": 16593,
+    "sha256": "65b1c1db64861366811266580daf8cf43bcf565fc856a405f473b02bdefd082c"
+  },
+  "cmake_after": {
+    "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/CMakeLists.txt",
+    "resolved": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot/CMakeLists.txt",
+    "bytes": 7602,
+    "sha256": "170eb49947c4daa61d30f45ab8fde637aa12766182dddfda15c9ca6453d0cc0d"
+  },
+  "passed": true,
+  "wall_seconds": 50.58614480635151
+}
