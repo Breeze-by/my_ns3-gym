@@ -255,13 +255,15 @@ V26原生12回合和34科学门已由原回执及唯一缺失information消费�
 掩码保存在 rollout 中；评估使用 mask-aware 接口；训练日志包括熵、KL、价值误差、
 覆盖、时间、失败、目标切换、安全介入，而不只画 reward。
 
-当前资格仍未通过：V69在冻结`720cd4e194eeb2e9f14a86ed9204f6110d72173b`完成32步原生返回，但显式Probe V3刺激覆盖不足，matrix失败，科学audits未派发；父进程真实rc1、完整parent1166.99234597秒。producer记录tb1/tb2两轮接受/WAIT/取消，tb3第一轮缺少由科学WAIT确认的取消，第二轮未准入；tb3终态的具体类型与时序尚待独立取证，不能凭该自报判物理停止合格。元数据/来源/57保存身份关闭与556原件无损归档已通过，这些不改原FAIL。实际工程U111360.1553685346018/C180000、余68639.8446314653982，上限由代理持续委托选择，非数值用户批准。详见[V69接续文档](report/20261024_mr3_p2a_v69_probe_v3_qualification.md)。后续顺序：
+当前资格仍未通过：V69原32步回合返回但Probe V3覆盖不足、科学audits未派发，原FAIL保持。V70已在冻结`b4f335506b301e0c8bae8c859d2dea460b58b034`一次完整读取固定两输入2456974B，Root88680真实rc0，完整费用5.806465998秒，13源/恢复及2保存身份闭合；四项独立重建比较均True，仅获描述信用。tb3在task2/3满足正速度/新增path但原WAITmask仍False；task5首次收到SUCCEEDED、已idle/unowned。首帧唯一三GOAL nonapproach组合621给tb3端点.462651321m/path.492737341m，不构成六次移动取消覆盖。具体终态生成/交付时刻仍UNKNOWN。
 
-1. V70只在新冻结下对固定transitions与benchmark_summary共2456974B作一次独立描述，完整还原tb3同目标接受、移动、原WAIT掩码/5秒commit与终态，以及原候选/合法joint rank。summary曾作为关闭metadata读取，transitions仅opaque读字节、未被语义解析；不声称原件从未读取。
-2. 依据独立记录决定刺激排序或其他前瞻路线，显式新版本；保留旧V2/V3字节和FAIL。原mask/nonapproach、.08正v/.05新增path、5秒commit、32步/两轮六GOAL与原停止/任务门保持；缺失路径不填0，真实0有效，accepted后一次基线不刷新。
-3. 新exact freeze执行完整12EP/30角色，interface1+reset8共9个probe EP必须经独立received重放并合取原科学审计；terminal/deadline保留原完整检查，不拼接旧冻结结果。
-4. 按真实native推进、coldstart/reset、reader及finalizer完整端点判断容量；短32步和CPU加速不供长任务或PPO容量信用。capacity=False时禁自动policy，连续parent包含gap、nested不重复加。
-5. 满足容量与新同freeze资格后，执行真实minimum正更新、原余额内pilot及open401/402/403三场strict95%验证。pilot1870决策/2905.9547395464029秒及final-only900决策/9000秒保持；P2A仍未完成，P2B/gateway未启动。
+V71“先KEEP一拍”的私有V4原型暂停：已闭合V68在KEEP后的task1，tb3经原mask+额外nonapproach后只剩端点.291m/path.311m，task0/1几乎不变；不支持候选会变长。私有共有core的29人工CPU/527次旧V3完整JSON差分只能证明软件兼容，未安装或启动World。双独立审阅后已选择新masked-cancel family的软件实现：去额外方向输入子集，按实际原per/joint mask选择，rank优先GOAL数、最小声明path、第二轮reverse软排序、sum与action；无新距离阈值，原安全/物理/contact门和32步/六GOAL保持。当前仅/tmp实现，未安装/新World，长path三GOAL可用仍未知。详见[V70接续文档](report/20261024_mr3_p2a_v70_probe_v3_stimulus_description.md)。实际工程U111365.9618345326018/C180000、余68634.0381654673982，上限为代理持续委托选择、非数值用户批准。
+
+1. 仅用既有derived/source审新fixture：任何输入都须在原per-robot与joint mask内，新增刺激规则明确版本化，原5秒承诺、.08正v/.05新增path、B/R/STOP、接触与全部科学审计不放宽。缺失路径不填0，真实0有效，accepted后一次基线不刷新。
+2. 只有方案与软件验证足够后，才新freeze完整12EP/30角色；不得以私有原型CPU、跨freeze银行或描述PASS补资格。新runtime必须真实取得六次要求的移动取消，保留原FAIL和真实不足。
+3. 按真实native推进、coldstart/reset、reader及finalizer完整端点判断容量；短32步和CPU加速不供长任务或PPO容量信用。capacity=False时禁自动policy，连续parent含gap、nested不重复加。
+4. 满足容量与新同freeze资格后，执行真实minimum正更新、原余额内pilot及open401/402/403三场strict95%验证。
+5. pilot1870决策/2905.9547395464029秒及final-only900决策/9000秒保持；P2A仍未完成，P2B/gateway未启动。
 
 下列v6/v7及文件上方V41/V45等段落为历史快照，不代表当前待执行冻结或余额。
 
