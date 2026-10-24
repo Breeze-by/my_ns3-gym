@@ -1057,3 +1057,7 @@ PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /home/zhuyulab/miniconda3/envs/ns3g
 ### 2026-10-24 authority v3 有限原子激活验证
 
 现行 profile 为 `mr3-owned-stream-authority-v3`；上方 v2 命令及结果属于历史冻结。入口仍为 `mr3_learning.authority_repair prepare/check/run`，必须新 current21 build、受影响测试、真实 commit/push/clean 及40位新冻结；实际计划位于 `report/assets/20261024_mr3_p2a_authority_activation`，exclusive 输出 `/tmp/mr3_p2a_authority_activation_v1`，外父 `/tmp/mr3_authority_activation_root_v1`。完整父预约26000秒承接 U116147.2793258256018/C180000。先原暖身+两次真实运动取消诊断；全部角色通过才执行双worker采样容量臂，不自动学习或授予完整资格。
+
+### 2026-10-24 独立capacity-after-activation
+
+当前 `mr3_learning.authority_repair` 入口将按显式 `mr3-p2a-capacity-after-activation-v4` scope只准备/检查/执行容量臂。输出 `/tmp/mr3_p2a_capacity_after_activation_v1`，native `log/mr3_p2a_capacity_after_activation_v1`，外父 `/tmp/mr3_capacity_after_activation_root_v1`；资产 `report/assets/20261024_mr3_p2a_capacity_after_activation`。两worker各64步、open101、uniform legal seed41，完整父26000秒预约；入场U123761.9480839786018/C180000，原pilot/final不变。需要新的受影响CPU、双环境readiness、current21实际构建来源逐字节复用证明、全来源INDEX/HEAD检查、真实push/clean，仍由reach_execution包住run。旧96步行为总体FAIL保持，不合并不同冻结形成资格，不自动学习。

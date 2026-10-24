@@ -132,3 +132,9 @@ PPO入口仅在同freeze、同显式规则的完整原生资格及前驱学习�
 ## 2026-10-24 receiving authority v3 原子激活契约
 
 v2 实测证明发送 ready 年龄80ms仍可能在接收时失去当前停止证据。现行 `mr3-owned-stream-authority-v3` 因而把合法 grant 登记为 PENDING，保持零权限；只在正常控制阶段重建原真实停止 witness 后原子转 ACTIVE，并以实际最新 raw callback sequence 设置 floor。既有回调不能取得新 owner 权限，严格更晚真实回调才可进入原 Reach。PENDING 续约不激活，原2秒租约、撤销和过期约束不变；非法包及重叠 owner 仍 fail-closed。独立读者必须逐原事件重建 PENDING→ACTIVE、原 witness 与 floor，并要求对应 activation ACK。原停止谓词、100ms证据界、STOP/B/R/5秒/95%不变。information 角色只检验自身信息边界，不能代替 FIFO/runtime 的完整 authority 重放。
+
+## 2026-10-24 绑定前权限记录与独立容量诊断
+
+receiving authority仍为v3，ROS、plant、STOP/B/R/lease/5s/95%均不变。独立读者须把实际UNBOUND决策逐项验证为原严格零权限，并保存带严格正整数且不重复decision_sequence的结果，供完整FIFO关联；建立authority_configuration后保留这些历史结果，不把它们变成ACTIVE权限。该修复不回填旧FIFO FAIL。
+
+96步原生及独立stimulus、information、cadence通过仅为本次范围的正证据，整体FIFO/closure仍FAIL，无同freeze完整资格。后续capacity-after-activation是新冻结的独立工程容量试验，不依赖将旧FAIL重判；本身须跑完自己的来源、native、FIFO、information、cadence、full、closure审查。任何结果均不自动取得P2A或PPO许可。

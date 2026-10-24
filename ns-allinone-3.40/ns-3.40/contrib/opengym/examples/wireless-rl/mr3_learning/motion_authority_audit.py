@@ -411,6 +411,7 @@ def replay_motion(motion,native,epoch,release_ns):
     """Read-only full journal pass; original Reach replay is also mandatory."""
     evidence={n:StopEvidence(epoch,n,release_ns,native[n]) for n in ROBOTS}
     gates={};pubs=[];callbacks=[];configuration=None;raws={};raw_counts=dict.fromkeys(ROBOTS,0)
+    permissions={n:{} for n in ROBOTS}
     for index,row in enumerate(motion,1):
         require(row.get('schema')=='mr3-motion-safety-v1' and row.get('epoch')==epoch
                 and integer(row.get('record_sequence'),1)==index,'authority motion source sequence/context')
@@ -430,6 +431,7 @@ def replay_motion(motion,native,epoch,release_ns):
                     'authority local configuration missing/duplicate/mixed')
             gid=graph(p['publisher_identity'],robot)
             gates[robot]=ReceivingReplay(epoch,robot,gid,evidence[robot])
+            gates[robot].decision_permissions=permissions[robot]
             gates[robot].raw_seq=raw_counts[robot]
             gates[robot].raw=copy.deepcopy(raws.get(robot))
         elif kind=='raw_request':
@@ -452,6 +454,9 @@ def replay_motion(motion,native,epoch,release_ns):
                 require(p.get('motion_authority_profile')==PROFILE,'unbound decision profile missing')
                 equal(p['motion_authority'],expected,'unbound receiving permission changed')
                 equal(p['effective_request'],[0.,0.],'unbound motion effective target nonzero')
+                sequence=integer(p['decision_sequence'],1)
+                require(sequence not in permissions[robot],'duplicate unbound decision permission')
+                permissions[robot][sequence]=copy.deepcopy(expected)
             else:gates[robot].decision(p,index)
         elif kind.startswith(('authority_','invalid_authority','invalid_motion_authority')):
             raise ValueError('unknown authority motion event: '+kind)

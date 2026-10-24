@@ -1,4 +1,4 @@
-"""Finite authority-v3 activation verification; no learning or qualification entry."""
+"""Finite independent capacity after actual activation evidence; no qualification or learning."""
 import argparse
 from decimal import Decimal
 import importlib.util
@@ -11,12 +11,12 @@ from . import decisive_tests as d
 from .motion_authority_profile import MOTION_AUTHORITY_PROFILE
 from .preparation import identity
 
-A=d.W/'report/assets/20261024_mr3_p2a_authority_activation_forward'
+A=d.W/'report/assets/20261024_mr3_p2a_capacity_after_activation'
 BUILD_A=d.W/'report/assets/20261024_mr3_p2a_authority_activation'
-OUT=Path('/tmp/mr3_p2a_authority_activation_forward_v1')
-NATIVE=d.ROOT/'ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_authority_activation_forward_v1'
-CONTRACT='mr3-p2a-authority-activation-v3'
-PRIOR=Decimal('116147.7953337696018')
+OUT=Path('/tmp/mr3_p2a_capacity_after_activation_v1')
+NATIVE=d.ROOT/'ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_capacity_after_activation_v1'
+CONTRACT='mr3-p2a-capacity-after-activation-v4'
+PRIOR=Decimal('123761.9480839786018')
 CAP=Decimal('180000')
 
 
@@ -34,6 +34,7 @@ def prepare():
                  and 'source_snapshots' not in p.parts and p.suffix in ('.py','.sh','.json','.md','.xml','.log','.rawbytes'))
     paths.update(str(p.relative_to(d.ROOT)) for p in BUILD_A.rglob('*') if p.is_file()
                  and 'source_snapshots' not in p.parts and p.suffix in ('.py','.sh','.json','.md','.xml','.log','.rawbytes'))
+    paths.add(str((d.W/'mr3_learning/tests/test_motion_authority_unbound.py').relative_to(d.ROOT)))
     paths-={str((A/n).relative_to(d.ROOT)) for n in ('binding.json','feasibility.json','capacity.json')}
     sources={p:d.sha(d.ROOT/p) for p in sorted(paths)}
     native,_=d.custody.load_implementation()
@@ -44,7 +45,7 @@ def prepare():
     binding['source_bindings']=[dict(path=p,sha256=h) for p,h in sources.items()]
     binding['qualification_wrappers']=[r for r in binding['source_bindings'] if '/mr3_learning/' in r['path']]
     d.dump(A/'binding.json',binding);sources[str((A/'binding.json').relative_to(d.ROOT))]=d.sha(A/'binding.json')
-    for arm in ('feasibility','capacity'):
+    for arm in ('capacity',):
         plan=json.loads((d.A/(arm+'.json')).read_bytes())
         path=A/(arm+'.json')
         argv=[v.replace(str(d.NATIVE),str(NATIVE)).replace(str(d.A),str(A)) for v in plan['native_argv']]
@@ -66,13 +67,13 @@ def execute(freeze):
                                    started_monotonic_ns=started,contract=CONTRACT))
     results=[];error=None
     try:
-        for arm in ('feasibility','capacity'):
+        for arm in ('capacity',):
             d.require(time.monotonic_ns()+12000*10**9<=started+d.RESERVATION*10**9,
                       'insufficient complete arm reservation')
             result=d.run_arm(A/(arm+'.json'),freeze,started+d.RESERVATION*10**9)
             results.append(result)
             if not result['diagnostic_passed']:
-                error='required repair diagnostic failed; dependent capacity not admitted';break
+                error='independent capacity diagnostic failed; no training admission';break
     except Exception as failure:error=repr(failure)
     ended=time.monotonic_ns();fee=Decimal(ended-started)/10**9
     result=dict(schema=CONTRACT,freeze=freeze,owner=owner,started_monotonic_ns=started,ended_monotonic_ns=ended,
@@ -82,7 +83,7 @@ def execute(freeze):
         automatic_policy_entry_allowed=False,optimizer_updates=0,policy_calls=0,P2A_complete=False)
     d.dump(OUT/'summary.json',result)
     print(json.dumps(dict(event='complete',error=error,engineering_seconds=str(fee))),flush=True)
-    return 0 if error is None and len(results)==2 else 1
+    return 0 if error is None and len(results)==1 else 1
 
 
 def main():
@@ -92,7 +93,7 @@ def main():
     if args.operation=='prepare':prepare();return 0
     d.require(args.freeze is not None,'exact freeze required')
     if args.operation=='check':
-        for arm in ('feasibility','capacity'):d.check(A/(arm+'.json'),args.freeze,clean=True)
+        for arm in ('capacity',):d.check(A/(arm+'.json'),args.freeze,clean=True)
         print(json.dumps(dict(passed=True,profile=MOTION_AUTHORITY_PROFILE)));return 0
     return execute(args.freeze)
 
