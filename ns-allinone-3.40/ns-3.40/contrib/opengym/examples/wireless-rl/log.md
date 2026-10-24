@@ -1,3 +1,5 @@
+2026-10-24 P2A决定性测试预声明：用户明确要求实测行为可行性与采样成本。当前仅软件准备；scope26000工程秒，前账112685.3057936486018/180000；无native/PPO。本次实际结果将在[测试报告](report/20261024_mr3_p2a_decisive_tests.md)和本日志追加，原V74及全部旧FAIL保持。
+
 # Shared Experiment and Development Log
 
 > 本文件按日期保留toy/ROS/旧路线/MR3的历史，不是当前研究指令。活动契约是
@@ -9155,3 +9157,12 @@ canonical Root17796实际reap0，17P(13+4)、4.140205043秒、97源前后/curren
 代码：尚未封新执行G，证据G b3707dcf258c832f35ef60f47a5dc8dc52296629与前账G45396954ed2612980859cff4629af1e6a662114c分开。准备不消费原件/模型/World；后继入口为canonical run_description_v1 --freeze <new exact pushedG>，完整argv与环境/17测试路径见[实际回执](report/assets/20261024_mr3_p2a_v74_reach_rejection_description/checks/canonical_CPU_postreap_proof_v1.json)。
 
 私有13/13/4分别保留，不充新的30独立判据；3候选根+边界v3+父短审264regular4961844B→1256139B/0link/fullrestore，archiveCPU43991真0/1.296306911秒/2source恢复/own2gone/工程0。Root下一force-stage/INDEX/commit/push/clean/exactHEAD才唯一提取，输入整SHA/固定窗/完整行/unknown/partial门保持；实际sourceguard/新G/消费结果不预填。见[V74预声明](report/20261024_mr3_p2a_v74_reach_rejection_description.md)。
+
+
+## 2026-10-24 V74 tb3 Reach拒绝字段描述实际闭合
+
+代码Gfea46716eb0d4b9c5502812067caf869998da44d，Root35799初8ca7cb/终f90786真实reap0；原证据G b370与前账V73 G453969仍分开。完整motion507221955B/232887行/parse0/semantic0/gap0；固定窗250候选7512098B，4条完整选行，derived894600B/SHA647f298934fe1a44b1ad666d5d532abac3deeb88337cb17dff75529bdf7d35b6，consumer work41.065690642秒。实际argv/身份见封存parent/execution与RootTool；无模型/学习/World或原数学重放。
+
+派生解释：tb2在250拟X检查的map/raw字段拒绝、tb1通过；223返回current-D与27返回X区别保留。44.72首样本line74325原slack为负，非显示舍入；条件充分性证书拒绝不证明碰撞/unsafe/数学错误或不可达。原V71FAIL与规范ledger root_cause UNKNOWN_PENDING_SEPARATE_DERIVED_ROUTE_REVIEW不改；Root后继选择V75显式新输入workload作disabled私有准备，详细契约/准入仍待声明，不提前World或改原数学/plant。
+
+完整F45.633274384，U112685.3057936486018/C180000/R67314.6942063513982，nested41.25075195/root不叠加，原pilot/final保持。27源前后/currentGit/全恢复与main2gone；关闭CPU16252真0/10.926041864秒/4source恢复/own2gone/工程0，主40regular2365525B→358503B/0link全恢复。关闭不重开原motion/旧raw/342库。规范ledger6210B/SHAbc29a45585ba65a3c9ea177152bd02c81a1037e34ace873376a5703d1c22fdbe。capacityFalse、P2A未完成，见[V74实际闭合](report/20261024_mr3_p2a_v74_reach_rejection_description.md)。

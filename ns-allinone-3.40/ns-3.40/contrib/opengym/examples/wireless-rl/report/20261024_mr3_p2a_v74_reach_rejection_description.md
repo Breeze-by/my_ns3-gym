@@ -1,3 +1,21 @@
+# MR3 P2A V74：tb3 Reach拒绝条件描述的实际闭合
+
+V74固定单流描述实际PASS：执行G `fea46716eb0d4b9c5502812067caf869998da44d`，Root35799初8ca7cb/终f90786真实reap0。完整读507221955B/SHA f27397fa…，232887行、parse/semantic/sequence-gap均0；固定tb3[44.72,49.72)窗口250条候选、原候选payload7512098B，按前瞻规则去重后实际选择4条完整原行（不是5条）。consumer work41.065690642秒，派生894600B/SHA `647f298934fe1a44b1ad666d5d532abac3deeb88337cb17dff75529bdf7d35b6`。这是字段描述PASS；没有数学/物理重放、新World、学习、容量或P2A完成信用，原V71 FAIL保持。
+
+规范[末账](assets/20261024_mr3_p2a_v74_reach_rejection_description/closure_ledger_v1.json)6210B/SHA `bc29a45585ba65a3c9ea177152bd02c81a1037e34ace873376a5703d1c22fdbe`原字节封版：F45.633274384秒，U112685.3057936486018/C180000/R67314.6942063513982。same-PID bootstrap→post-source ended、summary序列化前边界含gap一次收取，nested consumer wait41.25075195与Root区间不另加。原300parent/240work软门满足，pilot1870/2905.9547395464029秒、final-only900/9000秒原额保持；工程上限为代理依持续委托选择，非逐数值用户批准。ledger root_cause仍UNKNOWN_PENDING_SEPARATE_DERIVED_ROUTE_REVIEW，original_activity_passed={present:true,value:false}，不因后继派生解释改账或旧FAIL。
+
+27源before/after/current-Git与全恢复快照一致；driver2252687/start456193157和consumer2252768/start456193397两保存身份freshgone，nonowned不声称gone。关闭CPU16252初b6eda8/终8af199真实rc0/10.926041864秒，4执行源before/after/current及恢复一致、own2gone，工程0。主[库存](assets/20261024_mr3_p2a_v74_reach_rejection_description/closed_inventory_v1.json)40regular2365525B→358503B/0link，全字节恢复、原件保留，只封parent/RootTool/派生输出，未重开507MB motion、drive/旧两输入/pstats/342库。后继[closing_CPU库存](assets/20261024_mr3_p2a_v74_reach_rejection_description/checks/closing_CPU_v1/inventory_v1.json)另存真实工具对象、等待、源恢复和两CPU身份退出，不混入主活动费。原[派生全文](assets/20261024_mr3_p2a_v74_reach_rejection_description/closed_execution_v1/tmp/mr3_p2a_v74_reach_rejection_description_v1.json.rawbytes.gz)按库存SHA恢复；此前已有opaque和V73语义读取，不宣称原件从未读取。
+
+[独立derived-only解释](assets/20261024_mr3_p2a_v74_reach_rejection_description/checks/derived_interpretation_v1/README.md)保留原字段、rational/log interval与源行引用：250条tb3正请求被抑制的拟X检查中，tb1准入字段均通过，tb2在map/raw均拒绝。223条linear_brake_preserve_requested_turn返回的是当前D检查（两peer通过），真正被拒绝的拟X检查在component_filter；27条reach_transition_envelope返回字段本身是拟X检查，其中未保留的current-D结果不能补造。共同标定/旧hard-gate True只是这些原日志字段，未在本描述中独立重验。
+
+首样本44.72秒原line74325/SHA d9e4acd2058cd557cad8d1636e35f61ee53545c8b4de837dc5ae8b616c67b54b：tb3对tb2拟X记录nonnegative_dot_full_L，保留纵向support约.144m；显示的map/raw中心距约.6410/.6334m，所需support-bound约.7309m。当前D在同收到几何下约需.5713m而通过。4个选定X样本原slack区间均显著为负，非小数显示舍入的符号歧义；精确原字段见[findings](assets/20261024_mr3_p2a_v74_reach_rejection_description/checks/derived_interpretation_v1/findings_v1.json)。这些是冻结条件下保守的条件充分分离证书拒绝，不证明真实碰撞、物理unsafe、数学错误或无可行路径，未重新计算证书或证明plant假设。
+
+另有[独立derived-only peer复核](assets/20261024_mr3_p2a_v74_reach_rejection_description/checks/derived_peer_review_v1/REVIEW.md)与原字段facts交叉支持上述日志范围；没有重开原motion或进行数学/物理重放。
+
+本轮把日志拒绝的peer定位为tb2，但完整物理/上游因果与后继可行刺激仍未知；body target.linear_x=0仍不等于双轮命令0，APPLIED标签不充wheel SetParam/readback。Root已选V75显式新输入/阶段workload作disabled私有准备，详细有限契约由未来V75单独声明；保持原actor per-robot/joint masks、数学/plant与R/.5/B_stop/D/math/5s，本次闭合不改生产或预授准入/World。有限暖身只有源码边界提案，不能把自然release可接续当成两轮moving WAIT可达；所有额外步骤仍须原安全/18stream/full/authority/费用窗口，新版本仍需完整同freeze12EP30/实质9probe12authority及容量门，不借final、不自动policy。P2A未完成。
+
+历史准备快照：下文保留当时原文；其中新G/消费pending只代表先前准备时点。
+
 # MR3 P2A V74：tb3 Reach拒绝条件的有界描述预声明
 
 V74软件准备已完成，实际提取尚未执行，也没有V74描述PASS。Root在canonical CPU之前将固定单输入spec前瞻admitted=True；仅授权本次有限描述，不代替新G或实际门。唯一输入仍是V71 motion_safety.jsonl，507221955B，固定tb3 postcommit半开[44.72,49.72)窗口，最多12条完整原行、4MiB输出。完整parent300/work240秒软门，工程仍U112639.6725192646018/C180000/R67360.3274807353982，预约300；原pilot/final与V71原生FAIL保持，capacity/autoPolicy=False、P2A未完成。

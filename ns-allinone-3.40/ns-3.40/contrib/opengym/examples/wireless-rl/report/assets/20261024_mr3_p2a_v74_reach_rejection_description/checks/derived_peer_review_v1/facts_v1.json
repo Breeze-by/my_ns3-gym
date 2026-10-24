@@ -1,0 +1,2366 @@
+{
+  "schema": "mr3-v74-derived-peer-rejection-functional-review-v1",
+  "status": "DERIVED_ONLY_STOP",
+  "input": {
+    "path": "/tmp/mr3_p2a_v74_reach_rejection_description_v1.json",
+    "bytes": 894600,
+    "sha256": "647f298934fe1a44b1ad666d5d532abac3deeb88337cb17dff75529bdf7d35b6"
+  },
+  "window_ns": [
+    44720000000,
+    49720000000
+  ],
+  "tb3_window_decisions": 250,
+  "candidate_records": 250,
+  "window_reason_counts": {
+    "linear_brake_preserve_requested_turn": 223,
+    "reach_transition_envelope": 27
+  },
+  "original_literal_aggregates": {
+    "decision.component_filter.rejected_transition_checks": {
+      "check_map_presence": {
+        "field": [
+          {
+            "count": 27,
+            "first_record_sequence": 84270,
+            "last_record_sequence": 86770,
+            "original_field": {
+              "present": false
+            }
+          }
+        ]
+      },
+      "peers": {
+        "tb1": {
+          "records": 223,
+          "necessary_fields": {
+            "common_world_odom_calibrated": [
+              {
+                "count": 223,
+                "first_record_sequence": 74325,
+                "last_record_sequence": 104764,
+                "original_field": {
+                  "present": true,
+                  "value": true
+                }
+              }
+            ],
+            "geometric_necessary": [
+              {
+                "count": 223,
+                "first_record_sequence": 74325,
+                "last_record_sequence": 104764,
+                "original_field": {
+                  "present": true,
+                  "value": true
+                }
+              }
+            ],
+            "geometric_sufficient": [
+              {
+                "count": 223,
+                "first_record_sequence": 74325,
+                "last_record_sequence": 104764,
+                "original_field": {
+                  "present": true,
+                  "value": true
+                }
+              }
+            ],
+            "legacy_hard_gates_passed": [
+              {
+                "count": 223,
+                "first_record_sequence": 74325,
+                "last_record_sequence": 104764,
+                "original_field": {
+                  "present": true,
+                  "value": true
+                }
+              }
+            ],
+            "map.reported_normal_defined": [
+              {
+                "count": 223,
+                "first_record_sequence": 74325,
+                "last_record_sequence": 104764,
+                "original_field": {
+                  "present": true,
+                  "value": true
+                }
+              }
+            ],
+            "map.separation_sufficient_under_declared_sets": [
+              {
+                "count": 223,
+                "first_record_sequence": 74325,
+                "last_record_sequence": 104764,
+                "original_field": {
+                  "present": true,
+                  "value": true
+                }
+              }
+            ],
+            "raw.reported_normal_defined": [
+              {
+                "count": 223,
+                "first_record_sequence": 74325,
+                "last_record_sequence": 104764,
+                "original_field": {
+                  "present": true,
+                  "value": true
+                }
+              }
+            ],
+            "raw.separation_sufficient_under_declared_sets": [
+              {
+                "count": 223,
+                "first_record_sequence": 74325,
+                "last_record_sequence": 104764,
+                "original_field": {
+                  "present": true,
+                  "value": true
+                }
+              }
+            ]
+          }
+        },
+        "tb2": {
+          "records": 223,
+          "necessary_fields": {
+            "common_world_odom_calibrated": [
+              {
+                "count": 223,
+                "first_record_sequence": 74325,
+                "last_record_sequence": 104764,
+                "original_field": {
+                  "present": true,
+                  "value": true
+                }
+              }
+            ],
+            "geometric_necessary": [
+              {
+                "count": 223,
+                "first_record_sequence": 74325,
+                "last_record_sequence": 104764,
+                "original_field": {
+                  "present": true,
+                  "value": false
+                }
+              }
+            ],
+            "geometric_sufficient": [
+              {
+                "count": 223,
+                "first_record_sequence": 74325,
+                "last_record_sequence": 104764,
+                "original_field": {
+                  "present": true,
+                  "value": false
+                }
+              }
+            ],
+            "legacy_hard_gates_passed": [
+              {
+                "count": 223,
+                "first_record_sequence": 74325,
+                "last_record_sequence": 104764,
+                "original_field": {
+                  "present": true,
+                  "value": true
+                }
+              }
+            ],
+            "map.reported_normal_defined": [
+              {
+                "count": 223,
+                "first_record_sequence": 74325,
+                "last_record_sequence": 104764,
+                "original_field": {
+                  "present": true,
+                  "value": true
+                }
+              }
+            ],
+            "map.separation_sufficient_under_declared_sets": [
+              {
+                "count": 223,
+                "first_record_sequence": 74325,
+                "last_record_sequence": 104764,
+                "original_field": {
+                  "present": true,
+                  "value": false
+                }
+              }
+            ],
+            "raw.reported_normal_defined": [
+              {
+                "count": 223,
+                "first_record_sequence": 74325,
+                "last_record_sequence": 104764,
+                "original_field": {
+                  "present": true,
+                  "value": true
+                }
+              }
+            ],
+            "raw.separation_sufficient_under_declared_sets": [
+              {
+                "count": 223,
+                "first_record_sequence": 74325,
+                "last_record_sequence": 104764,
+                "original_field": {
+                  "present": true,
+                  "value": false
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "decision.reach_pair_checks": {
+      "check_map_presence": {},
+      "peers": {
+        "tb1": {
+          "records": 250,
+          "necessary_fields": {
+            "common_world_odom_calibrated": [
+              {
+                "count": 250,
+                "first_record_sequence": 74325,
+                "last_record_sequence": 104764,
+                "original_field": {
+                  "present": true,
+                  "value": true
+                }
+              }
+            ],
+            "geometric_necessary": [
+              {
+                "count": 250,
+                "first_record_sequence": 74325,
+                "last_record_sequence": 104764,
+                "original_field": {
+                  "present": true,
+                  "value": true
+                }
+              }
+            ],
+            "geometric_sufficient": [
+              {
+                "count": 250,
+                "first_record_sequence": 74325,
+                "last_record_sequence": 104764,
+                "original_field": {
+                  "present": true,
+                  "value": true
+                }
+              }
+            ],
+            "legacy_hard_gates_passed": [
+              {
+                "count": 250,
+                "first_record_sequence": 74325,
+                "last_record_sequence": 104764,
+                "original_field": {
+                  "present": true,
+                  "value": true
+                }
+              }
+            ],
+            "map.reported_normal_defined": [
+              {
+                "count": 250,
+                "first_record_sequence": 74325,
+                "last_record_sequence": 104764,
+                "original_field": {
+                  "present": true,
+                  "value": true
+                }
+              }
+            ],
+            "map.separation_sufficient_under_declared_sets": [
+              {
+                "count": 250,
+                "first_record_sequence": 74325,
+                "last_record_sequence": 104764,
+                "original_field": {
+                  "present": true,
+                  "value": true
+                }
+              }
+            ],
+            "raw.reported_normal_defined": [
+              {
+                "count": 250,
+                "first_record_sequence": 74325,
+                "last_record_sequence": 104764,
+                "original_field": {
+                  "present": true,
+                  "value": true
+                }
+              }
+            ],
+            "raw.separation_sufficient_under_declared_sets": [
+              {
+                "count": 250,
+                "first_record_sequence": 74325,
+                "last_record_sequence": 104764,
+                "original_field": {
+                  "present": true,
+                  "value": true
+                }
+              }
+            ]
+          }
+        },
+        "tb2": {
+          "records": 250,
+          "necessary_fields": {
+            "common_world_odom_calibrated": [
+              {
+                "count": 250,
+                "first_record_sequence": 74325,
+                "last_record_sequence": 104764,
+                "original_field": {
+                  "present": true,
+                  "value": true
+                }
+              }
+            ],
+            "geometric_necessary": [
+              {
+                "count": 27,
+                "first_record_sequence": 84270,
+                "last_record_sequence": 86770,
+                "original_field": {
+                  "present": true,
+                  "value": false
+                }
+              },
+              {
+                "count": 223,
+                "first_record_sequence": 74325,
+                "last_record_sequence": 104764,
+                "original_field": {
+                  "present": true,
+                  "value": true
+                }
+              }
+            ],
+            "geometric_sufficient": [
+              {
+                "count": 27,
+                "first_record_sequence": 84270,
+                "last_record_sequence": 86770,
+                "original_field": {
+                  "present": true,
+                  "value": false
+                }
+              },
+              {
+                "count": 223,
+                "first_record_sequence": 74325,
+                "last_record_sequence": 104764,
+                "original_field": {
+                  "present": true,
+                  "value": true
+                }
+              }
+            ],
+            "legacy_hard_gates_passed": [
+              {
+                "count": 250,
+                "first_record_sequence": 74325,
+                "last_record_sequence": 104764,
+                "original_field": {
+                  "present": true,
+                  "value": true
+                }
+              }
+            ],
+            "map.reported_normal_defined": [
+              {
+                "count": 250,
+                "first_record_sequence": 74325,
+                "last_record_sequence": 104764,
+                "original_field": {
+                  "present": true,
+                  "value": true
+                }
+              }
+            ],
+            "map.separation_sufficient_under_declared_sets": [
+              {
+                "count": 27,
+                "first_record_sequence": 84270,
+                "last_record_sequence": 86770,
+                "original_field": {
+                  "present": true,
+                  "value": false
+                }
+              },
+              {
+                "count": 223,
+                "first_record_sequence": 74325,
+                "last_record_sequence": 104764,
+                "original_field": {
+                  "present": true,
+                  "value": true
+                }
+              }
+            ],
+            "raw.reported_normal_defined": [
+              {
+                "count": 250,
+                "first_record_sequence": 74325,
+                "last_record_sequence": 104764,
+                "original_field": {
+                  "present": true,
+                  "value": true
+                }
+              }
+            ],
+            "raw.separation_sufficient_under_declared_sets": [
+              {
+                "count": 27,
+                "first_record_sequence": 84270,
+                "last_record_sequence": 86770,
+                "original_field": {
+                  "present": true,
+                  "value": false
+                }
+              },
+              {
+                "count": 223,
+                "first_record_sequence": 74325,
+                "last_record_sequence": 104764,
+                "original_field": {
+                  "present": true,
+                  "value": true
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  },
+  "samples": [
+    {
+      "reference": {
+        "callback_clock_ns": 44720000000,
+        "decision_clock_ns": 44720000000,
+        "decision_sequence": 2111,
+        "line": 74325,
+        "line_bytes": 30699,
+        "line_sha256": "d9e4acd2058cd557cad8d1636e35f61ee53545c8b4de837dc5ae8b616c67b54b",
+        "record_sequence": 74325
+      },
+      "raw_request": {
+        "sequence": 100,
+        "received_stamp": 44.72,
+        "v": 0.057894736842105325,
+        "w": 0.20526315789473676
+      },
+      "effective_request": [
+        0.057894736842105325,
+        0.20526315789473676
+      ],
+      "output": [
+        0.0,
+        0.20526315789473676
+      ],
+      "reason": "linear_brake_preserve_requested_turn",
+      "own_received_state": {
+        "x": 0.45808330796413566,
+        "y": -0.00107641362540011,
+        "yaw": 1.0814363672149268,
+        "v": -0.0003998413467885009,
+        "w": 0.182002615775104
+      },
+      "own_intent_role": "D",
+      "received_peer_intent_roles": {
+        "tb1": "D",
+        "tb2": "D"
+      },
+      "pairs": {
+        "returned": {
+          "present": true,
+          "peers": {
+            "tb1": {
+              "geometric_necessary": true,
+              "geometric_sufficient": true,
+              "legacy_hard_gates_passed": true,
+              "common_world_odom_calibrated": true,
+              "ages_ns": [
+                27000000,
+                21000000
+              ],
+              "uncertainty_m": "9/625",
+              "map": {
+                "reported_normal_defined": true,
+                "distance_norm_bounds_m": [
+                  "96154206637189/140737488355328",
+                  "192308413274379/281474976710656"
+                ],
+                "required_centre_distance_upper_bounds_m": [
+                  "159202246827547/281474976710656",
+                  "39800561706887/70368744177664"
+                ],
+                "squared_slack_bounds_m2": [
+                  "41343534537823/281474976710656",
+                  "1291985454307/8796093022208"
+                ],
+                "base_reserve_m": "707/1250",
+                "left": {
+                  "buffer_m": "39/2500",
+                  "direction_modes": [],
+                  "kind": "disk",
+                  "longitudinal_m": "0",
+                  "support_upper_bounds_m": [
+                    "0",
+                    "0"
+                  ],
+                  "union_rule": "no_directions_full_L"
+                },
+                "right": {
+                  "buffer_m": "39/2500",
+                  "direction_modes": [],
+                  "kind": "disk",
+                  "longitudinal_m": "0",
+                  "support_upper_bounds_m": [
+                    "0",
+                    "0"
+                  ],
+                  "union_rule": "no_directions_full_L"
+                },
+                "separation_sufficient_under_declared_sets": true,
+                "full_exact_frame_sha256": "394f1ac3b435fa0db822fbe28f9b971edb51e55f20c480fb6d448d0fe00abf60",
+                "display_decimal_only": {
+                  "distance_norm_bounds_m": [
+                    0.6832167303883026,
+                    0.6832167303883061
+                  ],
+                  "required_centre_distance_upper_bounds_m": [
+                    0.5655999999999999,
+                    0.5656000000000034
+                  ],
+                  "squared_slack_bounds_m2": [
+                    0.14688174068248472,
+                    0.14688174068248827
+                  ]
+                }
+              },
+              "raw": {
+                "reported_normal_defined": true,
+                "distance_norm_bounds_m": [
+                  "22282173096491/35184372088832",
+                  "178257384771929/281474976710656"
+                ],
+                "required_centre_distance_upper_bounds_m": [
+                  "159202246827547/281474976710656",
+                  "39800561706887/70368744177664"
+                ],
+                "squared_slack_bounds_m2": [
+                  "1427822267261/17592186044416",
+                  "22845156276177/281474976710656"
+                ],
+                "base_reserve_m": "707/1250",
+                "left": {
+                  "buffer_m": "39/2500",
+                  "direction_modes": [],
+                  "kind": "disk",
+                  "longitudinal_m": "0",
+                  "support_upper_bounds_m": [
+                    "0",
+                    "0"
+                  ],
+                  "union_rule": "no_directions_full_L"
+                },
+                "right": {
+                  "buffer_m": "39/2500",
+                  "direction_modes": [],
+                  "kind": "disk",
+                  "longitudinal_m": "0",
+                  "support_upper_bounds_m": [
+                    "0",
+                    "0"
+                  ],
+                  "union_rule": "no_directions_full_L"
+                },
+                "separation_sufficient_under_declared_sets": true,
+                "full_exact_frame_sha256": "7096d62224cb0688bab5b3deb331072f9778ed3742122c3001efd27dfdbf7e95",
+                "display_decimal_only": {
+                  "distance_norm_bounds_m": [
+                    0.6332974492264327,
+                    0.6332974492264363
+                  ],
+                  "required_centre_distance_upper_bounds_m": [
+                    0.5655999999999999,
+                    0.5656000000000034
+                  ],
+                  "squared_slack_bounds_m2": [
+                    0.08116229919670559,
+                    0.08116229919670914
+                  ]
+                }
+              }
+            },
+            "tb2": {
+              "geometric_necessary": true,
+              "geometric_sufficient": true,
+              "legacy_hard_gates_passed": true,
+              "common_world_odom_calibrated": true,
+              "ages_ns": [
+                27000000,
+                40000000
+              ],
+              "uncertainty_m": "201/10000",
+              "map": {
+                "reported_normal_defined": true,
+                "distance_norm_bounds_m": [
+                  "180433498036503/281474976710656",
+                  "22554187254563/35184372088832"
+                ],
+                "required_centre_distance_upper_bounds_m": [
+                  "160806654194797/281474976710656",
+                  "80403327097399/140737488355328"
+                ],
+                "squared_slack_bounds_m2": [
+                  "23794183264995/281474976710656",
+                  "5948545816249/70368744177664"
+                ],
+                "base_reserve_m": "5713/10000",
+                "left": {
+                  "buffer_m": "39/2500",
+                  "direction_modes": [],
+                  "kind": "disk",
+                  "longitudinal_m": "0",
+                  "support_upper_bounds_m": [
+                    "0",
+                    "0"
+                  ],
+                  "union_rule": "no_directions_full_L"
+                },
+                "right": {
+                  "buffer_m": "39/2500",
+                  "direction_modes": [],
+                  "kind": "disk",
+                  "longitudinal_m": "0",
+                  "support_upper_bounds_m": [
+                    "0",
+                    "0"
+                  ],
+                  "union_rule": "no_directions_full_L"
+                },
+                "separation_sufficient_under_declared_sets": true,
+                "full_exact_frame_sha256": "bc07ff8c78d327d879ddf7dce64372efd5009f297fd49a0c6f9f6a4fc41720a9",
+                "display_decimal_only": {
+                  "distance_norm_bounds_m": [
+                    0.6410285565881075,
+                    0.6410285565881111
+                  ],
+                  "required_centre_distance_upper_bounds_m": [
+                    0.5712999999999973,
+                    0.5713000000000008
+                  ],
+                  "squared_slack_bounds_m2": [
+                    0.0845339203614337,
+                    0.08453392036143725
+                  ]
+                }
+              },
+              "raw": {
+                "reported_normal_defined": true,
+                "distance_norm_bounds_m": [
+                  "5571883783539/8796093022208",
+                  "178300281073249/281474976710656"
+                ],
+                "required_centre_distance_upper_bounds_m": [
+                  "160806654194797/281474976710656",
+                  "80403327097399/140737488355328"
+                ],
+                "squared_slack_bounds_m2": [
+                  "10537722157043/140737488355328",
+                  "21075444314087/281474976710656"
+                ],
+                "base_reserve_m": "5713/10000",
+                "left": {
+                  "buffer_m": "39/2500",
+                  "direction_modes": [],
+                  "kind": "disk",
+                  "longitudinal_m": "0",
+                  "support_upper_bounds_m": [
+                    "0",
+                    "0"
+                  ],
+                  "union_rule": "no_directions_full_L"
+                },
+                "right": {
+                  "buffer_m": "39/2500",
+                  "direction_modes": [],
+                  "kind": "disk",
+                  "longitudinal_m": "0",
+                  "support_upper_bounds_m": [
+                    "0",
+                    "0"
+                  ],
+                  "union_rule": "no_directions_full_L"
+                },
+                "separation_sufficient_under_declared_sets": true,
+                "full_exact_frame_sha256": "5812248d8933a4cf03c629472a935d83d7004c82371bccf6b6613146fa5f11be",
+                "display_decimal_only": {
+                  "distance_norm_bounds_m": [
+                    0.6334498475029022,
+                    0.6334498475029058
+                  ],
+                  "required_centre_distance_upper_bounds_m": [
+                    0.5712999999999973,
+                    0.5713000000000008
+                  ],
+                  "squared_slack_bounds_m2": [
+                    0.07487501930145157,
+                    0.07487501930145513
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "rejected_X": {
+          "present": true,
+          "peers": {
+            "tb1": {
+              "geometric_necessary": true,
+              "geometric_sufficient": true,
+              "legacy_hard_gates_passed": true,
+              "common_world_odom_calibrated": true,
+              "ages_ns": [
+                27000000,
+                21000000
+              ],
+              "uncertainty_m": "9/625",
+              "map": {
+                "reported_normal_defined": true,
+                "distance_norm_bounds_m": [
+                  "96154206637189/140737488355328",
+                  "192308413274379/281474976710656"
+                ],
+                "required_centre_distance_upper_bounds_m": [
+                  "163593256464233/281474976710656",
+                  "81796628232117/140737488355328"
+                ],
+                "squared_slack_bounds_m2": [
+                  "36307924686471/281474976710656",
+                  "4538490585809/35184372088832"
+                ],
+                "base_reserve_m": "1453/2500",
+                "left": {
+                  "buffer_m": "39/1250",
+                  "direction_modes": [
+                    "original_nonclosing_zero"
+                  ],
+                  "kind": "transition",
+                  "longitudinal_m": "18/125",
+                  "support_upper_bounds_m": [
+                    "0",
+                    "0"
+                  ],
+                  "union_rule": "maximum"
+                },
+                "right": {
+                  "buffer_m": "39/2500",
+                  "direction_modes": [],
+                  "kind": "disk",
+                  "longitudinal_m": "0",
+                  "support_upper_bounds_m": [
+                    "0",
+                    "0"
+                  ],
+                  "union_rule": "no_directions_full_L"
+                },
+                "separation_sufficient_under_declared_sets": true,
+                "full_exact_frame_sha256": "92b07c0cc09ac88ff32f71101db263822d56fc38af50dea5274bcdc807aa34ae",
+                "display_decimal_only": {
+                  "distance_norm_bounds_m": [
+                    0.6832167303883026,
+                    0.6832167303883061
+                  ],
+                  "required_centre_distance_upper_bounds_m": [
+                    0.581199999999999,
+                    0.5812000000000026
+                  ],
+                  "squared_slack_bounds_m2": [
+                    0.1289916606824839,
+                    0.12899166068248746
+                  ]
+                }
+              },
+              "raw": {
+                "reported_normal_defined": true,
+                "distance_norm_bounds_m": [
+                  "22282173096491/35184372088832",
+                  "178257384771929/281474976710656"
+                ],
+                "required_centre_distance_upper_bounds_m": [
+                  "163593256464233/281474976710656",
+                  "81796628232117/140737488355328"
+                ],
+                "squared_slack_bounds_m2": [
+                  "2226193303103/35184372088832",
+                  "17809546424825/281474976710656"
+                ],
+                "base_reserve_m": "1453/2500",
+                "left": {
+                  "buffer_m": "39/1250",
+                  "direction_modes": [
+                    "original_nonclosing_zero"
+                  ],
+                  "kind": "transition",
+                  "longitudinal_m": "18/125",
+                  "support_upper_bounds_m": [
+                    "0",
+                    "0"
+                  ],
+                  "union_rule": "maximum"
+                },
+                "right": {
+                  "buffer_m": "39/2500",
+                  "direction_modes": [],
+                  "kind": "disk",
+                  "longitudinal_m": "0",
+                  "support_upper_bounds_m": [
+                    "0",
+                    "0"
+                  ],
+                  "union_rule": "no_directions_full_L"
+                },
+                "separation_sufficient_under_declared_sets": true,
+                "full_exact_frame_sha256": "ade9c1837b85cd03a438849b81a5a80d03680ce84f2b88c8a599684a73af2c06",
+                "display_decimal_only": {
+                  "distance_norm_bounds_m": [
+                    0.6332974492264327,
+                    0.6332974492264363
+                  ],
+                  "required_centre_distance_upper_bounds_m": [
+                    0.581199999999999,
+                    0.5812000000000026
+                  ],
+                  "squared_slack_bounds_m2": [
+                    0.06327221919670478,
+                    0.06327221919670833
+                  ]
+                }
+              }
+            },
+            "tb2": {
+              "geometric_necessary": false,
+              "geometric_sufficient": false,
+              "legacy_hard_gates_passed": true,
+              "common_world_odom_calibrated": true,
+              "ages_ns": [
+                27000000,
+                40000000
+              ],
+              "uncertainty_m": "201/10000",
+              "map": {
+                "reported_normal_defined": true,
+                "distance_norm_bounds_m": [
+                  "180433498036503/281474976710656",
+                  "22554187254563/35184372088832"
+                ],
+                "required_centre_distance_upper_bounds_m": [
+                  "102865030238909/140737488355328",
+                  "205730060477819/281474976710656"
+                ],
+                "squared_slack_bounds_m2": [
+                  "-34705076396755/281474976710656",
+                  "-17352538198377/140737488355328"
+                ],
+                "base_reserve_m": "5869/10000",
+                "left": {
+                  "buffer_m": "39/1250",
+                  "direction_modes": [
+                    "nonnegative_dot_full_L"
+                  ],
+                  "kind": "transition",
+                  "longitudinal_m": "18/125",
+                  "support_upper_bounds_m": [
+                    "20266198323167/140737488355328",
+                    "40532396646335/281474976710656"
+                  ],
+                  "union_rule": "maximum"
+                },
+                "right": {
+                  "buffer_m": "39/2500",
+                  "direction_modes": [],
+                  "kind": "disk",
+                  "longitudinal_m": "0",
+                  "support_upper_bounds_m": [
+                    "0",
+                    "0"
+                  ],
+                  "union_rule": "no_directions_full_L"
+                },
+                "separation_sufficient_under_declared_sets": false,
+                "full_exact_frame_sha256": "213027305270fc2e29a4108d236c704bb9db5d47a458eb4ed2fbd4bc9423bf14",
+                "display_decimal_only": {
+                  "distance_norm_bounds_m": [
+                    0.6410285565881075,
+                    0.6410285565881111
+                  ],
+                  "required_centre_distance_upper_bounds_m": [
+                    0.7308999999999983,
+                    0.7309000000000019
+                  ],
+                  "squared_slack_bounds_m2": [
+                    -0.12329719963856789,
+                    -0.12329719963856434
+                  ]
+                }
+              },
+              "raw": {
+                "reported_normal_defined": true,
+                "distance_norm_bounds_m": [
+                  "5571883783539/8796093022208",
+                  "178300281073249/281474976710656"
+                ],
+                "required_centre_distance_upper_bounds_m": [
+                  "102865030238909/140737488355328",
+                  "205730060477819/281474976710656"
+                ],
+                "squared_slack_bounds_m2": [
+                  "-2338988459229/17592186044416",
+                  "-37423815347663/281474976710656"
+                ],
+                "base_reserve_m": "5869/10000",
+                "left": {
+                  "buffer_m": "39/1250",
+                  "direction_modes": [
+                    "nonnegative_dot_full_L"
+                  ],
+                  "kind": "transition",
+                  "longitudinal_m": "18/125",
+                  "support_upper_bounds_m": [
+                    "20266198323167/140737488355328",
+                    "40532396646335/281474976710656"
+                  ],
+                  "union_rule": "maximum"
+                },
+                "right": {
+                  "buffer_m": "39/2500",
+                  "direction_modes": [],
+                  "kind": "disk",
+                  "longitudinal_m": "0",
+                  "support_upper_bounds_m": [
+                    "0",
+                    "0"
+                  ],
+                  "union_rule": "no_directions_full_L"
+                },
+                "separation_sufficient_under_declared_sets": false,
+                "full_exact_frame_sha256": "9d09bfe86c1358248ff523afe1d5a6e2e3542b1d40aae554722e32892bac6c63",
+                "display_decimal_only": {
+                  "distance_norm_bounds_m": [
+                    0.6334498475029022,
+                    0.6334498475029058
+                  ],
+                  "required_centre_distance_upper_bounds_m": [
+                    0.7308999999999983,
+                    0.7309000000000019
+                  ],
+                  "squared_slack_bounds_m2": [
+                    -0.13295610069855002,
+                    -0.13295610069854646
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "reference": {
+        "callback_clock_ns": 46180000000,
+        "decision_clock_ns": 46180000000,
+        "decision_sequence": 2184,
+        "line": 84270,
+        "line_bytes": 24424,
+        "line_sha256": "2bc8fd718f5fa1d1063cfe112e0fed9e910435557b9681a1003ce15a2a78ba67",
+        "record_sequence": 84270
+      },
+      "raw_request": {
+        "sequence": 129,
+        "received_stamp": 46.18,
+        "v": 0.1789473684210527,
+        "w": 0.0
+      },
+      "effective_request": [
+        0.1789473684210527,
+        0.0
+      ],
+      "output": [
+        0.0,
+        0.0
+      ],
+      "reason": "reach_transition_envelope",
+      "own_received_state": {
+        "x": 0.45818155028782853,
+        "y": -0.0008635060047928471,
+        "yaw": 0.9985887054356336,
+        "v": 8.874009840221291e-05,
+        "w": -0.037867917026486335
+      },
+      "own_intent_role": "D",
+      "received_peer_intent_roles": {
+        "tb1": "D",
+        "tb2": "D"
+      },
+      "pairs": {
+        "returned": {
+          "present": true,
+          "peers": {
+            "tb1": {
+              "geometric_necessary": true,
+              "geometric_sufficient": true,
+              "legacy_hard_gates_passed": true,
+              "common_world_odom_calibrated": true,
+              "ages_ns": [
+                37000000,
+                32000000
+              ],
+              "uncertainty_m": "207/10000",
+              "map": {
+                "reported_normal_defined": true,
+                "distance_norm_bounds_m": [
+                  "182602190359011/281474976710656",
+                  "45650547589753/70368744177664"
+                ],
+                "required_centre_distance_upper_bounds_m": [
+                  "82683274408755/140737488355328",
+                  "165366548817511/281474976710656"
+                ],
+                "squared_slack_bounds_m2": [
+                  "10653637005643/140737488355328",
+                  "21307274011287/281474976710656"
+                ],
+                "base_reserve_m": "47/80",
+                "left": {
+                  "buffer_m": "39/1250",
+                  "direction_modes": [
+                    "original_nonclosing_zero"
+                  ],
+                  "kind": "transition",
+                  "longitudinal_m": "18/125",
+                  "support_upper_bounds_m": [
+                    "0",
+                    "0"
+                  ],
+                  "union_rule": "maximum"
+                },
+                "right": {
+                  "buffer_m": "39/2500",
+                  "direction_modes": [],
+                  "kind": "disk",
+                  "longitudinal_m": "0",
+                  "support_upper_bounds_m": [
+                    "0",
+                    "0"
+                  ],
+                  "union_rule": "no_directions_full_L"
+                },
+                "separation_sufficient_under_declared_sets": true,
+                "full_exact_frame_sha256": "b632148b003fa85788243ebf5e8a4d97b4b8301c59e8411f1c86041e41a2267c",
+                "display_decimal_only": {
+                  "distance_norm_bounds_m": [
+                    0.6487332994673913,
+                    0.6487332994673949
+                  ],
+                  "required_centre_distance_upper_bounds_m": [
+                    0.5874999999999986,
+                    0.5875000000000021
+                  ],
+                  "squared_slack_bounds_m2": [
+                    0.07569864383784619,
+                    0.07569864383784974
+                  ]
+                }
+              },
+              "raw": {
+                "reported_normal_defined": true,
+                "distance_norm_bounds_m": [
+                  "178464217285929/281474976710656",
+                  "89232108642965/140737488355328"
+                ],
+                "required_centre_distance_upper_bounds_m": [
+                  "82683274408755/140737488355328",
+                  "165366548817511/281474976710656"
+                ],
+                "squared_slack_bounds_m2": [
+                  "15999224642603/281474976710656",
+                  "3999806160651/70368744177664"
+                ],
+                "base_reserve_m": "47/80",
+                "left": {
+                  "buffer_m": "39/1250",
+                  "direction_modes": [
+                    "original_nonclosing_zero"
+                  ],
+                  "kind": "transition",
+                  "longitudinal_m": "18/125",
+                  "support_upper_bounds_m": [
+                    "0",
+                    "0"
+                  ],
+                  "union_rule": "maximum"
+                },
+                "right": {
+                  "buffer_m": "39/2500",
+                  "direction_modes": [],
+                  "kind": "disk",
+                  "longitudinal_m": "0",
+                  "support_upper_bounds_m": [
+                    "0",
+                    "0"
+                  ],
+                  "union_rule": "no_directions_full_L"
+                },
+                "separation_sufficient_under_declared_sets": true,
+                "full_exact_frame_sha256": "faa62369a6752102a441d626bd9cc1fbfd94fbfce79d100918f14a7304eb3464",
+                "display_decimal_only": {
+                  "distance_norm_bounds_m": [
+                    0.6340322659281448,
+                    0.6340322659281483
+                  ],
+                  "required_centre_distance_upper_bounds_m": [
+                    0.5874999999999986,
+                    0.5875000000000021
+                  ],
+                  "squared_slack_bounds_m2": [
+                    0.056840664237977734,
+                    0.05684066423798129
+                  ]
+                }
+              }
+            },
+            "tb2": {
+              "geometric_necessary": false,
+              "geometric_sufficient": false,
+              "legacy_hard_gates_passed": true,
+              "common_world_odom_calibrated": true,
+              "ages_ns": [
+                37000000,
+                50000000
+              ],
+              "uncertainty_m": "261/10000",
+              "map": {
+                "reported_normal_defined": true,
+                "distance_norm_bounds_m": [
+                  "90004114222075/140737488355328",
+                  "180008228444151/281474976710656"
+                ],
+                "required_centre_distance_upper_bounds_m": [
+                  "103709455169041/140737488355328",
+                  "207418910338083/281474976710656"
+                ],
+                "squared_slack_bounds_m2": [
+                  "-9432136901065/70368744177664",
+                  "-37728547604259/281474976710656"
+                ],
+                "base_reserve_m": "5929/10000",
+                "left": {
+                  "buffer_m": "39/1250",
+                  "direction_modes": [
+                    "nonnegative_dot_full_L"
+                  ],
+                  "kind": "transition",
+                  "longitudinal_m": "18/125",
+                  "support_upper_bounds_m": [
+                    "20266198323167/140737488355328",
+                    "40532396646335/281474976710656"
+                  ],
+                  "union_rule": "maximum"
+                },
+                "right": {
+                  "buffer_m": "39/2500",
+                  "direction_modes": [],
+                  "kind": "disk",
+                  "longitudinal_m": "0",
+                  "support_upper_bounds_m": [
+                    "0",
+                    "0"
+                  ],
+                  "union_rule": "no_directions_full_L"
+                },
+                "separation_sufficient_under_declared_sets": false,
+                "full_exact_frame_sha256": "d440df2aa8dca1ea741d7cef42e077d949eb666af33a2982121911f256b169a0",
+                "display_decimal_only": {
+                  "distance_norm_bounds_m": [
+                    0.6395176954901771,
+                    0.6395176954901807
+                  ],
+                  "required_centre_distance_upper_bounds_m": [
+                    0.7368999999999986,
+                    0.7369000000000021
+                  ],
+                  "squared_slack_bounds_m2": [
+                    -0.13403872715493037,
+                    -0.13403872715492682
+                  ]
+                }
+              },
+              "raw": {
+                "reported_normal_defined": true,
+                "distance_norm_bounds_m": [
+                  "178013589275047/281474976710656",
+                  "22251698659381/35184372088832"
+                ],
+                "required_centre_distance_upper_bounds_m": [
+                  "103709455169041/140737488355328",
+                  "207418910338083/281474976710656"
+                ],
+                "squared_slack_bounds_m2": [
+                  "-40265626918953/281474976710656",
+                  "-5033203364869/35184372088832"
+                ],
+                "base_reserve_m": "5929/10000",
+                "left": {
+                  "buffer_m": "39/1250",
+                  "direction_modes": [
+                    "nonnegative_dot_full_L"
+                  ],
+                  "kind": "transition",
+                  "longitudinal_m": "18/125",
+                  "support_upper_bounds_m": [
+                    "20266198323167/140737488355328",
+                    "40532396646335/281474976710656"
+                  ],
+                  "union_rule": "maximum"
+                },
+                "right": {
+                  "buffer_m": "39/2500",
+                  "direction_modes": [],
+                  "kind": "disk",
+                  "longitudinal_m": "0",
+                  "support_upper_bounds_m": [
+                    "0",
+                    "0"
+                  ],
+                  "union_rule": "no_directions_full_L"
+                },
+                "separation_sufficient_under_declared_sets": false,
+                "full_exact_frame_sha256": "2ca74586be81e03a35c875c6464f1101eab3e8edbccf59dd5733f046ae61bd71",
+                "display_decimal_only": {
+                  "distance_norm_bounds_m": [
+                    0.6324313136298336,
+                    0.6324313136298372
+                  ],
+                  "required_centre_distance_upper_bounds_m": [
+                    0.7368999999999986,
+                    0.7369000000000021
+                  ],
+                  "squared_slack_bounds_m2": [
+                    -0.143052243540442,
+                    -0.14305224354043844
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "rejected_X": {
+          "present": false
+        }
+      }
+    },
+    {
+      "reference": {
+        "callback_clock_ns": 47200000000,
+        "decision_clock_ns": 47200000000,
+        "decision_sequence": 2235,
+        "line": 90414,
+        "line_bytes": 30727,
+        "line_sha256": "36f2cc671dfaf5b2d6b2d8ec64034886a2c9ada6ffb0a834319900f5428a70a1",
+        "record_sequence": 90414
+      },
+      "raw_request": {
+        "sequence": 149,
+        "received_stamp": 47.18,
+        "v": 0.1789473684210527,
+        "w": 0.015789473684210478
+      },
+      "effective_request": [
+        0.1789473684210527,
+        0.015789473684210478
+      ],
+      "output": [
+        0.0,
+        0.015789473684210478
+      ],
+      "reason": "linear_brake_preserve_requested_turn",
+      "own_received_state": {
+        "x": 0.4582198781970025,
+        "y": -0.0007979972213334557,
+        "yaw": 0.9815567381827249,
+        "v": 2.242564563180961e-05,
+        "w": -0.00553027240440046
+      },
+      "own_intent_role": "D",
+      "received_peer_intent_roles": {
+        "tb1": "D",
+        "tb2": "D"
+      },
+      "pairs": {
+        "returned": {
+          "present": true,
+          "peers": {
+            "tb1": {
+              "geometric_necessary": true,
+              "geometric_sufficient": true,
+              "legacy_hard_gates_passed": true,
+              "common_world_odom_calibrated": true,
+              "ages_ns": [
+                57000000,
+                52000000
+              ],
+              "uncertainty_m": "327/10000",
+              "map": {
+                "reported_normal_defined": true,
+                "distance_norm_bounds_m": [
+                  "182687947466183/281474976710656",
+                  "22835993433273/35184372088832"
+                ],
+                "required_centre_distance_upper_bounds_m": [
+                  "20544154862669/35184372088832",
+                  "164353238901353/281474976710656"
+                ],
+                "squared_slack_bounds_m2": [
+                  "5651389589227/70368744177664",
+                  "22605558356909/281474976710656"
+                ],
+                "base_reserve_m": "5839/10000",
+                "left": {
+                  "buffer_m": "39/2500",
+                  "direction_modes": [],
+                  "kind": "disk",
+                  "longitudinal_m": "0",
+                  "support_upper_bounds_m": [
+                    "0",
+                    "0"
+                  ],
+                  "union_rule": "no_directions_full_L"
+                },
+                "right": {
+                  "buffer_m": "39/2500",
+                  "direction_modes": [],
+                  "kind": "disk",
+                  "longitudinal_m": "0",
+                  "support_upper_bounds_m": [
+                    "0",
+                    "0"
+                  ],
+                  "union_rule": "no_directions_full_L"
+                },
+                "separation_sufficient_under_declared_sets": true,
+                "full_exact_frame_sha256": "d9d8812927b739d494b0b4e4f875c88fb12744329edef89f89616eb873ed8cac",
+                "display_decimal_only": {
+                  "distance_norm_bounds_m": [
+                    0.6490379699150957,
+                    0.6490379699150992
+                  ],
+                  "required_centre_distance_upper_bounds_m": [
+                    0.5838999999999999,
+                    0.5839000000000034
+                  ],
+                  "squared_slack_bounds_m2": [
+                    0.08031107639151003,
+                    0.08031107639151358
+                  ]
+                }
+              },
+              "raw": {
+                "reported_normal_defined": true,
+                "distance_norm_bounds_m": [
+                  "44666514231531/70368744177664",
+                  "178666056926125/281474976710656"
+                ],
+                "required_centre_distance_upper_bounds_m": [
+                  "20544154862669/35184372088832",
+                  "164353238901353/281474976710656"
+                ],
+                "squared_slack_bounds_m2": [
+                  "8721153151051/140737488355328",
+                  "17442306302103/281474976710656"
+                ],
+                "base_reserve_m": "5839/10000",
+                "left": {
+                  "buffer_m": "39/2500",
+                  "direction_modes": [],
+                  "kind": "disk",
+                  "longitudinal_m": "0",
+                  "support_upper_bounds_m": [
+                    "0",
+                    "0"
+                  ],
+                  "union_rule": "no_directions_full_L"
+                },
+                "right": {
+                  "buffer_m": "39/2500",
+                  "direction_modes": [],
+                  "kind": "disk",
+                  "longitudinal_m": "0",
+                  "support_upper_bounds_m": [
+                    "0",
+                    "0"
+                  ],
+                  "union_rule": "no_directions_full_L"
+                },
+                "separation_sufficient_under_declared_sets": true,
+                "full_exact_frame_sha256": "cbb0fedf696ebeac372626ca3a9ce7c6e899771b0680ab78a720e33b7922de0a",
+                "display_decimal_only": {
+                  "distance_norm_bounds_m": [
+                    0.6347493443787897,
+                    0.6347493443787933
+                  ],
+                  "required_centre_distance_upper_bounds_m": [
+                    0.5838999999999999,
+                    0.5839000000000034
+                  ],
+                  "squared_slack_bounds_m2": [
+                    0.06196752018930596,
+                    0.06196752018930951
+                  ]
+                }
+              }
+            },
+            "tb2": {
+              "geometric_necessary": true,
+              "geometric_sufficient": true,
+              "legacy_hard_gates_passed": true,
+              "common_world_odom_calibrated": true,
+              "ages_ns": [
+                57000000,
+                20000000
+              ],
+              "uncertainty_m": "231/10000",
+              "map": {
+                "reported_normal_defined": true,
+                "distance_norm_bounds_m": [
+                  "89866655430937/140737488355328",
+                  "179733310861875/281474976710656"
+                ],
+                "required_centre_distance_upper_bounds_m": [
+                  "161651079124929/281474976710656",
+                  "80825539562465/140737488355328"
+                ],
+                "squared_slack_bounds_m2": [
+                  "5482717969511/70368744177664",
+                  "21930871878045/281474976710656"
+                ],
+                "base_reserve_m": "5743/10000",
+                "left": {
+                  "buffer_m": "39/2500",
+                  "direction_modes": [],
+                  "kind": "disk",
+                  "longitudinal_m": "0",
+                  "support_upper_bounds_m": [
+                    "0",
+                    "0"
+                  ],
+                  "union_rule": "no_directions_full_L"
+                },
+                "right": {
+                  "buffer_m": "39/2500",
+                  "direction_modes": [],
+                  "kind": "disk",
+                  "longitudinal_m": "0",
+                  "support_upper_bounds_m": [
+                    "0",
+                    "0"
+                  ],
+                  "union_rule": "no_directions_full_L"
+                },
+                "separation_sufficient_under_declared_sets": true,
+                "full_exact_frame_sha256": "abf62adc41182658bd443d1bccaaa2e3cb9871573fe0f1f6d46ad53381408b0e",
+                "display_decimal_only": {
+                  "distance_norm_bounds_m": [
+                    0.6385409920350824,
+                    0.638540992035086
+                  ],
+                  "required_centre_distance_upper_bounds_m": [
+                    0.5742999999999974,
+                    0.5743000000000009
+                  ],
+                  "squared_slack_bounds_m2": [
+                    0.07791410850914815,
+                    0.0779141085091517
+                  ]
+                }
+              },
+              "raw": {
+                "reported_normal_defined": true,
+                "distance_norm_bounds_m": [
+                  "88914009330721/140737488355328",
+                  "177828018661443/281474976710656"
+                ],
+                "required_centre_distance_upper_bounds_m": [
+                  "161651079124929/281474976710656",
+                  "80825539562465/140737488355328"
+                ],
+                "squared_slack_bounds_m2": [
+                  "19510554376723/281474976710656",
+                  "4877638594181/70368744177664"
+                ],
+                "base_reserve_m": "5743/10000",
+                "left": {
+                  "buffer_m": "39/2500",
+                  "direction_modes": [],
+                  "kind": "disk",
+                  "longitudinal_m": "0",
+                  "support_upper_bounds_m": [
+                    "0",
+                    "0"
+                  ],
+                  "union_rule": "no_directions_full_L"
+                },
+                "right": {
+                  "buffer_m": "39/2500",
+                  "direction_modes": [],
+                  "kind": "disk",
+                  "longitudinal_m": "0",
+                  "support_upper_bounds_m": [
+                    "0",
+                    "0"
+                  ],
+                  "union_rule": "no_directions_full_L"
+                },
+                "separation_sufficient_under_declared_sets": true,
+                "full_exact_frame_sha256": "9d9b586446d4b4dee555d097079a9aefb04f5e2b59c279f9df1fb7d91e232309",
+                "display_decimal_only": {
+                  "distance_norm_bounds_m": [
+                    0.6317720343724957,
+                    0.6317720343724993
+                  ],
+                  "required_centre_distance_upper_bounds_m": [
+                    0.5742999999999974,
+                    0.5743000000000009
+                  ],
+                  "squared_slack_bounds_m2": [
+                    0.06931541341516478,
+                    0.06931541341516834
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "rejected_X": {
+          "present": true,
+          "peers": {
+            "tb1": {
+              "geometric_necessary": true,
+              "geometric_sufficient": true,
+              "legacy_hard_gates_passed": true,
+              "common_world_odom_calibrated": true,
+              "ages_ns": [
+                57000000,
+                52000000
+              ],
+              "uncertainty_m": "327/10000",
+              "map": {
+                "reported_normal_defined": true,
+                "distance_norm_bounds_m": [
+                  "182687947466183/281474976710656",
+                  "22835993433273/35184372088832"
+                ],
+                "required_centre_distance_upper_bounds_m": [
+                  "84372124269019/140737488355328",
+                  "168744248538039/281474976710656"
+                ],
+                "squared_slack_bounds_m2": [
+                  "8704618776427/140737488355328",
+                  "17409237552855/281474976710656"
+                ],
+                "base_reserve_m": "1199/2000",
+                "left": {
+                  "buffer_m": "39/1250",
+                  "direction_modes": [
+                    "original_nonclosing_zero"
+                  ],
+                  "kind": "transition",
+                  "longitudinal_m": "18/125",
+                  "support_upper_bounds_m": [
+                    "0",
+                    "0"
+                  ],
+                  "union_rule": "maximum"
+                },
+                "right": {
+                  "buffer_m": "39/2500",
+                  "direction_modes": [],
+                  "kind": "disk",
+                  "longitudinal_m": "0",
+                  "support_upper_bounds_m": [
+                    "0",
+                    "0"
+                  ],
+                  "union_rule": "no_directions_full_L"
+                },
+                "separation_sufficient_under_declared_sets": true,
+                "full_exact_frame_sha256": "7120e2175da133a73dfca721cb09eb0e8fbe4b7141099140223521957e62aabd",
+                "display_decimal_only": {
+                  "distance_norm_bounds_m": [
+                    0.6490379699150957,
+                    0.6490379699150992
+                  ],
+                  "required_centre_distance_upper_bounds_m": [
+                    0.599499999999999,
+                    0.5995000000000026
+                  ],
+                  "squared_slack_bounds_m2": [
+                    0.061850036391511765,
+                    0.06185003639151532
+                  ]
+                }
+              },
+              "raw": {
+                "reported_normal_defined": true,
+                "distance_norm_bounds_m": [
+                  "44666514231531/70368744177664",
+                  "178666056926125/281474976710656"
+                ],
+                "required_centre_distance_upper_bounds_m": [
+                  "84372124269019/140737488355328",
+                  "168744248538039/281474976710656"
+                ],
+                "squared_slack_bounds_m2": [
+                  "12245985498047/281474976710656",
+                  "191343523407/4398046511104"
+                ],
+                "base_reserve_m": "1199/2000",
+                "left": {
+                  "buffer_m": "39/1250",
+                  "direction_modes": [
+                    "original_nonclosing_zero"
+                  ],
+                  "kind": "transition",
+                  "longitudinal_m": "18/125",
+                  "support_upper_bounds_m": [
+                    "0",
+                    "0"
+                  ],
+                  "union_rule": "maximum"
+                },
+                "right": {
+                  "buffer_m": "39/2500",
+                  "direction_modes": [],
+                  "kind": "disk",
+                  "longitudinal_m": "0",
+                  "support_upper_bounds_m": [
+                    "0",
+                    "0"
+                  ],
+                  "union_rule": "no_directions_full_L"
+                },
+                "separation_sufficient_under_declared_sets": true,
+                "full_exact_frame_sha256": "a14febef4ab4b6e7199d8ecd847ccfee68169dfc2d34344c47d5132b48e39d90",
+                "display_decimal_only": {
+                  "distance_norm_bounds_m": [
+                    0.6347493443787897,
+                    0.6347493443787933
+                  ],
+                  "required_centre_distance_upper_bounds_m": [
+                    0.599499999999999,
+                    0.5995000000000026
+                  ],
+                  "squared_slack_bounds_m2": [
+                    0.04350648018930414,
+                    0.043506480189307695
+                  ]
+                }
+              }
+            },
+            "tb2": {
+              "geometric_necessary": false,
+              "geometric_sufficient": false,
+              "legacy_hard_gates_passed": true,
+              "common_world_odom_calibrated": true,
+              "ages_ns": [
+                57000000,
+                20000000
+              ],
+              "uncertainty_m": "231/10000",
+              "map": {
+                "reported_normal_defined": true,
+                "distance_norm_bounds_m": [
+                  "89866655430937/140737488355328",
+                  "179733310861875/281474976710656"
+                ],
+                "required_centre_distance_upper_bounds_m": [
+                  "103287242703975/140737488355328",
+                  "206574485407951/281474976710656"
+                ],
+                "squared_slack_bounds_m2": [
+                  "-9209482055351/70368744177664",
+                  "-36837928221403/281474976710656"
+                ],
+                "base_reserve_m": "5899/10000",
+                "left": {
+                  "buffer_m": "39/1250",
+                  "direction_modes": [
+                    "nonnegative_dot_full_L"
+                  ],
+                  "kind": "transition",
+                  "longitudinal_m": "18/125",
+                  "support_upper_bounds_m": [
+                    "20266198323167/140737488355328",
+                    "40532396646335/281474976710656"
+                  ],
+                  "union_rule": "maximum"
+                },
+                "right": {
+                  "buffer_m": "39/2500",
+                  "direction_modes": [],
+                  "kind": "disk",
+                  "longitudinal_m": "0",
+                  "support_upper_bounds_m": [
+                    "0",
+                    "0"
+                  ],
+                  "union_rule": "no_directions_full_L"
+                },
+                "separation_sufficient_under_declared_sets": false,
+                "full_exact_frame_sha256": "380064f36e6c4ff222dc8e5d5bfbcb2bdaf25d64d8a4ba2e96f69caff0b932ba",
+                "display_decimal_only": {
+                  "distance_norm_bounds_m": [
+                    0.6385409920350824,
+                    0.638540992035086
+                  ],
+                  "required_centre_distance_upper_bounds_m": [
+                    0.7338999999999984,
+                    0.733900000000002
+                  ],
+                  "squared_slack_bounds_m2": [
+                    -0.130874611490853,
+                    -0.13087461149084945
+                  ]
+                }
+              },
+              "raw": {
+                "reported_normal_defined": true,
+                "distance_norm_bounds_m": [
+                  "88914009330721/140737488355328",
+                  "177828018661443/281474976710656"
+                ],
+                "required_centre_distance_upper_bounds_m": [
+                  "103287242703975/140737488355328",
+                  "206574485407951/281474976710656"
+                ],
+                "squared_slack_bounds_m2": [
+                  "-39258245722725/281474976710656",
+                  "-9814561430681/70368744177664"
+                ],
+                "base_reserve_m": "5899/10000",
+                "left": {
+                  "buffer_m": "39/1250",
+                  "direction_modes": [
+                    "nonnegative_dot_full_L"
+                  ],
+                  "kind": "transition",
+                  "longitudinal_m": "18/125",
+                  "support_upper_bounds_m": [
+                    "20266198323167/140737488355328",
+                    "40532396646335/281474976710656"
+                  ],
+                  "union_rule": "maximum"
+                },
+                "right": {
+                  "buffer_m": "39/2500",
+                  "direction_modes": [],
+                  "kind": "disk",
+                  "longitudinal_m": "0",
+                  "support_upper_bounds_m": [
+                    "0",
+                    "0"
+                  ],
+                  "union_rule": "no_directions_full_L"
+                },
+                "separation_sufficient_under_declared_sets": false,
+                "full_exact_frame_sha256": "dfe10458750433b1b8b5f4903abbb9f95d6063105ed26833d6b18c590e92fad4",
+                "display_decimal_only": {
+                  "distance_norm_bounds_m": [
+                    0.6317720343724957,
+                    0.6317720343724993
+                  ],
+                  "required_centre_distance_upper_bounds_m": [
+                    0.7338999999999984,
+                    0.733900000000002
+                  ],
+                  "squared_slack_bounds_m2": [
+                    -0.13947330658483637,
+                    -0.1394733065848328
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "reference": {
+        "callback_clock_ns": 49700000000,
+        "decision_clock_ns": 49700000000,
+        "decision_sequence": 2360,
+        "line": 104764,
+        "line_bytes": 30758,
+        "line_sha256": "7e3022350d81cebdb75e0aa2f5b45df7e4551d5486de613a582c96ca65136410",
+        "record_sequence": 104764
+      },
+      "raw_request": {
+        "sequence": 199,
+        "received_stamp": 49.68,
+        "v": 0.010526315789473684,
+        "w": 0.04736842105263153
+      },
+      "effective_request": [
+        0.010526315789473684,
+        0.04736842105263153
+      ],
+      "output": [
+        0.0,
+        0.04736842105263153
+      ],
+      "reason": "linear_brake_preserve_requested_turn",
+      "own_received_state": {
+        "x": 0.458197491894612,
+        "y": -0.0008842182750088307,
+        "yaw": 1.0685915068867877,
+        "v": -4.2772659443157154e-05,
+        "w": 0.030035232335139855
+      },
+      "own_intent_role": "D",
+      "received_peer_intent_roles": {
+        "tb1": "D",
+        "tb2": "D"
+      },
+      "pairs": {
+        "returned": {
+          "present": true,
+          "peers": {
+            "tb1": {
+              "geometric_necessary": true,
+              "geometric_sufficient": true,
+              "legacy_hard_gates_passed": true,
+              "common_world_odom_calibrated": true,
+              "ages_ns": [
+                57000000,
+                52000000
+              ],
+              "uncertainty_m": "327/10000",
+              "map": {
+                "reported_normal_defined": true,
+                "distance_norm_bounds_m": [
+                  "93631628290025/140737488355328",
+                  "187263256580051/281474976710656"
+                ],
+                "required_centre_distance_upper_bounds_m": [
+                  "20544154862669/35184372088832",
+                  "164353238901353/281474976710656"
+                ],
+                "squared_slack_bounds_m2": [
+                  "14309513800727/140737488355328",
+                  "28619027601455/281474976710656"
+                ],
+                "base_reserve_m": "5839/10000",
+                "left": {
+                  "buffer_m": "39/2500",
+                  "direction_modes": [],
+                  "kind": "disk",
+                  "longitudinal_m": "0",
+                  "support_upper_bounds_m": [
+                    "0",
+                    "0"
+                  ],
+                  "union_rule": "no_directions_full_L"
+                },
+                "right": {
+                  "buffer_m": "39/2500",
+                  "direction_modes": [],
+                  "kind": "disk",
+                  "longitudinal_m": "0",
+                  "support_upper_bounds_m": [
+                    "0",
+                    "0"
+                  ],
+                  "union_rule": "no_directions_full_L"
+                },
+                "separation_sufficient_under_declared_sets": true,
+                "full_exact_frame_sha256": "8c83726b0b89acf37e6bb9b904fe605f6e8747d92354d5a1468e09e56adcb6e5",
+                "display_decimal_only": {
+                  "distance_norm_bounds_m": [
+                    0.6652927331886715,
+                    0.6652927331886751
+                  ],
+                  "required_centre_distance_upper_bounds_m": [
+                    0.5838999999999999,
+                    0.5839000000000034
+                  ],
+                  "squared_slack_bounds_m2": [
+                    0.10167521083365472,
+                    0.10167521083365827
+                  ]
+                }
+              },
+              "raw": {
+                "reported_normal_defined": true,
+                "distance_norm_bounds_m": [
+                  "179119107676033/281474976710656",
+                  "89559553838017/140737488355328"
+                ],
+                "required_centre_distance_upper_bounds_m": [
+                  "20544154862669/35184372088832",
+                  "164353238901353/281474976710656"
+                ],
+                "squared_slack_bounds_m2": [
+                  "9009091423617/140737488355328",
+                  "18018182847235/281474976710656"
+                ],
+                "base_reserve_m": "5839/10000",
+                "left": {
+                  "buffer_m": "39/2500",
+                  "direction_modes": [],
+                  "kind": "disk",
+                  "longitudinal_m": "0",
+                  "support_upper_bounds_m": [
+                    "0",
+                    "0"
+                  ],
+                  "union_rule": "no_directions_full_L"
+                },
+                "right": {
+                  "buffer_m": "39/2500",
+                  "direction_modes": [],
+                  "kind": "disk",
+                  "longitudinal_m": "0",
+                  "support_upper_bounds_m": [
+                    "0",
+                    "0"
+                  ],
+                  "union_rule": "no_directions_full_L"
+                },
+                "separation_sufficient_under_declared_sets": true,
+                "full_exact_frame_sha256": "54351de2d101ccd16ba4b188677bf82e6fe80dc00fb7bb04ff9e11a613e6fecc",
+                "display_decimal_only": {
+                  "distance_norm_bounds_m": [
+                    0.6363589039751822,
+                    0.6363589039751858
+                  ],
+                  "required_centre_distance_upper_bounds_m": [
+                    0.5838999999999999,
+                    0.5839000000000034
+                  ],
+                  "squared_slack_bounds_m2": [
+                    0.06401344466849679,
+                    0.06401344466850034
+                  ]
+                }
+              }
+            },
+            "tb2": {
+              "geometric_necessary": true,
+              "geometric_sufficient": true,
+              "legacy_hard_gates_passed": true,
+              "common_world_odom_calibrated": true,
+              "ages_ns": [
+                57000000,
+                20000000
+              ],
+              "uncertainty_m": "231/10000",
+              "map": {
+                "reported_normal_defined": true,
+                "distance_norm_bounds_m": [
+                  "179655884767597/281474976710656",
+                  "89827942383799/140737488355328"
+                ],
+                "required_centre_distance_upper_bounds_m": [
+                  "161651079124929/281474976710656",
+                  "80825539562465/140737488355328"
+                ],
+                "squared_slack_bounds_m2": [
+                  "10916006852877/140737488355328",
+                  "21832013705755/281474976710656"
+                ],
+                "base_reserve_m": "5743/10000",
+                "left": {
+                  "buffer_m": "39/2500",
+                  "direction_modes": [],
+                  "kind": "disk",
+                  "longitudinal_m": "0",
+                  "support_upper_bounds_m": [
+                    "0",
+                    "0"
+                  ],
+                  "union_rule": "no_directions_full_L"
+                },
+                "right": {
+                  "buffer_m": "39/2500",
+                  "direction_modes": [],
+                  "kind": "disk",
+                  "longitudinal_m": "0",
+                  "support_upper_bounds_m": [
+                    "0",
+                    "0"
+                  ],
+                  "union_rule": "no_directions_full_L"
+                },
+                "separation_sufficient_under_declared_sets": true,
+                "full_exact_frame_sha256": "ee07af8d605a0c8e2c71f2bf1fc4f5623c468e15a0c10d6d455f4c25bc01774c",
+                "display_decimal_only": {
+                  "distance_norm_bounds_m": [
+                    0.6382659192908484,
+                    0.638265919290852
+                  ],
+                  "required_centre_distance_upper_bounds_m": [
+                    0.5742999999999974,
+                    0.5743000000000009
+                  ],
+                  "squared_slack_bounds_m2": [
+                    0.07756289372819225,
+                    0.0775628937281958
+                  ]
+                }
+              },
+              "raw": {
+                "reported_normal_defined": true,
+                "distance_norm_bounds_m": [
+                  "177727734080713/281474976710656",
+                  "88863867040357/140737488355328"
+                ],
+                "required_centre_distance_upper_bounds_m": [
+                  "161651079124929/281474976710656",
+                  "80825539562465/140737488355328"
+                ],
+                "squared_slack_bounds_m2": [
+                  "19383876119187/281474976710656",
+                  "4845969029797/70368744177664"
+                ],
+                "base_reserve_m": "5743/10000",
+                "left": {
+                  "buffer_m": "39/2500",
+                  "direction_modes": [],
+                  "kind": "disk",
+                  "longitudinal_m": "0",
+                  "support_upper_bounds_m": [
+                    "0",
+                    "0"
+                  ],
+                  "union_rule": "no_directions_full_L"
+                },
+                "right": {
+                  "buffer_m": "39/2500",
+                  "direction_modes": [],
+                  "kind": "disk",
+                  "longitudinal_m": "0",
+                  "support_upper_bounds_m": [
+                    "0",
+                    "0"
+                  ],
+                  "union_rule": "no_directions_full_L"
+                },
+                "separation_sufficient_under_declared_sets": true,
+                "full_exact_frame_sha256": "092f271fc7175942bc687130889e9b9946ad3705f0f19141d86ec1af8e4a7279",
+                "display_decimal_only": {
+                  "distance_norm_bounds_m": [
+                    0.631415751970767,
+                    0.6314157519707706
+                  ],
+                  "required_centre_distance_upper_bounds_m": [
+                    0.5742999999999974,
+                    0.5743000000000009
+                  ],
+                  "squared_slack_bounds_m2": [
+                    0.06886536183681002,
+                    0.06886536183681358
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "rejected_X": {
+          "present": true,
+          "peers": {
+            "tb1": {
+              "geometric_necessary": true,
+              "geometric_sufficient": true,
+              "legacy_hard_gates_passed": true,
+              "common_world_odom_calibrated": true,
+              "ages_ns": [
+                57000000,
+                52000000
+              ],
+              "uncertainty_m": "327/10000",
+              "map": {
+                "reported_normal_defined": true,
+                "distance_norm_bounds_m": [
+                  "93631628290025/140737488355328",
+                  "187263256580051/281474976710656"
+                ],
+                "required_centre_distance_upper_bounds_m": [
+                  "84372124269019/140737488355328",
+                  "168744248538039/281474976710656"
+                ],
+                "squared_slack_bounds_m2": [
+                  "23422706797399/281474976710656",
+                  "2927838349675/35184372088832"
+                ],
+                "base_reserve_m": "1199/2000",
+                "left": {
+                  "buffer_m": "39/1250",
+                  "direction_modes": [
+                    "original_nonclosing_zero"
+                  ],
+                  "kind": "transition",
+                  "longitudinal_m": "18/125",
+                  "support_upper_bounds_m": [
+                    "0",
+                    "0"
+                  ],
+                  "union_rule": "maximum"
+                },
+                "right": {
+                  "buffer_m": "39/2500",
+                  "direction_modes": [],
+                  "kind": "disk",
+                  "longitudinal_m": "0",
+                  "support_upper_bounds_m": [
+                    "0",
+                    "0"
+                  ],
+                  "union_rule": "no_directions_full_L"
+                },
+                "separation_sufficient_under_declared_sets": true,
+                "full_exact_frame_sha256": "f317ee398be47eb27159045ed67d7ff752ef96a460ba2f6fb61c1c9bf834bedb",
+                "display_decimal_only": {
+                  "distance_norm_bounds_m": [
+                    0.6652927331886715,
+                    0.6652927331886751
+                  ],
+                  "required_centre_distance_upper_bounds_m": [
+                    0.599499999999999,
+                    0.5995000000000026
+                  ],
+                  "squared_slack_bounds_m2": [
+                    0.0832141708336529,
+                    0.08321417083365645
+                  ]
+                }
+              },
+              "raw": {
+                "reported_normal_defined": true,
+                "distance_norm_bounds_m": [
+                  "179119107676033/281474976710656",
+                  "89559553838017/140737488355328"
+                ],
+                "required_centre_distance_upper_bounds_m": [
+                  "84372124269019/140737488355328",
+                  "168744248538039/281474976710656"
+                ],
+                "squared_slack_bounds_m2": [
+                  "12821862043179/281474976710656",
+                  "3205465510795/70368744177664"
+                ],
+                "base_reserve_m": "1199/2000",
+                "left": {
+                  "buffer_m": "39/1250",
+                  "direction_modes": [
+                    "original_nonclosing_zero"
+                  ],
+                  "kind": "transition",
+                  "longitudinal_m": "18/125",
+                  "support_upper_bounds_m": [
+                    "0",
+                    "0"
+                  ],
+                  "union_rule": "maximum"
+                },
+                "right": {
+                  "buffer_m": "39/2500",
+                  "direction_modes": [],
+                  "kind": "disk",
+                  "longitudinal_m": "0",
+                  "support_upper_bounds_m": [
+                    "0",
+                    "0"
+                  ],
+                  "union_rule": "no_directions_full_L"
+                },
+                "separation_sufficient_under_declared_sets": true,
+                "full_exact_frame_sha256": "5459615051338e178fdfd703b041307529c3618e5a048d965238dff747e23380",
+                "display_decimal_only": {
+                  "distance_norm_bounds_m": [
+                    0.6363589039751822,
+                    0.6363589039751858
+                  ],
+                  "required_centre_distance_upper_bounds_m": [
+                    0.599499999999999,
+                    0.5995000000000026
+                  ],
+                  "squared_slack_bounds_m2": [
+                    0.04555240466849497,
+                    0.045552404668498525
+                  ]
+                }
+              }
+            },
+            "tb2": {
+              "geometric_necessary": false,
+              "geometric_sufficient": false,
+              "legacy_hard_gates_passed": true,
+              "common_world_odom_calibrated": true,
+              "ages_ns": [
+                57000000,
+                20000000
+              ],
+              "uncertainty_m": "231/10000",
+              "map": {
+                "reported_normal_defined": true,
+                "distance_norm_bounds_m": [
+                  "179655884767597/281474976710656",
+                  "89827942383799/140737488355328"
+                ],
+                "required_centre_distance_upper_bounds_m": [
+                  "103287242703975/140737488355328",
+                  "206574485407951/281474976710656"
+                ],
+                "squared_slack_bounds_m2": [
+                  "-18468393196847/140737488355328",
+                  "-36936786393693/281474976710656"
+                ],
+                "base_reserve_m": "5899/10000",
+                "left": {
+                  "buffer_m": "39/1250",
+                  "direction_modes": [
+                    "nonnegative_dot_full_L"
+                  ],
+                  "kind": "transition",
+                  "longitudinal_m": "18/125",
+                  "support_upper_bounds_m": [
+                    "20266198323167/140737488355328",
+                    "40532396646335/281474976710656"
+                  ],
+                  "union_rule": "maximum"
+                },
+                "right": {
+                  "buffer_m": "39/2500",
+                  "direction_modes": [],
+                  "kind": "disk",
+                  "longitudinal_m": "0",
+                  "support_upper_bounds_m": [
+                    "0",
+                    "0"
+                  ],
+                  "union_rule": "no_directions_full_L"
+                },
+                "separation_sufficient_under_declared_sets": false,
+                "full_exact_frame_sha256": "507be046370c257ec8721825448d47f74138acfb76dd736a51665c68c4a2f28d",
+                "display_decimal_only": {
+                  "distance_norm_bounds_m": [
+                    0.6382659192908484,
+                    0.638265919290852
+                  ],
+                  "required_centre_distance_upper_bounds_m": [
+                    0.7338999999999984,
+                    0.733900000000002
+                  ],
+                  "squared_slack_bounds_m2": [
+                    -0.1312258262718089,
+                    -0.13122582627180535
+                  ]
+                }
+              },
+              "raw": {
+                "reported_normal_defined": true,
+                "distance_norm_bounds_m": [
+                  "177727734080713/281474976710656",
+                  "88863867040357/140737488355328"
+                ],
+                "required_centre_distance_upper_bounds_m": [
+                  "103287242703975/140737488355328",
+                  "206574485407951/281474976710656"
+                ],
+                "squared_slack_bounds_m2": [
+                  "-39384923980261/281474976710656",
+                  "-9846230995065/70368744177664"
+                ],
+                "base_reserve_m": "5899/10000",
+                "left": {
+                  "buffer_m": "39/1250",
+                  "direction_modes": [
+                    "nonnegative_dot_full_L"
+                  ],
+                  "kind": "transition",
+                  "longitudinal_m": "18/125",
+                  "support_upper_bounds_m": [
+                    "20266198323167/140737488355328",
+                    "40532396646335/281474976710656"
+                  ],
+                  "union_rule": "maximum"
+                },
+                "right": {
+                  "buffer_m": "39/2500",
+                  "direction_modes": [],
+                  "kind": "disk",
+                  "longitudinal_m": "0",
+                  "support_upper_bounds_m": [
+                    "0",
+                    "0"
+                  ],
+                  "union_rule": "no_directions_full_L"
+                },
+                "separation_sufficient_under_declared_sets": false,
+                "full_exact_frame_sha256": "abfe50516127207dbb3c42075d1b19595ec0c58025532d017cda6cf454e6dc31",
+                "display_decimal_only": {
+                  "distance_norm_bounds_m": [
+                    0.631415751970767,
+                    0.6314157519707706
+                  ],
+                  "required_centre_distance_upper_bounds_m": [
+                    0.7338999999999984,
+                    0.733900000000002
+                  ],
+                  "squared_slack_bounds_m2": [
+                    -0.13992335816319112,
+                    -0.13992335816318757
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "source_interpretation_pins": [
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_reach_runtime.py",
+      "bytes": 31562,
+      "sha256": "576c235901a51223f1d2723757f60c490045ba897d445d5c6fb3c739512a466b"
+    },
+    {
+      "path": "/home/zhuyulab/ns3-workspace/ros2_ws/ros2-multi-robot-automap/src/multi_robot_exploration/multi_robot_exploration/mr3_reach_support.py",
+      "bytes": 12236,
+      "sha256": "dc32cb48831dc333a9a4674ee83cce940e35a655a1b1fb9c5e6ba9b10be13966"
+    }
+  ],
+  "new_mathematical_or_physical_or_native_credit": false,
+  "original_motion_or_drive_opened": false,
+  "mathematical_pair_checks_replayed": false,
+  "display_rationals_converted_for_readability_only": true,
+  "canonical_written": false,
+  "historical_FAIL_rejudged": false
+}

@@ -1,3 +1,5 @@
+2026-10-24 P2A独立有限诊断入口：无线目录下使用已冻结的 `python -B -m mr3_learning.decisive_tests run --freeze <exact40>`，必须先通过新计划/source/build检查并clean push；仅执行预声明行为与成本诊断，非资格或PPO入口。见[测试声明](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261024_mr3_p2a_decisive_tests.md)。尚未执行时不得称PASS。
+
 # 当前三机器人基线与MR3适配启动命令
 
 2026-10-24 V69入口已实际闭合FAIL：freeze720cd4e194eeb2e9f14a86ed9204f6110d72173b，Root29341真实rc1，32步返回但Probe V3覆盖不足，科学audits未派发；旧入口保留作历史，不重开。完整来源/身份/原件已闭合，下一仅准备V70固定两输入独立取证；无新World或学习信用。当前接续与原件在[V69报告](../../ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261024_mr3_p2a_v69_probe_v3_qualification.md)。

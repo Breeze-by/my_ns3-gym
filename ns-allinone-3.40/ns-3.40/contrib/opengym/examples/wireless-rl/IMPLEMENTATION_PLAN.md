@@ -1,6 +1,8 @@
+2026-10-24 用户要求两项决定性实测，现准备独立有限诊断：96步异步运动取消与双worker各64步完整成本；不替代V75完整资格、不启动学习，原科学门/旧FAIL/pilot-final保持。见[测试声明](report/20261024_mr3_p2a_decisive_tests.md)。
+
 # MR3 研发检查点与逐步验收
 
-现行状态以[V74拒绝条件预声明](report/20261024_mr3_p2a_v74_reach_rejection_description.md)及当前表格为准：canonical17P/98source恢复与runtime27软件准备已完成，固定tb3拒绝字段/own-peer-intent引用描述尚未执行、新G待封。V73描述PASS与V71原生FAIL范围分开，不数学replay或自动native/policy；下方旧日期保留历史范围。
+现行状态以[V74实际闭合](report/20261024_mr3_p2a_v74_reach_rejection_description.md)及当前表格为准：单流拒绝字段描述PASS，250拟X日志证书阻断定位tb2，但不证明物理unsafe/数学错误/无可行路径；原V71FAIL保持。V75显式新输入workload仅disabled私有准备，详细契约/新scope待独立声明，不自动native/policy；下方旧日期保留历史范围。
 
 2026-10-24 V62实际闭合FAIL：freeze81e63f506、tool80831真实reap rc1，startup触发原motion controlled execution phase wall guard expired，0个task transition；worker被ownedclose SIGTERM(-15)，forced/failed_sample=True，原remaining process/zombie数组均空，不能称正常close。原profile reader只在launcher header gate失败、pstats读取0；仅motion main文件及adapter main partial可用、worker无finished，五profile未全，根因UNKNOWN。1051source+12ELF before/after/current-Git一致，49保存PID/start freshgone，6 pre-exec祖先nonowned不claimgone。完整parent实费180.893159791，累计109067.3998164526018/C150000、余40932.6001835473982；nested/root墙时不叠加，pilot/final原额保持。148 regular原件213343452B→15944926B无损归档、0link/无oversized；metadata21.133850693s/archive21.266745912s真实CPU关闭，4 CPU身份另gone/工程0。capacity=False、P2A未完成、禁auto pilot/final。下一V63仅对两个已闭合main.pstats（894940B）做一次有限description，parent120/work60，先看真实热点；不重跑V62 native、不扩大原10秒controlled-phase wall guard。authority core/wiring/独立auditor继续只在/tmp，尚未安装；之后才诊断修复、probe-v2、实测优化/容量、新同freeze12EP30与真实学习/三strict95。 用户持续自主授权保持，不重复一般审批。 见[V62](report/20261024_mr3_p2a_v62_process_profile.md)与[末账](report/assets/20261024_mr3_p2a_v62_process_profile/closure_ledger_v1.json)；下方日期旧状态保留历史范围。
 
@@ -140,7 +142,7 @@
 | MR3-P1B | RL 可独占的稳定目标/观测接口 | 已验收（2026-10-15） |
 | MR3-P1C | 训练环境、可靠 reset、采样吞吐 | 已验收（2026-10-16） |
 | MR3-P2A.0 | 生命周期、候选及安全执行、参与观测准备 | 已验收（2026-10-18）；原V26编排中断保留 |
-| MR3-P2A | 联合 MaskablePPO 最小训练闭环 | 未完成；V74 canonical17P/.890931161秒/98source恢复，27runtime源与前瞻spec准入；唯一motion507221955B/300parent240work/4MiB/≤12整行待新G实际描述。U112639.6725192646018/C180000/R67360.3274807353982；V71FAIL/原pilot-final保持、capacityFalse |
+| MR3-P2A | 联合 MaskablePPO 最小训练闭环 | 未完成；V74 Root35799描述PASS/507221955B/4整行、parent45.633274384；27source/main2与关闭CPU已闭合。U112685.3057936486018/C180000/R67314.6942063513982，原V71FAIL/原pilot-final保持；V75显式输入workload仍disabled/未准入，capacityFalse禁auto policy |
 | MR3-P2B | 同接口算法对照与方法选择 | 未开始 |
 | MR3-P2C | 理想通信完整验收、冻结模型 | 未开始 |
 | MR3-P3A | 双向 gateway、字节协议、消除旁路 | 未开始 |

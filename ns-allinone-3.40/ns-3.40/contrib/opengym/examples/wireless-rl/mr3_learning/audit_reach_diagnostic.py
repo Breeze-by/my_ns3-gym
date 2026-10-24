@@ -112,7 +112,7 @@ def fifo_results(paths, episodes, freeze):
     return result, stable
 
 
-def audit_episode(directory, freeze, gates, preparation, fifo=None):
+def audit_episode(directory, freeze, gates, preparation, fifo=None, *, plan_path=None):
     """Use the native PPO episode gates, without policy/optimizer/probe gates."""
     from . import audit_evaluator_phase, audit_reach_controlled_physics
     phase, base, native, command, scalar, _ = gates
@@ -133,8 +133,9 @@ def audit_episode(directory, freeze, gates, preparation, fifo=None):
         original_physics = native.audit_physics
         original_readiness = native.audit_initial_inputs_ready
         try:
-            audit_reach_controlled_physics.dispatch_controlled_physics(native, [directory], cache)
-            audit_reach_controlled_physics.dispatch_controlled_readiness(native, [directory], cache)
+            options = {} if plan_path is None else {"plan_path": plan_path}
+            audit_reach_controlled_physics.dispatch_controlled_physics(native, [directory], cache, **options)
+            audit_reach_controlled_physics.dispatch_controlled_readiness(native, [directory], cache, **options)
             return phase.corrected_audit(base, native, command, [directory])
         finally:
             native.audit_physics = original_physics
@@ -176,14 +177,23 @@ def audit(directory, freeze, plan_path, *, fifo_paths=(), root=WORKSPACE):
         stable.update(fifo_stable)
         from .reach_gates import _load_versioned_native_gates
         from .audit_reach_preparation import load_impl
+        profiles = {key: plan[key] for key in ("seed_rule", "start_graph_rule",
+            "map_output_packing_profile", "reach_geometry_rule", "actuation_profile",
+            "motion_authority_profile") if key in plan}
         gates = _load_versioned_native_gates(Path(root), freeze, source_proof,
-                                             plan["source_bindings"], plan["custody_binding"])
+            plan["source_bindings"], plan["custody_binding"], **profiles)
         preparation, projection = load_impl(plan_path)
         result["native_gate_source_proof"] = gates[-1]
         result["preparation_helper_projection"] = projection
         for episode in episodes:
             try:
-                row = audit_episode(episode, freeze, gates, preparation, fifo.get(episode))
+                metadata = json.loads((episode / 'metadata.json').read_bytes())
+                for key in ('seed_rule', 'start_graph_rule', 'reach_geometry_rule',
+                            'actuation_profile', 'motion_authority_profile'):
+                    if key in plan:
+                        require(metadata.get(key) == plan[key], 'diagnostic episode profile differs: ' + key)
+                options = {"plan_path": plan_path} if plan.get('actuation_profile') is not None else {}
+                row = audit_episode(episode, freeze, gates, preparation, fifo.get(episode), **options)
             except ERRORS as error:
                 row = {"directory": str(episode), "passed": False, "errors": [str(error)]}
             result["episodes"].append(row)

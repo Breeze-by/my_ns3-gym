@@ -536,7 +536,17 @@ def native_profile_context(directory, metadata, plan_path):
     from . import reach_preparation
     require(plan_path is not None, 'new encoder peer replay requires its exact source plan')
     plan_path = Path(plan_path).resolve()
-    plan = reach_preparation.load_plan(plan_path, ROOT)
+    declared = json.loads(plan_path.read_bytes())
+    diagnostic = declared.get('schema') == 'mr3-reach-feasibility-diagnostic-plan-v1'
+    if diagnostic:
+        # A finite diagnostic binds the same sources/build without pretending
+        # to have a four-stage qualification or any permission to train.
+        from .audit_reach_diagnostic import bound_sources
+        require(Path(directory).resolve().is_relative_to(Path(declared['run_directory']).resolve()),
+                'diagnostic peer episode is outside its declared run')
+        plan, source, _ = bound_sources(plan_path, declared['run_directory'], metadata['freeze'], ROOT)
+    else:
+        plan = reach_preparation.load_plan(plan_path, ROOT)
     from .motion_authority_profile import selected_motion_authority_profile
     authority = selected_motion_authority_profile(metadata, required=True)
     require(selected_motion_authority_profile(plan, required=True) == authority,
@@ -544,7 +554,8 @@ def native_profile_context(directory, metadata, plan_path):
     require(custody.initial_encoder_profile(plan) == profile,
             'peer source plan and episode actuation profiles differ')
     freeze = metadata['freeze']
-    source = reach_preparation.source_check(plan, plan_path, freeze, ROOT, require_clean=False)
+    if not diagnostic:
+        source = reach_preparation.source_check(plan, plan_path, freeze, ROOT, require_clean=False)
     module, implementation = custody.load_implementation(ROOT)
     bound = module.load_binding(plan['custody_binding'], freeze, root=ROOT)
     require(custody.initial_encoder_profile(bound['document']) == profile,
