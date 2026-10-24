@@ -1,0 +1,79 @@
+{
+  "commit": {
+    "initial": {
+      "chunk_id": "9a6021",
+      "wall_time_seconds": 1.00204593,
+      "session_id": 15955,
+      "original_token_count": 10489,
+      "output": "Warning: truncated output (original token count: 10489)\nTotal output lines: 190\n\n[main b3707dcf2] feat: prepare P2A masked-cancel qualification with independent replay\n 202 files changed, 221978 insertions(+), 88 deletions(-)\n create mode 100644 ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/reach_probe_masked_cancel_replay.py\n create mode 100644 ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/masked_cancel_synthetic_trace.py\n create mode 100644 ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_reach_masked_cancel_producer.py\n create mode 100644 ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/mr3_learning/tests/test_reach_probe_masked_cancel_replay.py\n create mode 100644 ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/20261024_mr3_p2a_v71_masked_stimulus_qualification.md\n create mode 100644 ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v71_masked_stimulus_qualification/README.md\n create mode 100644 ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v71_masked_stimulus_qualification/admission_cpu_spec_v1.json\n create mode 100644 ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v71_masked_stimulus_qualification/authorization_v1.json\n create mode 100644 ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v71_masked_stimulus_qualification/bootstrap_v1.py\n create mode 100644 ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v71_masked_stimulus_qualification/checks/admission_collect_cpu_v1/actual_wait.json\n create mode 100644 ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v71_masked_stimulus_qualification/checks/admission_collect_cpu_v1/console.log\n create mode 100644 ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v71_masked_stimulus_qualification/checks/admission_collect_runner_v1.py.rawbytes\n create mode 100644 ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v71_masked_stimulus_qualification/checks/admission_cpu_v1/actual_wait.json\n create mode 100644 ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v71_masked_stimulus_qualification/checks/admission_cpu_v1/console.log\n create mode 100644 ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v71_masked_stimulus_qualification/checks/admission_cpu_v1/pytest.xml\n create mode 100644 ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v71_masked_stimulus_qualification/checks/admission_cpu_v1_source_recovery.json\n create mode 100644 ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v71_masked_stimulus_qualification/checks/all_selected_INDEX_blobs\u20268989 tokens truncated\u2026reless-rl/report/assets/20261024_mr3_p2a_v71_masked_stimulus_qualification/current_source_spec_v1.json\n create mode 100644 ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v71_masked_stimulus_qualification/fresh_cpu_spec_v1.json\n create mode 100644 ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v71_masked_stimulus_qualification/make_native_binding_v1.py\n create mode 100644 ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v71_masked_stimulus_qualification/native/libmr3_gazebo_diff_drive_initial_encoder_v1.so.gz\n create mode 100644 ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v71_masked_stimulus_qualification/native_build_bridge_v1.json\n create mode 100644 ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v71_masked_stimulus_qualification/native_custody_binding_v1.json\n create mode 100644 ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v71_masked_stimulus_qualification/plan_check_v1.py\n create mode 100644 ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v71_masked_stimulus_qualification/plan_v1.json\n create mode 100644 ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v71_masked_stimulus_qualification/preflight_v1.py\n create mode 100644 ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v71_masked_stimulus_qualification/prepare_plan_v1.py\n create mode 100644 ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v71_masked_stimulus_qualification/readiness_v1.py\n create mode 100644 ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v71_masked_stimulus_qualification/resource_v1.json\n create mode 100644 ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v71_masked_stimulus_qualification/run_admission_cpu_v1.py\n create mode 100644 ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v71_masked_stimulus_qualification/run_fresh_cpu_v1.py\n create mode 100644 ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v71_masked_stimulus_qualification/run_matrix_v1.py\n create mode 100644 ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v71_masked_stimulus_qualification/scope_v1.json\n create mode 100644 ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v71_masked_stimulus_qualification/test_activity_resource_entry_v1.py\n create mode 100644 ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v71_masked_stimulus_qualification/test_matrix_parent_v1.py\n"
+    },
+    "actual_reap": {
+      "chunk_id": "afa19f",
+      "wall_time_seconds": 2.0825e-05,
+      "exit_code": 0,
+      "original_token_count": 0,
+      "output": ""
+    }
+  },
+  "push": {
+    "initial": {
+      "chunk_id": "5ef82b",
+      "wall_time_seconds": 1.001072031,
+      "session_id": 3838,
+      "original_token_count": 0,
+      "output": ""
+    },
+    "actual_reap": {
+      "chunk_id": "6a80a2",
+      "wall_time_seconds": 1.9738e-05,
+      "exit_code": 0,
+      "original_token_count": 20,
+      "output": "To github.com:Breeze-by/my_ns3-gym.git\n   912d4259f..b3707dcf2  main -> main\n"
+    }
+  },
+  "final_stage": {
+    "initial": {
+      "chunk_id": "b3feb6",
+      "wall_time_seconds": 1.0010544,
+      "session_id": 66825,
+      "original_token_count": 0,
+      "output": ""
+    },
+    "actual_reap": {
+      "chunk_id": "c22fdf",
+      "wall_time_seconds": 2.1483e-05,
+      "exit_code": 0,
+      "original_token_count": 15,
+      "output": "{\"actual_git_add_returncode\": 0, \"A71_regular_files\": 182}\n"
+    }
+  },
+  "all_selected_INDEX": {
+    "initial": {
+      "chunk_id": "f55031",
+      "wall_time_seconds": 1.000550497,
+      "session_id": 41749,
+      "original_token_count": 0,
+      "output": ""
+    },
+    "actual_reap": {
+      "chunk_id": "24a2b8",
+      "wall_time_seconds": 2.3312e-05,
+      "exit_code": 0,
+      "original_token_count": 65,
+      "output": "{\"passed\": true, \"all_staged_regular_files\": 201, \"output\": \"/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v71_masked_stimulus_qualification/checks/all_selected_INDEX_blobs_v1.json\"}\n"
+    }
+  },
+  "proof_stage": {
+    "chunk_id": "3adc28",
+    "wall_time_seconds": 0.882904026,
+    "exit_code": 0,
+    "original_token_count": 0,
+    "output": ""
+  },
+  "exact_HEAD": "b3707dcf258c832f35ef60f47a5dc8dc52296629",
+  "origin_main": "b3707dcf258c832f35ef60f47a5dc8dc52296629",
+  "branch": "main",
+  "actual_clean_status": "",
+  "observed_unix_ns": 1792807072737824482,
+  "true_commit_and_push_reaped": true
+}

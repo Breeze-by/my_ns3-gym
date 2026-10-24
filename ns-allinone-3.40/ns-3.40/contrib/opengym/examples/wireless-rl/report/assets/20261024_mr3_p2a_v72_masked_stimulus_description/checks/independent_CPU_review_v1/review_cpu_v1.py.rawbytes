@@ -1,0 +1,98 @@
+"""One read-only metadata/source audit, never a consumer or test runner."""
+from pathlib import Path
+from decimal import Decimal
+import hashlib,json,os,re,stat
+ROOT=Path('/home/zhuyulab/ns3-workspace')
+A=ROOT/'ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v72_masked_stimulus_description'
+OLD=A.parent/'20261024_mr3_p2a_v71_masked_stimulus_qualification'
+HERE=Path(__file__).resolve().parent
+FORBIDDEN=ROOT/'ros2_ws/ros2-multi-robot-automap/log'
+FIELDS=('st_dev','st_ino','st_size','st_mtime_ns','st_ctime_ns')
+BINDINGS={}
+def need(x,m):
+ if not x:raise ValueError(m)
+def read(path):
+ p=Path(path);need(not p.is_relative_to(FORBIDDEN),'scientific/native original is forbidden')
+ need(p.is_absolute() and p.resolve(strict=True)==p,'path alias/symlink forbidden')
+ a=p.lstat();need(stat.S_ISREG(a.st_mode),'regular source/metadata required')
+ fd=os.open(p,os.O_RDONLY|os.O_NOFOLLOW)
+ with os.fdopen(fd,'rb') as f:
+  need(tuple(getattr(os.fstat(f.fileno()),k) for k in FIELDS)==tuple(getattr(a,k) for k in FIELDS),'opened another file')
+  raw=f.read()
+ b=p.lstat();need(tuple(getattr(a,k) for k in FIELDS)==tuple(getattr(b,k) for k in FIELDS),'source/metadata drift')
+ ref=dict(path=str(p),bytes=len(raw),sha256=hashlib.sha256(raw).hexdigest())
+ need(str(p) not in BINDINGS or BINDINGS[str(p)]==ref,'repeated metadata changed')
+ BINDINGS[str(p)]=ref
+ return raw,a
+def load(p):return json.loads(read(p)[0])
+def typed(s):return type(s) is dict and all(type(s.get(k)) is int and s[k]>0 for k in ('pid','start_ticks'))
+def gone(s):
+ need(typed(s),'typed saved PID/start required')
+ try:tail=(Path('/proc')/str(s['pid'])/'stat').read_text().rsplit(')',1)[1].split()
+ except (FileNotFoundError,ProcessLookupError):return True
+ need(len(tail)>=20,'unreadable saved identity')
+ return int(tail[19])!=s['start_ticks']
+def objects(o,session,rc):
+ need(type(o['initial'].get('session_id')) is int and o['initial']['session_id']==session,'Root initial session differs')
+ need(type(o['final'].get('exit_code')) is int and o['final']['exit_code']==rc and o['final'].get('session_id') is None,'Root final exit differs')
+def audit_group(folder,proof,session,rc,count,recovery):
+ wait=load(A/'checks'/folder/'actual_wait.json');lo,hi=wait['started_monotonic_ns'],wait['ended_monotonic_ns']
+ need(wait['schema']=='mr3-reach-outer-actual-wait-v1' and wait['scope']=='cpu' and wait['actual_waited'] is True,'not real CPU wait')
+ need(type(wait['actual_returncode']) is int and wait['actual_returncode']==rc and wait['passed'] is (rc==0) and wait['errors']==[],'CPU verdict changed')
+ need(type(lo) is int and type(hi) is int and 0<lo<hi and Decimal(wait['actual_child_wait_seconds'])==Decimal(hi-lo)/10**9,'actual wait duration differs')
+ before=wait['source_before'];need(wait['source_unchanged'] is True and before==wait['source_after'] and len(before)==count,'CPU source count/stability differs')
+ need(len({x['path'] for x in before})==count,'duplicate source paths')
+ recovered={x['path']:x for x in recovery};need(len(recovered)==len(recovery) and set(recovered)=={x['path'] for x in before},'snapshot source set differs')
+ for row in before:
+  raw,s=read(row['path']);need(len(raw)==row['bytes'] and hashlib.sha256(raw).hexdigest()==row['sha256'],'CPU current source bytes differ')
+  need([getattr(s,k) for k in FIELDS]==row['stat'],'CPU current source stat differs')
+  saved=recovered[row['path']];need((saved['bytes'],saved['sha256'])==(row['bytes'],row['sha256']),'source recovery row differs')
+  restored,_=read(saved['snapshot']);need(restored==raw,'snapshot restore differs')
+ actualids=[]
+ byrole={x['role']:x for x in proof['saved_CPU_identities']};need(set(byrole)=={'coordinator_identity','child_identity'},'saved role set differs')
+ for role in ('coordinator_identity','child_identity'):
+  saved=wait[role];need(byrole[role]['saved']==saved and byrole[role]['freshgone'] is True and gone(saved),'saved CPU still present or mismatched')
+  actualids.append(dict(role=role,saved=saved,freshgone=True))
+ console=read(A/'checks'/folder/'console.log')[0].decode();numbers=re.findall(r'Ran (\d+) tests? in ',console)
+ need(len(numbers)==1,'one actual unittest summary required')
+ if rc==0:need(numbers==['17'] and console.rstrip().endswith('OK'),'not actual17PASS')
+ else:need(numbers==['3'] and "No module named 'gymnasium'" in console and console.rstrip().endswith('FAILED (errors=1)'),'original system loader failure not preserved')
+ return dict(folder=folder,actual_tool_session=session,actual_returncode=rc,actual_child_wait_seconds=wait['actual_child_wait_seconds'],source_count=count,source_before_after_current_equal=True,all_recovery_bytes_equal=True,saved_CPU_identities=actualids,actual_unittest_summary_count=int(numbers[0]),case_scope='17 artificial cases' if rc==0 else '2 parent cases + 1 descriptor-module loader error; descriptor bodies not loaded')
+def main():
+ rootfinal=load(A/'checks/canonical_CPU_postreap_proof_v2.json');rootold=load(A/'checks/canonical_CPU_postreap_proof_v1.json')
+ need(rootfinal['actual_Root_tool_session']==75079 and rootfinal['actual_case_count']==17 and rootfinal['bound_source_count']==212,'final Root proof identity/scope differs')
+ objects(rootfinal['actual_tool_objects'],75079,0)
+ oldproofs={x['folder']:x for x in rootold['attempts']}
+ objects(rootold['actual_tool_objects']['attempt1'],90756,1);objects(rootold['actual_tool_objects']['attempt2'],31990,0)
+ rec1=load(A/'checks/canonical_cpu_v1_source_recovery.json')['sources'];rec3=load(A/'checks/canonical_cpu_v3_source_recovery.json')['sources']
+ final=audit_group('canonical_cpu_v3',rootfinal,75079,0,212,rec3)
+ old1=audit_group('canonical_cpu_v1',oldproofs['canonical_cpu_v1'],90756,1,181,rec1)
+ old2=audit_group('canonical_cpu_v2',oldproofs['canonical_cpu_v2'],31990,0,181,rec1)
+ blobraw,_=read(A/'source_blob_manifest_v1.json');need(len(blobraw)==2820 and hashlib.sha256(blobraw).hexdigest()=='e8718e454b51aff459404ada017aab0c1fbe7589878b45109900adffbc81b622','runtime blob manifest changed')
+ blob=json.loads(blobraw);specraw,_=read(A/'description_spec_v1.json');spec=json.loads(specraw)
+ private=load('/tmp/mr3_p2a_v72_masked_description_candidate_v4/description_spec_draft_v1.json')
+ differences=sorted(k for k in set(private)|set(spec) if private.get(k)!=spec.get(k))
+ need(differences==['admitted','status'] and private['admitted'] is False and spec['admitted'] is True,'spec forward changed more than admission/status')
+ expected={ROOT/row['path']:row['sha256'] for row in spec['source_bindings']}
+ need(len(expected)==8,'runtime interpretation closure differs')
+ expected[A/'description_spec_v1.json']=hashlib.sha256(specraw).hexdigest()
+ parentraw,_=read(A/'run_description_v1.py');need(hashlib.sha256(parentraw).hexdigest()=='308ee3c4af19830efbc9719a78ecb5c90ca56b8b6a45e2d5412dd701b61fe62a','reviewed parent sources() formula changed')
+ expected[A/'run_description_v1.py']=hashlib.sha256(parentraw).hexdigest()
+ paths={'inventory':OLD/'closed_inventory_v1.json','previous_accounting':OLD/'closure_ledger_v1.json','fixed_input_reference':OLD/'checks/v72_fixed_inputs_v1.json'}
+ need({x['path'] for x in spec['inputs']}.isdisjoint(map(str,expected)),'original appears in source bindings')
+ for key,path in paths.items():
+  row=spec[key];need(row['path']==str(path),'fixed metadata path differs');raw,_=read(path)
+  need((len(raw),hashlib.sha256(raw).hexdigest())==(row['bytes'],row['sha256']),'fixed metadata pin differs');expected[path]=row['sha256']
+ need(len(expected)==13 and blob['actual_source_count']==13 and blob['source_bindings']=={str(p.relative_to(ROOT)):sha for p,sha in expected.items()},'13 runtime set differs from reviewed parent.sources() expected')
+ need(not set(map(Path,[x['path'] for x in spec['inputs']]))&set(expected),'actual originals included in runtime source set')
+ for path,sha in expected.items():need(hashlib.sha256(read(path)[0]).hexdigest()==sha,'runtime current SHA differs')
+ refs=load(paths['fixed_input_reference']);ledger=load(paths['previous_accounting'])
+ need(refs['schema']=='mr3-v72-fixed-input-references-from-actual-v71-archive-v1' and refs['inventory']==spec['inventory'] and refs['epoch']==spec['identity']['epoch'],'fixed reference identity differs')
+ need([(x['original_path'],x['original_bytes'],x['original_sha256']) for x in refs['inputs']]==[(x['path'],x['expected_bytes'],x['expected_sha256']) for x in spec['inputs']],'original reference mapping differs')
+ need(refs['total_original_bytes']==2471310 and ledger['engineering_cumulative_seconds']=='112581.2023765236018' and ledger['activity_passed'] is False and ledger['passed'] is True,'entry original accounting differs')
+ need(spec['previous_accounting']['bytes']==12092 and spec['previous_accounting']['sha256']=='de6b54d5e86b859b67414c3246d286284bd721efd5adda91c86fc75f9706e22b','ledger pin differs')
+ need(spec['inventory']['bytes']==799822 and spec['inventory']['sha256']=='2cdf667a9362544880502d85cbc99d1e478dd4a8d737c701065be3f5bc7694ab','inventory pin differs')
+ need(spec['fixed_input_reference']['bytes']==4391 and spec['fixed_input_reference']['sha256']=='2bfe3fb07dcb61873ac88fe30e8b482a080ba1c149cbbcce28eafaa4969040de','refs pin differs')
+ result=dict(schema='mr3-v72-independent-canonical-CPU-runtime-source-review-v1',passed=True,final_canonical_software_case_count=17,final_actual_CPU=final,preserved_attempts=[old1,old2],runtime_source_count=13,runtime_set_exactly_matches_reviewed_parent_sources_expected=True,runtime_source_current_SHA_equal=True,runtime_blob_manifest_SHA='e8718e454b51aff459404ada017aab0c1fbe7589878b45109900adffbc81b622',spec_only_forward_fields=differences,actual_original_inputs_excluded_from_all_reads=True,original_input_bytes_read=0,consumer_main_or_tests_or_World_run_by_this_review=False,old342_read=False,new_scientific_qualification_or_capacity_credit=False,Git_freeze_or_INDEX_claimed=False,engineering_added_seconds='0',input_bindings=list(BINDINGS.values()))
+ (HERE/'review_v1.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps({k:v for k,v in result.items() if k!='input_bindings'}))
+if __name__=='__main__':main()

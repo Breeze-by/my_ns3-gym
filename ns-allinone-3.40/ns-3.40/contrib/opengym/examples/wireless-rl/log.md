@@ -9110,3 +9110,15 @@ Canonical CPU工具1554真实reap0、scope制作工具29523真实reap0，均scop
 2026-10-24 V71 masked-cancel软件准备已实际完成、待新执行冻结：新刺激/独立reader已安装，scope True在一切seal前仅作前瞻软件授权；current21 Root50426真reap0/2.201518827秒、21源稳定/两身份gone、ELF同A59，不声称compiler jobs。新fresh ROS212/learner542、入口33及双环境readiness真实PASS；pre-test snapshot xb竞态和首次隐藏CUDA导致device gate FAIL两原件保留，后继未改source/config。真实prepare36700/14.256321161秒与plancheck14624/.470842857秒PASS，新plan1112源/10ELF，12EP30/9probe/authority12要求保持。工程新增0，仍U111365.9618345326018/C180000、余68634.0381654673982，完整47220预约；pilot/final原额和全部旧FAIL保持。下一INDEX逐blob正检查、真实commit/push/clean、exact HEAD正检查后唯一bootstrap；尚无本轮native/资格/学习，capacity/autoPolicy=False，P2A未完成。
 
 原learner10951 pre-test snapshot xb竞态rc1及首次readiness30860隐藏CUDA的device gate rc1均原件保留；后继串行learner70578/双环境readiness48224实测通过，源/配置未改。实际tool对象、源码恢复/身份与计划引用见[V71报告](report/20261024_mr3_p2a_v71_masked_stimulus_qualification.md)。
+
+## 2026-10-24 V71 masked刺激覆盖FAIL实际闭合
+
+2026-10-24 V71实际闭合FAIL：freezeb3707dcf2、Root65935真实reap1；preflight rc0，interface native rc1/32有效返回但producer INCOMPLETE、masked刺激覆盖门FAIL，audits未派发/原roleclaims=[]，后3阶段SKIPPED，driver completed_stages=[]原样保留，无资格/学习信用。1123源/库before=after，关闭核1113非库current/Git+10选定ELF及8组literal/realpath同对象；57 typed保存身份含9main freshgone，5个nonowned祖先不声称gone。完整连续parent1215.240541991秒含gaps，累计112581.2023765236018/C180000、余67418.7976234763982；nested/root不叠加、pilot/final原额保持。559普通原件1118169971B→104825773B/0link/无oversized无损封存；metadata首轮缺确认时间导致feeUNKNOWN原FAIL保留，新真实后确认回执下第二轮PASS，非回填原工具时间。关闭CPU首轮13.390867767/后轮13.459432956、archive50.139763968秒，6个CPU身份另gone/工程0；overlay未执行、不claimPASS。具体故障谓词仍UNKNOWN；下一V72仅新scope/freeze固定两输入2471310B描述，不重跑V71或降门，capacity/autoPolicy=False、P2A未完成。
+
+各时间区间不同层不相加；原audits/roles/completed_stages空数组与后继SKIP保持，下一仅新V72两输入描述。真实原件、首轮关闭FAIL、后确认时间范围及源码恢复见[V71报告](report/20261024_mr3_p2a_v71_masked_stimulus_qualification.md)。
+
+## 2026-10-24 V72固定masked刺激描述准备
+
+2026-10-24 V72固定masked刺激描述准备：承接V71真实FAIL及完整费1215.240541991，新活动仅在新exact freeze下对库存固定两原件2471310B作一次received描述；summary已有closing metadata读取，transitions只有opaque字节保存、未语义消费，不宣称原件从未读取。完整parent120/work60秒软门、输出4MiB，13个runtime/metadata源封存，预期17个Git路径待实际blob检查。canonical最终Root75079真reap0/17人工CPU(15descriptor+2parent)/4.973803003秒，212绑定before/after/current及快照恢复一致、2保存身份gone；原system Python loaderERROR和181源范围结果均保留。actualspec True在所有canonical CPU前仅作Root持续授权下固定两输入准入；实际parent/consumer尚未执行或PASS，新G尚未产生。工程仍U112581.2023765236018/C180000、余67418.7976234763982，120预约为前瞻有限工程块、非数值用户批准；pilot/final原额及全部旧FAIL/科学门保持，capacity/autoPolicy=False、P2A未完成。
+
+原system loaderERROR、181范围结果与扩212范围的最终17PASS分别保存；私有consumer15/parent2/disabledpolicy11不合数，无实际data/native/PPO。后续新Git/blob/freeze/一次消费见[V72预声明](report/20261024_mr3_p2a_v72_masked_stimulus_description.md)。

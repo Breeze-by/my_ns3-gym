@@ -1,0 +1,111 @@
+{
+  "schema": "mr3-v72-canonical-CPU-reap-source-recovery-proof-v1",
+  "passed": true,
+  "actual_tool_objects": {
+    "attempt1": {
+      "initial": {
+        "chunk_id": "f89556",
+        "wall_time_seconds": 1.00119616,
+        "session_id": 90756,
+        "original_token_count": 0,
+        "output": ""
+      },
+      "final": {
+        "chunk_id": "cd5c7d",
+        "wall_time_seconds": 2.0979e-05,
+        "exit_code": 1,
+        "original_token_count": 22,
+        "output": "{\"passed\": false, \"actual_returncode\": 1, \"actual_child_wait_seconds\": \"0.915503615\"}\n"
+      }
+    },
+    "attempt2": {
+      "initial": {
+        "chunk_id": "a8fd0a",
+        "wall_time_seconds": 1.001115729,
+        "session_id": 31990,
+        "original_token_count": 0,
+        "output": ""
+      },
+      "final": {
+        "chunk_id": "7b709f",
+        "wall_time_seconds": 2.5423e-05,
+        "exit_code": 0,
+        "original_token_count": 21,
+        "output": "{\"passed\": true, \"actual_returncode\": 0, \"actual_child_wait_seconds\": \"5.11100842\"}\n"
+      }
+    }
+  },
+  "attempts": [
+    {
+      "folder": "canonical_cpu_v1",
+      "actual_Root_session": 90756,
+      "actual_returncode": 1,
+      "actual_child_wait_seconds": "0.915503615",
+      "source_count": 181,
+      "source_before_after_current_and_snapshot_equal": true,
+      "saved_CPU_identities": [
+        {
+          "role": "coordinator_identity",
+          "saved": {
+            "pid": 2219801,
+            "parent": 2219798,
+            "group": 2219796,
+            "session": 2219796,
+            "start_ticks": 455528075,
+            "state": "R"
+          },
+          "freshgone": true
+        },
+        {
+          "role": "child_identity",
+          "saved": {
+            "pid": 2219802,
+            "parent": 2219801,
+            "group": 2219796,
+            "session": 2219796,
+            "start_ticks": 455528095,
+            "state": "R"
+          },
+          "freshgone": true
+        }
+      ]
+    },
+    {
+      "folder": "canonical_cpu_v2",
+      "actual_Root_session": 31990,
+      "actual_returncode": 0,
+      "actual_child_wait_seconds": "5.11100842",
+      "source_count": 181,
+      "source_before_after_current_and_snapshot_equal": true,
+      "saved_CPU_identities": [
+        {
+          "role": "coordinator_identity",
+          "saved": {
+            "pid": 2220375,
+            "parent": 2220372,
+            "group": 2220371,
+            "session": 2220371,
+            "start_ticks": 455534937,
+            "state": "R"
+          },
+          "freshgone": true
+        },
+        {
+          "role": "child_identity",
+          "saved": {
+            "pid": 2220376,
+            "parent": 2220375,
+            "group": 2220371,
+            "session": 2220371,
+            "start_ticks": 455534957,
+            "state": "R"
+          },
+          "freshgone": true
+        }
+      ]
+    }
+  ],
+  "real_original_input_content_read": false,
+  "engineering_added_seconds": "0",
+  "observed_monotonic_ns": 4555420903431400
+}

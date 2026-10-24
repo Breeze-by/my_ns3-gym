@@ -1,3 +1,9 @@
+# A71 current21：build已完成，后续native活动实际FAIL
+
+原current21 build50426rc0/21稳定、ELF同A59/no compilerjobs的事实保持。其后新freeze b3707dcf2的实际Root65935rc1是masked刺激覆盖FAIL；build成功没有授予科学资格。全parent1215.240541991已收，规范ledger12092B/SHAde6b54d5e86b859b67414c3246d286284bd721efd5adda91c86fc75f9706e22b。source/build原件不修改；下一只按V72新scope描述，不重执行本build/native。
+
+## 历史构建与准备快照
+
 # A71 current21：实际prepare/build/reap/seal已完成
 
 Root prepare实际chunk e9aece rc0；唯一launcher tool50426已真实reap0/2.201518827秒，21输入before/after/current相等、保存CPU两身份freshgone；随后seal实际产生新manifest/bridge。最终Supervisor30319B/SHA94cf3440f6eb8f89d62e110c4f7bcb10300211adb6b5476a91b0e97c49e79dd5。manifest22909B/SHA5f98068dfdf01e7ab42fa39afd12cad399bac004f38831693f3a71faf4df2706；bridge2178B/SHA89f27de5c2d5492a3ac8cd92e25dbc8430b9d9adc520190d2033b4001b7505a2。实际ELF同A59，不声称compiler/link jobs、gtest、loader、World或资格。完整tool初/终真实对象见checks/root_cpu_tool_returns_v1.json，规范构建原件在checks/native_build_v1。

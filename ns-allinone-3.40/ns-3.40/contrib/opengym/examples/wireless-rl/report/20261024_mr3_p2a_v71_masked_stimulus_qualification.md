@@ -1,4 +1,22 @@
-# MR3 P2A V71：masked-cancel完整矩阵资格的软件准备
+# MR3 P2A V71：masked刺激覆盖失败的实际闭合
+
+2026-10-24 V71实际闭合FAIL：freezeb3707dcf2、Root65935真实reap1；preflight rc0，interface native rc1/32有效返回但producer INCOMPLETE、masked刺激覆盖门FAIL，audits未派发/原roleclaims=[]，后3阶段SKIPPED，driver completed_stages=[]原样保留，无资格/学习信用。1123源/库before=after，关闭核1113非库current/Git+10选定ELF及8组literal/realpath同对象；57 typed保存身份含9main freshgone，5个nonowned祖先不声称gone。完整连续parent1215.240541991秒含gaps，累计112581.2023765236018/C180000、余67418.7976234763982；nested/root不叠加、pilot/final原额保持。559普通原件1118169971B→104825773B/0link/无oversized无损封存；metadata首轮缺确认时间导致feeUNKNOWN原FAIL保留，新真实后确认回执下第二轮PASS，非回填原工具时间。关闭CPU首轮13.390867767/后轮13.459432956、archive50.139763968秒，6个CPU身份另gone/工程0；overlay未执行、不claimPASS。具体故障谓词仍UNKNOWN；下一V72仅新scope/freeze固定两输入2471310B描述，不重跑V71或降门，capacity/autoPolicy=False、P2A未完成。
+
+四个原phase wait分别为preflight61.811062317秒/rc0、matrix1123.920800229秒/rc1、matrix_absence.489012531秒/rc0、chain_final_absence.540999326秒/rc0。interface native metadata wall1088.838639662秒/rc1，producer自身wall_sec_including_all_attempts1088.3283002087846秒，stage1104.871936860秒，均包含于完整parent而不相加。producer原valid_transitions=32、outcome=INCOMPLETE、wall_limit_exceeded=False；原error为bounded masked-cancel-v1 stimulus coverage unavailable。该literal不定位具体predicate、机器人原生交付、物理停止或根因。
+
+原audits={}、roleclaims=[]及completed_stages=[]保持；没有科学审计派发，不制造30个PASS/FAIL/SKIP条目，也不称“物理审计失败”。terminal/reset/deadline原状态SKIPPED。本轮只完成原生尝试与元数据/字节闭合；12EP30、9probe和authority12仍是下次新资格的完整要求，没有学习更新。
+
+首轮关闭metadata Root10948真实rc1/13.390867767秒，7源稳定、57个typed身份gone及完整source/Git均已通过，但原Root兼容回执缺observed_monotonic_ns，fee字段诚实UNKNOWN，原review/spec/actualwait/console均保留。Root随后新增actual_tool_wait_v2.json，记录的是后来真实重新确认已reaped65935的时间，原actual_reap_v1.json与initial/final对象保持；并未回填原工具返回时间。新facts/spec/review命名空间下Root27642真实rc0/13.459432956秒，7源before/after/current一致；archive64761真实rc0/50.139763968秒，9源一致。成功/失败关闭CPU共6个保存tuple freshgone，独立于57个runtime身份。真实原tool对象的包装生成时间也不冒充早期返回时间。
+
+主库存559 ordinary原件1118169971B完整恢复验证为104825773B，4workers全部真实join，0link，oversized=[]，故v4 overlay没有执行或PASS信用。静态机器join审阅与各版源保留为未执行候选；原库存和整wrapper未改变。关闭只读取已闭合summary作bookkeeping/process/source/费用metadata，并对新原件作opaque hash/copy/恢复；transitions已被字节读取但未语义解析，summary先前已按metadata读取，不作全局0-byte声明。
+
+[规范末账](assets/20261024_mr3_p2a_v71_masked_stimulus_qualification/closure_ledger_v1.json) · [完整字节库存](assets/20261024_mr3_p2a_v71_masked_stimulus_qualification/closed_inventory_v1.json) · [metadata闭合](assets/20261024_mr3_p2a_v71_masked_stimulus_qualification/checks/closed_metadata_v2.json) · [closing CPU原件/源码恢复](assets/20261024_mr3_p2a_v71_masked_stimulus_qualification/checks/closure_tools_v1/inventory_v1.json) · [关闭scalar范围](assets/20261024_mr3_p2a_v71_masked_stimulus_qualification/checks/closing_bookkeeping_v1.json)。规范ledger12092B/SHA de6b54d5e86b859b67414c3246d286284bd721efd5adda91c86fc75f9706e22b已封存，后续补充bookkeeping不更改其字节。
+
+下一V72只以新scope/新freeze对库存固定的两原件2471310B作一次有界描述：transitions2355730B与benchmark_summary115580B，真实epoch为mr3_p2a_reach_v71_interface_w0_e1_53a7eddb，exact path/SHA/stat及恢复包装见[固定引用](assets/20261024_mr3_p2a_v71_masked_stimulus_qualification/checks/v72_fixed_inputs_v1.json)。原摘要已有metadata读取，transitions尚未独立semantic消费；本物化过程未重新解读原输入或运行科学reader、World、模型。描述完整性不等于根因、修复或科学资格；先还原已记录谓词，再确定最小新修复/新版本CPU与完整新同freeze资格，不直接重试本轮。
+
+新masked族取消了旧V3独立nonapproach工作负载过滤，保原per-robot AND joint masks及安全/物理门；这是输入域变化，不复用旧V3资格。所有旧FAIL、R/B/STOP/95%与原pilot1870决策/2905.9547395464029秒、final-only900/9000秒和open401/402/403保持。C180000是代理依用户持续委托选择，非数值用户批准。matrix与本次关闭均不自动触发policy，capacity仍False；P2A未完成。
+
+## 原软件准备记录（历史快照）
 
 2026-10-24 V71 masked-cancel软件准备已实际完成、待新执行冻结：新刺激/独立reader已安装，scope True在一切seal前仅作前瞻软件授权；current21 Root50426真reap0/2.201518827秒、21源稳定/两身份gone、ELF同A59，不声称compiler jobs。新fresh ROS212/learner542、入口33及双环境readiness真实PASS；pre-test snapshot xb竞态和首次隐藏CUDA导致device gate FAIL两原件保留，后继未改source/config。真实prepare36700/14.256321161秒与plancheck14624/.470842857秒PASS，新plan1112源/10ELF，12EP30/9probe/authority12要求保持。工程新增0，仍U111365.9618345326018/C180000、余68634.0381654673982，完整47220预约；pilot/final原额和全部旧FAIL保持。下一INDEX逐blob正检查、真实commit/push/clean、exact HEAD正检查后唯一bootstrap；尚无本轮native/资格/学习，capacity/autoPolicy=False，P2A未完成。
 

@@ -1,0 +1,69 @@
+{
+  "schema": "mr3-v71-pre-exec-ancestry-v1",
+  "execution_freeze": "b3707dcf258c832f35ef60f47a5dc8dc52296629",
+  "bootstrap_identity": {
+    "pid": 2190862,
+    "start_ticks": 455252047,
+    "parent": 2190860,
+    "group": 2190860,
+    "session": 2190860,
+    "state": "R"
+  },
+  "observed_ancestors": [
+    {
+      "pid": 2190860,
+      "start_ticks": 455252043,
+      "parent": 639355,
+      "group": 2190860,
+      "session": 2190860,
+      "state": "S"
+    },
+    {
+      "pid": 639355,
+      "start_ticks": 448459770,
+      "parent": 566777,
+      "group": 639355,
+      "session": 639355,
+      "state": "S"
+    },
+    {
+      "pid": 566777,
+      "start_ticks": 206294001,
+      "parent": 2142,
+      "group": 566777,
+      "session": 566777,
+      "state": "S"
+    },
+    {
+      "pid": 2142,
+      "start_ticks": 7270,
+      "parent": 1,
+      "group": 2142,
+      "session": 2142,
+      "state": "S"
+    },
+    {
+      "pid": 1,
+      "start_ticks": 77,
+      "parent": 0,
+      "group": 1,
+      "session": 1,
+      "state": "S"
+    }
+  ],
+  "ancestry_errors": [],
+  "complete_parent_started_monotonic_ns": 4552520535928908,
+  "observed_monotonic_ns": 4552520545048191,
+  "actual_bootstrap_argv": [
+    "/usr/bin/python3",
+    "-B",
+    "-m",
+    "report.assets.20261024_mr3_p2a_v71_masked_stimulus_qualification.bootstrap_v1",
+    "--freeze",
+    "b3707dcf258c832f35ef60f47a5dc8dc52296629"
+  ],
+  "source_path": "/home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_v71_masked_stimulus_qualification/bootstrap_v1.py",
+  "exec_preserves_PID_and_start_ticks": true,
+  "ancestors_nonowned": true,
+  "ancestor_absence_or_signal_authorized": false
+}

@@ -1,6 +1,6 @@
 # MR3 研发检查点与逐步验收
 
-现行状态以[V71软件准备](report/20261024_mr3_p2a_v71_masked_stimulus_qualification.md)及本文件当前表格为准：软件CPU/build/计划已实际闭合，尚无本轮native/资格/学习；下方带日期的V62及更早叙述保留历史范围。
+现行状态以[V72固定描述准备](report/20261024_mr3_p2a_v72_masked_stimulus_description.md)及本文件当前表格为准：V71实际FAIL已完整关闭，V72仅人工软件17PASS/212绑定，尚未消费真实两输入；下方旧日期叙述保留历史范围。
 
 2026-10-24 V62实际闭合FAIL：freeze81e63f506、tool80831真实reap rc1，startup触发原motion controlled execution phase wall guard expired，0个task transition；worker被ownedclose SIGTERM(-15)，forced/failed_sample=True，原remaining process/zombie数组均空，不能称正常close。原profile reader只在launcher header gate失败、pstats读取0；仅motion main文件及adapter main partial可用、worker无finished，五profile未全，根因UNKNOWN。1051source+12ELF before/after/current-Git一致，49保存PID/start freshgone，6 pre-exec祖先nonowned不claimgone。完整parent实费180.893159791，累计109067.3998164526018/C150000、余40932.6001835473982；nested/root墙时不叠加，pilot/final原额保持。148 regular原件213343452B→15944926B无损归档、0link/无oversized；metadata21.133850693s/archive21.266745912s真实CPU关闭，4 CPU身份另gone/工程0。capacity=False、P2A未完成、禁auto pilot/final。下一V63仅对两个已闭合main.pstats（894940B）做一次有限description，parent120/work60，先看真实热点；不重跑V62 native、不扩大原10秒controlled-phase wall guard。authority core/wiring/独立auditor继续只在/tmp，尚未安装；之后才诊断修复、probe-v2、实测优化/容量、新同freeze12EP30与真实学习/三strict95。 用户持续自主授权保持，不重复一般审批。 见[V62](report/20261024_mr3_p2a_v62_process_profile.md)与[末账](report/assets/20261024_mr3_p2a_v62_process_profile/closure_ledger_v1.json)；下方日期旧状态保留历史范围。
 
@@ -140,7 +140,7 @@
 | MR3-P1B | RL 可独占的稳定目标/观测接口 | 已验收（2026-10-15） |
 | MR3-P1C | 训练环境、可靠 reset、采样吞吐 | 已验收（2026-10-16） |
 | MR3-P2A.0 | 生命周期、候选及安全执行、参与观测准备 | 已验收（2026-10-18）；原V26编排中断保留 |
-| MR3-P2A | 联合 MaskablePPO 最小训练闭环 | 未完成；V69覆盖FAIL、V70 received描述PASS保留；A71 masked-cancel新current21及完整软件CPU/计划已实际完成，ROS212/learner542/entry33、双readiness与plancheck软件PASS，待新freeze/native。工程U111365.9618345326018/C180000、余68634.0381654673982，预约47220；capacity=False禁auto policy，原pilot/final不动 |
+| MR3-P2A | 联合 MaskablePPO 最小训练闭环 | 未完成；V71实际覆盖FAIL/无audit，完整费1215.240541991与末账保留；V72固定两输入2471310B描述准备，canonical17PASS/212绑定，parent120/work60/输出4MiB，尚无实际消费/新G；capacityFalse禁auto policy、pilot/final不动 |
 | MR3-P2B | 同接口算法对照与方法选择 | 未开始 |
 | MR3-P2C | 理想通信完整验收、冻结模型 | 未开始 |
 | MR3-P3A | 双向 gateway、字节协议、消除旁路 | 未开始 |
@@ -380,7 +380,7 @@ RealtimeSimulatorImpl 仅对齐机器墙钟，若使用它必须独立证明时�
 
 ## 4. 实施前必须闭合的具体问题
 
-P1A/P1B/P1C已验收，P2A已授权但未完成；全部旧FAIL保持。当前A71 masked刺激/独立reader软件准备与真实build/CPU不提供native信用；先完成当前准备及新同freeze资格，再按本轮实际完整成本判断容量与学习入场。
+P1A/P1B/P1C已验收，P2A已授权但未完成；全部旧FAIL保持。V71已真实FAIL并完整收账/保存原件，当前先V72固定两输入有界描述，再确定最小新修复、必要CPU、完整新资格与容量/学习入场。
 
 | 前置问题 | 闭合步骤与当前状态 | 未闭合的影响 |
 | --- | --- | --- |
@@ -389,8 +389,8 @@ P1A/P1B/P1C已验收，P2A已授权但未完成；全部旧FAIL保持。当前A7
 | K8/5秒承诺、无前沿行为与单一 goal owner；实际固定周期 | P1B已验收；P1C stepped固定dt已于2026-10-16验收 | 目标抖动、隐式手工控制或学习时间尺度无效 |
 | 理想模式的共享图副本与队友安全边界 | P1B已验收；P3A仍须字节/隔离证明 | 冻结后接网会改变执行架构 |
 | reset/固定 dt/终止/reward 隔离与吞吐 | P1C W7已于2026-10-16验收；GPU保留原probe范围，P2A工程最小链已验证rollout/折扣/GAE，完整策略出口未达 | 不产生完整训练/验证信用 |
-| 原生cancel真实停止与有意义的取消覆盖 | 原V60超限/覆盖缺口与V69刺激覆盖FAIL保持；owned-stream authority已接线，A71 masked刺激/独立reader已安装但新native资格未执行，私有39→40 routing修正只属软件证据 | 新同freeze真实9probe与authority12/原30角色必须合取；不以改变刺激或目标0代替物理停止证明 |
-| 含完整reader/finalizer的端到端容量 | capacity=False；A71 CPU/current21 build不供容量信用，待本轮资格后的实际phase/EP/native/audit/coldstart/closure完整成本 | 禁auto pilot/final；不线性外推短32步，不借final-only额，原cap内完整audit/finalizer仍强制 |
+| 原生cancel真实停止与有意义的取消覆盖 | 全部旧FAIL及V71具体谓词UNKNOWN保持；V72新reader只描述received样本/持久字段，尚未实际消费 | 描述完整性不等于根因或物理修复；随后必要新修复/CPU/完整同freeze资格，原门不变 |
+| 含完整reader/finalizer的端到端容量 | capacity=False；V71仍在interface覆盖门FAIL，未完成全matrix/fullreader资格；已闭合各层费用原样保留 | 禁auto pilot/final，原cap内完整audit/finalizer仍强制；不线性外推32步，不借final-only额 |
 | payload/缓存/断链/重试、无 raw 信息泄漏 | P3A/P3B | 无法把任务差异归因于网络 |
 | 实际 Wi-Fi/墙损耗/流量、统一时钟与最终理想等价 | P4A/P4B | 只能演示，或把调度影响混成网络效应 |
 
