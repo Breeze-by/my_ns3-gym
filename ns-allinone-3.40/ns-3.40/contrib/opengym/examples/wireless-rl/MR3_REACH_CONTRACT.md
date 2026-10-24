@@ -128,3 +128,7 @@ PPO入口仅在同freeze、同显式规则的完整原生资格及前驱学习�
 ## 2026-10-24 receiving authority v2 修复契约
 
 本次用户授权执行修复路线。现行 `mr3-owned-stream-authority-v2` 保持全部原停止谓词和 100 ms 接收证据门；真实 witness 最多每80 ms重新发布，发送 grant/运行中取消终态使用≤100 ms证据。任务已不可逆停止时，仅释放真实 native terminal 的 ownership，不要求能再次授予运动的 witness；独立事件明确不供 normal-stop/物理资格。故障仍 fail-closed，日志保存具体拒绝谓词与前态。完整原生资格必须新冻结重新验证，详见[修复报告](report/20261024_mr3_p2a_authority_repair.md)。
+
+## 2026-10-24 receiving authority v3 原子激活契约
+
+v2 实测证明发送 ready 年龄80ms仍可能在接收时失去当前停止证据。现行 `mr3-owned-stream-authority-v3` 因而把合法 grant 登记为 PENDING，保持零权限；只在正常控制阶段重建原真实停止 witness 后原子转 ACTIVE，并以实际最新 raw callback sequence 设置 floor。既有回调不能取得新 owner 权限，严格更晚真实回调才可进入原 Reach。PENDING 续约不激活，原2秒租约、撤销和过期约束不变；非法包及重叠 owner 仍 fail-closed。独立读者必须逐原事件重建 PENDING→ACTIVE、原 witness 与 floor，并要求对应 activation ACK。原停止谓词、100ms证据界、STOP/B/R/5秒/95%不变。information 角色只检验自身信息边界，不能代替 FIFO/runtime 的完整 authority 重放。

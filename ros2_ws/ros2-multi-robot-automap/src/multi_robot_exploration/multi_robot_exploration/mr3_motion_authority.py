@@ -11,7 +11,7 @@ import re
 from .mr3_episode import timestamp_ns
 from .mr3_reach_runtime import H_NS, PUB_NS, model_check
 
-PROFILE = "mr3-owned-stream-authority-v2"
+PROFILE = "mr3-owned-stream-authority-v3"
 PROTOCOL = "mr3-motion-authority-v1"
 ACK = "mr3-motion-authority-ack-v1"
 ROBOTS = ("tb1", "tb2", "tb3")
@@ -191,8 +191,13 @@ class MotionAuthority:
         self.ready = None
         return {"accepted": False, "reason": reason, "effective_permission": "zero_only"}
 
-    def observe_stop(self, tracker, clock_ns):
+    def observe_stop(self, tracker, clock_ns, *, latest_raw_sequence=None):
         require(tracker.epoch == self.epoch and tracker.robot == self.robot, "stop evidence owner differs")
+        if self.state == "PENDING" and clock_ns >= self.owner["lease_until_ns"]:
+            self.state = "REVOKED"
+            self.retired.add(identity_key(self.owner))
+            self.stop_not_before_ns = clock_ns
+            self.ready = None
         if self.state == "ACTIVE":
             return None
         if self.fault is not None:
@@ -206,6 +211,17 @@ class MotionAuthority:
         self.ready = normal_zero_witness(tracker, clock_ns, start, after_real_motion=self.after_real_motion)
         if self.ready is None:
             return None
+        if self.state == "PENDING":
+            require(integer(latest_raw_sequence), "activation_missing_actual_raw_callback_floor")
+            witness = self.ready
+            self.state = "ACTIVE"
+            self.callback_floor = latest_raw_sequence
+            self.ready = None
+            return {"schema": ACK, "epoch": self.epoch, "robot": self.robot,
+                    "stage": "authority_activated", "state": "ACTIVE", "authority_sequence": self.sequence,
+                    "owner": copy.deepcopy(self.owner), "received_clock_ns": self.received_clock_ns,
+                    "activation_clock_ns": clock_ns, "callback_floor": self.callback_floor,
+                    "witness": copy.deepcopy(witness)}
         return {"schema": ACK, "epoch": self.epoch, "robot": self.robot, "stage": "stop_obligation_ready",
                 "authority_sequence": self.sequence, "owner": copy.deepcopy(self.owner),
                 "received_clock_ns": self.received_clock_ns, "witness": copy.deepcopy(self.ready)}
@@ -261,18 +277,18 @@ class MotionAuthority:
                 self.stop_not_before_ns = clock_ns
                 self.ready = None
             elif operation == "renew":
-                require(self.state == "ACTIVE" and self.owner is not None and token == owner_key(self.owner),
+                require(self.state in ("PENDING", "ACTIVE") and self.owner is not None and token == owner_key(self.owner),
                         "renew_not_active_owner")
                 require(message["lease_until_ns"] > self.owner["lease_until_ns"], "authority_lease_not_extended")
             else:
                 require(message["owner_grant_sequence"] == sequence and identity not in self.retired,
                         "retired_or_mismatched_grant")
-                require(self.state != "ACTIVE", "overlapping_owner_grant")
-                require(self.ready is not None and 0 <= clock_ns-self.ready["clock_ns"] <= 100_000_000,
-                        "grant_without_current_real_stop_evidence")
+                require(self.state not in ("PENDING", "ACTIVE"), "overlapping_owner_grant")
+                # A well-formed owned request is not motion permission. Receipt
+                # can race with witness invalidation; activation happens only
+                # inside a normal control phase with newly reconstructed proof.
                 self.owner = copy.deepcopy(message)
-                self.callback_floor = latest_raw_sequence
-                self.state = "ACTIVE"
+                self.state = "PENDING"
                 self.ready = None
             if operation in ("grant", "renew"):
                 self.owner = copy.deepcopy(message)
@@ -301,7 +317,7 @@ class MotionAuthority:
             self._invalid("invalid_authority_decision_clock")
         else:
             self.last_decision_clock_ns = clock_ns
-        if self.state == "ACTIVE" and self.owner is not None and integer(clock_ns) and clock_ns >= self.owner["lease_until_ns"]:
+        if self.state in ("PENDING", "ACTIVE") and self.owner is not None and integer(clock_ns) and clock_ns >= self.owner["lease_until_ns"]:
             self.state = "REVOKED"
             self.retired.add(identity_key(self.owner))
             self.stop_not_before_ns = clock_ns

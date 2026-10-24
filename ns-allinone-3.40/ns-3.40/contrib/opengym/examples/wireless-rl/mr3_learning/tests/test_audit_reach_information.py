@@ -470,6 +470,27 @@ class NormalLineageTests(unittest.TestCase):
         host, _ = audit.load_implementation()
         return audit.audit_motion(rows, information, peer, EPOCH, host.BASE)
 
+    def test_authority_events_require_explicit_profile_and_keep_faults_failed(self):
+        from mr3_learning.motion_authority_profile import MOTION_AUTHORITY_PROFILE
+        rows,information,peer=normal_lineage_fixture()
+        rows[0]['payload']['motion_authority_profile']=MOTION_AUTHORITY_PROFILE
+        event=copy.deepcopy(rows[0]);event.update(kind='authority_configuration',payload=dict(
+            robot='tb1',motion_authority_profile=MOTION_AUTHORITY_PROFILE))
+        rows.insert(1,event)
+        message=dict(schema='mr3-motion-authority-v1',epoch=EPOCH,robot='tb1')
+        callback=copy.deepcopy(event);callback.update(kind='authority_callback',payload=dict(
+            robot='tb1',message=message,raw_json=audit.canonical(message).decode(),result=dict(accepted=True)))
+        rows.insert(2,callback)
+        for i,row in enumerate(rows,1):row['record_sequence']=i
+        self.assertEqual(self.audit_motion(rows,information,peer)['authority_callback'],1)
+        for attack in ('failed','undeclared','unknown','raw'):
+            bad=copy.deepcopy(rows)
+            if attack=='failed':bad[2]['payload']['result']=dict(accepted=False,reason='invalid_authority')
+            elif attack=='undeclared':bad[0]['payload'].pop('motion_authority_profile')
+            elif attack=='unknown':bad[2]['kind']='authority_unrecognized'
+            else:bad[2]['payload']['raw_json']='{}'
+            with self.subTest(attack=attack),self.assertRaises(ValueError):self.audit_motion(bad,information,peer)
+
     def test_actual_applied_then_strict_later_raw_normal_lineage(self):
         rows, information, peer = normal_lineage_fixture()
         result = self.audit_motion(rows, information, peer)

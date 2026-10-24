@@ -283,6 +283,8 @@ class ReceivingReplay:
         self.raw_seq=request['sequence'];self.raw=copy.deepcopy(request)
 
     def observe(self,now,index,exclude_current_intent=None):
+        if self.state=='PENDING' and now>=self.owner['lease_until_ns']:
+            self.state='REVOKED';self.retired.add(owner_identity(self.owner));self.stop=now;self.ready=None
         if self.state=='ACTIVE':return None
         start=self.evidence.release if self.stop is None else self.stop
         try:facts=self.evidence.facts(now,index,start,exclude_current_intent)
@@ -290,6 +292,12 @@ class ReceivingReplay:
             self.ready=None;return None
         self.ready=dict(schema='mr3-normal-zero-authority-witness-v1',epoch=self.epoch,robot=self.robot,
                         **facts,permanent_stop=False,continuous_physics_proved=False)
+        if self.state=='PENDING':
+            witness=self.ready;self.ready=None;self.state='ACTIVE';self.floor=self.raw_seq
+            return dict(schema=ACK,epoch=self.epoch,robot=self.robot,stage='authority_activated',
+                state='ACTIVE',authority_sequence=self.seq,owner=copy.deepcopy(self.owner),
+                received_clock_ns=self.received,activation_clock_ns=now,callback_floor=self.floor,
+                witness=copy.deepcopy(witness))
         return dict(schema=ACK,epoch=self.epoch,robot=self.robot,stage='stop_obligation_ready',
                     authority_sequence=self.seq,owner=copy.deepcopy(self.owner),
                     received_clock_ns=self.received,witness=copy.deepcopy(self.ready))
@@ -317,15 +325,13 @@ class ReceivingReplay:
                 require(self.owner is None or token(packet)==token(self.owner),'revoke changed actual owner')
                 self.retired.add(owner_identity(packet));self.state='REVOKED';self.stop=now;self.ready=None
             elif op=='renew':
-                require(self.state=='ACTIVE' and self.owner is not None and token(packet)==token(self.owner)
+                require(self.state in ('PENDING','ACTIVE') and self.owner is not None and token(packet)==token(self.owner)
                         and packet['lease_until_ns']>self.owner['lease_until_ns'],
                         'renew lacks active matching owner or extends no lease')
             else:
-                require(packet['owner_grant_sequence']==seq and self.state!='ACTIVE'
+                require(packet['owner_grant_sequence']==seq and self.state not in ('PENDING','ACTIVE')
                         and owner_identity(packet) not in self.retired,'overlap/retired/mismatched grant')
-                require(self.ready is not None and 0<=now-self.ready['clock_ns']<=100_000_000,
-                        'grant without actual fresh local stop evidence')
-                self.floor=self.raw_seq;self.state='ACTIVE';self.ready=None
+                self.state='PENDING';self.ready=None
             self.seq=seq;self.packet=copy.deepcopy(packet);self.owner=copy.deepcopy(packet);self.received=now
             result=dict(schema=ACK,epoch=self.epoch,robot=self.robot,authority_sequence=seq,
                 stage='authority_received',accepted=True,state=self.state,received_clock_ns=now,
@@ -340,7 +346,7 @@ class ReceivingReplay:
         integer(now)
         require(self.last_clock is None or now>=self.last_clock,'authority decision clock regression')
         self.last_clock=now
-        if self.state=='ACTIVE' and now>=self.owner['lease_until_ns']:
+        if self.state in ('PENDING','ACTIVE') and now>=self.owner['lease_until_ns']:
             self.state='REVOKED';self.retired.add(owner_identity(self.owner));self.stop=now;self.ready=None
         permit=(self.state=='ACTIVE' and type(raw) is dict
                 and type(raw.get('sequence')) is int and raw['sequence']>self.floor
@@ -356,7 +362,9 @@ class ReceivingReplay:
         now=integer(p['clock_ns'])
         require(p.get('motion_authority_profile')==PROFILE,'decision authority profile missing/mixed')
         equal(p['request'],self.raw,'decision lost or rewrote latest original raw callback')
-        self.observe(now,index,p['intent']['intent_sequence'])
+        observed=self.observe(now,index,p['intent']['intent_sequence'])
+        require(observed is None or observed['stage']!='authority_activated',
+                'activation omitted its preceding source-bound ACK publication')
         request=self.raw
         allowed=(p.get('started') is True and p.get('ready') is True and p.get('phase_kind')!='stop'
                  and request is not None and request.get('supported') is True
@@ -382,6 +390,12 @@ class ReceivingReplay:
             wanted_now,wanted=self.expected_acks.popleft()
             require(now==wanted_now,'received ACK clock changed')
             equal(ack,wanted,'received ACK differs from actual callback transition')
+        elif ack.get('stage')=='authority_activated':
+            require(self.state=='PENDING','activation without a pending owned request')
+            wanted=self.observe(now,index)
+            require(wanted is not None and wanted['stage']=='authority_activated',
+                    'activation lacks new real local stop evidence or has an expired lease')
+            equal(ack,wanted,'activation changed real witness/owner/callback floor')
         else:
             require(self.seq not in self.sent_ready or now-self.sent_ready[self.seq]>=80_000_000,
                     'stop-ready refresh exceeded declared publication cadence')

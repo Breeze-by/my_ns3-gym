@@ -131,6 +131,8 @@ def connect_initial(a,g,feed,goal):
     a.receive_authority_ack(ack,'tb1');a.poll_authority_handoff(a.now())
     packet=a.authority_publishers['tb1'].messages[-1]
     g.receive_motion_authority(packet,'tb1')
+    assert g.motion_authorities['tb1'].state=='PENDING'
+    g.receiving_permission('tb1',feed.r,None,feed.now)
     assert g.motion_authorities['tb1'].state=='ACTIVE'
     assert a.authority_grant['tb1']['goal_id']==goal
 
@@ -186,6 +188,28 @@ class WrapperContracts(unittest.TestCase):
         connect_initial(a,g,feed,goal)
         return feed,a,g,goal,handle
 
+    def test_activation_ack_reaches_adapter_and_forged_context_stops(self):
+        for attack in (None, 'owner', 'witness', 'floor', 'received_state'):
+            feed,a,g,goal,h=self.initial()
+            messages=g.authority_ack_publishers['tb1'].messages
+            for message in messages:
+                wire=json.loads(message.data)
+                if wire['ack']['stage']!='authority_activated':
+                    if attack=='received_state' and wire['ack']['stage']=='authority_received':
+                        wire['ack']['state']='ACTIVE'
+                        message=String(data=authority.canonical(wire))
+                    a.receive_authority_ack(message,'tb1')
+            wire=json.loads(messages[-1].data)
+            self.assertEqual(wire['ack']['stage'],'authority_activated')
+            if attack=='owner':wire['ack']['owner']['native_goal_uuid']='ff'*16
+            elif attack=='witness':wire['ack']['witness']['clock_ns']-=1
+            elif attack=='floor':wire['ack']['callback_floor']=True
+            a.receive_authority_ack(String(data=authority.canonical(wire)),'tb1')
+            with self.subTest(attack=attack):
+                self.assertEqual(a.stop_requested,attack is not None)
+                self.assertEqual(a.dispatcher.stopped,attack is not None)
+                self.assertEqual(g.failures,[])
+
     def test_stale_ready_cannot_grant_then_genuine_refresh_can(self):
         feed=f.Feed().disk();a=adapter_shell(feed.now);g=guard_shell(feed)
         g.receiving_permission('tb1',feed.r,None,feed.now)
@@ -202,18 +226,23 @@ class WrapperContracts(unittest.TestCase):
         self.assertEqual(json.loads(fresh.data)['ack']['witness']['clock_ns'],feed.now)
         a.receive_authority_ack(fresh,'tb1');a.poll_authority_handoff(a.now())
         g.receive_motion_authority(a.authority_publishers['tb1'].messages[-1],'tb1')
+        self.assertEqual(g.motion_authorities['tb1'].state,'PENDING')
+        g.receiving_permission('tb1',feed.r,None,feed.now)
         self.assertEqual(g.motion_authorities['tb1'].state,'ACTIVE')
         self.assertEqual(g.failures,[])
 
-    def test_missing_current_proof_preserves_exact_failure_and_zero_permission(self):
+    def test_missing_current_proof_waits_with_zero_permission(self):
         feed=f.Feed().disk();a=adapter_shell(feed.now);g=guard_shell(feed)
         goal,h,accepted=submitted(a);a.accepted(accepted,'tb1',goal)
         deliver(a,feed.now+200_000_000)
         packet=authority.from_accepted_owner(a.dispatcher,'tb1',a.handles,1,a.clock_ns,accepted_goal_id=goal)
         g.clock_ns=a.clock_ns;g.receive_motion_authority(String(data=authority.canonical(packet)),'tb1')
         result=[v['payload']['result'] for v in g.rows if v['kind']=='authority_callback'][-1]
-        self.assertEqual(result['rejected_condition'],'grant_without_current_real_stop_evidence')
-        self.assertIsNone(result['rejection_context']['ready'])
+        self.assertTrue(result['accepted'])
+        self.assertEqual(result['state'],'PENDING')
+        self.assertIsNone(g.motion_authorities['tb1'].fault)
+        g.receiving_permission('tb1',feed.r,None,g.clock_ns)
+        self.assertEqual(g.motion_authorities['tb1'].state,'PENDING')
         self.assertEqual(g.motion_authorities['tb1'].input({'sequence':1,'v':.2,'w':0.},clock_ns=g.clock_ns)['effective_request'],[0.,0.])
 
     def test_irreversible_task_stop_closes_native_result_without_normal_ready(self):

@@ -788,6 +788,21 @@ class MR3Adapter(Node):
                         or ack.get("owner") != current):
                     raise ValueError("stop readiness does not match current receiving owner")
                 self.authority_ready[name] = copy.deepcopy(packet)
+            elif ack.get("stage") == "authority_activated":
+                witness = ack.get("witness")
+                if (set(ack) != {"schema", "epoch", "robot", "stage", "state", "authority_sequence",
+                                "owner", "received_clock_ns", "activation_clock_ns", "callback_floor", "witness"}
+                        or current is None or current["operation"] not in ("grant", "renew")
+                        or ack["owner"] != current or ack["state"] != "ACTIVE"
+                        or type(ack["received_clock_ns"]) is not int
+                        or not current["source_clock_ns"] <= ack["received_clock_ns"] <= packet["clock_ns"]
+                        or ack["activation_clock_ns"] != packet["clock_ns"]
+                        or type(ack["callback_floor"]) is not int or ack["callback_floor"] < 0
+                        or type(witness) is not dict
+                        or witness.get("schema") != "mr3-normal-zero-authority-witness-v1"
+                        or witness.get("epoch") != self.epoch or witness.get("robot") != name
+                        or witness.get("clock_ns") != packet["clock_ns"]):
+                    raise ValueError("activation ACK lacks actual current owner and stop witness")
             else:
                 if (set(ack) != {"schema", "epoch", "robot", "stage", "authority_sequence",
                         "accepted", "state", "received_clock_ns", "source_clock_ns", "callback_floor", "scope"}
@@ -796,7 +811,8 @@ class MR3Adapter(Node):
                         or type(ack.get("received_clock_ns")) is not int
                         or not current["source_clock_ns"] <= ack["received_clock_ns"] <= packet["clock_ns"]
                         or type(ack.get("callback_floor")) is not int or ack["callback_floor"] < 0
-                        or ack.get("state") != ("REVOKED" if current["operation"] == "revoke" else "ACTIVE")):
+                        or ack.get("state") not in ({"revoke": ("REVOKED",), "grant": ("PENDING",),
+                                                    "renew": ("PENDING", "ACTIVE")}[current["operation"]])):
                     raise ValueError("authority callback rejected")
         except (ValueError, KeyError, TypeError, AttributeError) as error:
             self.record("invalid_authority_ack", {"robot": name, "raw_json": message.data, "reason": str(error)})

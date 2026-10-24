@@ -36,9 +36,9 @@ def callback(gate,p,now=None):
     elif seq==gate.seq:result=dict(accepted=True,reason='duplicate',state=gate.state)
     else:
         result=dict(schema=a.ACK,epoch=EPOCH,robot=ROBOT,authority_sequence=seq,
-            stage='authority_received',accepted=True,state='REVOKED' if op=='revoke' else 'ACTIVE',
+            stage='authority_received',accepted=True,state='REVOKED' if op=='revoke' else 'PENDING' if op=='grant' else gate.state,
             received_clock_ns=now,source_clock_ns=p['source_clock_ns'],
-            callback_floor=gate.raw_seq if op=='grant' else gate.floor,
+            callback_floor=gate.floor,
             scope='actual authority callback only, not target storage, motor or rest')
     return dict(robot=ROBOT,message=copy.deepcopy(p),raw_json=a.canonical(p),packet_sha256=a.digest(p),
                 publisher_identity=graph(),clock_ns=now,result=result)
@@ -95,23 +95,54 @@ class IndependentAuthorityTests(unittest.TestCase):
         self.assertIsNotNone(gate.observe(1_006_000_000,index))
         return gate
 
+    def test_activation_publication_reconstructs_witness_floor_and_lease(self):
+        def publication(gate,ack,seq,now):
+            wire=dict(schema=a.WIRE,profile=a.PROFILE,epoch=EPOCH,robot=ROBOT,
+                ack_sequence=seq,clock_ns=now,authority_packet_sha256=a.digest(gate.packet),ack=ack)
+            return dict(message=wire,raw_json=a.canonical(wire),scope='publication_call_returned; not delivery')
+        for attack in (None,'floor','owner','rest','missing_evidence','expired'):
+            gate=self.ready();gate.raw_callback(dict(sequence=1,v=.2,w=0.))
+            row=callback(gate,packet());gate.receive(row,100)
+            gate.ack_publication(publication(gate,row['result'],1,packet()['source_clock_ns']),101)
+            now=1_011_000_000;expected=copy.deepcopy(gate).observe(now,102)
+            if attack=='floor':expected['callback_floor']=0
+            elif attack=='owner':expected['owner']['native_goal_uuid']='ff'*16
+            elif attack=='rest':expected['witness']['rest'][0]['source_clock_ns']-=1
+            elif attack=='missing_evidence':gate.evidence.latest_applied=None;gate.evidence.applied.clear()
+            elif attack=='expired':now=gate.owner['lease_until_ns']
+            with self.subTest(attack=attack):
+                if attack is None:
+                    gate.ack_publication(publication(gate,expected,2,now),102)
+                    self.assertEqual(gate.permission(gate.raw,now)['effective_request'],[0.,0.])
+                    gate.raw_callback(dict(sequence=2,v=.2,w=0.))
+                    self.assertEqual(gate.permission(gate.raw,now)['effective_request'],[.2,0.])
+                else:
+                    with self.assertRaises(ValueError):
+                        gate.ack_publication(publication(gate,expected,2,now),102)
+
     def test_actual_zero_evidence_then_grant_floor_and_generation_unknown(self):
         gate=self.ready();request=dict(sequence=1,v=.1,w=.2);gate.raw_callback(request)
         gate.receive(callback(gate,packet()),100)
         self.assertEqual(gate.permission(request,1_011_000_000)['effective_request'],[0.,0.])
+        activation=gate.observe(1_011_000_000,101)
+        self.assertEqual(activation['stage'],'authority_activated')
+        self.assertEqual(activation['callback_floor'],1)
         request=dict(sequence=2,v=.1,w=.2);gate.raw_callback(request)
         result=gate.permission(request,1_012_000_000)
         self.assertEqual(result['effective_request'],[.1,.2]);self.assertIsNone(result['raw_goal_generation'])
         self.assertEqual(result['raw_goal_association'],'UNKNOWN_UNSTAMPED_TWIST')
 
-    def test_grant_without_local_stop_or_forged_callback_result_rejected(self):
+    def test_grant_without_local_stop_is_pending_and_forged_callback_result_rejected(self):
         ev,_,_=evidence();gate=a.ReceivingReplay(EPOCH,ROBOT,GID,ev)
-        with self.assertRaisesRegex(ValueError,'fresh local stop'):gate.receive(callback(gate,packet()),100)
+        gate.receive(callback(gate,packet()),100)
+        self.assertEqual(gate.state,'PENDING')
+        self.assertEqual(gate.permission(dict(sequence=1,v=.2,w=0.),1_011_000_000)['effective_request'],[0.,0.])
         gate=self.ready();row=callback(gate,packet());row['result']['callback_floor']=9
         with self.assertRaisesRegex(ValueError,'transition table'):gate.receive(row,100)
 
     def test_revoke_stops_nonzero_raw_and_retired_owner_never_regranted(self):
         gate=self.ready();grant=packet();gate.receive(callback(gate,grant),100)
+        self.assertEqual(gate.observe(1_011_000_000,101)['stage'],'authority_activated')
         gate.raw_callback(dict(sequence=1,v=.1,w=0.))
         self.assertEqual(gate.permission(gate.raw,1_012_000_000)['effective_request'],[.1,0.])
         revoke=packet(2,'revoke',1_020_000_000);gate.receive(callback(gate,revoke),101)

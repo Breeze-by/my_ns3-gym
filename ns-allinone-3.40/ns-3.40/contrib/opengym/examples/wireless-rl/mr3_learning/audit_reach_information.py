@@ -18,6 +18,7 @@ import struct
 import textwrap
 
 from .audit_information import load_implementation as load_measurement_implementation
+from .motion_authority_profile import selected_motion_authority_profile
 
 ROBOTS = ('tb1', 'tb2', 'tb3')
 CONTRACT = 'mr3-reach-v1'
@@ -864,7 +865,7 @@ class _AckPublicationIndex:
 
 
 def audit_motion(rows, information, peer, epoch, base):
-    counts = Counter(); current = None
+    counts = Counter(); current = None; authority_profile = None
     published = {name: {} for name in ROBOTS}
     owners_by_target = {name: {} for name in ROBOTS}
     raw = {name: {} for name in ROBOTS}; raw_sequences = Counter()
@@ -886,6 +887,7 @@ def audit_motion(rows, information, peer, epoch, base):
         if kind == 'configuration':
             require(row['record_sequence'] == 1 and value['safety_contract'] == CONTRACT
                     and value['controlled_execution'] is True, 'explicit stepped reach motion configuration')
+            authority_profile = selected_motion_authority_profile(value)
         elif kind == 'own_odom':
             name = value['robot']; require(name in ROBOTS, 'own raw robot')
             raw_sequences[name] += 1
@@ -1073,6 +1075,29 @@ def audit_motion(rows, information, peer, epoch, base):
                 control_ack_publications.add(identifier)
             else:
                 require(identifier in control_ack_publications, 'cached motion ACK lacks original actual publication')
+        elif kind in ('authority_configuration','authority_callback','authority_ack_publication'):
+            # This role verifies information delivery. Complete permission,
+            # witness and owner replay remains mandatory in FIFO/runtime.
+            require(authority_profile is not None and value.get('robot') in ROBOTS,
+                    'authority event lacks declared current profile/robot')
+            if kind=='authority_configuration':
+                require(value.get('motion_authority_profile')==authority_profile,
+                        'authority event/configuration profile differs')
+            else:
+                message=value.get('message')
+                require(type(message) is dict and message.get('epoch')==epoch
+                        and message.get('robot')==value['robot'], 'authority journal context differs')
+                equal(base.parse(value['raw_json']),message,'authority journal raw bytes differ')
+                if kind=='authority_callback':
+                    require(message.get('schema')=='mr3-motion-authority-v1', 'authority packet schema differs')
+                    result=value.get('result')
+                    require(type(result) is dict and (result.get('accepted') is True
+                        or result.get('reason') in ('stale_authority','retired_owner')),
+                        'failed authority callback retained by information role')
+                else:
+                    require(message.get('schema')=='mr3-motion-authority-ack-wire-v1'
+                            and message.get('profile')==authority_profile,
+                            'authority ACK profile differs')
         elif kind in known_other:
             pass  # Other independently required roles own command/body/closure predicates.
         else:
@@ -1099,10 +1124,13 @@ def audit_episode(directory, freeze=None):
     base = host.BASE
     inputs = base.Inputs()
     entry = Path(__file__).resolve(); entry_sha = hashlib.sha256(entry.read_bytes()).hexdigest()
+    authority_helper = Path(inspect.getsourcefile(selected_motion_authority_profile)).resolve()
+    authority_helper_sha = hashlib.sha256(authority_helper.read_bytes()).hexdigest()
     result = {'schema': 'mr3-reach-information-review-v1', 'episode': str(directory),
         'safety_contract': CONTRACT, 'passed': False, 'errors': [], 'inputs': inputs.bindings,
         'implementation': {'path': str(entry), 'sha256': entry_sha,
-                           'independent_measurement_oracle': provenance},
+                           'independent_measurement_oracle': provenance,
+                           'authority_profile_helper': {'path':str(authority_helper),'sha256':authority_helper_sha}},
         'role': 'reach_information_delivery_necessary_evidence',
         'historical_38_role_qualification': False, 'native_admission': False,
         'limitations': [
@@ -1143,6 +1171,8 @@ def audit_episode(directory, freeze=None):
     try:
         inputs.verify()
         require(hashlib.sha256(entry.read_bytes()).hexdigest() == entry_sha, 'reader source changed during audit')
+        require(hashlib.sha256(authority_helper.read_bytes()).hexdigest()==authority_helper_sha,
+                'authority profile helper changed during information audit')
         for binding in [provenance['effective_entry'], *provenance['unchanged_original_sources']]:
             require(hashlib.sha256(Path(binding['path']).read_bytes()).hexdigest() == binding['sha256'],
                     'independent measurement helper changed during audit')

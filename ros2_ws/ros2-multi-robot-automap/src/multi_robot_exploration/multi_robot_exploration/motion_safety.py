@@ -313,10 +313,12 @@ class MotionSafety(Node):
         # Reconstruct genuine proof each normal phase. A prior ready notice is
         # not permanent permission; refresh at most every 80 ms, inside the
         # unchanged 100 ms grant bound. Never refresh a cached witness timestamp.
-        ack = gate.observe_stop(tracker, clock_ns)
+        ack = gate.observe_stop(tracker, clock_ns, latest_raw_sequence=self.input_sequences[name]["request"])
         sent = self.authority_ready_sent[name]
-        if ack is not None and (sent is None or sent[0] != gate.sequence
-                                or clock_ns-sent[1] >= 80_000_000):
+        if ack is not None and ack["stage"] == "authority_activated":
+            self.publish_authority_ack(name, ack, clock_ns)
+        elif ack is not None and (sent is None or sent[0] != gate.sequence
+                                  or clock_ns-sent[1] >= 80_000_000):
             self.publish_authority_ack(name, ack, clock_ns)
             self.authority_ready_sent[name] = (gate.sequence, clock_ns)
         return gate.input(request, clock_ns=clock_ns)

@@ -201,6 +201,9 @@ def collect(plan_path):
     probe = Probe()
     summary = dict(version=VERSION, passed=False, transitions=0, error=None, cleanup_error=None,
                    optimizer_steps=0, policy_calls=0, qualification=False, timing=[])
+    summary.update({key:plan[key] for key in ('safety_contract','seed_rule','start_graph_rule',
+        'reach_geometry_rule','actuation_profile','motion_authority_profile','map_output_packing_profile',
+        'sensor_source_profile')})
     run.mkdir(parents=True, exist_ok=True)
     (run/'diagnostic_metadata.json').write_text(json.dumps(dict(plan=str(plan_path), version=VERSION,
         steps=STEPS, scene='open', seed=101, command=sys.argv, started_monotonic_ns=started), indent=2)+'\n')

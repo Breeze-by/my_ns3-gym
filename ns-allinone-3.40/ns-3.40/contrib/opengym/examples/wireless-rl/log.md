@@ -9184,3 +9184,6 @@ canonical Root17796实际reap0，17P(13+4)、4.140205043秒、97源前后/curren
 2026-10-24 authority v2首轮实际FAIL且根因已精确定位：freeze1f6d2fb7c，tb3新grant时sender ready80ms但receiver ready=null，谓词grant_without_current_real_stop_evidence。新鲜通知不消除竞态；任务失败本轮却正常返回/worker0/无forced，关闭修复获该路径证据。9返回/collector1、科学审计仍FAIL，容量未派发。完整父715.993225406→U116147.2793258256018/C180000/R63852.7206741743982；54保存身份gone、253原件及1161源全恢复，pilot/final保持。v3接收端PENDING→真实phase激活仅私有候选，下一新scope/测试/冻结；P2A未完成。
 
 命令为reach_execution包住 `python -B -m mr3_learning.authority_repair run --freeze 1f6d2fb7c0330e59de87e676018744a9f6be8fcf`；root session82458真实reap1，详细原命令/时钟/身份见该报告results/actual_wait.json。live custody PASS；FIFO/runtime为真实model failure，information旧事件登记缺口、cadence summary geometry缺口、stimulus incomplete均保留。正常worker退出不冒充collector/角色PASS。
+
+
+2026-10-24 authority v3原子激活准备实际完成：grant仅PENDING零权限，正常控制阶段原真实停止witness→ACTIVE+实际raw floor；原lease/STOP/B/R/5s/95%不变。full ROS218P/59.128570779秒与learner612P/167.511980496秒，新增回执正反例ROS15P/22.437206149秒、独立44P/6.239707632秒；首夹具跳号1F和readiness参数rc2原件保留。current21 build rc0/2.383893262秒、ELF同A59，无compiler jobs信用；双环境readiness rc0/8.547587696秒。当前生产源与完整测试相等，仅补两测试文件；快照恢复/保存CPU身份gone。前瞻26000完整父预约承接U116147.2793258256018/C180000，非数值用户批准；待新freeze执行有限行为→条件容量，不自动学习，capacity/P2A未完成。

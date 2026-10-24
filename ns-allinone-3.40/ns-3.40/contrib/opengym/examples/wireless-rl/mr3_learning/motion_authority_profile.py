@@ -1,5 +1,5 @@
 """Fixed explicit receiving-authority profile; independent of motor actuation."""
-MOTION_AUTHORITY_PROFILE = 'mr3-owned-stream-authority-v2'
+MOTION_AUTHORITY_PROFILE = 'mr3-owned-stream-authority-v3'
 REACH_CONTRACT = 'mr3-reach-v1'
 
 

@@ -44,3 +44,15 @@ current21 增量 colcon rc0/2.463039182秒、21来源稳定与恢复通过，选
 完整外父实际715.993225406秒（native内部407.876233882秒；不相加），U变为116147.2793258256018/C180000，余63852.7206741743982；pilot/final未动。[末账](assets/20261024_mr3_p2a_authority_repair/closure_ledger.json)。1161来源current/Git及恢复通过、54个已保存运行身份fresh absent；253普通原件462037582B与源码快照无损归档约69284560B，未删除原件。关闭归档CPU实际rc0/106.524877881秒，两个CPU身份另gone、工程新增0。[库存](assets/20261024_mr3_p2a_authority_repair/closed_inventory.json)。
 
 下一 authority v3 候选先在私有目录准备：合法grant仅登记PENDING零权限；原控制阶段以当前真实witness原子激活并设置实际raw callback floor。等待期间续约仍受原两秒租约、取消与过期均不能激活；不改原STOP/B/R/5s/95%。私有3项人工CPU通过只供候选检查，生产尚未安装；必须新来源/受影响测试/冻结后再运行有限验证。
+
+## 第二轮前瞻范围（authority v3）
+
+承接第一轮真实失败，v3现已安装：合法请求PENDING零权限，控制阶段以当前真实停止证据原子激活，并设置实际最新raw callback floor；PENDING续约仍零权限，撤销与过期禁止激活。原停止谓词和所有物理/五秒/95%门保持。独立重放要求完整激活ACK及原始证据。诊断summary补齐明确profile字段，information角色登记显式authority事件但不替代独立authority验证。
+
+沿用先行为、后容量的两臂及完整父26000秒预约，入场 U116147.2793258256018/C180000、余63852.7206741743982。当前尚无v3原生结果；须通过新的受影响CPU、build/readiness、来源封存与exact freeze。此前所有失败保持，不把私有候选测试视为原生证据。
+
+## 第二轮软件准备实际结果
+
+完整ROS218P/59.128570779秒、learner612P/167.511980496秒；随后只增加两个测试文件，生产实现未变，完整相关文件ROS15P/22.437206149秒、独立44P/6.239707632秒。新增验证覆盖真实激活回执到adapter、伪owner/伪witness/非法floor/错误ACTIVE接收态拒绝，以及独立原始停止证据重建、过期租约和缺证据拒绝。新增人工夹具首轮跳号1F/43P保留，修正为完整实际回调序列后44P；不是重跑所有830项。readiness首轮参数all不合法rc2保留，后继both双环境rc0/8.547587696秒。current21实际build rc0/2.383893262秒，21来源前后及恢复稳定、ELF同A59，不声称编译job。各CPU来源、原件和保存身份fresh absence见[准备核验](assets/20261024_mr3_p2a_authority_activation/checks/preparation_verification.json)。
+
+scope现为前瞻原生准入，仍必须运行时新freeze/clean/来源/ELF门；尚未运行v3 World。工程新增0，U116147.2793258256018与pilot/final原额保持。

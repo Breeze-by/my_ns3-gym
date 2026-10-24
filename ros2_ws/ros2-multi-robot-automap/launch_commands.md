@@ -1053,3 +1053,7 @@ PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /home/zhuyulab/miniconda3/envs/ns3g
 ### 2026-10-24 authority v2 有限修复验证
 
 现行 Reach 自动选择 `mr3-owned-stream-authority-v2`，旧 v1 资格不可复用。原三机、场景、控制/停车界和物理 profile 不变。新诊断在 wireless-rl 中经 `python -B -m mr3_learning.authority_repair prepare` 准备，提交推送干净 exact freeze 后 `python -B -m mr3_learning.authority_repair check --freeze <40位HEAD>`，再由 `reach_execution --scope engineering` 包住 `python -B -m mr3_learning.authority_repair run --freeze <40位HEAD>`。必须使用 ns3gym 解释器、`PYTHONNOUSERSITE=1` 并移除外来 `PYTHONPATH`。exclusive 输出 `/tmp/mr3_p2a_authority_repair_v1`，不覆盖/重复旧试验；首臂失败不自动执行容量或训练。详细范围及预算见共享修复报告。
+
+### 2026-10-24 authority v3 有限原子激活验证
+
+现行 profile 为 `mr3-owned-stream-authority-v3`；上方 v2 命令及结果属于历史冻结。入口仍为 `mr3_learning.authority_repair prepare/check/run`，必须新 current21 build、受影响测试、真实 commit/push/clean 及40位新冻结；实际计划位于 `report/assets/20261024_mr3_p2a_authority_activation`，exclusive 输出 `/tmp/mr3_p2a_authority_activation_v1`，外父 `/tmp/mr3_authority_activation_root_v1`。完整父预约26000秒承接 U116147.2793258256018/C180000。先原暖身+两次真实运动取消诊断；全部角色通过才执行双worker采样容量臂，不自动学习或授予完整资格。

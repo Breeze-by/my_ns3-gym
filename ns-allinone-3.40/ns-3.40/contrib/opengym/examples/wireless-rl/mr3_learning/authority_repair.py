@@ -1,4 +1,4 @@
-"""Finite authority-v2 repair verification; no learning or qualification entry."""
+"""Finite authority-v3 activation verification; no learning or qualification entry."""
 import argparse
 from decimal import Decimal
 import importlib.util
@@ -11,11 +11,11 @@ from . import decisive_tests as d
 from .motion_authority_profile import MOTION_AUTHORITY_PROFILE
 from .preparation import identity
 
-A=d.W/'report/assets/20261024_mr3_p2a_authority_repair'
-OUT=Path('/tmp/mr3_p2a_authority_repair_v1')
-NATIVE=d.ROOT/'ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_authority_repair_v1'
-CONTRACT='mr3-p2a-authority-repair-v2'
-PRIOR=Decimal('115431.2861004196018')
+A=d.W/'report/assets/20261024_mr3_p2a_authority_activation'
+OUT=Path('/tmp/mr3_p2a_authority_activation_v1')
+NATIVE=d.ROOT/'ros2_ws/ros2-multi-robot-automap/log/mr3_p2a_authority_activation_v1'
+CONTRACT='mr3-p2a-authority-activation-v3'
+PRIOR=Decimal('116147.2793258256018')
 CAP=Decimal('180000')
 
 

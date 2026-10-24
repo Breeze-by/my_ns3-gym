@@ -1,0 +1,31 @@
+F...........................................                             [100%]
+=================================== FAILURES ===================================
+_ IndependentAuthorityTests.test_activation_publication_reconstructs_witness_floor_and_lease _
+
+self = <mr3_learning.tests.test_motion_authority_audit.IndependentAuthorityTests testMethod=test_activation_publication_reconstructs_witness_floor_and_lease>
+
+    def test_activation_publication_reconstructs_witness_floor_and_lease(self):
+        def publication(gate,ack,seq,now):
+            wire=dict(schema=a.WIRE,profile=a.PROFILE,epoch=EPOCH,robot=ROBOT,
+                ack_sequence=seq,clock_ns=now,authority_packet_sha256=a.digest(gate.packet),ack=ack)
+            return dict(message=wire,raw_json=a.canonical(wire),scope='publication_call_returned; not delivery')
+        for attack in (None,'floor','owner','rest','missing_evidence','expired'):
+>           gate=self.ready();gate.raw_callback(dict(sequence=7,v=.2,w=0.))
+
+mr3_learning/tests/test_motion_authority_audit.py:104: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+mr3_learning/motion_authority_audit.py:282: in raw_callback
+    require(integer(request['sequence'],1)==self.raw_seq+1,'authority raw callback sequence gap')
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = False, reason = 'authority raw callback sequence gap'
+
+    def require(value,reason):
+>       if not value:raise ValueError(reason)
+E       ValueError: authority raw callback sequence gap
+
+mr3_learning/motion_authority_audit.py:35: ValueError
+- generated xml file: /home/zhuyulab/ns3-workspace/ns-allinone-3.40/ns-3.40/contrib/opengym/examples/wireless-rl/report/assets/20261024_mr3_p2a_authority_activation/checks/activation_learner_v1/junit.xml -
+=========================== short test summary info ============================
+FAILED mr3_learning/tests/test_motion_authority_audit.py::IndependentAuthorityTests::test_activation_publication_reconstructs_witness_floor_and_lease
+1 failed, 43 passed in 5.98s
