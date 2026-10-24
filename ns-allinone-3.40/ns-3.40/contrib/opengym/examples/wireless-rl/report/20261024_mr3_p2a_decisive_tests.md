@@ -25,4 +25,6 @@
 
 ## 结果
 
-待真实运行后填写，不预写 PASS。
+第一项 freeze `bacd0b59e4aba180dcfb5ff292b572b0e4ba9398` 已真实失败，完整父等待 `671.93121285` 秒。原 worker 保存 13 条 step（末步只推进 0.02 物理秒），外部刺激程序只收到 12 次返回；第 13 次原命令为 539，任务报告 navigation_failure，外层 step IPC guard 过期。关闭 worker rc=-9 / forced_shutdown=true / failed_sample=true；原 remaining_owned 两数组为空，不能改称正常关闭。custody 观察器原白名单只支持 benchmark/PPO/action_trace，新增 decisive_probe 未获准入，原 capture FAIL，审计原样 SKIPPED。该接线遗漏使本轮不能取得完整原生/取消资格信用。
+
+接续仅执行尚未启动的原 capacity 计划：固定上轮十个闭合输入共 5897292 字节，在原冻结源码不变的基础上增加独立父脚本；先核对保存 PID/start fresh absence 和输入哈希，描述原 transitions/adapter，再运行原 benchmark 双 worker/64 步输入与全部适用审计。新增父预约 13000 秒，与首次实际费用合计小于原 26000 预约；旧 FAIL 不重判、不重跑行为臂，不修改 native/module 白名单或数学/物理/安全参数。当前工程累计为 113357.2370064986018，余 66642.7629935013982；pilot/final 保持。容量结果仍待实际执行。

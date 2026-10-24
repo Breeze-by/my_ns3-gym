@@ -1044,3 +1044,5 @@ PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 /home/zhuyulab/miniconda3/envs/ns3g
 在既有MR3 adapter启动命令附加 `mr3_seed_rule:=exact-point-bridge-v2 mr3_start_graph_rule:=point-attachment-3x3-v1`。
 原生仍向Nav2派发策略选定的候选，attachment不是额外导航目标。此入口当前仅完成实现/CPU准备，
 不是原生资格或训练推荐；只按V37冻结计划执行有界代理profile/短探针。
+
+2026-10-24 decisive continuation: first behavior arm failed and is not rerun. After clean pushed freeze and fixed-input/identity precheck, run the source-bound `report/assets/20261024_mr3_p2a_decisive_tests/capacity_continuation.py --freeze <exact40>` through reach_execution; only original benchmark capacity plan runs. See decisive test report for scope and first failure.
